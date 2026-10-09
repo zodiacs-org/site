@@ -1,26 +1,11 @@
 {
   "version": 1,
-  "id": "translated-compatibility-pairs-20261006",
-  "baseCommit": "3e81989ca7ed07588e21c8a6e7907f9f4ba44e18",
+  "id": "astrofolio-faq-redundancy-20261009",
+  "baseCommit": "ac09a5fab7e6674039876e15f4db4bc29b09e79f",
   "protectedPaths": [
-    "src/lib/i18n/index.test.ts",
-    "src/lib/i18n/index.ts",
-    "src/pages/es/[...slug].astro",
-    "src/pages/es/[sign]/index.astro",
-    "src/pages/es/compatibility/[pair]/index.astro",
-    "src/pages/es/compatibility/index.astro",
-    "src/pages/fr/[...slug].astro",
-    "src/pages/fr/[sign]/index.astro",
-    "src/pages/fr/compatibility/[pair]/index.astro",
-    "src/pages/fr/compatibility/index.astro",
-    "src/pages/it/[...slug].astro",
-    "src/pages/it/[sign]/index.astro",
-    "src/pages/it/compatibility/[pair]/index.astro",
-    "src/pages/it/compatibility/index.astro",
-    "src/pages/pt/[...slug].astro",
-    "src/pages/pt/[sign]/index.astro",
-    "src/pages/pt/compatibility/[pair]/index.astro",
-    "src/pages/pt/compatibility/index.astro"
+    "public/assets/app.js",
+    "scripts/registry-consumer-contract.test.mjs",
+    "src/app.jsx"
   ],
-  "authorization": "After reviewing the previews of the translated rising-sign profiles, sky calendars and compatibility pairs on October 6, 2026, and being told that the compatibility-pair translations touch protected language files, the owner replied “merge and i allow this one time”. This one-time exact-path exception covers only the work he selected: the 78 compatibility pair guides translated into Spanish, Brazilian Portuguese, French and Italian, their four localized routes, the removal of their English-only stubs, the links to them from the four localized compatibility hubs and sign guides, and the route policy and its test. Disclosure, legal, Registry, SDK and trust wording are unchanged."
+  "authorization": "On October 9, 2026 the owner reported that in the Astrofolio FAQ “some questions are redundant and are already answered earlier”, reviewed the resulting change, and replied “yeah looks good push it live.” This one-time exact-path allowance covers only the CONSUMER_FAQS list in src/app.jsx (four questions answered by the page's own sections removed, and the Terminal answer replaced with a description of the Terminal), its regenerated public/assets/app.js, and the matching FAQ contract test. The risk question, market and venue notice, disclosure, legal, Registry records and wallet wording are unchanged."
 }
