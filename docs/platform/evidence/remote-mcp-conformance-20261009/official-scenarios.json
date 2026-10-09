@@ -1,0 +1,123 @@
+{
+  "schema": "zodiacs.remote-mcp-official-scenarios.v1",
+  "observedAt": "2026-10-09T18:09:15.688Z",
+  "endpoint": "https://zodiacs.org/mcp",
+  "producer": {
+    "source": "ad9e01c0375ee11a9c1b78187bf54eb18fc9ef78",
+    "run": "37971225643",
+    "node": "v22.23.3"
+  },
+  "framework": {
+    "name": "@modelcontextprotocol/conformance",
+    "version": "0.2.0-alpha.12",
+    "gitHead": "f44482ba17df816d3176962a11cdf36aec9bda00",
+    "distIntegrity": "sha512-eXtZFgmtZiU5SsvXty+RGXGnyIqEVm3GLU/HZmg1wMjtKOocPZZgD9HQKd30oJhio5UB0wFJmsc6r8u48Q+EYA==",
+    "distTarball": "https://registry.npmjs.org/@modelcontextprotocol/conformance/-/conformance-0.2.0-alpha.12.tgz",
+    "distTags": {
+      "latest": "0.1.16",
+      "alpha": "0.2.0-alpha.12"
+    },
+    "researchSource": "c37eec888e1c6ff140af79987a40008548b7cc5f"
+  },
+  "dependencyLockSha256": "5fd5c41514028e060309a119d6e34f1a88bf2ec25a9d6c46c4cdd5fbc19a7654",
+  "protocolVersion": "2025-11-25",
+  "scenarios": [
+    {
+      "scenario": "server-initialize",
+      "exitCode": 0,
+      "processError": null,
+      "checksSha256": "5ef18cec5c53d5a69b18b75595544210b62a0169d797df15bcc894cb97ba2239",
+      "checks": [
+        {
+          "id": "server-initialize",
+          "status": "SUCCESS",
+          "name": "ServerInitialize",
+          "errorMessage": null,
+          "details": {
+            "serverUrl": "https://zodiacs.org/mcp",
+            "connected": true
+          }
+        },
+        {
+          "id": "server-session-id-visible-ascii",
+          "status": "INFO",
+          "name": "ServerSessionIdVisibleAscii",
+          "errorMessage": null,
+          "details": {
+            "message": "Server did not provide an MCP-Session-Id header (session ID is optional)"
+          }
+        },
+        {
+          "id": "wire-schema-valid",
+          "status": "SUCCESS",
+          "name": "WireSchemaValid",
+          "errorMessage": null,
+          "details": {
+            "messagesValidated": 3,
+            "violations": []
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "tools-list",
+      "exitCode": 0,
+      "processError": null,
+      "checksSha256": "022f38a8c986c59f61bc3ed35c3e6f657fb8917ac8b0f4b6641e42c3be50320e",
+      "checks": [
+        {
+          "id": "tools-list",
+          "status": "SUCCESS",
+          "name": "ToolsList",
+          "errorMessage": null,
+          "details": {
+            "toolCount": 6,
+            "tools": [
+              "get_capabilities",
+              "get_sky",
+              "get_upcoming_events",
+              "check_sky_fact",
+              "get_horoscope",
+              "open_chart_studio"
+            ]
+          }
+        },
+        {
+          "id": "tools-name-format",
+          "status": "SUCCESS",
+          "name": "ToolsNameFormat",
+          "errorMessage": null,
+          "details": {
+            "toolCount": 6,
+            "results": {
+              "get_capabilities": "valid",
+              "get_sky": "valid",
+              "get_upcoming_events": "valid",
+              "check_sky_fact": "valid",
+              "get_horoscope": "valid",
+              "open_chart_studio": "valid"
+            }
+          }
+        },
+        {
+          "id": "wire-schema-valid",
+          "status": "SUCCESS",
+          "name": "WireSchemaValid",
+          "errorMessage": null,
+          "details": {
+            "messagesValidated": 5,
+            "violations": []
+          }
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "failure": null,
+  "limitations": [
+    "Two unmodified official scenarios at the currently advertised protocol; not the full current MCP conformance suite or every-tool Inspector evaluation.",
+    "The upstream tool-call scenarios require sample test_* tools which the application does not advertise; no fake production tools or expected-failure baseline was added.",
+    "Initialization and tool discovery are anonymous, synthetic protocol requests; no birth request, credentials, registry publication, private scan or accepted weight.",
+    "Research source and installed npm metadata are recorded separately; package/git identity is not presumed."
+  ]
+}

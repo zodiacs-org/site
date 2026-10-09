@@ -1,0 +1,52 @@
+{
+  "schema": "zodiacs.thesis-full-suite-receipt.v1",
+  "producer": {
+    "source": "ad9e01c0375ee11a9c1b78187bf54eb18fc9ef78",
+    "run": "37971225643"
+  },
+  "testedHead": "50636624a8677da3644987cfa4fe735e811650f3",
+  "integration": "45fc46b25fd96a17ae6029820f8382d623e7bdad",
+  "tree": "7d8126fc00dea60caebaf85540e2919c90dab72a",
+  "originalRun": 37962304681,
+  "artifact": 11634551439,
+  "artifactSha256": "d7b777abb513f7e37df7c303a588c479cf6891b4edc6dbf424c44098e2029681",
+  "jobsPassed": 20,
+  "lighthouseRoutesPassed": 30,
+  "stalls": 0,
+  "retakes": 0,
+  "samples": [
+    {
+      "file": "tests/visual/artifacts/lighthouse/thesis-1.json",
+      "sha256": "018dce2a3f21b699bd251fc387b79c6c3ebc78ecb00c5acf5495e768edc65125",
+      "lcpMs": 2408.9809999999998,
+      "cls": 0,
+      "tbtMs": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "file": "tests/visual/artifacts/lighthouse/thesis-2.json",
+      "sha256": "7f8235c522096793e998cd0931b8ef379a8b1f46c8e7ae336d78e4c89eb20e6e",
+      "lcpMs": 2412.3624,
+      "cls": 0,
+      "tbtMs": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "file": "tests/visual/artifacts/lighthouse/thesis-3.json",
+      "sha256": "74de7d9fb4eb9830c20030b165af3cdbcef88c14db543a92eb3998669985aa03",
+      "lcpMs": 2413.9336000000003,
+      "cls": 0,
+      "tbtMs": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    }
+  ],
+  "limitations": [
+    "Read-only extraction from the original passing full suite; no new browser run or gate relaxation."
+  ]
+}
