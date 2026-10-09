@@ -67,3 +67,11 @@ The fix adds the same catalogue's routes and controlled last-modified date
 to the existing sitemap endpoint, updates the edited developer hub date,
 and checks the built guide sitemap entries in the twin verifier.
 The Phase 1 capture boundary and all existing checks remain unchanged.
+
+The first sitemap registration source `fa8df91d3b7780750668bb354ae8b41d0a112602`
+then failed the same dist gate's coordinated count: 1,802 routes versus the
+previous 1,783. The existing baseline now adds exactly the catalogue's
+19 routes and requires their exact set. Every previous family's count,
+canonical requirement, noindex rule and locale count remains enforced.
+This registers new intended routes; no tolerance was widened or assertion
+removed.
