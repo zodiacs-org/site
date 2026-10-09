@@ -1,7 +1,14 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
-const root='docs/platform/evidence/checkpoint23-20261009/results/';
+import { resolve, relative, isAbsolute, sep } from 'node:path';
+import { REPORT_NAMES, assertReportBinding } from './report-binding.mjs';
+const committedRoot='docs/platform/evidence/checkpoint23-20261009/results/';
+assert.ok(process.env.PROGRAMME_RESULTS_DIR, 'Scratch results directory required');
+const root=resolve(process.env.PROGRAMME_RESULTS_DIR)+sep;
+const fromRepo=relative(resolve('.'),root);
+assert.ok(isAbsolute(fromRepo)||fromRepo==='..'||fromRepo.startsWith('..'+sep),
+  'Generated reports must stay outside the checked-out repository');
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const parsed=async name=>JSON.parse(await readFile(root+name,'utf8'));
 const given=await parsed('houses-given.json');
@@ -29,6 +36,9 @@ for(const name of ['items.json','key.json','tool-answers.json','scorer.mjs']) {
 }
 const proof={schema:'zodiacs.checkpoint23-gate.v1',producer:{source:process.env.GITHUB_SHA,head:process.env.PROGRAMME_HEAD,run:process.env.GITHUB_RUN_ID,node:process.version},engine:{version:pkg.version,archiveSha256:sha(archive)},clock:'same engine UT1 Julian day',judgedWindow:'1850-2049',givenToleranceArcseconds:0.01,endToEndToleranceArcseconds:3,benchmarkPublication:published,limitations:['Finite reference comparisons; no outside-window tolerance claim','Original failed clock and outside-window results retained','Assistant answers are separately required by B4.b','No private scan or registry/guide publication']};
 await writeFile(root+'validation.json',JSON.stringify(proof,null,2)+'\n');
-for(const name of ['houses-given.json','houses-end-to-end.json','co-given.json','co-end-to-end.json','validation.json']) {
- const bytes=await readFile(root+name);console.log('PROGRAMME_FILE '+JSON.stringify({path:root+name,size:bytes.length,sha256:sha(bytes),base64:bytes.toString('base64')}));
+for(const name of REPORT_NAMES) {
+ assertReportBinding(name,await readFile(committedRoot+name),await readFile(root+name));
+}
+for(const name of REPORT_NAMES) {
+ const bytes=await readFile(root+name);console.log('PROGRAMME_FILE '+JSON.stringify({path:committedRoot+name,size:bytes.length,sha256:sha(bytes),base64:bytes.toString('base64')}));
 }

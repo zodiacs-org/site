@@ -3,6 +3,14 @@ on:
   pull_request:
     paths:
       - 'docs/platform/evidence/checkpoint23-20261009/**'
+      - 'docs/platform/evidence/houses-2026-10-04/tools/**'
+      - 'docs/platform/evidence/co-ascendants-2026-10-04/tools/compare-end-to-end.py'
+      - 'public/developers/sky-benchmark/v0/**'
+      - 'tests/benchmarks/sky-benchmark.test.ts'
+      - 'src/lib/sky-api/**'
+      - 'vendor/zodiacs-engine-1.0.0-rc.2.tgz'
+      - 'package.json'
+      - 'package-lock.json'
       - 'docs/platform/programme/DECISIONS-2026-10-09.md'
       - '.github/workflows/checkpoint23.yml'
 permissions:
@@ -29,19 +37,22 @@ jobs:
         run: python -m pip install pyswisseph==2.10.3.2
       - name: Run unchanged seeds, grids, windows and tolerances on carried rc.2
         run: |
-          PROGRAMME_SCRATCH=$(mktemp -d)
-          trap 'rm -rf "$PROGRAMME_SCRATCH"' EXIT
-          mkdir -p docs/platform/evidence/checkpoint23-20261009/results
+          PROGRAMME_SCRATCH=$(mktemp -d "$RUNNER_TEMP/checkpoint23.XXXXXX")
+          PROGRAMME_RESULTS_DIR="$PROGRAMME_SCRATCH/results"
+          mkdir -p "$PROGRAMME_RESULTS_DIR"
+          printf 'PROGRAMME_SCRATCH=%s\nPROGRAMME_RESULTS_DIR=%s\n' "$PROGRAMME_SCRATCH" "$PROGRAMME_RESULTS_DIR" >> "$GITHUB_ENV"
           node docs/platform/evidence/houses-2026-10-04/tools/dump-given.mjs > "$PROGRAMME_SCRATCH/houses-given.jsonl"
-          python docs/platform/evidence/houses-2026-10-04/tools/compare-given.py "$PROGRAMME_SCRATCH/houses-given.jsonl" > docs/platform/evidence/checkpoint23-20261009/results/houses-given.json
+          python docs/platform/evidence/houses-2026-10-04/tools/compare-given.py "$PROGRAMME_SCRATCH/houses-given.jsonl" > "$PROGRAMME_RESULTS_DIR/houses-given.json"
           node docs/platform/evidence/checkpoint23-20261009/tools/dump-houses-end.mjs > "$PROGRAMME_SCRATCH/houses-end.jsonl"
-          python docs/platform/evidence/houses-2026-10-04/tools/compare-end-to-end.py "$PROGRAMME_SCRATCH/houses-end.jsonl" > docs/platform/evidence/checkpoint23-20261009/results/houses-end-to-end.json
+          python docs/platform/evidence/houses-2026-10-04/tools/compare-end-to-end.py "$PROGRAMME_SCRATCH/houses-end.jsonl" > "$PROGRAMME_RESULTS_DIR/houses-end-to-end.json"
           node docs/platform/evidence/checkpoint23-20261009/tools/dump-co-given.mjs > "$PROGRAMME_SCRATCH/co-given.jsonl"
-          python docs/platform/evidence/checkpoint23-20261009/tools/compare-co-given.py "$PROGRAMME_SCRATCH/co-given.jsonl" > docs/platform/evidence/checkpoint23-20261009/results/co-given.json
+          python docs/platform/evidence/checkpoint23-20261009/tools/compare-co-given.py "$PROGRAMME_SCRATCH/co-given.jsonl" > "$PROGRAMME_RESULTS_DIR/co-given.json"
           node docs/platform/evidence/checkpoint23-20261009/tools/dump-co-end.mjs > "$PROGRAMME_SCRATCH/co-end.jsonl"
-          python docs/platform/evidence/co-ascendants-2026-10-04/tools/compare-end-to-end.py "$PROGRAMME_SCRATCH/co-end.jsonl" > docs/platform/evidence/checkpoint23-20261009/results/co-end-to-end.json
+          python docs/platform/evidence/co-ascendants-2026-10-04/tools/compare-end-to-end.py "$PROGRAMME_SCRATCH/co-end.jsonl" > "$PROGRAMME_RESULTS_DIR/co-end-to-end.json"
       - name: Current tool agreement, frozen v0, surrounding facts and scorer
         run: npx vitest run tests/benchmarks/sky-benchmark.test.ts
+      - name: Retained report binding and tampering controls
+        run: node --test docs/platform/evidence/checkpoint23-20261009/tools/report-binding-selftest.mjs
       - name: Assert complete gates, exact archive and canonical published files; export aggregate evidence
         env:
           PROGRAMME_HEAD: ${{ github.event.pull_request.head.sha }}
@@ -49,5 +60,14 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: checkpoint23-${{ github.run_id }}
-          path: docs/platform/evidence/checkpoint23-20261009/results/
+          path: ${{ env.PROGRAMME_RESULTS_DIR }}
           retention-days: 90
+      - name: Remove generated scratch results
+        if: always()
+        run: |
+          if [ -n "${PROGRAMME_SCRATCH:-}" ]; then
+            case "$PROGRAMME_SCRATCH" in
+              "$RUNNER_TEMP"/checkpoint23.*) rm -rf "$PROGRAMME_SCRATCH" ;;
+              *) exit 1 ;;
+            esac
+          fi

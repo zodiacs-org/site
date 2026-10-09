@@ -68,3 +68,9 @@ benchmark risk. No new stable archive, registry package, active guide,
 private scan, account/security/hosting setting or outreach occurs here.
 P3.3, P3.4 and P3.10 retain their incomplete gates; stable/package/guide
 publication retains separate prerequisites.
+
+## Committed evidence binding
+
+Automatic review at head c802ef6cf4c17fe46ba5301f3ca6999044295910 identified that the repeat workflow overwrote tracked reports before verification. The continuation independently verified all four numerical report bytes against this retained producer and all validation claims excluding execution identity on every observed run, including 37928124600. That external verification does not cure the workflow gap.
+
+The corrected workflow generates only outside the checkout, compares all four numerical reports byte-for-byte with these committed files, and compares every generated validation claim with the retained validation after excluding only the new producer identity. The original validation bytes, including original producer, are anchored to SHA-256 07a86d180f2e1ff7e1115b0896a8a9002dd033d14c2105685e6ff5f1ef26f2ff. Node tests mutate both committed and regenerated metrics in every report, and alter the retained producer identity, requiring rejection; a changed new execution identity alone is allowed. Exported paths retain the committed report names while uploaded bytes come from scratch. The original evidence files, seeds, grids, tolerances, windows and canonical benchmark remain unchanged. A new complete workflow and full Site Check remain required; this records no new passing result.
