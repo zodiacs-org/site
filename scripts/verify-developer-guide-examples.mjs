@@ -56,6 +56,25 @@ try {
   await build({ entryPoints: [join(scratch, 'worker.mjs')], outfile: join(scratch, 'worker-bundle.mjs'), bundle: true, platform: 'browser', format: 'esm', logLevel: 'silent' });
   command(process.execPath, [join(scratch, 'worker-check.mjs')]);
   outcomes.push({ guide: 'cloudflare', runtime: 'worker-style fetch plus browser-platform bundle', status: 'pass' });
+  command('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', 'miniflare@4.20260730.0']);
+  await writeFile(join(scratch, 'worker-runtime-check.mjs'), `import assert from 'node:assert/strict';
+import { Miniflare } from 'miniflare';
+const worker = new Miniflare({
+  modules: true, scriptPath: new URL('./worker-bundle.mjs', import.meta.url).pathname,
+  compatibilityDate: '2026-10-09',
+});
+try {
+  const response = await worker.dispatchFetch('https://example.invalid/');
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).bodies.length, 12);
+} finally {
+  await worker.dispose();
+}
+`);
+  command(process.execPath, [join(scratch, 'worker-runtime-check.mjs')]);
+  const miniflare = JSON.parse(await readFile(join(scratch, 'node_modules/miniflare/package.json'), 'utf8'));
+  assert.equal(miniflare.version, '4.20260730.0');
+  outcomes.push({ guide: 'cloudflare', runtime: 'Miniflare ' + miniflare.version + ' / local workerd', status: 'pass' });
 
   await writeFile(join(scratch, 'browser.mjs'), code('browser'));
   await build({ entryPoints: [join(scratch, 'browser.mjs')], outfile: join(scratch, 'browser-bundle.mjs'), bundle: true, platform: 'browser', format: 'esm', logLevel: 'silent' });
@@ -92,7 +111,7 @@ try {
     guideSourceSha256: source,
     runtimes: { node: process.version, deno: command('deno', ['--version']).trim(), bun: command('bun', ['--version']).trim() },
     outcomes,
-    limitations: ['Worker-style fetch and bundle are not a deployed Workers runtime check.', 'Python and elections recipes use the existing hosted API contract fixtures; no live private request is made.', 'React Native and sunrise-based panchang remain outside this draft.'],
+    limitations: ['Local workerd validates the bundled Worker without proving a deployed Cloudflare service.', 'Python and elections recipes use the existing hosted API contract fixtures; no live private request is made.', 'React Native and sunrise-based panchang remain outside this draft.'],
   }, null, 2));
 } finally {
   await rm(scratch, { recursive: true, force: true });
