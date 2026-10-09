@@ -1,11 +1,26 @@
 {
   "version": 1,
-  "id": "astrofolio-faq-redundancy-20261009",
-  "baseCommit": "ac09a5fab7e6674039876e15f4db4bc29b09e79f",
+  "id": "navigation-parity-astrofolio-flow-20261010",
+  "baseCommit": "b49c69b7f070813aec3b6359ec3a0fde17a5159b",
   "protectedPaths": [
     "public/assets/app.js",
-    "scripts/registry-consumer-contract.test.mjs",
+    "public/registry/aquarius/index.html",
+    "public/registry/aries/index.html",
+    "public/registry/cancer/index.html",
+    "public/registry/capricorn/index.html",
+    "public/registry/gemini/index.html",
+    "public/registry/index.html",
+    "public/registry/leo/index.html",
+    "public/registry/libra/index.html",
+    "public/registry/pisces/index.html",
+    "public/registry/sagittarius/index.html",
+    "public/registry/scorpio/index.html",
+    "public/registry/taurus/index.html",
+    "public/registry/technical/index.html",
+    "public/registry/virgo/index.html",
+    "public/sdk/index.html",
+    "public/terminal/markets/index.html",
     "src/app.jsx"
   ],
-  "authorization": "On October 9, 2026 the owner reported that in the Astrofolio FAQ “some questions are redundant and are already answered earlier”, reviewed the resulting change, and replied “yeah looks good push it live.” This one-time exact-path allowance covers only the CONSUMER_FAQS list in src/app.jsx (four questions answered by the page's own sections removed, and the Terminal answer replaced with a description of the Terminal), its regenerated public/assets/app.js, and the matching FAQ contract test. The risk question, market and venue notice, disclosure, legal, Registry records and wallet wording are unchanged."
+  "authorization": "On October 10, 2026 the owner reported that the Tools dropdown on Astrofolio differs from the main site and asked: “The navigation bar and drop down should be consistent on all the pages.” In the same message the owner asked for a slight desktop-only rearrangement of the Astrofolio sections below the cards, leaving mobile unchanged, and then said “once you finish, push it live.” This one-time exact-path allowance covers only the shared wing navigation regenerated into the Registry, SDK and Terminal pages (the Tools menu gains the main site’s “More to explore” links and “All tools”, with matching fonts, colours and hover widths), the same Tools menu in the Astrofolio and Terminal application with its regenerated bundle, and desktop CSS that moves the Fomo description and store buttons under the phones and “View the collection” under the merchandise. Page content, token records, prices, disclosures, legal wording and mobile layouts are unchanged."
 }
