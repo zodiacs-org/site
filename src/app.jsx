@@ -1789,6 +1789,18 @@
         { href: '/saturn-return/', name: 'Saturn return', description: 'When yours hits, exactly, and what it tends to ask.' },
         { href: '/birthday/', name: 'Birthday', description: 'Find your Sun sign from your birthday, including dates near a sign change.' },
       ];
+      // Mirrors NAV_MORE in src/lib/nav-tools.ts, so this menu ends like the
+      // Tools menu on every other page.
+      const NAV_MORE = [
+        { href: '/group-charts/', label: 'Group charts' },
+        { href: '/chart-twins/', label: 'Chart twins' },
+        { href: '/big-three/', label: 'Big three card' },
+        { href: '/compatibility/invite/', label: 'Invite a friend' },
+        { href: '/sky-calendar/', label: 'Sky calendar' },
+        { href: '/chart-of-the-day/', label: 'Chart of the day' },
+        { href: '/your-sky-wrapped/', label: 'Your sky, wrapped' },
+        { href: '/astrologer-kit/', label: 'Chart PDF' },
+      ];
       const terminalNav = {
         href: '/astrofolio/',
         label: 'Astrofolio',
@@ -1826,6 +1838,15 @@
                     <span className="wnav-tools__desc">{tool.description}</span>
                   </a>
                 ))}
+                <div className="wnav-tools__more" role="group" aria-label="More to explore">
+                  <span className="wnav-tools__more-label">More to explore</span>
+                  <ul>
+                    {NAV_MORE.map((item) => (
+                      <li key={item.href}><a href={item.href} tabIndex={-1} onClick={() => setToolsOpen(false)}>{item.label}</a></li>
+                    ))}
+                  </ul>
+                </div>
+                <a className="wnav-tools__all" href="/tools/" tabIndex={-1} onClick={() => setToolsOpen(false)}>All tools <span aria-hidden="true">→</span></a>
               </div>
             </div>
             <div className={signsOpen ? 'wnav-signs is-open' : 'wnav-signs'} id="wnav-signs" data-wnav-signs-menu="" hidden={!signsOpen} onKeyDown={(event) => handleDropdownKey(event, 3, setSignsOpen, signsButtonRef)}>
@@ -1859,6 +1880,7 @@
                   {NAV_TOOLS.map((tool, i) => (
                     <a className="wnav-menu__tool" key={tool.href} style={{ '--i': i }} href={tool.href} aria-label={`${tool.name}. ${tool.description}`}>{tool.name}</a>
                   ))}
+                  <a className="wnav-menu__tool wnav-menu__tool--all" href="/tools/">All tools <span aria-hidden="true">→</span></a>
                 </div>
               </div>
               <div className="wnav-menu__group">
