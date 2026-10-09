@@ -11,9 +11,12 @@ const decode = (text) => text
 assert.equal(guides.length, 18);
 assert.equal(new Set(guides.map((guide) => guide.slug)).size, guides.length);
 const llms = await Promise.all(['llms.txt', 'llms-full.txt'].map((file) => readFile(resolve(root, 'dist', file), 'utf8')));
+const sitemap = await readFile(resolve(root, 'dist/sitemap.xml'), 'utf8');
+assert.ok(sitemap.includes('<loc>https://zodiacs.org/developers/docs/</loc>'), 'Missing guide index sitemap URL');
 const checked = [];
 for (const guide of guides) {
   assert.match(guide.slug, /^[a-z][a-z0-9-]*$/);
+  assert.ok(sitemap.includes('<loc>https://zodiacs.org/developers/docs/' + guide.slug + '/</loc>'), 'Missing guide sitemap URL: ' + guide.slug);
   const htmlPath = 'developers/docs/' + guide.slug + '/index.html';
   const markdownPath = 'developers/docs/' + guide.slug + '.md';
   const html = decode(await readFile(resolve(root, 'dist', htmlPath), 'utf8'));

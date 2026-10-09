@@ -56,3 +56,14 @@ Examples use synthetic requests and existing public fixtures only.
 Private birth-data search inputs from the previous executor are unavailable;
 no new private release search is claimed. Full affected release-range and
 staged-evidence searches remain required before publication.
+
+## Recorded preparation failure
+
+[Run 37893899060](https://github.com/zodiacs-org/site/actions/runs/37893899060)
+on source `64948973b2dd05e5db2e3dd5cf09ebab0d1e82c3` failed the
+unchanged build/dist gate: all 19 new guide HTML pages were absent from the
+custom sitemap. No runtime-example success is claimed for this attempt.
+The fix adds the same catalogue's routes and controlled last-modified date
+to the existing sitemap endpoint, updates the edited developer hub date,
+and checks the built guide sitemap entries in the twin verifier.
+The Phase 1 capture boundary and all existing checks remain unchanged.

@@ -24,6 +24,7 @@ import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
 import birthdayFactsData from '../data/birthdays.json';
 import daily from '../data/daily.json';
+import developerGuides from '../data/developer-guides.json';
 import horoscopeProgram from '../data/horoscope-program.json';
 import eventsPublicationData from '../data/events-publication.json';
 import registryResearchPublicationData from '../data/registry-research/publication.json';
@@ -128,6 +129,12 @@ const ENGINE_RC2_ROUTES = [
   '/developers/', '/developers/ai/', '/developers/compare/', '/developers/compute/', '/developers/conformance/',
   '/developers/engine/', '/developers/mcp/', '/developers/support/',
 ] as const;
+
+const DEVELOPER_GUIDES_LASTMOD = '2026-10-09';
+const DEVELOPER_GUIDES_ROUTES = [
+  '/developers/docs/',
+  ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
+];
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -265,6 +272,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...SKY_BENCHMARK_ROUTES.map((loc) => [loc, SKY_BENCHMARK_LASTMOD] as const),
   ...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const),
   ...ENGINE_RC2_ROUTES.map((loc) => [loc, ENGINE_RC2_LASTMOD] as const),
+  ['/developers/', DEVELOPER_GUIDES_LASTMOD] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -384,6 +392,7 @@ export const GET: APIRoute = async () => {
 
   const urls: { loc: string; priority: number; lastmod?: string }[] = [
     ...evergreenUrls,
+    ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: DEVELOPER_GUIDES_LASTMOD })),
     ...(registryAuraEntry ? [registryAuraEntry] : []),
     ...(gamesEnabled ? [
       { loc: '/race/', priority: 0.8, lastmod: '2026-08-19' },
