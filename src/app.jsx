@@ -6967,26 +6967,13 @@
       );
     }
 
+    // Only questions the sections above don't already answer: what Astrofolio
+    // is, official addresses, Solana and Base, and merchandise each have their
+    // own section on the page.
     const CONSUMER_FAQS = [
-      {
-        q: 'What is Astrofolio?',
-        a: 'Astrofolio is the collection of twelve official Zodiac tokens—one for each sign—with its own design and public Registry record.'
-      },
-      {
-        q: 'How do I know a Zodiac is official?',
-        a: 'Compare the complete token address with the published Registry. A name or ticker alone is not enough.'
-      },
-      {
-        q: 'Why does each sign have Solana and Base addresses?',
-        a: 'Each Zodiac began on Solana and has an official Base counterpart. Both verified addresses appear in the same Registry record.'
-      },
       {
         q: 'Do I need a wallet to browse?',
         a: 'No. You can browse the collection, see market context, and verify addresses without connecting a wallet.'
-      },
-      {
-        q: 'Where can I find Astrofolio merchandise?',
-        a: 'Browse the Astrofolio Shop for clothing inspired by the twelve signs.'
       },
       {
         q: 'What are the risks?',
@@ -6994,7 +6981,7 @@
       },
       {
         q: 'What is the Terminal?',
-        a: 'Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.'
+        a: 'The Terminal is the market view for all twelve Zodiacs, with live prices, charts, and liquidity side by side. It shows market data only.'
       }
     ];
 
