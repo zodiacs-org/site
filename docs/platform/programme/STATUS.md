@@ -3,9 +3,10 @@ npm and PyPI identities in the shared consumer Organization.
 
 **Overall delivery: 37%** (37.106% to three decimals) — 67.7 of 182.45
 weighted units proposed accepted; blocked 2% (3), or 1.644%.
-This branch adds only S7's 0.25 acceptance after complete checks, merge and
-exact-source canonical production verification. Checkpoint 23's merged
-ledger is 67.45/182.45, subject to its own full gates. Fixed weights,
+This branch combines checkpoint 23's proposed 67.45 with S7's 0.25 in the
+same programme PR. Its 67.7 is conditional on complete checks, merge and
+exact-source canonical production verification. Current main remains
+64/182.45 until those gates finish. Fixed weights,
 denominator and all scientific/performance/visual limits remain unchanged.
 
 [Anonymous public identity observation](../evidence/platform-identities-20261009/README.md)

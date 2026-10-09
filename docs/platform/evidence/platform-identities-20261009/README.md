@@ -20,7 +20,13 @@ that publication gate remains unfinished.
 
 Read-only test-source locator [37951312878](https://github.com/zodiacs-org/site/actions/runs/37951312878), producer `0f22392a826eb74b45f4d521c1c1fb6a718cc017`, inspected exact main `ac09a5f`; `test-source-locator.json` retains the byte-verified existing contact identity references. It did not execute tests or establish broad test coverage.
 
-The new source and its original full Site Check have not yet executed. Changes inside the Phase 1 source boundary require a new actual eighteen-capture receipt; prior manifests cannot be relabelled.
+Source check [37963645093](https://github.com/zodiacs-org/site/actions/runs/37963645093) checked out `5cdc38f4c0e6ae70bc0b69aec294d0046ad0b405`: the original scope guard passes all 21 changed source paths, 15 identity controls and six ledger controls pass, and the canonical ledger check passes. Its byte-bound result is in `source-check.json`.
+
+Fresh capture [37968247651](https://github.com/zodiacs-org/site/actions/runs/37968247651), producer `46b66342035d9d00a40aff54c826b2b93bf7c927`, checked out `87583eff7e61973e2373ed1501007b2bcc1a4c54`. The original build/schema checks, all 18 captures and original receipt tests pass. Each new PNG's bytes and digest match its prior tracked PNG. The new manifest binds raw Git template SHA-256 `ea85d4137a53d826ea5913bdb139a9c8b041f99231104e85c3dcc31387fd14f4`; unchanged images are retained only after these actual captures. `phase1-capture-producer.json` records individual comparisons.
+
+That workflow subsequently failed its separate rendered FAQ inventory because the runner lacks `rg`; the full-suite metric extraction was skipped. `follow-on-inventory-failure.json` preserves that failure and the uploaded capture artifact identity. This does not change the successful capture observations or declare the whole workflow successful. The recovery uses Node's directory walk, rebuilds the same exact source for the FAQ inventory and reads the already passing thesis full-suite artifact.
+
+The organisation changes are combined with checkpoint 23 in site #697. The predecessor thesis/full suite passed on `50636624a8677da3644987cfa4fe735e811650f3`; the combined head still requires its own complete suite, current review, merge and production observations.
 This proposes S7 acceptance after full checks, merge and exact-source
 canonical production verification. It changes no other accepted weight,
 denominator, scientific/performance/visual limit or immutable archive.
