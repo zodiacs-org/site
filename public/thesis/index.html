@@ -135,6 +135,8 @@
 
     .label { font-family: var(--display); font-weight: 500; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-dim); }
     .label--gold { color: var(--gold); }
+    /* Keep the essay start fixed while its small labels swap to the web font. */
+    .essay__rail .label { line-height: 1.6; }
 
   @font-face { font-family: 'Instrument Sans'; src: url('/fonts/instrument-sans-latin-wght-normal.woff2') format('woff2-variations'); font-weight: 400 600; font-style: normal; font-display: swap; }
   .wnav-wrap { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; top: 14px; left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; pointer-events: none; padding-top: env(safe-area-inset-top); }
@@ -3505,11 +3507,11 @@
         }
       }
 
-      if (!supportsWebGL()) return;
       var requested = false;
       function loadGallery() {
         if (requested) return;
         requested = true;
+        if (!supportsWebGL()) return;
         var script = document.createElement('script');
         script.src = '/assets/gallery.js';
         script.defer = true;

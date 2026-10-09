@@ -196,6 +196,16 @@ try {
   page.on('requestfailed', (req) => {
     (req.url().startsWith('http://127.0.0.1') ? errors : external).push(req.url());
   });
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    window.__thesisWebGLContexts = [];
+    HTMLCanvasElement.prototype.getContext = function (type) {
+      if (type === 'webgl' || type === 'webgl2') {
+        window.__thesisWebGLContexts.push({ type, at: performance.now() });
+      }
+      return getContext.apply(this, arguments);
+    };
+  });
   await page.goto(`${BASE}/thesis/`, { waitUntil: 'networkidle' });
   const registryCollectionMarker = await page.evaluate(async () => {
     const html = await fetch('/astrofolio/').then((response) => response.text());
@@ -212,6 +222,10 @@ try {
   check('Section V contains one gallery stage', (await thesisGallery.count()) === 1);
   check('gallery bundle is not requested above the fold', galleryRequests.length === 0,
     galleryRequests.join(' | '));
+
+  const initialWebGLContexts = await page.evaluate(() => window.__thesisWebGLContexts);
+  check('offscreen gallery creates no WebGL context above the fold',
+    initialWebGLContexts.length === 0, JSON.stringify(initialWebGLContexts));
 
   // Anchors resolve.
   for (const id of ['everyone-has-a-sign', 'where-the-signs-come-from', 'attention',
@@ -461,6 +475,9 @@ try {
   check('gallery bundle loads once when Section V approaches',
     galleryReady && galleryRequests.length === 1,
     `${galleryReady ? 'ready' : 'not ready'} · ${galleryRequests.length} request(s)`);
+  const visibleWebGLContexts = await page.evaluate(() => window.__thesisWebGLContexts);
+  check('gallery creates its real WebGL contexts when reached',
+    galleryReady && visibleWebGLContexts.length > 0, JSON.stringify(visibleWebGLContexts));
   const railButtons = thesisGallery.locator('[data-gallery-rail]').getByRole('button');
   const railState = await railButtons.evaluateAll((buttons) => buttons.map((button) => ({
     current: button.getAttribute('aria-current'),
@@ -1159,6 +1176,46 @@ try {
     }
     check(`no page errors or same-origin failures (${width}px)`, mobErrors.length === 0, mobErrors.slice(0, 2).join(' | '));
     await mob.close();
+  }
+  // Hold the real font requests to exercise the first layout with fallbacks,
+  // then release them without modifying production styles or metric gates.
+  for (const width of [390, 412, 810, 1440]) {
+    const cold = await browser.newContext({ viewport: { width, height: 900 } });
+    let releaseFonts;
+    const fontGate = new Promise((resolve) => { releaseFonts = resolve; });
+    await cold.route('**/fonts/*.woff2', async (route) => {
+      await fontGate;
+      await route.continue();
+    });
+    const coldPage = await cold.newPage();
+    try {
+      await coldPage.goto(`${BASE}/thesis/`, { waitUntil: 'domcontentloaded' });
+      await coldPage.waitForTimeout(150);
+      const beforeFonts = await coldPage.evaluate(() => ({
+        top: document.querySelector('.essay__body').getBoundingClientRect().top,
+        labels: [...document.querySelectorAll('.essay__rail .label')].map((node) => ({
+          height: node.getBoundingClientRect().height,
+          lineHeight: getComputedStyle(node).lineHeight,
+        })),
+        fontLoaded: document.fonts.check('500 9.5px "EB Garamond"'),
+      }));
+      releaseFonts();
+      await coldPage.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      const afterFonts = await coldPage.evaluate(() => ({
+        top: document.querySelector('.essay__body').getBoundingClientRect().top,
+        fontLoaded: document.fonts.check('500 9.5px "EB Garamond"'),
+      }));
+      check(`${width}px: essay start stays fixed across real font loading`,
+        !beforeFonts.fontLoaded && afterFonts.fontLoaded
+          && Math.abs(beforeFonts.top - afterFonts.top) <= 0.01,
+        JSON.stringify({ beforeFonts, afterFonts }));
+    } finally {
+      releaseFonts();
+      await cold.close();
+    }
   }
   await browser.close();
 } finally {

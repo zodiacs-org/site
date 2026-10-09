@@ -6,6 +6,8 @@ This document is the operating strategy for the Learn / Explore / Collect restru
 
 **Owner decision · 2026-08-13:** Astrofolio now names the consumer collection experience at `/astrofolio/`. Saved charts at `/profile/` are called simply “saved charts” or “your profile”; their product behavior does not change. Terminal is reserved for the expert market desk at `/terminal/`; the former `/terminal/pro/` URL redirects there. **Astrofolio is the collection. The Registry is the record. The Terminal is the market desk.**
 
+**Owner decision · 2026-10-08: no predictions.** Zodiacs does not build or publish betting tips, sports picks, market timing or election forecasts, on the site, in the plugins or in any API. Blinded tests of astrology come out at chance, both assistant stores ban the money and advertising mechanics behind those products, and gambling-advertising and financial-promotion law applies. What Zodiacs does instead: calculate the sky, offer astrology as interpretation for reflection, and test sky claims honestly in public (source: the research report "Zodiacs should test sky claims, not sell them", 8 October 2026).
+
 ---
 
 ## 0. The honest verdict

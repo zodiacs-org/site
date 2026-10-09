@@ -1,0 +1,25 @@
+{
+  "schema": "zodiacs.thesis-first-paint-preflight-failure.v1",
+  "source": "6ba9ed02d7334bba66ebf30516727bc76cac04b8",
+  "producer": "e139775bccaf67f81e2db3b82d040b2057d49072",
+  "run": 37955454945,
+  "job": 113904695263,
+  "stage": "Existing thesis contracts and footer transform controls",
+  "result": {
+    "passed": 40,
+    "failed": 2,
+    "browser": "not reached",
+    "performance": "not reached",
+    "artifacts": []
+  },
+  "cause": "String replacement interpreted a literal regex suffix as a replacement token and duplicated HTML within the initializer. Corrected using a replacement callback.",
+  "logSha256": "9f5b174141c62bef3babc89b0a364f003e77d301ba63e144c112a50492744ccf",
+  "correctedSource": "dadc59afab302a70e7a36b3ee475791aca3696ed",
+  "sourceControls": {
+    "onlyInitializerWrapperChanged": true,
+    "sourceSha256": "6033797e3126f910dd6f55c5132021013d0b3e9bec5133a27322d59e4d8a47d3",
+    "heroOldCodePreserved": true,
+    "limitations": "V8 syntax and byte comparison only; not browser or performance execution"
+  },
+  "limitation": "No browser or performance claim for the failed producer"
+}

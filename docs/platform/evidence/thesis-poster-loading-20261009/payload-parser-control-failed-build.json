@@ -1,0 +1,23 @@
+{
+  "schema": "zodiacs.thesis-payload-preflight.v1",
+  "producer": {
+    "source": "2d3b3829ad84e6f1e56aa507f2a318bbd4b50349",
+    "run": "37958923593"
+  },
+  "checkedOutSource": "943567ec145e9a1cf6a0b499e422fabe3180fba4",
+  "precedingStepsStatus": "failure",
+  "built": {
+    "bytes": 333529,
+    "sha256": "68520de474ecb4cfe7654264a921af02c2746b77eab72b5abe23683c5201baf1",
+    "gzipBytes": 71017,
+    "canonicalFooterBytes": 12153,
+    "canonicalFooterSha256": "1a606e00e8e5da140a83bee475e026fbbd5a79be164354033343bba04947cbad",
+    "heroInitializerBytes": 23686,
+    "heroInitializerSha256": "e5bfa20e13b187ba081be6175250513534185cb3f212ff2f91e46e335cebe169"
+  },
+  "samples": [],
+  "limitations": [
+    "Unchanged thesis-only three-sample gate; not a full Site Check or accepted programme weight.",
+    "Gzip sizes are local node:zlib measurements; actual network sizes remain in retained Lighthouse reports."
+  ]
+}
