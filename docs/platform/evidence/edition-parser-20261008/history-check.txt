@@ -1,0 +1,65 @@
+Private birth-data release search — counts and anonymous labels only
+
+Base: 66eb6712d692b7e4fe6a1367b12ee197f4d8c95d
+Source HEAD: c40b75065eb2240bfa46d6b2dc89143a97741b3b
+
+The original Node wrapper is absent from the uploaded archive. A rebuilt
+Node Unicode-regex wrapper used the supplied two private TSV pattern sets.
+This is a new wrapper result, not a rerun of the former Node implementation.
+It counts one matching line per kind and set; counts need not equal older
+per-pattern reports. No pattern, match, matched path or input identity is
+retained in this public record. Inputs and raw output remain outside Git.
+
+Scope: every commit against every parent, added lines and changed binary
+contents, staged changes, committed blobs and tracked/nonignored regular
+working files. Gzip, tar within gzip and ZIP members were decompressed
+recursively. Directory symlinks are not traversed; existing inside-repository
+targets remain covered as regular files. Final staged evidence is checked
+separately with a delta-only run.
+
+commits: 1
+gzipDecompressed: 256
+tarDecompressed: 182
+zipDecompressed: 48
+committedFiles: 17042
+workingFiles: 17042
+Read errors: 0
+
+Set 1: 79 data patterns; 10 name patterns; 7 anonymous subjects
+history: data 0; names 0
+staged: data 0; names 0
+committed: data 391; names 530
+working: data 391; names 530
+Unexplained introduced data records: 0
+Subject 1: working data 0; working names 3
+Subject 2: working data 1; working names 3
+Subject 3: working data 1; working names 0
+Subject 4: working data 0; working names 0
+Subject 5: working data 33; working names 47
+Subject 6: working data 1; working names 36
+Subject 7: working data 357; working names 443
+
+Set 2: 79 data patterns; 10 name patterns; 7 anonymous subjects
+history: data 0; names 0
+staged: data 0; names 0
+committed: data 391; names 530
+working: data 391; names 530
+Unexplained introduced data records: 0
+Subject 1: working data 0; working names 3
+Subject 2: working data 1; working names 3
+Subject 3: working data 1; working names 0
+Subject 4: working data 0; working names 0
+Subject 5: working data 33; working names 47
+Subject 6: working data 1; working names 36
+Subject 7: working data 357; working names 443
+
+Existing tree positives remain positive; this is not blanket privacy clearance.
+
+Heuristic: python3 scan.py <repo> <range>
+Exit: 0
+Output records: 3
+Heuristic output is unclassified; it is not a count of findings.
+
+Five supplied historical examples remain cited examples, not private finds.
+No cited-example names or values are published. The rebuilt wrapper does not
+claim to reproduce the unavailable original citation validator.
