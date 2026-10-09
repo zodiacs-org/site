@@ -1,0 +1,178 @@
+{
+  "schema": "zodiacs.private-registry-descriptor-validation.v1",
+  "observedAt": "2026-10-09T18:45:56.298Z",
+  "producer": {
+    "source": "c3b7cd3fe6295f7ea50dad68b7e85e7860e03a0e",
+    "run": "37975481986",
+    "node": "v22.23.3"
+  },
+  "candidate": {
+    "path": "docs/platform/preparation/remote-mcp-registry/server.json",
+    "bytes": 588,
+    "sha256": "778427f6d305f3eda7f35e232491a42257f295fc32d619ffe03ea4f7bd4b0b71",
+    "name": "io.github.zodiacs-org/zodiacs",
+    "version": "0.4.0"
+  },
+  "upstreamSource": "970df037919faa70456dde08c295473002d850e5",
+  "validator": {
+    "ajv": "8.17.1",
+    "formats": "3.0.1",
+    "dependencyLockSha256": "0a6e01ff7802b3e6b79d854b4e013bed6715093b69bf6cc2fe9915eae2cfa8da"
+  },
+  "observations": [
+    {
+      "url": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+      "bytes": 22090,
+      "sha256": "3fba09590c99f61735d234822279f4223fab9e300c0a81e81c91ab62a4114de0",
+      "candidateValid": true,
+      "rejected": [
+        {
+          "name": "name without namespace separator",
+          "errors": [
+            {
+              "instancePath": "/name",
+              "keyword": "pattern"
+            }
+          ]
+        },
+        {
+          "name": "description exceeds schema limit",
+          "errors": [
+            {
+              "instancePath": "/description",
+              "keyword": "maxLength"
+            }
+          ]
+        },
+        {
+          "name": "missing implementation version",
+          "errors": [
+            {
+              "instancePath": "",
+              "keyword": "required"
+            }
+          ]
+        },
+        {
+          "name": "stdio in remotes",
+          "errors": [
+            {
+              "instancePath": "/remotes/0/type",
+              "keyword": "enum"
+            },
+            {
+              "instancePath": "/remotes/0/type",
+              "keyword": "enum"
+            },
+            {
+              "instancePath": "/remotes/0",
+              "keyword": "anyOf"
+            }
+          ]
+        },
+        {
+          "name": "non-HTTP remote URL",
+          "errors": [
+            {
+              "instancePath": "/remotes/0/url",
+              "keyword": "pattern"
+            },
+            {
+              "instancePath": "/remotes/0/type",
+              "keyword": "enum"
+            },
+            {
+              "instancePath": "/remotes/0/url",
+              "keyword": "pattern"
+            },
+            {
+              "instancePath": "/remotes/0",
+              "keyword": "anyOf"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/modelcontextprotocol/registry/970df037919faa70456dde08c295473002d850e5/docs/reference/server-json/draft/server.schema.json",
+      "bytes": 22455,
+      "sha256": "e81b689767ce00722800b2c838ff7e93f6fb1d7bb6d7b2249250f66e4dc4d8c8",
+      "candidateValid": true,
+      "rejected": [
+        {
+          "name": "name without namespace separator",
+          "errors": [
+            {
+              "instancePath": "/name",
+              "keyword": "pattern"
+            }
+          ]
+        },
+        {
+          "name": "description exceeds schema limit",
+          "errors": [
+            {
+              "instancePath": "/description",
+              "keyword": "maxLength"
+            }
+          ]
+        },
+        {
+          "name": "missing implementation version",
+          "errors": [
+            {
+              "instancePath": "",
+              "keyword": "required"
+            }
+          ]
+        },
+        {
+          "name": "stdio in remotes",
+          "errors": [
+            {
+              "instancePath": "/remotes/0/type",
+              "keyword": "enum"
+            },
+            {
+              "instancePath": "/remotes/0/type",
+              "keyword": "enum"
+            },
+            {
+              "instancePath": "/remotes/0",
+              "keyword": "anyOf"
+            }
+          ]
+        },
+        {
+          "name": "non-HTTP remote URL",
+          "errors": [
+            {
+              "instancePath": "/remotes/0/url",
+              "keyword": "pattern"
+            },
+            {
+              "instancePath": "/remotes/0/type",
+              "keyword": "enum"
+            },
+            {
+              "instancePath": "/remotes/0/url",
+              "keyword": "pattern"
+            },
+            {
+              "instancePath": "/remotes/0",
+              "keyword": "anyOf"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "publication": "unpublished preparation",
+  "limitations": [
+    "Generic official JSON schemas only; no Registry publication or acceptance.",
+    "Namespace ownership and publisher authentication remain unverified.",
+    "No full MCP conformance, independent astronomy, private clearance or stable-release claim.",
+    "Version 0.4.0 is the observed deployed MCP implementation, not a new engine or package release."
+  ]
+}

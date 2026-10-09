@@ -11,3 +11,5 @@ Official references:
 - [Official Registry requirements](https://github.com/modelcontextprotocol/registry/blob/970df037919faa70456dde08c295473002d850e5/docs/reference/server-json/official-registry-requirements.md)
 
 The six-tool Inspector observation and two official conformance scenarios remain bounded observations. Fourteen Inspector schema warnings remain recorded. Full conformance, a resolving Registry entry, affected release/staged private clearance and publication prerequisites remain open; P3.6 is unaccepted.
+
+Actual validation [37975481986](https://github.com/zodiacs-org/site/actions/runs/37975481986), source `c3b7cd3fe6295f7ea50dad68b7e85e7860e03a0e`, passed both schemas and all five negative controls per schema on Node 22.23.3. The verified report is 4992 bytes, SHA-256 `06e86f1378c09ac1a8f62318a43c476b12a232c0d70124695dbafd5f24617b69`; the descriptor is 588 bytes, SHA-256 `778427f6d305f3eda7f35e232491a42257f295fc32d619ffe03ea4f7bd4b0b71`. This records generic schema validation only; publication and namespace ownership remain unverified.
