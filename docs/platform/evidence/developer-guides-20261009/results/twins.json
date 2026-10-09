@@ -1,0 +1,114 @@
+{
+  "schema": "zodiacs.developer-guide-twins.v1",
+  "version": "1.0.0-rc.2",
+  "checked": [
+    {
+      "slug": "node",
+      "html": "developers/docs/node/index.html",
+      "markdown": "developers/docs/node.md",
+      "status": "pass"
+    },
+    {
+      "slug": "browser",
+      "html": "developers/docs/browser/index.html",
+      "markdown": "developers/docs/browser.md",
+      "status": "pass"
+    },
+    {
+      "slug": "deno",
+      "html": "developers/docs/deno/index.html",
+      "markdown": "developers/docs/deno.md",
+      "status": "pass"
+    },
+    {
+      "slug": "bun",
+      "html": "developers/docs/bun/index.html",
+      "markdown": "developers/docs/bun.md",
+      "status": "pass"
+    },
+    {
+      "slug": "cloudflare",
+      "html": "developers/docs/cloudflare/index.html",
+      "markdown": "developers/docs/cloudflare.md",
+      "status": "pass"
+    },
+    {
+      "slug": "natal",
+      "html": "developers/docs/natal/index.html",
+      "markdown": "developers/docs/natal.md",
+      "status": "pass"
+    },
+    {
+      "slug": "transits",
+      "html": "developers/docs/transits/index.html",
+      "markdown": "developers/docs/transits.md",
+      "status": "pass"
+    },
+    {
+      "slug": "returns",
+      "html": "developers/docs/returns/index.html",
+      "markdown": "developers/docs/returns.md",
+      "status": "pass"
+    },
+    {
+      "slug": "synastry",
+      "html": "developers/docs/synastry/index.html",
+      "markdown": "developers/docs/synastry.md",
+      "status": "pass"
+    },
+    {
+      "slug": "crossings",
+      "html": "developers/docs/crossings/index.html",
+      "markdown": "developers/docs/crossings.md",
+      "status": "pass"
+    },
+    {
+      "slug": "conventions",
+      "html": "developers/docs/conventions/index.html",
+      "markdown": "developers/docs/conventions.md",
+      "status": "pass"
+    },
+    {
+      "slug": "errors",
+      "html": "developers/docs/errors/index.html",
+      "markdown": "developers/docs/errors.md",
+      "status": "pass"
+    },
+    {
+      "slug": "receipts",
+      "html": "developers/docs/receipts/index.html",
+      "markdown": "developers/docs/receipts.md",
+      "status": "pass"
+    },
+    {
+      "slug": "python",
+      "html": "developers/docs/python/index.html",
+      "markdown": "developers/docs/python.md",
+      "status": "pass"
+    },
+    {
+      "slug": "elections",
+      "html": "developers/docs/elections/index.html",
+      "markdown": "developers/docs/elections.md",
+      "status": "pass"
+    },
+    {
+      "slug": "deprecation",
+      "html": "developers/docs/deprecation/index.html",
+      "markdown": "developers/docs/deprecation.md",
+      "status": "pass"
+    },
+    {
+      "slug": "changelog",
+      "html": "developers/docs/changelog/index.html",
+      "markdown": "developers/docs/changelog.md",
+      "status": "pass"
+    },
+    {
+      "slug": "status",
+      "html": "developers/docs/status/index.html",
+      "markdown": "developers/docs/status.md",
+      "status": "pass"
+    }
+  ]
+}

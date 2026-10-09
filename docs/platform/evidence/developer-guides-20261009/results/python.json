@@ -1,0 +1,39 @@
+{
+  "schema": "zodiacs.python-guide.v1",
+  "runtime": "Python 3.12.3",
+  "outcomes": [
+    {
+      "case": "success",
+      "status": 200,
+      "exitCode": 0,
+      "result": "pass"
+    },
+    {
+      "case": "invalid-request",
+      "status": 400,
+      "exitCode": 1,
+      "result": "pass"
+    },
+    {
+      "case": "budget-exhausted",
+      "status": 422,
+      "exitCode": 1,
+      "result": "pass"
+    },
+    {
+      "case": "payload-too-large",
+      "status": 413,
+      "exitCode": 1,
+      "result": "pass"
+    },
+    {
+      "case": "rate-limited",
+      "status": 429,
+      "exitCode": 1,
+      "result": "pass"
+    }
+  ],
+  "limitations": [
+    "Actual documented snippet against committed public contract fixtures over local HTTP; no live service or private input."
+  ]
+}

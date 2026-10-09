@@ -34,9 +34,14 @@ request. Its expected source commit must be joined to a separately verified
 Vercel production deployment; HTTP responses alone do not establish the
 deployment source.
 
-Results are pending. The complete unchanged Site Check remains a separate
-required gate. Actual workflow outputs will be committed after execution;
-the descriptions above state the authored checks, not passing observations.
+The preparation checks passed in [run 37895777038](https://github.com/zodiacs-org/site/actions/runs/37895777038)
+on PR head `b002dc96535ff60fb78c122f05d04f3310a02f8f`, checked out as
+`db4eca31da06187103254ad8e3c2b1cd27189c8d`. The complete unchanged Site
+Check on the final evidence carrier remains a separate required gate. The six actual exported results are committed under `results/` with byte
+counts, verified SHA-256 digests and producer identities in
+`validation.json`. They establish 18 twins, 38 browser navigations, 14
+runtime checks, five Python HTTP cases, seven matching production assets,
+33,193 gzip bytes and the matching served OpenAPI contract.
 
 ## Publication and remaining scope
 

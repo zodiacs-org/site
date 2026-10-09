@@ -1,0 +1,83 @@
+{
+  "schema": "zodiacs.developer-guide-validation.v1",
+  "repository": "zodiacs-org/site",
+  "pullRequest": 695,
+  "headCommit": "b002dc96535ff60fb78c122f05d04f3310a02f8f",
+  "checkoutCommit": "db4eca31da06187103254ad8e3c2b1cd27189c8d",
+  "checkoutTree": "128079c3b6b2f5bd44204ed428df856fea5cce15",
+  "baseCommit": "e9a21981eeeb99b34f44b1a2325d80160dcf0fb0",
+  "runId": 37895777038,
+  "jobId": 113706678168,
+  "conclusion": "success",
+  "results": [
+    {
+      "path": "docs/platform/evidence/developer-guides-20261009/results/twins.json",
+      "bytes": 3010,
+      "sha256": "1559fcce5f3a00abde8d97d4b9920b3a9fdc2a4a9a1a3473147ee8e04f088abb"
+    },
+    {
+      "path": "docs/platform/evidence/developer-guides-20261009/results/browser.json",
+      "bytes": 5967,
+      "sha256": "d627f3ca9a27522b39719cf525b1bdd79f6e33671124423770282b8b875c8b8e"
+    },
+    {
+      "path": "docs/platform/evidence/developer-guides-20261009/results/examples.json",
+      "bytes": 2133,
+      "sha256": "af6c1344baaff86bca11ca093bca48c56de7f9d6e05d624f2bf3c6384d252172"
+    },
+    {
+      "path": "docs/platform/evidence/developer-guides-20261009/results/python.json",
+      "bytes": 789,
+      "sha256": "6b2ca4e6a9ec24310a4806c1375483cb38789680749856b2f322496cd2c6af1b"
+    },
+    {
+      "path": "docs/platform/evidence/developer-guides-20261009/results/production.json",
+      "bytes": 2484,
+      "sha256": "0575901c874acafa91fae92378c1a8546337a47823fcf10b4763fd4fe94a9846"
+    },
+    {
+      "path": "docs/platform/evidence/developer-guides-20261009/results/openapi.json",
+      "bytes": 369938,
+      "sha256": "0e851883d89977ce12e16a02c7f2c8efbec4cc9b08ff64035a35b850fdca2a9e"
+    }
+  ],
+  "productionObservation": {
+    "schema": "zodiacs.vercel-production-observation.v1",
+    "observedAt": "2026-10-09 06:36:46 UTC",
+    "projectId": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+    "team": "zodiacsofficial",
+    "deploymentId": "dpl_7cRJfgBFaS4m6F2YVVGFn1ujYz1G",
+    "status": "READY",
+    "sourceCommit": "e9a21981eeeb99b34f44b1a2325d80160dcf0fb0",
+    "branch": "main",
+    "aliases": [
+      "zodiacs.org",
+      "www.zodiacs.org",
+      "zodiacs-org.vercel.app",
+      "zodiacs-org-zodiacsofficial.vercel.app",
+      "zodiacs-org-git-main-zodiacsofficial.vercel.app"
+    ],
+    "url": "https://zodiacs-qwc17m4uw-zodiacsofficial.vercel.app",
+    "siteHeadTested": "3c848416b96925907ca38c419b77185dbe22081d",
+    "siteCheckRun": 37889961823,
+    "limitations": [
+      "Vercel deployment metadata establishes source, readiness and assigned domains; canonical asset and API bytes are a separate probe.",
+      "No environment values or access settings were inspected or changed."
+    ]
+  },
+  "summary": {
+    "guides": 18,
+    "browserNavigations": 38,
+    "runtimeChecks": 14,
+    "pythonHttpCases": 5,
+    "productionEngineAssets": 7,
+    "productionEngineGzipBytes": 33193
+  },
+  "limits": [
+    "Preparation checks do not publish the guides or accept a programme unit.",
+    "Complete Site Check on the final evidence carrier is a separate gate.",
+    "Private release-range and staged scans have not run; inputs are unavailable.",
+    "React Native and complete sunrise-based panchang remain outstanding.",
+    "Shape, receipt and adoption checks are not independent numerical accuracy claims."
+  ]
+}

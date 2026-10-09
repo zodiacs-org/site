@@ -1,0 +1,91 @@
+{
+  "schema": "zodiacs.developer-guide-examples.v1",
+  "candidate": {
+    "version": "1.0.0-rc.2",
+    "sha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002"
+  },
+  "guideSourceSha256": "ecef68d047c7a38c8f47fcac765dc15e2e1c015516758adecf84d1741e164132",
+  "runtimes": {
+    "node": "v22.23.3",
+    "deno": "deno 2.9.7 (stable, release, x86_64-unknown-linux-gnu)\nv8 15.0.245.2-rusty\ntypescript 6.0.3",
+    "bun": "1.4.2"
+  },
+  "outcomes": [
+    {
+      "guide": "node",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "deno",
+      "runtime": "deno",
+      "status": "pass"
+    },
+    {
+      "guide": "bun",
+      "runtime": "bun",
+      "status": "pass"
+    },
+    {
+      "guide": "natal",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "transits",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "returns",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "synastry",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "crossings",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "conventions",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "errors",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "receipts",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "cloudflare",
+      "runtime": "worker-style fetch plus browser-platform bundle",
+      "status": "pass"
+    },
+    {
+      "guide": "cloudflare",
+      "runtime": "Miniflare 4.20260730.0 / workerd 1.20260730.1",
+      "compatibilityDate": "2026-07-30",
+      "status": "pass"
+    },
+    {
+      "guide": "browser",
+      "runtime": "149.0.7827.55",
+      "status": "pass"
+    }
+  ],
+  "limitations": [
+    "Local workerd validates the bundled Worker without proving a deployed Cloudflare service.",
+    "Python and elections recipes use the existing hosted API contract fixtures; no live private request is made.",
+    "React Native and sunrise-based panchang remain outside this draft."
+  ]
+}
