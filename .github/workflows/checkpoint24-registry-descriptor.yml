@@ -1,0 +1,27 @@
+name: Private remote MCP Registry descriptor validation
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths:
+      - .github/workflows/checkpoint24-registry-descriptor.yml
+      - scripts/validate-remote-mcp-registry-descriptor.mjs
+      - docs/platform/preparation/remote-mcp-registry/server.json
+permissions:
+  contents: read
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - name: Published and draft generic schemas with negative controls
+        run: node scripts/validate-remote-mcp-registry-descriptor.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: private-registry-descriptor-validation
+          path: docs/platform/preparation/remote-mcp-registry/schema-validation.json
+          if-no-files-found: error

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.zodiacs-org/zodiacs",
+  "title": "Zodiacs.org",
+  "description": "Read-only sky facts, upcoming events, horoscope references and chart links from Zodiacs.org.",
+  "version": "0.4.0",
+  "repository": {
+    "url": "https://github.com/zodiacs-org/site",
+    "source": "github",
+    "subfolder": "src/ai-tools"
+  },
+  "websiteUrl": "https://zodiacs.org/developers/mcp/",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://zodiacs.org/mcp"
+    }
+  ]
+}
