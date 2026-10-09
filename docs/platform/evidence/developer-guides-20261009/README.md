@@ -84,3 +84,15 @@ now requires all four to be finite longitudes in [0, 360), the whole-sign
 house system and the same 12-body count. The documented Node snippet itself
 completed calculation. This runner mistake is retained; no complete
 example-run success is claimed for that attempt.
+
+[Run 37895207530](https://github.com/zodiacs-org/site/actions/runs/37895207530)
+completed the eleven runtime recipes and Worker-style fetch, then local
+workerd refused the verifier's compatibility date 2026-10-09: its binary
+supports dates only through 2026-08-06. The local check now uses the pinned
+Miniflare release's 2026-07-30 date and records the actual workerd version.
+The documented Worker source and all calculation assertions are unchanged.
+No complete Worker/browser-example success is claimed for that failed attempt.
+
+The public production probe also compares the served OpenAPI document
+with the actual build and preserves its exact public bytes, providing a
+source-bound contract for subsequent client generation.

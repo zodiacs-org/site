@@ -61,7 +61,7 @@ try {
 import { Miniflare } from 'miniflare';
 const worker = new Miniflare({
   modules: true, scriptPath: new URL('./worker-bundle.mjs', import.meta.url).pathname,
-  compatibilityDate: '2026-10-09',
+  compatibilityDate: '2026-07-30',
 });
 try {
   const response = await worker.dispatchFetch('https://example.invalid/');
@@ -74,7 +74,8 @@ try {
   command(process.execPath, [join(scratch, 'worker-runtime-check.mjs')]);
   const miniflare = JSON.parse(await readFile(join(scratch, 'node_modules/miniflare/package.json'), 'utf8'));
   assert.equal(miniflare.version, '4.20260730.0');
-  outcomes.push({ guide: 'cloudflare', runtime: 'Miniflare ' + miniflare.version + ' / local workerd', status: 'pass' });
+  const workerd = JSON.parse(await readFile(join(scratch, 'node_modules/workerd/package.json'), 'utf8'));
+  outcomes.push({ guide: 'cloudflare', runtime: 'Miniflare ' + miniflare.version + ' / workerd ' + workerd.version, compatibilityDate: '2026-07-30', status: 'pass' });
 
   await writeFile(join(scratch, 'browser.mjs'), code('browser'));
   await build({ entryPoints: [join(scratch, 'browser.mjs')], outfile: join(scratch, 'browser-bundle.mjs'), bundle: true, platform: 'browser', format: 'esm', logLevel: 'silent' });

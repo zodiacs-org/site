@@ -53,7 +53,7 @@ jobs:
           import { readFileSync } from 'node:fs';
           import { createHash } from 'node:crypto';
           const root = 'docs/platform/evidence/developer-guides-20261009/results';
-          for (const file of ['twins.json', 'browser.json', 'examples.json', 'python.json', 'production.json']) {
+          for (const file of ['twins.json', 'browser.json', 'examples.json', 'python.json', 'production.json', 'openapi.json']) {
             const bytes = readFileSync(root + '/' + file);
             console.log('PROGRAMME_FILE ' + JSON.stringify({
               path: root + '/' + file, size: bytes.length,

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
 import { resolve } from 'node:path';
@@ -28,6 +28,10 @@ for (const chunk of closure.chunks) {
 }
 assert.equal(assets.length, 7);
 assert.equal(assets.reduce((sum, asset) => sum + asset.gzipBytes, 0), closure.gzipBytes);
+const publicSpec = Buffer.from(await (await publicResponse('/api/v1/openapi.json')).arrayBuffer());
+const builtSpec = await readFile('dist/api/v1/openapi.json');
+assert.deepEqual(JSON.parse(publicSpec.toString('utf8')), JSON.parse(builtSpec.toString('utf8')), 'Production OpenAPI contract');
+await writeFile('docs/platform/evidence/developer-guides-20261009/results/openapi.json', publicSpec);
 const request = {
   instants: ['2026-09-29T12:00:00Z', '2026-12-31T00:00:00-05:00'],
   bodies: ['Sun', 'Moon', 'Mercury'],
@@ -53,6 +57,7 @@ console.log(JSON.stringify({
   expectedProductionSourceCommit: sourceCommit,
   candidate: { version: candidate.version, sha256: candidate.sha256, sourceCommit: candidate.sourceCommit },
   assets,
+  openapi: { bytes: publicSpec.length, sha256: digest(publicSpec), matchesBuiltContract: true },
   hostedPositions: { status: 'pass', instants: 2, bodiesPerInstant: 3, backend: result.backend,
     responseSha256: digest(bytes) },
   limitations: ['Source commit is separately verified against Vercel deployment metadata.',
