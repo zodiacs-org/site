@@ -297,9 +297,11 @@ export default function RaceBoard({
               <tr key={row.sign} data-mine={isMine ? 'true' : undefined} style={`--sign:${sign?.hue ?? 'var(--ink-dim)'}`}>
                 <td class="race-board__rank">{standings === null || row.points === 0 ? '—' : board.findIndex((entry) => entry.points === row.points) + 1}</td>
                 <td class="race-board__sign">
-                  {signIcon(row.sign, 24)}
-                  {sign?.name ?? row.sign}
-                  {isMine && <span class="race-board__yours">your team</span>}
+                  <span class="race-board__sign-inner">
+                    {signIcon(row.sign, 24)}
+                    {sign?.name ?? row.sign}
+                    {isMine && <span class="race-board__yours">your team</span>}
+                  </span>
                 </td>
                 <td class="race-board__points">{row.points.toLocaleString('en')}</td>
               </tr>
