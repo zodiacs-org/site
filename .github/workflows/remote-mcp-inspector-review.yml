@@ -1,0 +1,34 @@
+name: Remote MCP Inspector review
+on:
+  push:
+    branches: ['codex/developer-docs-preparation']
+    paths:
+      - 'scripts/review-hosted-mcp-inspector.mjs'
+      - '.github/workflows/remote-mcp-inspector-review.yml'
+permissions:
+  contents: read
+jobs:
+  inspector:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - name: Isolated pinned Inspector and public schema checks
+        run: |
+          INSPECTOR_REVIEW_DIR=$(mktemp -d)
+          trap 'rm -rf "$INSPECTOR_REVIEW_DIR"' EXIT
+          export INSPECTOR_REVIEW_DIR
+          npm install --prefix "$INSPECTOR_REVIEW_DIR" --ignore-scripts --no-audit --no-fund @modelcontextprotocol/inspector@2.10.1 ajv@8.20.0 ajv-formats@3.0.1
+          node scripts/review-hosted-mcp-inspector.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: remote-mcp-inspector-review-${{ github.sha }}
+          path: remote-mcp-inspector-review.json
+          if-no-files-found: warn
+          retention-days: 90
