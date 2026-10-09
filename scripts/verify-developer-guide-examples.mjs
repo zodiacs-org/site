@@ -23,10 +23,10 @@ function command(binary, args, cwd = scratch) {
   return result.stdout;
 }
 const checks = {
-  node: "assert.equal(chart.bodies.length, 12); assert.ok(chart.ascendant);",
-  deno: "assert.equal(chart.bodies.length, 12); assert.ok(chart.ascendant);",
-  bun: "assert.equal(chart.bodies.length, 12); assert.ok(chart.ascendant);",
-  natal: "assert.equal(chart.bodies.length, 12); assert.ok(chart.ascendant);",
+  node: "assert.equal(chart.bodies.length, 12); assert.equal(chart.houses.system, 'whole'); for (const key of ['asc', 'mc', 'dsc', 'ic']) assert.ok(Number.isFinite(chart.angles[key]) && chart.angles[key] >= 0 && chart.angles[key] < 360);",
+  deno: "assert.equal(chart.bodies.length, 12); assert.equal(chart.houses.system, 'whole'); for (const key of ['asc', 'mc', 'dsc', 'ic']) assert.ok(Number.isFinite(chart.angles[key]) && chart.angles[key] >= 0 && chart.angles[key] < 360);",
+  bun: "assert.equal(chart.bodies.length, 12); assert.equal(chart.houses.system, 'whole'); for (const key of ['asc', 'mc', 'dsc', 'ic']) assert.ok(Number.isFinite(chart.angles[key]) && chart.angles[key] >= 0 && chart.angles[key] < 360);",
+  natal: "assert.equal(chart.bodies.length, 12); assert.equal(chart.houses.system, 'whole'); for (const key of ['asc', 'mc', 'dsc', 'ic']) assert.ok(Number.isFinite(chart.angles[key]) && chart.angles[key] >= 0 && chart.angles[key] < 360);",
   transits: "assert.equal(typeof result, 'object'); assert.ok(result);",
   returns: "assert.equal(solar.body, 'Sun'); assert.equal(lunar.body, 'Moon'); assert.ok(Number.isFinite(solar.instant.getTime())); assert.ok(Number.isFinite(lunar.instant.getTime()));",
   synastry: "assert.equal(typeof synastry(first, second), 'object');",

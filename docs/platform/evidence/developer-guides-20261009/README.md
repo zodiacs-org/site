@@ -75,3 +75,12 @@ previous 1,783. The existing baseline now adds exactly the catalogue's
 canonical requirement, noindex rule and locale count remains enforced.
 This registers new intended routes; no tolerance was widened or assertion
 removed.
+
+[Run 37894678363](https://github.com/zodiacs-org/site/actions/runs/37894678363)
+then passed the build, actual twins and all 38 browser navigations, but the
+new example verifier incorrectly asserted `chart.ascendant`. The packed
+rc.2 declarations define `Chart.angles` with `asc/mc/dsc/ic`; the verifier
+now requires all four to be finite longitudes in [0, 360), the whole-sign
+house system and the same 12-body count. The documented Node snippet itself
+completed calculation. This runner mistake is retained; no complete
+example-run success is claimed for that attempt.
