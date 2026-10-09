@@ -1,0 +1,85 @@
+name: Programme acceptance capture
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  capture:
+    if: github.event.pull_request.number == 692 && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright-core install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:phase1:acceptance
+      - run: npm run test:phase1:evidence
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: programme-acceptance-${{ github.event.pull_request.head.sha }}
+          path: docs/acceptance/phase1/screenshots/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Export source-bound manifest
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          import { createHash } from 'node:crypto';
+          const path = 'docs/acceptance/phase1/screenshots/manifest.json';
+          const bytes = readFileSync(path);
+          console.log('PROGRAMME_FILE ' + JSON.stringify({
+            head: process.env.CAPTURE_HEAD, path,
+            sha256: createHash('sha256').update(bytes).digest('hex'),
+            size: bytes.length, base64: bytes.toString('base64')
+          }));
+          NODE
+        env:
+          CAPTURE_HEAD: ${{ github.event.pull_request.head.sha }}
+  export:
+    needs: capture
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        template: [today, horoscopes-hub, daily, tomorrow, weekly, monthly, love, career, yearly]
+        width: [360, 1280]
+    steps:
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: programme-acceptance-${{ github.event.pull_request.head.sha }}
+          path: capture
+      - name: Export one public acceptance screenshot
+        env:
+          CAPTURE_HEAD: ${{ github.event.pull_request.head.sha }}
+          CAPTURE_FILE: ${{ matrix.template }}-${{ matrix.width }}.png
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          import { createHash } from 'node:crypto';
+          const file = process.env.CAPTURE_FILE;
+          if (!/^(today|horoscopes-hub|daily|tomorrow|weekly|monthly|love|career|yearly)-(360|1280)\.png$/.test(file)) throw new Error('Unexpected capture path');
+          const bytes = readFileSync('capture/' + file);
+          console.log('PROGRAMME_META ' + JSON.stringify({
+            head: process.env.CAPTURE_HEAD,
+            path: 'docs/acceptance/phase1/screenshots/' + file,
+            sha256: createHash('sha256').update(bytes).digest('hex'), size: bytes.length
+          }));
+          const encoded = bytes.toString('base64');
+          for (let offset = 0; offset < encoded.length; offset += 4096) {
+            console.log('PROGRAMME_CHUNK ' + JSON.stringify({ offset, data: encoded.slice(offset, offset + 4096) }));
+          }
+          NODE
