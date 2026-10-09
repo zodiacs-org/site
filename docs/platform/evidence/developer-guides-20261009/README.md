@@ -112,3 +112,17 @@ served-document trees; no detector, boundary or rejection was removed.
 Added checks exercise retired-authorship rejection in a guide HTML page
 and its Markdown twin. Existing source guards and Phase 1 capture inputs
 are unchanged.
+
+The next complete [Site Check 37897350292](https://github.com/zodiacs-org/site/actions/runs/37897350292)
+on source `54dc531262a93825d3230d292e982701a0bd00fe` passed the
+authorship guard but failed claims-ledger R1: the new catalogue's convention
+instruction and the HTML/Markdown index's local-calculation choice were
+unlisted. The convention instruction is classified as an instruction, not
+an accuracy fact. The local-calculation choice cites the installed engine's
+core-entry network boundary; it does not claim optional
+geo loading or the caller's application has no network access. The existing
+extractor, scopes, claims ratchet and every R1–R10 check remain unchanged.
+
+The same review now carries a checkpoint 22 proposal for P3.2 only. Its
+complete gate and production adoption are already evidenced; main remains
+61 of 182.45 until the record merges. The guide publication hold remains.

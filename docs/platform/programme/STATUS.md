@@ -1,3 +1,43 @@
+Checkpoint 22 proposal, 2026-10-09 (Asia/Bangkok): P3.2's uniform calculation
+API gate is met by adopted, served `1.0.0-rc.2` under the owner's
+October 6 `EPHEMERIS_SPAN` reading.
+
+**Overall delivery: 35%** (35.078% to three decimals) — 64 of 182.45
+weighted units accepted in this proposed record; blocked 2% (3), or 1.644%.
+Only P3.2's weight of 3 is added. Main remains at 61 (33.434%) until this
+record merges. The denominator and other acceptance states are unchanged.
+
+The [complete packed gate on engine main](https://github.com/zodiacs-org/engine/tree/98465b1a6aba46ff5e12c283f77f54278dc6905b/docs/evidence/checkpoint22-rc2-20261009)
+detects all 21 declaration faults, replays 38 fixtures and 27 receipt requests
+exactly, and computes 21 sidereal definitions in all four functions. Across
+three models, TT/UT1/UTC and all four functions, 72 inclusive epoch cases
+compute and 72 beyond-end cases return the exact typed refusal.
+Full postmerge CI, archive rebuild, packed consumers, conformance and atlas
+pass. These are contract/replay/consistency checks, not independent numerical
+accuracy evidence.
+
+Site main `e9a21981` is READY at `dpl_7cRJfgBFaS4m6F2YVVGFn1ujYz1G`,
+assigned to zodiacs.org. The committed
+[production probe](../evidence/developer-guides-20261009/results/production.json)
+matches seven canonical engine assets to the build and observes backend
+`1.0.0-rc.2`. Separate deployment metadata in
+[validation.json](../evidence/developer-guides-20261009/validation.json)
+joins the bytes to the source. npm publication is a separate unit.
+F-80 closes in this proposal under the already recorded owner interpretation,
+the candidate's implementation, the complete gate and production adoption.
+
+The guide catalogue remains preparation. P3.10 stays partial: React Native
+and a full sunrise-based panchang recipe remain. The private TypeScript client
+in [engine #34](https://github.com/zodiacs-org/engine/pull/34) accepts no unit.
+P3.4 still needs its complete gate and dependencies.
+
+This site PR remains draft. Core publication prerequisites, final exact-head
+Site Check and full affected release-range and staged private searches remain
+required before merge/publication. Private inputs from the failed executor
+are unavailable; no new private search ran. Stable publication approval is
+pending in [engine #32](https://github.com/zodiacs-org/engine/issues/32).
+The earlier checkpoints below retain their original verdicts and observations.
+
 # Programme status
 
 Checkpoint 21, 2026-10-06: the uniform calculation API (P3.2), judged on
