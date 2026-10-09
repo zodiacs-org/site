@@ -1,0 +1,1453 @@
+{
+  "schema": "zodiacs.retained-home-diagnosis.v1",
+  "diagnosticRun": 37904687169,
+  "diagnosticSource": "2d4e1f0576e096ee6c6348aed0490b721b25e6c9",
+  "method": "Verify original artifact ZIP SHA-256; inspect only original home reports/traces, without rerunning the performance gate",
+  "records": [
+    {
+      "source": "32882c0983f80c2346f37411e05fcc2d4a723489",
+      "run": 37899456005,
+      "artifact": 11602473837,
+      "artifactSha256": "8facd9242793d16dc168b5421651dfc26458d9d791b482ce44c2db1f957e2995",
+      "samples": [
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-1.json",
+          "reportSha256": "39a7b612c6f6350a63fc314075a49326de624753a24bace058c83df7201c2b37",
+          "traceSha256": "ebea33df01e3c52b99e3805cb06e3e598a26077516af1ed94d4615dddffced2f",
+          "lcpMs": 3156.335,
+          "performance": 0.93,
+          "cls": 0,
+          "tbtMs": 0,
+          "benchmarkIndex": 4293,
+          "resourceCount": 40,
+          "transferBytes": 307163,
+          "resourceIdentity": [
+            {
+              "url": "http://127.0.0.1:4328/",
+              "resourceBytes": 274413,
+              "transferBytes": 67065
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif",
+              "resourceBytes": 111635,
+              "transferBytes": 111905
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2",
+              "resourceBytes": 20288,
+              "transferBytes": 20608
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2",
+              "resourceBytes": 13448,
+              "transferBytes": 13768
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+              "resourceBytes": 773,
+              "transferBytes": 1094
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js?v=search-ranking-2",
+              "resourceBytes": 3393,
+              "transferBytes": 2042
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2",
+              "resourceBytes": 13196,
+              "transferBytes": 13516
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAgCAYAAADaInAlAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAOo…",
+              "resourceBytes": 3823,
+              "transferBytes": 0
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAgCAYAAAD9qabkAAAACXBIWXMAAAPoAAAD6AG1e1JrAAANY…",
+              "resourceBytes": 3502,
+              "transferBytes": 0
+            },
+            {
+              "url": "http://127.0.0.1:4328/site.webmanifest",
+              "resourceBytes": 1433,
+              "transferBytes": 1714
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js",
+              "resourceBytes": 1402,
+              "transferBytes": 1134
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js",
+              "resourceBytes": 2909,
+              "transferBytes": 1553
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js",
+              "resourceBytes": 1447,
+              "transferBytes": 1192
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js",
+              "resourceBytes": 2472,
+              "transferBytes": 1372
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js",
+              "resourceBytes": 4190,
+              "transferBytes": 1899
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js",
+              "resourceBytes": 10499,
+              "transferBytes": 4795
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js",
+              "resourceBytes": 1301,
+              "transferBytes": 1089
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js",
+              "resourceBytes": 558,
+              "transferBytes": 879
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js",
+              "resourceBytes": 11693,
+              "transferBytes": 4646
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js",
+              "resourceBytes": 147,
+              "transferBytes": 468
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js",
+              "resourceBytes": 430,
+              "transferBytes": 751
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js",
+              "resourceBytes": 7060,
+              "transferBytes": 3265
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js",
+              "resourceBytes": 2125,
+              "transferBytes": 1414
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js",
+              "resourceBytes": 484,
+              "transferBytes": 805
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js",
+              "resourceBytes": 713,
+              "transferBytes": 1034
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/favicon.svg",
+              "resourceBytes": 791,
+              "transferBytes": 1058
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js",
+              "resourceBytes": 2875,
+              "transferBytes": 1606
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js",
+              "resourceBytes": 99,
+              "transferBytes": 418
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js",
+              "resourceBytes": 438,
+              "transferBytes": 759
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js",
+              "resourceBytes": 3226,
+              "transferBytes": 1571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js",
+              "resourceBytes": 228,
+              "transferBytes": 549
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js",
+              "resourceBytes": 158,
+              "transferBytes": 479
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js",
+              "resourceBytes": 533,
+              "transferBytes": 854
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js",
+              "resourceBytes": 46,
+              "transferBytes": 365
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+              "resourceBytes": 18304,
+              "transferBytes": 18571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css",
+              "resourceBytes": 18927,
+              "transferBytes": 4474
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/site-footer.css?v=20261006",
+              "resourceBytes": 12153,
+              "transferBytes": 3637
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+              "resourceBytes": 3972,
+              "transferBytes": 2168
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+              "resourceBytes": 1416,
+              "transferBytes": 994
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+              "resourceBytes": 11384,
+              "transferBytes": 11652
+            }
+          ],
+          "lcpElement": "IMG class='hero__poster'",
+          "observedLcpBreakdown": [
+            {
+              "subpart": "timeToFirstByte",
+              "label": "Time to first byte",
+              "duration": 6.566
+            },
+            {
+              "subpart": "resourceLoadDelay",
+              "label": "Resource load delay",
+              "duration": 32.093
+            },
+            {
+              "subpart": "resourceLoadDuration",
+              "label": "Resource load duration",
+              "duration": 11.15
+            },
+            {
+              "subpart": "elementRenderDelay",
+              "label": "Element render delay",
+              "duration": 96.889
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-2.json",
+          "reportSha256": "b9482fbc5dc508b5a362d93341df9ce4465bb37aaf1c582f3a732418216b70ea",
+          "traceSha256": "6c59c65ccc1b5232557e559c01f42824ffc9a6d07592e3dfabb74e8c061f76d6",
+          "lcpMs": 3154.1926000000003,
+          "performance": 0.93,
+          "cls": 0,
+          "tbtMs": 0,
+          "benchmarkIndex": 4460,
+          "resourceCount": 40,
+          "transferBytes": 307163,
+          "resourceIdentity": [
+            {
+              "url": "http://127.0.0.1:4328/",
+              "resourceBytes": 274413,
+              "transferBytes": 67065
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif",
+              "resourceBytes": 111635,
+              "transferBytes": 111905
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2",
+              "resourceBytes": 20288,
+              "transferBytes": 20608
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2",
+              "resourceBytes": 13448,
+              "transferBytes": 13768
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+              "resourceBytes": 773,
+              "transferBytes": 1094
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js?v=search-ranking-2",
+              "resourceBytes": 3393,
+              "transferBytes": 2042
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2",
+              "resourceBytes": 13196,
+              "transferBytes": 13516
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAgCAYAAADaInAlAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAOo…",
+              "resourceBytes": 3823,
+              "transferBytes": 0
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAgCAYAAAD9qabkAAAACXBIWXMAAAPoAAAD6AG1e1JrAAANY…",
+              "resourceBytes": 3502,
+              "transferBytes": 0
+            },
+            {
+              "url": "http://127.0.0.1:4328/site.webmanifest",
+              "resourceBytes": 1433,
+              "transferBytes": 1714
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js",
+              "resourceBytes": 1402,
+              "transferBytes": 1134
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js",
+              "resourceBytes": 2909,
+              "transferBytes": 1553
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js",
+              "resourceBytes": 1447,
+              "transferBytes": 1192
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js",
+              "resourceBytes": 2472,
+              "transferBytes": 1372
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js",
+              "resourceBytes": 4190,
+              "transferBytes": 1899
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js",
+              "resourceBytes": 10499,
+              "transferBytes": 4795
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js",
+              "resourceBytes": 1301,
+              "transferBytes": 1089
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js",
+              "resourceBytes": 558,
+              "transferBytes": 879
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js",
+              "resourceBytes": 11693,
+              "transferBytes": 4646
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js",
+              "resourceBytes": 147,
+              "transferBytes": 468
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js",
+              "resourceBytes": 430,
+              "transferBytes": 751
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js",
+              "resourceBytes": 7060,
+              "transferBytes": 3265
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js",
+              "resourceBytes": 2125,
+              "transferBytes": 1414
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js",
+              "resourceBytes": 484,
+              "transferBytes": 805
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js",
+              "resourceBytes": 713,
+              "transferBytes": 1034
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/favicon.svg",
+              "resourceBytes": 791,
+              "transferBytes": 1058
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js",
+              "resourceBytes": 2875,
+              "transferBytes": 1606
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js",
+              "resourceBytes": 99,
+              "transferBytes": 418
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js",
+              "resourceBytes": 438,
+              "transferBytes": 759
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js",
+              "resourceBytes": 3226,
+              "transferBytes": 1571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js",
+              "resourceBytes": 228,
+              "transferBytes": 549
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js",
+              "resourceBytes": 158,
+              "transferBytes": 479
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js",
+              "resourceBytes": 533,
+              "transferBytes": 854
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js",
+              "resourceBytes": 46,
+              "transferBytes": 365
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+              "resourceBytes": 18304,
+              "transferBytes": 18571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css",
+              "resourceBytes": 18927,
+              "transferBytes": 4474
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/site-footer.css?v=20261006",
+              "resourceBytes": 12153,
+              "transferBytes": 3637
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+              "resourceBytes": 3972,
+              "transferBytes": 2168
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+              "resourceBytes": 1416,
+              "transferBytes": 994
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+              "resourceBytes": 11384,
+              "transferBytes": 11652
+            }
+          ],
+          "lcpElement": "IMG class='hero__poster'",
+          "observedLcpBreakdown": [
+            {
+              "subpart": "timeToFirstByte",
+              "label": "Time to first byte",
+              "duration": 5.75
+            },
+            {
+              "subpart": "resourceLoadDelay",
+              "label": "Resource load delay",
+              "duration": 38.303
+            },
+            {
+              "subpart": "resourceLoadDuration",
+              "label": "Resource load duration",
+              "duration": 8.538
+            },
+            {
+              "subpart": "elementRenderDelay",
+              "label": "Element render delay",
+              "duration": 103.452
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-3.json",
+          "reportSha256": "d7e163c7d5bfe0affd01dbcb87866b4761fd350562556dff6fe9d9d3281e75f7",
+          "traceSha256": "e77bdc20851c6b92fc30876fc3edcd9464aaf23ec945cc37ec1d7b266f3614f7",
+          "lcpMs": 2857.5783,
+          "performance": 0.95,
+          "cls": 0,
+          "tbtMs": 0,
+          "benchmarkIndex": 4141.5,
+          "resourceCount": 40,
+          "transferBytes": 307163,
+          "resourceIdentity": [
+            {
+              "url": "http://127.0.0.1:4328/",
+              "resourceBytes": 274413,
+              "transferBytes": 67065
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif",
+              "resourceBytes": 111635,
+              "transferBytes": 111905
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2",
+              "resourceBytes": 20288,
+              "transferBytes": 20608
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2",
+              "resourceBytes": 13448,
+              "transferBytes": 13768
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+              "resourceBytes": 773,
+              "transferBytes": 1094
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js?v=search-ranking-2",
+              "resourceBytes": 3393,
+              "transferBytes": 2042
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2",
+              "resourceBytes": 13196,
+              "transferBytes": 13516
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAgCAYAAADaInAlAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAOo…",
+              "resourceBytes": 3823,
+              "transferBytes": 0
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAgCAYAAAD9qabkAAAACXBIWXMAAAPoAAAD6AG1e1JrAAANY…",
+              "resourceBytes": 3502,
+              "transferBytes": 0
+            },
+            {
+              "url": "http://127.0.0.1:4328/site.webmanifest",
+              "resourceBytes": 1433,
+              "transferBytes": 1714
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js",
+              "resourceBytes": 1402,
+              "transferBytes": 1134
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js",
+              "resourceBytes": 2909,
+              "transferBytes": 1553
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js",
+              "resourceBytes": 1447,
+              "transferBytes": 1192
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js",
+              "resourceBytes": 2472,
+              "transferBytes": 1372
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js",
+              "resourceBytes": 4190,
+              "transferBytes": 1899
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js",
+              "resourceBytes": 10499,
+              "transferBytes": 4795
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js",
+              "resourceBytes": 1301,
+              "transferBytes": 1089
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js",
+              "resourceBytes": 558,
+              "transferBytes": 879
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js",
+              "resourceBytes": 11693,
+              "transferBytes": 4646
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js",
+              "resourceBytes": 147,
+              "transferBytes": 468
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js",
+              "resourceBytes": 430,
+              "transferBytes": 751
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js",
+              "resourceBytes": 7060,
+              "transferBytes": 3265
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js",
+              "resourceBytes": 2125,
+              "transferBytes": 1414
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js",
+              "resourceBytes": 484,
+              "transferBytes": 805
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js",
+              "resourceBytes": 713,
+              "transferBytes": 1034
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/favicon.svg",
+              "resourceBytes": 791,
+              "transferBytes": 1058
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+              "resourceBytes": 18304,
+              "transferBytes": 18571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js",
+              "resourceBytes": 2875,
+              "transferBytes": 1606
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js",
+              "resourceBytes": 99,
+              "transferBytes": 418
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js",
+              "resourceBytes": 438,
+              "transferBytes": 759
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js",
+              "resourceBytes": 3226,
+              "transferBytes": 1571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js",
+              "resourceBytes": 228,
+              "transferBytes": 549
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js",
+              "resourceBytes": 158,
+              "transferBytes": 479
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js",
+              "resourceBytes": 533,
+              "transferBytes": 854
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js",
+              "resourceBytes": 46,
+              "transferBytes": 365
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css",
+              "resourceBytes": 18927,
+              "transferBytes": 4474
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/site-footer.css?v=20261006",
+              "resourceBytes": 12153,
+              "transferBytes": 3637
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+              "resourceBytes": 3972,
+              "transferBytes": 2168
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+              "resourceBytes": 1416,
+              "transferBytes": 994
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+              "resourceBytes": 11384,
+              "transferBytes": 11652
+            }
+          ],
+          "lcpElement": "IMG class='hero__poster'",
+          "observedLcpBreakdown": [
+            {
+              "subpart": "timeToFirstByte",
+              "label": "Time to first byte",
+              "duration": 6.275
+            },
+            {
+              "subpart": "resourceLoadDelay",
+              "label": "Resource load delay",
+              "duration": 21.018
+            },
+            {
+              "subpart": "resourceLoadDuration",
+              "label": "Resource load duration",
+              "duration": 7.812
+            },
+            {
+              "subpart": "elementRenderDelay",
+              "label": "Element render delay",
+              "duration": 98.044
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "3c848416b96925907ca38c419b77185dbe22081d",
+      "run": 37889961823,
+      "artifact": 11599577208,
+      "artifactSha256": "e00fc87f1b93eb0194f25b9653436a382aba6e815a02de3497482a23a0cae926",
+      "samples": [
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-1.json",
+          "reportSha256": "8457b5ee8ceb16ac398758e55244802a94fd5a6930553a4755146133998b3815",
+          "traceSha256": "223d686d3458cbddbafbc14814e5c3b47385d70103d067470103235b2ba1f634",
+          "lcpMs": 2784.5428999999995,
+          "performance": 0.95,
+          "cls": 0,
+          "tbtMs": 48.61427500000002,
+          "benchmarkIndex": 2484.5,
+          "resourceCount": 40,
+          "transferBytes": 307163,
+          "resourceIdentity": [
+            {
+              "url": "http://127.0.0.1:4328/",
+              "resourceBytes": 274413,
+              "transferBytes": 67065
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif",
+              "resourceBytes": 111635,
+              "transferBytes": 111905
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2",
+              "resourceBytes": 20288,
+              "transferBytes": 20608
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2",
+              "resourceBytes": 13448,
+              "transferBytes": 13768
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+              "resourceBytes": 773,
+              "transferBytes": 1094
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js?v=search-ranking-2",
+              "resourceBytes": 3393,
+              "transferBytes": 2042
+            },
+            {
+              "url": "http://127.0.0.1:4328/site.webmanifest",
+              "resourceBytes": 1433,
+              "transferBytes": 1714
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2",
+              "resourceBytes": 13196,
+              "transferBytes": 13516
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAgCAYAAADaInAlAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAOo…",
+              "resourceBytes": 3823,
+              "transferBytes": 0
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAgCAYAAAD9qabkAAAACXBIWXMAAAPoAAAD6AG1e1JrAAANY…",
+              "resourceBytes": 3502,
+              "transferBytes": 0
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js",
+              "resourceBytes": 1402,
+              "transferBytes": 1134
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js",
+              "resourceBytes": 2909,
+              "transferBytes": 1553
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js",
+              "resourceBytes": 1447,
+              "transferBytes": 1192
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js",
+              "resourceBytes": 2472,
+              "transferBytes": 1372
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js",
+              "resourceBytes": 4190,
+              "transferBytes": 1899
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/favicon.svg",
+              "resourceBytes": 791,
+              "transferBytes": 1058
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js",
+              "resourceBytes": 10499,
+              "transferBytes": 4795
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js",
+              "resourceBytes": 1301,
+              "transferBytes": 1089
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js",
+              "resourceBytes": 558,
+              "transferBytes": 879
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js",
+              "resourceBytes": 11693,
+              "transferBytes": 4646
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js",
+              "resourceBytes": 147,
+              "transferBytes": 468
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js",
+              "resourceBytes": 430,
+              "transferBytes": 751
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js",
+              "resourceBytes": 7060,
+              "transferBytes": 3265
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js",
+              "resourceBytes": 2125,
+              "transferBytes": 1414
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js",
+              "resourceBytes": 484,
+              "transferBytes": 805
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js",
+              "resourceBytes": 713,
+              "transferBytes": 1034
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+              "resourceBytes": 18304,
+              "transferBytes": 18571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js",
+              "resourceBytes": 99,
+              "transferBytes": 418
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js",
+              "resourceBytes": 438,
+              "transferBytes": 759
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js",
+              "resourceBytes": 3226,
+              "transferBytes": 1571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js",
+              "resourceBytes": 2875,
+              "transferBytes": 1606
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js",
+              "resourceBytes": 158,
+              "transferBytes": 479
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js",
+              "resourceBytes": 533,
+              "transferBytes": 854
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js",
+              "resourceBytes": 46,
+              "transferBytes": 365
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js",
+              "resourceBytes": 228,
+              "transferBytes": 549
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css",
+              "resourceBytes": 18927,
+              "transferBytes": 4474
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/site-footer.css?v=20261006",
+              "resourceBytes": 12153,
+              "transferBytes": 3637
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+              "resourceBytes": 3972,
+              "transferBytes": 2168
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+              "resourceBytes": 1416,
+              "transferBytes": 994
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+              "resourceBytes": 11384,
+              "transferBytes": 11652
+            }
+          ],
+          "lcpElement": "IMG class='hero__poster'",
+          "observedLcpBreakdown": [
+            {
+              "subpart": "timeToFirstByte",
+              "label": "Time to first byte",
+              "duration": 11.279
+            },
+            {
+              "subpart": "resourceLoadDelay",
+              "label": "Resource load delay",
+              "duration": 45.218
+            },
+            {
+              "subpart": "resourceLoadDuration",
+              "label": "Resource load duration",
+              "duration": 20.494
+            },
+            {
+              "subpart": "elementRenderDelay",
+              "label": "Element render delay",
+              "duration": 146.492
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-2.json",
+          "reportSha256": "ca52317d4d927d804fe2709808f516d7dd9f0d73d775a0e00b98688db8c3ebf8",
+          "traceSha256": "de478c8004dd0e5dfc74e7cd4ee098c8a9beaa767b3a4f6111e19552bcde6c0b",
+          "lcpMs": 2556.4461,
+          "performance": 0.97,
+          "cls": 0,
+          "tbtMs": 0,
+          "benchmarkIndex": 2486.5,
+          "resourceCount": 40,
+          "transferBytes": 307163,
+          "resourceIdentity": [
+            {
+              "url": "http://127.0.0.1:4328/",
+              "resourceBytes": 274413,
+              "transferBytes": 67065
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif",
+              "resourceBytes": 111635,
+              "transferBytes": 111905
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2",
+              "resourceBytes": 20288,
+              "transferBytes": 20608
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2",
+              "resourceBytes": 13448,
+              "transferBytes": 13768
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+              "resourceBytes": 773,
+              "transferBytes": 1094
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js?v=search-ranking-2",
+              "resourceBytes": 3393,
+              "transferBytes": 2042
+            },
+            {
+              "url": "http://127.0.0.1:4328/site.webmanifest",
+              "resourceBytes": 1433,
+              "transferBytes": 1714
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2",
+              "resourceBytes": 13196,
+              "transferBytes": 13516
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAgCAYAAADaInAlAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAOo…",
+              "resourceBytes": 3823,
+              "transferBytes": 0
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAgCAYAAAD9qabkAAAACXBIWXMAAAPoAAAD6AG1e1JrAAANY…",
+              "resourceBytes": 3502,
+              "transferBytes": 0
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js",
+              "resourceBytes": 1402,
+              "transferBytes": 1134
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js",
+              "resourceBytes": 2472,
+              "transferBytes": 1372
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js",
+              "resourceBytes": 4190,
+              "transferBytes": 1899
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js",
+              "resourceBytes": 2909,
+              "transferBytes": 1553
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js",
+              "resourceBytes": 1447,
+              "transferBytes": 1192
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/favicon.svg",
+              "resourceBytes": 791,
+              "transferBytes": 1058
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+              "resourceBytes": 18304,
+              "transferBytes": 18571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js",
+              "resourceBytes": 10499,
+              "transferBytes": 4795
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js",
+              "resourceBytes": 1301,
+              "transferBytes": 1089
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js",
+              "resourceBytes": 558,
+              "transferBytes": 879
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js",
+              "resourceBytes": 11693,
+              "transferBytes": 4646
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js",
+              "resourceBytes": 147,
+              "transferBytes": 468
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js",
+              "resourceBytes": 430,
+              "transferBytes": 751
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js",
+              "resourceBytes": 7060,
+              "transferBytes": 3265
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js",
+              "resourceBytes": 2125,
+              "transferBytes": 1414
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js",
+              "resourceBytes": 484,
+              "transferBytes": 805
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js",
+              "resourceBytes": 713,
+              "transferBytes": 1034
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js",
+              "resourceBytes": 2875,
+              "transferBytes": 1606
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js",
+              "resourceBytes": 99,
+              "transferBytes": 418
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js",
+              "resourceBytes": 438,
+              "transferBytes": 759
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js",
+              "resourceBytes": 3226,
+              "transferBytes": 1571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js",
+              "resourceBytes": 228,
+              "transferBytes": 549
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js",
+              "resourceBytes": 158,
+              "transferBytes": 479
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js",
+              "resourceBytes": 533,
+              "transferBytes": 854
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js",
+              "resourceBytes": 46,
+              "transferBytes": 365
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css",
+              "resourceBytes": 18927,
+              "transferBytes": 4474
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/site-footer.css?v=20261006",
+              "resourceBytes": 12153,
+              "transferBytes": 3637
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+              "resourceBytes": 3972,
+              "transferBytes": 2168
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+              "resourceBytes": 1416,
+              "transferBytes": 994
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+              "resourceBytes": 11384,
+              "transferBytes": 11652
+            }
+          ],
+          "lcpElement": "IMG class='hero__poster'",
+          "observedLcpBreakdown": [
+            {
+              "subpart": "timeToFirstByte",
+              "label": "Time to first byte",
+              "duration": 9.732999999761581
+            },
+            {
+              "subpart": "resourceLoadDelay",
+              "label": "Resource load delay",
+              "duration": 35.83900000023842
+            },
+            {
+              "subpart": "resourceLoadDuration",
+              "label": "Resource load duration",
+              "duration": 10.103
+            },
+            {
+              "subpart": "elementRenderDelay",
+              "label": "Element render delay",
+              "duration": 116.024
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-3.json",
+          "reportSha256": "bc30780921c2abeda804920e205f5411468ff490c371bd8dedf27107de3eb00e",
+          "traceSha256": "b19a2bb092ee920fce39338b14ea35a1349c8f9da11ebdb7ff58456dfc317031",
+          "lcpMs": 2554.2700999999997,
+          "performance": 0.97,
+          "cls": 0,
+          "tbtMs": 1,
+          "benchmarkIndex": 2470.5,
+          "resourceCount": 40,
+          "transferBytes": 307163,
+          "resourceIdentity": [
+            {
+              "url": "http://127.0.0.1:4328/",
+              "resourceBytes": 274413,
+              "transferBytes": 67065
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif",
+              "resourceBytes": 111635,
+              "transferBytes": 111905
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2",
+              "resourceBytes": 20288,
+              "transferBytes": 20608
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2",
+              "resourceBytes": 13448,
+              "transferBytes": 13768
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+              "resourceBytes": 773,
+              "transferBytes": 1094
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js?v=search-ranking-2",
+              "resourceBytes": 3393,
+              "transferBytes": 2042
+            },
+            {
+              "url": "http://127.0.0.1:4328/site.webmanifest",
+              "resourceBytes": 1433,
+              "transferBytes": 1714
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2",
+              "resourceBytes": 13196,
+              "transferBytes": 13516
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAgCAYAAADaInAlAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAOo…",
+              "resourceBytes": 3823,
+              "transferBytes": 0
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAgCAYAAAD9qabkAAAACXBIWXMAAAPoAAAD6AG1e1JrAAANY…",
+              "resourceBytes": 3502,
+              "transferBytes": 0
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js",
+              "resourceBytes": 1402,
+              "transferBytes": 1134
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js",
+              "resourceBytes": 2472,
+              "transferBytes": 1372
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js",
+              "resourceBytes": 4190,
+              "transferBytes": 1899
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/favicon.svg",
+              "resourceBytes": 791,
+              "transferBytes": 1058
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+              "resourceBytes": 18304,
+              "transferBytes": 18571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js",
+              "resourceBytes": 2909,
+              "transferBytes": 1553
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js",
+              "resourceBytes": 1447,
+              "transferBytes": 1192
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js",
+              "resourceBytes": 10499,
+              "transferBytes": 4795
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js",
+              "resourceBytes": 1301,
+              "transferBytes": 1089
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js",
+              "resourceBytes": 558,
+              "transferBytes": 879
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js",
+              "resourceBytes": 11693,
+              "transferBytes": 4646
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js",
+              "resourceBytes": 147,
+              "transferBytes": 468
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js",
+              "resourceBytes": 430,
+              "transferBytes": 751
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js",
+              "resourceBytes": 7060,
+              "transferBytes": 3265
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js",
+              "resourceBytes": 2125,
+              "transferBytes": 1414
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js",
+              "resourceBytes": 484,
+              "transferBytes": 805
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js",
+              "resourceBytes": 713,
+              "transferBytes": 1034
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js",
+              "resourceBytes": 2875,
+              "transferBytes": 1606
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js",
+              "resourceBytes": 99,
+              "transferBytes": 418
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js",
+              "resourceBytes": 438,
+              "transferBytes": 759
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js",
+              "resourceBytes": 3226,
+              "transferBytes": 1571
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js",
+              "resourceBytes": 228,
+              "transferBytes": 549
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js",
+              "resourceBytes": 158,
+              "transferBytes": 479
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js",
+              "resourceBytes": 533,
+              "transferBytes": 854
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js",
+              "resourceBytes": 46,
+              "transferBytes": 365
+            },
+            {
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css",
+              "resourceBytes": 18927,
+              "transferBytes": 4474
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/site-footer.css?v=20261006",
+              "resourceBytes": 12153,
+              "transferBytes": 3637
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+              "resourceBytes": 3972,
+              "transferBytes": 2168
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+              "resourceBytes": 1416,
+              "transferBytes": 994
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+              "resourceBytes": 11384,
+              "transferBytes": 11652
+            }
+          ],
+          "lcpElement": "IMG class='hero__poster'",
+          "observedLcpBreakdown": [
+            {
+              "subpart": "timeToFirstByte",
+              "label": "Time to first byte",
+              "duration": 8.998999999761581
+            },
+            {
+              "subpart": "resourceLoadDelay",
+              "label": "Resource load delay",
+              "duration": 35.08600000023842
+            },
+            {
+              "subpart": "resourceLoadDuration",
+              "label": "Resource load duration",
+              "duration": 10.051
+            },
+            {
+              "subpart": "elementRenderDelay",
+              "label": "Element render delay",
+              "duration": 117.32
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "conclusion": "The failing run's worst home LCP is 3156.335 ms against the existing 3100 ms calibration. Both runs report the same 40 resource URLs/sizes and the hero poster as LCP. That does not prove byte identity or establish the cause of the simulated timing difference. The original failure remains.",
+  "limits": [
+    "No detected runner stall or retaken sample in the original gate",
+    "No performance rerun or threshold change",
+    "Derived summary, not a new browser run or passing full suite",
+    "No private search/publication clearance"
+  ]
+}

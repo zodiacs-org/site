@@ -126,3 +126,27 @@ extractor, scopes, claims ratchet and every R1–R10 check remain unchanged.
 The same review now carries a checkpoint 22 proposal for P3.2 only. Its
 complete gate and production adoption are already evidenced; main remains
 61 of 182.45 until the record merges. The guide publication hold remains.
+
+## Final full-suite failure and retained diagnosis — 9 October
+
+Dedicated guide [run 37899456216](https://github.com/zodiacs-org/site/actions/runs/37899456216)
+passes on source 32882c09. Full [Site Check 37899456005](https://github.com/zodiacs-org/site/actions/runs/37899456005)
+**fails**: 19 jobs pass, but the homepage's worst LCP is 3156.335 ms against
+its unchanged 3100 ms calibration. The other 29 routes pass; the original
+gate detects no runner stall and retakes no sample.
+
+[Diagnosis 37904687169](https://github.com/zodiacs-org/site/actions/runs/37904687169)
+verifies immutable artifact ZIP hashes and reads only the original home
+reports/traces, alongside passing parser-repair run 37889961823.
+[The derived summary](results/home-lighthouse-diagnosis.json) retains exact
+report/trace hashes and timings. Both runs report the same 40 resource URLs
+and sizes and identify the hero poster as LCP. That does not establish byte
+identity or a cause for the simulated timing difference. No performance
+gate is rerun, no threshold changes and the original failure stays.
+
+First diagnostic run 37904480576 failed because API authorization was carried
+to the artifact storage redirect; dropping it on that redirect repairs the
+read-only diagnostic. Its temporary workflow is removed after retaining
+this evidence; the script remains. PR #695 is closed with branch/history
+preserved. No new private scan or publication clearance is claimed.
+Checkpoint 22 is separately merged in records-only #696.
