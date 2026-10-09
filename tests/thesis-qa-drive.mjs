@@ -1177,6 +1177,46 @@ try {
     check(`no page errors or same-origin failures (${width}px)`, mobErrors.length === 0, mobErrors.slice(0, 2).join(' | '));
     await mob.close();
   }
+  // Hold the real font requests to exercise the first layout with fallbacks,
+  // then release them without modifying production styles or metric gates.
+  for (const width of [390, 412, 810, 1440]) {
+    const cold = await browser.newContext({ viewport: { width, height: 900 } });
+    let releaseFonts;
+    const fontGate = new Promise((resolve) => { releaseFonts = resolve; });
+    await cold.route('**/fonts/*.woff2', async (route) => {
+      await fontGate;
+      await route.continue();
+    });
+    const coldPage = await cold.newPage();
+    try {
+      await coldPage.goto(`${BASE}/thesis/`, { waitUntil: 'domcontentloaded' });
+      await coldPage.waitForTimeout(150);
+      const beforeFonts = await coldPage.evaluate(() => ({
+        top: document.querySelector('.essay__body').getBoundingClientRect().top,
+        labels: [...document.querySelectorAll('.essay__rail .label')].map((node) => ({
+          height: node.getBoundingClientRect().height,
+          lineHeight: getComputedStyle(node).lineHeight,
+        })),
+        fontLoaded: document.fonts.check('500 9.5px "EB Garamond"'),
+      }));
+      releaseFonts();
+      await coldPage.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      const afterFonts = await coldPage.evaluate(() => ({
+        top: document.querySelector('.essay__body').getBoundingClientRect().top,
+        fontLoaded: document.fonts.check('500 9.5px "EB Garamond"'),
+      }));
+      check(`${width}px: essay start stays fixed across real font loading`,
+        !beforeFonts.fontLoaded && afterFonts.fontLoaded
+          && Math.abs(beforeFonts.top - afterFonts.top) <= 0.01,
+        JSON.stringify({ beforeFonts, afterFonts }));
+    } finally {
+      releaseFonts();
+      await cold.close();
+    }
+  }
   await browser.close();
 } finally {
   await preview.stop();
