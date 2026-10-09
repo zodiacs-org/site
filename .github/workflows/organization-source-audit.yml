@@ -1,0 +1,29 @@
+name: Locate current Organization source references
+on:
+  push:
+    branches: ['codex/developer-docs-preparation']
+    paths: ['scripts/audit-organization-source.mjs', '.github/workflows/organization-source-audit.yml']
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+          ref: ac09a5fab7e6674039876e15f4db4bc29b09e79f
+          path: current-main
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - run: node scripts/audit-organization-source.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: organization-source-audit
+          path: organization-source-audit.json
+          retention-days: 90
