@@ -69,8 +69,9 @@ try {
     }
   });
   await new Promise((resolveListen) => server.listen(0, '127.0.0.1', resolveListen));
-  const browser = await chromium.launch({ executablePath: findChromium(), headless: true, args: ['--no-sandbox'] });
+  let browser;
   try {
+    browser = await chromium.launch({ executablePath: await findChromium(), headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
@@ -81,7 +82,7 @@ try {
     assert.deepEqual(errors, []);
     outcomes.push({ guide: 'browser', runtime: await browser.version(), status: 'pass' });
   } finally {
-    await browser.close();
+    if (browser) await browser.close();
     await new Promise((resolveClose) => server.close(resolveClose));
   }
   const source = createHash('sha256').update(await readFile(resolve(root, 'src/data/developer-guides.json'))).digest('hex');
