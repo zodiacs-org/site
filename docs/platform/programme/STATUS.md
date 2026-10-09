@@ -1,3 +1,42 @@
+Checkpoint 22, 2026-10-09 (Asia/Bangkok): P3.2's uniform calculation API is
+accepted on adopted, served `1.0.0-rc.2` under the owner's October 6
+`EPHEMERIS_SPAN` interpretation.
+
+**Overall delivery: 35%** (35.078% to three decimals) — 64 of 182.45 weighted
+units accepted; blocked 2% (3), or 1.644%. Up by P3.2's 3 from checkpoint 21.
+The denominator, other acceptance states and all gate thresholds are unchanged.
+
+The [complete packed gate on engine main](https://github.com/zodiacs-org/engine/tree/98465b1a6aba46ff5e12c283f77f54278dc6905b/docs/evidence/checkpoint22-rc2-20261009)
+detects 21 declaration faults, replays 38 fixtures and 27 receipt requests
+exactly, and computes 21 sidereal definitions through all four functions.
+The epoch matrix covers three models, TT/UT1/UTC and all four functions:
+72 inclusive cases compute and 72 beyond-end cases return the exact typed
+refusal. Full postmerge core CI, archive rebuild, packed consumers,
+conformance and atlas pass. These are contract/replay/consistency checks,
+not independent numerical accuracy evidence.
+
+[Source-bound production evidence](../evidence/checkpoint22-20261009/README.md)
+joins the READY source/domain observation to seven matching canonical engine
+assets and the synthetic hosted backend `1.0.0-rc.2`. F-80 closes under
+the already recorded owner interpretation, the candidate's implementation,
+the complete gate and production adoption. Registry publication is separate.
+
+[Engine #34](https://github.com/zodiacs-org/engine/pull/34) merges the private
+TypeScript Compute client; its exact-head source and fresh packed-consumer
+checks pass on Node 20/22/24 along with the complete core suite.
+P3.4 remains partial for its complete gate and dependencies.
+[Site #695](https://github.com/zodiacs-org/site/pull/695) preserves the tested
+guide branch. Those routes remain unpublished; P3.10 remains partial for
+React Native and a complete sunrise-based panchang recipe.
+
+This checkpoint changes only programme records and existing evidence; it
+ships no new candidate, registry package, guide route, application code or
+hosting setting. Private release-range and staged searches did not run in
+this executor; their inputs remain unavailable. The stable release and guide
+publication prerequisites remain in
+[engine #32](https://github.com/zodiacs-org/engine/issues/32).
+The earlier checkpoints retain their original verdicts and observations.
+
 # Programme status
 
 Checkpoint 21, 2026-10-06: the uniform calculation API (P3.2), judged on
