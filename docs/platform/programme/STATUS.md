@@ -1,3 +1,32 @@
+Checkpoint 23, 2026-10-09 (Asia/Bangkok): Koch, co-ascendants and B4.a
+are accepted under the owner's specific delegation on their named
+ratification questions and [fresh carried rc.2 gates](../evidence/checkpoint23-20261009/README.md).
+
+**Overall delivery: 37%** (36.969% to three decimals) — 67.45 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up by 3.45 from
+checkpoint 22. Other states, fixed weights, gates and tolerances are unchanged.
+
+Koch and co-ascendants meet their unchanged given-input tolerances and their
+shared-UT1 end-to-end comparisons **in the judged 1850–2049 window**.
+Original UTC-as-UT1 failures, outside-window residuals and post-result
+selection history remain recorded. No outside-window tolerance is claimed.
+
+The frozen benchmark's canonical files match exactly and current rc.2
+tool/scorer tests pass. B4.a's raw answers are published tool replies;
+B4.b still requires assistants' private raw answers and separate evaluation.
+No assistant trial or assistant performance is claimed.
+
+[DECISIONS-2026-10-09.md](DECISIONS-2026-10-09.md) records the specific
+instruction and reasons, superseding the named non-ratification under the
+October 5 general delegation. No unrelated amendment is ratified.
+The private Python client is in engine #35; P3.4 remains partial.
+The held guide branch's dedicated check passed, but its full Site Check
+failed the homepage Lighthouse budget. No passing full result is substituted.
+
+This ships records and a read-only gate workflow, with no active route,
+core package, immutable archive, registry or hosting/security change.
+No new private scan ran; publication prerequisites stay separate.
+
 Checkpoint 22, 2026-10-09 (Asia/Bangkok): P3.2's uniform calculation API is
 accepted on adopted, served `1.0.0-rc.2` under the owner's October 6
 `EPHEMERIS_SPAN` interpretation.
