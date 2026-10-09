@@ -2791,11 +2791,36 @@
             });
           });
         };
+        var heroPaintObserver;
+        var waitForHeroPaint = function () {
+          try {
+            if (performance.getEntriesByName('first-contentful-paint').length > 0) {
+              allowHeroPlayback();
+              return;
+            }
+            if (window.PerformanceObserver
+              && PerformanceObserver.supportedEntryTypes.indexOf('paint') !== -1) {
+              if (heroPaintObserver) return;
+              heroPaintObserver = new PerformanceObserver(function (list) {
+                if (list.getEntries().some(function (entry) {
+                  return entry.name === 'first-contentful-paint';
+                })) {
+                  heroPaintObserver.disconnect();
+                  allowHeroPlayback();
+                }
+              });
+              heroPaintObserver.observe({ type: 'paint', buffered: true });
+              return;
+            }
+          } catch (e) {}
+          // Older browsers without paint entries still get the poster-load/frame gate.
+          allowHeroPlayback();
+        };
         var heroPoster = new Image();
-        heroPoster.onload = allowHeroPlayback;
-        heroPoster.onerror = allowHeroPlayback;
+        heroPoster.onload = waitForHeroPaint;
+        heroPoster.onerror = waitForHeroPaint;
         heroPoster.src = video.poster;
-        if (heroPoster.complete) allowHeroPlayback();
+        if (heroPoster.complete) waitForHeroPaint();
         if ('IntersectionObserver' in window) {
           // Keep the ambient loop active only while the hero is on screen.
           new IntersectionObserver(function (entries) {
