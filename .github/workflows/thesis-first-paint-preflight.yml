@@ -1,0 +1,104 @@
+name: Thesis fixed essay rail source preflight
+on:
+  push:
+    branches: ['codex/developer-docs-preparation']
+    paths: ['.github/workflows/thesis-first-paint-preflight.yml']
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PREFLIGHT_SOURCE: 'be5ecb75d08f1e23129db194240095e78a71b53f'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ env.PREFLIGHT_SOURCE }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Verify exact candidate source
+        run: test "$(git rev-parse HEAD)" = "$PREFLIGHT_SOURCE"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright-core install --with-deps chromium
+      - name: Parse every inline classic script before build
+        run: |
+          node --input-type=module <<'THESIS_SOURCE'
+          import {readFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import vm from 'node:vm';
+          const html=readFileSync('public/thesis/index.html','utf8');
+          if(createHash('sha256').update(html).digest('hex')!=='d79d3c188215fb3debc36fceffe1fd85d2291f1bdb738c44cc1090b5c37f567f')throw Error('Candidate bytes do not match');
+          let scripts=0;
+          for(const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){
+            if(/\b(?:src|type)\s*=/.test(match[1]))continue;
+            new vm.Script(match[2]);scripts++;
+          }
+          if(scripts<1)throw Error('No inline classic scripts checked');
+          console.log(JSON.stringify({source:process.env.PREFLIGHT_SOURCE,inlineClassicScripts:scripts,syntax:'passed'}));
+          THESIS_SOURCE
+      - name: Build candidate with unchanged source and dist checks
+        run: npm run build
+      - name: Existing thesis contracts and footer transform controls
+        run: npx vitest run tests/thesis-contract.test.mjs scripts/inline-thesis-footer.test.mjs
+      - name: Existing thesis browser acceptance
+        run: npm run test:thesis:browser
+      - name: Existing three-sample thesis performance gate
+        env:
+          LIGHTHOUSE_ROUTES: thesis
+          LIGHTHOUSE_SAVE_ASSETS: '1'
+        run: npm run test:lighthouse
+      - name: Retain source binding, built payload and actual Lighthouse samples
+        if: always()
+        env:
+          PRECEDING_STEPS_STATUS: ${{ job.status }}
+        run: |
+          node --input-type=module <<'THESIS_REPORT'
+          import {readFileSync,existsSync,mkdirSync,writeFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {execFileSync} from 'node:child_process';
+          import {gzipSync} from 'node:zlib';
+          const hash=b=>createHash('sha256').update(b).digest('hex');
+          const source=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',shell:false}).trim();
+          if(source!==process.env.PREFLIGHT_SOURCE)throw Error('Source binding differs');
+          const samples=[];
+          for(let i=1;i<=3;i++){
+            const path='tests/visual/artifacts/lighthouse/thesis-'+i+'.json';
+            if(!existsSync(path))continue;
+            const bytes=readFileSync(path),r=JSON.parse(bytes);
+            samples.push({path,sha256:hash(bytes),lcpMs:r.audits['largest-contentful-paint'].numericValue,
+              cls:r.audits['cumulative-layout-shift'].numericValue,tbtMs:r.audits['total-blocking-time'].numericValue,
+              performance:r.categories.performance.score,accessibility:r.categories.accessibility.score,
+              seo:r.categories.seo.score,metrics:r.audits.metrics.details.items[0]});
+          }
+          let built=null;
+          const path='dist/thesis/index.html';
+          if(existsSync(path)){
+            const html=readFileSync(path,'utf8'),css=readFileSync('src/styles/site-footer.css','utf8');
+            const footer=html.match(/<style data-canonical-thesis-footer>([\s\S]*?)<\/style>/);
+            if(!footer||footer[1]!==css)throw Error('Canonical footer changed');
+            const heroes=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].filter(m=>m[1].includes('.hero video.hero__media'));
+            if(heroes.length!==1)throw Error('Unexpected hero initializer');
+            built={bytes:Buffer.byteLength(html),sha256:hash(html),gzipBytes:gzipSync(html).length,
+              canonicalFooterBytes:Buffer.byteLength(css),canonicalFooterSha256:hash(css),
+              heroInitializerBytes:Buffer.byteLength(heroes[0][1]),heroInitializerSha256:hash(heroes[0][1])};
+          }
+          const report={schema:'zodiacs.thesis-payload-preflight.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID},
+            checkedOutSource:source,precedingStepsStatus:process.env.PRECEDING_STEPS_STATUS,built,samples,
+            limitations:['Unchanged thesis-only three-sample gate; not a full Site Check or accepted programme weight.','Gzip sizes are local node:zlib measurements; actual network sizes remain in retained Lighthouse reports.']};
+          const output=JSON.stringify(report,null,2)+'\n',outPath='docs/platform/evidence/thesis-poster-loading-20261009/payload-minification-preflight.json';
+          mkdirSync('docs/platform/evidence/thesis-poster-loading-20261009',{recursive:true});writeFileSync(outPath,output);
+          console.log('PROGRAMME_FILE '+JSON.stringify({path:outPath,size:Buffer.byteLength(output),sha256:hash(output),base64:Buffer.from(output).toString('base64')}));
+          THESIS_REPORT
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: thesis-first-paint-preflight
+          path: |
+            tests/visual/artifacts/
+            docs/platform/evidence/thesis-poster-loading-20261009/payload-minification-preflight.json
+          retention-days: 90
