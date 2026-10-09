@@ -1,12 +1,19 @@
-import hashlib, io, json, os, urllib.request, zipfile
+import hashlib, io, json, os, urllib.parse, urllib.request, zipfile
 repo = 'zodiacs-org/site'
 samples = [
     (37899456005, 11602473837, '32882c0983f80c2346f37411e05fcc2d4a723489', '8facd9242793d16dc168b5421651dfc26458d9d791b482ce44c2db1f957e2995'),
     (37889961823, 11599577208, '3c848416b96925907ca38c419b77185dbe22081d', 'e00fc87f1b93eb0194f25b9653436a382aba6e815a02de3497482a23a0cae926'),
 ]
+class ArchiveRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        next_request = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if next_request is not None and urllib.parse.urlsplit(newurl).hostname != 'api.github.com':
+            next_request.remove_header('Authorization')
+        return next_request
+opener = urllib.request.build_opener(ArchiveRedirect())
 def api(path):
     req = urllib.request.Request('https://api.github.com/repos/' + repo + path, headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json'})
-    return urllib.request.urlopen(req, timeout=60).read()
+    return opener.open(req, timeout=60).read()
 for run_id, artifact_id, source, digest in samples:
     run = json.loads(api('/actions/runs/' + str(run_id)))
     assert run['head_sha'] == source
