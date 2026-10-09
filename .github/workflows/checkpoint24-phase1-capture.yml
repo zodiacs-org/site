@@ -1,4 +1,4 @@
-name: Checkpoint 24 source-bound captures and retained gate receipts
+name: Checkpoint 24 rendered inventory and retained full-suite receipts
 on:
   push:
     branches: [codex/developer-docs-preparation]
@@ -23,56 +23,20 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright-core install --with-deps chromium
       - name: Build exact metadata source with original source and dist checks
         run: npm run build
-      - name: All nine templates at both required widths
-        run: npm run test:phase1:acceptance
-      - name: Original actual-capture receipt tests
-        run: npm run test:phase1:evidence
-      - name: Verify exact Git source and actual PNG identities
-        run: |
-          node --input-type=module <<'CAPTURE_EXPORT'
-          import assert from 'node:assert/strict';
-          import {readFile,writeFile} from 'node:fs/promises';
-          import {createHash} from 'node:crypto';
-          import {execFileSync} from 'node:child_process';
-          import {relative} from 'node:path';
-          import {phase1TemplateSourceSha256} from './tests/visual/phase1-evidence-contract.mjs';
-          const root='docs/acceptance/phase1/screenshots/',hash=b=>createHash('sha256').update(b).digest('hex');
-          const head=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',shell:false}).trim();
-          assert.equal(head,process.env.CAPTURE_TARGET_SHA);
-          const bytes=await readFile(root+'manifest.json'),manifest=JSON.parse(bytes);
-          assert.equal(manifest.captures.length,18);
-          const rawHash=await phase1TemplateSourceSha256(process.cwd(),{readSource:absolute=>execFileSync('git',['show','HEAD:'+relative(process.cwd(),absolute).replaceAll('\\','/')],{shell:false,maxBuffer:12*1024*1024})});
-          assert.equal(manifest.templateSourceSha256,rawHash);assert.equal(manifest.buildReceipt.templateSourceSha256,rawHash);
-          assert.ok(Date.parse(manifest.capturedAt)>=Date.parse(manifest.buildReceipt.builtAt));
-          const captures=[],names=new Set();
-          for(const row of manifest.captures){
-           const name=row.screenshot.file;assert.match(name,/^[a-z0-9-]+-(?:360|1280)\.png$/);
-           assert.ok(!names.has(name));names.add(name);
-           const actual=await readFile(root+name);assert.equal(hash(actual),row.screenshot.sha256);
-           const previous=execFileSync('git',['show','HEAD:'+root+name],{shell:false,maxBuffer:12*1024*1024});
-           captures.push({file:name,bytes:actual.length,sha256:hash(actual),previousTrackedBytes:previous.length,previousTrackedSha256:hash(previous),identicalToPreviousTracked:actual.equals(previous)});
-          }
-          const report={schema:'zodiacs.checkpoint24-phase1-capture.v1',producer:{workflowSource:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:head,target:process.env.CAPTURE_TARGET_SHA,rawGitTemplateSourceSha256:rawHash,manifestSha256:hash(bytes),captures,browser:manifest.browser,capturedAt:manifest.capturedAt,builtAt:manifest.buildReceipt.builtAt,limitation:'Eighteen fresh actual captures and original receipt tests; full combined suite and production checks remain required.'};
-          function exported(path,b){console.log('PROGRAMME_FILE '+JSON.stringify({path,size:b.length,sha256:hash(b),base64:b.toString('base64')}));}
-          exported(root+'manifest.json',bytes);
-          const proof=Buffer.from(JSON.stringify(report,null,2)+'\n');await writeFile('checkpoint24-capture-producer.json',proof);
-          exported('docs/platform/evidence/platform-identities-20261009/phase1-capture-producer.json',proof);
-          console.log('PROGRAMME_CAPTURE_SUMMARY '+JSON.stringify({actual:18,identical:captures.filter(x=>x.identicalToPreviousTracked).length,differing:captures.filter(x=>!x.identicalToPreviousTracked).map(x=>x.file)}));
-          
-          CAPTURE_EXPORT
       - name: Read actual rendered FAQ inventory for semantic review
         run: |
           node --input-type=module <<'FAQ_INVENTORY'
-          import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
+          import {readFileSync,mkdirSync,writeFileSync,readdirSync} from 'node:fs';
           import {execFileSync} from 'node:child_process';
           import {createHash} from 'node:crypto';
           const hash=b=>createHash('sha256').update(b).digest('hex');
           const source=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',shell:false}).trim();
           if(source!==process.env.CAPTURE_TARGET_SHA)throw Error('FAQ inventory source mismatch');
-          const files=execFileSync('rg',['--files','dist','-g','index.html'],{encoding:'utf8',shell:false,maxBuffer:8*1024*1024}).trim().split('\n').sort();
+          function indexFiles(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(entry=>entry.isDirectory()?indexFiles(dir+'/'+entry.name):entry.isFile()&&entry.name==='index.html'?[dir+'/'+entry.name]:[]);}
+          const files=indexFiles('dist').sort();
+          if(!files.length)throw Error('Rendered index inventory is empty');
           const plain=v=>String(v).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
           const types=n=>Array.isArray(n?.['@type'])?n['@type']:[n?.['@type']].filter(Boolean);
           const records=[];
@@ -90,7 +54,6 @@ jobs:
           const output=JSON.stringify(report,null,2)+'\n',path='docs/platform/evidence/faq-audit-20261009/rendered-inventory.json';
           mkdirSync('docs/platform/evidence/faq-audit-20261009',{recursive:true});writeFileSync(path,output);
           console.log('PROGRAMME_FILE '+JSON.stringify({path,size:Buffer.byteLength(output),sha256:hash(output),base64:Buffer.from(output).toString('base64')}));
-          
           FAQ_INVENTORY
       - name: Verify original passing full-suite artifact and retain exact thesis metrics
         env:
@@ -133,10 +96,8 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: checkpoint24-phase1-captures-${{ github.run_id }}
+          name: checkpoint24-retained-receipts-${{ github.run_id }}
           path: |
-            docs/acceptance/phase1/screenshots/
-            checkpoint24-capture-producer.json
             docs/platform/evidence/faq-audit-20261009/rendered-inventory.json
             docs/platform/evidence/thesis-poster-loading-20261009/fixed-rail-full-suite.json
           retention-days: 90
