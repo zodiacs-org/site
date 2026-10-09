@@ -58,6 +58,7 @@ jobs:
           PROGRAMME_HEAD: ${{ github.event.pull_request.head.sha }}
         run: node docs/platform/evidence/checkpoint23-20261009/tools/verify.mjs
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
         with:
           name: checkpoint23-${{ github.run_id }}
           path: ${{ env.PROGRAMME_RESULTS_DIR }}
