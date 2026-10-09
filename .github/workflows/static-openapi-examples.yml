@@ -1,0 +1,36 @@
+name: Static OpenAPI example preparation
+on:
+  push:
+    branches: ['codex/developer-docs-preparation']
+    paths:
+      - 'src/lib/sky-api/**'
+      - 'scripts/sky-api.test.mjs'
+      - 'scripts/verify-static-openapi-examples.mjs'
+      - '.github/workflows/static-openapi-examples.yml'
+permissions:
+  contents: read
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Validate static and existing Compute OpenAPI contracts
+        run: npx vitest run scripts/sky-api.test.mjs tests/api/compute-api-openapi.test.ts
+      - name: Export generated GET example source hashes
+        env:
+          PRODUCER_HEAD: ${{ github.sha }}
+        run: npx vite-node --script scripts/verify-static-openapi-examples.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: static-openapi-examples-${{ github.sha }}
+          path: static-openapi-examples.json
+          if-no-files-found: error
+          retention-days: 90

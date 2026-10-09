@@ -8,6 +8,7 @@ import addFormats from 'ajv-formats';
 
 import { loadSkyApiSources } from '../src/lib/sky-api/sources.ts';
 import { buildSkyApi } from '../src/lib/sky-api/files.ts';
+import { withStaticExamples } from '../src/lib/sky-api/static-examples.ts';
 import { SCHEMAS, SCHEMA_NAMES, schemaNameForFile } from '../src/lib/sky-api/schemas.ts';
 import {
   LUNATION_JOIN_TOLERANCE_MS,
@@ -418,5 +419,51 @@ describe('sky data API — text documents', () => {
     const upcoming = payload('sky/upcoming.json');
     expect(upcomingMd).toContain('## Next of each kind');
     for (const event of upcoming.events.slice(0, 5)) expect(upcomingMd).toContain(event.label);
+  });
+});
+
+describe('static OpenAPI generated response examples', () => {
+  const openapi = JSON.parse(build.files.get('openapi.json'));
+  const id = 'https://zodiacs.org/api/v1/openapi.json';
+  const validator = new Ajv2020({ strict: false, allErrors: true });
+  addFormats(validator);
+  validator.addSchema({ ...openapi, $id: id });
+  const operations = Object.entries(openapi.paths).filter(([, item]) => item.get);
+
+  it('documents all eleven GET operations with an exact covered generated payload', () => {
+    expect(operations).toHaveLength(11);
+    const postOperations = Object.values(openapi.paths).filter((item) => item.post);
+    expect(postOperations).toHaveLength(7);
+    for (const [template, item] of operations) {
+      let path = template;
+      for (const parameter of item.get.parameters ?? []) {
+        expect(parameter.schema.enum).toContain(parameter.example);
+        path = path.replace('{' + parameter.name + '}', String(parameter.example));
+      }
+      expect(path).not.toMatch(/[{}]/);
+      const media = item.get.responses['200'].content['application/json'];
+      expect(Object.keys(media.examples)).toEqual(['generated']);
+      const example = media.examples.generated;
+      expect(example.summary).toBe('Generated payload: ' + path);
+      const written = JSON.parse(build.files.get(path.replace('/api/v1/', '')));
+      expect(example.value).toEqual(written);
+      const validate = validator.getSchema(id + media.schema.$ref);
+      expect(validate, template).toBeTypeOf('function');
+      expect(validate(example.value), JSON.stringify(validate.errors)).toBe(true);
+      const invalid = structuredClone(example.value);
+      delete invalid.schema;
+      expect(validate(invalid), template + ': missing required schema is refused').toBe(false);
+    }
+  });
+
+  it('refuses missing payloads, uncovered parameter values and unresolved placeholders', () => {
+    expect(() => withStaticExamples(structuredClone(openapi), new Map())).toThrow('Missing static OpenAPI example');
+    const uncovered = structuredClone(openapi);
+    uncovered.paths['/api/v1/planets/{planet}.json'].get.parameters[0].schema.enum = [];
+    expect(() => withStaticExamples(uncovered, build.payloads)).toThrow('covered path value');
+    const unresolved = { paths: {
+      '/api/v1/planets/{unknown}.json': structuredClone(openapi.paths['/api/v1/planets/{planet}.json']),
+    } };
+    expect(() => withStaticExamples(unresolved, build.payloads)).toThrow('Unresolved static OpenAPI example path');
   });
 });

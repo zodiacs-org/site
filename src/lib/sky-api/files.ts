@@ -12,6 +12,7 @@ import {
 } from './build';
 import { SCHEMAS, SCHEMA_NAMES, buildOpenApi } from './schemas';
 import { renderAgentGuide, renderTodayMarkdown, renderUpcomingMarkdown } from './text';
+import { withStaticExamples } from './static-examples';
 import type { SkyApiSources } from './types';
 
 export interface SkyApiBuild {
@@ -59,7 +60,7 @@ export function buildSkyApi(sources: SkyApiSources, { generatedAt }: { generated
   const files = new Map<string, string>();
   for (const [path, payload] of payloads) files.set(path, json(payload));
   for (const name of SCHEMA_NAMES) files.set(`schema/${name}.v1.json`, json(SCHEMAS[name]));
-  files.set('openapi.json', json(buildOpenApi({ transitYears, skyYears, eclipseYears, dailyDate: daily.date, version: `${API_VERSION}.${vintage.slice(0, 10)}` })));
+  files.set('openapi.json', json(withStaticExamples(buildOpenApi({ transitYears, skyYears, eclipseYears, dailyDate: daily.date, version: `${API_VERSION}.${vintage.slice(0, 10)}` }), payloads)));
   files.set('llms.txt', renderAgentGuide({ transitYears, skyYears, eclipseYears, dailyDate: daily.date, vintage, schemaNames: SCHEMA_NAMES }));
   files.set('sky/today.md', renderTodayMarkdown(payloads.get('sky/today.json') as Record<string, unknown>));
   files.set('sky/upcoming.md', renderUpcomingMarkdown(payloads.get('sky/upcoming.json') as Record<string, unknown>));
