@@ -1,3 +1,32 @@
+Checkpoint 24 proposal, 2026-10-09 (Asia/Bangkok): existing engine,
+npm and PyPI identities in the shared consumer Organization.
+
+**Overall delivery: 37%** (37.106% to three decimals) — 67.7 of 182.45
+weighted units proposed accepted; blocked 2% (3), or 1.644%.
+This branch adds only S7's 0.25 acceptance after complete checks, merge and
+exact-source canonical production verification. Checkpoint 23's merged
+ledger is 67.45/182.45, subject to its own full gates. Fixed weights,
+denominator and all scientific/performance/visual limits remain unchanged.
+
+[Anonymous public identity observation](../evidence/platform-identities-20261009/README.md)
+records the existing engine repository, npm latest 0.1.1-rc.15 and PyPI
+0.1.0a1. Their common Organization links are held by source and built-schema
+checks, including missing/duplicate/altered identity controls. The unresolved
+MCP Registry listing is not invented. Existing registry identities do not
+publish the vendored rc.2 or any private client, CLI or wheel.
+
+P3.1d records the merged private wheel's installed browser, typing and accessibility controls, with registry/provenance delivery still open. P3.7 records the merged private CLI's validated cross-platform installed
+consumer gate, with public registry delivery still open. P3.4/P3.5 record
+the merged private sync/async hosted Python client alongside the TypeScript
+client; offline WebAssembly/NumPy and the wider hosted/documentation gates
+remain open. P3.6 records the limited six-tool remote Inspector observation,
+with its fourteen warnings and full conformance/registry/P3.3 gates open.
+Guide preparation stays closed and unpublished. S2 is partial after the verified ninety-file FAQ source locator; semantic audit and correction remain open, with no accepted weight.
+
+No private search, stable cut, registry publication, account/security/hosting
+change or outreach occurs here. The original checkpoints and failed verdicts
+remain below.
+
 Checkpoint 23, 2026-10-09 (Asia/Bangkok): Koch, co-ascendants and B4.a
 are accepted under the owner's specific delegation on their named
 ratification questions and [fresh carried rc.2 gates](../evidence/checkpoint23-20261009/README.md).

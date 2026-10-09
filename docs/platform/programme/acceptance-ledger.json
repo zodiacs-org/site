@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-09 checkpoint 23 (specific delegated F-71 and B4.a ratifications; fresh carried rc.2 comparison and frozen public benchmark gates; original failures and limited window retained)",
+  "asOf": "2026-10-09 checkpoint 24 proposal (canonical Organization and existing engine/npm/PyPI identity associations; private CLI, hosted clients and wheel progress; public delivery and missing capabilities remain open)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1622,9 +1622,15 @@
       "weight": 0.5,
       "gate": "package with structured text description and keyboard navigation (D7)",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "validated",
+      "release": "merged",
+      "evidence": [
+        "https://github.com/zodiacs-org/engine/pull/37",
+        "https://github.com/zodiacs-org/engine/tree/403eb8735280fa0b5fb96e88d5734057f45b1c75/docs/evidence/accessible-wheel-20261009",
+        "https://github.com/zodiacs-org/engine/actions/runs/37945794846",
+        "https://github.com/zodiacs-org/engine/actions/runs/37945794715"
+      ],
+      "notes": " Update 2026-10-09: Private @zodiacs/wheel@0.0.0 merged in engine #37 as 403eb8735280fa0b5fb96e88d5734057f45b1c75. DOM-free model/SVG root and separate browser factory provide explicit tropical/sidereal data, untimed charts, escaped full descriptions/tables, keyboard selection, independent live status and supplied engine version. Final and postmerge full engine workflows and installed consumers passed: Node 22 has 101 checks across Chromium/Firefox/WebKit at 360/1280; Node 24 has five runtime checks; both have eight source tests and strict ES2022-only/ES2022-DOM types. Exact seven-file private pack is 7904 bytes/SHA-256 54f80b18d8811193d76e12ae2a9c8bea376f91a9f0c98af7d0fb10cc2ac5c29b. Automated accessibility is not full human assistive-technology certification or independent astronomy. Public registry/provenance delivery remains open; no P3.1d acceptance."
     },
     {
       "id": "P3.2",
@@ -1691,9 +1697,11 @@
       "status": "partial",
       "release": "none",
       "evidence": [
-        "https://github.com/zodiacs-org/engine/pull/34: private TypeScript Compute client merged as 1b5d475bddc2896c7f1a795e5ff13fdef8ddab43; source and fresh packed consumer checks on Node 20/22/24; exact-head full core CI 37899468661 and client matrix 37899468667 passed"
+        "https://github.com/zodiacs-org/engine/pull/34: private TypeScript Compute client merged as 1b5d475bddc2896c7f1a795e5ff13fdef8ddab43; source and fresh packed consumer checks on Node 20/22/24; exact-head full core CI 37899468661 and client matrix 37899468667 passed",
+        "https://github.com/zodiacs-org/engine/pull/35",
+        "https://github.com/zodiacs-org/site/pull/695"
       ],
-      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples, as main serves it. The compute-api branch (P3.3, not merged) adds the six compute endpoints to the same document: each a POST operation with its request and response schemas, the refusals it answers with and an example of each that the handler itself produced, and an OPTIONS operation for the CORS preflight; tests/api/compute-api-openapi.test.ts validates every compute example against its schema and holds the committed examples to the handler, and the whole document validated once against the OpenAPI Initiative's 3.1 schema, outside the repository (docs/platform/evidence/compute-api-2026-09-29/README.md). The GET operations still have no examples, and there are no TypeScript or Python clients and no Markdown twins. Update 2026-10-04 (checkpoint 13): the compute endpoints and their OpenAPI operations are on main and in production since #605 and #607; the GET operations, clients and Markdown twins are as stated above. Checkpoint 22: a private TypeScript hosted client is merged under engine clients/typescript/, with generated structural request types, source and installed-package transport checks, HTTP metadata, finite timeout and cancellation. It is not published. The Python guide snippet and Markdown twins are preparation on the preserved site guide branch, not delivery of a complete Python client. The complete P3.4 gate and P3.3 dependency remain unmet; acceptance unchanged."
+      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples, as main serves it. The compute-api branch (P3.3, not merged) adds the six compute endpoints to the same document: each a POST operation with its request and response schemas, the refusals it answers with and an example of each that the handler itself produced, and an OPTIONS operation for the CORS preflight; tests/api/compute-api-openapi.test.ts validates every compute example against its schema and holds the committed examples to the handler, and the whole document validated once against the OpenAPI Initiative's 3.1 schema, outside the repository (docs/platform/evidence/compute-api-2026-09-29/README.md). The GET operations still have no examples, and there are no TypeScript or Python clients and no Markdown twins. Update 2026-10-04 (checkpoint 13): the compute endpoints and their OpenAPI operations are on main and in production since #605 and #607; the GET operations, clients and Markdown twins are as stated above. Checkpoint 22: a private TypeScript hosted client is merged under engine clients/typescript/, with generated structural request types, source and installed-package transport checks, HTTP metadata, finite timeout and cancellation. It is not published. The Python guide snippet and Markdown twins are preparation on the preserved site guide branch, not delivery of a complete Python client. The complete P3.4 gate and P3.3 dependency remain unmet; acceptance unchanged. Update 2026-10-09: Private typed sync/async Python Compute client merged as d8aa5f057b18e7d573e4cf002fd48d7c0ef1cd7b (engine #35), with 17 runtime cases, strict positive/eight-negative typing, fresh-wheel checks and postmerge gates. Private TypeScript client has 26 runtime cases and strict source/packed types. All eleven static GET examples and eighteen HTML/Markdown guides are prepared on closed site #695; their actual producer evidence is retained. Neither client, static examples nor guides are newly published; the complete P3.4 and P3.3 gates remain open."
     },
     {
       "id": "P3.5",
@@ -1710,9 +1718,10 @@
       "status": "partial",
       "release": "none",
       "evidence": [
-        "zodiacs 0.1.0a1 on PyPI (https://pypi.org/project/zodiacs/0.1.0a1/), published from zodiacs-org/engine's pypi.yml with trusted publishing after PR #21 (merged as d5326a88), run 36701023131 (the owner's report of 2026-09-30)"
+        "zodiacs 0.1.0a1 on PyPI (https://pypi.org/project/zodiacs/0.1.0a1/), published from zodiacs-org/engine's pypi.yml with trusted publishing after PR #21 (merged as d5326a88), run 36701023131 (the owner's report of 2026-09-30)",
+        "https://github.com/zodiacs-org/engine/pull/35"
       ],
-      "notes": "the alpha is a Python API and CLI that bundle the rc.14 JavaScript engine and need Node; the gate needs the conformance vectors passing in Python, and the brief's offline engine without Node (WebAssembly) and NumPy"
+      "notes": "the alpha is a Python API and CLI that bundle the rc.14 JavaScript engine and need Node; the gate needs the conformance vectors passing in Python, and the brief's offline engine without Node (WebAssembly) and NumPy Update 2026-10-09: The merged private sync/async hosted Python client supplies the hosted transport component. It does not deliver the independent offline WebAssembly engine, NumPy vectorization or Python/JavaScript scientific conformance required here."
     },
     {
       "id": "P3.6",
@@ -1726,9 +1735,12 @@
         "P3.3"
       ],
       "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry. Update 2026-10-05 (checkpoint 15): the site serves the stdio adapter 0.1.0-rc.16.1 (a44aea72…, 97,630 bytes, same engine rc.16), with output schemas, citations and two resources; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 16): the site serves the stdio adapter 0.1.0-rc.16.2 (2fc976c9…, 123,817 bytes, same engine rc.16), with three more tools that run the compute API's calculations; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 19): the site serves the stdio adapter 0.1.0-rc.16.3 (dde8e475…, 124,924 bytes, same engine rc.16), re-cut for the compute API's elections endpoint with no tool changed; still no remote server and no registry entry."
+      "release": "deployed",
+      "evidence": [
+        "https://github.com/zodiacs-org/site/actions/runs/37913616237",
+        "https://github.com/zodiacs-org/site/tree/c9673254a14f36fc9bd8e97606f1350df8a0a05f/docs/platform/evidence/remote-mcp-inspector-20261009"
+      ],
+      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry. Update 2026-10-05 (checkpoint 15): the site serves the stdio adapter 0.1.0-rc.16.1 (a44aea72…, 97,630 bytes, same engine rc.16), with output schemas, citations and two resources; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 16): the site serves the stdio adapter 0.1.0-rc.16.2 (2fc976c9…, 123,817 bytes, same engine rc.16), with three more tools that run the compute API's calculations; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 19): the site serves the stdio adapter 0.1.0-rc.16.3 (dde8e475…, 124,924 bytes, same engine rc.16), re-cut for the compute API's elections endpoint with no tool changed; still no remote server and no registry entry. Update 2026-10-09: An anonymous remote Streamable HTTP endpoint is live at https://zodiacs.org/mcp. Official Inspector 2.10.1 producer 37913616237 initialized protocol 2025-11-25/server 0.4.0 and called all six currently exposed read-only tools. Output/input schemas and missing-required-field controls were checked; fourteen untyped-schema warnings remain across four tools. This is limited interoperability, not full current MCP conformance, full Track A1 coverage or a resolved registry entry. Those gates and P3.3 remain open."
     },
     {
       "id": "P3.7",
@@ -1739,9 +1751,15 @@
       "weight": 1.5,
       "gate": "clean-consumer install on Linux, macOS and Windows",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "validated",
+      "release": "merged",
+      "evidence": [
+        "https://github.com/zodiacs-org/engine/pull/36",
+        "https://github.com/zodiacs-org/engine/tree/cea9eb354e60bb4fcf11d06dee2b972a6c0b56ca/docs/evidence/offline-cli-20261009",
+        "https://github.com/zodiacs-org/engine/actions/runs/37930600445",
+        "https://github.com/zodiacs-org/engine/actions/runs/37930600498"
+      ],
+      "notes": " Update 2026-10-09: Private @zodiacs/cli@0.0.0 merged in engine #36 as cea9eb354e60bb4fcf11d06dee2b972a6c0b56ca. All six Linux/macOS/Windows × Node 22/24 packed consumers pass 29 actual checks, including installed offline npm-exec, symlink entry, strict boundaries and exact original conformance parity. Final and postmerge full engine gates passed. Conformance remains 267 pass / 192 fail / 41 unsupported / 0 errors, with a nonzero failure exit; this is regression parity, not full accuracy. Windows packed inputs use exact Git bytes. No public npx registry installation, publication or private clearance; acceptance remains open."
     },
     {
       "id": "P3.8",
@@ -2152,9 +2170,13 @@
       "weight": 0.25,
       "gate": "audit of FAQPage use recorded and corrected",
       "dependsOn": [],
-      "status": "not-started",
+      "status": "partial",
       "release": "none",
-      "evidence": []
+      "evidence": [
+        "docs/platform/evidence/faq-audit-20261009/source-locator.json",
+        "https://github.com/zodiacs-org/site/actions/runs/37948152470"
+      ],
+      "notes": "Read-only source locator 37948152470, producer 665e2b046352fe7d81160c5bc28862dbcc6452ba, examined exact main ac09a5fab7e6674039876e15f4db4bc29b09e79f. Ninety production/validation source files mention FAQPage, including shared generators, home, tools, articles and Astrofolio. Verified exported file bytes/digest and locations are retained. This is not a completed semantic audit: emitted markup, visible question/answer correspondence and actual page purpose still need review and correction. No S2 acceptance or rich-result expectation is claimed."
     },
     {
       "id": "S3",
@@ -2218,10 +2240,17 @@
       "dependsOn": [
         "P3.1a"
       ],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "Organization sameAs lists only the token-framed SDK repository; the npm (@zodiacs/engine) and PyPI (zodiacs) entries exist since 2026-09-30 and the markup does not list them yet"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "src/strings/seo.en.mjs",
+        "scripts/organization-identity.mjs",
+        "scripts/organization-identity.test.mjs",
+        "scripts/validate-schema.mjs",
+        "docs/platform/evidence/platform-identities-20261009/observation.json",
+        "docs/platform/evidence/platform-identities-20261009/README.md"
+      ],
+      "notes": "The shared consumer Organization keeps the canonical Zodiacs.org name and https://zodiacs.org/#org identity. Its sameAs list points to the existing engine repository, npm engine package and PyPI zodiacs package. Anonymous producer 37936778716 confirms those existing identities; npm latest is 0.1.1-rc.15 and PyPI is 0.1.0a1, without implying stable rc.2 publication. The unresolved MCP Registry listing is not fabricated. Built-schema checks enforce all three identities and canonical name/URL, with negative controls for altered, missing or duplicate entries. Separate Registry/SDK product nodes retain their owner. This branch proposes acceptance only after its complete Site Check, merge and exact-source production verification."
     },
     {
       "id": "S8",

@@ -7,6 +7,7 @@
  */
 
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from './brand-icons.mjs';
+import { ORGANIZATION_NAME, SOCIAL_PROFILES } from '../strings/seo.en.mjs';
 
 export const EDITOR_NAME = 'Zodiacs.org Editorial System';
 export const EDITOR_ID = 'https://zodiacs.org/#org';
@@ -16,8 +17,9 @@ export const EDITOR_PATH = '/about/#editorial-system';
 export const EDITOR_ORGANIZATION = {
   '@type': 'Organization',
   '@id': EDITOR_ID,
-  name: 'Zodiacs',
+  name: ORGANIZATION_NAME,
   alternateName: 'Zodiacs.org',
+  sameAs: SOCIAL_PROFILES,
   url: 'https://zodiacs.org/',
   logo: {
     '@type': 'ImageObject',

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { EDITORIAL_METADATA } from '../src/lib/editorial-metadata.mjs';
 import { editorialGraphErrors, editorialSitemapErrors } from './editorial-metadata-checks.mjs';
+import { organizationIdentityErrors } from './organization-identity.mjs';
 import { WEB_APPLICATION_PATHS } from '../src/strings/seo.en.mjs';
 import { eventArticleDateFailures } from './event-article-dates.mjs';
 import {
@@ -249,6 +250,9 @@ for (const file of await htmlFiles(dist)) {
 
   const documents = structuredDocuments(html, label);
   const nodes = nodesOf(documents);
+  failures.push(...organizationIdentityErrors(nodes, {
+    required: pathname === '/' || /^\/[a-z]{2}(?:-[a-z]{2})?\/$/i.test(pathname) || pathname.startsWith('/developers/'),
+  }).map(error => `${label}: ${error}`));
   if (EDITORIAL_METADATA[pathname]) {
     seenEditorial.add(pathname);
     failures.push(...editorialGraphErrors(pathname, nodes).map((error) => `${label}: ${error}`));
