@@ -1,0 +1,25 @@
+name: Read-only latest thesis report diagnosis
+on:
+  push:
+    branches: ['codex/developer-docs-preparation']
+    paths:
+      - 'scripts/diagnose-thesis-deferred-loading.py'
+      - '.github/workflows/thesis-deferred-diagnosis.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  diagnosis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+      - name: Read only the retained reports and font receipts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/diagnose-thesis-deferred-loading.py
