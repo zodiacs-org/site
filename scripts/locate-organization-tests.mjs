@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {spawnSync,execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+const root=resolve('current-main'),expected='ac09a5fab7e6674039876e15f4db4bc29b09e79f';
+assert.equal(execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),expected);
+const pattern='EDITOR_ORGANIZATION|SOCIAL_PROFILES|organizationName|https://zodiacs.org/#org';
+let found=spawnSync('rg',['--files-with-matches',pattern,'src','scripts','tests'],{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:1024*1024});
+if(found.error?.code==='ENOENT')found=spawnSync('git',['grep','-l','-E',pattern,'--','src','scripts','tests'],{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:1024*1024});
+assert.ok(!found.error&&[0,1].includes(found.status),'Test source search failed');
+const paths=found.stdout.trim().split('\n').filter(Boolean).filter(path=>/\.(?:test|spec)\.[mc]?[jt]sx?$/.test(path)).sort();
+assert.ok(paths.length<=100,'Unexpected test-source count');
+const files=paths.map(path=>{
+ const content=readFileSync(resolve(root,path),'utf8'),lines=content.split('\n'),matches=[];
+ for(let i=0;i<lines.length;i++)if(/EDITOR_ORGANIZATION|SOCIAL_PROFILES|organizationName|https:\/\/zodiacs.org\/#org/.test(lines[i]))matches.push({line:i+1,context:lines.slice(Math.max(0,i-5),Math.min(lines.length,i+8)).join('\n').slice(0,3500)});
+ return {path,sha256:createHash('sha256').update(content).digest('hex'),matches};
+});
+const report={schema:'zodiacs.organization-test-source-locator.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},auditedSource:expected,files,limitations:['Read-only locator of existing test references; not executed tests, build or private scan.']};
+const body=Buffer.from(JSON.stringify(report,null,2)+'\n');assert.ok(body.length<=2*1024*1024,'Report bound');writeFileSync('organization-test-source-locator.json',body);
+console.log('PROGRAMME_FILE '+JSON.stringify({path:'docs/platform/evidence/platform-identities-20261009/test-source-locator.json',size:body.length,sha256:createHash('sha256').update(body).digest('hex'),base64:body.toString('base64')}));
