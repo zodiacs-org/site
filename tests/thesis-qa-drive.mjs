@@ -196,6 +196,16 @@ try {
   page.on('requestfailed', (req) => {
     (req.url().startsWith('http://127.0.0.1') ? errors : external).push(req.url());
   });
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    window.__thesisWebGLContexts = [];
+    HTMLCanvasElement.prototype.getContext = function (type) {
+      if (type === 'webgl' || type === 'webgl2') {
+        window.__thesisWebGLContexts.push({ type, at: performance.now() });
+      }
+      return getContext.apply(this, arguments);
+    };
+  });
   await page.goto(`${BASE}/thesis/`, { waitUntil: 'networkidle' });
   const registryCollectionMarker = await page.evaluate(async () => {
     const html = await fetch('/astrofolio/').then((response) => response.text());
@@ -212,6 +222,10 @@ try {
   check('Section V contains one gallery stage', (await thesisGallery.count()) === 1);
   check('gallery bundle is not requested above the fold', galleryRequests.length === 0,
     galleryRequests.join(' | '));
+
+  const initialWebGLContexts = await page.evaluate(() => window.__thesisWebGLContexts);
+  check('offscreen gallery creates no WebGL context above the fold',
+    initialWebGLContexts.length === 0, JSON.stringify(initialWebGLContexts));
 
   // Anchors resolve.
   for (const id of ['everyone-has-a-sign', 'where-the-signs-come-from', 'attention',
@@ -461,6 +475,9 @@ try {
   check('gallery bundle loads once when Section V approaches',
     galleryReady && galleryRequests.length === 1,
     `${galleryReady ? 'ready' : 'not ready'} · ${galleryRequests.length} request(s)`);
+  const visibleWebGLContexts = await page.evaluate(() => window.__thesisWebGLContexts);
+  check('gallery creates its real WebGL contexts when reached',
+    galleryReady && visibleWebGLContexts.length > 0, JSON.stringify(visibleWebGLContexts));
   const railButtons = thesisGallery.locator('[data-gallery-rail]').getByRole('button');
   const railState = await railButtons.evaluateAll((buttons) => buttons.map((button) => ({
     current: button.getAttribute('aria-current'),

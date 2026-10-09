@@ -2763,14 +2763,6 @@
   </script>
 
   <script>
-    // Bind the thesis interactions after the first content has painted.
-    // The static essay and navigation links remain available while it paints.
-    (function () {
-      var initialized = false;
-      function initializeThesis() {
-        if (initialized) return;
-        initialized = true;
-
     (function () {
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
       var video = document.querySelector('.hero video.hero__media');
@@ -3468,33 +3460,6 @@
         });
       });
     })();
-  
-      }
-      function queueInitialization() {
-        requestAnimationFrame(function () {
-          requestAnimationFrame(initializeThesis);
-        });
-      }
-      try {
-        if (performance.getEntriesByName('first-contentful-paint').length) {
-          queueInitialization();
-        } else if (window.PerformanceObserver
-          && PerformanceObserver.supportedEntryTypes.indexOf('paint') !== -1) {
-          var observer = new PerformanceObserver(function (list) {
-            if (!list.getEntries().some(function (entry) {
-              return entry.name === 'first-contentful-paint';
-            })) return;
-            observer.disconnect();
-            queueInitialization();
-          });
-          observer.observe({ type: 'paint', buffered: true });
-        } else {
-          queueInitialization();
-        }
-      } catch (error) {
-        queueInitialization();
-      }
-    })();
   </script>
   <script>
   (function(){
@@ -3540,11 +3505,11 @@
         }
       }
 
-      if (!supportsWebGL()) return;
       var requested = false;
       function loadGallery() {
         if (requested) return;
         requested = true;
+        if (!supportsWebGL()) return;
         var script = document.createElement('script');
         script.src = '/assets/gallery.js';
         script.defer = true;
