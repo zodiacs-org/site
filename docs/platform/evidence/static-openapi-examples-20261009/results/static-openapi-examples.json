@@ -1,0 +1,78 @@
+{
+  "producer": {
+    "repository": "zodiacs-org/site",
+    "head": "8638f1d9c52193742558a99aad52e57443e2b108",
+    "checkout": "8638f1d9c52193742558a99aad52e57443e2b108",
+    "run": "37909556424",
+    "node": "v22.23.3"
+  },
+  "generatedAt": "2026-09-07T00:00:00.000Z",
+  "operations": [
+    {
+      "path": "/api/v1/index.json",
+      "source": "/api/v1/index.json",
+      "bytes": 17773,
+      "sha256": "45ed18cf7bbfd5b9493de887510e429a28fc99f1aeacfae9f99d202045676876"
+    },
+    {
+      "path": "/api/v1/sky/today.json",
+      "source": "/api/v1/sky/today.json",
+      "bytes": 9868,
+      "sha256": "c2d5b0b3f9366fc02e164f77f0ddd69900dea41530bc788be6cf80823171b7e3"
+    },
+    {
+      "path": "/api/v1/sky/upcoming.json",
+      "source": "/api/v1/sky/upcoming.json",
+      "bytes": 17117,
+      "sha256": "85a10751655341b3f253c5bc822018a91796e0f0587016516f522cb3fbf7f3ad"
+    },
+    {
+      "path": "/api/v1/signs.json",
+      "source": "/api/v1/signs.json",
+      "bytes": 12774,
+      "sha256": "dc7ed0b531ccd93628a59b55e9c28a4b28c76c0d1903103aea50557338314a9a"
+    },
+    {
+      "path": "/api/v1/planets/{planet}.json",
+      "source": "/api/v1/planets/sun.json",
+      "bytes": 2907,
+      "sha256": "87f3d0d9138713955e93cae7640b06feeb70f2e07509424b454f00495144560a"
+    },
+    {
+      "path": "/api/v1/retrogrades/{year}.json",
+      "source": "/api/v1/retrogrades/2026.json",
+      "bytes": 9410,
+      "sha256": "f620add03b719dece54fb186fa514b15ee324c44cde061195f978b717e731f1e"
+    },
+    {
+      "path": "/api/v1/stations/{year}.json",
+      "source": "/api/v1/stations/2026.json",
+      "bytes": 7242,
+      "sha256": "b397430f2c3a173f9f13a98643823bd05cc7bb2876ff93c0f53f9e196d8acb8b"
+    },
+    {
+      "path": "/api/v1/ingresses/{year}.json",
+      "source": "/api/v1/ingresses/2026.json",
+      "bytes": 11535,
+      "sha256": "89ee819300b2f5e001d8f78f9c065601c9ea04a627fc82f8cb102838f7a46943"
+    },
+    {
+      "path": "/api/v1/moon-phases/{year}.json",
+      "source": "/api/v1/moon-phases/2026.json",
+      "bytes": 7521,
+      "sha256": "db089db6d3fa92fa00936ae6d467b7fbb4d4ecaf7e42c53332249551592a1b8b"
+    },
+    {
+      "path": "/api/v1/eclipses/{year}.json",
+      "source": "/api/v1/eclipses/2026.json",
+      "bytes": 3282,
+      "sha256": "1973af650d2e79b949b0fda0698266b7e358668bdfed81c17cd48e8d86990bab"
+    },
+    {
+      "path": "/api/v1/aspects/{year}.json",
+      "source": "/api/v1/aspects/2026.json",
+      "bytes": 57482,
+      "sha256": "28eb6a6f897f98b62a355a9257783f1f7c442fe6712eaf4db698c2d83a9945f4"
+    }
+  ]
+}
