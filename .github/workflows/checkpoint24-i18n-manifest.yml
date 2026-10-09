@@ -1,0 +1,59 @@
+name: Original organisation translation manifest regeneration
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: ['.github/workflows/checkpoint24-i18n-manifest.yml']
+permissions:
+  contents: read
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: 1912193623cf6975ab33353549e1f8358df75673
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - name: Original source generator and exact single-key change
+        run: |
+          node --input-type=module <<'REGENERATE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {execFileSync} from 'node:child_process';
+          import {writeI18nAdditions,i18nManifestIsCurrent} from './scripts/build-i18n-additions.mjs';
+          import {protectedPathLabels} from './scripts/phase1-scope-guard.mjs';
+          import {phase1TemplateSourceSha256} from './tests/visual/phase1-evidence-contract.mjs';
+          const hash=b=>createHash('sha256').update(b).digest('hex'),source=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',shell:false}).trim(),tick=String.fromCharCode(96);
+          assert.equal(source,'1912193623cf6975ab33353549e1f8358df75673');assert.deepEqual(protectedPathLabels('i18n-additions.md'),[]);
+          const before=readFileSync('i18n-additions.md');await writeI18nAdditions();
+          const after=readFileSync('i18n-additions.md');assert.ok(await i18nManifestIsCurrent());
+          const oldLines=before.toString('utf8').split('\n'),newLines=after.toString('utf8').split('\n');assert.equal(oldLines.length,newLines.length);
+          const changes=newLines.flatMap((line,i)=>line===oldLines[i]?[]:[{line:i+1,key:oldLines[i-1],before:oldLines[i],after:line}]);
+          assert.equal(changes.length,1);assert.match(changes[0].key,/organizationName/);assert.equal(changes[0].before,'  - EN default: '+tick+'Zodiacs'+tick);assert.equal(changes[0].after,'  - EN default: '+tick+'Zodiacs.org'+tick);
+          assert.equal((after.toString('utf8').match(/^  - Pending locales:/gm)??[]).length,608);
+          const manifest=JSON.parse(readFileSync('docs/acceptance/phase1/screenshots/manifest.json'));
+          const templateHash=await phase1TemplateSourceSha256(process.cwd(),{readSource:absolute=>execFileSync('git',['show','HEAD:'+absolute.slice(process.cwd().length+1)],{shell:false,maxBuffer:12*1024*1024})});
+          assert.equal(templateHash,manifest.templateSourceSha256);assert.equal(templateHash,'ea85d4137a53d826ea5913bdb139a9c8b041f99231104e85c3dcc31387fd14f4');
+          function chunked(path,bytes){const b64=bytes.toString('base64'),size=16384,parts=Math.ceil(b64.length/size);console.log('PROGRAMME_FILE_INDEX '+JSON.stringify({path,size:bytes.length,sha256:hash(bytes),chunks:parts}));for(let i=0;i<parts;i++)console.log('PROGRAMME_FILE_CHUNK '+JSON.stringify({path,index:i,base64:b64.slice(i*size,(i+1)*size)}));}
+          chunked('i18n-additions.md',after);
+          const report={schema:'zodiacs.organization-i18n-manifest.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:source,beforeSha256:hash(before),afterSha256:hash(after),changes,keys:608,protectedPathLabels:[],rawGitTemplateSourceSha256:templateHash,limitation:'Original generated manifest and source-bound template check; the corrected head still requires its own complete suite.'};
+          const path='docs/platform/evidence/platform-identities-20261009/i18n-manifest-regeneration.json',bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');mkdirSync('docs/platform/evidence/platform-identities-20261009',{recursive:true});writeFileSync(path,bytes);chunked(path,bytes);
+          REGENERATE
+      - run: npm ci
+      - name: Original eight translation controls and identity/ledger controls
+        run: npx vitest run scripts/build-i18n-additions.test.mjs scripts/organization-identity.test.mjs scripts/programme-ledger.test.mjs
+      - run: node scripts/programme-ledger.mjs --check
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: checkpoint24-generated-manifest-${{ github.run_id }}
+          path: |
+            i18n-additions.md
+            docs/platform/evidence/platform-identities-20261009/i18n-manifest-regeneration.json
+          retention-days: 90
