@@ -10,7 +10,27 @@ import { fileURLToPath } from 'node:url';
 // NUL byte in its first 8 KiB is binary (an image, a font, an archive) and skipped.
 const trees = ['developers', 'sdk', 'api/v1', 'widgets', 'examples'];
 const rootDocuments = ['llms.txt', 'llms-full.txt', 'assets/README.md'];
+const developerGuides = JSON.parse(await readFile(
+  new URL('../src/data/developer-guides.json', import.meta.url), 'utf8',
+));
+if (!Array.isArray(developerGuides)
+  || developerGuides.some((guide) => !/^[a-z][a-z0-9-]*$/.test(guide.slug))
+  || new Set(developerGuides.map((guide) => guide.slug)).size !== developerGuides.length) {
+  throw new Error('Invalid developer guide catalogue');
+}
+export const generatedDeveloperDocuments = Object.freeze({
+  'docs/[...guide].astro': [
+    'developers/docs/index.html',
+    ...developerGuides.map((guide) => `developers/docs/${guide.slug}/index.html`),
+  ],
+  'docs/[guide].md.ts': [
+    'developers/docs/index.md',
+    ...developerGuides.map((guide) => `developers/docs/${guide.slug}.md`),
+  ],
+});
+
 export const requiredDocuments = [
+  ...Object.values(generatedDeveloperDocuments).flat(),
   ...['', 'ai/', 'compare/', 'compute/', 'conformance/', 'engine/', 'examples/',
     'mcp/', 'precision-preview/', 'sky-benchmark/', 'support/'].map((route) => `developers/${route}index.html`),
   'developers/engine/reference/index.html', 'developers/engine/reference/modules.html',

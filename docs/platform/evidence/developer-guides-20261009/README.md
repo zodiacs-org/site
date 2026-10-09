@@ -101,3 +101,14 @@ No complete Worker/browser-example success is claimed for that failed attempt.
 The public production probe also compares the served OpenAPI document
 with the actual build and preserves its exact public bytes, providing a
 source-bound contract for subsequent client generation.
+
+The final carrier's [Site Check 37896672006](https://github.com/zodiacs-org/site/actions/runs/37896672006)
+caught an authorship inventory assumption: a dynamic Astro source was
+mistaken for a literal bracket-named HTML file. The served-document guard
+now requires all actual guide HTML and Markdown outputs from the same
+catalogue, and its source-to-output inventory test expands the two known
+generated routes. The existing scanner still reads every text file in its
+served-document trees; no detector, boundary or rejection was removed.
+Added checks exercise retired-authorship rejection in a guide HTML page
+and its Markdown twin. Existing source guards and Phase 1 capture inputs
+are unchanged.
