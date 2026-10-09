@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-06 checkpoint 21 (source 6f873334; engine rc.17 on production dpl_64jrZa9XhBh51S8b9FryzfSkSnbA: P3.2 validated, pending the owner's reading of calc's span for a caller's ayanamsa, FINDINGS F-80)",
+  "asOf": "2026-10-09 checkpoint 22 (P3.2 accepted: complete packed rc.2 gate under the owner's EPHEMERIS_SPAN interpretation, adopted and served at site e9a21981 / READY dpl_7cRJfgBFaS4m6F2YVVGFn1ujYz1G)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1629,7 +1629,7 @@
       "weight": 3,
       "gate": ".d.ts covers every calc_ut option Phase 2 ships; round-trip fixtures; typed refusals",
       "dependsOn": [],
-      "status": "validated",
+      "status": "accepted",
       "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc17-gates-2026-10-06/README.md",
@@ -1639,9 +1639,13 @@
         "docs/platform/evidence/rc17-gates-2026-10-06/results/calc-roundtrip-replay.json (the engine's round-trip fixtures at aae419c, SHA-256 3512922d…2a81: 37 cases, 27 calc, 3 houses, 3 events and 4 chart, 10 of them sidereal; every result and the 26 receipts' requests exact against the vendored rc.17; typed refusals with all four reasons)",
         "calc, houses, events and chart in @zodiacs/engine/calc; in @zodiacs/engine 0.1.1-rc.17, a vendored candidate not on npm (DECISIONS-2026-10-05.md §7), packed from aae419c05b77455b9e8f03ca11ee273b446f7d02 and carried by b080217c1b5b0b36c931e9c237bcff0308ec1efc, both on the engine's main since engine #26 (782b4963); the site vendors the carrier's archive, 9cd24c78…299a",
         "production dpl_64jrZa9XhBh51S8b9FryzfSkSnbA (READY 2026-10-06T03:42:45Z, aliased to zodiacs.org) serves site 6f873334 (#663), which vendors the rc.17 archive 9cd24c78…299a; its engine chunk names 0.1.1-rc.17 and equals a local build of 6f873334 byte for byte; the site does not call calc (scripts/engine-entry-imports.test.mjs)",
-        "docs/platform/evidence/rc16-gates-2026-10-04/README.md (checkpoint 14: partial)"
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md (checkpoint 14: partial)",
+        "docs/platform/programme/DECISIONS-2026-10-06.md §3: owner-approved EPHEMERIS_SPAN epoch reading",
+        "https://github.com/zodiacs-org/engine/tree/98465b1a6aba46ff5e12c283f77f54278dc6905b/docs/evidence/checkpoint22-rc2-20261009/README.md: complete packed declaration, fault, fixture, receipt, sidereal and epoch gate",
+        "https://github.com/zodiacs-org/engine/actions/runs/37890077138: postmerge engine/archive/consumer CI; Conformance 37890077148 and Atlas 37890077048 passed",
+        "docs/platform/evidence/checkpoint22-20261009/validation.json and production.json: canonical engine assets equal the build; backend 1.0.0-rc.2; READY production dpl_7cRJfgBFaS4m6F2YVVGFn1ujYz1G from site e9a21981eeeb99b34f44b1a2325d80160dcf0fb0, assigned to zodiacs.org"
       ],
-      "notes": "Checkpoint 14 (2026-10-04): calc(), houses(), events() and chart() are typed in @zodiacs/engine/calc, refusals are typed, and the round-trip fixtures replay exactly, though none exercises chart(). Not met, the first clause, for two options Phase 2 ships: the engine's own map of calc_ut flags gives SEFLG_SIDEREAL as typed in but refused (not-in-this-version), while @zodiacs/engine/vedic gives sidereal longitudes, on which the nakshatra and dasha units are accepted; and CalcAyanamsa names the nine built-in ayanamsas only, while vedic also ships userAyanamsa, the counterpart of SE_SIDM_USER. Checkpoint 21 (2026-10-06): validated, pending the owner (FINDINGS F-80). In engine rc.17, vendored and not on npm, calc(), houses(), events() and chart() take zodiac: { sidereal } with one of the nine built-in ayanamsas or a caller's own (CalcUserAyanamsa, the counterpart of SE_SIDM_USER and of vedic's userAyanamsa). A type check holds calc's declarations to what @zodiacs/engine/vedic ships, field types included: it compiles against rc.17 and is refused against rc.16. A run-time sweep computes every built-in ayanamsa and a caller's in twelve forms in all four functions, equal to vedic's siderealChart() in calc(), houses() and chart() where vedic has the form. For every other calc_ut flag the engine's map names the counterpart, and Phase 2 ships none of the ones it does not offer. The 37 round-trip fixtures replay exactly, and the refusals are typed. Not met without a reading: calc refuses a caller's ayanamsa carried by precession from an epoch outside 1800–2200, at every instant, where vedic computes and flags it. The epoch is part of SE_SIDM_USER, and checkpoint 14 failed the clause for an option declared but refused; reading the epoch's range as the entry point's span is the programme's own reading, which DECISIONS-2026-10-05 §4 leaves to the owner. An instant outside the span, which calc refused in rc.16 too, is not counted against the clause, as at checkpoint 14. The programme recommends closing F-80 in the 1.0 candidate, by computing such an ayanamsa from every epoch vedic accepts (the range of a JavaScript Date), rather than by the reading."
+      "notes": "Checkpoint 14 (2026-10-04): calc(), houses(), events() and chart() are typed in @zodiacs/engine/calc, refusals are typed, and the round-trip fixtures replay exactly, though none exercises chart(). Not met, the first clause, for two options Phase 2 ships: the engine's own map of calc_ut flags gives SEFLG_SIDEREAL as typed in but refused (not-in-this-version), while @zodiacs/engine/vedic gives sidereal longitudes, on which the nakshatra and dasha units are accepted; and CalcAyanamsa names the nine built-in ayanamsas only, while vedic also ships userAyanamsa, the counterpart of SE_SIDM_USER. Checkpoint 21 (2026-10-06): validated, pending the owner (FINDINGS F-80). In engine rc.17, vendored and not on npm, calc(), houses(), events() and chart() take zodiac: { sidereal } with one of the nine built-in ayanamsas or a caller's own (CalcUserAyanamsa, the counterpart of SE_SIDM_USER and of vedic's userAyanamsa). A type check holds calc's declarations to what @zodiacs/engine/vedic ships, field types included: it compiles against rc.17 and is refused against rc.16. A run-time sweep computes every built-in ayanamsa and a caller's in twelve forms in all four functions, equal to vedic's siderealChart() in calc(), houses() and chart() where vedic has the form. For every other calc_ut flag the engine's map names the counterpart, and Phase 2 ships none of the ones it does not offer. The 37 round-trip fixtures replay exactly, and the refusals are typed. Not met without a reading: calc refuses a caller's ayanamsa carried by precession from an epoch outside 1800–2200, at every instant, where vedic computes and flags it. The epoch is part of SE_SIDM_USER, and checkpoint 14 failed the clause for an option declared but refused; reading the epoch's range as the entry point's span is the programme's own reading, which DECISIONS-2026-10-05 §4 leaves to the owner. An instant outside the span, which calc refused in rc.16 too, is not counted against the clause, as at checkpoint 14. The programme recommends closing F-80 in the 1.0 candidate, by computing such an ayanamsa from every epoch vedic accepts (the range of a JavaScript Date), rather than by the reading. Checkpoint 22 (2026-10-09): the adopted and served rc.2 is judged against the complete gate under the owner's October 6 EPHEMERIS_SPAN reading. The early epoch computes, inclusive ends compute and epochs beyond return exact typed refusals. This is contract/replay/consistency evidence, not independent numerical accuracy. npm publication is a separate unit. This record accepts only this completed capability; it cuts no new candidate or registry release."
     },
     {
       "id": "P3.3",
@@ -1680,8 +1684,10 @@
       ],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples, as main serves it. The compute-api branch (P3.3, not merged) adds the six compute endpoints to the same document: each a POST operation with its request and response schemas, the refusals it answers with and an example of each that the handler itself produced, and an OPTIONS operation for the CORS preflight; tests/api/compute-api-openapi.test.ts validates every compute example against its schema and holds the committed examples to the handler, and the whole document validated once against the OpenAPI Initiative's 3.1 schema, outside the repository (docs/platform/evidence/compute-api-2026-09-29/README.md). The GET operations still have no examples, and there are no TypeScript or Python clients and no Markdown twins. Update 2026-10-04 (checkpoint 13): the compute endpoints and their OpenAPI operations are on main and in production since #605 and #607; the GET operations, clients and Markdown twins are as stated above."
+      "evidence": [
+        "https://github.com/zodiacs-org/engine/pull/34: private TypeScript Compute client merged as 1b5d475bddc2896c7f1a795e5ff13fdef8ddab43; source and fresh packed consumer checks on Node 20/22/24; exact-head full core CI 37899468661 and client matrix 37899468667 passed"
+      ],
+      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples, as main serves it. The compute-api branch (P3.3, not merged) adds the six compute endpoints to the same document: each a POST operation with its request and response schemas, the refusals it answers with and an example of each that the handler itself produced, and an OPTIONS operation for the CORS preflight; tests/api/compute-api-openapi.test.ts validates every compute example against its schema and holds the committed examples to the handler, and the whole document validated once against the OpenAPI Initiative's 3.1 schema, outside the repository (docs/platform/evidence/compute-api-2026-09-29/README.md). The GET operations still have no examples, and there are no TypeScript or Python clients and no Markdown twins. Update 2026-10-04 (checkpoint 13): the compute endpoints and their OpenAPI operations are on main and in production since #605 and #607; the GET operations, clients and Markdown twins are as stated above. Checkpoint 22: a private TypeScript hosted client is merged under engine clients/typescript/, with generated structural request types, source and installed-package transport checks, HTTP metadata, finite timeout and cancellation. It is not published. The Python guide snippet and Markdown twins are preparation on the preserved site guide branch, not delivery of a complete Python client. The complete P3.4 gate and P3.3 dependency remain unmet; acceptance unchanged."
     },
     {
       "id": "P3.5",
@@ -1757,8 +1763,10 @@
       "dependsOn": [],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "developer pages and llms files exist; most listed quickstarts and references do not"
+      "evidence": [
+        "https://github.com/zodiacs-org/site/pull/695: preserved guide-preparation branch at 32882c0983f80c2346f37411e05fcc2d4a723489; actual HTML/Markdown, browser and runtime producer records under docs/platform/evidence/developer-guides-20261009"
+      ],
+      "notes": "developer pages and llms files exist; most listed quickstarts and references do not Checkpoint 22: eighteen HTML/Markdown guides have source-bound preparation checks and discovery listings on the preserved branch. They remain unpublished. React Native and a complete sunrise-based panchang recipe remain; acceptance unchanged."
     },
     {
       "id": "P3.11",
