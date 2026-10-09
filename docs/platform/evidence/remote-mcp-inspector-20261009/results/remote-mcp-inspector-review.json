@@ -1,0 +1,300 @@
+{
+  "schema": "zodiacs.remote-mcp-inspector-review.v1",
+  "producer": {
+    "head": "706bdb49b2be6a77b299c22036e1776eb6196688",
+    "run": "37913616237",
+    "node": "v22.23.3"
+  },
+  "endpoint": "https://zodiacs.org/mcp",
+  "inspector": {
+    "version": "2.10.1",
+    "lockSha256": "afba89cf1851e1f3c3f952ef9ab45de27e3968bfe371a584956846f5361c8dc6"
+  },
+  "credentials": "none; isolated empty OAuth state, stored-auth-only",
+  "calls": [
+    {
+      "method": "initialize",
+      "tool": null,
+      "exit": 0,
+      "signal": null,
+      "stdoutSha256": "41900d0c2e2c447ad1e833ba5499011b727ce787a7bc774b41b80ece5b28cd5f",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "method": "tools/list",
+      "tool": null,
+      "exit": 0,
+      "signal": null,
+      "stdoutSha256": "a97d7b1dd1662a780446c7fd7a78276ed5ab6641196c103919434b16f9bf70f3",
+      "stderrSha256": "c8024b617a6379effe87766b605298110ad3a0be5f7a9931ad99a63484acc6c5"
+    },
+    {
+      "method": "tools/call",
+      "tool": "get_capabilities",
+      "exit": 0,
+      "signal": null,
+      "stdoutSha256": "7118b97a08f341096fad85d6cb319ea6d042d45d9a9dacc45aacf5af82d3af62",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "method": "tools/call",
+      "tool": "get_sky",
+      "exit": 0,
+      "signal": null,
+      "stdoutSha256": "f2f4b8f736d63582705f4becd9af3deeebcd19dc786397ade9b842640a99fd46",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "method": "tools/call",
+      "tool": "get_upcoming_events",
+      "exit": 0,
+      "signal": null,
+      "stdoutSha256": "5d6724ce76124b6a6b9c6d78828494251dd344e649ba27840092c0c5a236257f",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "method": "tools/call",
+      "tool": "check_sky_fact",
+      "exit": 0,
+      "signal": null,
+      "stdoutSha256": "b24ad7fdc1c44a40d53edf1d4a669852f3f6d357bbf56d43c16ca46466d20f3f",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "method": "tools/call",
+      "tool": "get_horoscope",
+      "exit": 0,
+      "signal": null,
+      "stdoutSha256": "be163c7c6bc033653c288bf21653e3fb013f8d1db1dec77fcbc9e79cefe96a39",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "method": "tools/call",
+      "tool": "open_chart_studio",
+      "exit": 0,
+      "signal": null,
+      "stdoutSha256": "ce27446a8b15703505aafe580c305f154bd01b49c6806753795d771923af8415",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "tools": [
+    {
+      "name": "get_capabilities",
+      "inputSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "inputSchemaSha256": "8fd2f3a9f585458d28f458b18645b0336925be162090e94d153d80c9a0385370",
+      "outputSchemaSha256": "8b766d5810d8cb9649ade862b3d341fa888053c88573be5521b78d4d95cc665d",
+      "outputSha256": "63144ff06d2cd90f84bd85f9254639575d4dfd42dce95a8948a805781a38f236",
+      "inputValid": true,
+      "outputValid": true,
+      "missingSchemaControlRefused": true
+    },
+    {
+      "name": "get_sky",
+      "inputSha256": "626f8aa1b409ac8914ad3af66762aa9d8ee389a0d83b66ac9139829cb95ccaef",
+      "inputSchemaSha256": "5a66c7f508c61fa55fc7e6180a5d60e33e83568f1344733197d249bf2a06f039",
+      "outputSchemaSha256": "021de0711e5b927e67d8a39b70509b687f66d9619ebec2c32ab3caa61833224e",
+      "outputSha256": "02cb2a468456ab70342661b79c53d81f2ae3a5cfe3e0eacf7195dc3e6ef74e05",
+      "inputValid": true,
+      "outputValid": true,
+      "missingSchemaControlRefused": true
+    },
+    {
+      "name": "get_upcoming_events",
+      "inputSha256": "ba3e07aca6493af5a83b42edda32c6ff0179fddc64d08f261d92f5cedba3c983",
+      "inputSchemaSha256": "fd01fe9166a3c6cc1147418179aa602df503c77a5c6ab0bb9802418e64716141",
+      "outputSchemaSha256": "3752d39123cfc5cb2fa95abb0149f771f54e50d2e98a0920367071d8873f97ab",
+      "outputSha256": "face96cd4ae989f11c67eb4f3456149bf9f9180fea240506bcb52099aec15105",
+      "inputValid": true,
+      "outputValid": true,
+      "missingSchemaControlRefused": true
+    },
+    {
+      "name": "check_sky_fact",
+      "inputSha256": "39ba5076cf211117957eeb5081371380c33d98fe22159ecef62289d2b74f77b6",
+      "inputSchemaSha256": "40106abfbb8af0f47042a7a581ff035f6a19aa6674fc7c170f45ad41bb9addf2",
+      "outputSchemaSha256": "9c4f4e3afd943a46afe609a92b6bb082074fc249e290d242b1517bb635621681",
+      "outputSha256": "6b9756c3b063012fb44c4aef0dfbc047c23491245084dfe91cddba464209a196",
+      "inputValid": true,
+      "outputValid": true,
+      "missingSchemaControlRefused": true
+    },
+    {
+      "name": "get_horoscope",
+      "inputSha256": "63701f3a85a9a6b36e49e124896ee96ba39de1a4a11c6c9d8ac73867c1d1668d",
+      "inputSchemaSha256": "9c156f138fb151338413695053e2f835a0e6f770af78917bee75f477da87fca9",
+      "outputSchemaSha256": "063d9c7c4affc38fcc909bff1d652f66f9cef52829eda2f90b918c3f2beabda9",
+      "outputSha256": "1abed02f88c9e7f32cc283483baf8c2d04d30379248882212863a899ede822f6",
+      "inputValid": true,
+      "outputValid": true,
+      "missingSchemaControlRefused": true,
+      "editionStatus": "available"
+    },
+    {
+      "name": "open_chart_studio",
+      "inputSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "inputSchemaSha256": "8fd2f3a9f585458d28f458b18645b0336925be162090e94d153d80c9a0385370",
+      "outputSchemaSha256": "88d6466485f4483f3b85a01f20f1bc2220dbed3a44145e725a6ee56688a0f3b9",
+      "outputSha256": "9ddeca645b71038771dd286df9a690b8489295d1bf8482c9c553afad46bdd56a",
+      "inputValid": true,
+      "outputValid": true,
+      "missingSchemaControlRefused": true
+    }
+  ],
+  "passed": true,
+  "limitations": [
+    "Inspector handshake/schema/tool integration review, not a full MCP conformance suite",
+    "No rendered MCP App or end-user assistant trial",
+    "No registry publication, account/grant/hosting changes, or private scan",
+    "Unavailable horoscope editions, if reported, are not counted as content delivery"
+  ],
+  "server": {
+    "serverInfo": {
+      "name": "zodiacs",
+      "version": "0.4.0"
+    },
+    "protocolVersion": "2025-11-25",
+    "capabilities": {
+      "resources": {
+        "listChanged": true
+      },
+      "tools": {
+        "listChanged": true
+      }
+    },
+    "instructions": "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Never guess a birth time or a sign. Zodiacs does not schedule anything, pick investments, or promise how a relationship, health or money will turn out; do not call its tools for those requests, and say plainly that it cannot."
+  },
+  "schemaFindings": [
+    {
+      "toolName": "get_capabilities",
+      "findings": [
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.engine.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.limits.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.conventions.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.coverage.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        }
+      ]
+    },
+    {
+      "toolName": "get_sky",
+      "findings": [
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.result.properties.instants.items.properties.deltaT.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.result.properties.instants.items.properties.timeScale.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.receipt.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.backend.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        }
+      ]
+    },
+    {
+      "toolName": "get_upcoming_events",
+      "findings": [
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.result.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.receipt.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.backend.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        }
+      ]
+    },
+    {
+      "toolName": "check_sky_fact",
+      "findings": [
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.result.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.receipt.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        },
+        {
+          "rule": "untyped-schema",
+          "severity": "warning",
+          "schema": "outputSchema",
+          "path": "anyOf[0].properties.data.properties.calculation.properties.backend.additionalProperties",
+          "issue": "Schema carries no validation keyword at all, so it accepts any value — the object-literal spelling of a bare `true`.",
+          "suggestion": "Declare what the value actually is — e.g. `{\"type\": \"object\", \"additionalProperties\": true}` for a free-form object. That is a deliberate change of contract, which is the point: as written it constrains nothing."
+        }
+      ]
+    }
+  ]
+}
