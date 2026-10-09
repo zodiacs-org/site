@@ -1,0 +1,33 @@
+{
+  "schema": "zodiacs.faq-policy-source-review.v1",
+  "reviewedAt": "2026-10-09",
+  "programmeRequirement": "S2: no retired rich-result claims; retain FAQPage only for actual FAQs",
+  "sources": [
+    {
+      "url": "https://developers.google.com/search/updates#deprecating-the-faq-rich-result-feature",
+      "publisher": "Google Search Central",
+      "entryDate": "2026-05-08",
+      "summary": "FAQ rich results stopped appearing in Google Search on 2026-05-07."
+    },
+    {
+      "url": "https://developers.google.com/search/updates#removing-documentation-for-the-faq-rich-result-feature",
+      "publisher": "Google Search Central",
+      "entryDate": "2026-06-15",
+      "summary": "FAQ rich-result documentation was removed after the feature ceased appearing."
+    }
+  ],
+  "observations": {
+    "previousDocumentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/faqpage",
+    "redirectedTo": "https://developers.google.com/search/updates",
+    "lexicalSourceAudit": "source-locator.json",
+    "sourceFiles": 90
+  },
+  "remaining": [
+    "Review the purpose of each emitted FAQ entity and its surrounding page.",
+    "Verify that every structured question and answer corresponds to visible page content.",
+    "Correct any retired-search-feature promises or validation requirements justified by them.",
+    "Run unchanged complete repository gates on the final change."
+  ],
+  "acceptance": "unfinished; no accepted weight",
+  "limitation": "Primary policy verification and lexical source inventory do not certify emitted markup, indexing benefits or runtime correspondence."
+}
