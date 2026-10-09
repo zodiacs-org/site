@@ -39,7 +39,7 @@ jobs:
           }));
           
           SOURCE_DIAG
-      - name: Verify retained ZIP and export existing actual captures
+      - name: Verify retained ZIP and read only its receipt metadata
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -68,7 +68,49 @@ jobs:
                   'captures': len(manifest['captures']), 'manifestSha256': hashlib.sha256(raw).hexdigest(),
                   'artifactId': 11616930539, 'archiveSha256': hashlib.sha256(archive).hexdigest()}
               print('PROGRAMME_DIAGNOSTIC ' + json.dumps(summary))
-              for name in ['manifest.json'] + [row['screenshot']['file'] for row in manifest['captures']]:
+          
+          ZIP_DIAG
+  export-part:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        file: ["manifest.json","today-360.png","today-1280.png","horoscopes-hub-360.png","horoscopes-hub-1280.png","daily-360.png","daily-1280.png","tomorrow-360.png","tomorrow-1280.png","weekly-360.png","weekly-1280.png","monthly-360.png","monthly-1280.png","love-360.png","love-1280.png","career-360.png","career-1280.png","yearly-360.png","yearly-1280.png"]
+    env:
+      CAPTURE_FILE: ${{ matrix.file }}
+    steps:
+      - name: Verify original ZIP and export one retained file
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 <<'ZIP_PART'
+          import os, json, hashlib, urllib.request, zipfile, io, base64
+          class RedirectWithoutAuth(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
+                  if redirected is not None:
+                      redirected.remove_header('Authorization')
+                  return redirected
+          opener = urllib.request.build_opener(RedirectWithoutAuth())
+          req = urllib.request.Request('https://api.github.com/repos/zodiacs-org/site/actions/artifacts/11616930539/zip',
+              headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json'})
+          with opener.open(req, timeout=60) as response: archive = response.read(20000000)
+          assert len(archive) == 8665743
+          assert hashlib.sha256(archive).hexdigest() == 'a4f1c2afeb2b3abcc0b16619ff5e92636240848686d578f655ab001bf81c146f'
+          with zipfile.ZipFile(io.BytesIO(archive)) as bundle:
+              matches = [name for name in bundle.namelist() if name == 'manifest.json' or name.endswith('/screenshots/manifest.json')]
+              assert len(matches) == 1
+              raw = bundle.read(matches[0])
+              manifest = json.loads(raw)
+              prefix = matches[0][:-len('manifest.json')]
+              summary = {'schema': manifest['schema'], 'templateSourceSha256': manifest['templateSourceSha256'],
+                  'browser': manifest['browser'], 'capturedAt': manifest['capturedAt'], 'buildReceipt': manifest['buildReceipt'],
+                  'captures': len(manifest['captures']), 'manifestSha256': hashlib.sha256(raw).hexdigest(),
+                  'artifactId': 11616930539, 'archiveSha256': hashlib.sha256(archive).hexdigest()}
+          
+              for name in [os.environ['CAPTURE_FILE']]:
                   data = bundle.read(prefix + name)
                   if name != 'manifest.json':
                       row = next(row for row in manifest['captures'] if row['screenshot']['file'] == name)
@@ -76,4 +118,5 @@ jobs:
                   print('PROGRAMME_FILE ' + json.dumps({'path': 'docs/acceptance/phase1/screenshots/' + name,
                       'size': len(data), 'sha256': hashlib.sha256(data).hexdigest(), 'base64': base64.b64encode(data).decode()}))
           
-          ZIP_DIAG
+          
+          ZIP_PART
