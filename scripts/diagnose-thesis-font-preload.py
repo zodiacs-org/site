@@ -52,9 +52,9 @@ for run_id, artifact_id, source, digest in samples:
                     selected_names = {'ParseHTML', 'EvaluateScript', 'FunctionCall', 'UpdateLayoutTree', 'Layout', 'Paint', 'CompositeLayers', 'RunTask'}
                     chosen = [e for e in events if e.get('ph') == 'X' and e.get('pid') == last_lcp.get('pid') and e.get('name') in selected_names and e.get('ts', 0) <= last_lcp['ts']]
                     for event in sorted(chosen, key=lambda e: e.get('dur', 0), reverse=True)[:40]:
-                        data = event.get('args', {}).get('data', {})
+                        event_data = event.get('args', {}).get('data', {})
                         before_lcp.append({'name': event['name'], 'durationMs': event.get('dur', 0) / 1000, 'deltaToLcpMs': (event.get('ts', 0) - last_lcp['ts']) / 1000,
-                            'data': {k: data.get(k) for k in ['url', 'scriptName', 'functionName', 'lineNumber', 'columnNumber', 'nodeId'] if k in data}})
+                            'data': {k: event_data.get(k) for k in ['url', 'scriptName', 'functionName', 'lineNumber', 'columnNumber', 'nodeId'] if k in event_data}})
                 trace_info = {'sha256': hashlib.sha256(trace_bytes).hexdigest(), 'lcpEvents': lcps, 'longTasks': sorted(tasks, key=lambda e: e.get('dur', 0), reverse=True)[:12], 'largestCpuEventsBeforeLcp': before_lcp}
             reports.append({'file': name, 'sha256': hashlib.sha256(data).hexdigest(), 'lcp': audits['largest-contentful-paint']['numericValue'], 'performance': lhr['categories']['performance']['score'], 'cls': audits['cumulative-layout-shift']['numericValue'], 'tbt': audits['total-blocking-time']['numericValue'], 'environment': lhr.get('environment'), 'selectedAudits': selected, 'network': network, 'trace': trace_info})
         fonts = []

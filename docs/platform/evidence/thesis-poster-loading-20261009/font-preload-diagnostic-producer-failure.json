@@ -1,0 +1,11 @@
+{
+  "schema": "zodiacs.diagnostic-producer-failure.v1",
+  "source": "c3b51442c4058136b53a988bb0a3d2f4e3528644",
+  "run": 37953015620,
+  "job": 113896382969,
+  "conclusion": "failure",
+  "error": "TypeError: object supporting the buffer API required",
+  "cause": "The added trace loop reused the report-byte variable name for a trace metadata object. Export hashing then received an object.",
+  "logSha256": "d8bf80bc7292a3f0304fefde57c2d4c92e151abe2d67b9f15533104cdd9514ac",
+  "scope": "Read-only saved artifact extraction; no browser rerun or passing diagnostic result."
+}
