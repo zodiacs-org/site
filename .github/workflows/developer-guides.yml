@@ -34,6 +34,8 @@ jobs:
         run: |
           mkdir -p docs/platform/evidence/developer-guides-20261009/results
           node scripts/verify-developer-guide-twins.mjs > docs/platform/evidence/developer-guides-20261009/results/twins.json
+      - name: Check all developer pages at mobile and desktop widths
+        run: node scripts/verify-developer-guide-browser.mjs > docs/platform/evidence/developer-guides-20261009/results/browser.json
       - name: Execute synthetic candidate examples in isolated consumers
         env:
           TMPDIR: ${{ runner.temp }}
@@ -46,7 +48,7 @@ jobs:
           import { readFileSync } from 'node:fs';
           import { createHash } from 'node:crypto';
           const root = 'docs/platform/evidence/developer-guides-20261009/results';
-          for (const file of ['twins.json', 'examples.json', 'python.json']) {
+          for (const file of ['twins.json', 'browser.json', 'examples.json', 'python.json']) {
             const bytes = readFileSync(root + '/' + file);
             console.log('PROGRAMME_FILE ' + JSON.stringify({
               path: root + '/' + file, size: bytes.length,
