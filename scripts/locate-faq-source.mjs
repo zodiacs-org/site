@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {spawnSync,execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+const root=resolve('current-main'),expected='ac09a5fab7e6674039876e15f4db4bc29b09e79f';
+assert.equal(execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),expected);
+let found=spawnSync('rg',['--files-with-matches','--fixed-strings','FAQPage','src','public','scripts'],{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:1024*1024});
+if(found.error?.code==='ENOENT')found=spawnSync('git',['grep','-l','--fixed-strings','FAQPage','--','src','public','scripts'],{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:1024*1024});
+assert.ok(!found.error&&[0,1].includes(found.status),'Source search failed');
+const paths=found.stdout.trim().split('\n').filter(Boolean).filter(path=>/\.(?:html|astro|mjs|js|ts|json)$/.test(path)&&!path.includes('.test.')&&!path.includes('/tests/')).sort();
+assert.ok(paths.length<=250,'Unexpected source count');
+const files=paths.map(path=>{
+ const content=readFileSync(resolve(root,path),'utf8'),lines=content.split('\n'),matches=[];
+ for(let i=0;i<lines.length;i++)if(lines[i].includes('FAQPage'))matches.push({line:i+1,context:lines.slice(Math.max(0,i-8),Math.min(lines.length,i+16)).join('\n').slice(0,7000)});
+ return {path,bytes:Buffer.byteLength(content),sha256:createHash('sha256').update(content).digest('hex'),matches};
+});
+const report={schema:'zodiacs.faq-source-locator.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},auditedSource:expected,files,limitations:['Source locator only; emitted markup, page purpose and visible questions require a semantic audit.','No FAQ policy acceptance, production claim or private scan follows from lexical matches.']};
+const content=Buffer.from(JSON.stringify(report,null,2)+'\n');assert.ok(content.length<=2*1024*1024,'Report exceeds bound');writeFileSync('faq-source-locator.json',content);
+console.log('PROGRAMME_FILE '+JSON.stringify({path:'docs/platform/evidence/faq-audit-20261009/source-locator.json',size:content.length,sha256:createHash('sha256').update(content).digest('hex'),base64:content.toString('base64')}));
