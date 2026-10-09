@@ -12,7 +12,8 @@
  */
 import { chromium } from 'playwright-core';
 import { startPreview } from './visual/preview-server.mjs';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+const canonicalFooterCss = readFileSync(new URL('../src/styles/site-footer.css', import.meta.url), 'utf8');
 import { setTimeout as wait } from 'node:timers/promises';
 
 const OUT = process.env.OUT_DIR ?? null;
@@ -224,6 +225,11 @@ try {
   const clock = await page.locator('[data-season-clock]').textContent();
   check('season clock renders', /season · day \d+ of \d+/.test(clock ?? ''), clock ?? '(hidden)');
 
+  check('thesis embeds byte-identical canonical footer CSS without its blocking request',
+    (await page.locator('style[data-canonical-thesis-footer]').textContent()) === canonicalFooterCss
+      && await page.locator('link[rel="stylesheet"][href*="site-footer.css"]').count() === 0
+      && await page.evaluate(() => performance.getEntriesByType('resource')
+        .filter((entry) => new URL(entry.name).pathname === '/assets/site-footer.css').length) === 0);
   // Masthead + footer.
   check('masthead reads Nº 09 · Why Zodiacs Matter', /Nº 09 · Why Zodiacs Matter/.test(await page.locator('.essay__rail').textContent() ?? ''));
   check('hero keeps one concise consumer subheader',
