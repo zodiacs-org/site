@@ -75,6 +75,14 @@ try{
     await page.evaluate(()=>document.fonts.ready);
     mkdirSync('tests/visual/artifacts/birth-time-window',{recursive:true});
     await page.screenshot({path:'tests/visual/artifacts/birth-time-window/'+variant.name+'.png',fullPage:true});
+    const cancellation=pauseNext();
+    await surface.locator('select').selectOption('30');
+    await surface.getByRole('button',{name:'Check this window',exact:true}).click();await cancellation.ready;
+    const cancelledId=await page.evaluate(()=>window.__birthWindowControls.created.length-1);
+    await surface.getByRole('button',{name:'Cancel',exact:true}).click();
+    assert.ok(await page.evaluate(id=>window.__birthWindowControls.terminated.includes(id),cancelledId),'Cancel terminates the actual worker');
+    assert.equal(await surface.locator('[data-birth-window-verification]').count(),0,'Cancelled work shows no previous result');
+    cancellation.release();
     const next=pauseNext();
     await surface.locator('select').selectOption('60');
     await surface.getByRole('button',{name:'Check this window',exact:true}).click();
@@ -101,7 +109,7 @@ try{
     assert.equal(await page.locator('[data-birth-window-entry]').count(),0,'Unknown-time reference does not invent a rising window');
     assert.deepEqual(errors,[]);
     const native=await page.evaluate(()=>window.__birthWindowControls);
-    records.push({name:variant.name,viewport:variant,summary,native,controls:{noWorkerBeforeRequest:true,realSampledWindow:true,allCellsRendered:true,windowChangeTerminates:true,chartReplacementTerminates:true,unknownTimeExcluded:true,noOverflow:true},pageErrors:errors});
+    records.push({name:variant.name,viewport:variant,summary,native,controls:{noWorkerBeforeRequest:true,realSampledWindow:true,allCellsRendered:true,explicitCancelTerminates:true,windowChangeTerminates:true,chartReplacementTerminates:true,unknownTimeExcluded:true,noOverflow:true},pageErrors:errors});
    }finally{hold?.release();hold=null;await context.close();}
   }}finally{await browser.close();}
  });
