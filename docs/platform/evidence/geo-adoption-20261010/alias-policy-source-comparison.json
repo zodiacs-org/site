@@ -1,0 +1,394 @@
+{
+  "schema": "zodiacs.geo-adoption-alias-policy-source-comparison.v1",
+  "site": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76",
+  "archive": {
+    "path": "vendor/zodiacs-engine-1.0.0-rc.2.tgz",
+    "bytes": 287011,
+    "sha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002"
+  },
+  "inventory": {
+    "run": 38070718338,
+    "job": 114267378701,
+    "producer": "9e6d6e987ae44f4d190ea2d5b76756c1f36b79b2",
+    "mode": "Native read-only source inventory; no package execution"
+  },
+  "siteSources": [
+    {
+      "path": "src/data/tz-history/2025c/excluded.json",
+      "sha256": "b6b929b6f53720a6a9df0800fd2bebf59cb055a1cc59e917acafcc03a6a25399",
+      "bytes": 1659,
+      "provenance": "Exact-commit GitHub raw connector read; hashes prepared with the retained byte helper, not a native timezone calculation"
+    },
+    {
+      "path": "src/data/tz-lmt.json",
+      "sha256": "98551c98dd05c91d3f8d948bbf6deaf7c2a63875b4095afba21cc00b3c2dd315",
+      "bytes": 34309,
+      "provenance": "Exact-commit GitHub raw connector read; hashes prepared with the retained byte helper, not a native timezone calculation"
+    },
+    {
+      "path": "src/lib/time/zone-names.ts",
+      "sha256": "dcd7173a8275fbfd853a8a2a0eae3ba0012ddfab19d9be909e8818a5822443d8",
+      "bytes": 3432,
+      "provenance": "Exact-commit GitHub raw connector read; hashes prepared with the retained byte helper, not a native timezone calculation"
+    }
+  ],
+  "records": [
+    {
+      "zone": "America/Argentina/ComodRivadavia",
+      "oldEraEnd": -2372095800,
+      "oldEraLines": null,
+      "oldEraOffset": -16200,
+      "packageSource": "America/Argentina/Catamarca",
+      "packageHostLegal": true,
+      "packageEraEnd": -2372096212,
+      "packageBirthplaceEra": [
+        [
+          -2372095800,
+          -16200
+        ]
+      ],
+      "packageOffsets": [
+        -15788,
+        -15408,
+        -14400,
+        -10800,
+        -10800
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "America/Ensenada",
+      "oldEraEnd": -1514736000,
+      "oldEraLines": null,
+      "oldEraOffset": -27988,
+      "packageSource": "America/Tijuana",
+      "packageHostLegal": true,
+      "packageEraEnd": -1514739600,
+      "packageBirthplaceEra": [
+        [
+          -1514736000,
+          -27988
+        ]
+      ],
+      "packageOffsets": [
+        -28084,
+        -25200,
+        -28800,
+        -25200,
+        -25200,
+        -25200
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "America/Nipigon",
+      "oldEraEnd": -2366734016,
+      "oldEraLines": null,
+      "oldEraOffset": -21184,
+      "packageSource": "America/Toronto",
+      "packageHostLegal": true,
+      "packageEraEnd": -2366736148,
+      "packageBirthplaceEra": [
+        [
+          -2366734016,
+          -21184
+        ]
+      ],
+      "packageOffsets": [
+        -19052,
+        -18000,
+        -14400,
+        -14400,
+        -14400
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "America/Rainy_River",
+      "oldEraEnd": -2366732504,
+      "oldEraLines": null,
+      "oldEraOffset": -22696,
+      "packageSource": "America/Winnipeg",
+      "packageHostLegal": true,
+      "packageEraEnd": -2602258284,
+      "packageBirthplaceEra": [
+        [
+          -2366732504,
+          -22696
+        ]
+      ],
+      "packageOffsets": [
+        -23316,
+        -21600,
+        -18000,
+        -18000,
+        -18000
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "America/Rosario",
+      "oldEraEnd": -2372011040,
+      "oldEraLines": null,
+      "oldEraOffset": -14560,
+      "packageSource": "America/Argentina/Cordoba",
+      "packageHostLegal": true,
+      "packageEraEnd": -2372096592,
+      "packageBirthplaceEra": [
+        [
+          -2372011040,
+          -14560
+        ]
+      ],
+      "packageOffsets": [
+        -15408,
+        -15408,
+        -14400,
+        -10800,
+        -10800
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "Asia/Chongqing",
+      "oldEraEnd": -1325487980,
+      "oldEraLines": null,
+      "oldEraOffset": 25580,
+      "packageSource": "Asia/Shanghai",
+      "packageHostLegal": true,
+      "packageEraEnd": -2177481943,
+      "packageBirthplaceEra": [
+        [
+          -1325487980,
+          25580
+        ]
+      ],
+      "packageOffsets": [
+        29143,
+        28800,
+        32400
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "Asia/Chungking",
+      "oldEraEnd": -1325487980,
+      "oldEraLines": null,
+      "oldEraOffset": 25580,
+      "packageSource": "Asia/Shanghai",
+      "packageHostLegal": true,
+      "packageEraEnd": -2177481943,
+      "packageBirthplaceEra": [
+        [
+          -1325487980,
+          25580
+        ]
+      ],
+      "packageOffsets": [
+        29143,
+        28800,
+        32400
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "Asia/Hanoi",
+      "oldEraEnd": -2004073404,
+      "oldEraLines": null,
+      "oldEraOffset": 25404,
+      "packageHostLegal": false,
+      "packageBirthplaceEra": null,
+      "policy": "The carried package has no shard record for this name. Host support and historical birthplace behavior require native comparison."
+    },
+    {
+      "zone": "Asia/Harbin",
+      "oldEraEnd": -1325492804,
+      "oldEraLines": null,
+      "oldEraOffset": 30404,
+      "packageSource": "Asia/Shanghai",
+      "packageHostLegal": true,
+      "packageEraEnd": -2177481943,
+      "packageBirthplaceEra": [
+        [
+          -1325492804,
+          30404
+        ]
+      ],
+      "packageOffsets": [
+        29143,
+        28800,
+        32400
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "Asia/Kashgar",
+      "oldEraEnd": -1325480636,
+      "oldEraLines": null,
+      "oldEraOffset": 18236,
+      "packageSource": "Asia/Urumqi",
+      "packageHostLegal": true,
+      "packageEraEnd": -1325483420,
+      "packageBirthplaceEra": [
+        [
+          -1325480636,
+          18236
+        ]
+      ],
+      "packageOffsets": [
+        21020,
+        21600
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "Atlantic/Jan_Mayen",
+      "oldEraEnd": null,
+      "oldEraLines": null,
+      "oldEraOffset": null,
+      "packageSource": "Europe/Berlin",
+      "packageHostLegal": true,
+      "packageEraEnd": -2422054408,
+      "packageBirthplaceEra": null,
+      "packageOffsets": [
+        3208,
+        3600,
+        7200,
+        10800
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "EET",
+      "oldEraEnd": null,
+      "oldEraLines": null,
+      "oldEraOffset": null,
+      "packageSource": "Europe/Athens",
+      "packageHostLegal": true,
+      "packageEraEnd": -2344642492,
+      "packageBirthplaceEra": null,
+      "packageOffsets": [
+        5692,
+        5692,
+        7200,
+        10800,
+        7200,
+        3600
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "Europe/Tiraspol",
+      "oldEraEnd": -2840147912,
+      "oldEraLines": null,
+      "oldEraOffset": 7112,
+      "packageSource": "Europe/Chisinau",
+      "packageHostLegal": true,
+      "packageEraEnd": -2840147720,
+      "packageBirthplaceEra": [
+        [
+          -2840147912,
+          7112
+        ]
+      ],
+      "packageOffsets": [
+        6920,
+        6900,
+        6264,
+        7200,
+        10800,
+        7200,
+        3600,
+        10800
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "Europe/Uzhgorod",
+      "oldEraEnd": -2500939752,
+      "oldEraLines": null,
+      "oldEraOffset": 5352,
+      "packageSource": "Europe/Kyiv",
+      "packageHostLegal": true,
+      "packageEraEnd": -2840148124,
+      "packageBirthplaceEra": [
+        [
+          -2500939752,
+          5352
+        ]
+      ],
+      "packageOffsets": [
+        7324,
+        7324,
+        7200,
+        10800,
+        7200,
+        3600
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "Europe/Zaporozhye",
+      "oldEraEnd": -2840149240,
+      "oldEraLines": null,
+      "oldEraOffset": 8440,
+      "packageSource": "Europe/Kyiv",
+      "packageHostLegal": true,
+      "packageEraEnd": -2840148124,
+      "packageBirthplaceEra": [
+        [
+          -2840149240,
+          8440
+        ]
+      ],
+      "packageOffsets": [
+        7324,
+        7324,
+        7200,
+        10800,
+        7200,
+        3600
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "Pacific/Enderbury",
+      "oldEraEnd": null,
+      "oldEraLines": null,
+      "oldEraOffset": null,
+      "packageSource": "Pacific/Kanton",
+      "packageHostLegal": true,
+      "packageEraEnd": null,
+      "packageBirthplaceEra": null,
+      "packageOffsets": [
+        null,
+        -43200
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    },
+    {
+      "zone": "WET",
+      "oldEraEnd": null,
+      "oldEraLines": null,
+      "oldEraOffset": null,
+      "packageSource": "Europe/Lisbon",
+      "packageHostLegal": true,
+      "packageEraEnd": -2713908195,
+      "packageBirthplaceEra": null,
+      "packageOffsets": [
+        -2205,
+        0,
+        3600,
+        7200,
+        3600
+      ],
+      "policy": "The site excludes this alias from its pinned legal history. The carried package has a selected pre-1970 history; old/new answers are not yet compared natively."
+    }
+  ],
+  "decision": "The package-only adapter is an unqualified draft. Do not apply or accept it until historical alias/LMT/transition parity, input/retry behavior and all hosted request caches are proved. Preserve the existing answers rather than silently changing their clock convention.",
+  "limitations": [
+    "This compares source tables and policies, not actual resolved instants or accuracy.",
+    "No package source/archive, site implementation, release or accepted ledger unit is changed.",
+    "P1.01b/P1.12b remain validated/released but not adopted."
+  ]
+}

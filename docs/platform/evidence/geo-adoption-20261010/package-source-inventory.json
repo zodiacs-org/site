@@ -1,0 +1,164 @@
+{
+  "schema": "zodiacs.geo-adoption-package-source-inventory.v2",
+  "siteSource": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76",
+  "archive": {
+    "path": "vendor/zodiacs-engine-1.0.0-rc.2.tgz",
+    "bytes": 287011,
+    "sha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002"
+  },
+  "package": {
+    "name": "@zodiacs/engine",
+    "version": "1.0.0-rc.2",
+    "geoExport": "./dist/geo.js"
+  },
+  "root": "package/dist/",
+  "files": [
+    {
+      "path": "package/dist/geo.js",
+      "bytes": 6049,
+      "sha256": "d6a7249f4a71e0d5037c3f16cd2c79617192a210c79b949c10a5225731a6d61f",
+      "relativeDependencies": [
+        "package/dist/chunk-KFTJMMG7.js",
+        "package/dist/chunk-PFGUCNOK.js",
+        "package/dist/chunk-YIITY7Q7.js"
+      ]
+    },
+    {
+      "path": "package/dist/chunk-KFTJMMG7.js",
+      "bytes": 2397,
+      "sha256": "a828a7b1802d8c61fc48bd1844cd12cbc60d54ad732014cae91413fe491c92a9",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/chunk-PFGUCNOK.js",
+      "bytes": 2929,
+      "sha256": "6d9d38ab4606288700b0959e732a61dfa5b4cdc570be21d17b4ac9b9fe1c0eb4",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/chunk-YIITY7Q7.js",
+      "bytes": 24064,
+      "sha256": "a32bc0fd7f2ef6a4c3f7ca0626b767a5ec2e1367d3d38e02435e8ed22fb638b1",
+      "relativeDependencies": [
+        "package/dist/chunk-KFTJMMG7.js",
+        "package/dist/chunk-PFGUCNOK.js",
+        "package/dist/tzdb-2025c-00-6GVG6RYL.js",
+        "package/dist/tzdb-2025c-01-CEYMG3LE.js",
+        "package/dist/tzdb-2025c-02-NWQJCVUU.js",
+        "package/dist/tzdb-2025c-03-PLHP6VH4.js",
+        "package/dist/tzdb-2025c-04-MEKUJA6M.js",
+        "package/dist/tzdb-2025c-05-3K5YKZBL.js",
+        "package/dist/tzdb-2025c-06-L2VV5XJV.js",
+        "package/dist/tzdb-2025c-07-H3GLGJGY.js",
+        "package/dist/tzdb-2025c-08-DA7QQIGD.js",
+        "package/dist/tzdb-2025c-09-MTXIO3QL.js",
+        "package/dist/tzdb-2025c-10-ASL4UW5C.js",
+        "package/dist/tzdb-2025c-11-EQEOANYB.js",
+        "package/dist/tzdb-2025c-12-NKCCXJ5G.js",
+        "package/dist/tzdb-2025c-13-DYTF3UC7.js",
+        "package/dist/tzdb-2025c-14-C25H45R5.js",
+        "package/dist/tzdb-2025c-15-7OYYZWRY.js"
+      ]
+    },
+    {
+      "path": "package/dist/tzdb-2025c-00-6GVG6RYL.js",
+      "bytes": 11600,
+      "sha256": "059b00f506f85dfbd0ca9c7b287d8118f712f1d43dea9f281dcf0b185f86ac2c",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-01-CEYMG3LE.js",
+      "bytes": 10882,
+      "sha256": "797d29a1c1b51cf406a414edb7e6e007fdb4f22f3884a03d0cb2cea195107f47",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-02-NWQJCVUU.js",
+      "bytes": 16722,
+      "sha256": "5422f5c203e1d6fcb16c36ce097efec6396bf0996de8e01e934d0f4f76673ed2",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-03-PLHP6VH4.js",
+      "bytes": 8729,
+      "sha256": "edf3feeb0ba30b6695964599c676a941d1813f0698faff7e2f9b82ee8d988de7",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-04-MEKUJA6M.js",
+      "bytes": 12107,
+      "sha256": "a85b39e4867440cf2cc94c86613ea4bb67bf67e7c90ce193600f5a9a82f5a1e9",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-05-3K5YKZBL.js",
+      "bytes": 12660,
+      "sha256": "af36cddf254579a06be0b3d23c38e69debb4489a5ef22af18a0d14f43c4e4568",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-06-L2VV5XJV.js",
+      "bytes": 10484,
+      "sha256": "03e33c1e26c3720150c43ebff4e19a15bab86e3ffff47c465c042200758637c0",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-07-H3GLGJGY.js",
+      "bytes": 15543,
+      "sha256": "84fa36e511f1d4ce35d92a86e75918b86c49d860b59db2640c167ed12c61eb02",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-08-DA7QQIGD.js",
+      "bytes": 12443,
+      "sha256": "a99c8fd5bc7f6b85ce04c4d12ad62169e87f560ba95262989398f7ce2eedbd2c",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-09-MTXIO3QL.js",
+      "bytes": 10295,
+      "sha256": "79906403985c2b709450ded97a4d369212bf17fd46ef622c7c37919e76d91d37",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-10-ASL4UW5C.js",
+      "bytes": 9206,
+      "sha256": "4f0ec17406f06305005e677e1b0ec9f4f3a2883c5e290844c03944390b4fd6ed",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-11-EQEOANYB.js",
+      "bytes": 14246,
+      "sha256": "b32cc926cf5900490bef32095d557d980b21f2083bdb04f01c6ba1028705b7c8",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-12-NKCCXJ5G.js",
+      "bytes": 12240,
+      "sha256": "642c36109fb20b11e04f2f5b84892b12d952263a2711258c33360f2b4bcd455c",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-13-DYTF3UC7.js",
+      "bytes": 10206,
+      "sha256": "4b95fd2a9a420192e149283b148752062fc2578444a80d6489dbfa07e9291d02",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-14-C25H45R5.js",
+      "bytes": 10241,
+      "sha256": "28be733c14242da6091ff0b977d7b13b20f94381d91eb07f0be830b6e2fd1903",
+      "relativeDependencies": []
+    },
+    {
+      "path": "package/dist/tzdb-2025c-15-7OYYZWRY.js",
+      "bytes": 11540,
+      "sha256": "e6979ca6d508602a450c43b9a087e6c8f42114b264c223dd26b733d904993380",
+      "relativeDependencies": []
+    }
+  ],
+  "limitations": [
+    "Read-only geo export and its literal relative compiled dependency graph, including shards, with exact byte hashes; no package module was imported or executed.",
+    "No scientific, parity, adoption, publication or accepted completion claim."
+  ]
+}

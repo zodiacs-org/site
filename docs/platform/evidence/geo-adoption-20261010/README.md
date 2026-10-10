@@ -1,0 +1,9 @@
+# Historical birthplace package adoption preparation
+
+The immutable carried archive is 287011 bytes, SHA-256 `4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002`. Native read-only [38070556906](https://github.com/zodiacs-org/site/actions/runs/38070556906) first identifies its actual geo export. [38070718338](https://github.com/zodiacs-org/site/actions/runs/38070718338), job 114267378701, then follows only that export's literal relative compiled dependencies: twenty files including sixteen timezone shards. Exported bytes and SHA-256 values are verified and retained. No package module is imported or executed by either source inventory.
+
+The site source at `5a46fb08a51cddb8bdbff02d8fc23837fd0cad76` retains a host-only legal-clock policy for seventeen aliases whose pinned history differs after 1970 or whose name is outside the default build. The carried package instead has pre-1970 records for sixteen of these; Asia/Hanoi has no shard record. Several aliases still have birthplace mean-time eras. A blanket adapter can change existing answers, so the prepared package-only implementation remains unqualified and unapplied. The source comparison is not a native answer or accuracy comparison.
+
+Adoption must preserve historical instants/flags/mean-time metadata, no-longitude and invalid-longitude behavior, modern unprepared calls, per-zone preparation, module-load failure/retry and abandoned warm-ups. The hosted bundle must carry the actual package shards and dispose all actual package and adapter selection caches on success/refusal/failure without racing a second request. Its generated files must be rebuilt with the original generator; original unit, privacy, drift, source/bundle and production gates remain required.
+
+P1.01b and P1.12b remain validated/released but not adopted. No archive, implementation, release or accepted weight changes in this record.
