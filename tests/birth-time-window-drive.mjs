@@ -139,9 +139,16 @@ try{
       reference:document.querySelector('[data-birth-window-reference]')?.textContent??null
     }));
     observations.push({variant:variant.name,stage,upperUTC,lowerBoundaryState});
-    assert.equal(await bounded.locator('select option[value="1"]').isEnabled(),true,"Lower-edge one-minute preset is enabled");
-    assert.equal(await bounded.locator('select option[value="30"]').isDisabled(),true,"Lower-edge thirty-minute preset is disabled");
-    assert.equal(await bounded.locator('select option[value="120"]').isDisabled(),true,"Lower-edge two-hour preset is disabled");
+    const automationOptionStates={
+      oneMinuteEnabled:await bounded.locator('select option[value="1"]').isEnabled(),
+      thirtyMinuteDisabled:await bounded.locator('select option[value="30"]').isDisabled(),
+      twoHourDisabled:await bounded.locator('select option[value="120"]').isDisabled()
+    };
+    observations.at(-1).automationOptionStates=automationOptionStates;
+    assert.equal(await bounded.locator('select').isEnabled(),true,"The boundary selector is usable");
+    assert.equal(await bounded.locator('select option[value="1"]').evaluate(option=>option.disabled),false,"Lower-edge one-minute option is not disabled");
+    assert.equal(await bounded.locator('select option[value="30"]').evaluate(option=>option.disabled),true,"Lower-edge thirty-minute option is disabled");
+    assert.equal(await bounded.locator('select option[value="120"]').evaluate(option=>option.disabled),true,"Lower-edge two-hour option is disabled");
     assert.ok(await bounded.locator('[data-birth-window-reference]').isVisible());
     await bounded.locator('select').selectOption('1');
     await bounded.getByRole('button',{name:'Check this window',exact:true}).click();
