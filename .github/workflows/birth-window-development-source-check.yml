@@ -1,0 +1,39 @@
+name: Native syntax check for prepared development worker correction
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/birth-window-development-source-check.yml]
+permissions:
+  contents: read
+jobs:
+  source-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: 018c3190649cb19e1f478459958b6ac8809d0464
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - name: Verify exact source and parse all corrected JavaScript entry files
+        run: |
+          node --input-type=module <<'SOURCE_CHECK'
+          import {readFileSync} from 'node:fs';
+          import {execFileSync} from 'node:child_process';
+          import {createHash} from 'node:crypto';
+          const source=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+          if(source!=='018c3190649cb19e1f478459958b6ac8809d0464')throw new Error('Wrong source');
+          const records=[];
+          for(const path of ['astro.config.mjs','tests/birth-time-window-drive.mjs','tests/birth-time-window-development-drive.mjs']){
+           const bytes=readFileSync(path);
+           execFileSync(process.execPath,['--check',path],{stdio:'pipe',shell:false});
+           records.push({path,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),nativeSyntaxPassed:true});
+          }
+          const path='docs/platform/evidence/birth-time-window-ui-20261010/development-source-syntax.json';
+          const report={schema:'zodiacs.birth-window-development-source-syntax.v1',source,node:process.version,producer:{commit:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID},records,passed:true,limitations:['Syntax only; imports are not loaded and no module, ephemeris, browser or build is executed.','Development/production browser behavior, original budgets and complete acceptance gates remain pending.']};
+          const out=Buffer.from(JSON.stringify(report,null,2)+'\n');
+          console.log('PROGRAMME_FILE '+JSON.stringify({path,size:out.length,sha256:createHash('sha256').update(out).digest('hex'),base64:out.toString('base64')}));
+          SOURCE_CHECK
