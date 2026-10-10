@@ -256,11 +256,11 @@ describe('the famous-people pages', () => {
 
 describe('the Moon ingresses on the void-of-course calendar', () => {
   it('are within about 5 seconds of Swiss Ephemeris, measured on the table the site publishes', () => {
-    const measured = JSON.parse(read('docs/platform/evidence/events-vs-swiss-2026-09-25/moon-ingresses.json'));
+    const measured = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0-rc2/moon-ingresses.json'));
     const bytes = readFileSync(new URL('../src/data/aura-moon-ingresses.json', import.meta.url));
     // A regenerated table needs docs/platform/evidence/events-vs-swiss-2026-09-25/tools/moon-ingresses.py run again.
-    expect(measured.rc8.tableSha256).toBe(createHash('sha256').update(bytes).digest('hex'));
-    expect(measured.rc8.maxAbsSeconds).toBeLessThan(5);
+    expect(measured.tableSha256).toBe(createHash('sha256').update(bytes).digest('hex'));
+    expect(measured.maxAbsSeconds).toBeLessThan(5);
     expect(read('src/pages/void-of-course-moon/index.astro').replace(/\s+/g, ' '))
       .toContain('falls within about 5 seconds of Swiss Ephemeris');
   });

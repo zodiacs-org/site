@@ -1,0 +1,9 @@
+(node:205683) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Wrote /workspace/site/public/assets/app.js
+  287873 bytes  ·  sha256:c1128d59add2  ·  from src/app.jsx (379640 bytes)
+Self-hosted React 18.3.1 runtime copied to public/assets/vendor.
+Wrote /workspace/site/public/registry/technical/index.html
+  shared Registry styles · 12 signs · 24 official representations
+Wrote /workspace/site/public/assets/registry-outlook.json
+  daily + weekly symbolic outlook · edition 2026-10-08

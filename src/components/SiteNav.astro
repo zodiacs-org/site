@@ -353,6 +353,9 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   .nav__link {
     display: inline-flex;
     align-items: center;
+    /* The tracks reserve the row's width; the hover pill hugs its own label
+       instead of stretching across a flexible last track. */
+    justify-self: start;
     gap: 6px;
     min-width: 0;
     padding: 7px 11px;

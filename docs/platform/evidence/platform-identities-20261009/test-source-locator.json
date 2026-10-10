@@ -1,0 +1,28 @@
+{
+  "schema": "zodiacs.organization-test-source-locator.v1",
+  "producer": {
+    "source": "0f22392a826eb74b45f4d521c1c1fb6a718cc017",
+    "run": "37951312878",
+    "node": "v22.23.3"
+  },
+  "auditedSource": "ac09a5fab7e6674039876e15f4db4bc29b09e79f",
+  "files": [
+    {
+      "path": "src/lib/contact-identity.test.ts",
+      "sha256": "89e94d20e541f79d57b771695783e5d54d8a5c3998feda5dfdba7e9a556db07a",
+      "matches": [
+        {
+          "line": 5,
+          "context": "import { readFile } from 'node:fs/promises';\nimport { dirname, resolve } from 'node:path';\nimport { fileURLToPath } from 'node:url';\nimport { describe, expect, it } from 'vitest';\nimport { EDITOR_ORGANIZATION } from './editorial';\n\nconst root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');\nconst publicContactPages = [\n  'src/pages/about/index.astro',\n  'src/pages/corrections/index.astro',\n  'src/pages/privacy/index.astro',\n  'src/pages/terms/index.astro',"
+        },
+        {
+          "line": 31,
+          "context": "\n    for (const source of sources) {\n      expect(source).toContain('mailto:admin@zodiacs.org');\n      expect(source).not.toContain('hello@zodiacs.org');\n    }\n    expect(EDITOR_ORGANIZATION.email).toBe('admin@zodiacs.org');\n  });\n});\n"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Read-only locator of existing test references; not executed tests, build or private scan."
+  ]
+}

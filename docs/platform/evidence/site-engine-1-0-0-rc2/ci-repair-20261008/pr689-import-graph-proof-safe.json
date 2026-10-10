@@ -1,0 +1,12 @@
+{
+  "files": 992,
+  "edges": 3501,
+  "oldMilliseconds": 2287.4397929999996,
+  "newMilliseconds": 1571.057719,
+  "exactGraphEqual": true,
+  "sourceBefore": "e814676c79c7bbde54b039fd4e86fe39d5229e72",
+  "sourceAfter": "1fd24bcbc7c7281245c83fb12c0d321028068085",
+  "parentLinksOnlyChange": true,
+  "deadlineMilliseconds": 5000,
+  "timingMethod": "One sequential old-then-new run in one Node process; not a performance guarantee."
+}

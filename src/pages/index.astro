@@ -14,6 +14,7 @@ import glassMaps from '../data/glass-maps.json';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import { UI } from '../lib/i18n';
 import { SIGNS } from '../lib/signs';
+import { ORGANIZATION_NAME, SOCIAL_PROFILES } from '../strings/seo.en.mjs';
 import homeFirstPaintCss from '../home/home-first-paint.css?inline';
 import '../styles/today.css';
 
@@ -33,7 +34,7 @@ const jsonLd = [
   {
     '@type': 'Organization',
     '@id': 'https://zodiacs.org/#org',
-    name: 'Zodiacs',
+    name: ORGANIZATION_NAME,
     legalName: 'Zodiacs LLC',
     alternateName: 'Zodiacs.org',
     url: 'https://zodiacs.org/',
@@ -45,7 +46,7 @@ const jsonLd = [
       width: 512,
       height: 512,
     },
-    sameAs: ['https://github.com/zodiacs-org/sdk'],
+    sameAs: SOCIAL_PROFILES,
   },
   {
     '@type': 'WebSite',
@@ -427,8 +428,10 @@ const tools = [
     globalThis.__ZDX_UI__ = { locale: 'en', messages: homeUiMessages };
   </script>
 
-  <!-- 01b · Returning visitors with a saved chart get greeted; everyone else sees nothing here -->
-  <WelcomeBack client:idle />
+  <!-- 01b · Returning visitors with a saved chart get greeted; everyone else sees nothing here.
+       The shared intent/load directive reaches the empty SSR island automatically
+       after load, keeping its module tree out of the poster's initial fetches. -->
+  <WelcomeBack client:interaction />
 
   <!-- 02 · The sky, right now -->
   <section class="container ticker-band reveal">

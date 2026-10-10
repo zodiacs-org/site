@@ -1,0 +1,16 @@
+{
+  "schema": "zodiacs.home-loading-changed-source-preflight.v1",
+  "producer": {
+    "workflowSource": "bbdb895d62be671898ae92b0c4fa175c3f4d337e",
+    "run": "38042666357",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "63dbcc0df75c655c2476af779f06e99f5a1cd6dd",
+  "precedingStepsStatus": "failure",
+  "built": {},
+  "samples": [],
+  "limitations": [
+    "Changed-source focused checks and selected original route gates only; full suite, review, post-merge and production checks remain required.",
+    "Original performance/visual thresholds, typography and image bytes are unchanged."
+  ]
+}

@@ -58,7 +58,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.17.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.18.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -288,7 +288,7 @@ gets the MCP SDK's validation message instead.
       "version": "2.1.19"
     },
     "name": "@zodiacs/engine",
-    "version": "0.1.1-rc.17"
+    "version": "1.0.0-rc.2"
   },
   "timeKnown": true,
   "houses": {
@@ -333,9 +333,9 @@ gets the MCP SDK's validation message instead.
   ],
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
-    "receipt": "sha256:f7b4ba470bb3c3a16cdb65d2d37271086cb1665cd8686e139cd5c98fc19c5920",
+    "receipt": "sha256:bc9260d5e6087b778747431754d165ec18b9ffd90bfc9a34421c7ed98c16ead9",
     "engine": "@zodiacs/engine",
-    "version": "0.1.1-rc.17"
+    "version": "1.0.0-rc.2"
   }
 }
 ```
@@ -429,7 +429,7 @@ are separate fields, so a fallback is visible rather than silent.
         "houses-actual",
         "houses-system"
       ],
-      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 0.1.1-rc.17, and changing only the house system turns each one into the other, in both directions."
+      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 1.0.0-rc.2, and changing only the house system turns each one into the other, in both directions."
     }
   ],
   "limits": [
@@ -441,19 +441,19 @@ are separate fields, so a fallback is visible rather than silent.
   "receipt": {
     "schema": "zodiacs.mcp-receipt.v1",
     "tool": "compare_calculation_records",
-    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.17" },
+    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.18" },
     "engine": {
       "name": "@zodiacs/engine",
-      "version": "0.1.1-rc.17",
+      "version": "1.0.0-rc.2",
       "ephemeris": { "name": "astronomy-engine", "version": "2.1.19" }
     },
     "output": "summary"
   },
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
-    "receipt": "sha256:e0422cc4f22b22487e8ae56669b9c53d74ec86ca96d5c7be31b2b5a31db39ce1",
+    "receipt": "sha256:19b55b8c17c02b467cbc0216b9821d61386714a5830c4a34eeaecbee419fbc65",
     "engine": "@zodiacs/engine",
-    "version": "0.1.1-rc.17"
+    "version": "1.0.0-rc.2"
   }
 }
 ```
@@ -478,7 +478,7 @@ API uses on each of its answers:
   that does not move;
 - `receipt`: `sha256:` and the SHA-256 of a receipt's RFC 8785 canonical JSON;
 - `engine` and `version`: the engine that calculated, `@zodiacs/engine`
-  0.1.1-rc.17.
+  1.0.0-rc.2.
 
 A chart cites the engine's calculation receipt, the `receipt` inside the record
 that `output: "record"` returns for the same arguments, so a summary and a
@@ -525,8 +525,8 @@ request.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.17`, unpublished candidate |
-| engine | `@zodiacs/engine` `0.1.1-rc.17`, a release candidate that is not on npm, bundled into `server.mjs` |
+| adapter | `0.1.0-rc.18`, unpublished candidate |
+| engine | `@zodiacs/engine` `1.0.0-rc.2`, a release candidate that is not on npm, bundled into `server.mjs` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
 | validation | `zod` 4.6.5, pinned exactly |
@@ -573,12 +573,12 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   supports and the adapter adopts it rather than inventing a wider one.
 - **Not on npm.** This adapter is not published under any name, and
   `get_capabilities` labels it `unpublished-candidate`. Neither is the engine
-  it bundles, `@zodiacs/engine` 0.1.1-rc.17, which `get_capabilities` labels
-  `unpublished-candidate` too. When this archive was made, on 2026-10-06, npm
+  it bundles, `@zodiacs/engine` 1.0.0-rc.2, which `get_capabilities` labels
+  `unpublished-candidate` too. When this archive was made, on 2026-10-07, npm
   had the version before it, 0.1.1-rc.16, under the `next` tag, and
-  0.1.1-rc.15 under `latest`. rc.17 adds the sidereal zodiac to the engine's
-  `calc` entry, which this adapter does not use, so its tools answer as they
-  did with rc.16.
+  0.1.1-rc.15 under `latest`. rc.2 marks unused table-building calls pure and carries the 1.0 API's
+  frozen tables and argument checks. This adapter does not import `calc`
+  or Vedic; its finite comparison with rc.17 is recorded in the site adoption.
 
 ## Uninstall
 
@@ -629,7 +629,7 @@ on dates chosen for what they exercise.
 ## Licence
 
 MIT AND CC-BY-4.0. The adapter's own code is MIT. `server.mjs` bundles
-`@zodiacs/engine` 0.1.1-rc.17, whose ΔT module contains 32 values of Table S15
+`@zodiacs/engine` 1.0.0-rc.2, whose ΔT module contains 32 values of Table S15
 of Stephenson, Morrison and Hohenkerk (2016) under CC BY 4.0, and whose time
 basis carries the IERS leap-second list and a UT1 − UTC table derived from
 IERS data. `NOTICE` gives the attributions; keep it if you redistribute the

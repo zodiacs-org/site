@@ -1,0 +1,98 @@
+{
+  "schema": "zodiacs.home-loading-changed-source-preflight.v1",
+  "producer": {
+    "workflowSource": "5b31d4850bb07c27a3f047bcb231d06e49c1d839",
+    "run": "38043051385",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "2e08e201aea43b7e23fed8723363213ea1ff82df",
+  "precedingStepsStatus": "success",
+  "built": {
+    "home": {
+      "bytes": 278320,
+      "sha256": "03857fac5ba655408bba05b5ca49429db0c54f8aba8954d1274bde3fece78820"
+    },
+    "thesis": {
+      "bytes": 335516,
+      "sha256": "b12cfb2a2e7d5bb65cd4b0007979a03b7cd9e481cf7c9cc132e51ac70d553a94"
+    }
+  },
+  "samples": [
+    {
+      "route": "home",
+      "sample": 1,
+      "bytes": 645939,
+      "sha256": "995c7769b899f4181f991c5ac3862b4f5637d62074a3a36fe706aac8a802125f",
+      "lcpMs": 2558.5819,
+      "cls": 0,
+      "tbtMs": 0,
+      "performance": 0.96,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "route": "home",
+      "sample": 2,
+      "bytes": 646205,
+      "sha256": "af2b27729923634696c8e0b6675a2efe7b5bafb057ba6532c3129a816b83ebc0",
+      "lcpMs": 2554.8217,
+      "cls": 0,
+      "tbtMs": 0.2945750000000089,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "route": "home",
+      "sample": 3,
+      "bytes": 646509,
+      "sha256": "84d7677ac39b506fb4cae61f151cc23c14e31c6f08db79e42124507df35e5254",
+      "lcpMs": 2406.6192,
+      "cls": 0,
+      "tbtMs": 39.84519999999998,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "route": "thesis",
+      "sample": 1,
+      "bytes": 869586,
+      "sha256": "d10734ab1898a71e915901f9583d8991d5fb0d0ff6ff322572dea26f44890608",
+      "lcpMs": 2407.9394,
+      "cls": 0,
+      "tbtMs": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "route": "thesis",
+      "sample": 2,
+      "bytes": 870156,
+      "sha256": "119bc5b1eaaadad618e4520364bd123746bcd763c9e3afa4826ca7de246f2b1e",
+      "lcpMs": 2408.3244000000004,
+      "cls": 0,
+      "tbtMs": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "route": "thesis",
+      "sample": 3,
+      "bytes": 869501,
+      "sha256": "1ce4c44c1acb229c51fda374fd112662e3318662c008abccc70349253bcd8868",
+      "lcpMs": 2409.0782,
+      "cls": 0,
+      "tbtMs": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    }
+  ],
+  "limitations": [
+    "Changed-source focused checks and selected original route gates only; full suite, review, post-merge and production checks remain required.",
+    "Original performance/visual thresholds, typography and image bytes are unchanged."
+  ]
+}

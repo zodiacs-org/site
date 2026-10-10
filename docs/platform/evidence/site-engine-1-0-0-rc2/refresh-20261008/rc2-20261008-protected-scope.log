@@ -1,0 +1,17 @@
+
+> zodiacs-org@1.0.0 test:phase1:scope
+> node scripts/phase1-scope-guard.mjs
+
+phase1-scope-guard: 12 protected path change(s)
+  - public/registry/aquarius/index.html (Registry wing)
+  - public/registry/aries/index.html (Registry wing)
+  - public/registry/cancer/index.html (Registry wing)
+  - public/registry/capricorn/index.html (Registry wing)
+  - public/registry/gemini/index.html (Registry wing)
+  - public/registry/leo/index.html (Registry wing)
+  - public/registry/libra/index.html (Registry wing)
+  - public/registry/pisces/index.html (Registry wing)
+  - public/registry/sagittarius/index.html (Registry wing)
+  - public/registry/scorpio/index.html (Registry wing)
+  - public/registry/taurus/index.html (Registry wing)
+  - public/registry/virgo/index.html (Registry wing)

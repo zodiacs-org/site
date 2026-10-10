@@ -1,0 +1,59 @@
+{
+  "what": "One sequential original/current comparison per scenario; exact digest, read coverage and order. No source file is modified.",
+  "base": "f4715b7047c852f48d0e188d43863d5825ae2bef",
+  "node": "v22.22.2",
+  "referenceSha256": "c8a598c63a004aff2af3fa250553b5f5ac5967b725b95a1c88f9712a81059ddf",
+  "implementationSha256": "a52c7aa2502cc0ce787655fab1f6f375b6f825f251eee4e9b5b817874f060d04",
+  "scenarios": [
+    {
+      "name": "current-tree",
+      "equalDigest": true,
+      "equalReadCoverageAndOrder": true,
+      "digest": "b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45",
+      "filesRead": 1103,
+      "originalWallMs": 555.73537,
+      "currentWallMs": 145.69734900000003,
+      "changesDigest": false
+    },
+    {
+      "name": "transitive-source-change",
+      "equalDigest": true,
+      "equalReadCoverageAndOrder": true,
+      "digest": "1f78965c3695354c0d832a9c3b33c92c30f9e798d9b06e8e7ed6c1f37c8bd8bb",
+      "filesRead": 1103,
+      "originalWallMs": 527.4098089999999,
+      "currentWallMs": 218.18650000000002,
+      "changesDigest": true
+    },
+    {
+      "name": "bundled-font-change",
+      "equalDigest": true,
+      "equalReadCoverageAndOrder": true,
+      "digest": "a437e5914acee0adf358168d3cfaddb894b315b8fc1371ce7f69ed9b5736a37b",
+      "filesRead": 1103,
+      "originalWallMs": 572.3326199999999,
+      "currentWallMs": 150.73236199999974,
+      "changesDigest": true
+    },
+    {
+      "name": "excluded-delivery-change",
+      "equalDigest": true,
+      "equalReadCoverageAndOrder": true,
+      "digest": "b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45",
+      "filesRead": 1103,
+      "originalWallMs": 452.37516300000016,
+      "currentWallMs": 138.44197299999996,
+      "changesDigest": false
+    },
+    {
+      "name": "excluded-payload-change",
+      "equalDigest": true,
+      "equalReadCoverageAndOrder": true,
+      "digest": "b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45",
+      "filesRead": 1103,
+      "originalWallMs": 559.4719089999999,
+      "currentWallMs": 151.86634200000026,
+      "changesDigest": false
+    }
+  ]
+}

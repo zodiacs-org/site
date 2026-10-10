@@ -1,0 +1,24 @@
+{
+  "sourceHead": "1fd24bcbc7c7281245c83fb12c0d321028068085",
+  "proof": {
+    "anonymousRows": 3,
+    "allFiveFieldsMatchPublicGeoNamesTransformation": 3,
+    "rowsHaveBirthDateOrTime": 0,
+    "catalogueRowsChecked": 33934
+  },
+  "sets": [
+    {
+      "historyOriginalMatchingDataLines": 20,
+      "remainingAfterVerifiedPublicRowRemoval": 0,
+      "verifiedPublicRowOccurrencesRemoved": 43,
+      "commits": 13
+    },
+    {
+      "historyOriginalMatchingDataLines": 20,
+      "remainingAfterVerifiedPublicRowRemoval": 0,
+      "verifiedPublicRowOccurrencesRemoved": 43,
+      "commits": 13
+    }
+  ],
+  "limits": "Count-only classification of introduced matching data lines. No matched value, path, pattern, private input identity or raw-output fingerprint is retained. Committed-tree and working-tree positive counts remain reported; this is not a blanket privacy clearance."
+}

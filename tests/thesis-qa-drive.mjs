@@ -12,7 +12,8 @@
  */
 import { chromium } from 'playwright-core';
 import { startPreview } from './visual/preview-server.mjs';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+const canonicalFooterCss = readFileSync(new URL('../src/styles/site-footer.css', import.meta.url), 'utf8');
 import { setTimeout as wait } from 'node:timers/promises';
 
 const OUT = process.env.OUT_DIR ?? null;
@@ -186,12 +187,24 @@ try {
   const errors = [];
   const external = [];
   const galleryRequests = [];
+  const heroMediaRequests = [];
   page.on('pageerror', (err) => errors.push(String(err)));
   page.on('request', (req) => {
     if (new URL(req.url()).pathname === '/assets/gallery.js') galleryRequests.push(req.url());
+    if (new URL(req.url()).pathname === '/assets/art/zodiac-clock.mp4') heroMediaRequests.push(req);
   });
   page.on('requestfailed', (req) => {
     (req.url().startsWith('http://127.0.0.1') ? errors : external).push(req.url());
+  });
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    window.__thesisWebGLContexts = [];
+    HTMLCanvasElement.prototype.getContext = function (type) {
+      if (type === 'webgl' || type === 'webgl2') {
+        window.__thesisWebGLContexts.push({ type, at: performance.now() });
+      }
+      return getContext.apply(this, arguments);
+    };
   });
   await page.goto(`${BASE}/thesis/`, { waitUntil: 'networkidle' });
   const registryCollectionMarker = await page.evaluate(async () => {
@@ -210,6 +223,10 @@ try {
   check('gallery bundle is not requested above the fold', galleryRequests.length === 0,
     galleryRequests.join(' | '));
 
+  const initialWebGLContexts = await page.evaluate(() => window.__thesisWebGLContexts);
+  check('offscreen gallery creates no WebGL context above the fold',
+    initialWebGLContexts.length === 0, JSON.stringify(initialWebGLContexts));
+
   // Anchors resolve.
   for (const id of ['everyone-has-a-sign', 'where-the-signs-come-from', 'attention',
     'worth-holding', 'pulse', 'the-candidacy', 'what-holding-means', 'the-public-record',
@@ -222,6 +239,11 @@ try {
   const clock = await page.locator('[data-season-clock]').textContent();
   check('season clock renders', /season · day \d+ of \d+/.test(clock ?? ''), clock ?? '(hidden)');
 
+  check('thesis embeds byte-identical canonical footer CSS without its blocking request',
+    (await page.locator('style[data-canonical-thesis-footer]').textContent()) === canonicalFooterCss
+      && await page.locator('link[rel="stylesheet"][href*="site-footer.css"]').count() === 0
+      && await page.evaluate(() => performance.getEntriesByType('resource')
+        .filter((entry) => new URL(entry.name).pathname === '/assets/site-footer.css').length) === 0);
   // Masthead + footer.
   check('masthead reads Nº 09 · Why Zodiacs Matter', /Nº 09 · Why Zodiacs Matter/.test(await page.locator('.essay__rail').textContent() ?? ''));
   check('hero keeps one concise consumer subheader',
@@ -231,6 +253,7 @@ try {
   check('hero uses one ambient zodiac-clock video', (await heroVideo.count()) === 1);
   const heroVideoStart = await heroVideo.evaluate((video) => ({
     autoplay: video.hasAttribute('autoplay'),
+    preload: video.preload,
     currentTime: video.currentTime,
     filter: getComputedStyle(video).filter,
     loop: video.loop,
@@ -251,6 +274,7 @@ try {
   check('hero ambient video is loaded, looping, muted, inline, and moving',
     heroVideoStart.readyState >= 2
       && !heroVideoStart.autoplay
+      && heroVideoStart.preload === 'none'
       && heroVideoStart.loop
       && heroVideoStart.muted
       && heroVideoStart.playsInline
@@ -260,6 +284,20 @@ try {
       && !heroVideoLater.paused
       && heroVideoLater.currentTime !== heroVideoStart.currentTime,
     JSON.stringify({ start: heroVideoStart, later: heroVideoLater }));
+  const heroPaint = await page.evaluate(() => ({
+    firstContentfulPaint: performance.getEntriesByName('first-contentful-paint')[0]?.startTime,
+    origin: performance.timeOrigin,
+    posterFinished: performance.getEntriesByType('resource')
+      .find((entry) => new URL(entry.name).pathname === '/assets/art/zodiac-clock-768.avif')?.responseEnd,
+  }));
+  const firstMediaRequest = heroMediaRequests[0]?.timing().startTime;
+  check('ambient media starts after the poster load and first contentful paint',
+    typeof firstMediaRequest === 'number'
+      && typeof heroPaint.firstContentfulPaint === 'number'
+      && typeof heroPaint.posterFinished === 'number'
+      && firstMediaRequest >= heroPaint.origin + heroPaint.firstContentfulPaint
+      && firstMediaRequest >= heroPaint.origin + heroPaint.posterFinished,
+    JSON.stringify({ ...heroPaint, firstMediaRequest }));
   check('hero keeps the original cover crop and color treatment',
     heroVideoStart.objectFit === 'cover'
       && heroVideoStart.objectPosition === '28% 50%'
@@ -437,6 +475,9 @@ try {
   check('gallery bundle loads once when Section V approaches',
     galleryReady && galleryRequests.length === 1,
     `${galleryReady ? 'ready' : 'not ready'} · ${galleryRequests.length} request(s)`);
+  const visibleWebGLContexts = await page.evaluate(() => window.__thesisWebGLContexts);
+  check('gallery creates its real WebGL contexts when reached',
+    galleryReady && visibleWebGLContexts.length > 0, JSON.stringify(visibleWebGLContexts));
   const railButtons = thesisGallery.locator('[data-gallery-rail]').getByRole('button');
   const railState = await railButtons.evaluateAll((buttons) => buttons.map((button) => ({
     current: button.getAttribute('aria-current'),
@@ -909,6 +950,10 @@ try {
   // No-JavaScript pass — the baked static values must stand on their own.
   const nojsContext = await browser.newContext({ javaScriptEnabled: false, reducedMotion: 'reduce' });
   const nojs = await nojsContext.newPage();
+  const nojsMedia = [];
+  nojs.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/assets/art/zodiac-clock.mp4') nojsMedia.push(request.url());
+  });
   await nojs.setViewportSize({ width: 1280, height: 1000 });
   await nojs.goto(`${BASE}/thesis/`, { waitUntil: 'domcontentloaded' });
   check('no-JS: zero pending chips', (await nojs.locator('.pending-disclosure').count()) === 0);
@@ -963,11 +1008,16 @@ try {
   check('no-JS: comparison opens and exposes the full matrix',
     await isVisuallyExposed(nojs.locator('#comparison-drawer .ztbl')));
   await nojs.locator('#comparison-drawer > summary').click();
+  check('no-JS never downloads the ambient loop', nojsMedia.length === 0, JSON.stringify(nojsMedia));
   await nojsContext.close();
 
   // Reduced motion shows final states without transitions or transforms.
   const reducedContext = await browser.newContext({ reducedMotion: 'reduce' });
   const reduced = await reducedContext.newPage();
+  const reducedMedia = [];
+  reduced.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/assets/art/zodiac-clock.mp4') reducedMedia.push(request.url());
+  });
   await reduced.setViewportSize({ width: 1280, height: 1000 });
   await reduced.goto(`${BASE}/thesis/`, { waitUntil: 'networkidle' });
   await wait(600);
@@ -1026,6 +1076,7 @@ try {
   check('reduced motion: comparison opens and exposes the full matrix',
     await isVisuallyExposed(reduced.locator('#comparison-drawer .ztbl')));
   await reduced.locator('#comparison-drawer > summary').click();
+  check('reduced motion never downloads the ambient loop', reducedMedia.length === 0, JSON.stringify(reducedMedia));
   await reducedContext.close();
 
   // A preference change after load must stop the ambient video immediately.
@@ -1125,6 +1176,46 @@ try {
     }
     check(`no page errors or same-origin failures (${width}px)`, mobErrors.length === 0, mobErrors.slice(0, 2).join(' | '));
     await mob.close();
+  }
+  // Hold the real font requests to exercise the first layout with fallbacks,
+  // then release them without modifying production styles or metric gates.
+  for (const width of [390, 412, 810, 1440]) {
+    const cold = await browser.newContext({ viewport: { width, height: 900 } });
+    let releaseFonts;
+    const fontGate = new Promise((resolve) => { releaseFonts = resolve; });
+    await cold.route('**/fonts/*.woff2', async (route) => {
+      await fontGate;
+      await route.continue();
+    });
+    const coldPage = await cold.newPage();
+    try {
+      await coldPage.goto(`${BASE}/thesis/`, { waitUntil: 'domcontentloaded' });
+      await coldPage.waitForTimeout(150);
+      const beforeFonts = await coldPage.evaluate(() => ({
+        top: document.querySelector('.essay__body').getBoundingClientRect().top,
+        labels: [...document.querySelectorAll('.essay__rail .label')].map((node) => ({
+          height: node.getBoundingClientRect().height,
+          lineHeight: getComputedStyle(node).lineHeight,
+        })),
+        fontLoaded: document.fonts.check('500 9.5px "EB Garamond"'),
+      }));
+      releaseFonts();
+      await coldPage.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      const afterFonts = await coldPage.evaluate(() => ({
+        top: document.querySelector('.essay__body').getBoundingClientRect().top,
+        fontLoaded: document.fonts.check('500 9.5px "EB Garamond"'),
+      }));
+      check(`${width}px: essay start stays fixed across real font loading`,
+        !beforeFonts.fontLoaded && afterFonts.fontLoaded
+          && Math.abs(beforeFonts.top - afterFonts.top) <= 0.01,
+        JSON.stringify({ beforeFonts, afterFonts }));
+    } finally {
+      releaseFonts();
+      await cold.close();
+    }
   }
   await browser.close();
 } finally {

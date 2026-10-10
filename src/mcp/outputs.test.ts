@@ -398,11 +398,18 @@ describe('the conventions vocabulary', () => {
     expect(vocabulary.sets.map((set) => set.conventions)).toEqual([...NATAL_RECEIPT_CONVENTION_SETS]);
     const fresh = createNatalEnvelope(natalChart({ utc: LONDON.utc })).receipt;
     expect(fresh.conventions).toEqual(vocabulary.sets[0].conventions);
-    // The installed engine writes the current set; rc.16 wrote it first, and rc.17
-    // records rc.16's conventions unchanged, as its declarations say.
-    const rc = (version: string) => Number(/^0\.1\.1-rc\.(\d+)$/.exec(version)![1]);
+    // The installed engine writes the current set, first introduced in rc.16.
+    // Compare the whole release tuple across the transition to 1.0 candidates.
+    const release = (version: string) => {
+      const parts = /^(\d+)\.(\d+)\.(\d+)(?:-rc\.(\d+))?$/.exec(version);
+      expect(parts, 'a stable release or numbered release candidate').not.toBeNull();
+      return [...parts!.slice(1, 4).map(Number), parts![4] === undefined ? Infinity : Number(parts![4])];
+    };
     expect(vocabulary.sets[0].writtenBy).toEqual({ from: '0.1.1-rc.16', to: null });
-    expect(rc(ENGINE_VERSION)).toBeGreaterThanOrEqual(rc(vocabulary.sets[0].writtenBy.from));
+    const installed = release(ENGINE_VERSION);
+    const introduced = release(vocabulary.sets[0].writtenBy.from);
+    const order = installed.reduce((result, value, index) => result || Math.sign(value - introduced[index]), 0);
+    expect(order).toBeGreaterThanOrEqual(0);
     expect(vocabulary.coverage).toEqual(fresh.coverage);
     expect(vocabulary.engine).toEqual({ name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { ...EPHEMERIS } });
   });

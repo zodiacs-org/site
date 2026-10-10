@@ -1,0 +1,9 @@
+(node:205629) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> zodiacs-org@1.0.0 registry:hub:check
+> node scripts/build-registry-hub.mjs --check
+
+(node:205642) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Registry hub is current.

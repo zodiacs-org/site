@@ -1,0 +1,24 @@
+{
+  "sourceHead": "1d49fd4397e378cf86054fc930e8395da0e63f6f",
+  "scope": "Exact staged evidence blobs preceding this count-only record. This record is included in a final pre-commit check.",
+  "matchingRules": "Canonical Unicode regular expressions; no matched values or paths retained.",
+  "sets": [
+    {
+      "stagedFilesRead": 21,
+      "stagedBytesRead": 420264,
+      "dataLines": 0,
+      "nameLines": 0,
+      "gzipArchives": 0,
+      "zipArchives": 0
+    },
+    {
+      "stagedFilesRead": 21,
+      "stagedBytesRead": 420264,
+      "dataLines": 0,
+      "nameLines": 0,
+      "gzipArchives": 0,
+      "zipArchives": 0
+    }
+  ],
+  "finalRecordIncludedInPreCommitCheck": true
+}

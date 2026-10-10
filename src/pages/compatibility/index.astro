@@ -5,6 +5,7 @@ import Faq from '../../components/Faq.astro';
 import RaceRamp from '../../components/RaceRamp.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
+import ToolEmblem from '../../components/ToolEmblem.astro';
 import SynastryCalculator from '../../islands/SynastryCalculator';
 import { SIGNS } from '../../lib/signs';
 import { pairSlug } from '../../lib/compat';
@@ -62,11 +63,31 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
       <em class="kicker">Two charts, honestly compared</em>
       <h1 class="display">Check your astrology compatibility.</h1>
       <p>
-        Compare two <AstroTerm term="birth-chart" label="birth charts" surface="compatibility" />{' '}to explore where a relationship flows and where it catches.
+        Compare two <AstroTerm term="birth-chart" label="birth charts" surface="compatibility" />{' '}to explore where a relationship flows and where it catches. You don’t need their birth details: send a link and they add their own.
       </p>
     </div>
 
-    <SynastryCalculator client:load />
+    <div class="compat-choices">
+      <a class="compat-choice compat-choice--invite" href="/compatibility/invite/">
+        <ToolEmblem kind="compat" />
+        <span class="compat-choice__body">
+          <strong>Send a link to someone</strong>
+          <span>Enter your birth details, then send the link. When they add theirs, the comparison opens for both of you.</span>
+          <span class="compat-choice__go">Make an invite link →</span>
+        </span>
+      </a>
+      <a class="compat-choice" href="#compare-form">
+        <span class="compat-choice__body">
+          <strong>Enter both charts yourself</strong>
+          <span>If you already know both birth dates, and the times and places if you have them.</span>
+          <span class="compat-choice__go">Use the form below ↓</span>
+        </span>
+      </a>
+    </div>
+
+    <div id="compare-form" class="compat-form-anchor">
+      <SynastryCalculator client:load />
+    </div>
     <noscript>
       <p>This compatibility calculator needs JavaScript. Enable it and reload to compare two birth charts in your browser.</p>
       {inviteUiEnabled && <p>Invitation links open here too, and need JavaScript for the same reason.</p>}
@@ -126,6 +147,36 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
     line-height: 1.04;
   }
   .compat-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+
+  .compat-choices {
+    display: grid;
+    gap: 12px;
+    margin: 28px 0 30px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) { .compat-choices { grid-template-columns: 1.35fr 1fr; } }
+  .compat-choice {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 22px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-lg);
+    background: var(--void-1);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--dur-1) var(--ease), transform var(--dur-2) var(--ease-soft);
+  }
+  .compat-choice:hover { border-color: var(--hair-3); transform: translateY(-2px); }
+  .compat-choice:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 3px; }
+  .compat-choice--invite { border-color: var(--hair-3); background: var(--void-2); }
+  .compat-choice :global(.tool-emblem) { --emblem-size: 72px; flex: none; }
+  .compat-choice__body { display: grid; gap: 6px; }
+  .compat-choice__body strong { font-family: var(--font-serif); font-weight: 400; font-size: var(--text-xl); line-height: 1.15; color: var(--text); }
+  .compat-choice__body span { color: var(--muted); font-size: var(--text-sm); line-height: 1.55; }
+  .compat-choice__body .compat-choice__go { margin-top: 4px; color: var(--text); font-weight: 550; font-size: 13px; }
+  .compat-form-anchor { scroll-margin-top: 96px; }
+  @media (prefers-reduced-motion: reduce) { .compat-choice { transition: none; } .compat-choice:hover { transform: none; } }
 
   .compat-library { overflow: hidden; border: 1px solid var(--hair-2); border-radius: var(--r-md); background: var(--void-1); }
   .compat-library > summary {

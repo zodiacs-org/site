@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-developer",
-  "version": "0.3.3",
+  "version": "0.3.6",
   "description": "Build and verify astrology integrations with the published Zodiacs engine, bounded sky tools and local chart comparison.",
   "author": {
     "name": "Zodiacs LLC",
@@ -22,7 +22,7 @@
     "com.openai": {
       "onboardingSkill": "./skills/build-with-zodiacs/SKILL.md",
       "publication": {
-        "release_notes": "0.3.3: Follows the public plugin's 0.4.0 tools: the catalogue search tool is retired, the sky calendar covers up to 92 days and tool titles and answers use plain language. Horoscopes are not part of this local server."
+        "release_notes": "0.3.6: Rebuilds the local engine 1.0.0-rc.2 candidate with current panel sizing and host link handling. Earlier review archives remain available."
       },
       "interface": {
         "displayName": "Zodiacs Developer",

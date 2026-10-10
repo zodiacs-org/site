@@ -1,0 +1,28 @@
+{
+  "schema": "zodiacs.home-hydration-harness-launch-failure.v1",
+  "run": 37979717024,
+  "job": 113986830115,
+  "workflowSource": "15ca780c406cc9353c29036ccc2d097e0ed42b47",
+  "checkedOutSource": "be1887221aeb0984d9b0b14e3a3e403abea47848",
+  "conclusion": "failure",
+  "reason": "The new driver passed findChromium()'s Promise as executablePath instead of awaiting the existing asynchronous helper.",
+  "correction": "Await findChromium() before launching Chromium.",
+  "reached": [
+    "original build/source/dist checks",
+    "original consumer/footer/type checks",
+    "existing homepage/thesis source contracts"
+  ],
+  "unreached": [
+    "browser launch",
+    "hydration controls",
+    "existing browser journeys",
+    "Lighthouse",
+    "fresh screenshots"
+  ],
+  "artifact": {
+    "id": 11640881704,
+    "bytes": 8678646,
+    "sha256": "8e8f2005973f4277b7af29019cfe2f812091b143126f21cfee73d54f9c498f0f"
+  },
+  "limitation": "No browser or performance result; the corrected source requires a fresh run."
+}

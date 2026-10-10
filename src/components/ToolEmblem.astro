@@ -1,0 +1,241 @@
+---
+/**
+ * Emblems for the five featured tools on /tools/ (and the invite choice on
+ * /compatibility/). Flat and pastel, drawn in the notation astrologers read
+ * at a glance, with no backdrop behind them:
+ *
+ *   birth       a natal wheel: the twelve signs, angles, planets, a grand trine
+ *   today       the Sun's glyph (☉) on its arc above the horizon
+ *   compat      two signs on the ascendant–descendant axis, self and partner
+ *   horoscopes  this sign season, its days so far drawn as a ring
+ *   moonrise    a crescent Moon, and the rising sign on the eastern horizon
+ *
+ * Signs always appear as the pastel zodiac icons; planets as the site's own
+ * glyphs. No gradients, glows or shadows.
+ */
+import { PLANET_GLYPH } from '../lib/glyphs/paths';
+import { SIGNS, seasonSign, signBySlug } from '../lib/signs';
+
+export type ToolEmblemKind = 'birth' | 'today' | 'compat' | 'horoscopes' | 'moonrise';
+
+interface Props {
+  kind: ToolEmblemKind;
+}
+const { kind } = Astro.props;
+
+const C = 60; // centre of the 120-unit face
+const n2 = (n: number) => Math.round(n * 100) / 100;
+/** A point at `deg` (counter-clockwise from 3 o'clock, as a chart runs) and radius `r`. */
+const at = (deg: number, r: number, cx = C, cy = C): [number, number] => {
+  const a = (deg * Math.PI) / 180;
+  return [n2(cx + r * Math.cos(a)), n2(cy - r * Math.sin(a))];
+};
+const radial = (deg: number, r1: number, r2: number) => {
+  const [x1, y1] = at(deg, r1);
+  const [x2, y2] = at(deg, r2);
+  return `M${x1} ${y1}L${x2} ${y2}`;
+};
+/** Counter-clockwise arc from `from`° to `to`°. */
+const arc = (from: number, to: number, r: number, cx = C, cy = C) => {
+  const [x1, y1] = at(from, r, cx, cy);
+  const [x2, y2] = at(to, r, cx, cy);
+  return `M${x1} ${y1}A${r} ${r} 0 ${to - from > 180 ? 1 : 0} 0 ${x2} ${y2}`;
+};
+/** A small open arrowhead at (x, y) pointing toward `deg`. */
+const arrowhead = (x: number, y: number, deg: number, size = 4.2) => {
+  const [ax, ay] = at(deg + 150, size, x, y);
+  const [bx, by] = at(deg - 150, size, x, y);
+  return `M${ax} ${ay}L${x} ${y}L${bx} ${by}`;
+};
+const icon = (slug: string, px: 48 | 128 = 48) => `/assets/zodiac-icons/${px}/${slug}.webp`;
+const hueOf = (slug: string) => signBySlug(slug).hue;
+
+// ── birth: 20° Libra rising, a grand trine in air ─────────────────────
+const ASC = 200;
+const onWheel = (lon: number) => 180 + lon - ASC;
+const RING_OUT = 56;
+const RING_IN = 42;
+const SIGN_ICON = 10.4;
+const signRing = SIGNS.map((s, i) => ({
+  slug: s.slug,
+  edge: radial(onWheel(i * 30), RING_IN, RING_OUT),
+  mid: at(onWheel(i * 30 + 15), (RING_OUT + RING_IN) / 2),
+}));
+const CUSPS = [200, 228, 258, 284, 316, 350, 20, 48, 78, 104, 136, 170];
+const ASPECT_R = 24;
+const houseLines = CUSPS.filter((_, i) => i % 3).map((lon) => radial(onWheel(lon), ASPECT_R, RING_IN)).join('');
+const axes = [0, 3, 6, 9].map((i) => radial(onWheel(CUSPS[i]), ASPECT_R, RING_IN)).join('');
+const ascTip = at(onWheel(CUSPS[0]), RING_IN);
+const mcTip = at(onWheel(CUSPS[9]), RING_IN);
+const BODY_R = 32;
+const GLYPH = 7.4;
+const bodies = ([['Sun', 190], ['Moon', 70], ['Venus', 160], ['Mars', 280], ['Jupiter', 310]] as const).map(([body, lon]) => {
+  const deg = onWheel(lon);
+  const [x, y] = at(deg, BODY_R);
+  return { body, x, y, deg };
+});
+const bodyAt = (name: string) => bodies.find((b) => b.body === name)!;
+// Aspect colours follow the chart result's wheel (src/lib/wheel/Wheel.tsx).
+const aspects = ([
+  ['Sun', 'Moon', '#B6D4E4'], ['Moon', 'Jupiter', '#B6D4E4'], ['Jupiter', 'Sun', '#B6D4E4'],
+  ['Moon', 'Venus', '#DE8E79'],
+] as const).map(([a, b, stroke]) => {
+  const [x1, y1] = at(bodyAt(a).deg, ASPECT_R);
+  const [x2, y2] = at(bodyAt(b).deg, ASPECT_R);
+  return { d: `M${x1} ${y1}L${x2} ${y2}`, stroke };
+});
+
+// ── today: ☉ a little past mid-morning ─────────────────────────────────
+const SUN = hueOf('sagittarius');
+const DAY_Y = 86;
+const DAY_R = 44;
+const SUN_DEG = 180 - 0.36 * 180;
+const [sunX, sunY] = at(SUN_DEG, DAY_R, C, DAY_Y);
+
+// ── compat: Aries on the ascendant, Libra on the descendant ──────────
+const PAIR_R = 40;
+const PAIR_ICON = 31;
+const pair = [
+  { slug: 'aries', deg: 180 },
+  { slug: 'libra', deg: 0 },
+].map((p) => {
+  const [x, y] = at(p.deg, PAIR_R);
+  return { ...p, x, y };
+});
+const pairTicks = Array.from({ length: 12 }, (_, i) => i * 30).filter((d) => d % 180).map((d) => radial(d, PAIR_R - 2.4, PAIR_R + 2.4)).join('');
+
+// ── horoscopes: the current sign season and how far into it we are ───
+// Stamped at build, like the race page's season fallback; daily deploys keep it current.
+const today = new Date();
+const season = seasonSign(today.getUTCMonth() + 1, today.getUTCDate());
+const seasonYear = today.getUTCMonth() + 1 < season.start[0] ? today.getUTCFullYear() - 1 : today.getUTCFullYear();
+const seasonStart = Date.UTC(seasonYear, season.start[0] - 1, season.start[1]);
+const seasonEnd = Date.UTC(season.end[0] < season.start[0] ? seasonYear + 1 : seasonYear, season.end[0] - 1, season.end[1]);
+const DAY_MS = 86_400_000;
+const seasonDays = Math.round((seasonEnd - seasonStart) / DAY_MS) + 1;
+const seasonDay = Math.min(seasonDays, Math.floor((Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()) - seasonStart) / DAY_MS) + 1);
+const PROGRESS_R = 39;
+const DIAL_X = 45; // left-aligned with the card text
+const nowDeg = 90 - (seasonDay / seasonDays) * 360;
+const progress = arc(nowDeg, 90, PROGRESS_R, DIAL_X);
+const [nowX, nowY] = at(nowDeg, PROGRESS_R, DIAL_X);
+const SEASON_ICON = 48;
+
+// ── moonrise: a crescent Moon over Leo rising in the east ─────────────
+const MOON = hueOf('cancer');
+const HZ = 90;
+const RISING_ICON = 31;
+const rising = { slug: 'leo', x: 4 + RISING_ICON / 2, y: HZ - RISING_ICON / 2 };
+const crescent = (() => {
+  const m = { x: 70, y: 48, r: 18 };
+  const s = { x: 78.6, y: 40.8, r: 16 };
+  const dx = s.x - m.x;
+  const dy = s.y - m.y;
+  const d = Math.hypot(dx, dy);
+  const a = (m.r ** 2 - s.r ** 2 + d ** 2) / (2 * d);
+  const h = Math.sqrt(m.r ** 2 - a ** 2);
+  const mx = m.x + (a * dx) / d;
+  const my = m.y + (a * dy) / d;
+  const p1 = `${n2(mx + (h * dy) / d)} ${n2(my - (h * dx) / d)}`;
+  const p2 = `${n2(mx - (h * dy) / d)} ${n2(my + (h * dx) / d)}`;
+  return `M${p1}A${m.r} ${m.r} 0 1 0 ${p2}A${s.r} ${s.r} 0 0 1 ${p1}Z`;
+})();
+
+---
+<span class={`tool-emblem tool-emblem--${kind}`} aria-hidden="true">
+  <svg viewBox="0 0 120 120">
+
+    {kind === 'birth' && (
+      <g>
+        <circle class="te-hair" cx="60" cy="60" r={RING_OUT} />
+        <circle class="te-hair" cx="60" cy="60" r={RING_IN} />
+        {signRing.map((s) => <path class="te-hair" d={s.edge} />)}
+        <path class="te-hair" d={houseLines} />
+        <circle class="te-hair" cx="60" cy="60" r={ASPECT_R} />
+        <path class="te-axis" d={axes} />
+        <path class="te-axis" d={arrowhead(ascTip[0], ascTip[1], 180)} />
+        <path class="te-axis" d={arrowhead(mcTip[0], mcTip[1], onWheel(CUSPS[9]))} />
+        {aspects.map((a) => <path class="te-aspect" d={a.d} style={`stroke:${a.stroke}`} />)}
+        {signRing.map((s) => (
+          <image href={icon(s.slug)} x={n2(s.mid[0] - SIGN_ICON / 2)} y={n2(s.mid[1] - SIGN_ICON / 2)} width={SIGN_ICON} height={SIGN_ICON} />
+        ))}
+        {bodies.map((b) => (
+          <g>
+            <circle class="te-cut" cx={b.x} cy={b.y} r="5" />
+            <g class="te-glyph" transform={`translate(${b.x} ${b.y}) scale(${GLYPH / 24}) translate(-12 -12)`} set:html={PLANET_GLYPH[b.body]} />
+          </g>
+        ))}
+      </g>
+    )}
+
+    {kind === 'today' && (
+      <g>
+        <path class="te-line te-line--dotted" d={`M${C - DAY_R} ${DAY_Y}A${DAY_R} ${DAY_R} 0 0 1 ${C + DAY_R} ${DAY_Y}`} />
+        <path class="te-line te-line--hue" d={`M${C - DAY_R} ${DAY_Y}A${DAY_R} ${DAY_R} 0 0 1 ${sunX} ${sunY}`} style={`stroke:${SUN}`} />
+        <path class="te-line" d={`M4 ${DAY_Y}H116`} />
+        <circle class="te-sun" cx={sunX} cy={sunY} r="11" style={`stroke:${SUN}`} />
+        <circle cx={sunX} cy={sunY} r="3.2" style={`fill:${SUN}`} />
+      </g>
+    )}
+
+    {kind === 'compat' && (
+      <g>
+        <circle class="te-line te-line--faint" cx="60" cy="60" r={PAIR_R} />
+        <path class="te-line te-line--faint" d={pairTicks} />
+        <path class="te-line te-line--hue" d={`M${pair[0].x} ${pair[0].y}H${pair[1].x}`} style="stroke:#E0A9B4" />
+        {pair.map((p) => (
+          <image href={icon(p.slug, 128)} x={n2(p.x - PAIR_ICON / 2)} y={n2(p.y - PAIR_ICON / 2)} width={PAIR_ICON} height={PAIR_ICON} />
+        ))}
+      </g>
+    )}
+
+    {kind === 'horoscopes' && (
+      <g>
+        <circle class="te-line te-line--faint" cx={DIAL_X} cy="60" r={PROGRESS_R} />
+        <path class="te-line te-line--hue te-line--bold" d={progress} style={`stroke:${season.hue}`} />
+        <circle class="te-bead" cx={nowX} cy={nowY} r="3" />
+        <image href={icon(season.slug, 128)} x={DIAL_X - SEASON_ICON / 2} y={60 - SEASON_ICON / 2} width={SEASON_ICON} height={SEASON_ICON} />
+      </g>
+    )}
+
+    {kind === 'moonrise' && (
+      <g>
+        <path class="te-line" d={`M4 ${HZ}H116`} />
+        <image href={icon(rising.slug, 128)} x={rising.x - RISING_ICON / 2} y={rising.y - RISING_ICON / 2} width={RISING_ICON} height={RISING_ICON} />
+        <path d={crescent} style={`fill:${MOON}`} />
+        <circle class="te-star" cx="34" cy="36" r="1.6" />
+        <circle class="te-star" cx="100" cy="70" r="1.1" />
+      </g>
+    )}
+  </svg>
+</span>
+
+<style>
+  .tool-emblem {
+    display: block;
+    width: var(--emblem-size, 96px);
+    aspect-ratio: 1;
+  }
+  .tool-emblem svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  /* Line weights are set in screen pixels, so the 280px wheel and the 72px
+     emblems share one hairline. */
+  .tool-emblem :global(:is(path, circle)) { vector-effect: non-scaling-stroke; }
+  /* Cut-outs (behind planet glyphs, inside ☉) take the card colour so lines
+     stop cleanly at them; a host on another surface can set --emblem-bg. */
+  .tool-emblem { --te-cutout: var(--emblem-bg, var(--void-2)); }
+  .tool-emblem :global(.te-line) { fill: none; stroke: var(--ink-1); stroke-opacity: 0.62; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .tool-emblem :global(.te-line--faint) { stroke-opacity: 0.26; }
+  .tool-emblem :global(.te-line--dotted) { stroke-opacity: 0.5; stroke-dasharray: 0 4; stroke-width: 1.8; }
+  .tool-emblem :global(.te-line--hue) { stroke-opacity: 1; stroke-width: 1.8; }
+  .tool-emblem :global(.te-line--bold) { stroke-width: 2.6; }
+  .tool-emblem :global(.te-sun) { fill: var(--te-cutout); stroke-width: 2.4; }
+  .tool-emblem :global(.te-bead) { fill: var(--ink-0); }
+  .tool-emblem :global(.te-star) { fill: var(--ink-1); fill-opacity: 0.7; }
+
+  /* birth */
+  .tool-emblem :global(.te-hair) { fill: none; stroke: var(--ink-1); stroke-opacity: 0.16; stroke-width: 1; }
+  .tool-emblem :global(.te-axis) { fill: none; stroke: var(--ink-0); stroke-opacity: 0.55; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+  .tool-emblem :global(.te-aspect) { fill: none; stroke-width: 1.4; stroke-linecap: round; }
+  .tool-emblem :global(.te-cut) { fill: var(--te-cutout); }
+  .tool-emblem :global(.te-glyph) { color: var(--ink-0); fill: none; stroke: var(--ink-0); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+</style>

@@ -1,0 +1,14 @@
+
+> zodiacs-org@1.0.0 test
+> vitest run scripts/platform-candidate-docs.test.mjs --pool=forks --maxWorkers=1 --fileParallelism=false
+
+
+ RUN  v3.2.7 /workspace/site
+
+ ✓ scripts/platform-candidate-docs.test.mjs (25 tests) 3004ms
+   ✓ developer candidate documentation > identifies the installed public engine and exact archived package  2807ms
+
+ Test Files  1 passed (1)
+      Tests  25 passed (25)
+   Start at  19:08:37
+   Duration  3.50s (transform 69ms, setup 0ms, collect 126ms, tests 3.00s, environment 0ms, prepare 69ms)

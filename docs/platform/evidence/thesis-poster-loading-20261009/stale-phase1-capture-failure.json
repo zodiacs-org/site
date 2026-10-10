@@ -1,0 +1,45 @@
+{
+  "schema": "zodiacs.retained-site-check-failure.v1",
+  "head": "c802ef6cf4c17fe46ba5301f3ca6999044295910",
+  "integration": "365057b2395928b43f6b3a3efe2ec50346090608",
+  "run": 37928124707,
+  "job": 113811915736,
+  "conclusion": "failure",
+  "failedStep": "Engine accuracy vectors (full unit suite)",
+  "passedThesisBrowserChecks": 236,
+  "unit": {
+    "passed": 6947,
+    "failed": 1,
+    "skipped": 6
+  },
+  "otherJobsPassed": 19,
+  "failure": {
+    "test": "Phase 1 durable acceptance evidence / contains exact 360px and 1280px captures for every new template",
+    "retainedTemplateSourceSha256": "c482bc1c785ceefcb3343b61b014fca5079c27d2f63034fde21ccc6aec0dccc7",
+    "requiredTemplateSourceSha256": "e801ad1b55f7332b1fe66cb26f42613441c22fda2814771de8b62d5f82d9da33",
+    "sourceBoundaryInputChanged": "package.json"
+  },
+  "notReached": [
+    "Visual regression",
+    "Lighthouse performance budgets",
+    "Foreign-origin widgets",
+    "Widget Lighthouse"
+  ],
+  "artifacts": [
+    {
+      "id": 11615471855,
+      "name": "thesis-browser-37928124707",
+      "bytes": 11790484,
+      "sha256": "96629ca3a107c24c766079b1f0583c8cc48163da179a7d4c8c53c785a6aa919a"
+    },
+    {
+      "id": 11615033283,
+      "name": "phase-1-browser-performance-37928124707",
+      "bytes": 33863795,
+      "sha256": "f1d0cd8ca2625817507793eafd563071cca04159e2aba4f8fdb1b4622ad9a6dd"
+    }
+  ],
+  "limitations": [
+    "This is a retained failed gate; no unchanged rerun or new performance pass"
+  ]
+}

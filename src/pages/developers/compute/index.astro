@@ -516,22 +516,22 @@ const jsonLd = [
         A request over a limit is refused whole, before anything is computed,
         except the three evaluation limits, which are counted as the searches
         run: when one is spent the request is refused and nothing is returned.
-        The limits come from the measured cost of requests in every year the
-        API takes: on the machine they were measured on, with engine rc.15,
-        one address at its rate limits could cost at most about 8.7 seconds of
-        CPU time a minute. Measured again on 2026-10-05, on one machine, the
-        same requests add up to about 10.7 seconds with rc.16 and to about 7.8
-        with rc.15, in one run of each; two earlier runs on rc.16 that day gave
-        12.8 and 13.2. The API now runs rc.17, which answers these requests
-        with rc.16's code. The measurements are
-        in the site repository, from{' '}
-        <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/compute-api-2026-09-29">2026-09-29</a>{' '}
-        and{' '}
-        <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/compute-api-2026-10-05">2026-10-05</a>.
+        The limits were set from local request-cost measurements in every
+        year from 1800 to 2199. A fresh local run on 2026-10-07 with engine
+        1.0.0-rc.2 measured 4,600 requests across nine synthetic shapes, after
+        two warmups per shape. Observed CPU maxima were 1,001.5 ms for events,
+        287.1 ms for positions and 1,447.5 ms for the slowest election shape.
+        A separate 5,200-request houses sweep measured a 98.5 ms maximum.
         An elections request counts against the same lower limit as an events
-        request, and in each run that timed it the slowest elections request
-        took less time than the slowest events request, so it adds nothing to
-        that figure.
+        request. The unchanged rate rules give about 23.1 CPU-seconds per
+        address per minute at these observed maxima, and 9.2 at p95.
+        These finite local draws do not guarantee an upper bound or measure
+        deployed cost. This run used Node 22.22.2 and a Xeon
+        Platinum 8573C under a four-CPU quota. Hardware and protocol differ
+        from the earlier runs, so the increase cannot be attributed to the
+        engine. The{' '}
+        <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/site-engine-1-0-0-rc2">current measurement record</a>{' '}
+        gives each endpoint's maximum and the earlier runs' limits.
         When the API is switched off, or its rate limit is not in place, every
         endpoint answers 503.
       </p>

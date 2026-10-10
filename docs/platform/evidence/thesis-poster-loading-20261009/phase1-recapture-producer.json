@@ -1,0 +1,146 @@
+{
+  "schema": "zodiacs.phase1-recapture-provenance.v1",
+  "source": "862e31e42aab89d7050b20f3be003edf7691ba48",
+  "comparedIntegration": "365057b2395928b43f6b3a3efe2ec50346090608",
+  "templateSourceSha256": "e801ad1b55f7332b1fe66cb26f42613441c22fda2814771de8b62d5f82d9da33",
+  "producer": {
+    "run": 37931209465,
+    "job": 113822098422,
+    "overallConclusion": "failure",
+    "captureCount": 18,
+    "evidenceTestsPassed": 5,
+    "failedStep": "Export source-bound captures (assertion pinned older template hash)",
+    "laterVisualAndPerformanceSteps": "not reached"
+  },
+  "artifact": {
+    "id": 11616930539,
+    "bytes": 8665743,
+    "sha256": "a4f1c2afeb2b3abcc0b16619ff5e92636240848686d578f655ab001bf81c146f"
+  },
+  "recovery": {
+    "run": 37933036640,
+    "conclusion": "success",
+    "metadataJob": 113828193434
+  },
+  "files": [
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
+      "bytes": 509372,
+      "sha256": "8cec68a955f1b86e555fb1e6f50a4634fb56f6e7706775757d936b0d60930785",
+      "exportJob": 113828193640
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-1280.png",
+      "bytes": 449482,
+      "sha256": "9fa5c6d27272e4a3437babfab80ac9bc87c53e0e0b69759739f57b239c9a7879",
+      "exportJob": 113828193969
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/manifest.json",
+      "bytes": 12353,
+      "sha256": "e12ac80b70307d02f43c235a08f0f0d9364bf080d068a6c3ac603869178afe9f",
+      "exportJob": 113828194133
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-360.png",
+      "bytes": 389777,
+      "sha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126",
+      "exportJob": 113828194164
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-360.png",
+      "bytes": 366716,
+      "sha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973",
+      "exportJob": 113828194199
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-1280.png",
+      "bytes": 428118,
+      "sha256": "7b6e4e1c136623b697567fdc6629a732b7cba1dcfd49bc295d86d00167feed9e",
+      "exportJob": 113828194200
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-360.png",
+      "bytes": 600066,
+      "sha256": "14bfeb5a016db3f7068843c430d07e3a9812b121c0621f1ce1594530d62da278",
+      "exportJob": 113828194202
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-360.png",
+      "bytes": 304265,
+      "sha256": "c992b5f985f8c9b3ace566bbe061a8b3ee5431b9c498859cbefe42732591d174",
+      "exportJob": 113828194210
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-1280.png",
+      "bytes": 416227,
+      "sha256": "3636fbc3704a3a38c1ac453a084fa1f3dd191f59525a6e3b8368f223927f8311",
+      "exportJob": 113828194214
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-360.png",
+      "bytes": 279728,
+      "sha256": "dcc7fbd8f7f96126fc2d10d4a2458c9c4a769be7ddef278d09c67f080c3b8828",
+      "exportJob": 113828194253
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-360.png",
+      "bytes": 391812,
+      "sha256": "53c7ab90d323eccbeb23bba5665f77e644fbe8af25793f25de225dea3aa5a9e5",
+      "exportJob": 113828194266
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-360.png",
+      "bytes": 303507,
+      "sha256": "fdb45f08cfa01008a7e9bf0c0ecd677c35c5f04257a49b9edf59849ec9f98210",
+      "exportJob": 113828194267
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-1280.png",
+      "bytes": 495815,
+      "sha256": "f70f8c522203ac54734db5d36bed6b1956cde46501942f592d1ad9750a49af0f",
+      "exportJob": 113828194290
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-1280.png",
+      "bytes": 747465,
+      "sha256": "24df52a645932dca9b811e0ff30d7612b39c479a9008ed930d7fd956af91ee22",
+      "exportJob": 113828194616
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-1280.png",
+      "bytes": 397128,
+      "sha256": "3a865e72df00e13d1a3562698e717f0801e52222d562f2b0a084f6dbd1a16178",
+      "exportJob": 113828195954
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-360.png",
+      "bytes": 279967,
+      "sha256": "c20a9173854b6ae28faa7544fbdac1ec62fc76d03dfb052aa88fc3725c180512",
+      "exportJob": 113828196071
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-360.png",
+      "bytes": 1042500,
+      "sha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617",
+      "exportJob": 113828196121
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-1280.png",
+      "bytes": 395890,
+      "sha256": "3aa31407a888494aa18ccefe0d1bb56ea3ce2ac2e3a2cfc0b1af433ac10085f0",
+      "exportJob": 113828196346
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-1280.png",
+      "bytes": 1293464,
+      "sha256": "b5e463dc73abb5c463025ae8fee0b104872e7528237f492b54b1fc31be1b321e",
+      "exportJob": 113828196407
+    }
+  ],
+  "pixelsIdenticalToPreviousActualCaptures": true,
+  "limitations": [
+    "Actual source-bound captures and evidence tests passed; this is not a full Site Check, visual-regression or performance pass.",
+    "Previous captures/failed runs remain in Git history and retained artifacts."
+  ]
+}

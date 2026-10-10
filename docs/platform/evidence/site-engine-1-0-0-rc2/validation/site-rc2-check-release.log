@@ -1,0 +1,207 @@
+
+> zodiacs-org@1.0.0 check
+> npm run check:consumer-boundary && npm run footer:check && astro check
+
+
+> zodiacs-org@1.0.0 check:consumer-boundary
+> node scripts/check-consumer-boundary.mjs
+
+consumer-boundary: clear · 2087 source files checked
+
+> zodiacs-org@1.0.0 footer:check
+> node scripts/sync-site-footer-css.mjs --check && node scripts/check-site-footer-standard.mjs
+
+site-footer.css: public copy matches the canonical source
+site-footer-standard: canonical footer sources and surfaces verified
+16:05:43 [content] Syncing content
+16:05:43 [content] Synced content
+16:05:43 [types] Generated 2.80s
+16:05:43 [check] Getting diagnostics for Astro files in /workspace/site...
+[96msrc/exchange/chart-model.mjs[0m:[93m89[0m:[93m42[0m - [93mwarning[0m[90m ts(6133): [0m'timeframe' is declared but its value is never read.
+
+[7m89[0m export function timeTickIndices(candles, timeframe, maxLabels = 6) {
+[7m  [0m [93m                                         ~~~~~~~~~[0m
+
+[96msrc/exchange/chart.mjs[0m:[93m24[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'INK' is declared but its value is never read.
+
+[7m24[0m const INK = '#EEF1F7';
+[7m  [0m [93m      ~~~[0m
+
+[96msrc/exchange/terminal.mjs[0m:[93m569[0m:[93m12[0m - [93mwarning[0m[90m ts(6133): [0m'setRailLocked' is declared but its value is never read.
+
+[7m569[0m   function setRailLocked(locked) {
+[7m   [0m [93m           ~~~~~~~~~~~~~[0m
+[96msrc/exchange/terminal.mjs[0m:[93m333[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'panelAttempt' is declared but its value is never read.
+
+[7m333[0m   let panelAttempt = 0;
+[7m   [0m [93m      ~~~~~~~~~~~~[0m
+[96msrc/exchange/terminal.mjs[0m:[93m105[0m:[93m10[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m105[0m function fetchWithin(url, deadline) {
+[7m   [0m [93m         ~~~~~~~~~~~[0m
+
+[96msrc/islands/CalendarSubscribe.tsx[0m:[93m74[0m:[93m64[0m - [93mwarning[0m[90m ts(6133): [0m'birthDate' is declared but its value is never read.
+
+[7m74[0m export default function CalendarSubscribe({ locale, positions, birthDate, contacts }: CalendarSubscribeProps) {
+[7m  [0m [93m                                                               ~~~~~~~~~[0m
+[96msrc/islands/CalendarSubscribe.tsx[0m:[93m74[0m:[93m53[0m - [93mwarning[0m[90m ts(6133): [0m'positions' is declared but its value is never read.
+
+[7m74[0m export default function CalendarSubscribe({ locale, positions, birthDate, contacts }: CalendarSubscribeProps) {
+[7m  [0m [93m                                                    ~~~~~~~~~[0m
+
+[96msrc/islands/ChartCalculator.tsx[0m:[93m1327[0m:[93m13[0m - [93mwarning[0m[90m ts(6133): [0m'computedSunSlug' is declared but its value is never read.
+
+[7m1327[0m       const computedSunSlug = computedSun ? signForLongitude(computedSun.lon).slug : null;
+[7m    [0m [93m            ~~~~~~~~~~~~~~~[0m
+
+[96msrc/islands/LunarReturnCalculator.test.tsx[0m:[93m59[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'CalculationReload' is declared but its value is never read.
+
+[7m59[0m import CalculationReload, { calculationLoadMessage } from './CalculationReload';
+[7m  [0m [93m       ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/islands/RaceBoard.tsx[0m:[93m293[0m:[93m105[0m - [93mwarning[0m[90m ts(6133): [0m'index' is declared but its value is never read.
+
+[7m293[0m           {(board.length > 0 ? board : signs.map((sign) => ({ sign: sign.slug, points: 0 }))).map((row, index) => {
+[7m   [0m [93m                                                                                                        ~~~~~[0m
+
+[96msrc/islands/RegistryAura.tsx[0m:[93m363[0m:[93m9[0m - [93mwarning[0m[90m ts(6133): [0m'invalidateConnectedResult' is declared but its value is never read.
+
+[7m363[0m   const invalidateConnectedResult = (nextAddress: string | null) => {
+[7m   [0m [93m        ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/islands/RegistryAura.tsx[0m:[93m310[0m:[93m9[0m - [93mwarning[0m[90m ts(6133): [0m'baseConnectRef' is declared but its value is never read.
+
+[7m310[0m   const baseConnectRef = useRef<HTMLButtonElement>(null);
+[7m   [0m [93m        ~~~~~~~~~~~~~~[0m
+[96msrc/islands/RegistryAura.tsx[0m:[93m309[0m:[93m9[0m - [93mwarning[0m[90m ts(6133): [0m'solanaConnectRef' is declared but its value is never read.
+
+[7m309[0m   const solanaConnectRef = useRef<HTMLButtonElement>(null);
+[7m   [0m [93m        ~~~~~~~~~~~~~~~~[0m
+[96msrc/islands/RegistryAura.tsx[0m:[93m260[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'walletIconSrc' is declared but its value is never read.
+
+[7m260[0m function walletIconSrc(icon: unknown): string | null {
+[7m   [0m [93m         ~~~~~~~~~~~~~[0m
+[96msrc/islands/RegistryAura.tsx[0m:[93m32[0m:[93m3[0m - [93mwarning[0m[90m ts(6196): [0m'StandardWallet' is declared but never used.
+
+[7m32[0m   StandardWallet,
+[7m  [0m [93m  ~~~~~~~~~~~~~~[0m
+[96msrc/islands/RegistryAura.tsx[0m:[93m31[0m:[93m3[0m - [93mwarning[0m[90m ts(6196): [0m'Eip6963ProviderDetail' is declared but never used.
+
+[7m31[0m   Eip6963ProviderDetail,
+[7m  [0m [93m  ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/lib/people.ts[0m:[93m17[0m:[93m35[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: string | { abort?: boolean | undefined; pattern?: RegExp | undefined; protocol?: RegExp | undefined; normalize?: boolean | undefined; hostname?: RegExp | undefined; error?: string | ... 1 more ... | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
+
+[7m17[0m const httpsUrlSchema = z.string().url().refine((value) => value.startsWith('https://'));
+[7m  [0m [93m                                  ~~~[0m
+[96msrc/lib/people.ts[0m:[93m16[0m:[93m37[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: string | { abort?: boolean | undefined; local?: boolean | undefined; offset?: boolean | undefined; precision?: number | null | undefined; error?: string | $ZodErrorMap<$ZodIssueInvalidStringFormat> | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
+
+[7m16[0m const isoInstantSchema = z.string().datetime({ offset: true });
+[7m  [0m [93m                                    ~~~~~~~~[0m
+
+[96msrc/lib/share-positions-callers.test.ts[0m:[93m816[0m:[93m29[0m - [93mwarning[0m[90m ts(6385): [0m'isTypeOnly' is deprecated.
+
+[7m816[0m       if (!clause || clause.isTypeOnly) continue;
+[7m   [0m [93m                            ~~~~~~~~~~[0m
+[96msrc/lib/share-positions-callers.test.ts[0m:[93m411[0m:[93m50[0m - [93mwarning[0m[90m ts(6385): [0m'isTypeOnly' is deprecated.
+
+[7m411[0m       const typeOnly = Boolean(clause && (clause.isTypeOnly
+[7m   [0m [93m                                                 ~~~~~~~~~~[0m
+
+[96msrc/lib/assistant/open-assistant.test.ts[0m:[93m661[0m:[93m11[0m - [93mwarning[0m[90m ts(6133): [0m'consent' is declared but its value is never read.
+
+[7m661[0m     const consent = source.slice(consentStart, submitStart);
+[7m   [0m [93m          ~~~~~~~[0m
+
+[96msrc/lib/assistant/open-assistant.ts[0m:[93m1585[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'questionRequestsMyChart' is declared but its value is never read.
+
+[7m1585[0m function questionRequestsMyChart(question: string): boolean {
+[7m    [0m [93m         ~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/lib/assistant/open-assistant.ts[0m:[93m316[0m:[93m5[0m - [93mwarning[0m[90m ts(6133): [0m'chartSummaryPromise' is declared but its value is never read.
+
+[7m316[0m let chartSummaryPromise: Promise<string | null> | null = null;
+[7m   [0m [93m    ~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/lib/assistant/open-assistant.ts[0m:[93m315[0m:[93m5[0m - [93mwarning[0m[90m ts(6133): [0m'chartSourceId' is declared but its value is never read.
+
+[7m315[0m let chartSourceId: string | null = null;
+[7m   [0m [93m    ~~~~~~~~~~~~~[0m
+[96msrc/lib/assistant/open-assistant.ts[0m:[93m314[0m:[93m5[0m - [93mwarning[0m[90m ts(6133): [0m'chartConsented' is declared but its value is never read.
+
+[7m314[0m let chartConsented = false;
+[7m   [0m [93m    ~~~~~~~~~~~~~~[0m
+[96msrc/lib/assistant/open-assistant.ts[0m:[93m312[0m:[93m5[0m - [93mwarning[0m[90m ts(6133): [0m'savedChart' is declared but its value is never read.
+
+[7m312[0m let savedChart: StoredChart | null = null;
+[7m   [0m [93m    ~~~~~~~~~~[0m
+
+[96msrc/lib/server/transit-calendar.test.ts[0m:[93m6[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'decodePositionsLink' is declared but its value is never read.
+
+[7m6[0m import { decodePositionsLink, encodePositionsLink, POSITION_BODY_ORDER } from '../share-positions';
+[7m [0m [93m         ~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/lib/time/birthplace-clock.ts[0m:[93m67[0m:[93m17[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m67[0m export function prepare(date: string, timeZone: string): Promise<void> {
+[7m  [0m [93m                ~~~~~~~[0m
+
+[96msrc/lib/time/zone-names.ts[0m:[93m48[0m:[93m10[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m48[0m function lmtName(key: string): Promise<string | undefined> {
+[7m  [0m [93m         ~~~~~~~[0m
+
+[96msrc/mcp/outputs.ts[0m:[93m300[0m:[93m39[0m - [93mwarning[0m[90m ts(6385): [0m'ZodTypeAny' is deprecated.
+
+[7m300[0m function computeBody<Result extends z.ZodTypeAny>(tool: SkyToolName, result: Result) {
+[7m   [0m [93m                                      ~~~~~~~~~~[0m
+
+[96msrc/pages/index.astro[0m:[93m61[0m:[93m37[0m - [93mwarning[0m[90m ts(6133): [0m'rest' is declared but its value is never read.
+
+[7m61[0m     mainEntity: faq.map(({ q, a, ...rest }) => ({
+[7m  [0m [93m                                    ~~~~[0m
+
+[96msrc/pages/bio/index.astro[0m:[93m162[0m:[93m31[0m - [93mwarning[0m[90m ts(6387): [0mThe signature '(commandId: string, showUI?: boolean | undefined, value?: string | undefined): boolean' of 'document.execCommand' is deprecated.
+
+[7m162[0m         var copied = document.execCommand('copy');
+[7m   [0m [93m                              ~~~~~~~~~~~[0m
+
+[96msrc/pages/developers/precision-preview/index.astro[0m:[93m155[0m:[93m11[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m155[0m   <script type="module" src="/precision-preview/app.mjs"></script>
+[7m   [0m [93m          ~~~~[0m
+
+[96msrc/pages/widgets/index.astro[0m:[93m171[0m:[93m20[0m - [93mwarning[0m[90m ts(6387): [0mThe signature '(commandId: string, showUI?: boolean | undefined, value?: string | undefined): boolean' of 'document.execCommand' is deprecated.
+
+[7m171[0m           document.execCommand('copy');
+[7m   [0m [93m                   ~~~~~~~~~~~[0m
+
+[96msrc/precision-preview/synthetic.mjs[0m:[93m83[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'fixed' is declared but its value is never read.
+
+[7m83[0m const fixed = (v) => { const c = zeros(); c[0] = v; return c; };
+[7m  [0m [93m      ~~~~~[0m
+
+[96msrc/registry/selected-token-chart.mjs[0m:[93m320[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'last' is declared but its value is never read.
+
+[7m320[0m   last,
+[7m   [0m [93m  ~~~~[0m
+
+[96msrc/shelf/card.mjs[0m:[93m27[0m:[93m10[0m - [93mwarning[0m[90m ts(80006): [0mThis may be converted to an async function.
+
+[7m27[0m function fetchWithin(url, ms, init) {
+[7m  [0m [93m         ~~~~~~~~~~~[0m
+
+[96msrc/trade/entry.mjs[0m:[93m33[0m:[93m60[0m - [93mwarning[0m[90m ts(6133): [0m'enabled' is declared but its value is never read.
+
+[7m33[0m export function renderTradeRegion({ sign, name, mint, hue, enabled }) {
+[7m  [0m [93m                                                           ~~~~~~~[0m
+[96msrc/trade/entry.mjs[0m:[93m20[0m:[93m38[0m - [93mwarning[0m[90m ts(6133): [0m'env' is declared but its value is never read.
+
+[7m20[0m export function registryTradeEnabled(env = {}) {
+[7m  [0m [93m                                     ~~~[0m
+
+Result (1319 files):
+- 0 errors
+- 0 warnings
+- 39 hints

@@ -1,0 +1,15 @@
+{
+  "from": "2026-01-01T00:00:00.000Z",
+  "to": "2029-01-01T00:00:00.000Z",
+  "n": 481,
+  "medianAbsSeconds": 0.861,
+  "maxAbsSeconds": 4.484,
+  "meanSeconds": 0.468,
+  "minSeconds": -2.865,
+  "maxSeconds": 4.484,
+  "swisseph": "2.10.03",
+  "tableSha256": "91e6ae8b62115da0b53d0844a82fce377931d376127789b12356fea894830916",
+  "measuredOn": "2026-10-07",
+  "tool": "docs/platform/evidence/events-vs-swiss-2026-09-25/tools/moon-ingresses.py",
+  "generationMetadata": "Original generation timestamp retained after exact regenerated payload comparison"
+}

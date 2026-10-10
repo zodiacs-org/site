@@ -1,0 +1,57 @@
+[
+  {
+    "check": "tz-lmt",
+    "exit": 1,
+    "durationSeconds": 0.148
+  },
+  {
+    "check": "tz-history",
+    "exit": 1,
+    "durationSeconds": 5.101
+  },
+  {
+    "check": "ai-tests",
+    "exit": 0,
+    "durationSeconds": 6.692
+  },
+  {
+    "check": "build",
+    "exit": 0,
+    "durationSeconds": 229.444
+  },
+  {
+    "check": "typecheck",
+    "exit": 0,
+    "durationSeconds": 98.349
+  },
+  {
+    "check": "protected-scope",
+    "exit": 1,
+    "durationSeconds": 0.785
+  },
+  {
+    "check": "engine-closure",
+    "exit": 0,
+    "durationSeconds": 0.902
+  },
+  {
+    "check": "hash-equivalence",
+    "exit": 0,
+    "durationSeconds": 3.575
+  },
+  {
+    "check": "captures",
+    "exit": 0,
+    "durationSeconds": 45.534
+  },
+  {
+    "check": "full-tests",
+    "exit": 0,
+    "durationSeconds": 633.651
+  },
+  {
+    "check": "frames",
+    "exit": 1,
+    "durationSeconds": 20.114
+  }
+]

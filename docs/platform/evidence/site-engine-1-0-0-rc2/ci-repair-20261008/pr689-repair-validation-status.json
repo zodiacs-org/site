@@ -1,0 +1,38 @@
+[
+  {
+    "check": "production-flags-build",
+    "exit": 0,
+    "seconds": 244.624,
+    "sourceHead": "e814676c79c7bbde54b039fd4e86fe39d5229e72"
+  },
+  {
+    "check": "typecheck",
+    "exit": 0,
+    "seconds": 99.032,
+    "sourceHead": "e814676c79c7bbde54b039fd4e86fe39d5229e72"
+  },
+  {
+    "check": "compatibility-browser",
+    "exit": 0,
+    "seconds": 152.857,
+    "sourceHead": "e814676c79c7bbde54b039fd4e86fe39d5229e72"
+  },
+  {
+    "check": "default-build",
+    "exit": 0,
+    "seconds": 225.647,
+    "sourceHead": "1fd24bcbc7c7281245c83fb12c0d321028068085"
+  },
+  {
+    "check": "captures",
+    "exit": 0,
+    "seconds": 44.808,
+    "sourceHead": "1fd24bcbc7c7281245c83fb12c0d321028068085"
+  },
+  {
+    "check": "full-tests",
+    "exit": 0,
+    "seconds": 771.011,
+    "sourceHead": "1fd24bcbc7c7281245c83fb12c0d321028068085"
+  }
+]

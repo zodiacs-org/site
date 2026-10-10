@@ -1,10 +1,15 @@
 # Anonymous usage counts for the hosted MCP server
 
-Status on 8 October 2026: built and tested, **not switched on**. The migration
-`supabase/migrations/20261008074758_zodiacs_mcp_usage_counts.sql` has not been
-applied to any database. Until the owner approves it and it is applied, the
-server's counting call fails quietly and nothing is recorded. No environment
-variable, Vercel setting or Supabase setting was changed for this work.
+Status on 8 October 2026: **switched on.** With the owner's approval, the
+migration `supabase/migrations/20261008074758_zodiacs_mcp_usage_counts.sql` was
+applied to the production Supabase project the same day (#690) and checked:
+row-level security on, service role only. The privacy page describes the
+counts, recorded in `docs/claims/ledger.json` as `priv.ai-usage-counts`. Six
+test calls dated 8 October are in the `other` rows. No environment variable or
+Vercel setting was changed for this work.
+
+The sections below describe the design as built. "Before switching it on"
+records the decisions as they stood before approval.
 
 ## What is counted
 

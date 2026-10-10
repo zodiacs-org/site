@@ -1,3 +1,101 @@
+Checkpoint 24 proposal, 2026-10-09 (Asia/Bangkok): existing engine,
+npm and PyPI identities in the shared consumer Organization.
+
+**Overall delivery: 37%** (37.106% to three decimals) — 67.7 of 182.45
+weighted units proposed accepted; blocked 2% (3), or 1.644%.
+This branch combines checkpoint 23's proposed 67.45 with S7's 0.25 in the
+same programme PR. Its 67.7 is conditional on complete checks, merge and
+exact-source canonical production verification. Current main remains
+64/182.45 until those gates finish. Fixed weights,
+denominator and all scientific/performance/visual limits remain unchanged.
+
+[Anonymous public identity observation](../evidence/platform-identities-20261009/README.md)
+records the existing engine repository, npm latest 0.1.1-rc.15 and PyPI
+0.1.0a1. Their common Organization links are held by source and built-schema
+checks, including missing/duplicate/altered identity controls. The unresolved
+MCP Registry listing is not invented. Existing registry identities do not
+publish the vendored rc.2 or any private client, CLI or wheel.
+
+P3.1d records the merged private wheel's installed browser, typing and accessibility controls, with registry/provenance delivery still open. P3.7 records the merged private CLI's validated cross-platform installed
+consumer gate, with public registry delivery still open. P3.4/P3.5 record
+the merged private sync/async hosted Python client alongside the TypeScript
+client; offline WebAssembly/NumPy and the wider hosted/documentation gates
+remain open. P3.6 records the limited six-tool remote Inspector observation,
+with its fourteen warnings and full conformance/registry/P3.3 gates open.
+Guide preparation stays closed and unpublished. S2 is partial after the verified ninety-file FAQ source locator; semantic audit and correction remain open, with no accepted weight.
+
+No private search, stable cut, registry publication, account/security/hosting
+change or outreach occurs here. The original checkpoints and failed verdicts
+remain below.
+
+Checkpoint 23, 2026-10-09 (Asia/Bangkok): Koch, co-ascendants and B4.a
+are accepted under the owner's specific delegation on their named
+ratification questions and [fresh carried rc.2 gates](../evidence/checkpoint23-20261009/README.md).
+
+**Overall delivery: 37%** (36.969% to three decimals) — 67.45 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up by 3.45 from
+checkpoint 22. Other states, fixed weights, gates and tolerances are unchanged.
+
+Koch and co-ascendants meet their unchanged given-input tolerances and their
+shared-UT1 end-to-end comparisons **in the judged 1850–2049 window**.
+Original UTC-as-UT1 failures, outside-window residuals and post-result
+selection history remain recorded. No outside-window tolerance is claimed.
+
+The frozen benchmark's canonical files match exactly and current rc.2
+tool/scorer tests pass. B4.a's raw answers are published tool replies;
+B4.b still requires assistants' private raw answers and separate evaluation.
+No assistant trial or assistant performance is claimed.
+
+[DECISIONS-2026-10-09.md](DECISIONS-2026-10-09.md) records the specific
+instruction and reasons, superseding the named non-ratification under the
+October 5 general delegation. No unrelated amendment is ratified.
+The private Python client is in engine #35; P3.4 remains partial.
+The held guide branch's dedicated check passed, but its full Site Check
+failed the homepage Lighthouse budget. No passing full result is substituted.
+
+This ships records and a read-only gate workflow, with no active route,
+core package, immutable archive, registry or hosting/security change.
+No new private scan ran; publication prerequisites stay separate.
+
+Checkpoint 22, 2026-10-09 (Asia/Bangkok): P3.2's uniform calculation API is
+accepted on adopted, served `1.0.0-rc.2` under the owner's October 6
+`EPHEMERIS_SPAN` interpretation.
+
+**Overall delivery: 35%** (35.078% to three decimals) — 64 of 182.45 weighted
+units accepted; blocked 2% (3), or 1.644%. Up by P3.2's 3 from checkpoint 21.
+The denominator, other acceptance states and all gate thresholds are unchanged.
+
+The [complete packed gate on engine main](https://github.com/zodiacs-org/engine/tree/98465b1a6aba46ff5e12c283f77f54278dc6905b/docs/evidence/checkpoint22-rc2-20261009)
+detects 21 declaration faults, replays 38 fixtures and 27 receipt requests
+exactly, and computes 21 sidereal definitions through all four functions.
+The epoch matrix covers three models, TT/UT1/UTC and all four functions:
+72 inclusive cases compute and 72 beyond-end cases return the exact typed
+refusal. Full postmerge core CI, archive rebuild, packed consumers,
+conformance and atlas pass. These are contract/replay/consistency checks,
+not independent numerical accuracy evidence.
+
+[Source-bound production evidence](../evidence/checkpoint22-20261009/README.md)
+joins the READY source/domain observation to seven matching canonical engine
+assets and the synthetic hosted backend `1.0.0-rc.2`. F-80 closes under
+the already recorded owner interpretation, the candidate's implementation,
+the complete gate and production adoption. Registry publication is separate.
+
+[Engine #34](https://github.com/zodiacs-org/engine/pull/34) merges the private
+TypeScript Compute client; its exact-head source and fresh packed-consumer
+checks pass on Node 20/22/24 along with the complete core suite.
+P3.4 remains partial for its complete gate and dependencies.
+[Site #695](https://github.com/zodiacs-org/site/pull/695) preserves the tested
+guide branch. Those routes remain unpublished; P3.10 remains partial for
+React Native and a complete sunrise-based panchang recipe.
+
+This checkpoint changes only programme records and existing evidence; it
+ships no new candidate, registry package, guide route, application code or
+hosting setting. Private release-range and staged searches did not run in
+this executor; their inputs remain unavailable. The stable release and guide
+publication prerequisites remain in
+[engine #32](https://github.com/zodiacs-org/engine/issues/32).
+The earlier checkpoints retain their original verdicts and observations.
+
 # Programme status
 
 Checkpoint 21, 2026-10-06: the uniform calculation API (P3.2), judged on

@@ -1,0 +1,975 @@
+(node:181417) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> zodiacs-org@1.0.0 test:compatibility:browser
+> node tests/relationship-wheel-drive.mjs
+
+(node:181430) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS  both locally computed charts show their UTC math receipts
+PASS  the comparison begins with a human sentence before placements
+PASS  astrology tools share navigation while keeping collection branding out of their footer
+PASS  inner wheel renders 11 natal bodies  · 11
+PASS  outer ring renders 11 partner bodies  · 11
+PASS  cross-chart chords draw
+PASS  caption names both people
+PASS  Wheel, Grid, Composite, and In-3D tabs render with Wheel selected
+PASS  an uncurated top contact keeps the role-composed fallback verbatim
+PASS  communication read follows top contacts and precedes balances
+[Line withheld by private search; original retained outside Git.]
+[Line withheld by private search; original retained outside Git.]
+PASS  tapping a row opens the contact reading
+PASS  the row is marked focused
+[Line withheld by private search; original retained outside Git.]
+PASS  swap clears the focused contact
+PASS  rings still render after swap
+PASS  tab arrow keys switch from Wheel to Grid
+PASS  grid includes ten aspect bodies plus known ASC and MC on both axes
+PASS  grid body-cell selection opens the fallback detail
+PASS  grid body selection stays focused on the wheel tab
+PASS  body-cell selection survives a round trip across tabs
+PASS  angle-cell selection layers one module-local focused chord
+PASS  composite tab renders a static house-free wheel
+PASS  composite lists all 12 midpoint placements
+PASS  the English composite note is verbatim
+PASS  grid selection analytics fires without props
+PASS  composite analytics fires once per compare without props
+PASS  depth tab renders both charts on the sphere
+PASS  depth tab draws cross-chart contacts through space
+PASS  depth tab keys both charts in the legend
+PASS  depth tab shows the tightest contact readout
+PASS  pairing CTA renders
+PASS  saving stores one pair of chart references
+PASS  save action advances to a completed state
+[Line withheld by private search; original retained outside Git.]
+PASS  tapping the chip re-runs the comparison
+PASS  removing clears the strip
+PASS  removing empties storage
+PASS  known Sun–Moon trine shows the curated top-contact line verbatim
+PASS  known Sun–Moon trine shows the same curated grid detail verbatim
+PASS  a pair with no qualifying Mercury contact shows the fallback verbatim
+PASS  a pair referencing a missing chart prunes itself
+PASS  only the restorable pair is offered
+PASS  an inline side restores and compares
+PASS  the inline side shows as a saved-comparison chip
+PASS  a restored own side still offers the invite
+PASS  ES strip renders translated
+PASS  ES keeps the localized Mercury receipt and suppresses all English communication narrative
+PASS  ES grid keeps receipts but suppresses English narrative
+PASS  ES relationship tabs use module-local Spanish chrome
+PASS  ES composite shows localized receipts without the English note
+PASS  profile lists the saved comparison
+PASS  profile chip deep-links into a live comparison
+PASS  removing from profile clears the pair
+PASS  long-name chip never overflows a 320px screen  · 320 vs 320
+PASS  mobile: bi-wheel renders
+PASS  communication block does not overflow a 320px screen  · 320 vs 320
+PASS  320px grid scrolls inside itself without page overflow  · {"scrollWidth":766,"clientWidth":263,"docWidth":320,"winWidth":320}
+PASS  legacy polar Profile: restored identity has the corrected Aries rising position
+PASS  legacy polar Profile: positions-only record retains its supplied Libra angle
+PASS  legacy polar Profile: original profile bytes are unchanged without read-time writes  · profile writes: 0
+PASS  legacy polar natal: Profile handoff keeps the name and recomputes the same corrected ASC
+PASS  legacy polar natal: original profile bytes are unchanged without read-time writes  · profile writes: 0
+PASS  legacy polar Today: personalized reading preserves the restored chart identity
+PASS  legacy polar Today: original profile bytes are unchanged without read-time writes  · profile writes: 0
+PASS  legacy polar synastry: both stored names reach the relationship wheel
+PASS  legacy polar synastry: repaired ASC opposes the unchanged positions-only ASC
+PASS  legacy polar synastry share: recomputed positions, whole-degree angles, house system and current engine receipt agree
+PASS  legacy polar synastry share: positions-only side retains its original angles, to the whole degree, and receipt
+PASS  legacy polar synastry: original profile bytes are unchanged without read-time writes  · profile writes: 0
+PASS  legacy polar positions receiver: shared Libra ASC remains read-only, to the whole degree
+PASS  legacy polar positions receiver: original profile bytes are unchanged without read-time writes  · profile writes: 0
+PASS  legacy polar chart routes have no page errors
+PASS  legacy polar Today: real daily contacts use the corrected ASC, not its opposite  · 2001-12-21T10:15:00.000Z; ASC 10.336745422953697; Sun sextile natal Pluto · 0.4° from exac
+PASS  legacy polar Today ASC: original profile bytes are unchanged without read-time writes  · profile writes: 0
+PASS  en-390: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":350,"height":44},{"body":"Moon","tag":"BU
+PASS  en-390: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  en-390: composite wheel is named accurately and has no houses or angles
+PASS  en-390: eleven visible body targets accompany all twelve receipts
+PASS  en-390: keyboard selects Sun with its detail
+PASS  en-390: keyboard selects Moon with its detail
+PASS  en-390: keyboard selects Mercury with its detail
+PASS  en-390: keyboard selects Venus with its detail
+PASS  en-390: keyboard selects Mars with its detail
+PASS  en-390: keyboard selects Jupiter with its detail
+PASS  en-390: keyboard selects Saturn with its detail
+PASS  en-390: keyboard selects Uranus with its detail
+PASS  en-390: keyboard selects Neptune with its detail
+PASS  en-390: keyboard selects Pluto with its detail
+PASS  en-390: keyboard selects North Node with its detail
+PASS  en-390: keyboard selects South Node with its detail
+PASS  en-390: native Tab reaches the next placement
+PASS  en-390: native keyboard focus has a visible indicator
+PASS  en-390: native Space activates the focused placement
+PASS  en-390: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  en-390: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  en-390: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  en-390: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  en-390: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  en-390: pointer selects composite:aspect:Moon:trine:Mars
+PASS  en-390: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  en-390: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  en-390: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  en-390: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  en-390: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  en-390: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  en-390: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  en-390: native keyboard activates an aspect with the same selection ID
+PASS  en-390: clearing restores focus to its native receipt
+PASS  en-390: clearing resets selection in the live detail region
+PASS  en-390: Sun SVG marker and placement share selection
+PASS  en-390: Moon SVG marker and placement share selection
+PASS  en-390: Mercury SVG marker and placement share selection
+PASS  en-390: Venus SVG marker and placement share selection
+PASS  en-390: Mars SVG marker and placement share selection
+PASS  en-390: Jupiter SVG marker and placement share selection
+PASS  en-390: Saturn SVG marker and placement share selection
+PASS  en-390: Uranus SVG marker and placement share selection
+PASS  en-390: Neptune SVG marker and placement share selection
+PASS  en-390: Pluto SVG marker and placement share selection
+PASS  en-390: North Node SVG marker and placement share selection
+PASS  en-390: native SVG aspect hit and aspect receipt share selection
+PASS  en-390: timed selection has substantive composite reading
+PASS  en-390: English interpretation has an explicit localized cue
+PASS  en-390: selection persists across tab changes
+PASS  en-390: ring swap preserves canonical composite and selection
+PASS  en-390: panel does not overflow its viewport
+PASS  composite stalled artwork keeps the chart, reading and Close available
+PASS  composite artwork download has a bounded15s abort and retry state  · {"elapsed":15108.542110000002,"failure":{"errorText":"net::ERR_ABORTED"}}
+PASS  composite artwork retry refetches the failed cache entry and preserves selection
+PASS  en-390-timed: image preview loads with localized alternative text
+PASS  en-390-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  en-390-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4472,"middleForeground":3337,"wheelForeground":15
+PASS  en-390-timed: PNG title and house-free receipt are localized  · Composite chart Midpoints of two charts · No houses or angles Composite aspects: 11 Sun ·
+PASS  en-390-timed: image contains all twelve exact localized placements and aspect count
+PASS  en-390-timed: image contains no stored birth inputs or natal verdict
+PASS  en-390-timed: image uncertainty matches its inputs
+PASS  en-390-timed: download status is distinct and preview remains
+PASS  en-390: exploring and exporting never changes stored birth data
+PASS  en-390: new comparison starts with no stale composite selection
+PASS  en-390: unknown Moon remains a provisional receipt without interpretation
+PASS  en-390: unknown Moon aspect also withholds substantive copy and actions
+PASS  en-390: unknown Moon does not suppress other composite interpretations
+PASS  en-390-unknown: image preview loads with localized alternative text
+PASS  en-390-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  en-390-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4627,"middleForeground":3120,"wheelForeground":14
+PASS  en-390-unknown: PNG title and house-free receipt are localized  · Composite chart Midpoints of two charts · No houses or angles Composite aspects: 12 Sun ·
+PASS  en-390-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Sun · 0°00′ Cancer","image":"Sun · 20°11′ Aquarius"},{"page":"Mercury · 0°00′ Ca
+PASS  en-390-unknown: image contains no stored birth inputs or natal verdict
+PASS  en-390-unknown: image uncertainty matches its inputs
+PASS  en-390-unknown: download status is distinct and preview remains
+PASS  en-1440: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":378,"height":44},{"body":"Moon","tag":"BU
+PASS  en-1440: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  en-1440: composite wheel is named accurately and has no houses or angles
+PASS  en-1440: eleven visible body targets accompany all twelve receipts
+PASS  en-1440: keyboard selects Sun with its detail
+PASS  en-1440: keyboard selects Moon with its detail
+PASS  en-1440: keyboard selects Mercury with its detail
+PASS  en-1440: keyboard selects Venus with its detail
+PASS  en-1440: keyboard selects Mars with its detail
+PASS  en-1440: keyboard selects Jupiter with its detail
+PASS  en-1440: keyboard selects Saturn with its detail
+PASS  en-1440: keyboard selects Uranus with its detail
+PASS  en-1440: keyboard selects Neptune with its detail
+PASS  en-1440: keyboard selects Pluto with its detail
+PASS  en-1440: keyboard selects North Node with its detail
+PASS  en-1440: keyboard selects South Node with its detail
+PASS  en-1440: native Tab reaches the next placement
+PASS  en-1440: native keyboard focus has a visible indicator
+PASS  en-1440: native Space activates the focused placement
+PASS  en-1440: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  en-1440: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  en-1440: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  en-1440: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  en-1440: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  en-1440: pointer selects composite:aspect:Moon:trine:Mars
+PASS  en-1440: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  en-1440: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  en-1440: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  en-1440: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  en-1440: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  en-1440: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  en-1440: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  en-1440: native keyboard activates an aspect with the same selection ID
+PASS  en-1440: clearing restores focus to its native receipt
+PASS  en-1440: clearing resets selection in the live detail region
+PASS  en-1440: Sun SVG marker and placement share selection
+PASS  en-1440: Moon SVG marker and placement share selection
+PASS  en-1440: Mercury SVG marker and placement share selection
+PASS  en-1440: Venus SVG marker and placement share selection
+PASS  en-1440: Mars SVG marker and placement share selection
+PASS  en-1440: Jupiter SVG marker and placement share selection
+PASS  en-1440: Saturn SVG marker and placement share selection
+PASS  en-1440: Uranus SVG marker and placement share selection
+PASS  en-1440: Neptune SVG marker and placement share selection
+PASS  en-1440: Pluto SVG marker and placement share selection
+PASS  en-1440: North Node SVG marker and placement share selection
+PASS  en-1440: native SVG aspect hit and aspect receipt share selection
+PASS  en-1440: timed selection has substantive composite reading
+PASS  en-1440: English interpretation has an explicit localized cue
+PASS  en-1440: selection persists across tab changes
+PASS  en-1440: ring swap preserves canonical composite and selection
+PASS  en-1440: panel does not overflow its viewport
+PASS  en-1440-timed: image preview loads with localized alternative text
+PASS  en-1440-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  en-1440-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4472,"middleForeground":3337,"wheelForeground":15
+PASS  en-1440-timed: PNG title and house-free receipt are localized  · Composite chart Midpoints of two charts · No houses or angles Composite aspects: 11 Sun ·
+PASS  en-1440-timed: image contains all twelve exact localized placements and aspect count
+PASS  en-1440-timed: image contains no stored birth inputs or natal verdict
+PASS  en-1440-timed: image uncertainty matches its inputs
+PASS  en-1440-timed: download status is distinct and preview remains
+PASS  composite cancellation keeps the prepared image without an error
+PASS  composite rejected native share falls back to a download and preserves image
+PASS  composite share retries with the actual prepared PNG
+PASS  composite closing image retains chart and selected reading
+PASS  composite encode failure leaves calculation and retry available
+PASS  composite encode retry succeeds without re-comparison
+PASS  en-1440: exploring and exporting never changes stored birth data
+PASS  en-1440: new comparison starts with no stale composite selection
+PASS  en-1440: unknown Moon remains a provisional receipt without interpretation
+PASS  en-1440: unknown Moon aspect also withholds substantive copy and actions
+PASS  en-1440: unknown Moon does not suppress other composite interpretations
+PASS  en-1440-unknown: image preview loads with localized alternative text
+PASS  en-1440-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  en-1440-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4627,"middleForeground":3120,"wheelForeground":14
+PASS  en-1440-unknown: PNG title and house-free receipt are localized  · Composite chart Midpoints of two charts · No houses or angles Composite aspects: 12 Sun ·
+PASS  en-1440-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Sun · 0°00′ Cancer","image":"Sun · 20°11′ Aquarius"},{"page":"Mercury · 0°00′ Ca
+PASS  en-1440-unknown: image contains no stored birth inputs or natal verdict
+PASS  en-1440-unknown: image uncertainty matches its inputs
+PASS  en-1440-unknown: download status is distinct and preview remains
+PASS  composite both unknown birth times retain only the provisional Moon receipt
+PASS  composite reversing source charts preserves exact-opposite convention
+PASS  composite a new form comparison clears the preceding selection
+PASS  es-390: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":350,"height":44},{"body":"Moon","tag":"BU
+PASS  es-390: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  es-390: composite wheel is named accurately and has no houses or angles
+PASS  es-390: eleven visible body targets accompany all twelve receipts
+PASS  es-390: keyboard selects Sun with its detail
+PASS  es-390: keyboard selects Moon with its detail
+PASS  es-390: keyboard selects Mercury with its detail
+PASS  es-390: keyboard selects Venus with its detail
+PASS  es-390: keyboard selects Mars with its detail
+PASS  es-390: keyboard selects Jupiter with its detail
+PASS  es-390: keyboard selects Saturn with its detail
+PASS  es-390: keyboard selects Uranus with its detail
+PASS  es-390: keyboard selects Neptune with its detail
+PASS  es-390: keyboard selects Pluto with its detail
+PASS  es-390: keyboard selects North Node with its detail
+PASS  es-390: keyboard selects South Node with its detail
+PASS  es-390: native Tab reaches the next placement
+PASS  es-390: native keyboard focus has a visible indicator
+PASS  es-390: native Space activates the focused placement
+PASS  es-390: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  es-390: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  es-390: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  es-390: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  es-390: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  es-390: pointer selects composite:aspect:Moon:trine:Mars
+PASS  es-390: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  es-390: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  es-390: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  es-390: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  es-390: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  es-390: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  es-390: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  es-390: native keyboard activates an aspect with the same selection ID
+PASS  es-390: clearing restores focus to its native receipt
+PASS  es-390: clearing resets selection in the live detail region
+PASS  es-390: Sun SVG marker and placement share selection
+PASS  es-390: Moon SVG marker and placement share selection
+PASS  es-390: Mercury SVG marker and placement share selection
+PASS  es-390: Venus SVG marker and placement share selection
+PASS  es-390: Mars SVG marker and placement share selection
+PASS  es-390: Jupiter SVG marker and placement share selection
+PASS  es-390: Saturn SVG marker and placement share selection
+PASS  es-390: Uranus SVG marker and placement share selection
+PASS  es-390: Neptune SVG marker and placement share selection
+PASS  es-390: Pluto SVG marker and placement share selection
+PASS  es-390: North Node SVG marker and placement share selection
+PASS  es-390: native SVG aspect hit and aspect receipt share selection
+PASS  es-390: timed selection has substantive composite reading
+PASS  es-390: English interpretation has an explicit localized cue
+PASS  es-390: selection persists across tab changes
+PASS  es-390: ring swap preserves canonical composite and selection
+PASS  es-390: panel does not overflow its viewport
+PASS  es-390-timed: image preview loads with localized alternative text
+PASS  es-390-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  es-390-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4633,"middleForeground":3368,"wheelForeground":15
+PASS  es-390-timed: PNG title and house-free receipt are localized  · Carta compuesta Puntos medios de dos cartas · Sin casas ni ángulos Aspectos de la carta co
+PASS  es-390-timed: image contains all twelve exact localized placements and aspect count
+PASS  es-390-timed: image contains no stored birth inputs or natal verdict
+PASS  es-390-timed: image uncertainty matches its inputs
+PASS  es-390-timed: download status is distinct and preview remains
+PASS  es-390: exploring and exporting never changes stored birth data
+PASS  es-390: new comparison starts with no stale composite selection
+PASS  es-390: unknown Moon remains a provisional receipt without interpretation
+PASS  es-390: unknown Moon aspect also withholds substantive copy and actions
+PASS  es-390: unknown Moon does not suppress other composite interpretations
+PASS  es-390-unknown: image preview loads with localized alternative text
+PASS  es-390-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  es-390-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4798,"middleForeground":3136,"wheelForeground":14
+PASS  es-390-unknown: PNG title and house-free receipt are localized  · Carta compuesta Puntos medios de dos cartas · Sin casas ni ángulos Aspectos de la carta co
+PASS  es-390-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Sol · 0°00′ Cáncer","image":"Sol · 20°11′ Acuario"},{"page":"Mercurio · 0°00′ Cá
+PASS  es-390-unknown: image contains no stored birth inputs or natal verdict
+PASS  es-390-unknown: image uncertainty matches its inputs
+PASS  es-390-unknown: download status is distinct and preview remains
+PASS  es-1440: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":378,"height":44},{"body":"Moon","tag":"BU
+PASS  es-1440: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  es-1440: composite wheel is named accurately and has no houses or angles
+PASS  es-1440: eleven visible body targets accompany all twelve receipts
+PASS  es-1440: keyboard selects Sun with its detail
+PASS  es-1440: keyboard selects Moon with its detail
+PASS  es-1440: keyboard selects Mercury with its detail
+PASS  es-1440: keyboard selects Venus with its detail
+PASS  es-1440: keyboard selects Mars with its detail
+PASS  es-1440: keyboard selects Jupiter with its detail
+PASS  es-1440: keyboard selects Saturn with its detail
+PASS  es-1440: keyboard selects Uranus with its detail
+PASS  es-1440: keyboard selects Neptune with its detail
+PASS  es-1440: keyboard selects Pluto with its detail
+PASS  es-1440: keyboard selects North Node with its detail
+PASS  es-1440: keyboard selects South Node with its detail
+PASS  es-1440: native Tab reaches the next placement
+PASS  es-1440: native keyboard focus has a visible indicator
+PASS  es-1440: native Space activates the focused placement
+PASS  es-1440: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  es-1440: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  es-1440: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  es-1440: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  es-1440: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  es-1440: pointer selects composite:aspect:Moon:trine:Mars
+PASS  es-1440: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  es-1440: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  es-1440: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  es-1440: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  es-1440: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  es-1440: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  es-1440: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  es-1440: native keyboard activates an aspect with the same selection ID
+PASS  es-1440: clearing restores focus to its native receipt
+PASS  es-1440: clearing resets selection in the live detail region
+PASS  es-1440: Sun SVG marker and placement share selection
+PASS  es-1440: Moon SVG marker and placement share selection
+PASS  es-1440: Mercury SVG marker and placement share selection
+PASS  es-1440: Venus SVG marker and placement share selection
+PASS  es-1440: Mars SVG marker and placement share selection
+PASS  es-1440: Jupiter SVG marker and placement share selection
+PASS  es-1440: Saturn SVG marker and placement share selection
+PASS  es-1440: Uranus SVG marker and placement share selection
+PASS  es-1440: Neptune SVG marker and placement share selection
+PASS  es-1440: Pluto SVG marker and placement share selection
+PASS  es-1440: North Node SVG marker and placement share selection
+PASS  es-1440: native SVG aspect hit and aspect receipt share selection
+PASS  es-1440: timed selection has substantive composite reading
+PASS  es-1440: English interpretation has an explicit localized cue
+PASS  es-1440: selection persists across tab changes
+PASS  es-1440: ring swap preserves canonical composite and selection
+PASS  es-1440: panel does not overflow its viewport
+PASS  es-1440-timed: image preview loads with localized alternative text
+PASS  es-1440-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  es-1440-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4633,"middleForeground":3368,"wheelForeground":15
+PASS  es-1440-timed: PNG title and house-free receipt are localized  · Carta compuesta Puntos medios de dos cartas · Sin casas ni ángulos Aspectos de la carta co
+PASS  es-1440-timed: image contains all twelve exact localized placements and aspect count
+PASS  es-1440-timed: image contains no stored birth inputs or natal verdict
+PASS  es-1440-timed: image uncertainty matches its inputs
+PASS  es-1440-timed: download status is distinct and preview remains
+PASS  es-1440: exploring and exporting never changes stored birth data
+PASS  es-1440: new comparison starts with no stale composite selection
+PASS  es-1440: unknown Moon remains a provisional receipt without interpretation
+PASS  es-1440: unknown Moon aspect also withholds substantive copy and actions
+PASS  es-1440: unknown Moon does not suppress other composite interpretations
+PASS  es-1440-unknown: image preview loads with localized alternative text
+PASS  es-1440-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  es-1440-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4798,"middleForeground":3136,"wheelForeground":14
+PASS  es-1440-unknown: PNG title and house-free receipt are localized  · Carta compuesta Puntos medios de dos cartas · Sin casas ni ángulos Aspectos de la carta co
+PASS  es-1440-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Sol · 0°00′ Cáncer","image":"Sol · 20°11′ Acuario"},{"page":"Mercurio · 0°00′ Cá
+PASS  es-1440-unknown: image contains no stored birth inputs or natal verdict
+PASS  es-1440-unknown: image uncertainty matches its inputs
+PASS  es-1440-unknown: download status is distinct and preview remains
+PASS  pt-390: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":350,"height":44},{"body":"Moon","tag":"BU
+PASS  pt-390: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  pt-390: composite wheel is named accurately and has no houses or angles
+PASS  pt-390: eleven visible body targets accompany all twelve receipts
+PASS  pt-390: keyboard selects Sun with its detail
+PASS  pt-390: keyboard selects Moon with its detail
+PASS  pt-390: keyboard selects Mercury with its detail
+PASS  pt-390: keyboard selects Venus with its detail
+PASS  pt-390: keyboard selects Mars with its detail
+PASS  pt-390: keyboard selects Jupiter with its detail
+PASS  pt-390: keyboard selects Saturn with its detail
+PASS  pt-390: keyboard selects Uranus with its detail
+PASS  pt-390: keyboard selects Neptune with its detail
+PASS  pt-390: keyboard selects Pluto with its detail
+PASS  pt-390: keyboard selects North Node with its detail
+PASS  pt-390: keyboard selects South Node with its detail
+PASS  pt-390: native Tab reaches the next placement
+PASS  pt-390: native keyboard focus has a visible indicator
+PASS  pt-390: native Space activates the focused placement
+PASS  pt-390: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  pt-390: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  pt-390: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  pt-390: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  pt-390: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  pt-390: pointer selects composite:aspect:Moon:trine:Mars
+PASS  pt-390: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  pt-390: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  pt-390: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  pt-390: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  pt-390: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  pt-390: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  pt-390: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  pt-390: native keyboard activates an aspect with the same selection ID
+PASS  pt-390: clearing restores focus to its native receipt
+PASS  pt-390: clearing resets selection in the live detail region
+PASS  pt-390: Sun SVG marker and placement share selection
+PASS  pt-390: Moon SVG marker and placement share selection
+PASS  pt-390: Mercury SVG marker and placement share selection
+PASS  pt-390: Venus SVG marker and placement share selection
+PASS  pt-390: Mars SVG marker and placement share selection
+PASS  pt-390: Jupiter SVG marker and placement share selection
+PASS  pt-390: Saturn SVG marker and placement share selection
+PASS  pt-390: Uranus SVG marker and placement share selection
+PASS  pt-390: Neptune SVG marker and placement share selection
+PASS  pt-390: Pluto SVG marker and placement share selection
+PASS  pt-390: North Node SVG marker and placement share selection
+PASS  pt-390: native SVG aspect hit and aspect receipt share selection
+PASS  pt-390: timed selection has substantive composite reading
+PASS  pt-390: English interpretation has an explicit localized cue
+PASS  pt-390: selection persists across tab changes
+PASS  pt-390: ring swap preserves canonical composite and selection
+PASS  pt-390: panel does not overflow its viewport
+PASS  pt-390-timed: image preview loads with localized alternative text
+PASS  pt-390-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  pt-390-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4626,"middleForeground":3377,"wheelForeground":15
+PASS  pt-390-timed: PNG title and house-free receipt are localized  · Mapa composto Pontos médios de dois mapas · Sem casas nem ângulos Aspectos do mapa compost
+PASS  pt-390-timed: image contains all twelve exact localized placements and aspect count
+PASS  pt-390-timed: image contains no stored birth inputs or natal verdict
+PASS  pt-390-timed: image uncertainty matches its inputs
+PASS  pt-390-timed: download status is distinct and preview remains
+PASS  pt-390: exploring and exporting never changes stored birth data
+PASS  pt-390: new comparison starts with no stale composite selection
+PASS  pt-390: unknown Moon remains a provisional receipt without interpretation
+PASS  pt-390: unknown Moon aspect also withholds substantive copy and actions
+PASS  pt-390: unknown Moon does not suppress other composite interpretations
+PASS  pt-390-unknown: image preview loads with localized alternative text
+PASS  pt-390-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  pt-390-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4780,"middleForeground":3146,"wheelForeground":14
+PASS  pt-390-unknown: PNG title and house-free receipt are localized  · Mapa composto Pontos médios de dois mapas · Sem casas nem ângulos Aspectos do mapa compost
+PASS  pt-390-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Sol · 0°00′ Câncer","image":"Sol · 20°11′ Aquário"},{"page":"Mercúrio · 0°00′ Câ
+PASS  pt-390-unknown: image contains no stored birth inputs or natal verdict
+PASS  pt-390-unknown: image uncertainty matches its inputs
+PASS  pt-390-unknown: download status is distinct and preview remains
+PASS  pt-1440: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":378,"height":44},{"body":"Moon","tag":"BU
+PASS  pt-1440: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  pt-1440: composite wheel is named accurately and has no houses or angles
+PASS  pt-1440: eleven visible body targets accompany all twelve receipts
+PASS  pt-1440: keyboard selects Sun with its detail
+PASS  pt-1440: keyboard selects Moon with its detail
+PASS  pt-1440: keyboard selects Mercury with its detail
+PASS  pt-1440: keyboard selects Venus with its detail
+PASS  pt-1440: keyboard selects Mars with its detail
+PASS  pt-1440: keyboard selects Jupiter with its detail
+PASS  pt-1440: keyboard selects Saturn with its detail
+PASS  pt-1440: keyboard selects Uranus with its detail
+PASS  pt-1440: keyboard selects Neptune with its detail
+PASS  pt-1440: keyboard selects Pluto with its detail
+PASS  pt-1440: keyboard selects North Node with its detail
+PASS  pt-1440: keyboard selects South Node with its detail
+PASS  pt-1440: native Tab reaches the next placement
+PASS  pt-1440: native keyboard focus has a visible indicator
+PASS  pt-1440: native Space activates the focused placement
+PASS  pt-1440: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  pt-1440: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  pt-1440: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  pt-1440: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  pt-1440: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  pt-1440: pointer selects composite:aspect:Moon:trine:Mars
+PASS  pt-1440: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  pt-1440: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  pt-1440: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  pt-1440: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  pt-1440: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  pt-1440: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  pt-1440: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  pt-1440: native keyboard activates an aspect with the same selection ID
+PASS  pt-1440: clearing restores focus to its native receipt
+PASS  pt-1440: clearing resets selection in the live detail region
+PASS  pt-1440: Sun SVG marker and placement share selection
+PASS  pt-1440: Moon SVG marker and placement share selection
+PASS  pt-1440: Mercury SVG marker and placement share selection
+PASS  pt-1440: Venus SVG marker and placement share selection
+PASS  pt-1440: Mars SVG marker and placement share selection
+PASS  pt-1440: Jupiter SVG marker and placement share selection
+PASS  pt-1440: Saturn SVG marker and placement share selection
+PASS  pt-1440: Uranus SVG marker and placement share selection
+PASS  pt-1440: Neptune SVG marker and placement share selection
+PASS  pt-1440: Pluto SVG marker and placement share selection
+PASS  pt-1440: North Node SVG marker and placement share selection
+PASS  pt-1440: native SVG aspect hit and aspect receipt share selection
+PASS  pt-1440: timed selection has substantive composite reading
+PASS  pt-1440: English interpretation has an explicit localized cue
+PASS  pt-1440: selection persists across tab changes
+PASS  pt-1440: ring swap preserves canonical composite and selection
+PASS  pt-1440: panel does not overflow its viewport
+PASS  pt-1440-timed: image preview loads with localized alternative text
+PASS  pt-1440-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  pt-1440-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4626,"middleForeground":3377,"wheelForeground":15
+PASS  pt-1440-timed: PNG title and house-free receipt are localized  · Mapa composto Pontos médios de dois mapas · Sem casas nem ângulos Aspectos do mapa compost
+PASS  pt-1440-timed: image contains all twelve exact localized placements and aspect count
+PASS  pt-1440-timed: image contains no stored birth inputs or natal verdict
+PASS  pt-1440-timed: image uncertainty matches its inputs
+PASS  pt-1440-timed: download status is distinct and preview remains
+PASS  pt-1440: exploring and exporting never changes stored birth data
+PASS  pt-1440: new comparison starts with no stale composite selection
+PASS  pt-1440: unknown Moon remains a provisional receipt without interpretation
+PASS  pt-1440: unknown Moon aspect also withholds substantive copy and actions
+PASS  pt-1440: unknown Moon does not suppress other composite interpretations
+PASS  pt-1440-unknown: image preview loads with localized alternative text
+PASS  pt-1440-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  pt-1440-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4780,"middleForeground":3146,"wheelForeground":14
+PASS  pt-1440-unknown: PNG title and house-free receipt are localized  · Mapa composto Pontos médios de dois mapas · Sem casas nem ângulos Aspectos do mapa compost
+PASS  pt-1440-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Sol · 0°00′ Câncer","image":"Sol · 20°11′ Aquário"},{"page":"Mercúrio · 0°00′ Câ
+PASS  pt-1440-unknown: image contains no stored birth inputs or natal verdict
+PASS  pt-1440-unknown: image uncertainty matches its inputs
+PASS  pt-1440-unknown: download status is distinct and preview remains
+PASS  fr-390: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":350,"height":44},{"body":"Moon","tag":"BU
+PASS  fr-390: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  fr-390: composite wheel is named accurately and has no houses or angles
+PASS  fr-390: eleven visible body targets accompany all twelve receipts
+PASS  fr-390: keyboard selects Sun with its detail
+PASS  fr-390: keyboard selects Moon with its detail
+PASS  fr-390: keyboard selects Mercury with its detail
+PASS  fr-390: keyboard selects Venus with its detail
+PASS  fr-390: keyboard selects Mars with its detail
+PASS  fr-390: keyboard selects Jupiter with its detail
+PASS  fr-390: keyboard selects Saturn with its detail
+PASS  fr-390: keyboard selects Uranus with its detail
+PASS  fr-390: keyboard selects Neptune with its detail
+PASS  fr-390: keyboard selects Pluto with its detail
+PASS  fr-390: keyboard selects North Node with its detail
+PASS  fr-390: keyboard selects South Node with its detail
+PASS  fr-390: native Tab reaches the next placement
+PASS  fr-390: native keyboard focus has a visible indicator
+PASS  fr-390: native Space activates the focused placement
+PASS  fr-390: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  fr-390: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  fr-390: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  fr-390: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  fr-390: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  fr-390: pointer selects composite:aspect:Moon:trine:Mars
+PASS  fr-390: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  fr-390: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  fr-390: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  fr-390: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  fr-390: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  fr-390: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  fr-390: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  fr-390: native keyboard activates an aspect with the same selection ID
+PASS  fr-390: clearing restores focus to its native receipt
+PASS  fr-390: clearing resets selection in the live detail region
+PASS  fr-390: Sun SVG marker and placement share selection
+PASS  fr-390: Moon SVG marker and placement share selection
+PASS  fr-390: Mercury SVG marker and placement share selection
+PASS  fr-390: Venus SVG marker and placement share selection
+PASS  fr-390: Mars SVG marker and placement share selection
+PASS  fr-390: Jupiter SVG marker and placement share selection
+PASS  fr-390: Saturn SVG marker and placement share selection
+PASS  fr-390: Uranus SVG marker and placement share selection
+PASS  fr-390: Neptune SVG marker and placement share selection
+PASS  fr-390: Pluto SVG marker and placement share selection
+PASS  fr-390: North Node SVG marker and placement share selection
+PASS  fr-390: native SVG aspect hit and aspect receipt share selection
+PASS  fr-390: timed selection has substantive composite reading
+PASS  fr-390: English interpretation has an explicit localized cue
+PASS  fr-390: selection persists across tab changes
+PASS  fr-390: ring swap preserves canonical composite and selection
+PASS  fr-390: panel does not overflow its viewport
+PASS  fr-390-timed: image preview loads with localized alternative text
+PASS  fr-390-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  fr-390-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4766,"middleForeground":3445,"wheelForeground":15
+PASS  fr-390-timed: PNG title and house-free receipt are localized  · Thème composite Points médians de deux thèmes · Sans maisons ni angles Aspects du thème co
+PASS  fr-390-timed: image contains all twelve exact localized placements and aspect count
+PASS  fr-390-timed: image contains no stored birth inputs or natal verdict
+PASS  fr-390-timed: image uncertainty matches its inputs
+PASS  fr-390-timed: download status is distinct and preview remains
+PASS  fr-390: exploring and exporting never changes stored birth data
+PASS  fr-390: new comparison starts with no stale composite selection
+PASS  fr-390: unknown Moon remains a provisional receipt without interpretation
+PASS  fr-390: unknown Moon aspect also withholds substantive copy and actions
+PASS  fr-390: unknown Moon does not suppress other composite interpretations
+PASS  fr-390-unknown: image preview loads with localized alternative text
+PASS  fr-390-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  fr-390-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4926,"middleForeground":3206,"wheelForeground":14
+PASS  fr-390-unknown: PNG title and house-free receipt are localized  · Thème composite Points médians de deux thèmes · Sans maisons ni angles Aspects du thème co
+PASS  fr-390-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Soleil · 0°00′ Cancer","image":"Soleil · 20°11′ Verseau"},{"page":"Mercure · 0°0
+PASS  fr-390-unknown: image contains no stored birth inputs or natal verdict
+PASS  fr-390-unknown: image uncertainty matches its inputs
+PASS  fr-390-unknown: download status is distinct and preview remains
+PASS  fr-1440: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":378,"height":44},{"body":"Moon","tag":"BU
+PASS  fr-1440: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  fr-1440: composite wheel is named accurately and has no houses or angles
+PASS  fr-1440: eleven visible body targets accompany all twelve receipts
+PASS  fr-1440: keyboard selects Sun with its detail
+PASS  fr-1440: keyboard selects Moon with its detail
+PASS  fr-1440: keyboard selects Mercury with its detail
+PASS  fr-1440: keyboard selects Venus with its detail
+PASS  fr-1440: keyboard selects Mars with its detail
+PASS  fr-1440: keyboard selects Jupiter with its detail
+PASS  fr-1440: keyboard selects Saturn with its detail
+PASS  fr-1440: keyboard selects Uranus with its detail
+PASS  fr-1440: keyboard selects Neptune with its detail
+PASS  fr-1440: keyboard selects Pluto with its detail
+PASS  fr-1440: keyboard selects North Node with its detail
+PASS  fr-1440: keyboard selects South Node with its detail
+PASS  fr-1440: native Tab reaches the next placement
+PASS  fr-1440: native keyboard focus has a visible indicator
+PASS  fr-1440: native Space activates the focused placement
+PASS  fr-1440: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  fr-1440: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  fr-1440: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  fr-1440: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  fr-1440: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  fr-1440: pointer selects composite:aspect:Moon:trine:Mars
+PASS  fr-1440: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  fr-1440: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  fr-1440: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  fr-1440: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  fr-1440: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  fr-1440: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  fr-1440: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  fr-1440: native keyboard activates an aspect with the same selection ID
+PASS  fr-1440: clearing restores focus to its native receipt
+PASS  fr-1440: clearing resets selection in the live detail region
+PASS  fr-1440: Sun SVG marker and placement share selection
+PASS  fr-1440: Moon SVG marker and placement share selection
+PASS  fr-1440: Mercury SVG marker and placement share selection
+PASS  fr-1440: Venus SVG marker and placement share selection
+PASS  fr-1440: Mars SVG marker and placement share selection
+PASS  fr-1440: Jupiter SVG marker and placement share selection
+PASS  fr-1440: Saturn SVG marker and placement share selection
+PASS  fr-1440: Uranus SVG marker and placement share selection
+PASS  fr-1440: Neptune SVG marker and placement share selection
+PASS  fr-1440: Pluto SVG marker and placement share selection
+PASS  fr-1440: North Node SVG marker and placement share selection
+PASS  fr-1440: native SVG aspect hit and aspect receipt share selection
+PASS  fr-1440: timed selection has substantive composite reading
+PASS  fr-1440: English interpretation has an explicit localized cue
+PASS  fr-1440: selection persists across tab changes
+PASS  fr-1440: ring swap preserves canonical composite and selection
+PASS  fr-1440: panel does not overflow its viewport
+PASS  fr-1440-timed: image preview loads with localized alternative text
+PASS  fr-1440-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  fr-1440-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4766,"middleForeground":3445,"wheelForeground":15
+PASS  fr-1440-timed: PNG title and house-free receipt are localized  · Thème composite Points médians de deux thèmes · Sans maisons ni angles Aspects du thème co
+PASS  fr-1440-timed: image contains all twelve exact localized placements and aspect count
+PASS  fr-1440-timed: image contains no stored birth inputs or natal verdict
+PASS  fr-1440-timed: image uncertainty matches its inputs
+PASS  fr-1440-timed: download status is distinct and preview remains
+PASS  fr-1440: exploring and exporting never changes stored birth data
+PASS  fr-1440: new comparison starts with no stale composite selection
+PASS  fr-1440: unknown Moon remains a provisional receipt without interpretation
+PASS  fr-1440: unknown Moon aspect also withholds substantive copy and actions
+PASS  fr-1440: unknown Moon does not suppress other composite interpretations
+PASS  fr-1440-unknown: image preview loads with localized alternative text
+PASS  fr-1440-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  fr-1440-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4926,"middleForeground":3206,"wheelForeground":14
+PASS  fr-1440-unknown: PNG title and house-free receipt are localized  · Thème composite Points médians de deux thèmes · Sans maisons ni angles Aspects du thème co
+PASS  fr-1440-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Soleil · 0°00′ Cancer","image":"Soleil · 20°11′ Verseau"},{"page":"Mercure · 0°0
+PASS  fr-1440-unknown: image contains no stored birth inputs or natal verdict
+PASS  fr-1440-unknown: image uncertainty matches its inputs
+PASS  fr-1440-unknown: download status is distinct and preview remains
+PASS  it-390: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":350,"height":44},{"body":"Moon","tag":"BU
+PASS  it-390: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  it-390: composite wheel is named accurately and has no houses or angles
+PASS  it-390: eleven visible body targets accompany all twelve receipts
+PASS  it-390: keyboard selects Sun with its detail
+PASS  it-390: keyboard selects Moon with its detail
+PASS  it-390: keyboard selects Mercury with its detail
+PASS  it-390: keyboard selects Venus with its detail
+PASS  it-390: keyboard selects Mars with its detail
+PASS  it-390: keyboard selects Jupiter with its detail
+PASS  it-390: keyboard selects Saturn with its detail
+PASS  it-390: keyboard selects Uranus with its detail
+PASS  it-390: keyboard selects Neptune with its detail
+PASS  it-390: keyboard selects Pluto with its detail
+PASS  it-390: keyboard selects North Node with its detail
+PASS  it-390: keyboard selects South Node with its detail
+PASS  it-390: native Tab reaches the next placement
+PASS  it-390: native keyboard focus has a visible indicator
+PASS  it-390: native Space activates the focused placement
+PASS  it-390: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  it-390: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  it-390: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  it-390: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  it-390: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  it-390: pointer selects composite:aspect:Moon:trine:Mars
+PASS  it-390: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  it-390: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  it-390: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  it-390: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  it-390: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  it-390: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  it-390: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  it-390: native keyboard activates an aspect with the same selection ID
+PASS  it-390: clearing restores focus to its native receipt
+PASS  it-390: clearing resets selection in the live detail region
+PASS  it-390: Sun SVG marker and placement share selection
+PASS  it-390: Moon SVG marker and placement share selection
+PASS  it-390: Mercury SVG marker and placement share selection
+PASS  it-390: Venus SVG marker and placement share selection
+PASS  it-390: Mars SVG marker and placement share selection
+PASS  it-390: Jupiter SVG marker and placement share selection
+PASS  it-390: Saturn SVG marker and placement share selection
+PASS  it-390: Uranus SVG marker and placement share selection
+PASS  it-390: Neptune SVG marker and placement share selection
+PASS  it-390: Pluto SVG marker and placement share selection
+PASS  it-390: North Node SVG marker and placement share selection
+PASS  it-390: native SVG aspect hit and aspect receipt share selection
+PASS  it-390: timed selection has substantive composite reading
+PASS  it-390: English interpretation has an explicit localized cue
+PASS  it-390: selection persists across tab changes
+PASS  it-390: ring swap preserves canonical composite and selection
+PASS  it-390: panel does not overflow its viewport
+PASS  it-390-timed: image preview loads with localized alternative text
+PASS  it-390-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  it-390-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4666,"middleForeground":3435,"wheelForeground":15
+PASS  it-390-timed: PNG title and house-free receipt are localized  · Tema composito Punti medi di due temi · Senza case né angoli Aspetti del tema composito: 1
+PASS  it-390-timed: image contains all twelve exact localized placements and aspect count
+PASS  it-390-timed: image contains no stored birth inputs or natal verdict
+PASS  it-390-timed: image uncertainty matches its inputs
+PASS  it-390-timed: download status is distinct and preview remains
+PASS  it-390: exploring and exporting never changes stored birth data
+PASS  it-390: new comparison starts with no stale composite selection
+PASS  it-390: unknown Moon remains a provisional receipt without interpretation
+PASS  it-390: unknown Moon aspect also withholds substantive copy and actions
+PASS  it-390: unknown Moon does not suppress other composite interpretations
+PASS  it-390-unknown: image preview loads with localized alternative text
+PASS  it-390-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  it-390-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4816,"middleForeground":3156,"wheelForeground":14
+PASS  it-390-unknown: PNG title and house-free receipt are localized  · Tema composito Punti medi di due temi · Senza case né angoli Aspetti del tema composito: 1
+PASS  it-390-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Sole · 0°00′ Cancro","image":"Sole · 20°11′ Acquario"},{"page":"Mercurio · 0°00′
+PASS  it-390-unknown: image contains no stored birth inputs or natal verdict
+PASS  it-390-unknown: image uncertainty matches its inputs
+PASS  it-390-unknown: download status is distinct and preview remains
+PASS  it-1440: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":378,"height":44},{"body":"Moon","tag":"BU
+PASS  it-1440: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  it-1440: composite wheel is named accurately and has no houses or angles
+PASS  it-1440: eleven visible body targets accompany all twelve receipts
+PASS  it-1440: keyboard selects Sun with its detail
+PASS  it-1440: keyboard selects Moon with its detail
+PASS  it-1440: keyboard selects Mercury with its detail
+PASS  it-1440: keyboard selects Venus with its detail
+PASS  it-1440: keyboard selects Mars with its detail
+PASS  it-1440: keyboard selects Jupiter with its detail
+PASS  it-1440: keyboard selects Saturn with its detail
+PASS  it-1440: keyboard selects Uranus with its detail
+PASS  it-1440: keyboard selects Neptune with its detail
+PASS  it-1440: keyboard selects Pluto with its detail
+PASS  it-1440: keyboard selects North Node with its detail
+PASS  it-1440: keyboard selects South Node with its detail
+PASS  it-1440: native Tab reaches the next placement
+PASS  it-1440: native keyboard focus has a visible indicator
+PASS  it-1440: native Space activates the focused placement
+PASS  it-1440: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  it-1440: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  it-1440: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  it-1440: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  it-1440: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  it-1440: pointer selects composite:aspect:Moon:trine:Mars
+PASS  it-1440: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  it-1440: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  it-1440: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  it-1440: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  it-1440: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  it-1440: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  it-1440: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  it-1440: native keyboard activates an aspect with the same selection ID
+PASS  it-1440: clearing restores focus to its native receipt
+PASS  it-1440: clearing resets selection in the live detail region
+PASS  it-1440: Sun SVG marker and placement share selection
+PASS  it-1440: Moon SVG marker and placement share selection
+PASS  it-1440: Mercury SVG marker and placement share selection
+PASS  it-1440: Venus SVG marker and placement share selection
+PASS  it-1440: Mars SVG marker and placement share selection
+PASS  it-1440: Jupiter SVG marker and placement share selection
+PASS  it-1440: Saturn SVG marker and placement share selection
+PASS  it-1440: Uranus SVG marker and placement share selection
+PASS  it-1440: Neptune SVG marker and placement share selection
+PASS  it-1440: Pluto SVG marker and placement share selection
+PASS  it-1440: North Node SVG marker and placement share selection
+PASS  it-1440: native SVG aspect hit and aspect receipt share selection
+PASS  it-1440: timed selection has substantive composite reading
+PASS  it-1440: English interpretation has an explicit localized cue
+PASS  it-1440: selection persists across tab changes
+PASS  it-1440: ring swap preserves canonical composite and selection
+PASS  it-1440: panel does not overflow its viewport
+PASS  it-1440-timed: image preview loads with localized alternative text
+PASS  it-1440-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  it-1440-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4666,"middleForeground":3435,"wheelForeground":15
+PASS  it-1440-timed: PNG title and house-free receipt are localized  · Tema composito Punti medi di due temi · Senza case né angoli Aspetti del tema composito: 1
+PASS  it-1440-timed: image contains all twelve exact localized placements and aspect count
+PASS  it-1440-timed: image contains no stored birth inputs or natal verdict
+PASS  it-1440-timed: image uncertainty matches its inputs
+PASS  it-1440-timed: download status is distinct and preview remains
+PASS  it-1440: exploring and exporting never changes stored birth data
+PASS  it-1440: new comparison starts with no stale composite selection
+PASS  it-1440: unknown Moon remains a provisional receipt without interpretation
+PASS  it-1440: unknown Moon aspect also withholds substantive copy and actions
+PASS  it-1440: unknown Moon does not suppress other composite interpretations
+PASS  it-1440-unknown: image preview loads with localized alternative text
+PASS  it-1440-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  it-1440-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4816,"middleForeground":3156,"wheelForeground":14
+PASS  it-1440-unknown: PNG title and house-free receipt are localized  · Tema composito Punti medi di due temi · Senza case né angoli Aspetti del tema composito: 1
+PASS  it-1440-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Sole · 0°00′ Cancro","image":"Sole · 20°11′ Acquario"},{"page":"Mercurio · 0°00′
+PASS  it-1440-unknown: image contains no stored birth inputs or natal verdict
+PASS  it-1440-unknown: image uncertainty matches its inputs
+PASS  it-1440-unknown: download status is distinct and preview remains
+PASS  ru-390: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":350,"height":44},{"body":"Moon","tag":"BU
+PASS  ru-390: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  ru-390: composite wheel is named accurately and has no houses or angles
+PASS  ru-390: eleven visible body targets accompany all twelve receipts
+PASS  ru-390: keyboard selects Sun with its detail
+PASS  ru-390: keyboard selects Moon with its detail
+PASS  ru-390: keyboard selects Mercury with its detail
+PASS  ru-390: keyboard selects Venus with its detail
+PASS  ru-390: keyboard selects Mars with its detail
+PASS  ru-390: keyboard selects Jupiter with its detail
+PASS  ru-390: keyboard selects Saturn with its detail
+PASS  ru-390: keyboard selects Uranus with its detail
+PASS  ru-390: keyboard selects Neptune with its detail
+PASS  ru-390: keyboard selects Pluto with its detail
+PASS  ru-390: keyboard selects North Node with its detail
+PASS  ru-390: keyboard selects South Node with its detail
+PASS  ru-390: native Tab reaches the next placement
+PASS  ru-390: native keyboard focus has a visible indicator
+PASS  ru-390: native Space activates the focused placement
+PASS  ru-390: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  ru-390: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  ru-390: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  ru-390: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  ru-390: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  ru-390: pointer selects composite:aspect:Moon:trine:Mars
+PASS  ru-390: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  ru-390: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  ru-390: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  ru-390: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  ru-390: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  ru-390: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  ru-390: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  ru-390: native keyboard activates an aspect with the same selection ID
+PASS  ru-390: clearing restores focus to its native receipt
+PASS  ru-390: clearing resets selection in the live detail region
+PASS  ru-390: Sun SVG marker and placement share selection
+PASS  ru-390: Moon SVG marker and placement share selection
+PASS  ru-390: Mercury SVG marker and placement share selection
+PASS  ru-390: Venus SVG marker and placement share selection
+PASS  ru-390: Mars SVG marker and placement share selection
+PASS  ru-390: Jupiter SVG marker and placement share selection
+PASS  ru-390: Saturn SVG marker and placement share selection
+PASS  ru-390: Uranus SVG marker and placement share selection
+PASS  ru-390: Neptune SVG marker and placement share selection
+PASS  ru-390: Pluto SVG marker and placement share selection
+PASS  ru-390: North Node SVG marker and placement share selection
+PASS  ru-390: native SVG aspect hit and aspect receipt share selection
+PASS  ru-390: timed selection has substantive composite reading
+PASS  ru-390: English interpretation has an explicit localized cue
+PASS  ru-390: selection persists across tab changes
+PASS  ru-390: ring swap preserves canonical composite and selection
+PASS  ru-390: panel does not overflow its viewport
+PASS  ru-390-timed: image preview loads with localized alternative text
+PASS  ru-390-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  ru-390-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4592,"middleForeground":3175,"wheelForeground":15
+PASS  ru-390-timed: PNG title and house-free receipt are localized  · Композитная карта Средние точки двух карт · Без домов и углов Аспекты композитной карты: 1
+PASS  ru-390-timed: image contains all twelve exact localized placements and aspect count
+PASS  ru-390-timed: image contains no stored birth inputs or natal verdict
+PASS  ru-390-timed: image uncertainty matches its inputs
+PASS  ru-390-timed: download status is distinct and preview remains
+PASS  ru-390: exploring and exporting never changes stored birth data
+PASS  ru-390: new comparison starts with no stale composite selection
+PASS  ru-390: unknown Moon remains a provisional receipt without interpretation
+PASS  ru-390: unknown Moon aspect also withholds substantive copy and actions
+PASS  ru-390: unknown Moon does not suppress other composite interpretations
+PASS  ru-390-unknown: image preview loads with localized alternative text
+PASS  ru-390-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  ru-390-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4677,"middleForeground":2950,"wheelForeground":14
+PASS  ru-390-unknown: PNG title and house-free receipt are localized  · Композитная карта Средние точки двух карт · Без домов и углов Аспекты композитной карты: 1
+PASS  ru-390-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Солнце · 0°00′ Рак","image":"Солнце · 20°11′ Водолей"},{"page":"Меркурий · 0°00′
+PASS  ru-390-unknown: image contains no stored birth inputs or natal verdict
+PASS  ru-390-unknown: image uncertainty matches its inputs
+PASS  ru-390-unknown: download status is distinct and preview remains
+PASS  ru-1440: all twelve placements are native 44px controls  · [{"body":"Sun","tag":"BUTTON","lon":"90","width":378,"height":44},{"body":"Moon","tag":"BU
+PASS  ru-1440: complete midpoint values preserve the documented convention  · [{"body":"Sun","lon":"90"},{"body":"Moon","lon":"120"},{"body":"Mercury","lon":"90"},{"bod
+PASS  ru-1440: composite wheel is named accurately and has no houses or angles
+PASS  ru-1440: eleven visible body targets accompany all twelve receipts
+PASS  ru-1440: keyboard selects Sun with its detail
+PASS  ru-1440: keyboard selects Moon with its detail
+PASS  ru-1440: keyboard selects Mercury with its detail
+PASS  ru-1440: keyboard selects Venus with its detail
+PASS  ru-1440: keyboard selects Mars with its detail
+PASS  ru-1440: keyboard selects Jupiter with its detail
+PASS  ru-1440: keyboard selects Saturn with its detail
+PASS  ru-1440: keyboard selects Uranus with its detail
+PASS  ru-1440: keyboard selects Neptune with its detail
+PASS  ru-1440: keyboard selects Pluto with its detail
+PASS  ru-1440: keyboard selects North Node with its detail
+PASS  ru-1440: keyboard selects South Node with its detail
+PASS  ru-1440: native Tab reaches the next placement
+PASS  ru-1440: native keyboard focus has a visible indicator
+PASS  ru-1440: native Space activates the focused placement
+PASS  ru-1440: every aspect has a native 44px selection control  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  ru-1440: all eleven expected aspects and exact orbs are present  · [{"id":"composite:aspect:Sun:conjunction:Mercury","orb":0,"hasOrb":true,"tag":"BUTTON","wi
+PASS  ru-1440: pointer selects composite:aspect:Sun:conjunction:Mercury
+PASS  ru-1440: pointer selects composite:aspect:Sun:opposition:Neptune
+PASS  ru-1440: pointer selects composite:aspect:Moon:sextile:Venus
+PASS  ru-1440: pointer selects composite:aspect:Moon:trine:Mars
+PASS  ru-1440: pointer selects composite:aspect:Mercury:opposition:Neptune
+PASS  ru-1440: pointer selects composite:aspect:Venus:opposition:Mars
+PASS  ru-1440: pointer selects composite:aspect:Jupiter:square:Saturn
+PASS  ru-1440: pointer selects composite:aspect:Jupiter:opposition:Uranus
+PASS  ru-1440: pointer selects composite:aspect:Saturn:square:Uranus
+PASS  ru-1440: pointer selects composite:aspect:Saturn:trine:Pluto
+PASS  ru-1440: pointer selects composite:aspect:Moon:opposition:Saturn
+PASS  ru-1440: native keyboard activates an aspect with the same selection ID
+PASS  ru-1440: clearing restores focus to its native receipt
+PASS  ru-1440: clearing resets selection in the live detail region
+PASS  ru-1440: Sun SVG marker and placement share selection
+PASS  ru-1440: Moon SVG marker and placement share selection
+PASS  ru-1440: Mercury SVG marker and placement share selection
+PASS  ru-1440: Venus SVG marker and placement share selection
+PASS  ru-1440: Mars SVG marker and placement share selection
+PASS  ru-1440: Jupiter SVG marker and placement share selection
+PASS  ru-1440: Saturn SVG marker and placement share selection
+PASS  ru-1440: Uranus SVG marker and placement share selection
+PASS  ru-1440: Neptune SVG marker and placement share selection
+PASS  ru-1440: Pluto SVG marker and placement share selection
+PASS  ru-1440: North Node SVG marker and placement share selection
+PASS  ru-1440: native SVG aspect hit and aspect receipt share selection
+PASS  ru-1440: timed selection has substantive composite reading
+PASS  ru-1440: English interpretation has an explicit localized cue
+PASS  ru-1440: selection persists across tab changes
+PASS  ru-1440: ring swap preserves canonical composite and selection
+PASS  ru-1440: panel does not overflow its viewport
+PASS  ru-1440-timed: image preview loads with localized alternative text
+PASS  ru-1440-timed: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  ru-1440-timed: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4592,"middleForeground":3175,"wheelForeground":15
+PASS  ru-1440-timed: PNG title and house-free receipt are localized  · Композитная карта Средние точки двух карт · Без домов и углов Аспекты композитной карты: 1
+PASS  ru-1440-timed: image contains all twelve exact localized placements and aspect count
+PASS  ru-1440-timed: image contains no stored birth inputs or natal verdict
+PASS  ru-1440-timed: image uncertainty matches its inputs
+PASS  ru-1440-timed: download status is distinct and preview remains
+PASS  ru-1440: exploring and exporting never changes stored birth data
+PASS  ru-1440: new comparison starts with no stale composite selection
+PASS  ru-1440: unknown Moon remains a provisional receipt without interpretation
+PASS  ru-1440: unknown Moon aspect also withholds substantive copy and actions
+PASS  ru-1440: unknown Moon does not suppress other composite interpretations
+PASS  ru-1440-unknown: image preview loads with localized alternative text
+PASS  ru-1440-unknown: native image text stays inside the card without overlapping ink  · {"clipped":[],"overlaps":[]}
+PASS  ru-1440-unknown: downloads a dedicated nonblank composite PNG  · {"width":1080,"height":1350,"foreground":4677,"middleForeground":2950,"wheelForeground":14
+PASS  ru-1440-unknown: PNG title and house-free receipt are localized  · Композитная карта Средние точки двух карт · Без домов и углов Аспекты композитной карты: 1
+PASS  ru-1440-unknown: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count  · [{"page":"Солнце · 0°00′ Рак","image":"Солнце · 20°11′ Водолей"},{"page":"Меркурий · 0°00′
+PASS  ru-1440-unknown: image contains no stored birth inputs or natal verdict
+PASS  ru-1440-unknown: image uncertainty matches its inputs
+PASS  ru-1440-unknown: download status is distinct and preview remains
+PASS  composite twelve locale/width contexts have no browser errors
+
+ALL PASS

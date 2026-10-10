@@ -18,7 +18,7 @@
  */
 import { createHash } from 'node:crypto';
 import { mkdtempSync, rmSync } from 'node:fs';
-import { copyFile, readFile, readdir, writeFile } from 'node:fs/promises';
+import { chmod, copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -31,9 +31,28 @@ const PUBLIC = resolve(ROOT, 'public/examples');
 const MANIFEST = join(PUBLIC, 'mcp-server.json');
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
-async function packInto(destination) {
+export async function packInto(destination, packageDirectory = PACKAGE) {
+  // npm preserves source-file permissions in its tar headers. The immutable
+  // rc.18 archive carries mode 0600; a fresh Git checkout uses 0644. Normalize
+  // a private staging copy so either checkout reproduces those exact bytes,
+  // without changing the source files or the archive's identity.
+  const source = join(destination, 'source');
+  await mkdir(source);
+  // Ask npm for the complete packlist, including its implicit README/licence
+  // entries, rather than reimplementing the package.json `files` rules.
+  const listing = spawnSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], {
+    cwd: packageDirectory, encoding: 'utf8',
+  });
+  if (listing.status !== 0) throw new Error(`npm pack listing failed: ${listing.stderr || listing.stdout}`);
+  const [{ files }] = JSON.parse(listing.stdout);
+  for (const { path: file } of files) {
+    const target = join(source, file);
+    await mkdir(resolve(target, '..'), { recursive: true });
+    await copyFile(join(packageDirectory, file), target);
+    await chmod(target, 0o600);
+  }
   const result = spawnSync('npm', ['pack', '--pack-destination', destination, '--silent'], {
-    cwd: PACKAGE, encoding: 'utf8',
+    cwd: source, encoding: 'utf8',
   });
   if (result.status !== 0) throw new Error(`npm pack failed: ${result.stderr || result.stdout}`);
   const [file] = (await readdir(destination)).filter((name) => name.endsWith('.tgz'));

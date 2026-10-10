@@ -1,0 +1,40 @@
+{
+  "schema": "zodiacs.thesis-lazy-webgl-preflight-failure.v1",
+  "source": "0453e06c6dbdf88c65315139be230104741a21d7",
+  "producer": "8db5efe7deea8ef8c1d5537e2804f9ff10f8c51a",
+  "run": 37957698922,
+  "job": 113912307008,
+  "stage": "Existing three-sample thesis performance gate",
+  "performance": {
+    "roundedWorstLcpSeconds": 2.57,
+    "limitSeconds": 2.5,
+    "stalls": 0,
+    "retakes": 0
+  },
+  "passed": {
+    "sourceSyntax": true,
+    "buildAndDist": true,
+    "sourceContracts": 42,
+    "thesisBrowser": 234,
+    "initialWebGLContexts": 0,
+    "realGalleryInitializedWhenReached": true
+  },
+  "artifact": {
+    "id": 11630615466,
+    "bytes": 2969739,
+    "sha256": "866e374b853ed9ab6e75ec0eb5cf243a30ec7fe41be4b11b0f741e69c8f5e876"
+  },
+  "logSha256": "c731d1e8a98b7aa875ec2387e49db7e2ec85c9a331b88513a0cbbcf6f91837bd",
+  "sourceControls": {
+    "previousSource": "24b3ec14686a0697a23e15f6936066d20a2decab",
+    "previousGitBlob": "8be269cdf8b2372e0dddbc4798c5a977ecd36868",
+    "previousSourceBytesMatch": true,
+    "onlyGalleryLoaderChanged": true,
+    "retainedInteractionInitializerUnchanged": true,
+    "styleAndArtAndMarkupUnchanged": true,
+    "newSourceSha256": "3eea17beb2e95d91acb6bc1cfaefd2f035bd88b8ca6d01d1ea65ed8acfca9ab3",
+    "candidate": "0453e06c6dbdf88c65315139be230104741a21d7",
+    "limitation": "V8 byte/syntax checks only; browser and performance gates remain running."
+  },
+  "acceptance": "performance remains blocked; candidate not advanced to active PR"
+}

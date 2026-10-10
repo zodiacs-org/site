@@ -1,0 +1,43 @@
+{
+  "sourceBefore": "d591f309fd0db03db56f58f9f6c9a7c4346f7426",
+  "sourceAfter": "4bad1f3e02306518a76541a26c91e4b46a416b34",
+  "python": "3.11",
+  "dependencies": "Unchanged hash-pinned pyerfa 2.0.1.5 and numpy 2.4.6",
+  "acquisition": "Offline rebuild from retained Horizons responses; no refresh or Swiss input",
+  "reports": [
+    {
+      "label": "reference-1",
+      "numericScalarsCompared": 139,
+      "numericChanges": 0,
+      "structuralChanges": 0,
+      "engineVersionFieldsChanged": 1,
+      "otherScalarChanges": 0
+    },
+    {
+      "label": "reference-2",
+      "numericScalarsCompared": 413,
+      "numericChanges": 0,
+      "structuralChanges": 0,
+      "engineVersionFieldsChanged": 1,
+      "otherScalarChanges": 0
+    },
+    {
+      "label": "reference-3",
+      "numericScalarsCompared": 153,
+      "numericChanges": 0,
+      "structuralChanges": 0,
+      "engineVersionFieldsChanged": 1,
+      "otherScalarChanges": 0
+    },
+    {
+      "label": "reference-4",
+      "numericScalarsCompared": 337,
+      "numericChanges": 0,
+      "structuralChanges": 0,
+      "engineVersionFieldsChanged": 1,
+      "otherScalarChanges": 0
+    }
+  ],
+  "policyBytesUnchanged": true,
+  "scope": "Four fixture blobs introduced by source 4bad1f3; the caller-only follow-up e814676 leaves these bytes unchanged."
+}
