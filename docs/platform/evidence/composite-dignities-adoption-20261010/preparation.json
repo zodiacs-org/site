@@ -1,0 +1,24 @@
+{
+  "schema": "zodiacs.composite-dignities-adoption-preparation.v1",
+  "baseline": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76",
+  "package": {
+    "version": "1.0.0-rc.2",
+    "archiveSha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002"
+  },
+  "units": [
+    "P2.E.composite",
+    "P2.E.dignities"
+  ],
+  "status": "Source preparation only; no native compile, parity, browser bundle, full CI, review or deployment claim. Accepted weight unchanged.",
+  "changes": [
+    "Remove the site midpoint/aspect construction and use package functions while preserving mutable return rows.",
+    "Remove the duplicated sign-dignity calculation table and use package functions, preserving existing glosses and unknown-string neutral results.",
+    "The legacy inherited-object-key recognition is intentionally refused; malformed composite lists follow the package refusal boundary."
+  ],
+  "gates": [
+    "Exact source-bound original/candidate finite parity and documented malformed-input differences",
+    "Original unit suite, bundle/isolation budgets, generated output consistency and browser flows",
+    "All required final CI, fresh review, exact merge, full post-merge checks and canonical deployment verification",
+    "Existing publication and package-release rules remain unchanged; no new archive or registry release."
+  ]
+}

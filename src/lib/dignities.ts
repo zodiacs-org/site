@@ -1,29 +1,17 @@
 /**
- * Classical essential dignities — the tradition's map of where each
- * planet works with the grain (domicile, exaltation) or against it
- * (detriment, fall). Defined for the seven classical planets only;
- * Uranus, Neptune, and Pluto entered the story after the system was
- * built, and this site doesn't retrofit them.
+ * Classical sign dignities from the carried package, with the site's labels.
+ * The adapter accepts legacy string inputs: an unknown planet or sign remains
+ * neutral rather than escaping as the package's malformed-input refusal.
  */
+import {
+  dignitiesFor as packageDignitiesFor,
+  dignityFor as packageDignityFor,
+  hasClassicalDignities as packageHasClassicalDignities,
+} from '@zodiacs/engine/techniques';
+import type { BodyName, ZodiacSign } from '@zodiacs/engine';
+import { SIGN_SLUGS } from './signs';
 
 export type Dignity = 'domicile' | 'exaltation' | 'detriment' | 'fall';
-
-interface DignityRow {
-  domicile: string[];
-  exaltation: string | null;
-  detriment: string[];
-  fall: string | null;
-}
-
-const TABLE: Record<string, DignityRow> = {
-  Sun: { domicile: ['leo'], exaltation: 'aries', detriment: ['aquarius'], fall: 'libra' },
-  Moon: { domicile: ['cancer'], exaltation: 'taurus', detriment: ['capricorn'], fall: 'scorpio' },
-  Mercury: { domicile: ['gemini', 'virgo'], exaltation: 'virgo', detriment: ['sagittarius', 'pisces'], fall: 'pisces' },
-  Venus: { domicile: ['taurus', 'libra'], exaltation: 'pisces', detriment: ['scorpio', 'aries'], fall: 'virgo' },
-  Mars: { domicile: ['aries', 'scorpio'], exaltation: 'capricorn', detriment: ['libra', 'taurus'], fall: 'cancer' },
-  Jupiter: { domicile: ['sagittarius', 'pisces'], exaltation: 'cancer', detriment: ['gemini', 'virgo'], fall: 'capricorn' },
-  Saturn: { domicile: ['capricorn', 'aquarius'], exaltation: 'libra', detriment: ['cancer', 'leo'], fall: 'aries' },
-};
 
 /** One-line glosses in the house voice, rendered next to the label. */
 export const DIGNITY_GLOSS: Record<Dignity, string> = {
@@ -33,35 +21,24 @@ export const DIGNITY_GLOSS: Record<Dignity, string> = {
   fall: 'the tradition’s uphill placement, strength earned rather than given',
 };
 
-/**
- * The classical dignity of a planet in a sign, or null when neutral or
- * when the planet carries no classical dignities (the outer three).
- * Exaltation/fall outrank domicile/detriment only where they overlap
- * (Mercury in Virgo reads as exaltation, its stronger title there).
- */
-export function dignityFor(planet: string, signSlug: string): Dignity | null {
-  const row = TABLE[planet];
-  if (!row) return null;
-  if (row.exaltation === signSlug) return 'exaltation';
-  if (row.fall === signSlug) return 'fall';
-  if (row.domicile.includes(signSlug)) return 'domicile';
-  if (row.detriment.includes(signSlug)) return 'detriment';
-  return null;
-}
 
-/** True for the seven planets the classical system covers. */
+/** True for the seven classical planets, including no inherited object keys. */
 export function hasClassicalDignities(planet: string): boolean {
-  return planet in TABLE;
+  try { return packageHasClassicalDignities(planet as BodyName); }
+  catch (error) {
+    if (error instanceof RangeError) return false;
+    throw error;
+  }
 }
 
-/** All four-table labels, without changing the legacy single-label contract. */
+/** Legacy single label, including exaltation over domicile for Mercury in Virgo. */
+export function dignityFor(planet: string, signSlug: string): Dignity | null {
+  if (!hasClassicalDignities(planet) || !SIGN_SLUGS.includes(signSlug)) return null;
+  return packageDignityFor(planet as BodyName, signSlug as ZodiacSign);
+}
+
+/** All labels in package order, without changing the legacy single-label contract. */
 export function dignitiesFor(planet: string, signSlug: string): readonly Dignity[] {
-  if (!Object.hasOwn(TABLE, planet)) return [];
-  const row = TABLE[planet];
-  const result: Dignity[] = [];
-  if (row.domicile.includes(signSlug)) result.push('domicile');
-  if (row.exaltation === signSlug) result.push('exaltation');
-  if (row.detriment.includes(signSlug)) result.push('detriment');
-  if (row.fall === signSlug) result.push('fall');
-  return result;
+  if (!hasClassicalDignities(planet) || !SIGN_SLUGS.includes(signSlug)) return [];
+  return packageDignitiesFor(planet as BodyName, signSlug as ZodiacSign);
 }
