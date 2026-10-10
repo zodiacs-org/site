@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      CAPTURE_TARGET_SHA: 'be1887221aeb0984d9b0b14e3a3e403abea47848'
+      CAPTURE_TARGET_SHA: '63dbcc0df75c655c2476af779f06e99f5a1cd6dd'
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -78,9 +78,14 @@ jobs:
            const actual=await readFile(root+name);assert.equal(hash(actual),row.screenshot.sha256);
            const previous=execFileSync('git',['show','HEAD:'+root+name],{shell:false,maxBuffer:12*1024*1024});
            captures.push({file:name,bytes:actual.length,sha256:hash(actual),previousTrackedBytes:previous.length,previousTrackedSha256:hash(previous),identicalToPreviousTracked:actual.equals(previous)});
+           if(!actual.equals(previous))exported(root+name,actual);
           }
           const report={schema:'zodiacs.checkpoint25-home-phase1-capture.v1',producer:{workflowSource:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:head,target:process.env.CAPTURE_TARGET_SHA,rawGitTemplateSourceSha256:rawHash,manifestSha256:hash(bytes),captures,browser:manifest.browser,capturedAt:manifest.capturedAt,builtAt:manifest.buildReceipt.builtAt,limitation:'Eighteen fresh actual captures and original receipt tests; full combined suite and production checks remain required.'};
-          function exported(path,b){console.log('PROGRAMME_FILE '+JSON.stringify({path,size:b.length,sha256:hash(b),base64:b.toString('base64')}));}
+          function exported(path,b){
+           if(b.length<=49152){console.log('PROGRAMME_FILE '+JSON.stringify({path,size:b.length,sha256:hash(b),base64:b.toString('base64')}));return;}
+           const chunks=Math.ceil(b.length/16384);console.log('PROGRAMME_FILE_INDEX '+JSON.stringify({path,size:b.length,sha256:hash(b),chunks}));
+           for(let index=0;index<chunks;index++)console.log('PROGRAMME_FILE_CHUNK '+JSON.stringify({path,index,base64:b.subarray(index*16384,(index+1)*16384).toString('base64')}));
+          }
           exported(root+'manifest.json',bytes);
           const proof=Buffer.from(JSON.stringify(report,null,2)+'\n');await writeFile('checkpoint25-home-capture-producer.json',proof);
           exported('docs/platform/evidence/home-poster-loading-20261010/phase1-capture-producer.json',proof);
