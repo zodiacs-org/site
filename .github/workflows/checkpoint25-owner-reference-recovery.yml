@@ -1,0 +1,146 @@
+name: Read-only recovery of current-owner visual reference artifact
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/checkpoint25-owner-reference-recovery.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  reports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      differing: ${{ steps.recovery.outputs.differing }}
+    steps:
+      - name: Verify original ZIP digest and CRC; recover exact reports
+        id: recovery
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 <<'RECOVER'
+          import os,json,hashlib,base64,urllib.request,urllib.error,zipfile,io
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+           def redirect_request(self,req,fp,code,msg,headers,newurl):return None
+          api='https://api.github.com/repos/zodiacs-org/site/actions/artifacts/11666596282/zip'
+          opener=urllib.request.build_opener(NoRedirect)
+          request=urllib.request.Request(api,headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json'})
+          try:
+           with opener.open(request,timeout=30) as response:packed=response.read()
+          except urllib.error.HTTPError as error:
+           if error.code!=302:raise
+           location=error.headers['Location']
+           assert location.startswith('https://')
+           # The signed external URL receives no GitHub Authorization header.
+           with urllib.request.urlopen(urllib.request.Request(location),timeout=60) as response:packed=response.read()
+          assert hashlib.sha256(packed).hexdigest()=='43b4f28e7e12abae1c5bcf9445a9b0523a9761a1f768cb0e9f3d4316385e500c'
+          archive=zipfile.ZipFile(io.BytesIO(packed))
+          assert archive.testzip() is None
+          root='docs/platform/evidence/home-poster-loading-20261010/'
+          def export(path,data):
+           digest=hashlib.sha256(data).hexdigest()
+           if len(data)<=49152:
+            print('PROGRAMME_FILE '+json.dumps({'path':path,'size':len(data),'sha256':digest,'base64':base64.b64encode(data).decode()},separators=(',',':')))
+           else:
+            parts=[data[i:i+16384] for i in range(0,len(data),16384)]
+            print('PROGRAMME_FILE_INDEX '+json.dumps({'path':path,'size':len(data),'sha256':digest,'chunks':len(parts)},separators=(',',':')))
+            for index,part in enumerate(parts):print('PROGRAMME_FILE_CHUNK '+json.dumps({'path':path,'index':index,'base64':base64.b64encode(part).decode()},separators=(',',':')))
+          proof=json.loads(archive.read('owner-reference.json'))
+          assert proof['ownerSource']=='943d11decff8c5cd417d315637aac2cf8c55fa01'
+          assert proof['fontControlSource']=='63dbcc0df75c655c2476af779f06e99f5a1cd6dd'
+          assert proof['fontControlGitBlob']=='f53933f7f2eeea36296d8e82bc3e2f692594897b'
+          assert proof['producer']['run']=='38043660114'
+          assert proof['producer']['workflowSource']=='29742ad1463bd9a0fd8e328c5946eaf2b045e923'
+          assert len(proof['records'])==15
+          changed=[row['file'] for row in proof['records'] if row['retained']=='fresh current-owner desktop bytes']
+          assert len(changed)==10
+          for row in proof['records']:
+           assert row['upperPageComparison']['diffRatio']<=0.001
+           actual=archive.read('tests/visual/baselines/linux/'+row['file'])
+           expected=row['old'] if row['retained']=='exact old mobile bytes' else row['captured']
+           assert len(actual)==expected['bytes'] and hashlib.sha256(actual).hexdigest()==expected['sha256']
+           assert row['captured']['height']-row['old']['height']==(0 if row['retained']=='exact old mobile bytes' else 13)
+          if os.environ.get('IMAGE_FILE'):
+           file=os.environ['IMAGE_FILE']
+           assert file in changed
+           path='tests/visual/baselines/linux/'+file
+           data=archive.read(path)
+           row=next(row for row in proof['records'] if row['file']==file)
+           assert len(data)==row['captured']['bytes'] and hashlib.sha256(data).hexdigest()==row['captured']['sha256']
+           export(path,data)
+          else:
+           export(root+'owner-visual-reference.json',archive.read('owner-reference.json'))
+           with open(os.environ['GITHUB_OUTPUT'],'a') as output:output.write('differing='+json.dumps(changed,separators=(',',':'))+'\n')
+           print('OWNER_REFERENCE_RECOVERY '+json.dumps({'artifact':11666596282,'verifiedZipSha256':hashlib.sha256(packed).hexdigest(),'crcVerified':True,'actual':15,'differing':changed},separators=(',',':')))
+                    RECOVER
+  images:
+    needs: reports
+    if: needs.reports.outputs.differing != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        file: ${{ fromJSON(needs.reports.outputs.differing) }}
+    steps:
+      - name: Recover one verified actual capture without a browser rerun
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          IMAGE_FILE: ${{ matrix.file }}
+        run: |
+          python3 <<'RECOVER'
+          import os,json,hashlib,base64,urllib.request,urllib.error,zipfile,io
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+           def redirect_request(self,req,fp,code,msg,headers,newurl):return None
+          api='https://api.github.com/repos/zodiacs-org/site/actions/artifacts/11666596282/zip'
+          opener=urllib.request.build_opener(NoRedirect)
+          request=urllib.request.Request(api,headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json'})
+          try:
+           with opener.open(request,timeout=30) as response:packed=response.read()
+          except urllib.error.HTTPError as error:
+           if error.code!=302:raise
+           location=error.headers['Location']
+           assert location.startswith('https://')
+           # The signed external URL receives no GitHub Authorization header.
+           with urllib.request.urlopen(urllib.request.Request(location),timeout=60) as response:packed=response.read()
+          assert hashlib.sha256(packed).hexdigest()=='43b4f28e7e12abae1c5bcf9445a9b0523a9761a1f768cb0e9f3d4316385e500c'
+          archive=zipfile.ZipFile(io.BytesIO(packed))
+          assert archive.testzip() is None
+          root='docs/platform/evidence/home-poster-loading-20261010/'
+          def export(path,data):
+           digest=hashlib.sha256(data).hexdigest()
+           if len(data)<=49152:
+            print('PROGRAMME_FILE '+json.dumps({'path':path,'size':len(data),'sha256':digest,'base64':base64.b64encode(data).decode()},separators=(',',':')))
+           else:
+            parts=[data[i:i+16384] for i in range(0,len(data),16384)]
+            print('PROGRAMME_FILE_INDEX '+json.dumps({'path':path,'size':len(data),'sha256':digest,'chunks':len(parts)},separators=(',',':')))
+            for index,part in enumerate(parts):print('PROGRAMME_FILE_CHUNK '+json.dumps({'path':path,'index':index,'base64':base64.b64encode(part).decode()},separators=(',',':')))
+          proof=json.loads(archive.read('owner-reference.json'))
+          assert proof['ownerSource']=='943d11decff8c5cd417d315637aac2cf8c55fa01'
+          assert proof['fontControlSource']=='63dbcc0df75c655c2476af779f06e99f5a1cd6dd'
+          assert proof['fontControlGitBlob']=='f53933f7f2eeea36296d8e82bc3e2f692594897b'
+          assert proof['producer']['run']=='38043660114'
+          assert proof['producer']['workflowSource']=='29742ad1463bd9a0fd8e328c5946eaf2b045e923'
+          assert len(proof['records'])==15
+          changed=[row['file'] for row in proof['records'] if row['retained']=='fresh current-owner desktop bytes']
+          assert len(changed)==10
+          for row in proof['records']:
+           assert row['upperPageComparison']['diffRatio']<=0.001
+           actual=archive.read('tests/visual/baselines/linux/'+row['file'])
+           expected=row['old'] if row['retained']=='exact old mobile bytes' else row['captured']
+           assert len(actual)==expected['bytes'] and hashlib.sha256(actual).hexdigest()==expected['sha256']
+           assert row['captured']['height']-row['old']['height']==(0 if row['retained']=='exact old mobile bytes' else 13)
+          if os.environ.get('IMAGE_FILE'):
+           file=os.environ['IMAGE_FILE']
+           assert file in changed
+           path='tests/visual/baselines/linux/'+file
+           data=archive.read(path)
+           row=next(row for row in proof['records'] if row['file']==file)
+           assert len(data)==row['captured']['bytes'] and hashlib.sha256(data).hexdigest()==row['captured']['sha256']
+           export(path,data)
+          else:
+           export(root+'owner-visual-reference.json',archive.read('owner-reference.json'))
+           with open(os.environ['GITHUB_OUTPUT'],'a') as output:output.write('differing='+json.dumps(changed,separators=(',',':'))+'\n')
+           print('OWNER_REFERENCE_RECOVERY '+json.dumps({'artifact':11666596282,'verifiedZipSha256':hashlib.sha256(packed).hexdigest(),'crcVerified':True,'actual':15,'differing':changed},separators=(',',':')))
+                    RECOVER
