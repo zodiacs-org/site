@@ -1,0 +1,35 @@
+name: Parse exact adoption source preparations without execution
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/adoption-source-syntax-preflight.yml]
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact producer script
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          path: producer
+          fetch-depth: 1
+      - name: Checkout exact local MCP preparation
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: da9483b2a51c378667f721e200745778e26fb1e5
+          path: local-mcp
+          fetch-depth: 1
+      - name: Checkout exact library adoption preparation
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: 0eb5942b5eff1ade2d7115510f9de03c8a7a8abb
+          path: library-adoption
+          fetch-depth: 1
+      - name: Set up Node syntax parser
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - name: Parse sources without resolving or executing imports
+        run: node producer/tests/adoption-source-syntax-preflight.mjs
