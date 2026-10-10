@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.local-build-summary.v1",
-  "assembled": "Assembled from the three local build logs: the lines below are copied verbatim from each log's bundle report, and the logs themselves are identified by size and SHA-256. The logs are working files and are not committed.",
+  "assembled": "Assembled from the local build logs that preceded the first three runs: the lines below are copied verbatim from each log's bundle report, and the logs themselves are identified by size and SHA-256. Those logs are working files and are not committed. From the fourth attempt on, the observer makes its own build and commits its log beside its observation.",
   "source": {
     "commit": "7028d01905137b45e835db1dca785cecb672a729",
     "tree": "d5a580d38df67d8150d6684e8ff6bd75d82bd389"
@@ -86,6 +86,25 @@
         "file": "_astro/birth-window.worker-BrxRL5ql.js",
         "sha256": "678516aeaf379c0cc406aa03cf5f2704d310448e9df29bc3879e1099988d1872"
       },
+      "trackedFilesChanged": "none"
+    },
+    {
+      "name": "flags unset, from a clean checkout of 368ce361, before the third run",
+      "source": {
+        "commit": "368ce3613d39a5625eb61b06b07a4f5f490989ba"
+      },
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": {
+        "bytes": 303038,
+        "sha256": "bbd1c9dd533c62871beabeaae893c1ce4d96d8079aeb09a4a5bdb4a0dc010b72"
+      },
+      "lines": [
+        "verify-daily-freshness: PASS — 2026-10-10 is 0 UTC day(s) old",
+        "  /birth-chart/      67.1 KB /   71 KB  (43 chunks)",
+        "  engine-chunk       32.5 KB / 32.598046875 KB  (/_astro/full.BKD3b6Gf.js; 7 static chunks)",
+        "Phase 1 build receipt: 9dd04ba1bf49c7dd8e332d951bf095f0b2878898f3126c2d9d4461f708192d23"
+      ],
       "trackedFilesChanged": "none"
     }
   ]

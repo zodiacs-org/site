@@ -9,13 +9,15 @@
  *
  * Usage: PRODUCTION_SOURCE_COMMIT=<sha> PRODUCTION_DEPLOYMENT_ID=<dpl_…>
  *   [VERCEL_TEAM_ID=<team_…>] node observe-birth-time-window-production.mjs <site checkout> <output dir>
- * The checkout must be at PRODUCTION_SOURCE_COMMIT with no tracked change and a
- * completed `npm run build` in dist/.
+ * The checkout must be at PRODUCTION_SOURCE_COMMIT with no tracked change and
+ * its dependencies installed (`npm ci`). The observer deletes dist/ and runs
+ * `npm run build` itself, with the feature flags unset as Site Check's Build &
+ * Check job builds, so the local build it compares is the checkout's.
  */
 import assert from 'node:assert/strict';
 import { execFileSync, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
@@ -43,10 +45,49 @@ const head = git('rev-parse', 'HEAD');
 assert.equal(head, expectedSource, 'Checkout is the deployed source commit');
 assert.equal(git('status', '--porcelain', '--untracked-files=no'), '', 'No tracked change before the run');
 const tree = git('rev-parse', 'HEAD^{tree}');
-const buildReceipt = JSON.parse(await readFile(join(repo, 'dist/.phase1-build-receipt.json'), 'utf8'));
 
+// The local build: made here, from this checkout, so it cannot be a stale dist/.
+await mkdir(out, { recursive: true });
+await rm(join(repo, 'dist'), { recursive: true, force: true });
+const buildEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^(PUBLIC_|SUPABASE_|RESEND_|DAILY_EMAIL_|EMAIL_)|_RPC_URL$/.test(key)));
+const buildLog = [];
+const buildExit = await new Promise((resolveExit, rejectExit) => {
+  const child = spawn('npm', ['run', 'build'], { cwd: repo, env: buildEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+  child.stdout.on('data', (chunk) => buildLog.push(chunk));
+  child.stderr.on('data', (chunk) => buildLog.push(chunk));
+  child.once('error', rejectExit);
+  child.once('exit', (code, signal) => resolveExit(code ?? (signal ? 1 : 0)));
+});
+const buildLogBytes = Buffer.concat(buildLog);
+await writeFile(join(out, 'build.log'), buildLogBytes);
+assert.equal(buildExit, 0, 'npm run build succeeds on the checkout (build.log)');
+assert.equal(git('status', '--porcelain', '--untracked-files=no'), '', 'No tracked change after the build');
+const buildReceipt = JSON.parse(await readFile(join(repo, 'dist/.phase1-build-receipt.json'), 'utf8'));
+const localBuild = {
+  madeBy: 'this observer, after deleting dist/, with the feature flags unset',
+  node: process.version,
+  npm: execFileSync('npm', ['--version'], { cwd: repo, encoding: 'utf8' }).trim(),
+  log: { file: 'build.log', bytes: buildLogBytes.length, sha256: sha256(buildLogBytes) },
+  gates: buildLogBytes.toString('utf8').split('\n').filter((line) => /verify-daily-freshness: PASS|validate-schema: OK|\/birth-chart\/ |engine-chunk|chunk-max|engine isolation|report-bundles:|Phase 1 build receipt/.test(line)).map((line) => line.trim()),
+  receipt: buildReceipt,
+};
+
+// A request that fails at the network level (no HTTP answer) is tried up to
+// three times; each retry is counted in the observation. An HTTP answer of
+// any status is taken as it is.
+let networkRetries = 0;
 async function served(path) {
-  const response = await fetch(BASE + path, { redirect: 'manual', signal: AbortSignal.timeout(30000) });
+  let response;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      response = await fetch(BASE + path, { redirect: 'manual', signal: AbortSignal.timeout(30000) });
+      break;
+    } catch (error) {
+      if (attempt === 3) throw error;
+      networkRetries += 1;
+      await new Promise((resolveDelay) => setTimeout(resolveDelay, 1000 * attempt));
+    }
+  }
   const bytes = Buffer.from(await response.arrayBuffer());
   return { status: response.status, bytes, cache: response.headers.get('x-vercel-cache'), type: response.headers.get('content-type') };
 }
@@ -124,7 +165,6 @@ const committedControls = await readFile(join(repo, CONTROLS));
 const chrome = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
 assert.ok(chrome, 'PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH names the browser that runs the drive');
 const chromeVersion = execFileSync(chrome, ['--version'], { encoding: 'utf8' }).trim();
-await mkdir(out, { recursive: true });
 const log = [];
 const exitCode = await new Promise((resolveExit, rejectExit) => {
   const child = spawn(process.execPath, [DRIVE], {
@@ -186,11 +226,11 @@ const sourceBinding = {
 };
 const drivePassed = driveReport.passed === true && exitCode === 0;
 const observation = {
-  schema: 'zodiacs.birth-time-window-production-observation.v3',
+  schema: 'zodiacs.birth-time-window-production-observation.v4',
   base: BASE,
   startedAt,
   finishedAt,
-  source: { commit: head, tree, trackedChangesBeforeAndAfter: 'none', localBuildReceipt: buildReceipt },
+  source: { commit: head, tree, trackedChangesBeforeAndAfter: 'none', localBuild },
   expectedDeployment: { id: deploymentId, team, aliasBefore, aliasAfter, cli: execFileSync('vercel', ['--version'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().split('\n').at(-1) },
   observer: {
     script: 'scripts/observe-birth-time-window-production.mjs',
@@ -220,6 +260,7 @@ const observation = {
   sourceBinding,
   passed: drivePassed && Object.values(sourceBinding).every(Boolean),
   assetIdentity: {
+    networkRetries,
     workers,
     pageGraphBefore: before,
     pageGraphAfter: after,

@@ -12,55 +12,60 @@ served from zodiacs.org, passes the same browser controls that qualified it.
 | Review | Codex comment `6100016486`, 2026-10-10T17:04:02Z, on `5a46fb08a5` | "Didn't find any major issues"; review threads `4237818455`, `4237818457` and `4238230846` all resolved |
 | Merge | [#703](https://github.com/zodiacs-org/site/pull/703) as `7028d01905137b45e835db1dca785cecb672a729` | tree `d5a580d3…`, the reviewed head's tree; parents `51b2c0d3` (main) and `5a46fb08` (head) |
 | Post-merge | [Site Check 38073108054](https://github.com/zodiacs-org/site/actions/runs/38073108054) on `7028d019` | 20 of 20 jobs; all 63 steps of Build & Check succeeded: 6,989 unit tests passed with six existing skips, the journal says "Runner stalls: none; no sample was retaken.", and both birth-window drives passed thirteen controls per viewport. Retained in [`postmerge/`](postmerge/postmerge.json): the job log as GitHub serves it, and the two drive reports decoded from it |
-| Deployment | Vercel `dpl_6sNuHibXGVrm67tBvp6dJHczAYGX`, from `7028d019` | READY; zodiacs.org and www.zodiacs.org assigned to it before and after the first browser run ([connector record](connector-observation.json), assembled) |
-| First canonical run | [`run-7028d019/`](run-7028d019/observation.json), 2026-10-10T20:09:38Z to 20:11:05Z | passed in both viewports |
-| Production moves | Vercel `dpl_9ycqFxvKfKRePBjaBYKAybUJGpgg`, from `ed1137cb` (#705, the daily email, merged by another session) | READY; zodiacs.org assigned to it from 22:05:11Z, before and after the second run |
-| Second canonical run | [`run-ed1137cb/`](run-ed1137cb/observation.json), 2026-10-10T22:37:42Z to 22:39:20Z | passed in both viewports, with source binding enforced |
-| Production moves again | Vercel `dpl_4vt77TuBeFzkq9Kp8q6FM8ZfoHSS`, from `368ce361` (#706, merged by another session) | READY; zodiacs.org assigned to it from 22:49:45Z |
-| Third canonical run | [`run-368ce361/`](run-368ce361/observation.json), 2026-10-10T23:08:52Z to 23:10:26Z, with the alias read at 23:08:42Z and 23:10:47Z | passed in both viewports; the observer itself read the alias's deployment and commit before and after the drive |
+| Canonical runs | four passing runs on three production deployments, and one failed attempt (below) | each passing run: all thirteen controls in both viewports |
+
+## The canonical runs
+
+Production moved twice while this record was made, each time because another
+session merged a change to main: #705 (`ed1137cb`, the daily email) at
+22:05:11Z and #706 (`368ce361`, the daily email's header) at 22:49:45Z. The
+birth-chart page served the same 190 files, with the same digests, on all
+three deployments.
+
+| run | deployment and commit | window (UTC) | observer | result |
+| --- | --- | --- | --- | --- |
+| [`run-7028d019/`](run-7028d019/observation.json) | `dpl_6sNuHibXGVrm67tBvp6dJHczAYGX`, `7028d019` | 20:09:38–20:11:05 | v1: the drive decides the result; worker identity and graph stability recorded | passed |
+| [`run-ed1137cb/`](run-ed1137cb/observation.json) | `dpl_9ycqFxvKfKRePBjaBYKAybUJGpgg`, `ed1137cb` | 22:37:42–22:39:20 | v2: also fails unless the worker is the local build's and the page graph did not change | passed |
+| [`run-368ce361/`](run-368ce361/observation.json) | `dpl_4vt77TuBeFzkq9Kp8q6FM8ZfoHSS`, `368ce361` | 23:08:52–23:10:26 | v3: also reads, before and after, which deployment the alias names and its commit | passed |
+| [`run-368ce361-failed-crawl/`](run-368ce361-failed-crawl/observer-stdout.log) | the same | about 23:19–23:21 (its files' times; it wrote no observation) | v4: also makes its own build of the checkout | **failed**: the build and the drive passed, then the observer's own after-run crawl got a network reset (ECONNRESET) and stopped before writing an observation |
+| [`run-368ce361-v4/`](run-368ce361-v4/observation.json) | the same | 23:23:28–23:24:06 | v4, with a request that fails at the network level tried up to three times and counted (none was) | passed |
+
+Each version of the observer answers a review of the one before it on
+#704: the Codex threads on `scripts/observe-birth-time-window-production.mjs`
+lines 169 (v2), 159 (v3) and 46 (v4). The committed script is v4; each earlier
+version is in the PR's history. The earlier runs predate the later checks, so
+the record says what bound each of them:
+
+- **The deployment.** Runs 1 and 2 were bracketed by reads of the zodiacs.org
+  alias made through the Vercel connector by hand
+  ([`connector-observation.json`](connector-observation.json), assembled):
+  before and after each, the alias named the run's deployment with an
+  unchanged `updatedAt`. Runs 3 and 4 made those reads themselves through the
+  Vercel CLI's existing login and recorded the deployment's commit.
+- **The local build.** Before runs 1 to 3 the commit was checked out clean and
+  built with the flags unset just before the run
+  ([`local-builds.json`](local-builds.json), assembled, with each log's
+  SHA-256). From the fourth attempt the observer deletes `dist/` and builds
+  the checkout itself, and its `build.log` is committed beside the run.
 
 ## What the browser runs did
 
-`scripts/observe-birth-time-window-production.mjs` ran the unchanged
-`tests/birth-time-window-drive.mjs` (SHA-256 `ce2770e3…`, the same file at
-both commits) with `ZODIACS_TEST_BASE_URL=https://zodiacs.org`, in headless
+`scripts/observe-birth-time-window-production.mjs` runs the unchanged
+`tests/birth-time-window-drive.mjs` (SHA-256 `ce2770e3…`, the same file at all
+three commits) with `ZODIACS_TEST_BASE_URL=https://zodiacs.org`, in headless
 Google Chrome 154.0.8037.98 on macOS, from a clean checkout of the deployed
-commit with a completed local build. Every page, script and worker came from
-canonical production.
+commit. Every page, script and worker came from canonical production.
 
-It ran twice. The first run, on `7028d019`, recorded the worker's identity and
-whether the page's module graph stayed the same, but its result counted only
-the drive; the PR's Codex review (thread on line 169) asked for both to fail
-the observation, and the script now does (schema v2, `sourceBinding`). By the
-time of the second run another session had merged #705, so production served
-`ed1137cb`. The second run, with the corrected script, passed on that
-deployment: the drive, the worker byte for byte and an unchanged graph. The
-first run's files are kept as they were written, and its recorded values meet
-the same two conditions.
-
-A second review comment (thread on line 159) pointed out that an unchanged
-graph does not prove an unchanged deployment: the first two runs' graphs are
-identical across two deployments. The observer now also reads, through the
-Vercel CLI's existing login, which deployment the zodiacs.org alias names and
-that deployment's commit, before and after the drive, and fails unless both
-reads name the expected READY production deployment, built from the checkout's
-commit, with the alias unchanged (schema v3). The first two runs were
-bracketed by the same reads made through the Vercel connector by hand
-(`connector-observation.json`): the alias named the run's deployment, with an
-unchanged `updatedAt`, before and after each. By the third run another
-session's #706 had moved production to `368ce361`; the third run, with the
-observer making those reads itself, passed there.
-
-- **Both viewports pass all thirteen controls** (390×844 and 1440×1000), as
-  the drive names them: no worker before the request; a real sampled window;
-  every cell rendered; an explicit cancel, a window change and a chart
-  replacement each terminate the actual worker; no window entry for an unknown
-  time, nor for a local date that resolves past the UTC span; disabled 30- and
-  120-minute options at the lower edge; a real worker result for the edge's
-  preset; the worker loaded from the production `/_astro/birth-window.worker-…`
-  file; the boundary charts' committed instants checked; and no horizontal
-  overflow. Each viewport created and terminated six workers. No page error
-  was observed.
+- **Every passing run passes all thirteen controls in both viewports**
+  (390×844 and 1440×1000), as the drive names them: no worker before the
+  request; a real sampled window; every cell rendered; an explicit cancel, a
+  window change and a chart replacement each terminate the actual worker; no
+  window entry for an unknown time, nor for a local date that resolves past
+  the UTC span; disabled 30- and 120-minute options at the lower edge; a real
+  worker result for the edge's preset; the worker loaded from the production
+  `/_astro/birth-window.worker-…` file; the boundary charts' committed
+  instants checked; and no horizontal overflow. Each viewport created and
+  terminated six workers. No page error was observed.
 - **The one-line summary** production showed for the drive's first chart:
   "Rising sign depends on the birth time: Cancer or Leo or Virgo." The
   boundary charts committed `2200-01-01T05:59:00.000Z` (no entry) and
@@ -70,31 +75,31 @@ observer making those reads itself, passed there.
   sentences meant for its default local preview; in these runs its base URL
   was production, which each `observation.json` records. The drive writes over
   the committed `birth-time-window-ui-20261010/browser-controls.json`; the
-  observer kept that file's bytes and put them back, and checked that no
+  observer keeps that file's bytes and puts them back, and checks that no
   tracked file changed.
 
 ## What production served
 
 - **The worker.** `/_astro/birth-window.worker-BrxRL5ql.js` is 88,808 bytes,
-  SHA-256 `678516ae…`, the same bytes in both runs and in the local builds of
-  `7028d019` and `ed1137cb`. It is
-  40,367 bytes gzipped at zlib's default level (the figure PR703's records
-  give) and 40,349 at level 9, under the 60 KB chunk limit.
+  SHA-256 `678516ae…`, the same bytes in every run and in the local builds of
+  `7028d019`, `ed1137cb` and `368ce361`. It is 40,367 bytes gzipped at zlib's
+  default level (the figure PR703's records give) and 40,349 at level 9,
+  under the 60 KB chunk limit.
 - **The page.** `/birth-chart/` and the modules it reaches came to 190 files,
-  the same set with the same digests before and after each run, and the same
-  in both runs; the page's HTML was the same bytes too. 182 are byte for
-  byte the local build with the flags unset. The other eight differ because
-  production builds with its feature flags on. A second local build with the
-  production-flags job's settings explains each of them
+  the same set with the same digests before and after each run and in every
+  run; the page's HTML was the same bytes too. 182 are byte for byte the local
+  build with the flags unset. The other eight differ because production builds
+  with its feature flags on. A local build with the production-flags job's
+  settings explains each of them
   ([`run-7028d019/flag-chunk-explanation.json`](run-7028d019/flag-chunk-explanation.json),
-  which holds for the second run's identical files): seven are
-  identical once the content hashes in file names are set aside, and
-  `client.BznKc0x4.js` differs from its counterpart only in two string
-  literals, where production has its public Supabase address and key and the
-  build has the CI's stand-ins.
-- [`local-builds.json`](local-builds.json) gives the builds' bundle gates. With
-  the production flags, `/birth-chart/` is 70.2 KB against its 71 KB budget and
-  `/compatibility/` 36.0 KB against 36 KB; both pass, with little room.
+  which holds for the later runs' identical files): seven are identical once
+  the content hashes in file names are set aside, and `client.BznKc0x4.js`
+  differs from its counterpart only in two string literals, where production
+  has its public Supabase address and key and the build has the CI's
+  stand-ins.
+- With the production flags, `/birth-chart/` is 70.2 KB against its 71 KB
+  budget and `/compatibility/` 36.0 KB against 36 KB
+  ([`local-builds.json`](local-builds.json)); both pass, with little room.
 
 ## What the screenshots show
 
@@ -119,22 +124,25 @@ picture of the deployed detail, not a control. They were read:
 
 ## Limits
 
-- These are two runs from one machine with anonymous requests and synthetic
-  or public demonstration inputs. They show the deployed interface working;
-  they are not a load, availability or long-term health measurement.
+- These are runs from one machine with anonymous requests and synthetic or
+  public demonstration inputs, on 2026-10-10 between 20:09 and 23:25 UTC. They
+  show the deployed interface working; they are not a load, availability or
+  long-term health measurement.
 - The windows are sampled at one-second resolution, as the interface says.
   Nothing here is a new accuracy measurement or an interval proof; B2.a and
   B2.c carry the thousand-window rule.
-- The Vercel connector's records are assembled by hand from its responses; the
-  bytes a visitor receives are what the observer measured.
+- The connector's records for runs 1 and 2 are assembled by hand from its
+  responses; runs 3 and 4 recorded the CLI's answers themselves. The bytes a
+  visitor receives are what the observer measured.
 - English full calculator only, as built. No saved-window model and no other
   locale.
 
 ## Reproduce
 
-Make a clean checkout of the commit production serves, run `npm ci` and
-`npm run build` there (the daily-freshness gate needs the day's edition), and
-run this branch's observer against it:
+Make a clean checkout of the commit production serves and run `npm ci` there
+(the build inside the observer needs the day's edition, which the
+daily-freshness gate checks). With the Vercel CLI logged in to the team, run
+this branch's observer against it:
 
 ```bash
 PRODUCTION_SOURCE_COMMIT=<deployed commit> PRODUCTION_DEPLOYMENT_ID=<its deployment> PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=<chrome> node <this checkout>/scripts/observe-birth-time-window-production.mjs <clean checkout> <output folder>
@@ -143,4 +151,4 @@ PRODUCTION_SOURCE_COMMIT=<deployed commit> PRODUCTION_DEPLOYMENT_ID=<its deploym
 Then `node scripts/explain-birth-window-flag-chunks.mjs <output folder>/observation.json <production-flags dist>`
 after a build with the environment of `site-check.yml`'s
 `production-flags-build` job. A rerun observes whatever deployment production
-serves then, not these two.
+serves then, not these.
