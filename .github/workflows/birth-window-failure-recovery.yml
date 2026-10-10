@@ -1,0 +1,80 @@
+name: Recover original failed birth-window visual artifacts without reruns
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/birth-window-failure-recovery.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify original source and ZIP digest; retain raw report observations
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 <<'RECOVER'
+          import os,json,hashlib,base64,urllib.request,urllib.error,zipfile,io,re
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+           def redirect_request(self,req,fp,code,msg,headers,newurl):return None
+          headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json'}
+          root='https://api.github.com/repos/zodiacs-org/site/'
+          with urllib.request.urlopen(urllib.request.Request(root+'actions/runs/38051045669',headers=headers),timeout=30) as response:run=json.load(response)
+          assert run['head_sha']=='d2c9b7644e4d0c01c9da98e234ae4e566c9d9c6a' and run['conclusion']=='failure' and run['run_attempt']==1
+          opener=urllib.request.build_opener(NoRedirect)
+          request=urllib.request.Request(root+'actions/artifacts/11669028889/zip',headers=headers)
+          try:
+           with opener.open(request,timeout=30) as response:packed=response.read()
+          except urllib.error.HTTPError as error:
+           if error.code!=302:raise
+           with urllib.request.urlopen(urllib.request.Request(error.headers['Location']),timeout=60) as response:packed=response.read()
+          assert len(packed)==15497821
+          digest=hashlib.sha256(packed).hexdigest()
+          assert digest=='43121fe7cb62d83eaddf046fffe90deb2aef375500a1b14a0126a2dc27b2d8d4'
+          archive=zipfile.ZipFile(io.BytesIO(packed));assert archive.testzip() is None
+          names=archive.namelist()
+          inventory=[{'path':name,'bytes':len(archive.read(name)),'sha256':hashlib.sha256(archive.read(name)).hexdigest()} for name in names if not name.endswith('/')]
+          def emit(path,data):
+           meta={'path':path,'size':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+           encoded=base64.b64encode(data).decode()
+           if len(encoded)<60000:print('PROGRAMME_FILE '+json.dumps({**meta,'base64':encoded},separators=(',',':')))
+           else:
+            chunks=[encoded[i:i+60000] for i in range(0,len(encoded),60000)]
+            print('PROGRAMME_FILE_INDEX '+json.dumps({**meta,'chunks':len(chunks)},separators=(',',':')))
+            for index,chunk in enumerate(chunks):print('PROGRAMME_FILE_CHUNK '+json.dumps({'path':path,'index':index,'base64':chunk},separators=(',',':')))
+          selected=[name for name in names if name.endswith(('.b2-geometry.json','browser-controls.json','summary-mobile.png','summary-desktop.png'))]
+          for name in selected:emit(name,archive.read(name))
+          geometry=[]
+          for name in sorted(x for x in names if x.endswith('.b2-geometry.json')):
+           stem=name.rsplit('/',1)[-1].replace('.b2-geometry.json','')
+           doc=json.loads(archive.read(name))
+           path='tests/visual/baselines/linux/'+stem+'.png'
+           current=archive.read(path)
+           url='https://raw.githubusercontent.com/zodiacs-org/site/41909a8294b29104f8b445f56e0cdd280379bcb9/'+path
+           with urllib.request.urlopen(url,timeout=30) as response:previous=response.read()
+           import struct,math
+           oldw,oldh=struct.unpack('>II',previous[16:24]);neww,newh=struct.unpack('>II',current[16:24])
+           delta=newh-oldh;after=math.ceil(doc['next']['top'])
+           row={'stem':stem,'geometry':doc,'oldDimensions':[oldw,oldh],'newDimensions':[neww,newh],'heightDelta':delta,'oldSuffixY':after-delta,'newSuffixY':after,'previousSha256':hashlib.sha256(previous).hexdigest(),'actualSha256':hashlib.sha256(current).hexdigest()}
+           try:
+            from PIL import Image
+            old=Image.open(io.BytesIO(previous)).convert('RGBA');new=Image.open(io.BytesIO(current)).convert('RGBA')
+            bands=[]
+            for offset in [0,max(0,newh-after-1000)]:
+             height=min(1000,newh-after-offset)
+             if height<=0:continue
+             a=old.crop((0,after-delta+offset,oldw,after-delta+offset+height))
+             b=new.crop((0,after+offset,neww,after+offset+height))
+             comparison=Image.new('RGBA',(oldw*2,height));comparison.paste(a,(0,0));comparison.paste(b,(oldw,0))
+             output=io.BytesIO();comparison.save(output,format='PNG')
+             derived='docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/'+stem+'-suffix-'+str(offset)+'.png'
+             emit(derived,output.getvalue());bands.append({'path':derived,'offset':offset,'height':height,'layout':'left original main; right native candidate; aligned by measured total height delta'})
+            row['derivedComparisons']=bands
+           except ImportError:
+            row['derivativeUnavailable']='Pillow is unavailable; originals retained in identified sources'
+           geometry.append(row)
+          report={'schema':'zodiacs.birth-window-failed-visual-artifact-recovery.v1','producer':{'source':os.environ['GITHUB_SHA'],'run':os.environ['GITHUB_RUN_ID']},'original':{'run':38051045669,'head':run['head_sha'],'candidate':'2507b7b22e53f9e466f6aa919db4f6b10a6eaf6c','attempt':1,'conclusion':'failure','artifact':11669028889,'zipBytes':len(packed),'zipSha256':digest,'crcVerified':True},'inventory':inventory,'geometry':geometry,'limitations':['Read-only extraction and diagnostic crops of the original failed run; no build, browser, numerical execution, reference qualification or rerun.','Derived comparison PNGs are inspection aids; original images retain independent byte identities.']}
+          emit('docs/platform/evidence/birth-time-window-ui-20261010/failed-visual-artifact-recovery.json',(json.dumps(report,indent=2)+'\n').encode())
+          RECOVER
