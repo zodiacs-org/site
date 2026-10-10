@@ -72,7 +72,7 @@ const jsonLd = [
 
     <div class="tools-grid tools-featured">
       {featured.map((t, i) => (
-        <div class={`featured-card${i === 0 ? ' featured-card--lead' : ''}`}>
+        <div class={`featured-card${i === 0 ? ' featured-card--lead' : ''}${'also' in t ? ' featured-card--also' : ''}`}>
           <a class="featured-card__link" href={t.href}>
             <ToolEmblem kind={t.emblem} />
             <h2>{t.title}</h2>
@@ -169,9 +169,12 @@ const jsonLd = [
   }
   .featured-card p { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; max-width: 40ch; }
   .featured-card__go { margin-top: auto; padding-top: 6px; font-size: 13px; font-weight: 550; color: var(--text); }
+  /* The second link sits under the first, so the two never collide on
+     narrower cards. */
+  .featured-card--also .featured-card__link { padding-bottom: 48px; }
   .featured-card__also {
     position: absolute;
-    right: 24px;
+    left: 24px;
     bottom: 22px;
     font-size: 13px;
     color: var(--muted);
@@ -180,7 +183,7 @@ const jsonLd = [
   .featured-card--lead .featured-card__link { justify-content: flex-end; padding: 32px 30px 30px; gap: 14px; }
 
   .featured-card--lead h2 { font-size: var(--text-2xl); }
-  .featured-card :global(.tool-emblem) { --emblem-size: 84px; }
+  .featured-card :global(.tool-emblem) { --emblem-size: 96px; }
   .featured-card.featured-card--lead :global(.tool-emblem) { --emblem-size: clamp(180px, 22vw, 280px); margin: 0 auto auto; }
   .featured-card__cta {
     align-self: flex-start;

@@ -54,7 +54,9 @@
   width: 2.5ch;
 }
 
-.race-board__sign {
+/* The cell stays a table cell so its rule lines up with the row; the
+   icon, name, and badge lay out inside it. */
+.race-board__sign-inner {
   display: flex;
   align-items: center;
   gap: 10px;
