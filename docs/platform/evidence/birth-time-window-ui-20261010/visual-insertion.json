@@ -1,12 +1,12 @@
 {
   "schema": "zodiacs.birth-time-window-visual-insertion.v1",
   "producer": {
-    "source": "45e749f2313f6034aa2c9edf5e9a97bf18fd6cc6",
-    "run": "38051943389",
+    "source": "22a9240542dc38e3c8c0dd603f3731823ed8c43c",
+    "run": "38063604884",
     "node": "v22.23.3"
   },
-  "checkedOutSource": "053803288412670635424cd1d78379dcec48110a",
-  "qualifiedMain": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "checkedOutSource": "a8b58d8b5476c6bd85d0abb204676ba008786abf",
+  "qualifiedMain": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
   "originalDriver": {
     "path": "tests/visual/visual-regression.mjs",
     "sha256": "411087748c814712d9450ff9d8af7eb1a9044375f066b46b60badd982751090d",

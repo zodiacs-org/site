@@ -1,11 +1,11 @@
 {
   "schema": "zodiacs.birth-time-window-ui-controls.v1",
   "producer": {
-    "workflowSource": "45e749f2313f6034aa2c9edf5e9a97bf18fd6cc6",
-    "run": "38051943389",
+    "workflowSource": "22a9240542dc38e3c8c0dd603f3731823ed8c43c",
+    "run": "38063604884",
     "node": "v22.23.3"
   },
-  "checkedOutSource": "053803288412670635424cd1d78379dcec48110a",
+  "checkedOutSource": "a8b58d8b5476c6bd85d0abb204676ba008786abf",
   "records": [
     {
       "name": "mobile",
@@ -17,18 +17,20 @@
       "summary": "Rising sign depends on the birth time: Cancer or Leo or Virgo.",
       "native": {
         "created": [
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js",
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js",
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js",
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js",
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js"
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js"
         ],
         "terminated": [
           0,
           1,
           2,
           3,
-          4
+          4,
+          5
         ],
         "results": [
           {
@@ -1097,6 +1099,132 @@
               "flags": [],
               "engineVersion": "1.0.0-rc.2"
             }
+          },
+          {
+            "probeId": 5,
+            "id": 2,
+            "result": {
+              "schema": "zodiacs.birth-window.v1",
+              "verification": "sampled at one-second resolution",
+              "start": "1800-01-01T00:19:58.000Z",
+              "end": "1800-01-01T00:21:58.000Z",
+              "latitude": -36.85,
+              "longitude": 174.76,
+              "houseSystem": "whole",
+              "rounding": null,
+              "cells": [
+                {
+                  "start": "1800-01-01T00:19:58.000Z",
+                  "end": "1800-01-01T00:21:58.000Z",
+                  "milliseconds": 120000,
+                  "share": 1,
+                  "features": {
+                    "signs": {
+                      "Sun": "capricorn",
+                      "Moon": "pisces",
+                      "Mercury": "sagittarius",
+                      "Venus": "scorpio",
+                      "Mars": "sagittarius",
+                      "Jupiter": "gemini",
+                      "Saturn": "leo",
+                      "Uranus": "virgo",
+                      "Neptune": "scorpio",
+                      "Pluto": "pisces",
+                      "North Node": "taurus",
+                      "South Node": "scorpio"
+                    },
+                    "ascendant": "aries",
+                    "midheaven": "capricorn",
+                    "houses": {
+                      "Sun": 10,
+                      "Moon": 12,
+                      "Mercury": 9,
+                      "Venus": 8,
+                      "Mars": 9,
+                      "Jupiter": 3,
+                      "Saturn": 5,
+                      "Uranus": 6,
+                      "Neptune": 8,
+                      "Pluto": 12,
+                      "North Node": 2,
+                      "South Node": 8
+                    },
+                    "aspects": [
+                      {
+                        "a": "Moon",
+                        "b": "Venus",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Jupiter",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Neptune",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Uranus",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Pluto",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Uranus",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Saturn",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Uranus",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Pluto",
+                        "type": "trine"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                }
+              ],
+              "switches": [],
+              "unresolved": [],
+              "flags": [],
+              "engineVersion": "1.0.0-rc.2"
+            }
           }
         ],
         "inputs": [
@@ -1164,8 +1292,25 @@
                 "houseSystem": "whole"
               }
             }
+          },
+          {
+            "probeId": 5,
+            "input": {
+              "id": 2,
+              "input": {
+                "at": "1800-01-01T00:20:58.000Z",
+                "minutes": 1,
+                "latitude": -36.85,
+                "longitude": 174.76,
+                "houseSystem": "whole"
+              }
+            }
           }
         ]
+      },
+      "boundaryInstants": {
+        "upperUTC": "2200-01-01T05:59:00.000Z",
+        "lowerUTC": "1800-01-01T00:20:58.000Z"
       },
       "controls": {
         "noWorkerBeforeRequest": true,
@@ -1175,7 +1320,12 @@
         "windowChangeTerminates": true,
         "chartReplacementTerminates": true,
         "unknownTimeExcluded": true,
-        "noOverflow": true
+        "noOverflow": true,
+        "outOfSpanEntryExcluded": true,
+        "boundaryOptionsDisabled": true,
+        "boundaryPresetNativeWorker": true,
+        "fullBoundaryWorker": true,
+        "committedBoundaryInstantsVerified": true
       },
       "pageErrors": []
     },
@@ -1189,18 +1339,20 @@
       "summary": "Rising sign depends on the birth time: Cancer or Leo or Virgo.",
       "native": {
         "created": [
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js",
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js",
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js",
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js",
-          "http://127.0.0.1:8793/_astro/birth-window.worker-DJUygK-J.js"
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js"
         ],
         "terminated": [
           0,
           1,
           2,
           3,
-          4
+          4,
+          5
         ],
         "results": [
           {
@@ -2269,6 +2421,132 @@
               "flags": [],
               "engineVersion": "1.0.0-rc.2"
             }
+          },
+          {
+            "probeId": 5,
+            "id": 2,
+            "result": {
+              "schema": "zodiacs.birth-window.v1",
+              "verification": "sampled at one-second resolution",
+              "start": "1800-01-01T00:19:58.000Z",
+              "end": "1800-01-01T00:21:58.000Z",
+              "latitude": -36.85,
+              "longitude": 174.76,
+              "houseSystem": "whole",
+              "rounding": null,
+              "cells": [
+                {
+                  "start": "1800-01-01T00:19:58.000Z",
+                  "end": "1800-01-01T00:21:58.000Z",
+                  "milliseconds": 120000,
+                  "share": 1,
+                  "features": {
+                    "signs": {
+                      "Sun": "capricorn",
+                      "Moon": "pisces",
+                      "Mercury": "sagittarius",
+                      "Venus": "scorpio",
+                      "Mars": "sagittarius",
+                      "Jupiter": "gemini",
+                      "Saturn": "leo",
+                      "Uranus": "virgo",
+                      "Neptune": "scorpio",
+                      "Pluto": "pisces",
+                      "North Node": "taurus",
+                      "South Node": "scorpio"
+                    },
+                    "ascendant": "aries",
+                    "midheaven": "capricorn",
+                    "houses": {
+                      "Sun": 10,
+                      "Moon": 12,
+                      "Mercury": 9,
+                      "Venus": 8,
+                      "Mars": 9,
+                      "Jupiter": 3,
+                      "Saturn": 5,
+                      "Uranus": 6,
+                      "Neptune": 8,
+                      "Pluto": 12,
+                      "North Node": 2,
+                      "South Node": 8
+                    },
+                    "aspects": [
+                      {
+                        "a": "Moon",
+                        "b": "Venus",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Jupiter",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Neptune",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Uranus",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Pluto",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Uranus",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Saturn",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Uranus",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Pluto",
+                        "type": "trine"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                }
+              ],
+              "switches": [],
+              "unresolved": [],
+              "flags": [],
+              "engineVersion": "1.0.0-rc.2"
+            }
           }
         ],
         "inputs": [
@@ -2336,8 +2614,25 @@
                 "houseSystem": "whole"
               }
             }
+          },
+          {
+            "probeId": 5,
+            "input": {
+              "id": 2,
+              "input": {
+                "at": "1800-01-01T00:20:58.000Z",
+                "minutes": 1,
+                "latitude": -36.85,
+                "longitude": 174.76,
+                "houseSystem": "whole"
+              }
+            }
           }
         ]
+      },
+      "boundaryInstants": {
+        "upperUTC": "2200-01-01T05:59:00.000Z",
+        "lowerUTC": "1800-01-01T00:20:58.000Z"
       },
       "controls": {
         "noWorkerBeforeRequest": true,
@@ -2347,9 +2642,112 @@
         "windowChangeTerminates": true,
         "chartReplacementTerminates": true,
         "unknownTimeExcluded": true,
-        "noOverflow": true
+        "noOverflow": true,
+        "outOfSpanEntryExcluded": true,
+        "boundaryOptionsDisabled": true,
+        "boundaryPresetNativeWorker": true,
+        "fullBoundaryWorker": true,
+        "committedBoundaryInstantsVerified": true
       },
       "pageErrors": []
+    }
+  ],
+  "observations": [
+    {
+      "variant": "mobile",
+      "stage": "mobile:lower-boundary-options",
+      "upperUTC": "2200-01-01T05:59:00.000Z",
+      "lowerBoundaryState": {
+        "date": "1800-01-01",
+        "time": "12:00",
+        "selectedPlace": "Auckland · Auckland, New Zealand",
+        "receiptUTC": "1800-01-01T00:20:58.000Z",
+        "instantBasis": "birth",
+        "options": [
+          {
+            "value": "1",
+            "disabled": false
+          },
+          {
+            "value": "5",
+            "disabled": false
+          },
+          {
+            "value": "10",
+            "disabled": false
+          },
+          {
+            "value": "15",
+            "disabled": false
+          },
+          {
+            "value": "30",
+            "disabled": true
+          },
+          {
+            "value": "60",
+            "disabled": true
+          },
+          {
+            "value": "120",
+            "disabled": true
+          }
+        ],
+        "reference": "Windows must start on or after 1 January 1800 UTC and end before 1 January 2200 UTC. Unavailable sizes are disabled."
+      },
+      "automationOptionStates": {
+        "oneMinuteEnabled": true,
+        "thirtyMinuteDisabled": false,
+        "twoHourDisabled": false
+      }
+    },
+    {
+      "variant": "desktop",
+      "stage": "desktop:lower-boundary-options",
+      "upperUTC": "2200-01-01T05:59:00.000Z",
+      "lowerBoundaryState": {
+        "date": "1800-01-01",
+        "time": "12:00",
+        "selectedPlace": "Auckland · Auckland, New Zealand",
+        "receiptUTC": "1800-01-01T00:20:58.000Z",
+        "instantBasis": "birth",
+        "options": [
+          {
+            "value": "1",
+            "disabled": false
+          },
+          {
+            "value": "5",
+            "disabled": false
+          },
+          {
+            "value": "10",
+            "disabled": false
+          },
+          {
+            "value": "15",
+            "disabled": false
+          },
+          {
+            "value": "30",
+            "disabled": true
+          },
+          {
+            "value": "60",
+            "disabled": true
+          },
+          {
+            "value": "120",
+            "disabled": true
+          }
+        ],
+        "reference": "Windows must start on or after 1 January 1800 UTC and end before 1 January 2200 UTC. Unavailable sizes are disabled."
+      },
+      "automationOptionStates": {
+        "oneMinuteEnabled": true,
+        "thirtyMinuteDisabled": false,
+        "twoHourDisabled": false
+      }
     }
   ],
   "passed": true,

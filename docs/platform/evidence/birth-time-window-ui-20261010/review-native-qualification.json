@@ -1,0 +1,116 @@
+{
+  "schema": "zodiacs.birth-window-review-native-qualification.v1",
+  "source": "a8b58d8b5476c6bd85d0abb204676ba008786abf",
+  "tree": "b66232e2fc1cc10122f4b9b9ce6af4b8ce79d17e",
+  "producer": "22a9240542dc38e3c8c0dd603f3731823ed8c43c",
+  "run": 38063604884,
+  "job": 114246653292,
+  "conclusion": "success",
+  "decodedLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-native-qualified.log",
+    "bytes": 1234459,
+    "sha256": "5049d2ec60faec8f29cc098a9b7a52f189775509711c2b8c75314d8f63ed3b0c"
+  },
+  "focusedControls": 53,
+  "typecheck": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 40
+  },
+  "units": {
+    "passed": 6989,
+    "failed": 0,
+    "skipped": 6,
+    "filesPassed": 543,
+    "filesSkipped": 1
+  },
+  "bundle": {
+    "mainClosureKB": 32.5,
+    "mainLimitKB": 32.598046875,
+    "birthRouteKB": 67.1,
+    "birthRouteLimitKB": 71,
+    "workerGzipBytes": 40367,
+    "globalChunkLimitKB": 60
+  },
+  "browser": {
+    "report": "docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json",
+    "widths": [
+      390,
+      1440
+    ],
+    "controlsPerViewport": 13,
+    "passed": true
+  },
+  "visual": {
+    "report": "docs/platform/evidence/birth-time-window-ui-20261010/visual-insertion.json",
+    "cases": 15,
+    "tolerance": 0.001,
+    "threshold": 0.1,
+    "passed": true
+  },
+  "lighthouse": [
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-1.json",
+      "bytes": 490524,
+      "sha256": "5ef0040a79f9997281aac7aa970045028a7021075f6ebb45e293cba6f662c9ee",
+      "runtimeError": null,
+      "lcp": 2108.6752,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.98,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-2.json",
+      "bytes": 490100,
+      "sha256": "a62cc6436665bddd8e1b2b6d336f24f1dae8f9989fefb802459f98c0de98713c",
+      "runtimeError": null,
+      "lcp": 2411.82945,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-3.json",
+      "bytes": 490013,
+      "sha256": "75182c6daf3e3b28b524fc8950ab5c9709e2b4df95b173388f7d0ffed618c690",
+      "runtimeError": null,
+      "lcp": 2256.8185,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.98,
+      "accessibility": 1,
+      "seo": 1
+    }
+  ],
+  "journal": {
+    "time": "2026-10-10T15:32:25.7258683Z",
+    "text": "Runner stalls: none; no sample was retaken."
+  },
+  "captures": {
+    "count": 18,
+    "byteIdenticalToQualifiedMain": 17,
+    "changed": [
+      "docs/acceptance/phase1/screenshots/love-360.png"
+    ],
+    "manifestSha256": "df7e72b0bc3716ce0da0ce4d3100acc67a5ae2dae5a4c1df1a3f361a3a95f666",
+    "templateSourceSha256": "fa8150b1db60f6bdc17ce460fdb270b431acd4a969db8b7a003e99fe92343abd"
+  },
+  "recovery": {
+    "run": 38064541802,
+    "allSixJobs": "success",
+    "artifact": 11674695553,
+    "bytes": 24393266,
+    "sha256": "3ba982f9ea03e6b7eeeb98b21439f132b430d06495cd7475c20fa5910230bb32",
+    "crc": "passed",
+    "receipt": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-artifact-recovery.json"
+  },
+  "limitations": [
+    "Final PR CI, fresh clean review, merge/post-merge and canonical production remain required. B2.b stays partial/unmerged with zero accepted weight.",
+    "Original failures retained. No unchanged failed run rerun, no expected result or limit changed.",
+    "Native disabled properties preserve original expectations; both viewports retain disagreeing old automation readings."
+  ]
+}
