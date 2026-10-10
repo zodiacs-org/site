@@ -17,7 +17,7 @@ jobs:
         with:
           ref: ${{ env.CANDIDATE }}
           persist-credentials: false
-          fetch-depth: 1
+          fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22
@@ -25,7 +25,7 @@ jobs:
       - name: Source identity and original protected-scope guard
         run: |
           test "$(git rev-parse HEAD)" = "$CANDIDATE"
-          git fetch --no-tags --depth=1 origin "$QUALIFIED_MAIN"
+          git fetch --no-tags origin "$QUALIFIED_MAIN"
           node scripts/phase1-scope-guard.mjs --base "$QUALIFIED_MAIN"
       - run: npm ci
       - name: Parse prepared native harnesses

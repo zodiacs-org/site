@@ -1,0 +1,13 @@
+{
+  "status": "failed-before-source-checks",
+  "run": "https://github.com/zodiacs-org/site/actions/runs/38048648532",
+  "job": 114203162643,
+  "producer": "9ebe92adaf7448a44255761f0187c6ca2d659e07",
+  "candidate": "2507b7b22e53f9e466f6aa919db4f6b10a6eaf6c",
+  "qualifiedMain": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "cause": "Shallow depth-one candidate checkout plus separately shallow base fetch left git diff base...HEAD without a merge base.",
+  "correction": "Checkout full site history and fetch the exact qualified base without a depth limit. Preserve the original protected-scope guard unchanged.",
+  "sourceChecksExecuted": false,
+  "buildExecuted": false,
+  "browserExecuted": false
+}
