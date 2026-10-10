@@ -3,6 +3,7 @@ import {mkdirSync,writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 const hash=b=>createHash('sha256').update(b).digest('hex'),observations=[];
 let failure=null;
+let footerSource=null;
 async function get(url,limit=2*1024*1024){
  const response=await fetch(url,{redirect:'error',cache:'no-store',headers:{'user-agent':'Zodiacs.org-public-source-verification'},signal:AbortSignal.timeout(20000)});assert.equal(response.status,200,new URL(url).pathname+' status');
  const reader=response.body.getReader(),chunks=[];let size=0;try{for(;;){const n=await reader.read();if(n.done)break;size+=n.value.byteLength;assert.ok(size<=limit,'Response bound');chunks.push(n.value);}}finally{await reader.cancel();}
@@ -11,7 +12,11 @@ async function get(url,limit=2*1024*1024){
 try {
  const thesis=(await get('https://zodiacs.org/thesis/')).toString('utf8');
  const footer=[...thesis.matchAll(/<style\b([^>]*)>([\s\S]*?)<\/style>/gi)].filter(m=>/\bdata-canonical-thesis-footer\b/.test(m[1]));assert.equal(footer.length,1);
- assert.equal(Buffer.byteLength(footer[0][2]),12153);assert.equal(hash(footer[0][2]),'1a606e00e8e5da140a83bee475e026fbbd5a79be164354033343bba04947cbad');
+ assert.match(process.env.EXPECTED_MERGE_SHA??'',/^[a-f0-9]{40}$/,'Exact accepted merge source');
+ const footerSourceUrl='https://raw.githubusercontent.com/zodiacs-org/site/'+process.env.EXPECTED_MERGE_SHA+'/src/styles/site-footer.css';
+ const expectedFooter=await get(footerSourceUrl);
+ assert.equal(footer[0][2],expectedFooter.toString('utf8'),'Exact accepted-source canonical footer CSS');
+ footerSource={url:footerSourceUrl,bytes:expectedFooter.length,sha256:hash(expectedFooter)};
  assert.ok(!/<link\b[^>]*href=["'][^"']*site-footer\.css(?:[?"'])/i.test(thesis));
  const preloadTags=[...thesis.matchAll(/<link\b[^>]*>/gi)].map(m=>m[0]).filter(t=>/rel=["']preload["']/i.test(t));
  assert.ok(!preloadTags.some(t=>/eb-garamond.*(?:500|italic)/i.test(t)));
@@ -43,7 +48,7 @@ try {
  const openapi=JSON.parse(await get('https://zodiacs.org/api/v1/openapi.json'));assert.equal(openapi.openapi,'3.1.0');
  assert.equal(Object.values(openapi.paths).filter(v=>v.get).length,11);assert.equal(Object.values(openapi.paths).filter(v=>v.post).length,7);
 } catch(error){failure={name:error.name,message:String(error.message).slice(0,1000)};}
-const report={schema:'zodiacs.checkpoint23-production-source.v1',observedAt:new Date().toISOString(),expectedMergedSource:process.env.EXPECTED_MERGE_SHA,producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},observations,passed:failure===null&&observations.length===10,failure,limitations:['Ten anonymous GET observations; 11 GET and seven POST are OpenAPI operation counts, not requests made.','Source assets and advertised metadata only; no browser timing, private clearance, independent accuracy, registry publication or assistant trial claim.','Exact deployment source and domain assignment require separate Vercel metadata verification.']};
+const report={schema:'zodiacs.checkpoint23-production-source.v1',observedAt:new Date().toISOString(),expectedMergedSource:process.env.EXPECTED_MERGE_SHA,producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},footerSource,observations,passed:failure===null&&observations.length===11,failure,limitations:['Eleven anonymous GET observations including the exact merged source's canonical footer CSS; 11 GET and seven POST are OpenAPI operation counts, not requests made.','Source assets and advertised metadata only; no browser timing, private clearance, independent accuracy, registry publication or assistant trial claim.','Exact deployment source and domain assignment require separate Vercel metadata verification.']};
 const path='docs/platform/evidence/checkpoint23-20261009/production-source-observation.json',bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');mkdirSync('docs/platform/evidence/checkpoint23-20261009',{recursive:true});writeFileSync(path,bytes);
 console.log('PROGRAMME_FILE '+JSON.stringify({path,size:bytes.length,sha256:hash(bytes),base64:bytes.toString('base64')}));
 if(!report.passed)process.exitCode=1;

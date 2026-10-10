@@ -1,0 +1,97 @@
+name: Capture current-owner footer design reference pixels
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/checkpoint25-owner-visual-reference.yml]
+permissions:
+  contents: read
+jobs:
+  owner-reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OWNER_SOURCE: '943d11decff8c5cd417d315637aac2cf8c55fa01'
+      FONT_CONTROL_SOURCE: '63dbcc0df75c655c2476af779f06e99f5a1cd6dd'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ env.OWNER_SOURCE }}
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright-core install --with-deps chromium
+      - name: Build exact current owner source
+        run: |
+          test "$(git rev-parse HEAD)" = "$OWNER_SOURCE"
+          npm run build
+      - name: Retain source-identical font controls and exact old reference bytes
+        run: |
+          git fetch --no-tags --depth=1 origin "$FONT_CONTROL_SOURCE"
+          git show "$FONT_CONTROL_SOURCE:tests/visual/visual-regression.mjs" > tests/visual/visual-regression.mjs
+          node --input-type=module <<'SAVE'
+          import {readdirSync,readFileSync,mkdirSync,writeFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import assert from 'node:assert/strict';
+          const harness=readFileSync('tests/visual/visual-regression.mjs');
+          const gitBlob=createHash('sha1').update(Buffer.from('blob '+harness.length+'\0')).update(harness).digest('hex');
+          assert.equal(gitBlob,'f53933f7f2eeea36296d8e82bc3e2f692594897b');
+          mkdirSync('owner-old-visual',{recursive:true});
+          for(const file of readdirSync('tests/visual/baselines/linux').filter(x=>x.endsWith('.png')))writeFileSync('owner-old-visual/'+file,readFileSync('tests/visual/baselines/linux/'+file));
+          SAVE
+      - name: Native actual captures of the intended owner design
+        run: node tests/visual/visual-regression.mjs --update
+      - name: Verify the recorded desktop change and preserve mobile reference bytes
+        run: |
+          node --input-type=module <<'REFERENCE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync,readdirSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {PNG} from 'pngjs';
+          import pixelmatch from 'pixelmatch';
+          const hash=b=>createHash('sha256').update(b).digest('hex'),records=[];
+          const routes=['home','birth-chart-kahlo','aries','events-hub','event-full-moon'];
+          const names=routes.flatMap(route=>[route+'-desktop.png',route+'-mobile.png',route+'-desktop-reduced-motion.png']);
+          for(const file of names){
+           const path='tests/visual/baselines/linux/'+file,oldBytes=readFileSync('owner-old-visual/'+file),newBytes=readFileSync(path);
+           const old=PNG.sync.read(oldBytes),actual=PNG.sync.read(newBytes),mobile=file.includes('-mobile');
+           assert.equal(actual.width,old.width,file+' width');
+           assert.equal(actual.height-old.height,mobile?0:13,file+' intended desktop-only 13px footer change');
+           const height=old.height-600,width=old.width;
+           const diff=pixelmatch(old.data.subarray(0,width*height*4),actual.data.subarray(0,width*height*4),null,width,height,{threshold:0.1,includeAA:false});
+           const diffRatio=diff/(width*height);
+           assert.ok(diffRatio<=0.001,file+' upper-page pixels under the original strict comparison tolerance');
+           records.push({file,old:{bytes:oldBytes.length,sha256:hash(oldBytes),width:old.width,height:old.height},captured:{bytes:newBytes.length,sha256:hash(newBytes),width:actual.width,height:actual.height},upperPageComparison:{height,excludedBottomRows:600,diffPixels:diff,diffRatio,threshold:0.1,maxDiffRatio:0.001},retained:mobile?'exact old mobile bytes':'fresh current-owner desktop bytes'});
+           if(mobile)writeFileSync(path,oldBytes);
+          }
+          const report={schema:'zodiacs.owner-footer-visual-reference.v1',producer:{workflowSource:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},ownerSource:process.env.OWNER_SOURCE,fontControlSource:process.env.FONT_CONTROL_SOURCE,fontControlGitBlob:'f53933f7f2eeea36296d8e82bc3e2f692594897b',reason:'Owner #700 moved the footer summary label margin override into the mobile media query, restoring the intended desktop label gap. Current-main full run 38027946344 records +13px on all ten desktop cases.',records,limitations:['Reference refresh covers the already-merged owner design only; homepage hydration candidate is absent from this build.','Upper-page comparison excludes the last 600 rows and is a bounded diagnostic, not a replacement for the original full-image gate.','Five original mobile reference files remain exact. Pixelmatch threshold 0.1 and maxDiffRatio 0.001 are unchanged.']};
+          const bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');writeFileSync('owner-reference.json',bytes);
+          console.log('PROGRAMME_FILE '+JSON.stringify({path:'docs/platform/evidence/home-poster-loading-20261010/owner-visual-reference.json',size:bytes.length,sha256:hash(bytes),base64:bytes.toString('base64')}));
+          REFERENCE
+      - name: Original full-image gate on the owner-source reference
+        run: node tests/visual/visual-regression.mjs
+      - name: Export only the ten actual owner desktop reference files
+        run: |
+          node --input-type=module <<'EXPORT'
+          import {readFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          const report=JSON.parse(readFileSync('owner-reference.json'));
+          for(const row of report.records.filter(x=>x.retained==='fresh current-owner desktop bytes')){
+           const path='tests/visual/baselines/linux/'+row.file,b=readFileSync(path),sha256=createHash('sha256').update(b).digest('hex'),chunks=Math.ceil(b.length/16384);
+           if(sha256!==row.captured.sha256)throw Error('Captured reference identity changed');
+           console.log('PROGRAMME_FILE_INDEX '+JSON.stringify({path,size:b.length,sha256,chunks}));
+           for(let index=0;index<chunks;index++)console.log('PROGRAMME_FILE_CHUNK '+JSON.stringify({path,index,base64:b.subarray(index*16384,(index+1)*16384).toString('base64')}));
+          }
+          EXPORT
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: current-owner-visual-reference
+          path: |
+            owner-reference.json
+            tests/visual/baselines/linux/
+            tests/visual/artifacts/visual/
+          if-no-files-found: error
