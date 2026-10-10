@@ -1,0 +1,162 @@
+{
+  "schema": "zodiacs.checkpoint24-phase1-capture.v1",
+  "producer": {
+    "workflowSource": "46b66342035d9d00a40aff54c826b2b93bf7c927",
+    "run": "37968247651",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "87583eff7e61973e2373ed1501007b2bcc1a4c54",
+  "target": "87583eff7e61973e2373ed1501007b2bcc1a4c54",
+  "rawGitTemplateSourceSha256": "ea85d4137a53d826ea5913bdb139a9c8b041f99231104e85c3dcc31387fd14f4",
+  "manifestSha256": "3e58a64d302300aa2d82e2031f8eb82bfdeb622fd1495d6007687c136b380c3a",
+  "captures": [
+    {
+      "file": "today-360.png",
+      "bytes": 600066,
+      "sha256": "14bfeb5a016db3f7068843c430d07e3a9812b121c0621f1ce1594530d62da278",
+      "previousTrackedBytes": 600066,
+      "previousTrackedSha256": "14bfeb5a016db3f7068843c430d07e3a9812b121c0621f1ce1594530d62da278",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "today-1280.png",
+      "bytes": 747465,
+      "sha256": "24df52a645932dca9b811e0ff30d7612b39c479a9008ed930d7fd956af91ee22",
+      "previousTrackedBytes": 747465,
+      "previousTrackedSha256": "24df52a645932dca9b811e0ff30d7612b39c479a9008ed930d7fd956af91ee22",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "horoscopes-hub-360.png",
+      "bytes": 391812,
+      "sha256": "53c7ab90d323eccbeb23bba5665f77e644fbe8af25793f25de225dea3aa5a9e5",
+      "previousTrackedBytes": 391812,
+      "previousTrackedSha256": "53c7ab90d323eccbeb23bba5665f77e644fbe8af25793f25de225dea3aa5a9e5",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "horoscopes-hub-1280.png",
+      "bytes": 449482,
+      "sha256": "9fa5c6d27272e4a3437babfab80ac9bc87c53e0e0b69759739f57b239c9a7879",
+      "previousTrackedBytes": 449482,
+      "previousTrackedSha256": "9fa5c6d27272e4a3437babfab80ac9bc87c53e0e0b69759739f57b239c9a7879",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "daily-360.png",
+      "bytes": 303507,
+      "sha256": "fdb45f08cfa01008a7e9bf0c0ecd677c35c5f04257a49b9edf59849ec9f98210",
+      "previousTrackedBytes": 303507,
+      "previousTrackedSha256": "fdb45f08cfa01008a7e9bf0c0ecd677c35c5f04257a49b9edf59849ec9f98210",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "daily-1280.png",
+      "bytes": 416227,
+      "sha256": "3636fbc3704a3a38c1ac453a084fa1f3dd191f59525a6e3b8368f223927f8311",
+      "previousTrackedBytes": 416227,
+      "previousTrackedSha256": "3636fbc3704a3a38c1ac453a084fa1f3dd191f59525a6e3b8368f223927f8311",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "tomorrow-360.png",
+      "bytes": 304265,
+      "sha256": "c992b5f985f8c9b3ace566bbe061a8b3ee5431b9c498859cbefe42732591d174",
+      "previousTrackedBytes": 304265,
+      "previousTrackedSha256": "c992b5f985f8c9b3ace566bbe061a8b3ee5431b9c498859cbefe42732591d174",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "tomorrow-1280.png",
+      "bytes": 428118,
+      "sha256": "7b6e4e1c136623b697567fdc6629a732b7cba1dcfd49bc295d86d00167feed9e",
+      "previousTrackedBytes": 428118,
+      "previousTrackedSha256": "7b6e4e1c136623b697567fdc6629a732b7cba1dcfd49bc295d86d00167feed9e",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "weekly-360.png",
+      "bytes": 366716,
+      "sha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973",
+      "previousTrackedBytes": 366716,
+      "previousTrackedSha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "weekly-1280.png",
+      "bytes": 495815,
+      "sha256": "f70f8c522203ac54734db5d36bed6b1956cde46501942f592d1ad9750a49af0f",
+      "previousTrackedBytes": 495815,
+      "previousTrackedSha256": "f70f8c522203ac54734db5d36bed6b1956cde46501942f592d1ad9750a49af0f",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "monthly-360.png",
+      "bytes": 389777,
+      "sha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126",
+      "previousTrackedBytes": 389777,
+      "previousTrackedSha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "monthly-1280.png",
+      "bytes": 509372,
+      "sha256": "8cec68a955f1b86e555fb1e6f50a4634fb56f6e7706775757d936b0d60930785",
+      "previousTrackedBytes": 509372,
+      "previousTrackedSha256": "8cec68a955f1b86e555fb1e6f50a4634fb56f6e7706775757d936b0d60930785",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "love-360.png",
+      "bytes": 279728,
+      "sha256": "dcc7fbd8f7f96126fc2d10d4a2458c9c4a769be7ddef278d09c67f080c3b8828",
+      "previousTrackedBytes": 279728,
+      "previousTrackedSha256": "dcc7fbd8f7f96126fc2d10d4a2458c9c4a769be7ddef278d09c67f080c3b8828",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "love-1280.png",
+      "bytes": 397128,
+      "sha256": "3a865e72df00e13d1a3562698e717f0801e52222d562f2b0a084f6dbd1a16178",
+      "previousTrackedBytes": 397128,
+      "previousTrackedSha256": "3a865e72df00e13d1a3562698e717f0801e52222d562f2b0a084f6dbd1a16178",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "career-360.png",
+      "bytes": 279967,
+      "sha256": "c20a9173854b6ae28faa7544fbdac1ec62fc76d03dfb052aa88fc3725c180512",
+      "previousTrackedBytes": 279967,
+      "previousTrackedSha256": "c20a9173854b6ae28faa7544fbdac1ec62fc76d03dfb052aa88fc3725c180512",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "career-1280.png",
+      "bytes": 395890,
+      "sha256": "3aa31407a888494aa18ccefe0d1bb56ea3ce2ac2e3a2cfc0b1af433ac10085f0",
+      "previousTrackedBytes": 395890,
+      "previousTrackedSha256": "3aa31407a888494aa18ccefe0d1bb56ea3ce2ac2e3a2cfc0b1af433ac10085f0",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "yearly-360.png",
+      "bytes": 1042500,
+      "sha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617",
+      "previousTrackedBytes": 1042500,
+      "previousTrackedSha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617",
+      "identicalToPreviousTracked": true
+    },
+    {
+      "file": "yearly-1280.png",
+      "bytes": 1293464,
+      "sha256": "b5e463dc73abb5c463025ae8fee0b104872e7528237f492b54b1fc31be1b321e",
+      "previousTrackedBytes": 1293464,
+      "previousTrackedSha256": "b5e463dc73abb5c463025ae8fee0b104872e7528237f492b54b1fc31be1b321e",
+      "identicalToPreviousTracked": true
+    }
+  ],
+  "browser": "Chromium 149.0.7827.55",
+  "capturedAt": "2026-10-09T17:47:22.852Z",
+  "builtAt": "2026-10-09T17:46:49.517Z",
+  "limitation": "Eighteen fresh actual captures and original receipt tests; full combined suite and production checks remain required."
+}

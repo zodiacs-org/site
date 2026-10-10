@@ -7,8 +7,6 @@
   <meta name="color-scheme" content="dark" />
   <link rel="preload" as="image" type="image/avif" href="/assets/art/zodiac-clock-768.avif" fetchpriority="high" />
   <link rel="preload" as="font" type="font/woff2" href="/fonts/eb-garamond-latin-400-normal.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" href="/fonts/eb-garamond-latin-500-normal.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" href="/fonts/eb-garamond-latin-400-italic.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/fonts/instrument-sans-latin-wght-normal.woff2" crossorigin />
   <script>
     /* Chromium paints SVG url() backdrop filters; Safari reports support but
@@ -58,8 +56,8 @@
         "inLanguage": "en",
         "datePublished": "2026-08-01",
         "dateModified": "2026-09-05",
-        "author": { "@type": "Organization", "@id": "https://zodiacs.org/#org", "name": "Zodiacs" },
-        "publisher": { "@type": "Organization", "@id": "https://zodiacs.org/#org", "name": "Zodiacs" },
+        "author": { "@type": "Organization", "@id": "https://zodiacs.org/#org", "name": "Zodiacs.org" },
+        "publisher": { "@type": "Organization", "@id": "https://zodiacs.org/#org", "name": "Zodiacs.org" },
         "isPartOf": { "@type": "WebSite", "@id": "https://zodiacs.org/#site" },
         "about": [
           { "@type": "Thing", "name": "Astrology" },
@@ -137,6 +135,8 @@
 
     .label { font-family: var(--display); font-weight: 500; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-dim); }
     .label--gold { color: var(--gold); }
+    /* Keep the essay start fixed while its small labels swap to the web font. */
+    .essay__rail .label { line-height: 1.6; }
 
   @font-face { font-family: 'Instrument Sans'; src: url('/fonts/instrument-sans-latin-wght-normal.woff2') format('woff2-variations'); font-weight: 400 600; font-style: normal; font-display: swap; }
   .wnav-wrap { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; top: 14px; left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; pointer-events: none; padding-top: env(safe-area-inset-top); }
@@ -1953,7 +1953,7 @@
     <video
       class="hero__media"
       muted loop playsinline
-      preload="auto"
+      preload="none"
       poster="/assets/art/zodiac-clock-768.avif"
       fetchpriority="high"
       aria-hidden="true"
@@ -2778,13 +2778,57 @@
       var video = document.querySelector('.hero video.hero__media');
       if (video) {
         var heroIsVisible = true;
+        var heroPosterPainted = false;
         var syncHeroPlayback = function () {
-          if (reduce.matches || !heroIsVisible) {
+          if (reduce.matches || !heroIsVisible || !heroPosterPainted) {
             try { video.pause(); } catch (e) {}
           } else {
             video.play().catch(function () {});
           }
         };
+        // Let the already-preloaded poster paint before starting the media request.
+        // Reduced motion keeps the poster and never needs to download the loop.
+        var posterScheduled = false;
+        var allowHeroPlayback = function () {
+          if (posterScheduled) return;
+          posterScheduled = true;
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              heroPosterPainted = true;
+              syncHeroPlayback();
+            });
+          });
+        };
+        var heroPaintObserver;
+        var waitForHeroPaint = function () {
+          try {
+            if (performance.getEntriesByName('first-contentful-paint').length > 0) {
+              allowHeroPlayback();
+              return;
+            }
+            if (window.PerformanceObserver
+              && PerformanceObserver.supportedEntryTypes.indexOf('paint') !== -1) {
+              if (heroPaintObserver) return;
+              heroPaintObserver = new PerformanceObserver(function (list) {
+                if (list.getEntries().some(function (entry) {
+                  return entry.name === 'first-contentful-paint';
+                })) {
+                  heroPaintObserver.disconnect();
+                  allowHeroPlayback();
+                }
+              });
+              heroPaintObserver.observe({ type: 'paint', buffered: true });
+              return;
+            }
+          } catch (e) {}
+          // Older browsers without paint entries still get the poster-load/frame gate.
+          allowHeroPlayback();
+        };
+        var heroPoster = new Image();
+        heroPoster.onload = waitForHeroPaint;
+        heroPoster.onerror = waitForHeroPaint;
+        heroPoster.src = video.poster;
+        if (heroPoster.complete) waitForHeroPaint();
         if ('IntersectionObserver' in window) {
           // Keep the ambient loop active only while the hero is on screen.
           new IntersectionObserver(function (entries) {
@@ -3471,11 +3515,11 @@
         }
       }
 
-      if (!supportsWebGL()) return;
       var requested = false;
       function loadGallery() {
         if (requested) return;
         requested = true;
+        if (!supportsWebGL()) return;
         var script = document.createElement('script');
         script.src = '/assets/gallery.js';
         script.defer = true;

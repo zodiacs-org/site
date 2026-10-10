@@ -1,0 +1,920 @@
+{
+  "schema": "zodiacs.aries-retained-visual-diagnosis.v1",
+  "producer": {
+    "source": "17d4c4ffa1875b383561a702030c11d167b90cdf",
+    "run": "37918332434"
+  },
+  "readOnlyRetainedArtifacts": true,
+  "samples": [
+    {
+      "run": 37915273972,
+      "source": "254014f3a72475157c1d27dca0e97d1784ccfc79",
+      "artifact": 11610541360,
+      "archiveSha256": "77671b5b0e7990977c052b6c658d8c5428530946157b2cab2ca7a5b805e9c1f5",
+      "images": [
+        {
+          "stem": "aries-desktop-reduced-motion",
+          "dimensions": [
+            1440,
+            7059
+          ],
+          "actualSha256": "d1e593cd101510dfcf58a74e15afcc447b135d57f277501c1592141c341cdfb8",
+          "baselineSha256": "89bbca19fc22f567861553d9230c861203ebc6189fc293fea4bb90a7a91737cf",
+          "rgbDifferenceBoundingBox": [
+            0,
+            34,
+            1440,
+            7023
+          ],
+          "bands": [
+            {
+              "fromY": 0,
+              "toY": 100,
+              "pixelsRgbDifferenceOver25": 1076
+            },
+            {
+              "fromY": 100,
+              "toY": 200,
+              "pixelsRgbDifferenceOver25": 357
+            },
+            {
+              "fromY": 300,
+              "toY": 400,
+              "pixelsRgbDifferenceOver25": 6185
+            },
+            {
+              "fromY": 400,
+              "toY": 500,
+              "pixelsRgbDifferenceOver25": 129
+            },
+            {
+              "fromY": 500,
+              "toY": 600,
+              "pixelsRgbDifferenceOver25": 7212
+            },
+            {
+              "fromY": 600,
+              "toY": 700,
+              "pixelsRgbDifferenceOver25": 875
+            },
+            {
+              "fromY": 700,
+              "toY": 800,
+              "pixelsRgbDifferenceOver25": 3985
+            },
+            {
+              "fromY": 800,
+              "toY": 900,
+              "pixelsRgbDifferenceOver25": 14084
+            },
+            {
+              "fromY": 900,
+              "toY": 1000,
+              "pixelsRgbDifferenceOver25": 13686
+            },
+            {
+              "fromY": 1000,
+              "toY": 1100,
+              "pixelsRgbDifferenceOver25": 5921
+            },
+            {
+              "fromY": 1100,
+              "toY": 1200,
+              "pixelsRgbDifferenceOver25": 16430
+            },
+            {
+              "fromY": 1200,
+              "toY": 1300,
+              "pixelsRgbDifferenceOver25": 21253
+            },
+            {
+              "fromY": 1300,
+              "toY": 1400,
+              "pixelsRgbDifferenceOver25": 17021
+            },
+            {
+              "fromY": 1400,
+              "toY": 1500,
+              "pixelsRgbDifferenceOver25": 14197
+            },
+            {
+              "fromY": 1500,
+              "toY": 1600,
+              "pixelsRgbDifferenceOver25": 15378
+            },
+            {
+              "fromY": 1600,
+              "toY": 1700,
+              "pixelsRgbDifferenceOver25": 8412
+            },
+            {
+              "fromY": 1700,
+              "toY": 1800,
+              "pixelsRgbDifferenceOver25": 11615
+            },
+            {
+              "fromY": 1800,
+              "toY": 1900,
+              "pixelsRgbDifferenceOver25": 16345
+            },
+            {
+              "fromY": 1900,
+              "toY": 2000,
+              "pixelsRgbDifferenceOver25": 13249
+            },
+            {
+              "fromY": 2000,
+              "toY": 2100,
+              "pixelsRgbDifferenceOver25": 13576
+            },
+            {
+              "fromY": 2100,
+              "toY": 2200,
+              "pixelsRgbDifferenceOver25": 14809
+            },
+            {
+              "fromY": 2200,
+              "toY": 2300,
+              "pixelsRgbDifferenceOver25": 9953
+            },
+            {
+              "fromY": 2300,
+              "toY": 2400,
+              "pixelsRgbDifferenceOver25": 9787
+            },
+            {
+              "fromY": 2400,
+              "toY": 2500,
+              "pixelsRgbDifferenceOver25": 15837
+            },
+            {
+              "fromY": 2500,
+              "toY": 2600,
+              "pixelsRgbDifferenceOver25": 17438
+            },
+            {
+              "fromY": 2600,
+              "toY": 2700,
+              "pixelsRgbDifferenceOver25": 21232
+            },
+            {
+              "fromY": 2700,
+              "toY": 2800,
+              "pixelsRgbDifferenceOver25": 12404
+            },
+            {
+              "fromY": 2800,
+              "toY": 2900,
+              "pixelsRgbDifferenceOver25": 10915
+            },
+            {
+              "fromY": 2900,
+              "toY": 3000,
+              "pixelsRgbDifferenceOver25": 3649
+            },
+            {
+              "fromY": 3000,
+              "toY": 3100,
+              "pixelsRgbDifferenceOver25": 9905
+            },
+            {
+              "fromY": 3100,
+              "toY": 3200,
+              "pixelsRgbDifferenceOver25": 10744
+            },
+            {
+              "fromY": 3200,
+              "toY": 3300,
+              "pixelsRgbDifferenceOver25": 9524
+            },
+            {
+              "fromY": 3300,
+              "toY": 3400,
+              "pixelsRgbDifferenceOver25": 12958
+            },
+            {
+              "fromY": 3400,
+              "toY": 3500,
+              "pixelsRgbDifferenceOver25": 10795
+            },
+            {
+              "fromY": 3500,
+              "toY": 3600,
+              "pixelsRgbDifferenceOver25": 14973
+            },
+            {
+              "fromY": 3600,
+              "toY": 3700,
+              "pixelsRgbDifferenceOver25": 9247
+            },
+            {
+              "fromY": 3700,
+              "toY": 3800,
+              "pixelsRgbDifferenceOver25": 6179
+            },
+            {
+              "fromY": 3800,
+              "toY": 3900,
+              "pixelsRgbDifferenceOver25": 10084
+            },
+            {
+              "fromY": 3900,
+              "toY": 4000,
+              "pixelsRgbDifferenceOver25": 17328
+            },
+            {
+              "fromY": 4000,
+              "toY": 4100,
+              "pixelsRgbDifferenceOver25": 17301
+            },
+            {
+              "fromY": 4100,
+              "toY": 4200,
+              "pixelsRgbDifferenceOver25": 13848
+            },
+            {
+              "fromY": 4200,
+              "toY": 4300,
+              "pixelsRgbDifferenceOver25": 10322
+            },
+            {
+              "fromY": 4300,
+              "toY": 4400,
+              "pixelsRgbDifferenceOver25": 9261
+            },
+            {
+              "fromY": 4400,
+              "toY": 4500,
+              "pixelsRgbDifferenceOver25": 8283
+            },
+            {
+              "fromY": 4500,
+              "toY": 4600,
+              "pixelsRgbDifferenceOver25": 8595
+            },
+            {
+              "fromY": 4600,
+              "toY": 4700,
+              "pixelsRgbDifferenceOver25": 9360
+            },
+            {
+              "fromY": 4700,
+              "toY": 4800,
+              "pixelsRgbDifferenceOver25": 10003
+            },
+            {
+              "fromY": 4800,
+              "toY": 4900,
+              "pixelsRgbDifferenceOver25": 5779
+            },
+            {
+              "fromY": 4900,
+              "toY": 5000,
+              "pixelsRgbDifferenceOver25": 11999
+            },
+            {
+              "fromY": 5000,
+              "toY": 5100,
+              "pixelsRgbDifferenceOver25": 11620
+            },
+            {
+              "fromY": 5100,
+              "toY": 5200,
+              "pixelsRgbDifferenceOver25": 7457
+            },
+            {
+              "fromY": 5200,
+              "toY": 5300,
+              "pixelsRgbDifferenceOver25": 7285
+            },
+            {
+              "fromY": 5300,
+              "toY": 5400,
+              "pixelsRgbDifferenceOver25": 4244
+            },
+            {
+              "fromY": 5400,
+              "toY": 5500,
+              "pixelsRgbDifferenceOver25": 3705
+            },
+            {
+              "fromY": 5500,
+              "toY": 5600,
+              "pixelsRgbDifferenceOver25": 4424
+            },
+            {
+              "fromY": 5600,
+              "toY": 5700,
+              "pixelsRgbDifferenceOver25": 1698
+            },
+            {
+              "fromY": 5700,
+              "toY": 5800,
+              "pixelsRgbDifferenceOver25": 5011
+            },
+            {
+              "fromY": 5800,
+              "toY": 5900,
+              "pixelsRgbDifferenceOver25": 1427
+            },
+            {
+              "fromY": 5900,
+              "toY": 6000,
+              "pixelsRgbDifferenceOver25": 6459
+            },
+            {
+              "fromY": 6000,
+              "toY": 6100,
+              "pixelsRgbDifferenceOver25": 1756
+            },
+            {
+              "fromY": 6100,
+              "toY": 6200,
+              "pixelsRgbDifferenceOver25": 5588
+            },
+            {
+              "fromY": 6200,
+              "toY": 6300,
+              "pixelsRgbDifferenceOver25": 2980
+            },
+            {
+              "fromY": 6300,
+              "toY": 6400,
+              "pixelsRgbDifferenceOver25": 5438
+            },
+            {
+              "fromY": 6400,
+              "toY": 6500,
+              "pixelsRgbDifferenceOver25": 3381
+            },
+            {
+              "fromY": 6500,
+              "toY": 6600,
+              "pixelsRgbDifferenceOver25": 9301
+            },
+            {
+              "fromY": 6600,
+              "toY": 6700,
+              "pixelsRgbDifferenceOver25": 4760
+            },
+            {
+              "fromY": 6700,
+              "toY": 6800,
+              "pixelsRgbDifferenceOver25": 9200
+            },
+            {
+              "fromY": 6800,
+              "toY": 6900,
+              "pixelsRgbDifferenceOver25": 6479
+            },
+            {
+              "fromY": 6900,
+              "toY": 7000,
+              "pixelsRgbDifferenceOver25": 5479
+            },
+            {
+              "fromY": 7000,
+              "toY": 7059,
+              "pixelsRgbDifferenceOver25": 3147
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": 37914739783,
+      "source": "ac09a5fab7e6674039876e15f4db4bc29b09e79f",
+      "artifact": 11610731356,
+      "archiveSha256": "4d8fc69453acc8a7480316f831c36ce1ee1f059c794d8bf85fa8a910ca9bbd66",
+      "images": [
+        {
+          "stem": "aries-mobile",
+          "dimensions": [
+            390,
+            10278
+          ],
+          "actualSha256": "eed5957ca05487c183b45a11917157107c58e58dfe11286c70ed7d3a95b15e0c",
+          "baselineSha256": "3608ed66bd716832ab5bbb5d248ea807606e3c83b6c696cc25205830f58f11ae",
+          "rgbDifferenceBoundingBox": [
+            0,
+            20,
+            390,
+            10275
+          ],
+          "bands": [
+            {
+              "fromY": 0,
+              "toY": 100,
+              "pixelsRgbDifferenceOver25": 743
+            },
+            {
+              "fromY": 200,
+              "toY": 300,
+              "pixelsRgbDifferenceOver25": 1204
+            },
+            {
+              "fromY": 300,
+              "toY": 400,
+              "pixelsRgbDifferenceOver25": 2601
+            },
+            {
+              "fromY": 400,
+              "toY": 500,
+              "pixelsRgbDifferenceOver25": 2404
+            },
+            {
+              "fromY": 500,
+              "toY": 600,
+              "pixelsRgbDifferenceOver25": 390
+            },
+            {
+              "fromY": 600,
+              "toY": 700,
+              "pixelsRgbDifferenceOver25": 845
+            },
+            {
+              "fromY": 700,
+              "toY": 800,
+              "pixelsRgbDifferenceOver25": 4217
+            },
+            {
+              "fromY": 800,
+              "toY": 900,
+              "pixelsRgbDifferenceOver25": 6485
+            },
+            {
+              "fromY": 900,
+              "toY": 1000,
+              "pixelsRgbDifferenceOver25": 7100
+            },
+            {
+              "fromY": 1000,
+              "toY": 1100,
+              "pixelsRgbDifferenceOver25": 7256
+            },
+            {
+              "fromY": 1100,
+              "toY": 1200,
+              "pixelsRgbDifferenceOver25": 2810
+            },
+            {
+              "fromY": 1200,
+              "toY": 1300,
+              "pixelsRgbDifferenceOver25": 6152
+            },
+            {
+              "fromY": 1300,
+              "toY": 1400,
+              "pixelsRgbDifferenceOver25": 7633
+            },
+            {
+              "fromY": 1400,
+              "toY": 1500,
+              "pixelsRgbDifferenceOver25": 6248
+            },
+            {
+              "fromY": 1500,
+              "toY": 1600,
+              "pixelsRgbDifferenceOver25": 7660
+            },
+            {
+              "fromY": 1600,
+              "toY": 1700,
+              "pixelsRgbDifferenceOver25": 6262
+            },
+            {
+              "fromY": 1700,
+              "toY": 1800,
+              "pixelsRgbDifferenceOver25": 9217
+            },
+            {
+              "fromY": 1800,
+              "toY": 1900,
+              "pixelsRgbDifferenceOver25": 7065
+            },
+            {
+              "fromY": 1900,
+              "toY": 2000,
+              "pixelsRgbDifferenceOver25": 8466
+            },
+            {
+              "fromY": 2000,
+              "toY": 2100,
+              "pixelsRgbDifferenceOver25": 5136
+            },
+            {
+              "fromY": 2100,
+              "toY": 2200,
+              "pixelsRgbDifferenceOver25": 8233
+            },
+            {
+              "fromY": 2200,
+              "toY": 2300,
+              "pixelsRgbDifferenceOver25": 8547
+            },
+            {
+              "fromY": 2300,
+              "toY": 2400,
+              "pixelsRgbDifferenceOver25": 8028
+            },
+            {
+              "fromY": 2400,
+              "toY": 2500,
+              "pixelsRgbDifferenceOver25": 7125
+            },
+            {
+              "fromY": 2500,
+              "toY": 2600,
+              "pixelsRgbDifferenceOver25": 6260
+            },
+            {
+              "fromY": 2600,
+              "toY": 2700,
+              "pixelsRgbDifferenceOver25": 6200
+            },
+            {
+              "fromY": 2700,
+              "toY": 2800,
+              "pixelsRgbDifferenceOver25": 6329
+            },
+            {
+              "fromY": 2800,
+              "toY": 2900,
+              "pixelsRgbDifferenceOver25": 8428
+            },
+            {
+              "fromY": 2900,
+              "toY": 3000,
+              "pixelsRgbDifferenceOver25": 7588
+            },
+            {
+              "fromY": 3000,
+              "toY": 3100,
+              "pixelsRgbDifferenceOver25": 3346
+            },
+            {
+              "fromY": 3100,
+              "toY": 3200,
+              "pixelsRgbDifferenceOver25": 6517
+            },
+            {
+              "fromY": 3200,
+              "toY": 3300,
+              "pixelsRgbDifferenceOver25": 9362
+            },
+            {
+              "fromY": 3300,
+              "toY": 3400,
+              "pixelsRgbDifferenceOver25": 6482
+            },
+            {
+              "fromY": 3400,
+              "toY": 3500,
+              "pixelsRgbDifferenceOver25": 7467
+            },
+            {
+              "fromY": 3500,
+              "toY": 3600,
+              "pixelsRgbDifferenceOver25": 7566
+            },
+            {
+              "fromY": 3600,
+              "toY": 3700,
+              "pixelsRgbDifferenceOver25": 9289
+            },
+            {
+              "fromY": 3700,
+              "toY": 3800,
+              "pixelsRgbDifferenceOver25": 7435
+            },
+            {
+              "fromY": 3800,
+              "toY": 3900,
+              "pixelsRgbDifferenceOver25": 7790
+            },
+            {
+              "fromY": 3900,
+              "toY": 4000,
+              "pixelsRgbDifferenceOver25": 3201
+            },
+            {
+              "fromY": 4000,
+              "toY": 4100,
+              "pixelsRgbDifferenceOver25": 7516
+            },
+            {
+              "fromY": 4100,
+              "toY": 4200,
+              "pixelsRgbDifferenceOver25": 2471
+            },
+            {
+              "fromY": 4200,
+              "toY": 4300,
+              "pixelsRgbDifferenceOver25": 8437
+            },
+            {
+              "fromY": 4300,
+              "toY": 4400,
+              "pixelsRgbDifferenceOver25": 4317
+            },
+            {
+              "fromY": 4400,
+              "toY": 4500,
+              "pixelsRgbDifferenceOver25": 6601
+            },
+            {
+              "fromY": 4500,
+              "toY": 4600,
+              "pixelsRgbDifferenceOver25": 8439
+            },
+            {
+              "fromY": 4600,
+              "toY": 4700,
+              "pixelsRgbDifferenceOver25": 4789
+            },
+            {
+              "fromY": 4700,
+              "toY": 4800,
+              "pixelsRgbDifferenceOver25": 7025
+            },
+            {
+              "fromY": 4800,
+              "toY": 4900,
+              "pixelsRgbDifferenceOver25": 7803
+            },
+            {
+              "fromY": 4900,
+              "toY": 5000,
+              "pixelsRgbDifferenceOver25": 8617
+            },
+            {
+              "fromY": 5000,
+              "toY": 5100,
+              "pixelsRgbDifferenceOver25": 4557
+            },
+            {
+              "fromY": 5100,
+              "toY": 5200,
+              "pixelsRgbDifferenceOver25": 4005
+            },
+            {
+              "fromY": 5200,
+              "toY": 5300,
+              "pixelsRgbDifferenceOver25": 8472
+            },
+            {
+              "fromY": 5300,
+              "toY": 5400,
+              "pixelsRgbDifferenceOver25": 7870
+            },
+            {
+              "fromY": 5400,
+              "toY": 5500,
+              "pixelsRgbDifferenceOver25": 7992
+            },
+            {
+              "fromY": 5500,
+              "toY": 5600,
+              "pixelsRgbDifferenceOver25": 7863
+            },
+            {
+              "fromY": 5600,
+              "toY": 5700,
+              "pixelsRgbDifferenceOver25": 6399
+            },
+            {
+              "fromY": 5700,
+              "toY": 5800,
+              "pixelsRgbDifferenceOver25": 8551
+            },
+            {
+              "fromY": 5800,
+              "toY": 5900,
+              "pixelsRgbDifferenceOver25": 6628
+            },
+            {
+              "fromY": 5900,
+              "toY": 6000,
+              "pixelsRgbDifferenceOver25": 5915
+            },
+            {
+              "fromY": 6000,
+              "toY": 6100,
+              "pixelsRgbDifferenceOver25": 6493
+            },
+            {
+              "fromY": 6100,
+              "toY": 6200,
+              "pixelsRgbDifferenceOver25": 7583
+            },
+            {
+              "fromY": 6200,
+              "toY": 6300,
+              "pixelsRgbDifferenceOver25": 6188
+            },
+            {
+              "fromY": 6300,
+              "toY": 6400,
+              "pixelsRgbDifferenceOver25": 6680
+            },
+            {
+              "fromY": 6400,
+              "toY": 6500,
+              "pixelsRgbDifferenceOver25": 6927
+            },
+            {
+              "fromY": 6500,
+              "toY": 6600,
+              "pixelsRgbDifferenceOver25": 6221
+            },
+            {
+              "fromY": 6600,
+              "toY": 6700,
+              "pixelsRgbDifferenceOver25": 5011
+            },
+            {
+              "fromY": 6700,
+              "toY": 6800,
+              "pixelsRgbDifferenceOver25": 5913
+            },
+            {
+              "fromY": 6800,
+              "toY": 6900,
+              "pixelsRgbDifferenceOver25": 6247
+            },
+            {
+              "fromY": 6900,
+              "toY": 7000,
+              "pixelsRgbDifferenceOver25": 8436
+            },
+            {
+              "fromY": 7000,
+              "toY": 7100,
+              "pixelsRgbDifferenceOver25": 6478
+            },
+            {
+              "fromY": 7100,
+              "toY": 7200,
+              "pixelsRgbDifferenceOver25": 5823
+            },
+            {
+              "fromY": 7200,
+              "toY": 7300,
+              "pixelsRgbDifferenceOver25": 2092
+            },
+            {
+              "fromY": 7300,
+              "toY": 7400,
+              "pixelsRgbDifferenceOver25": 3897
+            },
+            {
+              "fromY": 7400,
+              "toY": 7500,
+              "pixelsRgbDifferenceOver25": 1433
+            },
+            {
+              "fromY": 7500,
+              "toY": 7600,
+              "pixelsRgbDifferenceOver25": 3369
+            },
+            {
+              "fromY": 7600,
+              "toY": 7700,
+              "pixelsRgbDifferenceOver25": 3481
+            },
+            {
+              "fromY": 7700,
+              "toY": 7800,
+              "pixelsRgbDifferenceOver25": 2653
+            },
+            {
+              "fromY": 7800,
+              "toY": 7900,
+              "pixelsRgbDifferenceOver25": 2839
+            },
+            {
+              "fromY": 7900,
+              "toY": 8000,
+              "pixelsRgbDifferenceOver25": 2863
+            },
+            {
+              "fromY": 8000,
+              "toY": 8100,
+              "pixelsRgbDifferenceOver25": 4270
+            },
+            {
+              "fromY": 8100,
+              "toY": 8200,
+              "pixelsRgbDifferenceOver25": 3618
+            },
+            {
+              "fromY": 8200,
+              "toY": 8300,
+              "pixelsRgbDifferenceOver25": 2820
+            },
+            {
+              "fromY": 8300,
+              "toY": 8400,
+              "pixelsRgbDifferenceOver25": 12404
+            },
+            {
+              "fromY": 8400,
+              "toY": 8500,
+              "pixelsRgbDifferenceOver25": 16253
+            },
+            {
+              "fromY": 8500,
+              "toY": 8600,
+              "pixelsRgbDifferenceOver25": 2213
+            },
+            {
+              "fromY": 8600,
+              "toY": 8700,
+              "pixelsRgbDifferenceOver25": 4644
+            },
+            {
+              "fromY": 8700,
+              "toY": 8800,
+              "pixelsRgbDifferenceOver25": 2002
+            },
+            {
+              "fromY": 8800,
+              "toY": 8900,
+              "pixelsRgbDifferenceOver25": 1860
+            },
+            {
+              "fromY": 8900,
+              "toY": 9000,
+              "pixelsRgbDifferenceOver25": 3352
+            },
+            {
+              "fromY": 9000,
+              "toY": 9100,
+              "pixelsRgbDifferenceOver25": 4116
+            },
+            {
+              "fromY": 9100,
+              "toY": 9200,
+              "pixelsRgbDifferenceOver25": 3866
+            },
+            {
+              "fromY": 9200,
+              "toY": 9300,
+              "pixelsRgbDifferenceOver25": 1014
+            },
+            {
+              "fromY": 9300,
+              "toY": 9400,
+              "pixelsRgbDifferenceOver25": 1754
+            },
+            {
+              "fromY": 9400,
+              "toY": 9500,
+              "pixelsRgbDifferenceOver25": 2264
+            },
+            {
+              "fromY": 9500,
+              "toY": 9600,
+              "pixelsRgbDifferenceOver25": 913
+            },
+            {
+              "fromY": 9600,
+              "toY": 9700,
+              "pixelsRgbDifferenceOver25": 3229
+            },
+            {
+              "fromY": 9700,
+              "toY": 9800,
+              "pixelsRgbDifferenceOver25": 7095
+            },
+            {
+              "fromY": 9800,
+              "toY": 9900,
+              "pixelsRgbDifferenceOver25": 1677
+            },
+            {
+              "fromY": 9900,
+              "toY": 10000,
+              "pixelsRgbDifferenceOver25": 2270
+            },
+            {
+              "fromY": 10000,
+              "toY": 10100,
+              "pixelsRgbDifferenceOver25": 1907
+            },
+            {
+              "fromY": 10100,
+              "toY": 10200,
+              "pixelsRgbDifferenceOver25": 2681
+            },
+            {
+              "fromY": 10200,
+              "toY": 10278,
+              "pixelsRgbDifferenceOver25": 1568
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

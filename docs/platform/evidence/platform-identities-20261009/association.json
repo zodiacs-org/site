@@ -1,0 +1,58 @@
+{
+  "schema": "zodiacs.published-platform-identities.v1",
+  "observedAt": "2026-10-09T14:15:24.174Z",
+  "producer": {
+    "source": "a9290493c44f00958b92ae8fa316e9bdc1616065",
+    "run": "37942752378",
+    "node": "v22.23.3"
+  },
+  "observations": [
+    {
+      "url": "https://api.github.com/repos/zodiacs-org/engine",
+      "status": 200,
+      "bytes": 5439,
+      "sha256": "19a04057bc84871f38fc44f72ecbed2537d9276ae32907443da6b2bb724ad353",
+      "identityUrl": "https://github.com/zodiacs-org/engine",
+      "name": "zodiacs-org/engine",
+      "public": true
+    },
+    {
+      "url": "https://registry.npmjs.org/@zodiacs%2fengine/latest",
+      "status": 200,
+      "bytes": 3819,
+      "sha256": "0b8f9c8eeb109c49e574424e08d37a8b76d0dae917326dc909b34f8419cccd7d",
+      "identityUrl": "https://www.npmjs.com/package/@zodiacs/engine",
+      "name": "@zodiacs/engine",
+      "version": "0.1.1-rc.15",
+      "license": "MIT AND CC-BY-4.0",
+      "tarball": "https://registry.npmjs.org/@zodiacs/engine/-/engine-0.1.1-rc.15.tgz",
+      "repository": "git+https://github.com/zodiacs-org/engine.git",
+      "homepage": "https://github.com/zodiacs-org/engine#readme",
+      "associationChecked": true
+    },
+    {
+      "url": "https://pypi.org/pypi/zodiacs/json",
+      "status": 200,
+      "bytes": 10962,
+      "sha256": "5254d333635ff2acb9eece3344989a823033b52aaa2f9931c6cf78bd74e82cf5",
+      "identityUrl": "https://pypi.org/project/zodiacs/",
+      "name": "zodiacs",
+      "version": "0.1.0a1",
+      "projectUrl": "https://pypi.org/project/zodiacs/",
+      "homepage": null,
+      "projectUrls": {
+        "Documentation": "https://github.com/zodiacs-org/engine/tree/main/python",
+        "Homepage": "https://zodiacs.org",
+        "Issues": "https://github.com/zodiacs-org/engine/issues",
+        "Repository": "https://github.com/zodiacs-org/engine"
+      },
+      "associationChecked": true
+    }
+  ],
+  "passed": true,
+  "limitations": [
+    "Public metadata existence and organization cross-links; not publisher-account authentication, package installation, archive/provenance verification or stable publication.",
+    "Only existing identities are listed; MCP Registry publication remains unfinished.",
+    "No private scanner, credentials, access or infrastructure change."
+  ]
+}

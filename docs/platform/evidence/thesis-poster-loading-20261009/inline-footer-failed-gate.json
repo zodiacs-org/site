@@ -1,0 +1,41 @@
+{
+  "schema": "zodiacs.site-gate-failure.v1",
+  "head": "b9a560203edfb4b079abb46f519dc08b8e734687",
+  "integration": "35d2706d40a9d1b9a6954a4eb83446eb47525009",
+  "run": 37934060260,
+  "job": 113831586422,
+  "conclusion": "failure",
+  "checks": {
+    "otherJobsPassed": 19,
+    "thesisBrowserPassed": 236,
+    "unitPassed": 6948,
+    "unitSkipped": 6,
+    "visualPassed": 15,
+    "lighthouseRoutesPassed": 29,
+    "lighthouseRoutesFailed": 1,
+    "thesisLcpMs": [
+      2560.9056,
+      2560.3048,
+      2557.2821999999996
+    ],
+    "lcpLimitMs": 2500,
+    "runnerStalls": 0,
+    "sampleRetakes": 0,
+    "widgets": "not reached"
+  },
+  "artifacts": [
+    {
+      "id": 11620251552,
+      "name": "phase-1-browser-performance-37934060260",
+      "bytes": 158102113,
+      "sha256": "d1ae5f95cd1d3f9e717280d72735d98894c2fc5603c28d9121e96652b2d9c102"
+    },
+    {
+      "id": 11617424057,
+      "name": "thesis-browser-37934060260",
+      "bytes": 11794551,
+      "sha256": "c0179b88d44d51a94079655b8bf86f3cea9d785bda4348d8ac9189a717df1ae1"
+    }
+  ],
+  "interpretation": "Retained failure, no unchanged browser rerun. Exact canonical footer CSS embedding removed its blocking request; raw audits identify font-preload contention as an opportunity, not a proven cause."
+}

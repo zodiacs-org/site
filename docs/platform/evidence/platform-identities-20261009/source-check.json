@@ -1,0 +1,153 @@
+{
+  "schema": "zodiacs.organization-source-check.v1",
+  "producer": {
+    "source": "bd135ad6cca43dd35f2e6bca40f8ecb5cad70639",
+    "run": "37963645093",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "5cdc38f4c0e6ae70bc0b69aec294d0046ad0b405",
+  "comparisonSource": "50636624a8677da3644987cfa4fe735e811650f3",
+  "pages": [
+    {
+      "path": "public/astrofolio/index.html",
+      "bytes": 507650,
+      "sha256": "dbb1ba7a27f2500ecc2a12a316f9514dc5c21a3a7a0f65d62dfff1288015a3c2",
+      "nonmetadataBytesPreserved": true,
+      "identityErrors": 0
+    },
+    {
+      "path": "public/terminal/index.html",
+      "bytes": 471960,
+      "sha256": "297336ae5953bf4aa69b7be468f8724b5047730155adb0b9f5d42041a7428502",
+      "nonmetadataBytesPreserved": true,
+      "identityErrors": 0
+    },
+    {
+      "path": "public/thesis/index.html",
+      "bytes": 354803,
+      "sha256": "374c7ba188bbe3cbc03908c97cc0913d9130d06a0ec7c2502b8828a1fdea4073",
+      "nonmetadataBytesPreserved": true,
+      "identityErrors": 0
+    }
+  ],
+  "proposalFigures": {
+    "total": 182.45,
+    "accepted": 67.7,
+    "blocked": 3,
+    "percent": 37,
+    "blockedPercent": 2,
+    "byStatus": {
+      "accepted": 67.7,
+      "validated": 3.75,
+      "merged": 5,
+      "implemented": 0,
+      "partial": 43.5,
+      "failed": 8,
+      "not-started": 54.5
+    },
+    "byArea": [
+      {
+        "area": "Phase 0",
+        "units": 8,
+        "weight": 2.5,
+        "accepted": 2,
+        "percent": 80
+      },
+      {
+        "area": "Phase 1",
+        "units": 23,
+        "weight": 14.5,
+        "accepted": 8.5,
+        "percent": 59
+      },
+      {
+        "area": "Phase 2 A Western",
+        "units": 40,
+        "weight": 29.6,
+        "accepted": 12.1,
+        "percent": 41
+      },
+      {
+        "area": "Phase 2 B Sidereal/Vedic",
+        "units": 6,
+        "weight": 9.5,
+        "accepted": 2.5,
+        "percent": 26
+      },
+      {
+        "area": "Phase 2 C Chinese",
+        "units": 2,
+        "weight": 2,
+        "accepted": 0,
+        "percent": 0
+      },
+      {
+        "area": "Phase 2 D Frames",
+        "units": 1,
+        "weight": 2,
+        "accepted": 2,
+        "percent": 100
+      },
+      {
+        "area": "Phase 2 E Techniques into packages",
+        "units": 9,
+        "weight": 4.5,
+        "accepted": 2.5,
+        "percent": 56
+      },
+      {
+        "area": "Phase 3 Platform",
+        "units": 13,
+        "weight": 24.5,
+        "accepted": 4.5,
+        "percent": 18
+      },
+      {
+        "area": "Phase 4 Precision",
+        "units": 10,
+        "weight": 30.5,
+        "accepted": 0,
+        "percent": 0
+      },
+      {
+        "area": "Track A Agents",
+        "units": 11,
+        "weight": 9.75,
+        "accepted": 1.25,
+        "percent": 13
+      },
+      {
+        "area": "Track S Search",
+        "units": 8,
+        "weight": 5.6,
+        "accepted": 1.85,
+        "percent": 33
+      },
+      {
+        "area": "Track G GitHub",
+        "units": 5,
+        "weight": 5,
+        "accepted": 2.5,
+        "percent": 50
+      },
+      {
+        "area": "Frontier bets (first slices)",
+        "units": 14,
+        "weight": 41,
+        "accepted": 28,
+        "percent": 68
+      },
+      {
+        "area": "Standards §4.4",
+        "units": 1,
+        "weight": 1.5,
+        "accepted": 0,
+        "percent": 0
+      }
+    ]
+  },
+  "limitations": [
+    "Source and ledger tests only; no new capture, rendered-schema check, full suite or production claim.",
+    "Proposal figures are not accepted main progress."
+  ]
+}

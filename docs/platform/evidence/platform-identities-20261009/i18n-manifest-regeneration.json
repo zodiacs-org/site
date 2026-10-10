@@ -1,0 +1,23 @@
+{
+  "schema": "zodiacs.organization-i18n-manifest.v1",
+  "producer": {
+    "source": "e7a28ced713a9a22bfbab15eed1e773602992f60",
+    "run": "37972831466",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "1912193623cf6975ab33353549e1f8358df75673",
+  "beforeSha256": "0f52f397ba2b8f9ce640228f1d799b67db8ae2c5d6adc62c66f5b08ff233c463",
+  "afterSha256": "3364a045fd7b403d232c61ae55094aba532e2357f3a9719113512cd0c68b2bac",
+  "changes": [
+    {
+      "line": 1197,
+      "key": "- `schema.organizationName`",
+      "before": "  - EN default: `Zodiacs`",
+      "after": "  - EN default: `Zodiacs.org`"
+    }
+  ],
+  "keys": 608,
+  "protectedPathLabels": [],
+  "rawGitTemplateSourceSha256": "ea85d4137a53d826ea5913bdb139a9c8b041f99231104e85c3dcc31387fd14f4",
+  "limitation": "Original generated manifest and source-bound template check; the corrected head still requires its own complete suite."
+}

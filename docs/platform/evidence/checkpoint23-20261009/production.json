@@ -1,0 +1,18 @@
+{
+  "schema": "zodiacs.checkpoint23-production-observation.v1",
+  "observedAt": "2026-10-09T08:41:19Z",
+  "source": "Vercel read-only get_deployment",
+  "id": "dpl_4ycMhJKQfMSuRKoxwGpp3U1g9PNi",
+  "url": "https://zodiacs-ds009r0r4-zodiacsofficial.vercel.app",
+  "state": "READY",
+  "readyState": "READY",
+  "commit": "1d29cfabcf857357bc8a4fd1da0c5df5c06b61ce",
+  "aliases": [
+    "zodiacs.org",
+    "www.zodiacs.org",
+    "zodiacs-org.vercel.app",
+    "zodiacs-org-zodiacsofficial.vercel.app",
+    "zodiacs-org-git-main-zodiacsofficial.vercel.app"
+  ],
+  "relationship": "Checkpoint 22 is records-only with the same carried rc.2 archive. Its source-bound capability adoption proof remains in checkpoint22-20261009; canonical benchmark bytes are separately verified in results/validation.json."
+}
