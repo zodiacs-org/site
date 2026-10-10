@@ -1,0 +1,95 @@
+name: Recover qualified birth-window captures and references without reruns
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/birth-window-qualified-artifact-recovery.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [report, ref-desktop, ref-mobile, ref-reduced, ui-mobile, ui-desktop]
+    steps:
+      - name: Install the pinned image decoder for read-only inspection crops
+        run: python3 -m pip install --disable-pip-version-check --target "$RUNNER_TEMP/b2-inspection" Pillow==12.0.0
+      - name: Verify original source and ZIP digest; retain raw report observations
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PART: ${{ matrix.part }}
+        run: |
+          python3 <<'RECOVER'
+          import os,json,hashlib,base64,urllib.request,urllib.error,zipfile,io,re,sys
+          sys.path.insert(0,os.environ['RUNNER_TEMP']+'/b2-inspection')
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+           def redirect_request(self,req,fp,code,msg,headers,newurl):return None
+          headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json'}
+          root='https://api.github.com/repos/zodiacs-org/site/'
+          with urllib.request.urlopen(urllib.request.Request(root+'actions/runs/38051943389',headers=headers),timeout=30) as response:run=json.load(response)
+          assert run['head_sha']=='45e749f2313f6034aa2c9edf5e9a97bf18fd6cc6' and run['conclusion']=='success' and run['run_attempt']==1
+          opener=urllib.request.build_opener(NoRedirect)
+          request=urllib.request.Request(root+'actions/artifacts/11670430436/zip',headers=headers)
+          try:
+           with opener.open(request,timeout=30) as response:packed=response.read()
+          except urllib.error.HTTPError as error:
+           if error.code!=302:raise
+           assert error.headers['Location'].startswith('https://')
+           with urllib.request.urlopen(urllib.request.Request(error.headers['Location']),timeout=60) as response:packed=response.read()
+          assert len(packed)==16948179
+          digest=hashlib.sha256(packed).hexdigest()
+          assert digest=='b31b0ec5d52a162763d5a7332dc2976ca0bcdd8d9bb221c9259f24da5adc6783'
+          archive=zipfile.ZipFile(io.BytesIO(packed));assert archive.testzip() is None
+          evidence='docs/platform/evidence/birth-time-window-ui-20261010/'
+          capture=json.loads(archive.read(evidence+'capture-producer.json'))
+          assert capture['checkedOutSource']=='053803288412670635424cd1d78379dcec48110a'
+          assert capture['checkedOutTree']=='e40779f949d511caf9e683fc7cae8fa130228fe2'
+          assert capture['producer']['run']=='38051943389'
+          manifest=archive.read(capture['manifestPath'])
+          assert len(manifest)==capture['manifestBytes'] and hashlib.sha256(manifest).hexdigest()==capture['manifestSha256']
+          for row in capture['captures']+capture['visualReferences']+capture['lighthouse']:
+           data=archive.read(row['path'])
+           assert len(data)==row['bytes'] and hashlib.sha256(data).hexdigest()==row['sha256']
+          assert len(capture['captures'])==18 and all(row['identicalToQualifiedMain'] and row['sha256']==row['previousSha256'] for row in capture['captures'])
+          def emit(path,data):
+           meta={'path':path,'size':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+           encoded=base64.b64encode(data).decode()
+           if len(encoded)<60000:print('PROGRAMME_FILE '+json.dumps({**meta,'base64':encoded},separators=(',',':')))
+           else:
+            chunks=[encoded[i:i+60000] for i in range(0,len(encoded),60000)]
+            print('PROGRAMME_FILE_INDEX '+json.dumps({**meta,'chunks':len(chunks)},separators=(',',':')))
+            for index,chunk in enumerate(chunks):print('PROGRAMME_FILE_CHUNK '+json.dumps({'path':path,'index':index,'base64':chunk},separators=(',',':')))
+          part=os.environ['PART']
+          if part=='report':
+           emit(capture['manifestPath'],manifest)
+           for filename in ['browser-controls.json','visual-insertion.json','capture-producer.json']:emit(evidence+filename,archive.read(evidence+filename))
+           inventory=[{'path':name,'bytes':len(archive.read(name)),'sha256':hashlib.sha256(archive.read(name)).hexdigest()} for name in archive.namelist() if not name.endswith('/')]
+           raw=[]
+           for row in capture['lighthouse']:
+            doc=json.loads(archive.read(row['path']))
+            assert not doc.get('runtimeError')
+            raw.append({**row,'fetchTime':doc.get('fetchTime'),'lighthouseVersion':doc.get('lighthouseVersion'),'requestedUrl':doc['requestedUrl'],'lcp':doc['audits']['largest-contentful-paint']['numericValue'],'cls':doc['audits']['cumulative-layout-shift']['numericValue'],'tbt':doc['audits']['total-blocking-time']['numericValue']})
+           report={'schema':'zodiacs.birth-window-qualified-artifact-recovery.v1','producer':{'source':os.environ['GITHUB_SHA'],'run':os.environ['GITHUB_RUN_ID']},'original':{'run':38051943389,'head':run['head_sha'],'candidate':capture['checkedOutSource'],'tree':capture['checkedOutTree'],'attempt':1,'conclusion':'success','artifact':11670430436,'zipBytes':len(packed),'zipSha256':digest,'crcVerified':True},'inventory':inventory,'rawLighthouse':raw,'phase1':{'captures':18,'allActualPngsMatchNativeManifest':True,'allFreshPngsIdenticalToQualifiedMain':True,'manifestSha256':capture['manifestSha256'],'templateSourceSha256':capture['templateSourceSha256']},'limitations':['Read-only extraction of the original passed run; no build, browser, numerical execution or benchmark rerun.','All eighteen fresh native capture bytes equal the already committed qualified-main images; only their new source-bound manifest needs replacement.','The original focused qualification does not establish the final full suite, fresh review, merge/post-merge or production deployment.']}
+           emit(evidence+'qualified-artifact-recovery.json',(json.dumps(report,indent=2)+'\n').encode())
+          elif part.startswith('ref-'):
+           stems={'ref-desktop':'birth-chart-kahlo-desktop','ref-mobile':'birth-chart-kahlo-mobile','ref-reduced':'birth-chart-kahlo-desktop-reduced-motion'}
+           path='tests/visual/baselines/linux/'+stems[part]+'.png';emit(path,archive.read(path))
+          else:
+           from PIL import Image
+           view=part.removeprefix('ui-')
+           for filename in [view+'.png','summary-'+view+'.png']:
+            path='tests/visual/artifacts/birth-time-window/'+filename;emit(path,archive.read(path))
+           original='tests/visual/artifacts/birth-time-window/'+view+'.png'
+           source=Image.open(io.BytesIO(archive.read(original))).convert('RGBA')
+           crops=[]
+           for offset in [1000,2500]:
+            height=min(1500,source.height-offset)
+            assert height>0
+            image=source.crop((0,offset,source.width,offset+height));output=io.BytesIO();image.save(output,format='PNG')
+            path=evidence+'qualified-inspection/'+view+'-details-'+str(offset)+'.png'
+            emit(path,output.getvalue());crops.append({'path':path,'offset':offset,'height':height,'originalPath':original,'originalSha256':hashlib.sha256(archive.read(original)).hexdigest()})
+           emit(evidence+'qualified-inspection/'+view+'-crop-provenance.json',(json.dumps({'schema':'zodiacs.native-screenshot-inspection-crops.v1','originalRun':38051943389,'originalCandidate':capture['checkedOutSource'],'crops':crops,'limitations':['Derived inspection crops of the identified original native screenshot; no new browser run or qualification claim.']},indent=2)+'\n').encode())
+          RECOVER
