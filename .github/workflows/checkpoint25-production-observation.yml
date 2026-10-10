@@ -1,0 +1,34 @@
+name: Verify exact merged production source and Organization identities
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/checkpoint25-production-observation.yml]
+permissions:
+  contents: read
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXPECTED_MERGE_SHA: '41909a8294b29104f8b445f56e0cdd280379bcb9'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - name: Sixteen anonymous canonical HTML identity observations
+        run: node scripts/production-organization-observation.mjs
+      - name: Eleven source and asset observations
+        if: always()
+        run: node scripts/production-checkpoint23-observation.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: checkpoint25-production-observations
+          path: |
+            docs/platform/evidence/platform-identities-20261009/production-observation.json
+            docs/platform/evidence/checkpoint23-20261009/production-source-observation.json
+          retention-days: 90
