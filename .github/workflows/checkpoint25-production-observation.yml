@@ -19,6 +19,10 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22
+      - name: Parse-check both production observers before requests
+        run: |
+          node --check scripts/production-organization-observation.mjs
+          node --check scripts/production-checkpoint23-observation.mjs
       - name: Sixteen anonymous canonical HTML identity observations
         run: node scripts/production-organization-observation.mjs
       - name: Eleven source and asset observations

@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const checker=readFileSync('./scripts/organization-identity.mjs');
 assert.equal(hash(checker),'4bed7177cdffa26f83a6232f69e12902147da54165bc86075c8d0cae2f75ea38');
-const {organizationIdentityErrors,ORGANIZATION_ID}=await import('./scripts/organization-identity.mjs');
+const {organizationIdentityErrors,ORGANIZATION_ID}=await import('./organization-identity.mjs');
 const paths=['/','/es/','/pt/','/fr/','/it/','/ru/','/developers/','/developers/engine/','/developers/mcp/','/developers/compute/','/developers/conformance/','/developers/sky-benchmark/','/about/','/astrofolio/','/terminal/','/thesis/'];
 const observations=[];
 let failure=null;
