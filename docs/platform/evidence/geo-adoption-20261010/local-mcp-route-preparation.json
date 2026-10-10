@@ -1,0 +1,17 @@
+{
+  "schema": "zodiacs.geo-adoption-local-mcp-route-preparation.v1",
+  "ledgerUnits": [
+    "P1.01b",
+    "P1.12b"
+  ],
+  "existingRule": "The ledger already allows the MCP adapter to resolve local births through resolveBirth instead of replacing the site resolver.",
+  "proposedImplementation": "An explicit resolve_birth_time tool in the local stdio adapter, using the carried package geo prepareLocalTime and resolveBirth with its default pinned clock and explicit provenance. Existing forms and remote public-sky-only privacy contract remain as currently implemented.",
+  "why": "The carried package has a different legal-history convention for certain historical aliases. A new explicit package tool can honor package conventions without changing legacy form answers.",
+  "gates": [
+    "Actual package calls, original birthplace/backzone acceptance fixtures, gaps/folds/date-line and typed invalid input controls",
+    "Real SDK input/output/protocol validation, fixed refusal privacy, next-call recovery and bounded results",
+    "Native generated server bundle and original archive rebuild gates, all required final CI and fresh review",
+    "No archive/publication/guide clearance is inferred from earlier named owner answers; publication/adoption remains gated."
+  ],
+  "status": "Source investigation and draft only; no implementation or accepted-weight change."
+}
