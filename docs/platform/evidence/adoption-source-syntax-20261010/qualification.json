@@ -1,0 +1,24 @@
+{
+  "schema": "zodiacs.adoption-source-syntax-qualification.v1",
+  "producer": "9c400b5eedb702e1a3bcb712e8d88a64215a9b6c",
+  "workflowRun": 38072659213,
+  "attempt": 1,
+  "job": 114273118951,
+  "result": "success",
+  "sources": [
+    "da9483b2a51c378667f721e200745778e26fb1e5",
+    "0eb5942b5eff1ade2d7115510f9de03c8a7a8abb"
+  ],
+  "scope": "Native syntax parsing only; no imports, package execution, typecheck, resolution answer, parity, build or adoption claim.",
+  "report": {
+    "size": 3944,
+    "sha256": "63934dcafda3c13e1de5ae83218b2715e492c81ee77b205d33702fd076aab407"
+  },
+  "log": {
+    "size": 59109,
+    "sha256": "a077db388d079c0c660ef3df9aa321e7ac9ff88fafc782a20b96d6336b24ac7a"
+  },
+  "caseCount": 11,
+  "allPassed": true,
+  "acceptedWeightChange": 0
+}

@@ -1,0 +1,133 @@
+{
+  "schema": "zodiacs.adoption-source-syntax-preflight.v1",
+  "producer": {
+    "source": "9c400b5eedb702e1a3bcb712e8d88a64215a9b6c",
+    "run": "38072659213",
+    "node": "v24.21.0"
+  },
+  "scope": "Native syntax parsing only; no imports, package execution, typecheck, resolution answer, parity, build or adoption claim.",
+  "cases": [
+    {
+      "source": "da9483b2a51c378667f721e200745778e26fb1e5",
+      "path": "src/mcp/birth-time-tools.ts",
+      "size": 8382,
+      "sha256": "2d46193ef977204b057c2abf3ce23f5e952c89eb30ced3a79d415b68f56f8fa0",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "da9483b2a51c378667f721e200745778e26fb1e5",
+      "path": "src/mcp/birth-time-tools.test.ts",
+      "size": 9088,
+      "sha256": "e7281241c325d4c82559bab60f166993a03bf5ec1b9868cfb93bd898e50f50b7",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "da9483b2a51c378667f721e200745778e26fb1e5",
+      "path": "src/mcp/birth-time-protocol.test.ts",
+      "size": 3534,
+      "sha256": "47208b48474d534fa5a01d0d264952881bf0698b9db8baaa3ef66f002c439212",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "da9483b2a51c378667f721e200745778e26fb1e5",
+      "path": "src/mcp/create-server.ts",
+      "size": 9230,
+      "sha256": "dd1bba2b0a1c3632d82dc0c14d26828577e4dd1ea1800cbb5d31ae50a4e87ce9",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "da9483b2a51c378667f721e200745778e26fb1e5",
+      "path": "src/mcp/create-server.test.ts",
+      "size": 5370,
+      "sha256": "6d94bf737eb8d5224d461d958313feaa9c7ab5fb2f8e1b003808f9208ba6ebd2",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "da9483b2a51c378667f721e200745778e26fb1e5",
+      "path": "src/mcp/tools.ts",
+      "size": 23072,
+      "sha256": "83dfdb5cdf33cb146ed943a38e5af05fc6943301f80706b4f6ada669adf14df7",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "da9483b2a51c378667f721e200745778e26fb1e5",
+      "path": "src/mcp/cite.ts",
+      "size": 4141,
+      "sha256": "971a573963ed5cd226ad163d1acaef655238a3cbea1a5f1cf107bc55101b1f5f",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "da9483b2a51c378667f721e200745778e26fb1e5",
+      "path": "src/mcp/resources.ts",
+      "size": 12993,
+      "sha256": "fd8d639933395e0c3def5f97c8499c1b2ac0cce39d504d5d28a1563e0b2e4cae",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "da9483b2a51c378667f721e200745778e26fb1e5",
+      "path": "tests/mcp-protocol-drive.mjs",
+      "size": 42357,
+      "sha256": "682d40974140b8336d200d730a563aa1edca5e70a47065c8a76ab34c42e41422",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "0eb5942b5eff1ade2d7115510f9de03c8a7a8abb",
+      "path": "src/lib/composite.ts",
+      "size": 1172,
+      "sha256": "62d4515a4ae9da960d066e56795c3396747948dca3dec7ffd16e368faeb69a43",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "source": "0eb5942b5eff1ade2d7115510f9de03c8a7a8abb",
+      "path": "src/lib/dignities.ts",
+      "size": 1981,
+      "sha256": "83bcd9422e9c9ff59d7e15ee08b583e014ae219813639c658dc30f2cb235e9c2",
+      "status": 0,
+      "signal": null,
+      "errorClass": null,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "allPassed": true
+}

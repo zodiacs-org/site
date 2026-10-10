@@ -1,0 +1,642 @@
+﻿2026-10-10T17:40:03.5378160Z Current runner version: '2.337.0'
+2026-10-10T17:40:03.5399022Z ##[group]Runner Image Provisioner
+2026-10-10T17:40:03.5399894Z Hosted Compute Agent
+2026-10-10T17:40:03.5400453Z Version: 20261002.596
+2026-10-10T17:40:03.5401038Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-10T17:40:03.5402230Z Build Date: 2026-10-02T22:28:27Z
+2026-10-10T17:40:03.5402907Z Worker ID: {ab182be6-fc9e-49da-8163-b0cfca32f13f}
+2026-10-10T17:40:03.5403560Z Region: westus3
+2026-10-10T17:40:03.5404031Z Cloud: Azure
+2026-10-10T17:40:03.5404481Z ##[endgroup]
+2026-10-10T17:40:03.5405804Z ##[group]Operating System
+2026-10-10T17:40:03.5406319Z Ubuntu
+2026-10-10T17:40:03.5406735Z 24.04.5
+2026-10-10T17:40:03.5407191Z LTS
+2026-10-10T17:40:03.5407619Z ##[endgroup]
+2026-10-10T17:40:03.5408079Z ##[group]Runner Image
+2026-10-10T17:40:03.5408605Z Image: ubuntu-24.04
+2026-10-10T17:40:03.5409093Z Version: 20261004.327.1
+2026-10-10T17:40:03.5410146Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-10T17:40:03.5412013Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-10T17:40:03.5412939Z ##[endgroup]
+2026-10-10T17:40:03.5413841Z ##[group]GITHUB_TOKEN Permissions
+2026-10-10T17:40:03.5415820Z Contents: read
+2026-10-10T17:40:03.5416299Z Metadata: read
+2026-10-10T17:40:03.5416822Z ##[endgroup]
+2026-10-10T17:40:03.5418519Z Secret source: Actions
+2026-10-10T17:40:03.5419319Z Cache mode: write
+2026-10-10T17:40:03.5420069Z Prepare workflow directory
+2026-10-10T17:40:03.5690856Z Prepare all required actions
+2026-10-10T17:40:03.5734535Z Getting action download info
+2026-10-10T17:40:03.8737282Z Download action repository 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-10-10T17:40:04.0098370Z Download action repository 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-10T17:40:04.2126880Z Complete job name: syntax
+2026-10-10T17:40:04.2723612Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-10T17:40:04.2724500Z with:
+2026-10-10T17:40:04.2724911Z   path: producer
+2026-10-10T17:40:04.2725321Z   fetch-depth: 1
+2026-10-10T17:40:04.2725786Z   repository: zodiacs-org/site
+2026-10-10T17:40:04.2729126Z   token: ***
+2026-10-10T17:40:04.2729556Z   ssh-strict: true
+2026-10-10T17:40:04.2729973Z   ssh-user: git
+2026-10-10T17:40:04.2730377Z   persist-credentials: true
+2026-10-10T17:40:04.2730850Z   clean: true
+2026-10-10T17:40:04.2731426Z   sparse-checkout-cone-mode: true
+2026-10-10T17:40:04.2731939Z   fetch-tags: false
+2026-10-10T17:40:04.2732376Z   show-progress: true
+2026-10-10T17:40:04.2732801Z   lfs: false
+2026-10-10T17:40:04.2733237Z   submodules: false
+2026-10-10T17:40:04.2733682Z   set-safe-directory: true
+2026-10-10T17:40:04.2734151Z   allow-unsafe-pr-checkout: false
+2026-10-10T17:40:04.2734784Z ##[endgroup]
+2026-10-10T17:40:04.3645034Z Syncing repository: zodiacs-org/site
+2026-10-10T17:40:04.3647683Z ##[group]Getting Git version info
+2026-10-10T17:40:04.3648648Z Working directory is '/home/runner/work/site/site/producer'
+2026-10-10T17:40:04.3650004Z [command]/usr/bin/git version
+2026-10-10T17:40:04.3705760Z git version 2.55.0
+2026-10-10T17:40:04.3725104Z ##[endgroup]
+2026-10-10T17:40:04.3739261Z Temporarily overriding HOME='/home/runner/work/_temp/09130182-1baa-48dc-ab64-b414e3665d90' before making global git config changes
+2026-10-10T17:40:04.3741871Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-10T17:40:04.3744445Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/site/site/producer
+2026-10-10T17:40:04.3813018Z ##[group]Determining repository object format
+2026-10-10T17:40:04.3815060Z ##[endgroup]
+2026-10-10T17:40:04.3819240Z ##[group]Initializing the repository
+2026-10-10T17:40:04.3820037Z [command]/usr/bin/git init /home/runner/work/site/site/producer
+2026-10-10T17:40:04.3928900Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-10T17:40:04.3930597Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-10T17:40:04.3931968Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-10T17:40:04.3933008Z hint: call:
+2026-10-10T17:40:04.3933572Z hint:
+2026-10-10T17:40:04.3934268Z hint: 	git config --global init.defaultBranch <name>
+2026-10-10T17:40:04.3935103Z hint:
+2026-10-10T17:40:04.3935919Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-10T17:40:04.3937163Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-10T17:40:04.3938183Z hint:
+2026-10-10T17:40:04.3938857Z hint: 	git branch -m <name>
+2026-10-10T17:40:04.3939577Z hint:
+2026-10-10T17:40:04.3940572Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-10T17:40:04.3942136Z Initialized empty Git repository in /home/runner/work/site/site/producer/.git/
+2026-10-10T17:40:04.3954220Z [command]/usr/bin/git remote add origin https://github.com/zodiacs-org/site
+2026-10-10T17:40:04.3984979Z ##[endgroup]
+2026-10-10T17:40:04.3986285Z ##[group]Disabling automatic garbage collection
+2026-10-10T17:40:04.3989197Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-10T17:40:04.4014804Z ##[endgroup]
+2026-10-10T17:40:04.4016270Z ##[group]Setting up auth
+2026-10-10T17:40:04.4017423Z Removing SSH command configuration
+2026-10-10T17:40:04.4025393Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T17:40:04.4044470Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T17:40:04.4348082Z Removing HTTP extra header
+2026-10-10T17:40:04.4352730Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T17:40:04.4379733Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T17:40:04.4548647Z Removing includeIf entries pointing to credentials config files
+2026-10-10T17:40:04.4553875Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T17:40:04.4578193Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T17:40:04.4747418Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-10T17:40:04.4812581Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/site/site/producer/.git.path /home/runner/work/_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:04.5446795Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/site/site/producer/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:04.6682168Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/producer/.git.path /github/runner_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:04.6716483Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/producer/.git/worktrees/*.path /github/runner_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:04.6822567Z ##[endgroup]
+2026-10-10T17:40:04.6823790Z ##[group]Fetching the repository
+2026-10-10T17:40:04.6831855Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +9c400b5eedb702e1a3bcb712e8d88a64215a9b6c:refs/remotes/origin/codex/developer-docs-preparation
+2026-10-10T17:40:17.7580150Z From https://github.com/zodiacs-org/site
+2026-10-10T17:40:17.7581650Z  * [new ref]           9c400b5eedb702e1a3bcb712e8d88a64215a9b6c -> origin/codex/developer-docs-preparation
+2026-10-10T17:40:17.7589129Z [command]/usr/bin/git branch --list --remote origin/codex/developer-docs-preparation
+2026-10-10T17:40:17.7611248Z   origin/codex/developer-docs-preparation
+2026-10-10T17:40:17.7618248Z [command]/usr/bin/git rev-parse refs/remotes/origin/codex/developer-docs-preparation
+2026-10-10T17:40:17.7636661Z 9c400b5eedb702e1a3bcb712e8d88a64215a9b6c
+2026-10-10T17:40:17.7638898Z ##[endgroup]
+2026-10-10T17:40:17.7639622Z ##[group]Determining the checkout info
+2026-10-10T17:40:17.7640406Z ##[endgroup]
+2026-10-10T17:40:17.7644246Z [command]/usr/bin/git sparse-checkout disable
+2026-10-10T17:40:18.0970734Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-10T17:40:18.1002576Z ##[group]Checking out the ref
+2026-10-10T17:40:18.1006866Z [command]/usr/bin/git checkout --progress --force -B codex/developer-docs-preparation refs/remotes/origin/codex/developer-docs-preparation
+2026-10-10T17:40:19.1246616Z Updating files:  39% (6845/17220)
+2026-10-10T17:40:19.1485514Z Updating files:  40% (6888/17220)
+2026-10-10T17:40:19.1772663Z Updating files:  41% (7061/17220)
+2026-10-10T17:40:19.1888277Z Updating files:  42% (7233/17220)
+2026-10-10T17:40:19.2216760Z Updating files:  43% (7405/17220)
+2026-10-10T17:40:19.2774458Z Updating files:  44% (7577/17220)
+2026-10-10T17:40:19.3000614Z Updating files:  45% (7749/17220)
+2026-10-10T17:40:19.3127927Z Updating files:  46% (7922/17220)
+2026-10-10T17:40:19.3672386Z Updating files:  47% (8094/17220)
+2026-10-10T17:40:19.3805681Z Updating files:  48% (8266/17220)
+2026-10-10T17:40:19.4117141Z Updating files:  49% (8438/17220)
+2026-10-10T17:40:19.4563672Z Updating files:  50% (8610/17220)
+2026-10-10T17:40:19.4858024Z Updating files:  51% (8783/17220)
+2026-10-10T17:40:19.4972544Z Updating files:  52% (8955/17220)
+2026-10-10T17:40:19.5092513Z Updating files:  53% (9127/17220)
+2026-10-10T17:40:19.5786184Z Updating files:  54% (9299/17220)
+2026-10-10T17:40:19.6016141Z Updating files:  55% (9471/17220)
+2026-10-10T17:40:19.6462419Z Updating files:  56% (9644/17220)
+2026-10-10T17:40:19.6625979Z Updating files:  57% (9816/17220)
+2026-10-10T17:40:19.6974774Z Updating files:  58% (9988/17220)
+2026-10-10T17:40:19.7099895Z Updating files:  59% (10160/17220)
+2026-10-10T17:40:19.8078018Z Updating files:  60% (10332/17220)
+2026-10-10T17:40:19.8505326Z Updating files:  61% (10505/17220)
+2026-10-10T17:40:19.8741925Z Updating files:  62% (10677/17220)
+2026-10-10T17:40:19.8816661Z Updating files:  63% (10849/17220)
+2026-10-10T17:40:19.9325323Z Updating files:  64% (11021/17220)
+2026-10-10T17:40:19.9678008Z Updating files:  65% (11193/17220)
+2026-10-10T17:40:19.9939829Z Updating files:  66% (11366/17220)
+2026-10-10T17:40:20.0109615Z Updating files:  67% (11538/17220)
+2026-10-10T17:40:20.0278325Z Updating files:  68% (11710/17220)
+2026-10-10T17:40:20.0601570Z Updating files:  69% (11882/17220)
+2026-10-10T17:40:20.0695920Z Updating files:  70% (12054/17220)
+2026-10-10T17:40:20.0762738Z Updating files:  71% (12227/17220)
+2026-10-10T17:40:20.0836046Z Updating files:  72% (12399/17220)
+2026-10-10T17:40:20.0926616Z Updating files:  73% (12571/17220)
+2026-10-10T17:40:20.0990388Z Updating files:  74% (12743/17220)
+2026-10-10T17:40:20.1159782Z Updating files:  75% (12915/17220)
+2026-10-10T17:40:20.1169345Z Updating files:  76% (13088/17220)
+2026-10-10T17:40:20.1321197Z Updating files:  76% (13099/17220)
+2026-10-10T17:40:20.1376081Z Updating files:  77% (13260/17220)
+2026-10-10T17:40:20.1427762Z Updating files:  78% (13432/17220)
+2026-10-10T17:40:20.1536308Z Updating files:  79% (13604/17220)
+2026-10-10T17:40:20.1623434Z Updating files:  80% (13776/17220)
+2026-10-10T17:40:20.1706757Z Updating files:  81% (13949/17220)
+2026-10-10T17:40:20.1792847Z Updating files:  82% (14121/17220)
+2026-10-10T17:40:20.1869591Z Updating files:  83% (14293/17220)
+2026-10-10T17:40:20.1922000Z Updating files:  84% (14465/17220)
+2026-10-10T17:40:20.1980556Z Updating files:  85% (14637/17220)
+2026-10-10T17:40:20.2054880Z Updating files:  86% (14810/17220)
+2026-10-10T17:40:20.2123963Z Updating files:  87% (14982/17220)
+2026-10-10T17:40:20.2194830Z Updating files:  88% (15154/17220)
+2026-10-10T17:40:20.2475067Z Updating files:  89% (15326/17220)
+2026-10-10T17:40:20.2549029Z Updating files:  90% (15498/17220)
+2026-10-10T17:40:20.2644733Z Updating files:  91% (15671/17220)
+2026-10-10T17:40:20.2727754Z Updating files:  92% (15843/17220)
+2026-10-10T17:40:20.2814952Z Updating files:  93% (16015/17220)
+2026-10-10T17:40:20.2883023Z Updating files:  94% (16187/17220)
+2026-10-10T17:40:20.2966692Z Updating files:  95% (16359/17220)
+2026-10-10T17:40:20.3053099Z Updating files:  96% (16532/17220)
+2026-10-10T17:40:20.3161216Z Updating files:  97% (16704/17220)
+2026-10-10T17:40:20.3288261Z Updating files:  98% (16876/17220)
+2026-10-10T17:40:20.6378651Z Updating files:  99% (17048/17220)
+2026-10-10T17:40:20.6379062Z Updating files: 100% (17220/17220)
+2026-10-10T17:40:20.6379518Z Updating files: 100% (17220/17220), done.
+2026-10-10T17:40:20.6525780Z Switched to a new branch 'codex/developer-docs-preparation'
+2026-10-10T17:40:20.6527393Z branch 'codex/developer-docs-preparation' set up to track 'origin/codex/developer-docs-preparation'.
+2026-10-10T17:40:20.6609831Z ##[endgroup]
+2026-10-10T17:40:20.6632818Z [command]/usr/bin/git log -1 --format=%H
+2026-10-10T17:40:20.6654762Z 9c400b5eedb702e1a3bcb712e8d88a64215a9b6c
+2026-10-10T17:40:20.6864020Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-10T17:40:20.6864497Z with:
+2026-10-10T17:40:20.6864851Z   ref: da9483b2a51c378667f721e200745778e26fb1e5
+2026-10-10T17:40:20.6865217Z   path: local-mcp
+2026-10-10T17:40:20.6865549Z   fetch-depth: 1
+2026-10-10T17:40:20.6865859Z   repository: zodiacs-org/site
+2026-10-10T17:40:20.6868869Z   token: ***
+2026-10-10T17:40:20.6869188Z   ssh-strict: true
+2026-10-10T17:40:20.6869459Z   ssh-user: git
+2026-10-10T17:40:20.6869778Z   persist-credentials: true
+2026-10-10T17:40:20.6870101Z   clean: true
+2026-10-10T17:40:20.6870424Z   sparse-checkout-cone-mode: true
+2026-10-10T17:40:20.6870796Z   fetch-tags: false
+2026-10-10T17:40:20.6871156Z   show-progress: true
+2026-10-10T17:40:20.6871616Z   lfs: false
+2026-10-10T17:40:20.6871898Z   submodules: false
+2026-10-10T17:40:20.6872197Z   set-safe-directory: true
+2026-10-10T17:40:20.6872568Z   allow-unsafe-pr-checkout: false
+2026-10-10T17:40:20.6872907Z ##[endgroup]
+2026-10-10T17:40:20.7631638Z Syncing repository: zodiacs-org/site
+2026-10-10T17:40:20.7637685Z ##[group]Getting Git version info
+2026-10-10T17:40:20.7638377Z Working directory is '/home/runner/work/site/site/local-mcp'
+2026-10-10T17:40:20.7671395Z [command]/usr/bin/git version
+2026-10-10T17:40:20.7705327Z git version 2.55.0
+2026-10-10T17:40:20.7725155Z ##[endgroup]
+2026-10-10T17:40:20.7737275Z Temporarily overriding HOME='/home/runner/work/_temp/b485ae8d-a41f-42ee-b575-851388d0bcaa' before making global git config changes
+2026-10-10T17:40:20.7738905Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-10T17:40:20.7742818Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/site/site/local-mcp
+2026-10-10T17:40:20.7771490Z ##[group]Determining repository object format
+2026-10-10T17:40:20.7773865Z ##[endgroup]
+2026-10-10T17:40:20.7774738Z ##[group]Initializing the repository
+2026-10-10T17:40:20.7778520Z [command]/usr/bin/git init /home/runner/work/site/site/local-mcp
+2026-10-10T17:40:20.7812003Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-10T17:40:20.7812985Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-10T17:40:20.7816110Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-10T17:40:20.7816906Z hint: call:
+2026-10-10T17:40:20.7817502Z hint:
+2026-10-10T17:40:20.7818529Z hint: 	git config --global init.defaultBranch <name>
+2026-10-10T17:40:20.7819201Z hint:
+2026-10-10T17:40:20.7819728Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-10T17:40:20.7820885Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-10T17:40:20.7821814Z hint:
+2026-10-10T17:40:20.7822208Z hint: 	git branch -m <name>
+2026-10-10T17:40:20.7822636Z hint:
+2026-10-10T17:40:20.7823226Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-10T17:40:20.7824150Z Initialized empty Git repository in /home/runner/work/site/site/local-mcp/.git/
+2026-10-10T17:40:20.7825827Z [command]/usr/bin/git remote add origin https://github.com/zodiacs-org/site
+2026-10-10T17:40:20.7855477Z ##[endgroup]
+2026-10-10T17:40:20.7856403Z ##[group]Disabling automatic garbage collection
+2026-10-10T17:40:20.7857271Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-10T17:40:20.7889688Z ##[endgroup]
+2026-10-10T17:40:20.7890456Z ##[group]Setting up auth
+2026-10-10T17:40:20.7891007Z Removing SSH command configuration
+2026-10-10T17:40:20.7896414Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T17:40:20.7924301Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T17:40:20.8109548Z Removing HTTP extra header
+2026-10-10T17:40:20.8116667Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T17:40:20.8152054Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T17:40:20.8347085Z Removing includeIf entries pointing to credentials config files
+2026-10-10T17:40:20.8354670Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T17:40:20.8386225Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T17:40:20.8603223Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-10T17:40:20.8641700Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/site/site/local-mcp/.git.path /home/runner/work/_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:20.8673127Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/site/site/local-mcp/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:20.8704416Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/local-mcp/.git.path /github/runner_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:20.8733723Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/local-mcp/.git/worktrees/*.path /github/runner_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:20.8759859Z ##[endgroup]
+2026-10-10T17:40:20.8760610Z ##[group]Fetching the repository
+2026-10-10T17:40:20.8767770Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin da9483b2a51c378667f721e200745778e26fb1e5
+2026-10-10T17:40:34.2513963Z From https://github.com/zodiacs-org/site
+2026-10-10T17:40:34.2514814Z  * branch              da9483b2a51c378667f721e200745778e26fb1e5 -> FETCH_HEAD
+2026-10-10T17:40:34.2525460Z [command]/usr/bin/git rev-parse --verify --quiet da9483b2a51c378667f721e200745778e26fb1e5^{object}
+2026-10-10T17:40:34.2546581Z da9483b2a51c378667f721e200745778e26fb1e5
+2026-10-10T17:40:34.2549928Z ##[endgroup]
+2026-10-10T17:40:34.2550535Z ##[group]Determining the checkout info
+2026-10-10T17:40:34.2551184Z ##[endgroup]
+2026-10-10T17:40:34.2556280Z [command]/usr/bin/git sparse-checkout disable
+2026-10-10T17:40:34.2798799Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-10T17:40:34.2854378Z ##[group]Checking out the ref
+2026-10-10T17:40:34.2857960Z [command]/usr/bin/git checkout --progress --force da9483b2a51c378667f721e200745778e26fb1e5
+2026-10-10T17:40:35.3045682Z Updating files:  35% (6193/17355)
+2026-10-10T17:40:35.3464331Z Updating files:  36% (6248/17355)
+2026-10-10T17:40:35.3770005Z Updating files:  37% (6422/17355)
+2026-10-10T17:40:35.3886562Z Updating files:  38% (6595/17355)
+2026-10-10T17:40:35.4024150Z Updating files:  39% (6769/17355)
+2026-10-10T17:40:35.4397894Z Updating files:  40% (6942/17355)
+2026-10-10T17:40:35.4670759Z Updating files:  41% (7116/17355)
+2026-10-10T17:40:35.4941974Z Updating files:  42% (7290/17355)
+2026-10-10T17:40:35.5113053Z Updating files:  43% (7463/17355)
+2026-10-10T17:40:35.5611403Z Updating files:  44% (7637/17355)
+2026-10-10T17:40:35.5954336Z Updating files:  45% (7810/17355)
+2026-10-10T17:40:35.6157978Z Updating files:  46% (7984/17355)
+2026-10-10T17:40:35.6745935Z Updating files:  47% (8157/17355)
+2026-10-10T17:40:35.6831792Z Updating files:  48% (8331/17355)
+2026-10-10T17:40:35.7209950Z Updating files:  49% (8504/17355)
+2026-10-10T17:40:35.7695049Z Updating files:  50% (8678/17355)
+2026-10-10T17:40:35.7961933Z Updating files:  51% (8852/17355)
+2026-10-10T17:40:35.8100148Z Updating files:  52% (9025/17355)
+2026-10-10T17:40:35.8236881Z Updating files:  53% (9199/17355)
+2026-10-10T17:40:35.8626258Z Updating files:  54% (9372/17355)
+2026-10-10T17:40:35.9118960Z Updating files:  55% (9546/17355)
+2026-10-10T17:40:35.9336677Z Updating files:  56% (9719/17355)
+2026-10-10T17:40:35.9743180Z Updating files:  57% (9893/17355)
+2026-10-10T17:40:36.0028933Z Updating files:  58% (10066/17355)
+2026-10-10T17:40:36.0235926Z Updating files:  59% (10240/17355)
+2026-10-10T17:40:36.1013167Z Updating files:  60% (10413/17355)
+2026-10-10T17:40:36.1629472Z Updating files:  61% (10587/17355)
+2026-10-10T17:40:36.1934902Z Updating files:  62% (10761/17355)
+2026-10-10T17:40:36.2040368Z Updating files:  63% (10934/17355)
+2026-10-10T17:40:36.2380712Z Updating files:  64% (11108/17355)
+2026-10-10T17:40:36.2766077Z Updating files:  65% (11281/17355)
+2026-10-10T17:40:36.3006043Z Updating files:  66% (11455/17355)
+2026-10-10T17:40:36.3143523Z Updating files:  66% (11544/17355)
+2026-10-10T17:40:36.3316779Z Updating files:  67% (11628/17355)
+2026-10-10T17:40:36.3482111Z Updating files:  68% (11802/17355)
+2026-10-10T17:40:36.3773922Z Updating files:  69% (11975/17355)
+2026-10-10T17:40:36.3924006Z Updating files:  70% (12149/17355)
+2026-10-10T17:40:36.3987134Z Updating files:  71% (12323/17355)
+2026-10-10T17:40:36.4066726Z Updating files:  72% (12496/17355)
+2026-10-10T17:40:36.4155587Z Updating files:  73% (12670/17355)
+2026-10-10T17:40:36.4224436Z Updating files:  74% (12843/17355)
+2026-10-10T17:40:36.4404657Z Updating files:  75% (13017/17355)
+2026-10-10T17:40:36.4592842Z Updating files:  76% (13190/17355)
+2026-10-10T17:40:36.4641226Z Updating files:  77% (13364/17355)
+2026-10-10T17:40:36.4697903Z Updating files:  78% (13537/17355)
+2026-10-10T17:40:36.4763604Z Updating files:  79% (13711/17355)
+2026-10-10T17:40:36.4886922Z Updating files:  80% (13884/17355)
+2026-10-10T17:40:36.4973249Z Updating files:  81% (14058/17355)
+2026-10-10T17:40:36.5066743Z Updating files:  82% (14232/17355)
+2026-10-10T17:40:36.5153947Z Updating files:  83% (14405/17355)
+2026-10-10T17:40:36.5206784Z Updating files:  84% (14579/17355)
+2026-10-10T17:40:36.5268782Z Updating files:  85% (14752/17355)
+2026-10-10T17:40:36.5335555Z Updating files:  86% (14926/17355)
+2026-10-10T17:40:36.5409198Z Updating files:  87% (15099/17355)
+2026-10-10T17:40:36.5480059Z Updating files:  88% (15273/17355)
+2026-10-10T17:40:36.5754701Z Updating files:  89% (15446/17355)
+2026-10-10T17:40:36.5822386Z Updating files:  90% (15620/17355)
+2026-10-10T17:40:36.5910614Z Updating files:  91% (15794/17355)
+2026-10-10T17:40:36.6003728Z Updating files:  92% (15967/17355)
+2026-10-10T17:40:36.6098808Z Updating files:  93% (16141/17355)
+2026-10-10T17:40:36.6518006Z Updating files:  94% (16314/17355)
+2026-10-10T17:40:36.7504635Z Updating files:  95% (16488/17355)
+2026-10-10T17:40:36.7595431Z Updating files:  96% (16661/17355)
+2026-10-10T17:40:36.7709829Z Updating files:  97% (16835/17355)
+2026-10-10T17:40:36.7831470Z Updating files:  98% (17008/17355)
+2026-10-10T17:40:37.0955607Z Updating files:  99% (17182/17355)
+2026-10-10T17:40:37.0956384Z Updating files: 100% (17355/17355)
+2026-10-10T17:40:37.0956842Z Updating files: 100% (17355/17355), done.
+2026-10-10T17:40:37.1190924Z Note: switching to 'da9483b2a51c378667f721e200745778e26fb1e5'.
+2026-10-10T17:40:37.1191722Z 
+2026-10-10T17:40:37.1192316Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-10T17:40:37.1192925Z changes and commit them, and you can discard any commits you make in this
+2026-10-10T17:40:37.1193562Z state without impacting any branches by switching back to a branch.
+2026-10-10T17:40:37.1193915Z 
+2026-10-10T17:40:37.1194221Z If you want to create a new branch to retain commits you create, you may
+2026-10-10T17:40:37.1194876Z do so (now or later) by using -c with the switch command. Example:
+2026-10-10T17:40:37.1195272Z 
+2026-10-10T17:40:37.1195489Z   git switch -c <new-branch-name>
+2026-10-10T17:40:37.1195778Z 
+2026-10-10T17:40:37.1196015Z Or undo this operation with:
+2026-10-10T17:40:37.1196266Z 
+2026-10-10T17:40:37.1196486Z   git switch -
+2026-10-10T17:40:37.1196726Z 
+2026-10-10T17:40:37.1197326Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-10T17:40:37.1197796Z 
+2026-10-10T17:40:37.1198146Z HEAD is now at da9483b2 Prepare generated stdio protocol controls for local birth resolution
+2026-10-10T17:40:37.1266004Z ##[endgroup]
+2026-10-10T17:40:37.1301120Z [command]/usr/bin/git log -1 --format=%H
+2026-10-10T17:40:37.1324413Z da9483b2a51c378667f721e200745778e26fb1e5
+2026-10-10T17:40:37.2167192Z ##[group]Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+2026-10-10T17:40:37.2167586Z with:
+2026-10-10T17:40:37.2167885Z   ref: 0eb5942b5eff1ade2d7115510f9de03c8a7a8abb
+2026-10-10T17:40:37.2168230Z   path: library-adoption
+2026-10-10T17:40:37.2168506Z   fetch-depth: 1
+2026-10-10T17:40:37.2168801Z   repository: zodiacs-org/site
+2026-10-10T17:40:37.2171136Z   token: ***
+2026-10-10T17:40:37.2171515Z   ssh-strict: true
+2026-10-10T17:40:37.2171771Z   ssh-user: git
+2026-10-10T17:40:37.2172022Z   persist-credentials: true
+2026-10-10T17:40:37.2172327Z   clean: true
+2026-10-10T17:40:37.2172598Z   sparse-checkout-cone-mode: true
+2026-10-10T17:40:37.2173312Z   fetch-tags: false
+2026-10-10T17:40:37.2173658Z   show-progress: true
+2026-10-10T17:40:37.2173910Z   lfs: false
+2026-10-10T17:40:37.2174171Z   submodules: false
+2026-10-10T17:40:37.2174427Z   set-safe-directory: true
+2026-10-10T17:40:37.2174724Z   allow-unsafe-pr-checkout: false
+2026-10-10T17:40:37.2175047Z ##[endgroup]
+2026-10-10T17:40:37.2903667Z Syncing repository: zodiacs-org/site
+2026-10-10T17:40:37.2912623Z ##[group]Getting Git version info
+2026-10-10T17:40:37.2913771Z Working directory is '/home/runner/work/site/site/library-adoption'
+2026-10-10T17:40:37.2937774Z [command]/usr/bin/git version
+2026-10-10T17:40:37.2969521Z git version 2.55.0
+2026-10-10T17:40:37.2985176Z ##[endgroup]
+2026-10-10T17:40:37.2996083Z Temporarily overriding HOME='/home/runner/work/_temp/3b33362d-274a-46da-9210-2ef151a34d11' before making global git config changes
+2026-10-10T17:40:37.2997184Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-10T17:40:37.3000874Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/site/site/library-adoption
+2026-10-10T17:40:37.3852999Z ##[group]Determining repository object format
+2026-10-10T17:40:37.3853904Z ##[endgroup]
+2026-10-10T17:40:37.3854818Z ##[group]Initializing the repository
+2026-10-10T17:40:37.3855472Z [command]/usr/bin/git init /home/runner/work/site/site/library-adoption
+2026-10-10T17:40:37.5857207Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-10T17:40:37.5857989Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-10T17:40:37.5859110Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-10T17:40:37.5859658Z hint: call:
+2026-10-10T17:40:37.5859998Z hint:
+2026-10-10T17:40:37.5860319Z hint: 	git config --global init.defaultBranch <name>
+2026-10-10T17:40:37.5860655Z hint:
+2026-10-10T17:40:37.5860996Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-10T17:40:37.5861777Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-10T17:40:37.5862215Z hint:
+2026-10-10T17:40:37.5862535Z hint: 	git branch -m <name>
+2026-10-10T17:40:37.5862854Z hint:
+2026-10-10T17:40:37.5863426Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-10T17:40:37.5863973Z Initialized empty Git repository in /home/runner/work/site/site/library-adoption/.git/
+2026-10-10T17:40:37.5870938Z [command]/usr/bin/git remote add origin https://github.com/zodiacs-org/site
+2026-10-10T17:40:37.6373985Z ##[endgroup]
+2026-10-10T17:40:37.6374553Z ##[group]Disabling automatic garbage collection
+2026-10-10T17:40:37.6378383Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-10T17:40:37.6444748Z ##[endgroup]
+2026-10-10T17:40:37.6445494Z ##[group]Setting up auth
+2026-10-10T17:40:37.6446081Z Removing SSH command configuration
+2026-10-10T17:40:37.6451958Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T17:40:37.6489902Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T17:40:37.6670956Z Removing HTTP extra header
+2026-10-10T17:40:37.6677459Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T17:40:37.6712878Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T17:40:37.6885339Z Removing includeIf entries pointing to credentials config files
+2026-10-10T17:40:37.6892631Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T17:40:37.6919602Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T17:40:37.7105705Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-10T17:40:37.7695612Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/site/site/library-adoption/.git.path /home/runner/work/_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:38.1311042Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/site/site/library-adoption/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:38.1462841Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/library-adoption/.git.path /github/runner_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:38.1507119Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/library-adoption/.git/worktrees/*.path /github/runner_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:38.2117222Z ##[endgroup]
+2026-10-10T17:40:38.2117783Z ##[group]Fetching the repository
+2026-10-10T17:40:38.2125769Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 0eb5942b5eff1ade2d7115510f9de03c8a7a8abb
+2026-10-10T17:40:51.6642637Z From https://github.com/zodiacs-org/site
+2026-10-10T17:40:51.6643230Z  * branch              0eb5942b5eff1ade2d7115510f9de03c8a7a8abb -> FETCH_HEAD
+2026-10-10T17:40:51.6653540Z [command]/usr/bin/git rev-parse --verify --quiet 0eb5942b5eff1ade2d7115510f9de03c8a7a8abb^{object}
+2026-10-10T17:40:51.6677491Z 0eb5942b5eff1ade2d7115510f9de03c8a7a8abb
+2026-10-10T17:40:51.6683139Z ##[endgroup]
+2026-10-10T17:40:51.6683813Z ##[group]Determining the checkout info
+2026-10-10T17:40:51.6684507Z ##[endgroup]
+2026-10-10T17:40:51.6697946Z [command]/usr/bin/git sparse-checkout disable
+2026-10-10T17:40:51.6731081Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-10T17:40:51.6755733Z ##[group]Checking out the ref
+2026-10-10T17:40:51.6759868Z [command]/usr/bin/git checkout --progress --force 0eb5942b5eff1ade2d7115510f9de03c8a7a8abb
+2026-10-10T17:40:52.7220551Z Updating files:  36% (6341/17319)
+2026-10-10T17:40:52.7502533Z Updating files:  37% (6409/17319)
+2026-10-10T17:40:52.7612520Z Updating files:  38% (6582/17319)
+2026-10-10T17:40:52.7757589Z Updating files:  39% (6755/17319)
+2026-10-10T17:40:52.8124069Z Updating files:  40% (6928/17319)
+2026-10-10T17:40:52.8370861Z Updating files:  41% (7101/17319)
+2026-10-10T17:40:52.8623569Z Updating files:  42% (7274/17319)
+2026-10-10T17:40:52.8806554Z Updating files:  43% (7448/17319)
+2026-10-10T17:40:52.9345838Z Updating files:  44% (7621/17319)
+2026-10-10T17:40:52.9638810Z Updating files:  45% (7794/17319)
+2026-10-10T17:40:52.9839763Z Updating files:  46% (7967/17319)
+2026-10-10T17:40:53.0429982Z Updating files:  47% (8140/17319)
+2026-10-10T17:40:53.0495137Z Updating files:  48% (8314/17319)
+2026-10-10T17:40:53.0857137Z Updating files:  49% (8487/17319)
+2026-10-10T17:40:53.1329632Z Updating files:  50% (8660/17319)
+2026-10-10T17:40:53.1614083Z Updating files:  51% (8833/17319)
+2026-10-10T17:40:53.1756652Z Updating files:  52% (9006/17319)
+2026-10-10T17:40:53.1900373Z Updating files:  53% (9180/17319)
+2026-10-10T17:40:53.2348600Z Updating files:  54% (9353/17319)
+2026-10-10T17:40:53.2802699Z Updating files:  55% (9526/17319)
+2026-10-10T17:40:53.3012019Z Updating files:  56% (9699/17319)
+2026-10-10T17:40:53.3415466Z Updating files:  57% (9872/17319)
+2026-10-10T17:40:53.3716568Z Updating files:  58% (10046/17319)
+2026-10-10T17:40:53.3920704Z Updating files:  59% (10219/17319)
+2026-10-10T17:40:53.4831008Z Updating files:  60% (10392/17319)
+2026-10-10T17:40:53.5305511Z Updating files:  61% (10565/17319)
+2026-10-10T17:40:53.5593845Z Updating files:  62% (10738/17319)
+2026-10-10T17:40:53.5686260Z Updating files:  63% (10911/17319)
+2026-10-10T17:40:53.6039152Z Updating files:  64% (11085/17319)
+2026-10-10T17:40:53.6417163Z Updating files:  65% (11258/17319)
+2026-10-10T17:40:53.6776174Z Updating files:  66% (11431/17319)
+2026-10-10T17:40:53.6901884Z Updating files:  67% (11604/17319)
+2026-10-10T17:40:53.6947429Z Updating files:  67% (11728/17319)
+2026-10-10T17:40:53.7112989Z Updating files:  68% (11777/17319)
+2026-10-10T17:40:53.7418565Z Updating files:  69% (11951/17319)
+2026-10-10T17:40:53.7570500Z Updating files:  70% (12124/17319)
+2026-10-10T17:40:53.7636103Z Updating files:  71% (12297/17319)
+2026-10-10T17:40:53.7708381Z Updating files:  72% (12470/17319)
+2026-10-10T17:40:53.7797530Z Updating files:  73% (12643/17319)
+2026-10-10T17:40:53.7865277Z Updating files:  74% (12817/17319)
+2026-10-10T17:40:53.8042906Z Updating files:  75% (12990/17319)
+2026-10-10T17:40:53.8241861Z Updating files:  76% (13163/17319)
+2026-10-10T17:40:53.8297291Z Updating files:  77% (13336/17319)
+2026-10-10T17:40:53.8359153Z Updating files:  78% (13509/17319)
+2026-10-10T17:40:53.8429159Z Updating files:  79% (13683/17319)
+2026-10-10T17:40:53.8547217Z Updating files:  80% (13856/17319)
+2026-10-10T17:40:53.8630439Z Updating files:  81% (14029/17319)
+2026-10-10T17:40:53.8723926Z Updating files:  82% (14202/17319)
+2026-10-10T17:40:53.8809257Z Updating files:  83% (14375/17319)
+2026-10-10T17:40:53.8868288Z Updating files:  84% (14548/17319)
+2026-10-10T17:40:53.8932557Z Updating files:  85% (14722/17319)
+2026-10-10T17:40:53.9482918Z Updating files:  86% (14895/17319)
+2026-10-10T17:40:53.9555914Z Updating files:  87% (15068/17319)
+2026-10-10T17:40:53.9629864Z Updating files:  88% (15241/17319)
+2026-10-10T17:40:53.9922089Z Updating files:  89% (15414/17319)
+2026-10-10T17:40:53.9991937Z Updating files:  90% (15588/17319)
+2026-10-10T17:40:54.0080988Z Updating files:  91% (15761/17319)
+2026-10-10T17:40:54.0166253Z Updating files:  92% (15934/17319)
+2026-10-10T17:40:54.0254666Z Updating files:  93% (16107/17319)
+2026-10-10T17:40:54.0329187Z Updating files:  94% (16280/17319)
+2026-10-10T17:40:54.0413954Z Updating files:  95% (16454/17319)
+2026-10-10T17:40:54.0500981Z Updating files:  96% (16627/17319)
+2026-10-10T17:40:54.0614784Z Updating files:  97% (16800/17319)
+2026-10-10T17:40:54.0748432Z Updating files:  98% (16973/17319)
+2026-10-10T17:40:54.3848312Z Updating files:  99% (17146/17319)
+2026-10-10T17:40:54.3849269Z Updating files: 100% (17319/17319)
+2026-10-10T17:40:54.3849994Z Updating files: 100% (17319/17319), done.
+2026-10-10T17:40:54.4819118Z Note: switching to '0eb5942b5eff1ade2d7115510f9de03c8a7a8abb'.
+2026-10-10T17:40:54.4819835Z 
+2026-10-10T17:40:54.4820578Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-10T17:40:54.4821887Z changes and commit them, and you can discard any commits you make in this
+2026-10-10T17:40:54.4822658Z state without impacting any branches by switching back to a branch.
+2026-10-10T17:40:54.4823059Z 
+2026-10-10T17:40:54.4823412Z If you want to create a new branch to retain commits you create, you may
+2026-10-10T17:40:54.4824182Z do so (now or later) by using -c with the switch command. Example:
+2026-10-10T17:40:54.4824636Z 
+2026-10-10T17:40:54.4824830Z   git switch -c <new-branch-name>
+2026-10-10T17:40:54.4825205Z 
+2026-10-10T17:40:54.4825404Z Or undo this operation with:
+2026-10-10T17:40:54.4825733Z 
+2026-10-10T17:40:54.4825900Z   git switch -
+2026-10-10T17:40:54.4826162Z 
+2026-10-10T17:40:54.4826790Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-10T17:40:54.4827323Z 
+2026-10-10T17:40:54.4827766Z HEAD is now at 0eb5942b Prepare package adoption for composite points and sign dignities
+2026-10-10T17:40:54.4895022Z ##[endgroup]
+2026-10-10T17:40:54.4930721Z [command]/usr/bin/git log -1 --format=%H
+2026-10-10T17:40:54.4955768Z 0eb5942b5eff1ade2d7115510f9de03c8a7a8abb
+2026-10-10T17:40:54.5394379Z ##[group]Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+2026-10-10T17:40:54.5394801Z with:
+2026-10-10T17:40:54.5395054Z   node-version: 24
+2026-10-10T17:40:54.5395382Z   always-auth: false
+2026-10-10T17:40:54.5395655Z   check-latest: false
+2026-10-10T17:40:54.5397796Z   token: ***
+2026-10-10T17:40:54.5398053Z ##[endgroup]
+2026-10-10T17:40:54.6632950Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-10T17:40:54.6636284Z (node:2335) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-10T17:40:54.6637422Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-10T17:40:54.6638640Z ##[group]Environment details
+2026-10-10T17:40:55.0539253Z node: v24.21.0
+2026-10-10T17:40:55.0540097Z npm: 11.19.0
+2026-10-10T17:40:55.0540639Z yarn: 1.22.22
+2026-10-10T17:40:55.0541624Z ##[endgroup]
+2026-10-10T17:40:55.0728161Z ##[group]Run node producer/tests/adoption-source-syntax-preflight.mjs
+2026-10-10T17:40:55.0728877Z [36;1mnode producer/tests/adoption-source-syntax-preflight.mjs[0m
+2026-10-10T17:40:55.0888600Z shell: /usr/bin/bash -e {0}
+2026-10-10T17:40:55.0888922Z ##[endgroup]
+2026-10-10T17:40:55.4401745Z PROGRAMME_FILE {"path":"docs/platform/evidence/adoption-source-syntax-20261010/preflight.json","size":3944,"sha256":"63934dcafda3c13e1de5ae83218b2715e492c81ee77b205d33702fd076aab407","base64":"ewogICJzY2hlbWEiOiAiem9kaWFjcy5hZG9wdGlvbi1zb3VyY2Utc3ludGF4LXByZWZsaWdodC52MSIsCiAgInByb2R1Y2VyIjogewogICAgInNvdXJjZSI6ICI5YzQwMGI1ZWVkYjcwMmUxYTNiY2I3MTJlOGQ4OGE2NDIxNWE5YjZjIiwKICAgICJydW4iOiAiMzgwNzI2NTkyMTMiLAogICAgIm5vZGUiOiAidjI0LjIxLjAiCiAgfSwKICAic2NvcGUiOiAiTmF0aXZlIHN5bnRheCBwYXJzaW5nIG9ubHk7IG5vIGltcG9ydHMsIHBhY2thZ2UgZXhlY3V0aW9uLCB0eXBlY2hlY2ssIHJlc29sdXRpb24gYW5zd2VyLCBwYXJpdHksIGJ1aWxkIG9yIGFkb3B0aW9uIGNsYWltLiIsCiAgImNhc2VzIjogWwogICAgewogICAgICAic291cmNlIjogImRhOTQ4M2IyYTUxYzM3ODY2N2Y3MjFlMjAwNzQ1Nzc4ZTI2ZmIxZTUiLAogICAgICAicGF0aCI6ICJzcmMvbWNwL2JpcnRoLXRpbWUtdG9vbHMudHMiLAogICAgICAic2l6ZSI6IDgzODIsCiAgICAgICJzaGEyNTYiOiAiMmQ0NjE5M2VmOTc3MjA0YjA1N2MyYWJmM2NlMjNmNWU5NTJjODllYjMwY2VkM2E3OWQ0MTViNjhmNTZmOGZhMCIsCiAgICAgICJzdGF0dXMiOiAwLAogICAgICAic2lnbmFsIjogbnVsbCwKICAgICAgImVycm9yQ2xhc3MiOiBudWxsLAogICAgICAic3RkZXJyIjogIiIsCiAgICAgICJzdGRvdXQiOiAiIgogICAgfSwKICAgIHsKICAgICAgInNvdXJjZSI6ICJkYTk0ODNiMmE1MWMzNzg2NjdmNzIxZTIwMDc0NTc3OGUyNmZiMWU1IiwKICAgICAgInBhdGgiOiAic3JjL21jcC9iaXJ0aC10aW1lLXRvb2xzLnRlc3QudHMiLAogICAgICAic2l6ZSI6IDkwODgsCiAgICAgICJzaGEyNTYiOiAiZTcyODEyNDFjMzI1ZDRjODI1NTliYWI2MGYxNjY5OTNhMDNiZjVlYzFiOTg2OGNmYjkzYmQ4OThlNTBmNTBiNyIsCiAgICAgICJzdGF0dXMiOiAwLAogICAgICAic2lnbmFsIjogbnVsbCwKICAgICAgImVycm9yQ2xhc3MiOiBudWxsLAogICAgICAic3RkZXJyIjogIiIsCiAgICAgICJzdGRvdXQiOiAiIgogICAgfSwKICAgIHsKICAgICAgInNvdXJjZSI6ICJkYTk0ODNiMmE1MWMzNzg2NjdmNzIxZTIwMDc0NTc3OGUyNmZiMWU1IiwKICAgICAgInBhdGgiOiAic3JjL21jcC9iaXJ0aC10aW1lLXByb3RvY29sLnRlc3QudHMiLAogICAgICAic2l6ZSI6IDM1MzQsCiAgICAgICJzaGEyNTYiOiAiNDcyMDhiNDg0NzRkNTM0ZmE1YTAxZDBkMjY0OTUyODgxYmYwNjk4YjlkYjhiYWFhM2VmNjZmMDAyYzQzOTIxMiIsCiAgICAgICJzdGF0dXMiOiAwLAogICAgICAic2lnbmFsIjogbnVsbCwKICAgICAgImVycm9yQ2xhc3MiOiBudWxsLAogICAgICAic3RkZXJyIjogIiIsCiAgICAgICJzdGRvdXQiOiAiIgogICAgfSwKICAgIHsKICAgICAgInNvdXJjZSI6ICJkYTk0ODNiMmE1MWMzNzg2NjdmNzIxZTIwMDc0NTc3OGUyNmZiMWU1IiwKICAgICAgInBhdGgiOiAic3JjL21jcC9jcmVhdGUtc2VydmVyLnRzIiwKICAgICAgInNpemUiOiA5MjMwLAogICAgICAic2hhMjU2IjogImRkMWJiYTJiMGExYzM2MzJkODJkYzBjMTRkMjY4Mjg1NzdlNGRkMWVhMTgwMGNiYjVkMzFhZTUwYTRlODdjZTkiLAogICAgICAic3RhdHVzIjogMCwKICAgICAgInNpZ25hbCI6IG51bGwsCiAgICAgICJlcnJvckNsYXNzIjogbnVsbCwKICAgICAgInN0ZGVyciI6ICIiLAogICAgICAic3Rkb3V0IjogIiIKICAgIH0sCiAgICB7CiAgICAgICJzb3VyY2UiOiAiZGE5NDgzYjJhNTFjMzc4NjY3ZjcyMWUyMDA3NDU3NzhlMjZmYjFlNSIsCiAgICAgICJwYXRoIjogInNyYy9tY3AvY3JlYXRlLXNlcnZlci50ZXN0LnRzIiwKICAgICAgInNpemUiOiA1MzcwLAogICAgICAic2hhMjU2IjogIjZkOTRiZjczN2ViOGQ1MjI0ZDQ2MWQ5NTgzMTNmZWFhOWM3YWI1ZmIyZjhlMWIwMDM4MDhmOTIwOGJhNmViZDIiLAogICAgICAic3RhdHVzIjogMCwKICAgICAgInNpZ25hbCI6IG51bGwsCiAgICAgICJlcnJvckNsYXNzIjogbnVsbCwKICAgICAgInN0ZGVyciI6ICIiLAogICAgICAic3Rkb3V0IjogIiIKICAgIH0sCiAgICB7CiAgICAgICJzb3VyY2UiOiAiZGE5NDgzYjJhNTFjMzc4NjY3ZjcyMWUyMDA3NDU3NzhlMjZmYjFlNSIsCiAgICAgICJwYXRoIjogInNyYy9tY3AvdG9vbHMudHMiLAogICAgICAic2l6ZSI6IDIzMDcyLAogICAgICAic2hhMjU2IjogIjgzZGZkYjVjZGYzM2NiMTQ2ZWQ5NDNhMzhlNWFmMDVmYzY5NDMzMDFmODA3MDZiNGY2YWRhNjY5YWRmMTRkZjciLAogICAgICAic3RhdHVzIjogMCwKICAgICAgInNpZ25hbCI6IG51bGwsCiAgICAgICJlcnJvckNsYXNzIjogbnVsbCwKICAgICAgInN0ZGVyciI6ICIiLAogICAgICAic3Rkb3V0IjogIiIKICAgIH0sCiAgICB7CiAgICAgICJzb3VyY2UiOiAiZGE5NDgzYjJhNTFjMzc4NjY3ZjcyMWUyMDA3NDU3NzhlMjZmYjFlNSIsCiAgICAgICJwYXRoIjogInNyYy9tY3AvY2l0ZS50cyIsCiAgICAgICJzaXplIjogNDE0MSwKICAgICAgInNoYTI1NiI6ICI5NzFhNTczOTYzZWQ1Y2QyMjZhZDE2M2QxYWNhZWY2NTUyMzhhM2NiZWExYTVmMWNmMTA3YmM1NTEwMWIxZjVmIiwKICAgICAgInN0YXR1cyI6IDAsCiAgICAgICJzaWduYWwiOiBudWxsLAogICAgICAiZXJyb3JDbGFzcyI6IG51bGwsCiAgICAgICJzdGRlcnIiOiAiIiwKICAgICAgInN0ZG91dCI6ICIiCiAgICB9LAogICAgewogICAgICAic291cmNlIjogImRhOTQ4M2IyYTUxYzM3ODY2N2Y3MjFlMjAwNzQ1Nzc4ZTI2ZmIxZTUiLAogICAgICAicGF0aCI6ICJzcmMvbWNwL3Jlc291cmNlcy50cyIsCiAgICAgICJzaXplIjogMTI5OTMsCiAgICAgICJzaGEyNTYiOiAiZmQ4ZDYzOTkzMzM5NWUwYzNkZWY1Zjk3Yzg0OTljMWIyYWMwY2NlMzlkNTA0ZDVkMjhhMTU2M2UwYjJlNGNhZSIsCiAgICAgICJzdGF0dXMiOiAwLAogICAgICAic2lnbmFsIjogbnVsbCwKICAgICAgImVycm9yQ2xhc3MiOiBudWxsLAogICAgICAic3RkZXJyIjogIiIsCiAgICAgICJzdGRvdXQiOiAiIgogICAgfSwKICAgIHsKICAgICAgInNvdXJjZSI6ICJkYTk0ODNiMmE1MWMzNzg2NjdmNzIxZTIwMDc0NTc3OGUyNmZiMWU1IiwKICAgICAgInBhdGgiOiAidGVzdHMvbWNwLXByb3RvY29sLWRyaXZlLm1qcyIsCiAgICAgICJzaXplIjogNDIzNTcsCiAgICAgICJzaGEyNTYiOiAiNjgyZDQwOTc0MTQwYjgzMzZkMjAwZDczMGE1NjNhYTFlZGNhNWU3MGE0NzA2NWM4YTc2YWIzNGM0MmU0MTQyMiIsCiAgICAgICJzdGF0dXMiOiAwLAogICAgICAic2lnbmFsIjogbnVsbCwKICAgICAgImVycm9yQ2xhc3MiOiBudWxsLAogICAgICAic3RkZXJyIjogIiIsCiAgICAgICJzdGRvdXQiOiAiIgogICAgfSwKICAgIHsKICAgICAgInNvdXJjZSI6ICIwZWI1OTQyYjVlZmYxYWRlMmQ3MTE1NTEwZjlkZTAzYzhhN2E4YWJiIiwKICAgICAgInBhdGgiOiAic3JjL2xpYi9jb21wb3NpdGUudHMiLAogICAgICAic2l6ZSI6IDExNzIsCiAgICAgICJzaGEyNTYiOiAiNjJkNDUxNWE0YWU5ZGE5NjBkMDY2ZTU2Nzk1YzMzOTY3NDc5NDhkY2EzZGVjN2ZmZDE2ZTM2OGZhZWI2OWE0MyIsCiAgICAgICJzdGF0dXMiOiAwLAogICAgICAic2lnbmFsIjogbnVsbCwKICAgICAgImVycm9yQ2xhc3MiOiBudWxsLAogICAgICAic3RkZXJyIjogIiIsCiAgICAgICJzdGRvdXQiOiAiIgogICAgfSwKICAgIHsKICAgICAgInNvdXJjZSI6ICIwZWI1OTQyYjVlZmYxYWRlMmQ3MTE1NTEwZjlkZTAzYzhhN2E4YWJiIiwKICAgICAgInBhdGgiOiAic3JjL2xpYi9kaWduaXRpZXMudHMiLAogICAgICAic2l6ZSI6IDE5ODEsCiAgICAgICJzaGEyNTYiOiAiODNiY2Q5NDIyZTljOWZmNTlkN2UxNWVlMDhiNTgzZTAxNGFlMjE5ODEzNjM5YzY1OGRjMzBmMmNiMjM1ZTljMiIsCiAgICAgICJzdGF0dXMiOiAwLAogICAgICAic2lnbmFsIjogbnVsbCwKICAgICAgImVycm9yQ2xhc3MiOiBudWxsLAogICAgICAic3RkZXJyIjogIiIsCiAgICAgICJzdGRvdXQiOiAiIgogICAgfQogIF0sCiAgImFsbFBhc3NlZCI6IHRydWUKfQo="}
+2026-10-10T17:40:55.4701573Z Source syntax preflight: 11/11
+2026-10-10T17:40:55.5024988Z Post job cleanup.
+2026-10-10T17:40:55.6108610Z (node:2453) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-10T17:40:55.6109374Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-10T17:40:55.6410413Z Post job cleanup.
+2026-10-10T17:40:55.7196690Z [command]/usr/bin/git version
+2026-10-10T17:40:55.7234379Z git version 2.55.0
+2026-10-10T17:40:55.7269881Z Temporarily overriding HOME='/home/runner/work/_temp/6513fa0e-117c-4ee6-af82-9f4c560f346e' before making global git config changes
+2026-10-10T17:40:55.7271536Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-10T17:40:55.7276392Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/site/site/library-adoption
+2026-10-10T17:40:55.7787003Z Removing SSH command configuration
+2026-10-10T17:40:55.7794089Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T17:40:55.7825997Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T17:40:55.8030960Z Removing HTTP extra header
+2026-10-10T17:40:55.8036085Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T17:40:55.8062246Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T17:40:55.8236716Z Removing includeIf entries pointing to credentials config files
+2026-10-10T17:40:55.8243306Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T17:40:55.8264629Z includeif.gitdir:/home/runner/work/site/site/library-adoption/.git.path
+2026-10-10T17:40:55.8265502Z includeif.gitdir:/home/runner/work/site/site/library-adoption/.git/worktrees/*.path
+2026-10-10T17:40:55.8266111Z includeif.gitdir:/github/workspace/library-adoption/.git.path
+2026-10-10T17:40:55.8266711Z includeif.gitdir:/github/workspace/library-adoption/.git/worktrees/*.path
+2026-10-10T17:40:55.8273784Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/site/site/library-adoption/.git.path
+2026-10-10T17:40:55.8292130Z /home/runner/work/_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:55.8303148Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/site/site/library-adoption/.git.path /home/runner/work/_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:55.8462695Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/site/site/library-adoption/.git/worktrees/*.path
+2026-10-10T17:40:55.8482375Z /home/runner/work/_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:55.8491979Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/site/site/library-adoption/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:55.8930532Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/library-adoption/.git.path
+2026-10-10T17:40:55.8952731Z /github/runner_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:55.8959310Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/library-adoption/.git.path /github/runner_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:55.9191655Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/library-adoption/.git/worktrees/*.path
+2026-10-10T17:40:55.9210673Z /github/runner_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:55.9219646Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/library-adoption/.git/worktrees/*.path /github/runner_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config
+2026-10-10T17:40:55.9963799Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T17:40:56.0146256Z Removing credentials config '/home/runner/work/_temp/git-credentials-f152c825-89ad-4d8b-bfb6-aeb4fe069809.config'
+2026-10-10T17:40:56.1119676Z Post job cleanup.
+2026-10-10T17:40:56.1866770Z [command]/usr/bin/git version
+2026-10-10T17:40:56.1898540Z git version 2.55.0
+2026-10-10T17:40:56.1928794Z Temporarily overriding HOME='/home/runner/work/_temp/fa1ca866-a954-4cb1-ad9b-26f6d728780f' before making global git config changes
+2026-10-10T17:40:56.1930120Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-10T17:40:56.1932615Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/site/site/local-mcp
+2026-10-10T17:40:56.2015021Z Removing SSH command configuration
+2026-10-10T17:40:56.2020829Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T17:40:56.2059432Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T17:40:56.2244781Z Removing HTTP extra header
+2026-10-10T17:40:56.2249837Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T17:40:56.2276740Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T17:40:56.2481895Z Removing includeIf entries pointing to credentials config files
+2026-10-10T17:40:56.2486032Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T17:40:56.2519136Z includeif.gitdir:/home/runner/work/site/site/local-mcp/.git.path
+2026-10-10T17:40:56.2520235Z includeif.gitdir:/home/runner/work/site/site/local-mcp/.git/worktrees/*.path
+2026-10-10T17:40:56.2521448Z includeif.gitdir:/github/workspace/local-mcp/.git.path
+2026-10-10T17:40:56.2522387Z includeif.gitdir:/github/workspace/local-mcp/.git/worktrees/*.path
+2026-10-10T17:40:56.2533656Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/site/site/local-mcp/.git.path
+2026-10-10T17:40:56.2552809Z /home/runner/work/_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:56.2556113Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/site/site/local-mcp/.git.path /home/runner/work/_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:56.3088327Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/site/site/local-mcp/.git/worktrees/*.path
+2026-10-10T17:40:56.3111648Z /home/runner/work/_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:56.3119710Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/site/site/local-mcp/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:56.4257022Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/local-mcp/.git.path
+2026-10-10T17:40:56.4278145Z /github/runner_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:56.4286612Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/local-mcp/.git.path /github/runner_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:56.4746056Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/local-mcp/.git/worktrees/*.path
+2026-10-10T17:40:56.4766580Z /github/runner_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:56.4777396Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/local-mcp/.git/worktrees/*.path /github/runner_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config
+2026-10-10T17:40:56.5211638Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T17:40:56.5388733Z Removing credentials config '/home/runner/work/_temp/git-credentials-f25caf5e-e682-422b-b671-65426313e94e.config'
+2026-10-10T17:40:56.5620309Z Post job cleanup.
+2026-10-10T17:40:56.6382433Z [command]/usr/bin/git version
+2026-10-10T17:40:56.6412114Z git version 2.55.0
+2026-10-10T17:40:56.6448052Z Temporarily overriding HOME='/home/runner/work/_temp/76279b4b-2eac-4c19-80c7-a6376f62ea06' before making global git config changes
+2026-10-10T17:40:56.6448815Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-10T17:40:56.6454107Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/site/site/producer
+2026-10-10T17:40:56.7180175Z Removing SSH command configuration
+2026-10-10T17:40:56.7187506Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-10T17:40:56.7219916Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-10T17:40:56.7397220Z Removing HTTP extra header
+2026-10-10T17:40:56.7401899Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-10T17:40:56.7427378Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-10T17:40:56.7599828Z Removing includeIf entries pointing to credentials config files
+2026-10-10T17:40:56.7604834Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-10T17:40:56.7625193Z includeif.gitdir:/home/runner/work/site/site/producer/.git.path
+2026-10-10T17:40:56.7626573Z includeif.gitdir:/home/runner/work/site/site/producer/.git/worktrees/*.path
+2026-10-10T17:40:56.7627761Z includeif.gitdir:/github/workspace/producer/.git.path
+2026-10-10T17:40:56.7628853Z includeif.gitdir:/github/workspace/producer/.git/worktrees/*.path
+2026-10-10T17:40:56.7633194Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/site/site/producer/.git.path
+2026-10-10T17:40:56.7654110Z /home/runner/work/_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:56.7663021Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/site/site/producer/.git.path /home/runner/work/_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:56.7692580Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/site/site/producer/.git/worktrees/*.path
+2026-10-10T17:40:56.7710039Z /home/runner/work/_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:56.7717286Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/site/site/producer/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:56.7748013Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/producer/.git.path
+2026-10-10T17:40:56.7766623Z /github/runner_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:56.7772092Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/producer/.git.path /github/runner_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:56.7802264Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/producer/.git/worktrees/*.path
+2026-10-10T17:40:56.7817545Z /github/runner_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:56.7826002Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/producer/.git/worktrees/*.path /github/runner_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config
+2026-10-10T17:40:56.7854229Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-10T17:40:56.8039814Z Removing credentials config '/home/runner/work/_temp/git-credentials-3c7074e7-5a3b-4a7b-97d7-b2ab3682f82f.config'
+2026-10-10T17:40:56.8180693Z Cleaning up orphan processes
+2026-10-10T17:40:56.8408681Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
