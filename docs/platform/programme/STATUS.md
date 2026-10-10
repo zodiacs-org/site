@@ -1,42 +1,160 @@
-Checkpoint 22 proposal, 2026-10-09 (Asia/Bangkok): P3.2's uniform calculation
-API gate is met by adopted, served `1.0.0-rc.2` under the owner's
-October 6 `EPHEMERIS_SPAN` reading.
+Checkpoint 25, 2026-10-10 (Asia/Bangkok): merged and deployed checkpoint
+23/24 records qualified on exact main `41909a8294b29104f8b445f56e0cdd280379bcb9`
+([site #697](https://github.com/zodiacs-org/site/pull/697)).
 
-**Overall delivery: 35%** (35.078% to three decimals) — 64 of 182.45
-weighted units accepted in this proposed record; blocked 2% (3), or 1.644%.
-Only P3.2's weight of 3 is added. Main remains at 61 (33.434%) until this
-record merges. The denominator and other acceptance states are unchanged.
+**Overall delivery: 37%** (37.106% to three decimals) — 67.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. The increase from the
+previous qualified checkpoint is 3.7: Koch 0.2, co-ascendants 0.25, B4.a 3
+and S7 0.25. All 151 fixed units, weights, scientific tolerances, visual
+limits and performance budgets are unchanged.
+
+[Exact-source qualification](../evidence/checkpoint25-20261010/README.md)
+binds the tested head, merge tree and ordered parents to all twenty final
+Site Check jobs, the numerical gate, clean fresh review, all twenty
+post-merge jobs and canonical production. The original post-merge journal
+records no runner stall or retaken sample. The ninety raw Lighthouse
+observations were recovered from the original ZIP after verifying its
+digest and CRC; they were not replaced by another run's observations.
+Production verification joins the READY deployment on the exact merge
+source to sixteen anonymous identity checks and eleven source/asset checks.
+
+The owner's specific delegation ratifies shared-UT1 Koch comparisons and
+co-ascendants judged over 1850–2049; original failures and post-result
+selection history remain visible. B4.a publishes tool replies as raw answers.
+Private assistant answers and B4.b remain unfinished. S7 connects existing
+engine/npm/PyPI identities; it does not invent a Registry entry or publish
+the private packages.
+
+The birth-time-window UI is private preparation. Its first native mobile
+and desktop worker controls passed, including cancellation, chart/window
+replacement and unknown-time exclusion, but its insertion visual diagnostic
+failed and prevented Lighthouse and fresh-capture qualification. The original
+failure and source-bound screenshots are retained. A spacing correction is
+under fresh validation. B2.b remains unfinished and adds no accepted weight.
+The existing B2.a/B2.c thousand-window records are not a new accuracy run.
+
+The private solar scanner's source identity integration and in-scan mutation
+controls are under [engine #38](https://github.com/zodiacs-org/engine/pull/38).
+Native arithmetic/protocol checks and complete PR workflows pass on revised
+source `068451f29a5262dd06b9c9494038dbfe22693e56`. Fresh review then found
+an ambiguous name/version delimiter encoding; its correction is prepared
+in `10b9b7ce0cd05c6d54f15aa7c07974896788a215` but remains unvalidated.
+Clean review, merge and post-merge qualification remain pending. Actual solar ephemeris execution,
+normative clock/frame equivalence, independent two-second accuracy,
+completeness and public delivery remain unfinished.
+
+The [public adoption observation](../evidence/public-adoption-baseline-20261010/README.md)
+records dated public downloads, repository metadata and the named Registry
+query with provider methods. Unavailable MCP package download statistics,
+incomplete dependents/citation discovery and private analytics remain gaps;
+P0.7a is partial and unaccepted. The ninety-file FAQ source locator remains
+a locator, not a semantic audit. A6's legacy static sky data still needs
+source-bound provenance; it cannot be stamped with the current engine
+version merely because the build repackages it.
+
+Stable publication prerequisites remain in
+[engine #32](https://github.com/zodiacs-org/engine/issues/32). Guide routes
+remain closed and unpublished. No new private clearance, package publication,
+hosting/security change or outreach is claimed. Earlier checkpoint proposals
+and original failed verdicts remain below.
+
+Checkpoint 24 proposal, 2026-10-09 (Asia/Bangkok): existing engine,
+npm and PyPI identities in the shared consumer Organization.
+
+**Overall delivery: 37%** (37.106% to three decimals) — 67.7 of 182.45
+weighted units proposed accepted; blocked 2% (3), or 1.644%.
+This branch combines checkpoint 23's proposed 67.45 with S7's 0.25 in the
+same programme PR. Its 67.7 is conditional on complete checks, merge and
+exact-source canonical production verification. Current main remains
+64/182.45 until those gates finish. Fixed weights,
+denominator and all scientific/performance/visual limits remain unchanged.
+
+[Anonymous public identity observation](../evidence/platform-identities-20261009/README.md)
+records the existing engine repository, npm latest 0.1.1-rc.15 and PyPI
+0.1.0a1. Their common Organization links are held by source and built-schema
+checks, including missing/duplicate/altered identity controls. The unresolved
+MCP Registry listing is not invented. Existing registry identities do not
+publish the vendored rc.2 or any private client, CLI or wheel.
+
+P3.1d records the merged private wheel's installed browser, typing and accessibility controls, with registry/provenance delivery still open. P3.7 records the merged private CLI's validated cross-platform installed
+consumer gate, with public registry delivery still open. P3.4/P3.5 record
+the merged private sync/async hosted Python client alongside the TypeScript
+client; offline WebAssembly/NumPy and the wider hosted/documentation gates
+remain open. P3.6 records the limited six-tool remote Inspector observation,
+with its fourteen warnings and full conformance/registry/P3.3 gates open.
+Guide preparation stays closed and unpublished. S2 is partial after the verified ninety-file FAQ source locator; semantic audit and correction remain open, with no accepted weight.
+
+No private search, stable cut, registry publication, account/security/hosting
+change or outreach occurs here. The original checkpoints and failed verdicts
+remain below.
+
+Checkpoint 23, 2026-10-09 (Asia/Bangkok): Koch, co-ascendants and B4.a
+are accepted under the owner's specific delegation on their named
+ratification questions and [fresh carried rc.2 gates](../evidence/checkpoint23-20261009/README.md).
+
+**Overall delivery: 37%** (36.969% to three decimals) — 67.45 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up by 3.45 from
+checkpoint 22. Other states, fixed weights, gates and tolerances are unchanged.
+
+Koch and co-ascendants meet their unchanged given-input tolerances and their
+shared-UT1 end-to-end comparisons **in the judged 1850–2049 window**.
+Original UTC-as-UT1 failures, outside-window residuals and post-result
+selection history remain recorded. No outside-window tolerance is claimed.
+
+The frozen benchmark's canonical files match exactly and current rc.2
+tool/scorer tests pass. B4.a's raw answers are published tool replies;
+B4.b still requires assistants' private raw answers and separate evaluation.
+No assistant trial or assistant performance is claimed.
+
+[DECISIONS-2026-10-09.md](DECISIONS-2026-10-09.md) records the specific
+instruction and reasons, superseding the named non-ratification under the
+October 5 general delegation. No unrelated amendment is ratified.
+The private Python client is in engine #35; P3.4 remains partial.
+The held guide branch's dedicated check passed, but its full Site Check
+failed the homepage Lighthouse budget. No passing full result is substituted.
+
+This ships records and a read-only gate workflow, with no active route,
+core package, immutable archive, registry or hosting/security change.
+No new private scan ran; publication prerequisites stay separate.
+
+Checkpoint 22, 2026-10-09 (Asia/Bangkok): P3.2's uniform calculation API is
+accepted on adopted, served `1.0.0-rc.2` under the owner's October 6
+`EPHEMERIS_SPAN` interpretation.
+
+**Overall delivery: 35%** (35.078% to three decimals) — 64 of 182.45 weighted
+units accepted; blocked 2% (3), or 1.644%. Up by P3.2's 3 from checkpoint 21.
+The denominator, other acceptance states and all gate thresholds are unchanged.
 
 The [complete packed gate on engine main](https://github.com/zodiacs-org/engine/tree/98465b1a6aba46ff5e12c283f77f54278dc6905b/docs/evidence/checkpoint22-rc2-20261009)
-detects all 21 declaration faults, replays 38 fixtures and 27 receipt requests
-exactly, and computes 21 sidereal definitions in all four functions. Across
-three models, TT/UT1/UTC and all four functions, 72 inclusive epoch cases
-compute and 72 beyond-end cases return the exact typed refusal.
-Full postmerge CI, archive rebuild, packed consumers, conformance and atlas
-pass. These are contract/replay/consistency checks, not independent numerical
-accuracy evidence.
+detects 21 declaration faults, replays 38 fixtures and 27 receipt requests
+exactly, and computes 21 sidereal definitions through all four functions.
+The epoch matrix covers three models, TT/UT1/UTC and all four functions:
+72 inclusive cases compute and 72 beyond-end cases return the exact typed
+refusal. Full postmerge core CI, archive rebuild, packed consumers,
+conformance and atlas pass. These are contract/replay/consistency checks,
+not independent numerical accuracy evidence.
 
-Site main `e9a21981` is READY at `dpl_7cRJfgBFaS4m6F2YVVGFn1ujYz1G`,
-assigned to zodiacs.org. The committed
-[production probe](../evidence/developer-guides-20261009/results/production.json)
-matches seven canonical engine assets to the build and observes backend
-`1.0.0-rc.2`. Separate deployment metadata in
-[validation.json](../evidence/developer-guides-20261009/validation.json)
-joins the bytes to the source. npm publication is a separate unit.
-F-80 closes in this proposal under the already recorded owner interpretation,
-the candidate's implementation, the complete gate and production adoption.
+[Source-bound production evidence](../evidence/checkpoint22-20261009/README.md)
+joins the READY source/domain observation to seven matching canonical engine
+assets and the synthetic hosted backend `1.0.0-rc.2`. F-80 closes under
+the already recorded owner interpretation, the candidate's implementation,
+the complete gate and production adoption. Registry publication is separate.
 
-The guide catalogue remains preparation. P3.10 stays partial: React Native
-and a full sunrise-based panchang recipe remain. The private TypeScript client
-in [engine #34](https://github.com/zodiacs-org/engine/pull/34) accepts no unit.
-P3.4 still needs its complete gate and dependencies.
+[Engine #34](https://github.com/zodiacs-org/engine/pull/34) merges the private
+TypeScript Compute client; its exact-head source and fresh packed-consumer
+checks pass on Node 20/22/24 along with the complete core suite.
+P3.4 remains partial for its complete gate and dependencies.
+[Site #695](https://github.com/zodiacs-org/site/pull/695) preserves the tested
+guide branch. Those routes remain unpublished; P3.10 remains partial for
+React Native and a complete sunrise-based panchang recipe.
 
-This site PR remains draft. Core publication prerequisites, final exact-head
-Site Check and full affected release-range and staged private searches remain
-required before merge/publication. Private inputs from the failed executor
-are unavailable; no new private search ran. Stable publication approval is
-pending in [engine #32](https://github.com/zodiacs-org/engine/issues/32).
-The earlier checkpoints below retain their original verdicts and observations.
+This checkpoint changes only programme records and existing evidence; it
+ships no new candidate, registry package, guide route, application code or
+hosting setting. Private release-range and staged searches did not run in
+this executor; their inputs remain unavailable. The stable release and guide
+publication prerequisites remain in
+[engine #32](https://github.com/zodiacs-org/engine/issues/32).
+The earlier checkpoints retain their original verdicts and observations.
 
 # Programme status
 
