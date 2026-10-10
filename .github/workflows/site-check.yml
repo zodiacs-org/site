@@ -114,7 +114,7 @@ jobs:
 
       - name: Upload thesis screenshots
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: thesis-browser-${{ github.run_id }}
           path: tests/visual/artifacts/thesis/
@@ -184,7 +184,7 @@ jobs:
 
       - name: Upload return visit evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: return-visits-browser-${{ github.run_id }}
           path: tests/visual/artifacts/return-visits/
@@ -285,7 +285,7 @@ jobs:
 
       - name: Upload Phase 1 browser and performance evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: phase-1-browser-performance-${{ github.run_id }}
           path: |
@@ -562,7 +562,7 @@ jobs:
 
       - name: Upload saved-records lifecycle evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: saved-records-lifecycle-${{ github.run_id }}
           path: tests/visual/artifacts/saved-records-lifecycle/
@@ -597,7 +597,7 @@ jobs:
 
       - name: Upload saved-records account evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: saved-records-account-${{ github.run_id }}
           path: tests/visual/artifacts/saved-records-account/
@@ -640,7 +640,7 @@ jobs:
 
       - name: Upload sharing hydration evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: phase4-sharing-readiness-${{ github.sha }}-${{ github.run_id }}
           path: tests/visual/artifacts/phase4-sharing/
@@ -764,7 +764,7 @@ jobs:
 
       - name: Upload regenerated proofs
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: aura-drive-proofs
           path: docs/acceptance/registry-aura/
@@ -850,7 +850,7 @@ jobs:
 
       - name: Upload sharing evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sharing-phase2-${{ github.run_id }}
           path: tests/visual/artifacts/sharing-phase2/
@@ -882,7 +882,7 @@ jobs:
 
       - name: Upload visual consistency evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: visual-consistency-${{ github.run_id }}
           path: tests/visual/artifacts/visual-consistency/
@@ -891,7 +891,7 @@ jobs:
 
       - name: Upload profile recovery evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: profile-recovery-${{ github.run_id }}
           path: |
