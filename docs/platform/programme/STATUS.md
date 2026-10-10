@@ -30,8 +30,16 @@ faults in it: the sampling sentence starts in lower case, and the times read
 GMT+0 under a note that says UTC. No value or gate depends on them.
 
 No accuracy run, tolerance change, package publication, hosting or security
-change, or private search happened here. Stable 1.0 publication still waits
-for the owner's approval in [engine #32](https://github.com/zodiacs-org/engine/issues/32).
+change, or private search happened here.
+
+The owner approved cutting and publishing engine 1.0.0 under npm's `latest`
+once every gate, review and private search passes, the use of the private
+scanner for the release's searches, and the release toolchain
+([DECISIONS-2026-10-11](DECISIONS-2026-10-11.md);
+[engine #32](https://github.com/zodiacs-org/engine/issues/32)). Cutting it
+found F-82: on arm64 some values differ from x86-64's in their last bits, so
+four of the engine's exact regression pins fail there; the pins and
+generated files stay x86-64's, as CI runs.
 
 Checkpoint 25, 2026-10-10 (Asia/Bangkok): merged and deployed checkpoint
 23/24 records qualified on exact main `41909a8294b29104f8b445f56e0cdd280379bcb9`
