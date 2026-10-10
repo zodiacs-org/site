@@ -17,15 +17,18 @@ function interactionDirective() {
 }
 
 
-// Enable the window implementation only in its worker's build. The chart
-// namespace remains the existing lightweight boundary in normal page builds.
-function birthWindowWorkerBoundary() {
-  let enabled=false;
+// Production enables the window implementation only in its worker build.
+// Vite uses the top-level serve plugins for development workers; development
+// enables the same full.ts boundary without changing production page builds.
+function birthWindowWorkerBoundary({development=false}={}) {
+  let enabled=development;
   const marker='import.meta.env.ZODIACS_BIRTH_WINDOW_WORKER';
   return {
     name:'zodiacs-birth-window-worker-boundary',
     enforce:'pre',
+    ...(development?{apply:'serve'}:{}),
     buildStart(options) {
+      if(development)return;
       const input=options.input;
       const entries=typeof input==='string'?[input]:Array.isArray(input)?input:Object.values(input??{});
       enabled=entries.some(value=>/(?:^|\/)src\/islands\/birth-window\.worker\.ts$/.test(String(value).split('?')[0].replaceAll('\\','/')));
@@ -58,6 +61,7 @@ export default defineConfig({
   },
   vite: {
     define: { 'import.meta.env.ZODIACS_BIRTH_WINDOW_WORKER': 'false' },
+    plugins: [birthWindowWorkerBoundary({development:true})],
     worker: {
       plugins: () => [birthWindowWorkerBoundary()],
       rollupOptions: { output: { inlineDynamicImports: true } },

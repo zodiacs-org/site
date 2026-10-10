@@ -1,3 +1,9 @@
+# Development worker correction: fresh review pending
+
+Fresh review on PR carrier `814727d852ec927bcfbce68ed33a1a9e2e576554` identifies a missing Vite development worker transform in comment `4238230846`. The retained production-preview qualification below is valid on `a8b58d8`; it establishes no development-server result. [Exact finding](development-review-finding.json) preserves the review and correction.
+
+The serve-only top-level plugin enables the same `full.ts` boundary during development. Production page builds still use the false define and the original isolated worker-build plugin. The existing actual thirteen-control browser harness now supports both transports and retains distinct development/production reports and screenshots. Standard Site Check adds the same real development flow without removing an original job or limit. Native qualification of this new correction is pending; B2.b remains partial/unmerged/unaccepted and fresh clean review remains required.
+
 # Birth-time uncertainty UI: current review qualification
 
 Source `a8b58d8b5476c6bd85d0abb204676ba008786abf` passes [native run 38063604884](https://github.com/zodiacs-org/site/actions/runs/38063604884). [Exact qualification](review-native-qualification.json) binds its tree, producer, original log, browser/visual reports, budgets, cold samples and actual captures. **6989 units pass, zero fail, six existing skips**. All thirteen actual worker/UTC-boundary controls pass in both viewports; typecheck has zero errors and warnings. Main closure is 32.5 KB against 32.598046875 KB; worker gzip is 40367 bytes within the original 60 KB chunk budget.

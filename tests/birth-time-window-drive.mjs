@@ -5,6 +5,8 @@ import {createHash} from 'node:crypto';
 import {chromium} from 'playwright-core';
 import {findChromium,STABLE_CHROMIUM_ARGS} from './visual/browser.mjs';
 import {withPreview} from './visual/preview-server.mjs';
+const development=process.env.BIRTH_WINDOW_SERVER_MODE==='development';
+const artifactRoot='tests/visual/artifacts/birth-time-window'+(development?'-development':'');
 const records=[],observations=[];let failure=null;let stage="start";
 const variants=[{name:'mobile',width:390,height:844},{name:'desktop',width:1440,height:1000}];
 async function committed(page){
@@ -34,7 +36,7 @@ try{
      terminate(){if(this.windowProbe)window.__birthWindowControls.terminated.push(this.probeId);return super.terminate();}
     };
    });
-   await page.route('**/*birth-window.worker*.js',async route=>{
+   await page.route(url=>url.pathname.includes('birth-window.worker')&&(development?url.searchParams.has('worker_file'):url.pathname.endsWith('.js')),async route=>{
     const pending=hold;
     if(pending){pending.started();await pending.wait;}
     try{await route.continue();}catch(error){if(!pending)throw error;}
@@ -68,16 +70,16 @@ try{
     if(observed.result.flags.includes('bound-exceeded'))assert.match(summary,/could not establish coverage/);
     else for(const sign of new Set(observed.result.cells.map(cell=>cell.features.ascendant)))assert.ok(summary.includes(sign.charAt(0).toUpperCase()+sign.slice(1)));
     await page.evaluate(()=>document.fonts.ready);
-    mkdirSync('tests/visual/artifacts/birth-time-window',{recursive:true});
-    await surface.screenshot({path:'tests/visual/artifacts/birth-time-window/summary-'+variant.name+'.png'});
+    mkdirSync(artifactRoot,{recursive:true});
+    await surface.screenshot({path:artifactRoot+'/summary-'+variant.name+'.png'});
     await surface.locator(':scope > details > summary').click();
     await surface.getByText(/Sun, Moon, rising sign, houses and aspects \(/).click();
     assert.equal(await surface.locator('.birth-window__cell').count(),observed.result.cells.length);
     assert.ok(await surface.getByText('Times below use UTC notation.',{exact:false}).isVisible());
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal page overflow');
     await page.evaluate(()=>document.fonts.ready);
-    mkdirSync('tests/visual/artifacts/birth-time-window',{recursive:true});
-    await page.screenshot({path:'tests/visual/artifacts/birth-time-window/'+variant.name+'.png',fullPage:true});
+    mkdirSync(artifactRoot,{recursive:true});
+    await page.screenshot({path:artifactRoot+'/'+variant.name+'.png',fullPage:true});
     const cancellation=pauseNext();
     await surface.locator('select').selectOption('30');
     await surface.getByRole('button',{name:'Check this window',exact:true}).click();await cancellation.ready;
@@ -162,7 +164,12 @@ try{
     assert.equal(boundaryProbe.reply.result.end.getTime()-boundaryProbe.reply.result.start.getTime(),2*60000);
     assert.ok(boundaryProbe.reply.result.start.getTime()>=Date.parse('1800-01-01T00:00:00Z'));
     assert.ok(boundaryProbe.reply.result.end.getTime()<Date.parse('2200-01-01T00:00:00Z'));
-    assert.match(new URL((await page.evaluate(()=>window.__birthWindowControls.created)).at(-1)).pathname,/\/_astro\/birth-window\.worker[-.][^/]+\.js$/);
+    const transport=new URL((await page.evaluate(()=>window.__birthWindowControls.created)).at(-1));
+    if(development){
+     assert.equal(transport.pathname,'/src/islands/birth-window.worker.ts');
+     assert.ok(transport.searchParams.has('worker_file'),'Actual development worker module transport');
+     assert.equal(transport.searchParams.get('type'),'module');
+    }else assert.match(transport.pathname,/\/_astro\/birth-window\.worker[-.][^/]+\.js$/);
     assert.equal(await bounded.locator('[role="alert"]').count(),0);
     assert.deepEqual(errors,[]);
     const native=await page.evaluate(()=>window.__birthWindowControls);
@@ -171,7 +178,7 @@ try{
   }}finally{await browser.close();}
  });
 }catch(error){failure={name:error.name,message:String(error.message).slice(0,1500),stage,stack:String(error.stack).slice(0,3500)};}
-const report={schema:'zodiacs.birth-time-window-ui-controls.v1',producer:{workflowSource:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',shell:false}).trim(),records,observations,passed:failure===null&&records.length===variants.length,failure,limitations:['Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.','Only script loading is held for cancellation controls; no numerical result is injected.','No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim.']};
-const path='docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json',bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');mkdirSync('docs/platform/evidence/birth-time-window-ui-20261010',{recursive:true});writeFileSync(path,bytes);
+const report={schema:development?'zodiacs.birth-time-window-development-controls.v1':'zodiacs.birth-time-window-ui-controls.v1',serverMode:development?'development':'production-preview',producer:{workflowSource:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',shell:false}).trim(),records,observations,passed:failure===null&&records.length===variants.length,failure,limitations:[development?'Actual development server and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.':'Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.','Only script loading is held for cancellation controls; no numerical result is injected.','No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim.']};
+const path='docs/platform/evidence/birth-time-window-ui-20261010/'+(development?'development-browser-controls.json':'browser-controls.json'),bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');mkdirSync('docs/platform/evidence/birth-time-window-ui-20261010',{recursive:true});writeFileSync(path,bytes);
 console.log('PROGRAMME_FILE '+JSON.stringify({path,size:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),base64:bytes.toString('base64')}));
 if(!report.passed)process.exitCode=1;

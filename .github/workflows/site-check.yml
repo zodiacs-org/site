@@ -277,6 +277,9 @@ jobs:
       - name: Widget Lighthouse thresholds
         run: npm run test:widgets:lighthouse
 
+      - name: Birth-time window development worker and UTC boundaries
+        run: node tests/birth-time-window-development-drive.mjs
+
       - name: Birth-time window native worker and chart ownership
         run: node tests/birth-time-window-drive.mjs
 
@@ -288,6 +291,7 @@ jobs:
           path: |
             tests/visual/artifacts/
             docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json
+            docs/platform/evidence/birth-time-window-ui-20261010/development-browser-controls.json
             docs/acceptance/phase4-sharing/chart-sheet-33-percent.png
           if-no-files-found: ignore
           retention-days: 90
