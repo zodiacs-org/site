@@ -154,6 +154,7 @@ function withExactTime(line: DailyLine): string {
 function sunModel(
   recipient: Extract<DailyEmailRecipient, { tier: 'sun_sign' }>,
   publication: DailyPublication,
+  program: HoroscopeProgram,
   baseUrl: string,
   unsubscribeUrl: string,
   postalAddress: string,
@@ -164,6 +165,10 @@ function sunModel(
   const collective = published.lines
     .filter((line) => line.scope === 'collective')
     .map(withExactTime);
+  // The same reading the sign's horoscope page publishes for this date.
+  const reading = readingForSign(program, sign.slug).passages.map((item) => item.text);
+  const sections: MessageSection[] = [{ paragraphs: reading }];
+  if (collective.length) sections.push({ paragraphs: collective.map((line) => `Sky-wide: ${line}`) });
   const subjectTheme = HOUSE_SUBJECT_THEMES[published.todayLine.house ?? 0]
     ?? published.todayLine.text.replace(/^Today (?:may )?/u, '').replace(/[.]$/u, '').slice(0, 72);
   return {
@@ -173,7 +178,7 @@ function sunModel(
     title: published.headline,
     sign: sign.slug,
     signName: sign.name,
-    sections: collective.length ? [{ paragraphs: collective }] : [],
+    sections,
     cta: {
       label: `Read the full ${sign.name} daily`,
       url: siteUrl(baseUrl, `/horoscopes/${sign.slug}/`),
@@ -437,7 +442,7 @@ export function renderDailyEmail({
   const postalAddress = cleanPostalAddress(senderPostalAddress ?? 'Zodiacs.org · Postal address configured for live sends');
   if (!postalAddress) throw new Error('Daily email sender postal address is required.');
   const model = recipient.tier === 'sun_sign'
-    ? sunModel(recipient, publication, baseUrl, unsubscribeUrl, postalAddress)
+    ? sunModel(recipient, publication, program, baseUrl, unsubscribeUrl, postalAddress)
     : chartModel(recipient, daily, publication, program, baseUrl, unsubscribeUrl, postalAddress);
   if (firstDelivery) model.welcome = FIRST_DELIVERY_WELCOME;
   if (nearbyEvent && nearbyEvent.anchor.slice(0, 10) > publication.date) {
