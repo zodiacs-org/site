@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {chromium} from 'playwright-core';
 import {findChromium,STABLE_CHROMIUM_ARGS} from './visual/browser.mjs';
 import {withPreview} from './visual/preview-server.mjs';
-const records=[];let failure=null;
+const records=[],observations=[];let failure=null;let stage="start";
 const variants=[{name:'mobile',width:390,height:844},{name:'desktop',width:1440,height:1000}];
 async function committed(page){
  await page.locator('.calc__result').waitFor();
@@ -128,9 +128,20 @@ try{
     await page.locator('.calc__submit').click();await committed(page);
     await page.getByRole('button',{name:'Check a time window',exact:true}).click();
     const bounded=page.locator('[data-birth-window]');await bounded.waitFor();
-    assert.equal(await bounded.locator('select option[value="1"]').isEnabled(),true);
-    assert.equal(await bounded.locator('select option[value="30"]').isDisabled(),true);
-    assert.equal(await bounded.locator('select option[value="120"]').isDisabled(),true);
+    stage=variant.name+":lower-boundary-options";
+    const lowerBoundaryState=await page.evaluate(()=>({
+      date:document.querySelector('#birth-date')?.value,
+      time:document.querySelector('#birth-time')?.value,
+      selectedPlace:document.querySelector('#place')?.value,
+      receiptUTC:document.querySelector('.calc__result [data-check-our-math] time')?.getAttribute('datetime'),
+      instantBasis:document.querySelector('.calc__result [data-check-our-math]')?.getAttribute('data-instant-basis'),
+      options:[...document.querySelectorAll('[data-birth-window] select option')].map(option=>({value:option.value,disabled:option.disabled})),
+      reference:document.querySelector('[data-birth-window-reference]')?.textContent??null
+    }));
+    observations.push({variant:variant.name,stage,upperUTC,lowerBoundaryState});
+    assert.equal(await bounded.locator('select option[value="1"]').isEnabled(),true,"Lower-edge one-minute preset is enabled");
+    assert.equal(await bounded.locator('select option[value="30"]').isDisabled(),true,"Lower-edge thirty-minute preset is disabled");
+    assert.equal(await bounded.locator('select option[value="120"]').isDisabled(),true,"Lower-edge two-hour preset is disabled");
     assert.ok(await bounded.locator('[data-birth-window-reference]').isVisible());
     await bounded.locator('select').selectOption('1');
     await bounded.getByRole('button',{name:'Check this window',exact:true}).click();
@@ -152,8 +163,8 @@ try{
    }finally{hold?.release();hold=null;await context.close();}
   }}finally{await browser.close();}
  });
-}catch(error){failure={name:error.name,message:String(error.message).slice(0,1500)};}
-const report={schema:'zodiacs.birth-time-window-ui-controls.v1',producer:{workflowSource:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',shell:false}).trim(),records,passed:failure===null&&records.length===variants.length,failure,limitations:['Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.','Only script loading is held for cancellation controls; no numerical result is injected.','No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim.']};
+}catch(error){failure={name:error.name,message:String(error.message).slice(0,1500),stage,stack:String(error.stack).slice(0,3500)};}
+const report={schema:'zodiacs.birth-time-window-ui-controls.v1',producer:{workflowSource:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',shell:false}).trim(),records,observations,passed:failure===null&&records.length===variants.length,failure,limitations:['Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.','Only script loading is held for cancellation controls; no numerical result is injected.','No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim.']};
 const path='docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json',bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');mkdirSync('docs/platform/evidence/birth-time-window-ui-20261010',{recursive:true});writeFileSync(path,bytes);
 console.log('PROGRAMME_FILE '+JSON.stringify({path,size:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),base64:bytes.toString('base64')}));
 if(!report.passed)process.exitCode=1;
