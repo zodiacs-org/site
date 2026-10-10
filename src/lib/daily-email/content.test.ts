@@ -384,3 +384,46 @@ describe('first daily email', () => {
     expect(render(false).html).not.toContain('This is your first daily email');
   });
 });
+
+describe('brand and sign pictures', () => {
+  const chartMessage = (timed: boolean) => {
+    const chart = chartWithBodies([{ body: 'Sun', lon: 120, retrograde: false }], 120);
+    if (!timed) chart.birth = { ...chart.birth, time: null, timeKnown: false };
+    return renderDailyEmail({
+      recipient: {
+        tier: 'chart', email: 'pictures@example.com', userId: 'user', chartId: chart.id,
+        chart, timezone: 'UTC',
+      },
+      daily, publication, program, nearbyEvent: eventOffset(2),
+      baseUrl: 'https://zodiacs.org', unsubscribeUrl,
+    });
+  };
+
+  it('puts the Zodiacs ring in every header', () => {
+    for (const html of [
+      chartMessage(true).html,
+      chartMessage(false).html,
+      renderDailyEmail({
+        recipient: { tier: 'sun_sign', email: 'ring@example.com', sign: 'leo', contactId: 'ring', timezone: 'UTC' },
+        daily, publication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
+      }).html,
+    ]) expect(html).toContain('src="https://zodiacs.org/assets/app-icons/v3/favicon-96.png"');
+  });
+
+  it('shows a chart Sun sign disc only when the birth time makes the Sun sign certain', () => {
+    expect(chartMessage(true).html).toContain('/assets/zodiac-icons/128/leo.png" width="44"');
+    expect(chartMessage(false).html).not.toContain('width="44"');
+  });
+
+  it('marks an upcoming event with its sign disc', () => {
+    const sun = renderDailyEmail({
+      recipient: { tier: 'sun_sign', email: 'event@example.com', sign: 'leo', contactId: 'event', timezone: 'UTC' },
+      daily, publication, program, nearbyEvent: eventOffset(2, ['aquarius']),
+      baseUrl: 'https://zodiacs.org', unsubscribeUrl,
+    });
+    expect(sun.html).toContain('/assets/zodiac-icons/128/aquarius.png" width="26"');
+    expect(chartMessage(true).html).toContain('/assets/zodiac-icons/128/aquarius.png" width="26"');
+    const pictureFree = (text: string) => !/<img|\.png/u.test(text);
+    expect(pictureFree(sun.text)).toBe(true);
+  });
+});
