@@ -1,0 +1,1036 @@
+[
+  {
+    "path": "public/astrofolio/index.html",
+    "edits": [
+      {
+        "start": 5726,
+        "end": 6744,
+        "before": "{\n        \"@type\": \"FAQPage\",\n        \"@id\": \"https://zodiacs.org/astrofolio/#faq\",\n        \"mainEntity\": [\n          {\n            \"@type\": \"Question\",\n            \"name\": \"Do I need a wallet to browse?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"No. You can browse the collection, see market context, and verify addresses without connecting a wallet.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"What are the risks?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Zodiac tokens are speculative and can be volatile or hard to sell. Prices can fall to zero, and wallet mistakes or scams can cause permanent loss.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"What is the Terminal?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"The Terminal is the market view for all twelve Zodiacs, with live prices, charts, and liquidity side by side. It shows market data only.\" }\n          }\n        ]\n      },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/components/HoroscopeProgramPage.astro",
+    "edits": [
+      {
+        "start": 6399,
+        "end": 6578,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/components/compat/LocalizedPairPage.astro",
+    "edits": [
+      {
+        "start": 7314,
+        "end": 7533,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: entry.data.faq.map(({ q, a: answer }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: answer },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/components/learn/LocalizedRisingPage.astro",
+    "edits": [
+      {
+        "start": 8314,
+        "end": 8556,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: locale === 'pt' ? 'pt-BR' : locale,\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/components/programmatic/LocalizedBirthdayPage.astro",
+    "edits": [
+      {
+        "start": 5382,
+        "end": 5561,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/components/sky/LocalizedEclipsesPage.astro",
+    "edits": [
+      {
+        "start": 36680,
+        "end": 36872,
+        "before": "{\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/components/sky/LocalizedFullMoonCalendarPage.astro",
+    "edits": [
+      {
+        "start": 30459,
+        "end": 30651,
+        "before": "{\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/components/sky/LocalizedMercuryRetrogradePage.astro",
+    "edits": [
+      {
+        "start": 31302,
+        "end": 31494,
+        "before": "{\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/components/sky/LocalizedRetrogradesPage.astro",
+    "edits": [
+      {
+        "start": 32971,
+        "end": 33163,
+        "before": "{\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/[sign]/index.astro",
+    "edits": [
+      {
+        "start": 2863,
+        "end": 3053,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: guide.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ask/index.astro",
+    "edits": [
+      {
+        "start": 3380,
+        "end": 3559,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/baby-zodiac/index.astro",
+    "edits": [
+      {
+        "start": 2045,
+        "end": 2224,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/big-three/index.astro",
+    "edits": [
+      {
+        "start": 1855,
+        "end": 2034,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/birth-chart/index.astro",
+    "edits": [
+      {
+        "start": 3102,
+        "end": 3278,
+        "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/birth-chart/three-dimensions/index.astro",
+    "edits": [
+      {
+        "start": 5058,
+        "end": 5234,
+        "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/birthday/[slug].astro",
+    "edits": [
+      {
+        "start": 8115,
+        "end": 8294,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/compatibility/[pair]/index.astro",
+    "edits": [
+      {
+        "start": 2527,
+        "end": 2717,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/compatibility/index.astro",
+    "edits": [
+      {
+        "start": 2136,
+        "end": 2315,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/eclipses/2027/index.astro",
+    "edits": [
+      {
+        "start": 4226,
+        "end": 4405,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/eclipses/index.astro",
+    "edits": [
+      {
+        "start": 6345,
+        "end": 6521,
+        "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/[sign]/index.astro",
+    "edits": [
+      {
+        "start": 2477,
+        "end": 2684,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/baby-zodiac/index.astro",
+    "edits": [
+      {
+        "start": 2420,
+        "end": 2621,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/birth-chart/index.astro",
+    "edits": [
+      {
+        "start": 3224,
+        "end": 3422,
+        "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/compatibility/index.astro",
+    "edits": [
+      {
+        "start": 2215,
+        "end": 2416,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/moon-phase/index.astro",
+    "edits": [
+      {
+        "start": 2021,
+        "end": 2222,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/moon-sign/index.astro",
+    "edits": [
+      {
+        "start": 2161,
+        "end": 2362,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/rising-sign/index.astro",
+    "edits": [
+      {
+        "start": 2472,
+        "end": 2673,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/saturn-return/index.astro",
+    "edits": [
+      {
+        "start": 2548,
+        "end": 2749,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/transits/index.astro",
+    "edits": [
+      {
+        "start": 2784,
+        "end": 2985,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/[sign]/index.astro",
+    "edits": [
+      {
+        "start": 2476,
+        "end": 2683,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/baby-zodiac/index.astro",
+    "edits": [
+      {
+        "start": 2509,
+        "end": 2710,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/birth-chart/index.astro",
+    "edits": [
+      {
+        "start": 3383,
+        "end": 3581,
+        "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/compatibility/index.astro",
+    "edits": [
+      {
+        "start": 2262,
+        "end": 2463,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/moon-phase/index.astro",
+    "edits": [
+      {
+        "start": 2143,
+        "end": 2344,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/moon-sign/index.astro",
+    "edits": [
+      {
+        "start": 2322,
+        "end": 2523,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/rising-sign/index.astro",
+    "edits": [
+      {
+        "start": 2507,
+        "end": 2708,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/saturn-return/index.astro",
+    "edits": [
+      {
+        "start": 2623,
+        "end": 2824,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/transits/index.astro",
+    "edits": [
+      {
+        "start": 2860,
+        "end": 3061,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/full-moon-calendar/2027/index.astro",
+    "edits": [
+      {
+        "start": 4119,
+        "end": 4298,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/full-moon-calendar/index.astro",
+    "edits": [
+      {
+        "start": 5838,
+        "end": 6014,
+        "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/index.astro",
+    "edits": [
+      {
+        "start": 2382,
+        "end": 2570,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a, ...rest }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/[sign]/index.astro",
+    "edits": [
+      {
+        "start": 2474,
+        "end": 2681,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/baby-zodiac/index.astro",
+    "edits": [
+      {
+        "start": 2364,
+        "end": 2565,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/birth-chart/index.astro",
+    "edits": [
+      {
+        "start": 3206,
+        "end": 3404,
+        "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/compatibility/index.astro",
+    "edits": [
+      {
+        "start": 2158,
+        "end": 2359,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/moon-phase/index.astro",
+    "edits": [
+      {
+        "start": 2063,
+        "end": 2264,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/moon-sign/index.astro",
+    "edits": [
+      {
+        "start": 2165,
+        "end": 2366,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/rising-sign/index.astro",
+    "edits": [
+      {
+        "start": 2407,
+        "end": 2608,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/saturn-return/index.astro",
+    "edits": [
+      {
+        "start": 2548,
+        "end": 2749,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/transits/index.astro",
+    "edits": [
+      {
+        "start": 2741,
+        "end": 2942,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/learn/aspects/[slug].astro",
+    "edits": [
+      {
+        "start": 2675,
+        "end": 2865,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/learn/houses/[slug].astro",
+    "edits": [
+      {
+        "start": 2768,
+        "end": 2958,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/learn/how-to-read-a-birth-chart.astro",
+    "edits": [
+      {
+        "start": 2173,
+        "end": 2352,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/learn/placements/[slug].astro",
+    "edits": [
+      {
+        "start": 7317,
+        "end": 7507,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/learn/planets/[slug].astro",
+    "edits": [
+      {
+        "start": 3030,
+        "end": 3220,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/lunar-return/index.astro",
+    "edits": [
+      {
+        "start": 1951,
+        "end": 2096,
+        "before": ",\n  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/mercury-retrograde/2027/index.astro",
+    "edits": [
+      {
+        "start": 3532,
+        "end": 3711,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/mercury-retrograde/index.astro",
+    "edits": [
+      {
+        "start": 5822,
+        "end": 5998,
+        "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/moon-phase/index.astro",
+    "edits": [
+      {
+        "start": 2422,
+        "end": 2601,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/moon-sign/index.astro",
+    "edits": [
+      {
+        "start": 2006,
+        "end": 2185,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/numerology/index.astro",
+    "edits": [
+      {
+        "start": 3380,
+        "end": 3559,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/numerology/life-path/[number].astro",
+    "edits": [
+      {
+        "start": 3962,
+        "end": 4146,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: page.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/[sign]/index.astro",
+    "edits": [
+      {
+        "start": 2487,
+        "end": 2697,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/baby-zodiac/index.astro",
+    "edits": [
+      {
+        "start": 2342,
+        "end": 2546,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/birth-chart/index.astro",
+    "edits": [
+      {
+        "start": 3216,
+        "end": 3417,
+        "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/compatibility/index.astro",
+    "edits": [
+      {
+        "start": 2181,
+        "end": 2385,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/moon-phase/index.astro",
+    "edits": [
+      {
+        "start": 1969,
+        "end": 2173,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/moon-sign/index.astro",
+    "edits": [
+      {
+        "start": 2209,
+        "end": 2413,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/rising-sign/index.astro",
+    "edits": [
+      {
+        "start": 2413,
+        "end": 2617,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/saturn-return/index.astro",
+    "edits": [
+      {
+        "start": 2560,
+        "end": 2764,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/transits/index.astro",
+    "edits": [
+      {
+        "start": 2751,
+        "end": 2955,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/retrogrades/index.astro",
+    "edits": [
+      {
+        "start": 6474,
+        "end": 6650,
+        "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/rising-sign/[sign].astro",
+    "edits": [
+      {
+        "start": 3861,
+        "end": 4051,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/rising-sign/index.astro",
+    "edits": [
+      {
+        "start": 2205,
+        "end": 2384,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/[sign]/index.astro",
+    "edits": [
+      {
+        "start": 2587,
+        "end": 2794,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/baby-zodiac/index.astro",
+    "edits": [
+      {
+        "start": 1873,
+        "end": 2074,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/birth-chart/index.astro",
+    "edits": [
+      {
+        "start": 2895,
+        "end": 3093,
+        "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/compatibility/index.astro",
+    "edits": [
+      {
+        "start": 1993,
+        "end": 2194,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/moon-phase/index.astro",
+    "edits": [
+      {
+        "start": 1572,
+        "end": 1773,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/moon-sign/index.astro",
+    "edits": [
+      {
+        "start": 1881,
+        "end": 2082,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/rising-sign/index.astro",
+    "edits": [
+      {
+        "start": 2087,
+        "end": 2288,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/saturn-return/index.astro",
+    "edits": [
+      {
+        "start": 2115,
+        "end": 2316,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/transits/index.astro",
+    "edits": [
+      {
+        "start": 1871,
+        "end": 2072,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/saturn-return/index.astro",
+    "edits": [
+      {
+        "start": 2256,
+        "end": 2435,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/solar-return/index.astro",
+    "edits": [
+      {
+        "start": 1707,
+        "end": 1852,
+        "before": ",\n  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/transits/index.astro",
+    "edits": [
+      {
+        "start": 2555,
+        "end": 2734,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/void-of-course-moon/index.astro",
+    "edits": [
+      {
+        "start": 6066,
+        "end": 6245,
+        "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/lib/home-trust.ts",
+    "edits": [
+      {
+        "start": 457,
+        "end": 708,
+        "before": "export function homeTrustSchema(locale: CatalogLocale) {\n  return { '@type': 'FAQPage', mainEntity: homeTrustFaq(locale).map(({q,a,link}) => ({\n    '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: `${a} ${link}.` },\n  })) };\n}\n",
+        "after": ""
+      }
+    ]
+  },
+  {
+    "path": "src/pages/es/index.astro",
+    "edits": [
+      {
+        "start": 151,
+        "end": 1469,
+        "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Carta natal', promise: 'Tu Sol, Luna, ascendente, planetas, casas y lo que significan.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signo lunar', promise: 'Cómo sientes, qué te calma y qué necesitas para sentirte en casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'La primera impresión que das y cómo se ordena tu carta.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilidad', promise: 'Compara dos cartas y mira dónde conectan, chocan y crecen.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('es'),",
+        "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Carta natal', promise: 'Tu Sol, Luna, ascendente, planetas, casas y lo que significan.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signo lunar', promise: 'Cómo sientes, qué te calma y qué necesitas para sentirte en casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'La primera impresión que das y cómo se ordena tu carta.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilidad', promise: 'Compara dos cartas y mira dónde conectan, chocan y crecen.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+      }
+    ]
+  },
+  {
+    "path": "src/pages/fr/index.astro",
+    "edits": [
+      {
+        "start": 151,
+        "end": 1617,
+        "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { englishOnlyCue, localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\nconst englishOnly = englishOnlyCue('fr');\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Thème astral', promise: 'Ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signe lunaire', promise: 'Ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin pour te sentir chez toi.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendant', promise: 'La première impression que tu donnes et la façon dont ton thème s’organise.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilité', promise: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('fr'),",
+        "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { englishOnlyCue, localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\nconst englishOnly = englishOnlyCue('fr');\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Thème astral', promise: 'Ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signe lunaire', promise: 'Ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin pour te sentir chez toi.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendant', promise: 'La première impression que tu donnes et la façon dont ton thème s’organise.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilité', promise: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+      }
+    ]
+  },
+  {
+    "path": "src/pages/it/index.astro",
+    "edits": [
+      {
+        "start": 151,
+        "end": 1596,
+        "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { englishOnlyCue, localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\nconst englishOnly = englishOnlyCue('it');\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Tema natale', promise: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Segno lunare', promise: 'Come vivi le emozioni, che cosa ti calma e ciò di cui hai bisogno per sentirti a casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'La prima impressione che dai e il modo in cui si organizza il tuo tema.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilità', promise: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('it'),",
+        "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { englishOnlyCue, localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\nconst englishOnly = englishOnlyCue('it');\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Tema natale', promise: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Segno lunare', promise: 'Come vivi le emozioni, che cosa ti calma e ciò di cui hai bisogno per sentirti a casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'La prima impressione che dai e il modo in cui si organizza il tuo tema.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilità', promise: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+      }
+    ]
+  },
+  {
+    "path": "src/pages/pt/index.astro",
+    "edits": [
+      {
+        "start": 151,
+        "end": 1544,
+        "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Mapa astral', promise: 'Seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o significado de cada um.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signo lunar', promise: 'Como você vive as emoções, o que traz calma e do que precisa para se sentir em casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'A primeira impressão que você causa e como seu mapa se organiza.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilidade', promise: 'Compare dois mapas e veja onde vocês se conectam, entram em conflito e crescem.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('pt'),",
+        "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Mapa astral', promise: 'Seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o significado de cada um.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signo lunar', promise: 'Como você vive as emoções, o que traz calma e do que precisa para se sentir em casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'A primeira impressão que você causa e como seu mapa se organiza.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilidade', promise: 'Compare dois mapas e veja onde vocês se conectam, entram em conflito e crescem.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+      }
+    ]
+  },
+  {
+    "path": "src/pages/ru/index.astro",
+    "edits": [
+      {
+        "start": 151,
+        "end": 1390,
+        "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете, что вас успокаивает и что даёт ощущение дома.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Первое впечатление и то, как выстроена вся карта.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('ru'),",
+        "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете, что вас успокаивает и что даёт ощущение дома.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Первое впечатление и то, как выстроена вся карта.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+      }
+    ]
+  },
+  {
+    "path": "src/islands/ChartTrust.test.tsx",
+    "edits": [
+      {
+        "start": 284,
+        "end": 2251,
+        "before": ", homeTrustSchema } from '../lib/home-trust';\nimport { isAstrologyToolPath } from '../lib/trust-boundary';\n\ndescribe('chart trust receipts', () => {\n  it('reports the exact computed instant without rounding, storage, or requests', () => {\n    const instant = '1867-10-18T20:57:41.000Z';\n    expect(mathInstant(instant)).toBe(instant);\n    expect(mathInstant(new Date(instant))).toBe(instant);\n    const markup = render(h(CheckOurMath, { utc: instant }));\n    expect(markup).toContain(`datetime=\"${instant}\"`);\n    expect(markup).toContain('Check our math');\n    expect(markup).toContain('href=\"/methodology/\"');\n  });\n  it('never invents an instant for missing or malformed shared data', () => {\n    for (const utc of [undefined, null, 'not-a-date']) {\n      expect(mathInstant(utc)).toBeNull();\n      const markup = render(h(CheckOurMath, { utc }));\n      expect(markup).toContain('data-instant-basis=\"unavailable\"');\n      expect(markup).not.toContain('<time');\n    }\n  });\n  it.each(CATALOG_LOCALES)('ships truthful labels and human openings in %s', locale => {\n    for (const basis of ['birth', 'reference', 'return', 'approximate-return', 'sky-reference', 'record'] as const) {\n      const markup = render(h(CheckOurMath, { locale, basis, utc: '2000-01-01T12:00:00Z' }));\n      expect(markup).toContain(`href=\"${localizePath(locale, '/methodology/')}\"`);\n      expect(markup).toContain(UI[locale].trustMath);\n      if (basis === 'reference') expect(markup).toContain(UI[locale].trustReference);\n    }\n    for (const kind of ['self', 'other', 'pair', 'return', 'saturn'] as const) {\n      expect(render(h(ResultOpening, { locale, kind }))).toContain('data-result-opening');\n    }\n    const faq = homeTrustFaq(locale);\n    expect(faq[0].a).toContain('Zodiacs.org'); expect(faq[0].a).toContain('Astrofolio');\n    expect(faq[0].href).toBe(localizePath(locale, '/disclosure/'));\n    expect(homeTrustSchema(locale).mainEntity[0].acceptedAnswer.text).toContain(faq[0].a",
+        "after": " } from '../lib/home-trust';\nimport { isAstrologyToolPath } from '../lib/trust-boundary';\n\ndescribe('chart trust receipts', () => {\n  it('reports the exact computed instant without rounding, storage, or requests', () => {\n    const instant = '1867-10-18T20:57:41.000Z';\n    expect(mathInstant(instant)).toBe(instant);\n    expect(mathInstant(new Date(instant))).toBe(instant);\n    const markup = render(h(CheckOurMath, { utc: instant }));\n    expect(markup).toContain(`datetime=\"${instant}\"`);\n    expect(markup).toContain('Check our math');\n    expect(markup).toContain('href=\"/methodology/\"');\n  });\n  it('never invents an instant for missing or malformed shared data', () => {\n    for (const utc of [undefined, null, 'not-a-date']) {\n      expect(mathInstant(utc)).toBeNull();\n      const markup = render(h(CheckOurMath, { utc }));\n      expect(markup).toContain('data-instant-basis=\"unavailable\"');\n      expect(markup).not.toContain('<time');\n    }\n  });\n  it.each(CATALOG_LOCALES)('ships truthful labels and human openings in %s', locale => {\n    for (const basis of ['birth', 'reference', 'return', 'approximate-return', 'sky-reference', 'record'] as const) {\n      const markup = render(h(CheckOurMath, { locale, basis, utc: '2000-01-01T12:00:00Z' }));\n      expect(markup).toContain(`href=\"${localizePath(locale, '/methodology/')}\"`);\n      expect(markup).toContain(UI[locale].trustMath);\n      if (basis === 'reference') expect(markup).toContain(UI[locale].trustReference);\n    }\n    for (const kind of ['self', 'other', 'pair', 'return', 'saturn'] as const) {\n      expect(render(h(ResultOpening, { locale, kind }))).toContain('data-result-opening');\n    }\n    const faq = homeTrustFaq(locale);\n    expect(faq[0].a).toContain('Zodiacs.org'); expect(faq[0].a).toContain('Astrofolio');\n    expect(faq[0].href).toBe(localizePath(locale, '/disclosure/')"
+      }
+    ]
+  }
+]

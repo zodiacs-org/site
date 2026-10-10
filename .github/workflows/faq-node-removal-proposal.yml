@@ -1,0 +1,36 @@
+name: Read-only FAQ metadata correction proposal
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths:
+      - .github/workflows/faq-node-removal-proposal.yml
+      - scripts/propose-faq-node-corrections.mjs
+      - docs/platform/evidence/faq-source-purpose-20261010/proposed-node-edits.json
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - run: node --check scripts/propose-faq-node-corrections.mjs
+      - run: npm ci --ignore-scripts
+      - name: Verify proposed edits without writing application files
+        run: |
+          git worktree add --detach "$RUNNER_TEMP/faq-proposal-source" 51b2c0d3bafe8b23d0a7f54433cd0c89c9435818
+          node scripts/propose-faq-node-corrections.mjs "$RUNNER_TEMP/faq-proposal-source"
+          test -z "$(git -C "$RUNNER_TEMP/faq-proposal-source" status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: faq-node-removal-proposal-${{ github.run_id }}
+          path: docs/platform/evidence/faq-source-purpose-20261010/native-node-removal-proposal.json
+          retention-days: 90
