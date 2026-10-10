@@ -373,6 +373,7 @@ const dryReceiptStore: DeliveryReceiptStore = {
   reserve: async () => { throw new Error('Dry-run receipt store was called.'); },
   markSent: async () => { throw new Error('Dry-run receipt store was called.'); },
   markFailed: async () => { throw new Error('Dry-run receipt store was called.'); },
+  sentBefore: async () => { throw new Error('Dry-run receipt store was called.'); },
 };
 
 const dryResend: ResendDelivery = {
@@ -473,7 +474,7 @@ export async function runDailyEmail({
     hashSecret,
     receipts,
     resend,
-    render(recipient) {
+    render(recipient, { firstDelivery }) {
       const claim = dailyRecipientUnsubscribeClaim(recipient, hashSecret);
       return renderDailyEmail({
         recipient,
@@ -484,6 +485,7 @@ export async function runDailyEmail({
         baseUrl,
         unsubscribeUrl: dailyUnsubscribeUrl(baseUrl, claim, unsubscribeSecret),
         senderPostalAddress,
+        firstDelivery,
       });
     },
     log,

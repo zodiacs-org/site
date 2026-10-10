@@ -198,6 +198,7 @@ describe('daily email idempotent batch', () => {
         .mockResolvedValueOnce(LEASE_TOKEN),
       markSent: vi.fn().mockResolvedValue(undefined),
       markFailed: vi.fn().mockResolvedValue(undefined),
+      sentBefore: vi.fn().mockResolvedValue(true),
     };
     const resend = { send: vi.fn().mockResolvedValue('provider') };
     const report = await deliverDailyEmails({
@@ -223,6 +224,7 @@ describe('daily email idempotent batch', () => {
       reserve: vi.fn().mockResolvedValue(LEASE_TOKEN),
       markSent: vi.fn().mockResolvedValue(undefined),
       markFailed: vi.fn().mockResolvedValue(undefined),
+      sentBefore: vi.fn().mockResolvedValue(true),
     };
     const resend = {
       send: vi.fn().mockRejectedValueOnce(new Error('provider down')).mockResolvedValueOnce('provider-2'),
@@ -249,6 +251,7 @@ describe('daily email idempotent batch', () => {
       reserve: vi.fn().mockResolvedValue(LEASE_TOKEN),
       markSent: vi.fn().mockResolvedValue(undefined),
       markFailed: vi.fn().mockResolvedValue(undefined),
+      sentBefore: vi.fn().mockResolvedValue(true),
     };
     const keys: string[] = [];
     const resend: ResendDelivery = {
@@ -280,6 +283,7 @@ describe('daily email idempotent batch', () => {
       reserve: vi.fn().mockResolvedValue(LEASE_TOKEN),
       markSent: vi.fn().mockResolvedValue(undefined),
       markFailed: vi.fn().mockResolvedValue(undefined),
+      sentBefore: vi.fn().mockResolvedValue(true),
     };
     const resend = { send: vi.fn().mockResolvedValue('provider-3') };
     const logs: string[] = [];
@@ -319,7 +323,7 @@ describe('daily email idempotent batch', () => {
 
   it('keeps fixture dry-runs entirely side-effect free', async () => {
     const store: DeliveryReceiptStore = {
-      reserve: vi.fn(), markSent: vi.fn(), markFailed: vi.fn(),
+      reserve: vi.fn(), markSent: vi.fn(), markFailed: vi.fn(), sentBefore: vi.fn(),
     };
     const resend = { send: vi.fn() };
     const report = await deliverDailyEmails({
@@ -335,6 +339,69 @@ describe('daily email idempotent batch', () => {
     });
     expect(report.dryRun).toBe(1);
     expect(store.reserve).not.toHaveBeenCalled();
+    expect(store.sentBefore).not.toHaveBeenCalled();
     expect(resend.send).not.toHaveBeenCalled();
+  });
+});
+
+describe('daily email first delivery', () => {
+  const run = (store: DeliveryReceiptStore, render = vi.fn(() => message)) => ({
+    render,
+    report: deliverDailyEmails({
+      recipients: [recipient('one@example.com')],
+      editionDate: publication.date,
+      limit: 1,
+      dryRun: false,
+      hashSecret: 'recipient-hash-secret-that-is-long-enough',
+      receipts: store,
+      resend: { send: vi.fn().mockResolvedValue('provider') },
+      render,
+      log: vi.fn(),
+    }),
+  });
+  const storeWith = (sentBefore: DeliveryReceiptStore['sentBefore']): DeliveryReceiptStore => ({
+    reserve: vi.fn().mockResolvedValue(LEASE_TOKEN),
+    markSent: vi.fn().mockResolvedValue(undefined),
+    markFailed: vi.fn().mockResolvedValue(undefined),
+    sentBefore,
+  });
+
+  it('tells the renderer when no earlier edition reached the recipient', async () => {
+    const first = run(storeWith(vi.fn().mockResolvedValue(false)));
+    await expect(first.report).resolves.toMatchObject({ sent: 1, failed: 0 });
+    expect(first.render).toHaveBeenCalledWith(expect.objectContaining({ email: 'one@example.com' }), { firstDelivery: true });
+    const later = run(storeWith(vi.fn().mockResolvedValue(true)));
+    await expect(later.report).resolves.toMatchObject({ sent: 1, failed: 0 });
+    expect(later.render).toHaveBeenCalledWith(expect.anything(), { firstDelivery: false });
+  });
+
+  it('sends nothing and releases the receipt when the history lookup fails', async () => {
+    const store = storeWith(vi.fn().mockRejectedValue(new Error('database down')));
+    const attempt = run(store);
+    await expect(attempt.report).resolves.toMatchObject({ reserved: 1, sent: 0, failed: 1 });
+    expect(attempt.render).not.toHaveBeenCalled();
+    expect(store.markFailed).toHaveBeenCalledOnce();
+    expect(store.markSent).not.toHaveBeenCalled();
+  });
+
+  it('asks Supabase only for an earlier sent edition of this recipient', async () => {
+    const fetcher = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([{ edition_date: '2026-07-19' }]), { status: 200 }));
+    const store = createSupabaseDeliveryReceiptStore({
+      fetchImpl: fetcher, supabaseUrl: 'https://project.supabase.co', serviceKey: 'service-key',
+    });
+    await expect(store.sentBefore(publication.date, 'a'.repeat(64))).resolves.toBe(false);
+    await expect(store.sentBefore(publication.date, 'a'.repeat(64))).resolves.toBe(true);
+    const url = new URL(String(fetcher.mock.calls[0][0]));
+    expect(url.pathname).toBe('/rest/v1/daily_email_deliveries');
+    expect(Object.fromEntries(url.searchParams)).toEqual({
+      select: 'edition_date',
+      recipient_hash: `eq.${'a'.repeat(64)}`,
+      status: 'eq.sent',
+      edition_date: `lt.${publication.date}`,
+      limit: '1',
+    });
+    expect(fetcher.mock.calls[0][1]).toMatchObject({ method: 'GET' });
   });
 });
