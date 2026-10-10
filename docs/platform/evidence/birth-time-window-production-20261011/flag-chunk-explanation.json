@@ -1,0 +1,191 @@
+{
+  "schema": "zodiacs.birth-window-flag-chunk-explanation.v1",
+  "base": "https://zodiacs.org",
+  "checkedAt": "2026-10-10T20:15:43.048Z",
+  "productionFlagsBuild": "npm run build with site-check.yml production-flags-build env (CI stand-in values for keys and URLs)",
+  "results": [
+    {
+      "path": "/_astro/ChartCalculator.Hp2VboiO.js",
+      "status": 200,
+      "servedBytes": 64724,
+      "servedSha256": "4776e1deceb9cdfd99e865527d6c05f3b48a80a338d6b2783485e2a66911c923",
+      "candidates": [
+        {
+          "file": "ChartCalculator.Bmy857DT.js",
+          "bytes": 64724,
+          "identicalAfterHashNormalization": true
+        }
+      ],
+      "explainedBy": {
+        "file": "ChartCalculator.Bmy857DT.js",
+        "how": "identical after hashed file names are normalized"
+      }
+    },
+    {
+      "path": "/_astro/PostChartDailyBrief.CSeH7ejj.js",
+      "status": 200,
+      "servedBytes": 9294,
+      "servedSha256": "6e89a8a984d4e10f8c2001c2a715ac6fd54cbdb216ac31c39d91e84af28fdb87",
+      "candidates": [
+        {
+          "file": "PostChartDailyBrief.BzYqXi0C.js",
+          "bytes": 9294,
+          "identicalAfterHashNormalization": true
+        }
+      ],
+      "explainedBy": {
+        "file": "PostChartDailyBrief.BzYqXi0C.js",
+        "how": "identical after hashed file names are normalized"
+      }
+    },
+    {
+      "path": "/_astro/saved-record-flags.CGGGHpH9.js",
+      "status": 200,
+      "servedBytes": 299,
+      "servedSha256": "161d36475344c162a50e5f3b03cff768758664f0407de74d613a10719bfe6e8e",
+      "candidates": [
+        {
+          "file": "saved-record-flags.CGGGHpH9.js",
+          "bytes": 299,
+          "identicalAfterHashNormalization": true
+        }
+      ],
+      "explainedBy": {
+        "file": "saved-record-flags.CGGGHpH9.js",
+        "how": "identical after hashed file names are normalized"
+      }
+    },
+    {
+      "path": "/_astro/saved-record-access.fK_lFJdT.js",
+      "status": 200,
+      "servedBytes": 24925,
+      "servedSha256": "5c6ee89945120ff92853d40e249aaa0221ad7329cf994cdc690bd7413089e139",
+      "candidates": [
+        {
+          "file": "saved-record-access.fK_lFJdT.js",
+          "bytes": 24925,
+          "identicalAfterHashNormalization": true
+        }
+      ],
+      "explainedBy": {
+        "file": "saved-record-access.fK_lFJdT.js",
+        "how": "identical after hashed file names are normalized"
+      }
+    },
+    {
+      "path": "/_astro/store.zt4Lm41h.js",
+      "status": 200,
+      "servedBytes": 4260,
+      "servedSha256": "01d9bdb9356cf79258165fe2aca3d6dbacbc7ea6e886ebe1bd0f2c81e0f5a35a",
+      "candidates": [
+        {
+          "file": "store.C5MkzH32.js",
+          "bytes": 4260,
+          "identicalAfterHashNormalization": true
+        },
+        {
+          "file": "store.DE7leWKW.js",
+          "bytes": 26959,
+          "identicalAfterHashNormalization": false,
+          "literalsOnlyInServed": 26,
+          "literalsOnlyInLocal": 116
+        }
+      ],
+      "explainedBy": {
+        "file": "store.C5MkzH32.js",
+        "how": "identical after hashed file names are normalized"
+      }
+    },
+    {
+      "path": "/_astro/sync.C57OOLWY.js",
+      "status": 200,
+      "servedBytes": 5414,
+      "servedSha256": "9a0b926c8b40018c3e5816239646e01f8aba07998ba6a9a7331af23e6c89fec3",
+      "candidates": [
+        {
+          "file": "sync.BIo9Mm3v.js",
+          "bytes": 9036,
+          "identicalAfterHashNormalization": false,
+          "literalsOnlyInServed": 22,
+          "literalsOnlyInLocal": 45
+        },
+        {
+          "file": "sync.DBhRaimO.js",
+          "bytes": 5414,
+          "identicalAfterHashNormalization": true
+        }
+      ],
+      "explainedBy": {
+        "file": "sync.DBhRaimO.js",
+        "how": "identical after hashed file names are normalized"
+      }
+    },
+    {
+      "path": "/_astro/daily-email-client.RlNxx_OZ.js",
+      "status": 200,
+      "servedBytes": 4966,
+      "servedSha256": "c00fa9080636a3f65b58fcdbc49825923f75fb77fb49133262dc68d422280689",
+      "candidates": [
+        {
+          "file": "daily-email-client.DYOyEELS.js",
+          "bytes": 4966,
+          "identicalAfterHashNormalization": true
+        }
+      ],
+      "explainedBy": {
+        "file": "daily-email-client.DYOyEELS.js",
+        "how": "identical after hashed file names are normalized"
+      }
+    },
+    {
+      "path": "/_astro/client.BznKc0x4.js",
+      "status": 200,
+      "servedBytes": 202841,
+      "servedSha256": "6a21ef9bb64901babbee8d9afedc24cb26913b3d538619992bf594cb4907d14f",
+      "candidates": [
+        {
+          "file": "client.DC400vGu.js",
+          "bytes": 202803,
+          "identicalAfterHashNormalization": false,
+          "literalsOnlyInServed": 2,
+          "literalsOnlyInLocal": 2,
+          "servedLiterals": [
+            {
+              "length": 40,
+              "sha256": "ebf720cd28f939bebbb4c776e4e6fb477172007af0b9c8a04e2fca3e845028c5"
+            },
+            {
+              "length": 46,
+              "sha256": "6d40ab5652eb2038430e2de9879f83d2da807a078fc380ea75e2f81be5500ee7"
+            }
+          ],
+          "localLiterals": [
+            {
+              "length": 22,
+              "sha256": "a43416c82b48dcd84545dfdc0b67a747c2ff40b46d238dcfd3083ec3b7a4a50a",
+              "ciStandIn": "http://127.0.0.1:54321"
+            },
+            {
+              "length": 26,
+              "sha256": "9fb8ad8c52b61652db17fc39dda0ebbf2f18b7280314dc5270f92c6d8f430a6c",
+              "ciStandIn": "sb_publishable_ci_stand_in"
+            }
+          ],
+          "identicalAfterReplacingThoseLiterals": true
+        },
+        {
+          "file": "client.DPkn9Lbl.js",
+          "bytes": 1447,
+          "identicalAfterHashNormalization": false,
+          "literalsOnlyInServed": 975,
+          "literalsOnlyInLocal": 12
+        }
+      ],
+      "explainedBy": {
+        "file": "client.DC400vGu.js",
+        "how": "identical after hashed file names are normalized and the CI stand-in literals are put in place of production's values"
+      }
+    }
+  ],
+  "allExplained": true
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "zodiacs.birth-window-final-review.v1",
+  "head": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76",
+  "tree": "d5a580d38df67d8150d6684e8ff6bd75d82bd389",
+  "requestComment": 6099974054,
+  "summaryComment": 6098101794,
+  "startedAt": "2026-10-10T16:59:30.735561Z",
+  "completedAt": "2026-10-10T17:04:04.701250Z",
+  "rootPullRequestReaction": {
+    "id": 558879405,
+    "content": "+1",
+    "user": "chatgpt-codex-connector[bot]",
+    "createdAt": "2026-10-10T17:04:07Z"
+  },
+  "findings": [],
+  "previousFindingsResolved": [
+    "PRRT_kwDOSpI5QM6rEcZc",
+    "PRRT_kwDOSpI5QM6rEcZd",
+    "PRRT_kwDOSpI5QM6rFcSA"
+  ],
+  "evidence": "Fresh completed review names 5a46fb0; exact current-head request, bot +1 after completion, fresh reviews/comments/threads show no new finding. Earlier findings remain retained."
+}

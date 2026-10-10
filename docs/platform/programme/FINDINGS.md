@@ -74,6 +74,7 @@ Severity follows the audit's scale:
 | F-76 | minor | records | The engine's techniques documentation lists the mystic rectangle and the grand sextile among "aspect patterns with minor aspects"; both are made of oppositions, trines and sextiles | open: an appended correction in an engine pull request |
 | F-77 | minor | gates | The Lighthouse gate can fail `/birth-chart/` on a sample whose real load was no slower: the simulation counts the chart form's module scripts as blocking the first paint when they finish loading a few milliseconds before it, which took one sample of #643 to performance 92 and LCP 3.17 s against the route's calibrated 93 and 2.80 s | open, for the owner: a retake rule like F-51's, or loading the form's scripts after the first paint; the budgets stay as they are |
 | F-79 | minor | CI | Advisories for smol-toml, source-map-js and tinypool, which reached npm's audit data on 2026-10-06 after main's run at 00:07 UTC, failed Site Check's dependency audit on main's lockfile | fixed in #663: smol-toml 1.9.0 and source-map-js 1.2.2 in range, tinypool 2.2.0 through an override past vitest 3.2.7's declared `^1.1.1`; GHSA-82fw-gwwq-j7x9 (moderate) stays in development dependencies until vitest is upgraded |
+| F-81 | minor | copy | The birth-time window surface starts its sampling sentence in lower case ("sampled at one-second resolution. This check varies birth time…"), and its times read "GMT+0" under a note that says "Times below use UTC notation" | open: a later change to the surface; seen on canonical production at checkpoint 26; no value, control or gate depends on it |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned; fixed by the rc.14 adoption (2026-09-29): the Legacy wing drift job runs it; merged in #600 (`6cc4d477`) |
@@ -769,3 +770,20 @@ the decision gives the measured growth. Engine 1.0.0-rc.2 implements the
 reading. P3.2 stays validated until the site serves the candidate in
 production and the complete gate is judged at checkpoint 22. This local
 adoption changes neither its status nor the fixed denominator.
+
+### F-81 — two copy faults in the birth-time window surface (minor, copy)
+
+- **Seen.** On canonical production of `7028d019` (checkpoint 26), in the
+  drive's summary screenshots and the opened detail
+  ([record](../evidence/birth-time-window-production-20261011/README.md)).
+- **What.** The sampling label is the engine's own string, "sampled at
+  one-second resolution", and the surface puts it at the start of a sentence
+  without a capital: "sampled at one-second resolution. This check varies
+  birth time; it does not add an astronomical accuracy bound." Display text is
+  in sentence case. Below the window control the surface says "Times below use
+  UTC notation", while each time reads like "06 Jul 1907, 13:06:38 GMT+0".
+- **Why it matters.** It is copy only. The values, the label the brief asks
+  for, and the gate's one-line summary and detail on request are unaffected.
+- **Disposition.** Open. The fix belongs in the next change to the surface,
+  with its own Phase 1 captures if the template moves, and a test that holds
+  the sentence's capital and the time notation.
