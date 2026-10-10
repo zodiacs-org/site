@@ -1,0 +1,9 @@
+# Birth-time uncertainty UI preparation
+
+Private, unvalidated implementation for the English full birth-chart tool when its committed chart has a supplied time. The optional surface accepts 1, 5, 10, 15, 30, 60 or 120 elapsed minutes on either side of that chart's resolved instant. It calls the unchanged carried package's birthWindow in an on-device worker after an explicit request. It adds a rising-sign summary and details for the Sun, Moon, Ascendant, houses, aspects and switch times.
+
+The surface retains the package's sampled-at-one-second verification label, treats unresolved nodes separately from aspects outside an orb, and refuses to summarize bound-exceeded coverage as stable. Displayed shares describe time under a uniform prior. The entered-time chart, its receipt, saved chart and shared links remain that single instant; the UI tells the reader this distinction.
+
+Work is terminated on cancellation, a changed window or replacement of the current chart. There is no new telemetry, network upload, saved birth-time model, package version, archive, accuracy threshold or interval-proof claim. The existing unknown-time and other-locale surfaces are preserved. This is an English pilot, not general localization or a completed programme gate.
+
+Required before any acceptance: type and source checks; actual native worker and mobile/desktop browser controls including late-result ownership; unchanged full suite and performance/isolation budgets; fresh review; merge and post-merge checks; exact production verification. No such checks have yet been run on this preparation. B2.b remains unfinished.
