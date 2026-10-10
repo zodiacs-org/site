@@ -1,0 +1,54 @@
+{
+  "schema": "zodiacs.birth-window-ui-failure.v1",
+  "source": "a9034bd873e43954b20ff41ad78bdac8878daaca",
+  "producer": "6f8b6ecb55cb7bc1ef637883ece6f466aa74ad50",
+  "run": 38058924638,
+  "job": 114233005460,
+  "conclusion": "failure",
+  "passedBeforeFailure": {
+    "protectedScope": true,
+    "sourceControls": {
+      "bundleBoundary": 39,
+      "referenceSpan": 8,
+      "total": 47
+    },
+    "schema": {
+      "documents": 1788,
+      "nodes": 6861,
+      "editorialOwners": 70,
+      "errors": 0
+    },
+    "packageBoundary": "clear",
+    "homepageEngineMarkers": "clear"
+  },
+  "failure": "Full static engine closure remains 33.3 KB against unchanged 32.598046875 KB limit.",
+  "compiledObservations": [
+    "Full entry statically imports the 764-byte-gzip preload helper.",
+    "Vite-ignore leaves a bare @zodiacs/engine/window import in the built full entry.",
+    "Full entry exports compiler aliases and its logical namespace through an aliased object; the proposed opaque worker protocol assumed named native exports."
+  ],
+  "notReached": [
+    "type check",
+    "complete unit suite",
+    "real worker controls",
+    "visual gate",
+    "cold performance",
+    "fresh captures"
+  ],
+  "runtimeErrorsNotObserved": true,
+  "diagnostic": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "bytes": 59669,
+    "sha256": "a5e6ac9d92fe6e58c853d503a3dd2a3d608a1ad966719587b4508b2948753e28"
+  },
+  "originalDecodedLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-loader-second-failure.log",
+    "bytes": 791866,
+    "sha256": "d3f79809f1e6907ccdf7f49c90756aa0f515c55a52377d9d5c5a108c97589c70"
+  },
+  "correction": {
+    "source": "b8cbfc2a987a0dcc357999bb31563d91bf0c0578",
+    "method": "Static birthWindow re-export only in full.ts, consumed by the actual worker. The main engine importer is expected to discard unused window code, subject to native build proof. Website source import graph and worker static closure/fingerprint use original budgets."
+  },
+  "acceptedWeightAdded": 0
+}
