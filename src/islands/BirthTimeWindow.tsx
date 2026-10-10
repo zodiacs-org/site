@@ -4,9 +4,9 @@ import type {HouseSystem} from '../lib/engine/types';
 import {birthWindowSummary,birthWindowChange,birthWindowShare,birthWindowSignName} from '../lib/birth-time-window';
 import '../styles/birth-time-window.css';
 export interface BirthTimeWindowProps{
- utc:Date;latitude:number;longitude:number;houseSystem:HouseSystem;timeZone:string;
+ utc:Date;latitude:number;longitude:number;houseSystem:HouseSystem;
 }
-export function BirthTimeWindow({utc,latitude,longitude,houseSystem,timeZone}:BirthTimeWindowProps){
+export function BirthTimeWindow({utc,latitude,longitude,houseSystem}:BirthTimeWindowProps){
  const [minutes,setMinutes]=useState(10),[result,setResult]=useState<BirthWindow|null>(null);
  const [busy,setBusy]=useState(false),[error,setError]=useState('');
  const worker=useRef<Worker|null>(null),generation=useRef(0);
@@ -37,7 +37,7 @@ export function BirthTimeWindow({utc,latitude,longitude,houseSystem,timeZone}:Bi
    active.postMessage({id,input:{at:utc,minutes,latitude,longitude,houseSystem}});
   }catch{fail('The window could not be checked. No uncertainty result is shown.');}
  }
- const formatter=useMemo(()=>new Intl.DateTimeFormat('en-GB',{timeZone,year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',timeZoneName:'shortOffset',hourCycle:'h23'}),[timeZone]);
+ const formatter=useMemo(()=>new Intl.DateTimeFormat('en-GB',{timeZone:'UTC',year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',timeZoneName:'shortOffset',hourCycle:'h23'}),[]);
  const format=(date:Date)=>formatter.format(date);
  return <aside class="birth-window" data-birth-window>
   <p data-birth-window-summary role="status">{result?birthWindowSummary(result):'Check a window around the time used for this chart.'}</p>
@@ -48,12 +48,13 @@ export function BirthTimeWindow({utc,latitude,longitude,houseSystem,timeZone}:Bi
      {[1,5,10,15,30,60,120].map(value=><option key={value} value={value}>{value} {value===1?'minute':'minutes'} either side</option>)}
     </select>
    </label>
-   <p class="birth-window__note">The window counts elapsed minutes before and after {format(utc)}. Daylight-saving changes follow the birthplace’s clock.</p>
+   <p class="birth-window__note">Times below use UTC notation. The window counts elapsed minutes before and after {format(utc)}.</p>
    <button type="button" class="btn btn--secondary" onClick={check} disabled={busy}>{busy?'Checking the window…':'Check this window'}</button>
    {busy&&<button type="button" class="btn btn--secondary" onClick={()=>{cancel();setBusy(false);}}>Cancel</button>}
    {error&&<p role="alert">{error}</p>}
    {result&&<>
-    <p data-birth-window-verification>{result.verification}.</p>
+    <p data-birth-window-verification>{result.verification}. This check varies birth time; it does not add an astronomical accuracy bound.</p>
+    {utc.getTime()<Date.UTC(1972,0,1)&&<p>Before 1972, the engine treats civil time as UT1.</p>}
     {result.flags.includes('polar-fallback')&&<p>The requested house system is undefined here; affected cells use whole-sign houses.</p>}
     {result.unresolved.length>0&&<p>Some node signs or houses could not be resolved. They are marked unresolved below.</p>}
     <p>Each share is the fraction of this window’s duration, assuming equal weight for every instant. It does not state how likely your birth time is.</p>

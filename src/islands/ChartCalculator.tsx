@@ -2143,7 +2143,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             && !chart.flags.includes('no-time') && computedInput && (
             <BirthTimeWindowEntry key={String(chartContextIdRef.current)}
               utc={chart.input.utc} latitude={computedInput.city.lat} longitude={computedInput.city.lon}
-              houseSystem={chart.input.houseSystem} timeZone={computedInput.city.tz} />
+              houseSystem={chart.input.houseSystem} />
           )}
           {/* Notices */}
           {computedInput?.oldStyle && (
