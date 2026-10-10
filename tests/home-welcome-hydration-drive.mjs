@@ -13,7 +13,7 @@ const variants=[
 ];
 try {
  await withPreview({port:8792},async baseURL=>{
-  const browser=await chromium.launch({executablePath:findChromium(),args:STABLE_CHROMIUM_ARGS});
+  const browser=await chromium.launch({executablePath:await findChromium(),args:STABLE_CHROMIUM_ARGS});
   try {
    for(const variant of variants){
     const context=await browser.newContext({viewport:{width:variant.width,height:variant.height},reducedMotion:'reduce'});
