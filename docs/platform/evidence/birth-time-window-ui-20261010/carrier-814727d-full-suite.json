@@ -1,0 +1,240 @@
+{
+  "schema": {
+    "documents": 1788,
+    "nodes": 6861,
+    "owners": 70,
+    "errors": 0
+  },
+  "source": "814727d852ec927bcfbce68ed33a1a9e2e576554",
+  "tree": "47a121ed0208b2e1f06789063b2f6ba885c2518b",
+  "syntheticMerge": {
+    "sha": "ae90b2666aa0ba985bcfd5286de9c89284a3cc4b",
+    "tree": "47a121ed0208b2e1f06789063b2f6ba885c2518b",
+    "orderedParents": [
+      "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+      "814727d852ec927bcfbce68ed33a1a9e2e576554"
+    ]
+  },
+  "run": 38065234747,
+  "attempt": 1,
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 114251422065,
+      "name": "Account Sync v2 SQL",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422199,
+      "name": "Phase 3 push drive",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422211,
+      "name": "Sky Watch subscription lifecycle",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422228,
+      "name": "Saved calculation records lifecycle drive",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422252,
+      "name": "Phase 3 delivery SQL",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422255,
+      "name": "Phase 4 sharing drive",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422280,
+      "name": "Phase 6 assistant quota SQL",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422293,
+      "name": "Swiss output removal and independent references",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422307,
+      "name": "Saved calculation records under the real account coordinator",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422322,
+      "name": "Phase 3 post-chart drive",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422327,
+      "name": "Legacy wing drift",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422358,
+      "name": "Build & Check",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422369,
+      "name": "Build with production's feature flags",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422371,
+      "name": "Zodiac Games SQL",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422388,
+      "name": "Phase 4 compatibility invite SQL",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422403,
+      "name": "Phase 7 Living Chart sync SQL",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422461,
+      "name": "Registry Aura drive",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422557,
+      "name": "Phase 7 Living Chart drive",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422580,
+      "name": "Phase 3 PWA drive",
+      "conclusion": "success"
+    },
+    {
+      "id": 114251422621,
+      "name": "Time zone data drift",
+      "conclusion": "success"
+    }
+  ],
+  "mainJob": 114251422358,
+  "units": {
+    "passed": 6989,
+    "skipped": 6,
+    "failed": 0,
+    "filesPassed": 543,
+    "filesSkipped": 1
+  },
+  "typecheck": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 40
+  },
+  "decodedLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/carrier-814727d-full-suite.log",
+    "bytes": 1671687,
+    "sha256": "19babce4ce0bce7a582391d7588d2829721f7ec1ef73dc67b6af56b2e9961adb"
+  },
+  "journal": {
+    "time": "2026-10-10T16:33:36.6656827Z",
+    "text": "Runner stalls: none; no sample was retaken."
+  },
+  "artifacts": [
+    {
+      "id": 11675402658,
+      "name": "phase-1-browser-performance-38065234747",
+      "bytes": 162047627,
+      "digest": "sha256:8ce20a346d872a921d297deb87bd8b8021f4729bded478a7b7d84a84b33fd949",
+      "expiresAt": "2027-01-08T15:50:30Z",
+      "expired": false
+    },
+    {
+      "id": 11675063758,
+      "name": "return-visits-browser-38065234747",
+      "bytes": 15363533,
+      "digest": "sha256:238e5960fd12993becb9696bed63ff5bdadd275691ccc14b624880dc73d8da5e",
+      "expiresAt": "2026-11-09T16:07:34Z",
+      "expired": false
+    },
+    {
+      "id": 11675027087,
+      "name": "phase4-sharing-readiness-ae90b2666aa0ba985bcfd5286de9c89284a3cc4b-38065234747",
+      "bytes": 3590,
+      "digest": "sha256:7319c7d28aecb1cedbe2a77a81deeead7b0f60c676faac81e1d66d8f07209796",
+      "expiresAt": "2027-01-08T15:50:30Z",
+      "expired": false
+    },
+    {
+      "id": 11674942588,
+      "name": "sharing-phase2-38065234747",
+      "bytes": 9294463,
+      "digest": "sha256:7fd1d2979fc8f85025637ffc2a896cb80efc86b021ab6bd114c437fb9f2d129f",
+      "expiresAt": "2026-11-09T15:57:01Z",
+      "expired": false
+    },
+    {
+      "id": 11674542899,
+      "name": "profile-recovery-38065234747",
+      "bytes": 1087781,
+      "digest": "sha256:f6579ce7d8466a08ac1d59b02ddfb9a3eb4712921dc506df3671a3b79e54344a",
+      "expiresAt": "2026-11-09T16:03:49Z",
+      "expired": false
+    },
+    {
+      "id": 11674524029,
+      "name": "saved-records-lifecycle-38065234747",
+      "bytes": 1422,
+      "digest": "sha256:569e7eef6fa02f57ff750fb32f1d8feb425db1c83b84613ddf3017bb0790709f",
+      "expiresAt": "2026-11-09T16:00:15Z",
+      "expired": false
+    },
+    {
+      "id": 11674453079,
+      "name": "visual-consistency-38065234747",
+      "bytes": 170916,
+      "digest": "sha256:1ce32a93caa55efd5b9c0cf8c8b54378847a061bf945af3757a431a82566fee7",
+      "expiresAt": "2026-11-09T16:03:48Z",
+      "expired": false
+    },
+    {
+      "id": 11674357241,
+      "name": "saved-records-account-38065234747",
+      "bytes": 1079,
+      "digest": "sha256:9e806f36517241a3bb3e022b2b865ebb299c6aebf6d7e1cc86107f38625a4423",
+      "expiresAt": "2026-11-09T15:52:44Z",
+      "expired": false
+    },
+    {
+      "id": 11674297712,
+      "name": "thesis-browser-38065234747",
+      "bytes": 11797358,
+      "digest": "sha256:ccec3aa1695e85ffafa383732846f91985a996f76bf7aba143c11c240414fb9a",
+      "expiresAt": "2026-11-09T15:58:12Z",
+      "expired": false
+    }
+  ],
+  "numerical": {
+    "run": 38065234740,
+    "job": 114251421451,
+    "conclusion": "success",
+    "skyBenchmark": {
+      "passed": 21,
+      "existingVersionSkip": 1
+    },
+    "tamperControls": 16
+  },
+  "freshReview": {
+    "completed": "2026-10-10T15:55:35.397072Z",
+    "reviewedSource": "814727d852ec927bcfbce68ed33a1a9e2e576554",
+    "newUnresolvedComment": 4238230846,
+    "clean": false
+  },
+  "limitations": [
+    "The twenty full jobs and numerical gate pass on this exact carrier and synthetic merge tree. This is not qualification of the later development correction.",
+    "Fresh review found a separate development-only P2. No clean review, merge, deployed UI or accepted B2.b weight is claimed.",
+    "ZIP identities here are GitHub-reported metadata; no CRC or recovered raw-Lighthouse verification is claimed by this receipt."
+  ]
+}
