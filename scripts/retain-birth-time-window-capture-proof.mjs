@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import {readFileSync,readdirSync,mkdirSync,writeFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+const main=process.env.QUALIFIED_MAIN,source=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+assert.match(main??'',/^[a-f0-9]{40}$/);assert.equal(source,process.env.CANDIDATE);
+const readMain=path=>execFileSync('git',['show',main+':'+path],{maxBuffer:16*1024*1024});
+const manifestPath='docs/acceptance/phase1/screenshots/manifest.json',manifestBytes=readFileSync(manifestPath),manifest=JSON.parse(manifestBytes);
+const previous=JSON.parse(readMain(manifestPath));
+assert.notEqual(manifest.templateSourceSha256,previous.templateSourceSha256,'The new UI render sources require a fresh source receipt');
+assert.equal(manifest.captures.length,18);
+const captures=manifest.captures.map(capture=>{
+ const path='docs/acceptance/phase1/screenshots/'+capture.screenshot.file,bytes=readFileSync(path),old=readMain(path);
+ assert.equal(hash(bytes),capture.screenshot.sha256);
+ return {path,bytes:bytes.length,sha256:hash(bytes),identicalToQualifiedMain:bytes.equals(old),previousSha256:hash(old)};
+});
+const visual=JSON.parse(readFileSync('docs/platform/evidence/birth-time-window-ui-20261010/visual-insertion.json','utf8'));
+assert.equal(visual.checkedOutSource,source);assert.ok(visual.originalFullImageComparison.passed);
+const lhRoot='tests/visual/artifacts/lighthouse/',lighthouseFiles=readdirSync(lhRoot).filter(name=>/^birth-chart.*\.json$/.test(name)&&!/\.(?:trace|devtoolslog|devtoolsLog)\.json$/.test(name));
+const lighthouse=lighthouseFiles.sort().map(file=>{
+ const bytes=readFileSync(lhRoot+file),doc=JSON.parse(bytes);
+ return {path:lhRoot+file,bytes:bytes.length,sha256:hash(bytes),runtimeError:doc.runtimeError??null,lcp:doc.audits?.['largest-contentful-paint']?.numericValue??null,cls:doc.audits?.['cumulative-layout-shift']?.numericValue??null,tbt:doc.audits?.['total-blocking-time']?.numericValue??null,performance:doc.categories?.performance?.score??null,accessibility:doc.categories?.accessibility?.score??null,seo:doc.categories?.seo?.score??null};
+});
+assert.equal(lighthouse.filter(row=>/^birth-chart-[123]\.json$/.test(row.path.split('/').pop())).length,3);
+const controls=JSON.parse(readFileSync('docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json','utf8'));
+assert.equal(controls.checkedOutSource,source);assert.ok(controls.passed);
+const report={schema:'zodiacs.birth-time-window-capture-producer.v1',producer:{workflowSource:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:source,checkedOutTree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),qualifiedMain:main,browser:manifest.browser,manifestPath,manifestBytes:manifestBytes.length,manifestSha256:hash(manifestBytes),templateSourceSha256:manifest.templateSourceSha256,captures,visualReferences:visual.prefixSuffix.map(row=>({path:row.path,bytes:row.bytes,sha256:row.sha256})),lighthouse,browserControlsPassed:controls.passed,limitations:['Every capture came from the original native driver on this exact candidate; unchanged image bytes are explicitly identified, rather than fabricated as differences.','All raw Lighthouse reports, actual images and native reports are retained in this run artifact.','Focused qualification does not replace the required final full suite, fresh review, merge/post-merge or deployed UI checks.']};
+const path='docs/platform/evidence/birth-time-window-ui-20261010/capture-producer.json',bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');mkdirSync('docs/platform/evidence/birth-time-window-ui-20261010',{recursive:true});writeFileSync(path,bytes);
+console.log('PROGRAMME_FILE '+JSON.stringify({path,size:bytes.length,sha256:hash(bytes),base64:bytes.toString('base64')}));

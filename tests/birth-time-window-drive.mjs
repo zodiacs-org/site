@@ -67,6 +67,9 @@ try{
     const summary=await surface.locator('[data-birth-window-summary]').innerText();
     if(observed.result.flags.includes('bound-exceeded'))assert.match(summary,/could not establish coverage/);
     else for(const sign of new Set(observed.result.cells.map(cell=>cell.features.ascendant)))assert.ok(summary.includes(sign.charAt(0).toUpperCase()+sign.slice(1)));
+    await page.evaluate(()=>document.fonts.ready);
+    mkdirSync('tests/visual/artifacts/birth-time-window',{recursive:true});
+    await surface.screenshot({path:'tests/visual/artifacts/birth-time-window/summary-'+variant.name+'.png'});
     await surface.locator(':scope > details > summary').click();
     await surface.getByText(/Sun, Moon, rising sign, houses and aspects \(/).click();
     assert.equal(await surface.locator('.birth-window__cell').count(),observed.result.cells.length);

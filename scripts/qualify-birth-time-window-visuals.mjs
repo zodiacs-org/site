@@ -6,6 +6,7 @@ import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 const main=process.env.QUALIFIED_MAIN;
 assert.match(main??'',/^[a-f0-9]{40}$/);
+assert.equal(process.platform,'linux','This prepared reference protocol is Linux-only');
 const originalPath='tests/visual/visual-regression.mjs',original=readFileSync(originalPath,'utf8');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const readMain=path=>execFileSync('git',['show',main+':'+path],{maxBuffer:32*1024*1024});
@@ -58,7 +59,12 @@ for(const stem of all.filter(stem=>!stems.includes(stem))){
  assert.deepEqual(readFileSync(path),old,'Unrelated original visual reference remains exact');
  unchanged.push({path,bytes:old.length,sha256:sha(old)});
 }
+const darwinUnchanged=all.map(stem=>{
+ const path='tests/visual/baselines/darwin/'+stem+'.png',old=readMain(path);
+ assert.deepEqual(readFileSync(path),old,'Every Darwin reference remains exact');
+ return {path,bytes:old.length,sha256:sha(old)};
+});
 execFileSync(process.execPath,[originalPath],{stdio:'inherit',env:{...process.env,VISUAL_ROUTES:''}});
-const report={schema:'zodiacs.birth-time-window-visual-insertion.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),qualifiedMain:main,originalDriver:{path:originalPath,sha256:sha(Buffer.from(original)),probeSha256:sha(Buffer.from(probe)),restoredBeforeFullComparison:true},prefixSuffix,unchangedReferences:unchanged,originalFullImageComparison:{cases:15,tolerance:0.001,passed:true},limitations:['The region comparisons diagnose the predefined entry insertion, without replacing the final original fifteen-case full-image gate.','Only three intended Linux birth-chart references are refreshed; twelve unrelated Linux and every Darwin reference remain unchanged.','No browser timing or independent numerical accuracy claim.']};
+const report={schema:'zodiacs.birth-time-window-visual-insertion.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version},checkedOutSource:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),qualifiedMain:main,originalDriver:{path:originalPath,sha256:sha(Buffer.from(original)),probeSha256:sha(Buffer.from(probe)),restoredBeforeFullComparison:true},prefixSuffix,unchangedReferences:unchanged,darwinUnchanged,originalFullImageComparison:{cases:15,tolerance:0.001,passed:true},limitations:['The region comparisons diagnose the predefined entry insertion, without replacing the final original fifteen-case full-image gate.','Only three intended Linux birth-chart references are refreshed; twelve unrelated Linux and every Darwin reference remain unchanged.','No browser timing or independent numerical accuracy claim.']};
 const path='docs/platform/evidence/birth-time-window-ui-20261010/visual-insertion.json',bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');mkdirSync('docs/platform/evidence/birth-time-window-ui-20261010',{recursive:true});writeFileSync(path,bytes);
 console.log('PROGRAMME_FILE '+JSON.stringify({path,size:bytes.length,sha256:sha(bytes),base64:bytes.toString('base64')}));
