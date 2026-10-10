@@ -17,8 +17,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '5 October 2026';
-const modifiedAt = '2026-10-05T00:00:00.000Z';
+const updated = '9 October 2026';
+const modifiedAt = '2026-10-09T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -46,7 +46,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <p class="lede"> Chart calculation runs in your browser. Birth fields are not sent as part of calculation or a Cabinet of Twelve lookup; they leave your device only if you sign in to sync saved charts, share a link that carries them, or type them into an assistant message. Aura sends one public wallet address—not your birth or chart data—to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'} remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by default. We show no ads and use no cross-site tracking. </p>
 
       <h2 id="ai-integrations">AI integration candidates</h2>
-      <p>The public-sky ChatGPT candidate needs no birth information or account. When enabled, its tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no requests or results, writes no argument logs, uses uncacheable responses and refuses personal fields. Hosting and provider request metadata have separate retention policies; those policies require review before activation. It is live at zodiacs.org/mcp and has been submitted to the ChatGPT and Claude directories.</p>
+      <p>The public-sky ChatGPT candidate needs no birth information or account. When enabled, its tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no requests or results, writes no argument logs, uses uncacheable responses and refuses personal fields. Our host, Vercel, keeps routine request logs for this site, such as IP address, time and browser details, for 30 days. The assistant you use handles your conversation under its own privacy policy. It is live at zodiacs.org/mcp and has been submitted to the ChatGPT and Claude directories.</p>
       <p>The server keeps one count per day of how often each tool is used, and from which assistant. These counts hold no questions, answers, birth details, addresses or identifiers.</p>
       <p>The developer plugin computes locally over stdio and makes no outbound requests. An assistant connected to it can still send its tool arguments and results to its provider. Natal positions and exported records can reveal a birth instant; they are not anonymous. Keep them out of public links, analytics, screenshots and issues. The hosted candidate does not offer personal-chart computation or storage.</p>
 
