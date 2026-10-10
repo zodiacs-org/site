@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      CANDIDATE: '08d3eb7e97891951c94903ad1d37d92fa3b7a636'
+      CANDIDATE: '87e91325e53ce3d1240b877bf1c57b54a9529125'
       QUALIFIED_MAIN: '51b2c0d3bafe8b23d0a7f54433cd0c89c9435818'
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
