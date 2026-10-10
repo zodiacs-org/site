@@ -33,11 +33,10 @@ jobs:
         run: |
           git grep -n 'engine/full' -- src
           npx vitest run scripts/report-bundles.test.mjs src/lib/birth-time-window.test.ts src/lib/hooks/useEngine.test.ts
-      - name: Original build, type and complete unit suite
+      - name: Original build and type checks
         run: |
           npm run build
           npm run check
-          npm test
       - name: Original bundle size and engine isolation gates
         run: node scripts/report-bundles.mjs --fail
       - name: Actual mobile and desktop worker UI with cancellation and chart ownership
@@ -54,6 +53,8 @@ jobs:
           npm run test:phase1:acceptance
           npm run test:phase1:evidence
           node scripts/retain-birth-time-window-capture-proof.mjs
+      - name: Complete original unit suite after fresh source-bound captures
+        run: npm test
       - name: Retain compiled boundary diagnostics even after a gate failure
         if: always()
         run: |
