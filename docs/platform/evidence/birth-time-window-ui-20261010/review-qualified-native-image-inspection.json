@@ -56,7 +56,7 @@
   ],
   "observations": [
     "Both native summaries show Cancer, Leo or Virgo and the one-second sampling qualification outside collapsed details.",
-    "Both detail viewports show UTC notation, the selected 120-minute window, the pre-1972 convention and duration-share qualification. The inspected crops include all seven intervals and six switch instants.",
+    "Both detail viewports show UTC notation, the selected 120-minute window, the pre-1972 convention and duration-share qualification. The inspected crops include all seven interval rows and the collapsed switch-detail label showing six instants; the individual switch rows were not inspected in those crops.",
     "Desktop crops show entered chart cards below the separate window result. Mobile wraps within its column; the native browser independently asserts no horizontal overflow.",
     "Both Love difference crops show the same navigation pills and labels. Native comparison finds 24 differing pixels within [33,450,315,453], with equal 360x4180 image sizes. The actual new PNG is retained."
   ],

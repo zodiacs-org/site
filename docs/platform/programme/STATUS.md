@@ -44,6 +44,8 @@ PR [#703](https://github.com/zodiacs-org/site/pull/703) is still open. Final Sit
 Corrected native source `a8b58d8` passes run `38063604884`: 6989 unit tests with six existing skips, thirteen real controls in each mobile/desktop viewport, all fifteen original comparisons, three original cold samples and eighteen fresh captures. The original journal records no stall or retake. Seventeen captures match main; actual changed `love-360.png` and manifest are retained. Recovery `38064541802` verifies original ZIP SHA-256/CRC and file hashes. Actual current summary/detail and difference crops were inspected. PR703 remains unmerged pending final CI, fresh clean review, merge/post-merge and canonical production. Accepted weight remains 67.7/182.45.
 
 
+Fresh review on carrier `814727d` completes with development-worker P2 `4238230846`; it is not clean. Isolated source `018c319` registers the full boundary in the serve-only pipeline and adds actual development controls with the original expectations. Native syntax preflight `38068028005` passes the three exact corrected entry files on Node 22.23.3, without executing imports or a model. Actual corrected development/production qualification, final CI/review and deployed checks remain pending. The old-head numerical gate passes and the old full suite has nineteen jobs passed with performance still underway; neither establishes acceptance of the new source.
+
 The private solar scanner is merged under [engine #38](https://github.com/zodiacs-org/engine/pull/38)
 at `9a6317ac1f6516fbf518079c266453995d8f9341`, with the exact tested tree
 and ordered parents verified. [Source-bound qualification](../evidence/solar-terms-20261010/README.md)
