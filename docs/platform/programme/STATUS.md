@@ -14,12 +14,14 @@ completes the conditions the PR703 records left open. The reviewed head
 fresh Codex review found nothing. The merge keeps the reviewed tree. The
 post-merge Site Check passed all twenty jobs, among them both birth-window
 drives. Vercel `dpl_6sNuHibXGVrm67tBvp6dJHczAYGX` is READY at the merge and
-serves zodiacs.org and www.zodiacs.org. The unchanged browser drive, run
+served zodiacs.org and www.zodiacs.org. The unchanged browser drive, run
 against https://zodiacs.org, passed all thirteen controls in both viewports
-with no page error. The worker production served is byte-identical to a local
-build of the merge; of the 190 files the page reaches, 182 are identical to
-the build with the flags unset, and production's own flags and public keys
-account for the other eight.
+with no page error. It ran again after another session's #705 moved
+production to `ed1137cb`, this time with the observer failing on any break in
+source binding, and passed. The worker production served is byte-identical to
+local builds of both commits; of the 190 files the page reaches, 182 are
+identical to the build with the flags unset, and production's own flags and
+public keys account for the other eight.
 
 The interface shows one line ("Rising sign depends on the birth time: Cancer
 or Leo or Virgo.") with the intervals, switch times, houses and aspects on

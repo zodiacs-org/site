@@ -151,8 +151,16 @@ const after = await crawlPage('/birth-chart/');
 const sameGraph = JSON.stringify(before.assets.map((asset) => [asset.path, asset.sha256]).sort())
   === JSON.stringify(after.assets.map((asset) => [asset.path, asset.sha256]).sort());
 const differing = after.assets.filter((asset) => !asset.matchesLocalBuild).map((asset) => asset.path);
+// The run binds production to the source only if the worker each viewport
+// created is the local build's, byte for byte, and the page's module graph did
+// not change while the drive ran (a new deployment would change it).
+const sourceBinding = {
+  workersMatchLocalBuild: workers.length > 0 && workers.every((worker) => worker.status === 200 && worker.matchesLocalBuild),
+  pageGraphUnchangedDuringRun: sameGraph,
+};
+const drivePassed = driveReport.passed === true && exitCode === 0;
 const observation = {
-  schema: 'zodiacs.birth-time-window-production-observation.v1',
+  schema: 'zodiacs.birth-time-window-production-observation.v2',
   base: BASE,
   startedAt,
   finishedAt,
@@ -166,7 +174,7 @@ const observation = {
     drive: { path: DRIVE, sha256: sha256(await readFile(join(repo, DRIVE))), exitCode },
   },
   nativeBrowserExecution: {
-    passed: driveReport.passed === true && exitCode === 0,
+    passed: drivePassed,
     viewports: (driveReport.records ?? []).map((record) => ({
       name: record.name,
       viewport: record.viewport,
@@ -183,6 +191,8 @@ const observation = {
     screenshots,
     reportLimitationsNote: 'The drive writes fixed limitation sentences for its default local-preview mode. In this run ZODIACS_TEST_BASE_URL was ' + BASE + ', so its pages, scripts and worker came from canonical production.',
   },
+  sourceBinding,
+  passed: drivePassed && sourceBinding.workersMatchLocalBuild && sourceBinding.pageGraphUnchangedDuringRun,
   assetIdentity: {
     workers,
     pageGraphBefore: before,
@@ -199,11 +209,13 @@ const observation = {
 const observationBytes = Buffer.from(JSON.stringify(observation, null, 2) + '\n');
 await writeFile(join(out, 'observation.json'), observationBytes);
 console.log('OBSERVATION ' + JSON.stringify({
-  passed: observation.nativeBrowserExecution.passed,
+  passed: observation.passed,
+  drivePassed,
+  sourceBinding,
   workers: workers.map((worker) => [worker.path, worker.matchesLocalBuild]),
   assets: after.assets.length,
   differing,
   sameGraph,
   sha256: sha256(observationBytes),
 }));
-if (!observation.nativeBrowserExecution.passed) process.exitCode = 1;
+if (!observation.passed) process.exitCode = 1;
