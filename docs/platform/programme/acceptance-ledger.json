@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-09 checkpoint 24 proposal (canonical Organization and existing engine/npm/PyPI identity associations; private CLI, hosted clients and wheel progress; public delivery and missing capabilities remain open)",
+  "asOf": "2026-10-10 checkpoint 25 qualified (exact merged main, complete final/post-merge gates and canonical production; private UI/solar preparation and partial public adoption baseline remain unaccepted)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -119,9 +119,14 @@
       "weight": 0.25,
       "gate": "registry downloads, repository stars/forks/dependents, MCP Registry entries, citing domains recorded with date and method",
       "dependsOn": [],
-      "status": "not-started",
+      "status": "partial",
       "release": "none",
-      "evidence": []
+      "evidence": [
+        "docs/platform/evidence/public-adoption-baseline-20261010/README.md",
+        "docs/platform/evidence/public-adoption-baseline-20261010/observation.json",
+        "docs/platform/evidence/public-adoption-baseline-20261010/review.json"
+      ],
+      "notes": "Native read-only run 38049209045, source 042e420925d91ecb6b41ba4120bfdb6c04e2aa49, retains seven original dated public responses. Engine npm downloads, third-party PyPIStats windows, public repository metadata, the anonymous engine dependents page and the named MCP Registry search are recorded with method. MCP npm download statistics are unavailable (404, not zero); the dependents page reports zero listed public repositories/packages, which is not proof of no use; the Registry query is a named search, not a global census. Citation discovery found automatic mirrors/unrelated matches, without a complete adoption or citing-domain census. No P0.7a accepted weight or private analytics baseline."
     },
     {
       "id": "P0.7b",
@@ -2467,9 +2472,17 @@
       "dependsOn": [
         "B2.a"
       ],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "partial",
+      "release": "unmerged",
+      "evidence": [
+        "docs/platform/evidence/birth-time-window-ui-20261010/README.md",
+        "docs/platform/evidence/birth-time-window-ui-20261010/focused-failure.json",
+        "docs/platform/evidence/birth-time-window-ui-20261010/native-image-inspection.json",
+        "docs/platform/evidence/birth-time-window-ui-20261010/focused-qualification.json",
+        "docs/platform/evidence/birth-time-window-ui-20261010/qualified-artifact-recovery.json",
+        "docs/platform/evidence/birth-time-window-ui-20261010/qualified-native-image-inspection.json"
+      ],
+      "notes": "Private English full-chart pilot passes focused native run 38051943389 on source 053803288412670635424cd1d78379dcec48110a: original build/type/bundle/isolation gates, 58 focused controls, actual worker lifetime and chart ownership in both viewports, original fifteen-case visual gate, three original cold Lighthouse samples and eighteen fresh source-bound captures. Original failure 38051045669 and the source correction remain retained. SHA-256/CRC recovery 38052728808 binds every retained image/report to the original artifact; actual mobile/desktop summary/detail screenshots were inspected. Complete final CI, fresh review, merge/post-merge and production verification remain pending. No new thousand-window accuracy run or B2.b acceptance is claimed."
     },
     {
       "id": "B2.c",

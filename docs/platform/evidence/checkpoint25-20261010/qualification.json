@@ -1,0 +1,225 @@
+{
+  "schema": "zodiacs.checkpoint25-qualified-main.v1",
+  "observedAt": "2026-10-10T11:49:04Z",
+  "scope": "Exact merged main, not the held guide/preparation branch",
+  "pr": 697,
+  "finalHead": "94cbb7a7913d7b878729a93935e9e8ccd64a74a4",
+  "merge": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "tree": "342f138fce55eececf9a1d23e338edbe7ab57cbb",
+  "parents": [
+    "943d11decff8c5cd417d315637aac2cf8c55fa01",
+    "94cbb7a7913d7b878729a93935e9e8ccd64a74a4"
+  ],
+  "finalFull": {
+    "run": 38044354133,
+    "jobsPassed": 20
+  },
+  "numerical": {
+    "run": 38044354114,
+    "benchmarksPassed": 21,
+    "existingVersionBoundSkips": 1,
+    "bindingTamperControlsPassed": 16
+  },
+  "freshReview": {
+    "head": "94cbb7a7913d7b878729a93935e9e8ccd64a74a4",
+    "triggerIssueComment": 6080584578,
+    "cleanReaction": 558499604,
+    "cleanReactionAt": "2026-10-10T10:21:16Z",
+    "newFindings": 0,
+    "summaryUpdatedAt": "2026-10-10T10:21:14Z",
+    "completedAt": "2026-10-10T10:21:13.512518Z",
+    "trigger": "Draft marked ready"
+  },
+  "postMerge": {
+    "run": 38047052485,
+    "attempt": 1,
+    "conclusion": "success",
+    "head": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+    "jobs": [
+      {
+        "id": 114198582950,
+        "name": "Swiss output removal and independent references",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583079,
+        "name": "Phase 7 Living Chart drive",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583106,
+        "name": "Phase 6 assistant quota SQL",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583131,
+        "name": "Legacy wing drift",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583178,
+        "name": "Phase 4 compatibility invite SQL",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583211,
+        "name": "Build & Check",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583219,
+        "name": "Phase 3 delivery SQL",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583220,
+        "name": "Zodiac Games SQL",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583225,
+        "name": "Registry Aura drive",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583240,
+        "name": "Sky Watch subscription lifecycle",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583249,
+        "name": "Build with production's feature flags",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583258,
+        "name": "Phase 4 sharing drive",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583264,
+        "name": "Saved calculation records lifecycle drive",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583274,
+        "name": "Saved calculation records under the real account coordinator",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583275,
+        "name": "Phase 3 post-chart drive",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583292,
+        "name": "Time zone data drift",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583307,
+        "name": "Phase 3 push drive",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583318,
+        "name": "Account Sync v2 SQL",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583365,
+        "name": "Phase 7 Living Chart sync SQL",
+        "conclusion": "success"
+      },
+      {
+        "id": 114198583386,
+        "name": "Phase 3 PWA drive",
+        "conclusion": "success"
+      }
+    ],
+    "decodedMainJobLog": {
+      "job": 114198583211,
+      "bytes": 1537090,
+      "sha256": "98039f9dad2ee90f1b5d752463b4f92f6f047ba7ea322927f150982d3de0304e",
+      "format": "Exact decoded GitHub job-log connector text; not original compressed wire bytes."
+    },
+    "journal": "2026-10-10T11:45:59.5846718Z Runner stalls: none; no sample was retaken.",
+    "artifact": {
+      "run": 38047052485,
+      "headSha": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+      "conclusion": "success",
+      "attempt": 1,
+      "checkedOutSource": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+      "checkedOutTree": "342f138fce55eececf9a1d23e338edbe7ab57cbb",
+      "checkedOutParents": [
+        "943d11decff8c5cd417d315637aac2cf8c55fa01",
+        "94cbb7a7913d7b878729a93935e9e8ccd64a74a4"
+      ],
+      "artifact": 11668980949,
+      "zipBytes": 158917440,
+      "zipSha256": "4a86a91e8c5e83b894274ab098e42543f9c6b4add6aaad7fdce9ee73baa4181c",
+      "crcVerified": true
+    },
+    "rawLhrObservations": 90,
+    "invalidOrStalledReports": 0,
+    "observationPath": "docs/platform/evidence/home-poster-loading-20261010/post-merge-artifact-observation.json"
+  },
+  "production": {
+    "run": 38047469468,
+    "producer": "e5676d2a3c2eea6befc1e1ee50a2a5b2e2f03b2e",
+    "deployment": "dpl_CExuEbaorgd3MCMj5b3XxWhMeRFE",
+    "source": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+    "state": "READY",
+    "canonicalAliases": [
+      "zodiacs.org",
+      "www.zodiacs.org"
+    ],
+    "aliasSourceObservedAt": "2026-10-10T11:08:20Z",
+    "anonymousIdentityGetObservations": 16,
+    "anonymousSourceAssetGetObservations": 11,
+    "files": [
+      {
+        "path": "docs/platform/evidence/platform-identities-20261009/production-observation.json",
+        "bytes": 13101,
+        "sha256": "ba45c93782f71e91bdc81b42bb27b0833033366f312c5eb7577a7ef611c0f135"
+      },
+      {
+        "path": "docs/platform/evidence/checkpoint23-20261009/production-source-observation.json",
+        "bytes": 3616,
+        "sha256": "c804c86aa49fde344da4d40b23520c55c3ab9ebb1f37f8d1b5f636a2cca7f565"
+      }
+    ],
+    "firstStartupFailureRun": 38047375309
+  },
+  "acceptance": {
+    "before": 64,
+    "added": 3.7,
+    "after": 67.7,
+    "denominator": 182.45,
+    "percentage": 37.106056453822966,
+    "units": [
+      {
+        "id": "P2.A.house.koch",
+        "weight": 0.2
+      },
+      {
+        "id": "P2.A.houses.co-ascendants",
+        "weight": 0.25
+      },
+      {
+        "id": "B4.a",
+        "weight": 3
+      },
+      {
+        "id": "S7",
+        "weight": 0.25
+      }
+    ],
+    "limitations": [
+      "Koch/co-ascendant comparison uses the owner-delegated shared UT1 interpretation and judged 1850–2049 window; original failures and selection history remain.",
+      "B4.a publishes raw tool replies; private assistant answers and B4.b remain unfinished.",
+      "No birth-time UI, solar-term numerical accuracy, guide/public package delivery, private clearance or stable/publication approval is accepted here."
+    ]
+  },
+  "metadataMethod": "Workflow/job/merge/review/deployment fields are authenticated connector/API observations; original native production and artifact report files retain their own exact byte identities."
+}

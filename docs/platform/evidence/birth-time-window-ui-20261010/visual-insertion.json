@@ -1,0 +1,350 @@
+{
+  "schema": "zodiacs.birth-time-window-visual-insertion.v1",
+  "producer": {
+    "source": "45e749f2313f6034aa2c9edf5e9a97bf18fd6cc6",
+    "run": "38051943389",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "053803288412670635424cd1d78379dcec48110a",
+  "qualifiedMain": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "originalDriver": {
+    "path": "tests/visual/visual-regression.mjs",
+    "sha256": "411087748c814712d9450ff9d8af7eb1a9044375f066b46b60badd982751090d",
+    "probeSha256": "d8807a1db86b31d7078658519e526d6ebd22b1b35a9ffe77123d4dddd44b47db",
+    "restoredBeforeFullComparison": true
+  },
+  "prefixSuffix": [
+    {
+      "stem": "birth-chart-kahlo-desktop",
+      "previousDimensions": {
+        "width": 1440,
+        "height": 9712
+      },
+      "actualDimensions": {
+        "width": 1440,
+        "height": 9822
+      },
+      "addedHeight": 110,
+      "geometry": {
+        "entry": {
+          "top": 1172.515625,
+          "bottom": 1254.515625,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 82
+        },
+        "previous": {
+          "top": 1057.734375,
+          "bottom": 1120.515625,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 62.78125
+        },
+        "next": {
+          "top": 1282.515625,
+          "bottom": 1330.90625,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 48.390625
+        },
+        "text": "If your birth time is approximate, check which parts of the chart could change.Check a time window",
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "prefix": {
+        "oldY": 0,
+        "newY": 0,
+        "height": 1120,
+        "pixels": 1612800,
+        "differences": 0,
+        "ratio": 0
+      },
+      "suffix": {
+        "oldY": 1173,
+        "newY": 1283,
+        "height": 8539,
+        "pixels": 12296160,
+        "differences": 0,
+        "ratio": 0
+      },
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop.png",
+      "bytes": 1412941,
+      "sha256": "cee6f03918e50efe6d457e414a6905467e460b701a396cd7be3d92a76b18082d",
+      "previousSha256": "bcfdb8aeea1a1b0a0ac2f15a82cb8ddfb5d0cad44fed41d21ba3db4f4644fa4c"
+    },
+    {
+      "stem": "birth-chart-kahlo-mobile",
+      "previousDimensions": {
+        "width": 390,
+        "height": 14171
+      },
+      "actualDimensions": {
+        "width": 390,
+        "height": 14295
+      },
+      "addedHeight": 124,
+      "geometry": {
+        "entry": {
+          "top": 1189.828125,
+          "bottom": 1295.828125,
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 106
+        },
+        "previous": {
+          "top": 1059.859375,
+          "bottom": 1147.828125,
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 87.96875
+        },
+        "next": {
+          "top": 1313.828125,
+          "bottom": 1407,
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 93.171875
+        },
+        "text": "If your birth time is approximate, check which parts of the chart could change.Check a time window",
+        "viewport": 390,
+        "documentWidth": 390
+      },
+      "prefix": {
+        "oldY": 0,
+        "newY": 0,
+        "height": 1147,
+        "pixels": 447330,
+        "differences": 88,
+        "ratio": 0.00019672277736793866
+      },
+      "suffix": {
+        "oldY": 1190,
+        "newY": 1314,
+        "height": 12981,
+        "pixels": 5062590,
+        "differences": 0,
+        "ratio": 0
+      },
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-mobile.png",
+      "bytes": 1302257,
+      "sha256": "0f951a42bc132c2ab7c910731c779a151cf61d156d423535f361b01155e71594",
+      "previousSha256": "3b30595ad6827c098da59b519b94092b17ccb9cded12f4ad83fef70d3a4ae76d"
+    },
+    {
+      "stem": "birth-chart-kahlo-desktop-reduced-motion",
+      "previousDimensions": {
+        "width": 1440,
+        "height": 9712
+      },
+      "actualDimensions": {
+        "width": 1440,
+        "height": 9822
+      },
+      "addedHeight": 110,
+      "geometry": {
+        "entry": {
+          "top": 1172.515625,
+          "bottom": 1254.515625,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 82
+        },
+        "previous": {
+          "top": 1057.734375,
+          "bottom": 1120.515625,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 62.78125
+        },
+        "next": {
+          "top": 1282.515625,
+          "bottom": 1330.90625,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 48.390625
+        },
+        "text": "If your birth time is approximate, check which parts of the chart could change.Check a time window",
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "prefix": {
+        "oldY": 0,
+        "newY": 0,
+        "height": 1120,
+        "pixels": 1612800,
+        "differences": 0,
+        "ratio": 0
+      },
+      "suffix": {
+        "oldY": 1173,
+        "newY": 1283,
+        "height": 8539,
+        "pixels": 12296160,
+        "differences": 14,
+        "ratio": 0.0000011385668371263873
+      },
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop-reduced-motion.png",
+      "bytes": 1412753,
+      "sha256": "eadb696bf6ce6c1f82cdbed77d489a6f491199a821f045cf56926c6e5862ebaa",
+      "previousSha256": "b5b1529881ed2e4572a17b5ca2e51690220ed6a6b626c35c97b48d6c91b34eab"
+    }
+  ],
+  "unchangedReferences": [
+    {
+      "path": "tests/visual/baselines/linux/home-desktop.png",
+      "bytes": 2074219,
+      "sha256": "f376cab3b5a316b4e24677121a3d01c0848f81111415bc89d866abf10052bbf4"
+    },
+    {
+      "path": "tests/visual/baselines/linux/home-mobile.png",
+      "bytes": 929881,
+      "sha256": "06983bbb06d53ce8feaf91cef20d7c8cc51cae60fd49cc4258d66b8ef8a59ad7"
+    },
+    {
+      "path": "tests/visual/baselines/linux/home-desktop-reduced-motion.png",
+      "bytes": 2075526,
+      "sha256": "750b3580f96271f10147dd21dbc7d7662280ac41ce27ec008b6822ab2077ccf4"
+    },
+    {
+      "path": "tests/visual/baselines/linux/aries-desktop.png",
+      "bytes": 1080765,
+      "sha256": "4b4774c22c4c416d9b66c74e210472742ebcb9834c21ef93399585c8fc576158"
+    },
+    {
+      "path": "tests/visual/baselines/linux/aries-mobile.png",
+      "bytes": 945562,
+      "sha256": "3608ed66bd716832ab5bbb5d248ea807606e3c83b6c696cc25205830f58f11ae"
+    },
+    {
+      "path": "tests/visual/baselines/linux/aries-desktop-reduced-motion.png",
+      "bytes": 1080765,
+      "sha256": "4b4774c22c4c416d9b66c74e210472742ebcb9834c21ef93399585c8fc576158"
+    },
+    {
+      "path": "tests/visual/baselines/linux/events-hub-desktop.png",
+      "bytes": 1678437,
+      "sha256": "5a954f9ef7bf60dc173cf4fa7b5af672f9524b027ad368ef0dad5e92a56fdbb3"
+    },
+    {
+      "path": "tests/visual/baselines/linux/events-hub-mobile.png",
+      "bytes": 1444821,
+      "sha256": "d7f980a2adcf3937e2b4ae6a07fd65c794b1ac52e0e144bdd9e985cceb8892f1"
+    },
+    {
+      "path": "tests/visual/baselines/linux/events-hub-desktop-reduced-motion.png",
+      "bytes": 1677791,
+      "sha256": "ed56d15d4a9df07feba710f679a5b79451778e2c36c00a8dec6ed6f91d986d2d"
+    },
+    {
+      "path": "tests/visual/baselines/linux/event-full-moon-desktop.png",
+      "bytes": 730386,
+      "sha256": "f09ed0231c152755a1b2a829bbabc1121398707ada8cf3cbcfe03ae060fb0c44"
+    },
+    {
+      "path": "tests/visual/baselines/linux/event-full-moon-mobile.png",
+      "bytes": 583674,
+      "sha256": "44ff0d36f3c8c4727458257d2afe679d35584d16c908a2fd886074ed20c1c425"
+    },
+    {
+      "path": "tests/visual/baselines/linux/event-full-moon-desktop-reduced-motion.png",
+      "bytes": 730386,
+      "sha256": "f09ed0231c152755a1b2a829bbabc1121398707ada8cf3cbcfe03ae060fb0c44"
+    }
+  ],
+  "darwinUnchanged": [
+    {
+      "path": "tests/visual/baselines/darwin/home-desktop.png",
+      "bytes": 2068686,
+      "sha256": "d637afc150c68b9253c1cf856b34ee861c4e386072d4ee7ffed4550067e10392"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/home-mobile.png",
+      "bytes": 920785,
+      "sha256": "0b37ea3afcae36eaf05f54948bf7cbe19761b6340b1469046e8eb521688d698f"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/home-desktop-reduced-motion.png",
+      "bytes": 2067713,
+      "sha256": "7fef651536d5ac1cf37c2721f8d8935d062986c1bca68fd507843d22a4f1816b"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/birth-chart-kahlo-desktop.png",
+      "bytes": 1415118,
+      "sha256": "f511dc00e423933087b4b92211222de55f20f71e905f36c25bfc6d029314baf7"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/birth-chart-kahlo-mobile.png",
+      "bytes": 1325486,
+      "sha256": "7432c91dbda4e84f1bc2e6a84013dda72c060265176e9158025cfdecdafdbee4"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/birth-chart-kahlo-desktop-reduced-motion.png",
+      "bytes": 1414253,
+      "sha256": "436b1a893658f5dfd130adeb46d18ae87faa3a539936a987fc22ec3e4e726a45"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/aries-desktop.png",
+      "bytes": 1144504,
+      "sha256": "47b95d272b42d28b9390454b7fac225284a06493d5338c0fc31b50736a13a2f2"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/aries-mobile.png",
+      "bytes": 1017028,
+      "sha256": "ae889dfa2a5af02d91f59c16a8f42061431780bcd14210aa95d5db34621b875c"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/aries-desktop-reduced-motion.png",
+      "bytes": 1144504,
+      "sha256": "47b95d272b42d28b9390454b7fac225284a06493d5338c0fc31b50736a13a2f2"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/events-hub-desktop.png",
+      "bytes": 1817153,
+      "sha256": "9c414da3389b78e22baea6eef7362d4529fb529232810afc30cfd2829e018142"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/events-hub-mobile.png",
+      "bytes": 1590010,
+      "sha256": "5557275d6b8d1fcd0c13a7f7b2bd61ed5d6b4412a83104f51a3d1c1e88e5c869"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/events-hub-desktop-reduced-motion.png",
+      "bytes": 1817088,
+      "sha256": "1eda3f7748700e6770b36f0659537d71b9adea6807b84c0dde5087b0df6ee004"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/event-full-moon-desktop.png",
+      "bytes": 747979,
+      "sha256": "ba35c17493c0e3b34e51f54f485f6daa003b7ca830aa13bcb5e120751559ff61"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/event-full-moon-mobile.png",
+      "bytes": 624210,
+      "sha256": "8d933d080c26d16bad9987d8beb3207a0fb1d6f56e7614bb749fa09d4e6c9a19"
+    },
+    {
+      "path": "tests/visual/baselines/darwin/event-full-moon-desktop-reduced-motion.png",
+      "bytes": 747979,
+      "sha256": "ba35c17493c0e3b34e51f54f485f6daa003b7ca830aa13bcb5e120751559ff61"
+    }
+  ],
+  "originalFullImageComparison": {
+    "cases": 15,
+    "tolerance": 0.001,
+    "passed": true
+  },
+  "limitations": [
+    "The region comparisons diagnose the predefined entry insertion, without replacing the final original fifteen-case full-image gate.",
+    "Only three intended Linux birth-chart references are refreshed; twelve unrelated Linux and every Darwin reference remain unchanged.",
+    "No browser timing or independent numerical accuracy claim."
+  ]
+}

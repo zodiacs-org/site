@@ -1,0 +1,92 @@
+{
+  "schema": "zodiacs.checkpoint23-production-source.v1",
+  "observedAt": "2026-10-10T11:11:04.759Z",
+  "expectedMergedSource": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "producer": {
+    "source": "e5676d2a3c2eea6befc1e1ee50a2a5b2e2f03b2e",
+    "run": "38047469468",
+    "node": "v22.23.3"
+  },
+  "footerSource": {
+    "url": "https://raw.githubusercontent.com/zodiacs-org/site/41909a8294b29104f8b445f56e0cdd280379bcb9/src/styles/site-footer.css",
+    "bytes": 12275,
+    "sha256": "7261be135f576dfe5f450dda640845668cf725a63b2b6bc00170c6e602049cba"
+  },
+  "observations": [
+    {
+      "url": "https://zodiacs.org/thesis/",
+      "status": 200,
+      "bytes": 335890,
+      "sha256": "a3e4ec098431c53af02faa55bf778e1185e6ea03f2230df0d40e276eeb61575e"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/zodiacs-org/site/41909a8294b29104f8b445f56e0cdd280379bcb9/src/styles/site-footer.css",
+      "status": 200,
+      "bytes": 12275,
+      "sha256": "7261be135f576dfe5f450dda640845668cf725a63b2b6bc00170c6e602049cba"
+    },
+    {
+      "url": "https://zodiacs.org/assets/art/zodiac-clock-768.avif",
+      "status": 200,
+      "bytes": 13476,
+      "sha256": "7462ce4f1ddde007afd0543f458632861ef87ffb058d455ac5c15a2898752327",
+      "gitBlobSha1": "6d72c93a29ab53dfb9e0d641b64792a37953b266"
+    },
+    {
+      "url": "https://zodiacs.org/assets/art/zodiac-clock.mp4",
+      "status": 200,
+      "bytes": 2136544,
+      "sha256": "81d931ea58adacf363e80bdda0d6e4511c77ee2a0d68323ff9ad390c9dbc631e",
+      "gitBlobSha1": "c8af06736dfc26fe7eb29a08776d206496ffdfe6"
+    },
+    {
+      "url": "https://zodiacs.org/developers/sky-benchmark/v0/items.json",
+      "status": 200,
+      "bytes": 64964,
+      "sha256": "8521a288178929e18f9598bda34d7c70f975e9b168a4b7107920ee657f6fe532"
+    },
+    {
+      "url": "https://zodiacs.org/developers/sky-benchmark/v0/key.json",
+      "status": 200,
+      "bytes": 100497,
+      "sha256": "4d1ec5f76cce20830962d9bb0c876ad03fc85a9ace8a24a78f28ff4bd36abcb2"
+    },
+    {
+      "url": "https://zodiacs.org/developers/sky-benchmark/v0/tool-answers.json",
+      "status": 200,
+      "bytes": 793254,
+      "sha256": "7477701a8aeb90b23fe5102b66696017f02a47c1a7f131a91937c536f8ac092c"
+    },
+    {
+      "url": "https://zodiacs.org/developers/sky-benchmark/v0/scorer.mjs",
+      "status": 200,
+      "bytes": 25047,
+      "sha256": "728355f27bccf8713b09125f08044895c85e66b54edc77c7eea4e39c0df28217"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/zodiacs-org/engine/e790362bddf28016405df4164e66baea057c4f19/artifacts/zodiacs-engine-1.0.0-rc.2.tgz",
+      "status": 200,
+      "bytes": 287011,
+      "sha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002"
+    },
+    {
+      "url": "https://zodiacs.org/developers/engine/",
+      "status": 200,
+      "bytes": 103992,
+      "sha256": "a0c21406b6fbcc9cee42bf09c8b4c430d83e88fa564b0b13680e77b3b382daba"
+    },
+    {
+      "url": "https://zodiacs.org/api/v1/openapi.json",
+      "status": 200,
+      "bytes": 369938,
+      "sha256": "68856e9be424013c9800aed59d27cb6e495c71f2452e58db8d49288c5cd4cf8f"
+    }
+  ],
+  "passed": true,
+  "failure": null,
+  "limitations": [
+    "Eleven anonymous GET observations including the exact merged source canonical footer CSS; 11 GET and seven POST are OpenAPI operation counts, not requests made.",
+    "Source assets and advertised metadata only; no browser timing, private clearance, independent accuracy, registry publication or assistant trial claim.",
+    "Exact deployment source and domain assignment require separate Vercel metadata verification."
+  ]
+}

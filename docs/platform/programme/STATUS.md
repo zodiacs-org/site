@@ -1,3 +1,69 @@
+Checkpoint 25, 2026-10-10 (Asia/Bangkok): merged and deployed checkpoint
+23/24 records qualified on exact main `41909a8294b29104f8b445f56e0cdd280379bcb9`
+([site #697](https://github.com/zodiacs-org/site/pull/697)).
+
+**Overall delivery: 37%** (37.106% to three decimals) — 67.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. The increase from the
+previous qualified checkpoint is 3.7: Koch 0.2, co-ascendants 0.25, B4.a 3
+and S7 0.25. All 151 fixed units, weights, scientific tolerances, visual
+limits and performance budgets are unchanged.
+
+[Exact-source qualification](../evidence/checkpoint25-20261010/README.md)
+binds the tested head, merge tree and ordered parents to all twenty final
+Site Check jobs, the numerical gate, clean fresh review, all twenty
+post-merge jobs and canonical production. The original post-merge journal
+records no runner stall or retaken sample. The ninety raw Lighthouse
+observations were recovered from the original ZIP after verifying its
+digest and CRC; they were not replaced by another run's observations.
+Production verification joins the READY deployment on the exact merge
+source to sixteen anonymous identity checks and eleven source/asset checks.
+
+The owner's specific delegation ratifies shared-UT1 Koch comparisons and
+co-ascendants judged over 1850–2049; original failures and post-result
+selection history remain visible. B4.a publishes tool replies as raw answers.
+Private assistant answers and B4.b remain unfinished. S7 connects existing
+engine/npm/PyPI identities; it does not invent a Registry entry or publish
+the private packages.
+
+The birth-time-window UI is private preparation. Corrected source
+`053803288412670635424cd1d78379dcec48110a` passes
+[focused native qualification](../evidence/birth-time-window-ui-20261010/README.md):
+real mobile/desktop worker controls, original build/type/bundle gates,
+fifteen full-image comparisons, three cold birth-chart Lighthouse samples
+and eighteen fresh captures. Its original visual failure and source
+correction remain retained; no sample was retaken. The original passed
+artifact's SHA-256/CRC and retained image/report identities are verified,
+and actual summary/detail images were inspected. B2.b stays partial and
+unmerged until complete final CI, fresh review, merge/post-merge and
+production checks finish; it adds no accepted weight. The existing
+B2.a/B2.c thousand-window records are not a new accuracy run.
+
+The private solar scanner's source identity integration and in-scan mutation
+controls are under [engine #38](https://github.com/zodiacs-org/engine/pull/38).
+Complete PR workflows pass on `10b9b7ce0cd05c6d54f15aa7c07974896788a215`,
+including all nine core CI jobs and fourteen native source controls.
+Fresh review found that stored receipts also need the original identity
+shape; revised source `7df5b5df12e12dc5c87c50e76b4bae5b1d449314` is now
+under validation. Clean review, merge and post-merge qualification remain
+pending. Actual ephemeris execution, normative clock/frame equivalence,
+independent two-second accuracy, completeness and public delivery remain
+unfinished; no solar unit is accepted.
+
+The [public adoption observation](../evidence/public-adoption-baseline-20261010/README.md)
+records dated public downloads, repository metadata and the named Registry
+query with provider methods. Unavailable MCP package download statistics,
+incomplete dependents/citation discovery and private analytics remain gaps;
+P0.7a is partial and unaccepted. The ninety-file FAQ source locator remains
+a locator, not a semantic audit. A6's legacy static sky data still needs
+source-bound provenance; it cannot be stamped with the current engine
+version merely because the build repackages it.
+
+Stable publication prerequisites remain in
+[engine #32](https://github.com/zodiacs-org/engine/issues/32). Guide routes
+remain closed and unpublished. No new private clearance, package publication,
+hosting/security change or outreach is claimed. Earlier checkpoint proposals
+and original failed verdicts remain below.
+
 Checkpoint 24 proposal, 2026-10-09 (Asia/Bangkok): existing engine,
 npm and PyPI identities in the shared consumer Organization.
 

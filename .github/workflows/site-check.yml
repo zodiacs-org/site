@@ -277,6 +277,9 @@ jobs:
       - name: Widget Lighthouse thresholds
         run: npm run test:widgets:lighthouse
 
+      - name: Birth-time window native worker and chart ownership
+        run: node tests/birth-time-window-drive.mjs
+
       - name: Upload Phase 1 browser and performance evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -284,6 +287,7 @@ jobs:
           name: phase-1-browser-performance-${{ github.run_id }}
           path: |
             tests/visual/artifacts/
+            docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json
             docs/acceptance/phase4-sharing/chart-sheet-33-percent.png
           if-no-files-found: ignore
           retention-days: 90
