@@ -14,6 +14,8 @@ export interface StudioInput {
   longitude: string;
   houseSystem: HouseSystem;
   local?: { resolution: NatalLocalResolution; flags: ChartFlag[] };
+  /** The city the person chose, for the chart's header only: not calculated with, recorded or shared. */
+  place?: string;
 }
 export const EXAMPLE: StudioInput = { date: '1990-06-15', time: '12:00', timeKnown: true, latitude: '51.5074', longitude: '-0.1278', houseSystem: 'placidus' };
 export const houseName = (system: HouseSystem) => system === 'whole' ? 'Whole sign' : 'Placidus';

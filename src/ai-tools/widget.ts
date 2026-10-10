@@ -3,10 +3,10 @@ export const WIDGET_HTML = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Zodiacs sky calendar</title><style>
 :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0c0e16;color:#eef1f7}body{margin:0;padding:20px;max-width:760px}h1{font:normal 28px Georgia,serif;margin:0 0 12px}p{line-height:1.5;color:#b9bfce}ol{padding-left:22px}li{padding:12px 0;border-bottom:1px solid #272c3b}time{display:block;font-size:14px;color:#b9bfce;margin-top:5px}a{color:#c3d4ff;text-underline-offset:3px}nav{display:flex;flex-wrap:wrap;gap:16px;margin-top:20px}#status{min-height:20px}form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{display:grid;gap:6px;font-size:14px}input,select,button{font:inherit;color:inherit;background:#181c29;border:1px solid #454c61;border-radius:6px;padding:10px;min-width:0}button{cursor:pointer;align-self:end}button:disabled{opacity:.55;cursor:default}input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #c3d4ff;outline-offset:3px}#controls-help{font-size:13px} @media(max-width:420px){form{grid-template-columns:1fr}}
-</style></head><body><main><h1>Sky calendar</h1><p id="status" role="status">Ask about a week or month, or choose dates below.</p><form id="calendar" aria-describedby="controls-help"><label>From<input id="from" type="date" required></label><label>To<input id="to" type="date" required></label><label>Times for<select id="zone"></select></label><button id="update" type="submit" disabled>Show these dates</button></form><p id="controls-help">Up to 92 days at a time.</p><ol id="events"></ol><p id="coverage"></p><nav id="links" aria-label="Explore on Zodiacs"></nav></main>
+</style></head><body><main><h1>Sky calendar</h1><p id="status" role="status">Ask about a week or month, or choose dates below.</p><form id="calendar" aria-describedby="controls-help"><label>From<input id="from" type="date" required></label><label>To<input id="to" type="date" required></label><label>Times for<select id="zone"></select></label><button id="update" type="submit" disabled>Show these dates</button></form><p id="controls-help">Up to 92 days at a time.</p><ol id="events"></ol><p id="coverage"></p><p id="keep"></p><nav id="links" aria-label="Explore on Zodiacs"></nav></main>
 <script>
 (() => {
-  const status = document.getElementById('status'), list = document.getElementById('events'), coverage = document.getElementById('coverage'), links = document.getElementById('links');
+  const status = document.getElementById('status'), list = document.getElementById('events'), coverage = document.getElementById('coverage'), keep = document.getElementById('keep'), links = document.getElementById('links');
   const form = document.getElementById('calendar'), from = document.getElementById('from'), to = document.getElementById('to'), zone = document.getElementById('zone'), update = document.getElementById('update');
   const COMMON = ['America/Los_Angeles','America/Chicago','America/New_York','America/Sao_Paulo','Europe/London','Europe/Paris','Europe/Moscow','Africa/Lagos','Asia/Dubai','Asia/Kolkata','Asia/Bangkok','Asia/Singapore','Asia/Tokyo','Australia/Sydney','UTC'];
   const place = name => name === 'UTC' || name === 'Etc/UTC' ? 'UTC' : name.split('/').pop().replace(/_/g, ' ');
@@ -40,7 +40,7 @@ export const WIDGET_HTML = `<!doctype html>
   }
   function render(result) {
     if (!result || result.tool !== 'get_upcoming_events') return;
-    list.replaceChildren(); links.replaceChildren(); coverage.textContent = '';
+    list.replaceChildren(); links.replaceChildren(); keep.replaceChildren(); coverage.textContent = '';
     if (!result.ok) { status.textContent = result.error?.message || 'The calendar could not be updated.'; return; }
     last = result;
     const data = result.data;
@@ -54,6 +54,9 @@ export const WIDGET_HTML = `<!doctype html>
     }
     if (!data.events.length) status.textContent += ' · Nothing changes in these dates.';
     coverage.textContent = 'Shows planets changing sign, turning retrograde or direct, and new and full Moons. It does not list eclipses.';
+    // One way back: the site's page for adding its public sky dates to a person's own calendar.
+    const subscribe = document.createElement('a'); subscribe.href = 'https://zodiacs.org/sky-calendar/'; subscribe.target = '_blank'; subscribe.rel = 'noopener noreferrer';
+    subscribe.textContent = 'Add new and full Moons, eclipses and retrogrades to your own calendar'; keep.append(subscribe);
     for (const link of result.links || []) {
       let url; try { url = new URL(link.url); } catch { continue; }
       if (url.origin !== 'https://zodiacs.org' || url.search || url.hash) continue;

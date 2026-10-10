@@ -2,9 +2,9 @@
   "scope": "Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance",
   "timezone": "Asia/Bangkok",
   "window": [
-    "2026-10-06",
     "2026-10-07",
-    "2026-10-08"
+    "2026-10-08",
+    "2026-10-09"
   ],
   "passed": [
     "sign picker",
@@ -15,10 +15,17 @@
     "why this reading",
     "375px phone: no sideways scroll, reading on the first screen",
     "text injection",
+    "a quiet line, not the sign picker, while a reading is on its way",
+    "the sign picker after a short wait when no reading comes",
     "no external requests",
     "Chart Studio opens on birth details",
     "unknown birth time path",
-    "labelled example chart",
+    "header in plain words: date, \"Birth time unknown\", or clock time and city",
+    "Your week: plain dates on the device clock, closest first, at most five",
+    "Your week without a birth time leaves out the Moon, rising sign and Midheaven",
+    "Your week matches the same calculation in Node, with and without a birth time",
+    "Your week ready within a second, in a worker or, where workers are refused, on the page",
+    "labelled example chart without Your week",
     "both panels report their content height to an MCP Apps host",
     "links open through an MCP Apps host that offers it",
     "ChatGPT keeps the reviewed panels"
