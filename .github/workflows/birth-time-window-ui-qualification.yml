@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      CANDIDATE: '6f1c5c5d75eb72de21d901d3a36eabeefdd97b3b'
+      CANDIDATE: 'a9034bd873e43954b20ff41ad78bdac8878daaca'
       QUALIFIED_MAIN: '51b2c0d3bafe8b23d0a7f54433cd0c89c9435818'
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
@@ -29,6 +29,8 @@ jobs:
           node scripts/phase1-scope-guard.mjs --base "$QUALIFIED_MAIN"
       - run: npm ci
       - run: npx playwright-core install --with-deps chromium
+      - name: Source ownership and reference-span negative controls
+        run: npx vitest run scripts/report-bundles.test.mjs src/lib/birth-time-window.test.ts
       - name: Original build, type and complete unit suite
         run: |
           npm run build
@@ -50,6 +52,24 @@ jobs:
           npm run test:phase1:acceptance
           npm run test:phase1:evidence
           node scripts/retain-birth-time-window-capture-proof.mjs
+      - name: Retain compiled boundary diagnostics even after a gate failure
+        if: always()
+        run: |
+          node --input-type=module <<'BUNDLE_DIAGNOSTIC'
+          import {readFileSync,readdirSync,existsSync,writeFileSync,mkdirSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {gzipSync} from 'node:zlib';
+          const root='dist/_astro',chunks=[];
+          if(existsSync(root))for(const name of readdirSync(root).filter(n=>n.endsWith('.js'))){
+           const bytes=readFileSync(root+'/'+name);
+           chunks.push({name,bytes:bytes.length,gzip:gzipSync(bytes).length,sha256:createHash('sha256').update(bytes).digest('hex'),
+           source:/^(?:full\.|window[.-]|preload-helper[.-]|birth-window\.worker[.-])/.test(name)?bytes.toString('utf8'):undefined});
+          }
+          const report={schema:'zodiacs.birth-window-bundle-diagnostic.v1',producer:process.env.GITHUB_SHA,candidate:process.env.CANDIDATE,chunks};
+          const path='docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json',out=Buffer.from(JSON.stringify(report,null,2)+'\n');
+          mkdirSync('docs/platform/evidence/birth-time-window-ui-20261010',{recursive:true});writeFileSync(path,out);
+          console.log('PROGRAMME_FILE '+JSON.stringify({path,size:out.length,sha256:createHash('sha256').update(out).digest('hex'),base64:out.toString('base64')}));
+          BUNDLE_DIAGNOSTIC
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
