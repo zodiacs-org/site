@@ -1,0 +1,67 @@
+{
+  "schema": "zodiacs.birth-time-window-ui-controls.v1",
+  "producer": {
+    "workflowSource": "ecca4624a1e9ebb29f953ee37e73ae9f143727c9",
+    "run": "38063073561",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "87e91325e53ce3d1240b877bf1c57b54a9529125",
+  "records": [],
+  "observations": [
+    {
+      "variant": "mobile",
+      "stage": "mobile:lower-boundary-options",
+      "upperUTC": "2200-01-01T05:59:00.000Z",
+      "lowerBoundaryState": {
+        "date": "1800-01-01",
+        "time": "12:00",
+        "selectedPlace": "Auckland · Auckland, New Zealand",
+        "receiptUTC": "1800-01-01T00:20:58.000Z",
+        "instantBasis": "birth",
+        "options": [
+          {
+            "value": "1",
+            "disabled": false
+          },
+          {
+            "value": "5",
+            "disabled": false
+          },
+          {
+            "value": "10",
+            "disabled": false
+          },
+          {
+            "value": "15",
+            "disabled": false
+          },
+          {
+            "value": "30",
+            "disabled": true
+          },
+          {
+            "value": "60",
+            "disabled": true
+          },
+          {
+            "value": "120",
+            "disabled": true
+          }
+        ],
+        "reference": "Windows must start on or after 1 January 1800 UTC and end before 1 January 2200 UTC. Unavailable sizes are disabled."
+      }
+    }
+  ],
+  "passed": false,
+  "failure": {
+    "name": "AssertionError",
+    "message": "Lower-edge thirty-minute preset is disabled\n\nfalse !== true\n",
+    "stage": "mobile:lower-boundary-options",
+    "stack": "AssertionError [ERR_ASSERTION]: Lower-edge thirty-minute preset is disabled\n\nfalse !== true\n\n    at file:///home/runner/work/site/site/tests/birth-time-window-drive.mjs:143:12\n    at async withPreview (file:///home/runner/work/site/site/tests/visual/preview-server.mjs:105:12)\n    at async file:///home/runner/work/site/site/tests/birth-time-window-drive.mjs:15:2"
+  },
+  "limitations": [
+    "Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.",
+    "Only script loading is held for cancellation controls; no numerical result is injected.",
+    "No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim."
+  ]
+}

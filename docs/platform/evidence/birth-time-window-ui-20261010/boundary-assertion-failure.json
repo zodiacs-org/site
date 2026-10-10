@@ -1,0 +1,61 @@
+{
+  "schema": "zodiacs.birth-window-review-failure.v1",
+  "candidate": "08d3eb7e97891951c94903ad1d37d92fa3b7a636",
+  "producer": "6c641fff5c9aae930388e73c305f34ee9d651e26",
+  "run": 38062463718,
+  "job": 114243333596,
+  "conclusion": "failure",
+  "observed": {
+    "focusedTestsPassed": 53,
+    "buildTypeBundlePassed": true,
+    "birthChartKB": 67.1,
+    "birthChartLimitKB": 71,
+    "engineKB": 32.5,
+    "engineLimitKB": 32.598046875,
+    "browser": {
+      "schema": "zodiacs.birth-time-window-ui-controls.v1",
+      "producer": {
+        "workflowSource": "6c641fff5c9aae930388e73c305f34ee9d651e26",
+        "run": "38062463718",
+        "node": "v22.23.3"
+      },
+      "checkedOutSource": "08d3eb7e97891951c94903ad1d37d92fa3b7a636",
+      "records": [],
+      "passed": false,
+      "failure": {
+        "name": "AssertionError",
+        "message": "Expected values to be strictly equal:\n\nfalse !== true\n"
+      },
+      "limitations": [
+        "Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.",
+        "Only script loading is held for cancellation controls; no numerical result is injected.",
+        "No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim."
+      ]
+    },
+    "completedViewports": 0
+  },
+  "correction": "Add the actual selected-place/date/time/UTC/options snapshot before the lower-span assertions, names for the three option assertions, and error stack/stage retention. This diagnostic change does not relax any assertion or establish the cause yet.",
+  "log": {
+    "path": "boundary-assertion-failure.log",
+    "bytes": 951183,
+    "sha256": "dd06482d5e399b69ee36c256d56bf9b9f28c459d5284f7686f65ef0a9a8edc4d",
+    "encoding": "UTF-8 original decoded native job log"
+  },
+  "nativeBrowserReport": {
+    "path": "boundary-assertion-failure-browser.json",
+    "bytes": 798,
+    "sha256": "48c8cb00d2b0e5300ad8891ce72699c5ceafb895a40f45805e85f2dea7196abc"
+  },
+  "diagnostic": {
+    "path": "review-bundle-08d3eb7-boundary-assertion.json",
+    "originalExportPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "bytes": 147917,
+    "sha256": "3e052057df43152cb169c9f67d4d21eedafa92f32b57b341391064e54cfdd97c"
+  },
+  "limitations": [
+    "The old report omitted stack and current boundary values; it cannot establish which boolean assertion failed or whether the cause is application or harness.",
+    "No complete mobile/desktop, visual, performance, capture or full-unit pass is claimed.",
+    "A later diagnostic pass alone cannot erase the observed failure without resolving its cause."
+  ],
+  "acceptedWeightChange": 0
+}

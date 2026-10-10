@@ -1,0 +1,9 @@
+{
+  "schema": "zodiacs.phase1-changed-capture-inspection.v1",
+  "originalRun": 38068373681,
+  "actualCandidate": "018c3190649cb19e1f478459958b6ac8809d0464",
+  "comparisons": [],
+  "limitations": [
+    "Actual native capture bytes and qualified-main bytes are compared for inspection; no benchmark mask, altered pixel tolerance or new acceptance gate."
+  ]
+}

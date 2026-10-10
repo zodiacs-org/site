@@ -1,0 +1,56 @@
+{
+  "schema": "zodiacs.birth-window-qualified-native-image-inspection.v1",
+  "originalRun": 38051943389,
+  "candidate": "053803288412670635424cd1d78379dcec48110a",
+  "readOnlyRecoveryRun": 38052728808,
+  "artifact": {
+    "run": 38051943389,
+    "head": "45e749f2313f6034aa2c9edf5e9a97bf18fd6cc6",
+    "candidate": "053803288412670635424cd1d78379dcec48110a",
+    "tree": "e40779f949d511caf9e683fc7cae8fa130228fe2",
+    "attempt": 1,
+    "conclusion": "success",
+    "artifact": 11670430436,
+    "zipBytes": 16948179,
+    "zipSha256": "b31b0ec5d52a162763d5a7332dc2976ca0bcdd8d9bb221c9259f24da5adc6783",
+    "crcVerified": true
+  },
+  "inspected": [
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/desktop-details-1000.png",
+      "bytes": 263584,
+      "sha256": "f061c8d6081da952db126bafde5e524fcb885c6a2b0d2112d3e2c51027906236"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/desktop-details-2500.png",
+      "bytes": 422292,
+      "sha256": "c0bcc1aca1d83cdd43dc02fa4fa512a74fcbbbbef163255ede493a2c5e9d27e9"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/mobile-details-1000.png",
+      "bytes": 175377,
+      "sha256": "7fbc86db12ad49c3c12d0f3fe096b0e9ab0c3be3cf750265cd87ee4bc0bdad18"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/mobile-details-2500.png",
+      "bytes": 142200,
+      "sha256": "bc3bf380dd967b3d01c871ee38fc75bbe0d2cd0200d2cd6b3d244556cb6e12e7"
+    }
+  ],
+  "summaryChecks": {
+    "bothActualSummaryImagesMatchPreviouslyInspectedBytes": true,
+    "mobileSha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25",
+    "desktopSha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1"
+  },
+  "observations": [
+    "Both viewports visibly show the sampled-at-one-second limit, UTC notation and pre-1972 civil-as-UT1 convention.",
+    "Interval content and shares remain readable without horizontal overflow; details expose changing Moon and rising-sign cells.",
+    "Shares are expressly duration fractions under equal time weights, not probabilities of birth time.",
+    "The entered-time chart remains visible below the optional window surface."
+  ],
+  "accepted": false,
+  "limitations": [
+    "Inspection of actual native screenshots and documented crops only; this is not production verification or an independent numerical accuracy check.",
+    "Full final CI, clean review, merge/post-merge and deployment remain pending."
+  ]
+}

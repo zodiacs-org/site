@@ -1,0 +1,48 @@
+{
+  "schema": "zodiacs.birth-window-ui-failure.v1",
+  "source": "6f1c5c5d75eb72de21d901d3a36eabeefdd97b3b",
+  "producer": "ddb58f265373680c318835bc37267d7ff848e35b",
+  "run": 38058351414,
+  "job": 114231328512,
+  "conclusion": "failure",
+  "failure": [
+    "Full static engine closure 33.5 KB exceeds unchanged 32.598046875 KB budget.",
+    "New source window-import guard incorrectly includes the separately built offline studio widget.",
+    "New compiled marker guard incorrectly rejects three older workers using their existing full-boundary graphs."
+  ],
+  "passedBeforeFailure": {
+    "protectedScope": true,
+    "install": true,
+    "schema": {
+      "documents": 1788,
+      "nodes": 6861,
+      "editorialOwners": 70,
+      "errors": 0
+    }
+  },
+  "notReached": [
+    "type checks",
+    "complete unit suite",
+    "real birth-window controls",
+    "visual qualification",
+    "cold Lighthouse samples",
+    "fresh eighteen-capture receipts"
+  ],
+  "artifact": {
+    "id": 11672755363,
+    "reportedZipBytes": 17933554,
+    "containsPreviousEvidence": true,
+    "zipDigestOrCRCNotIndependentlyVerified": true
+  },
+  "correction": {
+    "source": "a9034bd873e43954b20ff41ad78bdac8878daaca",
+    "loader": "Suppress Vite preload transformation on the literal window import; Rollup/runtime resolution must be verified by the new native run.",
+    "scope": "Follow website relative runtime imports, including paths into separate widgets; require only full.ts to load window in that graph. Inspect the new birth-window transport static dependency closure; preserve existing worker graph behavior."
+  },
+  "acceptedWeightAdded": 0,
+  "originalDecodedLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-loader-failure.log",
+    "bytes": 708820,
+    "sha256": "3d78abe4f0de46189a7885398a19e24317022ac88401499660b662fef73c3e45"
+  }
+}

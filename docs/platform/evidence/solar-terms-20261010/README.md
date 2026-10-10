@@ -1,0 +1,15 @@
+# Private solar-term prototype qualification
+
+Engine [PR #38](https://github.com/zodiacs-org/engine/pull/38) merged as `9a6317ac1f6516fbf518079c266453995d8f9341`. Its tree `78b69bab8cf566dcab0f8f6e55db2d51fb5617a8` is identical to reviewed head `596435a43ce4995945ba1dcddc08cc5d8c318db4`; the ordered parents are the previous main and that tested head. This is private preparation and contributes no accepted solar-term weight.
+
+The standalone scanner makes an atomic twenty-four-term Gregorian-year inventory under one finite provider-sample budget. It accepts the carried string or frozen name/version ephemeris identity, retains the original tagged identity in computed/refused receipts, and checks source stability around provider calls and returns. Sample count, status, crossing collection and crossing time are captured once, so validation and accumulation use the same values.
+
+[Native run 38054407049](https://github.com/zodiacs-org/engine/actions/runs/38054407049) passed seventeen source controls on Node 22.22.2 and 24.21.0. Actual installed-package controls passed nine strict type rejection cases, seven paired synthetic year inventories, six delimiter/percent receipts, in-scan identity mutation refusal, distinct stored identity shapes and changing-getter whole-budget refusal. Both runtimes produced the same 6,388-byte private pack, SHA-256 `29be54e611e1884b3f143c9eac07391d51e4ef99dc1dded6de479dff6f7c7833`.
+
+All six workflows passed on the final PR head, including all nine core CI jobs and every carried-archive source rebuild. [Fresh review](https://github.com/zodiacs-org/engine/pull/38#issuecomment-6097854597) completed at 13:11:48.400116 UTC on 2026-10-10 with no major issues; the bot's clean reaction followed at 13:11:51 UTC. All five earlier findings remain visible with source corrections and native controls.
+
+The carried core archive remains 287,011 bytes, SHA-256 `4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002`. The installed arithmetic harness executes only the two existing crossing modules with supplied linear providers. No actual solar ephemeris or expanded root namespace is executed by that harness. Linear errors are synthetic arithmetic observations, not astronomical two-second acceptance.
+
+These files retain original connector-decoded job logs verbatim and actual native stdout consumer data reserialized as JSON. They do not claim the report JSON has the original pretty-printed ZIP member's byte identity. Earlier engine reports keep their historical source and pack identities.
+
+All seven post-merge workflows pass on the actual merge source: CI 38054884157 (all nine jobs), Conformance 38054884138, Atlas 38054884180, Python package 38054884131, CodeQL 38054884114, Scorecard 38054884172 and private solar arithmetic 38054884141. Actual ephemeris execution, full normative clock/frame equivalence, independent astronomical accuracy, completeness and public package delivery remain unfinished. No core package version, carried archive, scientific tolerance or registry publication changes.

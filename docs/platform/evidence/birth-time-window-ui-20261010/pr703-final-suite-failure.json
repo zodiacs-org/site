@@ -1,0 +1,34 @@
+{
+  "schema": "zodiacs.birth-window-ui-failure.v1",
+  "source": "5f0d1ab797432f6b4a6634795c3f32754d9d9d4b",
+  "run": 38056575059,
+  "job": 114226206978,
+  "conclusion": "failure",
+  "successfulJobs": 19,
+  "failedJobs": 1,
+  "failure": "Claims ledger R1 does not list the new UI sentence Before 1972, the engine treats civil time as UT1.",
+  "tests": {
+    "passed": 6969,
+    "failed": 1,
+    "skipped": 6
+  },
+  "correction": "The sentence is bound to the existing supported acc.time-basis claim on source 6f1c5c5d75eb72de21d901d3a36eabeefdd97b3b.",
+  "freshReviewFindings": [
+    {
+      "comment": 4237818455,
+      "priority": "P1",
+      "finding": "Direct window-worker runtime bypasses the full engine boundary."
+    },
+    {
+      "comment": 4237818457,
+      "priority": "P2",
+      "finding": "Time-window presets can cross the reference span near boundary dates."
+    }
+  ],
+  "acceptedWeightAdded": 0,
+  "originalDecodedLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/pr703-final-suite-failure.log",
+    "bytes": 1012022,
+    "sha256": "601ee202de28f3285873daaab408d6e993409ad0437078b8d3092c7618965621"
+  }
+}

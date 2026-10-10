@@ -1,0 +1,160 @@
+{
+  "schema": "zodiacs.native-artifact-retention-map.v1",
+  "source": "018c3190649cb19e1f478459958b6ac8809d0464",
+  "recoveryRun": 38069101345,
+  "mappings": [
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/summary-mobile.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/summary-mobile.png",
+      "bytes": 17685,
+      "sha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/mobile-crop-provenance.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/mobile-crop-provenance.json",
+      "bytes": 1016,
+      "sha256": "e2cfc06beb4214cf7893e1db6a22aa26339944aaf40b32b95eec8392e3873752"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/mobile.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/mobile.png",
+      "bytes": 1436010,
+      "sha256": "1cf7759c81c3cb8af7c5e593a8b751d0a4e7aae8c6469de554d97b75db0a6265"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/mobile-details-1000.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/mobile-details-1000.png",
+      "bytes": 175377,
+      "sha256": "7fbc86db12ad49c3c12d0f3fe096b0e9ab0c3be3cf750265cd87ee4bc0bdad18"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/mobile-details-2500.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/mobile-details-2500.png",
+      "bytes": 142200,
+      "sha256": "bc3bf380dd967b3d01c871ee38fc75bbe0d2cd0200d2cd6b3d244556cb6e12e7"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/summary-desktop.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/summary-desktop.png",
+      "bytes": 16723,
+      "sha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/desktop-crop-provenance.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/desktop-crop-provenance.json",
+      "bytes": 1020,
+      "sha256": "fc965b587bfe48e78d45f7b824352cfd80c6adc9316fd4ca1fa2a496c16821e4"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/desktop.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/desktop.png",
+      "bytes": 1527663,
+      "sha256": "8470c85ec0c1d82b7fd9a9ad3aee27c87adac9c6be1fbd1f2459f7c15297fa74"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/desktop-details-1000.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/desktop-details-1000.png",
+      "bytes": 263584,
+      "sha256": "f061c8d6081da952db126bafde5e524fcb885c6a2b0d2112d3e2c51027906236"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/desktop-details-2500.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/desktop-details-2500.png",
+      "bytes": 422292,
+      "sha256": "c0bcc1aca1d83cdd43dc02fa4fa512a74fcbbbbef163255ede493a2c5e9d27e9"
+    },
+    {
+      "exportedPath": "tests/visual/baselines/linux/birth-chart-kahlo-mobile.png",
+      "retainedPath": "tests/visual/baselines/linux/birth-chart-kahlo-mobile.png",
+      "bytes": 1302257,
+      "sha256": "0f951a42bc132c2ab7c910731c779a151cf61d156d423535f361b01155e71594"
+    },
+    {
+      "exportedPath": "tests/visual/baselines/linux/birth-chart-kahlo-desktop.png",
+      "retainedPath": "tests/visual/baselines/linux/birth-chart-kahlo-desktop.png",
+      "bytes": 1412941,
+      "sha256": "cee6f03918e50efe6d457e414a6905467e460b701a396cd7be3d92a76b18082d"
+    },
+    {
+      "exportedPath": "tests/visual/baselines/linux/birth-chart-kahlo-desktop-reduced-motion.png",
+      "retainedPath": "tests/visual/baselines/linux/birth-chart-kahlo-desktop-reduced-motion.png",
+      "bytes": 1412753,
+      "sha256": "eadb696bf6ce6c1f82cdbed77d489a6f491199a821f045cf56926c6e5862ebaa"
+    },
+    {
+      "exportedPath": "docs/acceptance/phase1/screenshots/manifest.json",
+      "retainedPath": "docs/acceptance/phase1/screenshots/manifest.json",
+      "bytes": 12353,
+      "sha256": "ab5b350e37c82f4e4a190e512d126b4ad4ee87ba5e6f497b7db72b90c5b5d86a"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/changed-phase1-captures.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/changed-phase1-captures.json",
+      "bytes": 358,
+      "sha256": "09cc0ce4004c1b2c145a8c3744eb3746d8f722b3fd29b1cce2ed3706232606ff"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/visual-insertion.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/visual-insertion.json",
+      "bytes": 11347,
+      "sha256": "a185a19eb9106438452cd5ec055e0bddfedb7cb4e1de3be8901a6f5ccaa58164"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/capture-producer.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/capture-producer.json",
+      "bytes": 8627,
+      "sha256": "78e247d0bceba8bd90a09b352e36973cd4d1c8d624b178af07aeb532e7789da6"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-artifact-recovery.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-artifact-recovery.json",
+      "bytes": 32429,
+      "sha256": "fd2b4763ea008d5467d631cdd4c3158589b9acd3d30a13174a1d427bf1b7faed"
+    },
+    {
+      "exportedPath": "docs/acceptance/phase1/screenshots/love-360.png",
+      "retainedPath": "docs/acceptance/phase1/screenshots/love-360.png",
+      "bytes": 282256,
+      "sha256": "d6434cb4c0ae482aabf05d925a897b1129ad9e91fc6fd9010a9c7dbaef503dc5"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/browser-controls.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/browser-controls.json",
+      "bytes": 92405,
+      "sha256": "6d9f5c8842096f11c898c4ffef0f82b71bc4aba1a40197a9f7103e862bee8a08"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/development-browser-controls.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/development-browser-controls.json",
+      "bytes": 92657,
+      "sha256": "7dcab1dd6c966a8d1b0b6a6dbd5d891630c8f6d84c553496eae3bae930582803"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-bundle-diagnostic.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-bundle-diagnostic.json",
+      "bytes": 147917,
+      "sha256": "73b22165af9416890de7244b5a77926c080ea0a3ec40863182e15278c90996ff"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/native-018c319/lighthouse/birth-chart-1.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/lighthouse/birth-chart-1.json",
+      "bytes": 489648,
+      "sha256": "a52490cf8f8497b68b0be4456703cf4e73f163b4872877eb45686c1d4b9d439d"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/native-018c319/lighthouse/birth-chart-2.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/lighthouse/birth-chart-2.json",
+      "bytes": 489984,
+      "sha256": "c56abfdb7a3a57e21149c72554a3afb9c929608ae811d341543e6bcd55efa37c"
+    },
+    {
+      "exportedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/native-018c319/lighthouse/birth-chart-3.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/lighthouse/birth-chart-3.json",
+      "bytes": 490052,
+      "sha256": "3758c3b261e7dfe584f35984234c9b2710cbaaa5b87e9afe23f0338b7b174f03"
+    }
+  ],
+  "limitations": [
+    "All retained bytes equal the verified export hashes. Three raw-LHR paths remove an accidentally duplicated source-folder component without changing bytes. Native/source paths inside raw reports describe their original run; this map names repository retention paths."
+  ]
+}

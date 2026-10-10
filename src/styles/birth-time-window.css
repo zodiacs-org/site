@@ -1,0 +1,13 @@
+.birth-window{margin-block:1.25rem;padding-block:1rem;border-block:1px solid var(--hair-2)}
+.birth-window summary{cursor:pointer}
+.birth-window__choice{display:flex;flex-wrap:wrap;align-items:center;gap:.65rem;margin-block:1rem}
+.birth-window select{font:inherit;color:inherit;background:var(--surface);border:1px solid var(--hair-2);border-radius:.35rem;padding:.55rem;max-width:100%}
+.birth-window__note{font-size:.875rem;color:var(--muted)}
+.birth-window__cells{padding-inline-start:1.5rem}
+.birth-window__cell{padding-block:1rem;border-bottom:1px solid var(--hair-2)}
+.birth-window dl{display:flex;flex-wrap:wrap;gap:.4rem 1rem}
+.birth-window dl>div{display:flex;gap:.4rem}
+.birth-window dt{color:var(--muted)}
+.birth-window dd{margin:0}
+.birth-window .mono{font-size:.8rem;overflow-wrap:anywhere}
+.birth-window .btn{margin-inline-end:.5rem;margin-block:.5rem}

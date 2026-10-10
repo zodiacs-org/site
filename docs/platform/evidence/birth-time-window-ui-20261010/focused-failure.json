@@ -1,0 +1,40 @@
+{
+  "schema": "zodiacs.birth-window-focused-failure.v1",
+  "producer": "d2c9b7644e4d0c01c9da98e234ae4e566c9d9c6a",
+  "candidate": "2507b7b22e53f9e466f6aa919db4f6b10a6eaf6c",
+  "qualifiedMain": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "run": 38051045669,
+  "job": 114210065707,
+  "attempt": 1,
+  "conclusion": "failure",
+  "passed": [
+    "protected scope",
+    "native build and type checks",
+    "bundle size and engine isolation",
+    "actual mobile and desktop worker UI, cancellation and chart ownership"
+  ],
+  "failure": {
+    "step": "intended insertion diagnostics before original full-image comparison",
+    "assertion": "After the insertion stays within the original 0.1% pixel budget after aligning its measured height change"
+  },
+  "skipped": [
+    "original fifteen-case full-image gate",
+    "three cold birth-chart Lighthouse samples",
+    "fresh eighteen-capture receipt"
+  ],
+  "artifact": {
+    "id": 11669028889,
+    "zipBytes": 15497821,
+    "zipSha256": "43121fe7cb62d83eaddf046fffe90deb2aef375500a1b14a0126a2dc27b2d8d4",
+    "crcVerified": false
+  },
+  "decodedConnectorLog": {
+    "bytes": 839472,
+    "sha256": "e4b9d82be252712e7504f35a27eb9dbe8cf21ad1977f862cf2fe47d94345a32b"
+  },
+  "accepted": false,
+  "limitations": [
+    "Original failure retained; source or harness correction is required before a fresh run.",
+    "Native screenshot/layout recovery is pending. No visual qualification, timing, full-suite or deployment claim."
+  ]
+}

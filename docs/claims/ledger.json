@@ -614,6 +614,7 @@
     {"path":"src/islands/AccountSyncV2Panel.tsx","text":"The chart remains only on this device.","claim":"priv.local-storage"},
     {"path":"src/islands/AccountSyncV2Panel.tsx","text":"The recovery record remains on this device; clear this site’s data in browser settings.","claim":"priv.local-storage"},
     {"path":"src/islands/AccountSyncV2Panel.tsx","text":"Your charts remain on this device.","claim":"priv.local-storage"},
+    {"path":"src/islands/BirthTimeWindow.tsx","text":"Before 1972, the engine treats civil time as UT1.","claim":"acc.time-basis"},
     {"path":"src/islands/CalendarSubscribe.tsx","text":"The file is a snapshot of the exact dates shown here, built in your browser.","claim":"priv.calendar-files"},
     {"path":"src/islands/ChartCalculator.tsx","text":"Saved as your chart on this device.","claim":"priv.local-storage"},
     {"path":"src/islands/ChartCalculator.tsx","text":"Their birth details stay in this browser.","claim":"priv.on-device"},

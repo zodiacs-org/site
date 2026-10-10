@@ -1,0 +1,19 @@
+{
+  "schema": "zodiacs.production-observer-startup-failure.v1",
+  "producer": {
+    "source": "077ddc43d5551402ead6564895c25f2ed40d41ef",
+    "run": 38047375309,
+    "job": 114199513444
+  },
+  "expectedMergedSource": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "observations": 0,
+  "results": {
+    "organization": "ERR_MODULE_NOT_FOUND: script-relative dynamic import incorrectly repeated scripts/",
+    "source": "SyntaxError: unescaped apostrophe in a limitation string"
+  },
+  "correction": "Fix the script-relative module path and limitation string; add native parse checks before requests. Preserve checker assertions and repeat on new source.",
+  "limitations": [
+    "Both scripts failed before their GET loops; this run establishes no production verdict.",
+    "The original decoded job log is retained without claiming raw HTTP response identity."
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schema": "zodiacs.birth-window-review-failure.v1",
+  "candidate": "f55bb57ffeeef4d05877940160fa7836588f32a6",
+  "producer": "e2a609bb0b82e1091e4ba0012ed033b4a3398ad0",
+  "run": 38061060350,
+  "job": 114239245589,
+  "conclusion": "failure",
+  "observed": {
+    "focusedTestsPassed": 53,
+    "buildPassed": true,
+    "typecheck": {
+      "errors": 0,
+      "warnings": 0,
+      "hints": 40
+    },
+    "unitTests": {
+      "passed": 6988,
+      "failed": 1,
+      "skipped": 6
+    },
+    "failedTest": "scripts/phase1-acceptance-evidence.test.mjs: contains exact 360px and 1280px captures for every new template",
+    "recordedSourceFingerprint": "8825b6886ea52daa9c5c569eef4ae0bfc4cd479b1dd4997d5962abf23f0529a0",
+    "requiredSourceFingerprint": "fa8150b1db60f6bdc17ce460fdb270b431acd4a969db8b7a003e99fe92343abd"
+  },
+  "log": {
+    "path": "capture-order-failure.log",
+    "bytes": 1092373,
+    "sha256": "dcb7e217730dd2e164641403e16deec727b510debd7133014bed1e343f38707b",
+    "encoding": "UTF-8 original decoded GitHub job log"
+  },
+  "diagnostic": {
+    "originalExportPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "path": "review-bundle-f55bb57-capture-order.json",
+    "bytes": 147917,
+    "sha256": "d8512ce3574e5b38b8ff37689f455bec4c547bbe5015e992a37efa9def292911"
+  },
+  "correction": "Generate actual fresh source-bound eighteen-capture evidence before the complete unchanged npm test suite. Same candidate source; workflow order corrected. No expected fingerprint, test, budget or tolerance edited.",
+  "unreached": [
+    "native worker UI",
+    "visual qualification",
+    "Lighthouse",
+    "fresh captures"
+  ],
+  "acceptedWeightChange": 0
+}
