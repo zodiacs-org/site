@@ -1,0 +1,63 @@
+name: Recover post-merge full-suite raw Lighthouse observations without reruns
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/checkpoint25-post-merge-recovery.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify original source and ZIP digest; retain raw report observations
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 <<'RECOVER'
+          import os,json,hashlib,base64,urllib.request,urllib.error,zipfile,io,re
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+           def redirect_request(self,req,fp,code,msg,headers,newurl):return None
+          headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json'}
+          root='https://api.github.com/repos/zodiacs-org/site/'
+          with urllib.request.urlopen(urllib.request.Request(root+'actions/runs/38047052485',headers=headers),timeout=30) as response:run=json.load(response)
+          assert run['head_sha']=='41909a8294b29104f8b445f56e0cdd280379bcb9'
+          assert run['conclusion']=='success' and run['run_attempt']==1
+          with urllib.request.urlopen(urllib.request.Request(root+'git/commits/41909a8294b29104f8b445f56e0cdd280379bcb9',headers=headers),timeout=30) as response:checkout=json.load(response)
+          assert checkout['tree']['sha']=='342f138fce55eececf9a1d23e338edbe7ab57cbb'
+          assert [x['sha'] for x in checkout['parents']]==['943d11decff8c5cd417d315637aac2cf8c55fa01','94cbb7a7913d7b878729a93935e9e8ccd64a74a4']
+          opener=urllib.request.build_opener(NoRedirect)
+          request=urllib.request.Request(root+'actions/artifacts/11668980949/zip',headers=headers)
+          try:
+           with opener.open(request,timeout=30) as response:packed=response.read()
+          except urllib.error.HTTPError as error:
+           if error.code!=302:raise
+           location=error.headers['Location']
+           assert location.startswith('https://')
+           with urllib.request.urlopen(urllib.request.Request(location),timeout=60) as response:packed=response.read()
+          assert len(packed)==158917440
+          digest=hashlib.sha256(packed).hexdigest()
+          assert digest=='4a86a91e8c5e83b894274ab098e42543f9c6b4add6aaad7fdce9ee73baa4181c'
+          archive=zipfile.ZipFile(io.BytesIO(packed))
+          assert archive.testzip() is None
+          files=sorted(name for name in archive.namelist() if re.search(r'(?:^|/)lighthouse/[^/]+\.json$',name) and not name.endswith(('.trace.json','.devtoolslog.json','.devtoolsLog.json')))
+          samples=[];excluded=[];invalid=[]
+          for name in files:
+           data=archive.read(name);doc=json.loads(data)
+           if 'categories' not in doc or 'audits' not in doc:excluded.append(name);continue
+           if doc.get('runtimeError') or 'stalled' in name or 'invalid' in name:
+            invalid.append({'file':name,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'requestedUrl':doc.get('requestedUrl'),'runtimeError':doc.get('runtimeError'),'fetchTime':doc.get('fetchTime'),'lighthouseVersion':doc.get('lighthouseVersion'),'audits':{key:doc.get('audits',{}).get(key,{}).get('numericValue') for key in ['largest-contentful-paint','cumulative-layout-shift','total-blocking-time']}})
+            continue
+           row={'file':name,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'requestedUrl':doc['requestedUrl'],'fetchTime':doc.get('fetchTime'),'lighthouseVersion':doc.get('lighthouseVersion'),'lcp':doc['audits']['largest-contentful-paint']['numericValue'],'cls':doc['audits']['cumulative-layout-shift']['numericValue'],'tbt':doc['audits']['total-blocking-time']['numericValue'],'performance':doc['categories']['performance']['score'],'accessibility':doc['categories']['accessibility']['score'],'seo':doc['categories']['seo']['score']}
+           samples.append(row)
+          assert len(samples)==90,[(x['file'],x['requestedUrl']) for x in samples]
+          assert not any('stalled' in x['file'] or 'invalid' in x['file'] for x in samples)
+          home=[x for x in samples if re.search(r'/home-[123]\.json$',x['file'])]
+          thesis=[x for x in samples if re.search(r'/thesis-[123]\.json$',x['file'])]
+          assert len(home)==3 and len(thesis)==3
+          report={'schema':'zodiacs.full-site-check-artifact-observation.v1','producer':{'workflowSource':os.environ['GITHUB_SHA'],'run':os.environ['GITHUB_RUN_ID']},'original':{'run':run['id'],'headSha':run['head_sha'],'conclusion':run['conclusion'],'attempt':run['run_attempt'],'checkedOutSource':checkout['sha'],'checkedOutTree':checkout['tree']['sha'],'checkedOutParents':[x['sha'] for x in checkout['parents']],'artifact':11668980949,'zipBytes':len(packed),'zipSha256':digest,'crcVerified':True},'samples':samples,'home':home,'thesis':thesis,'excludedNonLhrJson':excluded,'invalidOrStalledReports':invalid,'limitations':['Read-only extraction of original native reports; no build, browser or benchmark rerun.','Raw reports remain in the identified original artifact; the retained observation records their exact byte identities and unrounded fields.','The original post-merge job journal must be reviewed separately; this extraction does not infer stalls or retakes from successful reports.']}
+          path='docs/platform/evidence/home-poster-loading-20261010/post-merge-artifact-observation.json'
+          data=(json.dumps(report,indent=2)+'\n').encode()
+          print('PROGRAMME_FILE '+json.dumps({'path':path,'size':len(data),'sha256':hashlib.sha256(data).hexdigest(),'base64':base64.b64encode(data).decode()},separators=(',',':')))
+          RECOVER
