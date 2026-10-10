@@ -1,0 +1,20 @@
+{
+  "schema": "zodiacs.solar-term-source-review-correction.v1",
+  "correctedAt": "2026-10-10",
+  "original": {
+    "source": "8da723c03aec367f27a672fb34f811f02b5e9509",
+    "plan": {
+      "path": "docs/platform/evidence/solar-term-reference-20261010/reference-plan.json",
+      "bytes": 6433,
+      "sha256": "1bdb4329800b675a57cb493ec5ff983b65d8080d697262ec5c304b1cfa0cad1e"
+    }
+  },
+  "field": "calendarSource.evidence",
+  "correction": "The primary PDF table text was read and the twenty-four minute values were transcribed from its text rows. Screenshot calls returned only text placeholders through this connector; image pixels were not delivered or visually inspected.",
+  "impact": "The claim of screenshot inspection is withdrawn. The original source plan, acquisition producer and four exact JPL replies remain retained without relabelling. No astronomical accuracy or full-standard verification was claimed or established.",
+  "normativeText": {
+    "officialLocator": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=E107EA4DE9725EDF819F33C60A44B296",
+    "officialPreview": "Unavailable through this text-only connector",
+    "mirror": "A sixteen-page scanned PDF was found, but it has no extracted text and its screenshots were not delivered as pixels. It has not been read or authenticated."
+  }
+}
