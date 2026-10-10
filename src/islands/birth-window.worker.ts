@@ -1,8 +1,8 @@
 /// <reference lib="webworker" />
 import {birthWindow} from '../lib/engine/full';
 import type {BirthWindowInput} from '@zodiacs/engine/window';
-self.onmessage=(event:MessageEvent<{id:number;input:BirthWindowInput}>)=>{
+self.onmessage=async(event:MessageEvent<{id:number;input:BirthWindowInput}>)=>{
  const {id,input}=event.data;
- try{self.postMessage({id,result:birthWindow(input)});}
+ try{self.postMessage({id,result:await birthWindow(input)});}
  catch(error){self.postMessage({id,error:{budget:error instanceof Error&&error.name==='WindowBudgetError'}});}
 };

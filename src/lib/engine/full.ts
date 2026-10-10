@@ -33,5 +33,11 @@ export function computeChart(input: ChartInput): Chart {
   return adaptChart(engineComputeChart(input), input);
 }
 
-/** Window workers use the same package boundary as other chart workers. */
-export {birthWindow} from '@zodiacs/engine/window';
+/** Worker-only window implementation; normal chart builds retain no window runtime. */
+export async function birthWindow(input: import('@zodiacs/engine/window').BirthWindowInput) {
+  if(import.meta.env.ZODIACS_BIRTH_WINDOW_WORKER){
+    const windowEngine=await import('@zodiacs/engine/window');
+    return windowEngine.birthWindow(input);
+  }
+  throw new Error('Worker only');
+}
