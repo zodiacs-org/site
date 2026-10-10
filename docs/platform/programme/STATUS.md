@@ -1,3 +1,36 @@
+Checkpoint 26, 2026-10-11 (Asia/Bangkok): the birth-time window on the
+full birth-chart calculator (B2.b) is accepted on canonical production of
+merge `7028d01905137b45e835db1dca785cecb672a729`
+([site #703](https://github.com/zodiacs-org/site/pull/703)).
+
+**Overall delivery: 39%** (38.750% to three decimals) — 70.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 3 from checkpoint 25:
+B2.b. All 151 fixed units, weights, scientific tolerances, visual limits and
+performance budgets are unchanged.
+
+The [production record](../evidence/birth-time-window-production-20261011/README.md)
+completes the conditions the PR703 records left open. The reviewed head
+`5a46fb08` passed all twenty Site Check jobs and the numerical gate, and its
+fresh Codex review found nothing. The merge keeps the reviewed tree. The
+post-merge Site Check passed all twenty jobs, among them both birth-window
+drives. Vercel `dpl_6sNuHibXGVrm67tBvp6dJHczAYGX` is READY at the merge and
+serves zodiacs.org and www.zodiacs.org. The unchanged browser drive, run
+against https://zodiacs.org, passed all thirteen controls in both viewports
+with no page error. The worker production served is byte-identical to a local
+build of the merge; of the 190 files the page reaches, 182 are identical to
+the build with the flags unset, and production's own flags and public keys
+account for the other eight.
+
+The interface shows one line ("Rising sign depends on the birth time: Cancer
+or Leo or Virgo.") with the intervals, switch times, houses and aspects on
+request, labelled sampled at one-second resolution. F-81 records two copy
+faults in it: the sampling sentence starts in lower case, and the times read
+GMT+0 under a note that says UTC. No value or gate depends on them.
+
+No accuracy run, tolerance change, package publication, hosting or security
+change, or private search happened here. Stable 1.0 publication still waits
+for the owner's approval in [engine #32](https://github.com/zodiacs-org/engine/issues/32).
+
 Checkpoint 25, 2026-10-10 (Asia/Bangkok): merged and deployed checkpoint
 23/24 records qualified on exact main `41909a8294b29104f8b445f56e0cdd280379bcb9`
 ([site #697](https://github.com/zodiacs-org/site/pull/697)).

@@ -1,0 +1,97 @@
+{
+  "schema": "zodiacs.birth-window-final-carrier-numerical.v1",
+  "head": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76",
+  "tree": "d5a580d38df67d8150d6684e8ff6bd75d82bd389",
+  "syntheticMerge": "d8031d2cf3ee3f646ee9266b67e1f39ea8fb69a5",
+  "orderedParents": [
+    "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+    "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76"
+  ],
+  "run": 38069869015,
+  "job": 114264917315,
+  "attempt": 1,
+  "conclusion": "success",
+  "skyTestsPassed": 21,
+  "existingVersionSkip": 1,
+  "tamperControlsPassed": 16,
+  "validation": {
+    "schema": "zodiacs.checkpoint23-gate.v1",
+    "producer": {
+      "source": "d8031d2cf3ee3f646ee9266b67e1f39ea8fb69a5",
+      "head": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76",
+      "run": "38069869015",
+      "node": "v22.23.3"
+    },
+    "engine": {
+      "version": "1.0.0-rc.2",
+      "archiveSha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002"
+    },
+    "clock": "same engine UT1 Julian day",
+    "judgedWindow": "1850-2049",
+    "givenToleranceArcseconds": 0.01,
+    "endToEndToleranceArcseconds": 3,
+    "benchmarkPublication": [
+      {
+        "path": "public/developers/sky-benchmark/v0/items.json",
+        "url": "https://zodiacs.org/developers/sky-benchmark/v0/items.json",
+        "bytes": 64964,
+        "sha256": "8521a288178929e18f9598bda34d7c70f975e9b168a4b7107920ee657f6fe532"
+      },
+      {
+        "path": "public/developers/sky-benchmark/v0/key.json",
+        "url": "https://zodiacs.org/developers/sky-benchmark/v0/key.json",
+        "bytes": 100497,
+        "sha256": "4d1ec5f76cce20830962d9bb0c876ad03fc85a9ace8a24a78f28ff4bd36abcb2"
+      },
+      {
+        "path": "public/developers/sky-benchmark/v0/tool-answers.json",
+        "url": "https://zodiacs.org/developers/sky-benchmark/v0/tool-answers.json",
+        "bytes": 793254,
+        "sha256": "7477701a8aeb90b23fe5102b66696017f02a47c1a7f131a91937c536f8ac092c"
+      },
+      {
+        "path": "public/developers/sky-benchmark/v0/scorer.mjs",
+        "url": "https://zodiacs.org/developers/sky-benchmark/v0/scorer.mjs",
+        "bytes": 25047,
+        "sha256": "728355f27bccf8713b09125f08044895c85e66b54edc77c7eea4e39c0df28217"
+      }
+    ],
+    "limitations": [
+      "Finite reference comparisons; no outside-window tolerance claim",
+      "Original failed clock and outside-window results retained",
+      "Assistant answers are separately required by B4.b",
+      "No private scan or registry/guide publication"
+    ]
+  },
+  "exports": [
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/numerical/houses-given.json",
+      "bytes": 5227,
+      "sha256": "4e6a466d257377a9fddcc72afc6aed74750e07968d4ecc9841b179d455e44bb8"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/numerical/houses-end-to-end.json",
+      "bytes": 7743,
+      "sha256": "6a28818ba452ab760585bbfb801b7aaf44ccd5ae323bd657931d666feca63965"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/numerical/co-given.json",
+      "bytes": 1330,
+      "sha256": "d98ebf6844e41f1b6ea1a657e99ef806eba9e60734bc879f7fe78dcc6caed529"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/numerical/co-end-to-end.json",
+      "bytes": 2830,
+      "sha256": "b507d2f685a087be915ae166333c993d1117497aae40ede66157faa2a87eaeb3"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/numerical/validation.json",
+      "bytes": 1848,
+      "sha256": "7f89c4f950b0eb2935155c12f3a83313a94ef4222b39b34cf43f569ddb07a187"
+    }
+  ],
+  "limitations": [
+    "Synthetic merge is a test checkout, not a completed PR merge.",
+    "Current-head complete full suite, merge/post-merge and exact canonical production remain required; B2.b adds no accepted weight."
+  ]
+}

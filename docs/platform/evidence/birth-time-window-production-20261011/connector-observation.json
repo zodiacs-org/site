@@ -1,0 +1,62 @@
+{
+  "schema": "zodiacs.vercel-connector-observation.v1",
+  "assembled": "Assembled by hand from the Vercel connector's responses in the observing session (list_deployments, get_deployment, get_alias). Not raw tool output; the values are copied, and fields the observation does not use are left out.",
+  "team": "team_Ue0ac8HT1b3TAzaDDZBTFhQt",
+  "project": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+  "observations": [
+    {
+      "observedBetween": ["2026-10-10T18:56Z", "2026-10-10T19:47:28Z"],
+      "timeNote": "The session recorded no exact time for this call; the bounds are the session start and the next recorded timestamp.",
+      "call": "list_deployments target=production limit=6",
+      "latestProduction": {
+        "id": "dpl_6sNuHibXGVrm67tBvp6dJHczAYGX",
+        "state": "READY",
+        "createdMs": 1791654391264,
+        "githubCommitRef": "main",
+        "githubCommitSha": "7028d01905137b45e835db1dca785cecb672a729",
+        "githubCommitMessageFirstLine": "Merge pull request #703 from zodiacs-org/codex/birth-time-window-ui-preparation"
+      },
+      "previousProduction": {
+        "id": "dpl_Aq3LBv7VW1Sy6eu5Gzpk1qY7udBL",
+        "state": "READY",
+        "githubCommitSha": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818"
+      }
+    },
+    {
+      "observedBetween": ["2026-10-10T18:56Z", "2026-10-10T19:47:28Z"],
+      "timeNote": "As above.",
+      "call": "get_alias zodiacs.org; get_alias www.zodiacs.org",
+      "aliases": [
+        { "alias": "zodiacs.org", "deploymentId": "dpl_6sNuHibXGVrm67tBvp6dJHczAYGX", "updatedMs": 1791654621339, "redirect": null },
+        { "alias": "www.zodiacs.org", "deploymentId": "dpl_6sNuHibXGVrm67tBvp6dJHczAYGX", "updatedMs": 1791654621310, "redirect": null }
+      ]
+    },
+    {
+      "observedAt": "2026-10-10T19:48:57Z",
+      "call": "get_deployment dpl_6sNuHibXGVrm67tBvp6dJHczAYGX withGitRepoInfo=true",
+      "deployment": {
+        "id": "dpl_6sNuHibXGVrm67tBvp6dJHczAYGX",
+        "readyState": "READY",
+        "target": "production",
+        "source": "git",
+        "githubCommitSha": "7028d01905137b45e835db1dca785cecb672a729",
+        "buildingAtMs": 1791654392574,
+        "readyMs": 1791654621091,
+        "regions": ["iad1"],
+        "alias": ["zodiacs.org", "www.zodiacs.org", "zodiacs-org.vercel.app", "zodiacs-org-zodiacsofficial.vercel.app", "zodiacs-org-git-main-zodiacsofficial.vercel.app"],
+        "aliasError": null
+      }
+    },
+    {
+      "observedAt": "2026-10-10T20:15:52Z",
+      "call": "get_alias zodiacs.org (after the browser run of 20:09:38–20:11:05Z)",
+      "aliases": [
+        { "alias": "zodiacs.org", "deploymentId": "dpl_6sNuHibXGVrm67tBvp6dJHczAYGX", "updatedMs": 1791654621339, "redirect": null }
+      ]
+    }
+  ],
+  "limitations": [
+    "The connector reports what Vercel records; it does not observe the bytes a visitor receives. observation.json does that over anonymous HTTP.",
+    "The alias's other fields (including a protection-bypass entry for preview sharing) were read but are not used or reproduced here."
+  ]
+}

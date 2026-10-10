@@ -1,0 +1,214 @@
+{
+  "schema": "zodiacs.birth-time-window-ui-carrier-full-suite.v1",
+  "pr": "https://github.com/zodiacs-org/site/pull/703",
+  "head": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76",
+  "testedSource": "d8031d2cf3ee3f646ee9266b67e1f39ea8fb69a5",
+  "testedTree": "d5a580d38df67d8150d6684e8ff6bd75d82bd389",
+  "testedParents": [
+    "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+    "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76"
+  ],
+  "merge": {
+    "sha": "7028d01905137b45e835db1dca785cecb672a729",
+    "tree": "d5a580d38df67d8150d6684e8ff6bd75d82bd389",
+    "parents": [
+      "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+      "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76"
+    ],
+    "exactTestedTree": true
+  },
+  "workflow": {
+    "run": 38069869006,
+    "attempt": 1,
+    "result": "success",
+    "jobs": [
+      {
+        "id": 114264917553,
+        "name": "Phase 4 compatibility invite SQL",
+        "result": "success"
+      },
+      {
+        "id": 114264917641,
+        "name": "Legacy wing drift",
+        "result": "success"
+      },
+      {
+        "id": 114264917665,
+        "name": "Build with production's feature flags",
+        "result": "success"
+      },
+      {
+        "id": 114264917698,
+        "name": "Sky Watch subscription lifecycle",
+        "result": "success"
+      },
+      {
+        "id": 114264917730,
+        "name": "Build & Check",
+        "result": "success"
+      },
+      {
+        "id": 114264917767,
+        "name": "Phase 3 delivery SQL",
+        "result": "success"
+      },
+      {
+        "id": 114264917789,
+        "name": "Phase 6 assistant quota SQL",
+        "result": "success"
+      },
+      {
+        "id": 114264917837,
+        "name": "Registry Aura drive",
+        "result": "success"
+      },
+      {
+        "id": 114264917847,
+        "name": "Time zone data drift",
+        "result": "success"
+      },
+      {
+        "id": 114264917861,
+        "name": "Phase 4 sharing drive",
+        "result": "success"
+      },
+      {
+        "id": 114264917883,
+        "name": "Phase 7 Living Chart sync SQL",
+        "result": "success"
+      },
+      {
+        "id": 114264917895,
+        "name": "Account Sync v2 SQL",
+        "result": "success"
+      },
+      {
+        "id": 114264917909,
+        "name": "Phase 3 PWA drive",
+        "result": "success"
+      },
+      {
+        "id": 114264917910,
+        "name": "Phase 7 Living Chart drive",
+        "result": "success"
+      },
+      {
+        "id": 114264917914,
+        "name": "Swiss output removal and independent references",
+        "result": "success"
+      },
+      {
+        "id": 114264917916,
+        "name": "Zodiac Games SQL",
+        "result": "success"
+      },
+      {
+        "id": 114264917921,
+        "name": "Saved calculation records under the real account coordinator",
+        "result": "success"
+      },
+      {
+        "id": 114264917929,
+        "name": "Phase 3 push drive",
+        "result": "success"
+      },
+      {
+        "id": 114264918016,
+        "name": "Saved calculation records lifecycle drive",
+        "result": "success"
+      },
+      {
+        "id": 114264918020,
+        "name": "Phase 3 post-chart drive",
+        "result": "success"
+      }
+    ]
+  },
+  "numerical": {
+    "run": 38069869015,
+    "attempt": 1,
+    "result": "success",
+    "head": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76"
+  },
+  "review": {
+    "request": 6099974054,
+    "summary": 6098101794,
+    "cleanComment": 6100016486,
+    "reviewedCommit": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76",
+    "completed": "2026-10-10T17:04:04.701250Z",
+    "rootReaction": 558879405,
+    "rootReactionCreated": "2026-10-10T17:04:07Z",
+    "unresolvedThreads": 0,
+    "freshFindings": []
+  },
+  "unitSuite": {
+    "passed": 6989,
+    "failed": 0,
+    "existingSkipped": 6,
+    "filesPassed": 543,
+    "filesSkipped": 1
+  },
+  "controls": [
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/development-browser-controls.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/full-suite/development-browser-controls.json",
+      "size": 92657,
+      "sha256": "4aade925e3902e730a00f5a21915a68f7bf6b63ca607dc250a6e2fc2629a8cf1",
+      "modes": "development",
+      "viewports": 2,
+      "controlsPerViewport": 13,
+      "allPassed": true
+    },
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/full-suite/browser-controls.json",
+      "size": 92405,
+      "sha256": "7d1e0ea33eca4ce1c3031bf9d69360680edf84c88d5cecc2f3e440d3e5c7236a",
+      "modes": "production-preview",
+      "viewports": 2,
+      "controlsPerViewport": 13,
+      "allPassed": true
+    }
+  ],
+  "rawLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/full-suite.log",
+    "size": 1799057,
+    "sha256": "9a0b91157bff899a0388f04f47182ceba3c36ae87d2abb64c142bd2fe583b294"
+  },
+  "journal": {
+    "line": "2026-10-10T17:42:19.2920931Z Runner stalls: none; no sample was retaken.",
+    "stalls": 0,
+    "retakes": 0
+  },
+  "artifact": {
+    "id": 11677219365,
+    "name": "phase-1-browser-performance-38069869006",
+    "size_in_bytes": 164753308,
+    "url": "https://api.github.com/repos/zodiacs-org/site/actions/artifacts/11677219365",
+    "archive_download_url": "https://api.github.com/repos/zodiacs-org/site/actions/artifacts/11677219365/zip",
+    "expired": false,
+    "created_at": "2026-10-10T17:44:32Z",
+    "expires_at": "2027-01-08T16:59:08Z",
+    "updated_at": "2026-10-10T17:44:32Z",
+    "digest": "sha256:c5d24f3e9e94fbde6631e9e5904d9f487fad302ebc54bbc53830a307355bd99c",
+    "workflow_run": {
+      "id": 38069869006,
+      "repository_id": 1251096896,
+      "head_repository_id": 1251096896,
+      "head_branch": "codex/birth-time-window-ui-preparation",
+      "head_sha": "5a46fb08a51cddb8bdbff02d8fc23837fd0cad76"
+    },
+    "verification": "Provider metadata only at this checkpoint; do not infer independent ZIP SHA/CRC verification from this record."
+  },
+  "remaining": [
+    "All twenty required post-merge jobs on 7028d019",
+    "Exact READY canonical source/deployment verification",
+    "Real canonical production worker and UTC boundary controls",
+    "Record final programme acceptance without changing the denominator"
+  ],
+  "acceptedWeightChange": 0,
+  "limitations": [
+    "Full original gates passed unchanged. This does not add independent scientific accuracy, completeness, all-locale UI or a saved-window data model.",
+    "Original failures and qualified native-018c319 evidence remain unchanged."
+  ]
+}

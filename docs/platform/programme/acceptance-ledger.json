@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-10 checkpoint 25 qualified (exact merged main, complete final/post-merge gates and canonical production; private UI/solar preparation and partial public adoption baseline remain unaccepted)",
+  "asOf": "2026-10-11 checkpoint 26 (B2.b accepted on canonical production of merge 7028d019; other states unchanged)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -2489,9 +2489,17 @@
       "dependsOn": [
         "B2.a"
       ],
-      "status": "partial",
-      "release": "unmerged",
+      "status": "accepted",
+      "release": "deployed",
       "evidence": [
+        "docs/platform/evidence/birth-time-window-production-20261011/README.md",
+        "docs/platform/evidence/birth-time-window-production-20261011/observation.json",
+        "docs/platform/evidence/birth-time-window-production-20261011/drive-browser-controls.json",
+        "docs/platform/evidence/birth-time-window-production-20261011/flag-chunk-explanation.json",
+        "docs/platform/evidence/birth-time-window-production-20261011/connector-observation.json",
+        "docs/platform/evidence/birth-time-window-production-20261011/postmerge/postmerge.json",
+        "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/full-suite.json",
+        "docs/platform/evidence/birth-time-window-ui-20261010/carrier-5a46fb0/fresh-review.json",
         "docs/platform/evidence/birth-time-window-ui-20261010/README.md",
         "docs/platform/evidence/birth-time-window-ui-20261010/focused-failure.json",
         "docs/platform/evidence/birth-time-window-ui-20261010/native-image-inspection.json",
@@ -2520,7 +2528,7 @@
         "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-artifact-recovery.json",
         "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/image-inspection.json"
       ],
-      "notes": "Partial/unmerged English known-time calculator pilot. Source 018c319/native 38068373681 passes 53 focused controls, original build/schema/bundle checks and typecheck (zero errors/warnings, forty hints), 6989 units/six existing skips, thirteen actual controls in each mobile/desktop viewport in both development and production-preview modes, all fifteen original visual comparisons, three original cold samples and eighteen actual fresh captures. Main 32.5/32.598046875 KB, birth route 67.1/71 KB, worker 40367 gzip bytes/original 60 KB chunk limit. Journal records no stalls or retakes. All eighteen fresh PNGs match main; current native love-360.png and source-bound manifest restore exact actual bytes. Recovery 38069101345 passes all six jobs and verifies original ZIP SHA-256/CRC, raw three LHR files and retained report/image hashes. Six current summary/detail crop identities match the exact pixels already inspected; limitations distinguish visible interval rows and collapsed switch label from uninspected nested details. Original carrier 814727d passes all twenty final jobs and numerical gate on its exact synthetic merge tree, but fresh review finds development P2 4238230846. Correction registers the full boundary in the serve-only pipeline; production isolation, date-span expectations and old automation discrepancy remain preserved. Earlier source/harness failures and original review history remain visible. Corrected final carrier CI, fresh clean review, exact merge/post-merge and canonical production remain required. No new independent accuracy run, tolerance change or accepted B2.b weight."
+      "notes": "Accepted at checkpoint 26 (2026-10-11). The English full calculator shows a one-line rising-sign summary for a chosen birth-time window, with the Sun, Moon, rising sign, houses, aspects and switch times on request, labelled sampled at one-second resolution. Reviewed head 5a46fb08 passed all twenty Site Check jobs (38069869006) and the numerical gate (38069869015); Codex review 6100016486 found nothing and all three review threads are resolved; merge 7028d019 keeps the reviewed tree d5a580d3; post-merge Site Check 38073108054 passed all twenty jobs, including both birth-window drives. Vercel dpl_6sNuHibXGVrm67tBvp6dJHczAYGX is READY at 7028d019 and assigned to zodiacs.org and www.zodiacs.org. The unchanged drive run against https://zodiacs.org passed all thirteen controls in both viewports with no page error; the served worker is byte-identical to the local build of 7028d019, and the page graph 182 of 190 files identical with the flags unset, the other eight explained by production flags and public keys. F-81 records two copy faults in the surface. Earlier source, harness and review failures stay in birth-time-window-ui-20261010. No new accuracy run; B2.a/B2.c carry the thousand-window rule."
     },
     {
       "id": "B2.c",

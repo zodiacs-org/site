@@ -1,0 +1,45 @@
+{
+  "schema": "zodiacs.local-build-summary.v1",
+  "assembled": "Assembled from the two local build logs: the lines below are copied verbatim from each log's bundle report, and the logs themselves are identified by size and SHA-256. The logs are working files and are not committed.",
+  "source": { "commit": "7028d01905137b45e835db1dca785cecb672a729", "tree": "d5a580d38df67d8150d6684e8ff6bd75d82bd389" },
+  "machine": { "platform": "darwin 27.0.0", "node": "v24.13.0", "npm": "11.6.2", "install": "npm ci (lockfile unchanged)" },
+  "builds": [
+    {
+      "name": "flags unset, as Site Check's Build & Check job builds",
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": { "bytes": 303002, "sha256": "a46935bc2af4f07b232ec6af90112e526ab5a6d0e766c142706cba02404842f7" },
+      "lines": [
+        "verify-daily-freshness: PASS — 2026-10-10 is 0 UTC day(s) old",
+        "validate-schema: OK — 1788 JSON-LD documents, 6861 graph nodes, 70 editorial owners, 0 errors",
+        "  /birth-chart/      67.1 KB /   71 KB  (43 chunks)",
+        "  chunk-max          50.1 KB /   60 KB  (/_astro/client.D6U9smGw.js)",
+        "  engine-chunk       32.5 KB / 32.598046875 KB  (/_astro/full.BKD3b6Gf.js; 7 static chunks)",
+        "engine isolation: package boundary clear; homepage markers clear",
+        "report-bundles: budgets pass",
+        "Phase 1 build receipt: 9dd04ba1bf49c7dd8e332d951bf095f0b2878898f3126c2d9d4461f708192d23"
+      ],
+      "birthWindowWorker": { "file": "_astro/birth-window.worker-BrxRL5ql.js", "sha256": "678516aeaf379c0cc406aa03cf5f2704d310448e9df29bc3879e1099988d1872" },
+      "trackedFilesChanged": "none"
+    },
+    {
+      "name": "production feature flags, with the CI stand-in values of site-check.yml's production-flags-build job",
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": { "bytes": 302934, "sha256": "599f83e0fc56c7dcce9850f73bfd90008b8bfe57acd9bfc10055c3805c1b7b7c" },
+      "lines": [
+        "verify-daily-freshness: PASS — 2026-10-10 is 0 UTC day(s) old",
+        "validate-schema: OK — 1791 JSON-LD documents, 6868 graph nodes, 70 editorial owners, 0 errors",
+        "  /birth-chart/      70.2 KB /   71 KB  (44 chunks)",
+        "  /compatibility/    36.0 KB /   36 KB  (25 chunks)",
+        "  chunk-max          50.1 KB /   60 KB  (/_astro/client.DC400vGu.js)",
+        "  engine-chunk       32.5 KB / 32.598046875 KB  (/_astro/full.BKD3b6Gf.js; 7 static chunks)",
+        "engine isolation: package boundary clear; homepage markers clear",
+        "report-bundles: budgets pass",
+        "Phase 1 build receipt: 9dd04ba1bf49c7dd8e332d951bf095f0b2878898f3126c2d9d4461f708192d23"
+      ],
+      "birthWindowWorker": { "file": "_astro/birth-window.worker-BrxRL5ql.js", "sha256": "678516aeaf379c0cc406aa03cf5f2704d310448e9df29bc3879e1099988d1872" },
+      "trackedFilesChanged": "public/astrofolio/index.html and public/thesis/index.html (flag-on generator output), restored from the commit afterwards and never committed"
+    }
+  ]
+}
