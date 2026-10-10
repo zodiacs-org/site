@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      CANDIDATE: 'b8cbfc2a987a0dcc357999bb31563d91bf0c0578'
+      CANDIDATE: '44e963b268bb3fa318a0fe5288ae8bca1004dcbe'
       QUALIFIED_MAIN: '51b2c0d3bafe8b23d0a7f54433cd0c89c9435818'
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
@@ -30,7 +30,9 @@ jobs:
       - run: npm ci
       - run: npx playwright-core install --with-deps chromium
       - name: Source ownership and reference-span negative controls
-        run: npx vitest run scripts/report-bundles.test.mjs src/lib/birth-time-window.test.ts
+        run: |
+          rg -n 'engine/full' src --glob '*.ts' --glob '*.tsx' --glob '*.astro'
+          npx vitest run scripts/report-bundles.test.mjs src/lib/birth-time-window.test.ts src/lib/hooks/useEngine.test.ts
       - name: Original build, type and complete unit suite
         run: |
           npm run build
