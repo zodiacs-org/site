@@ -38,16 +38,16 @@ unmerged until complete final CI, fresh review, merge/post-merge and
 production checks finish; it adds no accepted weight. The existing
 B2.a/B2.c thousand-window records are not a new accuracy run.
 
-The private solar scanner's source identity integration and in-scan mutation
-controls are under [engine #38](https://github.com/zodiacs-org/engine/pull/38).
-Complete PR workflows pass on `10b9b7ce0cd05c6d54f15aa7c07974896788a215`,
-including all nine core CI jobs and fourteen native source controls.
-Fresh review found that stored receipts also need the original identity
-shape; revised source `7df5b5df12e12dc5c87c50e76b4bae5b1d449314` is now
-under validation. Clean review, merge and post-merge qualification remain
-pending. Actual ephemeris execution, normative clock/frame equivalence,
-independent two-second accuracy, completeness and public delivery remain
-unfinished; no solar unit is accepted.
+The private solar scanner is merged under [engine #38](https://github.com/zodiacs-org/engine/pull/38)
+at `9a6317ac1f6516fbf518079c266453995d8f9341`, with the exact tested tree
+and ordered parents verified. [Source-bound qualification](../evidence/solar-terms-20261010/README.md)
+records all six final PR workflows, all nine core CI jobs, seventeen native
+source controls on Node 22/24, clean fresh review and all seven post-merge
+workflows including Scorecard. Original identity and getter-accounting
+review findings remain visible with their corrections. Actual ephemeris
+execution, normative clock/frame equivalence, independent two-second
+accuracy, completeness and public delivery remain unfinished; no solar
+unit is accepted.
 
 The [public adoption observation](../evidence/public-adoption-baseline-20261010/README.md)
 records dated public downloads, repository metadata and the named Registry

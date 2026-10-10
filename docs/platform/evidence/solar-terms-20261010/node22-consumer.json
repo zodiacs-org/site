@@ -1,0 +1,104 @@
+{
+  "schema": "zodiacs.private-solar-term-consumer.v1",
+  "producer": {
+    "source": "596435a43ce4995945ba1dcddc08cc5d8c318db4",
+    "run": "38054407049",
+    "node": "v22.22.2"
+  },
+  "pack": {
+    "bytes": 6388,
+    "sha256": "29be54e611e1884b3f143c9eac07391d51e4ef99dc1dded6de479dff6f7c7833",
+    "files": [
+      "LICENSE",
+      "README.md",
+      "index.d.mts",
+      "index.mjs",
+      "package.json"
+    ]
+  },
+  "carriedArchiveSha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002",
+  "linearControls": [
+    {
+      "year": 1,
+      "terms": 24,
+      "samples": 4992,
+      "maxErrorMs": 9,
+      "budgetRefusesWhole": true
+    },
+    {
+      "year": 99,
+      "terms": 24,
+      "samples": 4992,
+      "maxErrorMs": 9,
+      "budgetRefusesWhole": true
+    },
+    {
+      "year": 1850,
+      "terms": 24,
+      "samples": 4992,
+      "maxErrorMs": 9,
+      "budgetRefusesWhole": true
+    },
+    {
+      "year": 2000,
+      "terms": 24,
+      "samples": 4992,
+      "maxErrorMs": 3,
+      "budgetRefusesWhole": true
+    },
+    {
+      "year": 2026,
+      "terms": 24,
+      "samples": 4992,
+      "maxErrorMs": 8,
+      "budgetRefusesWhole": true
+    },
+    {
+      "year": 2049,
+      "terms": 24,
+      "samples": 4992,
+      "maxErrorMs": 8,
+      "budgetRefusesWhole": true
+    },
+    {
+      "year": 9998,
+      "terms": 24,
+      "samples": 4992,
+      "maxErrorMs": 8,
+      "budgetRefusesWhole": true
+    }
+  ],
+  "typeChecks": {
+    "compiler": "5.8.3",
+    "lib": "ES2022 only; no DOM",
+    "strict": true,
+    "installedExports": true,
+    "negativeControls": 9,
+    "structuredIdentityType": true
+  },
+  "providerSnapshotControls": {
+    "sampleReadOnce": true,
+    "wholeBudgetRefusal": true,
+    "nonnegativeAccountedSamples": true
+  },
+  "ephemerisIdentityShapes": {
+    "string": true,
+    "structured": true,
+    "normalization": "escape % and @ within fields, then join with @",
+    "pairedInventories": 7,
+    "collisionControls": {
+      "distinctEncodedReceipts": 6,
+      "delimiterMutationRefused": true,
+      "shapeMutationRefused": true,
+      "storedReceiptShapesDistinct": true,
+      "refusalRetainsIdentityShape": true
+    }
+  },
+  "accuracy": "unvalidated",
+  "completeness": "unproven",
+  "publication": "private; no registry publication",
+  "limitations": [
+    "Installed private pack and independent linear arithmetic only.",
+    "No actual solar ephemeris, independent astronomical comparison or full repository suite was run by this script."
+  ]
+}
