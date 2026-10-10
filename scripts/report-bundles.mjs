@@ -73,6 +73,26 @@ function staticImportSpecifiers(source) {
   return found;
 }
 
+// Erased types do not load the engine. Window runtime loading belongs to full.ts.
+function runtimeWindowImport(source, fileName) {
+  const frontmatter=fileName.endsWith('.astro')?/^---\r?\n([\s\S]*?)\r?\n---/.exec(source):null;
+  const tree=ts.createSourceFile(fileName,frontmatter?frontmatter[1]:source,ts.ScriptTarget.Latest,false,fileName.endsWith('.tsx')?ts.ScriptKind.TSX:ts.ScriptKind.TS);
+  let found=false;
+  const target=node=>node&&ts.isStringLiteralLike(node)&&node.text==='@zodiacs/engine/window';
+  const visit=node=>{
+    if(ts.isImportDeclaration(node)&&target(node.moduleSpecifier)){
+      const clause=node.importClause,named=clause?.namedBindings;
+      const onlyTypes=clause?.isTypeOnly||(!clause?.name&&named&&ts.isNamedImports(named)&&named.elements.length>0&&named.elements.every(item=>item.isTypeOnly));
+      if(!onlyTypes)found=true;
+    }else if(ts.isExportDeclaration(node)&&target(node.moduleSpecifier)){
+      const onlyTypes=node.isTypeOnly||(node.exportClause&&ts.isNamedExports(node.exportClause)&&node.exportClause.elements.length>0&&node.exportClause.elements.every(item=>item.isTypeOnly));
+      if(!onlyTypes)found=true;
+    }else if(ts.isCallExpression(node)&&node.expression.kind===ts.SyntaxKind.ImportKeyword&&target(node.arguments[0]))found=true;
+    ts.forEachChild(node,visit);
+  };
+  visit(tree);return found;
+}
+
 // Built JavaScript needs syntax-aware closure discovery: side-effect imports
 // may contain whitespace/comments and shared engine modules may be re-exported.
 function staticJavaScriptImports(source) {
@@ -232,6 +252,7 @@ const sourceFiles = await walk(resolve(repo, 'src'), (path) =>
 const directVendorImporters = [];
 const engineInternalImporters = [];
 const engineMathImporters = [];
+const windowRuntimeImporters = [];
 for (const path of sourceFiles) {
   const source = await readFile(path, 'utf8');
   const specifiers = staticImportSpecifiers(source);
@@ -241,6 +262,7 @@ for (const path of sourceFiles) {
   if (hasVendorImport) directVendorImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/internal')) engineInternalImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/internal/math')) engineMathImporters.push(relativePath);
+  if(runtimeWindowImport(source,relativePath))windowRuntimeImporters.push(relativePath);
 }
 const allowedDirectVendorImporters = ['src/lib/engine/server-ephemeris.ts'];
 directVendorImporters.sort();
@@ -253,6 +275,9 @@ if (
 const allowedEngineImporter = 'src/lib/engine/full.ts';
 if (engineInternalImporters.length !== 1 || engineInternalImporters[0] !== allowedEngineImporter) {
   fail(`engine source isolation: expected only ${allowedEngineImporter} to import @zodiacs/engine/internal; found ${engineInternalImporters.join(', ') || 'none'}`);
+}
+if(windowRuntimeImporters.some(path=>path!==allowedEngineImporter)){
+  fail(`engine source isolation: window runtime must use ${allowedEngineImporter}; found ${windowRuntimeImporters.join(', ')}`);
 }
 const allowedMathImporters = [
   'src/lib/engine/aspects.ts',
@@ -305,6 +330,8 @@ const serverOnlyMarkerChunks = chunkRows
   .filter(({ source }) => ['node:module', 'createRequire'].some((marker) => source.includes(marker))
     || hasExternalEphemerisImport(source))
   .map(({ path }) => path);
+const escapedEngineMarkerChunks=chunkRows.filter(({path,source})=>!engineClosure.has(path)&&engineMarkers.some(marker=>source.includes(marker))).map(({path})=>path);
+if(escapedEngineMarkerChunks.length)fail(`worker/browser engine isolation: ephemeris marker outside the full static closure: ${escapedEngineMarkerChunks.join(', ')}`);
 if (homepageMarkerChunks.length) {
   fail(`homepage engine isolation: engine marker found in ${homepageMarkerChunks.join(', ')}`);
 }
@@ -350,7 +377,8 @@ if (engineChunk) {
 const sourceBoundaryClear = directVendorImporters.length === allowedDirectVendorImporters.length
   && directVendorImporters.every((path, index) => path === allowedDirectVendorImporters[index])
   && engineInternalImporters.length === 1
-  && engineInternalImporters[0] === allowedEngineImporter;
+  && engineInternalImporters[0] === allowedEngineImporter
+  && windowRuntimeImporters.every(path=>path===allowedEngineImporter);
 console.log(`engine isolation: package boundary ${sourceBoundaryClear ? 'clear' : 'failed'}; homepage markers ${homepageMarkerChunks.length ? 'found' : 'clear'}`);
 
 if (failures.length) {

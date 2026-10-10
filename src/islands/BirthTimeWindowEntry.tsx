@@ -1,4 +1,5 @@
 import {useEffect,useRef,useState} from 'preact/hooks';
+import {birthWindowAvailableMinutes} from '../lib/birth-time-window';
 import type {BirthTimeWindowProps} from './BirthTimeWindow';
 type Surface=typeof import('./BirthTimeWindow');
 /** Keep the optional window surface outside the calculator's initial closure. */
@@ -12,6 +13,7 @@ export function BirthTimeWindowEntry(props:BirthTimeWindowProps){
   catch{if(mounted.current)setError(true);}
   finally{if(mounted.current)setBusy(false);}
  }
+ if(birthWindowAvailableMinutes(props.utc).length===0)return null;
  if(surface)return <surface.BirthTimeWindow {...props}/>;
  return <aside data-birth-window-entry style={{display:'grid',gap:'0.75rem'}}>
   <p style={{margin:0,lineHeight:'1.5rem'}}>If your birth time is approximate, check which parts of the chart could change.</p>

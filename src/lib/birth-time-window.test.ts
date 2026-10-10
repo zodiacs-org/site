@@ -1,6 +1,6 @@
 import {describe,expect,it} from 'vitest';
 import type {BirthWindow} from '@zodiacs/engine/window';
-import {birthWindowSummary,birthWindowChange,birthWindowShare} from './birth-time-window';
+import {birthWindowSummary,birthWindowChange,birthWindowShare,birthWindowAvailableMinutes,BIRTH_WINDOW_MINUTES} from './birth-time-window';
 const fixture=(signs:BirthWindow['cells'][number]['features']['ascendant'][],flags:BirthWindow['flags']=[])=>({flags,cells:signs.map(ascendant=>({features:{ascendant}}))});
 describe('sampled birth-window presentation',()=>{
  it('distinguishes one rising sign, repeated cells and changing signs',()=>{
@@ -22,5 +22,20 @@ describe('sampled birth-window presentation',()=>{
   expect(birthWindowShare(0.5)).toBe('50.0%');
   expect(birthWindowShare(1)).toBe('100.0%');
   for(const value of [NaN,Infinity,-0.01,1.01])expect(()=>birthWindowShare(value)).toThrow(RangeError);
+ });
+});
+
+describe('supported birth-window dates',()=>{
+ it('keeps every preset well inside the reference span',()=>{expect(birthWindowAvailableMinutes(new Date('2000-01-01T12:00:00Z'))).toEqual([...BIRTH_WINDOW_MINUTES]);});
+ it('limits windows near the lower boundary and includes its starting instant',()=>{
+  expect(birthWindowAvailableMinutes(new Date('1800-01-01T00:10:00Z'))).toEqual([1,5,10]);
+  expect(birthWindowAvailableMinutes(new Date('1800-01-01T00:01:00Z'))).toEqual([1]);
+ });
+ it('excludes windows ending at the upper boundary',()=>{
+  expect(birthWindowAvailableMinutes(new Date('2199-12-31T23:50:00Z'))).toEqual([1,5]);
+  expect(birthWindowAvailableMinutes(new Date('2199-12-31T23:59:00Z'))).toEqual([]);
+ });
+ it('suppresses unsupported instants, invalid dates and charts with no supported preset',()=>{
+  for(const at of ['1799-12-31T23:59:59Z','1800-01-01T00:00:00Z','2200-01-01T00:00:00Z','2200-01-01T12:00:00Z','not-a-date'])expect(birthWindowAvailableMinutes(new Date(at))).toEqual([]);
  });
 });

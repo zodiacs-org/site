@@ -32,3 +32,10 @@ export function computeBodies(date: Date): BodyPosition[] {
 export function computeChart(input: ChartInput): Chart {
   return adaptChart(engineComputeChart(input), input);
 }
+
+/** The worker loads this same compiled boundary. */
+export const browserEngineModuleUrl = import.meta.url;
+export async function birthWindow(input: import('@zodiacs/engine/window').BirthWindowInput) {
+  const windowEngine = await import('@zodiacs/engine/window');
+  return windowEngine.birthWindow(input);
+}

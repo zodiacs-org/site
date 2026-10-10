@@ -129,3 +129,17 @@ describe('actual bundle gate', () => {
     expect(result.output).not.toContain('chunk-max:');
   });
 });
+
+describe('worker window engine boundary',()=>{
+ it.each(['import { birthWindow } from "@zodiacs/engine/window";','const load=()=>import("@zodiacs/engine/window");','export { birthWindow } from "@zodiacs/engine/window";','import {} from "@zodiacs/engine/window";','export {} from "@zodiacs/engine/window";'])('rejects runtime window loading outside full.ts: %s',source=>{
+  const result=check({'src/islands/window.worker.ts':source});expect(result.code).toBe(1);expect(result.output).toContain('window runtime must use');
+ });
+ it('allows erased types and loading the existing boundary URL',()=>{
+  expect(check({'src/islands/window.worker.ts':'import type { BirthWindowInput } from "@zodiacs/engine/window";const load=(url)=>import(url);'}).code).toBe(0);
+  expect(check({'src/islands/Window.ts':'import { type BirthWindow } from "@zodiacs/engine/window";'}).code).toBe(0);
+ });
+ it('rejects worker ephemeris code outside the full static closure',()=>{
+  const result=check({'dist/_astro/window.worker.fixture.js':'export const engine=["Value is not boolean:","Light-travel time solver did not converge"];'});
+  expect(result.code).toBe(1);expect(result.output).toContain('worker/browser engine isolation');
+ });
+});

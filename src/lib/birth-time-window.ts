@@ -23,3 +23,13 @@ export function birthWindowShare(share:number):string{
  if(!Number.isFinite(share)||share<0||share>1)throw new RangeError('Invalid window time share');
  return share>0&&share<0.001?'<0.1%':(share*100).toFixed(1)+'%';
 }
+
+export const BIRTH_WINDOW_MINUTES=[1,5,10,15,30,60,120] as const;
+const referenceStart=Date.parse('1800-01-01T00:00:00Z');
+const referenceEnd=Date.parse('2200-01-01T00:00:00Z');
+/** Both endpoints must belong to the engine's half-open UTC reference span. */
+export function birthWindowAvailableMinutes(utc:Date):readonly number[]{
+ const at=utc.getTime();
+ if(!Number.isFinite(at)||at<referenceStart||at>=referenceEnd)return [];
+ return BIRTH_WINDOW_MINUTES.filter(minutes=>at-minutes*60000>=referenceStart&&at+minutes*60000<referenceEnd);
+}
