@@ -112,9 +112,12 @@ try{
     assert.equal(await page.locator('[data-birth-window-entry]').count(),0,'Unknown-time reference does not invent a rising window');
     await page.getByRole('checkbox',{name:"I don't know it",exact:true}).uncheck();
     const beforeBoundary=await page.evaluate(()=>window.__birthWindowControls.created.length);
-    await page.getByLabel('Birth date',{exact:true}).fill('2200-01-01');
-    await page.getByLabel('Birth time',{exact:true}).fill('08:30');
+    await page.getByLabel('Birth date',{exact:true}).fill('2199-12-31');
+    await page.getByLabel('Birth time',{exact:true}).fill('23:59');
     await page.locator('.calc__submit').click();await committed(page);
+    const upperUTC=await page.locator('.calc__result [data-check-our-math] time').getAttribute('datetime');
+    assert.ok(Date.parse(upperUTC)>=Date.parse('2200-01-01T00:00:00Z'),'The committed accepted local date actually resolves beyond the UTC reference span');
+    assert.equal(await page.locator('.calc__result [data-check-our-math]').getAttribute('data-instant-basis'),'birth');
     assert.equal(await page.locator('[data-birth-window-entry]').count(),0,'A supported local boundary date resolving beyond the UTC reference span has no window entry');
     assert.equal(await page.evaluate(()=>window.__birthWindowControls.created.length),beforeBoundary);
     await page.getByLabel('Birth date',{exact:true}).fill('1800-01-01');
@@ -132,6 +135,9 @@ try{
     await bounded.getByRole('button',{name:'Check this window',exact:true}).click();
     await bounded.locator('[data-birth-window-verification]').waitFor({state:'attached',timeout:60000});
     const boundaryProbe=await page.evaluate(()=>({input:window.__birthWindowControls.inputs.at(-1),reply:window.__birthWindowControls.results.at(-1)}));
+    const lowerUTC=boundaryProbe.input.input.input.at.toISOString();
+    assert.equal(await page.locator('.calc__result [data-check-our-math] time').getAttribute('datetime'),lowerUTC);
+    assert.ok(Date.parse(lowerUTC)>=Date.parse('1800-01-01T00:00:00Z')&&Date.parse(lowerUTC)<Date.parse('1800-01-01T00:30:00Z'),'The boundary worker uses the actual lower-edge chart instant');
     assert.ok(boundaryProbe.reply.result,'The supported boundary preset produces a real worker result');
     assert.equal(boundaryProbe.reply.error,undefined);
     assert.equal(boundaryProbe.reply.result.end.getTime()-boundaryProbe.reply.result.start.getTime(),2*60000);
@@ -141,7 +147,7 @@ try{
     assert.equal(await bounded.locator('[role="alert"]').count(),0);
     assert.deepEqual(errors,[]);
     const native=await page.evaluate(()=>window.__birthWindowControls);
-    records.push({name:variant.name,viewport:variant,summary,native,controls:{noWorkerBeforeRequest:true,realSampledWindow:true,allCellsRendered:true,explicitCancelTerminates:true,windowChangeTerminates:true,chartReplacementTerminates:true,unknownTimeExcluded:true,noOverflow:true,outOfSpanEntryExcluded:true,boundaryOptionsDisabled:true,boundaryPresetNativeWorker:true,fullBoundaryWorker:true},pageErrors:errors});
+    records.push({name:variant.name,viewport:variant,summary,native,boundaryInstants:{upperUTC,lowerUTC},controls:{noWorkerBeforeRequest:true,realSampledWindow:true,allCellsRendered:true,explicitCancelTerminates:true,windowChangeTerminates:true,chartReplacementTerminates:true,unknownTimeExcluded:true,noOverflow:true,outOfSpanEntryExcluded:true,boundaryOptionsDisabled:true,boundaryPresetNativeWorker:true,fullBoundaryWorker:true,committedBoundaryInstantsVerified:true},pageErrors:errors});
    }finally{hold?.release();hold=null;await context.close();}
   }}finally{await browser.close();}
  });
