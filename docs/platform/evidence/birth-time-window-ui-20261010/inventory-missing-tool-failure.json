@@ -1,0 +1,34 @@
+{
+  "schema": "zodiacs.birth-window-ui-failure.v1",
+  "source": "44e963b268bb3fa318a0fe5288ae8bca1004dcbe",
+  "producer": "ef4d480e88a6362a76e1d354cca2bef68204b1b7",
+  "run": 38059715239,
+  "job": 114235313742,
+  "conclusion": "failure",
+  "passedBeforeFailure": {
+    "protectedScope": true,
+    "install": true
+  },
+  "failure": "Source inventory exits 127 because this runner has no rg executable.",
+  "notReached": [
+    "source controls",
+    "build",
+    "type check",
+    "complete unit suite",
+    "worker behavior",
+    "visual/performance/fresh captures"
+  ],
+  "harnessCorrection": "Producer 3b9d6ec0e6db75251354e771dbbf6a0891938a2b uses git grep on the same UI source; no unchanged retry was used.",
+  "originalDecodedLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/inventory-missing-tool-failure.log",
+    "bytes": 104767,
+    "sha256": "21cafeb6c625baba350d18c14b1f964579807d862ffc5fbab04d39b10ea11f2a"
+  },
+  "acceptedWeightAdded": 0,
+  "diagnostic": {
+    "originalExportPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-44e963b-inventory.json",
+    "bytes": 193,
+    "sha256": "de1c5654322c59fa110906519758caacf89e8972273dd0df7a5febdbc655db7c"
+  }
+}

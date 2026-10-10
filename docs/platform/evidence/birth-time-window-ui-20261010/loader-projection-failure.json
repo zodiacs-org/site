@@ -1,0 +1,33 @@
+{
+  "schema": "zodiacs.birth-window-ui-failure.v1",
+  "source": "44e963b268bb3fa318a0fe5288ae8bca1004dcbe",
+  "producer": "3b9d6ec0e6db75251354e771dbbf6a0891938a2b",
+  "run": 38060040537,
+  "job": 114236262101,
+  "conclusion": "failure",
+  "passedBeforeFailure": {
+    "sourceControls": 53,
+    "schema": true,
+    "sourceBoundary": true,
+    "workerFingerprintAndBudget": true
+  },
+  "failure": "The explicit loader projection does not eliminate the window namespace. Main closure remains 40.4 KB against unchanged 32.598046875 KB.",
+  "notReached": [
+    "type check",
+    "complete unit suite",
+    "worker behavior",
+    "visual/performance/fresh captures"
+  ],
+  "originalDecodedLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/loader-projection-failure.log",
+    "bytes": 947484,
+    "sha256": "0fc8976fdf9f86f32f55679b6543e21e215e16f0f2c03d3581782ce91c4c52a4"
+  },
+  "acceptedWeightAdded": 0,
+  "diagnostic": {
+    "originalExportPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-44e963b.json",
+    "bytes": 163066,
+    "sha256": "aa93a1b5d26238fea3fb996a64c0ba4d30735e89abf061413999e94809b279d7"
+  }
+}

@@ -37,9 +37,10 @@
   ],
   "runtimeErrorsNotObserved": true,
   "diagnostic": {
-    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-a9034bd.json",
     "bytes": 59669,
-    "sha256": "a5e6ac9d92fe6e58c853d503a3dd2a3d608a1ad966719587b4508b2948753e28"
+    "sha256": "a5e6ac9d92fe6e58c853d503a3dd2a3d608a1ad966719587b4508b2948753e28",
+    "originalExportPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json"
   },
   "originalDecodedLog": {
     "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-loader-second-failure.log",
