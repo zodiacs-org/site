@@ -1,4 +1,4 @@
-name: Recover corrected worker-boundary native evidence without reruns
+name: Recover corrected development and production native evidence without reruns
 on:
   push:
     branches: [codex/developer-docs-preparation]
@@ -29,25 +29,25 @@ jobs:
            def redirect_request(self,req,fp,code,msg,headers,newurl):return None
           headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json'}
           root='https://api.github.com/repos/zodiacs-org/site/'
-          with urllib.request.urlopen(urllib.request.Request(root+'actions/runs/38063604884',headers=headers),timeout=30) as response:run=json.load(response)
-          assert run['head_sha']=='22a9240542dc38e3c8c0dd603f3731823ed8c43c' and run['conclusion']=='success' and run['run_attempt']==1
+          with urllib.request.urlopen(urllib.request.Request(root+'actions/runs/38068373681',headers=headers),timeout=30) as response:run=json.load(response)
+          assert run['head_sha']=='2b8f342780db5d79bc4f5cc6cd96f480edb01463' and run['conclusion']=='success' and run['run_attempt']==1
           opener=urllib.request.build_opener(NoRedirect)
-          request=urllib.request.Request(root+'actions/artifacts/11674695553/zip',headers=headers)
+          request=urllib.request.Request(root+'actions/artifacts/11675743260/zip',headers=headers)
           try:
            with opener.open(request,timeout=30) as response:packed=response.read()
           except urllib.error.HTTPError as error:
            if error.code!=302:raise
            assert error.headers['Location'].startswith('https://')
            with urllib.request.urlopen(urllib.request.Request(error.headers['Location']),timeout=60) as response:packed=response.read()
-          assert len(packed)==24393266
+          assert len(packed)==31587765
           digest=hashlib.sha256(packed).hexdigest()
-          assert digest=='3ba982f9ea03e6b7eeeb98b21439f132b430d06495cd7475c20fa5910230bb32'
+          assert digest=='640185ca1c5a938a1c331be2cc39ae9cfcefca3d3090ff665a5fcf7c0f7670e0'
           archive=zipfile.ZipFile(io.BytesIO(packed));assert archive.testzip() is None
           evidence='docs/platform/evidence/birth-time-window-ui-20261010/'
           capture=json.loads(archive.read(evidence+'capture-producer.json'))
-          assert capture['checkedOutSource']=='a8b58d8b5476c6bd85d0abb204676ba008786abf'
-          assert capture['checkedOutTree']=='b66232e2fc1cc10122f4b9b9ce6af4b8ce79d17e'
-          assert capture['producer']['run']=='38063604884'
+          assert capture['checkedOutSource']=='018c3190649cb19e1f478459958b6ac8809d0464'
+          assert capture['checkedOutTree']=='bf10d1fd86d1179fcae5f432aedd0af25ff12bf8'
+          assert capture['producer']['run']=='38068373681'
           manifest=archive.read(capture['manifestPath'])
           assert len(manifest)==capture['manifestBytes'] and hashlib.sha256(manifest).hexdigest()==capture['manifestSha256']
           for row in capture['captures']+capture['visualReferences']+capture['lighthouse']:
@@ -55,7 +55,10 @@ jobs:
            assert len(data)==row['bytes'] and hashlib.sha256(data).hexdigest()==row['sha256']
           assert len(capture['captures'])==18
           all_identical=all(row['identicalToQualifiedMain'] and row['sha256']==row['previousSha256'] for row in capture['captures'])
+          retained=evidence+'native-018c319/'
           def emit(path,data):
+           if path.startswith(evidence):path=retained+path[len(evidence):]
+           elif path.startswith('tests/visual/artifacts/birth-time-window/'):path=retained+'screenshots/'+path.split('/')[-1]
            meta={'path':path,'size':len(data),'sha256':hashlib.sha256(data).hexdigest()}
            encoded=base64.b64encode(data).decode()
            if len(encoded)<60000:print('PROGRAMME_FILE '+json.dumps({**meta,'base64':encoded},separators=(',',':')))
@@ -66,6 +69,8 @@ jobs:
           part=os.environ['PART']
           if part=='report':
            emit(capture['manifestPath'],manifest)
+           love=next(row for row in capture['captures'] if row['path'].endswith('/love-360.png'))
+           if love['identicalToQualifiedMain']:emit(love['path'],archive.read(love['path']))
            changed_capture_comparisons=[]
            for row in capture['captures']:
             if row['identicalToQualifiedMain']:continue
@@ -88,15 +93,19 @@ jobs:
               output=io.BytesIO();im.crop(bounds).save(output,format='PNG')
               path=evidence+'review-qualified-inspection/'+stem+'-'+label+'-difference-region.png';emit(path,output.getvalue())
             changed_capture_comparisons.append(comparison)
-           emit(evidence+'review-qualified-inspection/changed-phase1-captures.json',(json.dumps({'schema':'zodiacs.phase1-changed-capture-inspection.v1','originalRun':38063604884,'actualCandidate':capture['checkedOutSource'],'comparisons':changed_capture_comparisons,'limitations':['Actual native capture bytes and qualified-main bytes are compared for inspection; no benchmark mask, altered pixel tolerance or new acceptance gate.']},indent=2)+'\n').encode())
-           for filename in ['browser-controls.json','visual-insertion.json','capture-producer.json','review-bundle-diagnostic.json']:emit(evidence+filename,archive.read(evidence+filename))
+           emit(evidence+'review-qualified-inspection/changed-phase1-captures.json',(json.dumps({'schema':'zodiacs.phase1-changed-capture-inspection.v1','originalRun':38068373681,'actualCandidate':capture['checkedOutSource'],'comparisons':changed_capture_comparisons,'limitations':['Actual native capture bytes and qualified-main bytes are compared for inspection; no benchmark mask, altered pixel tolerance or new acceptance gate.']},indent=2)+'\n').encode())
+           development=json.loads(archive.read(evidence+'development-browser-controls.json'))
+           assert development['passed'] and development['checkedOutSource']==capture['checkedOutSource'] and development['serverMode']=='development'
+           assert len(development['records'])==2 and all(len(row['controls'])==13 and all(row['controls'].values()) and not row['pageErrors'] for row in development['records'])
+           for filename in ['browser-controls.json','development-browser-controls.json','visual-insertion.json','capture-producer.json','review-bundle-diagnostic.json']:emit(evidence+filename,archive.read(evidence+filename))
+           for row in capture['lighthouse']:emit(retained+'lighthouse/'+row['path'].split('/')[-1],archive.read(row['path']))
            inventory=[{'path':name,'bytes':len(archive.read(name)),'sha256':hashlib.sha256(archive.read(name)).hexdigest()} for name in archive.namelist() if not name.endswith('/')]
            raw=[]
            for row in capture['lighthouse']:
             doc=json.loads(archive.read(row['path']))
             assert not doc.get('runtimeError')
             raw.append({**row,'fetchTime':doc.get('fetchTime'),'lighthouseVersion':doc.get('lighthouseVersion'),'requestedUrl':doc['requestedUrl'],'lcp':doc['audits']['largest-contentful-paint']['numericValue'],'cls':doc['audits']['cumulative-layout-shift']['numericValue'],'tbt':doc['audits']['total-blocking-time']['numericValue']})
-           report={'schema':'zodiacs.birth-window-qualified-artifact-recovery.v1','producer':{'source':os.environ['GITHUB_SHA'],'run':os.environ['GITHUB_RUN_ID']},'original':{'run':38063604884,'head':run['head_sha'],'candidate':capture['checkedOutSource'],'tree':capture['checkedOutTree'],'attempt':1,'conclusion':'success','artifact':11674695553,'zipBytes':len(packed),'zipSha256':digest,'crcVerified':True},'inventory':inventory,'rawLighthouse':raw,'phase1':{'captures':18,'allActualPngsMatchNativeManifest':True,'allFreshPngsIdenticalToQualifiedMain':all_identical,'manifestSha256':capture['manifestSha256'],'templateSourceSha256':capture['templateSourceSha256']},'limitations':['Read-only extraction of the original passed run; no build, browser, numerical execution or benchmark rerun.','Actual image equality to qualified main is computed, never assumed; changed images are exported when present.','The original focused qualification does not establish the final full suite, fresh review, merge/post-merge or production deployment.']}
+           report={'schema':'zodiacs.birth-window-qualified-artifact-recovery.v1','producer':{'source':os.environ['GITHUB_SHA'],'run':os.environ['GITHUB_RUN_ID']},'original':{'run':38068373681,'head':run['head_sha'],'candidate':capture['checkedOutSource'],'tree':capture['checkedOutTree'],'attempt':1,'conclusion':'success','artifact':11675743260,'zipBytes':len(packed),'zipSha256':digest,'crcVerified':True},'inventory':inventory,'rawLighthouse':raw,'phase1':{'captures':18,'allActualPngsMatchNativeManifest':True,'allFreshPngsIdenticalToQualifiedMain':all_identical,'manifestSha256':capture['manifestSha256'],'templateSourceSha256':capture['templateSourceSha256']},'limitations':['Read-only extraction of the original passed run; no build, browser, numerical execution or benchmark rerun.','Actual image equality to qualified main is computed, never assumed; changed images are exported when present.','The original focused qualification does not establish the final full suite, fresh review, merge/post-merge or production deployment.']}
            emit(evidence+'review-qualified-artifact-recovery.json',(json.dumps(report,indent=2)+'\n').encode())
           elif part.startswith('ref-'):
            stems={'ref-desktop':'birth-chart-kahlo-desktop','ref-mobile':'birth-chart-kahlo-mobile','ref-reduced':'birth-chart-kahlo-desktop-reduced-motion'}
@@ -115,5 +124,5 @@ jobs:
             image=source.crop((0,offset,source.width,offset+height));output=io.BytesIO();image.save(output,format='PNG')
             path=evidence+'review-qualified-inspection/'+view+'-details-'+str(offset)+'.png'
             emit(path,output.getvalue());crops.append({'path':path,'offset':offset,'height':height,'originalPath':original,'originalSha256':hashlib.sha256(archive.read(original)).hexdigest()})
-           emit(evidence+'review-qualified-inspection/'+view+'-crop-provenance.json',(json.dumps({'schema':'zodiacs.native-screenshot-inspection-crops.v1','originalRun':38063604884,'originalCandidate':capture['checkedOutSource'],'crops':crops,'limitations':['Derived inspection crops of the identified original native screenshot; no new browser run or qualification claim.']},indent=2)+'\n').encode())
+           emit(evidence+'review-qualified-inspection/'+view+'-crop-provenance.json',(json.dumps({'schema':'zodiacs.native-screenshot-inspection-crops.v1','originalRun':38068373681,'originalCandidate':capture['checkedOutSource'],'crops':crops,'limitations':['Derived inspection crops of the identified original native screenshot; no new browser run or qualification claim.']},indent=2)+'\n').encode())
           RECOVER
