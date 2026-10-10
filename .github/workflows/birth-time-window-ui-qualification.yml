@@ -1,0 +1,64 @@
+name: Qualify prepared birth-time uncertainty UI
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/birth-time-window-ui-qualification.yml]
+permissions:
+  contents: read
+jobs:
+  qualification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CANDIDATE: '2507b7b22e53f9e466f6aa919db4f6b10a6eaf6c'
+      QUALIFIED_MAIN: '41909a8294b29104f8b445f56e0cdd280379bcb9'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ env.CANDIDATE }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - name: Preserve exact qualified source and protected-scope guard
+        run: |
+          test "$(git rev-parse HEAD)" = "$CANDIDATE"
+          git fetch --no-tags origin "$QUALIFIED_MAIN"
+          node scripts/phase1-scope-guard.mjs --base "$QUALIFIED_MAIN"
+      - run: npm ci
+      - run: npx playwright-core install --with-deps chromium
+      - name: Original build, type and focused ownership/presentation checks
+        run: |
+          npm run build
+          npm run check
+          npx vitest run src/lib/birth-time-window.test.ts src/islands/ChartCalculator.ownership.test.ts src/islands/ChartCalculator.confidence.test.ts
+      - name: Original bundle size and engine isolation gates
+        run: node scripts/report-bundles.mjs --fail
+      - name: Actual mobile and desktop worker UI with cancellation and chart ownership
+        run: node tests/birth-time-window-drive.mjs
+      - name: Intended insertion diagnostics and original fifteen-case full-image gate
+        run: node scripts/qualify-birth-time-window-visuals.mjs
+      - name: Three original cold birth-chart Lighthouse samples
+        env:
+          LIGHTHOUSE_ROUTES: birth-chart
+          LIGHTHOUSE_RUNS: '3'
+        run: npm run test:lighthouse
+      - name: Fresh original eighteen-capture source receipt
+        run: |
+          npm run test:phase1:acceptance
+          npm run test:phase1:evidence
+          node scripts/retain-birth-time-window-capture-proof.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: birth-time-window-ui-qualification
+          path: |
+            docs/platform/evidence/birth-time-window-ui-20261010/
+            docs/acceptance/phase1/screenshots/
+            tests/visual/baselines/linux/birth-chart-kahlo*.png
+            tests/visual/artifacts/birth-time-window/
+            tests/visual/artifacts/lighthouse/
+            tests/visual/artifacts/visual/
+          retention-days: 90
