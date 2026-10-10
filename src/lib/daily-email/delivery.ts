@@ -23,6 +23,14 @@ export interface DeliveryReceiptStore {
     sentAt: string,
   ): Promise<void>;
   markFailed(editionDate: string, recipientHash: string, leaseToken: string): Promise<void>;
+  /** Whether this recipient was already sent a daily email for an edition before this one. */
+  sentBefore(editionDate: string, recipientHash: string): Promise<boolean>;
+}
+
+/** What the renderer needs to know about this recipient's history. */
+export interface DailyEmailRenderContext {
+  /** No earlier edition was sent to this recipient: the email says what they signed up for. */
+  firstDelivery: boolean;
 }
 
 export interface ResendDelivery {
@@ -130,6 +138,21 @@ export function createSupabaseDeliveryReceiptStore({
   newLeaseToken?: () => string;
 }): DeliveryReceiptStore {
   return {
+    async sentBefore(editionDate, recipientHash) {
+      const url = deliveriesEndpoint(supabaseUrl);
+      url.searchParams.set('select', 'edition_date');
+      url.searchParams.set('recipient_hash', `eq.${recipientHash}`);
+      url.searchParams.set('status', 'eq.sent');
+      url.searchParams.set('edition_date', `lt.${editionDate}`);
+      url.searchParams.set('limit', '1');
+      const response = await fetchImpl(url, { method: 'GET', headers: serviceHeaders(serviceKey) });
+      if (!response.ok) {
+        throw new Error(`Could not read earlier daily email receipts (${response.status}): ${await errorBody(response)}`);
+      }
+      const rows = await response.json() as unknown;
+      if (!Array.isArray(rows)) throw new Error('Earlier daily email receipts returned an invalid response.');
+      return rows.length > 0;
+    },
     async reserve(editionDate, recipientHash, tier) {
       const leaseToken = newLeaseToken();
       if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu.test(leaseToken)) {
@@ -323,7 +346,7 @@ export async function deliverDailyEmails({
   hashSecret: string;
   receipts: DeliveryReceiptStore;
   resend: ResendDelivery;
-  render: (recipient: DailyEmailRecipient) => DailyEmailMessage;
+  render: (recipient: DailyEmailRecipient, context: DailyEmailRenderContext) => DailyEmailMessage;
   now?: () => Date;
   log?: (message: string) => void;
 }): Promise<DeliveryReport> {
@@ -354,7 +377,7 @@ export async function deliverDailyEmails({
 
     if (dryRun) {
       try {
-        render(recipient);
+        render(recipient, { firstDelivery: false });
         report.dryRun += 1;
         log(`daily-email: dry-run ${recipient.tier} ${maskedEmail}`);
       } catch {
@@ -370,9 +393,24 @@ export async function deliverDailyEmails({
       continue;
     }
     report.reserved += 1;
+    // Only editions before this one count, so a retry of today's edition
+    // renders the same message under the same provider idempotency key.
+    let firstDelivery: boolean;
+    try {
+      firstDelivery = !await receipts.sentBefore(editionDate, recipientHash);
+    } catch {
+      report.failed += 1;
+      try {
+        await receipts.markFailed(editionDate, recipientHash, leaseToken);
+      } catch {
+        log(`daily-email: receipt update failed for ${maskedEmail}`);
+      }
+      log(`daily-email: failed ${recipient.tier} for ${maskedEmail} during history lookup`);
+      continue;
+    }
     let message: DailyEmailMessage;
     try {
-      message = render(recipient);
+      message = render(recipient, { firstDelivery });
     } catch {
       report.failed += 1;
       try {
