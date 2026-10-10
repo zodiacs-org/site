@@ -1,0 +1,34 @@
+{
+  "schema": "zodiacs.home-candidate-daily-freshness-failure.v1",
+  "run": 38042666357,
+  "workflowSource": "bbdb895d62be671898ae92b0c4fa175c3f4d337e",
+  "checkedOutSource": "63dbcc0df75c655c2476af779f06e99f5a1cd6dd",
+  "conclusion": "failure",
+  "message": "daily edition 2026-10-09 has age 1; allowed deployment range is 0-0 UTC days",
+  "unreached": [
+    "build output",
+    "browser launch",
+    "Lighthouse",
+    "fresh screenshots"
+  ],
+  "correction": "Reconcile exact current-main October 10 daily publication and preserve owner design/navigation changes. Freshness gate unchanged.",
+  "artifact": {
+    "id": 11665589508,
+    "name": "homepage-loading-source-preflight",
+    "size_in_bytes": 8680155,
+    "url": "https://api.github.com/repos/zodiacs-org/site/actions/artifacts/11665589508",
+    "archive_download_url": "https://api.github.com/repos/zodiacs-org/site/actions/artifacts/11665589508/zip",
+    "expired": false,
+    "created_at": "2026-10-10T09:49:08Z",
+    "expires_at": "2027-01-08T09:48:02Z",
+    "updated_at": "2026-10-10T09:49:08Z",
+    "digest": "sha256:0dfa1b9ad51deedaa5988dad19b58327927e24340ecb271985e8b5473142af2a",
+    "workflow_run": {
+      "id": 38042666357,
+      "repository_id": 1251096896,
+      "head_repository_id": 1251096896,
+      "head_branch": "codex/developer-docs-preparation",
+      "head_sha": "bbdb895d62be671898ae92b0c4fa175c3f4d337e"
+    }
+  }
+}

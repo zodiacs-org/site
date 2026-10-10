@@ -1,0 +1,3 @@
+(node:205942) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+phase1-scope-guard: PASS — 784 changed path(s), protected scope untouched

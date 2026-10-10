@@ -1,0 +1,751 @@
+{
+  "schema": "zodiacs.organization-source-audit.v1",
+  "producer": {
+    "source": "f5a2eb4764d7ced1c2b5d755fbb003a81030c032",
+    "run": "37946069291",
+    "node": "v22.23.3"
+  },
+  "auditedSource": "ac09a5fab7e6674039876e15f4db4bc29b09e79f",
+  "files": [
+    {
+      "path": "public/astrofolio/index.html",
+      "sha256": "96f2c4aaf37ea52e2f913f7c03a6317eff9316d534d570e1f11535d23c527639",
+      "references": [
+        {
+          "line": 69,
+          "literalName": "Zodiacs",
+          "classification": "noncanonical-literal"
+        },
+        {
+          "line": 87,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 175,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "public/terminal/index.html",
+      "sha256": "882813725c3f6047037a6f8eade8cf86392372886ca2e42ef58606e0887ba12e",
+      "references": [
+        {
+          "line": 68,
+          "literalName": "Zodiacs",
+          "classification": "noncanonical-literal"
+        },
+        {
+          "line": 86,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 112,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 135,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "public/thesis/index.html",
+      "sha256": "b9a33d0c4a748ce91e6177ac2072145b6f4b13f16cc529b9683eb70ab5c370af",
+      "references": [
+        {
+          "line": 61,
+          "literalName": "Zodiacs",
+          "classification": "noncanonical-literal"
+        },
+        {
+          "line": 62,
+          "literalName": "Zodiacs",
+          "classification": "noncanonical-literal"
+        }
+      ]
+    },
+    {
+      "path": "scripts/validate-schema.mjs",
+      "sha256": "79973c13248dcd256442e7aebca8f550d7074d50adf4e6d8be889c9257e42cad",
+      "references": [
+        {
+          "line": 160,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 166,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/HoroscopeProgramPage.astro",
+      "sha256": "0306d8d045c33f94b0f2c1e8d166116e897a4f85ec6a6083135e0fc26c2ba9d2",
+      "references": [
+        {
+          "line": 154,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/SEO.astro",
+      "sha256": "5724c02395694238e849dd2c25d8e5d70f34149e5a7f095e28a59599da0d0fe3",
+      "references": [
+        {
+          "line": 84,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/compat/LocalizedPairPage.astro",
+      "sha256": "3ce6f4eae5af3a5def29a10991f2eb8ab2b9199862145ee7170d080bcadb0a7f",
+      "references": [
+        {
+          "line": 150,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/events/EventPageLayout.astro",
+      "sha256": "b17cbecf870b136d1f6fea51452ecfe4a18a4a1aa08f5966c3a9064643f5abe3",
+      "references": [
+        {
+          "line": 157,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 158,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/learn/LocalizedRisingPage.astro",
+      "sha256": "0d5c703c0ef8c7c064a09ab94baa67e3b068d66da96c0bc358e01e1c349ab7ff",
+      "references": [
+        {
+          "line": 179,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/programmatic/LocalizedBirthdayPage.astro",
+      "sha256": "55ccad690338d0e328cc8572db7bf0a69882e5d5dc94dbcc2906d6b550301f27",
+      "references": [
+        {
+          "line": 125,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/programmatic/LocalizedChineseZodiacAnimal.astro",
+      "sha256": "b4dfc0dc2b783bbd80f4bc281488184be50d80f65ea8e31586e4464bfefa03ec",
+      "references": [
+        {
+          "line": 42,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 43,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/programmatic/LocalizedChineseZodiacHub.astro",
+      "sha256": "2e340961a5d6704f547b567792bb3dde09091796b113ac9d9386758c0e04b4e0",
+      "references": [
+        {
+          "line": 34,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 35,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedEclipsesPage.astro",
+      "sha256": "795f5ca815a24b8d5027f6e9166c312e93bdbace1a6fd41008a1eb5149b534ee",
+      "references": [
+        {
+          "line": 578,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 579,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedFullMoonCalendarPage.astro",
+      "sha256": "1915d16e93b89091e8460706bd9229949ee0cbbdb94dbb52458df9de8aabf585",
+      "references": [
+        {
+          "line": 501,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 502,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedMercuryRetrogradePage.astro",
+      "sha256": "cb6f6223754d16e264356c78ef377ccaafdd349b57a967fb197c2823edbf62d8",
+      "references": [
+        {
+          "line": 443,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 444,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedRetrogradesPage.astro",
+      "sha256": "d7f94b9cc9618c64109263fdf2084de57bde3f53bfc0a0f3a07bb4d659f96445",
+      "references": [
+        {
+          "line": 504,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 505,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/editorial.ts",
+      "sha256": "5579b7cc273fd9721a30cc2414807fd5a04762e58501e01b1ebcfdcdf92a410c",
+      "references": [
+        {
+          "line": 12,
+          "literalName": "Zodiacs",
+          "classification": "noncanonical-literal"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/[sign]/index.astro",
+      "sha256": "f4675fdad43c02754cad45589a456503a30a21b2bf51e18d292de6f41ab2320c",
+      "references": [
+        {
+          "line": 46,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/almanac/[slug].astro",
+      "sha256": "5859db2a546d03c81fe6e8620c26329da2ff4a2d40bd1682bf54cf5e2b0e22a9",
+      "references": [
+        {
+          "line": 28,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/birth-chart/three-dimensions/index.astro",
+      "sha256": "15be44340fdbef40d7e569b55d25ae01b4ff462b8802a4313944bf1462717b29",
+      "references": [
+        {
+          "line": 91,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/birthday/[slug].astro",
+      "sha256": "9d060ec8b70a1192bce03b2cd610dda375476cb9543dfaff4fe5cb4f43252c4d",
+      "references": [
+        {
+          "line": 139,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/compatibility/[pair]/index.astro",
+      "sha256": "9baf1d70d4efd7eb37dac3bf507bb15d52ecd13c8eaf2a13e1092ed2c17066ef",
+      "references": [
+        {
+          "line": 43,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/corrections/index.astro",
+      "sha256": "20193d86dd816bae5a62c4fbb9b9fbc7d4faa0619e2e20c594065fe06137878b",
+      "references": [
+        {
+          "line": 24,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/eclipses/index.astro",
+      "sha256": "9ddc036d81086099e3f1b5acf78e300fb442c28aa76a8bf0e6caa28c96ac118e",
+      "references": [
+        {
+          "line": 123,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 124,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/[sign]/index.astro",
+      "sha256": "7b3d8c79d4f07693d0e6f7fd8f48c66831a42399ecb89f7e45665fd4325ecf0a",
+      "references": [
+        {
+          "line": 46,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/index.astro",
+      "sha256": "4e99bf0dadf7678a76dfc493f315398fae1ade03347272535d8b764d44cf6de1",
+      "references": [
+        {
+          "line": 31,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/methodology/index.astro",
+      "sha256": "624354a6b0d1750dd1889d437c07a3e68885980f003b221429b2b711df9c9ae1",
+      "references": [
+        {
+          "line": 13,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/[sign]/index.astro",
+      "sha256": "408b25f293c6c56fe6370b9ee862abe59d97c389331cf93da70b75b468a7cd88",
+      "references": [
+        {
+          "line": 46,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/index.astro",
+      "sha256": "3650d99244e8438f3154eccb11ae4d1d540aa96d7de5566593ca6a577754676f",
+      "references": [
+        {
+          "line": 32,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/methodology/index.astro",
+      "sha256": "56f23e9d055daf9aba4f9c05771d9bf4ecf15f8b447c6650610170083a1ca70e",
+      "references": [
+        {
+          "line": 13,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/full-moon-calendar/index.astro",
+      "sha256": "9d65346e78f37a55172338cbb9239666581cd954f776c96fbb05ec57d84c9418",
+      "references": [
+        {
+          "line": 108,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 109,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/index.astro",
+      "sha256": "9a2063b2d162a735742fe5b20898e49295579f0170eba642dfdfe9a8df10ba18",
+      "references": [
+        {
+          "line": 35,
+          "literalName": "Zodiacs",
+          "classification": "noncanonical-literal"
+        },
+        {
+          "line": 56,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/[sign]/index.astro",
+      "sha256": "adb6867b470133af775f598ad60c924e0333c953e21ec02fa87d490897a5ae38",
+      "references": [
+        {
+          "line": 46,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/index.astro",
+      "sha256": "b8cc2a2e30be0781c56db079e59a6325efb7cbc7313708ef120342d6d0b1f65b",
+      "references": [
+        {
+          "line": 32,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/methodology/index.astro",
+      "sha256": "f0bcce8da630ef56531d4477d201c992baae6dfb4aa1e901cc99a2e9d24cc83d",
+      "references": [
+        {
+          "line": 13,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/aspects/[slug].astro",
+      "sha256": "c640188d5261f6514fb8bd102e7f498a343959e7c09d097da7fc333a1df79268",
+      "references": [
+        {
+          "line": 50,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/chinese-zodiac/[animal]/index.astro",
+      "sha256": "58aff8c7db4f806b5beadb898240d785ea7039cba2130c61c883de28aedeaa56",
+      "references": [
+        {
+          "line": 34,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 35,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/chinese-zodiac/index.astro",
+      "sha256": "93d25091ea08efd38577cf756e43cc9e945673eef93ad54bfc9e466c87470aa0",
+      "references": [
+        {
+          "line": 27,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 28,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/communication/index.astro",
+      "sha256": "6adc56ed8d353019ae7845a1ad892632d849835551ae61cccc7bc27893e2bebd",
+      "references": [
+        {
+          "line": 25,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/glossary/index.astro",
+      "sha256": "5138b41f909a34cf85768bd2e007d913ff419046c2e26b39461fcad106a01fab",
+      "references": [
+        {
+          "line": 69,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 84,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/houses/[slug].astro",
+      "sha256": "1e236ccd4815bce7f7f8e1e31f8e8cf21a88ed24055fac9f99fb3778821507ad",
+      "references": [
+        {
+          "line": 55,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/how-to-read-a-birth-chart.astro",
+      "sha256": "f82f05e949fa8fdb9dc8bda71c8b08e6adb2b977611e1ac1d9f09432f68ec9d4",
+      "references": [
+        {
+          "line": 33,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/placements/[slug].astro",
+      "sha256": "47606269dc3b1b14b3447e163c22e30854987215278e6e4338afa11dd0754f8b",
+      "references": [
+        {
+          "line": 112,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/planets/[slug].astro",
+      "sha256": "47597c5c0cf7deb891e6cbd863a8f8b074d21729dbf8eda3d4467be59e3a1ccb",
+      "references": [
+        {
+          "line": 59,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/zodiac-dates/index.astro",
+      "sha256": "990b8b359e1cc3905d9a58d3478eb3b221f0c290b3c6ad7bdbad159c86360fb6",
+      "references": [
+        {
+          "line": 42,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 43,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 83,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/mercury-retrograde/index.astro",
+      "sha256": "897510ee4fe96d10c4e4aca570c493770aa091bf60650834e9138c194d03ee7c",
+      "references": [
+        {
+          "line": 100,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 101,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/methodology/index.astro",
+      "sha256": "9d84c941fef09a4f296892d491994be5748a380a98525b1d4c9b5784fbf28d7e",
+      "references": [
+        {
+          "line": 14,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/numerology/life-path/[number].astro",
+      "sha256": "7c151d1f8537362cf651ca5062d32b057b27efc5d3ace0d00271b39fa2f04fbc",
+      "references": [
+        {
+          "line": 72,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/[sign]/index.astro",
+      "sha256": "febb9fdda517107ed94ed7da8d62bbe24975453751551cace4084f2748b6b175",
+      "references": [
+        {
+          "line": 46,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/index.astro",
+      "sha256": "e50ff3a90421263f0e9691c3198ee2c09e9bac13fe068cc8cc7eed0992a3b3cb",
+      "references": [
+        {
+          "line": 31,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/methodology/index.astro",
+      "sha256": "4c6503b64697c950958d0c14e14285196f91765b10de5f2369b3f83ab02541a4",
+      "references": [
+        {
+          "line": 13,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/retrogrades/index.astro",
+      "sha256": "9b7e06db6a7f870ee13d0cbc1f1cb40243f0a2822249b3b088b9521e61131173",
+      "references": [
+        {
+          "line": 120,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        },
+        {
+          "line": 121,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/rising-sign/[sign].astro",
+      "sha256": "57580fed3e8f04d8b46c5117048109dda2c0d8408f6305bd184ded28f5dc646b",
+      "references": [
+        {
+          "line": 74,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/[sign]/index.astro",
+      "sha256": "62d23cdbe6a8f4460da851f56680c2ac0c37478692da53472cf6851e6cee380e",
+      "references": [
+        {
+          "line": 46,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/index.astro",
+      "sha256": "4258f8c41851cdd16500ca8d4ad85bda637499184a7427b71b43611bfb13c792",
+      "references": [
+        {
+          "line": 29,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/methodology/index.astro",
+      "sha256": "4c2c7c32d61dab46da7e3b461e253b2c29f669429f0173f7bf847ffd38d28f32",
+      "references": [
+        {
+          "line": 13,
+          "literalName": null,
+          "classification": "dynamic-or-id-only"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Read-only source locator audit; lexical context does not establish built JSON-LD semantics.",
+    "Dynamic/id-only references require the full built-schema gate; public source fields only, no private scan."
+  ]
+}

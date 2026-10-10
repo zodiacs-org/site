@@ -1,0 +1,99 @@
+{
+  "schema": "zodiacs.live-parity-binding.v1",
+  "origin": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+  "provider": {
+    "queriedAt": "2026-10-06T07:20:34.034Z",
+    "tool": "vercel.get_deployment",
+    "lookup": {
+      "idOrUrl": "zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+      "slug": "zodiacsofficial",
+      "withGitRepoInfo": "true"
+    },
+    "deployment": {
+      "id": "dpl_6omXmaCaRgp4BXt9ZDBskx84262E",
+      "url": "zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+      "state": "READY",
+      "readyState": "READY",
+      "target": "production",
+      "source": "git",
+      "readyAt": "2026-10-06T05:31:19.336Z",
+      "sourceCommit": "b1c42f199cea5c879afd1be3597666d43abf9653",
+      "sourceRef": "main",
+      "repository": "zodiacs-org/site",
+      "alias": [
+        "zodiacs.org",
+        "www.zodiacs.org",
+        "zodiacs-org.vercel.app",
+        "zodiacs-org-zodiacsofficial.vercel.app",
+        "zodiacs-org-git-main-zodiacsofficial.vercel.app"
+      ],
+      "project": {
+        "id": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+        "name": "zodiacs-org",
+        "framework": null
+      }
+    }
+  },
+  "served": {
+    "manifest": {
+      "startedAt": "2026-10-06T07:21:00.299140+00:00",
+      "finishedAt": "2026-10-06T07:21:01.013204+00:00",
+      "method": "GET",
+      "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/examples/mcp-server.json",
+      "curlExitCode": 0,
+      "status": 200,
+      "stderr": "",
+      "bodyBytes": 731,
+      "bodySha256": "5bf917ab2235887898d658ab94fa8260f7dfcba8dfeb9fc3436bdc711ac1536f",
+      "headersSha256": "18f4a5ab938e04189f41e5362b87cdeb1c4a99219c8b54e69da67b0aeb1e3c76",
+      "headersTruncated": false,
+      "responseHeaderOmissions": [
+        "set-cookie",
+        "authorization",
+        "proxy-authorization"
+      ],
+      "redirectsFollowed": 0,
+      "bodyFile": "02-manifest.body"
+    },
+    "archive": {
+      "startedAt": "2026-10-06T07:21:01.013820+00:00",
+      "finishedAt": "2026-10-06T07:21:01.764498+00:00",
+      "method": "GET",
+      "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/examples/zodiacs-mcp-server-0.1.0-rc.17.tgz",
+      "curlExitCode": 0,
+      "status": 200,
+      "stderr": "",
+      "bodyBytes": 125262,
+      "bodySha256": "e0f1f7a4035649dac0d2e18e22efd6c394e6b0d0f2377356784a3152b163a052",
+      "headersSha256": "d0c6c4515a024b80573e6177ff8d42bc4c92e63130f8f9997f107a872f7ab513",
+      "headersTruncated": false,
+      "responseHeaderOmissions": [
+        "set-cookie",
+        "authorization",
+        "proxy-authorization"
+      ],
+      "redirectsFollowed": 0,
+      "bodyFile": "03-archive.body"
+    },
+    "openapi": {
+      "startedAt": "2026-10-06T07:21:01.765427+00:00",
+      "finishedAt": "2026-10-06T07:21:02.510016+00:00",
+      "method": "GET",
+      "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/api/v1/openapi.json",
+      "curlExitCode": 0,
+      "status": 200,
+      "stderr": "",
+      "bodyBytes": 369971,
+      "bodySha256": "d47080a30766bdc08e9196230ac310bb9c5d47d1c6babe786c1c9d063f921a2e",
+      "headersSha256": "bf0091e05a79e6ffb13b27d0dc4fcaba5ae4de9910ffc508e16c775cb98f4397",
+      "headersTruncated": false,
+      "responseHeaderOmissions": [
+        "set-cookie",
+        "authorization",
+        "proxy-authorization"
+      ],
+      "redirectsFollowed": 0,
+      "bodyFile": "04-openapi.body"
+    }
+  }
+}

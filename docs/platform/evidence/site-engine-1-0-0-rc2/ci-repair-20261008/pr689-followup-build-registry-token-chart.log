@@ -1,0 +1,3 @@
+(node:205695) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+registry-token-chart: wrote assets/registry-token-chart.js (16175 bytes)

@@ -1,0 +1,42 @@
+{
+  "reports": [
+    {
+      "anonymousSubjects": [
+        "Subject 1",
+        "Subject 2",
+        "Subject 3",
+        "Subject 4",
+        "Subject 5",
+        "Subject 6",
+        "Subject 7"
+      ],
+      "stagedFilesRead": 51,
+      "stagedBytesRead": 2033067,
+      "dataLines": 0,
+      "nameLines": 0,
+      "gzipArchives": 0,
+      "zipArchives": 0,
+      "anonymousCounts": {}
+    },
+    {
+      "anonymousSubjects": [
+        "Subject 8",
+        "Subject 9",
+        "Subject 10",
+        "Subject 11",
+        "Subject 12",
+        "Subject 13",
+        "Subject 14"
+      ],
+      "stagedFilesRead": 51,
+      "stagedBytesRead": 2033067,
+      "dataLines": 0,
+      "nameLines": 0,
+      "gzipArchives": 0,
+      "zipArchives": 0,
+      "anonymousCounts": {}
+    }
+  ],
+  "sourceHead": "1fd24bcbc7c7281245c83fb12c0d321028068085",
+  "scope": "Exact final staged capture/evidence blobs before this count record was added. The complete index, including this record, is checked again before commit."
+}

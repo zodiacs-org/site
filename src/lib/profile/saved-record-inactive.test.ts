@@ -32,7 +32,8 @@ function scriptRegions(path: string, source: string): string[] {
 }
 
 function moduleSpecifiers(source: string): string[] {
-  const file = ts.createSourceFile('source.tsx', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  // The visitor follows children only; omit unused parent links for the full-tree scan.
+  const file = ts.createSourceFile('source.tsx', source, ts.ScriptTarget.Latest, false, ts.ScriptKind.TSX);
   const imports: string[] = [];
   const visit = (node: ts.Node) => {
     let argument: ts.Node | undefined;

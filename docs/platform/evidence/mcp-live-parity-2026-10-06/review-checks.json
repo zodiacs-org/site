@@ -1,0 +1,13 @@
+{
+  "fullWhitespaceCheck": {
+    "exitCode": 2,
+    "output": "docs/platform/evidence/mcp-live-parity-2026-10-06/01-manifest.headers:5: trailing whitespace.\n+HTTP/2 200 \ndocs/platform/evidence/mcp-live-parity-2026-10-06/01-manifest.headers:28: new blank line at EOF.\ndocs/platform/evidence/mcp-live-parity-2026-10-06/02-manifest.headers:5: trailing whitespace.\n+HTTP/2 200 \ndocs/platform/evidence/mcp-live-parity-2026-10-06/02-manifest.headers:29: new blank line at EOF.\ndocs/platform/evidence/mcp-live-parity-2026-10-06/03-archive.headers:5: trailing whitespace.\n+HTTP/2 200 \ndocs/platform/evidence/mcp-live-parity-2026-10-06/03-archive.headers:29: new blank line at EOF.\ndocs/platform/evidence/mcp-live-parity-2026-10-06/04-openapi.headers:5: trailing whitespace.\n+HTTP/2 200 \ndocs/platform/evidence/mcp-live-parity-2026-10-06/04-openapi.headers:29: new blank line at EOF.\n",
+    "reason": "Preserved observed HTTP/2 status-line trailing space and terminal blank line in bounded sanitized header captures."
+  },
+  "excludingCapturedHeaders": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "evidenceChecksums": "all pass",
+  "changedScope": "runner, selftests and new dated evidence only"
+}

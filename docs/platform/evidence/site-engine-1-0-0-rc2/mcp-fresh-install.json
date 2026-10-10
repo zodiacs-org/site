@@ -1,0 +1,17 @@
+{
+  "version": "0.1.0-rc.18",
+  "archiveSha256": "504fbbf3c93c20e85e28d7bb442502fb9934e4672365abe8dd449627b56526bf",
+  "archiveBytes": 123273,
+  "files": [
+    "NOTICE",
+    "README.md",
+    "candidate.json",
+    "npm-shrinkwrap.json",
+    "package.json",
+    "server.mjs",
+    "verify.mjs"
+  ],
+  "npmCi": "passed",
+  "verification": "21 checks passed",
+  "runtime": "v22.22.2"
+}

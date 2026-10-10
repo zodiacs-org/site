@@ -1,0 +1,263 @@
+{
+  "schema": "zodiacs.private-solar-source-qualification.v1",
+  "source": {
+    "sha": "596435a43ce4995945ba1dcddc08cc5d8c318db4",
+    "tree": "78b69bab8cf566dcab0f8f6e55db2d51fb5617a8"
+  },
+  "merge": "9a6317ac1f6516fbf518079c266453995d8f9341",
+  "mergeTree": "78b69bab8cf566dcab0f8f6e55db2d51fb5617a8",
+  "orderedParents": [
+    "403eb8735280fa0b5fb96e88d5734057f45b1c75",
+    "596435a43ce4995945ba1dcddc08cc5d8c318db4"
+  ],
+  "native": {
+    "run": 38054407049,
+    "jobs": [
+      114219804227,
+      114219804377
+    ],
+    "sourceControls": 17,
+    "strictNegativeTypeControls": 9,
+    "pack": {
+      "bytes": 6388,
+      "sha256": "29be54e611e1884b3f143c9eac07391d51e4ef99dc1dded6de479dff6f7c7833",
+      "files": [
+        "LICENSE",
+        "README.md",
+        "index.d.mts",
+        "index.mjs",
+        "package.json"
+      ]
+    }
+  },
+  "finalPrRuns": [
+    {
+      "id": 38054409650,
+      "name": "Atlas",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 38054409639,
+      "name": "Conformance",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 38054409644,
+      "name": "Private solar-term source and arithmetic",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 38054409654,
+      "name": "CodeQL",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 38054409646,
+      "name": "Python package",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 38054409645,
+      "name": "CI",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "coreCIJobs": [
+    {
+      "id": 114219812043,
+      "name": "Every carried archive rebuilds from its source commit",
+      "conclusion": "success"
+    },
+    {
+      "id": 114219812266,
+      "name": "Engine (Node 22)",
+      "conclusion": "success"
+    },
+    {
+      "id": 114219812280,
+      "name": "Engine (Node 24)",
+      "conclusion": "success"
+    },
+    {
+      "id": 114219812320,
+      "name": "Pack",
+      "conclusion": "success"
+    },
+    {
+      "id": 114219812367,
+      "name": "Engine (Node 20)",
+      "conclusion": "success"
+    },
+    {
+      "id": 114219955345,
+      "name": "Packed consumer (Node 22.7.0)",
+      "conclusion": "success"
+    },
+    {
+      "id": 114219955386,
+      "name": "Packed consumer (Node 24)",
+      "conclusion": "success"
+    },
+    {
+      "id": 114219955404,
+      "name": "Packed consumer (Node 22)",
+      "conclusion": "success"
+    },
+    {
+      "id": 114219955405,
+      "name": "Packed consumer (Node 20.19.0)",
+      "conclusion": "success"
+    }
+  ],
+  "review": {
+    "request": 6097827707,
+    "summary": 6097200121,
+    "completedAt": "2026-10-10T13:11:48.400116Z",
+    "cleanComment": 6097854597,
+    "cleanReaction": [
+      {
+        "id": 558646019,
+        "content": "+1",
+        "createdAt": "2026-10-10T13:11:51Z",
+        "author": "chatgpt-codex-connector[bot]"
+      }
+    ],
+    "resolvedFindings": [
+      4237522805,
+      4237559457,
+      4237603589,
+      4237646255,
+      4237696497
+    ]
+  },
+  "postMerge": {
+    "status": "passed",
+    "runs": [
+      {
+        "id": 38054884180,
+        "name": "Atlas",
+        "source": "9a6317ac1f6516fbf518079c266453995d8f9341",
+        "event": "push",
+        "conclusion": "success"
+      },
+      {
+        "id": 38054884172,
+        "name": "Scorecard",
+        "source": "9a6317ac1f6516fbf518079c266453995d8f9341",
+        "event": "push",
+        "conclusion": "success"
+      },
+      {
+        "id": 38054884141,
+        "name": "Private solar-term source and arithmetic",
+        "source": "9a6317ac1f6516fbf518079c266453995d8f9341",
+        "event": "push",
+        "conclusion": "success"
+      },
+      {
+        "id": 38054884138,
+        "name": "Conformance",
+        "source": "9a6317ac1f6516fbf518079c266453995d8f9341",
+        "event": "push",
+        "conclusion": "success"
+      },
+      {
+        "id": 38054884131,
+        "name": "Python package",
+        "source": "9a6317ac1f6516fbf518079c266453995d8f9341",
+        "event": "push",
+        "conclusion": "success"
+      },
+      {
+        "id": 38054884114,
+        "name": "CodeQL",
+        "source": "9a6317ac1f6516fbf518079c266453995d8f9341",
+        "event": "push",
+        "conclusion": "success"
+      },
+      {
+        "id": 38054884157,
+        "name": "CI",
+        "source": "9a6317ac1f6516fbf518079c266453995d8f9341",
+        "event": "push",
+        "conclusion": "success"
+      }
+    ],
+    "coreCIJobs": [
+      {
+        "id": 114221183817,
+        "name": "Pack",
+        "conclusion": "success"
+      },
+      {
+        "id": 114221183896,
+        "name": "Engine (Node 20)",
+        "conclusion": "success"
+      },
+      {
+        "id": 114221183909,
+        "name": "Engine (Node 24)",
+        "conclusion": "success"
+      },
+      {
+        "id": 114221183919,
+        "name": "Every carried archive rebuilds from its source commit",
+        "conclusion": "success"
+      },
+      {
+        "id": 114221183933,
+        "name": "Engine (Node 22)",
+        "conclusion": "success"
+      },
+      {
+        "id": 114221253291,
+        "name": "Packed consumer (Node 22.7.0)",
+        "conclusion": "success"
+      },
+      {
+        "id": 114221253326,
+        "name": "Packed consumer (Node 22)",
+        "conclusion": "success"
+      },
+      {
+        "id": 114221253362,
+        "name": "Packed consumer (Node 20.19.0)",
+        "conclusion": "success"
+      },
+      {
+        "id": 114221253367,
+        "name": "Packed consumer (Node 24)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "accuracy": "unvalidated",
+  "completeness": "unproven",
+  "publication": "private; no registry publication",
+  "acceptedWeight": 0,
+  "logMethod": "Original UTF-8 connector-decoded job logs retained verbatim; consumer JSON reserialized from the actual native stdout payload, not claimed as byte-identical to the pretty-printed ZIP artifact.",
+  "originalDecodedLogs": [
+    {
+      "job": 114219804227,
+      "bytes": 24109,
+      "sha256": "b71a92eaa1e831778b5ccfea02841416b6b12cbd654faffef50067900d1addfa",
+      "sourceControls": 17,
+      "passed": 17,
+      "failed": 0
+    },
+    {
+      "job": 114219804377,
+      "bytes": 29313,
+      "sha256": "c2c4009a315131b3b52c4a6fe903b72a7b8c7ace7e0372dd248d74641f183d29",
+      "sourceControls": 17,
+      "passed": 17,
+      "failed": 0
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "zodiacs.live-parity-preregistration.v1",
+  "startedAt": "2026-10-06T07:19:52.483186+00:00",
+  "sourceCommit": "b1c42f199cea5c879afd1be3597666d43abf9653",
+  "environmentVersionOwnerReported": "6bacc0db-7423-4512-b538-f281ae47966c~cecfgver_6ac49ff0de20819d896e4d3d2329d69f",
+  "networkPolicy": {
+    "sha256": "f9df5f5abb9b61b3e37e55fd4e708a6a94fea6c67e492f00d56f5c3dfd6e60be",
+    "type": "restricted",
+    "approvedExactHosts": [
+      "zodiacs.org",
+      "zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app"
+    ],
+    "approvedHostsPresent": true,
+    "generatedWwwVariantsPresent": [
+      "www.zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+      "www.zodiacs.org"
+    ]
+  },
+  "metadataFirst": "https://zodiacs.org/examples/mcp-server.json",
+  "limits": {
+    "productionComputeCalls": 6,
+    "shortEventSearches": 2,
+    "sequential": true,
+    "retries": 0,
+    "redirects": 0,
+    "timeoutSeconds": 30,
+    "metadataBodyBytes": 1048576,
+    "computeBodyBytes": 262144,
+    "headerBytes": 16384,
+    "computeTimeoutSeconds": 10
+  },
+  "stopOn": [
+    "access denial",
+    "unexpected error or limit",
+    "source binding unavailable"
+  ],
+  "plannedComputeCases": [
+    "positions",
+    "short-lunation",
+    "date-depends",
+    "reference-edge",
+    "invalid-civil-date",
+    "invalid-civil-date-recovery"
+  ],
+  "claims": "Cross-wrapper integration parity only; no scientific accuracy or completeness proof; no delivery credit. No private birth data."
+}

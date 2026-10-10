@@ -1,0 +1,43 @@
+
+> zodiacs-org@1.0.0 test
+> vitest run scripts/phase1-acceptance-evidence.test.mjs src/lib/time/localToUtc-birthplace-clock.test.ts --fileParallelism=false
+
+
+ RUN  v3.2.7 /workspace/site
+
+ ❯ scripts/phase1-acceptance-evidence.test.mjs (5 tests | 1 failed) 2330ms
+   × Phase 1 durable acceptance evidence > contains exact 360px and 1280px captures for every new template 227ms
+     → expected '9bee92dfad390961d1a02132400e3d9385e30…' to be 'b513a934c454dd36466ea647c234010cd0ab0…' // Object.is equality
+   ✓ Phase 1 durable acceptance evidence > records the three-page cold read and the deliberate accessory removal 6ms
+   ✓ Phase 1 durable acceptance evidence > invalidates stale evidence when a transitive render source or bundled font changes  1471ms
+   ✓ Phase 1 durable acceptance evidence > keeps server-only email delivery changes outside the Phase 1 visual receipt 284ms
+   ✓ Phase 1 durable acceptance evidence > keeps reviewed template geometry valid across payload-only daily editions  339ms
+ ✓ src/lib/time/localToUtc-birthplace-clock.test.ts (26 tests) 7925ms
+   ✓ the birthplace clock at the end of its local mean time era > Africa/Ouagadougou: Bobo-Dioulasso  404ms
+   ✓ the birthplace clock at each change of its pinned history before 1970 > America/New_York: New York  1587ms
+   ✓ the birthplace clock at each change of its pinned history before 1970 > Europe/Amsterdam: Amsterdam  849ms
+   ✓ the birthplace clock at each change of its pinned history before 1970 > Atlantic/Reykjavik: Reykjavik  716ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  scripts/phase1-acceptance-evidence.test.mjs > Phase 1 durable acceptance evidence > contains exact 360px and 1280px captures for every new template
+AssertionError: expected '9bee92dfad390961d1a02132400e3d9385e30…' to be 'b513a934c454dd36466ea647c234010cd0ab0…' // Object.is equality
+
+Expected: "b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45"
+Received: "9bee92dfad390961d1a02132400e3d9385e30206d820880b609cae5c64d7a3e9"
+
+ ❯ scripts/phase1-acceptance-evidence.test.mjs:52:43
+     50|     expect(manifest.browser).toMatch(/^Chromium \d+/);
+     51|     expect(manifest.publicationCanonicalSha256).toMatch(/^[a-f0-9]{64}…
+     52|     expect(manifest.templateSourceSha256).toBe(await phase1TemplateSou…
+       |                                           ^
+     53|     expect(manifest.renderPayloadSha256).toEqual({
+     54|       daily: expect.stringMatching(/^[a-f0-9]{64}$/),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 30 passed (31)
+   Start at  16:42:18
+   Duration  11.30s (transform 256ms, setup 0ms, collect 377ms, tests 10.26s, environment 0ms, prepare 186ms)

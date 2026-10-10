@@ -1,0 +1,205 @@
+{
+  "schema": "zodiacs.birth-time-window-capture-producer.v1",
+  "producer": {
+    "workflowSource": "2b8f342780db5d79bc4f5cc6cd96f480edb01463",
+    "run": "38068373681",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "018c3190649cb19e1f478459958b6ac8809d0464",
+  "checkedOutTree": "bf10d1fd86d1179fcae5f432aedd0af25ff12bf8",
+  "qualifiedMain": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+  "browser": "Chromium 149.0.7827.55",
+  "manifestPath": "docs/acceptance/phase1/screenshots/manifest.json",
+  "manifestBytes": 12353,
+  "manifestSha256": "ab5b350e37c82f4e4a190e512d126b4ad4ee87ba5e6f497b7db72b90c5b5d86a",
+  "templateSourceSha256": "9dd04ba1bf49c7dd8e332d951bf095f0b2878898f3126c2d9d4461f708192d23",
+  "captures": [
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-360.png",
+      "bytes": 605183,
+      "sha256": "ce7d926d31895b85477deebb9253df8f2d93b8ed3edad1a2bf3f86a562103522",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "ce7d926d31895b85477deebb9253df8f2d93b8ed3edad1a2bf3f86a562103522"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-1280.png",
+      "bytes": 749592,
+      "sha256": "11c4c08e31cc8a94fdc9ec1904e60ee2a0b29c10c565099bb8a1e5d9d9628a6e",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "11c4c08e31cc8a94fdc9ec1904e60ee2a0b29c10c565099bb8a1e5d9d9628a6e"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-360.png",
+      "bytes": 391053,
+      "sha256": "2f1b90856c9ba412dbcebe2a5214d97fb4e2e5744f968e04527ce9491ce70b41",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "2f1b90856c9ba412dbcebe2a5214d97fb4e2e5744f968e04527ce9491ce70b41"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-1280.png",
+      "bytes": 450103,
+      "sha256": "8b04fca1aa7edf978bdc919b390bac14d064a9c5c221e4c0d024b2c8cddd8687",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "8b04fca1aa7edf978bdc919b390bac14d064a9c5c221e4c0d024b2c8cddd8687"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-360.png",
+      "bytes": 305973,
+      "sha256": "0a2532786748b6fc52435e452c047f59fa4af588bc8ee92010047a32945e8297",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "0a2532786748b6fc52435e452c047f59fa4af588bc8ee92010047a32945e8297"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-1280.png",
+      "bytes": 419448,
+      "sha256": "39e8dac6e5815c052b3973db7747fed9a4178e7f7075ab3773c0ebfee142db22",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "39e8dac6e5815c052b3973db7747fed9a4178e7f7075ab3773c0ebfee142db22"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-360.png",
+      "bytes": 302261,
+      "sha256": "6d2a2fb22afe49cd03649db186969e97fb92e77c9d98a4def226f07bafc955c3",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "6d2a2fb22afe49cd03649db186969e97fb92e77c9d98a4def226f07bafc955c3"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-1280.png",
+      "bytes": 425109,
+      "sha256": "427c3b6b63ffd727a477aeaaa07f6036fc44085a413d5d1c9b8aef0478049238",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "427c3b6b63ffd727a477aeaaa07f6036fc44085a413d5d1c9b8aef0478049238"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-360.png",
+      "bytes": 366716,
+      "sha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-1280.png",
+      "bytes": 495949,
+      "sha256": "e87041e5d45f6de533ce961c99bec27bed3300150f0b468c71ccb327af039e1c",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "e87041e5d45f6de533ce961c99bec27bed3300150f0b468c71ccb327af039e1c"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-360.png",
+      "bytes": 389777,
+      "sha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
+      "bytes": 509517,
+      "sha256": "dfe62a412ecbd6719bdc253c83b35b2d59189b49d37b7d0ddb343f6d8bde2fa3",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "dfe62a412ecbd6719bdc253c83b35b2d59189b49d37b7d0ddb343f6d8bde2fa3"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-360.png",
+      "bytes": 282256,
+      "sha256": "d6434cb4c0ae482aabf05d925a897b1129ad9e91fc6fd9010a9c7dbaef503dc5",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "d6434cb4c0ae482aabf05d925a897b1129ad9e91fc6fd9010a9c7dbaef503dc5"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-1280.png",
+      "bytes": 397619,
+      "sha256": "6313926d0e2c2b2143ec481acd449b293a68937071af3b926eea57f522e21dc4",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "6313926d0e2c2b2143ec481acd449b293a68937071af3b926eea57f522e21dc4"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-360.png",
+      "bytes": 280059,
+      "sha256": "c2a17338eba0656449f6f88d62f3cf9c91d5d9ed52996b1046a5a9575edd33be",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "c2a17338eba0656449f6f88d62f3cf9c91d5d9ed52996b1046a5a9575edd33be"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-1280.png",
+      "bytes": 396447,
+      "sha256": "ed89f330a3c4960e637b872ee27779b6078406e5b03b875724a7f8ba6bbacb65",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "ed89f330a3c4960e637b872ee27779b6078406e5b03b875724a7f8ba6bbacb65"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-360.png",
+      "bytes": 1042500,
+      "sha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-1280.png",
+      "bytes": 1293613,
+      "sha256": "6540fb4d5b402a0c13e55642f5636b580a501fe888e788acb21ac0aafdc743ca",
+      "identicalToQualifiedMain": true,
+      "previousSha256": "6540fb4d5b402a0c13e55642f5636b580a501fe888e788acb21ac0aafdc743ca"
+    }
+  ],
+  "visualReferences": [
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop.png",
+      "bytes": 1412941,
+      "sha256": "cee6f03918e50efe6d457e414a6905467e460b701a396cd7be3d92a76b18082d"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-mobile.png",
+      "bytes": 1302257,
+      "sha256": "0f951a42bc132c2ab7c910731c779a151cf61d156d423535f361b01155e71594"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop-reduced-motion.png",
+      "bytes": 1412753,
+      "sha256": "eadb696bf6ce6c1f82cdbed77d489a6f491199a821f045cf56926c6e5862ebaa"
+    }
+  ],
+  "lighthouse": [
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-1.json",
+      "bytes": 489648,
+      "sha256": "a52490cf8f8497b68b0be4456703cf4e73f163b4872877eb45686c1d4b9d439d",
+      "runtimeError": null,
+      "lcp": 2412.9876000000004,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-2.json",
+      "bytes": 489984,
+      "sha256": "c56abfdb7a3a57e21149c72554a3afb9c929608ae811d341543e6bcd55efa37c",
+      "runtimeError": null,
+      "lcp": 2487.2979,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-3.json",
+      "bytes": 490052,
+      "sha256": "3758c3b261e7dfe584f35984234c9b2710cbaaa5b87e9afe23f0338b7b174f03",
+      "runtimeError": null,
+      "lcp": 2107.3663,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.98,
+      "accessibility": 1,
+      "seo": 1
+    }
+  ],
+  "browserControlsPassed": true,
+  "limitations": [
+    "Every capture came from the original native driver on this exact candidate; unchanged image bytes are explicitly identified, rather than fabricated as differences.",
+    "All raw Lighthouse reports, actual images and native reports are retained in this run artifact.",
+    "Focused qualification does not replace the required final full suite, fresh review, merge/post-merge or deployed UI checks."
+  ]
+}

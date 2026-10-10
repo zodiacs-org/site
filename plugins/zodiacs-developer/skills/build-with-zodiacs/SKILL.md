@@ -6,7 +6,7 @@ description: Build a working astrology calculator, Moon widget, event calendar o
 Use `get_capabilities` before choosing a public-sky operation. For local natal
 calculations also use `get_local_chart_capabilities`. Read the target repository's
 instructions and make a small, reviewable integration in the user's authorized
-repository. Use GPT-6.1 Sol High; use xhigh for transport, privacy and time semantics.
+repository. Review transport boundaries and time semantics explicitly.
 
 Choose `@zodiacs/engine@0.1.1-rc.16` for local deterministic calculation. The
 `@zodiacs/sdk` package is Registry ownership tooling. Do not substitute it.

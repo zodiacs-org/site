@@ -1,0 +1,68 @@
+{
+  "swisseph": "2.10.03",
+  "unit": "arcseconds",
+  "tolerance": 0.01,
+  "sets": {
+    "L": {
+      "equatorialAscendant": {
+        "n": 5616,
+        "median": 0.0,
+        "p95": 2.05e-10,
+        "max": 2.05e-10,
+        "over": 0
+      },
+      "kochCoAscendant": {
+        "n": 5616,
+        "median": 0.0,
+        "p95": 4.09e-10,
+        "max": 8.19e-10,
+        "over": 0
+      },
+      "munkaseyCoAscendant": {
+        "n": 5616,
+        "median": 0.0,
+        "p95": 2.05e-10,
+        "max": 3.07e-10,
+        "over": 0
+      },
+      "polarAscendant": {
+        "n": 5616,
+        "median": 0.0,
+        "p95": 3.07e-10,
+        "max": 8.19e-10,
+        "over": 0
+      }
+    },
+    "G": {
+      "equatorialAscendant": {
+        "n": 20000,
+        "median": 0.0,
+        "p95": 2.05e-10,
+        "max": 3.07e-10,
+        "over": 0
+      },
+      "kochCoAscendant": {
+        "n": 20000,
+        "median": 0.0,
+        "p95": 4.09e-10,
+        "max": 4.71e-09,
+        "over": 0
+      },
+      "munkaseyCoAscendant": {
+        "n": 20000,
+        "median": 0.0,
+        "p95": 2.05e-10,
+        "max": 1.94e-09,
+        "over": 0
+      },
+      "polarAscendant": {
+        "n": 20000,
+        "median": 0.0,
+        "p95": 2.05e-10,
+        "max": 4.71e-09,
+        "over": 0
+      }
+    }
+  },
+  "verdict": "pass"
+}

@@ -1,0 +1,20 @@
+{
+  "sha256": "5e16f39b78d13c25f05137398c7d3237a74f06c7da2d34f25dbb4b1a4a768099",
+  "inputs": [
+    "node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js",
+    "node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js",
+    "node_modules/@zodiacs/engine/dist/chunk-BXBMGXAW.js",
+    "node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js",
+    "node_modules/@zodiacs/engine/dist/chunk-G3G4OHEP.js",
+    "node_modules/@zodiacs/engine/dist/chunk-HRQO5EVB.js",
+    "node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js",
+    "node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js",
+    "node_modules/@zodiacs/engine/dist/chunk-QJBGSY2B.js",
+    "node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js",
+    "node_modules/@zodiacs/engine/dist/chunk-ZX3QENKK.js",
+    "node_modules/@zodiacs/engine/dist/index.js",
+    "node_modules/@zodiacs/engine/dist/receipt.js",
+    "node_modules/astronomy-engine/esm/astronomy.js",
+    "src/lib/engine/time-basis.mjs"
+  ]
+}

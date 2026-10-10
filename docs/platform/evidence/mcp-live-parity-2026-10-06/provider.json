@@ -1,0 +1,33 @@
+{
+  "queriedAt": "2026-10-06T07:20:34.034Z",
+  "tool": "vercel.get_deployment",
+  "lookup": {
+    "idOrUrl": "zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+    "slug": "zodiacsofficial",
+    "withGitRepoInfo": "true"
+  },
+  "deployment": {
+    "id": "dpl_6omXmaCaRgp4BXt9ZDBskx84262E",
+    "url": "zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+    "state": "READY",
+    "readyState": "READY",
+    "target": "production",
+    "source": "git",
+    "readyAt": "2026-10-06T05:31:19.336Z",
+    "sourceCommit": "b1c42f199cea5c879afd1be3597666d43abf9653",
+    "sourceRef": "main",
+    "repository": "zodiacs-org/site",
+    "alias": [
+      "zodiacs.org",
+      "www.zodiacs.org",
+      "zodiacs-org.vercel.app",
+      "zodiacs-org-zodiacsofficial.vercel.app",
+      "zodiacs-org-git-main-zodiacsofficial.vercel.app"
+    ],
+    "project": {
+      "id": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+      "name": "zodiacs-org",
+      "framework": null
+    }
+  }
+}

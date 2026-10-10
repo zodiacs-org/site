@@ -1,0 +1,19 @@
+{
+  "startedAt": "2026-10-06T07:21:01.765427+00:00",
+  "finishedAt": "2026-10-06T07:21:02.510016+00:00",
+  "method": "GET",
+  "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/api/v1/openapi.json",
+  "curlExitCode": 0,
+  "status": 200,
+  "stderr": "",
+  "bodyBytes": 369971,
+  "bodySha256": "d47080a30766bdc08e9196230ac310bb9c5d47d1c6babe786c1c9d063f921a2e",
+  "headersSha256": "bf0091e05a79e6ffb13b27d0dc4fcaba5ae4de9910ffc508e16c775cb98f4397",
+  "headersTruncated": false,
+  "responseHeaderOmissions": [
+    "set-cookie",
+    "authorization",
+    "proxy-authorization"
+  ],
+  "redirectsFollowed": 0
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "zodiacs.checkpoint22-acceptance.v1",
+  "date": "2026-10-09",
+  "timezone": "Asia/Bangkok",
+  "engine": {
+    "gateCommit": "98465b1a6aba46ff5e12c283f77f54278dc6905b",
+    "candidateVersion": "1.0.0-rc.2",
+    "candidateSha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002",
+    "candidateSourceCommit": "7fa964d2a77d09dbb819b5733b36e303fc7fc513",
+    "postmergeCi": 37890077138,
+    "conformance": 37890077148,
+    "atlas": 37890077048
+  },
+  "productionProbe": {
+    "sourceHead": "b002dc96535ff60fb78c122f05d04f3310a02f8f",
+    "checkout": "db4eca31da06187103254ad8e3c2b1cd27189c8d",
+    "run": 37895777038,
+    "job": 113706678168,
+    "path": "docs/platform/evidence/checkpoint22-20261009/production.json",
+    "bytes": 2484,
+    "sha256": "0575901c874acafa91fae92378c1a8546337a47823fcf10b4763fd4fe94a9846"
+  },
+  "productionObservation": {
+    "schema": "zodiacs.vercel-production-observation.v1",
+    "observedAt": "2026-10-09 06:36:46 UTC",
+    "projectId": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+    "team": "zodiacsofficial",
+    "deploymentId": "dpl_7cRJfgBFaS4m6F2YVVGFn1ujYz1G",
+    "status": "READY",
+    "sourceCommit": "e9a21981eeeb99b34f44b1a2325d80160dcf0fb0",
+    "branch": "main",
+    "aliases": [
+      "zodiacs.org",
+      "www.zodiacs.org",
+      "zodiacs-org.vercel.app",
+      "zodiacs-org-zodiacsofficial.vercel.app",
+      "zodiacs-org-git-main-zodiacsofficial.vercel.app"
+    ],
+    "url": "https://zodiacs-qwc17m4uw-zodiacsofficial.vercel.app",
+    "siteHeadTested": "3c848416b96925907ca38c419b77185dbe22081d",
+    "siteCheckRun": 37889961823,
+    "limitations": [
+      "Vercel deployment metadata establishes source, readiness and assigned domains; canonical asset and API bytes are a separate probe.",
+      "No environment values or access settings were inspected or changed."
+    ]
+  },
+  "interpretation": "docs/platform/programme/DECISIONS-2026-10-06.md §3: the owner approved a precession-carried epoch inside EPHEMERIS_SPAN, with refusal beyond it.",
+  "judgement": "P3.2's complete declaration, replay and typed-refusal gate is met by adopted and served rc.2. Registry publication is a separate unit.",
+  "limits": [
+    "The asset/API probe came from the preserved guide-preparation build; this checkpoint publishes no new guide route or core candidate.",
+    "Deployment source/readiness/domains and canonical asset/API observations are separate evidence, joined explicitly.",
+    "Replay and cross-entry consistency are not independent astronomical accuracy.",
+    "No new private release-range/staged search ran; the failed executor's private inputs are unavailable. No new stable release or registry publication occurs."
+  ]
+}

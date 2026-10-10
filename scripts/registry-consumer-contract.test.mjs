@@ -14,37 +14,23 @@ const SHOP_IMAGE_PATHS = [
   '/assets/astrofolio/merch/cap-800.webp',
   '/assets/astrofolio/merch/t-shirt-800.webp',
 ];
+// Trimmed 2026-10-09 (owner request): questions already answered by the
+// page's own sections (what Astrofolio is, official addresses, Solana and
+// Base, merchandise) left the list.
 const EXPECTED_FAQS = [
-  {
-    q: 'What is Astrofolio?',
-    a: 'Astrofolio is the collection of twelve official Zodiac tokens—one for each sign—with its own design and public Registry record.',
-  },
-  {
-    q: 'How do I know a Zodiac is official?',
-    a: 'Compare the complete token address with the published Registry. A name or ticker alone is not enough.',
-  },
-  {
-    q: 'Why does each sign have Solana and Base addresses?',
-    a: 'Each Zodiac began on Solana and has an official Base counterpart. Both verified addresses appear in the same Registry record.',
-  },
   {
     q: 'Do I need a wallet to browse?',
     a: 'No. You can browse the collection, see market context, and verify addresses without connecting a wallet.',
-  },
-  {
-    q: 'Where can I find Astrofolio merchandise?',
-    a: 'Browse the Astrofolio Shop for clothing inspired by the twelve signs.',
   },
   {
     q: 'What are the risks?',
     a: 'Zodiac tokens are speculative and can be volatile or hard to sell. Prices can fall to zero, and wallet mistakes or scams can cause permanent loss.',
   },
   {
-    // Merged 2026-08-31: the retired "Zodiac Markets" name (naming addendum
-    // 2026-08-13) no longer fronts a consumer answer; Terminal carries the
-    // trading sentence.
+    // The answer describes the Terminal; the trading sentence it used to
+    // repeat stays in the market and venue notice directly below the FAQ.
     q: 'What is the Terminal?',
-    a: 'Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.',
+    a: 'The Terminal is the market view for all twelve Zodiacs, with live prices, charts, and liquidity side by side. It shows market data only.',
   },
 ];
 function functionBlock(source, name) {
@@ -693,7 +679,7 @@ describe('Astrofolio consumer and Terminal market-desk split', () => {
     const faqSource = source.slice(faqStart, source.indexOf('    function ConsumerFaq(', faqStart));
     expect(faqSource.match(/\n\s*q:/gu)).toHaveLength(EXPECTED_FAQS.length);
     ordered(faqSource, [
-      "q: 'Where can I find Astrofolio merchandise?'",
+      "q: 'Do I need a wallet to browse?'",
       "q: 'What are the risks?'",
       "q: 'What is the Terminal?'",
     ]);
@@ -701,7 +687,7 @@ describe('Astrofolio consumer and Terminal market-desk split', () => {
     const staticFaq = section(fallback, 'faq');
     expect(staticFaq.match(/<details\s+class="consumer-faq__item">/gu)).toHaveLength(EXPECTED_FAQS.length);
     ordered(staticFaq, [
-      '<summary>Where can I find Astrofolio merchandise?</summary>',
+      '<summary>Do I need a wallet to browse?</summary>',
       '<summary>What are the risks?</summary>',
       '<summary>What is the Terminal?</summary>',
     ]);

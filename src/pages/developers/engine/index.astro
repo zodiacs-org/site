@@ -154,7 +154,7 @@ const jsonLd = [
       <p class="engine-hash">SHA-256: <code>{candidate.sha256}</code></p>
       {!published && (
         <p>
-          On npm, the verified registry read of {candidate.registryObservedOn}{' '}
+          On npm, the registry read of {candidate.registryObservedOn}{' '}
           records {candidate.registryVersion} under <code>next</code> and
           0.1.1-rc.15 under <code>latest</code>.{' '}
           <code>{`npm install ${candidate.name}@${candidate.registryVersion}`}</code>{' '}
@@ -162,8 +162,10 @@ const jsonLd = [
           which refuses the sidereal zodiac in <code>@zodiacs/engine/calc</code>.
           It was published from the engine repository's <code>release.yml</code>{' '}
           workflow with SLSA provenance, which names the source repository, the
-          workflow and the commit the package was built from;{' '}
-          <code>npm audit signatures</code> verifies it.
+          workflow and the commit the package was built from. The retained{' '}
+          <code>npm audit signatures</code> records verified that release on
+          1 and 6 October 2026. Today's registry lookup identifies the same
+          tarball; a fresh signature check is pending.
         </p>
       )}
       <p>
@@ -177,6 +179,14 @@ const jsonLd = [
     <h2 id="api">What it computes</h2>
     <div class="prose">
       <p><a href="/developers/engine/reference/">Read the {candidate.version} API reference</a> for public exports, parameter and return types, and the release’s documentation comments.</p>
+      <p>
+        The 1.0 candidate freezes exported tables and checks options more strictly.
+        Copy a table before changing it. The{' '}
+        <a href={`${candidate.sourceRepository}/blob/${candidate.sourceCommit}/CHANGELOG.md`}>CHANGELOG</a>{' '}
+        lists breaking changes and replacements; the{' '}
+        <a href={`${candidate.sourceRepository}/blob/${candidate.sourceCommit}/docs/versioning.md`}>versioning policy</a>{' '}
+        defines the public API, record compatibility, experimental exports and deprecation.
+      </p>
     </div>
     <dl class="engine-api">
       {api.map(([signature, what]) => (
@@ -320,7 +330,7 @@ const jsonLd = [
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
         <li>No input-date bound inside the span the ephemeris covers, Terrestrial Time 0001-04-30 to 3998-09-03; outside it a calculation throws. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>
-        <li>The manifest declares Node 20.19 or a later 20.x, and 22.7 and newer. What has actually been executed for this candidate is Node 22.22.2 and Node 24.21.0 here, with the site's Chromium browser checks, and Node 20.19.0, 22.7.0, 22.22.2 and 24.21.0 in the engine's own packed-archive check — narrower than the declaration.</li>
+        <li>The manifest declares Node 20.19 or a later 20.x, and 22.7 and newer. What has actually been executed for this candidate is Node 22.22.2 and Node 24.19.0 here, with the site's Chromium browser checks, and Node 20.19.0, 22.7.0, 22.22.2 and 24.21.0 in the engine's own packed-archive check — narrower than the declaration.</li>
         <li>No interpretation. The engine returns geometry; what it means is your problem, and not an astronomical claim.</li>
       </ul>
       <p>

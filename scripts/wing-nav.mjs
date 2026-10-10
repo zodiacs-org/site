@@ -45,6 +45,30 @@ export const NAV_TOOLS = [
   { href: '/birthday/', name: 'Birthday', description: 'Find your Sun sign from your birthday, including dates near a sign change.' },
 ];
 
+// English mirror of NAV_MORE, NAV_MORE_LABEL and ALL_TOOLS_LABEL in
+// src/lib/nav-tools.ts, so the Tools menu ends the same way on every page.
+export const NAV_MORE = [
+  { href: '/group-charts/', label: 'Group charts' },
+  { href: '/chart-twins/', label: 'Chart twins' },
+  { href: '/big-three/', label: 'Big three card' },
+  { href: '/compatibility/invite/', label: 'Invite a friend' },
+  { href: '/sky-calendar/', label: 'Sky calendar' },
+  { href: '/chart-of-the-day/', label: 'Chart of the day' },
+  { href: '/your-sky-wrapped/', label: 'Your sky, wrapped' },
+  { href: '/astrologer-kit/', label: 'Chart PDF' },
+];
+export const NAV_MORE_LABEL = 'More to explore';
+export const ALL_TOOLS_LABEL = 'All tools';
+
+/** The links under the main eight in the desktop Tools menu. */
+export function wingToolsMoreHtml() {
+  return `<div class="wnav-tools__more" role="group" aria-label="${NAV_MORE_LABEL}">` +
+      `<span class="wnav-tools__more-label">${NAV_MORE_LABEL}</span>` +
+      `<ul>${NAV_MORE.map((item) => `<li><a href="${item.href}">${item.label}</a></li>`).join('')}</ul>` +
+    `</div>` +
+    `<a class="wnav-tools__all" href="/tools/">${ALL_TOOLS_LABEL} <span aria-hidden="true">→</span></a>`;
+}
+
 // BrandMark: twelve dots in a ring, one per sign hue (mirrors BrandMark.astro).
 export function brandMarkSvg(size = 17) {
   const C = 12, R = 9, DOT = 1.9;
@@ -106,7 +130,7 @@ export function wingNavHtml({ includeSearch = true } = {}) {
       </button>
     </nav>
     <div class="wnav-tools" id="wnav-tools" data-wnav-tools-menu hidden>
-      <div class="wnav-tools__grid">${desktopTools}</div>
+      <div class="wnav-tools__grid">${desktopTools}${wingToolsMoreHtml()}</div>
     </div>
     <div class="wnav-signs" id="wnav-signs" data-wnav-signs-menu hidden>
       <div class="wnav-signs__grid">${signGrid}</div>
@@ -124,7 +148,7 @@ export function wingNavHtml({ includeSearch = true } = {}) {
       </div>
       <div class="wnav-menu__group">
         <span class="wnav-menu__label">Tools</span>
-        <div class="wnav-menu__tools">${mobileTools}</div>
+        <div class="wnav-menu__tools">${mobileTools}<a class="wnav-menu__tool wnav-menu__tool--all" href="/tools/">${ALL_TOOLS_LABEL} <span aria-hidden="true">→</span></a></div>
       </div>
       <div class="wnav-menu__group">
         <span class="wnav-menu__label">The twelve</span>
@@ -312,7 +336,7 @@ export function wingNavCss() {
   .wnav__profile-shortcut:hover { background: rgba(198,204,218,0.08); }
   .wnav__links { display: none; align-items: center; gap: 2px; }
   @media (min-width: 920px) { .wnav__links { display: grid; } }
-  .wnav__link { line-height: 1.6; display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
+  .wnav__link { justify-self: start; line-height: 1.6; display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
   .wnav__link:hover { color: var(--ink, #EEF1F7); background: rgba(198,204,218,0.07); }
   .wnav__link[aria-current='page'] { color: var(--ink, #EEF1F7); }
   .wnav__dropdown-btn svg { transition: transform 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
@@ -347,14 +371,21 @@ export function wingNavCss() {
   .wnav-tools__item { display: grid; gap: 4px; min-width: 0; padding: 12px; border-radius: 14px; color: var(--ink, #EEF1F7); text-decoration: none; }
   .wnav-tools__item:hover, .wnav-tools__item:focus-visible { background: rgba(198,204,218,0.07); }
   .wnav-tools__name { font-family: var(--wing-sans); font-size: 14px; font-weight: 550; line-height: 1.25; }
-  .wnav-tools__desc { overflow: hidden; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 9px; line-height: 1.4; letter-spacing: 0.025em; color: var(--ink-mute, #8A93A6); text-overflow: ellipsis; white-space: nowrap; }
+  .wnav-tools__desc { overflow: hidden; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 9px; line-height: 1.4; letter-spacing: 0.025em; color: #7A8397; text-overflow: ellipsis; white-space: nowrap; }
+  .wnav-tools__more { grid-column: 1 / -1; display: grid; gap: 6px; padding: 10px 12px 12px; border-top: 1px solid rgba(198,204,218,0.08); }
+  .wnav-tools__more-label { font-family: var(--wing-sans); font-size: 11px; line-height: 1.6; color: #7A8397; }
+  .wnav-tools__more ul { display: flex; flex-wrap: wrap; gap: 2px 4px; margin: 0; padding: 0; list-style: none; }
+  .wnav-tools__more a { display: inline-flex; align-items: center; min-height: 32px; padding: 4px 8px; border-radius: 8px; color: var(--ink-2, #C6CCDA); font-family: var(--wing-sans); font-size: 13px; line-height: 1.6; text-decoration: none; }
+  .wnav-tools__more a:hover, .wnav-tools__more a:focus-visible { background: rgba(198,204,218,0.07); color: var(--ink, #EEF1F7); }
+  .wnav-tools__all { grid-column: 1 / -1; padding: 11px 12px 8px; border-top: 1px solid rgba(198,204,218,0.08); color: var(--ink-2, #C6CCDA); font-family: var(--wing-sans); font-size: 12px; font-weight: 600; line-height: 1.6; text-decoration: none; }
+  .wnav-tools__all:hover, .wnav-tools__all:focus-visible { color: var(--ink, #EEF1F7); }
   .wnav-signs__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
   @media (min-width: 640px) { .wnav-signs__grid { grid-template-columns: repeat(3, 1fr); } }
   .wnav-signs__item { display: grid; grid-template-columns: 32px 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px; text-decoration: none; transition: background 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
   .wnav-signs__item:hover { background: color-mix(in oklab, var(--sign) 12%, transparent); }
   .wnav-signs__item .wnav-disc { grid-row: span 2; }
   .wnav-signs__name { font-family: var(--wing-sans); font-size: 14px; font-weight: 550; color: var(--ink, #EEF1F7); line-height: 1.25; }
-  .wnav-signs__dates { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; letter-spacing: 0.06em; color: var(--ink-mute, #8A93A6); }
+  .wnav-signs__dates { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; line-height: 1.6; letter-spacing: 0.06em; color: #7A8397; }
   .wnav-menu { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; inset: 0; z-index: 59; pointer-events: auto; background: rgba(6,7,9,0.88); backdrop-filter: blur(26px) saturate(140%); -webkit-backdrop-filter: blur(26px) saturate(140%); padding: calc(96px + env(safe-area-inset-top)) 24px 40px; overflow-y: auto; }
   .wnav-menu[hidden] { display: none; }
   .wnav-menu__group + .wnav-menu__group { margin-top: 34px; }
@@ -366,6 +397,7 @@ export function wingNavCss() {
   .wnav-menu__tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
   .wnav-menu__tool { display: block; min-width: 0; padding: 11px 0; border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); color: var(--ink, #EEF1F7); font-family: var(--wing-serif); font-size: clamp(18px, 5vw, 22px); line-height: 1.05; text-decoration: none; }
   .wnav-menu__tool:last-child { border-bottom: 0; }
+  .wnav-menu__tool--all { color: var(--ink-2, #C6CCDA); font-size: clamp(16px, 4.6vw, 20px); }
   .wnav-menu__signs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
   .wnav-menu__sign { display: flex; flex-direction: row; align-items: center; gap: 13px; padding: 10px 0; text-decoration: none; font-family: var(--wing-serif); font-size: clamp(20px, 5.5vw, 26px); font-weight: 400; color: var(--ink, #EEF1F7); border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); }
   .wnav-menu__sign:last-child { border-bottom: 0; }

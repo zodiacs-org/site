@@ -1789,6 +1789,18 @@
         { href: '/saturn-return/', name: 'Saturn return', description: 'When yours hits, exactly, and what it tends to ask.' },
         { href: '/birthday/', name: 'Birthday', description: 'Find your Sun sign from your birthday, including dates near a sign change.' },
       ];
+      // Mirrors NAV_MORE in src/lib/nav-tools.ts, so this menu ends like the
+      // Tools menu on every other page.
+      const NAV_MORE = [
+        { href: '/group-charts/', label: 'Group charts' },
+        { href: '/chart-twins/', label: 'Chart twins' },
+        { href: '/big-three/', label: 'Big three card' },
+        { href: '/compatibility/invite/', label: 'Invite a friend' },
+        { href: '/sky-calendar/', label: 'Sky calendar' },
+        { href: '/chart-of-the-day/', label: 'Chart of the day' },
+        { href: '/your-sky-wrapped/', label: 'Your sky, wrapped' },
+        { href: '/astrologer-kit/', label: 'Chart PDF' },
+      ];
       const terminalNav = {
         href: '/astrofolio/',
         label: 'Astrofolio',
@@ -1826,6 +1838,15 @@
                     <span className="wnav-tools__desc">{tool.description}</span>
                   </a>
                 ))}
+                <div className="wnav-tools__more" role="group" aria-label="More to explore">
+                  <span className="wnav-tools__more-label">More to explore</span>
+                  <ul>
+                    {NAV_MORE.map((item) => (
+                      <li key={item.href}><a href={item.href} tabIndex={-1} onClick={() => setToolsOpen(false)}>{item.label}</a></li>
+                    ))}
+                  </ul>
+                </div>
+                <a className="wnav-tools__all" href="/tools/" tabIndex={-1} onClick={() => setToolsOpen(false)}>All tools <span aria-hidden="true">→</span></a>
               </div>
             </div>
             <div className={signsOpen ? 'wnav-signs is-open' : 'wnav-signs'} id="wnav-signs" data-wnav-signs-menu="" hidden={!signsOpen} onKeyDown={(event) => handleDropdownKey(event, 3, setSignsOpen, signsButtonRef)}>
@@ -1859,6 +1880,7 @@
                   {NAV_TOOLS.map((tool, i) => (
                     <a className="wnav-menu__tool" key={tool.href} style={{ '--i': i }} href={tool.href} aria-label={`${tool.name}. ${tool.description}`}>{tool.name}</a>
                   ))}
+                  <a className="wnav-menu__tool wnav-menu__tool--all" href="/tools/">All tools <span aria-hidden="true">→</span></a>
                 </div>
               </div>
               <div className="wnav-menu__group">
@@ -6967,26 +6989,13 @@
       );
     }
 
+    // Only questions the sections above don't already answer: what Astrofolio
+    // is, official addresses, Solana and Base, and merchandise each have their
+    // own section on the page.
     const CONSUMER_FAQS = [
-      {
-        q: 'What is Astrofolio?',
-        a: 'Astrofolio is the collection of twelve official Zodiac tokens—one for each sign—with its own design and public Registry record.'
-      },
-      {
-        q: 'How do I know a Zodiac is official?',
-        a: 'Compare the complete token address with the published Registry. A name or ticker alone is not enough.'
-      },
-      {
-        q: 'Why does each sign have Solana and Base addresses?',
-        a: 'Each Zodiac began on Solana and has an official Base counterpart. Both verified addresses appear in the same Registry record.'
-      },
       {
         q: 'Do I need a wallet to browse?',
         a: 'No. You can browse the collection, see market context, and verify addresses without connecting a wallet.'
-      },
-      {
-        q: 'Where can I find Astrofolio merchandise?',
-        a: 'Browse the Astrofolio Shop for clothing inspired by the twelve signs.'
       },
       {
         q: 'What are the risks?',
@@ -6994,7 +7003,7 @@
       },
       {
         q: 'What is the Terminal?',
-        a: 'Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.'
+        a: 'The Terminal is the market view for all twelve Zodiacs, with live prices, charts, and liquidity side by side. It shows market data only.'
       }
     ];
 

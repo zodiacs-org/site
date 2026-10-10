@@ -73,6 +73,44 @@ function staticImportSpecifiers(source) {
   return found;
 }
 
+// Erased types do not load the engine. The website window runtime belongs to full.ts.
+function runtimeWindowImport(source, fileName) {
+  const frontmatter=fileName.endsWith('.astro')?/^---\r?\n([\s\S]*?)\r?\n---/.exec(source):null;
+  const tree=ts.createSourceFile(fileName,frontmatter?frontmatter[1]:source,ts.ScriptTarget.Latest,false,fileName.endsWith('.tsx')?ts.ScriptKind.TSX:ts.ScriptKind.TS);
+  let found=false;
+  const target=node=>node&&ts.isStringLiteralLike(node)&&node.text==='@zodiacs/engine/window';
+  const visit=node=>{
+    if(ts.isImportDeclaration(node)&&target(node.moduleSpecifier)){
+      const clause=node.importClause,named=clause?.namedBindings;
+      const onlyTypes=clause?.isTypeOnly||(!clause?.name&&named&&ts.isNamedImports(named)&&named.elements.length>0&&named.elements.every(item=>item.isTypeOnly));
+      if(!onlyTypes)found=true;
+    }else if(ts.isExportDeclaration(node)&&target(node.moduleSpecifier)){
+      const onlyTypes=node.isTypeOnly||(node.exportClause&&ts.isNamedExports(node.exportClause)&&node.exportClause.elements.length>0&&node.exportClause.elements.every(item=>item.isTypeOnly));
+      if(!onlyTypes)found=true;
+    }else if(ts.isCallExpression(node)&&node.expression.kind===ts.SyntaxKind.ImportKeyword&&target(node.arguments[0]))found=true;
+    ts.forEachChild(node,visit);
+  };
+  visit(tree);return found;
+}
+
+function runtimeLocalImports(source,fileName){
+ const frontmatter=fileName.endsWith('.astro')?/^---\r?\n([\s\S]*?)\r?\n---/.exec(source):null;
+ const tree=ts.createSourceFile(fileName,frontmatter?frontmatter[1]:source,ts.ScriptTarget.Latest,false,fileName.endsWith('.tsx')?ts.ScriptKind.TSX:ts.ScriptKind.TS),found=[];
+ const add=node=>{if(node&&ts.isStringLiteralLike(node)&&node.text.startsWith('.'))found.push(node.text);};
+ const visit=node=>{
+  if(ts.isImportDeclaration(node)){
+   const clause=node.importClause,named=clause?.namedBindings;
+   const onlyTypes=clause?.isTypeOnly||(!clause?.name&&named&&ts.isNamedImports(named)&&named.elements.length>0&&named.elements.every(item=>item.isTypeOnly));
+   if(!onlyTypes)add(node.moduleSpecifier);
+  }else if(ts.isExportDeclaration(node)){
+   const onlyTypes=node.isTypeOnly||(node.exportClause&&ts.isNamedExports(node.exportClause)&&node.exportClause.elements.length>0&&node.exportClause.elements.every(item=>item.isTypeOnly));
+   if(!onlyTypes)add(node.moduleSpecifier);
+  }else if(ts.isCallExpression(node)&&node.expression.kind===ts.SyntaxKind.ImportKeyword)add(node.arguments[0]);
+  ts.forEachChild(node,visit);
+ };
+ visit(tree);return found;
+}
+
 // Built JavaScript needs syntax-aware closure discovery: side-effect imports
 // may contain whitespace/comments and shared engine modules may be re-exported.
 function staticJavaScriptImports(source) {
@@ -232,6 +270,8 @@ const sourceFiles = await walk(resolve(repo, 'src'), (path) =>
 const directVendorImporters = [];
 const engineInternalImporters = [];
 const engineMathImporters = [];
+const windowRuntimeImporters = [];
+const sourceRuntimeImports = new Map();
 for (const path of sourceFiles) {
   const source = await readFile(path, 'utf8');
   const specifiers = staticImportSpecifiers(source);
@@ -241,7 +281,23 @@ for (const path of sourceFiles) {
   if (hasVendorImport) directVendorImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/internal')) engineInternalImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/internal/math')) engineMathImporters.push(relativePath);
+  if(runtimeWindowImport(source,relativePath))windowRuntimeImporters.push(relativePath);
+  sourceRuntimeImports.set(relativePath,runtimeLocalImports(source,relativePath));
 }
+// Standalone generated AI widgets are a separate build, not Astro page roots.
+// Follow all website relative loads into them so relocating a bypass cannot
+// evade the website guard.
+const websiteSources=new Set([...sourceRuntimeImports.keys()].filter(path=>!path.startsWith('src/ai-tools/')));
+const queue=[...websiteSources];
+for(let index=0;index<queue.length;index++){
+ const current=queue[index];
+ for(const specifier of sourceRuntimeImports.get(current)??[]){
+  const base=relative(repo,resolve(repo,dirname(current),specifier)).split(sep).join('/');
+  const target=[base,...['.ts','.tsx','.js','.mjs','.astro','/index.ts','/index.tsx'].map(ext=>base+ext)].find(path=>sourceRuntimeImports.has(path));
+  if(target&&!websiteSources.has(target)){websiteSources.add(target);queue.push(target);}
+ }
+}
+const websiteWindowRuntimeImporters=windowRuntimeImporters.filter(path=>websiteSources.has(path));
 const allowedDirectVendorImporters = ['src/lib/engine/server-ephemeris.ts'];
 directVendorImporters.sort();
 if (
@@ -253,6 +309,9 @@ if (
 const allowedEngineImporter = 'src/lib/engine/full.ts';
 if (engineInternalImporters.length !== 1 || engineInternalImporters[0] !== allowedEngineImporter) {
   fail(`engine source isolation: expected only ${allowedEngineImporter} to import @zodiacs/engine/internal; found ${engineInternalImporters.join(', ') || 'none'}`);
+}
+if(websiteWindowRuntimeImporters.some(path=>path!==allowedEngineImporter)){
+  fail(`engine source isolation: window runtime must use ${allowedEngineImporter}; found ${websiteWindowRuntimeImporters.join(', ')}`);
 }
 const allowedMathImporters = [
   'src/lib/engine/aspects.ts',
@@ -305,6 +364,19 @@ const serverOnlyMarkerChunks = chunkRows
   .filter(({ source }) => ['node:module', 'createRequire'].some((marker) => source.includes(marker))
     || hasExternalEphemerisImport(source))
   .map(({ path }) => path);
+// This worker follows the established full.ts source boundary. Its compiled
+// closure uses the original global chunk budget, including the window algorithm.
+const birthWindowWorkerSource='src/islands/birth-window.worker.ts';
+const hasBirthWindowWorker=sourceRuntimeImports.has(birthWindowWorkerSource);
+if(hasBirthWindowWorker&&!(sourceRuntimeImports.get(birthWindowWorkerSource)??[]).some(specifier=>relative(repo,resolve(repo,dirname(birthWindowWorkerSource),specifier)).split(sep).join('/')==='src/lib/engine/full')){
+ fail('birth-window worker source must load window through full.ts');
+}
+const birthWindowWorkerChunks=chunkRows.filter(({path})=>/\/_astro\/birth-window\.worker[-.][^/]+\.js$/.test(path));
+if(hasBirthWindowWorker&&birthWindowWorkerChunks.length!==1)fail('birth-window worker isolation: expected one compiled bundle');
+const birthWindowWorkerClosure=routeClosure(birthWindowWorkerChunks.map(({path})=>path),'birth-window worker');
+const birthWindowWorkerGzip=[...birthWindowWorkerClosure].reduce((sum,path)=>sum+chunks.get(path).gzip,0);
+if(birthWindowWorkerGzip>budgets['chunk-max']*1024)fail('birth-window worker static closure exceeds original chunk-max budget');
+if(hasBirthWindowWorker&&!engineMarkers.every(marker=>[...birthWindowWorkerClosure].some(path=>chunks.get(path).source.includes(marker))))fail('birth-window worker engine marker fingerprint missing');
 if (homepageMarkerChunks.length) {
   fail(`homepage engine isolation: engine marker found in ${homepageMarkerChunks.join(', ')}`);
 }
@@ -350,7 +422,8 @@ if (engineChunk) {
 const sourceBoundaryClear = directVendorImporters.length === allowedDirectVendorImporters.length
   && directVendorImporters.every((path, index) => path === allowedDirectVendorImporters[index])
   && engineInternalImporters.length === 1
-  && engineInternalImporters[0] === allowedEngineImporter;
+  && engineInternalImporters[0] === allowedEngineImporter
+  && websiteWindowRuntimeImporters.every(path=>path===allowedEngineImporter);
 console.log(`engine isolation: package boundary ${sourceBoundaryClear ? 'clear' : 'failed'}; homepage markers ${homepageMarkerChunks.length ? 'found' : 'clear'}`);
 
 if (failures.length) {

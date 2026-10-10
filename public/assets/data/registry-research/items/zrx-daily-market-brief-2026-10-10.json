@@ -1,0 +1,109 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-daily-market-brief-2026-10-10",
+  "slug": "daily-market-brief-2026-10-10",
+  "kind": "daily-market-brief",
+  "templateId": "daily-market-brief.v1",
+  "issuedAt": "2026-10-10T12:00:00.000Z",
+  "visibleAt": "2026-10-10T12:00:00.000Z",
+  "title": "New Moon in Libra · daily market brief",
+  "summary": "New Moon in Libra leads the disclosed symbolic index; Libra market measures are recorded separately.",
+  "url": "/terminal/research/daily-market-brief-2026-10-10/",
+  "signs": [
+    "libra"
+  ],
+  "topics": [
+    "markets",
+    "daily-sky",
+    "lunation"
+  ],
+  "symbolicScore": {
+    "sign": "libra",
+    "attention": 27,
+    "tone": 7,
+    "eventIntensity": 7,
+    "calculation": "22 attention / 8 tone / 8 event intensity × 0.8351 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "New Moon in Libra is the highest-weighted named factor for Libra in the 2026-10-10 UTC edition. The disclosed score is attention 27/100, tone 7, and symbolic event intensity 7/100.",
+      "evidence": [
+        "src/data/transits-2026-10.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. This is a traditional symbolic reading, not a price direction or probability.",
+      "evidence": [
+        "src/data/transits-2026-10.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-10-10T05:33:50.813Z, Libra was indexed at $0.00008004, with -0.12% over 24 hours, $80.04K market cap, $80.04K FDV, $20.27K indexed liquidity, $1.85 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-10-10:2026-10-10T05:33:50.813Z",
+    "observedAt": "2026-10-10T05:33:50.813Z",
+    "provider": "DexScreener",
+    "sign": "libra",
+    "priceUsd": 0.00008004,
+    "change24hPct": -0.12,
+    "marketCapUsd": 80037,
+    "fdvUsd": 80037,
+    "liquidityUsd": 20271.09,
+    "volume24hUsd": 1.85,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/dtxpqjk4ae4h2wc7d5rpij8ymsqxqlutcnkrpbcjcan9"
+  },
+  "evidence": {
+    "dailyFacts": "src/data/daily.json#2026-10-10",
+    "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-10",
+    "marketSnapshotId": "registry-market:2026-10-10:2026-10-10T05:33:50.813Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "ca788d526c5451268148ba2ba00dcf0460ecefe2fb6a0f984d4d770f796979b4",
+  "publishedAt": "2026-10-10T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-10T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "ca788d526c5451268148ba2ba00dcf0460ecefe2fb6a0f984d4d770f796979b4"
+  },
+  "status": "approved"
+}

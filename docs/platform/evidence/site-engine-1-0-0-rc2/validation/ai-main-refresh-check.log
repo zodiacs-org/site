@@ -1,0 +1,17 @@
+
+> zodiacs-org@1.0.0 ai:check
+> node scripts/build-ai-integrations.mjs --check && node scripts/check-ai-integrations.mjs && python3 scripts/package-ai-integrations.py --check
+
+Verified Chart Studio (925591 bytes, self-contained)
+Verified the horoscope panel (179942 bytes, self-contained)
+Verified api/_ai/runtime.mjs (1683336 bytes)
+Verified plugins/zodiacs-developer/mcp/server.mjs (1733524 bytes)
+Verified integrations/generated/sky-watch.mjs (1687050 bytes)
+Verified plugins/zodiacs-developer/plugin.json
+Verified plugins/zodiacs-developer/mcp.json
+Verified plugins/zodiacs-sky/.codex-plugin/plugin.json
+Verified plugins/zodiacs-sky/.mcp.json
+Verified plugins/zodiacs-sky/.claude-plugin/plugin.json
+AI package contracts: manifests, submission cases, versions, routes and canonical links verified.
+Verified zodiacs-sky-0.4.0.zip (68271 bytes)
+Verified zodiacs-developer-0.3.5.zip (1845370 bytes)

@@ -1,6 +1,7 @@
 {
   "mcpServers": {
     "zodiacs-sky": {
+      "type": "http",
       "url": "https://zodiacs.org/mcp"
     }
   }

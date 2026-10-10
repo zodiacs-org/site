@@ -1,0 +1,39 @@
+{
+  "schema": "zodiacs.organization-full-suite-failure.v1",
+  "head": "1912193623cf6975ab33353549e1f8358df75673",
+  "integration": "23fd5981fdc33b989f9f85b0b978657b9c281c07",
+  "tree": "59e4200a8b5fa3ac5004f131ea34180d9509fa34",
+  "run": 37970231642,
+  "job": 113954685780,
+  "failedStep": "Engine accuracy vectors",
+  "assertion": {
+    "path": "scripts/build-i18n-additions.test.mjs",
+    "line": 151,
+    "test": "renders all per-key fields and keeps the checked-in manifest byte-current",
+    "expected": true,
+    "actual": false
+  },
+  "tests": {
+    "passed": 6965,
+    "failed": 1,
+    "skipped": 6,
+    "passingFiles": 541,
+    "failedFiles": 1,
+    "skippedFiles": 1
+  },
+  "thesisBrowserChecks": 242,
+  "unreached": [
+    "Later primary-job drives",
+    "Visual regression",
+    "Lighthouse performance budgets",
+    "Foreign-origin widget integration",
+    "Widget Lighthouse thresholds"
+  ],
+  "artifact": {
+    "id": 11636861448,
+    "bytes": 33867058,
+    "sha256": "e991d04376170c066ab612ef1eccffedc109005b5353f72d3b645eb9b92c590b"
+  },
+  "remedy": "Regenerate i18n-additions.md with the original source script to reflect the canonical Organisation name; preserve the original assertion and every gate.",
+  "limitation": "Failed source was not merged. The predecessor's passing suite does not replace a corrected combined head's full suite."
+}

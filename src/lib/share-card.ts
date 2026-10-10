@@ -674,23 +674,17 @@ async function drawFullChartCard(
     moonAmbiguous: options.moonAmbiguous || moonIsUncertain(chart),
   });
   const placements = bigThreePlacements(chart, locale);
-  const trio = placements.map((placement) => ({
-    label: shareCardText(locale, placement.kind),
-    slug: placement.slug,
-    name: placement.sign,
-  }));
 
   await document.fonts.ready;
   await Promise.all([
-    document.fonts.load(`500 52px ${SERIF}`),
+    document.fonts.load(`400 46px ${SERIF}`),
     document.fonts.load(`italic 400 34px ${SERIF}`),
-    document.fonts.load(`400 26px ${MONO}`),
+    document.fonts.load(`400 20px ${MONO}`),
   ]).catch(() => { /* system fallbacks still draw */ });
 
-  const [wheelImg, discs] = await Promise.all([
-    wheelSvgString(chart).then(loadSvg),
-    Promise.all(trio.map((t) => loadDisc(t.slug))),
-  ]);
+  // All twelve discs: the zodiac ring carries every sign.
+  const discEntries = await Promise.all(SIGNS.map(async ({ slug }) => [slug, await loadDisc(slug)] as const));
+  const discs = new Map(discEntries);
 
   const canvas = document.createElement('canvas');
   canvas.width = W;
@@ -700,6 +694,9 @@ async function drawFullChartCard(
 
   ctx.fillStyle = BG;
   ctx.fillRect(0, 0, W, H);
+
+  const { drawLuminousWheel } = await import('./share-card-luminous');
+  await drawLuminousWheel(ctx, chart, discs, { cx: W / 2, cy: 568, r: 404 }, { width: W, height: H });
 
   // Hairline frame, same register as the site's card bezels.
   if (typeof ctx.roundRect === 'function') {
@@ -716,36 +713,53 @@ async function drawFullChartCard(
   // Kicker — sentence-case serif italic, the house register.
   ctx.fillStyle = INK_2;
   ctx.font = `italic 400 34px ${SERIF}`;
-  ctx.fillText(shareCardText(locale, 'fullChartTitle'), W / 2, 118);
+  ctx.fillText(shareCardText(locale, 'fullChartTitle'), W / 2, 72);
 
-  ctx.drawImage(wheelImg, (W - WHEEL_SIZE) / 2, 158, WHEEL_SIZE, WHEEL_SIZE);
-
-  // Pastel discs for the big three.
-  const DISC = 84;
-  const GAP = 40;
-  const rowW = trio.length * DISC + (trio.length - 1) * GAP;
-  let x = (W - rowW) / 2;
-  const discY = 992;
-  for (const bitmap of discs) {
-    if (bitmap) ctx.drawImage(bitmap, x, discY, DISC, DISC);
-    x += DISC + GAP;
+  // The big three as three tiles: disc, label, sign, degree.
+  const tileW = 300;
+  const tileH = 124;
+  const tileGap = 24;
+  const rowW = placements.length * tileW + (placements.length - 1) * tileGap;
+  const tileY = 1042;
+  for (const [index, placement] of placements.entries()) {
+    const x = (W - rowW) / 2 + index * (tileW + tileGap);
+    if (typeof ctx.roundRect === 'function') {
+      ctx.fillStyle = 'rgba(15, 18, 26, 0.86)';
+      ctx.strokeStyle = 'rgba(198, 204, 218, 0.16)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(x + 0.5, tileY + 0.5, tileW - 1, tileH - 1, 22);
+      ctx.fill();
+      ctx.stroke();
+    }
+    const disc = discs.get(placement.slug);
+    if (disc) ctx.drawImage(disc, x + 20, tileY + (tileH - 64) / 2, 64, 64);
+    ctx.textAlign = 'left';
+    const textX = x + 102;
+    const label = shareCardText(locale, placement.kind).toUpperCase();
+    const detail = placement.uncertain
+      ? `${label} · ${t(locale, 'needsBirthTime')}`
+      : `${label} · ${cardDegreeText(placement.kind, placement.degree)}`;
+    ctx.fillStyle = INK_2;
+    ctx.font = `400 17px ${MONO}`;
+    ctx.fillText(detail, textX, tileY + 40, tileW - 118);
+    ctx.fillStyle = INK_0;
+    const px = fitText(ctx, placement.sign, tileW - 120, 46, 26, 400, SERIF);
+    ctx.font = `400 ${px}px ${SERIF}`;
+    ctx.fillText(placement.sign, textX, tileY + 80);
   }
-
-  // Big three line.
-  const line = trio.map((t) => `${t.name} ${t.label}`).join(' · ');
-  const px = fitText(ctx, line, W - 140, 52, 34, 500, SERIF);
-  ctx.fillStyle = INK_0;
-  ctx.font = `500 ${px}px ${SERIF}`;
-  ctx.fillText(line, W / 2, 1138);
+  ctx.textAlign = 'center';
 
   ctx.fillStyle = INK_2;
   ctx.font = `400 19px ${MONO}`;
-  timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1195 + index * 31));
+  timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1200 + index * 28));
 
   // Receipt + footer.
   ctx.fillStyle = INK_2;
-  ctx.font = `400 22px ${MONO}`;
-  ctx.fillText(chartCardReceipt(chart, locale), W / 2, 1272);
+  ctx.font = `400 19px ${MONO}`;
+  ctx.textAlign = 'left';
+  ctx.fillText(chartCardReceipt(chart, locale), 66, PORTRAIT_SHARE_CARD_BRAND_LAYOUT.centerY);
+  ctx.textAlign = 'center';
 
   await drawPortraitShareBrand(ctx);
 

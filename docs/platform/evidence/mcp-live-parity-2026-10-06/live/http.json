@@ -1,0 +1,857 @@
+[
+  {
+    "id": "positions",
+    "tool": "get_positions",
+    "endpoint": "positions",
+    "args": {
+      "instants": [
+        "2000-01-01T12:00:00Z"
+      ],
+      "bodies": [
+        "Sun",
+        "Moon",
+        "Mars"
+      ]
+    },
+    "status": 200,
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Retry-After",
+      "cache-control": "no-store",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
+      "content-type": "application/json; charset=utf-8",
+      "cross-origin-opener-policy": "same-origin-allow-popups",
+      "date": "Tue, 06 Oct 2026 07:25:36 GMT",
+      "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "server": "envoy",
+      "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-envoy-upstream-service-time": "816",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-robots-tag": "noindex",
+      "x-vercel-cache": "MISS",
+      "x-vercel-id": "cle1::iad1::w25p9-1791271536619-4073699e92b0"
+    },
+    "headersBytes": 1305,
+    "headersTruncated": false,
+    "text": "{\"schema\":\"zodiacs.compute-api.positions.v1\",\"result\":{\"instants\":[{\"instant\":\"2000-01-01T12:00:00.000Z\",\"bodies\":[{\"body\":\"Sun\",\"lon\":280.3687723811323,\"lat\":0.0000011205048760998976,\"speed\":1.0194308605093738,\"retrograde\":false,\"sign\":\"capricorn\",\"degree\":10.368772381132317},{\"body\":\"Moon\",\"lon\":223.32396777014543,\"lat\":5.170788636029834,\"speed\":12.021413077249576,\"retrograde\":false,\"sign\":\"scorpio\",\"degree\":13.323967770145373},{\"body\":\"Mars\",\"lon\":327.96393186874616,\"lat\":-1.0680819810158533,\"speed\":0.7756777245333524,\"retrograde\":false,\"sign\":\"aquarius\",\"degree\":27.963931868746158}],\"deltaT\":{\"seconds\":63.8285,\"sigma\":0.000827,\"model\":\"iers-utc/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"064d98b4a531053a\",\"segment\":\"observed\"},\"timeScale\":{\"input\":\"utc\",\"basis\":\"iers\",\"ut1MinusUtc\":{\"seconds\":0.35549999999999926,\"sigma\":0.000827,\"source\":\"observed\"},\"leapSeconds\":{\"taiMinusUtc\":32,\"listed\":true}},\"flags\":[]}]},\"receipt\":{\"schema\":\"zodiacs.compute-receipt.v1\",\"endpoint\":\"positions\",\"engine\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"conventions\":{\"angles\":\"gast-and-true-obliquity\",\"aspects\":\"major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate\",\"calendar\":\"proleptic-gregorian\",\"deltaT\":\"tt-minus-ut1;value-in-result\",\"localTime\":\"tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record\",\"longitudeUnit\":\"degrees-[0,360)\",\"moonNodes\":\"instantaneous-geocentric-moon-orbit-plane\",\"moonPosition\":\"astronomy-engine-geo-moon;no-light-time;no-aberration\",\"nutation\":\"iau2000b;equation-of-equinoxes-with-two-complementary-terms\",\"planetPositions\":\"aberrated-geocentric-ecliptic-of-date;no-deflection\",\"speed\":\"degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day\",\"timeScale\":\"tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result\",\"zodiac\":\"tropical\"},\"coverage\":{\"angleExclusions\":\"exact-geographic-poles-and-ecliptic-horizon-coincidence\",\"assessment\":\"finite-reference-cases-only\",\"broadDateRange\":\"not-certified\",\"inputSyntax\":\"not-an-astronomical-accuracy-guarantee\"},\"referenceSpan\":{\"from\":\"1800-01-01T00:00:00.000Z\",\"to\":\"2200-01-01T00:00:00.000Z\"},\"deltaT\":[{\"model\":\"iers-utc/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"064d98b4a531053a\"},{\"model\":\"zodiacs-deltat/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"6371988c510a1c6c\"}]},\"backend\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"cite\":{\"url\":\"https://zodiacs.org/developers/compute/#positions\",\"receipt\":\"sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de\",\"engine\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\"}}",
+    "body": {
+      "limitBytes": 262144,
+      "capturedBytes": 2736,
+      "observedBytes": 2736,
+      "truncated": false,
+      "capturedSha256": "af7798eec0e4105ec469bee0be3b3dcdf30bd4ee27886addb663f7de28f03c92"
+    },
+    "state": "parsed",
+    "value": {
+      "schema": "zodiacs.compute-api.positions.v1",
+      "result": {
+        "instants": [
+          {
+            "instant": "2000-01-01T12:00:00.000Z",
+            "bodies": [
+              {
+                "body": "Sun",
+                "lon": 280.3687723811323,
+                "lat": 0.0000011205048760998976,
+                "speed": 1.0194308605093738,
+                "retrograde": false,
+                "sign": "capricorn",
+                "degree": 10.368772381132317
+              },
+              {
+                "body": "Moon",
+                "lon": 223.32396777014543,
+                "lat": 5.170788636029834,
+                "speed": 12.021413077249576,
+                "retrograde": false,
+                "sign": "scorpio",
+                "degree": 13.323967770145373
+              },
+              {
+                "body": "Mars",
+                "lon": 327.96393186874616,
+                "lat": -1.0680819810158533,
+                "speed": 0.7756777245333524,
+                "retrograde": false,
+                "sign": "aquarius",
+                "degree": 27.963931868746158
+              }
+            ],
+            "deltaT": {
+              "seconds": 63.8285,
+              "sigma": 0.000827,
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a",
+              "segment": "observed"
+            },
+            "timeScale": {
+              "input": "utc",
+              "basis": "iers",
+              "ut1MinusUtc": {
+                "seconds": 0.35549999999999926,
+                "sigma": 0.000827,
+                "source": "observed"
+              },
+              "leapSeconds": {
+                "taiMinusUtc": 32,
+                "listed": true
+              }
+            },
+            "flags": []
+          }
+        ]
+      },
+      "receipt": {
+        "schema": "zodiacs.compute-receipt.v1",
+        "endpoint": "positions",
+        "engine": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "conventions": {
+          "angles": "gast-and-true-obliquity",
+          "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "calendar": "proleptic-gregorian",
+          "deltaT": "tt-minus-ut1;value-in-result",
+          "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "longitudeUnit": "degrees-[0,360)",
+          "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+          "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "zodiac": "tropical"
+        },
+        "coverage": {
+          "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "assessment": "finite-reference-cases-only",
+          "broadDateRange": "not-certified",
+          "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+        },
+        "referenceSpan": {
+          "from": "1800-01-01T00:00:00.000Z",
+          "to": "2200-01-01T00:00:00.000Z"
+        },
+        "deltaT": [
+          {
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a"
+          },
+          {
+            "model": "zodiacs-deltat/1",
+            "table": "2026-09-24",
+            "tableDigest": "6371988c510a1c6c"
+          }
+        ]
+      },
+      "backend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.17",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      },
+      "cite": {
+        "url": "https://zodiacs.org/developers/compute/#positions",
+        "receipt": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+        "engine": "@zodiacs/engine",
+        "version": "0.1.1-rc.17"
+      }
+    }
+  },
+  {
+    "id": "short-lunation",
+    "tool": "find_events",
+    "endpoint": "events",
+    "args": {
+      "from": "2026-03-01T00:00:00Z",
+      "to": "2026-03-05T00:00:00Z",
+      "bodies": [
+        "Moon"
+      ],
+      "kinds": [
+        "lunation"
+      ]
+    },
+    "nonempty": true,
+    "status": 200,
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Retry-After",
+      "cache-control": "no-store",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
+      "content-type": "application/json; charset=utf-8",
+      "cross-origin-opener-policy": "same-origin-allow-popups",
+      "date": "Tue, 06 Oct 2026 07:25:37 GMT",
+      "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "server": "envoy",
+      "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-envoy-upstream-service-time": "200",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-robots-tag": "noindex",
+      "x-vercel-cache": "MISS",
+      "x-vercel-id": "cle1::iad1::zvpn6-1791271537205-777d29cade01"
+    },
+    "headersBytes": 1305,
+    "headersTruncated": false,
+    "text": "{\"schema\":\"zodiacs.compute-api.events.v1\",\"result\":{\"from\":\"2026-03-01T00:00:00.000Z\",\"to\":\"2026-03-05T00:00:00.000Z\",\"events\":[{\"kind\":\"lunation\",\"type\":\"full\",\"at\":\"2026-03-03T11:37:57.654Z\",\"lon\":162.8983459950955,\"sign\":\"virgo\",\"degree\":12.898345995095497}]},\"receipt\":{\"schema\":\"zodiacs.compute-receipt.v1\",\"endpoint\":\"events\",\"engine\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"conventions\":{\"angles\":\"gast-and-true-obliquity\",\"aspects\":\"major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate\",\"calendar\":\"proleptic-gregorian\",\"deltaT\":\"tt-minus-ut1;value-in-result\",\"localTime\":\"tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record\",\"longitudeUnit\":\"degrees-[0,360)\",\"moonNodes\":\"instantaneous-geocentric-moon-orbit-plane\",\"moonPosition\":\"astronomy-engine-geo-moon;no-light-time;no-aberration\",\"nutation\":\"iau2000b;equation-of-equinoxes-with-two-complementary-terms\",\"planetPositions\":\"aberrated-geocentric-ecliptic-of-date;no-deflection\",\"speed\":\"degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day\",\"timeScale\":\"tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result\",\"zodiac\":\"tropical\"},\"coverage\":{\"angleExclusions\":\"exact-geographic-poles-and-ecliptic-horizon-coincidence\",\"assessment\":\"finite-reference-cases-only\",\"broadDateRange\":\"not-certified\",\"inputSyntax\":\"not-an-astronomical-accuracy-guarantee\"},\"referenceSpan\":{\"from\":\"1800-01-01T00:00:00.000Z\",\"to\":\"2200-01-01T00:00:00.000Z\"},\"deltaT\":[{\"model\":\"iers-utc/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"064d98b4a531053a\"},{\"model\":\"zodiacs-deltat/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"6371988c510a1c6c\"}],\"search\":{\"solver\":\"engine-longitude-crossings\",\"stepDays\":{\"default\":5,\"moon\":1,\"elongation\":1},\"bisections\":24,\"samples\":34,\"maxSamples\":12000,\"window\":\"start-exclusive-end-inclusive\",\"completeness\":\"tested-not-proven\"}},\"backend\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"cite\":{\"url\":\"https://zodiacs.org/developers/compute/#events\",\"receipt\":\"sha256:053bcf752f41d2b975b3d50e5cc85662778cb3208d4dbbaff850295c5620a6e2\",\"engine\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\"}}",
+    "body": {
+      "limitBytes": 262144,
+      "capturedBytes": 2292,
+      "observedBytes": 2292,
+      "truncated": false,
+      "capturedSha256": "e9385e7975875142b454292c6038719d1f382abef92f77d2a7f21eb974a0f6fd"
+    },
+    "state": "parsed",
+    "value": {
+      "schema": "zodiacs.compute-api.events.v1",
+      "result": {
+        "from": "2026-03-01T00:00:00.000Z",
+        "to": "2026-03-05T00:00:00.000Z",
+        "events": [
+          {
+            "kind": "lunation",
+            "type": "full",
+            "at": "2026-03-03T11:37:57.654Z",
+            "lon": 162.8983459950955,
+            "sign": "virgo",
+            "degree": 12.898345995095497
+          }
+        ]
+      },
+      "receipt": {
+        "schema": "zodiacs.compute-receipt.v1",
+        "endpoint": "events",
+        "engine": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "conventions": {
+          "angles": "gast-and-true-obliquity",
+          "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "calendar": "proleptic-gregorian",
+          "deltaT": "tt-minus-ut1;value-in-result",
+          "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "longitudeUnit": "degrees-[0,360)",
+          "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+          "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "zodiac": "tropical"
+        },
+        "coverage": {
+          "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "assessment": "finite-reference-cases-only",
+          "broadDateRange": "not-certified",
+          "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+        },
+        "referenceSpan": {
+          "from": "1800-01-01T00:00:00.000Z",
+          "to": "2200-01-01T00:00:00.000Z"
+        },
+        "deltaT": [
+          {
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a"
+          },
+          {
+            "model": "zodiacs-deltat/1",
+            "table": "2026-09-24",
+            "tableDigest": "6371988c510a1c6c"
+          }
+        ],
+        "search": {
+          "solver": "engine-longitude-crossings",
+          "stepDays": {
+            "default": 5,
+            "moon": 1,
+            "elongation": 1
+          },
+          "bisections": 24,
+          "samples": 34,
+          "maxSamples": 12000,
+          "window": "start-exclusive-end-inclusive",
+          "completeness": "tested-not-proven"
+        }
+      },
+      "backend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.17",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      },
+      "cite": {
+        "url": "https://zodiacs.org/developers/compute/#events",
+        "receipt": "sha256:053bcf752f41d2b975b3d50e5cc85662778cb3208d4dbbaff850295c5620a6e2",
+        "engine": "@zodiacs/engine",
+        "version": "0.1.1-rc.17"
+      }
+    }
+  },
+  {
+    "id": "date-depends",
+    "tool": "check_sky_fact",
+    "endpoint": "sky-fact",
+    "args": {
+      "kind": "phase",
+      "phase": "full",
+      "date": "2026-03-03"
+    },
+    "answer": "depends",
+    "basis": "any-zone-day",
+    "status": 200,
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Retry-After",
+      "cache-control": "no-store",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
+      "content-type": "application/json; charset=utf-8",
+      "cross-origin-opener-policy": "same-origin-allow-popups",
+      "date": "Tue, 06 Oct 2026 07:25:37 GMT",
+      "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "server": "envoy",
+      "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-envoy-upstream-service-time": "456",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-robots-tag": "noindex",
+      "x-vercel-cache": "MISS",
+      "x-vercel-id": "cle1::iad1::pxzjq-1791271537807-2dd4d9bb649e"
+    },
+    "headersBytes": 1305,
+    "headersTruncated": false,
+    "text": "{\"schema\":\"zodiacs.compute-api.sky-fact.v1\",\"result\":{\"answer\":\"depends\",\"basis\":\"any-zone-day\",\"fact\":{\"kind\":\"phase\",\"phase\":\"full\",\"date\":\"2026-03-03\",\"zone\":null},\"instant\":null,\"window\":{\"from\":\"2026-03-02T10:00:00.000Z\",\"to\":\"2026-03-04T12:00:00.000Z\"},\"zone\":null,\"facts\":{\"lunations\":[{\"at\":\"2026-03-03T11:37:57.651Z\",\"lon\":162.898345533544,\"sign\":\"virgo\",\"degree\":12.898345533543988}],\"flags\":[]}},\"receipt\":{\"schema\":\"zodiacs.compute-receipt.v1\",\"endpoint\":\"sky-fact\",\"engine\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"conventions\":{\"angles\":\"gast-and-true-obliquity\",\"aspects\":\"major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate\",\"calendar\":\"proleptic-gregorian\",\"deltaT\":\"tt-minus-ut1;value-in-result\",\"localTime\":\"tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record\",\"longitudeUnit\":\"degrees-[0,360)\",\"moonNodes\":\"instantaneous-geocentric-moon-orbit-plane\",\"moonPosition\":\"astronomy-engine-geo-moon;no-light-time;no-aberration\",\"nutation\":\"iau2000b;equation-of-equinoxes-with-two-complementary-terms\",\"planetPositions\":\"aberrated-geocentric-ecliptic-of-date;no-deflection\",\"speed\":\"degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day\",\"timeScale\":\"tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result\",\"zodiac\":\"tropical\"},\"coverage\":{\"angleExclusions\":\"exact-geographic-poles-and-ecliptic-horizon-coincidence\",\"assessment\":\"finite-reference-cases-only\",\"broadDateRange\":\"not-certified\",\"inputSyntax\":\"not-an-astronomical-accuracy-guarantee\"},\"referenceSpan\":{\"from\":\"1800-01-01T00:00:00.000Z\",\"to\":\"2200-01-01T00:00:00.000Z\"},\"deltaT\":[{\"model\":\"iers-utc/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"064d98b4a531053a\"},{\"model\":\"zodiacs-deltat/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"6371988c510a1c6c\"}],\"search\":{\"solver\":\"engine-longitude-crossings\",\"stepDays\":{\"default\":5,\"moon\":1,\"elongation\":1},\"bisections\":24,\"samples\":29,\"maxSamples\":1000,\"window\":\"start-exclusive-end-inclusive\",\"completeness\":\"tested-not-proven\"}},\"backend\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"cite\":{\"url\":\"https://zodiacs.org/developers/compute/#sky-fact\",\"receipt\":\"sha256:52a685e6302702960426c98986fb33c3f4c257c827b4995f3bc4a4c7548ee586\",\"engine\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\"}}",
+    "body": {
+      "limitBytes": 262144,
+      "capturedBytes": 2439,
+      "observedBytes": 2439,
+      "truncated": false,
+      "capturedSha256": "20a200c496b29ea3ce7414b791b8e2896d8883b1c921036927d58eb3f33fda86"
+    },
+    "state": "parsed",
+    "value": {
+      "schema": "zodiacs.compute-api.sky-fact.v1",
+      "result": {
+        "answer": "depends",
+        "basis": "any-zone-day",
+        "fact": {
+          "kind": "phase",
+          "phase": "full",
+          "date": "2026-03-03",
+          "zone": null
+        },
+        "instant": null,
+        "window": {
+          "from": "2026-03-02T10:00:00.000Z",
+          "to": "2026-03-04T12:00:00.000Z"
+        },
+        "zone": null,
+        "facts": {
+          "lunations": [
+            {
+              "at": "2026-03-03T11:37:57.651Z",
+              "lon": 162.898345533544,
+              "sign": "virgo",
+              "degree": 12.898345533543988
+            }
+          ],
+          "flags": []
+        }
+      },
+      "receipt": {
+        "schema": "zodiacs.compute-receipt.v1",
+        "endpoint": "sky-fact",
+        "engine": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "conventions": {
+          "angles": "gast-and-true-obliquity",
+          "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "calendar": "proleptic-gregorian",
+          "deltaT": "tt-minus-ut1;value-in-result",
+          "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "longitudeUnit": "degrees-[0,360)",
+          "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+          "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "zodiac": "tropical"
+        },
+        "coverage": {
+          "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "assessment": "finite-reference-cases-only",
+          "broadDateRange": "not-certified",
+          "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+        },
+        "referenceSpan": {
+          "from": "1800-01-01T00:00:00.000Z",
+          "to": "2200-01-01T00:00:00.000Z"
+        },
+        "deltaT": [
+          {
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a"
+          },
+          {
+            "model": "zodiacs-deltat/1",
+            "table": "2026-09-24",
+            "tableDigest": "6371988c510a1c6c"
+          }
+        ],
+        "search": {
+          "solver": "engine-longitude-crossings",
+          "stepDays": {
+            "default": 5,
+            "moon": 1,
+            "elongation": 1
+          },
+          "bisections": 24,
+          "samples": 29,
+          "maxSamples": 1000,
+          "window": "start-exclusive-end-inclusive",
+          "completeness": "tested-not-proven"
+        }
+      },
+      "backend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.17",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      },
+      "cite": {
+        "url": "https://zodiacs.org/developers/compute/#sky-fact",
+        "receipt": "sha256:52a685e6302702960426c98986fb33c3f4c257c827b4995f3bc4a4c7548ee586",
+        "engine": "@zodiacs/engine",
+        "version": "0.1.1-rc.17"
+      }
+    }
+  },
+  {
+    "id": "reference-edge",
+    "tool": "check_sky_fact",
+    "endpoint": "sky-fact",
+    "args": {
+      "kind": "retrograde",
+      "body": "Sun",
+      "date": "1800-01-01"
+    },
+    "answer": "false",
+    "flag": "outside-reference-span",
+    "status": 200,
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Retry-After",
+      "cache-control": "no-store",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
+      "content-type": "application/json; charset=utf-8",
+      "cross-origin-opener-policy": "same-origin-allow-popups",
+      "date": "Tue, 06 Oct 2026 07:25:38 GMT",
+      "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "server": "envoy",
+      "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-envoy-upstream-service-time": "172",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-robots-tag": "noindex",
+      "x-vercel-cache": "MISS",
+      "x-vercel-id": "cle1::iad1::w25p9-1791271538023-5a9842a50166"
+    },
+    "headersBytes": 1305,
+    "headersTruncated": false,
+    "text": "{\"schema\":\"zodiacs.compute-api.sky-fact.v1\",\"result\":{\"answer\":\"false\",\"basis\":\"any-zone-day\",\"fact\":{\"kind\":\"retrograde\",\"body\":\"Sun\",\"instant\":null,\"date\":\"1800-01-01\",\"zone\":null},\"instant\":null,\"window\":{\"from\":\"1799-12-31T10:00:00.000Z\",\"to\":\"1800-01-02T12:00:00.000Z\"},\"zone\":null,\"facts\":{\"atStart\":{\"lon\":279.83467133881084,\"sign\":\"capricorn\",\"degree\":9.834671338810836,\"speed\":1.0196767247236949,\"retrograde\":false},\"atEnd\":{\"lon\":281.95880616450677,\"sign\":\"capricorn\",\"degree\":11.958806164506768,\"speed\":1.0194843002011567,\"retrograde\":false},\"stations\":[],\"flags\":[\"outside-reference-span\"]}},\"receipt\":{\"schema\":\"zodiacs.compute-receipt.v1\",\"endpoint\":\"sky-fact\",\"engine\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"conventions\":{\"angles\":\"gast-and-true-obliquity\",\"aspects\":\"major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate\",\"calendar\":\"proleptic-gregorian\",\"deltaT\":\"tt-minus-ut1;value-in-result\",\"localTime\":\"tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record\",\"longitudeUnit\":\"degrees-[0,360)\",\"moonNodes\":\"instantaneous-geocentric-moon-orbit-plane\",\"moonPosition\":\"astronomy-engine-geo-moon;no-light-time;no-aberration\",\"nutation\":\"iau2000b;equation-of-equinoxes-with-two-complementary-terms\",\"planetPositions\":\"aberrated-geocentric-ecliptic-of-date;no-deflection\",\"speed\":\"degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day\",\"timeScale\":\"tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result\",\"zodiac\":\"tropical\"},\"coverage\":{\"angleExclusions\":\"exact-geographic-poles-and-ecliptic-horizon-coincidence\",\"assessment\":\"finite-reference-cases-only\",\"broadDateRange\":\"not-certified\",\"inputSyntax\":\"not-an-astronomical-accuracy-guarantee\"},\"referenceSpan\":{\"from\":\"1800-01-01T00:00:00.000Z\",\"to\":\"2200-01-01T00:00:00.000Z\"},\"deltaT\":[{\"model\":\"iers-utc/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"064d98b4a531053a\"},{\"model\":\"zodiacs-deltat/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"6371988c510a1c6c\"}],\"search\":{\"solver\":\"engine-longitude-crossings\",\"stepDays\":{\"default\":5,\"moon\":1,\"elongation\":1},\"bisections\":24,\"samples\":0,\"maxSamples\":1000,\"window\":\"start-exclusive-end-inclusive\",\"completeness\":\"tested-not-proven\"}},\"backend\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"cite\":{\"url\":\"https://zodiacs.org/developers/compute/#sky-fact\",\"receipt\":\"sha256:a69f8fea0274209b31dc4f6a7a2777c2134b8201c8e4fae8f84e66b3a7a0ea71\",\"engine\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\"}}",
+    "body": {
+      "limitBytes": 262144,
+      "capturedBytes": 2635,
+      "observedBytes": 2635,
+      "truncated": false,
+      "capturedSha256": "6d9a99e7000e3feed2739205d14960d7b580b2030a49f66f35c2d017d20396a2"
+    },
+    "state": "parsed",
+    "value": {
+      "schema": "zodiacs.compute-api.sky-fact.v1",
+      "result": {
+        "answer": "false",
+        "basis": "any-zone-day",
+        "fact": {
+          "kind": "retrograde",
+          "body": "Sun",
+          "instant": null,
+          "date": "1800-01-01",
+          "zone": null
+        },
+        "instant": null,
+        "window": {
+          "from": "1799-12-31T10:00:00.000Z",
+          "to": "1800-01-02T12:00:00.000Z"
+        },
+        "zone": null,
+        "facts": {
+          "atStart": {
+            "lon": 279.83467133881084,
+            "sign": "capricorn",
+            "degree": 9.834671338810836,
+            "speed": 1.0196767247236949,
+            "retrograde": false
+          },
+          "atEnd": {
+            "lon": 281.95880616450677,
+            "sign": "capricorn",
+            "degree": 11.958806164506768,
+            "speed": 1.0194843002011567,
+            "retrograde": false
+          },
+          "stations": [],
+          "flags": [
+            "outside-reference-span"
+          ]
+        }
+      },
+      "receipt": {
+        "schema": "zodiacs.compute-receipt.v1",
+        "endpoint": "sky-fact",
+        "engine": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "conventions": {
+          "angles": "gast-and-true-obliquity",
+          "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "calendar": "proleptic-gregorian",
+          "deltaT": "tt-minus-ut1;value-in-result",
+          "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "longitudeUnit": "degrees-[0,360)",
+          "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+          "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "zodiac": "tropical"
+        },
+        "coverage": {
+          "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "assessment": "finite-reference-cases-only",
+          "broadDateRange": "not-certified",
+          "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+        },
+        "referenceSpan": {
+          "from": "1800-01-01T00:00:00.000Z",
+          "to": "2200-01-01T00:00:00.000Z"
+        },
+        "deltaT": [
+          {
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a"
+          },
+          {
+            "model": "zodiacs-deltat/1",
+            "table": "2026-09-24",
+            "tableDigest": "6371988c510a1c6c"
+          }
+        ],
+        "search": {
+          "solver": "engine-longitude-crossings",
+          "stepDays": {
+            "default": 5,
+            "moon": 1,
+            "elongation": 1
+          },
+          "bisections": 24,
+          "samples": 0,
+          "maxSamples": 1000,
+          "window": "start-exclusive-end-inclusive",
+          "completeness": "tested-not-proven"
+        }
+      },
+      "backend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.17",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      },
+      "cite": {
+        "url": "https://zodiacs.org/developers/compute/#sky-fact",
+        "receipt": "sha256:a69f8fea0274209b31dc4f6a7a2777c2134b8201c8e4fae8f84e66b3a7a0ea71",
+        "engine": "@zodiacs/engine",
+        "version": "0.1.1-rc.17"
+      }
+    }
+  },
+  {
+    "id": "invalid-civil-date",
+    "tool": "get_positions",
+    "endpoint": "positions",
+    "args": {
+      "instants": [
+        "2001-02-29T00:00:00Z"
+      ]
+    },
+    "refusal": true,
+    "status": 400,
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Retry-After",
+      "cache-control": "no-store",
+      "content-length": "172",
+      "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
+      "content-type": "application/json; charset=utf-8",
+      "cross-origin-opener-policy": "same-origin-allow-popups",
+      "date": "Tue, 06 Oct 2026 07:25:38 GMT",
+      "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "server": "envoy",
+      "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+      "x-content-type-options": "nosniff",
+      "x-envoy-upstream-service-time": "437",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-robots-tag": "noindex",
+      "x-vercel-cache": "MISS",
+      "x-vercel-id": "cle1::iad1::64ghr-1791271538543-caa5323aa22f"
+    },
+    "headersBytes": 1280,
+    "headersTruncated": false,
+    "text": "{\"error\":{\"code\":\"invalid-request\",\"message\":\"Must name a real calendar date and a time from 00:00:00 to 23:59:59; leap seconds are not accepted.\",\"pointer\":\"/instants/0\"}}",
+    "body": {
+      "limitBytes": 262144,
+      "capturedBytes": 172,
+      "observedBytes": 172,
+      "truncated": false,
+      "capturedSha256": "4712a15cf30119cb02686886e101190553b962aba8e6fe0b0b8ab73788fbdcd5"
+    },
+    "state": "parsed",
+    "value": {
+      "error": {
+        "code": "invalid-request",
+        "message": "Must name a real calendar date and a time from 00:00:00 to 23:59:59; leap seconds are not accepted.",
+        "pointer": "/instants/0"
+      }
+    }
+  },
+  {
+    "id": "invalid-civil-date-recovery",
+    "tool": "get_positions",
+    "endpoint": "positions",
+    "args": {
+      "instants": [
+        "2000-01-01T12:00:00Z"
+      ],
+      "bodies": [
+        "Sun",
+        "Moon",
+        "Mars"
+      ]
+    },
+    "mcpCaseId": "positions",
+    "status": 200,
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "Retry-After",
+      "cache-control": "no-store",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
+      "content-type": "application/json; charset=utf-8",
+      "cross-origin-opener-policy": "same-origin-allow-popups",
+      "date": "Tue, 06 Oct 2026 07:25:38 GMT",
+      "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "server": "envoy",
+      "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-envoy-upstream-service-time": "159",
+      "x-frame-options": "DENY",
+      "x-permitted-cross-domain-policies": "none",
+      "x-robots-tag": "noindex",
+      "x-vercel-cache": "MISS",
+      "x-vercel-id": "cle1::iad1::2wgng-1791271538692-feb6050fe794"
+    },
+    "headersBytes": 1305,
+    "headersTruncated": false,
+    "text": "{\"schema\":\"zodiacs.compute-api.positions.v1\",\"result\":{\"instants\":[{\"instant\":\"2000-01-01T12:00:00.000Z\",\"bodies\":[{\"body\":\"Sun\",\"lon\":280.3687723811323,\"lat\":0.0000011205048760998976,\"speed\":1.0194308605093738,\"retrograde\":false,\"sign\":\"capricorn\",\"degree\":10.368772381132317},{\"body\":\"Moon\",\"lon\":223.32396777014543,\"lat\":5.170788636029834,\"speed\":12.021413077249576,\"retrograde\":false,\"sign\":\"scorpio\",\"degree\":13.323967770145373},{\"body\":\"Mars\",\"lon\":327.96393186874616,\"lat\":-1.0680819810158533,\"speed\":0.7756777245333524,\"retrograde\":false,\"sign\":\"aquarius\",\"degree\":27.963931868746158}],\"deltaT\":{\"seconds\":63.8285,\"sigma\":0.000827,\"model\":\"iers-utc/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"064d98b4a531053a\",\"segment\":\"observed\"},\"timeScale\":{\"input\":\"utc\",\"basis\":\"iers\",\"ut1MinusUtc\":{\"seconds\":0.35549999999999926,\"sigma\":0.000827,\"source\":\"observed\"},\"leapSeconds\":{\"taiMinusUtc\":32,\"listed\":true}},\"flags\":[]}]},\"receipt\":{\"schema\":\"zodiacs.compute-receipt.v1\",\"endpoint\":\"positions\",\"engine\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"conventions\":{\"angles\":\"gast-and-true-obliquity\",\"aspects\":\"major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate\",\"calendar\":\"proleptic-gregorian\",\"deltaT\":\"tt-minus-ut1;value-in-result\",\"localTime\":\"tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record\",\"longitudeUnit\":\"degrees-[0,360)\",\"moonNodes\":\"instantaneous-geocentric-moon-orbit-plane\",\"moonPosition\":\"astronomy-engine-geo-moon;no-light-time;no-aberration\",\"nutation\":\"iau2000b;equation-of-equinoxes-with-two-complementary-terms\",\"planetPositions\":\"aberrated-geocentric-ecliptic-of-date;no-deflection\",\"speed\":\"degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day\",\"timeScale\":\"tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result\",\"zodiac\":\"tropical\"},\"coverage\":{\"angleExclusions\":\"exact-geographic-poles-and-ecliptic-horizon-coincidence\",\"assessment\":\"finite-reference-cases-only\",\"broadDateRange\":\"not-certified\",\"inputSyntax\":\"not-an-astronomical-accuracy-guarantee\"},\"referenceSpan\":{\"from\":\"1800-01-01T00:00:00.000Z\",\"to\":\"2200-01-01T00:00:00.000Z\"},\"deltaT\":[{\"model\":\"iers-utc/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"064d98b4a531053a\"},{\"model\":\"zodiacs-deltat/1\",\"table\":\"2026-09-24\",\"tableDigest\":\"6371988c510a1c6c\"}]},\"backend\":{\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\",\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"}},\"cite\":{\"url\":\"https://zodiacs.org/developers/compute/#positions\",\"receipt\":\"sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de\",\"engine\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.17\"}}",
+    "body": {
+      "limitBytes": 262144,
+      "capturedBytes": 2736,
+      "observedBytes": 2736,
+      "truncated": false,
+      "capturedSha256": "af7798eec0e4105ec469bee0be3b3dcdf30bd4ee27886addb663f7de28f03c92"
+    },
+    "state": "parsed",
+    "value": {
+      "schema": "zodiacs.compute-api.positions.v1",
+      "result": {
+        "instants": [
+          {
+            "instant": "2000-01-01T12:00:00.000Z",
+            "bodies": [
+              {
+                "body": "Sun",
+                "lon": 280.3687723811323,
+                "lat": 0.0000011205048760998976,
+                "speed": 1.0194308605093738,
+                "retrograde": false,
+                "sign": "capricorn",
+                "degree": 10.368772381132317
+              },
+              {
+                "body": "Moon",
+                "lon": 223.32396777014543,
+                "lat": 5.170788636029834,
+                "speed": 12.021413077249576,
+                "retrograde": false,
+                "sign": "scorpio",
+                "degree": 13.323967770145373
+              },
+              {
+                "body": "Mars",
+                "lon": 327.96393186874616,
+                "lat": -1.0680819810158533,
+                "speed": 0.7756777245333524,
+                "retrograde": false,
+                "sign": "aquarius",
+                "degree": 27.963931868746158
+              }
+            ],
+            "deltaT": {
+              "seconds": 63.8285,
+              "sigma": 0.000827,
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a",
+              "segment": "observed"
+            },
+            "timeScale": {
+              "input": "utc",
+              "basis": "iers",
+              "ut1MinusUtc": {
+                "seconds": 0.35549999999999926,
+                "sigma": 0.000827,
+                "source": "observed"
+              },
+              "leapSeconds": {
+                "taiMinusUtc": 32,
+                "listed": true
+              }
+            },
+            "flags": []
+          }
+        ]
+      },
+      "receipt": {
+        "schema": "zodiacs.compute-receipt.v1",
+        "endpoint": "positions",
+        "engine": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "conventions": {
+          "angles": "gast-and-true-obliquity",
+          "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "calendar": "proleptic-gregorian",
+          "deltaT": "tt-minus-ut1;value-in-result",
+          "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "longitudeUnit": "degrees-[0,360)",
+          "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+          "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "zodiac": "tropical"
+        },
+        "coverage": {
+          "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "assessment": "finite-reference-cases-only",
+          "broadDateRange": "not-certified",
+          "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+        },
+        "referenceSpan": {
+          "from": "1800-01-01T00:00:00.000Z",
+          "to": "2200-01-01T00:00:00.000Z"
+        },
+        "deltaT": [
+          {
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a"
+          },
+          {
+            "model": "zodiacs-deltat/1",
+            "table": "2026-09-24",
+            "tableDigest": "6371988c510a1c6c"
+          }
+        ]
+      },
+      "backend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.17",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      },
+      "cite": {
+        "url": "https://zodiacs.org/developers/compute/#positions",
+        "receipt": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+        "engine": "@zodiacs/engine",
+        "version": "0.1.1-rc.17"
+      }
+    }
+  }
+]

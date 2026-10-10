@@ -16,7 +16,7 @@ try {
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
       await page.goto(`${baseURL}/developers/engine/`, { waitUntil: 'networkidle' });
-      await page.getByRole('link', { name: 'Read the 0.1.1-rc.17 API reference', exact: true }).click();
+      await page.getByRole('link', { name: 'Read the 1.0.0-rc.2 API reference', exact: true }).click();
       await page.waitForURL('**/developers/engine/reference/');
       await page.getByRole('link', { name: 'module index', exact: true }).click();
       await page.waitForURL('**/modules.html');

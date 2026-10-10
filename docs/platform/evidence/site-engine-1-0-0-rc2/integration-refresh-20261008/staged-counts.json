@@ -1,0 +1,17 @@
+{
+  "sourceHead": "71ab060a8614e58d619b5baeb2e009245c0ef354",
+  "scope": "Final staged evidence added lines and changed archive contents; fresh release history scanned separately. The count report itself is checked before the evidence commit.",
+  "stagedEvidenceFiles": 9,
+  "sets": [
+    {
+      "anonymousSet": 1,
+      "stagedMatchingDataLines": 0,
+      "stagedMatchingNameLines": 0
+    },
+    {
+      "anonymousSet": 2,
+      "stagedMatchingDataLines": 0,
+      "stagedMatchingNameLines": 0
+    }
+  ]
+}

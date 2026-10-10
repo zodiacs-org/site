@@ -1,0 +1,112 @@
+{
+  "schema": "zodiacs.birth-window-native-image-inspection.v1",
+  "originalRun": 38051045669,
+  "originalCandidate": "2507b7b22e53f9e466f6aa919db4f6b10a6eaf6c",
+  "readOnlyRecoveryRuns": [
+    38051691349,
+    38051784598
+  ],
+  "visuallyInspected": [
+    "original-failed-run/summary-mobile.png",
+    "original-failed-run/summary-desktop.png",
+    "diagnostics/birth-chart-kahlo-desktop-suffix-0.png",
+    "diagnostics/birth-chart-kahlo-desktop-suffix-7539.png",
+    "diagnostics/birth-chart-kahlo-mobile-suffix-0.png",
+    "diagnostics/birth-chart-kahlo-mobile-suffix-11980.png"
+  ],
+  "observations": [
+    "The actual summary in both viewports visibly includes the one-second sampling limit outside the collapsed details.",
+    "The aligned below-entry and footer crops preserve the content/layout, with small rendering differences visible between the original and candidate.",
+    "Native entry heights are fractional: desktop 105.1875px and mobile 130.78125px. Total screenshot-height deltas are integers, 133px and 148px. This is consistent with subpixel displacement contributing to the failed diagnostic; a causal correction remains subject to native validation."
+  ],
+  "correction": {
+    "source": "053803288412670635424cd1d78379dcec48110a",
+    "change": "Explicit entry grid spacing, paragraph/button line heights and margins; emit comparison ratios before the unchanged assertions.",
+    "validation": "pending"
+  },
+  "accepted": false,
+  "exports": [
+    {
+      "originalPath": "tests/visual/artifacts/birth-time-window/summary-desktop.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/summary-desktop.png",
+      "bytes": 16723,
+      "sha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1"
+    },
+    {
+      "originalPath": "tests/visual/artifacts/birth-time-window/summary-mobile.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/summary-mobile.png",
+      "bytes": 17685,
+      "sha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25"
+    },
+    {
+      "originalPath": "tests/visual/artifacts/visual/birth-chart-kahlo-desktop-reduced-motion.b2-geometry.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/birth-chart-kahlo-desktop-reduced-motion.b2-geometry.json",
+      "bytes": 602,
+      "sha256": "3962a16d9a339eb87c70047a0db5c08a93207ebc1f1f5c3dfd9a5f570df955ec"
+    },
+    {
+      "originalPath": "tests/visual/artifacts/visual/birth-chart-kahlo-desktop.b2-geometry.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/birth-chart-kahlo-desktop.b2-geometry.json",
+      "bytes": 602,
+      "sha256": "3962a16d9a339eb87c70047a0db5c08a93207ebc1f1f5c3dfd9a5f570df955ec"
+    },
+    {
+      "originalPath": "tests/visual/artifacts/visual/birth-chart-kahlo-mobile.b2-geometry.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/birth-chart-kahlo-mobile.b2-geometry.json",
+      "bytes": 592,
+      "sha256": "67e547f62bab18e3efb11cb6406e709cd50cb0137af72190256197ef37f1bff0"
+    },
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/failed-visual-artifact-recovery.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/failed-visual-artifact-recovery.json",
+      "bytes": 12485,
+      "sha256": "cf91dfd2423a18677ddaa5d1f4946add15d29747b1b4173bcf6042d728c96774"
+    },
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json",
+      "bytes": 79605,
+      "sha256": "d5ca4ca8c8869978b629dd5917e8d6a674ee40c686966a46fda6c45ab05b988b"
+    },
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-reduced-motion-suffix-0.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-reduced-motion-suffix-0.png",
+      "bytes": 377694,
+      "sha256": "8fe7ae84669680a87dc78438584a9e4b943a79a36c278ed64d967c7e23de0c5b"
+    },
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-reduced-motion-suffix-7539.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-reduced-motion-suffix-7539.png",
+      "bytes": 109441,
+      "sha256": "0900f3b510ac95a5f6f26420358fd6486d6c6a233409029dff46cea2ee7ccc04"
+    },
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-suffix-0.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-suffix-0.png",
+      "bytes": 372289,
+      "sha256": "aedd95feb79fb6a70f48d272e340f1608725e7dae516011bd7cbdd85d5985e54"
+    },
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-suffix-7539.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-suffix-7539.png",
+      "bytes": 109441,
+      "sha256": "0900f3b510ac95a5f6f26420358fd6486d6c6a233409029dff46cea2ee7ccc04"
+    },
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-mobile-suffix-0.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-mobile-suffix-0.png",
+      "bytes": 242513,
+      "sha256": "c4af9c6e14ad57acd7b35e871aa573e90fc8ea8a39f35c0587e62da425dacf6b"
+    },
+    {
+      "originalPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-mobile-suffix-11980.png",
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-mobile-suffix-11980.png",
+      "bytes": 68326,
+      "sha256": "dbf1f0703d8f8e5f913f9291eb0485ef6c7e9c4241b85699020ca7cd35f3972d"
+    }
+  ],
+  "limitations": [
+    "Visual inspection is diagnostic; it does not replace the original pixel gate.",
+    "No changed-source visual, Lighthouse, full-suite or deployment qualification is claimed."
+  ]
+}

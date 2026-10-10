@@ -1,0 +1,84 @@
+{
+  "schema": "zodiacs.home-welcome-hydration-controls.v1",
+  "producer": {
+    "workflowSource": "5b31d4850bb07c27a3f047bcb231d06e49c1d839",
+    "run": "38043051385",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "2e08e201aea43b7e23fed8723363213ea1ff82df",
+  "records": [
+    {
+      "name": "mobile real poster",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "failedPoster": false,
+      "heldPosterMs": 500,
+      "requestsWhilePosterHeld": 0,
+      "automaticHydration": true,
+      "moduleRequests": 1,
+      "paint": {
+        "fcp": 168,
+        "posterLcp": 748
+      },
+      "modules": [
+        {
+          "startTime": 1300.1999999999534,
+          "duration": 5
+        }
+      ]
+    },
+    {
+      "name": "desktop real poster",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "failedPoster": false,
+      "heldPosterMs": 500,
+      "requestsWhilePosterHeld": 0,
+      "automaticHydration": true,
+      "moduleRequests": 1,
+      "paint": {
+        "fcp": 216,
+        "posterLcp": 756
+      },
+      "modules": [
+        {
+          "startTime": 1300.4000000000233,
+          "duration": 5
+        }
+      ]
+    },
+    {
+      "name": "poster failure still hydrates",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "failedPoster": true,
+      "heldPosterMs": 500,
+      "requestsWhilePosterHeld": 0,
+      "automaticHydration": true,
+      "moduleRequests": 1,
+      "paint": {
+        "fcp": 136,
+        "posterLcp": null
+      },
+      "modules": [
+        {
+          "startTime": 1251.1999999999534,
+          "duration": 4
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "failure": null,
+  "limitations": [
+    "Real local-build poster requests, anonymous empty profiles and automatic hydration only.",
+    "Returning saved-chart behavior is checked separately by the existing consumer drive.",
+    "No Lighthouse result, independent astronomy, private clearance or publication claim."
+  ]
+}

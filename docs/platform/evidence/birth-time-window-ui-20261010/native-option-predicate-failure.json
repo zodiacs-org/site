@@ -1,0 +1,109 @@
+{
+  "schema": "zodiacs.birth-window-review-failure.v1",
+  "candidate": "87e91325e53ce3d1240b877bf1c57b54a9529125",
+  "producer": "ecca4624a1e9ebb29f953ee37e73ae9f143727c9",
+  "run": 38063073561,
+  "job": 114245108991,
+  "conclusion": "failure",
+  "observed": {
+    "focusedTestsPassed": 53,
+    "buildTypeBundlePassed": true,
+    "browser": {
+      "schema": "zodiacs.birth-time-window-ui-controls.v1",
+      "producer": {
+        "workflowSource": "ecca4624a1e9ebb29f953ee37e73ae9f143727c9",
+        "run": "38063073561",
+        "node": "v22.23.3"
+      },
+      "checkedOutSource": "87e91325e53ce3d1240b877bf1c57b54a9529125",
+      "records": [],
+      "observations": [
+        {
+          "variant": "mobile",
+          "stage": "mobile:lower-boundary-options",
+          "upperUTC": "2200-01-01T05:59:00.000Z",
+          "lowerBoundaryState": {
+            "date": "1800-01-01",
+            "time": "12:00",
+            "selectedPlace": "Auckland · Auckland, New Zealand",
+            "receiptUTC": "1800-01-01T00:20:58.000Z",
+            "instantBasis": "birth",
+            "options": [
+              {
+                "value": "1",
+                "disabled": false
+              },
+              {
+                "value": "5",
+                "disabled": false
+              },
+              {
+                "value": "10",
+                "disabled": false
+              },
+              {
+                "value": "15",
+                "disabled": false
+              },
+              {
+                "value": "30",
+                "disabled": true
+              },
+              {
+                "value": "60",
+                "disabled": true
+              },
+              {
+                "value": "120",
+                "disabled": true
+              }
+            ],
+            "reference": "Windows must start on or after 1 January 1800 UTC and end before 1 January 2200 UTC. Unavailable sizes are disabled."
+          }
+        }
+      ],
+      "passed": false,
+      "failure": {
+        "name": "AssertionError",
+        "message": "Lower-edge thirty-minute preset is disabled\n\nfalse !== true\n",
+        "stage": "mobile:lower-boundary-options",
+        "stack": "AssertionError [ERR_ASSERTION]: Lower-edge thirty-minute preset is disabled\n\nfalse !== true\n\n    at file:///home/runner/work/site/site/tests/birth-time-window-drive.mjs:143:12\n    at async withPreview (file:///home/runner/work/site/site/tests/visual/preview-server.mjs:105:12)\n    at async file:///home/runner/work/site/site/tests/birth-time-window-drive.mjs:15:2"
+      },
+      "limitations": [
+        "Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.",
+        "Only script loading is held for cancellation controls; no numerical result is injected.",
+        "No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim."
+      ]
+    },
+    "actualLowerUTC": "1800-01-01T00:20:58.000Z",
+    "actualNativeDisabledOptions": [
+      "30",
+      "60",
+      "120"
+    ],
+    "failedMeasurement": "Playwright locator.isDisabled() returned false for the option whose native disabled property is true"
+  },
+  "correction": "Assert the option native disabled property directly and separately verify the parent select is enabled. Expected states remain: one-minute enabled, thirty-minute/two-hour disabled. Retain old automation predicate values alongside actual DOM observations. No application clock, preset, tolerance or numerical result changed.",
+  "log": {
+    "path": "native-option-predicate-failure.log",
+    "bytes": 953413,
+    "sha256": "5496210e13bfe5dad4c47da512bc5923150af16003ceee989eaedb5588c8330c",
+    "encoding": "UTF-8 original decoded native job log"
+  },
+  "nativeBrowserReport": {
+    "path": "native-option-predicate-failure-browser.json",
+    "bytes": 2373,
+    "sha256": "31776bebf5a79f289baaf550bd191009b3512f5f2f2ed6c7168c1af1528e887f"
+  },
+  "diagnostic": {
+    "path": "review-bundle-87e9132-option-predicate.json",
+    "originalExportPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "bytes": 147917,
+    "sha256": "025555c4b73b9206dcdf6938149ca87093bae3b1290c33c3e8b29009736bd72e"
+  },
+  "limitations": [
+    "Actual DOM observations establish the automation/native property discrepancy; no uninspected upstream Playwright source mechanism is claimed.",
+    "No complete viewport pair, visual/performance/capture/full-unit pass has occurred in this diagnostic run."
+  ],
+  "acceptedWeightChange": 0
+}

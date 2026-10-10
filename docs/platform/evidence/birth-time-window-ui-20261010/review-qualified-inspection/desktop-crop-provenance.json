@@ -1,0 +1,24 @@
+{
+  "schema": "zodiacs.native-screenshot-inspection-crops.v1",
+  "originalRun": 38063604884,
+  "originalCandidate": "a8b58d8b5476c6bd85d0abb204676ba008786abf",
+  "crops": [
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/desktop-details-1000.png",
+      "offset": 1000,
+      "height": 1500,
+      "originalPath": "tests/visual/artifacts/birth-time-window/desktop.png",
+      "originalSha256": "8470c85ec0c1d82b7fd9a9ad3aee27c87adac9c6be1fbd1f2459f7c15297fa74"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/desktop-details-2500.png",
+      "offset": 2500,
+      "height": 1500,
+      "originalPath": "tests/visual/artifacts/birth-time-window/desktop.png",
+      "originalSha256": "8470c85ec0c1d82b7fd9a9ad3aee27c87adac9c6be1fbd1f2459f7c15297fa74"
+    }
+  ],
+  "limitations": [
+    "Derived inspection crops of the identified original native screenshot; no new browser run or qualification claim."
+  ]
+}

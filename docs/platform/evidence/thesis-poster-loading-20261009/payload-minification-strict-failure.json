@@ -1,0 +1,48 @@
+{
+  "schema": "zodiacs.thesis-preflight-failure.v1",
+  "source": "eefaae0e33e744329d850142addc1c53a48469e9",
+  "run": 37959585608,
+  "job": 113918706703,
+  "checks": {
+    "build": "passed",
+    "contracts": 45,
+    "browser": 234,
+    "performance": "failed"
+  },
+  "misses": [
+    "cls"
+  ],
+  "lcpMs": [
+    2415.4043999999994,
+    2413.513,
+    2413.1683999999996
+  ],
+  "cls": [
+    0.0003679214731617067,
+    0.0003679214731617067,
+    0.0003679214731617067
+  ],
+  "retakes": 0,
+  "artifact": {
+    "id": 11630658336,
+    "name": "thesis-first-paint-preflight",
+    "size_in_bytes": 2952257,
+    "url": "https://api.github.com/repos/zodiacs-org/site/actions/artifacts/11630658336",
+    "archive_download_url": "https://api.github.com/repos/zodiacs-org/site/actions/artifacts/11630658336/zip",
+    "expired": false,
+    "created_at": "2026-10-09T16:35:42Z",
+    "expires_at": "2027-01-07T16:30:15Z",
+    "updated_at": "2026-10-09T16:35:42Z",
+    "digest": "sha256:3a5b53beaa74b6937d4c17eae24dd3c9a12e721fb190e907914059a53f463dc5",
+    "workflow_run": {
+      "id": 37959585608,
+      "repository_id": 1251096896,
+      "head_repository_id": 1251096896,
+      "head_branch": "codex/developer-docs-preparation",
+      "head_sha": "6d9f40be5f12b448bcb20b74d667e06baf9bdd66"
+    }
+  },
+  "limits": [
+    "Not a full Site Check; no accepted weight."
+  ]
+}

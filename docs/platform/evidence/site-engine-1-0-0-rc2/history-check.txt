@@ -1,0 +1,63 @@
+Private birth-data search — count-only release record
+
+Base: f4715b7047c852f48d0e188d43863d5825ae2bef
+Source HEAD: 1d49fd4397e378cf86054fc930e8395da0e63f6f
+Commits: 4
+Runtime: Node 22.22.2
+
+Canonical command: node history-check.mjs <base>..HEAD <patterns> <examples> --staged
+The private batched checker preserves the canonical rules. Its complete
+private output was byte-equivalent to the canonical checker for both input
+sets on the preceding candidate. This final scan was fresh, without cached
+results. Added lines, merge parents, commit messages, staged changes, the
+committed tree and working files were searched. Gzip and ZIP contents were
+read decompressed. Private inputs and raw outputs remain outside Git.
+
+Positive counts are unclassified regex matches, not confirmed private charts.
+They do not establish privacy clearance. No matched value or path is recorded.
+
+Set 1: 79 data patterns; 10 name patterns; 7 anonymous subjects
+History and staged matching data lines: 14
+Committed-tree matching data lines: 400
+Checker exit status: 1
+Working files read: 16861
+Deleted working files skipped: 0
+Gzip archives decompressed: 122
+ZIP archives decompressed: 21
+Cited historical examples checked: 5 (cited, not finds)
+Working-tree counts:
+  Subject 1: data 0; name 3
+  Subject 2: data 1; name 3
+  Subject 3: data 1; name 0
+  Subject 4: data 0; name 0
+  Subject 5: data 23; name 47
+  Subject 6: data 1; name 26
+  Subject 7: data 374; name 681
+
+Set 2: 79 data patterns; 10 name patterns; 7 anonymous subjects
+History and staged matching data lines: 14
+Committed-tree matching data lines: 400
+Checker exit status: 1
+Working files read: 16861
+Deleted working files skipped: 0
+Gzip archives decompressed: 122
+ZIP archives decompressed: 21
+Cited historical examples checked: 5 (cited, not finds)
+Working-tree counts:
+  Subject 1: data 0; name 3
+  Subject 2: data 1; name 3
+  Subject 3: data 1; name 0
+  Subject 4: data 0; name 0
+  Subject 5: data 23; name 47
+  Subject 6: data 1; name 26
+  Subject 7: data 374; name 681
+
+Heuristic command: python3 scan.py <repo> <range>
+Commits: 4
+Exit status: 0
+Output records: 510; error records: 0
+Classification: not classified. Output-record count is not a count of findings.
+
+This full scan precedes the final evidence-only commit. Its exact staged
+evidence blobs are checked separately before commit; that delta is recorded
+in history-check-staged.json. No full-range claim is made for a later HEAD.

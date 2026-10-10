@@ -1,5 +1,13 @@
 # Zodiacs AI integration checkpoints
 
+## Current candidate — 2026-10-07
+
+Draft PR #681 prepares consumer 0.4.0 and Developer 0.3.3. The existing public
+submission is 0.3.4, in review and not published. The live MCP endpoint is
+`https://zodiacs.org/mcp`; do not apply the historical 404 or disabled-server
+statements below to its current state. See [AUDIT-0.4.0.md](./AUDIT-0.4.0.md)
+for source-bound candidate checks and remaining host/release gates.
+
 ## Recovery continuation — 2026-10-05
 
 The interrupted chat was recovered. Main `3491e8e9` is integrated, including
@@ -198,4 +206,6 @@ SDK protocol requests. The provider reports hot/prewarmed serial starts and
 is about $0.0092 per 1,000 successful tools for this serial mix, with protocol
 amortization; database/network/model costs and credits remain unallocated.
 Twelve HTTPS acceptance checks and six SDK calls pass on the rc.16 preview.
-Production `/mcp/` is still 404 and no production activation occurred.
+At the time of that 2 October measurement, production `/mcp/` returned 404
+and had not been activated. By 7 October it is deployed; the 0.3.4 package
+is in review and not published. This historical drive does not validate 0.4.0.

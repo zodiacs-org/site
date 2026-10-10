@@ -1,0 +1,142 @@
+{
+  "schema": "zodiacs.programme-acceptance-capture.v1",
+  "repository": "zodiacs-org/site",
+  "pr": 692,
+  "sourceCommit": "d567181d854ccb5b9878ecd6a463f579ed7958d7",
+  "mainParent": "cd5c87d78216900f13f1207ca8c45849e148d3e5",
+  "parserParent": "f74b29a0e1e1270325bb3b1edb7c17be295db4b2",
+  "runId": 37889199574,
+  "captureJobId": 113686034899,
+  "workflowPath": ".github/workflows/programme-acceptance-capture.yml",
+  "workflowRemovedAfterCapture": true,
+  "driver": "tests/phase1-acceptance-drive.mjs",
+  "manifestSha256": "e1a936917b75c2936cd8447f9f5458e0741936cfd02455422e88cb85761930b9",
+  "templateSourceSha256": "c482bc1c785ceefcb3343b61b014fca5079c27d2f63034fde21ccc6aec0dccc7",
+  "browser": "Chromium 149.0.7827.55",
+  "dailyDate": "2026-10-09",
+  "captures": [
+    {
+      "path": "docs/acceptance/phase1/screenshots/manifest.json",
+      "size": 12353,
+      "sha256": "e1a936917b75c2936cd8447f9f5458e0741936cfd02455422e88cb85761930b9",
+      "jobId": 113686034899
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-360.png",
+      "size": 600066,
+      "sha256": "14bfeb5a016db3f7068843c430d07e3a9812b121c0621f1ce1594530d62da278",
+      "jobId": 113687698733
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-1280.png",
+      "size": 428118,
+      "sha256": "7b6e4e1c136623b697567fdc6629a732b7cba1dcfd49bc295d86d00167feed9e",
+      "jobId": 113687698754
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-360.png",
+      "size": 279728,
+      "sha256": "dcc7fbd8f7f96126fc2d10d4a2458c9c4a769be7ddef278d09c67f080c3b8828",
+      "jobId": 113687698773
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-360.png",
+      "size": 303507,
+      "sha256": "fdb45f08cfa01008a7e9bf0c0ecd677c35c5f04257a49b9edf59849ec9f98210",
+      "jobId": 113687698774
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-1280.png",
+      "size": 416227,
+      "sha256": "3636fbc3704a3a38c1ac453a084fa1f3dd191f59525a6e3b8368f223927f8311",
+      "jobId": 113687698826
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-360.png",
+      "size": 389777,
+      "sha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126",
+      "jobId": 113687698852
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-1280.png",
+      "size": 397128,
+      "sha256": "3a865e72df00e13d1a3562698e717f0801e52222d562f2b0a084f6dbd1a16178",
+      "jobId": 113687698854
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-360.png",
+      "size": 1042500,
+      "sha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617",
+      "jobId": 113687698856
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-1280.png",
+      "size": 1293464,
+      "sha256": "b5e463dc73abb5c463025ae8fee0b104872e7528237f492b54b1fc31be1b321e",
+      "jobId": 113687698861
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-1280.png",
+      "size": 495815,
+      "sha256": "f70f8c522203ac54734db5d36bed6b1956cde46501942f592d1ad9750a49af0f",
+      "jobId": 113687698863
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-360.png",
+      "size": 279967,
+      "sha256": "c20a9173854b6ae28faa7544fbdac1ec62fc76d03dfb052aa88fc3725c180512",
+      "jobId": 113687698864
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-360.png",
+      "size": 304265,
+      "sha256": "c992b5f985f8c9b3ace566bbe061a8b3ee5431b9c498859cbefe42732591d174",
+      "jobId": 113687698865
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
+      "size": 509372,
+      "sha256": "8cec68a955f1b86e555fb1e6f50a4634fb56f6e7706775757d936b0d60930785",
+      "jobId": 113687698880
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-1280.png",
+      "size": 747465,
+      "sha256": "24df52a645932dca9b811e0ff30d7612b39c479a9008ed930d7fd956af91ee22",
+      "jobId": 113687698885
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-360.png",
+      "size": 391812,
+      "sha256": "53c7ab90d323eccbeb23bba5665f77e644fbe8af25793f25de225dea3aa5a9e5",
+      "jobId": 113687698889
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-1280.png",
+      "size": 395890,
+      "sha256": "3aa31407a888494aa18ccefe0d1bb56ea3ce2ac2e3a2cfc0b1af433ac10085f0",
+      "jobId": 113687698890
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-1280.png",
+      "size": 449482,
+      "sha256": "9fa5c6d27272e4a3437babfab80ac9bc87c53e0e0b69759739f57b239c9a7879",
+      "jobId": 113687699177
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-360.png",
+      "size": 366716,
+      "sha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973",
+      "jobId": 113687699375
+    }
+  ],
+  "privateReleaseSearch": {
+    "performed": false,
+    "reason": "Private search inputs from the prior executor are unavailable."
+  },
+  "validation": {
+    "capture": "success",
+    "receipt": "success",
+    "completeFinalSiteCheck": "pending"
+  }
+}

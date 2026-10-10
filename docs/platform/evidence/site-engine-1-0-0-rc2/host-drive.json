@@ -1,0 +1,64 @@
+{
+  "type": "named end-user host interoperability: the host launched the adapter and connected to it. Separate from the official-SDK protocol drive, and separate from the model-driven demonstration recorded by hand in host-interop.md.",
+  "host": {
+    "name": "Claude Code CLI",
+    "version": "2.1.292 (Claude Code)",
+    "mechanism": "claude mcp add/list/get/remove, stdio"
+  },
+  "notTested": [
+    "Claude Desktop: not exercised; this drive tests the installed CLI only.",
+    "VS Code, Cursor and other hosts: not installed here. Their config files are documented in the README from their own docs, not from a run."
+  ],
+  "isolation": {
+    "claudeConfigDir": "a throwaway directory",
+    "project": "a throwaway directory",
+    "realConfigTouched": false
+  },
+  "server": {
+    "path": "examples/mcp-server/server.mjs",
+    "sha256": "f0be3308b76f7dd9e5f1b3cf7ee8c9e719501ca1f802706ffb4cd672941a42ac"
+  },
+  "completedAt": "2026-10-07T14:52:48.241Z",
+  "checks": 7,
+  "passed": 7,
+  "results": [
+    {
+      "name": "the host accepts the server through its documented add command",
+      "ok": true,
+      "detail": "Added stdio MCP server zodiacs with command: node /workspace/site/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-jR6lmy/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-jR6lmy/project]"
+    },
+    {
+      "name": "the registration landed in the throwaway config, not the real one",
+      "ok": true,
+      "detail": "Added stdio MCP server zodiacs with command: node /workspace/site/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-jR6lmy/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-jR6lmy/project]"
+    },
+    {
+      "name": "the host launches the server and reports it connected",
+      "ok": true,
+      "detail": "Checking MCP server health…\n\nzodiacs: node /workspace/site/examples/mcp-server/server.mjs - ✔ Connected"
+    },
+    {
+      "name": "the host reports it as a connected stdio server",
+      "ok": true,
+      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: ✔ Connected\n  Type: stdio\n  Command: node\n  Args: /workspace/site/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
+    },
+    {
+      "name": "the documented removal command removes it",
+      "ok": true,
+      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-jR6lmy/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-jR6lmy/project]"
+    },
+    {
+      "name": "nothing is left configured after removal",
+      "ok": true,
+      "detail": "No MCP servers configured. Use `claude mcp add` to add a server."
+    },
+    {
+      "name": "the machine's own Claude Code configuration is byte-identical throughout",
+      "ok": true,
+      "detail": {
+        "before": "absent",
+        "after": "absent"
+      }
+    }
+  ]
+}

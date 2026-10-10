@@ -16,7 +16,7 @@ import type { SavedChart } from '../profile/schema';
 import { SIGN_SLUGS, signForLongitude } from '../signs';
 import { natalPointsForChart, selectTodayContacts } from '../today';
 import { TRANSIT_ORB, transitLine } from '../transits';
-import { renderDailyEmail, validateDailyEmailSources } from './content';
+import { FIRST_DELIVERY_WELCOME, renderDailyEmail, validateDailyEmailSources } from './content';
 
 const daily = dailyData as Daily;
 const publication = publicationData as DailyPublication;
@@ -355,5 +355,75 @@ describe('daily email content', () => {
     expect(unknown.text).toContain('reference-moment positions');
     expect(unknown.html).toContain('reference-moment positions');
     expect(JSON.stringify(reference)).toBe(before);
+  });
+});
+
+describe('first daily email', () => {
+  const sunRecipient = {
+    tier: 'sun_sign' as const, email: 'first@example.com', sign: 'leo',
+    contactId: 'contact_first', timezone: 'UTC' as const,
+  };
+  const render = (firstDelivery?: boolean) => renderDailyEmail({
+    recipient: sunRecipient, daily, publication, program,
+    baseUrl: 'https://zodiacs.org', unsubscribeUrl, senderPostalAddress: 'Zodiacs.org, Test Address', firstDelivery,
+  });
+
+  it('opens with what the person signed up for, before the reading', () => {
+    const message = render(true);
+    expect(message.text.indexOf(FIRST_DELIVERY_WELCOME)).toBeGreaterThan(-1);
+    const headline = publication.signs.find((entry) => entry.sign === 'leo')!.headline;
+    expect(message.text.indexOf(FIRST_DELIVERY_WELCOME)).toBeLessThan(message.text.indexOf(headline));
+    expect(message.html.indexOf('This is your first daily email from Zodiacs.org'))
+      .toBeLessThan(message.html.indexOf('<h1'));
+    expect(message.html).toContain('Unsubscribe</a>');
+  });
+
+  it('leaves every later email exactly as before', () => {
+    expect(render(false)).toEqual(render(undefined));
+    expect(render(false).text).not.toContain(FIRST_DELIVERY_WELCOME);
+    expect(render(false).html).not.toContain('This is your first daily email');
+  });
+});
+
+describe('brand and sign pictures', () => {
+  const chartMessage = (timed: boolean) => {
+    const chart = chartWithBodies([{ body: 'Sun', lon: 120, retrograde: false }], 120);
+    if (!timed) chart.birth = { ...chart.birth, time: null, timeKnown: false };
+    return renderDailyEmail({
+      recipient: {
+        tier: 'chart', email: 'pictures@example.com', userId: 'user', chartId: chart.id,
+        chart, timezone: 'UTC',
+      },
+      daily, publication, program, nearbyEvent: eventOffset(2),
+      baseUrl: 'https://zodiacs.org', unsubscribeUrl,
+    });
+  };
+
+  it('puts the Zodiacs ring in every header', () => {
+    for (const html of [
+      chartMessage(true).html,
+      chartMessage(false).html,
+      renderDailyEmail({
+        recipient: { tier: 'sun_sign', email: 'ring@example.com', sign: 'leo', contactId: 'ring', timezone: 'UTC' },
+        daily, publication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
+      }).html,
+    ]) expect(html).toContain('src="https://zodiacs.org/assets/app-icons/v3/favicon-96.png"');
+  });
+
+  it('shows a chart Sun sign disc only when the birth time makes the Sun sign certain', () => {
+    expect(chartMessage(true).html).toContain('/assets/zodiac-icons/128/leo.png" width="44"');
+    expect(chartMessage(false).html).not.toContain('width="44"');
+  });
+
+  it('marks an upcoming event with its sign disc', () => {
+    const sun = renderDailyEmail({
+      recipient: { tier: 'sun_sign', email: 'event@example.com', sign: 'leo', contactId: 'event', timezone: 'UTC' },
+      daily, publication, program, nearbyEvent: eventOffset(2, ['aquarius']),
+      baseUrl: 'https://zodiacs.org', unsubscribeUrl,
+    });
+    expect(sun.html).toContain('/assets/zodiac-icons/128/aquarius.png" width="26"');
+    expect(chartMessage(true).html).toContain('/assets/zodiac-icons/128/aquarius.png" width="26"');
+    const pictureFree = (text: string) => !/<img|\.png/u.test(text);
+    expect(pictureFree(sun.text)).toBe(true);
   });
 });

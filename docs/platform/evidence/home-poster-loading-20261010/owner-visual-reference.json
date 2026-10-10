@@ -1,0 +1,379 @@
+{
+  "schema": "zodiacs.owner-footer-visual-reference.v1",
+  "producer": {
+    "workflowSource": "29742ad1463bd9a0fd8e328c5946eaf2b045e923",
+    "run": "38043660114",
+    "node": "v22.23.3"
+  },
+  "ownerSource": "943d11decff8c5cd417d315637aac2cf8c55fa01",
+  "fontControlSource": "63dbcc0df75c655c2476af779f06e99f5a1cd6dd",
+  "fontControlGitBlob": "f53933f7f2eeea36296d8e82bc3e2f692594897b",
+  "reason": "Owner #700 moved the footer summary label margin override into the mobile media query, restoring the intended desktop label gap. Current-main full run 38027946344 records +13px on all ten desktop cases.",
+  "records": [
+    {
+      "file": "home-desktop.png",
+      "old": {
+        "bytes": 2074579,
+        "sha256": "883937503676a63be3f25ec6bd17c04423ffe861222f5fc8f5dbb1de752dc088",
+        "width": 1440,
+        "height": 7118
+      },
+      "captured": {
+        "bytes": 2074219,
+        "sha256": "f376cab3b5a316b4e24677121a3d01c0848f81111415bc89d866abf10052bbf4",
+        "width": 1440,
+        "height": 7131
+      },
+      "upperPageComparison": {
+        "height": 6518,
+        "excludedBottomRows": 600,
+        "diffPixels": 827,
+        "diffRatio": 0.00008811070198765812,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    },
+    {
+      "file": "home-mobile.png",
+      "old": {
+        "bytes": 929881,
+        "sha256": "06983bbb06d53ce8feaf91cef20d7c8cc51cae60fd49cc4258d66b8ef8a59ad7",
+        "width": 390,
+        "height": 9182
+      },
+      "captured": {
+        "bytes": 929282,
+        "sha256": "045cbccaab10ea9b84496fe747ab238af6c3250e6631453ebc95410132595ba4",
+        "width": 390,
+        "height": 9182
+      },
+      "upperPageComparison": {
+        "height": 8582,
+        "excludedBottomRows": 600,
+        "diffPixels": 336,
+        "diffRatio": 0.00010038900740368929,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "exact old mobile bytes"
+    },
+    {
+      "file": "home-desktop-reduced-motion.png",
+      "old": {
+        "bytes": 2075941,
+        "sha256": "f7bcfe0a447460dbbbd0507ea324856d7f947a0ff2cfce97d1d82cc506d92654",
+        "width": 1440,
+        "height": 7118
+      },
+      "captured": {
+        "bytes": 2075526,
+        "sha256": "750b3580f96271f10147dd21dbc7d7662280ac41ce27ec008b6822ab2077ccf4",
+        "width": 1440,
+        "height": 7131
+      },
+      "upperPageComparison": {
+        "height": 6518,
+        "excludedBottomRows": 600,
+        "diffPixels": 827,
+        "diffRatio": 0.00008811070198765812,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    },
+    {
+      "file": "birth-chart-kahlo-desktop.png",
+      "old": {
+        "bytes": 1404458,
+        "sha256": "5fea93b60e838870901efd19ffe02f6946531d800646c1737089de7212205382",
+        "width": 1440,
+        "height": 9699
+      },
+      "captured": {
+        "bytes": 1404706,
+        "sha256": "bcfdb8aeea1a1b0a0ac2f15a82cb8ddfb5d0cad44fed41d21ba3db4f4644fa4c",
+        "width": 1440,
+        "height": 9712
+      },
+      "upperPageComparison": {
+        "height": 9099,
+        "excludedBottomRows": 600,
+        "diffPixels": 2272,
+        "diffRatio": 0.00017340122846222418,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    },
+    {
+      "file": "birth-chart-kahlo-mobile.png",
+      "old": {
+        "bytes": 1291571,
+        "sha256": "3b30595ad6827c098da59b519b94092b17ccb9cded12f4ad83fef70d3a4ae76d",
+        "width": 390,
+        "height": 14171
+      },
+      "captured": {
+        "bytes": 1292769,
+        "sha256": "761cbec0583a4cb770ec1c9a7238cd9103840b1f35cfd5cd5595a3480c4369cc",
+        "width": 390,
+        "height": 14171
+      },
+      "upperPageComparison": {
+        "height": 13571,
+        "excludedBottomRows": 600,
+        "diffPixels": 88,
+        "diffRatio": 0.00001662670589057738,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "exact old mobile bytes"
+    },
+    {
+      "file": "birth-chart-kahlo-desktop-reduced-motion.png",
+      "old": {
+        "bytes": 1404180,
+        "sha256": "abc555c3eb23233fcd15976c49ba8275cfc579a431330652b1c53cf46177b70a",
+        "width": 1440,
+        "height": 9699
+      },
+      "captured": {
+        "bytes": 1404391,
+        "sha256": "b5b1529881ed2e4572a17b5ca2e51690220ed6a6b626c35c97b48d6c91b34eab",
+        "width": 1440,
+        "height": 9712
+      },
+      "upperPageComparison": {
+        "height": 9099,
+        "excludedBottomRows": 600,
+        "diffPixels": 2272,
+        "diffRatio": 0.00017340122846222418,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    },
+    {
+      "file": "aries-desktop.png",
+      "old": {
+        "bytes": 1080651,
+        "sha256": "89bbca19fc22f567861553d9230c861203ebc6189fc293fea4bb90a7a91737cf",
+        "width": 1440,
+        "height": 7059
+      },
+      "captured": {
+        "bytes": 1080765,
+        "sha256": "4b4774c22c4c416d9b66c74e210472742ebcb9834c21ef93399585c8fc576158",
+        "width": 1440,
+        "height": 7072
+      },
+      "upperPageComparison": {
+        "height": 6459,
+        "excludedBottomRows": 600,
+        "diffPixels": 461,
+        "diffRatio": 0.00004956477610913282,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    },
+    {
+      "file": "aries-mobile.png",
+      "old": {
+        "bytes": 945562,
+        "sha256": "3608ed66bd716832ab5bbb5d248ea807606e3c83b6c696cc25205830f58f11ae",
+        "width": 390,
+        "height": 10278
+      },
+      "captured": {
+        "bytes": 945562,
+        "sha256": "3608ed66bd716832ab5bbb5d248ea807606e3c83b6c696cc25205830f58f11ae",
+        "width": 390,
+        "height": 10278
+      },
+      "upperPageComparison": {
+        "height": 9678,
+        "excludedBottomRows": 600,
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "exact old mobile bytes"
+    },
+    {
+      "file": "aries-desktop-reduced-motion.png",
+      "old": {
+        "bytes": 1080651,
+        "sha256": "89bbca19fc22f567861553d9230c861203ebc6189fc293fea4bb90a7a91737cf",
+        "width": 1440,
+        "height": 7059
+      },
+      "captured": {
+        "bytes": 1080765,
+        "sha256": "4b4774c22c4c416d9b66c74e210472742ebcb9834c21ef93399585c8fc576158",
+        "width": 1440,
+        "height": 7072
+      },
+      "upperPageComparison": {
+        "height": 6459,
+        "excludedBottomRows": 600,
+        "diffPixels": 461,
+        "diffRatio": 0.00004956477610913282,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    },
+    {
+      "file": "events-hub-desktop.png",
+      "old": {
+        "bytes": 1678313,
+        "sha256": "4ff817326d8f3533f86130e55fb32a42654e06132f376727abe2620aae0671ea",
+        "width": 1440,
+        "height": 16789
+      },
+      "captured": {
+        "bytes": 1678437,
+        "sha256": "5a954f9ef7bf60dc173cf4fa7b5af672f9524b027ad368ef0dad5e92a56fdbb3",
+        "width": 1440,
+        "height": 16802
+      },
+      "upperPageComparison": {
+        "height": 16189,
+        "excludedBottomRows": 600,
+        "diffPixels": 461,
+        "diffRatio": 0.000019775087336394396,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    },
+    {
+      "file": "events-hub-mobile.png",
+      "old": {
+        "bytes": 1444821,
+        "sha256": "d7f980a2adcf3937e2b4ae6a07fd65c794b1ac52e0e144bdd9e985cceb8892f1",
+        "width": 390,
+        "height": 21068
+      },
+      "captured": {
+        "bytes": 1444821,
+        "sha256": "d7f980a2adcf3937e2b4ae6a07fd65c794b1ac52e0e144bdd9e985cceb8892f1",
+        "width": 390,
+        "height": 21068
+      },
+      "upperPageComparison": {
+        "height": 20468,
+        "excludedBottomRows": 600,
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "exact old mobile bytes"
+    },
+    {
+      "file": "events-hub-desktop-reduced-motion.png",
+      "old": {
+        "bytes": 1677668,
+        "sha256": "874b96f28e408b47c96524d19cac37edfc4982930c846eb2d8a0cc240537caed",
+        "width": 1440,
+        "height": 16789
+      },
+      "captured": {
+        "bytes": 1677791,
+        "sha256": "ed56d15d4a9df07feba710f679a5b79451778e2c36c00a8dec6ed6f91d986d2d",
+        "width": 1440,
+        "height": 16802
+      },
+      "upperPageComparison": {
+        "height": 16189,
+        "excludedBottomRows": 600,
+        "diffPixels": 461,
+        "diffRatio": 0.000019775087336394396,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    },
+    {
+      "file": "event-full-moon-desktop.png",
+      "old": {
+        "bytes": 730256,
+        "sha256": "7c5fb2346d713dc9f17e35160cb1c953d9cd4ea29e67ea1147b72fcbe1734b1f",
+        "width": 1440,
+        "height": 4754
+      },
+      "captured": {
+        "bytes": 730386,
+        "sha256": "f09ed0231c152755a1b2a829bbabc1121398707ada8cf3cbcfe03ae060fb0c44",
+        "width": 1440,
+        "height": 4767
+      },
+      "upperPageComparison": {
+        "height": 4154,
+        "excludedBottomRows": 600,
+        "diffPixels": 461,
+        "diffRatio": 0.00007706761889477344,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    },
+    {
+      "file": "event-full-moon-mobile.png",
+      "old": {
+        "bytes": 583674,
+        "sha256": "44ff0d36f3c8c4727458257d2afe679d35584d16c908a2fd886074ed20c1c425",
+        "width": 390,
+        "height": 6854
+      },
+      "captured": {
+        "bytes": 583674,
+        "sha256": "44ff0d36f3c8c4727458257d2afe679d35584d16c908a2fd886074ed20c1c425",
+        "width": 390,
+        "height": 6854
+      },
+      "upperPageComparison": {
+        "height": 6254,
+        "excludedBottomRows": 600,
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "exact old mobile bytes"
+    },
+    {
+      "file": "event-full-moon-desktop-reduced-motion.png",
+      "old": {
+        "bytes": 730256,
+        "sha256": "7c5fb2346d713dc9f17e35160cb1c953d9cd4ea29e67ea1147b72fcbe1734b1f",
+        "width": 1440,
+        "height": 4754
+      },
+      "captured": {
+        "bytes": 730386,
+        "sha256": "f09ed0231c152755a1b2a829bbabc1121398707ada8cf3cbcfe03ae060fb0c44",
+        "width": 1440,
+        "height": 4767
+      },
+      "upperPageComparison": {
+        "height": 4154,
+        "excludedBottomRows": 600,
+        "diffPixels": 461,
+        "diffRatio": 0.00007706761889477344,
+        "threshold": 0.1,
+        "maxDiffRatio": 0.001
+      },
+      "retained": "fresh current-owner desktop bytes"
+    }
+  ],
+  "limitations": [
+    "Reference refresh covers the already-merged owner design only; homepage hydration candidate is absent from this build.",
+    "Upper-page comparison excludes the last 600 rows and is a bounded diagnostic, not a replacement for the original full-image gate.",
+    "Five original mobile reference files remain exact. Pixelmatch threshold 0.1 and maxDiffRatio 0.001 are unchanged."
+  ]
+}

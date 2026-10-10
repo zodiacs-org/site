@@ -1,0 +1,15 @@
+(node:205711) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Wrote /registry/aries/index.html (166193 bytes)
+Wrote /registry/taurus/index.html (166247 bytes)
+Wrote /registry/gemini/index.html (166184 bytes)
+Wrote /registry/cancer/index.html (166407 bytes)
+Wrote /registry/leo/index.html (166039 bytes)
+Wrote /registry/virgo/index.html (166187 bytes)
+Wrote /registry/libra/index.html (166221 bytes)
+Wrote /registry/scorpio/index.html (166332 bytes)
+Wrote /registry/sagittarius/index.html (166525 bytes)
+Wrote /registry/capricorn/index.html (166473 bytes)
+Wrote /registry/aquarius/index.html (166361 bytes)
+Wrote /registry/pisces/index.html (166264 bytes)
+Done — 12 official token records and constellation maps.

@@ -1,0 +1,148 @@
+---
+/**
+ * A month of public sky events on /sky-calendar/: the same instants as the
+ * .ics feed. The server renders the build month in UTC so the page reads
+ * without JavaScript; the script then redraws the visitor's current month in
+ * their own time zone and adds month-to-month paging across the feed's range.
+ */
+import type { CatalogLocale } from '../../lib/i18n';
+import { skyMonthEvents } from '../../lib/return-visits/sky-month-events';
+import { monthTitle, skyMonthHtml, zonedDate } from '../../lib/return-visits/sky-month';
+
+interface Props { locale: CatalogLocale }
+const { locale } = Astro.props;
+const events = skyMonthEvents(locale);
+const first = zonedDate(events[0].at, 'UTC');
+const last = zonedDate(events.at(-1)!.at, 'UTC');
+const now = zonedDate(new Date(), 'UTC');
+const clamp = (y: number, m: number) => {
+  const k = y * 12 + m;
+  const lo = first.y * 12 + first.m;
+  const hi = last.y * 12 + last.m;
+  const v = Math.min(Math.max(k, lo), hi);
+  return { y: Math.floor((v - 1) / 12), m: ((v - 1) % 12) + 1 };
+};
+const start = clamp(now.y, now.m);
+const html = skyMonthHtml(events, { year: start.y, month: start.m, locale, timeZone: 'UTC' });
+const lang = locale === 'pt' ? 'pt-BR' : locale;
+const zoneNote = new Intl.DateTimeFormat(lang, { timeZone: 'UTC', timeZoneName: 'short' }).formatToParts(new Date()).find((p) => p.type === 'timeZoneName')?.value ?? 'UTC';
+---
+<section
+  class="skym"
+  data-sky-month
+  data-locale={locale}
+  data-year={start.y}
+  data-month={start.m}
+  data-min={first.y * 12 + first.m}
+  data-max={last.y * 12 + last.m}
+  aria-labelledby="skym-title"
+>
+  <div class="skym__head">
+    <h2 id="skym-title" class="skym__title" aria-live="polite">{monthTitle(start.y, start.m, locale)}</h2>
+    <div class="skym__nav">
+      <button type="button" class="skym__btn" data-step="-1" aria-label={monthTitle(clamp(start.y, start.m - 1).y, clamp(start.y, start.m - 1).m, locale)}>←</button>
+      <button type="button" class="skym__btn" data-step="1" aria-label={monthTitle(clamp(start.y, start.m + 1).y, clamp(start.y, start.m + 1).m, locale)}>→</button>
+    </div>
+  </div>
+  <p class="skym__zone mono" data-sky-zone>{zoneNote}</p>
+  <div class="skym__body" data-sky-body set:html={html} />
+  <script type="application/json" data-sky-events set:html={JSON.stringify(events).replace(/</g, '\\u003c')} />
+</section>
+
+<script>
+  import { monthTitle, skyMonthHtml, zonedDate } from '../../lib/return-visits/sky-month';
+  import type { SkyMonthEvent } from '../../lib/return-visits/sky-month';
+  import type { CatalogLocale } from '../../lib/i18n/core';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-sky-month]')) {
+    const events = JSON.parse(root.querySelector('[data-sky-events]')?.textContent ?? '[]') as SkyMonthEvent[];
+    const locale = (root.dataset.locale ?? 'en') as CatalogLocale;
+    const min = Number(root.dataset.min);
+    const max = Number(root.dataset.max);
+    const body = root.querySelector<HTMLElement>('[data-sky-body]');
+    const title = root.querySelector<HTMLElement>('.skym__title');
+    const zone = root.querySelector<HTMLElement>('[data-sky-zone]');
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-step]');
+    let timeZone = 'UTC';
+    try { timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch { /* keep UTC */ }
+    const today = zonedDate(new Date(), timeZone);
+    let index = Math.min(Math.max(today.y * 12 + today.m, min), max);
+    const at = (k: number) => ({ y: Math.floor((k - 1) / 12), m: ((k - 1) % 12) + 1 });
+    const draw = () => {
+      const { y, m } = at(index);
+      if (body) body.innerHTML = skyMonthHtml(events, { year: y, month: m, locale, timeZone, today });
+      if (title) title.textContent = monthTitle(y, m, locale);
+      buttons.forEach((button) => {
+        const target = index + Number(button.dataset.step);
+        button.disabled = target < min || target > max;
+        const t = at(Math.min(Math.max(target, min), max));
+        button.setAttribute('aria-label', monthTitle(t.y, t.m, locale));
+      });
+      if (zone) {
+        const lang = locale === 'pt' ? 'pt-BR' : locale;
+        const name = new Intl.DateTimeFormat(lang, { timeZone, timeZoneName: 'long' }).formatToParts(new Date()).find((p) => p.type === 'timeZoneName')?.value;
+        zone.textContent = name ?? timeZone;
+      }
+    };
+    buttons.forEach((button) => button.addEventListener('click', () => { index += Number(button.dataset.step); draw(); }));
+    draw();
+  }
+</script>
+
+<style is:global>
+  .skym { display: grid; gap: 14px; margin-block: 26px 8px; }
+  .skym__head { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+  .skym__title { margin: 0; font-family: var(--font-serif); font-weight: 400; font-size: var(--text-2xl); line-height: 1; letter-spacing: -0.01em; }
+  .skym__nav { display: flex; gap: 8px; }
+  .skym__btn {
+    width: 44px; height: 44px; border-radius: var(--r-full);
+    border: 1px solid var(--hair-3); background: transparent; color: var(--text);
+    font: inherit; font-size: 18px; cursor: pointer;
+  }
+  .skym__btn:hover:not(:disabled) { background: var(--void-2); }
+  .skym__btn:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 2px; }
+  .skym__btn:disabled { opacity: 0.35; cursor: default; }
+  .skym__zone { margin: 0; color: var(--faint); font-size: 12px; }
+  .skym__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+  .skym__wd { padding: 0 6px 4px; color: var(--faint); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .skym__cell {
+    position: relative; min-width: 0; min-height: 52px;
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 7px 7px 9px;
+    border: 1px solid var(--hair-1); border-radius: 10px; background: var(--void-1);
+  }
+  .skym__cell--pad { background: transparent; border-color: transparent; }
+  .skym__cell--has { background: var(--void-2); border-color: var(--hair-2); }
+  .skym__cell--today { border-color: var(--ink-1); }
+  .skym__n { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .skym__cell--today .skym__n { align-self: flex-start; padding: 0 7px; border-radius: var(--r-full); background: var(--ink-0); color: var(--void-0); }
+  .skym__dots { display: flex; gap: 3px; flex-wrap: wrap; }
+  .skym__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--hue, var(--ink-2)); }
+  .skym__dot--new { background: var(--void-3); box-shadow: inset 0 0 0 1px var(--ink-2); }
+  .skym__dot--full { background: var(--sign-cancer); }
+  .skym__dot--solar { background: var(--sign-sagittarius); }
+  .skym__dot--lunar { background: var(--sign-aries); }
+  .skym__evs { display: none; }
+  .skym__bars { margin-top: auto; display: grid; gap: 2px; }
+  .skym__bar { display: block; height: 3px; background: var(--hue); opacity: 0.65; margin-inline: -8px; }
+  .skym__bar--start { margin-left: 0; border-radius: 2px 0 0 2px; }
+  .skym__bar--end { margin-right: 0; border-radius: 0 2px 2px 0; }
+  .skym__list { margin: 10px 0 0; padding: 0; list-style: none; display: grid; }
+  .skym__list li { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 12px; padding: 11px 2px; border-bottom: 1px solid var(--hair-1); }
+  .skym__list .skym__name { color: var(--text); text-decoration: none; }
+  .skym__list a.skym__name:hover { text-decoration: underline; }
+  .skym__list time { font-family: var(--font-mono); font-size: 12px; color: var(--muted); text-align: end; }
+  .skym__mark svg { display: block; width: 20px; height: 20px; }
+  .skym__mark--retro { display: block; width: 20px; height: 3px; border-radius: 2px; background: var(--hue); }
+  @media (min-width: 760px) {
+    .skym__cell { min-height: 96px; }
+    .skym__dots { display: none; }
+    .skym__evs { display: grid; gap: 6px; }
+    .skym__ev { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 6px; align-items: start; color: var(--text); text-decoration: none; }
+    .skym__ev svg { width: 18px; height: 18px; }
+    .skym__ev--retro i { width: 14px; height: 3px; margin-top: 7px; border-radius: 2px; background: var(--hue); }
+    .skym__ev b { display: block; font-weight: 500; font-size: 12px; line-height: 1.2; overflow-wrap: anywhere; }
+    .skym__ev time { display: block; font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
+    .skym__ev:hover b { text-decoration: underline; }
+  }
+</style>

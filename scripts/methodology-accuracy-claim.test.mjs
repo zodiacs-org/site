@@ -33,6 +33,21 @@ import { describe, expect, it } from 'vitest';
 const root = process.cwd();
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
 
+/** Read the root's transitive relative import graph, rather than its facade alone. */
+function rootEntryGraph(extension = 'js') {
+  const seen = new Set();
+  function visit(path) {
+    if (seen.has(path)) return '';
+    seen.add(path);
+    const text = read(path);
+    const imports = [...text.matchAll(/(?:import|export)\s*(?:[^'";]*?from\s*)?["'](\.\/[^"']+)["']/gu),
+      ...text.matchAll(/import\(\s*["'](\.\/[^"']+)["']\s*\)/gu)];
+    return text + imports.map(([, specifier]) => visit(resolve(root, path, '..',
+      extension === 'd.ts' ? specifier.replace(/\.js$/u, '.d.ts') : specifier))).join('\n');
+  }
+  return visit(`node_modules/@zodiacs/engine/dist/index.${extension}`);
+}
+
 // The 180 measurements as run again on 2026-09-25 with engine 0.1.1-rc.8, whose
 // clock is observed ΔT; report-measure.json beside it is rc.6's run. The
 // per-row differences from Swiss were removed from the tree on 2026-09-28
@@ -48,7 +63,7 @@ const read = (p) => readFileSync(resolve(root, p), 'utf8');
 // deltat-gap-2100-2199.json holds and its tools regenerate with Swiss run on
 // demand.
 const report = JSON.parse(read('docs/platform/evidence/swiss-benchmark/report-measure-rc8.json'));
-const gap = JSON.parse(read('docs/platform/evidence/site-engine-rc17/accuracy-refresh/deltat-gap-2100-2199.json'));
+const gap = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0-rc2/accuracy-refresh/deltat-gap-2100-2199.json'));
 const corpus = read('docs/platform/evidence/swiss-benchmark/tools/corpus.mjs');
 const { withinRecord, farFuture } = report.statistics;
 /** The comparator's own per-stratum aggregates, which the statistics must agree with. */
@@ -332,8 +347,9 @@ describe('the same figures on /developers/engine/', () => {
     expect(enginePage).toMatch(/bounds its input date only where its ephemeris ends/u);
     expect(enginePage).toContain('outside Terrestrial Time 0001-04-30 to 3998-09-03 throws a RangeError');
     expect(enginePage).not.toMatch(/does not bound its input date|the engine accepts dates from 1800 to 2199/u);
-    const packaged = read('node_modules/@zodiacs/engine/dist/index.js')
-      + read('node_modules/@zodiacs/engine/dist/index.d.ts');
+    const javascript = rootEntryGraph();
+    // EPHEMERIS_SPAN's declaration lives in the reference-span .d.ts chunk.
+    const packaged = javascript + rootEntryGraph('d.ts');
     expect(packaged, 'if the package ever gains a 2199 range, this claim must change').not.toMatch(/2199/u);
     expect(read('src/lib/share.ts'), 'the site is where the 1800-2199 bound lives').toMatch(/year > 2199/u);
     const { EPHEMERIS_SPAN, natalChart } = await import('@zodiacs/engine');
@@ -349,7 +365,7 @@ describe('the same figures on /developers/engine/', () => {
       expect(() => natalChart({ utc, timeKnown: false }), String(year)).toThrow(/outside the ephemeris span/u);
     }
     // What the package does inside the span since rc.8: it flags a chart outside its reference span.
-    expect(packaged).toMatch(/outside-reference-span/u);
+    expect(javascript).toMatch(/outside-reference-span/u);
     expect(enginePage).toContain('outside 1800–2200 it carries the outside-reference-span flag');
   });
 
@@ -367,7 +383,7 @@ describe('the same figures on /developers/engine/', () => {
     const geo = read('node_modules/@zodiacs/engine/dist/geo.js');
     expect(geo, 'this case exists because /geo ships a network client').toMatch(/createGeoNamesClient/u);
     expect(geo).toMatch(/globalThis\.fetch/u);
-    const core = read('node_modules/@zodiacs/engine/dist/index.js');
+    const core = rootEntryGraph();
     expect(core, 'the core must stay offline').not.toMatch(/globalThis\.fetch|createGeoNamesClient/u);
     expect(enginePage).toMatch(/GeoNames place-lookup client/u);
     expect(enginePage).toMatch(/makes\s+HTTP requests/u);
@@ -376,7 +392,7 @@ describe('the same figures on /developers/engine/', () => {
 
 describe('the every-tenth-day comparison, 1800 to 2199', () => {
   // Statistics only: the per-instant Swiss values stay out of the repository.
-  const dense = JSON.parse(read('docs/platform/evidence/site-engine-rc17/accuracy-refresh/multiyear-1800-2199.json'));
+  const dense = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0-rc2/accuracy-refresh/multiyear-1800-2199.json'));
   const upTo2026 = dense.allBodiesLongitude.sameUt['1800-2026'];
   const moonSameTt = dense.sameTt.Moon.lon.byEra['2150-2199'];
   const moonSameUt = dense.sameUt.Moon.lon.byEra['2150-2199'];

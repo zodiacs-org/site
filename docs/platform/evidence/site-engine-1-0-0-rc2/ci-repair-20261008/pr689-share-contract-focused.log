@@ -1,0 +1,52 @@
+(node:178922) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:178935) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v3.2.7 /workspace/site
+
+(node:178947) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-positions-callers.test.ts (44 tests) 20847ms
+   ✓ producers of shared chart codes > finds encoder calls in .ts, .tsx, .js, .jsx, .astro and .mdx files, through aliases, namespaces and dynamic imports  3557ms
+   ✓ the audit of encoder callers > fails on .call  966ms
+   ✓ the audit of encoder callers > fails on .apply  647ms
+   ✓ the audit of encoder callers > fails on .bind  922ms
+   ✓ the audit of encoder callers > fails on element access on a namespace  481ms
+   ✓ the audit of encoder callers > fails on element access on a dynamic import  483ms
+   ✓ the audit of encoder callers > fails on a computed destructuring  575ms
+   ✓ the audit of encoder callers > fails on an exported alias  478ms
+   ✓ the audit of encoder callers > fails on a consumer of an exported alias  481ms
+   ✓ the audit of encoder callers > fails on export *  460ms
+   ✓ the audit of encoder callers > fails on a comma callee  472ms
+   ✓ the audit of encoder callers > fails on Reflect.apply  461ms
+   ✓ the audit of encoder callers > fails on an .mdx expression  562ms
+   ✓ the audit of encoder callers > fails on an exported wrapper  380ms
+   ✓ the audit of encoder callers > fails on a new call in a listed module  394ms
+   ✓ the audit of encoder callers > fails on a re-export from a listed module  1022ms
+   ✓ the audit of encoder callers > fails on an alias exported from a listed module  1261ms
+   ✓ the audit of encoder callers > fails on a named re-export  481ms
+   ✓ the audit of encoder callers > fails on a template-literal import  614ms
+   ✓ the audit of encoder callers > fails on a glob  525ms
+   ✓ the audit of encoder callers > fails on eval  307ms
+   ✓ the audit of encoder callers > fails on the Function constructor  370ms
+   ✓ the audit of encoder callers > fails on the module object passed on  458ms
+   ✓ the audit of encoder callers > fails on the module object into a rest element  450ms
+   ✓ the audit of encoder callers > passes on a type-only import and on a module that only decodes  564ms
+(node:178989) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/SynastryCalculator.recovery.test.ts (23 tests) 550ms
+(node:178997) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/SynastryCalculator.share.test.ts (1 test) 143ms
+(node:179006) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/SynastryCalculator.test.ts (2 tests) 4ms
+
+ Test Files  4 passed (4)
+      Tests  70 passed (70)
+   Start at  06:37:25
+   Duration  31.80s (transform 992ms, setup 0ms, collect 8.94s, tests 21.54s, environment 1ms, prepare 343ms)
+
+(node:179014) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)

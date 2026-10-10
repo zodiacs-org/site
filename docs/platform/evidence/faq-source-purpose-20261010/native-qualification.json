@@ -1,0 +1,51 @@
+{
+  "schema": "zodiacs.faq-native-source-qualification.v1",
+  "auditedSource": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+  "producer": {
+    "source": "602e339e4b99676b7b44aa9f1fafc2df230d92ac",
+    "run": "38056047866",
+    "node": "v22.23.3",
+    "typescript": "5.9.3"
+  },
+  "run": 38056047866,
+  "job": 114224695897,
+  "conclusion": "success",
+  "export": {
+    "path": "docs/platform/evidence/faq-source-purpose-20261010/native-source-ast.json",
+    "bytes": 60589,
+    "sha256": "d810f0bbb36c94c2d96d8102d45177998da8f51e47aa3ab8ad6624077a4d52f1",
+    "method": "Original native stdout byte export decoded and independently verified; no ZIP CRC recovery claimed"
+  },
+  "originalDecodedLog": {
+    "bytes": 161321,
+    "sha256": "d1a1e770dff1653ff997182e9feb1ef7543b633ba87e40e9db68df6d5cb0bf94"
+  },
+  "sourceRecords": 96,
+  "directEmitters": 88,
+  "arrayNodes": 87,
+  "productionHomeConsumers": 5,
+  "nonRenderedTestConsumers": 1,
+  "controls": {
+    "everyReviewedSourceByteVerified": true,
+    "primaryEvidenceLinesVerified": true,
+    "allDirectNodesParsed": true,
+    "knownSharedConsumersVerified": true,
+    "allSharedConsumersReviewed": true,
+    "objectParentsUnderstood": true
+  },
+  "retainedFailures": [
+    {
+      "run": 38055547993,
+      "job": 114223127884,
+      "cause": "Discovery harness expected five calls; six included a non-rendered test."
+    },
+    {
+      "run": 38055703143,
+      "job": 114223641541,
+      "cause": "Overescaped revised path filter failed native syntax check."
+    }
+  ],
+  "correctionApplied": false,
+  "renderedPurposeVerified": false,
+  "acceptedWeight": 0
+}

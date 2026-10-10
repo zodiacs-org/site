@@ -1,4 +1,50 @@
-# Native ChatGPT walkthrough — 6 October 2026
+# Native ChatGPT walkthroughs
+
+## 0.4.0 — 7 October 2026
+
+Video: `public/assets/ai/review/zodiacs-sky-0.4.0.mp4`
+SHA-256: `a271ce1ffb90372b343567dfe793f1fc74506bf58d8715826a45b967bd04bee6`
+
+Recorded by Claude in ChatGPT on the web, in one conversation, on the
+admin@zodiacs.org account (Bangkok time zone). The plugin was a private
+test copy, “Zodiacs Preview” (`plugin_asdk_app_6ac6158f5c148191ae156fea7ebc9dac`),
+connected to the protected 0.4.0 test server at commit `a6d24dc0`. It ran
+runtime 0.4.0 and engine 0.1.1-rc.17. The test copy was attached with
+“Try in chat” for the first message only. The other seven prompts relied
+on ChatGPT keeping Zodiacs available in the conversation.
+
+How it was made: real screenshots of the ChatGPT page, taken every one to
+five seconds while each step ran. Each frame is held for 1.5–6 seconds,
+and a title card plus one card per case are inserted. It is silent,
+524 × 1088 (the browser panel's portrait size, ChatGPT's narrow web
+layout), 2 min 44 s. Nothing on screen was edited. This is ChatGPT on
+the web at a narrow width, not the ChatGPT phone app.
+
+| Time | Case |
+| --- | --- |
+| 0:00 | title |
+| 0:07 | sky calendar for this week, Bangkok times |
+| 0:25 | Mercury retrograde and where it is |
+| 0:39 | what Zodiacs can check; Libra ingress depends on the time zone |
+| 0:58 | Leo horoscope, then Love, This week, and Change sign to Virgo |
+| 1:31 | Chart Studio opens on birth details; unknown birth time path |
+| 2:03 | declines: calendar change |
+| 2:13 | declines: stock pick |
+| 2:26 | declines: guaranteed relationship outcome |
+
+What it shows:
+
+- All five handled cases called Zodiacs. The calendar, horoscope and Chart
+  Studio panels rendered inside ChatGPT, with times and dates for Bangkok.
+- Signs switched inside the horoscope panel and stayed switched. This
+  failed earlier the same day and was fixed in `34f45d8e`.
+- None of the three declined requests called Zodiacs; in each, ChatGPT
+  said what Zodiacs can't do. An earlier run, before `2b357c44`, showed the
+  horoscope sign picker for the relationship prompt.
+- Chart Studio's chart header still shows `1992-03-14 · 12:00 UTC` (the
+  made-up date), not a plain date.
+
+## 0.3.4 — 6 October 2026
 
 The 0.3.4 recording is actual browser capture from a fresh synthetic ChatGPT conversation. It is silent, 1280 × 720, 248.07 seconds, with inactive gaps between segments trimmed. Individual segments preserve captured frame timing (maximum two-second frame interval); the final frame of each segment is held for two seconds. No UI output was fabricated.
 

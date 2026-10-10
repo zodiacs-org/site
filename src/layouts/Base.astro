@@ -234,10 +234,13 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
             };
             var editionPrepaintObserver = new MutationObserver(function (records) {
               records.forEach(function (record) {
+                // The streaming parser can append to the text node we already
+                // filled with the current label. Catch that coalesced text too.
+                if (record.type === 'characterData') syncCurrentEditionText(record.target);
                 record.addedNodes.forEach(syncCurrentEditionText);
               });
             });
-            editionPrepaintObserver.observe(editionRoot, { childList: true, subtree: true });
+            editionPrepaintObserver.observe(editionRoot, { childList: true, characterData: true, subtree: true });
             document.addEventListener('DOMContentLoaded', function () {
               syncCurrentEditionText(document);
               editionPrepaintObserver.disconnect();

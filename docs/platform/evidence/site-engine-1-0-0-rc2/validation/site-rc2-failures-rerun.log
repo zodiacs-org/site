@@ -1,0 +1,61 @@
+
+> zodiacs-org@1.0.0 test
+> vitest run tests/api/compute-api-private-state.test.ts tests/api/runtime-imports.test.ts scripts/report-bundles.test.mjs scripts/precision-alpha-types.test.mjs scripts/crossings-s2.test.mjs src/mcp/outputs.test.ts src/lib/engine/package-integration.test.ts src/lib/scene/scene.test.ts scripts/engine-demo.test.mjs src/lib/zodiac-dates.test.ts --fileParallelism=false
+
+
+ RUN  v3.2.7 /workspace/site
+
+ ✓ tests/api/compute-api-private-state.test.ts (1 test) 29189ms
+   ✓ compute API private module lifetime > clears exact instants and selected caches on success, refusal and failure, without racing another resolver  29185ms
+ ✓ scripts/report-bundles.test.mjs (26 tests) 17686ms
+   ✓ actual bundle gate > accepts a factored static engine closure and an inert provenance name  717ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "astronomy-engine";  864ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: export * from "astronomy-engine";  648ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import /* comment */ ("astronomy-engine");  639ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import (`astronomy-engine`);  628ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: require /* comment */ ("astronomy-engine");  661ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "astronomy-engine/astronomy.browser.js";  650ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "astronomy-\u0065ngine";  812ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: export * from "\u0061stronomy-engine";  798ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import("astronomy-\x65ngine");  928ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: require("astronomy-\u0065ngine");  795ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import(("astronomy-engine"));  858ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: require(("astronomy-engine"));  583ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: (require)("astronomy-engine");  572ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "https://esm.sh/astronomy-engine@2.1.19";  590ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import("https://esm.sh/astronomy-engine");  678ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import { createRequire } from "node:module";  557ms
+   ✓ actual bundle gate > does not parse comments or data strings as vendor imports  587ms
+   ✓ actual bundle gate > rejects the engine when imported eagerly through a shared chunk  566ms
+   ✓ actual bundle gate > rejects a missing dependency rather than measuring a partial closure  585ms
+   ✓ actual bundle gate > rejects shared engine code eagerly loaded by Registry Collection  703ms
+   ✓ actual bundle gate > preserves exact source import boundaries at src/islands/Unexpected.ts  621ms
+   ✓ actual bundle gate > preserves exact source import boundaries at src/lib/Unexpected.ts  567ms
+   ✓ actual bundle gate > preserves exact source import boundaries at src/islands/SideEffect.ts  573ms
+   ✓ actual bundle gate > requires both ephemeris fingerprints in the full static closure  662ms
+   ✓ actual bundle gate > enforces the unchanged engine limit across multiple individually small chunks  815ms
+ ✓ src/mcp/outputs.test.ts (28 tests) 6289ms
+   ✓ calculate_natal_chart over the seeded corpus > cites the digest of the calculation receipt, the same for a summary and a record  371ms
+   ✓ calculate_natal_chart over the seeded corpus > identifies a chart's birth details through cite.receipt: its date and place give back its time  3538ms
+   ✓ calculate_natal_chart over the seeded corpus > shows nothing that depends on the place when the time is unknown, while its receipt still holds the place  363ms
+   ✓ calculate_natal_chart over the seeded corpus > identifies the place as well: an unknown-time chart's instant and cite.receipt give back its coordinates  911ms
+   ✓ the registrations, through the SDK's own client > sends each result unchanged, and the advertised JSON Schema accepts it  640ms
+ ✓ scripts/precision-alpha-types.test.mjs (4 tests) 4921ms
+   ✓ the alpha ships declarations a consumer can actually use > compiles a strict consumer using both entry points and both search modes  1591ms
+   ✓ the alpha ships declarations a consumer can actually use > rejects everything it should, including an exact total off the proved branch  1612ms
+   ✓ the alpha ships declarations a consumer can actually use > compiles a consumer of the experimental subpath, deflected rung included  1713ms
+ ✓ tests/api/runtime-imports.test.ts (11 tests) 1284ms
+   ✓ Vercel API runtime packaging > uses Node ESM-safe relative imports through every handler graph  1238ms
+ ✓ scripts/crossings-s2.test.mjs (4 tests) 1144ms
+   ✓ the audit s2 cases on the one crossing solver > scans the Moon over 2,600 days at a quarter-day step without a budget, and both sides agree  532ms
+   ✓ the audit s2 cases on the one crossing solver > scans Saturn from 1900 to 2100 at a five-day step, and both sides agree  596ms
+ ✓ src/lib/engine/package-integration.test.ts (8 tests) 638ms
+   ✓ vendored @zodiacs/engine integration > matches the public natal entry point across hemispheres, date line, fallback and unknown time  304ms
+ ✓ scripts/engine-demo.test.mjs (4 tests) 149ms
+ ✓ src/lib/scene/scene.test.ts (15 tests) 93ms
+ ✓ src/lib/zodiac-dates.test.ts (4 tests) 6ms
+
+ Test Files  10 passed (10)
+      Tests  105 passed (105)
+   Start at  15:57:43
+   Duration  69.02s (transform 858ms, setup 0ms, collect 4.78s, tests 61.40s, environment 2ms, prepare 884ms)

@@ -1,0 +1,41 @@
+{
+  "schema": "zodiacs.birth-window-review-failure.v1",
+  "candidate": "f55bb57ffeeef4d05877940160fa7836588f32a6",
+  "producer": "0f29c65b261859adad4270d5ac67baa6a8664ff4",
+  "run": 38061973592,
+  "job": 114241894301,
+  "conclusion": "failure",
+  "observed": {
+    "focusedTestsPassed": 53,
+    "buildAndTypePassed": true,
+    "bundleIsolationPassed": true,
+    "browserFailure": {
+      "name": "TimeoutError",
+      "message": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByLabel('Birthplace', { exact: true })\n    - locator resolved to <input readonly id=\"place\" class=\"place__chip-value\"/>\n    - fill(\"Auckland\")\n  - attempting fill action\n    2 × waiting for element to be visible, enabled and editable\n      - element is not editable\n    - retrying fill action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and editable\n      - element is not editable\n    - retrying fill action\n      - waiting 100ms\n    60 × waiting for element to be visible, enabled and editable\n       - element is not editable\n     - retrying fill action\n       - waiting 500ms\n"
+    },
+    "recordsCompleted": 0
+  },
+  "correction": "Use the existing selected-place change button before entering Auckland in the lower-span browser control. No application calculation or expected results changed.",
+  "log": {
+    "path": "place-change-harness-failure.log",
+    "bytes": 952448,
+    "sha256": "860f3c1cb25ec3c168de91516258ff93e15b2b08de9806b0d5ec5aea2a4ad560",
+    "encoding": "UTF-8 original decoded job log"
+  },
+  "nativeBrowserReport": {
+    "path": "place-change-harness-failure-browser.json",
+    "bytes": 1441,
+    "sha256": "d5e85aa46d401f1e7b873e21d043980852b8d32914cbffd7eec0a0ed32ca53bb"
+  },
+  "diagnostic": {
+    "path": "review-bundle-f55bb57-place-change.json",
+    "originalExportPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "bytes": 147917,
+    "sha256": "a5c0635a34203417feb7584222f4a44a6a187939110d16512dc832c133b01b6f"
+  },
+  "limitations": [
+    "A sequential mobile assertion reached lower-edge setup only after actual sampled result, cancellation, replacement, unknown-time and upper-span controls; no complete mobile/desktop pass is claimed.",
+    "Visual/Lighthouse/fresh capture/complete unit suite stages were not reached."
+  ],
+  "acceptedWeightChange": 0
+}

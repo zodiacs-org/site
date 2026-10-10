@@ -250,7 +250,7 @@ describe('thesis hero background contract', () => {
     expect(videos[0].attrs).toMatch(/\bmuted\b/);
     expect(videos[0].attrs).toMatch(/\bloop\b/);
     expect(videos[0].attrs).toMatch(/\bplaysinline\b/);
-    expect(videos[0].attrs).toContain('preload="auto"');
+    expect(videos[0].attrs).toContain('preload="none"');
     expect(videos[0].attrs).toContain('poster="/assets/art/zodiac-clock-768.avif"');
     expect(videos[0].attrs).toContain('fetchpriority="high"');
     expect(videos[0].inner).toContain('src="/assets/art/zodiac-clock.mp4"');

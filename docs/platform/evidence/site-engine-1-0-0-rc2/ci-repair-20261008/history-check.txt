@@ -1,0 +1,63 @@
+Private birth-data release search — counts and anonymous labels only
+
+Base: f4715b7047c852f48d0e188d43863d5825ae2bef
+Source HEAD: 1fd24bcbc7c7281245c83fb12c0d321028068085
+Commits: 13
+Node: 22.22.2
+
+Command: node history-check.mjs <base>..HEAD <patterns> <examples> --staged
+The batched checker retains the canonical rules, with byte-equivalent output
+verified for both input sets on the earlier candidate. This range was scanned
+fresh, without cached results. Added lines, binary contents, paths, messages,
+every merge parent, staged changes, committed blobs and working files were
+read. Gzip and ZIP contents in the working tree were decompressed.
+
+Set 1: 79 data patterns; 10 name patterns
+Anonymous subjects: 7
+History and staged matching data lines: 20
+Committed-tree matching data lines: 400
+Checker exit: 1
+Working files: 16921
+Gzip archives decompressed: 122
+ZIP archives decompressed: 22
+Cited historical examples checked: 5 (cited, not finds)
+Subject 1: working data 0; working names 3
+Subject 2: working data 1; working names 3
+Subject 3: working data 1; working names 0
+Subject 4: working data 0; working names 0
+Subject 5: working data 23; working names 47
+Subject 6: working data 1; working names 26
+Subject 7: working data 374; working names 681
+Introduced matching data lines accounted for by verified public geography: 20
+Unexplained introduced matching data lines: 0
+
+Set 2: 79 data patterns; 10 name patterns
+Anonymous subjects: 7
+History and staged matching data lines: 20
+Committed-tree matching data lines: 400
+Checker exit: 1
+Working files: 16921
+Gzip archives decompressed: 122
+ZIP archives decompressed: 22
+Cited historical examples checked: 5 (cited, not finds)
+Subject 1: working data 0; working names 3
+Subject 2: working data 1; working names 3
+Subject 3: working data 1; working names 0
+Subject 4: working data 0; working names 0
+Subject 5: working data 23; working names 47
+Subject 6: working data 1; working names 26
+Subject 7: working data 374; working names 681
+Introduced matching data lines accounted for by verified public geography: 20
+Unexplained introduced matching data lines: 0
+
+Public geography proof: 3 anonymous location rows; 3 exact five-field catalogue transformations; 0 rows with birth-date or birth-time fields.
+
+Heuristic: python3 scan.py <repo> <range>
+Commits: 13; exit: 0
+Output records: 582; error records: 0
+Heuristic records are unclassified, and are not a count of findings.
+
+Positive regex counts remain positive. The introduced matches are public
+location data. No matched value or path is published. Inputs and raw output
+remain outside all repositories. This full scan precedes the final capture
+and evidence commit; its exact staged blobs are checked separately.

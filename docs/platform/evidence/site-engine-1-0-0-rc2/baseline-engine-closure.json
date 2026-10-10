@@ -1,0 +1,36 @@
+{
+  "metric": "gzip level 9, each static chunk separately, matching report-bundles.mjs",
+  "root": "full.5ANouOrH.js",
+  "chunks": [
+    {
+      "file": "full.5ANouOrH.js",
+      "gzip": 275
+    },
+    {
+      "file": "rolldown-runtime.DK3Fl9T5.js",
+      "gzip": 154
+    },
+    {
+      "file": "chart-adapter.D7gaZnvr.js",
+      "gzip": 304
+    },
+    {
+      "file": "chunk-V6YOLO64.39NUGWcU.js",
+      "gzip": 22979
+    },
+    {
+      "file": "chunk-UN4D3463.B29-KHfl.js",
+      "gzip": 1167
+    },
+    {
+      "file": "chunk-ZSJNUC7J.DjKh6MYB.js",
+      "gzip": 1767
+    },
+    {
+      "file": "chunk-KHBLFXFG.DP9le7v-.js",
+      "gzip": 6482
+    }
+  ],
+  "gzipBytes": 33128,
+  "limitBytes": 33380.4
+}

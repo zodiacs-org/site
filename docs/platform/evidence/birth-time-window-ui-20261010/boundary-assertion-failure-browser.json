@@ -1,0 +1,20 @@
+{
+  "schema": "zodiacs.birth-time-window-ui-controls.v1",
+  "producer": {
+    "workflowSource": "6c641fff5c9aae930388e73c305f34ee9d651e26",
+    "run": "38062463718",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "08d3eb7e97891951c94903ad1d37d92fa3b7a636",
+  "records": [],
+  "passed": false,
+  "failure": {
+    "name": "AssertionError",
+    "message": "Expected values to be strictly equal:\n\nfalse !== true\n"
+  },
+  "limitations": [
+    "Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.",
+    "Only script loading is held for cancellation controls; no numerical result is injected.",
+    "No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim."
+  ]
+}

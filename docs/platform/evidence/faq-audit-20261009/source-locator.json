@@ -1,0 +1,1021 @@
+{
+  "schema": "zodiacs.faq-source-locator.v1",
+  "producer": {
+    "source": "665e2b046352fe7d81160c5bc28862dbcc6452ba",
+    "run": "37948152470",
+    "node": "v22.23.3"
+  },
+  "auditedSource": "ac09a5fab7e6674039876e15f4db4bc29b09e79f",
+  "files": [
+    {
+      "path": "public/astrofolio/index.html",
+      "bytes": 507559,
+      "sha256": "96f2c4aaf37ea52e2f913f7c03a6317eff9316d534d570e1f11535d23c527639",
+      "matches": [
+        {
+          "line": 107,
+          "context": "          \"url\": \"https://zodiacs.org/assets/og/astrofolio/v5/faces.jpg\",\n          \"width\": 1200,\n          \"height\": 630\n        },\n        \"inLanguage\": \"en\",\n        \"isPartOf\": { \"@id\": \"https://zodiacs.org/#site\" }\n      },\n      {\n        \"@type\": \"FAQPage\",\n        \"@id\": \"https://zodiacs.org/astrofolio/#faq\",\n        \"mainEntity\": [\n          {\n            \"@type\": \"Question\",\n            \"name\": \"What is Astrofolio?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Astrofolio is the collection of twelve official Zodiac tokens—one for each sign—with its own design and public Registry record.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"How do I know a Zodiac is official?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Compare the complete token address with the published Registry. A name or ticker alone is not enough.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"Why does each sign have Solana and Base addresses?\","
+        }
+      ]
+    },
+    {
+      "path": "scripts/build-build-report.mjs",
+      "bytes": 28310,
+      "sha256": "b3266b36d980f68a09f95c4610cfc47c8cd7f3a1dfccce0c1a7e305cc94dff80",
+      "matches": [
+        {
+          "line": 98,
+          "context": "\n### WS2 — Growth infrastructure\n\n**Implemented locally; live-provider acceptance is pending credentials.**\n\n- Analytics: the Plausible-compatible shim is absent when unset and loads with \\`defer\\` only when configured. It canonicalizes paths, nulls outbound referrers, and allowlists the eleven directive events plus existing fixed-enum events. The integration uses no cookies or persistent/browser fingerprinting. Under the accepted bounded exception, Plausible may briefly process the request IP address and User-Agent into a salted site/device/day identifier for aggregate deduplication; raw values are not stored, the salt rotates and is deleted every 24 hours, and no identifier is exposed to Zodiacs.org or Growth OS. It rejects query strings, free text, birth details, chart positions, email values, and wallet addresses. The taxonomy is documented in \\`docs/ANALYTICS.md\\`. Local event tests pass; “events visible in analytics” requires a configured deployment and remains pending.\n- Email: one \\`EmailCapture\\` powers post-chart, \\`/horoscopes/\\`, and astrology-footer placements in all five locale rails. Only normalized email plus optional self-declared sun sign enters the adapter. Resend, Buttondown, and Loops are env-selected and the component is omitted when configuration is incomplete. Scanner-safe opaque AES-GCM Resend confirmation and a mocked end-to-end Buttondown request pass. A credentialed delivery/confirmation smoke test against the operator's chosen ESP remains pending.\n- OG/Twitter: 45 directive-required images are unique 1200×630 PNGs, use canonical sign art, and are wired per page; the cache-busted \\`/assets/og/v2/share-pastel-wheel-20260809.png\\` is the global fallback. The complete rendered inventory appears below.\n- Structured data: homepage \\`WebSite\\`, \\`Organization\\`, and existing FAQ \\`FAQPage\\`; sitewide \\`BreadcrumbList\\`; guide/learn \\`Article\\` (including the five learn section hubs); and tool \\`WebApplication\\` validate with 0 errors. Disclosure references the canonical site \\`@id\\`.\n\n### WS3 — Shareable result cards\n\n**Acceptance complete in local browser tests.** Big Three, full-chart, and compatibility cards render entirely client-side at 2× output, use canonical icons as their only illustration, provide Web Share with download fallback, and fire \\`share_card_downloaded\\`. The full-card boundary receives chart results rather than raw birth input, uses a generic filename, and renders only fields the user selected. Deterministic Big Three/full-card timings are well below one second; compatibility and cancellation/error paths pass.\n\n### WS4 — PWA and retention scaffold\n\n**Implementation and automated acceptance complete; physical-device smoke remains a deployment-candidate check.** \\`site.webmanifest\\` and the 192/512/maskable icons use the twelve-icon wheel motif on \\`#060709\\`. The worker precaches 158 versioned tool-shell/data URLs under cache \\`908fb24d08af\\`, while Registry identity JSON is never authoritative from a stale cache. The prompt appears after the second computed chart and a local dismissal prevents repeat prompts.\n\nPush remains default-off. Client, endpoint, worker, and delivery code require both public/server flags and VAPID configuration; the default production worker has push disabled and the client does not expose the prompt. iOS/Android installability was validated through manifest/worker/browser gates, but a final physical-device install smoke should be run on the deployment candidate.\n\n### WS5 — Programmatic SEO and coordinated indexing\n\n**Acceptance complete for English static generation/indexing.** The 78 compatibility pairs and 366 birthday pages were already collection-backed on locale main and already self-canonical; this branch preserves that implementation and adds the engine-derived CTA/share/indexing work without duplicating routes. The uniqueness gate is 0.014 versus 0.42. Birthday pages retain verified 1940–2030 sign/date data, degrees, decans, cusp handling, adjacent-day links, and chart/sign CTAs.\n"
+        }
+      ]
+    },
+    {
+      "path": "scripts/validate-schema.mjs",
+      "bytes": 16626,
+      "sha256": "79973c13248dcd256442e7aebca8f550d7074d50adf4e6d8be889c9257e42cad",
+      "matches": [
+        {
+          "line": 174,
+          "context": "  if (node.publisher?.['@id'] !== 'https://zodiacs.org/#org') {\n    failures.push(`${label}: Article publisher must identify the Zodiacs.org Organization`);\n  }\n}\n\nfunction validateFaq(node, label, expectedCount) {\n  const questions = node?.mainEntity;\n  if (!Array.isArray(questions) || questions.length !== expectedCount) {\n    failures.push(`${label}: FAQPage must contain exactly ${expectedCount} questions`);\n    return;\n  }\n  const names = new Set();\n  questions.forEach((question, index) => {\n    if (!hasType(question, 'Question') || typeof question.name !== 'string' || !question.name.trim()) {\n      failures.push(`${label}: FAQ question ${index + 1} has an invalid Question shape`);\n    } else if (names.has(question.name.trim())) {\n      failures.push(`${label}: FAQ question ${index + 1} duplicates an earlier question`);\n    } else {\n      names.add(question.name.trim());\n    }\n    const answer = question.acceptedAnswer;\n    if (!hasType(answer, 'Answer') || typeof answer.text !== 'string' || !answer.text.trim()) {\n      failures.push(`${label}: FAQ question ${index + 1} needs a non-empty accepted Answer`);\n    }"
+        },
+        {
+          "line": 272,
+          "context": "    const breadcrumb = nodes.find((node) => hasType(node, 'BreadcrumbList'));\n    if (!breadcrumb) failures.push(`${label}: indexable page is missing BreadcrumbList`);\n    else validateBreadcrumb(breadcrumb, label, pathname);\n  }\n\n  if (pathname === '/') {\n    const website = nodes.find((node) => hasType(node, 'WebSite'));\n    const organization = nodes.find((node) => hasType(node, 'Organization'));\n    const faq = nodes.find((node) => hasType(node, 'FAQPage'));\n    if (!website) failures.push(`${label}: homepage is missing WebSite`);\n    if (!organization) failures.push(`${label}: homepage is missing Organization`);\n    if (!Array.isArray(organization?.sameAs) || organization.sameAs.length < 1) {\n      failures.push(`${label}: homepage Organization needs sameAs profiles`);\n    }\n    const registryProfiles = Array.isArray(organization?.sameAs)\n      ? organization.sameAs.filter((profile) => (\n          typeof profile === 'string' && /astrofolio/i.test(profile)\n        ))\n      : [];\n    if (registryProfiles.length > 0) {\n      failures.push(\n        `${label}: consumer Organization sameAs crosses the Registry boundary: ${registryProfiles.join(', ')}`,\n      );\n    }"
+        },
+        {
+          "line": 289,
+          "context": "        ))\n      : [];\n    if (registryProfiles.length > 0) {\n      failures.push(\n        `${label}: consumer Organization sameAs crosses the Registry boundary: ${registryProfiles.join(', ')}`,\n      );\n    }\n    if (!faq || !Array.isArray(faq.mainEntity) || faq.mainEntity.length < 1) {\n      failures.push(`${label}: homepage is missing its FAQPage questions`);\n    }\n  }\n\n  const topLevelSlug = pathname.split('/').filter(Boolean);\n  const horoscopeContent = new RegExp(\n    `^/horoscopes/(?:${[...signSlugs].join('|')})(?:/(?:tomorrow|weekly|monthly|love|career|2027))?/$`,\n  ).test(pathname);\n  const eventContent = /^\\/(?:full-moon|new-moon|eclipses|(?:mercury|venus|mars)-retrograde)\\/\\d{4}-\\d{2}-\\d{2}\\/$/.test(pathname)\n    || /^\\/events\\/(?!preview(?:\\/|$))[a-z0-9-]+\\/$/.test(pathname);\n  const needsArticle = (topLevelSlug.length === 1 && signSlugs.has(topLevelSlug[0]))\n    || horoscopeContent\n    || eventContent;\n  const learnContent = pathname.startsWith('/learn/')\n    && (pathname === '/learn/how-to-read-a-birth-chart/'\n      || pathname === '/learn/zodiac-dates/'"
+        },
+        {
+          "line": 322,
+          "context": "        .map((failure) => `${label}: ${failure}`));\n    }\n  }\n\n  if (horoscopeContent) {\n    // FAQ rich results retreated to a handful of authority sites in 2023, so\n    // the markup is optional: validated when present, retirable without a\n    // gate change. The visible FAQ copy itself stays.\n    const faqs = nodes.filter((node) => hasType(node, 'FAQPage'));\n    if (faqs.length > 1) {\n      failures.push(`${label}: horoscope content allows at most one FAQPage (found ${faqs.length})`);\n    } else if (faqs.length === 1) validateFaq(faqs[0], label, 3);\n  }\n\n  if (pathname === '/horoscopes/') {\n    const collections = nodes.filter((node) => hasType(node, 'CollectionPage'));\n    const lists = nodes.filter((node) => hasType(node, 'ItemList'));\n    if (collections.length !== 1) {\n      failures.push(`${label}: horoscope hub needs exactly one CollectionPage (found ${collections.length})`);\n    } else {\n      const [collection] = collections;\n      siteUrl(collection.url, label, 'CollectionPage.url', canonicalUrl);\n      for (const field of ['name', 'description']) {\n        if (typeof collection[field] !== 'string' || !collection[field].trim()) {"
+        },
+        {
+          "line": 324,
+          "context": "  }\n\n  if (horoscopeContent) {\n    // FAQ rich results retreated to a handful of authority sites in 2023, so\n    // the markup is optional: validated when present, retirable without a\n    // gate change. The visible FAQ copy itself stays.\n    const faqs = nodes.filter((node) => hasType(node, 'FAQPage'));\n    if (faqs.length > 1) {\n      failures.push(`${label}: horoscope content allows at most one FAQPage (found ${faqs.length})`);\n    } else if (faqs.length === 1) validateFaq(faqs[0], label, 3);\n  }\n\n  if (pathname === '/horoscopes/') {\n    const collections = nodes.filter((node) => hasType(node, 'CollectionPage'));\n    const lists = nodes.filter((node) => hasType(node, 'ItemList'));\n    if (collections.length !== 1) {\n      failures.push(`${label}: horoscope hub needs exactly one CollectionPage (found ${collections.length})`);\n    } else {\n      const [collection] = collections;\n      siteUrl(collection.url, label, 'CollectionPage.url', canonicalUrl);\n      for (const field of ['name', 'description']) {\n        if (typeof collection[field] !== 'string' || !collection[field].trim()) {\n          failures.push(`${label}: CollectionPage is missing ${field}`);\n        }"
+        }
+      ]
+    },
+    {
+      "path": "src/components/HoroscopeProgramPage.astro",
+      "bytes": 28050,
+      "sha256": "0306d8d045c33f94b0f2c1e8d166116e897a4f85ec6a6083135e0fc26c2ba9d2",
+      "matches": [
+        {
+          "line": 173,
+          "context": "    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Horoscopes', item: 'https://zodiacs.org/horoscopes/' },\n      { '@type': 'ListItem', position: 3, name: sign.name, item: `https://zodiacs.org/horoscopes/${sign.slug}/` },\n      ...(meta.slug ? [{ '@type': 'ListItem', position: 4, name: meta.nav, item: canonicalUrl }] : []),\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n\nconst periodLinks = Object.entries(SURFACE_META).map(([key, item]) => ({\n  key,\n  label: item.nav,\n  href: item.slug\n    ? `/horoscopes/${sign.slug}/${item.slug}/`\n    : `/horoscopes/${sign.slug}/`,\n}));"
+        }
+      ]
+    },
+    {
+      "path": "src/components/compat/LocalizedPairPage.astro",
+      "bytes": 16744,
+      "sha256": "3ce6f4eae5af3a5def29a10991f2eb8ab2b9199862145ee7170d080bcadb0a7f",
+      "matches": [
+        {
+          "line": 168,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: `https://zodiacs.org${prefix}/` },\n      { '@type': 'ListItem', position: 2, name: c.kicker, item: `https://zodiacs.org${prefix}/compatibility/` },\n      { '@type': 'ListItem', position: 3, name: c.pairName(nameA, nameB), item: pageUrl },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: entry.data.faq.map(({ q, a: answer }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: answer },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title={entry.data.title}\n  description={entry.data.description}\n  path={pagePath}\n  locale={locale}"
+        }
+      ]
+    },
+    {
+      "path": "src/components/learn/LocalizedRisingPage.astro",
+      "bytes": 13577,
+      "sha256": "0d5c703c0ef8c7c064a09ab94baa67e3b068d66da96c0bc358e01e1c349ab7ff",
+      "matches": [
+        {
+          "line": 197,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: `https://zodiacs.org${prefix}/` },\n      { '@type': 'ListItem', position: 2, name: c.hub, item: `https://zodiacs.org${prefix}/rising-sign/` },\n      { '@type': 'ListItem', position: 3, name: c.heading(name), item: pageUrl },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: locale === 'pt' ? 'pt-BR' : locale,\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title={title}\n  description={entry.data.description}\n  path={pagePath}\n  locale={locale}"
+        }
+      ]
+    },
+    {
+      "path": "src/components/programmatic/LocalizedBirthdayPage.astro",
+      "bytes": 15563,
+      "sha256": "55ccad690338d0e328cc8572db7bf0a69882e5d5dc94dbcc2906d6b550301f27",
+      "matches": [
+        {
+          "line": 140,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: `https://zodiacs.org${localizePath(locale, '/')}` },\n      { '@type': 'ListItem', position: 2, name: text('kicker'), item: 'https://zodiacs.org/birthday/' },\n      { '@type': 'ListItem', position: 3, name: label, item: `https://zodiacs.org${path}` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={title}\n  description={description}\n  path={path}\n  noindex\n  locale={locale}\n  image={ogImage}"
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedEclipsesPage.astro",
+      "bytes": 42528,
+      "sha256": "795f5ca815a24b8d5027f6e9166c312e93bdbace1a6fd41008a1eb5149b534ee",
+      "matches": [
+        {
+          "line": 596,
+          "context": "  {\n    '@type': 'WebPage',\n    name: c.ld.pageName,\n    url: pageUrl,\n    inLanguage,\n    description: c.ld.pageDescription,\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  dataset,\n  ...eventNodes,\n];\n// One visible note replaces a cue repeated on every dated row; each link still carries hreflang and its title.\nconst EVENT_LINK_NOTE: Record<'es' | 'pt' | 'fr' | 'it', string> = {\n  es: 'Las fechas con enlace abren la página del evento, por ahora en inglés.',\n  pt: 'As datas com link abrem a página do evento, por enquanto em inglês.',\n  fr: 'Les dates avec un lien ouvrent la page de l’événement, pour l’instant en anglais.',"
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedFullMoonCalendarPage.astro",
+      "bytes": 36066,
+      "sha256": "1915d16e93b89091e8460706bd9229949ee0cbbdb94dbb52458df9de8aabf585",
+      "matches": [
+        {
+          "line": 519,
+          "context": "  {\n    '@type': 'WebPage',\n    name: c.pageName,\n    url: pageUrl,\n    description: c.pageDescription,\n    inLanguage,\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  dataset,\n  ...eventNodes,\n];\n// One visible note replaces a cue repeated on every dated row; each link still carries hreflang and its title.\nconst EVENT_LINK_NOTE: Record<'es' | 'pt' | 'fr' | 'it', string> = {\n  es: 'Las fechas con enlace abren la página del evento, por ahora en inglés.',\n  pt: 'As datas com link abrem a página do evento, por enquanto em inglês.',\n  fr: 'Les dates avec un lien ouvrent la page de l’événement, pour l’instant en anglais.',"
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedMercuryRetrogradePage.astro",
+      "bytes": 36207,
+      "sha256": "cb6f6223754d16e264356c78ef377ccaafdd349b57a967fb197c2823edbf62d8",
+      "matches": [
+        {
+          "line": 461,
+          "context": "  {\n    '@type': 'WebPage',\n    name: c.pageName,\n    url: pageUrl,\n    description: c.pageDescription,\n    inLanguage,\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  dataset,\n  ...eventNodes,\n];\n---\n<Base\n  title={c.title}\n  description={c.description}\n  path={pagePath}"
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedRetrogradesPage.astro",
+      "bytes": 39231,
+      "sha256": "d7f94b9cc9618c64109263fdf2084de57bde3f53bfc0a0f3a07bb4d659f96445",
+      "matches": [
+        {
+          "line": 522,
+          "context": "  {\n    '@type': 'WebPage',\n    name: c.schemaName,\n    url: pageUrl,\n    description: c.schemaDescription,\n    inLanguage,\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  dataset,\n  ...eventNodes,\n];\n---\n<Base\n  title={c.title}\n  description={c.description}\n  path={pagePath}"
+        }
+      ]
+    },
+    {
+      "path": "src/lib/home-trust.ts",
+      "bytes": 708,
+      "sha256": "14554e639e9dfc3a50bbce5aecae93bef5d51a741821ea0590657bb15406e7d5",
+      "matches": [
+        {
+          "line": 10,
+          "context": "\nexport function homeTrustFaq(locale: CatalogLocale) {\n  return [\n    { q: t(locale, 'trustFreeQuestion'), a: t(locale, 'trustFreeAnswer'), href: localizePath(locale, '/disclosure/'), link: t(locale, 'trustDisclosure') },\n    { q: t(locale, 'trustAccuracyQuestion'), a: t(locale, 'trustAccuracyAnswer'), href: localizePath(locale, '/methodology/'), link: t(locale, 'trustMethodology') },\n  ];\n}\nexport function homeTrustSchema(locale: CatalogLocale) {\n  return { '@type': 'FAQPage', mainEntity: homeTrustFaq(locale).map(({q,a,link}) => ({\n    '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: `${a} ${link}.` },\n  })) };\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/[sign]/index.astro",
+      "bytes": 14412,
+      "sha256": "f4675fdad43c02754cad45589a456503a30a21b2bf51e18d292de6f41ab2320c",
+      "matches": [
+        {
+          "line": 64,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Zodiac signs', item: 'https://zodiacs.org/learn/' },\n      { '@type': 'ListItem', position: 3, name: sign.name, item: `https://zodiacs.org/${sign.slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: guide.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  preloadMonoFont\n  inlineCriticalCss\n  title={guide.data.title}\n  description={guide.data.description}\n  path={`/${sign.slug}/`}\n  image={`/assets/og/v2/sign/${sign.slug}.png`}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ask/index.astro",
+      "bytes": 9513,
+      "sha256": "e227fea0a04800f43437c2f7192d9db3891392cb83ef95509fcecc2ba365f28a",
+      "matches": [
+        {
+          "line": 53,
+          "context": "  {\n    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Guide', item: 'https://zodiacs.org/ask/' },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title=\"Guide — astrology and birth-chart help from Zodiacs.org\"\n  description=\"Ask Guide about birth charts, astrology, or Zodiacs.org tools and guides. Signed-out conversations are not stored by Zodiacs.org.\"\n  path=\"/ask/\"\n  image=\"/assets/og/v2/tool/ask.png\"\n  imageAlt=\"Guide — astrology and birth-chart help from Zodiacs.org\"\n  jsonLd={jsonLd}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/baby-zodiac/index.astro",
+      "bytes": 6116,
+      "sha256": "dcb5155b91c15ddf546d49cc7bae15795394461e330ddafef118c60ecb267b63",
+      "matches": [
+        {
+          "line": 38,
+          "context": "  {\n    '@type': 'WebPage',\n    name: 'Baby zodiac: what sign will my baby be?',\n    url: 'https://zodiacs.org/baby-zodiac/',\n    description:\n      'Enter a due date and get the honest version: the near-certain sun sign (with cusp caveats computed), the week’s possible moon signs, and what has to wait for the birth minute.',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Baby Zodiac Calculator — What Sign Will My Baby Be? | Zodiacs.org\"\n  description=\"Enter a due date: the near-certain sun sign (cusp caveats computed, not guessed), the week's possible moon signs, and what has to wait for the birth minute. Free.\"\n  path=\"/baby-zodiac/\"\n  image=\"/assets/og/v2/tool/baby-zodiac.png\"\n  imageAlt=\"Baby zodiac calculator — Zodiacs.org\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/big-three/index.astro",
+      "bytes": 4962,
+      "sha256": "f4b56a0a1e2f3b0f7e7612e2592fe3f7dce2d55f106598e7421076cbc2617713",
+      "matches": [
+        {
+          "line": 37,
+          "context": "    '@type': 'WebApplication',\n    name: 'Big Three Calculator',\n    url: 'https://zodiacs.org/big-three/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base privateSurface\n  clientUi\n  title=\"Big Three Calculator — Sun, Moon, and Rising in Seconds | Zodiacs.org\"\n  description=\"Enter a birth date, time, and place and get your Sun, Moon, and Rising signs with exact degrees, a card to share, and one tap into the full birth chart. Free, computed in your browser.\"\n  path=\"/big-three/\"\n  image=\"/assets/og/v2/tool/big-three.png\"\n  imageAlt=\"Big Three calculator — Zodiacs.org\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/birth-chart/index.astro",
+      "bytes": 9848,
+      "sha256": "4eb08cefb3fc4fbeb47987b27096ab90c9cd5ed0be7355be159591b6cc9fa72e",
+      "matches": [
+        {
+          "line": 49,
+          "context": "    name: 'Free Birth Chart Calculator',\n    url: 'https://zodiacs.org/birth-chart/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    featureList: 'Sun, Moon, Rising, planets Mercury–Pluto, True Node, whole sign and Placidus houses, aspects',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  {\n    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Tools', item: 'https://zodiacs.org/tools/' },\n      { '@type': 'ListItem', position: 3, name: 'Birth chart calculator', item: 'https://zodiacs.org/birth-chart/' },\n    ],\n  },\n];"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/birth-chart/three-dimensions/index.astro",
+      "bytes": 14444,
+      "sha256": "15be44340fdbef40d7e569b55d25ae01b4ff462b8802a4313944bf1462717b29",
+      "matches": [
+        {
+          "line": 97,
+          "context": "    dateModified: '2026-09-23T00:00:00+07:00',\n    author: EDITOR_AUTHOR,\n    publisher: { '@id': 'https://zodiacs.org/#org' },\n    mainEntityOfPage: { '@type': 'WebPage', '@id': PAGE_URL },\n    inLanguage: 'en',\n    about: 'What the flat chart wheel leaves out: ecliptic latitude, declination and out-of-bounds planets, parallel and contraparallel aspects, the horizon, and sect.',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  {\n    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Birth chart calculator', item: 'https://zodiacs.org/birth-chart/' },\n      { '@type': 'ListItem', position: 3, name: 'The chart in three dimensions', item: PAGE_URL },\n    ],\n  },\n];"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/birthday/[slug].astro",
+      "bytes": 21682,
+      "sha256": "9d060ec8b70a1192bce03b2cd610dda375476cb9543dfaff4fe5cb4f43252c4d",
+      "matches": [
+        {
+          "line": 154,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Birthdays', item: 'https://zodiacs.org/birthday/' },\n      { '@type': 'ListItem', position: 3, name: label, item: `https://zodiacs.org/birthday/${slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={entry.data.title}\n  description={entry.data.description}\n  path={`/birthday/${slug}/`}\n  image={ogImage}\n  imageAlt={`${label} birthday astrology — Zodiacs.org`}\n  type=\"article\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/compatibility/[pair]/index.astro",
+      "bytes": 12192,
+      "sha256": "9baf1d70d4efd7eb37dac3bf507bb15d52ecd13c8eaf2a13e1092ed2c17066ef",
+      "matches": [
+        {
+          "line": 61,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Compatibility', item: 'https://zodiacs.org/compatibility/' },\n      { '@type': 'ListItem', position: 3, name: `${a.name} and ${b.name}`, item: `https://zodiacs.org/compatibility/${facts.slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title={entry.data.title}\n  description={entry.data.description}\n  path={`/compatibility/${facts.slug}/`}\n  image={`/assets/og/v2/pair/${facts.slug}.png`}\n  imageAlt={`${a.name} and ${b.name} compatibility — Zodiacs.org`}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/compatibility/index.astro",
+      "bytes": 10086,
+      "sha256": "f0791ad270752fa1c88162de116a24aee5a9a7d5b541ca759b9c5bf2f51ca138",
+      "matches": [
+        {
+          "line": 41,
+          "context": "    url: 'https://zodiacs.org/compatibility/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Any',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    description:\n      'See where a relationship flows, where it catches, and what each person brings out in the other with a private birth-chart comparison.',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\nconst inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';\n---\n<Base privateSurface\n  clientUi\n  title=\"Compatibility Calculator — Compare Two Birth Charts | Zodiacs.org\"\n  description=\"Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings.\"\n  path=\"/compatibility/\"\n  image=\"/assets/og/v2/tool/compatibility.png\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/eclipses/2027/index.astro",
+      "bytes": 8023,
+      "sha256": "11e0c2a3f5794d2d29d40351548af17d5a8df68026e0242ef33c65c2c3042fe3",
+      "matches": [
+        {
+          "line": 100,
+          "context": "  {\n    '@type': 'WebPage',\n    name: `Eclipses ${YEAR}`,\n    url: `https://zodiacs.org/eclipses/${YEAR}/`,\n    description,\n    isPartOf: { '@type': 'WebPage', url: 'https://zodiacs.org/eclipses/' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title=\"Eclipses 2027 — Every Solar and Lunar Eclipse, Exact | Zodiacs.org\"\n  description=\"Every solar and lunar eclipse of 2027 with the exact peak in universal time, the eclipse type, and the zodiac sign it falls in, plus a calendar file for the year.\"\n  path={`/eclipses/${YEAR}/`}\n  image=\"/assets/og/v2/tool/eclipses.png\"\n  imageAlt=\"Eclipses 2027 — Zodiacs.org\"\n  jsonLd={jsonLd}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/eclipses/index.astro",
+      "bytes": 12887,
+      "sha256": "9ddc036d81086099e3f1b5acf78e300fb442c28aa76a8bf0e6caa28c96ac118e",
+      "matches": [
+        {
+          "line": 141,
+          "context": "  {\n    '@type': 'WebPage',\n    name: 'Eclipse dates 2026–2028',\n    url: 'https://zodiacs.org/eclipses/',\n    description:\n      'Every solar and lunar eclipse from 2026 through 2028: exact peak times, type, and zodiac sign, computed from the real geometry.',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  dataset,\n  ...eventNodes,\n];\n---\n<Base\n  title=\"Eclipse Dates 2026–2028 — Solar & Lunar, Exact | Zodiacs.org\"\n  description=\"Every solar and lunar eclipse through 2028 with exact peak times and zodiac signs — including the August 12, 2026 total solar eclipse over Iceland and Spain.\"\n  path=\"/eclipses/\"\n  image=\"/assets/og/v2/tool/eclipses.png\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/[sign]/index.astro",
+      "bytes": 7940,
+      "sha256": "7b3d8c79d4f07693d0e6f7fd8f48c66831a42399ecb89f7e45665fd4325ecf0a",
+      "matches": [
+        {
+          "line": 61,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org en español', item: 'https://zodiacs.org/es/' },\n      { '@type': 'ListItem', position: 2, name: 'Signos del zodiaco', item: 'https://zodiacs.org/es/#signos' },\n      { '@type': 'ListItem', position: 3, name: signName(sign, 'es'), item: `https://zodiacs.org/es/${sign.slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={`${guide.title} | Zodiacs.org`}\n  description={guide.description}\n  path={`/es/${sign.slug}/`}\n  image={`/assets/og/v2/sign/${sign.slug}.png`}\n  imageAlt={`${signName(sign, 'es')} — guía de signo en Zodiacs.org`}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/baby-zodiac/index.astro",
+      "bytes": 5034,
+      "sha256": "d6fdef3df2a7321b9cd071285ade28d4ada847f79888c6f46989be5ee1e232c1",
+      "matches": [
+        {
+          "line": 40,
+          "context": "    '@type': 'WebPage',\n    name: 'Zodiaco del bebé: ¿qué signo tendrá?',\n    url: 'https://zodiacs.org/es/baby-zodiac/',\n    description: 'Ingresa una fecha probable de parto para ver el signo solar casi seguro, los signos lunares posibles de la semana y qué información no puede saberse hasta conocer el minuto del nacimiento.',\n    inLanguage: 'es',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"¿Qué signo será mi bebé? Calculadora gratis | Zodiacs.org\"\n  description=\"Ingresa la fecha probable de parto: el signo solar casi seguro, los signos lunares posibles de esa semana y lo que depende de la hora del nacimiento.\"\n  path=\"/es/baby-zodiac/\"\n  locale=\"es\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/birth-chart/index.astro",
+      "bytes": 7311,
+      "sha256": "1f024beee772b951933544e4252bb4e57d5c14a3185cc19f0d222048e60cde2e",
+      "matches": [
+        {
+          "line": 46,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    featureList: 'Sol, Luna, ascendente, planetas de Mercurio a Plutón, Nodo verdadero, casas de signos completos y Placidus, aspectos',\n    inLanguage: 'es',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  {\n    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org en español', item: 'https://zodiacs.org/es/' },\n      { '@type': 'ListItem', position: 2, name: 'Herramientas', item: 'https://zodiacs.org/es/tools/' },\n      { '@type': 'ListItem', position: 3, name: 'Calculadora de carta natal', item: 'https://zodiacs.org/es/birth-chart/' },\n    ],\n  },"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/compatibility/index.astro",
+      "bytes": 5665,
+      "sha256": "b6a523f08d6c5c654a3126ebcb460289f850c30eabb42c6a3b44a50dcaf08c94",
+      "matches": [
+        {
+          "line": 39,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Any',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    description: 'Calculadora gratuita de sinastría para comparar dos cartas natales en tu dispositivo.',\n    inLanguage: 'es',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base privateSurface\n  clientUi\n  title=\"Calculadora de compatibilidad astrológica | Zodiacs.org\"\n  description=\"Compara dos cartas natales gratis y de forma privada en tu navegador, con lecturas claras y guías para las 78 combinaciones de signos.\"\n  path=\"/es/compatibility/\"\n  locale=\"es\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/moon-phase/index.astro",
+      "bytes": 3609,
+      "sha256": "20cac29d92fa0ac7d253d463a99e5fbc8bd97168c084a0ac83085b1d61be737b",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/es/moon-phase/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'es',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Fase lunar de hoy y de tu cumpleaños | Zodiacs.org\"\n  description=\"Consulta la fase lunar de hoy y la Luna de cualquier fecha: fase, iluminación y signo lunar, gratis y en tu dispositivo.\"\n  path=\"/es/moon-phase/\"\n  locale=\"es\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/moon-sign/index.astro",
+      "bytes": 3728,
+      "sha256": "4ba04176b4b3bba947ab0ebece441f7fccdebbe858741de7e49926ac6a4a5179",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/es/moon-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'es',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Calculadora de signo lunar gratis | Zodiacs.org\"\n  description=\"Encuentra tu signo lunar gratis: cómo sientes, qué te calma y qué necesitas. Calculado en tu dispositivo, sin cuenta.\"\n  path=\"/es/moon-sign/\"\n  locale=\"es\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/rising-sign/index.astro",
+      "bytes": 4976,
+      "sha256": "4ea3fbbefeabe615f9a71f577221069c7c7f77c84e136e97434b41f086d3c4a3",
+      "matches": [
+        {
+          "line": 44,
+          "context": "    url: 'https://zodiacs.org/es/rising-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'es',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Calculadora de ascendente gratis | Zodiacs.org\"\n  description=\"Calcula tu ascendente gratis con tu hora y lugar de nacimiento: cómo te leen al principio y qué planeta rige tu carta.\"\n  path=\"/es/rising-sign/\"\n  locale=\"es\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/saturn-return/index.astro",
+      "bytes": 4371,
+      "sha256": "5b7dca151a2b2b33d9896e35a8bddc34a0fc5c40e4174d049d6e4d22442a1d7c",
+      "matches": [
+        {
+          "line": 43,
+          "context": "    url: 'https://zodiacs.org/es/saturn-return/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'es',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  privateSurface\n  clientUi\n  title=\"Calculadora de retorno de Saturno | Zodiacs.org\"\n  description=\"Encuentra gratis las fechas exactas de tu retorno de Saturno, con pasadas retrógradas incluidas, calculadas en tu dispositivo.\"\n  path=\"/es/saturn-return/\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/transits/index.astro",
+      "bytes": 5649,
+      "sha256": "9a79f8dbf559407802093162fe8c6d571774d646fe9f1668711c7fa487ae742e",
+      "matches": [
+        {
+          "line": 43,
+          "context": "    '@type': 'WebPage',\n    name: 'Rastreador de tránsitos: el cielo en movimiento sobre tu carta',\n    url: 'https://zodiacs.org/es/transits/',\n    description: 'El cielo en movimiento sobre tu carta natal: tránsitos con un orbe máximo de 3 grados, hoy o en cualquier fecha hasta un año hacia adelante o atrás.',\n    inLanguage: 'es',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Tránsitos de hoy sobre tu carta natal | Zodiacs.org\"\n  description=\"Los tránsitos de hoy sobre tus planetas natales, con un orbe máximo de 3°, y un control para mover el cielo hasta un año. Gratis y en tu dispositivo.\"\n  path=\"/es/transits/\"\n  locale=\"es\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/[sign]/index.astro",
+      "bytes": 8055,
+      "sha256": "408b25f293c6c56fe6370b9ee862abe59d97c389331cf93da70b75b468a7cd88",
+      "matches": [
+        {
+          "line": 61,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org en français', item: 'https://zodiacs.org/fr/' },\n      { '@type': 'ListItem', position: 2, name: 'Signes du zodiaque', item: 'https://zodiacs.org/fr/#signes' },\n      { '@type': 'ListItem', position: 3, name: signName(sign, 'fr'), item: `https://zodiacs.org/fr/${sign.slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={`${guide.title} | Zodiacs.org`}\n  description={guide.description}\n  path={`/fr/${sign.slug}/`}\n  image={`/assets/og/v2/sign/${sign.slug}.png`}\n  imageAlt={`${signName(sign, 'fr')} — guide du signe sur Zodiacs.org`}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/baby-zodiac/index.astro",
+      "bytes": 5327,
+      "sha256": "06b257aaa232c2fff2da2c5c68454af22ef0a6a26a2d2cb67e5bfc2b3c6bc911",
+      "matches": [
+        {
+          "line": 40,
+          "context": "    '@type': 'WebPage',\n    name: 'Zodiaque du bébé : quel sera son signe ?',\n    url: 'https://zodiacs.org/fr/baby-zodiac/',\n    description: 'Indique une date prévue d’accouchement pour voir le signe solaire presque certain, les signes lunaires possibles de la semaine et ce qui restera inconnu jusqu’à la minute de la naissance.',\n    inLanguage: 'fr',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Quel sera le signe de mon bébé ? Calculateur | Zodiacs.org\"\n  description=\"Indique la date prévue d’accouchement : signe solaire presque certain, signes lunaires possibles et ce qui restera inconnu jusqu’à la naissance.\"\n  path=\"/fr/baby-zodiac/\"\n  locale=\"fr\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/birth-chart/index.astro",
+      "bytes": 7681,
+      "sha256": "cba046933d0fedbbffc97f7c00f79fcfe07719231d2c386e4c36f3502e5c1bf6",
+      "matches": [
+        {
+          "line": 46,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    featureList: 'Soleil, Lune, ascendant, planètes de Mercure à Pluton, Nœud vrai, maisons en signes entiers et Placidus, aspects',\n    inLanguage: 'fr',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  {\n    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org en français', item: 'https://zodiacs.org/fr/' },\n      { '@type': 'ListItem', position: 2, name: 'Outils', item: 'https://zodiacs.org/fr/tools/' },\n      { '@type': 'ListItem', position: 3, name: 'Calculateur de thème astral', item: 'https://zodiacs.org/fr/birth-chart/' },\n    ],\n  },"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/compatibility/index.astro",
+      "bytes": 5771,
+      "sha256": "70b5079cdf3ca784b3ee014476a12278719d343124a9bc5dd8e62f32dd873089",
+      "matches": [
+        {
+          "line": 39,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Any',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    description: 'Calculateur de synastrie gratuit pour comparer deux thèmes astraux sur ton appareil.',\n    inLanguage: 'fr',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base privateSurface\n  clientUi\n  title=\"Calculateur de compatibilité astrologique | Zodiacs.org\"\n  description=\"Compare gratuitement deux thèmes astraux dans ton navigateur, avec les aspects qui les relient et des guides pour les 78 combinaisons de signes.\"\n  path=\"/fr/compatibility/\"\n  locale=\"fr\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/moon-phase/index.astro",
+      "bytes": 3847,
+      "sha256": "6aa96fe3bb1818f476413b36480ca6965ab5544b23c9e5bb1f79316a381df018",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/fr/moon-phase/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'fr',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Phase de la Lune aujourd’hui et à ta naissance | Zodiacs.org\"\n  description=\"Consulte la phase de la Lune du jour ou de toute autre date : phase, illumination et signe lunaire, gratuitement et sur ton appareil.\"\n  path=\"/fr/moon-phase/\"\n  locale=\"fr\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/moon-sign/index.astro",
+      "bytes": 4009,
+      "sha256": "e1812e1946c5e64cbef2ba7022fa55c23da02231a337f6ff22b1063ca3826647",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/fr/moon-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'fr',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Calculateur gratuit de signe lunaire | Zodiacs.org\"\n  description=\"Découvre gratuitement ton signe lunaire : ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin. Calculé sur ton appareil, sans compte.\"\n  path=\"/fr/moon-sign/\"\n  locale=\"fr\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/rising-sign/index.astro",
+      "bytes": 5187,
+      "sha256": "88b4fbba1228203b0e354d69007716a6e43bce1db2ee0dfd9c494d9865de67b9",
+      "matches": [
+        {
+          "line": 44,
+          "context": "    url: 'https://zodiacs.org/fr/rising-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'fr',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Calculateur gratuit d’ascendant | Zodiacs.org\"\n  description=\"Calcule gratuitement ton ascendant avec ton heure et ton lieu de naissance : la première impression que tu donnes et la planète qui gouverne ton thème.\"\n  path=\"/fr/rising-sign/\"\n  locale=\"fr\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/saturn-return/index.astro",
+      "bytes": 4482,
+      "sha256": "a19a41ac5e94213baedc563c7cc71497d7414a3a25f3795103047f352f36bcba",
+      "matches": [
+        {
+          "line": 43,
+          "context": "    url: 'https://zodiacs.org/fr/saturn-return/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'fr',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  privateSurface\n  clientUi\n  title=\"Calculateur de retour de Saturne | Zodiacs.org\"\n  description=\"Trouve gratuitement les dates exactes de ton retour de Saturne, passages rétrogrades compris, calculées sur ton appareil.\"\n  path=\"/fr/saturn-return/\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/transits/index.astro",
+      "bytes": 5811,
+      "sha256": "febcc5ab52faf7e21b248c70784b1af724bb7c6943d7479aa24122a72f0ea296",
+      "matches": [
+        {
+          "line": 43,
+          "context": "    '@type': 'WebPage',\n    name: 'Suivi des transits : le ciel en mouvement sur ton thème',\n    url: 'https://zodiacs.org/fr/transits/',\n    description: 'Le ciel en mouvement sur ton thème astral : transits avec un orbe maximal de 3 degrés, aujourd’hui ou à toute date jusqu’à un an avant ou après.',\n    inLanguage: 'fr',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Transits du jour sur ton thème astral | Zodiacs.org\"\n  description=\"Les transits du jour sur tes planètes natales, à 3° d’orbe au plus, et un curseur pour avancer ou reculer le ciel jusqu’à un an. Calculé sur ton appareil.\"\n  path=\"/fr/transits/\"\n  locale=\"fr\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/full-moon-calendar/2027/index.astro",
+      "bytes": 9077,
+      "sha256": "4ce6bad16e4e3b61fb8c0ea7f4d773edf59e021f0e9a3f380d7772c068fc867a",
+      "matches": [
+        {
+          "line": 93,
+          "context": "  {\n    '@type': 'WebPage',\n    name: `Full moon calendar ${YEAR}`,\n    url: `https://zodiacs.org/full-moon-calendar/${YEAR}/`,\n    description,\n    isPartOf: { '@type': 'WebPage', url: 'https://zodiacs.org/full-moon-calendar/' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title=\"Full Moon Calendar 2027 — Every Date, Time, and Sign | Zodiacs.org\"\n  description=\"All 12 full moons of 2027 with exact universal time, the Moon's zodiac sign and degree, and the almanac name, plus a calendar file you can subscribe to.\"\n  path={`/full-moon-calendar/${YEAR}/`}\n  image=\"/assets/og/v2/tool/full-moon-calendar.png\"\n  imageAlt=\"Full moon calendar 2027 — Zodiacs.org\"\n  jsonLd={jsonLd}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/full-moon-calendar/index.astro",
+      "bytes": 12112,
+      "sha256": "9d65346e78f37a55172338cbb9239666581cd954f776c96fbb05ec57d84c9418",
+      "matches": [
+        {
+          "line": 126,
+          "context": "  {\n    '@type': 'WebPage',\n    name: 'Full moon calendar 2026 & 2027',\n    url: 'https://zodiacs.org/full-moon-calendar/',\n    description:\n      'Every full moon in 2026 and 2027 with exact universal time, zodiac sign and degree, and its traditional name — computed from the Moon’s real motion.',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  dataset,\n  ...eventNodes,\n];\n---\n<Base\n  title=\"Full Moon Calendar 2026 & 2027 — Dates, Signs, Names | Zodiacs.org\"\n  description=\"Every full moon in 2026 and 2027: exact date and universal time, the Moon's zodiac sign and degree, and the traditional name — Wolf to Cold, blue moon included.\"\n  path=\"/full-moon-calendar/\"\n  image=\"/assets/og/v2/tool/full-moon-calendar.png\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/index.astro",
+      "bytes": 51554,
+      "sha256": "9a2063b2d162a735742fe5b20898e49295579f0170eba642dfdfe9a8df10ba18",
+      "matches": [
+        {
+          "line": 60,
+          "context": "    '@id': 'https://zodiacs.org/#site',\n    url: 'https://zodiacs.org/',\n    name: 'Zodiacs.org',\n    description: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides — private in your browser.',\n    publisher: { '@id': 'https://zodiacs.org/#org' },\n    inLanguage: 'en',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a, ...rest }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Birth chart', promise: 'Your sun, moon, rising, planets, houses, and what they mean.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Moon sign', promise: 'How you feel — and what helps you feel at home.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Rising sign', promise: 'How people first meet you.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibility', promise: 'See how two charts connect.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n---"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/[sign]/index.astro",
+      "bytes": 8031,
+      "sha256": "adb6867b470133af775f598ad60c924e0333c953e21ec02fa87d490897a5ae38",
+      "matches": [
+        {
+          "line": 61,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org in italiano', item: 'https://zodiacs.org/it/' },\n      { '@type': 'ListItem', position: 2, name: 'Segni zodiacali', item: 'https://zodiacs.org/it/#segni' },\n      { '@type': 'ListItem', position: 3, name: signName(sign, 'it'), item: `https://zodiacs.org/it/${sign.slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={`${guide.title} | Zodiacs.org`}\n  description={guide.description}\n  path={`/it/${sign.slug}/`}\n  image={`/assets/og/v2/sign/${sign.slug}.png`}\n  imageAlt={`${signName(sign, 'it')} — guida al segno su Zodiacs.org`}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/baby-zodiac/index.astro",
+      "bytes": 5034,
+      "sha256": "2dc94c9a7c1e88ecf4957a7af3ae5db23407e19d8cb61e457b66770800ffb03a",
+      "matches": [
+        {
+          "line": 40,
+          "context": "    '@type': 'WebPage',\n    name: 'Zodiaco del bambino: quale sarà il suo segno?',\n    url: 'https://zodiacs.org/it/baby-zodiac/',\n    description: 'Inserisci la data prevista del parto per vedere il segno solare quasi certo, i possibili segni lunari della settimana e ciò che resterà ignoto fino al minuto della nascita.',\n    inLanguage: 'it',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Quale sarà il segno zodiacale del bambino? | Zodiacs.org\"\n  description=\"Inserisci la data prevista del parto: segno solare quasi certo, possibili segni lunari della settimana e ciò che si saprà solo alla nascita.\"\n  path=\"/it/baby-zodiac/\"\n  locale=\"it\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/birth-chart/index.astro",
+      "bytes": 7282,
+      "sha256": "2f85eaa0c589f9b2cc85195bf87cf4a15173a858a380eaa8ac86cb1482d14e18",
+      "matches": [
+        {
+          "line": 46,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    featureList: 'Sole, Luna, ascendente, pianeti da Mercurio a Plutone, Nodo vero, case a segni interi e Placidus, aspetti',\n    inLanguage: 'it',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  {\n    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org in italiano', item: 'https://zodiacs.org/it/' },\n      { '@type': 'ListItem', position: 2, name: 'Strumenti', item: 'https://zodiacs.org/it/tools/' },\n      { '@type': 'ListItem', position: 3, name: 'Calcolatore del tema natale', item: 'https://zodiacs.org/it/birth-chart/' },\n    ],\n  },"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/compatibility/index.astro",
+      "bytes": 5577,
+      "sha256": "09f428412fccc51bce3463b81b01291ec54d56d4fe76ecd4fcfc37667ef626c6",
+      "matches": [
+        {
+          "line": 39,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Any',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    description: 'Calcolatore gratuito di sinastria per confrontare due temi natali sul tuo dispositivo.',\n    inLanguage: 'it',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base privateSurface\n  clientUi\n  title=\"Calcolatore di compatibilità astrologica | Zodiacs.org\"\n  description=\"Confronta gratuitamente due temi natali nel tuo browser, in modo riservato, con letture chiare e guide per le 78 combinazioni di segni.\"\n  path=\"/it/compatibility/\"\n  locale=\"it\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/moon-phase/index.astro",
+      "bytes": 3680,
+      "sha256": "246ce9b53802a509c3431e3eee06c5e019ee0eeec46e937f2f5a7b3710e9b2ae",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/it/moon-phase/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'it',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Fase lunare di oggi e della tua nascita | Zodiacs.org\"\n  description=\"Consulta la fase lunare di oggi o di qualsiasi altra data: fase, illuminazione e segno lunare, gratis e sul tuo dispositivo.\"\n  path=\"/it/moon-phase/\"\n  locale=\"it\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/moon-sign/index.astro",
+      "bytes": 3779,
+      "sha256": "2eb02b4bec7e161434b0caa69009e3c699706dced2fafcd7ab390da68d07d70a",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/it/moon-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'it',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Calcolatore gratuito del segno lunare | Zodiacs.org\"\n  description=\"Scopri gratuitamente il tuo segno lunare: come vivi le emozioni, che cosa ti calma e ciò di cui hai bisogno. Calcolato sul tuo dispositivo, senza account.\"\n  path=\"/it/moon-sign/\"\n  locale=\"it\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/rising-sign/index.astro",
+      "bytes": 4994,
+      "sha256": "ad88c73b9320aeded64d170e7a389c3072288964668487345c7f0e67263b98d4",
+      "matches": [
+        {
+          "line": 44,
+          "context": "    url: 'https://zodiacs.org/it/rising-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'it',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Calcolatore gratuito dell’ascendente | Zodiacs.org\"\n  description=\"Calcola gratuitamente il tuo ascendente con ora e luogo di nascita: la prima impressione che dai e il pianeta che governa il tuo tema.\"\n  path=\"/it/rising-sign/\"\n  locale=\"it\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/saturn-return/index.astro",
+      "bytes": 4349,
+      "sha256": "56d442078b5c3bee7d56544aefded600ff3bc4712dd022dd76a1d157aa827bfc",
+      "matches": [
+        {
+          "line": 43,
+          "context": "    url: 'https://zodiacs.org/it/saturn-return/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'it',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  privateSurface\n  clientUi\n  title=\"Calcolatore del ritorno di Saturno | Zodiacs.org\"\n  description=\"Trova gratuitamente le date esatte del tuo ritorno di Saturno, compresi i passaggi retrogradi, calcolate sul tuo dispositivo.\"\n  path=\"/it/saturn-return/\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/transits/index.astro",
+      "bytes": 5590,
+      "sha256": "abb69e04e9df28f464da645bb57136e21a6817c7813cdd1535e6062852bbabe0",
+      "matches": [
+        {
+          "line": 43,
+          "context": "    '@type': 'WebPage',\n    name: 'Tracciatore dei transiti: il cielo in movimento sul tuo tema',\n    url: 'https://zodiacs.org/it/transits/',\n    description: 'Il cielo in movimento sul tuo tema natale: transiti con un orbe massimo di 3 gradi, oggi o in qualsiasi data fino a un anno prima o dopo.',\n    inLanguage: 'it',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Transiti di oggi sul tuo tema natale | Zodiacs.org\"\n  description=\"I transiti di oggi sui tuoi pianeti natali, entro 3° di orbe, e un cursore per spostare il cielo fino a un anno prima o dopo. Gratis, sul tuo dispositivo.\"\n  path=\"/it/transits/\"\n  locale=\"it\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/aspects/[slug].astro",
+      "bytes": 6328,
+      "sha256": "c640188d5261f6514fb8bd102e7f498a343959e7c09d097da7fc333a1df79268",
+      "matches": [
+        {
+          "line": 68,
+          "context": "    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Learn', item: 'https://zodiacs.org/learn/' },\n      { '@type': 'ListItem', position: 3, name: 'The aspects', item: 'https://zodiacs.org/learn/aspects/' },\n      { '@type': 'ListItem', position: 4, name: name, item: `https://zodiacs.org/learn/aspects/${slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={entry.data.title}\n  description={entry.data.description}\n  path={`/learn/aspects/${slug}/`}\n  type=\"article\"\n  jsonLd={jsonLd}\n  sources={entry.data.sources}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/houses/[slug].astro",
+      "bytes": 6761,
+      "sha256": "1e236ccd4815bce7f7f8e1e31f8e8cf21a88ed24055fac9f99fb3778821507ad",
+      "matches": [
+        {
+          "line": 73,
+          "context": "    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Learn', item: 'https://zodiacs.org/learn/' },\n      { '@type': 'ListItem', position: 3, name: 'The houses', item: 'https://zodiacs.org/learn/houses/' },\n      { '@type': 'ListItem', position: 4, name: `The ${ORDINALS[n - 1]} house`, item: `https://zodiacs.org/learn/houses/${slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={entry.data.title}\n  description={entry.data.description}\n  path={`/learn/houses/${slug}/`}\n  type=\"article\"\n  jsonLd={jsonLd}\n  sources={entry.data.sources}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/how-to-read-a-birth-chart.astro",
+      "bytes": 10454,
+      "sha256": "f82f05e949fa8fdb9dc8bda71c8b08e6adb2b977611e1ac1d9f09432f68ec9d4",
+      "matches": [
+        {
+          "line": 39,
+          "context": "    dateModified: '2026-07-07T17:46:41+07:00',\n    author: EDITOR_AUTHOR,\n    publisher: { '@id': 'https://zodiacs.org/#org' },\n    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://zodiacs.org/learn/how-to-read-a-birth-chart/' },\n    inLanguage: 'en',\n    about: 'A four-step method for reading a natal chart: the big three, planets by house, major aspects, and whole-chart patterns.',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title=\"How to Read a Birth Chart, Step by Step | Zodiacs.org\"\n  description=\"A four-step method for reading any natal chart: the big three, planets room by room, the aspects doing the most work, and the whole-chart weather.\"\n  path=\"/learn/how-to-read-a-birth-chart/\"\n  image=\"/assets/og/v2/tool/how-to-read-a-birth-chart.png\"\n  imageAlt=\"How to read a birth chart — Zodiacs.org\"\n  type=\"article\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/placements/[slug].astro",
+      "bytes": 14480,
+      "sha256": "47606269dc3b1b14b3447e163c22e30854987215278e6e4338afa11dd0754f8b",
+      "matches": [
+        {
+          "line": 131,
+          "context": "    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Learn', item: 'https://zodiacs.org/learn/' },\n      { '@type': 'ListItem', position: 3, name: 'Placements', item: 'https://zodiacs.org/learn/placements/' },\n      { '@type': 'ListItem', position: 4, name: `${planet} in ${sign.name}`, item: `https://zodiacs.org/learn/placements/${slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={entry.data.title}\n  description={entry.data.description}\n  path={`/learn/placements/${slug}/`}\n  image={`/assets/og/v2/placements/${pl}.png`}\n  imageAlt={`${planet} in ${sign.name} — Zodiacs.org`}\n  type=\"article\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/planets/[slug].astro",
+      "bytes": 7700,
+      "sha256": "47597c5c0cf7deb891e6cbd863a8f8b074d21729dbf8eda3d4467be59e3a1ccb",
+      "matches": [
+        {
+          "line": 77,
+          "context": "    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Learn', item: 'https://zodiacs.org/learn/' },\n      { '@type': 'ListItem', position: 3, name: 'The planets', item: 'https://zodiacs.org/learn/planets/' },\n      { '@type': 'ListItem', position: 4, name: planet, item: `https://zodiacs.org/learn/planets/${slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={entry.data.title}\n  description={entry.data.description}\n  path={`/learn/planets/${slug}/`}\n  type=\"article\"\n  jsonLd={jsonLd}\n  sources={entry.data.sources}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/lunar-return/index.astro",
+      "bytes": 3985,
+      "sha256": "90def3ce01c0cd0866b7a760cbfe7a9de9dbe3766a126175103fd1c8d0079d23",
+      "matches": [
+        {
+          "line": 15,
+          "context": "  { q: 'What is a lunar return?', a: 'A lunar return is the moment the Moon reaches the same tropical zodiac longitude it occupied at your birth. This tool finds the first return after you calculate, then casts a chart for that moment. Astrologers use it as a short-term reflection chart.' },\n  { q: 'Why do I need my birth time?', a: 'The Moon moves enough during a day that a birth date or Moon sign alone cannot establish the return time. Use a known time and birthplace. If a clock change makes the local birth time ambiguous, check the original record before proceeding.' },\n  { q: 'Which location should I choose?', a: 'The tool defaults to your birthplace. You can also cast the return for another place. The event time and planets stay the same; the rising sign and houses change. Astrology has several traditions for choosing a return location, so the choice is left to you.' },\n  { q: 'Can I save the result?', a: 'You can create a private image of the return chart and reading, then save or share it. You can also download a calendar marker. Names, birth details, and place coordinates are omitted from these files. The result is not added to your saved birth charts.' },\n  { q: 'What dates does the calculator support?', a: 'The calculation accepts resolved birth and reference instants from January 2, 1800, with a latest reference of November 21, 2199. It searches up to 40 days ahead. Historical and distant future dates use the engine’s time model and do not establish exact civil-clock accuracy.' },\n];\nconst jsonLd = [\n  { '@type': 'WebApplication', name: 'Lunar Return Calculator', url: 'https://zodiacs.org/lunar-return/', applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },\n  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },\n];\n---\n<Base clientUi inlineCriticalCss title=\"Lunar Return Calculator — Your Next Moon Return\" description=\"Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar.\" path=\"/lunar-return/\" jsonLd={jsonLd}>\n  <section class=\"section--tight container\">\n    <div class=\"tool-hero\"><h1 class=\"display\">Your lunar return</h1><p>Find the next time the Moon returns to its place in your birth chart. Explore a fresh set of prompts for everyday care, connection, and attention.</p></div>\n    <!-- Use the existing intent trigger and automatic post-load fallback so\n         calculator dependencies do not compete with the first text paint. -->\n    <LunarReturnCalculator client:interaction />\n    <noscript><p>This lunar return calculator needs JavaScript to calculate the chart on your device.</p></noscript>\n  </section>\n  <section class=\"section--tight container container--narrow\">\n    <div class=\"section-head\"><h2>Questions, answered</h2></div>\n    <div class=\"faq\">{faq.map(({ q, a }) => <details class=\"faq__item\"><summary>{q}</summary><p>{a}</p></details>)}</div>\n  </section>\n</Base>"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/mercury-retrograde/2027/index.astro",
+      "bytes": 8106,
+      "sha256": "eb19d01573a095105380e7eeeb5fcf66e815282a553918283c88b6fbbeead940",
+      "matches": [
+        {
+          "line": 74,
+          "context": "  {\n    '@type': 'WebPage',\n    name: `Mercury retrograde ${YEAR}`,\n    url: `https://zodiacs.org/mercury-retrograde/${YEAR}/`,\n    description,\n    isPartOf: { '@type': 'WebPage', url: 'https://zodiacs.org/mercury-retrograde/' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title=\"Mercury Retrograde 2027 — Exact Dates and Stations | Zodiacs.org\"\n  description=\"Every Mercury retrograde window of 2027 with exact dates in universal time and the degree Mercury stations at, plus a calendar file so the windows sit in your own calendar.\"\n  path={`/mercury-retrograde/${YEAR}/`}\n  image=\"/assets/og/v2/tool/mercury-retrograde.png\"\n  imageAlt=\"Mercury retrograde 2027 — Zodiacs.org\"\n  jsonLd={jsonLd}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/mercury-retrograde/index.astro",
+      "bytes": 12067,
+      "sha256": "897510ee4fe96d10c4e4aca570c493770aa091bf60650834e9138c194d03ee7c",
+      "matches": [
+        {
+          "line": 117,
+          "context": "const jsonLd = [\n  {\n    '@type': 'WebPage',\n    name: 'Mercury retrograde dates, 2026–2027',\n    url: 'https://zodiacs.org/mercury-retrograde/',\n    description: 'Exact Mercury retrograde dates for 2026 and 2027, computed from the planet’s real motion, with station positions.',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  dataset,\n  ...eventNodes,\n];\n---\n<Base\n  title=\"Mercury Retrograde Dates 2026 & 2027 — Exact, Computed | Zodiacs.org\"\n  description=\"Every Mercury retrograde through 2027, computed from the planet's real motion: exact dates, station positions, and what the window actually asks of you.\"\n  path=\"/mercury-retrograde/\"\n  image=\"/assets/og/v2/tool/mercury-retrograde.png\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/moon-phase/index.astro",
+      "bytes": 7191,
+      "sha256": "e0148914322cdd8a9ffaf3890204ac8243cf00cf810c8e01772a4042642ce142",
+      "matches": [
+        {
+          "line": 54,
+          "context": "    '@type': 'WebApplication',\n    name: 'Moon Phase Tool',\n    url: 'https://zodiacs.org/moon-phase/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Moon Phase Today & On Your Birthday | Zodiacs.org\"\n  description=\"See tonight's moon phase or look up any date you care about: phase, illumination, and moon sign, free.\"\n  path=\"/moon-phase/\"\n  image=\"/assets/og/v2/tool/moon-phase.png\"\n  imageAlt=\"Moon phase, tonight and any night — Zodiacs.org\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/moon-sign/index.astro",
+      "bytes": 6779,
+      "sha256": "dd97a62dc788edd88507e8452f64883b04575e32fd228d20ab207faab6ebd0ab",
+      "matches": [
+        {
+          "line": 37,
+          "context": "    '@type': 'WebApplication',\n    name: 'Moon Sign Calculator',\n    url: 'https://zodiacs.org/moon-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Moon Sign Calculator — What Is My Moon Sign? | Zodiacs.org\"\n  description=\"Find your moon sign free, in seconds — how you feel, what soothes you, and what you need to feel safe. No signup.\"\n  path=\"/moon-sign/\"\n  image=\"/assets/og/v2/tool/moon-sign.png\"\n  imageAlt=\"Free moon sign calculator — Zodiacs.org\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/numerology/index.astro",
+      "bytes": 10823,
+      "sha256": "6f70d036d85288a0a468d5b2d1bcf7b584fa7ede68d9da3fad559018705bf000",
+      "matches": [
+        {
+          "line": 55,
+          "context": "    '@type': 'WebApplication',\n    name: 'Numerology Calculator',\n    url: 'https://zodiacs.org/numerology/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  inlineCriticalCss\n  title=\"Numerology Calculator — Life Path, Expression, Soul Urge | Zodiacs.org\"\n  description=\"Free numerology calculator: Life Path, Birthday, Expression, Soul Urge, Personality, Maturity, and Personal Year from your name and birth date, computed in your browser.\"\n  path=\"/numerology/\"\n  jsonLd={jsonLd}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/numerology/life-path/[number].astro",
+      "bytes": 10014,
+      "sha256": "7c151d1f8537362cf651ca5062d32b057b27efc5d3ace0d00271b39fa2f04fbc",
+      "matches": [
+        {
+          "line": 87,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Numerology', item: 'https://zodiacs.org/numerology/' },\n      { '@type': 'ListItem', position: 3, name: `Life Path ${number}`, item: url },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: page.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title={page.title}\n  description={page.description}\n  path={path}\n  type=\"article\"\n  jsonLd={jsonLd}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/[sign]/index.astro",
+      "bytes": 7978,
+      "sha256": "febb9fdda517107ed94ed7da8d62bbe24975453751551cace4084f2748b6b175",
+      "matches": [
+        {
+          "line": 61,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org em português', item: 'https://zodiacs.org/pt/' },\n      { '@type': 'ListItem', position: 2, name: 'Signos do zodíaco', item: 'https://zodiacs.org/pt/#signos' },\n      { '@type': 'ListItem', position: 3, name: signName(sign, 'pt'), item: `https://zodiacs.org/pt/${sign.slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={`${guide.title} | Zodiacs.org`}\n  description={guide.description}\n  path={`/pt/${sign.slug}/`}\n  image={`/assets/og/v2/sign/${sign.slug}.png`}\n  imageAlt={`${signName(sign, 'pt')} — guia de signo no Zodiacs.org`}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/baby-zodiac/index.astro",
+      "bytes": 4972,
+      "sha256": "ec6472a254421899d5a88585f12e7c45e34e75f31befb344bfbcd061dbafebb8",
+      "matches": [
+        {
+          "line": 40,
+          "context": "    '@type': 'WebPage',\n    name: 'Zodíaco do bebê: qual será o signo?',\n    url: 'https://zodiacs.org/pt/baby-zodiac/',\n    description: 'Informe a data prevista do parto para ver o signo solar quase certo, os possíveis signos lunares da semana e o que só poderá ser conhecido depois do nascimento.',\n    inLanguage: 'pt-BR',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Qual será o signo do meu bebê? Calculadora | Zodiacs.org\"\n  description=\"Informe a data prevista do parto e veja o signo solar quase certo, os possíveis signos lunares da semana e o que só dá para saber depois do nascimento.\"\n  path=\"/pt/baby-zodiac/\"\n  locale=\"pt\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/birth-chart/index.astro",
+      "bytes": 7397,
+      "sha256": "3b3a19bac15bb16ea95e90653961c5b19576690b97bb78048677c116d3426d8a",
+      "matches": [
+        {
+          "line": 46,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    featureList: 'Sol, Lua, ascendente, planetas de Mercúrio a Plutão, Nodo Norte verdadeiro, casas de signos inteiros e Placidus, aspectos',\n    inLanguage: 'pt-BR',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  {\n    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org em português', item: 'https://zodiacs.org/pt/' },\n      { '@type': 'ListItem', position: 2, name: 'Ferramentas', item: 'https://zodiacs.org/pt/tools/' },\n      { '@type': 'ListItem', position: 3, name: 'Calculadora de mapa astral', item: 'https://zodiacs.org/pt/birth-chart/' },\n    ],\n  },"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/compatibility/index.astro",
+      "bytes": 5614,
+      "sha256": "c5dc8d0389447d2470fb628a669113898408b58127a7ed59ab052aee4c47a75f",
+      "matches": [
+        {
+          "line": 39,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Any',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    description: 'Calculadora gratuita de sinastria para comparar dois mapas astrais no seu dispositivo.',\n    inLanguage: 'pt-BR',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base privateSurface\n  clientUi\n  title=\"Calculadora de compatibilidade astrológica | Zodiacs.org\"\n  description=\"Compare dois mapas astrais grátis e com privacidade no seu navegador, com leituras claras e guias para as 78 combinações de signos.\"\n  path=\"/pt/compatibility/\"\n  locale=\"pt\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/moon-phase/index.astro",
+      "bytes": 3527,
+      "sha256": "f084ce6914222304b844edbe912ab69bd044cf42dfebabe43d2b92a57dab60e8",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/pt/moon-phase/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'pt-BR',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Fase da Lua hoje e no seu aniversário | Zodiacs.org\"\n  description=\"Consulte a fase da Lua hoje e em qualquer data: fase, iluminação e signo lunar, grátis e no seu dispositivo.\"\n  path=\"/pt/moon-phase/\"\n  locale=\"pt\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/moon-sign/index.astro",
+      "bytes": 3809,
+      "sha256": "4de65bdf6fbb6a8a96774c04c73ed42c743c9bc3a1680e974bbd9df95d3e5ed4",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/pt/moon-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'pt-BR',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Calculadora de signo lunar grátis | Zodiacs.org\"\n  description=\"Descubra seu signo lunar grátis: como você vive as emoções, o que traz calma e do que precisa. Calculado no seu dispositivo, sem conta.\"\n  path=\"/pt/moon-sign/\"\n  locale=\"pt\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/rising-sign/index.astro",
+      "bytes": 4942,
+      "sha256": "a8d046b76ddcfb7cba9c2a2aa8643e633e595e5ba65c27631f96eee809396b78",
+      "matches": [
+        {
+          "line": 44,
+          "context": "    url: 'https://zodiacs.org/pt/rising-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'pt-BR',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Calculadora de ascendente grátis | Zodiacs.org\"\n  description=\"Calcule seu ascendente grátis com a hora e o local de nascimento: como as pessoas percebem você de início e qual planeta rege seu mapa.\"\n  path=\"/pt/rising-sign/\"\n  locale=\"pt\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/saturn-return/index.astro",
+      "bytes": 4381,
+      "sha256": "60a3bc1e03d02691777d7efc906f6a7b7ecaf3aa1e26798a49c05d6a1f0617df",
+      "matches": [
+        {
+          "line": 43,
+          "context": "    url: 'https://zodiacs.org/pt/saturn-return/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'pt-BR',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  privateSurface\n  clientUi\n  title=\"Calculadora de retorno de Saturno | Zodiacs.org\"\n  description=\"Descubra grátis as datas exatas do seu retorno de Saturno, incluindo as passagens retrógradas, calculadas no seu dispositivo.\"\n  path=\"/pt/saturn-return/\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/transits/index.astro",
+      "bytes": 5615,
+      "sha256": "ad20676f44f879165b061711841182b21a114d11f01d193eb1e3deb20bf816e2",
+      "matches": [
+        {
+          "line": 43,
+          "context": "    '@type': 'WebPage',\n    name: 'Rastreador de trânsitos: o céu em movimento sobre seu mapa',\n    url: 'https://zodiacs.org/pt/transits/',\n    description: 'O céu em movimento sobre seu mapa astral: trânsitos com orbe máximo de 3 graus, hoje ou em qualquer data até um ano antes ou depois.',\n    inLanguage: 'pt-BR',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Trânsitos de hoje sobre seu mapa astral | Zodiacs.org\"\n  description=\"Os trânsitos de hoje sobre seus planetas natais, com orbe de até 3°, e um controle que move o céu até um ano antes ou depois. Grátis, no seu dispositivo.\"\n  path=\"/pt/transits/\"\n  locale=\"pt\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/retrogrades/index.astro",
+      "bytes": 13801,
+      "sha256": "9b7e06db6a7f870ee13d0cbc1f1cb40243f0a2822249b3b088b9521e61131173",
+      "matches": [
+        {
+          "line": 138,
+          "context": "  {\n    '@type': 'WebPage',\n    name: 'Retrograde planets 2026–2027, dated',\n    url: 'https://zodiacs.org/retrogrades/',\n    description:\n      'Every planetary retrograde for 2026 and 2027 — Mercury through Pluto — with station dates and positions, computed from real motion.',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  dataset,\n  ...eventNodes,\n];\n---\n<Base\n  title=\"Retrograde Planets 2026 & 2027 — Every Window, Dated | Zodiacs.org\"\n  description=\"Which planets are retrograde right now, and when the next windows run: Mercury through Pluto for 2026–2027, station dates and positions for each window.\"\n  path=\"/retrogrades/\"\n  image=\"/assets/og/v2/tool/retrogrades.png\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/rising-sign/[sign].astro",
+      "bytes": 9389,
+      "sha256": "57580fed3e8f04d8b46c5117048109dda2c0d8408f6305bd184ded28f5dc646b",
+      "matches": [
+        {
+          "line": 92,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },\n      { '@type': 'ListItem', position: 2, name: 'Rising sign', item: 'https://zodiacs.org/rising-sign/' },\n      { '@type': 'ListItem', position: 3, name: `${sign.name} rising`, item: `https://zodiacs.org/rising-sign/${sign.slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title={entry.data.title}\n  description={entry.data.description}\n  path={`/rising-sign/${sign.slug}/`}\n  image={`/assets/og/v2/rising/${sign.slug}.png`}\n  imageAlt={`${sign.name} rising — Zodiacs.org`}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/rising-sign/index.astro",
+      "bytes": 7525,
+      "sha256": "ea6f84b56414a02a349c0c79e9bd89352a1410819f284be71f842000bc8f4025",
+      "matches": [
+        {
+          "line": 42,
+          "context": "    '@type': 'WebApplication',\n    name: 'Rising Sign Calculator',\n    url: 'https://zodiacs.org/rising-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Rising Sign Calculator — What Is My Rising Sign? | Zodiacs.org\"\n  description=\"Find your rising sign free with your birth time and place — how people first read you, plus the planet that rules your chart.\"\n  path=\"/rising-sign/\"\n  image=\"/assets/og/v2/tool/rising-sign.png\"\n  imageAlt=\"Free rising sign calculator — Zodiacs.org\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/[sign]/index.astro",
+      "bytes": 10954,
+      "sha256": "62d23cdbe6a8f4460da851f56680c2ac0c37478692da53472cf6851e6cee380e",
+      "matches": [
+        {
+          "line": 61,
+          "context": "    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org на русском', item: 'https://zodiacs.org/ru/' },\n      { '@type': 'ListItem', position: 2, name: 'Знаки зодиака', item: 'https://zodiacs.org/ru/#signs' },\n      { '@type': 'ListItem', position: 3, name: signName(sign, 'ru'), item: `https://zodiacs.org/ru/${sign.slug}/` },\n    ],\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  title={metaTitle}\n  description={metaDescription}\n  path={`/ru/${sign.slug}/`}\n  image={`/assets/og/v2/ru/sign/${sign.slug}.png`}\n  imageAlt={`${signName(sign, 'ru')} — гид по знаку на Zodiacs.org`}"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/baby-zodiac/index.astro",
+      "bytes": 6029,
+      "sha256": "9b135373029da55f4960f9d9299689af1ef751119559d72dd63ee93df4149308",
+      "matches": [
+        {
+          "line": 40,
+          "context": "    '@type': 'WebPage',\n    name: 'Знак ребёнка по дате родов',\n    url: 'https://zodiacs.org/ru/baby-zodiac/',\n    description: 'Предполагаемый солнечный знак, возможные лунные знаки недели и то, что нельзя узнать до точной минуты рождения.',\n    inLanguage: 'ru',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Какой знак зодиака будет у ребёнка — по дате родов\"\n  description=\"Что можно знать о знаках ребёнка до рождения — честно: Солнце почти наверняка, Луна — один из нескольких, асцендент ждёт минуты.\"\n  path=\"/ru/baby-zodiac/\"\n  locale=\"ru\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/birth-chart/index.astro",
+      "bytes": 9342,
+      "sha256": "6b4450e595da8999347d43a6b51c56e3b28754757f0d776e2f2032e79da0c3c1",
+      "matches": [
+        {
+          "line": 45,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    featureList: 'Солнце, Луна, асцендент, планеты от Меркурия до Плутона, Истинный узел, дома целых знаков и Плацидус, аспекты',\n    inLanguage: 'ru',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n  {\n    '@type': 'BreadcrumbList',\n    itemListElement: [\n      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org на русском', item: 'https://zodiacs.org/ru/' },\n      { '@type': 'ListItem', position: 2, name: 'Инструменты', item: 'https://zodiacs.org/ru/tools/' },\n      { '@type': 'ListItem', position: 3, name: 'Натальная карта', item: 'https://zodiacs.org/ru/birth-chart/' },\n    ],\n  },"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/compatibility/index.astro",
+      "bytes": 6987,
+      "sha256": "767f86c5b7b4ba5f64c1d6dfb35ac32a08190ee49b291f27bce56d6bd7e11662",
+      "matches": [
+        {
+          "line": 39,
+          "context": "    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Any',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    description: 'Бесплатное сравнение двух натальных карт на вашем устройстве.',\n    inLanguage: 'ru',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base privateSurface\n  clientUi\n  title=\"Совместимость по натальным картам — синастрия онлайн\"\n  description=\"Сравните две карты: каждый межкартный аспект, рассчитанный честно и приватно на вашем устройстве.\"\n  path=\"/ru/compatibility/\"\n  locale=\"ru\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/moon-phase/index.astro",
+      "bytes": 4131,
+      "sha256": "76f52fc0f1cb4b535fb7fb1e9a6cd09cedcb517bc6ce1657085cb3a10f323def",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/ru/moon-phase/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'ru',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Фаза Луны сегодня и в день рождения — калькулятор\"\n  description=\"Узнайте фазу Луны на любую дату — освещённость, знак и что это значит, без мистики.\"\n  path=\"/ru/moon-phase/\"\n  locale=\"ru\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/moon-sign/index.astro",
+      "bytes": 4737,
+      "sha256": "92c9f640ae2063ce4293e73fbd864999e83ba4bf3ef7b9c9d10630fa8a52c746",
+      "matches": [
+        {
+          "line": 38,
+          "context": "    url: 'https://zodiacs.org/ru/moon-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'ru',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Лунный знак по дате рождения — рассчитать онлайн\"\n  description=\"Найдите свой лунный знак по дате рождения. Считается в браузере, с честными оговорками, когда Луна меняла знак.\"\n  path=\"/ru/moon-sign/\"\n  locale=\"ru\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/rising-sign/index.astro",
+      "bytes": 6468,
+      "sha256": "77e2c78aa02d72c2cd8cd549e470de40ce5fb278f63eff4c490bd216c84a84c7",
+      "matches": [
+        {
+          "line": 44,
+          "context": "    url: 'https://zodiacs.org/ru/rising-sign/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'ru',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Асцендент по времени и месту рождения — рассчитать\"\n  description=\"Асцендент меняется каждые два часа. Рассчитайте свой по дате, времени и месту — приватно в браузере.\"\n  path=\"/ru/rising-sign/\"\n  locale=\"ru\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/saturn-return/index.astro",
+      "bytes": 5339,
+      "sha256": "d840402f55c407053803afb3d8bf796d091b6ba54f45b08e01510f2576cfc927",
+      "matches": [
+        {
+          "line": 43,
+          "context": "    url: 'https://zodiacs.org/ru/saturn-return/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n    inLanguage: 'ru',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  privateSurface\n  clientUi\n  title=\"Возвращение Сатурна: калькулятор дат — когда и что это\"\n  description=\"Годы и точные даты вашего возвращения Сатурна по эфемеридам, с тремя проходами. Введите дату рождения — расчёт в браузере, без регистрации.\"\n  path=\"/ru/saturn-return/\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/transits/index.astro",
+      "bytes": 5102,
+      "sha256": "3482f8a8db52d534c36432a0bd055eaa6325a2cc820f6b25a4740d9a9ecfbd67",
+      "matches": [
+        {
+          "line": 36,
+          "context": "    '@type': 'WebPage',\n    name: 'Транзиты сегодня на фоне вашей карты',\n    url: 'https://zodiacs.org/ru/transits/',\n    description: 'Движущееся небо на фоне натальной карты: транзиты с орбисом до 3 градусов сегодня или на дату в пределах года.',\n    inLanguage: 'ru',\n    isPartOf: { '@id': 'https://zodiacs.org/#site' },\n  },\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Транзиты планет сегодня — к вашей натальной карте\"\n  description=\"Постройте карту и смотрите сегодняшние транзиты к ней — с орбисами, градусами и временем UTC.\"\n  path=\"/ru/transits/\"\n  locale=\"ru\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/saturn-return/index.astro",
+      "bytes": 6347,
+      "sha256": "6128697a7da8567cecad88303598cc86f8fc51a54fbb864435d2203414019c8f",
+      "matches": [
+        {
+          "line": 40,
+          "context": "    '@type': 'WebApplication',\n    name: 'Saturn Return Calculator',\n    url: 'https://zodiacs.org/saturn-return/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  privateSurface\n  clientUi\n  title=\"Saturn Return Calculator — When Is Yours? | Zodiacs.org\"\n  description=\"Find your exact Saturn return dates free: every crossing, retrograde passes included, computed from Saturn's real motion on your device. Just needs your birth date.\"\n  path=\"/saturn-return/\"\n  image=\"/assets/og/v2/tool/saturn-return.png\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/solar-return/index.astro",
+      "bytes": 3643,
+      "sha256": "be97d7aaaf1b689d9ac82955973a2561cc2c4d62ca0cd402024997f6e30cb9e5",
+      "matches": [
+        {
+          "line": 18,
+          "context": "  { q: 'Does my birth time matter for a solar return?', a: `The return instant itself depends only on your birth date's Sun position, which needs your birth time to pin precisely — an unknown time can shift the return by up to about a day, since the Sun moves about a degree in that time. With no birth time we use the Sun at 12:00 UTC on your birth date as the natal reference, the same for every birthplace, and omit the return chart's rising sign, angles, and houses, and say so.` },\n];\nconst jsonLd = [\n  {\n    '@type': 'WebApplication', name: 'Solar Return Calculator', url: 'https://zodiacs.org/solar-return/',\n    applicationCategory: 'LifestyleApplication', operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n  },\n  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },\n];\n---\n<Base\n  clientUi\n  title=\"Solar Return Calculator — Your Birthday Chart for Any Year\"\n  description=\"See the themes shaping your personal year with a solar return chart for any year and location. Free and private by default.\"\n  path=\"/solar-return/\"\n  jsonLd={jsonLd}\n>\n  <section class=\"section--tight container\">\n    <div class=\"tool-hero\">\n      <h1 class=\"display\">Your solar return</h1>\n      <p>See the themes shaping your personal year: where to grow, what needs steadier attention, and which part of life is asking to lead. Choose a year and location to cast the chart.</p>\n    </div>\n    <SolarReturnCalculator client:load />"
+        }
+      ]
+    },
+    {
+      "path": "src/pages/transits/index.astro",
+      "bytes": 6435,
+      "sha256": "4235a236d4478614ba40ec09fc1a49c99c5d15db783c8390281cac6f146082a4",
+      "matches": [
+        {
+          "line": 44,
+          "context": "  {\n    '@type': 'WebPage',\n    name: 'Transit tracker — the sky moving over your chart',\n    url: 'https://zodiacs.org/transits/',\n    description:\n      'See what is active in your birth chart today, then move the date to watch each influence build, peak, and release.',\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n---\n<Base\n  clientUi\n  title=\"Transit Tracker — The Sky Moving Over Your Birth Chart | Zodiacs.org\"\n  description=\"See what is active in your birth chart today, then move the date up to a year forward or back to watch each transit build and release.\"\n  path=\"/transits/\"\n  image=\"/assets/og/v2/tool/transits.png\"\n  imageAlt=\"Transit tracker — Zodiacs.org\""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/void-of-course-moon/index.astro",
+      "bytes": 17185,
+      "sha256": "681d4347e5796c209f4fb68c6de3b2f36fa7fbe53266ac16e026977ae3386084",
+      "matches": [
+        {
+          "line": 98,
+          "context": "    '@type': 'WebApplication',\n    name: 'Void-of-Course Moon Calendar',\n    url: 'https://zodiacs.org/void-of-course-moon/',\n    applicationCategory: 'LifestyleApplication',\n    operatingSystem: 'Web',\n    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },\n  },\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },\n];\n\nconst description = 'Void-of-course Moon times for this month and the next two, to the minute: when each void begins, the last aspect that starts it, and the sign the Moon enters. Shown in your time zone.';\n---\n<Base\n  title=\"Void-of-Course Moon Calendar — Exact Times This Month and Next | Zodiacs.org\"\n  description={description}\n  path=\"/void-of-course-moon/\"\n  jsonLd={jsonLd}"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Source locator only; emitted markup, page purpose and visible questions require a semantic audit.",
+    "No FAQ policy acceptance, production claim or private scan follows from lexical matches."
+  ]
+}

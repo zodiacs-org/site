@@ -1,0 +1,78 @@
+{
+  "schema": "zodiacs.programme-production.v1",
+  "checkedAt": "2026-10-09T06:56:09.440Z",
+  "expectedProductionSourceCommit": "e9a21981eeeb99b34f44b1a2325d80160dcf0fb0",
+  "candidate": {
+    "version": "1.0.0-rc.2",
+    "sha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002",
+    "sourceCommit": "7fa964d2a77d09dbb819b5733b36e303fc7fc513"
+  },
+  "assets": [
+    {
+      "file": "full.BFcekPMZ.js",
+      "bytes": 434,
+      "sha256": "ae3fc5f4f08420d98614c4917cb90694db91e54ea64920c872eb8355ad1ee75f",
+      "gzipBytes": 274
+    },
+    {
+      "file": "rolldown-runtime.DK3Fl9T5.js",
+      "bytes": 158,
+      "sha256": "a526d1bb3288ef04d001028843220a24b0867a4edf8c685b69506d6525af36ff",
+      "gzipBytes": 154
+    },
+    {
+      "file": "chart-adapter.D7gaZnvr.js",
+      "bytes": 479,
+      "sha256": "41da38c04ca48f87a9ed7fcf6810e2a852d51010f4c42fda0c772913b91144b7",
+      "gzipBytes": 304
+    },
+    {
+      "file": "chunk-BXBMGXAW.D4xJfbA0.js",
+      "bytes": 52229,
+      "sha256": "a59637923a7031043153932b57c48ca6cbca3c67aae331066ce7a9491336022a",
+      "gzipBytes": 22941
+    },
+    {
+      "file": "chunk-ZX3QENKK.D45xPG4w.js",
+      "bytes": 3226,
+      "sha256": "c28e92eebc998dc4db3297f11abfbcb273161e88e83042011a2c5faea7cd1595",
+      "gzipBytes": 1199
+    },
+    {
+      "file": "chunk-QJBGSY2B.BRYjR2A8.js",
+      "bytes": 4445,
+      "sha256": "4a470c0bf3d49b7015ab49b73ae6aafcd49e0e1738b9d15f7298f0912f68c707",
+      "gzipBytes": 1784
+    },
+    {
+      "file": "chunk-B5LKF437.7_bxrzb_.js",
+      "bytes": 10911,
+      "sha256": "2fcc3ae0fed6632f10f69fc804cc92c04a7d3ab76e8da8224f75edb38b17708b",
+      "gzipBytes": 6537
+    }
+  ],
+  "openapi": {
+    "bytes": 369938,
+    "sha256": "0e851883d89977ce12e16a02c7f2c8efbec4cc9b08ff64035a35b850fdca2a9e",
+    "matchesBuiltContract": true
+  },
+  "hostedPositions": {
+    "status": "pass",
+    "instants": 2,
+    "bodiesPerInstant": 3,
+    "backend": {
+      "name": "@zodiacs/engine",
+      "version": "1.0.0-rc.2",
+      "ephemeris": {
+        "name": "astronomy-engine",
+        "version": "2.1.19"
+      }
+    },
+    "responseSha256": "d0dcfc17bc8ed6eb4a9f8412e51b71c898f18a4e8b59bf66f5888a0da623c313"
+  },
+  "limitations": [
+    "Source commit is separately verified against Vercel deployment metadata.",
+    "Synthetic public probes establish adoption, not independent numerical accuracy or stable publication.",
+    "No private birth data, account or authentication bypass was used."
+  ]
+}

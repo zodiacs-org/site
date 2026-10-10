@@ -1,0 +1,16 @@
+{
+  "schema": "zodiacs.owner-reference-artifact-recovery-failure.v1",
+  "source": "5f93b34799bc8304eac42151df02a350eae3d1d2",
+  "run": 38044055161,
+  "job": 114189894537,
+  "conclusion": "failure",
+  "reason": "The generated Python here-document closing delimiters had ten extra spaces.",
+  "actualLogSnippets": [
+    "2026-10-10T10:11:47.6020373Z \u001b[36;1mexcept urllib.error.HTTPError as error:\u001b[0m",
+    "2026-10-10T10:11:47.7244563Z /home/runner/work/_temp/4d575adb-9cfc-43f7-bfd7-81d14b3d5cab.sh: line 55: warning: here-document at line 1 delimited by end-of-file (wanted `RECOVER')",
+    "2026-10-10T10:11:47.8157433Z   File \"<stdin>\", line 54",
+    "2026-10-10T10:11:47.8158635Z IndentationError: unexpected indent"
+  ],
+  "correction": "Restore each delimiter to the run block's exact ten-space YAML indent.",
+  "limitation": "Read-only recovery wrapper failure only; passing owner-source browser run 38043660114 remains original and is not rerun."
+}

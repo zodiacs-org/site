@@ -71,6 +71,18 @@ jobs:
       - name: Replay 30 publication days
         run: npm run editorial:daily:replay -- --through "$TARGET_DATE"
 
+      # Assistants read a window of three editions around today's (the day
+      # before, the day of and the day after), so every time zone has its own
+      # "today"; see src/ai-tools/horoscope/window.ts. Best effort on purpose:
+      # it must never block the website's daily publication. On failure the
+      # committed window stays as it was and the window test flags it in CI.
+      - name: Build the assistant horoscope window (best effort)
+        id: window
+        continue-on-error: true
+        run: |
+          npx vite-node --script scripts/build-horoscope-window.ts
+          npx vite-node --script scripts/verify-horoscope-window.ts --replay
+
       # The site build refuses any tree whose Registry outlook is not dated
       # like daily.json (the pairing gate in scripts/registry-research-lib.mjs
       # runs inside `npm run build`), so a commit of the daily package alone
@@ -122,6 +134,7 @@ jobs:
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           PAIRING_OUTCOME: ${{ steps.pairing.outcome }}
+          WINDOW_OUTCOME: ${{ steps.window.outcome }}
           GH_TOKEN: ${{ github.token }}
         run: |
           FILES=(
@@ -130,6 +143,12 @@ jobs:
             "src/data/daily-publication-manifest.json"
             "src/data/horoscope-program.json"
           )
+          if [ "$WINDOW_OUTCOME" = "success" ]; then
+            FILES+=("src/data/horoscope-window.json")
+          else
+            git checkout -- src/data/horoscope-window.json 2>/dev/null || true
+            echo "::warning title=Horoscope window skipped::The assistant horoscope window could not be rebuilt; the website's publication continues without it."
+          fi
           REGISTRY_FILES=(
             "public/assets/data/registry-market-history.v1.json"
             "public/assets/registry-outlook.json"

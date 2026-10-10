@@ -1,0 +1,23 @@
+(node:163057) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:163070) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v3.2.7 /workspace/site
+
+(node:163083) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/mcp-artifact.test.mjs (46 tests) 2664ms
+   ✓ the install check a downloader runs > passes every check against the bundle that ships, and there are as many as the documents say  2361ms
+(node:163134) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/mcp-pack-permissions.test.mjs (1 test) 1568ms
+   ✓ packs the complete npm file selection identically from private and Git checkout permissions  1567ms
+
+ Test Files  2 passed (2)
+      Tests  47 passed (47)
+   Start at  06:05:52
+   Duration  5.63s (transform 366ms, setup 0ms, collect 818ms, tests 4.23s, environment 1ms, prepare 140ms)
+
+(node:163194) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)

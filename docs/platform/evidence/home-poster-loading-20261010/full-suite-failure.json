@@ -1,0 +1,77 @@
+{
+  "schema": "zodiacs.original-full-suite-home-lcp-failure.v1",
+  "source": "6d8b8a112b0ed079875e92e93ddcbf4444b4d658",
+  "tree": "39cec9a839aa274bd77cc4657043220e4b11f434",
+  "integration": "53a3925683b65e72eeb5fb440bf225b51b1728d3",
+  "run": 37973273635,
+  "job": 113965044672,
+  "conclusion": "failure",
+  "jobs": {
+    "passed": 19,
+    "failed": 1
+  },
+  "tests": {
+    "passed": 6966,
+    "skipped": 6
+  },
+  "thesisBrowserPassed": 242,
+  "visualCasesPassed": 15,
+  "lighthouse": {
+    "routesPassed": 29,
+    "failed": "/",
+    "budgetMs": 3100,
+    "homeLcpMs": [
+      3154.710600000001,
+      2554.6804,
+      3154.3239999999996
+    ],
+    "homeCls": [
+      0,
+      0,
+      0
+    ],
+    "homeTbtMs": [
+      0,
+      0,
+      0
+    ],
+    "thesisLcpMs": [
+      2405.187,
+      2418.437,
+      2407.392
+    ],
+    "thesisCls": [
+      0,
+      0,
+      0
+    ],
+    "thesisTbtMs": [
+      0,
+      0,
+      0
+    ],
+    "stalls": 0,
+    "retakes": 0
+  },
+  "unreached": [
+    "Foreign-origin widget integration",
+    "Widget Lighthouse thresholds"
+  ],
+  "artifact": {
+    "id": 11639781725,
+    "bytes": 157960211,
+    "sha256": "4606fb1b7527581ff4b2356baacb0643c1c2fb8bcb675b0a9c285bb851e268b6"
+  },
+  "comparison": {
+    "run": 37977917228,
+    "producer": "ca63ca95a584de93969a901bb2b6ef521ccbd36a",
+    "path": "retained-comparison.json",
+    "bytes": 170750,
+    "sha256": "2d7de31898d610a7e9f3433116214aa124356fa731e9cec00f3c2f8f0e756603"
+  },
+  "limitations": [
+    "Failed source was not merged.",
+    "Raw comparison alone does not establish the cause.",
+    "Candidate must pass changed-source checks, fresh source-bound captures, full suite, review, post-merge checks and canonical production verification."
+  ]
+}

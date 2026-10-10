@@ -1,0 +1,648 @@
+{
+  "schema": "zodiacs.read-only-source-reconciliation.v1",
+  "producer": {
+    "workflowSource": "f224c3675ec6af827a3e5c431cba22ef4d73807b",
+    "run": "38042823824"
+  },
+  "candidate": "63dbcc0df75c655c2476af779f06e99f5a1cd6dd",
+  "main": "943d11decff8c5cd417d315637aac2cf8c55fa01",
+  "mergeExit": 1,
+  "conflictsBefore": [
+    "docs/acceptance/phase1/screenshots/manifest.json"
+  ],
+  "resolutions": [
+    {
+      "path": "docs/acceptance/phase1/screenshots/manifest.json",
+      "choice": "exact current-main tracked manifest",
+      "limitation": "Temporary source reconciliation only. Fresh actual captures must regenerate this receipt before acceptance."
+    }
+  ],
+  "conflicts": [],
+  "entries": [
+    {
+      "path": ".github/phase1-scope-allowance.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b7a13b3c92b82261edab5be91df2644ab4c919a3",
+      "availableOnGitHub": true,
+      "mainSha": "b7a13b3c92b82261edab5be91df2644ab4c919a3",
+      "candidateSha": "acf321fab0374c5681fb8a9baa592d68bf7b8a8a"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-1280.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ff6e17a4c0657c34892a3e4850500ae302cf21ff",
+      "availableOnGitHub": true,
+      "mainSha": "ff6e17a4c0657c34892a3e4850500ae302cf21ff",
+      "candidateSha": "37ce2c5c433f3ed60179dd6823a0e9c22faafd22"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-360.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aec4ea0ea46463840d3aaed8a212597157a3e1c5",
+      "availableOnGitHub": true,
+      "mainSha": "aec4ea0ea46463840d3aaed8a212597157a3e1c5",
+      "candidateSha": "3799088173d556a57e5e678af05d8209ad9492ad"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-1280.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82863d8c848a0a73c85a35f034bfda3b00078e8e",
+      "availableOnGitHub": true,
+      "mainSha": "82863d8c848a0a73c85a35f034bfda3b00078e8e",
+      "candidateSha": "cb1f9db6ca04699dd5faef26d2a9ebc6a74368cb"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-360.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d0de95682399520f6b9ebba760ae22b32dfc50b7",
+      "availableOnGitHub": true,
+      "mainSha": "d0de95682399520f6b9ebba760ae22b32dfc50b7",
+      "candidateSha": "6dcf4831a441e7c3e7ee96d8fc1142e16df76b48"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-1280.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "adcb932e2e7d6d57c85b39db4b5b2494e4143e0b",
+      "availableOnGitHub": true,
+      "mainSha": "adcb932e2e7d6d57c85b39db4b5b2494e4143e0b",
+      "candidateSha": "7ba577f50960dbcce218bb8b2c60e213c7ff46bd"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-360.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac4c8e49110eed52f5b3ff4a7bc2f801f04b6a1f",
+      "availableOnGitHub": true,
+      "mainSha": "ac4c8e49110eed52f5b3ff4a7bc2f801f04b6a1f",
+      "candidateSha": "4c69e73f01f5fd3089250fe3efc6144c5b3f33a0"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-1280.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ef2f7b5b02ed6563d24942149270a81f5c5b5e3",
+      "availableOnGitHub": true,
+      "mainSha": "0ef2f7b5b02ed6563d24942149270a81f5c5b5e3",
+      "candidateSha": "d9450e46f1e8e1dbd959178940c4d54ca402035b"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-360.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "08dcf332594b97a505b1e0278e616a8f942a38b3",
+      "availableOnGitHub": true,
+      "mainSha": "08dcf332594b97a505b1e0278e616a8f942a38b3",
+      "candidateSha": "bd9636af4e37179051a8e85a4326244ff1e9d670"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3643e593e26f854b28b87544a29f85b671b4d973",
+      "availableOnGitHub": true,
+      "mainSha": "3643e593e26f854b28b87544a29f85b671b4d973",
+      "candidateSha": "cc5eb4f7a956710924b33872d1afd45b824a5e92"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "96e181b319dcdc183ae514672a27521b9cb0e7b4",
+      "availableOnGitHub": true,
+      "mainSha": "96e181b319dcdc183ae514672a27521b9cb0e7b4",
+      "candidateSha": "de16f34f19d76c9bb9280bb1a55fdfff8c58ecce"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-360.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "44cacbee5de42022e78501e2c34e077a1fb0aa7f",
+      "availableOnGitHub": true,
+      "mainSha": "44cacbee5de42022e78501e2c34e077a1fb0aa7f",
+      "candidateSha": "c95296e0538da96185702f5b515df067f6ee05c9"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-1280.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "475fa98ac3ffbd6fc12fb0d36c8ac1d35a31c979",
+      "availableOnGitHub": true,
+      "mainSha": "475fa98ac3ffbd6fc12fb0d36c8ac1d35a31c979",
+      "candidateSha": "721dba7aa9ee40efa902c89081b798c0354d779f"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-360.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b74cd3a069d67e857d08b2d7012a73d1fc2c6635",
+      "availableOnGitHub": true,
+      "mainSha": "b74cd3a069d67e857d08b2d7012a73d1fc2c6635",
+      "candidateSha": "695d932d4f393b624cebfb80fe730845a56a8702"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-1280.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b1a1c22018a1bcc30717e6f59dc50e3b390528a",
+      "availableOnGitHub": true,
+      "mainSha": "7b1a1c22018a1bcc30717e6f59dc50e3b390528a",
+      "candidateSha": "31ef7964feac766722e1d151b84ba0f21c6359cd"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-360.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "91433bf26a0bb3d3191f9b5b73d250f818041914",
+      "availableOnGitHub": true,
+      "mainSha": "91433bf26a0bb3d3191f9b5b73d250f818041914",
+      "candidateSha": "3e40fc8fab5f9fa86ea8b81bf2ef16031465183d"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-1280.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3830145f7cead198c40ac90ea59b04b90b3b2e88",
+      "availableOnGitHub": true,
+      "mainSha": "3830145f7cead198c40ac90ea59b04b90b3b2e88",
+      "candidateSha": "3fe542398d98e3334d6197e16b446bfeceae041e"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-360.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "719fc8c3b4b370270520de1f29afc7256a5de004",
+      "availableOnGitHub": true,
+      "mainSha": "719fc8c3b4b370270520de1f29afc7256a5de004",
+      "candidateSha": "b1a322a0862b7e10d809363fdfe408f16661477a"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-1280.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef31caf573550d573848eeb0859c8637760d3bd5",
+      "availableOnGitHub": true,
+      "mainSha": "ef31caf573550d573848eeb0859c8637760d3bd5",
+      "candidateSha": "9f65a083666979922452f5f3b126550d085a3c3f"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-360.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2bcd175198220e31295a7969a7a2966419054c04",
+      "availableOnGitHub": true,
+      "mainSha": "2bcd175198220e31295a7969a7a2966419054c04",
+      "candidateSha": "bd14b3e317ec61a32a657ef6ea872f4064044b53"
+    },
+    {
+      "path": "public/archive/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc040a7bd3e0a517833ab2be0323e71401639f98",
+      "availableOnGitHub": true,
+      "mainSha": "dc040a7bd3e0a517833ab2be0323e71401639f98",
+      "candidateSha": "7585a3ea4773ee3e15379443cb566207adc41712"
+    },
+    {
+      "path": "public/assets/app.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "973055bfccc3df744b50c00286c8236a5910720e",
+      "availableOnGitHub": true,
+      "mainSha": "973055bfccc3df744b50c00286c8236a5910720e",
+      "candidateSha": "26e5ebf78dce346676aeea14f6b90fb8dad2f1a4"
+    },
+    {
+      "path": "public/assets/data/registry-market-history.v1.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5edd66521c9cbb18987248b6b68f7ed836f51081",
+      "availableOnGitHub": true,
+      "mainSha": "5edd66521c9cbb18987248b6b68f7ed836f51081",
+      "candidateSha": "3d2feea4f591a396d967c7a7f042f04b58a7c5a1"
+    },
+    {
+      "path": "public/assets/data/registry-research/index.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "264b1e12b31206b932cd41e83a2d89186a7c9752",
+      "availableOnGitHub": true,
+      "mainSha": "264b1e12b31206b932cd41e83a2d89186a7c9752",
+      "candidateSha": "c99478ffc61a2c27d0c383711bf5670a57e09994"
+    },
+    {
+      "path": "public/assets/data/registry-research/items/zrx-daily-market-brief-2026-10-10.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f767a579f3da1b0d9d6b502178875120ee96a6c",
+      "availableOnGitHub": true,
+      "mainSha": "4f767a579f3da1b0d9d6b502178875120ee96a6c",
+      "candidateSha": null
+    },
+    {
+      "path": "public/assets/data/registry-research/items/zrx-market-check-2026-10-03-observation-168h.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26896071667e734518007d6850d91e070c068061",
+      "availableOnGitHub": true,
+      "mainSha": "26896071667e734518007d6850d91e070c068061",
+      "candidateSha": null
+    },
+    {
+      "path": "public/assets/data/registry-research/items/zrx-market-check-2026-10-08-observation-24h.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "367a4bb0dfa17c3c03113e5ef58aa639ae5cadfd",
+      "availableOnGitHub": true,
+      "mainSha": "367a4bb0dfa17c3c03113e5ef58aa639ae5cadfd",
+      "candidateSha": null
+    },
+    {
+      "path": "public/assets/data/registry-research/items/zrx-market-check-2026-10-09-observation-24h.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3946225b6c2c9674c3b77cdf4ade925685337cd",
+      "availableOnGitHub": true,
+      "mainSha": "b3946225b6c2c9674c3b77cdf4ade925685337cd",
+      "candidateSha": null
+    },
+    {
+      "path": "public/assets/data/registry-research/items/zrx-market-check-2026-10-10.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56fe7e1d42dc5de2b4c431ccc4c01f8e000703ad",
+      "availableOnGitHub": true,
+      "mainSha": "56fe7e1d42dc5de2b4c431ccc4c01f8e000703ad",
+      "candidateSha": null
+    },
+    {
+      "path": "public/assets/registry-outlook.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09735365e5b26547af4db76713f43207cc40c22a",
+      "availableOnGitHub": true,
+      "mainSha": "09735365e5b26547af4db76713f43207cc40c22a",
+      "candidateSha": "e79fb7ead0555ea47d54d7b0adc9f66d3d999d18"
+    },
+    {
+      "path": "public/assets/registry-research-feed.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af8728b7aee0b4ac9c8bc33dc6d3ab9163c8e42a",
+      "availableOnGitHub": true,
+      "mainSha": "af8728b7aee0b4ac9c8bc33dc6d3ab9163c8e42a",
+      "candidateSha": "04544b08970354c144f6e9fc3df99fac61ff40b7"
+    },
+    {
+      "path": "public/assets/site-footer.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2953e4d8a146ff41d300d46d5669bc82869e34b",
+      "availableOnGitHub": true,
+      "mainSha": "d2953e4d8a146ff41d300d46d5669bc82869e34b",
+      "candidateSha": "d64be4f41d5c836ab95a03f37aea2dc16f2f8559"
+    },
+    {
+      "path": "public/astrofolio/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "57d30ab324e2a1645b8bcf77dcd3f4815c6fba9a",
+      "availableOnGitHub": false,
+      "mainSha": "d5a419251e53653aa3c837475d319477cd810c2e",
+      "candidateSha": "2d08784386565f7721375159989140d3a9d8f09f"
+    },
+    {
+      "path": "public/registry/aquarius/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ce0cb4094727f7082d2dd4640afe806ec2e0c54",
+      "availableOnGitHub": true,
+      "mainSha": "4ce0cb4094727f7082d2dd4640afe806ec2e0c54",
+      "candidateSha": "50f3db7b058dec6f10f166121f9f3132550869f3"
+    },
+    {
+      "path": "public/registry/aries/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15e468a75689891d48188a76d4cf55d71a08ddaa",
+      "availableOnGitHub": true,
+      "mainSha": "15e468a75689891d48188a76d4cf55d71a08ddaa",
+      "candidateSha": "51b4f6386d3401eaf0271c1f27fe0bcb4959f812"
+    },
+    {
+      "path": "public/registry/cancer/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a8e71eaef2e9535a06e40bcdf0effff6bdae3a9",
+      "availableOnGitHub": true,
+      "mainSha": "6a8e71eaef2e9535a06e40bcdf0effff6bdae3a9",
+      "candidateSha": "770667296738dae936613914535aa171a0193aab"
+    },
+    {
+      "path": "public/registry/capricorn/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54cd6145f094dd96438338345f9c11742e60d8ae",
+      "availableOnGitHub": true,
+      "mainSha": "54cd6145f094dd96438338345f9c11742e60d8ae",
+      "candidateSha": "49fe8eb9dfedc105480796bd35f987382c58001c"
+    },
+    {
+      "path": "public/registry/gemini/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d327c50643f5ec31f13fda9f8832c7ecd96660a",
+      "availableOnGitHub": true,
+      "mainSha": "6d327c50643f5ec31f13fda9f8832c7ecd96660a",
+      "candidateSha": "e46ede7ff2651a94c423fac15c0c96104ba88e38"
+    },
+    {
+      "path": "public/registry/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2336acf592b054a5511404633867b11e9df07aa",
+      "availableOnGitHub": true,
+      "mainSha": "a2336acf592b054a5511404633867b11e9df07aa",
+      "candidateSha": "dd80896d9a3da04451f5fbabb3f32915a67de202"
+    },
+    {
+      "path": "public/registry/leo/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd6f2e18a8c8523a4015a010f2f50fada3cc88c0",
+      "availableOnGitHub": true,
+      "mainSha": "fd6f2e18a8c8523a4015a010f2f50fada3cc88c0",
+      "candidateSha": "d734754e31a49cdd50b6758b75b93815f866b69e"
+    },
+    {
+      "path": "public/registry/libra/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "265229375dbb92401225bab25ae4e8e19cb91daa",
+      "availableOnGitHub": true,
+      "mainSha": "265229375dbb92401225bab25ae4e8e19cb91daa",
+      "candidateSha": "095c70e56c2f6f79e77f7ebb494197dd0ebc0580"
+    },
+    {
+      "path": "public/registry/pisces/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60240104579baad356ba9785409eaddff34ac678",
+      "availableOnGitHub": true,
+      "mainSha": "60240104579baad356ba9785409eaddff34ac678",
+      "candidateSha": "4230542734267576ed3fb9ae51f89e347eef9073"
+    },
+    {
+      "path": "public/registry/sagittarius/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4cb0bf167959fd27a438587b7966d3ee9da9c035",
+      "availableOnGitHub": true,
+      "mainSha": "4cb0bf167959fd27a438587b7966d3ee9da9c035",
+      "candidateSha": "dfba6424d08e8b66a66253d608eb72cb267f69ce"
+    },
+    {
+      "path": "public/registry/scorpio/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa4251863488fbeac8f79d4f2702e2cdd9dd1cce",
+      "availableOnGitHub": true,
+      "mainSha": "aa4251863488fbeac8f79d4f2702e2cdd9dd1cce",
+      "candidateSha": "cb793e0be7ef9a2381fecdb94aa19884b3b25baf"
+    },
+    {
+      "path": "public/registry/taurus/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e46701b869c4eafd5e7818f11bafe178c1f6a99b",
+      "availableOnGitHub": true,
+      "mainSha": "e46701b869c4eafd5e7818f11bafe178c1f6a99b",
+      "candidateSha": "3edbd0c7ffd2dcdbdce1b1a6453fb02bc1049fee"
+    },
+    {
+      "path": "public/registry/technical/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b21c95f54c33fec6f142229057143a94bf99a4d",
+      "availableOnGitHub": true,
+      "mainSha": "1b21c95f54c33fec6f142229057143a94bf99a4d",
+      "candidateSha": "490f51a15d633724f90345512d92df73cd53cd71"
+    },
+    {
+      "path": "public/registry/virgo/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e2a1073e8fc0abf3f6e15a2e7346082c9111518",
+      "availableOnGitHub": true,
+      "mainSha": "9e2a1073e8fc0abf3f6e15a2e7346082c9111518",
+      "candidateSha": "b57dd664b80b6fabc2ef73ff77db61a4195d4312"
+    },
+    {
+      "path": "public/sdk/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a7ab29a6cecd15f81825509da58d6c3018b920e",
+      "availableOnGitHub": true,
+      "mainSha": "8a7ab29a6cecd15f81825509da58d6c3018b920e",
+      "candidateSha": "f88d8334750c64bd5c14bc5acb9b190625d3cc38"
+    },
+    {
+      "path": "public/terminal/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b19f3cef96b726b25e27fb83e4f7ebb023a5cc34",
+      "availableOnGitHub": false,
+      "mainSha": "2d963463ce49e5bcf2a52c600b743ccb068a77b8",
+      "candidateSha": "5fbec23d6b2fcfa80306fb836539761d632dd3eb"
+    },
+    {
+      "path": "public/terminal/markets/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3799f503da7c2c677a61da232dc638510e306927",
+      "availableOnGitHub": true,
+      "mainSha": "3799f503da7c2c677a61da232dc638510e306927",
+      "candidateSha": "272c9fada60fc32ebb5a97ebc346c5eacff0f2ef"
+    },
+    {
+      "path": "public/thesis/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e97398a89f76af50031955b641bd2530134e3a18",
+      "availableOnGitHub": false,
+      "mainSha": "304b5bda62e3d7273590619f4cb94d2fdfecfb69",
+      "candidateSha": "351c44386554cfb1f36e97bfb153c501b353e02d"
+    },
+    {
+      "path": "scripts/registry-consumer-contract.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a0bd53b0e314e846bb084dfe53d7120eade291da",
+      "availableOnGitHub": true,
+      "mainSha": "a0bd53b0e314e846bb084dfe53d7120eade291da",
+      "candidateSha": "077a779faa899810d626d2f6ea3ef0c5979608b6"
+    },
+    {
+      "path": "scripts/wing-nav.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "df2ca3e48d0d7f7bd5a95e0e6f4e7fb443be699b",
+      "availableOnGitHub": true,
+      "mainSha": "df2ca3e48d0d7f7bd5a95e0e6f4e7fb443be699b",
+      "candidateSha": "84b261c3f23161f7cbea0c8c21421f26eb01a59c"
+    },
+    {
+      "path": "src/app.jsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ce99884baaeb48bb640cf0151db4df50295a877",
+      "availableOnGitHub": true,
+      "mainSha": "4ce99884baaeb48bb640cf0151db4df50295a877",
+      "candidateSha": "7ff42807b21d3a17a7ad841610ce9fc29e67ec0a"
+    },
+    {
+      "path": "src/components/SiteNav.astro",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3168d022af563aeaf79fe976c1567131d428e6f",
+      "availableOnGitHub": true,
+      "mainSha": "c3168d022af563aeaf79fe976c1567131d428e6f",
+      "candidateSha": "b78e85285b18346b17dd218e8665f837941f9da0"
+    },
+    {
+      "path": "src/components/ToolEmblem.astro",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eebf2ed28de8c201e45e6fed995265a5b1e171d2",
+      "availableOnGitHub": true,
+      "mainSha": "eebf2ed28de8c201e45e6fed995265a5b1e171d2",
+      "candidateSha": "080286787cb0a45438e7817585cfbe7e1ba5a35b"
+    },
+    {
+      "path": "src/data/daily-publication-manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58d46772ed52b0a2e85f68e16db3ec2fd9809610",
+      "availableOnGitHub": true,
+      "mainSha": "58d46772ed52b0a2e85f68e16db3ec2fd9809610",
+      "candidateSha": "f18abb5fc2645d512ec817594ab3cc3b19be4f4f"
+    },
+    {
+      "path": "src/data/daily-publication.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be02cc24cbda2d09f59894054a66a2508b217799",
+      "availableOnGitHub": true,
+      "mainSha": "be02cc24cbda2d09f59894054a66a2508b217799",
+      "candidateSha": "79b9384d219db0cca312ee7b1988162fd1aa78dc"
+    },
+    {
+      "path": "src/data/daily.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f06218fc83d98c32efadf7188fe06cc86ef19c90",
+      "availableOnGitHub": true,
+      "mainSha": "f06218fc83d98c32efadf7188fe06cc86ef19c90",
+      "candidateSha": "0eda4d93b7437e0e766d0ebca49262291dcf658e"
+    },
+    {
+      "path": "src/data/horoscope-program.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d583800a91fd6fe7052997515935f7c74c15b58",
+      "availableOnGitHub": true,
+      "mainSha": "6d583800a91fd6fe7052997515935f7c74c15b58",
+      "candidateSha": "db495e9725a8a7e0971684ad3f8b1bc30f0212da"
+    },
+    {
+      "path": "src/data/horoscope-window.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e6131295f142aa1e6db30ad245d1b77c86027c5",
+      "availableOnGitHub": true,
+      "mainSha": "4e6131295f142aa1e6db30ad245d1b77c86027c5",
+      "candidateSha": "c304a64e2c3b7e51561ea52006fa022f9110f344"
+    },
+    {
+      "path": "src/data/registry-research/drafts.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9946ecdd8e1a5bee09214b1f17f952841e717c73",
+      "availableOnGitHub": true,
+      "mainSha": "9946ecdd8e1a5bee09214b1f17f952841e717c73",
+      "candidateSha": "442628bfd4bc9ea94eed1f9ad175523488c9fbd8"
+    },
+    {
+      "path": "src/data/registry-research/publication.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "264b1e12b31206b932cd41e83a2d89186a7c9752",
+      "availableOnGitHub": true,
+      "mainSha": "264b1e12b31206b932cd41e83a2d89186a7c9752",
+      "candidateSha": "c99478ffc61a2c27d0c383711bf5670a57e09994"
+    },
+    {
+      "path": "src/islands/RaceBoard.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "948946eef484acd33f4c0e3daf753b4238ba9248",
+      "availableOnGitHub": true,
+      "mainSha": "948946eef484acd33f4c0e3daf753b4238ba9248",
+      "candidateSha": "413565a86a791ad7698945207452323a595642d2"
+    },
+    {
+      "path": "src/pages/tools/index.astro",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82a35314c62f69425e0890537e5d0c0ecb802810",
+      "availableOnGitHub": true,
+      "mainSha": "82a35314c62f69425e0890537e5d0c0ecb802810",
+      "candidateSha": "19782920bd5d2d0effa7df0e3603872c60f00704"
+    },
+    {
+      "path": "src/styles/race.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e8dc7421dd9c70532fd2bdfb28d67f525f90893",
+      "availableOnGitHub": true,
+      "mainSha": "7e8dc7421dd9c70532fd2bdfb28d67f525f90893",
+      "candidateSha": "9c42760feecbd1ebd4d0743c27c5554a692f3d4b"
+    },
+    {
+      "path": "src/styles/site-footer.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2953e4d8a146ff41d300d46d5669bc82869e34b",
+      "availableOnGitHub": true,
+      "mainSha": "d2953e4d8a146ff41d300d46d5669bc82869e34b",
+      "candidateSha": "d64be4f41d5c836ab95a03f37aea2dc16f2f8559"
+    },
+    {
+      "path": "src/terminal/split-styles.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a085bcd09bec0f220db2b1b1df4623e1034d89b9",
+      "availableOnGitHub": true,
+      "mainSha": "a085bcd09bec0f220db2b1b1df4623e1034d89b9",
+      "candidateSha": "bacc20dff8e21732cee5dc6eb9b18a1baaeae2fb"
+    },
+    {
+      "path": "tests/terminal-split-drive.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d10541761413ae513d7feea23f46dc1f2f3271b9",
+      "availableOnGitHub": true,
+      "mainSha": "d10541761413ae513d7feea23f46dc1f2f3271b9",
+      "candidateSha": "1278a4238b35c5ff358d3b876a28c4fedc697e21"
+    }
+  ],
+  "limitations": [
+    "Local Git source merge only; no build, browser, performance, acceptance, remote push or deployment.",
+    "Current-main design, navigation, daily publication and actual PNG objects are preserved."
+  ]
+}

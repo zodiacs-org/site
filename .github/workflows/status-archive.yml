@@ -1,0 +1,52 @@
+name: Status archive
+
+# Once a day, saves the public incident lists of ten status pages for the
+# Mercury Retrograde Reality Check (Mercury retrograde 24 Oct–13 Nov 2026).
+# Statuspage feeds show only their 50 most recent incidents, so a daily copy
+# keeps the full record. Each day's copy is a workflow artifact kept 90 days;
+# nothing is committed and no secret is used. The results write-up will commit
+# the combined record. Pull requests that change this job run it once as a test.
+
+on:
+  schedule:
+    - cron: "41 3 * * *" # 03:41 UTC daily
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/status-archive.yml
+      - scripts/status-archive.mjs
+
+permissions:
+  contents: read
+
+concurrency:
+  group: status-archive-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    name: Save public status-page incidents
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+
+      - name: Save the feeds
+        id: save
+        run: |
+          echo "day=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+          node scripts/status-archive.mjs --out "$RUNNER_TEMP/status-archive"
+
+      - name: Keep the day's copy
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: status-archive-${{ steps.save.outputs.day }}${{ github.event_name == 'pull_request' && '-test' || '' }}
+          path: ${{ runner.temp }}/status-archive/
+          retention-days: 90
+          if-no-files-found: error

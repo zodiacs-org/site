@@ -1,0 +1,142 @@
+{
+  "schema": "zodiacs.040-local-day-probe.v1",
+  "capturedAt": "2026-10-07T05:09:05.747Z",
+  "host": "Official MCP client; not a ChatGPT/Claude host test",
+  "calls": [
+    {
+      "zone": "Asia/Bangkok",
+      "utcDate": "2026-10-07",
+      "expectedLocalDate": "2026-10-07",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": true,
+        "tool": "get_horoscope",
+        "data": {
+          "status": "available",
+          "sign": "leo",
+          "signName": "Leo",
+          "period": "day",
+          "focus": "general",
+          "date": "2026-10-07",
+          "dateLabel": "Wednesday 7 October",
+          "zone": "Asia/Bangkok",
+          "zoneLabel": "Bangkok",
+          "zoneSource": "request",
+          "reading": {
+            "title": "Leo · Wednesday 7 October",
+            "paragraphs": [
+              {
+                "text": "Today, check the budget of time, attention, and material resources. For Leo, presence is strongest when the point is clearer than the performance. The waning crescent Moon puts your money, possessions, and priorities on the day’s agenda."
+              },
+              {
+                "text": "Before agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury in Scorpio brings attention to home, family, and your private life."
+              },
+              {
+                "text": "Choose one visible first move and make it before asking the room for permission. Mars sextile Uranus connects your identity and how you present yourself with friends, groups, and plans for the future."
+              }
+            ]
+          },
+          "why": {
+            "note": "These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.",
+            "facts": [
+              {
+                "text": "Mars sextile Uranus",
+                "when": "Wed 7 Oct, 5:41 pm"
+              },
+              {
+                "text": "Moon at 5° Virgo",
+                "when": "Wed 7 Oct, 7:00 pm"
+              },
+              {
+                "text": "Mercury at 8° Scorpio",
+                "when": "Wed 7 Oct, 7:00 pm"
+              }
+            ],
+            "houses": [
+              "Moon in Virgo: your 2nd solar house",
+              "Mercury in Scorpio: your 4th solar house",
+              "Mars in Leo: your 1st solar house",
+              "Uranus in Gemini: your 11th solar house"
+            ]
+          },
+          "disclosure": "For reflection. Astrology does not establish what will happen in your life."
+        },
+        "links": [
+          {
+            "title": "Leo on Zodiacs",
+            "url": "https://zodiacs.org/horoscopes/leo/"
+          },
+          {
+            "title": "How we calculate",
+            "url": "https://zodiacs.org/methodology/"
+          }
+        ]
+      }
+    },
+    {
+      "zone": "America/Los_Angeles",
+      "utcDate": "2026-10-07",
+      "expectedLocalDate": "2026-10-06",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": true,
+        "tool": "get_horoscope",
+        "data": {
+          "status": "available",
+          "sign": "leo",
+          "signName": "Leo",
+          "period": "day",
+          "focus": "general",
+          "date": "2026-10-06",
+          "dateLabel": "Tuesday 6 October",
+          "zone": "America/Los_Angeles",
+          "zoneLabel": "Los Angeles",
+          "zoneSource": "request",
+          "reading": {
+            "title": "Leo · Tuesday 6 October",
+            "paragraphs": [
+              {
+                "text": "Today, make your own position visible before reacting to the room. For Leo, presence is strongest when the point is clearer than the performance. The waning crescent Moon puts your identity and how you present yourself on the day’s agenda."
+              },
+              {
+                "text": "Before agreeing to another plan, check what you need at home and make time for it. In this reading, Mercury in Scorpio brings attention to home, family, and your private life."
+              },
+              {
+                "text": "Connect your identity and how you present yourself with home, family, and your private life; choose the contribution you would still value without applause."
+              }
+            ]
+          },
+          "why": {
+            "note": "These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart.",
+            "facts": [
+              {
+                "text": "Moon at 21° Leo",
+                "when": "Tue 6 Oct, 5:00 am"
+              },
+              {
+                "text": "Mercury at 7° Scorpio",
+                "when": "Tue 6 Oct, 5:00 am"
+              }
+            ],
+            "houses": [
+              "Moon in Leo: your 1st solar house",
+              "Mercury in Scorpio: your 4th solar house"
+            ]
+          },
+          "disclosure": "For reflection. Astrology does not establish what will happen in your life."
+        },
+        "links": [
+          {
+            "title": "Leo on Zodiacs",
+            "url": "https://zodiacs.org/horoscopes/leo/"
+          },
+          {
+            "title": "How we calculate",
+            "url": "https://zodiacs.org/methodology/"
+          }
+        ]
+      }
+    }
+  ],
+  "passed": true
+}

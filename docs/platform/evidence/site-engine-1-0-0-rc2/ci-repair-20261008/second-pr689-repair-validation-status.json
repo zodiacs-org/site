@@ -1,0 +1,32 @@
+[
+  {
+    "check": "production-flags-build",
+    "exit": 0,
+    "seconds": 244.624
+  },
+  {
+    "check": "default-build",
+    "exit": 0,
+    "seconds": 225.04
+  },
+  {
+    "check": "typecheck",
+    "exit": 0,
+    "seconds": 99.032
+  },
+  {
+    "check": "compatibility-browser",
+    "exit": 0,
+    "seconds": 152.857
+  },
+  {
+    "check": "captures",
+    "exit": 0,
+    "seconds": 47.694
+  },
+  {
+    "check": "full-tests",
+    "exit": 1,
+    "seconds": 652.843
+  }
+]

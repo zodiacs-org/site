@@ -1,0 +1,30 @@
+{
+  "schema": "zodiacs.thesis-first-paint-preflight-failure.v2",
+  "source": "dadc59afab302a70e7a36b3ee475791aca3696ed",
+  "producer": "548591b7dcbd66d25af1ff785c5897afaa065b0d",
+  "run": 37955948277,
+  "job": 113906374403,
+  "stage": "Existing three-sample thesis performance gate",
+  "performance": {
+    "roundedWorstLcpSeconds": 2.56,
+    "limitSeconds": 2.5,
+    "stalls": 0,
+    "retakes": 0,
+    "exactSamples": "Await read-only extraction"
+  },
+  "passed": {
+    "sourceSyntax": true,
+    "buildAndDist": true,
+    "sourceContracts": 42,
+    "thesisBrowser": 232
+  },
+  "browserScope": "Existing default-feature browser drive, exact unchanged script sha370a6be6f57745eec3e7b1f3ccdb1576cd206d3f. Full-site CI's feature flags retain its wider case count.",
+  "artifact": {
+    "id": 11627987119,
+    "bytes": 3044541,
+    "sha256": "f05a12ed0dd38ead4b3e35e3e244f906afdebbd7d0ef7419745e1f2b040c3f54"
+  },
+  "logSha256": "dea0ac71ad00b6f5919732d98f65fe68940b0e34d943e3fc1e1ce718c1d979a5",
+  "acceptance": "blocked; source change not advanced to active PR",
+  "limitation": "No full-site or new accepted completion; delayed initialization did not clear the unchanged gate."
+}

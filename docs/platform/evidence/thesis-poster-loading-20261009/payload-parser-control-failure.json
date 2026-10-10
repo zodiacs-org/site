@@ -1,0 +1,31 @@
+{
+  "schema": "zodiacs.thesis-payload-parser-control-failure.v1",
+  "source": "943567ec145e9a1cf6a0b499e422fabe3180fba4",
+  "producer": "2d3b3829ad84e6f1e56aa507f2a318bbd4b50349",
+  "run": 37958923593,
+  "job": 113916466845,
+  "stage": "Existing thesis contracts and footer transform controls",
+  "passed": 44,
+  "failed": 1,
+  "failedControl": "Invalid CSS must be refused before writing built HTML",
+  "cause": "The CSS parser returns recoverable syntax warnings rather than rejecting the malformed fixture; the transform did not yet reject those warnings.",
+  "browser": "not reached",
+  "lighthouse": "not reached",
+  "builtPayload": {
+    "bytes": 333529,
+    "sha256": "68520de474ecb4cfe7654264a921af02c2746b77eab72b5abe23683c5201baf1",
+    "gzipBytes": 71017,
+    "canonicalFooterBytes": 12153,
+    "canonicalFooterSha256": "1a606e00e8e5da140a83bee475e026fbbd5a79be164354033343bba04947cbad",
+    "heroInitializerBytes": 23686,
+    "heroInitializerSha256": "e5bfa20e13b187ba081be6175250513534185cb3f212ff2f91e46e335cebe169"
+  },
+  "logSha256": "6bc3d1016575651df04ce0194d5613c6af143500ca3d32ca982541694aebe254",
+  "artifact": {
+    "id": 11630666799,
+    "bytes": 842,
+    "sha256": "6d420e490c83eb066aae9afa4ba670a84afd93a9654fdb9bb250c0f3c037c5a4"
+  },
+  "correctedSource": "eefaae0e33e744329d850142addc1c53a48469e9",
+  "acceptance": "none; failure retained"
+}

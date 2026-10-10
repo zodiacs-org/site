@@ -1,0 +1,4082 @@
+{
+  "schema": "zodiacs.retained-thesis-loading.v2",
+  "producer": {
+    "source": "b1e49d35a3db6aa437a0c84d192861b4059b4867",
+    "run": "37957154984"
+  },
+  "limitations": [
+    "Read-only retained reports; no browser gate rerun and no causality claim"
+  ],
+  "checkedOutSource": "dadc59afab302a70e7a36b3ee475791aca3696ed",
+  "checkoutBinding": "Producer workflow pins the checkout and verifies source bytes before parsing every inline classic script; the producer head differs from checkout head.",
+  "samples": [
+    {
+      "source": "548591b7dcbd66d25af1ff785c5897afaa065b0d",
+      "runId": 37955948277,
+      "artifactId": 11627987119,
+      "artifactSha256": "f05a12ed0dd38ead4b3e35e3e244f906afdebbd7d0ef7419745e1f2b040c3f54",
+      "reports": [
+        {
+          "file": "lighthouse/thesis-1.json",
+          "sha256": "e455229bae4f45a1cce296f5cd8a1e2a399a4e126a35922e648abac22a3e285f",
+          "lcp": 2560.2664000000004,
+          "performance": 0.96,
+          "cls": 0.0004587407989351434,
+          "tbt": 0,
+          "environment": {
+            "networkUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36",
+            "hostUserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.0.0 Safari/537.36",
+            "benchmarkIndex": 3661.5,
+            "credits": {
+              "axe-core": "4.12.1"
+            }
+          },
+          "selectedAudits": {
+            "metrics": {
+              "type": "debugdata",
+              "items": [
+                {
+                  "firstContentfulPaint": 1655,
+                  "largestContentfulPaint": 2560,
+                  "interactive": 2575,
+                  "speedIndex": 1655,
+                  "totalBlockingTime": 0,
+                  "maxPotentialFID": 16,
+                  "cumulativeLayoutShift": 0.0004587407989351434,
+                  "cumulativeLayoutShiftMainFrame": 0.0004587407989351434,
+                  "lcpLoadDelay": 808,
+                  "lcpLoadDuration": 888,
+                  "timeToFirstByte": 453,
+                  "observedTimeOrigin": 0,
+                  "observedTimeOriginTs": 265933108,
+                  "observedNavigationStart": 0,
+                  "observedNavigationStartTs": 265933108,
+                  "observedFirstPaint": 148,
+                  "observedFirstPaintTs": 266080970,
+                  "observedFirstContentfulPaint": 148,
+                  "observedFirstContentfulPaintTs": 266080970,
+                  "observedFirstContentfulPaintAllFrames": 148,
+                  "observedFirstContentfulPaintAllFramesTs": 266080970,
+                  "observedLargestContentfulPaint": 148,
+                  "observedLargestContentfulPaintTs": 266080971,
+                  "observedLargestContentfulPaintAllFrames": 148,
+                  "observedLargestContentfulPaintAllFramesTs": 266080971,
+                  "observedTraceEnd": 2945,
+                  "observedTraceEndTs": 268878362,
+                  "observedLoad": 123,
+                  "observedLoadTs": 266056389,
+                  "observedDomContentLoaded": 102,
+                  "observedDomContentLoadedTs": 266035409,
+                  "observedCumulativeLayoutShift": 0.0004587407989351434,
+                  "observedCumulativeLayoutShiftMainFrame": 0.0004587407989351434,
+                  "observedFirstVisualChange": 148,
+                  "observedFirstVisualChangeTs": 266081108,
+                  "observedLastVisualChange": 2928,
+                  "observedLastVisualChangeTs": 268861108,
+                  "observedSpeedIndex": 316,
+                  "observedSpeedIndexTs": 266248803
+                },
+                {
+                  "lcpInvalidated": false
+                }
+              ]
+            },
+            "diagnostics": {
+              "type": "debugdata",
+              "items": [
+                {
+                  "numRequests": 28,
+                  "numScripts": 1,
+                  "numStylesheets": 1,
+                  "numFonts": 5,
+                  "numTasks": 1134,
+                  "numTasksOver10ms": 6,
+                  "numTasksOver25ms": 0,
+                  "numTasksOver50ms": 0,
+                  "numTasksOver100ms": 0,
+                  "numTasksOver500ms": 0,
+                  "rtt": 0.036899999999999995,
+                  "throughput": 814301758.509837,
+                  "maxRtt": 0.036899999999999995,
+                  "maxServerLatency": 2.5665999999999998,
+                  "totalByteWeight": 2425296,
+                  "totalTaskTime": 199.43899999999968,
+                  "mainDocumentTransferSize": 77485
+                }
+              ]
+            },
+            "bootup-time": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "total",
+                  "granularity": 1,
+                  "valueType": "ms",
+                  "label": "Total CPU Time"
+                },
+                {
+                  "key": "scripting",
+                  "granularity": 1,
+                  "valueType": "ms",
+                  "label": "Script Evaluation"
+                },
+                {
+                  "key": "scriptParseCompile",
+                  "granularity": 1,
+                  "valueType": "ms",
+                  "label": "Script Parse"
+                }
+              ],
+              "items": [
+                {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "total": 398.3600000000001,
+                  "scripting": 33.04000000000001,
+                  "scriptParseCompile": 6.943999999999997
+                },
+                {
+                  "url": "Unattributable",
+                  "total": 381.81200000000104,
+                  "scripting": 11.255999999999995,
+                  "scriptParseCompile": 0
+                }
+              ],
+              "summary": {
+                "wastedMs": 51.24
+              },
+              "sortedBy": [
+                "total"
+              ]
+            },
+            "total-byte-weight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                }
+              ],
+              "items": [
+                {
+                  "url": "http://127.0.0.1:4328/assets/art/zodiac-clock.mp4",
+                  "totalBytes": 2136890
+                },
+                {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "totalBytes": 77485
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2",
+                  "totalBytes": 40724
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2",
+                  "totalBytes": 30412
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2",
+                  "totalBytes": 23332
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2",
+                  "totalBytes": 22492
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2",
+                  "totalBytes": 22024
+                },
+                {
+                  "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+                  "totalBytes": 18571
+                },
+                {
+                  "url": "http://127.0.0.1:4328/assets/art/zodiac-clock-768.avif",
+                  "totalBytes": 13744
+                },
+                {
+                  "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+                  "totalBytes": 11652
+                }
+              ],
+              "sortedBy": [
+                "totalBytes"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 9.907
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 36.159
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 5.225
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 96.572
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            },
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "network-dependency-tree-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "list-section",
+                  "value": {
+                    "type": "network-tree",
+                    "chains": {
+                      "BC0699672CAC9FF3FEC623D64E725B04": {
+                        "url": "http://127.0.0.1:4328/thesis/",
+                        "navStartToEndTime": 62,
+                        "transferSize": 77485,
+                        "isLongest": true,
+                        "children": {
+                          "4631.135": {
+                            "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+                            "navStartToEndTime": 630,
+                            "transferSize": 2168,
+                            "isLongest": true,
+                            "children": {
+                              "4631.136": {
+                                "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+                                "navStartToEndTime": 634,
+                                "transferSize": 994,
+                                "isLongest": true,
+                                "children": {}
+                              }
+                            }
+                          },
+                          "4631.125": {
+                            "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2",
+                            "navStartToEndTime": 122,
+                            "transferSize": 22492,
+                            "children": {}
+                          },
+                          "4631.129": {
+                            "url": "http://127.0.0.1:4328/site.webmanifest",
+                            "navStartToEndTime": 117,
+                            "transferSize": 1714,
+                            "children": {}
+                          },
+                          "4631.126": {
+                            "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2",
+                            "navStartToEndTime": 116,
+                            "transferSize": 40724,
+                            "children": {}
+                          },
+                          "4631.124": {
+                            "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2",
+                            "navStartToEndTime": 116,
+                            "transferSize": 23332,
+                            "children": {}
+                          }
+                        }
+                      }
+                    },
+                    "longestChain": {
+                      "duration": 634
+                    }
+                  }
+                },
+                {
+                  "type": "list-section",
+                  "title": "Preconnected origins",
+                  "description": "[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.",
+                  "value": {
+                    "type": "text",
+                    "value": "no origins were preconnected"
+                  }
+                },
+                {
+                  "type": "list-section",
+                  "title": "Preconnect candidates",
+                  "description": "Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.",
+                  "value": {
+                    "type": "text",
+                    "value": "No additional origins are good candidates for preconnecting"
+                  }
+                }
+              ]
+            },
+            "unused-css-rules": {
+              "type": "opportunity",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [
+                {
+                  "url": ".hero__epi { font-family: var(--hero-serif); font-style: italic; \u2026 } \u2026",
+                  "wastedBytes": 13039,
+                  "wastedPercent": 97.34471684812407,
+                  "totalBytes": 13395
+                }
+              ],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 13039,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "unused-javascript": {
+              "type": "opportunity",
+              "headings": [],
+              "items": [],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 0,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "mainthread-work-breakdown": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "groupLabel",
+                  "valueType": "text",
+                  "label": "Category"
+                },
+                {
+                  "key": "duration",
+                  "valueType": "ms",
+                  "granularity": 1,
+                  "label": "Time Spent"
+                }
+              ],
+              "items": [
+                {
+                  "group": "other",
+                  "groupLabel": "Other",
+                  "duration": 489.55200000000104
+                },
+                {
+                  "group": "styleLayout",
+                  "groupLabel": "Style & Layout",
+                  "duration": 153.03599999999986
+                },
+                {
+                  "group": "parseHTML",
+                  "groupLabel": "Parse HTML & CSS",
+                  "duration": 59.34
+                },
+                {
+                  "group": "scriptEvaluation",
+                  "groupLabel": "Script Evaluation",
+                  "duration": 51.48799999999996
+                },
+                {
+                  "group": "paintCompositeRender",
+                  "groupLabel": "Rendering",
+                  "duration": 29.38000000000016
+                },
+                {
+                  "group": "garbageCollection",
+                  "groupLabel": "Garbage Collection",
+                  "duration": 7.831999999999988
+                },
+                {
+                  "group": "scriptParseCompile",
+                  "groupLabel": "Script Parsing & Compilation",
+                  "duration": 7.1279999999999974
+                }
+              ],
+              "sortedBy": [
+                "duration"
+              ]
+            },
+            "unminified-css": {
+              "type": "opportunity",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [
+                {
+                  "url": ".hero__epi { font-family: var(--hero-serif); font-style: italic; \u2026 } \u2026",
+                  "totalBytes": 13441,
+                  "wastedBytes": 2425,
+                  "wastedPercent": 18.04339312289497
+                }
+              ],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 2425,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "unminified-javascript": {
+              "type": "opportunity",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [
+                {
+                  "url": "inline: \n    // Bind the thesis interactions af\u2026",
+                  "totalBytes": 7390,
+                  "wastedBytes": 2273,
+                  "wastedPercent": 30.75503308061448
+                }
+              ],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 2273,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "document-latency-insight": {
+              "type": "checklist",
+              "items": {
+                "noRedirects": {
+                  "label": "Avoids redirects",
+                  "value": true
+                },
+                "serverResponseIsFast": {
+                  "label": "Server responds quickly (observed 7 ms)",
+                  "value": true
+                },
+                "usesCompression": {
+                  "label": "Applies text compression",
+                  "value": true
+                }
+              },
+              "debugData": {
+                "type": "debugdata",
+                "redirectDuration": 0,
+                "serverResponseTime": 7,
+                "uncompressedResponseBytes": 0,
+                "wastedBytes": 0
+              }
+            },
+            "image-delivery-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "node",
+                  "valueType": "node",
+                  "label": ""
+                },
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL",
+                  "subItemsHeading": {
+                    "key": "reason",
+                    "valueType": "text"
+                  }
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Resource Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings",
+                  "subItemsHeading": {
+                    "key": "wastedBytes",
+                    "valueType": "bytes"
+                  }
+                }
+              ],
+              "items": [],
+              "debugData": {
+                "type": "debugdata",
+                "wastedBytes": 0
+              }
+            }
+          },
+          "network": [
+            {
+              "url": "http://127.0.0.1:4328/thesis/",
+              "resourceType": "Document",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 0.9870000000228174,
+              "networkEndTime": 13.03200000000652,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 77485,
+              "resourceSize": 368000,
+              "statusCode": 200,
+              "mimeType": "text/html"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/art/zodiac-clock-768.avif",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 45.48399999999674,
+              "networkEndTime": 50.13699999998789,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 13744,
+              "resourceSize": 13476,
+              "statusCode": 200,
+              "mimeType": "image/avif"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 45.65299999999115,
+              "networkEndTime": 50.23599999997532,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 22024,
+              "resourceSize": 21704,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 45.90000000002328,
+              "networkEndTime": 53.45000000001164,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 30412,
+              "resourceSize": 30092,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/aries.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 54.586999999999534,
+              "networkEndTime": 61.382000000041444,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1932,
+              "resourceSize": 1666,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/taurus.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 54.724000000045635,
+              "networkEndTime": 61.50400000001537,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1832,
+              "resourceSize": 1566,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/gemini.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 54.84899999998743,
+              "networkEndTime": 61.586000000010245,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1690,
+              "resourceSize": 1424,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/cancer.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 54.95000000001164,
+              "networkEndTime": 61.6699999999837,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1952,
+              "resourceSize": 1686,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/leo.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 55.132000000041444,
+              "networkEndTime": 61.756999999983236,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1904,
+              "resourceSize": 1638,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/virgo.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 55.3640000000014,
+              "networkEndTime": 61.84999999997672,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1900,
+              "resourceSize": 1634,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/libra.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 61.924000000057276,
+              "networkEndTime": 66.02100000000792,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1822,
+              "resourceSize": 1556,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/scorpio.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 61.98800000001211,
+              "networkEndTime": 66.15100000001257,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1752,
+              "resourceSize": 1486,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/sagittarius.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 62.02700000000186,
+              "networkEndTime": 66.24199999996927,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1854,
+              "resourceSize": 1588,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/capricorn.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 62.06500000000233,
+              "networkEndTime": 66.32799999997951,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1856,
+              "resourceSize": 1590,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/aquarius.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 62.55199999996694,
+              "networkEndTime": 66.40600000001723,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1800,
+              "resourceSize": 1534,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/pisces.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 62.62000000005355,
+              "networkEndTime": 66.50500000000466,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1742,
+              "resourceSize": 1476,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id\u2026",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 81.18599999998696,
+              "networkEndTime": 81.24100000003818,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 0,
+              "resourceSize": 317,
+              "statusCode": 200,
+              "mimeType": "image/svg+xml"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 97.51699999999255,
+              "networkEndTime": 99.07500000001164,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 40724,
+              "resourceSize": 40404,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 97.68499999999767,
+              "networkEndTime": 99.13500000000931,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 23332,
+              "resourceSize": 23012,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/site.webmanifest",
+              "resourceType": "Manifest",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 98.42600000003586,
+              "networkEndTime": 101.98200000001816,
+              "finished": true,
+              "priority": "Medium",
+              "transferSize": 1714,
+              "resourceSize": 1433,
+              "statusCode": 200,
+              "mimeType": "application/manifest+json"
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAgCAYAAAD9qabkAAAACXBIWXMAAAPoAAAD6AG1e1JrAAANY\u2026",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 100.53600000002189,
+              "networkEndTime": 100.66399999998976,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 0,
+              "resourceSize": 3502,
+              "statusCode": 200,
+              "mimeType": "image/png"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 116.83399999997346,
+              "networkEndTime": 120.20199999999022,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 22492,
+              "resourceSize": 22172,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/favicon.svg",
+              "resourceType": "Other",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 131.28000000002794,
+              "networkEndTime": 133.44799999997485,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 1058,
+              "resourceSize": 791,
+              "statusCode": 200,
+              "mimeType": "image/svg+xml"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+              "resourceType": "Other",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 131.9670000000624,
+              "networkEndTime": 133.57099999999627,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 18571,
+              "resourceSize": 18304,
+              "statusCode": 200,
+              "mimeType": "image/png"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/art/zodiac-clock.mp4",
+              "resourceType": "Media",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 223.10600000002887,
+              "networkEndTime": 236.2850000000326,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 2136890,
+              "resourceSize": 2136544,
+              "statusCode": 206,
+              "mimeType": "video/mp4"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+              "resourceType": "Script",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 626.2660000000033,
+              "networkEndTime": 628.7989999999991,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+              "resourceType": "Stylesheet",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 631.7369999999646,
+              "networkEndTime": 633.0580000000191,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 635.1829999999609,
+              "networkEndTime": 636.3460000000196,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 11652,
+              "resourceSize": 11384,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            }
+          ],
+          "trace": {
+            "sha256": "df268347d9fd591a6fafa58b082dc516758a4d088a3e25fd841952afc0794aa1",
+            "lcpEvents": [
+              {
+                "args": {
+                  "data": {
+                    "candidateIndex": 1,
+                    "imageDiscoveryTime": 46.20000000001164,
+                    "imageLoadEnd": 51.30000000004657,
+                    "imageLoadStart": 47.20000000001164,
+                    "isMainFrame": true,
+                    "isOutermostMainFrame": true,
+                    "navigationId": "BC0699672CAC9FF3FEC623D64E725B04",
+                    "nodeId": 8,
+                    "nodeName": "VIDEO class='hero__media'",
+                    "performanceTimelineNavigationId": 5731,
+                    "size": 280572,
+                    "type": "image"
+                  },
+                  "frame": "D728E1939176862C9BC8425210979857"
+                },
+                "cat": "loading,rail,devtools.timeline",
+                "name": "largestContentfulPaint::Candidate",
+                "ph": "R",
+                "pid": 4631,
+                "s": "t",
+                "tid": 4631,
+                "ts": 266080971
+              }
+            ],
+            "longTasks": [],
+            "largestCpuEventsBeforeLcp": [
+              {
+                "name": "RunTask",
+                "durationMs": 24.71,
+                "deltaToLcpMs": -74.128,
+                "data": {}
+              },
+              {
+                "name": "ParseHTML",
+                "durationMs": 24.499,
+                "deltaToLcpMs": -74.127,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 19.188,
+                "deltaToLcpMs": -129.91,
+                "data": {}
+              },
+              {
+                "name": "EvaluateScript",
+                "durationMs": 18.028,
+                "deltaToLcpMs": -67.685,
+                "data": {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "lineNumber": 3971,
+                  "columnNumber": 11
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 14.221,
+                "deltaToLcpMs": -45.229,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 10.779,
+                "deltaToLcpMs": -110.694,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 10.619,
+                "deltaToLcpMs": -99.146,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 10.596,
+                "deltaToLcpMs": -60.359,
+                "data": {}
+              },
+              {
+                "name": "ParseHTML",
+                "durationMs": 10.007,
+                "deltaToLcpMs": -99.135,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 8.343,
+                "deltaToLcpMs": -42.136,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 7.413,
+                "deltaToLcpMs": -23.325,
+                "data": {}
+              },
+              {
+                "name": "UpdateLayoutTree",
+                "durationMs": 7.103,
+                "deltaToLcpMs": -67.466,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 5.292,
+                "deltaToLcpMs": -135.208,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 3.645,
+                "deltaToLcpMs": -16.167,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 3.628,
+                "deltaToLcpMs": -9.218,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.809,
+                "deltaToLcpMs": -12.048,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.789,
+                "deltaToLcpMs": -87.172,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.623,
+                "deltaToLcpMs": -47.864,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.493,
+                "deltaToLcpMs": -29.212,
+                "data": {}
+              },
+              {
+                "name": "UpdateLayoutTree",
+                "durationMs": 2.446,
+                "deltaToLcpMs": -44.587,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.333,
+                "deltaToLcpMs": -77.254,
+                "data": {}
+              },
+              {
+                "name": "ParseHTML",
+                "durationMs": 1.867,
+                "deltaToLcpMs": -47.862,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.762,
+                "deltaToLcpMs": -25.104,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 1.644,
+                "deltaToLcpMs": -29.0,
+                "data": {}
+              },
+              {
+                "name": "Paint",
+                "durationMs": 1.302,
+                "deltaToLcpMs": -33.41,
+                "data": {
+                  "nodeId": 3
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.166,
+                "deltaToLcpMs": -142.286,
+                "data": {}
+              },
+              {
+                "name": "EvaluateScript",
+                "durationMs": 1.11,
+                "deltaToLcpMs": -47.731,
+                "data": {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "lineNumber": 3994,
+                  "columnNumber": 11
+                }
+              },
+              {
+                "name": "EvaluateScript",
+                "durationMs": 1.052,
+                "deltaToLcpMs": -68.821,
+                "data": {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "lineNumber": 3237,
+                  "columnNumber": 11
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.931,
+                "deltaToLcpMs": -81.862,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.894,
+                "deltaToLcpMs": -79.812,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.872,
+                "deltaToLcpMs": -84.379,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.83,
+                "deltaToLcpMs": -83.495,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.797,
+                "deltaToLcpMs": -88.522,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.78,
+                "deltaToLcpMs": -82.657,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.749,
+                "deltaToLcpMs": -30.164,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.639,
+                "deltaToLcpMs": -31.123,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.609,
+                "deltaToLcpMs": -78.907,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.547,
+                "deltaToLcpMs": -80.385,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.535,
+                "deltaToLcpMs": -77.796,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.533,
+                "deltaToLcpMs": -15.759,
+                "data": {}
+              }
+            ]
+          }
+        },
+        {
+          "file": "lighthouse/thesis-2.json",
+          "sha256": "fc538ae172b7a41f4b8ac2242f24e1fbfdce7f494b8aaca57fa5423cac5ca2b5",
+          "lcp": 2560.3184,
+          "performance": 0.96,
+          "cls": 0.0004587407989351434,
+          "tbt": 0,
+          "environment": {
+            "networkUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36",
+            "hostUserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.0.0 Safari/537.36",
+            "benchmarkIndex": 3312.5,
+            "credits": {
+              "axe-core": "4.12.1"
+            }
+          },
+          "selectedAudits": {
+            "metrics": {
+              "type": "debugdata",
+              "items": [
+                {
+                  "firstContentfulPaint": 1655,
+                  "largestContentfulPaint": 2560,
+                  "interactive": 2575,
+                  "speedIndex": 1655,
+                  "totalBlockingTime": 0,
+                  "maxPotentialFID": 16,
+                  "cumulativeLayoutShift": 0.0004587407989351434,
+                  "cumulativeLayoutShiftMainFrame": 0.0004587407989351434,
+                  "lcpLoadDelay": 453,
+                  "lcpLoadDuration": 465,
+                  "timeToFirstByte": 453,
+                  "observedTimeOrigin": 0,
+                  "observedTimeOriginTs": 274750064,
+                  "observedNavigationStart": 0,
+                  "observedNavigationStartTs": 274750064,
+                  "observedFirstPaint": 140,
+                  "observedFirstPaintTs": 274890403,
+                  "observedFirstContentfulPaint": 140,
+                  "observedFirstContentfulPaintTs": 274890403,
+                  "observedFirstContentfulPaintAllFrames": 140,
+                  "observedFirstContentfulPaintAllFramesTs": 274890403,
+                  "observedLargestContentfulPaint": 140,
+                  "observedLargestContentfulPaintTs": 274890403,
+                  "observedLargestContentfulPaintAllFrames": 140,
+                  "observedLargestContentfulPaintAllFramesTs": 274890403,
+                  "observedTraceEnd": 2929,
+                  "observedTraceEndTs": 277679326,
+                  "observedLoad": 110,
+                  "observedLoadTs": 274859673,
+                  "observedDomContentLoaded": 84,
+                  "observedDomContentLoadedTs": 274834265,
+                  "observedCumulativeLayoutShift": 0.0004587407989351434,
+                  "observedCumulativeLayoutShiftMainFrame": 0.0004587407989351434,
+                  "observedFirstVisualChange": 139,
+                  "observedFirstVisualChangeTs": 274889064,
+                  "observedLastVisualChange": 2912,
+                  "observedLastVisualChangeTs": 277662064,
+                  "observedSpeedIndex": 307,
+                  "observedSpeedIndexTs": 275056730
+                },
+                {
+                  "lcpInvalidated": false
+                }
+              ]
+            },
+            "diagnostics": {
+              "type": "debugdata",
+              "items": [
+                {
+                  "numRequests": 28,
+                  "numScripts": 1,
+                  "numStylesheets": 1,
+                  "numFonts": 5,
+                  "numTasks": 1185,
+                  "numTasksOver10ms": 4,
+                  "numTasksOver25ms": 1,
+                  "numTasksOver50ms": 0,
+                  "numTasksOver100ms": 0,
+                  "numTasksOver500ms": 0,
+                  "rtt": 0.0324,
+                  "throughput": 848487689.6809989,
+                  "maxRtt": 0.0324,
+                  "maxServerLatency": 2.5796,
+                  "totalByteWeight": 2425296,
+                  "totalTaskTime": 196.23199999999994,
+                  "mainDocumentTransferSize": 77485
+                }
+              ]
+            },
+            "bootup-time": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "total",
+                  "granularity": 1,
+                  "valueType": "ms",
+                  "label": "Total CPU Time"
+                },
+                {
+                  "key": "scripting",
+                  "granularity": 1,
+                  "valueType": "ms",
+                  "label": "Script Evaluation"
+                },
+                {
+                  "key": "scriptParseCompile",
+                  "granularity": 1,
+                  "valueType": "ms",
+                  "label": "Script Parse"
+                }
+              ],
+              "items": [
+                {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "total": 452.34000000000015,
+                  "scripting": 47.37999999999997,
+                  "scriptParseCompile": 7.759999999999998
+                },
+                {
+                  "url": "Unattributable",
+                  "total": 312.0160000000009,
+                  "scripting": 11.671999999999999,
+                  "scriptParseCompile": 0
+                }
+              ],
+              "summary": {
+                "wastedMs": 66.81199999999997
+              },
+              "sortedBy": [
+                "total"
+              ]
+            },
+            "total-byte-weight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                }
+              ],
+              "items": [
+                {
+                  "url": "http://127.0.0.1:4328/assets/art/zodiac-clock.mp4",
+                  "totalBytes": 2136890
+                },
+                {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "totalBytes": 77485
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2",
+                  "totalBytes": 40724
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2",
+                  "totalBytes": 30412
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2",
+                  "totalBytes": 23332
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2",
+                  "totalBytes": 22492
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2",
+                  "totalBytes": 22024
+                },
+                {
+                  "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+                  "totalBytes": 18571
+                },
+                {
+                  "url": "http://127.0.0.1:4328/assets/art/zodiac-clock-768.avif",
+                  "totalBytes": 13744
+                },
+                {
+                  "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+                  "totalBytes": 11652
+                }
+              ],
+              "sortedBy": [
+                "totalBytes"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 9.442
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 12.515
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 3.517
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 114.865
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            },
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "network-dependency-tree-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "list-section",
+                  "value": {
+                    "type": "network-tree",
+                    "chains": {
+                      "764A686670DE7A3F9624E6C8EDE5683D": {
+                        "url": "http://127.0.0.1:4328/thesis/",
+                        "navStartToEndTime": 51,
+                        "transferSize": 77485,
+                        "isLongest": true,
+                        "children": {
+                          "4873.135": {
+                            "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+                            "navStartToEndTime": 613,
+                            "transferSize": 2168,
+                            "isLongest": true,
+                            "children": {
+                              "4873.136": {
+                                "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+                                "navStartToEndTime": 617,
+                                "transferSize": 994,
+                                "isLongest": true,
+                                "children": {}
+                              }
+                            }
+                          },
+                          "4873.125": {
+                            "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2",
+                            "navStartToEndTime": 108,
+                            "transferSize": 22492,
+                            "children": {}
+                          },
+                          "4873.129": {
+                            "url": "http://127.0.0.1:4328/site.webmanifest",
+                            "navStartToEndTime": 101,
+                            "transferSize": 1714,
+                            "children": {}
+                          },
+                          "4873.126": {
+                            "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2",
+                            "navStartToEndTime": 100,
+                            "transferSize": 40724,
+                            "children": {}
+                          },
+                          "4873.124": {
+                            "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2",
+                            "navStartToEndTime": 99,
+                            "transferSize": 23332,
+                            "children": {}
+                          }
+                        }
+                      }
+                    },
+                    "longestChain": {
+                      "duration": 617
+                    }
+                  }
+                },
+                {
+                  "type": "list-section",
+                  "title": "Preconnected origins",
+                  "description": "[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.",
+                  "value": {
+                    "type": "text",
+                    "value": "no origins were preconnected"
+                  }
+                },
+                {
+                  "type": "list-section",
+                  "title": "Preconnect candidates",
+                  "description": "Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.",
+                  "value": {
+                    "type": "text",
+                    "value": "No additional origins are good candidates for preconnecting"
+                  }
+                }
+              ]
+            },
+            "unused-css-rules": {
+              "type": "opportunity",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [
+                {
+                  "url": ".hero__epi { font-family: var(--hero-serif); font-style: italic; \u2026 } \u2026",
+                  "wastedBytes": 13039,
+                  "wastedPercent": 97.34471684812407,
+                  "totalBytes": 13395
+                }
+              ],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 13039,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "unused-javascript": {
+              "type": "opportunity",
+              "headings": [],
+              "items": [],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 0,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "mainthread-work-breakdown": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "groupLabel",
+                  "valueType": "text",
+                  "label": "Category"
+                },
+                {
+                  "key": "duration",
+                  "valueType": "ms",
+                  "granularity": 1,
+                  "label": "Time Spent"
+                }
+              ],
+              "items": [
+                {
+                  "group": "other",
+                  "groupLabel": "Other",
+                  "duration": 431.2000000000009
+                },
+                {
+                  "group": "styleLayout",
+                  "groupLabel": "Style & Layout",
+                  "duration": 173.676
+                },
+                {
+                  "group": "scriptEvaluation",
+                  "groupLabel": "Script Evaluation",
+                  "duration": 67.71999999999998
+                },
+                {
+                  "group": "parseHTML",
+                  "groupLabel": "Parse HTML & CSS",
+                  "duration": 64.824
+                },
+                {
+                  "group": "paintCompositeRender",
+                  "groupLabel": "Rendering",
+                  "duration": 32.632000000000204
+                },
+                {
+                  "group": "scriptParseCompile",
+                  "groupLabel": "Script Parsing & Compilation",
+                  "duration": 7.975999999999998
+                },
+                {
+                  "group": "garbageCollection",
+                  "groupLabel": "Garbage Collection",
+                  "duration": 6.899999999999996
+                }
+              ],
+              "sortedBy": [
+                "duration"
+              ]
+            },
+            "unminified-css": {
+              "type": "opportunity",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [
+                {
+                  "url": ".hero__epi { font-family: var(--hero-serif); font-style: italic; \u2026 } \u2026",
+                  "totalBytes": 13441,
+                  "wastedBytes": 2425,
+                  "wastedPercent": 18.04339312289497
+                }
+              ],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 2425,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "unminified-javascript": {
+              "type": "opportunity",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [
+                {
+                  "url": "inline: \n    // Bind the thesis interactions af\u2026",
+                  "totalBytes": 7390,
+                  "wastedBytes": 2273,
+                  "wastedPercent": 30.75503308061448
+                }
+              ],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 2273,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "document-latency-insight": {
+              "type": "checklist",
+              "items": {
+                "noRedirects": {
+                  "label": "Avoids redirects",
+                  "value": true
+                },
+                "serverResponseIsFast": {
+                  "label": "Server responds quickly (observed 7 ms)",
+                  "value": true
+                },
+                "usesCompression": {
+                  "label": "Applies text compression",
+                  "value": true
+                }
+              },
+              "debugData": {
+                "type": "debugdata",
+                "redirectDuration": 0,
+                "serverResponseTime": 7,
+                "uncompressedResponseBytes": 0,
+                "wastedBytes": 0
+              }
+            },
+            "image-delivery-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "node",
+                  "valueType": "node",
+                  "label": ""
+                },
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL",
+                  "subItemsHeading": {
+                    "key": "reason",
+                    "valueType": "text"
+                  }
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Resource Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings",
+                  "subItemsHeading": {
+                    "key": "wastedBytes",
+                    "valueType": "bytes"
+                  }
+                }
+              ],
+              "items": [],
+              "debugData": {
+                "type": "debugdata",
+                "wastedBytes": 0
+              }
+            }
+          },
+          "network": [
+            {
+              "url": "http://127.0.0.1:4328/thesis/",
+              "resourceType": "Document",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 1.1759999999776483,
+              "networkEndTime": 12.813000000023749,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 77485,
+              "resourceSize": 368000,
+              "statusCode": 200,
+              "mimeType": "text/html"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/art/zodiac-clock-768.avif",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 21.450999999942724,
+              "networkEndTime": 24.2839999999851,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 13744,
+              "resourceSize": 13476,
+              "statusCode": 200,
+              "mimeType": "image/avif"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 21.64100000000326,
+              "networkEndTime": 25.225999999966007,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 22024,
+              "resourceSize": 21704,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 21.929999999993015,
+              "networkEndTime": 26.793000000005122,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 30412,
+              "resourceSize": 30092,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/aries.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 30.764999999955762,
+              "networkEndTime": 37.398999999975786,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1932,
+              "resourceSize": 1666,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/taurus.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 31.134000000020023,
+              "networkEndTime": 37.55800000001909,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1832,
+              "resourceSize": 1566,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/gemini.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 31.32799999997951,
+              "networkEndTime": 37.709000000031665,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1690,
+              "resourceSize": 1424,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/cancer.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 31.4879999999539,
+              "networkEndTime": 40.6589999999851,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1952,
+              "resourceSize": 1686,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/leo.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 31.958999999973457,
+              "networkEndTime": 41.618999999947846,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1904,
+              "resourceSize": 1638,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/virgo.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 32.3629999999539,
+              "networkEndTime": 43.16899999999441,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1900,
+              "resourceSize": 1634,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/libra.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 37.8289999999688,
+              "networkEndTime": 43.32999999995809,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1822,
+              "resourceSize": 1556,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/scorpio.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 37.90200000000186,
+              "networkEndTime": 43.45400000002701,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1752,
+              "resourceSize": 1486,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/sagittarius.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 37.94000000000233,
+              "networkEndTime": 44.196999999985565,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1854,
+              "resourceSize": 1588,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/capricorn.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 40.77999999996973,
+              "networkEndTime": 44.40000000002328,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1856,
+              "resourceSize": 1590,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/aquarius.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 41.71500000002561,
+              "networkEndTime": 44.56299999996554,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1800,
+              "resourceSize": 1534,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/pisces.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 44.29799999995157,
+              "networkEndTime": 47.08399999997346,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1742,
+              "resourceSize": 1476,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id\u2026",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 62.1140000000014,
+              "networkEndTime": 62.17799999995623,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 0,
+              "resourceSize": 317,
+              "statusCode": 200,
+              "mimeType": "image/svg+xml"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 79.49099999997998,
+              "networkEndTime": 81.74599999998463,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 40724,
+              "resourceSize": 40404,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 79.63300000003073,
+              "networkEndTime": 83.10999999998603,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 23332,
+              "resourceSize": 23012,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/site.webmanifest",
+              "resourceType": "Manifest",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 79.74400000000605,
+              "networkEndTime": 83.2269999999553,
+              "finished": true,
+              "priority": "Medium",
+              "transferSize": 1714,
+              "resourceSize": 1433,
+              "statusCode": 200,
+              "mimeType": "application/manifest+json"
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAgCAYAAAD9qabkAAAACXBIWXMAAAPoAAAD6AG1e1JrAAANY\u2026",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 82.22100000001956,
+              "networkEndTime": 82.34999999997672,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 0,
+              "resourceSize": 3502,
+              "statusCode": 200,
+              "mimeType": "image/png"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 101.65299999999115,
+              "networkEndTime": 103.34999999997672,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 22492,
+              "resourceSize": 22172,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/favicon.svg",
+              "resourceType": "Other",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 117.49499999993714,
+              "networkEndTime": 118.56599999999162,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 1058,
+              "resourceSize": 791,
+              "statusCode": 200,
+              "mimeType": "image/svg+xml"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+              "resourceType": "Other",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 118.17900000000373,
+              "networkEndTime": 130.22899999999208,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 18571,
+              "resourceSize": 18304,
+              "statusCode": 200,
+              "mimeType": "image/png"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/art/zodiac-clock.mp4",
+              "resourceType": "Media",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 205.7029999999795,
+              "networkEndTime": 215.14899999997579,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 2136890,
+              "resourceSize": 2136544,
+              "statusCode": 206,
+              "mimeType": "video/mp4"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+              "resourceType": "Script",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 609.6179999999586,
+              "networkEndTime": 611.8800000000047,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+              "resourceType": "Stylesheet",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 614.6840000000084,
+              "networkEndTime": 616.1439999999711,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 618.8679999999586,
+              "networkEndTime": 620.6070000000182,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 11652,
+              "resourceSize": 11384,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            }
+          ],
+          "trace": {
+            "sha256": "7409d9c1e8e904208cf82fb874482293fe5a48dd5bbb6f2a716205d95e486ed2",
+            "lcpEvents": [
+              {
+                "args": {
+                  "data": {
+                    "candidateIndex": 1,
+                    "imageDiscoveryTime": 22,
+                    "imageLoadEnd": 25.5,
+                    "imageLoadStart": 23.30000000004657,
+                    "isMainFrame": true,
+                    "isOutermostMainFrame": true,
+                    "navigationId": "764A686670DE7A3F9624E6C8EDE5683D",
+                    "nodeId": 8,
+                    "nodeName": "VIDEO class='hero__media'",
+                    "performanceTimelineNavigationId": 624,
+                    "size": 280572,
+                    "type": "image"
+                  },
+                  "frame": "C525B8CC6707F3F1A5BE32F1DA0B6D03"
+                },
+                "cat": "loading,rail,devtools.timeline",
+                "name": "largestContentfulPaint::Candidate",
+                "ph": "R",
+                "pid": 4873,
+                "s": "t",
+                "tid": 4873,
+                "ts": 274890403
+              }
+            ],
+            "longTasks": [],
+            "largestCpuEventsBeforeLcp": [
+              {
+                "name": "RunTask",
+                "durationMs": 27.042,
+                "deltaToLcpMs": -87.236,
+                "data": {}
+              },
+              {
+                "name": "ParseHTML",
+                "durationMs": 26.803,
+                "deltaToLcpMs": -87.235,
+                "data": {}
+              },
+              {
+                "name": "EvaluateScript",
+                "durationMs": 19.021,
+                "deltaToLcpMs": -79.488,
+                "data": {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "lineNumber": 3971,
+                  "columnNumber": 11
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 15.739,
+                "deltaToLcpMs": -55.746,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 10.862,
+                "deltaToLcpMs": -127.22,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 10.813,
+                "deltaToLcpMs": -115.562,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 10.711,
+                "deltaToLcpMs": -71.303,
+                "data": {}
+              },
+              {
+                "name": "ParseHTML",
+                "durationMs": 10.055,
+                "deltaToLcpMs": -115.548,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 9.057,
+                "deltaToLcpMs": -52.156,
+                "data": {}
+              },
+              {
+                "name": "UpdateLayoutTree",
+                "durationMs": 7.915,
+                "deltaToLcpMs": -79.224,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 6.995,
+                "deltaToLcpMs": -29.555,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 4.36,
+                "deltaToLcpMs": -37.54,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 3.634,
+                "deltaToLcpMs": -8.15,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 3.368,
+                "deltaToLcpMs": -37.308,
+                "data": {}
+              },
+              {
+                "name": "UpdateLayoutTree",
+                "durationMs": 3.01,
+                "deltaToLcpMs": -55.172,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.963,
+                "deltaToLcpMs": -101.467,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.872,
+                "deltaToLcpMs": -58.623,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.748,
+                "deltaToLcpMs": -90.544,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.009,
+                "deltaToLcpMs": -20.17,
+                "data": {}
+              },
+              {
+                "name": "ParseHTML",
+                "durationMs": 1.885,
+                "deltaToLcpMs": -58.621,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.757,
+                "deltaToLcpMs": -31.329,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.597,
+                "deltaToLcpMs": -97.686,
+                "data": {}
+              },
+              {
+                "name": "Paint",
+                "durationMs": 1.458,
+                "deltaToLcpMs": -42.683,
+                "data": {
+                  "nodeId": 3
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.281,
+                "deltaToLcpMs": -135.418,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.26,
+                "deltaToLcpMs": -128.496,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.186,
+                "deltaToLcpMs": -104.743,
+                "data": {}
+              },
+              {
+                "name": "EvaluateScript",
+                "durationMs": 1.159,
+                "deltaToLcpMs": -80.744,
+                "data": {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "lineNumber": 3237,
+                  "columnNumber": 11
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.107,
+                "deltaToLcpMs": -23.522,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.916,
+                "deltaToLcpMs": -92.699,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.898,
+                "deltaToLcpMs": -39.703,
+                "data": {}
+              },
+              {
+                "name": "EvaluateScript",
+                "durationMs": 0.831,
+                "deltaToLcpMs": -58.038,
+                "data": {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "lineNumber": 3994,
+                  "columnNumber": 11
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.779,
+                "deltaToLcpMs": -94.708,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.777,
+                "deltaToLcpMs": -95.517,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.732,
+                "deltaToLcpMs": -40.143,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.715,
+                "deltaToLcpMs": -38.49,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.628,
+                "deltaToLcpMs": -93.916,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.563,
+                "deltaToLcpMs": -93.279,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.555,
+                "deltaToLcpMs": -91.77,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 0.54,
+                "deltaToLcpMs": -30.386,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.535,
+                "deltaToLcpMs": -96.064,
+                "data": {}
+              }
+            ]
+          }
+        },
+        {
+          "file": "lighthouse/thesis-3.json",
+          "sha256": "084bc0ca078ae07605c0044be3bfdb7c7f8ce32207fa83a81b9e074b9ffd9bf7",
+          "lcp": 2557.1368,
+          "performance": 0.96,
+          "cls": 0.0004587407989351434,
+          "tbt": 0,
+          "environment": {
+            "networkUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36",
+            "hostUserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.0.0 Safari/537.36",
+            "benchmarkIndex": 3688.5,
+            "credits": {
+              "axe-core": "4.12.1"
+            }
+          },
+          "selectedAudits": {
+            "metrics": {
+              "type": "debugdata",
+              "items": [
+                {
+                  "firstContentfulPaint": 1654,
+                  "largestContentfulPaint": 2557,
+                  "interactive": 2572,
+                  "speedIndex": 1654,
+                  "totalBlockingTime": 0,
+                  "maxPotentialFID": 16,
+                  "cumulativeLayoutShift": 0.0004587407989351434,
+                  "cumulativeLayoutShiftMainFrame": 0.0004587407989351434,
+                  "lcpLoadDelay": 816,
+                  "lcpLoadDuration": 857,
+                  "timeToFirstByte": 452,
+                  "observedTimeOrigin": 0,
+                  "observedTimeOriginTs": 283449621,
+                  "observedNavigationStart": 0,
+                  "observedNavigationStartTs": 283449621,
+                  "observedFirstPaint": 164,
+                  "observedFirstPaintTs": 283613226,
+                  "observedFirstContentfulPaint": 164,
+                  "observedFirstContentfulPaintTs": 283613226,
+                  "observedFirstContentfulPaintAllFrames": 164,
+                  "observedFirstContentfulPaintAllFramesTs": 283613226,
+                  "observedLargestContentfulPaint": 164,
+                  "observedLargestContentfulPaintTs": 283613226,
+                  "observedLargestContentfulPaintAllFrames": 164,
+                  "observedLargestContentfulPaintAllFramesTs": 283613226,
+                  "observedTraceEnd": 2949,
+                  "observedTraceEndTs": 286398361,
+                  "observedLoad": 130,
+                  "observedLoadTs": 283579493,
+                  "observedDomContentLoaded": 109,
+                  "observedDomContentLoadedTs": 283558640,
+                  "observedCumulativeLayoutShift": 0.0004587407989351434,
+                  "observedCumulativeLayoutShiftMainFrame": 0.0004587407989351434,
+                  "observedFirstVisualChange": 163,
+                  "observedFirstVisualChangeTs": 283612621,
+                  "observedLastVisualChange": 2944,
+                  "observedLastVisualChangeTs": 286393621,
+                  "observedSpeedIndex": 336,
+                  "observedSpeedIndexTs": 283785796
+                },
+                {
+                  "lcpInvalidated": false
+                }
+              ]
+            },
+            "diagnostics": {
+              "type": "debugdata",
+              "items": [
+                {
+                  "numRequests": 28,
+                  "numScripts": 1,
+                  "numStylesheets": 1,
+                  "numFonts": 5,
+                  "numTasks": 1110,
+                  "numTasksOver10ms": 6,
+                  "numTasksOver25ms": 1,
+                  "numTasksOver50ms": 0,
+                  "numTasksOver100ms": 0,
+                  "numTasksOver500ms": 0,
+                  "rtt": 0.0243,
+                  "throughput": 935414521.2619184,
+                  "maxRtt": 0.0243,
+                  "maxServerLatency": 1.7842,
+                  "totalByteWeight": 2425296,
+                  "totalTaskTime": 209.91399999999987,
+                  "mainDocumentTransferSize": 77485
+                }
+              ]
+            },
+            "bootup-time": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "total",
+                  "granularity": 1,
+                  "valueType": "ms",
+                  "label": "Total CPU Time"
+                },
+                {
+                  "key": "scripting",
+                  "granularity": 1,
+                  "valueType": "ms",
+                  "label": "Script Evaluation"
+                },
+                {
+                  "key": "scriptParseCompile",
+                  "granularity": 1,
+                  "valueType": "ms",
+                  "label": "Script Parse"
+                }
+              ],
+              "items": [
+                {
+                  "url": "Unattributable",
+                  "total": 425.27200000000045,
+                  "scripting": 11.771999999999998,
+                  "scriptParseCompile": 0
+                },
+                {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "total": 398.908,
+                  "scripting": 41.69999999999996,
+                  "scriptParseCompile": 6.803999999999999
+                }
+              ],
+              "summary": {
+                "wastedMs": 60.27599999999996
+              },
+              "sortedBy": [
+                "total"
+              ]
+            },
+            "total-byte-weight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                }
+              ],
+              "items": [
+                {
+                  "url": "http://127.0.0.1:4328/assets/art/zodiac-clock.mp4",
+                  "totalBytes": 2136890
+                },
+                {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "totalBytes": 77485
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2",
+                  "totalBytes": 40724
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2",
+                  "totalBytes": 30412
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2",
+                  "totalBytes": 23332
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2",
+                  "totalBytes": 22492
+                },
+                {
+                  "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2",
+                  "totalBytes": 22024
+                },
+                {
+                  "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+                  "totalBytes": 18571
+                },
+                {
+                  "url": "http://127.0.0.1:4328/assets/art/zodiac-clock-768.avif",
+                  "totalBytes": 13744
+                },
+                {
+                  "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+                  "totalBytes": 11652
+                }
+              ],
+              "sortedBy": [
+                "totalBytes"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 9.192000000059604
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 42.510999999940395
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 3.139
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 108.763
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            },
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "network-dependency-tree-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "list-section",
+                  "value": {
+                    "type": "network-tree",
+                    "chains": {
+                      "67940BBBA13BB838DC4E3800D97B5D71": {
+                        "url": "http://127.0.0.1:4328/thesis/",
+                        "navStartToEndTime": 80,
+                        "transferSize": 77485,
+                        "isLongest": true,
+                        "children": {
+                          "5109.135": {
+                            "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+                            "navStartToEndTime": 633,
+                            "transferSize": 2168,
+                            "isLongest": true,
+                            "children": {
+                              "5109.136": {
+                                "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+                                "navStartToEndTime": 637,
+                                "transferSize": 994,
+                                "isLongest": true,
+                                "children": {}
+                              }
+                            }
+                          },
+                          "5109.125": {
+                            "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2",
+                            "navStartToEndTime": 129,
+                            "transferSize": 22492,
+                            "children": {}
+                          },
+                          "5109.129": {
+                            "url": "http://127.0.0.1:4328/site.webmanifest",
+                            "navStartToEndTime": 124,
+                            "transferSize": 1714,
+                            "children": {}
+                          },
+                          "5109.126": {
+                            "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2",
+                            "navStartToEndTime": 123,
+                            "transferSize": 40724,
+                            "children": {}
+                          },
+                          "5109.124": {
+                            "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2",
+                            "navStartToEndTime": 123,
+                            "transferSize": 23332,
+                            "children": {}
+                          }
+                        }
+                      }
+                    },
+                    "longestChain": {
+                      "duration": 637
+                    }
+                  }
+                },
+                {
+                  "type": "list-section",
+                  "title": "Preconnected origins",
+                  "description": "[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.",
+                  "value": {
+                    "type": "text",
+                    "value": "no origins were preconnected"
+                  }
+                },
+                {
+                  "type": "list-section",
+                  "title": "Preconnect candidates",
+                  "description": "Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.",
+                  "value": {
+                    "type": "text",
+                    "value": "No additional origins are good candidates for preconnecting"
+                  }
+                }
+              ]
+            },
+            "unused-css-rules": {
+              "type": "opportunity",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [
+                {
+                  "url": ".hero__epi { font-family: var(--hero-serif); font-style: italic; \u2026 } \u2026",
+                  "wastedBytes": 13039,
+                  "wastedPercent": 97.34471684812407,
+                  "totalBytes": 13395
+                }
+              ],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 13039,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "unused-javascript": {
+              "type": "opportunity",
+              "headings": [],
+              "items": [],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 0,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "mainthread-work-breakdown": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "groupLabel",
+                  "valueType": "text",
+                  "label": "Category"
+                },
+                {
+                  "key": "duration",
+                  "valueType": "ms",
+                  "granularity": 1,
+                  "label": "Time Spent"
+                }
+              ],
+              "items": [
+                {
+                  "group": "other",
+                  "groupLabel": "Other",
+                  "duration": 503.9720000000008
+                },
+                {
+                  "group": "styleLayout",
+                  "groupLabel": "Style & Layout",
+                  "duration": 170.39599999999993
+                },
+                {
+                  "group": "scriptEvaluation",
+                  "groupLabel": "Script Evaluation",
+                  "duration": 59.99999999999991
+                },
+                {
+                  "group": "parseHTML",
+                  "groupLabel": "Parse HTML & CSS",
+                  "duration": 53.61200000000001
+                },
+                {
+                  "group": "paintCompositeRender",
+                  "groupLabel": "Rendering",
+                  "duration": 31.72400000000021
+                },
+                {
+                  "group": "garbageCollection",
+                  "groupLabel": "Garbage Collection",
+                  "duration": 12.919999999999979
+                },
+                {
+                  "group": "scriptParseCompile",
+                  "groupLabel": "Script Parsing & Compilation",
+                  "duration": 7.031999999999999
+                }
+              ],
+              "sortedBy": [
+                "duration"
+              ]
+            },
+            "unminified-css": {
+              "type": "opportunity",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [
+                {
+                  "url": ".hero__epi { font-family: var(--hero-serif); font-style: italic; \u2026 } \u2026",
+                  "totalBytes": 13441,
+                  "wastedBytes": 2425,
+                  "wastedPercent": 18.04339312289497
+                }
+              ],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 2425,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "unminified-javascript": {
+              "type": "opportunity",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [
+                {
+                  "url": "inline: \n    // Bind the thesis interactions af\u2026",
+                  "totalBytes": 7390,
+                  "wastedBytes": 2273,
+                  "wastedPercent": 30.75503308061448
+                }
+              ],
+              "overallSavingsMs": 0,
+              "overallSavingsBytes": 2273,
+              "sortedBy": [
+                "wastedBytes"
+              ],
+              "debugData": {
+                "type": "debugdata",
+                "metricSavings": {
+                  "FCP": 0,
+                  "LCP": 0
+                }
+              }
+            },
+            "document-latency-insight": {
+              "type": "checklist",
+              "items": {
+                "noRedirects": {
+                  "label": "Avoids redirects",
+                  "value": true
+                },
+                "serverResponseIsFast": {
+                  "label": "Server responds quickly (observed 7 ms)",
+                  "value": true
+                },
+                "usesCompression": {
+                  "label": "Applies text compression",
+                  "value": true
+                }
+              },
+              "debugData": {
+                "type": "debugdata",
+                "redirectDuration": 0,
+                "serverResponseTime": 7,
+                "uncompressedResponseBytes": 0,
+                "wastedBytes": 0
+              }
+            },
+            "image-delivery-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "node",
+                  "valueType": "node",
+                  "label": ""
+                },
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL",
+                  "subItemsHeading": {
+                    "key": "reason",
+                    "valueType": "text"
+                  }
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Resource Size"
+                },
+                {
+                  "key": "wastedBytes",
+                  "valueType": "bytes",
+                  "label": "Est Savings",
+                  "subItemsHeading": {
+                    "key": "wastedBytes",
+                    "valueType": "bytes"
+                  }
+                }
+              ],
+              "items": [],
+              "debugData": {
+                "type": "debugdata",
+                "wastedBytes": 0
+              }
+            }
+          },
+          "network": [
+            {
+              "url": "http://127.0.0.1:4328/thesis/",
+              "resourceType": "Document",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 1.3730000000214204,
+              "networkEndTime": 12.048999999999069,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 77485,
+              "resourceSize": 368000,
+              "statusCode": 200,
+              "mimeType": "text/html"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/art/zodiac-clock-768.avif",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 51.15799999999581,
+              "networkEndTime": 53.773999999975786,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 13744,
+              "resourceSize": 13476,
+              "statusCode": 200,
+              "mimeType": "image/avif"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 51.352000000013504,
+              "networkEndTime": 55.148999999975786,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 22024,
+              "resourceSize": 21704,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 51.630999999993946,
+              "networkEndTime": 55.28099999995902,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 30412,
+              "resourceSize": 30092,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/aries.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 59.821999999985565,
+              "networkEndTime": 65.0219999999972,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1932,
+              "resourceSize": 1666,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/taurus.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 59.94199999998091,
+              "networkEndTime": 65.13199999998324,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1832,
+              "resourceSize": 1566,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/gemini.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 60.04000000003725,
+              "networkEndTime": 65.20000000001164,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1690,
+              "resourceSize": 1424,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/cancer.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 60.14100000000326,
+              "networkEndTime": 65.26600000000326,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1952,
+              "resourceSize": 1686,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/leo.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 60.54399999999441,
+              "networkEndTime": 65.34799999999814,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1904,
+              "resourceSize": 1638,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/virgo.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 60.91199999995297,
+              "networkEndTime": 65.4189999999362,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1900,
+              "resourceSize": 1634,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/libra.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 65.47899999999208,
+              "networkEndTime": 68.04300000000512,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1822,
+              "resourceSize": 1556,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/scorpio.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 65.54099999996834,
+              "networkEndTime": 68.1469999999972,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1752,
+              "resourceSize": 1486,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/sagittarius.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 65.57299999997485,
+              "networkEndTime": 69.83500000002095,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1854,
+              "resourceSize": 1588,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/capricorn.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 65.60100000002421,
+              "networkEndTime": 69.94800000003306,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1856,
+              "resourceSize": 1590,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/aquarius.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 65.62800000002608,
+              "networkEndTime": 70.04100000002654,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1800,
+              "resourceSize": 1534,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/zodiac-icons/48/pisces.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 65.65200000000186,
+              "networkEndTime": 70.11799999995856,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 1742,
+              "resourceSize": 1476,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            },
+            {
+              "url": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id\u2026",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 88.8190000000177,
+              "networkEndTime": 88.87299999996321,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 0,
+              "resourceSize": 317,
+              "statusCode": 200,
+              "mimeType": "image/svg+xml"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 105.27500000002328,
+              "networkEndTime": 107.61199999996461,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 40724,
+              "resourceSize": 40404,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 105.41100000002189,
+              "networkEndTime": 107.9199999999837,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 23332,
+              "resourceSize": 23012,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/site.webmanifest",
+              "resourceType": "Manifest",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 106.26699999999255,
+              "networkEndTime": 108.00899999996182,
+              "finished": true,
+              "priority": "Medium",
+              "transferSize": 1714,
+              "resourceSize": 1433,
+              "statusCode": 200,
+              "mimeType": "application/manifest+json"
+            },
+            {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAAgCAYAAAD9qabkAAAACXBIWXMAAAPoAAAD6AG1e1JrAAANY\u2026",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 107.3289999999688,
+              "networkEndTime": 107.44199999998091,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 0,
+              "resourceSize": 3502,
+              "statusCode": 200,
+              "mimeType": "image/png"
+            },
+            {
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2",
+              "resourceType": "Font",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 124.48499999998603,
+              "networkEndTime": 126.50799999997253,
+              "finished": true,
+              "priority": "VeryHigh",
+              "transferSize": 22492,
+              "resourceSize": 22172,
+              "statusCode": 200,
+              "mimeType": "font/woff2"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/favicon.svg",
+              "resourceType": "Other",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 131.82399999996414,
+              "networkEndTime": 132.94500000000698,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 1058,
+              "resourceSize": 791,
+              "statusCode": 200,
+              "mimeType": "image/svg+xml"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/app-icons/v3/icon-192.png",
+              "resourceType": "Other",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 132.08099999994738,
+              "networkEndTime": 134.03999999997905,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 18571,
+              "resourceSize": 18304,
+              "statusCode": 200,
+              "mimeType": "image/png"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/art/zodiac-clock.mp4",
+              "resourceType": "Media",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 242.49600000004284,
+              "networkEndTime": 253.1930000000284,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 2136890,
+              "resourceSize": 2136544,
+              "statusCode": 206,
+              "mimeType": "video/mp4"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js?v=icon-guide-5",
+              "resourceType": "Script",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 629.6059999999707,
+              "networkEndTime": 631.9750000000349,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css?v=icon-guide-5",
+              "resourceType": "Stylesheet",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 634.6889999999548,
+              "networkEndTime": 636.0439999999944,
+              "finished": true,
+              "priority": "High",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css"
+            },
+            {
+              "url": "http://127.0.0.1:4328/assets/guide-avatar.webp",
+              "resourceType": "Image",
+              "startTime": null,
+              "endTime": null,
+              "networkRequestTime": 638.2029999999795,
+              "networkEndTime": 639.6319999999832,
+              "finished": true,
+              "priority": "Low",
+              "transferSize": 11652,
+              "resourceSize": 11384,
+              "statusCode": 200,
+              "mimeType": "image/webp"
+            }
+          ],
+          "trace": {
+            "sha256": "5d1e245c8945db94e5c0616615e890350013309ca963edccb01e0bf5a36db6c9",
+            "lcpEvents": [
+              {
+                "args": {
+                  "data": {
+                    "candidateIndex": 1,
+                    "imageDiscoveryTime": 51.70000000001164,
+                    "imageLoadEnd": 54.79999999998836,
+                    "imageLoadStart": 52.79999999998836,
+                    "isMainFrame": true,
+                    "isOutermostMainFrame": true,
+                    "navigationId": "67940BBBA13BB838DC4E3800D97B5D71",
+                    "nodeId": 8,
+                    "nodeName": "VIDEO class='hero__media'",
+                    "performanceTimelineNavigationId": 1823,
+                    "size": 280572,
+                    "type": "image"
+                  },
+                  "frame": "A792E967AD7272E1B1EA3CEB41D24C57"
+                },
+                "cat": "loading,rail,devtools.timeline",
+                "name": "largestContentfulPaint::Candidate",
+                "ph": "R",
+                "pid": 5109,
+                "s": "t",
+                "tid": 5109,
+                "ts": 283613226
+              }
+            ],
+            "longTasks": [],
+            "largestCpuEventsBeforeLcp": [
+              {
+                "name": "RunTask",
+                "durationMs": 25.187,
+                "deltaToLcpMs": -145.503,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 23.686,
+                "deltaToLcpMs": -81.319,
+                "data": {}
+              },
+              {
+                "name": "ParseHTML",
+                "durationMs": 23.489,
+                "deltaToLcpMs": -81.318,
+                "data": {}
+              },
+              {
+                "name": "EvaluateScript",
+                "durationMs": 18.243,
+                "deltaToLcpMs": -76.103,
+                "data": {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "lineNumber": 3971,
+                  "columnNumber": 11
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 14.232,
+                "deltaToLcpMs": -54.162,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 11.688,
+                "deltaToLcpMs": -109.355,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 10.492,
+                "deltaToLcpMs": -68.463,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 10.377,
+                "deltaToLcpMs": -120.298,
+                "data": {}
+              },
+              {
+                "name": "ParseHTML",
+                "durationMs": 10.005,
+                "deltaToLcpMs": -109.345,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 7.855,
+                "deltaToLcpMs": -50.739,
+                "data": {}
+              },
+              {
+                "name": "UpdateLayoutTree",
+                "durationMs": 7.398,
+                "deltaToLcpMs": -75.865,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 6.307,
+                "deltaToLcpMs": -151.816,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 3.014,
+                "deltaToLcpMs": -95.477,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.985,
+                "deltaToLcpMs": -92.451,
+                "data": {}
+              },
+              {
+                "name": "UpdateLayoutTree",
+                "durationMs": 2.804,
+                "deltaToLcpMs": -53.548,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.768,
+                "deltaToLcpMs": -37.965,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.645,
+                "deltaToLcpMs": -23.848,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 2.118,
+                "deltaToLcpMs": -83.8,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.997,
+                "deltaToLcpMs": -56.191,
+                "data": {}
+              },
+              {
+                "name": "Layout",
+                "durationMs": 1.861,
+                "deltaToLcpMs": -37.773,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.555,
+                "deltaToLcpMs": -28.552,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.431,
+                "deltaToLcpMs": -34.149,
+                "data": {}
+              },
+              {
+                "name": "Paint",
+                "durationMs": 1.391,
+                "deltaToLcpMs": -42.499,
+                "data": {
+                  "nodeId": 3
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.167,
+                "deltaToLcpMs": -157.309,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.166,
+                "deltaToLcpMs": -26.984,
+                "data": {}
+              },
+              {
+                "name": "ParseHTML",
+                "durationMs": 1.149,
+                "deltaToLcpMs": -56.19,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 1.088,
+                "deltaToLcpMs": -97.663,
+                "data": {}
+              },
+              {
+                "name": "EvaluateScript",
+                "durationMs": 1.012,
+                "deltaToLcpMs": -77.198,
+                "data": {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "lineNumber": 3237,
+                  "columnNumber": 11
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.783,
+                "deltaToLcpMs": -23.9,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.767,
+                "deltaToLcpMs": -96.251,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.763,
+                "deltaToLcpMs": -39.085,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.744,
+                "deltaToLcpMs": -35.17,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.709,
+                "deltaToLcpMs": -21.19,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.694,
+                "deltaToLcpMs": -89.455,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.692,
+                "deltaToLcpMs": -85.199,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.675,
+                "deltaToLcpMs": -86.498,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.645,
+                "deltaToLcpMs": -40.083,
+                "data": {}
+              },
+              {
+                "name": "EvaluateScript",
+                "durationMs": 0.644,
+                "deltaToLcpMs": -56.095,
+                "data": {
+                  "url": "http://127.0.0.1:4328/thesis/",
+                  "lineNumber": 3994,
+                  "columnNumber": 11
+                }
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.604,
+                "deltaToLcpMs": -85.815,
+                "data": {}
+              },
+              {
+                "name": "RunTask",
+                "durationMs": 0.576,
+                "deltaToLcpMs": -88.191,
+                "data": {}
+              }
+            ]
+          }
+        }
+      ],
+      "ariesFontReceipts": []
+    }
+  ]
+}

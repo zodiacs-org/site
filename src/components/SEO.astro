@@ -13,6 +13,7 @@ import {
   type CatalogLocale as Locale,
 } from '../lib/i18n';
 import {
+  ORGANIZATION_NAME,
   SOCIAL_PROFILES,
   WEB_APPLICATION_PATHS,
 } from '../strings/seo.en.mjs';
@@ -82,7 +83,7 @@ const ogLocaleAlternates = alternateEntries
 const organization = {
   '@type': 'Organization',
   '@id': 'https://zodiacs.org/#org',
-  name: schema.organizationName,
+  name: ORGANIZATION_NAME,
   alternateName: schema.organizationAlternateName,
   url: 'https://zodiacs.org/',
   logo: {

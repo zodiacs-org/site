@@ -1,0 +1,257 @@
+{
+  "schema": "zodiacs.home-candidate-focused-qualification.v1",
+  "source": "2e08e201aea43b7e23fed8723363213ea1ff82df",
+  "preflight": {
+    "run": 38043051385,
+    "job": 114186975540,
+    "conclusion": "success",
+    "workflowSource": "5b31d4850bb07c27a3f047bcb231d06e49c1d839",
+    "artifact": {
+      "id": 11667475025,
+      "bytes": 15790207,
+      "sha256": "a990349227f3fb41295a82f458482b66c1fefaac6285fbcf2b6edbc06319098f"
+    },
+    "recovery": {
+      "run": 38043775546,
+      "conclusion": "success",
+      "zipSha256Verified": true,
+      "zipCrcVerified": true,
+      "browserReruns": 0
+    },
+    "reports": [
+      {
+        "path": "docs/platform/evidence/home-poster-loading-20261010/hydration-controls.json",
+        "bytes": 2016,
+        "sha256": "f08171de307d895f29bee4b6a209b00d77f8119abcf3d7a0260c510da8154968"
+      },
+      {
+        "path": "docs/platform/evidence/home-poster-loading-20261010/preflight.json",
+        "bytes": 2645,
+        "sha256": "b8d8268adcdf44e4ac3eff881d5775c88ecc70382e07abc8eb81a61fe840d24c"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/manifest.json",
+        "bytes": 12353,
+        "sha256": "74a10261e8e72c79e763d1c03d79a8ed49389036287165f75c1eff987ecdc36f"
+      },
+      {
+        "path": "docs/platform/evidence/home-poster-loading-20261010/phase1-capture-producer.json",
+        "bytes": 6774,
+        "sha256": "8cc2fd164b4b34a31b07e47191a75e98a6fabcc7d49e17b16f999e9d7e1c58f4"
+      }
+    ],
+    "captures": [
+      {
+        "path": "docs/acceptance/phase1/screenshots/daily-1280.png",
+        "sha": "b76e503e1228c88d22ec6e8420b848a43adb341f",
+        "bytes": 419448,
+        "sha256": "39e8dac6e5815c052b3973db7747fed9a4178e7f7075ab3773c0ebfee142db22"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/today-360.png",
+        "sha": "bdc8c0a1ca3ef6e4c2834a4e6bf0f3b61e9dc49f",
+        "bytes": 605183,
+        "sha256": "ce7d926d31895b85477deebb9253df8f2d93b8ed3edad1a2bf3f86a562103522"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/daily-360.png",
+        "sha": "22f59b5b539fed96f1f620efc64772c05ef7d5c6",
+        "bytes": 305973,
+        "sha256": "0a2532786748b6fc52435e452c047f59fa4af588bc8ee92010047a32945e8297"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-1280.png",
+        "sha": "cf2ecda61d5a07bdf986d5a81f8409ea1974bebe",
+        "bytes": 450103,
+        "sha256": "8b04fca1aa7edf978bdc919b390bac14d064a9c5c221e4c0d024b2c8cddd8687"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/monthly-360.png",
+        "sha": "c95296e0538da96185702f5b515df067f6ee05c9",
+        "bytes": 389777,
+        "sha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/today-1280.png",
+        "sha": "8d2e0cf3e73501c5a6da57c315c2dd3dacff19b7",
+        "bytes": 749592,
+        "sha256": "11c4c08e31cc8a94fdc9ec1904e60ee2a0b29c10c565099bb8a1e5d9d9628a6e"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/weekly-1280.png",
+        "sha": "e46cf858177e0f88d5ca044f5843a88444ad41c9",
+        "bytes": 495949,
+        "sha256": "e87041e5d45f6de533ce961c99bec27bed3300150f0b468c71ccb327af039e1c"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/tomorrow-360.png",
+        "sha": "5d06432ee04e578b71cc802c1bb03f7720ea484d",
+        "bytes": 302261,
+        "sha256": "6d2a2fb22afe49cd03649db186969e97fb92e77c9d98a4def226f07bafc955c3"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-360.png",
+        "sha": "aa35a7f2fceac276d4fa3d8a43874a7d8102acd0",
+        "bytes": 391053,
+        "sha256": "2f1b90856c9ba412dbcebe2a5214d97fb4e2e5744f968e04527ce9491ce70b41"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/tomorrow-1280.png",
+        "sha": "8d33180856b991f3e6bebd617c3052f34fa3dd38",
+        "bytes": 425109,
+        "sha256": "427c3b6b63ffd727a477aeaaa07f6036fc44085a413d5d1c9b8aef0478049238"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/weekly-360.png",
+        "sha": "b1a322a0862b7e10d809363fdfe408f16661477a",
+        "bytes": 366716,
+        "sha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
+        "sha": "2c72fa3df30e20c0b8a24885a2ed2d7b6af6bb88",
+        "bytes": 509517,
+        "sha256": "dfe62a412ecbd6719bdc253c83b35b2d59189b49d37b7d0ddb343f6d8bde2fa3"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/love-360.png",
+        "sha": "26ef4fe3fe0fcb04533c2e5363ebc788129321d2",
+        "bytes": 282256,
+        "sha256": "d6434cb4c0ae482aabf05d925a897b1129ad9e91fc6fd9010a9c7dbaef503dc5"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/love-1280.png",
+        "sha": "738e1c71bb027a1819ae8fb751f03b701be83069",
+        "bytes": 397619,
+        "sha256": "6313926d0e2c2b2143ec481acd449b293a68937071af3b926eea57f522e21dc4"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/career-360.png",
+        "sha": "b4a2bdeacd4ce0c5f77c4c9611a8bddfd0b80fd8",
+        "bytes": 280059,
+        "sha256": "c2a17338eba0656449f6f88d62f3cf9c91d5d9ed52996b1046a5a9575edd33be"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/career-1280.png",
+        "sha": "2f0fc5814ddb9f36e7cfe27fca034255f585c692",
+        "bytes": 396447,
+        "sha256": "ed89f330a3c4960e637b872ee27779b6078406e5b03b875724a7f8ba6bbacb65"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/yearly-360.png",
+        "sha": "bd14b3e317ec61a32a657ef6ea872f4064044b53",
+        "bytes": 1042500,
+        "sha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617"
+      },
+      {
+        "path": "docs/acceptance/phase1/screenshots/yearly-1280.png",
+        "sha": "4dd9d239bebeb474aecbb8062004ef1400b5cfc8",
+        "bytes": 1293613,
+        "sha256": "6540fb4d5b402a0c13e55642f5636b580a501fe888e788acb21ac0aafdc743ca"
+      }
+    ]
+  },
+  "ownerReference": {
+    "run": 38043660114,
+    "job": 114188745915,
+    "conclusion": "success",
+    "source": "943d11decff8c5cd417d315637aac2cf8c55fa01",
+    "workflowSource": "29742ad1463bd9a0fd8e328c5946eaf2b045e923",
+    "fontControlSource": "63dbcc0df75c655c2476af779f06e99f5a1cd6dd",
+    "nativeFullImageStep": "success",
+    "artifact": {
+      "id": 11666596282,
+      "bytes": 18249548,
+      "sha256": "43b4f28e7e12abae1c5bcf9445a9b0523a9761a1f768cb0e9f3d4316385e500c"
+    },
+    "recovery": {
+      "run": 38044104280,
+      "conclusion": "success",
+      "zipSha256Verified": true,
+      "zipCrcVerified": true,
+      "browserReruns": 0
+    },
+    "report": {
+      "path": "docs/platform/evidence/home-poster-loading-20261010/owner-visual-reference.json",
+      "bytes": 11526,
+      "sha256": "fac3fb82eb15b66a191a372ef19833f85d2f807e660d13ef3986c208746f34b3"
+    },
+    "desktopReferences": [
+      {
+        "path": "tests/visual/baselines/linux/home-desktop.png",
+        "sha": "8c6611e3b34135be93e770ba850745c616cd6186",
+        "bytes": 2074219,
+        "sha256": "f376cab3b5a316b4e24677121a3d01c0848f81111415bc89d866abf10052bbf4"
+      },
+      {
+        "path": "tests/visual/baselines/linux/aries-desktop.png",
+        "sha": "8229207002a21f036121b4c292d5aeca24f6ec64",
+        "bytes": 1080765,
+        "sha256": "4b4774c22c4c416d9b66c74e210472742ebcb9834c21ef93399585c8fc576158"
+      },
+      {
+        "path": "tests/visual/baselines/linux/event-full-moon-desktop.png",
+        "sha": "b813192ee6420ed4d1176ff8ce2e44b0f8746224",
+        "bytes": 730386,
+        "sha256": "f09ed0231c152755a1b2a829bbabc1121398707ada8cf3cbcfe03ae060fb0c44"
+      },
+      {
+        "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop-reduced-motion.png",
+        "sha": "9cb6551ff33990732898110806de989f9c6d190d",
+        "bytes": 1404391,
+        "sha256": "b5b1529881ed2e4572a17b5ca2e51690220ed6a6b626c35c97b48d6c91b34eab"
+      },
+      {
+        "path": "tests/visual/baselines/linux/events-hub-desktop-reduced-motion.png",
+        "sha": "989287359f7e5121a135369e49839c2362e8f42e",
+        "bytes": 1677791,
+        "sha256": "ed56d15d4a9df07feba710f679a5b79451778e2c36c00a8dec6ed6f91d986d2d"
+      },
+      {
+        "path": "tests/visual/baselines/linux/home-desktop-reduced-motion.png",
+        "sha": "cbdd896966acb420f516aa3660cdb578648773fd",
+        "bytes": 2075526,
+        "sha256": "750b3580f96271f10147dd21dbc7d7662280ac41ce27ec008b6822ab2077ccf4"
+      },
+      {
+        "path": "tests/visual/baselines/linux/event-full-moon-desktop-reduced-motion.png",
+        "sha": "b813192ee6420ed4d1176ff8ce2e44b0f8746224",
+        "bytes": 730386,
+        "sha256": "f09ed0231c152755a1b2a829bbabc1121398707ada8cf3cbcfe03ae060fb0c44"
+      },
+      {
+        "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop.png",
+        "sha": "56ba046e5c2600032fa1a5aca0eb62d317a70a12",
+        "bytes": 1404706,
+        "sha256": "bcfdb8aeea1a1b0a0ac2f15a82cb8ddfb5d0cad44fed41d21ba3db4f4644fa4c"
+      },
+      {
+        "path": "tests/visual/baselines/linux/events-hub-desktop.png",
+        "sha": "1cd144a2049e36cd85ceea07d56f2483eeaff927",
+        "bytes": 1678437,
+        "sha256": "5a954f9ef7bf60dc173cf4fa7b5af672f9524b027ad368ef0dad5e92a56fdbb3"
+      },
+      {
+        "path": "tests/visual/baselines/linux/aries-desktop-reduced-motion.png",
+        "sha": "8229207002a21f036121b4c292d5aeca24f6ec64",
+        "bytes": 1080765,
+        "sha256": "4b4774c22c4c416d9b66c74e210472742ebcb9834c21ef93399585c8fc576158"
+      }
+    ],
+    "mobileReferenceFilesChanged": 0,
+    "pixelmatchThreshold": 0.1,
+    "maxDiffRatio": 0.001
+  },
+  "remaining": [
+    "Final combined head's full required suite and fresh numerical gate",
+    "Fresh review on final head",
+    "Merge commit and complete post-merge gates",
+    "Exact-source canonical production verification"
+  ],
+  "limitations": [
+    "Focused and owner-reference observations only; no acceptance claimed before the remaining gates.",
+    "Original failures and raw nonzero CLS history remain retained.",
+    "The current carried engine/archive, benchmark values, performance budgets and comparison tolerances are unchanged.",
+    "No new private clearance, stable cut, archive, package/Registry/guide publication or account/security/hosting setting change."
+  ]
+}

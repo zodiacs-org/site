@@ -3,9 +3,9 @@
   "schema_version": 1,
   "app_info": {
     "display_name": "Zodiacs",
-    "subtitle": "Sky events and Chart Studio",
-    "description": "Zodiacs computes sky positions, upcoming sign ingresses, planetary stations and new/full Moons with explicit timezones and versioned calculation receipts. Check astronomical claims and find relevant astrology calculators and learning guides. No account or birth information is needed for public-sky tools. Interpretations are separate from astronomical facts. Chart Studio offers an interactive browser calculation panel with placement inspection, house comparison, UTC time exploration, possible birth-time windows and local calculation-record inspection. Users review a selection before sharing it with the assistant.",
-    "category": "LIFESTYLE"
+    "subtitle": "Sky, horoscopes and charts",
+    "description": "See what's changing in the sky this week, check whether a planet is retrograde, read the horoscope for your sign, and explore your own birth chart. No account is needed. Zodiacs calculates the sky; what it means in astrology is offered as interpretation, for reflection. Horoscopes are dated Sun-sign readings written for your own day, in your time zone. Chart Studio asks for your birth date, place and, if you know it, time, and works out the chart inside the panel. The assistant sees only what you choose to share.",
+    "category": "EDUCATION"
   },
   "tools": {
     "get_capabilities": {
@@ -56,16 +56,16 @@
         "destructive_justification": "No irreversible action is available."
       }
     },
-    "search_zodiacs": {
+    "get_horoscope": {
       "annotations": {
         "readOnlyHint": true,
         "openWorldHint": false,
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Reads a small curated consumer catalogue and returns fixed links.",
-        "open_world_justification": "Does not fetch arbitrary URLs or write to internet state.",
-        "destructive_justification": "No catalogue or user content is edited or removed."
+        "read_only_justification": "Reads the published, dated horoscope edition for a Sun sign; nothing is stored.",
+        "open_world_justification": "Reads only Zodiacs' own published editions; it fetches no other content and writes nothing.",
+        "destructive_justification": "No content or user data is changed or removed."
       }
     },
     "open_chart_studio": {
@@ -83,43 +83,43 @@
   },
   "test_cases": [
     {
-      "description": "Inspect capabilities and calculate an explicit public-sky instant.",
-      "user_prompt": "Show what Zodiacs supports and which engine it uses, then calculate the sky at 06:00 UTC on October 1, 2026, displayed in Asia/Bangkok.",
-      "file_attachment_urls": null,
-      "tools_triggered": "get_capabilities, get_sky",
-      "expected_output": "Report the six supported operations, actual bundled engine version, limits and privacy; return positions and Moon phase for 2026-10-01T06:00:00Z, Asia/Bangkok display time and a calculation receipt. Distinguish the vendored rc.17 candidate from published rc.16 developer recipes.",
-      "expected_output_url": null
-    },
-    {
-      "description": "Find lunar events in a bounded week.",
-      "user_prompt": "Find new and full Moons from October 1 to October 8, 2026, at midnight UTC, displayed in America/New_York.",
+      "description": "What changes in the sky this week, in the person's time zone.",
+      "user_prompt": "What's happening in the sky this week? I'm in Bangkok.",
       "file_attachment_urls": null,
       "tools_triggered": "get_upcoming_events",
-      "expected_output": "Return computed events or an honest empty window, local times and tested-not-proven coverage; render the sky calendar.",
+      "expected_output": "Lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Bangkok, in plain words, and renders the sky calendar.",
       "expected_output_url": null
     },
     {
-      "description": "Preserve an ambiguous date-only ingress claim.",
-      "user_prompt": "Did the Sun enter Libra on September 23, 2026? I haven't chosen a timezone.",
+      "description": "A yes-or-no sky question and where the planet is.",
+      "user_prompt": "Is Mercury retrograde right now, and where is it?",
       "file_attachment_urls": null,
-      "tools_triggered": "check_sky_fact",
-      "expected_output": "Preserve depends when the crossing fits some local-day interpretations and explain the date/timezone basis.",
+      "tools_triggered": "check_sky_fact, get_sky",
+      "expected_output": "Answers yes or no with the relevant dates and gives Mercury's current sign and position in plain words, keeping astronomy separate from astrological meaning.",
       "expected_output_url": null
     },
     {
-      "description": "Find a calculator with a canonical link.",
-      "user_prompt": "Where is the Zodiacs Moon sign calculator?",
+      "description": "Say what Zodiacs can check, then keep a date-only answer that depends on the time zone.",
+      "user_prompt": "What can Zodiacs check for me? For example, did the Sun enter Libra on September 23, 2026? I haven't said where I am.",
       "file_attachment_urls": null,
-      "tools_triggered": "search_zodiacs",
-      "expected_output": "Return the canonical Moon sign calculator link and explain its purpose; include no personal URL data.",
-      "expected_output_url": "https://zodiacs.org/moon-sign/"
+      "tools_triggered": "get_capabilities, check_sky_fact",
+      "expected_output": "Summarises what Zodiacs offers in plain words, then keeps the 'depends' answer and explains that it changes with the time zone instead of turning it into a certainty.",
+      "expected_output_url": null
     },
     {
-      "description": "Open an interactive chart without sending birth data as tool arguments.",
-      "user_prompt": "Open Chart Studio so I can compare house systems.",
+      "description": "A dated Sun-sign horoscope for the person's own day.",
+      "user_prompt": "Show today's horoscope for Leo.",
+      "file_attachment_urls": null,
+      "tools_triggered": "get_horoscope",
+      "expected_output": "Shows the Leo reading dated for the person's own day in their time zone, renders the horoscope panel, keeps the reading's date and presents it as reflection, not a personal forecast.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Open a personal chart without sending birth details as tool arguments.",
+      "user_prompt": "Help me read my birth chart.",
       "file_attachment_urls": null,
       "tools_triggered": "open_chart_studio",
-      "expected_output": "Call with {}, render the labeled synthetic example, and calculate locally. Review a synthetic local date/time conversion, compare house systems, inspect and download or locally copy its record, and share selected facts only after preview and explicit confirmation. Input changes and record imports must not automatically share data.",
+      "expected_output": "Calls with {} and renders Chart Studio, which asks when and where the person was born and calculates inside the panel. An example chart is offered only as a labelled second choice. Selected facts are shared only after a preview and an explicit action.",
       "expected_output_url": null
     }
   ],

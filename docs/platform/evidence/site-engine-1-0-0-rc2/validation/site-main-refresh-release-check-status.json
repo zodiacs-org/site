@@ -1,0 +1,18 @@
+[
+  {
+    "check": "captures",
+    "exitCode": 0
+  },
+  {
+    "check": "closure",
+    "exitCode": 0
+  },
+  {
+    "check": "source-hash-equivalence",
+    "exitCode": 0
+  },
+  {
+    "check": "regenerated-outputs",
+    "exitCode": 0
+  }
+]

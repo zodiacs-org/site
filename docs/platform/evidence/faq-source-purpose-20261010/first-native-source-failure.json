@@ -1,0 +1,18 @@
+{
+  "schema": "zodiacs.faq-native-source-failure.v1",
+  "source": "da93964d9911a728e36aab8e15e343fbcb420362",
+  "auditedSource": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+  "run": 38055547993,
+  "job": 114223127884,
+  "conclusion": "failure",
+  "failedAssertion": "All current shared-helper consumers are traced",
+  "actual": 6,
+  "expected": 5,
+  "originalDecodedLog": {
+    "bytes": 78604,
+    "sha256": "cd1f667e32dfd261566db569ca85b140e612d0e2c095f76cc1db747bd138b476"
+  },
+  "cause": "The discovery harness assumed that the five manually listed homepages were the complete set of calls. A sixth call needs inspection.",
+  "correction": "Verify the five known consumers, export every discovered call and flag unknown consumers for review; do not claim all consumers reviewed until the gap is resolved.",
+  "acceptedWeight": 0
+}

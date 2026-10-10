@@ -140,8 +140,8 @@ describe('homepage first-paint assets', () => {
 
     expect(ticker).toEqual(['<SkyTicker />']);
     // The saved-profile island has no SSR child for visibility observation.
-    // Idle hydration makes returning state reachable without changing the sky receipt.
-    expect(page).toContain('<WelcomeBack client:idle />');
+    // The intent/load fallback reaches returning state after the initial poster load.
+    expect(page).toContain('<WelcomeBack client:interaction />');
     expect(page).toContain('<TodayBySign client:visible={{ rootMargin: \'240px\' }} />');
   });
 

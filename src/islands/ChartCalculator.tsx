@@ -1,3 +1,4 @@
+import { BirthTimeWindowEntry } from './BirthTimeWindowEntry';
 import { CheckOurMath, ResultOpening } from './ChartTrust';
 /**
  * The calculator island — birth data in, chart out, entirely on-device.
@@ -2138,6 +2139,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           </h2>
           <ResultOpening locale={locale} kind={subjectMode === 'other' || personName ? 'other' : 'self'} />
           <CheckOurMath locale={locale} utc={chart.input.utc} basis={chart.input.timeKnown ? 'birth' : 'reference'} />
+          {locale === 'en' && mode === 'full' && chart.input.timeKnown
+            && !chart.flags.includes('no-time') && computedInput && (
+            <BirthTimeWindowEntry key={String(chartContextIdRef.current)}
+              utc={chart.input.utc} latitude={computedInput.city.lat} longitude={computedInput.city.lon}
+              houseSystem={chart.input.houseSystem} />
+          )}
           {/* Notices */}
           {computedInput?.oldStyle && (
             <p class="notice" role="status" data-old-style-date>

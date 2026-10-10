@@ -129,6 +129,58 @@ describe('horoscope program domain', () => {
     expect(failures).toEqual([]);
   });
 
+  it('re-frames only the later sign when two tomorrow readings would exceed the distinctness limit', () => {
+    // The sky of 2026-10-09: Mars in Leo (Gemini) and retrograde Venus in
+    // Scorpio (Virgo) both fall in the third solar house on a quiet New Moon
+    // day. With the shared sentence frames the pair measured 0.402 against 0.4.
+    const collision = clone(input);
+    const tomorrow = collision.dailySnapshots.find(({ date }) => date === '2026-07-20')!;
+    const place = (name: string, sign: string, retrograde: boolean) => {
+      const placed = tomorrow.bodies.find(({ body }) => body === name)!;
+      placed.sign = sign;
+      placed.retrograde = retrograde;
+      placed.lon = SIGN_SLUGS.indexOf(sign) * 30 + placed.degree;
+    };
+    place('Moon', 'libra', false);
+    place('Mercury', 'scorpio', false);
+    place('Venus', 'scorpio', true);
+    place('Mars', 'leo', false);
+    place('Saturn', 'aries', true);
+    tomorrow.moon.phase = 'New Moon';
+    tomorrow.events = [];
+
+    const program = buildHoroscopeProgram(collision);
+    const reading = (sign: string) => program.signs.find((entry) => entry.sign === sign)!.readings.tomorrow;
+    const sharedFrame = 'using the lead time to prepare the conditions around the decision before tomorrow begins';
+    expect(reading('gemini').text).toContain(sharedFrame);
+    expect(reading('virgo').text).not.toContain(sharedFrame);
+    // Only the frames change: the house advice and the cited facts stay.
+    expect(reading('virgo').text).toContain('Name who needs the message, what they need to know, and when they need it.');
+    expect(reading('virgo').text).toContain('Venus retrograde in Scorpio adds messages, errands, siblings, and your local community');
+    expect(reading('virgo').text).toContain('the new moon brings your money, possessions, and priorities');
+    const cited = new Set(reading('virgo').passages.flatMap((item) => item.evidenceRefs));
+    expect(program.evidence
+      .filter((receipt) => cited.has(receipt.id))
+      .map((receipt) => [receipt.kind, receipt.body, receipt.sunSign ?? '-', receipt.house ?? '-'].join(':'))
+      .sort()).toEqual([
+      'body-position:Moon:-:-',
+      'body-position:Venus:-:-',
+      'solar-house:Moon:virgo:2',
+      'solar-house:Venus:virgo:3',
+    ]);
+    expect(horoscopeShingleJaccard(reading('gemini').text, reading('virgo').text))
+      .toBeLessThanOrEqual(HOROSCOPE_DISTINCTNESS_LIMITS.tomorrow);
+    // Every sign that was already distinct keeps the original frames.
+    expect(program.signs
+      .filter((entry) => !entry.readings.tomorrow.text.includes(sharedFrame))
+      .map((entry) => entry.sign)).toEqual(['virgo']);
+
+    expect(validateHoroscopeProgramAgainstInput(collision, program)).toEqual([]);
+    expect(verifyHoroscopeProgramCopy(program).filter(({ path }) => (
+      /\.readings\.(?:today|tomorrow)(?:\.|$)/u.test(path)
+    ))).toEqual([]);
+  });
+
   it('links every publishable passage to serializable source or derived evidence', () => {
     const program = buildHoroscopeProgram(input);
     const evidence = new Map(program.evidence.map((receipt) => [receipt.id, receipt]));

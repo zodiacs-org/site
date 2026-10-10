@@ -3,8 +3,15 @@ import ingressData from '../src/data/ingresses.json';
 import skyData from '../src/data/sky.json';
 import julyTransits from '../src/data/transits-2026-07.json';
 import augustTransits from '../src/data/transits-2026-08.json';
-import { HOROSCOPE_WORD_BOUNDS } from '../src/lib/horoscope-program';
-import { expectedHoroscopeProgram, yearlyEvents } from './horoscope-program-files';
+import type { Daily } from '../src/lib/daily';
+import {
+  HOROSCOPE_WORD_BOUNDS,
+  buildHoroscopeProgram,
+  validateHoroscopeProgramAgainstInput,
+} from '../src/lib/horoscope-program';
+import { computeDailySnapshot } from './daily-snapshot-lib.mjs';
+import { HOROSCOPE_REPO_ROOT, expectedHoroscopeProgram, yearlyEvents } from './horoscope-program-files';
+import { verifyHoroscopeProgramCopy } from './independent-copy-verifier';
 
 interface IngressWindow {
   planet: string;
@@ -90,5 +97,34 @@ describe('strict 2027 horoscope fact catalog', () => {
       expect(reading.wordCount, entry.sign).toBeGreaterThanOrEqual(HOROSCOPE_WORD_BOUNDS['yearly-2027'].min);
       expect(reading.wordCount, entry.sign).toBeLessThanOrEqual(HOROSCOPE_WORD_BOUNDS['yearly-2027'].max);
     }
+  });
+});
+
+function addDays(date: string, amount: number): string {
+  const value = new Date(`${date}T00:00:00.000Z`);
+  value.setUTCDate(value.getUTCDate() + amount);
+  return value.toISOString().slice(0, 10);
+}
+
+describe('computed daily horoscope editions', () => {
+  // Before the alternate frames, Gemini and Virgo's tomorrow readings in these
+  // editions measured 0.402 against the 0.4 limit and blocked publication.
+  it.each(['2026-10-08', '2026-10-10'])('passes both validators for the %s edition', async (anchorDate) => {
+    const isoDay = new Date(`${anchorDate}T00:00:00.000Z`).getUTCDay() || 7;
+    const dates = [...new Set([
+      anchorDate,
+      addDays(anchorDate, 1),
+      ...Array.from({ length: 7 }, (_, index) => addDays(anchorDate, index + 1 - isoDay)),
+    ])].sort();
+    const input = {
+      anchorDate,
+      dailySnapshots: await Promise.all(dates.map((date) => (
+        computeDailySnapshot(date, HOROSCOPE_REPO_ROOT) as Promise<Daily>
+      ))),
+      yearlyEvents: await yearlyEvents(),
+    };
+    const program = buildHoroscopeProgram(input);
+    expect(validateHoroscopeProgramAgainstInput(input, program)).toEqual([]);
+    expect(verifyHoroscopeProgramCopy(program)).toEqual([]);
   });
 });

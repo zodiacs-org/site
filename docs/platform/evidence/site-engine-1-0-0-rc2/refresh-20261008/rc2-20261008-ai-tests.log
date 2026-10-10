@@ -1,0 +1,35 @@
+
+> zodiacs-org@1.0.0 ai:test
+> vitest run src/ai-tools && node tests/ai-integrations-drive.mjs && npm test --prefix plugins/zodiacs-developer
+
+
+ RUN  v3.2.7 /workspace/site
+
+ ✓ src/ai-tools/studio/local-time.test.ts (11 tests) 542ms
+ ✓ src/ai-tools/lifetime.test.ts (3 tests) 1719ms
+   ✓ clears actual HTTP bundle state after success and failure  757ms
+   ✓ clears actual stdio bundle state after success and failure  508ms
+   ✓ clears actual Sky Watch bundle state after success and failure  452ms
+ ✓ src/ai-tools/studio/inspect.test.ts (7 tests) 208ms
+ ✓ src/ai-tools/tools.test.ts (21 tests) 506ms
+ ✓ src/ai-tools/http.test.ts (15 tests) 800ms
+   ✓ stateless MCP HTTP boundary > works with the official SDK client: list, call, widget read and close  549ms
+ ✓ src/ai-tools/studio/model.test.ts (15 tests) 145ms
+ ✓ src/ai-tools/studio/explore.test.ts (16 tests) 186ms
+ ✓ src/ai-tools/studio/bridge.test.ts (4 tests) 31ms
+ ✓ src/ai-tools/watch/watch.test.ts (37 tests) 250ms
+ ✓ src/ai-tools/watch/oauth.test.ts (3 tests) 56ms
+ ✓ src/ai-tools/watch/callback.test.ts (3 tests) 18ms
+ ✓ src/ai-tools/quota.test.ts (4 tests) 10ms
+
+ Test Files  12 passed (12)
+      Tests  139 passed (139)
+   Start at  05:22:09
+   Duration  4.40s (transform 2.17s, setup 0ms, collect 4.54s, tests 4.47s, environment 3ms, prepare 1.22s)
+
+Developer bundle: manifest, three skills, eight MCP tools, synthetic record comparison and privacy recovery passed.
+
+> zodiacs-developer-plugin@0.3.5 test
+> node examples/verify.mjs
+
+Published-engine recipes: version, offset equivalence, unknown time, Moon phase and calendar passed.

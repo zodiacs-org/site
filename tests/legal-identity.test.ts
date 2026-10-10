@@ -44,12 +44,13 @@ describe('public legal identity', () => {
     // Terms and privacy were revised for the owner's approved Guide and
     // paste-address-only notices on 3 October. About retains its prior date.
     // Privacy changed again on 5 October, when the compute API it describes
-    // gained the elections endpoint.
+    // gained the elections endpoint, and on 9 October, when it named the host's
+    // 30-day request-log retention for the hosted MCP server.
     expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
     expect(terms).toContain("const updated = '3 October 2026'");
     expect(terms).toContain("const modifiedAt = '2026-10-03T00:00:00.000Z'");
     expect(privacy).toContain('AI integration candidates');
-    expect(privacy).toContain("const updated = '5 October 2026'");
-    expect(privacy).toContain("const modifiedAt = '2026-10-05T00:00:00.000Z'");
+    expect(privacy).toContain("const updated = '9 October 2026'");
+    expect(privacy).toContain("const modifiedAt = '2026-10-09T00:00:00.000Z'");
   });
 });

@@ -1,0 +1,28 @@
+{
+  "adapterVersion": "0.1.0-rc.17",
+  "engineVersion": "0.1.1-rc.17",
+  "ephemerisVersion": "2.1.19",
+  "engineArchiveSha256": "9cd24c788863424ef614aaadec580db5a0dfc529303d385274db48a092a5299a",
+  "manifestSha256": "5bf917ab2235887898d658ab94fa8260f7dfcba8dfeb9fc3436bdc711ac1536f",
+  "sourceLockSha256": "5f817f4e3f08b52a4b82694dc33b1abd794c78e6f637938eade4557992fe5798",
+  "engineSource": {
+    "mainCommit": "782b4963a8575fa8d81c602a36285f65fb9ae9bb",
+    "artifactSourceCommit": "aae419c05b77455b9e8f03ca11ee273b446f7d02",
+    "artifactCarrierCommit": "b080217c1b5b0b36c931e9c237bcff0308ec1efc"
+  },
+  "archive": {
+    "sourceCommit": "bd4d14484bf67df2de457a2cc0f1df7a825e7962",
+    "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/examples/zodiacs-mcp-server-0.1.0-rc.17.tgz",
+    "bytes": 125262,
+    "sha256": "e0f1f7a4035649dac0d2e18e22efd6c394e6b0d0f2377356784a3152b163a052"
+  },
+  "openapi": {
+    "bytes": 369971,
+    "sha256": "d47080a30766bdc08e9196230ac310bb9c5d47d1c6babe786c1c9d063f921a2e"
+  },
+  "http": {
+    "sourceCommit": "b1c42f199cea5c879afd1be3597666d43abf9653",
+    "bundleSha256": "8130a75d1f24f26d42da614b0acc87c8aae6ab77caf4bb9d939e92c2bf538503",
+    "localTimeBundleSha256": "6f9253009a83f84e755810ac5221eefd87811203e66aaef1933840be4e8571da"
+  }
+}

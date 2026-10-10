@@ -6,7 +6,6 @@ import { StdioServerTransport, serveStdio } from '@modelcontextprotocol/server/s
 import { LIMITS } from '../mcp/bounds';
 import { CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY, calculateNatalChart, compareCalculationRecords, describeCapabilities, type ToolOutcome } from '../mcp/tools';
 import { AI_VERSION, READ_ONLY } from './contracts';
-import { BACKEND } from '../lib/compute-api/receipt';
 import { createAiServer } from './server';
 import { sanitizeProtocolMessage } from './sanitize';
 
@@ -24,7 +23,7 @@ function build() {
   const server = createAiServer({});
   server.registerTool('get_local_chart_capabilities', { description: `Local natal and comparison conventions, bounds and privacy. ${PRIVACY.assistant}`, inputSchema: CAPABILITIES_INPUT, annotations: READ_ONLY }, () => respond(() => {
     const outcome = describeCapabilities();
-    return outcome.ok ? { ok: true, value: { ...outcome.value, adapter: { name: 'zodiacs-developer', version: AI_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' }, engine: { name: '@zodiacs/engine', version: BACKEND.version, releaseStatus: 'published' } } } : outcome;
+    return outcome.ok ? { ok: true, value: { ...outcome.value, adapter: { name: 'zodiacs-developer', version: AI_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' } } } : outcome;
   }));
   server.registerTool('calculate_natal_chart', { description: `Calculate one natal chart locally; request output: record for an exportable receipt. Do not invent a birth time or place. ${PRIVACY.assistant}`, inputSchema: NATAL_INPUT, annotations: READ_ONLY }, args => respond(() => calculateNatalChart(args)));
   server.registerTool('compare_calculation_records', { description: `Compare two record strings locally. Pass the record field from calculate_natal_chart with output: record. Do not pass paths or URLs. Preserve evidence levels. ${PRIVACY.assistant}`, inputSchema: COMPARE_INPUT, annotations: READ_ONLY }, args => respond(() => compareCalculationRecords(args)));

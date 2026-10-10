@@ -1,0 +1,13 @@
+
+> zodiacs-org@1.0.0 test
+> vitest run src/lib/engine/solar-return.test.ts --fileParallelism=false
+
+
+ RUN  v3.2.7 /workspace/site
+
+ ✓ src/lib/engine/solar-return.test.ts (10 tests) 461ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  17:06:20
+   Duration  1.21s (transform 208ms, setup 0ms, collect 301ms, tests 461ms, environment 0ms, prepare 139ms)

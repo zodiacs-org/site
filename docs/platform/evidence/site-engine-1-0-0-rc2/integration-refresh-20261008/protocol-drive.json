@@ -1,0 +1,1008 @@
+{
+  "type": "official-SDK protocol interoperability against the real server process; not a named end-user host, and not a model-driven demonstration",
+  "startedAt": "2026-10-08T14:52:34.628Z",
+  "completedAt": "2026-10-08T14:52:38.991Z",
+  "node": "v22.22.2",
+  "client": {
+    "package": "@modelcontextprotocol/client",
+    "version": "2.3.1",
+    "offeredProtocolVersion": "2025-11-25",
+    "supportedProtocolVersions": [
+      "2025-11-25",
+      "2025-06-18",
+      "2025-03-26",
+      "2024-11-05",
+      "2024-10-07"
+    ]
+  },
+  "server": {
+    "path": "examples/mcp-server/server.mjs",
+    "bytes": 324575,
+    "sha256": "f0be3308b76f7dd9e5f1b3cf7ee8c9e719501ca1f802706ffb4cd672941a42ac"
+  },
+  "wire": [
+    {
+      "version": "2025-11-25",
+      "negotiated": "2025-11-25",
+      "error": null
+    },
+    {
+      "version": "2025-06-18",
+      "negotiated": "2025-06-18",
+      "error": null
+    },
+    {
+      "version": "2025-03-26",
+      "negotiated": "2025-03-26",
+      "error": null
+    },
+    {
+      "version": "2024-11-05",
+      "negotiated": "2024-11-05",
+      "error": null
+    },
+    {
+      "version": "2024-10-07",
+      "negotiated": "2024-10-07",
+      "error": null
+    },
+    {
+      "version": "1999-01-01",
+      "negotiated": "2025-11-25",
+      "error": null
+    }
+  ],
+  "rawShapes": [
+    {
+      "case": "a request line too long to buffer",
+      "exit": 0,
+      "answered": [
+        1,
+        2,
+        3
+      ],
+      "unansweredOffender": true
+    },
+    {
+      "case": "the same line split across two writes",
+      "exit": 0,
+      "answered": [
+        1,
+        4
+      ],
+      "unansweredOffender": true
+    },
+    {
+      "case": "a JSON-RPC batch array",
+      "exit": 0,
+      "answered": [
+        1,
+        5
+      ],
+      "unansweredOffender": true
+    },
+    {
+      "case": "syntactically invalid JSON",
+      "exit": 0,
+      "answered": [
+        1,
+        6
+      ],
+      "unansweredOffender": true
+    },
+    {
+      "case": "two large lines in sequence",
+      "exit": 0,
+      "answered": [
+        1,
+        82,
+        83,
+        7
+      ],
+      "unansweredOffender": true
+    }
+  ],
+  "checks": 106,
+  "passed": 106,
+  "results": [
+    {
+      "name": "initialize succeeds and names the adapter",
+      "ok": true,
+      "detail": {
+        "name": "zodiacs-mcp-server",
+        "version": "0.1.0-rc.18"
+      }
+    },
+    {
+      "name": "server version is the packaged adapter candidate version",
+      "ok": true,
+      "detail": {
+        "server": "0.1.0-rc.18",
+        "package": "0.1.0-rc.18"
+      }
+    },
+    {
+      "name": "server declares the tools capability",
+      "ok": true
+    },
+    {
+      "name": "lists exactly the six tools",
+      "ok": true,
+      "detail": [
+        "calculate_natal_chart",
+        "check_sky_fact",
+        "compare_calculation_records",
+        "find_events",
+        "get_capabilities",
+        "get_positions"
+      ]
+    },
+    {
+      "name": "every tool closes its argument object",
+      "ok": true
+    },
+    {
+      "name": "every tool is annotated read-only, non-destructive and closed-world",
+      "ok": true
+    },
+    {
+      "name": "every tool advertises an object output schema",
+      "ok": true,
+      "detail": [
+        [
+          "get_capabilities",
+          "object"
+        ],
+        [
+          "calculate_natal_chart",
+          "object"
+        ],
+        [
+          "compare_calculation_records",
+          "object"
+        ],
+        [
+          "get_positions",
+          "object"
+        ],
+        [
+          "find_events",
+          "object"
+        ],
+        [
+          "check_sky_fact",
+          "object"
+        ]
+      ]
+    },
+    {
+      "name": "the server declares the resources capability",
+      "ok": true
+    },
+    {
+      "name": "the natal schema bounds the epoch, coordinates and options",
+      "ok": true
+    },
+    {
+      "name": "every tool description states the assistant-routing distinction",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "the comparison also says its own output is not anonymous",
+      "ok": true
+    },
+    {
+      "name": "capabilities name the pinned engine",
+      "ok": true,
+      "detail": {
+        "name": "@zodiacs/engine",
+        "version": "1.0.0-rc.2",
+        "releaseStatus": "unpublished-candidate"
+      }
+    },
+    {
+      "name": "capabilities label the engine as the site's candidate record does, and the adapter an unpublished candidate",
+      "ok": true,
+      "detail": {
+        "adapter": {
+          "name": "zodiacs-mcp-server",
+          "version": "0.1.0-rc.18",
+          "releaseStatus": "unpublished-candidate",
+          "transport": "stdio"
+        },
+        "engine": {
+          "name": "@zodiacs/engine",
+          "version": "1.0.0-rc.2",
+          "releaseStatus": "unpublished-candidate"
+        }
+      }
+    },
+    {
+      "name": "capabilities cite the receipt they carry",
+      "ok": true,
+      "detail": {
+        "url": "https://zodiacs.org/developers/mcp/#get_capabilities",
+        "receipt": "sha256:c0df2af44462c84756cacb86fa47bf7459fb0ffc2e5c3bf9ae9664bcf4e42dad",
+        "engine": "@zodiacs/engine",
+        "version": "1.0.0-rc.2"
+      }
+    },
+    {
+      "name": "capabilities state the privacy distinction in full",
+      "ok": true
+    },
+    {
+      "name": "capabilities list what is unsupported, including the absent timeout",
+      "ok": true
+    },
+    {
+      "name": "capabilities publish every limit the server enforces",
+      "ok": true
+    },
+    {
+      "name": "a summary carries twelve bodies, four angles, twelve cusps and aspects",
+      "ok": true
+    },
+    {
+      "name": "a summary reports requested against actual house system",
+      "ok": true
+    },
+    {
+      "name": "a summary does not echo the birth details back",
+      "ok": true
+    },
+    {
+      "name": "an unknown time suppresses angles and houses and says why",
+      "ok": true
+    },
+    {
+      "name": "a chart with no place keeps the bodies and reports the missing location",
+      "ok": true
+    },
+    {
+      "name": "a polar chart reports the house system it could actually use",
+      "ok": true,
+      "detail": {
+        "absenceReason": null,
+        "actual": "whole",
+        "requested": "placidus"
+      }
+    },
+    {
+      "name": "record output returns a parseable envelope and nothing else",
+      "ok": true,
+      "detail": [
+        "engine",
+        "schema",
+        "record",
+        "cite"
+      ]
+    },
+    {
+      "name": "the record reply is the record in a field, beside its two labels and what to cite",
+      "ok": true,
+      "detail": [
+        "engine",
+        "schema",
+        "record",
+        "cite"
+      ]
+    },
+    {
+      "name": "a chart and its record cite one digest, the record receipt's",
+      "ok": true,
+      "detail": {
+        "chart": {
+          "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
+          "receipt": "sha256:bc9260d5e6087b778747431754d165ec18b9ffd90bfc9a34421c7ed98c16ead9",
+          "engine": "@zodiacs/engine",
+          "version": "1.0.0-rc.2"
+        },
+        "record": {
+          "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
+          "receipt": "sha256:bc9260d5e6087b778747431754d165ec18b9ffd90bfc9a34421c7ed98c16ead9",
+          "engine": "@zodiacs/engine",
+          "version": "1.0.0-rc.2"
+        }
+      }
+    },
+    {
+      "name": "handing the whole reply to the comparison is refused, not compared",
+      "ok": true,
+      "detail": {
+        "layer": "tool",
+        "text": "The first record is not shaped like a zodiacs.natal-envelope.draft-v1 record. It looks like a whole calculate_natal_chart reply: pass its \"record\" field, which is the record itself."
+      }
+    },
+    {
+      "name": "and the refusal names the field to pass instead",
+      "ok": true,
+      "detail": "The first record is not shaped like a zodiacs.natal-envelope.draft-v1 record. It looks like a whole calculate_natal_chart reply: pass its \"record\" field, which is the record itself."
+    },
+    {
+      "name": "two identical records compare identical",
+      "ok": true,
+      "detail": {
+        "differences": 0,
+        "substantive": 0,
+        "displayOnly": 0,
+        "explanations": 0
+      }
+    },
+    {
+      "name": "a house-system difference is found and every cusp moves",
+      "ok": true,
+      "detail": {
+        "differences": 15,
+        "substantive": 15,
+        "displayOnly": 0,
+        "explanations": 1
+      }
+    },
+    {
+      "name": "the house-system cause is reproduced by local recalculation",
+      "ok": true,
+      "detail": [
+        [
+          "house-system",
+          "reproduced"
+        ]
+      ]
+    },
+    {
+      "name": "a comparison labels its own output as not anonymous",
+      "ok": true
+    },
+    {
+      "name": "a comparison cites its own receipt, which carries nothing from either record",
+      "ok": true,
+      "detail": {
+        "schema": "zodiacs.mcp-receipt.v1",
+        "tool": "compare_calculation_records",
+        "adapter": {
+          "name": "zodiacs-mcp-server",
+          "version": "0.1.0-rc.18"
+        },
+        "engine": {
+          "name": "@zodiacs/engine",
+          "version": "1.0.0-rc.2",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "output": "summary"
+      }
+    },
+    {
+      "name": "positions come back for every instant, twelve rows each, with the ΔT the engine used",
+      "ok": true,
+      "detail": [
+        12,
+        12
+      ]
+    },
+    {
+      "name": "the positions at a chart's instant are the chart's bodies",
+      "ok": true
+    },
+    {
+      "name": "positions cite the compute receipt they carry, the compute API's schema and endpoint",
+      "ok": true,
+      "detail": {
+        "url": "https://zodiacs.org/developers/mcp/#get_positions",
+        "receipt": "sha256:28aa5870ee36cdb7dd419aed0324b7f115ae10fb043122716b019bb7b755a6ce",
+        "engine": "@zodiacs/engine",
+        "version": "1.0.0-rc.2"
+      }
+    },
+    {
+      "name": "events come back in time order, of all three kinds",
+      "ok": true,
+      "detail": 62
+    },
+    {
+      "name": "an events reply says its search is tested, not proven complete, and how it searched",
+      "ok": true,
+      "detail": {
+        "solver": "engine-longitude-crossings",
+        "stepDays": {
+          "default": 5,
+          "moon": 1,
+          "elongation": 1
+        },
+        "bisections": 24,
+        "samples": 4938,
+        "maxSamples": 12000,
+        "window": "start-exclusive-end-inclusive",
+        "completeness": "tested-not-proven"
+      }
+    },
+    {
+      "name": "a fact at an instant is true or false, with the values that decide it",
+      "ok": true,
+      "detail": {
+        "answer": "true",
+        "basis": "instant",
+        "fact": {
+          "kind": "sign",
+          "body": "Sun",
+          "sign": "libra",
+          "instant": "2026-10-15T12:00:00.000Z",
+          "date": null,
+          "zone": null
+        },
+        "instant": "2026-10-15T12:00:00.000Z",
+        "window": null,
+        "zone": null,
+        "facts": {
+          "lon": 202.1520384980946,
+          "sign": "libra",
+          "degree": 22.152038498094612,
+          "speed": 0.9913009521369531,
+          "retrograde": false,
+          "deltaT": {
+            "seconds": 69.22333325195312,
+            "sigma": 0.003153,
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a",
+            "segment": "predicted"
+          },
+          "timeScale": {
+            "input": "utc",
+            "basis": "iers",
+            "ut1MinusUtc": {
+              "seconds": -0.03933333333333877,
+              "sigma": 0.003153,
+              "source": "predicted"
+            },
+            "leapSeconds": {
+              "taiMinusUtc": 37,
+              "listed": true
+            }
+          },
+          "boundaryMarginArcsec": 28252.6614068594,
+          "flags": []
+        }
+      }
+    },
+    {
+      "name": "a date without a zone is read in every UTC offset in use today at once, and a lunation on it depends on the offset",
+      "ok": true,
+      "detail": {
+        "found": "2026-02-01T22:09:17.518Z",
+        "onDate": [
+          {
+            "at": "2026-02-01T22:09:17.520Z",
+            "lon": 133.06144847908683,
+            "sign": "leo",
+            "degree": 13.061448479086835
+          }
+        ]
+      }
+    },
+    {
+      "name": "a fact cites the compute receipt it carries, which holds no date or instant from the request",
+      "ok": true,
+      "detail": [
+        {
+          "solver": "engine-longitude-crossings",
+          "stepDays": {
+            "default": 5,
+            "moon": 1,
+            "elongation": 1
+          },
+          "bisections": 24,
+          "samples": 28,
+          "maxSamples": 1000,
+          "window": "start-exclusive-end-inclusive",
+          "completeness": "tested-not-proven"
+        },
+        "sky-fact"
+      ]
+    },
+    {
+      "name": "a zone is refused, since this server reads none, and names the argument",
+      "ok": true,
+      "detail": {
+        "layer": "tool",
+        "text": "Input validation error: Invalid arguments for tool check_sky_fact: Unrecognized key: \"zone\""
+      }
+    },
+    {
+      "name": "a refusal from the compute API's parser is its own sentence, with the field it names",
+      "ok": true,
+      "detail": {
+        "layer": "tool",
+        "text": "/to: Must be later than from."
+      }
+    },
+    {
+      "name": "recovers after the compute tools' refusals",
+      "ok": true
+    },
+    {
+      "name": "lists the conventions and methodology resources",
+      "ok": true,
+      "detail": [
+        "zodiacs://conventions",
+        "zodiacs://methodology"
+      ]
+    },
+    {
+      "name": "the conventions resource is the vocabulary the records carry",
+      "ok": true,
+      "detail": [
+        {
+          "from": "0.1.1-rc.16",
+          "to": null
+        },
+        {
+          "from": "0.1.1-rc.15",
+          "to": "0.1.1-rc.15"
+        },
+        {
+          "from": "0.1.1-rc.8",
+          "to": "0.1.1-rc.14"
+        },
+        {
+          "from": "0.1.1-rc.7",
+          "to": "0.1.1-rc.7"
+        },
+        {
+          "from": "0.1.1-rc.3",
+          "to": "0.1.1-rc.6"
+        }
+      ]
+    },
+    {
+      "name": "the methodology resource names the engine and the site's methodology page",
+      "ok": true,
+      "detail": "# How this server calculates\n\nzodiacs-mcp-server 0.1.0-rc.18 runs @zodiacs/engine 1.0.0-rc.2, with astronomy-engine 2.1.19, on the machine it runs on.\nThe site's methodology page, https://zodiacs.org/"
+    },
+    {
+      "name": "the default comparison response repeats no birth detail back",
+      "ok": true,
+      "detail": "{\"identical\":false,\"counts\":{\"differences\":113,\"substantive\":113,\"displayOnly\":0,\"explanations\":3},\"output\":\"summary\",\"differences\":[{\"id\":\"instant\",\"area\":\"Inputs\",\"label\":\"Resolved instant (UTC)\",\"d"
+    },
+    {
+      "name": "and still says which field moved, how, and by how much",
+      "ok": true,
+      "detail": [
+        {
+          "id": "instant",
+          "area": "Inputs",
+          "label": "Resolved instant (UTC)",
+          "delta": null,
+          "kind": "metadata",
+          "valuesWithheld": true
+        },
+        {
+          "id": "latitude",
+          "area": "Inputs",
+          "label": "Latitude",
+          "delta": 26.71580000000001,
+          "kind": "numeric",
+          "valuesWithheld": true
+        },
+        {
+          "id": "houses-requested",
+          "area": "Houses",
+          "label": "House system requested",
+          "left": "placidus",
+          "right": "whole",
+          "delta": null,
+          "kind": "metadata"
+        }
+      ]
+    },
+    {
+      "name": "asking for full values is an explicit choice that returns them",
+      "ok": true
+    },
+    {
+      "name": "the same instant written two ways differs only in what was reported",
+      "ok": true,
+      "detail": [
+        "source-instant"
+      ]
+    },
+    {
+      "name": "refuses an unknown tool name",
+      "ok": true
+    },
+    {
+      "name": "recovers after an unknown tool name",
+      "ok": true
+    },
+    {
+      "name": "refuses a missing required argument",
+      "ok": true
+    },
+    {
+      "name": "recovers after a missing required argument",
+      "ok": true
+    },
+    {
+      "name": "refuses an unknown extra argument",
+      "ok": true
+    },
+    {
+      "name": "recovers after an unknown extra argument",
+      "ok": true
+    },
+    {
+      "name": "refuses a wrongly typed argument",
+      "ok": true
+    },
+    {
+      "name": "recovers after a wrongly typed argument",
+      "ok": true
+    },
+    {
+      "name": "refuses an out-of-range latitude",
+      "ok": true
+    },
+    {
+      "name": "recovers after an out-of-range latitude",
+      "ok": true
+    },
+    {
+      "name": "refuses an unsupported house system",
+      "ok": true
+    },
+    {
+      "name": "recovers after an unsupported house system",
+      "ok": true
+    },
+    {
+      "name": "refuses a date before the supported epoch",
+      "ok": true
+    },
+    {
+      "name": "recovers after a date before the supported epoch",
+      "ok": true
+    },
+    {
+      "name": "refuses a date that does not exist",
+      "ok": true
+    },
+    {
+      "name": "recovers after a date that does not exist",
+      "ok": true
+    },
+    {
+      "name": "refuses a wall time with no zone",
+      "ok": true
+    },
+    {
+      "name": "recovers after a wall time with no zone",
+      "ok": true
+    },
+    {
+      "name": "refuses one coordinate without the other",
+      "ok": true
+    },
+    {
+      "name": "recovers after one coordinate without the other",
+      "ok": true
+    },
+    {
+      "name": "refuses a record that is not JSON",
+      "ok": true
+    },
+    {
+      "name": "recovers after a record that is not JSON",
+      "ok": true
+    },
+    {
+      "name": "refuses a record that is JSON but not an envelope",
+      "ok": true
+    },
+    {
+      "name": "recovers after a record that is JSON but not an envelope",
+      "ok": true
+    },
+    {
+      "name": "refuses a record declaring an unsupported schema",
+      "ok": true
+    },
+    {
+      "name": "recovers after a record declaring an unsupported schema",
+      "ok": true
+    },
+    {
+      "name": "refuses a record requiring an unimplemented feature",
+      "ok": true
+    },
+    {
+      "name": "recovers after a record requiring an unimplemented feature",
+      "ok": true
+    },
+    {
+      "name": "refuses a record whose result contradicts its receipt",
+      "ok": true
+    },
+    {
+      "name": "recovers after a record whose result contradicts its receipt",
+      "ok": true
+    },
+    {
+      "name": "refuses a record over the character cap",
+      "ok": true
+    },
+    {
+      "name": "recovers after a record over the character cap",
+      "ok": true
+    },
+    {
+      "name": "refuses a record over the byte cap but under the character cap",
+      "ok": true
+    },
+    {
+      "name": "recovers after a record over the byte cap but under the character cap",
+      "ok": true
+    },
+    {
+      "name": "refuses an empty record",
+      "ok": true
+    },
+    {
+      "name": "recovers after an empty record",
+      "ok": true
+    },
+    {
+      "name": "every refusal reaches the caller, and only an unknown tool name is a protocol error",
+      "ok": true,
+      "detail": [
+        [
+          "an unknown tool name",
+          "protocol"
+        ],
+        [
+          "a missing required argument",
+          "tool"
+        ],
+        [
+          "an unknown extra argument",
+          "tool"
+        ],
+        [
+          "a wrongly typed argument",
+          "tool"
+        ],
+        [
+          "an out-of-range latitude",
+          "tool"
+        ],
+        [
+          "an unsupported house system",
+          "tool"
+        ],
+        [
+          "a date before the supported epoch",
+          "tool"
+        ],
+        [
+          "a date that does not exist",
+          "tool"
+        ],
+        [
+          "a wall time with no zone",
+          "tool"
+        ],
+        [
+          "one coordinate without the other",
+          "tool"
+        ],
+        [
+          "a record that is not JSON",
+          "tool"
+        ],
+        [
+          "a record that is JSON but not an envelope",
+          "tool"
+        ],
+        [
+          "a record declaring an unsupported schema",
+          "tool"
+        ],
+        [
+          "a record requiring an unimplemented feature",
+          "tool"
+        ],
+        [
+          "a record whose result contradicts its receipt",
+          "tool"
+        ],
+        [
+          "a record over the character cap",
+          "tool"
+        ],
+        [
+          "a record over the byte cap but under the character cap",
+          "tool"
+        ],
+        [
+          "an empty record",
+          "tool"
+        ]
+      ]
+    },
+    {
+      "name": "__proto__ is dropped upstream rather than refused, and changes nothing",
+      "ok": true,
+      "detail": {
+        "layer": "ok",
+        "timeKnown": true
+      }
+    },
+    {
+      "name": "every other unknown key, including the other two hostile names, is refused",
+      "ok": true
+    },
+    {
+      "name": "a schema violation names the field at fault so a caller can correct it",
+      "ok": true,
+      "detail": [
+        "Input validation error: Invalid arguments for tool calculate_natal_chart: utc: Invalid input: expected string, received undefined",
+        "Input validation error: Invalid arguments for tool calculate_natal_chart: Unrecognized key: \"houseSystemm\"",
+        "Input validation error: Invalid arguments for tool calculate_natal_chart: latitude: Invalid input: expected number, received string"
+      ]
+    },
+    {
+      "name": "no refusal message echoes a coordinate, an instant or record content",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "an unsupported version is refused distinctly from a malformed record",
+      "ok": true
+    },
+    {
+      "name": "stderr carried the adapter's startup note, so the capture is real",
+      "ok": true,
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.18, engine 1.0.0-rc.2, no network\n"
+    },
+    {
+      "name": "stderr carried only the adapter's own notes",
+      "ok": true,
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.18, engine 1.0.0-rc.2, no network\n"
+    },
+    {
+      "name": "stderr carried no birth detail, coordinate or record content",
+      "ok": true,
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.18, engine 1.0.0-rc.2, no network\n"
+    },
+    {
+      "name": "the transport exposes the server process id, so the next check measures something",
+      "ok": true,
+      "detail": 11699
+    },
+    {
+      "name": "the server process is gone after the client closes",
+      "ok": true,
+      "detail": true
+    },
+    {
+      "name": "every protocol revision the SDK supports negotiates a supported revision",
+      "ok": true,
+      "detail": [
+        {
+          "version": "2025-11-25",
+          "negotiated": "2025-11-25",
+          "error": null
+        },
+        {
+          "version": "2025-06-18",
+          "negotiated": "2025-06-18",
+          "error": null
+        },
+        {
+          "version": "2025-03-26",
+          "negotiated": "2025-03-26",
+          "error": null
+        },
+        {
+          "version": "2024-11-05",
+          "negotiated": "2024-11-05",
+          "error": null
+        },
+        {
+          "version": "2024-10-07",
+          "negotiated": "2024-10-07",
+          "error": null
+        },
+        {
+          "version": "1999-01-01",
+          "negotiated": "2025-11-25",
+          "error": null
+        }
+      ]
+    },
+    {
+      "name": "an unknown protocol revision is answered rather than dropped",
+      "ok": true,
+      "detail": {
+        "version": "1999-01-01",
+        "negotiated": "2025-11-25",
+        "error": null
+      }
+    },
+    {
+      "name": "the session survives a request line too long to buffer",
+      "ok": true,
+      "detail": {
+        "exit": 0,
+        "answered": [
+          1,
+          2,
+          3
+        ],
+        "stderr": "zodiacs-mcp-server: dropped one request line over the 1048576-byte limit; the session is unaffected"
+      }
+    },
+    {
+      "name": "the session survives the same line split across two writes",
+      "ok": true,
+      "detail": {
+        "exit": 0,
+        "answered": [
+          1,
+          4
+        ],
+        "stderr": "zodiacs-mcp-server: dropped one request line over the 1048576-byte limit; the session is unaffected"
+      }
+    },
+    {
+      "name": "the session survives a JSON-RPC batch array",
+      "ok": true,
+      "detail": {
+        "exit": 0,
+        "answered": [
+          1,
+          5
+        ],
+        "stderr": "zodiacs-mcp-server: transport reported ZodError"
+      }
+    },
+    {
+      "name": "the session survives syntactically invalid JSON",
+      "ok": true,
+      "detail": {
+        "exit": 0,
+        "answered": [
+          1,
+          6
+        ],
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.18, engine 1.0.0-rc.2, no network"
+      }
+    },
+    {
+      "name": "the session survives two large lines in sequence",
+      "ok": true,
+      "detail": {
+        "exit": 0,
+        "answered": [
+          1,
+          82,
+          83,
+          7
+        ],
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.18, engine 1.0.0-rc.2, no network"
+      }
+    },
+    {
+      "name": "both large lines are answered, not only survived",
+      "ok": true,
+      "detail": [
+        1,
+        82,
+        83,
+        7
+      ]
+    }
+  ]
+}

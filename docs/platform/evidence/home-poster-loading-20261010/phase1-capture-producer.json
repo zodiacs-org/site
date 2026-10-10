@@ -1,0 +1,162 @@
+{
+  "schema": "zodiacs.checkpoint25-home-phase1-capture.v1",
+  "producer": {
+    "workflowSource": "5b31d4850bb07c27a3f047bcb231d06e49c1d839",
+    "run": "38043051385",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "2e08e201aea43b7e23fed8723363213ea1ff82df",
+  "target": "2e08e201aea43b7e23fed8723363213ea1ff82df",
+  "rawGitTemplateSourceSha256": "0ae444c23eb652e41fdb0de6e443b6f6aa570eabbe73756d3bcd368454b3c47c",
+  "manifestSha256": "74a10261e8e72c79e763d1c03d79a8ed49389036287165f75c1eff987ecdc36f",
+  "captures": [
+    {
+      "file": "today-360.png",
+      "bytes": 605183,
+      "sha256": "ce7d926d31895b85477deebb9253df8f2d93b8ed3edad1a2bf3f86a562103522",
+      "previousTrackedBytes": 624623,
+      "previousTrackedSha256": "7ab7dddbe657a643bf71632cd00b3281bf21783844072d4e5e300c063f6ee700",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "today-1280.png",
+      "bytes": 749592,
+      "sha256": "11c4c08e31cc8a94fdc9ec1904e60ee2a0b29c10c565099bb8a1e5d9d9628a6e",
+      "previousTrackedBytes": 748095,
+      "previousTrackedSha256": "a826621cc61cbcecce0312e569f51c82d13e8073a23007d50531631a153e5746",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "horoscopes-hub-360.png",
+      "bytes": 391053,
+      "sha256": "2f1b90856c9ba412dbcebe2a5214d97fb4e2e5744f968e04527ce9491ce70b41",
+      "previousTrackedBytes": 414060,
+      "previousTrackedSha256": "58542203ebe7f4abb33e9fb3361782e14b60115cab2127588f124d1c4f0a011a",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "horoscopes-hub-1280.png",
+      "bytes": 450103,
+      "sha256": "8b04fca1aa7edf978bdc919b390bac14d064a9c5c221e4c0d024b2c8cddd8687",
+      "previousTrackedBytes": 466941,
+      "previousTrackedSha256": "92bf1bb296c0dd265fa484a4da74e3126c01209605503a7c2c2da0705040ca73",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "daily-360.png",
+      "bytes": 305973,
+      "sha256": "0a2532786748b6fc52435e452c047f59fa4af588bc8ee92010047a32945e8297",
+      "previousTrackedBytes": 319312,
+      "previousTrackedSha256": "c94e857f787b0fbaeee91ee3bb03b5fc16ee11d08ae90b946ce5721e7832db1c",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "daily-1280.png",
+      "bytes": 419448,
+      "sha256": "39e8dac6e5815c052b3973db7747fed9a4178e7f7075ab3773c0ebfee142db22",
+      "previousTrackedBytes": 428519,
+      "previousTrackedSha256": "5026d21f1141a618871c238df89dc4eb5a5c7e136b25229750eab92f5474fb49",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "tomorrow-360.png",
+      "bytes": 302261,
+      "sha256": "6d2a2fb22afe49cd03649db186969e97fb92e77c9d98a4def226f07bafc955c3",
+      "previousTrackedBytes": 319809,
+      "previousTrackedSha256": "a67a547d6223ab5ad7e0d4d2e5b2d35e667375bae36fdf00515aeb4882f69e36",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "tomorrow-1280.png",
+      "bytes": 425109,
+      "sha256": "427c3b6b63ffd727a477aeaaa07f6036fc44085a413d5d1c9b8aef0478049238",
+      "previousTrackedBytes": 440637,
+      "previousTrackedSha256": "75f13b7a63be236f92e6d2a5b89909bfe0c88014fc4bbae3b5878bb9f20fe5a0",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "weekly-360.png",
+      "bytes": 366716,
+      "sha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973",
+      "previousTrackedBytes": 394590,
+      "previousTrackedSha256": "1e59fc5f1e12d9854fac7ba9a57d02aa2b9064f379c60d14326bed9d9db8f3e4",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "weekly-1280.png",
+      "bytes": 495949,
+      "sha256": "e87041e5d45f6de533ce961c99bec27bed3300150f0b468c71ccb327af039e1c",
+      "previousTrackedBytes": 521834,
+      "previousTrackedSha256": "1b49ab12b44e7dd6599fbf4eba6b18d663803fdd2c855cb964a0aaccc22c87be",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "monthly-360.png",
+      "bytes": 389777,
+      "sha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126",
+      "previousTrackedBytes": 408668,
+      "previousTrackedSha256": "cba6038ea79c12865b736ce6f5b655b48d904c61082d1b19ddefccca166b84fa",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "monthly-1280.png",
+      "bytes": 509517,
+      "sha256": "dfe62a412ecbd6719bdc253c83b35b2d59189b49d37b7d0ddb343f6d8bde2fa3",
+      "previousTrackedBytes": 522904,
+      "previousTrackedSha256": "2c48ee42fd43363ea65a599658aedc6f1281105470fb7a94f00c564ca506e9c1",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "love-360.png",
+      "bytes": 282256,
+      "sha256": "d6434cb4c0ae482aabf05d925a897b1129ad9e91fc6fd9010a9c7dbaef503dc5",
+      "previousTrackedBytes": 294531,
+      "previousTrackedSha256": "3bcf0071a6be54e8bb959bf39d65d4ea7e2b2d6b529d83d7ff13ee7f852364f0",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "love-1280.png",
+      "bytes": 397619,
+      "sha256": "6313926d0e2c2b2143ec481acd449b293a68937071af3b926eea57f522e21dc4",
+      "previousTrackedBytes": 407156,
+      "previousTrackedSha256": "f37b47a3df354683e40e79bda9e2e2d6ecfcdb41eb938c3f31d941d1bf3520f8",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "career-360.png",
+      "bytes": 280059,
+      "sha256": "c2a17338eba0656449f6f88d62f3cf9c91d5d9ed52996b1046a5a9575edd33be",
+      "previousTrackedBytes": 293083,
+      "previousTrackedSha256": "7d094f0103eb1d61ba07f67a5246cd6d81affca80cec11a6199987397954db6e",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "career-1280.png",
+      "bytes": 396447,
+      "sha256": "ed89f330a3c4960e637b872ee27779b6078406e5b03b875724a7f8ba6bbacb65",
+      "previousTrackedBytes": 405287,
+      "previousTrackedSha256": "3cedd3ee3effd9a50d22b5b5f1d49df8e2ceeb1aaf0ad7bca472fbafd4a23de5",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "yearly-360.png",
+      "bytes": 1042500,
+      "sha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617",
+      "previousTrackedBytes": 1190248,
+      "previousTrackedSha256": "ffd7ec9b6e3a219e1625f3fff407e80709e99fd69856f406cec4bdb1d70bf344",
+      "identicalToPreviousTracked": false
+    },
+    {
+      "file": "yearly-1280.png",
+      "bytes": 1293613,
+      "sha256": "6540fb4d5b402a0c13e55642f5636b580a501fe888e788acb21ac0aafdc743ca",
+      "previousTrackedBytes": 1454022,
+      "previousTrackedSha256": "53bc8278111d7d59861edef536dc0f63c85af9e957539412d2765b7dc0536668",
+      "identicalToPreviousTracked": false
+    }
+  ],
+  "browser": "Chromium 149.0.7827.55",
+  "capturedAt": "2026-10-10T10:03:36.560Z",
+  "builtAt": "2026-10-10T09:58:17.851Z",
+  "limitation": "Eighteen fresh actual captures and original receipt tests; full combined suite and production checks remain required."
+}

@@ -383,7 +383,9 @@ describe('registry disclosure contract', () => {
     for (const locale of RELEASED_LOCALES) {
       const html = await readFile(routeFile(locale), 'utf8');
       const route = localizePath(locale, '/disclosure/');
-      expect(html, locale).toContain(`<html lang="${LOCALE_META[locale].htmlLang}">`);
+      // Enabled features add lifecycle attributes to the document root.
+      // Keep the locale contract while checking the complete opening tag.
+      expect(html, locale).toMatch(new RegExp(`<html lang="${LOCALE_META[locale].htmlLang}"(?:\\s[^>]*)?>`));
       expect(html, locale).toContain(`<link rel="canonical" href="https://zodiacs.org${route}">`);
       expect(html, locale).not.toContain('[OPERATOR');
       for (const key of [

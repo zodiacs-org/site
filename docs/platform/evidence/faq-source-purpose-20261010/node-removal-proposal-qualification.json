@@ -1,0 +1,24 @@
+{
+  "schema": "zodiacs.faq-node-proposal-qualification.v1",
+  "auditedSource": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+  "producer": "2b0d0195aee70360cdb97c1f5a682d65bb367c1d",
+  "run": 38058696799,
+  "job": 114232343347,
+  "conclusion": "success",
+  "report": {
+    "path": "docs/platform/evidence/faq-source-purpose-20261010/native-node-removal-proposal.json",
+    "bytes": 96645,
+    "sha256": "735dd37f986b6816692840b5a80502fadc4d56fd61c96fa3b596b6db56919889"
+  },
+  "originalDecodedLog": {
+    "bytes": 208748,
+    "sha256": "feae3c53cb6433df2438c334f4e1f9231e3563193abb434bcfa58e320ab96251"
+  },
+  "acceptedWeightAdded": 0,
+  "applicationTargetFilesModified": false,
+  "limitations": [
+    "Proposal only: actual application target files are not written or committed by this script.",
+    "Validator still requires obsolete homepage FAQ metadata and needs a reviewed semantic purpose rule.",
+    "No rendered page-purpose/visibility equivalence, exhaustive built-route audit, scope allowance, deployment or S2 acceptance."
+  ]
+}

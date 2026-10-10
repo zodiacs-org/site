@@ -1,0 +1,795 @@
+{
+  "schema": "zodiacs.retained-layout-shift.v1",
+  "producer": {
+    "source": "77772d65b89b4aadad3327f023fd7c43ad21724f",
+    "run": "37961173641"
+  },
+  "checkedOutSource": "eefaae0e33e744329d850142addc1c53a48469e9",
+  "samples": [
+    {
+      "run": 37959585608,
+      "source": "6d9f40be5f12b448bcb20b74d667e06baf9bdd66",
+      "artifact": 11630658336,
+      "artifactSha256": "3a5b53beaa74b6937d4c17eae24dd3c9a12e721fb190e907914059a53f463dc5",
+      "reports": [
+        {
+          "file": "tests/visual/artifacts/lighthouse/thesis-1.json",
+          "sha256": "8a778e8bf7f4b07e28ab40fd18d3b50f21037a9eab72ab3f13a4554dd970dda5",
+          "cls": 0.0003679214731617067,
+          "insights": {
+            "cumulative-layout-shift": {
+              "id": "cumulative-layout-shift",
+              "title": "Cumulative Layout Shift",
+              "description": "Cumulative Layout Shift measures the movement of visible elements within the viewport. [Learn more about the Cumulative Layout Shift metric](https://web.dev/articles/cls).",
+              "score": 1,
+              "scoreDisplayMode": "numeric",
+              "numericValue": 0.0003679214731617067,
+              "numericUnit": "unitless",
+              "displayValue": "0",
+              "scoringOptions": {
+                "p10": 0.1,
+                "median": 0.25
+              },
+              "details": {
+                "type": "debugdata",
+                "items": [
+                  {
+                    "cumulativeLayoutShiftMainFrame": 0.0003679214731617067,
+                    "newEngineResultDiffered": false
+                  }
+                ]
+              }
+            },
+            "layout-shifts": {
+              "id": "layout-shifts",
+              "title": "Avoid large layout shifts",
+              "description": "These are the largest layout shifts observed on the page. Each table item represents a single layout shift, and shows the element that shifted the most. Below each item are possible root causes that led to the layout shift. Some of these layout shifts may not be included in the CLS metric value due to [windowing](https://web.dev/articles/cls#what_is_cls). [Learn how to improve CLS](https://web.dev/articles/optimize-cls)",
+              "score": 1,
+              "scoreDisplayMode": "informative",
+              "displayValue": "1 layout shift found",
+              "metricSavings": {
+                "CLS": 0
+              },
+              "details": {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "node",
+                    "valueType": "node",
+                    "subItemsHeading": {
+                      "key": "extra"
+                    },
+                    "label": "Element"
+                  },
+                  {
+                    "key": "score",
+                    "valueType": "numeric",
+                    "subItemsHeading": {
+                      "key": "cause",
+                      "valueType": "text"
+                    },
+                    "granularity": 0.001,
+                    "label": "Layout shift score"
+                  }
+                ],
+                "items": [
+                  {
+                    "node": {
+                      "type": "node",
+                      "lhId": "page-1-DIV",
+                      "path": "1,HTML,1,BODY,5,MAIN,0,ARTICLE,1,DIV",
+                      "selector": "body > main.pg > article#essay > div.essay__body",
+                      "boundingRect": {
+                        "top": 783,
+                        "bottom": 10549,
+                        "left": 20,
+                        "right": 392,
+                        "width": 372,
+                        "height": 9766
+                      },
+                      "snippet": "<div class=\"essay__body\">",
+                      "nodeLabel": "I\nThe sign you already carry.\n\nB\nefore you had a username, you had a sign. Mayb\u2026"
+                    },
+                    "score": 0.0003679214731617067,
+                    "subItems": {
+                      "type": "subitems",
+                      "items": [
+                        {
+                          "extra": {
+                            "type": "url",
+                            "value": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+                          },
+                          "cause": "Web font loaded"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "guidanceLevel": 2
+            },
+            "cls-culprits-insight": {
+              "id": "cls-culprits-insight",
+              "title": "Layout shift culprits",
+              "description": "Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://developer.chrome.com/docs/performance/insights/cls-culprit), such as elements being added, removed, or their fonts changing as the page loads.",
+              "score": 1,
+              "scoreDisplayMode": "informative",
+              "metricSavings": {
+                "CLS": 0
+              },
+              "details": {
+                "type": "list",
+                "items": [
+                  {
+                    "type": "table",
+                    "headings": [
+                      {
+                        "key": "node",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                          "key": "extra"
+                        },
+                        "label": "Element"
+                      },
+                      {
+                        "key": "score",
+                        "valueType": "numeric",
+                        "subItemsHeading": {
+                          "key": "cause",
+                          "valueType": "text"
+                        },
+                        "granularity": 0.001,
+                        "label": "Layout shift score"
+                      }
+                    ],
+                    "items": [
+                      {
+                        "node": {
+                          "type": "text",
+                          "value": "Total"
+                        },
+                        "score": 0.0003679214731617067
+                      },
+                      {
+                        "node": {
+                          "type": "node",
+                          "lhId": "page-1-DIV",
+                          "path": "1,HTML,1,BODY,5,MAIN,0,ARTICLE,1,DIV",
+                          "selector": "body > main.pg > article#essay > div.essay__body",
+                          "boundingRect": {
+                            "top": 783,
+                            "bottom": 10549,
+                            "left": 20,
+                            "right": 392,
+                            "width": 372,
+                            "height": 9766
+                          },
+                          "snippet": "<div class=\"essay__body\">",
+                          "nodeLabel": "I\nThe sign you already carry.\n\nB\nefore you had a username, you had a sign. Mayb\u2026"
+                        },
+                        "score": 0.0003679214731617067,
+                        "subItems": {
+                          "type": "subitems",
+                          "items": [
+                            {
+                              "extra": {
+                                "type": "url",
+                                "value": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+                              },
+                              "cause": "Web font"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "guidanceLevel": 3
+            },
+            "font-display-insight": {
+              "id": "font-display-insight",
+              "title": "Font display",
+              "description": "Consider setting [font-display](https://developer.chrome.com/docs/performance/insights/font-display) to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).",
+              "score": 1,
+              "scoreDisplayMode": "metricSavings",
+              "metricSavings": {
+                "INP": 0
+              },
+              "details": {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "url",
+                    "valueType": "url",
+                    "label": "URL"
+                  },
+                  {
+                    "key": "wastedMs",
+                    "valueType": "ms",
+                    "label": "Est Savings"
+                  }
+                ],
+                "items": [],
+                "skipSumming": [
+                  "wastedMs"
+                ]
+              },
+              "guidanceLevel": 3
+            }
+          },
+          "traceSha256": "d93cbcda2120544c075082f1c710248a8c335269dbaf8ffb59f4b7c3e07a4752",
+          "layoutShifts": [
+            {
+              "args": {
+                "data": {
+                  "cumulative_score": 0,
+                  "frame_max_distance": 6,
+                  "had_recent_input": true,
+                  "impacted_nodes": [
+                    {
+                      "new_rect": [
+                        20,
+                        783,
+                        372,
+                        40
+                      ],
+                      "node_id": 36,
+                      "old_rect": [
+                        20,
+                        777,
+                        372,
+                        46
+                      ]
+                    }
+                  ],
+                  "is_main_frame": true,
+                  "last_input_timestamp": 116,
+                  "overall_max_distance": 6,
+                  "region_rects": [
+                    [
+                      20,
+                      777,
+                      372,
+                      46
+                    ]
+                  ],
+                  "score": 0.0003679214731617067,
+                  "weighted_score_delta": 0.0003679214731617067
+                },
+                "frame": "4D1F0801966283F923D4487DB8BBA969"
+              },
+              "cat": "loading",
+              "name": "LayoutShift",
+              "ph": "I",
+              "pid": 4958,
+              "s": "t",
+              "tid": 4958,
+              "ts": 851449437,
+              "tts": 1179185
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/thesis-2.json",
+          "sha256": "eac380d8d079bf3c58fd071e45832e2ff3d7655c99091898ead43d6798fcd0f1",
+          "cls": 0.0003679214731617067,
+          "insights": {
+            "cumulative-layout-shift": {
+              "id": "cumulative-layout-shift",
+              "title": "Cumulative Layout Shift",
+              "description": "Cumulative Layout Shift measures the movement of visible elements within the viewport. [Learn more about the Cumulative Layout Shift metric](https://web.dev/articles/cls).",
+              "score": 1,
+              "scoreDisplayMode": "numeric",
+              "numericValue": 0.0003679214731617067,
+              "numericUnit": "unitless",
+              "displayValue": "0",
+              "scoringOptions": {
+                "p10": 0.1,
+                "median": 0.25
+              },
+              "details": {
+                "type": "debugdata",
+                "items": [
+                  {
+                    "cumulativeLayoutShiftMainFrame": 0.0003679214731617067,
+                    "newEngineResultDiffered": false
+                  }
+                ]
+              }
+            },
+            "layout-shifts": {
+              "id": "layout-shifts",
+              "title": "Avoid large layout shifts",
+              "description": "These are the largest layout shifts observed on the page. Each table item represents a single layout shift, and shows the element that shifted the most. Below each item are possible root causes that led to the layout shift. Some of these layout shifts may not be included in the CLS metric value due to [windowing](https://web.dev/articles/cls#what_is_cls). [Learn how to improve CLS](https://web.dev/articles/optimize-cls)",
+              "score": 1,
+              "scoreDisplayMode": "informative",
+              "displayValue": "1 layout shift found",
+              "metricSavings": {
+                "CLS": 0
+              },
+              "details": {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "node",
+                    "valueType": "node",
+                    "subItemsHeading": {
+                      "key": "extra"
+                    },
+                    "label": "Element"
+                  },
+                  {
+                    "key": "score",
+                    "valueType": "numeric",
+                    "subItemsHeading": {
+                      "key": "cause",
+                      "valueType": "text"
+                    },
+                    "granularity": 0.001,
+                    "label": "Layout shift score"
+                  }
+                ],
+                "items": [
+                  {
+                    "node": {
+                      "type": "node",
+                      "lhId": "page-1-DIV",
+                      "path": "1,HTML,1,BODY,5,MAIN,0,ARTICLE,1,DIV",
+                      "selector": "body > main.pg > article#essay > div.essay__body",
+                      "boundingRect": {
+                        "top": 783,
+                        "bottom": 10549,
+                        "left": 20,
+                        "right": 392,
+                        "width": 372,
+                        "height": 9766
+                      },
+                      "snippet": "<div class=\"essay__body\">",
+                      "nodeLabel": "I\nThe sign you already carry.\n\nB\nefore you had a username, you had a sign. Mayb\u2026"
+                    },
+                    "score": 0.0003679214731617067,
+                    "subItems": {
+                      "type": "subitems",
+                      "items": [
+                        {
+                          "extra": {
+                            "type": "url",
+                            "value": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+                          },
+                          "cause": "Web font loaded"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "guidanceLevel": 2
+            },
+            "cls-culprits-insight": {
+              "id": "cls-culprits-insight",
+              "title": "Layout shift culprits",
+              "description": "Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://developer.chrome.com/docs/performance/insights/cls-culprit), such as elements being added, removed, or their fonts changing as the page loads.",
+              "score": 1,
+              "scoreDisplayMode": "informative",
+              "metricSavings": {
+                "CLS": 0
+              },
+              "details": {
+                "type": "list",
+                "items": [
+                  {
+                    "type": "table",
+                    "headings": [
+                      {
+                        "key": "node",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                          "key": "extra"
+                        },
+                        "label": "Element"
+                      },
+                      {
+                        "key": "score",
+                        "valueType": "numeric",
+                        "subItemsHeading": {
+                          "key": "cause",
+                          "valueType": "text"
+                        },
+                        "granularity": 0.001,
+                        "label": "Layout shift score"
+                      }
+                    ],
+                    "items": [
+                      {
+                        "node": {
+                          "type": "text",
+                          "value": "Total"
+                        },
+                        "score": 0.0003679214731617067
+                      },
+                      {
+                        "node": {
+                          "type": "node",
+                          "lhId": "page-1-DIV",
+                          "path": "1,HTML,1,BODY,5,MAIN,0,ARTICLE,1,DIV",
+                          "selector": "body > main.pg > article#essay > div.essay__body",
+                          "boundingRect": {
+                            "top": 783,
+                            "bottom": 10549,
+                            "left": 20,
+                            "right": 392,
+                            "width": 372,
+                            "height": 9766
+                          },
+                          "snippet": "<div class=\"essay__body\">",
+                          "nodeLabel": "I\nThe sign you already carry.\n\nB\nefore you had a username, you had a sign. Mayb\u2026"
+                        },
+                        "score": 0.0003679214731617067,
+                        "subItems": {
+                          "type": "subitems",
+                          "items": [
+                            {
+                              "extra": {
+                                "type": "url",
+                                "value": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+                              },
+                              "cause": "Web font"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "guidanceLevel": 3
+            },
+            "font-display-insight": {
+              "id": "font-display-insight",
+              "title": "Font display",
+              "description": "Consider setting [font-display](https://developer.chrome.com/docs/performance/insights/font-display) to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).",
+              "score": 1,
+              "scoreDisplayMode": "metricSavings",
+              "metricSavings": {
+                "INP": 0
+              },
+              "details": {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "url",
+                    "valueType": "url",
+                    "label": "URL"
+                  },
+                  {
+                    "key": "wastedMs",
+                    "valueType": "ms",
+                    "label": "Est Savings"
+                  }
+                ],
+                "items": [],
+                "skipSumming": [
+                  "wastedMs"
+                ]
+              },
+              "guidanceLevel": 3
+            }
+          },
+          "traceSha256": "9d04c6bf601e77c2242c916c50b630cb1b0ad6d8faf260556e20d2b3653edbdf",
+          "layoutShifts": [
+            {
+              "args": {
+                "data": {
+                  "cumulative_score": 0,
+                  "frame_max_distance": 6,
+                  "had_recent_input": true,
+                  "impacted_nodes": [
+                    {
+                      "new_rect": [
+                        20,
+                        783,
+                        372,
+                        40
+                      ],
+                      "node_id": 36,
+                      "old_rect": [
+                        20,
+                        777,
+                        372,
+                        46
+                      ]
+                    }
+                  ],
+                  "is_main_frame": true,
+                  "last_input_timestamp": 121.4000000000233,
+                  "overall_max_distance": 6,
+                  "region_rects": [
+                    [
+                      20,
+                      777,
+                      372,
+                      46
+                    ]
+                  ],
+                  "score": 0.0003679214731617067,
+                  "weighted_score_delta": 0.0003679214731617067
+                },
+                "frame": "BB4229AF61BE7B949D41DB9838B4D60B"
+              },
+              "cat": "loading",
+              "name": "LayoutShift",
+              "ph": "I",
+              "pid": 5193,
+              "s": "t",
+              "tid": 5193,
+              "ts": 861766940,
+              "tts": 1203837
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/thesis-3.json",
+          "sha256": "fbdfe51a84105b8e5e7026408b94ddbe21f0ade3a7a59ab91f58afaed6330cbd",
+          "cls": 0.0003679214731617067,
+          "insights": {
+            "cumulative-layout-shift": {
+              "id": "cumulative-layout-shift",
+              "title": "Cumulative Layout Shift",
+              "description": "Cumulative Layout Shift measures the movement of visible elements within the viewport. [Learn more about the Cumulative Layout Shift metric](https://web.dev/articles/cls).",
+              "score": 1,
+              "scoreDisplayMode": "numeric",
+              "numericValue": 0.0003679214731617067,
+              "numericUnit": "unitless",
+              "displayValue": "0",
+              "scoringOptions": {
+                "p10": 0.1,
+                "median": 0.25
+              },
+              "details": {
+                "type": "debugdata",
+                "items": [
+                  {
+                    "cumulativeLayoutShiftMainFrame": 0.0003679214731617067,
+                    "newEngineResultDiffered": false
+                  }
+                ]
+              }
+            },
+            "layout-shifts": {
+              "id": "layout-shifts",
+              "title": "Avoid large layout shifts",
+              "description": "These are the largest layout shifts observed on the page. Each table item represents a single layout shift, and shows the element that shifted the most. Below each item are possible root causes that led to the layout shift. Some of these layout shifts may not be included in the CLS metric value due to [windowing](https://web.dev/articles/cls#what_is_cls). [Learn how to improve CLS](https://web.dev/articles/optimize-cls)",
+              "score": 1,
+              "scoreDisplayMode": "informative",
+              "displayValue": "1 layout shift found",
+              "metricSavings": {
+                "CLS": 0
+              },
+              "details": {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "node",
+                    "valueType": "node",
+                    "subItemsHeading": {
+                      "key": "extra"
+                    },
+                    "label": "Element"
+                  },
+                  {
+                    "key": "score",
+                    "valueType": "numeric",
+                    "subItemsHeading": {
+                      "key": "cause",
+                      "valueType": "text"
+                    },
+                    "granularity": 0.001,
+                    "label": "Layout shift score"
+                  }
+                ],
+                "items": [
+                  {
+                    "node": {
+                      "type": "node",
+                      "lhId": "page-1-DIV",
+                      "path": "1,HTML,1,BODY,5,MAIN,0,ARTICLE,1,DIV",
+                      "selector": "body > main.pg > article#essay > div.essay__body",
+                      "boundingRect": {
+                        "top": 783,
+                        "bottom": 10549,
+                        "left": 20,
+                        "right": 392,
+                        "width": 372,
+                        "height": 9766
+                      },
+                      "snippet": "<div class=\"essay__body\">",
+                      "nodeLabel": "I\nThe sign you already carry.\n\nB\nefore you had a username, you had a sign. Mayb\u2026"
+                    },
+                    "score": 0.0003679214731617067,
+                    "subItems": {
+                      "type": "subitems",
+                      "items": [
+                        {
+                          "extra": {
+                            "type": "url",
+                            "value": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+                          },
+                          "cause": "Web font loaded"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "guidanceLevel": 2
+            },
+            "cls-culprits-insight": {
+              "id": "cls-culprits-insight",
+              "title": "Layout shift culprits",
+              "description": "Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://developer.chrome.com/docs/performance/insights/cls-culprit), such as elements being added, removed, or their fonts changing as the page loads.",
+              "score": 1,
+              "scoreDisplayMode": "informative",
+              "metricSavings": {
+                "CLS": 0
+              },
+              "details": {
+                "type": "list",
+                "items": [
+                  {
+                    "type": "table",
+                    "headings": [
+                      {
+                        "key": "node",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                          "key": "extra"
+                        },
+                        "label": "Element"
+                      },
+                      {
+                        "key": "score",
+                        "valueType": "numeric",
+                        "subItemsHeading": {
+                          "key": "cause",
+                          "valueType": "text"
+                        },
+                        "granularity": 0.001,
+                        "label": "Layout shift score"
+                      }
+                    ],
+                    "items": [
+                      {
+                        "node": {
+                          "type": "text",
+                          "value": "Total"
+                        },
+                        "score": 0.0003679214731617067
+                      },
+                      {
+                        "node": {
+                          "type": "node",
+                          "lhId": "page-1-DIV",
+                          "path": "1,HTML,1,BODY,5,MAIN,0,ARTICLE,1,DIV",
+                          "selector": "body > main.pg > article#essay > div.essay__body",
+                          "boundingRect": {
+                            "top": 783,
+                            "bottom": 10549,
+                            "left": 20,
+                            "right": 392,
+                            "width": 372,
+                            "height": 9766
+                          },
+                          "snippet": "<div class=\"essay__body\">",
+                          "nodeLabel": "I\nThe sign you already carry.\n\nB\nefore you had a username, you had a sign. Mayb\u2026"
+                        },
+                        "score": 0.0003679214731617067,
+                        "subItems": {
+                          "type": "subitems",
+                          "items": [
+                            {
+                              "extra": {
+                                "type": "url",
+                                "value": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+                              },
+                              "cause": "Web font"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "guidanceLevel": 3
+            },
+            "font-display-insight": {
+              "id": "font-display-insight",
+              "title": "Font display",
+              "description": "Consider setting [font-display](https://developer.chrome.com/docs/performance/insights/font-display) to swap or optional to ensure text is consistently visible. swap can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).",
+              "score": 1,
+              "scoreDisplayMode": "metricSavings",
+              "metricSavings": {
+                "INP": 0
+              },
+              "details": {
+                "type": "table",
+                "headings": [
+                  {
+                    "key": "url",
+                    "valueType": "url",
+                    "label": "URL"
+                  },
+                  {
+                    "key": "wastedMs",
+                    "valueType": "ms",
+                    "label": "Est Savings"
+                  }
+                ],
+                "items": [],
+                "skipSumming": [
+                  "wastedMs"
+                ]
+              },
+              "guidanceLevel": 3
+            }
+          },
+          "traceSha256": "f68f5044222884ccb773b60fa3a8786ca3b7cbde80a8735d2e19c99bcc87303a",
+          "layoutShifts": [
+            {
+              "args": {
+                "data": {
+                  "cumulative_score": 0,
+                  "frame_max_distance": 6,
+                  "had_recent_input": true,
+                  "impacted_nodes": [
+                    {
+                      "new_rect": [
+                        20,
+                        783,
+                        372,
+                        40
+                      ],
+                      "node_id": 36,
+                      "old_rect": [
+                        20,
+                        777,
+                        372,
+                        46
+                      ]
+                    }
+                  ],
+                  "is_main_frame": true,
+                  "last_input_timestamp": 96.09999999997672,
+                  "overall_max_distance": 6,
+                  "region_rects": [
+                    [
+                      20,
+                      777,
+                      372,
+                      46
+                    ]
+                  ],
+                  "score": 0.0003679214731617067,
+                  "weighted_score_delta": 0.0003679214731617067
+                },
+                "frame": "50E27994B231E05B143F144789073E7E"
+              },
+              "cat": "loading",
+              "name": "LayoutShift",
+              "ph": "I",
+              "pid": 5429,
+              "s": "t",
+              "tid": 5429,
+              "ts": 871748141,
+              "tts": 1156890
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Read-only extraction from retained evidence; no browser rerun or gate change."
+  ]
+}

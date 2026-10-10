@@ -1,0 +1,346 @@
+{
+  "kind": "synthetic regression benchmark",
+  "whatItIsNot": "Not a measured accuracy rate. Every pair here is built by the same engine from synthetic inputs, so this measures whether the comparison classifies the cases its rules describe. It says nothing about how often the tool is right about a disagreement between two independently authored astrology engines, and nothing about real-world users, because no such corpus exists here.",
+  "startedAt": "2026-10-08T14:52:39.477Z",
+  "completedAt": "2026-10-08T14:52:40.003Z",
+  "node": "v22.22.2",
+  "server": {
+    "path": "examples/mcp-server/server.mjs",
+    "sha256": "f0be3308b76f7dd9e5f1b3cf7ee8c9e719501ca1f802706ffb4cd672941a42ac"
+  },
+  "expectationsSha256": "05c22a0ae56f0f6df08eb66d1bc1898962021c0438a43d4ad2d8be80db40c6ca",
+  "scenarios": {
+    "passed": 18,
+    "of": 18
+  },
+  "assertions": {
+    "passed": 112,
+    "of": 112
+  },
+  "detail": [
+    {
+      "id": "identical",
+      "required": "identical records",
+      "differences": 0,
+      "explanations": [],
+      "assertions": 4,
+      "passed": 4,
+      "failures": []
+    },
+    {
+      "id": "house-system",
+      "required": "a real house-system difference",
+      "differences": 15,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "reproduced",
+          "covers": 15
+        }
+      ],
+      "assertions": 8,
+      "passed": 8,
+      "failures": []
+    },
+    {
+      "id": "equivalent-instants",
+      "required": "equivalent instants with different offsets",
+      "differences": 1,
+      "explanations": [
+        {
+          "id": "equivalent-instants",
+          "evidence": "reported",
+          "covers": 1
+        }
+      ],
+      "assertions": 8,
+      "passed": 8,
+      "failures": []
+    },
+    {
+      "id": "unknown-time",
+      "required": "unknown time",
+      "differences": 7,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "reported",
+          "covers": 3
+        },
+        {
+          "id": "time-known",
+          "evidence": "reported",
+          "covers": 4
+        },
+        {
+          "id": "flags",
+          "evidence": "reported",
+          "covers": 1
+        }
+      ],
+      "assertions": 8,
+      "passed": 8,
+      "failures": []
+    },
+    {
+      "id": "wraparound",
+      "required": "circular wraparound",
+      "differences": 81,
+      "explanations": [
+        {
+          "id": "instant",
+          "evidence": "hypothesis",
+          "covers": 80
+        }
+      ],
+      "assertions": 8,
+      "passed": 8,
+      "failures": []
+    },
+    {
+      "id": "mixed-versions",
+      "required": "mixed versions",
+      "differences": 16,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "hypothesis",
+          "covers": 15
+        },
+        {
+          "id": "engine",
+          "evidence": "hypothesis",
+          "covers": 13
+        }
+      ],
+      "assertions": 7,
+      "passed": 7,
+      "failures": []
+    },
+    {
+      "id": "unrelated-simultaneous",
+      "required": "unrelated simultaneous differences",
+      "differences": 86,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "hypothesis",
+          "covers": 15
+        },
+        {
+          "id": "instant",
+          "evidence": "hypothesis",
+          "covers": 81
+        }
+      ],
+      "assertions": 6,
+      "passed": 6,
+      "failures": []
+    },
+    {
+      "id": "insufficient-evidence",
+      "required": "insufficient evidence",
+      "differences": 116,
+      "explanations": [
+        {
+          "id": "instant",
+          "evidence": "hypothesis",
+          "covers": 114
+        },
+        {
+          "id": "location",
+          "evidence": "hypothesis",
+          "covers": 18
+        }
+      ],
+      "assertions": 7,
+      "passed": 7,
+      "failures": []
+    },
+    {
+      "id": "polar-fallback",
+      "required": "a requested house system that was not the one used",
+      "differences": 2,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "reported",
+          "covers": 1
+        },
+        {
+          "id": "flags",
+          "evidence": "reported",
+          "covers": 1
+        }
+      ],
+      "assertions": 8,
+      "passed": 8,
+      "failures": []
+    },
+    {
+      "id": "display-rounding",
+      "required": "a difference smaller than the printed precision",
+      "differences": 80,
+      "explanations": [
+        {
+          "id": "instant",
+          "evidence": "hypothesis",
+          "covers": 26
+        }
+      ],
+      "assertions": 5,
+      "passed": 5,
+      "failures": []
+    },
+    {
+      "id": "foreign-engine-but-matching-values",
+      "required": "a receipt naming an engine this installation does not have, whose values nevertheless match",
+      "differences": 16,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "hypothesis",
+          "covers": 15
+        },
+        {
+          "id": "engine",
+          "evidence": "hypothesis",
+          "covers": 13
+        }
+      ],
+      "assertions": 7,
+      "passed": 7,
+      "failures": []
+    },
+    {
+      "id": "different-build-claims",
+      "required": "equal SemVer precedence, different build and provenance claims",
+      "differences": 16,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "reproduced",
+          "covers": 15
+        },
+        {
+          "id": "engine-build",
+          "evidence": "reported",
+          "covers": 1
+        }
+      ],
+      "assertions": 6,
+      "passed": 6,
+      "failures": []
+    },
+    {
+      "id": "same-build-claims",
+      "required": "equal precedence and the same build claim on both sides",
+      "differences": 15,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "reproduced",
+          "covers": 15
+        }
+      ],
+      "assertions": 5,
+      "passed": 5,
+      "failures": []
+    },
+    {
+      "id": "drifted-baseline",
+      "required": "a record whose values do not follow from the inputs it declares",
+      "differences": 82,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "hypothesis",
+          "covers": 15
+        },
+        {
+          "id": "unexplained",
+          "evidence": "unresolved",
+          "covers": 65
+        }
+      ],
+      "assertions": 5,
+      "passed": 5,
+      "failures": []
+    },
+    {
+      "id": "wraparound-in-the-default-response",
+      "required": "the default response still carries the diagnosis",
+      "differences": 81,
+      "explanations": [
+        {
+          "id": "instant",
+          "evidence": "hypothesis",
+          "covers": 80
+        }
+      ],
+      "assertions": 6,
+      "passed": 6,
+      "failures": []
+    },
+    {
+      "id": "quantised-cusps-drift",
+      "required": "a rewritten instant that the cusps alone cannot detect",
+      "differences": 82,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "hypothesis",
+          "covers": 15
+        },
+        {
+          "id": "unexplained",
+          "evidence": "unresolved",
+          "covers": 65
+        }
+      ],
+      "assertions": 5,
+      "passed": 5,
+      "failures": []
+    },
+    {
+      "id": "drifted-place",
+      "required": "a rewritten place, reached the same way as a rewritten moment",
+      "differences": 19,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "hypothesis",
+          "covers": 15
+        },
+        {
+          "id": "unexplained",
+          "evidence": "unresolved",
+          "covers": 4
+        }
+      ],
+      "assertions": 4,
+      "passed": 4,
+      "failures": []
+    },
+    {
+      "id": "one-sided-build-claim",
+      "required": "one receipt claiming a build and the other claiming none",
+      "differences": 16,
+      "explanations": [
+        {
+          "id": "house-system",
+          "evidence": "reproduced",
+          "covers": 15
+        },
+        {
+          "id": "engine-build",
+          "evidence": "reported",
+          "covers": 1
+        }
+      ],
+      "assertions": 5,
+      "passed": 5,
+      "failures": []
+    }
+  ]
+}

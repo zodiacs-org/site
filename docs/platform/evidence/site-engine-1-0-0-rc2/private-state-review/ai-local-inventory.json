@@ -1,0 +1,2405 @@
+{
+  "bundlePath": "plugins/zodiacs-developer/mcp/server.mjs",
+  "bundleSha256": "b70806c9860963c24e1969ddb7d16523c808c8fd0ca63149fbc3841b2d557069",
+  "bindings": [
+    {
+      "name": "julianLeap",
+      "line": 9,
+      "initializer": "(year) => year % 4 === 0"
+    },
+    {
+      "name": "gregorianLeap",
+      "line": 10,
+      "initializer": "(year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)"
+    },
+    {
+      "name": "ISO_INSTANT",
+      "line": 58,
+      "initializer": "/^(\\d{4}|[+-]\\d{6})-(\\d{2})-(\\d{2})(?:T(\\d{2}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{1,3}))?)?(Z|[+-](\\d{2}):(\\d{2})))?$/"
+    },
+    {
+      "name": "DELTA_T_MODEL",
+      "line": 90,
+      "initializer": "\"zodiacs-deltat/1\""
+    },
+    {
+      "name": "DELTA_T_TABLE",
+      "line": 91,
+      "initializer": "Object.freeze({   version: \"2026-09-24\",   digest: \"6371988c510a1c6c\",   from: 1941,   observedTo: 61307,   predictedTo: 61680,   knots: /* @__PURE__ */ Object.freeze([     2482,  "
+    },
+    {
+      "name": "SX",
+      "line": 191,
+      "initializer": "[-720, 400, 1e3, 1500, 1600, 1650, 1720, 1800, 1810, 1820, 1830, 1840]"
+    },
+    {
+      "name": "SY",
+      "line": 192,
+      "initializer": "[   2055059,   660440,   146765,   29264,   8938,   4374,   1073,   1871,   1526,   1668,   1076,   767,   932,   1038,   904,   826,   237,   -113,   -321,   -439,   -388,   -502,"
+    },
+    {
+      "name": "SIG",
+      "line": 226,
+      "initializer": "[   640,   83,   900,   230,   1240,   120,   1400,   15,   1420,   7.5,   1440,   4.2,   1500,   5.6,   1560,   27,   1670,   15,   1710,   3.3,   1720,   3.3,   1760,   1.5,   18"
+    },
+    {
+      "name": "X",
+      "line": 262,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "Y",
+      "line": 263,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "M",
+      "line": 264,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "KX",
+      "line": 265,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "KV",
+      "line": 266,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "OBS",
+      "line": 267,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "PRED",
+      "line": 268,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "SLOPE",
+      "line": 269,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "yearOfMjd",
+      "line": 270,
+      "initializer": "(mjd) => 2e3 + (mjd - 51544.5) / 365.25"
+    },
+    {
+      "name": "longTerm",
+      "line": 271,
+      "initializer": "(y) => {   const t = (y - 1825) / 100;   return 36.525 * (0.89 * t * t + 30 / Math.PI * Math.cos(Math.PI * t / 7.5)); }"
+    },
+    {
+      "name": "longTermRate",
+      "line": 275,
+      "initializer": "(y) => {   const t = (y - 1825) / 100;   return 0.36525 * (1.78 * t - 4 * Math.sin(Math.PI * t / 7.5)); }"
+    },
+    {
+      "name": "REFERENCE_SPAN",
+      "line": 371,
+      "initializer": "Object.freeze({   from: \"1800-01-01T00:00:00.000Z\",   to: \"2200-01-01T00:00:00.000Z\" })"
+    },
+    {
+      "name": "EPHEMERIS_SPAN",
+      "line": 375,
+      "initializer": "Object.freeze({   /** The scale of the bounds, as a label, like `fromTT` and `toTT`: not a TimeScaleName, which is lowercase. */   timeScale: \"TT\",   /** Days of Terrestrial Time f"
+    },
+    {
+      "name": "FROM",
+      "line": 384,
+      "initializer": "Date.UTC(1800, 0, 1)"
+    },
+    {
+      "name": "TO",
+      "line": 385,
+      "initializer": "Date.UTC(2200, 0, 1)"
+    },
+    {
+      "name": "LEAP_SECOND_LIST",
+      "line": 390,
+      "initializer": "Object.freeze({   source: \"IERS leap-seconds.list, retrieved 2026-09-29\",   sha256: \"db5a895f16853b03bfc865e8d68f9fc8710ef1740e3400c701cd46a5bbbc3433\",   /** The list's last update"
+    },
+    {
+      "name": "UT1_DATA",
+      "line": 399,
+      "initializer": "Object.freeze({   version: \"2026-09-24\",   source: \"IERS finals2000A.all (Bulletin A), Last-Modified 2026-09-24T17:37:44Z\",   sha256: \"cc80680ec05c91b65e7d02c6068fe0d44dd0998dc8805"
+    },
+    {
+      "name": "UT1_FROM_MS",
+      "line": 427,
+      "initializer": "63072e6"
+    },
+    {
+      "name": "UT1_FINALS_FROM_MS",
+      "line": 428,
+      "initializer": "947808e5"
+    },
+    {
+      "name": "UT1_OBSERVED_TO_MS",
+      "line": 429,
+      "initializer": "1790208e6"
+    },
+    {
+      "name": "UT1_TO_MS",
+      "line": 430,
+      "initializer": "18224352e5"
+    },
+    {
+      "name": "UT1_GRID_BEFORE",
+      "line": 431,
+      "initializer": "122"
+    },
+    {
+      "name": "LEAP_SECONDS_EXPIRE_MS",
+      "line": 432,
+      "initializer": "18141408e5"
+    },
+    {
+      "name": "TIME_SCALE_NAMES",
+      "line": 433,
+      "initializer": "Object.freeze([\"utc\", \"ut1\", \"tt\"])"
+    },
+    {
+      "name": "DELTA_T_IERS_MODEL",
+      "line": 434,
+      "initializer": "\"iers-utc/1\""
+    },
+    {
+      "name": "DAY",
+      "line": 435,
+      "initializer": "864e5"
+    },
+    {
+      "name": "J2000_MS",
+      "line": 436,
+      "initializer": "Date.UTC(2e3, 0, 1, 12)"
+    },
+    {
+      "name": "MJD_UNIX",
+      "line": 437,
+      "initializer": "40587"
+    },
+    {
+      "name": "LEAP_SECONDS_FROM",
+      "line": 438,
+      "initializer": "Date.UTC(1972, 0, 1)"
+    },
+    {
+      "name": "UT1_FALLBACK_BAND",
+      "line": 439,
+      "initializer": "0.9"
+    },
+    {
+      "name": "ALPHABET",
+      "line": 440,
+      "initializer": "\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~\""
+    },
+    {
+      "name": "knots",
+      "line": 441,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "fallback",
+      "line": 501,
+      "initializer": "() => ({ seconds: 0, sigma: UT1_FALLBACK_BAND, source: \"fallback\" })"
+    },
+    {
+      "name": "modelDeltaT",
+      "line": 513,
+      "initializer": "(ut1Ms) => deltaTAt((ut1Ms - J2000_MS) / DAY)"
+    },
+    {
+      "name": "MODEL_KNOTS_FROM",
+      "line": 566,
+      "initializer": "(1941 - 2e3) * 365.25"
+    },
+    {
+      "name": "ASPECT_TYPES",
+      "line": 580,
+      "initializer": "Object.freeze([   \"conjunction\",   \"sextile\",   \"square\",   \"trine\",   \"opposition\" ])"
+    },
+    {
+      "name": "ASPECTS",
+      "line": 587,
+      "initializer": "Object.freeze([   /* @__PURE__ */ Object.freeze({ type: \"conjunction\", angle: 0, orb: 8, luminaryOrb: 10 }),   /* @__PURE__ */ Object.freeze({ type: \"sextile\", angle: 60, orb: 4, l"
+    },
+    {
+      "name": "LUMINARIES",
+      "line": 594,
+      "initializer": "new Set([\"Sun\", \"Moon\"])"
+    },
+    {
+      "name": "ASPECT_BODY_NAMES",
+      "line": 595,
+      "initializer": "Object.freeze([   \"Sun\",   \"Moon\",   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ])"
+    },
+    {
+      "name": "ASPECT_BODY_SET",
+      "line": 607,
+      "initializer": "new Set(ASPECT_BODY_NAMES)"
+    },
+    {
+      "name": "STATIONARY_RELATIVE_SPEED",
+      "line": 608,
+      "initializer": "1e-9"
+    },
+    {
+      "name": "SIGNS",
+      "line": 656,
+      "initializer": "Object.freeze([   /* @__PURE__ */ Object.freeze({     slug: \"aries\",     name: \"Aries\",     element: \"fire\",     modality: \"cardinal\",     polarity: \"day\",     naturalHouse: 1   })"
+    },
+    {
+      "name": "ENGINE_VERSION",
+      "line": 769,
+      "initializer": "\"1.0.0-rc.2\""
+    },
+    {
+      "name": "EPHEMERIS",
+      "line": 770,
+      "initializer": "Object.freeze({ name: \"astronomy-engine\", version: \"2.1.19\" })"
+    },
+    {
+      "name": "SEMVER",
+      "line": 870,
+      "initializer": "/^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    {
+      "name": "DIGITS",
+      "line": 871,
+      "initializer": "/^\\d+$/"
+    },
+    {
+      "name": "NATAL_ENVELOPE_SCHEMA",
+      "line": 898,
+      "initializer": "\"zodiacs.natal-envelope.draft-v1\""
+    },
+    {
+      "name": "NATAL_RECEIPT_SCHEMA",
+      "line": 899,
+      "initializer": "\"zodiacs.calculation-receipt.draft-v1\""
+    },
+    {
+      "name": "NATAL_DIAGNOSTIC_SCHEMA",
+      "line": 900,
+      "initializer": "\"zodiacs.natal-diagnostic.draft-v1\""
+    },
+    {
+      "name": "NATAL_ENVELOPE_LIMITS",
+      "line": 901,
+      "initializer": "Object.freeze({ bytes: 65536, depth: 12, nodes: 4096 })"
+    },
+    {
+      "name": "ERROR_CODES",
+      "line": 902,
+      "initializer": "new Set([   \"invalid_json\",   \"invalid_shape\",   \"invalid_value\",   \"inconsistent_result\",   \"invalid_context\",   \"size_limit\",   \"complexity_limit\",   \"unsupported_version\",   \"un"
+    },
+    {
+      "name": "ERROR_BRAND",
+      "line": 913,
+      "initializer": "new WeakMap()"
+    },
+    {
+      "name": "NatalEnvelopeError",
+      "line": 914,
+      "initializer": "class extends Error {   code;   constructor(code) {     const fixed = ERROR_CODES.has(code) ? code : \"invalid_shape\";     super(`Natal envelope rejected: ${fixed}.`);     this.code"
+    },
+    {
+      "name": "CONVENTIONS_RC3",
+      "line": 924,
+      "initializer": "Object.freeze({   calendar: \"proleptic-gregorian\",   zodiac: \"tropical\",   planetPositions: \"apparent-geocentric-ecliptic-of-date\",   moonPosition: \"astronomy-engine-ecliptic-geo-m"
+    },
+    {
+      "name": "CONVENTIONS_RC7",
+      "line": 935,
+      "initializer": "(() => Object.freeze({   ...CONVENTIONS_RC3,   angles: \"gast-and-true-obliquity\",   speed: \"degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day\",   as"
+    },
+    {
+      "name": "CONVENTIONS_RC8",
+      "line": 941,
+      "initializer": "(() => Object.freeze({   ...CONVENTIONS_RC7,   planetPositions: \"aberrated-geocentric-ecliptic-of-date;no-deflection\",   moonPosition: \"astronomy-engine-ecliptic-geo-moon;no-light-"
+    },
+    {
+      "name": "CONVENTIONS_RC15",
+      "line": 947,
+      "initializer": "(() => Object.freeze({   ...CONVENTIONS_RC8,   deltaT: \"tt-minus-ut1;value-in-result\",   timeScale: \"tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwis"
+    },
+    {
+      "name": "CONVENTIONS",
+      "line": 953,
+      "initializer": "(() => Object.freeze({   ...CONVENTIONS_RC15,   moonPosition: \"astronomy-engine-geo-moon;no-light-time;no-aberration\",   nutation: \"iau2000b;equation-of-equinoxes-with-two-compleme"
+    },
+    {
+      "name": "NATAL_RECEIPT_CONVENTION_SETS",
+      "line": 958,
+      "initializer": "Object.freeze([   CONVENTIONS,   CONVENTIONS_RC15,   CONVENTIONS_RC8,   CONVENTIONS_RC7,   CONVENTIONS_RC3 ])"
+    },
+    {
+      "name": "RC3_TO_RC6",
+      "line": 965,
+      "initializer": "/^0\\.1\\.1-rc\\.[3-6](?:\\+[A-Za-z0-9.-]+)?$/"
+    },
+    {
+      "name": "RC7",
+      "line": 966,
+      "initializer": "/^0\\.1\\.1-rc\\.7(?:\\+[A-Za-z0-9.-]+)?$/"
+    },
+    {
+      "name": "RC8_TO_RC14",
+      "line": 967,
+      "initializer": "/^0\\.1\\.1-rc\\.(?:[89]|1[0-4])(?:\\+[A-Za-z0-9.-]+)?$/"
+    },
+    {
+      "name": "RC15",
+      "line": 968,
+      "initializer": "/^0\\.1\\.1-rc\\.15(?:\\+[A-Za-z0-9.-]+)?$/"
+    },
+    {
+      "name": "before",
+      "line": 969,
+      "initializer": "(version2, release) => compareVersions(version2, release) < 0"
+    },
+    {
+      "name": "NUTATION_RELEASE",
+      "line": 970,
+      "initializer": "\"0.1.1-rc.16\""
+    },
+    {
+      "name": "RC9_RELEASE",
+      "line": 971,
+      "initializer": "\"0.1.1-rc.9\""
+    },
+    {
+      "name": "RC10_RELEASE",
+      "line": 972,
+      "initializer": "\"0.1.1-rc.10\""
+    },
+    {
+      "name": "COVERAGE",
+      "line": 973,
+      "initializer": "Object.freeze({   assessment: \"finite-reference-cases-only\",   broadDateRange: \"not-certified\",   angleExclusions: \"exact-geographic-poles-and-ecliptic-horizon-coincidence\",   inpu"
+    },
+    {
+      "name": "BODIES",
+      "line": 979,
+      "initializer": "[   \"Sun\",   \"Moon\",   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\",   \"North Node\",   \"South Node\" ]"
+    },
+    {
+      "name": "FLAGS_RC7",
+      "line": 993,
+      "initializer": "[\"dst-gap\", \"dst-fold\", \"lmt\", \"no-time\", \"polar-fallback\"]"
+    },
+    {
+      "name": "FLAGS",
+      "line": 994,
+      "initializer": "[...FLAGS_RC7, \"outside-reference-span\"]"
+    },
+    {
+      "name": "TIME_FLAGS",
+      "line": 995,
+      "initializer": "[\"dst-gap\", \"dst-fold\", \"lmt\"]"
+    },
+    {
+      "name": "HOUSE_SYSTEMS",
+      "line": 996,
+      "initializer": "[   \"whole\",   \"placidus\",   \"porphyry\",   \"equal\",   \"equal-mc\",   \"vehlow\",   \"koch\",   \"regiomontanus\",   \"campanus\",   \"topocentric\",   \"alcabitius\",   \"morinus\",   \"meridian\" "
+    },
+    {
+      "name": "HOUSE_SYSTEMS_BEFORE_RC9",
+      "line": 1011,
+      "initializer": "[\"whole\", \"placidus\", \"porphyry\"]"
+    },
+    {
+      "name": "HOUSE_SYSTEMS_BEFORE_RC10",
+      "line": 1012,
+      "initializer": "HOUSE_SYSTEMS.filter(   (system) => system !== \"equal-mc\" )"
+    },
+    {
+      "name": "POLAR_UNDEFINED",
+      "line": 1015,
+      "initializer": "[\"placidus\", \"koch\"]"
+    },
+    {
+      "name": "TURNING_WITH_ASCENDANT",
+      "line": 1016,
+      "initializer": "[\"regiomontanus\", \"campanus\", \"topocentric\"]"
+    },
+    {
+      "name": "HOSTILE_KEYS",
+      "line": 1017,
+      "initializer": "new Set([\"__proto__\", \"prototype\", \"constructor\"])"
+    },
+    {
+      "name": "BODY_RECORD",
+      "line": 1018,
+      "initializer": "[\"body\", \"lon\", \"lat\", \"speed\", \"retrograde\", \"sign\", \"degree\"]"
+    },
+    {
+      "name": "ANGLES_RECORD",
+      "line": 1019,
+      "initializer": "[\"asc\", \"mc\", \"dsc\", \"ic\"]"
+    },
+    {
+      "name": "HOUSES_RECORD",
+      "line": 1020,
+      "initializer": "[\"system\", \"cusps\"]"
+    },
+    {
+      "name": "ASPECT_RECORD",
+      "line": 1021,
+      "initializer": "[\"a\", \"b\", \"type\", \"orb\", \"applying\"]"
+    },
+    {
+      "name": "DELTA_T_RECORD",
+      "line": 1022,
+      "initializer": "[\"seconds\", \"sigma\", \"model\", \"table\", \"tableDigest\", \"segment\"]"
+    },
+    {
+      "name": "TIME_SCALE_RECORD",
+      "line": 1023,
+      "initializer": "[\"input\", \"basis\", \"ut1MinusUtc\", \"leapSeconds\"]"
+    },
+    {
+      "name": "UT1_RECORD",
+      "line": 1024,
+      "initializer": "[\"seconds\", \"sigma\", \"source\"]"
+    },
+    {
+      "name": "LEAP_SECONDS_RECORD",
+      "line": 1025,
+      "initializer": "[\"taiMinusUtc\", \"listed\"]"
+    },
+    {
+      "name": "DELTA_T_SEGMENTS",
+      "line": 1194,
+      "initializer": "[   \"long-term\",   \"reconstructed\",   \"observed\",   \"predicted\",   \"extrapolated\" ]"
+    },
+    {
+      "name": "J2000_MS2",
+      "line": 1201,
+      "initializer": "Date.UTC(2e3, 0, 1, 12)"
+    },
+    {
+      "name": "IERS_SEGMENTS",
+      "line": 1202,
+      "initializer": "[\"observed\", \"predicted\", \"fallback\"]"
+    },
+    {
+      "name": "LOCAL_FIELDS",
+      "line": 1376,
+      "initializer": "[\"date\", \"time\", \"timeZone\", \"offsetMinutes\", \"gapShiftMinutes\", \"policy\"]"
+    },
+    {
+      "name": "LOCAL_TIME_BASIS_FIELDS",
+      "line": 1377,
+      "initializer": "[   \"calendar\",   \"writtenDate\",   \"tzdbVersion\",   \"dataForm\",   \"clock\",   \"transition\",   \"localMeanTime\" ]"
+    },
+    {
+      "name": "ADAPTER_VERSION",
+      "line": 1722,
+      "initializer": "\"0.1.0-rc.18\""
+    },
+    {
+      "name": "ADAPTER_NAME",
+      "line": 1723,
+      "initializer": "\"zodiacs-mcp-server\""
+    },
+    {
+      "name": "EPOCH_MIN_UTC",
+      "line": 1724,
+      "initializer": "\"1800-01-01T00:00:00.000Z\""
+    },
+    {
+      "name": "EPOCH_MAX_UTC",
+      "line": 1725,
+      "initializer": "\"2199-12-31T23:59:59.999Z\""
+    },
+    {
+      "name": "EPOCH_MIN",
+      "line": 1726,
+      "initializer": "Date.parse(EPOCH_MIN_UTC)"
+    },
+    {
+      "name": "EPOCH_MAX",
+      "line": 1727,
+      "initializer": "Date.parse(EPOCH_MAX_UTC)"
+    },
+    {
+      "name": "HOUSE_SYSTEMS2",
+      "line": 1728,
+      "initializer": "Object.freeze([   \"placidus\",   \"whole\",   \"porphyry\",   \"equal\",   \"vehlow\",   \"koch\",   \"regiomontanus\",   \"campanus\",   \"topocentric\",   \"alcabitius\",   \"morinus\",   \"meridian\","
+    },
+    {
+      "name": "REFERENCES",
+      "line": 1743,
+      "initializer": "Object.freeze([\"supplied-instant\", \"utc-noon\"])"
+    },
+    {
+      "name": "UTC_NOON_MS",
+      "line": 1744,
+      "initializer": "12 * 60 * 60 * 1e3"
+    },
+    {
+      "name": "OUTPUTS",
+      "line": 1758,
+      "initializer": "Object.freeze([\"summary\", \"record\"])"
+    },
+    {
+      "name": "COMPARE_OUTPUTS",
+      "line": 1759,
+      "initializer": "Object.freeze([\"summary\", \"full\"])"
+    },
+    {
+      "name": "SETTING_ROW",
+      "line": 1760,
+      "initializer": "/^(time-known|time-scale$|reference|houses-|cusps-shape|angles-presence|engine-version|schema|result-flags|input-flags|convention-)/u"
+    },
+    {
+      "name": "LIMITS",
+      "line": 1764,
+      "initializer": "Object.freeze({   recordBytes: NATAL_ENVELOPE_LIMITS.bytes,   recordDepth: NATAL_ENVELOPE_LIMITS.depth,   recordNodes: NATAL_ENVELOPE_LIMITS.nodes,   instantChars: 64,   /**    * T"
+    },
+    {
+      "name": "INSTANT",
+      "line": 1781,
+      "initializer": "/^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{1,3}))?)?(Z|[+-]\\d{2}:\\d{2})$/"
+    },
+    {
+      "name": "DEG",
+      "line": 1854,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "RAD",
+      "line": 1855,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "HOUSE_SYSTEMS3",
+      "line": 1856,
+      "initializer": "Object.freeze([   \"whole\",   \"placidus\",   \"porphyry\",   \"equal\",   \"equal-mc\",   \"vehlow\",   \"koch\",   \"regiomontanus\",   \"campanus\",   \"topocentric\",   \"alcabitius\",   \"morinus\","
+    },
+    {
+      "name": "POLAR_UNDEFINED_HOUSE_SYSTEMS",
+      "line": 1871,
+      "initializer": "Object.freeze([\"placidus\", \"koch\"])"
+    },
+    {
+      "name": "POLAR_FALLBACK",
+      "line": 1872,
+      "initializer": "\"whole\""
+    },
+    {
+      "name": "C_AUDAY",
+      "line": 2190,
+      "initializer": "173.1446326846693"
+    },
+    {
+      "name": "KM_PER_AU",
+      "line": 2191,
+      "initializer": "14959787069098932e-8"
+    },
+    {
+      "name": "DEG2RAD",
+      "line": 2192,
+      "initializer": "0.017453292519943295"
+    },
+    {
+      "name": "DAYS_PER_TROPICAL_YEAR",
+      "line": 2193,
+      "initializer": "365.24217"
+    },
+    {
+      "name": "J2000",
+      "line": 2194,
+      "initializer": "new Date(\"2000-01-01T12:00:00Z\")"
+    },
+    {
+      "name": "PI2",
+      "line": 2195,
+      "initializer": "2 * Math.PI"
+    },
+    {
+      "name": "ARC",
+      "line": 2196,
+      "initializer": "3600 * (180 / Math.PI)"
+    },
+    {
+      "name": "ASEC2RAD",
+      "line": 2197,
+      "initializer": "484813681109536e-20"
+    },
+    {
+      "name": "ASEC180",
+      "line": 2198,
+      "initializer": "180 * 60 * 60"
+    },
+    {
+      "name": "ASEC360",
+      "line": 2199,
+      "initializer": "2 * ASEC180"
+    },
+    {
+      "name": "AU_PER_PARSEC",
+      "line": 2200,
+      "initializer": "ASEC180 / Math.PI"
+    },
+    {
+      "name": "SUN_MAG_1AU",
+      "line": 2201,
+      "initializer": "-0.17 - 5 * Math.log10(AU_PER_PARSEC)"
+    },
+    {
+      "name": "SECONDS_PER_DAY",
+      "line": 2202,
+      "initializer": "24 * 3600"
+    },
+    {
+      "name": "MILLIS_PER_DAY",
+      "line": 2203,
+      "initializer": "SECONDS_PER_DAY * 1e3"
+    },
+    {
+      "name": "SUN_RADIUS_KM",
+      "line": 2204,
+      "initializer": "695700"
+    },
+    {
+      "name": "SUN_RADIUS_AU",
+      "line": 2205,
+      "initializer": "SUN_RADIUS_KM / KM_PER_AU"
+    },
+    {
+      "name": "EARTH_FLATTENING",
+      "line": 2206,
+      "initializer": "0.996647180302104"
+    },
+    {
+      "name": "EARTH_FLATTENING_SQUARED",
+      "line": 2207,
+      "initializer": "EARTH_FLATTENING * EARTH_FLATTENING"
+    },
+    {
+      "name": "EARTH_EQUATORIAL_RADIUS_KM",
+      "line": 2208,
+      "initializer": "6378.1366"
+    },
+    {
+      "name": "EARTH_EQUATORIAL_RADIUS_AU",
+      "line": 2209,
+      "initializer": "EARTH_EQUATORIAL_RADIUS_KM / KM_PER_AU"
+    },
+    {
+      "name": "EARTH_POLAR_RADIUS_KM",
+      "line": 2210,
+      "initializer": "EARTH_EQUATORIAL_RADIUS_KM * EARTH_FLATTENING"
+    },
+    {
+      "name": "EARTH_MEAN_RADIUS_KM",
+      "line": 2211,
+      "initializer": "6371"
+    },
+    {
+      "name": "EARTH_ATMOSPHERE_KM",
+      "line": 2212,
+      "initializer": "88"
+    },
+    {
+      "name": "EARTH_ECLIPSE_RADIUS_KM",
+      "line": 2213,
+      "initializer": "EARTH_MEAN_RADIUS_KM + EARTH_ATMOSPHERE_KM"
+    },
+    {
+      "name": "MOON_EQUATORIAL_RADIUS_KM",
+      "line": 2214,
+      "initializer": "1738.1"
+    },
+    {
+      "name": "MOON_EQUATORIAL_RADIUS_AU",
+      "line": 2215,
+      "initializer": "MOON_EQUATORIAL_RADIUS_KM / KM_PER_AU"
+    },
+    {
+      "name": "MOON_POLAR_RADIUS_KM",
+      "line": 2216,
+      "initializer": "1736"
+    },
+    {
+      "name": "MOON_POLAR_RADIUS_AU",
+      "line": 2217,
+      "initializer": "MOON_POLAR_RADIUS_KM / KM_PER_AU"
+    },
+    {
+      "name": "REFRACTION_NEAR_HORIZON",
+      "line": 2218,
+      "initializer": "34 / 60"
+    },
+    {
+      "name": "EARTH_MOON_MASS_RATIO",
+      "line": 2219,
+      "initializer": "81.30056"
+    },
+    {
+      "name": "SUN_GM",
+      "line": 2220,
+      "initializer": "2959122082855911e-19"
+    },
+    {
+      "name": "EARTH_GM",
+      "line": 2221,
+      "initializer": "8887692390113509e-25"
+    },
+    {
+      "name": "JUPITER_GM",
+      "line": 2222,
+      "initializer": "2825345909524226e-22"
+    },
+    {
+      "name": "SATURN_GM",
+      "line": 2223,
+      "initializer": "8459715185680659e-23"
+    },
+    {
+      "name": "URANUS_GM",
+      "line": 2224,
+      "initializer": "1292024916781969e-23"
+    },
+    {
+      "name": "NEPTUNE_GM",
+      "line": 2225,
+      "initializer": "1524358900784276e-23"
+    },
+    {
+      "name": "MOON_GM",
+      "line": 2226,
+      "initializer": "EARTH_GM / EARTH_MOON_MASS_RATIO"
+    },
+    {
+      "name": "Body",
+      "line": 2244,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "StarList",
+      "line": 2268,
+      "initializer": "[   Body.Star1,   Body.Star2,   Body.Star3,   Body.Star4,   Body.Star5,   Body.Star6,   Body.Star7,   Body.Star8 ]"
+    },
+    {
+      "name": "StarTable",
+      "line": 2278,
+      "initializer": "[   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 },   { ra: 0, dec: 0, dist: 0 }"
+    },
+    {
+      "name": "PrecessDirection",
+      "line": 2296,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "vsop",
+      "line": 2301,
+      "initializer": "{   Mercury: [     [       [         [4.40250710144, 0, 0],         [0.40989414977, 1.48302034195, 26087.9031415742],         [0.050462942, 4.47785489551, 52175.8062831484],       "
+    },
+    {
+      "name": "DeltaT",
+      "line": 3038,
+      "initializer": "DeltaT_EspenakMeeus"
+    },
+    {
+      "name": "AstroTime",
+      "line": 3045,
+      "initializer": "class _AstroTime {   /**    * @param {FlexibleDateTime} date    *      A JavaScript Date object, a numeric UTC value expressed in J2000 days, or another AstroTime object.    */   c"
+    },
+    {
+      "name": "CalcMoonCount",
+      "line": 3147,
+      "initializer": "0"
+    },
+    {
+      "name": "Vector",
+      "line": 3451,
+      "initializer": "class {   constructor(x, y, z6, t) {     this.x = x;     this.y = y;     this.z = z6;     this.t = t;   }   /**    * Returns the length of the vector in astronomical units (AU).   "
+    },
+    {
+      "name": "StateVector",
+      "line": 3466,
+      "initializer": "class {   constructor(x, y, z6, vx, vy, vz, t) {     this.x = x;     this.y = y;     this.z = z6;     this.vx = vx;     this.vy = vy;     this.vz = vz;     this.t = t;   } }"
+    },
+    {
+      "name": "Spherical",
+      "line": 3477,
+      "initializer": "class {   constructor(lat, lon, dist) {     this.lat = VerifyNumber(lat);     this.lon = VerifyNumber(lon);     this.dist = VerifyNumber(dist);   } }"
+    },
+    {
+      "name": "RotationMatrix",
+      "line": 3484,
+      "initializer": "class {   constructor(rot) {     this.rot = rot;   } }"
+    },
+    {
+      "name": "DAYS_PER_MILLENNIUM",
+      "line": 3553,
+      "initializer": "365250"
+    },
+    {
+      "name": "LON_INDEX",
+      "line": 3554,
+      "initializer": "0"
+    },
+    {
+      "name": "LAT_INDEX",
+      "line": 3555,
+      "initializer": "1"
+    },
+    {
+      "name": "RAD_INDEX",
+      "line": 3556,
+      "initializer": "2"
+    },
+    {
+      "name": "PLUTO_NUM_STATES",
+      "line": 3618,
+      "initializer": "51"
+    },
+    {
+      "name": "PLUTO_TIME_STEP",
+      "line": 3619,
+      "initializer": "29200"
+    },
+    {
+      "name": "PLUTO_DT",
+      "line": 3620,
+      "initializer": "146"
+    },
+    {
+      "name": "PLUTO_NSTEPS",
+      "line": 3621,
+      "initializer": "201"
+    },
+    {
+      "name": "PlutoStateTable",
+      "line": 3622,
+      "initializer": "[   [-73e4, [-26.118207232108, -14.376168177825, 3.384402515299], [0.0016339372163656, -0.0027861699588508, -0.0013585880229445]],   [-700800, [41.974905202127, -0.448502952929, -1"
+    },
+    {
+      "name": "TerseVector",
+      "line": 3675,
+      "initializer": "class _TerseVector {   constructor(x, y, z6) {     this.x = x;     this.y = y;     this.z = z6;   }   clone() {     return new _TerseVector(this.x, this.y, this.z);   }   ToAstroVe"
+    },
+    {
+      "name": "body_state_t",
+      "line": 3722,
+      "initializer": "class _body_state_t {   constructor(tt, r, v) {     this.tt = tt;     this.r = r;     this.v = v;   }   clone() {     return new _body_state_t(this.tt, this.r, this.v);   }   sub(o"
+    },
+    {
+      "name": "major_bodies_t",
+      "line": 3751,
+      "initializer": "class {   constructor(tt) {     let ssb = new body_state_t(tt, new TerseVector(0, 0, 0), new TerseVector(0, 0, 0));     this.Jupiter = AdjustBarycenterPosVel(ssb, tt, Body.Jupiter,"
+    },
+    {
+      "name": "body_grav_calc_t",
+      "line": 3777,
+      "initializer": "class _body_grav_calc_t {   constructor(tt, r, v, a) {     this.tt = tt;     this.r = r;     this.v = v;     this.a = a;   }   clone() {     return new _body_grav_calc_t(this.tt, t"
+    },
+    {
+      "name": "grav_sim_t",
+      "line": 3788,
+      "initializer": "class {   constructor(bary, grav) {     this.bary = bary;     this.grav = grav;   } }"
+    },
+    {
+      "name": "pluto_cache",
+      "line": 3811,
+      "initializer": "[]"
+    },
+    {
+      "name": "Rotation_JUP_EQJ",
+      "line": 3897,
+      "initializer": "new RotationMatrix([   [0.999432765338654, -0.0336771074697641, 0],   [0.0303959428906285, 0.902057912352809, 0.430543388542295],   [-0.0144994559663353, -0.430299169409101, 0.9025"
+    },
+    {
+      "name": "BodyPosition",
+      "line": 3948,
+      "initializer": "class {   constructor(observerBody, targetBody, aberration, observerPos) {     this.observerBody = observerBody;     this.targetBody = targetBody;     this.aberration = aberration;"
+    },
+    {
+      "name": "ApsisKind",
+      "line": 4037,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "EclipseKind",
+      "line": 4049,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "NodeEventKind",
+      "line": 4056,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "SAFE_MAGNITUDE",
+      "line": 4064,
+      "initializer": "2 ** 1e3"
+    },
+    {
+      "name": "DEG2",
+      "line": 4065,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "RAD2",
+      "line": 4066,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "RA_POLE_TOLERANCE",
+      "line": 4067,
+      "initializer": "32 * Number.EPSILON"
+    },
+    {
+      "name": "DEG22",
+      "line": 4068,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "ARCSEC",
+      "line": 4069,
+      "initializer": "DEG22 / 3600"
+    },
+    {
+      "name": "ARGUMENTS",
+      "line": 4070,
+      "initializer": "[   485868.249036,   17179159232178e-4,   128710479305e-5,   1295965810481e-4,   335779.526232,   17395272628478e-4,   107226070369e-5,   1602961601209e-3,   450160.398036,   -6962"
+    },
+    {
+      "name": "MULTIPLIERS",
+      "line": 4082,
+      "initializer": "\"22223224042242422224232222340432222224233242421404224031242412242322231222312444324230242322242224442040402242424243240412423422222242223223122432440422042322032122312443242223244"
+    },
+    {
+      "name": "COEFFICIENT_TEXT",
+      "line": 4083,
+      "initializer": "\"-172064161,-174666,33386,92052331,9086,15377,-13170906,-1675,-13696,5730336,-3015,-4587,-2276413,-234,2796,978459,-485,1374,2074554,207,-698,-897492,470,-291,1475877,-3633,11817,7"
+    },
+    {
+      "name": "coefficientValues",
+      "line": 4084,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "OFFSETS",
+      "line": 4088,
+      "initializer": "[-135e-6, 388e-6]"
+    },
+    {
+      "name": "NUTATION_TERMS",
+      "line": 4089,
+      "initializer": "77"
+    },
+    {
+      "name": "DEG3",
+      "line": 4141,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "ASEC2RAD2",
+      "line": 4142,
+      "initializer": "DEG3 / 3600"
+    },
+    {
+      "name": "RAD22",
+      "line": 4143,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "last",
+      "line": 4144,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "DEG4",
+      "line": 4210,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "RAD3",
+      "line": 4211,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "ARCSEC2",
+      "line": 4212,
+      "initializer": "1 / 3600"
+    },
+    {
+      "name": "RAD4",
+      "line": 4213,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "DAY2",
+      "line": 4214,
+      "initializer": "864e5"
+    },
+    {
+      "name": "UTC_CLOCK",
+      "line": 4215,
+      "initializer": "{ scale: \"utc\", pin: void 0 }"
+    },
+    {
+      "name": "basisAt",
+      "line": 4230,
+      "initializer": "(ms, clock) => timeBasis(ms, clock.scale, clock.pin)"
+    },
+    {
+      "name": "timeAt",
+      "line": 4231,
+      "initializer": "(ms, clock) => timeOf(basisAt(ms, clock))"
+    },
+    {
+      "name": "PLANETS",
+      "line": 4254,
+      "initializer": "[   { name: \"Sun\", body: Body.Sun },   { name: \"Mercury\", body: Body.Mercury },   { name: \"Venus\", body: Body.Venus },   { name: \"Mars\", body: Body.Mars },   { name: \"Jupiter\", bod"
+    },
+    {
+      "name": "SPEED_STEP_DAYS",
+      "line": 4301,
+      "initializer": "1e-3"
+    },
+    {
+      "name": "NODE_SPEED_STEP_DAYS",
+      "line": 4302,
+      "initializer": "0.25"
+    },
+    {
+      "name": "clockOf",
+      "line": 4348,
+      "initializer": "(input) => ({   scale: input.timeScale ?? \"utc\",   pin: input.deltaT })"
+    },
+    {
+      "name": "DAY3",
+      "line": 4393,
+      "initializer": "864e5"
+    },
+    {
+      "name": "REFINE_STEPS",
+      "line": 4394,
+      "initializer": "24"
+    },
+    {
+      "name": "EDGE_PROBE_MAX_MS",
+      "line": 4395,
+      "initializer": "6e4"
+    },
+    {
+      "name": "DUPLICATE_MS",
+      "line": 4396,
+      "initializer": "1e3"
+    },
+    {
+      "name": "GOLDEN",
+      "line": 4397,
+      "initializer": "(Math.sqrt(5) - 1) / 2"
+    },
+    {
+      "name": "SampleBudgetReached",
+      "line": 4398,
+      "initializer": "class { }"
+    },
+    {
+      "name": "HOUSE_SYSTEM_NAMES",
+      "line": 4621,
+      "initializer": "[   \"whole\",   \"placidus\",   \"porphyry\",   \"equal\",   \"equal-mc\",   \"vehlow\",   \"koch\",   \"regiomontanus\",   \"campanus\",   \"topocentric\",   \"alcabitius\",   \"morinus\",   \"meridian\" "
+    },
+    {
+      "name": "FLAGS2",
+      "line": 4663,
+      "initializer": "[   \"dst-gap\",   \"dst-fold\",   \"lmt\",   \"no-time\",   \"polar-fallback\",   \"outside-reference-span\" ]"
+    },
+    {
+      "name": "DERIVED_FLAGS",
+      "line": 4671,
+      "initializer": "[\"no-time\", \"polar-fallback\", \"outside-reference-span\"]"
+    },
+    {
+      "name": "BIRTH_FIELDS",
+      "line": 4708,
+      "initializer": "[   \"utc\",   \"timeScale\",   \"latitude\",   \"longitude\",   \"houseSystem\",   \"timeKnown\",   \"flags\",   \"deltaT\" ]"
+    },
+    {
+      "name": "IDENTICAL_EPSILON",
+      "line": 4790,
+      "initializer": "1e-12"
+    },
+    {
+      "name": "DISPLAYED_DECIMALS",
+      "line": 4791,
+      "initializer": "6"
+    },
+    {
+      "name": "ANGLE_LABELS",
+      "line": 4816,
+      "initializer": "{ asc: \"Ascendant\", mc: \"Midheaven\", dsc: \"Descendant\", ic: \"Imum coeli\" }"
+    },
+    {
+      "name": "DELTA_T_LABELS",
+      "line": 4817,
+      "initializer": "{   seconds: \"\\u0394T (TT \\u2212 UT1), seconds\",   sigma: \"\\u0394T band (1\\u03C3), seconds\",   model: \"\\u0394T model\",   table: \"\\u0394T table (last observed day)\",   tableDigest: "
+    },
+    {
+      "name": "DELTA_T_SOURCE_ROWS",
+      "line": 4825,
+      "initializer": "new Set([\"delta-t-model\", \"delta-t-table\", \"delta-t-tableDigest\"])"
+    },
+    {
+      "name": "TIME_BASIS_LABELS",
+      "line": 4826,
+      "initializer": "[   [\"time-basis\", \"Time basis\", (scale) => scale.basis],   [\"ut1-utc-seconds\", \"UT1 \\u2212 UTC, seconds\", (scale) => scale.ut1MinusUtc?.seconds ?? null],   [\"ut1-utc-sigma\", \"UT1 "
+    },
+    {
+      "name": "SETTING_ROWS",
+      "line": 5049,
+      "initializer": "new Set([\"houses-requested\", \"houses-actual\", \"houses-system\"])"
+    },
+    {
+      "name": "INPUT_ROWS",
+      "line": 5050,
+      "initializer": "new Set([\"instant\", \"source-instant\", \"reference\", \"time-scale\", \"time-known\", \"zone\", \"latitude\", \"longitude\"])"
+    },
+    {
+      "name": "PROVENANCE_ROWS",
+      "line": 5051,
+      "initializer": "new Set([\"engine-version\", \"schema\", \"result-flags\", \"input-flags\", \"houses-absence\"])"
+    },
+    {
+      "name": "replay",
+      "line": 5325,
+      "initializer": "(request) => {   try {     const chart = natalChart({       utc: request.utc,       latitude: request.latitude,       longitude: request.longitude,       houseSystem: request.house"
+    },
+    {
+      "name": "COMPUTE_ENDPOINTS",
+      "line": 5349,
+      "initializer": "Object.freeze([   \"chart\",   \"positions\",   \"houses\",   \"events\",   \"time\",   \"sky-fact\",   \"elections\" ])"
+    },
+    {
+      "name": "COMPUTE_ORIGIN",
+      "line": 5358,
+      "initializer": "\"https://zodiacs.org\""
+    },
+    {
+      "name": "COMPUTE_DOCS_URL",
+      "line": 5359,
+      "initializer": "`${COMPUTE_ORIGIN}/developers/compute/`"
+    },
+    {
+      "name": "COMPUTE_RATE_LIMIT_ID",
+      "line": 5363,
+      "initializer": "\"zodiacs-compute-api\""
+    },
+    {
+      "name": "COMPUTE_EVENTS_RATE_LIMIT_ID",
+      "line": 5364,
+      "initializer": "\"zodiacs-compute-events\""
+    },
+    {
+      "name": "RATE_LIMIT_RULES",
+      "line": 5365,
+      "initializer": "Object.freeze({   [COMPUTE_RATE_LIMIT_ID]: Object.freeze({ requests: 40, windowSeconds: 60 }),   [COMPUTE_EVENTS_RATE_LIMIT_ID]: Object.freeze({ requests: 10, windowSeconds: 60 }) "
+    },
+    {
+      "name": "RETRY_AFTER_SECONDS",
+      "line": 5369,
+      "initializer": "Object.freeze({   rateLimited: 60,   rateLimitUnavailable: 300,   disabled: 3600 })"
+    },
+    {
+      "name": "RESPONSE_HEADERS",
+      "line": 5374,
+      "initializer": "Object.freeze({   \"Content-Type\": \"application/json; charset=utf-8\",   \"Cache-Control\": \"no-store\",   \"Access-Control-Allow-Origin\": \"*\",   \"Access-Control-Expose-Headers\": \"Retry-"
+    },
+    {
+      "name": "PREFLIGHT_HEADERS",
+      "line": 5382,
+      "initializer": "Object.freeze({   \"Access-Control-Allow-Origin\": \"*\",   \"Access-Control-Allow-Methods\": \"POST, OPTIONS\",   \"Access-Control-Allow-Headers\": \"Content-Type\",   \"Access-Control-Max-Age"
+    },
+    {
+      "name": "MAX_BODY_BYTES",
+      "line": 5391,
+      "initializer": "16384"
+    },
+    {
+      "name": "EPOCH",
+      "line": 5392,
+      "initializer": "Object.freeze({   from: \"1800-01-01T00:00:00.000Z\",   to: \"2199-12-31T23:59:59.999Z\",   firstYear: 1800,   lastYear: 2199 })"
+    },
+    {
+      "name": "BUDGETS",
+      "line": 5398,
+      "initializer": "Object.freeze({   \"positions.instants\": 100,   \"events.windowDays\": 92,   \"events.samples\": 12e3,   \"sky-fact.samples\": 1e3,   \"elections.windowDays\": 31,   \"elections.samples\": 6e"
+    },
+    {
+      "name": "BUDGET_MESSAGES",
+      "line": 5406,
+      "initializer": "Object.freeze({   \"positions.instants\": `A positions request takes at most ${BUDGETS[\"positions.instants\"]} instants.`,   \"events.windowDays\": `An events window is at most ${BUDGET"
+    },
+    {
+      "name": "SEARCH_STEP_DAYS",
+      "line": 5414,
+      "initializer": "Object.freeze({   default: 5,   moon: 1,   elongation: 1 })"
+    },
+    {
+      "name": "ERROR_CODES2",
+      "line": 5419,
+      "initializer": "Object.freeze([   \"not-found\",   \"method-not-allowed\",   \"disabled\",   \"rate-limited\",   \"rate-limit-unavailable\",   \"unsupported-media-type\",   \"payload-too-large\",   \"invalid-jso"
+    },
+    {
+      "name": "ERROR_STATUS",
+      "line": 5432,
+      "initializer": "Object.freeze({   \"not-found\": 404,   \"method-not-allowed\": 405,   disabled: 503,   \"rate-limited\": 429,   \"rate-limit-unavailable\": 503,   \"unsupported-media-type\": 415,   \"payloa"
+    },
+    {
+      "name": "HOUSE_SYSTEM_NAMES2",
+      "line": 5445,
+      "initializer": "Object.freeze([   \"whole\",   \"placidus\",   \"porphyry\",   \"equal\",   \"equal-mc\",   \"vehlow\",   \"koch\",   \"regiomontanus\",   \"campanus\",   \"topocentric\",   \"alcabitius\",   \"morinus\","
+    },
+    {
+      "name": "EVENT_BODIES",
+      "line": 5460,
+      "initializer": "Object.freeze([   \"Sun\",   \"Moon\",   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ])"
+    },
+    {
+      "name": "POSITION_BODIES",
+      "line": 5472,
+      "initializer": "Object.freeze([   ...EVENT_BODIES,   \"North Node\",   \"South Node\" ])"
+    },
+    {
+      "name": "STATION_BODIES",
+      "line": 5477,
+      "initializer": "Object.freeze([   \"Mercury\",   \"Venus\",   \"Mars\",   \"Jupiter\",   \"Saturn\",   \"Uranus\",   \"Neptune\",   \"Pluto\" ])"
+    },
+    {
+      "name": "EVENT_KINDS",
+      "line": 5487,
+      "initializer": "Object.freeze([\"ingress\", \"station\", \"lunation\"])"
+    },
+    {
+      "name": "SIGN_SLUGS2",
+      "line": 5488,
+      "initializer": "Object.freeze([   \"aries\",   \"taurus\",   \"gemini\",   \"cancer\",   \"leo\",   \"virgo\",   \"libra\",   \"scorpio\",   \"sagittarius\",   \"capricorn\",   \"aquarius\",   \"pisces\" ])"
+    },
+    {
+      "name": "PHASES",
+      "line": 5502,
+      "initializer": "Object.freeze({   new: 0,   \"first-quarter\": 90,   full: 180,   \"last-quarter\": 270 })"
+    },
+    {
+      "name": "PHASE_NAMES",
+      "line": 5508,
+      "initializer": "Object.freeze(Object.keys(PHASES))"
+    },
+    {
+      "name": "SKY_FACT_KINDS",
+      "line": 5509,
+      "initializer": "Object.freeze([\"sign\", \"retrograde\", \"ingress\", \"phase\"])"
+    },
+    {
+      "name": "ELECTION_CONDITION_KINDS",
+      "line": 5510,
+      "initializer": "Object.freeze([\"phase\", \"void-of-course\", \"sign\", \"retrograde\", \"angular\"])"
+    },
+    {
+      "name": "MAX_ELECTION_CONDITIONS",
+      "line": 5511,
+      "initializer": "5"
+    },
+    {
+      "name": "MOON_HALVES",
+      "line": 5512,
+      "initializer": "Object.freeze([\"waxing\", \"waning\"])"
+    },
+    {
+      "name": "ANGULAR_HOUSES",
+      "line": 5513,
+      "initializer": "Object.freeze([1, 4, 7, 10])"
+    },
+    {
+      "name": "ANGULAR_MAX_ABS_LATITUDE",
+      "line": 5514,
+      "initializer": "60"
+    },
+    {
+      "name": "ELECTION_STEPS",
+      "line": 5515,
+      "initializer": "Object.freeze({   houseSampleMinutes: 60,   houseBoundarySeconds: 1,   /**    * Every boundary is within a second, so two less than 2 seconds apart may be    * one instant found tw"
+    },
+    {
+      "name": "ANY_ZONE_DAY",
+      "line": 5525,
+      "initializer": "Object.freeze({   startHoursBeforeUtcMidnight: 14,   endHoursAfterUtcMidnight: 36 })"
+    },
+    {
+      "name": "PINNED_TZDB_RELEASE",
+      "line": 5529,
+      "initializer": "\"2025c\""
+    },
+    {
+      "name": "COMPUTE_RECEIPT_SCHEMA",
+      "line": 5533,
+      "initializer": "\"zodiacs.compute-receipt.v1\""
+    },
+    {
+      "name": "ADAPTER_RECEIPT_SCHEMA",
+      "line": 5557,
+      "initializer": "\"zodiacs.mcp-receipt.v1\""
+    },
+    {
+      "name": "DOCS_URL",
+      "line": 5558,
+      "initializer": "\"https://zodiacs.org/developers/mcp/\""
+    },
+    {
+      "name": "TOOL_NAMES",
+      "line": 5559,
+      "initializer": "Object.freeze([   \"get_capabilities\",   \"calculate_natal_chart\",   \"compare_calculation_records\",   \"get_positions\",   \"find_events\",   \"check_sky_fact\" ])"
+    },
+    {
+      "name": "SKY_TOOLS",
+      "line": 5567,
+      "initializer": "Object.freeze({   get_positions: \"positions\",   find_events: \"events\",   check_sky_fact: \"sky-fact\" })"
+    },
+    {
+      "name": "DELTA_T_MODEL2",
+      "line": 5597,
+      "initializer": "\"zodiacs-deltat/1\""
+    },
+    {
+      "name": "DELTA_T_TABLE2",
+      "line": 5598,
+      "initializer": "Object.freeze({   version: \"2026-09-24\",   digest: \"6371988c510a1c6c\",   from: 1941,   observedTo: 61307,   predictedTo: 61680,   knots: /* @__PURE__ */ Object.freeze([     2482,  "
+    },
+    {
+      "name": "SX2",
+      "line": 5698,
+      "initializer": "[-720, 400, 1e3, 1500, 1600, 1650, 1720, 1800, 1810, 1820, 1830, 1840]"
+    },
+    {
+      "name": "SY2",
+      "line": 5699,
+      "initializer": "[   2055059,   660440,   146765,   29264,   8938,   4374,   1073,   1871,   1526,   1668,   1076,   767,   932,   1038,   904,   826,   237,   -113,   -321,   -439,   -388,   -502,"
+    },
+    {
+      "name": "SIG2",
+      "line": 5733,
+      "initializer": "[   640,   83,   900,   230,   1240,   120,   1400,   15,   1420,   7.5,   1440,   4.2,   1500,   5.6,   1560,   27,   1670,   15,   1710,   3.3,   1720,   3.3,   1760,   1.5,   18"
+    },
+    {
+      "name": "X2",
+      "line": 5769,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "Y2",
+      "line": 5770,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "M2",
+      "line": 5771,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "KX2",
+      "line": 5772,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "KV2",
+      "line": 5773,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "OBS2",
+      "line": 5774,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "PRED2",
+      "line": 5775,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "SLOPE2",
+      "line": 5776,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "yearOfMjd2",
+      "line": 5777,
+      "initializer": "(mjd) => 2e3 + (mjd - 51544.5) / 365.25"
+    },
+    {
+      "name": "longTerm2",
+      "line": 5778,
+      "initializer": "(y) => {   const t = (y - 1825) / 100;   return 36.525 * (0.89 * t * t + 30 / Math.PI * Math.cos(Math.PI * t / 7.5)); }"
+    },
+    {
+      "name": "longTermRate2",
+      "line": 5782,
+      "initializer": "(y) => {   const t = (y - 1825) / 100;   return 0.36525 * (1.78 * t - 4 * Math.sin(Math.PI * t / 7.5)); }"
+    },
+    {
+      "name": "FROM2",
+      "line": 5871,
+      "initializer": "Date.UTC(1800, 0, 1)"
+    },
+    {
+      "name": "TO2",
+      "line": 5872,
+      "initializer": "Date.UTC(2200, 0, 1)"
+    },
+    {
+      "name": "LEAP_SECOND_LIST2",
+      "line": 5873,
+      "initializer": "Object.freeze({   source: \"IERS leap-seconds.list, retrieved 2026-09-29\",   sha256: \"db5a895f16853b03bfc865e8d68f9fc8710ef1740e3400c701cd46a5bbbc3433\",   /** The list's last update"
+    },
+    {
+      "name": "UT1_DATA2",
+      "line": 5882,
+      "initializer": "Object.freeze({   version: \"2026-09-24\",   source: \"IERS finals2000A.all (Bulletin A), Last-Modified 2026-09-24T17:37:44Z\",   sha256: \"cc80680ec05c91b65e7d02c6068fe0d44dd0998dc8805"
+    },
+    {
+      "name": "UT1_FROM_MS2",
+      "line": 5910,
+      "initializer": "63072e6"
+    },
+    {
+      "name": "UT1_FINALS_FROM_MS2",
+      "line": 5911,
+      "initializer": "947808e5"
+    },
+    {
+      "name": "UT1_OBSERVED_TO_MS2",
+      "line": 5912,
+      "initializer": "1790208e6"
+    },
+    {
+      "name": "UT1_TO_MS2",
+      "line": 5913,
+      "initializer": "18224352e5"
+    },
+    {
+      "name": "UT1_GRID_BEFORE2",
+      "line": 5914,
+      "initializer": "122"
+    },
+    {
+      "name": "LEAP_SECONDS_EXPIRE_MS2",
+      "line": 5915,
+      "initializer": "18141408e5"
+    },
+    {
+      "name": "DELTA_T_IERS_MODEL2",
+      "line": 5916,
+      "initializer": "\"iers-utc/1\""
+    },
+    {
+      "name": "DAY4",
+      "line": 5917,
+      "initializer": "864e5"
+    },
+    {
+      "name": "J2000_MS3",
+      "line": 5918,
+      "initializer": "Date.UTC(2e3, 0, 1, 12)"
+    },
+    {
+      "name": "MJD_UNIX2",
+      "line": 5919,
+      "initializer": "40587"
+    },
+    {
+      "name": "LEAP_SECONDS_FROM2",
+      "line": 5920,
+      "initializer": "Date.UTC(1972, 0, 1)"
+    },
+    {
+      "name": "UT1_FALLBACK_BAND2",
+      "line": 5921,
+      "initializer": "0.9"
+    },
+    {
+      "name": "ALPHABET2",
+      "line": 5922,
+      "initializer": "\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~\""
+    },
+    {
+      "name": "knots2",
+      "line": 5923,
+      "initializer": "<uninitialized>"
+    },
+    {
+      "name": "fallback2",
+      "line": 5983,
+      "initializer": "() => ({ seconds: 0, sigma: UT1_FALLBACK_BAND2, source: \"fallback\" })"
+    },
+    {
+      "name": "modelDeltaT2",
+      "line": 5995,
+      "initializer": "(ut1Ms) => deltaTAt2((ut1Ms - J2000_MS3) / DAY4)"
+    },
+    {
+      "name": "MODEL_KNOTS_FROM2",
+      "line": 6048,
+      "initializer": "(1941 - 2e3) * 365.25"
+    },
+    {
+      "name": "DEG5",
+      "line": 6049,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "RAD5",
+      "line": 6050,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "DEG23",
+      "line": 6051,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "ARCSEC3",
+      "line": 6052,
+      "initializer": "DEG23 / 3600"
+    },
+    {
+      "name": "DEG32",
+      "line": 6053,
+      "initializer": "Math.PI / 180"
+    },
+    {
+      "name": "ASEC2RAD3",
+      "line": 6054,
+      "initializer": "DEG32 / 3600"
+    },
+    {
+      "name": "RAD23",
+      "line": 6055,
+      "initializer": "180 / Math.PI"
+    },
+    {
+      "name": "ComputeApiError",
+      "line": 6058,
+      "initializer": "class extends Error {   status;   detail;   headers;   constructor(detail, headers = {}) {     super(detail.message);     this.name = \"ComputeApiError\";     this.status = ERROR_STA"
+    },
+    {
+      "name": "MESSAGES",
+      "line": 6070,
+      "initializer": "Object.freeze({   notFound: \"No compute endpoint is served at this address.\",   methodNotAllowed: \"This endpoint accepts POST with a JSON body, and OPTIONS.\",   disabled: \"The comp"
+    },
+    {
+      "name": "PINNED_HISTORY_LAST_DATE",
+      "line": 6094,
+      "initializer": "\"1970-01-01\""
+    },
+    {
+      "name": "BACKEND",
+      "line": 6135,
+      "initializer": "Object.freeze({   name: \"@zodiacs/engine\",   version: ENGINE_VERSION,   ephemeris: Object.freeze({ name: EPHEMERIS.name, version: EPHEMERIS.version }) })"
+    },
+    {
+      "name": "statements",
+      "line": 6140,
+      "initializer": "null"
+    },
+    {
+      "name": "TEXT",
+      "line": 6208,
+      "initializer": "Object.freeze({   body: \"The body must be a JSON object.\",   object: \"Must be a JSON object.\",   unknownField: \"This object has a field this endpoint does not accept.\",   required:"
+    },
+    {
+      "name": "VALIDATION_POINTERS",
+      "line": 6249,
+      "initializer": "Object.freeze([   \"\",   \"/utc\",   \"/local\",   \"/local/date\",   \"/local/time\",   \"/local/zone\",   \"/latitude\",   \"/longitude\",   \"/houseSystem\",   \"/instants\",   \"/bodies\",   \"/from"
+    },
+    {
+      "name": "INDEXED_POINTERS",
+      "line": 6277,
+      "initializer": "Object.freeze([\"/instants\", \"/bodies\", \"/kinds\", \"/conditions\"])"
+    },
+    {
+      "name": "CONDITION_FIELD_POINTERS",
+      "line": 6278,
+      "initializer": "Object.freeze([\"kind\", \"phase\", \"body\", \"sign\", \"not\"])"
+    },
+    {
+      "name": "ZONE_NAME",
+      "line": 6279,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/u"
+    },
+    {
+      "name": "INSTANT2",
+      "line": 6280,
+      "initializer": "/^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})(?::(\\d{2})(?:\\.(\\d{1,3}))?)?(Z|[+-]\\d{2}:\\d{2})$/u"
+    },
+    {
+      "name": "EPOCH_FROM",
+      "line": 6281,
+      "initializer": "Date.parse(EPOCH.from)"
+    },
+    {
+      "name": "EPOCH_TO",
+      "line": 6282,
+      "initializer": "Date.parse(EPOCH.to)"
+    },
+    {
+      "name": "FIRST_DATE",
+      "line": 6283,
+      "initializer": "`${EPOCH.firstYear}-01-01`"
+    },
+    {
+      "name": "LAST_DATE",
+      "line": 6284,
+      "initializer": "`${EPOCH.lastYear}-12-31`"
+    },
+    {
+      "name": "DAY_MS",
+      "line": 6382,
+      "initializer": "864e5"
+    },
+    {
+      "name": "CONDITION_FIELDS",
+      "line": 6440,
+      "initializer": "Object.freeze({   phase: [\"kind\", \"phase\", \"not\"],   \"void-of-course\": [\"kind\", \"not\"],   sign: [\"kind\", \"body\", \"sign\", \"not\"],   retrograde: [\"kind\", \"body\", \"not\"],   angular: ["
+    },
+    {
+      "name": "VALIDATION_MESSAGES",
+      "line": 6447,
+      "initializer": "TEXT"
+    },
+    {
+      "name": "HOUR_MS",
+      "line": 6450,
+      "initializer": "36e5"
+    },
+    {
+      "name": "DAY_MS2",
+      "line": 6451,
+      "initializer": "864e5"
+    },
+    {
+      "name": "J2000_MS4",
+      "line": 6452,
+      "initializer": "Date.UTC(2e3, 0, 1, 12)"
+    },
+    {
+      "name": "SampleBudget",
+      "line": 6476,
+      "initializer": "class {   constructor(limit) {     this.limit = limit;   }   limit;   used = 0;   get max() {     return BUDGETS[this.limit];   }   options(stepDays) {     const remaining = this.m"
+    },
+    {
+      "name": "KIND_ORDER",
+      "line": 6568,
+      "initializer": "{ ingress: 0, station: 1, lunation: 2 }"
+    },
+    {
+      "name": "BODY_ORDER",
+      "line": 6569,
+      "initializer": "new Map([\"Sun\", \"Moon\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"].map((body2, index) => [body2, index]))"
+    },
+    {
+      "name": "INSTANT_CHARS",
+      "line": 6744,
+      "initializer": "29"
+    },
+    {
+      "name": "DATE_CHARS",
+      "line": 6745,
+      "initializer": "10"
+    },
+    {
+      "name": "instantForm",
+      "line": 6746,
+      "initializer": "`ISO 8601 with Z or a numeric offset, such as 2000-01-01T12:00:00Z or 1990-06-15T14:30:00+02:00, from ${EPOCH.from} to ${EPOCH.to} once the offset is applied. A time without Z or a"
+    },
+    {
+      "name": "ANY_ZONE_DAY_TEXT",
+      "line": 6747,
+      "initializer": "`This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from \\u2212${ANY_ZONE_DAY.endHoursAfterUtcMidnight - 24}:00 to +${ANY_ZONE_DAY."
+    },
+    {
+      "name": "POSITIONS_INPUT",
+      "line": 6748,
+      "initializer": "z.strictObject({   instants: z.array(z.string().max(INSTANT_CHARS)).min(1).max(BUDGETS[\"positions.instants\"]).describe(`One to ${BUDGETS[\"positions.instants\"]} instants, each in ${"
+    },
+    {
+      "name": "EVENTS_INPUT",
+      "line": 6752,
+      "initializer": "z.strictObject({   from: z.string().max(INSTANT_CHARS).describe(`The start of the window, which is excluded, in ${instantForm}`),   to: z.string().max(INSTANT_CHARS).describe(`The "
+    },
+    {
+      "name": "SKY_FACT_INPUT",
+      "line": 6758,
+      "initializer": "z.strictObject({   kind: z.enum(SKY_FACT_KINDS).describe(\"sign: is the body in the sign? retrograde: is the body retrograde? ingress: does the body enter the sign on the date? phas"
+    },
+    {
+      "name": "CONVENTIONS_URI",
+      "line": 6768,
+      "initializer": "\"zodiacs://conventions\""
+    },
+    {
+      "name": "METHODOLOGY_URI",
+      "line": 6769,
+      "initializer": "\"zodiacs://methodology\""
+    },
+    {
+      "name": "VOCABULARY_SCHEMA",
+      "line": 6770,
+      "initializer": "\"zodiacs.conventions-vocabulary.v1\""
+    },
+    {
+      "name": "SET_WRITERS",
+      "line": 6771,
+      "initializer": "Object.freeze([   { from: \"0.1.1-rc.16\", to: null },   { from: \"0.1.1-rc.15\", to: \"0.1.1-rc.15\" },   { from: \"0.1.1-rc.8\", to: \"0.1.1-rc.14\" },   { from: \"0.1.1-rc.7\", to: \"0.1.1-r"
+    },
+    {
+      "name": "CONVENTION_KEYS",
+      "line": 6778,
+      "initializer": "Object.freeze({   calendar: \"The calendar dates are read on.\",   zodiac: \"The zodiac longitudes are measured in.\",   planetPositions: \"How the planets' positions are reduced: the o"
+    },
+    {
+      "name": "FLAG_MEANINGS",
+      "line": 6793,
+      "initializer": "Object.freeze({   \"dst-gap\": \"The local time given did not exist, because a clock change skipped it; it was moved forward.\",   \"dst-fold\": \"The local time given happened twice, bec"
+    },
+    {
+      "name": "METHODOLOGY_SECTIONS",
+      "line": 6822,
+      "initializer": "Object.freeze([   \"## What a chart holds\",   \"Twelve bodies: the Sun, the Moon, the planets from Mercury to Pluto, and the two lunar nodes of the Moon's instantaneous orbit. Each c"
+    },
+    {
+      "name": "RESOURCES",
+      "line": 6854,
+      "initializer": "Object.freeze([   {     name: \"conventions\",     uri: CONVENTIONS_URI,     title: \"Calculation conventions\",     description: \"The conventions vocabulary of the calculation records"
+    },
+    {
+      "name": "PRIVACY",
+      "line": 6875,
+      "initializer": "Object.freeze({   calculation: \"This server calculates on the machine it runs on. No birth detail reaches zodiacs.org, and the server opens no network connection, listener or port "
+    },
+    {
+      "name": "UNSUPPORTED",
+      "line": 6883,
+      "initializer": "Object.freeze([   \"Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing e"
+    },
+    {
+      "name": "instantDescription",
+      "line": 6893,
+      "initializer": "`The birth instant as ISO-8601 with an explicit zone, such as 1990-06-15T13:30:00Z or 1990-06-15T19:00:00+05:30. A naked wall time is refused rather than assumed to be UTC. Must fa"
+    },
+    {
+      "name": "CAPABILITIES_INPUT",
+      "line": 6894,
+      "initializer": "z2.strictObject({})"
+    },
+    {
+      "name": "NATAL_INPUT",
+      "line": 6895,
+      "initializer": "z2.strictObject({   utc: z2.string().max(LIMITS.instantChars).describe(instantDescription),   latitude: z2.number().min(-90).max(90).optional().describe(\"Degrees north, -90 to 90. "
+    },
+    {
+      "name": "COMPARE_INPUT",
+      "line": 6904,
+      "initializer": "z2.strictObject({   left: z2.string().min(1).max(LIMITS.recordBytes).describe(`The content of a ${NATAL_ENVELOPE_SCHEMA} calculation record, as JSON text. Not a file path, URL or i"
+    },
+    {
+      "name": "PARSE_REFUSALS",
+      "line": 6909,
+      "initializer": "Object.freeze({   invalid_json: \"is not valid JSON\",   invalid_shape: `is not shaped like a ${NATAL_ENVELOPE_SCHEMA} record`,   invalid_value: \"carries a value the schema does not "
+    },
+    {
+      "name": "trimStop",
+      "line": 7105,
+      "initializer": "(message) => message.replace(/\\.+$/, \"\")"
+    },
+    {
+      "name": "HOROSCOPE_URI",
+      "line": 7111,
+      "initializer": "\"ui://zodiacs/horoscopes-v1.html\""
+    },
+    {
+      "name": "HOROSCOPE_SIGNS",
+      "line": 7112,
+      "initializer": "[\"aries\", \"taurus\", \"gemini\", \"cancer\", \"leo\", \"virgo\", \"libra\", \"scorpio\", \"sagittarius\", \"capricorn\", \"aquarius\", \"pisces\"]"
+    },
+    {
+      "name": "HOROSCOPE_FOCUSES",
+      "line": 7113,
+      "initializer": "[\"general\", \"love\", \"career\"]"
+    },
+    {
+      "name": "HOROSCOPE_PERIODS",
+      "line": 7114,
+      "initializer": "[\"day\", \"week\"]"
+    },
+    {
+      "name": "HOROSCOPE_DISCLOSURE",
+      "line": 7115,
+      "initializer": "\"For reflection. Astrology does not establish what will happen in your life.\""
+    },
+    {
+      "name": "WHY_NOTE",
+      "line": 7116,
+      "initializer": "\"These are sky positions we calculate. What they mean is astrological interpretation. Solar houses count signs from your Sun sign; they are not the houses of a personal birth chart"
+    },
+    {
+      "name": "cap",
+      "line": 7117,
+      "initializer": "(value) => value[0].toUpperCase() + value.slice(1)"
+    },
+    {
+      "name": "noon",
+      "line": 7126,
+      "initializer": "(date2) => /* @__PURE__ */ new Date(`${date2}T12:00:00.000Z`)"
+    },
+    {
+      "name": "format2",
+      "line": 7127,
+      "initializer": "(date2, options) => new Intl.DateTimeFormat(\"en-GB\", { timeZone: \"UTC\", ...options }).format(noon(date2))"
+    },
+    {
+      "name": "AI_VERSION",
+      "line": 7268,
+      "initializer": "\"0.4.0\""
+    },
+    {
+      "name": "AI_RESULT_SCHEMA",
+      "line": 7269,
+      "initializer": "\"zodiacs.ai-tool-result.v1\""
+    },
+    {
+      "name": "AI_TOOL_NAMES",
+      "line": 7270,
+      "initializer": "[\"get_capabilities\", \"get_sky\", \"get_upcoming_events\", \"check_sky_fact\", \"get_horoscope\", \"open_chart_studio\"]"
+    },
+    {
+      "name": "MAX_EVENT_DAYS",
+      "line": 7271,
+      "initializer": "BUDGETS[\"events.windowDays\"]"
+    },
+    {
+      "name": "ORIGIN",
+      "line": 7272,
+      "initializer": "\"https://zodiacs.org\""
+    },
+    {
+      "name": "WIDGET_URI",
+      "line": 7273,
+      "initializer": "\"ui://zodiacs/sky-events-v1.html\""
+    },
+    {
+      "name": "STUDIO_URI",
+      "line": 7274,
+      "initializer": "\"ui://zodiacs/chart-studio-v2.html\""
+    },
+    {
+      "name": "LEGACY_STUDIO_URI",
+      "line": 7275,
+      "initializer": "\"ui://zodiacs/chart-studio-v1.html\""
+    },
+    {
+      "name": "READ_ONLY",
+      "line": 7276,
+      "initializer": "{ readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true }"
+    },
+    {
+      "name": "TOOL_TITLES",
+      "line": 7277,
+      "initializer": "{   get_capabilities: \"What Zodiacs can do\",   get_sky: \"Sky right now\",   get_upcoming_events: \"Sky calendar\",   check_sky_fact: \"Check a sky fact\",   get_horoscope: \"Horoscopes\","
+    },
+    {
+      "name": "instant",
+      "line": 7285,
+      "initializer": "z3.string().min(20).max(29).describe(\"A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800\\u20132199).\")"
+    },
+    {
+      "name": "ZONE_PATTERN",
+      "line": 7286,
+      "initializer": "/^[A-Za-z][A-Za-z0-9_+-]*(?:\\/[A-Za-z0-9_+-]+){0,3}$/"
+    },
+    {
+      "name": "zone",
+      "line": 7287,
+      "initializer": "z3.string().min(1).max(64).regex(ZONE_PATTERN).describe(\"The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.\")"
+    },
+    {
+      "name": "date",
+      "line": 7288,
+      "initializer": "z3.string().regex(/^(?:18|19|20|21)\\d{2}-\\d{2}-\\d{2}$/)"
+    },
+    {
+      "name": "INPUT_SCHEMAS",
+      "line": 7289,
+      "initializer": "{   get_capabilities: z3.strictObject({}),   open_chart_studio: z3.strictObject({}),   get_sky: z3.strictObject({ instant: instant.optional(), zone: zone.optional(), bodies: z3.arr"
+    },
+    {
+      "name": "link",
+      "line": 7305,
+      "initializer": "z3.object({ title: z3.string(), url: z3.url() })"
+    },
+    {
+      "name": "jsonObject",
+      "line": 7306,
+      "initializer": "z3.record(z3.string(), z3.unknown())"
+    },
+    {
+      "name": "calculation",
+      "line": 7307,
+      "initializer": "z3.object({ schema: z3.string(), result: jsonObject, receipt: jsonObject, backend: jsonObject, cite: z3.object({ url: z3.url(), receipt: z3.string(), engine: z3.string(), version: "
+    },
+    {
+      "name": "localTime",
+      "line": 7308,
+      "initializer": "z3.object({ utc: z3.string(), zone: z3.string(), display: z3.string() })"
+    },
+    {
+      "name": "body",
+      "line": 7309,
+      "initializer": "z3.object({ body: z3.string(), lon: z3.number(), lat: z3.number(), speed: z3.number(), retrograde: z3.boolean(), sign: z3.string(), degree: z3.number() })"
+    },
+    {
+      "name": "positionResult",
+      "line": 7310,
+      "initializer": "z3.object({ instants: z3.array(z3.object({ instant: z3.string(), bodies: z3.array(body), deltaT: jsonObject, timeScale: jsonObject, flags: z3.array(z3.string()) })) })"
+    },
+    {
+      "name": "event",
+      "line": 7311,
+      "initializer": "z3.object({ kind: z3.enum(EVENT_KINDS), at: z3.string(), localAt: z3.string(), body: z3.string().optional(), sign: z3.string(), type: z3.string().optional(), retrograde: z3.boolean"
+    },
+    {
+      "name": "horoscope",
+      "line": 7312,
+      "initializer": "z3.object({   status: z3.enum([\"available\", \"unavailable\", \"choose-sign\"]),   sign: z3.enum(HOROSCOPE_SIGNS).optional(),   signName: z3.string().optional(),   period: z3.enum(HOROS"
+    },
+    {
+      "name": "dataSchemas",
+      "line": 7329,
+      "initializer": "{   open_chart_studio: z3.object({ title: z3.literal(\"Chart Studio\"), calculation: z3.literal(\"browser-local\"), initialChart: z3.literal(\"birth-details\"), sharing: z3.literal(\"user"
+    },
+    {
+      "name": "ERROR_SCHEMA",
+      "line": 7337,
+      "initializer": "z3.object({ schema: z3.literal(AI_RESULT_SCHEMA), ok: z3.literal(false), tool: z3.enum(AI_TOOL_NAMES), error: z3.object({ code: z3.string(), message: z3.string(), retryAfterSeconds"
+    },
+    {
+      "name": "OUTPUT_SCHEMAS",
+      "line": 7344,
+      "initializer": "{   open_chart_studio: outputSchema(\"open_chart_studio\", dataSchemas.open_chart_studio),   get_capabilities: outputSchema(\"get_capabilities\", dataSchemas.get_capabilities),   get_s"
+    },
+    {
+      "name": "TOOL_DESCRIPTIONS",
+      "line": 7352,
+      "initializer": "{   open_chart_studio: \"Opens Chart Studio, an interactive birth chart the person fills in themselves: birth date, place, and time if they know it. Call it with no arguments and do"
+    },
+    {
+      "name": "PRIVACY2",
+      "line": 8743,
+      "initializer": "\"Public-sky tools and horoscopes need no birth details and save no request or result. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodi"
+    },
+    {
+      "name": "methodLink",
+      "line": 8744,
+      "initializer": "{ title: \"How we calculate\", url: `${ORIGIN}/methodology/` }"
+    },
+    {
+      "name": "moonLink",
+      "line": 8745,
+      "initializer": "{ title: \"Explore Moon phases\", url: `${ORIGIN}/moon-phase/` }"
+    },
+    {
+      "name": "LIMITS2",
+      "line": 8746,
+      "initializer": "{ from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS[\"events.samples\"], factSamples: BUDGETS[\"sky-fact.samples\"] }"
+    },
+    {
+      "name": "STUDIO_HTML",
+      "line": 8859,
+      "initializer": "'<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex\"><title>Chart St"
+    },
+    {
+      "name": "HOROSCOPES_HTML",
+      "line": 8862,
+      "initializer": "'<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex\"><title>Horoscop"
+    },
+    {
+      "name": "WIDGET_HTML",
+      "line": 8865,
+      "initializer": "`<!doctype html> <html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"> <title>Zodiacs sky calendar</title><style> :root{co"
+    },
+    {
+      "name": "blocked",
+      "line": 8977,
+      "initializer": "new BlockList()"
+    },
+    {
+      "name": "global6",
+      "line": 8979,
+      "initializer": "new BlockList()"
+    },
+    {
+      "name": "WATCH_VERSION",
+      "line": 8985,
+      "initializer": "`sky-watch-v1:${ENGINE_VERSION}`"
+    },
+    {
+      "name": "BODIES2",
+      "line": 8986,
+      "initializer": "[\"Sun\", \"Moon\", \"Mercury\", \"Venus\", \"Mars\", \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\", \"Pluto\"]"
+    },
+    {
+      "name": "NAMES",
+      "line": 8987,
+      "initializer": "[\"zodiacs.sky.ingress\", \"zodiacs.sky.station\", \"zodiacs.sky.lunation\"]"
+    },
+    {
+      "name": "zone2",
+      "line": 8988,
+      "initializer": "z4.string().max(80).default(\"UTC\").refine((value) => {   try {     new Intl.DateTimeFormat(\"en\", { timeZone: value });     return true;   } catch {     return false;   } })"
+    },
+    {
+      "name": "choices",
+      "line": 8996,
+      "initializer": "(values) => z4.array(z4.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort())"
+    },
+    {
+      "name": "FILTERS",
+      "line": 8997,
+      "initializer": "{   \"zodiacs.sky.ingress\": z4.object({ bodies: choices(BODIES2), zone: zone2 }).strict(),   \"zodiacs.sky.station\": z4.object({ bodies: choices([\"Mercury\", \"Venus\", \"Mars\", \"Jupiter"
+    },
+    {
+      "name": "subscriptionParams",
+      "line": 9002,
+      "initializer": "z4.object({   name: z4.enum(NAMES),   arguments: z4.unknown(),   delivery: z4.object({ mode: z4.literal(\"webhook\"), url: z4.string().max(2048), secret: z4.string().max(100) }).stri"
+    },
+    {
+      "name": "unsubscribeParams",
+      "line": 9009,
+      "initializer": "subscriptionParams.omit({ ttlMs: true, cursor: true }).extend({   delivery: subscriptionParams.shape.delivery.omit({ secret: true }) })"
+    },
+    {
+      "name": "EVENT_DEFINITIONS",
+      "line": 9012,
+      "initializer": "NAMES.map((name) => ({   name,   description: name.endsWith(\"ingress\") ? \"A selected body crosses a tropical zodiac sign boundary.\" : name.endsWith(\"station\") ? \"A selected planet "
+    },
+    {
+      "name": "WATCH_SCOPES",
+      "line": 9035,
+      "initializer": "[\"openid\"]"
+    },
+    {
+      "name": "INSTRUCTIONS",
+      "line": 9062,
+      "initializer": "\"Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an a"
+    },
+    {
+      "name": "PANELS",
+      "line": 9063,
+      "initializer": "{   get_upcoming_events: { uri: WIDGET_URI, icon: \"sky-calendar\" },   open_chart_studio: { uri: STUDIO_URI, icon: \"chart-studio\" },   get_horoscope: { uri: HOROSCOPE_URI, icon: \"ho"
+    },
+    {
+      "name": "panelMeta",
+      "line": 9068,
+      "initializer": "(preferredDisplayMode) => ({ ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, \"openai/widgetCSP\": { connect_domains: [], resource_domains: [] }, \"open"
+    },
+    {
+      "name": "pending",
+      "line": 9151,
+      "initializer": "[]"
+    },
+    {
+      "name": "size",
+      "line": 9152,
+      "initializer": "0"
+    },
+    {
+      "name": "dropping",
+      "line": 9153,
+      "initializer": "false"
+    },
+    {
+      "name": "gate",
+      "line": 9154,
+      "initializer": "new Transform({ transform(chunk, _encoding, done) {   let start = 0;   while (start < chunk.length) {     const newline = chunk.indexOf(10, start);     const end = newline < 0 ? ch"
+    },
+    {
+      "name": "output",
+      "line": 9185,
+      "initializer": "\"\""
+    },
+    {
+      "name": "safeOutput",
+      "line": 9186,
+      "initializer": "new Transform({ transform(chunk, _encoding, done) {   output += chunk.toString(\"utf8\");   let newline;   while ((newline = output.indexOf(\"\\n\")) >= 0) {     const line = output.sli"
+    },
+    {
+      "name": "handle",
+      "line": 9200,
+      "initializer": "serveStdio(build, { transport: new StdioServerTransport(gate, safeOutput, { maxBufferSize: LIMITS.requestBytes + 4096 }), onerror: () => { } })"
+    }
+  ],
+  "directWrites": [
+    {
+      "name": "X",
+      "kind": "assignment",
+      "line": 306,
+      "expression": "X = x"
+    },
+    {
+      "name": "Y",
+      "kind": "assignment",
+      "line": 307,
+      "expression": "Y = y"
+    },
+    {
+      "name": "M",
+      "kind": "assignment",
+      "line": 308,
+      "expression": "M = m"
+    },
+    {
+      "name": "KX",
+      "kind": "assignment",
+      "line": 309,
+      "expression": "KX = kx"
+    },
+    {
+      "name": "KV",
+      "kind": "assignment",
+      "line": 310,
+      "expression": "KV = kv"
+    },
+    {
+      "name": "OBS",
+      "kind": "assignment",
+      "line": 311,
+      "expression": "OBS = obs"
+    },
+    {
+      "name": "PRED",
+      "kind": "assignment",
+      "line": 312,
+      "expression": "PRED = pred"
+    },
+    {
+      "name": "SLOPE",
+      "kind": "assignment",
+      "line": 313,
+      "expression": "SLOPE = (kv[years + 4] - kv[years]) / (pred - obs)"
+    },
+    {
+      "name": "knots",
+      "kind": "assignment",
+      "line": 473,
+      "expression": "knots ??= decode()"
+    },
+    {
+      "name": "ERROR_BRAND",
+      "kind": "method",
+      "line": 921,
+      "expression": "ERROR_BRAND.set(this, fixed)"
+    },
+    {
+      "name": "Body",
+      "kind": "assignment",
+      "line": 2267,
+      "expression": "Body = {}"
+    },
+    {
+      "name": "PrecessDirection",
+      "kind": "assignment",
+      "line": 2300,
+      "expression": "PrecessDirection = {}"
+    },
+    {
+      "name": "DeltaT",
+      "kind": "assignment",
+      "line": 3040,
+      "expression": "DeltaT = func"
+    },
+    {
+      "name": "CalcMoonCount",
+      "kind": "update",
+      "line": 3149,
+      "expression": "++CalcMoonCount"
+    },
+    {
+      "name": "ApsisKind",
+      "kind": "assignment",
+      "line": 4041,
+      "expression": "ApsisKind = {}"
+    },
+    {
+      "name": "EclipseKind",
+      "kind": "assignment",
+      "line": 4055,
+      "expression": "EclipseKind = {}"
+    },
+    {
+      "name": "NodeEventKind",
+      "kind": "assignment",
+      "line": 4061,
+      "expression": "NodeEventKind = {}"
+    },
+    {
+      "name": "coefficientValues",
+      "kind": "assignment",
+      "line": 4086,
+      "expression": "coefficientValues ??= COEFFICIENT_TEXT.split(\",\").map(Number)"
+    },
+    {
+      "name": "last",
+      "kind": "assignment",
+      "line": 4177,
+      "expression": "last = {     tt,     rows: [       xx,       yx,       zx,       ce * xy + se * xz,       ce * yy + se * yz,       ce * zy + se * zz,       ce * xz - se * xy,       ce * yz - se * "
+    },
+    {
+      "name": "X2",
+      "kind": "assignment",
+      "line": 5813,
+      "expression": "X2 = x"
+    },
+    {
+      "name": "Y2",
+      "kind": "assignment",
+      "line": 5814,
+      "expression": "Y2 = y"
+    },
+    {
+      "name": "M2",
+      "kind": "assignment",
+      "line": 5815,
+      "expression": "M2 = m"
+    },
+    {
+      "name": "KX2",
+      "kind": "assignment",
+      "line": 5816,
+      "expression": "KX2 = kx"
+    },
+    {
+      "name": "KV2",
+      "kind": "assignment",
+      "line": 5817,
+      "expression": "KV2 = kv"
+    },
+    {
+      "name": "OBS2",
+      "kind": "assignment",
+      "line": 5818,
+      "expression": "OBS2 = obs"
+    },
+    {
+      "name": "PRED2",
+      "kind": "assignment",
+      "line": 5819,
+      "expression": "PRED2 = pred"
+    },
+    {
+      "name": "SLOPE2",
+      "kind": "assignment",
+      "line": 5820,
+      "expression": "SLOPE2 = (kv[years + 4] - kv[years]) / (pred - obs)"
+    },
+    {
+      "name": "knots2",
+      "kind": "assignment",
+      "line": 5955,
+      "expression": "knots2 ??= decode2()"
+    },
+    {
+      "name": "statements",
+      "kind": "assignment",
+      "line": 6149,
+      "expression": "statements = {       conventions: receipt.conventions,       coverage: receipt.coverage,       deltaT: [         { model, table, tableDigest },         { model: DELTA_T_MODEL, tabl"
+    },
+    {
+      "name": "dropping",
+      "kind": "assignment",
+      "line": 9162,
+      "expression": "dropping = false"
+    },
+    {
+      "name": "pending",
+      "kind": "assignment",
+      "line": 9166,
+      "expression": "pending = []"
+    },
+    {
+      "name": "size",
+      "kind": "assignment",
+      "line": 9167,
+      "expression": "size = 0"
+    },
+    {
+      "name": "dropping",
+      "kind": "assignment",
+      "line": 9168,
+      "expression": "dropping = newline < 0"
+    },
+    {
+      "name": "pending",
+      "kind": "method",
+      "line": 9171,
+      "expression": "pending.push(part)"
+    },
+    {
+      "name": "size",
+      "kind": "assignment",
+      "line": 9172,
+      "expression": "size += part.length"
+    },
+    {
+      "name": "pending",
+      "kind": "assignment",
+      "line": 9175,
+      "expression": "pending = []"
+    },
+    {
+      "name": "size",
+      "kind": "assignment",
+      "line": 9176,
+      "expression": "size = 0"
+    },
+    {
+      "name": "output",
+      "kind": "assignment",
+      "line": 9187,
+      "expression": "output += chunk.toString(\"utf8\")"
+    },
+    {
+      "name": "output",
+      "kind": "assignment",
+      "line": 9191,
+      "expression": "output = output.slice(newline + 1)"
+    },
+    {
+      "name": "last",
+      "kind": "assignment",
+      "line": 9209,
+      "expression": "last = undefined"
+    },
+    {
+      "name": "pluto_cache",
+      "kind": "assignment",
+      "line": 9210,
+      "expression": "pluto_cache.length = 0"
+    },
+    {
+      "name": "CalcMoonCount",
+      "kind": "assignment",
+      "line": 9211,
+      "expression": "CalcMoonCount = 0"
+    }
+  ]
+}

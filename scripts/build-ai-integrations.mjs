@@ -4,11 +4,13 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { buildChartStudio } from './build-chart-studio.mjs';
+import { buildHoroscopePanel } from './build-horoscope-panel.mjs';
 import { addAiLifetimeBoundary } from './ai-runtime-lifetime.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
 await buildChartStudio(check);
+await buildHoroscopePanel(check);
 const outputs = [
   ['src/ai-tools/http.ts', 'api/_ai/runtime.mjs', ['@modelcontextprotocol/server', '@modelcontextprotocol/core', 'zod', '@vercel/firewall', '@supabase/supabase-js']],
   ['src/ai-tools/local.ts', 'plugins/zodiacs-developer/mcp/server.mjs', ['@modelcontextprotocol/server', '@modelcontextprotocol/core', 'zod']],
@@ -43,8 +45,19 @@ const skyCompatibility = Object.fromEntries(['name', 'version', 'description', '
 const { interface: skyInterface, ...skySettings } = sky.extensions['com.openai'];
 Object.assign(skyCompatibility, { skills: './skills/', mcpServers: './.mcp.json', interface: skyInterface });
 skyCompatibility.extensions = { 'com.openai': skySettings };
-const skyMcp = { mcpServers: { 'zodiacs-sky': { url: 'https://zodiacs.org/mcp' } } };
-for (const [output, data] of [['plugins/zodiacs-sky/.codex-plugin/plugin.json', skyCompatibility], ['plugins/zodiacs-sky/.mcp.json', skyMcp]]) {
+// Claude requires an explicit remote transport in the shared MCP configuration.
+const skyMcp = { mcpServers: { 'zodiacs-sky': { type: 'http', url: 'https://zodiacs.org/mcp' } } };
+const skyClaude = Object.fromEntries(['name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords'].map(key => [key, sky[key]]));
+Object.assign(skyClaude, {
+  displayName: skyInterface.displayName,
+  mcpServers: './.mcp.json',
+  icon: skyInterface.logo,
+  documentationUrl: sky.homepage,
+  supportUrl: skyInterface.supportURL,
+  privacyPolicyUrl: skyInterface.privacyPolicyURL,
+  termsOfServiceUrl: skyInterface.termsOfServiceURL,
+});
+for (const [output, data] of [['plugins/zodiacs-sky/.codex-plugin/plugin.json', skyCompatibility], ['plugins/zodiacs-sky/.mcp.json', skyMcp], ['plugins/zodiacs-sky/.claude-plugin/plugin.json', skyClaude]]) {
   const bytes = Buffer.from(JSON.stringify(data, null, 2) + '\n');
   const path = resolve(root, output);
   if (check) { if (!bytes.equals(await readFile(path))) throw new Error(`${output} is stale; run npm run ai:build`); }

@@ -12,7 +12,7 @@ const exactKeys = (value, expected) => record(value)
   && Object.keys(value).length === expected.length
   && expected.every((key) => Object.hasOwn(value, key));
 const matches = (value, pattern) => typeof value === 'string' && pattern.exec(value)?.[0] === value;
-const commit = (value) => matches(value, /^[a-f0-9]{40}$/u) && value.length === 40;
+const commit = (value) => matches(value, /^[a-f0-9]{40}$/u) && value !== '0'.repeat(40);
 // The SDK and site repositories moved from ZodiacsOfficial to zodiacs-org on
 // 2026-09-24; GitHub serves the same commits, and so the same bytes, at both.
 const OWNER = 'zodiacs-org';

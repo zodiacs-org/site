@@ -1,0 +1,29 @@
+HTTP/1.1 200 OK
+date: Tue, 06 Oct 2026 07:21:01 GMT
+server: envoy
+
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 0
+cache-control: public, max-age=86400, must-revalidate
+content-disposition: inline; filename="openapi.json"
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; script-src-attr 'none'; connect-src 'self' https://plausible.io https://mftpcdpttteuwbolobye.supabase.co wss://mftpcdpttteuwbolobye.supabase.co https://api.jup.ag https://api.dexscreener.com https://api.geckoterminal.com https://wikimedia.org; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+content-type: application/json; charset=utf-8
+cross-origin-opener-policy: same-origin-allow-popups
+date: Tue, 06 Oct 2026 07:21:02 GMT
+etag: "24f3a8b3ec9d791bf309514aaa969e7d"
+last-modified: Tue, 06 Oct 2026 07:21:02 GMT
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+referrer-policy: strict-origin-when-cross-origin
+server: envoy
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-permitted-cross-domain-policies: none
+x-robots-tag: noindex
+x-vercel-cache: MISS
+x-vercel-id: cle1::pxzjq-1791271262160-ce9ce981e1b5
+content-length: 369971
+x-envoy-upstream-service-time: 536
+

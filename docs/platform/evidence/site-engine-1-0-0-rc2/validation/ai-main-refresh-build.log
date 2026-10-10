@@ -1,0 +1,14 @@
+
+> zodiacs-org@1.0.0 ai:build
+> node scripts/build-ai-integrations.mjs
+
+Built Chart Studio (925591 bytes, self-contained)
+Built the horoscope panel (179942 bytes, self-contained)
+Built api/_ai/runtime.mjs (1683336 bytes)
+Built plugins/zodiacs-developer/mcp/server.mjs (1733524 bytes)
+Built integrations/generated/sky-watch.mjs (1687050 bytes)
+Built plugins/zodiacs-developer/plugin.json
+Built plugins/zodiacs-developer/mcp.json
+Built plugins/zodiacs-sky/.codex-plugin/plugin.json
+Built plugins/zodiacs-sky/.mcp.json
+Built plugins/zodiacs-sky/.claude-plugin/plugin.json

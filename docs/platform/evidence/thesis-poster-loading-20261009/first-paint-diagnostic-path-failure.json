@@ -1,0 +1,12 @@
+{
+  "schema": "zodiacs.retained-first-paint-diagnostic-failure.v1",
+  "run": 37957002164,
+  "job": 113909938479,
+  "source": "2b11c45faa3d7bdb4bf6870a07cd695038fb47f2",
+  "stage": "retained ZIP report selection",
+  "cause": "The single-directory artifact preserves lighthouse/ at archive root; the original selector expected a preceding slash.",
+  "archiveSha256": "f05a12ed0dd38ead4b3e35e3e244f906afdebbd7d0ef7419745e1f2b040c3f54",
+  "archiveDigestVerifiedBeforeSelection": true,
+  "logSha256": "c3dc6c2ce4169d5e3138e2e4ebf038472079904689a3eb495d4ced234659cce8",
+  "limitation": "Read-only diagnostic failure; no new browser execution, retry or acceptance."
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "zodiacs.phase1-changed-capture-inspection.v1",
+  "originalRun": 38063604884,
+  "actualCandidate": "a8b58d8b5476c6bd85d0abb204676ba008786abf",
+  "comparisons": [
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-360.png",
+      "actualSha256": "357d01e6f2e13b04f0ce1ab69376200288b54d8e3b349a354cea143dc8f6937d",
+      "previousSource": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+      "previousSha256": "d6434cb4c0ae482aabf05d925a897b1129ad9e91fc6fd9010a9c7dbaef503dc5",
+      "previousPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/love-360-previous.png",
+      "beforeSize": [
+        360,
+        4180
+      ],
+      "afterSize": [
+        360,
+        4180
+      ],
+      "pixelsChanged": 24,
+      "differenceBounds": [
+        33,
+        450,
+        315,
+        453
+      ],
+      "inspectionOnly": true,
+      "cropBounds": [
+        1,
+        418,
+        347,
+        485
+      ]
+    }
+  ],
+  "limitations": [
+    "Actual native capture bytes and qualified-main bytes are compared for inspection; no benchmark mask, altered pixel tolerance or new acceptance gate."
+  ]
+}

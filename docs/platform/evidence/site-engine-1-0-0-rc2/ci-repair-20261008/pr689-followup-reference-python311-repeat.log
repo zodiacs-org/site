@@ -1,0 +1,5 @@
+{"birthTransport": "2000-01-12T18:48:22.141Z", "rawMilliseconds": 947702902141.0216}
+wrote src/lib/engine/fixtures/independent-node-polar.json (9245 bytes, sha256 5726074f6b89fa60b79eeeaaec031e4c7848671bd520483bc5103cb8ff4fd4da)
+wrote src/lib/engine/fixtures/independent-eight-cases.json (13294 bytes, sha256 c447b257ce1e79c426f042c68aa99bd133fdae771763de3ff1fba429a681b0f5)
+wrote src/lib/engine/fixtures/independent-lunar-returns.json (28670 bytes, sha256 48cf21594a582ba3d87f6c55a5c9fae520d605472c1c9c76ec99907d157c705e)
+wrote src/lib/engine/fixtures/transit-window-horizons.json (72119 bytes, sha256 f44d08cadcea959e5570ae7a06ad8c1ea2c6ab1f21ade55c98b3b78f01062670)

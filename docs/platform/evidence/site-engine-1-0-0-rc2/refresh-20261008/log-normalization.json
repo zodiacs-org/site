@@ -1,0 +1,104 @@
+[
+  {
+    "file": "rc2-20261008-tz-lmt.log",
+    "withheldLines": 0,
+    "normalizedSha256": "c368d847e6c1b994879844d1d18a6cf636ae79ebb6ce554a46f42d69a5f25529",
+    "capturedSha256": "c368d847e6c1b994879844d1d18a6cf636ae79ebb6ce554a46f42d69a5f25529"
+  },
+  {
+    "file": "rc2-20261008-tz-history.log",
+    "withheldLines": 0,
+    "normalizedSha256": "a8b2464ffa49d2fb284f7948f2972a633f366175c8a0c6d6af55af68f9a0ae0b",
+    "capturedSha256": "a8b2464ffa49d2fb284f7948f2972a633f366175c8a0c6d6af55af68f9a0ae0b"
+  },
+  {
+    "file": "rc2-20261008-ai-tests.log",
+    "withheldLines": 0,
+    "normalizedSha256": "5e5c3eb6e50b826f50c6529a2f9fce04f3a57a7d9f59e9dd015dd314045fba43",
+    "capturedSha256": "5e5c3eb6e50b826f50c6529a2f9fce04f3a57a7d9f59e9dd015dd314045fba43"
+  },
+  {
+    "file": "rc2-20261008-build.log",
+    "withheldLines": 0,
+    "normalizedSha256": "73b785a541a45a2ef7ff5396dee4cbe2401fa6e2f27489dd76152be8d6d2932b",
+    "capturedSha256": "7a648f6ae03d36ae5ab0dfcff76fdf28f60372bd6b7632a4ad68856d2760d7db"
+  },
+  {
+    "file": "rc2-20261008-typecheck.log",
+    "withheldLines": 0,
+    "normalizedSha256": "20c7cb0a2078130d89227879347e2b8a12e4be00c11532309853cbd348f09c7a",
+    "capturedSha256": "610f4d5ecc1ca4431bb9e3d319c628755e4f4533b3bfdac72b47e974e1248537"
+  },
+  {
+    "file": "rc2-20261008-protected-scope.log",
+    "withheldLines": 0,
+    "normalizedSha256": "d94088f400595cc7fe4bc3ce4a29331f7ab8eab25ce711dcb0bc128f9b01df64",
+    "capturedSha256": "d94088f400595cc7fe4bc3ce4a29331f7ab8eab25ce711dcb0bc128f9b01df64"
+  },
+  {
+    "file": "rc2-20261008-engine-closure.log",
+    "withheldLines": 0,
+    "normalizedSha256": "38e5c345dfd376c894e69405726cfa4be949ee8e863cf83d6fdb8414abb85a4d",
+    "capturedSha256": "38e5c345dfd376c894e69405726cfa4be949ee8e863cf83d6fdb8414abb85a4d"
+  },
+  {
+    "file": "rc2-20261008-hash-equivalence.log",
+    "withheldLines": 0,
+    "normalizedSha256": "6546fb5f96674fbceebe5899c3e58b9828dc077bf77babde87790fbb45ef1cae",
+    "capturedSha256": "6546fb5f96674fbceebe5899c3e58b9828dc077bf77babde87790fbb45ef1cae"
+  },
+  {
+    "file": "rc2-20261008-captures.log",
+    "withheldLines": 0,
+    "normalizedSha256": "03ab99db4df126f4ee00c4bf4927675531d4d95ec810e4d8474774558031fc45",
+    "capturedSha256": "03ab99db4df126f4ee00c4bf4927675531d4d95ec810e4d8474774558031fc45"
+  },
+  {
+    "file": "rc2-20261008-full-tests.log",
+    "withheldLines": 0,
+    "normalizedSha256": "c596efcf0deb63b7dc09c8d62826510cd37d8b900819580170207caad12d36da",
+    "capturedSha256": "3048c5505e8a19f7841c8fe1e40ea00f926c8a37e5b7dac4ad1fa3743a8cac2a"
+  },
+  {
+    "file": "rc2-20261008-frames.log",
+    "withheldLines": 0,
+    "normalizedSha256": "8e1e7f0f91e0c172d24f8a0cffd2d7cfd32aac8de043ccab2bca0de5b87dd6a4",
+    "capturedSha256": "8e1e7f0f91e0c172d24f8a0cffd2d7cfd32aac8de043ccab2bca0de5b87dd6a4"
+  },
+  {
+    "file": "rc2-20261008-registry-attestation.log",
+    "withheldLines": 0,
+    "normalizedSha256": "3ee032c78dcddfa18e9642e65884037f3c01809bb3ef3a4684d107ac8e7f9155",
+    "capturedSha256": "3ee032c78dcddfa18e9642e65884037f3c01809bb3ef3a4684d107ac8e7f9155"
+  },
+  {
+    "file": "rc2-20261008-protected-scope-current-main.log",
+    "withheldLines": 0,
+    "normalizedSha256": "dba9ac636aa7add491e36f1d3ca1e07eec288627da941fac3fcaf7ba272d6226",
+    "capturedSha256": "dba9ac636aa7add491e36f1d3ca1e07eec288627da941fac3fcaf7ba272d6226"
+  },
+  {
+    "file": "candidate-byte-comparison-before.log",
+    "withheldLines": 0,
+    "normalizedSha256": "f506c3beebdfed6f7ca6bf86b58c201c5e6ba7e94c4fb0c3bffd75f9ae392eb6",
+    "capturedSha256": "2a398e904f5331252c21e3cbfdbf81b655f451b2bbf47812ced516b68ff31720"
+  },
+  {
+    "file": "candidate-byte-comparison-after.log",
+    "withheldLines": 0,
+    "normalizedSha256": "9c8d36f59a83cba382df524631b568f8d13a348147f4d84072cc89cedc41403c",
+    "capturedSha256": "e9116c910ed61324d6328eb9775bf58d3d0aeb287eacee5c15d12b9afd031427"
+  },
+  {
+    "file": "rc2-20261008-tz-lmt-retry.log",
+    "withheldLines": 0,
+    "normalizedSha256": "b0039fab3acbddd68f860d4346b6fcabda6fc37d0fdd6cf97008dc3924e54216",
+    "capturedSha256": "b0039fab3acbddd68f860d4346b6fcabda6fc37d0fdd6cf97008dc3924e54216"
+  },
+  {
+    "file": "rc2-20261008-tz-history-retry.log",
+    "withheldLines": 0,
+    "normalizedSha256": "8bcf67922e7636f082893a37b0b4c51ace5678263e7d757198c33f58e729b68e",
+    "capturedSha256": "8bcf67922e7636f082893a37b0b4c51ace5678263e7d757198c33f58e729b68e"
+  }
+]

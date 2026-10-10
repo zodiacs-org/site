@@ -49,6 +49,9 @@ function App() {
   const [applied, setApplied] = useState<StudioInput>({ ...EXAMPLE });
   const [run, setRun] = useState(() => calculateStudio(EXAMPLE));
   const [example, setExample] = useState(true);
+  // A new panel asks for the person's own birth details first; the example is a labelled second choice.
+  const [started, setStarted] = useState(false);
+  const [unknownDate, setUnknownDate] = useState('');
   const [selection, setSelection] = useState<EntityRef | null>(null);
   const [compare, setCompare] = useState(false);
   const [error, setError] = useState('');
@@ -105,14 +108,32 @@ function App() {
     catch (e) { if (revision === shareRevision.current) setNotice(e instanceof Error ? e.message : 'Could not share this selection.'); }
     finally { setSharing(false); }
   }
+  if (!started) return <main>
+    <header class="studio-header"><a href="https://zodiacs.org/" target="_blank" rel="noreferrer">Zodiacs<span>·</span>org</a><span class="header-note">Your birth chart</span></header>
+    <section class="onboarding" aria-label="Your birth details">
+      <h1>When and where were you born?</h1>
+      <p class="lede">Your chart is worked out inside this panel. Nothing is saved, and the assistant sees only what you choose to share.</p>
+      <LocalTimeEntry input={draft} title="Birth date, time and place" intro="Use the time on your birth certificate if you have it, and the town or city you were born in." applyLabel="Make my chart" onApply={input => { apply(input); setStarted(true); }} />
+      <details class="unknown-time"><summary>I don't know my birth time</summary>
+        <p>Without a birth time we use midday as a stand-in. Your Sun sign is reliable; your rising sign and houses can't be shown, and the Moon may have changed sign that day.</p>
+        <form onSubmit={e => { e.preventDefault(); if (unknownDate) { apply({ ...EXAMPLE, date: unknownDate, time: '12:00', timeKnown: false, latitude: '', longitude: '' }); setStarted(true); } }}>
+          <label>Birth date<input type="date" required min="1800-01-01" max="2199-12-31" value={unknownDate} onInput={e => setUnknownDate(e.currentTarget.value)} /></label>
+          <button type="submit" disabled={!unknownDate}>Make my chart without a time</button>
+        </form>
+      </details>
+      {error && <p class="error" role="alert">{error}</p>}
+      <button class="quiet" onClick={() => { apply(EXAMPLE, true); setStarted(true); }}>See an example chart (not yours)</button>
+    </section>
+    <footer class="studio-footer"><a href="https://zodiacs.org/methodology/" target="_blank" rel="noreferrer">How we calculate</a><a href="https://zodiacs.org/privacy/" target="_blank" rel="noreferrer">Privacy</a></footer>
+  </main>;
   return <main>
     <header class="studio-header"><a href="https://zodiacs.org/" target="_blank" rel="noreferrer">Zodiacs<span>·</span>org</a><span class="header-note">An interactive chart workspace</span></header>
-    <div class="studio-title"><div><p class="kicker">Explore the details</p><h1>Chart Studio</h1><p class="lede">A chart you can explore, compare, and bring into the conversation.</p></div><button class="quiet" onClick={() => { apply(EXAMPLE, true); setWorkspaceEpoch(value => value + 1); }}>Reset to example</button></div>
+    <div class="studio-title"><div><p class="kicker">Explore the details</p><h1>Chart Studio</h1><p class="lede">A chart you can explore, compare, and bring into the conversation.</p></div><button class="quiet" onClick={() => { setStarted(false); setWorkspaceEpoch(value => value + 1); }}>Start over</button></div>
     <nav class="workspace-tabs" aria-label="Chart Studio workspaces">{([['chart', 'Chart'], ['time', 'Time Explorer'], ['inspect', 'Chart Inspector']] as const).map(([value, label]) => <button key={value} aria-pressed={workspace === value} onClick={() => setWorkspace(value)}>{label}</button>)}</nav>
     {error && <p class="error" role="alert">{error} The displayed chart still uses its previous inputs.</p>}
     <div hidden={workspace !== 'inspect'}><RecordInspector key={workspaceEpoch} currentRecord={recordText(run)} /></div>
     {workspace !== 'inspect' && <>
-    <details class="inputs"><summary>Chart inputs <span>{example ? 'Synthetic example · London coordinates' : 'Your current calculation'}{dirty ? ' · unapplied changes' : ''}</span></summary>
+    <details class="inputs"><summary>Chart inputs <span>{example ? 'Example chart (not yours) · London, 15 June 1990' : 'Your chart'}{dirty ? ' · unapplied changes' : ''}</span></summary>
       <LocalTimeEntry key={workspaceEpoch} input={draft} onApply={apply} />
       <h2 class="utc-heading">Enter UTC directly</h2>
       <form onSubmit={e => { e.preventDefault(); apply(draft); }} onKeyDown={e => { if (e.key === 'Enter' && e.target instanceof HTMLInputElement) { e.preventDefault(); apply(draft); } }}>
@@ -129,12 +150,12 @@ function App() {
     {workspace === 'time' && <TimeExplorer key={workspaceEpoch} input={applied} run={run} onApply={apply} dirty={dirty} />}
     <div class="workspace">
       <section class="chart-area" aria-label="Chart workspace">
-        <div class="chart-meta"><span>{example ? 'Example chart' : 'Calculated chart'}</span><time dateTime={run.inputSnapshot.utc}>{run.inputSnapshot.utc.replace('T', ' · ').replace(':00.000Z', ' UTC').replace('Z', ' UTC')}</time></div>
+        <div class="chart-meta"><span>{example ? 'Example chart (not yours)' : 'Your chart'}</span><time dateTime={run.inputSnapshot.utc}>{run.inputSnapshot.utc.replace('T', ' · ').replace(':00.000Z', ' UTC').replace('Z', ' UTC')}</time></div>
         {applied.local && run.chart.input.timeKnown && <p class="local-origin">From {applied.local.resolution.date} at {applied.local.resolution.time} · {applied.local.resolution.timeZone}. Time-zone assumptions are in the calculation record.</p>}
         <div class="wheel-wrap" ref={wheelRoot}><Wheel bodies={run.chart.bodies} asc={run.chart.angles?.asc} mc={run.chart.angles?.mc} cusps={run.chart.houses?.cusps} aspects={run.chart.aspects} size={520} deferIcons interactive={{ scene, selection, emphasis, onSelect: select, label: 'Select a chart element' }} /></div>
         <div class="chart-caption"><span>Tropical zodiac</span><span>{run.chart.houses ? `${houseName(run.chart.houses.system)} houses` : 'No houses or angles'}</span><span>Engine {run.chart.engineVersion}</span></div>
         {run.chart.flags.includes('polar-fallback') && <p class="callout">Placidus is unavailable at this latitude. The engine used whole-sign houses; the receipt records the fallback.</p>}
-        {!run.chart.input.timeKnown && <p class="callout">Unknown birth time. These are noon-UTC reference positions, not confirmed birth-time placements.</p>}
+        {!run.chart.input.timeKnown && <p class="callout">Birth time unknown. Positions use midday as a stand-in, so the rising sign and houses aren't shown, and the Moon may have been in a different sign at your actual time of birth.</p>}
         {run.chart.input.timeKnown && !run.chart.houses && <p class="callout">No location supplied. Add both coordinates to calculate houses and angles.</p>}
         <div class="compare-control"><label class="check"><input type="checkbox" checked={compare} disabled={!run.chart.houses} onChange={e => setCompare(e.currentTarget.checked)} /> Compare house systems</label>{comparison && <span>{changed} of {changes.length} placements change house</span>}</div>
         {comparisonResult.error && <p class="error" role="alert">{comparisonResult.error}</p>}
@@ -143,7 +164,7 @@ function App() {
       <aside class="inspector" aria-label="Chart inspector" style={{ '--selection-color': selectedHue }}>
         <label class="selection-label">Inspect an element<select value={selection ? entityId(selection) : ''} onChange={e => select(parseEntityId(e.currentTarget.value))}><option value="">Choose an element</option><optgroup label="Placements">{scene.bodies.map(b => <option key={b.body} value={`body:${b.body}`}>{b.body}</option>)}</optgroup><optgroup label="Signs">{SIGNS.map(s => <option key={s.slug} value={`sign:${s.slug}`}>{s.name}</option>)}</optgroup>{scene.houses && <optgroup label="Houses">{scene.houses.map(h => <option key={h.index} value={`house:${h.index}`}>House {h.index}</option>)}</optgroup>}{scene.angles && <optgroup label="Angles">{['asc','mc','dsc','ic'].map(a => <option key={a} value={`angle:${a}`}>{a.toUpperCase()}</option>)}</optgroup>}<optgroup label="Aspects">{scene.aspects.map(a => <option key={entityId({ kind: 'aspect', ...a })} value={entityId({ kind: 'aspect', ...a })}>{a.a} {a.type} {a.b}</option>)}</optgroup></select></label>
         <div class="selection-detail" aria-live="polite"><p class="kicker">{selection ? titleCase(selection.kind) : 'Chart detail'}</p><h2>{selectedTitle}</h2>{selectedBody ? <><p class="position">{formatLongitude(selectedBody.lon)}</p><dl><div><dt>House</dt><dd>{selectedBody.house ?? 'Not calculated'}</dd></div><div><dt>Motion</dt><dd>{selectedBody.retrograde ? 'Retrograde' : 'Direct'}</dd></div><div><dt>Longitude</dt><dd>{selectedBody.lon.toFixed(6)}°</dd></div></dl><p class="detail-help">Select a connected aspect below to inspect its orb and whether it is applying.</p>{scene.aspects.filter(a => a.a === selectedBody.body || a.b === selectedBody.body).map(a => <button key={entityId({ kind: 'aspect', ...a })} class="aspect-link" onClick={() => select({ kind: 'aspect', ...a })}>{a.a} {a.type} {a.b}<span>{a.orb.toFixed(2)}° {a.applying ? 'applying' : 'separating'}</span></button>)}</> : !selection ? <p class="detail-help">Choose a placement on the wheel, or use the element menu to inspect a body, sign, house, angle, or aspect.</p> : <dl>{Object.entries(facts).map(([key,value]) => <div key={key}><dt>{titleCase(key.replace(/([A-Z])/g,' $1'))}</dt><dd>{Array.isArray(value) ? value.map(v => typeof v === 'object' ? `${v.body}: ${v.position}` : String(v)).join(', ') || 'None' : typeof value === 'number' ? value.toFixed(4) : String(value)}</dd></div>)}</dl>}</div>
-        <div class="assistant-action"><button disabled={!selection || sharing} onClick={() => setShareOpen(!shareOpen)} aria-expanded={shareOpen}>Share selection with assistant</button><p>Only the selection you review is shared. Chart positions can reveal personal information.</p>{shareOpen && <div class="share-preview"><h3>Review this selection</h3><p>{selectedTitle}, its computed facts, and the calculation settings shown below.</p><details><summary>Inspect shared facts</summary><pre tabIndex={0}>{context}</pre></details><p>{available ? 'Your assistant provider will receive these facts. Earlier shared selections remain in the conversation.' : 'Open Chart Studio through the connected plugin to share this selection.'}</p><button disabled={!available || sharing} onClick={() => void share()}>{sharing ? 'Sharing…' : 'Share these facts'}</button><button class="quiet" disabled={sharing} onClick={() => setShareOpen(false)}>Cancel</button></div>}<p role="status">{notice}</p></div>
+        <div class="assistant-action"><button disabled={!selection || sharing} onClick={() => setShareOpen(!shareOpen)} aria-expanded={shareOpen}>Ask about this</button><p>Only the selection you review is shared. Chart positions can reveal personal information.</p>{shareOpen && <div class="share-preview"><h3>Review this selection</h3><p>{selectedTitle}, its computed facts, and the calculation settings shown below.</p><details><summary>See exactly what's shared</summary><pre tabIndex={0}>{context}</pre></details><p>{available ? 'Your assistant provider will receive these facts. Earlier shared selections remain in the conversation.' : 'Open Chart Studio through the connected plugin to share this selection.'}</p><button disabled={!available || sharing} onClick={() => void share()}>{sharing ? 'Sharing…' : 'Share these facts'}</button><button class="quiet" disabled={sharing} onClick={() => setShareOpen(false)}>Cancel</button></div>}<p role="status">{notice}</p></div>
       </aside>
     </div>
     <section class="records" aria-label="Calculation details"><div class="record-tabs" role="group" aria-label="View calculation details">{(['placements','aspects','receipt'] as const).map(name => <button key={name} aria-pressed={tab === name} onClick={() => setTab(name)}>{titleCase(name)}</button>)}</div>
@@ -152,7 +173,7 @@ function App() {
       {tab === 'receipt' && <div class="receipt"><div><h2>Calculation record</h2><p>Inputs, conventions, versions, and results for the displayed chart. Downloaded and copied records contain personal chart data.</p><RecordExport key={recordText(run)} text={recordText(run)} /></div><details><summary>Inspect full JSON record</summary><pre tabIndex={0}>{recordText(run)}</pre></details>{comparison && <details><summary>Inspect comparison record</summary><pre tabIndex={0}>{recordText(comparison)}</pre></details>}</div>}
     </section>
     </>}
-    <footer class="studio-footer"><a href="https://zodiacs.org/methodology/" target="_blank" rel="noreferrer">Calculation methods</a><p>Calculated in this browser. This panel does not save charts. Only reviewed selections are shared with the assistant. Interpretations are separate from these calculations.</p><a href="https://zodiacs.org/privacy/" target="_blank" rel="noreferrer">Privacy</a></footer>
+    <footer class="studio-footer"><a href="https://zodiacs.org/methodology/" target="_blank" rel="noreferrer">How we calculate</a><p>Calculated in this browser. This panel does not save charts. Only reviewed selections are shared with the assistant. Interpretations are separate from these calculations.</p><a href="https://zodiacs.org/privacy/" target="_blank" rel="noreferrer">Privacy</a></footer>
   </main>;
 }
 render(<App />, document.getElementById('studio')!);

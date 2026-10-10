@@ -192,6 +192,47 @@ async function settlePage(page, { result, normalizeEventsHub, name }) {
   await page.waitForTimeout(100);
 }
 
+
+async function ariesFontReceipt(page, context, stem, phase) {
+  const css = await page.evaluate(() => ({
+    faces: [...document.fonts].map((face) => ({
+      family: face.family, style: face.style, weight: face.weight, status: face.status,
+    })),
+    samples: ['.guide-hero__essence', '.guide-main .prose p'].map((selector) => {
+      const node = document.querySelector(selector);
+      if (!node) throw new Error('Missing Aries typography sample: ' + selector);
+      const style = getComputedStyle(node);
+      return { selector, family: style.fontFamily, weight: style.fontWeight, size: style.fontSize };
+    }),
+  }));
+  const session = await context.newCDPSession(page);
+  const rendered = [];
+  try {
+    await session.send('DOM.enable');
+    await session.send('CSS.enable');
+    const { root } = await session.send('DOM.getDocument');
+    for (const sample of css.samples) {
+      const { nodeId } = await session.send('DOM.querySelector', {
+        nodeId: root.nodeId, selector: sample.selector,
+      });
+      if (!nodeId) throw new Error('Missing rendered Aries typography sample: ' + sample.selector);
+      const { fonts } = await session.send('CSS.getPlatformFontsForNode', { nodeId });
+      rendered.push({ ...sample, fonts });
+    }
+  } finally {
+    await session.detach();
+  }
+  const receipt = { stem, phase, css, rendered };
+  await writeFile(resolve(artifactRoot, stem + '.fonts.' + phase + '.json'), JSON.stringify(receipt, null, 2));
+  for (const sample of rendered) {
+    if (!sample.fonts.some((font) => font.isCustomFont
+      && /instrument\s*sans/i.test(font.familyName) && font.glyphCount > 0)) {
+      throw new Error('Aries screenshot rendered a fallback body font: '
+        + JSON.stringify({ phase, sample }));
+    }
+  }
+}
+
 async function capture(browser, baseURL, testCase) {
   const context = await browser.newContext({
     viewport: { width: testCase.viewport.width, height: testCase.viewport.height },
@@ -306,6 +347,22 @@ async function capture(browser, baseURL, testCase) {
     `,
   });
   await settlePage(page, testCase);
+  if (testCase.name === 'aries') {
+    // The general sweep includes optional/local faces whose failures can be
+    // legitimate. The sign guide's required body font must load explicitly:
+    // do not swallow its error or accept CSS family names as proof of rendering.
+    await page.evaluate(async () => {
+      for (const weight of [400, 500, 600, 700]) {
+        const fonts = await document.fonts.load(weight + ' 16px "Instrument Sans"', 'Aries');
+        if (fonts.length === 0 || fonts.some((font) => font.status !== 'loaded')) {
+          throw new Error('Required Instrument Sans font did not load at weight ' + weight);
+        }
+      }
+      await document.fonts.ready;
+      await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    });
+    await ariesFontReceipt(page, context, fileStem(testCase), 'before');
+  }
 
   if (testCase.result && testCase.viewport.name === 'mobile') {
     const geometry = await page.evaluate(async () => {
@@ -375,6 +432,9 @@ async function capture(browser, baseURL, testCase) {
     })
   ));
   const image = await page.screenshot({ fullPage: true, animations: 'disabled' });
+  if (testCase.name === 'aries') {
+    await ariesFontReceipt(page, context, fileStem(testCase), 'after');
+  }
   await context.close();
   return { image, masks };
 }

@@ -1,0 +1,23 @@
+{
+  "schema": "zodiacs.birth-window-development-source-syntax-qualification.v1",
+  "source": "018c3190649cb19e1f478459958b6ac8809d0464",
+  "producer": "f8655525597f669ffd5765dc71c1fcca301f6dd5",
+  "run": 38068028005,
+  "job": 114259560785,
+  "conclusion": "success",
+  "node": "v22.23.3",
+  "report": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/development-source-syntax.json",
+    "bytes": 1122,
+    "sha256": "7ba127ac9a9664e58345190afd8b32eaedd3deba9e3a73cb126f68e2c0e175ef"
+  },
+  "log": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/development-source-syntax.log",
+    "bytes": 25860,
+    "sha256": "4e1409aafc74f8b24e09467ddd97c1989d16f1049fa9a2eadf8717edfdd86140"
+  },
+  "limitations": [
+    "Syntax only; imports are not loaded and no module, ephemeris, browser or build is executed.",
+    "Development/production browser behavior, original budgets and complete acceptance gates remain pending."
+  ]
+}

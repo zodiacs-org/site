@@ -1,0 +1,765 @@
+{
+  "schema": "zodiacs.birth-window-qualified-artifact-recovery.v1",
+  "producer": {
+    "source": "f021be07472dd1327f8f0802c3c8fbfaff39cd3f",
+    "run": "38069101345"
+  },
+  "original": {
+    "run": 38068373681,
+    "head": "2b8f342780db5d79bc4f5cc6cd96f480edb01463",
+    "candidate": "018c3190649cb19e1f478459958b6ac8809d0464",
+    "tree": "bf10d1fd86d1179fcae5f432aedd0af25ff12bf8",
+    "attempt": 1,
+    "conclusion": "success",
+    "artifact": 11675743260,
+    "zipBytes": 31587765,
+    "zipSha256": "640185ca1c5a938a1c331be2cc39ae9cfcefca3d3090ff665a5fcf7c0f7670e0",
+    "crcVerified": true
+  },
+  "inventory": [
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/README.md",
+      "bytes": 16145,
+      "sha256": "013191ec66dba2f6902f00c19a6d3a540751fc4740150c78754d97b92fa7db12"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/boundary-assertion-failure.json",
+      "bytes": 2743,
+      "sha256": "eaa0d1810628eb0483e7d6f9c0050126dfc28bb55043d7c69bcd1385f9f7103a"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/boundary-assertion-failure-browser.json",
+      "bytes": 798,
+      "sha256": "48c8cb00d2b0e5300ad8891ce72699c5ceafb895a40f45805e85f2dea7196abc"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/boundary-assertion-failure.log",
+      "bytes": 951183,
+      "sha256": "dd06482d5e399b69ee36c256d56bf9b9f28c459d5284f7686f65ef0a9a8edc4d"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json",
+      "bytes": 92405,
+      "sha256": "6d9f5c8842096f11c898c4ffef0f82b71bc4aba1a40197a9f7103e862bee8a08"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/capture-order-failure.json",
+      "bytes": 1709,
+      "sha256": "32d013058530c64e4fc79461287c72177c31a389104ddae2cf54d397cc2d9f9b"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/capture-order-failure.log",
+      "bytes": 1092373,
+      "sha256": "dcb7e217730dd2e164641403e16deec727b510debd7133014bed1e343f38707b"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/capture-producer.json",
+      "bytes": 8627,
+      "sha256": "78e247d0bceba8bd90a09b352e36973cd4d1c8d624b178af07aeb532e7789da6"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/development-browser-controls.json",
+      "bytes": 92657,
+      "sha256": "7dcab1dd6c966a8d1b0b6a6dbd5d891630c8f6d84c553496eae3bae930582803"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/development-review-finding.json",
+      "bytes": 2660,
+      "sha256": "b062df58ceda616db185b2c19b87b7e8c04a3965ea953949e1e7c4b1a1ea0321"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-reduced-motion-suffix-0.png",
+      "bytes": 377694,
+      "sha256": "8fe7ae84669680a87dc78438584a9e4b943a79a36c278ed64d967c7e23de0c5b"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-reduced-motion-suffix-7539.png",
+      "bytes": 109441,
+      "sha256": "0900f3b510ac95a5f6f26420358fd6486d6c6a233409029dff46cea2ee7ccc04"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-suffix-0.png",
+      "bytes": 372289,
+      "sha256": "aedd95feb79fb6a70f48d272e340f1608725e7dae516011bd7cbdd85d5985e54"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-suffix-7539.png",
+      "bytes": 109441,
+      "sha256": "0900f3b510ac95a5f6f26420358fd6486d6c6a233409029dff46cea2ee7ccc04"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-mobile-suffix-0.png",
+      "bytes": 242513,
+      "sha256": "c4af9c6e14ad57acd7b35e871aa573e90fc8ea8a39f35c0587e62da425dacf6b"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-mobile-suffix-11980.png",
+      "bytes": 68326,
+      "sha256": "dbf1f0703d8f8e5f913f9291eb0485ef6c7e9c4241b85699020ca7cd35f3972d"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/failed-visual-artifact-recovery.json",
+      "bytes": 12485,
+      "sha256": "cf91dfd2423a18677ddaa5d1f4946add15d29747b1b4173bcf6042d728c96774"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/focused-failure.json",
+      "bytes": 1471,
+      "sha256": "84dac3e41a321ba02cefd30b82438842e99101a13892838795d45d982f3deb69"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/focused-failure.log",
+      "bytes": 839472,
+      "sha256": "e4b9d82be252712e7504f35a27eb9dbe8cf21ad1977f862cf2fe47d94345a32b"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/focused-qualification.json",
+      "bytes": 1874,
+      "sha256": "6955ec57fdb640e2d003438c224e297dd420de51a1a2aeeb02167854bbc68a65"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/focused-qualification.log",
+      "bytes": 876167,
+      "sha256": "9252a30cfe042fd6e4fd4a3f03dc125babc81b5ffeb088d1a58462bd1e7d5f81"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/inventory-missing-tool-failure.json",
+      "bytes": 1316,
+      "sha256": "728a572dfff7ffee2fb33d9035acd86c6588dd9b710b53d06488ea4a441eaad7"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/inventory-missing-tool-failure.log",
+      "bytes": 104767,
+      "sha256": "21cafeb6c625baba350d18c14b1f964579807d862ffc5fbab04d39b10ea11f2a"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/loader-projection-failure.json",
+      "bytes": 1258,
+      "sha256": "eb4184479fd83d856e18aa62b5b3e41b870faabd1ac4cd760893bcd62e9f1ce3"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/loader-projection-failure.log",
+      "bytes": 947484,
+      "sha256": "0fc8976fdf9f86f32f55679b6543e21e215e16f0f2c03d3581782ce91c4c52a4"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-image-inspection.json",
+      "bytes": 6416,
+      "sha256": "81cedbcf33e4e8eaf985c5f60c58f7050021a3246a0e366cf9af1a2644e1110d"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-option-predicate-failure-browser.json",
+      "bytes": 2373,
+      "sha256": "31776bebf5a79f289baaf550bd191009b3512f5f2f2ed6c7168c1af1528e887f"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-option-predicate-failure.json",
+      "bytes": 4614,
+      "sha256": "13443519b4696ee9de8590ed654a6a3177469df7db2057c555536b2db0b2b214"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-option-predicate-failure.log",
+      "bytes": 953413,
+      "sha256": "5496210e13bfe5dad4c47da512bc5923150af16003ceee989eaedb5588c8330c"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/birth-chart-kahlo-desktop-reduced-motion.b2-geometry.json",
+      "bytes": 602,
+      "sha256": "3962a16d9a339eb87c70047a0db5c08a93207ebc1f1f5c3dfd9a5f570df955ec"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/birth-chart-kahlo-desktop.b2-geometry.json",
+      "bytes": 602,
+      "sha256": "3962a16d9a339eb87c70047a0db5c08a93207ebc1f1f5c3dfd9a5f570df955ec"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/birth-chart-kahlo-mobile.b2-geometry.json",
+      "bytes": 592,
+      "sha256": "67e547f62bab18e3efb11cb6406e709cd50cb0137af72190256197ef37f1bff0"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/summary-desktop.png",
+      "bytes": 16723,
+      "sha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/original-failed-run/summary-mobile.png",
+      "bytes": 17685,
+      "sha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/place-change-harness-failure.json",
+      "bytes": 2392,
+      "sha256": "42baa432858f98aafb85acf073f144315b4fb9ba471d35c5c22a434f30301ddd"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/place-change-harness-failure-browser.json",
+      "bytes": 1441,
+      "sha256": "d5e85aa46d401f1e7b873e21d043980852b8d32914cbffd7eec0a0ed32ca53bb"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/place-change-harness-failure.log",
+      "bytes": 952448,
+      "sha256": "860f3c1cb25ec3c168de91516258ff93e15b2b08de9806b0d5ec5aea2a4ad560"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/pr703-final-suite-failure.json",
+      "bytes": 1148,
+      "sha256": "c6916fbd6d234373cd73269de7bc022c0254bcf279b080794a76b758369daa9a"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/pr703-final-suite-failure.log",
+      "bytes": 1012022,
+      "sha256": "601ee202de28f3285873daaab408d6e993409ad0437078b8d3092c7618965621"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-artifact-recovery.json",
+      "bytes": 11599,
+      "sha256": "acf5bb63f4e647bb94a16a05e6bbc72dffb85f7dea7764b2fdd44e64fb70bfb0"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/desktop-details-1000.png",
+      "bytes": 263584,
+      "sha256": "f061c8d6081da952db126bafde5e524fcb885c6a2b0d2112d3e2c51027906236"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/desktop-crop-provenance.json",
+      "bytes": 1006,
+      "sha256": "46d4f9724da42e32c34c3d1c0e09df5930f77c369301e644294f839d669c49cf"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/desktop-details-2500.png",
+      "bytes": 422292,
+      "sha256": "c0bcc1aca1d83cdd43dc02fa4fa512a74fcbbbbef163255ede493a2c5e9d27e9"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/desktop.png",
+      "bytes": 1527663,
+      "sha256": "8470c85ec0c1d82b7fd9a9ad3aee27c87adac9c6be1fbd1f2459f7c15297fa74"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/mobile-crop-provenance.json",
+      "bytes": 1002,
+      "sha256": "0436637bd0ba679ab15d9a8b0ea52670629b4bf25c925be67df5e3ecd03516a7"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/mobile-details-1000.png",
+      "bytes": 175377,
+      "sha256": "7fbc86db12ad49c3c12d0f3fe096b0e9ab0c3be3cf750265cd87ee4bc0bdad18"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/mobile-details-2500.png",
+      "bytes": 142200,
+      "sha256": "bc3bf380dd967b3d01c871ee38fc75bbe0d2cd0200d2cd6b3d244556cb6e12e7"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/summary-desktop.png",
+      "bytes": 16723,
+      "sha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/mobile.png",
+      "bytes": 1436010,
+      "sha256": "1cf7759c81c3cb8af7c5e593a8b751d0a4e7aae8c6469de554d97b75db0a6265"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-inspection/summary-mobile.png",
+      "bytes": 17685,
+      "sha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/qualified-native-image-inspection.json",
+      "bytes": 2603,
+      "sha256": "8ee2e0818a7258fd948a99b9fb1aeb31ba5a62d5b4ae9fadcf9f5c6abde7fc69"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-08d3eb7-boundary-assertion.json",
+      "bytes": 147917,
+      "sha256": "3e052057df43152cb169c9f67d4d21eedafa92f32b57b341391064e54cfdd97c"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-377e876.json",
+      "bytes": 147917,
+      "sha256": "14d1369375745080596ae202d5bed531f1097a0ce682e177dcfc957509a79972"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-44e963b-inventory.json",
+      "bytes": 193,
+      "sha256": "de1c5654322c59fa110906519758caacf89e8972273dd0df7a5febdbc655db7c"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-44e963b.json",
+      "bytes": 163066,
+      "sha256": "aa93a1b5d26238fea3fb996a64c0ba4d30735e89abf061413999e94809b279d7"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-87e9132-option-predicate.json",
+      "bytes": 147917,
+      "sha256": "025555c4b73b9206dcdf6938149ca87093bae3b1290c33c3e8b29009736bd72e"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-a9034bd.json",
+      "bytes": 59669,
+      "sha256": "a5e6ac9d92fe6e58c853d503a3dd2a3d608a1ad966719587b4508b2948753e28"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-b8cbfc2.json",
+      "bytes": 163066,
+      "sha256": "139767e00ffd6d8ae0e077d2a33167bd3b1f235189ba5f3fcbab4b03b2f3b318"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+      "bytes": 147917,
+      "sha256": "73b22165af9416890de7244b5a77926c080ea0a3ec40863182e15278c90996ff"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-f55bb57-capture-order.json",
+      "bytes": 147917,
+      "sha256": "d8512ce3574e5b38b8ff37689f455bec4c547bbe5015e992a37efa9def292911"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-f55bb57-place-change.json",
+      "bytes": 147917,
+      "sha256": "a5c0635a34203417feb7584222f4a44a6a187939110d16512dc832c133b01b6f"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-loader-failure.json",
+      "bytes": 1863,
+      "sha256": "6313d2fb9db4c3f068def65d4520e841b65801e9c327b03b373ba4532d394f8e"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-loader-failure.log",
+      "bytes": 708820,
+      "sha256": "3d78abe4f0de46189a7885398a19e24317022ac88401499660b662fef73c3e45"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-loader-second-failure.json",
+      "bytes": 2190,
+      "sha256": "a8e1d4e0cf61a8fc62827292edd8f1ce54d33f4fd59405a46db44acf10732840"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-loader-second-failure.log",
+      "bytes": 791866,
+      "sha256": "d3f79809f1e6907ccdf7f49c90756aa0f515c55a52377d9d5c5a108c97589c70"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-native-qualification.json",
+      "bytes": 3601,
+      "sha256": "13c874e8d64ca643220b5a7aadddb964c6e1879f1d9635d36991d0f4bc00d5d9"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-native-qualified.log",
+      "bytes": 1234459,
+      "sha256": "5049d2ec60faec8f29cc098a9b7a52f189775509711c2b8c75314d8f63ed3b0c"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-artifact-recovery.json",
+      "bytes": 26890,
+      "sha256": "7d99334cd07b256478548e6968067f534881c45a6fe364562de6f385b4f8dab0"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/changed-phase1-captures.json",
+      "bytes": 1152,
+      "sha256": "9e3fe7a8024df20b7d883df64dfed2fda1b77372c615d54f78def5f1deeab613"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/desktop-crop-provenance.json",
+      "bytes": 1020,
+      "sha256": "88bbf8c27a3e86b22cbef01a7cfab6c88bd1106f68b3c3ed972c93248b9d23ae"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/desktop-details-1000.png",
+      "bytes": 263584,
+      "sha256": "f061c8d6081da952db126bafde5e524fcb885c6a2b0d2112d3e2c51027906236"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/desktop-details-2500.png",
+      "bytes": 422292,
+      "sha256": "c0bcc1aca1d83cdd43dc02fa4fa512a74fcbbbbef163255ede493a2c5e9d27e9"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/desktop.png",
+      "bytes": 1527663,
+      "sha256": "8470c85ec0c1d82b7fd9a9ad3aee27c87adac9c6be1fbd1f2459f7c15297fa74"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/love-360-actual-difference-region.png",
+      "bytes": 3679,
+      "sha256": "4bc436966e63314de0627f9620256023e901d88657d6fe5e5ccdb42ac7240023"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/love-360-previous.png",
+      "bytes": 282256,
+      "sha256": "d6434cb4c0ae482aabf05d925a897b1129ad9e91fc6fd9010a9c7dbaef503dc5"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/love-360-previous-difference-region.png",
+      "bytes": 3682,
+      "sha256": "9100bb3c3e32ef23ff23db2ae4e9ad7fca015c2f8acda9824ba572b11cd725b8"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/mobile-crop-provenance.json",
+      "bytes": 1016,
+      "sha256": "e3ff331706be6fc4a7d53ce89963ea400daf4024f1acd8ab10aedf0812b62ec4"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/mobile-details-1000.png",
+      "bytes": 175377,
+      "sha256": "7fbc86db12ad49c3c12d0f3fe096b0e9ab0c3be3cf750265cd87ee4bc0bdad18"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/mobile-details-2500.png",
+      "bytes": 142200,
+      "sha256": "bc3bf380dd967b3d01c871ee38fc75bbe0d2cd0200d2cd6b3d244556cb6e12e7"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/mobile.png",
+      "bytes": 1436010,
+      "sha256": "1cf7759c81c3cb8af7c5e593a8b751d0a4e7aae8c6469de554d97b75db0a6265"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/summary-desktop.png",
+      "bytes": 16723,
+      "sha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-inspection/summary-mobile.png",
+      "bytes": 17685,
+      "sha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-qualified-native-image-inspection.json",
+      "bytes": 4289,
+      "sha256": "0903f59fddffa8f6ba8e088913fa04da321fc355e145da18e9fb880ad8841c47"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/source-preflight-checkout-failure.json",
+      "bytes": 702,
+      "sha256": "1ff8b86b9295c2f8e272498553c4cb6a44fb7646c8b86871d5f28a9546280e4b"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/source-preflight-checkout-failure.log",
+      "bytes": 25088,
+      "sha256": "0ed9e383fb91edb31e6fb3f12c8ba7da372ee93d83da32b7d57bb36031e55fb7"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/source-preflight.json",
+      "bytes": 1891,
+      "sha256": "e59bd6a4ec5f7b657a0e042198eab8a95577d98a7ff660958b07c54271c8ea92"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/source-preflight.log",
+      "bytes": 96338,
+      "sha256": "4605bf93bd0dcdc4e5af98c0620da9bf5f6e02c2a1cc6bf1b937fe8c0833668e"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/static-boundary-failure.json",
+      "bytes": 1243,
+      "sha256": "c6372240af24b80b9c255ece5bfa1234d993c2f2999e4e7e925d627ca7c75403"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/static-boundary-failure.log",
+      "bytes": 929363,
+      "sha256": "e43e1d8a454af31a4d1fe878ffac8745ed44a991d4213b5f430270b9e7d7f426"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/visual-insertion.json",
+      "bytes": 11347,
+      "sha256": "a185a19eb9106438452cd5ec055e0bddfedb7cb4e1de3be8901a6f5ccaa58164"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/worker-flag-type-failure.json",
+      "bytes": 1608,
+      "sha256": "7ab87828365a4dd6f5b152692108a132d3f4ab0d277406d839c44ae634412237"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/worker-flag-type-failure.log",
+      "bytes": 946833,
+      "sha256": "6c91963e162065ac9905d05702c333ced1e2672778c06f73d09418941ba5de03"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-1280.png",
+      "bytes": 396447,
+      "sha256": "ed89f330a3c4960e637b872ee27779b6078406e5b03b875724a7f8ba6bbacb65"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-360.png",
+      "bytes": 280059,
+      "sha256": "c2a17338eba0656449f6f88d62f3cf9c91d5d9ed52996b1046a5a9575edd33be"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-1280.png",
+      "bytes": 419448,
+      "sha256": "39e8dac6e5815c052b3973db7747fed9a4178e7f7075ab3773c0ebfee142db22"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-360.png",
+      "bytes": 305973,
+      "sha256": "0a2532786748b6fc52435e452c047f59fa4af588bc8ee92010047a32945e8297"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-1280.png",
+      "bytes": 450103,
+      "sha256": "8b04fca1aa7edf978bdc919b390bac14d064a9c5c221e4c0d024b2c8cddd8687"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-360.png",
+      "bytes": 391053,
+      "sha256": "2f1b90856c9ba412dbcebe2a5214d97fb4e2e5744f968e04527ce9491ce70b41"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-1280.png",
+      "bytes": 397619,
+      "sha256": "6313926d0e2c2b2143ec481acd449b293a68937071af3b926eea57f522e21dc4"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-360.png",
+      "bytes": 282256,
+      "sha256": "d6434cb4c0ae482aabf05d925a897b1129ad9e91fc6fd9010a9c7dbaef503dc5"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
+      "bytes": 509517,
+      "sha256": "dfe62a412ecbd6719bdc253c83b35b2d59189b49d37b7d0ddb343f6d8bde2fa3"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/manifest.json",
+      "bytes": 12353,
+      "sha256": "ab5b350e37c82f4e4a190e512d126b4ad4ee87ba5e6f497b7db72b90c5b5d86a"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-360.png",
+      "bytes": 389777,
+      "sha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-1280.png",
+      "bytes": 749592,
+      "sha256": "11c4c08e31cc8a94fdc9ec1904e60ee2a0b29c10c565099bb8a1e5d9d9628a6e"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-360.png",
+      "bytes": 605183,
+      "sha256": "ce7d926d31895b85477deebb9253df8f2d93b8ed3edad1a2bf3f86a562103522"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-1280.png",
+      "bytes": 425109,
+      "sha256": "427c3b6b63ffd727a477aeaaa07f6036fc44085a413d5d1c9b8aef0478049238"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-360.png",
+      "bytes": 302261,
+      "sha256": "6d2a2fb22afe49cd03649db186969e97fb92e77c9d98a4def226f07bafc955c3"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-1280.png",
+      "bytes": 495949,
+      "sha256": "e87041e5d45f6de533ce961c99bec27bed3300150f0b468c71ccb327af039e1c"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-360.png",
+      "bytes": 366716,
+      "sha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-1280.png",
+      "bytes": 1293613,
+      "sha256": "6540fb4d5b402a0c13e55642f5636b580a501fe888e788acb21ac0aafdc743ca"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-360.png",
+      "bytes": 1042500,
+      "sha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop-reduced-motion.png",
+      "bytes": 1412753,
+      "sha256": "eadb696bf6ce6c1f82cdbed77d489a6f491199a821f045cf56926c6e5862ebaa"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop.png",
+      "bytes": 1412941,
+      "sha256": "cee6f03918e50efe6d457e414a6905467e460b701a396cd7be3d92a76b18082d"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-mobile.png",
+      "bytes": 1302257,
+      "sha256": "0f951a42bc132c2ab7c910731c779a151cf61d156d423535f361b01155e71594"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window/mobile.png",
+      "bytes": 1436010,
+      "sha256": "1cf7759c81c3cb8af7c5e593a8b751d0a4e7aae8c6469de554d97b75db0a6265"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window/desktop.png",
+      "bytes": 1527663,
+      "sha256": "8470c85ec0c1d82b7fd9a9ad3aee27c87adac9c6be1fbd1f2459f7c15297fa74"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window/summary-desktop.png",
+      "bytes": 16723,
+      "sha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window/summary-mobile.png",
+      "bytes": 17685,
+      "sha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window-development/desktop.png",
+      "bytes": 1528466,
+      "sha256": "dcbd60d911d9f234d7de15dddcd2d403e2021ac6ec795cc891706171be043a00"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window-development/mobile.png",
+      "bytes": 1439085,
+      "sha256": "d8d255b019d7ebf394565559d3bdae6d94ed0d60a818e866a4075eb18dd6cdad"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window-development/summary-desktop.png",
+      "bytes": 16723,
+      "sha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window-development/summary-mobile.png",
+      "bytes": 17685,
+      "sha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-1.devtoolslog.json",
+      "bytes": 348911,
+      "sha256": "90a0f8403f1404f09c96c7d4b979efcd7b72baca3fe73f2043ea23dd00c1eec8"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-1.json",
+      "bytes": 489648,
+      "sha256": "a52490cf8f8497b68b0be4456703cf4e73f163b4872877eb45686c1d4b9d439d"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-1.trace.json",
+      "bytes": 2633744,
+      "sha256": "70fea0e6b3a1ca288d2008fc51d6c14ff94b8579f363825be7a4e91dc98bd850"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-2.devtoolslog.json",
+      "bytes": 348725,
+      "sha256": "9ccf7353b9257d8eaabeffc0d1cb7284bc91d603fe1b42d2cf85b8bb3d637572"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-2.json",
+      "bytes": 489984,
+      "sha256": "c56abfdb7a3a57e21149c72554a3afb9c929608ae811d341543e6bcd55efa37c"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-2.trace.json",
+      "bytes": 2606007,
+      "sha256": "8f8c147b0424914883304a3a9fcb51fc0dd28ba865318ddc1801118d315a66f3"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-3.devtoolslog.json",
+      "bytes": 348489,
+      "sha256": "164c9e4f7f236235167114029a63d382008154e43e1c108acee5de39895b4e36"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-3.json",
+      "bytes": 490052,
+      "sha256": "3758c3b261e7dfe584f35984234c9b2710cbaaa5b87e9afe23f0338b7b174f03"
+    },
+    {
+      "path": "tests/visual/artifacts/visual/aries-desktop-reduced-motion.fonts.after.json",
+      "bytes": 5356,
+      "sha256": "f4c36613038d45f989a971fc373c26e4789ddf4736c9bf169c6b1b293c68d25f"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-3.trace.json",
+      "bytes": 2626910,
+      "sha256": "cf0be0d4b25e34ea88e71f6389cdd26789056f8d00ddf2733884fbcfae1afaab"
+    },
+    {
+      "path": "tests/visual/artifacts/visual/aries-desktop-reduced-motion.fonts.before.json",
+      "bytes": 5325,
+      "sha256": "a5255b8da0662a52bae4dd49071c14b21e7e96f1c4124d131e2faca7bae30123"
+    },
+    {
+      "path": "tests/visual/artifacts/visual/aries-desktop.fonts.after.json",
+      "bytes": 5341,
+      "sha256": "0d18e7024a3f5ca4bcf954458f727c359737aeef6758a3f593868629a40a9f85"
+    },
+    {
+      "path": "tests/visual/artifacts/visual/aries-desktop.fonts.before.json",
+      "bytes": 5310,
+      "sha256": "099f429168a2f4a16ecd5389f0a2e09c0e533997d2113c546fde9726ace8979a"
+    },
+    {
+      "path": "tests/visual/artifacts/visual/aries-mobile.fonts.after.json",
+      "bytes": 5342,
+      "sha256": "b3d904053bd17fa42d655e92ac2f6cfdd8d4d9fea1f7d0e3b598adfd530b9224"
+    },
+    {
+      "path": "tests/visual/artifacts/visual/aries-mobile.fonts.before.json",
+      "bytes": 5311,
+      "sha256": "b061e22e73c6f40ec9fa04aaab2d2227e6664f01d9f94f20f19b7fce723b5a37"
+    }
+  ],
+  "rawLighthouse": [
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-1.json",
+      "bytes": 489648,
+      "sha256": "a52490cf8f8497b68b0be4456703cf4e73f163b4872877eb45686c1d4b9d439d",
+      "runtimeError": null,
+      "lcp": 2412.9876000000004,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1,
+      "fetchTime": "2026-10-10T16:42:45.990Z",
+      "lighthouseVersion": "13.4.1",
+      "requestedUrl": "http://127.0.0.1:4328/birth-chart/"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-2.json",
+      "bytes": 489984,
+      "sha256": "c56abfdb7a3a57e21149c72554a3afb9c929608ae811d341543e6bcd55efa37c",
+      "runtimeError": null,
+      "lcp": 2487.2979,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1,
+      "fetchTime": "2026-10-10T16:42:53.698Z",
+      "lighthouseVersion": "13.4.1",
+      "requestedUrl": "http://127.0.0.1:4328/birth-chart/"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-3.json",
+      "bytes": 490052,
+      "sha256": "3758c3b261e7dfe584f35984234c9b2710cbaaa5b87e9afe23f0338b7b174f03",
+      "runtimeError": null,
+      "lcp": 2107.3663,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.98,
+      "accessibility": 1,
+      "seo": 1,
+      "fetchTime": "2026-10-10T16:43:01.203Z",
+      "lighthouseVersion": "13.4.1",
+      "requestedUrl": "http://127.0.0.1:4328/birth-chart/"
+    }
+  ],
+  "phase1": {
+    "captures": 18,
+    "allActualPngsMatchNativeManifest": true,
+    "allFreshPngsIdenticalToQualifiedMain": true,
+    "manifestSha256": "ab5b350e37c82f4e4a190e512d126b4ad4ee87ba5e6f497b7db72b90c5b5d86a",
+    "templateSourceSha256": "9dd04ba1bf49c7dd8e332d951bf095f0b2878898f3126c2d9d4461f708192d23"
+  },
+  "limitations": [
+    "Read-only extraction of the original passed run; no build, browser, numerical execution or benchmark rerun.",
+    "Actual image equality to qualified main is computed, never assumed; changed images are exported when present.",
+    "The original focused qualification does not establish the final full suite, fresh review, merge/post-merge or production deployment."
+  ]
+}

@@ -1,0 +1,323 @@
+# Site adoption of engine 1.0.0-rc.2 — review candidate
+
+Base: site main `f4715b7047c852f48d0e188d43863d5825ae2bef`.
+This is an adoption draft for review. It is not deployed, and no programme
+unit is accepted here.
+
+## CI repair — 2026-10-08
+
+Draft review PR: https://github.com/zodiacs-org/site/pull/689. Preserve the artifact carrier in a merge commit. Source 1fd24bcbc7c7281245c83fb12c0d321028068085 incorporates three CI repairs, the share-date contract correction and the import-graph scan optimization.
+
+The clean-checkout MCP failure was tar-header permissions: all seven members had identical content, while the immutable rc.18 archive carries mode 0600 and Git checks out mode 0644. Packaging now obtains npm’s complete packlist and normalizes a temporary copy, including implicit README/licence entries, without modifying source permissions. The archive, bundle and manifest remain byte-identical. A regression fixture checks both source modes, implicit file selection and unchanged source files.
+
+The independent references are rebuilt offline with CI’s Python 3.11 and unchanged hash-pinned dependencies. All 1,042 numerical scalars and every structure remain unchanged; four engine-version metadata fields and their reference digest pins change. Policy files, tolerances and retained Horizons responses remain unchanged. Python 3.12 produced one last-decimal numerical difference; that output was discarded in favour of the CI runtime.
+
+Production flags exposed a compatibility initial-JavaScript budget failure: 36,896 bytes against 36,864. Sharing the repeated chart projection reduces the final route to 36,861 bytes, with 3 bytes of headroom under the original limit. Each caller still explicitly chooses its civil birth date or UTC instant. The first repair full suite found that source-contract omission; its failed run is retained, the guard is unchanged, and the caller expressions were restored.
+
+The second full repair run found a five-second timeout in the saved-record import-graph boundary test. Its AST visitor only follows children, so the parser now omits unused parent links. The complete graph retains exactly 992 nodes and 3,501 edges; the comparison takes 1,571 ms versus 2,287 ms, about 31% less time. File coverage, Astro regions, imports, dependency assertions and the original five-second deadline are unchanged. Both failed full repair runs are retained.
+
+The final full suite passes 6,917 tests with five existing skips across 536 passing files and one existing skipped file. The default build and 18 captures are refreshed on this source. The production-flags build, typecheck and compatibility browser results bind e814676c, whose only subsequent source change is the test-only AST scan optimization.
+
+Latest source validation results and count-only release search are in `ci-repair-20261008/`. Earlier Chromium 151 calibration failures remain in `refresh-20261008/`. The preceding PR head d591f309 passed CI’s full suite, exact-width acceptance and frame-cadence gates; these results bind that head, and the new repair head requires its own complete CI run.
+
+Vercel authentication remains unavailable. The configured production Node version and the two oldest July 6 environment names/targets remain unverified. Public production still advertises rc.17. No deployment, npm publication, flag/Firewall change, programme acceptance, ledger change or Checkpoint 22 is claimed.
+
+## Artifact and registry identity
+
+The site consumes [the immutable engine carrier](https://raw.githubusercontent.com/zodiacs-org/engine/e790362bddf28016405df4164e66baea057c4f19/artifacts/zodiacs-engine-1.0.0-rc.2.tgz),
+copied byte for byte into `vendor/zodiacs-engine-1.0.0-rc.2.tgz` with its receipt.
+SHA-256: `4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002`.
+Source: `7fa964d2a77d09dbb819b5733b36e303fc7fc513`.
+The archive is 287,011 bytes, 74 files and 989,528 unpacked bytes; the
+lockfile records its SHA-512 integrity. Licence: **MIT AND CC-BY-4.0**.
+All 49 earlier engine, MCP and plugin archives retain their digests.
+
+The [7 October registry read](npm-registry-rc16.json) records rc.16 under
+`next`, rc.15 under `latest`; [the candidate lookup](npm-view.txt) returns
+404. rc.17, rc.1 and rc.2 are not published by this adoption. The new
+signature verification attempt could not download its verification data.
+The successful 1 and 6 October rc.16 attestation records keep their dates;
+the fresh distribution metadata agrees with the retained archive and those
+records. This does not claim that signature verification ran successfully today.
+
+## Audit and behavior
+
+Engine main `ff4457be` is PR #31's merge commit and retains carrier
+`e790362b` as an ancestor; PR #30's 1.0 API work is retained. Site PRs #663
+and #664 have merge commits `6f873334` and `b1c42f19`. The local ledger
+check preserves 61/182.45 accepted weight, 33.434% delivered, 1.644% blocked.
+The engine's final table-check repair passes its 28-test suite, but this
+session has not supplied an independent fresh-context review of that repair.
+The checker remains an aid, not proof of a call's purity.
+
+The 1.0 CHANGELOG lists stricter argument/option checks, frozen exported
+tables, lowercase calc time scales and the caller-ayanamsa epoch bound.
+rc.2 marks table-building calls pure. [All 14 entry graphs differ](entry-graphs.txt),
+including `./houses`; this is not a version-only dependency replacement.
+The site keeps its current engine entries and lazy boundaries. The CDS
+star-values question is documented in the
+[engine's LICENSING.md](https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/LICENSING.md#timing-and-vedic-values).
+Neither calc nor Vedic is added to production imports or the MCP adapter.
+
+The owner decisions are carried in
+[DECISIONS-2026-10-06](../../programme/DECISIONS-2026-10-06.md).
+The package has 10,472 bytes under its approved unpacked cap. P3.2 stays
+validated until the candidate is served in production and judged.
+
+## Rebuilt outputs and finite comparisons
+
+[regenerated-outputs.json](regenerated-outputs.json) is an assembled exact
+JSON comparison with main, not raw runner output. Generated sky, eclipses,
+all monthly transits, daily facts, horoscope editions and event publication
+retain their numerical values to the bit in every comparison made here.
+The protected Registry Moon-ingress table retains its original generation
+metadata after an exact fresh payload comparison, so it keeps its bytes.
+The retained [comparison checker](tools/check-regenerated-outputs.py) verifies
+all 73 recorded file hashes and JSON differences against the immutable base.
+Other differences are generation timestamps, the daily publication receipt's
+engine identity/fingerprint, and compute examples' engine/citation identities
+and runtime timezone version. The compute examples were generated on Node
+24.19.0; production's current Node runtime has not been read here.
+
+The server time basis was checked against natalChart at 14,765 instants and
+177,180 body longitudes. [Node 22](node22-parity.json) and
+[Node 24](node24-parity.json) preserve the independent node/polar residuals.
+[The packed consumer summary](public-candidate-consumer.log) is assembled
+from actual smoke/type reports on Node 22.22.2 and 24.19.0.
+The [fresh Swiss aggregate reports](accuracy-refresh/) change only their
+engine identity and dump digest. Raw Swiss values and ephemeris files stayed
+outside the repository. The [frozen benchmark redraw](sky-benchmark-redraw.json)
+records its exact comparison; v0's published files retain their bytes.
+
+The [compute-state review](PRIVATE-STATE.md) preceded its reviewed digest
+update. The same record includes a source review and static inventories of all three
+AI runtimes before the main-metadata refresh; their actual-bundle lifetime regression drive passes
+success, refusal, failure and overlapping timezone resolution. Site main PR #681 removed the older
+hosted `/api/v1/mcp` bundle; this adoption rebuilds the current sole `/mcp`
+runtime instead of reinstating that removed endpoint. Developer plugin
+0.3.5 is the current review ZIP; the earlier local 0.3.4 candidate, sky 0.4.0
+and developer 0.3.3 retain their bytes. All 62 archives present before this
+refresh retain their SHA-256; developer 0.3.5 is appended. The earlier lifetime
+inventory binds the preceding bundles, not the refreshed bundle digests.
+The merged metadata sources pass the refreshed AI build, package, contract
+checks and regression suite; they do not establish secure erasure.
+
+MCP adapter 0.1.0-rc.18 bundles rc.2. The [278-call comparison](mcp-rc17-rc18.json)
+finds no differences after version/receipt-digest normalization, including
+ten refusals, both resources and the tool list. The protocol drive passes
+106 checks, Claude Code 2.1.292 host registration/launch/removal passes seven,
+and one synthetic benchmark run passes 18 scenarios and 112 assertions.
+That run is not an astronomical accuracy rate or a model-driven trial.
+The final 123,273-byte archive installs fresh with its shrinkwrap and passes
+21 verification checks on Node 22.22.2; [the record](mcp-fresh-install.json)
+binds its SHA-256. The complete local release checks and their failures are recorded below.
+
+## Bundle and compute cost
+
+The release-base baseline measures 33,128 gzip bytes across seven static
+chunks, under the unchanged 33,380.4-byte engine allowance.
+[baseline-engine-closure.json](baseline-engine-closure.json) gives each chunk.
+The candidate build measures 33,193 gzip bytes in seven static chunks,
+187.4 bytes below the unchanged limit. [candidate-engine-closure.json](candidate-engine-closure.json)
+records the closure. The final documentation build and its dist, schema, isolation and budget gates
+pass, with the same closure. Final local suite/capture results follow below. One fresh nine-shape
+sweep made 4,600 measured requests after two warmups per shape, interleaved
+with seed 20261005, through the production handler's TypeScript source and
+local-time bundle. It ran alone with respect to heavy builds/tests, on Node
+22.22.2 and Xeon Platinum 8573C under a four-CPU quota. It did not use the
+previous run's two-minute quiet-load admission criterion. The exact report is
+[compute-worst-case.json](compute-worst-case.json); source is the unchanged
+`election-search-v0/tools/worst-case.ts` and its draw/harness imports.
+
+CPU maxima in that run: events 1,001.5 ms; positions 287.1 ms; chart 15.7 ms;
+sky-fact 41.2 ms; time 24.1 ms; election void-of-course 1,129.6 ms, five
+conditions 932.8 ms, four-day Moon-angular 1,447.5 ms, and sign/phase/Mars-angular
+1,008.4 ms. A separate [houses sweep](houses-cost.json) through the generated,
+guarded bundle made 5,200 requests (13 systems in each year 1800–2199), after
+one warmup per system: CPU p95 23.0 ms, maximum 98.5 ms. These are observed
+maxima for finite synthetic draws, not a universal upper bound.
+
+The existing 40/10 rule arithmetic gives an illustrative 23.1 CPU-seconds
+per address per minute at the nine-shape maxima and 9.2 at p95. The separate
+houses maximum is below positions and does not change that arithmetic.
+Hardware and protocol differences prevent attributing the increase to the
+engine. The owner security step remains open; deployed cold latency/cost
+are still missing. No budget, Firewall rule or production flag changes.
+
+## Limits and outstanding delivery checks
+
+The unchanged five-second receipt-invalidation test timed out in two complete
+runs. Its hasher read each source file sequentially. The helper now reads in
+batches of 16 and hashes every path and byte in the same sorted order, without
+caching or changing the source boundary. [The reference comparison](phase1-hash-equivalence.json)
+uses main's original implementation on the same tree: all five scenarios have
+identical digests, read coverage and order across 1,103 files. Source/font
+changes still invalidate; excluded delivery/payload changes still do not.
+The first focused run correctly rejects the now-stale capture receipt. The
+fresh build and 18/18 captures bind source digest
+`b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45`.
+The fourth complete suite after this helper change runs every test, with one Vitest
+thread and unchanged time limits: 6,915 pass, one solar-return consistency case
+times out, and the five pre-existing skips remain. All ten solar-return checks
+then pass in isolation (461 ms for the file). That complete run is **failed**;
+the isolated pass does not turn it into a green full-suite result. CI remains
+required before delivery or acceptance.
+
+- The final build, typecheck (1,319 files: zero errors/warnings, 39 hints),
+  generated bundle/reference/AI checks and 18/18 Phase 1 captures pass.
+  The first full unit run had 6,904 passes, 12 failures and five skips. Stale
+  release/demo/ingress expectations were corrected; the five time limits
+  remained unchanged. All 105 checks across the ten failed files pass on an
+  isolated rerun. The second complete run had two five-second timeouts;
+  its 31 isolated rerun checks passed. The third complete run, with one Vitest
+  thread and the same deadlines/assertions, had 6,915 passes and just the
+  receipt-invalidation timeout. The fourth complete run passes the repaired
+  invalidation check and has the one solar-return timeout described above.
+  The [idle frame comparison](browser-frames/comparison.json) runs the unchanged
+  driver once on freshly built, untouched main, then on the candidate before
+  and after the evidence-hasher optimization.
+  Both calibrations measure 58.1 fps, below the unchanged 59 fps floor; all
+  three animation trials pass at 60 fps in those first two runs. The preceding
+  candidate measures 58.4 fps in calibration and 58.7–60 fps in its three
+  passing animation trials. All three frame gates fail their unchanged calibration. The refreshed candidate
+  measures 51.9256 fps against the same 59 fps calibration floor, with three
+  passing animation trials; its overall frame gate is also **failed**.
+  The earlier candidate reports remain retained. This reproduces the calibration
+  failure on main; it does not establish a passing calibration or rule out
+  every performance regression. No animation, Guide or threshold changes.
+- Pinned IANA archive checks are blocked by network access; timezone pins and
+  generated tables remain unchanged. The People assembler checks its frozen
+  reviewed charts; those historical charts were not redrawn here.
+- The 7 October GitHub API limitation is superseded by the 8 October checks below.
+- Vercel project variable names/targets, including the two older entries, and
+  production deployment identity have not been read. No values are read.
+- P3.3 is merged but not accepted; deployed cold latency and cost are missing.
+- Privacy evidence establishes finite behavior, not secure memory erasure;
+  numerical agreement is consistency, not independent observation.
+- The private birth-data search ran across the four-commit release range,
+  staged changes, the committed tree, working files and decompressed archives.
+  [history-check.txt](history-check.txt) records counts and anonymous labels
+  only. Both pattern sets have positive, **unclassified** matches. No privacy
+  clearance is claimed. The initial publication hold is superseded by the 8 October introduced-match classification;
+  inputs and raw outputs stay outside every repository and public record.
+- No npm publication is authorized, and no daily scheduled check is duplicated.
+
+The regenerated Moon ingress table was redrawn against Swiss 2.10.03: 481
+ingresses, 4.484 s maximum absolute residual, 0.861 s median;
+[the fresh aggregate](moon-ingresses.json) binds its current bytes.
+
+The protected-scope guard passes against the release base. The npm production
+audit reports zero vulnerabilities; the full tree reports two moderate dev
+advisories and passes its unchanged high/critical CI threshold.
+The separate precision-alpha tier A suite passes all 423 tests, with no skips.
+
+Runner log copies have trailing whitespace removed for review.
+[log-normalization.json](log-normalization.json) records the captured and
+normalized SHA-256 for each affected log; original captured logs remain
+outside Git. This formatting change does not change assertions or results.
+
+## 7 October refresh from current main
+
+Main advanced to `10099d693d35a02d521a11fba21a6c1705a3d08e` during
+validation. Its MCP tool titles and compute documentation link are retained,
+and the AI runtimes and developer plugin are regenerated from those merged
+sources. The new developer 0.3.5 ZIP preserves the earlier 0.3.4 archive.
+The merged source commit is `1d49fd4397e378cf86054fc930e8395da0e63f6f`.
+The refreshed build, typecheck, generated-output comparison, hash-equivalence
+comparison and all 18 captures pass. The capture source digest remains
+`b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45`.
+The closure remains 33,193 gzip bytes across seven chunks.
+
+The fifth complete suite runs all 536 files and 6,921 tests with unchanged
+deadlines: **6,915 pass, one fails by timeout, and five existing skips remain**.
+The five-second timeout is in `scripts/platform-candidate-docs.test.mjs`;
+all 25 checks in that file then pass in isolation under the same deadline.
+The full run remains **failed**. Its duration is 898.98 seconds.
+[The complete log](validation/site-rc2-full-tests-main-refresh.log) and
+[isolated rerun](validation/site-rc2-candidate-docs-rerun.log) retain both results.
+The [refreshed frame report](browser-frames/candidate-main-refresh.json)
+also fails its unchanged calibration, as recorded above. No passing result
+is selected in place of those failures.
+
+The branch remains local. No PR, deployment, npm publication, Checkpoint 22
+or new programme acceptance is claimed. Delivery needs privacy classification,
+passing unchanged release gates, and API/deployment verification.
+
+
+## 8 October current-main validation
+
+Current main `5485cda15e7a147e5f680e426291eacf355c3703` is retained in
+merge commit `97d59ff024dbf09f64387bac4b8054c228db3dac`. Its daily data and
+other programme changes are preserved. The refreshed daily/horoscope outputs
+have zero numerical and structural changes against that main, with two
+engine-identity field changes. The exact 73-file comparison now uses that
+immutable current-main baseline; the preceding comparison remains retained
+in `refresh-20261008/regenerated-outputs-before-refresh.json`.
+
+The archive identity test now uses native `Buffer.equals` for every member
+instead of the assertion library's generic object traversal. It still reads
+all 74 members, verifies their lengths and every byte, and keeps the same
+five-second deadline. Both focused runs pass 25 checks: 2.65 seconds of test
+time before, 210 milliseconds after. This is one observed comparison, not a
+universal speed claim.
+
+**The sixth complete suite passes: 6,916 tests passed and the five existing
+skips remain, across all 536 files.** The full command uses one fork worker
+and retains every test and deadline. The preceding failed runs and isolated
+results are retained. The merged build, typecheck, AI checks, closure and
+18/18 fresh Phase 1 captures pass. The capture source digest remains
+`b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45`.
+The closure remains 33,193 gzip bytes against the unchanged 33,380.4 limit.
+
+The unchanged protected-scope guard passes against the actual PR base,
+`5485cda15e7a147e5f680e426291eacf355c3703`. Comparing the entire merged
+history against the original release base also includes 12 protected changes
+already merged by another PR. Both comparison results are retained; no
+protected-path definition or allowance is changed by this adoption.
+
+Fresh IANA acquisition matches the unchanged 2025c SHA-256; both timezone
+checks pass. Initial Node fetches failed because they did not use the managed
+proxy. The cache was populated through that proxy with the verified bytes,
+and proxy-aware Node fetch is now enabled in the local setup. Fresh rc.16
+registry signature/attestation verification passes with zero invalid and
+missing entries. The successful 1 and 6 October records retain their dates.
+No rc.17 or 1.0 candidate is published.
+
+The fresh private search reads all nine source commits, staged changes,
+committed blobs, 16,888 working files, 122 gzip archives and 22 ZIP archives.
+Each pattern set reports 20 introduced matching data lines and 400
+committed-tree matching data lines. **All 20 introduced matching lines are
+accounted for by three public GeoNames location records:** every one of their
+five fields exactly matches the catalogue transformation, and none has a
+birth-date or birth-time field. No unexplained introduced matching data line
+remains in the checked range. Positive counts remain positive; this does not
+claim blanket privacy clearance of historical content. Only counts and
+anonymous labels appear in
+[the fresh search record](refresh-20261008/history-check.txt) and
+[classification](refresh-20261008/private-search-classification.json).
+Private inputs, matched values/paths and raw outputs stay outside Git.
+
+The previous 62 archive byte identities all survive: 61 at the same paths and
+one exact prior copy in appended history alongside the upstream-updated
+current archive. The upstream PR is retained. The developer 0.3.5 candidate
+and all engine/MCP archives keep their bytes.
+
+The local Chromium 151 frame check remains **failed**: calibration 56.8451 fps
+against the unchanged 59 fps floor; all three animation trials pass. Earlier
+local failures remain retained. CI pins Chromium 149.0.7827.55. Its download
+was refused with HTTP 403 in this environment, so no result for that browser
+is claimed locally. The draft review must receive the unchanged CI frame
+check before delivery; no threshold, trial, driver or animation change is made.
+
+GitHub API checks now verify 22 successful checks on engine merge `ff4457be`
+and its resolved archive-link review thread. Current site main has 23
+successful checks and one skip. Public production still advertises rc.17;
+its sole `/mcp` initializes as server 0.4.0 / protocol 2025-11-25. Those are
+observed production results, not an rc.2 deployment. Vercel API authentication
+is refused, so the two older variable names/targets and deployed Node runtime
+remain unverified. No environment values, flags or Firewall rules are changed.
+
+[Fresh logs and records](refresh-20261008/) retain successes, initial failures
+and retries. No Checkpoint 22, acceptance, npm publication or new daily
+schedule is claimed. Review publication is a draft; merge waits for required
+CI and review results.

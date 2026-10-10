@@ -1,0 +1,44 @@
+{
+  "sourceHead": "71ab060a8614e58d619b5baeb2e009245c0ef354",
+  "baseMain": "254bf7fe223c2b153b6ea36d238577fd8a4516cb",
+  "defaultBuild": "passed",
+  "productionFlagsBuild": "passed on c9c3df53188d8261d5372908443547dda5627178; subsequent change is test assertion and capture binding only",
+  "typecheck": "0 errors, 0 warnings, 39 hints on combined c9c3df53 source",
+  "fullSuite": {
+    "passed": 6937,
+    "existingSkipped": 5,
+    "filesPassed": 537,
+    "existingFileSkipped": 1
+  },
+  "captures": {
+    "required": 18,
+    "passed": 18,
+    "imagesChanged": 0
+  },
+  "compatibilityBrowser": "passed: twelve locale/width contexts",
+  "mcpProtocolChecks": 106,
+  "syntheticMcpBenchmark": {
+    "scenarios": 18,
+    "assertions": 112
+  },
+  "namedMcpHost": "unrun: Claude Code absent",
+  "mcpArchiveReproduction": "passed: existing rc.18 bytes unchanged",
+  "existingArchiveIdentitiesChecked": 65,
+  "existingArchiveIdentitiesUnchanged": 65,
+  "earlierDeveloper033ArchiveVariantRetained": true,
+  "priorFailuresPreserved": [
+    {
+      "run": "production-flags full suite",
+      "passed": 6936,
+      "failed": 1,
+      "cause": "Disclosure test required an attribute-free root HTML tag; locale assertion corrected to allow lifecycle attributes."
+    },
+    {
+      "run": "after assertion correction",
+      "passed": 6936,
+      "failed": 1,
+      "cause": "Phase 1 capture manifest source binding stale after test-source change; rebuilt and recaptured 18 views."
+    }
+  ],
+  "acceptance": "No new programme acceptance; CI and production release remain pending."
+}

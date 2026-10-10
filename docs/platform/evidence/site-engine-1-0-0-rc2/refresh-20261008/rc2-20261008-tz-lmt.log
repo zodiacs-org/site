@@ -1,0 +1,22 @@
+downloading https://data.iana.org/time-zones/releases/tzdata2025c.tar.gz …
+node:internal/deps/undici/undici:14976
+      Error.captureStackTrace(err);
+            ^
+
+TypeError: fetch failed
+    at node:internal/deps/undici/undici:14976:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async loadRelease (file:///workspace/site/scripts/build-tz-lmt.mjs:253:22)
+    at async buildTable (file:///workspace/site/scripts/build-tz-lmt.mjs:275:30)
+    at async main (file:///workspace/site/scripts/build-tz-lmt.mjs:291:27)
+    at async file:///workspace/site/scripts/build-tz-lmt.mjs:306:13 {
+  [cause]: Error: getaddrinfo EAI_AGAIN data.iana.org
+      at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26) {
+    errno: -3001,
+    code: 'EAI_AGAIN',
+    syscall: 'getaddrinfo',
+    hostname: 'data.iana.org'
+  }
+}
+
+Node.js v22.22.2

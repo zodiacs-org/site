@@ -1,0 +1,47 @@
+{
+  "sourceCommit": "c40b75065eb2240bfa46d6b2dc89143a97741b3b",
+  "baseMain": "66eb6712d692b7e4fe6a1367b12ee197f4d8c95d",
+  "ciFailure": {
+    "run": 37807709612,
+    "job": 113416228540,
+    "check": "stored Sun-sign hydration has exactly zero CLS",
+    "cls": 0.025757519876700677,
+    "layoutShifts": 1
+  },
+  "controlledOldSource": {
+    "browser": "149.0.7827.55",
+    "cls": 0.0261823537414966,
+    "headingHeightsPx": [
+      51.15625,
+      102.3125
+    ],
+    "labelStates": [
+      "current",
+      "combined-current-and-dated"
+    ],
+    "regression": "fails unchanged zero-CLS assertion"
+  },
+  "correctedSource": {
+    "browser": "149.0.7827.55",
+    "cls": 0,
+    "regression": "passes unchanged zero-CLS assertion",
+    "existingTodayDrive": "passes"
+  },
+  "validation": {
+    "build": "passed",
+    "typecheckErrors": 0,
+    "typecheckWarnings": 0,
+    "typecheckHints": 39,
+    "unitTestsPassed": 6937,
+    "existingSkippedTests": 5,
+    "passingTestFiles": 537,
+    "existingSkippedTestFiles": 1,
+    "phase1Captures": 18,
+    "capturePngBytesUnchanged": true,
+    "engineAssetsUnchanged": 7
+  },
+  "limits": [
+    "The original CI trace records displacement but does not capture the intermediate heading text. The controlled test establishes this parser race independently.",
+    "Local validation is not a replacement for the new PR/main CI and deployment observations."
+  ]
+}

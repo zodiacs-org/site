@@ -1,0 +1,40 @@
+{
+  "schema": "zodiacs.birth-window-ui-failure.v1",
+  "source": "377e876898f4856e0c5d89a8445dc5594aec29f3",
+  "producer": "cdd8c10b81ec9971daa78eb031700621d9ec7f74",
+  "run": 38060589904,
+  "job": 114237877339,
+  "conclusion": "failure",
+  "passedBeforeFailure": {
+    "sourceControls": 53,
+    "build": true,
+    "schema": true,
+    "originalMainEngineBudget": true,
+    "mainClosureRoundedKB": 32.5,
+    "mainLimitKB": 32.598046875,
+    "mainStaticChunks": 7,
+    "workerGzipBytes": 40367,
+    "workerOriginalLimitKB": 60,
+    "sourceBoundary": true,
+    "homepageIsolation": true
+  },
+  "failure": "TypeScript 2322: narrowed shared EngineLoader is incompatible with the existing comparison loader contract after full.ts adds the worker-only function.",
+  "notReached": [
+    "complete unit suite",
+    "worker behavior",
+    "visual/performance/fresh captures"
+  ],
+  "correction": "Source f55bb57ffeeef4d05877940160fa7836588f32a6 restores the original loader; worker flag and original budgets remain unchanged.",
+  "originalDecodedLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/worker-flag-type-failure.log",
+    "bytes": 946833,
+    "sha256": "6c91963e162065ac9905d05702c333ced1e2672778c06f73d09418941ba5de03"
+  },
+  "acceptedWeightAdded": 0,
+  "diagnostic": {
+    "originalExportPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-377e876.json",
+    "bytes": 147917,
+    "sha256": "14d1369375745080596ae202d5bed531f1097a0ce682e177dcfc957509a79972"
+  }
+}

@@ -1,5 +1,33 @@
 # Vendored @zodiacs/engine artifact
 
+`zodiacs-engine-1.0.0-rc.2.tgz` is the exact archive consumed by this revision.
+It is a **vendored candidate, not on npm**. The registry read of 2026-10-07
+records `0.1.1-rc.16` under `next` and `0.1.1-rc.15` under `latest`.
+
+- Artifact SHA-256: `4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002`
+- Packed size: 287,011 bytes; 74 files; 989,528 unpacked bytes.
+- Source commit: `7fa964d2a77d09dbb819b5733b36e303fc7fc513`
+- Carrier commit: `e790362bddf28016405df4164e66baea057c4f19`
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/e790362bddf28016405df4164e66baea057c4f19/artifacts/zodiacs-engine-1.0.0-rc.2.tgz)
+- Licence: **MIT AND CC-BY-4.0**. Keep the archive's LICENSE, LICENSING.md
+  and NOTICE. Both licences apply to the distributed package.
+- [Adoption record](../docs/platform/evidence/site-engine-1-0-0-rc2/README.md).
+
+The archive and its SHA-256 receipt are byte-for-byte copies of that carrier.
+The 1.0 candidate freezes exported tables, validates options and arguments,
+uses lowercase calc time-scale names, and bounds a caller's ayanamsa epoch
+by EPHEMERIS_SPAN. rc.2 marks table-building calls pure so unused tables can
+be dropped by bundlers. The package's CHANGELOG lists the breaking changes.
+The site keeps its existing public entry-point and lazy-load boundaries.
+The compute bundle copies attribution from the archive's NOTICE.
+
+The CDS star-values question remains unsettled in the
+[engine's LICENSING.md](https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/LICENSING.md#timing-and-vedic-values).
+No calc or Vedic entry is added to the site's production imports or MCP adapter.
+All older archives below retain their bytes and historical identities.
+
+# Previous candidate: 0.1.1-rc.17
+
 `zodiacs-engine-0.1.1-rc.17.tgz` is the exact npm pack artifact consumed by this
 candidate site revision. The standalone starter keeps its separate engine
 `0.1.1-rc.3` pin and immutable project archive.
@@ -170,7 +198,8 @@ the old artifact alone needs the former site polar correction. The frozen
 chart summaries produced from that artifact before replacing the dependency.
 They exercise saved-record migration, not independent numerical accuracy.
 
-The package is MIT licensed. Its `LICENSING.md`, `NOTICE`, and `LICENSE` are
+The original 0.1.0 code was labelled MIT. The current distribution is
+`MIT AND CC-BY-4.0`; both licences apply. Its `LICENSING.md`, `NOTICE`, and `LICENSE` are
 inside the tarball. Consumers of the optional GeoNames adapter must retain the
 CC BY 4.0 attribution in `NOTICE`.
 

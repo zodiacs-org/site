@@ -1,0 +1,25 @@
+✔ canonical digest has fixed independently known bytes; finite JSON only (2.515656ms)
+✔ altered archive hash fails before extraction (0.84148ms)
+✔ stale engine and adapter versions fail even when wrappers agree (1.924695ms)
+✔ missing receipt is refused (0.369448ms)
+✔ bad citation digest fails independent recomputation (0.361105ms)
+✔ lost depends fails even after BOTH wrappers collapse it to true (1.116505ms)
+✔ inflated completeness fails even when BOTH wrappers recite the altered receipt (0.588428ms)
+✔ parity allows only exact documentation URL substitution (0.766987ms)
+✔ malformed and non-JSON HTTP bodies survive failed parsing alongside earlier evidence (16.145424ms)
+✔ fetch and interrupted-body failures retain honest status and partial bytes (3.430566ms)
+✔ oversized HTTP body and headers stop with explicitly bounded evidence (8.741431ms)
+✔ stale output directory is rejected by helper and CLI without changing original evidence (69.672673ms)
+✔ live policy accepts only the two exact approved HTTPS hosts (0.781909ms)
+✔ live binding rejects same-version source drift and changed served bytes before compute (1.594442ms)
+✔ live fixed plan makes six sequential attempts, one event search, and recovers after refusal (10.97698ms)
+✔ live denial and unexpected errors stop at the first attempt and preserve raw failure (14.247249ms)
+✔ sensitive response headers are omitted while raw body evidence remains intact (2.343606ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 218.143691

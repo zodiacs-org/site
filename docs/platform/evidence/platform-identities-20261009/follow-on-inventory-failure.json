@@ -1,0 +1,28 @@
+{
+  "schema": "zodiacs.checkpoint24-follow-on-failure.v1",
+  "source": "87583eff7e61973e2373ed1501007b2bcc1a4c54",
+  "producer": "46b66342035d9d00a40aff54c826b2b93bf7c927",
+  "run": 37968247651,
+  "job": 113947963815,
+  "completed": {
+    "build": true,
+    "actualCaptures": 18,
+    "originalReceiptTests": true,
+    "verifiedIdenticalPngs": 18
+  },
+  "failure": {
+    "step": "Read actual rendered FAQ inventory for semantic review",
+    "error": "spawnSync rg ENOENT",
+    "cause": "The runner does not provide ripgrep."
+  },
+  "skipped": [
+    "Read-only full-suite metric extraction"
+  ],
+  "artifact": {
+    "id": 11635000451,
+    "bytes": 8667524,
+    "sha256": "29b47170627ce411b69cc9cefe07b9602691b6725b1a1eb5bea33c5b470ba061"
+  },
+  "remedy": "Use Node fs.readdirSync for the rendered index inventory, rebuild the same exact source for that inventory, and extract the existing passing full-suite artifact. Do not rerun successful captures.",
+  "limitation": "The workflow failed after verified captures; this report does not declare the entire workflow successful."
+}

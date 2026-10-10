@@ -1,0 +1,92 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-event-brief-aspect-2026-10-15t08-21-27-267z-sun-sextile-jupiter",
+  "slug": "event-brief-aspect-2026-10-15t08-21-27-267z-sun-sextile-jupiter",
+  "kind": "event-brief",
+  "templateId": "event-brief.v1",
+  "issuedAt": "2026-10-08T12:00:00.000Z",
+  "visibleAt": "2026-10-15T08:21:27.267Z",
+  "eventAt": "2026-10-15T08:21:27.267Z",
+  "title": "Sun Sextile Jupiter · event brief",
+  "summary": "Sun Sextile Jupiter becomes exact at 2026-10-15T08:21:27.267Z. Its symbolic reading and later market observations remain separate.",
+  "url": "/terminal/research/event-brief-aspect-2026-10-15t08-21-27-267z-sun-sextile-jupiter/",
+  "signs": [
+    "leo",
+    "libra"
+  ],
+  "topics": [
+    "calendar",
+    "astrology",
+    "aspect"
+  ],
+  "symbolicScore": null,
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Sun Sextile Jupiter is exact at 2026-10-15T08:21:27.267Z, according to the committed transit catalog.",
+      "evidence": [
+        "src/data/transits-2026-10.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "The event is listed as calendar context. No directional market claim is attached to it.",
+      "evidence": [
+        "src/data/transits-2026-10.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "No market outcome is attached to this precomputed event brief. A separately timestamped follow-up may be appended after an eligible archive observation.",
+      "evidence": []
+    }
+  },
+  "market": {
+    "available": false,
+    "snapshotId": null,
+    "observedAt": null
+  },
+  "evidence": {
+    "transitSource": "src/data/transits-2026-10.json",
+    "eventKey": "aspect:2026-10-15T08:21:27.267Z:Sun-sextile-Jupiter",
+    "groupedEvents": null,
+    "outlookEdition": "public/assets/registry-outlook.json#weekly:2026-10-08",
+    "marketSnapshotId": null,
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "649688b8b931f7ef8a98b4722b624340280fc5be390280e7f047b61a8681afaa",
+  "publishedAt": "2026-10-08T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-08T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "649688b8b931f7ef8a98b4722b624340280fc5be390280e7f047b61a8681afaa"
+  },
+  "status": "approved"
+}

@@ -1,0 +1,19 @@
+{
+  "startedAt": "2026-10-06T07:21:01.013820+00:00",
+  "finishedAt": "2026-10-06T07:21:01.764498+00:00",
+  "method": "GET",
+  "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/examples/zodiacs-mcp-server-0.1.0-rc.17.tgz",
+  "curlExitCode": 0,
+  "status": 200,
+  "stderr": "",
+  "bodyBytes": 125262,
+  "bodySha256": "e0f1f7a4035649dac0d2e18e22efd6c394e6b0d0f2377356784a3152b163a052",
+  "headersSha256": "d0c6c4515a024b80573e6177ff8d42bc4c92e63130f8f9997f107a872f7ab513",
+  "headersTruncated": false,
+  "responseHeaderOmissions": [
+    "set-cookie",
+    "authorization",
+    "proxy-authorization"
+  ],
+  "redirectsFollowed": 0
+}

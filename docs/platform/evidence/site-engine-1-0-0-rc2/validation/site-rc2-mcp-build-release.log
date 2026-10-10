@@ -1,0 +1,5 @@
+
+> zodiacs-org@1.0.0 mcp:build:check
+> node scripts/build-mcp-server.mjs --check
+
+build-mcp-server: up to date (324575 bytes, sha256 f0be3308b76f…)

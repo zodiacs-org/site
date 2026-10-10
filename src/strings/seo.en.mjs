@@ -6,8 +6,11 @@
  */
 // Consumer Organization identity only. Registry channels remain contained on
 // the Registry's own static surfaces and must not enter consumer JSON-LD.
+export const ORGANIZATION_NAME = 'Zodiacs.org';
 export const SOCIAL_PROFILES = Object.freeze([
-  'https://github.com/zodiacs-org/sdk',
+  'https://github.com/zodiacs-org/engine',
+  'https://www.npmjs.com/package/@zodiacs/engine',
+  'https://pypi.org/project/zodiacs/',
 ]);
 
 // English-only build descriptors for the Phase 1 route family. Keeping this
@@ -188,7 +191,7 @@ export const WEB_APPLICATION_PATHS = Object.freeze([
 ]);
 
 export const SCHEMA_EN = Object.freeze({
-  organizationName: 'Zodiacs',
+  organizationName: ORGANIZATION_NAME,
   organizationAlternateName: 'Zodiacs.org',
   websiteName: 'Zodiacs.org',
   websiteDescription: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides — private in your browser.',

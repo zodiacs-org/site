@@ -467,6 +467,7 @@
   .zfooter__fold[open] > summary::after { content: '−'; }
   .zfooter__fold .zfooter__links { padding-bottom: 12px; }
   .zfooter__group--wide { grid-column: auto; }
+  /* The 44px summary row spaces the folded label; open columns keep the
+     label's own gap above their first link. */
+  .zfooter__fold > summary .zfooter__label { margin-bottom: 0; }
 }
-
-.zfooter__fold > summary .zfooter__label { margin-bottom: 0; }

@@ -1,0 +1,38 @@
+{
+  "schema": "zodiacs.thesis-font-preload-full-site-failure.v1",
+  "source": "24b3ec14686a0697a23e15f6936066d20a2decab",
+  "integration": "7ae5d070d0a5c7d8b50452950b3a7c18c3718097",
+  "run": 37946407294,
+  "job": 113873684780,
+  "artifact": {
+    "id": 11626037929,
+    "bytes": 158495512,
+    "sha256": "60f0c8fef0a28a168fef3ef701d64b52e5955f9f78300cfd74e920c201060c74"
+  },
+  "stage": "thesis Lighthouse budget",
+  "limitMs": 2500,
+  "samplesMs": [
+    2555.541,
+    2565.6316000000006,
+    2561.6794
+  ],
+  "otherJobsPassed": 19,
+  "thesisBrowserPassed": 236,
+  "unitTests": {
+    "passed": 6948,
+    "existingSkipped": 6
+  },
+  "visualCasesPassed": 15,
+  "otherLighthouseRoutesPassed": 29,
+  "stalls": 0,
+  "sampleRetakes": 0,
+  "widgets": "not reached",
+  "numericalGate": {
+    "run": 37946407353,
+    "status": "passed",
+    "bindingControls": 16
+  },
+  "acceptance": "blocked",
+  "diagnosis": "font-preload-retained-diagnosis.json",
+  "limitation": "Removing below-hero font preload hints did not clear the unchanged gate; no causality or accepted completion follows."
+}

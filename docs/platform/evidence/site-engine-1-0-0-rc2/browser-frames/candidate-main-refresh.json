@@ -1,0 +1,99 @@
+{
+  "schema": "zodiacs.phase1-frame-cadence.v2",
+  "measuredAt": "2026-10-07T19:11:41.888Z",
+  "route": "/horoscopes/aries/",
+  "browser": "Chromium 151.0.7922.173",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "cpuThrottleRate": 4,
+  "thresholds": {
+    "minimumBaselineFps": 59,
+    "maximumTargetFps": 60,
+    "minimumCadenceRetention": 0.98,
+    "maximumMedianIntervalMs": 18.5,
+    "maximumP95IntervalMs": 34,
+    "maximumLongFrameRatio": 0.02,
+    "longFrameMs": 34
+  },
+  "baseline": {
+    "sampledFrames": 180,
+    "durationMs": 3466.5,
+    "effectiveFps": 51.92557334487235,
+    "medianIntervalMs": 16.699999999999818,
+    "p95IntervalMs": 33.30000000000018,
+    "p99IntervalMs": 100,
+    "maximumIntervalMs": 100,
+    "longFrameCount": 7,
+    "longFrameRatio": 0.03888888888888889
+  },
+  "baselinePass": false,
+  "motion": {
+    "animationName": "program-sky-drift",
+    "animationDuration": "12s",
+    "animationPlayState": "running",
+    "documentVisibility": "visible",
+    "activeAnimations": [
+      {
+        "name": "CSSTransition",
+        "pseudoElement": null
+      },
+      {
+        "name": "CSSTransition",
+        "pseudoElement": null
+      },
+      {
+        "name": "program-sky-drift",
+        "pseudoElement": "::before"
+      }
+    ]
+  },
+  "requiredPassingTrials": 3,
+  "passingTrials": 3,
+  "trials": [
+    {
+      "sampledFrames": 180,
+      "durationMs": 2999.7999999999993,
+      "effectiveFps": 60.00400026668446,
+      "medianIntervalMs": 16.69999999999891,
+      "p95IntervalMs": 16.700000000000728,
+      "p99IntervalMs": 16.80000000000109,
+      "maximumIntervalMs": 16.80000000000109,
+      "longFrameCount": 0,
+      "longFrameRatio": 0,
+      "minimumEffectiveFps": 50.8870618779749,
+      "distinctTransformSamples": 8,
+      "pass": true
+    },
+    {
+      "sampledFrames": 180,
+      "durationMs": 2999.9000000000015,
+      "effectiveFps": 60.00200006666886,
+      "medianIntervalMs": 16.69999999999891,
+      "p95IntervalMs": 16.700000000000728,
+      "p99IntervalMs": 16.80000000000109,
+      "maximumIntervalMs": 16.80000000000109,
+      "longFrameCount": 0,
+      "longFrameRatio": 0,
+      "minimumEffectiveFps": 50.8870618779749,
+      "distinctTransformSamples": 8,
+      "pass": true
+    },
+    {
+      "sampledFrames": 180,
+      "durationMs": 3116.5,
+      "effectiveFps": 57.757099310123536,
+      "medianIntervalMs": 16.700000000000728,
+      "p95IntervalMs": 16.799999999999272,
+      "p99IntervalMs": 50,
+      "maximumIntervalMs": 50,
+      "longFrameCount": 2,
+      "longFrameRatio": 0.011111111111111112,
+      "minimumEffectiveFps": 50.8870618779749,
+      "distinctTransformSamples": 8,
+      "pass": true
+    }
+  ],
+  "pass": false
+}
