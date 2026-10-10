@@ -1,0 +1,2373 @@
+{
+  "schema": "zodiacs.faq-node-removal-proposal.v1",
+  "auditedSource": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+  "producer": {
+    "source": "2b0d0195aee70360cdb97c1f5a682d65bb367c1d",
+    "run": "38058696799",
+    "node": "v22.23.3",
+    "typescript": "5.9.3"
+  },
+  "records": [
+    {
+      "path": "public/astrofolio/index.html",
+      "beforeSha256": "f822b629bb60f4272306be458892a6a710d4a4d1864298d056c354f884747b65",
+      "afterSha256": "644d214b99543c2bef09cd9c50c302127322bd58e239ff83bee2e916623461e8",
+      "beforeBytes": 506981,
+      "afterBytes": 505963,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 5726,
+          "end": 6744,
+          "before": "{\n        \"@type\": \"FAQPage\",\n        \"@id\": \"https://zodiacs.org/astrofolio/#faq\",\n        \"mainEntity\": [\n          {\n            \"@type\": \"Question\",\n            \"name\": \"Do I need a wallet to browse?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"No. You can browse the collection, see market context, and verify addresses without connecting a wallet.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"What are the risks?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Zodiac tokens are speculative and can be volatile or hard to sell. Prices can fall to zero, and wallet mistakes or scams can cause permanent loss.\" }\n          },\n          {\n            \"@type\": \"Question\",\n            \"name\": \"What is the Terminal?\",\n            \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"The Terminal is the market view for all twelve Zodiacs, with live prices, charts, and liquidity side by side. It shows market data only.\" }\n          }\n        ]\n      },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/components/HoroscopeProgramPage.astro",
+      "beforeSha256": "0306d8d045c33f94b0f2c1e8d166116e897a4f85ec6a6083135e0fc26c2ba9d2",
+      "afterSha256": "70cd6e54a7e87e25ecddfa2779737595421425443d435a9ab34b911b76a2e1f8",
+      "beforeBytes": 28050,
+      "afterBytes": 27871,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 6399,
+          "end": 6578,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/components/compat/LocalizedPairPage.astro",
+      "beforeSha256": "3ce6f4eae5af3a5def29a10991f2eb8ab2b9199862145ee7170d080bcadb0a7f",
+      "afterSha256": "df2487b93373c01a0c93a6a1b9f79e3490727c2f4933c20382eea5ee28c06273",
+      "beforeBytes": 16744,
+      "afterBytes": 16525,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 7314,
+          "end": 7533,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: entry.data.faq.map(({ q, a: answer }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: answer },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/components/learn/LocalizedRisingPage.astro",
+      "beforeSha256": "0d5c703c0ef8c7c064a09ab94baa67e3b068d66da96c0bc358e01e1c349ab7ff",
+      "afterSha256": "62b9aba3d4d92c7425cc1905f4e6596a06dd64692b2fe140089437ad8503073d",
+      "beforeBytes": 13577,
+      "afterBytes": 13335,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 8314,
+          "end": 8556,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: locale === 'pt' ? 'pt-BR' : locale,\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/components/programmatic/LocalizedBirthdayPage.astro",
+      "beforeSha256": "55ccad690338d0e328cc8572db7bf0a69882e5d5dc94dbcc2906d6b550301f27",
+      "afterSha256": "8ac16e5fa1a37f186c97ca79aff099b60cba5ce4002e8cf7dd1222fca009ea5e",
+      "beforeBytes": 15563,
+      "afterBytes": 15384,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 5382,
+          "end": 5561,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedEclipsesPage.astro",
+      "beforeSha256": "795f5ca815a24b8d5027f6e9166c312e93bdbace1a6fd41008a1eb5149b534ee",
+      "afterSha256": "de193c4f39e7160128ebfaef2f2e877a7552e24e76339de21899f3335977a365",
+      "beforeBytes": 42528,
+      "afterBytes": 42336,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 36680,
+          "end": 36872,
+          "before": "{\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedFullMoonCalendarPage.astro",
+      "beforeSha256": "1915d16e93b89091e8460706bd9229949ee0cbbdb94dbb52458df9de8aabf585",
+      "afterSha256": "a38ec47b878a64bbca51338c0651fc5161d55e8380eb78a6f5472e6898269256",
+      "beforeBytes": 36066,
+      "afterBytes": 35874,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 30459,
+          "end": 30651,
+          "before": "{\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedMercuryRetrogradePage.astro",
+      "beforeSha256": "cb6f6223754d16e264356c78ef377ccaafdd349b57a967fb197c2823edbf62d8",
+      "afterSha256": "ee77a54825411b6dcb14761269ba45c6c8c10f24609bd8f14550930cd02bd744",
+      "beforeBytes": 36207,
+      "afterBytes": 36015,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 31302,
+          "end": 31494,
+          "before": "{\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/components/sky/LocalizedRetrogradesPage.astro",
+      "beforeSha256": "d7f94b9cc9618c64109263fdf2084de57bde3f53bfc0a0f3a07bb4d659f96445",
+      "afterSha256": "8de2dcdce10923759c0e450d0da3464986ae5c5d26b3b9f8bcd3a61ca34c982d",
+      "beforeBytes": 39231,
+      "afterBytes": 39039,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 32971,
+          "end": 33163,
+          "before": "{\n    '@type': 'FAQPage',\n    inLanguage,\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/[sign]/index.astro",
+      "beforeSha256": "f4675fdad43c02754cad45589a456503a30a21b2bf51e18d292de6f41ab2320c",
+      "afterSha256": "ce7317a2512f045b378d33acf27e44e198b3e955c32b0a1a786398050e758935",
+      "beforeBytes": 14412,
+      "afterBytes": 14222,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "existing sign guides"
+      ],
+      "edits": [
+        {
+          "start": 2863,
+          "end": 3053,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: guide.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ask/index.astro",
+      "beforeSha256": "e227fea0a04800f43437c2f7192d9db3891392cb83ef95509fcecc2ba365f28a",
+      "afterSha256": "f307abc08f4c9f56fca23cef8af6f5de39837fbf5eb7a69a6735ceb1a6d43aab",
+      "beforeBytes": 9513,
+      "afterBytes": 9334,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 3380,
+          "end": 3559,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/baby-zodiac/index.astro",
+      "beforeSha256": "dcb5155b91c15ddf546d49cc7bae15795394461e330ddafef118c60ecb267b63",
+      "afterSha256": "59f13f00315518d7c14b42ff27359b4bfe35178e7bee980a8d101ada7b0864e4",
+      "beforeBytes": 6116,
+      "afterBytes": 5937,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2045,
+          "end": 2224,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/big-three/index.astro",
+      "beforeSha256": "f4b56a0a1e2f3b0f7e7612e2592fe3f7dce2d55f106598e7421076cbc2617713",
+      "afterSha256": "535dbcb5d6ad85b8d71cabecc2e13ef4158f3730167bfe90ac06edd569730699",
+      "beforeBytes": 4962,
+      "afterBytes": 4783,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 1855,
+          "end": 2034,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/birth-chart/index.astro",
+      "beforeSha256": "4eb08cefb3fc4fbeb47987b27096ab90c9cd5ed0be7355be159591b6cc9fa72e",
+      "afterSha256": "ea4ecbfb546b2bc671da6350927aecb4c343b28ee2d2dd456e96f33a4e863ed2",
+      "beforeBytes": 9848,
+      "afterBytes": 9672,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 3102,
+          "end": 3278,
+          "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/birth-chart/three-dimensions/index.astro",
+      "beforeSha256": "15be44340fdbef40d7e569b55d25ae01b4ff462b8802a4313944bf1462717b29",
+      "afterSha256": "907733cd1a9feb652c63fed519f07f762c30221314738897e1d26e92da0e8a88",
+      "beforeBytes": 14444,
+      "afterBytes": 14268,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 5058,
+          "end": 5234,
+          "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/birthday/[slug].astro",
+      "beforeSha256": "9d060ec8b70a1192bce03b2cd610dda375476cb9543dfaff4fe5cb4f43252c4d",
+      "afterSha256": "765e3d4efc9f510936f9355120d40766d5a1167358b01047e72b5349c544a830",
+      "beforeBytes": 21682,
+      "afterBytes": 21503,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 8115,
+          "end": 8294,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/compatibility/[pair]/index.astro",
+      "beforeSha256": "9baf1d70d4efd7eb37dac3bf507bb15d52ecd13c8eaf2a13e1092ed2c17066ef",
+      "afterSha256": "4b49068e9f871f7bd6a25b2f910cf037af55ca120e8712e4ed1e34cacbe7512d",
+      "beforeBytes": 12192,
+      "afterBytes": 12002,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2527,
+          "end": 2717,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/compatibility/index.astro",
+      "beforeSha256": "f0791ad270752fa1c88162de116a24aee5a9a7d5b541ca759b9c5bf2f51ca138",
+      "afterSha256": "80306dc037a7928a9af36267341485de6782147ff80b90ccb9243d1eb2d04cfb",
+      "beforeBytes": 10086,
+      "afterBytes": 9907,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2136,
+          "end": 2315,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/eclipses/2027/index.astro",
+      "beforeSha256": "11e0c2a3f5794d2d29d40351548af17d5a8df68026e0242ef33c65c2c3042fe3",
+      "afterSha256": "a4d94dcc900e80ac9e0e6cc265e0881fbcba39fecf5ed04319a72120619e5dc3",
+      "beforeBytes": 8023,
+      "afterBytes": 7844,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 4226,
+          "end": 4405,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/eclipses/index.astro",
+      "beforeSha256": "9ddc036d81086099e3f1b5acf78e300fb442c28aa76a8bf0e6caa28c96ac118e",
+      "afterSha256": "480ad4b82996909408446da46ca9cb785dedf30853f2b91151541a4e60778bd3",
+      "beforeBytes": 12887,
+      "afterBytes": 12711,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 6345,
+          "end": 6521,
+          "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/[sign]/index.astro",
+      "beforeSha256": "7b3d8c79d4f07693d0e6f7fd8f48c66831a42399ecb89f7e45665fd4325ecf0a",
+      "afterSha256": "dc822b64c44e3c72f2161433f373203b4a9ed0e7f47372f0d1c6e6d060ef1971",
+      "beforeBytes": 7940,
+      "afterBytes": 7733,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2477,
+          "end": 2684,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/baby-zodiac/index.astro",
+      "beforeSha256": "d6fdef3df2a7321b9cd071285ade28d4ada847f79888c6f46989be5ee1e232c1",
+      "afterSha256": "53652f95ef961743fabeef26f0c67846a9c4373f60902a386be630902fd12ef6",
+      "beforeBytes": 5034,
+      "afterBytes": 4833,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2420,
+          "end": 2621,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/birth-chart/index.astro",
+      "beforeSha256": "1f024beee772b951933544e4252bb4e57d5c14a3185cc19f0d222048e60cde2e",
+      "afterSha256": "12ae0aa1e64b30ed9202faf8f934e36672d909f9b76b9917d75c707b85b4fed6",
+      "beforeBytes": 7311,
+      "afterBytes": 7113,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 3224,
+          "end": 3422,
+          "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/compatibility/index.astro",
+      "beforeSha256": "b6a523f08d6c5c654a3126ebcb460289f850c30eabb42c6a3b44a50dcaf08c94",
+      "afterSha256": "a303f16841c0f6c198415426cb7d778b81691ff46ea1dfa02fc5b9732e418577",
+      "beforeBytes": 5665,
+      "afterBytes": 5464,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2215,
+          "end": 2416,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/moon-phase/index.astro",
+      "beforeSha256": "20cac29d92fa0ac7d253d463a99e5fbc8bd97168c084a0ac83085b1d61be737b",
+      "afterSha256": "0ce621714d3e36839d5904ac821d0d08e101ba12076cca0788db5e1527a39093",
+      "beforeBytes": 3609,
+      "afterBytes": 3408,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2021,
+          "end": 2222,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/moon-sign/index.astro",
+      "beforeSha256": "4ba04176b4b3bba947ab0ebece441f7fccdebbe858741de7e49926ac6a4a5179",
+      "afterSha256": "bcecfa7e8416a0ab3f52ff78644fe05d1899cdd2244efbad6c220e535208d392",
+      "beforeBytes": 3728,
+      "afterBytes": 3527,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2161,
+          "end": 2362,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/rising-sign/index.astro",
+      "beforeSha256": "4ea3fbbefeabe615f9a71f577221069c7c7f77c84e136e97434b41f086d3c4a3",
+      "afterSha256": "1d135997dd4ee3b55a373c02af2fe81f1501796d288b52d4efa17caef0010390",
+      "beforeBytes": 4976,
+      "afterBytes": 4775,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2472,
+          "end": 2673,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/saturn-return/index.astro",
+      "beforeSha256": "5b7dca151a2b2b33d9896e35a8bddc34a0fc5c40e4174d049d6e4d22442a1d7c",
+      "afterSha256": "9a80cdf0082ef0042d16cdbef85fda2a4bbe1aebcf6ba2dcaf2f48b70f56ace4",
+      "beforeBytes": 4371,
+      "afterBytes": 4170,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2548,
+          "end": 2749,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/transits/index.astro",
+      "beforeSha256": "9a79f8dbf559407802093162fe8c6d571774d646fe9f1668711c7fa487ae742e",
+      "afterSha256": "169c8da0fd2c9ac8c251df1a8019656b0282b55183e7e3b087553ba12fcd0184",
+      "beforeBytes": 5649,
+      "afterBytes": 5448,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2784,
+          "end": 2985,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'es',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/[sign]/index.astro",
+      "beforeSha256": "408b25f293c6c56fe6370b9ee862abe59d97c389331cf93da70b75b468a7cd88",
+      "afterSha256": "fa6e3e53a6c9a8f25cabb3b9a7e0bbf9319bf70e3954ca36cdc35412e1eeb55d",
+      "beforeBytes": 8055,
+      "afterBytes": 7848,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2476,
+          "end": 2683,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/baby-zodiac/index.astro",
+      "beforeSha256": "06b257aaa232c2fff2da2c5c68454af22ef0a6a26a2d2cb67e5bfc2b3c6bc911",
+      "afterSha256": "46c13c9c5c2bcfe98a32553ce6244a8d5eb5305f5452e63f1a4bdb19ddd2ffe5",
+      "beforeBytes": 5327,
+      "afterBytes": 5126,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2509,
+          "end": 2710,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/birth-chart/index.astro",
+      "beforeSha256": "cba046933d0fedbbffc97f7c00f79fcfe07719231d2c386e4c36f3502e5c1bf6",
+      "afterSha256": "033b522b010e71b31bb1b2c23ec4b07f5d9eedfb72db0548d631c7e75fa596d8",
+      "beforeBytes": 7681,
+      "afterBytes": 7483,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 3383,
+          "end": 3581,
+          "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/compatibility/index.astro",
+      "beforeSha256": "70b5079cdf3ca784b3ee014476a12278719d343124a9bc5dd8e62f32dd873089",
+      "afterSha256": "bd819cd41342240d00db75e7e68fdf278de0e0182c32dcd4bc82bcc907383a2e",
+      "beforeBytes": 5771,
+      "afterBytes": 5570,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2262,
+          "end": 2463,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/moon-phase/index.astro",
+      "beforeSha256": "6aa96fe3bb1818f476413b36480ca6965ab5544b23c9e5bb1f79316a381df018",
+      "afterSha256": "6caacb1714cf6b36186432576e43aeb6e4837c316e6bd549dca3bbd1f200a5ab",
+      "beforeBytes": 3847,
+      "afterBytes": 3646,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2143,
+          "end": 2344,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/moon-sign/index.astro",
+      "beforeSha256": "e1812e1946c5e64cbef2ba7022fa55c23da02231a337f6ff22b1063ca3826647",
+      "afterSha256": "df0d03b75778c1162c3d6456b4a3fc92b57ed8208a9b4ade1a242ec387b67cad",
+      "beforeBytes": 4009,
+      "afterBytes": 3808,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2322,
+          "end": 2523,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/rising-sign/index.astro",
+      "beforeSha256": "88b4fbba1228203b0e354d69007716a6e43bce1db2ee0dfd9c494d9865de67b9",
+      "afterSha256": "5f7c87c5a7aa027e1851651d86d29b0b9ba59337be75cb6249c9029bbed945c9",
+      "beforeBytes": 5187,
+      "afterBytes": 4986,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2507,
+          "end": 2708,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/saturn-return/index.astro",
+      "beforeSha256": "a19a41ac5e94213baedc563c7cc71497d7414a3a25f3795103047f352f36bcba",
+      "afterSha256": "2b32410e1b5127365e6aeb900bf3c9f752c0fb82ce421ae8d222e2f91165bbd5",
+      "beforeBytes": 4482,
+      "afterBytes": 4281,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2623,
+          "end": 2824,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/transits/index.astro",
+      "beforeSha256": "febcc5ab52faf7e21b248c70784b1af724bb7c6943d7479aa24122a72f0ea296",
+      "afterSha256": "a3fa0385f5943f566b04c03b8f4711160d165c4f82a1aa0c4216d2c5f01b7607",
+      "beforeBytes": 5811,
+      "afterBytes": 5610,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2860,
+          "end": 3061,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'fr',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/full-moon-calendar/2027/index.astro",
+      "beforeSha256": "4ce6bad16e4e3b61fb8c0ea7f4d773edf59e021f0e9a3f380d7772c068fc867a",
+      "afterSha256": "752bcf3b4603083251425f058d1b5972227c0fd97fb698ba24e46d8261ae09f0",
+      "beforeBytes": 9077,
+      "afterBytes": 8898,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 4119,
+          "end": 4298,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/full-moon-calendar/index.astro",
+      "beforeSha256": "9d65346e78f37a55172338cbb9239666581cd954f776c96fbb05ec57d84c9418",
+      "afterSha256": "3a8ee9f57b0e4ebb06c77377821f61a02a1d7b98dfcfbd69ca7e44304f4ce69c",
+      "beforeBytes": 12112,
+      "afterBytes": 11936,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 5838,
+          "end": 6014,
+          "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/index.astro",
+      "beforeSha256": "4d4f6c034e00b937101a3a6f777f6b4e8ef55aa64c4c19321a43370327624222",
+      "afterSha256": "aba4634af92a4fc28cdd7f5bce645c35759230be31caca1d1b447b340d7d0941",
+      "beforeBytes": 51786,
+      "afterBytes": 51598,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2382,
+          "end": 2570,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a, ...rest }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/[sign]/index.astro",
+      "beforeSha256": "adb6867b470133af775f598ad60c924e0333c953e21ec02fa87d490897a5ae38",
+      "afterSha256": "b4d1c3c1e48284975ac66e89213daa602fb5b39743fa641cc3b1a6bb07c9ecdb",
+      "beforeBytes": 8031,
+      "afterBytes": 7824,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2474,
+          "end": 2681,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/baby-zodiac/index.astro",
+      "beforeSha256": "2dc94c9a7c1e88ecf4957a7af3ae5db23407e19d8cb61e457b66770800ffb03a",
+      "afterSha256": "98ec12cd5c90a4a76d2fe9f3453628dc49e7b71b05cb4aebe81155bb4b30bd87",
+      "beforeBytes": 5034,
+      "afterBytes": 4833,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2364,
+          "end": 2565,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/birth-chart/index.astro",
+      "beforeSha256": "2f85eaa0c589f9b2cc85195bf87cf4a15173a858a380eaa8ac86cb1482d14e18",
+      "afterSha256": "1fc9c1c5a237ecbfab32474243e8f3f1b08dff88232c844c884b274bdfc47e82",
+      "beforeBytes": 7282,
+      "afterBytes": 7084,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 3206,
+          "end": 3404,
+          "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/compatibility/index.astro",
+      "beforeSha256": "09f428412fccc51bce3463b81b01291ec54d56d4fe76ecd4fcfc37667ef626c6",
+      "afterSha256": "4e3bcbbdd5e6cc52eae6a071ea02686fde237510a2e17c9f4d1b047d053422d8",
+      "beforeBytes": 5577,
+      "afterBytes": 5376,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2158,
+          "end": 2359,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/moon-phase/index.astro",
+      "beforeSha256": "246ce9b53802a509c3431e3eee06c5e019ee0eeec46e937f2f5a7b3710e9b2ae",
+      "afterSha256": "62e0eba831080078f6d1b01bdd247132cc42179e789521e434a3a1f7b4ede997",
+      "beforeBytes": 3680,
+      "afterBytes": 3479,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2063,
+          "end": 2264,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/moon-sign/index.astro",
+      "beforeSha256": "2eb02b4bec7e161434b0caa69009e3c699706dced2fafcd7ab390da68d07d70a",
+      "afterSha256": "432b533f7c450eb95ff322e23b57a0d1f0bf0524432a70973cd4b33ed6873365",
+      "beforeBytes": 3779,
+      "afterBytes": 3578,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2165,
+          "end": 2366,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/rising-sign/index.astro",
+      "beforeSha256": "ad88c73b9320aeded64d170e7a389c3072288964668487345c7f0e67263b98d4",
+      "afterSha256": "385b771c9ddd6e9c10489f7b14ceb5cb7cd573aff222e41d6926a4f9c72012d9",
+      "beforeBytes": 4994,
+      "afterBytes": 4793,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2407,
+          "end": 2608,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/saturn-return/index.astro",
+      "beforeSha256": "56d442078b5c3bee7d56544aefded600ff3bc4712dd022dd76a1d157aa827bfc",
+      "afterSha256": "2401a0c7adabac130d2110978c060e384969b51a6a3a0c57c0b5af89347b4226",
+      "beforeBytes": 4349,
+      "afterBytes": 4148,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2548,
+          "end": 2749,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/transits/index.astro",
+      "beforeSha256": "abb69e04e9df28f464da645bb57136e21a6817c7813cdd1535e6062852bbabe0",
+      "afterSha256": "2fb1e5dfadbc0694341affc98504c3bcc5241c1721480f8cfc5fbf5369749a3a",
+      "beforeBytes": 5590,
+      "afterBytes": 5389,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2741,
+          "end": 2942,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'it',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/aspects/[slug].astro",
+      "beforeSha256": "c640188d5261f6514fb8bd102e7f498a343959e7c09d097da7fc333a1df79268",
+      "afterSha256": "8e05f41429d1bc62ddb7a3a563ae6082b10182ab3d0e974fb841451ea5dc8e78",
+      "beforeBytes": 6328,
+      "afterBytes": 6138,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "edits": [
+        {
+          "start": 2675,
+          "end": 2865,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/houses/[slug].astro",
+      "beforeSha256": "1e236ccd4815bce7f7f8e1e31f8e8cf21a88ed24055fac9f99fb3778821507ad",
+      "afterSha256": "a2f6052c0ffc670b1498761cebc7a1038792a0dccbc6ee79b9c90b1a29c2993e",
+      "beforeBytes": 6761,
+      "afterBytes": 6571,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "edits": [
+        {
+          "start": 2768,
+          "end": 2958,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/how-to-read-a-birth-chart.astro",
+      "beforeSha256": "f82f05e949fa8fdb9dc8bda71c8b08e6adb2b977611e1ac1d9f09432f68ec9d4",
+      "afterSha256": "8a7ecb7609d4283e3c5304ec0dc5adc2d216a31ea83605f06b7ea211fa6fe172",
+      "beforeBytes": 10454,
+      "afterBytes": 10275,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "edits": [
+        {
+          "start": 2173,
+          "end": 2352,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/placements/[slug].astro",
+      "beforeSha256": "47606269dc3b1b14b3447e163c22e30854987215278e6e4338afa11dd0754f8b",
+      "afterSha256": "704f7a217008665458475590dbe0f4ab69ce3dd5d193598b89b704e4354d23ac",
+      "beforeBytes": 14480,
+      "afterBytes": 14290,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "edits": [
+        {
+          "start": 7317,
+          "end": 7507,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/learn/planets/[slug].astro",
+      "beforeSha256": "47597c5c0cf7deb891e6cbd863a8f8b074d21729dbf8eda3d4467be59e3a1ccb",
+      "afterSha256": "c3f0e33799069b29eae0f1c43760856921938e6a9c13f9ee50b587dbef2e4c1e",
+      "beforeBytes": 7700,
+      "afterBytes": 7510,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "edits": [
+        {
+          "start": 3030,
+          "end": 3220,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/lunar-return/index.astro",
+      "beforeSha256": "90def3ce01c0cd0866b7a760cbfe7a9de9dbe3766a126175103fd1c8d0079d23",
+      "afterSha256": "8d93502af26e6d0355917336975dbca0c56d8e87a5630d0a13c4fd8b30125fd1",
+      "beforeBytes": 3985,
+      "afterBytes": 3840,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 1951,
+          "end": 2096,
+          "before": ",\n  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/mercury-retrograde/2027/index.astro",
+      "beforeSha256": "eb19d01573a095105380e7eeeb5fcf66e815282a553918283c88b6fbbeead940",
+      "afterSha256": "6105788e16f62bb656bfcb59f2ecb8d7cd56ddc5fb39fbec2a5737dc1f187fb0",
+      "beforeBytes": 8106,
+      "afterBytes": 7927,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 3532,
+          "end": 3711,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/mercury-retrograde/index.astro",
+      "beforeSha256": "897510ee4fe96d10c4e4aca570c493770aa091bf60650834e9138c194d03ee7c",
+      "afterSha256": "a5d5ee295020a8fe26b53eae44ae4cd950ccb700a7de0f89923d6452d1b9a503",
+      "beforeBytes": 12067,
+      "afterBytes": 11891,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 5822,
+          "end": 5998,
+          "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/moon-phase/index.astro",
+      "beforeSha256": "e0148914322cdd8a9ffaf3890204ac8243cf00cf810c8e01772a4042642ce142",
+      "afterSha256": "e5a53b6707e84a6afec332469914e05baeec48ef5473f1e3a72ab350b0625d7d",
+      "beforeBytes": 7191,
+      "afterBytes": 7012,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2422,
+          "end": 2601,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/moon-sign/index.astro",
+      "beforeSha256": "dd97a62dc788edd88507e8452f64883b04575e32fd228d20ab207faab6ebd0ab",
+      "afterSha256": "7d2438f2416920d157cfecb1a69e973e163fbacaba4d7b39ebcd94e1de0973cd",
+      "beforeBytes": 6779,
+      "afterBytes": 6600,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2006,
+          "end": 2185,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/numerology/index.astro",
+      "beforeSha256": "6f70d036d85288a0a468d5b2d1bcf7b584fa7ede68d9da3fad559018705bf000",
+      "afterSha256": "87372cf5bc749e27e30dd96f4fea9a55d19747ee43177a0272ba0e253d82e11d",
+      "beforeBytes": 10823,
+      "afterBytes": 10644,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 3380,
+          "end": 3559,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/numerology/life-path/[number].astro",
+      "beforeSha256": "7c151d1f8537362cf651ca5062d32b057b27efc5d3ace0d00271b39fa2f04fbc",
+      "afterSha256": "a8de7c0671cb82d6561fbf04d569e69fd0f18eaa97c0f22c173db25de10b3e5f",
+      "beforeBytes": 10014,
+      "afterBytes": 9830,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 3962,
+          "end": 4146,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: page.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/[sign]/index.astro",
+      "beforeSha256": "febb9fdda517107ed94ed7da8d62bbe24975453751551cace4084f2748b6b175",
+      "afterSha256": "b9afd000997f176ebc258aa54bd7eafee98a5b2adf032f7fd844da33d6fd5845",
+      "beforeBytes": 7978,
+      "afterBytes": 7768,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2487,
+          "end": 2697,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/baby-zodiac/index.astro",
+      "beforeSha256": "ec6472a254421899d5a88585f12e7c45e34e75f31befb344bfbcd061dbafebb8",
+      "afterSha256": "a5887cf00132e1b0a199eee93b5c7d9b22f89c2e3e53486d2a237ed94695829b",
+      "beforeBytes": 4972,
+      "afterBytes": 4768,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2342,
+          "end": 2546,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/birth-chart/index.astro",
+      "beforeSha256": "3b3a19bac15bb16ea95e90653961c5b19576690b97bb78048677c116d3426d8a",
+      "afterSha256": "33a3fd796194073b12480ac3982fe1eedbb28e65b0490ac06b52364deea4579b",
+      "beforeBytes": 7397,
+      "afterBytes": 7196,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 3216,
+          "end": 3417,
+          "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/compatibility/index.astro",
+      "beforeSha256": "c5dc8d0389447d2470fb628a669113898408b58127a7ed59ab052aee4c47a75f",
+      "afterSha256": "4636bd93ea55ec41ee16a907eb2803e17f99356e578fd01ab470cc7a101e0a90",
+      "beforeBytes": 5614,
+      "afterBytes": 5410,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2181,
+          "end": 2385,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/moon-phase/index.astro",
+      "beforeSha256": "f084ce6914222304b844edbe912ab69bd044cf42dfebabe43d2b92a57dab60e8",
+      "afterSha256": "7caeea33556acd18b343aa07fbf2e50d194f20574dbb84243fef34959b139d9e",
+      "beforeBytes": 3527,
+      "afterBytes": 3323,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 1969,
+          "end": 2173,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/moon-sign/index.astro",
+      "beforeSha256": "4de65bdf6fbb6a8a96774c04c73ed42c743c9bc3a1680e974bbd9df95d3e5ed4",
+      "afterSha256": "b9669224598049ebea64bf7aae4b581a6682f0f9c945b7082650c1613c7ad26a",
+      "beforeBytes": 3809,
+      "afterBytes": 3605,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2209,
+          "end": 2413,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/rising-sign/index.astro",
+      "beforeSha256": "a8d046b76ddcfb7cba9c2a2aa8643e633e595e5ba65c27631f96eee809396b78",
+      "afterSha256": "e174baa5925c0d9e57e8369c46495a6b108c234a8dd2a17cb0eb691758ee35cb",
+      "beforeBytes": 4942,
+      "afterBytes": 4738,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2413,
+          "end": 2617,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/saturn-return/index.astro",
+      "beforeSha256": "60a3bc1e03d02691777d7efc906f6a7b7ecaf3aa1e26798a49c05d6a1f0617df",
+      "afterSha256": "ea5cbff54ebdcbf4666afb73e02b07bd9f23c4803a12ab184b2ea5170b08bfc1",
+      "beforeBytes": 4381,
+      "afterBytes": 4177,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2560,
+          "end": 2764,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/transits/index.astro",
+      "beforeSha256": "ad20676f44f879165b061711841182b21a114d11f01d193eb1e3deb20bf816e2",
+      "afterSha256": "a345a3b2bc19bcce10f83bf26515be22b4345c00d7f1f555bd20a75f4d49b4a6",
+      "beforeBytes": 5615,
+      "afterBytes": 5411,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 2751,
+          "end": 2955,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'pt-BR',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/retrogrades/index.astro",
+      "beforeSha256": "9b7e06db6a7f870ee13d0cbc1f1cb40243f0a2822249b3b088b9521e61131173",
+      "afterSha256": "8dd236737b48a137369bd0b96ade21d2e1fe727695e5a9cdf7b3d13d429207f7",
+      "beforeBytes": 13801,
+      "afterBytes": 13625,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 6474,
+          "end": 6650,
+          "before": "{\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/rising-sign/[sign].astro",
+      "beforeSha256": "57580fed3e8f04d8b46c5117048109dda2c0d8408f6305bd184ded28f5dc646b",
+      "afterSha256": "53d0f53c0f3819fab53be274aee217c27a5cc8215385b76b17c59f108e5b5a90",
+      "beforeBytes": 9389,
+      "afterBytes": 9199,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 3861,
+          "end": 4051,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: entry.data.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/rising-sign/index.astro",
+      "beforeSha256": "ea6f84b56414a02a349c0c79e9bd89352a1410819f284be71f842000bc8f4025",
+      "afterSha256": "ac524ee983e6dac90e003a6f77d737b39ab6c50b0ea4c5db5c3a19b3a233df7e",
+      "beforeBytes": 7525,
+      "afterBytes": 7346,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2205,
+          "end": 2384,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/[sign]/index.astro",
+      "beforeSha256": "62d23cdbe6a8f4460da851f56680c2ac0c37478692da53472cf6851e6cee380e",
+      "afterSha256": "587e2e6ea87b18b963f11a9b1434130372e2e9741d62a90f77ba654ca2021b0b",
+      "beforeBytes": 10954,
+      "afterBytes": 10747,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2587,
+          "end": 2794,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: guide.faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/baby-zodiac/index.astro",
+      "beforeSha256": "9b135373029da55f4960f9d9299689af1ef751119559d72dd63ee93df4149308",
+      "afterSha256": "aa93080fbda3573b88f25c73e7fdf23d48ddf5ab36a7de9a370c0f0e71d4e0ae",
+      "beforeBytes": 6029,
+      "afterBytes": 5828,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 1873,
+          "end": 2074,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/birth-chart/index.astro",
+      "beforeSha256": "6b4450e595da8999347d43a6b51c56e3b28754757f0d776e2f2032e79da0c3c1",
+      "afterSha256": "4712b4cd0fba561b8f70ccd3221867f22b500b1ccd867fe624b89e0fd59cdf0d",
+      "beforeBytes": 9342,
+      "afterBytes": 9144,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2895,
+          "end": 3093,
+          "before": "{\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  },",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/compatibility/index.astro",
+      "beforeSha256": "767f86c5b7b4ba5f64c1d6dfb35ac32a08190ee49b291f27bce56d6bd7e11662",
+      "afterSha256": "30485e2f67e344efa57d76e0b72a09fe4d2faf6ea6969b220ec887334886fc9f",
+      "beforeBytes": 6987,
+      "afterBytes": 6786,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 1993,
+          "end": 2194,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/moon-phase/index.astro",
+      "beforeSha256": "76f52fc0f1cb4b535fb7fb1e9a6cd09cedcb517bc6ce1657085cb3a10f323def",
+      "afterSha256": "0246b69e7e64e5803a52bd8c66cd198711b34304e00156b1495fd2559581a937",
+      "beforeBytes": 4131,
+      "afterBytes": 3930,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 1572,
+          "end": 1773,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/moon-sign/index.astro",
+      "beforeSha256": "92c9f640ae2063ce4293e73fbd864999e83ba4bf3ef7b9c9d10630fa8a52c746",
+      "afterSha256": "ddd223e7a18a0d69254fad18f8bf039d63f18519c3e63c8b3b5a862e9cf05e2e",
+      "beforeBytes": 4737,
+      "afterBytes": 4536,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 1881,
+          "end": 2082,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/rising-sign/index.astro",
+      "beforeSha256": "77e2c78aa02d72c2cd8cd549e470de40ce5fb278f63eff4c490bd216c84a84c7",
+      "afterSha256": "650c80aa8e50d7cc47038eb2fe2106ab7f85ccf62867e8175deb83041bec53c4",
+      "beforeBytes": 6468,
+      "afterBytes": 6267,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2087,
+          "end": 2288,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/saturn-return/index.astro",
+      "beforeSha256": "d840402f55c407053803afb3d8bf796d091b6ba54f45b08e01510f2576cfc927",
+      "afterSha256": "1e731816d82bd4d0a2ca27a74e71cd36eb8a442c3b3b0e42537263c002b0392e",
+      "beforeBytes": 5339,
+      "afterBytes": 5138,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2115,
+          "end": 2316,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/transits/index.astro",
+      "beforeSha256": "3482f8a8db52d534c36432a0bd055eaa6325a2cc820f6b25a4740d9a9ecfbd67",
+      "afterSha256": "3cbd4c434a14b9c542cd79ff531ea1b7752331d0f824169e4a34b7c9de5af013",
+      "beforeBytes": 5102,
+      "afterBytes": 4901,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 1871,
+          "end": 2072,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    inLanguage: 'ru',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/saturn-return/index.astro",
+      "beforeSha256": "6128697a7da8567cecad88303598cc86f8fc51a54fbb864435d2203414019c8f",
+      "afterSha256": "8bec09286e685566dcecba9bb3259c5aed13fd6efe257a8d00ae07d480a06a33",
+      "beforeBytes": 6347,
+      "afterBytes": 6168,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2256,
+          "end": 2435,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/solar-return/index.astro",
+      "beforeSha256": "be97d7aaaf1b689d9ac82955973a2561cc2c4d62ca0cd402024997f6e30cb9e5",
+      "afterSha256": "ce7948e2789cdf77a0ca7cdd84309c096074894e786319c79243288dcd1585f4",
+      "beforeBytes": 3643,
+      "afterBytes": 3498,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 1707,
+          "end": 1852,
+          "before": ",\n  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/transits/index.astro",
+      "beforeSha256": "4235a236d4478614ba40ec09fc1a49c99c5d15db783c8390281cac6f146082a4",
+      "afterSha256": "e796d77f343532c19d2c725ebdf92af424f88e325ba25f16a48aba3be14d4280",
+      "beforeBytes": 6435,
+      "afterBytes": 6256,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 2555,
+          "end": 2734,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/void-of-course-moon/index.astro",
+      "beforeSha256": "681d4347e5796c209f4fb68c6de3b2f36fa7fbe53266ac16e026977ae3386084",
+      "afterSha256": "f0048ade292c66e97fe1ca5fc8e222308749bd38f111dff9a2960879d66ddb28",
+      "beforeBytes": 17185,
+      "afterBytes": 17006,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 6066,
+          "end": 6245,
+          "before": ",\n  {\n    '@type': 'FAQPage',\n    mainEntity: faq.map(({ q, a }) => ({\n      '@type': 'Question',\n      name: q,\n      acceptedAnswer: { '@type': 'Answer', text: a },\n    })),\n  }",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/lib/home-trust.ts",
+      "beforeSha256": "14554e639e9dfc3a50bbce5aecae93bef5d51a741821ea0590657bb15406e7d5",
+      "afterSha256": "5db6601d3409b3adac0b9d6e30bac24578816b394801fdcee987f7a8b3015184",
+      "beforeBytes": 708,
+      "afterBytes": 457,
+      "before": {
+        "declarations": 1,
+        "calls": 0
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 457,
+          "end": 708,
+          "before": "export function homeTrustSchema(locale: CatalogLocale) {\n  return { '@type': 'FAQPage', mainEntity: homeTrustFaq(locale).map(({q,a,link}) => ({\n    '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: `${a} ${link}.` },\n  })) };\n}\n",
+          "after": ""
+        }
+      ]
+    },
+    {
+      "path": "src/pages/es/index.astro",
+      "beforeSha256": "4e99bf0dadf7678a76dfc493f315398fae1ade03347272535d8b764d44cf6de1",
+      "afterSha256": "aa200aca908f8c9c01cfdfedea291f1c7ab0ec409866caeb42a4a26e23e50e80",
+      "beforeBytes": 19095,
+      "afterBytes": 19014,
+      "before": {
+        "declarations": 0,
+        "calls": 1
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 151,
+          "end": 1469,
+          "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Carta natal', promise: 'Tu Sol, Luna, ascendente, planetas, casas y lo que significan.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signo lunar', promise: 'Cómo sientes, qué te calma y qué necesitas para sentirte en casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'La primera impresión que das y cómo se ordena tu carta.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilidad', promise: 'Compara dos cartas y mira dónde conectan, chocan y crecen.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('es'),",
+          "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Carta natal', promise: 'Tu Sol, Luna, ascendente, planetas, casas y lo que significan.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signo lunar', promise: 'Cómo sientes, qué te calma y qué necesitas para sentirte en casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'La primera impresión que das y cómo se ordena tu carta.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilidad', promise: 'Compara dos cartas y mira dónde conectan, chocan y crecen.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+        }
+      ]
+    },
+    {
+      "path": "src/pages/fr/index.astro",
+      "beforeSha256": "3650d99244e8438f3154eccb11ae4d1d540aa96d7de5566593ca6a577754676f",
+      "afterSha256": "bc7a05ac0f7878d6537573436706656ab7d380fd8601807bc888af5414199e1a",
+      "beforeBytes": 19345,
+      "afterBytes": 19264,
+      "before": {
+        "declarations": 0,
+        "calls": 1
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 151,
+          "end": 1617,
+          "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { englishOnlyCue, localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\nconst englishOnly = englishOnlyCue('fr');\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Thème astral', promise: 'Ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signe lunaire', promise: 'Ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin pour te sentir chez toi.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendant', promise: 'La première impression que tu donnes et la façon dont ton thème s’organise.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilité', promise: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('fr'),",
+          "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { englishOnlyCue, localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\nconst englishOnly = englishOnlyCue('fr');\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Thème astral', promise: 'Ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signe lunaire', promise: 'Ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin pour te sentir chez toi.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendant', promise: 'La première impression que tu donnes et la façon dont ton thème s’organise.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilité', promise: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+        }
+      ]
+    },
+    {
+      "path": "src/pages/it/index.astro",
+      "beforeSha256": "b8cc2a2e30be0781c56db079e59a6325efb7cbc7313708ef120342d6d0b1f65b",
+      "afterSha256": "8ea37382f89e4d6e8b89a3d0e398f71818dea22d527629738b3fe553f979cd53",
+      "beforeBytes": 19173,
+      "afterBytes": 19092,
+      "before": {
+        "declarations": 0,
+        "calls": 1
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 151,
+          "end": 1596,
+          "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { englishOnlyCue, localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\nconst englishOnly = englishOnlyCue('it');\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Tema natale', promise: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Segno lunare', promise: 'Come vivi le emozioni, che cosa ti calma e ciò di cui hai bisogno per sentirti a casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'La prima impressione che dai e il modo in cui si organizza il tuo tema.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilità', promise: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('it'),",
+          "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { englishOnlyCue, localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\nconst englishOnly = englishOnlyCue('it');\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Tema natale', promise: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Segno lunare', promise: 'Come vivi le emozioni, che cosa ti calma e ciò di cui hai bisogno per sentirti a casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'La prima impressione che dai e il modo in cui si organizza il tuo tema.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilità', promise: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+        }
+      ]
+    },
+    {
+      "path": "src/pages/pt/index.astro",
+      "beforeSha256": "e50ff3a90421263f0e9691c3198ee2c09e9bac13fe068cc8cc7eed0992a3b3cb",
+      "afterSha256": "5653a985d9c9f164f02cc53ea45109b1051deb0c747499dda31ca4711923ddc1",
+      "beforeBytes": 19079,
+      "afterBytes": 18998,
+      "before": {
+        "declarations": 0,
+        "calls": 1
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "edits": [
+        {
+          "start": 151,
+          "end": 1544,
+          "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Mapa astral', promise: 'Seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o significado de cada um.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signo lunar', promise: 'Como você vive as emoções, o que traz calma e do que precisa para se sentir em casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'A primeira impressão que você causa e como seu mapa se organiza.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilidade', promise: 'Compare dois mapas e veja onde vocês se conectam, entram em conflito e crescem.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('pt'),",
+          "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport TodayBySign from '../../islands/TodayBySign';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport { localizePath } from '../../lib/i18n';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/birth-chart/', title: 'Mapa astral', promise: 'Seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o significado de cada um.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/moon-sign/', title: 'Signo lunar', promise: 'Como você vive as emoções, o que traz calma e do que precisa para se sentir em casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/rising-sign/', title: 'Ascendente', promise: 'A primeira impressão que você causa e como seu mapa se organiza.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/compatibility/', title: 'Compatibilidade', promise: 'Compare dois mapas e veja onde vocês se conectam, entram em conflito e crescem.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+        }
+      ]
+    },
+    {
+      "path": "src/pages/ru/index.astro",
+      "beforeSha256": "4258f8c41851cdd16500ca8d4ad85bda637499184a7427b71b43611bfb13c792",
+      "afterSha256": "c4c7c15f3e198bf02d7cfbb5777feb84f8cda583896562ac90dcebf345e0e0a1",
+      "beforeBytes": 25553,
+      "afterBytes": 25472,
+      "before": {
+        "declarations": 0,
+        "calls": 1
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 151,
+          "end": 1390,
+          "before": "{ homeTrustSchema } from '../../lib/home-trust';\nimport Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете, что вас успокаивает и что даёт ощущение дома.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Первое впечатление и то, как выстроена вся карта.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = [\n  homeTrustSchema('ru'),",
+          "after": "Base from '../../layouts/Base.astro';\nimport SignIcon from '../../components/SignIcon.astro';\nimport ToolGlyph from '../../components/ToolGlyph.astro';\nimport SkyTicker from '../../islands/SkyTicker';\nimport WelcomeBack from '../../islands/WelcomeBack';\nimport { SIGNS, signDates, signName } from '../../lib/signs';\nimport glassMaps from '../../data/glass-maps.json';\nimport '../../styles/today.css';\n\nconst tools = [\n  { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },\n  { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете, что вас успокаивает и что даёт ощущение дома.', hue: 'var(--sign-pisces)', kind: 'moon' as const },\n  { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Первое впечатление и то, как выстроена вся карта.', hue: 'var(--sign-libra)', kind: 'rising' as const },\n  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-leo)', kind: 'compat' as const },\n];\n\nconst jsonLd = ["
+        }
+      ]
+    },
+    {
+      "path": "src/islands/ChartTrust.test.tsx",
+      "beforeSha256": "3fd2e38ada9ae47249ab8278a2780b5d4b801985ab3f004778f34be21d78d0f3",
+      "afterSha256": "59fd61b7088e696e03bfe91e0f291a5c9456dc67cdabaaed4e814b4c5b8b941f",
+      "beforeBytes": 2846,
+      "afterBytes": 2738,
+      "before": {
+        "declarations": 0,
+        "calls": 1
+      },
+      "proposed": {
+        "declarations": 0,
+        "calls": 0
+      },
+      "protectedBy": [],
+      "edits": [
+        {
+          "start": 284,
+          "end": 2251,
+          "before": ", homeTrustSchema } from '../lib/home-trust';\nimport { isAstrologyToolPath } from '../lib/trust-boundary';\n\ndescribe('chart trust receipts', () => {\n  it('reports the exact computed instant without rounding, storage, or requests', () => {\n    const instant = '1867-10-18T20:57:41.000Z';\n    expect(mathInstant(instant)).toBe(instant);\n    expect(mathInstant(new Date(instant))).toBe(instant);\n    const markup = render(h(CheckOurMath, { utc: instant }));\n    expect(markup).toContain(`datetime=\"${instant}\"`);\n    expect(markup).toContain('Check our math');\n    expect(markup).toContain('href=\"/methodology/\"');\n  });\n  it('never invents an instant for missing or malformed shared data', () => {\n    for (const utc of [undefined, null, 'not-a-date']) {\n      expect(mathInstant(utc)).toBeNull();\n      const markup = render(h(CheckOurMath, { utc }));\n      expect(markup).toContain('data-instant-basis=\"unavailable\"');\n      expect(markup).not.toContain('<time');\n    }\n  });\n  it.each(CATALOG_LOCALES)('ships truthful labels and human openings in %s', locale => {\n    for (const basis of ['birth', 'reference', 'return', 'approximate-return', 'sky-reference', 'record'] as const) {\n      const markup = render(h(CheckOurMath, { locale, basis, utc: '2000-01-01T12:00:00Z' }));\n      expect(markup).toContain(`href=\"${localizePath(locale, '/methodology/')}\"`);\n      expect(markup).toContain(UI[locale].trustMath);\n      if (basis === 'reference') expect(markup).toContain(UI[locale].trustReference);\n    }\n    for (const kind of ['self', 'other', 'pair', 'return', 'saturn'] as const) {\n      expect(render(h(ResultOpening, { locale, kind }))).toContain('data-result-opening');\n    }\n    const faq = homeTrustFaq(locale);\n    expect(faq[0].a).toContain('Zodiacs.org'); expect(faq[0].a).toContain('Astrofolio');\n    expect(faq[0].href).toBe(localizePath(locale, '/disclosure/'));\n    expect(homeTrustSchema(locale).mainEntity[0].acceptedAnswer.text).toContain(faq[0].a",
+          "after": " } from '../lib/home-trust';\nimport { isAstrologyToolPath } from '../lib/trust-boundary';\n\ndescribe('chart trust receipts', () => {\n  it('reports the exact computed instant without rounding, storage, or requests', () => {\n    const instant = '1867-10-18T20:57:41.000Z';\n    expect(mathInstant(instant)).toBe(instant);\n    expect(mathInstant(new Date(instant))).toBe(instant);\n    const markup = render(h(CheckOurMath, { utc: instant }));\n    expect(markup).toContain(`datetime=\"${instant}\"`);\n    expect(markup).toContain('Check our math');\n    expect(markup).toContain('href=\"/methodology/\"');\n  });\n  it('never invents an instant for missing or malformed shared data', () => {\n    for (const utc of [undefined, null, 'not-a-date']) {\n      expect(mathInstant(utc)).toBeNull();\n      const markup = render(h(CheckOurMath, { utc }));\n      expect(markup).toContain('data-instant-basis=\"unavailable\"');\n      expect(markup).not.toContain('<time');\n    }\n  });\n  it.each(CATALOG_LOCALES)('ships truthful labels and human openings in %s', locale => {\n    for (const basis of ['birth', 'reference', 'return', 'approximate-return', 'sky-reference', 'record'] as const) {\n      const markup = render(h(CheckOurMath, { locale, basis, utc: '2000-01-01T12:00:00Z' }));\n      expect(markup).toContain(`href=\"${localizePath(locale, '/methodology/')}\"`);\n      expect(markup).toContain(UI[locale].trustMath);\n      if (basis === 'reference') expect(markup).toContain(UI[locale].trustReference);\n    }\n    for (const kind of ['self', 'other', 'pair', 'return', 'saturn'] as const) {\n      expect(render(h(ResultOpening, { locale, kind }))).toContain('data-result-opening');\n    }\n    const faq = homeTrustFaq(locale);\n    expect(faq[0].a).toContain('Zodiacs.org'); expect(faq[0].a).toContain('Astrofolio');\n    expect(faq[0].href).toBe(localizePath(locale, '/disclosure/')"
+        }
+      ]
+    }
+  ],
+  "controls": {
+    "all94SourceHashesVerified": true,
+    "all88DirectDeclarationsLocated": true,
+    "allProposedParserInputsValid": true,
+    "allProposedFAQDeclarationsRemoved": true,
+    "allSixRetiredConsumersRemoved": true,
+    "nonFAQTemplateBodyBytesUnchanged": true
+  },
+  "limitations": [
+    "Proposal only: actual application target files are not written or committed by this script.",
+    "Validator still requires obsolete homepage FAQ metadata and needs a reviewed semantic purpose rule.",
+    "No rendered page-purpose/visibility equivalence, exhaustive built-route audit, scope allowance, deployment or S2 acceptance."
+  ]
+}

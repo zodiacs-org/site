@@ -38,6 +38,9 @@ unmerged until complete final CI, fresh review, merge/post-merge and
 production checks finish; it adds no accepted weight. The existing
 B2.a/B2.c thousand-window records are not a new accuracy run.
 
+
+PR [#703](https://github.com/zodiacs-org/site/pull/703) is still open. Final Site Check `38056575059` has nineteen passing jobs and a main-check failure for an unlisted clock sentence. Review finds a worker engine-boundary violation and unsupported reference-span presets. The first corrective source `6f1c5c5` fails native `38058351414` on the unchanged engine budget and overbroad new guards. Both exact failure logs and their corrective source choices are retained; the earlier focused pass is not final acceptance. Corrective source `a9034bd` is undergoing native qualification `38058924638`. All final CI, clean review, merge/post-merge and canonical production gates remain required; B2.b remains partial.
+
 The private solar scanner is merged under [engine #38](https://github.com/zodiacs-org/engine/pull/38)
 at `9a6317ac1f6516fbf518079c266453995d8f9341`, with the exact tested tree
 and ordered parents verified. [Source-bound qualification](../evidence/solar-terms-20261010/README.md)
@@ -56,7 +59,7 @@ incomplete dependents/citation discovery and private analytics remain gaps;
 P0.7a is partial and unaccepted. The [FAQ source-purpose review](../evidence/faq-source-purpose-20261010/README.md)
 and native audit now verify ninety-six source records, eighty-eight
 declarations, five homepage consumers and their non-rendered test. This
-advances the locator; actual markup corrections, compiled-route coverage
+advances the locator. Native read-only proposal `38058696799` verifies 94 source hashes, valid proposed syntax, 88 in-memory node removals, six retired helper consumers and unchanged visible template bodies. Forty-six proposed paths are protected. Application files remain unchanged; the schema validator still requires correction. Actual markup corrections, compiled-route coverage
 and rendered equivalence/visibility remain open, with S2 partial. Existing
 protected-path freezes remain in force.
 [A6's static API source-lineage review](../evidence/sky-api-citation-lineage-20261010/README.md)
