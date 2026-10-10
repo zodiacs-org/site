@@ -259,4 +259,24 @@ describe('local birth time through the package geo entry', () => {
     expect(RESOLVE_BIRTH_OUTPUT.safeParse({ ...value, extra: 'unadvertised' }).success).toBe(false);
   });
 
+  it('records the explicitly written Julian date alongside its Gregorian instant', async () => {
+    const result = await resolveBirthTime({ date: '1900-03-01', time: '12:00', timeZone: 'UTC', calendar: 'julian' });
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error('Julian reference refused');
+    const value = RESOLVE_BIRTH_OUTPUT.parse(result.value);
+    expect(value.birth.utc).toBe('1900-03-14T12:00:00.000Z');
+    expect(value.resolution).toMatchObject({ date: '1900-03-14', writtenDate: '1900-03-01', calendar: 'julian' });
+    expect(value.receipt.localResolution).toMatchObject({ date: '1900-03-14', writtenDate: '1900-03-01', calendar: 'julian' });
+  });
+
+  it('exposes the package alias clock explicitly rather than claiming legacy form parity', async () => {
+    const result = await resolveBirthTime({ date: '1890-06-15', time: '12:00', timeZone: 'WET' });
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error('Package alias refused');
+    const value = RESOLVE_BIRTH_OUTPUT.parse(result.value);
+    expect(value.birth.utc).toBe('1890-06-15T12:36:45.000Z');
+    expect(value.resolution.zone).toMatchObject({ source: 'tzdb', dataForm: 'main', tzdbVersion: '2025c' });
+    expect(value.limitations.join(' ')).toContain('existing site forms may use a different host-clock convention');
+  });
+
 });

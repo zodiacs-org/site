@@ -13,5 +13,13 @@
     "Native generated server bundle and original archive rebuild gates, all required final CI and fresh review",
     "No archive/publication/guide clearance is inferred from earlier named owner answers; publication/adoption remains gated."
   ],
-  "status": "Source investigation and draft only; no implementation or accepted-weight change."
+  "status": "Local stdio source implementation and meaningful controls prepared on an isolated branch; no native execution, archive publication, form clock change or accepted-weight change.",
+  "sourcePreparation": {
+    "tool": "resolve_birth_time",
+    "unitControls": 31,
+    "realSdkControls": 3,
+    "unexpectedRejectionPrivacyControl": 1,
+    "originalStdioDrive": "Existing checks preserved and new geo controls added; native qualification pending",
+    "nativeQualification": "Not started; heavy validation remains serial behind the birth-window full suite and deployment gates."
+  }
 }

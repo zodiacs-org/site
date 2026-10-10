@@ -6,7 +6,7 @@
  *
  * Nothing here is mocked: the drive spawns `examples/mcp-server/server.mjs` as
  * a child process, speaks MCP over its stdio, and reads what comes back. It
- * initializes, lists the tools and their output schemas, calls all six —
+ * initializes, lists the tools and their output schemas, calls all seven —
  * the client itself checks every result against the schema the server
  * advertised — checks what each result cites, lists and reads the two
  * resources, drives eighteen malformed or refused requests, checks that a
@@ -196,8 +196,8 @@ try {
   // ---- tools/list ----
   const listed = await client.listTools();
   const names = listed.tools.map((tool) => tool.name).sort();
-  check('lists exactly the six tools', JSON.stringify(names)
-    === JSON.stringify(['calculate_natal_chart', 'check_sky_fact', 'compare_calculation_records', 'find_events', 'get_capabilities', 'get_positions']), names);
+  check('lists exactly the seven local tools', JSON.stringify(names)
+    === JSON.stringify(['calculate_natal_chart', 'check_sky_fact', 'compare_calculation_records', 'find_events', 'get_capabilities', 'get_positions', 'resolve_birth_time']), names);
   check('every tool closes its argument object', listed.tools.every((tool) =>
     tool.inputSchema?.type === 'object' && tool.inputSchema.additionalProperties === false));
   check('every tool is annotated read-only, non-destructive and closed-world', listed.tools.every((tool) =>
@@ -257,6 +257,38 @@ try {
     capabilities.supported?.limits?.recordBytes === 65536
     && capabilities.supported.limits.requestBytes === 1048576
     && capabilities.supported.epoch?.from === '1800-01-01T00:00:00.000Z');
+
+  // ---- resolve_birth_time ----
+  const resolvedBirth = await ok('resolve_birth_time', {
+    date: '1947-07-01', time: '12:00', timeZone: 'Europe/Stockholm', latitude: 59.33, longitude: 18.07,
+  });
+  check('local birth uses the fixed backzone acceptance instant',
+    resolvedBirth.birth?.utc === '1947-07-01T11:00:00.000Z'
+    && resolvedBirth.birth.timeKnown === true && resolvedBirth.reference === 'supplied-instant');
+  check('local birth distinguishes pinned history from the actual host cross-check',
+    resolvedBirth.resolution?.offsetMinutes === 60 && resolvedBirth.resolution.intlOffsetMinutes === 120
+    && resolvedBirth.resolution.zone?.source === 'tzdb'
+    && resolvedBirth.resolution.zone.dataForm === 'main+backzone'
+    && resolvedBirth.resolution.zone.tzdbVersion === '2025c');
+  check('local birth cites the actual private clock receipt at the existing methodology URL',
+    resolvedBirth.cite?.url === 'https://zodiacs.org/methodology/'
+    && resolvedBirth.cite.receipt === digest(resolvedBirth.receipt)
+    && resolvedBirth.receipt.localResolution?.timeZone === 'Europe/Stockholm'
+    && resolvedBirth.receipt.localResolution.offsetMinutes === 60
+    && resolvedBirth.receipt.localResolution.policy?.fold === 'earlier'
+    && resolvedBirth.receipt.localResolution.policy.gap === 'shift-forward');
+  const localUnknown = await ok('resolve_birth_time', { date: '1947-07-01', timeZone: 'Europe/Stockholm' });
+  check('local noon is labelled as one unknown-time reference rather than whole-date coverage',
+    localUnknown.birth?.timeKnown === false && localUnknown.reference === 'local-noon'
+    && localUnknown.birth.utc === '1947-07-01T11:00:00.000Z'
+    && localUnknown.limitations.some((line) => /not coverage of the whole local date/.test(line)));
+  const badLocalZone = await attempt('resolve_birth_time', {
+    date: '1947-07-01', time: '12:00', timeZone: 'Europe/PrivateCanary',
+  });
+  check('local zone refusal carries no private zone value or partial answer',
+    badLocalZone.layer === 'tool' && !badLocalZone.text.includes('PrivateCanary'));
+  const localRecovery = await ok('resolve_birth_time', { date: '1947-07-01', time: '12:00', timeZone: 'UTC' });
+  check('local birth serves the next valid call after refusal', localRecovery.birth?.utc === '1947-07-01T12:00:00.000Z');
 
   // ---- calculate_natal_chart ----
   const chart = await ok('calculate_natal_chart', LONDON);
@@ -385,7 +417,7 @@ try {
     && ![skyInstant, lunation.at.slice(0, 10)].some((needle) => JSON.stringify([onDate.receipt, atInstant.receipt]).includes(needle)),
     [onDate.receipt?.search, atInstant.receipt?.endpoint]);
   const zoned = await attempt('check_sky_fact', { kind: 'phase', phase: 'full', date: '2026-10-07', zone: 'Europe/Paris' });
-  check('a zone is refused, since this server reads none, and names the argument',
+  check('check_sky_fact refuses a zone and names the argument',
     zoned.layer === 'tool' && /zone/.test(zoned.text), zoned);
   const backwards = await attempt('find_events', { from: '2026-04-30T00:00:00Z', to: '2026-02-01T00:00:00Z' });
   check("a refusal from the compute API's parser is its own sentence, with the field it names",
