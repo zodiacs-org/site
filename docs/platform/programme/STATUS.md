@@ -53,10 +53,18 @@ The [public adoption observation](../evidence/public-adoption-baseline-20261010/
 records dated public downloads, repository metadata and the named Registry
 query with provider methods. Unavailable MCP package download statistics,
 incomplete dependents/citation discovery and private analytics remain gaps;
-P0.7a is partial and unaccepted. The ninety-file FAQ source locator remains
-a locator, not a semantic audit. A6's legacy static sky data still needs
-source-bound provenance; it cannot be stamped with the current engine
-version merely because the build repackages it.
+P0.7a is partial and unaccepted. The [FAQ source-purpose review](../evidence/faq-source-purpose-20261010/README.md)
+and native audit now verify ninety-six source records, eighty-eight
+declarations, five homepage consumers and their non-rendered test. This
+advances the locator; actual markup corrections, compiled-route coverage
+and rendered equivalence/visibility remain open, with S2 partial. Existing
+protected-path freezes remain in force.
+[A6's static API source-lineage review](../evidence/sky-api-citation-lineage-20261010/README.md)
+shows that the API repackages historical components without cite fields;
+a retrograde-only revision left moon records and the file timestamp
+unchanged. It establishes no accuracy failure and does not authorize
+stamping the current engine version onto every legacy value. A6 remains
+partial pending actual producer records and complete response coverage.
 
 Stable publication prerequisites remain in
 [engine #32](https://github.com/zodiacs-org/engine/issues/32). Guide routes
