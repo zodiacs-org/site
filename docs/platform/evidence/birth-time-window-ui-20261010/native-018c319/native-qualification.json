@@ -1,0 +1,125 @@
+{
+  "schema": "zodiacs.birth-window-development-native-qualification.v1",
+  "source": "018c3190649cb19e1f478459958b6ac8809d0464",
+  "tree": "bf10d1fd86d1179fcae5f432aedd0af25ff12bf8",
+  "producer": "2b8f342780db5d79bc4f5cc6cd96f480edb01463",
+  "run": 38068373681,
+  "job": 114260559026,
+  "attempt": 1,
+  "conclusion": "success",
+  "focusedControls": 53,
+  "typecheck": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 40
+  },
+  "units": {
+    "passed": 6989,
+    "failed": 0,
+    "existingSkips": 6,
+    "filesPassed": 543,
+    "filesSkipped": 1
+  },
+  "bundle": {
+    "mainKB": 32.5,
+    "mainLimitKB": 32.598046875,
+    "birthRouteKB": 67.1,
+    "birthRouteLimitKB": 71,
+    "workerGzipBytes": 40367,
+    "globalChunkLimitKB": 60
+  },
+  "browser": {
+    "developmentReport": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/development-browser-controls.json",
+    "productionPreviewReport": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/browser-controls.json",
+    "modes": 2,
+    "widths": [
+      390,
+      1440
+    ],
+    "controlsPerModePerViewport": 13,
+    "allPassed": true,
+    "pageErrors": []
+  },
+  "visual": {
+    "report": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/visual-insertion.json",
+    "cases": 15,
+    "tolerance": 0.001,
+    "threshold": 0.1,
+    "unrelatedLinuxUnchanged": 12,
+    "darwinReferenceBytesUnchanged": 15,
+    "passed": true
+  },
+  "lighthouse": [
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-1.json",
+      "bytes": 489648,
+      "sha256": "a52490cf8f8497b68b0be4456703cf4e73f163b4872877eb45686c1d4b9d439d",
+      "runtimeError": null,
+      "lcp": 2412.9876000000004,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1,
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/lighthouse/birth-chart-1.json"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-2.json",
+      "bytes": 489984,
+      "sha256": "c56abfdb7a3a57e21149c72554a3afb9c929608ae811d341543e6bcd55efa37c",
+      "runtimeError": null,
+      "lcp": 2487.2979,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.97,
+      "accessibility": 1,
+      "seo": 1,
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/lighthouse/birth-chart-2.json"
+    },
+    {
+      "path": "tests/visual/artifacts/lighthouse/birth-chart-3.json",
+      "bytes": 490052,
+      "sha256": "3758c3b261e7dfe584f35984234c9b2710cbaaa5b87e9afe23f0338b7b174f03",
+      "runtimeError": null,
+      "lcp": 2107.3663,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 0.98,
+      "accessibility": 1,
+      "seo": 1,
+      "retainedPath": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/lighthouse/birth-chart-3.json"
+    }
+  ],
+  "journal": {
+    "time": "2026-10-10T16:43:07.0776873Z",
+    "text": "Runner stalls: none; no sample was retaken."
+  },
+  "captures": {
+    "count": 18,
+    "allActualPngsMatchNativeManifest": true,
+    "allByteIdenticalToQualifiedMain": true,
+    "templateSourceSha256": "9dd04ba1bf49c7dd8e332d951bf095f0b2878898f3126c2d9d4461f708192d23",
+    "manifestSha256": "ab5b350e37c82f4e4a190e512d126b4ad4ee87ba5e6f497b7db72b90c5b5d86a"
+  },
+  "originalLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/native-qualification.log",
+    "bytes": 1363606,
+    "sha256": "9bdce9486749d5d4a16675f86a1b8bb30b019b7374b304ec8306f44c604ef4a7"
+  },
+  "recovery": {
+    "run": 38069101345,
+    "allSixJobs": "success",
+    "artifact": 11675743260,
+    "bytes": 31587765,
+    "sha256": "640185ca1c5a938a1c331be2cc39ae9cfcefca3d3090ff665a5fcf7c0f7670e0",
+    "crcVerified": true,
+    "receipt": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-artifact-recovery.json",
+    "retentionMapping": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/retention-mapping.json"
+  },
+  "inspection": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/image-inspection.json",
+  "limitations": [
+    "All observations are bound to source 018c319 and original run/ZIP. There are no sample retakes or changed expectations/thresholds.",
+    "Complete final carrier CI, fresh clean review, merge/post-merge and exact canonical production remain required. B2.b stays partial/unmerged/unaccepted.",
+    "Earlier A8 and carrier-814 results and all failure/review history remain source-specific, retained and do not qualify a different source."
+  ]
+}

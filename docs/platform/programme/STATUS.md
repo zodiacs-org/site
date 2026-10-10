@@ -46,6 +46,9 @@ Corrected native source `a8b58d8` passes run `38063604884`: 6989 unit tests with
 
 Fresh review on carrier `814727d` completes with development-worker P2 `4238230846`; it is not clean. Isolated source `018c319` registers the full boundary in the serve-only pipeline and adds actual development controls with the original expectations. Native syntax preflight `38068028005` passes the three exact corrected entry files on Node 22.23.3, without executing imports or a model. Actual corrected development/production qualification, final CI/review and deployed checks remain pending. The old-head numerical gate passes and the old full suite has nineteen jobs passed with performance still underway; neither establishes acceptance of the new source.
 
+Corrected source `018c319` now passes native `38068373681`: actual development and production-preview controls in both viewports, original visual/performance limits, eighteen fresh captures and 6989 complete unit passes/six existing skips. Original journal records no stall or retake. All eighteen PNGs match main; current Love PNG and fresh template manifest are restored. Recovery `38069101345` verifies original ZIP SHA-256/CRC and exact three raw LHR/report/image bytes. Current summary/detail crops match the exact images already inspected. Current qualification has its own `native-018c319/` folder, preserving history. Corrected final carrier CI, clean review, merge/post-merge and canonical production remain pending; accepted weight remains 67.7/182.45.
+
+
 The private solar scanner is merged under [engine #38](https://github.com/zodiacs-org/engine/pull/38)
 at `9a6317ac1f6516fbf518079c266453995d8f9341`, with the exact tested tree
 and ordered parents verified. [Source-bound qualification](../evidence/solar-terms-20261010/README.md)

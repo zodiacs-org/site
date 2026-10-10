@@ -1,0 +1,56 @@
+{
+  "schema": "zodiacs.birth-window-current-qualified-inspection.v1",
+  "source": "018c3190649cb19e1f478459958b6ac8809d0464",
+  "tree": "bf10d1fd86d1179fcae5f432aedd0af25ff12bf8",
+  "originalRun": 38068373681,
+  "recoveryRun": 38069101345,
+  "images": [
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/summary-mobile.png",
+      "bytes": 17685,
+      "sha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25",
+      "byteIdenticalToPreviouslyInspectedA8": true
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/mobile-details-1000.png",
+      "bytes": 175377,
+      "sha256": "7fbc86db12ad49c3c12d0f3fe096b0e9ab0c3be3cf750265cd87ee4bc0bdad18",
+      "byteIdenticalToPreviouslyInspectedA8": true
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/mobile-details-2500.png",
+      "bytes": 142200,
+      "sha256": "bc3bf380dd967b3d01c871ee38fc75bbe0d2cd0200d2cd6b3d244556cb6e12e7",
+      "byteIdenticalToPreviouslyInspectedA8": true
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/screenshots/summary-desktop.png",
+      "bytes": 16723,
+      "sha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1",
+      "byteIdenticalToPreviouslyInspectedA8": true
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/desktop-details-1000.png",
+      "bytes": 263584,
+      "sha256": "f061c8d6081da952db126bafde5e524fcb885c6a2b0d2112d3e2c51027906236",
+      "byteIdenticalToPreviouslyInspectedA8": true
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/native-018c319/review-qualified-inspection/desktop-details-2500.png",
+      "bytes": 422292,
+      "sha256": "c0bcc1aca1d83cdd43dc02fa4fa512a74fcbbbbef163255ede493a2c5e9d27e9",
+      "byteIdenticalToPreviouslyInspectedA8": true
+    }
+  ],
+  "observations": [
+    "Verified current summary and detail crop bytes are exactly those already visually inspected in both viewports; six SHA-256/size identities match.",
+    "The visible summary names Cancer, Leo or Virgo and the one-second sampling qualification. Detail crops show UTC notation, the selected two-hour span, the pre-1972 convention and uniform duration-share qualification.",
+    "All seven interval rows and the collapsed six-instant switch-detail label are visible across the inspected crops. Individual switch and nested house/aspect rows were not visually inspected in these crops.",
+    "Current original eighteen-capture bytes all match qualified main. Actual love-360.png is restored to current native bytes, while the prior A8 difference and its actual full PNG remain retained."
+  ],
+  "limitations": [
+    "Cropped-image inspection covers the listed exact bytes, not every pixel of full-page screenshots. The original fifteen-case native comparison establishes the visual gate.",
+    "Original native development and production-preview browser assertions separately verify actual results, UTC boundaries, disabled options, cancellation, ownership and no overflow.",
+    "No new mask, tolerance, independent accuracy, Darwin browser run or canonical deployment is claimed."
+  ]
+}

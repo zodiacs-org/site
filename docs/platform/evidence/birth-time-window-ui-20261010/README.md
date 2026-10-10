@@ -1,3 +1,19 @@
+# Current birth-time window qualification
+
+Corrected source `018c3190649cb19e1f478459958b6ac8809d0464` passes [native 38068373681](https://github.com/zodiacs-org/site/actions/runs/38068373681). [Source-bound qualification](native-018c319/native-qualification.json) joins its tree, original decoded log, all thirteen actual controls in both viewports in **both development and production-preview modes**, original build/schema/type/bundle checks, 6989 unit passes/six existing skips, fifteen unchanged-limit visual comparisons, three original cold samples and eighteen actual captures.
+
+The same full.ts marker transform now runs in Vite’s serve-only top-level pipeline. Production page builds retain the false define and isolated worker-build plugin. Main closure stays 32.5/32.598046875 KB; birth route 67.1/71 KB; worker gzip 40367 bytes within the original 60 KB chunk limit. Runtime imports, date-span choices and native disabled-property expectations remain unchanged.
+
+Original cold LCP: **2412.9876000000004 / 2487.2979 / 2107.3663 ms**; all CLS/TBT zero. The original journal says “Runner stalls: none; no sample was retaken.” Exact original raw LHR bytes are retained under `native-018c319/lighthouse/`. Only three Linux birth references are refreshed; twelve other Linux and fifteen Darwin reference files retain main’s exact bytes. There is no Darwin browser result.
+
+All eighteen current captures match qualified main byte for byte. The actual current mobile Love PNG replaces the earlier A8’s 24-pixel difference; both historical comparison crops and that earlier actual full PNG remain retained. The fresh manifest names template fingerprint `9dd04ba1bf49c7dd8e332d951bf095f0b2878898f3126c2d9d4461f708192d23`.
+
+[Read-only recovery 38069101345](https://github.com/zodiacs-org/site/actions/runs/38069101345) passes six jobs and verifies original artifact 11675743260: 31,587,765 bytes, SHA-256 `640185ca1c5a938a1c331be2cc39ae9cfcefca3d3090ff665a5fcf7c0f7670e0`, ZIP CRC passed. [Recovery receipt](native-018c319/review-qualified-artifact-recovery.json) and [retention mapping](native-018c319/retention-mapping.json) preserve native/exported paths and hashes. Current summary/detail crop bytes match exactly those already visually inspected; [inspection](native-018c319/image-inspection.json) records the six identities and limits. Current observations have their own source folder and preserve earlier proof.
+
+Original carrier 814727d passes all twenty Site Check jobs and numerical gate on its exact synthetic merge tree ([record](carrier-814727d-full-suite.json)). Its fresh review finds development P2 4238230846; that old full pass is not a clean review or qualification of later source. The correction above now passes actual native development behavior. **Corrected final carrier CI, fresh clean review, merge/post-merge and canonical production are still required.** B2.b remains partial/unmerged/unaccepted; accepted programme weight is unchanged at 67.7/182.45.
+
+## Retained earlier source records
+
 # Development worker correction: fresh review pending
 
 Fresh review on PR carrier `814727d852ec927bcfbce68ed33a1a9e2e576554` identifies a missing Vite development worker transform in comment `4238230846`. The retained production-preview qualification below is valid on `a8b58d8`; it establishes no development-server result. [Exact finding](development-review-finding.json) preserves the review and correction.
