@@ -1,0 +1,38 @@
+name: Read-only FAQ source structure audit
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths:
+      - .github/workflows/faq-source-structure-audit.yml
+      - scripts/audit-faq-source-structure.mjs
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      AUDITED_SOURCE: '51b2c0d3bafe8b23d0a7f54433cd0c89c9435818'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - name: Parse syntax before any source audit
+        run: node --check scripts/audit-faq-source-structure.mjs
+      - name: Install parser without lifecycle scripts
+        run: npm ci --ignore-scripts
+      - name: Verify exact source bytes and FAQ node structure
+        run: |
+          git worktree add --detach "$RUNNER_TEMP/faq-audited-source" "$AUDITED_SOURCE"
+          node scripts/audit-faq-source-structure.mjs "$RUNNER_TEMP/faq-audited-source"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: faq-native-source-structure-${{ github.run_id }}
+          path: docs/platform/evidence/faq-source-purpose-20261010/native-source-ast.json
+          retention-days: 90
