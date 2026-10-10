@@ -1,0 +1,61 @@
+{
+  "schema": "zodiacs.birth-time-window-ui-source-preflight.v1",
+  "producer": {
+    "workflowSource": "eda447e55d886bcaae4c6d83351d9bddeab2ba8f",
+    "run": 38048916330,
+    "job": 114203925979,
+    "node": "v22.23.3"
+  },
+  "candidate": "2507b7b22e53f9e466f6aa919db4f6b10a6eaf6c",
+  "qualifiedMain": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "conclusion": "success",
+  "attempt": 1,
+  "scope": {
+    "changedPaths": 11,
+    "protectedScopeUntouched": true
+  },
+  "parseChecks": [
+    "tests/birth-time-window-drive.mjs",
+    "scripts/qualify-birth-time-window-visuals.mjs",
+    "scripts/retain-birth-time-window-capture-proof.mjs"
+  ],
+  "astroCheck": {
+    "files": 1335,
+    "errors": 0,
+    "warnings": 0,
+    "hints": 40
+  },
+  "tests": {
+    "files": 3,
+    "passed": 58,
+    "groups": [
+      {
+        "file": "src/lib/birth-time-window.test.ts",
+        "passed": 4
+      },
+      {
+        "file": "src/islands/ChartCalculator.confidence.test.ts",
+        "passed": 27
+      },
+      {
+        "file": "src/islands/ChartCalculator.ownership.test.ts",
+        "passed": 27
+      }
+    ]
+  },
+  "decodedJobLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/source-preflight.log",
+    "bytes": 96338,
+    "sha256": "4605bf93bd0dcdc4e5af98c0620da9bf5f6e02c2a1cc6bf1b937fe8c0833668e",
+    "format": "Exact decoded text returned by GitHub job-log connector; not an original compressed wire receipt."
+  },
+  "priorFailure": {
+    "run": 38048648532,
+    "cause": "Depth-one checkout had no merge base for the original scope guard.",
+    "sourceCorrection": "Full site history checkout; original scope guard unchanged."
+  },
+  "limitations": [
+    "No build, native worker execution, browser or performance benchmark ran in this preflight.",
+    "This is not the required complete Site Check, a deployed UI, programme acceptance or visual verification."
+  ]
+}
