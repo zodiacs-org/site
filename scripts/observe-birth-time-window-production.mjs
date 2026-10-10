@@ -2,12 +2,13 @@
  * Canonical production observation for B2.b. Runs the unchanged
  * tests/birth-time-window-drive.mjs against https://zodiacs.org and binds the
  * assets production served during that run to a local build of the same
- * source. The deployment's identity (Vercel connector) is observed separately
- * and passed in; this script only asserts what it can observe over anonymous
- * HTTP and in the browser.
+ * source. Before and after the drive it reads, through the Vercel CLI's
+ * existing login (`vercel api`), which deployment the zodiacs.org alias names
+ * and that deployment's commit; the run passes only if both reads name the
+ * expected deployment, unchanged, built from the checkout's commit.
  *
  * Usage: PRODUCTION_SOURCE_COMMIT=<sha> PRODUCTION_DEPLOYMENT_ID=<dpl_…>
- *   node observe-birth-time-window-production.mjs <site checkout> <output dir>
+ *   [VERCEL_TEAM_ID=<team_…>] node observe-birth-time-window-production.mjs <site checkout> <output dir>
  * The checkout must be at PRODUCTION_SOURCE_COMMIT with no tracked change and a
  * completed `npm run build` in dist/.
  */
@@ -31,6 +32,8 @@ const expectedSource = process.env.PRODUCTION_SOURCE_COMMIT ?? '';
 const deploymentId = process.env.PRODUCTION_DEPLOYMENT_ID ?? '';
 assert.match(expectedSource, /^[0-9a-f]{40}$/, 'PRODUCTION_SOURCE_COMMIT must be a full commit');
 assert.match(deploymentId, /^dpl_[A-Za-z0-9]+$/, 'PRODUCTION_DEPLOYMENT_ID must be a Vercel deployment id');
+const team = process.env.VERCEL_TEAM_ID ?? 'team_Ue0ac8HT1b3TAzaDDZBTFhQt';
+assert.match(team, /^team_[A-Za-z0-9]+$/, 'VERCEL_TEAM_ID must be a Vercel team id');
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const git = (...args) => execFileSync('git', ['-C', repo, ...args], { encoding: 'utf8' }).trim();
@@ -92,6 +95,25 @@ async function crawlPage(route) {
   return { route, status: page.status, htmlBytes: page.bytes.length, htmlSha256: sha256(page.bytes), assets: [...seen.values()] };
 }
 
+/** Which deployment the canonical alias names, and that deployment's commit, read now through the Vercel CLI. */
+function vercel(path) {
+  return JSON.parse(execFileSync('vercel', ['api', path, '--method', 'GET'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }));
+}
+function aliasIdentity() {
+  const readAt = new Date().toISOString();
+  const alias = vercel(`/v4/aliases/zodiacs.org?teamId=${team}`);
+  const deployment = vercel(`/v13/deployments/${encodeURIComponent(alias.deploymentId)}?teamId=${team}`);
+  return {
+    readAt,
+    alias: alias.alias,
+    deploymentId: alias.deploymentId,
+    aliasUpdatedAt: alias.updatedAt,
+    readyState: deployment.readyState,
+    target: deployment.target,
+    githubCommitSha: deployment.meta?.githubCommitSha ?? null,
+  };
+}
+const aliasBefore = aliasIdentity();
 const startedAt = new Date().toISOString();
 const before = await crawlPage('/birth-chart/');
 
@@ -147,6 +169,9 @@ for (const record of driveReport.records ?? []) {
 const workers = [];
 for (const path of [...workerPaths].sort()) workers.push(await compareAsset(path));
 const after = await crawlPage('/birth-chart/');
+const aliasAfter = aliasIdentity();
+const bound = (identity) => identity.alias === 'zodiacs.org' && identity.deploymentId === deploymentId
+  && identity.readyState === 'READY' && identity.target === 'production' && identity.githubCommitSha === head;
 
 const sameGraph = JSON.stringify(before.assets.map((asset) => [asset.path, asset.sha256]).sort())
   === JSON.stringify(after.assets.map((asset) => [asset.path, asset.sha256]).sort());
@@ -155,17 +180,18 @@ const differing = after.assets.filter((asset) => !asset.matchesLocalBuild).map((
 // created is the local build's, byte for byte, and the page's module graph did
 // not change while the drive ran (a new deployment would change it).
 const sourceBinding = {
+  aliasNamesExpectedDeploymentBeforeAndAfter: bound(aliasBefore) && bound(aliasAfter) && aliasBefore.aliasUpdatedAt === aliasAfter.aliasUpdatedAt,
   workersMatchLocalBuild: workers.length > 0 && workers.every((worker) => worker.status === 200 && worker.matchesLocalBuild),
   pageGraphUnchangedDuringRun: sameGraph,
 };
 const drivePassed = driveReport.passed === true && exitCode === 0;
 const observation = {
-  schema: 'zodiacs.birth-time-window-production-observation.v2',
+  schema: 'zodiacs.birth-time-window-production-observation.v3',
   base: BASE,
   startedAt,
   finishedAt,
   source: { commit: head, tree, trackedChangesBeforeAndAfter: 'none', localBuildReceipt: buildReceipt },
-  expectedDeployment: { id: deploymentId, note: 'Observed separately through the Vercel connector; see connector-observation.json.' },
+  expectedDeployment: { id: deploymentId, team, aliasBefore, aliasAfter, cli: execFileSync('vercel', ['--version'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().split('\n').at(-1) },
   observer: {
     script: 'scripts/observe-birth-time-window-production.mjs',
     node: process.version,
@@ -192,7 +218,7 @@ const observation = {
     reportLimitationsNote: 'The drive writes fixed limitation sentences for its default local-preview mode. In this run ZODIACS_TEST_BASE_URL was ' + BASE + ', so its pages, scripts and worker came from canonical production.',
   },
   sourceBinding,
-  passed: drivePassed && sourceBinding.workersMatchLocalBuild && sourceBinding.pageGraphUnchangedDuringRun,
+  passed: drivePassed && Object.values(sourceBinding).every(Boolean),
   assetIdentity: {
     workers,
     pageGraphBefore: before,

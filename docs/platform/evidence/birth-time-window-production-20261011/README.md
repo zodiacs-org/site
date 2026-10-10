@@ -16,6 +16,8 @@ served from zodiacs.org, passes the same browser controls that qualified it.
 | First canonical run | [`run-7028d019/`](run-7028d019/observation.json), 2026-10-10T20:09:38Z to 20:11:05Z | passed in both viewports |
 | Production moves | Vercel `dpl_9ycqFxvKfKRePBjaBYKAybUJGpgg`, from `ed1137cb` (#705, the daily email, merged by another session) | READY; zodiacs.org assigned to it from 22:05:11Z, before and after the second run |
 | Second canonical run | [`run-ed1137cb/`](run-ed1137cb/observation.json), 2026-10-10T22:37:42Z to 22:39:20Z | passed in both viewports, with source binding enforced |
+| Production moves again | Vercel `dpl_4vt77TuBeFzkq9Kp8q6FM8ZfoHSS`, from `368ce361` (#706, merged by another session) | READY; zodiacs.org assigned to it from 22:49:45Z |
+| Third canonical run | [`run-368ce361/`](run-368ce361/observation.json), 2026-10-10T23:08:52Z to 23:10:26Z, with the alias read at 23:08:42Z and 23:10:47Z | passed in both viewports; the observer itself read the alias's deployment and commit before and after the drive |
 
 ## What the browser runs did
 
@@ -35,6 +37,19 @@ time of the second run another session had merged #705, so production served
 deployment: the drive, the worker byte for byte and an unchanged graph. The
 first run's files are kept as they were written, and its recorded values meet
 the same two conditions.
+
+A second review comment (thread on line 159) pointed out that an unchanged
+graph does not prove an unchanged deployment: the first two runs' graphs are
+identical across two deployments. The observer now also reads, through the
+Vercel CLI's existing login, which deployment the zodiacs.org alias names and
+that deployment's commit, before and after the drive, and fails unless both
+reads name the expected READY production deployment, built from the checkout's
+commit, with the alias unchanged (schema v3). The first two runs were
+bracketed by the same reads made through the Vercel connector by hand
+(`connector-observation.json`): the alias named the run's deployment, with an
+unchanged `updatedAt`, before and after each. By the third run another
+session's #706 had moved production to `368ce361`; the third run, with the
+observer making those reads itself, passed there.
 
 - **Both viewports pass all thirteen controls** (390×844 and 1440×1000), as
   the drive names them: no worker before the request; a real sampled window;

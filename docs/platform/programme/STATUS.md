@@ -18,7 +18,9 @@ served zodiacs.org and www.zodiacs.org. The unchanged browser drive, run
 against https://zodiacs.org, passed all thirteen controls in both viewports
 with no page error. It ran again after another session's #705 moved
 production to `ed1137cb`, this time with the observer failing on any break in
-source binding, and passed. The worker production served is byte-identical to
+source binding, and passed; and a third time on `368ce361` (#706), with the
+observer reading the alias's deployment and commit before and after the
+drive, and passed. The worker production served is byte-identical to
 local builds of both commits; of the 190 files the page reaches, 182 are
 identical to the build with the flags unset, and production's own flags and
 public keys account for the other eight.
