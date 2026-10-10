@@ -49,6 +49,7 @@ for(const stem of stems){
  const prefixHeight=Math.floor(geometry.previous.bottom),afterY=Math.ceil(geometry.next.top);
  const prefix=region(expected,actual,0,0,prefixHeight);
  const suffix=region(expected,actual,afterY-delta,afterY,actual.height-afterY);
+ console.log('BIRTH_WINDOW_INSERTION '+JSON.stringify({stem,geometry,previousDimensions:{width:expected.width,height:expected.height},actualDimensions:{width:actual.width,height:actual.height},addedHeight:delta,prefix,suffix}));
  assert.ok(prefix.ratio<=0.001,'Before the insertion stays within the original 0.1% pixel budget');
  assert.ok(suffix.ratio<=0.001,'After the insertion stays within the original 0.1% pixel budget after aligning its measured height change');
  prefixSuffix.push({stem,previousDimensions:{width:expected.width,height:expected.height},actualDimensions:{width:actual.width,height:actual.height},addedHeight:delta,geometry,prefix,suffix,path,bytes:bytes.length,sha256:sha(bytes),previousSha256:sha(before.get(stem))});

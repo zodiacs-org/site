@@ -13,9 +13,9 @@ export function BirthTimeWindowEntry(props:BirthTimeWindowProps){
   finally{if(mounted.current)setBusy(false);}
  }
  if(surface)return <surface.BirthTimeWindow {...props}/>;
- return <aside data-birth-window-entry>
-  <p>If your birth time is approximate, check which parts of the chart could change.</p>
-  <button type="button" class="btn btn--secondary" onClick={open} disabled={busy}>{busy?'Opening…':'Check a time window'}</button>
+ return <aside data-birth-window-entry style={{display:'grid',gap:'0.75rem'}}>
+  <p style={{margin:0,lineHeight:'1.5rem'}}>If your birth time is approximate, check which parts of the chart could change.</p>
+  <button type="button" class="btn btn--secondary" style={{justifySelf:'start',margin:0,lineHeight:'1.5rem'}} onClick={open} disabled={busy}>{busy?'Opening…':'Check a time window'}</button>
   {error&&<p role="status">The window check could not open. Try again.</p>}
  </aside>;
 }
