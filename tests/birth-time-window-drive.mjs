@@ -122,6 +122,7 @@ try{
     assert.equal(await page.evaluate(()=>window.__birthWindowControls.created.length),beforeBoundary);
     await page.getByLabel('Birth date',{exact:true}).fill('1800-01-01');
     await page.getByLabel('Birth time',{exact:true}).fill('12:00');
+    await page.locator('.calc__form .place__clear').click();
     await page.getByLabel('Birthplace',{exact:true}).fill('Auckland');
     await page.locator('#place-opt-0').waitFor({state:'visible'});await page.locator('#place-opt-0').click();
     await page.locator('.calc__submit').click();await committed(page);

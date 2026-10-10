@@ -1,0 +1,20 @@
+{
+  "schema": "zodiacs.birth-time-window-ui-controls.v1",
+  "producer": {
+    "workflowSource": "0f29c65b261859adad4270d5ac67baa6a8664ff4",
+    "run": "38061973592",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "f55bb57ffeeef4d05877940160fa7836588f32a6",
+  "records": [],
+  "passed": false,
+  "failure": {
+    "name": "TimeoutError",
+    "message": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByLabel('Birthplace', { exact: true })\n    - locator resolved to <input readonly id=\"place\" class=\"place__chip-value\"/>\n    - fill(\"Auckland\")\n  - attempting fill action\n    2 × waiting for element to be visible, enabled and editable\n      - element is not editable\n    - retrying fill action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and editable\n      - element is not editable\n    - retrying fill action\n      - waiting 100ms\n    60 × waiting for element to be visible, enabled and editable\n       - element is not editable\n     - retrying fill action\n       - waiting 500ms\n"
+  },
+  "limitations": [
+    "Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.",
+    "Only script loading is held for cancellation controls; no numerical result is injected.",
+    "No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim."
+  ]
+}
