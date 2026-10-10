@@ -33,9 +33,5 @@ export function computeChart(input: ChartInput): Chart {
   return adaptChart(engineComputeChart(input), input);
 }
 
-/** The worker loads this same compiled boundary. */
-export const browserEngineModuleUrl = import.meta.url;
-export async function birthWindow(input: import('@zodiacs/engine/window').BirthWindowInput) {
-  const windowEngine = await import(/* @vite-ignore */ '@zodiacs/engine/window');
-  return windowEngine.birthWindow(input);
-}
+/** Window workers use the same package boundary as other chart workers. */
+export {birthWindow} from '@zodiacs/engine/window';

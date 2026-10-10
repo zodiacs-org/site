@@ -138,9 +138,9 @@ describe('worker window engine boundary',()=>{
   expect(check({'src/islands/window.worker.ts':'import type { BirthWindowInput } from "@zodiacs/engine/window";const load=(url)=>import(url);'}).code).toBe(0);
   expect(check({'src/islands/Window.ts':'import { type BirthWindow } from "@zodiacs/engine/window";'}).code).toBe(0);
  });
- it('rejects worker ephemeris code outside the full static closure',()=>{
-  const result=check({'dist/_astro/birth-window.worker-fixture.js':'export const engine=["Value is not boolean:","Light-travel time solver did not converge"];'});
-  expect(result.code).toBe(1);expect(result.output).toContain('worker/browser engine isolation');
+ it('requires the birth-window source to consume full.ts, including indirect built dependencies',()=>{
+  const result=check({'src/islands/birth-window.worker.ts':'import { birthWindow } from "@zodiacs/engine/window";','dist/_astro/birth-window.worker-fixture.js':'import "./engine-core.fixture.js";'});
+  expect(result.code).toBe(1);expect(result.output).toContain('window runtime must use');expect(result.output).toContain('must load window through full.ts');
  });
 });
 
@@ -157,13 +157,22 @@ describe('standalone widget versus website window imports',()=>{
  });
 });
 
-describe('birth-window worker transitive isolation',()=>{
- it('rejects ephemeris hidden in a statically imported worker dependency',()=>{
-  const result=check({'dist/_astro/birth-window.worker-fixture.js':'import "./engine-core.fixture.js";'});
-  expect(result.code).toBe(1);expect(result.output).toContain('worker/browser engine isolation');
+describe('birth-window worker built boundary',()=>{
+ it('accepts a worker compiled through full.ts with both engine fingerprints',()=>{
+  expect(check({'src/islands/birth-window.worker.ts':'import { birthWindow } from "../lib/engine/full";','dist/_astro/birth-window.worker-fixture.js':'import "./engine-core.fixture.js";'}).code).toBe(0);
  });
- it('requires the actual source worker to have exactly one compiled transport',()=>{
-  const result=check({'src/islands/birth-window.worker.ts':'import type { BirthWindowInput } from "@zodiacs/engine/window";'});
-  expect(result.code).toBe(1);expect(result.output).toContain('expected one transport bundle');
+ it('requires an actual source worker to have exactly one compiled bundle',()=>{
+  const result=check({'src/islands/birth-window.worker.ts':'import { birthWindow } from "../lib/engine/full";'});
+  expect(result.code).toBe(1);expect(result.output).toContain('expected one compiled bundle');
+ });
+ it('requires the worker core fingerprint rather than an empty successful wrapper',()=>{
+  const result=check({'src/islands/birth-window.worker.ts':'import { birthWindow } from "../lib/engine/full";','dist/_astro/birth-window.worker-fixture.js':'export const ready=true;'});
+  expect(result.code).toBe(1);expect(result.output).toContain('worker engine marker fingerprint missing');
+ });
+ it('holds the transitive worker closure to the unchanged global chunk budget',()=>{
+  let seed=7;
+  const text=Array.from({length:95000},()=>{seed=Math.imul(seed,1664525)+1013904223|0;return String.fromCharCode(33+((seed>>>0)%90));}).join('');
+  const result=check({'src/islands/birth-window.worker.ts':'import { birthWindow } from "../lib/engine/full";','dist/_astro/birth-window.worker-fixture.js':'import "./engine-core.fixture.js";import "./worker-extra.fixture.js";','dist/_astro/worker-extra.fixture.js':'export const data='+JSON.stringify(text)+';'});
+  expect(result.code).toBe(1);expect(result.output).toContain('worker static closure exceeds original chunk-max budget');
  });
 });

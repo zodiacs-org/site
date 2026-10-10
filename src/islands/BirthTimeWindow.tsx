@@ -16,7 +16,7 @@ export function BirthTimeWindow({utc,latitude,longitude,houseSystem}:BirthTimeWi
  // The parent keys this surface to its current committed chart. A new chart
  // unmounts the old surface and terminates work before a stale result can render.
  function changeMinutes(value:number){cancel();setBusy(false);setResult(null);setError('');setMinutes(value);}
- async function check(){
+ function check(){
   if(!birthWindowAvailableMinutes(utc).includes(minutes)){setError('Choose a shorter window within the supported dates.');return;}
   cancel();setResult(null);setError('');setBusy(true);
   const id=generation.current;
@@ -26,9 +26,6 @@ export function BirthTimeWindow({utc,latitude,longitude,houseSystem}:BirthTimeWi
    active?.terminate();worker.current=null;setBusy(false);setError(message);
   }
   try{
-   const boundary=await import('../lib/engine/full');
-   if(id!==generation.current)return;
-   if(typeof Reflect.get(boundary,'birthWindow')!=='function')throw new TypeError('Window engine is unavailable');
    active=new Worker(new URL('./birth-window.worker.ts',import.meta.url),{type:'module'});
    worker.current=active;
    active.onmessage=(event:MessageEvent<{id:number;result?:BirthWindow;error?:{budget:boolean}}>)=>{
@@ -39,7 +36,7 @@ export function BirthTimeWindow({utc,latitude,longitude,houseSystem}:BirthTimeWi
    };
    active.onerror=()=>fail('The window could not be checked. No uncertainty result is shown.');
    active.onmessageerror=()=>fail('The window result could not be read. Try again.');
-   active.postMessage({id,engineUrl:boundary.browserEngineModuleUrl,input:{at:utc,minutes,latitude,longitude,houseSystem}});
+   active.postMessage({id,input:{at:utc,minutes,latitude,longitude,houseSystem}});
   }catch{fail('The window could not be checked. No uncertainty result is shown.');}
  }
  const formatter=useMemo(()=>new Intl.DateTimeFormat('en-GB',{timeZone:'UTC',year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',timeZoneName:'shortOffset',hourCycle:'h23'}),[]);

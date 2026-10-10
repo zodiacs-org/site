@@ -364,13 +364,19 @@ const serverOnlyMarkerChunks = chunkRows
   .filter(({ source }) => ['node:module', 'createRequire'].some((marker) => source.includes(marker))
     || hasExternalEphemerisImport(source))
   .map(({ path }) => path);
-// The new birth-window worker is a transport to the already compiled full
-// boundary. Older workers compile their existing full-boundary graph separately.
+// This worker follows the established full.ts source boundary. Its compiled
+// closure uses the original global chunk budget, including the window algorithm.
+const birthWindowWorkerSource='src/islands/birth-window.worker.ts';
+const hasBirthWindowWorker=sourceRuntimeImports.has(birthWindowWorkerSource);
+if(hasBirthWindowWorker&&!(sourceRuntimeImports.get(birthWindowWorkerSource)??[]).some(specifier=>relative(repo,resolve(repo,dirname(birthWindowWorkerSource),specifier)).split(sep).join('/')==='src/lib/engine/full')){
+ fail('birth-window worker source must load window through full.ts');
+}
 const birthWindowWorkerChunks=chunkRows.filter(({path})=>/\/_astro\/birth-window\.worker[-.][^/]+\.js$/.test(path));
-if(sourceRuntimeImports.has('src/islands/birth-window.worker.ts')&&birthWindowWorkerChunks.length!==1)fail('birth-window worker isolation: expected one transport bundle');
+if(hasBirthWindowWorker&&birthWindowWorkerChunks.length!==1)fail('birth-window worker isolation: expected one compiled bundle');
 const birthWindowWorkerClosure=routeClosure(birthWindowWorkerChunks.map(({path})=>path),'birth-window worker');
-const escapedEngineMarkerChunks=[...birthWindowWorkerClosure].filter(path=>engineMarkers.some(marker=>chunks.get(path).source.includes(marker)));
-if(escapedEngineMarkerChunks.length)fail('worker/browser engine isolation: birth-window transport contains an ephemeris runtime: '+escapedEngineMarkerChunks.join(', '));
+const birthWindowWorkerGzip=[...birthWindowWorkerClosure].reduce((sum,path)=>sum+chunks.get(path).gzip,0);
+if(birthWindowWorkerGzip>budgets['chunk-max']*1024)fail('birth-window worker static closure exceeds original chunk-max budget');
+if(hasBirthWindowWorker&&!engineMarkers.every(marker=>[...birthWindowWorkerClosure].some(path=>chunks.get(path).source.includes(marker))))fail('birth-window worker engine marker fingerprint missing');
 if (homepageMarkerChunks.length) {
   fail(`homepage engine isolation: engine marker found in ${homepageMarkerChunks.join(', ')}`);
 }

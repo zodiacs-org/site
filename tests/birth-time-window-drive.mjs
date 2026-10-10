@@ -137,12 +137,11 @@ try{
     assert.equal(boundaryProbe.reply.result.end.getTime()-boundaryProbe.reply.result.start.getTime(),2*60000);
     assert.ok(boundaryProbe.reply.result.start.getTime()>=Date.parse('1800-01-01T00:00:00Z'));
     assert.ok(boundaryProbe.reply.result.end.getTime()<Date.parse('2200-01-01T00:00:00Z'));
-    assert.equal(new URL(boundaryProbe.input.input.engineUrl).origin,new URL(baseURL).origin);
-    assert.match(new URL(boundaryProbe.input.input.engineUrl).pathname,/\/_astro\/full\.[^/]+\.js$/);
+    assert.match(new URL((await page.evaluate(()=>window.__birthWindowControls.created)).at(-1)).pathname,/\/_astro\/birth-window\.worker[-.][^/]+\.js$/);
     assert.equal(await bounded.locator('[role="alert"]').count(),0);
     assert.deepEqual(errors,[]);
     const native=await page.evaluate(()=>window.__birthWindowControls);
-    records.push({name:variant.name,viewport:variant,summary,native,controls:{noWorkerBeforeRequest:true,realSampledWindow:true,allCellsRendered:true,explicitCancelTerminates:true,windowChangeTerminates:true,chartReplacementTerminates:true,unknownTimeExcluded:true,noOverflow:true,outOfSpanEntryExcluded:true,boundaryOptionsDisabled:true,boundaryPresetNativeWorker:true,existingFullEngineUrl:true},pageErrors:errors});
+    records.push({name:variant.name,viewport:variant,summary,native,controls:{noWorkerBeforeRequest:true,realSampledWindow:true,allCellsRendered:true,explicitCancelTerminates:true,windowChangeTerminates:true,chartReplacementTerminates:true,unknownTimeExcluded:true,noOverflow:true,outOfSpanEntryExcluded:true,boundaryOptionsDisabled:true,boundaryPresetNativeWorker:true,fullBoundaryWorker:true},pageErrors:errors});
    }finally{hold?.release();hold=null;await context.close();}
   }}finally{await browser.close();}
  });
