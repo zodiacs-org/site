@@ -41,6 +41,7 @@ export function BirthTimeWindow({utc,latitude,longitude,houseSystem}:BirthTimeWi
  const format=(date:Date)=>formatter.format(date);
  return <aside class="birth-window" data-birth-window>
   <p data-birth-window-summary role="status">{result?birthWindowSummary(result):'Check a window around the time used for this chart.'}</p>
+  {result&&<p data-birth-window-verification>{result.verification}. This check varies birth time; it does not add an astronomical accuracy bound.</p>}
   <details open={!result}>
    <summary>{result?'See the time window and changes':'Choose a time window'}</summary>
    <label class="birth-window__choice">The time may be off by
@@ -53,7 +54,6 @@ export function BirthTimeWindow({utc,latitude,longitude,houseSystem}:BirthTimeWi
    {busy&&<button type="button" class="btn btn--secondary" onClick={()=>{cancel();setBusy(false);}}>Cancel</button>}
    {error&&<p role="alert">{error}</p>}
    {result&&<>
-    <p data-birth-window-verification>{result.verification}. This check varies birth time; it does not add an astronomical accuracy bound.</p>
     {utc.getTime()<Date.UTC(1972,0,1)&&<p>Before 1972, the engine treats civil time as UT1.</p>}
     {result.flags.includes('polar-fallback')&&<p>The requested house system is undefined here; affected cells use whole-sign houses.</p>}
     {result.unresolved.length>0&&<p>Some node signs or houses could not be resolved. They are marked unresolved below.</p>}
