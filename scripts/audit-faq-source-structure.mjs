@@ -50,7 +50,7 @@ for(const path of paths){
   }
  }else if(!path.startsWith('scripts/'))parsed(path,text,text,0,/\.tsx$/.test(path)?ts.ScriptKind.TSX:ts.ScriptKind.TS);
 }
-assert.equal(hashes.length,95,'Every reviewed source is byte-verified');
+assert.equal(hashes.length,judgement.records.length,'Every reviewed source is byte-verified');
 assert.equal(emitters.length,88,'Every direct emitter is parsed');
 const knownHomePaths=new Set(['es','fr','it','pt','ru'].map(locale=>'src/pages/'+locale+'/index.astro'));
 const reviewedConsumers=judgement.records.filter(r=>knownHomePaths.has(r.path));
@@ -58,9 +58,9 @@ for(const record of reviewedConsumers)assert.ok(consumers.some(c=>c.path===recor
 const unreviewedConsumers=consumers.filter(c=>!judgement.records.some(r=>r.path===c.path));
 console.log('FAQ_SHARED_CONSUMERS '+JSON.stringify({consumers,unreviewedConsumers}));
 assert.ok(emitters.every(e=>e.arrayElement||e.path==='src/lib/home-trust.ts'),'Unexpected emitter shape requires explicit review');
-const report={schema:'zodiacs.faq-native-source-ast.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version,typescript:ts.version},auditedSource:source,verifiedSourceHashes:hashes,emitters,sharedHomeConsumers:consumers,unreviewedConsumers,controls:{everyReviewedSourceByteVerified:true,primaryEvidenceLinesVerified:true,allDirectNodesParsed:true,knownSharedConsumersVerified:true,allSharedConsumersReviewed:unreviewedConsumers.length===0,objectParentsUnderstood:true},limitations:['Native source parsing and source-byte verification only; the semantic decisions remain the source reviewer\'s judgement.','No build, browser, compiled-route coverage, rendered visibility, question/answer equivalence, correction, protected-scope allowance, acceptance or deployment is claimed.']};
+const report={schema:'zodiacs.faq-native-source-ast.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version,typescript:ts.version},auditedSource:source,verifiedSourceHashes:hashes,emitters,sharedHelperCalls:consumers,productionHomeConsumers:consumers.filter(c=>c.path.startsWith('src/pages/')),testConsumers:consumers.filter(c=>c.path.endsWith('.test.tsx')),unreviewedConsumers,controls:{everyReviewedSourceByteVerified:true,primaryEvidenceLinesVerified:true,allDirectNodesParsed:true,knownSharedConsumersVerified:true,allSharedConsumersReviewed:unreviewedConsumers.length===0,objectParentsUnderstood:true},limitations:['Native source parsing and source-byte verification only; the semantic decisions remain the source reviewer\'s judgement.','No build, browser, compiled-route coverage, rendered visibility, question/answer equivalence, correction, protected-scope allowance, acceptance or deployment is claimed.']};
 const output='docs/platform/evidence/faq-source-purpose-20261010/native-source-ast.json';
 mkdirSync('docs/platform/evidence/faq-source-purpose-20261010',{recursive:true});
 const bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');writeFileSync(output,bytes);
-console.log('FAQ_NATIVE_AST '+JSON.stringify({source,verifiedSources:hashes.length,emitters:emitters.length,arrayElements:emitters.filter(e=>e.arrayElement).length,sharedHomeConsumers:consumers.length,controls:report.controls}));
+console.log('FAQ_NATIVE_AST '+JSON.stringify({source,verifiedSources:hashes.length,emitters:emitters.length,arrayElements:emitters.filter(e=>e.arrayElement).length,sharedHelperCalls:consumers.length,productionHomeConsumers:report.productionHomeConsumers.length,testConsumers:report.testConsumers.length,controls:report.controls}));
 console.log('PROGRAMME_FILE '+JSON.stringify({path:output,size:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),base64:bytes.toString('base64')}));

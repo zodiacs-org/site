@@ -3122,11 +3122,33 @@
       "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
       "renderedPurposeVerified": false,
       "correctionApplied": false
+    },
+    {
+      "path": "src/islands/ChartTrust.test.tsx",
+      "bytes": 2846,
+      "sha256": "3fd2e38ada9ae47249ab8278a2780b5d4b801985ab3f004778f34be21d78d0f3",
+      "role": "non-rendered metadata contract test",
+      "primaryPurpose": "existing trust metadata contract test",
+      "primaryEvidence": [],
+      "faqEvidence": [
+        {
+          "line": 6,
+          "text": "import { homeTrustFaq, homeTrustSchema } from '../lib/home-trust';"
+        },
+        {
+          "line": 40,
+          "text": "expect(homeTrustSchema(locale).mainEntity[0].acceptedAnswer.text).toContain(faq[0].a);"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "Update the obsolete FAQPage graph expectation with the semantic correction, preserving trust text/link and chart receipt controls.",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
     }
   ],
   "limitations": [
     "This is a source-purpose review and correction proposal, not accepted S2 completion.",
-    "The former locator did not directly list five homeTrustSchema consumers; they are included here.",
+    "The original locator omitted five direct shared-helper homepage consumers and one test call; all are included. The sixth call found by native parsing is a non-rendered test, not a sixth production homepage.",
     "Compiled visibility/question-answer equivalence, exhaustive built-route inventory, source corrections, required CI/review/post-merge/production remain unfinished.",
     "Protected path freezes remain in force; no allowance or publication is introduced by this report."
   ],
@@ -3135,5 +3157,6 @@
   "producer": {
     "method": "Codex source review; exact GitHub source fetched read-only and hashed in the orchestration runtime",
     "nativeExecution": false
-  }
+  },
+  "additionalNonRenderedTestConsumers": 1
 }
