@@ -73,7 +73,7 @@ function staticImportSpecifiers(source) {
   return found;
 }
 
-// Erased types do not load the engine. Window runtime loading belongs to full.ts.
+// Erased types do not load the engine. The website window runtime belongs to full.ts.
 function runtimeWindowImport(source, fileName) {
   const frontmatter=fileName.endsWith('.astro')?/^---\r?\n([\s\S]*?)\r?\n---/.exec(source):null;
   const tree=ts.createSourceFile(fileName,frontmatter?frontmatter[1]:source,ts.ScriptTarget.Latest,false,fileName.endsWith('.tsx')?ts.ScriptKind.TSX:ts.ScriptKind.TS);
@@ -91,6 +91,24 @@ function runtimeWindowImport(source, fileName) {
     ts.forEachChild(node,visit);
   };
   visit(tree);return found;
+}
+
+function runtimeLocalImports(source,fileName){
+ const frontmatter=fileName.endsWith('.astro')?/^---\r?\n([\s\S]*?)\r?\n---/.exec(source):null;
+ const tree=ts.createSourceFile(fileName,frontmatter?frontmatter[1]:source,ts.ScriptTarget.Latest,false,fileName.endsWith('.tsx')?ts.ScriptKind.TSX:ts.ScriptKind.TS),found=[];
+ const add=node=>{if(node&&ts.isStringLiteralLike(node)&&node.text.startsWith('.'))found.push(node.text);};
+ const visit=node=>{
+  if(ts.isImportDeclaration(node)){
+   const clause=node.importClause,named=clause?.namedBindings;
+   const onlyTypes=clause?.isTypeOnly||(!clause?.name&&named&&ts.isNamedImports(named)&&named.elements.length>0&&named.elements.every(item=>item.isTypeOnly));
+   if(!onlyTypes)add(node.moduleSpecifier);
+  }else if(ts.isExportDeclaration(node)){
+   const onlyTypes=node.isTypeOnly||(node.exportClause&&ts.isNamedExports(node.exportClause)&&node.exportClause.elements.length>0&&node.exportClause.elements.every(item=>item.isTypeOnly));
+   if(!onlyTypes)add(node.moduleSpecifier);
+  }else if(ts.isCallExpression(node)&&node.expression.kind===ts.SyntaxKind.ImportKeyword)add(node.arguments[0]);
+  ts.forEachChild(node,visit);
+ };
+ visit(tree);return found;
 }
 
 // Built JavaScript needs syntax-aware closure discovery: side-effect imports
@@ -253,6 +271,7 @@ const directVendorImporters = [];
 const engineInternalImporters = [];
 const engineMathImporters = [];
 const windowRuntimeImporters = [];
+const sourceRuntimeImports = new Map();
 for (const path of sourceFiles) {
   const source = await readFile(path, 'utf8');
   const specifiers = staticImportSpecifiers(source);
@@ -263,7 +282,22 @@ for (const path of sourceFiles) {
   if (specifiers.includes('@zodiacs/engine/internal')) engineInternalImporters.push(relativePath);
   if (specifiers.includes('@zodiacs/engine/internal/math')) engineMathImporters.push(relativePath);
   if(runtimeWindowImport(source,relativePath))windowRuntimeImporters.push(relativePath);
+  sourceRuntimeImports.set(relativePath,runtimeLocalImports(source,relativePath));
 }
+// Standalone generated AI widgets are a separate build, not Astro page roots.
+// Follow all website relative loads into them so relocating a bypass cannot
+// evade the website guard.
+const websiteSources=new Set([...sourceRuntimeImports.keys()].filter(path=>!path.startsWith('src/ai-tools/')));
+const queue=[...websiteSources];
+for(let index=0;index<queue.length;index++){
+ const current=queue[index];
+ for(const specifier of sourceRuntimeImports.get(current)??[]){
+  const base=relative(repo,resolve(repo,dirname(current),specifier)).split(sep).join('/');
+  const target=[base,...['.ts','.tsx','.js','.mjs','.astro','/index.ts','/index.tsx'].map(ext=>base+ext)].find(path=>sourceRuntimeImports.has(path));
+  if(target&&!websiteSources.has(target)){websiteSources.add(target);queue.push(target);}
+ }
+}
+const websiteWindowRuntimeImporters=windowRuntimeImporters.filter(path=>websiteSources.has(path));
 const allowedDirectVendorImporters = ['src/lib/engine/server-ephemeris.ts'];
 directVendorImporters.sort();
 if (
@@ -276,8 +310,8 @@ const allowedEngineImporter = 'src/lib/engine/full.ts';
 if (engineInternalImporters.length !== 1 || engineInternalImporters[0] !== allowedEngineImporter) {
   fail(`engine source isolation: expected only ${allowedEngineImporter} to import @zodiacs/engine/internal; found ${engineInternalImporters.join(', ') || 'none'}`);
 }
-if(windowRuntimeImporters.some(path=>path!==allowedEngineImporter)){
-  fail(`engine source isolation: window runtime must use ${allowedEngineImporter}; found ${windowRuntimeImporters.join(', ')}`);
+if(websiteWindowRuntimeImporters.some(path=>path!==allowedEngineImporter)){
+  fail(`engine source isolation: window runtime must use ${allowedEngineImporter}; found ${websiteWindowRuntimeImporters.join(', ')}`);
 }
 const allowedMathImporters = [
   'src/lib/engine/aspects.ts',
@@ -330,8 +364,13 @@ const serverOnlyMarkerChunks = chunkRows
   .filter(({ source }) => ['node:module', 'createRequire'].some((marker) => source.includes(marker))
     || hasExternalEphemerisImport(source))
   .map(({ path }) => path);
-const escapedEngineMarkerChunks=chunkRows.filter(({path,source})=>!engineClosure.has(path)&&engineMarkers.some(marker=>source.includes(marker))).map(({path})=>path);
-if(escapedEngineMarkerChunks.length)fail(`worker/browser engine isolation: ephemeris marker outside the full static closure: ${escapedEngineMarkerChunks.join(', ')}`);
+// The new birth-window worker is a transport to the already compiled full
+// boundary. Older workers compile their existing full-boundary graph separately.
+const birthWindowWorkerChunks=chunkRows.filter(({path})=>/\/_astro\/birth-window\.worker[-.][^/]+\.js$/.test(path));
+if(sourceRuntimeImports.has('src/islands/birth-window.worker.ts')&&birthWindowWorkerChunks.length!==1)fail('birth-window worker isolation: expected one transport bundle');
+const birthWindowWorkerClosure=routeClosure(birthWindowWorkerChunks.map(({path})=>path),'birth-window worker');
+const escapedEngineMarkerChunks=[...birthWindowWorkerClosure].filter(path=>engineMarkers.some(marker=>chunks.get(path).source.includes(marker)));
+if(escapedEngineMarkerChunks.length)fail('worker/browser engine isolation: birth-window transport contains an ephemeris runtime: '+escapedEngineMarkerChunks.join(', '));
 if (homepageMarkerChunks.length) {
   fail(`homepage engine isolation: engine marker found in ${homepageMarkerChunks.join(', ')}`);
 }
@@ -378,7 +417,7 @@ const sourceBoundaryClear = directVendorImporters.length === allowedDirectVendor
   && directVendorImporters.every((path, index) => path === allowedDirectVendorImporters[index])
   && engineInternalImporters.length === 1
   && engineInternalImporters[0] === allowedEngineImporter
-  && windowRuntimeImporters.every(path=>path===allowedEngineImporter);
+  && websiteWindowRuntimeImporters.every(path=>path===allowedEngineImporter);
 console.log(`engine isolation: package boundary ${sourceBoundaryClear ? 'clear' : 'failed'}; homepage markers ${homepageMarkerChunks.length ? 'found' : 'clear'}`);
 
 if (failures.length) {

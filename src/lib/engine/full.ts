@@ -36,6 +36,6 @@ export function computeChart(input: ChartInput): Chart {
 /** The worker loads this same compiled boundary. */
 export const browserEngineModuleUrl = import.meta.url;
 export async function birthWindow(input: import('@zodiacs/engine/window').BirthWindowInput) {
-  const windowEngine = await import('@zodiacs/engine/window');
+  const windowEngine = await import(/* @vite-ignore */ '@zodiacs/engine/window');
   return windowEngine.birthWindow(input);
 }

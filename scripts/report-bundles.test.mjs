@@ -139,7 +139,31 @@ describe('worker window engine boundary',()=>{
   expect(check({'src/islands/Window.ts':'import { type BirthWindow } from "@zodiacs/engine/window";'}).code).toBe(0);
  });
  it('rejects worker ephemeris code outside the full static closure',()=>{
-  const result=check({'dist/_astro/window.worker.fixture.js':'export const engine=["Value is not boolean:","Light-travel time solver did not converge"];'});
+  const result=check({'dist/_astro/birth-window.worker-fixture.js':'export const engine=["Value is not boolean:","Light-travel time solver did not converge"];'});
   expect(result.code).toBe(1);expect(result.output).toContain('worker/browser engine isolation');
+ });
+});
+
+describe('standalone widget versus website window imports',()=>{
+ it('keeps a separate unreferenced offline widget outside website roots',()=>{
+  expect(check({'src/ai-tools/studio/window.worker.ts':'import { birthWindow } from "@zodiacs/engine/window";'}).code).toBe(0);
+ });
+ it.each(['import "./../ai-tools/studio/window.worker";','const load=()=>import("../ai-tools/studio/window.worker");'])('rejects a website load reaching a separate widget runtime: %s',source=>{
+  const result=check({'src/islands/Unexpected.ts':source,'src/ai-tools/studio/window.worker.ts':'import { birthWindow } from "@zodiacs/engine/window";'});
+  expect(result.code).toBe(1);expect(result.output).toContain('window runtime must use');
+ });
+ it('preserves an existing worker compiled through its full boundary',()=>{
+  expect(check({'dist/_astro/TransitSearch.worker-fixture.js':'export const engine=["Value is not boolean:","Light-travel time solver did not converge"];'}).code).toBe(0);
+ });
+});
+
+describe('birth-window worker transitive isolation',()=>{
+ it('rejects ephemeris hidden in a statically imported worker dependency',()=>{
+  const result=check({'dist/_astro/birth-window.worker-fixture.js':'import "./engine-core.fixture.js";'});
+  expect(result.code).toBe(1);expect(result.output).toContain('worker/browser engine isolation');
+ });
+ it('requires the actual source worker to have exactly one compiled transport',()=>{
+  const result=check({'src/islands/birth-window.worker.ts':'import type { BirthWindowInput } from "@zodiacs/engine/window";'});
+  expect(result.code).toBe(1);expect(result.output).toContain('expected one transport bundle');
  });
 });
