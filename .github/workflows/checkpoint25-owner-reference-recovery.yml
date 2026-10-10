@@ -72,7 +72,7 @@ jobs:
            export(root+'owner-visual-reference.json',archive.read('owner-reference.json'))
            with open(os.environ['GITHUB_OUTPUT'],'a') as output:output.write('differing='+json.dumps(changed,separators=(',',':'))+'\n')
            print('OWNER_REFERENCE_RECOVERY '+json.dumps({'artifact':11666596282,'verifiedZipSha256':hashlib.sha256(packed).hexdigest(),'crcVerified':True,'actual':15,'differing':changed},separators=(',',':')))
-                    RECOVER
+          RECOVER
   images:
     needs: reports
     if: needs.reports.outputs.differing != '[]'
@@ -143,4 +143,4 @@ jobs:
            export(root+'owner-visual-reference.json',archive.read('owner-reference.json'))
            with open(os.environ['GITHUB_OUTPUT'],'a') as output:output.write('differing='+json.dumps(changed,separators=(',',':'))+'\n')
            print('OWNER_REFERENCE_RECOVERY '+json.dumps({'artifact':11666596282,'verifiedZipSha256':hashlib.sha256(packed).hexdigest(),'crcVerified':True,'actual':15,'differing':changed},separators=(',',':')))
-                    RECOVER
+          RECOVER
