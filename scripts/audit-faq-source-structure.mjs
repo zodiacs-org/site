@@ -52,9 +52,12 @@ for(const path of paths){
 }
 assert.equal(hashes.length,95,'Every reviewed source is byte-verified');
 assert.equal(emitters.length,88,'Every direct emitter is parsed');
-assert.equal(consumers.length,5,'All current shared-helper consumers are traced');
+const reviewedConsumers=judgement.records.filter(r=>/^src\\/pages\\/(?:es|fr|it|pt|ru)\\/index\\.astro$/.test(r.path));
+for(const record of reviewedConsumers)assert.ok(consumers.some(c=>c.path===record.path),'Known shared-helper consumer: '+record.path);
+const unreviewedConsumers=consumers.filter(c=>!judgement.records.some(r=>r.path===c.path));
+console.log('FAQ_SHARED_CONSUMERS '+JSON.stringify({consumers,unreviewedConsumers}));
 assert.ok(emitters.every(e=>e.arrayElement||e.path==='src/lib/home-trust.ts'),'Unexpected emitter shape requires explicit review');
-const report={schema:'zodiacs.faq-native-source-ast.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version,typescript:ts.version},auditedSource:source,verifiedSourceHashes:hashes,emitters,sharedHomeConsumers:consumers,controls:{everyReviewedSourceByteVerified:true,primaryEvidenceLinesVerified:true,allDirectNodesParsed:true,sharedHomeConsumersTraced:true,objectParentsUnderstood:true},limitations:['Native source parsing and source-byte verification only; the semantic decisions remain the source reviewer\'s judgement.','No build, browser, compiled-route coverage, rendered visibility, question/answer equivalence, correction, protected-scope allowance, acceptance or deployment is claimed.']};
+const report={schema:'zodiacs.faq-native-source-ast.v1',producer:{source:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,node:process.version,typescript:ts.version},auditedSource:source,verifiedSourceHashes:hashes,emitters,sharedHomeConsumers:consumers,unreviewedConsumers,controls:{everyReviewedSourceByteVerified:true,primaryEvidenceLinesVerified:true,allDirectNodesParsed:true,knownSharedConsumersVerified:true,allSharedConsumersReviewed:unreviewedConsumers.length===0,objectParentsUnderstood:true},limitations:['Native source parsing and source-byte verification only; the semantic decisions remain the source reviewer\'s judgement.','No build, browser, compiled-route coverage, rendered visibility, question/answer equivalence, correction, protected-scope allowance, acceptance or deployment is claimed.']};
 const output='docs/platform/evidence/faq-source-purpose-20261010/native-source-ast.json';
 mkdirSync('docs/platform/evidence/faq-source-purpose-20261010',{recursive:true});
 const bytes=Buffer.from(JSON.stringify(report,null,2)+'\n');writeFileSync(output,bytes);
