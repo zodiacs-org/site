@@ -1,0 +1,16 @@
+{
+  "schema": "zodiacs.faq-native-source-failure.v1",
+  "source": "9b069c410d123b1b7938c9bf2256c382fe2d946f",
+  "auditedSource": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+  "run": 38055703143,
+  "job": 114223641541,
+  "conclusion": "failure",
+  "stage": "node --check before installing or auditing",
+  "cause": "The revised path-filter regular expression was overescaped in the authored source and failed module syntax parsing.",
+  "originalDecodedLog": {
+    "bytes": 73456,
+    "sha256": "238564bea7ea6857859a896abcff6deffadb86768a1f06e253ddd7a7174251c9"
+  },
+  "correction": "Use exact known consumer paths rather than an escaped regular expression; compile the authored body for syntax before pushing and retain native Node syntax check.",
+  "acceptedWeight": 0
+}

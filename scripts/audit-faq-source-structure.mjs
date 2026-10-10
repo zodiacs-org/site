@@ -52,7 +52,8 @@ for(const path of paths){
 }
 assert.equal(hashes.length,95,'Every reviewed source is byte-verified');
 assert.equal(emitters.length,88,'Every direct emitter is parsed');
-const reviewedConsumers=judgement.records.filter(r=>/^src\\/pages\\/(?:es|fr|it|pt|ru)\\/index\\.astro$/.test(r.path));
+const knownHomePaths=new Set(['es','fr','it','pt','ru'].map(locale=>'src/pages/'+locale+'/index.astro'));
+const reviewedConsumers=judgement.records.filter(r=>knownHomePaths.has(r.path));
 for(const record of reviewedConsumers)assert.ok(consumers.some(c=>c.path===record.path),'Known shared-helper consumer: '+record.path);
 const unreviewedConsumers=consumers.filter(c=>!judgement.records.some(r=>r.path===c.path));
 console.log('FAQ_SHARED_CONSUMERS '+JSON.stringify({consumers,unreviewedConsumers}));
