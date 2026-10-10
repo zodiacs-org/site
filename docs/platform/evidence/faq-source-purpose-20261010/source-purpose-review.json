@@ -1,0 +1,3139 @@
+{
+  "schema": "zodiacs.faq-source-purpose-review.v1",
+  "auditedSource": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+  "method": "Exact-source primary headings/titles, FAQ emission sites and visible-FAQ component references reviewed; no browser/compiled-page claim.",
+  "initialLocatorSources": 90,
+  "additionalLocalizedHomeConsumers": 5,
+  "records": [
+    {
+      "path": "public/astrofolio/index.html",
+      "bytes": 506981,
+      "sha256": "f822b629bb60f4272306be458892a6a710d4a4d1864298d056c354f884747b65",
+      "role": "page/template",
+      "primaryPurpose": "Astrofolio landing page",
+      "primaryEvidence": [
+        {
+          "line": 32,
+          "text": "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"Zodiacs — The Archive\" href=\"/archive/rss.xml\" />"
+        },
+        {
+          "line": 33,
+          "text": "<link rel=\"alternate\" type=\"application/feed+json\" title=\"Zodiacs — The Archive\" href=\"/archive/feed.json\" />"
+        },
+        {
+          "line": 10999,
+          "text": "<h1 id=\"static-astrofolio-title\">Twelve signs. Twelve tokens.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 107,
+          "text": "\"@type\": \"FAQPage\","
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "scripts/build-build-report.mjs",
+      "bytes": 28310,
+      "sha256": "b3266b36d980f68a09f95c4610cfc47c8cd7f3a1dfccce0c1a7e305cc94dff80",
+      "role": "non-rendered reference",
+      "primaryPurpose": "validation/documentation",
+      "primaryEvidence": [],
+      "faqEvidence": [
+        {
+          "line": 98,
+          "text": "- Structured data: homepage \\`WebSite\\`, \\`Organization\\`, and existing FAQ \\`FAQPage\\`; sitewide \\`BreadcrumbList\\`; guide/learn \\`Article\\` (including the five learn section hubs); and tool \\`WebApplication\\` validate with 0 errors. Disclosure references the"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "retain reference and correct stale expectations with implementation",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "scripts/validate-schema.mjs",
+      "bytes": 16918,
+      "sha256": "bb71bc67e44ad084a3975c550185c91706b4fbf90044b1f17d1ce133f9214d86",
+      "role": "non-rendered reference",
+      "primaryPurpose": "validation/documentation",
+      "primaryEvidence": [],
+      "faqEvidence": [
+        {
+          "line": 175,
+          "text": "failures.push(`${label}: FAQPage must contain exactly ${expectedCount} questions`);"
+        },
+        {
+          "line": 276,
+          "text": "const faq = nodes.find((node) => hasType(node, 'FAQPage'));"
+        },
+        {
+          "line": 293,
+          "text": "failures.push(`${label}: homepage is missing its FAQPage questions`);"
+        },
+        {
+          "line": 326,
+          "text": "const faqs = nodes.filter((node) => hasType(node, 'FAQPage'));"
+        },
+        {
+          "line": 328,
+          "text": "failures.push(`${label}: horoscope content allows at most one FAQPage (found ${faqs.length})`);"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "retain reference and correct stale expectations with implementation",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/components/HoroscopeProgramPage.astro",
+      "bytes": 28050,
+      "sha256": "0306d8d045c33f94b0f2c1e8d166116e897a4f85ec6a6083135e0fc26c2ba9d2",
+      "role": "page/template",
+      "primaryPurpose": "horoscope reading",
+      "primaryEvidence": [
+        {
+          "line": 194,
+          "text": "title={`${sign.name} ${reading.title} — ${reading.label} | Zodiacs.org`}"
+        },
+        {
+          "line": 204,
+          "text": "title: `Zodiacs.org — ${sign.name} daily horoscope`,"
+        },
+        {
+          "line": 265,
+          "text": "<h1 class=\"display\">{sign.name} {reading.title}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 173,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 386,
+          "text": "<Faq items={faq} heading={`${sign.name} ${meta.nav.toLowerCase()} horoscope, answered`} />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/components/compat/LocalizedPairPage.astro",
+      "bytes": 16744,
+      "sha256": "3ce6f4eae5af3a5def29a10991f2eb8ab2b9199862145ee7170d080bcadb0a7f",
+      "role": "page/template",
+      "primaryPurpose": "compatibility guide",
+      "primaryEvidence": [
+        {
+          "line": 180,
+          "text": "title={entry.data.title}"
+        },
+        {
+          "line": 197,
+          "text": "<h1 class=\"display\">{nameA} <span class=\"pair-hero__amp\">{c.and}</span> {nameB}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 168,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/components/learn/LocalizedRisingPage.astro",
+      "bytes": 13577,
+      "sha256": "0d5c703c0ef8c7c064a09ab94baa67e3b068d66da96c0bc358e01e1c349ab7ff",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 32,
+          "text": "heading: (sign: string) => string;"
+        },
+        {
+          "line": 57,
+          "text": "heading: (s) => `Ascendente ${s}`,"
+        },
+        {
+          "line": 80,
+          "text": "heading: (s) => `Ascendente em ${s}`,"
+        },
+        {
+          "line": 103,
+          "text": "heading: (s) => `Ascendant ${s}`,"
+        },
+        {
+          "line": 126,
+          "text": "heading: (s) => `Ascendente ${s}`,"
+        },
+        {
+          "line": 209,
+          "text": "title={title}"
+        },
+        {
+          "line": 224,
+          "text": "<h1 class=\"display\">{c.heading(name)}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 197,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 270,
+          "text": "<Faq items={entry.data.faq} heading={c.faqHeading} />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/components/programmatic/LocalizedBirthdayPage.astro",
+      "bytes": 15563,
+      "sha256": "55ccad690338d0e328cc8572db7bf0a69882e5d5dc94dbcc2906d6b550301f27",
+      "role": "page/template",
+      "primaryPurpose": "birthday profile",
+      "primaryEvidence": [
+        {
+          "line": 150,
+          "text": "title={title}"
+        },
+        {
+          "line": 166,
+          "text": "<h1 class=\"display\">{text('bornOn', { date: label })}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 140,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 287,
+          "text": "<Faq items={faq} heading={text('faqHeading')} />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/components/sky/LocalizedEclipsesPage.astro",
+      "bytes": 42528,
+      "sha256": "795f5ca815a24b8d5027f6e9166c312e93bdbace1a6fd41008a1eb5149b534ee",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 24,
+          "text": "title: string;"
+        },
+        {
+          "line": 27,
+          "text": "heroHeading: string;"
+        },
+        {
+          "line": 102,
+          "text": "title: 'Eclipses 2026–2028: fechas y signos | Zodiacs.org',"
+        },
+        {
+          "line": 106,
+          "text": "heroHeading: 'Encuentra todos los eclipses hasta 2028.',"
+        },
+        {
+          "line": 186,
+          "text": "title: 'Eclipses 2026–2028: datas e signos | Zodiacs.org',"
+        },
+        {
+          "line": 190,
+          "text": "heroHeading: 'Encontre todos os eclipses até 2028.',"
+        },
+        {
+          "line": 271,
+          "text": "title: 'Éclipses 2026–2028\\u202F: dates et signes | Zodiacs.org',"
+        },
+        {
+          "line": 275,
+          "text": "heroHeading: 'Trouve toutes les éclipses jusqu’en 2028.',"
+        },
+        {
+          "line": 355,
+          "text": "title: 'Eclissi 2026–2028: date e segni | Zodiacs.org',"
+        },
+        {
+          "line": 359,
+          "text": "heroHeading: 'Trova tutte le eclissi fino al 2028.',"
+        },
+        {
+          "line": 616,
+          "text": "title={c.title}"
+        },
+        {
+          "line": 627,
+          "text": "<h1 class=\"display\">{c.heroHeading}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 596,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/components/sky/LocalizedFullMoonCalendarPage.astro",
+      "bytes": 36066,
+      "sha256": "1915d16e93b89091e8460706bd9229949ee0cbbdb94dbb52458df9de8aabf585",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 33,
+          "text": "title: string;"
+        },
+        {
+          "line": 36,
+          "text": "heading: string;"
+        },
+        {
+          "line": 74,
+          "text": "title: 'Calendario de lunas llenas 2026 y 2027 | Zodiacs.org',"
+        },
+        {
+          "line": 78,
+          "text": "heading: 'Encuentra todas las lunas llenas hasta 2027.',"
+        },
+        {
+          "line": 158,
+          "text": "title: 'Calendário de luas cheias 2026 e 2027 | Zodiacs.org',"
+        },
+        {
+          "line": 162,
+          "text": "heading: 'Encontre todas as luas cheias até 2027.',"
+        },
+        {
+          "line": 242,
+          "text": "title: 'Calendrier des pleines lunes 2026 et 2027 | Zodiacs.org',"
+        },
+        {
+          "line": 246,
+          "text": "heading: 'Trouve toutes les pleines lunes jusqu’en 2027.',"
+        },
+        {
+          "line": 326,
+          "text": "title: 'Calendario delle lune piene 2026 e 2027 | Zodiacs.org',"
+        },
+        {
+          "line": 330,
+          "text": "heading: 'Trova tutte le lune piene fino al 2027.',"
+        },
+        {
+          "line": 539,
+          "text": "title={c.title}"
+        },
+        {
+          "line": 550,
+          "text": "<h1 class=\"display\">{c.heading}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 519,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/components/sky/LocalizedMercuryRetrogradePage.astro",
+      "bytes": 36207,
+      "sha256": "cb6f6223754d16e264356c78ef377ccaafdd349b57a967fb197c2823edbf62d8",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 31,
+          "text": "title: string;"
+        },
+        {
+          "line": 34,
+          "text": "h1: string;"
+        },
+        {
+          "line": 80,
+          "text": "title: 'Mercurio retrógrado 2026 y 2027: fechas | Zodiacs.org',"
+        },
+        {
+          "line": 83,
+          "text": "h1: 'Mira cuándo Mercurio se vuelve retrógrado.',"
+        },
+        {
+          "line": 146,
+          "text": "title: 'Mercúrio retrógrado 2026 e 2027: datas | Zodiacs.org',"
+        },
+        {
+          "line": 149,
+          "text": "h1: 'Veja quando Mercúrio fica retrógrado.',"
+        },
+        {
+          "line": 212,
+          "text": "title: 'Mercure rétrograde 2026 et 2027 : dates | Zodiacs.org',"
+        },
+        {
+          "line": 215,
+          "text": "h1: 'Regarde quand Mercure devient rétrograde.',"
+        },
+        {
+          "line": 278,
+          "text": "title: 'Mercurio retrogrado 2026 e 2027: date | Zodiacs.org',"
+        },
+        {
+          "line": 281,
+          "text": "h1: 'Guarda quando Mercurio diventa retrogrado.',"
+        },
+        {
+          "line": 474,
+          "text": "title={c.title}"
+        },
+        {
+          "line": 485,
+          "text": "<h1 class=\"display\">{c.h1}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 461,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/components/sky/LocalizedRetrogradesPage.astro",
+      "bytes": 39231,
+      "sha256": "d7f94b9cc9618c64109263fdf2084de57bde3f53bfc0a0f3a07bb4d659f96445",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 39,
+          "text": "title: string;"
+        },
+        {
+          "line": 52,
+          "text": "heroTitle: string;"
+        },
+        {
+          "line": 82,
+          "text": "title: 'Planetas retrógrados 2026 y 2027 | Zodiacs.org',"
+        },
+        {
+          "line": 96,
+          "text": "heroTitle: 'Revisa todos los periodos retrógrados hasta 2027.',"
+        },
+        {
+          "line": 164,
+          "text": "title: 'Planetas retrógrados 2026 e 2027 | Zodiacs.org',"
+        },
+        {
+          "line": 178,
+          "text": "heroTitle: 'Veja todos os períodos retrógrados até 2027.',"
+        },
+        {
+          "line": 246,
+          "text": "title: 'Planètes rétrogrades 2026 et 2027 | Zodiacs.org',"
+        },
+        {
+          "line": 260,
+          "text": "heroTitle: 'Consulte toutes les périodes rétrogrades jusqu’en 2027.',"
+        },
+        {
+          "line": 328,
+          "text": "title: 'Pianeti retrogradi 2026 e 2027 | Zodiacs.org',"
+        },
+        {
+          "line": 343,
+          "text": "heroTitle: 'Consulta tutti i periodi retrogradi fino al 2027.',"
+        },
+        {
+          "line": 535,
+          "text": "title={c.title}"
+        },
+        {
+          "line": 546,
+          "text": "<h1 class=\"display\">{c.heroTitle}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 522,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/lib/home-trust.ts",
+      "bytes": 708,
+      "sha256": "14554e639e9dfc3a50bbce5aecae93bef5d51a741821ea0590657bb15406e7d5",
+      "role": "shared JSON-LD emitter",
+      "primaryPurpose": "localized home trust section",
+      "primaryEvidence": [],
+      "faqEvidence": [
+        {
+          "line": 9,
+          "text": "export function homeTrustSchema(locale: CatalogLocale) {"
+        },
+        {
+          "line": 10,
+          "text": "return { '@type': 'FAQPage', mainEntity: homeTrustFaq(locale).map(({q,a,link}) => ({"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/[sign]/index.astro",
+      "bytes": 14412,
+      "sha256": "f4675fdad43c02754cad45589a456503a30a21b2bf51e18d292de6f41ab2320c",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 76,
+          "text": "title={guide.data.title}"
+        },
+        {
+          "line": 93,
+          "text": "<h1>{sign.name}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 64,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 177,
+          "text": "<Faq items={guide.data.faq} heading={`${sign.name}, asked and answered`} />"
+        }
+      ],
+      "protectedBy": [
+        "existing sign guides"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ask/index.astro",
+      "bytes": 9513,
+      "sha256": "e227fea0a04800f43437c2f7192d9db3891392cb83ef95509fcecc2ba365f28a",
+      "role": "page/template",
+      "primaryPurpose": "Guide conversation/help",
+      "primaryEvidence": [
+        {
+          "line": 63,
+          "text": "title=\"Guide — astrology and birth-chart help from Zodiacs.org\""
+        },
+        {
+          "line": 74,
+          "text": "<h1 class=\"display\">Astrology help, right when you need it.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 53,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 133,
+          "text": "<Faq items={faq} heading=\"Guide, answered\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/baby-zodiac/index.astro",
+      "bytes": 6116,
+      "sha256": "dcb5155b91c15ddf546d49cc7bae15795394461e330ddafef118c60ecb267b63",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 49,
+          "text": "title=\"Baby Zodiac Calculator — What Sign Will My Baby Be? | Zodiacs.org\""
+        },
+        {
+          "line": 58,
+          "text": "<h1 class=\"display\">What sign will the baby be?</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/big-three/index.astro",
+      "bytes": 4962,
+      "sha256": "f4b56a0a1e2f3b0f7e7612e2592fe3f7dce2d55f106598e7421076cbc2617713",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 48,
+          "text": "title=\"Big Three Calculator — Sun, Moon, and Rising in Seconds | Zodiacs.org\""
+        },
+        {
+          "line": 58,
+          "text": "<h1 class=\"display\">{sharingText('en', 'bigTitle')}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 37,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/birth-chart/index.astro",
+      "bytes": 9848,
+      "sha256": "4eb08cefb3fc4fbeb47987b27096ab90c9cd5ed0be7355be159591b6cc9fa72e",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 70,
+          "text": "title=\"Free Birth Chart Calculator — Sun, Moon & Rising | Zodiacs.org\""
+        },
+        {
+          "line": 113,
+          "text": "<h1 class=\"display\">Get your free birth chart.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 49,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/birth-chart/three-dimensions/index.astro",
+      "bytes": 14444,
+      "sha256": "15be44340fdbef40d7e569b55d25ae01b4ff462b8802a4313944bf1462717b29",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 115,
+          "text": "title=\"The Birth Chart in Three Dimensions — Declination, Parallels, Sect | Zodiacs.org\""
+        },
+        {
+          "line": 125,
+          "text": "<h1 class=\"display td-title\">The birth chart in three dimensions.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 97,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/birthday/[slug].astro",
+      "bytes": 21682,
+      "sha256": "9d060ec8b70a1192bce03b2cd610dda375476cb9543dfaff4fe5cb4f43252c4d",
+      "role": "page/template",
+      "primaryPurpose": "birthday profile",
+      "primaryEvidence": [
+        {
+          "line": 164,
+          "text": "title={entry.data.title}"
+        },
+        {
+          "line": 178,
+          "text": "<h1 class=\"display\">Born on {label}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 154,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 289,
+          "text": "<Faq items={faq} heading=\"The date, answered\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/compatibility/[pair]/index.astro",
+      "bytes": 12192,
+      "sha256": "9baf1d70d4efd7eb37dac3bf507bb15d52ecd13c8eaf2a13e1092ed2c17066ef",
+      "role": "page/template",
+      "primaryPurpose": "compatibility guide",
+      "primaryEvidence": [
+        {
+          "line": 72,
+          "text": "title={entry.data.title}"
+        },
+        {
+          "line": 88,
+          "text": "<h1 class=\"display\">{a.name} <span class=\"pair-hero__amp\">and</span> {same ? a.name : b.name}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 61,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/compatibility/index.astro",
+      "bytes": 10086,
+      "sha256": "f0791ad270752fa1c88162de116a24aee5a9a7d5b541ca759b9c5bf2f51ca138",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 53,
+          "text": "title=\"Compatibility Calculator — Compare Two Birth Charts | Zodiacs.org\""
+        },
+        {
+          "line": 64,
+          "text": "<h1 class=\"display\">Check your astrology compatibility.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 41,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 136,
+          "text": "<Faq items={faq} heading=\"Compatibility questions\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/eclipses/2027/index.astro",
+      "bytes": 8023,
+      "sha256": "11e0c2a3f5794d2d29d40351548af17d5a8df68026e0242ef33c65c2c3042fe3",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 110,
+          "text": "title=\"Eclipses 2027 — Every Solar and Lunar Eclipse, Exact | Zodiacs.org\""
+        },
+        {
+          "line": 121,
+          "text": "<h1 class=\"display\">The eclipses of {YEAR}.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 100,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/eclipses/index.astro",
+      "bytes": 12887,
+      "sha256": "9ddc036d81086099e3f1b5acf78e300fb442c28aa76a8bf0e6caa28c96ac118e",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 153,
+          "text": "title=\"Eclipse Dates 2026–2028 — Solar & Lunar, Exact | Zodiacs.org\""
+        },
+        {
+          "line": 163,
+          "text": "<h1 class=\"display\">Find every eclipse through 2028.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 141,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/[sign]/index.astro",
+      "bytes": 7940,
+      "sha256": "7b3d8c79d4f07693d0e6f7fd8f48c66831a42399ecb89f7e45665fd4325ecf0a",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 72,
+          "text": "title={`${guide.title} | Zodiacs.org`}"
+        },
+        {
+          "line": 86,
+          "text": "<h1 class=\"display\">{signName(sign, 'es')}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 61,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 138,
+          "text": "<Faq items={guide.faq} heading={`${signName(sign, 'es')}, preguntas frecuentes`} />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/baby-zodiac/index.astro",
+      "bytes": 5034,
+      "sha256": "d6fdef3df2a7321b9cd071285ade28d4ada847f79888c6f46989be5ee1e232c1",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 52,
+          "text": "title=\"¿Qué signo será mi bebé? Calculadora gratis | Zodiacs.org\""
+        },
+        {
+          "line": 62,
+          "text": "<h1 class=\"display\">¿Qué signo será el bebé?</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 40,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 91,
+          "text": "<Faq items={faq} heading=\"Preguntas sobre el zodiaco del bebé\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/birth-chart/index.astro",
+      "bytes": 7311,
+      "sha256": "1f024beee772b951933544e4252bb4e57d5c14a3185cc19f0d222048e60cde2e",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 67,
+          "text": "title=\"Carta natal gratis — Sol, Luna y ascendente | Zodiacs.org\""
+        },
+        {
+          "line": 101,
+          "text": "<h1 class=\"display\">Obtén tu carta natal gratis.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 46,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 122,
+          "text": "<Faq items={faq} heading=\"Preguntas sobre la carta natal\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/compatibility/index.astro",
+      "bytes": 5665,
+      "sha256": "b6a523f08d6c5c654a3126ebcb460289f850c30eabb42c6a3b44a50dcaf08c94",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 51,
+          "text": "title=\"Calculadora de compatibilidad astrológica | Zodiacs.org\""
+        },
+        {
+          "line": 63,
+          "text": "<h1 class=\"display\">Revisa tu compatibilidad astrológica.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 39,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 97,
+          "text": "<Faq items={faq} heading=\"Preguntas sobre la compatibilidad\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/moon-phase/index.astro",
+      "bytes": 3609,
+      "sha256": "20cac29d92fa0ac7d253d463a99e5fbc8bd97168c084a0ac83085b1d61be737b",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Fase lunar de hoy y de tu cumpleaños | Zodiacs.org\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">La Luna, hoy y cualquier noche.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Preguntas sobre las fases lunares\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/moon-sign/index.astro",
+      "bytes": 3728,
+      "sha256": "4ba04176b4b3bba947ab0ebece441f7fccdebbe858741de7e49926ac6a4a5179",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Calculadora de signo lunar gratis | Zodiacs.org\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">Encuentra tu signo lunar.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Preguntas sobre el signo lunar\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/rising-sign/index.astro",
+      "bytes": 4976,
+      "sha256": "4ea3fbbefeabe615f9a71f577221069c7c7f77c84e136e97434b41f086d3c4a3",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Calculadora de ascendente gratis | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Encuentra tu ascendente.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 44,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 91,
+          "text": "<Faq items={faq} heading=\"Preguntas sobre el ascendente\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/saturn-return/index.astro",
+      "bytes": 4371,
+      "sha256": "5b7dca151a2b2b33d9896e35a8bddc34a0fc5c40e4174d049d6e4d22442a1d7c",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Calculadora de retorno de Saturno | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Tu retorno de Saturno, con fechas.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 43,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 76,
+          "text": "<Faq items={faq} heading=\"Preguntas sobre el retorno de Saturno\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/transits/index.astro",
+      "bytes": 5649,
+      "sha256": "9a79f8dbf559407802093162fe8c6d571774d646fe9f1668711c7fa487ae742e",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 55,
+          "text": "title=\"Tránsitos de hoy sobre tu carta natal | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">El cielo, sobre tu carta.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 43,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 90,
+          "text": "<Faq items={faq} heading=\"Preguntas sobre los tránsitos\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/[sign]/index.astro",
+      "bytes": 8055,
+      "sha256": "408b25f293c6c56fe6370b9ee862abe59d97c389331cf93da70b75b468a7cd88",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 72,
+          "text": "title={`${guide.title} | Zodiacs.org`}"
+        },
+        {
+          "line": 86,
+          "text": "<h1 class=\"display\">{signName(sign, 'fr')}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 61,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 139,
+          "text": "<Faq items={guide.faq} heading={`${signName(sign, 'fr')} : questions fréquentes`} />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/baby-zodiac/index.astro",
+      "bytes": 5327,
+      "sha256": "06b257aaa232c2fff2da2c5c68454af22ef0a6a26a2d2cb67e5bfc2b3c6bc911",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 52,
+          "text": "title=\"Quel sera le signe de mon bébé ? Calculateur | Zodiacs.org\""
+        },
+        {
+          "line": 62,
+          "text": "<h1 class=\"display\">Quel sera le signe du bébé ?</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 40,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 91,
+          "text": "<Faq items={faq} heading=\"Questions sur le zodiaque du bébé\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/birth-chart/index.astro",
+      "bytes": 7681,
+      "sha256": "cba046933d0fedbbffc97f7c00f79fcfe07719231d2c386e4c36f3502e5c1bf6",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 67,
+          "text": "title=\"Calcul de thème astral gratuit, avec ascendant | Zodiacs.org\""
+        },
+        {
+          "line": 101,
+          "text": "<h1 class=\"display\">Obtiens ton thème astral gratuit.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 46,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 122,
+          "text": "<Faq items={faq} heading=\"Questions sur le thème astral\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/compatibility/index.astro",
+      "bytes": 5771,
+      "sha256": "70b5079cdf3ca784b3ee014476a12278719d343124a9bc5dd8e62f32dd873089",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 51,
+          "text": "title=\"Calculateur de compatibilité astrologique | Zodiacs.org\""
+        },
+        {
+          "line": 63,
+          "text": "<h1 class=\"display\">Explore ta compatibilité astrologique.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 39,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 97,
+          "text": "<Faq items={faq} heading=\"Questions sur la compatibilité\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/moon-phase/index.astro",
+      "bytes": 3847,
+      "sha256": "6aa96fe3bb1818f476413b36480ca6965ab5544b23c9e5bb1f79316a381df018",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Phase de la Lune aujourd’hui et à ta naissance | Zodiacs.org\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">La Lune, aujourd’hui ou n’importe quel soir.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Questions sur les phases de la Lune\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/moon-sign/index.astro",
+      "bytes": 4009,
+      "sha256": "e1812e1946c5e64cbef2ba7022fa55c23da02231a337f6ff22b1063ca3826647",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Calculateur gratuit de signe lunaire | Zodiacs.org\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">Découvre ton signe lunaire.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Questions sur le signe lunaire\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/rising-sign/index.astro",
+      "bytes": 5187,
+      "sha256": "88b4fbba1228203b0e354d69007716a6e43bce1db2ee0dfd9c494d9865de67b9",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Calculateur gratuit d’ascendant | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Découvre ton ascendant.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 44,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 91,
+          "text": "<Faq items={faq} heading=\"Questions sur l’ascendant\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/saturn-return/index.astro",
+      "bytes": 4482,
+      "sha256": "a19a41ac5e94213baedc563c7cc71497d7414a3a25f3795103047f352f36bcba",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Calculateur de retour de Saturne | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Ton retour de Saturne, avec ses dates.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 43,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 76,
+          "text": "<Faq items={faq} heading=\"Questions sur le retour de Saturne\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/transits/index.astro",
+      "bytes": 5811,
+      "sha256": "febcc5ab52faf7e21b248c70784b1af724bb7c6943d7479aa24122a72f0ea296",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 55,
+          "text": "title=\"Transits du jour sur ton thème astral | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Le ciel, sur ton thème.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 43,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 90,
+          "text": "<Faq items={faq} heading=\"Questions sur les transits\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/full-moon-calendar/2027/index.astro",
+      "bytes": 9077,
+      "sha256": "4ce6bad16e4e3b61fb8c0ea7f4d773edf59e021f0e9a3f380d7772c068fc867a",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 103,
+          "text": "title=\"Full Moon Calendar 2027 — Every Date, Time, and Sign | Zodiacs.org\""
+        },
+        {
+          "line": 114,
+          "text": "<h1 class=\"display\">The full moons of {YEAR}.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 93,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/full-moon-calendar/index.astro",
+      "bytes": 12112,
+      "sha256": "9d65346e78f37a55172338cbb9239666581cd954f776c96fbb05ec57d84c9418",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 138,
+          "text": "title=\"Full Moon Calendar 2026 & 2027 — Dates, Signs, Names | Zodiacs.org\""
+        },
+        {
+          "line": 148,
+          "text": "<h1 class=\"display\">Find every full moon through 2027.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 126,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/index.astro",
+      "bytes": 51786,
+      "sha256": "4d4f6c034e00b937101a3a6f777f6b4e8ef55aa64c4c19321a43370327624222",
+      "role": "page/template",
+      "primaryPurpose": "site home",
+      "primaryEvidence": [
+        {
+          "line": 82,
+          "text": "title=\"Zodiacs.org — Free Birth Charts, Sign Guides & Astrology Tools\""
+        },
+        {
+          "line": 183,
+          "text": "<h1 class=\"hero__title\">Your whole chart, <em>not just your sign.</em></h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 61,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/[sign]/index.astro",
+      "bytes": 8031,
+      "sha256": "adb6867b470133af775f598ad60c924e0333c953e21ec02fa87d490897a5ae38",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 72,
+          "text": "title={`${guide.title} | Zodiacs.org`}"
+        },
+        {
+          "line": 86,
+          "text": "<h1 class=\"display\">{signName(sign, 'it')}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 61,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 139,
+          "text": "<Faq items={guide.faq} heading={`${signName(sign, 'it')}: domande frequenti`} />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/baby-zodiac/index.astro",
+      "bytes": 5034,
+      "sha256": "2dc94c9a7c1e88ecf4957a7af3ae5db23407e19d8cb61e457b66770800ffb03a",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 52,
+          "text": "title=\"Quale sarà il segno zodiacale del bambino? | Zodiacs.org\""
+        },
+        {
+          "line": 62,
+          "text": "<h1 class=\"display\">Quale sarà il segno del bambino?</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 40,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 91,
+          "text": "<Faq items={faq} heading=\"Domande sullo zodiaco del bambino\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/birth-chart/index.astro",
+      "bytes": 7282,
+      "sha256": "2f85eaa0c589f9b2cc85195bf87cf4a15173a858a380eaa8ac86cb1482d14e18",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 67,
+          "text": "title=\"Tema natale gratuito — Sole, Luna e ascendente | Zodiacs.org\""
+        },
+        {
+          "line": 101,
+          "text": "<h1 class=\"display\">Calcola il tuo tema natale gratis.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 46,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 122,
+          "text": "<Faq items={faq} heading=\"Domande sul tema natale\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/compatibility/index.astro",
+      "bytes": 5577,
+      "sha256": "09f428412fccc51bce3463b81b01291ec54d56d4fe76ecd4fcfc37667ef626c6",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 51,
+          "text": "title=\"Calcolatore di compatibilità astrologica | Zodiacs.org\""
+        },
+        {
+          "line": 63,
+          "text": "<h1 class=\"display\">Esplora la tua compatibilità astrologica.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 39,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 97,
+          "text": "<Faq items={faq} heading=\"Domande sulla compatibilità\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/moon-phase/index.astro",
+      "bytes": 3680,
+      "sha256": "246ce9b53802a509c3431e3eee06c5e019ee0eeec46e937f2f5a7b3710e9b2ae",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Fase lunare di oggi e della tua nascita | Zodiacs.org\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">La Luna, oggi o in qualsiasi altra notte.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Domande sulle fasi lunari\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/moon-sign/index.astro",
+      "bytes": 3779,
+      "sha256": "2eb02b4bec7e161434b0caa69009e3c699706dced2fafcd7ab390da68d07d70a",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Calcolatore gratuito del segno lunare | Zodiacs.org\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">Scopri il tuo segno lunare.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Domande sul segno lunare\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/rising-sign/index.astro",
+      "bytes": 4994,
+      "sha256": "ad88c73b9320aeded64d170e7a389c3072288964668487345c7f0e67263b98d4",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Calcolatore gratuito dell’ascendente | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Scopri il tuo ascendente.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 44,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 91,
+          "text": "<Faq items={faq} heading=\"Domande sull’ascendente\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/saturn-return/index.astro",
+      "bytes": 4349,
+      "sha256": "56d442078b5c3bee7d56544aefded600ff3bc4712dd022dd76a1d157aa827bfc",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Calcolatore del ritorno di Saturno | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Il tuo ritorno di Saturno, con le date.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 43,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 76,
+          "text": "<Faq items={faq} heading=\"Domande sul ritorno di Saturno\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/transits/index.astro",
+      "bytes": 5590,
+      "sha256": "abb69e04e9df28f464da645bb57136e21a6817c7813cdd1535e6062852bbabe0",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 55,
+          "text": "title=\"Transiti di oggi sul tuo tema natale | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Il cielo, sul tuo tema.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 43,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 90,
+          "text": "<Faq items={faq} heading=\"Domande sui transiti\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/learn/aspects/[slug].astro",
+      "bytes": 6328,
+      "sha256": "c640188d5261f6514fb8bd102e7f498a343959e7c09d097da7fc333a1df79268",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 78,
+          "text": "title={entry.data.title}"
+        },
+        {
+          "line": 90,
+          "text": "<h1 id={slug} class=\"display\">The {type}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 68,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 104,
+          "text": "<Faq items={entry.data.faq} heading=\"Asked and answered\" />"
+        }
+      ],
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/learn/houses/[slug].astro",
+      "bytes": 6761,
+      "sha256": "1e236ccd4815bce7f7f8e1e31f8e8cf21a88ed24055fac9f99fb3778821507ad",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 83,
+          "text": "title={entry.data.title}"
+        },
+        {
+          "line": 95,
+          "text": "<h1 id={slug} class=\"display\">The {ORDINALS[n - 1]} house</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 73,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 112,
+          "text": "<Faq items={entry.data.faq} heading=\"Asked and answered\" />"
+        }
+      ],
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/learn/how-to-read-a-birth-chart.astro",
+      "bytes": 10454,
+      "sha256": "f82f05e949fa8fdb9dc8bda71c8b08e6adb2b977611e1ac1d9f09432f68ec9d4",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 49,
+          "text": "title=\"How to Read a Birth Chart, Step by Step | Zodiacs.org\""
+        },
+        {
+          "line": 59,
+          "text": "<h1 id=\"how-to-read-a-birth-chart\" class=\"method-title display\">How to read a birth chart.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 39,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/learn/placements/[slug].astro",
+      "bytes": 14480,
+      "sha256": "47606269dc3b1b14b3447e163c22e30854987215278e6e4338afa11dd0754f8b",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 141,
+          "text": "title={entry.data.title}"
+        },
+        {
+          "line": 156,
+          "text": "<h1 id={slug} class=\"display\">{planet} in {sign.name}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 131,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 217,
+          "text": "<Faq items={entry.data.faq} heading=\"Asked and answered\" />"
+        }
+      ],
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/learn/planets/[slug].astro",
+      "bytes": 7700,
+      "sha256": "47597c5c0cf7deb891e6cbd863a8f8b074d21729dbf8eda3d4467be59e3a1ccb",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 87,
+          "text": "title={entry.data.title}"
+        },
+        {
+          "line": 98,
+          "text": "<h1 id={slug} class=\"display\">{planet}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 77,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 112,
+          "text": "<Faq items={entry.data.faq} heading={`${planet}, asked and answered`} />"
+        }
+      ],
+      "protectedBy": [
+        "existing Learn pages"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/lunar-return/index.astro",
+      "bytes": 3985,
+      "sha256": "90def3ce01c0cd0866b7a760cbfe7a9de9dbe3766a126175103fd1c8d0079d23",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 18,
+          "text": "<Base clientUi inlineCriticalCss title=\"Lunar Return Calculator — Your Next Moon Return\" description=\"Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar.\" path=\"/lunar-return/\" jsonL"
+        },
+        {
+          "line": 20,
+          "text": "<div class=\"tool-hero\"><h1 class=\"display\">Your lunar return</h1><p>Find the next time the Moon returns to its place in your birth chart. Explore a fresh set of prompts for everyday care, connection, and attention.</p></div>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 15,
+          "text": "{ '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/mercury-retrograde/2027/index.astro",
+      "bytes": 8106,
+      "sha256": "eb19d01573a095105380e7eeeb5fcf66e815282a553918283c88b6fbbeead940",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 84,
+          "text": "title=\"Mercury Retrograde 2027 — Exact Dates and Stations | Zodiacs.org\""
+        },
+        {
+          "line": 95,
+          "text": "<h1 class=\"display\">Mercury retrograde in {YEAR}.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 74,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/mercury-retrograde/index.astro",
+      "bytes": 12067,
+      "sha256": "897510ee4fe96d10c4e4aca570c493770aa091bf60650834e9138c194d03ee7c",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 129,
+          "text": "title=\"Mercury Retrograde Dates 2026 & 2027 — Exact, Computed | Zodiacs.org\""
+        },
+        {
+          "line": 139,
+          "text": "<h1 class=\"display\">See when Mercury turns retrograde.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 117,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/moon-phase/index.astro",
+      "bytes": 7191,
+      "sha256": "e0148914322cdd8a9ffaf3890204ac8243cf00cf810c8e01772a4042642ce142",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 65,
+          "text": "title=\"Moon Phase Today & On Your Birthday | Zodiacs.org\""
+        },
+        {
+          "line": 74,
+          "text": "<h1 class=\"display\">The moon, tonight and any night.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 54,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/moon-sign/index.astro",
+      "bytes": 6779,
+      "sha256": "dd97a62dc788edd88507e8452f64883b04575e32fd228d20ab207faab6ebd0ab",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 48,
+          "text": "title=\"Moon Sign Calculator — What Is My Moon Sign? | Zodiacs.org\""
+        },
+        {
+          "line": 57,
+          "text": "<h1 class=\"display\">Find your moon sign.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 37,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/numerology/index.astro",
+      "bytes": 10823,
+      "sha256": "6f70d036d85288a0a468d5b2d1bcf7b584fa7ede68d9da3fad559018705bf000",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 67,
+          "text": "title=\"Numerology Calculator — Life Path, Expression, Soul Urge | Zodiacs.org\""
+        },
+        {
+          "line": 75,
+          "text": "<h1 class=\"display\">Find your Life Path number.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 55,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/numerology/life-path/[number].astro",
+      "bytes": 10014,
+      "sha256": "7c151d1f8537362cf651ca5062d32b057b27efc5d3ace0d00271b39fa2f04fbc",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 98,
+          "text": "title={page.title}"
+        },
+        {
+          "line": 107,
+          "text": "<h1 class=\"display\">Life Path {number}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 87,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/[sign]/index.astro",
+      "bytes": 7978,
+      "sha256": "febb9fdda517107ed94ed7da8d62bbe24975453751551cace4084f2748b6b175",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 72,
+          "text": "title={`${guide.title} | Zodiacs.org`}"
+        },
+        {
+          "line": 86,
+          "text": "<h1 class=\"display\">{signName(sign, 'pt')}</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 61,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 139,
+          "text": "<Faq items={guide.faq} heading={`${signName(sign, 'pt')}: perguntas frequentes`} />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/baby-zodiac/index.astro",
+      "bytes": 4972,
+      "sha256": "ec6472a254421899d5a88585f12e7c45e34e75f31befb344bfbcd061dbafebb8",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 52,
+          "text": "title=\"Qual será o signo do meu bebê? Calculadora | Zodiacs.org\""
+        },
+        {
+          "line": 62,
+          "text": "<h1 class=\"display\">Qual será o signo do bebê?</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 40,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 90,
+          "text": "<Faq items={faq} heading=\"Perguntas sobre o zodíaco do bebê\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/birth-chart/index.astro",
+      "bytes": 7397,
+      "sha256": "3b3a19bac15bb16ea95e90653961c5b19576690b97bb78048677c116d3426d8a",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 67,
+          "text": "title=\"Mapa astral grátis — Sol, Lua e ascendente | Zodiacs.org\""
+        },
+        {
+          "line": 101,
+          "text": "<h1 class=\"display\">Calcule seu mapa astral grátis.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 46,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 122,
+          "text": "<Faq items={faq} heading=\"Perguntas sobre o mapa astral\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/compatibility/index.astro",
+      "bytes": 5614,
+      "sha256": "c5dc8d0389447d2470fb628a669113898408b58127a7ed59ab052aee4c47a75f",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 51,
+          "text": "title=\"Calculadora de compatibilidade astrológica | Zodiacs.org\""
+        },
+        {
+          "line": 63,
+          "text": "<h1 class=\"display\">Veja sua compatibilidade astrológica.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 39,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 97,
+          "text": "<Faq items={faq} heading=\"Perguntas sobre compatibilidade\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/moon-phase/index.astro",
+      "bytes": 3527,
+      "sha256": "f084ce6914222304b844edbe912ab69bd044cf42dfebabe43d2b92a57dab60e8",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Fase da Lua hoje e no seu aniversário | Zodiacs.org\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">A Lua, hoje e em qualquer noite.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Perguntas sobre as fases da Lua\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/moon-sign/index.astro",
+      "bytes": 3809,
+      "sha256": "4de65bdf6fbb6a8a96774c04c73ed42c743c9bc3a1680e974bbd9df95d3e5ed4",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Calculadora de signo lunar grátis | Zodiacs.org\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">Descubra seu signo lunar.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Perguntas sobre o signo lunar\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/rising-sign/index.astro",
+      "bytes": 4942,
+      "sha256": "a8d046b76ddcfb7cba9c2a2aa8643e633e595e5ba65c27631f96eee809396b78",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Calculadora de ascendente grátis | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Descubra seu ascendente.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 44,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 91,
+          "text": "<Faq items={faq} heading=\"Perguntas sobre o ascendente\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/saturn-return/index.astro",
+      "bytes": 4381,
+      "sha256": "60a3bc1e03d02691777d7efc906f6a7b7ecaf3aa1e26798a49c05d6a1f0617df",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Calculadora de retorno de Saturno | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Seu retorno de Saturno, com datas.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 43,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 76,
+          "text": "<Faq items={faq} heading=\"Perguntas sobre o retorno de Saturno\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/transits/index.astro",
+      "bytes": 5615,
+      "sha256": "ad20676f44f879165b061711841182b21a114d11f01d193eb1e3deb20bf816e2",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 55,
+          "text": "title=\"Trânsitos de hoje sobre seu mapa astral | Zodiacs.org\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">O céu, sobre seu mapa.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 43,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 90,
+          "text": "<Faq items={faq} heading=\"Perguntas sobre trânsitos\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/retrogrades/index.astro",
+      "bytes": 13801,
+      "sha256": "9b7e06db6a7f870ee13d0cbc1f1cb40243f0a2822249b3b088b9521e61131173",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 150,
+          "text": "title=\"Retrograde Planets 2026 & 2027 — Every Window, Dated | Zodiacs.org\""
+        },
+        {
+          "line": 160,
+          "text": "<h1 class=\"display\">See every retrograde through 2027.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 138,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/rising-sign/[sign].astro",
+      "bytes": 9389,
+      "sha256": "57580fed3e8f04d8b46c5117048109dda2c0d8408f6305bd184ded28f5dc646b",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 103,
+          "text": "title={entry.data.title}"
+        },
+        {
+          "line": 117,
+          "text": "<h1 class=\"display\">{sign.name} rising</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 92,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 166,
+          "text": "<Faq items={entry.data.faq} heading=\"Asked and answered\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/rising-sign/index.astro",
+      "bytes": 7525,
+      "sha256": "ea6f84b56414a02a349c0c79e9bd89352a1410819f284be71f842000bc8f4025",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 53,
+          "text": "title=\"Rising Sign Calculator — What Is My Rising Sign? | Zodiacs.org\""
+        },
+        {
+          "line": 62,
+          "text": "<h1 class=\"display\">Find your rising sign.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 42,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/[sign]/index.astro",
+      "bytes": 10954,
+      "sha256": "62d23cdbe6a8f4460da851f56680c2ac0c37478692da53472cf6851e6cee380e",
+      "role": "page/template",
+      "primaryPurpose": "educational guide",
+      "primaryEvidence": [
+        {
+          "line": 72,
+          "text": "title={metaTitle}"
+        },
+        {
+          "line": 87,
+          "text": "<h1 class=\"display\">{signName(sign, 'ru')}</h1>"
+        },
+        {
+          "line": 100,
+          "text": "<a class=\"collect-band__link\" href={`/registry/${sign.slug}/`} hreflang=\"en\" title=\"Материал пока доступен по-английски\">Открыть запись — пока по-английски</a>"
+        },
+        {
+          "line": 111,
+          "text": "<a href={`/rising-sign/${sign.slug}/`} hreflang=\"en\" title=\"Материал пока доступен по-английски\" aria-label={`Полный профиль асцендента «${signName(sign, 'ru')}». Материал пока доступен по-английски`}>"
+        },
+        {
+          "line": 132,
+          "text": "<a class=\"chip\" href={`/compatibility/${pairSlug(sign.slug, s.slug)}/`} hreflang=\"en\" title=\"Материал пока доступен по-английски\" aria-label={`${signName(sign, 'ru')} и ${signName(s, 'ru')}. Материал пока доступен по-английски`} style={`--sign:${s.hue}`}>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 61,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 142,
+          "text": "<Faq items={guide.faq} heading={`${signName(sign, 'ru')}: частые вопросы`} />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/baby-zodiac/index.astro",
+      "bytes": 6029,
+      "sha256": "9b135373029da55f4960f9d9299689af1ef751119559d72dd63ee93df4149308",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 52,
+          "text": "title=\"Какой знак зодиака будет у ребёнка — по дате родов\""
+        },
+        {
+          "line": 62,
+          "text": "<h1 class=\"display\">Какой знак будет у ребёнка?</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 40,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 88,
+          "text": "<Faq items={faq} heading=\"Вопросы о знаках ребёнка\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/birth-chart/index.astro",
+      "bytes": 9342,
+      "sha256": "6b4450e595da8999347d43a6b51c56e3b28754757f0d776e2f2032e79da0c3c1",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 69,
+          "text": "title=\"Натальная карта онлайн бесплатно — Солнце, Луна, асцендент\""
+        },
+        {
+          "line": 109,
+          "text": "<h1 class=\"display\">Постройте бесплатную натальную карту.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 45,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 128,
+          "text": "<Faq items={faq} heading=\"Вопросы о натальной карте\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/compatibility/index.astro",
+      "bytes": 6987,
+      "sha256": "767f86c5b7b4ba5f64c1d6dfb35ac32a08190ee49b291f27bce56d6bd7e11662",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 51,
+          "text": "title=\"Совместимость по натальным картам — синастрия онлайн\""
+        },
+        {
+          "line": 63,
+          "text": "<h1 class=\"display\">Проверьте совместимость.</h1>"
+        },
+        {
+          "line": 86,
+          "text": "<a class=\"compat-row__pair\" href={`/compatibility/${pairSlug(a.slug, b.slug)}/`} hreflang=\"en\" title=\"Материал пока доступен по-английски\" aria-label={`${signName(a, 'ru')} и ${signName(b, 'ru')}. Материал пока доступен по-английски`}>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 39,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 97,
+          "text": "<Faq items={faq} heading=\"Вопросы о совместимости\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/moon-phase/index.astro",
+      "bytes": 4131,
+      "sha256": "76f52fc0f1cb4b535fb7fb1e9a6cd09cedcb517bc6ce1657085cb3a10f323def",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Фаза Луны сегодня и в день рождения — калькулятор\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">Луна сегодня и в любую дату.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Вопросы о фазах Луны\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/moon-sign/index.astro",
+      "bytes": 4737,
+      "sha256": "92c9f640ae2063ce4293e73fbd864999e83ba4bf3ef7b9c9d10630fa8a52c746",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 50,
+          "text": "title=\"Лунный знак по дате рождения — рассчитать онлайн\""
+        },
+        {
+          "line": 60,
+          "text": "<h1 class=\"display\">Найдите свой лунный знак.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 38,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 70,
+          "text": "<Faq items={faq} heading=\"Вопросы о лунном знаке\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/rising-sign/index.astro",
+      "bytes": 6468,
+      "sha256": "77e2c78aa02d72c2cd8cd549e470de40ce5fb278f63eff4c490bd216c84a84c7",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Асцендент по времени и месту рождения — рассчитать\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Найдите свой асцендент.</h1>"
+        },
+        {
+          "line": 82,
+          "text": "<a class=\"risings__chip\" href={`/rising-sign/${s.slug}/`} hreflang=\"en\" title=\"Материал пока доступен по-английски\" aria-label={`${signName(s, 'ru')} — асцендент. Материал пока доступен по-английски`} style={`--sign:${s.hue}`}>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 44,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 91,
+          "text": "<Faq items={faq} heading=\"Вопросы об асценденте\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/saturn-return/index.astro",
+      "bytes": 5339,
+      "sha256": "d840402f55c407053803afb3d8bf796d091b6ba54f45b08e01510f2576cfc927",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 56,
+          "text": "title=\"Возвращение Сатурна: калькулятор дат — когда и что это\""
+        },
+        {
+          "line": 66,
+          "text": "<h1 class=\"display\">Ваше возвращение Сатурна — с датами.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 43,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 76,
+          "text": "<Faq items={faq} heading=\"Вопросы о возвращении Сатурна\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/transits/index.astro",
+      "bytes": 5102,
+      "sha256": "3482f8a8db52d534c36432a0bd055eaa6325a2cc820f6b25a4740d9a9ecfbd67",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 48,
+          "text": "title=\"Транзиты планет сегодня — к вашей натальной карте\""
+        },
+        {
+          "line": 59,
+          "text": "<h1 class=\"display\">Небо на фоне вашей карты.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 36,
+          "text": "'@type': 'FAQPage',"
+        },
+        {
+          "line": 69,
+          "text": "<Faq items={faq} heading=\"Вопросы о транзитах\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/saturn-return/index.astro",
+      "bytes": 6347,
+      "sha256": "6128697a7da8567cecad88303598cc86f8fc51a54fbb864435d2203414019c8f",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 52,
+          "text": "title=\"Saturn Return Calculator — When Is Yours? | Zodiacs.org\""
+        },
+        {
+          "line": 61,
+          "text": "<h1 class=\"display\">Find your Saturn return.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 40,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/solar-return/index.astro",
+      "bytes": 3643,
+      "sha256": "be97d7aaaf1b689d9ac82955973a2561cc2c4d62ca0cd402024997f6e30cb9e5",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 23,
+          "text": "title=\"Solar Return Calculator — Your Birthday Chart for Any Year\""
+        },
+        {
+          "line": 30,
+          "text": "<h1 class=\"display\">Your solar return</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 18,
+          "text": "{ '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/transits/index.astro",
+      "bytes": 6435,
+      "sha256": "4235a236d4478614ba40ec09fc1a49c99c5d15db783c8390281cac6f146082a4",
+      "role": "page/template",
+      "primaryPurpose": "calculator",
+      "primaryEvidence": [
+        {
+          "line": 55,
+          "text": "title=\"Transit Tracker — The Sky Moving Over Your Birth Chart | Zodiacs.org\""
+        },
+        {
+          "line": 65,
+          "text": "<h1 class=\"display\">What is active in your chart?</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 44,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/void-of-course-moon/index.astro",
+      "bytes": 17185,
+      "sha256": "681d4347e5796c209f4fb68c6de3b2f36fa7fbe53266ac16e026977ae3386084",
+      "role": "page/template",
+      "primaryPurpose": "sky calendar/explanation",
+      "primaryEvidence": [
+        {
+          "line": 110,
+          "text": "title=\"Void-of-Course Moon Calendar — Exact Times This Month and Next | Zodiacs.org\""
+        },
+        {
+          "line": 118,
+          "text": "<h1 class=\"display\">When the Moon is void of course.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 98,
+          "text": "'@type': 'FAQPage',"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/es/index.astro",
+      "bytes": 19095,
+      "sha256": "4e99bf0dadf7678a76dfc493f315398fae1ade03347272535d8b764d44cf6de1",
+      "role": "page/template",
+      "primaryPurpose": "site home",
+      "primaryEvidence": [
+        {
+          "line": 38,
+          "text": "title=\"Zodiacs.org — carta natal gratis y guías de signos\""
+        },
+        {
+          "line": 69,
+          "text": "<h1>Tu carta completa, no solo tu signo.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 24,
+          "text": "homeTrustSchema('es'),"
+        },
+        {
+          "line": 197,
+          "text": "<HomeTrustFaq locale=\"es\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/fr/index.astro",
+      "bytes": 19345,
+      "sha256": "3650d99244e8438f3154eccb11ae4d1d540aa96d7de5566593ca6a577754676f",
+      "role": "page/template",
+      "primaryPurpose": "site home",
+      "primaryEvidence": [
+        {
+          "line": 39,
+          "text": "title=\"Thème astral gratuit, signe lunaire, ascendant | Zodiacs.org\""
+        },
+        {
+          "line": 70,
+          "text": "<h1>Ton thème complet, pas seulement ton signe.</h1>"
+        },
+        {
+          "line": 75,
+          "text": "<a class=\"btn btn--ghost hero-es__ghost\" href={localizePath('fr', '/horoscopes/')} hreflang=\"en\" title={englishOnly?.aria}><span>Ton horoscope{englishOnly?.suffix}</span></a>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 25,
+          "text": "homeTrustSchema('fr'),"
+        },
+        {
+          "line": 192,
+          "text": "<HomeTrustFaq locale=\"fr\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/it/index.astro",
+      "bytes": 19173,
+      "sha256": "b8cc2a2e30be0781c56db079e59a6325efb7cbc7313708ef120342d6d0b1f65b",
+      "role": "page/template",
+      "primaryPurpose": "site home",
+      "primaryEvidence": [
+        {
+          "line": 39,
+          "text": "title=\"Tema natale gratuito e astrologia | Zodiacs.org\""
+        },
+        {
+          "line": 70,
+          "text": "<h1>Il tuo tema completo, non solo il tuo segno.</h1>"
+        },
+        {
+          "line": 75,
+          "text": "<a class=\"btn btn--ghost hero-es__ghost\" href={localizePath('it', '/horoscopes/')} hreflang=\"en\" title={englishOnly?.aria}><span>Il tuo oroscopo{englishOnly?.suffix}</span></a>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 25,
+          "text": "homeTrustSchema('it'),"
+        },
+        {
+          "line": 192,
+          "text": "<HomeTrustFaq locale=\"it\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/pt/index.astro",
+      "bytes": 19079,
+      "sha256": "e50ff3a90421263f0e9691c3198ee2c09e9bac13fe068cc8cc7eed0992a3b3cb",
+      "role": "page/template",
+      "primaryPurpose": "site home",
+      "primaryEvidence": [
+        {
+          "line": 38,
+          "text": "title=\"Mapa astral grátis e astrologia clara | Zodiacs.org\""
+        },
+        {
+          "line": 69,
+          "text": "<h1>Seu mapa completo, não apenas seu signo.</h1>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 24,
+          "text": "homeTrustSchema('pt'),"
+        },
+        {
+          "line": 191,
+          "text": "<HomeTrustFaq locale=\"pt\" />"
+        }
+      ],
+      "protectedBy": [
+        "locale page trees"
+      ],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    },
+    {
+      "path": "src/pages/ru/index.astro",
+      "bytes": 25553,
+      "sha256": "4258f8c41851cdd16500ca8d4ad85bda637499184a7427b71b43611bfb13c792",
+      "role": "page/template",
+      "primaryPurpose": "site home",
+      "primaryEvidence": [
+        {
+          "line": 37,
+          "text": "title=\"Zodiacs.org — натальные карты и астрология без мистики\""
+        },
+        {
+          "line": 95,
+          "text": "<h1>Натальные карты и астрология без мистики.</h1>"
+        },
+        {
+          "line": 100,
+          "text": "<a class=\"btn btn--ghost hero-ru__ghost\" href=\"/horoscopes/\" hreflang=\"en\" title=\"Материал пока доступен по-английски\" aria-label=\"Сегодняшний гороскоп. Материал пока доступен по-английски\"><span>Гороскопы — пока по-английски</span></a>"
+        }
+      ],
+      "faqEvidence": [
+        {
+          "line": 22,
+          "text": "homeTrustSchema('ru'),"
+        },
+        {
+          "line": 365,
+          "text": "<HomeTrustFaq locale=\"ru\" />"
+        }
+      ],
+      "protectedBy": [],
+      "decision": "propose removal of FAQPage metadata; preserve visible questions and answers",
+      "renderedPurposeVerified": false,
+      "correctionApplied": false
+    }
+  ],
+  "limitations": [
+    "This is a source-purpose review and correction proposal, not accepted S2 completion.",
+    "The former locator did not directly list five homeTrustSchema consumers; they are included here.",
+    "Compiled visibility/question-answer equivalence, exhaustive built-route inventory, source corrections, required CI/review/post-merge/production remain unfinished.",
+    "Protected path freezes remain in force; no allowance or publication is introduced by this report."
+  ],
+  "acceptedWeight": 0,
+  "reviewedAt": "2026-10-10 13:21:37 UTC",
+  "producer": {
+    "method": "Codex source review; exact GitHub source fetched read-only and hashed in the orchestration runtime",
+    "nativeExecution": false
+  }
+}

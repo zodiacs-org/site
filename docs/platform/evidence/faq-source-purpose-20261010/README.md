@@ -1,0 +1,13 @@
+# FAQ source-purpose review and correction proposal
+
+The programme brief requires FAQPage only where the page really is an FAQ and expects no search feature from it. This source review advances the earlier lexical locator; it does not claim accepted S2 completion.
+
+The exact reviewed source is `51b2c0d3bafe8b23d0a7f54433cd0c89c9435818`. All ninety original locator files were read at that source. Eighty-eight contain actual FAQPage emitter nodes; two are documentation/validation references. Five additional localized homepages call `homeTrustSchema` without containing the FAQPage type literal. The report includes those consumers, so it contains ninety-five source records. Each record retains the exact source-byte digest, primary title/heading evidence, FAQ emission/component references, proposed decision and existing protected-path labels.
+
+The reviewed page/template purposes are calculators, educational/compatibility guides, horoscope readings, sky calendars, birthday profiles, home/landing pages and Guide conversation/help. Their FAQ sections supplement those primary purposes. No audited page is proposed as a dedicated FAQ destination. The shared home helper itself has no independent page purpose. This is a source-level judgement; neither source snippets nor the earlier compiled counts alone establish rendered question/answer equivalence or visibility.
+
+The correction proposal removes FAQPage metadata from secondary sections while retaining the visible questions and answers, canonical page identity, Article/WebApplication/CollectionPage data, breadcrumbs and Organization identity. The schema validator currently requires homepage FAQPage and still describes pre-retirement horoscope FAQ eligibility; those expectations need a semantic correction with the implementation, while all unrelated schema checks stay in force. Do not simply rename FAQPage to another type while retaining an inappropriate question graph.
+
+Forty-six audited records fall under the existing protected-path patterns. This report adds no allowance, changes no protected source, activates no Guide route and publishes no new page. The canonical consumer/Registry boundary remains in force.
+
+Before S2 can count as accepted, source corrections need the existing scope process, an exhaustive compiled-route inventory that traces shared emitters, rendered question/answer/visibility review where FAQPage is retained, meaningful rejection controls for non-FAQ page purposes, complete required CI/review, merge/post-merge and canonical production evidence. Source-only review is not a substitute for those gates. Accepted weight remains zero for this work.
