@@ -11,12 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Install the pinned image decoder for read-only diagnostic crops
+        run: python3 -m pip install --disable-pip-version-check --target "$RUNNER_TEMP/b2-inspection" Pillow==12.0.0
       - name: Verify original source and ZIP digest; retain raw report observations
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           python3 <<'RECOVER'
-          import os,json,hashlib,base64,urllib.request,urllib.error,zipfile,io,re
+          import os,json,hashlib,base64,urllib.request,urllib.error,zipfile,io,re,sys
+          sys.path.insert(0,os.environ['RUNNER_TEMP']+'/b2-inspection')
           class NoRedirect(urllib.request.HTTPRedirectHandler):
            def redirect_request(self,req,fp,code,msg,headers,newurl):return None
           headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json'}
