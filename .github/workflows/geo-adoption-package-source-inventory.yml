@@ -1,0 +1,54 @@
+name: Read-only carried geo package source inventory
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/geo-adoption-package-source-inventory.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Checkout exact unchanged carried archive
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: 5a46fb08a51cddb8bdbff02d8fc23837fd0cad76
+          fetch-depth: 1
+      - name: Hash archive and inspect only selected geo source without executing modules
+        run: |
+          python3 - <<'PY'
+          import base64,hashlib,io,json,posixpath,tarfile
+          from pathlib import Path
+          archive=Path('vendor/zodiacs-engine-1.0.0-rc.2.tgz').read_bytes()
+          assert len(archive)==287011
+          assert hashlib.sha256(archive).hexdigest()=='4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002'
+          def emit(path,data):
+           print('PROGRAMME_FILE '+json.dumps({'path':path,'size':len(data),'sha256':hashlib.sha256(data).hexdigest(),'base64':base64.b64encode(data).decode()},separators=(',',':')))
+          with tarfile.open(fileobj=io.BytesIO(archive),mode='r:gz') as pack:
+           package_bytes=pack.extractfile('package/package.json').read()
+           package=json.loads(package_bytes)
+           emit('docs/platform/evidence/geo-adoption-20261010/package/package.json',package_bytes)
+           entry=package['exports']['./geo']
+           if isinstance(entry,dict):
+            entry=entry.get('import',entry.get('default'))
+            if isinstance(entry,dict):entry=entry.get('default')
+           assert isinstance(entry,str) and entry.startswith('./') and '..' not in entry.split('/')
+           target='package/'+entry[2:]
+           if target.endswith('/geo.js'): root=posixpath.dirname(target)+'/'
+           elif target.endswith('/geo/index.js'):root=posixpath.dirname(posixpath.dirname(target))+'/'
+           else:raise AssertionError('Review actual geo export layout: '+target)
+           selected=[]
+           for member in pack.getmembers():
+            if not member.isfile():continue
+            name=member.name
+            if name==target or (name.startswith(root+'geo/') or name.startswith(root+'tzdb/')) and name.endswith(('.js','.json','.d.ts')):
+             data=pack.extractfile(member).read()
+             selected.append({'path':name,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+             if name==target or name.startswith(root+'geo/') and name.endswith('.js') or name==root+'tzdb/tzdb-2025c.js':
+              emit('docs/platform/evidence/geo-adoption-20261010/'+name,data)
+           assert any(item['path']==target for item in selected)
+           report={'schema':'zodiacs.geo-adoption-package-source-inventory.v1','siteSource':'5a46fb08a51cddb8bdbff02d8fc23837fd0cad76','archive':{'path':'vendor/zodiacs-engine-1.0.0-rc.2.tgz','bytes':len(archive),'sha256':hashlib.sha256(archive).hexdigest()},'package':{'name':package['name'],'version':package['version'],'geoExport':entry},'root':root,'files':selected,'limitations':['Read-only selected geo/tzdb package source and byte hashes; no package module was imported or executed.','No scientific, parity, adoption, publication or accepted completion claim.']}
+           emit('docs/platform/evidence/geo-adoption-20261010/package-source-inventory.json',(json.dumps(report,indent=2)+'\n').encode())
+           print('Read-only geo source inventory verified; no package import or execution.')
+          PY
