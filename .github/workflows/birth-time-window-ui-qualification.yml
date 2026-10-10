@@ -31,7 +31,7 @@ jobs:
       - run: npx playwright-core install --with-deps chromium
       - name: Source ownership and reference-span negative controls
         run: |
-          rg -n 'engine/full' src --glob '*.ts' --glob '*.tsx' --glob '*.astro'
+          git grep -n 'engine/full' -- src
           npx vitest run scripts/report-bundles.test.mjs src/lib/birth-time-window.test.ts src/lib/hooks/useEngine.test.ts
       - name: Original build, type and complete unit suite
         run: |
