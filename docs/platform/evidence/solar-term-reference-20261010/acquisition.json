@@ -1,0 +1,640 @@
+{
+  "schema": "zodiacs.solar-term-reference-acquisition.v1",
+  "observedAt": "2026-10-10T10:30:42.691Z",
+  "producer": {
+    "source": "8da723c03aec367f27a672fb34f811f02b5e9509",
+    "run": "38045122431",
+    "node": "v22.23.3"
+  },
+  "plan": {
+    "path": "docs/platform/evidence/solar-term-reference-20261010/reference-plan.json",
+    "bytes": 6433,
+    "sha256": "1bdb4329800b675a57cb493ec5ff983b65d8080d697262ec5c304b1cfa0cad1e"
+  },
+  "observations": [
+    {
+      "batch": 1,
+      "status": 200,
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%2710%27&CENTER=%27500%40399%27&EPHEM_TYPE=%27OBSERVER%27&MAKE_EPHEM=%27YES%27&OBJ_DATA=%27NO%27&QUANTITIES=%2730%2C31%27&TIME_TYPE=%27UT%27&TIME_DIGITS=%27FRACSEC%27&TLIST_TYPE=%27JD%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&APPARENT=%27AIRLESS%27&REF_SYSTEM=%27ICRF%27&CAL_TYPE=%27GREGORIAN%27&TLIST=%272461045.847916666884%27+%272461045.848611111287%27+%272461045.849305555690%27+%272461045.850000000093%27+%272461045.850694444496%27+%272461060.571527777705%27+%272461060.572222222108%27+%272461060.572916666511%27+%272461060.573611110914%27+%272461060.574305555783%27+%272461075.333333333489%27+%272461075.334027777892%27+%272461075.334722222295%27+%272461075.335416666698%27+%272461075.336111111101%27+%272461090.159722222015%27+%272461090.160416666884%27+%272461090.161111111287%27+%272461090.161805555690%27+%272461090.162500000093%27+%272461105.081249999814%27+%272461105.081944444217%27+%272461105.082638889086%27+%272461105.083333333489%27+%272461105.084027777892%27+%272461120.113888889086%27+%272461120.114583333489%27+%272461120.115277777892%27+%272461120.115972222295%27+%272461120.116666666698%27",
+      "parameters": {
+        "format": "json",
+        "COMMAND": "'10'",
+        "CENTER": "'500@399'",
+        "EPHEM_TYPE": "'OBSERVER'",
+        "MAKE_EPHEM": "'YES'",
+        "OBJ_DATA": "'NO'",
+        "QUANTITIES": "'30,31'",
+        "TIME_TYPE": "'UT'",
+        "TIME_DIGITS": "'FRACSEC'",
+        "TLIST_TYPE": "'JD'",
+        "CSV_FORMAT": "'YES'",
+        "EXTRA_PREC": "'YES'",
+        "APPARENT": "'AIRLESS'",
+        "REF_SYSTEM": "'ICRF'",
+        "CAL_TYPE": "'GREGORIAN'",
+        "TLIST": "'2461045.847916666884' '2461045.848611111287' '2461045.849305555690' '2461045.850000000093' '2461045.850694444496' '2461060.571527777705' '2461060.572222222108' '2461060.572916666511' '2461060.573611110914' '2461060.574305555783' '2461075.333333333489' '2461075.334027777892' '2461075.334722222295' '2461075.335416666698' '2461075.336111111101' '2461090.159722222015' '2461090.160416666884' '2461090.161111111287' '2461090.161805555690' '2461090.162500000093' '2461105.081249999814' '2461105.081944444217' '2461105.082638889086' '2461105.083333333489' '2461105.084027777892' '2461120.113888889086' '2461120.114583333489' '2461120.115277777892' '2461120.115972222295' '2461120.116666666698'"
+      },
+      "epochs": [
+        {
+          "longitude": 285,
+          "utc": "2026-01-05T08:21:00.000Z"
+        },
+        {
+          "longitude": 285,
+          "utc": "2026-01-05T08:22:00.000Z"
+        },
+        {
+          "longitude": 285,
+          "utc": "2026-01-05T08:23:00.000Z"
+        },
+        {
+          "longitude": 285,
+          "utc": "2026-01-05T08:24:00.000Z"
+        },
+        {
+          "longitude": 285,
+          "utc": "2026-01-05T08:25:00.000Z"
+        },
+        {
+          "longitude": 300,
+          "utc": "2026-01-20T01:43:00.000Z"
+        },
+        {
+          "longitude": 300,
+          "utc": "2026-01-20T01:44:00.000Z"
+        },
+        {
+          "longitude": 300,
+          "utc": "2026-01-20T01:45:00.000Z"
+        },
+        {
+          "longitude": 300,
+          "utc": "2026-01-20T01:46:00.000Z"
+        },
+        {
+          "longitude": 300,
+          "utc": "2026-01-20T01:47:00.000Z"
+        },
+        {
+          "longitude": 315,
+          "utc": "2026-02-03T20:00:00.000Z"
+        },
+        {
+          "longitude": 315,
+          "utc": "2026-02-03T20:01:00.000Z"
+        },
+        {
+          "longitude": 315,
+          "utc": "2026-02-03T20:02:00.000Z"
+        },
+        {
+          "longitude": 315,
+          "utc": "2026-02-03T20:03:00.000Z"
+        },
+        {
+          "longitude": 315,
+          "utc": "2026-02-03T20:04:00.000Z"
+        },
+        {
+          "longitude": 330,
+          "utc": "2026-02-18T15:50:00.000Z"
+        },
+        {
+          "longitude": 330,
+          "utc": "2026-02-18T15:51:00.000Z"
+        },
+        {
+          "longitude": 330,
+          "utc": "2026-02-18T15:52:00.000Z"
+        },
+        {
+          "longitude": 330,
+          "utc": "2026-02-18T15:53:00.000Z"
+        },
+        {
+          "longitude": 330,
+          "utc": "2026-02-18T15:54:00.000Z"
+        },
+        {
+          "longitude": 345,
+          "utc": "2026-03-05T13:57:00.000Z"
+        },
+        {
+          "longitude": 345,
+          "utc": "2026-03-05T13:58:00.000Z"
+        },
+        {
+          "longitude": 345,
+          "utc": "2026-03-05T13:59:00.000Z"
+        },
+        {
+          "longitude": 345,
+          "utc": "2026-03-05T14:00:00.000Z"
+        },
+        {
+          "longitude": 345,
+          "utc": "2026-03-05T14:01:00.000Z"
+        },
+        {
+          "longitude": 0,
+          "utc": "2026-03-20T14:44:00.000Z"
+        },
+        {
+          "longitude": 0,
+          "utc": "2026-03-20T14:45:00.000Z"
+        },
+        {
+          "longitude": 0,
+          "utc": "2026-03-20T14:46:00.000Z"
+        },
+        {
+          "longitude": 0,
+          "utc": "2026-03-20T14:47:00.000Z"
+        },
+        {
+          "longitude": 0,
+          "utc": "2026-03-20T14:48:00.000Z"
+        }
+      ],
+      "path": "docs/platform/evidence/solar-term-reference-20261010/horizons-batch-1.json",
+      "bytes": 8102,
+      "sha256": "03d3f57f65124a98bd0469788aab26c1ab5dc7150721ff585040b7767492687c",
+      "signature": {
+        "version": "1.2",
+        "source": "NASA/JPL Horizons API"
+      },
+      "rows": 30,
+      "sourceHeader": "\n\n*******************************************************************************\nEphemeris / API_USER Sat Oct 10 03:30:41 2026 Pasadena, USA      / Horizons    \n*******************************************************************************\nTarget body name: Sun (10)                        {source: DE441}\nCenter body name: Earth (399)                     {source: DE441}\nCenter-site name: GEOCENTRIC\n*******************************************************************************\nStart time      : A.D. 2026-Jan-05 08:21:00.0000 UT      \nStop  time      : A.D. 2026-Mar-20 14:48:00.0000 UT      \nStep-size       : 0 steps\n*******************************************************************************\nTarget pole/equ : IAU_SUN                         {East-longitude positive}\nTarget radii    : 695700.0, 695700.0, 695700.0 km {Equator_a, b, pole_c}       \nCenter geodetic : 0.0, 0.0, -6378.137             {E-lon(deg),Lat(deg),Alt(km)}\nCenter cylindric: 0.0, 0.0, 0.0                   {E-lon(deg),Dxy(km),Dz(km)}\nCenter pole/equ : ITRF93                          {East-longitude positive}\nCenter radii    : 6378.137, 6378.137, 6356.752 km {Equator_a, b, pole_c}       \nTarget primary  : Sun\nVis. interferer : MOON (R_eq= 1737.400) km        {source: DE441}\nRel. light bend : Sun                             {source: DE441}\nRel. lght bnd GM: 1.3271E+11 km^3/s^2                                          \nAtmos refraction: NO (AIRLESS)\nRA format       : HMS\nTime format     : CAL \nCalendar mode   : Gregorian\nEOP file        : eop.261009.p270105                                           \nEOP coverage    : DATA-BASED 1962-JAN-20 TO 2026-OCT-09. PREDICTS-> 2027-JAN-04\nUnits conversion: 1 au= 149597870.700 km, c= 299792.458 km/s, 1 day= 86400.0 s \nTable cut-offs 1: Elevation (-90.0deg=NO ),Airmass (>38.000=NO), Daylight (NO )\nTable cut-offs 2: Solar elongation (  0.0,180.0=NO ),Local Hour Angle( 0.0=NO )\nTable cut-offs 3: RA/DEC angular rate (     0.0=NO )                           \nTable format    : Comma Separated Values (spreadsheet)\n*******************************************************************************\n Date__(UT)__HR:MN:SC.fff, , ,       TDB-UT,     ObsEcLon,   ObsEcLat,\n**********************************************************************\n"
+    },
+    {
+      "batch": 2,
+      "status": 200,
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%2710%27&CENTER=%27500%40399%27&EPHEM_TYPE=%27OBSERVER%27&MAKE_EPHEM=%27YES%27&OBJ_DATA=%27NO%27&QUANTITIES=%2730%2C31%27&TIME_TYPE=%27UT%27&TIME_DIGITS=%27FRACSEC%27&TLIST_TYPE=%27JD%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&APPARENT=%27AIRLESS%27&REF_SYSTEM=%27ICRF%27&CAL_TYPE=%27GREGORIAN%27&TLIST=%272461135.276388888713%27+%272461135.277083333116%27+%272461135.277777777985%27+%272461135.278472222388%27+%272461135.279166666791%27+%272461150.567361111287%27+%272461150.568055555690%27+%272461150.568750000093%27+%272461150.569444444496%27+%272461150.570138888899%27+%272461165.990972222295%27+%272461165.991666666698%27+%272461165.992361111101%27+%272461165.993055555504%27+%272461165.993749999907%27+%272461181.524305555504%27+%272461181.524999999907%27+%272461181.525694444310%27+%272461181.526388888713%27+%272461181.527083333116%27+%272461197.156944444403%27+%272461197.157638888806%27+%272461197.158333333209%27+%272461197.159027777612%27+%272461197.159722222015%27+%272461212.849305555690%27+%272461212.850000000093%27+%272461212.850694444496%27+%272461212.851388888899%27+%272461212.852083333302%27",
+      "parameters": {
+        "format": "json",
+        "COMMAND": "'10'",
+        "CENTER": "'500@399'",
+        "EPHEM_TYPE": "'OBSERVER'",
+        "MAKE_EPHEM": "'YES'",
+        "OBJ_DATA": "'NO'",
+        "QUANTITIES": "'30,31'",
+        "TIME_TYPE": "'UT'",
+        "TIME_DIGITS": "'FRACSEC'",
+        "TLIST_TYPE": "'JD'",
+        "CSV_FORMAT": "'YES'",
+        "EXTRA_PREC": "'YES'",
+        "APPARENT": "'AIRLESS'",
+        "REF_SYSTEM": "'ICRF'",
+        "CAL_TYPE": "'GREGORIAN'",
+        "TLIST": "'2461135.276388888713' '2461135.277083333116' '2461135.277777777985' '2461135.278472222388' '2461135.279166666791' '2461150.567361111287' '2461150.568055555690' '2461150.568750000093' '2461150.569444444496' '2461150.570138888899' '2461165.990972222295' '2461165.991666666698' '2461165.992361111101' '2461165.993055555504' '2461165.993749999907' '2461181.524305555504' '2461181.524999999907' '2461181.525694444310' '2461181.526388888713' '2461181.527083333116' '2461197.156944444403' '2461197.157638888806' '2461197.158333333209' '2461197.159027777612' '2461197.159722222015' '2461212.849305555690' '2461212.850000000093' '2461212.850694444496' '2461212.851388888899' '2461212.852083333302'"
+      },
+      "epochs": [
+        {
+          "longitude": 15,
+          "utc": "2026-04-04T18:38:00.000Z"
+        },
+        {
+          "longitude": 15,
+          "utc": "2026-04-04T18:39:00.000Z"
+        },
+        {
+          "longitude": 15,
+          "utc": "2026-04-04T18:40:00.000Z"
+        },
+        {
+          "longitude": 15,
+          "utc": "2026-04-04T18:41:00.000Z"
+        },
+        {
+          "longitude": 15,
+          "utc": "2026-04-04T18:42:00.000Z"
+        },
+        {
+          "longitude": 30,
+          "utc": "2026-04-20T01:37:00.000Z"
+        },
+        {
+          "longitude": 30,
+          "utc": "2026-04-20T01:38:00.000Z"
+        },
+        {
+          "longitude": 30,
+          "utc": "2026-04-20T01:39:00.000Z"
+        },
+        {
+          "longitude": 30,
+          "utc": "2026-04-20T01:40:00.000Z"
+        },
+        {
+          "longitude": 30,
+          "utc": "2026-04-20T01:41:00.000Z"
+        },
+        {
+          "longitude": 45,
+          "utc": "2026-05-05T11:47:00.000Z"
+        },
+        {
+          "longitude": 45,
+          "utc": "2026-05-05T11:48:00.000Z"
+        },
+        {
+          "longitude": 45,
+          "utc": "2026-05-05T11:49:00.000Z"
+        },
+        {
+          "longitude": 45,
+          "utc": "2026-05-05T11:50:00.000Z"
+        },
+        {
+          "longitude": 45,
+          "utc": "2026-05-05T11:51:00.000Z"
+        },
+        {
+          "longitude": 60,
+          "utc": "2026-05-21T00:35:00.000Z"
+        },
+        {
+          "longitude": 60,
+          "utc": "2026-05-21T00:36:00.000Z"
+        },
+        {
+          "longitude": 60,
+          "utc": "2026-05-21T00:37:00.000Z"
+        },
+        {
+          "longitude": 60,
+          "utc": "2026-05-21T00:38:00.000Z"
+        },
+        {
+          "longitude": 60,
+          "utc": "2026-05-21T00:39:00.000Z"
+        },
+        {
+          "longitude": 75,
+          "utc": "2026-06-05T15:46:00.000Z"
+        },
+        {
+          "longitude": 75,
+          "utc": "2026-06-05T15:47:00.000Z"
+        },
+        {
+          "longitude": 75,
+          "utc": "2026-06-05T15:48:00.000Z"
+        },
+        {
+          "longitude": 75,
+          "utc": "2026-06-05T15:49:00.000Z"
+        },
+        {
+          "longitude": 75,
+          "utc": "2026-06-05T15:50:00.000Z"
+        },
+        {
+          "longitude": 90,
+          "utc": "2026-06-21T08:23:00.000Z"
+        },
+        {
+          "longitude": 90,
+          "utc": "2026-06-21T08:24:00.000Z"
+        },
+        {
+          "longitude": 90,
+          "utc": "2026-06-21T08:25:00.000Z"
+        },
+        {
+          "longitude": 90,
+          "utc": "2026-06-21T08:26:00.000Z"
+        },
+        {
+          "longitude": 90,
+          "utc": "2026-06-21T08:27:00.000Z"
+        }
+      ],
+      "path": "docs/platform/evidence/solar-term-reference-20261010/horizons-batch-2.json",
+      "bytes": 8102,
+      "sha256": "81f8c335de9c9cae9a11b60916b2248f57948e30cbe131d7efc6864cb639df77",
+      "signature": {
+        "version": "1.2",
+        "source": "NASA/JPL Horizons API"
+      },
+      "rows": 30,
+      "sourceHeader": "\n\n*******************************************************************************\nEphemeris / API_USER Sat Oct 10 03:30:41 2026 Pasadena, USA      / Horizons    \n*******************************************************************************\nTarget body name: Sun (10)                        {source: DE441}\nCenter body name: Earth (399)                     {source: DE441}\nCenter-site name: GEOCENTRIC\n*******************************************************************************\nStart time      : A.D. 2026-Apr-04 18:38:00.0000 UT      \nStop  time      : A.D. 2026-Jun-21 08:27:00.0000 UT      \nStep-size       : 0 steps\n*******************************************************************************\nTarget pole/equ : IAU_SUN                         {East-longitude positive}\nTarget radii    : 695700.0, 695700.0, 695700.0 km {Equator_a, b, pole_c}       \nCenter geodetic : 0.0, 0.0, -6378.137             {E-lon(deg),Lat(deg),Alt(km)}\nCenter cylindric: 0.0, 0.0, 0.0                   {E-lon(deg),Dxy(km),Dz(km)}\nCenter pole/equ : ITRF93                          {East-longitude positive}\nCenter radii    : 6378.137, 6378.137, 6356.752 km {Equator_a, b, pole_c}       \nTarget primary  : Sun\nVis. interferer : MOON (R_eq= 1737.400) km        {source: DE441}\nRel. light bend : Sun                             {source: DE441}\nRel. lght bnd GM: 1.3271E+11 km^3/s^2                                          \nAtmos refraction: NO (AIRLESS)\nRA format       : HMS\nTime format     : CAL \nCalendar mode   : Gregorian\nEOP file        : eop.261009.p270105                                           \nEOP coverage    : DATA-BASED 1962-JAN-20 TO 2026-OCT-09. PREDICTS-> 2027-JAN-04\nUnits conversion: 1 au= 149597870.700 km, c= 299792.458 km/s, 1 day= 86400.0 s \nTable cut-offs 1: Elevation (-90.0deg=NO ),Airmass (>38.000=NO), Daylight (NO )\nTable cut-offs 2: Solar elongation (  0.0,180.0=NO ),Local Hour Angle( 0.0=NO )\nTable cut-offs 3: RA/DEC angular rate (     0.0=NO )                           \nTable format    : Comma Separated Values (spreadsheet)\n*******************************************************************************\n Date__(UT)__HR:MN:SC.fff, , ,       TDB-UT,     ObsEcLon,   ObsEcLat,\n**********************************************************************\n"
+    },
+    {
+      "batch": 3,
+      "status": 200,
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%2710%27&CENTER=%27500%40399%27&EPHEM_TYPE=%27OBSERVER%27&MAKE_EPHEM=%27YES%27&OBJ_DATA=%27NO%27&QUANTITIES=%2730%2C31%27&TIME_TYPE=%27UT%27&TIME_DIGITS=%27FRACSEC%27&TLIST_TYPE=%27JD%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&APPARENT=%27AIRLESS%27&REF_SYSTEM=%27ICRF%27&CAL_TYPE=%27GREGORIAN%27&TLIST=%272461228.579861111008%27+%272461228.580555555411%27+%272461228.581249999814%27+%272461228.581944444217%27+%272461228.582638889086%27+%272461244.299305555411%27+%272461244.299999999814%27+%272461244.300694444217%27+%272461244.301388889086%27+%272461244.302083333489%27+%272461259.986805555411%27+%272461259.987499999814%27+%272461259.988194444217%27+%272461259.988888889086%27+%272461259.989583333489%27+%272461275.595138888806%27+%272461275.595833333209%27+%272461275.596527777612%27+%272461275.597222222015%27+%272461275.597916666884%27+%272461291.110416666605%27+%272461291.111111111008%27+%272461291.111805555411%27+%272461291.112499999814%27+%272461291.113194444217%27+%272461306.502083333209%27+%272461306.502777777612%27+%272461306.503472222015%27+%272461306.504166666884%27+%272461306.504861111287%27",
+      "parameters": {
+        "format": "json",
+        "COMMAND": "'10'",
+        "CENTER": "'500@399'",
+        "EPHEM_TYPE": "'OBSERVER'",
+        "MAKE_EPHEM": "'YES'",
+        "OBJ_DATA": "'NO'",
+        "QUANTITIES": "'30,31'",
+        "TIME_TYPE": "'UT'",
+        "TIME_DIGITS": "'FRACSEC'",
+        "TLIST_TYPE": "'JD'",
+        "CSV_FORMAT": "'YES'",
+        "EXTRA_PREC": "'YES'",
+        "APPARENT": "'AIRLESS'",
+        "REF_SYSTEM": "'ICRF'",
+        "CAL_TYPE": "'GREGORIAN'",
+        "TLIST": "'2461228.579861111008' '2461228.580555555411' '2461228.581249999814' '2461228.581944444217' '2461228.582638889086' '2461244.299305555411' '2461244.299999999814' '2461244.300694444217' '2461244.301388889086' '2461244.302083333489' '2461259.986805555411' '2461259.987499999814' '2461259.988194444217' '2461259.988888889086' '2461259.989583333489' '2461275.595138888806' '2461275.595833333209' '2461275.596527777612' '2461275.597222222015' '2461275.597916666884' '2461291.110416666605' '2461291.111111111008' '2461291.111805555411' '2461291.112499999814' '2461291.113194444217' '2461306.502083333209' '2461306.502777777612' '2461306.503472222015' '2461306.504166666884' '2461306.504861111287'"
+      },
+      "epochs": [
+        {
+          "longitude": 105,
+          "utc": "2026-07-07T01:55:00.000Z"
+        },
+        {
+          "longitude": 105,
+          "utc": "2026-07-07T01:56:00.000Z"
+        },
+        {
+          "longitude": 105,
+          "utc": "2026-07-07T01:57:00.000Z"
+        },
+        {
+          "longitude": 105,
+          "utc": "2026-07-07T01:58:00.000Z"
+        },
+        {
+          "longitude": 105,
+          "utc": "2026-07-07T01:59:00.000Z"
+        },
+        {
+          "longitude": 120,
+          "utc": "2026-07-22T19:11:00.000Z"
+        },
+        {
+          "longitude": 120,
+          "utc": "2026-07-22T19:12:00.000Z"
+        },
+        {
+          "longitude": 120,
+          "utc": "2026-07-22T19:13:00.000Z"
+        },
+        {
+          "longitude": 120,
+          "utc": "2026-07-22T19:14:00.000Z"
+        },
+        {
+          "longitude": 120,
+          "utc": "2026-07-22T19:15:00.000Z"
+        },
+        {
+          "longitude": 135,
+          "utc": "2026-08-07T11:41:00.000Z"
+        },
+        {
+          "longitude": 135,
+          "utc": "2026-08-07T11:42:00.000Z"
+        },
+        {
+          "longitude": 135,
+          "utc": "2026-08-07T11:43:00.000Z"
+        },
+        {
+          "longitude": 135,
+          "utc": "2026-08-07T11:44:00.000Z"
+        },
+        {
+          "longitude": 135,
+          "utc": "2026-08-07T11:45:00.000Z"
+        },
+        {
+          "longitude": 150,
+          "utc": "2026-08-23T02:17:00.000Z"
+        },
+        {
+          "longitude": 150,
+          "utc": "2026-08-23T02:18:00.000Z"
+        },
+        {
+          "longitude": 150,
+          "utc": "2026-08-23T02:19:00.000Z"
+        },
+        {
+          "longitude": 150,
+          "utc": "2026-08-23T02:20:00.000Z"
+        },
+        {
+          "longitude": 150,
+          "utc": "2026-08-23T02:21:00.000Z"
+        },
+        {
+          "longitude": 165,
+          "utc": "2026-09-07T14:39:00.000Z"
+        },
+        {
+          "longitude": 165,
+          "utc": "2026-09-07T14:40:00.000Z"
+        },
+        {
+          "longitude": 165,
+          "utc": "2026-09-07T14:41:00.000Z"
+        },
+        {
+          "longitude": 165,
+          "utc": "2026-09-07T14:42:00.000Z"
+        },
+        {
+          "longitude": 165,
+          "utc": "2026-09-07T14:43:00.000Z"
+        },
+        {
+          "longitude": 180,
+          "utc": "2026-09-23T00:03:00.000Z"
+        },
+        {
+          "longitude": 180,
+          "utc": "2026-09-23T00:04:00.000Z"
+        },
+        {
+          "longitude": 180,
+          "utc": "2026-09-23T00:05:00.000Z"
+        },
+        {
+          "longitude": 180,
+          "utc": "2026-09-23T00:06:00.000Z"
+        },
+        {
+          "longitude": 180,
+          "utc": "2026-09-23T00:07:00.000Z"
+        }
+      ],
+      "path": "docs/platform/evidence/solar-term-reference-20261010/horizons-batch-3.json",
+      "bytes": 8102,
+      "sha256": "9aec7bf8a4d06d54f1580ac4ecbc9e43d3fb81e7f94b140b70101a6db44b2a23",
+      "signature": {
+        "source": "NASA/JPL Horizons API",
+        "version": "1.2"
+      },
+      "rows": 30,
+      "sourceHeader": "\n\n*******************************************************************************\nEphemeris / API_USER Sat Oct 10 03:30:42 2026 Pasadena, USA      / Horizons    \n*******************************************************************************\nTarget body name: Sun (10)                        {source: DE441}\nCenter body name: Earth (399)                     {source: DE441}\nCenter-site name: GEOCENTRIC\n*******************************************************************************\nStart time      : A.D. 2026-Jul-07 01:55:00.0000 UT      \nStop  time      : A.D. 2026-Sep-23 00:07:00.0000 UT      \nStep-size       : 0 steps\n*******************************************************************************\nTarget pole/equ : IAU_SUN                         {East-longitude positive}\nTarget radii    : 695700.0, 695700.0, 695700.0 km {Equator_a, b, pole_c}       \nCenter geodetic : 0.0, 0.0, -6378.137             {E-lon(deg),Lat(deg),Alt(km)}\nCenter cylindric: 0.0, 0.0, 0.0                   {E-lon(deg),Dxy(km),Dz(km)}\nCenter pole/equ : ITRF93                          {East-longitude positive}\nCenter radii    : 6378.137, 6378.137, 6356.752 km {Equator_a, b, pole_c}       \nTarget primary  : Sun\nVis. interferer : MOON (R_eq= 1737.400) km        {source: DE441}\nRel. light bend : Sun                             {source: DE441}\nRel. lght bnd GM: 1.3271E+11 km^3/s^2                                          \nAtmos refraction: NO (AIRLESS)\nRA format       : HMS\nTime format     : CAL \nCalendar mode   : Gregorian\nEOP file        : eop.261009.p270105                                           \nEOP coverage    : DATA-BASED 1962-JAN-20 TO 2026-OCT-09. PREDICTS-> 2027-JAN-04\nUnits conversion: 1 au= 149597870.700 km, c= 299792.458 km/s, 1 day= 86400.0 s \nTable cut-offs 1: Elevation (-90.0deg=NO ),Airmass (>38.000=NO), Daylight (NO )\nTable cut-offs 2: Solar elongation (  0.0,180.0=NO ),Local Hour Angle( 0.0=NO )\nTable cut-offs 3: RA/DEC angular rate (     0.0=NO )                           \nTable format    : Comma Separated Values (spreadsheet)\n*******************************************************************************\n Date__(UT)__HR:MN:SC.fff, , ,       TDB-UT,     ObsEcLon,   ObsEcLat,\n**********************************************************************\n"
+    },
+    {
+      "batch": 4,
+      "status": 200,
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%2710%27&CENTER=%27500%40399%27&EPHEM_TYPE=%27OBSERVER%27&MAKE_EPHEM=%27YES%27&OBJ_DATA=%27NO%27&QUANTITIES=%2730%2C31%27&TIME_TYPE=%27UT%27&TIME_DIGITS=%27FRACSEC%27&TLIST_TYPE=%27JD%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&APPARENT=%27AIRLESS%27&REF_SYSTEM=%27ICRF%27&CAL_TYPE=%27GREGORIAN%27&TLIST=%272461321.768749999814%27+%272461321.769444444217%27+%272461321.770138889086%27+%272461321.770833333489%27+%272461321.771527777892%27+%272461336.899999999907%27+%272461336.900694444310%27+%272461336.901388888713%27+%272461336.902083333116%27+%272461336.902777777985%27+%272461351.909722222015%27+%272461351.910416666884%27+%272461351.911111111287%27+%272461351.911805555690%27+%272461351.912500000093%27+%272461366.806249999907%27+%272461366.806944444310%27+%272461366.807638888713%27+%272461366.808333333116%27+%272461366.809027777985%27+%272461381.618749999907%27+%272461381.619444444310%27+%272461381.620138888713%27+%272461381.620833333116%27+%272461381.621527777985%27+%272461396.366666666698%27+%272461396.367361111101%27+%272461396.368055555504%27+%272461396.368749999907%27+%272461396.369444444310%27",
+      "parameters": {
+        "format": "json",
+        "COMMAND": "'10'",
+        "CENTER": "'500@399'",
+        "EPHEM_TYPE": "'OBSERVER'",
+        "MAKE_EPHEM": "'YES'",
+        "OBJ_DATA": "'NO'",
+        "QUANTITIES": "'30,31'",
+        "TIME_TYPE": "'UT'",
+        "TIME_DIGITS": "'FRACSEC'",
+        "TLIST_TYPE": "'JD'",
+        "CSV_FORMAT": "'YES'",
+        "EXTRA_PREC": "'YES'",
+        "APPARENT": "'AIRLESS'",
+        "REF_SYSTEM": "'ICRF'",
+        "CAL_TYPE": "'GREGORIAN'",
+        "TLIST": "'2461321.768749999814' '2461321.769444444217' '2461321.770138889086' '2461321.770833333489' '2461321.771527777892' '2461336.899999999907' '2461336.900694444310' '2461336.901388888713' '2461336.902083333116' '2461336.902777777985' '2461351.909722222015' '2461351.910416666884' '2461351.911111111287' '2461351.911805555690' '2461351.912500000093' '2461366.806249999907' '2461366.806944444310' '2461366.807638888713' '2461366.808333333116' '2461366.809027777985' '2461381.618749999907' '2461381.619444444310' '2461381.620138888713' '2461381.620833333116' '2461381.621527777985' '2461396.366666666698' '2461396.367361111101' '2461396.368055555504' '2461396.368749999907' '2461396.369444444310'"
+      },
+      "epochs": [
+        {
+          "longitude": 195,
+          "utc": "2026-10-08T06:27:00.000Z"
+        },
+        {
+          "longitude": 195,
+          "utc": "2026-10-08T06:28:00.000Z"
+        },
+        {
+          "longitude": 195,
+          "utc": "2026-10-08T06:29:00.000Z"
+        },
+        {
+          "longitude": 195,
+          "utc": "2026-10-08T06:30:00.000Z"
+        },
+        {
+          "longitude": 195,
+          "utc": "2026-10-08T06:31:00.000Z"
+        },
+        {
+          "longitude": 210,
+          "utc": "2026-10-23T09:36:00.000Z"
+        },
+        {
+          "longitude": 210,
+          "utc": "2026-10-23T09:37:00.000Z"
+        },
+        {
+          "longitude": 210,
+          "utc": "2026-10-23T09:38:00.000Z"
+        },
+        {
+          "longitude": 210,
+          "utc": "2026-10-23T09:39:00.000Z"
+        },
+        {
+          "longitude": 210,
+          "utc": "2026-10-23T09:40:00.000Z"
+        },
+        {
+          "longitude": 225,
+          "utc": "2026-11-07T09:50:00.000Z"
+        },
+        {
+          "longitude": 225,
+          "utc": "2026-11-07T09:51:00.000Z"
+        },
+        {
+          "longitude": 225,
+          "utc": "2026-11-07T09:52:00.000Z"
+        },
+        {
+          "longitude": 225,
+          "utc": "2026-11-07T09:53:00.000Z"
+        },
+        {
+          "longitude": 225,
+          "utc": "2026-11-07T09:54:00.000Z"
+        },
+        {
+          "longitude": 240,
+          "utc": "2026-11-22T07:21:00.000Z"
+        },
+        {
+          "longitude": 240,
+          "utc": "2026-11-22T07:22:00.000Z"
+        },
+        {
+          "longitude": 240,
+          "utc": "2026-11-22T07:23:00.000Z"
+        },
+        {
+          "longitude": 240,
+          "utc": "2026-11-22T07:24:00.000Z"
+        },
+        {
+          "longitude": 240,
+          "utc": "2026-11-22T07:25:00.000Z"
+        },
+        {
+          "longitude": 255,
+          "utc": "2026-12-07T02:51:00.000Z"
+        },
+        {
+          "longitude": 255,
+          "utc": "2026-12-07T02:52:00.000Z"
+        },
+        {
+          "longitude": 255,
+          "utc": "2026-12-07T02:53:00.000Z"
+        },
+        {
+          "longitude": 255,
+          "utc": "2026-12-07T02:54:00.000Z"
+        },
+        {
+          "longitude": 255,
+          "utc": "2026-12-07T02:55:00.000Z"
+        },
+        {
+          "longitude": 270,
+          "utc": "2026-12-21T20:48:00.000Z"
+        },
+        {
+          "longitude": 270,
+          "utc": "2026-12-21T20:49:00.000Z"
+        },
+        {
+          "longitude": 270,
+          "utc": "2026-12-21T20:50:00.000Z"
+        },
+        {
+          "longitude": 270,
+          "utc": "2026-12-21T20:51:00.000Z"
+        },
+        {
+          "longitude": 270,
+          "utc": "2026-12-21T20:52:00.000Z"
+        }
+      ],
+      "path": "docs/platform/evidence/solar-term-reference-20261010/horizons-batch-4.json",
+      "bytes": 8102,
+      "sha256": "52381f33dd1f55ba2d9835e7801ae46a1f2cc208ef494a4f8fa19a8361940650",
+      "signature": {
+        "version": "1.2",
+        "source": "NASA/JPL Horizons API"
+      },
+      "rows": 30,
+      "sourceHeader": "\n\n*******************************************************************************\nEphemeris / API_USER Sat Oct 10 03:30:42 2026 Pasadena, USA      / Horizons    \n*******************************************************************************\nTarget body name: Sun (10)                        {source: DE441}\nCenter body name: Earth (399)                     {source: DE441}\nCenter-site name: GEOCENTRIC\n*******************************************************************************\nStart time      : A.D. 2026-Oct-08 06:27:00.0000 UT      \nStop  time      : A.D. 2026-Dec-21 20:52:00.0000 UT      \nStep-size       : 0 steps\n*******************************************************************************\nTarget pole/equ : IAU_SUN                         {East-longitude positive}\nTarget radii    : 695700.0, 695700.0, 695700.0 km {Equator_a, b, pole_c}       \nCenter geodetic : 0.0, 0.0, -6378.137             {E-lon(deg),Lat(deg),Alt(km)}\nCenter cylindric: 0.0, 0.0, 0.0                   {E-lon(deg),Dxy(km),Dz(km)}\nCenter pole/equ : ITRF93                          {East-longitude positive}\nCenter radii    : 6378.137, 6378.137, 6356.752 km {Equator_a, b, pole_c}       \nTarget primary  : Sun\nVis. interferer : MOON (R_eq= 1737.400) km        {source: DE441}\nRel. light bend : Sun                             {source: DE441}\nRel. lght bnd GM: 1.3271E+11 km^3/s^2                                          \nAtmos refraction: NO (AIRLESS)\nRA format       : HMS\nTime format     : CAL \nCalendar mode   : Gregorian\nEOP file        : eop.261009.p270105                                           \nEOP coverage    : DATA-BASED 1962-JAN-20 TO 2026-OCT-09. PREDICTS-> 2027-JAN-04\nUnits conversion: 1 au= 149597870.700 km, c= 299792.458 km/s, 1 day= 86400.0 s \nTable cut-offs 1: Elevation (-90.0deg=NO ),Airmass (>38.000=NO), Daylight (NO )\nTable cut-offs 2: Solar elongation (  0.0,180.0=NO ),Local Hour Angle( 0.0=NO )\nTable cut-offs 3: RA/DEC angular rate (     0.0=NO )                           \nTable format    : Comma Separated Values (spreadsheet)\n*******************************************************************************\n Date__(UT)__HR:MN:SC.fff, , ,       TDB-UT,     ObsEcLon,   ObsEcLat,\n**********************************************************************\n"
+    }
+  ],
+  "passed": true,
+  "failure": null,
+  "limitations": [
+    "Raw independent source acquisition only; no engine was loaded or evaluated.",
+    "PMO minute values are search centres, not second-level fixtures.",
+    "Horizons IAU76/80 apparent ecliptic frame has not been equated to the engine frame.",
+    "The programme two-second gate and standard calendar-date one-second requirement remain unvalidated."
+  ]
+}
