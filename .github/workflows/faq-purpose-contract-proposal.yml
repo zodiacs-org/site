@@ -1,0 +1,31 @@
+name: Read-only FAQ page purpose contract proposal
+on:
+  push:
+    branches: [codex/developer-docs-preparation]
+    paths: [.github/workflows/faq-purpose-contract-proposal.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - name: Qualify proposal syntax and page-purpose rejection controls without applying it
+        run: |
+          node --check scripts/qualify-faq-purpose-contract-proposal.mjs
+          git worktree add --detach "$RUNNER_TEMP/faq-purpose-source" 51b2c0d3bafe8b23d0a7f54433cd0c89c9435818
+          node scripts/qualify-faq-purpose-contract-proposal.mjs "$RUNNER_TEMP/faq-purpose-source"
+          test -z "$(git -C "$RUNNER_TEMP/faq-purpose-source" status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: faq-purpose-contract-proposal
+          path: docs/platform/evidence/faq-source-purpose-20261010/native-purpose-contract-proposal.json
+          retention-days: 90
