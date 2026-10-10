@@ -32,6 +32,7 @@ interface MessageModel {
   identity: string;
   identityDetail?: string;
   title: string;
+  welcome?: string;
   sign?: string;
   signName?: string;
   sections: MessageSection[];
@@ -302,6 +303,9 @@ function chartModel(
   };
 }
 
+/** Opens a recipient's first daily email, which may come weeks after they signed up. */
+export const FIRST_DELIVERY_WELCOME = 'This is your first daily email from Zodiacs.org, the one you signed up for. If you would rather not get them, use the Unsubscribe link at the bottom.';
+
 function escapeHtml(value: string): string {
   return value
     .replaceAll('&', '&amp;')
@@ -314,7 +318,9 @@ function escapeHtml(value: string): string {
 function textFromModel(model: MessageModel): string {
   const lines = [model.identity];
   if (model.identityDetail) lines.push(model.identityDetail);
-  lines.push('', model.title, '');
+  lines.push('');
+  if (model.welcome) lines.push(model.welcome, '');
+  lines.push(model.title, '');
   for (const section of model.sections) {
     if (section.heading) lines.push(section.heading, '');
     for (const paragraph of section.paragraphs) lines.push(paragraph, '');
@@ -368,6 +374,7 @@ function htmlFromModel(model: MessageModel, baseUrl: string): string {
           <td align="right" style="vertical-align:middle;padding:0 0 22px"><p style="font:600 13px/1.2 Georgia,serif;margin:0;color:#EEF1F7;white-space:nowrap">Zodiacs.org</p></td>
         </tr>
       </table>
+      ${model.welcome ? `<p style="font:14px/1.55 system-ui,-apple-system,sans-serif;margin:0 0 24px;padding:14px 16px;border:1px solid #26282E;border-radius:12px;color:#C6CCDA">${escapeHtml(model.welcome)}</p>` : ''}
       <h1 style="font:500 27px/1.34 Georgia,serif;margin:0 0 22px;color:#EEF1F7">${escapeHtml(model.title)}</h1>
       ${sections}
       ${why}
@@ -393,6 +400,7 @@ export function renderDailyEmail({
   baseUrl,
   unsubscribeUrl,
   senderPostalAddress,
+  firstDelivery = false,
 }: {
   recipient: DailyEmailRecipient;
   daily: Daily;
@@ -402,6 +410,8 @@ export function renderDailyEmail({
   baseUrl: string;
   unsubscribeUrl: string;
   senderPostalAddress?: string;
+  /** No earlier daily email reached this recipient. */
+  firstDelivery?: boolean;
 }): DailyEmailMessage {
   validateDailyEmailSources({ daily, publication, program });
   const postalAddress = cleanPostalAddress(senderPostalAddress ?? 'Zodiacs.org · Postal address configured for live sends');
@@ -409,6 +419,7 @@ export function renderDailyEmail({
   const model = recipient.tier === 'sun_sign'
     ? sunModel(recipient, publication, baseUrl, unsubscribeUrl, postalAddress)
     : chartModel(recipient, daily, publication, program, baseUrl, unsubscribeUrl, postalAddress);
+  if (firstDelivery) model.welcome = FIRST_DELIVERY_WELCOME;
   if (nearbyEvent && nearbyEvent.anchor.slice(0, 10) > publication.date) {
     if (recipient.tier === 'sun_sign') {
       model.nearbyEvent = {
