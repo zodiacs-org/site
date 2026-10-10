@@ -1,0 +1,30 @@
+{
+  "applicationCommit": "e7cbc8d568a98d9ec69376168267dafd26d2e0f8",
+  "previousPreviewHead": "8d5c10dd4a2442bf33c6a33aa7dd0b3dbcedc20e",
+  "deploymentCommit": "084d46bb0f02bc2170151a268064a9260e62efba",
+  "previewBranch": "codex/lens-preview-20261001",
+  "productionDeployed": false,
+  "buildAllowanceRestored": true,
+  "costControlsRestoredCommit": "e2ebece185781281842a1c01b5a4b2b8a46528f6",
+  "restoredTreeEqualsApplicationTree": true,
+  "deploymentId": 6792664782,
+  "url": "https://zodiacs-pexrfs7bk-zodiacsofficial.vercel.app",
+  "branchAlias": "https://zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app",
+  "readyAt": "2026-10-01T18:57:06Z",
+  "readyAtBangkok": "2026-10-02T01:57:06+07:00",
+  "state": "success",
+  "applicationCI": {
+    "run": "https://github.com/zodiacs-org/site/actions/runs/36904789968",
+    "passed": 19,
+    "failed": 0,
+    "skipped": 2
+  },
+  "genericFunctionSmoke": "https://github.com/zodiacs-org/site/actions/runs/36910669861",
+  "genericFunctionSmokePassed": true,
+  "hostedLensAcceptance": "blocked by Vercel Authentication HTTP 302 before handler",
+  "bypassPresent": false,
+  "hostedPricesEnabled": false,
+  "driverLogSha256": "2b852ff804a7b95db050205b21ddb69868eaa72084b877461a49550693f09993",
+  "latestMainIntegratedInPreview": false,
+  "mainAdvancedTo": "db5bf5744507605cf0007ed3bc760596e7818428"
+}

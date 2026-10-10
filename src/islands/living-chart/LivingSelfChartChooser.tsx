@@ -4,6 +4,7 @@ import type { SavedChart } from '../../lib/profile/schema';
 
 interface Props {
   charts: SavedChart[];
+  purpose?: string;
 }
 
 function validCharts(charts: SavedChart[]): SavedChart[] {
@@ -14,7 +15,7 @@ function validCharts(charts: SavedChart[]): SavedChart[] {
   ));
 }
 
-export default function LivingSelfChartChooser({ charts }: Props) {
+export default function LivingSelfChartChooser({ charts, purpose }: Props) {
   const choices = useMemo(() => validCharts(charts), [charts]);
   const [selected, setSelected] = useState(choices[0]?.id ?? '');
   const [message, setMessage] = useState('');
@@ -26,19 +27,19 @@ export default function LivingSelfChartChooser({ charts }: Props) {
       setMessage('That chart could not be selected. Try again.');
       return;
     }
-    setMessage('Opening your personal forecast…');
+    setMessage(purpose ? 'Your chart is selected.' : 'Opening your personal forecast…');
   };
 
   return (
     <section class="living-self-chart" data-living-self-chart aria-labelledby="living-self-chart-heading">
       <div>
         <h2 id="living-self-chart-heading">Which chart is yours?</h2>
-        <p>Living Chart uses only your own birth chart. Other saved charts stay separate.</p>
+        <p>{purpose ?? 'Living Chart'} uses only your own birth chart. Other saved charts stay separate.</p>
       </div>
       {choices.length > 1 && (
         <label>
           <span class="living-moment-composer__label">My chart</span>
-          <select class="field__input" value={selected} onChange={(event) => setSelected((event.currentTarget as HTMLSelectElement).value)}>
+          <select class="field__input" aria-label="My chart" value={selected} onChange={(event) => setSelected((event.currentTarget as HTMLSelectElement).value)}>
             {choices.map((chart) => <option value={chart.id} key={chart.id}>{chart.name}</option>)}
           </select>
         </label>

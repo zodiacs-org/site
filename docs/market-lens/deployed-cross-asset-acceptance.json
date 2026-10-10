@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-10-07T01:39:48.689Z",
+  "base": "https://zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app",
+  "transport": "TLS-verified native-fetch relay to actual deployed URLs; no data fixtures",
+  "status": "passed",
+  "checks": [
+    "Cross-asset hourly/daily requests reach the actual function and return the noncached display-disabled contract",
+    "Hosted query allowlist and method validation",
+    "Deployed mobile calendar loads real event shards with prices disabled",
+    "Deployed journal saves/reloads privately and mobile layout fits",
+    "Deployed retrospective report and prospective protocol remain noindex"
+  ],
+  "pageErrors": [],
+  "privatePayloadTransmitted": false,
+  "livePricePathVerified": false,
+  "livePriceBlocker": "Owner confirmed no display license; hosted prices are disabled",
+  "sourceCommit": "54fd2609783959f1595397139e02313e65d69f31",
+  "deploymentId": "dpl_39XunjH1rDqsUQmVRUYUxV1bDgHQ",
+  "individualDeployment": "https://zodiacs-mobf5voja-zodiacsofficial.vercel.app",
+  "unauthenticatedStatus": 302,
+  "protection": "Vercel SSO remains enabled for previews",
+  "automaticDeploymentGuardsUnchanged": true,
+  "subsequentChanges": "Only test assertions, generated visual provenance and documentation; application source is unchanged."
+}

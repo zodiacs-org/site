@@ -1,0 +1,126 @@
+{
+  "schema": "zodiacs.market-lens.security-followup.v1",
+  "verifiedAt": "2026-10-01T18:09:33.634912+00:00",
+  "baseCommit": "9b66dd24bd5c52a9e4d792820ff09488a106581b",
+  "reason": "New high-severity devalue advisories failed Dependency advisories stay at zero in Build & Check.",
+  "site": {
+    "devalueBefore": "5.9.2",
+    "devalueAfter": "5.9.4",
+    "productionAudit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "fullAudit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 2,
+      "high": 0,
+      "critical": 0,
+      "total": 2
+    },
+    "remainingFindingScope": "Two moderate dev-only Vitest findings; no high or critical findings."
+  },
+  "localValidation": {
+    "buildPassed": true,
+    "astroCheck": {
+      "errors": 0,
+      "warnings": 0,
+      "hints": 19
+    },
+    "tests": {
+      "passed": 6470,
+      "skipped": 4,
+      "failed": 0,
+      "passingFiles": 512,
+      "skippedFiles": 1
+    },
+    "phase1CapturesPassed": 18,
+    "marketLensBrowserChecksPassed": 30,
+    "nativeChartOwnershipBrowserChecksPassed": 17,
+    "bundleGzipKB": {
+      "lens": 26.9,
+      "chart": 50.1,
+      "engineClosure": 31.4
+    },
+    "budgetsChanged": false
+  },
+  "paper": {
+    "protocolHash": "c9185d2a42d8fcbb2ba2a9358340406e03367f7b486ef773e3727fd513ad0ca5",
+    "originalProtocolSourceLockDecisionAndWitnessPreserved": true,
+    "byteComparedStateFiles": 5,
+    "installedPackages": [
+      "@zodiacs/engine@0.1.1-rc.15",
+      "astronomy-engine@2.1.19"
+    ],
+    "minimalRuntimeAudit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "freshMinimalInstallationPassed": true,
+    "completedLocalCycles": 2,
+    "recordedDecisions": 1,
+    "witnessedDecisions": 1,
+    "matchedDays": 0,
+    "operationalErrors": 0,
+    "controls": {
+      "publicOutputRejected": true,
+      "changedFrozenLockRejected": true,
+      "workflowParsed": true,
+      "minimalInstallStepVerified": true
+    },
+    "currentPrivateTransferArchive": {
+      "sha256": "82b70a5701ffb7a4afe72acdd7a50ca188bdc039634f5b9349b8d296773845fe",
+      "bytes": 330557,
+      "containsInstalledDependencies": false,
+      "containsPrivateStudy": true
+    },
+    "remoteRepositoryAccessible": false,
+    "remoteSchedulerActive": false,
+    "remoteBackupsVerified": false
+  },
+  "cloudStartup": {
+    "startSkillSaveConfirmed": true,
+    "secureBypassBindingPresent": false
+  },
+  "preview": {
+    "url": "https://zodiacs-2j7skv6o5-zodiacsofficial.vercel.app/terminal/lens/",
+    "containsThisSecurityPatch": false,
+    "hostedLensAcceptance": "Blocked by authentication before the handler",
+    "hostedPricesEnabled": false,
+    "productionDeployed": false
+  },
+  "sourceFileSha256": {
+    "package-lock.json": "08218e5a61153b1d9b9d545f79dda89aeae74747ca1c8c0a6f135e0f8df91c9f",
+    "src/data/daily-publication-manifest.json": "c1b15f1f91fbe31f136f6104db1a2a1a657ce731f89f710ff7434a1357f71b5c",
+    "docs/acceptance/phase1/screenshots/manifest.json": "c7ca86d1a0e94a3dafd878d7f215b83a50adfcf7e9d1c1f569d86be95f44a8fa",
+    "research/market-lens/ops/README.md": "29ea92f33222bcf351bb06fb75234ef792c8543165bc9368dfcdc53f0b507b96",
+    "research/market-lens/ops/paper.yml": "54528d629d9abd6c731a30c3154197cfce9b82c9bfe50dc0625a2f66bbc20cc2",
+    "research/market-lens/ops/install-runtime.sh": "d1813353a02087212308617b9fe9f0d416d8274a3fde135c82c4f30c1bb87b1a",
+    "research/market-lens/ops/runtime-deps/package.json": "c4e97661c62ba76974859a4053e8f19c5be2d75457259103c4ca34b38d2c52b2",
+    "research/market-lens/ops/runtime-deps/package-lock.json": "00b0c6b2a8ce11f85bda934fc3f71f368d50535c509d5f5b7406a68adc3344f8",
+    "scripts/prepare-market-lens-paper-ops.mjs": "325994883c86f5247c96c7caff95e4ddef39be656f99710ba4d47044c3779a9c"
+  },
+  "validationLogSha256": {
+    "lens-devalue-build.log": "31301e738771209fded7f413cf71e2907555cd9c1e8df956322a1f43c01142ab",
+    "lens-devalue-check.log": "2c6a14ba8ff3913ea2682fbf3f3cd92f7c2276bdaffd022daf3254ae7602a4d4",
+    "lens-devalue-tests.log": "5a30fca28ec84e6dfe93da44ba8590e0e0fce64224718edfdac60252f90a7179",
+    "lens-devalue-phase1.log": "f116185560edcd9079c3ab19899ce30b2b7596da8d3297f0fe63909cd2e53fd7",
+    "lens-devalue-browser.log": "66ec1255fd7bcd65c39c3fef47456ec1baea296288a5382ab5c5208a30acfab0",
+    "lens-devalue-chart-ownership.log": "19b791d6fec627c6a9a964651b8c23f51539ac28d686df04beeae1d7b57ba6a6",
+    "lens-devalue-audit-production.json": "04cdf48a1ae49eed066dc9b041f48329da6947a0c26875377019b18c6f1098d8",
+    "lens-devalue-audit-all.json": "af1f8122cd16c8ce75347e94fc591d240b2c0be834b9c3bb7d60c8be3ab4d5e3",
+    "lens-paper-minimal-cycle-1.log": "889e355f8183dbe0e0024c710bf0798704c1dec605d0695660a3bffccbfc1438",
+    "lens-paper-minimal-cycle-2.log": "b15a3162b8616b3b6dea41c0fe421ba70d1d7794c91f455a176e826a7f367c2f",
+    "lens-paper-minimal-audit.json": "12931fe186a1d5341d0bd56a90726249c7208945f5b9168701ba8b1af5ce8dc3",
+    "lens-paper-minimal-preservation.json": "4576aaeca5d4c79b649f703104e25ae30877d5060fa2ed089e6dfa4679162273",
+    "lens-paper-minimal-controls.json": "980237c37ca3194983cbbb818ce251121be52aa8f412a21b132b7eacaa4e9dad"
+  }
+}

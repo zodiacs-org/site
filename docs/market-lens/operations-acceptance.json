@@ -1,0 +1,71 @@
+{
+  "schema": "zodiacs.market-lens.operations-acceptance.v1",
+  "verifiedAt": "2026-10-01T17:30:54.720343+00:00",
+  "applicationCommit": "bdda5cee2043b50643e0adb13413bdabbe16fe4c",
+  "preview": {
+    "deploymentCommit": "51836f28d3c9669edb6e00ccec70c2b74c0a1229",
+    "deploymentId": 6790444415,
+    "url": "https://zodiacs-2j7skv6o5-zodiacsofficial.vercel.app",
+    "state": "success",
+    "readyAt": "2026-10-01T17:09:08Z",
+    "costControlsRestoredCommit": "8d5c10dd4a2442bf33c6a33aa7dd0b3dbcedc20e",
+    "genericSmoke": "https://github.com/zodiacs-org/site/actions/runs/36897272617",
+    "genericSmokePassed": true,
+    "lensHostedAcceptance": "blocked by Vercel Authentication HTTP 302 before handler",
+    "bypassPresent": false,
+    "hostedPricesEnabled": false,
+    "productionDeployed": false
+  },
+  "paper": {
+    "freshInstall": true,
+    "completedLocalCycles": 2,
+    "originalReceiptBytesPreserved": true,
+    "recordedDecisions": 1,
+    "witnessedDecisions": 1,
+    "settledDays": 0,
+    "operationalErrors": 0,
+    "publicOutputNegativeControl": true,
+    "publicRemoteNegativeControl": true,
+    "changedFrozenSourceNegativeControl": true,
+    "workflowParsed": true,
+    "repositoryCreated": false,
+    "remoteSchedulerActive": false,
+    "remoteBackupsVerified": false,
+    "blocker": "GitHub POST /user/repos HTTP 403 Resource not accessible by integration",
+    "signedFirstDecisionEvidence": "paper-first-witness/receipt.json",
+    "privateTransferArchiveSha256": "0966c55ce6420dd606bd7a1adfff78cd1841afec9068abd6ba18dfe3ded82536"
+  },
+  "provider": {
+    "requestSubmitted": true,
+    "acknowledgment": "provider-contact.json",
+    "writtenGrantHeld": false,
+    "servicePurchased": false
+  },
+  "cloudConfiguration": {
+    "startSkillSaved": true,
+    "secretDomainUpdateSaved": false,
+    "secretDomainUpdateBlocker": "Existing secret requirement conflicts; read confirms original domains and absent binding"
+  },
+  "templateFiles": {
+    "research/market-lens/ops/README.md": "05e1dbea7752f8061e6f25c6af611e01a0f57aea146b8a58ef0369ef70bb2506",
+    "research/market-lens/ops/deploy-private.sh": "dd5be544333370e280e76226b3ce029ddb92593e6749e21ab7ea2eec5cccfdad",
+    "research/market-lens/ops/freetsa-ca.pem": "2151b61137ffa86bf664691ba67e7da0b19f98c758e3d228d5d8ebf27e044438",
+    "research/market-lens/ops/paper.yml": "7e7f96c68f86e80d7b841b08306a4dcc94ad6bd6a99ae77bfe4866cb3dbdcb7c",
+    "research/market-lens/ops/run-cycle.mjs": "ec33a7c7920efa28b220c80581a880600e32e7bd99c09096f11443d3873e756b",
+    "scripts/prepare-market-lens-paper-ops.mjs": "8da8005f2c8ab01f59e80344910919277acc59bf7c9458544f017b03d1da8f94"
+  },
+  "logsSha256": {
+    "lens-paper-ops-install.log": "b7563295694b64997caccaa85368c29610fba569c97e715323d1981584728a18",
+    "lens-paper-ops-cycle-1.log": "588dd70322d1538d9a75cc355b878e50e764e012619b781377688941df409e87",
+    "lens-paper-ops-cycle-2.log": "a9b5a8451c499599ea96d2be60f8a08e21daaaf7e9b1ca8b1ca10659f808ade3",
+    "lens-revised-deployed.log": "1109cfcc47b2384dc4ea1749f2829c851d1a2d211a9f3693e2c12eeebfca67cc"
+  },
+  "applicationCI": {
+    "commit": "bdda5cee2043b50643e0adb13413bdabbe16fe4c",
+    "run": "https://github.com/zodiacs-org/site/actions/runs/36895191166",
+    "passed": 19,
+    "skipped": 2,
+    "failed": 0,
+    "pending": 0
+  }
+}

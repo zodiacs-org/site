@@ -290,27 +290,19 @@ export async function resolveLink(link: { input: ShareChartInput; label: string 
 }
 
 export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEngine: EngineLoader): Promise<Person> {
-  const [engine, { prepareLocalTime, resolveLocalToUtc }] = await Promise.all([
-    loadEngine(),
-    loadModule(() => import('../lib/time/localToUtc')),
-  ]);
-  await prepareLocalTime(slot.date, slot.city!.tz);
-  const timeKnown = slot.timeKnown && slot.time !== '';
-  const resolved = resolveLocalToUtc(slot.date, timeKnown ? slot.time : '12:00', slot.city!.tz, { longitude: slot.city!.lon });
-  const result = engine.computeChart({
-    utc: resolved.utc,
-    latitude: slot.city!.lat,
-    longitude: slot.city!.lon,
-    houseSystem: 'whole',
-    timeKnown,
-    flags: resolved.flags,
-  });
-  return {
-    ...personFromChart(result, slot.name.trim() || fallbackLabel, timeKnown),
-    computedUtc: resolved.utc,
-    ...(timeKnown ? { utc: resolved.utc } : { untimedDate: slot.date }),
-    oldStyle: slot.oldStyle,
-  };
+  const person = await resolveLink({
+    input: {
+      date: slot.date,
+      time: slot.time,
+      timeKnown: slot.timeKnown && slot.time !== '',
+      lat: slot.city!.lat,
+      lon: slot.city!.lon,
+      tz: slot.city!.tz,
+      houseSystem: 'whole',
+    },
+    label: slot.name.trim() || fallbackLabel,
+  }, loadEngine);
+  return { ...person, oldStyle: slot.oldStyle };
 }
 
 /** Shared projection for entered details and birth-input links. */

@@ -1,0 +1,85 @@
+{
+  "at": "2026-10-07T01:12:58.295782+00:00",
+  "integratedMain": "8e0b849e78a75269a2a078ae966a30d33bcc52c0",
+  "engine": "0.1.1-rc.17",
+  "frozenV1V2Unchanged": true,
+  "build": {
+    "passed": true,
+    "lensKB": 31.8,
+    "lensLimitKB": 32,
+    "maxChunkKB": 50.1,
+    "maxChunkLimitKB": 60,
+    "engineKB": 32.4,
+    "engineLimitKB": 32.598046875
+  },
+  "static": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 40
+  },
+  "tests": {
+    "passed": 7036,
+    "skipped": 5,
+    "failed": 0
+  },
+  "browser": {
+    "crossAssetSyntheticDisabled": 5,
+    "lens": 18,
+    "webChartOwnership": 17,
+    "phase1Captures": 18
+  },
+  "hostedIntegratedAcceptance": {
+    "status": "passed",
+    "sourceCommit": "54fd2609783959f1595397139e02313e65d69f31",
+    "deploymentId": "dpl_39XunjH1rDqsUQmVRUYUxV1bDgHQ",
+    "stableAliasVerified": true,
+    "unauthenticatedStatus": 302,
+    "livePricesVerified": false
+  },
+  "v3Activated": false,
+  "v3SyntheticRecovery": {
+    "at": "2026-10-07T01:10:52.518Z",
+    "syntheticOnly": true,
+    "engine": "0.1.1-rc.17",
+    "archiveSha256": "72ce1fbee11e42594152b208f2ac8dc25b242b81370096764e45b10852970230",
+    "verify": {
+      "status": "verified",
+      "decisions": 0,
+      "settlements": 0,
+      "witnesses": 0
+    },
+    "cycles": [
+      {
+        "tasks": 0,
+        "failed": 0
+      },
+      {
+        "tasks": 0,
+        "failed": 0
+      }
+    ],
+    "protocolBytesUnchanged": true
+  },
+  "security": {
+    "production": {
+      "total": 0
+    },
+    "development": {
+      "moderate": 2,
+      "high": 0,
+      "critical": 0
+    }
+  },
+  "compatibilityBudgetFollowup": {
+    "commit": "613ac801efd0650c39120076fd40b1fb896fab3c",
+    "focusedTestsPassed": 26,
+    "productionFeatureBuildPassed": true,
+    "budgetsUnchanged": true,
+    "productionFeatureCompatibilityKB": 35.9,
+    "limitKB": 36
+  },
+  "privacySourceAssertionFollowup": {
+    "focusedTestsPassed": 55,
+    "meaning": "Privacy caller guard follows the shared resolver; runtime privacy tests unchanged."
+  }
+}

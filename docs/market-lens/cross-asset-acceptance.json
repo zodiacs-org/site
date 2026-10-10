@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-07T01:08:29.629Z",
+  "status": "passed",
+  "transport": "built production UI; explicitly synthetic or disabled market response fixtures, no live market acceptance",
+  "checks": [
+    "Disabled response keeps prices empty and calendar/planning usable",
+    "Search, stable overseas identity and favorites persist; unverified sizing refuses",
+    "FX cash plan saves and renders quote currency, with no USD substitution",
+    "Clearly labeled synthetic SOL chart clears fully when switching to unavailable FX",
+    "Mobile layout fits; private journal text never enters network requests; no page errors"
+  ]
+}

@@ -256,6 +256,15 @@ jobs:
       - name: Zodiac Markets mobile terminal acceptance
         run: OUT_DIR=tests/visual/artifacts/zodiac-markets node tests/registry-exchange-mobile-drive.mjs
 
+      - name: Zodiacs Desk trade window and plan ledger acceptance
+        # Built UI with market prices disabled and synthetic journal fixtures:
+        # trade window, planned-entry warnings, calendar export, reviews,
+        # schema 2 and 3 imports, persistence, export round trip and privacy.
+        run: OUT_DIR=tests/visual/artifacts/zodiacs-desk node tests/zodiacs-desk-drive.mjs
+
+      - name: Zodiacs Desk cross-asset acceptance
+        run: OUT_DIR=tests/visual/artifacts/zodiacs-desk-cross-asset node tests/market-lens-cross-asset-drive.mjs
+
       - name: Phase 1 mobile frame cadence
         run: npm run test:phase1:frames
 

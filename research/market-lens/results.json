@@ -1,0 +1,4606 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "market-lens-lunar-direction-v1",
+  "manifestHash": "656f73307f7ae005e244ec88eb1b76bb93933f74d44d66eb6b55778cfee5eadf",
+  "modelSelectionFreezeSha256": "8fade7fbd87d68a502de0eacb2ef810c1d5152c74068e19f744d86909f00cf8b",
+  "generatedAt": "2026-10-01T10:57:29.660Z",
+  "status": "Private exploratory research; public predictions disabled",
+  "engine": {
+    "engine": "@zodiacs/engine",
+    "version": "0.1.1-rc.15",
+    "ephemeris": {
+      "name": "astronomy-engine",
+      "version": "2.1.19"
+    },
+    "packageArchiveSha256": "24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348",
+    "runtimeMatchesPinnedArchive": true,
+    "runtimeFilesSha256": {
+      "chunk-AECKV73C.js": "a812be9882c25f67c9fa8dfe19eb0d950a3867a7cdbede4c746c226ca760480c",
+      "chunk-CPALRSPC.js": "9db1a3814ec9bd00a40d4bc295e348debd6108f62a322ed91d18610c81b9fb08",
+      "chunk-CWI4YUDL.js": "169dbddc7a5fc821355899dcee698212f36e8a8d951cf9fd2034f14126bb4713",
+      "chunk-KFTJMMG7.js": "a828a7b1802d8c61fc48bd1844cd12cbc60d54ad732014cae91413fe491c92a9",
+      "chunk-KHBLFXFG.js": "e690801ef7d6bf53efb744b4f92157797ce4c405b4c6ead0fda88facd29c3188",
+      "chunk-MFF3VKO3.js": "be053c94c84610fd0c8647ebaa97405d3057d5b41ed18f14a41a203805a42dba",
+      "chunk-ONBZ4HK7.js": "50f11205373c177c728ea8c7d50d41b19ff80cd9921eb51c6e907a8045f93308",
+      "chunk-OYGRVGXD.js": "5a7d633bba7b3bd01070346e4a3ebdfee2297c3cd681d2aa10c6b2290d9dd130",
+      "chunk-PFGUCNOK.js": "6d9d38ab4606288700b0959e732a61dfa5b4cdc570be21d17b4ac9b9fe1c0eb4",
+      "chunk-ZHVI3KWJ.js": "59d9f91c8414e301169cd5dc792c70b903c9c0138e9a5044d49e01e44dc09dfc",
+      "chunk-ZZPITHQS.js": "fa4aff2dc4a32cce8e01d0fa6c065ba5a2136c6f6bb13b537c0eef10dfd7dd91",
+      "crossings.js": "bad1c9bcf76338a95d8c09d1019fb32a65f2d9622c611fd87f81a83392bd3f5f",
+      "deltat.js": "43b1503b6597e82ed6e920c18991703fe02be05856e6de0fc347e4abcf4c15e4",
+      "geo.js": "f5ead5256ee11fd0d56918b43b8289fbe42ac530f00fd54d4411c8c18ffe8d7f",
+      "index.js": "2ca4824f6cfd80c11509cd4fad7e93694a249704905fee1959b010ac6b6013ea",
+      "internal-math.js": "5ad6786bf816eefbf2132a9b7d746b0cb16a5ae197968b462ae51b792a176be2",
+      "internal.js": "1a3e0d2005a501a07515dd64b1ad72845e716cea5400bae05b3b11484746b16f",
+      "receipt.js": "38f16b170daebb9cf13bfbd3bc5b6ed248a1398d499b62b07952d8212d11445c",
+      "timing.js": "6f20e9a4b35a951346a0eb3bf5d65f3c0c4e29cfe9386acfd7f3bf70cb679c4b",
+      "tzdb-2025c-00-6GVG6RYL.js": "059b00f506f85dfbd0ca9c7b287d8118f712f1d43dea9f281dcf0b185f86ac2c",
+      "tzdb-2025c-01-CEYMG3LE.js": "797d29a1c1b51cf406a414edb7e6e007fdb4f22f3884a03d0cb2cea195107f47",
+      "tzdb-2025c-02-NWQJCVUU.js": "5422f5c203e1d6fcb16c36ce097efec6396bf0996de8e01e934d0f4f76673ed2",
+      "tzdb-2025c-03-PLHP6VH4.js": "edf3feeb0ba30b6695964599c676a941d1813f0698faff7e2f9b82ee8d988de7",
+      "tzdb-2025c-04-MEKUJA6M.js": "a85b39e4867440cf2cc94c86613ea4bb67bf67e7c90ce193600f5a9a82f5a1e9",
+      "tzdb-2025c-05-3K5YKZBL.js": "af36cddf254579a06be0b3d23c38e69debb4489a5ef22af18a0d14f43c4e4568",
+      "tzdb-2025c-06-L2VV5XJV.js": "03e33c1e26c3720150c43ebff4e19a15bab86e3ffff47c465c042200758637c0",
+      "tzdb-2025c-07-H3GLGJGY.js": "84fa36e511f1d4ce35d92a86e75918b86c49d860b59db2640c167ed12c61eb02",
+      "tzdb-2025c-08-DA7QQIGD.js": "a99c8fd5bc7f6b85ce04c4d12ad62169e87f560ba95262989398f7ce2eedbd2c",
+      "tzdb-2025c-09-MTXIO3QL.js": "79906403985c2b709450ded97a4d369212bf17fd46ef622c7c37919e76d91d37",
+      "tzdb-2025c-10-ASL4UW5C.js": "4f0ec17406f06305005e677e1b0ec9f4f3a2883c5e290844c03944390b4fd6ed",
+      "tzdb-2025c-11-EQEOANYB.js": "b32cc926cf5900490bef32095d557d980b21f2083bdb04f01c6ba1028705b7c8",
+      "tzdb-2025c-12-NKCCXJ5G.js": "642c36109fb20b11e04f2f5b84892b12d952263a2711258c33360f2b4bcd455c",
+      "tzdb-2025c-13-DYTF3UC7.js": "4b95fd2a9a420192e149283b148752062fc2578444a80d6489dbfa07e9291d02",
+      "tzdb-2025c-14-C25H45R5.js": "28be733c14242da6091ff0b977d7b13b20f94381d91eb07f0be830b6e2fd1903",
+      "tzdb-2025c-15-7OYYZWRY.js": "e6979ca6d508602a450c43b9a087e6c8f42114b264c223dd26b733d904993380",
+      "vedic.js": "42fa3906790653c83a84a98f4084b693ed00424ef69f06604798eb5a91236d3d"
+    },
+    "ephemerisFilesSha256": {
+      "astronomy.js": "729c0ce37cc1a8096034a689039a5f04585ee8184177c638e8c74dec4fa3185a",
+      "esm/astronomy.js": "068f1445ed0c636c94818fe6d20d7d125120e605e0bab9fc4675c3d531be5ad7"
+    }
+  },
+  "sourceHashes": {
+    "core.mjs": "bbd1751478a7267eefd1c4807015f80931cb200fe291da7dc191f1d15bbd5891",
+    "features.mjs": "79319136e3e6ed999ac41559b7b84ee046a73a50e01b75f2ca3dbcda9cdb8df4",
+    "dataset.mjs": "9fc461a854ef66409d0677f6a9ef28acd6879e8ab564143eb87e05f473da0b14",
+    "experiment.mjs": "bbbe9be654cdfca0fb877ce2a94014247c9e49939ffeb74e4ded2a3da51019f4"
+  },
+  "target": {
+    "name": "next_utc_daily_close_direction",
+    "cutoff": "Opening time of bar t plus 86400 seconds, when its close is finalized.",
+    "positive": "close[t+1] > close[t]",
+    "tie": "A zero return belongs to class 0.",
+    "horizonDays": 1,
+    "missing": "No filling. Require 61 consecutive daily bars through t and one complete next bar for the target."
+  },
+  "split": {
+    "developmentBefore": "2021-01-01T00:00:00.000Z",
+    "validationFolds": [
+      {
+        "start": "2021-01-01T00:00:00.000Z",
+        "endExclusive": "2022-01-01T00:00:00.000Z"
+      },
+      {
+        "start": "2022-01-01T00:00:00.000Z",
+        "endExclusive": "2023-01-01T00:00:00.000Z"
+      }
+    ],
+    "testStart": "2023-01-01T00:00:00.000Z",
+    "purge": "Training targetEnd must be strictly earlier than the next evaluation start. Validation labels ending at or after testStart are excluded. This removes boundary label overlaps.",
+    "scaling": "Mean and population standard deviation fit on training rows only, independently per asset/fold/model. Constant scales use 1."
+  },
+  "scope": "Lunar features only. No feature selection, no slow-planet aspects, no natal features, no magnitude or profitability analysis.",
+  "licensing": "Private research only. Public display/redistribution rights have not been established. Raw vendor data is stored outside the checkout.",
+  "assets": [
+    {
+      "product": "BTC-USD",
+      "datasetSha256": "725bf049f356140f65eec07ecf9af783e7ea690dd0c73b1339df6ca405f1f1b4",
+      "retrievedFirstAt": "2026-10-01T10:52:14.386Z",
+      "retrievedLastAt": "2026-10-01T10:52:20.747Z",
+      "coverage": {
+        "n": 4091,
+        "firstBar": "2015-07-20T00:00:00.000Z",
+        "lastBar": "2026-09-30T00:00:00.000Z",
+        "missingBars": 0,
+        "gaps": []
+      },
+      "usableRows": 4030,
+      "developmentRows": 1930,
+      "finalTrainingRows": 2660,
+      "testFirstCutoff": "2023-01-01T00:00:00.000Z",
+      "testLastCutoff": "2026-09-30T00:00:00.000Z",
+      "approximateLunarCyclesInHoldout": 46.32484798474043,
+      "selections": {
+        "taOnly": {
+          "lambda": 0.01,
+          "candidates": [
+            {
+              "lambda": 0.01,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1930,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5123287671232877,
+                    "brier": 0.248868946911983,
+                    "logLoss": 0.6907903850500556,
+                    "accuracy": 0.5232876712328767,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 1,
+                        "predicted": 0.3642196673248378,
+                        "observed": 1
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 319,
+                        "predicted": 0.531187166368653,
+                        "observed": 0.5047021943573667
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 45,
+                        "predicted": 0.6336963880278136,
+                        "observed": 0.5555555555555556
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 2295,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.4642857142857143,
+                    "brier": 0.25499615603775705,
+                    "logLoss": 0.7033533666994762,
+                    "accuracy": 0.48626373626373626,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 341,
+                        "predicted": 0.5233173908578421,
+                        "observed": 0.4574780058651026
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 23,
+                        "predicted": 0.6383820842253575,
+                        "observed": 0.5652173913043478
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                }
+              ],
+              "weightedLogLoss": 0.6970632592892725
+            },
+            {
+              "lambda": 0.1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1930,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5123287671232877,
+                    "brier": 0.24938994305348344,
+                    "logLoss": 0.6919068677320996,
+                    "accuracy": 0.5095890410958904,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 335,
+                        "predicted": 0.540756344117971,
+                        "observed": 0.5074626865671642
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 30,
+                        "predicted": 0.6223312334772352,
+                        "observed": 0.5666666666666667
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 2295,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.4642857142857143,
+                    "brier": 0.2550416292006101,
+                    "logLoss": 0.7033568186547916,
+                    "accuracy": 0.4835164835164835,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 348,
+                        "predicted": 0.5373328038230536,
+                        "observed": 0.45977011494252873
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 16,
+                        "predicted": 0.6290864829482189,
+                        "observed": 0.5625
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                }
+              ],
+              "weightedLogLoss": 0.6976239900035124
+            },
+            {
+              "lambda": 1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1930,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5123287671232877,
+                    "brier": 0.2507251719658129,
+                    "logLoss": 0.694605689066669,
+                    "accuracy": 0.5123287671232877,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.5513642071487308,
+                        "observed": 0.5123287671232877
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 2295,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.4642857142857143,
+                    "brier": 0.2551930371347606,
+                    "logLoss": 0.7035726904358384,
+                    "accuracy": 0.4642857142857143,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.545534386778656,
+                        "observed": 0.4642857142857143
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.6990830395445533
+            }
+          ]
+        },
+        "astroOnly": {
+          "lambda": 1,
+          "candidates": [
+            {
+              "lambda": 0.01,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1930,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5123287671232877,
+                    "brier": 0.2532922229718422,
+                    "logLoss": 0.6998045007875237,
+                    "accuracy": 0.5123287671232877,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.5526111426670797,
+                        "observed": 0.5123287671232877
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 2295,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.4642857142857143,
+                    "brier": 0.2555053401250453,
+                    "logLoss": 0.7041998870119035,
+                    "accuracy": 0.4642857142857143,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.5470470896824918,
+                        "observed": 0.4642857142857143
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.7019991792315213
+            },
+            {
+              "lambda": 0.1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1930,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5123287671232877,
+                    "brier": 0.25276352943232405,
+                    "logLoss": 0.6987297581719609,
+                    "accuracy": 0.5123287671232877,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.5526414584550212,
+                        "observed": 0.5123287671232877
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 2295,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.4642857142857143,
+                    "brier": 0.2554868831888176,
+                    "logLoss": 0.7041605641175882,
+                    "accuracy": 0.4642857142857143,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.5469548518345723,
+                        "observed": 0.4642857142857143
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.7014414363121644
+            },
+            {
+              "lambda": 1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1930,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5123287671232877,
+                    "brier": 0.2518246093446762,
+                    "logLoss": 0.6968259670815143,
+                    "accuracy": 0.5123287671232877,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.5527810468366984,
+                        "observed": 0.5123287671232877
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 2295,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.4642857142857143,
+                    "brier": 0.2555129141242767,
+                    "logLoss": 0.704211663198806,
+                    "accuracy": 0.4642857142857143,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.5468571465834214,
+                        "observed": 0.4642857142857143
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.7005137495049631
+            }
+          ]
+        },
+        "combined": {
+          "lambda": 0.1,
+          "candidates": [
+            {
+              "lambda": 0.01,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1930,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5123287671232877,
+                    "brier": 0.25139477425420037,
+                    "logLoss": 0.6959596392184857,
+                    "accuracy": 0.5041095890410959,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 1,
+                        "predicted": 0.36361842885386403,
+                        "observed": 1
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 316,
+                        "predicted": 0.5290322324468173,
+                        "observed": 0.5031645569620253
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 48,
+                        "predicted": 0.6378690784645157,
+                        "observed": 0.5625
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 2295,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.4642857142857143,
+                    "brier": 0.25493352807496794,
+                    "logLoss": 0.7032887636433788,
+                    "accuracy": 0.47527472527472525,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 339,
+                        "predicted": 0.5231180860050915,
+                        "observed": 0.45427728613569324
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 25,
+                        "predicted": 0.6368743174114675,
+                        "observed": 0.6
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                }
+              ],
+              "weightedLogLoss": 0.6996191745966216
+            },
+            {
+              "lambda": 0.1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1930,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5123287671232877,
+                    "brier": 0.2510518554527552,
+                    "logLoss": 0.6952939743854945,
+                    "accuracy": 0.5041095890410959,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 333,
+                        "predicted": 0.5395060693539684,
+                        "observed": 0.5075075075075075
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 32,
+                        "predicted": 0.6263024977838808,
+                        "observed": 0.5625
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 2295,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.4642857142857143,
+                    "brier": 0.25500168441506177,
+                    "logLoss": 0.7033010390552401,
+                    "accuracy": 0.4807692307692308,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 348,
+                        "predicted": 0.5375030543214432,
+                        "observed": 0.45689655172413796
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 16,
+                        "predicted": 0.6293634175399658,
+                        "observed": 0.625
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                }
+              ],
+              "weightedLogLoss": 0.6992920149064649
+            },
+            {
+              "lambda": 1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1930,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5123287671232877,
+                    "brier": 0.25108342471405776,
+                    "logLoss": 0.695331162295157,
+                    "accuracy": 0.5123287671232877,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.5512871010636134,
+                        "observed": 0.5123287671232877
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 2295,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.4642857142857143,
+                    "brier": 0.2551693868416572,
+                    "logLoss": 0.7035257433006659,
+                    "accuracy": 0.4642857142857143,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.5455526499085388,
+                        "observed": 0.4642857142857143
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.6994228323719817
+            }
+          ]
+        }
+      },
+      "baseline": {
+        "unconditional": 0.5353383458646617,
+        "persistence": [
+          0.5666936135812449,
+          0.5080588647512263
+        ]
+      },
+      "scores": {
+        "unconditional": {
+          "n": 1369,
+          "positiveRate": 0.5025566106647188,
+          "brier": 0.25106810590462497,
+          "logLoss": 0.6952890476729816,
+          "accuracy": 0.5025566106647188,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1369,
+              "predicted": 0.5353383458646763,
+              "observed": 0.5025566106647188
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "persistence": {
+          "n": 1369,
+          "positiveRate": 0.5025566106647188,
+          "brier": 0.25079067753360457,
+          "logLoss": 0.6947491362826448,
+          "accuracy": 0.5025566106647188,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1369,
+              "predicted": 0.5372263329420537,
+              "observed": 0.5025566106647188
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "taOnly": {
+          "n": 1369,
+          "positiveRate": 0.5025566106647188,
+          "brier": 0.25256628933895886,
+          "logLoss": 0.6983375312677458,
+          "accuracy": 0.4959824689554419,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 3,
+              "predicted": 0.3702388483479344,
+              "observed": 0.6666666666666666
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1210,
+              "predicted": 0.5267549751391449,
+              "observed": 0.49669421487603305
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 156,
+              "predicted": 0.6232459343511892,
+              "observed": 0.5448717948717948
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "astroOnly": {
+          "n": 1369,
+          "positiveRate": 0.5025566106647188,
+          "brier": 0.2510054595074313,
+          "logLoss": 0.6951630874632255,
+          "accuracy": 0.5025566106647188,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1369,
+              "predicted": 0.5353514272233468,
+              "observed": 0.5025566106647188
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "combined": {
+          "n": 1369,
+          "positiveRate": 0.5025566106647188,
+          "brier": 0.2511928581518998,
+          "logLoss": 0.6955323718643924,
+          "accuracy": 0.4967129291453616,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1339,
+              "predicted": 0.5360899711816834,
+              "observed": 0.49738610903659447
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 30,
+              "predicted": 0.612063185937678,
+              "observed": 0.7333333333333333
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        }
+      },
+      "comparison": {
+        "direction": "Combined minus TA-only; lower scores are better.",
+        "brier": {
+          "mean": -0.0013734311870590855,
+          "interval95": [
+            -0.0023313409151598822,
+            -0.00034792882027281653
+          ],
+          "interval975": [
+            -0.002472285425491039,
+            -0.00008447899345261462
+          ],
+          "blockDays": 30,
+          "replicates": 1000,
+          "seed": 61421
+        },
+        "logLoss": {
+          "mean": -0.0028051594033546494,
+          "interval95": [
+            -0.004825855497052854,
+            -0.000717677271389771
+          ],
+          "interval975": [
+            -0.005047364814726061,
+            -0.00037443014045895857
+          ],
+          "blockDays": 30,
+          "replicates": 1000,
+          "seed": 61422
+        },
+        "conclusion": "Exploratory incremental improvement in this fixed holdout; independent review and prospective testing still required."
+      },
+      "baselineDifferences": {
+        "combinedMinusUnconditionalBrier": 0.00012475224727481748,
+        "combinedMinusPersistenceBrier": 0.00040218061829522256
+      },
+      "postHocMatchedPenalty": {
+        "status": "Post-hoc diagnostic added after first holdout inspection; no confirmatory inference.",
+        "reason": "Selected penalties differ between model variants, so the primary pipeline comparison cannot isolate lunar features from regularization.",
+        "taOnlyLambda": 0.1,
+        "taOnlyScore": {
+          "n": 1369,
+          "positiveRate": 0.5025566106647188,
+          "brier": 0.25135681102983676,
+          "logLoss": 0.6958644791600019,
+          "accuracy": 0.4974433893352812,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1344,
+              "predicted": 0.536343163170484,
+              "observed": 0.49776785714285715
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 25,
+              "predicted": 0.6127080684796546,
+              "observed": 0.76
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "pairedComparison": {
+          "direction": "Combined minus TA-only; lower scores are better.",
+          "brier": {
+            "mean": -0.00016395287793701625,
+            "interval95": [
+              -0.00042620852340996383,
+              0.00012202868939757707
+            ],
+            "interval975": [
+              -0.0005117106328107921,
+              0.00015620668929952207
+            ],
+            "blockDays": 30,
+            "replicates": 1000,
+            "seed": 62000
+          },
+          "logLoss": {
+            "mean": -0.00033210729560953256,
+            "interval95": [
+              -0.0008402052989885545,
+              0.00021439132778619584
+            ],
+            "interval975": [
+              -0.0009089194446782868,
+              0.00031414154800705704
+            ],
+            "blockDays": 30,
+            "replicates": 1000,
+            "seed": 62001
+          },
+          "conclusion": "No incremental benefit demonstrated by the primary holdout comparison; uncertainty includes no difference."
+        }
+      },
+      "yearly": {
+        "unconditional": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.2515392508462425,
+            "logLoss": 0.6962329112492676,
+            "accuracy": 0.4958904109589041,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5353383458646596,
+                "observed": 0.4958904109589041
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5245901639344263,
+            "brier": 0.24951084725248382,
+            "logLoss": 0.6921693288968406,
+            "accuracy": 0.5245901639344263,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 366,
+                "predicted": 0.5353383458646596,
+                "observed": 0.5245901639344263
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.2515392508462425,
+            "logLoss": 0.6962329112492673,
+            "accuracy": 0.4958904109589041,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5353383458646596,
+                "observed": 0.4958904109589041
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.4908424908424908,
+            "brier": 0.2518960211401844,
+            "logLoss": 0.6969476435021567,
+            "accuracy": 0.4908424908424908,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 273,
+                "predicted": 0.5353383458646598,
+                "observed": 0.4908424908424908
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ],
+        "persistence": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.24994310291264396,
+            "logLoss": 0.6930411961703573,
+            "accuracy": 0.4958904109589041,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5377778470349345,
+                "observed": 0.4958904109589041
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5245901639344263,
+            "brier": 0.24790747155318107,
+            "logLoss": 0.6889477965985565,
+            "accuracy": 0.5245901639344263,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 366,
+                "predicted": 0.5359344010802516,
+                "observed": 0.5245901639344263
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.25216809003055435,
+            "logLoss": 0.6975213490616946,
+            "accuracy": 0.4958904109589041,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.537456560739975,
+                "observed": 0.4958904109589041
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.4908424908424908,
+            "brier": 0.25394768326290035,
+            "logLoss": 0.7011038278614634,
+            "accuracy": 0.4908424908424908,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 273,
+                "predicted": 0.5379131874155947,
+                "observed": 0.4908424908424908
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ],
+        "taOnly": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.2531817147857025,
+            "logLoss": 0.6996259093575106,
+            "accuracy": 0.4931506849315068,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 3,
+                "predicted": 0.3702388483479344,
+                "observed": 0.6666666666666666
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 307,
+                "predicted": 0.5329725064871876,
+                "observed": 0.4788273615635179
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 55,
+                "predicted": 0.6263281948379916,
+                "observed": 0.5818181818181818
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5245901639344263,
+            "brier": 0.2493855746639562,
+            "logLoss": 0.6919008426073094,
+            "accuracy": 0.5245901639344263,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 319,
+                "predicted": 0.5270623862578043,
+                "observed": 0.5266457680250783
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 47,
+                "predicted": 0.6200479466073323,
+                "observed": 0.5106382978723404
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.25460469822126963,
+            "logLoss": 0.7024380920420016,
+            "accuracy": 0.4657534246575342,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 333,
+                "predicted": 0.5232857690185934,
+                "observed": 0.4894894894894895
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 32,
+                "predicted": 0.623911732618991,
+                "observed": 0.5625
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.4908424908424908,
+            "brier": 0.2532823774010334,
+            "logLoss": 0.6997619465217862,
+            "accuracy": 0.5018315018315018,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 251,
+                "predicted": 0.5233621439337366,
+                "observed": 0.4900398406374502
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 22,
+                "predicted": 0.6214039140156195,
+                "observed": 0.5
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ],
+        "astroOnly": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.25161305824220576,
+            "logLoss": 0.6963814699500642,
+            "accuracy": 0.4958904109589041,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5353717987882216,
+                "observed": 0.4958904109589041
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5245901639344263,
+            "brier": 0.2494171542723064,
+            "logLoss": 0.6919808737686894,
+            "accuracy": 0.5245901639344263,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 366,
+                "predicted": 0.5353205527416895,
+                "observed": 0.5245901639344263
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.25145497657442567,
+            "logLoss": 0.6960634831205789,
+            "accuracy": 0.4958904109589041,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5353109205526889,
+                "observed": 0.4958904109589041
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.4908424908424908,
+            "brier": 0.2517214758019734,
+            "logLoss": 0.6965965533590862,
+            "accuracy": 0.4908424908424908,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 273,
+                "predicted": 0.5354197399482419,
+                "observed": 0.4908424908424908
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ],
+        "combined": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.25135979268812325,
+            "logLoss": 0.6958845511205342,
+            "accuracy": 0.4986301369863014,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 358,
+                "predicted": 0.5404333229604599,
+                "observed": 0.49162011173184356
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 7,
+                "predicted": 0.6042240890863716,
+                "observed": 0.7142857142857143
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5245901639344263,
+            "brier": 0.24858170044699263,
+            "logLoss": 0.6902713773022083,
+            "accuracy": 0.5191256830601093,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 358,
+                "predicted": 0.5352651461489688,
+                "observed": 0.5167597765363129
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 8,
+                "predicted": 0.6165997697976366,
+                "observed": 0.875
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.4958904109589041,
+            "brier": 0.2527936471254792,
+            "logLoss": 0.6987404885992636,
+            "accuracy": 0.4575342465753425,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 353,
+                "predicted": 0.5330863164433889,
+                "observed": 0.49008498583569404
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 12,
+                "predicted": 0.6097526540711978,
+                "observed": 0.6666666666666666
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.4908424908424908,
+            "brier": 0.2523300912614898,
+            "logLoss": 0.6978254706667321,
+            "accuracy": 0.5164835164835165,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 270,
+                "predicted": 0.5353516658021529,
+                "observed": 0.4888888888888889
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 3,
+                "predicted": 0.6274989824300893,
+                "observed": 0.6666666666666666
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "product": "ETH-USD",
+      "datasetSha256": "a693f3209af5d74f9f134c15e1b6c2b16bcd8b0c52b5eaf7014cdda2860ca9f3",
+      "retrievedFirstAt": "2026-10-01T10:52:21.207Z",
+      "retrievedLastAt": "2026-10-01T10:52:27.423Z",
+      "coverage": {
+        "n": 3786,
+        "firstBar": "2016-05-18T00:00:00.000Z",
+        "lastBar": "2026-09-30T00:00:00.000Z",
+        "missingBars": 2,
+        "gaps": [
+          {
+            "start": "2016-05-21T00:00:00.000Z",
+            "endExclusive": "2016-05-23T00:00:00.000Z",
+            "missingBars": 2
+          }
+        ]
+      },
+      "usableRows": 3722,
+      "developmentRows": 1622,
+      "finalTrainingRows": 2352,
+      "testFirstCutoff": "2023-01-01T00:00:00.000Z",
+      "testLastCutoff": "2026-09-30T00:00:00.000Z",
+      "approximateLunarCyclesInHoldout": 46.32484798474043,
+      "selections": {
+        "taOnly": {
+          "lambda": 0.1,
+          "candidates": [
+            {
+              "lambda": 0.01,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1622,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5561643835616439,
+                    "brier": 0.24958510337302808,
+                    "logLoss": 0.6925803883031385,
+                    "accuracy": 0.547945205479452,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 10,
+                        "predicted": 0.35542708669501527,
+                        "observed": 0.6
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 322,
+                        "predicted": 0.5046844358919946,
+                        "observed": 0.546583850931677
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 32,
+                        "predicted": 0.6441862493175148,
+                        "observed": 0.625
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 1,
+                        "predicted": 0.8592242671459109,
+                        "observed": 1
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 1987,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.47802197802197804,
+                    "brier": 0.2510873761131456,
+                    "logLoss": 0.6955171202482907,
+                    "accuracy": 0.5357142857142857,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 6,
+                        "predicted": 0.3830671891203406,
+                        "observed": 0.16666666666666666
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 342,
+                        "predicted": 0.4984658357647803,
+                        "observed": 0.4824561403508772
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 16,
+                        "predicted": 0.6442436613971989,
+                        "observed": 0.5
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                }
+              ],
+              "weightedLogLoss": 0.6940467400562735
+            },
+            {
+              "lambda": 0.1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1622,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5561643835616439,
+                    "brier": 0.24829482575518677,
+                    "logLoss": 0.6897355740207363,
+                    "accuracy": 0.5424657534246575,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 3,
+                        "predicted": 0.3698305885685172,
+                        "observed": 0.6666666666666666
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 346,
+                        "predicted": 0.5054376544968561,
+                        "observed": 0.5578034682080925
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 16,
+                        "predicted": 0.6383623132627163,
+                        "observed": 0.5
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 1987,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.47802197802197804,
+                    "brier": 0.2501868447477377,
+                    "logLoss": 0.6935871382523389,
+                    "accuracy": 0.5384615384615384,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 356,
+                        "predicted": 0.5031980724624039,
+                        "observed": 0.48314606741573035
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 8,
+                        "predicted": 0.6307360025215614,
+                        "observed": 0.25
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                }
+              ],
+              "weightedLogLoss": 0.6916587144601098
+            },
+            {
+              "lambda": 1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1622,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5561643835616439,
+                    "brier": 0.24869430014517172,
+                    "logLoss": 0.6905319119744107,
+                    "accuracy": 0.5534246575342465,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.5060423678550713,
+                        "observed": 0.5561643835616439
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 1987,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.47802197802197804,
+                    "brier": 0.25031432254752356,
+                    "logLoss": 0.6937772489041247,
+                    "accuracy": 0.47527472527472525,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.5111137217812924,
+                        "observed": 0.47802197802197804
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.6921523545565998
+            }
+          ]
+        },
+        "astroOnly": {
+          "lambda": 1,
+          "candidates": [
+            {
+              "lambda": 0.01,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1622,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5561643835616439,
+                    "brier": 0.2500354247874499,
+                    "logLoss": 0.6932154184810286,
+                    "accuracy": 0.4958904109589041,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.5039870689267708,
+                        "observed": 0.5561643835616439
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 1987,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.47802197802197804,
+                    "brier": 0.2515695047911346,
+                    "logLoss": 0.6962954122122184,
+                    "accuracy": 0.489010989010989,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.5132764288052006,
+                        "observed": 0.47802197802197804
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.6947533028680699
+            },
+            {
+              "lambda": 0.1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1622,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5561643835616439,
+                    "brier": 0.2498089246662956,
+                    "logLoss": 0.6927631313031049,
+                    "accuracy": 0.4986301369863014,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.5040940226489501,
+                        "observed": 0.5561643835616439
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 1987,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.47802197802197804,
+                    "brier": 0.25134728367404,
+                    "logLoss": 0.6958473520386446,
+                    "accuracy": 0.49175824175824173,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.513418329151665,
+                        "observed": 0.47802197802197804
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.6943031262931412
+            },
+            {
+              "lambda": 1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1622,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5561643835616439,
+                    "brier": 0.24952353107992398,
+                    "logLoss": 0.692194021465317,
+                    "accuracy": 0.5424657534246575,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.504266377211584,
+                        "observed": 0.5561643835616439
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 1987,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.47802197802197804,
+                    "brier": 0.25093337261016785,
+                    "logLoss": 0.6950149075834434,
+                    "accuracy": 0.47802197802197804,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.513707816403108,
+                        "observed": 0.47802197802197804
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.6936025297602388
+            }
+          ]
+        },
+        "combined": {
+          "lambda": 1,
+          "candidates": [
+            {
+              "lambda": 0.01,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1622,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5561643835616439,
+                    "brier": 0.2502651978244954,
+                    "logLoss": 0.693920502960649,
+                    "accuracy": 0.5397260273972603,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 12,
+                        "predicted": 0.3647987938025081,
+                        "observed": 0.5833333333333334
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 316,
+                        "predicted": 0.5026670631747144,
+                        "observed": 0.5537974683544303
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 36,
+                        "predicted": 0.6456133414869784,
+                        "observed": 0.5555555555555556
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 1,
+                        "predicted": 0.8712069571356761,
+                        "observed": 1
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 1987,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.47802197802197804,
+                    "brier": 0.251976852170559,
+                    "logLoss": 0.6975143720112336,
+                    "accuracy": 0.554945054945055,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 9,
+                        "predicted": 0.3811050834984945,
+                        "observed": 0.5555555555555556
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 336,
+                        "predicted": 0.49700478940527515,
+                        "observed": 0.4732142857142857
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 19,
+                        "predicted": 0.6451719834947087,
+                        "observed": 0.5263157894736842
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                }
+              ],
+              "weightedLogLoss": 0.6957149725551796
+            },
+            {
+              "lambda": 0.1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1622,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5561643835616439,
+                    "brier": 0.2487036386375483,
+                    "logLoss": 0.6905288767900117,
+                    "accuracy": 0.5260273972602739,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 3,
+                        "predicted": 0.3721518576852178,
+                        "observed": 0.6666666666666666
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 345,
+                        "predicted": 0.5044223096291213,
+                        "observed": 0.5565217391304348
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 17,
+                        "predicted": 0.6443271871377296,
+                        "observed": 0.5294117647058824
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 1987,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.47802197802197804,
+                    "brier": 0.25081663713820773,
+                    "logLoss": 0.6949295317408248,
+                    "accuracy": 0.554945054945055,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 356,
+                        "predicted": 0.5021463055450931,
+                        "observed": 0.4803370786516854
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 8,
+                        "predicted": 0.6439853528196718,
+                        "observed": 0.375
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 3
+                }
+              ],
+              "weightedLogLoss": 0.6927261859835591
+            },
+            {
+              "lambda": 1,
+              "folds": [
+                {
+                  "start": "2021-01-01T00:00:00.000Z",
+                  "endExclusive": "2022-01-01T00:00:00.000Z",
+                  "trainingN": 1622,
+                  "validation": {
+                    "n": 365,
+                    "positiveRate": 0.5561643835616439,
+                    "brier": 0.24868973661323635,
+                    "logLoss": 0.6905215991403264,
+                    "accuracy": 0.5671232876712329,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 365,
+                        "predicted": 0.5059855231969068,
+                        "observed": 0.5561643835616439
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                },
+                {
+                  "start": "2022-01-01T00:00:00.000Z",
+                  "endExclusive": "2023-01-01T00:00:00.000Z",
+                  "trainingN": 1987,
+                  "validation": {
+                    "n": 364,
+                    "positiveRate": 0.47802197802197804,
+                    "brier": 0.25045643577314924,
+                    "logLoss": 0.6940632294286739,
+                    "accuracy": 0.4725274725274725,
+                    "calibration": [
+                      {
+                        "lower": 0,
+                        "upper": 0.2,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.2,
+                        "upper": 0.4,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.4,
+                        "upper": 0.6,
+                        "n": 364,
+                        "predicted": 0.510940066852766,
+                        "observed": 0.47802197802197804
+                      },
+                      {
+                        "lower": 0.6,
+                        "upper": 0.8,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      },
+                      {
+                        "lower": 0.8,
+                        "upper": 1,
+                        "n": 0,
+                        "predicted": null,
+                        "observed": null
+                      }
+                    ]
+                  },
+                  "iterations": 2
+                }
+              ],
+              "weightedLogLoss": 0.6922899851827934
+            }
+          ]
+        }
+      },
+      "baseline": {
+        "unconditional": 0.5080782312925171,
+        "persistence": [
+          0.540587219343696,
+          0.4766277128547579
+        ]
+      },
+      "scores": {
+        "unconditional": {
+          "n": 1369,
+          "positiveRate": 0.5105916727538349,
+          "brier": 0.2498941338562553,
+          "logLoss": 0.6929354355259599,
+          "accuracy": 0.5105916727538349,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1369,
+              "predicted": 0.5080782312925269,
+              "observed": 0.5105916727538349
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "persistence": {
+          "n": 1369,
+          "positiveRate": 0.5105916727538349,
+          "brier": 0.24938520450846519,
+          "logLoss": 0.6919169491552041,
+          "accuracy": 0.5237399561723886,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1369,
+              "predicted": 0.5079767478102616,
+              "observed": 0.5105916727538349
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "taOnly": {
+          "n": 1369,
+          "positiveRate": 0.5105916727538349,
+          "brier": 0.2503230203504043,
+          "logLoss": 0.693794534650342,
+          "accuracy": 0.504017531044558,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1365,
+              "predicted": 0.4995703493918381,
+              "observed": 0.5098901098901099
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 4,
+              "predicted": 0.6164954740597522,
+              "observed": 0.75
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "astroOnly": {
+          "n": 1369,
+          "positiveRate": 0.5105916727538349,
+          "brier": 0.2498098397137045,
+          "logLoss": 0.6927668007150877,
+          "accuracy": 0.5105916727538349,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1369,
+              "predicted": 0.5081534569887701,
+              "observed": 0.5105916727538349
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "combined": {
+          "n": 1369,
+          "positiveRate": 0.5105916727538349,
+          "brier": 0.24975702403750977,
+          "logLoss": 0.692661081464831,
+          "accuracy": 0.5186267348429511,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1369,
+              "predicted": 0.5058221156839626,
+              "observed": 0.5105916727538349
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        }
+      },
+      "comparison": {
+        "direction": "Combined minus TA-only; lower scores are better.",
+        "brier": {
+          "mean": -0.0005659963128946155,
+          "interval95": [
+            -0.0016589785185206507,
+            0.0005743961672653788
+          ],
+          "interval975": [
+            -0.0018634404873379335,
+            0.0007106618959947422
+          ],
+          "blockDays": 30,
+          "replicates": 1000,
+          "seed": 61521
+        },
+        "logLoss": {
+          "mean": -0.0011334531855112873,
+          "interval95": [
+            -0.0034743635330549043,
+            0.0011618503848954082
+          ],
+          "interval975": [
+            -0.003880707818426659,
+            0.0015371830225814939
+          ],
+          "blockDays": 30,
+          "replicates": 1000,
+          "seed": 61522
+        },
+        "conclusion": "No incremental benefit demonstrated by the primary holdout comparison; uncertainty includes no difference."
+      },
+      "baselineDifferences": {
+        "combinedMinusUnconditionalBrier": -0.00013710981874553996,
+        "combinedMinusPersistenceBrier": 0.0003718195290445814
+      },
+      "postHocMatchedPenalty": {
+        "status": "Post-hoc diagnostic added after first holdout inspection; no confirmatory inference.",
+        "reason": "Selected penalties differ between model variants, so the primary pipeline comparison cannot isolate lunar features from regularization.",
+        "taOnlyLambda": 1,
+        "taOnlyScore": {
+          "n": 1369,
+          "positiveRate": 0.5105916727538349,
+          "brier": 0.24984422463507802,
+          "logLoss": 0.6928354721105069,
+          "accuracy": 0.5135135135135135,
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.2,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 1369,
+              "predicted": 0.5057871809769667,
+              "observed": 0.5105916727538349
+            },
+            {
+              "lower": 0.6,
+              "upper": 0.8,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            },
+            {
+              "lower": 0.8,
+              "upper": 1,
+              "n": 0,
+              "predicted": null,
+              "observed": null
+            }
+          ]
+        },
+        "pairedComparison": {
+          "direction": "Combined minus TA-only; lower scores are better.",
+          "brier": {
+            "mean": -0.00008720059756834277,
+            "interval95": [
+              -0.0002730646182446047,
+              0.00010438832789086363
+            ],
+            "interval975": [
+              -0.0003053244172845798,
+              0.0001315774917233796
+            ],
+            "blockDays": 30,
+            "replicates": 1000,
+            "seed": 62100
+          },
+          "logLoss": {
+            "mean": -0.00017439064567684772,
+            "interval95": [
+              -0.0005753485063507217,
+              0.00019417336767408596
+            ],
+            "interval975": [
+              -0.0006124620636370554,
+              0.00025500611285909073
+            ],
+            "blockDays": 30,
+            "replicates": 1000,
+            "seed": 62101
+          },
+          "conclusion": "No incremental benefit demonstrated by the primary holdout comparison; uncertainty includes no difference."
+        }
+      },
+      "yearly": {
+        "unconditional": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.5068493150684932,
+            "brier": 0.2499545971181775,
+            "logLoss": 0.6930563725733104,
+            "accuracy": 0.5068493150684932,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.50807823129252,
+                "observed": 0.5068493150684932
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5218579234972678,
+            "brier": 0.24971211109764482,
+            "logLoss": 0.6925713583280098,
+            "accuracy": 0.5218579234972678,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 366,
+                "predicted": 0.50807823129252,
+                "observed": 0.5218579234972678
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.5013698630136987,
+            "brier": 0.25004312568028786,
+            "logLoss": 0.6932334451057595,
+            "accuracy": 0.5013698630136987,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.50807823129252,
+                "observed": 0.5013698630136987
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.5128205128205128,
+            "brier": 0.24985812368510954,
+            "logLoss": 0.6928634089161549,
+            "accuracy": 0.5128205128205128,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 273,
+                "predicted": 0.5080782312925168,
+                "observed": 0.5128205128205128
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ],
+        "persistence": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.5068493150684932,
+            "brier": 0.24930664161471852,
+            "logLoss": 0.6917599074751368,
+            "accuracy": 0.5260273972602739,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5081693872876616,
+                "observed": 0.5068493150684932
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5218579234972678,
+            "brier": 0.2477256468157979,
+            "logLoss": 0.6885912457585882,
+            "accuracy": 0.546448087431694,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 366,
+                "predicted": 0.5072094440994717,
+                "observed": 0.5218579234972678
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.5013698630136987,
+            "brier": 0.2501079293064668,
+            "logLoss": 0.6933656653518889,
+            "accuracy": 0.5150684931506849,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5085198503369167,
+                "observed": 0.5013698630136987
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.5128205128205128,
+            "brier": 0.25074886392407847,
+            "logLoss": 0.6946486203808252,
+            "accuracy": 0.5018315018315018,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 273,
+                "predicted": 0.508021756332846,
+                "observed": 0.5128205128205128
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ],
+        "taOnly": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.5068493150684932,
+            "brier": 0.24837540715026898,
+            "logLoss": 0.6898932441790943,
+            "accuracy": 0.5506849315068493,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.498915708650116,
+                "observed": 0.5068493150684932
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5218579234972678,
+            "brier": 0.24974803950718086,
+            "logLoss": 0.6926269344723178,
+            "accuracy": 0.48360655737704916,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5008906738868246,
+                "observed": 0.5205479452054794
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 1,
+                "predicted": 0.6098554423421824,
+                "observed": 1
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.5013698630136987,
+            "brier": 0.2518483132291737,
+            "logLoss": 0.6968648771543222,
+            "accuracy": 0.4904109589041096,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 363,
+                "predicted": 0.4999183450529504,
+                "observed": 0.5013774104683195
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 2,
+                "predicted": 0.6183711754905618,
+                "observed": 0.5
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.5128205128205128,
+            "brier": 0.25165851451127874,
+            "logLoss": 0.6964708631236353,
+            "accuracy": 0.48717948717948717,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 272,
+                "predicted": 0.4982126398516711,
+                "observed": 0.5110294117647058
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 1,
+                "predicted": 0.6193841029157033,
+                "observed": 1
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ],
+        "astroOnly": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.5068493150684932,
+            "brier": 0.25016140142485094,
+            "logLoss": 0.6934702843455547,
+            "accuracy": 0.5068493150684932,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5081992623188598,
+                "observed": 0.5068493150684932
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5218579234972678,
+            "brier": 0.2495126393820168,
+            "logLoss": 0.6921721883740486,
+            "accuracy": 0.5218579234972678,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 366,
+                "predicted": 0.5080169634554023,
+                "observed": 0.5218579234972678
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.5013698630136987,
+            "brier": 0.24980471194415368,
+            "logLoss": 0.692756425887149,
+            "accuracy": 0.5013698630136987,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5080820512123213,
+                "observed": 0.5013698630136987
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.5128205128205128,
+            "brier": 0.24974510320350357,
+            "logLoss": 0.6926372893740549,
+            "accuracy": 0.5128205128205128,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 273,
+                "predicted": 0.508370676022233,
+                "observed": 0.5128205128205128
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ],
+        "combined": [
+          {
+            "year": 2023,
+            "n": 365,
+            "positiveRate": 0.5068493150684932,
+            "brier": 0.24962257033082982,
+            "logLoss": 0.6923924054689047,
+            "accuracy": 0.5260273972602739,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5056653745232053,
+                "observed": 0.5068493150684932
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2024,
+            "n": 366,
+            "positiveRate": 0.5218579234972678,
+            "brier": 0.24934480646008284,
+            "logLoss": 0.6918359790436559,
+            "accuracy": 0.5136612021857924,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 366,
+                "predicted": 0.5060492054757799,
+                "observed": 0.5218579234972678
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2025,
+            "n": 365,
+            "positiveRate": 0.5013698630136987,
+            "brier": 0.25007007034537393,
+            "logLoss": 0.6932874348982013,
+            "accuracy": 0.5013698630136987,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 365,
+                "predicted": 0.5058679982747888,
+                "observed": 0.5013698630136987
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          },
+          {
+            "year": 2026,
+            "n": 273,
+            "positiveRate": 0.5128205128205128,
+            "brier": 0.2500708897294747,
+            "logLoss": 0.6932890493090874,
+            "accuracy": 0.5384615384615384,
+            "calibration": [
+              {
+                "lower": 0,
+                "upper": 0.2,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.2,
+                "upper": 0.4,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.6,
+                "n": 273,
+                "predicted": 0.5056658831353208,
+                "observed": 0.5128205128205128
+              },
+              {
+                "lower": 0.6,
+                "upper": 0.8,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              },
+              {
+                "lower": 0.8,
+                "upper": 1,
+                "n": 0,
+                "predicted": null,
+                "observed": null
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "Only a fixed lunar feature set was tested; this does not establish or refute every astrological method.",
+    "Same-venue daily OHLCV from public Coinbase Exchange responses; no futures, fees, spreads or execution simulation.",
+    "Retrospective fixed holdout, not a prospectively timestamped paper forecast; repeated evaluation is reproducibility checking, not a new unseen test.",
+    "Moving-block bootstrap is an uncertainty approximation, not a guarantee under regime changes. BTC/ETH observations are correlated.",
+    "Two primary asset comparisons use conservative 97.5% intervals; other score/model/year/calibration comparisons are exploratory.",
+    "Classification scores do not establish trading profitability. API availability does not establish public redistribution rights.",
+    "UTC cutoff assumes finalized close availability. A public prospective system must define and record actual data-publication latency."
+  ],
+  "primaryConclusion": "The experiment does not demonstrate a consistent incremental predictive benefit from the tested lunar features. Public model forecasts remain disabled."
+}

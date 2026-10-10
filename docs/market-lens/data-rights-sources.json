@@ -1,0 +1,25 @@
+{
+  "reviewedOn": "2026-10-01",
+  "sources": [
+    {
+      "url": "https://docs.cdp.coinbase.com/exchange/introduction/welcome",
+      "retrievedOn": "2026-10-01",
+      "responseSha256": "517871ed30de783ba7315b8358455fc6d2845f81809fee01bf5fb5f8b25c3f70"
+    },
+    {
+      "url": "https://www.coinapi.io/products/market-data-api/pricing",
+      "retrievedOn": "2026-10-01",
+      "responseSha256": "3ec1a665706888e2f69b9805d293ccd4fe2392aac99cd8ba782a19c7f3d80ed1"
+    },
+    {
+      "url": "https://www.coinapi.io/legal",
+      "retrievedOn": "2026-10-01",
+      "responseSha256": "b0b70ddf719963bcd38f5adac231da6b508d77e74abfeb2926606ada7c0259b0"
+    }
+  ],
+  "unverified": {
+    "url": "https://www.coinbase.com/legal/market_data",
+    "reason": "HTTP 403; current legal clauses not retrieved"
+  },
+  "ownerConfirmedNoLicense": true
+}

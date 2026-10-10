@@ -70,7 +70,7 @@ describe('Terminal public-route split', () => {
     expect(pro).not.toMatch(/Zodiac Terminal(?: Pro)?/u);
   });
 
-  it('redirects legacy consumer routes directly to Astrofolio and legacy Pro to Terminal', async () => {
+  it('redirects legacy consumer routes directly to Astrofolio, legacy Pro to Terminal and Market Lens to Zodiacs Desk', async () => {
     const config = JSON.parse(await read('vercel.json'));
     const redirects = new Map(config.redirects.map((rule) => [rule.source, rule]));
     const expected = {
@@ -88,6 +88,9 @@ describe('Terminal public-route split', () => {
       '/registry/research': '/terminal/research/',
       '/registry/research/': '/terminal/research/',
       '/registry/research/:path(.*)': '/terminal/research/:path',
+      '/terminal/lens': '/terminal/desk/',
+      '/terminal/lens/': '/terminal/desk/',
+      '/terminal/lens/:path(.*)': '/terminal/desk/:path',
     };
 
     for (const [source, destination] of Object.entries(expected)) {

@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-01T12:29:50.163Z",
+  "base": "http://127.0.0.1:39175",
+  "checks": [
+    "Real BTC/ETH hourly and daily API data and chart selection",
+    "Fractional timezone and accessible indicator table",
+    "All calendar views, event selection, exact ICS export",
+    "Rule create, pause/resume without version reset, reload and deletion",
+    "Private journal save/revision/export/delete/import/reload and recovery after invalid import",
+    "Stale-tab conflicts preserve entries and drafts; deleted entries cannot silently reappear; drafts survive view changes",
+    "Real expanded historical data and complete/pending/incomplete occurrence rows",
+    "Provider outage retains previous prices and working calendar/journal",
+    "390px mobile all five views, default agenda and readable month-day alternative",
+    "No private note payload transmission, third-party analytics or page exceptions",
+    "Blocked private storage leaves public workspace usable",
+    "Instrument switches cannot evaluate ETH rules against preceding BTC candles"
+  ],
+  "errors": [],
+  "requests": 716
+}

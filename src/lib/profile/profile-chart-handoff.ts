@@ -12,20 +12,27 @@ export interface ProfileChartRunInput {
   subjectMode: 'self' | 'other';
   name?: string;
 }
+export type ProfileChartEditInput = Omit<ProfileChartRunInput, 'city'> & { city: City | null };
 
 /** Resolve only within the profile already admitted by the synchronous access guard. */
 export function profileChartRunInput(
   charts: SavedChart[],
   chartId: string,
 ): ProfileChartRunInput | null {
+  const input = profileChartEditInput(charts, chartId);
+  return input?.city ? { ...input, city: input.city } : null;
+}
+
+/** Populate the shared editor even when only the birthplace is missing. */
+export function profileChartEditInput(charts: SavedChart[], chartId: string): ProfileChartEditInput | null {
   const chart = charts.find((candidate) => candidate.id === chartId);
   const place = chart?.birth.place;
-  if (!chart || !place) return null;
+  if (!chart) return null;
   return {
     date: chart.birth.date,
     time: chart.birth.time ?? '',
     timeKnown: chart.birth.timeKnown,
-    city: { ...place, pop: 0 },
+    city: place ? { ...place, pop: 0 } : null,
     houseSystem: chart.summary.houseSystem,
     // Only an explicit classification can grant the one-tap self-save path.
     // Legacy, unclassified charts remain in the safer people/naming flow.
@@ -36,4 +43,8 @@ export function profileChartRunInput(
 
 export function loadProfileChartRunInput(chartId: string): ProfileChartRunInput | null {
   return profileChartRunInput(loadProfile().charts, chartId);
+}
+
+export function loadProfileChartEditInput(chartId: string): ProfileChartEditInput | null {
+  return profileChartEditInput(loadProfile().charts, chartId);
 }

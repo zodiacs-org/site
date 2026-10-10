@@ -1,0 +1,69 @@
+{
+  "schema": "zodiacs.market-lens.main-integration.v1",
+  "verifiedAt": "2026-10-01T19:11:08.777096+00:00",
+  "verifiedAtBangkok": "2026-10-02T02:11:08.777096+07:00",
+  "applicationBase": "e7cbc8d568a98d9ec69376168267dafd26d2e0f8",
+  "mergedMain": "db5bf5744507605cf0007ed3bc760596e7818428",
+  "conflictsResolvedBy": "Regenerate daily provenance and all 18 exact-width screenshots with their documented tools; no handwritten generated output.",
+  "mainPreservation": {
+    "mainFilesByteIdentical": 56,
+    "siteDevaluePatched": true,
+    "lensChartDependencyPreserved": true
+  },
+  "localValidation": {
+    "productionBuildPassed": true,
+    "astroCheck": {
+      "errors": 0,
+      "warnings": 0,
+      "hints": 19
+    },
+    "tests": {
+      "passed": 6471,
+      "skipped": 4,
+      "failed": 0,
+      "passingFiles": 512,
+      "skippedFiles": 1
+    },
+    "phase1CapturesPassed": 18,
+    "lensBrowserChecksPassed": 30,
+    "nativeChartOwnershipBrowserChecksPassed": 17,
+    "bundleBudgetsUnchanged": true,
+    "engineArchiveUnchanged": true
+  },
+  "paper": {
+    "originalProtocolDecisionWitnessBytesPreserved": true,
+    "originalFrozenRuntimeUnchanged": true,
+    "remoteSchedulerActive": false,
+    "remoteBackupsVerified": false
+  },
+  "preview": {
+    "receipt": "patched-preview.json",
+    "containsThisMainIntegration": false,
+    "hostedLensAcceptance": "blocked by authentication before handler",
+    "pricesEnabled": false,
+    "productionDeployed": false
+  },
+  "cloudStartSkillSaveConfirmed": true,
+  "beta": {
+    "invitationsSent": 0,
+    "feedbackCollected": false
+  },
+  "sourceFileSha256": {
+    "package-lock.json": "08218e5a61153b1d9b9d545f79dda89aeae74747ca1c8c0a6f135e0f8df91c9f",
+    "src/data/daily-publication-manifest.json": "f62988856f317543eae1ee057a68498db95853a4fcf1be7980ee632a40a64754",
+    "docs/acceptance/phase1/screenshots/manifest.json": "b3f23d72ca9eec834f122508dc1291906301e77b730fd0c3cae7aa6152c895e7",
+    "src/islands/ChartCalculator.tsx": "5f1bc5593cde56c215dc461df9813a5c7dd304f19d9f05bc754c342321c0da87",
+    "src/lib/profile/profile-chart-handoff.ts": "da3160b423a85f91b561e23477a5127cc6a5f0bc033e010d9c8a7bf8b3f50d18",
+    "tests/chart-ownership-drive.mjs": "c09f5123158d6a090800fb60da7d4bcee410f9157d6c25435de7ac43d95457ad"
+  },
+  "validationLogSha256": {
+    "lens-main-refresh-daily.log": "20c172a7fc5d3a9d21434cf5bef01a18bbc73338d069902c148cee31d0eea856",
+    "lens-main-refresh-build.log": "ecaae7cc84fcbadb88452311c429799ffb7ff06e7b668a3bce290e43fe0f4c3a",
+    "lens-main-refresh-check.log": "f47935e9e176b86ce1d1376dcb54ec497a2ece6d674dce12ed4ae06889b9e48f",
+    "lens-main-refresh-phase1.log": "6f6b6ef8aff554dbdc6cbd970681f53d641dfafc9a00d9cdacd1a820aebc8a34",
+    "lens-main-refresh-tests.log": "09e9fd3d4a33d94c67005fadd03638ec0e353fd0a11c45f8fe68884164d65606",
+    "lens-main-refresh-browser.log": "9fd2c11b3ef3af8b25b2d33cc0a757383f63b35cb383f7dc807293e8fe94f9a9",
+    "lens-main-refresh-native.log": "76018e501942e15f4b274306e0045ac6ddb1546b07bc067f5ffd320f4a0d673c",
+    "lens-main-refresh-preservation.json": "65f3863af884f2e9e1944bca11a868def5b0410b5104314f2e401d50d4f4e227"
+  }
+}

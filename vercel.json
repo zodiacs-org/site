@@ -181,6 +181,21 @@
       "permanent": true
     },
     {
+      "source": "/terminal/lens",
+      "destination": "/terminal/desk/",
+      "permanent": true
+    },
+    {
+      "source": "/terminal/lens/",
+      "destination": "/terminal/desk/",
+      "permanent": true
+    },
+    {
+      "source": "/terminal/lens/:path(.*)",
+      "destination": "/terminal/desk/:path",
+      "permanent": true
+    },
+    {
       "source": "/registry/aura",
       "destination": "/registry/collection/",
       "permanent": true
@@ -268,6 +283,10 @@
     {
       "source": "/api/registry/news",
       "destination": "/api/compatibility?action=registry-news"
+    },
+    {
+      "source": "/api/registry/lens",
+      "destination": "/api/compatibility?action=registry-lens"
     },
     {
       "source": "/c/:token/",
