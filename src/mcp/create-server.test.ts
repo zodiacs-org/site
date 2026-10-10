@@ -36,6 +36,14 @@ vi.mock('../lib/compute-api/endpoints', async (importOriginal) => {
   };
 });
 
+vi.mock('./birth-time-tools', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('./birth-time-tools')>();
+  return {
+    ...actual,
+    resolveBirthTime: async () => { throw new SyntaxError('private local time 1947-07-01 12:00 Europe/Stockholm'); },
+  };
+});
+
 const FIXED = 'The adapter could not complete this call. The connection is still open and the next request is unaffected.';
 
 describe('a tool handler that throws', async () => {
@@ -82,4 +90,17 @@ describe('a tool handler that throws', async () => {
     expect(events.isError).toBeFalsy();
     expect(notes).toHaveLength(2);
   });
+  it('keeps an unexpected local birth rejection private and serves the next call', async () => {
+    notes.length = 0;
+    const failed = await client.callTool({ name: 'resolve_birth_time', arguments: { date: '1947-07-01', time: '12:00', timeZone: 'Europe/Stockholm' } });
+    expect(failed.isError).toBe(true);
+    expect(failed.content).toEqual([{ type: 'text', text: FIXED }]);
+    expect(JSON.stringify(failed)).not.toContain('1947-07-01');
+    expect(JSON.stringify(failed)).not.toContain('Europe/Stockholm');
+    expect(notes).toEqual(['a tool handler failed with SyntaxError']);
+    const next = await client.callTool({ name: 'get_capabilities', arguments: {} });
+    expect(next.isError).toBeFalsy();
+    expect(notes).toHaveLength(1);
+  });
+
 });

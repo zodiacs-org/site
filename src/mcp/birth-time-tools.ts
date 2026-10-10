@@ -101,7 +101,7 @@ export const RESOLVE_BIRTH_OUTPUT = z.strictObject({
   receipt,
   cite: z.strictObject({
     url: z.literal(LOCAL_BIRTH_DOCS_URL),
-    receipt: z.string().regex(/^sha256:[0-9a-f]{64}$/),
+    receipt: z.string().regex(/^sha256:[0-9a-f]{64}$/).describe('Identifies the local birth details in the clock receipt; it is not anonymous.'),
     engine: z.literal('@zodiacs/engine'),
     version: z.string(),
   }),

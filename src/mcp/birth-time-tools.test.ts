@@ -238,4 +238,25 @@ describe('local birth time through the package geo entry', () => {
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.refusal).toContain('1800–2199');
   });
+  it('keeps a supplied unknown-time reference instead of inventing local noon', async () => {
+    const result = await resolveBirthTime({ date: '1947-07-01', time: '09:15', timeZone: 'Europe/Stockholm', timeKnown: false });
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error('Supplied reference refused');
+    const value = RESOLVE_BIRTH_OUTPUT.parse(result.value);
+    expect(value.birth.utc).toBe('1947-07-01T08:15:00.000Z');
+    expect(value.birth.timeKnown).toBe(false);
+    expect(value.reference).toBe('supplied-instant');
+    expect(value.receipt.localResolution.time).toBe('09:15');
+  });
+
+  it('changes the receipt digest when its actual timezone policy is altered', async () => {
+    const result = await resolveBirthTime({ date: '1947-07-01', time: '12:00', timeZone: 'Europe/Stockholm' });
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error('Receipt case refused');
+    const value = RESOLVE_BIRTH_OUTPUT.parse(result.value);
+    expect(receiptDigest({ ...value.receipt, localResolution: { ...value.receipt.localResolution, offsetMinutes: 120 } }))
+      .not.toBe(value.cite.receipt);
+    expect(RESOLVE_BIRTH_OUTPUT.safeParse({ ...value, extra: 'unadvertised' }).success).toBe(false);
+  });
+
 });

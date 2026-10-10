@@ -16,6 +16,7 @@ import {
   CAPABILITIES_OUTPUT, COMPARE_OUTPUT, EVENTS_OUTPUT, NATAL_OUTPUT, POSITIONS_OUTPUT, SKY_FACT_OUTPUT,
 } from './outputs';
 import { RESOURCES } from './resources';
+import { RESOLVE_BIRTH_INPUT, RESOLVE_BIRTH_OUTPUT, resolveBirthTime } from './birth-time-tools';
 import {
   ANY_ZONE_DAY_TEXT, EVENTS_INPUT, POSITIONS_INPUT, SKY_FACT_INPUT, checkSkyFact, findEvents, getPositions,
 } from './sky-tools';
@@ -91,6 +92,21 @@ export function createServer(note: Note): McpServer {
     outputSchema: CAPABILITIES_OUTPUT,
     annotations: READ_ONLY,
   }, () => guard(note, () => describeCapabilities()));
+
+  server.registerTool('resolve_birth_time', {
+    title: 'Resolve a supplied local birth time',
+    description: [
+      'Resolve a written local date and supplied IANA zone through the pinned package geo entry, with an explicit Gregorian or Julian calendar.',
+      'Returns the UTC instant and the actual clock receipt, including fold, gap, mean time and timezone provenance.',
+      'An omitted time selects an unknown local-noon reference; it does not recover a birth time or cover the whole date.',
+      'No place or zone is inferred. Existing site forms may use a different historical alias clock policy.',
+      'The reply contains birth details and its receipt digest identifies them. Quote it only where those details may be known.',
+      PRIVACY.assistant,
+    ].join(' '),
+    inputSchema: RESOLVE_BIRTH_INPUT,
+    outputSchema: RESOLVE_BIRTH_OUTPUT,
+    annotations: READ_ONLY,
+  }, (args) => guardAsync(note, () => resolveBirthTime(args)));
 
   server.registerTool('calculate_natal_chart', {
     title: 'Calculate a natal chart',

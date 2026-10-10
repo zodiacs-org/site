@@ -56,7 +56,7 @@ export const PRIVACY = Object.freeze({
 export const UNSUPPORTED = Object.freeze([
   'Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.',
   'Interpretation, horoscope or any generated reading.',
-  'Resolving a place name or time zone: supply an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.',
+  'Identifying a place or inferring its time zone. resolve_birth_time requires a supplied IANA zone and written calendar; calculate_natal_chart requires an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.',
   'Reading or writing files. Records are passed as content; the adapter accepts no path and imports no filesystem module.',
   'Fetching a URL, running a command, importing a named module or installing a package.',
   'Any network listener, remote endpoint or browser-reachable port. The transport is local stdio only.',
@@ -178,7 +178,7 @@ export function describeCapabilities(): ToolOutcome {
       references: [...REFERENCES],
       referenceRules: {
         'utc-noon': 'needs timeKnown: false and utc at exactly 12:00:00Z; it records that no birth time was known',
-        'local-noon': 'not offered: it needs a captured local date, wall time, zone and offset, and this adapter resolves no timezones',
+        'local-noon': 'resolve_birth_time captures a local-noon reference when time is omitted, with the local date, wall time, zone and offset in its clock receipt; calculate_natal_chart still accepts only supplied-instant and utc-noon and does not ingest that clock receipt',
       },
       epoch: { from: EPOCH_MIN_UTC, to: EPOCH_MAX_UTC },
       coordinates: {

@@ -27,8 +27,9 @@
  *   receipt the compute API writes for the same request, so the digest is the
  *   one the compute API cites.
  *
- * `cite.url` is the tool's entry on the developer page, an anchor that does
- * not move.
+ * resolve_birth_time cites its separate clock receipt, which holds local birth
+ * details. Its URL is the existing methodology page while the new local tool
+ * and its guide entry remain an unpublished preparation.
  */
 import { ENGINE_VERSION, EPHEMERIS } from '@zodiacs/engine';
 import { receiptDigest } from '../lib/receipt-digest';
@@ -38,7 +39,7 @@ export const ADAPTER_RECEIPT_SCHEMA = 'zodiacs.mcp-receipt.v1' as const;
 export const DOCS_URL = 'https://zodiacs.org/developers/mcp/';
 
 export const TOOL_NAMES = Object.freeze([
-  'get_capabilities', 'calculate_natal_chart', 'compare_calculation_records',
+  'get_capabilities', 'resolve_birth_time', 'calculate_natal_chart', 'compare_calculation_records',
   'get_positions', 'find_events', 'check_sky_fact',
 ] as const);
 export type ToolName = (typeof TOOL_NAMES)[number];
@@ -52,7 +53,7 @@ export const SKY_TOOLS = Object.freeze({
 export type SkyToolName = keyof typeof SKY_TOOLS;
 
 export function toolUrl(tool: ToolName): string {
-  return `${DOCS_URL}#${tool}`;
+  return tool === 'resolve_birth_time' ? 'https://zodiacs.org/methodology/' : `${DOCS_URL}#${tool}`;
 }
 
 export interface Cite {
@@ -66,7 +67,7 @@ export function citeFor(tool: ToolName, receipt: unknown): Cite {
   return { url: toolUrl(tool), receipt: receiptDigest(receipt), engine: '@zodiacs/engine', version: ENGINE_VERSION };
 }
 
-function adapterReceipt<Tool extends Exclude<ToolName, 'calculate_natal_chart' | SkyToolName>>(tool: Tool) {
+function adapterReceipt<Tool extends Exclude<ToolName, 'calculate_natal_chart' | 'resolve_birth_time' | SkyToolName>>(tool: Tool) {
   return {
     schema: ADAPTER_RECEIPT_SCHEMA,
     tool,
