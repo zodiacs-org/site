@@ -1,0 +1,33 @@
+{
+  "schema": "zodiacs.birth-window-ui-failure.v1",
+  "source": "b8cbfc2a987a0dcc357999bb31563d91bf0c0578",
+  "producer": "334212a0691851c0a620de5056a1a7cce4b3e743",
+  "run": 38059364588,
+  "job": 114234293074,
+  "conclusion": "failure",
+  "passedBeforeFailure": {
+    "sourceControls": 49,
+    "schema": true,
+    "sourceBoundary": true,
+    "workerFingerprintAndBudget": true
+  },
+  "failure": "Main closure 40.4 KB exceeds the unchanged 32.598046875 KB limit because the full namespace retains the new window export.",
+  "notReached": [
+    "type check",
+    "complete unit suite",
+    "worker behavior",
+    "visual/performance/fresh captures"
+  ],
+  "originalDecodedLog": {
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/static-boundary-failure.log",
+    "bytes": 929363,
+    "sha256": "e43e1d8a454af31a4d1fe878ffac8745ed44a991d4213b5f430270b9e7d7f426"
+  },
+  "acceptedWeightAdded": 0,
+  "diagnostic": {
+    "originalExportPath": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-diagnostic.json",
+    "path": "docs/platform/evidence/birth-time-window-ui-20261010/review-bundle-b8cbfc2.json",
+    "bytes": 163066,
+    "sha256": "139767e00ffd6d8ae0e077d2a33167bd3b1f235189ba5f3fcbab4b03b2f3b318"
+  }
+}

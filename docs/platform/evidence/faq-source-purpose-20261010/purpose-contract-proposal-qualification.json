@@ -1,0 +1,32 @@
+{
+  "schema": "zodiacs.faq-purpose-proposal-native-qualification.v1",
+  "auditedSource": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+  "producer": {
+    "source": "f2ac8743c530c5d2dca4bff837114233c6c28172",
+    "run": "38062190013",
+    "node": "v22.23.3"
+  },
+  "run": 38062190013,
+  "job": 114242527931,
+  "conclusion": "success",
+  "nativeReport": {
+    "path": "docs/platform/evidence/faq-source-purpose-20261010/native-purpose-contract-proposal.json",
+    "bytes": 2460,
+    "sha256": "0c1e5619a588857b4eac43b9fdb403d494c342f54e7b3eb83fbaafb8fecd4bcb"
+  },
+  "log": {
+    "path": "docs/platform/evidence/faq-source-purpose-20261010/purpose-contract-proposal-native.log",
+    "bytes": 80940,
+    "sha256": "d03d69eccf38007790b27624516b98a87f68c8835cc35c076321cd5812717d32",
+    "encoding": "UTF-8 original decoded GitHub job log"
+  },
+  "controls": 7,
+  "actualApplicationWorktreeUnchanged": true,
+  "acceptedWeightChange": 0,
+  "limitations": [
+    "No application source or validator target has been written or committed.",
+    "No primary FAQ routes were identified by source-purpose review; adding any future FAQPage needs a new page-purpose review and visible-question validation.",
+    "Validator proposal checks indexable production HTML; an independent exhaustive rendered-route audit must also cover noindex files and preserve visible content.",
+    "Protected source edits remain held. No scope allowance or S2 acceptance."
+  ]
+}

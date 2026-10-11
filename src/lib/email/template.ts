@@ -117,6 +117,24 @@ export function signIconUrl(baseUrl: string, sign: string): string {
   return `${base}/assets/zodiac-icons/128/${sign}.png`;
 }
 
+/**
+ * Where the header pictures come from. By default the sign disc is the
+ * remote PNG and there is no ring. A message that must load nothing remote
+ * passes cid: references to inline attachments instead.
+ */
+export interface EmailImages {
+  /** The twelve-dot ring beside the wordmark; omitted means no ring. */
+  ring?: string;
+  /** The sign disc; defaults to the remote icon when the document has a sign. */
+  sign?: string;
+}
+
+/** An image src: an absolute http(s) URL or a cid: reference to an inline attachment. */
+function safeImageSrc(src: string): string {
+  if (/^cid:[A-Za-z0-9._-]+$/u.test(src)) return src;
+  return safeUrl(src);
+}
+
 function accentFor(sign?: string): string {
   return (sign && SIGN_HUE[sign]) || INK_0;
 }
@@ -159,12 +177,17 @@ function sectionHtml(section: EmailSection, accent: string): string {
   </td></tr>`;
 }
 
-export function renderEmailHtml(doc: EmailDocument, baseUrl: string): string {
+export function renderEmailHtml(doc: EmailDocument, baseUrl: string, images: EmailImages = {}): string {
   const accent = accentFor(doc.sign);
 
   // Outlook lays out with Word, which ignores flex — the header is a table.
-  const disc = doc.sign
-    ? `<td width="44" style="width:44px;padding:0 14px 0 0"><img src="${safeUrl(signIconUrl(baseUrl, doc.sign))}" width="44" height="44" alt="" style="display:block;width:44px;height:44px;border:0;border-radius:50%" /></td>`
+  const signSrc = doc.sign ? safeImageSrc(images.sign ?? signIconUrl(baseUrl, doc.sign)) : '';
+  const disc = signSrc
+    ? `<td width="44" style="width:44px;padding:0 14px 0 0"><img src="${signSrc}" width="44" height="44" alt="" style="display:block;width:44px;height:44px;border:0;border-radius:50%" /></td>`
+    : '';
+  const ringSrc = images.ring ? safeImageSrc(images.ring) : '';
+  const ring = ringSrc
+    ? `<td style="padding:0 8px 0 0;vertical-align:middle"><img src="${ringSrc}" width="22" height="22" alt="" style="display:block;width:22px;height:22px;border:0" /></td>`
     : '';
 
   const identity = doc.identity
@@ -228,7 +251,11 @@ export function renderEmailHtml(doc: EmailDocument, baseUrl: string): string {
       <div style="font:600 11px/1.4 ${MONO};letter-spacing:.14em;text-transform:uppercase;color:${INK_3}">${escapeHtml(doc.eyebrow)}</div>
       ${identity}
     </td>
-    <td align="right" style="vertical-align:middle;font:500 14px/1.2 ${SERIF};color:${INK_0};white-space:nowrap">Zodiacs<span style="font:400 10px/1 ${MONO};color:${INK_3}">.org</span></td>
+    <td align="right" style="vertical-align:middle">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+        ${ring}<td style="vertical-align:middle;font:500 14px/1.2 ${SERIF};color:${INK_0};white-space:nowrap">Zodiacs<span style="font:400 10px/1 ${MONO};color:${INK_3}">.org</span></td>
+      </tr></table>
+    </td>
   </tr></table>
 </td></tr>
 

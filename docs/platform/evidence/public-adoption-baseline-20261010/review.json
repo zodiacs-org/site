@@ -1,0 +1,71 @@
+{
+  "schema": "zodiacs.public-adoption-baseline-review.v1",
+  "observation": {
+    "source": "042e420925d91ecb6b41ba4120bfdb6c04e2aa49",
+    "run": "38049209045",
+    "python": "3.12.3"
+  },
+  "reviewedAt": "2026-10-10T11:41:19Z",
+  "dependents": {
+    "sourcePath": "docs/platform/evidence/public-adoption-baseline-20261010/github-engine-dependents.html",
+    "sourceBytes": 179361,
+    "sourceSha256": "edb8ad11809684643b26894094ae0ff85f7834bef75539c86beb9583a4ed277d",
+    "displayed": [
+      {
+        "kind": "REPOSITORY",
+        "count": 0,
+        "text": "0 Repositories"
+      },
+      {
+        "kind": "PACKAGE",
+        "count": 0,
+        "text": "0 Packages"
+      }
+    ],
+    "method": "Inspect exact dependency-kind anchor elements in the retained anonymous GitHub HTML; remove nested SVG and HTML tags and require an explicit number beside Repositories/Packages. The extraction ran in this chat's JavaScript tool runtime.",
+    "limitations": [
+      "GitHub's displayed dependents reflect its indexing; the site vendors an archive and is not thereby counted.",
+      "Zero displayed indexed dependents is not proof of no actual users."
+    ]
+  },
+  "registry": {
+    "sourcePath": "docs/platform/evidence/public-adoption-baseline-20261010/mcp-registry-search.json",
+    "query": "search=zodiacs&limit=100&version=latest",
+    "returned": 0,
+    "metadataCount": 0,
+    "hasNextCursor": false,
+    "method": "Actual official JSON contains empty servers and metadata.count 0, with no next cursor; this covers this search only.",
+    "limitations": [
+      "No global Registry inventory or alternative-name search is claimed.",
+      "Metadata listings provide no installs or session counts."
+    ]
+  },
+  "citationDiscovery": {
+    "status": "incomplete",
+    "method": "Three exact-name web queries, followed by opening returned pages; results include package distribution metadata, automatic mirrors and unrelated same-name services.",
+    "queries": [
+      "\"@zodiacs/engine\" -site:zodiacs.org -site:github.com",
+      "\"zodiacs.org\" ephemeris engine -site:zodiacs.org -site:github.com",
+      "site:registry.modelcontextprotocol.io zodiacs"
+    ],
+    "observedMirrorDomains": [
+      {
+        "domain": "npm.io",
+        "url": "https://npm.io/package/@zodiacs/engine",
+        "kind": "automatic package README/metadata mirror"
+      },
+      {
+        "domain": "data.safetycli.com",
+        "url": "https://data.safetycli.com/packages/pypi/zodiacs/changelog",
+        "kind": "automatic package changelog mirror"
+      }
+    ],
+    "limitations": [
+      "These are discovery observations, not independently reviewed editorial adoption or a complete citing-domain census.",
+      "Distribution registries, token SDK/social mirrors, domain-lookup pages and zodiacs.ai are excluded from an engine adoption count.",
+      "No citing-paper count or zero is claimed."
+    ]
+  },
+  "coverage": "partial",
+  "acceptedWeightAdded": 0
+}

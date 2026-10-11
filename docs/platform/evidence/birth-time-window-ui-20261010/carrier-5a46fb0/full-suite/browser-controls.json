@@ -1,0 +1,2761 @@
+{
+  "schema": "zodiacs.birth-time-window-ui-controls.v1",
+  "serverMode": "production-preview",
+  "producer": {
+    "workflowSource": "d8031d2cf3ee3f646ee9266b67e1f39ea8fb69a5",
+    "run": "38069869006",
+    "node": "v22.23.3"
+  },
+  "checkedOutSource": "d8031d2cf3ee3f646ee9266b67e1f39ea8fb69a5",
+  "records": [
+    {
+      "name": "mobile",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "summary": "Rising sign depends on the birth time: Cancer or Leo or Virgo.",
+      "native": {
+        "created": [
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js"
+        ],
+        "terminated": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "results": [
+          {
+            "probeId": 0,
+            "id": 2,
+            "result": {
+              "schema": "zodiacs.birth-window.v1",
+              "verification": "sampled at one-second resolution",
+              "start": "1907-07-06T13:06:38.000Z",
+              "end": "1907-07-06T17:06:38.000Z",
+              "latitude": 19.35,
+              "longitude": -99.16,
+              "houseSystem": "whole",
+              "rounding": null,
+              "cells": [
+                {
+                  "start": "1907-07-06T13:06:38.000Z",
+                  "end": "1907-07-06T13:22:14.830Z",
+                  "milliseconds": 936830,
+                  "share": 0.0650576388888889,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "cancer",
+                    "midheaven": "aries",
+                    "houses": {
+                      "Sun": 1,
+                      "Moon": 11,
+                      "Mercury": 2,
+                      "Venus": 12,
+                      "Mars": 7,
+                      "Jupiter": 1,
+                      "Saturn": 9,
+                      "Uranus": 7,
+                      "Neptune": 1,
+                      "Pluto": 12,
+                      "North Node": 1,
+                      "South Node": 7
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T13:22:14.830Z",
+                  "end": "1907-07-06T13:34:44.637Z",
+                  "milliseconds": 749807,
+                  "share": 0.05206993055555555,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "leo",
+                    "midheaven": "aries",
+                    "houses": {
+                      "Sun": 12,
+                      "Moon": 10,
+                      "Mercury": 1,
+                      "Venus": 11,
+                      "Mars": 6,
+                      "Jupiter": 12,
+                      "Saturn": 8,
+                      "Uranus": 6,
+                      "Neptune": 12,
+                      "Pluto": 11,
+                      "North Node": 12,
+                      "South Node": 6
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T13:34:44.637Z",
+                  "end": "1907-07-06T15:34:02.962Z",
+                  "milliseconds": 7158325,
+                  "share": 0.4971059027777778,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "leo",
+                    "midheaven": "taurus",
+                    "houses": {
+                      "Sun": 12,
+                      "Moon": 10,
+                      "Mercury": 1,
+                      "Venus": 11,
+                      "Mars": 6,
+                      "Jupiter": 12,
+                      "Saturn": 8,
+                      "Uranus": 6,
+                      "Neptune": 12,
+                      "Pluto": 11,
+                      "North Node": 12,
+                      "South Node": 6
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T15:34:02.962Z",
+                  "end": "1907-07-06T15:34:47.496Z",
+                  "milliseconds": 44534,
+                  "share": 0.0030926388888888887,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "leo",
+                    "midheaven": "gemini",
+                    "houses": {
+                      "Sun": 12,
+                      "Moon": 10,
+                      "Mercury": 1,
+                      "Venus": 11,
+                      "Mars": 6,
+                      "Jupiter": 12,
+                      "Saturn": 8,
+                      "Uranus": 6,
+                      "Neptune": 12,
+                      "Pluto": 11,
+                      "North Node": 12,
+                      "South Node": 6
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T15:34:47.496Z",
+                  "end": "1907-07-06T15:41:03.881Z",
+                  "milliseconds": 376385,
+                  "share": 0.026137847222222222,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "virgo",
+                    "midheaven": "gemini",
+                    "houses": {
+                      "Sun": 11,
+                      "Moon": 9,
+                      "Mercury": 12,
+                      "Venus": 10,
+                      "Mars": 5,
+                      "Jupiter": 11,
+                      "Saturn": 7,
+                      "Uranus": 5,
+                      "Neptune": 11,
+                      "Pluto": 10,
+                      "North Node": 11,
+                      "South Node": 5
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T15:41:03.881Z",
+                  "end": "1907-07-06T16:12:49.227Z",
+                  "milliseconds": 1905346,
+                  "share": 0.13231569444444444,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "gemini",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "virgo",
+                    "midheaven": "gemini",
+                    "houses": {
+                      "Sun": 11,
+                      "Moon": 10,
+                      "Mercury": 12,
+                      "Venus": 10,
+                      "Mars": 5,
+                      "Jupiter": 11,
+                      "Saturn": 7,
+                      "Uranus": 5,
+                      "Neptune": 11,
+                      "Pluto": 10,
+                      "North Node": 11,
+                      "South Node": 5
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T16:12:49.227Z",
+                  "end": "1907-07-06T17:06:38.000Z",
+                  "milliseconds": 3228773,
+                  "share": 0.22422034722222223,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "gemini",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "virgo",
+                    "midheaven": "gemini",
+                    "houses": {
+                      "Sun": 11,
+                      "Moon": 10,
+                      "Mercury": 12,
+                      "Venus": 10,
+                      "Mars": 5,
+                      "Jupiter": 11,
+                      "Saturn": 7,
+                      "Uranus": 5,
+                      "Neptune": 11,
+                      "Pluto": 10,
+                      "North Node": 11,
+                      "South Node": 5
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Saturn",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                }
+              ],
+              "switches": [
+                {
+                  "at": "1907-07-06T13:22:14.830Z",
+                  "changes": [
+                    {
+                      "feature": "ascendant",
+                      "from": "cancer",
+                      "to": "leo"
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Sun",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Moon",
+                      "from": 11,
+                      "to": 10
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Mercury",
+                      "from": 2,
+                      "to": 1
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Venus",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Mars",
+                      "from": 7,
+                      "to": 6
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Jupiter",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Saturn",
+                      "from": 9,
+                      "to": 8
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Uranus",
+                      "from": 7,
+                      "to": 6
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Neptune",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Pluto",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "North Node",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "South Node",
+                      "from": 7,
+                      "to": 6
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T13:34:44.637Z",
+                  "changes": [
+                    {
+                      "feature": "midheaven",
+                      "from": "aries",
+                      "to": "taurus"
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T15:34:02.962Z",
+                  "changes": [
+                    {
+                      "feature": "midheaven",
+                      "from": "taurus",
+                      "to": "gemini"
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T15:34:47.496Z",
+                  "changes": [
+                    {
+                      "feature": "ascendant",
+                      "from": "leo",
+                      "to": "virgo"
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Sun",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Moon",
+                      "from": 10,
+                      "to": 9
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Mercury",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Venus",
+                      "from": 11,
+                      "to": 10
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Mars",
+                      "from": 6,
+                      "to": 5
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Jupiter",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Saturn",
+                      "from": 8,
+                      "to": 7
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Uranus",
+                      "from": 6,
+                      "to": 5
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Neptune",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Pluto",
+                      "from": 11,
+                      "to": 10
+                    },
+                    {
+                      "feature": "house",
+                      "body": "North Node",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "South Node",
+                      "from": 6,
+                      "to": 5
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T15:41:03.881Z",
+                  "changes": [
+                    {
+                      "feature": "sign",
+                      "body": "Moon",
+                      "from": "taurus",
+                      "to": "gemini"
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Moon",
+                      "from": 9,
+                      "to": 10
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T16:12:49.227Z",
+                  "changes": [
+                    {
+                      "feature": "aspect",
+                      "a": "Jupiter",
+                      "b": "Saturn",
+                      "from": null,
+                      "to": "trine"
+                    }
+                  ]
+                }
+              ],
+              "unresolved": [],
+              "flags": [],
+              "engineVersion": "1.0.0-rc.2"
+            }
+          },
+          {
+            "probeId": 3,
+            "id": 9,
+            "result": {
+              "schema": "zodiacs.birth-window.v1",
+              "verification": "sampled at one-second resolution",
+              "start": "1907-07-06T15:05:38.000Z",
+              "end": "1907-07-06T15:07:38.000Z",
+              "latitude": 19.35,
+              "longitude": -99.16,
+              "houseSystem": "whole",
+              "rounding": null,
+              "cells": [
+                {
+                  "start": "1907-07-06T15:05:38.000Z",
+                  "end": "1907-07-06T15:07:38.000Z",
+                  "milliseconds": 120000,
+                  "share": 1,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "leo",
+                    "midheaven": "taurus",
+                    "houses": {
+                      "Sun": 12,
+                      "Moon": 10,
+                      "Mercury": 1,
+                      "Venus": 11,
+                      "Mars": 6,
+                      "Jupiter": 12,
+                      "Saturn": 8,
+                      "Uranus": 6,
+                      "Neptune": 12,
+                      "Pluto": 11,
+                      "North Node": 12,
+                      "South Node": 6
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                }
+              ],
+              "switches": [],
+              "unresolved": [],
+              "flags": [],
+              "engineVersion": "1.0.0-rc.2"
+            }
+          },
+          {
+            "probeId": 5,
+            "id": 2,
+            "result": {
+              "schema": "zodiacs.birth-window.v1",
+              "verification": "sampled at one-second resolution",
+              "start": "1800-01-01T00:19:58.000Z",
+              "end": "1800-01-01T00:21:58.000Z",
+              "latitude": -36.85,
+              "longitude": 174.76,
+              "houseSystem": "whole",
+              "rounding": null,
+              "cells": [
+                {
+                  "start": "1800-01-01T00:19:58.000Z",
+                  "end": "1800-01-01T00:21:58.000Z",
+                  "milliseconds": 120000,
+                  "share": 1,
+                  "features": {
+                    "signs": {
+                      "Sun": "capricorn",
+                      "Moon": "pisces",
+                      "Mercury": "sagittarius",
+                      "Venus": "scorpio",
+                      "Mars": "sagittarius",
+                      "Jupiter": "gemini",
+                      "Saturn": "leo",
+                      "Uranus": "virgo",
+                      "Neptune": "scorpio",
+                      "Pluto": "pisces",
+                      "North Node": "taurus",
+                      "South Node": "scorpio"
+                    },
+                    "ascendant": "aries",
+                    "midheaven": "capricorn",
+                    "houses": {
+                      "Sun": 10,
+                      "Moon": 12,
+                      "Mercury": 9,
+                      "Venus": 8,
+                      "Mars": 9,
+                      "Jupiter": 3,
+                      "Saturn": 5,
+                      "Uranus": 6,
+                      "Neptune": 8,
+                      "Pluto": 12,
+                      "North Node": 2,
+                      "South Node": 8
+                    },
+                    "aspects": [
+                      {
+                        "a": "Moon",
+                        "b": "Venus",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Jupiter",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Neptune",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Uranus",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Pluto",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Uranus",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Saturn",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Uranus",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Pluto",
+                        "type": "trine"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                }
+              ],
+              "switches": [],
+              "unresolved": [],
+              "flags": [],
+              "engineVersion": "1.0.0-rc.2"
+            }
+          }
+        ],
+        "inputs": [
+          {
+            "probeId": 0,
+            "input": {
+              "id": 2,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 120,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 1,
+            "input": {
+              "id": 4,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 30,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 2,
+            "input": {
+              "id": 7,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 60,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 3,
+            "input": {
+              "id": 9,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 1,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 4,
+            "input": {
+              "id": 11,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 60,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 5,
+            "input": {
+              "id": 2,
+              "input": {
+                "at": "1800-01-01T00:20:58.000Z",
+                "minutes": 1,
+                "latitude": -36.85,
+                "longitude": 174.76,
+                "houseSystem": "whole"
+              }
+            }
+          }
+        ]
+      },
+      "boundaryInstants": {
+        "upperUTC": "2200-01-01T05:59:00.000Z",
+        "lowerUTC": "1800-01-01T00:20:58.000Z"
+      },
+      "controls": {
+        "noWorkerBeforeRequest": true,
+        "realSampledWindow": true,
+        "allCellsRendered": true,
+        "explicitCancelTerminates": true,
+        "windowChangeTerminates": true,
+        "chartReplacementTerminates": true,
+        "unknownTimeExcluded": true,
+        "noOverflow": true,
+        "outOfSpanEntryExcluded": true,
+        "boundaryOptionsDisabled": true,
+        "boundaryPresetNativeWorker": true,
+        "fullBoundaryWorker": true,
+        "committedBoundaryInstantsVerified": true
+      },
+      "pageErrors": []
+    },
+    {
+      "name": "desktop",
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      },
+      "summary": "Rising sign depends on the birth time: Cancer or Leo or Virgo.",
+      "native": {
+        "created": [
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js",
+          "http://127.0.0.1:8793/_astro/birth-window.worker-BrxRL5ql.js"
+        ],
+        "terminated": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "results": [
+          {
+            "probeId": 0,
+            "id": 2,
+            "result": {
+              "schema": "zodiacs.birth-window.v1",
+              "verification": "sampled at one-second resolution",
+              "start": "1907-07-06T13:06:38.000Z",
+              "end": "1907-07-06T17:06:38.000Z",
+              "latitude": 19.35,
+              "longitude": -99.16,
+              "houseSystem": "whole",
+              "rounding": null,
+              "cells": [
+                {
+                  "start": "1907-07-06T13:06:38.000Z",
+                  "end": "1907-07-06T13:22:14.830Z",
+                  "milliseconds": 936830,
+                  "share": 0.0650576388888889,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "cancer",
+                    "midheaven": "aries",
+                    "houses": {
+                      "Sun": 1,
+                      "Moon": 11,
+                      "Mercury": 2,
+                      "Venus": 12,
+                      "Mars": 7,
+                      "Jupiter": 1,
+                      "Saturn": 9,
+                      "Uranus": 7,
+                      "Neptune": 1,
+                      "Pluto": 12,
+                      "North Node": 1,
+                      "South Node": 7
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T13:22:14.830Z",
+                  "end": "1907-07-06T13:34:44.637Z",
+                  "milliseconds": 749807,
+                  "share": 0.05206993055555555,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "leo",
+                    "midheaven": "aries",
+                    "houses": {
+                      "Sun": 12,
+                      "Moon": 10,
+                      "Mercury": 1,
+                      "Venus": 11,
+                      "Mars": 6,
+                      "Jupiter": 12,
+                      "Saturn": 8,
+                      "Uranus": 6,
+                      "Neptune": 12,
+                      "Pluto": 11,
+                      "North Node": 12,
+                      "South Node": 6
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T13:34:44.637Z",
+                  "end": "1907-07-06T15:34:02.962Z",
+                  "milliseconds": 7158325,
+                  "share": 0.4971059027777778,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "leo",
+                    "midheaven": "taurus",
+                    "houses": {
+                      "Sun": 12,
+                      "Moon": 10,
+                      "Mercury": 1,
+                      "Venus": 11,
+                      "Mars": 6,
+                      "Jupiter": 12,
+                      "Saturn": 8,
+                      "Uranus": 6,
+                      "Neptune": 12,
+                      "Pluto": 11,
+                      "North Node": 12,
+                      "South Node": 6
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T15:34:02.962Z",
+                  "end": "1907-07-06T15:34:47.496Z",
+                  "milliseconds": 44534,
+                  "share": 0.0030926388888888887,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "leo",
+                    "midheaven": "gemini",
+                    "houses": {
+                      "Sun": 12,
+                      "Moon": 10,
+                      "Mercury": 1,
+                      "Venus": 11,
+                      "Mars": 6,
+                      "Jupiter": 12,
+                      "Saturn": 8,
+                      "Uranus": 6,
+                      "Neptune": 12,
+                      "Pluto": 11,
+                      "North Node": 12,
+                      "South Node": 6
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T15:34:47.496Z",
+                  "end": "1907-07-06T15:41:03.881Z",
+                  "milliseconds": 376385,
+                  "share": 0.026137847222222222,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "virgo",
+                    "midheaven": "gemini",
+                    "houses": {
+                      "Sun": 11,
+                      "Moon": 9,
+                      "Mercury": 12,
+                      "Venus": 10,
+                      "Mars": 5,
+                      "Jupiter": 11,
+                      "Saturn": 7,
+                      "Uranus": 5,
+                      "Neptune": 11,
+                      "Pluto": 10,
+                      "North Node": 11,
+                      "South Node": 5
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T15:41:03.881Z",
+                  "end": "1907-07-06T16:12:49.227Z",
+                  "milliseconds": 1905346,
+                  "share": 0.13231569444444444,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "gemini",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "virgo",
+                    "midheaven": "gemini",
+                    "houses": {
+                      "Sun": 11,
+                      "Moon": 10,
+                      "Mercury": 12,
+                      "Venus": 10,
+                      "Mars": 5,
+                      "Jupiter": 11,
+                      "Saturn": 7,
+                      "Uranus": 5,
+                      "Neptune": 11,
+                      "Pluto": 10,
+                      "North Node": 11,
+                      "South Node": 5
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                },
+                {
+                  "start": "1907-07-06T16:12:49.227Z",
+                  "end": "1907-07-06T17:06:38.000Z",
+                  "milliseconds": 3228773,
+                  "share": 0.22422034722222223,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "gemini",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "virgo",
+                    "midheaven": "gemini",
+                    "houses": {
+                      "Sun": 11,
+                      "Moon": 10,
+                      "Mercury": 12,
+                      "Venus": 10,
+                      "Mars": 5,
+                      "Jupiter": 11,
+                      "Saturn": 7,
+                      "Uranus": 5,
+                      "Neptune": 11,
+                      "Pluto": 10,
+                      "North Node": 11,
+                      "South Node": 5
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Saturn",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                }
+              ],
+              "switches": [
+                {
+                  "at": "1907-07-06T13:22:14.830Z",
+                  "changes": [
+                    {
+                      "feature": "ascendant",
+                      "from": "cancer",
+                      "to": "leo"
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Sun",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Moon",
+                      "from": 11,
+                      "to": 10
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Mercury",
+                      "from": 2,
+                      "to": 1
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Venus",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Mars",
+                      "from": 7,
+                      "to": 6
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Jupiter",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Saturn",
+                      "from": 9,
+                      "to": 8
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Uranus",
+                      "from": 7,
+                      "to": 6
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Neptune",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Pluto",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "North Node",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "South Node",
+                      "from": 7,
+                      "to": 6
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T13:34:44.637Z",
+                  "changes": [
+                    {
+                      "feature": "midheaven",
+                      "from": "aries",
+                      "to": "taurus"
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T15:34:02.962Z",
+                  "changes": [
+                    {
+                      "feature": "midheaven",
+                      "from": "taurus",
+                      "to": "gemini"
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T15:34:47.496Z",
+                  "changes": [
+                    {
+                      "feature": "ascendant",
+                      "from": "leo",
+                      "to": "virgo"
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Sun",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Moon",
+                      "from": 10,
+                      "to": 9
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Mercury",
+                      "from": 1,
+                      "to": 12
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Venus",
+                      "from": 11,
+                      "to": 10
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Mars",
+                      "from": 6,
+                      "to": 5
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Jupiter",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Saturn",
+                      "from": 8,
+                      "to": 7
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Uranus",
+                      "from": 6,
+                      "to": 5
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Neptune",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Pluto",
+                      "from": 11,
+                      "to": 10
+                    },
+                    {
+                      "feature": "house",
+                      "body": "North Node",
+                      "from": 12,
+                      "to": 11
+                    },
+                    {
+                      "feature": "house",
+                      "body": "South Node",
+                      "from": 6,
+                      "to": 5
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T15:41:03.881Z",
+                  "changes": [
+                    {
+                      "feature": "sign",
+                      "body": "Moon",
+                      "from": "taurus",
+                      "to": "gemini"
+                    },
+                    {
+                      "feature": "house",
+                      "body": "Moon",
+                      "from": 9,
+                      "to": 10
+                    }
+                  ]
+                },
+                {
+                  "at": "1907-07-06T16:12:49.227Z",
+                  "changes": [
+                    {
+                      "feature": "aspect",
+                      "a": "Jupiter",
+                      "b": "Saturn",
+                      "from": null,
+                      "to": "trine"
+                    }
+                  ]
+                }
+              ],
+              "unresolved": [],
+              "flags": [],
+              "engineVersion": "1.0.0-rc.2"
+            }
+          },
+          {
+            "probeId": 3,
+            "id": 9,
+            "result": {
+              "schema": "zodiacs.birth-window.v1",
+              "verification": "sampled at one-second resolution",
+              "start": "1907-07-06T15:05:38.000Z",
+              "end": "1907-07-06T15:07:38.000Z",
+              "latitude": 19.35,
+              "longitude": -99.16,
+              "houseSystem": "whole",
+              "rounding": null,
+              "cells": [
+                {
+                  "start": "1907-07-06T15:05:38.000Z",
+                  "end": "1907-07-06T15:07:38.000Z",
+                  "milliseconds": 120000,
+                  "share": 1,
+                  "features": {
+                    "signs": {
+                      "Sun": "cancer",
+                      "Moon": "taurus",
+                      "Mercury": "leo",
+                      "Venus": "gemini",
+                      "Mars": "capricorn",
+                      "Jupiter": "cancer",
+                      "Saturn": "pisces",
+                      "Uranus": "capricorn",
+                      "Neptune": "cancer",
+                      "Pluto": "gemini",
+                      "North Node": "cancer",
+                      "South Node": "capricorn"
+                    },
+                    "ascendant": "leo",
+                    "midheaven": "taurus",
+                    "houses": {
+                      "Sun": 12,
+                      "Moon": 10,
+                      "Mercury": 1,
+                      "Venus": 11,
+                      "Mars": 6,
+                      "Jupiter": 12,
+                      "Saturn": 8,
+                      "Uranus": 6,
+                      "Neptune": 12,
+                      "Pluto": 11,
+                      "North Node": 12,
+                      "South Node": 6
+                    },
+                    "aspects": [
+                      {
+                        "a": "Sun",
+                        "b": "Mars",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Jupiter",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Sun",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Saturn",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Saturn",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Pluto",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Uranus",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Saturn",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Uranus",
+                        "b": "Neptune",
+                        "type": "opposition"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                }
+              ],
+              "switches": [],
+              "unresolved": [],
+              "flags": [],
+              "engineVersion": "1.0.0-rc.2"
+            }
+          },
+          {
+            "probeId": 5,
+            "id": 2,
+            "result": {
+              "schema": "zodiacs.birth-window.v1",
+              "verification": "sampled at one-second resolution",
+              "start": "1800-01-01T00:19:58.000Z",
+              "end": "1800-01-01T00:21:58.000Z",
+              "latitude": -36.85,
+              "longitude": 174.76,
+              "houseSystem": "whole",
+              "rounding": null,
+              "cells": [
+                {
+                  "start": "1800-01-01T00:19:58.000Z",
+                  "end": "1800-01-01T00:21:58.000Z",
+                  "milliseconds": 120000,
+                  "share": 1,
+                  "features": {
+                    "signs": {
+                      "Sun": "capricorn",
+                      "Moon": "pisces",
+                      "Mercury": "sagittarius",
+                      "Venus": "scorpio",
+                      "Mars": "sagittarius",
+                      "Jupiter": "gemini",
+                      "Saturn": "leo",
+                      "Uranus": "virgo",
+                      "Neptune": "scorpio",
+                      "Pluto": "pisces",
+                      "North Node": "taurus",
+                      "South Node": "scorpio"
+                    },
+                    "ascendant": "aries",
+                    "midheaven": "capricorn",
+                    "houses": {
+                      "Sun": 10,
+                      "Moon": 12,
+                      "Mercury": 9,
+                      "Venus": 8,
+                      "Mars": 9,
+                      "Jupiter": 3,
+                      "Saturn": 5,
+                      "Uranus": 6,
+                      "Neptune": 8,
+                      "Pluto": 12,
+                      "North Node": 2,
+                      "South Node": 8
+                    },
+                    "aspects": [
+                      {
+                        "a": "Moon",
+                        "b": "Venus",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Jupiter",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Uranus",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Moon",
+                        "b": "Neptune",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Jupiter",
+                        "type": "opposition"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Uranus",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Mercury",
+                        "b": "Pluto",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Uranus",
+                        "type": "sextile"
+                      },
+                      {
+                        "a": "Venus",
+                        "b": "Neptune",
+                        "type": "conjunction"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Saturn",
+                        "type": "trine"
+                      },
+                      {
+                        "a": "Mars",
+                        "b": "Pluto",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Uranus",
+                        "type": "square"
+                      },
+                      {
+                        "a": "Jupiter",
+                        "b": "Pluto",
+                        "type": "trine"
+                      }
+                    ],
+                    "houseSystem": "whole"
+                  }
+                }
+              ],
+              "switches": [],
+              "unresolved": [],
+              "flags": [],
+              "engineVersion": "1.0.0-rc.2"
+            }
+          }
+        ],
+        "inputs": [
+          {
+            "probeId": 0,
+            "input": {
+              "id": 2,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 120,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 1,
+            "input": {
+              "id": 4,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 30,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 2,
+            "input": {
+              "id": 7,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 60,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 3,
+            "input": {
+              "id": 9,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 1,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 4,
+            "input": {
+              "id": 11,
+              "input": {
+                "at": "1907-07-06T15:06:38.000Z",
+                "minutes": 60,
+                "latitude": 19.35,
+                "longitude": -99.16,
+                "houseSystem": "whole"
+              }
+            }
+          },
+          {
+            "probeId": 5,
+            "input": {
+              "id": 2,
+              "input": {
+                "at": "1800-01-01T00:20:58.000Z",
+                "minutes": 1,
+                "latitude": -36.85,
+                "longitude": 174.76,
+                "houseSystem": "whole"
+              }
+            }
+          }
+        ]
+      },
+      "boundaryInstants": {
+        "upperUTC": "2200-01-01T05:59:00.000Z",
+        "lowerUTC": "1800-01-01T00:20:58.000Z"
+      },
+      "controls": {
+        "noWorkerBeforeRequest": true,
+        "realSampledWindow": true,
+        "allCellsRendered": true,
+        "explicitCancelTerminates": true,
+        "windowChangeTerminates": true,
+        "chartReplacementTerminates": true,
+        "unknownTimeExcluded": true,
+        "noOverflow": true,
+        "outOfSpanEntryExcluded": true,
+        "boundaryOptionsDisabled": true,
+        "boundaryPresetNativeWorker": true,
+        "fullBoundaryWorker": true,
+        "committedBoundaryInstantsVerified": true
+      },
+      "pageErrors": []
+    }
+  ],
+  "observations": [
+    {
+      "variant": "mobile",
+      "stage": "mobile:lower-boundary-options",
+      "upperUTC": "2200-01-01T05:59:00.000Z",
+      "lowerBoundaryState": {
+        "date": "1800-01-01",
+        "time": "12:00",
+        "selectedPlace": "Auckland · Auckland, New Zealand",
+        "receiptUTC": "1800-01-01T00:20:58.000Z",
+        "instantBasis": "birth",
+        "options": [
+          {
+            "value": "1",
+            "disabled": false
+          },
+          {
+            "value": "5",
+            "disabled": false
+          },
+          {
+            "value": "10",
+            "disabled": false
+          },
+          {
+            "value": "15",
+            "disabled": false
+          },
+          {
+            "value": "30",
+            "disabled": true
+          },
+          {
+            "value": "60",
+            "disabled": true
+          },
+          {
+            "value": "120",
+            "disabled": true
+          }
+        ],
+        "reference": "Windows must start on or after 1 January 1800 UTC and end before 1 January 2200 UTC. Unavailable sizes are disabled."
+      },
+      "automationOptionStates": {
+        "oneMinuteEnabled": true,
+        "thirtyMinuteDisabled": false,
+        "twoHourDisabled": false
+      }
+    },
+    {
+      "variant": "desktop",
+      "stage": "desktop:lower-boundary-options",
+      "upperUTC": "2200-01-01T05:59:00.000Z",
+      "lowerBoundaryState": {
+        "date": "1800-01-01",
+        "time": "12:00",
+        "selectedPlace": "Auckland · Auckland, New Zealand",
+        "receiptUTC": "1800-01-01T00:20:58.000Z",
+        "instantBasis": "birth",
+        "options": [
+          {
+            "value": "1",
+            "disabled": false
+          },
+          {
+            "value": "5",
+            "disabled": false
+          },
+          {
+            "value": "10",
+            "disabled": false
+          },
+          {
+            "value": "15",
+            "disabled": false
+          },
+          {
+            "value": "30",
+            "disabled": true
+          },
+          {
+            "value": "60",
+            "disabled": true
+          },
+          {
+            "value": "120",
+            "disabled": true
+          }
+        ],
+        "reference": "Windows must start on or after 1 January 1800 UTC and end before 1 January 2200 UTC. Unavailable sizes are disabled."
+      },
+      "automationOptionStates": {
+        "oneMinuteEnabled": true,
+        "thirtyMinuteDisabled": false,
+        "twoHourDisabled": false
+      }
+    }
+  ],
+  "passed": true,
+  "failure": null,
+  "limitations": [
+    "Actual built UI and native worker in two Chromium viewports with public demonstration and synthetic chart inputs.",
+    "Only script loading is held for cancellation controls; no numerical result is injected.",
+    "No independent accuracy, repeated 1000-window benchmark, production deployment, saved-window model or general localization claim."
+  ]
+}

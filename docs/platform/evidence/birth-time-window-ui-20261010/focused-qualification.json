@@ -1,0 +1,42 @@
+{
+  "schema": "zodiacs.birth-window-focused-qualification.v1",
+  "producer": "45e749f2313f6034aa2c9edf5e9a97bf18fd6cc6",
+  "candidate": "053803288412670635424cd1d78379dcec48110a",
+  "tree": "e40779f949d511caf9e683fc7cae8fa130228fe2",
+  "qualifiedMain": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "run": 38051943389,
+  "job": 114212669667,
+  "attempt": 1,
+  "conclusion": "success",
+  "passed": [
+    "protected source scope",
+    "original native build and type checks",
+    "fifty-eight focused helper/ownership/confidence controls",
+    "original bundle and engine isolation gates",
+    "actual native worker controls in mobile and desktop",
+    "predefined insertion diagnostics",
+    "original fifteen-case full-image comparison",
+    "three original cold birth-chart Lighthouse samples",
+    "eighteen fresh exact-width Phase 1 captures and source-bound receipt"
+  ],
+  "journal": "2026-10-10T12:34:19.7626831Z Runner stalls: none; no sample was retaken.",
+  "artifact": {
+    "id": 11670430436,
+    "zipBytes": 16948179,
+    "zipSha256": "b31b0ec5d52a162763d5a7332dc2976ca0bcdd8d9bb221c9259f24da5adc6783",
+    "crcVerified": false
+  },
+  "decodedConnectorLog": {
+    "bytes": 876167,
+    "sha256": "9252a30cfe042fd6e4fd4a3f03dc125babc81b5ffeb088d1a58462bd1e7d5f81",
+    "format": "Exact decoded connector text; not compressed wire bytes."
+  },
+  "originalFailedRun": 38051045669,
+  "correction": "Explicit entry line heights, grid spacing and margins eliminate fractional insertion displacement under the original comparison budget.",
+  "accepted": false,
+  "limitations": [
+    "Focused qualification only; final full suite, fresh review, merge/post-merge and production checks remain pending.",
+    "No new thousand-window accuracy run or astronomical accuracy claim.",
+    "Artifact CRC/image recovery and direct detail screenshot inspection are pending."
+  ]
+}

@@ -1,0 +1,156 @@
+{
+ "swisseph": "2.10.03",
+ "unit": "arcseconds",
+ "tolerance": 3.0,
+ "windows": {
+  "1850-2049": {
+   "ladder": {
+    "failedCases": 0,
+    "equatorialAscendant": {
+     "compared": 319,
+     "p50": 0.0002355,
+     "p95": 0.0008597,
+     "max": 0.001281,
+     "over": 0
+    },
+    "kochCoAscendant": {
+     "compared": 319,
+     "p50": 0.0004612,
+     "p95": 0.002663,
+     "max": 0.02002,
+     "over": 0
+    },
+    "munkaseyCoAscendant": {
+     "compared": 319,
+     "p50": 0.000287,
+     "p95": 0.0008974,
+     "max": 0.001811,
+     "over": 0
+    },
+    "polarAscendant": {
+     "compared": 319,
+     "p50": 0.0004612,
+     "p95": 0.002663,
+     "max": 0.02002,
+     "over": 0
+    },
+    "inputs": {
+     "armcMax": 0.001404,
+     "obliquityMax": 0.001027
+    }
+   },
+   "broad": {
+    "failedCases": 0,
+    "equatorialAscendant": {
+     "compared": 1541,
+     "p50": 0.0002387,
+     "p95": 0.000891,
+     "max": 0.001618,
+     "over": 0
+    },
+    "kochCoAscendant": {
+     "compared": 1541,
+     "p50": 0.0003127,
+     "p95": 0.001229,
+     "max": 0.01324,
+     "over": 0
+    },
+    "munkaseyCoAscendant": {
+     "compared": 1541,
+     "p50": 0.0002677,
+     "p95": 0.001576,
+     "max": 0.0172,
+     "over": 0
+    },
+    "polarAscendant": {
+     "compared": 1541,
+     "p50": 0.0003127,
+     "p95": 0.001229,
+     "max": 0.01324,
+     "over": 0
+    },
+    "inputs": {
+     "armcMax": 0.001512,
+     "obliquityMax": 0.001052
+    }
+   }
+  },
+  "1800-2199": {
+   "ladder": {
+    "failedCases": 0,
+    "equatorialAscendant": {
+     "compared": 708,
+     "p50": 0.1302,
+     "p95": 1.942,
+     "max": 2.08,
+     "over": 0
+    },
+    "kochCoAscendant": {
+     "compared": 708,
+     "p50": 0.1102,
+     "p95": 1.775,
+     "max": 63.06,
+     "over": 22
+    },
+    "munkaseyCoAscendant": {
+     "compared": 708,
+     "p50": 0.1251,
+     "p95": 2.197,
+     "max": 2.811,
+     "over": 0
+    },
+    "polarAscendant": {
+     "compared": 708,
+     "p50": 0.1102,
+     "p95": 1.775,
+     "max": 63.06,
+     "over": 22
+    },
+    "inputs": {
+     "armcMax": 1.909,
+     "obliquityMax": 0.001595
+    }
+   },
+   "broad": {
+    "failedCases": 0,
+    "equatorialAscendant": {
+     "compared": 3000,
+     "p50": 0.0009947,
+     "p95": 1.918,
+     "max": 2.077,
+     "over": 0
+    },
+    "kochCoAscendant": {
+     "compared": 3000,
+     "p50": 0.001699,
+     "p95": 2.051,
+     "max": 13.14,
+     "over": 38
+    },
+    "munkaseyCoAscendant": {
+     "compared": 3000,
+     "p50": 0.001908,
+     "p95": 1.718,
+     "max": 83.54,
+     "over": 38
+    },
+    "polarAscendant": {
+     "compared": 3000,
+     "p50": 0.001699,
+     "p95": 2.051,
+     "max": 13.14,
+     "over": 38
+    },
+    "inputs": {
+     "armcMax": 1.91,
+     "obliquityMax": 0.001622
+    }
+   }
+  }
+ },
+ "gate": {
+  "set": "ladder",
+  "window": "1850-2049",
+  "verdict": "pass"
+ }
+}

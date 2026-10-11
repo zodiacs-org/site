@@ -1,0 +1,38 @@
+{
+  "schema": "zodiacs.birth-window-development-review-finding.v1",
+  "reviewedSource": "814727d852ec927bcfbce68ed33a1a9e2e576554",
+  "reviewCompleted": "2026-10-10T15:55:35.397072Z",
+  "thread": {
+    "id": "PRRT_kwDOSpI5QM6rFcSA",
+    "is_resolved": false,
+    "is_outdated": false,
+    "path": "astro.config.mjs",
+    "line": 62,
+    "diff_side": "RIGHT",
+    "start_line": 62,
+    "start_diff_side": null,
+    "original_line": 62,
+    "original_start_line": null,
+    "resolved_by": null,
+    "comments": [
+      {
+        "id": "PRRC_kwDOSpI5QM78nkU-",
+        "database_id": 4238230846,
+        "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Apply the worker flag transform during development**\n\nWhen the site runs through `npm run dev`, this transformer is not applied to worker modules: [Vite documents](https://vite.dev/config/worker-options) that top-level `config.plugins` applies to workers in development, while `worker.plugins` configures worker bundles for builds. Consequently, the global define above leaves `ZODIACS_BIRTH_WINDOW_WORKER` false in the dev-served `full.ts`, so every window request throws `Worker only` and displays the generic failure message even though production previews work. Register the same transform in the development plugin pipeline while preserving `full.ts` as the engine boundary. [CLAUDE.mdL295-L303](https://github.com/zodiacs-org/site/blob/814727d852ec927bcfbce68ed33a1a9e2e576554/CLAUDE.md#L295-L303)\n\nUseful? React with 👍 / 👎.",
+        "created_at": "2026-10-10T15:55:32Z",
+        "updated_at": "2026-10-10T15:55:33Z",
+        "author": {
+          "login": "chatgpt-codex-connector",
+          "name": "chatgpt-codex-connector",
+          "email": null,
+          "avatar_url": "https://avatars.githubusercontent.com/in/1144995?v=4",
+          "id": null
+        },
+        "viewer_did_author": false
+      }
+    ]
+  },
+  "observedScope": "Fresh source review identifies a development pipeline omission. The earlier native production-preview pass remains real but establishes no development behavior.",
+  "correction": "Register the full.ts marker transform in the top-level serve-only pipeline. The existing worker-build plugin and false production page define remain unchanged. Use the original thirteen-control browser harness in both development and production-preview modes, retaining distinct reports and native transport assertions.",
+  "qualification": "Pending actual native Node/build/unit/bundle/development/production/visual/performance/capture gates on the corrected source. No clean-review or deployment acceptance is claimed."
+}

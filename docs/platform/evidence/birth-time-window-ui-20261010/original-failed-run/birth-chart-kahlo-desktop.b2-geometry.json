@@ -1,0 +1,29 @@
+{
+  "entry": {
+    "top": 1172.515625,
+    "bottom": 1277.703125,
+    "left": 160,
+    "right": 1280,
+    "width": 1120,
+    "height": 105.1875
+  },
+  "previous": {
+    "top": 1057.734375,
+    "bottom": 1120.515625,
+    "left": 160,
+    "right": 1280,
+    "width": 1120,
+    "height": 62.78125
+  },
+  "next": {
+    "top": 1305.703125,
+    "bottom": 1354.09375,
+    "left": 160,
+    "right": 1280,
+    "width": 1120,
+    "height": 48.390625
+  },
+  "text": "If your birth time is approximate, check which parts of the chart could change.Check a time window",
+  "viewport": 1440,
+  "documentWidth": 1440
+}

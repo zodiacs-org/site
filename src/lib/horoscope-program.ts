@@ -178,7 +178,7 @@ const SIGN_REGISTER: Record<HoroscopeSign, SignRegister> = {
     love: 'honesty is kindest when timing and tone are part of the truth',
     career: 'a promising direction still needs a defined next checkpoint',
     year: 'freedom expands through commitments chosen with open eyes',
-    test: 'connect the large idea to one appointment, draft, or measurable step',
+    test: 'pin the large idea to one appointment, draft, or measurable step',
   },
   capricorn: {
     daily: 'responsibility is clearer when you distinguish the essential from the inherited',
@@ -828,10 +828,10 @@ function eventName(event: HoroscopeProgramEvent): string {
 function eventSentence(event: HoroscopeProgramEvent, sign: HoroscopeSign): string {
   const houses = eventHouses(event, sign);
   if (houses.length === 2) {
-    return `${eventName(event)} connects ${HOUSE_THEME[houses[0]]} with ${HOUSE_THEME[houses[1]]}.`;
+    return `${cap(eventName(event))} connects ${HOUSE_THEME[houses[0]]} with ${HOUSE_THEME[houses[1]]}.`;
   }
   const house = houses[0];
-  return `${eventName(event)} brings ${HOUSE_THEME[house]} into focus.`;
+  return `${cap(eventName(event))} brings ${HOUSE_THEME[house]} into focus.`;
 }
 
 /** The same event and houses as eventSentence, in the alternate daily frame. */
@@ -968,7 +968,7 @@ function dailySurface(
   const passages = surface === 'today'
     ? [
         passage(
-          `${dayWord}, ${HOUSE_ACTION[moonHouse]}. For ${cap(sign)}, ${profile.daily}. The ${daily.moon.phase.toLocaleLowerCase('en')} Moon puts ${HOUSE_THEME[moonHouse]} on the day’s agenda.`,
+          `${dayWord}, ${HOUSE_ACTION[moonHouse]}. For ${cap(sign)}, ${profile.daily}. The ${moonPhaseLabel(daily.moon.phase)} puts ${HOUSE_THEME[moonHouse]} on the day’s agenda.`,
           catalog.position(daily, moon, sign),
         ),
         passage(
@@ -978,7 +978,7 @@ function dailySurface(
       ]
     : [
         passage(
-          `${tomorrowOpening} As the ${daily.moon.phase.toLocaleLowerCase('en')} Moon develops, tomorrow’s foreground shifts toward ${HOUSE_THEME[moonHouse]}.`,
+          `${tomorrowOpening} As the ${moonPhaseLabel(daily.moon.phase)} develops, tomorrow’s foreground shifts toward ${HOUSE_THEME[moonHouse]}.`,
           catalog.position(daily, moon, sign),
         ),
         passage(
@@ -997,7 +997,7 @@ function dailySurface(
     ));
   } else {
     const quietFocus = moonHouse === secondaryHouse
-      ? `Keep ${HOUSE_THEME[moonHouse]} centered in the choice`
+      ? `Hold ${HOUSE_THEME[moonHouse]} at the center of the choice`
       : `Connect ${HOUSE_THEME[moonHouse]} with ${HOUSE_THEME[secondaryHouse]}`;
     passages.push(passage(
       `${quietFocus}; ${profile.test}.`,

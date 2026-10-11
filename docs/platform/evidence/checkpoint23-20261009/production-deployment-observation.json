@@ -1,0 +1,57 @@
+{
+  "schema": "zodiacs.production-deployment-connector-observation.v1",
+  "observedAt": "2026-10-10T11:08:20Z",
+  "method": "Authenticated Vercel get_deployment connector response withGitRepoInfo=true; structured response metadata, not a raw wire receipt",
+  "deployment": {
+    "id": "dpl_CExuEbaorgd3MCMj5b3XxWhMeRFE",
+    "name": "zodiacs-org",
+    "url": "zodiacs-oqhudyuig-zodiacsofficial.vercel.app",
+    "type": "LAMBDAS",
+    "state": "READY",
+    "createdAt": 1791630202321,
+    "creator": {
+      "uid": "BcnvhMnmrQpRvxQmYbTC8rn1",
+      "username": "zodiacs-org"
+    },
+    "project": {
+      "id": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+      "name": "zodiacs-org",
+      "framework": null
+    },
+    "meta": {
+      "githubCommitRef": "main",
+      "githubCommitSha": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+      "githubCommitMessage": "Merge pull request #697 from zodiacs-org/codex/checkpoint23-ratification\n\nRatify benchmark readings, align Organization identity and defer homepage hydration",
+      "githubRepo": "site",
+      "githubOrg": "zodiacs-org"
+    },
+    "alias": [
+      "zodiacs.org",
+      "www.zodiacs.org",
+      "zodiacs-org.vercel.app",
+      "zodiacs-org-zodiacsofficial.vercel.app",
+      "zodiacs-org-git-main-zodiacsofficial.vercel.app"
+    ],
+    "target": "production",
+    "regions": [
+      "iad1"
+    ],
+    "buildingAt": 1791630206233,
+    "ready": 1791630479226,
+    "readyState": "READY",
+    "source": "git",
+    "aliasError": null
+  },
+  "sourceBinding": {
+    "mergedSource": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+    "tree": "342f138fce55eececf9a1d23e338edbe7ab57cbb",
+    "originalHead": "94cbb7a7913d7b878729a93935e9e8ccd64a74a4",
+    "postMergeRun": 38047052485,
+    "postMergeStatus": "pending",
+    "productionRun": 38047469468
+  },
+  "limitations": [
+    "Complete post-merge Site Check is still required before counting the proposed acceptance increase.",
+    "No stable publication, private clearance, independent accuracy, guide delivery or assistant trial claim."
+  ]
+}

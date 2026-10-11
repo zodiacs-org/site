@@ -1,0 +1,358 @@
+{
+  "schema": "zodiacs.birth-window-failed-visual-artifact-recovery.v1",
+  "producer": {
+    "source": "5b20e4669df11919723e5c0538e010c4da6b24c9",
+    "run": "38051784598"
+  },
+  "original": {
+    "run": 38051045669,
+    "head": "d2c9b7644e4d0c01c9da98e234ae4e566c9d9c6a",
+    "candidate": "2507b7b22e53f9e466f6aa919db4f6b10a6eaf6c",
+    "attempt": 1,
+    "conclusion": "failure",
+    "artifact": 11669028889,
+    "zipBytes": 15497821,
+    "zipSha256": "43121fe7cb62d83eaddf046fffe90deb2aef375500a1b14a0126a2dc27b2d8d4",
+    "crcVerified": true
+  },
+  "inventory": [
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/README.md",
+      "bytes": 2342,
+      "sha256": "4a9b8bdab5a6e1f35746e1a4fe007623b926ea2d629d0ebbfeeb7e5a27826817"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-1280.png",
+      "bytes": 396447,
+      "sha256": "ed89f330a3c4960e637b872ee27779b6078406e5b03b875724a7f8ba6bbacb65"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-360.png",
+      "bytes": 280059,
+      "sha256": "c2a17338eba0656449f6f88d62f3cf9c91d5d9ed52996b1046a5a9575edd33be"
+    },
+    {
+      "path": "docs/platform/evidence/birth-time-window-ui-20261010/browser-controls.json",
+      "bytes": 79605,
+      "sha256": "d5ca4ca8c8869978b629dd5917e8d6a674ee40c686966a46fda6c45ab05b988b"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-1280.png",
+      "bytes": 419448,
+      "sha256": "39e8dac6e5815c052b3973db7747fed9a4178e7f7075ab3773c0ebfee142db22"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-360.png",
+      "bytes": 305973,
+      "sha256": "0a2532786748b6fc52435e452c047f59fa4af588bc8ee92010047a32945e8297"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-1280.png",
+      "bytes": 450103,
+      "sha256": "8b04fca1aa7edf978bdc919b390bac14d064a9c5c221e4c0d024b2c8cddd8687"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-360.png",
+      "bytes": 391053,
+      "sha256": "2f1b90856c9ba412dbcebe2a5214d97fb4e2e5744f968e04527ce9491ce70b41"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-1280.png",
+      "bytes": 397619,
+      "sha256": "6313926d0e2c2b2143ec481acd449b293a68937071af3b926eea57f522e21dc4"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-360.png",
+      "bytes": 282256,
+      "sha256": "d6434cb4c0ae482aabf05d925a897b1129ad9e91fc6fd9010a9c7dbaef503dc5"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/manifest.json",
+      "bytes": 12353,
+      "sha256": "74a10261e8e72c79e763d1c03d79a8ed49389036287165f75c1eff987ecdc36f"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
+      "bytes": 509517,
+      "sha256": "dfe62a412ecbd6719bdc253c83b35b2d59189b49d37b7d0ddb343f6d8bde2fa3"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-360.png",
+      "bytes": 389777,
+      "sha256": "e99949137ff7e82289a6d77039727b82815b90042937a72228de87d280e63126"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-1280.png",
+      "bytes": 749592,
+      "sha256": "11c4c08e31cc8a94fdc9ec1904e60ee2a0b29c10c565099bb8a1e5d9d9628a6e"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-360.png",
+      "bytes": 605183,
+      "sha256": "ce7d926d31895b85477deebb9253df8f2d93b8ed3edad1a2bf3f86a562103522"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-1280.png",
+      "bytes": 425109,
+      "sha256": "427c3b6b63ffd727a477aeaaa07f6036fc44085a413d5d1c9b8aef0478049238"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-360.png",
+      "bytes": 302261,
+      "sha256": "6d2a2fb22afe49cd03649db186969e97fb92e77c9d98a4def226f07bafc955c3"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-1280.png",
+      "bytes": 495949,
+      "sha256": "e87041e5d45f6de533ce961c99bec27bed3300150f0b468c71ccb327af039e1c"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-360.png",
+      "bytes": 366716,
+      "sha256": "31fa1b834d1de8b55fcbefef57b00591eccdaaae47f56c476aa097cfbc435973"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-360.png",
+      "bytes": 1042500,
+      "sha256": "d00d79b95c4cca72fc8251fabef612acea9fea25e143b5b15c15d10f93626617"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop-reduced-motion.png",
+      "bytes": 1412281,
+      "sha256": "3ebc2a074a8f236a686df5a7a2c419a5af542b0a730a4e8c56911dc57f715d99"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-1280.png",
+      "bytes": 1293613,
+      "sha256": "6540fb4d5b402a0c13e55642f5636b580a501fe888e788acb21ac0aafdc743ca"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop.png",
+      "bytes": 1412532,
+      "sha256": "d5024531de6c1656c5c4c6d3295e43fb704ebd53ff9694b237b2a29cd1c1c383"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-mobile.png",
+      "bytes": 1301992,
+      "sha256": "60ce09ce907cbb50f4630a04a119e1003a268ff5b3e10c1921bdd9a51df33b14"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window/desktop.png",
+      "bytes": 1527663,
+      "sha256": "8470c85ec0c1d82b7fd9a9ad3aee27c87adac9c6be1fbd1f2459f7c15297fa74"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window/mobile.png",
+      "bytes": 1436010,
+      "sha256": "1cf7759c81c3cb8af7c5e593a8b751d0a4e7aae8c6469de554d97b75db0a6265"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window/summary-desktop.png",
+      "bytes": 16723,
+      "sha256": "6a241f6a05cd6dc1d3991590812e5a3debc5e779b1b154c4ab871d6ff0d833a1"
+    },
+    {
+      "path": "tests/visual/artifacts/birth-time-window/summary-mobile.png",
+      "bytes": 17685,
+      "sha256": "025a095f9b5fbeb53dbdb5fb70341f0031ac31e96d6b469625854488eea4aa25"
+    },
+    {
+      "path": "tests/visual/artifacts/visual/birth-chart-kahlo-desktop-reduced-motion.b2-geometry.json",
+      "bytes": 602,
+      "sha256": "3962a16d9a339eb87c70047a0db5c08a93207ebc1f1f5c3dfd9a5f570df955ec"
+    },
+    {
+      "path": "tests/visual/artifacts/visual/birth-chart-kahlo-desktop.b2-geometry.json",
+      "bytes": 602,
+      "sha256": "3962a16d9a339eb87c70047a0db5c08a93207ebc1f1f5c3dfd9a5f570df955ec"
+    },
+    {
+      "path": "tests/visual/artifacts/visual/birth-chart-kahlo-mobile.b2-geometry.json",
+      "bytes": 592,
+      "sha256": "67e547f62bab18e3efb11cb6406e709cd50cb0137af72190256197ef37f1bff0"
+    }
+  ],
+  "geometry": [
+    {
+      "stem": "birth-chart-kahlo-desktop-reduced-motion",
+      "geometry": {
+        "entry": {
+          "top": 1172.515625,
+          "bottom": 1277.703125,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 105.1875
+        },
+        "previous": {
+          "top": 1057.734375,
+          "bottom": 1120.515625,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 62.78125
+        },
+        "next": {
+          "top": 1305.703125,
+          "bottom": 1354.09375,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 48.390625
+        },
+        "text": "If your birth time is approximate, check which parts of the chart could change.Check a time window",
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "oldDimensions": [
+        1440,
+        9712
+      ],
+      "newDimensions": [
+        1440,
+        9845
+      ],
+      "heightDelta": 133,
+      "oldSuffixY": 1173,
+      "newSuffixY": 1306,
+      "previousSha256": "b5b1529881ed2e4572a17b5ca2e51690220ed6a6b626c35c97b48d6c91b34eab",
+      "actualSha256": "3ebc2a074a8f236a686df5a7a2c419a5af542b0a730a4e8c56911dc57f715d99",
+      "derivedComparisons": [
+        {
+          "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-reduced-motion-suffix-0.png",
+          "offset": 0,
+          "height": 1000,
+          "layout": "left original main; right native candidate; aligned by measured total height delta"
+        },
+        {
+          "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-reduced-motion-suffix-7539.png",
+          "offset": 7539,
+          "height": 1000,
+          "layout": "left original main; right native candidate; aligned by measured total height delta"
+        }
+      ]
+    },
+    {
+      "stem": "birth-chart-kahlo-desktop",
+      "geometry": {
+        "entry": {
+          "top": 1172.515625,
+          "bottom": 1277.703125,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 105.1875
+        },
+        "previous": {
+          "top": 1057.734375,
+          "bottom": 1120.515625,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 62.78125
+        },
+        "next": {
+          "top": 1305.703125,
+          "bottom": 1354.09375,
+          "left": 160,
+          "right": 1280,
+          "width": 1120,
+          "height": 48.390625
+        },
+        "text": "If your birth time is approximate, check which parts of the chart could change.Check a time window",
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "oldDimensions": [
+        1440,
+        9712
+      ],
+      "newDimensions": [
+        1440,
+        9845
+      ],
+      "heightDelta": 133,
+      "oldSuffixY": 1173,
+      "newSuffixY": 1306,
+      "previousSha256": "bcfdb8aeea1a1b0a0ac2f15a82cb8ddfb5d0cad44fed41d21ba3db4f4644fa4c",
+      "actualSha256": "d5024531de6c1656c5c4c6d3295e43fb704ebd53ff9694b237b2a29cd1c1c383",
+      "derivedComparisons": [
+        {
+          "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-suffix-0.png",
+          "offset": 0,
+          "height": 1000,
+          "layout": "left original main; right native candidate; aligned by measured total height delta"
+        },
+        {
+          "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-desktop-suffix-7539.png",
+          "offset": 7539,
+          "height": 1000,
+          "layout": "left original main; right native candidate; aligned by measured total height delta"
+        }
+      ]
+    },
+    {
+      "stem": "birth-chart-kahlo-mobile",
+      "geometry": {
+        "entry": {
+          "top": 1189.828125,
+          "bottom": 1320.609375,
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 130.78125
+        },
+        "previous": {
+          "top": 1059.859375,
+          "bottom": 1147.828125,
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 87.96875
+        },
+        "next": {
+          "top": 1338.609375,
+          "bottom": 1431.78125,
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 93.171875
+        },
+        "text": "If your birth time is approximate, check which parts of the chart could change.Check a time window",
+        "viewport": 390,
+        "documentWidth": 390
+      },
+      "oldDimensions": [
+        390,
+        14171
+      ],
+      "newDimensions": [
+        390,
+        14319
+      ],
+      "heightDelta": 148,
+      "oldSuffixY": 1191,
+      "newSuffixY": 1339,
+      "previousSha256": "3b30595ad6827c098da59b519b94092b17ccb9cded12f4ad83fef70d3a4ae76d",
+      "actualSha256": "60ce09ce907cbb50f4630a04a119e1003a268ff5b3e10c1921bdd9a51df33b14",
+      "derivedComparisons": [
+        {
+          "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-mobile-suffix-0.png",
+          "offset": 0,
+          "height": 1000,
+          "layout": "left original main; right native candidate; aligned by measured total height delta"
+        },
+        {
+          "path": "docs/platform/evidence/birth-time-window-ui-20261010/diagnostics/birth-chart-kahlo-mobile-suffix-11980.png",
+          "offset": 11980,
+          "height": 1000,
+          "layout": "left original main; right native candidate; aligned by measured total height delta"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Read-only extraction and diagnostic crops of the original failed run; no build, browser, numerical execution, reference qualification or rerun.",
+    "Derived comparison PNGs are inspection aids; original images retain independent byte identities."
+  ]
+}

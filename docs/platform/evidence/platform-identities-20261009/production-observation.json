@@ -1,0 +1,468 @@
+{
+  "schema": "zodiacs.production-organization-identities.v1",
+  "observedAt": "2026-10-10T11:11:02.580Z",
+  "expectedMergedSource": "41909a8294b29104f8b445f56e0cdd280379bcb9",
+  "producer": {
+    "source": "e5676d2a3c2eea6befc1e1ee50a2a5b2e2f03b2e",
+    "run": "38047469468",
+    "node": "v22.23.3"
+  },
+  "checkerSha256": "4bed7177cdffa26f83a6232f69e12902147da54165bc86075c8d0cae2f75ea38",
+  "observations": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 299522,
+      "sha256": "07ef222d2cd64d804e9ac8e556be91bfa122f273085202231d6196d650d7d8a1",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/es/",
+      "status": 200,
+      "bytes": 148756,
+      "sha256": "e57ab67c976407a7528ec562798d9df311a75deaff1873b34ab324f9512bf2f3",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/pt/",
+      "status": 200,
+      "bytes": 149146,
+      "sha256": "b3d8feb4a4d83a0103355b3e2906bfa0cc4e7b71be2a1200e65de1f5dbe2cac6",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/fr/",
+      "status": 200,
+      "bytes": 152190,
+      "sha256": "ae65b8682c1ca6c57920f1e5306acfc979f2d5258d7ec49098a9e46ab3df659e",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/it/",
+      "status": 200,
+      "bytes": 149432,
+      "sha256": "8cd5051d8c861312469012380fbda2eb440c3d41811aee1698fac380be70bc10",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/ru/",
+      "status": 200,
+      "bytes": 239725,
+      "sha256": "4bd4821c8611b9f8c361880a9c3008b1b9f1360cff941f93e5ae5e221e7c2a83",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/developers/",
+      "status": 200,
+      "bytes": 106063,
+      "sha256": "88e67970d3086a49a9cd8493fcc09c4067049504ec393115771bf95612199804",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/developers/engine/",
+      "status": 200,
+      "bytes": 103992,
+      "sha256": "a0c21406b6fbcc9cee42bf09c8b4c430d83e88fa564b0b13680e77b3b382daba",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/developers/mcp/",
+      "status": 200,
+      "bytes": 107213,
+      "sha256": "495805e4c758f620e04963dee4f070a34854262b8db9a690ca2138fa43ba8033",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/developers/compute/",
+      "status": 200,
+      "bytes": 145311,
+      "sha256": "6ac1264848ad82632a83498bc36e167f8f519115c06b5682504ad0905b4a7126",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/developers/conformance/",
+      "status": 200,
+      "bytes": 102893,
+      "sha256": "d1bb6a8ccc8c4bd3489a30950faf331d4ea5ffa34534c112358bea60cea5bdbe",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/developers/sky-benchmark/",
+      "status": 200,
+      "bytes": 93266,
+      "sha256": "41cc1c534d01fadf5850f908cac9f1cee077601245989ca8d69dd7296d6728f1",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/about/",
+      "status": 200,
+      "bytes": 89582,
+      "sha256": "13b91fbb98cfc9a79d1d238a8cb757e107aa4d5f4e4911512f21ef0f66d3e97b",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/astrofolio/",
+      "status": 200,
+      "bytes": 511440,
+      "sha256": "99b6189024835153104e5587d5008fcb765db9a50b5a25ac6c291977bf4ea629",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/terminal/",
+      "status": 200,
+      "bytes": 473568,
+      "sha256": "1f9a55061d041287ead9ef807249b91083b5de5d46ff413a83f1595892c58f30",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": "https://zodiacs.org/",
+          "sameAs": [
+            "https://github.com/zodiacs-org/engine",
+            "https://www.npmjs.com/package/@zodiacs/engine",
+            "https://pypi.org/project/zodiacs/"
+          ]
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": null,
+          "name": null,
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    },
+    {
+      "path": "/thesis/",
+      "status": 200,
+      "bytes": 335890,
+      "sha256": "a3e4ec098431c53af02faa55bf778e1185e6ea03f2230df0d40e276eeb61575e",
+      "entityReferences": [
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": null,
+          "sameAs": null
+        },
+        {
+          "id": "https://zodiacs.org/#org",
+          "type": "Organization",
+          "name": "Zodiacs.org",
+          "url": null,
+          "sameAs": null
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "passed": true,
+  "failure": null,
+  "limitations": [
+    "Anonymous canonical HTML observations only; deployment source and domain assignment require separate Vercel metadata verification.",
+    "No account authentication, package installation, private clearance or publication claim."
+  ]
+}

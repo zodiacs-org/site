@@ -183,6 +183,11 @@ describe('admin-only daily email bootstrap', () => {
     const emailBody = JSON.parse(String(emailRequest?.[1]?.body));
     expect(emailBody.to).toEqual([ADMIN_EMAIL]);
     expect(emailBody.subject).toBe('Confirm your Zodiacs.org daily forecast');
+    // The ring and the chosen sign's disc ride along as inline attachments.
+    expect([...emailBody.html.matchAll(/<img\b[^>]*\bsrc="([^"]*)"/giu)].map((match) => match[1]))
+      .toEqual(['cid:zodiacs-sign', 'cid:zodiacs-ring']);
+    expect(emailBody.attachments.map((item: { filename: string }) => item.filename))
+      .toEqual(['zodiacs-ring.png', 'libra.png']);
     const confirmationUrl = emailBody.text.match(/https:\/\/zodiacs\.org\/api\/email\/confirm\?token=\S+/u)?.[0];
     expect(confirmationUrl).toBeTruthy();
     const token = new URL(confirmationUrl!).searchParams.get('token') ?? '';

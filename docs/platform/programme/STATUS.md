@@ -1,3 +1,140 @@
+Checkpoint 26, 2026-10-11 (Asia/Bangkok): the birth-time window on the
+full birth-chart calculator (B2.b) is accepted on canonical production of
+merge `7028d01905137b45e835db1dca785cecb672a729`
+([site #703](https://github.com/zodiacs-org/site/pull/703)).
+
+**Overall delivery: 39%** (38.750% to three decimals) — 70.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 3 from checkpoint 25:
+B2.b. All 151 fixed units, weights, scientific tolerances, visual limits and
+performance budgets are unchanged.
+
+The [production record](../evidence/birth-time-window-production-20261011/README.md)
+completes the conditions the PR703 records left open. The reviewed head
+`5a46fb08` passed all twenty Site Check jobs and the numerical gate, and its
+fresh Codex review found nothing. The merge keeps the reviewed tree. The
+post-merge Site Check passed all twenty jobs, among them both birth-window
+drives. Vercel `dpl_6sNuHibXGVrm67tBvp6dJHczAYGX` is READY at the merge and
+served zodiacs.org and www.zodiacs.org. The unchanged browser drive, run
+against https://zodiacs.org, passed all thirteen controls in both viewports
+with no page error. It ran again after another session's #705 moved
+production to `ed1137cb`, this time with the observer failing on any break in
+source binding, and passed; and twice on `368ce361` (#706), first with the
+observer reading the alias's deployment and commit before and after the
+drive, then with it also building the checkout itself, and passed both
+times; and on `58362fb1`, the 2026-10-11 daily edition, with observer v5,
+every check of which passed, and a flag-chunk analysis that builds the
+observed commit itself. Every run's record also meets the two checks the
+observer gained afterwards: every response 200, and a page graph that holds
+every import of its chunks. One
+attempt on `368ce361` stopped on a network reset in the observer's own crawl
+after the drive had passed; it is retained. The worker production served is byte-identical to
+local builds of every observed commit; of the 190 files the page reaches, 182 are
+identical to the build with the flags unset, and production's own flags and
+public keys account for the other eight.
+
+The interface shows one line ("Rising sign depends on the birth time: Cancer
+or Leo or Virgo.") with the intervals, switch times, houses and aspects on
+request, labelled sampled at one-second resolution. F-81 records two copy
+faults in it: the sampling sentence starts in lower case, and the times read
+GMT+0 under a note that says UTC. No value or gate depends on them.
+
+No accuracy run, tolerance change, package publication, hosting or security
+change, or private search happened here.
+
+The owner approved cutting and publishing engine 1.0.0 under npm's `latest`
+once every gate, review and private search passes, the use of the private
+scanner for the release's searches, and the release toolchain
+([DECISIONS-2026-10-11](DECISIONS-2026-10-11.md);
+[engine #32](https://github.com/zodiacs-org/engine/issues/32)). Cutting it
+found F-82: on arm64 some values differ from x86-64's in their last bits, so
+four of the engine's exact regression pins fail there; the pins and
+generated files stay x86-64's, as CI runs.
+
+Checkpoint 25, 2026-10-10 (Asia/Bangkok): merged and deployed checkpoint
+23/24 records qualified on exact main `41909a8294b29104f8b445f56e0cdd280379bcb9`
+([site #697](https://github.com/zodiacs-org/site/pull/697)).
+
+**Overall delivery: 37%** (37.106% to three decimals) — 67.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. The increase from the
+previous qualified checkpoint is 3.7: Koch 0.2, co-ascendants 0.25, B4.a 3
+and S7 0.25. All 151 fixed units, weights, scientific tolerances, visual
+limits and performance budgets are unchanged.
+
+[Exact-source qualification](../evidence/checkpoint25-20261010/README.md)
+binds the tested head, merge tree and ordered parents to all twenty final
+Site Check jobs, the numerical gate, clean fresh review, all twenty
+post-merge jobs and canonical production. The original post-merge journal
+records no runner stall or retaken sample. The ninety raw Lighthouse
+observations were recovered from the original ZIP after verifying its
+digest and CRC; they were not replaced by another run's observations.
+Production verification joins the READY deployment on the exact merge
+source to sixteen anonymous identity checks and eleven source/asset checks.
+
+The owner's specific delegation ratifies shared-UT1 Koch comparisons and
+co-ascendants judged over 1850–2049; original failures and post-result
+selection history remain visible. B4.a publishes tool replies as raw answers.
+Private assistant answers and B4.b remain unfinished. S7 connects existing
+engine/npm/PyPI identities; it does not invent a Registry entry or publish
+the private packages.
+
+The birth-time-window UI is private preparation. Corrected source
+`053803288412670635424cd1d78379dcec48110a` passes
+[focused native qualification](../evidence/birth-time-window-ui-20261010/README.md):
+real mobile/desktop worker controls, original build/type/bundle gates,
+fifteen full-image comparisons, three cold birth-chart Lighthouse samples
+and eighteen fresh captures. Its original visual failure and source
+correction remain retained; no sample was retaken. The original passed
+artifact's SHA-256/CRC and retained image/report identities are verified,
+and actual summary/detail images were inspected. B2.b stays partial and
+unmerged until complete final CI, fresh review, merge/post-merge and
+production checks finish; it adds no accepted weight. The existing
+B2.a/B2.c thousand-window records are not a new accuracy run.
+
+
+PR [#703](https://github.com/zodiacs-org/site/pull/703) is still open. Final Site Check `38056575059` has nineteen passing jobs and a main-check failure for an unlisted clock sentence. Review finds a worker engine-boundary violation and unsupported reference-span presets. The first corrective source `6f1c5c5` fails native `38058351414` on the unchanged engine budget and overbroad new guards. Both exact failure logs and their corrective source choices are retained; the earlier focused pass is not final acceptance. Corrective source `a9034bd` passes 47 source controls but fails native `38058924638` on a 33.3 KB main engine closure. Its exact log and compiled diagnostics remain retained. Static full-boundary and loader projection runs retain 40.4 KB closure failures. The missing-rg inventory failure is corrected with git grep. Worker-flag source `377e876` passes the original build/schema/bundle/isolation gates at 32.5 KB/32.598046875 KB main and 40367 gzip bytes/60 KB worker, then fails a narrowed-loader type contract. Corrective source `f55bb57` restores the original shared loader. Native `38061060350` passes build/type/bundle gates and 6988 unit tests, but correctly rejects the stale screenshot source fingerprint. Its original failure log and unique diagnostic remain retained. Producer `0f29c65` generates actual fresh eighteen-capture evidence before the complete unchanged unit suite in native `38061973592`, which passes build/type/bundles but fails selected-place browser setup. Corrective harness `08d3eb7` uses the existing place-change action; native `38062463718` then fails a boundary option assertion. Diagnostic `38063073561` records Auckland UTC `1800-01-01T00:20:58Z` and properly disabled 30/60/120-minute DOM options while the automation predicate returns false. Source `a8b58d8` measures the native option properties with the same expected presets in `38063604884`, now passed. Exact failure logs and uniquely named compiled diagnostics remain retained. All final CI, clean review, merge/post-merge and canonical production gates remain required; B2.b remains partial.
+
+Corrected native source `a8b58d8` passes run `38063604884`: 6989 unit tests with six existing skips, thirteen real controls in each mobile/desktop viewport, all fifteen original comparisons, three original cold samples and eighteen fresh captures. The original journal records no stall or retake. Seventeen captures match main; actual changed `love-360.png` and manifest are retained. Recovery `38064541802` verifies original ZIP SHA-256/CRC and file hashes. Actual current summary/detail and difference crops were inspected. PR703 remains unmerged pending final CI, fresh clean review, merge/post-merge and canonical production. Accepted weight remains 67.7/182.45.
+
+
+Fresh review on carrier `814727d` completes with development-worker P2 `4238230846`; it is not clean. Isolated source `018c319` registers the full boundary in the serve-only pipeline and adds actual development controls with the original expectations. Native syntax preflight `38068028005` passes the three exact corrected entry files on Node 22.23.3, without executing imports or a model. Actual corrected development/production qualification, final CI/review and deployed checks remain pending. The old-head numerical gate passes and the old full suite has nineteen jobs passed with performance still underway; neither establishes acceptance of the new source.
+
+Corrected source `018c319` now passes native `38068373681`: actual development and production-preview controls in both viewports, original visual/performance limits, eighteen fresh captures and 6989 complete unit passes/six existing skips. Original journal records no stall or retake. All eighteen PNGs match main; current Love PNG and fresh template manifest are restored. Recovery `38069101345` verifies original ZIP SHA-256/CRC and exact three raw LHR/report/image bytes. Current summary/detail crops match the exact images already inspected. Current qualification has its own `native-018c319/` folder, preserving history. Corrected final carrier CI, clean review, merge/post-merge and canonical production remain pending; accepted weight remains 67.7/182.45.
+
+
+The private solar scanner is merged under [engine #38](https://github.com/zodiacs-org/engine/pull/38)
+at `9a6317ac1f6516fbf518079c266453995d8f9341`, with the exact tested tree
+and ordered parents verified. [Source-bound qualification](../evidence/solar-terms-20261010/README.md)
+records all six final PR workflows, all nine core CI jobs, seventeen native
+source controls on Node 22/24, clean fresh review and all seven post-merge
+workflows including Scorecard. Original identity and getter-accounting
+review findings remain visible with their corrections. Actual ephemeris
+execution, normative clock/frame equivalence, independent two-second
+accuracy, completeness and public delivery remain unfinished; no solar
+unit is accepted.
+
+The [public adoption observation](../evidence/public-adoption-baseline-20261010/README.md)
+records dated public downloads, repository metadata and the named Registry
+query with provider methods. Unavailable MCP package download statistics,
+incomplete dependents/citation discovery and private analytics remain gaps;
+P0.7a is partial and unaccepted. The [FAQ source-purpose review](../evidence/faq-source-purpose-20261010/README.md)
+and native audit now verify ninety-six source records, eighty-eight
+declarations, five homepage consumers and their non-rendered test. This
+advances the locator. Native read-only proposal `38058696799` verifies 94 source hashes, valid proposed syntax, 88 in-memory node removals, six retired helper consumers and unchanged visible template bodies. Forty-six proposed paths are protected. Read-only purpose proposal `38062190013` verifies exact validator source, syntax and seven controls without applying it. Application files and validator remain unchanged; actual correction is still required. Actual markup corrections, compiled-route coverage
+and rendered equivalence/visibility remain open, with S2 partial. Existing
+protected-path freezes remain in force.
+[A6's static API source-lineage review](../evidence/sky-api-citation-lineage-20261010/README.md)
+shows that the API repackages historical components without cite fields;
+a retrograde-only revision left moon records and the file timestamp
+unchanged. It establishes no accuracy failure and does not authorize
+stamping the current engine version onto every legacy value. A6 remains
+partial pending actual producer records and complete response coverage.
+
+Stable publication prerequisites remain in
+[engine #32](https://github.com/zodiacs-org/engine/issues/32). Guide routes
+remain closed and unpublished. No new private clearance, package publication,
+hosting/security change or outreach is claimed. Earlier checkpoint proposals
+and original failed verdicts remain below.
+
 Checkpoint 24 proposal, 2026-10-09 (Asia/Bangkok): existing engine,
 npm and PyPI identities in the shared consumer Organization.
 

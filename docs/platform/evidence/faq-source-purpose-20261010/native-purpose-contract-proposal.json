@@ -1,0 +1,79 @@
+{
+  "schema": "zodiacs.faq-page-purpose-proposal.v1",
+  "auditedSource": "51b2c0d3bafe8b23d0a7f54433cd0c89c9435818",
+  "producer": {
+    "source": "f2ac8743c530c5d2dca4bff837114233c6c28172",
+    "run": "38062190013",
+    "node": "v22.23.3"
+  },
+  "validator": {
+    "path": "scripts/validate-schema.mjs",
+    "beforeSha256": "bb71bc67e44ad084a3975c550185c91706b4fbf90044b1f17d1ce133f9214d86",
+    "afterSha256": "fc216aa4b6416b8c4719228fe63003fb8c7bf2dad4f505d009458c77b1447857",
+    "syntaxPassed": true
+  },
+  "proposedModule": {
+    "path": "scripts/faq-page-purpose.mjs",
+    "sha256": "2d0e9d144711a000e4a6d5c26205a0624a154539509ce3d73b1a355d7911c2c0",
+    "syntaxPassed": true
+  },
+  "controls": [
+    {
+      "name": "tool page with ordinary application metadata",
+      "route": "/birth-chart/",
+      "expectedFailures": 0,
+      "actualFailures": 0,
+      "passed": true
+    },
+    {
+      "name": "secondary FAQ on tool",
+      "route": "/birth-chart/",
+      "expectedFailures": 1,
+      "actualFailures": 1,
+      "passed": true
+    },
+    {
+      "name": "homepage FAQ with visible section",
+      "route": "/",
+      "expectedFailures": 1,
+      "actualFailures": 1,
+      "passed": true
+    },
+    {
+      "name": "Article FAQ under graph",
+      "route": "/horoscopes/aries/",
+      "expectedFailures": 1,
+      "actualFailures": 1,
+      "passed": true
+    },
+    {
+      "name": "FAQ type in mixed type array",
+      "route": "/es/",
+      "expectedFailures": 1,
+      "actualFailures": 1,
+      "passed": true
+    },
+    {
+      "name": "nested entity FAQ",
+      "route": "/learn/",
+      "expectedFailures": 1,
+      "actualFailures": 1,
+      "passed": true
+    },
+    {
+      "name": "normal article and breadcrumb preserved",
+      "route": "/learn/zodiac-dates/",
+      "expectedFailures": 0,
+      "actualFailures": 0,
+      "passed": true
+    }
+  ],
+  "applicationWorktreeUnchanged": true,
+  "limitations": [
+    "No application source or validator target has been written or committed.",
+    "No primary FAQ routes were identified by source-purpose review; adding any future FAQPage needs a new page-purpose review and visible-question validation.",
+    "Validator proposal checks indexable production HTML; an independent exhaustive rendered-route audit must also cover noindex files and preserve visible content.",
+    "Protected source edits remain held. No scope allowance or S2 acceptance."
+  ],
+  "acceptedWeightChange": 0
+}

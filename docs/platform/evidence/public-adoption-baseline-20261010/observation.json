@@ -1,0 +1,154 @@
+{
+  "schema": "zodiacs.public-adoption-baseline-observation.v1",
+  "producer": {
+    "source": "042e420925d91ecb6b41ba4120bfdb6c04e2aa49",
+    "run": "38049209045",
+    "python": "3.12.3"
+  },
+  "observations": [
+    {
+      "name": "npm-engine-week",
+      "url": "https://api.npmjs.org/downloads/point/last-week/%40zodiacs%2Fengine",
+      "finalUrl": "https://api.npmjs.org/downloads/point/last-week/%40zodiacs%2Fengine",
+      "observedAt": "2026-10-10T11:40:04.165992+00:00",
+      "httpStatus": 200,
+      "bytes": 85,
+      "sha256": "452c65f9f7f781e77ebcdcb6c9b24945c9e7a577741d41dbf51e2b961e435ad7",
+      "contentType": "application/json; charset=utf-8",
+      "authenticatedGitHubMetadata": false,
+      "measurement": {
+        "downloads": 139,
+        "periodStart": "2026-10-02",
+        "periodEnd": "2026-10-08",
+        "package": "@zodiacs/engine",
+        "method": "npm downloads point API last-week; downloads, not unique people or external adopters"
+      },
+      "rawPath": "docs/platform/evidence/public-adoption-baseline-20261010/npm-engine-week.json"
+    },
+    {
+      "name": "npm-mcp-week",
+      "url": "https://api.npmjs.org/downloads/point/last-week/%40zodiacs%2Fmcp-server",
+      "finalUrl": "https://api.npmjs.org/downloads/point/last-week/%40zodiacs%2Fmcp-server",
+      "observedAt": "2026-10-10T11:40:04.166875+00:00",
+      "httpStatus": 404,
+      "bytes": 49,
+      "sha256": "c628cacdcbbc5309c820b42ba1d78f2f814e405273731c535e380b099e1d11da",
+      "contentType": "application/json; charset=utf-8",
+      "authenticatedGitHubMetadata": false,
+      "measurement": {
+        "status": "unavailable",
+        "method": "Non-200 response is retained; no zero inferred"
+      },
+      "rawPath": "docs/platform/evidence/public-adoption-baseline-20261010/npm-mcp-week.json"
+    },
+    {
+      "name": "pypistats-python-recent",
+      "url": "https://pypistats.org/api/packages/zodiacs/recent",
+      "finalUrl": "https://pypistats.org/api/packages/zodiacs/recent",
+      "observedAt": "2026-10-10T11:40:04.167398+00:00",
+      "httpStatus": 200,
+      "bytes": 102,
+      "sha256": "c729cc324deb91424b63108a62a80a5e1052fe1e991a104367f64ff917a2d406",
+      "contentType": "application/json",
+      "authenticatedGitHubMetadata": false,
+      "measurement": {
+        "provider": "pypistats.org (third-party PyPI statistics)",
+        "data": {
+          "last_day": 0,
+          "last_month": 128,
+          "last_week": 11
+        },
+        "type": "recent_downloads",
+        "package": "zodiacs",
+        "method": "PyPIStats recent API; provider-defined last-day/week/month windows; not unique users"
+      },
+      "rawPath": "docs/platform/evidence/public-adoption-baseline-20261010/pypistats-python-recent.json"
+    },
+    {
+      "name": "github-engine",
+      "url": "https://api.github.com/repos/zodiacs-org/engine",
+      "finalUrl": "https://api.github.com/repos/zodiacs-org/engine",
+      "observedAt": "2026-10-10T11:40:04.167957+00:00",
+      "httpStatus": 200,
+      "bytes": 5525,
+      "sha256": "0d127f68b76e596755ad5d341cd0fbe59ddb0714d5215cba9d4696347a772c2a",
+      "contentType": "application/json; charset=utf-8",
+      "authenticatedGitHubMetadata": true,
+      "measurement": {
+        "repository": "zodiacs-org/engine",
+        "stars": 0,
+        "forks": 0,
+        "subscribers": 0,
+        "defaultBranch": "main",
+        "method": "Authenticated GitHub REST observation of public repository metadata; no code checkout"
+      },
+      "rawPath": "docs/platform/evidence/public-adoption-baseline-20261010/github-engine.json"
+    },
+    {
+      "name": "github-site",
+      "url": "https://api.github.com/repos/zodiacs-org/site",
+      "finalUrl": "https://api.github.com/repos/zodiacs-org/site",
+      "observedAt": "2026-10-10T11:40:04.487306+00:00",
+      "httpStatus": 200,
+      "bytes": 5271,
+      "sha256": "d9b283e40d6644dce03385c8be95f3776972f9af014750978e33e2dd73f5f08e",
+      "contentType": "application/json; charset=utf-8",
+      "authenticatedGitHubMetadata": true,
+      "measurement": {
+        "repository": "zodiacs-org/site",
+        "stars": 0,
+        "forks": 1,
+        "subscribers": 0,
+        "defaultBranch": "main",
+        "method": "Authenticated GitHub REST observation of public repository metadata; no code checkout"
+      },
+      "rawPath": "docs/platform/evidence/public-adoption-baseline-20261010/github-site.json"
+    },
+    {
+      "name": "github-engine-dependents",
+      "url": "https://github.com/zodiacs-org/engine/network/dependents",
+      "finalUrl": "https://github.com/zodiacs-org/engine/network/dependents",
+      "observedAt": "2026-10-10T11:40:04.601642+00:00",
+      "httpStatus": 200,
+      "bytes": 179361,
+      "sha256": "edb8ad11809684643b26894094ae0ff85f7834bef75539c86beb9583a4ed277d",
+      "contentType": "text/html; charset=utf-8",
+      "authenticatedGitHubMetadata": false,
+      "measurement": {
+        "status": "unparsed",
+        "method": "Anonymous GitHub public dependents HTML retained for review; no count inferred from missing elements",
+        "candidateCountStrings": []
+      },
+      "rawPath": "docs/platform/evidence/public-adoption-baseline-20261010/github-engine-dependents.html"
+    },
+    {
+      "name": "mcp-registry-search",
+      "url": "https://registry.modelcontextprotocol.io/v0.1/servers?search=zodiacs&limit=100&version=latest",
+      "finalUrl": "https://registry.modelcontextprotocol.io/v0.1/servers?search=zodiacs&limit=100&version=latest",
+      "observedAt": "2026-10-10T11:40:04.667506+00:00",
+      "httpStatus": 200,
+      "bytes": 38,
+      "sha256": "bd77acb780201187e66256677f13e4145d6839a056c477181355b19589b40f23",
+      "contentType": "application/json",
+      "authenticatedGitHubMetadata": false,
+      "measurement": {
+        "status": "requires-review",
+        "serversReturned": 0,
+        "metadata": {
+          "count": 0
+        },
+        "method": "Official metadata registry search for zodiacs; listings are not installs or sessions"
+      },
+      "rawPath": "docs/platform/evidence/public-adoption-baseline-20261010/mcp-registry-search.json"
+    }
+  ],
+  "coverage": "partial",
+  "limitations": [
+    "Read-only public network observations with exact raw response identities; no build, browser, publication, private account or engine execution.",
+    "Unknown, blocked, unparsed and non-200 values are not zero.",
+    "Registry searches need pagination and identity review; dependent counts need HTML review; citing-domain discovery needs separate checked sources.",
+    "Registry downloads include CI and repeat downloads and are not unique external adoption. PyPIStats is a third-party provider.",
+    "Remote MCP sessions and hosted API caller counts need owner-controlled telemetry; no such private data was accessed.",
+    "P0.7a is not accepted by this collection alone."
+  ]
+}

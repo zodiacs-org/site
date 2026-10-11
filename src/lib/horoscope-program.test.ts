@@ -131,8 +131,10 @@ describe('horoscope program domain', () => {
 
   it('re-frames only the later sign when two tomorrow readings would exceed the distinctness limit', () => {
     // The sky of 2026-10-09: Mars in Leo (Gemini) and retrograde Venus in
-    // Scorpio (Virgo) both fall in the third solar house on a quiet New Moon
-    // day. With the shared sentence frames the pair measured 0.402 against 0.4.
+    // Scorpio (Virgo) both fall in the third solar house on a quiet day. With
+    // the shared sentence frames the pair measured 0.402 against 0.4. The
+    // waxing crescent keeps the phase three words long, as "new moon Moon" was
+    // before the phase label stopped doubling the noun.
     const collision = clone(input);
     const tomorrow = collision.dailySnapshots.find(({ date }) => date === '2026-07-20')!;
     const place = (name: string, sign: string, retrograde: boolean) => {
@@ -146,7 +148,7 @@ describe('horoscope program domain', () => {
     place('Venus', 'scorpio', true);
     place('Mars', 'leo', false);
     place('Saturn', 'aries', true);
-    tomorrow.moon.phase = 'New Moon';
+    tomorrow.moon.phase = 'Waxing Crescent';
     tomorrow.events = [];
 
     const program = buildHoroscopeProgram(collision);
@@ -157,7 +159,7 @@ describe('horoscope program domain', () => {
     // Only the frames change: the house advice and the cited facts stay.
     expect(reading('virgo').text).toContain('Name who needs the message, what they need to know, and when they need it.');
     expect(reading('virgo').text).toContain('Venus retrograde in Scorpio adds messages, errands, siblings, and your local community');
-    expect(reading('virgo').text).toContain('the new moon brings your money, possessions, and priorities');
+    expect(reading('virgo').text).toContain('the waxing crescent Moon brings your money, possessions, and priorities');
     const cited = new Set(reading('virgo').passages.flatMap((item) => item.evidenceRefs));
     expect(program.evidence
       .filter((receipt) => cited.has(receipt.id))
@@ -179,6 +181,39 @@ describe('horoscope program domain', () => {
     expect(verifyHoroscopeProgramCopy(program).filter(({ path }) => (
       /\.readings\.(?:today|tomorrow)(?:\.|$)/u.test(path)
     ))).toEqual([]);
+  });
+
+  it('starts every sentence with a capital and never writes "moon Moon"', () => {
+    const newMoonDay = clone(input);
+    for (const snapshot of newMoonDay.dailySnapshots) snapshot.moon.phase = 'New Moon';
+    for (const program of [buildHoroscopeProgram(input), buildHoroscopeProgram(newMoonDay)]) {
+      for (const entry of program.signs) {
+        for (const reading of Object.values(entry.readings)) {
+          for (const { text } of reading.passages) {
+            expect(text).not.toMatch(/\bmoon Moon\b/iu);
+            expect(text).not.toMatch(/^[a-z]|[.!?]\s+[a-z]/u);
+          }
+        }
+      }
+    }
+  });
+
+  it('never repeats a passage\'s opening verb in its follow-up clause', () => {
+    const newMoonDay = clone(input);
+    for (const snapshot of newMoonDay.dailySnapshots) snapshot.moon.phase = 'New Moon';
+    for (const program of [buildHoroscopeProgram(input), buildHoroscopeProgram(newMoonDay)]) {
+      for (const entry of program.signs) {
+        for (const reading of Object.values(entry.readings)) {
+          for (const { text } of reading.passages) {
+            for (const sentence of text.split(/(?<=[.!?])\s+/u)) {
+              const opening = sentence.match(/^([A-Za-z]+)/u)?.[1]?.toLowerCase();
+              const followUps = [...sentence.matchAll(/(?:;|, then)\s+([a-z]+)/gu)].map((match) => match[1]);
+              if (opening) expect(followUps, sentence).not.toContain(opening);
+            }
+          }
+        }
+      }
+    }
   });
 
   it('links every publishable passage to serializable source or derived evidence', () => {

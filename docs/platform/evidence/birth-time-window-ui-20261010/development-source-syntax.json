@@ -1,0 +1,34 @@
+{
+  "schema": "zodiacs.birth-window-development-source-syntax.v1",
+  "source": "018c3190649cb19e1f478459958b6ac8809d0464",
+  "node": "v22.23.3",
+  "producer": {
+    "commit": "f8655525597f669ffd5765dc71c1fcca301f6dd5",
+    "run": "38068028005"
+  },
+  "records": [
+    {
+      "path": "astro.config.mjs",
+      "bytes": 2776,
+      "sha256": "9e82ef6b98ca5f397a5d090fc2bcfc2c29438ade41b35678575d09d0b58bf593",
+      "nativeSyntaxPassed": true
+    },
+    {
+      "path": "tests/birth-time-window-drive.mjs",
+      "bytes": 15861,
+      "sha256": "ce2770e3d912fd0ebee72980ec4aca952362cf2ebcc588d1c3e7ad31bcb30fd6",
+      "nativeSyntaxPassed": true
+    },
+    {
+      "path": "tests/birth-time-window-development-drive.mjs",
+      "bytes": 1977,
+      "sha256": "43a38843defe1ae26a82dc75b0576636338100fef6bcc10a0c363f81808f49fd",
+      "nativeSyntaxPassed": true
+    }
+  ],
+  "passed": true,
+  "limitations": [
+    "Syntax only; imports are not loaded and no module, ephemeris, browser or build is executed.",
+    "Development/production browser behavior, original budgets and complete acceptance gates remain pending."
+  ]
+}
