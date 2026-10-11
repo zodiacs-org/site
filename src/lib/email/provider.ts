@@ -20,6 +20,7 @@ import { serverUiMessage } from '../i18n/ui/server.js';
 import { signBySlug } from '../signs.js';
 import { createRateLimitedResendRequest } from '../daily-email/resend-request.js';
 import { renderEmailHtml, type EmailDocument } from './template.js';
+import { RING_PNG_BASE64, SIGN_PNG_BASE64 } from './inline-images.js';
 
 type Environment = Record<string, unknown>;
 type Fetch = typeof fetch;
@@ -111,12 +112,19 @@ class ResendAdapter implements EmailSubscriptionAdapter {
       ? 'Confirm your Zodiacs.org daily forecast'
       : serverUiMessage(this.locale, 'emailConfirmSubject');
 
-    // `sign` is deliberately omitted: the header disc is a remote image, and
-    // this message stays free of remote resources.
+    // The ring and the sign disc travel inside the message as inline
+    // attachments (cid:), so the confirmation still loads nothing remote.
+    const discSign = sign && SIGN_PNG_BASE64[sign] ? sign : undefined;
+    const attachments = [
+      { filename: 'zodiacs-ring.png', content: RING_PNG_BASE64, content_id: 'zodiacs-ring' },
+      ...(discSign ? [{ filename: `${discSign}.png`, content: SIGN_PNG_BASE64[discSign], content_id: 'zodiacs-sign' }] : []),
+    ];
+    const images = { ring: 'cid:zodiacs-ring', ...(discSign ? { sign: 'cid:zodiacs-sign' } : {}) };
     const document: EmailDocument = daily
       ? {
         preheader: 'One tap to confirm your daily forecast.',
         eyebrow: 'Confirm your subscription',
+        ...(discSign ? { sign: discSign } : {}),
         title: subject,
         identity: `Daily · ${signBySlug(sign!).name}`,
         intro: `Confirm that you want the free Zodiacs.org daily forecast for ${signBySlug(sign!).name}.`,
@@ -131,6 +139,7 @@ class ResendAdapter implements EmailSubscriptionAdapter {
       : {
         preheader: serverUiMessage(this.locale, 'emailConfirmMessage'),
         eyebrow: 'Zodiacs.org',
+        ...(discSign ? { sign: discSign } : {}),
         title: subject,
         intro: serverUiMessage(this.locale, 'emailConfirmMessage'),
         sections: [{ paragraphs: [serverUiMessage(this.locale, 'emailConfirmIgnore')] }],
@@ -154,7 +163,8 @@ class ResendAdapter implements EmailSubscriptionAdapter {
           to: [email],
           subject,
           text: body,
-          html: renderEmailHtml(document, baseUrl(this.env)),
+          html: renderEmailHtml(document, baseUrl(this.env), images),
+          attachments,
         }),
       });
       if (!response.ok) throw providerError(this.provider, response.status);

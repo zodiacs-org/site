@@ -53,6 +53,9 @@ const NON_SURFACE_SOURCE = Object.freeze([
   /(?:^|\/)[^/]+\.(?:spec|test)\.[^.]+$/u,
   /^api\/_assistant\/persona\.ts$/u,
   /^src\/lib\/guide-server\/safety\.ts$/u,
+  // Generated base64 PNGs (scripts/build-email-inline-images.mjs): image
+  // bytes, not copy, whose letter runs can spell anything.
+  /^src\/lib\/email\/inline-images\.ts$/u,
 ]);
 
 const VOCABULARY = Object.freeze([

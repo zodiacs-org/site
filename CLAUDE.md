@@ -113,6 +113,10 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   and are not byte-stable across platforms — same rule as the cabinet
   materials.
 - `public/assets/app.js` ← `node scripts/build-app.mjs` (source `src/app.jsx`)
+- `src/lib/email/inline-images.ts` ← `node scripts/build-email-inline-images.mjs`
+  (the brand ring and the twelve 128px sign discs as base64, attached inline
+  by cid: to the confirmation email so it still loads nothing remote;
+  `--check` and `scripts/build-email-inline-images.test.mjs` catch drift)
 - `public/registry/index.html` Aura marker region (meta flag + no-JS entry
   between the `registry-aura-entry` comments) ← stamped by
   `scripts/configure-registry-aura.mjs` (predev/prebuild) and
