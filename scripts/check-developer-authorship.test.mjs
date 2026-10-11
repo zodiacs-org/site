@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { checkDeveloperAuthorship, requiredDocuments } from './check-developer-authorship.mjs';
+import { checkDeveloperAuthorship, generatedDeveloperDocuments, requiredDocuments } from './check-developer-authorship.mjs';
 
 let root;
 async function put(path, text) {
@@ -33,11 +33,25 @@ describe('served developer documentation authorship', () => {
   it('requires every current Astro developer page in the output inventory', async () => {
     const pages = await readdir('src/pages/developers', { recursive: true });
     for (const page of pages.filter((path) => path.endsWith('.astro'))) {
-      expect(requiredDocuments).toContain(`developers/${page.replace(/\.astro$/, '.html')}`);
+      const outputs = generatedDeveloperDocuments[page]
+        ?? [`developers/${page.replace(/\.astro$/, '.html')}`];
+      for (const output of outputs) expect(requiredDocuments).toContain(output);
+    }
+  });
+
+  it('requires the generated HTML and Markdown outputs for their real route sources', async () => {
+    const pages = await readdir('src/pages/developers', { recursive: true });
+    for (const [source, outputs] of Object.entries(generatedDeveloperDocuments)) {
+      expect(pages).toContain(source);
+      for (const output of outputs) {
+        expect(output).not.toContain('[');
+        expect(requiredDocuments).toContain(output);
+      }
     }
   });
 
   const surfaces = [
+    'developers/docs/natal/index.html', 'developers/docs/natal.md',
     'developers/engine/reference/functions/calc.calc.html',
     'developers/engine/reference/release/NOTICE.txt',
     'developers/engine/index.html', 'developers/new/deep/topic/index.html',
