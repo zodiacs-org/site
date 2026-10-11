@@ -132,9 +132,9 @@ On macOS arm64:
   The engine closure is 32.4 KB of the unchanged 32.6 KB allowance.
 - `npm run check`: 0 errors, 0 warnings, 40 hints.
 - `npm test`: 6,999 passed, 5 existing skips, 3 failed, across 545 files.
-  The three failures are the two items below that are not yet established:
-  - the two checks in `scripts/methodology-accuracy-claim.test.mjs` that
-    require the accuracy runs to name the installed engine;
+  The three failures were:
+  - the two checks in `scripts/methodology-accuracy-claim.test.mjs`, which
+    pass since the accuracy refresh below;
   - `scripts/phase1-acceptance-evidence.test.mjs`, which requires captures of
     the current source.
 
@@ -161,15 +161,29 @@ and its tree, with both pattern sets
 
 Inputs and raw outputs stay outside every repository.
 
-## Not established here
+## Accuracy refresh
 
-- **Accuracy refresh.** It has not run on 1.0.0.
-  `scripts/methodology-accuracy-claim.test.mjs` requires the Swiss statistics
-  runs to name the installed engine. Those runs need the Swiss Ephemeris files
-  `sepl_18.se1` and `semo_18.se1` (hash-pinned in
-  `../site-engine-1-0-0-rc2/tools/refresh-accuracy.sh`) and pyswisseph
-  2.10.3.2. Neither is on this machine; earlier runs kept them outside every
-  repository.
+The two Swiss statistics runs the methodology page binds to were made again,
+on 1.0.0, with `tools/refresh-accuracy.sh` (rc.2's, writing to
+`accuracy-refresh/`). The inputs were:
+
+- Node 22.22.2;
+- pyswisseph 2.10.3.2 (Swiss 2.10.03);
+- `sepl_18.se1` and `semo_18.se1`, downloaded with the owner's approval
+  (DECISIONS-2026-10-11 §4) and matched to their pinned SHA-256.
+
+The data files and the per-instant dumps stay outside every repository. The
+Swiss library cannot open a path of more than 255 characters, so the files
+sat at a short path outside the repositories.
+
+[deltat-gap-2100-2199.json](accuracy-refresh/deltat-gap-2100-2199.json) and
+[multiyear-1800-2199.json](accuracy-refresh/multiyear-1800-2199.json) equal
+rc.2's in every statistic. They differ only in `engine` and in the digest of
+the engine-side dump, whose header names the engine. The test, the
+methodology claims `acc.deltat` and `acc.swiss-multiyear`, and their binds
+now read these reports; the bound values are unchanged.
+
+## Not established here
 - **Phase 1 captures.** The lockfile is part of the capture digest, so the 18
   captures must be taken again. CI's Browser Evidence workflow takes them.
 - **CI.** The full x86-64 check has not run yet.
