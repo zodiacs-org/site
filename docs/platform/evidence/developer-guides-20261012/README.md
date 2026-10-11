@@ -172,7 +172,9 @@ failed the check it targets and no other:
 
 No whole page is the build's bytes (`wholePageIdentical` is false for each),
 because of those insertions. Main's post-merge Site Check is recorded in
-STATUS.md.
+STATUS.md. The private birth-data search over this record's commits found no
+birth-data line ([production/history-check.txt](production/history-check.txt),
+counts only).
 
 ## The llms files' developer section
 
