@@ -183,9 +183,22 @@ the engine-side dump, whose header names the engine. The test, the
 methodology claims `acc.deltat` and `acc.swiss-multiyear`, and their binds
 now read these reports; the bound values are unchanged.
 
+## Phase 1 captures
+
+The lockfile and `src/lib/**` are part of the Phase 1 capture digest, so the
+18 captures were taken again by CI.
+
+- **Run.** Browser Evidence run 38152080088 on head `f4bb98d4`, artifact
+  `browser-evidence-compare-f4bb98d4…-38152080088`.
+- **Browser.** Chromium 149.0.7827.55, at 2026-10-11T15:42:06Z, for the
+  2026-10-11 edition.
+- **Digest.** The captures are bound to template source digest `184e452f…`, the
+  same digest the local build's receipt records.
+- **Same run.** The 390 and 1440 px visual baselines matched, and Lighthouse
+  and the explorer drive passed.
+- **Committed.** The 18 PNGs and `manifest.json`, as the artifact holds them.
+
 ## Not established here
-- **Phase 1 captures.** The lockfile is part of the capture digest, so the 18
-  captures must be taken again. CI's Browser Evidence workflow takes them.
 - **CI.** The full x86-64 check has not run yet.
 - **Deployment.** Nothing is deployed, and no programme unit is accepted here.
 - **Publication and hosting.** The MCP adapter and the plugin are not
