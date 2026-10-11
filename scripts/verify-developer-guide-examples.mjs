@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { execFile, spawnSync } from 'node:child_process';
+import { promisify } from 'node:util';
 import { createHash } from 'node:crypto';
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -115,6 +116,72 @@ try {
     if (browser) await browser.close();
     await new Promise((resolveClose) => server.close(resolveClose));
   }
+  // The hosted elections recipe: the guide's own snippet, run in Node with fetch pointed at a local fixture
+  // of the committed contract. The request must be the compute API's documented example; a 200 must print
+  // the committed response, and a refusal must stop the program.
+  const examples = JSON.parse(await readFile(resolve(root, 'src/lib/compute-api/examples.json'), 'utf8'));
+  const documented = {
+    from: '2026-12-09T00:00:00Z', to: '2026-12-12T00:00:00Z',
+    conditions: [{ kind: 'phase', phase: 'waxing' }, { kind: 'void-of-course', not: true },
+      { kind: 'retrograde', body: 'Mercury', not: true }, { kind: 'angular', body: 'Jupiter' }],
+    place: { latitude: 51.5072, longitude: -0.1276, houseSystem: 'placidus' },
+  };
+  const contractSource = await readFile(resolve(root, 'src/lib/compute-api/examples.ts'), 'utf8');
+  for (const fragment of ["from: '2026-12-09T00:00:00Z'", "to: '2026-12-12T00:00:00Z'", "{ kind: 'angular', body: 'Jupiter' }",
+    "place: { latitude: 51.5072, longitude: -0.1276, houseSystem: 'placidus' }"]) {
+    assert.ok(contractSource.includes(fragment), `the compute API's elections example still reads ${fragment}`);
+  }
+  await writeFile(join(scratch, 'elections.mjs'), code('elections'));
+  await writeFile(join(scratch, 'elections-run.mjs'), `const target = process.env.MOCK_ORIGIN;
+const realFetch = globalThis.fetch;
+globalThis.fetch = (url, init) => realFetch(String(url).replace('https://zodiacs.org', target), init);
+const printed = [];
+console.log = (value) => { printed.push(value); };
+process.on('exit', () => { process.stdout.write(JSON.stringify(printed)); });
+await import('./elections.mjs');
+`);
+  for (const fixture of [
+    { name: 'success', status: 200, headers: {}, response: examples.success.elections.london },
+    { name: 'rate-limited', ...examples.refusals['rate-limited'] },
+  ]) {
+    let received = null;
+    const mock = createServer(async (request, response) => {
+      const chunks = [];
+      for await (const chunk of request) chunks.push(chunk);
+      received = { method: request.method, url: request.url, type: request.headers['content-type'], body: Buffer.concat(chunks).toString('utf8') };
+      response.writeHead(fixture.status, { ...fixture.headers, 'Content-Type': 'application/json' });
+      response.end(JSON.stringify(fixture.response));
+    });
+    await new Promise((ready) => mock.listen(0, '127.0.0.1', ready));
+    try {
+      // Asynchronous, so this process keeps serving the fixture while the snippet runs.
+      let run;
+      try {
+        const { stdout, stderr } = await promisify(execFile)(process.execPath, [join(scratch, 'elections-run.mjs')], {
+          cwd: scratch, encoding: 'utf8', timeout: 30000, env: { ...process.env, MOCK_ORIGIN: 'http://127.0.0.1:' + mock.address().port },
+        });
+        run = { status: 0, stdout, stderr };
+      } catch (error) {
+        assert.equal(typeof error.code, 'number', `the elections snippet did not run: ${error.message}`);
+        run = { status: error.code, stdout: error.stdout, stderr: error.stderr };
+      }
+      assert.ok(received, 'the documented request reached the fixture');
+      assert.equal(received.method, 'POST');
+      assert.equal(received.url, '/api/v1/elections');
+      assert.equal(received.type, 'application/json');
+      assert.deepEqual(JSON.parse(received.body), documented);
+      if (fixture.status === 200) {
+        assert.equal(run.status, 0, run.stderr);
+        assert.deepEqual(JSON.parse(run.stdout), [fixture.response]);
+      } else {
+        assert.notEqual(run.status, 0);
+        assert.match(run.stderr, new RegExp(`The service refused this request: ${fixture.status}`));
+      }
+      outcomes.push({ guide: 'elections', runtime: 'node, against a local fixture of the committed contract', case: fixture.name, status: 'pass' });
+    } finally {
+      await new Promise((closed) => mock.close(closed));
+    }
+  }
   const source = createHash('sha256').update(await readFile(resolve(root, 'src/data/developer-guides.json'))).digest('hex');
   console.log(JSON.stringify({
     schema: 'zodiacs.developer-guide-examples.v1',
@@ -122,7 +189,7 @@ try {
     guideSourceSha256: source,
     runtimes: { node: process.version, deno: command('deno', ['--version']).trim(), bun: command('bun', ['--version']).trim() },
     outcomes,
-    limitations: ['Local workerd validates the bundled Worker without proving a deployed Cloudflare service.', 'Python and elections recipes use the existing hosted API contract fixtures; no live private request is made.', 'React Native and sunrise-based panchang guides are not yet written.'],
+    limitations: ['Local workerd validates the bundled Worker without proving a deployed Cloudflare service.', 'The Python and elections recipes run against local fixtures of the committed hosted API contract; no live request is made.', 'React Native and sunrise-based panchang guides are not yet written.'],
   }, null, 2));
 } finally {
   await rm(scratch, { recursive: true, force: true });

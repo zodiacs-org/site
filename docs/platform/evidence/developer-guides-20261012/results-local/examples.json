@@ -88,11 +88,23 @@
       "guide": "browser",
       "runtime": "154.0.8037.98",
       "status": "pass"
+    },
+    {
+      "guide": "elections",
+      "runtime": "node, against a local fixture of the committed contract",
+      "case": "success",
+      "status": "pass"
+    },
+    {
+      "guide": "elections",
+      "runtime": "node, against a local fixture of the committed contract",
+      "case": "rate-limited",
+      "status": "pass"
     }
   ],
   "limitations": [
     "Local workerd validates the bundled Worker without proving a deployed Cloudflare service.",
-    "Python and elections recipes use the existing hosted API contract fixtures; no live private request is made.",
+    "The Python and elections recipes run against local fixtures of the committed hosted API contract; no live request is made.",
     "React Native and sunrise-based panchang guides are not yet written."
   ]
 }

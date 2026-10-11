@@ -50,6 +50,8 @@ commit, and before a merge production necessarily serves the previous source.
   `docs/evidence/1.0.0-20261011` on engine main `7307665b`, which holds the
   publication record.
 - **Checks.**
+  - The examples verifier now also runs the elections recipe; the preparation
+    never executed it.
   - The examples verifier installs what the guides say: `@zodiacs/engine@1.0.0`
     from npm by exact version, while a vendored candidate is still installed
     from its archive. It then requires all 74 installed files to equal the
@@ -77,6 +79,10 @@ budgets all pass). The results are in [results-local/](results-local/).
   - Cloudflare: a Worker-style fetch and the browser-platform bundle, then
     workerd 1.20260730.1 through Miniflare 4.20260730.0.
   - Browser: the browser bundle in Chrome 154.
+  - Elections: the hosted recipe, run in Node with its fetch pointed at a
+    local fixture of the committed contract. The request it sends must be the
+    compute API's documented example; a 200 must print the committed response,
+    and a 429 must stop the program. Both cases pass.
 - **Python.** Python 3.9.6 against the hosted contract's fixtures over local
   HTTP: 200, 400, 422, 413 and 429 with Retry-After.
 
