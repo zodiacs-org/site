@@ -1,12 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
+import Faq from '../../components/Faq.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import { SIGNS, signBySlug } from '../../lib/signs';
 import { MONTH_NAMES, MONTH_SLUGS, DAYS_IN_MONTH, birthdaySlug, type BirthdayEntry } from '../../lib/birthdays';
 import birthdays from '../../data/birthdays.json';
 
 const days = birthdays.days as Record<string, BirthdayEntry>;
+const modifiedAt = '2026-09-07T00:00:00.000Z';
 
 // Per month: the signs it passes through and which days sit on the boundary.
 const months = MONTH_NAMES.map((name, i) => {
@@ -26,12 +28,36 @@ const months = MONTH_NAMES.map((name, i) => {
   return { name, m, list, signs: signs.map((s) => signBySlug(s)) };
 });
 
+const faq = [
+  {
+    q: 'What does this birthday page do?',
+    a: 'Pick a month and day for a date-specific astrology reading of character, relationships, work, and growth. Each page includes Sun-sign information and year-by-year guidance for birthdays near a sign change.',
+  },
+  {
+    q: 'What’s a cusp, and why does year matter?',
+    a: 'A cusp is a boundary between two zodiac signs. Around a sign-change date, your Sun sign can depend on the birth year and exact time, with the local time zone taken into account. For your Sun’s precise degree, use the free birth chart with your full birth date, time, and birthplace. If the time is unknown, the chart uses local noon as a reference; it cannot settle every sign-boundary question.',
+  },
+  {
+    q: 'Do I need birth time here?',
+    a: 'You do not need a birth time to browse this birthday guide. Time can matter for your Sun sign near a sign change, and it is needed for rising sign and houses. Use the birth chart or rising-sign calculator when you want those placements.',
+  },
+  {
+    q: 'Is this the same as a full natal chart?',
+    a: 'No. This is a birthday and Sun-date guide. A full birth chart adds your Moon, rising sign, planets, houses, and aspects; rising sign and houses require birth time and place. You can also use the moon-sign calculator on its own. Birth time may be needed if the Moon changed signs that day.',
+  },
+  {
+    q: 'Is it free? Do I need an account?',
+    a: 'Yes, it is free. No account is required to read birthday pages or run the calculators. You can save charts on this device without signing in; sign in only if you want saved charts to sync across devices.',
+  },
+];
+
 const jsonLd = [
   {
     '@type': 'CollectionPage',
     name: 'Birthday astrology, date by date',
-    description: 'A date-specific astrology reading for every birthday, with character, relationships, work, growth, Sun sign, and exact cusp answers when the year matters.',
+    description: 'A date-specific astrology reading for every birthday, with character, relationships, work, growth, Sun-sign information, and year-by-year guidance near sign changes.',
     url: 'https://zodiacs.org/birthday/',
+    dateModified: modifiedAt,
     hasPart: SIGNS.map((s) => ({ '@type': 'Thing', name: `${s.name} birthdays` })),
   },
   {
@@ -41,11 +67,19 @@ const jsonLd = [
       { '@type': 'ListItem', position: 2, name: 'Birthdays', item: 'https://zodiacs.org/birthday/' },
     ],
   },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  },
 ];
 ---
 <Base
   title="Birthday Astrology by Date — Signs, Traits & Cusp Answers"
-  description="Choose your birthday for a date-specific reading of character, relationships, work, and growth, with an exact Sun-sign answer when the birth year matters."
+  description="Choose your birthday for a date-specific astrology reading, with Sun-sign information and year-by-year guidance for birthdays near a sign change."
   path="/birthday/"
   image="/assets/og/v2/tool/birthday.png"
   imageAlt="Birthday astrology — Zodiacs.org"
@@ -60,6 +94,11 @@ const jsonLd = [
         You’ll also get the <a href="/learn/glossary/#sun-sign">Sun sign</a> and{' '}
         <a href="/learn/glossary/#decan">decan</a>; if the birthday falls on a{' '}
         <a href="/learn/glossary/#cusp">sign boundary</a>, the page checks the birth year too.
+      </p>
+      <p class="bday-hub__related">
+        For your other placements, use the free <a href="/birth-chart/">birth chart</a>,{' '}
+        <a href="/moon-sign/">moon-sign calculator</a>, or{' '}
+        <a href="/rising-sign/">rising-sign calculator</a>.
       </p>
       <EvidenceDisclosure label="What each birthday page verifies">
         <p>
@@ -108,6 +147,14 @@ const jsonLd = [
       exact answer; if the change happened during that day, your birth time settles it.
       The same date and time can be used in the <a href="/birth-chart/">birth chart calculator</a>.
     </p>
+
+    <section class="bday-hub__faq reveal" aria-labelledby="questions-answered">
+      <Faq items={faq} />
+      <p class="bday-hub__related">
+        Read <a href="/methodology/">how chart positions are calculated</a>, including
+        time zones and the limits of an unknown birth time.
+      </p>
+    </section>
   </div>
 </Base>
 
@@ -116,6 +163,11 @@ const jsonLd = [
   .bday-hub__hero { display: grid; gap: 14px; max-width: 760px; }
   .bday-hub__hero h1 { margin: 0; font-size: clamp(2.2rem, 1.5rem + 3.6vw, 3.8rem); line-height: 1.02; }
   .bday-hub__lede { margin: 0; color: var(--text-2); font-size: var(--text-md); line-height: 1.6; }
+  .bday-hub__related { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.65; }
+  .bday-hub__related a { color: var(--text-2); }
+  .bday-hub__hero .bday-hub__related a { white-space: nowrap; }
+  .bday-hub__faq { max-width: 760px; }
+  .bday-hub__faq > .bday-hub__related { margin-top: 20px; }
 
   .bday-hub__month { display: grid; gap: 14px; }
   .bday-hub__month-head { display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; }
