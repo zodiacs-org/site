@@ -62,11 +62,17 @@ export const PHASE1_TEMPLATE_SOURCE_EXCLUDED_DIRECTORIES = Object.freeze([
   // reader template. Keep their future pilot revisions from churning the
   // already-released Phase 1 screenshot receipt.
   'src/components/people',
+  // Occasion cards (/occasions/) are imported by no Phase 1 reader template.
+  'src/lib/occasions',
 ]);
 
 export const PHASE1_TEMPLATE_SOURCE_EXCLUDED_PATHS = Object.freeze([
   'src/lib/people.ts',
   'src/styles/people.css',
+  'src/islands/BabyShowerSky.tsx',
+  'src/islands/LifeMilestones.tsx',
+  'src/islands/OccasionSky.tsx',
+  'src/styles/occasions.css',
 ]);
 
 export function sha256(value) {
