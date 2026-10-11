@@ -19,6 +19,7 @@ import type { SavedChart } from '../profile/schema';
 import { signBySlug, signForLongitude } from '../signs';
 import { natalPointsForChart, selectTodayContacts, type TodayContact } from '../today';
 import { TRANSIT_ORB, transitLine } from '../transits';
+import { BRAND_ICON_PATHS } from '../brand-icons.mjs';
 import type { DailyEmailMessage, DailyEmailRecipient } from './types';
 
 interface MessageSection {
@@ -32,12 +33,13 @@ interface MessageModel {
   identity: string;
   identityDetail?: string;
   title: string;
+  welcome?: string;
   sign?: string;
   signName?: string;
   sections: MessageSection[];
   why?: string;
   cta: { label: string; url: string };
-  nearbyEvent?: { title: string; summary: string; separator?: string; url: string };
+  nearbyEvent?: { title: string; summary: string; separator?: string; url: string; sign?: string };
   footerLines: string[];
   manageUrl?: string;
   unsubscribeUrl: string;
@@ -288,6 +290,7 @@ function chartModel(
       : `${referenceOnly ? 'Your reference chart' : 'Your chart'} today — a quieter sky`,
     preheader: [referenceOnly ? referenceNotice : null, personal[0], sharedSky[0]].filter(Boolean).join(' '),
     identity: `FOR ${name.toUpperCase()} · ${dateLabel(program.anchorDate, true).toUpperCase()}`,
+    ...(signSlug ? { sign: signSlug, signName: signBySlug(signSlug).name } : {}),
     identityDetail: [chartBirthSummary(recipient.chart), referenceOnly ? referenceNotice : null].filter(Boolean).join(' · '),
     title: personal[0],
     sections,
@@ -302,6 +305,24 @@ function chartModel(
   };
 }
 
+/** The pastel sign disc, as PNG: Outlook on Windows and several older clients decode neither WebP nor AVIF. */
+function signIconUrl(baseUrl: string, sign: string): string {
+  return siteUrl(baseUrl, `/assets/zodiac-icons/128/${sign}.png`);
+}
+
+/** A canonical sign slug, or nothing. */
+function knownSign(sign: string | null): string | undefined {
+  if (!sign) return undefined;
+  try {
+    return signBySlug(sign).slug;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Opens a recipient's first daily email, which may come weeks after they signed up. */
+export const FIRST_DELIVERY_WELCOME = 'This is your first daily email from Zodiacs.org, the one you signed up for. If you would rather not get them, use the Unsubscribe link at the bottom.';
+
 function escapeHtml(value: string): string {
   return value
     .replaceAll('&', '&amp;')
@@ -314,7 +335,9 @@ function escapeHtml(value: string): string {
 function textFromModel(model: MessageModel): string {
   const lines = [model.identity];
   if (model.identityDetail) lines.push(model.identityDetail);
-  lines.push('', model.title, '');
+  lines.push('');
+  if (model.welcome) lines.push(model.welcome, '');
+  lines.push(model.title, '');
   for (const section of model.sections) {
     if (section.heading) lines.push(section.heading, '');
     for (const paragraph of section.paragraphs) lines.push(paragraph, '');
@@ -341,13 +364,16 @@ function htmlFromModel(model: MessageModel, baseUrl: string): string {
       ${section.paragraphs.map((paragraph) => `<p style="font:18px/1.58 Georgia,serif;margin:0 0 14px;color:#C6CCDA">${escapeHtml(paragraph)}</p>`).join('')}
     </section>`).join('');
   const event = model.nearbyEvent ? `
-    <section style="border-top:1px solid #26282E;padding-top:18px;margin:4px 0 26px">
-      <p style="font:14px/1.55 system-ui,-apple-system,sans-serif;margin:0;color:#C6CCDA"><strong style="color:#EEF1F7">Ahead: ${escapeHtml(model.nearbyEvent.title)}</strong>${escapeHtml(model.nearbyEvent.separator ?? ' — ')}${escapeHtml(model.nearbyEvent.summary)} <a href="${escapeHtml(model.nearbyEvent.url)}" style="color:#EEF1F7">Read the event</a></p>
-    </section>` : '';
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-top:1px solid #26282E;margin:4px 0 26px">
+      <tr>
+        ${model.nearbyEvent.sign ? `<td width="26" style="width:26px;vertical-align:top;padding:18px 12px 0 0"><img src="${escapeHtml(signIconUrl(baseUrl, model.nearbyEvent.sign))}" width="26" height="26" alt="" style="display:block;width:26px;height:26px;border:0;border-radius:50%" /></td>` : ''}
+        <td style="vertical-align:top;padding:18px 0 0"><p style="font:14px/1.55 system-ui,-apple-system,sans-serif;margin:0;color:#C6CCDA"><strong style="color:#EEF1F7">Ahead: ${escapeHtml(model.nearbyEvent.title)}</strong>${escapeHtml(model.nearbyEvent.separator ?? ' — ')}${escapeHtml(model.nearbyEvent.summary)} <a href="${escapeHtml(model.nearbyEvent.url)}" style="color:#EEF1F7">Read the event</a></p></td>
+      </tr>
+    </table>` : '';
   // PNG, not WebP: Outlook on Windows and several older clients decode
   // neither WebP nor AVIF, and a broken disc is worse than no disc.
   const signIcon = model.sign ? `
-        <img src="${escapeHtml(siteUrl(baseUrl, `/assets/zodiac-icons/128/${model.sign}.png`))}" width="44" height="44" alt="${escapeHtml(model.signName ?? '')}" style="display:block;width:44px;height:44px;border:0;border-radius:50%" />` : '';
+        <img src="${escapeHtml(signIconUrl(baseUrl, model.sign))}" width="44" height="44" alt="${escapeHtml(model.signName ?? '')}" style="display:block;width:44px;height:44px;border:0;border-radius:50%" />` : '';
   const detail = model.identityDetail
     ? `<p style="font:12px/1.45 system-ui,-apple-system,sans-serif;margin:6px 0 0;color:#7A8397">${escapeHtml(model.identityDetail)}</p>`
     : '';
@@ -365,9 +391,10 @@ function htmlFromModel(model: MessageModel, baseUrl: string): string {
         <tr>
           ${signIcon ? `<td width="58" style="width:58px;vertical-align:middle;padding:0 14px 22px 0">${signIcon}</td>` : ''}
           <td style="vertical-align:middle;padding:0 0 22px"><p style="font:600 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;margin:0;color:#7A8397">${escapeHtml(model.identity)}</p>${detail}</td>
-          <td align="right" style="vertical-align:middle;padding:0 0 22px"><p style="font:600 13px/1.2 Georgia,serif;margin:0;color:#EEF1F7;white-space:nowrap">Zodiacs.org</p></td>
+          <td align="right" style="vertical-align:middle;padding:0 0 22px"><table role="presentation" cellspacing="0" cellpadding="0" border="0" align="right"><tr><td style="vertical-align:middle;padding:0 8px 0 0"><img src="${escapeHtml(siteUrl(baseUrl, BRAND_ICON_PATHS.favicon))}" width="28" height="28" alt="" style="display:block;width:28px;height:28px;border:0" /></td><td style="vertical-align:middle"><p style="font:600 13px/1.2 Georgia,serif;margin:0;color:#EEF1F7;white-space:nowrap">Zodiacs.org</p></td></tr></table></td>
         </tr>
       </table>
+      ${model.welcome ? `<p style="font:14px/1.55 system-ui,-apple-system,sans-serif;margin:0 0 24px;padding:14px 16px;border:1px solid #26282E;border-radius:12px;color:#C6CCDA">${escapeHtml(model.welcome)}</p>` : ''}
       <h1 style="font:500 27px/1.34 Georgia,serif;margin:0 0 22px;color:#EEF1F7">${escapeHtml(model.title)}</h1>
       ${sections}
       ${why}
@@ -393,6 +420,7 @@ export function renderDailyEmail({
   baseUrl,
   unsubscribeUrl,
   senderPostalAddress,
+  firstDelivery = false,
 }: {
   recipient: DailyEmailRecipient;
   daily: Daily;
@@ -402,6 +430,8 @@ export function renderDailyEmail({
   baseUrl: string;
   unsubscribeUrl: string;
   senderPostalAddress?: string;
+  /** No earlier daily email reached this recipient. */
+  firstDelivery?: boolean;
 }): DailyEmailMessage {
   validateDailyEmailSources({ daily, publication, program });
   const postalAddress = cleanPostalAddress(senderPostalAddress ?? 'Zodiacs.org · Postal address configured for live sends');
@@ -409,12 +439,14 @@ export function renderDailyEmail({
   const model = recipient.tier === 'sun_sign'
     ? sunModel(recipient, publication, baseUrl, unsubscribeUrl, postalAddress)
     : chartModel(recipient, daily, publication, program, baseUrl, unsubscribeUrl, postalAddress);
+  if (firstDelivery) model.welcome = FIRST_DELIVERY_WELCOME;
   if (nearbyEvent && nearbyEvent.anchor.slice(0, 10) > publication.date) {
     if (recipient.tier === 'sun_sign') {
       model.nearbyEvent = {
         title: nearbyEvent.title,
         summary: nearbyEvent.summary,
         url: siteUrl(baseUrl, nearbyEvent.path),
+        sign: knownSign(singlePublishedEventSign(nearbyEvent)),
       };
     } else {
       const ascendantSign = chartAscendantSign(recipient.chart);
@@ -428,6 +460,7 @@ export function renderDailyEmail({
             summary: `falls in your ${ORDINAL[house]} house — a checkpoint for ${HOUSE_THEME[house]}.`,
             separator: ' ',
             url: siteUrl(baseUrl, nearbyEvent.path),
+            sign: eventSign,
           };
         } catch {
           // Without a canonical event sign, there is no declared whole-sign derivation.
