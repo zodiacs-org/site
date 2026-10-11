@@ -54,8 +54,9 @@ commit, and before a merge production necessarily serves the previous source.
     never executed it.
   - The examples verifier installs what the guides say: `@zodiacs/engine@1.0.0`
     from npm by exact version, while a vendored candidate is still installed
-    from its archive. It then requires all 74 installed files to equal the
-    carried archive's.
+    from its archive. It then requires the installed package to hold exactly
+    the carried archive's 74 files, byte for byte. With an extra file added,
+    it fails.
   - The workflow pins Deno 2.9.7 and Bun 1.4.2, the versions the preparation
     run recorded, and writes its results outside the checkout.
   - The workflow runs when the engine archive, the candidate record, the

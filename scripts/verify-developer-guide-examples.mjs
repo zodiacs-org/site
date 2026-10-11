@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import { execFile, spawnSync } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, readdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { resolve, join } from 'node:path';
+import { resolve, join, relative, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createServer } from 'node:http';
 import { build } from 'esbuild';
@@ -50,10 +50,18 @@ try {
   const installed = JSON.parse(await readFile(join(scratch, 'node_modules/@zodiacs/engine/package.json'), 'utf8'));
   assert.equal(installed.version, candidate.version);
   if (published) {
-    for (const [path, bytes] of readPackageArchive(archive)) {
-      assert.ok((await readFile(join(scratch, 'node_modules/@zodiacs/engine', path))).equals(bytes), `npm's ${path} is the archive's`);
+    const packed = readPackageArchive(archive);
+    // The same set of files, not only the archive's files: npm's package may hold nothing more.
+    const installedDir = join(scratch, 'node_modules/@zodiacs/engine');
+    const installedFiles = (await readdir(installedDir, { recursive: true, withFileTypes: true }))
+      .filter((entry) => entry.isFile())
+      .map((entry) => relative(installedDir, join(entry.parentPath ?? entry.path, entry.name)).split(sep).join('/'))
+      .sort();
+    assert.deepEqual(installedFiles, [...packed.keys()].sort(), "npm's package holds exactly the archive's files");
+    for (const [path, bytes] of packed) {
+      assert.ok((await readFile(join(installedDir, path))).equals(bytes), `npm's ${path} is the archive's`);
     }
-    outcomes.push({ check: 'npm install matches the carried archive', files: readPackageArchive(archive).size, status: 'pass' });
+    outcomes.push({ check: 'npm install matches the carried archive', files: packed.size, status: 'pass' });
   }
   for (const [slug, check] of Object.entries(checks)) {
     const file = join(scratch, slug + '.mjs');
