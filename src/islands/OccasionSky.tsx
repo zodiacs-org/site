@@ -77,9 +77,11 @@ export default function OccasionSky() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  // What the card on screen was made from, so a copied link always opens that card.
+  const [shown, setShown] = useState<{ occasion: OccasionKind; names: string; date: string; time: string; city: City | null } | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  async function compute(next: { occasion: OccasionKind; date: string; time: string; city: City | null }) {
+  async function compute(next: { occasion: OccasionKind; names: string; date: string; time: string; city: City | null }) {
     setBusy(true);
     setError('');
     try {
@@ -92,9 +94,11 @@ export default function OccasionSky() {
         place: next.city ? { name: placeLabel(next.city), lat: next.city.lat, lon: next.city.lon } : null,
       });
       setCard(result);
+      setShown(next);
       requestAnimationFrame(() => cardRef.current?.focus());
     } catch (cause) {
       setCard(null);
+      setShown(null);
       setError(cause instanceof RangeError ? cause.message : 'The sky could not be worked out for that date. Please try again.');
     } finally {
       setBusy(false);
@@ -118,12 +122,13 @@ export default function OccasionSky() {
       setError('Add the place too: a time only makes sense with its time zone.');
       return;
     }
-    void compute({ occasion, date, time, city });
+    void compute({ occasion, names, date, time, city });
   }
 
   async function copyLink() {
+    if (!shown) return;
     try {
-      await navigator.clipboard.writeText(cardLink(occasion, names, date, time, city));
+      await navigator.clipboard.writeText(cardLink(shown.occasion, shown.names, shown.date, shown.time, shown.city));
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -185,7 +190,7 @@ export default function OccasionSky() {
       {card && sun && moon && (
         <div class="calc__result">
           <div class="occasion-card" ref={cardRef} tabIndex={-1} aria-label={card.words.title}>
-            {names.trim() ? <p class="kicker occasion-card__kicker">{names.trim()}</p> : null}
+            {shown?.names.trim() ? <p class="kicker occasion-card__kicker">{shown.names.trim()}</p> : null}
             <h2 class="occasion-card__title">{card.words.title}</h2>
             <p class="occasion-card__sub">{sub}</p>
             <div class="occasion-card__discs">

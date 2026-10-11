@@ -114,7 +114,9 @@ export default function BabyShowerSky() {
               )}
               {window_.sunSpans.length > 1 && window_.sunSpans.map((span, index) => (
                 <div key={span.sign}>
-                  <dt>{index === 0 ? `Born before ${dayMonth(window_.sunSpans[1]!.enters!.slice(0, 10))}` : `Born from ${dayMonth(span.enters!.slice(0, 10))}`}</dt>
+                  <dt>{index === 0
+                    ? `Born before ${dayMonth(window_.sunSpans[1]!.enters!.slice(0, 10))}, ${utcClock(window_.sunSpans[1]!.enters!)} UTC`
+                    : `Born from ${dayMonth(span.enters!.slice(0, 10))}, ${utcClock(span.enters!)} UTC`}</dt>
                   <dd>{signName(span.sign)} Sun</dd>
                 </div>
               ))}

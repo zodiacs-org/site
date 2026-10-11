@@ -4,7 +4,7 @@
  * the browser (behind the lazy engine import) and in the MCP runtime alike.
  * Nothing is stored; the card is a function of its inputs.
  */
-import { offsetAt, prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 import { eveningSky, type EveningSky } from './evening';
 import type { OccasionKind } from './kinds';
 import { OCCASION_WORDS, sunMoonLine } from './lines';
@@ -13,7 +13,6 @@ import { skyAt, type OccasionSkyFacts } from './sky';
 /** The engine's reference years, as the site's other tools use them. */
 export const OCCASION_MIN_YEAR = 1800;
 export const OCCASION_MAX_YEAR = 2199;
-const DAY = 86_400_000;
 
 export interface OccasionInput {
   occasion: OccasionKind;
@@ -44,12 +43,21 @@ export function validOccasionDate(value: string): boolean {
     && probe.getUTCMonth() === month - 1 && probe.getUTCDate() === day;
 }
 
-/** Local midnight of `date` in `timeZone`, or UTC midnight without one. */
-function dayStart(date: string, timeZone: string | null): Date {
-  const [year, month, day] = date.split('-').map(Number);
-  const utcMidnight = Date.UTC(year, month - 1, day);
-  if (!timeZone) return new Date(utcMidnight);
-  return new Date(utcMidnight - offsetAt(timeZone, utcMidnight + DAY / 2) * 60_000);
+/**
+ * A local clock time on `date` at the place as an instant, through the
+ * site's pinned zone history; with a place, its longitude settles the
+ * offset before standard time (local mean time).
+ */
+async function localInstant(date: string, time: string, timeZone: string, place: OccasionInput['place']): Promise<Date> {
+  await prepareLocalTime(date, timeZone);
+  return (place
+    ? resolveLocalToUtc(date, time, timeZone, { longitude: place.lon })
+    : resolveLocalToUtc(date, time, timeZone)).utc;
+}
+
+/** A clock time on `date` read as UTC, for a card without a time zone. */
+function utcInstant(date: string, time: string): Date {
+  return new Date(`${date}T${time}:00Z`);
 }
 
 export async function occasionCard(input: OccasionInput): Promise<OccasionCard> {
@@ -60,35 +68,28 @@ export async function occasionCard(input: OccasionInput): Promise<OccasionCard> 
   if ((input.time !== null || input.place !== null) && !input.timeZone) {
     throw new RangeError('A time or a place needs its time zone.');
   }
+  const { date, timeZone, place } = input;
+  const at = (time: string) => (timeZone ? localInstant(date, time, timeZone, place) : Promise.resolve(utcInstant(date, time)));
 
-  let instant: Date;
-  if (input.time !== null && input.timeZone) {
-    await prepareLocalTime(input.date, input.timeZone);
-    // With a place, its longitude settles the offset before standard time (local mean time).
-    instant = (input.place
-      ? resolveLocalToUtc(input.date, input.time, input.timeZone, { longitude: input.place.lon })
-      : resolveLocalToUtc(input.date, input.time, input.timeZone)).utc;
-  } else {
-    instant = new Date(dayStart(input.date, input.timeZone).getTime() + DAY / 2);
-  }
+  // Without a time, the card stands for local noon.
+  const instant = await at(input.time ?? '12:00');
 
   const sky = skyAt(instant);
   let moonSignChange: OccasionCard['moonSignChange'] = null;
   if (input.time === null) {
-    const start = dayStart(input.date, input.timeZone);
-    const moonAt = (at: Date) => skyAt(at).bodies.find((row) => row.body === 'Moon')!.sign;
-    const from = moonAt(start);
-    const to = moonAt(new Date(start.getTime() + DAY - 60_000));
+    const moonAt = (when: Date) => skyAt(when).bodies.find((row) => row.body === 'Moon')!.sign;
+    const from = moonAt(await at('00:00'));
+    const to = moonAt(await at('23:59'));
     if (from !== to) moonSignChange = { from, to };
   }
 
-  const evening = input.place && input.timeZone
-    ? eveningSky(
-      { latitude: input.place.lat, longitude: input.place.lon },
-      input.date,
-      Math.round(offsetAt(input.timeZone, dayStart(input.date, input.timeZone).getTime() + DAY / 2)),
-    )
-    : null;
+  let evening: EveningSky | null = null;
+  if (place && timeZone) {
+    // The place's offset from UTC at local noon, as the pinned history gives it.
+    const noon = await at('12:00');
+    const offsetMinutes = Math.round((utcInstant(date, '12:00').getTime() - noon.getTime()) / 60_000);
+    evening = eveningSky({ latitude: place.lat, longitude: place.lon }, date, offsetMinutes);
+  }
 
   const sign = (body: string) => sky.bodies.find((row) => row.body === body)!.sign;
   const words = OCCASION_WORDS[input.occasion];

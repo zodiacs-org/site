@@ -48,6 +48,17 @@ describe('occasion card', () => {
     expect(next.moonSignChange).toBeNull();
   });
 
+  it('reads a date-only card before standard time on the place’s own local mean time', async () => {
+    // Rio de Janeiro, 1900: Sao Paulo's zone was still on local mean time, so
+    // Rio's own clock (43.2° W, 2 h 52 min 48 s behind UTC) sets local noon.
+    const card = await occasionCard({
+      occasion: 'wedding', date: '1900-06-15', time: null, timeZone: 'America/Sao_Paulo',
+      place: { name: 'Rio de Janeiro, Brazil', lat: -22.9, lon: -43.2 },
+    });
+    expect(card.instant).toBe('1900-06-15T14:52:48.000Z');
+    expect(card.evening?.utcOffsetMinutes).toBe(-173);
+  });
+
   it('refuses impossible input', async () => {
     expect(validOccasionDate('2027-02-30')).toBe(false);
     expect(validOccasionDate('1799-12-31')).toBe(false);
