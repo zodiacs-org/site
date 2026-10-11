@@ -1,0 +1,27 @@
+{
+  "recordedAt": "2026-09-07T20:43:40.773Z",
+  "baseURL": "https://zodiacs-lkqoi56y1-zodiacsofficial.vercel.app",
+  "sourceCommit": "4704acc5c7a0625dedd7601009b9c17207892ba9",
+  "servedPageSha256": "fdf21e22c9f1a039da2d079f69761b1e9e120117376f99f8c104928495e8d53e",
+  "harnessSha256": "17646cf129ccf4975302380d3e8f22e90474051085fc8cbb3ee846f22b6b6708",
+  "node": "v22.23.2",
+  "chromium": "152.0.7977.83",
+  "fixture": "public/registry/zodiacs.registry.json",
+  "viewportWidths": [
+    1280,
+    390,
+    320
+  ],
+  "results": [
+    {
+      "scenario": "layout-1280",
+      "status": "failed",
+      "error": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Astrofolio|Know what you[’']re looking at/iu. Input:\n\n'Log in to Vercel'\n\n    at open (file://<site>/tests/astrofolio-verification/browser.mjs:165:16)\n    at async scenario.viewport.width.width (file://<site>/tests/astrofolio-verification/browser.mjs:183:24)\n    at async scenario (file://<site>/tests/astrofolio-verification/browser.mjs:168:7)\n    at async run (file://<site>/tests/astrofolio-verification/browser.mjs:182:43)"
+    }
+  ],
+  "normalization": {
+    "absoluteWorkspacePaths": "Replaced the local workspace root in diagnostic stack traces with <site>.",
+    "retained": "Original scenario outcomes, error messages and available execution metadata are preserved."
+  },
+  "executionBoundary": "The anonymous browser reached Vercel login protection. The Astrofolio application scenario was not reached; this is not evidence of an application regression. No further remote scenarios were attempted."
+}
