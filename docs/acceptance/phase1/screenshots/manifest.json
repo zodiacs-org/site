@@ -2,31 +2,31 @@
   "schema": "zodiacs.phase1-visual-acceptance.v4",
   "driver": {
     "name": "playwright-core",
-    "version": "1.64.0",
+    "version": "1.61.1",
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-11T20:45:23.706Z",
+  "capturedAt": "2026-10-11T21:15:54.804Z",
   "browser": "Chromium 154.0.8037.97",
   "dailyDate": "2026-10-11",
   "publicationCanonicalSha256": "f149fc4e49b43db2f946388f0d23ca6246febca78ff6066b5fd2e1feccd929b9",
-  "templateSourceSha256": "68003553344fa1bdf4ef292773d9fea0c00cff1001ddac65bda377f40ac9dc58",
+  "templateSourceSha256": "16876e51a9a5587a7cf3f567bc1ce7c8d44a5ffaa84be02478b205dc463e3d3d",
   "renderPayloadSha256": {
     "daily": "31c9c61928c74f4f4ee753b50375d5d3bf8cd8cbdec8739aa38942cbd5e6732c",
     "dailyPublication": "75befc7a935d005372466d57365822481194c924aef7188694ad7d255c95f452",
-    "dailyPublicationManifest": "bf5b3837605e63af77631b2af2e0fdc59784741b62410808b6503b6df2da0840",
+    "dailyPublicationManifest": "423e11b02b41f1fcc84a7d125cde231102a2c69bc3769468f64b3d6cf21e4fdb",
     "horoscopeProgram": "6f4bfb7f7cd1af2fe1f86d53b6a6cf461f80cdafe9d5194709bd70c673a5f306"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-11T20:44:55.144Z",
-    "templateSourceSha256": "68003553344fa1bdf4ef292773d9fea0c00cff1001ddac65bda377f40ac9dc58",
+    "builtAt": "2026-10-11T21:15:26.159Z",
+    "templateSourceSha256": "16876e51a9a5587a7cf3f567bc1ce7c8d44a5ffaa84be02478b205dc463e3d3d",
     "dailyDate": "2026-10-11",
     "publicationCanonicalSha256": "f149fc4e49b43db2f946388f0d23ca6246febca78ff6066b5fd2e1feccd929b9",
     "renderPayloadSha256": {
       "daily": "31c9c61928c74f4f4ee753b50375d5d3bf8cd8cbdec8739aa38942cbd5e6732c",
       "dailyPublication": "75befc7a935d005372466d57365822481194c924aef7188694ad7d255c95f452",
-      "dailyPublicationManifest": "bf5b3837605e63af77631b2af2e0fdc59784741b62410808b6503b6df2da0840",
+      "dailyPublicationManifest": "423e11b02b41f1fcc84a7d125cde231102a2c69bc3769468f64b3d6cf21e4fdb",
       "horoscopeProgram": "6f4bfb7f7cd1af2fe1f86d53b6a6cf461f80cdafe9d5194709bd70c673a5f306"
     }
   },
