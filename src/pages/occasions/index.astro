@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import OccasionSky from '../../islands/OccasionSky.tsx';
+import '../../styles/calculator.css';
+import '../../styles/occasions.css';
+
+const faq = [
+  {
+    q: 'What does the card show?',
+    a: 'The Sun and Moon signs for the day, the Moon’s phase, and any planet that is retrograde. With a place it adds the evening: golden hour, sunset, dusk, when the Moon is highest, and the bright planets above the horizon after dark.',
+  },
+  {
+    q: 'Can it pick the best date for a wedding?',
+    a: 'No. Zodiacs does not pick or rank dates. Enter each date you are considering and compare the facts: sunset times, the Moon, whether Mercury is retrograde. The choice stays yours.',
+  },
+  {
+    q: 'Do I need the time?',
+    a: 'Only if you want the Moon pinned down. The Moon changes sign every two or three days, so on some days it is in one sign in the morning and the next by evening. The card says so when that happens.',
+  },
+  {
+    q: 'Is anything stored?',
+    a: 'No. The sky is worked out on your device. The card’s link carries the date, time and place in the address itself, so sharing the link shares the card.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    name: 'The sky on your day: wedding, birthday and life-event sky cards',
+    url: 'https://zodiacs.org/occasions/',
+    description: 'A printable card of the sky on a wedding day, birthday, new home or any day: Sun and Moon signs, the Moon’s phase, sunset and golden hour, and the planets after dark.',
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+---
+<Base
+  clientUi
+  title="The Sky on Your Day — Wedding & Birthday Sky Cards | Zodiacs.org"
+  description="A printable card of the sky on a wedding day, birthday, new home or any day: Sun and Moon signs, the Moon's phase, sunset, golden hour and the planets after dark. Free."
+  path="/occasions/"
+  jsonLd={jsonLd}
+>
+  <section class="section--tight container container--narrow">
+    <div class="tool-hero reveal">
+      <h1 class="display">The sky on your day</h1>
+      <p>
+        A card of the sky on a wedding day, a birthday, a new home or any day that matters. Add the place for the
+        evening: golden hour, sunset, the Moon and the planets you can see after dark. Print it, or share its link.
+      </p>
+    </div>
+    <OccasionSky client:load />
+    <noscript>
+      <p>This card is worked out in your browser and needs JavaScript. Enable it and reload.</p>
+    </noscript>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal">
+      <h2>More for life’s dates</h2>
+    </div>
+    <div class="prose reveal">
+      <ul>
+        <li><a href="/baby-zodiac/">Expecting a baby?</a> The signs across the due-date window, and what has to wait for the birth.</li>
+        <li><a href="/saturn-return/">Turning 29?</a> The dates of your Saturn return, with every pass.</li>
+        <li><a href="/solar-return/">Birthday chart</a>: the chart for the moment the Sun returns to its place at your birth.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal">
+      <h2>Questions</h2>
+    </div>
+    <div class="prose reveal">
+      {faq.map(({ q, a }) => (<><h3>{q}</h3><p>{a}</p></>))}
+    </div>
+  </section>
+</Base>

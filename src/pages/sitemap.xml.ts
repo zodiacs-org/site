@@ -145,7 +145,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     '/eclipses/', '/full-moon-calendar/', '/retrogrades/', '/today/', '/learn/', '/tools/',
     '/profile/', '/learn/how-to-read-a-birth-chart/', '/learn/communication/', '/learn/zodiac-dates/', '/learn/glossary/', '/learn/planets/',
     '/learn/houses/', '/learn/aspects/', '/learn/placements/', '/birthday/',
-    '/baby-zodiac/', '/widgets/', '/methodology/', '/about/', '/corrections/', '/privacy/',
+    '/baby-zodiac/', '/occasions/', '/widgets/', '/methodology/', '/about/', '/corrections/', '/privacy/',
     '/terms/', '/feeds/', '/almanac/',
     '/es/', '/es/birth-chart/', '/es/compatibility/', '/es/moon-sign/',
     '/es/rising-sign/', '/es/moon-phase/', '/es/saturn-return/', '/es/transits/',
