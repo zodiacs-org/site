@@ -87,7 +87,9 @@ budgets all pass). The results are in [results-local/](results-local/).
     response, and a 429 must stop the program. Both cases pass. With one
     condition changed in the contract, the check fails.
 - **Python.** Python 3.9.6 against the hosted contract's fixtures over local
-  HTTP: 200, 400, 422, 413 and 429 with Retry-After.
+  HTTP: 200, 400, 422, 413 and 429 with Retry-After. The request must equal
+  the contract's documented positions example, which, as for elections, is
+  taken from the compiled `examples.ts`.
 
 ## CI results
 

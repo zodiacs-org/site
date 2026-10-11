@@ -4,7 +4,9 @@ import { promisify } from 'node:util';
 import { createServer } from 'node:http';
 import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { build } from 'esbuild';
 
 const execute = promisify(execFile);
 const guides = JSON.parse(await readFile('src/data/developer-guides.json', 'utf8'));
@@ -15,6 +17,12 @@ const file = join(scratch, 'guide.py');
 const outcomes = [];
 try {
   await writeFile(file, source);
+  // The documented request is the contract's own: examples.ts, compiled here and imported, not a copy.
+  await build({ entryPoints: [resolve('src/lib/compute-api/examples.ts')], outfile: join(scratch, 'contract.mjs'),
+    bundle: true, platform: 'node', format: 'esm', logLevel: 'silent' });
+  const { SUCCESS_EXAMPLES } = await import(pathToFileURL(join(scratch, 'contract.mjs')).href);
+  const documented = SUCCESS_EXAMPLES.positions.two.body;
+  assert.ok(documented && Array.isArray(documented.instants), "the compute API's positions example has a request body");
   const cases = [
     { name: 'success', status: 200, headers: {}, response: examples.success.positions.two },
     ...['invalid-request', 'budget-exhausted', 'payload-too-large', 'rate-limited'].map((name) => ({ name, ...examples.refusals[name] })),
@@ -28,9 +36,7 @@ try {
         assert.equal(request.headers['content-type'], 'application/json');
         const chunks = [];
         for await (const chunk of request) chunks.push(chunk);
-        assert.deepEqual(JSON.parse(Buffer.concat(chunks).toString('utf8')), {
-          instants: ['2026-09-29T12:00:00Z', '2026-12-31T00:00:00-05:00'], bodies: ['Sun', 'Moon', 'Mercury'],
-        });
+        assert.deepEqual(JSON.parse(Buffer.concat(chunks).toString('utf8')), documented);
         received = true;
         response.writeHead(fixture.status, { ...fixture.headers, 'Content-Type': 'application/json' });
         response.end(JSON.stringify(fixture.response));
