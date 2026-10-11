@@ -22,8 +22,9 @@ if (process.argv[2] === '--after') {
   const after = JSON.parse(process.env.ALIAS_AFTER ?? 'null');
   assert.ok(after && after.deploymentId, 'ALIAS_AFTER must hold the connector\'s alias read');
   record.alias.after = after;
-  record.checks.push({ name: 'alias unchanged during the checks', ok: after.deploymentId === record.alias.before.deploymentId
-    && after.aliasUpdatedAt === record.alias.before.aliasUpdatedAt, ...after });
+  // The read's fields go first, so nothing it carries can replace the computed name or result.
+  record.checks.push({ ...after, name: 'alias unchanged during the checks', ok: after.deploymentId === record.alias.before.deploymentId
+    && after.aliasUpdatedAt === record.alias.before.aliasUpdatedAt });
   record.ok = record.checks.every((item) => item.ok);
   console.log(JSON.stringify(record, null, 2));
   if (!record.ok) process.exitCode = 1;
@@ -48,7 +49,8 @@ async function get(path) {
 }
 
 const checks = [];
-const check = (name, ok, detail = {}) => checks.push({ name, ok: Boolean(ok), ...detail });
+// Detail first, so no field it carries can replace the check's name or result.
+const check = (name, ok, detail = {}) => checks.push({ ...detail, name, ok: Boolean(ok) });
 const before = alias('ALIAS_BEFORE');
 check('alias names a READY production deployment of the merge', before.readyState === 'READY' && before.target === 'production'
   && before.githubCommitSha === expected, before);
