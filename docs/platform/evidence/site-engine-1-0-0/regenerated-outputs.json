@@ -1,6 +1,7 @@
 {
   "schema": "zodiacs.regenerated-outputs.v1",
   "base": "073bde6e27b2d302352ba056f8ee3fd65f03446e",
+  "candidateCommit": "84c892bf170a5ea5fc9d8c8189307f8dfe26e946",
   "generator": "docs/platform/evidence/site-engine-1-0-0/tools/regenerate.py",
   "runtime": "Node v22.22.2, macOS arm64",
   "files": [
