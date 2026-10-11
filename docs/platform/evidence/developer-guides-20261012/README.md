@@ -83,6 +83,12 @@ budgets all pass). The results are in [results-local/](results-local/).
 The workflow's own run on this branch is the record for Linux and the pinned
 runtimes.
 
+## Private search
+
+The owner's private birth-data search ran over this change's two commits with
+both pattern sets ([history-check.txt](history-check.txt), counts only). The
+commits add no birth-data line. Every example is synthetic.
+
 ## Remaining scope
 
 P3.10 stays partial. Its brief lists a React Native quickstart and a sunrise-based
