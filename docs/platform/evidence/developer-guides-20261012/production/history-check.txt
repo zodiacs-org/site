@@ -2,15 +2,16 @@ Private birth-data search, 2026-10-12 (Asia/Bangkok) (counts only)
 
 Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
 (SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), Node 22.22.2.
-Range: 8e2dd784..b9d53490, the two commits before the one that adds this file
-(the llms files' developer section, and the production record): every added
-line, every added or changed binary with its gzip or ZIP contents, the added
-paths and the messages. Also the tree of b9d53490. The commit that adds this
-file adds only it and the README's sentence that links it.
+Range: 8e2dd784..6a523808, this record's four commits (the llms files'
+developer section, the production record, the first search record, and the
+revised production check): every added line, every added or changed binary
+with its gzip or ZIP contents, the added paths and the messages. Also the tree
+of 6a523808. The commit that last changes this file, after the search, changes
+nothing else.
 Patterns: the owner's two private pattern sets, kept outside every repository
 with the raw outputs. No pattern, matched line, label or path is recorded here.
 
 Each pattern set gives the same result.
-Lines the two commits add: 0 birth-data lines.
-Tree: 421 birth-data lines in 17,489 files, the same count as #713's tree
+Lines the four commits add: 0 birth-data lines.
+Tree: 421 birth-data lines in 17,490 files, the same count as #713's tree
 (../history-check.txt). Those lines predate this change.
