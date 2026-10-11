@@ -37,6 +37,10 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
+          cache: npm
+
+      - name: Install dependencies for the offline gap chart renderer
+        run: npm ci
 
       - name: Require today's committed Daily Sky
         run: |
@@ -69,7 +73,9 @@ jobs:
       # without them leaves the legacy-wing drift gate red on every ref of
       # the branch until someone regenerates by hand.
       - name: Regenerate the catalogue pages that render the snapshot
-        run: node scripts/build-sign-pages.mjs
+        run: |
+          node scripts/build-sign-pages.mjs
+          node scripts/build-astrofolio-gap.mjs
 
       - name: Require current, internally paired artifacts
         run: |
@@ -104,7 +110,7 @@ jobs:
           TARGET_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || github.event.repository.default_branch }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          FILES="public/assets/data/registry-market-history.v1.json public/assets/registry-outlook.json src/data/registry-research/drafts.json src/data/registry-research/publication.json public/assets/registry-research-feed.json public/assets/data/registry-research public/registry"
+          FILES="public/assets/data/registry-market-history.v1.json public/assets/registry-outlook.json src/data/registry-research/drafts.json src/data/registry-research/publication.json public/assets/registry-research-feed.json public/assets/data/registry-research public/registry public/astrofolio/gap/index.html public/assets/og/astrofolio/gap"
           if git diff --quiet -- $FILES; then
             echo "Registry market history and outlook unchanged"
             exit 0

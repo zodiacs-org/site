@@ -345,6 +345,7 @@ jobs:
           node scripts/build-exchange.mjs
           node scripts/configure-registry-exchange.mjs
           node scripts/build-precision-preview.mjs
+          node scripts/build-astrofolio-gap.mjs --check
 
       - name: Drift gate
         run: git diff --exit-code -- public/

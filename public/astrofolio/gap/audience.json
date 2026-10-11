@@ -1,0 +1,36 @@
+{
+  "schema": "zodiacs.astrofolio-gap-audience.v1",
+  "ownerReviewRequired": true,
+  "reviewStatus": "owner review required",
+  "verifiedOn": "2026-10-12",
+  "facts": [
+    {
+      "id": "us-sign-awareness",
+      "value": 90,
+      "unit": "percent",
+      "label": "U.S. adults who selected their zodiac sign",
+      "sourceName": "YouGov 2022 survey",
+      "sourceUrl": "https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology",
+      "asOfDate": "2022-04-22",
+      "publishedDate": "2022-04-26",
+      "surveyPeriod": "April 21–22, 2022",
+      "sampleSize": 3472,
+      "method": "Nationally representative sample of U.S. adults, interviewed online and weighted by YouGov.",
+      "context": "Respondents were offered the zodiac signs as options. This measures awareness, rather than belief or token ownership."
+    },
+    {
+      "id": "us-astrology-belief",
+      "value": 27,
+      "unit": "percent",
+      "label": "U.S. adults who said they believe in astrology",
+      "sourceName": "YouGov 2022 survey",
+      "sourceUrl": "https://yougov.com/en-us/articles/42292-one-four-americans-say-they-believe-astrology",
+      "asOfDate": "2022-04-22",
+      "publishedDate": "2022-04-26",
+      "surveyPeriod": "April 21–22, 2022",
+      "sampleSize": 3472,
+      "method": "Nationally representative sample of U.S. adults, interviewed online and weighted by YouGov.",
+      "context": "The question asked about belief in astrology or the influence of stars and planets on people’s lives. This is not a count of investors."
+    }
+  ]
+}
