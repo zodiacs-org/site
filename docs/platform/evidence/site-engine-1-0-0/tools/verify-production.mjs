@@ -16,11 +16,18 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const BASE = 'https://zodiacs.org';
+/** A connector read must name the deployment and the alias's update time before anything is compared. */
+const complete = (read, name) => {
+  assert.ok(read && typeof read.deploymentId === 'string' && /^dpl_[A-Za-z0-9]+$/u.test(read.deploymentId),
+    `${name} must name the deployment the alias points at`);
+  assert.ok(Number.isInteger(read.aliasUpdatedAt) && read.aliasUpdatedAt > 0, `${name} must carry the alias's updatedAt`);
+  return read;
+};
 if (process.argv[2] === '--after') {
   // Second step: add the connector's read made after the run, and the check that it did not move.
   const record = JSON.parse(readFileSync(process.argv[3], 'utf8'));
-  const after = JSON.parse(process.env.ALIAS_AFTER ?? 'null');
-  assert.ok(after && after.deploymentId, 'ALIAS_AFTER must hold the connector\'s alias read');
+  const after = complete(JSON.parse(process.env.ALIAS_AFTER ?? 'null'), 'ALIAS_AFTER');
+  complete(record.alias.before, 'the recorded ALIAS_BEFORE');
   record.alias.after = after;
   // The read's fields go first, so nothing it carries can replace the computed name or result.
   record.checks.push({ ...after, name: 'alias unchanged during the checks', ok: after.deploymentId === record.alias.before.deploymentId
@@ -38,11 +45,7 @@ const candidate = JSON.parse(readFileSync(resolve(root, 'src/data/platform-engin
 const mcp = JSON.parse(readFileSync(resolve(root, 'public/examples/mcp-server.json'), 'utf8'));
 
 /** A connector read: { readAt, deploymentId, aliasUpdatedAt, readyState, target, githubCommitSha }. */
-const alias = (name) => {
-  const value = JSON.parse(process.env[name] ?? 'null');
-  assert.ok(value && value.deploymentId, `${name} must hold the connector's alias read`);
-  return value;
-};
+const alias = (name) => complete(JSON.parse(process.env[name] ?? 'null'), name);
 async function get(path) {
   const response = await fetch(BASE + path, { redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(30000) });
   return { status: response.status, bytes: Buffer.from(await response.arrayBuffer()) };
