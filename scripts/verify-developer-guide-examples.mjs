@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { createServer } from 'node:http';
 import { build } from 'esbuild';
 import { chromium } from 'playwright-core';
@@ -120,17 +121,12 @@ try {
   // of the committed contract. The request must be the compute API's documented example; a 200 must print
   // the committed response, and a refusal must stop the program.
   const examples = JSON.parse(await readFile(resolve(root, 'src/lib/compute-api/examples.json'), 'utf8'));
-  const documented = {
-    from: '2026-12-09T00:00:00Z', to: '2026-12-12T00:00:00Z',
-    conditions: [{ kind: 'phase', phase: 'waxing' }, { kind: 'void-of-course', not: true },
-      { kind: 'retrograde', body: 'Mercury', not: true }, { kind: 'angular', body: 'Jupiter' }],
-    place: { latitude: 51.5072, longitude: -0.1276, houseSystem: 'placidus' },
-  };
-  const contractSource = await readFile(resolve(root, 'src/lib/compute-api/examples.ts'), 'utf8');
-  for (const fragment of ["from: '2026-12-09T00:00:00Z'", "to: '2026-12-12T00:00:00Z'", "{ kind: 'angular', body: 'Jupiter' }",
-    "place: { latitude: 51.5072, longitude: -0.1276, houseSystem: 'placidus' }"]) {
-    assert.ok(contractSource.includes(fragment), `the compute API's elections example still reads ${fragment}`);
-  }
+  // The documented request is the contract's own: examples.ts, compiled here and imported, not a copy.
+  await build({ entryPoints: [resolve(root, 'src/lib/compute-api/examples.ts')], outfile: join(scratch, 'contract.mjs'),
+    bundle: true, platform: 'node', format: 'esm', logLevel: 'silent' });
+  const { SUCCESS_EXAMPLES } = await import(pathToFileURL(join(scratch, 'contract.mjs')).href);
+  const documented = SUCCESS_EXAMPLES.elections.london.body;
+  assert.ok(documented && Array.isArray(documented.conditions), "the compute API's elections example has a request body");
   await writeFile(join(scratch, 'elections.mjs'), code('elections'));
   await writeFile(join(scratch, 'elections-run.mjs'), `const target = process.env.MOCK_ORIGIN;
 const realFetch = globalThis.fetch;

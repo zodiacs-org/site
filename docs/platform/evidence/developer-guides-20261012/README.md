@@ -57,8 +57,9 @@ commit, and before a merge production necessarily serves the previous source.
     from its archive. It then requires all 74 installed files to equal the
     carried archive's.
   - The workflow pins Deno 2.9.7 and Bun 1.4.2, the versions the preparation
-    run recorded, writes its results outside the checkout, and runs when the
-    engine archive or the candidate record changes.
+    run recorded, and writes its results outside the checkout.
+  - The workflow runs when the engine archive, the candidate record, the
+    compute API's examples or a verifier's helper changes.
   - The ledger's guide claim uses `statement`, like every other claim.
 
 ## Local results
@@ -80,9 +81,11 @@ budgets all pass). The results are in [results-local/](results-local/).
     workerd 1.20260730.1 through Miniflare 4.20260730.0.
   - Browser: the browser bundle in Chrome 154.
   - Elections: the hosted recipe, run in Node with its fetch pointed at a
-    local fixture of the committed contract. The request it sends must be the
-    compute API's documented example; a 200 must print the committed response,
-    and a 429 must stop the program. Both cases pass.
+    local fixture of the committed contract. The request it sends must equal
+    the compute API's documented example, which the verifier takes from
+    `examples.ts` itself, compiled and imported. A 200 must print the committed
+    response, and a 429 must stop the program. Both cases pass. With one
+    condition changed in the contract, the check fails.
 - **Python.** Python 3.9.6 against the hosted contract's fixtures over local
   HTTP: 200, 400, 422, 413 and 429 with Retry-After.
 
