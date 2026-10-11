@@ -78,6 +78,7 @@ describe('signIcon', () => {
  */
 const LISTED: Record<string, string> = {
   'src/lib/sign-icon.ts': 'signIcon itself',
+  'src/lib/daily-content-manifest.ts': 'a build-time public file that lists all twelve signs in zodiac order',
   'src/islands/BigThreeQuick.tsx': 'asks for all twelve discs itself (requestAllDiscs) before it sets its result',
   'src/lib/share-card.ts': 'card discs come from allDiscs, all twelve in zodiac order',
   'src/lib/compatibility-card.ts': 'loads all twelve discs in zodiac order',

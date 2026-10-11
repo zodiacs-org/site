@@ -70,20 +70,13 @@ describe('daily content manifest', () => {
     // The built-route checks run when validating the emitted endpoints below.
   });
 
-  it('prerenders identical stable and dated responses with cache and CORS headers', async () => {
+  it('prerenders identical stable and dated responses', async () => {
     expect(todayPrerender && datedPrerender).toBe(true);
     expect(getStaticPaths()).toEqual([{ params: { date: manifest.date } }]);
     const today = todayGET();
     expect(await today.json()).toEqual(dailyContentManifest);
     expect(await todayGET().text()).toBe(await datedGET().text());
     expect(today.headers.get('content-type')).toBe('application/json; charset=utf-8');
-    expect(today.headers.get('cache-control')).toBe('public, max-age=300, s-maxage=300');
-    expect(today.headers.get('access-control-allow-origin')).toBe('*');
-    const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
-    expect(vercel.headers.find(({ source }: { source: string }) => source === '/content/:file(.*).json').headers).toEqual([
-      { key: 'Cache-Control', value: 'public, max-age=300, s-maxage=300' },
-      { key: 'Access-Control-Allow-Origin', value: '*' },
-    ]);
   });
 
   it('refuses mismatched editions, missing signs, withheld readings, and em-dashes', () => {

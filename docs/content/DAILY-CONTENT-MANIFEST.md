@@ -56,8 +56,10 @@ missing dated file or delayed edition, retry after at least five minutes and
 keep any older content labeled with its actual date. Never relabel yesterday's
 reading as today's.
 
-Both JSON URLs allow cross-origin reads (`Access-Control-Allow-Origin: *`)
-and cache for five minutes (`max-age=300, s-maxage=300`). Only the edition in
+Both JSON URLs are plain static files served with the site's default static
+headers (no extra `vercel.json` rule, so the recorded Vercel route set stays
+unchanged). Read them server-side; browser cross-origin reads are not
+configured. Only the edition in
 the current deployment has a dated file. Earlier dated files are not retained
 as an archive across deployments; consumers needing history should store
 accepted payloads themselves. Polling after 07:30 UTC is a practical default,
