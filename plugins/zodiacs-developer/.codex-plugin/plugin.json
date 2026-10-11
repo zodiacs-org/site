@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-developer",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Build and verify astrology integrations with the published Zodiacs engine, bounded sky tools and local chart comparison.",
   "author": {
     "name": "Zodiacs LLC",
@@ -46,7 +46,7 @@
     "com.openai": {
       "onboardingSkill": "./skills/build-with-zodiacs/SKILL.md",
       "publication": {
-        "release_notes": "0.3.6: Rebuilds the local engine 1.0.0-rc.2 candidate with current panel sizing and host link handling. Earlier review archives remain available."
+        "release_notes": "0.3.7: Bundles engine 1.0.0, published on npm under latest, which capabilities now report as published; the external recipes install the same 1.0.0 from npm. Earlier review archives remain available."
       }
     }
   }

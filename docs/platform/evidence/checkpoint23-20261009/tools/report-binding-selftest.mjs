@@ -19,6 +19,14 @@ for (const name of REPORT_NAMES) {
     assert.throws(() => assertReportBinding(name, bytes, Buffer.from(JSON.stringify(altered, null, 2) + '\n')));
   });
 }
+test('a regenerated engine identity may differ; the four reports still bind byte for byte', () => {
+  const bytes = readFileSync(new URL('../results/validation.json', import.meta.url));
+  const regenerated = JSON.parse(bytes.toString('utf8'));
+  regenerated.engine = { version: '1.0.0', archiveSha256: 'c'.repeat(64) };
+  assertReportBinding('validation.json', bytes, Buffer.from(JSON.stringify(regenerated, null, 2) + '\n'));
+  regenerated.judgedWindow = '1850-2050';
+  assert.throws(() => assertReportBinding('validation.json', bytes, Buffer.from(JSON.stringify(regenerated, null, 2) + '\n')));
+});
 test('only regenerated producer identity may differ', () => {
   const bytes = readFileSync(new URL('../results/validation.json', import.meta.url));
   const regenerated = JSON.parse(bytes.toString('utf8'));

@@ -50,10 +50,10 @@ describe('independent true node and polar references', () => {
     const digest = (name: string) => createHash('sha256')
       .update(readFileSync(new URL(`./fixtures/${name}`, import.meta.url)))
       .digest('hex');
-    // 1.0.0-rc.2 rebuild: engine version metadata only; policies and retained
-    // Horizons responses are unchanged.
+    // 1.0.0-rc.2 and 1.0.0 rebuilds: engine version metadata only; policies and
+    // retained Horizons responses are unchanged.
     expect(digest('independent-node-polar.json'))
-      .toBe('5726074f6b89fa60b79eeeaaec031e4c7848671bd520483bc5103cb8ff4fd4da');
+      .toBe('731e0e77af1975cbd780bbc28391e26e6a67efcb626481abbc5f386403b005f3');
     expect(digest('swiss-node-polar-policy.json'))
       .toBe('7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
   });
@@ -112,9 +112,9 @@ describe('independent representative supported epochs', () => {
       .digest('hex');
     // rc.16 nutation moves the product's solar-return instant; its independent
     // returned-chart references were re-evaluated there, with every gate unchanged.
-    // The 1.0.0-rc.2 rebuild updates the recorded engine version.
+    // The 1.0.0-rc.2 and 1.0.0 rebuilds update the recorded engine version.
     expect(digest('independent-eight-cases.json'))
-      .toBe('c447b257ce1e79c426f042c68aa99bd133fdae771763de3ff1fba429a681b0f5');
+      .toBe('d16a80481483b147df65ac62ce6bab7717489755e8f6d5855c2fdefbda19b95b');
     expect(digest('swiss-eight-cases-policy.json'))
       .toBe('9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4');
   });

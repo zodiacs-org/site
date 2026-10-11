@@ -1,6 +1,6 @@
-# Owner decisions of 2026-10-11: engine 1.0.0, the private search and the release toolchain
+# Owner decisions of 2026-10-11: engine 1.0.0, the private search, the release toolchain and the Swiss files
 
-The owner answered three explicit questions in the programme session of
+The owner answered four explicit questions in the programme session of
 2026-10-11 (Asia/Bangkok), each put as a choice with its consequences. The
 answers below are the owner's selections, quoted. They grant what each
 question named and nothing more.
@@ -53,3 +53,20 @@ and, asked separately, "Yes, download it (Recommended)" for linux-x64 22.22.2.
 are x86-64's. On arm64 three numbers of the calc round-trip fixture and one
 recorded conformance residual move in their last bits, so those generated
 files were rebuilt on Linux x86-64 (FINDINGS F-82).
+
+## 4. The Swiss Ephemeris files for the accuracy refresh
+
+**Question.** May the programme download the two Swiss Ephemeris data files
+the site's accuracy refresh needs, `sepl_18.se1` (484,061 bytes) and
+`semo_18.se1` (1,304,771 bytes) from github.com/aloistr/swisseph `ephe/`,
+each checked against the SHA-256 the refresh script pins, and pyswisseph
+2.10.3.2 from PyPI into a scratch environment, keeping all of it outside
+every repository and committing only the aggregate statistics, as the rc.2
+refresh did?
+
+**Answer.** "Yes, download them (Recommended)".
+
+**What it grants.** Those two files and that package, used for the
+refresh's two statistics runs on engine 1.0.0
+(`docs/platform/evidence/site-engine-1-0-0/accuracy-refresh/`). Both files
+matched their pinned digests. No Swiss value or ephemeris file is committed.

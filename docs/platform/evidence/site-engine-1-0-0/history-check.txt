@@ -1,0 +1,28 @@
+Private birth-data search, 2026-10-11 (counts only)
+
+Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
+(SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), run from this checkout with Node 22.22.2.
+Range: 073bde6e27b2d302352ba056f8ee3fd65f03446e..7888d9c1 (this adoption's two
+commits: every added line, every added or changed binary with gzip and ZIP
+contents read, added paths and messages), and the tree of 7888d9c1.
+Patterns: the owner's two private pattern sets, kept outside every repository
+with the raw outputs. No pattern, matched line, label or path is recorded here.
+The owner's excluded engine file does not exist in this repository; the
+tool's exclusion is stated in its output all the same.
+
+Each pattern set gives the same counts.
+
+Lines the two commits add: 5 birth-data lines, under 1 anonymous label, in 5
+places. Every one is a line already on main (073bde6e), re-emitted unchanged
+apart from the engine, adapter and plugin version strings it carries:
+  4 in regenerated JavaScript bundles;
+  1 inside the new developer plugin 0.3.7 ZIP, in its copy of the plugin's
+    bundle.
+No other line in the range matches.
+
+Tree: 421 birth-data lines in the 17,444 files of 7888d9c1, against 420 in
+the 17,406 files of main's 073bde6e. The one more is the 0.3.7 ZIP's copy;
+the earlier ZIPs keep theirs. The tree's lines predate this adoption and stay
+as the 2026-10-08 record (../site-engine-1-0-0-rc2/refresh-20261008/)
+classified the lines introduced then; no blanket privacy clearance of the
+tree is claimed.

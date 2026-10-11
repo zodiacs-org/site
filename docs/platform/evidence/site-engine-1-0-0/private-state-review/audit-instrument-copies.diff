@@ -1,0 +1,33 @@
+--- docs/platform/evidence/site-engine-rc16/private-state-review/audit-inventory.mjs	2026-10-11 21:13:45
++++ <audit>/audit-inventory.mjs	2026-10-11 21:44:31
+@@ -9,12 +9,12 @@
+ import { createRequire } from 'node:module';
+ import { join } from 'node:path';
+ import { fileURLToPath, pathToFileURL } from 'node:url';
+-import ts from 'typescript';
++const ts = createRequire('<checkout>/package.json')('typescript'); // audit copy: the checkout's TypeScript
+
+-const root = fileURLToPath(new URL('../../../../../', import.meta.url));
++const root = '<checkout>/'; // audit copy: the checkout whose packages it loads
+ const require = createRequire(join(root, 'package.json'));
+ const bundlePath = 'api/_compute/compute.mjs';
+-const filename = join(root, bundlePath);
++const filename = fileURLToPath(new URL('./compute.mjs', import.meta.url)); // audit copy: the audit-only bundle
+ const source = readFileSync(filename, 'utf8');
+ const sha256 = value => createHash('sha256').update(value).digest('hex');
+ const program = ts.createProgram([filename], { allowJs: true, noResolve: true, noLib: true });
+--- docs/platform/evidence/site-engine-rc16/private-state-review/probe-nearby-overlap.mjs	2026-10-11 21:13:45
++++ <audit>/probe-nearby-overlap.mjs	2026-10-11 21:43:54
+@@ -11,10 +11,10 @@
+ import { join } from 'node:path';
+ import { fileURLToPath, pathToFileURL } from 'node:url';
+
+-const root = fileURLToPath(new URL('../../../../../', import.meta.url));
++const root = '<checkout>/'; // audit copy: the checkout whose packages it loads
+ const require = createRequire(join(root, 'package.json'));
+ const bundlePath = 'api/_compute/compute.mjs';
+-const source = readFileSync(join(root, bundlePath), 'utf8');
++const source = readFileSync(new URL('./compute.mjs', import.meta.url), 'utf8'); // audit copy: the audit-only bundle
+ const sha256 = value => createHash('sha256').update(value).digest('hex');
+ function once(text, from, to) {
+   assert.equal(text.split(from).length, 2, `instrumentation marker: ${from}`);
