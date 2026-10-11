@@ -86,8 +86,23 @@ budgets all pass). The results are in [results-local/](results-local/).
 - **Python.** Python 3.9.6 against the hosted contract's fixtures over local
   HTTP: 200, 400, 422, 413 and 429 with Retry-After.
 
-The workflow's own run on this branch is the record for Linux and the pinned
-runtimes.
+## CI results
+
+The Developer guides workflow ran on Linux with the pinned runtimes (run
+38166970251, on the PR's merge with main, head `c043bb40`). Its results are in
+[results-ci/](results-ci/):
+
+- **Twins.** All 18 guides and the index.
+- **Browser.** 38 of 38 navigations in Chromium 149.0.7827.55.
+- **Examples.** 17 of 17, run on Node 22.23.3, Deno 2.9.7 and Bun 1.4.2:
+  - Install: `@zodiacs/engine@1.0.0` from npm, whose 74 files equal the
+    carried archive's.
+  - Cloudflare: workerd through Miniflare.
+  - Elections: both fixture cases.
+- **Python.** 5 of 5 on Python 3.12.3.
+
+The run before the elections check was added, 38163949561 on `c2b74923`, also
+passed.
 
 ## Private search
 
