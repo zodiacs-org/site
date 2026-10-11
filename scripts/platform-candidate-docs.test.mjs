@@ -24,15 +24,13 @@ const beforeMove = (url) => url.replace(/^https:\/\/(github\.com|raw\.githubuser
 const packagePrefix = candidate.sourcePackagePath ? `${candidate.sourcePackagePath}/` : '';
 // The draft envelope specification stays in the SDK repository, as written for rc.3 to rc.6.
 const RECEIPT_SPEC = 'https://github.com/zodiacs-org/sdk/blob/fb57af7a2cd7c30983cc8fb655183d5a11f9cf30/docs/platform/receipt-draft-v1.md';
-// What the npm registry recorded for this version on 2026-09-30, written by
+// What the npm registry recorded for rc.15 on 2026-09-30, written by
 // docs/platform/evidence/site-engine-rc15/tools/npm-registry-read.mjs.
 const registry = JSON.parse(read('docs/platform/evidence/site-engine-rc15/npm-registry.json'));
-const currentRegistry = JSON.parse(read('docs/platform/evidence/site-engine-rc16/npm-release/verification-receipt.json'));
-// What npm served on 2026-10-06, when the site vendored rc.17, which is not on npm: the same tool's read of
-// the version under `next`, and the registry's list of versions (docs/platform/evidence/site-engine-rc17/).
-const registryNow = JSON.parse(read('docs/platform/evidence/site-engine-rc17/npm-registry-rc16.json'));
-const currentRegistryRead = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0-rc2/npm-registry-rc16.json'));
-const npmView = read('docs/platform/evidence/site-engine-1-0-0-rc2/npm-view.txt');
+// The rc.16 release record of 2026-10-01.
+const rc16Release = JSON.parse(read('docs/platform/evidence/site-engine-rc16/npm-release/verification-receipt.json'));
+// The same tool's read of 1.0.0, the version this revision vendors, on 2026-10-11.
+const release = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0/npm-registry.json'));
 
 describe('developer candidate documentation', () => {
   it('identifies the installed public engine and exact archived package', () => {
@@ -141,41 +139,48 @@ describe('developer candidate documentation', () => {
     expect(receipt.types).toBe('passed');
   });
 
-  it('records the vendored rc17 candidate beside the verified rc16 next release, and retains earlier rc15 provenance', () => {
-    // rc.17 is vendored and not on npm (docs/platform/programme/DECISIONS-2026-10-05.md §7).
-    expect(candidate.releaseStatus).toBe('vendored-candidate');
-    expect(candidate.releaseLabel).toBe('Vendored candidate');
-    expect(candidate.registryObservedOn).toBe(currentRegistryRead.readAt.slice(0, 10));
-    expect(currentRegistryRead.version).toBe(candidate.registryVersion);
-    expect(currentRegistryRead.distTags).toEqual(registryNow.distTags);
-    expect(currentRegistryRead.dist).toEqual(registryNow.dist);
-    expect(registryNow.version).toBe(candidate.registryVersion);
-    expect(registryNow.distTags).toEqual({ latest: registry.version, next: candidate.registryVersion });
-    const versions = JSON.parse(npmView.slice(npmView.indexOf('{'), npmView.indexOf('\n}\n') + 2)).versions;
-    expect(versions).toContain(candidate.registryVersion);
-    expect(versions).not.toContain(candidate.version);
-    expect(npmView).toContain(`'${candidate.name}@${candidate.version}' is not in this registry.`);
-    // npm's rc.16 tarball is the rc.16 archive the site keeps, read again on 2026-10-06 with its attestation verified.
-    const published = readFileSync(resolve(root, `vendor/zodiacs-engine-${candidate.registryVersion}.tgz`));
-    expect(registryNow.dist.shasum).toBe(createHash('sha1').update(published).digest('hex'));
-    expect(registryNow.dist.integrity).toBe(`sha512-${createHash('sha512').update(published).digest('base64')}`);
-    expect(registryNow.auditSignatures.installed).toBe(candidate.registryVersion);
-    expect(registryNow.auditSignatures.report).toEqual({ invalid: [], missing: [] });
-    expect(registryNow.auditSignatures.summary).toContain('1 package has a verified attestation');
-    // The rc.16 release record of 2026-10-01.
-    expect(currentRegistry.version).toBe(candidate.registryVersion);
-    expect(currentRegistry.tags).toEqual({ latest: registry.version, next: candidate.registryVersion });
-    expect(currentRegistry.registryTarball.sha256).toBe(createHash('sha256').update(published).digest('hex'));
-    expect(currentRegistry.registryTarball.bytes).toBe(published.length);
-    expect(currentRegistry.registryTarball.sha1).toBe(createHash('sha1').update(published).digest('hex'));
-    expect(currentRegistry.registryTarball.integritySha512).toBe(`sha512-${createHash('sha512').update(published).digest('base64')}`);
-    expect(currentRegistry.attestation.subjectDigestMatchesArchive).toBe(true);
-    expect(currentRegistry.attestation.workflowAndHeadAndRunMatch).toBe(true);
-    expect(currentRegistry.attestation.npmAuditSignaturesExitCode).toBe(0);
-    expect(currentRegistry.attestation.invalid).toEqual([]);
-    expect(currentRegistry.attestation.missing).toEqual([]);
+  it('records the published 1.0.0 release, and retains the earlier rc.16 and rc.15 provenance', () => {
+    // 1.0.0 is on npm under `latest`, published by the engine's Release workflow on 2026-10-11.
+    expect(candidate.releaseStatus).toBe('published');
+    expect(candidate.releaseLabel).toBe('On npm');
+    expect(candidate.registryVersion).toBe(candidate.version);
+    expect(manifest.version).toBe(candidate.version);
+    expect(candidate.registryObservedOn).toBe(release.readAt.slice(0, 10));
+    expect(release.package).toBe(candidate.name);
+    expect(release.version).toBe(candidate.version);
+    expect(release.distTags.latest).toBe(candidate.version);
+    // npm's tarball is the vendored archive: the same SHA-1 and SHA-512, and the same file count.
+    expect(release.dist.shasum).toBe(createHash('sha1').update(archive).digest('hex'));
+    expect(release.dist.integrity).toBe(`sha512-${createHash('sha512').update(archive).digest('base64')}`);
+    expect(release.dist.fileCount).toBe(74);
+    // The SLSA provenance names the source repository, the workflow on main and the commit
+    // the package was built from, for these bytes; npm verified it.
+    expect(release.dist.attestations.provenance.predicateType).toBe('https://slsa.dev/provenance/v1');
+    expect(release.provenance.subject).toEqual({
+      name: `pkg:npm/%40zodiacs/engine@${candidate.version}`, sha512: createHash('sha512').update(archive).digest('hex'),
+    });
+    expect(release.provenance.workflow).toEqual({
+      ref: 'refs/heads/main', repository: candidate.sourceRepository, path: '.github/workflows/release.yml',
+    });
+    expect(release.provenance.resolvedDependencies).toHaveLength(1);
+    expect(release.provenance.resolvedDependencies[0].uri).toBe(`git+${candidate.sourceRepository}@refs/heads/main`);
+    expect(release.provenance.resolvedDependencies[0].digest.gitCommit).toMatch(/^[a-f0-9]{40}$/);
+    expect(release.auditSignatures.installed).toBe(candidate.version);
+    expect(release.auditSignatures.report).toEqual({ invalid: [], missing: [] });
+    expect(release.auditSignatures.summary).toContain('1 package has a verified attestation');
+    // The rc.16 release record of 2026-10-01: npm's rc.16 tarball is the rc.16 archive the site keeps.
+    const rc16 = readFileSync(resolve(root, 'vendor/zodiacs-engine-0.1.1-rc.16.tgz'));
+    expect(rc16Release.version).toBe('0.1.1-rc.16');
+    expect(rc16Release.registryTarball.sha256).toBe(createHash('sha256').update(rc16).digest('hex'));
+    expect(rc16Release.registryTarball.bytes).toBe(rc16.length);
+    expect(rc16Release.registryTarball.sha1).toBe(createHash('sha1').update(rc16).digest('hex'));
+    expect(rc16Release.registryTarball.integritySha512).toBe(`sha512-${createHash('sha512').update(rc16).digest('base64')}`);
+    expect(rc16Release.attestation.subjectDigestMatchesArchive).toBe(true);
+    expect(rc16Release.attestation.workflowAndHeadAndRunMatch).toBe(true);
+    expect(rc16Release.attestation.npmAuditSignaturesExitCode).toBe(0);
+    expect(rc16Release.attestation.invalid).toEqual([]);
+    expect(rc16Release.attestation.missing).toEqual([]);
     const registryArchive = readFileSync(resolve(root, `vendor/zodiacs-engine-${registry.version}.tgz`));
-    expect(manifest.version).toMatch(/-rc\.[0-9]+$/);
     // The registry read of 2026-09-30, committed with the tool that made it.
     expect(registry.package).toBe(candidate.name);
     expect(registry.version).toBe('0.1.1-rc.15');
@@ -214,14 +219,15 @@ describe('developer candidate documentation', () => {
 
   it('identifies current source documentation separately from the archived TypeDoc and starter', () => {
     const guide = read('public/llms-full.txt');
-    expect(guide).toContain(`candidate version ${candidate.version}`);
+    // The version must stand alone: "1.0.0" is a prefix of every 1.0.0 pre-release.
+    expect(guide).toMatch(new RegExp(`\`@zodiacs/engine\` version ${candidate.version.replaceAll('.', '\\.')}(?![-+.\\w])`, 'u'));
     expect(guide).toContain(`${candidate.sourceRepository}/blob/${candidate.sourceCommit}/${packagePrefix}README.md`);
     expect(guide).toContain(RECEIPT_SPEC);
     expect(read('src/pages/developers/support/index.astro')).toContain(RECEIPT_SPEC);
     expect(guide).toContain('Archived rc.1 typed API reference (earlier candidate)');
     expect(read('public/sdk/engine/index.html')).toContain('<title>@zodiacs/engine 0.1.1-rc.1</title>');
     const support = read('src/pages/developers/support/index.astro');
-    expect(support).toContain('current candidate API guide');
+    expect(support).toContain('current API guide');
     expect(support).toContain('archived rc.1 API reference');
     expect(support).toContain('site saved-chart/account format is unchanged');
   });

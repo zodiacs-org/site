@@ -99,8 +99,8 @@ assert.equal(slashPattern.test('moon-sign'), true, 'Consumer canonical redirects
 // Horoscope links must reach existing consumer pages; do not create dead referrals.
 await access(new URL('src/pages/horoscopes/[sign]/index.astro', root));
 const packageInfo = await json('plugins/zodiacs-developer/package.json');
-assert.equal(packageInfo.dependencies['@zodiacs/engine'], '0.1.1-rc.16');
+assert.equal(packageInfo.dependencies['@zodiacs/engine'], '1.0.0');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');
-// Site/embedded runtime follows the reviewed candidate; external recipes keep the published release.
-const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-1.0.0-rc.2.tgz');
+// The site/embedded runtime and the external recipes both use the published 1.0.0: the site from its vendored copy of the carried archive, the recipes from npm.
+const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-1.0.0.tgz');
 console.log('AI package contracts: manifests, submission cases, versions, routes and canonical links verified.');

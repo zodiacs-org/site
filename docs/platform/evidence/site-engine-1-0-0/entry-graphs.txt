@@ -1,0 +1,16 @@
+1.0.0-rc.2 -> 1.0.0: each entry's static import closure, compared file by file in graph order after replacing the quoted version literal and hashed chunk names.
+. (dist/index.js): same code (11 files, 105980 bytes; 11 files, 105975 bytes; 5 renamed)
+./calc (dist/calc.js): same code (12 files, 145261 bytes; 12 files, 145256 bytes; 5 renamed)
+./crossings (dist/crossings.js): same code (2 files, 9942 bytes; 2 files, 9942 bytes; 0 renamed)
+./deltat (dist/deltat.js): same code (2 files, 5232 bytes; 2 files, 5232 bytes; 0 renamed)
+./geo (dist/geo.js): same code (20 files, 224583 bytes; 20 files, 224583 bytes; 0 renamed)
+./houses (dist/houses-extra.js): same code (1 files, 13678 bytes; 1 files, 13678 bytes; 0 renamed)
+./internal (dist/internal.js): same code (6 files, 66287 bytes; 6 files, 66282 bytes; 3 renamed)
+./internal/math (dist/internal-math.js): same code (3 files, 19175 bytes; 3 files, 19170 bytes; 2 renamed)
+./receipt (dist/receipt.js): same code (6 files, 69496 bytes; 6 files, 69491 bytes; 1 renamed)
+./sky (dist/sky.js): same code (10 files, 94149 bytes; 10 files, 94144 bytes; 4 renamed)
+./techniques (dist/techniques.js): same code (29 files, 344949 bytes; 29 files, 344944 bytes; 4 renamed)
+./timing (dist/timing.js): same code (13 files, 125356 bytes; 13 files, 125351 bytes; 5 renamed)
+./vedic (dist/vedic.js): same code (12 files, 127751 bytes; 12 files, 127746 bytes; 5 renamed)
+./window (dist/window.js): same code (8 files, 104242 bytes; 8 files, 104237 bytes; 3 renamed)
+Every entry point loads the same code apart from the version string and chunk names.

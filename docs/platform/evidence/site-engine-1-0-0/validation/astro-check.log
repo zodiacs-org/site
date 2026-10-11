@@ -1,0 +1,206 @@
+consumer-boundary: clear · 2099 source files checked
+site-footer.css: public copy matches the canonical source
+site-footer-standard: canonical footer sources and surfaces verified
+22:10:06 [content] Syncing content
+22:10:07 [content] Synced content
+22:10:07 [types] Generated 498ms
+22:10:07 [check] Getting diagnostics for Astro files in <checkout>...
+src/components/return-visits/SkyMonth.astro:49:11 - warning astro(4000): This script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+49   <script type="application/json" data-sky-events set:html={JSON.stringify(events).replace(/</g, '\\u003c')} />
+             ~~~~
+
+src/exchange/chart-model.mjs:89:42 - warning ts(6133): 'timeframe' is declared but its value is never read.
+
+89 export function timeTickIndices(candles, timeframe, maxLabels = 6) {
+                                            ~~~~~~~~~
+
+src/exchange/chart.mjs:24:7 - warning ts(6133): 'INK' is declared but its value is never read.
+
+24 const INK = '#EEF1F7';
+         ~~~
+
+src/exchange/terminal.mjs:569:12 - warning ts(6133): 'setRailLocked' is declared but its value is never read.
+
+569   function setRailLocked(locked) {
+               ~~~~~~~~~~~~~
+src/exchange/terminal.mjs:333:7 - warning ts(6133): 'panelAttempt' is declared but its value is never read.
+
+333   let panelAttempt = 0;
+          ~~~~~~~~~~~~
+src/exchange/terminal.mjs:105:10 - warning ts(80006): This may be converted to an async function.
+
+105 function fetchWithin(url, deadline) {
+             ~~~~~~~~~~~
+
+src/islands/CalendarSubscribe.tsx:74:64 - warning ts(6133): 'birthDate' is declared but its value is never read.
+
+74 export default function CalendarSubscribe({ locale, positions, birthDate, contacts }: CalendarSubscribeProps) {
+                                                                  ~~~~~~~~~
+src/islands/CalendarSubscribe.tsx:74:53 - warning ts(6133): 'positions' is declared but its value is never read.
+
+74 export default function CalendarSubscribe({ locale, positions, birthDate, contacts }: CalendarSubscribeProps) {
+                                                       ~~~~~~~~~
+
+src/islands/ChartCalculator.tsx:1328:13 - warning ts(6133): 'computedSunSlug' is declared but its value is never read.
+
+1328       const computedSunSlug = computedSun ? signForLongitude(computedSun.lon).slug : null;
+                 ~~~~~~~~~~~~~~~
+
+src/islands/LunarReturnCalculator.test.tsx:59:8 - warning ts(6133): 'CalculationReload' is declared but its value is never read.
+
+59 import CalculationReload, { calculationLoadMessage } from './CalculationReload';
+          ~~~~~~~~~~~~~~~~~
+
+src/islands/RaceBoard.tsx:293:105 - warning ts(6133): 'index' is declared but its value is never read.
+
+293           {(board.length > 0 ? board : signs.map((sign) => ({ sign: sign.slug, points: 0 }))).map((row, index) => {
+                                                                                                            ~~~~~
+
+src/islands/RegistryAura.tsx:363:9 - warning ts(6133): 'invalidateConnectedResult' is declared but its value is never read.
+
+363   const invalidateConnectedResult = (nextAddress: string | null) => {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~
+src/islands/RegistryAura.tsx:310:9 - warning ts(6133): 'baseConnectRef' is declared but its value is never read.
+
+310   const baseConnectRef = useRef<HTMLButtonElement>(null);
+            ~~~~~~~~~~~~~~
+src/islands/RegistryAura.tsx:309:9 - warning ts(6133): 'solanaConnectRef' is declared but its value is never read.
+
+309   const solanaConnectRef = useRef<HTMLButtonElement>(null);
+            ~~~~~~~~~~~~~~~~
+src/islands/RegistryAura.tsx:260:10 - warning ts(6133): 'walletIconSrc' is declared but its value is never read.
+
+260 function walletIconSrc(icon: unknown): string | null {
+             ~~~~~~~~~~~~~
+src/islands/RegistryAura.tsx:32:3 - warning ts(6196): 'StandardWallet' is declared but never used.
+
+32   StandardWallet,
+     ~~~~~~~~~~~~~~
+src/islands/RegistryAura.tsx:31:3 - warning ts(6196): 'Eip6963ProviderDetail' is declared but never used.
+
+31   Eip6963ProviderDetail,
+     ~~~~~~~~~~~~~~~~~~~~~
+
+src/lib/people.ts:17:35 - warning ts(6385): '(params?: string | { abort?: boolean | undefined; pattern?: RegExp | undefined; protocol?: RegExp | undefined; normalize?: boolean | undefined; hostname?: RegExp | undefined; error?: string | ... 1 more ... | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
+
+17 const httpsUrlSchema = z.string().url().refine((value) => value.startsWith('https://'));
+                                     ~~~
+src/lib/people.ts:16:37 - warning ts(6385): '(params?: string | { abort?: boolean | undefined; local?: boolean | undefined; offset?: boolean | undefined; precision?: number | null | undefined; error?: string | $ZodErrorMap<$ZodIssueInvalidStringFormat> | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
+
+16 const isoInstantSchema = z.string().datetime({ offset: true });
+                                       ~~~~~~~~
+
+src/lib/share-positions-callers.test.ts:816:29 - warning ts(6385): 'isTypeOnly' is deprecated.
+
+816       if (!clause || clause.isTypeOnly) continue;
+                                ~~~~~~~~~~
+src/lib/share-positions-callers.test.ts:411:50 - warning ts(6385): 'isTypeOnly' is deprecated.
+
+411       const typeOnly = Boolean(clause && (clause.isTypeOnly
+                                                     ~~~~~~~~~~
+
+src/lib/assistant/open-assistant.test.ts:661:11 - warning ts(6133): 'consent' is declared but its value is never read.
+
+661     const consent = source.slice(consentStart, submitStart);
+              ~~~~~~~
+
+src/lib/assistant/open-assistant.ts:1585:10 - warning ts(6133): 'questionRequestsMyChart' is declared but its value is never read.
+
+1585 function questionRequestsMyChart(question: string): boolean {
+              ~~~~~~~~~~~~~~~~~~~~~~~
+src/lib/assistant/open-assistant.ts:316:5 - warning ts(6133): 'chartSummaryPromise' is declared but its value is never read.
+
+316 let chartSummaryPromise: Promise<string | null> | null = null;
+        ~~~~~~~~~~~~~~~~~~~
+src/lib/assistant/open-assistant.ts:315:5 - warning ts(6133): 'chartSourceId' is declared but its value is never read.
+
+315 let chartSourceId: string | null = null;
+        ~~~~~~~~~~~~~
+src/lib/assistant/open-assistant.ts:314:5 - warning ts(6133): 'chartConsented' is declared but its value is never read.
+
+314 let chartConsented = false;
+        ~~~~~~~~~~~~~~
+src/lib/assistant/open-assistant.ts:312:5 - warning ts(6133): 'savedChart' is declared but its value is never read.
+
+312 let savedChart: StoredChart | null = null;
+        ~~~~~~~~~~
+
+src/lib/server/transit-calendar.test.ts:6:10 - warning ts(6133): 'decodePositionsLink' is declared but its value is never read.
+
+6 import { decodePositionsLink, encodePositionsLink, POSITION_BODY_ORDER } from '../share-positions';
+           ~~~~~~~~~~~~~~~~~~~
+
+src/lib/time/birthplace-clock.ts:67:17 - warning ts(80006): This may be converted to an async function.
+
+67 export function prepare(date: string, timeZone: string): Promise<void> {
+                   ~~~~~~~
+
+src/lib/time/zone-names.ts:48:10 - warning ts(80006): This may be converted to an async function.
+
+48 function lmtName(key: string): Promise<string | undefined> {
+            ~~~~~~~
+
+src/mcp/outputs.ts:301:39 - warning ts(6385): 'ZodTypeAny' is deprecated.
+
+301 function computeBody<Result extends z.ZodTypeAny>(tool: SkyToolName, result: Result) {
+                                          ~~~~~~~~~~
+
+src/pages/index.astro:62:37 - warning ts(6133): 'rest' is declared but its value is never read.
+
+62     mainEntity: faq.map(({ q, a, ...rest }) => ({
+                                       ~~~~
+
+src/pages/bio/index.astro:162:31 - warning ts(6387): The signature '(commandId: string, showUI?: boolean | undefined, value?: string | undefined): boolean' of 'document.execCommand' is deprecated.
+
+162         var copied = document.execCommand('copy');
+                                  ~~~~~~~~~~~
+
+src/pages/developers/precision-preview/index.astro:155:11 - warning astro(4000): This script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+155   <script type="module" src="/precision-preview/app.mjs"></script>
+              ~~~~
+
+src/pages/widgets/index.astro:171:20 - warning ts(6387): The signature '(commandId: string, showUI?: boolean | undefined, value?: string | undefined): boolean' of 'document.execCommand' is deprecated.
+
+171           document.execCommand('copy');
+                       ~~~~~~~~~~~
+
+src/precision-preview/synthetic.mjs:83:7 - warning ts(6133): 'fixed' is declared but its value is never read.
+
+83 const fixed = (v) => { const c = zeros(); c[0] = v; return c; };
+         ~~~~~
+
+src/registry/selected-token-chart.mjs:320:3 - warning ts(6133): 'last' is declared but its value is never read.
+
+320   last,
+      ~~~~
+
+src/shelf/card.mjs:27:10 - warning ts(80006): This may be converted to an async function.
+
+27 function fetchWithin(url, ms, init) {
+            ~~~~~~~~~~~
+
+src/trade/entry.mjs:33:60 - warning ts(6133): 'enabled' is declared but its value is never read.
+
+33 export function renderTradeRegion({ sign, name, mint, hue, enabled }) {
+                                                              ~~~~~~~
+src/trade/entry.mjs:20:38 - warning ts(6133): 'env' is declared but its value is never read.
+
+20 export function registryTradeEnabled(env = {}) {
+                                        ~~~
+
+Result (1336 files):
+- 0 errors
+- 0 warnings
+- 40 hints
+
+check exit 0

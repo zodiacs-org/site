@@ -231,9 +231,10 @@ try {
   // ---- get_capabilities ----
   const capabilities = await ok('get_capabilities', {});
   check('capabilities name the pinned engine', capabilities.engine?.name === '@zodiacs/engine'
-    && /^\d+\.\d+\.\d+-rc\.\d+$/.test(capabilities.engine.version), capabilities.engine);
+    && /^\d+\.\d+\.\d+(?:-rc\.\d+)?$/.test(capabilities.engine.version), capabilities.engine);
   // The adapter is not on npm. The engine is labelled as the site's candidate record has it: rc.16 was on
-  // npm, under `next`; rc.17, which the site vendors, is not (docs/platform/programme/DECISIONS-2026-10-05.md §7).
+  // npm, under `next`; rc.17 to 1.0.0-rc.2 were not (docs/platform/programme/DECISIONS-2026-10-05.md §7);
+  // 1.0.0 is, under `latest`.
   const engineCandidate = JSON.parse(await readFile(resolve(ROOT, 'src/data/platform-engine-candidate.json'), 'utf8'));
   const engineLabel = { name: '@zodiacs/engine', version: engineCandidate.version,
     ...(engineCandidate.releaseStatus === 'published'

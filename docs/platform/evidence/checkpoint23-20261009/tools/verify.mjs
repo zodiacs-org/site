@@ -20,10 +20,13 @@ assert.equal(given.verdicts.koch,'pass');assert.equal(end.verdicts.koch,'pass');
 assert.equal(coGiven.sets.L.equatorialAscendant.n,5616);assert.equal(coGiven.sets.G.equatorialAscendant.n,20000);
 assert.equal(end.windows['1850-2049'].ladder.koch.compared,353);
 assert.equal(coEnd.windows['1850-2049'].ladder.equatorialAscendant.compared,319);
+// The engine is the archive the site vendors (1.0.0-rc.2 when ratified; 1.0.0, the same code, from
+// 2026-10-11). The four reports are still compared byte for byte below, so a numerical change fails.
+const candidate=JSON.parse(await readFile('src/data/platform-engine-candidate.json','utf8'));
 const pkg=JSON.parse(await readFile('node_modules/@zodiacs/engine/package.json','utf8'));
-assert.equal(pkg.version,'1.0.0-rc.2');
-const archive=await readFile('vendor/zodiacs-engine-1.0.0-rc.2.tgz');
-assert.equal(sha(archive),'4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002');
+assert.equal(pkg.version,candidate.version);
+const archive=await readFile(candidate.artifactPath);
+assert.equal(sha(archive),candidate.sha256);
 const published=[];
 for(const name of ['items.json','key.json','tool-answers.json','scorer.mjs']) {
  const path='public/developers/sky-benchmark/v0/'+name;

@@ -13,8 +13,12 @@ export function assertReportBinding(name, committed, generated) {
     'Retained validation evidence, including original producer identity, changed');
   const oldReport = JSON.parse(committed.toString('utf8'));
   const newReport = JSON.parse(generated.toString('utf8'));
-  // Only the new execution identity differs; every claim/metric/hash is compared.
+  // Only the new execution identity and the adopted engine's identity may differ; verify.mjs checks
+  // that engine against the site's candidate record, and the four reports must stay byte-identical.
+  // Every other claim, metric and hash is compared.
   delete oldReport.producer;
   delete newReport.producer;
+  delete oldReport.engine;
+  delete newReport.engine;
   assert.deepEqual(newReport, oldReport, 'Validation claims differ from retained evidence');
 }
