@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { eveningSky } from './evening';
 import { fullMoonsBetween, lifeMilestones, mercuryRetrogradesBetween } from './milestones';
 import { skyAt } from './sky';
+import { sunAltitude } from './sun-altitude';
 
 const FLORENCE = { latitude: 43.7696, longitude: 11.2558 };
 const TROMSO = { latitude: 69.6492, longitude: 18.9553 };
@@ -20,6 +21,21 @@ describe('occasion sky', () => {
 
   it('refuses an invalid instant', () => {
     expect(() => skyAt(new Date('nope'))).toThrow(RangeError);
+  });
+});
+
+describe('sun altitude', () => {
+  it('agrees with astronomy-engine to within 0.02° across seasons and hemispheres', () => {
+    // Reference: astronomy-engine 2.1.19 Equator(of date, aberration) + Horizon, no refraction.
+    const cases: [string, number, number, number][] = [
+      ['2027-06-12T18:13:00Z', 43.7696, 11.2558, 6.0594],
+      ['2026-12-21T15:30:00Z', 51.5074, -0.1278, 1.9259],
+      ['2026-03-20T22:00:00Z', -33.8688, 151.2093, 23.9641],
+      ['2026-07-27T22:30:00Z', 69.6492, 18.9553, -1.2380],
+    ];
+    for (const [at, latitude, longitude, expected] of cases) {
+      expect(Math.abs(sunAltitude(new Date(at), latitude, longitude) - expected)).toBeLessThan(0.02);
+    }
   });
 });
 

@@ -3,12 +3,12 @@
  * sunrise and sunset, golden hour, civil dusk, the Moon's rise, set and
  * highest point, and the bright planets above the horizon after dusk.
  *
- * Server-only: golden hour and civil dusk come from the server ephemeris
- * adapter's altitude search, the only module allowed to call astronomy-engine
- * directly. Rise, set and transit times come from @zodiacs/engine/sky.
+ * Rise, set and transit times come from @zodiacs/engine/sky; golden hour and
+ * civil dusk from ./sun-altitude.ts, between the Sun's upper and lower
+ * transits, where its altitude only falls.
  */
 import { skyEvents, skyEventsOn, type Observer, type SkyBody, type SkyEvent } from '@zodiacs/engine/sky';
-import { sunAltitudeCrossing } from '../engine/server-ephemeris';
+import { sunDescendsThrough } from './sun-altitude';
 
 /** Golden hour runs from the Sun at this height down to sunset (a common photographers' convention). */
 export const GOLDEN_HOUR_SUN_ALTITUDE = 6;
@@ -44,12 +44,6 @@ function first(events: readonly SkyEvent[], kind: SkyEvent['kind']): SkyEvent | 
   return events.find((event) => event.kind === kind);
 }
 
-/** The UTC instant of local noon on `date` for a clock `utcOffsetMinutes` east of UTC. */
-function localNoon(date: string, utcOffsetMinutes: number): Date {
-  const [year, month, day] = date.split('-').map(Number);
-  return new Date(Date.UTC(year, month - 1, day, 12) - utcOffsetMinutes * 60_000);
-}
-
 /** Whether `body` is above the horizon at `at`, or rises before `until`. */
 function upInWindow(body: SkyBody, observer: Observer, at: Date, until: Date): boolean {
   const ahead = skyEvents(body, observer, at, new Date(at.getTime() + 24 * HOUR));
@@ -76,13 +70,17 @@ export function eveningSky(observer: Observer, date: string, utcOffsetMinutes: n
 
   const sunrise = first(sun.events, 'rise')?.at ?? null;
   const sunset = first(sun.events, 'set')?.at ?? null;
-  const noon = localNoon(date, utcOffsetMinutes);
-  const goldenStart = sunset ? sunAltitudeCrossing(observer, noon, -1, GOLDEN_HOUR_SUN_ALTITUDE) : null;
-  const duskFound = sunset ? sunAltitudeCrossing(observer, noon, -1, CIVIL_DUSK_SUN_ALTITUDE) : null;
-  // Near the poles in summer the Sun never sinks 6° below the horizon; a
-  // crossing found on a later day is not this evening's dusk.
-  const dusk = duskFound && sunset && duskFound.getTime() > sunset.getTime()
-    && duskFound.getTime() - sunset.getTime() < 6 * HOUR ? duskFound : null;
+  // The Sun only descends from its upper transit to the next lower transit.
+  const upper = first(sun.events, 'upper-transit');
+  const after = upper ? skyEvents('Sun', observer, upper.at, new Date(upper.at.getTime() + 24 * HOUR)) : null;
+  const lower = after?.status === 'complete' ? after.events.find((event) => event.kind === 'lower-transit') : undefined;
+  const descent = upper && lower ? { from: upper.at, to: lower.at } : null;
+  const goldenStart = sunset && descent
+    ? sunDescendsThrough(GOLDEN_HOUR_SUN_ALTITUDE, descent.from, sunset, observer.latitude, observer.longitude)
+    : null;
+  const dusk = sunset && descent
+    ? sunDescendsThrough(CIVIL_DUSK_SUN_ALTITUDE, sunset, descent.to, observer.latitude, observer.longitude)
+    : null;
   const goldenHour = goldenStart && sunset && goldenStart.getTime() < sunset.getTime()
     ? { start: goldenStart.toISOString(), end: sunset.toISOString() }
     : null;
