@@ -1,0 +1,73 @@
+{
+  "schema": "zodiacs.birth-time-window-postmerge.v1",
+  "run": 38073108054,
+  "attempt": 1,
+  "event": "push",
+  "headSha": "7028d01905137b45e835db1dca785cecb672a729",
+  "conclusion": "success",
+  "jobs": {
+    "total": 20,
+    "success": 20
+  },
+  "buildAndCheck": {
+    "job": 114274415549,
+    "steps": 63,
+    "stepsSucceeded": 63,
+    "log": {
+      "file": "postmerge/build-check.log",
+      "bytes": 1787606,
+      "sha256": "70d5cd96f7bea3792e60f32387db4cda0bcdc3de07f2db3777d3adb6cd3fb976",
+      "source": "GitHub job log API, saved unmodified"
+    },
+    "unitSuite": "2026-10-10T17:59:38.6647020Z       Tests  6989 passed | 6 skipped (6995)",
+    "unitFiles": "2026-10-10T17:59:38.6630095Z  Test Files  543 passed | 1 skipped (544)",
+    "journal": "2026-10-10T18:24:09.9689190Z Runner stalls: none; no sample was retaken.",
+    "birthWindowSteps": [
+      "2026-10-10T18:24:54.0322802Z ##[group]Run node tests/birth-time-window-development-drive.mjs",
+      "2026-10-10T18:25:24.0328261Z ##[group]Run node tests/birth-time-window-drive.mjs"
+    ]
+  },
+  "reports": [
+    {
+      "file": "postmerge/browser-controls.json",
+      "bytes": 92405,
+      "sha256": "30fc464f45e9a5d16ee7a75cd456a79afaa9e21d4796b568b61efb8e59883997",
+      "serverMode": "production-preview",
+      "checkedOutSource": "7028d01905137b45e835db1dca785cecb672a729",
+      "passed": true,
+      "viewports": [
+        {
+          "name": "mobile",
+          "controlsPassed": 13,
+          "pageErrors": 0
+        },
+        {
+          "name": "desktop",
+          "controlsPassed": 13,
+          "pageErrors": 0
+        }
+      ]
+    },
+    {
+      "file": "postmerge/development-browser-controls.json",
+      "bytes": 92657,
+      "sha256": "3c6c23f1d760466372d218393abfc9f4ce24c1506b07c9c8faa6a256e0abb857",
+      "serverMode": "development",
+      "checkedOutSource": "7028d01905137b45e835db1dca785cecb672a729",
+      "passed": true,
+      "viewports": [
+        {
+          "name": "mobile",
+          "controlsPassed": 13,
+          "pageErrors": 0
+        },
+        {
+          "name": "desktop",
+          "controlsPassed": 13,
+          "pageErrors": 0
+        }
+      ]
+    }
+  ],
+  "note": "The two reports are decoded from the PROGRAMME_FILE lines the drives printed in this log; each decoded file matches the SHA-256 printed beside it."
+}

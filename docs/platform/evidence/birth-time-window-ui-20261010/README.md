@@ -1,3 +1,9 @@
+> **Update, 2026-10-11.** The conditions below that were still required are
+> met: final CI, fresh clean review, merge `7028d019`, post-merge Site Check
+> and canonical production. See
+> [birth-time-window-production-20261011](../birth-time-window-production-20261011/README.md).
+> B2.b is accepted at checkpoint 26. The text below is kept as written.
+
 # Current birth-time window qualification
 
 Corrected source `018c3190649cb19e1f478459958b6ac8809d0464` passes [native 38068373681](https://github.com/zodiacs-org/site/actions/runs/38068373681). [Source-bound qualification](native-018c319/native-qualification.json) joins its tree, original decoded log, all thirteen actual controls in both viewports in **both development and production-preview modes**, original build/schema/type/bundle checks, 6989 unit passes/six existing skips, fifteen unchanged-limit visual comparisons, three original cold samples and eighteen actual captures.

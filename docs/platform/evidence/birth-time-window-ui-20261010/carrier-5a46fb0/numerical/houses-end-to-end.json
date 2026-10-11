@@ -1,0 +1,450 @@
+{
+ "swisseph": "2.10.03",
+ "unit": "arcseconds, largest of the twelve cusps per case",
+ "tolerance": 3.0,
+ "windows": {
+  "1800-2199": {
+   "broad": {
+    "alcabitius": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 2.121,
+     "p50": 0.011,
+     "over3": 34,
+     "refused": 0
+    },
+    "campanus": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 2.578,
+     "p50": 0.011,
+     "over3": 84,
+     "refused": 0
+    },
+    "equal": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 2.013,
+     "p50": 0.01,
+     "over3": 34,
+     "refused": 0
+    },
+    "equal-mc": {
+     "compared": 3000,
+     "max": 2.08,
+     "p95": 1.914,
+     "p50": 0.01,
+     "over3": 0,
+     "refused": 0
+    },
+    "koch": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 2.473,
+     "p50": 0.013,
+     "over3": 85,
+     "refused": 0
+    },
+    "meridian": {
+     "compared": 3000,
+     "max": 2.08,
+     "p95": 2.05,
+     "p50": 0.011,
+     "over3": 0,
+     "refused": 0
+    },
+    "morinus": {
+     "compared": 3000,
+     "max": 2.08,
+     "p95": 2.05,
+     "p50": 0.011,
+     "over3": 0,
+     "refused": 0
+    },
+    "placidus": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 2.469,
+     "p50": 0.011,
+     "over3": 69,
+     "refused": 0
+    },
+    "porphyry": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 2.065,
+     "p50": 0.011,
+     "over3": 34,
+     "refused": 0
+    },
+    "regiomontanus": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 2.665,
+     "p50": 0.011,
+     "over3": 105,
+     "refused": 0
+    },
+    "topocentric": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 2.445,
+     "p50": 0.011,
+     "over3": 64,
+     "refused": 0
+    },
+    "vehlow": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 2.013,
+     "p50": 0.01,
+     "over3": 34,
+     "refused": 0
+    },
+    "whole": {
+     "compared": 3000,
+     "max": 0.0,
+     "p95": 0.0,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    }
+   },
+   "ladder": {
+    "alcabitius": {
+     "compared": 708,
+     "max": 13.433,
+     "p95": 2.21,
+     "p50": 0.003,
+     "over3": 25,
+     "refused": 0
+    },
+    "campanus": {
+     "compared": 708,
+     "max": 13.433,
+     "p95": 3.589,
+     "p50": 0.003,
+     "over3": 65,
+     "refused": 0
+    },
+    "equal": {
+     "compared": 708,
+     "max": 13.433,
+     "p95": 2.208,
+     "p50": 0.003,
+     "over3": 25,
+     "refused": 0
+    },
+    "equal-mc": {
+     "compared": 708,
+     "max": 2.08,
+     "p95": 1.898,
+     "p50": 0.001,
+     "over3": 0,
+     "refused": 0
+    },
+    "koch": {
+     "compared": 696,
+     "max": 31.358,
+     "p95": 5.188,
+     "p50": 0.013,
+     "over3": 66,
+     "refused": 0
+    },
+    "meridian": {
+     "compared": 708,
+     "max": 2.08,
+     "p95": 2.047,
+     "p50": 0.001,
+     "over3": 0,
+     "refused": 0
+    },
+    "morinus": {
+     "compared": 708,
+     "max": 2.08,
+     "p95": 2.047,
+     "p50": 0.001,
+     "over3": 0,
+     "refused": 0
+    },
+    "placidus": {
+     "compared": 696,
+     "max": 13.433,
+     "p95": 3.986,
+     "p50": 0.004,
+     "over3": 67,
+     "refused": 0
+    },
+    "porphyry": {
+     "compared": 708,
+     "max": 13.433,
+     "p95": 2.208,
+     "p50": 0.003,
+     "over3": 25,
+     "refused": 0
+    },
+    "regiomontanus": {
+     "compared": 708,
+     "max": 15.597,
+     "p95": 4.801,
+     "p50": 0.004,
+     "over3": 86,
+     "refused": 0
+    },
+    "topocentric": {
+     "compared": 708,
+     "max": 13.433,
+     "p95": 3.855,
+     "p50": 0.003,
+     "over3": 63,
+     "refused": 0
+    },
+    "vehlow": {
+     "compared": 708,
+     "max": 13.433,
+     "p95": 2.208,
+     "p50": 0.003,
+     "over3": 25,
+     "refused": 0
+    },
+    "whole": {
+     "compared": 708,
+     "max": 0.0,
+     "p95": 0.0,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    }
+   }
+  },
+  "1850-2049": {
+   "broad": {
+    "alcabitius": {
+     "compared": 1499,
+     "max": 0.024,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "campanus": {
+     "compared": 1499,
+     "max": 0.024,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "equal": {
+     "compared": 1499,
+     "max": 0.024,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "equal-mc": {
+     "compared": 1499,
+     "max": 0.001,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "koch": {
+     "compared": 1499,
+     "max": 0.055,
+     "p95": 0.002,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "meridian": {
+     "compared": 1499,
+     "max": 0.002,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "morinus": {
+     "compared": 1499,
+     "max": 0.002,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "placidus": {
+     "compared": 1499,
+     "max": 0.024,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "porphyry": {
+     "compared": 1499,
+     "max": 0.024,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "regiomontanus": {
+     "compared": 1499,
+     "max": 0.024,
+     "p95": 0.002,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "topocentric": {
+     "compared": 1499,
+     "max": 0.024,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "vehlow": {
+     "compared": 1499,
+     "max": 0.024,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "whole": {
+     "compared": 1499,
+     "max": 0.0,
+     "p95": 0.0,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    }
+   },
+   "ladder": {
+    "alcabitius": {
+     "compared": 361,
+     "max": 0.01,
+     "p95": 0.002,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "campanus": {
+     "compared": 361,
+     "max": 0.01,
+     "p95": 0.003,
+     "p50": 0.001,
+     "over3": 0,
+     "refused": 0
+    },
+    "equal": {
+     "compared": 361,
+     "max": 0.01,
+     "p95": 0.002,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "equal-mc": {
+     "compared": 361,
+     "max": 0.001,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "koch": {
+     "compared": 353,
+     "max": 0.035,
+     "p95": 0.007,
+     "p50": 0.001,
+     "over3": 0,
+     "refused": 0
+    },
+    "meridian": {
+     "compared": 361,
+     "max": 0.001,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "morinus": {
+     "compared": 361,
+     "max": 0.001,
+     "p95": 0.001,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "placidus": {
+     "compared": 353,
+     "max": 0.007,
+     "p95": 0.003,
+     "p50": 0.001,
+     "over3": 0,
+     "refused": 0
+    },
+    "porphyry": {
+     "compared": 361,
+     "max": 0.01,
+     "p95": 0.002,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "regiomontanus": {
+     "compared": 361,
+     "max": 0.01,
+     "p95": 0.003,
+     "p50": 0.001,
+     "over3": 0,
+     "refused": 0
+    },
+    "topocentric": {
+     "compared": 361,
+     "max": 0.01,
+     "p95": 0.003,
+     "p50": 0.001,
+     "over3": 0,
+     "refused": 0
+    },
+    "vehlow": {
+     "compared": 361,
+     "max": 0.01,
+     "p95": 0.002,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    },
+    "whole": {
+     "compared": 361,
+     "max": 0.0,
+     "p95": 0.0,
+     "p50": 0.0,
+     "over3": 0,
+     "refused": 0
+    }
+   }
+  }
+ },
+ "verdicts": {
+  "whole": "pass",
+  "placidus": "pass",
+  "porphyry": "pass",
+  "equal": "pass",
+  "equal-mc": "pass",
+  "vehlow": "pass",
+  "koch": "pass",
+  "regiomontanus": "pass",
+  "campanus": "pass",
+  "topocentric": "pass",
+  "alcabitius": "pass",
+  "morinus": "pass",
+  "meridian": "pass"
+ }
+}

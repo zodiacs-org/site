@@ -1,0 +1,45 @@
+{
+  "schema": "zodiacs.birth-window-graph-closure.v1",
+  "checkedAt": "2026-10-11T13:56:37.048Z",
+  "base": "https://zodiacs.org",
+  "localBuild": {
+    "builtAt": "2026-10-10T20:19:43.926Z"
+  },
+  "rule": "every relative or /_astro/ import in a recorded chunk is a file the same crawl recorded; a chunk is read only from bytes whose SHA-256 equals the recorded digest",
+  "passed": false,
+  "runs": [
+    {
+      "observation": "docs/platform/evidence/birth-time-window-production-20261011/observer-controls/closure-tampered-observation.json",
+      "observationSha256": "eec6b32a25813948a5d6112ba5f6dc5f3b4bfd94b8d45b8fd7246457015f7e5e",
+      "schema": "zodiacs.birth-time-window-production-observation.v5",
+      "commit": "58362fb104e585e66b1fbbabb6b39aa1f2bc986d",
+      "before": {
+        "files": 189,
+        "chunks": 187,
+        "bytesFrom": {
+          "production": 187,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [
+          {
+            "from": "/_astro/techniques.B8CZYTeM.js",
+            "reference": "/_astro/chunk-TSS2SZWQ.CyItoxb-.js"
+          }
+        ],
+        "closed": false
+      },
+      "after": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      }
+    }
+  ]
+}
