@@ -427,3 +427,17 @@ describe('brand and sign pictures', () => {
     expect(pictureFree(sun.text)).toBe(true);
   });
 });
+
+describe('sun-sign reading', () => {
+  it('carries the reading the sign page publishes for the same date', () => {
+    const message = renderDailyEmail({
+      recipient: { tier: 'sun_sign', email: 'reading@example.com', sign: 'leo', contactId: 'reading', timezone: 'UTC' },
+      daily, publication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
+    });
+    const reading = program.signs.find((entry) => entry.sign === 'leo')!.readings.today;
+    expect(reading.period.from).toBe(publication.date);
+    for (const { text } of reading.passages) expect(message.text).toContain(text);
+    expect(message.text.indexOf(reading.passages[0]!.text))
+      .toBeLessThan(message.text.indexOf('Read the full Leo daily'));
+  });
+});

@@ -828,10 +828,10 @@ function eventName(event: HoroscopeProgramEvent): string {
 function eventSentence(event: HoroscopeProgramEvent, sign: HoroscopeSign): string {
   const houses = eventHouses(event, sign);
   if (houses.length === 2) {
-    return `${eventName(event)} connects ${HOUSE_THEME[houses[0]]} with ${HOUSE_THEME[houses[1]]}.`;
+    return `${cap(eventName(event))} connects ${HOUSE_THEME[houses[0]]} with ${HOUSE_THEME[houses[1]]}.`;
   }
   const house = houses[0];
-  return `${eventName(event)} brings ${HOUSE_THEME[house]} into focus.`;
+  return `${cap(eventName(event))} brings ${HOUSE_THEME[house]} into focus.`;
 }
 
 /** The same event and houses as eventSentence, in the alternate daily frame. */
@@ -968,7 +968,7 @@ function dailySurface(
   const passages = surface === 'today'
     ? [
         passage(
-          `${dayWord}, ${HOUSE_ACTION[moonHouse]}. For ${cap(sign)}, ${profile.daily}. The ${daily.moon.phase.toLocaleLowerCase('en')} Moon puts ${HOUSE_THEME[moonHouse]} on the day’s agenda.`,
+          `${dayWord}, ${HOUSE_ACTION[moonHouse]}. For ${cap(sign)}, ${profile.daily}. The ${moonPhaseLabel(daily.moon.phase)} puts ${HOUSE_THEME[moonHouse]} on the day’s agenda.`,
           catalog.position(daily, moon, sign),
         ),
         passage(
@@ -978,7 +978,7 @@ function dailySurface(
       ]
     : [
         passage(
-          `${tomorrowOpening} As the ${daily.moon.phase.toLocaleLowerCase('en')} Moon develops, tomorrow’s foreground shifts toward ${HOUSE_THEME[moonHouse]}.`,
+          `${tomorrowOpening} As the ${moonPhaseLabel(daily.moon.phase)} develops, tomorrow’s foreground shifts toward ${HOUSE_THEME[moonHouse]}.`,
           catalog.position(daily, moon, sign),
         ),
         passage(
