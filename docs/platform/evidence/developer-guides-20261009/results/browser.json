@@ -1,0 +1,272 @@
+{
+  "schema": "zodiacs.developer-guide-browser.v1",
+  "browser": "149.0.7827.55",
+  "checked": [
+    {
+      "path": "/developers/docs/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/node/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/browser/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/deno/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/bun/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/cloudflare/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/natal/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/transits/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/returns/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/synastry/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/crossings/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/conventions/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/errors/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/receipts/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/python/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/elections/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/deprecation/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/changelog/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/status/",
+      "width": 360,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/node/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/browser/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/deno/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/bun/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/cloudflare/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/natal/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/transits/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/returns/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/synastry/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/crossings/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/conventions/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/errors/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/receipts/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/python/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/elections/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/deprecation/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/changelog/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "path": "/developers/docs/status/",
+      "width": 1280,
+      "status": "pass",
+      "calculationRequests": 0,
+      "pageErrors": 0
+    }
+  ]
+}
