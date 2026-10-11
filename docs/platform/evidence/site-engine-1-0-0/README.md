@@ -197,6 +197,10 @@ The lockfile and `src/lib/**` are part of the Phase 1 capture digest, so the
 - **Same run.** The 390 and 1440 px visual baselines matched, and Lighthouse
   and the explorer drive passed.
 - **Committed.** The 18 PNGs and `manifest.json`, as the artifact holds them.
+  [browser-evidence-provenance.json](browser-evidence-provenance.json) is the
+  run's own provenance record. It names the head, the base, the template
+  digest and every step's outcome, and hashes 752 files; all 19 capture
+  entries match the committed files.
 
 ## Not established here
 - **CI.** The full x86-64 check has not run yet.
