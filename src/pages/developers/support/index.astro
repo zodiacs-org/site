@@ -14,10 +14,10 @@ if (process.env.VERCEL_ENV === 'production' && /^0{40}$/.test(candidate.evidence
   throw new Error('src/data/platform-engine-candidate.json still has the all-zero evidenceCommit placeholder;'
     + ' pin it to the pushed evidence commit before deploying');
 }
-const description = 'Current Zodiacs developer support: local engine candidate, public sky data, hosted widgets, the compute API, runtime checks, calculation limits, privacy, and licenses.';
+const description = 'Current Zodiacs developer support: the local engine, public sky data, hosted widgets, the compute API, runtime checks, calculation limits, privacy, and licenses.';
 const engineRows = [
   ['Language and runtime', 'ESM JavaScript with TypeScript declarations. The manifest declares Node.js ^20.19.0 || >=22.7.0: astronomy-engine ships ES modules in a package without "type": "module", which plain Node loads as ES modules only from 20.19.0 and 22.7.0. There is no CommonJS export. Browser integrations need an ESM-aware bundler or equivalent dependency setup; bundlers are not affected by the Node range.'],
-  ['Recorded runtime checks', 'The linked reports record this candidate’s tested runtimes, package consumers and TypeScript declarations. They identify the exact artifact and validation scope; they do not certify every browser or all Node versions allowed by the manifest.'],
+  ['Recorded runtime checks', 'The linked reports record this version’s tested runtimes, package consumers and TypeScript declarations. They identify the exact artifact and validation scope; they do not certify every browser or all Node versions allowed by the manifest.'],
   ['Zodiac and positions', 'Tropical ecliptic of date; apparent geocentric positions in degrees. Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, and true North/South Moon nodes. The sidereal zodiac is in the separate @zodiacs/engine/vedic and @zodiacs/engine/calc entry points. The core has no topocentric parallax; @zodiacs/engine/calc offers a topocentric center.'],
   ['Calculations', 'Positions, natal charts, transit snapshots, synastry, Moon phase, Saturn-return seasons, secondary progressions, chart points, aspects under a configurable policy, and declinations with parallels. Separate imports add Hellenistic timing (@zodiacs/engine/timing) and sidereal and Jyotish techniques (@zodiacs/engine/vedic). The same public API supplies calculation metadata; interpretation is separate from astronomical accuracy.'],
   ['Houses and unknown time', 'Thirteen house systems, each as Swiss Ephemeris defines it: whole sign, Placidus, Koch, Porphyry, Regiomontanus, Campanus, Topocentric, Alcabitius, Equal (Ascendant), Equal-MC, Vehlow, Meridian and Morinus. Known time and coordinates are required for angles/houses. timeKnown: false sets both to null and adds no-time. Placidus and Koch fall back to whole sign inside the polar circle, where the absolute latitude is 90° minus the obliquity or more, and Placidus also on nonconvergence, with polar-fallback. The other eleven systems are defined wherever the angles are. Exact geographic poles and degenerate horizon intersections are outside verified angle scope.'],
@@ -48,10 +48,10 @@ const engineRows = [
         <a href="/developers/">Developer tools</a> have different release states.
         Public sky files, hosted embeds and the compute API are available now;
         the compute API answers only while its per-address rate limit is in
-        place. The local engine below is a release candidate,{' '}
+        place. The local engine below is{' '}
         {candidate.releaseStatus === 'published'
-          ? 'on npm.'
-          : 'distributed as a digest-pinned archive and not on npm.'}
+          ? (candidate.version.includes('-') ? 'a release candidate, on npm.' : 'a stable release, on npm.')
+          : 'a release candidate, distributed as a digest-pinned archive and not on npm.'}
       </p>
     </div>
 
@@ -68,8 +68,8 @@ const engineRows = [
           <p>
             <code>{`npm install ${candidate.name}@${candidate.version}`}</code> installs
             this exact published release. The verified registry read of
-            {candidate.registryObservedOn} records it under <code>next</code>;
-            <code>latest</code> remains 0.1.1-rc.15. That release was
+            {candidate.registryObservedOn} records it under <code>latest</code>;
+            <code>next</code> still names an earlier candidate, 0.1.1-rc.16. That release was
             published from the <code>release.yml</code> workflow of the{' '}
             <a href={candidate.sourceRepository}>engine repository</a> with SLSA
             provenance, which names that repository, the workflow and the commit the
@@ -113,7 +113,7 @@ const engineRows = [
       <p>
         <a href={candidate.artifactUrl}>Download engine {candidate.version} (.tgz)</a>.
         Verify its SHA-256 before installing the local file; follow the{' '}
-        <a href={`${sourceRoot}/README.md`}>candidate README and examples</a>.
+        <a href={`${sourceRoot}/README.md`}>README and examples</a>.
       </p>
       <p class="support-hash">SHA-256: <code>{candidate.sha256}</code></p>
       <p><a href="/developers/examples/">Run the starter project</a> for complete local natal, transit, and publisher widget examples.</p>
@@ -121,9 +121,9 @@ const engineRows = [
         Use the public <code>@zodiacs/engine</code> and optional{' '}
         <code>@zodiacs/engine/geo</code> and <code>@zodiacs/engine/receipt</code> entry points. The{' '}
         <code>/internal</code> entry points are site compatibility boundaries.
-        Use the <a href={`${sourceRoot}/README.md`}>current candidate API guide</a>,{' '}
+        Use the <a href={`${sourceRoot}/README.md`}>current API guide</a>,{' '}
         <a href={receiptSpec}>draft receipt specification</a> (written for rc.3 to rc.6), and{' '}
-        <a href={`${sourceRoot}/CHANGELOG.md`}>candidate changelog</a>. The{' '}
+        <a href={`${sourceRoot}/CHANGELOG.md`}>changelog</a>. The{' '}
         <a href="/developers/engine/reference/">{candidate.version} API reference</a> documents every
         public entry point of the archive this revision vendors; the{' '}
         <a href="/sdk/engine/">archived rc.1 API reference</a> describes the earlier candidate.
@@ -151,7 +151,7 @@ const engineRows = [
         event discovery.
       </p>
       <p>
-        The <a href={evidenceUrl(candidate.evidencePaths.ledger)}>candidate evidence ledger</a>{' '}
+        The <a href={evidenceUrl(candidate.evidencePaths.ledger)}>evidence ledger</a>{' '}
         records commands, runtimes, reference conventions, and limits. Read the{' '}
         <a href={evidenceUrl(candidate.evidencePaths.node22)}>Node 22 comparison</a>,{' '}
         <a href={evidenceUrl(candidate.evidencePaths.node24)}>Node 24 comparison</a>, and{' '}
@@ -247,14 +247,14 @@ const engineRows = [
     <h2>Report a discrepancy</h2>
     <div class="prose">
       <p>
-        <a href="https://github.com/zodiacs-org/sdk/issues">Engine issues</a>{' '}
-        belong in the SDK repository; use{' '}
+        <a href={`${candidate.sourceRepository}/issues`}>Engine issues</a>{' '}
+        belong in the engine repository; use{' '}
         <a href="https://github.com/zodiacs-org/site/issues">site issues</a>{' '}
         for data files or embeds. Include the version or payload URL, runtime,
         settings, expected result, and actual result. Prefer a synthetic input
         that reproduces the problem; public issues should not contain someone’s
         name or private birth details. There is no published long-term support
-        or response-time guarantee for this candidate.
+        or response-time guarantee for this version.
       </p>
     </div>
   </section>

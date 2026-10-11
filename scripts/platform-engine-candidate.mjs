@@ -13,6 +13,7 @@ const exactKeys = (value, expected) => record(value)
   && expected.every((key) => Object.hasOwn(value, key));
 const matches = (value, pattern) => typeof value === 'string' && pattern.exec(value)?.[0] === value;
 const commit = (value) => matches(value, /^[a-f0-9]{40}$/u) && value !== '0'.repeat(40);
+const VERSION = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-rc\.(?:0|[1-9]\d*))?$/u;
 // The SDK and site repositories moved from ZodiacsOfficial to zodiacs-org on
 // 2026-09-24; GitHub serves the same commits, and so the same bytes, at both.
 const OWNER = 'zodiacs-org';
@@ -33,11 +34,12 @@ export function assertEngineCandidate(candidate) {
   const fail = () => { throw new Error('Invalid engine candidate metadata'); };
   if (!exactKeys(candidate, keys)) fail();
   if (candidate.schemaVersion !== 1 || candidate.name !== '@zodiacs/engine'
-    || !matches(candidate.version, /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)-rc\.(?:0|[1-9]\d*)$/u)
+    // A release candidate (x.y.z-rc.n) or, from 1.0.0, a stable release (x.y.z).
+    || !matches(candidate.version, VERSION)
     || candidate.version.includes('\n')
     // Vendoring a new archive does not publish it. The separately recorded
     // registry version/date must stay explicit through an adoption.
-    || !matches(candidate.registryVersion, /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)-rc\.(?:0|[1-9]\d*)$/u)
+    || !matches(candidate.registryVersion, VERSION)
     || !matches(candidate.registryObservedOn, /^\d{4}-\d{2}-\d{2}$/u)
     || !(candidate.releaseStatus === 'published' && candidate.releaseLabel === 'On npm' && candidate.registryVersion === candidate.version
       || candidate.releaseStatus === 'vendored-candidate' && candidate.releaseLabel === 'Vendored candidate' && candidate.registryVersion !== candidate.version)

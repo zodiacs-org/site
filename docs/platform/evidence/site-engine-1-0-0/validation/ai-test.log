@@ -1,0 +1,29 @@
+
+ RUN  v3.2.7 <checkout>
+
+ ✓ src/ai-tools/studio/bridge.test.ts (4 tests) 12ms
+ ✓ src/ai-tools/watch/oauth.test.ts (3 tests) 32ms
+ ✓ src/ai-tools/studio/model.test.ts (15 tests) 69ms
+ ✓ src/ai-tools/watch/watch.test.ts (37 tests) 113ms
+ ✓ src/ai-tools/studio/explore.test.ts (16 tests) 122ms
+ ✓ src/ai-tools/quota.test.ts (4 tests) 5ms
+ ✓ src/ai-tools/tools.test.ts (21 tests) 198ms
+ ✓ src/ai-tools/studio/inspect.test.ts (7 tests) 153ms
+ ✓ src/ai-tools/watch/callback.test.ts (3 tests) 6ms
+ ✓ src/ai-tools/studio/local-time.test.ts (11 tests) 209ms
+ ✓ src/ai-tools/lifetime.test.ts (3 tests) 1034ms
+   ✓ clears actual HTTP bundle state after success and failure  382ms
+   ✓ clears actual stdio bundle state after success and failure  348ms
+   ✓ clears actual Sky Watch bundle state after success and failure  303ms
+ ✓ src/ai-tools/http.test.ts (15 tests) 458ms
+   ✓ stateless MCP HTTP boundary > works with the official SDK client: list, call, widget read and close  316ms
+ ✓ src/ai-tools/usage.test.ts (20 tests) 1742ms
+   ✓ counting hosted tool calls > replies before a slow database answers, then gives up within the timeout without an error  1507ms
+
+ Test Files  13 passed (13)
+      Tests  159 passed (159)
+   Start at  21:50:10
+   Duration  2.82s (transform 1.80s, setup 0ms, collect 4.70s, tests 4.15s, environment 1ms, prepare 1.10s)
+
+Developer bundle: manifest, three skills, eight MCP tools, synthetic record comparison and privacy recovery passed.
+Published-engine recipes: version, offset equivalence, unknown time, Moon phase and calendar passed.

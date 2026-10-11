@@ -2,7 +2,7 @@
   "type": "named end-user host interoperability: the host launched the adapter and connected to it. Separate from the official-SDK protocol drive, and separate from the model-driven demonstration recorded by hand in host-interop.md.",
   "host": {
     "name": "Claude Code CLI",
-    "version": "2.1.292 (Claude Code)",
+    "version": "2.1.81 (Claude Code)",
     "mechanism": "claude mcp add/list/get/remove, stdio"
   },
   "notTested": [
@@ -16,36 +16,36 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "sha256": "f0be3308b76f7dd9e5f1b3cf7ee8c9e719501ca1f802706ffb4cd672941a42ac"
+    "sha256": "fd062f8cc33947e79db2e83faa6dd923bbef23d58dc86e34117ef5ce3aeac6e0"
   },
-  "completedAt": "2026-10-07T14:52:48.241Z",
+  "completedAt": "2026-10-11T14:48:04.772Z",
   "checks": 7,
   "passed": 7,
   "results": [
     {
       "name": "the host accepts the server through its documented add command",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /workspace/site/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-jR6lmy/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-jR6lmy/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node <checkout>/examples/mcp-server/server.mjs to local config\nFile modified: <tmp>/zodiacs-mcp-host-<id>/claude-config/.claude.json [project: <tmp>/zodiacs-mcp-host-<id>/project]"
     },
     {
       "name": "the registration landed in the throwaway config, not the real one",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /workspace/site/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-jR6lmy/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-jR6lmy/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node <checkout>/examples/mcp-server/server.mjs to local config\nFile modified: <tmp>/zodiacs-mcp-host-<id>/claude-config/.claude.json [project: <tmp>/zodiacs-mcp-host-<id>/project]"
     },
     {
       "name": "the host launches the server and reports it connected",
       "ok": true,
-      "detail": "Checking MCP server health…\n\nzodiacs: node /workspace/site/examples/mcp-server/server.mjs - ✔ Connected"
+      "detail": "Checking MCP server health...\n\nzodiacs: node <checkout>/examples/mcp-server/server.mjs - ✓ Connected"
     },
     {
       "name": "the host reports it as a connected stdio server",
       "ok": true,
-      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: ✔ Connected\n  Type: stdio\n  Command: node\n  Args: /workspace/site/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
+      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: ✓ Connected\n  Type: stdio\n  Command: node\n  Args: <checkout>/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove \"zodiacs\" -s local"
     },
     {
       "name": "the documented removal command removes it",
       "ok": true,
-      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-jR6lmy/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-jR6lmy/project]"
+      "detail": "Removed MCP server zodiacs from local config\nFile modified: <tmp>/zodiacs-mcp-host-<id>/claude-config/.claude.json [project: <tmp>/zodiacs-mcp-host-<id>/project]"
     },
     {
       "name": "nothing is left configured after removal",
@@ -56,8 +56,8 @@
       "name": "the machine's own Claude Code configuration is byte-identical throughout",
       "ok": true,
       "detail": {
-        "before": "absent",
-        "after": "absent"
+        "before": "present; digest withheld",
+        "after": "present; digest withheld, equal to before"
       }
     }
   ]

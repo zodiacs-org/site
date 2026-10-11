@@ -13,7 +13,7 @@ which are public standalone imports as well as root re-exports.
 `/internal` and `/internal/math` are site compatibility entries outside the
 public API promise, may change without notice, and are deliberately excluded.
 
-This is a release candidate. Signatures describe the implementation, not proof
+This is the first stable release, published on npm. Signatures describe the implementation, not proof
 of accuracy or event-search completeness. Keep the limitations and failed or
 partial measurements in the [engine overview](/developers/engine/#accuracy),
 [release README](/developers/engine/reference/release/README.txt) and

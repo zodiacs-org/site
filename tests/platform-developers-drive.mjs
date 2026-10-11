@@ -95,7 +95,7 @@ try {
       assert.equal(await matrix.locator('tbody tr').count(), 11);
       assert.equal(await matrix.locator('caption').textContent(), `Local engine ${engine.version}`);
       assert.ok((await matrix.getByRole('row', { name: /Portable natal records/ }).textContent()).includes('does not authenticate imported claims'));
-      assert.equal(await page.getByRole('link', { name: 'current candidate API guide', exact: true }).getAttribute('href'), `${engine.sourceRepository}/blob/${engine.sourceCommit}/${engine.sourcePackagePath ? `${engine.sourcePackagePath}/` : ''}README.md`);
+      assert.equal(await page.getByRole('link', { name: 'current API guide', exact: true }).getAttribute('href'), `${engine.sourceRepository}/blob/${engine.sourceCommit}/${engine.sourcePackagePath ? `${engine.sourcePackagePath}/` : ''}README.md`);
       assert.equal(await page.getByRole('link', { name: 'archived rc.1 API reference', exact: true }).getAttribute('href'), '/sdk/engine/');
       assert.equal(await page.locator('footer.zfooter').count(), 1);
       assert.equal(await page.locator('#hosted').textContent(), 'Hosted computation · available');

@@ -9,6 +9,8 @@ on:
       - 'tests/benchmarks/sky-benchmark.test.ts'
       - 'src/lib/sky-api/**'
       - 'vendor/zodiacs-engine-1.0.0-rc.2.tgz'
+      - 'vendor/zodiacs-engine-1.0.0.tgz'
+      - 'src/data/platform-engine-candidate.json'
       - 'package.json'
       - 'package-lock.json'
       - 'docs/platform/programme/DECISIONS-2026-10-09.md'
@@ -35,7 +37,7 @@ jobs:
       - run: npm ci
       - name: Install the existing pinned comparison instrument outside Git
         run: python -m pip install pyswisseph==2.10.3.2
-      - name: Run unchanged seeds, grids, windows and tolerances on carried rc.2
+      - name: Run unchanged seeds, grids, windows and tolerances on the vendored engine
         run: |
           PROGRAMME_SCRATCH=$(mktemp -d "$RUNNER_TEMP/checkpoint23.XXXXXX")
           PROGRAMME_RESULTS_DIR="$PROGRAMME_SCRATCH/results"

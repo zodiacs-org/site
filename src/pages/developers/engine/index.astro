@@ -7,7 +7,7 @@ import { ENGINE_DEMO_SOURCE, ENGINE_DEMO_OUTPUT } from '../../../lib/engine-demo
 import { ENGINE_LICENSES, FREE_OFFER, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 
 const install = engineInstallBlock(candidate);
-// A vendored candidate is not on npm: the registry serves an earlier version under `next`.
+// A vendored candidate is not on npm; a published version is, and the site vendors its exact tarball.
 const published = candidate.releaseStatus === 'published';
 // The package sits at the root of its repository from rc.7 (packages/engine of the SDK before).
 const sourceTree = `${candidate.sourceRepository}/tree/${candidate.sourceCommit}${candidate.sourcePackagePath ? `/${candidate.sourcePackagePath}` : ''}`;
@@ -111,9 +111,10 @@ const jsonLd = [
       <>
         <div class="prose">
           <p>
-            This revision vendors {candidate.version}. The verified registry read of
-            {candidate.registryObservedOn} records it under <code>next</code>;
-            <code>latest</code> remains 0.1.1-rc.15. Install this exact published version:
+            This revision vendors {candidate.version}, the first stable release. The
+            verified registry read of {candidate.registryObservedOn} records it under{' '}
+            <code>latest</code>; <code>next</code> still names an earlier candidate,
+            0.1.1-rc.16. Install this exact published version:
           </p>
         </div>
         <pre tabindex="0" role="region" aria-label="Install from npm"><code>{`npm install ${candidate.name}@${candidate.version}`}</code></pre>
@@ -180,7 +181,7 @@ const jsonLd = [
     <div class="prose">
       <p><a href="/developers/engine/reference/">Read the {candidate.version} API reference</a> for public exports, parameter and return types, and the release’s documentation comments.</p>
       <p>
-        The 1.0 candidate freezes exported tables and checks options more strictly.
+        Since 1.0 the engine freezes exported tables and checks options more strictly.
         Copy a table before changing it. The{' '}
         <a href={`${candidate.sourceRepository}/blob/${candidate.sourceCommit}/CHANGELOG.md`}>CHANGELOG</a>{' '}
         lists breaking changes and replacements; the{' '}
@@ -330,7 +331,7 @@ const jsonLd = [
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
         <li>No input-date bound inside the span the ephemeris covers, Terrestrial Time 0001-04-30 to 3998-09-03; outside it a calculation throws. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>
-        <li>The manifest declares Node 20.19 or a later 20.x, and 22.7 and newer. What has actually been executed for this candidate is Node 22.22.2 and Node 24.19.0 here, with the site's Chromium browser checks, and Node 20.19.0, 22.7.0, 22.22.2 and 24.21.0 in the engine's own packed-archive check — narrower than the declaration.</li>
+        <li>The manifest declares Node 20.19 or a later 20.x, and 22.7 and newer. What has actually been executed for this release is Node 22.22.2 and Node 24.21.0 here, with the site's Chromium browser checks, and Node 20.19.0, 22.7.0, 22.23.3 and 24.21.0 in the engine's own packed-archive check — narrower than the declaration.</li>
         <li>No interpretation. The engine returns geometry; what it means is your problem, and not an astronomical claim.</li>
       </ul>
       <p>

@@ -132,6 +132,10 @@ const ENGINE_RC2_ROUTES = [
 // retention for the hosted MCP server.
 const MCP_HOST_LOGS_LASTMOD = '2026-10-09';
 const MCP_HOST_LOGS_ROUTES = ['/privacy/'] as const;
+// Engine 1.0.0, published on npm, adopted 2026-10-11 with MCP adapter 0.1.0-rc.19 and developer plugin 0.3.7:
+// the same pages, which name the engine's version, how to install it and that npm carries it.
+const ENGINE_100_LASTMOD = '2026-10-11';
+const ENGINE_100_ROUTES = ENGINE_RC2_ROUTES;
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -270,6 +274,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const),
   ...ENGINE_RC2_ROUTES.map((loc) => [loc, ENGINE_RC2_LASTMOD] as const),
   ...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const),
+  ...ENGINE_100_ROUTES.map((loc) => [loc, ENGINE_100_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

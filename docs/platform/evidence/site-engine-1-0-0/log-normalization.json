@@ -1,0 +1,48 @@
+{
+  "schema": "zodiacs.log-normalization.v1",
+  "what": "Records whose committed bytes differ from what the tool wrote, why, and both digests. The captured bytes stay outside Git.",
+  "files": [
+    {
+      "path": "docs/platform/evidence/mcp-adapter/host-drive.json",
+      "tool": "tests/mcp-host-drive.mjs (npm run test:mcp:host), 2026-10-11T14:48:04.772Z",
+      "capturedSha256": "56258f0664e512d5dc16d055a8d4e50d2854e89e4a5bc8c33d141c0956dba97b",
+      "committedSha256": "9eb06a2125b7ebe47fcc5481f80c6a903b2f56ee84ef6f953e4e16baba228a40",
+      "normalization": [
+        "the checkout's absolute path is written <checkout>",
+        "the drive's throwaway directories under the macOS temporary directory are written <tmp>/zodiacs-mcp-host-<id>",
+        "the SHA-256 of the machine's own Claude Code configuration, equal before and after, is withheld as a private fingerprint; the record says it was present and unchanged"
+      ],
+      "unchanged": "every check, its result, the host version and the bundle's SHA-256"
+    },
+    {
+      "path": "validation/full-suite.log",
+      "capturedSha256": "5fce5bd884589b03df7ac168a31088b38b906870d681e7fe76d1554b4ed88762",
+      "committedSha256": "85911e35b4c393deede3ec4b6d9f998599d427dcd6a8c85de77824e585fd5a56",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
+    },
+    {
+      "path": "validation/astro-check.log",
+      "capturedSha256": "b1b64f275a3815c0ab1b7889f38db7400df8483e3c568815423f100fdc861471",
+      "committedSha256": "06584e25438a0c4184567f5ecc2c958bf1b42f84a73841a84e4b0378fb37a87a",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
+    },
+    {
+      "path": "validation/build.log",
+      "capturedSha256": "1459585dc99b56da843f3f17e03ea1fa5e6aa2a76a55d818cb8583e9b8d0659d",
+      "committedSha256": "7c54e1ec3dd011c02f0e9f5bb449d5b0d4cf9b86383649e7c38a0a96f198eede",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
+    },
+    {
+      "path": "validation/ai-test.log",
+      "capturedSha256": "ef6fed767af5fa89c1365c6dd3d897bbd7ad305c60dbd57e51c1e2845fe8c2e4",
+      "committedSha256": "d57a9c9f9d7cb9d52d8d2850666d6db58dc9fa8e3f04722a741abbf0008b08a7",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
+    },
+    {
+      "path": "validation/regenerate.log",
+      "capturedSha256": "5ff18934f338e82efb5eadf3496e1a3d85aea2be0042f70f4bc4e0fba111c384",
+      "committedSha256": "0fbdfa1f737ca583a450aaed9a042dcadf64b7134f77c8645b9501c8ab646e5d",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
+    }
+  ]
+}

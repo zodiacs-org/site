@@ -1,8 +1,33 @@
 # Vendored @zodiacs/engine artifact
 
-`zodiacs-engine-1.0.0-rc.2.tgz` is the exact archive consumed by this revision.
-It is a **vendored candidate, not on npm**. The registry read of 2026-10-07
-records `0.1.1-rc.16` under `next` and `0.1.1-rc.15` under `latest`.
+`zodiacs-engine-1.0.0.tgz` is the exact archive consumed by this revision:
+`@zodiacs/engine@1.0.0`, the first stable release. The engine's Release
+workflow published it to npm under `latest` on 2026-10-11 (run
+38144970198, with SLSA provenance), and npm's tarball is these bytes.
+
+- Artifact SHA-256: `c4d3754de899fb98882331e6d7b9ce3ce77fb2072baeb002aa0ef8c77b0ab0f6`
+- Packed size: 288,063 bytes; 74 files; 991,915 unpacked bytes.
+- Source commit: `ca2c8cefbaa1a9d6f5f78ee86713e813633942ca`
+- Carrier commit: `38d31854e5716454921b6ce8a211788a0984328e`, merged into engine
+  `main` by `f8992a4c1dfedd9e69c0783e2c185e22580460f7` (engine PR #39)
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/38d31854e5716454921b6ce8a211788a0984328e/artifacts/zodiacs-engine-1.0.0.tgz)
+- Licence: **MIT AND CC-BY-4.0**. Keep the archive's LICENSE, LICENSING.md
+  and NOTICE. Both licences apply to the distributed package.
+- [Adoption record](../docs/platform/evidence/site-engine-1-0-0/README.md);
+  the engine's release and publication record is its
+  `docs/evidence/1.0.0-20261011/`.
+
+The archive and its SHA-256 receipt are byte-for-byte copies of the
+carrier's git objects (blob ids `5912e240…` and `4595a764…`). 1.0.0 is
+1.0.0-rc.2 with the version changed: the same API and the same values. For
+this site nothing it computes changes; receipts and generated records name
+1.0.0 where they named 1.0.0-rc.2.
+
+# Previous candidate: 1.0.0-rc.2
+
+`zodiacs-engine-1.0.0-rc.2.tgz` and its checksum remain unchanged. It was a
+**vendored candidate, not on npm**; the registry read of 2026-10-07 recorded
+`0.1.1-rc.16` under `next` and `0.1.1-rc.15` under `latest`.
 
 - Artifact SHA-256: `4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002`
 - Packed size: 287,011 bytes; 74 files; 989,528 unpacked bytes.
