@@ -143,3 +143,26 @@ export function longitudeSpeed(body: BodyName, date: Date): number {
     return difference / elapsedDays(before, after, 2 * stepDays);
   });
 }
+
+/**
+ * When the Sun's centre next reaches `altitude` degrees, geometric and
+ * unrefracted (the twilight convention astronomy-engine's SearchAltitude
+ * follows), for an observer, searching from
+ * `start` for up to `limitDays`, rising (`direction` 1) or setting (−1). Null
+ * when it does not happen in the window: polar day or night, or a height the
+ * Sun never reaches that day. Used for golden hour and civil dusk, which the
+ * engine's sky module (rise, set and transits only) does not give.
+ */
+export function sunAltitudeCrossing(
+  observer: { latitude: number; longitude: number; height?: number },
+  start: Date,
+  direction: 1 | -1,
+  altitude: number,
+  limitDays = 1,
+): Date | null {
+  return onEngineClock(() => {
+    const place = new Astronomy.Observer(observer.latitude, observer.longitude, observer.height ?? 0);
+    const found = Astronomy.SearchAltitude(Astronomy.Body.Sun, place, direction, start, limitDays, altitude);
+    return found ? found.date : null;
+  });
+}
