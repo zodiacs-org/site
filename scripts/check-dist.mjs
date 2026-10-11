@@ -516,6 +516,56 @@ const dailyPublicationManifest = JSON.parse(await readFile(
   const expectedPublicationSha256 = sha256(canonicalJson(sourcePublication));
   const expectedPolicySha256 = sha256(policyRaw);
 
+  // The stable and dated bot manifests must describe this exact deployment.
+  const contentPaths = ['content/today.json', `content/${manifest.date}.json`];
+  const contentBytes = [];
+  for (const path of contentPaths) {
+    const file = resolve(root, path);
+    if (!(await exists(file))) {
+      fail(`daily-content: missing ${path}`);
+      continue;
+    }
+    try {
+      const bytes = await readFile(file, 'utf8');
+      contentBytes.push(bytes);
+      const content = JSON.parse(bytes);
+      if (content.schema !== 'zodiacs.daily-content.v1' || content.date !== manifest.date
+        || !Number.isFinite(Date.parse(content.generatedAt))
+        || content.source?.publicationCanonicalSha256 !== expectedPublicationSha256
+        || content.source?.url !== `${SITE_ORIGIN}/horoscopes/`) {
+        fail(`daily-content: ${path} has invalid edition metadata`);
+      }
+      if (!Array.isArray(content.signs)
+        || JSON.stringify(content.signs.map((entry) => entry.sign)) !== JSON.stringify(ZODIAC_SIGN_SLUGS)) {
+        fail(`daily-content: ${path} must contain twelve signs in zodiac order`);
+        continue;
+      }
+      for (const entry of content.signs) {
+        const reading = sourceHoroscopeProgram.signs.find(({ sign }) => sign === entry.sign)?.readings.today;
+        if (entry.dailyLine !== reading?.passages[0]?.text || reading?.status !== 'publishable'
+          || reading?.period.from !== manifest.date || reading?.period.through !== manifest.date) {
+          fail(`daily-content: ${path} ${entry.sign} differs from the published daily passage`);
+        }
+        if (entry.signPageUrl !== `${SITE_ORIGIN}/horoscopes/${entry.sign}/`
+          || entry.iconUrl !== `${SITE_ORIGIN}/assets/zodiac-icons/400/${entry.sign}.webp`) {
+          fail(`daily-content: ${path} ${entry.sign} has unexpected URLs`);
+        }
+        for (const rawUrl of [content.source.url, entry.signPageUrl, entry.iconUrl]) {
+          const url = new URL(rawUrl);
+          const target = targetPath(url.pathname);
+          if (url.origin !== SITE_ORIGIN || !target || !(await exists(target))) {
+            fail(`daily-content: ${path} URL does not resolve in this build: ${rawUrl}`);
+          }
+        }
+      }
+    } catch (error) {
+      fail(`daily-content: ${path} is invalid: ${error.message}`);
+    }
+  }
+  if (contentBytes.length === 2 && contentBytes[0] !== contentBytes[1]) {
+    fail('daily-content: stable and dated manifests are not byte-identical');
+  }
+
   if (manifest.publication?.canonicalSha256 !== expectedPublicationSha256) {
     fail('daily-publication: committed manifest publication SHA-256 does not match the source publication');
   }
