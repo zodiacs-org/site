@@ -27,13 +27,15 @@ export const EXAMPLE_HEADING: ChartHeading = { text: '15 June 1990 · 1:00 pm ·
 /**
  * The chart's header in plain words, from what the person entered: the local
  * date and clock time when they started from local time, otherwise the date
- * and time they typed in UTC, and the place they chose, if any.
+ * and time they typed in UTC, and the place they chose, if any, except beside
+ * a UTC time.
  */
 export function chartHeading(input: StudioInput, instantUtc: string): ChartHeading {
   const local = input.timeKnown ? input.local?.resolution : undefined;
   const parts = !input.timeKnown ? [birthDate(input.date), 'Birth time unknown']
     : local ? [birthDate(local.date), birthClock(local.time)]
       : [birthDate(input.date), `${birthClock(input.time)} UTC`];
-  if (input.place) parts.push(input.place);
+  // A UTC instant (typed, or shifted in Time Explorer) is no longer the place's own clock.
+  if (input.place && (!input.timeKnown || local)) parts.push(input.place);
   return { text: parts.join(' · '), dateTime: input.timeKnown ? instantUtc : input.date };
 }

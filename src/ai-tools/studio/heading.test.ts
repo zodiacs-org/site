@@ -36,6 +36,13 @@ describe('Chart Studio header', () => {
     expect(chartHeading(input, calculateStudio(input).inputSnapshot.utc).text).toBe('14 March 1992 · 9:30 am UTC');
   });
 
+  it('leaves the city off a UTC time, as after a shift in Time Explorer', () => {
+    const input = { ...EXAMPLE, date: '1992-03-14', time: '10:30', local: undefined, place: 'London, England, United Kingdom' };
+    expect(chartHeading(input, calculateStudio(input).inputSnapshot.utc).text).toBe('14 March 1992 · 10:30 am UTC');
+    const unknown = { ...input, timeKnown: false };
+    expect(chartHeading(unknown, calculateStudio(unknown).inputSnapshot.utc).text).toBe('14 March 1992 · Birth time unknown · London, England, United Kingdom');
+  });
+
   it('labels the example in London clock time', () => {
     const utc = calculateStudio(EXAMPLE).inputSnapshot.utc;
     expect(EXAMPLE_HEADING.dateTime).toBe(utc);
