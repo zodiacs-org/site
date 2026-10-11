@@ -1,0 +1,152 @@
+{
+  "schema": "zodiacs.birth-window-graph-closure.v1",
+  "checkedAt": "2026-10-11T13:56:12.870Z",
+  "base": "https://zodiacs.org",
+  "localBuild": {
+    "builtAt": "2026-10-10T20:19:43.926Z"
+  },
+  "rule": "every relative or /_astro/ import in a recorded chunk is a file the same crawl recorded; a chunk is read only from bytes whose SHA-256 equals the recorded digest",
+  "passed": true,
+  "runs": [
+    {
+      "observation": "docs/platform/evidence/birth-time-window-production-20261011/run-7028d019/observation.json",
+      "observationSha256": "cdcd027de338593466407035a70e75505f93ed33f5ef2d00fda2ba0364dc4e06",
+      "schema": "zodiacs.birth-time-window-production-observation.v1",
+      "commit": "7028d01905137b45e835db1dca785cecb672a729",
+      "before": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      },
+      "after": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      }
+    },
+    {
+      "observation": "docs/platform/evidence/birth-time-window-production-20261011/run-ed1137cb/observation.json",
+      "observationSha256": "1101ebc11b29f025eeb6511a494db0c36e89a83cf3092ee9db1472b8d6944714",
+      "schema": "zodiacs.birth-time-window-production-observation.v2",
+      "commit": "ed1137cb3effe0976a3a5709c4c9fae8f324f196",
+      "before": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      },
+      "after": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      }
+    },
+    {
+      "observation": "docs/platform/evidence/birth-time-window-production-20261011/run-368ce361/observation.json",
+      "observationSha256": "cfd705cf2d8e1c830f4df39015f0cfb5e5cd9f635f6a5f438aaa5c90d49ece9c",
+      "schema": "zodiacs.birth-time-window-production-observation.v3",
+      "commit": "368ce3613d39a5625eb61b06b07a4f5f490989ba",
+      "before": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      },
+      "after": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      }
+    },
+    {
+      "observation": "docs/platform/evidence/birth-time-window-production-20261011/run-368ce361-v4/observation.json",
+      "observationSha256": "e5f74710df2051824e26d48291b419b94ed62863576c6b0d211106e23ec297c9",
+      "schema": "zodiacs.birth-time-window-production-observation.v4",
+      "commit": "368ce3613d39a5625eb61b06b07a4f5f490989ba",
+      "before": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      },
+      "after": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      }
+    },
+    {
+      "observation": "docs/platform/evidence/birth-time-window-production-20261011/run-58362fb1/observation.json",
+      "observationSha256": "93105b14c62563d4ef802834417937b896cd2b3239d743c67e40fb3e3b4275c5",
+      "schema": "zodiacs.birth-time-window-production-observation.v5",
+      "commit": "58362fb104e585e66b1fbbabb6b39aa1f2bc986d",
+      "before": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      },
+      "after": {
+        "files": 190,
+        "chunks": 188,
+        "bytesFrom": {
+          "production": 188,
+          "local build": 0
+        },
+        "bytesUnavailable": [],
+        "missingReferences": [],
+        "closed": true
+      }
+    }
+  ]
+}

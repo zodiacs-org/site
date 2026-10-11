@@ -21,8 +21,11 @@ production to `ed1137cb`, this time with the observer failing on any break in
 source binding, and passed; and twice on `368ce361` (#706), first with the
 observer reading the alias's deployment and commit before and after the
 drive, then with it also building the checkout itself, and passed both
-times; and on `58362fb1`, the 2026-10-11 daily edition, with every observer
-check and a flag-chunk analysis that builds the observed commit itself. One
+times; and on `58362fb1`, the 2026-10-11 daily edition, with observer v5,
+every check of which passed, and a flag-chunk analysis that builds the
+observed commit itself. Every run's record also meets the two checks the
+observer gained afterwards: every response 200, and a page graph that holds
+every import of its chunks. One
 attempt on `368ce361` stopped on a network reset in the observer's own crawl
 after the drive had passed; it is retained. The worker production served is byte-identical to
 local builds of every observed commit; of the 190 files the page reaches, 182 are

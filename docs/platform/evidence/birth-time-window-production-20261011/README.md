@@ -34,10 +34,10 @@ four deployments.
 
 Each version of the observer answers a review of the one before it on
 #704: the Codex threads on `scripts/observe-birth-time-window-production.mjs`
-lines 169 (v2), 159 (v3), 46 (v4), 52 (v5) and 138 (v6). The last run was
-made with v5 and the v4 runs with the version before it; the committed
-observer is v6, which adds one check over what every run already recorded
-(below). Each earlier version is in the PR's history. The flag-chunk analysis,
+lines 169 (v2), 159 (v3), 46 (v4), 52 (v5), and 138 and 228 (v6). The last
+run was made with v5 and the v4 runs with the version before it; the
+committed observer is v6, which adds two checks that every run's record also
+meets (below). Each earlier version is in the PR's history. The flag-chunk analysis,
 `scripts/explain-birth-window-flag-chunks.mjs`, is at v3 (threads on lines 36
 and 34). The earlier runs predate the later checks, so the record says what
 bound each of them:
@@ -67,11 +67,27 @@ bound each of them:
 
 ### Checks added after the runs
 
-The observer's v6 also requires every asset it crawled, before and after the
-drive, and the worker, to have answered 200 (Codex thread on line 138).
-Every recorded run meets it: each `observation.json` records 381 asset
-responses (the page's 190 files twice, and the worker), every one 200, and
-the page itself 200 before and after. No run was made with v6.
+The observer's v6 adds two checks. No run was made with v6; every recorded run
+meets both:
+
+- **Every response 200.** Every asset crawled before and after the drive, and
+  the worker, must have answered 200 (Codex thread on line 138). Each
+  `observation.json` records 381 asset responses (the page's 190 files twice,
+  and the worker), every one 200, and the page itself 200 before and after.
+- **The graph grows from the recorded response.** v1 to v5 read each chunk's
+  imports from a second request for it, which they did not record, so a
+  failed second request could have left imports out of a graph without
+  failing the run (Codex thread on line 228). v6 reads them from the bytes of
+  the response it records. `scripts/check-birth-window-graph-closure.mjs`
+  checks the retained graphs, reading each chunk only from bytes whose
+  SHA-256 equals the recorded digest: at 2026-10-11T13:56:12Z canonical
+  production still served all 188 chunks of every graph with those digests,
+  and in all ten graphs (five runs, before and after) every import of every
+  chunk names a file the same crawl recorded
+  ([`graph-closure.json`](graph-closure.json)). With one chunk taken out of
+  the fifth run's before-graph it failed, naming the chunk that imports it
+  ([`observer-controls/closure-tampered.json`](observer-controls/closure-tampered.json),
+  input `closure-tampered-observation.json`).
 
 ### Checks added after the v4 runs
 
@@ -204,4 +220,9 @@ PRODUCTION_SOURCE_COMMIT=<deployed commit> PRODUCTION_DEPLOYMENT_ID=<its deploym
 
 Then `node scripts/explain-birth-window-flag-chunks.mjs <output folder>/observation.json <clean checkout> <build log path>`,
 which builds the checkout with the production flags itself. A rerun observes
-whatever deployment production serves then, not these.
+whatever deployment production serves then, not these. The retained graphs'
+closure is checked with
+`node scripts/check-birth-window-graph-closure.mjs <site checkout> <observation.json>...`;
+it reads each chunk from production, or from the checkout's `dist/`, only when
+the bytes have the recorded digest, so it can be repeated only while one of
+them still holds those bytes.

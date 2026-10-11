@@ -97,12 +97,13 @@ async function served(path) {
   return { status: response.status, bytes, cache: response.headers.get('x-vercel-cache'), type: response.headers.get('content-type') };
 }
 
-async function compareAsset(path) {
+/** One request for a hashed asset: the record of its response, and the bytes that record describes. */
+async function fetchAsset(path) {
   assert.match(path, /^\/_astro\/[A-Za-z0-9._-]+\.(?:js|css)$/, 'Hashed asset path: ' + path);
   const response = await served(path);
   let built = null;
   try { built = await readFile(join(repo, 'dist', path)); } catch {}
-  return {
+  const record = {
     path,
     status: response.status,
     bytes: response.bytes.length,
@@ -112,7 +113,9 @@ async function compareAsset(path) {
     matchesLocalBuild: built !== null && Buffer.compare(built, response.bytes) === 0,
     vercelCache: response.cache,
   };
+  return { record, bytes: response.bytes };
 }
+const compareAsset = async (path) => (await fetchAsset(path)).record;
 
 // The module graph production serves for the page, from its HTML and from the
 // relative imports inside each served chunk.
@@ -131,11 +134,12 @@ async function crawlPage(route) {
   while (queue.length) {
     const path = queue.shift();
     if (seen.has(path)) continue;
-    const record = await compareAsset(path);
+    // The graph grows from the bytes of the response the record describes;
+    // no chunk is fetched a second time.
+    const { record, bytes } = await fetchAsset(path);
     seen.set(path, record);
     if (path.endsWith('.js') && record.status === 200) {
-      const response = await served(path);
-      for (const next of assetReferences(response.bytes.toString('utf8'), true)) if (!seen.has(next)) queue.push(next);
+      for (const next of assetReferences(bytes.toString('utf8'), true)) if (!seen.has(next)) queue.push(next);
     }
   }
   return { route, status: page.status, htmlBytes: page.bytes.length, htmlSha256: sha256(page.bytes), assets: [...seen.values()] };
