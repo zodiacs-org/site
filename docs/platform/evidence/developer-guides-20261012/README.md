@@ -116,6 +116,113 @@ The owner's private birth-data search ran over this change's two commits with
 both pattern sets ([history-check.txt](history-check.txt), counts only). The
 commits add no birth-data line. Every example is synthetic.
 
+## Production
+
+#713 merged as `8e2dd7840f514f8e30fc870d2b3aca91ba613c67`. Vercel
+`dpl_4zLgJubt6qa74W817DSbeJevyxem` built it for production and was READY at
+2026-10-11T20:30:45Z.
+
+[tools/verify-production.mjs](tools/verify-production.mjs) then checked
+canonical production against two local builds of the merge, both made with
+Node 22.22.2:
+
+- one with the feature flags unset, as CI's main build is, which the guide
+  verifiers check;
+- one with production's feature flags, made with the environment of CI's
+  "Build with production's feature flags" job, whose public values are CI
+  stand-ins.
+
+Before and after the run, the zodiacs.org alias named that deployment, built
+from the merge, with an unchanged `updatedAt`. Those reads went through the
+Vercel connector, which reports no read time. All 25 checks pass
+([production/production.json](production/production.json)):
+
+- **Pages.** Each page is the production-flags build's page, byte for byte,
+  except one string: the analytics script's URL. CI's build has the stand-in
+  `https://plausible.io/js/script.js`; production has its own script on
+  plausible.io, recorded by length and digest. The check allows a difference
+  only where the build has one of CI's stand-ins and production's value has
+  the stand-in's form; nothing else may differ, quoting included, and no
+  piece may be added or missing.
+- **Guide content.** Each page's guide article is also the flags-unset build's
+  bytes. Its text has the content the twins verifier requires of the build:
+  the version, and for installation guides the archive digest and
+  `npm install @zodiacs/engine@1.0.0`.
+- **Twins and listings.** The 19 Markdown twins, `llms.txt` and
+  `llms-full.txt` are both builds' bytes. Both llms files list every guide and
+  its twin.
+- **Sitemap.** It is the production-flags build's bytes, with the 19 guide
+  pages. It has three entries that the flags-unset build lacks:
+  `/registry/collection/`, `/race/` and `/games/history/`, which
+  `PUBLIC_REGISTRY_COLLECTION_ENABLED` and `PUBLIC_ZODIAC_GAMES_ENABLED` add
+  (`src/pages/sitemap.xml.ts`).
+- **Browser.** Chromium 154 opened every page at 360 and 1280 px: 38
+  navigations. Each was a 200 with its heading and twin link, and none had
+  overflow, a page error or a calculation request. Its 38 requests to
+  analytics were aborted, so the check added no visit to the site's
+  analytics.
+
+The controls are in [production/controls.json](production/controls.json). They
+ran against production with one build or the alias reads altered, and each
+failed the check it targets and no other:
+
+- **Production-flags build.**
+  - One byte appended to a twin.
+  - An attribute added to a page's `<html>` tag.
+  - A tag removed, so production has one piece more.
+  - The analytics stand-in replaced by another URL.
+  - The literal beside the stand-in changed.
+  - An attribute's double quotes changed to single quotes.
+  - One sitemap lastmod changed.
+- **Flags-unset build.**
+  - One word changed inside an article.
+  - One newline appended to `llms.txt`.
+- **Alias reads.**
+  - A before-read naming another commit failed the alias check.
+  - An after-read with a later `updatedAt` failed the unchanged-alias check.
+  - An after-read without a deployment was refused.
+
+Codex's review on site #722 found two faults, both fixed:
+
+- **Inserted runs.** The check's first version compared pages with the
+  flags-unset build only. It allowed a run of inserted markup if the run held
+  the analytics script or the email signup, so extra markup inside such a run
+  would have passed. The check now compares whole pages with the
+  production-flags build instead.
+- **Quoting.** The second version replaced every string literal with the
+  same marker, so a change from double to single quotes would have passed.
+  The marker now keeps the quotes. Main's post-merge Site Check is
+recorded in STATUS.md. The private birth-data search over this record's
+commits found no birth-data line
+([production/history-check.txt](production/history-check.txt), counts only).
+
+## The llms files' developer section
+
+This record's change also gives the developer platform its own section in
+both llms files. F-21 found the engine filed under the Registry's heading,
+and A5 asks for a developer-platform section. Only headings were added or
+renamed; every paragraph moved verbatim.
+
+- **`llms-full.txt`.** "Astrofolio, Terminal, Registry, and Developer Wing"
+  is split in two:
+  - "Astrofolio, Terminal, Registry, and SDK": the entity boundary,
+    Astrofolio, the Terminal, the registry, the SDK and the read-only posture.
+  - "Developer platform": the sky data API, the engine, the local MCP server,
+    the compute API, the sky-fact benchmark and the widget package.
+- **`llms.txt`.** The pointer to `llms-full.txt` and the read-only posture
+  now come straight after the consumer lines. A "Developer platform" heading
+  follows, over the sky data API (with its OpenAPI link), the engine and its
+  reference, the MCP server, the compute API, the conformance suite and the
+  benchmark. The guide section follows.
+
+The consumer lines still come first. The boundary test still finds no
+Registry wording before the pointer, and the pointer and the posture
+paragraph still appear once each. The claims ledger restates one record,
+`priv.local-tools`: its paragraph no longer ends with the pointer line. The
+claims check finds no unlisted sentence and no orphan. The build passes
+`check-dist`, the twins verifier and the boundary, trust-surface, claims,
+sky-API and authorship tests.
+
 ## Remaining scope
 
 P3.10 stays partial. Its brief lists a React Native quickstart and a sunrise-based
