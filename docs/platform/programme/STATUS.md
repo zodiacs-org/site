@@ -21,8 +21,10 @@ production to `ed1137cb`, this time with the observer failing on any break in
 source binding, and passed; and twice on `368ce361` (#706), first with the
 observer reading the alias's deployment and commit before and after the
 drive, then with it also building the checkout itself, and passed both
-times. One attempt between those two stopped on a network reset in the
-observer's own crawl after the drive had passed; it is retained. The worker production served is byte-identical to
+times; and on `58362fb1`, the 2026-10-11 daily edition, with every observer
+check and a flag-chunk analysis that builds the observed commit itself. One
+attempt on `368ce361` stopped on a network reset in the observer's own crawl
+after the drive had passed; it is retained. The worker production served is byte-identical to
 local builds of both commits; of the 190 files the page reaches, 182 are
 identical to the build with the flags unset, and production's own flags and
 public keys account for the other eight.

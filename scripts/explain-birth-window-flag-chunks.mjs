@@ -1,7 +1,10 @@
 /**
- * Explains served chunks that differ from a local build. For each served chunk
- * it finds the local chunks with the same name stem in a build made with the
- * production feature flags, normalizes the content-hash part of every hashed
+ * Explains served chunks that differ from a local build. It builds the
+ * observed commit itself with the production feature flags: from a clean
+ * checkout of the observation's source commit, with the environment of the
+ * checkout's own site-check.yml production-flags-build job (CI's stand-in
+ * values for keys and URLs). For each served chunk it then finds the built
+ * chunks with the same name stem, normalizes the content-hash part of every hashed
  * file name, and reports whether one local chunk is then identical. When none
  * is, it lists the string literals left on each side: their length and
  * SHA-256, and the value only for the CI's own stand-in values.
@@ -11,14 +14,72 @@
  * the observation's digest for that path is not analysed, and the result then
  * fails.
  *
- * Usage: node explain-birth-window-flag-chunks.mjs <observation.json> <production-flags dist>
+ * The flags-on generators rewrite two tracked files; the script puts them back
+ * and checks that no tracked file is left changed.
+ *
+ * Usage: node explain-birth-window-flag-chunks.mjs <observation.json> <clean checkout of its source commit> <build log path>
  */
+import assert from 'node:assert/strict';
+import { execFileSync, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFile, readdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 
-const [observationPath, flagsDist] = process.argv.slice(2);
+const [observationPath, checkoutArg, buildLogPath] = process.argv.slice(2);
+assert.ok(observationPath && checkoutArg && buildLogPath, 'Usage: explain-birth-window-flag-chunks.mjs <observation.json> <clean checkout of its source commit> <build log path>');
 const observation = JSON.parse(await readFile(observationPath, 'utf8'));
+const checkout = resolve(checkoutArg);
+const git = (...args) => execFileSync('git', ['-C', checkout, ...args], { encoding: 'utf8' }).trim();
+assert.equal(git('rev-parse', 'HEAD'), observation.source.commit, 'The checkout is the observation\'s source commit');
+assert.equal(git('status', '--porcelain', '--untracked-files=no'), '', 'No tracked change before the build');
+const envFiles = git('ls-files', '--others', '--ignored', '--exclude-standard', '--', ':(glob).env*', ':(glob)**/.env*')
+  .split('\n').filter(Boolean).filter((path) => !path.split('/').includes('node_modules'));
+assert.deepEqual(envFiles, [], 'No ignored .env file in the checkout: ' + envFiles.join(', '));
+
+/** The env block of the production-flags-build job in the checkout's own Site Check workflow. */
+function flagsEnvironment(workflow) {
+  const lines = workflow.split('\n');
+  const job = lines.findIndex((line) => /^  production-flags-build:\s*$/.test(line));
+  assert.ok(job >= 0, 'site-check.yml has a production-flags-build job');
+  const env = lines.findIndex((line, index) => index > job && /^    env:\s*$/.test(line));
+  assert.ok(env > job, 'the production-flags-build job has an env block');
+  const values = {};
+  for (const line of lines.slice(env + 1)) {
+    if (/^\s*#/.test(line) || line.trim() === '') continue;
+    const match = /^      ([A-Z0-9_]+):\s*(.*)$/.exec(line);
+    if (!match) break;
+    values[match[1]] = match[2].replace(/^"(.*)"$/s, '$1');
+  }
+  return values;
+}
+const flagsEnv = flagsEnvironment(await readFile(join(checkout, '.github/workflows/site-check.yml'), 'utf8'));
+assert.ok(flagsEnv.PUBLIC_SAVED_RECORDS_ENABLED === '1' && Object.keys(flagsEnv).length >= 10, 'the production flags were read');
+await rm(join(checkout, 'dist'), { recursive: true, force: true });
+const inherited = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^(PUBLIC_|SUPABASE_|RESEND_|DAILY_EMAIL_|EMAIL_)|_RPC_URL$/.test(key)));
+const buildLog = [];
+const buildExit = await new Promise((resolveExit, rejectExit) => {
+  const child = spawn('npm', ['run', 'build'], { cwd: checkout, env: { ...inherited, ...flagsEnv }, stdio: ['ignore', 'pipe', 'pipe'] });
+  child.stdout.on('data', (chunk) => buildLog.push(chunk));
+  child.stderr.on('data', (chunk) => buildLog.push(chunk));
+  child.once('error', rejectExit);
+  child.once('exit', (code, signal) => resolveExit(code ?? (signal ? 1 : 0)));
+});
+const buildLogBytes = Buffer.concat(buildLog);
+await writeFile(buildLogPath, buildLogBytes);
+assert.equal(buildExit, 0, 'the production-flags build succeeds (' + buildLogPath + ')');
+const rewritten = git('diff', '--name-only').split('\n').filter(Boolean);
+if (rewritten.length) execFileSync('git', ['-C', checkout, 'checkout', '--', ...rewritten]);
+assert.equal(git('status', '--porcelain', '--untracked-files=no'), '', 'No tracked change after the build');
+const flagsDist = join(checkout, 'dist');
+const flagsBuild = {
+  commit: git('rev-parse', 'HEAD'),
+  tree: git('rev-parse', 'HEAD^{tree}'),
+  environment: 'site-check.yml production-flags-build env, read from the checkout',
+  keys: Object.keys(flagsEnv),
+  node: process.version,
+  log: { bytes: buildLogBytes.length, sha256: createHash('sha256').update(buildLogBytes).digest('hex') },
+  trackedFilesRewrittenAndRestored: rewritten,
+};
 const base = observation.base;
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const stemOf = (file) => file.replace(/[.-][A-Za-z0-9_-]{8}\.(?:js|css)$/, '');
@@ -76,10 +137,10 @@ for (const path of observation.assetIdentity.assetsDifferingFromLocalBuild) {
   });
 }
 console.log(JSON.stringify({
-  schema: 'zodiacs.birth-window-flag-chunk-explanation.v2',
+  schema: 'zodiacs.birth-window-flag-chunk-explanation.v3',
   base,
   checkedAt: new Date().toISOString(),
-  productionFlagsBuild: 'npm run build with site-check.yml production-flags-build env (CI stand-in values for keys and URLs)',
+  productionFlagsBuild: flagsBuild,
   results,
   allExplained: results.every((result) => result.matchesObservation && result.explainedBy !== null),
 }, null, 2));
