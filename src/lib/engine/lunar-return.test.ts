@@ -113,10 +113,10 @@ describe('independent lunar return references', () => {
       .toBe('5db9f2ef1491fc96896d2d610bbe91a84b0743dd30b449f923e8c2d7aafa5ba5');
     // rc.16 nutation moves returned-chart instants; rebuild their Horizons/ERFA
     // references at those instants, retaining the independent crossings and gates.
-    // The 1.0.0-rc.2 rebuild with CI's Python 3.11 changes only the
+    // The 1.0.0-rc.2 and 1.0.0 rebuilds with CI's Python 3.11 change only the
     // recorded engine version; numerical references and gates are unchanged.
     expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
-      .toBe('48cf21594a582ba3d87f6c55a5c9fae520d605472c1c9c76ec99907d157c705e');
+      .toBe('7feb6d84f5dcfbd31a62115e2b2e97402a66ea4f0846ba34acc04a458c98693a');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
     // The carried-over policy names the one it supersedes, and keeps its gates.

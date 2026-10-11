@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.18",
+  "version": "0.1.0-rc.19",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -28,14 +28,15 @@
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
-    "note": "Engine 1.0.0-rc.2 and the site comparison are inlined into server.mjs. The engine and adapter are unpublished candidates. The 2026-10-07 registry read records 0.1.1-rc.16 under next. The engine archive's SHA-256 is recorded below. Bundling keeps one copy of the comparison rules.",
+    "note": "Engine 1.0.0 and the site comparison are inlined into server.mjs. The engine was published to npm on 2026-10-11 under the latest tag; the bundle is built from the archive whose SHA-256 is below, which npm's tarball matches. The adapter is an unpublished candidate. Bundling keeps one copy of the comparison rules.",
     "engine": {
       "package": "@zodiacs/engine",
-      "version": "1.0.0-rc.2",
-      "releaseStatus": "unpublished-candidate",
+      "version": "1.0.0",
+      "releaseStatus": "published",
+      "registry": "npm",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "4cd834b2dca085cd5732ecad6edbd82b61d7625d9a0647900c160a0747810002"
+      "artifactSha256": "c4d3754de899fb98882331e6d7b9ce3ce77fb2072baeb002aa0ef8c77b0ab0f6"
     },
     "ephemeris": {
       "name": "astronomy-engine",
@@ -84,6 +85,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.16.3",
-  "changedSince": "0.1.0-rc.18 bundles engine 1.0.0-rc.2. Older archives remain unchanged. The engine's CHANGELOG lists its 1.0 argument validation, frozen tables and other API changes; rc.2 marks unused table-building calls pure. This adapter keeps its current tool vocabulary and does not import calc or Vedic. The adoption's comparison record reports measured differences against 0.1.0-rc.17; it does not assert universal parity."
+  "supersedes": "0.1.0-rc.18",
+  "changedSince": "0.1.0-rc.19 bundles engine 1.0.0, which is 1.0.0-rc.2 with the version changed: the same API and the same values. Older archives remain unchanged. get_capabilities now reports the engine as published on npm, with registry npm, and every receipt and cite names engine 1.0.0 and adapter 0.1.0-rc.19; apart from those versions and the digests over them, every tool's arguments, results and receipts are rc.18's. The adoption's comparison record reports measured differences against 0.1.0-rc.18; it does not assert universal parity. The adapter itself is still not on npm."
 }

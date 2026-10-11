@@ -1,0 +1,91 @@
+{
+  "tool": "docs/platform/evidence/site-engine-rc15/tools/npm-registry-read.mjs",
+  "readAt": "2026-10-11T14:20:52.209Z",
+  "npm": "10.9.7",
+  "node": "v22.22.2",
+  "package": "@zodiacs/engine",
+  "version": "1.0.0",
+  "distTags": {
+    "latest": "1.0.0",
+    "next": "0.1.1-rc.16"
+  },
+  "published": "2026-10-11T13:54:56.087Z",
+  "dist": {
+    "tarball": "https://registry.npmjs.org/@zodiacs/engine/-/engine-1.0.0.tgz",
+    "shasum": "72b7a0266f59a25a21f4c72f6a50f41e5784dc27",
+    "integrity": "sha512-npoQ6scEH1Ozdix4H8juvsXqpYIMypmCU3CRSvYJ7cI8vDX2A9tPDSDaasqDSt9niPgQoW/y93vRWw62m/Kj7A==",
+    "fileCount": 74,
+    "unpackedSize": 991915,
+    "attestations": {
+      "url": "https://registry.npmjs.org/-/npm/v1/attestations/@zodiacs%2fengine@1.0.0",
+      "provenance": {
+        "predicateType": "https://slsa.dev/provenance/v1"
+      }
+    }
+  },
+  "attestations": [
+    {
+      "predicateType": "https://github.com/npm/attestation/tree/main/specs/publish/v0.1",
+      "subject": [
+        {
+          "name": "pkg:npm/%40zodiacs/engine@1.0.0",
+          "digest": {
+            "sha512": "9e9a10eac7041f53b3762c781fc8eebec5eaa5820cca99825370914af609edc23cbc35f603db4f0d20da6aca834adf6788f810a16ff2f77bd15b0eb69bf2a3ec"
+          }
+        }
+      ],
+      "logIndexes": [
+        "3208447084"
+      ]
+    },
+    {
+      "predicateType": "https://slsa.dev/provenance/v1",
+      "subject": [
+        {
+          "name": "pkg:npm/%40zodiacs/engine@1.0.0",
+          "digest": {
+            "sha512": "9e9a10eac7041f53b3762c781fc8eebec5eaa5820cca99825370914af609edc23cbc35f603db4f0d20da6aca834adf6788f810a16ff2f77bd15b0eb69bf2a3ec"
+          }
+        }
+      ],
+      "logIndexes": [
+        "3208435349"
+      ]
+    }
+  ],
+  "provenance": {
+    "predicateType": "https://slsa.dev/provenance/v1",
+    "subject": {
+      "name": "pkg:npm/%40zodiacs/engine@1.0.0",
+      "sha512": "9e9a10eac7041f53b3762c781fc8eebec5eaa5820cca99825370914af609edc23cbc35f603db4f0d20da6aca834adf6788f810a16ff2f77bd15b0eb69bf2a3ec"
+    },
+    "buildType": "https://slsa-framework.github.io/github-actions-buildtypes/workflow/v1",
+    "workflow": {
+      "ref": "refs/heads/main",
+      "repository": "https://github.com/zodiacs-org/engine",
+      "path": ".github/workflows/release.yml"
+    },
+    "event": "workflow_dispatch",
+    "resolvedDependencies": [
+      {
+        "uri": "git+https://github.com/zodiacs-org/engine@refs/heads/main",
+        "digest": {
+          "gitCommit": "f8992a4c1dfedd9e69c0783e2c185e22580460f7"
+        }
+      }
+    ],
+    "builder": "https://github.com/actions/runner/github-hosted",
+    "invocation": "https://github.com/zodiacs-org/engine/actions/runs/38144970198/attempts/1"
+  },
+  "auditSignatures": {
+    "installed": "1.0.0",
+    "report": {
+      "invalid": [],
+      "missing": []
+    },
+    "summary": [
+      "2 packages have verified registry signatures",
+      "1 package has a verified attestation"
+    ]
+  }
+}
