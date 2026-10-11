@@ -344,10 +344,18 @@ describe('Resend and Loops subscription adapters', () => {
     expect(body.text).toContain('https://zodiacs.org/api/email/confirm?token=');
 
     // The confirmation may be styled, but opening it must still signal
-    // nothing: no image, no stylesheet, no script, no CSS-fetched asset.
+    // nothing: no remote image, no stylesheet, no script, no CSS-fetched
+    // asset. Its pictures are inline attachments referenced by cid:.
     // Anchors are fine — a link is only fetched if the reader chooses to.
     expect(body.html).toContain('https://zodiacs.org/api/email/confirm?token=');
-    expect(body.html).not.toMatch(/<img\b/iu);
+    const sources = [...body.html.matchAll(/<img\b[^>]*\bsrc="([^"]*)"/giu)].map((match) => match[1]);
+    expect(sources).toEqual(['cid:zodiacs-sign', 'cid:zodiacs-ring']);
+    expect((body.html.match(/<img\b/giu) ?? []).length).toBe(sources.length);
+    expect(body.attachments.map((item: { content_id: string; filename: string }) => [item.content_id, item.filename]))
+      .toEqual([['zodiacs-ring', 'zodiacs-ring.png'], ['zodiacs-sign', 'taurus.png']]);
+    for (const item of body.attachments) {
+      expect(Buffer.from(item.content, 'base64').subarray(1, 4).toString('latin1')).toBe('PNG');
+    }
     expect(body.html).not.toMatch(/<script\b/iu);
     expect(body.html).not.toMatch(/<link\b/iu);
     expect(body.html).not.toMatch(/\burl\s*\(/iu);
