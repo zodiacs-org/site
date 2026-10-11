@@ -35,7 +35,7 @@ export interface LifeMilestones {
   birth: string;
   asOf: string;
   milestones: Milestone[];
-  /** The first milestone whose last pass is on or after `asOf`, or null. */
+  /** The milestone with the soonest pass on or after `asOf`, or null. */
   next: Milestone | null;
   numbers: {
     fullMoons: number;
@@ -98,13 +98,25 @@ export function mercuryRetrogradesBetween(from: Date, to: Date): number {
   return count;
 }
 
+/** The milestone with the soonest pass on or after `asOf`; a return season under way counts by its next pass. */
+export function nextMilestone(milestones: Milestone[], asOf: Date): Milestone | null {
+  let best: { milestone: Milestone; at: number } | null = null;
+  for (const milestone of milestones) {
+    const at = milestone.passes.map((pass) => Date.parse(pass.at)).find((time) => time >= asOf.getTime());
+    if (at !== undefined && (!best || at < best.at)) best = { milestone, at };
+  }
+  return best?.milestone ?? null;
+}
+
 export function lifeMilestones(birth: Date, asOf: Date): LifeMilestones {
   if (Number.isNaN(birth.getTime()) || Number.isNaN(asOf.getTime())) {
     throw new RangeError('lifeMilestones needs valid instants.');
   }
   if (asOf.getTime() < birth.getTime()) throw new RangeError('The as-of date is before the birth.');
 
-  const jupiter = seasonsOf('Jupiter', bodyLongitude('Jupiter', birth), birth, 5, 100)
+  // Through age 100, or one Jupiter cycle past `asOf` for anyone older.
+  const jupiterYears = Math.max(100, (asOf.getTime() - birth.getTime()) / YEAR + 13);
+  const jupiter = seasonsOf('Jupiter', bodyLongitude('Jupiter', birth), birth, 5, jupiterYears)
     .map((season) => toMilestone('jupiter-return', season, birth));
   const saturn = saturnReturns(birth).seasons.map((season) => toMilestone('saturn-return', season, birth));
   const uranus = seasonsOf('Uranus', bodyLongitude('Uranus', birth) + 180, birth, 30, 55)
@@ -113,7 +125,7 @@ export function lifeMilestones(birth: Date, asOf: Date): LifeMilestones {
 
   const milestones = [...jupiter, ...saturn, ...uranus]
     .sort((a, b) => Date.parse(a.first) - Date.parse(b.first));
-  const next = milestones.find((milestone) => Date.parse(milestone.last) >= asOf.getTime()) ?? null;
+  const next = nextMilestone(milestones, asOf);
 
   return {
     birth: birth.toISOString(),

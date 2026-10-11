@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { eveningSky } from './evening';
-import { fullMoonsBetween, lifeMilestones, mercuryRetrogradesBetween } from './milestones';
+import { fullMoonsBetween, lifeMilestones, mercuryRetrogradesBetween, nextMilestone, type Milestone } from './milestones';
 import { skyAt } from './sky';
 import { sunAltitude } from './sun-altitude';
 
@@ -112,6 +112,23 @@ describe('life milestones', () => {
   it('counts each Mercury retrograde station once', () => {
     // Mercury turned retrograde three times in 2025 (March, July and November).
     expect(mercuryRetrogradesBetween(new Date('2025-01-01T00:00:00Z'), new Date('2026-01-01T00:00:00Z'))).toBe(3);
+  });
+
+  it('picks the soonest upcoming pass, not the season that began first', () => {
+    const pass = (at: string) => ({ at, retrograde: false });
+    const saturn: Milestone = { kind: 'saturn-return', index: 1, passes: [pass('2026-01-10T00:00:00Z'), pass('2026-11-20T00:00:00Z')], first: '2026-01-10T00:00:00Z', last: '2026-11-20T00:00:00Z', age: 29 };
+    const jupiter: Milestone = { kind: 'jupiter-return', index: 3, passes: [pass('2026-06-01T00:00:00Z')], first: '2026-06-01T00:00:00Z', last: '2026-06-01T00:00:00Z', age: 36 };
+    expect(nextMilestone([saturn, jupiter], new Date('2026-03-01T00:00:00Z'))).toBe(jupiter);
+    expect(nextMilestone([saturn, jupiter], new Date('2026-07-01T00:00:00Z'))).toBe(saturn);
+    expect(nextMilestone([saturn, jupiter], new Date('2027-01-01T00:00:00Z'))).toBeNull();
+  });
+
+  it('keeps finding Jupiter returns past age 100', () => {
+    const result = lifeMilestones(new Date('1910-06-01T12:00:00Z'), asOf);
+    const jupiter = result.milestones.filter((milestone) => milestone.kind === 'jupiter-return');
+    expect(jupiter.map((milestone) => milestone.first.slice(0, 4)).slice(-2)).toEqual(['2016', '2028']);
+    expect(result.next?.first.slice(0, 10)).toBe('2028-09-15');
+    expect(result.numbers.jupiterReturns).toBe(9);
   });
 
   it('refuses an as-of date before the birth', () => {
