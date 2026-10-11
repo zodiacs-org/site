@@ -4,6 +4,7 @@
  * on the device behind the lazy engine import; the card's link carries its
  * inputs, so nothing is stored anywhere.
  */
+import { signIcon } from '../lib/sign-icon';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { City } from '../lib/geo/search';
 import { OCCASION_KINDS, OCCASION_LABELS, type OccasionKind } from '../lib/occasions/kinds';
@@ -39,7 +40,7 @@ function placeLabel(city: City): string {
 }
 
 function readLink(): { occasion: OccasionKind; names: string; date: string; time: string; city: City | null } | null {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.hash.slice(1));
   const date = params.get('d');
   if (!date) return null;
   const occasion = (OCCASION_KINDS as readonly string[]).includes(params.get('o') ?? '') ? params.get('o') as OccasionKind : 'wedding';
@@ -62,7 +63,8 @@ function cardLink(occasion: OccasionKind, names: string, date: string, time: str
     params.set('lon', city.lon.toFixed(4));
     params.set('place', placeLabel(city));
   }
-  return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+  // After the #, so the names, date and place never reach the server.
+  return `${window.location.origin}${window.location.pathname}#${params.toString()}`;
 }
 
 export default function OccasionSky() {
@@ -87,7 +89,7 @@ export default function OccasionSky() {
         date: next.date,
         time: next.time || null,
         timeZone: next.city?.tz ?? null,
-        place: next.city ? { name: placeLabel(next.city), latitude: next.city.lat, longitude: next.city.lon } : null,
+        place: next.city ? { name: placeLabel(next.city), lat: next.city.lat, lon: next.city.lon } : null,
       });
       setCard(result);
       requestAnimationFrame(() => cardRef.current?.focus());
@@ -188,11 +190,11 @@ export default function OccasionSky() {
             <p class="occasion-card__sub">{sub}</p>
             <div class="occasion-card__discs">
               <div class="occasion-card__disc">
-                <img src={`/assets/zodiac-icons/128/${sun.sign}.png`} width={64} height={64} alt="" />
+                <img src={signIcon(128, sun.sign)} width={64} height={64} alt="" />
                 <div><strong>{signName(sun.sign)} Sun</strong><span>{sun.degree.toFixed(1)}°</span></div>
               </div>
               <div class="occasion-card__disc">
-                <img src={`/assets/zodiac-icons/128/${moon.sign}.png`} width={64} height={64} alt="" />
+                <img src={signIcon(128, moon.sign)} width={64} height={64} alt="" />
                 <div>
                   <strong>{card.moonSignChange ? `${signName(card.moonSignChange.from)} → ${signName(card.moonSignChange.to)} Moon` : `${signName(moon.sign)} Moon`}</strong>
                   <span>{card.sky.moon.phase.toLowerCase()} · {card.sky.moon.illuminationPercent}% lit</span>

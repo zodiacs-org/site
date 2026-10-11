@@ -31,7 +31,7 @@ describe('occasion card', () => {
       date: '2027-06-12',
       time: '19:00',
       timeZone: 'Europe/Rome',
-      place: { name: 'Florence, Italy', latitude: 43.7696, longitude: 11.2558 },
+      place: { name: 'Florence, Italy', lat: 43.7696, lon: 11.2558 },
     });
     expect(card.instant).toBe('2027-06-12T17:00:00.000Z');
     expect(card.words.title).toBe('The sky on your wedding day');

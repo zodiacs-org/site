@@ -23,7 +23,7 @@ export interface OccasionInput {
   time: string | null;
   /** The place's IANA zone; required with a time or a place. */
   timeZone: string | null;
-  place: { name: string; latitude: number; longitude: number } | null;
+  place: { name: string; lat: number; lon: number } | null;
 }
 
 export interface OccasionCard {
@@ -64,12 +64,10 @@ export async function occasionCard(input: OccasionInput): Promise<OccasionCard> 
   let instant: Date;
   if (input.time !== null && input.timeZone) {
     await prepareLocalTime(input.date, input.timeZone);
-    instant = resolveLocalToUtc(
-      input.date,
-      input.time,
-      input.timeZone,
-      input.place ? { longitude: input.place.longitude } : {},
-    ).utc;
+    // With a place, its longitude settles the offset before standard time (local mean time).
+    instant = (input.place
+      ? resolveLocalToUtc(input.date, input.time, input.timeZone, { longitude: input.place.lon })
+      : resolveLocalToUtc(input.date, input.time, input.timeZone)).utc;
   } else {
     instant = new Date(dayStart(input.date, input.timeZone).getTime() + DAY / 2);
   }
@@ -86,7 +84,7 @@ export async function occasionCard(input: OccasionInput): Promise<OccasionCard> 
 
   const evening = input.place && input.timeZone
     ? eveningSky(
-      { latitude: input.place.latitude, longitude: input.place.longitude },
+      { latitude: input.place.lat, longitude: input.place.lon },
       input.date,
       Math.round(offsetAt(input.timeZone, dayStart(input.date, input.timeZone).getTime() + DAY / 2)),
     )

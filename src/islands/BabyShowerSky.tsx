@@ -4,6 +4,7 @@
  * game for guests. Facts only: no "most likely" sign and nothing about the
  * baby. Worked out on the device; nothing is stored.
  */
+import { signIcon } from '../lib/sign-icon';
 import { useEffect, useState } from 'preact/hooks';
 import type { DueWindow } from '../lib/occasions/due-window';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
@@ -52,7 +53,7 @@ export default function BabyShowerSky() {
   }
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.hash.slice(1));
     const linked = params.get('due');
     if (!linked) return;
     setDue(linked);
@@ -96,7 +97,7 @@ export default function BabyShowerSky() {
             <div class="due-bar" role="img" aria-label={window_.sunSpans.map((span) => `${signName(span.sign)} from ${dayMonth(span.from)} to ${dayMonth(span.to)}`).join('; ')}>
               {window_.sunSpans.map((span, index) => (
                 <div class={index > 0 ? 'due-bar__span due-bar__span--end' : 'due-bar__span'} key={span.sign} style={`flex:${spanDays(span.from, span.to)};background:var(--sign-${span.sign})`}>
-                  <img src={`/assets/zodiac-icons/128/${span.sign}.png`} width={40} height={40} alt="" />
+                  <img src={signIcon(128, span.sign)} width={40} height={40} alt="" />
                   <span>{signName(span.sign)}</span>
                 </div>
               ))}

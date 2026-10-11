@@ -29,7 +29,8 @@ export interface MilestoneInput {
   birthDate: string;
   time: string | null;
   timeZone: string | null;
-  longitude: number | null;
+  /** The birthplace, when known; its longitude settles the offset before standard time. */
+  birthplace: { lon: number } | null;
 }
 
 export interface MilestoneCard extends LifeMilestones {
@@ -43,7 +44,9 @@ export async function milestoneCard(input: MilestoneInput, asOf = new Date()): P
   let birth: Date;
   if (input.time !== null && input.timeZone) {
     await prepareLocalTime(input.birthDate, input.timeZone);
-    birth = resolveLocalToUtc(input.birthDate, input.time, input.timeZone, input.longitude === null ? {} : { longitude: input.longitude }).utc;
+    birth = (input.birthplace
+      ? resolveLocalToUtc(input.birthDate, input.time, input.timeZone, { longitude: input.birthplace.lon })
+      : resolveLocalToUtc(input.birthDate, input.time, input.timeZone)).utc;
   } else {
     // Without a time, noon UTC on the birth date. The slow planets move so
     // little in half a day that a pass usually shifts by a day or less (more

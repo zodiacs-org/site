@@ -53,7 +53,7 @@ export default function LifeMilestones() {
         birthDate: next.birth,
         time: next.time || null,
         timeZone: next.city?.tz ?? null,
-        longitude: next.city?.lon ?? null,
+        birthplace: next.city ? { lon: next.city.lon } : null,
       }));
     } catch (cause) {
       setCard(null);
@@ -64,7 +64,7 @@ export default function LifeMilestones() {
   }
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.hash.slice(1));
     const linked = params.get('b');
     if (!linked) return;
     setBirth(linked);
