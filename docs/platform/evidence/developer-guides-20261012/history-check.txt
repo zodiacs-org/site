@@ -1,0 +1,15 @@
+Private birth-data search, 2026-10-12 (Asia/Bangkok) (counts only)
+
+Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
+(SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), Node 22.22.2.
+Range: 84c892bf..d7492652, this change's two commits: every added line, every
+added or changed binary with its gzip or ZIP contents, the added paths and the
+messages. Also the tree of d7492652.
+Patterns: the owner's two private pattern sets, kept outside every repository
+with the raw outputs. No pattern, matched line, label or path is recorded here.
+
+Each pattern set gives the same result.
+Lines the two commits add: 0 birth-data lines.
+Tree: 421 birth-data lines in 17,471 files, the same count as the base, which is
+the engine 1.0.0 adoption (../site-engine-1-0-0/history-check.txt). Those
+lines predate this change.
