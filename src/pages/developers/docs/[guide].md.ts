@@ -28,7 +28,13 @@ export const GET: APIRoute = ({ props }) => {
         lines.push('~~~' + section.code.language, section.code.source, '~~~', '');
       }
     }
-    if (guide.installation) {
+    if (guide.installation && candidate.releaseStatus === 'published') {
+      lines.push(
+        '## Install the release', '', '~~~sh', `npm install ${candidate.name}@${candidate.version}`, '~~~', '',
+        `npm's ${candidate.version} tarball is byte-identical to the archive the engine repository carries. To install those bytes from the carrier, with their digest checked before npm sees them, run this in the project's directory instead:`, '',
+        '~~~sh', engineInstallBlock(candidate), '~~~', '',
+      );
+    } else if (guide.installation) {
       lines.push('## Verify and install the candidate', '', '~~~sh', engineInstallBlock(candidate), '~~~', '');
     }
     lines.push('## References', '', ...guide.links.map((link) => `- [${link.label}](${link.url.startsWith('/') ? 'https://zodiacs.org' + link.url : link.url})`), '');

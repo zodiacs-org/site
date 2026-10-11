@@ -1,0 +1,98 @@
+{
+  "schema": "zodiacs.developer-guide-examples.v1",
+  "candidate": {
+    "version": "1.0.0",
+    "sha256": "c4d3754de899fb98882331e6d7b9ce3ce77fb2072baeb002aa0ef8c77b0ab0f6",
+    "releaseStatus": "published",
+    "installedFrom": "npm registry, by exact version"
+  },
+  "guideSourceSha256": "056f1b140ba52275cb46823247d8def95817022ffe88c68e65cc5c29f0dcce34",
+  "runtimes": {
+    "node": "v22.22.2",
+    "deno": "deno 2.9.0 (stable, release, aarch64-apple-darwin)\nv8 14.9.207.2-rusty\ntypescript 6.0.3",
+    "bun": "1.3.11"
+  },
+  "outcomes": [
+    {
+      "check": "npm install matches the carried archive",
+      "files": 74,
+      "status": "pass"
+    },
+    {
+      "guide": "node",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "deno",
+      "runtime": "deno",
+      "status": "pass"
+    },
+    {
+      "guide": "bun",
+      "runtime": "bun",
+      "status": "pass"
+    },
+    {
+      "guide": "natal",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "transits",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "returns",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "synastry",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "crossings",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "conventions",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "errors",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "receipts",
+      "runtime": "node",
+      "status": "pass"
+    },
+    {
+      "guide": "cloudflare",
+      "runtime": "worker-style fetch plus browser-platform bundle",
+      "status": "pass"
+    },
+    {
+      "guide": "cloudflare",
+      "runtime": "Miniflare 4.20260730.0 / workerd 1.20260730.1",
+      "compatibilityDate": "2026-07-30",
+      "status": "pass"
+    },
+    {
+      "guide": "browser",
+      "runtime": "154.0.8037.98",
+      "status": "pass"
+    }
+  ],
+  "limitations": [
+    "Local workerd validates the bundled Worker without proving a deployed Cloudflare service.",
+    "Python and elections recipes use the existing hosted API contract fixtures; no live private request is made.",
+    "React Native and sunrise-based panchang guides are not yet written."
+  ]
+}

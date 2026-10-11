@@ -1151,6 +1151,11 @@ const indexedRegistryResearchPaths = new Set([
     .filter((item) => item.status === 'published' && item.visibleAt <= registryResearchPublication.generatedAt)
     .map((item) => item.url),
 ]);
+const developerGuidePaths = new Set([
+  '/developers/docs/',
+  ...JSON.parse(await readFile(resolve(repo, 'src/data/developer-guides.json'), 'utf8'))
+    .map((guide) => `/developers/docs/${guide.slug}/`),
+]);
 const sitemapPolicy = {
   // 944 reflects Packet F's removal of 1,464 localized birthday previews,
   // twelve thin Russian sign guides, and three machine-contract artifacts;
@@ -1174,10 +1179,11 @@ const sitemapPolicy = {
   // +48 for the twelve rising-sign profiles translated into es, pt, fr and it.
   // +16 for the four sky-calendar hubs translated into es, pt, fr and it.
   // +312 translated compatibility pairs and +1 AI integration candidates page.
+  // +19 version-bound developer guide pages from the shared catalogue (index included).
   total: 1419 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
-    + indexedRegistryResearchPaths.size,
+    + indexedRegistryResearchPaths.size + developerGuidePaths.size,
   // 78 pairs in English and in es, pt, fr and it.
   compatibilityPairs: 390,
   birthdays: 366,
@@ -1282,6 +1288,11 @@ if (packetFNoindexCounts.people !== 501 - indexablePeoplePaths.size) {
 if (sitemapLocs.size !== sitemapPolicy.total) {
   fail(`sitemap.xml: ${sitemapLocs.size} locs vs coordinated baseline ${sitemapPolicy.total}`);
 }
+requireExactSet(
+  'sitemap.xml developer guide routes',
+  new Set([...sitemapLocs].filter((path) => path.startsWith('/developers/docs/'))),
+  developerGuidePaths,
+);
 requireExactSet(
   'sitemap.xml lunar-return routes',
   new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?lunar-return\/$/u.test(path))),

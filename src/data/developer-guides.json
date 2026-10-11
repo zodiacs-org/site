@@ -2,13 +2,13 @@
   {
     "slug": "node",
     "title": "Node quickstart",
-    "description": "Compute a synthetic chart in a Node process using the verified candidate archive.",
+    "description": "Compute a synthetic chart in a Node process with the published package.",
     "installation": true,
     "sections": [
       {
         "heading": "Install and run",
         "paragraphs": [
-          "Use an ESM project. Create package.json with npm init -y, then run the verified archive installation block below in that directory. Save this example as chart.mjs and run node chart.mjs.",
+          "Use an ESM project. Create package.json with npm init -y, then install the package with the command below in that directory. Save this example as chart.mjs and run node chart.mjs.",
           "The package supports Node 20.19 or later in the 20 series, and Node 22.7 or newer. Earlier releases cannot load the astronomy dependency's ESM in the required way."
         ],
         "code": {
@@ -26,7 +26,7 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/README.md"
       }
     ]
   },
@@ -39,7 +39,7 @@
       {
         "heading": "Bundle the module",
         "paragraphs": [
-          "Install the verified archive in an existing browser project with a bundler such as Vite. Put a pre element with id result in the HTML, then import this code from the application's module entry.",
+          "Install the package in an existing browser project with a bundler such as Vite. Put a pre element with id result in the HTML, then import this code from the application's module entry.",
           "Use the bundler's development server. Directly opening a module through a file URL does not resolve npm package imports. Keep chart inputs on the device unless the user separately chooses a hosted service."
         ],
         "code": {
@@ -57,7 +57,7 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/README.md"
       }
     ]
   },
@@ -70,8 +70,8 @@
       {
         "heading": "Run the installed package",
         "paragraphs": [
-          "Install the candidate archive with npm in an ESM project, keeping node_modules. Save the synthetic chart example as chart.mjs. Deno's Node compatibility must resolve that installed package, rather than substituting a registry version.",
-          "Run deno run --node-modules-dir=manual chart.mjs. This example needs no network permission once dependencies are installed. Candidate compatibility is still part of this preparation's runtime validation."
+          "Install the package with npm in an ESM project, keeping node_modules. Save the synthetic chart example as chart.mjs. Deno's Node compatibility resolves that installed package.",
+          "Run deno run --node-modules-dir=manual chart.mjs. This example needs no network permission once dependencies are installed. The site's guide checks run this example under Deno."
         ],
         "code": {
           "language": "javascript",
@@ -88,21 +88,21 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/README.md"
       }
     ]
   },
   {
     "slug": "bun",
     "title": "Bun quickstart",
-    "description": "Run an ESM chart example with Bun using the exact verified engine archive.",
+    "description": "Run an ESM chart example with Bun using the published package.",
     "installation": true,
     "sections": [
       {
         "heading": "Use the existing package",
         "paragraphs": [
-          "Install the candidate archive in the project directory, then save this as chart.mjs and run bun chart.mjs. Avoid replacing the candidate with an npm dist-tag: the carried candidate and the published registry release differ.",
-          "Candidate compatibility is still part of this preparation's runtime validation. Keep the lockfile that records the archive installation."
+          "Install the package with npm in the project directory, then save this as chart.mjs and run bun chart.mjs. Install by version: npm's next tag still names an earlier candidate.",
+          "The site's guide checks run this example under Bun. Keep the lockfile, which records the exact version installed."
         ],
         "code": {
           "language": "javascript",
@@ -119,7 +119,7 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/README.md"
       }
     ]
   },
@@ -132,7 +132,7 @@
       {
         "heading": "Worker entry",
         "paragraphs": [
-          "Install the archive in an existing Wrangler project and use this module as the Worker entry. This handler always calculates the fixed synthetic request; it does not accept personal chart input.",
+          "Install the package in an existing Wrangler project and use this module as the Worker entry. This handler always calculates the fixed synthetic request; it does not accept personal chart input.",
           "The fetch handler returns a JSON response. Before adapting it to user input, add schema validation, request limits, consent and a policy for logging and retention. Do not log birth details."
         ],
         "code": {
@@ -143,14 +143,14 @@
       {
         "heading": "Runtime verification",
         "paragraphs": [
-          "Bundle the dependency graph with Wrangler and exercise the Worker locally before deploying. Node compilation alone does not establish Workers compatibility. Deployment is separate from this draft recipe."
+          "Bundle the dependency graph with Wrangler and exercise the Worker locally before deploying. Node compilation alone does not establish Workers compatibility. Deployment is separate from this recipe."
         ]
       }
     ],
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/README.md"
       }
     ]
   },
@@ -181,11 +181,11 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/time.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/time.md"
       },
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/README.md"
       }
     ]
   },
@@ -215,7 +215,7 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/README.md"
       }
     ]
   },
@@ -245,7 +245,7 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/techniques.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/techniques.md"
       }
     ]
   },
@@ -275,7 +275,7 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/README.md"
       }
     ]
   },
@@ -305,11 +305,11 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/calc.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/calc.md"
       },
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/src/crossings.ts"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/src/crossings.ts"
       }
     ]
   },
@@ -341,15 +341,15 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/calc.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/calc.md"
       },
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/time.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/time.md"
       },
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/vedic.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/vedic.md"
       }
     ]
   },
@@ -380,7 +380,7 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/calc.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/calc.md"
       },
       {
         "label": "Hosted error catalogue",
@@ -415,11 +415,11 @@
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/calc.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/calc.md"
       },
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/versioning.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/versioning.md"
       }
     ]
   },
@@ -511,70 +511,70 @@
         "heading": "Notice and removal",
         "paragraphs": [
           "The policy provides at least twelve months' notice before removing a public API, followed by removal in a major version. A deprecated alias can remain available while its preferred replacement is documented.",
-          "Experimental features follow the exclusions in the versioning policy. Pin an exact release and read its changelog before an upgrade. This candidate does not establish a stable npm publication."
+          "Experimental features follow the exclusions in the versioning policy. Pin an exact release and read its changelog before an upgrade. The policy applies from 1.0.0, the first stable release on npm."
         ]
       }
     ],
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/versioning.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/docs/versioning.md"
       },
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/CHANGELOG.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/CHANGELOG.md"
       }
     ]
   },
   {
     "slug": "changelog",
     "title": "Release changelog",
-    "description": "Find the authoritative release changes and distinguish carried candidates from published versions.",
+    "description": "Find the authoritative changes for each release and where each version came from.",
     "installation": false,
     "sections": [
       {
         "heading": "Use the version-bound record",
         "paragraphs": [
-          "The engine CHANGELOG is the authoritative per-version history. Read it at the candidate's source commit when evaluating this documentation, and at your installed release's tag when upgrading.",
-          "Candidate archives are immutable. A version names its recorded bytes; do not repack an existing candidate or replace it with a package that merely prints the same version."
+          "The engine CHANGELOG is the authoritative per-version history. Read it at the source commit of the version these guides name, and read the entries between your installed version and the new one before upgrading.",
+          "Carried archives are immutable. A version names its recorded bytes; do not repack an existing archive or replace it with a package that merely prints the same version."
         ]
       },
       {
-        "heading": "Candidate status",
+        "heading": "Release status",
         "paragraphs": [
-          "The site carries rc.2 from a verified archive. Stable 1.0 publication is still pending explicit approval and release gates. Installing the carried candidate and installing a registry dist-tag are different operations.",
-          "The candidate's evidence explains its bundling changes and records its tests. Compatibility and accuracy claims apply only to the referenced build and measured span."
+          "1.0.0 is the first stable release, published to npm under latest on 2026-10-11 with SLSA provenance. The site carries it from a verified archive whose bytes are npm's 1.0.0 tarball. npm's next tag still names an earlier candidate, 0.1.1-rc.16, so install by version or latest.",
+          "The release evidence records its checks, its publication and its provenance. Compatibility and accuracy claims apply only to the referenced build and measured span."
         ]
       }
     ],
     "links": [
       {
         "label": "Engine source reference",
-        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/CHANGELOG.md"
+        "url": "https://github.com/zodiacs-org/engine/blob/ca2c8cefbaa1a9d6f5f78ee86713e813633942ca/CHANGELOG.md"
       },
       {
-        "label": "Candidate evidence",
-        "url": "https://github.com/zodiacs-org/engine/tree/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/evidence/1.0.0-rc.2-20261006"
+        "label": "Release evidence",
+        "url": "https://github.com/zodiacs-org/engine/tree/7307665bdbc432269fdac006104f661be16000bc/docs/evidence/1.0.0-20261011"
       }
     ]
   },
   {
     "slug": "status",
     "title": "Developer status",
-    "description": "Identify the installed candidate, supported surfaces and remaining programme work.",
+    "description": "Identify the installed release, supported surfaces and remaining programme work.",
     "installation": false,
     "sections": [
       {
         "heading": "Available surfaces",
         "paragraphs": [
-          "The local TypeScript engine, shared-sky static JSON and hosted Compute API have different deployment and privacy boundaries. The engine page names the exact carried archive and source; the Compute API page states HTTP limits and errors.",
-          "Use the engine page to verify the candidate before installing it. The guides identify the supported entry point and whether requests remain local or go to the hosted service."
+          "The local TypeScript engine, shared-sky static JSON and hosted Compute API have different deployment and privacy boundaries. The engine page names the published version, its carried archive and its source; the Compute API page states HTTP limits and errors.",
+          "Use the engine page to install the release, or to check its archive's digest first. The guides identify the supported entry point and whether requests remain local or go to the hosted service."
         ]
       },
       {
         "heading": "Still separate",
         "paragraphs": [
-          "Stable npm publication, client-package publication and remote MCP delivery are tracked separately. React Native and complete sunrise-based panchang guides are not yet available."
+          "Client-package publication and the hosted MCP server's Registry listing are tracked separately. React Native and complete sunrise-based panchang guides are not yet available."
         ]
       }
     ],

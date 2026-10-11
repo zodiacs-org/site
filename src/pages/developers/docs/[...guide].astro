@@ -17,6 +17,9 @@ const title = guide ? `${guide.title} | Zodiacs developer guides` : 'Developer g
 const description = guide?.description ?? 'Version-bound quickstarts, recipes, conventions, errors and receipts for the Zodiacs engine and Compute API.';
 const markdown = guide ? `/developers/docs/${guide.slug}.md` : '/developers/docs/index.md';
 const install = guide?.installation ? engineInstallBlock(candidate) : '';
+// A published version installs from npm; the carried archive, the same bytes, stays the digest-checked alternative.
+const published = candidate.releaseStatus === 'published';
+const npmInstall = `npm install ${candidate.name}@${candidate.version}`;
 ---
 <Base title={title} description={description} path={path} jsonLd={[developerBreadcrumb(path, guide?.title ?? 'Developer guides')]}>
   <article class="section container container--narrow developer-guide" data-developer-guide={guide?.slug ?? 'index'}>
@@ -34,7 +37,14 @@ const install = guide?.installation ? engineInstallBlock(candidate) : '';
             {'code' in section && section.code && <pre><code>{section.code.source}</code></pre>}
           </section>
         ))}
-        {install && <section><h2>Verify and install the candidate</h2><pre><code>{install}</code></pre></section>}
+        {install && (published ? (
+          <section>
+            <h2>Install the release</h2>
+            <pre><code>{npmInstall}</code></pre>
+            <p>npm's {candidate.version} tarball is byte-identical to the archive the engine repository carries. To install those bytes from the carrier, with their digest checked before npm sees them, run this in the project's directory instead:</p>
+            <pre><code>{install}</code></pre>
+          </section>
+        ) : <section><h2>Verify and install the candidate</h2><pre><code>{install}</code></pre></section>)}
         <section><h2>References</h2><ul>{guide.links.map((link) => <li><a href={link.url}>{link.label}</a></li>)}</ul></section>
       </>
     ) : (

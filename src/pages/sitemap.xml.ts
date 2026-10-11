@@ -24,6 +24,7 @@ import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
 import birthdayFactsData from '../data/birthdays.json';
 import daily from '../data/daily.json';
+import developerGuides from '../data/developer-guides.json';
 import horoscopeProgram from '../data/horoscope-program.json';
 import eventsPublicationData from '../data/events-publication.json';
 import registryResearchPublicationData from '../data/registry-research/publication.json';
@@ -136,6 +137,13 @@ const MCP_HOST_LOGS_ROUTES = ['/privacy/'] as const;
 // the same pages, which name the engine's version, how to install it and that npm carries it.
 const ENGINE_100_LASTMOD = '2026-10-11';
 const ENGINE_100_ROUTES = ENGINE_RC2_ROUTES;
+// The developer guides: their index and one page per guide in the shared catalogue, and the developer hub's
+// link to them.
+const DEVELOPER_GUIDES_LASTMOD = '2026-10-12';
+const DEVELOPER_GUIDES_ROUTES = [
+  '/developers/docs/',
+  ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
+];
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -275,6 +283,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ENGINE_RC2_ROUTES.map((loc) => [loc, ENGINE_RC2_LASTMOD] as const),
   ...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const),
   ...ENGINE_100_ROUTES.map((loc) => [loc, ENGINE_100_LASTMOD] as const),
+  ['/developers/', DEVELOPER_GUIDES_LASTMOD] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -394,6 +403,7 @@ export const GET: APIRoute = async () => {
 
   const urls: { loc: string; priority: number; lastmod?: string }[] = [
     ...evergreenUrls,
+    ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: DEVELOPER_GUIDES_LASTMOD })),
     ...(registryAuraEntry ? [registryAuraEntry] : []),
     ...(gamesEnabled ? [
       { loc: '/race/', priority: 0.8, lastmod: '2026-08-19' },

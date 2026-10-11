@@ -1,11 +1,13 @@
-name: Developer guide preparation
+name: Developer guides
 on:
   pull_request:
     paths:
       - 'src/data/developer-guides.json'
+      - 'src/data/platform-engine-candidate.json'
       - 'src/pages/developers/docs/**'
+      - 'src/lib/engine-install-block.ts'
       - 'scripts/verify-developer-guide-*.mjs'
-      - 'scripts/verify-programme-production.mjs'
+      - 'vendor/zodiacs-engine-*.tgz'
       - '.github/workflows/developer-guides.yml'
       - 'public/llms*.txt'
 permissions:
@@ -24,48 +26,31 @@ jobs:
           cache: npm
       - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
         with:
-          deno-version: v2.x
+          deno-version: v2.9.7
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
         with:
-          bun-version: latest
+          bun-version: 1.4.2
       - run: npm ci
       - run: npx playwright-core install --with-deps chromium
       - run: npm run build
-      - name: Verify served HTML, Markdown twins and llms listings
+      - name: Results directory outside the checkout
         run: |
-          mkdir -p docs/platform/evidence/developer-guides-20261009/results
-          node scripts/verify-developer-guide-twins.mjs > docs/platform/evidence/developer-guides-20261009/results/twins.json
-      - name: Check all developer pages at mobile and desktop widths
-        run: node scripts/verify-developer-guide-browser.mjs > docs/platform/evidence/developer-guides-20261009/results/browser.json
-      - name: Execute synthetic candidate examples in isolated consumers
+          echo "RESULTS=$RUNNER_TEMP/developer-guides-results" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/developer-guides-results"
+      - name: Served HTML, Markdown twins and llms listings
+        run: node scripts/verify-developer-guide-twins.mjs > "$RESULTS/twins.json"
+      - name: Every guide page at mobile and desktop widths
+        run: node scripts/verify-developer-guide-browser.mjs > "$RESULTS/browser.json"
+      - name: Run each synthetic example on the engine the guides install
         env:
           TMPDIR: ${{ runner.temp }}
-        run: node scripts/verify-developer-guide-examples.mjs > docs/platform/evidence/developer-guides-20261009/results/examples.json
-      - name: Execute documented Python HTTP success and failure handling
-        run: node scripts/verify-developer-guide-python.mjs > docs/platform/evidence/developer-guides-20261009/results/python.json
-      - name: Verify public production candidate assets and hosted backend
-        env:
-          PRODUCTION_SOURCE_COMMIT: e9a21981eeeb99b34f44b1a2325d80160dcf0fb0
-        run: node scripts/verify-programme-production.mjs > docs/platform/evidence/developer-guides-20261009/results/production.json
-      - name: Export actual review records
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
-          import { createHash } from 'node:crypto';
-          const root = 'docs/platform/evidence/developer-guides-20261009/results';
-          for (const file of ['twins.json', 'browser.json', 'examples.json', 'python.json', 'production.json', 'openapi.json']) {
-            const bytes = readFileSync(root + '/' + file);
-            console.log('PROGRAMME_FILE ' + JSON.stringify({
-              path: root + '/' + file, size: bytes.length,
-              sha256: createHash('sha256').update(bytes).digest('hex'),
-              base64: bytes.toString('base64')
-            }));
-          }
-          NODE
+        run: node scripts/verify-developer-guide-examples.mjs > "$RESULTS/examples.json"
+      - name: Documented Python HTTP success and failure handling
+        run: node scripts/verify-developer-guide-python.mjs > "$RESULTS/python.json"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: developer-guide-preparation-${{ github.sha }}
-          path: docs/platform/evidence/developer-guides-20261009/results/
+          name: developer-guides-${{ github.sha }}
+          path: ${{ env.RESULTS }}
           if-no-files-found: warn
           retention-days: 90

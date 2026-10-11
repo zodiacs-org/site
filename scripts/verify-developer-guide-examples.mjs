@@ -8,6 +8,7 @@ import { createServer } from 'node:http';
 import { build } from 'esbuild';
 import { chromium } from 'playwright-core';
 import { findChromium } from '../tests/visual/browser.mjs';
+import { readPackageArchive } from './verify-platform-starter.mjs';
 
 const root = process.cwd();
 const guides = JSON.parse(await readFile(resolve(root, 'src/data/developer-guides.json'), 'utf8'));
@@ -40,9 +41,18 @@ try {
   const archive = await readFile(archivePath);
   assert.equal(createHash('sha256').update(archive).digest('hex'), candidate.sha256);
   await writeFile(join(scratch, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
-  command('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', archivePath]);
+  // A published version is installed as the guides say, from npm by exact version, and every file npm
+  // installed must be the carried archive's, byte for byte; a vendored candidate is installed from the archive.
+  const published = candidate.releaseStatus === 'published';
+  command('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', published ? `${candidate.name}@${candidate.version}` : archivePath]);
   const installed = JSON.parse(await readFile(join(scratch, 'node_modules/@zodiacs/engine/package.json'), 'utf8'));
   assert.equal(installed.version, candidate.version);
+  if (published) {
+    for (const [path, bytes] of readPackageArchive(archive)) {
+      assert.ok((await readFile(join(scratch, 'node_modules/@zodiacs/engine', path))).equals(bytes), `npm's ${path} is the archive's`);
+    }
+    outcomes.push({ check: 'npm install matches the carried archive', files: readPackageArchive(archive).size, status: 'pass' });
+  }
   for (const [slug, check] of Object.entries(checks)) {
     const file = join(scratch, slug + '.mjs');
     await writeFile(file, "import assert from 'node:assert/strict';\nconsole.log = () => {};\n" + code(slug) + '\n' + check + '\n');
@@ -108,11 +118,11 @@ try {
   const source = createHash('sha256').update(await readFile(resolve(root, 'src/data/developer-guides.json'))).digest('hex');
   console.log(JSON.stringify({
     schema: 'zodiacs.developer-guide-examples.v1',
-    candidate: { version: candidate.version, sha256: candidate.sha256 },
+    candidate: { version: candidate.version, sha256: candidate.sha256, releaseStatus: candidate.releaseStatus, installedFrom: candidate.releaseStatus === 'published' ? 'npm registry, by exact version' : 'carried archive' },
     guideSourceSha256: source,
     runtimes: { node: process.version, deno: command('deno', ['--version']).trim(), bun: command('bun', ['--version']).trim() },
     outcomes,
-    limitations: ['Local workerd validates the bundled Worker without proving a deployed Cloudflare service.', 'Python and elections recipes use the existing hosted API contract fixtures; no live private request is made.', 'React Native and sunrise-based panchang remain outside this draft.'],
+    limitations: ['Local workerd validates the bundled Worker without proving a deployed Cloudflare service.', 'Python and elections recipes use the existing hosted API contract fixtures; no live private request is made.', 'React Native and sunrise-based panchang guides are not yet written.'],
   }, null, 2));
 } finally {
   await rm(scratch, { recursive: true, force: true });
