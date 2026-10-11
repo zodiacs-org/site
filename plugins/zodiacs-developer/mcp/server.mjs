@@ -5,7 +5,7 @@
 import { Transform } from "node:stream";
 import { StdioServerTransport, serveStdio } from "@modelcontextprotocol/server/stdio";
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
+// node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js
 var julianLeap = (year) => year % 4 === 0;
 var gregorianLeap = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 function parseCalendarDate(value, calendar) {
@@ -54,7 +54,7 @@ function julianToGregorian(value) {
   return date2 ? format(civilDateOf(julianDayNumber(date2, "julian"), "gregorian")) : null;
 }
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
+// node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js
 var ISO_INSTANT = /^(\d{4}|[+-]\d{6})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-](\d{2}):(\d{2})))?$/;
 function validIsoInput(input) {
   const match = ISO_INSTANT.exec(input);
@@ -86,7 +86,7 @@ function dateFrom(input, label) {
   return date2;
 }
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
+// node_modules/@zodiacs/engine/dist/chunk-BHJXUY67.js
 var DELTA_T_MODEL = "zodiacs-deltat/1";
 var DELTA_T_TABLE = /* @__PURE__ */ Object.freeze({
   version: "2026-09-24",
@@ -367,7 +367,7 @@ function deltaT(ut) {
   return seconds(2e3 + ut / 365.25);
 }
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
+// node_modules/@zodiacs/engine/dist/chunk-B5LKF437.js
 var REFERENCE_SPAN = /* @__PURE__ */ Object.freeze({
   from: "1800-01-01T00:00:00.000Z",
   to: "2200-01-01T00:00:00.000Z"
@@ -576,7 +576,7 @@ function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
 }
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-ZX3QENKK.js
+// node_modules/@zodiacs/engine/dist/chunk-ZX3QENKK.js
 var ASPECT_TYPES = /* @__PURE__ */ Object.freeze([
   "conjunction",
   "sextile",
@@ -769,7 +769,7 @@ function degreeInSign(lon) {
 var ENGINE_VERSION = "1.0.0-rc.2";
 var EPHEMERIS = /* @__PURE__ */ Object.freeze({ name: "astronomy-engine", version: "2.1.19" });
 
-// ../site/node_modules/@zodiacs/engine/dist/receipt.js
+// node_modules/@zodiacs/engine/dist/receipt.js
 function parseReceiptJson(json, limits) {
   if (typeof json !== "string") return { ok: false, code: "invalid_json" };
   if (!Number.isSafeInteger(limits.depth) || limits.depth < 0 || !Number.isSafeInteger(limits.nodes) || limits.nodes < 1)
@@ -1850,7 +1850,7 @@ function bounded(value) {
 // src/mcp/tools.ts
 import { z as z2 } from "zod";
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-QJBGSY2B.js
+// node_modules/@zodiacs/engine/dist/chunk-QJBGSY2B.js
 var DEG = Math.PI / 180;
 var RAD = 180 / Math.PI;
 var HOUSE_SYSTEMS3 = /* @__PURE__ */ Object.freeze([
@@ -2153,7 +2153,7 @@ function computeHouses(system, input, angles) {
   }
 }
 
-// ../site/node_modules/astronomy-engine/esm/astronomy.js
+// node_modules/astronomy-engine/esm/astronomy.js
 /**
     @preserve
 
@@ -4060,7 +4060,7 @@ var NodeEventKind;
   NodeEventKind2[NodeEventKind2["Descending"] = -1] = "Descending";
 })(NodeEventKind || (NodeEventKind = {}));
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-BXBMGXAW.js
+// node_modules/@zodiacs/engine/dist/chunk-BXBMGXAW.js
 var SAFE_MAGNITUDE = 2 ** 1e3;
 var DEG2 = Math.PI / 180;
 var RAD2 = 180 / Math.PI;
@@ -4389,7 +4389,7 @@ function chartAt(input) {
   };
 }
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
+// node_modules/@zodiacs/engine/dist/chunk-TSS2SZWQ.js
 var DAY3 = 864e5;
 var REFINE_STEPS = 24;
 var EDGE_PROBE_MAX_MS = 6e4;
@@ -4617,7 +4617,7 @@ function searchLongitudeCrossingsWith(longitudeAt2, body2, targetLongitude, from
   return run(longitudeAt2, body2, targetLongitude, window, maxSamples);
 }
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
+// node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js
 var HOUSE_SYSTEM_NAMES = [
   "whole",
   "placidus",
@@ -4698,7 +4698,7 @@ function assertDerivedFlags(supplied, actual) {
   }
 }
 
-// ../site/node_modules/@zodiacs/engine/dist/chunk-G3G4OHEP.js
+// node_modules/@zodiacs/engine/dist/chunk-G3G4OHEP.js
 function windowEnd(value, end) {
   return dateFrom(value, `Crossing window ${end}`);
 }
