@@ -1,0 +1,139 @@
+{
+  "schema": "zodiacs.developer-guides-production-controls.v1",
+  "tool": "tools/verify-production.mjs",
+  "expectedCommit": "8e2dd7840f514f8e30fc870d2b3aca91ba613c67",
+  "note": "Run against production with the local build of the merge altered, or with altered alias reads. The six build files were copied before the changes and restored after them, byte for byte, before the recorded run. Each control must fail the check it targets and no other.",
+  "build": {
+    "checkedAt": "2026-10-11T20:57:19.503Z",
+    "ok": false,
+    "failedChecks": [
+      "/developers/docs/node/: its guide article and its twin are the merge's build, and the page is the build's with production's flags",
+      "/developers/docs/browser/: its guide article and its twin are the merge's build, and the page is the build's with production's flags",
+      "/developers/docs/deno/: its guide article and its twin are the merge's build, and the page is the build's with production's flags",
+      "/developers/docs/bun/: its guide article and its twin are the merge's build, and the page is the build's with production's flags",
+      "/llms.txt is the merge's build and lists every guide and twin",
+      "/sitemap.xml serves every entry of the merge's build, every guide page among them"
+    ],
+    "controls": [
+      {
+        "change": "one byte appended to the build's developers/docs/node.md",
+        "expected": "the node page check fails on its twin",
+        "result": {
+          "ok": false,
+          "articleIdentical": true,
+          "outsideArticle": {
+            "buildInOrder": true,
+            "flagAttributes": true,
+            "insertions": [
+              "analytics script",
+              "footer email signup"
+            ],
+            "ok": true
+          },
+          "twinIdentical": false
+        }
+      },
+      {
+        "change": "\"Bun\" changed to \"Bon\" once inside the bun page's guide article in the build",
+        "expected": "the bun page check fails on its article",
+        "result": {
+          "ok": false,
+          "articleIdentical": false,
+          "outsideArticle": {
+            "buildInOrder": false,
+            "flagAttributes": true,
+            "insertions": [
+              "analytics script",
+              "footer email signup"
+            ],
+            "ok": false
+          },
+          "twinIdentical": true
+        }
+      },
+      {
+        "change": "an attribute added to the deno page's <html> tag in the build, outside the guide article",
+        "expected": "the deno page check fails: the build's page is not served in order",
+        "result": {
+          "ok": false,
+          "articleIdentical": true,
+          "outsideArticle": {
+            "buildInOrder": false,
+            "flagAttributes": true,
+            "insertions": [
+              "unexplained"
+            ],
+            "ok": false
+          },
+          "twinIdentical": true
+        }
+      },
+      {
+        "change": "the viewport <meta> removed from the browser page in the build, so production's copy of it is an insertion",
+        "expected": "the browser page check fails on an unexplained insertion",
+        "result": {
+          "ok": false,
+          "articleIdentical": true,
+          "outsideArticle": {
+            "buildInOrder": true,
+            "flagAttributes": true,
+            "insertions": [
+              "unexplained",
+              "analytics script",
+              "footer email signup"
+            ],
+            "ok": false
+          },
+          "twinIdentical": true
+        }
+      },
+      {
+        "change": "the node guide's sitemap lastmod changed to 2001-01-01 in the build",
+        "expected": "the sitemap check fails, naming the node guide",
+        "result": {
+          "ok": false,
+          "notServed": [
+            "https://zodiacs.org/developers/docs/node/"
+          ]
+        }
+      },
+      {
+        "change": "a newline appended to the build's llms.txt",
+        "expected": "the llms.txt check fails",
+        "result": {
+          "ok": false
+        }
+      }
+    ]
+  },
+  "alias": [
+    {
+      "change": "ALIAS_BEFORE naming another commit",
+      "expected": "the alias check fails, and no other",
+      "result": {
+        "checkedAt": "2026-10-11T20:57:41.565Z",
+        "ok": false,
+        "failedChecks": [
+          "alias names a READY production deployment of the merge"
+        ]
+      }
+    },
+    {
+      "change": "ALIAS_AFTER with updatedAt one millisecond later than the recorded run's before-read",
+      "expected": "the unchanged-alias check fails, and no other",
+      "result": {
+        "ok": false,
+        "failedChecks": [
+          "alias unchanged during the checks"
+        ]
+      }
+    },
+    {
+      "change": "ALIAS_AFTER without a deployment id",
+      "expected": "refused before any comparison",
+      "result": {
+        "refused": "AssertionError [ERR_ASSERTION]: ALIAS_AFTER must name the deployment the alias points at"
+      }
+    }
+  ]
+}

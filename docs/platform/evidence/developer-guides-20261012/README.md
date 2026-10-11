@@ -116,6 +116,91 @@ The owner's private birth-data search ran over this change's two commits with
 both pattern sets ([history-check.txt](history-check.txt), counts only). The
 commits add no birth-data line. Every example is synthetic.
 
+## Production
+
+#713 merged as `8e2dd7840f514f8e30fc870d2b3aca91ba613c67`. Vercel
+`dpl_4zLgJubt6qa74W817DSbeJevyxem` built it for production and was READY at
+2026-10-11T20:30:45Z.
+
+[tools/verify-production.mjs](tools/verify-production.mjs) then checked
+canonical production against a local build of the merge. The build used Node
+22.22.2 with the feature flags unset, as CI's main build does. Before and after
+the run, the zodiacs.org alias named that deployment, built from the merge,
+with an unchanged `updatedAt`. Those reads went through the Vercel connector,
+which reports no read time. All 25 checks pass
+([production/production.json](production/production.json)):
+
+- **Twins and listings.** The 19 Markdown twins, `llms.txt` and
+  `llms-full.txt` are the build's bytes. Both llms files list every guide and
+  its twin.
+- **Pages.** Each page's guide article is the build's bytes. Its text has the
+  content the twins verifier requires of the build: the version, and for
+  installation guides the archive digest and `npm install
+  @zodiacs/engine@1.0.0`.
+- **The rest of each page.** It holds the build's page in order. Production's
+  flags insert only three things:
+  - the analytics script;
+  - the footer's daily-email signup;
+  - two attributes on `<html>`.
+- **Sitemap.** Production serves every `<url>` entry of the build unchanged,
+  the 19 guide pages among them. Production has three entries the build lacks:
+  `/registry/collection/`, `/race/` and `/games/history/`. Its
+  `PUBLIC_REGISTRY_COLLECTION_ENABLED` and `PUBLIC_ZODIAC_GAMES_ENABLED` flags
+  add them (`src/pages/sitemap.xml.ts`).
+- **Browser.** Chromium 154 opened every page at 360 and 1280 px: 38
+  navigations. Each was a 200 with its heading and twin link, and none had
+  overflow, a page error or a calculation request. Its 38 requests to
+  analytics were aborted, so the check added no visit to the site's
+  analytics.
+
+The controls are in [production/controls.json](production/controls.json). They
+ran against production with the build or the alias reads altered, and each
+failed the check it targets and no other:
+
+- **Build files.**
+  - One byte appended to a twin.
+  - One word changed inside an article.
+  - An attribute added outside an article.
+  - A tag removed from a built page, so production's copy reads as an
+    unexplained insertion.
+  - One sitemap lastmod changed.
+  - One newline appended to `llms.txt`.
+- **Alias reads.**
+  - A before-read naming another commit failed the alias check.
+  - An after-read with a later `updatedAt` failed the unchanged-alias check.
+  - An after-read without a deployment was refused.
+
+No whole page is the build's bytes (`wholePageIdentical` is false for each),
+because of those insertions. Main's post-merge Site Check is recorded in
+STATUS.md.
+
+## The llms files' developer section
+
+This record's change also gives the developer platform its own section in
+both llms files. F-21 found the engine filed under the Registry's heading,
+and A5 asks for a developer-platform section. Only headings were added or
+renamed; every paragraph moved verbatim.
+
+- **`llms-full.txt`.** "Astrofolio, Terminal, Registry, and Developer Wing"
+  is split in two:
+  - "Astrofolio, Terminal, Registry, and SDK": the entity boundary,
+    Astrofolio, the Terminal, the registry, the SDK and the read-only posture.
+  - "Developer platform": the sky data API, the engine, the local MCP server,
+    the compute API, the sky-fact benchmark and the widget package.
+- **`llms.txt`.** The pointer to `llms-full.txt` and the read-only posture
+  now come straight after the consumer lines. A "Developer platform" heading
+  follows, over the sky data API (with its OpenAPI link), the engine and its
+  reference, the MCP server, the compute API, the conformance suite and the
+  benchmark. The guide section follows.
+
+The consumer lines still come first. The boundary test still finds no
+Registry wording before the pointer, and the pointer and the posture
+paragraph still appear once each. The claims ledger restates one record,
+`priv.local-tools`: its paragraph no longer ends with the pointer line. The
+claims check finds no unlisted sentence and no orphan. The build passes
+`check-dist`, the twins verifier and the boundary, trust-surface, claims,
+sky-API and authorship tests.
+
 ## Remaining scope
 
 P3.10 stays partial. Its brief lists a React Native quickstart and a sunrise-based

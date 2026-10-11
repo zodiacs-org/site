@@ -1,6 +1,7 @@
 Engine 1.0.0, 2026-10-12 (Asia/Bangkok): `@zodiacs/engine` 1.0.0, the first
-stable release, is on npm under `latest`, and zodiacs.org runs it. No unit
-changes state.
+stable release, is on npm under `latest`, and zodiacs.org runs it. The
+developer guides are published on it. No unit changes status: P3.10 is now
+deployed, and still partial.
 
 **Overall delivery: 39%** (38.750% to three decimals): 70.7 of 182.45
 weighted units accepted; blocked 2% (3), or 1.644%.
@@ -34,10 +35,20 @@ weighted units accepted; blocked 2% (3), or 1.644%.
   on its first attempt: a WebKit blob-URL access error in the sharing drive on
   `/compatibility/`. Its re-run passed all twenty jobs, and both attempts are
   kept.
-- **Developer guides (P3.10).** The guides are in review as #713. P3.10 stays
-  partial until a React Native quickstart and a sunrise-based panchang recipe
-  exist. The first depends on D14, which the ledger defers; the second on a
-  rise/set capability the engine lacks.
+- **Developer guides (P3.10).** #713 merged as `8e2dd784`, and Vercel
+  `dpl_4zLgJubt6qa74W817DSbeJevyxem` serves it
+  ([the record](../evidence/developer-guides-20261012/README.md)).
+  - Post-merge Site Check 38172233878 passed all twenty jobs.
+  - The production check passes 25 of 25 against a local build of the merge.
+    The Markdown twins, both llms files and every guide article are the
+    build's bytes, and every sitemap entry of the build is served. The rest
+    of each page differs only by what production's flags insert. Chromium
+    loaded every page at 360 and 1280 px without overflow or a page error.
+  - With this record, both llms files give the developer platform its own
+    section (F-21's llms part, and part of A5).
+  - P3.10 stays partial until a React Native quickstart and a sunrise-based
+    panchang recipe exist. The first depends on D14, which the ledger
+    defers; the second on a rise/set capability the engine lacks.
 
 Checkpoint 26, 2026-10-11 (Asia/Bangkok): the birth-time window on the
 full birth-chart calculator (B2.b) is accepted on canonical production of

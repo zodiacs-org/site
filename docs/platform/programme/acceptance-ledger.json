@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-12 engine 1.0.0 published under latest and in production (site e710e574); states unchanged since checkpoint 26",
+  "asOf": "2026-10-12 engine 1.0.0 published under latest and in production (site e710e574); developer guides in production (site 8e2dd784); states unchanged since checkpoint 26",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1796,11 +1796,13 @@
       "gate": "every page has a Markdown twin and is listed in llms.txt",
       "dependsOn": [],
       "status": "partial",
-      "release": "none",
+      "release": "deployed",
       "evidence": [
-        "https://github.com/zodiacs-org/site/pull/695: preserved guide-preparation branch at 32882c0983f80c2346f37411e05fcc2d4a723489; actual HTML/Markdown, browser and runtime producer records under docs/platform/evidence/developer-guides-20261009"
+        "https://github.com/zodiacs-org/site/pull/695: preserved guide-preparation branch at 32882c0983f80c2346f37411e05fcc2d4a723489; actual HTML/Markdown, browser and runtime producer records under docs/platform/evidence/developer-guides-20261009",
+        "docs/platform/evidence/developer-guides-20261012/README.md: site #713, merged as 8e2dd7840f514f8e30fc870d2b3aca91ba613c67, publishes the guides on engine 1.0.0, with CI and local twin, browser, example and Python results",
+        "docs/platform/evidence/developer-guides-20261012/production/production.json: canonical production (dpl_4zLgJubt6qa74W817DSbeJevyxem) serves the merge build's twins, llms files, sitemap entries and guide articles, and 38 Chromium navigations pass; 25 of 25 checks, with controls in production/controls.json"
       ],
-      "notes": "developer pages and llms files exist; most listed quickstarts and references do not Checkpoint 22: eighteen HTML/Markdown guides have source-bound preparation checks and discovery listings on the preserved branch. They remain unpublished. React Native and a complete sunrise-based panchang recipe remain; acceptance unchanged."
+      "notes": "developer pages and llms files exist; most listed quickstarts and references do not Checkpoint 22: eighteen HTML/Markdown guides have source-bound preparation checks and discovery listings on the preserved branch. They remain unpublished. React Native and a complete sunrise-based panchang recipe remain; acceptance unchanged. Update 2026-10-12: site #713, merged as 8e2dd784 and in production, publishes the 18 guides and their index on engine 1.0.0. Every page has its Markdown twin, and both llms.txt and llms-full.txt list it. Still partial: the brief's React Native quickstart, whose runtime is deferred as D14, and its panchang recipe, which needs sunrise; the engine has no rise/set, and P2.A.rise-set failed."
     },
     {
       "id": "P3.11",
@@ -2114,8 +2116,10 @@
       "dependsOn": [],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "llms.txt and llms-full.txt exist; developer content sits under the Registry heading (F-21); no AGENTS.md in the engine; Context7/DeepWiki not confirmed"
+      "evidence": [
+        "docs/platform/evidence/developer-guides-20261012/README.md, \"The llms files' developer section\": both llms files give the developer platform its own section"
+      ],
+      "notes": "llms.txt and llms-full.txt exist; developer content sits under the Registry heading (F-21); no AGENTS.md in the engine; Context7/DeepWiki not confirmed Update 2026-10-12: the change that records the developer guides in production also gives the developer platform its own section in both llms files (F-21), and llms.txt's developer section links the OpenAPI document. The 18 guides and their index have Markdown twins. AGENTS.md is in each public repository: site (2d101024), engine (597a216f, 2026-10-06) and sdk (6959435a). Still open: stable anchors on the guides' section headings; a Context7 submission of the engine repository, a public listing the owner has not authorized; and a confirmed DeepWiki index."
     },
     {
       "id": "A6",
