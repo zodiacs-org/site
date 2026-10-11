@@ -42,7 +42,10 @@ kept_base = set(report['summary']['baseBytesKept'])
 for item in report['files']:
     prior = subprocess.check_output(
         ['git', 'show', f"{report['base']}:{item['path']}"], cwd=ROOT)
-    committed = (ROOT / item['path']).read_bytes()
+    # The outputs as the record describes them: at its candidate commit when it names one (later
+    # changes on main, merged afterwards, are not this regeneration's), else the working tree.
+    committed = (subprocess.check_output(['git', 'show', f"{report['candidateCommit']}:{item['path']}"], cwd=ROOT)
+                 if report.get('candidateCommit') else (ROOT / item['path']).read_bytes())
     if hashlib.sha256(prior).hexdigest() != item['baseSha256']:
         raise SystemExit(f"FAIL: {item['path']}: base digest differs from its record")
     if item['sameBytes'] or item['path'] in kept_base:
