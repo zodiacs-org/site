@@ -2,16 +2,23 @@
  * After the merge deploys: what canonical production serves for the developer
  * guides. For the index and each of the 18 guides it GETs the page and its
  * Markdown twin, and it GETs llms.txt, llms-full.txt and the sitemap. They are
- * compared with a local build of the merge commit made with the feature flags
- * unset, as CI's main build is:
+ * compared with two local builds of the merge commit:
  *
- * - the Markdown twins and both llms files byte for byte;
- * - each page's guide article byte for byte, and its text for the content the
- *   twins verifier requires of the build. The rest of the page must hold the
- *   build's page in order, and only what production's flags insert: two
- *   attributes on <html>, the analytics script and the footer's email signup;
- * - the sitemap by its entries: every <url> entry of the build must be served
- *   as built, and any entry production adds is listed.
+ * - the build with the feature flags unset, as CI's main build is (the one the
+ *   guide verifiers check), in the checkout's dist/;
+ * - the build with production's feature flags, made with the environment of
+ *   CI's "Build with production's feature flags" job (site-check.yml), whose
+ *   public values are CI stand-ins.
+ *
+ * What must hold:
+ * - each page is the production-flags build's page, byte for byte, except where
+ *   that build has one of the CI's stand-in values, and there production's
+ *   value must be of the same kind (STAND_INS below). Nothing else may differ:
+ *   not a piece more, not a piece less;
+ * - each page's guide article is also the flags-unset build's, byte for byte,
+ *   and its text has the content the twins verifier requires of that build;
+ * - the Markdown twins and both llms files are both builds' bytes;
+ * - the sitemap is the production-flags build's bytes, every guide page in it.
  *
  * Chromium then opens every page at 360 and 1280 px, as the browser verifier
  * does against a local preview. Its requests to analytics are aborted, so the
@@ -22,7 +29,7 @@
  * output; ALIAS_BEFORE and ALIAS_AFTER pass those reads in as JSON. Prints
  * JSON; exits non-zero on any failed check.
  *
- *   EXPECTED_COMMIT=<merge commit> ALIAS_BEFORE='{…}' node verify-production.mjs <site checkout built at that commit> > out.json
+ *   EXPECTED_COMMIT=<merge commit> ALIAS_BEFORE='{…}' node verify-production.mjs <checkout built at that commit, flags unset> <production-flags dist> > out.json
  *   ALIAS_AFTER='{…}' node verify-production.mjs --after out.json        # the read made after the run
  */
 import assert from 'node:assert/strict';
@@ -34,6 +41,18 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const BASE = 'https://zodiacs.org';
+/**
+ * The public values CI's production-flags build uses as stand-ins
+ * (.github/workflows/site-check.yml), each with the form production's own value
+ * must have where the build has the stand-in.
+ */
+const STAND_INS = new Map([
+  ['https://plausible.io/js/script.js', /^https:\/\/plausible\.io\/js\/[A-Za-z0-9._-]+\.js$/u],
+  ['sb_publishable_ci_stand_in', /^sb_publishable_[A-Za-z0-9_-]+$/u],
+  ['ci-stand-in-vapid-public-key', /^[A-Za-z0-9_-]{80,100}$/u],
+  ['http://127.0.0.1:54321', /^https:\/\/[a-z0-9]+\.supabase\.co$/u],
+]);
+
 /** A connector read must name the deployment and the alias's update time before anything is compared. */
 const complete = (read, name) => {
   assert.ok(read && typeof read.deploymentId === 'string' && /^dpl_[A-Za-z0-9]+$/u.test(read.deploymentId),
@@ -57,9 +76,11 @@ if (process.argv[2] === '--after') {
 }
 
 const root = resolve(process.argv[2] ?? '.');
+const flagsDist = process.argv[3] ? resolve(process.argv[3]) : null;
+assert.ok(flagsDist, 'the production-flags build is the second argument');
 const expected = process.env.EXPECTED_COMMIT ?? '';
 assert.match(expected, /^[0-9a-f]{40}$/u, 'EXPECTED_COMMIT must be the full merge commit');
-// The local build is the reference, so its checkout must be the merge, unmodified.
+// The local builds are the reference, so the checkout must be the merge, unmodified.
 const git = (...args) => execFileSync('git', ['-C', root, ...args], { encoding: 'utf8' }).trim();
 assert.equal(git('rev-parse', 'HEAD'), expected, 'the checkout must be at the merge commit');
 assert.equal(git('status', '--porcelain', '--untracked-files=no'), '', 'the checkout must have no tracked changes');
@@ -76,40 +97,60 @@ async function get(path) {
   const response = await fetch(BASE + path, { redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(30000) });
   return { status: response.status, type: response.headers.get('content-type'), bytes: Buffer.from(await response.arrayBuffer()) };
 }
-/** The served bytes against the local build's file at the same path. */
+/** The served bytes beside both builds' files at the same path. */
 async function compare(path, file) {
   const served = await get(path);
   const built = readFileSync(resolve(root, 'dist', file));
-  return { ...served, built, identical: served.status === 200 && served.bytes.equals(built),
-    detail: { status: served.status, contentType: served.type, bytes: served.bytes.length, sha256: sha256(served.bytes), builtSha256: sha256(built) } };
+  const flagged = readFileSync(resolve(flagsDist, file));
+  return { ...served, built, flagged,
+    detail: { status: served.status, contentType: served.type, bytes: served.bytes.length, sha256: sha256(served.bytes),
+      builtSha256: sha256(built), flagsBuildSha256: sha256(flagged) } };
+}
+
+/** A piece's string literals, and the piece with each replaced by a marker. */
+const LITERAL = /"((?:[^"\\\n]|\\.)*)"|'((?:[^'\\\n]|\\.)*)'/gu;
+function literals(piece) {
+  const values = [];
+  const skeleton = piece.replace(LITERAL, (_whole, double, single) => {
+    values.push(double ?? single);
+    return '\u0000';
+  });
+  return { skeleton, values };
 }
 /**
- * The served page against the built one. The build's page is split at each '>',
- * and every piece must appear in the served page in order; what the served page
- * has between them are its insertions. Production's flags insert the analytics
- * script and the footer's email signup, and two attributes on <html>.
+ * The served page against the production-flags build's. Both are split at each
+ * '>'; they must have the same pieces, and a piece may differ only in string
+ * literals where the build's is a CI stand-in and the served one has the form
+ * production's value must have. Returns what was replaced, by length and digest.
  */
-const FLAG_ATTRIBUTES = '<html lang="en" data-daily-email-lifecycle data-guide-analytics-boundary';
-function insertions(served, built) {
-  const attributes = served.includes(FLAG_ATTRIBUTES);
-  const pieces = served.replace(FLAG_ATTRIBUTES, '<html lang="en"').split('>');
-  const expected = built.split('>');
-  let next = 0;
-  const runs = [];
-  let run = [];
-  for (const piece of pieces) {
-    if (next < expected.length && piece === expected[next]) {
-      next += 1;
-      if (run.length) runs.push(run.join('>'));
-      run = [];
-    } else run.push(piece);
+function againstFlagsBuild(served, flagged) {
+  const servedPieces = served.split('>');
+  const flaggedPieces = flagged.split('>');
+  const replaced = [];
+  const problems = [];
+  if (servedPieces.length !== flaggedPieces.length) {
+    problems.push(`${servedPieces.length} pieces served, ${flaggedPieces.length} built`);
+    return { ok: false, replaced, problems };
   }
-  if (run.length) runs.push(run.join('>'));
-  const kinds = runs.map((text) => (/https:\/\/plausible\.io\/js\//u.test(text) && !/data-email-capture-shell/u.test(text) ? 'analytics script'
-    : /data-email-capture-shell/u.test(text) && !/plausible/u.test(text) ? 'footer email signup' : 'unexplained'));
-  return { buildInOrder: next === expected.length, flagAttributes: attributes, insertions: kinds,
-    ok: next === expected.length && attributes && kinds.join() === 'analytics script,footer email signup' };
+  for (let index = 0; index < servedPieces.length; index += 1) {
+    if (servedPieces[index] === flaggedPieces[index]) continue;
+    const a = literals(servedPieces[index]);
+    const b = literals(flaggedPieces[index]);
+    if (a.skeleton !== b.skeleton || a.values.length !== b.values.length) {
+      problems.push(`piece ${index} differs outside its string literals`);
+      continue;
+    }
+    for (let at = 0; at < a.values.length; at += 1) {
+      if (a.values[at] === b.values[at]) continue;
+      const form = STAND_INS.get(b.values[at]);
+      if (!form) problems.push(`piece ${index}: a literal differs where the build has no stand-in`);
+      else if (!form.test(a.values[at])) problems.push(`piece ${index}: the value served for ${b.values[at]} is not of its form`);
+      else replaced.push({ standIn: b.values[at], piece: index, servedLength: a.values[at].length, servedSha256: sha256(a.values[at]) });
+    }
+  }
+  return { ok: problems.length === 0, replaced, problems };
 }
+
 /** The page's one guide article, from its opening tag to the matching close. */
 function article(bytes) {
   const text = bytes.toString('utf8');
@@ -143,59 +184,55 @@ const routes = [{ slug: 'index', title: 'Developer guides', html: '/developers/d
 for (const route of routes) {
   const html = await compare(route.html, route.htmlFile);
   const markdown = await compare(route.markdown, route.markdownFile);
+  const page = html.status === 200 ? againstFlagsBuild(html.bytes.toString('utf8'), html.flagged.toString('utf8'))
+    : { ok: false, replaced: [], problems: [`status ${html.status}`] };
   const servedArticle = article(html.bytes);
   const builtArticle = article(html.built);
   const articleIdentical = html.status === 200 && servedArticle !== null && servedArticle === builtArticle;
-  const outside = insertions(html.bytes.toString('utf8'), html.built.toString('utf8'));
+  const twinIdentical = markdown.status === 200 && markdown.bytes.equals(markdown.built) && markdown.bytes.equals(markdown.flagged);
   // The same content the twins verifier requires of the build, here of what production serves.
-  const page = decode(html.bytes.toString('utf8'));
+  const text = decode(html.bytes.toString('utf8'));
   const twin = markdown.bytes.toString('utf8');
   const missing = [];
   if (route.guide) {
     const { guide } = route;
-    if (!page.includes(`data-developer-guide="${guide.slug}"`)) missing.push('guide attribute');
-    for (const text of [guide.title, guide.description, ...guide.sections.flatMap((section) => [section.heading, ...section.paragraphs,
+    if (!text.includes(`data-developer-guide="${guide.slug}"`)) missing.push('guide attribute');
+    for (const part of [guide.title, guide.description, ...guide.sections.flatMap((section) => [section.heading, ...section.paragraphs,
       ...(section.code ? [section.code.source] : [])])]) {
-      if (!page.includes(text)) missing.push('HTML content');
-      if (!twin.includes(text)) missing.push('Markdown content');
+      if (!text.includes(part)) missing.push('HTML content');
+      if (!twin.includes(part)) missing.push('Markdown content');
     }
-    if (!page.includes(candidate.version) || !twin.includes(candidate.version)) missing.push('release identity');
-    if (guide.installation && (!page.includes(candidate.sha256) || !twin.includes(candidate.sha256))) missing.push('archive digest');
-    if (guide.installation && (!page.includes(`npm install ${candidate.name}@${candidate.version}`)
+    if (!text.includes(candidate.version) || !twin.includes(candidate.version)) missing.push('release identity');
+    if (guide.installation && (!text.includes(candidate.sha256) || !twin.includes(candidate.sha256))) missing.push('archive digest');
+    if (guide.installation && (!text.includes(`npm install ${candidate.name}@${candidate.version}`)
       || !twin.includes(`npm install ${candidate.name}@${candidate.version}`))) missing.push('npm install line');
   } else {
     for (const guide of guides) {
-      if (!page.includes(`/developers/docs/${guide.slug}/`) || !twin.includes(`/developers/docs/${guide.slug}/`)) missing.push(`index entry ${guide.slug}`);
+      if (!text.includes(`/developers/docs/${guide.slug}/`) || !twin.includes(`/developers/docs/${guide.slug}/`)) missing.push(`index entry ${guide.slug}`);
     }
   }
-  check(`${route.html}: its guide article and its twin are the merge's build, and the page is the build's with production's flags`,
-    articleIdentical && outside.ok && markdown.identical && missing.length === 0,
-    { html: { ...html.detail, article: { identical: articleIdentical, bytes: servedArticle === null ? null : Buffer.byteLength(servedArticle),
-      sha256: servedArticle === null ? null : sha256(servedArticle), builtSha256: builtArticle === null ? null : sha256(builtArticle) },
-    wholePageIdentical: html.identical, outsideArticle: outside }, markdown: markdown.detail, missing: [...new Set(missing)] });
+  check(`${route.html}: the production-flags build's page, with its guide article and its twin as built`,
+    page.ok && articleIdentical && twinIdentical && missing.length === 0,
+    { html: { ...html.detail, standInsReplaced: page.replaced, problems: page.problems,
+      article: { identical: articleIdentical, bytes: servedArticle === null ? null : Buffer.byteLength(servedArticle),
+        sha256: servedArticle === null ? null : sha256(servedArticle), builtSha256: builtArticle === null ? null : sha256(builtArticle) } },
+    markdown: { ...markdown.detail, identical: twinIdentical }, missing: [...new Set(missing)] });
 }
 
 for (const file of ['llms.txt', 'llms-full.txt']) {
   const listing = await compare(`/${file}`, file);
+  const identical = listing.status === 200 && listing.bytes.equals(listing.built) && listing.bytes.equals(listing.flagged);
   const text = listing.bytes.toString('utf8');
   const unlisted = guides.filter((guide) => !text.includes(`https://zodiacs.org/developers/docs/${guide.slug}/`)
     || !text.includes(`https://zodiacs.org/developers/docs/${guide.slug}.md`)).map((guide) => guide.slug);
-  check(`/${file} is the merge's build and lists every guide and twin`, listing.identical && unlisted.length === 0, { ...listing.detail, unlisted });
+  check(`/${file} is both builds' bytes and lists every guide and twin`, identical && unlisted.length === 0, { ...listing.detail, unlisted });
 }
 const sitemap = await compare('/sitemap.xml', 'sitemap.xml');
-/** Each <url> entry, whole: its location, alternates, lastmod and priority. */
-const entries = (bytes) => bytes.toString('utf8').match(/<url>[\s\S]*?<\/url>/gu) ?? [];
-const location = (entry) => /<loc>([^<]+)<\/loc>/u.exec(entry)?.[1] ?? null;
-const servedEntries = entries(sitemap.bytes);
-const builtEntries = entries(sitemap.built);
-const served = new Set(servedEntries);
-const built = new Set(builtEntries);
-const notServed = builtEntries.filter((entry) => !served.has(entry)).map(location);
-const added = servedEntries.filter((entry) => !built.has(entry)).map(location);
-const absent = routes.filter((route) => !builtEntries.some((entry) => location(entry) === `https://zodiacs.org${route.html}`)).map((route) => route.slug);
-check('/sitemap.xml serves every entry of the merge\'s build, every guide page among them', sitemap.status === 200
-  && builtEntries.length > 0 && notServed.length === 0 && absent.length === 0,
-  { ...sitemap.detail, builtEntries: builtEntries.length, servedEntries: servedEntries.length, notServed, absent, addedByProduction: added });
+const sitemapText = sitemap.bytes.toString('utf8');
+const absent = routes.filter((route) => !sitemapText.includes(`<loc>https://zodiacs.org${route.html}</loc>`)).map((route) => route.slug);
+check('/sitemap.xml is the production-flags build\'s bytes, every guide page in it',
+  sitemap.status === 200 && sitemap.bytes.equals(sitemap.flagged) && absent.length === 0,
+  { ...sitemap.detail, identicalToFlagsUnsetBuild: sitemap.bytes.equals(sitemap.built), absent });
 
 // Every page in Chromium at both widths, with the browser verifier's assertions, against production.
 const require = createRequire(resolve(root, 'package.json'));
@@ -252,7 +289,7 @@ try {
 }
 
 const ok = checks.every((item) => item.ok);
-console.log(JSON.stringify({ schema: 'zodiacs.developer-guides-production.v1', base: BASE, expectedCommit: expected,
+console.log(JSON.stringify({ schema: 'zodiacs.developer-guides-production.v2', base: BASE, expectedCommit: expected,
   engine: { name: candidate.name, version: candidate.version, sha256: candidate.sha256 }, checkedAt: new Date().toISOString(),
   alias: { before }, ok, checks }, null, 2));
 if (!ok) process.exitCode = 1;

@@ -39,11 +39,14 @@ weighted units accepted; blocked 2% (3), or 1.644%.
   `dpl_4zLgJubt6qa74W817DSbeJevyxem` serves it
   ([the record](../evidence/developer-guides-20261012/README.md)).
   - Post-merge Site Check 38172233878 passed all twenty jobs.
-  - The production check passes 25 of 25 against a local build of the merge.
-    The Markdown twins, both llms files and every guide article are the
-    build's bytes, and every sitemap entry of the build is served. The rest
-    of each page differs only by what production's flags insert. Chromium
-    loaded every page at 360 and 1280 px without overflow or a page error.
+  - The production check passes 25 of 25 against two local builds of the
+    merge.
+    - Each page is the production-flags build's page, byte for byte, except
+      the analytics script's URL, which CI's build has as a stand-in.
+    - Every guide article, Markdown twin and llms file is also the
+      flags-unset build's.
+    - Chromium loaded every page at 360 and 1280 px without overflow or a
+      page error.
   - With this record, both llms files give the developer platform its own
     section (F-21's llms part, and part of A5).
   - P3.10 stays partial until a React Native quickstart and a sunrise-based

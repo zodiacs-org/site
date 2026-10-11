@@ -1,104 +1,107 @@
 {
-  "schema": "zodiacs.developer-guides-production-controls.v1",
+  "schema": "zodiacs.developer-guides-production-controls.v2",
   "tool": "tools/verify-production.mjs",
   "expectedCommit": "8e2dd7840f514f8e30fc870d2b3aca91ba613c67",
-  "note": "Run against production with the local build of the merge altered, or with altered alias reads. The six build files were copied before the changes and restored after them, byte for byte, before the recorded run. Each control must fail the check it targets and no other.",
+  "note": "Run against production with one of the two local builds altered, or with altered alias reads. The altered build files were copied first and restored afterwards, byte for byte, before the recorded run. Each control must fail the check it targets and no other.",
   "build": {
-    "checkedAt": "2026-10-11T20:57:19.503Z",
+    "checkedAt": "2026-10-11T22:14:47.352Z",
     "ok": false,
     "failedChecks": [
-      "/developers/docs/node/: its guide article and its twin are the merge's build, and the page is the build's with production's flags",
-      "/developers/docs/browser/: its guide article and its twin are the merge's build, and the page is the build's with production's flags",
-      "/developers/docs/deno/: its guide article and its twin are the merge's build, and the page is the build's with production's flags",
-      "/developers/docs/bun/: its guide article and its twin are the merge's build, and the page is the build's with production's flags",
-      "/llms.txt is the merge's build and lists every guide and twin",
-      "/sitemap.xml serves every entry of the merge's build, every guide page among them"
+      "/developers/docs/node/: the production-flags build's page, with its guide article and its twin as built",
+      "/developers/docs/browser/: the production-flags build's page, with its guide article and its twin as built",
+      "/developers/docs/deno/: the production-flags build's page, with its guide article and its twin as built",
+      "/developers/docs/bun/: the production-flags build's page, with its guide article and its twin as built",
+      "/developers/docs/natal/: the production-flags build's page, with its guide article and its twin as built",
+      "/developers/docs/returns/: the production-flags build's page, with its guide article and its twin as built",
+      "/llms.txt is both builds' bytes and lists every guide and twin",
+      "/sitemap.xml is the production-flags build's bytes, every guide page in it"
     ],
     "controls": [
       {
-        "change": "one byte appended to the build's developers/docs/node.md",
+        "build": "production flags",
+        "change": "one byte appended to developers/docs/node.md",
         "expected": "the node page check fails on its twin",
         "result": {
           "ok": false,
+          "problems": [],
           "articleIdentical": true,
-          "outsideArticle": {
-            "buildInOrder": true,
-            "flagAttributes": true,
-            "insertions": [
-              "analytics script",
-              "footer email signup"
-            ],
-            "ok": true
-          },
           "twinIdentical": false
         }
       },
       {
-        "change": "\"Bun\" changed to \"Bon\" once inside the bun page's guide article in the build",
+        "build": "flags unset",
+        "change": "\"Bun\" changed to \"Bon\" once inside the bun page's guide article",
         "expected": "the bun page check fails on its article",
         "result": {
           "ok": false,
+          "problems": [],
           "articleIdentical": false,
-          "outsideArticle": {
-            "buildInOrder": false,
-            "flagAttributes": true,
-            "insertions": [
-              "analytics script",
-              "footer email signup"
-            ],
-            "ok": false
-          },
           "twinIdentical": true
         }
       },
       {
-        "change": "an attribute added to the deno page's <html> tag in the build, outside the guide article",
-        "expected": "the deno page check fails: the build's page is not served in order",
+        "build": "production flags",
+        "change": "an attribute added to the deno page's <html> tag",
+        "expected": "the deno page check fails: a piece differs outside its string literals",
         "result": {
           "ok": false,
+          "problems": [
+            "piece 1 differs outside its string literals"
+          ],
           "articleIdentical": true,
-          "outsideArticle": {
-            "buildInOrder": false,
-            "flagAttributes": true,
-            "insertions": [
-              "unexplained"
-            ],
-            "ok": false
-          },
           "twinIdentical": true
         }
       },
       {
-        "change": "the viewport <meta> removed from the browser page in the build, so production's copy of it is an insertion",
-        "expected": "the browser page check fails on an unexplained insertion",
+        "build": "production flags",
+        "change": "the viewport <meta> removed from the browser page, so production has one piece more",
+        "expected": "the browser page check fails on the piece count",
         "result": {
           "ok": false,
+          "problems": [
+            "1089 pieces served, 1088 built"
+          ],
           "articleIdentical": true,
-          "outsideArticle": {
-            "buildInOrder": true,
-            "flagAttributes": true,
-            "insertions": [
-              "unexplained",
-              "analytics script",
-              "footer email signup"
-            ],
-            "ok": false
-          },
           "twinIdentical": true
         }
       },
       {
-        "change": "the node guide's sitemap lastmod changed to 2001-01-01 in the build",
-        "expected": "the sitemap check fails, naming the node guide",
+        "build": "production flags",
+        "change": "the natal page's analytics stand-in replaced by another URL",
+        "expected": "the natal page check fails: a literal differs where the build has no stand-in",
         "result": {
           "ok": false,
-          "notServed": [
-            "https://zodiacs.org/developers/docs/node/"
-          ]
+          "problems": [
+            "piece 53: a literal differs where the build has no stand-in"
+          ],
+          "articleIdentical": true,
+          "twinIdentical": true
         }
       },
       {
-        "change": "a newline appended to the build's llms.txt",
+        "build": "production flags",
+        "change": "the literal beside the stand-in in the returns page changed (plausibleEndpoint)",
+        "expected": "the returns page check fails: only the stand-in may differ",
+        "result": {
+          "ok": false,
+          "problems": [
+            "piece 53: a literal differs where the build has no stand-in"
+          ],
+          "articleIdentical": true,
+          "twinIdentical": true
+        }
+      },
+      {
+        "build": "production flags",
+        "change": "the node guide's sitemap lastmod changed to 2001-01-01",
+        "expected": "the sitemap check fails",
+        "result": {
+          "ok": false
+        }
+      },
+      {
+        "build": "flags unset",
+        "change": "a newline appended to llms.txt",
         "expected": "the llms.txt check fails",
         "result": {
           "ok": false
@@ -111,7 +114,7 @@
       "change": "ALIAS_BEFORE naming another commit",
       "expected": "the alias check fails, and no other",
       "result": {
-        "checkedAt": "2026-10-11T20:57:41.565Z",
+        "checkedAt": "2026-10-11T22:15:07.997Z",
         "ok": false,
         "failedChecks": [
           "alias names a READY production deployment of the merge"

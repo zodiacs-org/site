@@ -123,30 +123,39 @@ commits add no birth-data line. Every example is synthetic.
 2026-10-11T20:30:45Z.
 
 [tools/verify-production.mjs](tools/verify-production.mjs) then checked
-canonical production against a local build of the merge. The build used Node
-22.22.2 with the feature flags unset, as CI's main build does. Before and after
-the run, the zodiacs.org alias named that deployment, built from the merge,
-with an unchanged `updatedAt`. Those reads went through the Vercel connector,
-which reports no read time. All 25 checks pass
+canonical production against two local builds of the merge, both made with
+Node 22.22.2:
+
+- one with the feature flags unset, as CI's main build is, which the guide
+  verifiers check;
+- one with production's feature flags, made with the environment of CI's
+  "Build with production's feature flags" job, whose public values are CI
+  stand-ins.
+
+Before and after the run, the zodiacs.org alias named that deployment, built
+from the merge, with an unchanged `updatedAt`. Those reads went through the
+Vercel connector, which reports no read time. All 25 checks pass
 ([production/production.json](production/production.json)):
 
+- **Pages.** Each page is the production-flags build's page, byte for byte,
+  except one string: the analytics script's URL. CI's build has the stand-in
+  `https://plausible.io/js/script.js`; production has its own script on
+  plausible.io, recorded by length and digest. The check allows a difference
+  only where the build has one of CI's stand-ins and production's value has
+  the stand-in's form; nothing else may differ, and no piece may be added or
+  missing.
+- **Guide content.** Each page's guide article is also the flags-unset build's
+  bytes. Its text has the content the twins verifier requires of the build:
+  the version, and for installation guides the archive digest and
+  `npm install @zodiacs/engine@1.0.0`.
 - **Twins and listings.** The 19 Markdown twins, `llms.txt` and
-  `llms-full.txt` are the build's bytes. Both llms files list every guide and
+  `llms-full.txt` are both builds' bytes. Both llms files list every guide and
   its twin.
-- **Pages.** Each page's guide article is the build's bytes. Its text has the
-  content the twins verifier requires of the build: the version, and for
-  installation guides the archive digest and `npm install
-  @zodiacs/engine@1.0.0`.
-- **The rest of each page.** It holds the build's page in order. Production's
-  flags insert only three things:
-  - the analytics script;
-  - the footer's daily-email signup;
-  - two attributes on `<html>`.
-- **Sitemap.** Production serves every `<url>` entry of the build unchanged,
-  the 19 guide pages among them. Production has three entries the build lacks:
-  `/registry/collection/`, `/race/` and `/games/history/`. Its
-  `PUBLIC_REGISTRY_COLLECTION_ENABLED` and `PUBLIC_ZODIAC_GAMES_ENABLED` flags
-  add them (`src/pages/sitemap.xml.ts`).
+- **Sitemap.** It is the production-flags build's bytes, with the 19 guide
+  pages. It has three entries that the flags-unset build lacks:
+  `/registry/collection/`, `/race/` and `/games/history/`, which
+  `PUBLIC_REGISTRY_COLLECTION_ENABLED` and `PUBLIC_ZODIAC_GAMES_ENABLED` add
+  (`src/pages/sitemap.xml.ts`).
 - **Browser.** Chromium 154 opened every page at 360 and 1280 px: 38
   navigations. Each was a 200 with its heading and twin link, and none had
   overflow, a page error or a calculation request. Its 38 requests to
@@ -154,27 +163,32 @@ which reports no read time. All 25 checks pass
   analytics.
 
 The controls are in [production/controls.json](production/controls.json). They
-ran against production with the build or the alias reads altered, and each
+ran against production with one build or the alias reads altered, and each
 failed the check it targets and no other:
 
-- **Build files.**
+- **Production-flags build.**
   - One byte appended to a twin.
-  - One word changed inside an article.
-  - An attribute added outside an article.
-  - A tag removed from a built page, so production's copy reads as an
-    unexplained insertion.
+  - An attribute added to a page's `<html>` tag.
+  - A tag removed, so production has one piece more.
+  - The analytics stand-in replaced by another URL.
+  - The literal beside the stand-in changed.
   - One sitemap lastmod changed.
+- **Flags-unset build.**
+  - One word changed inside an article.
   - One newline appended to `llms.txt`.
 - **Alias reads.**
   - A before-read naming another commit failed the alias check.
   - An after-read with a later `updatedAt` failed the unchanged-alias check.
   - An after-read without a deployment was refused.
 
-No whole page is the build's bytes (`wholePageIdentical` is false for each),
-because of those insertions. Main's post-merge Site Check is recorded in
-STATUS.md. The private birth-data search over this record's commits found no
-birth-data line ([production/history-check.txt](production/history-check.txt),
-counts only).
+The check's first version, in this PR's first commits, compared pages with the
+flags-unset build only. It allowed a run of inserted markup if the run held the
+analytics script or the email signup, so extra markup inside such a run would
+have passed (Codex review on site #722). This version compares whole pages
+with the production-flags build instead. Main's post-merge Site Check is
+recorded in STATUS.md. The private birth-data search over this record's
+commits found no birth-data line
+([production/history-check.txt](production/history-check.txt), counts only).
 
 ## The llms files' developer section
 
