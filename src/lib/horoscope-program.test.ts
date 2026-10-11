@@ -198,6 +198,24 @@ describe('horoscope program domain', () => {
     }
   });
 
+  it('never repeats a passage\'s opening verb in its follow-up clause', () => {
+    const newMoonDay = clone(input);
+    for (const snapshot of newMoonDay.dailySnapshots) snapshot.moon.phase = 'New Moon';
+    for (const program of [buildHoroscopeProgram(input), buildHoroscopeProgram(newMoonDay)]) {
+      for (const entry of program.signs) {
+        for (const reading of Object.values(entry.readings)) {
+          for (const { text } of reading.passages) {
+            for (const sentence of text.split(/(?<=[.!?])\s+/u)) {
+              const opening = sentence.match(/^([A-Za-z]+)/u)?.[1]?.toLowerCase();
+              const followUps = [...sentence.matchAll(/(?:;|, then)\s+([a-z]+)/gu)].map((match) => match[1]);
+              if (opening) expect(followUps, sentence).not.toContain(opening);
+            }
+          }
+        }
+      }
+    }
+  });
+
   it('links every publishable passage to serializable source or derived evidence', () => {
     const program = buildHoroscopeProgram(input);
     const evidence = new Map(program.evidence.map((receipt) => [receipt.id, receipt]));
