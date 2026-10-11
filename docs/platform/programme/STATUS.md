@@ -1,3 +1,44 @@
+Engine 1.0.0, 2026-10-12 (Asia/Bangkok): `@zodiacs/engine` 1.0.0, the first
+stable release, is on npm under `latest`, and zodiacs.org runs it. No unit
+changes state.
+
+**Overall delivery: 39%** (38.750% to three decimals): 70.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **Engine.** zodiacs-org/engine#39 merged as `f8992a4c` (source `ca2c8cef`,
+  carrier `38d31854`).
+  - The Release workflow published the carried archive from main (run
+    38144970198), with SLSA provenance.
+  - npm serves the carried bytes; the signatures and the attestation verify;
+    the package imports in Node and Deno. The record is engine #40
+    (`docs/evidence/1.0.0-20261011/`).
+  - npm's `next` still names 0.1.1-rc.16, and moving it needs the owner's npm
+    login.
+  - P3.1a was already accepted, so this publication adds no weight.
+- **Site.** #710 merged as `e710e574`, adopting 1.0.0
+  ([the record](../evidence/site-engine-1-0-0/README.md)).
+  - Every entry point loads rc.2's code, so nothing the site computes changes.
+  - The compute bundle's private-state review was rerun, and the bundle
+    changes in six lines.
+  - It ships MCP adapter 0.1.0-rc.19 and developer plugin 0.3.7.
+  - The Swiss accuracy statistics were run again on 1.0.0 and are unchanged
+    (DECISIONS-2026-10-11 §4).
+  - CI took the Phase 1 captures again. The private birth-data search found
+    no new birth data.
+  - Post-merge Site Check 38163879437 passed all twenty jobs.
+  - Vercel `dpl_CyGnPa7pnNKRjwkAYfpZpyrCtMLE` is READY at the merge and serves
+    zodiacs.org. The production check passes 11 of 11: pages, llms files,
+    TypeDoc provenance, the MCP archive digest, and the compute API answering
+    from 1.0.0 (`../evidence/site-engine-1-0-0/production/`).
+- **Earlier failure.** #704's post-merge Site Check 38148270908 failed one job
+  on its first attempt: a WebKit blob-URL access error in the sharing drive on
+  `/compatibility/`. Its re-run passed all twenty jobs, and both attempts are
+  kept.
+- **Developer guides (P3.10).** The guides are in review as #713. P3.10 stays
+  partial until a React Native quickstart and a sunrise-based panchang recipe
+  exist. The first depends on D14, which the ledger defers; the second on a
+  rise/set capability the engine lacks.
+
 Checkpoint 26, 2026-10-11 (Asia/Bangkok): the birth-time window on the
 full birth-chart calculator (B2.b) is accepted on canonical production of
 merge `7028d01905137b45e835db1dca785cecb672a729`

@@ -1,0 +1,61 @@
+name: Developer guides
+on:
+  pull_request:
+    paths:
+      - 'src/data/developer-guides.json'
+      - 'src/data/platform-engine-candidate.json'
+      - 'src/pages/developers/docs/**'
+      - 'src/lib/engine-install-block.ts'
+      - 'scripts/verify-developer-guide-*.mjs'
+      - 'scripts/verify-platform-starter.mjs'
+      - 'tests/visual/browser.mjs'
+      - 'tests/visual/preview-server.mjs'
+      - 'src/lib/compute-api/examples.ts'
+      - 'src/lib/compute-api/examples.json'
+      - 'vendor/zodiacs-engine-*.tgz'
+      - '.github/workflows/developer-guides.yml'
+      - 'public/llms*.txt'
+permissions:
+  contents: read
+jobs:
+  guides:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
+        with:
+          deno-version: v2.9.7
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version: 1.4.2
+      - run: npm ci
+      - run: npx playwright-core install --with-deps chromium
+      - run: npm run build
+      - name: Results directory outside the checkout
+        run: |
+          echo "RESULTS=$RUNNER_TEMP/developer-guides-results" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/developer-guides-results"
+      - name: Served HTML, Markdown twins and llms listings
+        run: node scripts/verify-developer-guide-twins.mjs > "$RESULTS/twins.json"
+      - name: Every guide page at mobile and desktop widths
+        run: node scripts/verify-developer-guide-browser.mjs > "$RESULTS/browser.json"
+      - name: Run each synthetic example on the engine the guides install
+        env:
+          TMPDIR: ${{ runner.temp }}
+        run: node scripts/verify-developer-guide-examples.mjs > "$RESULTS/examples.json"
+      - name: Documented Python HTTP success and failure handling
+        run: node scripts/verify-developer-guide-python.mjs > "$RESULTS/python.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: developer-guides-${{ github.sha }}
+          path: ${{ env.RESULTS }}
+          if-no-files-found: warn
+          retention-days: 90
