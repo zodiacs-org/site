@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/server';
-import { AI_VERSION, HOROSCOPE_URI, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI, type AiToolName } from './contracts';
+import { AI_VERSION, HOROSCOPE_URI, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, type AiToolName } from './contracts';
 import { executeAiTool, offeredTools, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
@@ -30,19 +30,21 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     capabilities: { tools: {}, resources: {}, ...(watch ? { events: {} } : {}) },
     instructions: INSTRUCTIONS,
   });
-  server.registerResource('sky-events', WIDGET_URI, {
+  // The current URI first; each earlier one is registered under its own name and serves the same panel.
+  const versions = (name: string, uris: readonly string[]) => uris.map((uri, index) => ({ uri, name: index === 0 ? name : `${name}-legacy${uris.length > 2 ? `-${uri.match(/-v(\d+)\.html$/u)?.[1]}` : ''}` }));
+  for (const { uri, name } of versions('sky-events', [WIDGET_URI, ...LEGACY_WIDGET_URIS])) server.registerResource(name, uri, {
     title: 'Zodiacs sky calendar', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'A list of what changes in the sky, with times on your clock.' },
-  }, () => ({ contents: [{ uri: WIDGET_URI, mimeType: 'text/html;profile=mcp-app', text: WIDGET_HTML, _meta: panelMeta('inline') }] }));
-  for (const uri of [STUDIO_URI, LEGACY_STUDIO_URI]) server.registerResource(uri === STUDIO_URI ? 'chart-studio' : 'chart-studio-legacy', uri, {
+  }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: WIDGET_HTML, _meta: panelMeta('inline') }] }));
+  for (const { uri, name } of versions('chart-studio', [STUDIO_URI, ...LEGACY_STUDIO_URIS])) server.registerResource(name, uri, {
     title: 'Zodiacs Chart Studio', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'An interactive birth chart the person fills in themselves, calculated inside the panel. Only parts they choose to share reach the conversation.' },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: STUDIO_HTML, _meta: panelMeta('fullscreen') }] }));
   const tools = offeredTools(dependencies);
-  if (tools.includes('get_horoscope')) server.registerResource('horoscopes', HOROSCOPE_URI, {
+  if (tools.includes('get_horoscope')) for (const { uri, name } of versions('horoscopes', [HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS])) server.registerResource(name, uri, {
     title: 'Zodiacs horoscopes', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it." },
-  }, () => ({ contents: [{ uri: HOROSCOPE_URI, mimeType: 'text/html;profile=mcp-app', text: HOROSCOPES_HTML, _meta: panelMeta('inline') }] }));
+  }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: HOROSCOPES_HTML, _meta: panelMeta('inline') }] }));
   for (const tool of tools) {
     const panel = PANELS[tool];
     server.registerTool(tool, {
