@@ -142,8 +142,8 @@ Vercel connector, which reports no read time. All 25 checks pass
   `https://plausible.io/js/script.js`; production has its own script on
   plausible.io, recorded by length and digest. The check allows a difference
   only where the build has one of CI's stand-ins and production's value has
-  the stand-in's form; nothing else may differ, and no piece may be added or
-  missing.
+  the stand-in's form; nothing else may differ, quoting included, and no
+  piece may be added or missing.
 - **Guide content.** Each page's guide article is also the flags-unset build's
   bytes. Its text has the content the twins verifier requires of the build:
   the version, and for installation guides the archive digest and
@@ -172,6 +172,7 @@ failed the check it targets and no other:
   - A tag removed, so production has one piece more.
   - The analytics stand-in replaced by another URL.
   - The literal beside the stand-in changed.
+  - An attribute's double quotes changed to single quotes.
   - One sitemap lastmod changed.
 - **Flags-unset build.**
   - One word changed inside an article.
@@ -181,11 +182,16 @@ failed the check it targets and no other:
   - An after-read with a later `updatedAt` failed the unchanged-alias check.
   - An after-read without a deployment was refused.
 
-The check's first version, in this PR's first commits, compared pages with the
-flags-unset build only. It allowed a run of inserted markup if the run held the
-analytics script or the email signup, so extra markup inside such a run would
-have passed (Codex review on site #722). This version compares whole pages
-with the production-flags build instead. Main's post-merge Site Check is
+Codex's review on site #722 found two faults, both fixed:
+
+- **Inserted runs.** The check's first version compared pages with the
+  flags-unset build only. It allowed a run of inserted markup if the run held
+  the analytics script or the email signup, so extra markup inside such a run
+  would have passed. The check now compares whole pages with the
+  production-flags build instead.
+- **Quoting.** The second version replaced every string literal with the
+  same marker, so a change from double to single quotes would have passed.
+  The marker now keeps the quotes. Main's post-merge Site Check is
 recorded in STATUS.md. The private birth-data search over this record's
 commits found no birth-data line
 ([production/history-check.txt](production/history-check.txt), counts only).

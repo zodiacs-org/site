@@ -107,13 +107,16 @@ async function compare(path, file) {
       builtSha256: sha256(built), flagsBuildSha256: sha256(flagged) } };
 }
 
-/** A piece's string literals, and the piece with each replaced by a marker. */
+/**
+ * A piece's string literals, and the piece with each replaced by a marker that
+ * keeps its quotes, so a change of quoting is a change of the skeleton.
+ */
 const LITERAL = /"((?:[^"\\\n]|\\.)*)"|'((?:[^'\\\n]|\\.)*)'/gu;
 function literals(piece) {
   const values = [];
   const skeleton = piece.replace(LITERAL, (_whole, double, single) => {
     values.push(double ?? single);
-    return '\u0000';
+    return double === undefined ? "'\u0000'" : '"\u0000"';
   });
   return { skeleton, values };
 }

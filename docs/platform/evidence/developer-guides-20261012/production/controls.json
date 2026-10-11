@@ -1,10 +1,10 @@
 {
-  "schema": "zodiacs.developer-guides-production-controls.v2",
+  "schema": "zodiacs.developer-guides-production-controls.v3",
   "tool": "tools/verify-production.mjs",
   "expectedCommit": "8e2dd7840f514f8e30fc870d2b3aca91ba613c67",
   "note": "Run against production with one of the two local builds altered, or with altered alias reads. The altered build files were copied first and restored afterwards, byte for byte, before the recorded run. Each control must fail the check it targets and no other.",
   "build": {
-    "checkedAt": "2026-10-11T22:14:47.352Z",
+    "checkedAt": "2026-10-11T22:45:59.086Z",
     "ok": false,
     "failedChecks": [
       "/developers/docs/node/: the production-flags build's page, with its guide article and its twin as built",
@@ -13,6 +13,7 @@
       "/developers/docs/bun/: the production-flags build's page, with its guide article and its twin as built",
       "/developers/docs/natal/: the production-flags build's page, with its guide article and its twin as built",
       "/developers/docs/returns/: the production-flags build's page, with its guide article and its twin as built",
+      "/developers/docs/synastry/: the production-flags build's page, with its guide article and its twin as built",
       "/llms.txt is both builds' bytes and lists every guide and twin",
       "/sitemap.xml is the production-flags build's bytes, every guide page in it"
     ],
@@ -93,6 +94,19 @@
       },
       {
         "build": "production flags",
+        "change": "the synastry page's <html lang> quoted with single quotes instead of double",
+        "expected": "the synastry page check fails: quoting is part of the comparison",
+        "result": {
+          "ok": false,
+          "problems": [
+            "piece 1 differs outside its string literals"
+          ],
+          "articleIdentical": true,
+          "twinIdentical": true
+        }
+      },
+      {
+        "build": "production flags",
         "change": "the node guide's sitemap lastmod changed to 2001-01-01",
         "expected": "the sitemap check fails",
         "result": {
@@ -114,7 +128,7 @@
       "change": "ALIAS_BEFORE naming another commit",
       "expected": "the alias check fails, and no other",
       "result": {
-        "checkedAt": "2026-10-11T22:15:07.997Z",
+        "checkedAt": "2026-10-11T22:46:20.261Z",
         "ok": false,
         "failedChecks": [
           "alias names a READY production deployment of the merge"
