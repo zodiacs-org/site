@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-11 checkpoint 26 (B2.b accepted on canonical production of merge 7028d019; other states unchanged)",
+  "asOf": "2026-10-12 engine 1.0.0 published under latest and in production (site e710e574); states unchanged since checkpoint 26",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1585,7 +1585,7 @@
         "0.1.1-rc.14 was the one manual first upload, with two-factor authentication, because npm configures a trusted publisher only for a package that exists; publishing access now requires two-factor authentication and disallows tokens, and the GitHub environment npm allows main only",
         "docs/platform/evidence/site-engine-rc15/npm-registry.json, the registry read of 2026-09-30 at 14:24 UTC by tools/npm-registry-read.mjs: dist-tags latest and next 0.1.1-rc.15; the SLSA provenance, decoded, names zodiacs-org/engine, .github/workflows/release.yml on main, commit d5326a88 and run 36711081147 for the tarball whose SHA-512 is the vendored archive's; npm audit signatures verified the registry signatures and the attestation"
       ],
-      "notes": "on 2026-09-30 npm gave the manual first upload latest; the owner then moved latest to 0.1.1-rc.15, so a plain npm install selects the attested version (dist-tags latest and next both 0.1.1-rc.15)"
+      "notes": "on 2026-09-30 npm gave the manual first upload latest; the owner then moved latest to 0.1.1-rc.15, so a plain npm install selects the attested version (dist-tags latest and next both 0.1.1-rc.15). Update 2026-10-11: 1.0.0, the first stable release, published under latest by the same workflow from engine main f8992a4c (run 38144970198) with SLSA provenance; npm's tarball is the carried archive, and signatures and the attestation verify (engine #40, docs/evidence/1.0.0-20261011/); next still names 0.1.1-rc.16"
     },
     {
       "id": "P3.1b",

@@ -207,19 +207,36 @@ took the 18 captures again.
   digest `184e452f…`, is superseded by the merge. Its provenance is kept as
   `browser-evidence-provenance-f4bb98d4.json`.
 
-## Production check
+## Production
 
-`tools/verify-production.mjs` is the check to run once the merge deploys:
+#710 merged as `e710e57453b1ac275acce6b168759ddc323857ae`. Its parents are
+main `0b6a9359` and head `6cc2710a`, and its tree is the tested head's tree.
+Vercel `dpl_CyGnPa7pnNKRjwkAYfpZpyrCtMLE` built it for production and was
+READY at 2026-10-11T18:31:11Z. Post-merge Site Check 38163879437 passed all twenty jobs.
 
-- Through the Vercel CLI's login, it reads the zodiacs.org alias's deployment
-  and that deployment's commit, before and after.
-- It checks the engine, support and MCP pages, both llms files, the TypeDoc
-  provenance, and the MCP manifest and archive digest.
-- It sends the compute API's own documented positions example once, and
-  expects the answer to come from engine 1.0.0.
+`tools/verify-production.mjs` then checked canonical production
+([production/production.json](production/production.json)). Before and after
+the run, the zodiacs.org alias named that deployment, built from the merge,
+with an unchanged `updatedAt`. Those reads went through the Vercel connector,
+because the CLI's install was gone on the day; the connector reports no read
+time. All 11 checks pass:
+
+- the engine, support and MCP pages and both llms files name 1.0.0, npm's
+  `latest`, the install command and the archive digest;
+- the TypeDoc provenance names 1.0.0, its source and its digest;
+- the MCP manifest served is the committed one, and the rc.19 archive has its
+  digest;
+- the compute API's own documented positions request is answered with
+  `backend` and receipt engine `@zodiacs/engine` 1.0.0.
+
+The first run failed two checks on the script's own text patterns, while
+production already served the right text. The MCP page's `<code>` tags carry
+Astro's scoped attributes, and the llms commit is in backticks. That run is
+kept as [production/production-first-run.json](production/production-first-run.json).
+The patterns were corrected (pages are compared with tags removed) and the
+run repeated.
 
 ## Not established here
-- **CI.** The full x86-64 check has not run yet.
-- **Deployment.** Nothing is deployed, and no programme unit is accepted here.
+- **Acceptance.** No programme unit is accepted here.
 - **Publication and hosting.** The MCP adapter and the plugin are not
   published. No hosting, Firewall or production-flag change is made.
