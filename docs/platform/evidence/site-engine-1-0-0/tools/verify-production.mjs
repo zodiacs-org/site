@@ -1,21 +1,34 @@
 /**
  * After the merge deploys: what canonical production serves for the engine
- * 1.0.0 adoption. Reads, through the Vercel CLI's existing login, which
- * deployment the zodiacs.org alias names and that deployment's commit, before
- * and after; then GETs the pages and files that name the engine and the MCP
- * adapter, and sends the compute API's own committed synthetic positions
- * request once. Prints JSON; exits non-zero on any failed check.
+ * 1.0.0 adoption. GETs the pages and files that name the engine and the MCP
+ * adapter, and sends the compute API's own documented positions request once.
+ * Which deployment the zodiacs.org alias names, and its commit, is read before
+ * and after this run through the Vercel connector (the CLI's install was gone
+ * on the day) and recorded beside the output; ALIAS_BEFORE and ALIAS_AFTER pass
+ * those reads in as JSON. Prints JSON; exits non-zero on any failed check.
  *
- *   EXPECTED_COMMIT=<merge commit> node verify-production.mjs <site checkout>
+ *   EXPECTED_COMMIT=<merge commit> ALIAS_BEFORE='{…}' node verify-production.mjs <site checkout> > out.json
+ *   ALIAS_AFTER='{…}' node verify-production.mjs --after out.json        # the read made after the run
  */
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const BASE = 'https://zodiacs.org';
-const TEAM = 'team_Ue0ac8HT1b3TAzaDDZBTFhQt';
+if (process.argv[2] === '--after') {
+  // Second step: add the connector's read made after the run, and the check that it did not move.
+  const record = JSON.parse(readFileSync(process.argv[3], 'utf8'));
+  const after = JSON.parse(process.env.ALIAS_AFTER ?? 'null');
+  assert.ok(after && after.deploymentId, 'ALIAS_AFTER must hold the connector\'s alias read');
+  record.alias.after = after;
+  record.checks.push({ name: 'alias unchanged during the checks', ok: after.deploymentId === record.alias.before.deploymentId
+    && after.aliasUpdatedAt === record.alias.before.aliasUpdatedAt, ...after });
+  record.ok = record.checks.every((item) => item.ok);
+  console.log(JSON.stringify(record, null, 2));
+  if (!record.ok) process.exitCode = 1;
+  process.exit();
+}
 const root = resolve(process.argv[2] ?? '.');
 const expected = process.env.EXPECTED_COMMIT ?? '';
 assert.match(expected, /^[0-9a-f]{40}$/u, 'EXPECTED_COMMIT must be the full merge commit');
@@ -23,16 +36,12 @@ const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const candidate = JSON.parse(readFileSync(resolve(root, 'src/data/platform-engine-candidate.json'), 'utf8'));
 const mcp = JSON.parse(readFileSync(resolve(root, 'public/examples/mcp-server.json'), 'utf8'));
 
-function vercel(path) {
-  return JSON.parse(execFileSync('vercel', ['api', path, '--method', 'GET'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }));
-}
-function alias() {
-  const readAt = new Date().toISOString();
-  const record = vercel(`/v4/aliases/zodiacs.org?teamId=${TEAM}`);
-  const deployment = vercel(`/v13/deployments/${encodeURIComponent(record.deploymentId)}?teamId=${TEAM}`);
-  return { readAt, deploymentId: record.deploymentId, aliasUpdatedAt: record.updatedAt, readyState: deployment.readyState,
-    target: deployment.target, githubCommitSha: deployment.meta?.githubCommitSha ?? null };
-}
+/** A connector read: { readAt, deploymentId, aliasUpdatedAt, readyState, target, githubCommitSha }. */
+const alias = (name) => {
+  const value = JSON.parse(process.env[name] ?? 'null');
+  assert.ok(value && value.deploymentId, `${name} must hold the connector's alias read`);
+  return value;
+};
 async function get(path) {
   const response = await fetch(BASE + path, { redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(30000) });
   return { status: response.status, bytes: Buffer.from(await response.arrayBuffer()) };
@@ -40,19 +49,20 @@ async function get(path) {
 
 const checks = [];
 const check = (name, ok, detail = {}) => checks.push({ name, ok: Boolean(ok), ...detail });
-const before = alias();
+const before = alias('ALIAS_BEFORE');
 check('alias names a READY production deployment of the merge', before.readyState === 'READY' && before.target === 'production'
   && before.githubCommitSha === expected, before);
 
 for (const [path, needles] of [
   ['/developers/engine/', [`${candidate.version}, the first stable release`, `npm install ${candidate.name}@${candidate.version}`, candidate.sha256]],
   ['/developers/support/', ['a stable release, on npm.', candidate.sha256]],
-  ['/developers/mcp/', [`it under <code>latest</code>`, mcp.version]],
+  ['/developers/mcp/', ['records it under latest, and get_capabilities labels it published', mcp.version]],
   ['/llms.txt', [`\`@zodiacs/engine\` ${candidate.version}, MIT`, `\`zodiacs-mcp-server\` ${mcp.version}`]],
-  ['/llms-full.txt', [`\`@zodiacs/engine\` version ${candidate.version}, the first stable release`, `engine commit f8992a4c1dfedd9e69c0783e2c185e22580460f7`]],
+  ['/llms-full.txt', [`\`@zodiacs/engine\` version ${candidate.version}, the first stable release`, 'engine commit `f8992a4c1dfedd9e69c0783e2c185e22580460f7`']],
 ]) {
   const { status, bytes } = await get(path);
-  const text = bytes.toString('utf8');
+  // Pages are compared as text: tags, which carry Astro's scoped attributes, are removed.
+  const text = path.endsWith('.txt') ? bytes.toString('utf8') : bytes.toString('utf8').replace(/<[^>]+>/gu, '');
   const missing = needles.filter((needle) => !text.includes(needle));
   check(`${path} names engine ${candidate.version}`, status === 200 && missing.length === 0, { status, missing });
 }
@@ -82,9 +92,7 @@ const answer = await response.json().catch(() => null);
 check('compute API answers on engine 1.0.0', response.status === 200 && answer?.backend?.version === candidate.version
   && answer?.receipt?.engine?.version === candidate.version, { status: response.status, backend: answer?.backend, receiptEngine: answer?.receipt?.engine });
 
-const after = alias();
-check('alias unchanged during the checks', after.deploymentId === before.deploymentId && after.aliasUpdatedAt === before.aliasUpdatedAt, after);
 const ok = checks.every((item) => item.ok);
 console.log(JSON.stringify({ schema: 'zodiacs.engine-1-0-0-production.v1', base: BASE, expectedCommit: expected, checkedAt: new Date().toISOString(),
-  alias: { before, after }, ok, checks }, null, 2));
+  alias: { before }, ok, checks }, null, 2));
 if (!ok) process.exitCode = 1;

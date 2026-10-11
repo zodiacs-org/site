@@ -1,0 +1,106 @@
+{
+  "schema": "zodiacs.engine-1-0-0-production.v1",
+  "base": "https://zodiacs.org",
+  "expectedCommit": "e710e57453b1ac275acce6b168759ddc323857ae",
+  "checkedAt": "2026-10-11T18:49:03.635Z",
+  "alias": {
+    "before": {
+      "readAt": null,
+      "via": "Vercel connector get_alias + get_deployment",
+      "deploymentId": "dpl_CyGnPa7pnNKRjwkAYfpZpyrCtMLE",
+      "aliasUpdatedAt": 1791743471440,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "e710e57453b1ac275acce6b168759ddc323857ae",
+      "note": "made through the Vercel connector before the run; the connector reports no read time"
+    }
+  },
+  "ok": false,
+  "checks": [
+    {
+      "name": "alias names a READY production deployment of the merge",
+      "ok": true,
+      "readAt": null,
+      "via": "Vercel connector get_alias + get_deployment",
+      "deploymentId": "dpl_CyGnPa7pnNKRjwkAYfpZpyrCtMLE",
+      "aliasUpdatedAt": 1791743471440,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "e710e57453b1ac275acce6b168759ddc323857ae"
+    },
+    {
+      "name": "/developers/engine/ names engine 1.0.0",
+      "ok": true,
+      "status": 200,
+      "missing": []
+    },
+    {
+      "name": "/developers/support/ names engine 1.0.0",
+      "ok": true,
+      "status": 200,
+      "missing": []
+    },
+    {
+      "name": "/developers/mcp/ names engine 1.0.0",
+      "ok": false,
+      "status": 200,
+      "missing": [
+        "it under <code>latest</code>"
+      ]
+    },
+    {
+      "name": "/llms.txt names engine 1.0.0",
+      "ok": true,
+      "status": 200,
+      "missing": []
+    },
+    {
+      "name": "/llms-full.txt names engine 1.0.0",
+      "ok": false,
+      "status": 200,
+      "missing": [
+        "engine commit f8992a4c1dfedd9e69c0783e2c185e22580460f7"
+      ]
+    },
+    {
+      "name": "TypeDoc provenance names 1.0.0 and its archive",
+      "ok": true,
+      "status": 200,
+      "version": "1.0.0"
+    },
+    {
+      "name": "MCP manifest is the committed one",
+      "ok": true,
+      "status": 200,
+      "version": "0.1.0-rc.19"
+    },
+    {
+      "name": "MCP archive has the manifest digest",
+      "ok": true,
+      "status": 200,
+      "bytes": 123267,
+      "sha256": "fbd4734918713cfb2928018f5c828eae9b6da5bdbbb3dd474b488b6ac11448df"
+    },
+    {
+      "name": "compute API answers on engine 1.0.0",
+      "ok": true,
+      "status": 200,
+      "backend": {
+        "name": "@zodiacs/engine",
+        "version": "1.0.0",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      },
+      "receiptEngine": {
+        "name": "@zodiacs/engine",
+        "version": "1.0.0",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      }
+    }
+  ]
+}
