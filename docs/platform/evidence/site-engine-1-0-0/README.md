@@ -147,6 +147,20 @@ On macOS arm64:
   - AI (159 tests, the bundle drive and the npm recipes) and `ai:check`.
 - The adapter's drives and fresh install, as above.
 
+## Private search
+
+The owner's private birth-data search ran over this adoption's two commits
+and its tree, with both pattern sets
+([history-check.txt](history-check.txt), counts only).
+
+- The commits add five matching lines, under one anonymous label. Every one is
+  a line already on main, re-emitted unchanged apart from the version strings
+  it carries: four in regenerated bundles, and one in the new plugin ZIP's
+  copy of its bundle.
+- The tree's 421 lines are main's 420 plus that ZIP copy.
+
+Inputs and raw outputs stay outside every repository.
+
 ## Not established here
 
 - **Accuracy refresh.** It has not run on 1.0.0.
