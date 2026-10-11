@@ -100,7 +100,7 @@ For factual citations, prefer the methodology page for the calculation frame, a 
 
 Daily horoscope RSS: https://zodiacs.org/feeds/horoscopes.xml
 
-## Astrofolio, Terminal, Registry, and Developer Wing
+## Astrofolio, Terminal, Registry, and SDK
 
 ### Entity boundary
 
@@ -157,6 +157,14 @@ const status = record
 Do not turn the null case into a fraud, scam, unsafe, or counterfeit judgment. It means only that the address was not found in the official registry.
 
 The SDK can support Zodiac shelves, identity receipts, chart overlays, compatibility context, seasonal moments, share cards, profiles, and opted-in AI astrology context. The SDK provides verified inputs; each app owns its interpretive copy and rendering. Symbolic traits should be framed as optional emphasis, never rank or superiority.
+
+### Read-only posture
+
+The SDK does not request private keys, take custody, connect wallets, sign messages, submit transactions, approve transfers, move assets, or gate astrology access by ownership. Registry tools accept pasted addresses only. Unknown addresses use the neutral result “not found in the official Zodiacs.org registry.” Optional delayed market context is separate and never changes verification status.
+
+Official registry. Public reads. No custody. No signing. No transactions. Nothing in the registry or SDK documentation is financial advice.
+
+## Developer platform
 
 ### Sky data API
 
@@ -284,12 +292,6 @@ const embed = createWidgetEmbedContract("sky", { theme: "light" });
 ```
 
 The required sandbox is `allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox`. The in-document `Powered by Zodiacs.org` link is required and cannot be removed, relabeled, or redirected. Referrer policy is `strict-origin-when-cross-origin`, allowing an origin-level load count without a full host URL. There are no cookies, storage, wallet APIs, signing, transactions, or third-party analytics in the package.
-
-### Read-only posture
-
-The SDK does not request private keys, take custody, connect wallets, sign messages, submit transactions, approve transfers, move assets, or gate astrology access by ownership. Registry tools accept pasted addresses only. Unknown addresses use the neutral result “not found in the official Zodiacs.org registry.” Optional delayed market context is separate and never changes verification status.
-
-Official registry. Public reads. No custody. No signing. No transactions. Nothing in the registry or SDK documentation is financial advice.
 
 ## Developer quickstarts and recipes
 
