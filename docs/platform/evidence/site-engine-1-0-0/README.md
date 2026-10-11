@@ -190,22 +190,33 @@ now read these reports; the bound values are unchanged.
 
 ## Phase 1 captures
 
-The lockfile and `src/lib/**` are part of the Phase 1 capture digest, so the
-18 captures were taken again by CI.
+The lockfile and `src/lib/**` are part of the Phase 1 capture digest, so CI
+took the 18 captures again.
 
-- **Run.** Browser Evidence run 38152080088 on head `f4bb98d4`, artifact
-  `browser-evidence-compare-f4bb98d4…-38152080088`.
-- **Browser.** Chromium 149.0.7827.55, at 2026-10-11T15:42:06Z, for the
-  2026-10-11 edition.
-- **Digest.** The captures are bound to template source digest `184e452f…`, the
-  same digest the local build's receipt records.
+- **Committed captures.** Browser Evidence run 38158755985 took them on the
+  merged head `87d28fec`, after main's #711 came in, because #711 changed
+  `src/lib`. Chromium 149.0.7827.55 took them at 2026-10-11T17:16:39Z, for the
+  2026-10-11 edition, bound to template source digest `a6915a67…`.
 - **Same run.** The 390 and 1440 px visual baselines matched, and Lighthouse
   and the explorer drive passed.
-- **Committed.** The 18 PNGs and `manifest.json`, as the artifact holds them.
-  [browser-evidence-provenance.json](browser-evidence-provenance.json) is the
-  run's own provenance record. It names the head, the base, the template
-  digest and every step's outcome, and hashes 752 files; all 19 capture
+- **Provenance.** [browser-evidence-provenance.json](browser-evidence-provenance.json)
+  is that run's own record. It names head `87d28fec`, base `0b6a9359`, the
+  digest and every step's outcome, and hashes 752 files. All 19 capture
   entries match the committed files.
+- **Superseded run.** The first capture run, 38152080088 on `f4bb98d4` for
+  digest `184e452f…`, is superseded by the merge. Its provenance is kept as
+  `browser-evidence-provenance-f4bb98d4.json`.
+
+## Production check
+
+`tools/verify-production.mjs` is the check to run once the merge deploys:
+
+- Through the Vercel CLI's login, it reads the zodiacs.org alias's deployment
+  and that deployment's commit, before and after.
+- It checks the engine, support and MCP pages, both llms files, the TypeDoc
+  provenance, and the MCP manifest and archive digest.
+- It sends the compute API's own documented positions example once, and
+  expects the answer to come from engine 1.0.0.
 
 ## Not established here
 - **CI.** The full x86-64 check has not run yet.
