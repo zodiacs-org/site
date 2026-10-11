@@ -48,6 +48,32 @@ the record says what bound each of them:
   SHA-256). From the fourth attempt the observer deletes `dist/` and builds
   the checkout itself, and its `build.log` is committed beside the run.
 
+### Checks added after the last run
+
+Codex's review of the v4 head raised two more points, which the scripts now
+check; neither changes a recorded result:
+
+- **Ignored `.env` files.** Vite and `scripts/build-assistant-ui.mjs` read
+  `.env` files, which git ignores, so a checkout holding one would not give the
+  flags-unset build the record claims. The observer now refuses such a
+  checkout before it builds (schema v5): with a synthetic `.env` placed in the
+  `368ce361` checkout and removed afterwards, it stopped with "No ignored .env
+  file in the checkout; the build would read it: .env"
+  ([`observer-controls/env-refusal.log`](observer-controls/env-refusal.log)).
+  Every run above used a fresh clone, which holds no `.env` file.
+- **The analysed chunks are the observed bytes.**
+  `scripts/explain-birth-window-flag-chunks.mjs` fetches each chunk again, so
+  it now analyses one only when the response is 200 and its SHA-256 equals the
+  observation's digest for that path, and fails otherwise (schema v2). The
+  first analysis, made at 2026-10-10T20:15:43Z while production still served
+  `7028d019`, recorded each chunk's served digest: all eight equal the first
+  run's observed digests. Run again with the check at 2026-10-11T06:34:06Z against the
+  first run's observation, every chunk matched its observed digest and was
+  explained ([`run-7028d019/flag-chunk-explanation-v2.json`](run-7028d019/flag-chunk-explanation-v2.json));
+  with one recorded digest replaced by zeros it refused that chunk and failed
+  ([`observer-controls/explanation-tampered.json`](observer-controls/explanation-tampered.json),
+  input `tampered-observation.json`).
+
 ## What the browser runs did
 
 `scripts/observe-birth-time-window-production.mjs` runs the unchanged

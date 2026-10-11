@@ -6,6 +6,11 @@
  * is, it lists the string literals left on each side: their length and
  * SHA-256, and the value only for the CI's own stand-in values.
  *
+ * Each chunk is fetched again, so it must still be the bytes the observation
+ * recorded: a response whose status is not 200 or whose SHA-256 differs from
+ * the observation's digest for that path is not analysed, and the result then
+ * fails.
+ *
  * Usage: node explain-birth-window-flag-chunks.mjs <observation.json> <production-flags dist>
  */
 import { createHash } from 'node:crypto';
@@ -26,10 +31,17 @@ const replaceAll = (text, values) => [...values].sort((a, b) => b.length - a.len
   .reduce((acc, value) => acc.split(value).join('\u0000LITERAL\u0000'), text);
 
 const localFiles = await readdir(join(flagsDist, '_astro'));
+const recorded = new Map(observation.assetIdentity.pageGraphAfter.assets.map((asset) => [asset.path, asset.sha256]));
 const results = [];
 for (const path of observation.assetIdentity.assetsDifferingFromLocalBuild) {
   const response = await fetch(base + path, { redirect: 'error', signal: AbortSignal.timeout(30000) });
-  const served = await response.text();
+  const servedBytes = Buffer.from(await response.arrayBuffer());
+  const matchesObservation = response.status === 200 && recorded.get(path) === sha256(servedBytes);
+  if (!matchesObservation) {
+    results.push({ path, status: response.status, servedSha256: sha256(servedBytes), observedSha256: recorded.get(path) ?? null, matchesObservation, candidates: [], explainedBy: null });
+    continue;
+  }
+  const served = servedBytes.toString('utf8');
   const stem = stemOf(path.split('/').pop());
   const candidates = [];
   for (const file of localFiles.filter((name) => stemOf(name) === stem).sort()) {
@@ -56,17 +68,19 @@ for (const path of observation.assetIdentity.assetsDifferingFromLocalBuild) {
   results.push({
     path,
     status: response.status,
-    servedBytes: Buffer.byteLength(served),
-    servedSha256: sha256(served),
+    matchesObservation,
+    servedBytes: servedBytes.length,
+    servedSha256: sha256(servedBytes),
     candidates,
     explainedBy: explained ? { file: explained.file, how: explained.identicalAfterHashNormalization ? 'identical after hashed file names are normalized' : 'identical after hashed file names are normalized and the CI stand-in literals are put in place of production\'s values' } : null,
   });
 }
 console.log(JSON.stringify({
-  schema: 'zodiacs.birth-window-flag-chunk-explanation.v1',
+  schema: 'zodiacs.birth-window-flag-chunk-explanation.v2',
   base,
   checkedAt: new Date().toISOString(),
   productionFlagsBuild: 'npm run build with site-check.yml production-flags-build env (CI stand-in values for keys and URLs)',
   results,
-  allExplained: results.every((result) => result.explainedBy !== null),
+  allExplained: results.every((result) => result.matchesObservation && result.explainedBy !== null),
 }, null, 2));
+if (!results.every((result) => result.matchesObservation && result.explainedBy !== null)) process.exitCode = 1;

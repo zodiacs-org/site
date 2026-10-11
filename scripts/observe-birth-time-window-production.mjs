@@ -47,6 +47,11 @@ assert.equal(git('status', '--porcelain', '--untracked-files=no'), '', 'No track
 const tree = git('rev-parse', 'HEAD^{tree}');
 
 // The local build: made here, from this checkout, so it cannot be a stale dist/.
+// Vite and scripts/build-assistant-ui.mjs read .env files, which git ignores,
+// so a checkout holding one is refused rather than built.
+const envFiles = git('ls-files', '--others', '--ignored', '--exclude-standard', '--', ':(glob).env*', ':(glob)**/.env*')
+  .split('\n').filter(Boolean).filter((path) => !path.split('/').includes('node_modules'));
+assert.deepEqual(envFiles, [], 'No ignored .env file in the checkout; the build would read it: ' + envFiles.join(', '));
 await mkdir(out, { recursive: true });
 await rm(join(repo, 'dist'), { recursive: true, force: true });
 const buildEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^(PUBLIC_|SUPABASE_|RESEND_|DAILY_EMAIL_|EMAIL_)|_RPC_URL$/.test(key)));
@@ -64,7 +69,7 @@ assert.equal(buildExit, 0, 'npm run build succeeds on the checkout (build.log)')
 assert.equal(git('status', '--porcelain', '--untracked-files=no'), '', 'No tracked change after the build');
 const buildReceipt = JSON.parse(await readFile(join(repo, 'dist/.phase1-build-receipt.json'), 'utf8'));
 const localBuild = {
-  madeBy: 'this observer, after deleting dist/, with the feature flags unset',
+  madeBy: 'this observer, after deleting dist/, with the feature flags unset and no ignored .env file in the checkout',
   node: process.version,
   npm: execFileSync('npm', ['--version'], { cwd: repo, encoding: 'utf8' }).trim(),
   log: { file: 'build.log', bytes: buildLogBytes.length, sha256: sha256(buildLogBytes) },
@@ -226,7 +231,7 @@ const sourceBinding = {
 };
 const drivePassed = driveReport.passed === true && exitCode === 0;
 const observation = {
-  schema: 'zodiacs.birth-time-window-production-observation.v4',
+  schema: 'zodiacs.birth-time-window-production-observation.v5',
   base: BASE,
   startedAt,
   finishedAt,
