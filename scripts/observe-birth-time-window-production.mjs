@@ -225,13 +225,14 @@ const differing = after.assets.filter((asset) => !asset.matchesLocalBuild).map((
 // created is the local build's, byte for byte, and the page's module graph did
 // not change while the drive ran (a new deployment would change it).
 const sourceBinding = {
+  everyAssetServed: [...before.assets, ...after.assets, ...workers].every((asset) => asset.status === 200),
   aliasNamesExpectedDeploymentBeforeAndAfter: bound(aliasBefore) && bound(aliasAfter) && aliasBefore.aliasUpdatedAt === aliasAfter.aliasUpdatedAt,
   workersMatchLocalBuild: workers.length > 0 && workers.every((worker) => worker.status === 200 && worker.matchesLocalBuild),
   pageGraphUnchangedDuringRun: sameGraph,
 };
 const drivePassed = driveReport.passed === true && exitCode === 0;
 const observation = {
-  schema: 'zodiacs.birth-time-window-production-observation.v5',
+  schema: 'zodiacs.birth-time-window-production-observation.v6',
   base: BASE,
   startedAt,
   finishedAt,

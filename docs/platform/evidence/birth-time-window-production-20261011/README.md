@@ -34,9 +34,10 @@ four deployments.
 
 Each version of the observer answers a review of the one before it on
 #704: the Codex threads on `scripts/observe-birth-time-window-production.mjs`
-lines 169 (v2), 159 (v3), 46 (v4) and 52 (v5). The committed observer is v5,
-which made the last run; the v4 runs above used the version before it, and
-each earlier version is in the PR's history. The flag-chunk analysis,
+lines 169 (v2), 159 (v3), 46 (v4), 52 (v5) and 138 (v6). The last run was
+made with v5 and the v4 runs with the version before it; the committed
+observer is v6, which adds one check over what every run already recorded
+(below). Each earlier version is in the PR's history. The flag-chunk analysis,
 `scripts/explain-birth-window-flag-chunks.mjs`, is at v3 (threads on lines 36
 and 34). The earlier runs predate the later checks, so the record says what
 bound each of them:
@@ -64,7 +65,15 @@ bound each of them:
   ([`run-58362fb1/flag-chunk-explanation.json`](run-58362fb1/flag-chunk-explanation.json),
   build log `flags-build.log`).
 
-### Checks added after the last run
+### Checks added after the runs
+
+The observer's v6 also requires every asset it crawled, before and after the
+drive, and the worker, to have answered 200 (Codex thread on line 138).
+Every recorded run meets it: each `observation.json` records 381 asset
+responses (the page's 190 files twice, and the worker), every one 200, and
+the page itself 200 before and after. No run was made with v6.
+
+### Checks added after the v4 runs
 
 Codex's review of the v4 head raised two more points, which the scripts now
 check; neither changes a recorded result:

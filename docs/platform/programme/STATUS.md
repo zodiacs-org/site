@@ -25,7 +25,7 @@ times; and on `58362fb1`, the 2026-10-11 daily edition, with every observer
 check and a flag-chunk analysis that builds the observed commit itself. One
 attempt on `368ce361` stopped on a network reset in the observer's own crawl
 after the drive had passed; it is retained. The worker production served is byte-identical to
-local builds of both commits; of the 190 files the page reaches, 182 are
+local builds of every observed commit; of the 190 files the page reaches, 182 are
 identical to the build with the flags unset, and production's own flags and
 public keys account for the other eight.
 
