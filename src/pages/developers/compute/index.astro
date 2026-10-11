@@ -310,24 +310,27 @@ const jsonLd = [
         the place's <code>longitude</code>. It returns the instant in UTC, the
         offset from UTC in minutes, flags, the local mean time used if any,
         which zone history was read, whether the zone is uncertain, the instant
-        in Terrestrial Time, and ΔT. It reads the local time with the birth
-        chart calculator's own resolver, built into the function with its
-        tables:
+        in Terrestrial Time, and ΔT. It reads the local time with
+        <code>@zodiacs/engine/geo</code>, the resolver the birth chart
+        calculator uses too, built into the function with the histories it
+        loads:
       </p>
       <ul>
         <li>A clock time that happened twice takes the earlier instant and the
           flag <code>dst-fold</code>; one that was skipped moves forward by the
           gap and has <code>dst-gap</code>.</li>
-        <li>With a longitude, a time before the place adopted a legal time uses
-          the place's own mean time, flagged <code>lmt</code>.</li>
-        <li>With a longitude, a date up to 1 January 1970 in a zone the pinned
-          tzdb release 2025c keeps takes its legal offset from that release,
-          backzone file included, and <code>zoneHistory</code> is{' '}
+        <li>A time before the place adopted a legal time uses a local mean
+          time, flagged <code>lmt</code>: with a longitude the place's own,
+          without one the mean time of the zone's reference city.</li>
+        <li>A date up to 1 January 1970 takes its offset from tzdb release
+          2025c, backzone file included, which the engine ships, with or
+          without a longitude, and <code>zoneHistory</code> is{' '}
           <code>pinned</code>.</li>
-        <li>Otherwise the offset comes from the time zone data of the server's
-          runtime, and <code>zoneHistory</code> is <code>runtime</code>. For a
-          date up to 1 January 1970 that history can differ from the pinned
-          one, and <code>zoneUncertain</code> is true.</li>
+        <li>From 1970 the offset comes from the time zone data of the server's
+          runtime, and <code>zoneHistory</code> is <code>runtime</code>. So it
+          does before 1970 where the release records no local time, such as an
+          Antarctic station before it was staffed, and there{' '}
+          <code>zoneUncertain</code> is true.</li>
         <li>Terrestrial Time and ΔT are the engine's for that instant, to the
           millisecond, read as described above. ΔT comes with its one-sigma
           band and the source it came from: the IERS measurements, or the part

@@ -1,23 +1,22 @@
-import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
-import { prepareLocalTime, resolveLocalToUtc } from './localToUtc';
+import { resolveLocalToUtc as packageResolveLocalToUtc } from '@zodiacs/engine/geo';
+import tzNames from '../../data/tz-names.json';
+import { offsetAt, prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 import { canonicalZoneName } from './zone-names';
 
 /*
- * Intl reads a zone name in any letter case. The resolver must too: its
- * local mean time table was once read case-sensitively, so america/new_york
- * skipped the birthplace's mean time that America/New_York applied, and a
- * birth in Buffalo in 1870 moved by 19½ minutes. Its formatter caches grew
- * with every name a caller sent and were never freed; they now hold at most
- * 1,024 formatters each, and the compute API passes the resolver only a
- * name's tzdb spelling, which the API's own tests count.
+ * Intl reads a zone name in any letter case. The resolver must too: the
+ * site's local mean time table was once read case-sensitively, so
+ * america/new_york skipped the birthplace's mean time that America/New_York
+ * applied, and a birth in Buffalo in 1870 moved by 19½ minutes. The engine's
+ * resolver, which the site now uses, reads names in any case as well.
+ *
+ * The site's own formatter caches (offsetAt, localDateContainsUtc) hold at
+ * most 1,024 formatters each, whatever names a caller sends. The engine's
+ * resolver keeps one formatter per name it is given, so a caller that takes a
+ * name from outside maps it to its tzdb spelling first: the compute API does,
+ * and its own tests count the names it passes.
  */
-
-const lmt = JSON.parse(readFileSync(new URL('../../data/tz-lmt.json', import.meta.url), 'utf8')) as {
-  eras: Record<string, number>;
-  offsets: Record<string, number>;
-};
-const HISTORY = new URL('../../data/tz-history/2025c/', import.meta.url);
 
 /** Every letter of a name flipped to the other case. */
 function swapped(name: string): string {
@@ -57,31 +56,29 @@ describe('a zone name in any letter case', () => {
     }
   });
 
-  it('gives every zone with a local mean time era the same instant lower-cased and upper-cased', async () => {
+  it('gives every tzdb zone the same instant lower-cased and upper-cased, on a birthplace mean time', async () => {
     let tested = 0;
     const differences: string[] = [];
-    for (const [zone, end] of Object.entries(lmt.eras)) {
-      // Asia/Hanoi is in the table from backzone, but not in the runtime's Intl data.
+    for (const zone of tzNames.names) {
+      // Asia/Hanoi is in tzdata's backzone, but not in the runtime's Intl data.
       if (!intlAccepts(zone)) continue;
-      // Two years before the era ended, 5° east of the zone's own mean-time meridian.
-      const day = new Date(end * 1000 - 2 * 365.25 * 86_400_000);
-      if (day.getUTCFullYear() < 1800) continue;
-      const date = day.toISOString().slice(0, 10);
-      const meridian = Object.prototype.hasOwnProperty.call(lmt.offsets, zone) ? lmt.offsets[zone] / 240 : 0;
+      await prepareLocalTime('1850-06-15', zone);
+      // 5° east of the zone's own mean-time meridian, before most zones kept standard time.
+      const meridian = packageResolveLocalToUtc('1800-06-15', '12:00', zone).offsetMinutes / 4;
       const longitude = Math.max(-180, Math.min(180, meridian + 5));
-      const exact = await resolved(date, '12:00', zone, longitude);
+      const exact = await resolved('1850-06-15', '12:00', zone, longitude);
       for (const spelling of [zone.toLowerCase(), zone.toUpperCase()]) {
-        const other = await resolved(date, '12:00', spelling, longitude);
-        if (JSON.stringify(other) !== JSON.stringify(exact)) differences.push(`${zone} ${date} as ${spelling}`);
+        const other = await resolved('1850-06-15', '12:00', spelling, longitude);
+        if (JSON.stringify(other) !== JSON.stringify(exact)) differences.push(`${zone} as ${spelling}`);
       }
       tested += 1;
     }
-    expect(tested).toBe(518);
+    expect(tested).toBe(597);
     expect(differences).toEqual([]);
   }, 120_000);
 
-  it('keeps at most 1,024 formatters of each kind, whatever names a caller sends', () => {
-    // Every formatter the resolver builds is stored with Map.prototype.set:
+  it('keeps at most 1,024 formatters of its own, whatever names a caller sends', () => {
+    // Every formatter offsetAt builds is stored with Map.prototype.set:
     // record the size of each map a formatter is stored in.
     const set = Map.prototype.set;
     let most = 0;
@@ -94,23 +91,20 @@ describe('a zone name in any letter case', () => {
       // Intl takes UTC offsets as names, 1,440 of them here; none is a zone the site uses.
       for (let minutes = 0; minutes < 24 * 60; minutes += 1) {
         const zone = `+${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
-        resolveLocalToUtc('2000-01-01', '12:00', zone);
+        offsetAt(zone, Date.UTC(2000, 0, 1, 12));
       }
     } finally {
       spy.mockRestore();
     }
-    // The caches reached the limit and never passed it.
+    // The cache reached the limit and never passed it.
     expect(most).toBe(1024);
-    // A name Intl refuses is never stored.
+    // A name Intl refuses is never stored, and never reaches the engine.
     expect(() => resolveLocalToUtc('2000-01-01', '12:00', 'Europe/Atlantis')).toThrow(RangeError);
   });
 });
 
 describe('canonicalZoneName', () => {
-  const pinned = readdirSync(HISTORY).filter((name) => /^\d{2}\.json$/u.test(name))
-    .flatMap((name) => Object.keys(JSON.parse(readFileSync(new URL(name, HISTORY), 'utf8')).zones));
-  const excluded = Object.keys(JSON.parse(readFileSync(new URL('excluded.json', HISTORY), 'utf8')).excluded);
-  const names = [...new Set([...Intl.supportedValuesOf('timeZone'), ...Object.keys(lmt.eras), ...pinned, ...excluded])];
+  const names = [...new Set([...Intl.supportedValuesOf('timeZone'), ...tzNames.names])];
 
   it('gives the tzdb spelling of a name written in any letter case', async () => {
     expect(await canonicalZoneName('america/new_york')).toBe('America/New_York');
@@ -122,7 +116,7 @@ describe('canonicalZoneName', () => {
     expect(await canonicalZoneName('wet')).toBe('WET');
   });
 
-  it('maps every name of the runtime, the local mean time table and the pinned release to itself, and no two differ only in case', async () => {
+  it('maps every name of the runtime and of tzdata 2025c with backzone to itself, and no two differ only in case', async () => {
     const keys = new Map<string, string>();
     for (const name of names) {
       const key = name.toLowerCase();

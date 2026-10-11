@@ -394,7 +394,7 @@ export async function computeTime(request: TimeRequest, dependencies: ComputeDep
     tt: iso(tt).slice(0, -1),
     deltaT,
     timeScale,
-  }, computeReceipt('time', { timeResolution: timeResolutionFacts() }));
+  }, computeReceipt('time', { timeResolution: timeResolutionFacts(dependencies.localTime) }));
 }
 
 // ---------- sky-fact ----------
@@ -549,7 +549,7 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
     facts,
   }, computeReceipt('sky-fact', {
     search: budget.facts(),
-    ...(window.zone ? { timeResolution: timeResolutionFacts() } : {}),
+    ...(window.zone ? { timeResolution: timeResolutionFacts(dependencies.localTime) } : {}),
   }));
 }
 

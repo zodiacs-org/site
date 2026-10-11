@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.19",
+  "version": "0.1.0-rc.20",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -85,6 +85,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.18",
-  "changedSince": "0.1.0-rc.19 bundles engine 1.0.0, which is 1.0.0-rc.2 with the version changed: the same API and the same values. Older archives remain unchanged. get_capabilities now reports the engine as published on npm, with registry npm, and every receipt and cite names engine 1.0.0 and adapter 0.1.0-rc.19; apart from those versions and the digests over them, every tool's arguments, results and receipts are rc.18's. The adoption's comparison record reports measured differences against 0.1.0-rc.18; it does not assert universal parity. The adapter itself is still not on npm."
+  "supersedes": "0.1.0-rc.19",
+  "changedSince": "0.1.0-rc.20 is 0.1.0-rc.19 rebuilt after the compute API began reading local times with @zodiacs/engine/geo. The adapter resolves no time zone, so the bundled compute code that changed never runs in it; apart from the adapter version and the digests over it, every tool's arguments, results and receipts are rc.19's. The comparison record reports measured differences against 0.1.0-rc.19; it does not assert universal parity. Older archives remain unchanged. The adapter itself is still not on npm."
 }

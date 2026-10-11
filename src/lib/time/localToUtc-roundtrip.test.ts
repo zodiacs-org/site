@@ -1,11 +1,14 @@
-import { describe, expect, it } from 'vitest';
-import { offsetAt, resolveLocalToUtc } from './localToUtc';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { zoneOffsetAt } from '@zodiacs/engine/geo';
+import { prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 
 /*
  * The engine audit's all-zone round-trip scan (docs/platform/evidence/
  * engine-audit-2026-09-22, finding time-9), kept as a test. It finds every
- * offset change the host's Intl data knows in every IANA zone from 1850 to
- * 2100, resolves wall minutes around each on the zone's clock, and compares
+ * offset change in every IANA zone from 1850 to 2100 on the zone's clock as
+ * the resolver reads it, @zodiacs/engine/geo's zoneOffsetAt (the history the
+ * engine ships before 1970, the host's Intl data from 1970), resolves wall
+ * minutes around each, and compares
  * the result with a brute-force reading: every offset in force near the
  * change is tried, one match is the answer, two are a fold (the earlier, with
  * `dst-fold`), none is a gap (moved forward by the offset just before, with
@@ -72,8 +75,12 @@ function wallMinutes(change: Change): number[] {
 const ZONES = Intl.supportedValuesOf('timeZone');
 const GROUPS = Array.from({ length: 12 }, (_, group) => ZONES.filter((_, index) => index % 12 === group));
 const totals = { transitions: 0, tested: 0 };
+/** The zone's clock, as the resolver reads it. */
+const offsetAt = zoneOffsetAt;
 
 describe('resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan)', () => {
+  beforeAll(() => Promise.all(ZONES.map((tz) => prepareLocalTime('1850-01-01', tz))));
+
   // Groups of zones, so the worker reports between them on a long full scan.
   it.each(GROUPS.map((zones, group) => [group + 1, zones] as const))('round-trips zone group %i of 12', (_group, zones) => {
     const failures: string[] = [];

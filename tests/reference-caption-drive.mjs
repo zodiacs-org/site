@@ -29,7 +29,7 @@ import MoonPhaseTool from './src/islands/MoonPhaseTool';
 import ChartCalculator from './src/islands/ChartCalculator';
 import * as actual from './src/lib/engine/full';
 import { moonPhaseName } from './src/lib/engine/lite';
-import { resolveLocalToUtc } from './src/lib/time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from './src/lib/time/localToUtc';
 import { prepareChartCard, downloadPreparedChartCard, chartSheetSettings, chartSheetProvenanceLines, shareCardTimeNotes } from './src/lib/share-card';
 import { encodePositionsLink } from './src/lib/share-positions';
 import * as chartPreview from './src/server/chart-preview-model';
@@ -48,6 +48,7 @@ window.fixture={city:null,canvasText:[],
  mount(mode,locale){window.__ZDX_UI__={locale,messages:catalogs[locale]};window.__ZDX_RU__={locale:'ru',data:RUSSIAN_RUNTIME};render(h(mode==='chart'?ChartCalculator:MoonPhaseTool,mode==='chart'?{mode:'moon',locale}:{locale}),document.getElementById('mount'));},
  unmount(){render(null,document.getElementById('mount'));},
  async prepareImage(locale,known=false,variant='full'){
+  await prepareLocalTime('2000-01-15','Africa/Khartoum');
   const r=resolveLocalToUtc('2000-01-15',known?'08:30':'12:00','Africa/Khartoum');
   const chart=actual.computeChart({utc:r.utc,latitude:15.5,longitude:32.5,houseSystem:'whole',timeKnown:known,flags:r.flags});
   if(!known)chart.moonSignCandidates=[];

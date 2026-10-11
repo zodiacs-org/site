@@ -28,7 +28,6 @@ import {
   MAX_BODY_BYTES,
   MOON_HALVES,
   PHASE_NAMES,
-  PINNED_TZDB_RELEASE,
   POSITION_BODIES,
   SIGN_SLUGS,
   SKY_FACT_KINDS,
@@ -483,13 +482,14 @@ describe('compute API validation', () => {
   });
 
   it('flags a local time or a day at the ends of the accepted dates that reaches past the instant span', async () => {
+    // Without a longitude Tokyo's own mean time reads the time, from the history the engine ships, and lmt says so.
     const tokyo = await call('time', { local: { date: '1800-01-01', time: '00:00', zone: 'Asia/Tokyo' } });
     expect(tokyo.json.result.utc).toBe('1799-12-31T14:41:01.000Z');
-    expect(tokyo.json.result.flags).toEqual(['outside-reference-span']);
+    expect(tokyo.json.result.flags).toEqual(['lmt', 'outside-reference-span']);
     const honolulu = await call('time', { local: { date: '2199-12-31', time: '23:59', zone: 'Pacific/Honolulu' } });
     expect(honolulu.json.result.utc).toBe('2200-01-01T09:59:00.000Z');
     expect(honolulu.json.result.flags).toEqual(['outside-reference-span']);
-    expect((await call('time', { local: { date: '1800-01-01', time: '12:00', zone: 'Asia/Tokyo' } })).json.result.flags).toEqual([]);
+    expect((await call('time', { local: { date: '1800-01-01', time: '12:00', zone: 'Asia/Tokyo' } })).json.result.flags).toEqual(['lmt']);
     // With a longitude the birthplace's mean time reads the time, and lmt says so.
     const place = await call('time', { local: { date: '1800-01-01', time: '00:00', zone: 'Asia/Tokyo' }, longitude: 139.69 });
     expect(place.json.result.flags).toEqual(['lmt', 'outside-reference-span']);
@@ -573,9 +573,9 @@ describe('compute API receipts, backend and citation', () => {
     });
     const time = await call('time', VALID.time);
     expect(time.json.receipt.timeResolution).toEqual({
-      resolver: 'src/lib/time/localToUtc.ts',
+      resolver: '@zodiacs/engine/geo',
       policy: { fold: 'earlier', gap: 'shift-forward' },
-      pinnedTzdb: { release: PINNED_TZDB_RELEASE, dataForm: 'main+backzone', appliesBefore: '1970-01-02', requires: 'longitude' },
+      pinnedTzdb: { release: localTime.TZDB.version, sha256: localTime.TZDB.sha256, dataForm: 'main+backzone', appliesBefore: '1970-01-02' },
       runtimeTzdb: process.versions.tz,
     });
   });
@@ -627,8 +627,7 @@ describe('compute API receipts, backend and citation', () => {
   it("lists the engine's own house systems, bodies and pinned tzdb release", () => {
     expect([...HOUSE_SYSTEM_NAMES]).toEqual([...HOUSE_SYSTEMS]);
     expect(positions('2026-09-29T12:00:00Z').map((row) => row.body)).toEqual([...POSITION_BODIES]);
-    const bucket = JSON.parse(readFileSync(new URL('../../src/data/tz-history/2025c/00.json', import.meta.url), 'utf8'));
-    expect(bucket.tzdb).toBe(PINNED_TZDB_RELEASE);
+    expect(localTime.TZDB).toMatchObject({ version: '2025c', form: 'main+backzone' });
   });
 });
 
@@ -753,13 +752,14 @@ describe('compute API parity with the engine and the site resolver', () => {
     }
   }, 60_000);
 
-  it("time is the site resolver's answer, TT and ΔT are a chart's at that instant, and the zone history is named", async () => {
+  it("time is the calculators' resolver's answer, TT and ΔT are a chart's at that instant, and the zone history is named", async () => {
     const cases = [
       [{ date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, 18.07, 'pinned', false],
-      [{ date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, null, 'runtime', true],
+      // The engine's history answers before 1970 with or without a longitude.
+      [{ date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, null, 'pinned', false],
       [{ date: '1850-06-01', time: '12:00', zone: 'America/Mexico_City' }, -99.13, 'pinned', false],
-      // Harbin is left out of the pinned release (its history differs after 1970), so the runtime's applies.
-      [{ date: '1960-05-01', time: '12:00', zone: 'Asia/Harbin' }, 126.65, 'runtime', true],
+      // Harbin's backzone history differs after 1970, so the engine ships the default build's for it.
+      [{ date: '1960-05-01', time: '12:00', zone: 'Asia/Harbin' }, 126.65, 'pinned', false],
       [{ date: '2026-03-29', time: '02:30', zone: 'Europe/Paris' }, null, 'runtime', false],
       [{ date: '2026-10-25', time: '02:30', zone: 'Europe/Paris' }, 2.35, 'runtime', false],
     ] as const;

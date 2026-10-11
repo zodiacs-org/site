@@ -14,7 +14,7 @@ import { NATAL_ENVELOPE_LIMITS } from '@zodiacs/engine/receipt';
 import type { ToolOutcome } from './tools';
 
 /** This adapter's own version, distinct from the engine's. */
-export const ADAPTER_VERSION = '0.1.0-rc.19';
+export const ADAPTER_VERSION = '0.1.0-rc.20';
 export const ADAPTER_NAME = 'zodiacs-mcp-server' as const;
 
 /**

@@ -413,7 +413,6 @@ var ANY_ZONE_DAY = Object.freeze({
   startHoursBeforeUtcMidnight: 14,
   endHoursAfterUtcMidnight: 36
 });
-var PINNED_TZDB_RELEASE = "2025c";
 function responseSchemaName(endpoint) {
   return `zodiacs.compute-api.${endpoint}.v1`;
 }
@@ -5523,7 +5522,7 @@ async function resolveLocal(module, input, longitude2) {
   const options = longitude2 === null ? {} : { longitude: longitude2 };
   const resolved = module.resolveLocalToUtc(input.date, input.time, input.zone, options);
   const early = input.date <= PINNED_HISTORY_LAST_DATE;
-  const pinned = early && longitude2 !== null && await module.loadZoneHistory(input.zone) !== null;
+  const pinned = resolved.zone.source === "tzdb";
   const gapShiftMinutes = (resolved.utc.getTime() + resolved.offsetMinutes * 6e4 - wallMilliseconds(input)) / 6e4;
   return {
     input,
@@ -5540,11 +5539,11 @@ function runtimeTzdbVersion() {
   const version2 = typeof process === "object" ? process.versions?.tz : void 0;
   return typeof version2 === "string" && version2 ? version2 : null;
 }
-function timeResolutionFacts() {
+function timeResolutionFacts(module) {
   return {
-    resolver: "src/lib/time/localToUtc.ts",
+    resolver: "@zodiacs/engine/geo",
     policy: { fold: "earlier", gap: "shift-forward" },
-    pinnedTzdb: { release: PINNED_TZDB_RELEASE, dataForm: "main+backzone", appliesBefore: "1970-01-02", requires: "longitude" },
+    pinnedTzdb: { release: module.TZDB.version, sha256: module.TZDB.sha256, dataForm: "main+backzone", appliesBefore: "1970-01-02" },
     runtimeTzdb: runtimeTzdbVersion()
   };
 }
@@ -6239,7 +6238,7 @@ async function computeTime(request, dependencies) {
     tt: iso(tt).slice(0, -1),
     deltaT: deltaT2,
     timeScale
-  }, computeReceipt("time", { timeResolution: timeResolutionFacts() }));
+  }, computeReceipt("time", { timeResolution: timeResolutionFacts(dependencies.localTime) }));
 }
 function nextDate(date) {
   return new Date(Date.parse(`${date}T00:00:00Z`) + DAY_MS2).toISOString().slice(0, 10);
@@ -6353,7 +6352,7 @@ async function computeSkyFact(request, dependencies) {
     facts
   }, computeReceipt("sky-fact", {
     search: budget.facts(),
-    ...window.zone ? { timeResolution: timeResolutionFacts() } : {}
+    ...window.zone ? { timeResolution: timeResolutionFacts(dependencies.localTime) } : {}
   }));
 }
 function factEcho(request) {
