@@ -178,7 +178,7 @@ const SIGN_REGISTER: Record<HoroscopeSign, SignRegister> = {
     love: 'honesty is kindest when timing and tone are part of the truth',
     career: 'a promising direction still needs a defined next checkpoint',
     year: 'freedom expands through commitments chosen with open eyes',
-    test: 'connect the large idea to one appointment, draft, or measurable step',
+    test: 'pin the large idea to one appointment, draft, or measurable step',
   },
   capricorn: {
     daily: 'responsibility is clearer when you distinguish the essential from the inherited',
@@ -997,7 +997,7 @@ function dailySurface(
     ));
   } else {
     const quietFocus = moonHouse === secondaryHouse
-      ? `Keep ${HOUSE_THEME[moonHouse]} centered in the choice`
+      ? `Hold ${HOUSE_THEME[moonHouse]} at the center of the choice`
       : `Connect ${HOUSE_THEME[moonHouse]} with ${HOUSE_THEME[secondaryHouse]}`;
     passages.push(passage(
       `${quietFocus}; ${profile.test}.`,
