@@ -1,3 +1,45 @@
+Local times on the engine's resolver, 2026-10-12 (Asia/Bangkok): the site
+reads every local birth time with `@zodiacs/engine/geo` from 1.0.0, and its
+own copy of the logic is gone. P1.01b and P1.12b are accepted.
+
+**Overall delivery: 40%** (39.710% to three decimals): 72.45 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **Site.** #723 merged as `4f2d6f03`
+  ([the record](../evidence/site-engine-geo-20261012/README.md)).
+  - `src/lib/time/localToUtc.ts` keeps the site's signatures and hands every
+    wall time to the engine. Every production caller prepares first, apart
+    from the frozen wallet chart, whose page is not served (F-83).
+  - The site's birthplace clock, history loader, pinned tables, generators and
+    drift job are removed, and the compute API bundles the engine's resolver.
+    Tools and records that used them say they run from a checkout before the
+    change.
+  - Parity at the base: with a birthplace longitude, all 915,420 cases give
+    the same instant, offset and flags; before 1970 without one, the engine's
+    backzone history answers where the host's default build did.
+  - MCP adapter 0.1.0-rc.21 and developer plugin 0.3.9 ship with it.
+  - Codex's three findings on the later commits were fixed before the merge.
+    The private birth-data search over every commit of the change found no
+    added line matching a person the base did not.
+  - Post-merge Site Check 38243322140 passed all nineteen jobs.
+  - Vercel `dpl_DZRCVJxtrBBzcex3Wh9NEdq3PiT3` is READY at the merge and
+    serves zodiacs.org. The production check passes 12 of 13 against a
+    production-flags build of the merge
+    (`../evidence/site-engine-geo-20261012/production/`). Its 13th found
+    `/developers/compute/` missing the space before an inline element.
+- **Spacing.** The 13th check's cause appears in 51 places on eight developer
+  pages, the methodology and privacy. Astro drops the line break between text
+  and an inline element on the next line. This record restores each space,
+  and `check-dist` now fails those pages on such a join. The translated and
+  frozen pages that have it wait for their own changes.
+- **Main's Site Check.** The post-merge runs of #722 (`ec0451ff`, run
+  38184748851) and of the daily edition (`5ab297a9`, run 38208999034) each
+  failed one job, Lighthouse performance budgets, on the nightly layout shift
+  of the daily pages, which a separate change addresses. #724's run
+  (38206757424) failed every build at the edition-age gate, because it merged
+  before that day's edition.
+- **Findings.** F-35 is closed.
+
 Engine 1.0.0, 2026-10-12 (Asia/Bangkok): `@zodiacs/engine` 1.0.0, the first
 stable release, is on npm under `latest`, and zodiacs.org runs it. The
 developer guides are published on it. No unit changes status: P3.10 is now
