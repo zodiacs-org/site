@@ -79,7 +79,7 @@ Severity follows the audit's scale:
 | F-83 | minor | Registry (frozen) | The wallet chart's owner comparison (`src/islands/WalletChart.tsx`) resolves the owner's local time without `prepareLocalTime`. With the engine's resolver, which #723 adopts, it refuses every owner time ("the local-time resolver is not loaded") and shows the page's invalid-response error; on main it read the host's Intl data. The file is frozen Registry code under the Phase 1 scope guard, and its page serves only a redirect while no wallet chain is configured, as in production. | open: the fix is one awaited `prepareLocalTime(ownerDate, ownerCity.tz)` before the call, which needs the owner's one-time scope allowance; until then the feature must stay unconfigured. `src/lib/time/localToUtc-callers.test.ts` lists it as the one caller that does not prepare |
 | F-84 | minor | performance | From 00:00 UTC until the day's edition deploys, the daily pages dated their "today" wording after the first paint, and the longer text moved what was below it: Site Check's Lighthouse gate measured CLS 0.020 on `/today/`, 0.005 on `/horoscopes/` and 0.011 on `/horoscopes/aries/` (run 38184748851, 2026-10-12 after 00:00 UTC) | fixed here: the head script dates that wording as the parser adds it; `tests/edition-dated-drive.mjs` |
 | F-86 | minor | copy | From 00:00 UTC until the day's edition deploys, the Spanish and Portuguese daily pages (`/es/today/`, `/es/horoscopes/`, `/es/horoscopes/<sign>/` and their `/pt/` twins) kept "hoy" and "hoje" while their kicker gave the older date: the dating rules were English only (F-84, *Remaining*) | fixed here: each reviewed Spanish and Portuguese phrase has its dated form in `src/lib/edition-freshness.ts`, which the head script inlines for its page's language, so the first paint is dated; `tests/edition-dated-drive.mjs` drives the six routes |
-| F-87 | minor | performance | A page short enough to show the site footer in its first viewport could paint the footer before its deferred stylesheet arrived, then move and reflow it: CLS up to 0.173 on `/es/horoscopes/aries/` and `/pt/horoscopes/aries/` in a 1400 px tall viewport, on any clock | fixed here: a script before the footer marks one that starts in the first viewport, base.css hides it from its first layout, and the loader shows it when its stylesheet loads or fails, or after 3 s; `tests/footer-style-loader.test.mjs`, `tests/edition-dated-drive.mjs` |
+| F-87 | minor | performance | A page short enough to show the site footer in its first viewport could paint the footer before its deferred stylesheet arrived, then move and reflow it: CLS up to 0.173 on `/es/horoscopes/aries/` and `/pt/horoscopes/aries/` in a 1400 px tall viewport, on any clock | fixed here: a script before the footer marks one that starts in the first viewport, base.css hides it from its first layout and its own stylesheet shows it again, and the loader shows it if the stylesheet fails or takes over 3 s; `tests/footer-style-loader.test.mjs`, `tests/edition-dated-drive.mjs` |
 | F-88 | minor | copy | Reviewing F-86's wording found faults in the Spanish and Portuguese daily copy that predate it: the Sun and Moon without their article as subjects ("Sol entra…", "Lua entra…"), Portuguese lists that drop their preposition, a lower-case, wrongly gendered note under "Por qué esta lectura", a doubled "inglés" cue, "cuatro notas por signo" on days with three, and smaller calques | open, for the owner: the files are Phase 1 protected (locale page trees and catalogs), so a fix needs a one-time allowance; each fault and its proposed correction is below |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
@@ -966,16 +966,19 @@ adoption changes neither its status nor the fixed denominator.
 - **Fix.** The decision is made before the footer is parsed: a script just
   before it marks the document (`data-footer-styles-pending`) when the content
   above ends within 200 px of the first viewport, and base.css hides a marked
-  footer (`visibility: hidden`) from its first layout. The loader then requests
-  the stylesheet at once and removes the mark when it loads or fails, or after
-  3 s at most. A footer further down is never hidden, the request and its
-  timing are otherwise unchanged, and without JavaScript the `@import` still
-  styles it. After the fix, 0 of 120 loads shifted.
+  footer (`visibility: hidden`) from its first layout. The footer's stylesheet
+  shows it again, in the same style pass as its layout; the loader requests
+  the stylesheet at once and removes the mark once it has loaded, or if it
+  fails or takes over 3 s. A footer further down is never hidden, the request
+  and its timing are otherwise unchanged, and without JavaScript the `@import`
+  still styles it. After the fix, 0 of 120 loads shifted.
 - **Regression test.** `tests/footer-style-loader.test.mjs` runs both inline
   scripts: the marker against the elements before it, and the loader with a
-  marked footer (requested at once, shown on load, on error or after 3 s) and
-  an unmarked one (never hidden). The dated drive's CLS checks on the two sign
-  pages, on both clocks, fail without the fix. Measurements are in the
+  marked footer (requested at once, mark removed on load, on error or after
+  3 s) and an unmarked one (never hidden). `check-site-footer-standard.mjs`
+  requires the hiding rule in base.css and the showing rule in the footer's
+  stylesheet. The dated drive's CLS checks on the two sign pages, on both
+  clocks, fail without the fix. Measurements are in the
   [record](../evidence/edition-dated-locales-20261012/README.md#the-footer-f-87).
 - **Remaining.** A footer reached by scrolling still gets its stylesheet 200 px
   before it enters the viewport, as before.

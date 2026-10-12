@@ -152,9 +152,10 @@ the footer from the loader, which runs after the footer, still shifted once in
 loader ran. The fix decides before the footer is parsed: a small script just
 before it marks the document when the content above ends within 200 px of the
 first viewport, base.css hides a marked footer from its first layout, and the
-loader requests the stylesheet at once and removes the mark when it loads or
-fails, or after 3 s. A footer further down is never hidden, and without
-JavaScript the `@import` styles it as before.
+footer's stylesheet shows it again in the same style pass as its layout. The
+loader requests the stylesheet at once and removes the mark once it has
+loaded, or if it fails or takes over 3 s. A footer further down is never
+hidden, and without JavaScript the `@import` styles it as before.
 
 ## Reproduce
 
