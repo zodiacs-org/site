@@ -11,11 +11,31 @@ published under CC BY 4.0. Its time basis, inlined too, carries TAI - UTC
 from the IERS leap-second list, which is in the public domain, and a table
 of UT1 - UTC derived from IERS EOP 20 C04 for 1972 and from IERS
 finals2000A.all from 1973-01-02. It also carries the IAU 2000B nutation from NOVAS C 3.1 and the
-engine's precession transformation, attributed below. None of the engine's zone histories,
-calendar tables or star values is in server.mjs. If you redistribute this
-archive or server.mjs, keep this notice. The engine's own notice follows
-unchanged; the engine's LICENSING.md, in its archive, gives the terms of
-each source.
+engine's precession transformation, attributed below. From 0.1.0-rc.24,
+for resolve_birth_time, server.mjs also carries the engine's zone histories,
+compiled from the IANA Time Zone Database 2025c with its backzone file, and
+its table of Gregorian calendar adoption dates, both from public-domain
+sources that the engine's notice below names. None of the engine's star
+values is in server.mjs.
+
+server.mjs also carries, from the Zodiacs.org site:
+
+- for search_places, the site's birthplace index, derived from GeoNames
+  cities15000 (https://www.geonames.org/), which is licensed under Creative
+  Commons Attribution 4.0 International (CC BY 4.0):
+  https://creativecommons.org/licenses/by/4.0/. The index keeps each place's
+  name, ASCII name, first-level region, country, latitude and longitude
+  rounded to two decimal places, time zone and population. Credit GeoNames
+  wherever you show its places;
+- for resolve_birth_time's calendar note, the site's table of the dates on
+  which 42 countries took the Gregorian calendar, whose dates come from the
+  IANA Time Zone Database's calendars file and the English, Latvian and
+  Finnish Wikipedia articles the site names beside each row; it copies
+  dates, not text.
+
+If you redistribute this archive or server.mjs, keep this notice. The
+engine's own notice follows unchanged; the engine's LICENSING.md, in its
+archive, gives the terms of each source.
 
 @zodiacs/engine notice
 ========================

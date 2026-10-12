@@ -2,11 +2,12 @@
 
 A local MCP server that lets an AI assistant you connect it to calculate natal
 charts with the Zodiacs engine, compare two calculation records to find out why
-they disagree, find positions, sign ingresses, stations and lunations, and check
-whether a stated sky fact holds.
+they disagree, find positions, sign ingresses, stations and lunations, check
+whether a stated sky fact holds, look up a place, and turn a local birth time
+into UTC.
 
 It speaks MCP over stdio. It opens no listener, binds no port, makes no outbound
-request, and reads and writes no files. Six tools and two resources, one
+request, and reads and writes no files. Eight tools and two resources, one
 process, started by whatever host you point at it.
 
 **Unpublished release candidate.** There is no `npm install zodiacs-mcp-server`:
@@ -77,10 +78,10 @@ disk, `npm ci --omit=dev` installs the three and `npm start` works; only
 `npm run verify` needs the rest.
 
 `npm run verify` launches `server.mjs` as a real child process, speaks MCP to it
-with the official client SDK, calls all six tools with synthetic charts and
-dates, refuses two bad requests, and confirms the session still works
+with the official client SDK, calls all eight tools with synthetic charts,
+dates and places, refuses two bad requests, and confirms the session still works
 afterwards. The client checks every result other than a refusal against the
-output schema the server declares. It prints one line per check, twenty-one in
+output schema the server declares. It prints one line per check, twenty-five in
 all, and exits 0 when they all pass. That is the
 clean-environment verification: if it passes in a directory you just extracted,
 the install is good.
@@ -131,7 +132,7 @@ key, credential or secret anywhere in this package. What a host passes it is the
 host's business — most pass their whole environment — but nothing here looks at
 it.
 
-## The six tools
+## The eight tools
 
 Each tool declares an output schema, which a host reads in `tools/list`
 beside the arguments. The server checks every result other than a refusal
@@ -158,7 +159,7 @@ options.
 | `longitude` | number | −180 to 180. |
 | `houseSystem` | `placidus` \| `whole` \| `porphyry` \| `equal` \| `vehlow` \| `koch` \| `regiomontanus` \| `campanus` \| `topocentric` \| `alcabitius` \| `morinus` \| `meridian` \| `equal-mc` | Default `placidus`. Placidus and Koch fall back to whole sign inside the polar circle. |
 | `timeKnown` | boolean | Default `true`. `false` makes `utc` a reference instant and suppresses angles and houses. It does not imply noon. With `false` the coordinates change nothing in the result, but the calculation record holds them and `cite.receipt` identifies them: leave them out unless the record should carry them. |
-| `reference` | `supplied-instant` \| `utc-noon` | Recorded in the calculation record, not in the summary. Omitting it is the usual case and infers nothing. `utc-noon` means no birth time was known and midday UTC stands in, so it needs `timeKnown: false` and `utc` at exactly `12:00:00Z`. The envelope's third value, `local-noon`, is not offered: it requires a captured local date, wall time, zone and offset, and this adapter resolves no timezones. |
+| `reference` | `supplied-instant` \| `utc-noon` | Recorded in the calculation record, not in the summary. Omitting it is the usual case and infers nothing. `utc-noon` means no birth time was known and midday UTC stands in, so it needs `timeKnown: false` and `utc` at exactly `12:00:00Z`. The envelope's third value, `local-noon`, is not offered: it requires a captured local date, wall time, zone and offset, and this tool takes an instant, not a local time. `resolve_birth_time` turns a local time into one. |
 | `output` | `summary` \| `record` | Default `summary`. |
 
 `summary` returns the computed chart — twelve bodies, four angles, twelve cusps,
@@ -255,7 +256,7 @@ and an `other` body in a `conjunction`, `sextile`, `square`, `trine` or
 computed values that decide the answer. On a date, an aspect's reply also gives
 where it begins or ends and where it is exact. It never interprets.
 
-This adapter looks up no time zone, so there is no `zone` argument. A date is
+`check_sky_fact` takes no time zone, so there is no `zone` argument. A date is
 read as that day in every UTC offset in use today, −12:00 to +14:00, at once:
 from 14 hours before its midnight UTC to 36 hours after. `depends` means the
 answer turns on the time of day or on the offset. When the ingress or the phase
@@ -273,6 +274,52 @@ API's parser refuses gets its sentence, after the field it names:
 `/to: Must be later than from.` One the input schema refuses first, such as an
 unknown argument like `zone`, more than 100 instants or a value outside a list,
 gets the MCP SDK's validation message instead.
+
+### `resolve_birth_time`
+
+Takes `local`, a `date`, a `time` in hours and minutes and an IANA `zone`, and
+optionally the place's `longitude`, the `calendar` its date is written in, and
+its `country` as an ISO 3166-1 alpha-2 code. Returns the instant in UTC and in
+Terrestrial Time, the offset applied, and how the time was read:
+
+- a time the clocks skipped moves forward by the gap and is flagged `dst-gap`;
+  one they repeated takes the earlier instant and is flagged `dst-fold`;
+- a time before the place adopted a legal time is read on a local mean time,
+  flagged `lmt`: the place's own with its longitude, the zone reference city's
+  without one;
+- up to 1970-01-01 the offset comes from tzdb 2025c with its backzone file,
+  which the engine ships (`zoneHistory: "pinned"`); from then on, from the time
+  zone data of the Node.js running this server (`"runtime"`), so the same
+  request gives the same answer on runtimes with the same tzdb;
+- where the pinned history answered, `intlOffsetMinutes` is the zone's offset
+  at the same instant in the runtime's own data, tzdb's default build, and the
+  flags include `zone-history-disputed` where the two differ: at noon on
+  1 July 1947 Stockholm is an hour ahead of UTC in the pinned history and two
+  in the default build;
+- `zoneUncertain` is true for a date up to 1970-01-01 read on the runtime's
+  data where the release records no local time, such as an Antarctic station
+  before it was staffed;
+- with `calendar: "julian"` a date written from 1800 to the end of 1923 is read
+  in the Julian calendar, the Old Style, and converted to the Gregorian date
+  before the time is read; the reply gives both. With `country`, it gives when
+  the site's table says that country changed calendar and, for a date written
+  before 1924, the note the site's birth forms give: `old-style`, `new-style`
+  or `other-calendar`.
+
+This is the same parser, calculation and receipt as
+`POST https://zodiacs.org/api/v1/time`, run here with the zone histories built
+into `server.mjs`. Pass the `utc` it returns to `calculate_natal_chart`.
+
+### `search_places`
+
+Takes a `query`, a place name or its start, and optionally a `limit` from 1 to
+20, 8 when omitted. Returns the places whose names start with it, then, from
+three characters, those whose names contain it, each in order of population,
+with the region and country, the coordinates rounded to 0.01° (about 1.1 km)
+and the IANA time zone. It reads GeoNames cities15000, every place of 15,000
+people or more, which is the index the site's birthplace search reads, with the
+same ranking, built into `server.mjs`: a search opens no file and makes no
+request. GeoNames data is CC BY 4.0; credit GeoNames where you show its places.
 
 ## Three requests, and what comes back
 
@@ -495,18 +542,20 @@ summary shows no angle, cusp or coordinate. With `timeKnown: false` the
 coordinates change nothing else in the result, so leaving them out keeps them
 out of the receipt. Quote the digest only where the birth details may be known.
 
-`get_capabilities` and `compare_calculation_records` cite the adapter's own
-receipt, which the reply carries in full: the adapter and the engine that
-answered, and for a comparison its output. It holds nothing from either record,
-so a comparison's citation says how the comparison was made, not which records
-it read.
+`get_capabilities`, `compare_calculation_records` and `search_places` cite the
+adapter's own receipt, which the reply carries in full: the adapter and the
+engine that answered, for a comparison its output, and for a search the place
+index it read. It holds nothing from either record or from the query, so a
+comparison's citation says how the comparison was made, not which records it
+read.
 
-`get_positions`, `find_events` and `check_sky_fact` cite the compute API's
-receipt for the same calculation, which the reply carries in full: the engine,
-its conventions and coverage, the reference span, the two sources of ΔT, and
-for a search how it searched and how many evaluations it made. It holds no
-instant, date or body from the request, and the compute API cites the same
-digest for the same request.
+`get_positions`, `find_events`, `check_sky_fact` and `resolve_birth_time` cite
+the compute API's receipt for the same calculation, which the reply carries in
+full: the engine, its conventions and coverage, the reference span, the two
+sources of ΔT, for a search how it searched and how many evaluations it made,
+and for a local time how time zones were read. It holds no instant, date, zone
+or body from the request, and the compute API cites the same digest for the
+same request.
 
 ## Resources
 
@@ -520,7 +569,8 @@ request.
   receipts carry; and what each chart flag reports.
 - `zodiacs://methodology` (Markdown): what a chart holds, how an instant is
   read, unknown birth times, house systems, aspects, comparisons, positions,
-  events and sky facts, the accepted dates, and what a result cites, with links
+  events and sky facts, local times and places, the accepted dates, and what a
+  result cites, with links
   to the site's methodology page and the engine's measured agreement with other
   software.
 
@@ -536,8 +586,8 @@ request.
 | protocol | stdio. Negotiated on the wire in testing: 2025-11-25, 2025-06-18, 2025-03-26, 2024-11-05, 2024-10-07 |
 | node | built for and tested on Node 22 (v22.22.2). `package.json` requires `>=22` |
 | record schema | `zodiacs.natal-envelope.draft-v1` — Zodiacs-owned draft vocabulary, not an industry interoperability standard |
-| adapter receipt | `zodiacs.mcp-receipt.v1`, carried by `get_capabilities` and `compare_calculation_records` |
-| compute receipt | `zodiacs.compute-receipt.v1`, the hosted compute API's, carried by `get_positions`, `find_events` and `check_sky_fact` |
+| adapter receipt | `zodiacs.mcp-receipt.v1`, carried by `get_capabilities`, `compare_calculation_records` and `search_places` |
+| compute receipt | `zodiacs.compute-receipt.v1`, the hosted compute API's, carried by `get_positions`, `find_events`, `check_sky_fact` and `resolve_birth_time` |
 
 `candidate.json` carries the same identities in machine-readable form, including
 the engine artifact's own SHA-256 and the source paths every part was built from.
@@ -548,8 +598,10 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   new and full moons in a window of at most 92 days. No transits,
   progressions, returns or eclipses.
 - **No interpretation.** Positions and differences, no readings.
-- **No timezone resolution.** Supply an instant with an explicit offset. This
-  adapter does not turn a place name and a wall clock into a moment, and
+- **Time zones from tzdb, places from GeoNames.** `resolve_birth_time` reads
+  tzdb's zone histories, with no town-level clock records beyond them, and
+  `search_places` finds only the places of 15,000 people or more that GeoNames
+  lists. The other tools take an instant with an explicit offset, and
   `check_sky_fact` reads a date without a zone as that day in every UTC offset
   in use today at once.
 - **No file access and no fetching.** Records are passed as content. The adapter
@@ -611,7 +663,7 @@ model-interoperability record is from an earlier candidate and stays
 historical until rerun. The records establish different things:
 
 - **`protocol-drive.json`** — the official SDK client against the real server
-  process: initialize, list the tools and their output schemas, all six tools
+  process: initialize, list the tools and their output schemas, all eight tools
   with every result other than a refusal checked against its schema by the
   client, what each result
   cites, the two resources, eighteen malformed or refused requests each
@@ -621,6 +673,12 @@ historical until rerun. The records establish different things:
   requests, `get_positions`, `find_events` and `check_sky_fact` return the body
   the compute API's own handler answers for the same JSON, apart from
   `cite.url`, and each of 21 refused requests gets the handler's own sentence.
+- **`src/mcp/time-places.test.ts`**, in the repository — for 105 synthetic
+  requests, `resolve_birth_time` returns the body the compute API's own handler
+  answers for the same JSON, apart from `cite.url`, and each of 6 refused
+  requests gets the handler's own sentence; for 75 queries, each at three
+  limits, `search_places` lists the places the site's own birthplace search
+  lists, in the same order.
 - **`host-drive.json`** — the Claude Code CLI launching the adapter and
   reporting it connected, inside a throwaway config directory, with the
   machine's real configuration proved byte-identical afterwards.
@@ -639,7 +697,12 @@ on dates chosen for what they exercise.
 
 MIT AND CC-BY-4.0. The adapter's own code is MIT. `server.mjs` bundles
 `@zodiacs/engine` 1.0.0, whose ΔT module contains 32 values of Table S15
-of Stephenson, Morrison and Hohenkerk (2016) under CC BY 4.0, and whose time
+of Stephenson, Morrison and Hohenkerk (2016) under CC BY 4.0, whose time
 basis carries the IERS leap-second list and a UT1 − UTC table derived from
-IERS data. `NOTICE` gives the attributions; keep it if you redistribute the
-archive. `candidate.json` records what is bundled and where it came from.
+IERS data, and whose `geo` entry carries zone histories compiled from the IANA
+Time Zone Database and a table of Gregorian calendar adoption dates, both from
+public-domain sources. It also bundles the site's birthplace index, derived
+from GeoNames cities15000 under CC BY 4.0, and the site's own table of
+adoption dates for its birth forms' calendar notes. `NOTICE` gives the
+attributions; keep it if you redistribute the archive. `candidate.json`
+records what is bundled and where it came from.

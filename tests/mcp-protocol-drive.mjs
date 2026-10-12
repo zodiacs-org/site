@@ -6,7 +6,7 @@
  *
  * Nothing here is mocked: the drive spawns `examples/mcp-server/server.mjs` as
  * a child process, speaks MCP over its stdio, and reads what comes back. It
- * initializes, lists the tools and their output schemas, calls all six —
+ * initializes, lists the tools and their output schemas, calls all eight —
  * the client itself checks every result against the schema the server
  * advertised — checks what each result cites, lists and reads the two
  * resources, drives eighteen malformed or refused requests, checks that a
@@ -196,8 +196,8 @@ try {
   // ---- tools/list ----
   const listed = await client.listTools();
   const names = listed.tools.map((tool) => tool.name).sort();
-  check('lists exactly the six tools', JSON.stringify(names)
-    === JSON.stringify(['calculate_natal_chart', 'check_sky_fact', 'compare_calculation_records', 'find_events', 'get_capabilities', 'get_positions']), names);
+  check('lists exactly the eight tools', JSON.stringify(names)
+    === JSON.stringify(['calculate_natal_chart', 'check_sky_fact', 'compare_calculation_records', 'find_events', 'get_capabilities', 'get_positions', 'resolve_birth_time', 'search_places']), names);
   check('every tool closes its argument object', listed.tools.every((tool) =>
     tool.inputSchema?.type === 'object' && tool.inputSchema.additionalProperties === false));
   check('every tool is annotated read-only, non-destructive and closed-world', listed.tools.every((tool) =>
@@ -386,8 +386,40 @@ try {
     && ![skyInstant, lunation.at.slice(0, 10)].some((needle) => JSON.stringify([onDate.receipt, atInstant.receipt]).includes(needle)),
     [onDate.receipt?.search, atInstant.receipt?.endpoint]);
   const zoned = await attempt('check_sky_fact', { kind: 'phase', phase: 'full', date: '2026-10-07', zone: 'Europe/Paris' });
-  check('a zone is refused, since this server reads none, and names the argument',
+  check('a zone is refused, since check_sky_fact reads none, and names the argument',
     zoned.layer === 'tool' && /zone/.test(zoned.text), zoned);
+
+  // ---- resolve_birth_time and search_places ----
+  // The compute API's time endpoint with the histories built into the bundle,
+  // and the site's birthplace search over the index built into it: a place
+  // and a wall clock become the chart's instant, with nothing read from disk.
+  const places = await ok('search_places', { query: 'London' });
+  const london = places.places?.[0];
+  check('a place search lists London first, with its coordinates and its zone, and cites the index, not the query',
+    london?.name === 'London' && london.timeZone === 'Europe/London'
+    && Math.abs(london.latitude - LONDON.latitude) < 0.01 && Math.abs(london.longitude - LONDON.longitude) < 0.01
+    && places.source?.licence === 'CC BY 4.0' && places.cite?.url === `${DOCS}#search_places`
+    && places.cite.receipt === digest(places.receipt) && !JSON.stringify(places.receipt).includes('London'), london);
+  const local = await ok('resolve_birth_time', { local: { date: '1990-06-15', time: '14:30', zone: london.timeZone }, longitude: london.longitude });
+  check("a local time at the place resolves to the chart's instant, on the runtime's zone data",
+    local.result?.utc === new Date(LONDON.utc).toISOString() && local.result.offsetMinutes === 60
+    && local.result.flags.length === 0 && local.result.zoneHistory === 'runtime', local.result);
+  const disputed = await ok('resolve_birth_time', { local: { date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' } });
+  check('a time before 1970 is read on the pinned history, and a zone history the runtime disputes is flagged',
+    disputed.result?.zoneHistory === 'pinned' && disputed.result.offsetMinutes === 60
+    && disputed.result.intlOffsetMinutes === 120 && disputed.result.flags.includes('zone-history-disputed'), disputed.result);
+  const oldStyle = await ok('resolve_birth_time', { local: { date: '1917-10-25', time: '12:00', zone: 'Europe/Moscow' }, calendar: 'julian', country: 'RU' });
+  check('a Julian date is converted before the time is read, with the country\'s change of calendar',
+    oldStyle.result?.date === '1917-11-07' && oldStyle.result.writtenDate === '1917-10-25'
+    && oldStyle.result.adoption?.firstGregorian === '1918-02-14' && oldStyle.result.calendarNote === null, oldStyle.result);
+  check('a time cites the compute receipt it carries, which holds no date, time or zone from the request',
+    local.schema === 'zodiacs.compute-api.time.v1' && local.receipt?.endpoint === 'time'
+    && local.cite?.url === `${DOCS}#resolve_birth_time` && local.cite.receipt === digest(local.receipt)
+    && !['1990-06-15', '14:30', 'Europe/London'].some((needle) => JSON.stringify(local.receipt).includes(needle)), local.cite);
+  const badZone = await attempt('resolve_birth_time', { local: { date: '1990-06-15', time: '14:30', zone: 'Mars/Olympus_Mons' } });
+  check("an unknown zone is refused in the compute API's words, with the field it names",
+    badZone.layer === 'tool' && badZone.text.startsWith('/local/zone: '), badZone);
+  await recovers('the time and place refusals');
   const backwards = await attempt('find_events', { from: '2026-04-30T00:00:00Z', to: '2026-02-01T00:00:00Z' });
   check("a refusal from the compute API's parser is its own sentence, with the field it names",
     backwards.layer === 'tool' && backwards.text === '/to: Must be later than from.', backwards);

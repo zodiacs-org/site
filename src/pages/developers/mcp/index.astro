@@ -43,6 +43,8 @@ const tools = [
   ['get_positions', 'Up to 100 instants, each with Z or an offset. Returns the twelve rows of a chart at each, the longitude, latitude, daily motion, sign and degree of every body, with the ΔT and time scale the engine used: the rows calculate_natal_chart gives for the same instant.'],
   ['find_events', 'A window of at most 92 days. Returns the sign ingresses, the stations of Mercury to Pluto and the new and full moons in it, in time order, found by the engine\'s crossing search. The search is tested, not proven to miss nothing, and every reply\'s receipt says so.'],
   ['check_sky_fact', 'Whether a body is in a sign or retrograde, at an instant or on a date, whether it enters a sign on a date, whether the Moon reaches a phase on a date, or whether two bodies are in an aspect, at an instant or on a date: true, false or depends, with the computed values that decide it, and never an interpretation. There is no zone argument: a date is read as that day in every UTC offset in use today at once, from 14 hours before its midnight UTC to 36 hours after.'],
+  ['resolve_birth_time', 'A local date and time in an IANA time zone, and optionally the place\'s longitude, the calendar its date is written in and its country. Returns the instant in UTC and Terrestrial Time, with flags for a time the clocks skipped or repeated, a time read on a local mean time, and a zone history before 1970 that the runtime\'s own time zone data disputes. A date written in the Julian calendar up to 1923 is converted before the time is read. The compute API\'s time endpoint, run here with the zone histories built into the adapter.'],
+  ['search_places', 'A place name or its start. Returns the places whose names start with it, then those whose names contain it, each in order of population, with the region, the country, coordinates rounded to 0.01° and the IANA time zone: the index and ranking of the site\'s birthplace search, GeoNames cities15000 under CC BY 4.0, built into the adapter.'],
 ];
 
 // The archive's package.json declares MIT AND CC-BY-4.0: the adapter's code is
@@ -141,10 +143,10 @@ const jsonLd = [
       <p>
         <code>npm run verify</code> is the check that the install <em>works</em>, not a
         second integrity check: it launches the server as a real process, speaks MCP to
-        it with the official client library, calls all six tools with synthetic
-        charts and dates, refuses two bad requests, and confirms the session still works
+        it with the official client library, calls all eight tools with synthetic
+        charts, dates and places, refuses two bad requests, and confirms the session still works
         afterwards; the client checks every result other than a refusal against
-        the output schema the server declares. Twenty-one checks, one line each, exit 0 when they all pass. It
+        the output schema the server declares. Twenty-five checks, one line each, exit 0 when they all pass. It
         tests behaviour rather than identity, so a tampered archive can pass it — the
         digest comparison above is what establishes you have the published bytes.
       </p>
@@ -208,7 +210,7 @@ const jsonLd = [
       </p>
     </div>
 
-    <h2 id="tools">The six tools</h2>
+    <h2 id="tools">The eight tools</h2>
     <dl class="mcp-tools">
       {tools.map(([name, summary]) => (
         <div>
@@ -229,9 +231,11 @@ const jsonLd = [
       <p>
         <code>get_positions</code>, <code>find_events</code> and{' '}
         <code>check_sky_fact</code> run the <a href="/developers/compute/">compute
-        API</a>'s own parsers and calculations, without a zone. For the same request
-        each returns the compute API's body, with the same result and the same
-        receipt; only the citation's link names the tool here. A request the
+        API</a>'s own parsers and calculations, without a zone, and{' '}
+        <code>resolve_birth_time</code> runs its time endpoint with the zone
+        histories built into the adapter. For the same request each returns the
+        compute API's body, with the same result and the same receipt; only the
+        citation's link names the tool here. A request the
         compute API's parser refuses gets its sentence, after the field it names;
         one the input schema refuses first, such as an unknown argument or a value
         outside a list, gets the MCP SDK's validation message.
@@ -248,8 +252,9 @@ const jsonLd = [
         <code>{'{ requested: "placidus", actual: "placidus", absenceReason: null }'}</code>.
         Then drop the zone — ask for <code>1988-03-21T06:45:00</code> with no{' '}
         <code>Z</code> — and it refuses rather than guessing: <em>utc must be an ISO-8601
-        instant with an explicit zone</em>. That refusal is the limit you would meet
-        first for real, because this adapter resolves no time zones.
+        instant with an explicit zone</em>. For a wall clock in a place, ask for its
+        instant first: <code>search_places</code> gives the place's zone and{' '}
+        <code>resolve_birth_time</code> the UTC instant to pass on.
       </p>
       <p>
         <code>compare_calculation_records</code> reads the record format this site
@@ -338,18 +343,20 @@ const jsonLd = [
         only where the birth details may be known.
       </p>
       <p>
-        <code>get_capabilities</code> and <code>compare_calculation_records</code>{' '}
-        cite the adapter's own receipt, which the reply carries: the adapter and the
-        engine that answered, and for a comparison its output. It holds nothing from
-        either record, so a comparison's citation says how the comparison was made,
-        not which records it read.
+        <code>get_capabilities</code>, <code>compare_calculation_records</code> and{' '}
+        <code>search_places</code> cite the adapter's own receipt, which the reply
+        carries: the adapter and the engine that answered, for a comparison its
+        output, and for a search the place index it read. It holds nothing from
+        either record or from the query, so a comparison's citation says how the
+        comparison was made, not which records it read.
       </p>
       <p>
-        <code>get_positions</code>, <code>find_events</code> and{' '}
-        <code>check_sky_fact</code> cite the compute API's receipt for the same
-        calculation, which the reply carries: the engine, its conventions and
-        coverage, the reference span, the two sources of ΔT, and for a search how it
-        searched and how many evaluations it made. It holds no instant, date or body
+        <code>get_positions</code>, <code>find_events</code>,{' '}
+        <code>check_sky_fact</code> and <code>resolve_birth_time</code> cite the
+        compute API's receipt for the same calculation, which the reply carries: the
+        engine, its conventions and coverage, the reference span, the two sources of
+        ΔT, for a search how it searched and how many evaluations it made, and for a
+        local time how time zones were read. It holds no instant, date, zone or body
         from the request, and the compute API cites the same digest for the same
         request.
       </p>
@@ -376,8 +383,11 @@ const jsonLd = [
           stations and new and full moons in a window of at most 92 days. No
           transits, progressions, returns or eclipses.</li>
         <li>No interpretation. Positions and differences, no readings.</li>
-        <li>No timezone resolution. Supply an instant with an explicit offset; the
-          adapter does not turn a place name and a wall clock into a moment, and{' '}
+        <li>Time zones from tzdb, places from GeoNames.{' '}
+          <code>resolve_birth_time</code> reads tzdb's zone histories, with no
+          town-level clock records beyond them, and <code>search_places</code> finds
+          only the places of 15,000 people or more that GeoNames lists. The other
+          tools take an instant with an explicit offset, and{' '}
           <code>check_sky_fact</code> reads a date without a zone as that day in
           every UTC offset in use today at once.</li>
         <li>No file access and no fetching. Records are passed as content.</li>
@@ -432,7 +442,10 @@ const jsonLd = [
         The site's tests also run 301 synthetic requests through{' '}
         <code>get_positions</code>, <code>find_events</code> and{' '}
         <code>check_sky_fact</code> and through the compute API's own handler, and
-        hold the two answers to be the same apart from the citation's link.
+        hold the two answers to be the same apart from the citation's link. They do
+        the same for 105 requests through <code>resolve_birth_time</code>, and hold{' '}
+        <code>search_places</code> to the site's own birthplace search over 75
+        queries.
       </p>
       <p>
         The current bundle passed the protocol, synthetic regression and Claude

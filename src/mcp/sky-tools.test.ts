@@ -386,7 +386,7 @@ describe("refusals are the compute API's own sentences", () => {
     }
   });
 
-  it('refuses a zone, which this adapter never reads, before any calculation, and keeps serving', async () => {
+  it('refuses a zone, which check_sky_fact never reads, before any calculation, and keeps serving', async () => {
     const notes: string[] = [];
     const server = createServer((message) => notes.push(message));
     const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
