@@ -149,7 +149,12 @@ macOS arm64 with Node 22.22.2:
 - **Bundles.** The compute bundle, the AI bundles and the MCP bundle are what
   their sources build to (`--check`). The adapter archive and the plugin
   package are packed and verified.
-- **Phase 1 captures.** These are retaken by the Browser Evidence workflow.
+- **Phase 1 captures.** The library sources changed, and main brought #724,
+  so the merged head needed captures for its own digest. Browser Evidence
+  run 38211859904 on `f985be12` took them for digest `85a9b9fa`. Its 19
+  capture hashes match the committed files, and its build, visual comparison,
+  Lighthouse and explorer drive all passed
+  ([`browser-evidence-provenance.json`](browser-evidence-provenance.json)).
 - **Private search.** [`history-check.txt`](history-check.txt) records it,
   counts only: no line this change adds matches a person the base did not.
 
