@@ -5187,6 +5187,23 @@ var DEG32 = Math.PI / 180;
 var ASEC2RAD3 = DEG32 / 3600;
 var RAD23 = 180 / Math.PI;
 
+// src/lib/time/calendar-choice.ts
+var CALENDAR_CHOICE_BEFORE = "1924-01-01";
+
+// src/lib/time/civil-date.ts
+function parseCivilDate(value) {
+  if (typeof value !== "string" || value.length !== 10) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1) return null;
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  return day <= days ? { year, month, day } : null;
+}
+
 // src/lib/compute-api/errors.ts
 var ComputeApiError = class extends Error {
   status;
@@ -5255,7 +5272,8 @@ async function resolveLocal(module, input, longitude2) {
     localMeanTime: resolved.localMeanTime ? { ...resolved.localMeanTime } : null,
     zoneHistory: pinned ? "pinned" : "runtime",
     zoneUncertain: early && !pinned && !isFixedOffsetZone(input.zone),
-    gapShiftMinutes
+    gapShiftMinutes,
+    intlOffsetMinutes: pinned ? resolved.intlOffsetMinutes : null
   };
 }
 function runtimeTzdbVersion() {
@@ -5351,21 +5369,8 @@ function successBody(endpoint, result, receipt) {
   };
 }
 
-// src/lib/time/civil-date.ts
-function parseCivilDate(value) {
-  if (typeof value !== "string" || value.length !== 10) return null;
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  if (month < 1 || month > 12 || day < 1) return null;
-  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-  const days = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
-  return day <= days ? { year, month, day } : null;
-}
-
 // src/lib/compute-api/validate.ts
+var CALENDARS = Object.freeze(["gregorian", "julian"]);
 var TEXT = Object.freeze({
   body: "The body must be a JSON object.",
   object: "Must be a JSON object.",
@@ -5380,6 +5385,9 @@ var TEXT = Object.freeze({
   instantOffset: "The offset must be from -14:00 to +14:00.",
   instantRange: `Must fall from ${EPOCH.from} to ${EPOCH.to}.`,
   date: `Must be a real date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31.`,
+  julianDate: `With calendar julian, must be a real Julian calendar date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to the day before ${CALENDAR_CHOICE_BEFORE}.`,
+  calendar: `Must be one of: ${CALENDARS.join(", ")}.`,
+  country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",
@@ -5418,6 +5426,8 @@ var VALIDATION_POINTERS = Object.freeze([
   "/local/zone",
   "/latitude",
   "/longitude",
+  "/calendar",
+  "/country",
   "/houseSystem",
   "/instants",
   "/bodies",
@@ -6571,7 +6581,7 @@ PT|Portugal|-|1582-10-15|t18|
 RU|Russia|Soviet Russia|1918-02-14|t|Grotefend 1891, 1898: still Julian. Duchy of Prussia, now partly Kaliningrad, 1612-09-02 (Grotefend 1898: 1612-09-01).
 SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates are one day ahead of the Julian (Grotefend 1898).`;
     var SOURCE_KEYS = { t: "tzdb", 1: "grotefend-1891", 8: "grotefend-1898" };
-    var GREGORIAN_ADOPTION = /* @__PURE__ */ Object.freeze(
+    var GREGORIAN_ADOPTION2 = /* @__PURE__ */ Object.freeze(
       /* @__PURE__ */ ROWS.split("\n").map((line) => {
         const [code, country, region, firstGregorian, sources, note] = line.split("|");
         const day = julianDayNumber2(parseCalendarDate2(firstGregorian, "gregorian"), "gregorian");
@@ -6586,11 +6596,11 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
         });
       })
     );
-    function gregorianAdoption(country) {
-      return GREGORIAN_ADOPTION.find((row) => row.code === country || row.country === country);
+    function gregorianAdoption2(country) {
+      return GREGORIAN_ADOPTION2.find((row) => row.code === country || row.country === country);
     }
     function noteFor(gregorianDate, calendar, country) {
-      const adoption = gregorianAdoption(country);
+      const adoption = gregorianAdoption2(country);
       if (!adoption) return null;
       const julian = calendar === "julian";
       if (gregorianDate.length > 10 || gregorianDate >= adoption.firstGregorian) return julian ? { kind: "new-style", adoption } : null;

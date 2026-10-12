@@ -2896,11 +2896,11 @@ function CalcVsopPosVel(model, tt) {
   return new body_state_t(tt, equ_pos, equ_vel);
 }
 function AdjustBarycenter(ssb, time, body, pmass) {
-  const shift2 = pmass / (pmass + SUN_GM);
+  const shift3 = pmass / (pmass + SUN_GM);
   const planet = CalcVsop(vsop[body], time);
-  ssb.x += shift2 * planet.x;
-  ssb.y += shift2 * planet.y;
-  ssb.z += shift2 * planet.z;
+  ssb.x += shift3 * planet.x;
+  ssb.y += shift3 * planet.y;
+  ssb.z += shift3 * planet.z;
 }
 function CalcSolarSystemBarycenter(time) {
   const ssb = new Vector(0, 0, 0, time);
@@ -3032,10 +3032,10 @@ function BodyStateFromTable(entry) {
   return new body_state_t(tt, new TerseVector(rx, ry, rz), new TerseVector(vx, vy, vz));
 }
 function AdjustBarycenterPosVel(ssb, tt, body, planet_gm) {
-  const shift2 = planet_gm / (planet_gm + SUN_GM);
+  const shift3 = planet_gm / (planet_gm + SUN_GM);
   const planet = CalcVsopPosVel(vsop[body], tt);
-  ssb.r.incr(planet.r.mul(shift2));
-  ssb.v.incr(planet.v.mul(shift2));
+  ssb.r.incr(planet.r.mul(shift3));
+  ssb.v.incr(planet.v.mul(shift3));
   return planet;
 }
 function AccelerationIncrement(small_pos, gm, major_pos) {
@@ -4670,22 +4670,22 @@ function validateLocal(value, receipt, timeBasis22) {
   const zone = text(local.timeZone, 128);
   if (!/^[A-Za-z][A-Za-z0-9._+-]*(?:\/[A-Za-z0-9._+-]+){0,3}$/.test(zone)) fail("invalid_context");
   const offset = number(local.offsetMinutes, -1440, 1440);
-  const shift2 = number(local.gapShiftMinutes, 0, 2880);
-  const offsetMs = offset * 6e4, shiftMs = shift2 * 6e4;
+  const shift3 = number(local.gapShiftMinutes, 0, 2880);
+  const offsetMs = offset * 6e4, shiftMs = shift3 * 6e4;
   if (Math.abs(offsetMs - Math.round(offsetMs)) > 1e-6 || Math.abs(shiftMs - Math.round(shiftMs)) > 1e-6)
     fail("invalid_context");
   if (wall + Math.round(shiftMs) - Math.round(offsetMs) !== dateFrom(receipt.instant, "instant").getTime())
     fail("invalid_context");
   fixedFields(local.policy, { fold: "earlier", gap: "shift-forward" });
-  if (receipt.inputFlags.includes("dst-gap") !== shift2 > 0) fail("invalid_context");
+  if (receipt.inputFlags.includes("dst-gap") !== shift3 > 0) fail("invalid_context");
   if (receipt.reference === "local-noon" && time !== "12:00") fail("invalid_context");
   if (!timeBasis22) {
     if (receipt.inputFlags.includes("lmt") !== Math.abs(offset % 1) > 1e-9) fail("invalid_context");
     return;
   }
-  validateLocalRecord(local, receipt, date, offset, shift2);
+  validateLocalRecord(local, receipt, date, offset, shift3);
 }
-function validateLocalRecord(local, receipt, date, offset, shift2) {
+function validateLocalRecord(local, receipt, date, offset, shift3) {
   const has2 = (key) => Object.hasOwn(local, key);
   const calendar = has2("calendar") ? choice(local.calendar, ["gregorian", "julian"]) : "gregorian";
   const written = has2("writtenDate") ? text(local.writtenDate, 10) : null;
@@ -4713,7 +4713,7 @@ function validateLocalRecord(local, receipt, date, offset, shift2) {
     const near = (a, b) => Math.abs(a - b) <= 1e-9;
     if (
       // A change of half a day or more moves the date: a move across the date line.
-      choice(transition.cause, ["dst", "legal-change", "date-line"]) === "date-line" !== Math.abs(after - before2) >= 720 || !(gap ? after > before2 && near(after - before2, shift2) && near(offset, after) && at <= instant : fold ? after < before2 && near(offset, before2) && at > instant : near(offset, after) && at <= instant)
+      choice(transition.cause, ["dst", "legal-change", "date-line"]) === "date-line" !== Math.abs(after - before2) >= 720 || !(gap ? after > before2 && near(after - before2, shift3) && near(offset, after) && at <= instant : fold ? after < before2 && near(offset, before2) && at > instant : near(offset, after) && at <= instant)
     )
       fail("invalid_context");
   }
@@ -5424,6 +5424,208 @@ var DEG32 = Math.PI / 180;
 var ASEC2RAD3 = DEG32 / 3600;
 var RAD23 = 180 / Math.PI;
 
+// src/data/gregorian-adoption.ts
+var GREGORIAN_ADOPTION = [
+  // Transcaucasian Democratic Federative Republic, with Azerbaijan and Georgia.
+  { code: "AM", country: "Armenia", lastJulian: "1918-04-17", firstGregorian: "1918-05-01", sources: ["wikipedia"] },
+  // "Austria and Bohemia", 6 → 17 January 1584 (tzdb). The English list gives
+  // Salzburg February 1583 and the other Austrian lands October–December 1583;
+  // this is the later date.
+  { code: "AT", country: "Austria", lastJulian: "1584-01-06", firstGregorian: "1584-01-17", sources: ["tzdb", "wikipedia"] },
+  { code: "AZ", country: "Azerbaijan", lastJulian: "1918-04-17", firstGregorian: "1918-05-01", sources: ["wikipedia"] },
+  // The prince-bishopric of Liège, the last of the Belgian lands; Flanders,
+  // Brabant and the Spanish Netherlands changed in December 1582.
+  { code: "BE", country: "Belgium", lastJulian: "1583-02-10", firstGregorian: "1583-02-21", sources: ["tzdb", "wikipedia"] },
+  { code: "BG", country: "Bulgaria", lastJulian: "1916-03-31", firstGregorian: "1916-04-14", sources: ["wikipedia"] },
+  // The Soviet decree. The Grodno governorate, under German occupation,
+  // changed on 5 September 1915.
+  { code: "BY", country: "Belarus", lastJulian: "1918-01-31", firstGregorian: "1918-02-14", sources: ["wikipedia"] },
+  // The British colonies. New France kept France's date, 20 December 1582.
+  { code: "CA", country: "Canada", lastJulian: "1752-09-02", firstGregorian: "1752-09-14", sources: ["wikipedia"] },
+  // Appenzell Ausserrhoden, the last canton. The Catholic cantons changed in
+  // 1584 and the main Protestant ones on 12 January 1701; some Protestant
+  // communes of Graubünden held out until 1783–1812 (in Schiers and Grüsch,
+  // 25 December 1811 was followed by 7 January 1812).
+  { code: "CH", country: "Switzerland", lastJulian: "1798-12-13", firstGregorian: "1798-12-25", sources: ["wikipedia"] },
+  // The Chinese calendar before; the change was not complete until 1929, and
+  // the Chinese calendar stayed in wide use.
+  { code: "CN", country: "China", firstGregorian: "1912-01-01", sources: ["wikipedia"] },
+  // Moravia, the last region; Bohemia and Silesia changed on 17 January 1584.
+  { code: "CZ", country: "Czechia", lastJulian: "1584-10-15", firstGregorian: "1584-10-26", sources: ["wikipedia"] },
+  // The Protestant states; the Catholic states changed in 1583–1585.
+  { code: "DE", country: "Germany", lastJulian: "1700-02-18", firstGregorian: "1700-03-01", sources: ["tzdb", "wikipedia"] },
+  { code: "DK", country: "Denmark", lastJulian: "1700-02-18", firstGregorian: "1700-03-01", sources: ["tzdb", "wikipedia"] },
+  { code: "EE", country: "Estonia", lastJulian: "1918-02-15", firstGregorian: "1918-03-01", sources: ["wikipedia"] },
+  // The Coptic calendar (for fiscal purposes) and the Islamic calendar before.
+  { code: "EG", country: "Egypt", firstGregorian: "1875-09-11", sources: ["wikipedia"] },
+  { code: "ES", country: "Spain", lastJulian: "1582-10-04", firstGregorian: "1582-10-15", sources: ["tzdb", "wikipedia"] },
+  // With Sweden. The Grand Duchy kept the Gregorian calendar under Russian
+  // rule, 1809–1917 (fi); the list tzdb quotes counts Finland with Russia.
+  { code: "FI", country: "Finland", lastJulian: "1753-02-17", firstGregorian: "1753-03-01", sources: ["wikipedia", "fi"] },
+  // Protestant Alsace changed in 1682 and Lorraine in 1760. The Republican
+  // calendar was in civil use from 1793 to 1805; the forms do not convert it.
+  { code: "FR", country: "France", lastJulian: "1582-12-09", firstGregorian: "1582-12-20", sources: ["tzdb", "wikipedia"] },
+  { code: "GB", country: "United Kingdom", lastJulian: "1752-09-02", firstGregorian: "1752-09-14", sources: ["tzdb", "wikipedia"] },
+  { code: "GE", country: "Georgia", lastJulian: "1918-04-17", firstGregorian: "1918-05-01", sources: ["wikipedia"] },
+  // Mount Athos keeps the Julian calendar.
+  { code: "GR", country: "Greece", lastJulian: "1923-02-15", firstGregorian: "1923-03-01", sources: ["wikipedia"] },
+  // The legal change; tzdb dates its first use to 1584.
+  { code: "HU", country: "Hungary", lastJulian: "1587-10-21", firstGregorian: "1587-11-01", sources: ["tzdb", "wikipedia"] },
+  // The same act as Great Britain.
+  { code: "IE", country: "Ireland", lastJulian: "1752-09-02", firstGregorian: "1752-09-14", sources: ["wikipedia"] },
+  // Most states; Tyrol and Brixen changed in 1583.
+  { code: "IT", country: "Italy", lastJulian: "1582-10-04", firstGregorian: "1582-10-15", sources: ["tzdb", "wikipedia"] },
+  // The Japanese lunisolar calendar before.
+  { code: "JP", country: "Japan", firstGregorian: "1873-01-01", sources: ["wikipedia"] },
+  // The Korean calendar before, for both Koreas.
+  { code: "KP", country: "North Korea", firstGregorian: "1896-01-01", sources: ["wikipedia"] },
+  { code: "KR", country: "South Korea", firstGregorian: "1896-01-01", sources: ["wikipedia"] },
+  // The Kovno and Vilna governorates under German administration (its
+  // ordinance of 21 May 1915); Lithuania had kept the Julian calendar since
+  // Russian rule began (1800).
+  { code: "LT", country: "Lithuania", lastJulian: "1915-05-11", firstGregorian: "1915-05-25", sources: ["wikipedia"] },
+  { code: "LU", country: "Luxembourg", lastJulian: "1582-12-20", firstGregorian: "1582-12-31", sources: ["wikipedia"] },
+  // Vidzeme and Latgale, by the Iskolat's decree (lv). German-occupied
+  // Courland changed in 1915 and Riga in 1917.
+  { code: "LV", country: "Latvia", lastJulian: "1918-01-31", firstGregorian: "1918-02-14", sources: ["lv", "wikipedia"] },
+  // The Kingdom of Serbs, Croats and Slovenes, with North Macedonia and
+  // Serbia; Vojvodina, Hungarian until 1918, used the Gregorian calendar.
+  { code: "ME", country: "Montenegro", lastJulian: "1919-01-14", firstGregorian: "1919-01-28", sources: ["wikipedia"] },
+  { code: "MK", country: "North Macedonia", lastJulian: "1919-01-14", firstGregorian: "1919-01-28", sources: ["wikipedia"] },
+  // Drenthe, the last province. Holland and Zeeland changed in 1582–1583,
+  // the other provinces in 1700–1701.
+  { code: "NL", country: "The Netherlands", lastJulian: "1701-04-30", firstGregorian: "1701-05-12", sources: ["wikipedia"] },
+  { code: "NO", country: "Norway", lastJulian: "1700-02-18", firstGregorian: "1700-03-01", sources: ["tzdb", "wikipedia"] },
+  // Silesia changed in 1584 and the Brandenburg lands in 1700. Records of
+  // the Russian period often give both dates.
+  { code: "PL", country: "Poland", lastJulian: "1582-10-04", firstGregorian: "1582-10-15", sources: ["tzdb", "wikipedia"] },
+  { code: "PT", country: "Portugal", lastJulian: "1582-10-04", firstGregorian: "1582-10-15", sources: ["tzdb", "wikipedia"] },
+  // Transylvania, Banat and Bukovina, part of Austria-Hungary until 1918,
+  // used the Gregorian calendar.
+  { code: "RO", country: "Romania", lastJulian: "1919-03-31", firstGregorian: "1919-04-14", sources: ["wikipedia"] },
+  { code: "RS", country: "Serbia", lastJulian: "1919-01-14", firstGregorian: "1919-01-28", sources: ["wikipedia"] },
+  { code: "RU", country: "Russia", lastJulian: "1918-01-31", firstGregorian: "1918-02-14", sources: ["tzdb", "wikipedia"] },
+  // After the Swedish calendar of 1700–1712.
+  { code: "SE", country: "Sweden", lastJulian: "1753-02-17", firstGregorian: "1753-03-01", sources: ["tzdb", "wikipedia"] },
+  // The Rumi calendar kept Julian days and months until then, and its own
+  // year count until 1926, so a date given with its Common Era year is Old Style.
+  { code: "TR", country: "Turkey", lastJulian: "1917-02-15", firstGregorian: "1917-03-01", sources: ["wikipedia"] },
+  // The Ukrainian People's Republic. Areas under Soviet control followed
+  // Russia on 14 February; Galicia and Bukovina, Austrian until 1918, used the
+  // Gregorian calendar.
+  { code: "UA", country: "Ukraine", lastJulian: "1918-02-15", firstGregorian: "1918-03-01", sources: ["wikipedia"] },
+  // The British colonies. Alaska, Russian until 1867, kept the Julian
+  // calendar until 18 October 1867; the French and Spanish lands had the
+  // Gregorian from 1582.
+  { code: "US", country: "United States", lastJulian: "1752-09-02", firstGregorian: "1752-09-14", sources: ["wikipedia"] }
+];
+function gregorianAdoption(country) {
+  return country ? GREGORIAN_ADOPTION.find((row) => row.country === country) : void 0;
+}
+
+// src/lib/time/calendar.ts
+var julianLeap2 = (year) => year % 4 === 0;
+function parse(value, leap) {
+  if (typeof value !== "string" || value.length !== 10) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1) return null;
+  const days = month === 2 ? leap(year) ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  return day <= days ? { year, month, day } : null;
+}
+function parseJulianDate(value) {
+  return parse(value, julianLeap2);
+}
+function shift2(date) {
+  const a = Math.floor((14 - date.month) / 12);
+  return { y: date.year + 4800 - a, m: date.month + 12 * a - 3 };
+}
+function dayNumberFromJulian(date) {
+  const { y, m } = shift2(date);
+  return date.day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - 32083;
+}
+function fromDayNumber2(c, centuries) {
+  const d = Math.floor((4 * c + 3) / 1461);
+  const e = c - Math.floor(1461 * d / 4);
+  const m = Math.floor((5 * e + 2) / 153);
+  return {
+    day: e - Math.floor((153 * m + 2) / 5) + 1,
+    month: m + 3 - 12 * Math.floor(m / 10),
+    year: 100 * centuries + d - 4800 + Math.floor(m / 10)
+  };
+}
+function gregorianFromDayNumber(jdn) {
+  const a = jdn + 32044;
+  const b = Math.floor((4 * a + 3) / 146097);
+  return fromDayNumber2(a - Math.floor(146097 * b / 4), b);
+}
+function format2(date) {
+  if (date.year < 0 || date.year > 9999) return null;
+  return `${String(date.year).padStart(4, "0")}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+}
+function julianToGregorian2(value) {
+  const date = parseJulianDate(value);
+  return date ? format2(gregorianFromDayNumber(dayNumberFromJulian(date))) : null;
+}
+
+// src/lib/time/calendar-choice.ts
+var CALENDAR_CHOICE_BEFORE = "1924-01-01";
+
+// src/lib/time/civil-date.ts
+function parseCivilDate(value) {
+  if (typeof value !== "string" || value.length !== 10) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1) return null;
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  return day <= days ? { year, month, day } : null;
+}
+function parseCivilTime(value) {
+  if (typeof value !== "string" || value.length !== 5) return null;
+  const match = /^(\d{2}):(\d{2})$/.exec(value);
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  return hour <= 23 && minute <= 59 ? { hour, minute } : null;
+}
+
+// src/lib/time/birth-calendar.ts
+var BIRTH_DATE_FIRST = "1800-01-01";
+var BIRTH_DATE_LAST = "2199-12-31";
+var COMPLETE = /^\d{4}-\d{2}-\d{2}$/;
+function writtenDate(value) {
+  const text2 = value.trim();
+  const parts = /^(\d{4})[-./ ](\d{1,2})[-./ ](\d{1,2})$/.exec(text2) ?? /^(\d{4})(\d{2})(\d{2})$/.exec(text2);
+  return parts ? `${parts[1]}-${parts[2].padStart(2, "0")}-${parts[3].padStart(2, "0")}` : text2;
+}
+function readBirthDate(value, calendar) {
+  const written = writtenDate(value);
+  if (!COMPLETE.test(written)) return { problem: "format" };
+  if (written < BIRTH_DATE_FIRST || written > BIRTH_DATE_LAST) return { problem: "range" };
+  if (calendar === "gregorian" || written >= CALENDAR_CHOICE_BEFORE) {
+    return parseCivilDate(written) ? { date: written } : { problem: "gregorian" };
+  }
+  const date = julianToGregorian2(written);
+  return date ? { date, oldStyle: written } : { problem: "julian" };
+}
+function adoptionNote(value, calendar, country) {
+  const adoption = gregorianAdoption(country);
+  if (!adoption || writtenDate(value) >= CALENDAR_CHOICE_BEFORE) return null;
+  const reading = readBirthDate(value, calendar);
+  if ("problem" in reading) return null;
+  const julian = calendar === "julian";
+  if (reading.date >= adoption.firstGregorian) return julian ? { kind: "new-style", adoption } : null;
+  if (!adoption.lastJulian) return { kind: "other-calendar", adoption };
+  return julian ? null : { kind: "old-style", adoption };
+}
+
 // src/lib/compute-api/errors.ts
 var ComputeApiError = class extends Error {
   status;
@@ -5539,8 +5741,14 @@ async function resolveLocal(module, input, longitude2) {
     localMeanTime: resolved.localMeanTime ? { ...resolved.localMeanTime } : null,
     zoneHistory: pinned ? "pinned" : "runtime",
     zoneUncertain: early && !pinned && !isFixedOffsetZone(input.zone),
-    gapShiftMinutes
+    gapShiftMinutes,
+    intlOffsetMinutes: pinned ? resolved.intlOffsetMinutes : null
   };
+}
+function zoneHistoriesDisagree(local) {
+  if (local.intlOffsetMinutes === null) return false;
+  const zoneOffset = local.localMeanTime ? local.localMeanTime.zoneOffsetMinutes : local.offsetMinutes;
+  return Math.abs(local.intlOffsetMinutes - zoneOffset) > 1e-9;
 }
 function runtimeTzdbVersion() {
   const version2 = typeof process === "object" ? process.versions?.tz : void 0;
@@ -5635,29 +5843,8 @@ function successBody(endpoint, result, receipt) {
   };
 }
 
-// src/lib/time/civil-date.ts
-function parseCivilDate(value) {
-  if (typeof value !== "string" || value.length !== 10) return null;
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  if (month < 1 || month > 12 || day < 1) return null;
-  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-  const days = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
-  return day <= days ? { year, month, day } : null;
-}
-function parseCivilTime(value) {
-  if (typeof value !== "string" || value.length !== 5) return null;
-  const match = /^(\d{2}):(\d{2})$/.exec(value);
-  if (!match) return null;
-  const hour = Number(match[1]);
-  const minute = Number(match[2]);
-  return hour <= 23 && minute <= 59 ? { hour, minute } : null;
-}
-
 // src/lib/compute-api/validate.ts
+var CALENDARS = Object.freeze(["gregorian", "julian"]);
 var TEXT = Object.freeze({
   body: "The body must be a JSON object.",
   object: "Must be a JSON object.",
@@ -5672,6 +5859,9 @@ var TEXT = Object.freeze({
   instantOffset: "The offset must be from -14:00 to +14:00.",
   instantRange: `Must fall from ${EPOCH.from} to ${EPOCH.to}.`,
   date: `Must be a real date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31.`,
+  julianDate: `With calendar julian, must be a real Julian calendar date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to the day before ${CALENDAR_CHOICE_BEFORE}.`,
+  calendar: `Must be one of: ${CALENDARS.join(", ")}.`,
+  country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",
@@ -5710,6 +5900,8 @@ var VALIDATION_POINTERS = Object.freeze([
   "/local/zone",
   "/latitude",
   "/longitude",
+  "/calendar",
+  "/country",
   "/houseSystem",
   "/instants",
   "/bodies",
@@ -5793,6 +5985,12 @@ function dateAt(value, pointer) {
   const text2 = stringAt(value, pointer);
   if (!parseCivilDate(text2) || text2 < FIRST_DATE || text2 > LAST_DATE) throw invalidRequest(pointer, TEXT.date);
   return text2;
+}
+function julianDateAt(value, pointer) {
+  const text2 = stringAt(value, pointer);
+  const gregorian = text2 >= FIRST_DATE && text2 < CALENDAR_CHOICE_BEFORE ? julianToGregorian2(text2) : null;
+  if (!gregorian) throw invalidRequest(pointer, TEXT.julianDate);
+  return gregorian;
 }
 function timeAt2(value, pointer) {
   const text2 = stringAt(value, pointer);
@@ -5896,12 +6094,24 @@ function parseEventsRequest(value) {
     kinds: EVENT_KINDS.filter((kind) => kinds.includes(kind))
   };
 }
+var COUNTRY_CODE = /^[A-Z]{2}$/u;
 async function parseTimeRequest(value, zones) {
   const object = bodyObject(value);
-  onlyFields(object, ["local", "longitude"], "");
-  const local = await localAt(required(object, "local", ""), "/local", zones);
+  onlyFields(object, ["local", "longitude", "calendar", "country"], "");
+  const calendar = has(object, "calendar") ? oneOf(object.calendar, "/calendar", CALENDARS, TEXT.calendar) : "gregorian";
+  const localObject = objectAt(required(object, "local", ""), "/local");
+  onlyFields(localObject, ["date", "time", "zone"], "/local");
+  const writtenDate2 = required(localObject, "date", "/local");
+  const date = calendar === "julian" ? julianDateAt(writtenDate2, "/local/date") : dateAt(writtenDate2, "/local/date");
+  const time = timeAt2(required(localObject, "time", "/local"), "/local/time");
+  const zone = await zoneAt(required(localObject, "zone", "/local"), "/local/zone", zones);
   const longitude2 = has(object, "longitude") ? longitudeAt2(object.longitude, "/longitude") : null;
-  return { local, longitude: longitude2 };
+  let country = null;
+  if (has(object, "country")) {
+    if (typeof object.country !== "string" || !COUNTRY_CODE.test(object.country)) throw invalidRequest("/country", TEXT.country);
+    country = object.country;
+  }
+  return { local: { date, time, zone }, longitude: longitude2, calendar, writtenDate: writtenDate2, country };
 }
 async function factDay(object, zones) {
   const date = dateAt(required(object, "date", ""), "/date");
@@ -6245,6 +6455,22 @@ function computeEvents(request) {
   events.sort((a, b) => a.at.localeCompare(b.at) || KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || (BODY_ORDER.get("body" in a ? a.body : "Moon") ?? 0) - (BODY_ORDER.get("body" in b ? b.body : "Moon") ?? 0));
   return successBody("events", { from: iso(from), to: iso(to), events }, computeReceipt("events", { search: budget.facts() }));
 }
+function calendarFacts(request) {
+  const row = request.country === null ? void 0 : GREGORIAN_ADOPTION.find((entry) => entry.code === request.country);
+  const note = row ? adoptionNote(request.writtenDate, request.calendar, row.country) : null;
+  return {
+    calendar: request.calendar,
+    writtenDate: request.writtenDate,
+    date: request.local.date,
+    adoption: row ? {
+      code: row.code,
+      firstGregorian: row.firstGregorian,
+      lastJulian: row.lastJulian ?? null,
+      sources: [...row.sources]
+    } : null,
+    calendarNote: note ? note.kind : null
+  };
+}
 async function computeTime(request, dependencies) {
   const local = await resolveLocal(dependencies.localTime, request.local, request.longitude);
   const { deltaT: deltaT2, timeScale, ttDays } = basisOf(local.utc);
@@ -6253,7 +6479,9 @@ async function computeTime(request, dependencies) {
   return successBody("time", {
     utc: iso(local.utc),
     ...summary,
-    flags: [...summary.flags, ...spanFlags(local.utc)],
+    flags: [...summary.flags, ...zoneHistoriesDisagree(local) ? ["zone-history-disputed"] : [], ...spanFlags(local.utc)],
+    intlOffsetMinutes: local.intlOffsetMinutes,
+    ...calendarFacts(request),
     tt: iso(tt).slice(0, -1),
     deltaT: deltaT2,
     timeScale

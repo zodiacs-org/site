@@ -1117,10 +1117,18 @@
         "result": {
           "utc": "1947-07-01T11:00:00.000Z",
           "offsetMinutes": 60,
-          "flags": [],
+          "flags": [
+            "zone-history-disputed"
+          ],
           "localMeanTime": null,
           "zoneHistory": "pinned",
           "zoneUncertain": false,
+          "intlOffsetMinutes": 120,
+          "calendar": "gregorian",
+          "writtenDate": "1947-07-01",
+          "date": "1947-07-01",
+          "adoption": null,
+          "calendarNote": null,
           "tt": "1947-07-01T11:00:28.008",
           "deltaT": {
             "seconds": 28.008138261464772,
@@ -1226,6 +1234,12 @@
           "localMeanTime": null,
           "zoneHistory": "runtime",
           "zoneUncertain": false,
+          "intlOffsetMinutes": null,
+          "calendar": "gregorian",
+          "writtenDate": "2026-03-29",
+          "date": "2026-03-29",
+          "adoption": null,
+          "calendarNote": null,
           "tt": "2026-03-29T01:31:09.184",
           "deltaT": {
             "seconds": 69.13070825195312,
@@ -1247,6 +1261,123 @@
               "taiMinusUtc": 37,
               "listed": true
             }
+          }
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "time",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "1.0.0",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ],
+          "timeResolution": {
+            "resolver": "@zodiacs/engine/geo",
+            "policy": {
+              "fold": "earlier",
+              "gap": "shift-forward"
+            },
+            "pinnedTzdb": {
+              "release": "2025c",
+              "sha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
+              "dataForm": "main+backzone",
+              "appliesBefore": "1970-01-02"
+            },
+            "runtimeTzdb": "2026c"
+          }
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "1.0.0",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/compute/#time",
+          "receipt": "sha256:153c99f0ad80b236b20421b542441b4eb81b317968c4646e15da6ac1562913d7",
+          "engine": "@zodiacs/engine",
+          "version": "1.0.0"
+        }
+      },
+      "julian": {
+        "schema": "zodiacs.compute-api.time.v1",
+        "result": {
+          "utc": "1917-11-07T08:28:41.000Z",
+          "offsetMinutes": 211.31666666666666,
+          "flags": [],
+          "localMeanTime": null,
+          "zoneHistory": "pinned",
+          "zoneUncertain": false,
+          "intlOffsetMinutes": 211.31666666666666,
+          "calendar": "julian",
+          "writtenDate": "1917-10-25",
+          "date": "1917-11-07",
+          "adoption": {
+            "code": "RU",
+            "firstGregorian": "1918-02-14",
+            "lastJulian": "1918-01-31",
+            "sources": [
+              "tzdb",
+              "wikipedia"
+            ]
+          },
+          "calendarNote": null,
+          "tt": "1917-11-07T08:29:01.142",
+          "deltaT": {
+            "seconds": 20.142440181923075,
+            "sigma": 0.46,
+            "model": "zodiacs-deltat/1",
+            "table": "2026-09-24",
+            "tableDigest": "6371988c510a1c6c",
+            "segment": "reconstructed"
+          },
+          "timeScale": {
+            "input": "utc",
+            "basis": "delta-t",
+            "ut1MinusUtc": null,
+            "leapSeconds": null
           }
         },
         "receipt": {

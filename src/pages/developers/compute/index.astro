@@ -52,7 +52,7 @@ const endpoints: Array<[ComputeEndpoint, string]> = [
   ['positions', `Positions and speeds of the bodies you name at up to ${BUDGETS['positions.instants']} instants.`],
   ['houses', 'Angles and house cusps for an instant, a place and a house system.'],
   ['events', `Sign changes, stations and new and full moons in a window of up to ${BUDGETS['events.windowDays']} days.`],
-  ['time', 'A local civil time as UTC and Terrestrial Time, with flags for skipped and repeated clock times.'],
+  ['time', 'A local civil time as UTC and Terrestrial Time, with flags for skipped and repeated clock times, and a date written in the Julian calendar.'],
   ['sky-fact', 'Whether a stated fact about the sky holds on a date or at an instant: true, false or depends.'],
   ['elections', `The stretches of a window of up to ${BUDGETS['elections.windowDays']} days in which up to ${MAX_ELECTION_CONDITIONS} conditions all hold: the Moon's phase or void of course, a body's sign, a planet retrograde, a body in an angular house.`],
 ];
@@ -307,10 +307,12 @@ const jsonLd = [
     <div class="prose">
       <p>
         <code>POST /api/v1/time</code> takes <code>local</code> and, optionally,
-        the place's <code>longitude</code>. It returns the instant in UTC, the
-        offset from UTC in minutes, flags, the local mean time used if any,
-        which zone history was read, whether the zone is uncertain, the instant
-        in Terrestrial Time, and ΔT. It reads the local time with
+        the place's <code>longitude</code>, the <code>calendar</code> its date is
+        written in and its <code>country</code>. It returns the instant in UTC,
+        the offset from UTC in minutes, flags, the local mean time used if any,
+        which zone history was read, whether the zone is uncertain, the date as
+        written and as read, the instant in Terrestrial Time, and ΔT. It reads
+        the local time with
         <code>@zodiacs/engine/geo</code>, the resolver the birth chart
         calculator uses too, built into the function with the histories it
         loads:
@@ -332,6 +334,26 @@ const jsonLd = [
           data cannot get wrong, and a place the release records no local time
           for, such as an Antarctic station before it was staffed, where{' '}
           <code>zoneUncertain</code> is true.</li>
+        <li>Where the release answered, <code>intlOffsetMinutes</code> is the
+          zone's offset at the same instant in the server's own time zone
+          data, tzdb's default build. Before 1970 that build can give another
+          offset, and then the flags include{' '}
+          <code>zone-history-disputed</code>: at noon on 1 July 1947,
+          Stockholm is an hour ahead of UTC in the release and two hours ahead
+          in the default build. A time read on the place's own mean time is
+          compared by the zone's clock.</li>
+        <li>With <code>calendar: "julian"</code> the date is read in the Julian
+          calendar, the Old Style, as the birth forms read one: from 1800 to
+          the end of 1923. It is converted to the proleptic Gregorian date
+          before the time is read, and the answer gives both.</li>
+        <li>With <code>country</code>, an ISO 3166-1 alpha-2 code, the answer
+          gives when the birth forms' table says that country changed to the
+          Gregorian calendar, and for a date written before 1924 the forms'
+          note: <code>old-style</code> for a date written as Gregorian before
+          that day, <code>new-style</code> for one written as Julian on or
+          after it, and <code>other-calendar</code> where the calendar before
+          was not the Julian, which is not converted. A note is advice and
+          changes nothing.</li>
         <li>Terrestrial Time and ΔT are the engine's for that instant, to the
           millisecond, read as described above. ΔT comes with its one-sigma
           band and the source it came from: the IERS measurements, or the part

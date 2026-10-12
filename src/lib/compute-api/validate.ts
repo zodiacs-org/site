@@ -18,6 +18,8 @@
  */
 import { ASPECT_TYPES, HOUSE_SYSTEMS, type AspectType, type HouseSystem } from '@zodiacs/engine';
 import { parseCivilDate, parseCivilTime } from '../time/civil-date.js';
+import { julianToGregorian } from '../time/calendar.js';
+import { CALENDAR_CHOICE_BEFORE } from '../time/calendar-choice.js';
 import {
   ANGULAR_MAX_ABS_LATITUDE,
   BUDGETS,
@@ -75,9 +77,19 @@ export interface EventsRequest {
   kinds: EventKind[];
 }
 
+/** The calendars a local date may be written in, as the birth forms offer them. */
+export const CALENDARS = Object.freeze(['gregorian', 'julian'] as const);
+export type CalendarName = typeof CALENDARS[number];
+
 export interface TimeRequest {
+  /** Its date is the proleptic Gregorian date the written one names. */
   local: LocalInput;
   longitude: number | null;
+  /** The calendar the request wrote its date in, and that date as written. */
+  calendar: CalendarName;
+  writtenDate: string;
+  /** An ISO 3166-1 alpha-2 code, for the calendar note; null when none was given. */
+  country: string | null;
 }
 
 export interface FactDay {
@@ -131,6 +143,9 @@ const TEXT = Object.freeze({
   instantOffset: 'The offset must be from -14:00 to +14:00.',
   instantRange: `Must fall from ${EPOCH.from} to ${EPOCH.to}.`,
   date: `Must be a real date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31.`,
+  julianDate: `With calendar julian, must be a real Julian calendar date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to the day before ${CALENDAR_CHOICE_BEFORE}.`,
+  calendar: `Must be one of: ${CALENDARS.join(', ')}.`,
+  country: 'Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.',
   time: 'Must be a time written HH:MM, from 00:00 to 23:59.',
   zoneFormat: 'Must be an IANA time zone name, such as Europe/Paris.',
   zoneUnknown: 'Must be a time zone name the server\'s time zone data includes.',
@@ -167,7 +182,7 @@ const TEXT = Object.freeze({
  * request invented.
  */
 export const VALIDATION_POINTERS = Object.freeze([
-  '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude',
+  '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude', '/calendar', '/country',
   '/houseSystem', '/instants', '/bodies', '/from', '/to', '/kinds', '/kind', '/body', '/sign',
   '/phase', '/other', '/aspect', '/instant', '/date', '/zone', '/conditions', '/place', '/place/latitude',
   '/place/longitude', '/place/houseSystem',
@@ -250,6 +265,19 @@ export function dateAt(value: unknown, pointer: string): string {
   const text = stringAt(value, pointer);
   if (!parseCivilDate(text) || text < FIRST_DATE || text > LAST_DATE) throw invalidRequest(pointer, TEXT.date);
   return text;
+}
+
+/**
+ * A Julian (Old Style) date as the birth forms take one: written from the
+ * first accepted year to the end of 1923, after which every country the forms
+ * know kept the Gregorian calendar. Returns the proleptic Gregorian date it
+ * names (src/lib/time/calendar.ts).
+ */
+function julianDateAt(value: unknown, pointer: string): string {
+  const text = stringAt(value, pointer);
+  const gregorian = text >= FIRST_DATE && text < CALENDAR_CHOICE_BEFORE ? julianToGregorian(text) : null;
+  if (!gregorian) throw invalidRequest(pointer, TEXT.julianDate);
+  return gregorian;
 }
 
 function timeAt(value: unknown, pointer: string): string {
@@ -385,12 +413,30 @@ export function parseEventsRequest(value: unknown): EventsRequest {
   };
 }
 
+const COUNTRY_CODE = /^[A-Z]{2}$/u;
+
+/**
+ * time: a local time, whose date may be written in the Julian calendar, as
+ * the birth forms allow before 1924; the place's longitude; and its country,
+ * for the note on when it changed calendar.
+ */
 export async function parseTimeRequest(value: unknown, zones: ZoneNames): Promise<TimeRequest> {
   const object = bodyObject(value);
-  onlyFields(object, ['local', 'longitude'], '');
-  const local = await localAt(required(object, 'local', ''), '/local', zones);
+  onlyFields(object, ['local', 'longitude', 'calendar', 'country'], '');
+  const calendar = has(object, 'calendar') ? oneOf(object.calendar, '/calendar', CALENDARS, TEXT.calendar) : 'gregorian';
+  const localObject = objectAt(required(object, 'local', ''), '/local');
+  onlyFields(localObject, ['date', 'time', 'zone'], '/local');
+  const writtenDate = required(localObject, 'date', '/local');
+  const date = calendar === 'julian' ? julianDateAt(writtenDate, '/local/date') : dateAt(writtenDate, '/local/date');
+  const time = timeAt(required(localObject, 'time', '/local'), '/local/time');
+  const zone = await zoneAt(required(localObject, 'zone', '/local'), '/local/zone', zones);
   const longitude = has(object, 'longitude') ? longitudeAt(object.longitude, '/longitude') : null;
-  return { local, longitude };
+  let country: string | null = null;
+  if (has(object, 'country')) {
+    if (typeof object.country !== 'string' || !COUNTRY_CODE.test(object.country)) throw invalidRequest('/country', TEXT.country);
+    country = object.country;
+  }
+  return { local: { date, time, zone }, longitude, calendar, writtenDate: writtenDate as string, country };
 }
 
 async function factDay(object: JsonObject, zones: ZoneNames): Promise<FactDay> {
