@@ -3,11 +3,17 @@
 ## F-23
 
 The claims ledger did not read the developer docs. It now reads all those the
-site serves or ships, in three parts:
+site serves or ships, in four parts:
 
 - **Shipped READMEs.** These are the READMEs inside the MCP adapter, the
   platform starter and the two plugin archives, and the developer guides'
   prose. They hold 84 sentences: four claims are new and three restated.
+- **Shipped skills.** The plugin archives also ship four `SKILL.md` files,
+  which a host loads as instructions. They hold 16 selected sentences: 11 are
+  instructions, and five state facts, held to `acc.daily-gate`,
+  `priv.chart-studio` and `product.ai-candidate`, restated to give the sky
+  tools' 92-day event window. The developer plugin's skill said 31 days; it
+  now says 92, and plugin 0.3.10 is packed with it.
 - **The precision alpha's README.** It holds 16 sentences: three claims are
   new, and `acc.precision-preview` is restated.
 - **The engine references the site serves.** These are the 1.0.0 API

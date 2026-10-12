@@ -333,6 +333,15 @@ describe('claims ledger', () => {
       texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
     });
     expect(selection.files).toContain('public/sdk/engine/media/NOTICE');
+    controls.push({
+      // The skills the plugin archives ship are read as the READMEs are.
+      path: 'plugins/zodiacs-developer/skills/verify-astrology-output/SKILL.md',
+      inject: (source) => `${source}\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    for (const skill of ['zodiacs-developer/skills/build-with-zodiacs', 'zodiacs-developer/skills/test-astrology-integration', 'zodiacs-developer/skills/verify-astrology-output', 'zodiacs-sky/skills/explore-the-sky']) {
+      expect(selection.files).toContain(`plugins/${skill}/SKILL.md`);
+    }
     const missed = [];
     for (const control of controls) {
       const source = read(control.path);

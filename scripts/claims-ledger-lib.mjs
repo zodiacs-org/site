@@ -134,6 +134,8 @@ export const SCOPE_ADD = Object.freeze([
 export const SCOPE_ADD_TREES = Object.freeze([
   { root: 'public/developers/engine/reference', pattern: /\.(?:html|txt)$/u },
   { root: 'public/sdk', pattern: /(?:\.(?:html|md)|\/NOTICE)$/u },
+  // The skills the plugin archives ship, which a host loads as instructions.
+  { root: 'plugins', pattern: /^plugins\/[^/]+\/skills\/[^/]+\/SKILL\.md$/u },
 ]);
 
 /** In the consumer surface, but not read here, each with its reason. */
@@ -167,6 +169,7 @@ export const TRUST_PATTERNS = Object.freeze([
   /^src\/pages\/developers\//u,
   /^src\/data\/developer-guides\.json$/u,
   /^(?:examples|plugins)\/[^/]+\/README\.md$/u,
+  /^plugins\/[^/]+\/skills\/[^/]+\/SKILL\.md$/u,
   /^src\/mcp\/[^/]+\.ts$/u,
   /^src\/lib\/sky-api\/[^/]+\.ts$/u,
   /^src\/lib\/compute-api\/[^/]+\.ts$/u,
