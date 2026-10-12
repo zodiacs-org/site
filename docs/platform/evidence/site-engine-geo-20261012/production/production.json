@@ -1,0 +1,315 @@
+{
+  "schema": "zodiacs.engine-geo-production.v1",
+  "base": "https://zodiacs.org",
+  "control": false,
+  "expectedCommit": "4f2d6f0383d77f397adce0c66b7c9911b461ea6e",
+  "checkedAt": "2026-10-12T11:48:17.930Z",
+  "alias": {
+    "before": {
+      "deploymentId": "dpl_DZRCVJxtrBBzcex3Wh9NEdq3PiT3",
+      "aliasUpdatedAt": 1791805280615,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "4f2d6f0383d77f397adce0c66b7c9911b461ea6e"
+    },
+    "after": {
+      "deploymentId": "dpl_DZRCVJxtrBBzcex3Wh9NEdq3PiT3",
+      "aliasUpdatedAt": 1791805280615,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "4f2d6f0383d77f397adce0c66b7c9911b461ea6e"
+    }
+  },
+  "ok": false,
+  "checks": [
+    {
+      "deploymentId": "dpl_DZRCVJxtrBBzcex3Wh9NEdq3PiT3",
+      "aliasUpdatedAt": 1791805280615,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "4f2d6f0383d77f397adce0c66b7c9911b461ea6e",
+      "name": "alias names a READY production deployment of the merge",
+      "ok": true
+    },
+    {
+      "histories": 16,
+      "files": 19,
+      "identical": 19,
+      "served": [
+        {
+          "path": "/_astro/chunk-YIITY7Q7.CzXgzkhL.js",
+          "status": 200,
+          "bytes": 16008,
+          "sha256": "d5e3b8d5aa0eeb3d31236f43e677eaba860a5e184b6583f74effb6592e25b255",
+          "localSha256": "d5e3b8d5aa0eeb3d31236f43e677eaba860a5e184b6583f74effb6592e25b255"
+        },
+        {
+          "path": "/_astro/geo.Dsw7uG8X.js",
+          "status": 200,
+          "bytes": 3115,
+          "sha256": "f284de2debcdad3ab8bd99872bafa140d9643df3b11b6fff54a6ec00e93feefc",
+          "localSha256": "f284de2debcdad3ab8bd99872bafa140d9643df3b11b6fff54a6ec00e93feefc"
+        },
+        {
+          "path": "/_astro/localToUtc.CcpfcBvE.js",
+          "status": 200,
+          "bytes": 3595,
+          "sha256": "c432315f82301533f2f546893c5ef337a882780ee5663875da5ec5d86d75d92e",
+          "localSha256": "c432315f82301533f2f546893c5ef337a882780ee5663875da5ec5d86d75d92e"
+        },
+        {
+          "path": "/_astro/tzdb-2025c-00-6GVG6RYL.o1FB3h2V.js",
+          "status": 200,
+          "bytes": 11501,
+          "sha256": "9b373a12c299cabdd763bc2bb8e6ef1c784dd1b410eb87f483fe6b8ac7fb588d",
+          "localSha256": "9b373a12c299cabdd763bc2bb8e6ef1c784dd1b410eb87f483fe6b8ac7fb588d",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-01-CEYMG3LE.D9o2_5X6.js",
+          "status": 200,
+          "bytes": 10783,
+          "sha256": "8c818f579aefa341fee75090b2fdbf48a8df960800a3ff90d1d5745bb5770ef6",
+          "localSha256": "8c818f579aefa341fee75090b2fdbf48a8df960800a3ff90d1d5745bb5770ef6",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-02-NWQJCVUU.Dic7vfKg.js",
+          "status": 200,
+          "bytes": 16623,
+          "sha256": "722bbb56dcf361dfd140f67fb1f05f64d86a98073c10056e8516c817da867eaa",
+          "localSha256": "722bbb56dcf361dfd140f67fb1f05f64d86a98073c10056e8516c817da867eaa",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-03-PLHP6VH4.KKcrqjC9.js",
+          "status": 200,
+          "bytes": 8630,
+          "sha256": "997c27a17fcb6c54bc1daa8833abf5840a4fb8292c77d5a9d5646a6b621ea2e3",
+          "localSha256": "997c27a17fcb6c54bc1daa8833abf5840a4fb8292c77d5a9d5646a6b621ea2e3",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-04-MEKUJA6M.BOTJyefL.js",
+          "status": 200,
+          "bytes": 12008,
+          "sha256": "e6cfde144244b23e6ac3a72dcecbf51dc506e6b97218a7bfba096a5b2220b5c7",
+          "localSha256": "e6cfde144244b23e6ac3a72dcecbf51dc506e6b97218a7bfba096a5b2220b5c7",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-05-3K5YKZBL.BFC59_WX.js",
+          "status": 200,
+          "bytes": 12561,
+          "sha256": "e092e3a91def00eb69567b47eccbbd6dd2a01d03495f385659fc74d9ae71e388",
+          "localSha256": "e092e3a91def00eb69567b47eccbbd6dd2a01d03495f385659fc74d9ae71e388",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-06-L2VV5XJV.DZBBNSu1.js",
+          "status": 200,
+          "bytes": 10385,
+          "sha256": "56f7dfaa8c238df17b4d82c33cfcb321ff8f154a6c06cf1d595faea55151c405",
+          "localSha256": "56f7dfaa8c238df17b4d82c33cfcb321ff8f154a6c06cf1d595faea55151c405",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-07-H3GLGJGY.D8jvxl_a.js",
+          "status": 200,
+          "bytes": 15444,
+          "sha256": "e99ed43a177021cbcafd90748ee2dd9512963853cc75742d288cb8edff4e65c5",
+          "localSha256": "e99ed43a177021cbcafd90748ee2dd9512963853cc75742d288cb8edff4e65c5",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-08-DA7QQIGD.t__Erz0Q.js",
+          "status": 200,
+          "bytes": 12344,
+          "sha256": "dbac49e12d8d91e71d9b1a043cad1576511132a9eb9fb07d02f6c3aa9144041f",
+          "localSha256": "dbac49e12d8d91e71d9b1a043cad1576511132a9eb9fb07d02f6c3aa9144041f",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-09-MTXIO3QL.Bxb9eIMI.js",
+          "status": 200,
+          "bytes": 10196,
+          "sha256": "f12ff1682e4f31d9ffbcbb0ffdffdae4ae7303ad96e3297e09c5e03033b38cbc",
+          "localSha256": "f12ff1682e4f31d9ffbcbb0ffdffdae4ae7303ad96e3297e09c5e03033b38cbc",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-10-ASL4UW5C.DACi51my.js",
+          "status": 200,
+          "bytes": 9107,
+          "sha256": "e6da7b399711c2305c1f07a3174159edf058d3241d130e9ca6eb193b202627bc",
+          "localSha256": "e6da7b399711c2305c1f07a3174159edf058d3241d130e9ca6eb193b202627bc",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-11-EQEOANYB.taFkXdsx.js",
+          "status": 200,
+          "bytes": 14147,
+          "sha256": "648dc15a67beacd5a6270ee4b2b740783925caef982a40335fb53c203057facb",
+          "localSha256": "648dc15a67beacd5a6270ee4b2b740783925caef982a40335fb53c203057facb",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-12-NKCCXJ5G.o8-oHjPD.js",
+          "status": 200,
+          "bytes": 12141,
+          "sha256": "a9d7fc6c8e4905a28d6ed555d375a9c512ba2fc1c55ff284947309f504d7a8ed",
+          "localSha256": "a9d7fc6c8e4905a28d6ed555d375a9c512ba2fc1c55ff284947309f504d7a8ed",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-13-DYTF3UC7.DOB6pRnd.js",
+          "status": 200,
+          "bytes": 10107,
+          "sha256": "b17dd2878e4d2caaf9cbd372163f2b1cf6c0f1498b3ee4689e835778034d7940",
+          "localSha256": "b17dd2878e4d2caaf9cbd372163f2b1cf6c0f1498b3ee4689e835778034d7940",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-14-C25H45R5.CqvuAlLS.js",
+          "status": 200,
+          "bytes": 10142,
+          "sha256": "6259771a8fcec3e2c1271cb385519ef8b35fbb4525599b2987b1c525d0c1d2f7",
+          "localSha256": "6259771a8fcec3e2c1271cb385519ef8b35fbb4525599b2987b1c525d0c1d2f7",
+          "engineData": true
+        },
+        {
+          "path": "/_astro/tzdb-2025c-15-7OYYZWRY.BSDLg9kh.js",
+          "status": 200,
+          "bytes": 11441,
+          "sha256": "16811f279c102b0ac7c41e40a25ef17975ffe850aa41b29a81fdf4ff73c33540",
+          "localSha256": "16811f279c102b0ac7c41e40a25ef17975ffe850aa41b29a81fdf4ff73c33540",
+          "engineData": true
+        }
+      ],
+      "name": "the build's 19 resolver files are served byte for byte",
+      "ok": true
+    },
+    {
+      "matching": 16,
+      "name": "each served history file carries the engine package's tzdb 2025c data",
+      "ok": true
+    },
+    {
+      "files": [
+        {
+          "path": "/_astro/birthplace-clock.DxI3Iji3.js",
+          "status": 404
+        },
+        {
+          "path": "/_astro/tz-history-load.BjkYU0PQ.js",
+          "status": 404
+        },
+        {
+          "path": "/_astro/tz-lmt.BOEbpbSi.js",
+          "status": 404
+        }
+      ],
+      "name": "the site's own resolver files of the base build (3) are not served",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "missing": [
+        "It reads the local time with @zodiacs/engine/geo, the resolver the birth chart calculator uses too"
+      ],
+      "name": "/developers/compute/ describes the adoption",
+      "ok": false
+    },
+    {
+      "status": 200,
+      "missing": [],
+      "name": "/developers/mcp/ describes the adoption",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "missing": [],
+      "name": "/llms.txt describes the adoption",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "missing": [],
+      "name": "/llms-full.txt describes the adoption",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "dates": {
+        "/developers/compute/": "2026-10-12",
+        "/developers/mcp/": "2026-10-12"
+      },
+      "name": "the sitemap dates both pages 2026-10-12",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "911c9192455d128db7496b017990c150d925fbe0e5a8f4c35d4d098cdb2c18b1",
+      "name": "MCP manifest is the committed one",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "bytes": 123576,
+      "sha256": "753655312c8dfb49370c4c36065ba0bb0da3b79e3689bdbafbbbfb7062c35c87",
+      "name": "MCP adapter 0.1.0-rc.21 has the manifest digest",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "result": {
+        "utc": "1947-07-01T11:00:00.000Z",
+        "offsetMinutes": 60,
+        "flags": [],
+        "localMeanTime": null,
+        "zoneHistory": "pinned",
+        "zoneUncertain": false,
+        "tt": "1947-07-01T11:00:28.008",
+        "deltaT": {
+          "seconds": 28.008138261464772,
+          "sigma": 0.46,
+          "model": "zodiacs-deltat/1",
+          "table": "2026-09-24",
+          "tableDigest": "6371988c510a1c6c",
+          "segment": "reconstructed"
+        },
+        "timeScale": {
+          "input": "utc",
+          "basis": "delta-t",
+          "ut1MinusUtc": null,
+          "leapSeconds": null
+        }
+      },
+      "timeResolution": {
+        "resolver": "@zodiacs/engine/geo",
+        "policy": {
+          "fold": "earlier",
+          "gap": "shift-forward"
+        },
+        "pinnedTzdb": {
+          "release": "2025c",
+          "sha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
+          "dataForm": "main+backzone",
+          "appliesBefore": "1970-01-02"
+        },
+        "runtimeTzdb": "2026a"
+      },
+      "name": "the compute API reads 1947 Stockholm with @zodiacs/engine/geo, as documented",
+      "ok": true
+    },
+    {
+      "deploymentId": "dpl_DZRCVJxtrBBzcex3Wh9NEdq3PiT3",
+      "aliasUpdatedAt": 1791805280615,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "4f2d6f0383d77f397adce0c66b7c9911b461ea6e",
+      "name": "alias unchanged during the checks",
+      "ok": true
+    }
+  ]
+}
