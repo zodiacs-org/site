@@ -122,23 +122,32 @@ a birthplace longitude ([`parity.json`](parity.json)).
 
 ## Checks
 
-- **Unit tests**, on macOS arm64 with Node 22.22.2:
+At `e0e62cfa`, on macOS arm64 with Node 22.22.2:
+
+- **Unit tests.** The whole suite: 7,045 pass and 5 are skipped. One fails,
+  the Phase 1 capture digest; the Browser Evidence workflow retakes those
+  captures because the library sources changed. The suite includes:
   - the time module's tests, the parity test with the engine over every city
     index zone (300,000-odd cases), and the all-zone round trip on the
     engine's own clock;
-  - the compute API's 170 tests, the AI tools' and the claims tests, and the
-    whole suite.
+  - the fixed-offset test, over every such name of the release;
+  - the compute API's tests, the AI tools' (`ai:test`) and the claims tests.
 
   The tests that held the site's own birthplace clock are the engine's now
   (`src/geo/birthplace-clock.test.ts` in the engine), and were removed here.
-- **Build.** The build passes `check-dist` and every bundle budget. The
-  initial script of `/birth-chart/` is 67.0 KB gzipped, 0.1 KB less than
-  before, because no page loads the engine resolver up front.
+- **Build.**
+  - `astro check` passes, and so do the build, `check-dist` (5,103 HTML files)
+    and every bundle budget.
+  - The initial script of `/birth-chart/` is 66.9 KB gzipped, against 67.1 KB
+    on main, because no page loads the engine resolver up front.
+  - The build ran on 2026-10-12 before that day's daily edition, so its two
+    checks of the edition's age, which read nothing else, were left out.
 - **Bundles.** The compute bundle, the AI bundles and the MCP bundle are what
-  their sources build to (`--check`). The plugin and adapter archives are
-  packed.
-- **Phase 1 captures.** These are retaken by the Browser Evidence workflow:
-  the library sources changed.
+  their sources build to (`--check`). The adapter archive and the plugin
+  package are packed and verified.
+- **Phase 1 captures.** These are retaken by the Browser Evidence workflow.
+- **Private search.** [`history-check.txt`](history-check.txt) records it,
+  counts only: no line this change adds matches a person the base did not.
 
 ## Acceptance
 
