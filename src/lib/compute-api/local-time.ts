@@ -1,28 +1,29 @@
 /**
- * Local civil time through the site's own resolver, src/lib/time/localToUtc.ts:
- * the function the birth chart calculator calls, with its pinned zone history
- * before 1970 and a birthplace's own mean time before standard time. Nothing
- * here converts a time itself.
+ * Local civil time through @zodiacs/engine/geo, the resolver the birth chart
+ * calculator also reads local times with (src/lib/time/localToUtc.ts delegates
+ * to it): before 1970 the history of tzdata 2025c with its backzone file, which
+ * the engine ships; from 1970 the runtime's Intl data; and before standard
+ * time a birthplace's own mean time. Nothing here converts a time itself.
  *
- * The resolver cannot be imported by a Vercel function as it is (extensionless
- * relative imports, and JSON loaded without import attributes), so the function
- * receives it as a dependency: api/_compute/handler.ts passes api/_compute/local-time.mjs,
- * which scripts/build-compute-local-time.mjs bundles from that same source with
- * its tables, and tests pass the source module itself.
+ * The function receives the resolver as a dependency: api/_compute/handler.ts
+ * passes api/_compute/local-time.mjs, which scripts/build-compute-local-time.mjs
+ * bundles from local-time-source.ts with the engine's histories inlined, a
+ * fresh copy for each request; tests pass the source module itself.
  */
-import type { LocalTimeResolution } from '../time/localToUtc.js';
-import { PINNED_TZDB_RELEASE } from './constants.js';
+import type { LocalTimeResolution as EngineLocalTimeResolution, TZDB } from '@zodiacs/engine/geo';
 import type { LocalInput } from './validate.js';
+import { isFixedOffsetZone } from '../time/fixed-zones.js';
 
 export interface LocalTimeModule {
   prepareLocalTime(date: string, timeZone: string): Promise<void>;
-  resolveLocalToUtc(date: string, time: string, timeZone: string, options?: { longitude?: number }): LocalTimeResolution;
-  loadZoneHistory(name: string): Promise<unknown>;
+  resolveLocalToUtc(date: string, time: string, timeZone: string, options?: { longitude?: number }): EngineLocalTimeResolution;
   /** The tzdb spelling of a zone name given in any letter case, or null (src/lib/time/zone-names.ts). */
   canonicalZoneName(name: string): Promise<string | null>;
+  /** The tzdb release the engine ships. */
+  TZDB: typeof TZDB;
 }
 
-export type LocalTimeFlag = LocalTimeResolution['flags'][number];
+export type LocalTimeFlag = EngineLocalTimeResolution['flags'][number];
 
 export interface LocalResolution {
   input: LocalInput;
@@ -33,15 +34,16 @@ export interface LocalResolution {
   /** The birthplace's own mean time, where the resolver used it. */
   localMeanTime: { longitude: number; zoneOffsetMinutes: number } | null;
   /**
-   * Where the offset came from: the pinned tzdb release with backzone, which
-   * the resolver reads before 1970 when it has the birthplace's longitude and
-   * the release has the zone; otherwise the runtime's Intl data.
+   * Where the offset came from: the tzdb release the engine ships, with
+   * backzone, which answers before 1970 for every zone it has a local time
+   * for; otherwise the runtime's Intl data, as for a fixed offset such as UTC.
    */
   zoneHistory: 'pinned' | 'runtime';
   /**
-   * True for a wall time before 1970-01-02 read on the runtime's data. Default
-   * tzdb builds, which Intl carries, merge zones that have agreed since 1970,
-   * so before then they can give another city's clock changes.
+   * True for a wall time before 1970-01-02 read on the runtime's data: a span
+   * the release records as having no local time ("-00"), whose host reading
+   * may give another city's clock. Never for a fixed offset, which cannot
+   * differ.
    */
   zoneUncertain: boolean;
   /** Forward wall-clock shift of a DST gap, in minutes; 0 otherwise. */
@@ -61,7 +63,7 @@ function wallMilliseconds({ date, time }: LocalInput): number {
 }
 
 /**
- * Resolve a validated local time as the calculator does: prepare the tables
+ * Resolve a validated local time as the calculator does: prepare the history
  * the date can need, then read the wall time with the longitude when there is
  * one. Refusals from the resolver (an unsupported zone) surface as RangeError.
  */
@@ -74,7 +76,7 @@ export async function resolveLocal(
   const options = longitude === null ? {} : { longitude };
   const resolved = module.resolveLocalToUtc(input.date, input.time, input.zone, options);
   const early = input.date <= PINNED_HISTORY_LAST_DATE;
-  const pinned = early && longitude !== null && (await module.loadZoneHistory(input.zone)) !== null;
+  const pinned = resolved.zone.source === 'tzdb';
   const gapShiftMinutes = (resolved.utc.getTime() + resolved.offsetMinutes * 60_000 - wallMilliseconds(input)) / 60_000;
   return {
     input,
@@ -83,7 +85,7 @@ export async function resolveLocal(
     flags: [...resolved.flags],
     localMeanTime: resolved.localMeanTime ? { ...resolved.localMeanTime } : null,
     zoneHistory: pinned ? 'pinned' : 'runtime',
-    zoneUncertain: early && !pinned,
+    zoneUncertain: early && !pinned && !isFixedOffsetZone(input.zone),
     gapShiftMinutes,
   };
 }
@@ -95,18 +97,18 @@ export function runtimeTzdbVersion(): string | null {
 }
 
 export interface TimeResolutionFacts {
-  resolver: 'src/lib/time/localToUtc.ts';
+  resolver: '@zodiacs/engine/geo';
   policy: { fold: 'earlier'; gap: 'shift-forward' };
-  pinnedTzdb: { release: string; dataForm: 'main+backzone'; appliesBefore: '1970-01-02'; requires: 'longitude' };
+  pinnedTzdb: { release: string; sha256: string; dataForm: 'main+backzone'; appliesBefore: '1970-01-02' };
   runtimeTzdb: string | null;
 }
 
 /** What a receipt records about how local times were read, without any input value. */
-export function timeResolutionFacts(): TimeResolutionFacts {
+export function timeResolutionFacts(module: Pick<LocalTimeModule, 'TZDB'>): TimeResolutionFacts {
   return {
-    resolver: 'src/lib/time/localToUtc.ts',
+    resolver: '@zodiacs/engine/geo',
     policy: { fold: 'earlier', gap: 'shift-forward' },
-    pinnedTzdb: { release: PINNED_TZDB_RELEASE, dataForm: 'main+backzone', appliesBefore: '1970-01-02', requires: 'longitude' },
+    pinnedTzdb: { release: module.TZDB.version, sha256: module.TZDB.sha256, dataForm: 'main+backzone', appliesBefore: '1970-01-02' },
     runtimeTzdb: runtimeTzdbVersion(),
   };
 }

@@ -280,20 +280,22 @@ longitude, reads a birth from before its place adopted a legal time on the
 birthplace's own local mean
 time: 240 seconds of time per degree of longitude, rounded to the second. The
 time zone data records mean time only for each zone's reference city, so a
-Buffalo birth in 1870 had been read on New York's clock, 19 min 29 s early. The
-date each zone's local mean time ended comes from a table generated from a
-pinned tzdb release, 2025c, with backzone (`src/data/tz-lmt.json`, by
-`scripts/build-tz-lmt.mjs`), and the legal offsets after it come from the same
-release (next paragraph). Checked: the table against that release, by
-`node scripts/build-tz-lmt.mjs --check`, which downloads the release and runs
-in CI's time zone data drift job, while tests pin ten era ends and the
-generator's rules. Tested: every wall minute within 26 hours of sixteen era ends, for
-twenty-one towns east and west of the reference meridian, against a separate
-model of the birthplace clock, with receipts validated; at each of the 338
-era ends (of 518) where the host's history agrees with the table, the zone's
-own meridian giving exactly the zone clock's answer around the change; the date-line days of
-Alaska, Manila, Pohnpei and Apia inside eras; a bound that ignores a longitude
-more than three hours from the zone's mean time. Since rc.15 the site's
+Buffalo birth in 1870 had been read on New York's clock, 19 min 29 s early.
+Since 2026-10-12 the site reads every local time with `@zodiacs/engine/geo`
+and keeps no table of its own. The date each zone's local mean time ended, and
+the legal offsets after it (next paragraph), come from the history the engine
+ships: the pinned tzdb release 2025c with backzone, compiled with zic by the
+engine's `scripts/build-tz-shards.mjs` into 16 files. The site's own tables,
+generated from the same release, gave the same instant, offset and flags on
+every one of 915,420 synthetic wall times with a longitude
+([`../platform/evidence/site-engine-geo-20261012/`](../platform/evidence/site-engine-geo-20261012/)).
+Tested, in the engine: every wall minute within 26 hours of sixteen era ends,
+for twenty-one towns east and west of the reference meridian, against a
+separate model of the birthplace clock, with receipts validated; at more than
+430 of the 518 era ends, the zone's own meridian giving exactly the zone
+clock's answer around the change; the date-line days of Manila, Pohnpei and Apia inside eras;
+a bound that ignores a longitude more than three hours from the zone's mean
+time. Since rc.15 the site's
 `lmt` flag means what the engine's does, that a local mean time read the wall
 time, where it had meant an offset with seconds. On 264,455 wall times from
 1850 to 1969 in 928 towns, the three largest of every zone in the city index,
@@ -304,18 +306,21 @@ Both read the same pinned release, so that agreement is consistency rather
 than corroboration. Not established:
 agreement with other programs' era ends.
 
-Since the same day, the legal offsets of a birthplace time before 1970 come
-from that pinned release too, backzone included (`src/data/tz-history/`, by
-`scripts/build-tz-history.mjs`, which compiles it with zic): the host's data
-is tzdb's default build, which gives a merged place another city's history
+Since 2026-09-23 the legal offsets of a birthplace time before 1970 come from
+that pinned release too, backzone included, and since 2026-10-12 from the
+engine's history of it, with a longitude or without one: the host's data is
+tzdb's default build, which gives a merged place another city's history
 before 1970. For 85 of the 356 zones in the birthplace index the two differ
 at some point in the legal time from 1900 to 1970, 55 of them by an hour or
 more ([`tz-history-2025c/`](../platform/evidence/tz-history-2025c/));
 Stockholm on 1 July 1947 resolves on Sweden's +1:00, not Berlin's +2:00, and
 Amsterdam in 1900 on Amsterdam Mean Time's +0:19:32, not Brussels's +0:00.
-From 1970 on the host decides. Seventeen names keep the host's history
-throughout, none in the birthplace index: sixteen whose pinned history also
-differs after 1970, and Asia/Hanoi, which the host does not know.
+From 1970 on the host decides. Sixteen names, none in the birthplace index,
+read the default build's history before 1970 too, because their backzone
+records differ after 1970; only their local mean time era comes from backzone.
+Where the release records no local time, as at Antarctica/Troll and
+Antarctica/Rothera in every year before 1970, the host's history answers.
+Asia/Hanoi, which the host does not know, is refused.
 
 Not established: which IANA version any given visitor's runtime carries. From
 1970 on the history is the host's, so two machines can legitimately disagree

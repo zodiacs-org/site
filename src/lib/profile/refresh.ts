@@ -18,14 +18,14 @@ import { loadProfile, updateChartSummaries } from './store';
 /**
  * Chart states already checked against the birthplace clock, as opaque
  * fingerprints: the key holds no chart id or birth data of its own. It is
- * named for the tzdb release tz-history-load pins, so a new pin checks every
- * chart again.
+ * named for the tzdb release the resolver reads before 1970 (the engine's
+ * TZDB.version), so a new release checks every chart again.
  */
 const CHECKED_KEY = 'zodiacs.profile.birthplace-checks-2025c.v1';
 
 let running: Promise<number> | null = null;
 
-/** FNV-1a over id, birth input and summary, as tz-history-load hashes zone names. */
+/** FNV-1a over id, birth input and summary. */
 function fingerprint(chart: SavedChart): string {
   const text = JSON.stringify([chart.id, chart.birth, chart.summary]);
   let hash = 0x811c9dc5;

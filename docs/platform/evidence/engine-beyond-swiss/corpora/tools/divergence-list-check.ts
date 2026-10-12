@@ -15,10 +15,21 @@
  *
  *   npx vite-node --script docs/platform/evidence/engine-beyond-swiss/corpora/tools/divergence-list-check.ts \
  *     > docs/platform/evidence/engine-beyond-swiss/corpora/tzdb-divergence-98-check.json
+ *
+ * It checks the site's own resolver, its pinned history and its mean-time
+ * table, which #723 removed when the site moved to @zodiacs/engine/geo. It runs
+ * from a checkout before that change, such as ec0451ff, and
+ * tzdb-divergence-98-check.json is its record. The engine checks the same
+ * list against its own resolver in src/geo/zone-history.test.ts ("the audit's
+ * 98-zone divergence list").
  */
-import { readFileSync } from 'node:fs';
-import { prepareLocalTime, resolveLocalToUtc } from '../../../../../../src/lib/time/localToUtc';
-import { loadZoneHistory } from '../../../../../../src/lib/time/tz-history-load';
+import { existsSync, readFileSync } from 'node:fs';
+
+if (!existsSync('src/lib/time/tz-history-load.ts')) {
+  throw new Error('This check reads the site\'s own resolver, which #723 removed. Run it from a checkout before that change, such as ec0451ff.');
+}
+const { prepareLocalTime, resolveLocalToUtc } = await import('../../../../../../src/lib/time/localToUtc');
+const { loadZoneHistory } = await import('../../../../../../src/lib/time/tz-history-load');
 
 const list = JSON.parse(readFileSync('docs/platform/evidence/engine-beyond-swiss/corpora/tzdb-divergence-98.json', 'utf8'));
 const lmt = JSON.parse(readFileSync('src/data/tz-lmt.json', 'utf8'));

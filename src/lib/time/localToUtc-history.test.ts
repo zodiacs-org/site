@@ -1,13 +1,14 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
-import excluded from '../../data/tz-history/2025c/excluded.json';
-import { prepareLocalTime, resolveLocalToUtc } from './localToUtc';
+import { prepareLocalTime as preparePackageLocalTime, resolveLocalToUtc as packageResolveLocalToUtc } from '@zodiacs/engine/geo';
+import { offsetAt, prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 
 /*
- * Before 1970, a birthplace time takes its zone's legal offsets from the
- * pinned tzdb release with backzone (src/data/tz-history/), not from the
+ * Before 1970, a wall time takes its zone's legal offsets from the history
+ * @zodiacs/engine/geo ships (tzdata 2025c with backzone), not from the
  * browser, whose default build gives many places another city's history.
  * Each case below differs from the host (Node's ICU, tzdb 2025c without
- * backzone), which the "host" column records.
+ * backzone), which the "host" column records. Since the site resolves through
+ * the engine, the shipped history applies with or without a longitude.
  */
 const CASES: [label: string, date: string, zone: string, longitude: number, utc: string, offset: number, host: number][] = [
   // Sweden kept +1:00 all year from 1917 to 1979; Berlin had summer time, and double summer time in 1947.
@@ -34,8 +35,10 @@ describe('the pinned zone history before 1970', () => {
     const resolved = resolveLocalToUtc(date, '12:00', zone, { longitude });
     expect(resolved.utc.toISOString()).toBe(utc);
     expect(resolved.offsetMinutes).toBeCloseTo(offset, 9);
-    // Without a longitude the host's history applies, as before.
-    expect(resolveLocalToUtc(date, '12:00', zone).offsetMinutes).toBeCloseTo(host, 9);
+    // Without a longitude the shipped history applies too: no birthplace here keeps a local mean time.
+    expect(resolveLocalToUtc(date, '12:00', zone)).toEqual(resolved);
+    // The host's default build would have given another offset at that instant.
+    expect(offsetAt(zone, resolved.utc.getTime())).toBeCloseTo(host, 9);
   });
 
   it('changes nothing where the host already has the place\'s history', () => {
@@ -68,8 +71,10 @@ describe('the pinned zone history before 1970', () => {
     expect(resolved.utc.getTime()).toBe(resolveLocalToUtc('1940-01-01', '12:00', 'Indian/Kerguelen').utc.getTime());
   });
 
-  it('leaves a name whose pinned history differs after 1970 to the host', () => {
-    expect(Object.keys(excluded.excluded)).toContain('WET');
+  it('leaves a name whose pinned history differs after 1970 to the default build', async () => {
+    // One of the 16 names the engine ships in the default build's form, so the hand-over at 1970 cannot jump.
+    await preparePackageLocalTime('1950-06-15', 'WET');
+    expect(packageResolveLocalToUtc('1950-06-15', '12:00', 'WET').zone.dataForm).toBe('main');
     const resolved = resolveLocalToUtc('1950-06-15', '12:00', 'WET', { longitude: -9.14 });
     expect(resolved).toEqual(resolveLocalToUtc('1950-06-15', '12:00', 'WET'));
   });
@@ -98,18 +103,16 @@ describe('loading the pinned history', () => {
       .toBe('1969-12-31T21:00:00.000Z');
   });
 
-  it('downloads a zone once, and does not remember a failed download', async () => {
+  it('reports a failed download as a ModuleLoadError, and does not remember it', async () => {
     vi.resetModules();
-    let calls = 0;
     let fail = true;
-    vi.doMock('./tz-history-load', async (importOriginal) => {
-      const original = await importOriginal<typeof import('./tz-history-load')>();
+    vi.doMock('@zodiacs/engine/geo', async (importOriginal) => {
+      const original = await importOriginal<typeof import('@zodiacs/engine/geo')>();
       return {
         ...original,
-        loadZoneHistory: async (name: string) => {
-          calls += 1;
-          if (fail) throw new Error('offline');
-          return original.loadZoneHistory(name);
+        prepareLocalTime: async (date: string, timeZone: string) => {
+          if (fail) throw new TypeError('Failed to fetch dynamically imported module');
+          return original.prepareLocalTime(date, timeZone);
         },
       };
     });
@@ -118,18 +121,16 @@ describe('loading the pinned history', () => {
     await expect(fresh.prepareLocalTime('1947-07-01', 'Europe/Stockholm')).rejects.toBeInstanceOf(ModuleLoadError);
     fail = false;
     await fresh.prepareLocalTime('1947-07-01', 'Europe/Stockholm');
-    await fresh.prepareLocalTime('1930-01-01', 'Europe/Stockholm');
-    expect(calls).toBe(2);
     expect(fresh.resolveLocalToUtc('1947-07-01', '12:00', 'Europe/Stockholm', { longitude: 18.07 }).offsetMinutes).toBe(60);
-    vi.doUnmock('./tz-history-load');
+    vi.doUnmock('@zodiacs/engine/geo');
     vi.resetModules();
   });
 
   it('raises no unhandled rejection when a caller stops waiting for a failed download', async () => {
     vi.resetModules();
-    vi.doMock('./tz-history-load', async (importOriginal) => ({
-      ...await importOriginal<typeof import('./tz-history-load')>(),
-      loadZoneHistory: async () => { throw new Error('offline'); },
+    vi.doMock('@zodiacs/engine/geo', async (importOriginal) => ({
+      ...await importOriginal<typeof import('@zodiacs/engine/geo')>(),
+      prepareLocalTime: async () => { throw new TypeError('Failed to fetch dynamically imported module'); },
     }));
     const unhandled: unknown[] = [];
     const listener = (reason: unknown) => { unhandled.push(reason); };
@@ -144,7 +145,7 @@ describe('loading the pinned history', () => {
       await expect(fresh.prepareLocalTime('1947-07-01', 'Europe/Oslo')).rejects.toThrow();
     } finally {
       process.off('unhandledRejection', listener);
-      vi.doUnmock('./tz-history-load');
+      vi.doUnmock('@zodiacs/engine/geo');
       vi.resetModules();
     }
   });

@@ -30,6 +30,17 @@ describe('Chart Studio local-time entry', () => {
     expect(shifted.local).toBeUndefined();
     expect(initialWindow(converted.input).start).toBe('1907-07-06T14:51');
   });
+  it.each([
+    ['Europe/London', false],
+    // A fixed offset reads the browser's data, which cannot differ from tzdb's.
+    ['UTC', false],
+    ['Etc/GMT+5', false],
+    // No local time is recorded at Troll before it was staffed in 2005.
+    ['Antarctica/Troll', true],
+  ])('marks the zone uncertain in 1950 only where the release records no local time: %s', async (zone, uncertain) => {
+    const converted = await localStudioInput({ date: '1950-06-01', time: '12:00', zone, latitude: '51.5', longitude: '0' }, 'whole');
+    expect(converted.zoneUncertain).toBe(uncertain);
+  });
   it.each([{ date: '2024-02-30' }, { time: '24:00' }, { zone: '+02:00' }, { longitude: '' }, { latitude: '90' }, { date: '1800-01-01', zone: 'Pacific/Auckland', time: '00:00' }])('refuses invalid or out-of-range local inputs %j', async change => {
     await expect(localStudioInput({ ...place, date: '2024-01-01', time: '12:00', ...change }, 'whole')).rejects.toThrow();
   });

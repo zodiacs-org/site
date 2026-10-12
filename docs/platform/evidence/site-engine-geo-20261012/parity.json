@@ -1,0 +1,929 @@
+{
+  "schema": "zodiacs.geo-parity.v1",
+  "base": "8e2dd7840f514f8e30fc870d2b3aca91ba613c67",
+  "site": "src/lib/time/localToUtc.ts at the base, the site's own resolver before this change",
+  "engine": "@zodiacs/engine 1.0.0 (@zodiacs/engine/geo), vendored at the base",
+  "runtime": {
+    "node": "v22.22.2",
+    "icu": "78.2",
+    "tz": "2025c",
+    "platform": "macOS arm64"
+  },
+  "tool": "tools/parity.ts, bundled with esbuild from the base checkout",
+  "zones": 418,
+  "seconds": 43.277,
+  "results": {
+    "cases": 2746260,
+    "agree": 2394635,
+    "bothThrow": 0,
+    "siteOnlyThrow": 0,
+    "engineOnlyThrow": 0,
+    "disagree": 351625
+  },
+  "buckets": {
+    "1800-1899|longitude": {
+      "cases": 116015,
+      "disagree": 0,
+      "examples": [],
+      "kinds": {},
+      "flagKinds": {},
+      "zonesWithInstant": {},
+      "maxAbsDeltaSeconds": 0,
+      "examplesByKind": {}
+    },
+    "1800-1899|no longitude": {
+      "cases": 231918,
+      "disagree": 202935,
+      "examples": [],
+      "kinds": {
+        "flags only": 150447,
+        "instant": 52488
+      },
+      "flagKinds": {
+        "site [] engine [lmt]": 200436,
+        "same flags": 2499
+      },
+      "zonesWithInstant": {
+        "Africa/Accra": 555,
+        "Africa/Addis_Ababa": 549,
+        "Africa/Asmera": 559,
+        "Africa/Bamako": 566,
+        "Africa/Bangui": 557,
+        "Africa/Banjul": 545,
+        "Africa/Blantyre": 552,
+        "Africa/Brazzaville": 561,
+        "Africa/Bujumbura": 559,
+        "Africa/Conakry": 570,
+        "Africa/Dakar": 549,
+        "Africa/Dar_es_Salaam": 558,
+        "Africa/Djibouti": 564,
+        "Africa/Douala": 558,
+        "Africa/Freetown": 545,
+        "Africa/Gaborone": 553,
+        "Africa/Harare": 548,
+        "Africa/Kampala": 552,
+        "Africa/Kigali": 562,
+        "Africa/Kinshasa": 554,
+        "Africa/Libreville": 544,
+        "Africa/Lome": 567,
+        "Africa/Luanda": 561,
+        "Africa/Lubumbashi": 559,
+        "Africa/Lusaka": 546,
+        "Africa/Malabo": 566,
+        "Africa/Maseru": 555,
+        "Africa/Mbabane": 542,
+        "Africa/Mogadishu": 565,
+        "Africa/Niamey": 553,
+        "Africa/Nouakchott": 553,
+        "Africa/Ouagadougou": 549,
+        "Africa/Porto-Novo": 566,
+        "America/Anguilla": 549,
+        "America/Antigua": 542,
+        "America/Aruba": 554,
+        "America/Blanc-Sablon": 554,
+        "America/Cayman": 545,
+        "America/Coral_Harbour": 569,
+        "America/Creston": 421,
+        "America/Curacao": 556,
+        "America/Dominica": 558,
+        "America/Grenada": 554,
+        "America/Guadeloupe": 553,
+        "America/Kralendijk": 561,
+        "America/Lower_Princes": 553,
+        "America/Marigot": 554,
+        "America/Montserrat": 550,
+        "America/Nassau": 548,
+        "America/Port_of_Spain": 578,
+        "America/St_Barthelemy": 560,
+        "America/St_Kitts": 540,
+        "America/St_Lucia": 563,
+        "America/St_Thomas": 557,
+        "America/St_Vincent": 559,
+        "America/Tortola": 559,
+        "Arctic/Longyearbyen": 557,
+        "Asia/Aden": 557,
+        "Asia/Bahrain": 549,
+        "Asia/Brunei": 557,
+        "Asia/Kuala_Lumpur": 552,
+        "Asia/Kuwait": 566,
+        "Asia/Muscat": 535,
+        "Asia/Phnom_Penh": 554,
+        "Asia/Vientiane": 579,
+        "Atlantic/Reykjavik": 558,
+        "Atlantic/St_Helena": 548,
+        "Europe/Amsterdam": 553,
+        "Europe/Copenhagen": 546,
+        "Europe/Guernsey": 556,
+        "Europe/Isle_of_Man": 422,
+        "Europe/Jersey": 570,
+        "Europe/Ljubljana": 423,
+        "Europe/Luxembourg": 570,
+        "Europe/Monaco": 538,
+        "Europe/Oslo": 559,
+        "Europe/Sarajevo": 427,
+        "Europe/Skopje": 418,
+        "Europe/Stockholm": 544,
+        "Europe/Vaduz": 537,
+        "Europe/Zagreb": 413,
+        "Indian/Antananarivo": 559,
+        "Indian/Christmas": 550,
+        "Indian/Cocos": 553,
+        "Indian/Comoro": 561,
+        "Indian/Mahe": 549,
+        "Indian/Mayotte": 553,
+        "Indian/Reunion": 561,
+        "Pacific/Funafuti": 552,
+        "Pacific/Majuro": 568,
+        "Pacific/Midway": 550,
+        "Pacific/Ponape": 570,
+        "Pacific/Saipan": 558,
+        "Pacific/Truk": 547,
+        "Pacific/Wake": 548,
+        "Pacific/Wallis": 542
+      },
+      "maxAbsDeltaSeconds": 88000,
+      "examplesByKind": {
+        "flags only": [
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1800-01-01",
+            "time": "00:30",
+            "site": {
+              "utc": "1800-01-01T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1800-01-01",
+            "time": "01:30",
+            "site": {
+              "utc": "1800-01-01T01:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T01:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1800-01-01",
+            "time": "02:30",
+            "site": {
+              "utc": "1800-01-01T02:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T02:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1800-01-01",
+            "time": "03:30",
+            "site": {
+              "utc": "1800-01-01T03:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T03:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1800-01-01",
+            "time": "12:00",
+            "site": {
+              "utc": "1800-01-01T12:16:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T12:16:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1800-01-15",
+            "time": "00:30",
+            "site": {
+              "utc": "1800-01-15T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-15T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          }
+        ],
+        "instant": [
+          {
+            "zone": "Africa/Accra",
+            "date": "1800-01-01",
+            "time": "00:30",
+            "site": {
+              "utc": "1800-01-01T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T00:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1800-01-01",
+            "time": "01:30",
+            "site": {
+              "utc": "1800-01-01T01:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T01:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1800-01-01",
+            "time": "02:30",
+            "site": {
+              "utc": "1800-01-01T02:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T02:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1800-01-01",
+            "time": "03:30",
+            "site": {
+              "utc": "1800-01-01T03:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T03:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1800-01-01",
+            "time": "12:00",
+            "site": {
+              "utc": "1800-01-01T12:16:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-01T12:00:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1800-01-15",
+            "time": "00:30",
+            "site": {
+              "utc": "1800-01-15T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1800-01-15T00:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          }
+        ]
+      }
+    },
+    "1900-1969|longitude": {
+      "cases": 462393,
+      "disagree": 1,
+      "examples": [],
+      "kinds": {
+        "localMeanTime only": 1
+      },
+      "flagKinds": {
+        "same flags": 1
+      },
+      "zonesWithInstant": {},
+      "maxAbsDeltaSeconds": 0,
+      "examplesByKind": {
+        "localMeanTime only": [
+          {
+            "zone": "Asia/Qatar",
+            "date": "1920-01-01",
+            "time": "00:30",
+            "longitude": 49.3109,
+            "site": {
+              "utc": "1919-12-31T21:12:45.000Z",
+              "offsetMinutes": 240,
+              "flags": [
+                "dst-gap"
+              ],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1919-12-31T21:12:45.000Z",
+              "offsetMinutes": 240,
+              "flags": [
+                "dst-gap"
+              ],
+              "localMeanTime": {
+                "longitude": 49.3109,
+                "zoneOffsetMinutes": 240
+              }
+            }
+          }
+        ]
+      }
+    },
+    "1900-1969|no longitude": {
+      "cases": 924690,
+      "disagree": 148689,
+      "examples": [],
+      "kinds": {
+        "flags only": 73762,
+        "instant": 74920,
+        "offset only": 7
+      },
+      "flagKinds": {
+        "site [] engine [lmt]": 98623,
+        "same flags": 50041,
+        "site [] engine [dst-fold]": 5,
+        "site [] engine [dst-gap]": 12,
+        "site [dst-gap] engine []": 7,
+        "site [dst-gap] engine [lmt]": 1
+      },
+      "zonesWithInstant": {
+        "Africa/Accra": 1158,
+        "Africa/Addis_Ababa": 1179,
+        "Africa/Asmera": 1185,
+        "Africa/Bamako": 1406,
+        "Africa/Bangui": 487,
+        "Africa/Banjul": 1120,
+        "Africa/Blantyre": 682,
+        "Africa/Brazzaville": 493,
+        "Africa/Bujumbura": 247,
+        "Africa/Conakry": 1350,
+        "Africa/Dakar": 1116,
+        "Africa/Dar_es_Salaam": 1557,
+        "Africa/Djibouti": 1173,
+        "Africa/Douala": 491,
+        "Africa/Freetown": 1116,
+        "Africa/Gaborone": 280,
+        "Africa/Harare": 246,
+        "Africa/Kampala": 1601,
+        "Africa/Kigali": 918,
+        "Africa/Kinshasa": 501,
+        "Africa/Libreville": 497,
+        "Africa/Lome": 365,
+        "Africa/Luanda": 492,
+        "Africa/Lubumbashi": 535,
+        "Africa/Lusaka": 246,
+        "Africa/Malabo": 1968,
+        "Africa/Maseru": 152,
+        "Africa/Mbabane": 185,
+        "Africa/Mogadishu": 1703,
+        "Africa/Niamey": 1855,
+        "Africa/Nouakchott": 1467,
+        "Africa/Ouagadougou": 373,
+        "Africa/Porto-Novo": 869,
+        "America/Anguilla": 660,
+        "America/Antigua": 1719,
+        "America/Aruba": 1967,
+        "America/Blanc-Sablon": 30,
+        "America/Cayman": 370,
+        "America/Coral_Harbour": 564,
+        "America/Creston": 171,
+        "America/Curacao": 1968,
+        "America/Dominica": 653,
+        "America/Grenada": 655,
+        "America/Guadeloupe": 657,
+        "America/Kralendijk": 1960,
+        "America/Lower_Princes": 1964,
+        "America/Marigot": 653,
+        "America/Montserrat": 654,
+        "America/Nassau": 951,
+        "America/Port_of_Spain": 653,
+        "America/St_Barthelemy": 651,
+        "America/St_Kitts": 654,
+        "America/St_Lucia": 656,
+        "America/St_Thomas": 655,
+        "America/St_Vincent": 654,
+        "America/Tortola": 658,
+        "Arctic/Longyearbyen": 274,
+        "Asia/Aden": 1587,
+        "Asia/Bahrain": 1234,
+        "Asia/Brunei": 1110,
+        "Asia/Kuala_Lumpur": 120,
+        "Asia/Kuwait": 1598,
+        "Asia/Muscat": 495,
+        "Asia/Phnom_Penh": 730,
+        "Asia/Vientiane": 892,
+        "Atlantic/Reykjavik": 1430,
+        "Atlantic/St_Helena": 1715,
+        "Europe/Amsterdam": 1089,
+        "Europe/Copenhagen": 94,
+        "Europe/Guernsey": 498,
+        "Europe/Jersey": 125,
+        "Europe/Ljubljana": 11,
+        "Europe/Luxembourg": 375,
+        "Europe/Monaco": 91,
+        "Europe/Oslo": 277,
+        "Europe/Sarajevo": 10,
+        "Europe/Skopje": 10,
+        "Europe/Stockholm": 392,
+        "Europe/Zagreb": 10,
+        "Indian/Antananarivo": 1180,
+        "Indian/Christmas": 527,
+        "Indian/Cocos": 746,
+        "Indian/Comoro": 1181,
+        "Indian/Kerguelen": 244,
+        "Indian/Mahe": 490,
+        "Indian/Mayotte": 1174,
+        "Indian/Reunion": 496,
+        "Pacific/Funafuti": 120,
+        "Pacific/Majuro": 2186,
+        "Pacific/Midway": 376,
+        "Pacific/Ponape": 924,
+        "Pacific/Saipan": 1120,
+        "Pacific/Truk": 555,
+        "Pacific/Wake": 122,
+        "Pacific/Wallis": 122
+      },
+      "maxAbsDeltaSeconds": 10800,
+      "examplesByKind": {
+        "flags only": [
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1900-01-01",
+            "time": "00:30",
+            "site": {
+              "utc": "1900-01-01T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1900-01-01",
+            "time": "01:30",
+            "site": {
+              "utc": "1900-01-01T01:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T01:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1900-01-01",
+            "time": "02:30",
+            "site": {
+              "utc": "1900-01-01T02:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T02:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1900-01-01",
+            "time": "03:30",
+            "site": {
+              "utc": "1900-01-01T03:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T03:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1900-01-01",
+            "time": "12:00",
+            "site": {
+              "utc": "1900-01-01T12:16:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T12:16:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Abidjan",
+            "date": "1900-01-15",
+            "time": "00:30",
+            "site": {
+              "utc": "1900-01-15T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-15T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          }
+        ],
+        "instant": [
+          {
+            "zone": "Africa/Accra",
+            "date": "1900-01-01",
+            "time": "00:30",
+            "site": {
+              "utc": "1900-01-01T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T00:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1900-01-01",
+            "time": "01:30",
+            "site": {
+              "utc": "1900-01-01T01:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T01:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1900-01-01",
+            "time": "02:30",
+            "site": {
+              "utc": "1900-01-01T02:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T02:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1900-01-01",
+            "time": "03:30",
+            "site": {
+              "utc": "1900-01-01T03:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T03:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1900-01-01",
+            "time": "12:00",
+            "site": {
+              "utc": "1900-01-01T12:16:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-01T12:00:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Africa/Accra",
+            "date": "1900-01-15",
+            "time": "00:30",
+            "site": {
+              "utc": "1900-01-15T00:46:08.000Z",
+              "offsetMinutes": -16.133333333333333,
+              "flags": [],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1900-01-15T00:30:52.000Z",
+              "offsetMinutes": -0.8666666666666667,
+              "flags": [
+                "lmt"
+              ],
+              "localMeanTime": null
+            }
+          }
+        ],
+        "offset only": [
+          {
+            "zone": "America/Creston",
+            "date": "1944-04-01",
+            "time": "00:30",
+            "site": {
+              "utc": "1944-04-01T07:30:00.000Z",
+              "offsetMinutes": -360,
+              "flags": [
+                "dst-gap"
+              ],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1944-04-01T07:30:00.000Z",
+              "offsetMinutes": -420,
+              "flags": [],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Arctic/Longyearbyen",
+            "date": "1940-04-01",
+            "time": "02:30",
+            "site": {
+              "utc": "1940-04-01T01:30:00.000Z",
+              "offsetMinutes": 120,
+              "flags": [
+                "dst-gap"
+              ],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1940-04-01T01:30:00.000Z",
+              "offsetMinutes": 60,
+              "flags": [],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Europe/Copenhagen",
+            "date": "1940-04-01",
+            "time": "02:30",
+            "site": {
+              "utc": "1940-04-01T01:30:00.000Z",
+              "offsetMinutes": 120,
+              "flags": [
+                "dst-gap"
+              ],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1940-04-01T01:30:00.000Z",
+              "offsetMinutes": 60,
+              "flags": [],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Europe/Oslo",
+            "date": "1940-04-01",
+            "time": "02:30",
+            "site": {
+              "utc": "1940-04-01T01:30:00.000Z",
+              "offsetMinutes": 120,
+              "flags": [
+                "dst-gap"
+              ],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1940-04-01T01:30:00.000Z",
+              "offsetMinutes": 60,
+              "flags": [],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Europe/Stockholm",
+            "date": "1940-04-01",
+            "time": "02:30",
+            "site": {
+              "utc": "1940-04-01T01:30:00.000Z",
+              "offsetMinutes": 120,
+              "flags": [
+                "dst-gap"
+              ],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1940-04-01T01:30:00.000Z",
+              "offsetMinutes": 60,
+              "flags": [],
+              "localMeanTime": null
+            }
+          },
+          {
+            "zone": "Indian/Cocos",
+            "date": "1942-05-01",
+            "time": "00:30",
+            "site": {
+              "utc": "1942-04-30T18:00:00.000Z",
+              "offsetMinutes": 540,
+              "flags": [
+                "dst-gap"
+              ],
+              "localMeanTime": null
+            },
+            "engine": {
+              "utc": "1942-04-30T18:00:00.000Z",
+              "offsetMinutes": 390,
+              "flags": [],
+              "localMeanTime": null
+            }
+          }
+        ]
+      }
+    },
+    "1970-2037|longitude": {
+      "cases": 236414,
+      "disagree": 0,
+      "examples": [],
+      "kinds": {},
+      "flagKinds": {},
+      "zonesWithInstant": {},
+      "maxAbsDeltaSeconds": 0,
+      "examplesByKind": {}
+    },
+    "1970-2037|no longitude": {
+      "cases": 472767,
+      "disagree": 0,
+      "examples": [],
+      "kinds": {},
+      "flagKinds": {},
+      "zonesWithInstant": {},
+      "maxAbsDeltaSeconds": 0,
+      "examplesByKind": {}
+    },
+    "2038-2199|longitude": {
+      "cases": 100598,
+      "disagree": 0,
+      "examples": [],
+      "kinds": {},
+      "flagKinds": {},
+      "zonesWithInstant": {},
+      "maxAbsDeltaSeconds": 0,
+      "examplesByKind": {}
+    },
+    "2038-2199|no longitude": {
+      "cases": 201465,
+      "disagree": 0,
+      "examples": [],
+      "kinds": {},
+      "flagKinds": {},
+      "zonesWithInstant": {},
+      "maxAbsDeltaSeconds": 0,
+      "examplesByKind": {}
+    }
+  }
+}

@@ -1,8 +1,7 @@
+import { prepareLocalTime, resolveLocalToUtc } from '@zodiacs/engine/geo';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
-import { prepareLocalTime, resolveLocalToUtc } from '../../lib/time/localToUtc';
+import { isFixedOffsetZone } from '../../lib/time/fixed-zones';
 import { canonicalZoneName } from '../../lib/time/zone-names';
-import { loadZoneHistory } from '../../lib/time/tz-history-load';
-import { tzdb } from '../../data/tz-lmt.json';
 import { calculateStudio, type StudioInput } from './model';
 
 export interface LocalDraft { date: string; time: string; zone: string; latitude: string; longitude: string }
@@ -13,7 +12,11 @@ export function findStudioCities(cities: readonly StudioCity[], text: string) {
   return text.trim().length < 2 ? [] : cities.filter(city => words.every(word => city.search.includes(word))).slice(0, 6);
 }
 
-/** Same historical clock as the website; all tables are bundled in the panel. */
+/**
+ * The website's historical clock: the engine's resolver, @zodiacs/engine/geo,
+ * whose histories before 1970 are bundled in the panel. Its own record of the
+ * resolution goes into the receipt as it stands.
+ */
 export async function localStudioInput(draft: LocalDraft, houseSystem: StudioInput['houseSystem']) {
   const date = parseCivilDate(draft.date);
   if (!date || date.year < 1800 || date.year > 2199 || !parseCivilTime(draft.time)) throw new Error('Enter a real local date from 1800 to 2199 and a time.');
@@ -23,19 +26,13 @@ export async function localStudioInput(draft: LocalDraft, houseSystem: StudioInp
   if (!zone) throw new Error('Choose a city or enter a supported IANA time zone, such as Europe/London.');
   await prepareLocalTime(draft.date, zone);
   const resolved = resolveLocalToUtc(draft.date, draft.time, zone, { longitude: place.lon });
-  const early = draft.date <= '1970-01-01';
-  const pinned = early && (await loadZoneHistory(zone)) !== null;
-  const gapShiftMinutes = (resolved.utc.getTime() + resolved.offsetMinutes * 60_000 - Date.parse(`${draft.date}T${draft.time}:00Z`)) / 60_000;
   const utc = resolved.utc.toISOString();
   const input: StudioInput = { date: utc.slice(0, 10), time: utc.slice(11, 23), timeKnown: true,
     latitude: draft.latitude, longitude: draft.longitude, houseSystem,
-    local: { flags: resolved.flags, resolution: { date: draft.date, time: draft.time, timeZone: zone,
-      offsetMinutes: resolved.offsetMinutes, gapShiftMinutes,
-      policy: { fold: 'earlier', gap: 'shift-forward' }, calendar: 'gregorian',
-      tzdbVersion: pinned ? tzdb : null,
-      dataForm: pinned ? 'main+backzone' : 'host',
-      clock: resolved.localMeanTime ? 'local-mean-time' : 'legal', localMeanTime: resolved.localMeanTime ?? null } } };
+    local: { flags: [...resolved.flags], resolution: resolved.localResolution } };
   // Checks conversion bounds and that the receipt faithfully preserves its provenance.
   calculateStudio(input);
-  return { input, utc, zoneUncertain: early && !pinned };
+  // Before 1970 the shipped history answers, except where it records no local time;
+  // a fixed offset such as UTC reads the browser's data, which cannot differ.
+  return { input, utc, zoneUncertain: draft.date <= '1970-01-01' && resolved.zone.source !== 'tzdb' && !isFixedOffsetZone(zone) };
 }

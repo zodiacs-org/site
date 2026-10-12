@@ -1,0 +1,26 @@
+{
+ "schemaVersion": 1,
+ "what": "Two builds of the local MCP adapter driven with the same tool list, resource reads and tool calls, compared after versions and sha256: digests are written out",
+ "node": "v22.22.2",
+ "old": {
+  "file": "server-rc19.mjs",
+  "sha256": "fd062f8cc33947e79db2e83faa6dd923bbef23d58dc86e34117ef5ce3aeac6e0"
+ },
+ "new": {
+  "file": "server-rc21.mjs",
+  "sha256": "a17319697341970fb0ba4557987f557071418266858063f6fe3ddf849962555a"
+ },
+ "tools": [],
+ "resources": [],
+ "calls": 278,
+ "refusals": 10,
+ "byTool": {
+  "get_capabilities": 1,
+  "calculate_natal_chart": 160,
+  "compare_calculation_records": 23,
+  "get_positions": 23,
+  "find_events": 14,
+  "check_sky_fact": 57
+ },
+ "differing": []
+}

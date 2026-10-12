@@ -1,8 +1,11 @@
 import { runInNewContext } from 'node:vm';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { assessLocalDateReference } from './local-date-reference';
 import type { CompleteTransitionProvider } from './local-date-intervals';
-import { localDateContainsUtc, resolveLocalToUtc } from './localToUtc';
+import { localDateContainsUtc, prepareLocalTime, resolveLocalToUtc } from './localToUtc';
+
+// The resolver is the engine's, which the site loads on first use.
+beforeAll(() => prepareLocalTime('2000-01-01', 'UTC'));
 
 const DAY = 86_400_000;
 const HOUR = 3_600_000;

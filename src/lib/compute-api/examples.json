@@ -1186,16 +1186,16 @@
             }
           ],
           "timeResolution": {
-            "resolver": "src/lib/time/localToUtc.ts",
+            "resolver": "@zodiacs/engine/geo",
             "policy": {
               "fold": "earlier",
               "gap": "shift-forward"
             },
             "pinnedTzdb": {
               "release": "2025c",
+              "sha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
               "dataForm": "main+backzone",
-              "appliesBefore": "1970-01-02",
-              "requires": "longitude"
+              "appliesBefore": "1970-01-02"
             },
             "runtimeTzdb": "2026c"
           }
@@ -1210,7 +1210,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:4a4e1703527b84bb9b3d8748dbf20794dbac7fc170bab4914ca6b3452c31c0c1",
+          "receipt": "sha256:153c99f0ad80b236b20421b542441b4eb81b317968c4646e15da6ac1562913d7",
           "engine": "@zodiacs/engine",
           "version": "1.0.0"
         }
@@ -1298,16 +1298,16 @@
             }
           ],
           "timeResolution": {
-            "resolver": "src/lib/time/localToUtc.ts",
+            "resolver": "@zodiacs/engine/geo",
             "policy": {
               "fold": "earlier",
               "gap": "shift-forward"
             },
             "pinnedTzdb": {
               "release": "2025c",
+              "sha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
               "dataForm": "main+backzone",
-              "appliesBefore": "1970-01-02",
-              "requires": "longitude"
+              "appliesBefore": "1970-01-02"
             },
             "runtimeTzdb": "2026c"
           }
@@ -1322,7 +1322,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:4a4e1703527b84bb9b3d8748dbf20794dbac7fc170bab4914ca6b3452c31c0c1",
+          "receipt": "sha256:153c99f0ad80b236b20421b542441b4eb81b317968c4646e15da6ac1562913d7",
           "engine": "@zodiacs/engine",
           "version": "1.0.0"
         }
@@ -1587,16 +1587,16 @@
             }
           ],
           "timeResolution": {
-            "resolver": "src/lib/time/localToUtc.ts",
+            "resolver": "@zodiacs/engine/geo",
             "policy": {
               "fold": "earlier",
               "gap": "shift-forward"
             },
             "pinnedTzdb": {
               "release": "2025c",
+              "sha256": "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
               "dataForm": "main+backzone",
-              "appliesBefore": "1970-01-02",
-              "requires": "longitude"
+              "appliesBefore": "1970-01-02"
             },
             "runtimeTzdb": "2026c"
           },
@@ -1624,7 +1624,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#sky-fact",
-          "receipt": "sha256:6c30c85adb1aa168962b57f6d0620bdbcf5c9dec3091ef3ad1c499f6aec2d0b8",
+          "receipt": "sha256:ea86f4751db3f355fa4e2e4d03a565774cf2c6893366496972553b76bd6cd358",
           "engine": "@zodiacs/engine",
           "version": "1.0.0"
         }

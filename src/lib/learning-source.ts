@@ -1,6 +1,6 @@
 import { profileAccessAllowed } from './account-v2/profile-access-reader';
 import { loadProfile } from './profile/read-store';
-import { resolveLocalToUtc } from './time/localToUtc';
+import { isResolvableLocalTime } from './time/localToUtc';
 import { learningInputIdentity } from './learning-input-identity';
 import type { ProfileChartRunInput } from './profile/profile-chart-handoff';
 
@@ -29,7 +29,7 @@ export function projectLearningSource(value: unknown): LearningSource | null {
     const day = new Date(`${b.date}T12:00:00Z`);
     if (!Number.isFinite(day.getTime()) || day.toISOString().slice(0, 10) !== b.date) return null;
     const time = b.timeKnown ? b.time as string : '12:00';
-    if (!Number.isFinite(resolveLocalToUtc(b.date, time, p.tz).utc.getTime())) return null;
+    if (!isResolvableLocalTime(b.date, time, p.tz)) return null;
     const input: ProfileChartRunInput = { date: b.date, time, timeKnown: b.timeKnown,
       city: { name: p.name as string, admin1: p.admin1 as string, country: p.country as string,
         lat: p.lat, lon: p.lon, tz: p.tz, pop: 0 }, houseSystem: s.houseSystem,
