@@ -4,7 +4,7 @@
  * deploys, every daily page is dated, and the guard used to rewrite its
  * relative wording after the first paint: Site Check's Lighthouse gate
  * measured CLS 0.020 on /today/, 0.005 on /horoscopes/ and 0.011 on
- * /horoscopes/aries/ at 00:17 UTC (run 38184748851, finding F-84).
+ * /horoscopes/aries/ just after 00:00 UTC (run 38184748851, finding F-84).
  *
  * The response is streamed in three parts with pauses, so the browser paints
  * before the document finishes and before DOMContentLoaded; the first break
@@ -31,7 +31,7 @@ const publication = JSON.parse(await readFile(new URL('../src/data/daily-publica
 const program = JSON.parse(await readFile(new URL('../src/data/horoscope-program.json', import.meta.url), 'utf8'));
 const editionDate = publication.date;
 const editionDay = Date.parse(`${editionDate}T00:00:00.000Z`);
-// 00:17 UTC on the next day: when Site Check's Lighthouse step measured.
+// 00:17 UTC on the next day, when Site Check's Lighthouse step finished.
 const datedNow = editionDay + 86_400_000 + 17 * 60_000;
 const currentNow = editionDay + 12 * 3_600_000;
 const label = editionDateLabel(editionDate);

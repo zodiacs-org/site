@@ -76,7 +76,7 @@ Severity follows the audit's scale:
 | F-79 | minor | CI | Advisories for smol-toml, source-map-js and tinypool, which reached npm's audit data on 2026-10-06 after main's run at 00:07 UTC, failed Site Check's dependency audit on main's lockfile | fixed in #663: smol-toml 1.9.0 and source-map-js 1.2.2 in range, tinypool 2.2.0 through an override past vitest 3.2.7's declared `^1.1.1`; GHSA-82fw-gwwq-j7x9 (moderate) stays in development dependencies until vitest is upgraded |
 | F-81 | minor | copy | The birth-time window surface starts its sampling sentence in lower case ("sampled at one-second resolution. This check varies birth time…"), and its times read "GMT+0" under a note that says "Times below use UTC notation" | open: a later change to the surface; seen on canonical production at checkpoint 26; no value, control or gate depends on it |
 | F-82 | minor | engine reproducibility | On arm64 the engine gives some values that differ from x86-64's in their last bits: 4 of its 3,853 tests fail on an Apple M4 under Node 20, 22 and 24 (a calc speed by 1.4e-11 against a 1e-12 pin; a chart digest and an aspect angle by 5e-14° in two exact site-parity checks), and one conformance residual rounds differently in its ninth decimal | recorded in engine 1.0.0's CHANGELOG and evidence; the pins and generated results stay x86-64's, as CI runs, and 1.0.0's generated files were rebuilt on Linux x86-64; no published claim says bit-identical across platforms |
-| F-84 | minor | performance | From 00:00 UTC until the day's edition deploys, the daily pages dated their "today" wording after the first paint, and the longer text moved what was below it: Site Check's Lighthouse gate measured CLS 0.020 on `/today/`, 0.005 on `/horoscopes/` and 0.011 on `/horoscopes/aries/` (run 38184748851, 00:17 UTC) | fixed here: the head script dates that wording as the parser adds it; `tests/edition-dated-drive.mjs` |
+| F-84 | minor | performance | From 00:00 UTC until the day's edition deploys, the daily pages dated their "today" wording after the first paint, and the longer text moved what was below it: Site Check's Lighthouse gate measured CLS 0.020 on `/today/`, 0.005 on `/horoscopes/` and 0.011 on `/horoscopes/aries/` (run 38184748851, 2026-10-12 after 00:00 UTC) | fixed here: the head script dates that wording as the parser adds it; `tests/edition-dated-drive.mjs` |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned; fixed by the rc.14 adoption (2026-09-29): the Legacy wing drift job runs it; merged in #600 (`6cc4d477`) |
@@ -826,8 +826,10 @@ adoption changes neither its status nor the fixed denominator.
   00:17 UTC on 2026-10-12, when the served edition was 2026-10-11's: three
   routes missed CLS = 0, `/today/` (0.020), `/horoscopes/` (0.005) and
   `/horoscopes/aries/` (0.011). Every other route measured 0.000, the
-  non-daily pages included, and earlier runs pass. Lighthouse names the
-  Today card (`section#save-moment`) as the element that moved.
+  non-daily pages included, and earlier runs pass. Its reports name what
+  moved: the Today card on `/today/`, the grid of signs on `/horoscopes/` and
+  the note whose link is named Today on `/horoscopes/aries/`
+  ([record](../evidence/edition-dated-20261012/README.md)).
 - **Cause.** From 00:00 UTC until the daily commit deploys, at about
   05:30 UTC, every daily page's edition is a day old. The head script in
   `Base.astro` marked the page dated before the first paint, and EditionText
@@ -843,8 +845,9 @@ adoption changes neither its status nor the fixed denominator.
 - **Reproduced** on `ec0451ff`, built without the two freshness gates and
   served here on 2026-10-12 with the 2026-10-11 edition: the Lighthouse
   harness gave `/today/` CLS 0.020 with the same element (the other two
-  routes measured 0 on this machine), and the new drive measured 0.008 to
-  0.060 on all three routes at 360, 412 and 1280 px (7 of its 9 dated loads).
+  routes measured 0 on this machine), and the new drive measured 0.0075 to
+  0.0595 on all three routes, on 7 of its 9 dated loads at 360, 412 and
+  1280 px.
 - **Fix.** `EditionFreshnessGuard.astro` is now the whole browser side of an
   edition, inlined in `<head>` before the body. It decides the state, then
   writes each piece of edition text in its final form as the parser adds it:
