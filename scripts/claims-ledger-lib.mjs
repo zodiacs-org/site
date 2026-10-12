@@ -116,12 +116,11 @@ export const SCOPE_ADD = Object.freeze([
 /** In the consumer surface, but not read here, each with its reason. */
 export const SCOPE_DROP = Object.freeze([
   { pattern: /^api\/_assistant\/context\.ts$/u, reason: 'generated from scripts/build-assistant-context.mjs, which is read instead' },
-  { pattern: /^api\/_compute\/local-time\.mjs$/u, reason: 'generated from src/lib/time/, which is read instead, and the time zone tables dropped below' },
+  { pattern: /^api\/_compute\/local-time\.mjs$/u, reason: 'generated from @zodiacs/engine/geo and src/lib/time/zone-names.ts, which is read instead' },
   { pattern: /^api\/_compute\/compute\.mjs$/u, reason: 'generated from src/lib/compute-api/ and the vendored engine, which are read instead' },
   { pattern: /^api\/_ai\/runtime\.mjs$/u, reason: 'generated from src/ai-tools, src/lib/compute-api and the vendored engine; the source adapters are read instead' },
   { pattern: /^src\/data\/(?:sky|ingresses|eclipses|birthdays)\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/transits-\d{4}-\d{2}\.json$/u, reason: 'generated sky data with no prose' },
-  { pattern: /^src\/data\/tz-(?:lmt\.json|history\/)/u, reason: 'generated time zone tables' },
   { pattern: /^src\/data\/people\.json$/u, reason: 'the people pilot\'s frozen, generated copy; its facts are checked by build-people-pilot.mjs --check' },
   { pattern: /(?:^|\/)fixtures\/|\.fixture\.json$/u, reason: 'test fixtures, not copy' },
 ]);
