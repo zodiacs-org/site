@@ -72,7 +72,7 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       ['es', '¿Tienes tu carta natal? La comparación privada con el cielo de hoy está en',
         '¿Tienes tu carta natal? La comparación privada con el cielo del 12 de octubre de 2026 está en'],
       ['es', 'Horóscopos de hoy', 'Horóscopos del 12 de octubre de 2026'],
-      ['es', 'Busca tu signo y lee la nota más concreta del cielo de hoy.', 'Busca tu signo y lee la nota más concreta del cielo del 12 de octubre de 2026.'],
+      ['es', 'Busca tu signo y encontrarás la nota más concreta del cielo de hoy.', 'Busca tu signo y encontrarás la nota más concreta del cielo del 12 de octubre de 2026.'],
       ['es', 'Leer hoy →', 'Lectura del 12 de octubre de 2026 →'],
       ['es', 'Un cielo tranquilo hoy.', 'Un cielo tranquilo el 12 de octubre de 2026.'],
       ['pt', 'Hoje', 'O céu de 12 de outubro de 2026'],
@@ -81,7 +81,7 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       ['pt', 'Já tem o seu mapa astral? A comparação privada com o céu de hoje está na',
         'Já tem o seu mapa astral? A comparação privada com o céu de 12 de outubro de 2026 está na'],
       ['pt', 'Horóscopos de hoje', 'Horóscopos de 12 de outubro de 2026'],
-      ['pt', 'Encontre o seu signo e leia a nota mais concreta sobre o céu de hoje.', 'Encontre o seu signo e leia a nota mais concreta sobre o céu de 12 de outubro de 2026.'],
+      ['pt', 'Encontre o seu signo e veja a nota mais concreta sobre o céu de hoje.', 'Encontre o seu signo e veja a nota mais concreta sobre o céu de 12 de outubro de 2026.'],
       ['pt', 'Ler hoje →', 'Leitura de 12 de outubro de 2026 →'],
       ['pt', 'Um céu tranquilo hoje.', 'Um céu tranquilo em 12 de outubro de 2026.'],
     ];
@@ -98,8 +98,6 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       expect(datedEditionTextIn('pt', `\n  ${pt} hoje\n`, date)).toBe(`\n  ${pt} em ${label.pt}\n`);
       expect(datedEditionTextIn('es', `Horóscopo de ${es} de hoy`, date)).toBe(`Horóscopo de ${es} del ${label.es}`);
       expect(datedEditionTextIn('pt', `Horóscopo de ${pt} de hoje`, date)).toBe(`Horóscopo de ${pt} de ${label.pt}`);
-      expect(datedEditionTextIn('es', `Lo que más importa para ${es} hoy.`, date)).toBe(`Lo que más importa para ${es} el ${label.es}.`);
-      expect(datedEditionTextIn('pt', `O que mais importa para ${pt} hoje.`, date)).toBe(`O que mais importa para ${pt} em ${label.pt}.`);
     }
   });
 

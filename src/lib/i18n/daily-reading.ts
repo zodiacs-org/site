@@ -165,7 +165,11 @@ const PLANET_VERB_IT: Record<string, string> = {
 // As subjects and after a preposition, the Sun and the Moon take their
 // article in Spanish and Portuguese; the receipts keep the bare names.
 const subjectEs = (body: string) => (body === 'Sun' ? 'El Sol' : body === 'Moon' ? 'La Luna' : planetLabel('es', body));
-const objectEs = (body: string) => (body === 'Sun' ? 'el Sol' : body === 'Moon' ? 'la Luna' : planetLabel('es', body));
+/** "en oposición a" (al Sol, a la Luna); every other aspect is "con". */
+const aspectPartnerEs = (type: string, body: string) => {
+  if (type === 'opposition') return body === 'Sun' ? 'al Sol' : body === 'Moon' ? 'a la Luna' : `a ${planetLabel('es', body)}`;
+  return `con ${body === 'Sun' ? 'el Sol' : body === 'Moon' ? 'la Luna' : planetLabel('es', body)}`;
+};
 const subjectPt = (body: string) => (body === 'Sun' ? 'O Sol' : body === 'Moon' ? 'A Lua' : planetLabel('pt', body));
 /** "em oposição a" (ao Sol, à Lua); every other aspect is "com". */
 const aspectPartnerPt = (type: string, body: string) => {
@@ -226,7 +230,7 @@ function eventLineEs(event: DailyEvent, sunSign: string, date: string): DailyLin
     const house = solarHouse(event.sign, sunSign);
     const name = event.type === 'new' ? 'Luna nueva' : 'Luna llena';
     const meaning = event.type === 'new'
-      ? 'abre un punto de partida en'
+      ? 'abre un nuevo ciclo en'
       : 'marca una culminación en';
     return {
       text: `La ${name} en tu ${ORDINAL_ES[house]} casa ${meaning} ${HOUSE_THEME_ES[house]}.`,
@@ -259,7 +263,7 @@ function eventLineEs(event: DailyEvent, sunSign: string, date: string): DailyLin
     const b = planetLabel('es', event.b);
     const aspect = aspectLabel('es', event.type);
     return {
-      text: `${subjectEs(event.a)} en ${aspect} con ${objectEs(event.b)} alcanza hoy su punto exacto: es un aspecto colectivo y el comprobante muestra la hora.`,
+      text: `${subjectEs(event.a)} en ${aspect} ${aspectPartnerEs(event.type, event.b)} alcanza hoy su punto exacto: es un aspecto colectivo y el comprobante muestra la hora.`,
       receipt: `${a} ${aspect} ${b} · exacto ${utcTime(event.at)}`,
       body: event.a,
       templateId: 'aspect-collective.v1',
