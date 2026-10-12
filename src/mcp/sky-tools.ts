@@ -15,23 +15,18 @@
  * first, such as an unknown argument or a value outside a list, gets the MCP
  * SDK's validation message instead.
  *
- * resolve_birth_time reads a local time in a named zone with the resolver the
- * compute API's function uses, @zodiacs/engine/geo with the zone histories it
- * loads, which are built into the bundle. The other three take no zone:
- * check_sky_fact takes an instant with its offset, or a date, which the
- * compute API reads in every UTC offset in use today at once.
+ * resolve_birth_time (time-tools.ts) reads a local time in a named zone; these
+ * three take no zone: check_sky_fact takes an instant with its offset, or a
+ * date, which the compute API reads in every UTC offset in use today at once.
  */
 import { z } from 'zod';
 import { ASPECTS, ASPECT_TYPES } from '@zodiacs/engine';
 import {
   ANY_ZONE_DAY, BUDGETS, EPOCH, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS, SKY_FACT_KINDS,
 } from '../lib/compute-api/constants';
-import { computeEvents, computePositions, computeSkyFact, computeTime, type ComputeDependencies } from '../lib/compute-api/endpoints';
+import { computeEvents, computePositions, computeSkyFact, type ComputeDependencies } from '../lib/compute-api/endpoints';
 import { ComputeApiError } from '../lib/compute-api/errors';
-import * as localTime from '../lib/compute-api/local-time-source';
-import {
-  CALENDARS, parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, parseTimeRequest, type ZoneNames,
-} from '../lib/compute-api/validate';
+import { parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, type ZoneNames } from '../lib/compute-api/validate';
 import { bounded } from './bounds';
 import { citeFor, type ComputeToolName } from './cite';
 import type { ToolOutcome } from './tools';
@@ -92,13 +87,13 @@ export const SKY_FACT_INPUT = z.strictObject({
  * JSON Pointer of the field it refused when there is one. Any other throw is
  * left to the server's guard, which reports it without its message.
  */
-function refusalOf(error: unknown): ToolOutcome {
+export function refusalOf(error: unknown): ToolOutcome {
   if (!(error instanceof ComputeApiError)) throw error;
   const { message, pointer } = error.detail;
   return { ok: false, refusal: pointer ? `${pointer}: ${message}` : message };
 }
 
-function cited<Body extends { receipt: unknown; cite: unknown }>(tool: ComputeToolName, body: Body): ToolOutcome {
+export function cited<Body extends { receipt: unknown; cite: unknown }>(tool: ComputeToolName, body: Body): ToolOutcome {
   return bounded({ ...body, cite: citeFor(tool, body.receipt) });
 }
 
@@ -145,26 +140,3 @@ export async function checkSkyFact(args: z.infer<typeof SKY_FACT_INPUT>): Promis
   }
 }
 
-export const TIME_INPUT = z.strictObject({
-  local: z.strictObject({
-    date: z.string().max(DATE_CHARS)
-      .describe(`YYYY-MM-DD in the calendar named by calendar: from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31, or with calendar julian from ${EPOCH.firstYear}-01-01 to 1923-12-31.`),
-    time: z.string().max(5).describe('The time the clock showed, HH:MM, from 00:00 to 23:59.'),
-    zone: z.string().max(64)
-      .describe('An IANA time zone name, such as Europe/Paris, in any letter case; search_places gives each place\'s zone.'),
-  }).describe('A local date and time as a clock in the zone showed them.'),
-  longitude: z.number().optional()
-    .describe('The place\'s longitude in degrees east, from -180 to 180. With it, a time before the place adopted a legal time is read on the place\'s own mean time.'),
-  calendar: z.enum(CALENDARS).optional()
-    .describe('The calendar local.date is written in; gregorian when omitted. julian, the Old Style, is accepted for a date written up to 1923-12-31 and converted to the Gregorian date before the time is read.'),
-  country: z.string().max(2).optional()
-    .describe('The place\'s country as an ISO 3166-1 alpha-2 code in capitals, such as RU, for the note on when it changed to the Gregorian calendar.'),
-});
-
-export async function resolveBirthTime(args: z.infer<typeof TIME_INPUT>): Promise<ToolOutcome> {
-  try {
-    return cited('resolve_birth_time', await computeTime(await parseTimeRequest(args, localTime.canonicalZoneName), { localTime }));
-  } catch (error) {
-    return refusalOf(error);
-  }
-}

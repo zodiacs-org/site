@@ -31,7 +31,7 @@ import {
 import { ADAPTER_NAME, COMPARE_OUTPUTS, HOUSE_SYSTEMS, REFERENCES } from './bounds';
 import { CALENDARS } from '../lib/compute-api/validate';
 import { ADAPTER_RECEIPT_SCHEMA, COMPUTE_TOOLS, SKY_TOOLS, toolUrl, type ComputeToolName, type SkyToolName, type ToolName } from './cite';
-import { PLACES_MAX, PLACES_SOURCE } from './places';
+import { PLACES_MAX, PLACES_SOURCE } from './places-source';
 
 export const BODY_NAMES = Object.freeze([
   'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto',

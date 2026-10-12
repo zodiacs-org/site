@@ -28,8 +28,9 @@ import { COMPUTE_TOOLS, toolUrl } from './cite';
 import { createServer } from './create-server';
 import { PLACES_OUTPUT, TIME_OUTPUT } from './outputs';
 import { PLACE_SHARDS, PLACES_DEFAULT, PLACES_MAX, PLACES_SOURCE, searchPlaces } from './places';
-import { resolveBirthTime } from './sky-tools';
-import { describeCapabilities, type ToolOutcome } from './tools';
+import { PINNED_TZDB_RELEASE } from './bounds';
+import { resolveBirthTime } from './time-tools';
+import { describeCapabilities, describeLocalChartCapabilities, type ToolOutcome } from './tools';
 
 /** mulberry32: a small seeded generator, so the corpus is the same on every run. */
 function generator(seed: number) {
@@ -254,6 +255,18 @@ describe('the two tools in get_capabilities and tools/list', () => {
       julianLastWritten: '1923-12-31',
     });
     expect(places).toMatchObject({ tool: 'search_places', ...PLACES_SOURCE, maxResults: PLACES_MAX });
+    expect(PINNED_TZDB_RELEASE).toBe(TZDB.version);
+  });
+
+  it("leaves the sky, time and place tools' sections and limits out of the chart tools' capabilities", () => {
+    const full = value(describeCapabilities());
+    const local = value(describeLocalChartCapabilities());
+    expect(Object.keys(local).sort()).toEqual(Object.keys(full).filter((key) => !['sky', 'time', 'places'].includes(key)).sort());
+    expect(local.unsupported).toHaveLength(full.unsupported.length - 2);
+    expect(JSON.stringify(local.unsupported)).not.toMatch(/find_events|search_places|resolve_birth_time/u);
+    expect(local.engine).toEqual(full.engine);
+    expect(full.privacy.citation.startsWith(local.privacy.citation)).toBe(true);
+    expect(local.privacy.citation).not.toMatch(/get_positions|search_places|resolve_birth_time/u);
   });
 
   it('describes both in the methodology resource', async () => {

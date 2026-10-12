@@ -15,6 +15,9 @@ import type { ToolOutcome } from './tools';
 
 /** This adapter's own version, distinct from the engine's. */
 export const ADAPTER_VERSION = '0.1.0-rc.23';
+
+/** The tzdb release whose histories the engine ships and resolve_birth_time reads up to 1970; the tests hold it to the engine's TZDB. */
+export const PINNED_TZDB_RELEASE = '2025c';
 export const ADAPTER_NAME = 'zodiacs-mcp-server' as const;
 
 /**

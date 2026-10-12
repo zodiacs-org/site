@@ -18,8 +18,9 @@ import {
 import { PLACES_INPUT, searchPlaces } from './places';
 import { RESOURCES } from './resources';
 import {
-  ANY_ZONE_DAY_TEXT, EVENTS_INPUT, POSITIONS_INPUT, SKY_FACT_INPUT, TIME_INPUT, checkSkyFact, findEvents, getPositions, resolveBirthTime,
+  ANY_ZONE_DAY_TEXT, EVENTS_INPUT, POSITIONS_INPUT, SKY_FACT_INPUT, checkSkyFact, findEvents, getPositions,
 } from './sky-tools';
+import { TIME_INPUT, resolveBirthTime } from './time-tools';
 import {
   CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY,
   calculateNatalChart, compareCalculationRecords, describeCapabilities, type ToolOutcome,

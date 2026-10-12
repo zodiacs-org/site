@@ -38,6 +38,7 @@ import shardY from '../../public/data/cities/y.json';
 import shardZ from '../../public/data/cities/z.json';
 import { bounded } from './bounds';
 import { citeFor, placesReceipt } from './cite';
+import { PLACES_DEFAULT, PLACES_MAX, PLACES_SOURCE, PLACE_QUERY_CHARS } from './places-source';
 import type { ToolOutcome } from './tools';
 
 /** A shard as scripts/build-cities.mjs writes it; the tests check every row's shape. */
@@ -74,17 +75,7 @@ export const PLACE_SHARDS: Readonly<Record<string, readonly Row[]>> = Object.fre
   z: rows(shardZ),
 });
 
-export const PLACES_SOURCE = Object.freeze({
-  source: 'GeoNames cities15000',
-  licence: 'CC BY 4.0',
-  url: 'https://www.geonames.org/',
-  rows: index.count,
-} as const);
-
-export const PLACE_QUERY_CHARS = 64;
-/** As many places as the site's birthplace search lists. */
-export const PLACES_DEFAULT = 8;
-export const PLACES_MAX = 20;
+export { PLACES_SOURCE, PLACE_QUERY_CHARS, PLACES_DEFAULT, PLACES_MAX } from './places-source';
 
 export const PLACES_INPUT = z.strictObject({
   query: z.string().max(PLACE_QUERY_CHARS)
