@@ -6,7 +6,7 @@ import type { BodyPosition } from '../lib/engine/types';
 import type { PairSummary } from '../lib/engine/synastry';
 import { summarizePair } from '../lib/engine/synastry';
 import { aspectLabel, planetLabel } from '../lib/i18n/astrology';
-import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
+import { resolveLocalToUtc } from '../lib/time/localToUtc';
 import {
   elementLabel,
   formatLongitude,
@@ -187,8 +187,6 @@ export default function WalletChart({ availableChains }: Props) {
     setOwnerBusy(true);
     setOwnerError(null);
     try {
-      // A date up to 1970 reads the zone's history, which loads first.
-      await prepareLocalTime(ownerDate, ownerCity.tz);
       const resolved = resolveLocalToUtc(
         ownerDate,
         ownerTimeKnown ? ownerTime : '12:00',

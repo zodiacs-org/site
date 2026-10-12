@@ -37,7 +37,12 @@ backzone-complete tzdb inside the engine) wait for.
   every one of them through the engine.
 - **Callers.** Every production call now awaits `prepareLocalTime` for the
   same date and zone first, and a test reads the source to hold that.
-  - The wallet chart now prepares; it passes no longitude, as before.
+  - The wallet chart is frozen Registry code, which this change leaves as it
+    was. Its page serves only a redirect while no wallet chain is
+    configured, as in production. Its owner comparison resolves without
+    preparing, so with the engine's resolver it would refuse every owner
+    time. The fix is one line, which waits for the owner's scope allowance
+    (FINDINGS F-83).
   - The learning-source check of a stored record no longer converts at all
     (`isResolvableLocalTime`).
 - **The compute API.**
@@ -113,12 +118,10 @@ a birthplace longitude ([`parity.json`](parity.json)).
     cases differ only in flags); the site's resolver claimed it only with a
     longitude.
 
-  Without a longitude, the site resolves:
-  - the compute API's local times when no longitude is sent;
-  - its day windows for a date and zone;
-  - the wallet chart's owner time.
-
-  These now read the engine's history.
+  Without a longitude, the site resolves the compute API's local times when
+  no longitude is sent, and its day windows for a date and zone. These now
+  read the engine's history. The wallet chart's owner time would too, once
+  it prepares (F-83); its page is not served.
 
 ## Checks
 
