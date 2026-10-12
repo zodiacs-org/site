@@ -47,26 +47,10 @@ export interface LocalTimeResolution {
 }
 
 /**
- * Every local mean time era ends before this instant (the last, Niue and
- * Rarotonga, in October 1952).
- */
-export const LOCAL_MEAN_TIME_ERAS_END_BEFORE = Date.UTC(1953, 0, 1);
-
-/**
- * Whether a local date (YYYY-MM-DD) could fall in a local mean time era, so
- * that a birthplace's longitude can change how its wall time resolves. False
- * only for years after the last era ended.
- */
-export function localMeanTimeCanApply(date: string): boolean {
-  const year = Number(String(date).slice(0, 4));
-  return !(Number.isFinite(year) && year > new Date(LOCAL_MEAN_TIME_ERAS_END_BEFORE).getUTCFullYear());
-}
-
-/**
- * Whether a wall time on this local date (YYYY-MM-DD) can need the zone's
- * shipped history, and so prepareLocalTime: for dates up to 1970. Saved charts
- * on such dates are the ones an earlier reading of the birthplace clock can
- * have left with another summary (src/lib/profile/refresh.ts).
+ * Whether a wall time on this local date (YYYY-MM-DD) reads the zone's history
+ * the engine ships: for dates up to 1970. Saved charts on such dates are the
+ * ones an earlier reading of the birthplace clock can have left with another
+ * summary (src/lib/profile/refresh.ts).
  */
 export function birthplaceTimeCanApply(date: string): boolean {
   return !(Number(String(date).slice(0, 4)) > 1970);
