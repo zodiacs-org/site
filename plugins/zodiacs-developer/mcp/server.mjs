@@ -1719,7 +1719,7 @@ function serializeNatalEnvelope(envelope) {
 }
 
 // src/mcp/bounds.ts
-var ADAPTER_VERSION = "0.1.0-rc.21";
+var ADAPTER_VERSION = "0.1.0-rc.22";
 var ADAPTER_NAME = "zodiacs-mcp-server";
 var EPOCH_MIN_UTC = "1800-01-01T00:00:00.000Z";
 var EPOCH_MAX_UTC = "2199-12-31T23:59:59.999Z";

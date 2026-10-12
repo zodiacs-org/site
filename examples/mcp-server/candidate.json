@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.21",
+  "version": "0.1.0-rc.22",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -86,5 +86,5 @@
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
   "supersedes": "0.1.0-rc.19",
-  "changedSince": "0.1.0-rc.21 is 0.1.0-rc.19 rebuilt after the compute API began reading local times with @zodiacs/engine/geo, and marks a fixed offset such as UTC as certain before 1970. The adapter resolves no time zone, so the bundled compute code that changed never runs in it; apart from the adapter version and the digests over it, every tool's arguments, results and receipts are rc.19's. The comparison record reports measured differences against 0.1.0-rc.19; it does not assert universal parity. Older archives remain unchanged. 0.1.0-rc.20, cut with the first of these changes in the same pull request, was withdrawn before release and is not served. The adapter itself is still not on npm."
+  "changedSince": "0.1.0-rc.22 is 0.1.0-rc.21 with its README corrected: it describes the comparison benchmark as the eighteen scenarios it runs, where it still said ten record pairs. The bundle's code is rc.21's; apart from the adapter version and the digests over it, every tool's arguments, results and receipts are rc.21's. rc.21 is rc.19 rebuilt after the compute API began reading local times with @zodiacs/engine/geo, and marks a fixed offset such as UTC as certain before 1970; the adapter resolves no time zone, so that bundled code never runs in it. Older archives remain unchanged. The adapter itself is still not on npm."
 }
