@@ -1605,12 +1605,18 @@ if (!/^\d{4}-\d{2}-\d{2}$/.test(daily.date ?? '') || Number.isNaN(dailyDay.getTi
 // {' '} at the end of such a line. The developer pages, the methodology and the
 // privacy page are held to it. The generated API references are not checked
 // here, and the frozen and translated pages wait for their own changes.
-const INLINE_JOIN = /[A-Za-z0-9,;:]<(?:code|a|em|strong|kbd|abbr)[\s>]|<\/(?:code|a|em|strong|kbd|abbr)>[A-Za-z0-9(]/gu;
+// Text that needs a space after it: a word character, sentence punctuation, a
+// closing bracket or a closing curly quote. Opening brackets, dashes and
+// straight quotes may sit flush against an element. A non-breaking space is a
+// space, and any other entity counts as the character it stands for.
+const INLINE_JOIN = /[\p{L}\p{N}_.,;:!?)\]}%\u201d\u2019]<(?:code|a|em|strong|kbd|abbr)[\s>]|<\/(?:code|a|em|strong|kbd|abbr)>[\p{L}\p{N}_(\u201c\u2018]/gu;
+const ENTITIES = /&(?:nbsp|#160|#x[aA]0);|&(?:[a-zA-Z]+|#\d+|#x[0-9a-fA-F]+);/gu;
 const spacedPage = (path) => (path.startsWith('/developers/') && !path.startsWith('/developers/engine/reference/'))
   || path === '/methodology/' || path === '/privacy/';
 for (const [file, path] of builtPageByFile) {
   if (!spacedPage(path)) continue;
-  const html = (await readFile(file, 'utf8')).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<pre[\s\S]*?<\/pre>/gu, '');
+  const html = (await readFile(file, 'utf8')).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<pre[\s\S]*?<\/pre>/gu, '')
+    .replace(ENTITIES, (entity) => (/^&(?:nbsp|#160|#x[aA]0);$/u.test(entity) ? ' ' : 'x'));
   const joined = [...html.matchAll(INLINE_JOIN)].length;
   if (joined) fail(`${path}: ${joined} place(s) where text runs into an inline element; end the line with {' '}`);
 }
