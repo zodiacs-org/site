@@ -32,6 +32,7 @@ import { ADAPTER_NAME, COMPARE_OUTPUTS, HOUSE_SYSTEMS, REFERENCES } from './boun
 import { CALENDARS } from '../lib/compute-api/validate';
 import { ADAPTER_RECEIPT_SCHEMA, COMPUTE_TOOLS, SKY_TOOLS, toolUrl, type ComputeToolName, type SkyToolName, type ToolName } from './cite';
 import { PLACES_MAX, PLACES_SOURCE } from './places-source';
+import { ATLAS_PLACE_IDS } from '../lib/time-atlas/places';
 
 export const BODY_NAMES = Object.freeze([
   'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto',
@@ -167,6 +168,12 @@ export const CAPABILITIES_OUTPUT = z.strictObject({
     pinnedTzdb: z.strictObject({ release: z.string(), appliesBefore: z.literal('1970-01-02') }),
     calendars: z.array(z.enum(CALENDARS)),
     julianLastWritten: z.literal('1923-12-31'),
+    atlas: z.strictObject({
+      version: z.string(),
+      licence: z.literal('CC BY 4.0'),
+      window: z.strictObject({ from: z.string(), to: z.string() }),
+      places: z.array(z.enum(ATLAS_PLACE_IDS)),
+    }).describe('The Zodiacs time atlas, which resolve_birth_time reads for a place named in atlasPlace: what the clocks said there, with citations, for wall times from its window\'s start up to its end.'),
   }).describe('What resolve_birth_time accepts and how it reads a local time.'),
   places: z.strictObject({
     tool: z.literal('search_places'),
@@ -464,6 +471,32 @@ export const TIME_OUTPUT = computeBody('resolve_birth_time', z.strictObject({
     lastJulian: z.string().nullable(),
     sources: z.array(z.enum(['wikipedia', 'tzdb', 'lv', 'fi'])),
   }).nullable().describe('When the country named changed to the Gregorian calendar, from the site\'s birth forms\' table; null when no country was named or the table does not date it.'),
+  atlas: z.strictObject({
+    place: z.enum(ATLAS_PLACE_IDS),
+    name: z.string(),
+    jurisdiction: z.string(),
+    clock: z.literal('civil'),
+    status: z.enum(['ok', 'ambiguous', 'nonexistent', 'out-of-coverage'])
+      .describe('ok: one instant. ambiguous: the clocks were set back over the time; every instant is listed, earliest first. nonexistent: they were set forward over it; the instant listed is the time read on the clock before the change. out-of-coverage: outside 1870 to 1919.'),
+    instants: z.array(z.strictObject({
+      utc: instantOut,
+      offsetSeconds: z.number(),
+      rule: z.string(),
+      ruleVersion: z.number().int().min(1),
+      isDst: z.boolean(),
+      abbreviation: z.string().nullable(),
+      uncertainty: z.strictObject({
+        flag: z.enum(['documented', 'inferred', 'uncertain']),
+        reasons: z.array(z.string()),
+      }).describe('documented: the cited sources state the offset and the change. inferred: they follow from the sources by a stated assumption. uncertain: the sources leave it open or disagree, or the time falls within the limits they leave for a change.'),
+      citations: z.array(z.strictObject({
+        id: z.string(), title: z.string(), date: z.string().nullable(), url: z.string(), locator: z.string().nullable(), gloss: z.string().nullable(),
+      })),
+    })),
+    skipped: z.strictObject({ from: z.string(), to: z.string() }).nullable(),
+    secondsFromTzdb: z.number().nullable().describe('The atlas\'s first instant minus the utc tzdb gave, in seconds: 0 where they agree.'),
+    source: z.strictObject({ name: z.string(), version: z.string(), licence: z.literal('CC BY 4.0'), url: z.string() }),
+  }).nullable().describe('The time atlas\'s reading of the wall time at the place named in atlasPlace, beside tzdb\'s; null when none was named.'),
   calendarNote: z.enum(['old-style', 'new-style', 'other-calendar']).nullable()
     .describe('For a date written before 1924: old-style, written as Gregorian before the country\'s first New Style day; new-style, written as Julian on or after it; other-calendar, before the change in a country whose calendar before was not the Julian. Advice only.'),
   tt: z.string().describe('Terrestrial Time to the millisecond, with no zone designator because it is not UTC.'),

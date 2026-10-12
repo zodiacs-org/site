@@ -1,7 +1,7 @@
 {
   "type": "official-SDK protocol interoperability against the real server process; not a named end-user host, and not a model-driven demonstration",
-  "startedAt": "2026-10-12T15:07:58.455Z",
-  "completedAt": "2026-10-12T15:08:01.943Z",
+  "startedAt": "2026-10-12T15:33:45.137Z",
+  "completedAt": "2026-10-12T15:33:48.637Z",
   "node": "v22.22.2",
   "client": {
     "package": "@modelcontextprotocol/client",
@@ -17,8 +17,8 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "bytes": 2268682,
-    "sha256": "70552a0959b9eab94bb6be75afb605ae6bd1ad32d1cf8cbca2fc88ed87aae625"
+    "bytes": 2459502,
+    "sha256": "866e5a9c0756b96a5777c0a15117735f8bd60d6728d1a2a3a2f7e00094f5b959"
   },
   "wire": [
     {
@@ -102,8 +102,8 @@
       "unansweredOffender": true
     }
   ],
-  "checks": 113,
-  "passed": 113,
+  "checks": 114,
+  "passed": 114,
   "results": [
     {
       "name": "initialize succeeds and names the adapter",
@@ -552,6 +552,7 @@
         "date": "1990-06-15",
         "adoption": null,
         "calendarNote": null,
+        "atlas": null,
         "tt": "1990-06-15T13:30:57.184",
         "deltaT": {
           "seconds": 57.197125,
@@ -594,6 +595,7 @@
         "date": "1947-07-01",
         "adoption": null,
         "calendarNote": null,
+        "atlas": null,
         "tt": "1947-07-01T11:00:28.008",
         "deltaT": {
           "seconds": 28.008138261464772,
@@ -635,6 +637,7 @@
           ]
         },
         "calendarNote": null,
+        "atlas": null,
         "tt": "1917-11-07T08:29:01.142",
         "deltaT": {
           "seconds": 20.142440181923075,
@@ -651,6 +654,11 @@
           "leapSeconds": null
         }
       }
+    },
+    {
+      "name": "a place of the time atlas gets the atlas's cited reading beside tzdb's, with its uncertainty flag",
+      "ok": true,
+      "detail": "ok"
     },
     {
       "name": "a time cites the compute receipt it carries, which holds no date, time or zone from the request",
@@ -1042,7 +1050,7 @@
     {
       "name": "the transport exposes the server process id, so the next check measures something",
       "ok": true,
-      "detail": 97344
+      "detail": 1726
     },
     {
       "name": "the server process is gone after the client closes",

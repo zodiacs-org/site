@@ -20,6 +20,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
 import { TZDB } from '@zodiacs/engine/geo';
+import atlasPlaces from '../data/time-atlas/places.json';
+import { ATLAS_PLACE_IDS, ATLAS_VERSION, ATLAS_WINDOW } from '../lib/time-atlas/places';
 import { createComputeApiHandler } from '../lib/compute-api/handler';
 import * as localTime from '../lib/compute-api/local-time-source';
 import { COMPUTE_COMPONENTS, responseComponentName } from '../lib/compute-api/openapi';
@@ -95,14 +97,32 @@ function timeCorpus() {
     { local: { date: '1850-01-01', time: '12:00', zone: 'Asia/Tokyo' }, country: 'JP' },
     // A zone name in another letter case is answered in its tzdb spelling.
     { local: { date: '1990-06-15', time: '14:30', zone: 'europe/paris' } },
+    // The time atlas's places, each at a seeded wall time from 1869 to 1921, and its changes.
+    ...atlasCorpus(),
+    { local: { date: '1916-06-14', time: '23:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-paris' },
+    { local: { date: '1911-03-10', time: '23:51', zone: 'Europe/Paris' }, atlasPlace: 'fr-paris' },
+    { local: { date: '1883-11-18', time: '12:00', zone: 'America/New_York' }, atlasPlace: 'us-new-york' },
+    { local: { date: '1918-03-31', time: '02:00', zone: 'America/New_York' }, atlasPlace: 'us-new-york' },
   ];
+}
+
+/** Each atlas place, with its zone and longitude, at a seeded wall time from 1869 to 1921. */
+function atlasCorpus() {
+  const random = generator(1870);
+  const first = Date.UTC(1869, 0, 1);
+  const last = Date.UTC(1921, 11, 31);
+  return atlasPlaces.places.map(({ id, tzdbZone, longitude }: { id: string; tzdbZone: string; longitude: number }) => {
+    const date = new Date(first + Math.floor(random() * ((last - first) / DAY)) * DAY).toISOString().slice(0, 10);
+    const time = `${pad(Math.floor(random() * 24))}:${pad(Math.floor(random() * 60))}`;
+    return { local: { date, time, zone: tzdbZone }, longitude: Math.round(longitude * 100) / 100, atlasPlace: id };
+  });
 }
 
 const corpus = await Promise.all(timeCorpus().map(async (args) => ({ args, value: value(await resolveBirthTime(args as any)) })));
 
 describe('resolve_birth_time is the compute API\'s time endpoint', () => {
   it("returns, for every request of the corpus, the body the compute API's handler answers, with the tool's cite", async () => {
-    expect(corpus).toHaveLength(105);
+    expect(corpus).toHaveLength(130);
     for (const { args, value: result } of corpus) {
       const response = await hosted(args);
       expect(response.status, JSON.stringify(args)).toBe(200);
@@ -122,6 +142,12 @@ describe('resolve_birth_time is the compute API\'s time endpoint', () => {
     expect(corpus.some(({ value: result }) => result.result.zoneUncertain)).toBe(true);
     expect(corpus.filter(({ value: result }) => result.result.calendar === 'julian').length).toBeGreaterThan(10);
     expect(corpus.at(-1)!.value.receipt.endpoint).toBe('time');
+    // The atlas: every place, and every status it has for a wall time in or out of its window.
+    const atlas = corpus.map(({ value: result }) => result.result.atlas).filter(Boolean);
+    expect(new Set(atlas.map((reading: { place: string }) => reading.place)).size).toBe(21);
+    expect(new Set(atlas.map((reading: { status: string }) => reading.status))).toEqual(new Set(['ok', 'ambiguous', 'nonexistent', 'out-of-coverage']));
+    expect(atlas.some((reading: { secondsFromTzdb: number | null }) => reading.secondsFromTzdb === 0)).toBe(true);
+    expect(atlas.some((reading: { secondsFromTzdb: number | null }) => Math.abs(reading.secondsFromTzdb ?? 0) >= 60)).toBe(true);
   });
 
   it('refuses what the compute API refuses, in the same words', async () => {
@@ -253,6 +279,7 @@ describe('the two tools in get_capabilities and tools/list', () => {
       pinnedTzdb: { release: TZDB.version, appliesBefore: '1970-01-02' },
       calendars: ['gregorian', 'julian'],
       julianLastWritten: '1923-12-31',
+      atlas: { version: ATLAS_VERSION, licence: 'CC BY 4.0', window: { ...ATLAS_WINDOW }, places: [...ATLAS_PLACE_IDS] },
     });
     expect(places).toMatchObject({ tool: 'search_places', ...PLACES_SOURCE, maxResults: PLACES_MAX });
     expect(PINNED_TZDB_RELEASE).toBe(TZDB.version);

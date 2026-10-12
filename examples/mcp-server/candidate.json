@@ -37,6 +37,10 @@
     "src/data/gregorian-adoption.ts",
     "src/data/tz-names.json",
     "public/data/cities/",
+    "src/lib/time-atlas/index.ts",
+    "src/lib/time-atlas/lib.mjs",
+    "src/lib/time-atlas/places.ts",
+    "src/data/time-atlas/",
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
@@ -69,6 +73,13 @@
       "rows": 33934,
       "ranking": "src/lib/geo/rank.ts",
       "note": "The site's birthplace index, which scripts/build-cities.mjs builds and the site's calculators fetch, inlined into server.mjs for search_places with the ranking the site's search uses."
+    },
+    "timeAtlas": {
+      "name": "Zodiacs.org historical time atlas",
+      "version": "0.1.0",
+      "licence": "CC BY 4.0",
+      "source": "https://github.com/zodiacs-org/engine/tree/7307665bdbc432269fdac006104f661be16000bc/atlas",
+      "note": "The engine repository's atlas data, copied byte for byte, and its resolver (atlas/tools/lib.mjs, MIT) with only its loader changed, inlined into server.mjs for resolve_birth_time's atlasPlace."
     }
   },
   "dependencies": {
@@ -106,5 +117,5 @@
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
   "supersedes": "0.1.0-rc.19",
-  "changedSince": "0.1.0-rc.24 adds two tools. resolve_birth_time runs the compute API's time endpoint, POST /api/v1/time, with the engine's geo entry and the zone histories it ships, which server.mjs now carries: a local date and time in an IANA zone as UTC and Terrestrial Time, with flags for a time the clocks skipped or repeated, local mean time and a zone history before 1970 that the runtime's own data disputes, and a date written in the Julian calendar up to 1923, with the birth forms' calendar note for a country. search_places searches the site's birthplace index, derived from GeoNames cities15000 under CC BY 4.0, which server.mjs now carries, with the site's ranking. server.mjs grows to about 2.3 MB. get_capabilities adds a time and a places section, and its limits and citation text name the two tools; the other tools' arguments, results and receipts are rc.23's. Older archives remain unchanged. The adapter itself is still not on npm."
+  "changedSince": "0.1.0-rc.24 adds two tools. resolve_birth_time runs the compute API's time endpoint, POST /api/v1/time, with the engine's geo entry and the zone histories it ships, which server.mjs now carries: a local date and time in an IANA zone as UTC and Terrestrial Time, with flags for a time the clocks skipped or repeated, local mean time and a zone history before 1970 that the runtime's own data disputes, and a date written in the Julian calendar up to 1923, with the birth forms' calendar note for a country. search_places searches the site's birthplace index, derived from GeoNames cities15000 under CC BY 4.0, which server.mjs now carries, with the site's ranking. For a place of the Zodiacs time atlas 0.1.0 (CC BY 4.0), which server.mjs also carries, resolve_birth_time adds the atlas's cited reading of the same wall time, with its uncertainty flag, beside tzdb's. server.mjs grows to about 2.5 MB. get_capabilities adds a time and a places section, and its limits and citation text name the two tools; the other tools' arguments, results and receipts are rc.23's. Older archives remain unchanged. The adapter itself is still not on npm."
 }

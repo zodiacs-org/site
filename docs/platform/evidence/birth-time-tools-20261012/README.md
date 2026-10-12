@@ -51,10 +51,12 @@ committed nodal speeds kept, as before.
 
 - `resolve_birth_time` runs the compute API's own time parser and function,
   with the engine's resolver and the zone histories it loads built into
-  `server.mjs`. `src/mcp/time-places.test.ts` runs 105 synthetic requests (96
+  `server.mjs`. `src/mcp/time-places.test.ts` runs 130 synthetic requests (96
   seeded across 18 zones and the accepted years, a sixth of them in the Julian
-  calendar, and 9 chosen to reach each flag, both zone histories and each
-  calendar note) through the tool and through the compute API's handler, and
+  calendar, 9 chosen to reach each flag, both zone histories and each calendar
+  note, and 25 at the time atlas's places, which
+  [`../time-atlas-reading-20261012/`](../time-atlas-reading-20261012/)
+  describes) through the tool and through the compute API's handler, and
   holds every result to the handler's body, apart from `cite.url`, and to the
   tool's output schema, the JSON Schema a host reads and the OpenAPI response.
   Six refused requests get the handler's own sentences.

@@ -36,6 +36,7 @@ import {
 import { computeApiRateLimit, createComputeApiHandler } from '../../src/lib/compute-api/handler';
 import * as localTime from '../../src/lib/compute-api/local-time-source';
 import { VALIDATION_MESSAGES } from '../../src/lib/compute-api/validate';
+import { ATLAS_SOURCE, atlasReading } from '../../src/lib/time-atlas/index';
 import { prepareLocalTime, resolveLocalToUtc } from '../../src/lib/time/localToUtc';
 import { run, type HarnessRequest } from '../../scripts/lib/compute-api-harness';
 import compatibilityHandler from '../../api/compatibility.js';
@@ -829,6 +830,29 @@ describe('compute API parity with the engine and the site resolver', () => {
     // A code the table does not date, and a date written from 1924 on: no note.
     expect(await at({ local: { date: '1917-10-25', ...moscow }, country: 'ZZ' })).toMatchObject({ adoption: null, calendarNote: null });
     expect(await at({ local: { date: '1924-06-01', ...moscow }, country: 'RU' })).toMatchObject({ adoption: { code: 'RU' }, calendarNote: null });
+  });
+
+  it("time gives the time atlas's reading at an atlas place, beside tzdb's, with its rule, its uncertainty and its citations", async () => {
+    const at = (body: object) => call('time', body).then((response) => response.json.result);
+    // Strasbourg was German in 1916 and kept German summer time; tzdb's Europe/Paris answers for Paris.
+    const strasbourg = await at({ local: { date: '1916-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-strasbourg' });
+    const reading = atlasReading('fr-strasbourg', '1916-06-01', '12:00');
+    expect(strasbourg.atlas).toEqual({ ...reading, secondsFromTzdb: -7200, source: { ...ATLAS_SOURCE } });
+    expect(strasbourg.atlas.instants[0]).toMatchObject({ utc: '1916-06-01T10:00:00.000Z', offsetSeconds: 7200, isDst: true });
+    expect(strasbourg.utc).toBe('1916-06-01T12:00:00.000Z');
+    // Where the atlas and tzdb agree, the difference is zero: Paris on Paris mean time in 1900.
+    expect((await at({ local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-paris' })).atlas)
+      .toMatchObject({ status: 'ok', secondsFromTzdb: 0 });
+    // The noon New York set its clocks back to Eastern time, which the atlas flags uncertain.
+    const changeover = (await at({ local: { date: '1883-11-18', time: '12:02', zone: 'America/New_York' }, atlasPlace: 'us-new-york' })).atlas;
+    expect(changeover.status).toBe('ambiguous');
+    expect(changeover.instants.map((instant: { uncertainty: { flag: string } }) => instant.uncertainty.flag)).toEqual(['uncertain', 'uncertain']);
+    // Outside the atlas's window there is no reading, and without an atlas place no atlas at all.
+    expect((await at({ local: { date: '1925-06-01', time: '12:00', zone: 'America/Chicago' }, atlasPlace: 'us-chicago' })).atlas)
+      .toMatchObject({ status: 'out-of-coverage', instants: [], secondsFromTzdb: null });
+    expect((await at({ local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' } })).atlas).toBeNull();
+    const refused = (await call('time', { local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-lille' })).json.error;
+    expect(refused).toMatchObject({ code: 'invalid-request', pointer: '/atlasPlace' });
   });
 
   it('time refuses a Julian date the birth forms would not take, an unknown calendar and a malformed country', async () => {

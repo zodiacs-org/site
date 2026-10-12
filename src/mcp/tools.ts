@@ -32,6 +32,7 @@ import { CALENDARS } from '../lib/compute-api/validate';
 import { SKY_TOOLS, capabilitiesReceipt, citeFor, comparisonReceipt } from './cite';
 import type { CapabilitiesOutput, CompareOutput, NatalRecordOutput, NatalSummaryOutput } from './outputs';
 import { PLACES_MAX, PLACES_SOURCE } from './places-source';
+import { ATLAS_PLACE_IDS, ATLAS_VERSION, ATLAS_WINDOW } from '../lib/time-atlas/places';
 import { RESOURCES } from './resources';
 import { ANY_ZONE_DAY_TEXT } from './sky-tools';
 import {
@@ -226,6 +227,7 @@ export function describeCapabilities(): ToolOutcome {
       pinnedTzdb: { release: PINNED_TZDB_RELEASE, appliesBefore: '1970-01-02' },
       calendars: [...CALENDARS],
       julianLastWritten: '1923-12-31',
+      atlas: { version: ATLAS_VERSION, licence: 'CC BY 4.0', window: { ...ATLAS_WINDOW }, places: [...ATLAS_PLACE_IDS] },
     },
     places: {
       tool: 'search_places',

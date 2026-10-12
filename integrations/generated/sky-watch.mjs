@@ -5204,6 +5204,309 @@ function parseCivilDate(value) {
   return day <= days ? { year, month, day } : null;
 }
 
+// src/data/time-atlas/atlas.json
+var atlas_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-manifest",
+  name: "Zodiacs.org historical time atlas: United States and France, 1870-1919",
+  version: "0.1.0",
+  released: "2026-09-28",
+  license: "CC-BY-4.0",
+  coverage: {
+    start: "1870-01-01T00:00:00",
+    end: "1920-01-01T00:00:00",
+    countries: ["FR", "US"],
+    note: "Civil time from 1 January 1870 to the end of 1919, read on each place's own clock. See atlas/COVERAGE.md for the places and what is left out."
+  },
+  files: [
+    "places.json",
+    "leads.json",
+    "citations-fr.json",
+    "rules-fr.json",
+    "citations-als.json",
+    "rules-als.json",
+    "citations-us.json",
+    "rules-us.json",
+    "tzdb-explanations.json"
+  ],
+  longitudeSource: {
+    dataset: "GeoNames cities15000 (cities15000.zip)",
+    url: "https://download.geonames.org/export/dump/cities15000.zip",
+    retrieved: "2026-09-28",
+    sha256: "2b63225616ed25a77577883b073ba65531e545e682ca9e2eddfaa776d3bd3972",
+    license: "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    attribution: "Place names, coordinates and GeoNames ids from GeoNames (https://www.geonames.org/).",
+    changes: "For each covered place the atlas keeps only the GeoNames id, name, country code, latitude and longitude, copied unchanged (decimal degrees as published), and the name of its first-level administrative division from admin1CodesASCII.txt (https://download.geonames.org/export/dump/admin1CodesASCII.txt, retrieved 2026-09-28, SHA-256 1da92a6323a5fec3176f3f743bf4cf4040fd56a876da55e46fbca23c863aa60a). Nothing else from either file is redistributed."
+  }
+};
+
+// src/data/time-atlas/places.json
+var places_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-places",
+  description: "Covered places. Names, first-level administrative divisions (as GeoNames names them today), coordinates and ids are from GeoNames (https://www.geonames.org/, CC BY 4.0), copied unchanged; see longitudeSource in atlas.json.",
+  places: [
+    {
+      id: "fr-paris",
+      name: "Paris",
+      country: "FR",
+      admin1: "\xCEle-de-France",
+      jurisdiction: "fr-paris",
+      latitude: 48.85341,
+      longitude: 2.3488,
+      geonamesId: 2988507,
+      tzdbZone: "Europe/Paris",
+      note: "Legal time before 1891 is Paris mean time (+0:09:21), not the mean time of these coordinates."
+    },
+    {
+      id: "fr-brest",
+      name: "Brest",
+      country: "FR",
+      admin1: "Brittany",
+      jurisdiction: "fr-brest",
+      latitude: 48.39029,
+      longitude: -4.48628,
+      geonamesId: 3030300,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-nantes",
+      name: "Nantes",
+      country: "FR",
+      admin1: "Pays de la Loire",
+      jurisdiction: "fr-general",
+      latitude: 47.21725,
+      longitude: -1.55336,
+      geonamesId: 2990969,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-bordeaux",
+      name: "Bordeaux",
+      country: "FR",
+      admin1: "New Aquitaine",
+      jurisdiction: "fr-general",
+      latitude: 44.84124,
+      longitude: -0.58046,
+      geonamesId: 3031582,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-rouen",
+      name: "Rouen",
+      country: "FR",
+      admin1: "Normandy",
+      jurisdiction: "fr-general",
+      latitude: 49.44313,
+      longitude: 1.09932,
+      geonamesId: 2982652,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-toulouse",
+      name: "Toulouse",
+      country: "FR",
+      admin1: "Occitanie",
+      jurisdiction: "fr-general",
+      latitude: 43.60426,
+      longitude: 1.44367,
+      geonamesId: 2972315,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-lyon",
+      name: "Lyon",
+      country: "FR",
+      admin1: "Auvergne-Rh\xF4ne-Alpes",
+      jurisdiction: "fr-general",
+      latitude: 45.74906,
+      longitude: 4.84789,
+      geonamesId: 2996944,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-marseille",
+      name: "Marseille",
+      country: "FR",
+      admin1: "Provence-Alpes-C\xF4te d'Azur",
+      jurisdiction: "fr-general",
+      latitude: 43.29695,
+      longitude: 5.38107,
+      geonamesId: 2995469,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-nice",
+      name: "Nice",
+      country: "FR",
+      admin1: "Provence-Alpes-C\xF4te d'Azur",
+      jurisdiction: "fr-general",
+      latitude: 43.70313,
+      longitude: 7.26608,
+      geonamesId: 2990440,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-ajaccio",
+      name: "Ajaccio",
+      country: "FR",
+      admin1: "Corsica",
+      jurisdiction: "fr-general",
+      latitude: 41.91886,
+      longitude: 8.73812,
+      geonamesId: 3038334,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-strasbourg",
+      name: "Strasbourg",
+      country: "FR",
+      admin1: "Grand Est",
+      jurisdiction: "als-strasbourg",
+      latitude: 48.58392,
+      longitude: 7.74553,
+      geonamesId: 2973783,
+      tzdbZone: "Europe/Paris",
+      compareZones: ["Europe/Berlin"],
+      note: "German from 1871 to November 1918. tzdb has no zone for Alsace-Lorraine; Europe/Berlin is compared for information."
+    },
+    {
+      id: "fr-metz",
+      name: "Metz",
+      country: "FR",
+      admin1: "Grand Est",
+      jurisdiction: "mos-metz",
+      latitude: 49.11911,
+      longitude: 6.17269,
+      geonamesId: 2994160,
+      tzdbZone: "Europe/Paris",
+      compareZones: ["Europe/Berlin"],
+      note: "German from 1871 to November 1918. tzdb has no zone for Alsace-Lorraine; Europe/Berlin is compared for information."
+    },
+    {
+      id: "us-new-york",
+      name: "New York City",
+      country: "US",
+      admin1: "New York",
+      jurisdiction: "us-nyc",
+      latitude: 40.71427,
+      longitude: -74.00597,
+      geonamesId: 5128581,
+      tzdbZone: "America/New_York"
+    },
+    {
+      id: "us-baltimore",
+      name: "Baltimore",
+      country: "US",
+      admin1: "Maryland",
+      jurisdiction: "us-baltimore",
+      latitude: 39.29038,
+      longitude: -76.61219,
+      geonamesId: 4347778,
+      tzdbZone: "America/New_York"
+    },
+    {
+      id: "us-washington",
+      name: "Washington",
+      country: "US",
+      admin1: "District of Columbia",
+      jurisdiction: "us-washington",
+      latitude: 38.89511,
+      longitude: -77.03637,
+      geonamesId: 4140963,
+      tzdbZone: "America/New_York"
+    },
+    {
+      id: "us-providence",
+      name: "Providence",
+      country: "US",
+      admin1: "Rhode Island",
+      jurisdiction: "us-providence",
+      latitude: 41.82399,
+      longitude: -71.41283,
+      geonamesId: 5224151,
+      tzdbZone: "America/New_York"
+    },
+    {
+      id: "us-indianapolis",
+      name: "Indianapolis",
+      country: "US",
+      admin1: "Indiana",
+      jurisdiction: "us-indianapolis",
+      latitude: 39.76838,
+      longitude: -86.15804,
+      geonamesId: 4259418,
+      tzdbZone: "America/Indiana/Indianapolis"
+    },
+    {
+      id: "us-louisville",
+      name: "Louisville",
+      country: "US",
+      admin1: "Kentucky",
+      jurisdiction: "us-louisville",
+      latitude: 38.25424,
+      longitude: -85.75941,
+      geonamesId: 4299276,
+      tzdbZone: "America/Kentucky/Louisville"
+    },
+    {
+      id: "us-chicago",
+      name: "Chicago",
+      country: "US",
+      admin1: "Illinois",
+      jurisdiction: "us-chicago",
+      latitude: 41.85003,
+      longitude: -87.65005,
+      geonamesId: 4887398,
+      tzdbZone: "America/Chicago"
+    },
+    {
+      id: "us-saint-paul",
+      name: "Saint Paul",
+      country: "US",
+      admin1: "Minnesota",
+      jurisdiction: "us-saint-paul",
+      latitude: 44.94441,
+      longitude: -93.09327,
+      geonamesId: 5045360,
+      tzdbZone: "America/Chicago"
+    },
+    {
+      id: "us-minneapolis",
+      name: "Minneapolis",
+      country: "US",
+      admin1: "Minnesota",
+      jurisdiction: "us-minneapolis",
+      latitude: 44.97997,
+      longitude: -93.26384,
+      geonamesId: 5037649,
+      tzdbZone: "America/Chicago"
+    }
+  ]
+};
+
+// src/lib/time-atlas/lib.mjs
+var PRECISION_MS = {
+  second: 0,
+  minute: 0,
+  hour: 36e5,
+  day: 864e5,
+  days: 3 * 864e5,
+  weeks: 14 * 864e5
+};
+
+// src/lib/time-atlas/index.ts
+var ATLAS_COMMIT = "7307665bdbc432269fdac006104f661be16000bc";
+var ATLAS_SOURCE = Object.freeze({
+  name: atlas_default.name,
+  version: atlas_default.version,
+  licence: "CC BY 4.0",
+  url: `https://github.com/zodiacs-org/engine/tree/${ATLAS_COMMIT}/atlas`
+});
+var ATLAS_PLACES = Object.freeze(places_default.places.map(({ id }) => id));
+var ATLAS_COVERAGE = Object.freeze({ start: atlas_default.coverage.start, end: atlas_default.coverage.end });
+
 // src/lib/compute-api/errors.ts
 var ComputeApiError = class extends Error {
   status;
@@ -5369,6 +5672,32 @@ function successBody(endpoint, result, receipt) {
   };
 }
 
+// src/lib/time-atlas/places.ts
+var ATLAS_PLACE_IDS = Object.freeze([
+  "fr-paris",
+  "fr-brest",
+  "fr-nantes",
+  "fr-bordeaux",
+  "fr-rouen",
+  "fr-toulouse",
+  "fr-lyon",
+  "fr-marseille",
+  "fr-nice",
+  "fr-ajaccio",
+  "fr-strasbourg",
+  "fr-metz",
+  "us-new-york",
+  "us-baltimore",
+  "us-washington",
+  "us-providence",
+  "us-indianapolis",
+  "us-louisville",
+  "us-chicago",
+  "us-saint-paul",
+  "us-minneapolis"
+]);
+var ATLAS_WINDOW = Object.freeze({ from: "1870-01-01T00:00:00", to: "1920-01-01T00:00:00" });
+
 // src/lib/compute-api/validate.ts
 var CALENDARS = Object.freeze(["gregorian", "julian"]);
 var TEXT = Object.freeze({
@@ -5388,6 +5717,7 @@ var TEXT = Object.freeze({
   julianDate: `With calendar julian, must be a real Julian calendar date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to the day before ${CALENDAR_CHOICE_BEFORE}.`,
   calendar: `Must be one of: ${CALENDARS.join(", ")}.`,
   country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
+  atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(", ")}.`,
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",
@@ -5428,6 +5758,7 @@ var VALIDATION_POINTERS = Object.freeze([
   "/longitude",
   "/calendar",
   "/country",
+  "/atlasPlace",
   "/houseSystem",
   "/instants",
   "/bodies",
@@ -7326,7 +7657,7 @@ var callbackPost = async (raw, headers, body2) => {
   ]);
   if (!addresses.length || addresses.some((row) => !publicAddress(row.address))) throw new Error("blocked-callback");
   const pinned = addresses[0];
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve2, reject) => {
     const req = request(url, {
       method: "POST",
       agent: false,
@@ -7348,7 +7679,7 @@ var callbackPost = async (raw, headers, body2) => {
         } else chunks.push(chunk);
       });
       res.on("error", () => reject(new Error("callback-failed")));
-      res.on("end", () => resolve({ status: res.statusCode ?? 0, body: Buffer.concat(chunks).toString("utf8") }));
+      res.on("end", () => resolve2({ status: res.statusCode ?? 0, body: Buffer.concat(chunks).toString("utf8") }));
     });
     req.on("error", () => reject(new Error(signal.aborted ? "timeout" : "callback-failed")));
     req.end(body2);

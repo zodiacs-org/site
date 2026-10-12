@@ -31,7 +31,14 @@ server.mjs also carries, from the Zodiacs.org site:
   which 42 countries took the Gregorian calendar, whose dates come from the
   IANA Time Zone Database's calendars file and the English, Latvian and
   Finnish Wikipedia articles the site names beside each row; it copies
-  dates, not text.
+  dates, not text;
+- for resolve_birth_time's atlasPlace, the Zodiacs.org historical time
+  atlas 0.1.0 (the engine repository's atlas/data at commit
+  7307665bdbc432269fdac006104f661be16000bc,
+  https://github.com/zodiacs-org/engine/tree/7307665bdbc432269fdac006104f661be16000bc/atlas),
+  whose data is licensed under Creative Commons Attribution 4.0
+  International (CC BY 4.0), and the resolver of its atlas/tools/lib.mjs,
+  under the MIT licence.
 
 If you redistribute this archive or server.mjs, keep this notice. The
 engine's own notice follows unchanged; the engine's LICENSING.md, in its

@@ -278,8 +278,9 @@ gets the MCP SDK's validation message instead.
 ### `resolve_birth_time`
 
 Takes `local`, a `date`, a `time` in hours and minutes and an IANA `zone`, and
-optionally the place's `longitude`, the `calendar` its date is written in, and
-its `country` as an ISO 3166-1 alpha-2 code. Returns the instant in UTC and in
+optionally the place's `longitude`, the `calendar` its date is written in, its
+`country` as an ISO 3166-1 alpha-2 code, and `atlasPlace`, a place of the time
+atlas. Returns the instant in UTC and in
 Terrestrial Time, the offset applied, and how the time was read:
 
 - a time the clocks skipped moves forward by the gap and is flagged `dst-gap`;
@@ -304,7 +305,16 @@ Terrestrial Time, the offset applied, and how the time was read:
   before the time is read; the reply gives both. With `country`, it gives when
   the site's table says that country changed calendar and, for a date written
   before 1924, the note the site's birth forms give: `old-style`, `new-style`
-  or `other-calendar`.
+  or `other-calendar`;
+- with `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which
+  records with citations what the clocks said in France and the United States
+  from 1870 to 1919, the reply adds the atlas's reading of the same wall time:
+  one instant, every instant of a time the clocks repeated, or the instant of a
+  time they skipped, each with the rule the atlas applies, its uncertainty
+  flag, `documented`, `inferred` or `uncertain`, with the reasons, and the
+  rule's citations; and how many seconds its first instant is from tzdb's. At
+  noon on 1 June 1916 Strasbourg, then German, kept German summer time, and the
+  atlas's instant is two hours before tzdb's for Europe/Paris.
 
 This is the same parser, calculation and receipt as
 `POST https://zodiacs.org/api/v1/time`, run here with the zone histories built
@@ -634,8 +644,8 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   whose bytes npm's tarball matches. 1.0.0 is 1.0.0-rc.2 with the version
   changed. This adapter does not import `calc` or Vedic; its finite comparison
   with rc.18 is recorded in the site adoption. rc.24 adds `resolve_birth_time`
-  and `search_places`, with the zone histories and the place index they read,
-  which take `server.mjs` to about 2.3 MB; rc.23 adds aspect facts to
+  and `search_places`, with the zone histories, the time atlas and the place
+  index they read, which take `server.mjs` to about 2.5 MB; rc.23 adds aspect facts to
   `check_sky_fact`; rc.22 is rc.21 with this README corrected; rc.21 is rc.19
   rebuilt after the hosted compute API began reading local times with
   `@zodiacs/engine/geo`. Until rc.24 the adapter resolved no time zone. Its
@@ -675,7 +685,7 @@ historical until rerun. The records establish different things:
   requests, `get_positions`, `find_events` and `check_sky_fact` return the body
   the compute API's own handler answers for the same JSON, apart from
   `cite.url`, and each of 21 refused requests gets the handler's own sentence.
-- **`src/mcp/time-places.test.ts`**, in the repository — for 105 synthetic
+- **`src/mcp/time-places.test.ts`**, in the repository — for 130 synthetic
   requests, `resolve_birth_time` returns the body the compute API's own handler
   answers for the same JSON, apart from `cite.url`, and each of 6 refused
   requests gets the handler's own sentence; for 75 queries, each at three
@@ -704,7 +714,8 @@ basis carries the IERS leap-second list and a UT1 − UTC table derived from
 IERS data, and whose `geo` entry carries zone histories compiled from the IANA
 Time Zone Database and a table of Gregorian calendar adoption dates, both from
 public-domain sources. It also bundles the site's birthplace index, derived
-from GeoNames cities15000 under CC BY 4.0, and the site's own table of
-adoption dates for its birth forms' calendar notes. `NOTICE` gives the
+from GeoNames cities15000 under CC BY 4.0, the site's own table of adoption
+dates for its birth forms' calendar notes, and the Zodiacs time atlas 0.1.0,
+whose data is CC BY 4.0. `NOTICE` gives the
 attributions; keep it if you redistribute the archive. `candidate.json`
 records what is bundled and where it came from.

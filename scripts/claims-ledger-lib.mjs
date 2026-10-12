@@ -144,6 +144,7 @@ export const SCOPE_DROP = Object.freeze([
   { pattern: /^api\/_ai\/runtime\.mjs$/u, reason: 'generated from src/ai-tools, src/lib/compute-api and the vendored engine; the source adapters are read instead' },
   { pattern: /^src\/data\/(?:sky|ingresses|eclipses|birthdays)\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/transits-\d{4}-\d{2}\.json$/u, reason: 'generated sky data with no prose' },
+  { pattern: /^src\/data\/time-atlas\//u, reason: 'the engine repository\'s time atlas, copied byte for byte at a pinned commit and held to its digests: its statements are the atlas\'s own, each rule cited to primary sources and checked by the atlas\'s checks (B3.a)' },
   { pattern: /^src\/data\/people\.json$/u, reason: 'the people pilot\'s frozen, generated copy; its facts are checked by build-people-pilot.mjs --check' },
   { pattern: /(?:^|\/)fixtures\/|\.fixture\.json$/u, reason: 'test fixtures, not copy' },
 ]);

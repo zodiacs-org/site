@@ -20,6 +20,7 @@ import { ASPECT_TYPES, HOUSE_SYSTEMS, type AspectType, type HouseSystem } from '
 import { parseCivilDate, parseCivilTime } from '../time/civil-date.js';
 import { julianToGregorian } from '../time/calendar.js';
 import { CALENDAR_CHOICE_BEFORE } from '../time/calendar-choice.js';
+import { ATLAS_PLACE_IDS, type AtlasPlaceId } from '../time-atlas/places.js';
 import {
   ANGULAR_MAX_ABS_LATITUDE,
   BUDGETS,
@@ -90,6 +91,8 @@ export interface TimeRequest {
   writtenDate: string;
   /** An ISO 3166-1 alpha-2 code, for the calendar note; null when none was given. */
   country: string | null;
+  /** A place of the time atlas to read the wall time on as well; null when none was given. */
+  atlasPlace: AtlasPlaceId | null;
 }
 
 export interface FactDay {
@@ -146,6 +149,7 @@ const TEXT = Object.freeze({
   julianDate: `With calendar julian, must be a real Julian calendar date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to the day before ${CALENDAR_CHOICE_BEFORE}.`,
   calendar: `Must be one of: ${CALENDARS.join(', ')}.`,
   country: 'Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.',
+  atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(', ')}.`,
   time: 'Must be a time written HH:MM, from 00:00 to 23:59.',
   zoneFormat: 'Must be an IANA time zone name, such as Europe/Paris.',
   zoneUnknown: 'Must be a time zone name the server\'s time zone data includes.',
@@ -182,7 +186,7 @@ const TEXT = Object.freeze({
  * request invented.
  */
 export const VALIDATION_POINTERS = Object.freeze([
-  '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude', '/calendar', '/country',
+  '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude', '/calendar', '/country', '/atlasPlace',
   '/houseSystem', '/instants', '/bodies', '/from', '/to', '/kinds', '/kind', '/body', '/sign',
   '/phase', '/other', '/aspect', '/instant', '/date', '/zone', '/conditions', '/place', '/place/latitude',
   '/place/longitude', '/place/houseSystem',
@@ -422,7 +426,7 @@ const COUNTRY_CODE = /^[A-Z]{2}$/u;
  */
 export async function parseTimeRequest(value: unknown, zones: ZoneNames): Promise<TimeRequest> {
   const object = bodyObject(value);
-  onlyFields(object, ['local', 'longitude', 'calendar', 'country'], '');
+  onlyFields(object, ['local', 'longitude', 'calendar', 'country', 'atlasPlace'], '');
   const calendar = has(object, 'calendar') ? oneOf(object.calendar, '/calendar', CALENDARS, TEXT.calendar) : 'gregorian';
   const localObject = objectAt(required(object, 'local', ''), '/local');
   onlyFields(localObject, ['date', 'time', 'zone'], '/local');
@@ -436,7 +440,8 @@ export async function parseTimeRequest(value: unknown, zones: ZoneNames): Promis
     if (typeof object.country !== 'string' || !COUNTRY_CODE.test(object.country)) throw invalidRequest('/country', TEXT.country);
     country = object.country;
   }
-  return { local: { date, time, zone }, longitude, calendar, writtenDate: writtenDate as string, country };
+  const atlasPlace = has(object, 'atlasPlace') ? oneOf(object.atlasPlace, '/atlasPlace', ATLAS_PLACE_IDS, TEXT.atlasPlace) : null;
+  return { local: { date, time, zone }, longitude, calendar, writtenDate: writtenDate as string, country, atlasPlace };
 }
 
 async function factDay(object: JsonObject, zones: ZoneNames): Promise<FactDay> {

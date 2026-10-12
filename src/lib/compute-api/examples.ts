@@ -56,6 +56,10 @@ export const SUCCESS_EXAMPLES: Readonly<Record<ComputeEndpoint, Readonly<Record<
       summary: 'A date written in the Julian calendar, with the country for the calendar note',
       body: { local: { date: '1917-10-25', time: '12:00', zone: 'Europe/Moscow' }, calendar: 'julian', country: 'RU' },
     },
+    atlas: {
+      summary: 'A place of the time atlas whose clock tzdb does not record: Strasbourg under German summer time in 1916',
+      body: { local: { date: '1916-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-strasbourg' },
+    },
   },
   elections: {
     london: {

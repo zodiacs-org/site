@@ -412,6 +412,12 @@ try {
   check('a Julian date is converted before the time is read, with the country\'s change of calendar',
     oldStyle.result?.date === '1917-11-07' && oldStyle.result.writtenDate === '1917-10-25'
     && oldStyle.result.adoption?.firstGregorian === '1918-02-14' && oldStyle.result.calendarNote === null, oldStyle.result);
+  const atlasRead = await ok('resolve_birth_time', { local: { date: '1916-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-strasbourg' });
+  check("a place of the time atlas gets the atlas's cited reading beside tzdb's, with its uncertainty flag",
+    atlasRead.result?.atlas?.status === 'ok' && atlasRead.result.atlas.secondsFromTzdb === -7200
+    && ['documented', 'inferred', 'uncertain'].includes(atlasRead.result.atlas.instants[0]?.uncertainty?.flag)
+    && atlasRead.result.atlas.instants[0].citations.length > 0 && atlasRead.result.atlas.source?.licence === 'CC BY 4.0',
+    atlasRead.result?.atlas?.status);
   check('a time cites the compute receipt it carries, which holds no date, time or zone from the request',
     local.schema === 'zodiacs.compute-api.time.v1' && local.receipt?.endpoint === 'time'
     && local.cite?.url === `${DOCS}#resolve_birth_time` && local.cite.receipt === digest(local.receipt)
