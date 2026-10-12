@@ -1719,7 +1719,8 @@ function serializeNatalEnvelope(envelope) {
 }
 
 // src/mcp/bounds.ts
-var ADAPTER_VERSION = "0.1.0-rc.23";
+var ADAPTER_VERSION = "0.1.0-rc.24";
+var PINNED_TZDB_RELEASE = "2025c";
 var ADAPTER_NAME = "zodiacs-mcp-server";
 var EPOCH_MIN_UTC = "1800-01-01T00:00:00.000Z";
 var EPOCH_MAX_UTC = "2199-12-31T23:59:59.999Z";
@@ -5531,6 +5532,319 @@ function responseSchemaName(endpoint) {
 }
 var COMPUTE_RECEIPT_SCHEMA = "zodiacs.compute-receipt.v1";
 
+// src/lib/time/civil-date.ts
+function parseCivilDate(value) {
+  if (typeof value !== "string" || value.length !== 10) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1) return null;
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  return day <= days ? { year, month, day } : null;
+}
+
+// src/lib/time/calendar-choice.ts
+var CALENDAR_CHOICE_BEFORE = "1924-01-01";
+
+// src/lib/compute-api/errors.ts
+var ComputeApiError = class extends Error {
+  status;
+  detail;
+  headers;
+  constructor(detail, headers = {}) {
+    super(detail.message);
+    this.name = "ComputeApiError";
+    this.status = ERROR_STATUS[detail.code];
+    this.detail = detail;
+    this.headers = Object.freeze({ ...headers });
+  }
+};
+var MESSAGES = Object.freeze({
+  notFound: "No compute endpoint is served at this address.",
+  methodNotAllowed: "This endpoint accepts POST with a JSON body, and OPTIONS.",
+  disabled: "The compute API is switched off. Try again later.",
+  rateLimited: "Too many requests from this address. Try again after the interval in Retry-After.",
+  rateLimitUnavailable: "The compute API answers only while its rate limit is in place, and the limit could not be checked. Try again after the interval in Retry-After.",
+  unsupportedMediaType: "Send the body as application/json in UTF-8, without a content encoding.",
+  payloadTooLarge: `The body is larger than ${MAX_BODY_BYTES} bytes.`,
+  invalidJson: "The body is not valid JSON in UTF-8.",
+  calculationFailed: "The engine could not complete this calculation."
+});
+function invalidRequest(pointer, message) {
+  return new ComputeApiError({ code: "invalid-request", message, pointer });
+}
+function budgetExhausted(limit) {
+  return new ComputeApiError({
+    code: "budget-exhausted",
+    message: BUDGET_MESSAGES[limit],
+    limit,
+    max: BUDGETS[limit]
+  });
+}
+
+// src/lib/compute-api/validate.ts
+var CALENDARS = Object.freeze(["gregorian", "julian"]);
+var TEXT = Object.freeze({
+  body: "The body must be a JSON object.",
+  object: "Must be a JSON object.",
+  unknownField: "This object has a field this endpoint does not accept.",
+  required: "This field is required.",
+  string: "Must be a string.",
+  array: "Must be a non-empty array.",
+  distinct: "Must not repeat a value.",
+  utcOrLocal: "Give exactly one of utc and local.",
+  instantFormat: "Must be an ISO 8601 instant with Z or a numeric offset, such as 2001-02-03T04:05:06Z.",
+  instantCalendar: "Must name a real calendar date and a time from 00:00:00 to 23:59:59; leap seconds are not accepted.",
+  instantOffset: "The offset must be from -14:00 to +14:00.",
+  instantRange: `Must fall from ${EPOCH.from} to ${EPOCH.to}.`,
+  date: `Must be a real date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31.`,
+  julianDate: `With calendar julian, must be a real Julian calendar date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to the day before ${CALENDAR_CHOICE_BEFORE}.`,
+  calendar: `Must be one of: ${CALENDARS.join(", ")}.`,
+  country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
+  time: "Must be a time written HH:MM, from 00:00 to 23:59.",
+  zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
+  zoneUnknown: "Must be a time zone name the server's time zone data includes.",
+  latitude: "Must be a number greater than -90 and less than 90; the engine does not compute angles at the poles.",
+  longitude: "Must be a number from -180 to 180.",
+  houseSystem: `Must be one of the engine's house systems: ${HOUSE_SYSTEMS3.join(", ")}.`,
+  positionBody: `Each must be one of: ${POSITION_BODIES.join(", ")}.`,
+  eventBody: `Must be one of: ${EVENT_BODIES.join(", ")}.`,
+  eventBodies: `Each must be one of: ${EVENT_BODIES.join(", ")}.`,
+  eventKinds: `Each must be one of: ${EVENT_KINDS.join(", ")}.`,
+  window: "Must be later than from.",
+  factKind: `Must be one of: ${SKY_FACT_KINDS.join(", ")}.`,
+  sign: `Must be a sign in lowercase: ${SIGN_SLUGS2.join(", ")}.`,
+  phase: `Must be one of: ${PHASE_NAMES.join(", ")}.`,
+  aspect: `Must be one of: ${ASPECT_TYPES.join(", ")}.`,
+  otherBody: `Must be one of: ${EVENT_BODIES.join(", ")}, and not the body itself.`,
+  instantOrDate: "Give exactly one of instant and date.",
+  zoneNeedsDate: "A zone goes with a date, not with an instant.",
+  skippedDay: "This date did not happen in this zone: its clocks went from the day before straight to the day after.",
+  conditions: `Must be an array of one to ${MAX_ELECTION_CONDITIONS} conditions.`,
+  conditionKind: `Must be one of: ${ELECTION_CONDITION_KINDS.join(", ")}.`,
+  moonHalf: `Must be one of: ${MOON_HALVES.join(", ")}.`,
+  stationBody: `Must be one of: ${STATION_BODIES.join(", ")}; the Sun and the Moon are never retrograde.`,
+  not: "Must be true or false.",
+  repeatedCondition: "Must not repeat a condition.",
+  placeRequired: "An angular condition needs a place.",
+  placeWithoutAngular: "A place goes with an angular condition.",
+  angularLatitude: `Must be a number from -${ANGULAR_MAX_ABS_LATITUDE} to ${ANGULAR_MAX_ABS_LATITUDE}: an angular condition is searched within ${ANGULAR_MAX_ABS_LATITUDE}\xB0 of the equator.`
+});
+var VALIDATION_POINTERS = Object.freeze([
+  "",
+  "/utc",
+  "/local",
+  "/local/date",
+  "/local/time",
+  "/local/zone",
+  "/latitude",
+  "/longitude",
+  "/calendar",
+  "/country",
+  "/houseSystem",
+  "/instants",
+  "/bodies",
+  "/from",
+  "/to",
+  "/kinds",
+  "/kind",
+  "/body",
+  "/sign",
+  "/phase",
+  "/other",
+  "/aspect",
+  "/instant",
+  "/date",
+  "/zone",
+  "/conditions",
+  "/place",
+  "/place/latitude",
+  "/place/longitude",
+  "/place/houseSystem"
+]);
+var INDEXED_POINTERS = Object.freeze(["/instants", "/bodies", "/kinds", "/conditions"]);
+var CONDITION_FIELD_POINTERS = Object.freeze(["kind", "phase", "body", "sign", "not"]);
+var ZONE_NAME = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/u;
+var INSTANT2 = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-]\d{2}:\d{2})$/u;
+var EPOCH_FROM = Date.parse(EPOCH.from);
+var EPOCH_TO = Date.parse(EPOCH.to);
+var FIRST_DATE = `${EPOCH.firstYear}-01-01`;
+var LAST_DATE = `${EPOCH.lastYear}-12-31`;
+function isObject(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+function child(pointer, key) {
+  return `${pointer}/${key}`;
+}
+function has(object, key) {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+function onlyFields(object, allowed, pointer) {
+  for (const key of Object.keys(object)) {
+    if (!allowed.includes(key)) throw invalidRequest(pointer, TEXT.unknownField);
+  }
+}
+function objectAt(value, pointer, message = TEXT.object) {
+  if (!isObject(value)) throw invalidRequest(pointer, message);
+  return value;
+}
+function required(object, key, pointer) {
+  if (!has(object, key)) throw invalidRequest(child(pointer, key), TEXT.required);
+  return object[key];
+}
+function stringAt(value, pointer) {
+  if (typeof value !== "string") throw invalidRequest(pointer, TEXT.string);
+  return value;
+}
+function daysInMonth2(year, month) {
+  if (month === 2) return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0 ? 29 : 28;
+  return [4, 6, 9, 11].includes(month) ? 30 : 31;
+}
+function instantAt(value, pointer) {
+  const text2 = stringAt(value, pointer);
+  const match = text2.length <= 29 ? INSTANT2.exec(text2) : null;
+  if (!match) throw invalidRequest(pointer, TEXT.instantFormat);
+  const [, y, mo, d, h, mi, s, , zone3] = match;
+  const year = Number(y);
+  const month = Number(mo);
+  const day = Number(d);
+  if (month < 1 || month > 12 || day < 1 || day > daysInMonth2(year, month) || Number(h) > 23 || Number(mi) > 59 || s !== void 0 && Number(s) > 59) {
+    throw invalidRequest(pointer, TEXT.instantCalendar);
+  }
+  if (zone3 !== "Z") {
+    const hours = Number(zone3.slice(1, 3));
+    const minutes = Number(zone3.slice(4, 6));
+    if (minutes > 59 || hours * 60 + minutes > 14 * 60) throw invalidRequest(pointer, TEXT.instantOffset);
+  }
+  const ms = Date.parse(text2);
+  if (!Number.isFinite(ms) || ms < EPOCH_FROM || ms > EPOCH_TO) throw invalidRequest(pointer, TEXT.instantRange);
+  return { date: new Date(ms), source: text2 };
+}
+function dateAt(value, pointer) {
+  const text2 = stringAt(value, pointer);
+  if (!parseCivilDate(text2) || text2 < FIRST_DATE || text2 > LAST_DATE) throw invalidRequest(pointer, TEXT.date);
+  return text2;
+}
+function zoneKnown(zone3) {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: zone3 });
+    return true;
+  } catch {
+    return false;
+  }
+}
+async function zoneAt(value, pointer, zones) {
+  const text2 = stringAt(value, pointer);
+  if (text2.length > 64 || !ZONE_NAME.test(text2)) throw invalidRequest(pointer, TEXT.zoneFormat);
+  const name = await zones(text2);
+  if (name === null || !zoneKnown(name)) throw invalidRequest(pointer, TEXT.zoneUnknown);
+  return name;
+}
+function oneOf(value, pointer, allowed, message) {
+  if (typeof value !== "string" || !allowed.includes(value)) throw invalidRequest(pointer, message);
+  return value;
+}
+function distinctList(value, pointer, allowed, message) {
+  if (!Array.isArray(value) || value.length === 0) throw invalidRequest(pointer, TEXT.array);
+  const seen = /* @__PURE__ */ new Set();
+  value.forEach((item, index) => {
+    const name = oneOf(item, child(pointer, index), allowed, message);
+    if (seen.has(name)) throw invalidRequest(child(pointer, index), TEXT.distinct);
+    seen.add(name);
+  });
+  return [...seen];
+}
+function bodyObject(value) {
+  return objectAt(value, "", TEXT.body);
+}
+function parsePositionsRequest(value) {
+  const object = bodyObject(value);
+  onlyFields(object, ["instants", "bodies"], "");
+  const list2 = required(object, "instants", "");
+  if (!Array.isArray(list2) || list2.length === 0) throw invalidRequest("/instants", TEXT.array);
+  const instants = list2.map((item, index) => instantAt(item, child("/instants", index)).date);
+  const bodies = has(object, "bodies") ? distinctList(object.bodies, "/bodies", POSITION_BODIES, TEXT.positionBody) : null;
+  if (instants.length > BUDGETS["positions.instants"]) throw budgetExhausted("positions.instants");
+  return { instants, bodies };
+}
+var DAY_MS = 864e5;
+function parseEventsRequest(value) {
+  const object = bodyObject(value);
+  onlyFields(object, ["from", "to", "bodies", "kinds"], "");
+  const from = instantAt(required(object, "from", ""), "/from").date;
+  const to = instantAt(required(object, "to", ""), "/to").date;
+  if (to.getTime() <= from.getTime()) throw invalidRequest("/to", TEXT.window);
+  const bodies = has(object, "bodies") ? distinctList(object.bodies, "/bodies", EVENT_BODIES, TEXT.eventBodies) : [...EVENT_BODIES];
+  const kinds = has(object, "kinds") ? distinctList(object.kinds, "/kinds", EVENT_KINDS, TEXT.eventKinds) : [...EVENT_KINDS];
+  if (to.getTime() - from.getTime() > BUDGETS["events.windowDays"] * DAY_MS) throw budgetExhausted("events.windowDays");
+  return {
+    from,
+    to,
+    bodies: EVENT_BODIES.filter((body2) => bodies.includes(body2)),
+    kinds: EVENT_KINDS.filter((kind) => kinds.includes(kind))
+  };
+}
+async function factDay(object, zones) {
+  const date2 = dateAt(required(object, "date", ""), "/date");
+  const zone3 = has(object, "zone") ? await zoneAt(object.zone, "/zone", zones) : null;
+  return { date: date2, zone: zone3 };
+}
+async function factWhen(object, zones) {
+  if (has(object, "instant") === has(object, "date")) throw invalidRequest("", TEXT.instantOrDate);
+  if (has(object, "instant")) {
+    if (has(object, "zone")) throw invalidRequest("/zone", TEXT.zoneNeedsDate);
+    return { instant: instantAt(object.instant, "/instant").date };
+  }
+  return factDay(object, zones);
+}
+async function parseSkyFactRequest(value, zones) {
+  const object = bodyObject(value);
+  const kind = oneOf(required(object, "kind", ""), "/kind", SKY_FACT_KINDS, TEXT.factKind);
+  switch (kind) {
+    case "sign": {
+      onlyFields(object, ["kind", "body", "sign", "instant", "date", "zone"], "");
+      const body2 = oneOf(required(object, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
+      const sign = oneOf(required(object, "sign", ""), "/sign", SIGN_SLUGS2, TEXT.sign);
+      return { kind, body: body2, sign, when: await factWhen(object, zones) };
+    }
+    case "retrograde": {
+      onlyFields(object, ["kind", "body", "instant", "date", "zone"], "");
+      const body2 = oneOf(required(object, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
+      return { kind, body: body2, when: await factWhen(object, zones) };
+    }
+    case "ingress": {
+      onlyFields(object, ["kind", "body", "sign", "date", "zone"], "");
+      const body2 = oneOf(required(object, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
+      const sign = oneOf(required(object, "sign", ""), "/sign", SIGN_SLUGS2, TEXT.sign);
+      return { kind, body: body2, sign, day: await factDay(object, zones) };
+    }
+    case "phase": {
+      onlyFields(object, ["kind", "phase", "date", "zone"], "");
+      const phase = oneOf(required(object, "phase", ""), "/phase", PHASE_NAMES, TEXT.phase);
+      return { kind, phase, day: await factDay(object, zones) };
+    }
+    case "aspect": {
+      onlyFields(object, ["kind", "body", "other", "aspect", "instant", "date", "zone"], "");
+      const body2 = oneOf(required(object, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
+      const other = oneOf(required(object, "other", ""), "/other", EVENT_BODIES, TEXT.otherBody);
+      if (other === body2) throw invalidRequest("/other", TEXT.otherBody);
+      const aspect = oneOf(required(object, "aspect", ""), "/aspect", ASPECT_TYPES, TEXT.aspect);
+      return { kind, body: body2, other, aspect, when: await factWhen(object, zones) };
+    }
+  }
+}
+var CONDITION_FIELDS = Object.freeze({
+  phase: ["kind", "phase", "not"],
+  "void-of-course": ["kind", "not"],
+  sign: ["kind", "body", "sign", "not"],
+  retrograde: ["kind", "body", "not"],
+  angular: ["kind", "body", "not"]
+});
+var VALIDATION_MESSAGES = TEXT;
+
 // src/lib/receipt-digest.ts
 import { createHash } from "node:crypto";
 function canonicalJson(value) {
@@ -5561,13 +5875,16 @@ var TOOL_NAMES = Object.freeze([
   "compare_calculation_records",
   "get_positions",
   "find_events",
-  "check_sky_fact"
+  "check_sky_fact",
+  "resolve_birth_time",
+  "search_places"
 ]);
 var SKY_TOOLS = Object.freeze({
   get_positions: "positions",
   find_events: "events",
   check_sky_fact: "sky-fact"
 });
+var COMPUTE_TOOLS = Object.freeze({ ...SKY_TOOLS, resolve_birth_time: "time" });
 function toolUrl(tool) {
   return `${DOCS_URL}#${tool}`;
 }
@@ -5588,6 +5905,15 @@ function capabilitiesReceipt() {
 function comparisonReceipt(output2) {
   return { ...adapterReceipt("compare_calculation_records"), output: output2 };
 }
+
+// src/mcp/places-source.ts
+var PLACES_SOURCE = Object.freeze({
+  source: "GeoNames cities15000",
+  licence: "CC BY 4.0",
+  url: "https://www.geonames.org/",
+  rows: 33934
+});
+var PLACES_MAX = 20;
 
 // src/mcp/sky-tools.ts
 import { z } from "zod";
@@ -6053,42 +6379,6 @@ var DEG32 = Math.PI / 180;
 var ASEC2RAD3 = DEG32 / 3600;
 var RAD23 = 180 / Math.PI;
 
-// src/lib/compute-api/errors.ts
-var ComputeApiError = class extends Error {
-  status;
-  detail;
-  headers;
-  constructor(detail, headers = {}) {
-    super(detail.message);
-    this.name = "ComputeApiError";
-    this.status = ERROR_STATUS[detail.code];
-    this.detail = detail;
-    this.headers = Object.freeze({ ...headers });
-  }
-};
-var MESSAGES = Object.freeze({
-  notFound: "No compute endpoint is served at this address.",
-  methodNotAllowed: "This endpoint accepts POST with a JSON body, and OPTIONS.",
-  disabled: "The compute API is switched off. Try again later.",
-  rateLimited: "Too many requests from this address. Try again after the interval in Retry-After.",
-  rateLimitUnavailable: "The compute API answers only while its rate limit is in place, and the limit could not be checked. Try again after the interval in Retry-After.",
-  unsupportedMediaType: "Send the body as application/json in UTF-8, without a content encoding.",
-  payloadTooLarge: `The body is larger than ${MAX_BODY_BYTES} bytes.`,
-  invalidJson: "The body is not valid JSON in UTF-8.",
-  calculationFailed: "The engine could not complete this calculation."
-});
-function invalidRequest(pointer, message) {
-  return new ComputeApiError({ code: "invalid-request", message, pointer });
-}
-function budgetExhausted(limit) {
-  return new ComputeApiError({
-    code: "budget-exhausted",
-    message: BUDGET_MESSAGES[limit],
-    limit,
-    max: BUDGETS[limit]
-  });
-}
-
 // src/lib/time/fixed-zones.ts
 var FIXED_OFFSET_ZONE = /^(?:etc\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\/gmt[+-]\d{1,2}$/iu;
 function isFixedOffsetZone(name) {
@@ -6121,7 +6411,8 @@ async function resolveLocal(module, input, longitude2) {
     localMeanTime: resolved.localMeanTime ? { ...resolved.localMeanTime } : null,
     zoneHistory: pinned ? "pinned" : "runtime",
     zoneUncertain: early && !pinned && !isFixedOffsetZone(input.zone),
-    gapShiftMinutes
+    gapShiftMinutes,
+    intlOffsetMinutes: pinned ? resolved.intlOffsetMinutes : null
   };
 }
 function runtimeTzdbVersion() {
@@ -6195,274 +6486,6 @@ function successBody(endpoint, result, receipt) {
     cite: citeFor2(endpoint, receipt)
   };
 }
-
-// src/lib/time/civil-date.ts
-function parseCivilDate(value) {
-  if (typeof value !== "string" || value.length !== 10) return null;
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  if (month < 1 || month > 12 || day < 1) return null;
-  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-  const days = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
-  return day <= days ? { year, month, day } : null;
-}
-
-// src/lib/compute-api/validate.ts
-var TEXT = Object.freeze({
-  body: "The body must be a JSON object.",
-  object: "Must be a JSON object.",
-  unknownField: "This object has a field this endpoint does not accept.",
-  required: "This field is required.",
-  string: "Must be a string.",
-  array: "Must be a non-empty array.",
-  distinct: "Must not repeat a value.",
-  utcOrLocal: "Give exactly one of utc and local.",
-  instantFormat: "Must be an ISO 8601 instant with Z or a numeric offset, such as 2001-02-03T04:05:06Z.",
-  instantCalendar: "Must name a real calendar date and a time from 00:00:00 to 23:59:59; leap seconds are not accepted.",
-  instantOffset: "The offset must be from -14:00 to +14:00.",
-  instantRange: `Must fall from ${EPOCH.from} to ${EPOCH.to}.`,
-  date: `Must be a real date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31.`,
-  time: "Must be a time written HH:MM, from 00:00 to 23:59.",
-  zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
-  zoneUnknown: "Must be a time zone name the server's time zone data includes.",
-  latitude: "Must be a number greater than -90 and less than 90; the engine does not compute angles at the poles.",
-  longitude: "Must be a number from -180 to 180.",
-  houseSystem: `Must be one of the engine's house systems: ${HOUSE_SYSTEMS3.join(", ")}.`,
-  positionBody: `Each must be one of: ${POSITION_BODIES.join(", ")}.`,
-  eventBody: `Must be one of: ${EVENT_BODIES.join(", ")}.`,
-  eventBodies: `Each must be one of: ${EVENT_BODIES.join(", ")}.`,
-  eventKinds: `Each must be one of: ${EVENT_KINDS.join(", ")}.`,
-  window: "Must be later than from.",
-  factKind: `Must be one of: ${SKY_FACT_KINDS.join(", ")}.`,
-  sign: `Must be a sign in lowercase: ${SIGN_SLUGS2.join(", ")}.`,
-  phase: `Must be one of: ${PHASE_NAMES.join(", ")}.`,
-  aspect: `Must be one of: ${ASPECT_TYPES.join(", ")}.`,
-  otherBody: `Must be one of: ${EVENT_BODIES.join(", ")}, and not the body itself.`,
-  instantOrDate: "Give exactly one of instant and date.",
-  zoneNeedsDate: "A zone goes with a date, not with an instant.",
-  skippedDay: "This date did not happen in this zone: its clocks went from the day before straight to the day after.",
-  conditions: `Must be an array of one to ${MAX_ELECTION_CONDITIONS} conditions.`,
-  conditionKind: `Must be one of: ${ELECTION_CONDITION_KINDS.join(", ")}.`,
-  moonHalf: `Must be one of: ${MOON_HALVES.join(", ")}.`,
-  stationBody: `Must be one of: ${STATION_BODIES.join(", ")}; the Sun and the Moon are never retrograde.`,
-  not: "Must be true or false.",
-  repeatedCondition: "Must not repeat a condition.",
-  placeRequired: "An angular condition needs a place.",
-  placeWithoutAngular: "A place goes with an angular condition.",
-  angularLatitude: `Must be a number from -${ANGULAR_MAX_ABS_LATITUDE} to ${ANGULAR_MAX_ABS_LATITUDE}: an angular condition is searched within ${ANGULAR_MAX_ABS_LATITUDE}\xB0 of the equator.`
-});
-var VALIDATION_POINTERS = Object.freeze([
-  "",
-  "/utc",
-  "/local",
-  "/local/date",
-  "/local/time",
-  "/local/zone",
-  "/latitude",
-  "/longitude",
-  "/houseSystem",
-  "/instants",
-  "/bodies",
-  "/from",
-  "/to",
-  "/kinds",
-  "/kind",
-  "/body",
-  "/sign",
-  "/phase",
-  "/other",
-  "/aspect",
-  "/instant",
-  "/date",
-  "/zone",
-  "/conditions",
-  "/place",
-  "/place/latitude",
-  "/place/longitude",
-  "/place/houseSystem"
-]);
-var INDEXED_POINTERS = Object.freeze(["/instants", "/bodies", "/kinds", "/conditions"]);
-var CONDITION_FIELD_POINTERS = Object.freeze(["kind", "phase", "body", "sign", "not"]);
-var ZONE_NAME = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/u;
-var INSTANT2 = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-]\d{2}:\d{2})$/u;
-var EPOCH_FROM = Date.parse(EPOCH.from);
-var EPOCH_TO = Date.parse(EPOCH.to);
-var FIRST_DATE = `${EPOCH.firstYear}-01-01`;
-var LAST_DATE = `${EPOCH.lastYear}-12-31`;
-function isObject(value) {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
-}
-function child(pointer, key) {
-  return `${pointer}/${key}`;
-}
-function has(object, key) {
-  return Object.prototype.hasOwnProperty.call(object, key);
-}
-function onlyFields(object, allowed, pointer) {
-  for (const key of Object.keys(object)) {
-    if (!allowed.includes(key)) throw invalidRequest(pointer, TEXT.unknownField);
-  }
-}
-function objectAt(value, pointer, message = TEXT.object) {
-  if (!isObject(value)) throw invalidRequest(pointer, message);
-  return value;
-}
-function required(object, key, pointer) {
-  if (!has(object, key)) throw invalidRequest(child(pointer, key), TEXT.required);
-  return object[key];
-}
-function stringAt(value, pointer) {
-  if (typeof value !== "string") throw invalidRequest(pointer, TEXT.string);
-  return value;
-}
-function daysInMonth2(year, month) {
-  if (month === 2) return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0 ? 29 : 28;
-  return [4, 6, 9, 11].includes(month) ? 30 : 31;
-}
-function instantAt(value, pointer) {
-  const text2 = stringAt(value, pointer);
-  const match = text2.length <= 29 ? INSTANT2.exec(text2) : null;
-  if (!match) throw invalidRequest(pointer, TEXT.instantFormat);
-  const [, y, mo, d, h, mi, s, , zone3] = match;
-  const year = Number(y);
-  const month = Number(mo);
-  const day = Number(d);
-  if (month < 1 || month > 12 || day < 1 || day > daysInMonth2(year, month) || Number(h) > 23 || Number(mi) > 59 || s !== void 0 && Number(s) > 59) {
-    throw invalidRequest(pointer, TEXT.instantCalendar);
-  }
-  if (zone3 !== "Z") {
-    const hours = Number(zone3.slice(1, 3));
-    const minutes = Number(zone3.slice(4, 6));
-    if (minutes > 59 || hours * 60 + minutes > 14 * 60) throw invalidRequest(pointer, TEXT.instantOffset);
-  }
-  const ms = Date.parse(text2);
-  if (!Number.isFinite(ms) || ms < EPOCH_FROM || ms > EPOCH_TO) throw invalidRequest(pointer, TEXT.instantRange);
-  return { date: new Date(ms), source: text2 };
-}
-function dateAt(value, pointer) {
-  const text2 = stringAt(value, pointer);
-  if (!parseCivilDate(text2) || text2 < FIRST_DATE || text2 > LAST_DATE) throw invalidRequest(pointer, TEXT.date);
-  return text2;
-}
-function zoneKnown(zone3) {
-  try {
-    new Intl.DateTimeFormat("en-US", { timeZone: zone3 });
-    return true;
-  } catch {
-    return false;
-  }
-}
-async function zoneAt(value, pointer, zones) {
-  const text2 = stringAt(value, pointer);
-  if (text2.length > 64 || !ZONE_NAME.test(text2)) throw invalidRequest(pointer, TEXT.zoneFormat);
-  const name = await zones(text2);
-  if (name === null || !zoneKnown(name)) throw invalidRequest(pointer, TEXT.zoneUnknown);
-  return name;
-}
-function oneOf(value, pointer, allowed, message) {
-  if (typeof value !== "string" || !allowed.includes(value)) throw invalidRequest(pointer, message);
-  return value;
-}
-function distinctList(value, pointer, allowed, message) {
-  if (!Array.isArray(value) || value.length === 0) throw invalidRequest(pointer, TEXT.array);
-  const seen = /* @__PURE__ */ new Set();
-  value.forEach((item, index) => {
-    const name = oneOf(item, child(pointer, index), allowed, message);
-    if (seen.has(name)) throw invalidRequest(child(pointer, index), TEXT.distinct);
-    seen.add(name);
-  });
-  return [...seen];
-}
-function bodyObject(value) {
-  return objectAt(value, "", TEXT.body);
-}
-function parsePositionsRequest(value) {
-  const object = bodyObject(value);
-  onlyFields(object, ["instants", "bodies"], "");
-  const list2 = required(object, "instants", "");
-  if (!Array.isArray(list2) || list2.length === 0) throw invalidRequest("/instants", TEXT.array);
-  const instants = list2.map((item, index) => instantAt(item, child("/instants", index)).date);
-  const bodies = has(object, "bodies") ? distinctList(object.bodies, "/bodies", POSITION_BODIES, TEXT.positionBody) : null;
-  if (instants.length > BUDGETS["positions.instants"]) throw budgetExhausted("positions.instants");
-  return { instants, bodies };
-}
-var DAY_MS = 864e5;
-function parseEventsRequest(value) {
-  const object = bodyObject(value);
-  onlyFields(object, ["from", "to", "bodies", "kinds"], "");
-  const from = instantAt(required(object, "from", ""), "/from").date;
-  const to = instantAt(required(object, "to", ""), "/to").date;
-  if (to.getTime() <= from.getTime()) throw invalidRequest("/to", TEXT.window);
-  const bodies = has(object, "bodies") ? distinctList(object.bodies, "/bodies", EVENT_BODIES, TEXT.eventBodies) : [...EVENT_BODIES];
-  const kinds = has(object, "kinds") ? distinctList(object.kinds, "/kinds", EVENT_KINDS, TEXT.eventKinds) : [...EVENT_KINDS];
-  if (to.getTime() - from.getTime() > BUDGETS["events.windowDays"] * DAY_MS) throw budgetExhausted("events.windowDays");
-  return {
-    from,
-    to,
-    bodies: EVENT_BODIES.filter((body2) => bodies.includes(body2)),
-    kinds: EVENT_KINDS.filter((kind) => kinds.includes(kind))
-  };
-}
-async function factDay(object, zones) {
-  const date2 = dateAt(required(object, "date", ""), "/date");
-  const zone3 = has(object, "zone") ? await zoneAt(object.zone, "/zone", zones) : null;
-  return { date: date2, zone: zone3 };
-}
-async function factWhen(object, zones) {
-  if (has(object, "instant") === has(object, "date")) throw invalidRequest("", TEXT.instantOrDate);
-  if (has(object, "instant")) {
-    if (has(object, "zone")) throw invalidRequest("/zone", TEXT.zoneNeedsDate);
-    return { instant: instantAt(object.instant, "/instant").date };
-  }
-  return factDay(object, zones);
-}
-async function parseSkyFactRequest(value, zones) {
-  const object = bodyObject(value);
-  const kind = oneOf(required(object, "kind", ""), "/kind", SKY_FACT_KINDS, TEXT.factKind);
-  switch (kind) {
-    case "sign": {
-      onlyFields(object, ["kind", "body", "sign", "instant", "date", "zone"], "");
-      const body2 = oneOf(required(object, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
-      const sign = oneOf(required(object, "sign", ""), "/sign", SIGN_SLUGS2, TEXT.sign);
-      return { kind, body: body2, sign, when: await factWhen(object, zones) };
-    }
-    case "retrograde": {
-      onlyFields(object, ["kind", "body", "instant", "date", "zone"], "");
-      const body2 = oneOf(required(object, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
-      return { kind, body: body2, when: await factWhen(object, zones) };
-    }
-    case "ingress": {
-      onlyFields(object, ["kind", "body", "sign", "date", "zone"], "");
-      const body2 = oneOf(required(object, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
-      const sign = oneOf(required(object, "sign", ""), "/sign", SIGN_SLUGS2, TEXT.sign);
-      return { kind, body: body2, sign, day: await factDay(object, zones) };
-    }
-    case "phase": {
-      onlyFields(object, ["kind", "phase", "date", "zone"], "");
-      const phase = oneOf(required(object, "phase", ""), "/phase", PHASE_NAMES, TEXT.phase);
-      return { kind, phase, day: await factDay(object, zones) };
-    }
-    case "aspect": {
-      onlyFields(object, ["kind", "body", "other", "aspect", "instant", "date", "zone"], "");
-      const body2 = oneOf(required(object, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
-      const other = oneOf(required(object, "other", ""), "/other", EVENT_BODIES, TEXT.otherBody);
-      if (other === body2) throw invalidRequest("/other", TEXT.otherBody);
-      const aspect = oneOf(required(object, "aspect", ""), "/aspect", ASPECT_TYPES, TEXT.aspect);
-      return { kind, body: body2, other, aspect, when: await factWhen(object, zones) };
-    }
-  }
-}
-var CONDITION_FIELDS = Object.freeze({
-  phase: ["kind", "phase", "not"],
-  "void-of-course": ["kind", "not"],
-  sign: ["kind", "body", "sign", "not"],
-  retrograde: ["kind", "body", "not"],
-  angular: ["kind", "body", "not"]
-});
-var VALIDATION_MESSAGES = TEXT;
 
 // src/lib/compute-api/endpoints.ts
 var HOUR_MS = 36e5;
@@ -6850,7 +6873,7 @@ function factEcho(request) {
 var INSTANT_CHARS = 29;
 var DATE_CHARS = 10;
 var instantForm = `ISO 8601 with Z or a numeric offset, such as 2000-01-01T12:00:00Z or 1990-06-15T14:30:00+02:00, from ${EPOCH.from} to ${EPOCH.to} once the offset is applied. A time without Z or an offset is refused.`;
-var ANY_ZONE_DAY_TEXT = `This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from \u2212${ANY_ZONE_DAY.endHoursAfterUtcMidnight - 24}:00 to +${ANY_ZONE_DAY.startHoursBeforeUtcMidnight}:00, at once: from ${ANY_ZONE_DAY.startHoursBeforeUtcMidnight} hours before its midnight UTC to ${ANY_ZONE_DAY.endHoursAfterUtcMidnight} hours after. depends means the answer turns on the time of day or on the offset.`;
+var ANY_ZONE_DAY_TEXT = `check_sky_fact takes no time zone, so a date is read as that day in every UTC offset in use today, from \u2212${ANY_ZONE_DAY.endHoursAfterUtcMidnight - 24}:00 to +${ANY_ZONE_DAY.startHoursBeforeUtcMidnight}:00, at once: from ${ANY_ZONE_DAY.startHoursBeforeUtcMidnight} hours before its midnight UTC to ${ANY_ZONE_DAY.endHoursAfterUtcMidnight} hours after. depends means the answer turns on the time of day or on the offset.`;
 var POSITIONS_INPUT = z.strictObject({
   instants: z.array(z.string().max(INSTANT_CHARS)).min(1).max(BUDGETS["positions.instants"]).describe(`One to ${BUDGETS["positions.instants"]} instants, each in ${instantForm}`),
   bodies: z.array(z.enum(POSITION_BODIES)).min(1).optional().describe("Which rows to return, each named once; all twelve when omitted.")
@@ -6932,7 +6955,7 @@ var METHODOLOGY_SECTIONS = Object.freeze([
   "## What a chart holds",
   "Twelve bodies: the Sun, the Moon, the planets from Mercury to Pluto, and the two lunar nodes of the Moon's instantaneous orbit. Each comes with its tropical ecliptic longitude of date, in degrees from 0 up to 360, its latitude, and its daily motion in longitude, which is negative while it is retrograde. The resource zodiacs://conventions lists the conventions the engine's calculation records state.",
   "## Time",
-  "`utc`, and every instant the other tools take, must carry its zone, `Z` or an offset. This server applies the offset written there and nothing else: it looks up no place and no time zone. From 1972 to the end of the IERS table it carries, the engine reads the instant as UTC, taking Terrestrial Time from the IERS leap seconds and UT1 from IERS UT1 \u2212 UTC. It reads any other instant as UT1, with \u0394T (TT \u2212 UT1) from its versioned model. A calculation record states the \u0394T used, with its uncertainty and its source, and how the instant became UT1 and Terrestrial Time.",
+  "`utc`, and every instant the other tools take, must carry its zone, `Z` or an offset. They apply the offset written there and nothing else. From 1972 to the end of the IERS table it carries, the engine reads the instant as UTC, taking Terrestrial Time from the IERS leap seconds and UT1 from IERS UT1 \u2212 UTC. It reads any other instant as UT1, with \u0394T (TT \u2212 UT1) from its versioned model. A calculation record states the \u0394T used, with its uncertainty and its source, and how the instant became UT1 and Terrestrial Time.",
   "## An unknown birth time",
   'With `timeKnown: false` the instant is a reference, not a birth time. The positions are those at that instant, angles and houses are left out, and the reply says why. Nothing implies noon: `reference: "utc-noon"` records that midday UTC stands in for an unknown time.',
   "## Houses",
@@ -6946,17 +6969,20 @@ var METHODOLOGY_SECTIONS = Object.freeze([
   `\`find_events\` finds sign ingresses, stations and new and full moons in a window of up to ${BUDGETS["events.windowDays"]} days. It samples each motion at a fixed step, ${SEARCH_STEP_DAYS.default} days for most bodies and ${SEARCH_STEP_DAYS.moon} day for the Moon and for the Moon\u2013Sun elongation behind every lunation, and bisects each crossing it sees 24 times. The search is tested, not proven to miss nothing, and its receipt says so in \`search.completeness\`. A window excludes its start and includes its end.`,
   `\`check_sky_fact\` answers \`true\`, \`false\` or \`depends\`, with the computed values that decide the answer. It never interprets. ${ANY_ZONE_DAY_TEXT}`,
   `An aspect fact holds while the two bodies' separation is within the orb a chart uses for that aspect, the wider one when the Sun or the Moon is one of them. On a date, the reply gives where the aspect begins or ends and where it is exact, which the same crossing search finds on the difference between the two longitudes, at the Moon's step when the Moon is one of them.`,
+  "## Local times and places",
+  "`resolve_birth_time` runs the compute API's time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place's own with its longitude, the zone reference city's without one. Up to 1970-01-01 the offsets are those of tzdb 2025c with its backzone file, which the engine ships; from then on, the runtime's own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone's offset at the same instant in the runtime's data, tzdb's default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms' note on when that country changed calendar. Pass the `utc` it returns to the other tools.",
+  "`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site's birthplace search, built into this server: names that start with the query first, then, from three characters, names that contain it, each by population. Coordinates are rounded to 0.01\xB0, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.",
   "## Dates",
   'Requests are accepted from 1800 to 2199. That is the range the rest of Zodiacs supports, not a range in which every date has been checked: the engine\'s records state `broadDateRange: "not-certified"`.',
   "## Citing a result",
-  "Every result other than a refusal carries `cite`: `url`, the tool's entry on the developer page; `receipt`, `sha256:` and the SHA-256 of a receipt's RFC 8785 canonical JSON; and the engine and its version. A chart cites the engine's calculation receipt, which the record carries. That receipt holds the instant as it was written, offset included, the coordinates and the settings, so its digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With `timeKnown: false` the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison and the capabilities reply cite the adapter's own receipt, which they carry and which holds nothing from a record. `get_positions`, `find_events` and `check_sky_fact` cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date or body from the request, so their digest is the one the compute API cites for the same request."
+  "Every result other than a refusal carries `cite`: `url`, the tool's entry on the developer page; `receipt`, `sha256:` and the SHA-256 of a receipt's RFC 8785 canonical JSON; and the engine and its version. A chart cites the engine's calculation receipt, which the record carries. That receipt holds the instant as it was written, offset included, the coordinates and the settings, so its digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With `timeKnown: false` the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison and the capabilities reply cite the adapter's own receipt, which they carry and which holds nothing from a record. `get_positions`, `find_events`, `check_sky_fact` and `resolve_birth_time` cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date, zone or body from the request, so their digest is the one the compute API cites for the same request. `search_places` cites the adapter's receipt, which names the place index and holds nothing from the query."
 ]);
 function methodology() {
   return [
     "# How this server calculates",
     "",
     `${ADAPTER_NAME} ${ADAPTER_VERSION} runs @zodiacs/engine ${ENGINE_VERSION}, with astronomy-engine ${EPHEMERIS.version}, on the machine it runs on.`,
-    "The site's methodology page, https://zodiacs.org/methodology/, describes the same engine as the site's calculators use it, and https://zodiacs.org/developers/engine/ reports how far its results were from other software in dated measurements. This text says what the six tools do with it.",
+    "The site's methodology page, https://zodiacs.org/methodology/, describes the same engine as the site's calculators use it, and https://zodiacs.org/developers/engine/ reports how far its results were from other software in dated measurements. This text says what the eight tools do with it.",
     "",
     ...METHODOLOGY_SECTIONS.flatMap((section) => [section, ""])
   ].join("\n");
@@ -6975,25 +7001,29 @@ var RESOURCES = Object.freeze([
     name: "methodology",
     uri: METHODOLOGY_URI,
     title: "How this server calculates",
-    description: "What a chart holds, how an instant is read, unknown birth times, house systems, aspects, comparisons, positions, events and sky facts, the accepted dates, and what a result cites.",
+    description: "What a chart holds, how an instant is read, unknown birth times, house systems, aspects, comparisons, positions, events and sky facts, local times and places, the accepted dates, and what a result cites.",
     mimeType: "text/markdown",
     read: methodology
   }
 ]);
 
 // src/mcp/tools.ts
+var CHART_CITATION = "A chart's cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter's own receipt, which holds nothing from either record.";
+var TOOL_CITATION = "get_positions, find_events, check_sky_fact and resolve_birth_time cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date, zone or body from the request. search_places cites the adapter's receipt, which names the place index and holds nothing from the query.";
 var PRIVACY = Object.freeze({
   calculation: "This server calculates on the machine it runs on. No birth detail reaches zodiacs.org, and the server opens no network connection, listener or port of any kind.",
   assistant: "A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider \u2014 your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
   output: "A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
   withheld: 'By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions \u2014 you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: "full" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.',
   claims: "A version, checksum or source URL inside a supplied record is a claim that record makes about itself. Nothing here authenticates it.",
-  citation: "A chart's cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter's own receipt, which holds nothing from either record. get_positions, find_events and check_sky_fact cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date or body from the request."
+  citation: `${CHART_CITATION} ${TOOL_CITATION}`
 });
+var SEARCH_LIMIT = "Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.";
+var PLACE_TIME_LIMIT = "Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb. search_places reads only that index, and resolve_birth_time only tzdb, with no town-level clock records. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.";
 var UNSUPPORTED = Object.freeze([
-  "Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.",
+  SEARCH_LIMIT,
   "Interpretation, horoscope or any generated reading.",
-  "Resolving a place name or time zone: supply an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.",
+  PLACE_TIME_LIMIT,
   "Reading or writing files. Records are passed as content; the adapter accepts no path and imports no filesystem module.",
   "Fetching a URL, running a command, importing a named module or installing a package.",
   "Any network listener, remote endpoint or browser-reachable port. The transport is local stdio only.",
@@ -7068,7 +7098,7 @@ function describeCapabilities() {
       references: [...REFERENCES],
       referenceRules: {
         "utc-noon": "needs timeKnown: false and utc at exactly 12:00:00Z; it records that no birth time was known",
-        "local-noon": "not offered: it needs a captured local date, wall time, zone and offset, and this adapter resolves no timezones"
+        "local-noon": "not offered: it needs a captured local date, wall time, zone and offset, and calculate_natal_chart takes an instant, not a local time"
       },
       epoch: { from: EPOCH_MIN_UTC, to: EPOCH_MAX_UTC },
       coordinates: {
@@ -7098,6 +7128,20 @@ function describeCapabilities() {
       search: { window: "start-exclusive-end-inclusive", completeness: "tested-not-proven" },
       dates: ANY_ZONE_DAY_TEXT
     },
+    time: {
+      tool: "resolve_birth_time",
+      sameAs: "POST https://zodiacs.org/api/v1/time: the same parser, resolver and receipt, so the same result and cite.receipt for the same request on a runtime with the same tzdb",
+      resolver: "@zodiacs/engine/geo",
+      pinnedTzdb: { release: PINNED_TZDB_RELEASE, appliesBefore: "1970-01-02" },
+      calendars: [...CALENDARS],
+      julianLastWritten: "1923-12-31"
+    },
+    places: {
+      tool: "search_places",
+      ...PLACES_SOURCE,
+      maxResults: PLACES_MAX,
+      coordinates: "Degrees, rounded to 0.01\xB0, about 1.1 km, as the index stores them."
+    },
     resources: RESOURCES.map(({ uri, name, mimeType }) => ({ uri, name, mimeType })),
     unsupported: [...UNSUPPORTED],
     privacy: { ...PRIVACY },
@@ -7105,6 +7149,19 @@ function describeCapabilities() {
     cite: citeFor("get_capabilities", receipt)
   };
   return { ok: true, value };
+}
+function describeLocalChartCapabilities() {
+  const outcome = describeCapabilities();
+  if (!outcome.ok) return outcome;
+  const { sky: _sky, time: _time, places: _places, unsupported, ...core } = outcome.value;
+  return {
+    ok: true,
+    value: {
+      ...core,
+      unsupported: unsupported.filter((line) => line !== SEARCH_LIMIT && line !== PLACE_TIME_LIMIT),
+      privacy: { ...core.privacy, citation: CHART_CITATION }
+    }
+  };
 }
 function calculateNatalChart(args) {
   const instant2 = parseInstant(args.utc);
@@ -7756,7 +7813,7 @@ PT|Portugal|-|1582-10-15|t18|
 RU|Russia|Soviet Russia|1918-02-14|t|Grotefend 1891, 1898: still Julian. Duchy of Prussia, now partly Kaliningrad, 1612-09-02 (Grotefend 1898: 1612-09-01).
 SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates are one day ahead of the Julian (Grotefend 1898).`;
     var SOURCE_KEYS = { t: "tzdb", 1: "grotefend-1891", 8: "grotefend-1898" };
-    var GREGORIAN_ADOPTION = /* @__PURE__ */ Object.freeze(
+    var GREGORIAN_ADOPTION2 = /* @__PURE__ */ Object.freeze(
       /* @__PURE__ */ ROWS.split("\n").map((line) => {
         const [code, country, region, firstGregorian, sources, note] = line.split("|");
         const day = julianDayNumber2(parseCalendarDate2(firstGregorian, "gregorian"), "gregorian");
@@ -7771,11 +7828,11 @@ SE|Sweden|-|1753-03-01|t18|From 1 March 1700 to 30 February 1712 Swedish dates a
         });
       })
     );
-    function gregorianAdoption(country) {
-      return GREGORIAN_ADOPTION.find((row) => row.code === country || row.country === country);
+    function gregorianAdoption2(country) {
+      return GREGORIAN_ADOPTION2.find((row) => row.code === country || row.country === country);
     }
     function noteFor(gregorianDate, calendar, country) {
-      const adoption = gregorianAdoption(country);
+      const adoption = gregorianAdoption2(country);
       if (!adoption) return null;
       const julian = calendar === "julian";
       if (gregorianDate.length > 10 || gregorianDate >= adoption.firstGregorian) return julian ? { kind: "new-style", adoption } : null;
@@ -8603,7 +8660,7 @@ function respondWithoutLifetimeBoundary(run2) {
 function build() {
   const server = createAiServer({});
   server.registerTool("get_local_chart_capabilities", { description: `Local natal and comparison conventions, bounds and privacy. ${PRIVACY.assistant}`, inputSchema: CAPABILITIES_INPUT, annotations: READ_ONLY }, () => respond(() => {
-    const outcome = describeCapabilities();
+    const outcome = describeLocalChartCapabilities();
     return outcome.ok ? { ok: true, value: { ...outcome.value, adapter: { name: "zodiacs-developer", version: AI_VERSION, releaseStatus: "unpublished-candidate", transport: "stdio" } } } : outcome;
   }));
   server.registerTool("calculate_natal_chart", { description: `Calculate one natal chart locally; request output: record for an exportable receipt. Do not invent a birth time or place. ${PRIVACY.assistant}`, inputSchema: NATAL_INPUT, annotations: READ_ONLY }, (args) => respond(() => calculateNatalChart(args)));

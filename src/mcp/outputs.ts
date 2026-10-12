@@ -70,8 +70,11 @@ function citeReceiptText(tool: ToolName): string {
   if (tool === 'calculate_natal_chart') {
     return 'SHA-256 of the calculation receipt\'s RFC 8785 canonical JSON. The receipt holds the instant as written, the coordinates and the settings, so this digest identifies the birth details, even when the time is unknown: quote it only where they may be known.';
   }
-  if (Object.hasOwn(COMPUTE_TOOLS, tool)) {
-    return 'SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds no instant, date, zone or body from the request. It is the digest the hosted compute API cites for the same request.';
+  if (tool === 'resolve_birth_time') {
+    return 'SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds no date, time or zone from the request. It is the digest the hosted compute API cites for the same request.';
+  }
+  if (Object.hasOwn(SKY_TOOLS, tool)) {
+    return 'SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds no instant, date or body from the request. It is the digest the hosted compute API cites for the same request.';
   }
   if (tool === 'search_places') {
     return 'SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which names the place index searched and holds nothing from the query.';
@@ -320,14 +323,14 @@ function computeReceipt(tool: ComputeToolName) {
       completeness: z.literal('tested-not-proven')
         .describe('The search samples each motion at a fixed step and bisects every crossing it sees. It is tested, not proven to miss nothing.'),
     }).optional().describe('How a search searched: present when one ran.'),
-    timeResolution: z.strictObject({
+    ...(tool === 'resolve_birth_time' ? { timeResolution: z.strictObject({
       resolver: z.literal('@zodiacs/engine/geo'),
       policy: z.strictObject({ fold: z.literal('earlier'), gap: z.literal('shift-forward') }),
       pinnedTzdb: z.strictObject({
         release: z.string(), sha256: z.string(), dataForm: z.literal('main+backzone'), appliesBefore: z.literal('1970-01-02'),
       }),
       runtimeTzdb: z.string().nullable(),
-    }).optional().describe('How local times were read: the resolver and its policy, the tzdb release it ships for dates up to 1970-01-01, and the runtime\'s own tzdb, which reads the rest.'),
+    }).describe('How local times were read: the resolver and its policy, the tzdb release it ships for dates up to 1970-01-01, and the runtime\'s own tzdb, which reads the rest.') } : {}),
   }).describe('The compute API\'s receipt for this calculation: the engine, its conventions and coverage as its own receipts state them, and what this request used. The cite digest is of this object.');
 }
 

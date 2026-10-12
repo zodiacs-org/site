@@ -59,7 +59,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.23.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.24.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -491,7 +491,7 @@ are separate fields, so a fallback is visible rather than silent.
   "receipt": {
     "schema": "zodiacs.mcp-receipt.v1",
     "tool": "compare_calculation_records",
-    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.23" },
+    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.24" },
     "engine": {
       "name": "@zodiacs/engine",
       "version": "1.0.0",
@@ -501,7 +501,7 @@ are separate fields, so a fallback is visible rather than silent.
   },
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
-    "receipt": "sha256:c4261b3a6059f99bbf51ffd50d6f865a9702a39497bb061236e67e44bea1cedf",
+    "receipt": "sha256:328185165b8d4ca55c1a01e2ff2e5092fa47a67b3a9189263c2ff82c673a8670",
     "engine": "@zodiacs/engine",
     "version": "1.0.0"
   }
@@ -578,7 +578,7 @@ request.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.23`, unpublished candidate |
+| adapter | `0.1.0-rc.24`, unpublished candidate |
 | engine | `@zodiacs/engine` `1.0.0`, on npm under `latest` since 2026-10-11, bundled into `server.mjs` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
@@ -633,12 +633,14 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   `registry: "npm"`. `server.mjs` is built from the engine's carried archive,
   whose bytes npm's tarball matches. 1.0.0 is 1.0.0-rc.2 with the version
   changed. This adapter does not import `calc` or Vedic; its finite comparison
-  with rc.18 is recorded in the site adoption. rc.23 adds aspect facts to
+  with rc.18 is recorded in the site adoption. rc.24 adds `resolve_birth_time`
+  and `search_places`, with the zone histories and the place index they read,
+  which take `server.mjs` to about 2.3 MB; rc.23 adds aspect facts to
   `check_sky_fact`; rc.22 is rc.21 with this README corrected; rc.21 is rc.19
-  rebuilt after the hosted compute API began reading
-  local times with `@zodiacs/engine/geo`. The adapter resolves no time zone, and
-  its comparisons with rc.19, rc.21 and rc.22 are recorded with those changes. rc.20,
-  an earlier cut, was withdrawn before release.
+  rebuilt after the hosted compute API began reading local times with
+  `@zodiacs/engine/geo`. Until rc.24 the adapter resolved no time zone. Its
+  comparisons with rc.19, rc.21, rc.22 and rc.23 are recorded with those
+  changes. rc.20, an earlier cut, was withdrawn before release.
 
 ## Uninstall
 
