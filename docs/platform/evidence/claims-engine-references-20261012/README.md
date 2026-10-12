@@ -7,8 +7,8 @@ reference and SDK pages under `public/sdk/` (F-23). Each of their 465 selected
 sentences is held to a claim or exempted. Eleven claims are overstated, and
 `docs/claims/ledger.json` gives each one its resolution:
 
-- nine are F-84, wording the engine's next release corrects;
-- one is F-85, the Swiss ΔT values the engine's conformance corpus records,
+- nine are F-89, wording the engine's next release corrects;
+- one is F-90, the Swiss ΔT values the engine's conformance corpus records,
   which the owner decides;
 - one is the rc.1 footer, which the Phase 1 freeze keeps.
 
