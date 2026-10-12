@@ -1,7 +1,7 @@
 {
   "type": "official-SDK protocol interoperability against the real server process; not a named end-user host, and not a model-driven demonstration",
-  "startedAt": "2026-10-11T23:06:19.793Z",
-  "completedAt": "2026-10-11T23:06:22.860Z",
+  "startedAt": "2026-10-12T01:11:00.353Z",
+  "completedAt": "2026-10-12T01:11:03.585Z",
   "node": "v22.22.2",
   "client": {
     "package": "@modelcontextprotocol/client",
@@ -17,8 +17,8 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "bytes": 324530,
-    "sha256": "f5c5451cabf03946e24edef0cd3aca1c48c09d48f1a1285f47db6ab02f68a077"
+    "bytes": 324847,
+    "sha256": "a17319697341970fb0ba4557987f557071418266858063f6fe3ddf849962555a"
   },
   "wire": [
     {
@@ -110,15 +110,15 @@
       "ok": true,
       "detail": {
         "name": "zodiacs-mcp-server",
-        "version": "0.1.0-rc.20"
+        "version": "0.1.0-rc.21"
       }
     },
     {
       "name": "server version is the packaged adapter candidate version",
       "ok": true,
       "detail": {
-        "server": "0.1.0-rc.20",
-        "package": "0.1.0-rc.20"
+        "server": "0.1.0-rc.21",
+        "package": "0.1.0-rc.21"
       }
     },
     {
@@ -208,7 +208,7 @@
       "detail": {
         "adapter": {
           "name": "zodiacs-mcp-server",
-          "version": "0.1.0-rc.20",
+          "version": "0.1.0-rc.21",
           "releaseStatus": "unpublished-candidate",
           "transport": "stdio"
         },
@@ -225,7 +225,7 @@
       "ok": true,
       "detail": {
         "url": "https://zodiacs.org/developers/mcp/#get_capabilities",
-        "receipt": "sha256:24e38d07e64f2ba4bf5b71c40822dd8f1541c911a8ee993d48240ec36cd05486",
+        "receipt": "sha256:70e7405d926386d8b5a39aae33e7fcc5eafe6c52075ca473e47ea64562afcb32",
         "engine": "@zodiacs/engine",
         "version": "1.0.0"
       }
@@ -364,7 +364,7 @@
         "tool": "compare_calculation_records",
         "adapter": {
           "name": "zodiacs-mcp-server",
-          "version": "0.1.0-rc.20"
+          "version": "0.1.0-rc.21"
         },
         "engine": {
           "name": "@zodiacs/engine",
@@ -562,7 +562,7 @@
     {
       "name": "the methodology resource names the engine and the site's methodology page",
       "ok": true,
-      "detail": "# How this server calculates\n\nzodiacs-mcp-server 0.1.0-rc.20 runs @zodiacs/engine 1.0.0, with astronomy-engine 2.1.19, on the machine it runs on.\nThe site's methodology page, https://zodiacs.org/metho"
+      "detail": "# How this server calculates\n\nzodiacs-mcp-server 0.1.0-rc.21 runs @zodiacs/engine 1.0.0, with astronomy-engine 2.1.19, on the machine it runs on.\nThe site's methodology page, https://zodiacs.org/metho"
     },
     {
       "name": "the default comparison response repeats no birth detail back",
@@ -866,22 +866,22 @@
     {
       "name": "stderr carried the adapter's startup note, so the capture is real",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.20, engine 1.0.0, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.21, engine 1.0.0, no network\n"
     },
     {
       "name": "stderr carried only the adapter's own notes",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.20, engine 1.0.0, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.21, engine 1.0.0, no network\n"
     },
     {
       "name": "stderr carried no birth detail, coordinate or record content",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.20, engine 1.0.0, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.21, engine 1.0.0, no network\n"
     },
     {
       "name": "the transport exposes the server process id, so the next check measures something",
       "ok": true,
-      "detail": 14589
+      "detail": 40162
     },
     {
       "name": "the server process is gone after the client closes",
@@ -979,7 +979,7 @@
           1,
           6
         ],
-        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.20, engine 1.0.0, no network"
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.21, engine 1.0.0, no network"
       }
     },
     {
@@ -993,7 +993,7 @@
           83,
           7
         ],
-        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.20, engine 1.0.0, no network"
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.21, engine 1.0.0, no network"
       }
     },
     {

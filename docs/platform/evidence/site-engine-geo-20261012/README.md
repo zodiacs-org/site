@@ -49,27 +49,43 @@ backzone-complete tzdb inside the engine) wait for.
     failure, and while two resolvers interleave.
   - **Receipts.** `zoneHistory` is `pinned` when the engine's history answered
     (`zone.source === 'tzdb'`), and `zoneUncertain` marks a date up to 1970 it
-    did not. A receipt's `timeResolution` names `@zodiacs/engine/geo`, and the
-    release with its archive digest, and no longer says the history needs a
-    longitude.
+    did not, except in a fixed-offset zone. A receipt's `timeResolution` names
+    `@zodiacs/engine/geo`, and the release with its archive digest, and no
+    longer says the history needs a longitude.
+  - **Fixed offsets.** The engine reads UTC, Etc/GMT±N and their other names
+    from Intl at every date, where the two cannot differ.
+    `src/lib/time/fixed-zones.ts` names them with the engine's own pattern; a
+    test holds the two together and checks every such name of the release. A
+    1950 time in UTC has `zoneHistory` `runtime` and is not uncertain. With a
+    longitude, main read it on its table and reported `pinned`. Before 2005,
+    Antarctica/Troll, where tzdb records no local time, is still uncertain.
+    The chart studio applies the same rule.
+  - **Text.** The OpenAPI description of `/time`, the `/time` sentence of
+    `llms-full.txt` and a comment in `endpoints.ts` still named the site's own
+    resolver. Like the compute page, they now name the engine's.
   - **Examples.** The documented examples were regenerated on Node 24.21.0
     (tzdata 2026c), as for the 1.0.0 adoption. Two node speeds that macOS arm64
     computes differently in the last bits keep CI's x86-64 values (F-82).
 - **The chart studio** (`src/ai-tools/studio/local-time.ts`) records the
   engine's own resolution, its `localResolution`, in the receipt.
-- **The MCP adapter 0.1.0-rc.20.** The adapter bundles the compute API's
-  parsers, so it was rebuilt. It resolves no time zone, so the changed code
+- **The MCP adapter 0.1.0-rc.21.** The adapter bundles the compute API's
+  code, so it was rebuilt. It resolves no time zone, so the changed code
   never runs in it.
-  - [`mcp-rc19-rc20.json`](mcp-rc19-rc20.json): rc.19 and rc.20 answer the same
+  - rc.20, cut with the first commit of this change, was withdrawn before
+    release when the fixed-offset rule changed the bundle again. It was never
+    served.
+  - [`mcp-rc19-rc21.json`](mcp-rc19-rc21.json): rc.19 and rc.21 answer the same
     278 calls (10 of them refusals), the tool list and both resources
     identically once versions and digests are taken out.
-  - The protocol drive, the host drive (Claude Code 2.1.296, 7 of 7) and the
-    benchmark (18 of 18 scenarios) were run again on it.
-- **The developer plugin 0.3.8** bundles the AI tools, whose sky tools resolve
-  a day's zone, so it was rebuilt and packaged.
+  - The protocol drive (106 of 106), the host drive (Claude Code 2.1.296, 7 of
+    7) and the benchmark (18 of 18 scenarios, 112 assertions) were run again on
+    it.
+- **The developer plugin 0.3.9** bundles the AI tools, whose sky tools resolve
+  a day's zone and whose chart studio applies the fixed-offset rule, so it was
+  rebuilt and packaged. 0.3.8, the earlier cut, was withdrawn with rc.20.
 - **Copy.** The compute API page describes the new reading. Both llms files
-  name adapter rc.20. The sitemap dates both pages 2026-10-12. Five claims
-  were restated and five ledger sentences updated, and one was added.
+  name adapter rc.21. The sitemap dates both pages 2026-10-12. Five claims
+  were restated, nine ledger sentences updated, and two added.
 
 ## What it changes in the answers
 
