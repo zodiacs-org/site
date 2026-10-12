@@ -1,6 +1,9 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
-import { resolveLocalToUtc as packageResolveLocalToUtc } from '@zodiacs/engine/geo';
+import { TZDB, resolveLocalToUtc as packageResolveLocalToUtc } from '@zodiacs/engine/geo';
 import tzNames from '../../data/tz-names.json';
+import cityIndex from '../../../public/data/cities/index.json';
 import { offsetAt, prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 import { canonicalZoneName } from './zone-names';
 
@@ -100,6 +103,50 @@ describe('a zone name in any letter case', () => {
     expect(most).toBe(1024);
     // A name Intl refuses is never stored, and never reaches the engine.
     expect(() => resolveLocalToUtc('2000-01-01', '12:00', 'Europe/Atlantis')).toThrow(RangeError);
+  });
+});
+
+describe('the zone names the site spells', () => {
+  // Each zone of the engine's history files, as its JSON text gives it: the
+  // name, whether the file holds the default build's form (h), and the
+  // offsets of its types before 1970, null where tzdb records no local time.
+  type ShippedZone = { n: string; h?: 1; y: [number | null, number, string][] };
+  const engineZones = () => {
+    const dist = resolve(import.meta.dirname, '../../../node_modules/@zodiacs/engine/dist');
+    const zones: ShippedZone[] = [];
+    for (const file of readdirSync(dist).filter((name) => /^tzdb-\d{4}[a-z]-\d{2}-[A-Z0-9]+\.js$/u.test(name))) {
+      const text = readFileSync(resolve(dist, file), 'utf8').match(/JSON\.parse\('((?:[^'\\]|\\.)*)'\)/u)?.[1];
+      expect(text, file).toBeDefined();
+      const bucket = JSON.parse(text!.replace(/\\'/gu, "'").replace(/\\\\/gu, '\\')) as Record<string, ShippedZone>;
+      zones.push(...Object.values(bucket));
+    }
+    return zones;
+  };
+  const engineNames = () => new Set(engineZones().map((zone) => zone.n));
+
+  it("are the release the engine ships: every name its histories carry, and Asia/Hanoi", () => {
+    expect(tzNames.tzdb).toBe(TZDB.version);
+    const shipped = engineNames();
+    expect(shipped.size).toBeGreaterThan(500);
+    expect([...shipped].filter((name) => !tzNames.names.includes(name))).toEqual([]);
+    // tzdata keeps Asia/Hanoi in its backzone file. Node 22 (tzdata 2025c) and
+    // Node 24 (2026c) refuse it, the engine ships no history for it, and
+    // resolving it is refused.
+    expect(tzNames.names.filter((name) => !shipped.has(name))).toEqual(['Asia/Hanoi']);
+  });
+
+  it("leave the host's history to sixteen names and two stations before 1970, none of them in the city index", () => {
+    const zones = engineZones();
+    // Records that differ after 1970 too: the default build's form, so the
+    // hand-over at 1970 cannot jump.
+    const defaultForm = zones.filter((zone) => zone.h).map((zone) => zone.n).sort();
+    expect(defaultForm).toHaveLength(16);
+    expect(defaultForm).toEqual(expect.arrayContaining(['Asia/Harbin', 'Pacific/Enderbury', 'WET']));
+    // No local time before 1970 at all, so the host answers throughout.
+    const noLocalTime = zones.filter((zone) => zone.y.every(([offset]) => offset === null)).map((zone) => zone.n).sort();
+    expect(noLocalTime).toEqual(['Antarctica/Rothera', 'Antarctica/Troll']);
+    const index = new Set(cityIndex.tz);
+    expect([...defaultForm, ...noLocalTime, 'Asia/Hanoi'].filter((name) => index.has(name))).toEqual([]);
   });
 });
 
