@@ -617,10 +617,10 @@ historical until rerun. The records establish different things:
   cites, the two resources, eighteen malformed or refused requests each
   followed by a valid one, the diagnostic channel, a clean close, and a raw
   handshake at every protocol revision the SDK supports.
-- **`src/mcp/sky-tools.test.ts`**, in the repository — for 252 synthetic
+- **`src/mcp/sky-tools.test.ts`**, in the repository — for 301 synthetic
   requests, `get_positions`, `find_events` and `check_sky_fact` return the body
   the compute API's own handler answers for the same JSON, apart from
-  `cite.url`, and each of 17 refused requests gets the handler's own sentence.
+  `cite.url`, and each of 21 refused requests gets the handler's own sentence.
 - **`host-drive.json`** — the Claude Code CLI launching the adapter and
   reporting it connected, inside a throwaway config directory, with the
   machine's real configuration proved byte-identical afterwards.
