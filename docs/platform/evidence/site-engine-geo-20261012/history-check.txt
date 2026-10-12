@@ -1,0 +1,21 @@
+Private birth-data search, 2026-10-12 (Asia/Bangkok) (counts only)
+
+Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
+(SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), Node 22.22.2.
+Range: ec0451ff..6e8a6dce, this change's commits after main at the time (the
+adoption, the archive pin, and the merge of main): every added line, every
+added or changed binary with its gzip or ZIP contents, the added paths and the
+messages. Also the tree of 6e8a6dce.
+Patterns: the owner's two private pattern sets, kept outside every repository
+with the raw outputs. No pattern, matched line, label or path is recorded here.
+
+Each pattern set gives the same result.
+Lines the commits add that match: 7, in 2 commits.
+- 1 is a line the base already holds verbatim.
+- 6 are lines in files where the base already matched the same person's
+  pattern: 4 in generated bundles this change rebuilt (the compute, AI and
+  MCP bundles), and 2 in test sources whose existing cases this change edited.
+No added line matches a person the base did not.
+Tree: 424 birth-data lines in 17,424 files, against 421 on main before this
+change. The three more lines are the edited and rebuilt lines above; those
+people's lines predate this change.
