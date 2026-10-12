@@ -622,10 +622,11 @@ historical until rerun. The records establish different things:
   machine's real configuration proved byte-identical afterwards.
 - **`host-interop.md`** — a model actually calling these tools through that
   host, with the exact command and the exact reply.
-- **`benchmark.json`** — a fixed synthetic corpus of ten record pairs with the
-  classification each should receive, written from the comparison's rules before
-  the candidate ran against any of them. It is a regression corpus, not an
-  accuracy rate: both sides of every pair come from the same engine.
+- **`benchmark.json`** — a fixed synthetic corpus of record pairs in eighteen
+  scenarios, with the classification each should receive, written from the
+  comparison's rules before the candidate ran against any of them. It is a
+  regression corpus, not an accuracy rate: both sides of every pair come from
+  the same engine.
 
 Every chart in every test is synthetic — round coordinates for well-known cities
 on dates chosen for what they exercise.

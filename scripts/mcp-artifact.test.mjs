@@ -49,6 +49,17 @@ describe('the built server bundle', () => {
     expect(bundle.includes(marker), `${marker} appears in the bundle`).toBe(false);
   });
 
+  // Sentences only the engine's calc and Vedic entries carry: neither is bundled.
+  it.each([
+    ['calc', 'calc.js', 'Gravitational light deflection is not modelled in this version.'],
+    ['calc', 'calc.js', 'The Earth is offered heliocentric or barycentric only.'],
+    ['Vedic', 'vedic.js', 'Odd signs: Leo, then Cancer'],
+  ])('bundles none of the %s entry of the engine (%s)', async (_entry, file, marker) => {
+    const entry = await readFile(resolve(ROOT, 'node_modules/@zodiacs/engine/dist', file), 'utf8');
+    expect(entry).toContain(marker);
+    expect(bundle).not.toContain(marker);
+  });
+
   it('writes to stdout in exactly one place: handing it to the transport', () => {
     const uses = bundle.split('\n')
       .map((line, index) => ({ line: line.trim(), number: index + 1 }))

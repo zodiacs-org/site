@@ -106,9 +106,21 @@ export function serializeLedger(ledger) {
   ].join('\n');
 }
 
-/** Files outside the consumer surface that make claims to readers or to other programs. */
+/**
+ * Files outside the consumer surface that make claims to readers or to other
+ * programs: the validation report, the llms file, the assistant's site guide,
+ * and the developer docs that ship inside the MCP adapter, platform starter
+ * and plugin archives (finding F-23). Not read yet, and open under F-23: the
+ * precision alpha's README, whose tests CI runs from their own package, and
+ * the engine's README and CHANGELOG. The READMEs under integrations/ are the
+ * maintainers' packaging and review notes, not shipped.
+ */
 export const SCOPE_ADD = Object.freeze([
   'docs/engine-validation/README.md',
+  'examples/mcp-server/README.md',
+  'examples/platform/README.md',
+  'plugins/zodiacs-developer/README.md',
+  'plugins/zodiacs-sky/README.md',
   'public/llms-full.txt',
   'scripts/build-assistant-context.mjs',
 ]);
@@ -142,6 +154,8 @@ export const TRUST_PATTERNS = Object.freeze([
   /^src\/pages\/terms\/index\.astro$/u,
   /^src\/pages\/birth-chart\/index\.astro$/u,
   /^src\/pages\/developers\//u,
+  /^src\/data\/developer-guides\.json$/u,
+  /^(?:examples|plugins)\/[^/]+\/README\.md$/u,
   /^src\/mcp\/[^/]+\.ts$/u,
   /^src\/lib\/sky-api\/[^/]+\.ts$/u,
   /^src\/lib\/compute-api\/[^/]+\.ts$/u,
@@ -383,6 +397,9 @@ function markdownBlocks(source) {
   return source
     .replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/u, '')
     .replace(/<!--[\s\S]*?-->/gu, ' ')
+    // Fenced code is a command or an example output, not prose: the sentences
+    // an example prints are listed where the code that writes them is.
+    .replace(/^[ \t]{0,3}(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n[ \t]{0,3}\1[ \t]*$/gmu, '')
     .split(/\r?\n\s*\r?\n/u)
     .filter((block) => !/^\s*(?:import|export)\s/u.test(block))
     .map((block) => block
