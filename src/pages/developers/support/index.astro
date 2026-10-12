@@ -68,7 +68,7 @@ const engineRows = [
           <p>
             <code>{`npm install ${candidate.name}@${candidate.version}`}</code> installs
             this exact published release. The verified registry read of
-            {candidate.registryObservedOn} records it under <code>latest</code>;
+            {candidate.registryObservedOn} records it under <code>latest</code>;{' '}
             <code>next</code> still names an earlier candidate, 0.1.1-rc.16. That release was
             published from the <code>release.yml</code> workflow of the{' '}
             <a href={candidate.sourceRepository}>engine repository</a> with SLSA
@@ -143,7 +143,7 @@ const engineRows = [
     </div>
     <div class="prose">
       <p>
-        A longitude-crossing search has no sample budget unless you give it one:
+        A longitude-crossing search has no sample budget unless you give it one:{' '}
         <code>searchLongitudeCrossings</code> takes an optional budget and refuses
         the whole search, rather than throwing, when it would be exceeded.
         Sampling can miss events between steps, and direction at a window
@@ -196,7 +196,7 @@ const engineRows = [
       <p>
         The <a href="/widgets/">widget builder</a> supplies Moon phase, daily
         sky, and mini birth-chart iframes. An optional script mounts the same
-        sandboxed documents. No npm package or framework is required; the
+        sandboxed documents. No npm package or framework is required; the{' '}
         <code>@zodiacs/widgets</code> package is not a released installation path.
         Dark/light themes and an adjusted accent work inside the frame; keep
         its width within the host layout and its “Powered by Zodiacs.org” credit intact.

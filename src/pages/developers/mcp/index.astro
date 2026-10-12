@@ -89,8 +89,8 @@ const jsonLd = [
         values; it also carries the IERS leap-second list and UT1 − UTC values the
         engine reads 1972 to 2027 with, and its <code>NOTICE</code> gives the
         attributions. The archives of
-        0.1.0-rc.8 to rc.10 carry the same values without a notice of their own;
-        <a href="/examples/zodiacs-mcp-server-0.1.0-rc.8-to-rc.10-NOTICE.txt">their notice</a>
+        0.1.0-rc.8 to rc.10 carry the same values without a notice of their own;{' '}
+        <a href="/examples/zodiacs-mcp-server-0.1.0-rc.8-to-rc.10-NOTICE.txt">their notice</a>{' '}
         is published beside them.
       </p>
     </div>
@@ -114,7 +114,7 @@ const jsonLd = [
         assistant local.
       </p>
       <p>
-        Two smaller points in the same family. A comparison reports the <em>exact</em>
+        Two smaller points in the same family. A comparison reports the <em>exact</em>{' '}
         difference between two charts, so anyone holding one of the two can reconstruct
         the other from it: safer to pass on than a full record, not anonymous. And a
         version, checksum or source URL inside a record you supply is a claim that
@@ -149,19 +149,19 @@ const jsonLd = [
         digest comparison above is what establishes you have the published bytes.
       </p>
       <p>
-        <code>npm ci</code> installs exactly the tree recorded in the
+        <code>npm ci</code> installs exactly the tree recorded in the{' '}
         <code>npm-shrinkwrap.json</code> inside the archive, so two people running
-        these commands get the same dependencies. This package declares no
-        <code>preinstall</code>, <code>install</code>, <code>postinstall</code> or
+        these commands get the same dependencies. This package declares no{' '}
+        <code>preinstall</code>, <code>install</code>, <code>postinstall</code> or{' '}
         <code>prepare</code> script of its own.
       </p>
       <p>
         The install brings fourteen packages. Three are the server's own,
         pinned exactly —
-        <code>@modelcontextprotocol/server {manifest.dependencies['@modelcontextprotocol/server']}</code>,
-        <code>@modelcontextprotocol/core {manifest.dependencies['@modelcontextprotocol/core']}</code> and
+        <code>@modelcontextprotocol/server {manifest.dependencies['@modelcontextprotocol/server']}</code>,{' '}
+        <code>@modelcontextprotocol/core {manifest.dependencies['@modelcontextprotocol/core']}</code> and{' '}
         <code>zod {manifest.dependencies.zod}</code> — and the other eleven are
-        development dependencies of the MCP <em>client</em>, which only
+        development dependencies of the MCP <em>client</em>, which only{' '}
         <code>npm run verify</code> uses. <code>npm ci --omit=dev</code> installs
         the three and the server runs; only the verifier needs the rest. The engine
         ({manifest.engine.package} {manifest.engine.version}) and the comparison are
@@ -186,14 +186,14 @@ const jsonLd = [
     <pre tabindex="0" role="region" aria-label="Claude Code commands"><code>{connect}</code></pre>
     <div class="prose">
       <p>
-        Expect <code>zodiacs: node … - ✓ Connected</code>. Add <code>--scope project</code>
-        to write it into a <code>.mcp.json</code> your repository shares, or
+        Expect <code>zodiacs: node … - ✓ Connected</code>. Add <code>--scope project</code>{' '}
+        to write it into a <code>.mcp.json</code> your repository shares, or{' '}
         <code>--scope user</code> for every project on the machine.
       </p>
       <p>
         For Claude Desktop, VS Code or Cursor, add the same entry to the config file
-        their own documentation names — <code>claude_desktop_config.json</code> under
-        <code>mcpServers</code>, <code>.vscode/mcp.json</code> under <code>servers</code>,
+        their own documentation names — <code>claude_desktop_config.json</code> under{' '}
+        <code>mcpServers</code>, <code>.vscode/mcp.json</code> under <code>servers</code>,{' '}
         <code>.cursor/mcp.json</code> under <code>mcpServers</code>. Those locations come
         from their docs rather than from a run here, so they are not tested claims;
         Claude Desktop is macOS and Windows only and could not be exercised on the
@@ -227,7 +227,7 @@ const jsonLd = [
         result over a seeded synthetic corpus to these schemas.
       </p>
       <p>
-        <code>get_positions</code>, <code>find_events</code> and
+        <code>get_positions</code>, <code>find_events</code> and{' '}
         <code>check_sky_fact</code> run the <a href="/developers/compute/">compute
         API</a>'s own parsers and calculations, without a zone. For the same request
         each returns the compute API's body, with the same result and the same
@@ -244,9 +244,9 @@ const jsonLd = [
         houses</em>. Those are round public coordinates for New York on an ordinary
         date — a synthetic chart, nobody's birth details. You should get twelve bodies,
         four angles and twelve cusps, with the Sun at 0.873331° and the ascendant at
-        274.044963°, and <code>houses</code> reading
+        274.044963°, and <code>houses</code> reading{' '}
         <code>{'{ requested: "placidus", actual: "placidus", absenceReason: null }'}</code>.
-        Then drop the zone — ask for <code>1988-03-21T06:45:00</code> with no
+        Then drop the zone — ask for <code>1988-03-21T06:45:00</code> with no{' '}
         <code>Z</code> — and it refuses rather than guessing: <em>utc must be an ISO-8601
         instant with an explicit zone</em>. That refusal is the limit you would meet
         first for real, because this adapter resolves no time zones.
@@ -254,7 +254,7 @@ const jsonLd = [
       <p>
         <code>compare_calculation_records</code> reads the record format this site
         produces — <code>zodiacs.natal-envelope.draft-v1</code>, what the birth chart
-        here offers for download, what the developer starter writes, and what
+        here offers for download, what the developer starter writes, and what{' '}
         <code>calculate_natal_chart</code> carries in the <code>record</code> field of
         its reply when you pass <code>output: "record"</code>. That field holds the
         whole record, as text; the two keys beside it name the engine that produced it
@@ -276,7 +276,7 @@ const jsonLd = [
         package version, because the adapter imports nothing that could carry one out.
       </p>
       <p>
-        The comparison is the same code as the
+        The comparison is the same code as the{' '}
         <a href="/developers/compare/"> browser tool on this site</a>, which is the
         reason the adapter lives in the site's own repository: one set of rules, not a
         copy that drifts.
@@ -317,9 +317,9 @@ const jsonLd = [
     <div class="prose">
       <p>
         Every result other than a refusal carries <code>cite</code>, the same four
-        fields the
-        <a href="/developers/compute/">compute API</a> puts on its answers:
-        <code>url</code>, the tool's entry on this page; <code>receipt</code>,
+        fields the{' '}
+        <a href="/developers/compute/">compute API</a> puts on its answers:{' '}
+        <code>url</code>, the tool's entry on this page; <code>receipt</code>,{' '}
         <code>sha256:</code> and the SHA-256 of a receipt's RFC 8785 canonical JSON;
         and the engine and its version.
       </p>
@@ -332,20 +332,20 @@ const jsonLd = [
         birth details from either side. With the date and the place, trying each
         time of day finds the time. With the instant, which the positions give away,
         trying places from a list of towns finds the place, even for a chart with no
-        known time, whose summary shows no angle, cusp or coordinate. With
+        known time, whose summary shows no angle, cusp or coordinate. With{' '}
         <code>timeKnown: false</code> the coordinates change nothing else in the
         result, so leaving them out keeps them out of the receipt. Quote the digest
         only where the birth details may be known.
       </p>
       <p>
-        <code>get_capabilities</code> and <code>compare_calculation_records</code>
+        <code>get_capabilities</code> and <code>compare_calculation_records</code>{' '}
         cite the adapter's own receipt, which the reply carries: the adapter and the
         engine that answered, and for a comparison its output. It holds nothing from
         either record, so a comparison's citation says how the comparison was made,
         not which records it read.
       </p>
       <p>
-        <code>get_positions</code>, <code>find_events</code> and
+        <code>get_positions</code>, <code>find_events</code> and{' '}
         <code>check_sky_fact</code> cite the compute API's receipt for the same
         calculation, which the reply carries: the engine, its conventions and
         coverage, the reference span, the two sources of ΔT, and for a search how it
@@ -363,8 +363,8 @@ const jsonLd = [
         record may carry, taken from the engine, with the engine versions that wrote
         it, what each key covers, the coverage statement the engine's receipts carry,
         and what each chart flag reports. <code>zodiacs://methodology</code> says how
-        the server calculates, with links to the
-        <a href="/methodology/">methodology page</a>. Both are built into
+        the server calculates, with links to the{' '}
+        <a href="/methodology/">methodology page</a>. Both are built into{' '}
         <code>server.mjs</code>: reading one opens no file and makes no request.
       </p>
     </div>
@@ -377,7 +377,7 @@ const jsonLd = [
           transits, progressions, returns or eclipses.</li>
         <li>No interpretation. Positions and differences, no readings.</li>
         <li>No timezone resolution. Supply an instant with an explicit offset; the
-          adapter does not turn a place name and a wall clock into a moment, and
+          adapter does not turn a place name and a wall clock into a moment, and{' '}
           <code>check_sky_fact</code> reads a date without a zone as that day in
           every UTC offset in use today at once.</li>
         <li>No file access and no fetching. Records are passed as content.</li>
@@ -416,7 +416,7 @@ const jsonLd = [
     <h2 id="testing">How it was tested</h2>
     <div class="prose">
       <p>
-        Recorded in the repository under
+        Recorded in the repository under{' '}
         <code>docs/platform/evidence/mcp-adapter/</code>, kept as separate records
         because they establish separate things: the official client library against the
         real server process; the Claude Code CLI connecting to it; model-driven
@@ -429,8 +429,8 @@ const jsonLd = [
         about a disagreement between independently authored software.
       </p>
       <p>
-        The site's tests also run 252 synthetic requests through
-        <code>get_positions</code>, <code>find_events</code> and
+        The site's tests also run 301 synthetic requests through{' '}
+        <code>get_positions</code>, <code>find_events</code> and{' '}
         <code>check_sky_fact</code> and through the compute API's own handler, and
         hold the two answers to be the same apart from the citation's link.
       </p>
@@ -445,7 +445,7 @@ const jsonLd = [
         on dates chosen for what they exercise.
       </p>
       <p>
-        Building something on this? Open an
+        Building something on this? Open an{' '}
         <a href="https://github.com/zodiacs-org/site/issues">issue on the site
         repository</a> — what you connected it to, what you asked it for, and what it
         got wrong. Use a synthetic chart: a public issue should not carry someone's
