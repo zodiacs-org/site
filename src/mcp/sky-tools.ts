@@ -19,6 +19,7 @@
  * a date, which the compute API reads in every UTC offset in use today at once.
  */
 import { z } from 'zod';
+import { ASPECTS, ASPECT_TYPES } from '@zodiacs/engine';
 import {
   ANY_ZONE_DAY, BUDGETS, EPOCH, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS, SKY_FACT_KINDS,
 } from '../lib/compute-api/constants';
@@ -63,16 +64,21 @@ export const EVENTS_INPUT = z.strictObject({
     .describe('ingress: a body entering a sign. station: a planet turning retrograde or direct. lunation: a new or full moon, whichever bodies are named. Each named once; all three when omitted.'),
 });
 
+/** The orbs a chart's aspects use, which an aspect fact holds to. */
+const ASPECT_ORBS = ASPECTS.map(({ type, angle, orb, luminaryOrb }) => `${type} ${angle}° within ${orb}° (${luminaryOrb}° with the Sun or the Moon)`).join(', ');
+
 export const SKY_FACT_INPUT = z.strictObject({
   kind: z.enum(SKY_FACT_KINDS)
-    .describe('sign: is the body in the sign? retrograde: is the body retrograde? ingress: does the body enter the sign on the date? phase: does the Moon reach the phase on the date?'),
-  body: z.enum(EVENT_BODIES).optional().describe('For sign, retrograde and ingress.'),
+    .describe('sign: is the body in the sign? retrograde: is the body retrograde? ingress: does the body enter the sign on the date? phase: does the Moon reach the phase on the date? aspect: are the body and the other body in the aspect?'),
+  body: z.enum(EVENT_BODIES).optional().describe('For sign, retrograde, ingress and aspect.'),
+  other: z.enum(EVENT_BODIES).optional().describe('For aspect: the second body, not the same as body.'),
+  aspect: z.enum(ASPECT_TYPES).optional().describe(`For aspect, within the orbs a chart's aspects use: ${ASPECT_ORBS}.`),
   sign: z.enum(SIGN_SLUGS).optional().describe('For sign and ingress, in lowercase.'),
   phase: z.enum(PHASE_NAMES).optional().describe('For phase.'),
   instant: z.string().max(INSTANT_CHARS).optional()
-    .describe(`For sign and retrograde: the moment to check, in ${instantForm} Give instant or date, not both.`),
+    .describe(`For sign, retrograde and aspect: the moment to check, in ${instantForm} Give instant or date, not both.`),
   date: z.string().max(DATE_CHARS).optional()
-    .describe(`YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31. Needed for ingress and phase; for sign and retrograde, the alternative to instant. ${ANY_ZONE_DAY_TEXT}`),
+    .describe(`YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31. Needed for ingress and phase; for sign, retrograde and aspect, the alternative to instant. ${ANY_ZONE_DAY_TEXT}`),
 });
 
 /**

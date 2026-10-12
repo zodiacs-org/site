@@ -14,6 +14,7 @@
 import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import { describe, expect, it } from 'vitest';
+import { ASPECTS } from '@zodiacs/engine';
 import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
 import {
@@ -107,16 +108,41 @@ function eventsCorpus(): Args[] {
   return cases;
 }
 
+/** The corpus of the four kinds before aspects, unchanged, so a drive can compare versions request for request. */
+const FIRST_FACT_KINDS = SKY_FACT_KINDS.filter((kind) => kind !== 'aspect');
+
 function skyFactCorpus(): Args[] {
   const random = generator(20261007);
   const cases: Args[] = [];
   for (let index = 0; index < 160; index += 1) {
-    const kind = SKY_FACT_KINDS[index % SKY_FACT_KINDS.length];
+    const kind = FIRST_FACT_KINDS[index % FIRST_FACT_KINDS.length];
     const when = (kind === 'sign' || kind === 'retrograde') && random() < 0.5
       ? { instant: instantFor(random) } : { date: dateFor(random) };
     if (kind === 'phase') cases.push({ kind, phase: pick(random, PHASE_NAMES), date: dateFor(random) });
     else if (kind === 'retrograde') cases.push({ kind, body: pick(random, EVENT_BODIES), ...when });
     else cases.push({ kind, body: pick(random, EVENT_BODIES), sign: pick(random, SIGN_SLUGS), ...(kind === 'ingress' ? { date: dateFor(random) } : when) });
+  }
+  return cases;
+}
+
+/**
+ * Aspect facts between two of the ten bodies, at an instant or on a date. Most
+ * ask about the aspect nearest the two bodies' separation there, read from
+ * get_positions, so that the corpus reaches every answer.
+ */
+function aspectCorpus(): Args[] {
+  const random = generator(20261012);
+  const cases: Args[] = [];
+  for (let index = 0; index < 48; index += 1) {
+    const body = index % 2 === 0 ? 'Moon' : pick(random, EVENT_BODIES);
+    const other = pick(random, EVENT_BODIES.filter((candidate) => candidate !== body));
+    const when = random() < 0.5 ? { instant: instantFor(random) } : { date: dateFor(random) };
+    const at = 'instant' in when ? when.instant : `${when.date}T12:00:00Z`;
+    const rows = value(getPositions({ instants: [at], bodies: [body, other] })).result.instants[0].bodies as Array<{ lon: number }>;
+    const difference = Math.abs(rows[0].lon - rows[1].lon) % 360;
+    const apart = difference > 180 ? 360 - difference : difference;
+    const nearest = [...ASPECTS].sort((a, b) => Math.abs(apart - a.angle) - Math.abs(apart - b.angle))[0].type;
+    cases.push({ kind: 'aspect', body, other, aspect: random() < 0.75 ? nearest : pick(random, ASPECTS).type, ...when });
   }
   return cases;
 }
@@ -131,7 +157,7 @@ const value = (outcome: ToolOutcome) => {
 
 const positions = positionsCorpus().map((args) => ({ args, value: value(getPositions(args as any)) }));
 const events = eventsCorpus().map((args) => ({ args, value: value(findEvents(args as any)) }));
-const facts = await Promise.all(skyFactCorpus().map(async (args) => ({ args, value: value(await checkSkyFact(args as any)) })));
+const facts = await Promise.all([...skyFactCorpus(), ...aspectCorpus()].map(async (args) => ({ args, value: value(await checkSkyFact(args as any)) })));
 
 // Facts chosen from the engine's own answers, so that every answer appears: a
 // station, an ingress and a lunation found by find_events, each read on its own
@@ -150,6 +176,8 @@ for (const args of [
   { kind: 'sign', body: ingress.body, sign: ingress.sign, date: ingress.at.slice(0, 10) },
   { kind: 'sign', body: 'Sun', sign: signOf('Sun'), instant: '2026-10-15T12:00:00Z' },
   { kind: 'sign', body: 'Saturn', sign: signOf('Saturn'), date: '2026-10-15' },
+  // Saturn and Neptune hold their conjunction through 2026.
+  { kind: 'aspect', body: 'Saturn', other: 'Neptune', aspect: 'conjunction', date: '2026-10-15' },
 ]) facts.push({ args, value: value(await checkSkyFact(args as any)) });
 
 const all: [SkyToolName, Args, Record<string, any>][] = [
@@ -160,7 +188,7 @@ const all: [SkyToolName, Args, Record<string, any>][] = [
 
 describe("the three tools are the compute API's calculations", () => {
   it("returns, for every request of the corpus, the body the compute API's handler answers, with the tool's cite", async () => {
-    expect(all).toHaveLength(61 + 25 + 166);
+    expect(all).toHaveLength(61 + 25 + 215);
     for (const [tool, args, result] of all) {
       const response = await hosted(SKY_TOOLS[tool], args);
       expect(response.status, `${tool} ${JSON.stringify(args).slice(0, 120)}`).toBe(200);
@@ -183,6 +211,8 @@ describe("the three tools are the compute API's calculations", () => {
       for (const answer of ['false', 'depends']) expect(seen).toContain(`${kind} any-zone-day ${answer}`);
       expect(seen).not.toContain(`${kind} any-zone-day true`);
     }
+    for (const answer of ['true', 'false']) expect(seen).toContain(`aspect instant ${answer}`);
+    for (const answer of ['true', 'false', 'depends']) expect(seen).toContain(`aspect any-zone-day ${answer}`);
     // Every event kind and every station body the corpus reaches comes back from find_events.
     const kinds = new Set(events.flatMap(({ value }) => value.result.events.map((event: any) => event.kind)));
     expect([...kinds].sort()).toEqual([...EVENT_KINDS].sort());
@@ -256,6 +286,8 @@ describe('the ends of the accepted dates', () => {
       ['check_sky_fact', { kind: 'retrograde', body: 'Sun', date }],
       ...SIGN_SLUGS.map((sign) => ['check_sky_fact', { kind: 'ingress', body: 'Moon', sign, date }]),
       ...PHASE_NAMES.map((phase) => ['check_sky_fact', { kind: 'phase', phase, date }]),
+      ['check_sky_fact', { kind: 'aspect', body: 'Moon', other: 'Sun', aspect: 'opposition', date }],
+      ['check_sky_fact', { kind: 'aspect', body: 'Jupiter', other: 'Saturn', aspect: 'square', date }],
     ] as [SkyToolName, Args][]),
   ];
 
@@ -336,6 +368,10 @@ describe("refusals are the compute API's own sentences", () => {
     ['check_sky_fact', { kind: 'phase', phase: 'new' }],
     ['check_sky_fact', { kind: 'retrograde', body: 'Mars', date: '2026-02-30' }],
     ['check_sky_fact', { kind: 'retrograde', body: 'Mars', date: '2200-01-01' }],
+    ['check_sky_fact', { kind: 'aspect', body: 'Moon', other: 'Moon', aspect: 'square', date: '2026-10-05' }],
+    ['check_sky_fact', { kind: 'aspect', body: 'Moon', aspect: 'square', date: '2026-10-05' }],
+    ['check_sky_fact', { kind: 'aspect', body: 'Moon', other: 'Mars', instant: '2026-10-05T12:00:00Z' }],
+    ['check_sky_fact', { kind: 'aspect', body: 'Moon', other: 'Mars', aspect: 'trine', sign: 'leo', date: '2026-10-05' }],
   ];
 
   it('refuses what the compute API refuses, in the same words', async () => {

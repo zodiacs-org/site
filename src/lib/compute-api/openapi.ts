@@ -12,6 +12,7 @@
  * server's time zone data knows, an events window whose `to` is after its
  * `from`); those are refused with invalid-request too.
  */
+import { ASPECTS, ASPECT_TYPES } from '@zodiacs/engine';
 import {
   ANGULAR_MAX_ABS_LATITUDE,
   COMPUTE_DOCS_URL,
@@ -72,6 +73,8 @@ const object = (required: string[], properties: Record<string, unknown>, descrip
   properties,
   ...(description ? { description } : {}),
 });
+const place = object(['lon', 'sign', 'degree'], { lon: num, sign, degree: num }, 'A longitude, with its sign and the degree within it.');
+const allowedOrb = { type: 'number', minimum: 0, description: 'The widest orb at which the aspect holds between these two bodies, in degrees: the wider one when the Sun or the Moon is one of them.' };
 
 export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   Instant: {
@@ -211,7 +214,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     },
   },
   SkyFactRequest: {
-    oneOf: [ref('SignFact'), ref('RetrogradeFact'), ref('IngressFact'), ref('PhaseFact')],
+    oneOf: [ref('SignFact'), ref('RetrogradeFact'), ref('IngressFact'), ref('PhaseFact'), ref('AspectFact')],
     discriminator: {
       propertyName: 'kind',
       mapping: {
@@ -219,6 +222,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
         retrograde: '#/components/schemas/RetrogradeFact',
         ingress: '#/components/schemas/IngressFact',
         phase: '#/components/schemas/PhaseFact',
+        aspect: '#/components/schemas/AspectFact',
       },
     },
   },
@@ -274,6 +278,24 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     properties: {
       kind: { const: 'phase' },
       phase: { enum: [...PHASE_NAMES] },
+      date: { type: 'string', pattern: `^${DATE}$` },
+      zone: requestZone,
+    },
+  },
+  AspectFact: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['kind', 'body', 'other', 'aspect'],
+    oneOf: [
+      { required: ['instant'], not: { anyOf: [{ required: ['date'] }, { required: ['zone'] }] } },
+      { required: ['date'], not: { required: ['instant'] } },
+    ],
+    properties: {
+      kind: { const: 'aspect' },
+      body: { enum: [...EVENT_BODIES] },
+      other: { enum: [...EVENT_BODIES], description: 'A body other than body: the order of the two changes nothing but the order they are reported in.' },
+      aspect: { enum: [...ASPECT_TYPES], description: `One of the five major aspects, held within the orbs a chart's aspects use: ${ASPECTS.map((definition) => `${definition.type} ${definition.angle}° within ${definition.orb}°`).join(', ')}, each widened (${ASPECTS.map((definition) => `${definition.luminaryOrb}°`).join(', ')}) when the Sun or the Moon is one of the two.` },
+      instant: ref('Instant'),
       date: { type: 'string', pattern: `^${DATE}$` },
       zone: requestZone,
     },
@@ -579,9 +601,18 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     allOf: [ref('LocalResolution'), object(['utc'], { utc: outputInstant })],
     description: 'A midnight of the day in its zone: the instant, and how the local time was read.',
   },
+  AspectState: object(['body', 'other', 'separation', 'orb', 'motion'], {
+    body: ref('BodyState'),
+    other: ref('BodyState'),
+    separation: { type: 'number', minimum: 0, maximum: 180, description: 'The angle between the two longitudes, in degrees.' },
+    orb: { type: 'number', minimum: 0, description: 'How far the separation is from the aspect\'s exact angle, in degrees.' },
+    motion: { enum: ['applying', 'separating', 'stationary'], description: 'applying while the orb shrinks, separating while it grows, judged from the two daily motions; stationary when the two move at the same speed.' },
+  }, 'The two bodies at one instant and the aspect between them.'),
   SkyFactEcho: object(['kind', 'date', 'zone'], {
-    kind: { enum: ['sign', 'retrograde', 'ingress', 'phase'] },
+    kind: { enum: ['sign', 'retrograde', 'ingress', 'phase', 'aspect'] },
     body: eventBody,
+    other: eventBody,
+    aspect: { enum: [...ASPECT_TYPES] },
     sign,
     phase: { enum: [...PHASE_NAMES] },
     instant: nullable(outputInstant),
@@ -599,7 +630,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       window: nullable(object(['from', 'to'], { from: outputInstant, to: outputInstant }, 'The day read: from its start (included) to its end (excluded).')),
       zone: nullable(object(['start', 'end'], { start: ref('ZoneEdge'), end: ref('ZoneEdge') }, 'The two midnights of a day read in a zone.')),
       facts: {
-        description: 'The computed values that decide the answer. At an instant: the body\'s state there. On a day: the state at its start and end with the sign changes or stations between, or the ingresses or lunations in it. flags holds outside-reference-span when the instant or the day reaches past the instant span.',
+        description: 'The computed values that decide the answer. At an instant: the body\'s state there, or for an aspect both bodies\' states, their separation, the orb and whether it is shrinking. On a day: the state at its start and end with the sign changes, stations or aspect changes between, or the ingresses or lunations in it. flags holds outside-reference-span when the instant or the day reaches past the instant span.',
         oneOf: [
           object(['lon', 'sign', 'degree', 'speed', 'retrograde', 'deltaT', 'timeScale', 'flags'], {
             lon: num, sign, degree: num, speed: num, retrograde: bool, deltaT: ref('DeltaT'), timeScale: ref('TimeScale'),
@@ -620,6 +651,17 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
           object(['lunations', 'flags'], {
             lunations: list(object(['at', 'lon', 'sign', 'degree'], { at: outputInstant, lon: num, sign, degree: num })), flags: spanFlags,
           }, 'A phase on a day.'),
+          {
+            allOf: [ref('AspectState'), object(['allowedOrb', 'deltaT', 'timeScale', 'flags'], {
+              allowedOrb, deltaT: ref('DeltaT'), timeScale: ref('TimeScale'), flags: spanFlags,
+            })],
+            description: 'An aspect at an instant: true when the orb is within allowedOrb.',
+          },
+          object(['atStart', 'atEnd', 'allowedOrb', 'changes', 'exact', 'flags'], {
+            atStart: ref('AspectState'), atEnd: ref('AspectState'), allowedOrb, flags: spanFlags,
+            changes: list(object(['at', 'holds'], { at: outputInstant, holds: { type: 'boolean', description: 'Whether the aspect holds from this instant on: true where it begins, false where it ends.' } })),
+            exact: list(object(['at', 'body', 'other'], { at: outputInstant, body: place, other: place })),
+          }, 'An aspect on a day: where it begins or ends in the day, and where it is exact.'),
         ],
       },
     },

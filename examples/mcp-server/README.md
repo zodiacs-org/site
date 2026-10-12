@@ -247,10 +247,13 @@ beside the number of evaluations it made, at most 12,000.
 
 Takes a `kind` and what it needs: `sign`, a body in a sign, or `retrograde`, a
 body moving backward, each at an `instant` or on a `date`; `ingress`, a body
-entering a sign on a `date`; or `phase`, the Moon reaching `new`,
-`first-quarter`, `full` or `last-quarter` on a `date`. It answers `true`,
-`false` or `depends`, with the computed values that decide the answer. It
-never interprets.
+entering a sign on a `date`; `phase`, the Moon reaching `new`,
+`first-quarter`, `full` or `last-quarter` on a `date`; or `aspect`, a `body`
+and an `other` body in a `conjunction`, `sextile`, `square`, `trine` or
+`opposition`, within the orb `calculate_natal_chart` uses for its aspects, at an
+`instant` or on a `date`. It answers `true`, `false` or `depends`, with the
+computed values that decide the answer. On a date, an aspect's reply also gives
+where it begins or ends and where it is exact. It never interprets.
 
 This adapter looks up no time zone, so there is no `zone` argument. A date is
 read as that day in every UTC offset in use today, −12:00 to +14:00, at once:
@@ -258,8 +261,8 @@ from 14 hours before its midnight UTC to 36 hours after. `depends` means the
 answer turns on the time of day or on the offset. When the ingress or the phase
 asked about falls in that span, the answer is always `depends`, because some
 offsets' dates hold it and others' do not, so neither is ever `true` here. For a
-definite answer to a sign or retrograde fact, ask at an instant; for an ingress
-or a phase, `find_events` gives the instant.
+definite answer to a sign, retrograde or aspect fact, ask at an instant; for an
+ingress or a phase, `find_events` gives the instant.
 
 These three run the hosted compute API's own calculations: the same parser and
 the same function as `POST https://zodiacs.org/api/v1/positions`, `/events` and
