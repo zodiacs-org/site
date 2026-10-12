@@ -169,6 +169,16 @@ drops the hold when the stylesheet has loaded, or if it fails or takes over
 the `@import` styles the footer as before. After it, the explorer's check
 passed 3 of 3 locally.
 
+## Phase 1 captures
+
+The guard, the layout and the footer styles are template sources, so this
+branch needed captures for its own digest. Browser Evidence run 38267976358
+on `ae3bcf15` took them for digest `3e72452d`; the committed manifest and the
+18 captures are that artifact's, and only `love-360.png` differs from main's.
+Its build, captures, visual comparison, Lighthouse and explorer drive all
+passed, the explorer's 44 px target check included
+([`browser-evidence-provenance.json`](browser-evidence-provenance.json)).
+
 ## Reproduce
 
 ```bash
