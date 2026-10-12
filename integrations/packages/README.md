@@ -16,7 +16,7 @@ local MCP connection are the available development paths.
 
 These files are prepared packages, not evidence of upload, acceptance or listing.
 
-Current candidates are **Zodiacs 0.4.1** and **Zodiacs Developer 0.3.10**;
+Current candidates are **Zodiacs 0.4.1** and **Zodiacs Developer 0.3.11**;
 `manifest.json` identifies their archive and member hashes. Earlier ZIPs are
 historical artifacts. The consumer ZIP includes portable, Codex and Claude
 manifest files; its shared `.mcp.json` declares HTTP transport. The production
