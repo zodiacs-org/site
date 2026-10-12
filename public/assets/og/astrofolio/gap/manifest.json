@@ -1,0 +1,14 @@
+{
+  "schema": "zodiacs.astrofolio-gap-og.v1",
+  "width": 1200,
+  "height": 630,
+  "observedAt": "2026-10-11T05:30:17.551Z",
+  "sourceName": "DexScreener",
+  "sourceUrl": "https://api.dexscreener.com/tokens/v1/solana/GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv,EjkkxYpfSwS6TAtKKuiJuNMMngYvumc1t1v9ZX1WJKMp,ARiZfq6dK19uNqxWyRudhbM2MswLyYhVUHdndGkffdGc,CmomKM8iPKRSMN7y1jqyW1QKj5bGoZmbvNZXWBJSUdnZ,8Cd7wXoPb5Yt9cUGtmHNqAEmpMDrhfcVqnGbLC48b8Qm,Ez4bst5qu5uqX3AntYWUdafw9XvtFeJ3gugytKKbSJso,7Zt2KUh5mkpEpPGcNcFy51aGkh9Ycb5ELcqRH1n2GmAe,J4fQTRN13MKpXhVE74t99msKJLbrjegjEgLBnzEv2YH1,8x17zMmVjJxqswjX4hNpxVPc7Tr5UabVJF3kv8TKq8Y3,3C2SN1FjzE9MiLFFVRp7Jhkp8Gjwpk29S2TCSJ2jkHn2,C49Ut3om3QFTDrMZ5Cr8VcTKPpHDcQ2Fv8mmuJHHigDt,3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE",
+  "measure": "Market cap (USD)",
+  "combinedUsd": 911482,
+  "reportedAssetCount": 12,
+  "audienceOwnerReviewRequired": true,
+  "image": "/assets/og/astrofolio/gap/2026-10-11-18c82bc52d72.png",
+  "sha256": "18c82bc52d725683c04987fae131aa3693dfc0e092a59fcf1eb1ee59c012e252"
+}

@@ -103,6 +103,7 @@ jobs:
           node scripts/build-registry-outlook.mjs
           node scripts/build-registry-research.mjs
           node scripts/build-sign-pages.mjs
+          node scripts/build-astrofolio-gap.mjs
           node --input-type=module <<'NODE'
           import { readFile } from 'node:fs/promises';
           const [history, outlook, researchDrafts, researchPublication, researchFeed] = await Promise.all([
@@ -157,6 +158,8 @@ jobs:
             "public/assets/registry-research-feed.json"
             "public/assets/data/registry-research"
             "public/registry"
+            "public/astrofolio/gap/index.html"
+            "public/assets/og/astrofolio/gap"
           )
           if [ "$PAIRING_OUTCOME" = "success" ]; then
             FILES+=("${REGISTRY_FILES[@]}")

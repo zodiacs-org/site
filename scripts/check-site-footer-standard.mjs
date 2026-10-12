@@ -121,6 +121,7 @@ for (const generator of [
 
 for (const fullPage of [
   'public/archive/index.html',
+  'public/astrofolio/gap/index.html',
   'public/registry/index.html',
   'public/thesis/index.html',
   ...[
