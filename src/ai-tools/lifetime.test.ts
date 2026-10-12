@@ -28,7 +28,7 @@ for (const [name, path, local] of [
       source = source.slice(0, start) + source.slice(end);
     }
     source = once(source, 'return localTimeModule;', 'auditResolvers.push(localTimeModule); return localTimeModule;');
-    source = once(source, 'dispose() {', 'auditState() { return [offsetFormatters.size, wallFormatters.size, zoneHistories?.size ?? 0, zoneHistoryLoads?.size ?? 0]; }, dispose() {');
+    source = once(source, 'dispose() {', 'auditState() { return [offsetFormatters.size, histories.size, loads.size]; }, dispose() {');
     source = once(source, '  return last;\n}', '  if (auditFail) throw new Error("synthetic engine failure");\n  return last;\n}');
     source += `\nconst auditResolvers = []; let auditFail = false;
 export function auditState() { return [last ?? null, pluto_cache.length, CalcMoonCount]; }
@@ -39,7 +39,7 @@ export { executeAiTool, executeAiToolWithoutLifetimeBoundary, auditResolvers${lo
 import assert from 'node:assert/strict';
 import * as bundle from './bundle.mjs';
 const args = { instant: '2082-03-14T05:29:17Z', zone: 'Asia/Bangkok' };
-const empty = () => { assert.deepEqual(bundle.auditState(), [null, 0, 0]); for (const resolver of bundle.auditResolvers) assert.deepEqual(resolver.auditState(), [0, 0, 0, 0]); };
+const empty = () => { assert.deepEqual(bundle.auditState(), [null, 0, 0]); for (const resolver of bundle.auditResolvers) assert.deepEqual(resolver.auditState(), [0, 0, 0]); };
 // Positive control proves that the reader observes the real retained canary.
 const prior = await bundle.executeAiToolWithoutLifetimeBoundary('get_sky', args, {});
 assert.equal(prior.ok, true); assert.notEqual(bundle.auditState()[0], null);

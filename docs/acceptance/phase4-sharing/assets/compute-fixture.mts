@@ -3,7 +3,7 @@
  * with the repo's own engine so no aspect, orb, sign, or degree in the
  * handoff or proofs is invented. Regenerate with:
  *
- *   npx vite-node docs/acceptance/phase4-compat-invite/assets/compute-fixture.mts
+ *   npx vite-node docs/acceptance/phase4-sharing/assets/compute-fixture.mts
  *
  * Frida matches the committed demo chart (src/data/demo-chart-frida.json);
  * the script fails if the recomputed Sun drifts from that file's value.
@@ -16,7 +16,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { computeChart } from '../../../../src/lib/engine/full';
 import { summarizePair, type MinimalBody } from '../../../../src/lib/engine/synastry';
-import { resolveLocalToUtc } from '../../../../src/lib/time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from '../../../../src/lib/time/localToUtc';
 import { degreeInSign, signForLongitude } from '../../../../src/lib/signs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -55,7 +55,9 @@ const DIEGO: Side = {
   place: 'Guanajuato, Mexico',
 };
 
-function chartFor(side: Side) {
+// Both dates are before 1970, so the engine's resolver loads the zone's history first.
+async function chartFor(side: Side) {
+  await prepareLocalTime(side.date, side.tz);
   const resolved = resolveLocalToUtc(
     side.date,
     side.timeKnown && side.time ? side.time : '12:00',
@@ -77,8 +79,8 @@ const describe = (lon: number) => {
   return { lon: Number(lon.toFixed(4)), sign: sign.name, slug: sign.slug, degree: Number(degreeInSign(lon).toFixed(1)) };
 };
 
-const a = chartFor(FRIDA);
-const b = chartFor(DIEGO);
+const a = await chartFor(FRIDA);
+const b = await chartFor(DIEGO);
 
 // Cross-check against the committed demo chart — fail loudly on drift.
 const demo = JSON.parse(readFileSync(join(repo, 'src/data/demo-chart-frida.json'), 'utf8')) as {
