@@ -40,6 +40,9 @@ body { min-height: 100dvh; overflow-x: clip; }
   content-visibility: auto;
   contain-intrinsic-size: auto 900px;
 }
+/* Base.astro marks a footer that starts in the first viewport until its
+   deferred stylesheet has loaded, so it never paints unstyled and then moves. */
+:root[data-footer-styles-pending] .zfooter { visibility: hidden; }
 
 /* A single faint cool depth wash — no SaaS aurora, no chroma. Depth
    comes from one near-black vignette; the only color on the site is the
