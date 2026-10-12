@@ -320,6 +320,12 @@ describe('claims ledger', () => {
         texts: ['Posiciones verificadas con NASA JPL Horizons.', 'La hora se lee en UTC a las 12:00 del día.'],
       },
     ];
+    controls.push({
+      // A TypeDoc page is read for its doc comments, so a claim written in one is selected.
+      path: 'public/developers/engine/reference/functions/engine.natalChart.html',
+      inject: (source) => source.replace('<div class="tsd-comment tsd-typography"><p>', '<div class="tsd-comment tsd-typography"><p>Positions are verified against <code>JPL</code> to 2″.</p><p>'),
+      texts: ['Positions are verified against JPL to 2″.'],
+    });
     const missed = [];
     for (const control of controls) {
       const source = read(control.path);
@@ -329,6 +335,13 @@ describe('claims ledger', () => {
       for (const text of control.texts) if (!selected.has(text)) missed.push(`${control.path}: "${text}"`);
     }
     expect(missed, report(missed)).toEqual([]);
+
+    // Its signatures and member names are code, not prose: the same words there are not selected.
+    const page = read('public/developers/engine/reference/functions/engine.natalChart.html');
+    const signature = page.replace('<div class="tsd-signature tsd-anchor-link" id="natalchart">', '<div class="tsd-signature tsd-anchor-link" id="natalchart">deltaT verified against JPL to 2″ ');
+    expect(signature).not.toBe(page);
+    expect((await selectFileSentences('public/developers/engine/reference/functions/engine.natalChart.html', signature))
+      .filter((sentence) => sentence.text.includes('JPL'))).toEqual([]);
 
     expect(splitSentences('It is accurate, e.g. to 1″ in 2020. The next sentence starts here.'))
       .toEqual(['It is accurate, e.g. to 1″ in 2020.', 'The next sentence starts here.']);
