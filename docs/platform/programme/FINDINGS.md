@@ -76,6 +76,7 @@ Severity follows the audit's scale:
 | F-79 | minor | CI | Advisories for smol-toml, source-map-js and tinypool, which reached npm's audit data on 2026-10-06 after main's run at 00:07 UTC, failed Site Check's dependency audit on main's lockfile | fixed in #663: smol-toml 1.9.0 and source-map-js 1.2.2 in range, tinypool 2.2.0 through an override past vitest 3.2.7's declared `^1.1.1`; GHSA-82fw-gwwq-j7x9 (moderate) stays in development dependencies until vitest is upgraded |
 | F-81 | minor | copy | The birth-time window surface starts its sampling sentence in lower case ("sampled at one-second resolution. This check varies birth time…"), and its times read "GMT+0" under a note that says "Times below use UTC notation" | open: a later change to the surface; seen on canonical production at checkpoint 26; no value, control or gate depends on it |
 | F-82 | minor | engine reproducibility | On arm64 the engine gives some values that differ from x86-64's in their last bits: 4 of its 3,853 tests fail on an Apple M4 under Node 20, 22 and 24 (a calc speed by 1.4e-11 against a 1e-12 pin; a chart digest and an aspect angle by 5e-14° in two exact site-parity checks), and one conformance residual rounds differently in its ninth decimal | recorded in engine 1.0.0's CHANGELOG and evidence; the pins and generated results stay x86-64's, as CI runs, and 1.0.0's generated files were rebuilt on Linux x86-64; no published claim says bit-identical across platforms |
+| F-85 | minor | CI | `tests/bio-drive.mjs` read the real clock: from 00:00 UTC until the day's edition deploys, `/bio/`'s dated heading takes another line and put the desktop CTA at 374 px against the drive's 360 px ceiling, so its verdict depended on when it ran; Site Check 38184748851 passed the step because it started at 23:58:31 UTC | fixed here: the drive sets the page clock, to the edition's day for its acceptance checks and to the dated window for a pass with its own expectation |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned; fixed by the rc.14 adoption (2026-09-29): the Legacy wing drift job runs it; merged in #600 (`6cc4d477`) |
@@ -817,3 +818,39 @@ adoption changes neither its status nor the fixed denominator.
   rebuilt on Linux x86-64 so that they differ from 1.0.0-rc.2's in the version
   alone. Open for a later change: whether exact pins should carry a platform
   note or compare within a stated tolerance; no tolerance is changed here.
+
+### F-85 — the bio drive's verdict depended on the time of day (minor, CI; fixed here)
+
+- **Found.** A run of `tests/bio-drive.mjs` on 2026-10-12 against
+  `ec0451ff`, with the 2026-10-11 edition and the real clock on 2026-10-12,
+  failed `desktop: primary CTA arrives in the opening scan` at 374 px. Site
+  Check run 38184748851 on the same commit passed the step because it
+  started at 23:58:31 UTC on 2026-10-11, 89 seconds before midnight
+  ([record](../evidence/bio-drive-clock-20261012/README.md)).
+- **Cause.** The drive read the real clock. `/bio/` renders its heading with
+  EditionText, "Your chart and today’s sky". From 00:00 UTC until the day's
+  daily commit deploys, at about 05:30 UTC, the page is dated and the heading
+  reads "Your chart and the October 11, 2026 edition’s sky": one more line in
+  Georgia, and for most dates two in Times New Roman. The drive's 360 px
+  ceiling, one figure for all five viewports, came with this heading in
+  `1dac5100` and was set against the edition day's composition (328 px on
+  desktop).
+- **Reproduced** on `812423b1`, main before the 2026-10-12 daily commit, with
+  the 2026-10-11 edition, built without the two freshness gates and driven
+  at 07:30 UTC on 2026-10-12: the same failure at 374 px. Tablet (357),
+  mobile (326), annotation (332) and narrow (323) pass.
+- **Fix.** The drive sets the page clock with an init script, as
+  `tests/edition-parser-drive.mjs` does: 12:00 UTC on the edition's day for
+  the acceptance checks, which now also check that the heading is the
+  current one, and 00:17 UTC on the next day for a dated pass over the same
+  five viewports. The dated pass checks for page errors, the dated heading
+  exactly, horizontal overflow, and that the whole primary CTA is in the
+  first screen. No page, style or copy changes.
+- **Regression test.** The drive itself, in Site Check's "Link-in-bio page
+  acceptance". On `812423b1` at 10:12 UTC the new drive passes its 109
+  checks; the old one fails as above.
+- **Remaining.** The dated pass does not bound where in the first screen the
+  CTA lands: 374 to 420 px on desktop in the measured cases, against 328 px
+  on the edition's day. Keeping the edition day's position in the dated
+  state would be a design change to the page. Other drives that read the
+  real clock were not surveyed.
