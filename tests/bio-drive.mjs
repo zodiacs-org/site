@@ -1,4 +1,4 @@
-import { mkdir, readFile } from 'node:fs/promises';
+import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
@@ -18,24 +18,34 @@ const VIEWPORTS = [
   { name: 'narrow', width: 320, height: 780 },
 ];
 
-// The heading reads "today’s sky" only while the page's own clock is on the
-// edition's UTC day. From 00:00 UTC until the next edition deploys it names
-// the edition's date instead, and takes more lines. The drive sets the page
-// clock rather than reading the real one: the edition's day for the page's
-// acceptance, and 00:17 UTC on the next day for the dated pass.
-const publication = JSON.parse(await readFile(new URL('../src/data/daily-publication.json', import.meta.url), 'utf8'));
-const EDITION_DAY = Date.parse(`${publication.date}T12:00:00Z`);
-const DATED_WINDOW = Date.parse(`${publication.date}T00:17:00Z`) + 24 * 60 * 60 * 1000;
-const editionLabel = new Intl.DateTimeFormat('en-US', {
-  month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
-}).format(new Date(`${publication.date}T00:00:00Z`));
 const CURRENT_HEADING = 'Your chart and today’s sky';
-const DATED_HEADING = `Your chart and the ${editionLabel} edition’s sky`;
 const failures = [];
 
 function check(name, ok, detail = '') {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? ` · ${detail}` : ''}`);
   if (!ok) failures.push(name);
+}
+
+// The heading reads "today’s sky" only while the page's own clock is on the
+// edition's UTC day. From 00:00 UTC until the next edition deploys it names
+// the edition's date instead, and takes more lines. The drive sets the page
+// clock rather than reading the real one: the edition's day for the page's
+// acceptance, and 00:17 UTC on the next day for the dated pass. The edition is
+// the one the target serves, which for ZODIACS_TEST_BASE_URL need not be this
+// checkout's.
+async function editionClocks(base) {
+  const response = await fetch(`${base}/bio/`);
+  const html = await response.text();
+  const date = /<html\b[^>]*\sdata-edition-date="(\d{4}-\d{2}-\d{2})"/u.exec(html)?.[1];
+  if (!response.ok || !date) throw new Error(`${base}/bio/ serves no edition date (HTTP ${response.status})`);
+  const label = new Intl.DateTimeFormat('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+  }).format(new Date(`${date}T00:00:00Z`));
+  return {
+    editionDay: Date.parse(`${date}T12:00:00Z`),
+    datedWindow: Date.parse(`${date}T00:17:00Z`) + 24 * 60 * 60 * 1000,
+    datedHeading: `Your chart and the ${label} edition’s sky`,
+  };
 }
 
 async function pinClock(page, at) {
@@ -54,6 +64,7 @@ async function pinClock(page, at) {
 
 await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (BASE) => {
   if (OUT) await mkdir(OUT, { recursive: true });
+  const { editionDay, datedWindow, datedHeading } = await editionClocks(BASE);
   const browser = await chromium.launch({ executablePath: CHROMIUM, args: STABLE_CHROMIUM_ARGS });
 
   try {
@@ -64,7 +75,7 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
     });
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
-    await pinClock(page, EDITION_DAY);
+    await pinClock(page, editionDay);
     await page.goto(`${BASE}/bio/`, { waitUntil: 'networkidle' });
 
     const evidence = await page.evaluate(() => ({
@@ -257,7 +268,7 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
       });
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
-      await pinClock(page, DATED_WINDOW);
+      await pinClock(page, datedWindow);
       await page.goto(`${BASE}/bio/`, { waitUntil: 'networkidle' });
 
       const dated = await page.evaluate(() => {
@@ -275,7 +286,7 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
 
       check(`${viewport.name} (dated): route renders without page errors`, errors.length === 0, errors.join(' | '));
       check(`${viewport.name} (dated): the heading names the edition's date instead of today`,
-        dated.editionState === 'dated' && dated.heading === DATED_HEADING,
+        dated.editionState === 'dated' && dated.heading === datedHeading,
         `${dated.editionState} · ${dated.heading}`);
       check(`${viewport.name} (dated): no horizontal overflow`, dated.width <= dated.viewport, `${dated.width}/${dated.viewport}`);
       check(`${viewport.name} (dated): primary CTA stays in the first screen`,
@@ -287,7 +298,7 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
     }
 
     const reduced = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
-    await pinClock(reduced, EDITION_DAY);
+    await pinClock(reduced, editionDay);
     await reduced.goto(`${BASE}/bio/`, { waitUntil: 'networkidle' });
     const motion = await reduced.locator('.bio-link').first().evaluate((node) => ({
       transition: getComputedStyle(node).transitionDuration,

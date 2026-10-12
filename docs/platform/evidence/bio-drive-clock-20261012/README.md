@@ -89,9 +89,14 @@ In `tests/bio-drive.mjs`:
 
 - An init script sets the page clock, with the `FixedDate` of
   `tests/edition-parser-drive.mjs`. The acceptance pass runs at 12:00 UTC on
-  the edition's day (`src/data/daily-publication.json`) and checks on each
-  viewport that the heading is the current one, "Your chart and today’s
-  sky". The reduced-motion page uses the same clock.
+  the edition's day and checks on each viewport that the heading is the
+  current one, "Your chart and today’s sky". The reduced-motion page uses the
+  same clock.
+- The edition is the one the target serves: the drive reads `/bio/`'s
+  `data-edition-date` before it sets either clock. With
+  `ZODIACS_TEST_BASE_URL` the target can serve another edition than the
+  checkout's `src/data/daily-publication.json`, which the drive's first
+  version (`263ec244`) read (review of #727).
 - A dated pass over the same five viewports runs at 00:17 UTC on the next
   day. It checks for page errors, that the page is dated and the heading
   reads exactly "Your chart and the ‹edition date› edition’s sky", that
@@ -103,7 +108,8 @@ In `tests/bio-drive.mjs`:
 ## Runs
 
 Node 22.22.2, Chrome 154.0.8037.98, macOS 27.0.1 (arm64), all on
-2026-10-12. "After" is the drive of `263ec244`.
+2026-10-12. "After" is the drive of `263ec244`; the drive that reads the
+served edition gives byte-identical output on the first four builds.
 
 | build | edition | real clock (UTC) | drive | result | log |
 | --- | --- | --- | --- | --- | --- |
@@ -112,6 +118,8 @@ Node 22.22.2, Chrome 154.0.8037.98, macOS 27.0.1 (arm64), all on
 | `812423b1` | 2026-10-11 | 10:12 | after | 109 pass | `drive-after-dated-clock.txt` |
 | `5ab297a9` (the change touches no built file) | 2026-10-12 | 10:15 | after | 109 pass | `drive-after-current-clock.txt` |
 | `263ec244` merged with #726's head `accb6786` | 2026-10-12 | 10:13 | after | 109 pass | `drive-after-with-726.txt` |
+| `812423b1` served at `ZODIACS_TEST_BASE_URL`, driven from a checkout with the 2026-10-12 edition | 2026-10-11 | 14:42 | after, `263ec244` | 98 pass, 11 fail: both clocks a day late | `drive-external-preview-before.txt` |
+| the same | 2026-10-11 | 14:42 | after, reading the served edition | 109 pass | `drive-external-preview-after.txt` |
 
 ## Remaining
 
