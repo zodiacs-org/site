@@ -129,8 +129,8 @@ At `36468281`, main merged in after the daily edition of 2026-10-12, on
 macOS arm64 with Node 22.22.2:
 
 - **Unit tests.** The whole suite: 7,047 pass and 5 are skipped. One fails,
-  the Phase 1 capture digest; the Browser Evidence workflow retakes those
-  captures because the library sources changed. The suite includes:
+  the Phase 1 capture digest, until the captures below are committed; at
+  `80de530e`, with them, 7,048 pass and 5 are skipped. The suite includes:
   - the time module's tests, the parity test with the engine over every city
     index zone (300,000-odd cases), and the all-zone round trip on the
     engine's own clock;
