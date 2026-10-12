@@ -65,8 +65,8 @@ plugin as 0.3.11.
 
 - The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.23.tgz` is 125,468
   bytes, SHA-256
-  `26126bd8833691e988d7422a19e48714501c763379a163ca176f5602d90f72db`, built
-  from commit `ab64a4ff21ec10fe236449103f18a1e9950e729e`. Its `server.mjs` has
+  `113a8b8cac570769c27ff46f49bfff33ea56b629f11d2efa3af6d884507b2deb`, built
+  from commit `7c8ba924a45873cf75aa987f70f8a27d756c147c`. Its `server.mjs` has
   SHA-256 `cba42fac851f431f57e0578d593607844a8d8b80bf8b26850f46f479d19847fe`.
 - `integrations/packages/zodiacs-developer-0.3.11.zip` is 1,791,261 bytes.
 - [`../mcp-adapter/mcp-rc22-rc23.json`](../mcp-adapter/mcp-rc22-rc23.json)
