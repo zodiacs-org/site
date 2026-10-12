@@ -125,9 +125,10 @@ a birthplace longitude ([`parity.json`](parity.json)).
 
 ## Checks
 
-At `e0e62cfa`, on macOS arm64 with Node 22.22.2:
+At `36468281`, main merged in after the daily edition of 2026-10-12, on
+macOS arm64 with Node 22.22.2:
 
-- **Unit tests.** The whole suite: 7,045 pass and 5 are skipped. One fails,
+- **Unit tests.** The whole suite: 7,047 pass and 5 are skipped. One fails,
   the Phase 1 capture digest; the Browser Evidence workflow retakes those
   captures because the library sources changed. The suite includes:
   - the time module's tests, the parity test with the engine over every city
@@ -139,12 +140,12 @@ At `e0e62cfa`, on macOS arm64 with Node 22.22.2:
   The tests that held the site's own birthplace clock are the engine's now
   (`src/geo/birthplace-clock.test.ts` in the engine), and were removed here.
 - **Build.**
-  - `astro check` passes, and so do the build, `check-dist` (5,103 HTML files)
+  - `astro check` passes, and so do the build, `check-dist` (5,109 HTML files)
     and every bundle budget.
   - The initial script of `/birth-chart/` is 66.9 KB gzipped, against 67.1 KB
     on main, because no page loads the engine resolver up front.
-  - The build ran on 2026-10-12 before that day's daily edition, so its two
-    checks of the edition's age, which read nothing else, were left out.
+  - The build ran after that day's daily edition, with every check, the two
+    of the edition's age included.
 - **Bundles.** The compute bundle, the AI bundles and the MCP bundle are what
   their sources build to (`--check`). The adapter archive and the plugin
   package are packed and verified.

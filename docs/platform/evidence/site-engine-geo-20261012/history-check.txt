@@ -2,23 +2,25 @@ Private birth-data search, 2026-10-12 (Asia/Bangkok) (counts only)
 
 Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
 (SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), Node 22.22.2.
-Range: ec0451ff..e0e62cfa, this change's eleven commits after main at the
-time (the adoption, the archive pins, the merge of main, the review fixes and
-the rc.21 re-cut): every added line, every added or changed binary with its
-gzip or ZIP contents, the added paths and the messages. Also the tree of
-e0e62cfa. The run before it, over ec0451ff..6e8a6dce, gave the same
-conclusion for its seven lines.
+It leaves out the one path the owner has ruled must never be read; this
+repository holds no file of that name, and no archive member was skipped.
+Range: 5ab297a9..36468281, every commit this change adds to main as of the
+daily edition of 2026-10-12 (the adoption, the archive pins, the merges of
+main, the review fixes and the rc.21 re-cut): every added line, every added or
+changed binary with its gzip or ZIP contents, the added paths and the
+messages. Also the tree of 36468281. The runs before it, over
+ec0451ff..6e8a6dce and ec0451ff..e0e62cfa, gave the same conclusion.
 Patterns: the owner's two private pattern sets, kept outside every repository
 with the raw outputs. No pattern, matched line, label or path is recorded here.
 
 Each pattern set gives the same result.
-Lines the commits add that match: 11, in 3 commits.
+Lines the commits add that match: 11, in 4 commits (29 counted per commit
+and file).
 - 1 is a line the base already holds verbatim.
 - 10 are lines in files where the base already matched the same person's
   pattern: 8 in generated bundles this change rebuilt (the compute, AI and
   MCP bundles, rebuilt for the adoption and again for rc.21), and 2 in test
   sources whose existing cases this change edited.
 No added line matches a person the base did not.
-Tree: 424 birth-data lines in 17,427 files, against 421 on main before this
-change. The three more lines are the edited and rebuilt lines above; those
-people's lines predate this change.
+Tree: 424 birth-data lines in 17,433 files, as at e0e62cfa. Those people's
+lines predate this change.
