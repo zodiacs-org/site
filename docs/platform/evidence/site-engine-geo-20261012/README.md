@@ -158,10 +158,40 @@ macOS arm64 with Node 22.22.2:
 - **Private search.** [`history-check.txt`](history-check.txt) records it,
   counts only: no line this change adds matches a person the base did not.
 
+## Production
+
+#723 merged as `4f2d6f03`. Vercel `dpl_DZRCVJxtrBBzcex3Wh9NEdq3PiT3` is
+READY at the merge, and zodiacs.org moved to it 0.2 s after it was ready.
+[`tools/verify-production.mjs`](tools/verify-production.mjs) checks it against
+a production-flags build of the merge and one of the base (`5ab297a9`), and
+reads the alias before and after through the Vercel connector, keeping only
+the deployment, its commit, its state and the alias's update time
+([`production/production.json`](production/production.json)). 12 of 13 pass:
+
+- the alias names the merge's READY production deployment, before the checks
+  and unchanged after them;
+- the build's 19 resolver files are served byte for byte, and each of the 16
+  history files exports the same data as the engine package's own file (the
+  site's build writes it as a template literal, the package as a quoted
+  string, so the values are compared);
+- the base build's three files of the site's own resolver are not served;
+- `/developers/mcp/`, both llms files and the sitemap describe the change, and
+  the MCP manifest and the rc.21 archive are the committed ones;
+- the compute API reads 1947 Stockholm with `@zodiacs/engine/geo`, as
+  documented.
+
+The 13th found `/developers/compute/` saying "with@zodiacs/engine/geo": Astro
+drops the line break between text and an inline element on the next line. The
+record that follows the merge fixes it there and in 50 other places on eight
+developer pages, the methodology and privacy, and `check-dist` now holds those
+pages to it. The same check against production before the merge, as a control
+([`production/control-before.json`](production/control-before.json)), fails
+all 11 of its checks, as it should: the site's own resolver was served and the
+engine's was not.
+
 ## Acceptance
 
 P1.01b and P1.12b both ask for the engine's function released (1.0.0, on
-npm) and adopted. The site now calls `prepareLocalTime` and
-`resolveLocalToUtc` with its own conversion removed, and the parity is
-recorded. Acceptance waits for the change to be deployed and checked in
-production.
+npm) and adopted. The site calls `prepareLocalTime` and `resolveLocalToUtc`
+with its own conversion removed, the parity is recorded, and canonical
+production serves it. Both are accepted on that production record.
