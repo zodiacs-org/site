@@ -1599,6 +1599,22 @@ if (!/^\d{4}-\d{2}-\d{2}$/.test(daily.date ?? '') || Number.isNaN(dailyDay.getTi
   }
 }
 
+// ---- Spaces around inline elements -------------------------------------------
+// Astro drops the line break between text and an inline element that starts
+// the next line, so "the\n  <code>x</code>" renders "thex"; the pages put
+// {' '} at the end of such a line. The developer pages, the methodology and the
+// privacy page are held to it. The generated API references are not checked
+// here, and the frozen and translated pages wait for their own changes.
+const INLINE_JOIN = /[A-Za-z0-9,;:]<(?:code|a|em|strong|kbd|abbr)[\s>]|<\/(?:code|a|em|strong|kbd|abbr)>[A-Za-z0-9(]/gu;
+const spacedPage = (path) => (path.startsWith('/developers/') && !path.startsWith('/developers/engine/reference/'))
+  || path === '/methodology/' || path === '/privacy/';
+for (const [file, path] of builtPageByFile) {
+  if (!spacedPage(path)) continue;
+  const html = (await readFile(file, 'utf8')).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<pre[\s\S]*?<\/pre>/gu, '');
+  const joined = [...html.matchAll(INLINE_JOIN)].length;
+  if (joined) fail(`${path}: ${joined} place(s) where text runs into an inline element; end the line with {' '}`);
+}
+
 // ---- Report ------------------------------------------------------------------
 if (failures.length) {
   console.error(`check-dist: ${failures.length} failure(s)`);

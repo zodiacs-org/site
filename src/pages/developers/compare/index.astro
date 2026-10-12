@@ -27,12 +27,12 @@ const description = 'Load two calculation records and see what differs between t
         does that reading, in your browser.
       </p>
       <p>
-        It reads the calculation records this site produces: download one from a
-        <a href="/birth-chart/">birth chart</a>, let the
-        <a href="/developers/examples/">developer starter</a> write one, or ask the
-        <a href="/developers/mcp/">local MCP server</a> for <code>output: "record"</code>
+        It reads the calculation records this site produces: download one from a{' '}
+        <a href="/birth-chart/">birth chart</a>, let the{' '}
+        <a href="/developers/examples/">developer starter</a> write one, or ask the{' '}
+        <a href="/developers/mcp/">local MCP server</a> for <code>output: "record"</code>{' '}
         and keep the <code>record</code> field of its reply — that field is the record,
-        and the reply around it is not one. They are
+        and the reply around it is not one. They are{' '}
         <code>zodiacs.natal-envelope.draft-v1</code>, a Zodiacs-owned draft vocabulary rather
         than an industry interchange format — so another program's export and a screenshot
         are both out of scope, and the four examples below are the fastest way to see what an
@@ -87,7 +87,7 @@ const description = 'Load two calculation records and see what differs between t
     <div class="prose">
       <p>
         Supported: the calculation record this site offers for download from a birth chart, and
-        the records the <a href="/developers/examples/">developer starter</a> produces. Both are
+        the records the <a href="/developers/examples/">developer starter</a> produces. Both are{' '}
         <code>zodiacs.natal-envelope.draft-v1</code>, validated with the engine's own parser and
         its size, depth and node limits. A record from a different engine version of that same
         schema is read, and the version difference is reported.
