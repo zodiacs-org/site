@@ -574,7 +574,13 @@ describe('resolveSavedChart', () => {
 });
 
 describe('refreshSavedChartSummaries', () => {
-  const STOCKHOLM: SavedPlace = { name: 'Stockholm', admin1: 'Stockholm', country: 'SE', lat: 59.33, lon: 18.07, tz: 'Europe/Stockholm' };
+  it("remembers its checks under the tzdb release the engine reads, so a new release checks every chart again", async () => {
+    const { TZDB } = await import('@zodiacs/engine/geo');
+    const source = (await import('node:fs')).readFileSync(new URL('./refresh.ts', import.meta.url), 'utf8');
+    expect(source).toContain(`const CHECKED_KEY = 'zodiacs.profile.birthplace-checks-${TZDB.version}.v1';`);
+  });
+
+  const STOCKHOLM: SavedPlace ={ name: 'Stockholm', admin1: 'Stockholm', country: 'SE', lat: 59.33, lon: 18.07, tz: 'Europe/Stockholm' };
   const OSLO: SavedPlace = { name: 'Oslo', admin1: 'Oslo', country: 'NO', lat: 59.913, lon: 10.75, tz: 'Europe/Oslo' };
   const NEW_YORK: SavedPlace = { name: 'New York', admin1: 'New York', country: 'US', lat: 40.7128, lon: -74.006, tz: 'America/New_York' };
 
