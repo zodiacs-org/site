@@ -24,8 +24,8 @@
  * Nothing here writes the ledger; scripts/claims-ledger.mjs prints drafts.
  */
 import { readFileSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { readdir, readFile } from 'node:fs/promises';
+import { relative, resolve, sep } from 'node:path';
 import { parse as parseAstro } from '@astrojs/compiler';
 import ts from 'typescript';
 import { consumerSurfaceFiles } from './consumer-boundary-lib.mjs';
@@ -110,8 +110,7 @@ export function serializeLedger(ledger) {
  * Files outside the consumer surface that make claims to readers or to other
  * programs: the validation report, the llms file, the assistant's site guide,
  * the developer docs that ship inside the MCP adapter, platform starter and
- * plugin archives, and the precision alpha's README (finding F-23). Not read
- * yet, and open under F-23: the engine's README and CHANGELOG. The READMEs
+ * plugin archives, and the precision alpha's README (finding F-23). The READMEs
  * under integrations/ are the maintainers' packaging and review notes, not
  * shipped.
  */
@@ -124,6 +123,17 @@ export const SCOPE_ADD = Object.freeze([
   'plugins/zodiacs-sky/README.md',
   'public/llms-full.txt',
   'scripts/build-assistant-context.mjs',
+]);
+
+/**
+ * Generated developer docs the site serves as they were built (F-23): the
+ * engine's API reference, with the README, licensing and notices of the
+ * release it documents, and under /sdk/ the archived rc.1 reference and the
+ * SDK pages, which Phase 1 froze.
+ */
+export const SCOPE_ADD_TREES = Object.freeze([
+  { root: 'public/developers/engine/reference', pattern: /\.(?:html|txt)$/u },
+  { root: 'public/sdk', pattern: /\.(?:html|md)$/u },
 ]);
 
 /** In the consumer surface, but not read here, each with its reason. */
@@ -161,6 +171,8 @@ export const TRUST_PATTERNS = Object.freeze([
   /^src\/lib\/sky-api\/[^/]+\.ts$/u,
   /^src\/lib\/compute-api\/[^/]+\.ts$/u,
   /^scripts\/build-assistant-context\.mjs$/u,
+  /^public\/developers\/engine\/reference\//u,
+  /^public\/sdk\//u,
 ]);
 
 /** Translated pages and catalogs, read with the NEUTRAL list. */
@@ -181,7 +193,16 @@ export function tierOf(file) {
 
 export async function ledgerScope(repoRoot) {
   const base = await consumerSurfaceFiles(repoRoot);
-  return [...new Set([...base, ...SCOPE_ADD])]
+  const trees = [];
+  for (const { root, pattern } of SCOPE_ADD_TREES) {
+    const entries = await readdir(resolve(repoRoot, root), { recursive: true, withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isFile()) continue;
+      const file = relative(repoRoot, resolve(entry.parentPath, entry.name)).split(sep).join('/');
+      if (pattern.test(file)) trees.push(file);
+    }
+  }
+  return [...new Set([...base, ...SCOPE_ADD, ...trees])]
     .filter((file) => !SCOPE_DROP.some(({ pattern }) => pattern.test(file)))
     .sort();
 }
@@ -428,10 +449,67 @@ function jsonBlocks(source) {
 }
 
 /** The text blocks of one file, each a run of text a reader meets as one piece. */
+/** Tags that end one block of a page's text and begin the next. */
+const HTML_BREAKS = /<\/?(?:p|li|ul|ol|dl|dt|dd|h[1-6]|div|section|article|aside|header|footer|nav|main|blockquote|table|thead|tbody|tr|td|th|caption|figure|figcaption|details|summary|br|hr)\b[^>]*>/giu;
+
+/**
+ * The inner HTML of each outermost element whose class list holds
+ * `className`: the element ends where its own open and close tags balance.
+ */
+function htmlElementsWithClass(source, className) {
+  const found = [];
+  const start = new RegExp(`<([a-z][a-z0-9]*)\\b[^>]*\\bclass="(?:[^"]*\\s)?${className}(?:\\s[^"]*)?"[^>]*>`, 'giu');
+  let open;
+  while ((open = start.exec(source))) {
+    const tags = new RegExp(`<(/?)${open[1]}\\b[^>]*>`, 'giu');
+    tags.lastIndex = open.index + open[0].length;
+    let depth = 1;
+    let tag = null;
+    while (depth > 0 && (tag = tags.exec(source))) depth += tag[1] ? -1 : 1;
+    const end = depth === 0 ? tag.index : source.length;
+    found.push(source.slice(open.index + open[0].length, end));
+    start.lastIndex = depth === 0 ? tags.lastIndex : source.length;
+  }
+  return found;
+}
+
+/**
+ * A served HTML page as a reader meets it. A TypeDoc page (an engine API
+ * reference) is read for its prose: every doc comment, the README its index
+ * renders, and its footer. Its signatures, member names and navigation are
+ * generated from the code's own names, and its scripts hold the search index.
+ * Any other page is read for its title, its description and the text of its
+ * body. Scripts, styles, graphics and preformatted code are dropped, as fenced
+ * code is from Markdown.
+ */
+function htmlBlocks(source) {
+  const page = source
+    .replace(/<!--[\s\S]*?-->/gu, ' ')
+    .replace(/<(script|style|svg|template|noscript)\b[\s\S]*?<\/\1\s*>/giu, ' ')
+    .replace(/<pre\b[\s\S]*?<\/pre\s*>/giu, ' ');
+  const head = page.match(/<head\b[^>]*>([\s\S]*?)<\/head\s*>/iu)?.[1] ?? '';
+  const body = page.replace(/<head\b[^>]*>[\s\S]*?<\/head\s*>/iu, ' ');
+  const typedoc = /\bclass="[^"]*\btsd-page-toolbar\b/u.test(source);
+  const parts = typedoc
+    ? [...htmlElementsWithClass(body, 'tsd-typography'), ...[...body.matchAll(/<footer\b[^>]*>([\s\S]*?)<\/footer\s*>/giu)].map((match) => match[1])]
+    : [
+      head.match(/<title\b[^>]*>([\s\S]*?)<\/title\s*>/iu)?.[1] ?? '',
+      head.match(/<meta\s+name="description"\s+content="([^"]*)"/iu)?.[1] ?? '',
+      body,
+    ];
+  // An inline element's text joins its neighbours' as a browser shows it.
+  return parts.flatMap((part) => part
+    .replace(HTML_BREAKS, '\n\n')
+    .replace(/<[^>]+>/gu, '')
+    .split(/\n\s*\n/u))
+    .filter((block) => block.trim());
+}
+
 export async function extractBlocks(file, source) {
   if (file.endsWith('.astro')) return astroBlocks(source, file);
   if (/\.(?:md|mdx|txt)$/u.test(file)) return markdownBlocks(source);
   if (file.endsWith('.json')) return jsonBlocks(source);
+  if (file.endsWith('.html')) return htmlBlocks(source);
   return scriptBlocks(source, file);
 }
 

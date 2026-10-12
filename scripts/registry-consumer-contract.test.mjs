@@ -723,7 +723,7 @@ describe('Astrofolio consumer and Terminal market-desk split', () => {
     expect(header).toContain("const terminalNav = {");
     expect(header).toContain("href: '/astrofolio/'");
     expect(header).toContain("label: 'Astrofolio'");
-    expect(header).toContain("description: 'Choose a sign and explore the collection'");
+    expect(header).toContain("description: 'Official Zodiac token collection'");
     expect(header).not.toContain("label: 'Terminal'");
 
     const proStart = source.indexOf('<main id="main" className="zd terminal-pro">');
