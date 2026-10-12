@@ -202,7 +202,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         }
       } catch (e) {}
     </script>
-    {props.editionDate && <EditionFreshnessGuard />}
+    {props.editionDate && <EditionFreshnessGuard editionDate={props.editionDate} locale={locale} />}
     <script is:inline>
       // Capture Chromium's one-shot install event before calculator islands
       // hydrate. The prompt itself stays hidden until two successful charts.

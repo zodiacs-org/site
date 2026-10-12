@@ -11,29 +11,33 @@
  * pageshow and when the tab becomes visible. Without JavaScript, EditionText's
  * server text is the dated form.
  *
- * `dated` below is the browser's copy of `datedEditionText` in
- * src/lib/edition-freshness.ts; tests/edition-dated-drive.mjs holds the two
- * to the same result.
+ * `rules` below are the page locale's rules from src/lib/edition-freshness.ts,
+ * with the edition's date already in each replacement, so the browser dates
+ * text exactly as `datedEditionTextIn` does on the server;
+ * tests/edition-dated-drive.mjs holds the two to the same result.
  */
+import { editionRules, inlineEditionRules, type EditionLocale } from '../lib/edition-freshness';
+
+interface Props {
+  editionDate: string;
+  locale: string;
+}
+
+const { editionDate, locale } = Astro.props;
+if (!editionRules(locale)) {
+  throw new Error(`EditionFreshnessGuard: no dated wording for locale "${locale}"; add its rules to src/lib/edition-freshness.ts`);
+}
+const rules = inlineEditionRules(locale as EditionLocale, editionDate);
 ---
-<script is:inline>
+<script is:inline define:vars={{ rules }}>
   (function () {
     var root = document.documentElement;
     var editionDate = root.getAttribute('data-edition-date');
     if (!editionDate) return;
 
-    var day = new Intl.DateTimeFormat('en-US', {
-      month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
-    }).format(new Date(editionDate + 'T00:00:00.000Z'));
+    var compiled = rules.map(function (rule) { return [new RegExp(rule[0], rule[1]), rule[2]]; });
     function dated(value) {
-      return value
-        .replace(/\bToday[’']s\b/g, 'The ' + day + ' edition’s')
-        .replace(/\btoday[’']s\b/g, 'the ' + day + ' edition’s')
-        .replace(/\bToday,/g, 'For the ' + day + ' edition,')
-        .replace(/\bToday\b/g, 'The ' + day + ' edition')
-        .replace(/\bas of today\b/g, 'as of ' + day)
-        .replace(/\b(for|from|on|until|through|since|before|after|by) today\b/g, '$1 ' + day)
-        .replace(/\btoday\b/g, 'on ' + day);
+      return compiled.reduce(function (text, rule) { return text.replace(rule[0], rule[1]); }, value);
     }
     function decide() {
       var state = editionDate === new Date().toISOString().slice(0, 10) ? 'current' : 'dated';

@@ -1,5 +1,15 @@
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/u;
 
+/** The locales whose daily pages carry an edition, each with its dated wording below. */
+export type EditionLocale = 'en' | 'es' | 'pt';
+
+/**
+ * The same Intl locales as LOCALE_META in src/lib/i18n/core.ts, so a dated
+ * label reads exactly like the date the page already prints. Kept here
+ * rather than imported: the drives load this file in plain Node.
+ */
+const EDITION_INTL_LOCALE: Record<EditionLocale, string> = { en: 'en-US', es: 'es-419', pt: 'pt-BR' };
+
 function parsedUtcDate(value: string): Date | null {
   if (!ISO_DATE.test(value)) return null;
   const parsed = new Date(`${value}T00:00:00.000Z`);
@@ -17,10 +27,10 @@ export function isCurrentUtcEdition(editionDate: string, now: Date = new Date())
   return parsedUtcDate(editionDate) !== null && editionDate === utcDate(now);
 }
 
-export function editionDateLabel(editionDate: string): string {
+export function editionDateLabel(editionDate: string, locale: EditionLocale = 'en'): string {
   const parsed = parsedUtcDate(editionDate);
   if (!parsed) return editionDate;
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat(EDITION_INTL_LOCALE[locale], {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
@@ -29,21 +39,94 @@ export function editionDateLabel(editionDate: string): string {
 }
 
 /**
+ * One dating rule: the relative wording to find and its dated form, where
+ * `{date}` stands for the edition's date label. Rules apply in order, so a
+ * fixed phrase comes before the single word it contains.
+ */
+export type EditionRule = readonly [pattern: RegExp, replacement: string];
+
+const ENGLISH_RULES: readonly EditionRule[] = [
+  [/\bToday[’']s\b/gu, 'The {date} edition’s'],
+  [/\btoday[’']s\b/gu, 'the {date} edition’s'],
+  [/\bToday,/gu, 'For the {date} edition,'],
+  [/\bToday\b/gu, 'The {date} edition'],
+  [/\bas of today\b/gu, 'as of {date}'],
+  [/\b(for|from|on|until|through|since|before|after|by) today\b/gu, '$1 {date}'],
+  [/\btoday\b/gu, 'on {date}'],
+];
+
+// The Spanish and Portuguese daily pages say "hoy" and "hoje" in their own
+// copy and in the reading templates of src/lib/i18n/daily-reading.ts. Each
+// rule is one reviewed phrase with its dated form written whole, and nothing
+// else is dated: a "hoy" or "hoje" that no rule names stays as it is, and
+// tests/edition-dated-drive.mjs fails on it. The phrases, their review and
+// the forms considered are in docs/platform/evidence/edition-dated-locales-20261012/.
+const SPANISH_SIGNS = 'Aries|Tauro|Géminis|Cáncer|Leo|Virgo|Libra|Escorpio|Sagitario|Capricornio|Acuario|Piscis';
+const PORTUGUESE_SIGNS = 'Áries|Touro|Gêmeos|Câncer|Leão|Virgem|Libra|Escorpião|Sagitário|Capricórnio|Aquário|Peixes';
+
+const SPANISH_RULES: readonly EditionRule[] = [
+  [/^(\s*)Hoy(\s*)$/gu, '$1El cielo del {date}$2'],
+  [new RegExp(`^(\\s*)(${SPANISH_SIGNS}) hoy(\\s*)$`, 'gu'), '$1$2, {date}$3'],
+  [new RegExp(`\\bHoróscopo de hoy de (${SPANISH_SIGNS})(?=$|[\\s.,;:!?])`, 'gu'), 'Horóscopo de $1 del {date}'],
+  [/^(\s*)La Luna pasa hoy por\b/gu, '$1El {date}, la Luna pasa por'],
+  [/\bentra hoy en tu (\S+) casa\b/gu, 'entra en tu $1 casa el {date}'],
+  [/\balcanza hoy su punto exacto\b/gu, 'alcanza su punto exacto el {date}'],
+  [/\bLeer hoy →/gu, 'Lectura del {date} →'],
+  [/\bUn cielo tranquilo hoy\./gu, 'Un cielo tranquilo el {date}.'],
+  [/\bHoróscopos de hoy\b/gu, 'Horóscopos del {date}'],
+  [/\bcielo de hoy\b/gu, 'cielo del {date}'],
+];
+
+const PORTUGUESE_RULES: readonly EditionRule[] = [
+  [/^(\s*)Hoje(\s*)$/gu, '$1O céu de {date}$2'],
+  [new RegExp(`^(\\s*)(${PORTUGUESE_SIGNS}) hoje(\\s*)$`, 'gu'), '$1$2 em {date}$3'],
+  [new RegExp(`\\bHoróscopo de hoje de (${PORTUGUESE_SIGNS})(?=$|[\\s.,;:!?])`, 'gu'), 'Horóscopo de $1 de {date}'],
+  [/^(\s*)A Lua passa hoje por\b/gu, '$1Em {date}, a Lua passa por'],
+  [/\bentra hoje na sua (\S+(?: \S+)?) casa\b/gu, 'entra na sua $1 casa em {date}'],
+  [/\bchega hoje ao ponto exato\b/gu, 'chega ao ponto exato em {date}'],
+  [/\bLer hoje →/gu, 'Leitura de {date} →'],
+  [/\bUm céu tranquilo hoje\./gu, 'Um céu tranquilo em {date}.'],
+  [/\bHoróscopos de hoje\b/gu, 'Horóscopos de {date}'],
+  [/\bcéu de hoje\b/gu, 'céu de {date}'],
+];
+
+function applyEditionRules(value: string, rules: readonly EditionRule[], label: string): string {
+  return rules.reduce((text, [pattern, replacement]) => (
+    text.replace(pattern, replacement.replaceAll('{date}', label))
+  ), value);
+}
+
+/**
  * Convert relative current-day language into an explicit archival label.
  * The dated form is also the server/no-JavaScript fallback; the browser only
  * restores the relative wording after proving that the edition is current.
- * `EditionFreshnessGuard.astro` carries the browser's copy of these rules.
+ * English, for EditionText and the islands; `datedEditionTextIn` takes a locale.
  */
 export function datedEditionText(value: string, editionDate: string): string {
-  const label = editionDateLabel(editionDate);
-  return value
-    .replace(/\bToday[’']s\b/gu, `The ${label} edition’s`)
-    .replace(/\btoday[’']s\b/gu, `the ${label} edition’s`)
-    .replace(/\bToday,/gu, `For the ${label} edition,`)
-    .replace(/\bToday\b/gu, `The ${label} edition`)
-    .replace(/\bas of today\b/gu, `as of ${label}`)
-    .replace(/\b(for|from|on|until|through|since|before|after|by) today\b/gu, `$1 ${label}`)
-    .replace(/\btoday\b/gu, `on ${label}`);
+  return applyEditionRules(value, ENGLISH_RULES, editionDateLabel(editionDate));
+}
+
+/** The dating rules for a locale's daily pages, or null where it has none. */
+export function editionRules(locale: string): readonly EditionRule[] | null {
+  if (locale === 'en') return ENGLISH_RULES;
+  if (locale === 'es') return SPANISH_RULES;
+  if (locale === 'pt') return PORTUGUESE_RULES;
+  return null;
+}
+
+/**
+ * The rules as EditionFreshnessGuard inlines them for one page: pattern
+ * source, flags and the replacement with the edition's date already in it.
+ */
+export function inlineEditionRules(locale: EditionLocale, editionDate: string): [string, string, string][] {
+  const label = editionDateLabel(editionDate, locale);
+  return (editionRules(locale) ?? []).map(([pattern, replacement]) => (
+    [pattern.source, pattern.flags, replacement.replaceAll('{date}', label)]
+  ));
+}
+
+export function datedEditionTextIn(locale: EditionLocale, value: string, editionDate: string): string {
+  return applyEditionRules(value, editionRules(locale) ?? [], editionDateLabel(editionDate, locale));
 }
 
 export function millisecondsUntilNextUtcDay(now: Date = new Date()): number {
