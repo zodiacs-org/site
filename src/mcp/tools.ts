@@ -28,8 +28,11 @@ import { replay } from '../lib/compare/replay';
 import {
   BUDGETS, EPOCH, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SKY_FACT_KINDS,
 } from '../lib/compute-api/constants';
+import { TZDB } from '@zodiacs/engine/geo';
+import { CALENDARS } from '../lib/compute-api/validate';
 import { SKY_TOOLS, capabilitiesReceipt, citeFor, comparisonReceipt } from './cite';
 import type { CapabilitiesOutput, CompareOutput, NatalRecordOutput, NatalSummaryOutput } from './outputs';
+import { PLACES_MAX, PLACES_SOURCE } from './places';
 import { RESOURCES } from './resources';
 import { ANY_ZONE_DAY_TEXT } from './sky-tools';
 import {
@@ -49,14 +52,14 @@ export const PRIVACY = Object.freeze({
   output: 'A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.',
   withheld: 'By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: "full" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.',
   claims: 'A version, checksum or source URL inside a supplied record is a claim that record makes about itself. Nothing here authenticates it.',
-  citation: 'A chart\'s cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter\'s own receipt, which holds nothing from either record. get_positions, find_events and check_sky_fact cite the compute API\'s receipt for the same calculation, which they carry and which holds no instant, date or body from the request.',
+  citation: 'A chart\'s cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter\'s own receipt, which holds nothing from either record. get_positions, find_events, check_sky_fact and resolve_birth_time cite the compute API\'s receipt for the same calculation, which they carry and which holds no instant, date, zone or body from the request. search_places cites the adapter\'s receipt, which names the place index and holds nothing from the query.',
 });
 
 /** What this first integration deliberately does not do. */
 export const UNSUPPORTED = Object.freeze([
   'Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.',
   'Interpretation, horoscope or any generated reading.',
-  'Resolving a place name or time zone: supply an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.',
+  'Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb. search_places reads only that index, and resolve_birth_time only tzdb, with no town-level clock records. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.',
   'Reading or writing files. Records are passed as content; the adapter accepts no path and imports no filesystem module.',
   'Fetching a URL, running a command, importing a named module or installing a package.',
   'Any network listener, remote endpoint or browser-reachable port. The transport is local stdio only.',
@@ -178,7 +181,7 @@ export function describeCapabilities(): ToolOutcome {
       references: [...REFERENCES],
       referenceRules: {
         'utc-noon': 'needs timeKnown: false and utc at exactly 12:00:00Z; it records that no birth time was known',
-        'local-noon': 'not offered: it needs a captured local date, wall time, zone and offset, and this adapter resolves no timezones',
+        'local-noon': 'not offered: it needs a captured local date, wall time, zone and offset, and calculate_natal_chart takes an instant, not a local time',
       },
       epoch: { from: EPOCH_MIN_UTC, to: EPOCH_MAX_UTC },
       coordinates: {
@@ -207,6 +210,20 @@ export function describeCapabilities(): ToolOutcome {
       },
       search: { window: 'start-exclusive-end-inclusive', completeness: 'tested-not-proven' },
       dates: ANY_ZONE_DAY_TEXT,
+    },
+    time: {
+      tool: 'resolve_birth_time',
+      sameAs: 'POST https://zodiacs.org/api/v1/time: the same parser, resolver and receipt, so the same result and cite.receipt for the same request on a runtime with the same tzdb',
+      resolver: '@zodiacs/engine/geo',
+      pinnedTzdb: { release: TZDB.version, appliesBefore: '1970-01-02' },
+      calendars: [...CALENDARS],
+      julianLastWritten: '1923-12-31',
+    },
+    places: {
+      tool: 'search_places',
+      ...PLACES_SOURCE,
+      maxResults: PLACES_MAX,
+      coordinates: 'Degrees, rounded to 0.01°, about 1.1 km, as the index stores them.',
     },
     resources: RESOURCES.map(({ uri, name, mimeType }) => ({ uri, name, mimeType })),
     unsupported: [...UNSUPPORTED],
