@@ -16,6 +16,8 @@ const root = resolve(process.cwd(), 'src');
 
 const WITHOUT_LONGITUDE: Record<string, string> = {
   'islands/WalletChart.tsx': 'Registry scope, frozen for Phase 1; planets only, no angles',
+  'lib/occasions/card.ts': 'an occasion card with a time and zone but no place; with a place the other call passes its .lon',
+  'lib/occasions/milestone-card.ts': 'a birth time and zone without a birthplace; with one the other call passes its .lon',
 };
 
 /**

@@ -5,7 +5,7 @@ daily page serves an edition that is a day old. Those pages dated their
 "today" wording after the first paint, and the longer text moved the page.
 This folder records the failing run, the reproduction and the fix's
 measurements. The finding is
-[F-84](../../programme/FINDINGS.md#f-84--the-daily-pages-moved-after-their-first-paint-while-their-edition-was-a-day-old-minor-performance-fixed-here).
+[F-84](../../programme/FINDINGS.md#f-84--the-daily-pages-moved-after-their-first-paint-while-their-edition-was-a-day-old-minor-performance-fixed-in-726).
 
 ## The failing run
 
