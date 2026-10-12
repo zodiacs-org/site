@@ -1,0 +1,838 @@
+{
+ "schemaVersion": 1,
+ "what": "Two builds of the local MCP adapter driven with the same tool list, resource reads and tool calls, compared after versions and sha256: digests are written out",
+ "node": "v22.22.2",
+ "old": {
+  "file": "server.mjs",
+  "sha256": "e945f67c8409e3b6788716f402ee73893a2e2291309817ccf31c6d0416057ce7"
+ },
+ "new": {
+  "file": "server.mjs",
+  "sha256": "cba42fac851f431f57e0578d593607844a8d8b80bf8b26850f46f479d19847fe"
+ },
+ "tools": [
+  {
+   "path": "$.0.outputSchema.properties.sky.properties.factKinds.items.enum.4",
+   "new": "aspect"
+  },
+  {
+   "path": "$.5.description",
+   "old": "Whether a stated fact holds: a body in a sign or retrograde at an instant or on a date, a body entering a sign on a date, or the Moon reaching a phase on a date. Answers true, false or depends, with the computed values that decide it and a receipt. It never interprets. This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset. The same calculation, result and receipt as POST https://zodiacs.org/api/v1/sky-fact for the same request without a zone, computed on this machine. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+   "new": "Whether a stated fact holds: a body in a sign or retrograde at an instant or on a date, a body entering a sign on a date, the Moon reaching a phase on a date, or two bodies in an aspect at an instant or on a date. Answers true, false or depends, with the computed values that decide it and a receipt. It never interprets. This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset. The same calculation, result and receipt as POST https://zodiacs.org/api/v1/sky-fact for the same request without a zone, computed on this machine. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route."
+  },
+  {
+   "path": "$.5.inputSchema.properties.kind.enum.4",
+   "new": "aspect"
+  },
+  {
+   "path": "$.5.inputSchema.properties.kind.description",
+   "old": "sign: is the body in the sign? retrograde: is the body retrograde? ingress: does the body enter the sign on the date? phase: does the Moon reach the phase on the date?",
+   "new": "sign: is the body in the sign? retrograde: is the body retrograde? ingress: does the body enter the sign on the date? phase: does the Moon reach the phase on the date? aspect: are the body and the other body in the aspect?"
+  },
+  {
+   "path": "$.5.inputSchema.properties.body.description",
+   "old": "For sign, retrograde and ingress.",
+   "new": "For sign, retrograde, ingress and aspect."
+  },
+  {
+   "path": "$.5.inputSchema.properties.instant.description",
+   "old": "For sign and retrograde: the moment to check, in ISO 8601 with Z or a numeric offset, such as 2000-01-01T12:00:00Z or 1990-06-15T14:30:00+02:00, from 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z once the offset is applied. A time without Z or an offset is refused. Give instant or date, not both.",
+   "new": "For sign, retrograde and aspect: the moment to check, in ISO 8601 with Z or a numeric offset, such as 2000-01-01T12:00:00Z or 1990-06-15T14:30:00+02:00, from 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z once the offset is applied. A time without Z or an offset is refused. Give instant or date, not both."
+  },
+  {
+   "path": "$.5.inputSchema.properties.date.description",
+   "old": "YYYY-MM-DD, from 1800-01-01 to 2199-12-31. Needed for ingress and phase; for sign and retrograde, the alternative to instant. This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset.",
+   "new": "YYYY-MM-DD, from 1800-01-01 to 2199-12-31. Needed for ingress and phase; for sign, retrograde and aspect, the alternative to instant. This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset."
+  },
+  {
+   "path": "$.5.inputSchema.properties.other",
+   "new": {
+    "description": "For aspect: the second body, not the same as body.",
+    "type": "string",
+    "enum": [
+     "Sun",
+     "Moon",
+     "Mercury",
+     "Venus",
+     "Mars",
+     "Jupiter",
+     "Saturn",
+     "Uranus",
+     "Neptune",
+     "Pluto"
+    ]
+   }
+  },
+  {
+   "path": "$.5.inputSchema.properties.aspect",
+   "new": {
+    "description": "For aspect, within the orbs a chart's aspects use: conjunction 0° within 8° (10° with the Sun or the Moon), sextile 60° within 4° (5° with the Sun or the Moon), square 90° within 7° (8° with the Sun or the Moon), trine 120° within 7° (8° with the Sun or the Moon), opposition 180° within 8° (10° with the Sun or the Moon).",
+    "type": "string",
+    "enum": [
+     "conjunction",
+     "sextile",
+     "square",
+     "trine",
+     "opposition"
+    ]
+   }
+  },
+  {
+   "path": "$.5.outputSchema.properties.result.properties.fact.anyOf.4",
+   "new": {
+    "type": "object",
+    "properties": {
+     "kind": {
+      "type": "string",
+      "const": "aspect"
+     },
+     "body": {
+      "type": "string",
+      "enum": [
+       "Sun",
+       "Moon",
+       "Mercury",
+       "Venus",
+       "Mars",
+       "Jupiter",
+       "Saturn",
+       "Uranus",
+       "Neptune",
+       "Pluto"
+      ]
+     },
+     "other": {
+      "type": "string",
+      "enum": [
+       "Sun",
+       "Moon",
+       "Mercury",
+       "Venus",
+       "Mars",
+       "Jupiter",
+       "Saturn",
+       "Uranus",
+       "Neptune",
+       "Pluto"
+      ]
+     },
+     "aspect": {
+      "type": "string",
+      "enum": [
+       "conjunction",
+       "sextile",
+       "square",
+       "trine",
+       "opposition"
+      ]
+     },
+     "instant": {
+      "anyOf": [
+       {
+        "type": "string",
+        "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "date": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "zone": {
+      "type": "null"
+     }
+    },
+    "required": [
+     "kind",
+     "body",
+     "other",
+     "aspect",
+     "instant",
+     "date",
+     "zone"
+    ],
+    "additionalProperties": false
+   }
+  },
+  {
+   "path": "$.5.outputSchema.properties.result.properties.facts.anyOf.5",
+   "new": {
+    "type": "object",
+    "properties": {
+     "body": {
+      "type": "object",
+      "properties": {
+       "lon": {
+        "type": "number"
+       },
+       "sign": {
+        "type": "string",
+        "enum": [
+         "aries",
+         "taurus",
+         "gemini",
+         "cancer",
+         "leo",
+         "virgo",
+         "libra",
+         "scorpio",
+         "sagittarius",
+         "capricorn",
+         "aquarius",
+         "pisces"
+        ]
+       },
+       "degree": {
+        "type": "number"
+       },
+       "speed": {
+        "type": "number"
+       },
+       "retrograde": {
+        "type": "boolean"
+       }
+      },
+      "required": [
+       "lon",
+       "sign",
+       "degree",
+       "speed",
+       "retrograde"
+      ],
+      "additionalProperties": false
+     },
+     "other": {
+      "type": "object",
+      "properties": {
+       "lon": {
+        "type": "number"
+       },
+       "sign": {
+        "type": "string",
+        "enum": [
+         "aries",
+         "taurus",
+         "gemini",
+         "cancer",
+         "leo",
+         "virgo",
+         "libra",
+         "scorpio",
+         "sagittarius",
+         "capricorn",
+         "aquarius",
+         "pisces"
+        ]
+       },
+       "degree": {
+        "type": "number"
+       },
+       "speed": {
+        "type": "number"
+       },
+       "retrograde": {
+        "type": "boolean"
+       }
+      },
+      "required": [
+       "lon",
+       "sign",
+       "degree",
+       "speed",
+       "retrograde"
+      ],
+      "additionalProperties": false
+     },
+     "separation": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 180,
+      "description": "The angle between the two longitudes, in degrees."
+     },
+     "orb": {
+      "type": "number",
+      "minimum": 0,
+      "description": "How far the separation is from the aspect's exact angle, in degrees."
+     },
+     "motion": {
+      "type": "string",
+      "enum": [
+       "applying",
+       "separating",
+       "stationary"
+      ],
+      "description": "applying while the orb shrinks, separating while it grows, judged from the two daily motions; stationary when the two move at the same speed."
+     },
+     "allowedOrb": {
+      "type": "number",
+      "minimum": 0,
+      "description": "The widest orb at which the aspect holds between these two bodies, in degrees: the wider one when the Sun or the Moon is one of them."
+     },
+     "deltaT": {
+      "type": "object",
+      "properties": {
+       "seconds": {
+        "type": "number"
+       },
+       "sigma": {
+        "type": "number"
+       },
+       "model": {
+        "type": "string",
+        "enum": [
+         "iers-utc/1",
+         "zodiacs-deltat/1"
+        ]
+       },
+       "table": {
+        "type": "string"
+       },
+       "tableDigest": {
+        "type": "string"
+       },
+       "segment": {
+        "type": "string",
+        "enum": [
+         "long-term",
+         "reconstructed",
+         "observed",
+         "predicted",
+         "extrapolated"
+        ]
+       }
+      },
+      "required": [
+       "seconds",
+       "sigma",
+       "model",
+       "table",
+       "tableDigest",
+       "segment"
+      ],
+      "additionalProperties": false,
+      "description": "ΔT = TT − UT1 in seconds, with its 1-sigma band and where it came from: iers-utc/1 from 1972 to the end of the engine's UT1 table, its model zodiacs-deltat/1 otherwise."
+     },
+     "timeScale": {
+      "type": "object",
+      "properties": {
+       "input": {
+        "type": "string",
+        "const": "utc"
+       },
+       "basis": {
+        "type": "string",
+        "enum": [
+         "iers",
+         "delta-t"
+        ]
+       },
+       "ut1MinusUtc": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "seconds": {
+            "type": "number"
+           },
+           "sigma": {
+            "type": "number"
+           },
+           "source": {
+            "type": "string",
+            "enum": [
+             "observed",
+             "predicted",
+             "fallback"
+            ]
+           }
+          },
+          "required": [
+           "seconds",
+           "sigma",
+           "source"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "leapSeconds": {
+        "anyOf": [
+         {
+          "type": "object",
+          "properties": {
+           "taiMinusUtc": {
+            "type": "number"
+           },
+           "listed": {
+            "type": "boolean"
+           }
+          },
+          "required": [
+           "taiMinusUtc",
+           "listed"
+          ],
+          "additionalProperties": false
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "required": [
+       "input",
+       "basis",
+       "ut1MinusUtc",
+       "leapSeconds"
+      ],
+      "additionalProperties": false,
+      "description": "How the engine read the instant. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis delta-t, otherwise: the instant is read as UT1, and TT is UT1 plus the ΔT model."
+     },
+     "flags": {
+      "maxItems": 1,
+      "type": "array",
+      "items": {
+       "type": "string",
+       "const": "outside-reference-span"
+      }
+     }
+    },
+    "required": [
+     "body",
+     "other",
+     "separation",
+     "orb",
+     "motion",
+     "allowedOrb",
+     "deltaT",
+     "timeScale",
+     "flags"
+    ],
+    "additionalProperties": false,
+    "description": "An aspect at an instant: true when orb is within allowedOrb."
+   }
+  },
+  {
+   "path": "$.5.outputSchema.properties.result.properties.facts.anyOf.6",
+   "new": {
+    "type": "object",
+    "properties": {
+     "atStart": {
+      "type": "object",
+      "properties": {
+       "body": {
+        "type": "object",
+        "properties": {
+         "lon": {
+          "type": "number"
+         },
+         "sign": {
+          "type": "string",
+          "enum": [
+           "aries",
+           "taurus",
+           "gemini",
+           "cancer",
+           "leo",
+           "virgo",
+           "libra",
+           "scorpio",
+           "sagittarius",
+           "capricorn",
+           "aquarius",
+           "pisces"
+          ]
+         },
+         "degree": {
+          "type": "number"
+         },
+         "speed": {
+          "type": "number"
+         },
+         "retrograde": {
+          "type": "boolean"
+         }
+        },
+        "required": [
+         "lon",
+         "sign",
+         "degree",
+         "speed",
+         "retrograde"
+        ],
+        "additionalProperties": false
+       },
+       "other": {
+        "type": "object",
+        "properties": {
+         "lon": {
+          "type": "number"
+         },
+         "sign": {
+          "type": "string",
+          "enum": [
+           "aries",
+           "taurus",
+           "gemini",
+           "cancer",
+           "leo",
+           "virgo",
+           "libra",
+           "scorpio",
+           "sagittarius",
+           "capricorn",
+           "aquarius",
+           "pisces"
+          ]
+         },
+         "degree": {
+          "type": "number"
+         },
+         "speed": {
+          "type": "number"
+         },
+         "retrograde": {
+          "type": "boolean"
+         }
+        },
+        "required": [
+         "lon",
+         "sign",
+         "degree",
+         "speed",
+         "retrograde"
+        ],
+        "additionalProperties": false
+       },
+       "separation": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 180,
+        "description": "The angle between the two longitudes, in degrees."
+       },
+       "orb": {
+        "type": "number",
+        "minimum": 0,
+        "description": "How far the separation is from the aspect's exact angle, in degrees."
+       },
+       "motion": {
+        "type": "string",
+        "enum": [
+         "applying",
+         "separating",
+         "stationary"
+        ],
+        "description": "applying while the orb shrinks, separating while it grows, judged from the two daily motions; stationary when the two move at the same speed."
+       }
+      },
+      "required": [
+       "body",
+       "other",
+       "separation",
+       "orb",
+       "motion"
+      ],
+      "additionalProperties": false
+     },
+     "atEnd": {
+      "type": "object",
+      "properties": {
+       "body": {
+        "type": "object",
+        "properties": {
+         "lon": {
+          "type": "number"
+         },
+         "sign": {
+          "type": "string",
+          "enum": [
+           "aries",
+           "taurus",
+           "gemini",
+           "cancer",
+           "leo",
+           "virgo",
+           "libra",
+           "scorpio",
+           "sagittarius",
+           "capricorn",
+           "aquarius",
+           "pisces"
+          ]
+         },
+         "degree": {
+          "type": "number"
+         },
+         "speed": {
+          "type": "number"
+         },
+         "retrograde": {
+          "type": "boolean"
+         }
+        },
+        "required": [
+         "lon",
+         "sign",
+         "degree",
+         "speed",
+         "retrograde"
+        ],
+        "additionalProperties": false
+       },
+       "other": {
+        "type": "object",
+        "properties": {
+         "lon": {
+          "type": "number"
+         },
+         "sign": {
+          "type": "string",
+          "enum": [
+           "aries",
+           "taurus",
+           "gemini",
+           "cancer",
+           "leo",
+           "virgo",
+           "libra",
+           "scorpio",
+           "sagittarius",
+           "capricorn",
+           "aquarius",
+           "pisces"
+          ]
+         },
+         "degree": {
+          "type": "number"
+         },
+         "speed": {
+          "type": "number"
+         },
+         "retrograde": {
+          "type": "boolean"
+         }
+        },
+        "required": [
+         "lon",
+         "sign",
+         "degree",
+         "speed",
+         "retrograde"
+        ],
+        "additionalProperties": false
+       },
+       "separation": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 180,
+        "description": "The angle between the two longitudes, in degrees."
+       },
+       "orb": {
+        "type": "number",
+        "minimum": 0,
+        "description": "How far the separation is from the aspect's exact angle, in degrees."
+       },
+       "motion": {
+        "type": "string",
+        "enum": [
+         "applying",
+         "separating",
+         "stationary"
+        ],
+        "description": "applying while the orb shrinks, separating while it grows, judged from the two daily motions; stationary when the two move at the same speed."
+       }
+      },
+      "required": [
+       "body",
+       "other",
+       "separation",
+       "orb",
+       "motion"
+      ],
+      "additionalProperties": false
+     },
+     "allowedOrb": {
+      "type": "number",
+      "minimum": 0,
+      "description": "The widest orb at which the aspect holds between these two bodies, in degrees: the wider one when the Sun or the Moon is one of them."
+     },
+     "changes": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "at": {
+         "type": "string",
+         "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+        },
+        "holds": {
+         "type": "boolean",
+         "description": "Whether the aspect holds from this instant on: true where it begins, false where it ends."
+        }
+       },
+       "required": [
+        "at",
+        "holds"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "exact": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "at": {
+         "type": "string",
+         "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+        },
+        "body": {
+         "type": "object",
+         "properties": {
+          "lon": {
+           "type": "number"
+          },
+          "sign": {
+           "type": "string",
+           "enum": [
+            "aries",
+            "taurus",
+            "gemini",
+            "cancer",
+            "leo",
+            "virgo",
+            "libra",
+            "scorpio",
+            "sagittarius",
+            "capricorn",
+            "aquarius",
+            "pisces"
+           ]
+          },
+          "degree": {
+           "type": "number"
+          }
+         },
+         "required": [
+          "lon",
+          "sign",
+          "degree"
+         ],
+         "additionalProperties": false
+        },
+        "other": {
+         "type": "object",
+         "properties": {
+          "lon": {
+           "type": "number"
+          },
+          "sign": {
+           "type": "string",
+           "enum": [
+            "aries",
+            "taurus",
+            "gemini",
+            "cancer",
+            "leo",
+            "virgo",
+            "libra",
+            "scorpio",
+            "sagittarius",
+            "capricorn",
+            "aquarius",
+            "pisces"
+           ]
+          },
+          "degree": {
+           "type": "number"
+          }
+         },
+         "required": [
+          "lon",
+          "sign",
+          "degree"
+         ],
+         "additionalProperties": false
+        }
+       },
+       "required": [
+        "at",
+        "body",
+        "other"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "flags": {
+      "maxItems": 1,
+      "type": "array",
+      "items": {
+       "type": "string",
+       "const": "outside-reference-span"
+      }
+     }
+    },
+    "required": [
+     "atStart",
+     "atEnd",
+     "allowedOrb",
+     "changes",
+     "exact",
+     "flags"
+    ],
+    "additionalProperties": false,
+    "description": "An aspect on a date: where it begins or ends in the span, and where it is exact."
+   }
+  }
+ ],
+ "resources": [
+  {
+   "path": "$.1.1.contents.0.text",
+   "onlyOld": [],
+   "onlyNew": [
+    "An aspect fact holds while the two bodies' separation is within the orb a chart uses for that aspect, the wider one when the Sun or the Moon is one of them. On a date, the reply gives where the aspect begins or ends and where it is exact, which the same crossing search finds on the difference between the two longitudes, at the Moon's step when the Moon is one of them."
+   ]
+  }
+ ],
+ "calls": 278,
+ "refusals": 10,
+ "byTool": {
+  "get_capabilities": 1,
+  "calculate_natal_chart": 160,
+  "compare_calculation_records": 23,
+  "get_positions": 23,
+  "find_events": 14,
+  "check_sky_fact": 57
+ },
+ "differing": [
+  {
+   "index": 0,
+   "name": "get_capabilities",
+   "args": {},
+   "differences": [
+    {
+     "path": "$.structured.sky.factKinds.4",
+     "new": "aspect"
+    },
+    {
+     "path": "$.content.0.text",
+     "onlyOld": [
+      "   \"phase\""
+     ],
+     "onlyNew": [
+      "   \"phase\",",
+      "   \"aspect\""
+     ]
+    }
+   ]
+  }
+ ]
+}
