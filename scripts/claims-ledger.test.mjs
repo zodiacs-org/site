@@ -362,10 +362,23 @@ function ciCorpus() {
       texts.push(text);
       for (const match of text.matchAll(/(?:scripts|tests|examples|supabase)\/[\w./-]+\.(?:mjs|cjs|js|ts|sh|sql)/gu)) next.push(match[0]);
       for (const match of text.matchAll(/'(tests\/[\w.-]+\.check\.mjs)'/gu)) next.push(`examples/platform/${match[1]}`);
+      // A workflow step that runs `npm test` in a package's own directory runs
+      // that package's test script, and the files its globs name.
+      for (const match of text.matchAll(/working-directory: (examples\/[\w.-]+)\n\s+run: npm test\n/gu)) {
+        const files = packageTestFiles(match[1]);
+        texts.push(files.join('\n'));
+        next.push(...files);
+      }
     }
     queue = next;
   }
   return texts.join('\n');
+}
+
+/** The files a package's `npm test` script names, its `dir/*.ext` globs expanded. */
+function packageTestFiles(directory) {
+  const script = JSON.parse(read(`${directory}/package.json`)).scripts?.test ?? '';
+  return [...script.matchAll(/([\w./-]+\/\*[\w.-]+)/gu)].flatMap(([, glob]) => expandGlob(`${directory}/${glob}`));
 }
 
 function escapeRegExp(value) {

@@ -109,16 +109,17 @@ export function serializeLedger(ledger) {
 /**
  * Files outside the consumer surface that make claims to readers or to other
  * programs: the validation report, the llms file, the assistant's site guide,
- * and the developer docs that ship inside the MCP adapter, platform starter
- * and plugin archives (finding F-23). Not read yet, and open under F-23: the
- * precision alpha's README, whose tests CI runs from their own package, and
- * the engine's README and CHANGELOG. The READMEs under integrations/ are the
- * maintainers' packaging and review notes, not shipped.
+ * the developer docs that ship inside the MCP adapter, platform starter and
+ * plugin archives, and the precision alpha's README (finding F-23). Not read
+ * yet, and open under F-23: the engine's README and CHANGELOG. The READMEs
+ * under integrations/ are the maintainers' packaging and review notes, not
+ * shipped.
  */
 export const SCOPE_ADD = Object.freeze([
   'docs/engine-validation/README.md',
   'examples/mcp-server/README.md',
   'examples/platform/README.md',
+  'examples/precision-alpha/README.md',
   'plugins/zodiacs-developer/README.md',
   'plugins/zodiacs-sky/README.md',
   'public/llms-full.txt',
