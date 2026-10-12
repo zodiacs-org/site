@@ -145,17 +145,29 @@ viewport:
 
 The elements that moved were the footer and its groups. It is a race: fonts are
 not the cause, and a second load does not avoid it because the stylesheet is
-served `must-revalidate`. Two attempts did not hold: reserving the footer's
-margin in base.css left the reflow inside it (CLS 0.006 to 0.12), and hiding
-the footer from the loader, which runs after the footer, still shifted once in
-60 loads (0.12 at 1280 px), when the browser painted the footer before the
-loader ran. The fix decides before the footer is parsed: a small script just
-before it marks the document when the content above ends within 200 px of the
-first viewport, base.css hides a marked footer from its first layout, and the
-footer's stylesheet shows it again in the same style pass as its layout. The
-loader requests the stylesheet at once and removes the mark once it has
-loaded, or if it fails or takes over 3 s. A footer further down is never
-hidden, and without JavaScript the `@import` styles it as before.
+served `must-revalidate`. Three attempts did not hold:
+
+- reserving the footer's margin in base.css left the reflow inside it (CLS
+  0.006 to 0.12);
+- hiding the footer from the loader, which runs after the footer, still
+  shifted once in 60 loads (0.12 at 1280 px), when the browser painted the
+  footer before the loader ran;
+- a script just before the footer that measured the content above it forced
+  a layout while parsing every page, and changed how `/learn/` scrolled: the
+  explorer drive's 44 px target check at 390 px failed on this PR's first
+  Browser Evidence run and in 2 of 3 local runs (the label ended 0.45 px below
+  the viewport), and passed 3 of 3 with that script removed from the built
+  page, as on main and on #726.
+
+The fix: a script in `<head>` holds the footer, and base.css hides a held
+footer from its first layout. The loader, which already measures the footer,
+shows a footer more than 200 px below the viewport at once, as before; a
+nearer one stays held, its stylesheet is requested at once, and the
+stylesheet shows the footer in the same style pass as its layout. The loader
+drops the hold when the stylesheet has loaded, or if it fails or takes over
+3 s. Nothing new reads the layout, and without JavaScript nothing is held and
+the `@import` styles the footer as before. After it, the explorer's check
+passed 3 of 3 locally.
 
 ## Reproduce
 
