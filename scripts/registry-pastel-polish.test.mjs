@@ -417,7 +417,9 @@ describe('registry pastel polish', () => {
     }
     for (const value of [wingNav, thesis]) {
       expect(value).toContain('<a class="wnav__link" href="/today/">Today</a>');
-      expect(value).toContain('<a class="wnav-menu__link" style="--i:0" href="/today/">Today</a>');
+      // The phone menu mirrors the main site's: explained Today, Horoscopes and Saved charts.
+      expect(value).toContain('<a class="wnav-menu__link wnav-menu__link--explained" style="--i:0" href="/today/"><span>Today</span><small>');
+      expect(value).toContain('<a class="wnav-menu__link" style="--i:4" href="/developers/">Developers</a>');
     }
     for (const value of [wingNav, thesis, sdk]) expect(value).toContain('>Tools</span>');
     for (const [href, name] of [
@@ -433,7 +435,9 @@ describe('registry pastel polish', () => {
       expect(wingNav).toContain(`{ href: '${href}', name: '${name}', description:`);
       expect(source).toContain(`{ href: '${href}', name: '${name}', description:`);
       for (const output of [thesis, sdk]) {
-        expect(output).toContain(`href="${href}" aria-label="${name}.`);
+        // Birth chart and compatibility lead "The site"; the other six are the Tools grid.
+        if (href === '/birth-chart/' || href === '/compatibility/') expect(output).toContain(`<a class="wnav-menu__link" href="${href}">${name}</a>`);
+        else expect(output).toContain(`href="${href}" aria-label="${name}.`);
         expect(output).toContain(`>${name}</a>`);
       }
     }
@@ -442,7 +446,7 @@ describe('registry pastel polish', () => {
       expect(output).toContain('class="wnav-menu__sign" style="--i:11;--sign:#A9D4C4"');
     }
     expect(thesis).toContain('<a class="wnav__chip" href="/astrofolio/">Astrofolio</a>');
-    expect(thesis).toContain('<span>Astrofolio</span><small>The twelve Zodiac signs</small>');
+    expect(thesis).toContain('<span>Astrofolio</span><small>Official Zodiac token collection</small>');
     expect(thesis).not.toContain('<a class="wnav__chip" href="/terminal/">Terminal</a>');
     expect(siteNav).toContain('.mobile-menu__tool:last-child { border-bottom: 0; }');
     expect(source).toContain('<span className="wnav__sep">·</span><span className="wnav__dim">org</span>');
