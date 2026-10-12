@@ -47,7 +47,7 @@ describe('the precision preview is isolated', () => {
   });
 
   it('says plainly that it is not the production engine', () => {
-    expect(page).toMatch(/not what\s*\n?\s*<a href="\/birth-chart\/">/);
+    expect(page).toMatch(/not what(?:\{' '\})?\s*\n?\s*<a href="\/birth-chart\/">/);
     expect(page).toMatch(/does not load on any\s*\n?\s*other page/);
   });
 
