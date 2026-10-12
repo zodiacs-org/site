@@ -6,7 +6,8 @@
  * `outsideReferenceSpan`, `searchLongitudeCrossings`,
  * `searchLongitudeCrossingsWith`), from the engine's own time basis, which
  * src/lib/engine/time-basis.mjs carries because the package does not export
- * it, or, for local civil time, from the site's own resolver. The engine's
+ * it, or, for local civil time, from the engine's own resolver,
+ * @zodiacs/engine/geo (./local-time.ts). The engine's
  * `/receipt` entry point writes the chart receipt. Nothing here keeps
  * anything once the request is answered.
  */
@@ -394,7 +395,7 @@ export async function computeTime(request: TimeRequest, dependencies: ComputeDep
     tt: iso(tt).slice(0, -1),
     deltaT,
     timeScale,
-  }, computeReceipt('time', { timeResolution: timeResolutionFacts() }));
+  }, computeReceipt('time', { timeResolution: timeResolutionFacts(dependencies.localTime) }));
 }
 
 // ---------- sky-fact ----------
@@ -549,7 +550,7 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
     facts,
   }, computeReceipt('sky-fact', {
     search: budget.facts(),
-    ...(window.zone ? { timeResolution: timeResolutionFacts() } : {}),
+    ...(window.zone ? { timeResolution: timeResolutionFacts(dependencies.localTime) } : {}),
   }));
 }
 

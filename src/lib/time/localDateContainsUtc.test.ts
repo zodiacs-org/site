@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { runInNewContext } from 'node:vm';
-import { localDateContainsUtc, resolveLocalToUtc } from './localToUtc';
+import { localDateContainsUtc, prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 import { resolveLocalDateIntervals } from './local-date-intervals';
 import { UI, CATALOG_LOCALES } from '../i18n';
 
@@ -11,7 +11,8 @@ describe('local date membership of a selected instant', () => {
   it.each([
     ['2011-12-30', 'Pacific/Apia'], ['1993-08-21', 'Pacific/Kwajalein'],
     ['1994-12-31', 'Pacific/Kiritimati'], ['1844-12-31', 'Pacific/Guam'],
-  ])('refuses the out-of-date noon selected for %s in %s', (date, zone) => {
+  ])('refuses the out-of-date noon selected for %s in %s', async (date, zone) => {
+    await prepareLocalTime(date, zone);
     const resolved = resolveLocalToUtc(date, '12:00', zone);
     expect(localDateContainsUtc(date, resolved.utc, zone)).toBe(false);
     expect(resolved.flags).toContain('dst-gap'); // Existing resolution policy is unchanged.
@@ -23,7 +24,8 @@ describe('local date membership of a selected instant', () => {
     ['1969-09-30', 'Pacific/Kwajalein'], ['1867-10-18', 'America/Juneau'],
     ['1919-03-31', 'America/Toronto'], ['2009-11-01', 'America/St_Johns'],
     ['1990-01-04', 'US/Eastern'], ['1990-01-04', '+0100'],
-  ])('admits a reference on %s in %s without making a coverage claim', (date, zone) => {
+  ])('admits a reference on %s in %s without making a coverage claim', async (date, zone) => {
+    await prepareLocalTime(date, zone);
     expect(localDateContainsUtc(date, resolveLocalToUtc(date, '12:00', zone).utc, zone)).toBe(true);
   });
 
@@ -32,7 +34,8 @@ describe('local date membership of a selected instant', () => {
     ['9999-12-31', 'UTC'], ['0000-01-01', '+23:59'], ['9999-12-31', '-23:59'],
     ['1907-07-06', 'America/Mexico_City'], ['1883-11-17', 'America/Denver'],
     ['1900-01-01', 'Asia/Colombo'],
-  ])('uses exact era-aware midnight membership for %s in %s', (date, zone) => {
+  ])('uses exact era-aware midnight membership for %s in %s', async (date, zone) => {
+    await prepareLocalTime(date, zone);
     const midnight = resolveLocalToUtc(date, '00:00', zone).utc;
     expect(localDateContainsUtc(date, midnight, zone)).toBe(true);
     expect(localDateContainsUtc(date, new Date(midnight.getTime() - 1), zone)).toBe(false);

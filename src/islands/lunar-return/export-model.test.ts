@@ -1,6 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { computeLunarReturn } from './compute';
 import { lunarReturnExportModel } from './export-model';
+import { prepareLocalTime } from '../../lib/time/localToUtc';
+
+// The resolver is the engine's, which the site loads on first use.
+beforeAll(() => prepareLocalTime('2000-01-01', 'UTC'));
 
 const result = () => computeLunarReturn({ birthDate: '1990-02-01', birthTime: '12:00', timeKnown: true,
   birthplace: { name: 'Private birthplace', lat: 13.7563, lon: 100.5018, tz: 'Asia/Bangkok' }, houseSystem: 'placidus', castLocation: null }, new Date('2026-03-01T00:00:00Z'));

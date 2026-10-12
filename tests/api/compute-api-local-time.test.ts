@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 const bundled = createLocalTimeModule();
@@ -7,35 +7,29 @@ import { BUNDLE_PATH, TYPES_PATH, buildLocalTimeBundle } from '../../scripts/bui
 
 /*
  * The compute function resolves local time with api/_compute/local-time.mjs,
- * the site's own resolver bundled with its tables. This holds the bundle to
- * its source: it must be what the source builds to today, it must carry every
- * zone history the pinned release has, and it must answer every case exactly
- * as the calculator's module does.
+ * the engine's resolver (@zodiacs/engine/geo) bundled with the histories it
+ * loads. This holds the bundle to its source: it must be what the source
+ * builds to today, it must carry every zone name of the release, and it must
+ * answer every case exactly as the source modules do, its histories included.
  */
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url));
+const tzNames: { names: string[] } = JSON.parse(read('src/data/tz-names.json').toString('utf8'));
 
 describe("the compute API's local-time bundle", () => {
-  it('is what src/lib/time/localToUtc.ts builds to now, and loads nothing at run time', async () => {
+  it("is what the engine's resolver builds to now, and loads nothing at run time", async () => {
     const { bytes, types, inputs } = await buildLocalTimeBundle();
     expect(read(BUNDLE_PATH).equals(bytes), 'stale: run node scripts/build-compute-local-time.mjs').toBe(true);
     expect(read(TYPES_PATH).equals(types)).toBe(true);
-    expect(inputs).toContain('src/lib/time/localToUtc.ts');
-    expect(inputs).toContain('src/lib/time/birthplace-clock.ts');
+    expect(inputs).toContain('node_modules/@zodiacs/engine/dist/geo.js');
+    expect(inputs.filter((input) => /^node_modules\/@zodiacs\/engine\/dist\/tzdb-2025c-\d{2}-/u.test(input))).toHaveLength(16);
     expect(inputs).toContain('src/lib/time/zone-names.ts');
-    expect(inputs).toContain('src/data/tz-lmt.json');
-    expect(inputs).toContain('src/data/tz-history/2025c/excluded.json');
+    expect(inputs).toContain('src/data/tz-names.json');
+    // The site's own resolver and tables are gone, from the bundle as from the site.
+    expect(inputs.filter((input) => /localToUtc|birthplace-clock|tz-history|tz-lmt/u.test(input))).toEqual([]);
   });
 
   it('gives every zone name the spelling the source gives it, in any letter case', async () => {
-    const directory = new URL('../../src/data/tz-history/2025c/', import.meta.url);
-    const names = new Set<string>([
-      ...Intl.supportedValuesOf('timeZone'),
-      ...Object.keys(JSON.parse(read('src/data/tz-lmt.json').toString('utf8')).eras),
-      ...Object.keys(JSON.parse(readFileSync(new URL('excluded.json', directory), 'utf8')).excluded),
-    ]);
-    for (const file of readdirSync(directory).filter((name) => /^\d{2}\.json$/u.test(name))) {
-      for (const zone of Object.keys(JSON.parse(readFileSync(new URL(file, directory), 'utf8')).zones)) names.add(zone);
-    }
+    const names = new Set<string>([...Intl.supportedValuesOf('timeZone'), ...tzNames.names]);
     for (const name of [...names, 'Europe/Atlantis', 'SystemV/AST4', '+05:30']) {
       for (const spelling of [name, name.toLowerCase(), name.toUpperCase()]) {
         expect(await bundled.canonicalZoneName(spelling), spelling).toBe(await source.canonicalZoneName(spelling));
@@ -44,22 +38,28 @@ describe("the compute API's local-time bundle", () => {
     expect(names.size).toBeGreaterThan(590);
   }, 60_000);
 
-  it('carries every zone history of the pinned release', async () => {
-    const directory = new URL('../../src/data/tz-history/2025c/', import.meta.url);
-    let zones = 0;
-    for (const file of readdirSync(directory).filter((name) => /^\d{2}\.json$/u.test(name))) {
-      const bucket = JSON.parse(readFileSync(new URL(file, directory), 'utf8'));
-      for (const [zone, history] of Object.entries<any>(bucket.zones)) {
-        expect(await bundled.loadZoneHistory(zone), zone).toEqual(history);
-        zones += 1;
-      }
+  it('carries every zone history the engine ships, and names the same release', async () => {
+    expect(bundled.TZDB).toEqual(source.TZDB);
+    let tzdb = 0;
+    for (const zone of tzNames.names) {
+      // A name the runtime's Intl refuses (Asia/Hanoi) is refused by both.
+      let expected: unknown;
+      let actual: unknown;
+      try {
+        await source.prepareLocalTime('1850-06-15', zone);
+        expected = source.resolveLocalToUtc('1850-06-15', '12:00', zone);
+      } catch (error) { expected = String(error); }
+      try {
+        await bundled.prepareLocalTime('1850-06-15', zone);
+        actual = bundled.resolveLocalToUtc('1850-06-15', '12:00', zone);
+      } catch (error) { actual = String(error); }
+      expect(actual, zone).toEqual(expected);
+      if ((actual as { zone?: { source: string } }).zone?.source === 'tzdb') tzdb += 1;
     }
-    expect(zones).toBeGreaterThan(300);
-    const excluded = JSON.parse(readFileSync(new URL('excluded.json', directory), 'utf8')).excluded;
-    for (const zone of Object.keys(excluded)) expect(await bundled.loadZoneHistory(zone), zone).toBeNull();
-  });
+    expect(tzdb).toBeGreaterThan(500);
+  }, 60_000);
 
-  it("resolves every case as the calculator's module does", async () => {
+  it("resolves every case as the engine's module does", async () => {
     const zones: Array<[string, number]> = [
       ['Europe/Stockholm', 18.07], ['America/Mexico_City', -99.13], ['Asia/Kolkata', 88.36], ['Australia/Lord_Howe', 159.08],
       ['Pacific/Apia', -171.76], ['America/Sitka', -135.33], ['Asia/Manila', 120.98], ['Europe/Paris', 2.35],

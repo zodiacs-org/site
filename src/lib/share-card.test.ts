@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   CHART_SHEET_LAYOUT,
@@ -39,6 +39,8 @@ import { bodyLongitude, computeBodies, computeChart } from './engine/full';
 import { signForLongitude } from './signs';
 import { decodePositionsLink, encodeSharedPositionsLink, wholeDegreeAngle } from './share-positions';
 import { sharedTimedInstant, timedSharedPositions } from './share-positions-noon';
+import { zoneOffsetAt } from '@zodiacs/engine/geo';
+import tzNames from '../data/tz-names.json';
 import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
 
 const CHART = { engineVersion: '1.0.0' } as Chart;
@@ -668,21 +670,30 @@ describe('a chart image with birth details hidden', () => {
   });
 
   it('checks the Moon over a span that holds every date, save in Alaska before 1867 and the Philippines and Micronesia before 1845', async () => {
-    // The span is 00:00 at UTC+14 to 24:00 at UTC−12. The pinned time zone
-    // history keeps offsets outside it only for dates kept on the other side
-    // of the date line, all before 1868.
+    // The span is 00:00 at UTC+14 to 24:00 at UTC−12. The history the engine
+    // ships keeps offsets outside it only for dates kept on the other side of
+    // the date line, all before 1868. Each zone is sampled every 30 days from
+    // 1800 to 1970 on the engine's own clock, and each stretch outside the span
+    // is followed to its end to the second.
+    const DAY = 86_400_000;
+    const inSpan = (offsetMinutes: number) => offsetMinutes <= 14 * 60 && offsetMinutes >= -12 * 60;
     const outside: string[] = [];
-    const directory = new URL('../data/tz-history/2025c/', import.meta.url);
-    for (const file of readdirSync(directory).filter((name) => name !== 'excluded.json')) {
-      const { zones } = JSON.parse(readFileSync(new URL(file, directory), 'utf8')) as {
-        zones: Record<string, { t: number[]; o: number[] }>;
-      };
-      for (const [zone, { t, o }] of Object.entries(zones)) {
-        o.forEach((offset, era) => {
-          if (offset <= 14 * 3600 && offset >= -12 * 3600) return;
-          const until = t[era] === undefined ? 'now' : new Date(t[era] * 1000).toISOString().slice(0, 10);
-          outside.push(`${zone} until ${until}`);
-        });
+    for (const zone of tzNames.names) {
+      try { await prepareLocalTime('1800-01-01', zone); } catch { continue; }
+      let offsetAt: (instant: number) => number;
+      try { zoneOffsetAt(zone, Date.UTC(1800, 0, 1)); offsetAt = (instant) => zoneOffsetAt(zone, instant); } catch { continue; }
+      for (let instant = Date.UTC(1800, 0, 1); instant < Date.UTC(1970, 0, 1); instant += 30 * DAY) {
+        if (inSpan(offsetAt(instant))) continue;
+        // The stretch ends at the first instant back inside the span.
+        let low = instant;
+        let high = instant + 30 * DAY;
+        while (!inSpan(offsetAt(high)) && high < Date.UTC(1970, 0, 1)) { low = high; high += 30 * DAY; }
+        while (high - low > 1000) {
+          const middle = low + Math.floor((high - low) / 2000) * 1000;
+          if (inSpan(offsetAt(middle))) high = middle; else low = middle;
+        }
+        outside.push(`${zone} until ${new Date(high).toISOString().slice(0, 10)}`);
+        instant = high;
       }
     }
     expect(outside.sort()).toEqual([

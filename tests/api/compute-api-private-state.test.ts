@@ -39,7 +39,7 @@ export function auditSetFrameFailure(value) { auditFailFrame = value; }
       let local = read('api/_compute/local-time.mjs');
       local = once(local, 'return localTimeModule;', 'auditRuntimes.push(localTimeModule); return localTimeModule;');
       local = once(local, 'dispose() {', `
-auditState() { return { offset: [...offsetFormatters.keys()], wall: [...wallFormatters.keys()], histories: zoneHistories ? [...zoneHistories.keys()] : [], pending: zoneHistoryLoads ? [...zoneHistoryLoads.keys()] : [] }; },
+auditState() { return { offset: [...offsetFormatters.keys()], histories: [...histories.keys()], pending: [...loads.keys()] }; },
 async prepareLocalTime(...args) { await prepareLocalTime(...args); if (auditAfterPrepare) await auditAfterPrepare(...args); },
 dispose() {`);
       local += '\nexport const auditRuntimes = [];\nexport let auditAfterPrepare = null;\nexport function auditPause(fn) { auditAfterPrepare = fn; }\n';
@@ -63,7 +63,7 @@ globalThis.fetch = async () => new Response(null, { status: firewall });
 const utc = '2082-03-14T05:29:17Z';
 const chart = { utc, latitude: -31.55537, longitude: 159.07735 };
 const localChart = { local: { date: '1913-07-19', time: '04:37', zone: 'Australia/Lord_Howe' }, latitude: -31.55537, longitude: 159.07735 };
-const empty = { offset: [], wall: [], histories: [], pending: [] };
+const empty = { offset: [], histories: [], pending: [] };
 const engineEmpty = () => assert.deepEqual(auditEngineState(), { frame: null, deltaTReset: true, moonCalls: 0, plutoSegments: [] });
 const allEmpty = () => { engineEmpty(); for (const runtime of auditRuntimes) assert.deepEqual(runtime.auditState(), empty); };
 async function run(entry, endpoint, body, extra = {}) {

@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { moonSignCandidates, moonSignsBetween } from '@zodiacs/engine/techniques';
 import { computeChart } from './engine/full';
 import type { Chart } from './engine/types';
-import { resolveLocalToUtc } from './time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
 import { moonCandidates, moonIsUncertain, moonLabel } from './moon-certainty';
 import { chartSignature } from './chart-signature';
 import { communicationRead } from './communication';
@@ -19,6 +19,9 @@ import { PositionsOnlyResult } from '../islands/PositionsShareSurface';
 import ChartShareDialog from '../islands/ChartShareDialog';
 import ChartTour, { type ChartTourProps } from '../islands/explorer/tour/ChartTour';
 import { deriveChapters, flattenStops } from './scene/chapters';
+
+// The resolver is the engine's, which the site loads on first use.
+beforeAll(() => prepareLocalTime('2000-01-01', 'UTC'));
 
 /**
  * A chart without a birth time, with the Moon signs possible over its local

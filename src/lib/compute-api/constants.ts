@@ -294,9 +294,6 @@ export const ANY_ZONE_DAY = Object.freeze({
   endHoursAfterUtcMidnight: 36,
 });
 
-/** The pinned tzdb release under src/data/tz-history/ that the site's resolver reads before 1970. */
-export const PINNED_TZDB_RELEASE = '2025c';
-
 /** Schema names of every success body. */
 export function responseSchemaName(endpoint: ComputeEndpoint): string {
   return `zodiacs.compute-api.${endpoint}.v1`;
