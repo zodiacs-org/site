@@ -457,8 +457,8 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           var stylesheet = document.createElement('link');
           stylesheet.rel = 'stylesheet';
           stylesheet.href = '/assets/site-footer.css?v=20261006';
-          // A footer hidden until its styles land is shown once they have
-          // loaded or failed, or after 3 s at most.
+          // A footer hidden until its styles land is shown by them; the mark
+          // goes once they have loaded, or if they fail or take over 3 s.
           if (pending) {
             var reveal = function () { root.removeAttribute('data-footer-styles-pending'); };
             stylesheet.addEventListener('load', reveal);

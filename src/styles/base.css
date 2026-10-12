@@ -41,7 +41,8 @@ body { min-height: 100dvh; overflow-x: clip; }
   contain-intrinsic-size: auto 900px;
 }
 /* Base.astro marks a footer that starts in the first viewport until its
-   deferred stylesheet has loaded, so it never paints unstyled and then moves. */
+   deferred stylesheet applies (it shows the footer again), so the footer
+   never paints unstyled and then moves. */
 :root[data-footer-styles-pending] .zfooter { visibility: hidden; }
 
 /* A single faint cool depth wash — no SaaS aurora, no chroma. Depth
