@@ -85,4 +85,12 @@ describe('the site resolver is the engine\'s', () => {
     await expect(prepareLocalTime('1900-01-01', 'Private/Atlantis')).resolves.toBeUndefined();
     expect(() => resolveLocalToUtc('1900-01-01', '12:00', 'Private/Atlantis')).toThrow('An explicit supported timezone is required.');
   });
+
+  // The engine refuses these dates with a RangeError; the site rejects a
+  // preparation only when a download fails, so a calculator shows the input error.
+  it.each(['1900-1-1', '1900-02-30', '', 'yesterday'])('prepares nothing for the date %j, so resolving it is what fails', async (date) => {
+    await expect(prepareLocalTime(date, 'Europe/Paris')).resolves.toBeUndefined();
+    expect(() => resolveLocalToUtc(date, '12:00', 'Europe/Paris'))
+      .toThrow(new RangeError('resolveLocalToUtc needs a valid YYYY-MM-DD date and HH:MM time.'));
+  });
 });

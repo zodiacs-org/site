@@ -111,15 +111,17 @@ function loadGeo(): Promise<EngineGeo> {
  * needs: the engine's resolver, and for dates up to 1970 the zone's history
  * from the engine. A failed download rejects with a ModuleLoadError, like the
  * calculators' other code downloads, and is not remembered: the next call
- * tries again. A name Intl refuses loads no history; resolving it then throws.
- * The rejection counts as observed, so a caller that starts preparing early
+ * tries again. Nothing else rejects: a date that is not a real YYYY-MM-DD, or a
+ * name Intl refuses, loads no history, and resolving it then throws the input
+ * error. The rejection counts as observed, so a caller that starts preparing early
  * and stops waiting (the chart calculator, when its engine fails to load
  * first) raises no unhandled rejection; a caller that awaits still sees it.
  */
 export function prepareLocalTime(date: string, timeZone: string): Promise<void> {
   const ready = (async () => {
     const engine = await loadGeo();
-    if (!birthplaceTimeCanApply(date) || !intlAccepts(timeZone)) return;
+    // The engine refuses such input with a RangeError, which is not a download failure.
+    if (!parseCivilDate(date) || !birthplaceTimeCanApply(date) || !intlAccepts(timeZone)) return;
     try {
       await engine.prepareLocalTime(date, timeZone);
     } catch (cause) {

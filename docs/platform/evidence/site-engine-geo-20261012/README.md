@@ -18,6 +18,11 @@ backzone-complete tzdb inside the engine) wait for.
   - `resolveLocalToUtc` maps the engine's answer onto the site's fields.
   - A longitude the site cannot place is ignored, as before.
   - An unsupported zone gives a fixed error that never repeats the zone given.
+  - `prepareLocalTime` rejects only when a download fails, as before. A date
+    that is not a real YYYY-MM-DD loads nothing, so resolving it fails with
+    the input error. The engine's own preparation refuses such a date with a
+    `RangeError`, which the calculators would otherwise have shown as a
+    failed download.
   - `offsetAt` and `localDateContainsUtc` still read the host's Intl data:
     they answer questions about the host's clock, not about a birth.
 - **Removed.** The site's own birthplace clock (`birthplace-clock.ts`), its
