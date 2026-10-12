@@ -466,6 +466,6 @@ differences from the S15 reconstructions, 1800 to 1940, and from this model,
 and 2100 and its differences from S15 at 1800, 1850, 1900 and the year 1000.
 On 2026-10-12 the Swiss figures this README still quoted from the file (its
 ΔT at 2050 and 2100, and its differences from S15 at 1850, 1900 and the year
-1000) were taken out of the text as well (F-85). Commit `2ca93d41` still has it whole, the file records the SHA-256
+1000) were taken out of the text as well (F-90). Commit `2ca93d41` still has it whole, the file records the SHA-256
 of what it lost under `swissOutputRemoved`, and `tools/moon/swiss_deltat.py`
 regenerates it. The record of everything removed is [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).
