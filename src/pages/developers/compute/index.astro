@@ -328,8 +328,9 @@ const jsonLd = [
           <code>pinned</code>.</li>
         <li>From 1970 the offset comes from the time zone data of the server's
           runtime, and <code>zoneHistory</code> is <code>runtime</code>. So it
-          does before 1970 where the release records no local time, such as an
-          Antarctic station before it was staffed, and there{' '}
+          does before 1970 in two cases: a fixed offset such as UTC, which that
+          data cannot get wrong, and a place the release records no local time
+          for, such as an Antarctic station before it was staffed, where{' '}
           <code>zoneUncertain</code> is true.</li>
         <li>Terrestrial Time and ΔT are the engine's for that instant, to the
           millisecond, read as described above. ΔT comes with its one-sigma

@@ -1,5 +1,6 @@
 import { prepareLocalTime, resolveLocalToUtc } from '@zodiacs/engine/geo';
 import { parseCivilDate, parseCivilTime } from '../../lib/time/civil-date';
+import { isFixedOffsetZone } from '../../lib/time/fixed-zones';
 import { canonicalZoneName } from '../../lib/time/zone-names';
 import { calculateStudio, type StudioInput } from './model';
 
@@ -31,6 +32,7 @@ export async function localStudioInput(draft: LocalDraft, houseSystem: StudioInp
     local: { flags: [...resolved.flags], resolution: resolved.localResolution } };
   // Checks conversion bounds and that the receipt faithfully preserves its provenance.
   calculateStudio(input);
-  // Before 1970 the shipped history answers, except where it records no local time.
-  return { input, utc, zoneUncertain: draft.date <= '1970-01-01' && resolved.zone.source !== 'tzdb' };
+  // Before 1970 the shipped history answers, except where it records no local time;
+  // a fixed offset such as UTC reads the browser's data, which cannot differ.
+  return { input, utc, zoneUncertain: draft.date <= '1970-01-01' && resolved.zone.source !== 'tzdb' && !isFixedOffsetZone(zone) };
 }

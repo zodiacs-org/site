@@ -141,7 +141,7 @@ const ENGINE_100_ROUTES = ENGINE_RC2_ROUTES;
 // link to them.
 const DEVELOPER_GUIDES_LASTMOD = '2026-10-12';
 // Local times read by @zodiacs/engine/geo across the site: the compute API page's account of it, and the
-// MCP page's adapter 0.1.0-rc.20, rebuilt for it.
+// MCP page's adapter 0.1.0-rc.21, rebuilt for it.
 const ENGINE_GEO_LASTMOD = '2026-10-12';
 const ENGINE_GEO_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
 const DEVELOPER_GUIDES_ROUTES = [

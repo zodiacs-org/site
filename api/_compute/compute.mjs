@@ -5507,6 +5507,13 @@ function calculationFailed() {
   return new ComputeApiError({ code: "calculation-failed", message: MESSAGES.calculationFailed });
 }
 
+// src/lib/time/fixed-zones.ts
+var FIXED_OFFSET_ZONE = /^(?:etc\/)?(?:utc|uct|gmt|gmt0|gmt[+-]0|greenwich|universal|zulu)$|^etc\/gmt[+-]\d{1,2}$/iu;
+function isFixedOffsetZone(name) {
+  return FIXED_OFFSET_ZONE.test(name);
+}
+var FIXED_OFFSET_ZONE_SOURCE = FIXED_OFFSET_ZONE.source;
+
 // src/lib/compute-api/local-time.ts
 var PINNED_HISTORY_LAST_DATE = "1970-01-01";
 function wallMilliseconds({ date, time }) {
@@ -5531,7 +5538,7 @@ async function resolveLocal(module, input, longitude2) {
     flags: [...resolved.flags],
     localMeanTime: resolved.localMeanTime ? { ...resolved.localMeanTime } : null,
     zoneHistory: pinned ? "pinned" : "runtime",
-    zoneUncertain: early && !pinned,
+    zoneUncertain: early && !pinned && !isFixedOffsetZone(input.zone),
     gapShiftMinutes
   };
 }

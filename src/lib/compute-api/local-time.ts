@@ -12,6 +12,7 @@
  */
 import type { LocalTimeResolution as EngineLocalTimeResolution, TZDB } from '@zodiacs/engine/geo';
 import type { LocalInput } from './validate.js';
+import { isFixedOffsetZone } from '../time/fixed-zones.js';
 
 export interface LocalTimeModule {
   prepareLocalTime(date: string, timeZone: string): Promise<void>;
@@ -35,13 +36,14 @@ export interface LocalResolution {
   /**
    * Where the offset came from: the tzdb release the engine ships, with
    * backzone, which answers before 1970 for every zone it has a local time
-   * for; otherwise the runtime's Intl data.
+   * for; otherwise the runtime's Intl data, as for a fixed offset such as UTC.
    */
   zoneHistory: 'pinned' | 'runtime';
   /**
    * True for a wall time before 1970-01-02 read on the runtime's data: a span
    * the release records as having no local time ("-00"), whose host reading
-   * may give another city's clock.
+   * may give another city's clock. Never for a fixed offset, which cannot
+   * differ.
    */
   zoneUncertain: boolean;
   /** Forward wall-clock shift of a DST gap, in minutes; 0 otherwise. */
@@ -83,7 +85,7 @@ export async function resolveLocal(
     flags: [...resolved.flags],
     localMeanTime: resolved.localMeanTime ? { ...resolved.localMeanTime } : null,
     zoneHistory: pinned ? 'pinned' : 'runtime',
-    zoneUncertain: early && !pinned,
+    zoneUncertain: early && !pinned && !isFixedOffsetZone(input.zone),
     gapShiftMinutes,
   };
 }

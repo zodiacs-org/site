@@ -760,6 +760,11 @@ describe('compute API parity with the engine and the site resolver', () => {
       [{ date: '1850-06-01', time: '12:00', zone: 'America/Mexico_City' }, -99.13, 'pinned', false],
       // Harbin's backzone history differs after 1970, so the engine ships the default build's for it.
       [{ date: '1960-05-01', time: '12:00', zone: 'Asia/Harbin' }, 126.65, 'pinned', false],
+      // A fixed offset reads the runtime's data at every date, and that cannot differ.
+      [{ date: '1950-06-01', time: '12:00', zone: 'UTC' }, 0, 'runtime', false],
+      [{ date: '1950-06-01', time: '12:00', zone: 'Etc/GMT+5' }, null, 'runtime', false],
+      // The release records no local time at Troll before the station was staffed in 2005.
+      [{ date: '1950-06-01', time: '12:00', zone: 'Antarctica/Troll' }, null, 'runtime', true],
       [{ date: '2026-03-29', time: '02:30', zone: 'Europe/Paris' }, null, 'runtime', false],
       [{ date: '2026-10-25', time: '02:30', zone: 'Europe/Paris' }, 2.35, 'runtime', false],
     ] as const;
