@@ -77,16 +77,18 @@ committed nodal speeds kept, as before.
 
 ## 0.1.0-rc.24 and plugin 0.3.12
 
-- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 872,066
+- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 909,658
   bytes, SHA-256
-  `b28e948064e4eda4419505071a83eddd8ac04680f952218a13b05b647654e64f`, built
-  from commit `01b70483ec2a1c0f2be6109e4c2e3d94c351c3d5`. Its `server.mjs` is
-  2,268,682 bytes, SHA-256
-  `70552a0959b9eab94bb6be75afb605ae6bd1ad32d1cf8cbca2fc88ed87aae625`: the
+  `433385a993b973dfa0235affd1dafd3b72a88f06f08b4627955502124828a9f1`, built
+  from commit `f148a386031995a8abb84c982a80ff9fead7b083`, which also adds the
+  time atlas (B3.b,
+  [`../time-atlas-reading-20261012/`](../time-atlas-reading-20261012/)). Its
+  `server.mjs` is 2,459,502 bytes, SHA-256
+  `866e5a9c0756b96a5777c0a15117735f8bd60d6728d1a2a3a2f7e00094f5b959`: the
   build now inlines every JSON table as a string parsed at its first import,
   as the compute API's local-time bundle does, so the zone-name table carries
   no CommonJS shim.
-- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,795,785 bytes.
+- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,805,668 bytes.
 - [`../mcp-adapter/mcp-rc23-rc24.json`](../mcp-adapter/mcp-rc23-rc24.json)
   drives rc.23 and rc.24 with the same 278 tool calls, 10 of them refusals,
   after versions and digests are written out. One answer differs:
@@ -95,7 +97,7 @@ committed nodal speeds kept, as before.
   new tools, the capabilities reply's schema, and the wording of
   `check_sky_fact`'s description and date argument. The methodology resource
   gains a section on local times and places.
-- The protocol drive passed 113 of 113 checks, the host drive with Claude Code
+- The protocol drive passed 114 of 114 checks, the host drive with Claude Code
   2.1.296 7 of 7, the comparison benchmark 18 of 18 cases and 112 of 112
   assertions, and the archive's own `verify.mjs` 25 of 25
   ([`../mcp-adapter/`](../mcp-adapter/)).
@@ -104,5 +106,4 @@ committed nodal speeds kept, as before.
 
 The hosted assistant tools and the remote MCP at zodiacs.org keep their own
 contracts; their bundles are rebuilt because they inline the compute API, but
-no tool they list changes. B3.b, the time atlas feeding `resolve_birth_time`
-with its uncertainty flag, follows separately.
+no tool they list changes.
