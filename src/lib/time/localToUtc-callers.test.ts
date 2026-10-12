@@ -4,19 +4,30 @@ import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 /*
- * A birthplace longitude makes an early date need the local mean time table
- * and the zone's pinned history, and resolving without them throws. So every
- * production call that passes a longitude must follow an awaited
- * prepareLocalTime of the same date and zone in the same function, or sit in
- * a module that re-exports the preparation to the islands that await it; and
- * the longitude must be a place's `.lon`. Calls without a longitude keep the
- * host's clock, and each is listed with a reason.
+ * The resolver is the engine's, and a date up to 1970 needs the zone's
+ * history it ships, with a longitude or without one; resolving without it
+ * throws. So every production call must follow an awaited prepareLocalTime of
+ * the same date and zone in the same function, or sit in a module that
+ * re-exports the preparation to the islands that await it; and a longitude
+ * must be a place's `.lon`. Calls without a longitude read the zone's own
+ * clock, and each is listed with a reason.
  */
 const root = resolve(process.cwd(), 'src');
 
 const WITHOUT_LONGITUDE: Record<string, string> = {
-  'lib/learning-source.ts': 'checks that a stored birth resolves at all; the chart itself goes through ChartCalculator',
   'islands/WalletChart.tsx': 'Registry scope, frozen for Phase 1; planets only, no angles',
+};
+
+/**
+ * Frozen callers that do not prepare, each with its reason. The wallet chart
+ * is Registry code, which scripts/phase1-scope-guard.mjs keeps unchanged
+ * without the owner's allowance, and its page serves only a redirect while
+ * no wallet chain is configured (src/lib/wallet/config.ts), as in production.
+ * Its owner comparison would refuse every owner time until it prepares
+ * (FINDINGS F-83).
+ */
+const UNPREPARED: Record<string, string> = {
+  'islands/WalletChart.tsx': 'Registry scope, frozen for Phase 1; not served while no wallet chain is configured (F-83)',
 };
 
 /** Compute modules that re-export the preparation, and the islands that await it. */
@@ -112,14 +123,14 @@ describe('callers of resolveLocalToUtc', () => {
     expect(sources.length).toBeGreaterThan(10);
   });
 
-  it('await prepareLocalTime of the same date and zone before each call that passes a longitude', () => {
+  it('await prepareLocalTime of the same date and zone before each call', () => {
     const problems: string[] = [];
+    const unprepared = new Set<string>();
     for (const { path, file } of sources) {
       for (const call of calls(file, 'resolveLocalToUtc')) {
         const longitude = longitudeOf(call);
-        if (!longitude) continue;
         const where = `${path}:${file.getLineAndCharacterOfPosition(call.getStart()).line + 1}`;
-        if (!/\.lon$/.test(longitude.getText())) problems.push(`${where} passes ${longitude.getText()} as the longitude`);
+        if (longitude && !/\.lon$/.test(longitude.getText())) problems.push(`${where} passes ${longitude.getText()} as the longitude`);
         const date = normal(call.arguments[0].getText());
         const zone = normal(call.arguments[2].getText());
         const scope = enclosingFunction(call);
@@ -137,9 +148,13 @@ describe('callers of resolveLocalToUtc', () => {
         const preparedByCallers = uses.length > 0 && uses.every((use) => preparedBefore(use,
           substituted(call.arguments[0], scope as ts.SignatureDeclaration, use),
           substituted(call.arguments[2], scope as ts.SignatureDeclaration, use)));
-        if (!preparedByCallers) problems.push(`${where} has no awaited prepareLocalTime(${date}, ${zone}) before it`);
+        if (preparedByCallers) continue;
+        if (UNPREPARED[path]) unprepared.add(path);
+        else problems.push(`${where} has no awaited prepareLocalTime(${date}, ${zone}) before it`);
       }
     }
+    // The exceptions are exactly the frozen callers that still do not prepare.
+    expect([...unprepared].sort()).toEqual(Object.keys(UNPREPARED).sort());
     for (const module of Object.keys(PREPARED_BY)) {
       if (!/export \{ prepareLocalTime \}/.test(readFileSync(resolve(root, module), 'utf8'))) problems.push(`${module} does not re-export prepareLocalTime`);
     }

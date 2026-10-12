@@ -804,6 +804,10 @@ TZ=UTC node docs/platform/evidence/c02-timezone-review-probe.mjs
 TZ=America/Los_Angeles node docs/platform/evidence/c02-timezone-review-probe.mjs
 ```
 
+The two C02 probes load the site's own resolver of their day, which #723
+replaced with `@zodiacs/engine/geo` on 2026-10-12. They run from a checkout
+before that change, such as `ec0451ff`, and say so otherwise.
+
 - Final focused suite: **201/201** on Node 22.23.2 with Bangkok host and Node
   24.19.0 with UTC host. [Node 22](evidence/c02-final-focused-node22.log),
   [Node 24](evidence/c02-final-focused-node24.log).

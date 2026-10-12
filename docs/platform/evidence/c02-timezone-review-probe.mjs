@@ -4,6 +4,11 @@ import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
 const root=fileURLToPath(new URL('../../../', import.meta.url));
+// It loads the site's own resolver of its day, which #723 replaced with the engine's.
+if(!fs.existsSync(path.join(root,'src/lib/time/tz-history-load.ts'))){
+  console.error('This probe reads the site\'s former resolver, which #723 replaced with @zodiacs/engine/geo. Run it from a checkout before that change, such as ec0451ff.');
+  process.exit(2);
+}
 const require=createRequire(path.join(root,'package.json'));
 const ts=require('typescript');
 const cache=new Map();

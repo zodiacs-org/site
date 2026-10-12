@@ -140,6 +140,10 @@ const ENGINE_100_ROUTES = ENGINE_RC2_ROUTES;
 // The developer guides: their index and one page per guide in the shared catalogue, and the developer hub's
 // link to them.
 const DEVELOPER_GUIDES_LASTMOD = '2026-10-12';
+// Local times read by @zodiacs/engine/geo across the site: the compute API page's account of it, and the
+// MCP page's adapter 0.1.0-rc.21, rebuilt for it.
+const ENGINE_GEO_LASTMOD = '2026-10-12';
+const ENGINE_GEO_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -284,6 +288,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const),
   ...ENGINE_100_ROUTES.map((loc) => [loc, ENGINE_100_LASTMOD] as const),
   ['/developers/', DEVELOPER_GUIDES_LASTMOD] as const,
+  ...ENGINE_GEO_ROUTES.map((loc) => [loc, ENGINE_GEO_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
