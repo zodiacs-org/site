@@ -4,11 +4,12 @@ Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mj
 (SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), Node 22.22.2.
 It leaves out the one path the owner has ruled must never be read; this
 repository holds no file of that name, and no archive member was skipped.
-Range: 5ab297a9..80de530e, every commit this change adds to main as of the
+Range: 5ab297a9..f2234bb5, every commit this change adds to main as of the
 daily edition of 2026-10-12 (the adoption, the archive pins, the merges of
 main, the review fixes, the rc.21 re-cut, the Phase 1 captures and the tools
-kept runnable): every added line, every added or changed binary with its gzip
-or ZIP contents, the added paths and the messages. Also the tree of 80de530e. The runs before it, over
+kept runnable or pinned): every added line, every added or changed binary with
+its gzip or ZIP contents, the added paths and the messages. Also the tree of
+f2234bb5. The runs before it, over
 ec0451ff..6e8a6dce and ec0451ff..e0e62cfa, gave the same conclusion.
 Patterns: the owner's two private pattern sets, kept outside every repository
 with the raw outputs. No pattern, matched line, label or path is recorded here.
