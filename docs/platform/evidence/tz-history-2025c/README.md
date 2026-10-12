@@ -1,5 +1,10 @@
 # Pinned zone history before 1970, 2026-09-23 (Phase 1 step 1.12)
 
+> On 2026-10-12, #723 moved the site to `@zodiacs/engine/geo`, which ships the
+> same release's history, and removed the files, generators and tests this
+> record describes. Its commands run from a checkout before that change, such
+> as `ec0451ff`.
+
 Browsers resolve historical time zones from the default build of the IANA
 time zone database, which merges places whose clocks have agreed since 1970
 and so gives them another city's history before then. Node 22.22 (ICU 78.2,

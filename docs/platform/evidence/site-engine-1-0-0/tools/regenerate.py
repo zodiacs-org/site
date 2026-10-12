@@ -30,6 +30,11 @@ commands += [
     ['node', 'node_modules/vite-node/vite-node.mjs', '--script', 'scripts/build-horoscope-window.ts'],
 ]
 for command in commands:
+    # The time zone tables and their generators were removed by #723, when the
+    # site moved to @zodiacs/engine/geo; at this record's commit they ran.
+    if command[0] == 'node' and command[1].startswith('scripts/') and not (ROOT / command[1]).exists():
+        print('SKIP', ' '.join(command), '(not in this checkout)', flush=True)
+        continue
     print('RUN', ' '.join(command), flush=True)
     subprocess.run(command, cwd=ROOT, check=True)
     if command == ['node', 'scripts/build-aura-moon-ingresses.mjs']:

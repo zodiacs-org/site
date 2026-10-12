@@ -1789,6 +1789,8 @@
         { href: '/saturn-return/', name: 'Saturn return', description: 'When yours hits, exactly, and what it tends to ask.' },
         { href: '/birthday/', name: 'Birthday', description: 'Find your Sun sign from your birthday, including dates near a sign change.' },
       ];
+      // The phone menu leads "The site" with these two, as the main site does.
+      const NAV_SITE_TOOLS = ['/birth-chart/', '/compatibility/'];
       // Mirrors NAV_MORE in src/lib/nav-tools.ts, so this menu ends like the
       // Tools menu on every other page.
       const NAV_MORE = [
@@ -1804,7 +1806,8 @@
       const terminalNav = {
         href: '/astrofolio/',
         label: 'Astrofolio',
-        description: 'Choose a sign and explore the collection',
+        // The owner-approved description (2026-10-01), as on every other page.
+        description: 'Official Zodiac token collection',
       };
       return (
         <>
@@ -1865,23 +1868,29 @@
             <nav aria-label="Mobile">
               <div className="wnav-menu__group">
                 <span className="wnav-menu__label">The site</span>
-                <a className="wnav-menu__link" style={{ '--i': 0 }} href="/today/">Today</a>
+                {NAV_TOOLS.filter((tool) => NAV_SITE_TOOLS.includes(tool.href)).map((tool) => (
+                  <a className="wnav-menu__link" key={tool.href} href={tool.href}>{tool.name}</a>
+                ))}
+                <a className="wnav-menu__link wnav-menu__link--explained" style={{ '--i': 0 }} href="/today/"><span>Today</span><small>Your daily reading and personal chart highlights</small></a>
                 <a className="wnav-menu__link" style={{ '--i': 1 }} href="/learn/">Learn</a>
-                <a className="wnav-menu__link" style={{ '--i': 2 }} href="/horoscopes/">Horoscopes</a>
-                <a className="wnav-menu__link" style={{ '--i': 3 }} href="/profile/">Saved charts</a>
-                <a className="wnav-menu__link wnav-menu__registry" style={{ '--i': 4 }} href={terminalNav.href} aria-current={REGISTRY_VIEW === 'terminal' ? 'page' : undefined}>
-                  <span>{terminalNav.label}</span>
-                  <small>{terminalNav.description}</small>
-                </a>
+                <a className="wnav-menu__link wnav-menu__link--explained" style={{ '--i': 2 }} href="/horoscopes/"><span>Horoscopes</span><small>Daily readings for your zodiac sign</small></a>
+                <a className="wnav-menu__link wnav-menu__link--explained" style={{ '--i': 3 }} href="/profile/"><span className="wnav__avatar" data-profile-avatar="" aria-hidden="true" hidden /><span>Saved charts</span><small>Your birth chart and the people you’ve added</small></a>
               </div>
               <div className="wnav-menu__group">
                 <span className="wnav-menu__label">Tools</span>
                 <div className="wnav-menu__tools">
-                  {NAV_TOOLS.map((tool, i) => (
+                  {NAV_TOOLS.filter((tool) => !NAV_SITE_TOOLS.includes(tool.href)).map((tool, i) => (
                     <a className="wnav-menu__tool" key={tool.href} style={{ '--i': i }} href={tool.href} aria-label={`${tool.name}. ${tool.description}`}>{tool.name}</a>
                   ))}
                   <a className="wnav-menu__tool wnav-menu__tool--all" href="/tools/">All tools <span aria-hidden="true">→</span></a>
                 </div>
+              </div>
+              <div className="wnav-menu__group">
+                <a className="wnav-menu__link" style={{ '--i': 4 }} href="/developers/">Developers</a>
+                <a className="wnav-menu__link wnav-menu__registry" style={{ '--i': 5 }} href={terminalNav.href} aria-current={REGISTRY_VIEW === 'terminal' ? 'page' : undefined}>
+                  <span>{terminalNav.label}</span>
+                  <small>{terminalNav.description}</small>
+                </a>
               </div>
               <div className="wnav-menu__group">
                 <span className="wnav-menu__label">The twelve</span>

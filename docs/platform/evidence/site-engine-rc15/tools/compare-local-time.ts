@@ -13,9 +13,14 @@
  * Run at b1a20dcc, the commit before the site adopted rc.15's meaning of `lmt`,
  * it gives the old rule's differences (docs/platform/evidence/site-engine-rc15/README.md).
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { prepareLocalTime as pkgPrepare, resolveLocalToUtc as pkgResolve } from '@zodiacs/engine/geo';
-import { prepareLocalTime, resolveLocalToUtc } from '../../../../../src/lib/time/localToUtc';
+
+// The comparison is with the site's own resolver of its day, which #723 replaced with the engine's.
+if (!existsSync('src/lib/time/tz-history-load.ts')) {
+  throw new Error("This comparison reads the site's former resolver, which #723 replaced with @zodiacs/engine/geo. Run it from a checkout before that change, such as ec0451ff.");
+}
+const { prepareLocalTime, resolveLocalToUtc } = await import('../../../../../src/lib/time/localToUtc');
 
 const index = JSON.parse(readFileSync('public/data/cities/index.json', 'utf8'));
 const lmt = JSON.parse(readFileSync('src/data/tz-lmt.json', 'utf8'));

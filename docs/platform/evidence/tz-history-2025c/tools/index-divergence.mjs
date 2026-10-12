@@ -13,7 +13,12 @@
  *
  *   node docs/platform/evidence/tz-history-2025c/tools/index-divergence.mjs > docs/platform/evidence/tz-history-2025c/index-divergence.json
  */
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+
+// The pinned history it reads was removed by #723, when the site moved to @zodiacs/engine/geo.
+if (!existsSync('src/data/tz-history/2025c')) {
+  throw new Error('This check reads the site\'s pinned history, which #723 removed. Run it from a checkout before that change, such as ec0451ff.');
+}
 
 const directory = 'src/data/tz-history/2025c';
 const zones = {};
