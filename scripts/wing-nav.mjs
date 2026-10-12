@@ -60,6 +60,16 @@ export const NAV_MORE = [
 export const NAV_MORE_LABEL = 'More to explore';
 export const ALL_TOOLS_LABEL = 'All tools';
 
+// The phone menu's English copy, as in src/components/SiteNav.astro.
+const WING_SITE_TOOLS = ['/birth-chart/', '/compatibility/'];
+const WING_DESTINATIONS = {
+  today: 'Your daily reading and personal chart highlights',
+  horoscope: 'Daily readings for your zodiac sign',
+  saved: 'Your birth chart and the people you’ve added',
+};
+// The owner-approved Astrofolio description (2026-10-01), the same on every page.
+export const WING_ASTROFOLIO_DESCRIPTION = 'Official Zodiac token collection';
+
 /** The links under the main eight in the desktop Tools menu. */
 export function wingToolsMoreHtml() {
   return `<div class="wnav-tools__more" role="group" aria-label="${NAV_MORE_LABEL}">` +
@@ -91,7 +101,11 @@ export function wingNavHtml({ includeSearch = true } = {}) {
       `<span class="wnav-signs__dates">${s.dates}</span>` +
     `</a>`
   )).join('');
-  const mobileTools = NAV_TOOLS.map((tool, i) => (
+  // The phone menu mirrors the main site's (src/components/SiteNav.astro):
+  // birth chart and compatibility lead "The site", the other tools follow.
+  const siteTools = NAV_TOOLS.filter((tool) => WING_SITE_TOOLS.includes(tool.href));
+  const siteToolLinks = siteTools.map((tool) => `<a class="wnav-menu__link" href="${tool.href}">${tool.name}</a>`).join('');
+  const mobileTools = NAV_TOOLS.filter((tool) => !siteTools.includes(tool)).map((tool, i) => (
     `<a class="wnav-menu__tool" style="--i:${i}" href="${tool.href}" aria-label="${tool.name}. ${tool.description}">${tool.name}</a>`
   )).join('');
   const desktopTools = NAV_TOOLS.map((tool) => (
@@ -140,15 +154,19 @@ export function wingNavHtml({ includeSearch = true } = {}) {
     <nav aria-label="Mobile">
       <div class="wnav-menu__group">
         <span class="wnav-menu__label">The site</span>
-        <a class="wnav-menu__link" style="--i:0" href="/today/">Today</a>
+        ${siteToolLinks}
+        <a class="wnav-menu__link wnav-menu__link--explained" style="--i:0" href="/today/"><span>Today</span><small>${WING_DESTINATIONS.today}</small></a>
         <a class="wnav-menu__link" style="--i:1" href="/learn/">Learn</a>
-        <a class="wnav-menu__link" style="--i:2" href="/horoscopes/">Horoscopes</a>
-        <a class="wnav-menu__link" style="--i:3" href="/profile/">Saved charts</a>
-        <a class="wnav-menu__link wnav-menu__registry" style="--i:4" href="/astrofolio/"><span>Astrofolio</span><small>The twelve Zodiac signs</small></a>
+        <a class="wnav-menu__link wnav-menu__link--explained" style="--i:2" href="/horoscopes/"><span>Horoscopes</span><small>${WING_DESTINATIONS.horoscope}</small></a>
+        <a class="wnav-menu__link wnav-menu__link--explained" style="--i:3" href="/profile/"><span class="wnav__avatar" data-profile-avatar aria-hidden="true" hidden></span><span>Saved charts</span><small>${WING_DESTINATIONS.saved}</small></a>
       </div>
       <div class="wnav-menu__group">
         <span class="wnav-menu__label">Tools</span>
         <div class="wnav-menu__tools">${mobileTools}<a class="wnav-menu__tool wnav-menu__tool--all" href="/tools/">${ALL_TOOLS_LABEL} <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="wnav-menu__group">
+        <a class="wnav-menu__link" style="--i:4" href="/developers/">Developers</a>
+        <a class="wnav-menu__link wnav-menu__registry" style="--i:5" href="/astrofolio/"><span>Astrofolio</span><small>${WING_ASTROFOLIO_DESCRIPTION}</small></a>
       </div>
       <div class="wnav-menu__group">
         <span class="wnav-menu__label">The twelve</span>
@@ -386,21 +404,19 @@ export function wingNavCss() {
   .wnav-signs__item .wnav-disc { grid-row: span 2; }
   .wnav-signs__name { font-family: var(--wing-sans); font-size: 14px; font-weight: 550; color: var(--ink, #EEF1F7); line-height: 1.25; }
   .wnav-signs__dates { font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; line-height: 1.6; letter-spacing: 0.06em; color: #7A8397; }
-  .wnav-menu { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; inset: 0; z-index: 59; pointer-events: auto; background: rgba(6,7,9,0.88); backdrop-filter: blur(26px) saturate(140%); -webkit-backdrop-filter: blur(26px) saturate(140%); padding: calc(96px + env(safe-area-inset-top)) 24px 40px; overflow-y: auto; }
+  .wnav-menu { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; inset: 0; z-index: 59; pointer-events: auto; background: rgba(6,7,9,0.88); backdrop-filter: blur(26px) saturate(140%); -webkit-backdrop-filter: blur(26px) saturate(140%); padding: calc(96px + env(safe-area-inset-top)) 24px 40px; overflow-y: auto; font-family: var(--wing-sans); }
   .wnav-menu[hidden] { display: none; }
   .wnav-menu__group + .wnav-menu__group { margin-top: 34px; }
-  .wnav-menu__label { display: block; margin-bottom: 14px; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-mute, #8A93A6); }
-  .wnav-menu__link { display: block; padding: 13px 0; font-family: var(--wing-serif); font-size: clamp(24px, 7vw, 32px); font-weight: 400; letter-spacing: 0.01em; line-height: 1.05; text-decoration: none; color: var(--ink, #EEF1F7); border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); }
-  .wnav-menu__link:last-child { border-bottom: 0; }
-  .wnav-menu__registry { display: grid; gap: 5px; }
-  .wnav-menu__registry small { color: var(--ink-mute, #8A93A6); font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 9px; letter-spacing: 0.04em; line-height: 1.35; }
+  .wnav-menu__label { display: block; margin-bottom: 14px; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; line-height: 1.6; letter-spacing: 0.24em; text-transform: uppercase; color: #7A8397; }
+  .wnav-menu__link { display: block; padding: 13px 0; font-family: var(--wing-serif); font-size: clamp(24px, 7vw, 32px); font-weight: 400; letter-spacing: 0.01em; line-height: 1.05; text-decoration: none; color: var(--ink, #EEF1F7); }
+  .wnav-menu__link--explained, .wnav-menu__registry { display: grid; gap: 5px; }
+  .wnav-menu__link small { color: #8E96AB; font-family: var(--wing-sans); font-size: 12px; letter-spacing: 0; line-height: 1.45; }
+  .wnav-menu__link .wnav__avatar { margin-inline-end: 12px; vertical-align: -3px; }
   .wnav-menu__tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
-  .wnav-menu__tool { display: block; min-width: 0; padding: 11px 0; border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); color: var(--ink, #EEF1F7); font-family: var(--wing-serif); font-size: clamp(18px, 5vw, 22px); line-height: 1.05; text-decoration: none; }
-  .wnav-menu__tool:last-child { border-bottom: 0; }
+  .wnav-menu__tool { display: block; min-width: 0; min-height: 44px; padding: 11px 0; color: var(--ink, #EEF1F7); font-family: var(--wing-serif); font-size: clamp(18px, 5vw, 22px); line-height: 1.05; text-decoration: none; }
   .wnav-menu__tool--all { color: var(--ink-2, #C6CCDA); font-size: clamp(16px, 4.6vw, 20px); }
-  .wnav-menu__signs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
-  .wnav-menu__sign { display: flex; flex-direction: row; align-items: center; gap: 13px; padding: 10px 0; text-decoration: none; font-family: var(--wing-serif); font-size: clamp(20px, 5.5vw, 26px); font-weight: 400; color: var(--ink, #EEF1F7); border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); }
-  .wnav-menu__sign:last-child { border-bottom: 0; }
+  .wnav-menu__signs { display: flex; flex-direction: row; flex-wrap: wrap; gap: 0 16px; }
+  .wnav-menu__sign { width: calc(50% - 8px); min-height: 44px; display: flex; flex-direction: row; align-items: center; gap: 13px; padding: 10px 0; text-decoration: none; font-family: var(--wing-serif); font-size: clamp(20px, 5.5vw, 26px); font-weight: 400; line-height: 1.6; color: var(--ink, #EEF1F7); }
   .wnav-menu__sign .wnav-disc { width: 30px; height: 30px; }
   @keyframes wnav-turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .wnav-tools, .wnav-signs, .wnav__burger, .wnav__dropdown-btn svg, .wnav__burger-line { transition: none; } .wnav__mark:hover .wnav__brand { animation: none; } }

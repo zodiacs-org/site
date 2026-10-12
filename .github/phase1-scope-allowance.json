@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "navigation-parity-astrofolio-flow-20261010",
-  "baseCommit": "b49c69b7f070813aec3b6359ec3a0fde17a5159b",
+  "id": "phone-menu-parity-20261012",
+  "baseCommit": "ec0451ffeb9a68a57f55f1efb1e3fdba422d0329",
   "protectedPaths": [
     "public/assets/app.js",
     "public/registry/aquarius/index.html",
@@ -20,7 +20,10 @@
     "public/registry/virgo/index.html",
     "public/sdk/index.html",
     "public/terminal/markets/index.html",
+    "scripts/registry-consumer-contract.test.mjs",
+    "scripts/registry-pastel-polish.test.mjs",
+    "scripts/registry-shell-parity.test.mjs",
     "src/app.jsx"
   ],
-  "authorization": "On October 10, 2026 the owner reported that the Tools dropdown on Astrofolio differs from the main site and asked: “The navigation bar and drop down should be consistent on all the pages.” In the same message the owner asked for a slight desktop-only rearrangement of the Astrofolio sections below the cards, leaving mobile unchanged, and then said “once you finish, push it live.” This one-time exact-path allowance covers only the shared wing navigation regenerated into the Registry, SDK and Terminal pages (the Tools menu gains the main site’s “More to explore” links and “All tools”, with matching fonts, colours and hover widths), the same Tools menu in the Astrofolio and Terminal application with its regenerated bundle, and desktop CSS that moves the Fomo description and store buttons under the phones and “View the collection” under the merchandise. Page content, token records, prices, disclosures, legal wording and mobile layouts are unchanged."
+  "authorization": "On October 10, 2026 the owner asked that “the navigation bar and drop down should be consistent on all the pages.” After the desktop menus were matched, the remaining difference was the phone menu on the Astrofolio, Terminal, Registry and SDK pages; asked whether to make it match the main site everywhere and which Astrofolio description to use, the owner replied on October 12, 2026: “yes and use the official token collection.” This one-time exact-path allowance covers only the shared wing navigation regenerated into the Registry, SDK and Terminal pages, the same phone menu in the Astrofolio and Terminal application with its regenerated bundle, and the navigation tests that pin it: the phone menu now has the main site’s groups, order and short explanations, a Developers link, and the owner-approved description “Official Zodiac token collection” under Astrofolio. Page content, token records, prices, disclosures and legal wording are unchanged."
 }

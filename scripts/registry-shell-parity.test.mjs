@@ -52,7 +52,7 @@ describe('Registry catalogue shell parity', () => {
     ]);
 
     for (const html of [hub, ...profiles]) {
-      expect(html).toContain('<span>Astrofolio</span><small>The twelve Zodiac signs</small>');
+      expect(html).toContain('<span>Astrofolio</span><small>Official Zodiac token collection</small>');
       expect(html).not.toContain('gold Zodiac sculptures');
     }
   });
