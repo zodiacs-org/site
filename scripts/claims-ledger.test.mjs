@@ -326,6 +326,13 @@ describe('claims ledger', () => {
       inject: (source) => source.replace('<div class="tsd-comment tsd-typography"><p>', '<div class="tsd-comment tsd-typography"><p>Positions are verified against <code>JPL</code> to 2″.</p><p>'),
       texts: ['Positions are verified against JPL to 2″.'],
     });
+    controls.push({
+      // The archived reference's notice has no extension; it is read as plain text, sentence by sentence.
+      path: 'public/sdk/engine/media/NOTICE',
+      inject: (source) => `${source}\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    expect(selection.files).toContain('public/sdk/engine/media/NOTICE');
     const missed = [];
     for (const control of controls) {
       const source = read(control.path);

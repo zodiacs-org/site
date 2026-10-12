@@ -128,12 +128,12 @@ export const SCOPE_ADD = Object.freeze([
 /**
  * Generated developer docs the site serves as they were built (F-23): the
  * engine's API reference, with the README, licensing and notices of the
- * release it documents, and under /sdk/ the archived rc.1 reference and the
- * SDK pages, which Phase 1 froze.
+ * release it documents, and under /sdk/ the archived rc.1 reference, its
+ * notice, which has no extension, and the SDK pages, which Phase 1 froze.
  */
 export const SCOPE_ADD_TREES = Object.freeze([
   { root: 'public/developers/engine/reference', pattern: /\.(?:html|txt)$/u },
-  { root: 'public/sdk', pattern: /\.(?:html|md)$/u },
+  { root: 'public/sdk', pattern: /(?:\.(?:html|md)|\/NOTICE)$/u },
 ]);
 
 /** In the consumer surface, but not read here, each with its reason. */
@@ -507,7 +507,8 @@ function htmlBlocks(source) {
 
 export async function extractBlocks(file, source) {
   if (file.endsWith('.astro')) return astroBlocks(source, file);
-  if (/\.(?:md|mdx|txt)$/u.test(file)) return markdownBlocks(source);
+  // A notice without an extension is plain text, read as Markdown reads it.
+  if (/\.(?:md|mdx|txt)$/u.test(file) || /(?:^|\/)NOTICE$/u.test(file)) return markdownBlocks(source);
   if (file.endsWith('.json')) return jsonBlocks(source);
   if (file.endsWith('.html')) return htmlBlocks(source);
   return scriptBlocks(source, file);
