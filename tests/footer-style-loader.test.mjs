@@ -7,8 +7,7 @@ import { describe, expect, it } from 'vitest';
 const base = readFileSync(new URL('../src/layouts/Base.astro', import.meta.url), 'utf8');
 const source = base.match(/<script is:inline>\s*(\(function loadFooterStyles\(\) \{[\s\S]*?\}\)\(\);)\s*<\/script>/)?.[1];
 if (!source) throw new Error('The actual inline footer stylesheet loader was not found');
-const markSource = base.match(/<script is:inline>[\s\S]*?(\(function markFooterStylesPending\(\) \{[\s\S]*?\}\)\(\);)\s*<\/script>\s*<SiteFooter/)?.[1];
-if (!markSource) throw new Error('The inline footer marker before <SiteFooter> was not found');
+const holdSource = "document.documentElement.setAttribute('data-footer-styles-pending', '');";
 
 /** The document's root element, with just the attribute calls the scripts make. */
 function rootElement(attributes = []) {
@@ -21,9 +20,10 @@ function rootElement(attributes = []) {
   };
 }
 
-function run({ top = 1800, readyState = 'loading', io = 'normal', hasFooter = true, pending = false } = {}) {
+// The head holds the footer before the loader runs (see the last block).
+function run({ top = 1800, readyState = 'loading', io = 'normal', hasFooter = true } = {}) {
   const links = [];
-  const root = rootElement(pending ? ['data-footer-styles-pending'] : []);
+  const root = rootElement(['data-footer-styles-pending']);
   const listeners = new Map();
   const timers = [];
   const observations = [];
@@ -91,36 +91,35 @@ describe('actual footer stylesheet loader', () => {
       const state = run({ top });
       expectOneStylesheet(state);
       expect(state.observations).toHaveLength(0);
-      expect(state.timers).toHaveLength(0);
+      expect(state.timers.map((timer) => timer.delay)).toEqual([3000]);
     }
   });
 
   // A footer in the first viewport would paint unstyled, then move and
   // reflow when its stylesheet lands: a layout shift on any page short
-  // enough to show it (F-87). The marker before the footer hides it from its
-  // first layout; the loader requests at once and reveals it.
-  it('requests a footer marked as pending at once and reveals it when its styles load or fail', () => {
+  // enough to show it (F-87). Held from the head, it stays hidden until its
+  // styles apply; the loader drops the hold once they load, fail or stall.
+  it('keeps a near footer held until its styles load or fail, or for 3 s', () => {
     for (const settle of ['load', 'error']) {
-      const state = run({ top: 1800, pending: true });
-      expectOneStylesheet(state);
-      expect(state.observations).toHaveLength(0);
+      const state = run({ top: 200 });
       expect(state.root.names.has('data-footer-styles-pending')).toBe(true);
       state.linkEvents.get(settle)();
       expect(state.root.names.has('data-footer-styles-pending')).toBe(false);
     }
-    const stalled = run({ top: 200, pending: true });
-    expect(stalled.timers.map((timer) => timer.delay)).toEqual([3000]);
+    const stalled = run({ top: 1200 });
     stalled.advance();
     expect(stalled.root.names.has('data-footer-styles-pending')).toBe(false);
   });
 
-  it('leaves a footer that was not marked visible, whenever its styles are requested', () => {
-    const near = run({ top: 200 });
+  it('shows a distant or missing footer at once, whenever its styles are requested', () => {
     const approached = run();
+    expect(approached.root.names.size).toBe(0);
     approached.approach();
     const afterLoad = run();
     afterLoad.load(); afterLoad.advance();
-    for (const state of [near, approached, afterLoad]) {
+    const missing = run({ hasFooter: false });
+    expect(missing.root.names.size).toBe(0);
+    for (const state of [approached, afterLoad]) {
       expectOneStylesheet(state);
       expect(state.linkEvents.size).toBe(0);
       expect(state.root.names.size).toBe(0);
@@ -183,29 +182,12 @@ describe('actual footer stylesheet loader', () => {
   });
 });
 
-describe('footer marker before the footer is parsed', () => {
-  function mark(siblings, innerHeight = 1000) {
-    // The marker script, then the elements before it, nearest first.
-    let previous = null;
-    for (const sibling of [...siblings].reverse()) previous = { ...sibling, previousElementSibling: previous };
+describe('footer hold set in the head', () => {
+  it('holds the footer before the body is parsed, so no paint can show it unstyled', () => {
+    const head = base.slice(0, base.indexOf('<body'));
+    expect(head).toContain(holdSource);
     const root = rootElement();
-    const currentScript = { tagName: 'SCRIPT', previousElementSibling: previous };
-    runInNewContext(markSource, { document: { currentScript, documentElement: root }, window: { innerHeight } });
-    return root.names.has('data-footer-styles-pending');
-  }
-  const block = (bottom, tagName = 'MAIN') => ({ tagName, getBoundingClientRect: () => ({ bottom }) });
-
-  it('marks a footer that starts within 200px of the first viewport', () => {
-    expect(mark([block(900)])).toBe(true);
-    expect(mark([block(1200)])).toBe(true);
-    expect(mark([block(1201)])).toBe(false);
-  });
-
-  it('measures the nearest element that is laid out, past scripts and styles', () => {
-    const script = { tagName: 'SCRIPT', getBoundingClientRect: () => ({ bottom: 0 }) };
-    const style = { tagName: 'STYLE', getBoundingClientRect: () => ({ bottom: 0 }) };
-    expect(mark([script, style, block(3000, 'P')])).toBe(false);
-    expect(mark([script, block(400, 'P')])).toBe(true);
-    expect(mark([script])).toBe(false);
+    runInNewContext(holdSource, { document: { documentElement: root } });
+    expect(root.names.has('data-footer-styles-pending')).toBe(true);
   });
 });

@@ -27,8 +27,8 @@
   contain-intrinsic-size: auto 900px;
 }
 
-/* base.css hides a footer that starts in the first viewport until these styles
-   apply (Base.astro marks it); show it in the same style pass as its layout. */
+/* base.css hides a footer Base.astro holds until these styles apply; show it
+   in the same style pass as its layout. */
 :root[data-footer-styles-pending] .zfooter { visibility: visible; }
 
 /* Russian routes already preload their metric-matched Cyrillic families.

@@ -204,6 +204,13 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     </script>
     {props.editionDate && <EditionFreshnessGuard editionDate={props.editionDate} locale={locale} />}
     <script is:inline>
+      // The footer's stylesheet loads late (see the loader after the footer).
+      // Hold the footer hidden from its first layout until the loader decides:
+      // one in or near the first viewport waits for its styles, so it never
+      // paints unstyled and then moves; any other is shown at once.
+      document.documentElement.setAttribute('data-footer-styles-pending', '');
+    </script>
+    <script is:inline>
       // Capture Chromium's one-shot install event before calculator islands
       // hydrate. The prompt itself stays hidden until two successful charts.
       window.addEventListener('beforeinstallprompt', function (event) {
@@ -424,20 +431,6 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
 
     {(props.editorialLine ?? props.type === 'article') && <EditorialLine locale={locale} />}
     <SourcesLine sources={props.sources} locale={locale} />
-    <script is:inline>
-      // The footer's stylesheet arrives late (below). A footer that starts in
-      // or near the first viewport would paint unstyled, then move and reflow
-      // when it lands, so it is hidden from its first layout until the loader
-      // reveals it. This runs before the footer is parsed.
-      (function markFooterStylesPending() {
-        var above = document.currentScript;
-        do above = above && above.previousElementSibling;
-        while (above && /^(?:SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(above.tagName));
-        if (above && above.getBoundingClientRect().bottom <= window.innerHeight + 200) {
-          document.documentElement.setAttribute('data-footer-styles-pending', '');
-        }
-      })();
-    </script>
     <SiteFooter locale={locale} terminalMarketNotice={props.terminalMarketNotice} noAssistant={props.noAssistant} />
 
     <!-- The canonical footer sits below every route's primary content, so its
@@ -457,9 +450,9 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           var stylesheet = document.createElement('link');
           stylesheet.rel = 'stylesheet';
           stylesheet.href = '/assets/site-footer.css?v=20261006';
-          // A footer hidden until its styles land is shown by them; the mark
-          // goes once they have loaded, or if they fail or take over 3 s.
-          if (pending) {
+          // A held footer is shown by these styles; the hold goes once they
+          // have loaded, or if they fail or take over 3 s.
+          if (root.hasAttribute('data-footer-styles-pending')) {
             var reveal = function () { root.removeAttribute('data-footer-styles-pending'); };
             stylesheet.addEventListener('load', reveal);
             stylesheet.addEventListener('error', reveal);
@@ -471,9 +464,9 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           window.setTimeout(appendStylesheet, 250);
         }
         var root = document.documentElement;
-        var pending = root.hasAttribute('data-footer-styles-pending');
         var footer = document.querySelector('.zfooter');
-        var nearViewport = pending || (footer && footer.getBoundingClientRect().top <= window.innerHeight + 200);
+        var nearViewport = footer && footer.getBoundingClientRect().top <= window.innerHeight + 200;
+        if (!nearViewport) root.removeAttribute('data-footer-styles-pending');
         if (nearViewport) appendStylesheet();
         else {
           if (footer && 'IntersectionObserver' in window) {

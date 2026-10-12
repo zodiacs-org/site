@@ -68,6 +68,8 @@ await requireMarkers('src/layouts/Base.astro', [
   '<SiteFooter',
   "stylesheet.href = '/assets/site-footer.css?v=20261006';",
   'if (nearViewport) appendStylesheet();',
+  "document.documentElement.setAttribute('data-footer-styles-pending', '');",
+  "if (!nearViewport) root.removeAttribute('data-footer-styles-pending');",
   "window.addEventListener('load', appendAfterLoad, { once: true });",
   "<noscript><style>@import url('/assets/site-footer.css?v=20261006');</style></noscript>",
 ]);
