@@ -361,6 +361,15 @@ describe('claims ledger', () => {
       inject: (source) => `${source}\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n`,
       texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
     });
+    controls.push({
+      // The starter's scripts are read for their strings, as the site's own code is.
+      path: 'examples/platform/src/calculate.mjs',
+      inject: (source) => `${source}\nexport const control = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    for (const path of ['examples/platform/src/app.mjs', 'examples/platform/scripts/build.mjs', 'examples/platform/tests/receipt.check.mjs', 'examples/mcp-server/verify.mjs', 'plugins/zodiacs-developer/examples/calendar.mjs']) {
+      expect(selection.files).toContain(path);
+    }
     for (const path of SCOPE_ADD) expect(selection.files).toContain(path);
     // A directory shows a manifest's description whole, so it is read whole.
     for (const path of SCOPE_ADD.filter((file) => /plugin\.json$/u.test(file))) expect(tierOf(path), path).toBe('dense');

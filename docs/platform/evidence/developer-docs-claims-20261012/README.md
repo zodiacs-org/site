@@ -14,9 +14,13 @@ site serves or ships, in five parts:
   `priv.chart-studio` and `product.ai-candidate`, restated to give the sky
   tools' 92-day event window. The developer plugin's skill said 31 days; it
   now says 92, and plugin 0.3.10 is packed with it.
-- **Shipped notices, manifests, records and pages.** The adapter's NOTICE and
-  `candidate.json`, the plugins' NOTICEs and manifests, and the starter's
-  three pages hold 122 selected sentences. The manifests are read whole, as
+- **Shipped notices, manifests, records, pages and scripts.** The adapter's
+  NOTICE, `candidate.json` and `verify.mjs`, the plugins' NOTICEs, manifests
+  and examples, the starter's pages, scripts, sources and checks, and the
+  package manifests hold 142 selected sentences. The archives' generated
+  bundles are built from sources the ledger reads, and the build checks
+  require them to match; their licence texts, lock files and launch
+  settings make no claims. The manifests are read whole, as
   the llms files are, once any sentence of a description is selected: an
   assistant directory shows those descriptions as written.
   - The adapter's NOTICE ends with the engine's NOTICE, unchanged. Its 19
@@ -26,11 +30,13 @@ site serves or ships, in five parts:
     directory reviewer runs, are not claims, nor are the developer plugin's
     starter prompts or the starter pages' form labels.
   - The rest are held to claims. Two claims are new: what the developer
-    plugin's generated server bundles, and its three skills. Seven are
+    plugin's generated server bundles, and its three skills. Nine are
     restated to cover what these files add: `product.mcp-licence`,
-    `product.mcp-candidate`, `product.ai-packages`, `priv.local-tools`,
-    `priv.widgets`, `acc.studio-replay` (Time Explorer's birth-time window)
-    and `time.visible-math` (Chart Studio without a birth time).
+    `product.mcp-candidate`, `product.ai-packages`, `product.platform-starter`
+    (the starter's file round trip and redacted diagnostic),
+    `priv.local-tools`, `priv.widgets`, `priv.compare-withheld-values` (the
+    adapter's chart answer), `acc.studio-replay` (Time Explorer's birth-time
+    window) and `time.visible-math` (Chart Studio without a birth time).
   - New checks hold these sentences:
     - `npm run ai:check` requires the developer plugin's ENGINE-NOTICE,
       ENGINE-LICENSE and ENGINE-LICENSING to be the installed engine's files,

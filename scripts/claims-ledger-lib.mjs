@@ -153,6 +153,17 @@ export const SCOPE_ADD_TREES = Object.freeze([
   { root: 'public/sdk', pattern: /(?:\.(?:html|md)|\/NOTICE)$/u },
   // The skills the plugin archives ship, which a host loads as instructions.
   { root: 'plugins', pattern: /^plugins\/[^/]+\/skills\/[^/]+\/SKILL\.md$/u },
+  // The hand-written files the starter, adapter and plugin archives ship
+  // beside their READMEs, notices and pages: the starter's scripts, sources
+  // and checks, the adapter's verify.mjs, the plugin's examples and the
+  // package manifests. Their generated bundles (the adapter's server.mjs, the
+  // plugin's mcp/server.mjs) are built from sources read here (src/mcp/,
+  // src/lib/compute-api/, src/ai-tools/), and mcp:build:check and ai:check
+  // require them to match; LICENSE files are licence texts, the lock files
+  // dependency data, and .mcp.json and mcp.json launch settings.
+  { root: 'examples/platform', pattern: /^examples\/platform\/(?:package\.json|(?:scripts|src|tests)\/[^/]+\.mjs)$/u },
+  { root: 'examples/mcp-server', pattern: /^examples\/mcp-server\/(?:package\.json|verify\.mjs)$/u },
+  { root: 'plugins', pattern: /^plugins\/[^/]+\/(?:package\.json|examples\/[^/]+\.mjs)$/u },
 ]);
 
 /** In the consumer surface, but not read here, each with its reason. */
@@ -200,6 +211,9 @@ export const TRUST_PATTERNS = Object.freeze([
   /^(?:examples\/mcp-server|plugins\/[^/]+)\/NOTICE$/u,
   /^examples\/(?:mcp-server|platform)\/candidate\.json$/u,
   /^examples\/platform\/src\/[^/]+\.html$/u,
+  /^examples\/platform\/(?:package\.json|(?:scripts|src|tests)\/[^/]+\.mjs)$/u,
+  /^examples\/mcp-server\/(?:package\.json|verify\.mjs)$/u,
+  /^plugins\/[^/]+\/(?:package\.json|examples\/[^/]+\.mjs)$/u,
   /^src\/mcp\/[^/]+\.ts$/u,
   /^src\/lib\/sky-api\/[^/]+\.ts$/u,
   /^src\/lib\/compute-api\/[^/]+\.ts$/u,
