@@ -19,13 +19,16 @@
  *   record, so a comparison's citation says how the comparison was made, not
  *   which records it read. The engine's version fixes the conventions it
  *   calculates under, which the `zodiacs://conventions` resource lists.
- * - `get_positions`, `find_events` and `check_sky_fact`: the hosted compute
- *   API's receipt for the same calculation, which the reply carries in full:
- *   the engine, its conventions and coverage, the reference span, the two
- *   sources of ΔT, and for a search how it searched and how many evaluations
- *   it made. It holds no instant, date or body from the request, and it is the
+ * - `get_positions`, `find_events`, `check_sky_fact` and `resolve_birth_time`:
+ *   the hosted compute API's receipt for the same calculation, which the reply
+ *   carries in full: the engine, its conventions and coverage, the reference
+ *   span, the two sources of ΔT, for a search how it searched and how many
+ *   evaluations it made, and for a local time how time zones were read. It
+ *   holds no instant, date, zone or body from the request, and it is the
  *   receipt the compute API writes for the same request, so the digest is the
  *   one the compute API cites.
+ * - `search_places`: the adapter's own receipt, with the place index it
+ *   searched. Nothing in it comes from the query.
  *
  * `cite.url` is the tool's entry on the developer page, an anchor that does
  * not move.
@@ -39,17 +42,21 @@ export const DOCS_URL = 'https://zodiacs.org/developers/mcp/';
 
 export const TOOL_NAMES = Object.freeze([
   'get_capabilities', 'calculate_natal_chart', 'compare_calculation_records',
-  'get_positions', 'find_events', 'check_sky_fact',
+  'get_positions', 'find_events', 'check_sky_fact', 'resolve_birth_time', 'search_places',
 ] as const);
 export type ToolName = (typeof TOOL_NAMES)[number];
 
-/** The tools that run a compute API calculation, and the endpoint each one is. */
+/** The tools that calculate the sky with the compute API, and the endpoint each one is. */
 export const SKY_TOOLS = Object.freeze({
   get_positions: 'positions',
   find_events: 'events',
   check_sky_fact: 'sky-fact',
 } as const);
 export type SkyToolName = keyof typeof SKY_TOOLS;
+
+/** Every tool that runs a compute API calculation: the sky tools and the time endpoint's. */
+export const COMPUTE_TOOLS = Object.freeze({ ...SKY_TOOLS, resolve_birth_time: 'time' } as const);
+export type ComputeToolName = keyof typeof COMPUTE_TOOLS;
 
 export function toolUrl(tool: ToolName): string {
   return `${DOCS_URL}#${tool}`;
@@ -66,7 +73,7 @@ export function citeFor(tool: ToolName, receipt: unknown): Cite {
   return { url: toolUrl(tool), receipt: receiptDigest(receipt), engine: '@zodiacs/engine', version: ENGINE_VERSION };
 }
 
-function adapterReceipt<Tool extends Exclude<ToolName, 'calculate_natal_chart' | SkyToolName>>(tool: Tool) {
+function adapterReceipt<Tool extends Exclude<ToolName, 'calculate_natal_chart' | ComputeToolName>>(tool: Tool) {
   return {
     schema: ADAPTER_RECEIPT_SCHEMA,
     tool,
@@ -83,4 +90,9 @@ export function capabilitiesReceipt() {
 /** The receipt `compare_calculation_records` carries and cites: the adapter's, and the output asked for. */
 export function comparisonReceipt(output: CompareOutputName) {
   return { ...adapterReceipt('compare_calculation_records'), output };
+}
+
+/** The receipt `search_places` carries and cites: the adapter's, and the index it searched. */
+export function placesReceipt(places: { source: string; licence: 'CC BY 4.0'; rows: number }) {
+  return { ...adapterReceipt('search_places'), places };
 }

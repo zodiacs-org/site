@@ -845,7 +845,7 @@
       {
         "heading": "The local server",
         "paragraphs": [
-          "The local adapter runs over stdio on your own machine and opens no listener and no network connection. It adds natal-chart calculation and the comparison of calculation records to the sky tools. It is a release candidate, not on npm: its archive and digest are on the MCP page."
+          "The local adapter runs over stdio on your own machine and opens no listener and no network connection. It adds natal-chart calculation, the comparison of calculation records, the conversion of a local birth time to UTC and a birthplace search to the sky tools. It is a release candidate, not on npm: its archive and digest are on the MCP page."
         ]
       },
       {

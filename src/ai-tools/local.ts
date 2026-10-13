@@ -4,7 +4,7 @@
 import { Transform } from 'node:stream';
 import { StdioServerTransport, serveStdio } from '@modelcontextprotocol/server/stdio';
 import { LIMITS } from '../mcp/bounds';
-import { CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY, calculateNatalChart, compareCalculationRecords, describeCapabilities, type ToolOutcome } from '../mcp/tools';
+import { CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY, calculateNatalChart, compareCalculationRecords, describeLocalChartCapabilities, type ToolOutcome } from '../mcp/tools';
 import { AI_VERSION, READ_ONLY } from './contracts';
 import { createAiServer } from './server';
 import { sanitizeProtocolMessage } from './sanitize';
@@ -22,7 +22,7 @@ function respond(run: () => ToolOutcome) {
 function build() {
   const server = createAiServer({});
   server.registerTool('get_local_chart_capabilities', { description: `Local natal and comparison conventions, bounds and privacy. ${PRIVACY.assistant}`, inputSchema: CAPABILITIES_INPUT, annotations: READ_ONLY }, () => respond(() => {
-    const outcome = describeCapabilities();
+    const outcome = describeLocalChartCapabilities();
     return outcome.ok ? { ok: true, value: { ...outcome.value, adapter: { name: 'zodiacs-developer', version: AI_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' } } } : outcome;
   }));
   server.registerTool('calculate_natal_chart', { description: `Calculate one natal chart locally; request output: record for an exportable receipt. Do not invent a birth time or place. ${PRIVACY.assistant}`, inputSchema: NATAL_INPUT, annotations: READ_ONLY }, args => respond(() => calculateNatalChart(args)));

@@ -1,7 +1,7 @@
 {
   "type": "official-SDK protocol interoperability against the real server process; not a named end-user host, and not a model-driven demonstration",
-  "startedAt": "2026-10-12T12:58:00.176Z",
-  "completedAt": "2026-10-12T12:58:03.657Z",
+  "startedAt": "2026-10-12T15:33:45.137Z",
+  "completedAt": "2026-10-12T15:33:48.637Z",
   "node": "v22.22.2",
   "client": {
     "package": "@modelcontextprotocol/client",
@@ -17,8 +17,8 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "bytes": 332627,
-    "sha256": "cba42fac851f431f57e0578d593607844a8d8b80bf8b26850f46f479d19847fe"
+    "bytes": 2459502,
+    "sha256": "866e5a9c0756b96a5777c0a15117735f8bd60d6728d1a2a3a2f7e00094f5b959"
   },
   "wire": [
     {
@@ -102,23 +102,23 @@
       "unansweredOffender": true
     }
   ],
-  "checks": 106,
-  "passed": 106,
+  "checks": 114,
+  "passed": 114,
   "results": [
     {
       "name": "initialize succeeds and names the adapter",
       "ok": true,
       "detail": {
         "name": "zodiacs-mcp-server",
-        "version": "0.1.0-rc.23"
+        "version": "0.1.0-rc.24"
       }
     },
     {
       "name": "server version is the packaged adapter candidate version",
       "ok": true,
       "detail": {
-        "server": "0.1.0-rc.23",
-        "package": "0.1.0-rc.23"
+        "server": "0.1.0-rc.24",
+        "package": "0.1.0-rc.24"
       }
     },
     {
@@ -126,7 +126,7 @@
       "ok": true
     },
     {
-      "name": "lists exactly the six tools",
+      "name": "lists exactly the eight tools",
       "ok": true,
       "detail": [
         "calculate_natal_chart",
@@ -134,7 +134,9 @@
         "compare_calculation_records",
         "find_events",
         "get_capabilities",
-        "get_positions"
+        "get_positions",
+        "resolve_birth_time",
+        "search_places"
       ]
     },
     {
@@ -172,6 +174,14 @@
         [
           "check_sky_fact",
           "object"
+        ],
+        [
+          "resolve_birth_time",
+          "object"
+        ],
+        [
+          "search_places",
+          "object"
         ]
       ]
     },
@@ -208,7 +218,7 @@
       "detail": {
         "adapter": {
           "name": "zodiacs-mcp-server",
-          "version": "0.1.0-rc.23",
+          "version": "0.1.0-rc.24",
           "releaseStatus": "unpublished-candidate",
           "transport": "stdio"
         },
@@ -225,7 +235,7 @@
       "ok": true,
       "detail": {
         "url": "https://zodiacs.org/developers/mcp/#get_capabilities",
-        "receipt": "sha256:8602b832681a9a8c00e60e2e0d05b40b1425a5abc29057ff4ccd71befda15d58",
+        "receipt": "sha256:ba14ec3ad4e9d1d9d74d3e7565ea46f439cd50f31557abb2e5796d48434daa4a",
         "engine": "@zodiacs/engine",
         "version": "1.0.0"
       }
@@ -364,7 +374,7 @@
         "tool": "compare_calculation_records",
         "adapter": {
           "name": "zodiacs-mcp-server",
-          "version": "0.1.0-rc.23"
+          "version": "0.1.0-rc.24"
         },
         "engine": {
           "name": "@zodiacs/engine",
@@ -506,12 +516,171 @@
       ]
     },
     {
-      "name": "a zone is refused, since this server reads none, and names the argument",
+      "name": "a zone is refused, since check_sky_fact reads none, and names the argument",
       "ok": true,
       "detail": {
         "layer": "tool",
         "text": "Input validation error: Invalid arguments for tool check_sky_fact: Unrecognized key: \"zone\""
       }
+    },
+    {
+      "name": "a place search lists London first, with its coordinates and its zone, and cites the index, not the query",
+      "ok": true,
+      "detail": {
+        "name": "London",
+        "admin1": "England",
+        "country": "United Kingdom",
+        "latitude": 51.51,
+        "longitude": -0.13,
+        "timeZone": "Europe/London",
+        "population": 8961989
+      }
+    },
+    {
+      "name": "a local time at the place resolves to the chart's instant, on the runtime's zone data",
+      "ok": true,
+      "detail": {
+        "utc": "1990-06-15T13:30:00.000Z",
+        "offsetMinutes": 60,
+        "flags": [],
+        "localMeanTime": null,
+        "zoneHistory": "runtime",
+        "zoneUncertain": false,
+        "intlOffsetMinutes": null,
+        "calendar": "gregorian",
+        "writtenDate": "1990-06-15",
+        "date": "1990-06-15",
+        "adoption": null,
+        "calendarNote": null,
+        "atlas": null,
+        "tt": "1990-06-15T13:30:57.184",
+        "deltaT": {
+          "seconds": 57.197125,
+          "sigma": 0.000846,
+          "model": "iers-utc/1",
+          "table": "2026-09-24",
+          "tableDigest": "064d98b4a531053a",
+          "segment": "observed"
+        },
+        "timeScale": {
+          "input": "utc",
+          "basis": "iers",
+          "ut1MinusUtc": {
+            "seconds": -0.013124999999998721,
+            "sigma": 0.000846,
+            "source": "observed"
+          },
+          "leapSeconds": {
+            "taiMinusUtc": 25,
+            "listed": true
+          }
+        }
+      }
+    },
+    {
+      "name": "a time before 1970 is read on the pinned history, and a zone history the runtime disputes is flagged",
+      "ok": true,
+      "detail": {
+        "utc": "1947-07-01T11:00:00.000Z",
+        "offsetMinutes": 60,
+        "flags": [
+          "zone-history-disputed"
+        ],
+        "localMeanTime": null,
+        "zoneHistory": "pinned",
+        "zoneUncertain": false,
+        "intlOffsetMinutes": 120,
+        "calendar": "gregorian",
+        "writtenDate": "1947-07-01",
+        "date": "1947-07-01",
+        "adoption": null,
+        "calendarNote": null,
+        "atlas": null,
+        "tt": "1947-07-01T11:00:28.008",
+        "deltaT": {
+          "seconds": 28.008138261464772,
+          "sigma": 0.46,
+          "model": "zodiacs-deltat/1",
+          "table": "2026-09-24",
+          "tableDigest": "6371988c510a1c6c",
+          "segment": "reconstructed"
+        },
+        "timeScale": {
+          "input": "utc",
+          "basis": "delta-t",
+          "ut1MinusUtc": null,
+          "leapSeconds": null
+        }
+      }
+    },
+    {
+      "name": "a Julian date is converted before the time is read, with the country's change of calendar",
+      "ok": true,
+      "detail": {
+        "utc": "1917-11-07T08:28:41.000Z",
+        "offsetMinutes": 211.31666666666666,
+        "flags": [],
+        "localMeanTime": null,
+        "zoneHistory": "pinned",
+        "zoneUncertain": false,
+        "intlOffsetMinutes": 211.31666666666666,
+        "calendar": "julian",
+        "writtenDate": "1917-10-25",
+        "date": "1917-11-07",
+        "adoption": {
+          "code": "RU",
+          "firstGregorian": "1918-02-14",
+          "lastJulian": "1918-01-31",
+          "sources": [
+            "tzdb",
+            "wikipedia"
+          ]
+        },
+        "calendarNote": null,
+        "atlas": null,
+        "tt": "1917-11-07T08:29:01.142",
+        "deltaT": {
+          "seconds": 20.142440181923075,
+          "sigma": 0.46,
+          "model": "zodiacs-deltat/1",
+          "table": "2026-09-24",
+          "tableDigest": "6371988c510a1c6c",
+          "segment": "reconstructed"
+        },
+        "timeScale": {
+          "input": "utc",
+          "basis": "delta-t",
+          "ut1MinusUtc": null,
+          "leapSeconds": null
+        }
+      }
+    },
+    {
+      "name": "a place of the time atlas gets the atlas's cited reading beside tzdb's, with its uncertainty flag",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "a time cites the compute receipt it carries, which holds no date, time or zone from the request",
+      "ok": true,
+      "detail": {
+        "url": "https://zodiacs.org/developers/mcp/#resolve_birth_time",
+        "receipt": "sha256:e3241d06c706c3bdeb62cbc40951199679bb7aa604e56a694486ef969f0db0d5",
+        "engine": "@zodiacs/engine",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "an unknown zone is refused in the compute API's words, with the field it names",
+      "ok": true,
+      "detail": {
+        "layer": "tool",
+        "text": "/local/zone: Must be a time zone name the server's time zone data includes."
+      }
+    },
+    {
+      "name": "recovers after the time and place refusals",
+      "ok": true
     },
     {
       "name": "a refusal from the compute API's parser is its own sentence, with the field it names",
@@ -562,7 +731,7 @@
     {
       "name": "the methodology resource names the engine and the site's methodology page",
       "ok": true,
-      "detail": "# How this server calculates\n\nzodiacs-mcp-server 0.1.0-rc.23 runs @zodiacs/engine 1.0.0, with astronomy-engine 2.1.19, on the machine it runs on.\nThe site's methodology page, https://zodiacs.org/metho"
+      "detail": "# How this server calculates\n\nzodiacs-mcp-server 0.1.0-rc.24 runs @zodiacs/engine 1.0.0, with astronomy-engine 2.1.19, on the machine it runs on.\nThe site's methodology page, https://zodiacs.org/metho"
     },
     {
       "name": "the default comparison response repeats no birth detail back",
@@ -866,22 +1035,22 @@
     {
       "name": "stderr carried the adapter's startup note, so the capture is real",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.23, engine 1.0.0, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.24, engine 1.0.0, no network\n"
     },
     {
       "name": "stderr carried only the adapter's own notes",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.23, engine 1.0.0, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.24, engine 1.0.0, no network\n"
     },
     {
       "name": "stderr carried no birth detail, coordinate or record content",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.23, engine 1.0.0, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.24, engine 1.0.0, no network\n"
     },
     {
       "name": "the transport exposes the server process id, so the next check measures something",
       "ok": true,
-      "detail": 70359
+      "detail": 1726
     },
     {
       "name": "the server process is gone after the client closes",
@@ -979,7 +1148,7 @@
           1,
           6
         ],
-        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.23, engine 1.0.0, no network"
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.24, engine 1.0.0, no network"
       }
     },
     {
@@ -993,7 +1162,7 @@
           83,
           7
         ],
-        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.23, engine 1.0.0, no network"
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.24, engine 1.0.0, no network"
       }
     },
     {

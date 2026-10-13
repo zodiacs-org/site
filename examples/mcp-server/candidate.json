@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.23",
+  "version": "0.1.0-rc.24",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -25,6 +25,22 @@
     "src/lib/compare/diff.ts",
     "src/lib/compare/angles.ts",
     "src/lib/compare/replay.ts",
+    "src/mcp/time-tools.ts",
+    "src/mcp/places.ts",
+    "src/mcp/places-source.ts",
+    "src/lib/geo/rank.ts",
+    "src/lib/compute-api/local-time-source.ts",
+    "src/lib/time/zone-names.ts",
+    "src/lib/time/calendar.ts",
+    "src/lib/time/calendar-choice.ts",
+    "src/lib/time/birth-calendar.ts",
+    "src/data/gregorian-adoption.ts",
+    "src/data/tz-names.json",
+    "public/data/cities/",
+    "src/lib/time-atlas/index.ts",
+    "src/lib/time-atlas/lib.mjs",
+    "src/lib/time-atlas/places.ts",
+    "src/data/time-atlas/",
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
@@ -48,7 +64,22 @@
     },
     "computeApi": {
       "modules": "src/lib/compute-api/",
-      "note": "The hosted compute API's parsers and positions, events and sky-fact calculations, inlined into server.mjs, so get_positions, find_events and check_sky_fact return what POST https://zodiacs.org/api/v1/positions, /events and /sky-fact return for the same request, without a zone."
+      "note": "The hosted compute API's parsers and positions, events, sky-fact and time calculations, inlined into server.mjs, so get_positions, find_events, check_sky_fact and resolve_birth_time return what POST https://zodiacs.org/api/v1/positions, /events, /sky-fact and /time return for the same request. The first three take no zone; resolve_birth_time reads its zone with the engine's geo entry and the zone histories the engine ships, which server.mjs carries."
+    },
+    "places": {
+      "index": "public/data/cities/",
+      "source": "GeoNames cities15000",
+      "licence": "CC BY 4.0",
+      "rows": 33934,
+      "ranking": "src/lib/geo/rank.ts",
+      "note": "The site's birthplace index, which scripts/build-cities.mjs builds and the site's calculators fetch, inlined into server.mjs for search_places with the ranking the site's search uses."
+    },
+    "timeAtlas": {
+      "name": "Zodiacs.org historical time atlas",
+      "version": "0.1.0",
+      "licence": "CC BY 4.0",
+      "source": "https://github.com/zodiacs-org/engine/tree/7307665bdbc432269fdac006104f661be16000bc/atlas",
+      "note": "The engine repository's atlas data, copied byte for byte, and its resolver (atlas/tools/lib.mjs, MIT) with only its loader changed, inlined into server.mjs for resolve_birth_time's atlasPlace."
     }
   },
   "dependencies": {
@@ -85,6 +116,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.22",
-  "changedSince": "0.1.0-rc.23 adds aspect facts to check_sky_fact: kind aspect, with a body, another body and one of the five major aspects, at an instant or on a date, which the compute API's sky-fact endpoint gained in the same change. At an instant the answer is the engine's matchAspect; on a date the engine's crossing search finds where the aspect begins, ends and is exact. Apart from the adapter version and the digests over it, every other tool's arguments, results and receipts are rc.22's, and so are check_sky_fact's answers to its four earlier kinds; its input and output schemas add the aspect fact. Like rc.21 and rc.22, it bundles the compute API's local-time code, which marks a fixed offset such as UTC as certain before 1970; the adapter resolves no time zone, so that bundled code never runs in it. Older archives remain unchanged. The adapter itself is still not on npm."
+  "supersedes": "0.1.0-rc.23",
+  "changedSince": "0.1.0-rc.24 adds two tools. resolve_birth_time runs the compute API's time endpoint, POST /api/v1/time, with the engine's geo entry and the zone histories it ships, which server.mjs now carries: a local date and time in an IANA zone as UTC and Terrestrial Time, with flags for a time the clocks skipped or repeated, local mean time and a zone history before 1970 that the runtime's own data disputes, and a date written in the Julian calendar up to 1923, with the birth forms' calendar note for a country. search_places searches the site's birthplace index, derived from GeoNames cities15000 under CC BY 4.0, which server.mjs now carries, with the site's ranking. For a place of the Zodiacs time atlas 0.1.0 (CC BY 4.0), which server.mjs also carries, resolve_birth_time adds the atlas's cited reading of the same wall time, with its uncertainty flag, beside tzdb's. server.mjs grows to about 2.5 MB. get_capabilities adds a time and a places section, and its limits and citation text name the two tools; the other tools' arguments, results and receipts are rc.23's. Older archives remain unchanged. The adapter itself is still not on npm."
 }

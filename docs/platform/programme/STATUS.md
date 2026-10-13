@@ -1,3 +1,34 @@
+Developer documentation in production, 2026-10-14 (Asia/Bangkok): the claims
+ledger reads every developer document the site serves (#730), seven guides
+answer the developer queries of the brief (#735), and `check_sky_fact` checks
+aspects (#740). P1.15, S4 and A1.b are accepted.
+
+**Overall delivery: 42%** (41.628% to three decimals): 75.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P1.15.** #730 merged as `7d12c0f1`; zodiacs.org's `llms.txt` and
+  `llms-full.txt` are the merge's, byte for byte, and describe no retired share
+  path as live (7 of 7 checks; 1 of 7 before the merge;
+  [the record](../evidence/p1-15-production-20261013/README.md)). Main's Site
+  Check passed on a re-run after one /thesis/ Lighthouse sample measured CLS
+  0.0000915 (F-93, open).
+- **S4.** #735 merged as `d205a673`: the guides' pages, twins, llms files and
+  sitemap are what two local builds of the merge make, 32 of 32 checks with 52
+  browser navigations, three controls each failing only what they target
+  ([the record](../evidence/developer-query-guides-20261013/README.md)).
+  `/developers/compare/`, which the gate names, points to the four guides that
+  compare the engine with other software since #740.
+- **A1.b.** #740 merged as `848e6087`: the compute API's sky-fact endpoint
+  answers the documented aspect example as documented, the MCP adapter rc.23
+  archive is served with its digest, and the hosted Chart Studio is the
+  merge's with F-91's fix, 6 of 6 checks, 0 of 6 before the merge
+  ([the record](../evidence/sky-fact-aspects-20261012/README.md)). Plugin
+  0.3.11's release note says that the plugin's `check_sky_fact` is the hosted
+  tools' and keeps four kinds.
+- **Main's Site Check.** #731's post-merge run failed the Phase 1 scope guard,
+  because it merged on CI that predated #734 with its allowance pinned to the
+  older base (F-92); main's next push passed it.
+
 Local times on the engine's resolver, 2026-10-12 (Asia/Bangkok): the site
 reads every local birth time with `@zodiacs/engine/geo` from 1.0.0, and its
 own copy of the logic is gone. P1.01b and P1.12b are accepted.

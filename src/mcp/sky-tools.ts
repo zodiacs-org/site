@@ -1,22 +1,23 @@
 /**
- * get_positions, find_events and check_sky_fact: the hosted compute API's
- * positions, events and sky-fact calculations, run on this machine.
+ * get_positions, find_events, check_sky_fact and resolve_birth_time: the hosted
+ * compute API's positions, events, sky-fact and time calculations, run on this
+ * machine.
  *
  * Each tool parses its arguments with the compute API's own parser and
  * calculates with the compute API's own function (`src/lib/compute-api/`), so
  * for the same JSON a call returns what POST
- * https://zodiacs.org/api/v1/positions, /events or /sky-fact returns: the same
- * result and the same receipt, and so the same `cite.receipt` digest. Only
- * `cite.url` differs: it names the tool's entry on the developer page. Nothing
- * here re-derives a position, a search or an answer. A request the compute
- * API's parser refuses gets its own fixed sentence, which never quotes a value
- * from the request; one the input schema below refuses first, such as an
- * unknown argument or a value outside a list, gets the MCP SDK's validation
- * message instead.
+ * https://zodiacs.org/api/v1/positions, /events, /sky-fact or /time returns:
+ * the same result and the same receipt, and so the same `cite.receipt` digest.
+ * Only `cite.url` differs: it names the tool's entry on the developer page.
+ * Nothing here re-derives a position, a search, an answer or an offset. A
+ * request the compute API's parser refuses gets its own fixed sentence, which
+ * never quotes a value from the request; one the input schema below refuses
+ * first, such as an unknown argument or a value outside a list, gets the MCP
+ * SDK's validation message instead.
  *
- * One difference in what is accepted: this adapter looks up no time zone, so
- * check_sky_fact has no zone argument. It takes an instant with its offset, or
- * a date, which the compute API reads in every UTC offset in use today at once.
+ * resolve_birth_time (time-tools.ts) reads a local time in a named zone; these
+ * three take no zone: check_sky_fact takes an instant with its offset, or a
+ * date, which the compute API reads in every UTC offset in use today at once.
  */
 import { z } from 'zod';
 import { ASPECTS, ASPECT_TYPES } from '@zodiacs/engine';
@@ -27,7 +28,7 @@ import { computeEvents, computePositions, computeSkyFact, type ComputeDependenci
 import { ComputeApiError } from '../lib/compute-api/errors';
 import { parseEventsRequest, parsePositionsRequest, parseSkyFactRequest, type ZoneNames } from '../lib/compute-api/validate';
 import { bounded } from './bounds';
-import { citeFor, type SkyToolName } from './cite';
+import { citeFor, type ComputeToolName } from './cite';
 import type { ToolOutcome } from './tools';
 
 /** The compute API's longest instant, `1800-01-01T00:00:00.000+14:00`, is 29 characters. */
@@ -43,7 +44,7 @@ const instantForm = `ISO 8601 with Z or a numeric offset, such as 2000-01-01T12:
  * UTC than either end (Manila until 1844, Alaska until 1867), and their date
  * is not covered, as it is not by the compute API without a zone.
  */
-export const ANY_ZONE_DAY_TEXT = `This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −${ANY_ZONE_DAY.endHoursAfterUtcMidnight - 24}:00 to +${ANY_ZONE_DAY.startHoursBeforeUtcMidnight}:00, at once: from ${ANY_ZONE_DAY.startHoursBeforeUtcMidnight} hours before its midnight UTC to ${ANY_ZONE_DAY.endHoursAfterUtcMidnight} hours after. depends means the answer turns on the time of day or on the offset.`;
+export const ANY_ZONE_DAY_TEXT = `check_sky_fact takes no time zone, so a date is read as that day in every UTC offset in use today, from −${ANY_ZONE_DAY.endHoursAfterUtcMidnight - 24}:00 to +${ANY_ZONE_DAY.startHoursBeforeUtcMidnight}:00, at once: from ${ANY_ZONE_DAY.startHoursBeforeUtcMidnight} hours before its midnight UTC to ${ANY_ZONE_DAY.endHoursAfterUtcMidnight} hours after. depends means the answer turns on the time of day or on the offset.`;
 
 /** As in tools.ts: an unknown argument is refused, and the JSON Schema a model reads says so. */
 export const POSITIONS_INPUT = z.strictObject({
@@ -86,13 +87,13 @@ export const SKY_FACT_INPUT = z.strictObject({
  * JSON Pointer of the field it refused when there is one. Any other throw is
  * left to the server's guard, which reports it without its message.
  */
-function refusalOf(error: unknown): ToolOutcome {
+export function refusalOf(error: unknown): ToolOutcome {
   if (!(error instanceof ComputeApiError)) throw error;
   const { message, pointer } = error.detail;
   return { ok: false, refusal: pointer ? `${pointer}: ${message}` : message };
 }
 
-function cited<Body extends { receipt: unknown; cite: unknown }>(tool: SkyToolName, body: Body): ToolOutcome {
+export function cited<Body extends { receipt: unknown; cite: unknown }>(tool: ComputeToolName, body: Body): ToolOutcome {
   return bounded({ ...body, cite: citeFor(tool, body.receipt) });
 }
 
@@ -113,12 +114,13 @@ export function findEvents(args: z.infer<typeof EVENTS_INPUT>): ToolOutcome {
 }
 
 /**
- * The input schema has no zone, so the parser never asks for a zone name and
- * the calculation never resolves a local time. These are here to satisfy the
- * compute API's signatures, and each throws if that ever changes.
+ * check_sky_fact's input schema has no zone, so its parser never asks for a
+ * zone name and its calculation never resolves a local time. These are here
+ * to satisfy the compute API's signatures, and each throws if that ever
+ * changes.
  */
 function noZones(): never {
-  throw new Error('This adapter looks up no time zone.');
+  throw new Error('check_sky_fact reads no time zone.');
 }
 const NO_ZONE_NAMES: ZoneNames = async () => noZones();
 const NO_ZONES: ComputeDependencies = {
@@ -137,3 +139,4 @@ export async function checkSkyFact(args: z.infer<typeof SKY_FACT_INPUT>): Promis
     return refusalOf(error);
   }
 }
+

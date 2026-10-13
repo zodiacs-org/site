@@ -13,12 +13,14 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import { ADAPTER_NAME, ADAPTER_VERSION } from './bounds';
 import {
-  CAPABILITIES_OUTPUT, COMPARE_OUTPUT, EVENTS_OUTPUT, NATAL_OUTPUT, POSITIONS_OUTPUT, SKY_FACT_OUTPUT,
+  CAPABILITIES_OUTPUT, COMPARE_OUTPUT, EVENTS_OUTPUT, NATAL_OUTPUT, PLACES_OUTPUT, POSITIONS_OUTPUT, SKY_FACT_OUTPUT, TIME_OUTPUT,
 } from './outputs';
+import { PLACES_INPUT, searchPlaces } from './places';
 import { RESOURCES } from './resources';
 import {
   ANY_ZONE_DAY_TEXT, EVENTS_INPUT, POSITIONS_INPUT, SKY_FACT_INPUT, checkSkyFact, findEvents, getPositions,
 } from './sky-tools';
+import { TIME_INPUT, resolveBirthTime } from './time-tools';
 import {
   CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY,
   calculateNatalChart, compareCalculationRecords, describeCapabilities, type ToolOutcome,
@@ -163,6 +165,32 @@ export function createServer(note: Note): McpServer {
     outputSchema: SKY_FACT_OUTPUT,
     annotations: READ_ONLY,
   }, (args) => guardAsync(note, () => checkSkyFact(args)));
+
+  server.registerTool('resolve_birth_time', {
+    title: 'Resolve a local birth time to UTC',
+    description: [
+      'A local date and time in an IANA time zone, as UTC and Terrestrial Time, with flags: a time the clocks skipped (dst-gap) or repeated (dst-fold), a time read on a local mean time (lmt), and a zone history before 1970 that the runtime\'s own time zone data disputes (zone-history-disputed); zoneUncertain where the runtime\'s data has no local time for the place.',
+      'It takes a date written in the Julian calendar up to 1923, and with a country code gives the site\'s note on when that country changed calendar.',
+      'Give it the place\'s longitude, which search_places returns, so a time before standard time is read on the place\'s own mean time. Pass the utc it returns to calculate_natal_chart.',
+      'The same calculation, result and receipt as POST https://zodiacs.org/api/v1/time for the same request, computed on this machine with the time zone histories built into this adapter.',
+      PRIVACY.assistant,
+    ].join(' '),
+    inputSchema: TIME_INPUT,
+    outputSchema: TIME_OUTPUT,
+    annotations: READ_ONLY,
+  }, (args) => guardAsync(note, () => resolveBirthTime(args)));
+
+  server.registerTool('search_places', {
+    title: 'Search places by name',
+    description: [
+      'Places whose names start with or contain the query, from GeoNames cities15000, every place of 15,000 people or more, with coordinates rounded to 0.01° and IANA time zones: the index and ranking of the site\'s birthplace search, built into this adapter.',
+      'A search opens no file and makes no request. GeoNames data is CC BY 4.0: credit GeoNames where you show its places.',
+      PRIVACY.assistant,
+    ].join(' '),
+    inputSchema: PLACES_INPUT,
+    outputSchema: PLACES_OUTPUT,
+    annotations: READ_ONLY,
+  }, (args) => guard(note, () => searchPlaces(args)));
 
   // Static text built into the bundle: a read opens no file and makes no request.
   for (const resource of RESOURCES) {

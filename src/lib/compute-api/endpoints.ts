@@ -35,6 +35,9 @@ import {
 } from '@zodiacs/engine';
 import { createNatalEnvelope, type NatalEnvelopeContext, type NatalReceipt } from '@zodiacs/engine/receipt';
 import { timeBasis, type TimeBasis } from '../engine/time-basis.mjs';
+import { GREGORIAN_ADOPTION } from '../../data/gregorian-adoption.js';
+import { adoptionNote } from '../time/birth-calendar.js';
+import { ATLAS_SOURCE, atlasReading } from '../time-atlas/index.js';
 import {
   ANY_ZONE_DAY,
   BUDGETS,
@@ -54,6 +57,7 @@ import {
   resolveLocal,
   runtimeTzdbVersion,
   timeResolutionFacts,
+  zoneHistoriesDisagree,
   type LocalResolution,
   type LocalTimeModule,
 } from './local-time.js';
@@ -387,6 +391,42 @@ export function computeEvents(request: EventsRequest) {
 
 // ---------- time ----------
 
+/**
+ * The date as written and as computed, and what the country's change of
+ * calendar says about it: the birth forms' adoption table and note
+ * (src/lib/time/birth-calendar.ts), for a country the table dates.
+ */
+function calendarFacts(request: TimeRequest) {
+  const row = request.country === null ? undefined : GREGORIAN_ADOPTION.find((entry) => entry.code === request.country);
+  const note = row ? adoptionNote(request.writtenDate, request.calendar, row.country) : null;
+  return {
+    calendar: request.calendar,
+    writtenDate: request.writtenDate,
+    date: request.local.date,
+    adoption: row ? {
+      code: row.code,
+      firstGregorian: row.firstGregorian,
+      lastJulian: row.lastJulian ?? null,
+      sources: [...row.sources],
+    } : null,
+    calendarNote: note ? note.kind : null,
+  };
+}
+
+/**
+ * The time atlas's reading of the same wall time at the place the request
+ * names, beside tzdb's: its status, every instant with its rule, its
+ * uncertainty flag and reasons and its citations, and how far its first
+ * instant is from tzdb's, in seconds. Null when the request names no atlas
+ * place.
+ */
+function atlasFacts(request: TimeRequest, utc: Date) {
+  if (request.atlasPlace === null) return null;
+  const reading = atlasReading(request.atlasPlace, request.local.date, request.local.time);
+  const first = reading.instants[0];
+  return { ...reading, secondsFromTzdb: first ? (Date.parse(first.utc) - utc.getTime()) / 1000 : null, source: { ...ATLAS_SOURCE } };
+}
+
 export async function computeTime(request: TimeRequest, dependencies: ComputeDependencies) {
   const local = await resolveLocal(dependencies.localTime, request.local, request.longitude);
   // TT as the engine reads the instant: from 1972 to the end of its UT1 table,
@@ -398,7 +438,10 @@ export async function computeTime(request: TimeRequest, dependencies: ComputeDep
   return successBody('time', {
     utc: iso(local.utc),
     ...summary,
-    flags: [...summary.flags, ...spanFlags(local.utc)],
+    flags: [...summary.flags, ...(zoneHistoriesDisagree(local) ? ['zone-history-disputed' as const] : []), ...spanFlags(local.utc)],
+    intlOffsetMinutes: local.intlOffsetMinutes,
+    ...calendarFacts(request),
+    atlas: atlasFacts(request, local.utc),
     tt: iso(tt).slice(0, -1),
     deltaT,
     timeScale,

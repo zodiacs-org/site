@@ -16,11 +16,11 @@
  * The engine exports them as types only, so they are written out here, and
  * the tests compare each list with what the engine returns.
  *
- * get_positions, find_events and check_sky_fact return the hosted compute
- * API's success body, so their schemas follow its OpenAPI components
- * (`src/lib/compute-api/openapi.ts`) field for field, with this adapter's
- * `cite` and without the zone, which it never reads. The tests hold every
- * result to both.
+ * get_positions, find_events, check_sky_fact and resolve_birth_time return
+ * the hosted compute API's success body, so their schemas follow its OpenAPI
+ * components (`src/lib/compute-api/openapi.ts`) field for field, with this
+ * adapter's `cite`, and for check_sky_fact without the zone, which it never
+ * reads. The tests hold every result to both.
  */
 import { z } from 'zod';
 import { EPHEMERIS } from '@zodiacs/engine';
@@ -29,7 +29,10 @@ import {
   COMPUTE_RECEIPT_SCHEMA, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, SEARCH_STEP_DAYS, SKY_FACT_KINDS, responseSchemaName,
 } from '../lib/compute-api/constants';
 import { ADAPTER_NAME, COMPARE_OUTPUTS, HOUSE_SYSTEMS, REFERENCES } from './bounds';
-import { ADAPTER_RECEIPT_SCHEMA, SKY_TOOLS, toolUrl, type SkyToolName, type ToolName } from './cite';
+import { CALENDARS } from '../lib/compute-api/validate';
+import { ADAPTER_RECEIPT_SCHEMA, COMPUTE_TOOLS, SKY_TOOLS, toolUrl, type ComputeToolName, type SkyToolName, type ToolName } from './cite';
+import { PLACES_MAX, PLACES_SOURCE } from './places-source';
+import { ATLAS_PLACE_IDS } from '../lib/time-atlas/places';
 
 export const BODY_NAMES = Object.freeze([
   'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto',
@@ -68,8 +71,14 @@ function citeReceiptText(tool: ToolName): string {
   if (tool === 'calculate_natal_chart') {
     return 'SHA-256 of the calculation receipt\'s RFC 8785 canonical JSON. The receipt holds the instant as written, the coordinates and the settings, so this digest identifies the birth details, even when the time is unknown: quote it only where they may be known.';
   }
+  if (tool === 'resolve_birth_time') {
+    return 'SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds no date, time or zone from the request. It is the digest the hosted compute API cites for the same request.';
+  }
   if (Object.hasOwn(SKY_TOOLS, tool)) {
     return 'SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds no instant, date or body from the request. It is the digest the hosted compute API cites for the same request.';
+  }
+  if (tool === 'search_places') {
+    return 'SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which names the place index searched and holds nothing from the query.';
   }
   return 'SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds nothing from a record.';
 }
@@ -83,13 +92,16 @@ function cite(tool: ToolName) {
   }).describe('What to quote as this result\'s source.');
 }
 
-function adapterReceipt(tool: Exclude<ToolName, 'calculate_natal_chart'>, withOutput: boolean) {
+function adapterReceipt(tool: Exclude<ToolName, 'calculate_natal_chart' | ComputeToolName>, withOutput: boolean) {
   return z.strictObject({
     schema: z.literal(ADAPTER_RECEIPT_SCHEMA),
     tool: z.literal(tool),
     adapter: z.strictObject({ name: z.literal(ADAPTER_NAME), version: z.string() }),
     engine,
     ...(withOutput ? { output: z.enum(COMPARE_OUTPUTS) } : {}),
+    ...(tool === 'search_places' ? {
+      places: z.strictObject({ source: z.literal(PLACES_SOURCE.source), licence: z.literal(PLACES_SOURCE.licence), rows: count }),
+    } : {}),
   }).describe('The adapter and the engine that answered. The cite digest is of this object.');
 }
 
@@ -149,6 +161,29 @@ export const CAPABILITIES_OUTPUT = z.strictObject({
     }),
     dates: z.string(),
   }).describe('What get_positions, find_events and check_sky_fact accept.'),
+  time: z.strictObject({
+    tool: z.literal('resolve_birth_time'),
+    sameAs: z.string(),
+    resolver: z.literal('@zodiacs/engine/geo'),
+    pinnedTzdb: z.strictObject({ release: z.string(), appliesBefore: z.literal('1970-01-02') }),
+    calendars: z.array(z.enum(CALENDARS)),
+    julianLastWritten: z.literal('1923-12-31'),
+    atlas: z.strictObject({
+      version: z.string(),
+      licence: z.literal('CC BY 4.0'),
+      window: z.strictObject({ from: z.string(), to: z.string() }),
+      places: z.array(z.enum(ATLAS_PLACE_IDS)),
+    }).describe('The Zodiacs time atlas, which resolve_birth_time reads for a place named in atlasPlace: what the clocks said there, with citations, for wall times from its window\'s start up to its end.'),
+  }).describe('What resolve_birth_time accepts and how it reads a local time.'),
+  places: z.strictObject({
+    tool: z.literal('search_places'),
+    source: z.literal(PLACES_SOURCE.source),
+    licence: z.literal(PLACES_SOURCE.licence),
+    url: z.literal(PLACES_SOURCE.url),
+    rows: count,
+    maxResults: z.literal(PLACES_MAX),
+    coordinates: z.string(),
+  }).describe('The place index search_places reads, which is built into this adapter.'),
   resources: z.array(z.strictObject({ uri: z.string(), name: z.string(), mimeType: z.string() })),
   unsupported: z.array(z.string()),
   privacy: z.strictObject({
@@ -268,10 +303,10 @@ const backend = z.strictObject({
 });
 
 /** The receipt the compute API writes for a calculation the engine writes none for. */
-function computeReceipt(tool: SkyToolName) {
+function computeReceipt(tool: ComputeToolName) {
   return z.strictObject({
     schema: z.literal(COMPUTE_RECEIPT_SCHEMA),
-    endpoint: z.literal(SKY_TOOLS[tool]),
+    endpoint: z.literal(COMPUTE_TOOLS[tool]),
     engine: backend,
     conventions: z.record(z.string(), z.string()),
     coverage: z.record(z.string(), z.string()),
@@ -295,12 +330,20 @@ function computeReceipt(tool: SkyToolName) {
       completeness: z.literal('tested-not-proven')
         .describe('The search samples each motion at a fixed step and bisects every crossing it sees. It is tested, not proven to miss nothing.'),
     }).optional().describe('How a search searched: present when one ran.'),
+    ...(tool === 'resolve_birth_time' ? { timeResolution: z.strictObject({
+      resolver: z.literal('@zodiacs/engine/geo'),
+      policy: z.strictObject({ fold: z.literal('earlier'), gap: z.literal('shift-forward') }),
+      pinnedTzdb: z.strictObject({
+        release: z.string(), sha256: z.string(), dataForm: z.literal('main+backzone'), appliesBefore: z.literal('1970-01-02'),
+      }),
+      runtimeTzdb: z.string().nullable(),
+    }).describe('How local times were read: the resolver and its policy, the tzdb release it ships for dates up to 1970-01-01, and the runtime\'s own tzdb, which reads the rest.') } : {}),
   }).describe('The compute API\'s receipt for this calculation: the engine, its conventions and coverage as its own receipts state them, and what this request used. The cite digest is of this object.');
 }
 
-function computeBody<Result extends z.ZodTypeAny>(tool: SkyToolName, result: Result) {
+function computeBody<Result extends z.ZodTypeAny>(tool: ComputeToolName, result: Result) {
   return z.strictObject({
-    schema: z.literal(responseSchemaName(SKY_TOOLS[tool])),
+    schema: z.literal(responseSchemaName(COMPUTE_TOOLS[tool])),
     result,
     receipt: computeReceipt(tool),
     backend,
@@ -405,6 +448,81 @@ export const SKY_FACT_OUTPUT = computeBody('check_sky_fact', z.strictObject({
     }).describe('An aspect on a date: where it begins or ends in the span, and where it is exact.'),
   ]).describe('The computed values that decide the answer.'),
 })).describe('The body of POST /api/v1/sky-fact for the same request, with this tool\'s cite. answer is never an interpretation.');
+
+export const TIME_OUTPUT = computeBody('resolve_birth_time', z.strictObject({
+  utc: instantOut,
+  offsetMinutes: z.number().describe('Minutes east of UTC; fractional before standard time.'),
+  flags: z.array(z.enum(['dst-gap', 'dst-fold', 'lmt', 'zone-history-disputed', 'outside-reference-span']))
+    .describe('dst-gap: the time was skipped and moved forward by the gap. dst-fold: it happened twice and the earlier was taken. lmt: it was read on a local mean time. zone-history-disputed: tzdb\'s default build, the runtime\'s own data, gives the zone another offset at the instant than the pinned history. outside-reference-span: the instant falls outside 1800 to 2200.'),
+  localMeanTime: z.strictObject({ longitude: z.number(), zoneOffsetMinutes: z.number() }).nullable()
+    .describe('The place\'s own mean time, where the time was read on it, with the zone\'s offset then.'),
+  zoneHistory: z.enum(['pinned', 'runtime'])
+    .describe('pinned: tzdb release 2025c with backzone, which the engine ships, read the offset. runtime: the runtime\'s own time zone data read it.'),
+  zoneUncertain: z.boolean()
+    .describe('True for a date up to 1970-01-01 read on the runtime\'s data where the release records no local time, as at an Antarctic station before it was staffed.'),
+  intlOffsetMinutes: z.number().nullable()
+    .describe('Where the pinned history answered, the zone\'s offset at the same instant in the runtime\'s own data, tzdb\'s default build; null otherwise.'),
+  calendar: z.enum(CALENDARS),
+  writtenDate: z.string().describe('The date as written.'),
+  date: z.string().describe('The proleptic Gregorian date the time was read on.'),
+  adoption: z.strictObject({
+    code: z.string(),
+    firstGregorian: z.string(),
+    lastJulian: z.string().nullable(),
+    sources: z.array(z.enum(['wikipedia', 'tzdb', 'lv', 'fi'])),
+  }).nullable().describe('When the country named changed to the Gregorian calendar, from the site\'s birth forms\' table; null when no country was named or the table does not date it.'),
+  atlas: z.strictObject({
+    place: z.enum(ATLAS_PLACE_IDS),
+    name: z.string(),
+    jurisdiction: z.string(),
+    clock: z.literal('civil'),
+    status: z.enum(['ok', 'ambiguous', 'nonexistent', 'out-of-coverage'])
+      .describe('ok: one instant. ambiguous: the clocks were set back over the time; every instant is listed, earliest first. nonexistent: they were set forward over it; the instant listed is the time read on the clock before the change. out-of-coverage: outside 1870 to 1919.'),
+    instants: z.array(z.strictObject({
+      utc: instantOut,
+      offsetSeconds: z.number(),
+      rule: z.string(),
+      ruleVersion: z.number().int().min(1),
+      isDst: z.boolean(),
+      abbreviation: z.string().nullable(),
+      uncertainty: z.strictObject({
+        flag: z.enum(['documented', 'inferred', 'uncertain']),
+        reasons: z.array(z.string()),
+      }).describe('documented: the cited sources state the offset and the change. inferred: they follow from the sources by a stated assumption. uncertain: the sources leave it open or disagree, or the time falls within the limits they leave for a change.'),
+      citations: z.array(z.strictObject({
+        id: z.string(), title: z.string(), date: z.string().nullable(), url: z.string(), locator: z.string().nullable(), gloss: z.string().nullable(),
+      })),
+    })),
+    skipped: z.strictObject({ from: z.string(), to: z.string() }).nullable(),
+    secondsFromTzdb: z.number().nullable().describe('The atlas\'s first instant minus the utc tzdb gave, in seconds: 0 where they agree.'),
+    source: z.strictObject({ name: z.string(), version: z.string(), licence: z.literal('CC BY 4.0'), url: z.string() }),
+  }).nullable().describe('The time atlas\'s reading of the wall time at the place named in atlasPlace, beside tzdb\'s; null when none was named.'),
+  calendarNote: z.enum(['old-style', 'new-style', 'other-calendar']).nullable()
+    .describe('For a date written before 1924: old-style, written as Gregorian before the country\'s first New Style day; new-style, written as Julian on or after it; other-calendar, before the change in a country whose calendar before was not the Julian. Advice only.'),
+  tt: z.string().describe('Terrestrial Time to the millisecond, with no zone designator because it is not UTC.'),
+  deltaT,
+  timeScale,
+})).describe('The body of POST /api/v1/time for the same request, with this tool\'s cite.');
+
+export const PLACES_OUTPUT = z.strictObject({
+  places: z.array(z.strictObject({
+    name: z.string(),
+    admin1: z.string().describe('The region, as GeoNames names its first-level division; empty where it has none.'),
+    country: z.string(),
+    latitude: z.number().describe('Degrees north, rounded to 0.01° as the index stores it.'),
+    longitude: z.number().describe('Degrees east, rounded to 0.01° as the index stores it.'),
+    timeZone: z.string().describe('The place\'s IANA time zone, for resolve_birth_time.'),
+    population: count,
+  })).max(PLACES_MAX).describe('Places whose names start with the query first, then, from three characters, places whose names contain it, each in order of population.'),
+  source: z.strictObject({
+    source: z.literal(PLACES_SOURCE.source),
+    licence: z.literal(PLACES_SOURCE.licence),
+    url: z.literal(PLACES_SOURCE.url),
+    rows: count,
+  }).describe('The index searched: GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0.'),
+  receipt: adapterReceipt('search_places', false),
+  cite: cite('search_places'),
+});
 
 export type CapabilitiesOutput = z.infer<typeof CAPABILITIES_OUTPUT>;
 export type NatalSummaryOutput = z.infer<typeof NATAL_SUMMARY_OUTPUT>;

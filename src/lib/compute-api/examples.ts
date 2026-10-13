@@ -45,12 +45,20 @@ export const SUCCESS_EXAMPLES: Readonly<Record<ComputeEndpoint, Readonly<Record<
   },
   time: {
     pinned: {
-      summary: 'A wall time before 1970 with the birthplace longitude, read on the pinned zone history',
+      summary: 'A wall time before 1970 with the birthplace longitude, read on the pinned zone history, which the server\'s time zone data disputes',
       body: { local: { date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, longitude: 18.07 },
     },
     gap: {
       summary: 'A wall time the spring clock change skipped',
       body: { local: { date: '2026-03-29', time: '02:30', zone: 'Europe/Paris' } },
+    },
+    julian: {
+      summary: 'A date written in the Julian calendar, with the country for the calendar note',
+      body: { local: { date: '1917-10-25', time: '12:00', zone: 'Europe/Moscow' }, calendar: 'julian', country: 'RU' },
+    },
+    atlas: {
+      summary: 'A place of the time atlas whose clock tzdb does not record: Strasbourg under German summer time in 1916',
+      body: { local: { date: '1916-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-strasbourg' },
     },
   },
   elections: {

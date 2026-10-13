@@ -41,6 +41,7 @@ import {
 } from './constants.js';
 import examples from './examples.json';
 import { REFUSAL_EXAMPLES, SUCCESS_EXAMPLES } from './examples.js';
+import { ATLAS_PLACE_IDS } from '../time-atlas/places.js';
 
 type Schema = Record<string, unknown>;
 const ref = (name: string): Schema => ({ $ref: `#/components/schemas/${name}` });
@@ -95,6 +96,17 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       zone: requestZone,
     },
   },
+  WrittenLocalTime: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['date', 'time', 'zone'],
+    description: 'A wall-clock date and time in an IANA time zone, read as the site\'s birth chart calculator reads one, with the date in the calendar the request names.',
+    properties: {
+      date: { type: 'string', pattern: `^${DATE}$`, description: 'A real date in the calendar the request names: a proleptic Gregorian date from 1800-01-01 to 2199-12-31, or with calendar julian a Julian date from 1800-01-01 to 1923-12-31.' },
+      time: { type: 'string', pattern: `^${CLOCK}$`, description: 'Hours and minutes, 00:00 to 23:59.' },
+      zone: requestZone,
+    },
+  },
   Latitude: { type: 'number', exclusiveMinimum: -90, exclusiveMaximum: 90, description: 'Degrees north. The poles are refused: the engine does not compute angles there.' },
   Longitude: { type: 'number', minimum: -180, maximum: 180, description: 'Degrees east.' },
   HouseSystem: { enum: [...HOUSE_SYSTEM_NAMES], description: 'One of the engine\'s thirteen house systems.' },
@@ -139,8 +151,11 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     additionalProperties: false,
     required: ['local'],
     properties: {
-      local: ref('LocalTime'),
+      local: ref('WrittenLocalTime'),
       longitude: { ...ref('Longitude'), description: 'The place\'s longitude, degrees east. With it, a time before the place adopted a legal time uses the place\'s own mean time, and a date up to 1970-01-01 the pinned zone history.' },
+      calendar: { enum: ['gregorian', 'julian'], description: 'The calendar local.date is written in; gregorian when omitted. julian, the Old Style, is accepted for a date written from 1800-01-01 to 1923-12-31, as the birth forms accept it, and is converted to the proleptic Gregorian date before the time is read.' },
+      country: { type: 'string', pattern: '^[A-Z]{2}$', description: 'The place\'s country, as an ISO 3166-1 alpha-2 code in capitals, such as RU. For a country the birth forms\' table dates, the answer gives when it changed to the Gregorian calendar and whether the date as written conflicts with that.' },
+      atlasPlace: { enum: [...ATLAS_PLACE_IDS], description: 'A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919. The answer gives the atlas\'s reading of the same wall time there, beside tzdb\'s.' },
     },
   },
   ElectionsRequest: {
@@ -577,23 +592,63 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   },
   TimeResult: {
     type: 'object',
-    required: ['utc', 'offsetMinutes', 'flags', 'localMeanTime', 'zoneHistory', 'zoneUncertain', 'tt', 'deltaT', 'timeScale'],
+    required: ['utc', 'offsetMinutes', 'flags', 'localMeanTime', 'zoneHistory', 'zoneUncertain', 'intlOffsetMinutes', 'calendar', 'writtenDate', 'date', 'adoption', 'calendarNote', 'atlas', 'tt', 'deltaT', 'timeScale'],
     properties: {
       utc: outputInstant,
       offsetMinutes: num,
       flags: {
         type: 'array',
-        items: { enum: ['dst-gap', 'dst-fold', 'lmt', 'outside-reference-span'] },
-        description: 'The resolver\'s flags, and outside-reference-span when a local time at the ends of the accepted dates falls outside the instant span.',
+        items: { enum: ['dst-gap', 'dst-fold', 'lmt', 'zone-history-disputed', 'outside-reference-span'] },
+        description: 'The resolver\'s flags; zone-history-disputed when the server\'s time zone data gives the zone another offset at the instant than the pinned history does; and outside-reference-span when a local time at the ends of the accepted dates falls outside the instant span.',
       },
       localMeanTime: nullable({ type: 'object', required: ['longitude', 'zoneOffsetMinutes'], properties: { longitude: num, zoneOffsetMinutes: num } }),
       zoneHistory: { enum: ['pinned', 'runtime'] },
       zoneUncertain: bool,
+      intlOffsetMinutes: { ...nullable(num), description: 'Where the pinned history answered, the zone\'s offset at the same instant in the server\'s time zone data, minutes east: tzdb\'s default build, which before 1970 can differ from the history with backzone. Null where the pinned history did not answer.' },
+      calendar: { enum: ['gregorian', 'julian'], description: 'The calendar the date was written in.' },
+      writtenDate: { type: 'string', pattern: `^${DATE}$`, description: 'The date as written.' },
+      date: { type: 'string', pattern: `^${DATE}$`, description: 'The proleptic Gregorian date the time was read on.' },
+      adoption: nullable(object(['code', 'firstGregorian', 'lastJulian', 'sources'], {
+        code: { type: 'string', pattern: '^[A-Z]{2}$' },
+        firstGregorian: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$' },
+        lastJulian: nullable({ type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$' }),
+        sources: list({ enum: ['wikipedia', 'tzdb', 'lv', 'fi'] }),
+      }, 'When the country named changed to the Gregorian calendar, from the birth forms\' table: the first New Style day, the last Old Style day before it (null where the calendar before was not the Julian), and the sources. Null when no country was named or the table does not date it.')),
+      atlas: nullable(ref('AtlasReading')),
+      calendarNote: {
+        anyOf: [{ enum: ['old-style', 'new-style', 'other-calendar'] }, { type: 'null' }],
+        description: 'For a date written before 1924 in a country the table dates: old-style, written as Gregorian but before the country\'s first New Style day; new-style, written as Julian on or after it; other-calendar, before the change in a country whose calendar before was not the Julian, which is not converted. Advice, as the birth forms give it; null otherwise.',
+      },
       tt: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}$', description: 'Terrestrial Time to the millisecond, as the engine reads the instant (timeScale says how), with no zone designator because it is not UTC.' },
       deltaT: ref('DeltaT'),
       timeScale: ref('TimeScale'),
     },
   },
+  AtlasReading: object(['place', 'name', 'jurisdiction', 'clock', 'status', 'instants', 'skipped', 'secondsFromTzdb', 'source'], {
+    place: { enum: [...ATLAS_PLACE_IDS] },
+    name: str,
+    jurisdiction: str,
+    clock: { const: 'civil' },
+    status: { enum: ['ok', 'ambiguous', 'nonexistent', 'out-of-coverage'], description: 'ok: one instant. ambiguous: the clocks were set back over the time, and every instant it occurred is listed, earliest first. nonexistent: the clocks were set forward over it, and the instant listed is the time read on the clock in force before the change. out-of-coverage: outside the atlas\'s window, 1870 to 1919, and nothing is listed.' },
+    instants: list(object(['utc', 'offsetSeconds', 'rule', 'ruleVersion', 'isDst', 'abbreviation', 'uncertainty', 'citations'], {
+      utc: outputInstant,
+      offsetSeconds: { ...num, description: 'The place\'s clock, seconds east of UTC; a mean time is to the millisecond.' },
+      rule: str,
+      ruleVersion: { type: 'integer', minimum: 1 },
+      isDst: bool,
+      abbreviation: nullable(str),
+      uncertainty: object(['flag', 'reasons'], {
+        flag: { enum: ['documented', 'inferred', 'uncertain'], description: 'documented: the cited sources state the offset and the change for this place, or for a law covering it. inferred: they follow from the sources by a stated assumption. uncertain: the sources leave the offset or the date open, or disagree, or the time falls within the limits the sources leave for a change.' },
+        reasons: list(str),
+      }),
+      citations: list(object(['id', 'title', 'date', 'url', 'locator', 'gloss'], {
+        id: str, title: str, date: nullable(str), url: str, locator: nullable(str), gloss: nullable(str),
+      })),
+    })),
+    skipped: nullable(object(['from', 'to'], { from: str, to: str })),
+    secondsFromTzdb: { ...nullable(num), description: 'The atlas\'s first instant minus the utc tzdb gave, in seconds: 0 where they agree; null when the atlas lists none.' },
+    source: object(['name', 'version', 'licence', 'url'], { name: str, version: str, licence: { const: 'CC BY 4.0' }, url: str }),
+  }, 'The time atlas\'s reading of the wall time at the place named: what its civil clock meant by it, with each rule\'s uncertainty and citations.'),
   BodyState: object(['lon', 'sign', 'degree', 'speed', 'retrograde'], {
     lon: num, sign, degree: num, speed: num, retrograde: bool,
   }, 'A body\'s longitude, sign, degree, speed and direction at one instant.'),
@@ -749,7 +804,7 @@ const DESCRIPTIONS: Readonly<Record<ComputeEndpoint, string>> = {
   positions: 'The rows the engine\'s positions() returns at each instant: tropical ecliptic longitude and latitude of date, speed in degrees per day, and the sign. Each instant carries the ΔT it was computed with.',
   houses: 'The angles and the twelve cusps of natalChart for one instant, place and house system. Inside the polar circle Placidus and Koch fall back to whole sign, and the flags and the receipt say so.',
   events: 'Sign ingresses of the requested bodies, their stations, and new and full moons, found by the engine\'s crossing search. Each crossing is bisected to within its search step divided by 2^24. Completeness is tested, not proven: sampling can miss a pair of crossings around a station that falls between two samples.',
-  time: '@zodiacs/engine/geo, the resolver the birth chart calculator uses: a repeated wall time takes the earlier instant (dst-fold), a skipped one moves forward by the gap (dst-gap). A time before the place adopted a legal time uses a local mean time (lmt): with a longitude the place\'s own, without one the zone reference city\'s. A date up to 1970-01-01 takes the offsets of tzdb release 2025c, backzone included, which the engine ships (zoneHistory pinned). Otherwise offsets come from the server\'s time zone data (zoneHistory runtime), and a date up to 1970-01-01 read that way has zoneUncertain true, unless the zone is a fixed offset such as UTC.',
+  time: '@zodiacs/engine/geo, the resolver the birth chart calculator uses: a repeated wall time takes the earlier instant (dst-fold), a skipped one moves forward by the gap (dst-gap). A time before the place adopted a legal time uses a local mean time (lmt): with a longitude the place\'s own, without one the zone reference city\'s. A date up to 1970-01-01 takes the offsets of tzdb release 2025c, backzone included, which the engine ships (zoneHistory pinned); where the server\'s time zone data gives the zone another offset at that instant, the flags include zone-history-disputed. Otherwise offsets come from the server\'s time zone data (zoneHistory runtime), and a date up to 1970-01-01 read that way has zoneUncertain true, unless the zone is a fixed offset such as UTC. A date may be written in the Julian calendar up to 1923, and a country named gets the birth forms\' note on when it changed calendar. A place of the Zodiacs time atlas named with atlasPlace gets the atlas\'s reading of the same wall time, with its rule, its uncertainty flag and its citations, beside tzdb\'s.',
   'sky-fact': 'A structured fact, never interpretive text, answered true, false or depends, with the computed values that decide it. A fact about a date is depends when the answer turns on the time of day or, with no zone given, on the zone.',
   elections: `An election search: every stretch of the window in which all the conditions hold. Sign changes, stations and the Moon's new and full phases come from the engine's crossing search; void periods from the Moon's sign changes and its last exact aspect before each; house changes from natalChart, sampled every ${ELECTION_STEPS.houseSampleMinutes} minutes inside the stretches the other conditions leave, more finely where a body passes more than one house between samples. Every boundary is within a second. Completeness is tested, not proven: on 100 random requests it found the same windows as a scan of every 10 seconds, every end within 5.4 seconds.`,
 };
