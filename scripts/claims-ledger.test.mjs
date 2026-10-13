@@ -374,6 +374,12 @@ describe('claims ledger', () => {
       texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
     });
     controls.push({
+      // So are their comments, which a developer reads: consecutive line comments are one block.
+      path: 'examples/platform/src/app.mjs',
+      inject: (source) => `${source}\n// Positions are verified against JPL to 2″.\n// Nothing is sent to a server.\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
       // A fence with no language only lays prose out, so its lines are read.
       path: 'examples/precision-alpha/README.md',
       inject: (source) => `${source}\n\n\`\`\`\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n\`\`\`\n`,
