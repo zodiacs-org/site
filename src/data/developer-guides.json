@@ -602,10 +602,10 @@
       {
         "heading": "The options",
         "paragraphs": [
-          "Licences and versions are as Astrodienst and the npm registry gave them on 13 October 2026.",
-          "Swiss Ephemeris is Astrodienst's C library, at version 2.10.03, licensed under the AGPL or the paid Swiss Ephemeris Professional License.",
+          "Licences and versions are as Astrodienst's repository and the npm registry gave them on 13 October 2026.",
+          "Swiss Ephemeris is Astrodienst's C library, whose latest release is 2.10.3b, of August 2026, licensed under the AGPL or the paid Swiss Ephemeris Professional License.",
           "sweph 2.10.3-8 binds it for Node. Its licence is AGPL-3.0-or-later, or LGPL-3.0-or-later for holders of the professional licence; its versions up to 2.10.0 were GPL-2.0.",
-          "swisseph 0.5.17, of January 2022, binds Swiss Ephemeris 2.09.03. It declares no licence on npm; its repository's licence file is the GNU GPL, version 2.",
+          "swisseph 0.5.17, of January 2022, binds an earlier Swiss Ephemeris. It declares no licence on npm; its repository's licence file is the GNU GPL, version 2.",
           "astronomy-engine 2.1.19, under MIT, computes the Sun, the Moon and the planets in JavaScript, with no astrological houses or charts.",
           "ephemeris 3.2.1, under GPL-3.0, computes with a JavaScript port of Moshier's analytic ephemeris, or with Swiss Ephemeris through sweph.",
           "@zodiacs/engine 1.0.0, under MIT AND CC-BY-4.0, builds charts on astronomy-engine: thirteen house systems, aspects, returns, transits, a sidereal zodiac with nine ayanamsas, and receipts that record how a result was computed. It has no Swiss Ephemeris code, dependency or table in it.",
@@ -682,7 +682,7 @@
           "astronomy-engine 2.1.19, of December 2023, MIT: astronomical positions, rise and set times and phases, in JavaScript; @zodiacs/engine is built on it.",
           "ephemeris 3.2.1, of August 2026, GPL-3.0: a JavaScript port of Moshier's analytic ephemeris, which can use Swiss Ephemeris through sweph instead.",
           "sweph 2.10.3-8, of August 2026, AGPL-3.0-or-later or LGPL-3.0-or-later: a native Node binding of Swiss Ephemeris 2.10.03.",
-          "swisseph 0.5.17, of January 2022, with no licence declared on npm: a native Node binding of Swiss Ephemeris 2.09.03."
+          "swisseph 0.5.17, of January 2022, with no licence declared on npm: a native Node binding of an earlier Swiss Ephemeris."
         ]
       },
       {

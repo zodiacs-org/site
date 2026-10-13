@@ -60,6 +60,17 @@ const KEPT_POLICIES = new Map([
 ]);
 /** The conformance suite's summary names the pyswisseph run it measured; that run may carry statistics only. */
 const CONFORMANCE = 'src/data/conformance/summary.json';
+/**
+ * The developer guides compare the Swiss Ephemeris bindings by name (S4), so
+ * there the packages' names alone may stand: no other marker (an ephemeris
+ * flag, a call on the swe module), and, as in every data file, no value and no
+ * source code.
+ */
+const NAMED_PACKAGES = new Map([['src/data/developer-guides.json', new Set(['swisseph', 'pyswisseph'])]]);
+function namedPackageProblems(path, text) {
+  const names = NAMED_PACKAGES.get(path);
+  return [...text.matchAll(PROVENANCE)].filter((match) => !names?.has(match[0])).map((match) => `${path}:${lineAt(text, match.index)}`);
+}
 
 function conformanceProblems(source) {
   const summary = JSON.parse(source);
@@ -135,7 +146,7 @@ function scan() {
       } else if (entry.path === CONFORMANCE) {
         found.provenance.push(...conformanceProblems(text));
       } else {
-        for (const match of text.matchAll(PROVENANCE)) found.provenance.push(`${entry.path}:${lineAt(text, match.index)}`);
+        found.provenance.push(...namedPackageProblems(entry.path, text));
       }
     }
   });
@@ -235,6 +246,14 @@ describe('Swiss Ephemeris output stays out of the tree', () => {
 
   it('finds no Swiss provenance under src/ beyond the kept policies and the conformance summary', { timeout: SCAN_TIMEOUT }, () => {
     expect(scan().provenance, REGENERATE).toEqual([]);
+  });
+
+  it('lets the developer guides name the bindings and nothing else of Swiss', () => {
+    const guides = 'src/data/developer-guides.json';
+    expect(namedPackageProblems(guides, 'sweph binds it; swisseph and pyswisseph are packages.')).toEqual([]);
+    expect(namedPackageProblems(guides, 'Swisseph\nswe.calc_ut(jd)\nSEFLG_SWIEPH'))
+      .toEqual([`${guides}:1: Swisseph`, `${guides}:2: swe.calc_ut(jd)`, `${guides}:3: SEFLG_SWIEPH`]);
+    expect(namedPackageProblems('src/data/other.json', 'swisseph')).toEqual(['src/data/other.json:1: swisseph']);
   });
 
   it('finds no Swiss Ephemeris source code in the tree, and no patch in a swisseph commit receipt', { timeout: SCAN_TIMEOUT }, () => {

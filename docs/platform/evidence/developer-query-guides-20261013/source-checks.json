@@ -9,14 +9,9 @@
       "finding": "Swiss Ephemeris is offered under a dual licence: the GNU AGPL or the Swiss Ephemeris Professional License."
     },
     {
-      "url": "https://raw.githubusercontent.com/aloistr/swisseph/master/sweph.h",
-      "sha256": "eab1d1727f85e88b2bcb8bc0df6c64c9f50430eb2a85a48e85ae1eb1250f769d",
-      "finding": "SE_VERSION is 2.10.03."
-    },
-    {
-      "url": "https://unpkg.com/swisseph@0.5.17/deps/swisseph/sweph.h",
-      "sha256": "d0dd55a17327570a3f2943a049e2279a6cb752ee709a9fe59a316fd7606a7831",
-      "finding": "swisseph 0.5.17 bundles Swiss Ephemeris with SE_VERSION 2.09.03."
+      "url": "https://api.github.com/repos/aloistr/swisseph/releases/latest",
+      "sha256": "54cb392b53c0e1b96575df51dd4aa67f25b9e61832f28c4743f17c4689b9cb83",
+      "finding": "Astrodienst's latest Swiss Ephemeris release is 2.10.3b final release (tag v2.10.3bfinal), published 2026-08-02."
     },
     {
       "url": "https://raw.githubusercontent.com/mivion/swisseph/master/LICENSE",
@@ -26,7 +21,7 @@
     {
       "url": "https://raw.githubusercontent.com/timotejroiko/sweph/master/README.md",
       "sha256": "4bbd5d7e2adf376c21067b0c23520df6c1d208c1ea7aff23c8dc3e1b3d771265",
-      "finding": "sweph is GPL-2.0 up to 2.10.0, AGPL-3.0 from 2.10.1, and LGPL-3.0 for holders of a Swiss Ephemeris professional licence."
+      "finding": "sweph is GPL-2.0 up to 2.10.0, AGPL-3.0 from 2.10.1, and LGPL-3.0 for holders of a Swiss Ephemeris professional licence; its versions are locked to Swiss Ephemeris, 2.10.3-x being Swiss Ephemeris 2.10.03."
     },
     {
       "url": "https://raw.githubusercontent.com/g-battaglia/kerykeion/main/LICENSING.md",

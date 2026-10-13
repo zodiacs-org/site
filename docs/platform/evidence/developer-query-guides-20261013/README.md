@@ -54,12 +54,32 @@ them, and says what the other software does without ranking it:
   version, its date, its declared licence);
 - [`source-checks.json`](source-checks.json): the licence files, READMEs and
   repository status behind the facts the registries do not carry, each with
-  the digest of the bytes read.
+  the digest of the bytes read, and Swiss Ephemeris's latest release from its
+  repository's release record.
 
 Where a registry and a project disagree, the page says so: swisseph declares
 no licence on npm while its repository's licence file is the GPL, version 2;
 immanuel's PyPI entry names no licence while its README gives the AGPL,
 version 3 or later.
+
+Swiss Ephemeris's latest release, 2.10.3b of 2026-08-02, comes from its
+repository's release record; sweph's README gives its version lock
+(2.10.3-x is Swiss Ephemeris 2.10.03). The pages give no version for the
+Swiss Ephemeris that swisseph bundles: the only record of it is a Swiss source
+file, which the evidence does not name (below).
+
+## The Swiss output guard
+
+`scripts/swiss-output-guard.test.mjs` reads any name of Swiss Ephemeris's
+bindings under `src/` as possible Swiss provenance (DECISIONS-2026-09-29 §2),
+and the names of Swiss's source files in any data or code file as possible
+source code. The comparisons must name two bindings, so the guard now lets
+`src/data/developer-guides.json` hold the package names `swisseph` and
+`pyswisseph`, and nothing else of its list: no other spelling, no ephemeris
+flag, no call on the `swe` module. A control test holds the allowance to
+that, and every data file, this one included, may still hold no Swiss value
+and no Swiss source code. This narrows a rule the programme's decisions set,
+so it is named here for the owner's review.
 
 The engine's own figures are claims the ledger already holds:
 `acc.jpl-gate` (14.8″ against NASA JPL Horizons), `acc.swiss-multiyear`
