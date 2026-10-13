@@ -8595,7 +8595,7 @@ function usageHostFamily(userAgent) {
 }
 async function countAiToolCall(tool, host, env, fetcher = fetch) {
   const rpc = serviceRpc(env);
-  if (!rpc || !AI_TOOL_NAMES.includes(tool) || !USAGE_HOSTS.includes(host)) return false;
+  if (!rpc || !ALL_AI_TOOL_NAMES.includes(tool) || !USAGE_HOSTS.includes(host)) return false;
   try {
     const response = await fetcher(`${rpc.url}/rest/v1/rpc/zodiacs_mcp_usage_count_v1`, {
       method: "POST",
@@ -8756,7 +8756,8 @@ function createAiNodeHandler(options = {}) {
       let calledTool;
       if (message.method === "tools/call" && message.params && typeof message.params === "object") {
         const name = message.params.name;
-        if (AI_TOOL_NAMES.includes(String(name))) operation = String(name);
+        const offered = env[OCCASIONS_SWITCH_ENV] === "1" ? ALL_AI_TOOL_NAMES : AI_TOOL_NAMES;
+        if (offered.includes(String(name))) operation = String(name);
         if (typeof name === "string" && name === operation) calledTool = name;
       }
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));

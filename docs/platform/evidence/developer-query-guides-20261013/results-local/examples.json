@@ -6,7 +6,7 @@
     "releaseStatus": "published",
     "installedFrom": "npm registry, by exact version"
   },
-  "guideSourceSha256": "7a1247d003b2d98dec469a307980781efe6f3d459485be7601daffef2fe7486c",
+  "guideSourceSha256": "2f54ffe938b7198bd5c258758c8e94060587577e94e139ab21941489c21a7ddf",
   "runtimes": {
     "node": "v22.22.2",
     "deno": "deno 2.9.0 (stable, release, aarch64-apple-darwin)\nv8 14.9.207.2-rusty\ntypescript 6.0.3",

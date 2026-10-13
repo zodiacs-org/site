@@ -45,7 +45,10 @@
     },
     {
       "url": "https://api.github.com/repos/flatangle/flatlib",
-      "finding": "The flatlib repository is archived; it was last pushed on 2026-10-09."
+      "sha256": "80cdeba815c3d0fbae853727049c42c4fa54b0310348e3d7b086e5172c326dd6",
+      "readAt": "2026-10-13T10:26:59Z",
+      "finding": "The flatlib repository is archived; it was last pushed on 2026-10-09.",
+      "note": "Read again for its digest, which the first read on this date did not keep; archived is true and pushed_at is 2026-10-09T08:29:18Z."
     }
   ]
 }
