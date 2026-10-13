@@ -530,8 +530,9 @@ function htmlElementsWithClass(source, className) {
  * renders, and its footer. Its signatures, member names and navigation are
  * generated from the code's own names, and its scripts hold the search index.
  * Any other page is read for its title, its meta tags' content (the
- * description and the social cards'), the text of its body and its text
- * attributes, and the strings of its inline scripts. Styles, graphics and
+ * description and the social cards'), the text of its body (noscript blocks
+ * included) and its text attributes, its graphics' titles and descriptions,
+ * and the strings of its inline scripts. Styles, the rest of its graphics and
  * preformatted code are dropped, as fenced code in a language is from
  * Markdown.
  */
@@ -544,9 +545,13 @@ function htmlBlocks(source) {
     .filter(([, attributes, code]) => !/\bsrc\s*=/iu.test(attributes) && code.trim())
     .flatMap(([, attributes, code]) => (/\btype\s*=\s*["']?application\/(?:ld\+)?json/iu.test(attributes)
       ? jsonBlocks(code) : scriptBlocks(code, 'inline-script.js')));
+  // A graphic's title and description are its accessible text.
+  const graphics = typedoc ? [] : [...source.matchAll(/<svg\b[\s\S]*?<\/svg\s*>/giu)]
+    .flatMap(([svg]) => [...svg.matchAll(/<(title|desc)\b[^>]*>([\s\S]*?)<\/\1\s*>/giu)].map((match) => match[2]));
+  // A noscript block is read as body text: a reader without scripts sees it.
   const page = source
     .replace(/<!--[\s\S]*?-->/gu, ' ')
-    .replace(/<(script|style|svg|template|noscript)\b[\s\S]*?<\/\1\s*>/giu, ' ')
+    .replace(/<(script|style|svg|template)\b[\s\S]*?<\/\1\s*>/giu, ' ')
     .replace(/<pre\b[\s\S]*?<\/pre\s*>/giu, ' ');
   const head = page.match(/<head\b[^>]*>([\s\S]*?)<\/head\s*>/iu)?.[1] ?? '';
   const body = page.replace(/<head\b[^>]*>[\s\S]*?<\/head\s*>/iu, ' ');
@@ -566,7 +571,7 @@ function htmlBlocks(source) {
   return [...parts.flatMap((part) => part
     .replace(HTML_BREAKS, '\n\n')
     .replace(/<[^>]+>/gu, '')
-    .split(/\n\s*\n/u)), ...scripted]
+    .split(/\n\s*\n/u)), ...scripted, ...graphics]
     .filter((block) => block.trim());
 }
 

@@ -382,6 +382,12 @@ describe('claims ledger', () => {
       texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
     });
     controls.push({
+      // A noscript block and a graphic's title are text a reader can meet.
+      path: 'examples/platform/src/natal.html',
+      inject: (source) => source.replace('</body>', '<noscript>Positions are verified against JPL to 2″.</noscript><svg><title>Nothing is sent to a server.</title></svg></body>'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
       // An inline script on a page that is not a TypeDoc reference is read for its strings.
       path: 'public/sdk/examples/simastry-aura/index.html',
       inject: (source) => source.replace('</body>', "<script>document.title = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';</script></body>"),
