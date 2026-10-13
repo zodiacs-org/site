@@ -362,6 +362,8 @@ describe('claims ledger', () => {
       texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
     });
     for (const path of SCOPE_ADD) expect(selection.files).toContain(path);
+    // A directory shows a manifest's description whole, so it is read whole.
+    for (const path of SCOPE_ADD.filter((file) => /plugin\.json$/u.test(file))) expect(tierOf(path), path).toBe('dense');
     const missed = [];
     for (const control of controls) {
       const source = read(control.path);

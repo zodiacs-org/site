@@ -167,9 +167,18 @@ export const SCOPE_DROP = Object.freeze([
   { pattern: /(?:^|\/)fixtures\/|\.fixture\.json$/u, reason: 'test fixtures, not copy' },
 ]);
 
-/** Trust files whose blocks are ledgered whole once any sentence in them is triggered. */
+/**
+ * Trust files whose blocks are ledgered whole once any sentence in them is
+ * triggered. The plugin manifests are among them: an assistant directory
+ * shows their descriptions as written, privacy sentences and all.
+ */
 export const DENSE_FILES = Object.freeze([
   'docs/engine-validation/README.md',
+  'plugins/zodiacs-developer/.codex-plugin/plugin.json',
+  'plugins/zodiacs-developer/plugin.json',
+  'plugins/zodiacs-sky/.claude-plugin/plugin.json',
+  'plugins/zodiacs-sky/.codex-plugin/plugin.json',
+  'plugins/zodiacs-sky/plugin.json',
   'public/llms-full.txt',
   'public/llms.txt',
   'src/pages/developers/engine/index.astro',

@@ -16,7 +16,9 @@ site serves or ships, in five parts:
   now says 92, and plugin 0.3.10 is packed with it.
 - **Shipped notices, manifests, records and pages.** The adapter's NOTICE and
   `candidate.json`, the plugins' NOTICEs and manifests, and the starter's
-  three pages hold 82 selected sentences.
+  three pages hold 122 selected sentences. The manifests are read whole, as
+  the llms files are, once any sentence of a description is selected: an
+  assistant directory shows those descriptions as written.
   - The adapter's NOTICE ends with the engine's NOTICE, unchanged. Its 19
     sentences from there keep the decisions made for the same sentences in
     the release's NOTICE.
