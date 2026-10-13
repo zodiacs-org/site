@@ -139,13 +139,24 @@ Remembrance ships last in each step, after the owner has read its wording.
 
 - The `occasions-v1` panel (not built yet; for now the tools return
   structured data and a link to the printable card).
-- A usage-counts migration that adds the two tool names. Until then, calls to
-  them are not counted.
-- The claims ledger's `priv.ai-integration` statement ("requests no birth
-  details"): amend it, or add an occasion-tools claim, when the switch goes on,
-  because `get_life_milestones` takes a birth date.
-- The owner reads both tool titles and descriptions; they are shown to people
-  in the plugin's details.
+- **Usage counts: built, not applied.** The migration
+  `20261013144500_zodiacs_mcp_usage_occasion_tools.sql` adds the two tool
+  names to the anonymous daily counts, and the server counts them only while
+  the switch offers them (`docs/platform/zodiacs-ai/USAGE.md`). It needs the
+  owner's approval to apply to production before the switch goes on.
+- **Claims ledger: at switch-on.** The ledger takes a claim only when a public
+  sentence makes it, so this goes in with the privacy-page wording when the
+  switch goes on. Then `priv.ai-integration` ("requests no birth details")
+  gains "unless its occasion tools are switched on", and a new
+  `priv.ai-occasion-tools` claim says: the two tools take an occasion date or
+  a birth date, with an optional time, zone, coordinates and first names;
+  calculate for that call and store none of it; return a card link with the
+  details after its `#`, and only when the card page reproduces the answer;
+  and count one call each in the anonymous usage counts. Its evidence is in
+  `occasions.test.ts`, `http.test.ts`, `usage.test.ts` and the occasion usage
+  SQL test.
+- **Tool descriptions: approved** on 13 October (the owner delegated the
+  decision; merged in #734).
 - The ChatGPT submission file, evaluation cases and drives, then staging, then
   0.5.0 after the current review ends.
 
