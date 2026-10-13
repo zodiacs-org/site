@@ -1,0 +1,13 @@
+Chromium 154.0.8037.98 · warm · 5 loads each · viewport height 1400
+/es/horoscopes/aries/   360 px  5/5 loads shifted  CLS 0.0103 0.0103 0.0103 0.0103 0.0103  first: [{"at":41,"value":0.0103,"moved":["footer.zfooter","p.zfooter__help-description"]}]
+/es/horoscopes/aries/   412 px  5/5 loads shifted  CLS 0.0137 0.0137 0.0137 0.0137 0.0137  first: [{"at":31,"value":0.0137,"moved":["footer.zfooter"]}]
+/es/horoscopes/aries/  1280 px  4/5 loads shifted  CLS 0.0000 0.1730 0.1730 0.1730 0.1730  first: [{"at":33,"value":0.173,"moved":["footer.zfooter","nav.zfooter__group"]}]
+/pt/horoscopes/aries/   360 px  5/5 loads shifted  CLS 0.0095 0.0095 0.0095 0.0095 0.0095  first: [{"at":59,"value":0.0095,"moved":["footer.zfooter"]}]
+/pt/horoscopes/aries/   412 px  4/5 loads shifted  CLS 0.0102 0.0000 0.0102 0.0102 0.0102  first: [{"at":36,"value":0.0102,"moved":["footer.zfooter","p.zfooter__help-description"]}]
+/pt/horoscopes/aries/  1280 px  5/5 loads shifted  CLS 0.1730 0.1730 0.1730 0.1730 0.1730  first: [{"at":53,"value":0.173,"moved":["footer.zfooter","nav.zfooter__group"]}]
+/es/today/              360 px  0/5 loads shifted  CLS 0.0000 0.0000 0.0000 0.0000 0.0000
+/es/today/              412 px  0/5 loads shifted  CLS 0.0000 0.0000 0.0000 0.0000 0.0000
+/es/today/             1280 px  0/5 loads shifted  CLS 0.0000 0.0000 0.0000 0.0000 0.0000
+/pt/today/              360 px  0/5 loads shifted  CLS 0.0000 0.0000 0.0000 0.0000 0.0000
+/pt/today/              412 px  0/5 loads shifted  CLS 0.0000 0.0000 0.0000 0.0000 0.0000
+/pt/today/             1280 px  0/5 loads shifted  CLS 0.0000 0.0000 0.0000 0.0000 0.0000

@@ -1,0 +1,286 @@
+Chromium 154.0.8037.98 · edition 2026-10-12 · dated clock 2026-10-13T00:17:00.000Z
+PASS  Today and Horoscopes share the edition date
+PASS  The Spanish and Portuguese pages share the edition date
+PASS  /today/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /today/ 360px dated: the edition is dated
+PASS  /today/ 360px dated: CLS is exactly 0
+PASS  /today/ 360px dated: the server sent relative wording to date
+PASS  /today/ 360px dated: every text node reads as the server dates it
+PASS  /today/ 360px dated: EditionText shows its dated form
+PASS  /today/ 360px dated: no relative wording remains, islands included
+PASS  /today/ 360px dated: no page errors
+PASS  /today/ dated: text appended after its start was dated reads as one dated text
+PASS  /today/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /today/ 412px dated: the edition is dated
+PASS  /today/ 412px dated: CLS is exactly 0
+PASS  /today/ 412px dated: the server sent relative wording to date
+PASS  /today/ 412px dated: every text node reads as the server dates it
+PASS  /today/ 412px dated: EditionText shows its dated form
+PASS  /today/ 412px dated: no relative wording remains, islands included
+PASS  /today/ 412px dated: no page errors
+PASS  /today/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /today/ 1280px dated: the edition is dated
+PASS  /today/ 1280px dated: CLS is exactly 0
+PASS  /today/ 1280px dated: the server sent relative wording to date
+PASS  /today/ 1280px dated: every text node reads as the server dates it
+PASS  /today/ 1280px dated: EditionText shows its dated form
+PASS  /today/ 1280px dated: no relative wording remains, islands included
+PASS  /today/ 1280px dated: no page errors
+PASS  /today/ 412px current: answers 200
+PASS  /today/ 412px current: the edition is current
+PASS  /today/ 412px current: CLS is exactly 0
+PASS  /today/ 412px current: EditionText shows its current form
+PASS  /today/ 412px current: every text node keeps the server's wording
+PASS  /today/ 412px current: no page errors
+PASS  /horoscopes/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/ 360px dated: the edition is dated
+PASS  /horoscopes/ 360px dated: CLS is exactly 0
+PASS  /horoscopes/ 360px dated: the server sent relative wording to date
+PASS  /horoscopes/ 360px dated: every text node reads as the server dates it
+PASS  /horoscopes/ 360px dated: EditionText shows its dated form
+PASS  /horoscopes/ 360px dated: no relative wording remains, islands included
+PASS  /horoscopes/ 360px dated: no page errors
+PASS  /horoscopes/ dated: text appended after its start was dated reads as one dated text
+PASS  /horoscopes/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/ 412px dated: the edition is dated
+PASS  /horoscopes/ 412px dated: CLS is exactly 0
+PASS  /horoscopes/ 412px dated: the server sent relative wording to date
+PASS  /horoscopes/ 412px dated: every text node reads as the server dates it
+PASS  /horoscopes/ 412px dated: EditionText shows its dated form
+PASS  /horoscopes/ 412px dated: no relative wording remains, islands included
+PASS  /horoscopes/ 412px dated: no page errors
+PASS  /horoscopes/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/ 1280px dated: the edition is dated
+PASS  /horoscopes/ 1280px dated: CLS is exactly 0
+PASS  /horoscopes/ 1280px dated: the server sent relative wording to date
+PASS  /horoscopes/ 1280px dated: every text node reads as the server dates it
+PASS  /horoscopes/ 1280px dated: EditionText shows its dated form
+PASS  /horoscopes/ 1280px dated: no relative wording remains, islands included
+PASS  /horoscopes/ 1280px dated: no page errors
+PASS  /horoscopes/ 412px current: answers 200
+PASS  /horoscopes/ 412px current: the edition is current
+PASS  /horoscopes/ 412px current: CLS is exactly 0
+PASS  /horoscopes/ 412px current: EditionText shows its current form
+PASS  /horoscopes/ 412px current: every text node keeps the server's wording
+PASS  /horoscopes/ 412px current: no page errors
+PASS  /horoscopes/aries/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/aries/ 360px dated: the edition is dated
+PASS  /horoscopes/aries/ 360px dated: CLS is exactly 0
+PASS  /horoscopes/aries/ 360px dated: the server sent relative wording to date
+PASS  /horoscopes/aries/ 360px dated: every text node reads as the server dates it
+PASS  /horoscopes/aries/ 360px dated: EditionText shows its dated form
+PASS  /horoscopes/aries/ 360px dated: no relative wording remains, islands included
+PASS  /horoscopes/aries/ 360px dated: no page errors
+PASS  /horoscopes/aries/ dated: text appended after its start was dated reads as one dated text
+PASS  /horoscopes/aries/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/aries/ 412px dated: the edition is dated
+PASS  /horoscopes/aries/ 412px dated: CLS is exactly 0
+PASS  /horoscopes/aries/ 412px dated: the server sent relative wording to date
+PASS  /horoscopes/aries/ 412px dated: every text node reads as the server dates it
+PASS  /horoscopes/aries/ 412px dated: EditionText shows its dated form
+PASS  /horoscopes/aries/ 412px dated: no relative wording remains, islands included
+PASS  /horoscopes/aries/ 412px dated: no page errors
+PASS  /horoscopes/aries/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/aries/ 1280px dated: the edition is dated
+PASS  /horoscopes/aries/ 1280px dated: CLS is exactly 0
+PASS  /horoscopes/aries/ 1280px dated: the server sent relative wording to date
+PASS  /horoscopes/aries/ 1280px dated: every text node reads as the server dates it
+PASS  /horoscopes/aries/ 1280px dated: EditionText shows its dated form
+PASS  /horoscopes/aries/ 1280px dated: no relative wording remains, islands included
+PASS  /horoscopes/aries/ 1280px dated: no page errors
+PASS  /horoscopes/aries/ 412px current: answers 200
+PASS  /horoscopes/aries/ 412px current: the edition is current
+PASS  /horoscopes/aries/ 412px current: CLS is exactly 0
+PASS  /horoscopes/aries/ 412px current: EditionText shows its current form
+PASS  /horoscopes/aries/ 412px current: every text node keeps the server's wording
+PASS  /horoscopes/aries/ 412px current: no page errors
+PASS  /es/today/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /es/today/ 360px dated: the edition is dated
+PASS  /es/today/ 360px dated: CLS is exactly 0
+PASS  /es/today/ 360px dated: the server sent relative wording to date
+PASS  /es/today/ 360px dated: every text node reads as the server dates it
+PASS  /es/today/ 360px dated: EditionText shows its dated form
+PASS  /es/today/ 360px dated: no relative wording remains, islands included
+PASS  /es/today/ 360px dated: no page errors
+PASS  /es/today/ dated: text appended after its start was dated reads as one dated text
+PASS  /es/today/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /es/today/ 412px dated: the edition is dated
+PASS  /es/today/ 412px dated: CLS is exactly 0
+PASS  /es/today/ 412px dated: the server sent relative wording to date
+PASS  /es/today/ 412px dated: every text node reads as the server dates it
+PASS  /es/today/ 412px dated: EditionText shows its dated form
+PASS  /es/today/ 412px dated: no relative wording remains, islands included
+PASS  /es/today/ 412px dated: no page errors
+PASS  /es/today/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /es/today/ 1280px dated: the edition is dated
+PASS  /es/today/ 1280px dated: CLS is exactly 0
+PASS  /es/today/ 1280px dated: the server sent relative wording to date
+PASS  /es/today/ 1280px dated: every text node reads as the server dates it
+PASS  /es/today/ 1280px dated: EditionText shows its dated form
+PASS  /es/today/ 1280px dated: no relative wording remains, islands included
+PASS  /es/today/ 1280px dated: no page errors
+PASS  /es/today/ 412px current: answers 200
+PASS  /es/today/ 412px current: the edition is current
+PASS  /es/today/ 412px current: CLS is exactly 0
+PASS  /es/today/ 412px current: EditionText shows its current form
+PASS  /es/today/ 412px current: every text node keeps the server's wording
+PASS  /es/today/ 412px current: no page errors
+PASS  /es/horoscopes/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/ 360px dated: the edition is dated
+PASS  /es/horoscopes/ 360px dated: CLS is exactly 0
+PASS  /es/horoscopes/ 360px dated: the server sent relative wording to date
+PASS  /es/horoscopes/ 360px dated: every text node reads as the server dates it
+PASS  /es/horoscopes/ 360px dated: EditionText shows its dated form
+PASS  /es/horoscopes/ 360px dated: no relative wording remains, islands included
+PASS  /es/horoscopes/ 360px dated: no page errors
+PASS  /es/horoscopes/ dated: text appended after its start was dated reads as one dated text
+PASS  /es/horoscopes/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/ 412px dated: the edition is dated
+PASS  /es/horoscopes/ 412px dated: CLS is exactly 0
+PASS  /es/horoscopes/ 412px dated: the server sent relative wording to date
+PASS  /es/horoscopes/ 412px dated: every text node reads as the server dates it
+PASS  /es/horoscopes/ 412px dated: EditionText shows its dated form
+PASS  /es/horoscopes/ 412px dated: no relative wording remains, islands included
+PASS  /es/horoscopes/ 412px dated: no page errors
+PASS  /es/horoscopes/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/ 1280px dated: the edition is dated
+PASS  /es/horoscopes/ 1280px dated: CLS is exactly 0
+PASS  /es/horoscopes/ 1280px dated: the server sent relative wording to date
+PASS  /es/horoscopes/ 1280px dated: every text node reads as the server dates it
+PASS  /es/horoscopes/ 1280px dated: EditionText shows its dated form
+PASS  /es/horoscopes/ 1280px dated: no relative wording remains, islands included
+PASS  /es/horoscopes/ 1280px dated: no page errors
+PASS  /es/horoscopes/ 412px current: answers 200
+PASS  /es/horoscopes/ 412px current: the edition is current
+PASS  /es/horoscopes/ 412px current: CLS is exactly 0
+PASS  /es/horoscopes/ 412px current: EditionText shows its current form
+PASS  /es/horoscopes/ 412px current: every text node keeps the server's wording
+PASS  /es/horoscopes/ 412px current: no page errors
+PASS  /es/horoscopes/aries/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/aries/ 360px dated: the edition is dated
+PASS  /es/horoscopes/aries/ 360px dated: CLS is exactly 0
+PASS  /es/horoscopes/aries/ 360px dated: the server sent relative wording to date
+PASS  /es/horoscopes/aries/ 360px dated: every text node reads as the server dates it
+PASS  /es/horoscopes/aries/ 360px dated: EditionText shows its dated form
+PASS  /es/horoscopes/aries/ 360px dated: no relative wording remains, islands included
+PASS  /es/horoscopes/aries/ 360px dated: no page errors
+PASS  /es/horoscopes/aries/ dated: text appended after its start was dated reads as one dated text
+PASS  /es/horoscopes/aries/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/aries/ 412px dated: the edition is dated
+PASS  /es/horoscopes/aries/ 412px dated: CLS is exactly 0
+PASS  /es/horoscopes/aries/ 412px dated: the server sent relative wording to date
+PASS  /es/horoscopes/aries/ 412px dated: every text node reads as the server dates it
+PASS  /es/horoscopes/aries/ 412px dated: EditionText shows its dated form
+PASS  /es/horoscopes/aries/ 412px dated: no relative wording remains, islands included
+PASS  /es/horoscopes/aries/ 412px dated: no page errors
+PASS  /es/horoscopes/aries/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/aries/ 1280px dated: the edition is dated
+PASS  /es/horoscopes/aries/ 1280px dated: CLS is exactly 0
+PASS  /es/horoscopes/aries/ 1280px dated: the server sent relative wording to date
+PASS  /es/horoscopes/aries/ 1280px dated: every text node reads as the server dates it
+PASS  /es/horoscopes/aries/ 1280px dated: EditionText shows its dated form
+PASS  /es/horoscopes/aries/ 1280px dated: no relative wording remains, islands included
+PASS  /es/horoscopes/aries/ 1280px dated: no page errors
+PASS  /es/horoscopes/aries/ 412px current: answers 200
+PASS  /es/horoscopes/aries/ 412px current: the edition is current
+PASS  /es/horoscopes/aries/ 412px current: CLS is exactly 0
+PASS  /es/horoscopes/aries/ 412px current: EditionText shows its current form
+PASS  /es/horoscopes/aries/ 412px current: every text node keeps the server's wording
+PASS  /es/horoscopes/aries/ 412px current: no page errors
+PASS  /pt/today/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /pt/today/ 360px dated: the edition is dated
+PASS  /pt/today/ 360px dated: CLS is exactly 0
+PASS  /pt/today/ 360px dated: the server sent relative wording to date
+PASS  /pt/today/ 360px dated: every text node reads as the server dates it
+PASS  /pt/today/ 360px dated: EditionText shows its dated form
+PASS  /pt/today/ 360px dated: no relative wording remains, islands included
+PASS  /pt/today/ 360px dated: no page errors
+PASS  /pt/today/ dated: text appended after its start was dated reads as one dated text
+PASS  /pt/today/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /pt/today/ 412px dated: the edition is dated
+PASS  /pt/today/ 412px dated: CLS is exactly 0
+PASS  /pt/today/ 412px dated: the server sent relative wording to date
+PASS  /pt/today/ 412px dated: every text node reads as the server dates it
+PASS  /pt/today/ 412px dated: EditionText shows its dated form
+PASS  /pt/today/ 412px dated: no relative wording remains, islands included
+PASS  /pt/today/ 412px dated: no page errors
+PASS  /pt/today/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /pt/today/ 1280px dated: the edition is dated
+PASS  /pt/today/ 1280px dated: CLS is exactly 0
+PASS  /pt/today/ 1280px dated: the server sent relative wording to date
+PASS  /pt/today/ 1280px dated: every text node reads as the server dates it
+PASS  /pt/today/ 1280px dated: EditionText shows its dated form
+PASS  /pt/today/ 1280px dated: no relative wording remains, islands included
+PASS  /pt/today/ 1280px dated: no page errors
+PASS  /pt/today/ 412px current: answers 200
+PASS  /pt/today/ 412px current: the edition is current
+PASS  /pt/today/ 412px current: CLS is exactly 0
+PASS  /pt/today/ 412px current: EditionText shows its current form
+PASS  /pt/today/ 412px current: every text node keeps the server's wording
+PASS  /pt/today/ 412px current: no page errors
+PASS  /pt/horoscopes/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/ 360px dated: the edition is dated
+PASS  /pt/horoscopes/ 360px dated: CLS is exactly 0
+PASS  /pt/horoscopes/ 360px dated: the server sent relative wording to date
+PASS  /pt/horoscopes/ 360px dated: every text node reads as the server dates it
+PASS  /pt/horoscopes/ 360px dated: EditionText shows its dated form
+PASS  /pt/horoscopes/ 360px dated: no relative wording remains, islands included
+PASS  /pt/horoscopes/ 360px dated: no page errors
+PASS  /pt/horoscopes/ dated: text appended after its start was dated reads as one dated text
+PASS  /pt/horoscopes/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/ 412px dated: the edition is dated
+PASS  /pt/horoscopes/ 412px dated: CLS is exactly 0
+PASS  /pt/horoscopes/ 412px dated: the server sent relative wording to date
+PASS  /pt/horoscopes/ 412px dated: every text node reads as the server dates it
+PASS  /pt/horoscopes/ 412px dated: EditionText shows its dated form
+PASS  /pt/horoscopes/ 412px dated: no relative wording remains, islands included
+PASS  /pt/horoscopes/ 412px dated: no page errors
+PASS  /pt/horoscopes/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/ 1280px dated: the edition is dated
+PASS  /pt/horoscopes/ 1280px dated: CLS is exactly 0
+PASS  /pt/horoscopes/ 1280px dated: the server sent relative wording to date
+PASS  /pt/horoscopes/ 1280px dated: every text node reads as the server dates it
+PASS  /pt/horoscopes/ 1280px dated: EditionText shows its dated form
+PASS  /pt/horoscopes/ 1280px dated: no relative wording remains, islands included
+PASS  /pt/horoscopes/ 1280px dated: no page errors
+PASS  /pt/horoscopes/ 412px current: answers 200
+PASS  /pt/horoscopes/ 412px current: the edition is current
+PASS  /pt/horoscopes/ 412px current: CLS is exactly 0
+PASS  /pt/horoscopes/ 412px current: EditionText shows its current form
+PASS  /pt/horoscopes/ 412px current: every text node keeps the server's wording
+PASS  /pt/horoscopes/ 412px current: no page errors
+PASS  /pt/horoscopes/aries/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/aries/ 360px dated: the edition is dated
+PASS  /pt/horoscopes/aries/ 360px dated: CLS is exactly 0
+PASS  /pt/horoscopes/aries/ 360px dated: the server sent relative wording to date
+PASS  /pt/horoscopes/aries/ 360px dated: every text node reads as the server dates it
+PASS  /pt/horoscopes/aries/ 360px dated: EditionText shows its dated form
+PASS  /pt/horoscopes/aries/ 360px dated: no relative wording remains, islands included
+PASS  /pt/horoscopes/aries/ 360px dated: no page errors
+PASS  /pt/horoscopes/aries/ dated: text appended after its start was dated reads as one dated text
+PASS  /pt/horoscopes/aries/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/aries/ 412px dated: the edition is dated
+PASS  /pt/horoscopes/aries/ 412px dated: CLS is exactly 0
+PASS  /pt/horoscopes/aries/ 412px dated: the server sent relative wording to date
+PASS  /pt/horoscopes/aries/ 412px dated: every text node reads as the server dates it
+PASS  /pt/horoscopes/aries/ 412px dated: EditionText shows its dated form
+PASS  /pt/horoscopes/aries/ 412px dated: no relative wording remains, islands included
+PASS  /pt/horoscopes/aries/ 412px dated: no page errors
+PASS  /pt/horoscopes/aries/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/aries/ 1280px dated: the edition is dated
+PASS  /pt/horoscopes/aries/ 1280px dated: CLS is exactly 0
+PASS  /pt/horoscopes/aries/ 1280px dated: the server sent relative wording to date
+PASS  /pt/horoscopes/aries/ 1280px dated: every text node reads as the server dates it
+PASS  /pt/horoscopes/aries/ 1280px dated: EditionText shows its dated form
+PASS  /pt/horoscopes/aries/ 1280px dated: no relative wording remains, islands included
+PASS  /pt/horoscopes/aries/ 1280px dated: no page errors
+PASS  /pt/horoscopes/aries/ 412px current: answers 200
+PASS  /pt/horoscopes/aries/ 412px current: the edition is current
+PASS  /pt/horoscopes/aries/ 412px current: CLS is exactly 0
+PASS  /pt/horoscopes/aries/ 412px current: EditionText shows its current form
+PASS  /pt/horoscopes/aries/ 412px current: every text node keeps the server's wording
+PASS  /pt/horoscopes/aries/ 412px current: no page errors
+PASS  /today/ without JavaScript: no state is decided
+PASS  /today/ without JavaScript: the heading is dated
+
+ALL PASS

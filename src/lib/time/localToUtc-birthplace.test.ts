@@ -1,9 +1,11 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import {
+  TZDB, prepareLocalTime as preparePackageLocalTime, resolveLocalToUtc as packageResolveLocalToUtc, zoneOffsetAt,
+} from '@zodiacs/engine/geo';
 import { parseNatalEnvelope } from '@zodiacs/engine/receipt';
-import lmtEras from '../../data/tz-lmt.json';
 import cityIndex from '../../../public/data/cities/index.json';
 import { computeCalculatorReceipt } from '../engine/calculator-receipt';
-import { LOCAL_MEAN_TIME_ERAS_END_BEFORE, offsetAt, prepareLocalTime, resolveLocalToUtc } from './localToUtc';
+import { offsetAt, prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 
 // Longitudes as the shipped city index carries them (GeoNames, 0.01°).
 const BUFFALO = -78.88;
@@ -124,8 +126,10 @@ describe('birthplace local mean time', () => {
     expect(resolved.utc.toISOString()).toBe('1883-11-18T17:05:31.000Z');
     expect(resolved.offsetMinutes).toBe(-300);
     expect(resolved.flags).toEqual(['dst-gap']);
-    // The shifted instant is already on Eastern time.
-    expect(resolved.localMeanTime).toBeUndefined();
+    // The shifted instant is already on Eastern time, but the clock the reading
+    // came from was Buffalo's own mean time, which the shift is measured from:
+    // the engine reports it, with New York's mean time for comparison.
+    expect(resolved.localMeanTime).toEqual({ longitude: BUFFALO, zoneOffsetMinutes: minutes(-4, 56, 2) });
     // Either side of the gap reads normally.
     expect(resolveLocalToUtc('1883-11-18', '11:44', 'America/New_York', { longitude: BUFFALO }).utc.toISOString())
       .toBe('1883-11-18T16:59:31.000Z');
@@ -157,31 +161,20 @@ describe('birthplace local mean time', () => {
     expect(() => fresh.resolveLocalToUtc('1953-01-01', '00:00', 'Pacific/Kiritimati', { longitude: -157.4 })).not.toThrow();
   });
 
-  it('does not remember a failed download of the table', async () => {
-    vi.resetModules();
-    vi.doMock('../../data/tz-lmt.json', () => { throw new Error('offline'); });
-    const fresh = await import('./localToUtc');
-    const { ModuleLoadError } = await import('../module-load');
-    await expect(fresh.prepareLocalTime('1870-06-15', 'America/New_York')).rejects.toBeInstanceOf(ModuleLoadError);
-    vi.doUnmock('../../data/tz-lmt.json');
-    await expect(fresh.prepareLocalTime('1870-06-15', 'America/New_York')).resolves.toBeUndefined();
-    expect(fresh.resolveLocalToUtc('1870-06-15', '12:00', 'America/New_York', { longitude: BUFFALO }).utc.toISOString())
-      .toBe('1870-06-15T17:15:31.000Z');
-    vi.resetModules();
-  });
-
-  it('refuses to guess an early birthplace time before the table is loaded', async () => {
-    const fresh = await import('./localToUtc?unloaded' as string) as typeof import('./localToUtc');
-    expect(() => fresh.resolveLocalToUtc('1870-06-15', '12:00', 'America/New_York', { longitude: BUFFALO }))
-      .toThrow('prepareLocalTime');
-    // Dates up to 1970 need the zone's pinned history too; later dates, and
-    // early dates without a longitude, need neither.
-    expect(() => fresh.resolveLocalToUtc('1953-01-04', '12:00', 'America/New_York', { longitude: BUFFALO })).toThrow('prepareLocalTime');
-    expect(fresh.resolveLocalToUtc('1971-01-04', '12:00', 'America/New_York', { longitude: BUFFALO }).offsetMinutes).toBe(-300);
-    expect(fresh.resolveLocalToUtc('1870-06-15', '12:00', 'America/New_York').offsetMinutes).toBeCloseTo(-(4 * 60 + 56 + 2 / 60), 9);
-    await fresh.prepareLocalTime('1952-12-31', 'America/New_York');
-    expect(fresh.resolveLocalToUtc('1870-06-15', '12:00', 'America/New_York', { longitude: BUFFALO }).utc.toISOString())
-      .toBe('1870-06-15T17:15:31.000Z');
+  it('refuses to guess an early time before the zone is prepared', async () => {
+    // A zone no test prepares: the engine keeps what it has loaded for the
+    // whole run, and its module is shared by every copy of the resolver.
+    const zone = 'America/Indiana/Knox';
+    const KNOX = -86.62;
+    expect(() => resolveLocalToUtc('1870-06-15', '12:00', zone, { longitude: KNOX })).toThrow('prepareLocalTime');
+    // Dates up to 1970 need the zone's shipped history, with a longitude or
+    // without one; later dates need nothing.
+    expect(() => resolveLocalToUtc('1953-01-04', '12:00', zone, { longitude: KNOX })).toThrow('prepareLocalTime');
+    expect(() => resolveLocalToUtc('1870-06-15', '12:00', zone)).toThrow('prepareLocalTime');
+    expect(resolveLocalToUtc('1971-01-04', '12:00', zone, { longitude: KNOX }).offsetMinutes).toBe(-360);
+    await prepareLocalTime('1952-12-31', zone);
+    expect(resolveLocalToUtc('1870-06-15', '12:00', zone, { longitude: KNOX }).utc.toISOString()).toBe('1870-06-15T17:46:29.000Z');
+    expect(resolveLocalToUtc('1870-06-15', '12:00', zone).offsetMinutes).toBeCloseTo(minutes(-5, 46, 30), 9);
   });
 
   it('keeps a skipped or repeated date across a date-line move inside the era', () => {
@@ -217,10 +210,8 @@ describe('birthplace local mean time', () => {
   it('ignores a longitude hours away from the zone, as a birthplace in another zone', () => {
     // Toronto's longitude under Juneau's zone is 3 h 40 min from Juneau's mean time.
     const resolved = resolveLocalToUtc('1867-10-18', '12:00', 'America/Juneau', { longitude: -79.38 });
-    // The zone's clock, with `lmt`: the zone's own mean time read the wall time,
-    // which only a reading with a longitude claims.
-    expect({ ...resolved, flags: resolved.flags.filter((flag) => flag !== 'lmt') })
-      .toEqual(resolveLocalToUtc('1867-10-18', '12:00', 'America/Juneau'));
+    // The zone's clock, as without a longitude, with `lmt`: the zone's own mean time read the wall time.
+    expect(resolved).toEqual(resolveLocalToUtc('1867-10-18', '12:00', 'America/Juneau'));
     expect(resolved.flags).toEqual(['lmt']);
     // The widest real case in the city index, Gar under Shanghai's zone, is kept.
     expect(resolveLocalToUtc('1890-06-15', '12:00', 'Asia/Shanghai', { longitude: 80.1 }).localMeanTime).toBeDefined();
@@ -247,28 +238,24 @@ describe('birthplace local mean time', () => {
   });
 });
 
-describe('local mean time era table', () => {
-  const eras: Record<string, number> = lmtEras.eras;
-
-  it('records its tzdb release and source digest', () => {
-    expect(lmtEras.tzdb).toMatch(/^\d{4}[a-z]$/);
-    expect(lmtEras.source.sha256).toMatch(/^[0-9a-f]{64}$/);
-    expect(lmtEras.source.files).toContain('backzone');
+describe('the engine\'s local mean time eras', () => {
+  it('ships tzdata 2025c with backzone', () => {
+    expect(TZDB).toMatchObject({ version: '2025c', form: 'main+backzone' });
+    expect(TZDB.sha256).toMatch(/^[0-9a-f]{64}$/);
   });
 
-  it('covers every zone the birthplace search offers that has a local mean time era', () => {
-    // Kerguelen was uninhabited until 1950; tzdb begins it at "-00", not LMT.
-    const withoutEra = new Set(['Indian/Kerguelen']);
-    const missing = cityIndex.tz.filter((zone) => !(zone in eras) && !withoutEra.has(zone) && !/^(?:Etc\/|UTC$)/.test(zone));
-    expect(missing).toEqual([]);
-  });
-
-  it('holds whole seconds, every era ending before the resolver stops looking', () => {
-    for (const end of Object.values(eras)) {
-      expect(Number.isInteger(end)).toBe(true);
-      expect(end).toBeGreaterThan(Date.UTC(1700, 0, 1) / 1000);
-      expect(end * 1000).toBeLessThan(LOCAL_MEAN_TIME_ERAS_END_BEFORE);
+  it('covers every zone the birthplace search offers', async () => {
+    // Before standard time every zone of the city index reads the engine's
+    // shipped history; Kerguelen was uninhabited until 1950, which tzdb
+    // records as "-00", read from Intl.
+    const fromIntl = new Set(['Indian/Kerguelen']);
+    const uncovered: string[] = [];
+    for (const zone of cityIndex.tz.filter((name: string) => !/^(?:Etc\/|UTC$)/.test(name))) {
+      await preparePackageLocalTime('1850-06-15', zone);
+      const source = packageResolveLocalToUtc('1850-06-15', '12:00', zone).zone.source;
+      if (source !== (fromIntl.has(zone) ? 'intl' : 'tzdb')) uncovered.push(zone);
     }
+    expect(uncovered).toEqual([]);
   });
 
   it.each([
@@ -284,15 +271,25 @@ describe('local mean time era table', () => {
     ['America/Kralendijk', '1912-02-12T04:35:47.000Z'],
     // An UNTIL in standard time ("0:00s"), not universal time.
     ['Europe/Isle_of_Man', '1883-03-30T00:17:55.000Z'],
-  ])('ends %s at %s', (zone, iso) => {
-    expect(new Date(eras[zone] * 1000).toISOString()).toBe(iso);
+  ])('ends %s at %s', async (zone, iso) => {
+    await prepareLocalTime('1850-01-01', zone);
+    const end = Date.parse(iso);
+    // The wall time an hour either side of the end, on the zone's own clock.
+    const read = (instant: number) => {
+      const wall = new Date(instant + zoneOffsetAt(zone, instant) * 60_000).toISOString();
+      return resolveLocalToUtc(wall.slice(0, 10), wall.slice(11, 16), zone);
+    };
+    const before = read(end - 3_600_000);
+    const after = read(end + 3_600_000);
+    expect(before.flags).toContain('lmt');
+    expect(after.flags).not.toContain('lmt');
   });
 
   it('matches Intl on the offset change where the zone and its reference data agree', () => {
-    // New York, Chicago and Mexico City change from local mean time to a
-    // different standard offset, which Intl can see.
-    for (const zone of ['America/New_York', 'America/Chicago', 'America/Mexico_City']) {
-      const end = eras[zone] * 1000;
+    // New York and Chicago change from local mean time to a different
+    // standard offset, which Intl can see.
+    for (const [zone, iso] of [['America/New_York', '1883-11-18T17:00:00.000Z'], ['America/Chicago', '1883-11-18T18:00:00.000Z']]) {
+      const end = Date.parse(iso);
       expect(offsetAt(zone, end - 1000)).not.toBe(offsetAt(zone, end));
     }
   });

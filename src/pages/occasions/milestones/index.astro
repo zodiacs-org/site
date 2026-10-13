@@ -1,0 +1,24 @@
+---
+import Base from '../../../layouts/Base.astro';
+import LifeMilestones from '../../../islands/LifeMilestones.tsx';
+import '../../../styles/calculator.css';
+import '../../../styles/occasions.css';
+---
+<Base
+  clientUi
+  title="Your Sky Milestones — Saturn Return, Jupiter Return & More | Zodiacs.org"
+  description="From your birth date: the dates of your Jupiter returns, Saturn returns and Uranus opposition with every pass, and the full moons and Mercury retrogrades you have lived through. Free."
+  path="/occasions/milestones/"
+>
+  <section class="section--tight container container--narrow">
+    <div class="tool-hero reveal">
+      <h1 class="display">Your sky milestones</h1>
+      <p>
+        Astrology has its own birthdays: the years Jupiter and Saturn come back to where they were when you were born,
+        and the year Uranus stands opposite. Enter a birth date for the dates, every pass, and how many full moons you
+        have seen so far.
+      </p>
+    </div>
+    <LifeMilestones client:load />
+  </section>
+</Base>

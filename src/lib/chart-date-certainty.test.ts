@@ -1,9 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { moonSignCandidates } from '@zodiacs/engine/techniques';
 import type { BodyName, BodyPosition } from './engine/types';
 import { computeBodies } from './engine/full';
 import { signForLongitude } from './signs';
-import { resolveLocalToUtc } from './time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
+
+// The resolver is the engine's, which the site loads on first use.
+beforeAll(() => prepareLocalTime('2000-01-01', 'UTC'));
 import {
   bodySignIsAmbiguous,
   stableBodySignSlug,

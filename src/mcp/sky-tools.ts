@@ -119,8 +119,8 @@ const NO_ZONES: ComputeDependencies = {
   localTime: {
     prepareLocalTime: async () => noZones(),
     resolveLocalToUtc: () => noZones(),
-    loadZoneHistory: async () => noZones(),
     canonicalZoneName: async () => noZones(),
+    get TZDB() { return noZones(); },
   },
 };
 

@@ -4,7 +4,7 @@ import render from 'preact-render-to-string';
 import { describe, expect, it } from 'vitest';
 import Inspector from '../islands/explorer/Inspector';
 import { computeChart } from './engine/full';
-import { resolveLocalToUtc } from './time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
 import { chartSheetProvenanceLines, chartSheetSettings, shareCardTimeNotes } from './share-card';
 import { shareCardText } from './share-card-copy';
 import { buildSceneModel } from './scene/build';
@@ -16,6 +16,8 @@ import itUi from './i18n/ui/it'; import pt from './i18n/ui/pt'; import ru from '
 
 const catalogs = { en, es, fr, it: itUi, pt, ru };
 const locales = Object.keys(catalogs) as CatalogLocale[];
+// The resolver is the engine's, which the site loads on first use.
+await prepareLocalTime('2000-01-15', 'Africa/Khartoum');
 const r = resolveLocalToUtc('2000-01-15', '12:00', 'Africa/Khartoum');
 const chart = computeChart({ utc: r.utc, latitude: 15.5, longitude: 32.5, houseSystem: 'whole', timeKnown: false, flags: r.flags });
 const details = { date: '2000-01-15', time: '12:00', timeKnown: false, city: '', country: '', timezone: 'Africa/Khartoum' };
