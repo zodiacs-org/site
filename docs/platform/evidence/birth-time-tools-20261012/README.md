@@ -77,18 +77,27 @@ committed nodal speeds kept, as before.
 
 ## 0.1.0-rc.24 and plugin 0.3.12
 
-- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 909,658
+- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 909,656
   bytes, SHA-256
-  `433385a993b973dfa0235affd1dafd3b72a88f06f08b4627955502124828a9f1`, built
-  from commit `f148a386031995a8abb84c982a80ff9fead7b083`, which also adds the
-  time atlas (B3.b,
-  [`../time-atlas-reading-20261012/`](../time-atlas-reading-20261012/)). Its
+  `1a669aab22ed7c7223bb4ac80bd40cabc4df13812c1c8cc5c4b4b6585fca82bb`, built
+  from commit `21691a8cda95c5fac910d79576cd3f734b03a8e1`. It was first cut
+  from `f148a386`, which also adds the time atlas (B3.b,
+  [`../time-atlas-reading-20261012/`](../time-atlas-reading-20261012/)), and
+  packed again on 2026-10-13, after the merge of A1.b's re-cut, because its
+  `candidate.json` said it superseded 0.1.0-rc.19; it now names 0.1.0-rc.23,
+  the latest archive the site served before it, as
+  `scripts/mcp-artifact.test.mjs` requires. The drives below ran on the same
+  `server.mjs`, byte for byte. Its
   `server.mjs` is 2,459,502 bytes, SHA-256
   `866e5a9c0756b96a5777c0a15117735f8bd60d6728d1a2a3a2f7e00094f5b959`: the
   build now inlines every JSON table as a string parsed at its first import,
   as the compute API's local-time bundle does, so the zone-name table carries
   no CommonJS shim.
-- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,805,668 bytes.
+- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,849,062 bytes. It
+  also carries Chart Studio's fix for a birth date without a time (F-91),
+  which came with A1.b. Its release note first said it "bundles MCP adapter
+  0.1.0-rc.24"; the plugin registers only the adapter's chart tools, beside
+  the hosted tools, and the note now says so.
 - [`../mcp-adapter/mcp-rc23-rc24.json`](../mcp-adapter/mcp-rc23-rc24.json)
   drives rc.23 and rc.24 with the same 278 tool calls, 10 of them refusals,
   after versions and digests are written out. One answer differs:
