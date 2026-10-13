@@ -203,6 +203,36 @@ digest `b16d6533`: the committed manifest and captures are that artifact's,
 and its build, captures, visual comparison, Lighthouse and explorer drive
 passed ([`browser-evidence-provenance-f88.json`](browser-evidence-provenance-f88.json)).
 
+## Tab titles and the pt-BR first of the month (#737)
+
+The last two items F-86 and F-88 left open. In the dated window the head guard
+now dates the Spanish and Portuguese tab titles as they are parsed, keeping
+the date each title already names; the server titles that search engines read
+are unchanged, and English titles name only their date:
+
+| page | server title | dated window |
+| --- | --- | --- |
+| `/es/today/` | Hoy — el cielo del 12 de octubre de 2026 | El cielo del 12 de octubre de 2026 |
+| `/es/horoscopes/` | Horóscopos de hoy — 12 de octubre de 2026 | Horóscopos del 12 de octubre de 2026 |
+| `/es/horoscopes/aries/` | Horóscopo de Aries hoy, 12 de octubre | Horóscopo de Aries del 12 de octubre |
+| `/pt/today/` | Hoje — o céu de 12 de outubro de 2026 | O céu de 12 de outubro de 2026 |
+| `/pt/horoscopes/` | Horóscopos de hoje — 12 de outubro de 2026 | Horóscopos de 12 de outubro de 2026 |
+| `/pt/horoscopes/aries/` | Horóscopo de Áries hoje, 12 de outubro | Horóscopo de Áries de 12 de outubro |
+
+Every Portuguese date that names its month writes day 1 as "1º" ("1º de
+novembro de 2026", "1º de nov. de 2026"), through `formatDate` and
+`formatDateTime` (one-time allowance for `src/lib/i18n/dates.ts`), the
+edition's date label and the birthday pages. The reviews
+([reviews-titles.md](reviews-titles.md)) accepted every title and "1º" form,
+and changed the Spanish and Portuguese birthday sky lines to join the year
+with "de". The drive now also checks the tab title on all nine routes: dated
+on a dated clock, the server's on a current one. `dates.ts` and the guard are
+template sources: Browser Evidence run 38416946190 on `1483eb1f` took the
+captures for digest `091d850f`, which the later commit (a string file and
+records) did not move; its build, captures, visual comparison, Lighthouse and
+explorer drive passed
+([`browser-evidence-provenance-titles.json`](browser-evidence-provenance-titles.json)).
+
 ## Phase 1 captures
 
 The guard, the layout and the footer styles are template sources, so this

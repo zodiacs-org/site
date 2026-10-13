@@ -7,6 +7,7 @@ import SignIcon from '../SignIcon.astro';
 import CollectBand from '../CollectBand.astro';
 import { LOCALE_META, localizePath } from '../../lib/i18n';
 import { planetLabel } from '../../lib/i18n/astrology';
+import { withFirstDayOrdinal } from '../../lib/i18n/dates';
 import { formatLongitude, signBySlug, signName } from '../../lib/signs';
 import {
   birthdaySlug,
@@ -41,8 +42,10 @@ const dateFormatter = new Intl.DateTimeFormat(LOCALE_META[locale].intlLocale, {
 const dateLabel = (valueMonth: number, valueDay: number) => {
   const formatted = dateFormatter.format(new Date(Date.UTC(2000, valueMonth - 1, valueDay)));
   // Intl renders French first-of-month dates as “1 février”; editorial
-  // French requires the ordinal form wherever these labels enter prose.
-  return locale === 'fr' && valueDay === 1 ? formatted.replace(/^1 /, '1er ') : formatted;
+  // French requires the ordinal form wherever these labels enter prose, and
+  // Brazilian Portuguese writes “1º de fevereiro”.
+  if (locale === 'fr' && valueDay === 1) return formatted.replace(/^1 /, '1er ');
+  return withFirstDayOrdinal(locale, formatted);
 };
 const label = dateLabel(month, day);
 const text = (key: Parameters<typeof birthdayText>[1], values: Record<string, string | number> = {}) => (
