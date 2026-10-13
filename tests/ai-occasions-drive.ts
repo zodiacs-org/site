@@ -95,6 +95,12 @@ try {
   assert.match(babyText, /The Moon changes sign that day\. Add the time to pin it down\./);
   assert.doesNotMatch(babyText, /Golden hour|Sunset/);
 
+  // A place name with no zone or coordinates is shown, and the line does not claim there was no place.
+  const named = await open();
+  await show(named, await result('get_occasion_sky', { occasion: 'birthday', date: '2026-10-23', place: 'Florence, Italy' }));
+  await named.locator('h1').waitFor();
+  assert.match(await named.locator('.when').innerText(), /^Friday 23 October 2026 · Florence, Italy · no time given, so at noon UTC$/);
+
   // Life milestones: the next one with each pass, the numbers, every milestone.
   const lives = await open();
   await show(lives, milestones);

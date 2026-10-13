@@ -77,7 +77,10 @@ function Occasion({ data }: { data: OccasionSky }) {
   const when = [
     longDate(data.date),
     data.place,
-    data.instantIs === 'given-time' ? time(data.instant) : data.instantIs === 'local-noon' ? 'no time given, so at noon' : 'no time or place given, so at noon UTC',
+    data.instantIs === 'given-time' ? time(data.instant)
+      : data.instantIs === 'local-noon' ? 'no time given, so at noon'
+      // A place name alone (no zone or coordinates) is shown, but the sky is still read at noon UTC.
+      : data.place ? 'no time given, so at noon UTC' : 'no time or place given, so at noon UTC',
   ].filter(Boolean).join(' · ');
   const moonLine = data.moonSignChange ? `${signName(data.moonSignChange.from)} → ${signName(data.moonSignChange.to)} Moon` : moon ? `${signName(moon.sign)} Moon` : '';
   const rows: [string, string][] = [];
