@@ -8,7 +8,7 @@
  },
  "new": {
   "file": "server.mjs",
-  "sha256": "866e5a9c0756b96a5777c0a15117735f8bd60d6728d1a2a3a2f7e00094f5b959"
+  "sha256": "d90de2807a965feffa0c04f6e6ca72b0ed82ba34a422d91906bcb875464b3d9b"
  },
  "tools": [
   {
@@ -281,7 +281,7 @@
        "maxLength": 2
       },
       "atlasPlace": {
-       "description": "A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.",
+       "description": "A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.",
        "type": "string",
        "enum": [
         "fr-paris",
@@ -1501,7 +1501,7 @@
     {
      "path": "$.structured.unsupported.2",
      "old": "Resolving a place name or time zone: supply an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.",
-     "new": "Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb. search_places reads only that index, and resolve_birth_time only tzdb, with no town-level clock records. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once."
+     "new": "Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb and the time atlas. search_places reads only that index; resolve_birth_time reads tzdb and, for one of the time atlas's 21 places named in atlasPlace, the atlas's cited reading beside it, and no other town-level clock record. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once."
     },
     {
      "path": "$.structured.privacy.citation",
@@ -1628,7 +1628,7 @@
       "  \"rows\": 33934,",
       "  \"maxResults\": 20,",
       "  \"coordinates\": \"Degrees, rounded to 0.01°, about 1.1 km, as the index stores them.\"",
-      "  \"Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb. search_places reads only that index, and resolve_birth_time only tzdb, with no town-level clock records. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.\",",
+      "  \"Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb and the time atlas. search_places reads only that index; resolve_birth_time reads tzdb and, for one of the time atlas's 21 places named in atlasPlace, the atlas's cited reading beside it, and no other town-level clock record. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.\",",
       "  \"citation\": \"A chart's cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter's own receipt, which holds nothing from either record. get_positions, find_events, check_sky_fact and resolve_birth_time cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date, zone or body from the request. search_places cites the adapter's receipt, which names the place index and holds nothing from the query.\""
      ]
     }

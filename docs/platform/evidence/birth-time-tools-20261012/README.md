@@ -77,23 +77,25 @@ committed nodal speeds kept, as before.
 
 ## 0.1.0-rc.24 and plugin 0.3.12
 
-- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 909,656
+- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 910,032
   bytes, SHA-256
-  `1a669aab22ed7c7223bb4ac80bd40cabc4df13812c1c8cc5c4b4b6585fca82bb`, built
-  from commit `21691a8cda95c5fac910d79576cd3f734b03a8e1`. It was first cut
-  from `f148a386`, which also adds the time atlas (B3.b,
-  [`../time-atlas-reading-20261012/`](../time-atlas-reading-20261012/)), and
-  packed again on 2026-10-13, after the merge of A1.b's re-cut, because its
-  `candidate.json` said it superseded 0.1.0-rc.19; it now names 0.1.0-rc.23,
+  `2d27439075bd29548b85d248933f843c63e02ce0774621f241813ea90d46587a`, built
+  from commit `0310cdae9ae3ea58fc0c0f3dc22c8d7743cbd658`. Its `server.mjs` is
+  2,460,956 bytes, SHA-256
+  `d90de2807a965feffa0c04f6e6ca72b0ed82ba34a422d91906bcb875464b3d9b`: the build
+  inlines every JSON table as a string parsed at its first import, as the
+  compute API's local-time bundle does, so the zone-name table carries no
+  CommonJS shim. It was first cut from `f148a386`, which also adds the time
+  atlas (B3.b, [`../time-atlas-reading-20261012/`](../time-atlas-reading-20261012/));
+  packed again on 2026-10-13 after the merge of A1.b's re-cut, because its
+  `candidate.json` said it superseded 0.1.0-rc.19 (it now names 0.1.0-rc.23,
   the latest archive the site served before it, as
-  `scripts/mcp-artifact.test.mjs` requires. The drives below ran on the same
-  `server.mjs`, byte for byte. Its
-  `server.mjs` is 2,459,502 bytes, SHA-256
-  `866e5a9c0756b96a5777c0a15117735f8bd60d6728d1a2a3a2f7e00094f5b959`: the
-  build now inlines every JSON table as a string parsed at its first import,
-  as the compute API's local-time bundle does, so the zone-name table carries
-  no CommonJS shim.
-- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,849,062 bytes. It
+  `scripts/mcp-artifact.test.mjs` requires); and packed again after #742's
+  review, which found that `resolve_birth_time` accepted an `atlasPlace` in
+  another zone than `local.zone`, and that its stated limits denied the atlas.
+  The parser now refuses such a place (`/atlasPlace`), and the limits name the
+  atlas as the exception to "no town-level clock records".
+- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,850,094 bytes. It
   also carries Chart Studio's fix for a birth date without a time (F-91),
   which came with A1.b. Its release note first said it "bundles MCP adapter
   0.1.0-rc.24"; the plugin registers only the adapter's chart tools, beside
@@ -106,10 +108,11 @@ committed nodal speeds kept, as before.
   new tools, the capabilities reply's schema, and the wording of
   `check_sky_fact`'s description and date argument. The methodology resource
   gains a section on local times and places.
-- The protocol drive passed 114 of 114 checks, the host drive with Claude Code
-  2.1.296 7 of 7, the comparison benchmark 18 of 18 cases and 112 of 112
-  assertions, and the archive's own `verify.mjs` 25 of 25
-  ([`../mcp-adapter/`](../mcp-adapter/)).
+- The comparison, the protocol drive (114 of 114 checks), the host drive with
+  Claude Code 2.1.296 (7 of 7) and the comparison benchmark (18 of 18 cases and
+  112 of 112 assertions) ran again on this `server.mjs`, with the same counts
+  ([`../mcp-adapter/`](../mcp-adapter/)); the archive's own `verify.mjs` passes
+  25 of 25 in `scripts/mcp-artifact.test.mjs`.
 
 ## Phase 1 captures
 
