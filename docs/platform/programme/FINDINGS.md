@@ -77,7 +77,11 @@ Severity follows the audit's scale:
 | F-81 | minor | copy | The birth-time window surface starts its sampling sentence in lower case ("sampled at one-second resolution. This check varies birth time…"), and its times read "GMT+0" under a note that says "Times below use UTC notation" | open: a later change to the surface; seen on canonical production at checkpoint 26; no value, control or gate depends on it |
 | F-82 | minor | engine reproducibility | On arm64 the engine gives some values that differ from x86-64's in their last bits: 4 of its 3,853 tests fail on an Apple M4 under Node 20, 22 and 24 (a calc speed by 1.4e-11 against a 1e-12 pin; a chart digest and an aspect angle by 5e-14° in two exact site-parity checks), and one conformance residual rounds differently in its ninth decimal | recorded in engine 1.0.0's CHANGELOG and evidence; the pins and generated results stay x86-64's, as CI runs, and 1.0.0's generated files were rebuilt on Linux x86-64; no published claim says bit-identical across platforms |
 | F-83 | minor | Registry (frozen) | The wallet chart's owner comparison (`src/islands/WalletChart.tsx`) resolves the owner's local time without `prepareLocalTime`. With the engine's resolver, which #723 adopts, it refuses every owner time ("the local-time resolver is not loaded") and shows the page's invalid-response error; on main it read the host's Intl data. The file is frozen Registry code under the Phase 1 scope guard, and its page serves only a redirect while no wallet chain is configured, as in production. | open: the fix is one awaited `prepareLocalTime(ownerDate, ownerCity.tz)` before the call, which needs the owner's one-time scope allowance; until then the feature must stay unconfigured. `src/lib/time/localToUtc-callers.test.ts` lists it as the one caller that does not prepare |
+| F-84 | minor | performance | From 00:00 UTC until the day's edition deploys, the daily pages dated their "today" wording after the first paint, and the longer text moved what was below it: Site Check's Lighthouse gate measured CLS 0.020 on `/today/`, 0.005 on `/horoscopes/` and 0.011 on `/horoscopes/aries/` (run 38184748851, 2026-10-12 after 00:00 UTC) | fixed in #726: the head script dates that wording as the parser adds it; `tests/edition-dated-drive.mjs` |
 | F-85 | minor | CI | `tests/bio-drive.mjs` read the real clock: from 00:00 UTC until the day's edition deploys, `/bio/`'s dated heading takes another line and put the desktop CTA at 374 px against the drive's 360 px ceiling, so its verdict depended on when it ran; Site Check 38184748851 passed the step because it started at 23:58:31 UTC | fixed here: the drive sets the page clock, to the edition's day for its acceptance checks and to the dated window for a pass with its own expectation |
+| F-86 | minor | copy | From 00:00 UTC until the day's edition deploys, the Spanish and Portuguese daily pages (`/es/today/`, `/es/horoscopes/`, `/es/horoscopes/<sign>/` and their `/pt/` twins) kept "hoy" and "hoje" while their kicker gave the older date: the dating rules were English only (F-84, *Remaining*) | fixed here: each reviewed Spanish and Portuguese phrase has its dated form in `src/lib/edition-freshness.ts`, which the head script inlines for its page's language, so the first paint is dated; `tests/edition-dated-drive.mjs` drives the six routes |
+| F-87 | minor | performance | A page short enough to show the site footer in its first viewport could paint the footer before its deferred stylesheet arrived, then move and reflow it: CLS up to 0.173 on `/es/horoscopes/aries/` and `/pt/horoscopes/aries/` in a 1400 px tall viewport, on any clock | fixed here: the head holds the footer hidden from its first layout; the loader, which already measures it, shows a distant footer at once, and a near one stays held until its stylesheet applies and shows it (or fails, or takes over 3 s); `tests/footer-style-loader.test.mjs`, `tests/edition-dated-drive.mjs` |
+| F-88 | minor | copy | Reviewing F-86's wording found faults in the Spanish and Portuguese daily copy that predate it: the Sun and Moon without their article as subjects ("Sol entra…", "Lua entra…"), Portuguese lists that drop their preposition, a lower-case, wrongly gendered note under "Por qué esta lectura", a doubled "inglés" cue, "cuatro notas por signo" on days with three, and smaller calques | open, for the owner: the files are Phase 1 protected (locale page trees and catalogs), so a fix needs a one-time allowance; each fault and its proposed correction is below |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned; fixed by the rc.14 adoption (2026-09-29): the Legacy wing drift job runs it; merged in #600 (`6cc4d477`) |
@@ -820,6 +824,70 @@ adoption changes neither its status nor the fixed denominator.
   alone. Open for a later change: whether exact pins should carry a platform
   note or compare within a stated tolerance; no tolerance is changed here.
 
+### F-84 — the daily pages moved after their first paint while their edition was a day old (minor, performance; fixed in #726)
+
+- **Found.** Site Check on main after #722 (run 38184748851, on `ec0451ff`)
+  failed only "Lighthouse performance budgets". The step ran from 00:03 to
+  00:17 UTC on 2026-10-12, when the served edition was 2026-10-11's: three
+  routes missed CLS = 0, `/today/` (0.020), `/horoscopes/` (0.005) and
+  `/horoscopes/aries/` (0.011). Every other route measured 0.000, the
+  non-daily pages included, and earlier runs pass. Its reports name what
+  moved: the Today card on `/today/`, the grid of signs on `/horoscopes/` and
+  the note whose link is named Today on `/horoscopes/aries/`
+  ([record](../evidence/edition-dated-20261012/README.md)).
+- **Cause.** From 00:00 UTC until the daily commit deploys, at about
+  05:30 UTC, every daily page's edition is a day old. The head script in
+  `Base.astro` marked the page dated before the first paint, and EditionText
+  already sends its dated form, but the rest of the wording inside
+  `[data-edition-content]` ("Compare today's sky…", "A look at today's
+  readings", the link named Today, the Guide prompts) was dated by
+  `EditionFreshnessGuard` on DOMContentLoaded. That event waits for the
+  module scripts, so it can come after the first paint; the longer text took
+  another line and moved what followed. Real visitors saw the same move every
+  night in that window. `applyEditionFreshness` and
+  `installEditionFreshnessGuard` in `src/lib/edition-freshness.ts` describe the
+  same pass but were never imported; the inline copy was what ran.
+- **Reproduced** on `ec0451ff`, built without the two freshness gates and
+  served here on 2026-10-12 with the 2026-10-11 edition: the Lighthouse
+  harness gave `/today/` CLS 0.020 with the same element (the other two
+  routes measured 0 on this machine), and the new drive measured 0.0075 to
+  0.0595 on all three routes, on 7 of its 9 dated loads at 360, 412 and
+  1280 px.
+- **Fix.** `EditionFreshnessGuard.astro` is now the whole browser side of an
+  edition, inlined in `<head>` before the body. It decides the state, then
+  writes each piece of edition text in its final form as the parser adds it:
+  EditionText's relative wording on a current edition, as before, and the
+  dated wording inside the edition scopes on a dated one. The observer runs
+  before the browser can paint what the parser added, so the first paint
+  shows the final text. After parsing it keeps hydrated text dated, and
+  decides again at UTC midnight, on pageshow and when the tab becomes
+  visible. Text appended to a node whose start was already dated is dated
+  again as a whole. Without JavaScript nothing changes: EditionText shows its
+  dated server form. The head script in `Base.astro` and the unused copy in
+  `src/lib/edition-freshness.ts` are removed. No copy changes; the dated
+  wording is the same as before, only earlier.
+- **Regression test.** `tests/edition-dated-drive.mjs`, in Site Check's
+  `npm run test:today:browser`. It streams the three routes in three parts,
+  breaking just after a relative word, on a clock at 00:17 UTC after the
+  edition's day, at 360, 412 and 1280 px with tall viewports. CLS must be
+  exactly 0 through hydration, every text node outside the islands must read
+  as the server's `datedEditionText` dates it, and no relative wording may
+  remain. It also appends to a dated text node, checks the current clock
+  (CLS 0, current wording) and loads `/today/` without JavaScript. On
+  `ec0451ff` it fails 7 of the 9 dated loads on CLS; on the fix it passes, and
+  a build of the fix without the re-dating of appended text fails the append
+  check.
+- **After.** The Lighthouse harness on the fix, for the three routes with the
+  clock after UTC midnight (2026-10-12 05:24 UTC, 2026-10-11 edition):
+  CLS 0.000 on each, performance 100, 100 and 98.
+- **Remaining.** An open page still changes its wording at UTC midnight; that
+  change is the guard's purpose, and it can move the page then. The dating
+  rules are English: the Spanish and Portuguese daily pages carry
+  `data-edition-content`, but their "Hoy" and "hoje" stay as they are in the
+  window, as before. `tests/bio-drive.mjs` reads the real clock, and in the
+  window `/bio/`'s dated heading puts its desktop CTA at 374 px against the
+  drive's 360 px (on `ec0451ff` too); Site Check ran it at 23:58 UTC.
+
 ### F-85 — the bio drive's verdict depended on the time of day (minor, CI; fixed here)
 
 - **Found.** A run of `tests/bio-drive.mjs` on 2026-10-12 against
@@ -827,7 +895,8 @@ adoption changes neither its status nor the fixed denominator.
   failed `desktop: primary CTA arrives in the opening scan` at 374 px. Site
   Check run 38184748851 on the same commit passed the step because it
   started at 23:58:31 UTC on 2026-10-11, 89 seconds before midnight
-  ([record](../evidence/bio-drive-clock-20261012/README.md)).
+  ([record](../evidence/bio-drive-clock-20261012/README.md)). F-84 lists it
+  under Remaining.
 - **Cause.** The drive read the real clock. `/bio/` renders its heading with
   EditionText, "Your chart and today’s sky". From 00:00 UTC until the day's
   daily commit deploys, at about 05:30 UTC, the page is dated and the heading
@@ -855,3 +924,137 @@ adoption changes neither its status nor the fixed denominator.
   on the edition's day. Keeping the edition day's position in the dated
   state would be a design change to the page. Other drives that read the
   real clock were not surveyed.
+
+### F-86 — the Spanish and Portuguese daily pages said "today" about a day-old edition (minor, copy; fixed here)
+
+- **Found.** F-84's *Remaining*: the Spanish and Portuguese daily pages carry
+  `data-edition-content`, but the dating rules were English, so from 00:00 UTC
+  until the day's edition deployed `/es/today/` still said "Hoy" and "el cielo
+  de hoy", `/es/horoscopes/` "Horóscopos de hoy", the sign pages "Aries hoy",
+  and their Portuguese twins "hoje", under a kicker giving the older date.
+- **Wording.** Written from the conventions these pages already use ("el
+  cielo del {date}", "o céu de {date}" in their titles), one dated form per
+  phrase: the headings become "El cielo del 12 de octubre de 2026" and "O céu
+  de 12 de outubro de 2026", "Horóscopos del…"/"Horóscopos de…", "Aries, 12 de
+  octubre de 2026" and "Áries em 12 de outubro de 2026"; the card link "Leer
+  hoy →" becomes "Lectura del 12 de octubre de 2026 →"; the Moon's line opens
+  with the date ("El 12 de octubre de 2026, la Luna pasa por…"), and an
+  ingress or exact aspect takes it after the house or the exactness. The
+  full list, the sheet as reviewed and every reading line the templates wrote
+  over 117 editions are in the
+  [record](../evidence/edition-dated-locales-20261012/README.md).
+- **Review.** Two independent review passes, one per language, each given the
+  sheet, the pages and the templates but not the authors' reasoning, as a
+  senior native-register editor would read them. They changed three headings
+  and found the catch-all word rules English has wrong in Spanish and
+  Portuguese (idioms such as "hoy en día" and "hoje em dia", "hoy" as a
+  subject, after "até" or "para", in labels). So only the reviewed phrases
+  are dated: a "hoy" or "hoje" that no rule names stays as it is, and the drive
+  fails on it. This is not a human native-speaker certification, and no page
+  claims the copy was reviewed. The reviews' findings about the existing copy
+  are F-88.
+- **Fix.** `src/lib/edition-freshness.ts` holds the English, Spanish and
+  Portuguese rules; `EditionFreshnessGuard` inlines its page's rules with the
+  edition's date already in each replacement, in place of its hand-kept copy
+  of the English ones, and dates text as the parser adds it, as F-84 does, so
+  the first paint is final. A daily page in a language without rules fails
+  the build. The dates are the pages' own (`formatDate`'s es-419 and pt-BR
+  long dates, checked by a unit test). The Spanish and Portuguese pages,
+  catalogs and templates, Phase 1 protected, are unchanged. Kept as they are,
+  as on the English pages: "Las lecturas de mañana…", "Mañana, semana y mes"
+  and their Portuguese twins (English keeps its "Tomorrow" tab), and the tab
+  title, description and share-image text, which lie outside the edition
+  scopes.
+- **Regression test.** `tests/edition-dated-drive.mjs` now drives the six
+  localized routes as it drives the English three: streamed with a break just
+  after "hoy" or "hoje", at 360, 412 and 1280 px, with CLS exactly 0, every
+  text node as the server dates it in the page's language, no "hoy" or "hoje"
+  left, an appended-text check, and on the current clock CLS 0 with the
+  server's wording kept. On #726's head `accb6786` it fails 50 of its 283
+  checks, all on the localized routes; here it passes all 283.
+  `src/lib/edition-freshness.test.ts` dates every phrase, every sign's heading
+  and link, and every line the reading templates can write, and holds the
+  browser's inlined rules to the server's result.
+- **Remaining.** Without JavaScript the Spanish and Portuguese pages show
+  their server wording, as English copy outside EditionText does; a dated
+  server form needs EditionText in the protected pages. The tab title,
+  description and share-image text keep "hoy" and "hoje" in the window.
+
+### F-87 — the site footer moved after the first paint on short pages (minor, performance; fixed here)
+
+- **Found.** Extending the dated drive for F-86: `/es/horoscopes/aries/` and
+  `/pt/horoscopes/aries/` measured CLS 0.016 to 0.173 on the dated clock and on
+  the current one, and the elements that moved were the footer's.
+- **Cause.** `Base.astro` requests `/assets/site-footer.css` after the footer
+  is parsed, without blocking rendering, so that the footer's stylesheet never
+  delays the first viewport. Until it arrives the footer has only base.css's
+  `content-visibility` rule: the stylesheet then adds the footer's top margin
+  (112 px at 1280 px wide) and its layout. On a page short enough to show the
+  footer in the first viewport, the footer could paint first and then move and
+  reflow. It is a race: over five fresh loads per route and width, it shifted
+  in 27 of the 30 loads of the two sign pages and in none of the 30 of the
+  longer `/today/` pages; aborting the web fonts did not remove it, and neither
+  did a second load, because the stylesheet is served `must-revalidate`.
+  Reserving the margin in base.css alone left the reflow inside the footer
+  (CLS 0.006 to 0.12), and hiding the footer from the loader, which runs after
+  the footer, still shifted once in 60 loads, when the browser painted the
+  footer first. A third, a script just before the footer that measured the
+  content above it, forced a layout while parsing every page and changed how
+  `/learn/` scrolled: the explorer drive's 44 px target check at 390 px failed
+  on #728's first Browser Evidence run and in 2 of 3 local runs, and passed
+  3 of 3 without that script. The English daily pages are long enough that
+  their footers start below the drive's viewports. Readers see the shift on
+  these pages in a desktop window taller than about 1,030 px.
+- **Fix.** A script in `<head>` holds the footer (`data-footer-styles-pending`
+  on the root), and base.css hides a held footer (`visibility: hidden`) from
+  its first layout, so no paint can show it unstyled. The loader, which
+  already measures the footer, shows a footer more than 200 px below the
+  viewport at once, as before; a nearer one stays held, the stylesheet is
+  requested at once, and the stylesheet shows the footer in the same style
+  pass as its layout. The loader drops the hold when the stylesheet has
+  loaded, or if it fails or takes over 3 s. Nothing new reads the layout, the
+  request and its timing are unchanged, and without JavaScript nothing is
+  held and the `@import` styles the footer. After the fix, 0 of 120 loads
+  shifted, and the explorer's check passed 3 of 3 locally.
+- **Regression test.** `tests/footer-style-loader.test.mjs` runs the inline
+  loader with a held footer: a near one stays held until the stylesheet's
+  load or error event or the 3 s timer, a distant or missing one is shown at
+  once, and the head sets the hold before `<body>`.
+  `check-site-footer-standard.mjs` requires the hold, its release, the hiding
+  rule in base.css and the showing rule in the footer's stylesheet. The dated
+  drive's CLS checks on the two sign pages, on both clocks, fail without the
+  fix. Measurements are in the
+  [record](../evidence/edition-dated-locales-20261012/README.md#the-footer-f-87).
+- **Remaining.** A footer reached by scrolling still gets its stylesheet 200 px
+  before it enters the viewport, as before.
+
+### F-88 — faults in the Spanish and Portuguese daily copy, found reviewing F-86 (minor, copy)
+
+- **Found.** By the two reviews of F-86's wording
+  ([reviews](../evidence/edition-dated-locales-20261012/reviews.md)), in
+  copy that predates it and reads the same on any day.
+- **What.** In `src/lib/i18n/daily-reading.ts`: the ingress, aspect and
+  lunation templates use the bare planet name as the subject ("Sol entra hoy en
+  tu…", "Luna entra…", "Sol en cuadratura con…", "Lua nova na sua…"), where
+  Spanish needs "El Sol"/"La Luna" (and "con el Sol"/"con la Luna") and
+  Portuguese "O Sol"/"A Lua"/"A Lua nova"; 30 of the 169 distinct lines of each
+  language in the reviewed set. The Portuguese ingress and lunation lines
+  contract only the first item of a list ("coloca o foco na carreira, a
+  reputação e o que o público vê"; every item needs "na/no/nas/nos"), and
+  "em oposição com" should be "em oposição a". In the catalogs, the note under
+  "Por qué esta lectura"/"Por que esta leitura" starts in lower case with a
+  masculine participle that agrees with nothing ("leído desde las casas
+  solares de tu signo.", "lido pelas casas solares do seu signo.";
+  proposed: "Se lee desde…", "Lida a partir das…"). On the pages: the closing
+  notes say "la edición en inglés — por ahora en inglés" and "edição em inglês
+  — por enquanto em inglês"; the descriptions promise "cuatro notas"/"quatro
+  notas" por signo where the 2026-10-12 edition has three, and the sign page's
+  `${n} notas` would print "1 notas"; "vive en" is a calque ("está en"); the
+  sign pages' lead repeats the first reading line just below it. Smaller
+  calques and the pt-BR first of the month ("1º de novembro") are listed in
+  the reviews.
+- **Disposition.** Open, for the owner. Every fault is in a Phase 1 protected
+  path (`src/lib/i18n`, `src/pages/es`, `src/pages/pt`), so the fix needs a
+  one-time allowance, and its corrections the same review as F-86's. A template
+  change that moves a dated phrase changes its rule in
+  `src/lib/edition-freshness.ts` too; the unit test fails until it does.

@@ -7,12 +7,27 @@ import { describe, expect, it } from 'vitest';
 const base = readFileSync(new URL('../src/layouts/Base.astro', import.meta.url), 'utf8');
 const source = base.match(/<script is:inline>\s*(\(function loadFooterStyles\(\) \{[\s\S]*?\}\)\(\);)\s*<\/script>/)?.[1];
 if (!source) throw new Error('The actual inline footer stylesheet loader was not found');
+const holdSource = "document.documentElement.setAttribute('data-footer-styles-pending', '');";
 
+/** The document's root element, with just the attribute calls the scripts make. */
+function rootElement(attributes = []) {
+  const names = new Set(attributes);
+  return {
+    names,
+    hasAttribute: (name) => names.has(name),
+    setAttribute: (name) => names.add(name),
+    removeAttribute: (name) => names.delete(name),
+  };
+}
+
+// The head holds the footer before the loader runs (see the last block).
 function run({ top = 1800, readyState = 'loading', io = 'normal', hasFooter = true } = {}) {
   const links = [];
+  const root = rootElement(['data-footer-styles-pending']);
   const listeners = new Map();
   const timers = [];
   const observations = [];
+  const linkEvents = new Map();
   const footer = hasFooter ? { getBoundingClientRect: () => ({ top }) } : null;
   const window = {
     innerHeight: 1000,
@@ -20,9 +35,18 @@ function run({ top = 1800, readyState = 'loading', io = 'normal', hasFooter = tr
     setTimeout: (callback, delay) => timers.push({ callback, delay }),
   };
   const document = {
+    documentElement: root,
     readyState,
     querySelector: (selector) => selector === '.zfooter' ? footer : null,
-    createElement: (tag) => ({ tag }),
+    createElement: (tag) => {
+      // Listeners stay off the element's own keys, so a link still equals
+      // exactly what the loader set on it.
+      const element = { tag };
+      Object.defineProperty(element, 'addEventListener', {
+        value: (type, callback) => linkEvents.set(type, callback),
+      });
+      return element;
+    },
     head: { appendChild: (link) => links.push(link) },
   };
   if (io !== 'absent') {
@@ -43,7 +67,7 @@ function run({ top = 1800, readyState = 'loading', io = 'normal', hasFooter = tr
   }
   runInNewContext(source, { window, document, IntersectionObserver: window.IntersectionObserver });
   return {
-    links, listeners, timers, observations, footer,
+    links, listeners, timers, observations, footer, linkEvents, root,
     load() { listeners.get('load')?.callback(); },
     advance() { for (const timer of timers.splice(0)) timer.callback(); },
     approach(intersects = true) { observations[0].callback([{ isIntersecting: intersects }]); },
@@ -67,7 +91,38 @@ describe('actual footer stylesheet loader', () => {
       const state = run({ top });
       expectOneStylesheet(state);
       expect(state.observations).toHaveLength(0);
-      expect(state.timers).toHaveLength(0);
+      expect(state.timers.map((timer) => timer.delay)).toEqual([3000]);
+    }
+  });
+
+  // A footer in the first viewport would paint unstyled, then move and
+  // reflow when its stylesheet lands: a layout shift on any page short
+  // enough to show it (F-87). Held from the head, it stays hidden until its
+  // styles apply; the loader drops the hold once they load, fail or stall.
+  it('keeps a near footer held until its styles load or fail, or for 3 s', () => {
+    for (const settle of ['load', 'error']) {
+      const state = run({ top: 200 });
+      expect(state.root.names.has('data-footer-styles-pending')).toBe(true);
+      state.linkEvents.get(settle)();
+      expect(state.root.names.has('data-footer-styles-pending')).toBe(false);
+    }
+    const stalled = run({ top: 1200 });
+    stalled.advance();
+    expect(stalled.root.names.has('data-footer-styles-pending')).toBe(false);
+  });
+
+  it('shows a distant or missing footer at once, whenever its styles are requested', () => {
+    const approached = run();
+    expect(approached.root.names.size).toBe(0);
+    approached.approach();
+    const afterLoad = run();
+    afterLoad.load(); afterLoad.advance();
+    const missing = run({ hasFooter: false });
+    expect(missing.root.names.size).toBe(0);
+    for (const state of [approached, afterLoad]) {
+      expectOneStylesheet(state);
+      expect(state.linkEvents.size).toBe(0);
+      expect(state.root.names.size).toBe(0);
     }
   });
 
@@ -124,5 +179,15 @@ describe('actual footer stylesheet loader', () => {
     expect(state.observations).toHaveLength(0);
     state.load(); state.advance();
     expectOneStylesheet(state);
+  });
+});
+
+describe('footer hold set in the head', () => {
+  it('holds the footer before the body is parsed, so no paint can show it unstyled', () => {
+    const head = base.slice(0, base.indexOf('<body'));
+    expect(head).toContain(holdSource);
+    const root = rootElement();
+    runInNewContext(holdSource, { document: { documentElement: root } });
+    expect(root.names.has('data-footer-styles-pending')).toBe(true);
   });
 });
