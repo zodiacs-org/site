@@ -1217,6 +1217,57 @@ try {
       await cold.close();
     }
   }
+  // F-93: only the 400 face is preloaded, so the 500 and italic faces can
+  // arrive after the first paint. Hold just those two and require the first
+  // heading row's text boxes to keep their tops and heights when they swap in.
+  // Reduced motion keeps the essay visible and untransformed throughout, as
+  // when the first paint comes before the reveal script.
+  for (const width of [390, 412, 810, 1440]) {
+    const late = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+    let releaseLateFonts;
+    const lateGate = new Promise((resolve) => { releaseLateFonts = resolve; });
+    await late.route(/\/fonts\/eb-garamond-latin-(?:500-normal|400-italic)\.woff2$/, async (route) => {
+      await lateGate;
+      await route.continue();
+    });
+    const latePage = await late.newPage();
+    const headingRow = () => latePage.evaluate(() => {
+      const box = (selector) => {
+        const rect = document.querySelector(selector).getBoundingClientRect();
+        return { top: rect.top, height: rect.height };
+      };
+      return {
+        numeral: box('#everyone-has-a-sign .mov__no'),
+        accent: box('#everyone-has-a-sign .mov__title .it'),
+        label: box('.essay__rail .label'),
+        faces: [document.fonts.check('500 9.5px "EB Garamond"'), document.fonts.check('italic 400 25px "EB Garamond"')],
+      };
+    });
+    try {
+      await latePage.goto(`${BASE}/thesis/`, { waitUntil: 'domcontentloaded' });
+      await latePage.evaluate(async () => {
+        await document.fonts.load('400 25px "EB Garamond"');
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      const held = await headingRow();
+      releaseLateFonts();
+      await latePage.evaluate(async () => {
+        await Promise.all([document.fonts.load('500 9.5px "EB Garamond"'), document.fonts.load('italic 400 25px "EB Garamond"')]);
+        await document.fonts.ready;
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      const loaded = await headingRow();
+      const kept = (part) => Math.abs(held[part].top - loaded[part].top) <= 0.01
+        && Math.abs(held[part].height - loaded[part].height) <= 0.01;
+      check(`${width}px: first heading row keeps its place when the 500 and italic faces arrive`,
+        held.faces.every((face) => !face) && loaded.faces.every(Boolean)
+          && kept('numeral') && kept('accent') && kept('label'),
+        JSON.stringify({ held, loaded }));
+    } finally {
+      releaseLateFonts();
+      await late.close();
+    }
+  }
   await browser.close();
 } finally {
   await preview.stop();

@@ -83,6 +83,7 @@ Severity follows the audit's scale:
 | F-88 | minor | copy | Reviewing F-86's wording found faults in the Spanish and Portuguese daily copy that predate it: the Sun and Moon without their article as subjects ("Sol entra…", "Lua entra…"), Portuguese lists that drop their preposition, a lower-case, wrongly gendered note under "Por qué esta lectura", a doubled "inglés" cue, "cuatro notas por signo" on days with three, and smaller calques | open, for the owner: the files are Phase 1 protected (locale page trees and catalogs), so a fix needs a one-time allowance; each fault and its proposed correction is below; fixed in #731 under a one-time allowance the owner approved on 2026-10-12, each correction reviewed; the pt-BR first of the month and the undated titles remain; the pt-BR first of the month and the tab titles: fixed in #737 |
 | F-89 | minor | engine docs | Statements in engine 1.0.0's README, NOTICE, LICENSING and doc comments that the claims ledger found inaccurate once it read them (F-23): the README's 0.00001″ for the Vertex given Swiss's inputs (0.000014″ at the near-degenerate 1852 case); NOTICE and LICENSING placing `GREGORIAN_ADOPTION` in `dist/geo.js` (a shared chunk it re-exports); every local-time resolution naming its transition (null from 1970 without a jump); receipts naming the ephemeris "from the current set on" (from rc.8's); a plain 5-day scan's blind band given as 0.0103° for Saturn and 0.0205° for Jupiter, twice the f″h²/8 the engine's own stations give (the engine audit's production-event-search-4 left out the half); Placidus needing "up to 63 steps" near the limit, recorded by no test; Munkasey's co-ascendant lying west within 90° − ε of the equator (within ε); `ChartInput.deltaT` defaulting to the model (the time basis); and LICENSING's calc bounds all against Horizons (the mean points are against ERFA definitions) | open: each is an overstated claim in `docs/claims/ledger.json` with this resolution; the engine's next release corrects them, and the reference served here follows when it is regenerated for it |
 | F-90 | minor | licensing | Swiss Ephemeris ΔT values outside statistics: the site's `docs/platform/evidence/deltat-2026-09-25/README.md` still quoted Swiss's ΔT at 2050 and 2100 and its differences from S15 at 1850, 1900 and the year 1000, which DECISIONS-2026-09-28 §3 removed from that folder's JSON; and the engine's `conformance/sources/horizons-24/corpus-tt.json` records Swiss's ΔT for the 24 corpus instants as clock values, where its LICENSING says no Swiss output is committed | site part fixed 2026-10-12 (the README quotes none); engine part open for the owner: keep the 24 values and say so in LICENSING and the conformance README, or replace them with an independent ΔT, which changes the Horizons requests |
+| F-93 | minor | performance | On main's post-merge Site Check for #730 (run 38381457494, `7d12c0f1`), one of three Lighthouse samples of /thesis/ measured CLS 0.0000915, from the italic `span.it` in `section#everyone-has-a-sign h2.mov__title`; the gate fails any positive CLS but prints three decimals, so its table read 0.000 | the re-run of that check (attempt 2) passed /thesis/ and every other route at 15:37 UTC, and #735's run 38415921818 failed the same way on a change that does not touch /thesis/; the other two samples, and main's runs before it, measured 0; open: keep the italic face from moving the heading after its first layout; fixed in this change: the sample's trace shows the section numeral, in the 500 face, moving with the accent, both swapping in after a first paint that came before the reveal script hid the section; the page's serif stacks now fall back to local serifs given EB Garamond's ascent and descent, so neither face moves the row; with CI's fallback metrics, main's row shifted in 10 of 10 held loads in the lab and this change's in none, and 20 local Lighthouse samples measured CLS 0 with LCP as on main (2.329–2.416 s) |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned; fixed by the rc.14 adoption (2026-09-29): the Legacy wing drift job runs it; merged in #600 (`6cc4d477`) |
@@ -1049,3 +1050,53 @@ adoption changes neither its status nor the fixed denominator.
   accepted every title and "1º" form and changed the birthday sky line in both
   languages to join the year with "de" ("1º de janeiro de 1990", "1 de enero
   de 2026"). The drive checks the tab title on all nine routes.
+
+### F-93 — the first heading row on /thesis/ moved when its late fonts arrived (minor, performance; fixed here)
+
+- **Found.** Main's post-merge Site Check for #730 (run 38381457494 attempt 1,
+  `7d12c0f1`) failed "Lighthouse performance budgets" on /thesis/ alone.
+  Sample 2 measured CLS 0.0000915 and the table printed 0.000; samples 1 and
+  3 measured 0, and attempt 2 passed. #735's run 38415921818 failed the same
+  way. Neither change touches /thesis/.
+- **Cause.** The page preloads only EB Garamond's 400 face. The 500 face (the
+  section numerals and the essay rail's labels) and the italic (the headings'
+  accents) are requested when the styles need them, 60–85 ms later. The first
+  section's heading row sits at the bottom of Lighthouse's 412 × 823
+  viewport. When the reveal script at the end of the body runs before those
+  faces arrive, they swap in while the section is hidden: samples 1 and 3 and
+  every local run. In sample 2 the parser stopped at line 1360 of the built
+  page, and the row was painted in the fallback before the script ran. At
+  195 ms the two faces swapped in, and the trace records both the accent and
+  the numeral "I" moving. EB Garamond's ascent and descent are 1.007 and
+  0.298 em. Liberation Serif's, CI's fallback, are 0.891 and 0.216 em, so the
+  accent's text box moved 3 px at 25 px. macOS falls back to Georgia (0.917
+  and 0.219 em), whose 2 px move Chrome does not report, so local runs never
+  failed.
+- **Reproduce.** `docs/platform/evidence/thesis-heading-fonts-20261013/tools/font-race-lab.mjs`
+  with `HTML=<main's built page> MOTION=reduce FALLBACK=times` holds the two
+  faces back. On main every load records a shift of 0.0000908 on the accent,
+  with CI's rectangles.
+- **Fix.** `public/thesis/index.html` adds `EB Garamond Metrics`: local
+  Georgia, Times New Roman, Liberation Serif and Noto Serif, and their
+  italics, with EB Garamond's ascent, descent and line gap as overrides. The
+  family comes second in `--serif` and `--display`. Before a face arrives,
+  the page shows the same local font as before, with EB Garamond's vertical
+  metrics, so the swap changes only widths. No request, preload or
+  `font-display` changed.
+- **Regression test.** `tests/thesis-qa-drive.mjs` holds only the 500 and
+  italic faces at 390, 412, 810 and 1440 px. It requires the row's numeral,
+  accent and rail label to keep their top and height when the faces arrive.
+  With main's page served instead, those four checks fail and the drive's
+  other 242 pass.
+- **Measured** ([record](../evidence/thesis-heading-fonts-20261013/README.md)).
+  In the lab, with CI's fallback metrics, main's row shifted in 10 of 10 held
+  loads (0.0000766 to 0.0000908) and this change's in none. Lighthouse, 20
+  local samples each: CLS 0 on both. LCP min / median / max was 2.329 /
+  2.332 / 2.416 s on main and 2.329 / 2.334 / 2.416 s with the change; FCP
+  medians were 1.507 and 1.508 s. Preloading the italic instead left LCP
+  unchanged locally, but with `swap` a late face still moved the row.
+- **Remaining.** The 400 face could still change the heading's widths if it
+  ever arrived after a first paint that showed the row; no sample has shown
+  this. With the CPU slowed 8× in the lab, a first paint inside the hero moved
+  its text 82 px when the hero's last lines arrived, on main and with the
+  change alike; no Lighthouse sample has shown it.
