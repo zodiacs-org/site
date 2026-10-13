@@ -46,7 +46,7 @@
     "com.openai": {
       "onboardingSkill": "./skills/build-with-zodiacs/SKILL.md",
       "publication": {
-        "release_notes": "0.3.11: It bundles MCP adapter 0.1.0-rc.23, whose check_sky_fact also checks whether two bodies are in one of the five major aspects, at an instant or on a date. Its Chart Studio no longer calls the Sun sign reliable without a birth time: it names its stand-in as 12:00 UTC on the birth date and, when the Sun changed sign around that date, the two signs it moved between. Its other tools and engine 1.0.0 are 0.3.10's. Earlier review archives remain available."
+        "release_notes": "0.3.11: Its Chart Studio no longer calls the Sun sign reliable without a birth time: it names its stand-in as 12:00 UTC on the birth date and, when the Sun changed sign around that date, the two signs it moved between. Its local chart tools are MCP adapter 0.1.0-rc.23's. That adapter's own check_sky_fact gained aspect facts; this plugin's check_sky_fact is the hosted tools' and keeps its four kinds, although get_local_chart_capabilities, which also describes the adapter's sky tools, lists aspect among their fact kinds. Earlier review archives remain available."
       }
     }
   }

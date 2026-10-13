@@ -73,6 +73,12 @@ describe('public AI tools', () => {
     expect(result.ok).toBe(false);
     expect(JSON.stringify(result)).not.toContain('private-canary');
   });
+  it('keeps check_sky_fact to its four kinds, and refuses an aspect fact', async () => {
+    // Every other argument is one the four kinds take, so the kind alone is refused.
+    const result = await executeAiTool('check_sky_fact', { kind: 'aspect', body: 'Moon', date: '2026-10-14' }, dependencies);
+    expect(result.ok).toBe(false);
+    expect((await executeAiTool('check_sky_fact', { kind: 'retrograde', body: 'Mercury', date: '2026-10-14' }, dependencies)).ok).toBe(true);
+  });
   it('fails closed under the events limiter and produces no logs or fetches', async () => {
     const log = vi.spyOn(console, 'log'); const error = vi.spyOn(console, 'error'); const fetchSpy = vi.spyOn(globalThis, 'fetch');
     try {
