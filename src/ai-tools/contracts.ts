@@ -1,11 +1,17 @@
 import { z } from 'zod';
 import { BUDGETS, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS } from '../lib/compute-api/constants';
+import { OCCASION_KINDS } from '../lib/occasions/kinds';
 import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS } from './horoscope/reading';
 
 export const AI_VERSION = '0.4.0';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
+/** The released tools: what the reviewed plugin offers. */
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'] as const;
-export type AiToolName = typeof AI_TOOL_NAMES[number];
+/** The occasion tools, offered only where ZODIACS_OCCASIONS_ENABLED=1 (docs/platform/zodiacs-ai/OCCASIONS.md). */
+export const OCCASION_TOOL_NAMES = ['get_occasion_sky', 'get_life_milestones'] as const;
+export const ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES] as const;
+export type AiToolName = typeof ALL_AI_TOOL_NAMES[number];
+export const OCCASIONS_SWITCH_ENV = 'ZODIACS_OCCASIONS_ENABLED';
 /** The compute API's own events bound. */
 export const MAX_EVENT_DAYS = BUDGETS['events.windowDays'];
 export const MAX_HTTP_BYTES = 16_384;
@@ -32,12 +38,15 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   check_sky_fact: 'Check a sky fact',
   get_horoscope: 'Horoscopes',
   open_chart_studio: 'Chart Studio',
+  get_occasion_sky: 'The sky on a day',
+  get_life_milestones: 'Life milestones',
 };
 
 const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).');
 export const ZONE_PATTERN = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 const zone = z.string().min(1).max(64).regex(ZONE_PATTERN).describe("The person's time zone, such as Asia/Bangkok or America/New_York. Without it, times are in UTC.");
 const date = z.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/);
+const wallClock = z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
 
 export const INPUT_SCHEMAS = {
   get_capabilities: z.strictObject({}),
@@ -49,6 +58,27 @@ export const INPUT_SCHEMAS = {
     if ((!args.from || !args.to) && Object.keys(args).length !== 0) context.addIssue({ code: 'custom', message: 'Supply both from and to, or an empty object for the next seven days in UTC.' });
   }),
   check_sky_fact: z.strictObject({ kind: z.enum(['sign', 'retrograde', 'ingress', 'phase']), body: z.enum(EVENT_BODIES).optional(), sign: z.enum(SIGN_SLUGS).optional(), phase: z.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone.optional() }),
+  get_occasion_sky: z.strictObject({
+    occasion: z.enum(OCCASION_KINDS).describe('What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering.'),
+    date: date.describe('The day, such as 2027-06-12 (years 1800–2199).'),
+    time: wallClock.optional().describe('The local clock time, such as 19:00, if the person gives one. Needs zone.'),
+    zone: zone.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
+    latitude: z.number().min(-90).max(90).optional().describe('The place, for the evening sky. Give it with longitude and zone.'),
+    longitude: z.number().min(-180).max(180).optional(),
+    place: z.string().min(1).max(80).optional().describe('The place name for the card, such as Florence, Italy. Shown only.'),
+    names: z.string().min(1).max(60).optional().describe('Up to two first names to show on the card, if the person wants them.'),
+  }).superRefine((args, context) => {
+    if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
+    if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A time or a place needs its time zone.' });
+  }),
+  get_life_milestones: z.strictObject({
+    birthDate: date.describe('The birth date, such as 1997-03-15.'),
+    time: wallClock.optional().describe('The birth time on the local clock, if known. Needs zone.'),
+    zone: zone.optional().describe("The birthplace's time zone, such as Europe/London. Needed with a time."),
+    longitude: z.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time."),
+  }).superRefine((args, context) => {
+    if (args.time !== undefined && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time needs its time zone.' });
+  }),
   get_horoscope: z.strictObject({
     sign: z.enum(HOROSCOPE_SIGNS).optional().describe('Sun sign. Leave it out to let the person choose; never guess it.'),
     period: z.enum(HOROSCOPE_PERIODS).optional().describe('day (the default) or week.'),
@@ -82,16 +112,54 @@ const horoscope = z.object({
   message: z.string().optional(),
   disclosure: z.string(),
 });
+const clockTime = z.object({ utc: z.string(), local: z.string() });
+const occasionNote = 'Astronomical facts with traditional astrological meanings. Zodiacs does not choose or rank dates and does not say how the day will go.';
+const occasionSky = z.object({
+  occasion: z.enum(OCCASION_KINDS), date: z.string(), time: z.string().nullable(), zone: z.string().nullable(),
+  place: z.string().nullable(), names: z.string().nullable(),
+  card: z.object({ title: z.string(), interpretation: z.string(), closing: z.string() }),
+  instant: clockTime, instantIs: z.enum(['given-time', 'local-noon', 'utc-noon']),
+  sky: z.object({
+    bodies: z.array(z.object({ body: z.string(), sign: z.string(), degree: z.number(), retrograde: z.boolean() })),
+    moon: z.object({ phase: z.string(), illuminationPercent: z.number(), waxing: z.boolean() }),
+    retrograde: z.array(z.string()),
+  }),
+  moonSignChange: z.object({ from: z.string(), to: z.string() }).nullable(),
+  evening: z.object({
+    sunrise: clockTime.nullable(), sunset: clockTime.nullable(),
+    goldenHour: z.object({ start: clockTime, end: clockTime }).nullable(), civilDusk: clockTime.nullable(),
+    moonrise: clockTime.nullable(), moonset: clockTime.nullable(),
+    moonHighest: z.object({ at: clockTime, altitude: z.number() }).nullable(),
+    planetsAfterDusk: z.array(z.string()), flags: z.array(z.string()),
+  }).nullable(),
+  cardUrl: z.url().nullable(),
+  note: z.literal(occasionNote),
+});
+const milestone = z.object({
+  kind: z.enum(['jupiter-return', 'saturn-return', 'uranus-opposition']), name: z.string(), index: z.number(), age: z.number(),
+  first: z.string(), last: z.string(), passes: z.array(z.object({ at: z.string(), retrograde: z.boolean() })),
+});
+const lifeMilestones = z.object({
+  birthDate: z.string(), timeKnown: z.boolean(), asOf: z.string(),
+  milestones: z.array(milestone), next: milestone.nullable(),
+  numbers: z.object({ fullMoons: z.number(), mercuryRetrogrades: z.number(), jupiterReturns: z.number() }),
+  cardUrl: z.url().nullable(),
+  note: z.literal('Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.'),
+});
+export const OCCASION_NOTE = occasionNote;
+
 const dataSchemas = {
   open_chart_studio: z.object({ title: z.literal('Chart Studio'), calculation: z.literal('browser-local'), initialChart: z.literal('birth-details'), sharing: z.literal('user-reviewed-selection-only') }),
-  get_capabilities: z.object({ name: z.literal('Zodiacs'), version: z.string(), engine: jsonObject, tools: z.array(z.enum(AI_TOOL_NAMES)), limits: jsonObject, conventions: jsonObject, coverage: jsonObject, privacy: z.string(), limitations: z.array(z.string()) }),
+  get_capabilities: z.object({ name: z.literal('Zodiacs'), version: z.string(), engine: jsonObject, tools: z.array(z.enum(ALL_AI_TOOL_NAMES)), limits: jsonObject, conventions: jsonObject, coverage: jsonObject, privacy: z.string(), limitations: z.array(z.string()) }),
   get_sky: z.object({ mode: z.enum(['current-instant', 'requested-instant']), time: localTime, calculation: calculation.extend({ result: positionResult }), moonPhase: z.object({ name: z.string(), angle: z.number(), illumination: z.number() }), interpretation: z.literal('Astronomical calculations; no personal prediction is supplied.') }),
   get_upcoming_events: z.object({ from: z.string(), to: z.string(), zone: z.string(), events: z.array(event), calculation, completeness: z.literal('tested-not-proven') }),
   check_sky_fact: z.object({ answer: z.enum(['true', 'false', 'depends']), calculation, interpretation: z.literal('The verdict checks an astronomical proposition, not an astrological prediction.') }),
   get_horoscope: horoscope,
+  get_occasion_sky: occasionSky,
+  get_life_milestones: lifeMilestones,
 };
 
-export const ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(AI_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
+export const ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(ALL_AI_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
 function outputSchema<T extends AiToolName, S extends z.ZodType>(tool: T, data: S) {
   return z.union([
     z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(true), tool: z.literal(tool), data, links: z.array(link) }),
@@ -103,6 +171,8 @@ export const OUTPUT_SCHEMAS = {
   get_capabilities: outputSchema('get_capabilities', dataSchemas.get_capabilities), get_sky: outputSchema('get_sky', dataSchemas.get_sky),
   get_upcoming_events: outputSchema('get_upcoming_events', dataSchemas.get_upcoming_events), check_sky_fact: outputSchema('check_sky_fact', dataSchemas.check_sky_fact),
   get_horoscope: outputSchema('get_horoscope', dataSchemas.get_horoscope),
+  get_occasion_sky: outputSchema('get_occasion_sky', dataSchemas.get_occasion_sky),
+  get_life_milestones: outputSchema('get_life_milestones', dataSchemas.get_life_milestones),
 };
 
 /** Read by the assistant and shown to people in the plugin's details: plain first sentence, then routing detail. */
@@ -113,4 +183,6 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   get_upcoming_events: "Shows what changes in the sky over the coming days or weeks: planets changing sign, turning retrograde or direct, and new and full Moons, for up to 92 days. Supply from and to, and the person's time zone. With no arguments it opens the calendar for the next seven days. It does not list eclipses or every aspect.",
   check_sky_fact: "Checks a claim such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?' and answers yes, no, or that it depends on the time zone when the answer changes during that day. Use instant or date for sign and retrograde checks, date for ingress and Moon-phase checks. Astronomy only; it cannot check predictions. API documentation: https://zodiacs.org/developers/compute/ .",
   get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Use it when the person asks for a horoscope or reading, not to answer a request for certainty about a relationship, money or health. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written, keep its dates, and present it as reflection, not a personal birth-chart forecast.",
+  get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, the day a baby arrived, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It does not choose or rank dates or say how the day will go: when asked which date is best, give the facts for each date they name.",
+  get_life_milestones: "Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and how many full Moons and Mercury retrogrades the person has lived through. A birth date is enough; add the birth time and time zone if known. It makes no prediction.",
 };

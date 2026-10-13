@@ -4,7 +4,6 @@
  * the browser (behind the lazy engine import) and in the MCP runtime alike.
  * Nothing is stored; the card is a function of its inputs.
  */
-import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 import { eveningSky, type EveningSky } from './evening';
 import type { OccasionKind } from './kinds';
 import { OCCASION_WORDS, sunMoonLine } from './lines';
@@ -13,6 +12,18 @@ import { skyAt, type OccasionSkyFacts } from './sky';
 /** The engine's reference years, as the site's other tools use them. */
 export const OCCASION_MIN_YEAR = 1800;
 export const OCCASION_MAX_YEAR = 2199;
+
+/**
+ * The local-time resolver, passed in: the pages pass the site's own
+ * (./site-clock.ts, src/lib/time/localToUtc.ts) and the MCP runtime the
+ * compute API's bundled one (api/_compute/local-time.mjs), so the runtime
+ * bundle never loads the site's on-demand resolver. Both hand every wall
+ * time to @zodiacs/engine/geo.
+ */
+export interface OccasionClock {
+  prepareLocalTime(date: string, timeZone: string): Promise<void>;
+  resolveLocalToUtc(date: string, time: string, timeZone: string, options?: { longitude?: number }): { utc: Date };
+}
 
 export interface OccasionInput {
   occasion: OccasionKind;
@@ -48,7 +59,8 @@ export function validOccasionDate(value: string): boolean {
  * site's pinned zone history; with a place, its longitude settles the
  * offset before standard time (local mean time).
  */
-async function localInstant(date: string, time: string, timeZone: string, place: OccasionInput['place']): Promise<Date> {
+async function localInstant(date: string, time: string, timeZone: string, place: OccasionInput['place'], clock: OccasionClock): Promise<Date> {
+  const { prepareLocalTime, resolveLocalToUtc } = clock;
   await prepareLocalTime(date, timeZone);
   return (place
     ? resolveLocalToUtc(date, time, timeZone, { longitude: place.lon })
@@ -60,7 +72,7 @@ function utcInstant(date: string, time: string): Date {
   return new Date(`${date}T${time}:00Z`);
 }
 
-export async function occasionCard(input: OccasionInput): Promise<OccasionCard> {
+export async function occasionCard(input: OccasionInput, clock: OccasionClock): Promise<OccasionCard> {
   if (!validOccasionDate(input.date)) {
     throw new RangeError(`The date must be a real date from ${OCCASION_MIN_YEAR} to ${OCCASION_MAX_YEAR}.`);
   }
@@ -69,7 +81,7 @@ export async function occasionCard(input: OccasionInput): Promise<OccasionCard> 
     throw new RangeError('A time or a place needs its time zone.');
   }
   const { date, timeZone, place } = input;
-  const at = (time: string) => (timeZone ? localInstant(date, time, timeZone, place) : Promise.resolve(utcInstant(date, time)));
+  const at = (time: string) => (timeZone ? localInstant(date, time, timeZone, place, clock) : Promise.resolve(utcInstant(date, time)));
 
   // Without a time, the card stands for local noon.
   const instant = await at(input.time ?? '12:00');
