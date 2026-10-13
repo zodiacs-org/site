@@ -529,9 +529,11 @@ function htmlElementsWithClass(source, className) {
  * reference) is read for its prose: every doc comment, the README its index
  * renders, and its footer. Its signatures, member names and navigation are
  * generated from the code's own names, and its scripts hold the search index.
- * Any other page is read for its title, its description and the text of its
- * body. Scripts, styles, graphics and preformatted code are dropped, as fenced
- * code is from Markdown.
+ * Any other page is read for its title, its meta tags' content (the
+ * description and the social cards'), the text of its body and its text
+ * attributes, and the strings of its inline scripts. Styles, graphics and
+ * preformatted code are dropped, as fenced code in a language is from
+ * Markdown.
  */
 function htmlBlocks(source) {
   const typedoc = /\bclass="[^"]*\btsd-page-toolbar\b/u.test(source);
@@ -552,7 +554,12 @@ function htmlBlocks(source) {
     ? [...htmlElementsWithClass(body, 'tsd-typography'), ...[...body.matchAll(/<footer\b[^>]*>([\s\S]*?)<\/footer\s*>/giu)].map((match) => match[1])]
     : [
       head.match(/<title\b[^>]*>([\s\S]*?)<\/title\s*>/iu)?.[1] ?? '',
-      head.match(/<meta\s+name="description"\s+content="([^"]*)"/iu)?.[1] ?? '',
+      // Every meta tag's content: the description, and the social cards'
+      // (og:, twitter:) titles and descriptions a share shows.
+      ...[...head.matchAll(/<meta\b[^>]*\bcontent\s*=\s*"([^"]*)"[^>]*>/giu)].map((match) => match[1]),
+      // The text a reader meets in attributes: alternative text, titles,
+      // labels and placeholders.
+      ...[...body.matchAll(/\s(?:alt|title|aria-label|placeholder)\s*=\s*"([^"]*)"/giu)].map((match) => match[1]),
       body,
     ];
   // An inline element's text joins its neighbours' as a browser shows it.

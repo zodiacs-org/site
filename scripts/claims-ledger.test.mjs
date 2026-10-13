@@ -374,6 +374,14 @@ describe('claims ledger', () => {
       texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
     });
     controls.push({
+      // A page's social card and its text attributes are read as its description is.
+      path: 'examples/platform/src/widget.html',
+      inject: (source) => source
+        .replace('</head>', '<meta property="og:description" content="Positions are verified against JPL to 2″."></head>')
+        .replace('<fieldset>', '<fieldset><img src="x.png" alt="Nothing is sent to a server.">'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
       // An inline script on a page that is not a TypeDoc reference is read for its strings.
       path: 'public/sdk/examples/simastry-aura/index.html',
       inject: (source) => source.replace('</body>', "<script>document.title = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';</script></body>"),

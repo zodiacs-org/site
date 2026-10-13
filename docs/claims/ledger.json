@@ -1287,6 +1287,7 @@
     {"path":"public/sdk/index.html","text":"A verified context layer.","exempt":"not-a-claim"},
     {"path":"public/sdk/index.html","text":"Apps can map verified holdings into aura bars, hover text, or share-card copy without changing the SDK.","exempt":"not-a-claim"},
     {"path":"public/sdk/index.html","text":"Apps can surface verified holdings, emphasized elements, wheel coverage, and seasonal relevance inside a reading, profile, or moment.","exempt":"not-a-claim"},
+    {"path":"public/sdk/index.html","text":"Build astrology apps with verified Zodiac ownership, public reads, symbolic resonance, identity context, and official Zodiac icon assets.","exempt":"not-a-claim"},
     {"path":"public/sdk/index.html","text":"Build astrology apps with verified Zodiac ownership.","exempt":"not-a-claim"},
     {"path":"public/sdk/index.html","text":"From verified signs to a shareable Aura.","exempt":"not-a-claim"},
     {"path":"public/sdk/index.html","text":"More holdings never imply a better or more accurate reading.","exempt":"limitation"},
