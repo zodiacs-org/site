@@ -145,11 +145,20 @@ export const SCOPE_ADD = Object.freeze([
 /**
  * Generated developer docs the site serves as they were built (F-23): the
  * engine's API reference, with the README, licensing and notices of the
- * release it documents, and under /sdk/ the archived rc.1 reference, its
- * notice, which has no extension, and the SDK pages, which Phase 1 froze.
+ * release it documents and its provenance record, and under /sdk/ the
+ * archived rc.1 reference, its notice, which has no extension, and the SDK
+ * pages, which Phase 1 froze; and what /examples/ serves beside the archives,
+ * their metadata and the notice for rc.8 to rc.10. Not read, each for its
+ * reason: the references' generated assets (TypeDoc's search index and
+ * navigation, built from the code's names and comments, which the pages
+ * render; its styles and icons); the archives of past releases, served
+ * unchanged as published, whose current files are read from their sources;
+ * and the sky benchmark's v0 files under /developers/sky-benchmark/, a frozen
+ * dataset of questions, answers and its scorer, which its page describes.
  */
 export const SCOPE_ADD_TREES = Object.freeze([
-  { root: 'public/developers/engine/reference', pattern: /\.(?:html|txt)$/u },
+  { root: 'public/developers/engine/reference', pattern: /\.(?:html|txt|json)$/u },
+  { root: 'public/examples', pattern: /^public\/examples\/[^/]+\.(?:json|txt)$/u },
   { root: 'public/sdk', pattern: /(?:\.(?:html|md)|\/NOTICE)$/u },
   // The skills the plugin archives ship, which a host loads as instructions.
   { root: 'plugins', pattern: /^plugins\/[^/]+\/skills\/[^/]+\/SKILL\.md$/u },
@@ -220,6 +229,7 @@ export const TRUST_PATTERNS = Object.freeze([
   /^scripts\/build-assistant-context\.mjs$/u,
   /^public\/developers\/engine\/reference\//u,
   /^public\/sdk\//u,
+  /^public\/examples\/[^/]+\.(?:json|txt)$/u,
 ]);
 
 /** Translated pages and catalogs, read with the NEUTRAL list. */

@@ -18,6 +18,7 @@ import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
 import { buildServerBundle } from './build-mcp-server.mjs';
 import { manifestFor } from './pack-mcp-server.mjs';
+import { readPackageArchive } from './verify-platform-starter.mjs';
 import { createServer } from '../src/mcp/create-server';
 import { receiptDigest } from '../src/lib/receipt-digest';
 
@@ -337,5 +338,15 @@ describe('the notice beside the 0.1.0-rc.8 to rc.10 archives', () => {
   it('is linked from the MCP page', async () => {
     const page = await readFile(resolve(ROOT, 'src/pages/developers/mcp/index.astro'), 'utf8');
     expect(page).toContain(`href="/examples/${NOTICE}"`);
+  });
+
+  it('says what each archive bundles: its engine with the ΔT values, and astronomy-engine with its notice', async () => {
+    for (const rc of ['8', '9', '10']) {
+      const server = readPackageArchive(await readFile(join(PUBLIC, `zodiacs-mcp-server-0.1.0-rc.${rc}.tgz`))).get('server.mjs').toString('utf8');
+      expect(server, `rc.${rc}`).toContain(`0.1.1-rc.${rc}`);
+      expect(server, `rc.${rc}`).toContain('var SY = [');
+      expect(server, `rc.${rc}`).toContain('Copyright (c) 2019-2023 Don Cross');
+      expect(server, `rc.${rc}`).toContain('Permission is hereby granted');
+    }
   });
 });
