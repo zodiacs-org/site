@@ -72,7 +72,7 @@ const COPY = {
     noonUtc: 'meio-dia UTC, {from}–{to}',
     decan: 'Decanato',
     thisYear: 'Este ano',
-    sunMoon: '{date}, {year}: Sol {sun} · Lua em {moon} ao meio-dia UTC',
+    sunMoon: '{date} de {year}: Sol {sun} · Lua em {moon} ao meio-dia UTC',
     decanSingle: '{ordinal} decanato de {sign} — regente tradicional {ruler}',
     decanSplit: 'entre os decanatos {lo} e {hi} de {sign} — a linha de {degree}° cai dentro do intervalo desta data (regentes {rulerLo} / {rulerHi})',
     decanCusp: 'último decanato de {a} ou primeiro de {b} — o ingresso decide',

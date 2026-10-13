@@ -17,9 +17,10 @@
  * relative wording may remain.
  * Chromium holds a text run back until its end arrives, so a separate check
  * appends to a text node after its start was dated, as a parser that paints
- * partial text would. The same routes on a current clock keep CLS at 0 and
- * the server's wording, and without JavaScript /today/ shows EditionText's
- * dated server form.
+ * partial text would. The tab title reads as the server's title dated (in
+ * Spanish and Portuguese it loses "hoy"/"hoje"). The same routes on a current
+ * clock keep CLS at 0 and the server's wording and title, and without
+ * JavaScript /today/ shows EditionText's dated server form.
  *
  *   npm run build
  *   node tests/edition-dated-drive.mjs
@@ -27,7 +28,7 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
-import { datedEditionTextIn, editionDateLabel } from '../src/lib/edition-freshness.ts';
+import { datedEditionTextIn, datedEditionTitleIn, editionDateLabel } from '../src/lib/edition-freshness.ts';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 
@@ -189,6 +190,12 @@ await withPreview({ port: 4393 }, async (baseURL) => {
       return { live: textsOf(document), server: textsOf(new DOMParser().parseFromString(source ?? '', 'text/html')) };
     }, served.get(route));
 
+    // The tab title, live and as the server sent it.
+    const titles = (page, route) => page.evaluate((source) => ({
+      live: document.title,
+      server: new DOMParser().parseFromString(source ?? '', 'text/html').title,
+    }), served.get(route));
+
     for (const { path: route, locale } of routes) {
       const language = languages[locale];
       const label = editionDateLabel(editionDate, locale);
@@ -226,6 +233,13 @@ await withPreview({ port: 4393 }, async (baseURL) => {
             `${where}: no relative wording remains, islands included`,
             !language.left.test(scopeText) && scopeText.includes(label),
             scopeText.match(left)?.[0] ?? `no "${label}"`,
+          );
+          const title = await titles(page, route);
+          check(
+            `${where}: the tab title reads as the server's dated`,
+            title.live === datedEditionTitleIn(locale, title.server) && !language.left.test(title.live)
+              && (locale === 'en' || title.live !== title.server),
+            JSON.stringify(title),
           );
           check(`${where}: no page errors`, errors.length === 0, errors.join(' | '));
 
@@ -275,6 +289,8 @@ await withPreview({ port: 4393 }, async (baseURL) => {
           texts.live.length === texts.server.length && changed.length === 0 && texts.server.some((text) => new RegExp(language.word.source, 'u').test(text)),
           `${texts.live.length}/${texts.server.length} nodes; ${JSON.stringify(changed.slice(0, 2))}`,
         );
+        const title = await titles(page, route);
+        check(`${where}: the tab title keeps the server's wording`, title.live === title.server, JSON.stringify(title));
         check(`${where}: no page errors`, errors.length === 0, errors.join(' | '));
       } finally {
         await context.close();
