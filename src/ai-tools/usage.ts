@@ -1,4 +1,4 @@
-import { AI_TOOL_NAMES, type AiToolName } from './contracts';
+import { ALL_AI_TOOL_NAMES, type AiToolName } from './contracts';
 import { serviceRpc } from './quota';
 
 export const USAGE_HOSTS = ['chatgpt', 'claude', 'other'] as const;
@@ -25,7 +25,7 @@ export function usageHostFamily(userAgent: unknown): UsageHost {
  */
 export async function countAiToolCall(tool: AiToolName, host: UsageHost, env: Environment, fetcher: typeof fetch = fetch): Promise<boolean> {
   const rpc = serviceRpc(env);
-  if (!rpc || !(AI_TOOL_NAMES as readonly string[]).includes(tool) || !(USAGE_HOSTS as readonly string[]).includes(host)) return false;
+  if (!rpc || !(ALL_AI_TOOL_NAMES as readonly string[]).includes(tool) || !(USAGE_HOSTS as readonly string[]).includes(host)) return false;
   try {
     const response = await fetcher(`${rpc.url}/rest/v1/rpc/zodiacs_mcp_usage_count_v1`, {
       method: 'POST', headers: rpc.headers, cache: 'no-store', redirect: 'error',
