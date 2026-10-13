@@ -623,29 +623,38 @@ function htmlBlocks(source) {
 const SHIPPED_SCRIPT = /^(?:examples\/(?:platform|mcp-server)|plugins\/[^/]+\/examples)\/.*\.m?js$/u;
 
 /** A script's comments as blocks: a run of line comments on consecutive lines is one block. */
-function commentBlocks(source) {
+function commentBlocks(source, file) {
+  const tree = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, scriptKindFor(file));
+  const ranges = new Map();
+  const collect = (position) => {
+    for (const range of [...(ts.getLeadingCommentRanges(source, position) ?? []), ...(ts.getTrailingCommentRanges(source, position) ?? [])]) ranges.set(range.pos, range);
+  };
+  const visit = (node) => {
+    collect(node.getFullStart());
+    collect(node.getEnd());
+    ts.forEachChild(node, visit);
+  };
+  visit(tree);
+  collect(tree.endOfFileToken.getFullStart());
   const blocks = [];
-  const scanner = ts.createScanner(ts.ScriptTarget.Latest, false, ts.LanguageVariant.Standard, source);
-  let run = null;
-  for (let kind = scanner.scan(); kind !== ts.SyntaxKind.EndOfFileToken; kind = scanner.scan()) {
-    if (kind === ts.SyntaxKind.SingleLineCommentTrivia) {
-      const line = source.slice(0, scanner.getTokenStart()).split('\n').length;
-      const text = scanner.getTokenText().replace(/^\/\/\s?/u, '');
-      if (run && run.line === line - 1) run.text += ` ${text}`;
-      else blocks.push(run = { line, text });
-      run.line = line;
-    } else if (kind === ts.SyntaxKind.MultiLineCommentTrivia) {
-      run = null;
-      blocks.push({ text: scanner.getTokenText().replace(/^\/\*+|\*+\/$/gu, '').replace(/^\s*\*\s?/gmu, ' ') });
-    } else if (kind !== ts.SyntaxKind.NewLineTrivia && kind !== ts.SyntaxKind.WhitespaceTrivia) {
-      run = null;
+  let previous = null;
+  for (const range of [...ranges.values()].sort((a, b) => a.pos - b.pos)) {
+    const raw = source.slice(range.pos, range.end);
+    if (range.kind === ts.SyntaxKind.SingleLineCommentTrivia) {
+      const text = raw.replace(/^\/\/\s?/u, '');
+      if (previous && /^[ \t]*\r?\n[ \t]*$/u.test(source.slice(previous.end, range.pos))) blocks[blocks.length - 1] += ` ${text}`;
+      else blocks.push(text);
+      previous = range;
+    } else {
+      blocks.push(raw.replace(/^\/\*+|\*+\/$/gu, '').replace(/^\s*\*\s?/gmu, ' '));
+      previous = null;
     }
   }
-  return blocks.map(({ text }) => text.replace(/\s+/gu, ' ').trim()).filter(Boolean);
+  return blocks.map((text) => text.replace(/\s+/gu, ' ').trim()).filter(Boolean);
 }
 
 export async function extractBlocks(file, source) {
-  if (SHIPPED_SCRIPT.test(file)) return [...scriptBlocks(source, file), ...commentBlocks(source)];
+  if (SHIPPED_SCRIPT.test(file)) return [...scriptBlocks(source, file), ...commentBlocks(source, file)];
   if (file.endsWith('.astro')) return astroBlocks(source, file);
   // A notice without an extension is plain text, read as Markdown reads it.
   if (/\.(?:md|mdx|txt)$/u.test(file) || /(?:^|\/)NOTICE$/u.test(file)) return markdownBlocks(source);
