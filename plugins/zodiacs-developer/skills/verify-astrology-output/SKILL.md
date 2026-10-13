@@ -7,7 +7,7 @@ Use `check_sky_fact` for supported sign, retrograde, ingress or lunar phase
 propositions. A date without a timezone can return depends. Preserve that verdict.
 Do not use this tool to verify predictions or advice about medical, relationship
 or financial outcomes. Use `get_upcoming_events` only for supported event kinds
-and windows no longer than 31 days; preserve tested-not-proven completeness.
+and windows no longer than 92 days; preserve tested-not-proven completeness.
 
 For chart disagreements, inspect `get_local_chart_capabilities` and use
 `compare_calculation_records`. Inputs are record strings, never file paths or
