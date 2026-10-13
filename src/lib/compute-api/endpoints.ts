@@ -4,7 +4,8 @@
  * of a success response; every number in it comes from the vendored engine's
  * root entry point (`natalChart`, `positions`, `moonPhase`,
  * `outsideReferenceSpan`, `searchLongitudeCrossings`,
- * `searchLongitudeCrossingsWith`), from the engine's own time basis, which
+ * `searchLongitudeCrossingsWith`, and for an aspect `matchAspect`,
+ * `separation` and `aspectMotion`), from the engine's own time basis, which
  * src/lib/engine/time-basis.mjs carries because the package does not export
  * it, or, for local civil time, from the engine's own resolver,
  * @zodiacs/engine/geo (./local-time.ts). The engine's
@@ -12,14 +13,20 @@
  * anything once the request is answered.
  */
 import {
+  ASPECTS,
+  aspectMotion,
   degreeInSign,
+  matchAspect,
   moonPhase,
   natalChart,
   outsideReferenceSpan,
+  normalizeLongitude,
   positions,
   searchLongitudeCrossings,
   searchLongitudeCrossingsWith,
+  separation,
   signForLongitude,
+  type AspectType,
   type BodyName,
   type BodyPosition,
   type Chart,
@@ -460,10 +467,111 @@ function boundaryMarginArcsec(lon: number): number {
   return Math.min(within, 30 - within) * 3600;
 }
 
+type AspectFact = Extract<SkyFactRequest, { kind: 'aspect' }>;
+
+/** The Sun and the Moon, which widen an aspect's orb in matchAspect. */
+const LUMINARIES: ReadonlySet<BodyName> = new Set(['Sun', 'Moon']);
+
+interface AspectRule {
+  angle: number;
+  /** The widest orb at which matchAspect counts the aspect between these two bodies. */
+  allowedOrb: number;
+}
+
+function aspectRule(type: AspectType, body: BodyName, other: BodyName): AspectRule {
+  const definition = ASPECTS.find((candidate) => candidate.type === type);
+  if (!definition) throw new Error('The engine names no such aspect.');
+  const luminary = LUMINARIES.has(body) || LUMINARIES.has(other);
+  return { angle: definition.angle, allowedOrb: luminary ? definition.luminaryOrb : definition.orb };
+}
+
+/** Whether the aspect holds at one instant: matchAspect, which decides a chart's aspects, names it. */
+function aspectHolds(rows: readonly BodyPosition[], request: AspectFact): boolean {
+  const match = matchAspect(request.body, rowOf(rows, request.body).lon, request.other, rowOf(rows, request.other).lon);
+  return match?.definition.type === request.aspect;
+}
+
+/**
+ * The two bodies at one instant, how far apart they are, the orb (the
+ * distance from the aspect's exact angle) and whether it is shrinking.
+ */
+function aspectState(rows: readonly BodyPosition[], request: AspectFact, rule: AspectRule) {
+  const body = rowOf(rows, request.body);
+  const other = rowOf(rows, request.other);
+  const apart = separation(body.lon, other.lon);
+  return {
+    body: stateAt(rows, request.body),
+    other: stateAt(rows, request.other),
+    separation: apart,
+    orb: Math.abs(apart - rule.angle),
+    motion: aspectMotion(body, other, rule.angle),
+  };
+}
+
+/**
+ * Where an aspect begins or ends, as values of the relative longitude, the
+ * body's longitude minus the other's from 0 to 360: the two edges of its orb
+ * on each side of the circle, one pair for a conjunction or an opposition.
+ * Rising through a lower edge or falling through an upper one, the aspect
+ * begins; the other way, it ends.
+ */
+function aspectEdges(rule: AspectRule): Array<{ lon: number; lower: boolean }> {
+  const { angle, allowedOrb } = rule;
+  const edges = [
+    { lon: normalizeLongitude(angle - allowedOrb), lower: true },
+    { lon: normalizeLongitude(angle + allowedOrb), lower: false },
+    { lon: normalizeLongitude(360 - angle - allowedOrb), lower: true },
+    { lon: normalizeLongitude(360 - angle + allowedOrb), lower: false },
+  ];
+  return edges.filter((edge, index) => edges.findIndex((candidate) => candidate.lon === edge.lon) === index);
+}
+
+/** Where the aspect is exact: the relative longitude at its angle, on each side of the circle. */
+function aspectExactness(rule: AspectRule): number[] {
+  return [...new Set([normalizeLongitude(rule.angle), normalizeLongitude(360 - rule.angle)])];
+}
+
+/**
+ * Crossings of the relative longitude, by the engine's solver on the two
+ * bodies' longitudes from positions(), at the Moon's step when the Moon is one
+ * of them.
+ */
+function relativeCrossings(request: AspectFact, target: number, from: Date, to: Date, budget: SampleBudget,
+  rowsAt: (date: Date) => BodyPosition[]): LongitudeCrossing[] {
+  const relativeAt = (_body: BodyName, date: Date) => {
+    const rows = rowsAt(date);
+    return normalizeLongitude(rowOf(rows, request.body).lon - rowOf(rows, request.other).lon);
+  };
+  const step = request.body === 'Moon' || request.other === 'Moon' ? SEARCH_STEP_DAYS.moon : SEARCH_STEP_DAYS.default;
+  return budget.settle(searchLongitudeCrossingsWith(relativeAt, request.body, target, from, to, budget.options(step)));
+}
+
 export async function computeSkyFact(request: SkyFactRequest, dependencies: ComputeDependencies) {
   const budget = new SampleBudget('sky-fact.samples');
   const rowsAt = positionsMemo();
   const fact = factEcho(request);
+
+  if (request.kind === 'aspect' && 'instant' in request.when) {
+    const instant = request.when.instant;
+    const rows = rowsAt(instant);
+    const rule = aspectRule(request.aspect, request.body, request.other);
+    const basis = basisOf(instant);
+    return successBody('sky-fact', {
+      answer: (aspectHolds(rows, request) ? 'true' : 'false') as Answer,
+      basis: 'instant' as const,
+      fact,
+      instant: iso(instant),
+      window: null,
+      zone: null,
+      facts: {
+        ...aspectState(rows, request, rule),
+        allowedOrb: rule.allowedOrb,
+        deltaT: basis.deltaT,
+        timeScale: basis.timeScale,
+        flags: outsideReferenceSpan(instant) ? ['outside-reference-span' as const] : [],
+      },
+    }, computeReceipt('sky-fact'));
+  }
 
   if ((request.kind === 'sign' || request.kind === 'retrograde') && 'instant' in request.when) {
     const instant = request.when.instant;
@@ -538,6 +646,31 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
       facts = { lunations, flags };
       break;
     }
+    case 'aspect': {
+      const rule = aspectRule(request.aspect, request.body, request.other);
+      const changes = aspectEdges(rule)
+        .flatMap((edge) => relativeCrossings(request, edge.lon, span.from, span.to, budget, rowsAt)
+          .map((crossing) => ({ at: iso(crossing.at), holds: edge.lower !== crossing.retrograde })))
+        .sort((a, b) => a.at.localeCompare(b.at));
+      const exact = aspectExactness(rule)
+        .flatMap((target) => relativeCrossings(request, target, span.from, span.to, budget, rowsAt))
+        .map((crossing) => {
+          const rows = rowsAt(crossing.at);
+          return { at: iso(crossing.at), body: placeOf(rowOf(rows, request.body).lon), other: placeOf(rowOf(rows, request.other).lon) };
+        })
+        .sort((a, b) => a.at.localeCompare(b.at));
+      const startRows = rowsAt(window.from);
+      answer = changes.length > 0 ? 'depends' : (aspectHolds(startRows, request) ? 'true' : 'false');
+      facts = {
+        atStart: aspectState(startRows, request, rule),
+        atEnd: aspectState(rowsAt(span.to), request, rule),
+        allowedOrb: rule.allowedOrb,
+        changes,
+        exact,
+        flags,
+      };
+      break;
+    }
   }
 
   return successBody('sky-fact', {
@@ -570,6 +703,12 @@ function factEcho(request: SkyFactRequest): Record<string, string | null> {
       return { kind: request.kind, body: request.body, sign: request.sign, date: request.day.date, zone: request.day.zone };
     case 'phase':
       return { kind: request.kind, phase: request.phase, date: request.day.date, zone: request.day.zone };
+    case 'aspect': {
+      const when = 'instant' in request.when
+        ? { instant: iso(request.when.instant), date: null, zone: null }
+        : { instant: null, date: request.when.date, zone: request.when.zone };
+      return { kind: request.kind, body: request.body, other: request.other, aspect: request.aspect, ...when };
+    }
   }
 }
 

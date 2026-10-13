@@ -1,0 +1,43 @@
+{
+  "schema": "zodiacs.developer-query-guides-production-controls.v1",
+  "tool": "tools/verify-production.mjs",
+  "expectedCommit": "d205a673361bce6fbc4d0234fcab3040dfe14350",
+  "checkedAt": "2026-10-13T16:56:55.370Z",
+  "controls": [
+    {
+      "change": "one byte appended to the production-flags build's developers/docs/astrology-api.md",
+      "expected": "the astrology-api check fails on its twin, and no other check",
+      "result": {
+        "exited": 1,
+        "ok": false,
+        "failedChecks": [
+          "/developers/docs/astrology-api/: the production-flags build's page, with its guide article and its twin as built"
+        ]
+      },
+      "restored": true
+    },
+    {
+      "change": "one bit changed in the snapshot's /developers/docs/ephemeris-npm/ bytes",
+      "expected": "the run stops: the snapshot is not the bytes it recorded",
+      "result": {
+        "exited": 1,
+        "ok": false,
+        "failedChecks": null,
+        "error": "AssertionError [ERR_ASSERTION]: the snapshot's /developers/docs/ephemeris-npm/ is not the bytes it recorded"
+      },
+      "restored": true
+    },
+    {
+      "change": "the alias read before names #730's merge, 7d12c0f1, as the deployment's commit",
+      "expected": "the alias check fails, and no other check",
+      "result": {
+        "exited": 1,
+        "ok": false,
+        "failedChecks": [
+          "alias names a READY production deployment of the merge"
+        ]
+      },
+      "restored": true
+    }
+  ]
+}

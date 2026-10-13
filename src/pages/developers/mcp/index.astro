@@ -42,7 +42,7 @@ const tools = [
   ['compare_calculation_records', 'Two records, passed as content. Names where they differ, from the inputs and settings to the computed values, then what accounts for it — reproduced by a local recalculation, reported by the records, a hypothesis that fits, or unresolved. By default it leaves out the values of rows carrying birth details or computed positions, keeping their labels and their numeric differences; ask for the values explicitly when you need to read them.'],
   ['get_positions', 'Up to 100 instants, each with Z or an offset. Returns the twelve rows of a chart at each, the longitude, latitude, daily motion, sign and degree of every body, with the ΔT and time scale the engine used: the rows calculate_natal_chart gives for the same instant.'],
   ['find_events', 'A window of at most 92 days. Returns the sign ingresses, the stations of Mercury to Pluto and the new and full moons in it, in time order, found by the engine\'s crossing search. The search is tested, not proven to miss nothing, and every reply\'s receipt says so.'],
-  ['check_sky_fact', 'Whether a body is in a sign or retrograde, at an instant or on a date, whether it enters a sign on a date, or whether the Moon reaches a phase on a date: true, false or depends, with the computed values that decide it, and never an interpretation. There is no zone argument: a date is read as that day in every UTC offset in use today at once, from 14 hours before its midnight UTC to 36 hours after.'],
+  ['check_sky_fact', 'Whether a body is in a sign or retrograde, at an instant or on a date, whether it enters a sign on a date, whether the Moon reaches a phase on a date, or whether two bodies are in an aspect, at an instant or on a date: true, false or depends, with the computed values that decide it, and never an interpretation. There is no zone argument: a date is read as that day in every UTC offset in use today at once, from 14 hours before its midnight UTC to 36 hours after.'],
 ];
 
 // The archive's package.json declares MIT AND CC-BY-4.0: the adapter's code is
@@ -429,7 +429,7 @@ const jsonLd = [
         about a disagreement between independently authored software.
       </p>
       <p>
-        The site's tests also run 252 synthetic requests through{' '}
+        The site's tests also run 301 synthetic requests through{' '}
         <code>get_positions</code>, <code>find_events</code> and{' '}
         <code>check_sky_fact</code> and through the compute API's own handler, and
         hold the two answers to be the same apart from the citation's link.

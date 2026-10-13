@@ -58,7 +58,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.22.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.23.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -247,10 +247,13 @@ beside the number of evaluations it made, at most 12,000.
 
 Takes a `kind` and what it needs: `sign`, a body in a sign, or `retrograde`, a
 body moving backward, each at an `instant` or on a `date`; `ingress`, a body
-entering a sign on a `date`; or `phase`, the Moon reaching `new`,
-`first-quarter`, `full` or `last-quarter` on a `date`. It answers `true`,
-`false` or `depends`, with the computed values that decide the answer. It
-never interprets.
+entering a sign on a `date`; `phase`, the Moon reaching `new`,
+`first-quarter`, `full` or `last-quarter` on a `date`; or `aspect`, a `body`
+and an `other` body in a `conjunction`, `sextile`, `square`, `trine` or
+`opposition`, within the orb `calculate_natal_chart` uses for its aspects, at an
+`instant` or on a `date`. It answers `true`, `false` or `depends`, with the
+computed values that decide the answer. On a date, an aspect's reply also gives
+where it begins or ends and where it is exact. It never interprets.
 
 This adapter looks up no time zone, so there is no `zone` argument. A date is
 read as that day in every UTC offset in use today, −12:00 to +14:00, at once:
@@ -258,8 +261,8 @@ from 14 hours before its midnight UTC to 36 hours after. `depends` means the
 answer turns on the time of day or on the offset. When the ingress or the phase
 asked about falls in that span, the answer is always `depends`, because some
 offsets' dates hold it and others' do not, so neither is ever `true` here. For a
-definite answer to a sign or retrograde fact, ask at an instant; for an ingress
-or a phase, `find_events` gives the instant.
+definite answer to a sign, retrograde or aspect fact, ask at an instant; for an
+ingress or a phase, `find_events` gives the instant.
 
 These three run the hosted compute API's own calculations: the same parser and
 the same function as `POST https://zodiacs.org/api/v1/positions`, `/events` and
@@ -441,7 +444,7 @@ are separate fields, so a fallback is visible rather than silent.
   "receipt": {
     "schema": "zodiacs.mcp-receipt.v1",
     "tool": "compare_calculation_records",
-    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.22" },
+    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.23" },
     "engine": {
       "name": "@zodiacs/engine",
       "version": "1.0.0",
@@ -451,7 +454,7 @@ are separate fields, so a fallback is visible rather than silent.
   },
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
-    "receipt": "sha256:7d06030ff1aa3278faaac878aa4c69745a1f5c062739bc2be534154fe4934610",
+    "receipt": "sha256:c4261b3a6059f99bbf51ffd50d6f865a9702a39497bb061236e67e44bea1cedf",
     "engine": "@zodiacs/engine",
     "version": "1.0.0"
   }
@@ -525,7 +528,7 @@ request.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.22`, unpublished candidate |
+| adapter | `0.1.0-rc.23`, unpublished candidate |
 | engine | `@zodiacs/engine` `1.0.0`, on npm under `latest` since 2026-10-11, bundled into `server.mjs` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
@@ -578,10 +581,11 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   `registry: "npm"`. `server.mjs` is built from the engine's carried archive,
   whose bytes npm's tarball matches. 1.0.0 is 1.0.0-rc.2 with the version
   changed. This adapter does not import `calc` or Vedic; its finite comparison
-  with rc.18 is recorded in the site adoption. rc.22 is rc.21 with this README
-  corrected; rc.21 is rc.19 rebuilt after the hosted compute API began reading
+  with rc.18 is recorded in the site adoption. rc.23 adds aspect facts to
+  `check_sky_fact`; rc.22 is rc.21 with this README corrected; rc.21 is rc.19
+  rebuilt after the hosted compute API began reading
   local times with `@zodiacs/engine/geo`. The adapter resolves no time zone, and
-  its comparisons with rc.19 and rc.21 are recorded with those changes. rc.20,
+  its comparisons with rc.19, rc.21 and rc.22 are recorded with those changes. rc.20,
   an earlier cut, was withdrawn before release.
 
 ## Uninstall
@@ -613,10 +617,10 @@ historical until rerun. The records establish different things:
   cites, the two resources, eighteen malformed or refused requests each
   followed by a valid one, the diagnostic channel, a clean close, and a raw
   handshake at every protocol revision the SDK supports.
-- **`src/mcp/sky-tools.test.ts`**, in the repository — for 252 synthetic
+- **`src/mcp/sky-tools.test.ts`**, in the repository — for 301 synthetic
   requests, `get_positions`, `find_events` and `check_sky_fact` return the body
   the compute API's own handler answers for the same JSON, apart from
-  `cite.url`, and each of 17 refused requests gets the handler's own sentence.
+  `cite.url`, and each of 21 refused requests gets the handler's own sentence.
 - **`host-drive.json`** — the Claude Code CLI launching the adapter and
   reporting it connected, inside a throwaway config directory, with the
   machine's real configuration proved byte-identical afterwards.

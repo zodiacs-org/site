@@ -456,7 +456,8 @@ describe('compute API validation', () => {
     expect(await refusal('events', { from: '2026-10-08T00:00:00Z', to: '2026-10-08T00:00:00Z' })).toMatchObject({ pointer: '/to' });
     expect(await refusal('events', { ...VALID.events, bodies: ['North Node'] })).toMatchObject({ pointer: '/bodies/0' });
     expect(await refusal('events', { ...VALID.events, kinds: ['eclipse'] })).toMatchObject({ pointer: '/kinds/0' });
-    expect(await refusal('sky-fact', { kind: 'aspect', body: 'Sun' })).toMatchObject({ pointer: '/kind' });
+    expect(await refusal('sky-fact', { kind: 'eclipse', body: 'Sun' })).toMatchObject({ pointer: '/kind' });
+    expect(await refusal('sky-fact', { kind: 'aspect', body: 'Sun', other: 'Sun', aspect: 'square', date: '2026-09-29' })).toMatchObject({ pointer: '/other' });
     expect(await refusal('sky-fact', { kind: 'sign', body: 'Sun', sign: 'Libra', instant: '2026-09-29T12:00:00Z' })).toMatchObject({ pointer: '/sign' });
     expect(await refusal('sky-fact', { kind: 'sign', body: 'Sun', sign: 'libra', instant: '2026-09-29T12:00:00Z', date: '2026-09-29' })).toMatchObject({ pointer: '' });
     expect(await refusal('sky-fact', { kind: 'retrograde', body: 'Mars', instant: '2026-09-29T12:00:00Z', zone: 'Europe/Paris' })).toMatchObject({ pointer: '/zone' });

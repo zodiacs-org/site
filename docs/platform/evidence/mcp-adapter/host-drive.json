@@ -16,21 +16,21 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "sha256": "e945f67c8409e3b6788716f402ee73893a2e2291309817ccf31c6d0416057ce7"
+    "sha256": "cba42fac851f431f57e0578d593607844a8d8b80bf8b26850f46f479d19847fe"
   },
-  "completedAt": "2026-10-12T12:37:42.357Z",
+  "completedAt": "2026-10-12T12:58:07.987Z",
   "checks": 7,
   "passed": 7,
   "results": [
     {
       "name": "the host accepts the server through its documented add command",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /Users/chiburashka/Developer/zodiacs-programme-20261011/site-docs/examples/mcp-server/server.mjs to local config\nFile modified: /var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-yzzLg2/claude-config/.claude.json [project: /private/var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-yzzLg2/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /Users/chiburashka/Developer/zodiacs-programme-20261011/site-docs/examples/mcp-server/server.mjs to local config\nFile modified: /var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-CSz21x/claude-config/.claude.json [project: /private/var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-CSz21x/project]"
     },
     {
       "name": "the registration landed in the throwaway config, not the real one",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /Users/chiburashka/Developer/zodiacs-programme-20261011/site-docs/examples/mcp-server/server.mjs to local config\nFile modified: /var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-yzzLg2/claude-config/.claude.json [project: /private/var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-yzzLg2/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /Users/chiburashka/Developer/zodiacs-programme-20261011/site-docs/examples/mcp-server/server.mjs to local config\nFile modified: /var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-CSz21x/claude-config/.claude.json [project: /private/var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-CSz21x/project]"
     },
     {
       "name": "the host launches the server and reports it connected",
@@ -45,7 +45,7 @@
     {
       "name": "the documented removal command removes it",
       "ok": true,
-      "detail": "Removed MCP server zodiacs from local config\nFile modified: /var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-yzzLg2/claude-config/.claude.json [project: /private/var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-yzzLg2/project]"
+      "detail": "Removed MCP server zodiacs from local config\nFile modified: /var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-CSz21x/claude-config/.claude.json [project: /private/var/folders/yj/t3y9tw9d1rj9mxk5z2_pkxpw0000gn/T/zodiacs-mcp-host-CSz21x/project]"
     },
     {
       "name": "nothing is left configured after removal",
@@ -56,8 +56,8 @@
       "name": "the machine's own Claude Code configuration is byte-identical throughout",
       "ok": true,
       "detail": {
-        "before": "5cb2a834f4ef2d974803703260b36926dfd56896f0dc63ab0ed38f81a6630951",
-        "after": "5cb2a834f4ef2d974803703260b36926dfd56896f0dc63ab0ed38f81a6630951"
+        "before": "c2fbaa02c832ef7e4c5233e91e1d56fd87c16ecef68b715e4e6676cfd70eaec8",
+        "after": "c2fbaa02c832ef7e4c5233e91e1d56fd87c16ecef68b715e4e6676cfd70eaec8"
       }
     }
   ]

@@ -153,7 +153,7 @@ export function createServer(note: Note): McpServer {
   server.registerTool('check_sky_fact', {
     title: 'Check a stated sky fact',
     description: [
-      'Whether a stated fact holds: a body in a sign or retrograde at an instant or on a date, a body entering a sign on a date, or the Moon reaching a phase on a date.',
+      'Whether a stated fact holds: a body in a sign or retrograde at an instant or on a date, a body entering a sign on a date, the Moon reaching a phase on a date, or two bodies in an aspect at an instant or on a date.',
       'Answers true, false or depends, with the computed values that decide it and a receipt. It never interprets.',
       ANY_ZONE_DAY_TEXT,
       'The same calculation, result and receipt as POST https://zodiacs.org/api/v1/sky-fact for the same request without a zone, computed on this machine.',
