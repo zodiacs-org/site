@@ -5710,6 +5710,29 @@ var ATLAS_PLACE_IDS = Object.freeze([
   "us-saint-paul",
   "us-minneapolis"
 ]);
+var ATLAS_PLACE_ZONES = Object.freeze({
+  "fr-paris": "Europe/Paris",
+  "fr-brest": "Europe/Paris",
+  "fr-nantes": "Europe/Paris",
+  "fr-bordeaux": "Europe/Paris",
+  "fr-rouen": "Europe/Paris",
+  "fr-toulouse": "Europe/Paris",
+  "fr-lyon": "Europe/Paris",
+  "fr-marseille": "Europe/Paris",
+  "fr-nice": "Europe/Paris",
+  "fr-ajaccio": "Europe/Paris",
+  "fr-strasbourg": "Europe/Paris",
+  "fr-metz": "Europe/Paris",
+  "us-new-york": "America/New_York",
+  "us-baltimore": "America/New_York",
+  "us-washington": "America/New_York",
+  "us-providence": "America/New_York",
+  "us-indianapolis": "America/Indiana/Indianapolis",
+  "us-louisville": "America/Kentucky/Louisville",
+  "us-chicago": "America/Chicago",
+  "us-saint-paul": "America/Chicago",
+  "us-minneapolis": "America/Chicago"
+});
 var ATLAS_WINDOW = Object.freeze({ from: "1870-01-01T00:00:00", to: "1920-01-01T00:00:00" });
 
 // src/lib/compute-api/validate.ts
@@ -5732,6 +5755,7 @@ var TEXT = Object.freeze({
   calendar: `Must be one of: ${CALENDARS.join(", ")}.`,
   country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
   atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(", ")}.`,
+  atlasPlaceZone: "Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place's clock.",
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",

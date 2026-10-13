@@ -167,6 +167,14 @@ describe('resolve_birth_time is the compute API\'s time endpoint', () => {
     }
   });
 
+  it("refuses an atlas place outside the request's zone, in the compute API's words", async () => {
+    const args = { local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'us-new-york' };
+    const outcome = await resolveBirthTime(args as any);
+    const { error } = (await hosted(args)).json;
+    expect(error.pointer).toBe('/atlasPlace');
+    expect(outcome.ok ? '' : outcome.refusal).toBe(`${error.pointer}: ${error.message}`);
+  });
+
   it("holds every result to its output schema, to the JSON Schema a host reads, and to the compute API's OpenAPI response", async () => {
     const ajv = new Ajv2020({ allErrors: true, strict: false });
     addFormats(ajv);

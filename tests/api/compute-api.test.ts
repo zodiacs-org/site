@@ -853,6 +853,13 @@ describe('compute API parity with the engine and the site resolver', () => {
     expect((await at({ local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' } })).atlas).toBeNull();
     const refused = (await call('time', { local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-lille' })).json.error;
     expect(refused).toMatchObject({ code: 'invalid-request', pointer: '/atlasPlace' });
+    // A place outside the request's zone is refused before anything is read: New York's clock beside
+    // tzdb's reading of Paris would set two places' clocks side by side.
+    const elsewhere = (await call('time', { local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'us-new-york' })).json.error;
+    expect(elsewhere).toMatchObject({ code: 'invalid-request', pointer: '/atlasPlace',
+      message: 'Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place\'s clock.' });
+    expect((await at({ local: { date: '1900-06-01', time: '12:00', zone: 'America/Indiana/Indianapolis' }, atlasPlace: 'us-indianapolis' })).atlas)
+      .toMatchObject({ place: 'us-indianapolis' });
   });
 
   it('time refuses a Julian date the birth forms would not take, an unknown calendar and a malformed country', async () => {

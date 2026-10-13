@@ -5587,6 +5587,29 @@ var ATLAS_PLACE_IDS = Object.freeze([
   "us-saint-paul",
   "us-minneapolis"
 ]);
+var ATLAS_PLACE_ZONES = Object.freeze({
+  "fr-paris": "Europe/Paris",
+  "fr-brest": "Europe/Paris",
+  "fr-nantes": "Europe/Paris",
+  "fr-bordeaux": "Europe/Paris",
+  "fr-rouen": "Europe/Paris",
+  "fr-toulouse": "Europe/Paris",
+  "fr-lyon": "Europe/Paris",
+  "fr-marseille": "Europe/Paris",
+  "fr-nice": "Europe/Paris",
+  "fr-ajaccio": "Europe/Paris",
+  "fr-strasbourg": "Europe/Paris",
+  "fr-metz": "Europe/Paris",
+  "us-new-york": "America/New_York",
+  "us-baltimore": "America/New_York",
+  "us-washington": "America/New_York",
+  "us-providence": "America/New_York",
+  "us-indianapolis": "America/Indiana/Indianapolis",
+  "us-louisville": "America/Kentucky/Louisville",
+  "us-chicago": "America/Chicago",
+  "us-saint-paul": "America/Chicago",
+  "us-minneapolis": "America/Chicago"
+});
 var ATLAS_VERSION = "0.1.0";
 var ATLAS_WINDOW = Object.freeze({ from: "1870-01-01T00:00:00", to: "1920-01-01T00:00:00" });
 
@@ -5646,6 +5669,7 @@ var TEXT = Object.freeze({
   calendar: `Must be one of: ${CALENDARS.join(", ")}.`,
   country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
   atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(", ")}.`,
+  atlasPlaceZone: "Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place's clock.",
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",
@@ -7365,7 +7389,7 @@ var PRIVACY = Object.freeze({
   citation: `${CHART_CITATION} ${TOOL_CITATION}`
 });
 var SEARCH_LIMIT = "Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.";
-var PLACE_TIME_LIMIT = "Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb. search_places reads only that index, and resolve_birth_time only tzdb, with no town-level clock records. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.";
+var PLACE_TIME_LIMIT = "Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb and the time atlas. search_places reads only that index; resolve_birth_time reads tzdb and, for one of the time atlas's 21 places named in atlasPlace, the atlas's cited reading beside it, and no other town-level clock record. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.";
 var UNSUPPORTED = Object.freeze([
   SEARCH_LIMIT,
   "Interpretation, horoscope or any generated reading.",

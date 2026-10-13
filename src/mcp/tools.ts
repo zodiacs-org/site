@@ -62,7 +62,7 @@ export const PRIVACY = Object.freeze({
 
 /** The limits of the sky, time and place tools, which a host registering only the chart tools leaves out. */
 const SEARCH_LIMIT = 'Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.';
-const PLACE_TIME_LIMIT = 'Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb. search_places reads only that index, and resolve_birth_time only tzdb, with no town-level clock records. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.';
+const PLACE_TIME_LIMIT = 'Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb and the time atlas. search_places reads only that index; resolve_birth_time reads tzdb and, for one of the time atlas\'s 21 places named in atlasPlace, the atlas\'s cited reading beside it, and no other town-level clock record. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.';
 
 /** What this first integration deliberately does not do. */
 export const UNSUPPORTED = Object.freeze([

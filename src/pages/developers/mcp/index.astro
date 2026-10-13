@@ -384,8 +384,10 @@ const jsonLd = [
           transits, progressions, returns or eclipses.</li>
         <li>No interpretation. Positions and differences, no readings.</li>
         <li>Time zones from tzdb, places from GeoNames.{' '}
-          <code>resolve_birth_time</code> reads tzdb's zone histories, with no
-          town-level clock records beyond them, and <code>search_places</code> finds
+          <code>resolve_birth_time</code> reads tzdb's zone histories and, for a
+          place of the time atlas named in <code>atlasPlace</code>, the atlas's
+          cited reading beside them, with no other town-level clock records, and{' '}
+          <code>search_places</code> finds
           only the places of 15,000 people or more that GeoNames lists. The other
           tools take an instant with an explicit offset, and{' '}
           <code>check_sky_fact</code> reads a date without a zone as that day in

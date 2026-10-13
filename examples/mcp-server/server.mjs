@@ -5315,6 +5315,29 @@ var ATLAS_PLACE_IDS = Object.freeze([
   "us-saint-paul",
   "us-minneapolis"
 ]);
+var ATLAS_PLACE_ZONES = Object.freeze({
+  "fr-paris": "Europe/Paris",
+  "fr-brest": "Europe/Paris",
+  "fr-nantes": "Europe/Paris",
+  "fr-bordeaux": "Europe/Paris",
+  "fr-rouen": "Europe/Paris",
+  "fr-toulouse": "Europe/Paris",
+  "fr-lyon": "Europe/Paris",
+  "fr-marseille": "Europe/Paris",
+  "fr-nice": "Europe/Paris",
+  "fr-ajaccio": "Europe/Paris",
+  "fr-strasbourg": "Europe/Paris",
+  "fr-metz": "Europe/Paris",
+  "us-new-york": "America/New_York",
+  "us-baltimore": "America/New_York",
+  "us-washington": "America/New_York",
+  "us-providence": "America/New_York",
+  "us-indianapolis": "America/Indiana/Indianapolis",
+  "us-louisville": "America/Kentucky/Louisville",
+  "us-chicago": "America/Chicago",
+  "us-saint-paul": "America/Chicago",
+  "us-minneapolis": "America/Chicago"
+});
 var ATLAS_VERSION = "0.1.0";
 var ATLAS_WINDOW = Object.freeze({ from: "1870-01-01T00:00:00", to: "1920-01-01T00:00:00" });
 
@@ -5374,6 +5397,7 @@ var TEXT = Object.freeze({
   calendar: `Must be one of: ${CALENDARS.join(", ")}.`,
   country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
   atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(", ")}.`,
+  atlasPlaceZone: "Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place's clock.",
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",
@@ -5576,6 +5600,15 @@ function parseEventsRequest(value) {
   };
 }
 var COUNTRY_CODE = /^[A-Z]{2}$/u;
+function sameZone(a, b) {
+  if (a === b) return true;
+  try {
+    const canonical = (zone) => new Intl.DateTimeFormat("en-US", { timeZone: zone }).resolvedOptions().timeZone;
+    return canonical(a) === canonical(b);
+  } catch {
+    return false;
+  }
+}
 async function parseTimeRequest(value, zones) {
   const object = bodyObject(value);
   onlyFields(object, ["local", "longitude", "calendar", "country", "atlasPlace"], "");
@@ -5593,6 +5626,7 @@ async function parseTimeRequest(value, zones) {
     country = object.country;
   }
   const atlasPlace = has(object, "atlasPlace") ? oneOf(object.atlasPlace, "/atlasPlace", ATLAS_PLACE_IDS, TEXT.atlasPlace) : null;
+  if (atlasPlace !== null && !sameZone(zone, ATLAS_PLACE_ZONES[atlasPlace])) throw invalidRequest("/atlasPlace", TEXT.atlasPlaceZone);
   return { local: { date, time, zone }, longitude: longitude2, calendar, writtenDate: writtenDate2, country, atlasPlace };
 }
 async function factDay(object, zones) {
@@ -8497,7 +8531,7 @@ var TIME_INPUT = z4.strictObject({
   longitude: z4.number().optional().describe("The place's longitude in degrees east, from -180 to 180. With it, a time before the place adopted a legal time is read on the place's own mean time."),
   calendar: z4.enum(CALENDARS).optional().describe("The calendar local.date is written in; gregorian when omitted. julian, the Old Style, is accepted for a date written up to 1923-12-31 and converted to the Gregorian date before the time is read."),
   country: z4.string().max(2).optional().describe("The place's country as an ISO 3166-1 alpha-2 code in capitals, such as RU, for the note on when it changed to the Gregorian calendar."),
-  atlasPlace: z4.enum(ATLAS_PLACE_IDS).optional().describe("A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.")
+  atlasPlace: z4.enum(ATLAS_PLACE_IDS).optional().describe("A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.")
 });
 async function resolveBirthTime(args) {
   try {
@@ -9081,7 +9115,7 @@ var PRIVACY = Object.freeze({
   citation: `${CHART_CITATION} ${TOOL_CITATION}`
 });
 var SEARCH_LIMIT = "Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.";
-var PLACE_TIME_LIMIT = "Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb. search_places reads only that index, and resolve_birth_time only tzdb, with no town-level clock records. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.";
+var PLACE_TIME_LIMIT = "Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb and the time atlas. search_places reads only that index; resolve_birth_time reads tzdb and, for one of the time atlas's 21 places named in atlasPlace, the atlas's cited reading beside it, and no other town-level clock record. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.";
 var UNSUPPORTED = Object.freeze([
   SEARCH_LIMIT,
   "Interpretation, horoscope or any generated reading.",
