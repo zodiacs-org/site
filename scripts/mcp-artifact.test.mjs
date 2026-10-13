@@ -49,6 +49,17 @@ describe('the built server bundle', () => {
     expect(bundle.includes(marker), `${marker} appears in the bundle`).toBe(false);
   });
 
+  // Sentences only the engine's calc and Vedic entries carry: neither is bundled.
+  it.each([
+    ['calc', 'calc.js', 'Gravitational light deflection is not modelled in this version.'],
+    ['calc', 'calc.js', 'The Earth is offered heliocentric or barycentric only.'],
+    ['Vedic', 'vedic.js', 'Odd signs: Leo, then Cancer'],
+  ])('bundles none of the %s entry of the engine (%s)', async (_entry, file, marker) => {
+    const entry = await readFile(resolve(ROOT, 'node_modules/@zodiacs/engine/dist', file), 'utf8');
+    expect(entry).toContain(marker);
+    expect(bundle).not.toContain(marker);
+  });
+
   it('writes to stdout in exactly one place: handing it to the transport', () => {
     const uses = bundle.split('\n')
       .map((line, index) => ({ line: line.trim(), number: index + 1 }))
@@ -262,6 +273,12 @@ describe('the archive the site distributes', () => {
     expect(notice.endsWith(engineNotice), 'the engine NOTICE, unchanged, at the end').toBe(true);
     expect(notice).toContain('Table S15');
     expect(bundle).toContain('var SY = [');
+    // The rest of what the NOTICE says server.mjs carries: the leap-second
+    // list, the UT1 - UTC table and the IAU 2000B series.
+    expect(notice).toContain('It also carries the IAU 2000B nutation from NOVAS C 3.1');
+    expect(bundle).toContain('source: "IERS leap-seconds.list');
+    expect(bundle).toContain('var UT1_DATA = ');
+    expect(bundle).toContain('var COEFFICIENT_TEXT = "-172064161,');
   });
 
   it('pins every runtime dependency exactly, and locks the whole tree', async () => {
