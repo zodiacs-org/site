@@ -472,8 +472,42 @@ async function astroBlocks(source, file) {
   return blocks;
 }
 
+/**
+ * The string values of a Markdown file's front matter, which a host or a page
+ * shows (a skill's description, a page's title, FAQ answers): each scalar
+ * after a key or a list dash, quoted or plain, the items of an inline list and
+ * a block scalar's lines. Not a YAML parser: on the files in scope it gives
+ * the strings a YAML parser gives, and numbers and dates as text.
+ */
+function frontMatterStrings(block) {
+  const out = [];
+  const lines = block.split(/\r?\n/u);
+  const unquote = (raw) => {
+    const value = raw.trim();
+    if (value.startsWith('"') && value.endsWith('"') && value.length >= 2) return JSON.parse(value);
+    if (value.startsWith("'") && value.endsWith("'") && value.length >= 2) return value.slice(1, -1).replace(/''/gu, "'");
+    return value.replace(/\s+#.*$/u, '');
+  };
+  for (let i = 0; i < lines.length; i++) {
+    const match = lines[i].match(/^(\s*)(?:-\s+)?(?:[A-Za-z0-9_$-]+:\s*)?(.*)$/u);
+    if (!match || match[2] === '') continue;
+    const [, indent, value] = match;
+    if (/^[|>][+-]?\s*$/u.test(value)) {
+      const body = [];
+      while (i + 1 < lines.length && (lines[i + 1].trim() === '' || lines[i + 1].match(/^(\s*)/u)[1].length > indent.length)) body.push(lines[++i].trim());
+      out.push(body.join(value.startsWith('>') ? ' ' : '\n').trim());
+    } else if (/^\[.*\]$/u.test(value.trim())) {
+      for (const item of value.trim().slice(1, -1).match(/"(?:[^"\\]|\\.)*"|'(?:[^']|'')*'|[^,]+/gu) ?? []) out.push(unquote(item));
+    } else {
+      out.push(unquote(value));
+    }
+  }
+  return out.filter((string) => string.trim());
+}
+
 function markdownBlocks(source) {
-  return source
+  const front = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u);
+  return [...(front ? frontMatterStrings(front[1]) : []), ...source
     .replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/u, '')
     .replace(/<!--[\s\S]*?-->/gu, ' ')
     // Fenced code in a language is a command, an example or its output, not
@@ -491,7 +525,7 @@ function markdownBlocks(source) {
       .replace(/^\s{0,3}(?:#{1,6}|[-*+]|\d+\.|>)\s+/gmu, '')
       .replace(/[*`]+/gu, '')
       // Underscore emphasis only; an underscore inside a name (America/New_York) stays.
-      .replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:!?]|$)/gmu, '$1$2'));
+      .replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:!?]|$)/gmu, '$1$2'))];
 }
 
 function jsonBlocks(source) {

@@ -335,6 +335,12 @@ describe('claims ledger', () => {
     });
     expect(selection.files).toContain('public/sdk/engine/media/NOTICE');
     controls.push({
+      // A Markdown file's front matter is read: a skill's description is what a host shows.
+      path: 'plugins/zodiacs-developer/skills/build-with-zodiacs/SKILL.md',
+      inject: (source) => source.replace(/^description: .*$/mu, 'description: "Positions are verified against JPL to 2″. Nothing is sent to a server."'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
       // The skills the plugin archives ship are read as the READMEs are.
       path: 'plugins/zodiacs-developer/skills/verify-astrology-output/SKILL.md',
       inject: (source) => `${source}\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n`,
