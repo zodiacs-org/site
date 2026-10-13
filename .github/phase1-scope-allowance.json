@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "locale-daily-copy-20261012",
-  "baseCommit": "c8bd493db5ef3dfc56503dadaa0e773ed43785c4",
+  "baseCommit": "5583101e997b2eeb9353c37097a35b654c1910db",
   "protectedPaths": [
     "src/lib/i18n/daily-reading.ts",
     "src/lib/i18n/ui/es.ts",
