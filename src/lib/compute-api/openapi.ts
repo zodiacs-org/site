@@ -155,7 +155,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       longitude: { ...ref('Longitude'), description: 'The place\'s longitude, degrees east. With it, a time before the place adopted a legal time uses the place\'s own mean time, and a date up to 1970-01-01 the pinned zone history.' },
       calendar: { enum: ['gregorian', 'julian'], description: 'The calendar local.date is written in; gregorian when omitted. julian, the Old Style, is accepted for a date written from 1800-01-01 to 1923-12-31, as the birth forms accept it, and is converted to the proleptic Gregorian date before the time is read.' },
       country: { type: 'string', pattern: '^[A-Z]{2}$', description: 'The place\'s country, as an ISO 3166-1 alpha-2 code in capitals, such as RU. For a country the birth forms\' table dates, the answer gives when it changed to the Gregorian calendar and whether the date as written conflicts with that.' },
-      atlasPlace: { enum: [...ATLAS_PLACE_IDS], description: 'A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone. The answer gives the atlas\'s reading of the same wall time there, beside tzdb\'s.' },
+      atlasPlace: { enum: [...ATLAS_PLACE_IDS], description: 'A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone, and tzdb\'s reading uses its longitude, so a longitude sent with it must be the place\'s, to 0.01°. The answer gives the atlas\'s reading of the same wall time there, beside tzdb\'s.' },
     },
   },
   ElectionsRequest: {

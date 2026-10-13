@@ -513,7 +513,7 @@ export const PLACES_OUTPUT = z.strictObject({
     longitude: z.number().describe('Degrees east, rounded to 0.01° as the index stores it.'),
     timeZone: z.string().describe('The place\'s IANA time zone, for resolve_birth_time.'),
     population: count,
-  })).max(PLACES_MAX).describe('Places whose names start with the query first, then, from three characters, places whose names contain it, each in order of population.'),
+  })).max(PLACES_MAX).describe('Places whose names start with the query first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population.'),
   source: z.strictObject({
     source: z.literal(PLACES_SOURCE.source),
     licence: z.literal(PLACES_SOURCE.licence),

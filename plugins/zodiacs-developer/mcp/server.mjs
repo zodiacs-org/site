@@ -5610,6 +5610,29 @@ var ATLAS_PLACE_ZONES = Object.freeze({
   "us-saint-paul": "America/Chicago",
   "us-minneapolis": "America/Chicago"
 });
+var ATLAS_PLACE_LONGITUDES = Object.freeze({
+  "fr-paris": 2.3488,
+  "fr-brest": -4.48628,
+  "fr-nantes": -1.55336,
+  "fr-bordeaux": -0.58046,
+  "fr-rouen": 1.09932,
+  "fr-toulouse": 1.44367,
+  "fr-lyon": 4.84789,
+  "fr-marseille": 5.38107,
+  "fr-nice": 7.26608,
+  "fr-ajaccio": 8.73812,
+  "fr-strasbourg": 7.74553,
+  "fr-metz": 6.17269,
+  "us-new-york": -74.00597,
+  "us-baltimore": -76.61219,
+  "us-washington": -77.03637,
+  "us-providence": -71.41283,
+  "us-indianapolis": -86.15804,
+  "us-louisville": -85.75941,
+  "us-chicago": -87.65005,
+  "us-saint-paul": -93.09327,
+  "us-minneapolis": -93.26384
+});
 var ATLAS_VERSION = "0.1.0";
 var ATLAS_WINDOW = Object.freeze({ from: "1870-01-01T00:00:00", to: "1920-01-01T00:00:00" });
 
@@ -5670,6 +5693,7 @@ var TEXT = Object.freeze({
   country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
   atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(", ")}.`,
   atlasPlaceZone: "Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place's clock.",
+  atlasPlaceLongitude: "With atlasPlace, must be the place's own longitude, to 0.01\xB0, or be left out, when the place's own is used.",
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",
@@ -7341,7 +7365,7 @@ var METHODOLOGY_SECTIONS = Object.freeze([
   `An aspect fact holds while the two bodies' separation is within the orb a chart uses for that aspect, the wider one when the Sun or the Moon is one of them. On a date, the reply gives where the aspect begins or ends and where it is exact, which the same crossing search finds on the difference between the two longitudes, at the Moon's step when the Moon is one of them.`,
   "## Local times and places",
   "`resolve_birth_time` runs the compute API's time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place's own with its longitude, the zone reference city's without one. Up to 1970-01-01 the offsets are those of tzdb 2025c with its backzone file, which the engine ships; from then on, the runtime's own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone's offset at the same instant in the runtime's data, tzdb's default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms' note on when that country changed calendar. With `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which records with citations what the clocks said in France and the United States from 1870 to 1919, the reply adds the atlas's reading of the same wall time: each instant with the rule the atlas applies, its uncertainty flag (documented, inferred or uncertain) and reasons, and its citations, and how many seconds the first instant is from tzdb's. Pass the `utc` it returns to the other tools.",
-  "`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site's birthplace search, built into this server: names that start with the query first, then, from three characters, names that contain it, each by population. Coordinates are rounded to 0.01\xB0, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.",
+  "`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site's birthplace search, built into this server: names that start with the query first, then, from three characters, names that begin with the same letter and contain it, each by population. Coordinates are rounded to 0.01\xB0, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.",
   "## Dates",
   'Requests are accepted from 1800 to 2199. That is the range the rest of Zodiacs supports, not a range in which every date has been checked: the engine\'s records state `broadDateRange: "not-certified"`.',
   "## Citing a result",

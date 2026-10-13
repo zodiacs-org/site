@@ -307,7 +307,8 @@ Terrestrial Time, the offset applied, and how the time was read:
   before 1924, the note the site's birth forms give: `old-style`, `new-style`
   or `other-calendar`;
 - with `atlasPlace`, one of the 21 places of the Zodiacs time atlas in
-  `local.zone`, which
+  `local.zone`, whose longitude tzdb's reading then uses (one sent with it must
+  be the place's, to 0.01°), which
   records with citations what the clocks said in France and the United States
   from 1870 to 1919, the reply adds the atlas's reading of the same wall time:
   one instant, every instant of a time the clocks repeated, or the instant of a
@@ -325,7 +326,8 @@ into `server.mjs`. Pass the `utc` it returns to `calculate_natal_chart`.
 
 Takes a `query`, a place name or its start, and optionally a `limit` from 1 to
 20, 8 when omitted. Returns the places whose names start with it, then, from
-three characters, those whose names contain it, each in order of population,
+three characters, those whose names begin with the same letter and contain
+it, each in order of population,
 with the region and country, the coordinates rounded to 0.01° (about 1.1 km)
 and the IANA time zone. It reads GeoNames cities15000, every place of 15,000
 people or more, which is the index the site's birthplace search reads, with the

@@ -79,7 +79,7 @@ export { PLACES_SOURCE, PLACE_QUERY_CHARS, PLACES_DEFAULT, PLACES_MAX } from './
 
 export const PLACES_INPUT = z.strictObject({
   query: z.string().max(PLACE_QUERY_CHARS)
-    .describe('A place name or its start, in any letter case, with or without accents; two characters or more. Places whose names start with it come first, then, from three characters, places whose names contain it, each in order of population.'),
+    .describe('A place name or its start, in any letter case, with or without accents; two characters or more. Places whose names start with it come first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population.'),
   limit: z.number().int().min(1).max(PLACES_MAX).optional()
     .describe(`How many places, 1 to ${PLACES_MAX}; ${PLACES_DEFAULT} when omitted, as the site's search lists.`),
 });

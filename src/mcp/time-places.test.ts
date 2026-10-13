@@ -167,12 +167,16 @@ describe('resolve_birth_time is the compute API\'s time endpoint', () => {
     }
   });
 
-  it("refuses an atlas place outside the request's zone, in the compute API's words", async () => {
-    const args = { local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'us-new-york' };
-    const outcome = await resolveBirthTime(args as any);
-    const { error } = (await hosted(args)).json;
-    expect(error.pointer).toBe('/atlasPlace');
-    expect(outcome.ok ? '' : outcome.refusal).toBe(`${error.pointer}: ${error.message}`);
+  it("refuses an atlas place outside the request's zone, or with another town's longitude, in the compute API's words", async () => {
+    for (const [args, pointer] of [
+      [{ local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'us-new-york' }, '/atlasPlace'],
+      [{ local: { date: '1880-06-01', time: '12:00', zone: 'Europe/Paris' }, longitude: 2.35, atlasPlace: 'fr-brest' }, '/longitude'],
+    ] as const) {
+      const outcome = await resolveBirthTime(args as any);
+      const { error } = (await hosted(args)).json;
+      expect(error.pointer).toBe(pointer);
+      expect(outcome.ok ? '' : outcome.refusal).toBe(`${error.pointer}: ${error.message}`);
+    }
   });
 
   it("holds every result to its output schema, to the JSON Schema a host reads, and to the compute API's OpenAPI response", async () => {
@@ -248,6 +252,8 @@ describe('search_places is the site\'s birthplace search', () => {
       }
     }
     expect(value(searchPlaces({ query: 'Paris' })).places[0]).toMatchObject({ name: 'Paris', country: 'France', timeZone: 'Europe/Paris' });
+    // A native spelling whose letters NFD leaves whole finds the place its ASCII name is indexed under.
+    expect(value(searchPlaces({ query: 'Łódź' })).places[0]).toMatchObject({ name: 'Łódź', country: 'Poland', timeZone: 'Europe/Warsaw' });
     expect(value(searchPlaces({ query: 'a' })).places).toEqual([]);
   });
 

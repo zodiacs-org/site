@@ -14,7 +14,7 @@ import manifest from '../../data/time-atlas/atlas.json';
 import { ATLAS_COMMIT, ATLAS_COVERAGE, ATLAS_PLACES, ATLAS_SOURCE, atlasReading } from './index';
 import { loadAtlas, resolve } from './lib.mjs';
 import placesData from '../../data/time-atlas/places.json';
-import { ATLAS_PLACE_IDS, ATLAS_PLACE_ZONES, ATLAS_VERSION, ATLAS_WINDOW } from './places';
+import { ATLAS_PLACE_IDS, ATLAS_PLACE_LONGITUDES, ATLAS_PLACE_ZONES, ATLAS_VERSION, ATLAS_WINDOW } from './places';
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url));
 const sha256 = (bytes: Buffer | string) => createHash('sha256').update(bytes).digest('hex');
@@ -52,6 +52,7 @@ describe('the time atlas copied from the engine repository', () => {
     expect(ATLAS_PLACES).toHaveLength(21);
     expect([...ATLAS_PLACE_IDS]).toEqual([...ATLAS_PLACES]);
     expect({ ...ATLAS_PLACE_ZONES }).toEqual(Object.fromEntries(placesData.places.map((place: { id: string; tzdbZone: string }) => [place.id, place.tzdbZone])));
+    expect({ ...ATLAS_PLACE_LONGITUDES }).toEqual(Object.fromEntries(placesData.places.map((place: { id: string; longitude: number }) => [place.id, place.longitude])));
     expect(ATLAS_VERSION).toBe(manifest.version);
     expect(ATLAS_WINDOW).toEqual({ from: manifest.coverage.start, to: manifest.coverage.end });
   });

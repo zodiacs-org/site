@@ -25,8 +25,14 @@ export interface CityIndex {
 /** [name, asciiOrZero, admin1Idx, countryIdx, lat100, lon100, tzIdx, pop]; scripts/build-cities.mjs. */
 export type Row = [string, string | 0, number, number, number, number, number, number];
 
+/** Letters NFD leaves whole, written as GeoNames' ASCII names, by which the index is sharded, write them. */
+const ASCII_LETTERS: Readonly<Record<string, string>> = {
+  'ł': 'l', 'ø': 'o', 'đ': 'd', 'ð': 'd', 'þ': 'th', 'æ': 'ae', 'œ': 'oe', 'ß': 'ss',
+  'ı': 'i', 'ħ': 'h', 'ŧ': 't', 'ŋ': 'n', 'ĸ': 'k', 'ſ': 's', 'ŀ': 'l',
+};
+
 export const fold = (s: string) =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[łøđðþæœßıħŧŋĸſŀ]/g, (letter) => ASCII_LETTERS[letter] ?? letter);
 
 /** The folded query, or null when it is too short to search. */
 export function foldedQuery(query: string): string | null {
@@ -41,7 +47,8 @@ export function shardKey(q: string): string {
 
 /**
  * Names that start with the query first, then, for three characters or more,
- * names that contain it; each in the shard's order, which is by population.
+ * names that contain it, among those in the shard of the query's first letter;
+ * each in the shard's order, which is by population.
  */
 export function rankCities(index: CityIndex, rows: readonly Row[], q: string, limit: number): City[] {
   const starts: Row[] = [];

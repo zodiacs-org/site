@@ -23,6 +23,31 @@ export const ATLAS_PLACE_ZONES: Readonly<Record<AtlasPlaceId, string>> = Object.
   'us-minneapolis': 'America/Chicago',
 });
 
+/** Each place's longitude, as the atlas's places.json gives it: the one its own mean time and tzdb's are read on. */
+export const ATLAS_PLACE_LONGITUDES: Readonly<Record<AtlasPlaceId, number>> = Object.freeze({
+  'fr-paris': 2.3488,
+  'fr-brest': -4.48628,
+  'fr-nantes': -1.55336,
+  'fr-bordeaux': -0.58046,
+  'fr-rouen': 1.09932,
+  'fr-toulouse': 1.44367,
+  'fr-lyon': 4.84789,
+  'fr-marseille': 5.38107,
+  'fr-nice': 7.26608,
+  'fr-ajaccio': 8.73812,
+  'fr-strasbourg': 7.74553,
+  'fr-metz': 6.17269,
+  'us-new-york': -74.00597,
+  'us-baltimore': -76.61219,
+  'us-washington': -77.03637,
+  'us-providence': -71.41283,
+  'us-indianapolis': -86.15804,
+  'us-louisville': -85.75941,
+  'us-chicago': -87.65005,
+  'us-saint-paul': -93.09327,
+  'us-minneapolis': -93.26384,
+});
+
 /** The atlas's version and the wall times it covers, as its manifest gives them. */
 export const ATLAS_VERSION = '0.1.0';
 export const ATLAS_WINDOW = Object.freeze({ from: '1870-01-01T00:00:00', to: '1920-01-01T00:00:00' } as const);

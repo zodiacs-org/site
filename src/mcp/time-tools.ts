@@ -35,7 +35,7 @@ export const TIME_INPUT = z.strictObject({
   country: z.string().max(2).optional()
     .describe('The place\'s country as an ISO 3166-1 alpha-2 code in capitals, such as RU, for the note on when it changed to the Gregorian calendar.'),
   atlasPlace: z.enum(ATLAS_PLACE_IDS).optional()
-    .describe('A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone. The reply then gives the atlas\'s reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb\'s.'),
+    .describe('A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone, and tzdb\'s reading uses its longitude, so a longitude sent with it must be the place\'s, to 0.01°. The reply then gives the atlas\'s reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb\'s.'),
 });
 
 export async function resolveBirthTime(args: z.infer<typeof TIME_INPUT>): Promise<ToolOutcome> {

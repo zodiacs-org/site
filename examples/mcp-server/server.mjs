@@ -5338,6 +5338,29 @@ var ATLAS_PLACE_ZONES = Object.freeze({
   "us-saint-paul": "America/Chicago",
   "us-minneapolis": "America/Chicago"
 });
+var ATLAS_PLACE_LONGITUDES = Object.freeze({
+  "fr-paris": 2.3488,
+  "fr-brest": -4.48628,
+  "fr-nantes": -1.55336,
+  "fr-bordeaux": -0.58046,
+  "fr-rouen": 1.09932,
+  "fr-toulouse": 1.44367,
+  "fr-lyon": 4.84789,
+  "fr-marseille": 5.38107,
+  "fr-nice": 7.26608,
+  "fr-ajaccio": 8.73812,
+  "fr-strasbourg": 7.74553,
+  "fr-metz": 6.17269,
+  "us-new-york": -74.00597,
+  "us-baltimore": -76.61219,
+  "us-washington": -77.03637,
+  "us-providence": -71.41283,
+  "us-indianapolis": -86.15804,
+  "us-louisville": -85.75941,
+  "us-chicago": -87.65005,
+  "us-saint-paul": -93.09327,
+  "us-minneapolis": -93.26384
+});
 var ATLAS_VERSION = "0.1.0";
 var ATLAS_WINDOW = Object.freeze({ from: "1870-01-01T00:00:00", to: "1920-01-01T00:00:00" });
 
@@ -5398,6 +5421,7 @@ var TEXT = Object.freeze({
   country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
   atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(", ")}.`,
   atlasPlaceZone: "Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place's clock.",
+  atlasPlaceLongitude: "With atlasPlace, must be the place's own longitude, to 0.01\xB0, or be left out, when the place's own is used.",
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",
@@ -5627,7 +5651,11 @@ async function parseTimeRequest(value, zones) {
   }
   const atlasPlace = has(object, "atlasPlace") ? oneOf(object.atlasPlace, "/atlasPlace", ATLAS_PLACE_IDS, TEXT.atlasPlace) : null;
   if (atlasPlace !== null && !sameZone(zone, ATLAS_PLACE_ZONES[atlasPlace])) throw invalidRequest("/atlasPlace", TEXT.atlasPlaceZone);
-  return { local: { date, time, zone }, longitude: longitude2, calendar, writtenDate: writtenDate2, country, atlasPlace };
+  if (atlasPlace !== null && longitude2 !== null && Math.abs(longitude2 - ATLAS_PLACE_LONGITUDES[atlasPlace]) > 0.01) {
+    throw invalidRequest("/longitude", TEXT.atlasPlaceLongitude);
+  }
+  const readOn = atlasPlace !== null && longitude2 === null ? ATLAS_PLACE_LONGITUDES[atlasPlace] : longitude2;
+  return { local: { date, time, zone }, longitude: readOn, calendar, writtenDate: writtenDate2, country, atlasPlace };
 }
 async function factDay(object, zones) {
   const date = dateAt(required(object, "date", ""), "/date");
@@ -6240,7 +6268,7 @@ var PLACES_OUTPUT = z.strictObject({
     longitude: z.number().describe("Degrees east, rounded to 0.01\xB0 as the index stores it."),
     timeZone: z.string().describe("The place's IANA time zone, for resolve_birth_time."),
     population: count
-  })).max(PLACES_MAX).describe("Places whose names start with the query first, then, from three characters, places whose names contain it, each in order of population."),
+  })).max(PLACES_MAX).describe("Places whose names start with the query first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population."),
   source: z.strictObject({
     source: z.literal(PLACES_SOURCE.source),
     licence: z.literal(PLACES_SOURCE.licence),
@@ -6255,7 +6283,24 @@ var PLACES_OUTPUT = z.strictObject({
 import { z as z2 } from "zod";
 
 // src/lib/geo/rank.ts
-var fold = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+var ASCII_LETTERS = {
+  "\u0142": "l",
+  "\xF8": "o",
+  "\u0111": "d",
+  "\xF0": "d",
+  "\xFE": "th",
+  "\xE6": "ae",
+  "\u0153": "oe",
+  "\xDF": "ss",
+  "\u0131": "i",
+  "\u0127": "h",
+  "\u0167": "t",
+  "\u014B": "n",
+  "\u0138": "k",
+  "\u017F": "s",
+  "\u0140": "l"
+};
+var fold = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[łøđðþæœßıħŧŋĸſŀ]/g, (letter) => ASCII_LETTERS[letter] ?? letter);
 function foldedQuery(query) {
   const q = fold(query.trim());
   return q[1] ? q : null;
@@ -6400,7 +6445,7 @@ var PLACE_SHARDS = Object.freeze({
   z: rows(z_default)
 });
 var PLACES_INPUT = z2.strictObject({
-  query: z2.string().max(PLACE_QUERY_CHARS).describe("A place name or its start, in any letter case, with or without accents; two characters or more. Places whose names start with it come first, then, from three characters, places whose names contain it, each in order of population."),
+  query: z2.string().max(PLACE_QUERY_CHARS).describe("A place name or its start, in any letter case, with or without accents; two characters or more. Places whose names start with it come first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population."),
   limit: z2.number().int().min(1).max(PLACES_MAX).optional().describe(`How many places, 1 to ${PLACES_MAX}; ${PLACES_DEFAULT} when omitted, as the site's search lists.`)
 });
 var cityIndex = cities_default;
@@ -8030,7 +8075,7 @@ var METHODOLOGY_SECTIONS = Object.freeze([
   `An aspect fact holds while the two bodies' separation is within the orb a chart uses for that aspect, the wider one when the Sun or the Moon is one of them. On a date, the reply gives where the aspect begins or ends and where it is exact, which the same crossing search finds on the difference between the two longitudes, at the Moon's step when the Moon is one of them.`,
   "## Local times and places",
   "`resolve_birth_time` runs the compute API's time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place's own with its longitude, the zone reference city's without one. Up to 1970-01-01 the offsets are those of tzdb 2025c with its backzone file, which the engine ships; from then on, the runtime's own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone's offset at the same instant in the runtime's data, tzdb's default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms' note on when that country changed calendar. With `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which records with citations what the clocks said in France and the United States from 1870 to 1919, the reply adds the atlas's reading of the same wall time: each instant with the rule the atlas applies, its uncertainty flag (documented, inferred or uncertain) and reasons, and its citations, and how many seconds the first instant is from tzdb's. Pass the `utc` it returns to the other tools.",
-  "`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site's birthplace search, built into this server: names that start with the query first, then, from three characters, names that contain it, each by population. Coordinates are rounded to 0.01\xB0, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.",
+  "`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site's birthplace search, built into this server: names that start with the query first, then, from three characters, names that begin with the same letter and contain it, each by population. Coordinates are rounded to 0.01\xB0, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.",
   "## Dates",
   'Requests are accepted from 1800 to 2199. That is the range the rest of Zodiacs supports, not a range in which every date has been checked: the engine\'s records state `broadDateRange: "not-certified"`.',
   "## Citing a result",
@@ -8531,7 +8576,7 @@ var TIME_INPUT = z4.strictObject({
   longitude: z4.number().optional().describe("The place's longitude in degrees east, from -180 to 180. With it, a time before the place adopted a legal time is read on the place's own mean time."),
   calendar: z4.enum(CALENDARS).optional().describe("The calendar local.date is written in; gregorian when omitted. julian, the Old Style, is accepted for a date written up to 1923-12-31 and converted to the Gregorian date before the time is read."),
   country: z4.string().max(2).optional().describe("The place's country as an ISO 3166-1 alpha-2 code in capitals, such as RU, for the note on when it changed to the Gregorian calendar."),
-  atlasPlace: z4.enum(ATLAS_PLACE_IDS).optional().describe("A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.")
+  atlasPlace: z4.enum(ATLAS_PLACE_IDS).optional().describe("A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone, and tzdb's reading uses its longitude, so a longitude sent with it must be the place's, to 0.01\xB0. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.")
 });
 async function resolveBirthTime(args) {
   try {
