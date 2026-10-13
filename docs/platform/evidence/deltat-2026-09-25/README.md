@@ -271,16 +271,14 @@ dump reproduces the committed `zodiacsDumpSha256` 4552e19f… of
 
 Every gated window is within 0.3″ on the reference implementation; rc.7
 fails the gap in 1800–1849 and 1850–1899 and the paired p95 in four of five
-eras. After 2026 both ΔT values are extrapolations; Swiss's own ΔT is
-93.18 s at 2100-01-01 (`outputs/swiss-deltat.json`) where this model gives
-78.93 s.
+eras. After 2026 both ΔT values are extrapolations, and they part: at
+2100-01-01 this model gives 78.93 s, and Swiss's own extrapolation is
+higher.
 
 **What gate 3 checks before 1962.** Before 1962, gate 3 mostly checks that
 the engine and Swiss use the same reconstruction, both Table S15 of 2016. It
 does not check accuracy. From 1800 to 1940 Swiss's ΔT is within 0.189 s of
-Table S15 (2016) (0.086 s at 1850, 0.022 s at 1900) and up to 0.536 s from
-the 2020 revision; at AD 1000 it differs from the 2016 table by 7.239 s and
-from the 2020 one by −175.5 s. From 1800 to 1961.5 it is within 0.291 s of this
+Table S15 (2016) and up to 0.536 s from the 2020 revision. From 1800 to 1961.5 it is within 0.291 s of this
 model, RMS 0.098 s; the largest difference is at 1945, where the model
 follows USNO's values (`outputs/swiss-deltat.json`, on a half-year grid). A
 small gap before 1962 shows that the two agree, and it would be just as
@@ -321,9 +319,8 @@ Moon's geometry, which is M2's work.
 - **The past.** At 1800-01-01 ΔT goes from 13.772 to 18.708 s (Moon +2.55″),
   at 1850 from 7.102 to 9.321 s (+1.35″), at 1900 from −2.757 to −1.977 s
   (+0.47″), at 1950 by +0.096 s (+0.05″) and at 2000 by −0.017 s (−0.01″).
-- **The future.** ΔT on 2050-01-01 is 71.451 ± 11.89 s (rc.7 92.968 s;
-  Swiss 74.58 s); on 2100-01-01, 78.927 ± 42.39 s (rc.7 202.652 s; Swiss
-  93.18 s); on 2199-12-31, 126.246 ± 103.387 s (rc.7 441.984 s). The Moon in
+- **The future.** ΔT on 2050-01-01 is 71.451 ± 11.89 s (rc.7 92.968 s);
+  on 2100-01-01, 78.927 ± 42.39 s (rc.7 202.652 s); on 2199-12-31, 126.246 ± 103.387 s (rc.7 441.984 s). The Moon in
   a chart of 2100-01-01 moves back 72.23″.
 - Values: 1620 67.065 ± 20.455 s; 1700 14.587 ± 6.225 s; 1800 18.710 ±
   1.5 s; 1900 −1.980 ± 0.46 s; 1956 31.350 ± 0.03 s; 2000 63.830 ± 0.03 s;
@@ -433,10 +430,9 @@ enter the table as 91 values in 0.01 s.
   points); `table.json` (the table and its digest input); `iers-12.json`
   (gate 1's twelve values, their source rows, formal errors and source
   digests; the engine's test fixture is this file).
-- `outputs/`: statistics only. No Swiss position is committed. Swiss's only
-  values here are its ΔT, in `swiss-deltat.json`: three figures (2026-09-22,
-  2050 and 2100), and how far its ΔT sits from Table S15 and from the model
-  before 1962.
+- `outputs/`: statistics only. No Swiss position is committed. Of Swiss's
+  ΔT, `swiss-deltat.json` keeps only how far it sits from Table S15 and from
+  the model before 1962, as statistics (see the removal below).
 - `tools/`: `run-all.sh` runs every tool in order. With the raw sources in
   `DELTAT_SOURCES`, Node 22.22.2, Python 3.11 and, for gate 3,
   `SWISS_EPHE` pointing at the two `.se1` files, it reproduces every file
@@ -468,7 +464,8 @@ Under [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md) `outpu
 differences from the S15 reconstructions, 1800 to 1940, and from this model,
 1800 to 1961, with the latter's RMS) and lost Swiss's ΔT at 2026-09-22, 2050
 and 2100 and its differences from S15 at 1800, 1850, 1900 and the year 1000.
-The figures quoted above, such as Swiss's 93.18 s at 2100, are as the file
-had them. Commit `2ca93d41` still has it whole, the file records the SHA-256
+On 2026-10-12 the Swiss figures this README still quoted from the file (its
+ΔT at 2050 and 2100, and its differences from S15 at 1850, 1900 and the year
+1000) were taken out of the text as well (F-90). Commit `2ca93d41` still has it whole, the file records the SHA-256
 of what it lost under `swissOutputRemoved`, and `tools/moon/swiss_deltat.py`
 regenerates it. The record of everything removed is [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).
