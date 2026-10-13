@@ -1,8 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/server';
-import { AI_VERSION, HOROSCOPE_URI, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, type AiToolName } from './contracts';
+import { AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, type AiToolName } from './contracts';
 import { executeAiTool, offeredTools, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
+import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
 import { WIDGET_HTML } from './widget';
 import { registerSkyWatch, type SkyWatch } from './watch/service';
 import type { Principal } from './watch/contracts';
@@ -14,6 +15,8 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   get_upcoming_events: { uri: WIDGET_URI, icon: 'sky-calendar' },
   open_chart_studio: { uri: STUDIO_URI, icon: 'chart-studio' },
   get_horoscope: { uri: HOROSCOPE_URI, icon: 'horoscopes' },
+  get_occasion_sky: { uri: OCCASIONS_URI, icon: 'occasions' },
+  get_life_milestones: { uri: OCCASIONS_URI, icon: 'occasions' },
 };
 
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen') => ({ ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
@@ -45,6 +48,10 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     title: 'Zodiacs horoscopes', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it." },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: HOROSCOPES_HTML, _meta: panelMeta('inline') }] }));
+  if (tools.includes('get_occasion_sky') || tools.includes('get_life_milestones')) server.registerResource('occasions', OCCASIONS_URI, {
+    title: 'Zodiacs occasions', mimeType: 'text/html;profile=mcp-app',
+    _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'A card for a day that matters, or for life milestones, from what the assistant worked out.' },
+  }, () => ({ contents: [{ uri: OCCASIONS_URI, mimeType: 'text/html;profile=mcp-app', text: OCCASIONS_HTML, _meta: panelMeta('inline') }] }));
   for (const tool of tools) {
     const panel = PANELS[tool];
     server.registerTool(tool, {

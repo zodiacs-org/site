@@ -5,12 +5,14 @@ import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { buildChartStudio } from './build-chart-studio.mjs';
 import { buildHoroscopePanel } from './build-horoscope-panel.mjs';
+import { buildOccasionsPanel } from './build-occasions-panel.mjs';
 import { addAiLifetimeBoundary } from './ai-runtime-lifetime.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
 await buildChartStudio(check);
 await buildHoroscopePanel(check);
+await buildOccasionsPanel(check);
 const outputs = [
   ['src/ai-tools/http.ts', 'api/_ai/runtime.mjs', ['@modelcontextprotocol/server', '@modelcontextprotocol/core', 'zod', '@vercel/firewall', '@supabase/supabase-js']],
   ['src/ai-tools/local.ts', 'plugins/zodiacs-developer/mcp/server.mjs', ['@modelcontextprotocol/server', '@modelcontextprotocol/core', 'zod']],

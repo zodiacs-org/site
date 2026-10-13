@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI, OCCASIONS_URI } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
@@ -190,6 +190,27 @@ describe('stateless MCP HTTP boundary', () => {
       expect(call.result.structuredContent).toMatchObject({ ok: true, tool: 'get_life_milestones', data: { birthDate: '1997-03-15' } });
     } finally { occasionsSwitch = undefined; }
     expect(await names()).toEqual(AI_TOOL_NAMES);
+  });
+  it('offers the occasions panel only with the switch on, and both occasion tools open it', async () => {
+    const resources = async () => (await readMessage(await post(rpc('resources/list')))).result.resources.map((resource: { uri: string }) => resource.uri);
+    expect(await resources()).not.toContain(OCCASIONS_URI);
+    occasionsSwitch = '1';
+    try {
+      expect(await resources()).toContain(OCCASIONS_URI);
+      const tools = (await readMessage(await post(rpc('tools/list')))).result.tools;
+      for (const name of ['get_occasion_sky', 'get_life_milestones']) {
+        const meta = tools.find((tool: { name: string }) => tool.name === name)._meta;
+        expect(meta['openai/outputTemplate']).toBe(OCCASIONS_URI);
+        expect(meta.ui.resourceUri).toBe(OCCASIONS_URI);
+      }
+      const read = await post(rpc('resources/read', { uri: OCCASIONS_URI }));
+      expect(read.status).toBe(200);
+      const content = (await readMessage(read)).result.contents[0];
+      expect(content.mimeType).toBe('text/html;profile=mcp-app');
+      expect(content.text).toContain('<div id="occasions">');
+      // Self-contained: no remote script, style, font or image.
+      expect(content.text).not.toMatch(/(?:src|href)=["']https?:/u);
+    } finally { occasionsSwitch = undefined; }
   });
   it('serves the newer per-request protocol envelope without a session', async () => {
     const response = await post(rpc('tools/list', { _meta: {
