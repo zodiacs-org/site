@@ -1,0 +1,50 @@
+{
+  "schema": "zodiacs.p1-15-production.v1",
+  "base": "https://zodiacs.org",
+  "control": true,
+  "expectedCommit": "5db82a95a58d5983f833a06e60da32f6f19ca4fc",
+  "readAt": "2026-10-13T10:00:24.611Z",
+  "passed": 1,
+  "of": 7,
+  "checks": [
+    {
+      "check": "the zodiacs.org alias names a READY production deployment built from the commit",
+      "deploymentId": "dpl_F93raokP8a1Sc3rK49cniZxeU4B9",
+      "aliasUpdatedAt": 1791876909634,
+      "readyState": "READY",
+      "target": "production",
+      "githubCommitSha": "127e07675483d6535fa61aed22103592ee52d5ac",
+      "pass": false
+    },
+    {
+      "check": "https://zodiacs.org/llms.txt is the commit's public/llms.txt, byte for byte",
+      "status": 200,
+      "servedSha256": "cc146c4925a4d4036a1154ab64a1bb4ed72fab1ff0aff2f5e219eb16b6af270f",
+      "committedSha256": "e187af55c03b7a60dec7484687a4a1cab3370963d85919adf03ed5f1891fd28c",
+      "pass": false
+    },
+    {
+      "check": "https://zodiacs.org/llms.txt describes no retired path as live",
+      "pass": true
+    },
+    {
+      "check": "https://zodiacs.org/llms-full.txt is the commit's public/llms-full.txt, byte for byte",
+      "status": 200,
+      "servedSha256": "d8231b4bf066f7ed6e782b47a48ce4cd14ce3f9c159c478ea32b8436f2751dba",
+      "committedSha256": "7f5b118da26a7dd7b0920440d4ff72771510f9d560ef8a20809c4d93d2727b28",
+      "pass": false
+    },
+    {
+      "check": "https://zodiacs.org/llms-full.txt describes no retired path as live",
+      "pass": false
+    },
+    {
+      "check": "llms-full.txt says: Share links keep chart data in the URL fragment, which is not sent in normal HTTP requests, and the links the site makes now carry none in their query string.",
+      "pass": false
+    },
+    {
+      "check": "llms-full.txt says: Preview links made before those were retired still open",
+      "pass": false
+    }
+  ]
+}

@@ -392,7 +392,7 @@ var PHASES = Object.freeze({
   "last-quarter": 270
 });
 var PHASE_NAMES = Object.freeze(Object.keys(PHASES));
-var SKY_FACT_KINDS = Object.freeze(["sign", "retrograde", "ingress", "phase"]);
+var SKY_FACT_KINDS = Object.freeze(["sign", "retrograde", "ingress", "phase", "aspect"]);
 var ELECTION_CONDITION_KINDS = Object.freeze(["phase", "void-of-course", "sign", "retrograde", "angular"]);
 var MAX_ELECTION_CONDITIONS = 5;
 var MOON_HALVES = Object.freeze(["waxing", "waning"]);
@@ -5686,6 +5686,8 @@ var TEXT = Object.freeze({
   factKind: `Must be one of: ${SKY_FACT_KINDS.join(", ")}.`,
   sign: `Must be a sign in lowercase: ${SIGN_SLUGS.join(", ")}.`,
   phase: `Must be one of: ${PHASE_NAMES.join(", ")}.`,
+  aspect: `Must be one of: ${ASPECT_TYPES.join(", ")}.`,
+  otherBody: `Must be one of: ${EVENT_BODIES.join(", ")}, and not the body itself.`,
   instantOrDate: "Give exactly one of instant and date.",
   zoneNeedsDate: "A zone goes with a date, not with an instant.",
   skippedDay: "This date did not happen in this zone: its clocks went from the day before straight to the day after.",
@@ -5718,6 +5720,8 @@ var VALIDATION_POINTERS = Object.freeze([
   "/body",
   "/sign",
   "/phase",
+  "/other",
+  "/aspect",
   "/instant",
   "/date",
   "/zone",
@@ -5937,6 +5941,14 @@ async function parseSkyFactRequest(value, zones) {
       onlyFields(object, ["kind", "phase", "date", "zone"], "");
       const phase = oneOf(required(object, "phase", ""), "/phase", PHASE_NAMES, TEXT.phase);
       return { kind, phase, day: await factDay(object, zones) };
+    }
+    case "aspect": {
+      onlyFields(object, ["kind", "body", "other", "aspect", "instant", "date", "zone"], "");
+      const body = oneOf(required(object, "body", ""), "/body", EVENT_BODIES, TEXT.eventBody);
+      const other = oneOf(required(object, "other", ""), "/other", EVENT_BODIES, TEXT.otherBody);
+      if (other === body) throw invalidRequest("/other", TEXT.otherBody);
+      const aspect = oneOf(required(object, "aspect", ""), "/aspect", ASPECT_TYPES, TEXT.aspect);
+      return { kind, body, other, aspect, when: await factWhen(object, zones) };
     }
   }
 }
@@ -6284,10 +6296,75 @@ function boundaryMarginArcsec(lon) {
   const within = lon % 30;
   return Math.min(within, 30 - within) * 3600;
 }
+var LUMINARIES2 = /* @__PURE__ */ new Set(["Sun", "Moon"]);
+function aspectRule(type, body, other) {
+  const definition = ASPECTS.find((candidate) => candidate.type === type);
+  if (!definition) throw new Error("The engine names no such aspect.");
+  const luminary = LUMINARIES2.has(body) || LUMINARIES2.has(other);
+  return { angle: definition.angle, allowedOrb: luminary ? definition.luminaryOrb : definition.orb };
+}
+function aspectHolds(rows, request) {
+  const match = matchAspect(request.body, rowOf(rows, request.body).lon, request.other, rowOf(rows, request.other).lon);
+  return match?.definition.type === request.aspect;
+}
+function aspectState(rows, request, rule) {
+  const body = rowOf(rows, request.body);
+  const other = rowOf(rows, request.other);
+  const apart = separation(body.lon, other.lon);
+  return {
+    body: stateAt(rows, request.body),
+    other: stateAt(rows, request.other),
+    separation: apart,
+    orb: Math.abs(apart - rule.angle),
+    motion: aspectMotion(body, other, rule.angle)
+  };
+}
+function aspectEdges(rule) {
+  const { angle, allowedOrb } = rule;
+  const edges = [
+    { lon: normalizeLongitude(angle - allowedOrb), lower: true },
+    { lon: normalizeLongitude(angle + allowedOrb), lower: false },
+    { lon: normalizeLongitude(360 - angle - allowedOrb), lower: true },
+    { lon: normalizeLongitude(360 - angle + allowedOrb), lower: false }
+  ];
+  return edges.filter((edge, index) => edges.findIndex((candidate) => candidate.lon === edge.lon) === index);
+}
+function aspectExactness(rule) {
+  return [.../* @__PURE__ */ new Set([normalizeLongitude(rule.angle), normalizeLongitude(360 - rule.angle)])];
+}
+function relativeCrossings(request, target, from, to, budget, rowsAt) {
+  const relativeAt = (_body, date) => {
+    const rows = rowsAt(date);
+    return normalizeLongitude(rowOf(rows, request.body).lon - rowOf(rows, request.other).lon);
+  };
+  const step = request.body === "Moon" || request.other === "Moon" ? SEARCH_STEP_DAYS.moon : SEARCH_STEP_DAYS.default;
+  return budget.settle(searchLongitudeCrossingsWith(relativeAt, request.body, target, from, to, budget.options(step)));
+}
 async function computeSkyFact(request, dependencies) {
   const budget = new SampleBudget("sky-fact.samples");
   const rowsAt = positionsMemo();
   const fact = factEcho(request);
+  if (request.kind === "aspect" && "instant" in request.when) {
+    const instant = request.when.instant;
+    const rows = rowsAt(instant);
+    const rule = aspectRule(request.aspect, request.body, request.other);
+    const basis = basisOf(instant);
+    return successBody("sky-fact", {
+      answer: aspectHolds(rows, request) ? "true" : "false",
+      basis: "instant",
+      fact,
+      instant: iso(instant),
+      window: null,
+      zone: null,
+      facts: {
+        ...aspectState(rows, request, rule),
+        allowedOrb: rule.allowedOrb,
+        deltaT: basis.deltaT,
+        timeScale: basis.timeScale,
+        flags: outsideReferenceSpan(instant) ? ["outside-reference-span"] : []
+      }
+    }, computeReceipt("sky-fact"));
+  }
   if ((request.kind === "sign" || request.kind === "retrograde") && "instant" in request.when) {
     const instant = request.when.instant;
     const state = stateAt(rowsAt(instant), request.body);
@@ -6348,6 +6425,25 @@ async function computeSkyFact(request, dependencies) {
       facts = { lunations, flags };
       break;
     }
+    case "aspect": {
+      const rule = aspectRule(request.aspect, request.body, request.other);
+      const changes = aspectEdges(rule).flatMap((edge) => relativeCrossings(request, edge.lon, span.from, span.to, budget, rowsAt).map((crossing) => ({ at: iso(crossing.at), holds: edge.lower !== crossing.retrograde }))).sort((a, b) => a.at.localeCompare(b.at));
+      const exact = aspectExactness(rule).flatMap((target) => relativeCrossings(request, target, span.from, span.to, budget, rowsAt)).map((crossing) => {
+        const rows = rowsAt(crossing.at);
+        return { at: iso(crossing.at), body: placeOf(rowOf(rows, request.body).lon), other: placeOf(rowOf(rows, request.other).lon) };
+      }).sort((a, b) => a.at.localeCompare(b.at));
+      const startRows = rowsAt(window.from);
+      answer = changes.length > 0 ? "depends" : aspectHolds(startRows, request) ? "true" : "false";
+      facts = {
+        atStart: aspectState(startRows, request, rule),
+        atEnd: aspectState(rowsAt(span.to), request, rule),
+        allowedOrb: rule.allowedOrb,
+        changes,
+        exact,
+        flags
+      };
+      break;
+    }
   }
   return successBody("sky-fact", {
     answer,
@@ -6373,6 +6469,10 @@ function factEcho(request) {
       return { kind: request.kind, body: request.body, sign: request.sign, date: request.day.date, zone: request.day.zone };
     case "phase":
       return { kind: request.kind, phase: request.phase, date: request.day.date, zone: request.day.zone };
+    case "aspect": {
+      const when = "instant" in request.when ? { instant: iso(request.when.instant), date: null, zone: null } : { instant: null, date: request.when.date, zone: request.when.zone };
+      return { kind: request.kind, body: request.body, other: request.other, aspect: request.aspect, ...when };
+    }
   }
 }
 

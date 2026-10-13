@@ -233,7 +233,7 @@ export const PHASES = Object.freeze({
 export type PhaseName = keyof typeof PHASES;
 export const PHASE_NAMES = Object.freeze(Object.keys(PHASES) as PhaseName[]);
 
-export const SKY_FACT_KINDS = Object.freeze(['sign', 'retrograde', 'ingress', 'phase'] as const);
+export const SKY_FACT_KINDS = Object.freeze(['sign', 'retrograde', 'ingress', 'phase', 'aspect'] as const);
 export type SkyFactKind = (typeof SKY_FACT_KINDS)[number];
 
 /**
