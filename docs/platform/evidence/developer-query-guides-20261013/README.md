@@ -43,6 +43,46 @@ the catalogue, now run each new snippet as the page shows it:
 Deno 2.9.0, Bun 1.3.11 and Python 3.9 on macOS; the workflow pins its own
 versions.
 
+## Production
+
+#735 merged as `d205a673361bce6fbc4d0234fcab3040dfe14350`. Vercel
+`dpl_8xXijxDCnn8daw1FzZatHZ6SzZBE` built it for production and was READY at
+2026-10-13T16:28:22Z; the zodiacs.org alias named it, built from the merge,
+before the snapshot, after it and after the checks, with an unchanged
+`updatedAt`.
+
+The guides' production check of 2026-10-12, adapted to the 25 guides,
+compared production with two local builds of the merge made with Node
+22.22.2: one with the feature flags unset, as CI's main build is, and one
+with the environment of CI's "Build with production's feature flags" job,
+whose public values are CI stand-ins ([`tools/verify-production.mjs`](tools/verify-production.mjs)).
+Production's bytes were read first, between 16:28:46 and 16:29:09 UTC, by
+[`tools/snapshot-production.mjs`](tools/snapshot-production.mjs): the index,
+the 25 guides and their 26 Markdown twins, `llms.txt`, `llms-full.txt` and
+the sitemap, 55 responses, each a 200
+([`production/snapshot-manifest.json`](production/snapshot-manifest.json)
+keeps their digests and read times). The check then read those bytes, and
+Chromium 154 opened every page on production at 360 and 1280 px. All 32
+checks pass ([`production/production.json`](production/production.json)):
+
+- **Pages.** Each page is the production-flags build's page, byte for byte,
+  apart from the analytics script's URL, where production has its own; each
+  guide article and each twin is also the flags-unset build's bytes.
+- **Listings.** `llms.txt` and `llms-full.txt` are both builds' bytes and list
+  every guide and twin; the sitemap is the production-flags build's bytes,
+  with every guide page in it.
+- **Browser.** 52 navigations, each a 200 with its heading and twin link, no
+  overflow, no page error and no calculation request; their 52 requests to
+  analytics were aborted, so the check added no visit.
+
+Three controls ([`production/controls.json`](production/controls.json), from
+[`tools/production-controls.mjs`](tools/production-controls.mjs)), each
+restored byte for byte before the next: one byte appended to the
+production-flags build's `astrology-api` twin failed that guide's check and no
+other; one bit changed in the snapshot's `ephemeris-npm` page stopped the run,
+the snapshot no longer being the bytes it recorded; an alias read naming
+#730's merge as the deployment's commit failed the alias check and no other.
+
 ## Comparisons and their receipts
 
 Each comparison names versions, dates and licences as their publishers state
