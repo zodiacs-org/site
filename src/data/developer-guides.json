@@ -514,7 +514,7 @@
       {
         "heading": "What comes back",
         "paragraphs": [
-          "The receipt names the conventions behind the numbers, among them the tropical zodiac, apparent geocentric positions and the time scale, the engine and its ephemeris, and the coverage the answer can claim. cite.receipt is a digest of the receipt: store it beside a result to show later what produced it.",
+          "The receipt names the conventions behind the numbers, among them the tropical zodiac, apparent geocentric positions and the time scale, the engine and its ephemeris, and the coverage the answer can claim. Its SHA-256 is cite.receipt, to store beside a result and show later what produced it. For a chart or houses the receipt holds the birth instant and place, so its digest can identify them: keep it as you keep birth details.",
           "A refusal is a fixed sentence with a code, such as invalid-request or budget-exhausted, and a 429 or 503 answer carries Retry-After. The limits, such as 92 days for an events window, are on the API reference."
         ]
       },
@@ -745,7 +745,7 @@
       {
         "heading": "Where it runs",
         "paragraphs": [
-          "The Compute API answers in the tropical zodiac only, so Vedic calculation runs in your own process, with no request leaving it. pyswisseph, under AGPL-3.0, gives Python the sidereal modes of Swiss Ephemeris."
+          "The Compute API answers in the tropical zodiac only, so Vedic calculation runs in your own process, with no request leaving it. Python has the sidereal modes of Swiss Ephemeris through pyswisseph, under AGPL-3.0."
         ]
       }
     ],
