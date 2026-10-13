@@ -68,6 +68,8 @@ await requireMarkers('src/layouts/Base.astro', [
   '<SiteFooter',
   "stylesheet.href = '/assets/site-footer.css?v=20261006';",
   'if (nearViewport) appendStylesheet();',
+  "document.documentElement.setAttribute('data-footer-styles-pending', '');",
+  "if (!nearViewport) root.removeAttribute('data-footer-styles-pending');",
   "window.addEventListener('load', appendAfterLoad, { once: true });",
   "<noscript><style>@import url('/assets/site-footer.css?v=20261006');</style></noscript>",
 ]);
@@ -77,6 +79,11 @@ await rejectMarkers('src/layouts/Base.astro', [
 await requireMarkers('src/styles/base.css', [
   'content-visibility: auto;',
   'contain-intrinsic-size: auto 900px;',
+  ':root[data-footer-styles-pending] .zfooter { visibility: hidden; }',
+]);
+// A footer hidden from its first layout must be shown by its own styles.
+await requireMarkers('src/styles/site-footer.css', [
+  ':root[data-footer-styles-pending] .zfooter { visibility: visible; }',
 ]);
 await requireMarkers('src/components/SiteFooter.astro', [
   '<footer class="zfooter">',
