@@ -1,0 +1,113 @@
+{
+  "schema": "zodiacs.s4-registry-facts.v1",
+  "readAt": "2026-10-13T05:23:24.934Z",
+  "npm": [
+    {
+      "name": "@zodiacs/engine",
+      "latest": "1.0.0",
+      "published": "2026-10-11T13:54:56.087Z",
+      "license": "MIT AND CC-BY-4.0",
+      "distTags": {
+        "latest": "1.0.0",
+        "next": "0.1.1-rc.16"
+      },
+      "source": "https://registry.npmjs.org/@zodiacs/engine"
+    },
+    {
+      "name": "astronomy-engine",
+      "latest": "2.1.19",
+      "published": "2023-12-14T18:20:31.621Z",
+      "license": "MIT",
+      "distTags": {
+        "latest": "2.1.19"
+      },
+      "source": "https://registry.npmjs.org/astronomy-engine"
+    },
+    {
+      "name": "ephemeris",
+      "latest": "3.2.1",
+      "published": "2026-08-26T20:52:04.191Z",
+      "license": "GPL-3.0",
+      "distTags": {
+        "latest": "3.2.1"
+      },
+      "source": "https://registry.npmjs.org/ephemeris"
+    },
+    {
+      "name": "sweph",
+      "latest": "2.10.3-8",
+      "published": "2026-08-24T01:08:57.169Z",
+      "license": "(AGPL-3.0-or-later OR LGPL-3.0-or-later)",
+      "distTags": {
+        "latest": "2.10.3-8",
+        "gpl": "2.10.0-12"
+      },
+      "source": "https://registry.npmjs.org/sweph"
+    },
+    {
+      "name": "swisseph",
+      "latest": "0.5.17",
+      "published": "2022-01-25T06:38:41.709Z",
+      "license": null,
+      "distTags": {
+        "latest": "0.5.17"
+      },
+      "source": "https://registry.npmjs.org/swisseph"
+    }
+  ],
+  "pypi": [
+    {
+      "name": "pyswisseph",
+      "latest": "2.10.3.2",
+      "uploaded": "2023-06-04T17:04:31.612731Z",
+      "license": null,
+      "licenseExpression": null,
+      "licenseClassifiers": [
+        "License :: OSI Approved :: GNU Affero General Public License v3"
+      ],
+      "source": "https://pypi.org/pypi/pyswisseph/json"
+    },
+    {
+      "name": "kerykeion",
+      "latest": "6.0.5",
+      "uploaded": "2026-10-05T13:44:56.493951Z",
+      "license": "AGPL-3.0",
+      "licenseExpression": null,
+      "licenseClassifiers": [
+        "License :: OSI Approved :: GNU Affero General Public License v3"
+      ],
+      "source": "https://pypi.org/pypi/kerykeion/json"
+    },
+    {
+      "name": "immanuel",
+      "latest": "1.6.0",
+      "uploaded": "2026-09-07T20:39:17.174469Z",
+      "license": null,
+      "licenseExpression": null,
+      "licenseClassifiers": [],
+      "source": "https://pypi.org/pypi/immanuel/json"
+    },
+    {
+      "name": "flatlib",
+      "latest": "0.2.3",
+      "uploaded": "2021-04-05T10:07:55.632841Z",
+      "license": "MIT",
+      "licenseExpression": null,
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "source": "https://pypi.org/pypi/flatlib/json"
+    },
+    {
+      "name": "skyfield",
+      "latest": "1.55",
+      "uploaded": "2026-08-07T20:16:49.772977Z",
+      "license": "MIT",
+      "licenseExpression": null,
+      "licenseClassifiers": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "source": "https://pypi.org/pypi/skyfield/json"
+    }
+  ]
+}

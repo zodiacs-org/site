@@ -75,6 +75,62 @@ try {
       await new Promise((closed) => server.close(closed));
     }
   }
+  // The Python query guide (S4): its chart request against the committed chart example, a 200 printing each
+  // body and the receipt's digest, a refusal stopping with the status.
+  const query = guides.find((guide) => guide.slug === 'python-astrology-library').sections.find((section) => section.code).code.source;
+  const queryFile = join(scratch, 'query.py');
+  await writeFile(queryFile, query);
+  const chartBody = SUCCESS_EXAMPLES.chart.local.body;
+  for (const fixture of [
+    { name: 'chart success', status: 200, headers: {}, response: examples.success.chart.local },
+    { name: 'chart rate-limited', ...examples.refusals['rate-limited'] },
+  ]) {
+    let received = false;
+    const server = createServer(async (request, response) => {
+      try {
+        assert.equal(request.method, 'POST');
+        assert.equal(request.url, '/api/v1/chart');
+        assert.equal(request.headers['content-type'], 'application/json');
+        const chunks = [];
+        for await (const chunk of request) chunks.push(chunk);
+        assert.deepEqual(JSON.parse(Buffer.concat(chunks).toString('utf8')), chartBody);
+        received = true;
+        response.writeHead(fixture.status, { ...fixture.headers, 'Content-Type': 'application/json' });
+        response.end(JSON.stringify(fixture.response));
+      } catch {
+        response.writeHead(500);
+        response.end('{}');
+      }
+    });
+    await new Promise((ready) => server.listen(0, '127.0.0.1', ready));
+    try {
+      let result;
+      try {
+        result = { ...(await execute('python3', [queryFile], {
+          env: { ...process.env, ZODIACS_COMPUTE_ORIGIN: 'http://127.0.0.1:' + server.address().port },
+          timeout: 20000, maxBuffer: 1048576,
+        })), code: 0 };
+      } catch (error) {
+        assert.equal(typeof error.code, 'number', 'Python execution failed');
+        result = error;
+      }
+      assert.ok(received, 'Documented chart request reached the mock');
+      if (fixture.status === 200) {
+        assert.equal(result.code, 0, result.stderr);
+        const lines = result.stdout.trim().split('\n');
+        const { result: chart, backend, cite } = fixture.response;
+        assert.equal(lines.length, chart.bodies.length + 1);
+        assert.equal(lines[0], `${chart.bodies[0].body} ${chart.bodies[0].sign} ${Math.round(chart.bodies[0].degree * 100) / 100}`);
+        assert.equal(lines.at(-1), `${backend.name} ${backend.version} ${cite.receipt}`);
+      } else {
+        assert.equal(result.code, 1);
+        assert.match(result.stderr, new RegExp(`The service refused this request: ${fixture.status}`));
+      }
+      outcomes.push({ guide: 'python-astrology-library', case: fixture.name, status: fixture.status, exitCode: result.code, result: 'pass' });
+    } finally {
+      await new Promise((closed) => server.close(closed));
+    }
+  }
   const version = (await execute('python3', ['--version'])).stdout.trim();
   console.log(JSON.stringify({ schema: 'zodiacs.python-guide.v1', runtime: version, outcomes,
     limitations: ['Actual documented snippet against committed public contract fixtures over local HTTP; no live service or private input.'] }, null, 2));
