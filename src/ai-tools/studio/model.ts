@@ -1,3 +1,4 @@
+import { positions } from '@zodiacs/engine';
 import { serializeNatalEnvelope, type NatalLocalResolution } from '@zodiacs/engine/receipt';
 import { computePortableChart, type PortableChartCalculation } from '../../lib/engine/portable';
 import { houseOf } from '../../lib/engine/houses';
@@ -38,6 +39,23 @@ export function calculateStudio(input: StudioInput): PortableChartCalculation {
     ...(hasLat && input.timeKnown ? { latitude, longitude } : {}) },
   { sourceInstant: utc, reference: input.timeKnown ? 'supplied-instant' : 'utc-noon',
     ...(input.timeKnown && input.local ? { localResolution: input.local.resolution } : {}) });
+}
+
+/**
+ * The Sun's signs over every reading of a date the world's clocks give, from
+ * its 00:00 at UTC+14 to its 24:00 at UTC−12: 14 hours before its UTC midnight
+ * to 36 after. Without a birth time and place the Sun's sign is known only
+ * when it is the same at both ends; otherwise these are the two signs it moved
+ * between.
+ */
+export function sunSignsForDate(date: string): readonly string[] {
+  const midnight = Date.parse(`${date}T00:00:00.000Z`);
+  if (!/^(18|19|20|21)\d{2}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(midnight) || new Date(midnight).toISOString().slice(0, 10) !== date) {
+    throw new Error('Enter a valid UTC date from 1800 to 2199.');
+  }
+  const sunAt = (ms: number) => positions(new Date(ms)).find(row => row.body === 'Sun')!.sign;
+  const first = sunAt(midnight - 14 * 3_600_000), last = sunAt(midnight + 36 * 3_600_000);
+  return first === last ? [first] : [first, last];
 }
 
 export function compareStudio(current: PortableChartCalculation, other: PortableChartCalculation) {
