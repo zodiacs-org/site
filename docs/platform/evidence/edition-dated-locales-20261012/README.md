@@ -169,6 +169,40 @@ drops the hold when the stylesheet has loaded, or if it fails or takes over
 the `@import` styles the footer as before. After it, the explorer's check
 passed 3 of 3 locally.
 
+## The F-88 corrections (#731)
+
+The reviews of F-86's wording also found faults in the existing Spanish and
+Portuguese daily copy (F-88). The owner approved a one-time allowance for the
+nine protected files on 2026-10-12, and #731, stacked on this branch, fixes
+them. The same two reviews read the corrections and real template output
+([reviews-f88.md](reviews-f88.md)), and their changes are applied as given:
+
+| | before | after |
+| --- | --- | --- |
+| an ingress | Sol entra hoy en tu octava casa… | El Sol entra hoy en tu octava casa… |
+| an opposition | Sol en oposición con Neptuno… / Sol em oposição com Netuno… | El Sol en oposición a Neptuno… / O Sol em oposição a Netuno… |
+| a Portuguese list | coloca o foco na carreira, a reputação e o que o público vê | coloca o foco na carreira, na reputação e no que o público vê |
+| a new Moon | Luna nueva en tu cuarta casa: abre un punto de partida en… | La Luna nueva en tu cuarta casa abre un nuevo ciclo en… |
+| a Portuguese receipt | Lua 10.9° Escorpião · casa 8 | Lua 10,9° Escorpião · casa 8 |
+| the note under "Por qué esta lectura" | leído desde las casas solares de tu signo. | Se lee desde las casas solares de tu signo. |
+| the closing notes | la edición en inglés — por ahora en inglés | la edición en inglés (the link keeps `hreflang` and its title) |
+| `/es/today/` note | …con el cielo de hoy vive en… | …con el cielo de hoy está en… |
+| the descriptions | cuatro notas / quatro notas; 1 notas | hasta cuatro / até quatro; 1 nota |
+| the sign links | Horóscopo de hoy de Aries | Horóscopo de Aries de hoy |
+| the sign pages' lead | the first reading line, again just below | Lo que más importa para Aries. / O que mais importa para Áries. |
+
+Remaining: the pt-BR first of the month ("1º de novembro"), which would change
+every Portuguese date on the site, and the tab titles and descriptions, which
+keep "hoy" and "hoje" in the dated window.
+
+The reading templates are a template source, so #731 has its own Phase 1
+digest. Browser Evidence run 38299435216 on `b347bec7` took its captures first
+(digest `53845b05`). Main then brought #733, whose template change moved the
+digest again, so after merging it run 38351380693 on `92fdcb17` took them for
+digest `b16d6533`: the committed manifest and captures are that artifact's,
+and its build, captures, visual comparison, Lighthouse and explorer drive
+passed ([`browser-evidence-provenance-f88.json`](browser-evidence-provenance-f88.json)).
+
 ## Phase 1 captures
 
 The guard, the layout and the footer styles are template sources, so this

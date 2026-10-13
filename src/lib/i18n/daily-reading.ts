@@ -59,12 +59,28 @@ const HOUSE_THEME_PT: Record<number, string> = {
   4: 'o lar, a família e a base privada da sua vida',
   5: 'o prazer, o romance, os filhos e o que você cria por gosto',
   6: 'o trabalho em andamento, os hábitos de saúde e a carga diária',
-  7: 'os relacionamentos e as pessoas do outro lado da mesa',
-  8: 'o dinheiro compartilhado, as dívidas, a intimidade e o que se une',
+  7: 'os relacionamentos e as pessoas com quem você lida de igual para igual',
+  8: 'o dinheiro compartilhado, as dívidas, a intimidade e o que se funde',
   9: 'as viagens, os estudos, as crenças e a visão de longo alcance',
   10: 'a carreira, a reputação e o que o público vê',
   11: 'as amizades, os grupos e o futuro que você busca construir',
   12: 'o descanso, o recolhimento e o que acontece sob a superfície',
+};
+
+/** The same themes after "em", each item with its own contraction. */
+const HOUSE_THEME_EM_PT: Record<number, string> = {
+  1: 'na sua imagem, nos seus começos e na impressão que você causa',
+  2: 'no dinheiro, nos bens e no que dá estabilidade a você',
+  3: 'nas tarefas, nos irmãos, nas mensagens e no seu ambiente próximo',
+  4: 'no lar, na família e na base privada da sua vida',
+  5: 'no prazer, no romance, nos filhos e no que você cria por gosto',
+  6: 'no trabalho em andamento, nos hábitos de saúde e na carga diária',
+  7: 'nos relacionamentos e nas pessoas com quem você lida de igual para igual',
+  8: 'no dinheiro compartilhado, nas dívidas, na intimidade e no que se funde',
+  9: 'nas viagens, nos estudos, nas crenças e na visão de longo alcance',
+  10: 'na carreira, na reputação e no que o público vê',
+  11: 'nas amizades, nos grupos e no futuro que você busca construir',
+  12: 'no descanso, no recolhimento e no que acontece sob a superfície',
 };
 
 const PLANET_VERB_PT: Record<string, string> = {
@@ -146,11 +162,22 @@ const PLANET_VERB_IT: Record<string, string> = {
   Pluto: 'Plutone trasforma lentamente',
 };
 
-const emPt = (phrase: string) => `em ${phrase}`
-  .replace(/^em o /, 'no ')
-  .replace(/^em a /, 'na ')
-  .replace(/^em os /, 'nos ')
-  .replace(/^em as /, 'nas ');
+// As subjects and after a preposition, the Sun and the Moon take their
+// article in Spanish and Portuguese; the receipts keep the bare names.
+const subjectEs = (body: string) => (body === 'Sun' ? 'El Sol' : body === 'Moon' ? 'La Luna' : planetLabel('es', body));
+/** "en oposición a" (al Sol, a la Luna); every other aspect is "con". */
+const aspectPartnerEs = (type: string, body: string) => {
+  if (type === 'opposition') return body === 'Sun' ? 'al Sol' : body === 'Moon' ? 'a la Luna' : `a ${planetLabel('es', body)}`;
+  return `con ${body === 'Sun' ? 'el Sol' : body === 'Moon' ? 'la Luna' : planetLabel('es', body)}`;
+};
+const subjectPt = (body: string) => (body === 'Sun' ? 'O Sol' : body === 'Moon' ? 'A Lua' : planetLabel('pt', body));
+/** "em oposição a" (ao Sol, à Lua); every other aspect is "com". */
+const aspectPartnerPt = (type: string, body: string) => {
+  if (type === 'opposition') return body === 'Sun' ? 'ao Sol' : body === 'Moon' ? 'à Lua' : `a ${planetLabel('pt', body)}`;
+  return `com ${body === 'Sun' ? 'o Sol' : body === 'Moon' ? 'a Lua' : planetLabel('pt', body)}`;
+};
+/** pt-BR writes a decimal comma. */
+const degreePt = (degree: number) => degree.toFixed(1).replace('.', ',');
 
 const signLabel = (slug: string) => signName(signBySlug(slug), 'es');
 const signLabelPt = (slug: string) => signName(signBySlug(slug), 'pt');
@@ -190,7 +217,7 @@ function eventLineEs(event: DailyEvent, sunSign: string, date: string): DailyLin
       ? 'pone el foco a largo plazo en'
       : 'pone el foco en';
     return {
-      text: `${planet} entra hoy en tu ${ORDINAL_ES[house]} casa y ${focus} ${HOUSE_THEME_ES[house]}.`,
+      text: `${subjectEs(event.planet)} entra hoy en tu ${ORDINAL_ES[house]} casa y ${focus} ${HOUSE_THEME_ES[house]}.`,
       receipt: `${planet} → 0° ${signLabel(event.sign)} · ${utcTime(event.at)}`,
       body: event.planet,
       hue: signBySlug(event.sign).hue,
@@ -203,10 +230,10 @@ function eventLineEs(event: DailyEvent, sunSign: string, date: string): DailyLin
     const house = solarHouse(event.sign, sunSign);
     const name = event.type === 'new' ? 'Luna nueva' : 'Luna llena';
     const meaning = event.type === 'new'
-      ? 'abre un punto de partida en'
+      ? 'abre un nuevo ciclo en'
       : 'marca una culminación en';
     return {
-      text: `${name} en tu ${ORDINAL_ES[house]} casa: ${meaning} ${HOUSE_THEME_ES[house]}.`,
+      text: `La ${name} en tu ${ORDINAL_ES[house]} casa ${meaning} ${HOUSE_THEME_ES[house]}.`,
       receipt: `${name} ${event.degree?.toFixed(1)}° ${signLabel(event.sign)} · ${utcTime(event.at)}`,
       body: 'Moon',
       hue: signBySlug(event.sign).hue,
@@ -236,7 +263,7 @@ function eventLineEs(event: DailyEvent, sunSign: string, date: string): DailyLin
     const b = planetLabel('es', event.b);
     const aspect = aspectLabel('es', event.type);
     return {
-      text: `${a} en ${aspect} con ${b} alcanza hoy su punto exacto: es un aspecto de alcance general y el comprobante muestra la hora.`,
+      text: `${subjectEs(event.a)} en ${aspect} ${aspectPartnerEs(event.type, event.b)} alcanza hoy su punto exacto: es un aspecto colectivo y el comprobante muestra la hora.`,
       receipt: `${a} ${aspect} ${b} · exacto ${utcTime(event.at)}`,
       body: event.a,
       templateId: 'aspect-collective.v1',
@@ -252,7 +279,7 @@ function houseLinePt(body: DailyBody, house: number, context: LineContext): Dail
   const rx = body.retrograde ? ' ℞' : '';
   return {
     text: `${PLANET_VERB_PT[body.body] ?? `${planet} percorre`} sua ${ORDINAL_PT[house]} casa: ${HOUSE_THEME_PT[house]}.`,
-    receipt: `${planet} ${body.degree.toFixed(1)}° ${signLabelPt(body.sign)}${rx} · casa ${house}`,
+    receipt: `${planet} ${degreePt(body.degree)}° ${signLabelPt(body.sign)}${rx} · casa ${house}`,
     house,
     body: body.body,
     hue: signBySlug(body.sign).hue,
@@ -269,7 +296,7 @@ function eventLinePt(event: DailyEvent, sunSign: string, date: string): DailyLin
       ? 'coloca o foco de longo prazo'
       : 'coloca o foco';
     return {
-      text: `${planet} entra hoje na sua ${ORDINAL_PT[house]} casa e ${focus} ${emPt(HOUSE_THEME_PT[house])}.`,
+      text: `${subjectPt(event.planet)} entra hoje na sua ${ORDINAL_PT[house]} casa e ${focus} ${HOUSE_THEME_EM_PT[house]}.`,
       receipt: `${planet} → 0° ${signLabelPt(event.sign)} · ${utcTime(event.at)}`,
       body: event.planet,
       hue: signBySlug(event.sign).hue,
@@ -283,10 +310,10 @@ function eventLinePt(event: DailyEvent, sunSign: string, date: string): DailyLin
     const name = event.type === 'new' ? 'Lua nova' : 'Lua cheia';
     const meaning = event.type === 'new'
       ? 'abre um ponto de partida'
-      : 'marca uma culminação';
+      : 'marca uma culminância';
     return {
-      text: `${name} na sua ${ORDINAL_PT[house]} casa: ${meaning} ${emPt(HOUSE_THEME_PT[house])}.`,
-      receipt: `${name} ${event.degree?.toFixed(1)}° ${signLabelPt(event.sign)} · ${utcTime(event.at)}`,
+      text: `A ${name} na sua ${ORDINAL_PT[house]} casa ${meaning} ${HOUSE_THEME_EM_PT[house]}.`,
+      receipt: `${name} ${degreePt(event.degree ?? 0)}° ${signLabelPt(event.sign)} · ${utcTime(event.at)}`,
       body: 'Moon',
       hue: signBySlug(event.sign).hue,
       house,
@@ -302,7 +329,7 @@ function eventLinePt(event: DailyEvent, sunSign: string, date: string): DailyLin
     const meaning = retrograde ? 'coloca em revisão' : 'volta a colocar em movimento';
     return {
       text: `${planet} ${direction} na sua ${ORDINAL_PT[house]} casa: ${meaning} ${HOUSE_THEME_PT[house]}.`,
-      receipt: `${planet} ${direction} ${event.degree?.toFixed(1)}° ${signLabelPt(event.sign)} · ${utcTime(event.at)}`,
+      receipt: `${planet} ${direction} ${degreePt(event.degree ?? 0)}° ${signLabelPt(event.sign)} · ${utcTime(event.at)}`,
       body: event.planet,
       hue: signBySlug(event.sign).hue,
       house,
@@ -315,7 +342,7 @@ function eventLinePt(event: DailyEvent, sunSign: string, date: string): DailyLin
     const b = planetLabel('pt', event.b);
     const aspect = aspectLabel('pt', event.type);
     return {
-      text: `${a} em ${aspect} com ${b} chega hoje ao ponto exato: é um aspecto de alcance geral, e o registro mostra o horário.`,
+      text: `${subjectPt(event.a)} em ${aspect} ${aspectPartnerPt(event.type, event.b)} chega hoje ao ponto exato: é um aspecto de alcance geral, e o registro mostra o horário.`,
       receipt: `${a} ${aspect} ${b} · exato às ${utcTime(event.at)}`,
       body: event.a,
       templateId: 'aspect-collective.v1',
