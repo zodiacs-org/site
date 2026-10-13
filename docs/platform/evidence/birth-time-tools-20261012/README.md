@@ -117,13 +117,18 @@ committed nodal speeds kept, as before.
 ## Phase 1 captures
 
 The time endpoint and the time atlas change `src/lib`, which the Phase 1
-capture digest covers, so CI took the 18 captures again. Browser Evidence run
-38460766572 took them on `4fee71ac`, this branch merged with main at
-`848e6087` (#740), with Chromium 149.0.7827.55 at 2026-10-13T20:15:16Z, for
-the 2026-10-13 edition, bound to template source digest `96847a88…`. Its
-build, acceptance captures, receipt, visual comparison, Lighthouse and
-explorer drive passed ([browser-evidence-provenance.json](browser-evidence-provenance.json)
-is the run's own record).
+capture digest covers, so CI took the 18 captures again.
+
+- **Committed captures.** Browser Evidence run 38478006905 took them on
+  `2efc0a63`, after the review fix changed the time request parser, with
+  Chromium 149.0.7827.55 at 2026-10-13T22:32:40Z, for the 2026-10-13 edition,
+  bound to template source digest `93a9f716…`. Its build, acceptance
+  captures, receipt, visual comparison, Lighthouse and explorer drive passed
+  ([browser-evidence-provenance.json](browser-evidence-provenance.json) is the
+  run's own record). The 18 images are byte for byte main's.
+- **Superseded run.** Run 38460766572 on `4fee71ac`, before the review fix,
+  took them for digest `96847a88…`; its provenance is kept as
+  `browser-evidence-provenance-4fee71ac.json`.
 
 ## Not changed
 
