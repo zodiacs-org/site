@@ -196,11 +196,12 @@ every Portuguese date on the site, and the tab titles and descriptions, which
 keep "hoy" and "hoje" in the dated window.
 
 The reading templates are a template source, so #731 has its own Phase 1
-digest. Browser Evidence run 38299435216 on `b347bec7` took its captures for
-digest `53845b05` (the 18 images equal #728's; only the manifest differs), and
-its build, captures, visual comparison, Lighthouse and explorer drive passed
-([`browser-evidence-provenance-f88.json`](browser-evidence-provenance-f88.json)).
-After #728 merged, main came in with only data and records, so the digest held.
+digest. Browser Evidence run 38299435216 on `b347bec7` took its captures first
+(digest `53845b05`). Main then brought #733, whose template change moved the
+digest again, so after merging it run 38351380693 on `92fdcb17` took them for
+digest `b16d6533`: the committed manifest and captures are that artifact's,
+and its build, captures, visual comparison, Lighthouse and explorer drive
+passed ([`browser-evidence-provenance-f88.json`](browser-evidence-provenance-f88.json)).
 
 ## Phase 1 captures
 
