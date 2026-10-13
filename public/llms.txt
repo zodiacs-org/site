@@ -92,6 +92,13 @@ These guides describe the version named on the engine page, `@zodiacs/engine` 1.
 - Receipts and reproduction: https://zodiacs.org/developers/docs/receipts/ | Markdown: https://zodiacs.org/developers/docs/receipts.md
 - Python hosted quickstart: https://zodiacs.org/developers/docs/python/ | Markdown: https://zodiacs.org/developers/docs/python.md
 - Hosted election search: https://zodiacs.org/developers/docs/elections/ | Markdown: https://zodiacs.org/developers/docs/elections.md
+- Astrology API: https://zodiacs.org/developers/docs/astrology-api/ | Markdown: https://zodiacs.org/developers/docs/astrology-api.md
+- Birth chart API: https://zodiacs.org/developers/docs/birth-chart-api/ | Markdown: https://zodiacs.org/developers/docs/birth-chart-api.md
+- Swiss Ephemeris alternatives in JavaScript: https://zodiacs.org/developers/docs/swiss-ephemeris-alternative-javascript/ | Markdown: https://zodiacs.org/developers/docs/swiss-ephemeris-alternative-javascript.md
+- Ephemeris packages on npm: https://zodiacs.org/developers/docs/ephemeris-npm/ | Markdown: https://zodiacs.org/developers/docs/ephemeris-npm.md
+- Vedic astrology API: https://zodiacs.org/developers/docs/vedic-astrology-api/ | Markdown: https://zodiacs.org/developers/docs/vedic-astrology-api.md
+- Python astrology libraries: https://zodiacs.org/developers/docs/python-astrology-library/ | Markdown: https://zodiacs.org/developers/docs/python-astrology-library.md
+- Astrology MCP server: https://zodiacs.org/developers/docs/astrology-mcp-server/ | Markdown: https://zodiacs.org/developers/docs/astrology-mcp-server.md
 - Deprecation policy: https://zodiacs.org/developers/docs/deprecation/ | Markdown: https://zodiacs.org/developers/docs/deprecation.md
 - Release changelog: https://zodiacs.org/developers/docs/changelog/ | Markdown: https://zodiacs.org/developers/docs/changelog.md
 - Developer status: https://zodiacs.org/developers/docs/status/ | Markdown: https://zodiacs.org/developers/docs/status.md

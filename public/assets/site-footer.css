@@ -27,6 +27,10 @@
   contain-intrinsic-size: auto 900px;
 }
 
+/* base.css hides a footer Base.astro holds until these styles apply; show it
+   in the same style pass as its layout. */
+:root[data-footer-styles-pending] .zfooter { visibility: visible; }
+
 /* Russian routes already preload their metric-matched Cyrillic families.
    Reuse them in the colophon so Latin-only footer faces cannot compete with
    the above-the-fold poster or chart UI during a cold navigation. */

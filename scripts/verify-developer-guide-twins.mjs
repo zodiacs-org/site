@@ -8,7 +8,7 @@ const candidate = JSON.parse(await readFile(resolve(root, 'src/data/platform-eng
 const decode = (text) => text
   .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
   .replace(/&#(?:39|x27);/gi, "'").replace(/&amp;/g, '&');
-assert.equal(guides.length, 18);
+assert.equal(guides.length, 25);
 assert.equal(new Set(guides.map((guide) => guide.slug)).size, guides.length);
 const llms = await Promise.all(['llms.txt', 'llms-full.txt'].map((file) => readFile(resolve(root, 'dist', file), 'utf8')));
 const sitemap = await readFile(resolve(root, 'dist/sitemap.xml'), 'utf8');

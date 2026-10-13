@@ -185,6 +185,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/mcp/', '2026-09-18'] as const,
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
+  // The occasion cards, first published 2026-10-11.
+  ['/occasions/', '2026-10-11'] as const,
+  ['/occasions/milestones/', '2026-10-11'] as const,
+  ['/occasions/baby-shower/', '2026-10-11'] as const,
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
   ['/fomo/', '2026-09-01'] as const,
@@ -374,6 +378,9 @@ export const GET: APIRoute = async () => {
     { loc: '/learn/placements/', priority: 0.7 },
     { loc: '/birthday/', priority: 0.7 },
     { loc: '/baby-zodiac/', priority: 0.8 },
+    { loc: '/occasions/', priority: 0.7 },
+    { loc: '/occasions/milestones/', priority: 0.6 },
+    { loc: '/occasions/baby-shower/', priority: 0.6 },
     { loc: '/widgets/', priority: 0.6 },
     { loc: '/developers/', priority: 0.6 },
     { loc: '/developers/support/', priority: 0.6 },

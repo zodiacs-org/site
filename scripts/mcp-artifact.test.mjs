@@ -18,6 +18,7 @@ import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
 import { buildServerBundle } from './build-mcp-server.mjs';
 import { manifestFor } from './pack-mcp-server.mjs';
+import { readPackageArchive } from './verify-platform-starter.mjs';
 import { createServer } from '../src/mcp/create-server';
 import { receiptDigest } from '../src/lib/receipt-digest';
 
@@ -273,6 +274,12 @@ describe('the archive the site distributes', () => {
     expect(notice.endsWith(engineNotice), 'the engine NOTICE, unchanged, at the end').toBe(true);
     expect(notice).toContain('Table S15');
     expect(bundle).toContain('var SY = [');
+    // The rest of what the NOTICE says server.mjs carries: the leap-second
+    // list, the UT1 - UTC table and the IAU 2000B series.
+    expect(notice).toContain('It also carries the IAU 2000B nutation from NOVAS C 3.1');
+    expect(bundle).toContain('source: "IERS leap-seconds.list');
+    expect(bundle).toContain('var UT1_DATA = ');
+    expect(bundle).toContain('var COEFFICIENT_TEXT = "-172064161,');
   });
 
   it('pins every runtime dependency exactly, and locks the whole tree', async () => {
@@ -331,5 +338,15 @@ describe('the notice beside the 0.1.0-rc.8 to rc.10 archives', () => {
   it('is linked from the MCP page', async () => {
     const page = await readFile(resolve(ROOT, 'src/pages/developers/mcp/index.astro'), 'utf8');
     expect(page).toContain(`href="/examples/${NOTICE}"`);
+  });
+
+  it('says what each archive bundles: its engine with the ΔT values, and astronomy-engine with its notice', async () => {
+    for (const rc of ['8', '9', '10']) {
+      const server = readPackageArchive(await readFile(join(PUBLIC, `zodiacs-mcp-server-0.1.0-rc.${rc}.tgz`))).get('server.mjs').toString('utf8');
+      expect(server, `rc.${rc}`).toContain(`0.1.1-rc.${rc}`);
+      expect(server, `rc.${rc}`).toContain('var SY = [');
+      expect(server, `rc.${rc}`).toContain('Copyright (c) 2019-2023 Don Cross');
+      expect(server, `rc.${rc}`).toContain('Permission is hereby granted');
+    }
   });
 });

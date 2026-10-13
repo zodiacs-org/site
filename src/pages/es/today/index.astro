@@ -19,7 +19,7 @@ const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
 });
 const readings = SIGNS.map((sign) => ({ sign, reading: dailyReadingForLocale(sign.slug, daily, locale) }));
 const cue = englishOnlyCue(locale);
-const description = `El cielo de hoy para los doce signos solares: cuatro notas por signo, calculadas a partir de las posiciones reales del ${dateLabel}.`;
+const description = `El cielo de hoy para los doce signos solares: hasta cuatro notas por signo, calculadas a partir de las posiciones reales del ${dateLabel}.`;
 ---
 <Base
   title={`Hoy — el cielo del ${dateLabel} | Zodiacs.org`}
@@ -56,15 +56,15 @@ const description = `El cielo de hoy para los doce signos solares: cuatro notas 
         </h2>
         <DailyLocaleReading locale={locale} reading={reading} headingId={`${sign.slug}-title`} />
         <p class="today-es__links">
-          <a href={`/es/horoscopes/${sign.slug}/`}>Horóscopo de hoy de {signName(sign, locale)}</a> ·
+          <a href={`/es/horoscopes/${sign.slug}/`}>Horóscopo de {signName(sign, locale)} de hoy</a> ·
           <a href={`/es/${sign.slug}/`}>Guía de {signName(sign, locale)}</a>
         </p>
       </article>
     ))}
 
     <p class="today-es__note">
-      ¿Tienes tu carta natal? La comparación privada con el cielo de hoy vive en{' '}
-      <a href="/today/" hreflang="en" title={cue?.aria}>la edición en inglés{cue?.suffix}</a>; tu{' '}
+      ¿Tienes tu carta natal? La comparación privada con el cielo de hoy está en{' '}
+      <a href="/today/" hreflang="en" title={cue?.aria}>la edición en inglés</a>; tu{' '}
       <a href="/es/birth-chart/">carta natal gratis</a> se calcula aquí, en tu navegador.
     </p>
   </section>
