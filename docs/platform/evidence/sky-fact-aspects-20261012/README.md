@@ -96,6 +96,24 @@ plugin as 0.3.11.
   2.1.296 7 of 7, and the comparison benchmark 18 of 18 cases and 112 of 112
   assertions ([`../mcp-adapter/`](../mcp-adapter/)).
 
+## Phase 1 captures
+
+The aspect facts change `src/lib/compute-api/`, which the Phase 1 capture
+digest covers, so CI took the 18 captures again.
+
+- **Committed captures.** Browser Evidence run 38444247411 took them on
+  `53e99a59`, this branch merged with main at `6af799c7`, after main's #737
+  came in, because #737 changed `src/lib` and `src/components`. Chromium
+  149.0.7827.55 took them at 2026-10-13T18:12:02Z, for the 2026-10-13 edition,
+  bound to template source digest `b730c4bb…`. Its build, acceptance captures,
+  receipt, visual comparison, Lighthouse and explorer drive passed
+  ([browser-evidence-provenance.json](browser-evidence-provenance.json) is the
+  run's own record). The 18 images are byte for byte main's; the manifest's
+  digest, build receipt and capture time are new.
+- **Superseded run.** Run 38433828282 on `37b3f056`, before #737, took them
+  for digest `51f4d297…`; its provenance is kept as
+  `browser-evidence-provenance-37b3f056.json`.
+
 ## Not changed
 
 The hosted assistant tools (`src/ai-tools/`, the remote MCP at zodiacs.org) keep
