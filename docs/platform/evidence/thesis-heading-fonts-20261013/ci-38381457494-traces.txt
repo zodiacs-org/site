@@ -1,0 +1,22 @@
+# thesis-1.trace.json
+fonts: eb-garamond-latin-400-normal.woff2[High] 31.4→49.1 | instrument-sans-latin-wght-normal.woff2[High] 31.6→49.5 | jetbrains-mono-latin-wght-normal.woff2[VeryHigh] 95.8→135 | eb-garamond-latin-500-normal.woff2[VeryHigh] 96.2→134.2 | eb-garamond-latin-400-italic.woff2[VeryHigh] 116.8→145.8
+paints: firstContentfulPaint@181.4 firstPaint@181.4 largestContentfulPaint::Candidate@181.4
+parse chunks: 0-628@37.4 628-1361@64.9 1361-1363@82.7 1363-1375@139 1375-1375@142.7 
+inline scripts: L11@38+0.6 L1354@72.8+0.6 L1357@74.2+0.5 L1360@75.1+5.3 L1362@82.8+28.6 L1364@140.5+1.4
+viewport event: 7.1
+shifts: none
+# thesis-2.trace.json
+fonts: eb-garamond-latin-400-normal.woff2[High] 56→78.7 | instrument-sans-latin-wght-normal.woff2[High] 56.2→77.7 | jetbrains-mono-latin-wght-normal.woff2[VeryHigh] 120.8→178.2 | eb-garamond-latin-500-normal.woff2[VeryHigh] 121.2→177.7 | eb-garamond-latin-400-italic.woff2[VeryHigh] 136.3→178.7
+paints: firstContentfulPaint@227.5 firstPaint@227.5 largestContentfulPaint::Candidate@227.5
+parse chunks: 0-564@62.4 564-1010@92.2 1010-1360@154.9 1360-1363@179.5 1363-1375@197 1375-1375@198.7 
+inline scripts: L11@63.3+1.5 L1354@162.5+0.7 L1357@164+0.7 L1360@179.9+5.4 L1362@185.3+8.5 L1364@197.1+0.6
+viewport event: 7.2
+shifts: 
+  195ms score=0.00009151810136236585 weighted=0.00009151810136236585 recent=true nodes=[{"id":80,"old":[39,788,264,32],"new":[39,788,255,29]},{"id":34,"old":[20,802,5,10],"new":[20,799,5,13]}]
+# thesis-3.trace.json
+fonts: eb-garamond-latin-400-normal.woff2[High] 51.2→67.4 | instrument-sans-latin-wght-normal.woff2[High] 51.4→67.7 | jetbrains-mono-latin-wght-normal.woff2[VeryHigh] 115.2→166.6 | eb-garamond-latin-500-normal.woff2[VeryHigh] 115.8→168.5 | eb-garamond-latin-400-italic.woff2[VeryHigh] 135.7→169.2
+paints: firstContentfulPaint@206.6 firstPaint@206.6 largestContentfulPaint::Candidate@206.6
+parse chunks: 0-591@56.3 591-1161@72.3 1161-1361@92.4 1361-1375@154.8 1375-1375@158.2 
+inline scripts: L11@56.9+0.6 L1354@96+0.5 L1357@96.8+0.3 L1360@97.6+5.5 L1362@154.9+0.5 L1364@156.3+0.5
+viewport event: 6.6
+shifts: none

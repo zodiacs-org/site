@@ -80,6 +80,12 @@
     @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
     @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-500-normal.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
     @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-400-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+    /* Only the 400 face is preloaded, so the 500 and italic faces can arrive
+       after the first paint (F-93). Until a face arrives, the local serif that
+       stands in gets EB Garamond's own ascent and descent (1.007 and 0.298 em),
+       so the swap cannot move the essay's first heading row. */
+    @font-face { font-family: 'EB Garamond Metrics'; src: local('Georgia'), local('Times New Roman'), local('Liberation Serif'), local('Noto Serif'); font-weight: 400 500; font-style: normal; ascent-override: 100.7%; descent-override: 29.8%; line-gap-override: 0%; }
+    @font-face { font-family: 'EB Garamond Metrics'; src: local('Georgia Italic'), local('Times New Roman Italic'), local('Liberation Serif Italic'), local('Noto Serif Italic'); font-weight: 400 500; font-style: italic; ascent-override: 100.7%; descent-override: 29.8%; line-gap-override: 0%; }
     @font-face { font-family: 'JetBrains Mono'; src: url('/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations'); font-weight: 300 600; font-style: normal; font-display: swap; }
   </style>
 
@@ -91,9 +97,9 @@
       --gold: #C6CCDA; --gold-bright: #EEF1F7; --gold-deep: #8E96AB;
       --ink: #EEF1F7; --ink-2: #C6CCDA; --ink-dim: #8E96AB; --ink-mute: #7A8397;
       --celestial: #3E6378; --live: #C6CCDA;
-      --serif: 'EB Garamond', Georgia, Cambria, 'Times New Roman', serif;
+      --serif: 'EB Garamond', 'EB Garamond Metrics', Georgia, Cambria, 'Times New Roman', serif;
       --mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, Menlo, Monaco, Consolas, monospace;
-      --display: 'EB Garamond', Georgia, serif;
+      --display: 'EB Garamond', 'EB Garamond Metrics', Georgia, serif;
       --hero-serif: Georgia, Cambria, 'Times New Roman', serif;
       --hero-mono: 'SFMono-Regular', ui-monospace, Menlo, Monaco, Consolas, monospace;
       --ease: cubic-bezier(0.32, 0.72, 0, 1);

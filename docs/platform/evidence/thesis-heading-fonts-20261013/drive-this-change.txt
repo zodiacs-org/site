@@ -1,0 +1,5 @@
+PASS  390px: first heading row keeps its place when the 500 and italic faces arrive  · {"held":{"numeral":{"top":870.375,"height":13},"accent":{"top":855.375,"height":
+PASS  412px: first heading row keeps its place when the 500 and italic faces arrive  · {"held":{"numeral":{"top":870.375,"height":13},"accent":{"top":855.375,"height":
+PASS  810px: first heading row keeps its place when the 500 and italic faces arrive  · {"held":{"numeral":{"top":860.1875,"height":13},"accent":{"top":839.1875,"height
+PASS  1440px: first heading row keeps its place when the 500 and italic faces arrive  · {"held":{"numeral":{"top":860,"height":13},"accent":{"top":836,"height":44},"lab
+ALL PASS · 246 checks
