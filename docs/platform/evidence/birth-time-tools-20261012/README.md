@@ -111,6 +111,17 @@ committed nodal speeds kept, as before.
   assertions, and the archive's own `verify.mjs` 25 of 25
   ([`../mcp-adapter/`](../mcp-adapter/)).
 
+## Phase 1 captures
+
+The time endpoint and the time atlas change `src/lib`, which the Phase 1
+capture digest covers, so CI took the 18 captures again. Browser Evidence run
+38460766572 took them on `4fee71ac`, this branch merged with main at
+`848e6087` (#740), with Chromium 149.0.7827.55 at 2026-10-13T20:15:16Z, for
+the 2026-10-13 edition, bound to template source digest `96847a88…`. Its
+build, acceptance captures, receipt, visual comparison, Lighthouse and
+explorer drive passed ([browser-evidence-provenance.json](browser-evidence-provenance.json)
+is the run's own record).
+
 ## Not changed
 
 The hosted assistant tools and the remote MCP at zodiacs.org keep their own
