@@ -1180,7 +1180,8 @@ const sitemapPolicy = {
   // +16 for the four sky-calendar hubs translated into es, pt, fr and it.
   // +312 translated compatibility pairs and +1 AI integration candidates page.
   // +19 version-bound developer guide pages from the shared catalogue (index included).
-  total: 1419 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +3 for the English-only occasion cards (/occasions/, milestones, baby shower).
+  total: 1422 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size + developerGuidePaths.size,

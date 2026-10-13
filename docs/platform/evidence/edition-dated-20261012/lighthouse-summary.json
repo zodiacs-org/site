@@ -1,0 +1,624 @@
+{
+  "site-check-38184748851": [
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T00:08:21.023Z",
+      "chrome": "149.0.0.0",
+      "performance": 0.99,
+      "lcpMs": 2102,
+      "cls": 0.010503,
+      "tbtMs": 0,
+      "shiftedElements": [
+        {
+          "score": 0.010503,
+          "selector": "body > main#main > article.program > p.experience-note",
+          "snippet": "<p class=\"experience-note\" data-astro-cid-nz7c46ef=\"\">"
+        }
+      ]
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T00:08:29.661Z",
+      "chrome": "149.0.0.0",
+      "performance": 0.99,
+      "lcpMs": 2102,
+      "cls": 0.010503,
+      "tbtMs": 0,
+      "shiftedElements": [
+        {
+          "score": 0.010503,
+          "selector": "body > main#main > article.program > p.experience-note",
+          "snippet": "<p class=\"experience-note\" data-astro-cid-nz7c46ef=\"\">"
+        }
+      ]
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T00:08:38.190Z",
+      "chrome": "149.0.0.0",
+      "performance": 0.99,
+      "lcpMs": 2103,
+      "cls": 0.010503,
+      "tbtMs": 0,
+      "shiftedElements": [
+        {
+          "score": 0.010503,
+          "selector": "body > main#main > article.program > p.experience-note",
+          "snippet": "<p class=\"experience-note\" data-astro-cid-nz7c46ef=\"\">"
+        }
+      ]
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T00:07:54.454Z",
+      "chrome": "149.0.0.0",
+      "performance": 1,
+      "lcpMs": 1807,
+      "cls": 0.005477,
+      "tbtMs": 1,
+      "shiftedElements": [
+        {
+          "score": 0.005477,
+          "selector": "body > main#main > section.section--tight > div.horo-grid",
+          "snippet": "<div class=\"horo-grid\" data-astro-cid-nit3twta=\"\">"
+        }
+      ]
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T00:08:03.315Z",
+      "chrome": "149.0.0.0",
+      "performance": 1,
+      "lcpMs": 1804,
+      "cls": 0.005477,
+      "tbtMs": 2,
+      "shiftedElements": [
+        {
+          "score": 0.005477,
+          "selector": "body > main#main > section.section--tight > div.horo-grid",
+          "snippet": "<div class=\"horo-grid\" data-astro-cid-nit3twta=\"\">"
+        }
+      ]
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T00:08:12.193Z",
+      "chrome": "149.0.0.0",
+      "performance": 1,
+      "lcpMs": 1732,
+      "cls": 0.005477,
+      "tbtMs": 0,
+      "shiftedElements": [
+        {
+          "score": 0.005477,
+          "selector": "body > main#main > section.section--tight > div.horo-grid",
+          "snippet": "<div class=\"horo-grid\" data-astro-cid-nit3twta=\"\">"
+        }
+      ]
+    },
+    {
+      "route": "/today/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T00:07:26.402Z",
+      "chrome": "149.0.0.0",
+      "performance": 0.99,
+      "lcpMs": 1382,
+      "cls": 0.019766,
+      "tbtMs": 105,
+      "shiftedElements": [
+        {
+          "score": 0.019766,
+          "selector": "main#main > section.section--tight > astro-island > section#save-moment",
+          "snippet": "<section id=\"save-moment\" class=\"today-card shell tinted\" style=\"--sign:var(--sign-cancer)\" data-today-state=\"empty\">"
+        }
+      ]
+    },
+    {
+      "route": "/today/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T00:07:35.678Z",
+      "chrome": "149.0.0.0",
+      "performance": 0.99,
+      "lcpMs": 1377,
+      "cls": 0.019766,
+      "tbtMs": 106,
+      "shiftedElements": [
+        {
+          "score": 0.019766,
+          "selector": "main#main > section.section--tight > astro-island > section#save-moment",
+          "snippet": "<section id=\"save-moment\" class=\"today-card shell tinted\" style=\"--sign:var(--sign-cancer)\" data-today-state=\"empty\">"
+        }
+      ]
+    },
+    {
+      "route": "/today/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T00:07:45.095Z",
+      "chrome": "149.0.0.0",
+      "performance": 0.99,
+      "lcpMs": 1384,
+      "cls": 0.019766,
+      "tbtMs": 107,
+      "shiftedElements": [
+        {
+          "score": 0.019766,
+          "selector": "main#main > section.section--tight > astro-island > section#save-moment",
+          "snippet": "<section id=\"save-moment\" class=\"today-card shell tinted\" style=\"--sign:var(--sign-cancer)\" data-today-state=\"empty\">"
+        }
+      ]
+    }
+  ],
+  "local-ec0451ff-dated": [
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:09:23.326Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2257,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:09:30.314Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2256,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:09:37.261Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2258,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:08:51.301Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.99,
+      "lcpMs": 1957,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:09:07.482Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1579,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:09:15.687Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1879,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 1,
+      "setAsideForRunnerStall": true,
+      "fetchTime": "2026-10-12T05:08:59.588Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.79,
+      "lcpMs": 1880,
+      "cls": 0,
+      "tbtMs": 860,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:08:26.809Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1357,
+      "cls": 0.019766,
+      "tbtMs": 81,
+      "shiftedElements": [
+        {
+          "score": 0.019766,
+          "selector": "main#main > section.section--tight > astro-island > section#save-moment",
+          "snippet": "<section id=\"save-moment\" class=\"today-card shell tinted\" style=\"--sign:var(--sign-cancer)\" data-today-state=\"empty\">"
+        }
+      ]
+    },
+    {
+      "route": "/today/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:08:35.227Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1737,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:08:43.162Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1667,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    }
+  ],
+  "local-1632196d-dated": [
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:25:12.635Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2261,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:25:19.854Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2260,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:25:27.021Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2258,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:24:48.039Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1881,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:24:56.034Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1882,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:25:04.765Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1881,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:24:23.280Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1358,
+      "cls": 0,
+      "tbtMs": 79,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:24:31.820Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1663,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T05:24:39.823Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1740,
+      "cls": 0,
+      "tbtMs": 3,
+      "shiftedElements": []
+    }
+  ],
+  "local-merged-dated": [
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:08:35.217Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2261,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:08:42.210Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2264,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:08:49.360Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2260,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:08:11.721Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1811,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:08:19.604Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1883,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:08:27.329Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1881,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:07:46.958Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1592,
+      "cls": 0,
+      "tbtMs": 11,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:07:54.919Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1676,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:08:03.742Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1750,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    }
+  ],
+  "local-merged-current": [
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:06:37.464Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.98,
+      "lcpMs": 2262,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:06:45.216Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.99,
+      "lcpMs": 2126,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:06:53.841Z",
+      "chrome": "154.0.0.0",
+      "performance": 0.99,
+      "lcpMs": 2106,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:06:12.085Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1808,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:06:21.115Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1810,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:06:29.448Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1739,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:05:48.203Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1742,
+      "cls": 0,
+      "tbtMs": 12,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:05:56.130Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1738,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-12T06:06:04.045Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1743,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    }
+  ]
+}
