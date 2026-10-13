@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-12 local times through @zodiacs/engine/geo in production (site 4f2d6f03); P1.01b and P1.12b accepted",
+  "asOf": "2026-10-13 share links described truthfully in production (site 7d12c0f1); P1.15 accepted",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -439,7 +439,7 @@
         "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.14",
         "independent re-verification 2026-09-28 (A4), reproduced by running code: 80 claims, tests 33/33; 5 of 11 planted sentences caught"
       ],
-      "notes": "developer docs and trigger-free claims escape the extractor (F-23); the claim product.engine-package, which said npm view returns 404 after the engine was published on 2026-09-30, is restated on the registry read of that day (F-57, fixed in the checkpoint 7 PR)"
+      "notes": "developer docs and trigger-free claims escape the extractor (F-23); the claim product.engine-package, which said npm view returns 404 after the engine was published on 2026-09-30, is restated on the registry read of that day (F-57, fixed in the checkpoint 7 PR) Update 2026-10-13: site #730 closes F-23: the ledger reads every developer doc the site serves or its archives ship (the engine references, the SDK pages, the READMEs, notices, manifests, skills, scripts and pages the adapter, starter and plugin archives carry), with front matter, inline scripts and social cards; still partial because claims that use no trigger word escape the extractor."
     },
     {
       "id": "P1.15",
@@ -450,12 +450,16 @@
       "weight": 1,
       "gate": "decoder test shows the chosen precision cannot recover the birth instant to better than the stated window; truthful wording in the claims ledger",
       "dependsOn": [],
-      "status": "partial",
+      "status": "accepted",
       "release": "deployed",
       "evidence": [
-        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.15"
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.15",
+        "src/lib/share-positions.test.ts: the decoder and invariance tests of #599 hold a timed code to the whole UTC minute and a code without a birth time to 12:00 UTC on its date",
+        "https://github.com/zodiacs-org/site/pull/730",
+        "https://github.com/zodiacs-org/site/actions/runs/38381457494/attempts/2",
+        "docs/platform/evidence/p1-15-production-20261013/production.json: zodiacs.org at dpl_FF8v9Lp4xeRCaGMYPyAgmMPqRW3N, built from 7d12c0f1, serves llms.txt and llms-full.txt byte for byte as merged, with the corrected share-link wording and no retired path described as live"
       ],
-      "notes": "no committed test decodes the instant (a code-only decoder recovers 100/100 to a median 6.28 s); time-unknown codes leak the birthplace (F-17); the region figure fails at high latitude (F-40); decided 2026-09-28: random opaque feed ids stored server-side, older token URLs retired after 60 days (docs/platform/programme/DECISIONS-2026-09-28.md §2); #599: timed codes and feeds carry the whole UTC minute and codes without a birth time 12:00 UTC on the date, with decoder and invariance tests (src/lib/share-positions.test.ts); the opaque feed ids decided on 2026-09-28 are not built yet; the release's owner steps are done (2026-09-30): CALENDAR_FEED_SWEEP_SECRET in Vercel Production and in the GitHub environment calendar-feed-production, and PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are Production project variables"
+      "notes": "Accepted 2026-10-13: site #730, merged as 7d12c0f1 and served by dpl_FF8v9Lp4xeRCaGMYPyAgmMPqRW3N; main's Site Check for the merge passed on a re-run (attempt 2) after one of three Lighthouse samples of /thesis/, a page #730 does not change, measured CLS 0.0000915 (F-93). The chosen precision is the whole UTC minute for a timed code and 12:00 UTC on the date for a code without a birth time, which the decoder tests of #599 hold (src/lib/share-positions.test.ts); F-17 and F-40 were fixed there. #628 retired personal calendar feeds (410 Gone) and server-drawn preview links, which made the opaque feed ids decided on 2026-09-28 moot. The truthful wording: llms-full.txt no longer describes the retired paths as live and names the one exception, a preview link made before they were retired, which still opens and sends its code in the query string; the claims priv.positions-token, priv.on-device, priv.share-images and priv.fragment-links say the same, and scripts/trust-privacy-boundary.test.mjs fails if either llms file describes the retired paths as live again. Earlier: no committed test decodes the instant (a code-only decoder recovers 100/100 to a median 6.28 s); time-unknown codes leak the birthplace (F-17); the region figure fails at high latitude (F-40); decided 2026-09-28: random opaque feed ids stored server-side, older token URLs retired after 60 days (docs/platform/programme/DECISIONS-2026-09-28.md §2); #599: timed codes and feeds carry the whole UTC minute and codes without a birth time 12:00 UTC on the date, with decoder and invariance tests (src/lib/share-positions.test.ts); the opaque feed ids decided on 2026-09-28 are not built yet; the release's owner steps are done (2026-09-30): CALENDAR_FEED_SWEEP_SECRET in Vercel Production and in the GitHub environment calendar-feed-production, and PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are Production project variables"
     },
     {
       "id": "P1.M3a",

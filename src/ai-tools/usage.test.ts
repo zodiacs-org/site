@@ -3,7 +3,7 @@ import { createServer, request, type Server, type ServerResponse } from 'node:ht
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createAiNodeHandler, type AiHttpOptions } from './http';
-import { AI_TOOL_NAMES } from './contracts';
+import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES } from './contracts';
 import { countAiToolCall, usageHostFamily, USAGE_HOSTS, USAGE_TIMEOUT_MS } from './usage';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -98,17 +98,25 @@ describe('anonymous daily usage RPC', () => {
       expect(await countAiToolCall('get_sky', 'other', env, fetcher as unknown as typeof fetch)).toBe(false);
     }
   });
-  it('keeps the migration in step with the tool names and host families', () => {
-    const files = readdirSync(`${root}supabase/migrations`).filter(name => name.endsWith('_zodiacs_mcp_usage_counts.sql'));
-    expect(files).toHaveLength(1);
-    const sql = readFileSync(`${root}supabase/migrations/${files[0]}`, 'utf8');
-    const lists = [...sql.matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)].map(match => match[1].split(', ').map(value => value.slice(1, -1)));
-    const tools = lists.filter(list => list.includes('get_sky'));
-    const hosts = lists.filter(list => list.includes('chatgpt'));
-    expect(tools).toHaveLength(2);
-    expect(hosts).toHaveLength(2);
-    for (const list of tools) expect(list).toEqual([...AI_TOOL_NAMES]);
-    for (const list of hosts) expect(list).toEqual([...USAGE_HOSTS]);
+  it('keeps the migrations in step with the tool names and host families', () => {
+    const lists = (file: string) => [...readFileSync(`${root}supabase/migrations/${file}`, 'utf8').matchAll(/in \(((?:'[a-z_]+'(?:, )?)+)\)/g)]
+      .map(match => match[1].split(', ').map(value => value.slice(1, -1)));
+    const migrations = readdirSync(`${root}supabase/migrations`);
+    const created = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_counts.sql'));
+    const widened = migrations.filter(name => name.endsWith('_zodiacs_mcp_usage_occasion_tools.sql'));
+    expect(created).toHaveLength(1);
+    expect(widened).toHaveLength(1);
+    // The applied migration stays as it was; the later one widens the tool list to every hosted tool.
+    expect(widened[0] > created[0]).toBe(true);
+    for (const [file, names] of [[created[0], AI_TOOL_NAMES], [widened[0], ALL_AI_TOOL_NAMES]] as const) {
+      const tools = lists(file).filter(list => list.includes('get_sky'));
+      const hosts = lists(file).filter(list => list.includes('chatgpt'));
+      expect(tools).toHaveLength(2);
+      for (const list of tools) expect(list).toEqual([...names]);
+      for (const list of hosts) expect(list).toEqual([...USAGE_HOSTS]);
+    }
+    expect(lists(created[0]).filter(list => list.includes('chatgpt'))).toHaveLength(2);
+    expect(lists(widened[0]).filter(list => list.includes('chatgpt'))).toHaveLength(1);
     expect(USAGE_TIMEOUT_MS).toBeLessThanOrEqual(1500);
   });
 });
@@ -131,6 +139,22 @@ describe('counting hosted tool calls', () => {
     const limited = await serve({ countUsage, atomicQuota: async () => 'limited' });
     expect((await call(limited, capabilities)).status).toBe(429);
     expect(counted).toEqual([]);
+  });
+
+  it('counts the occasion tools only while their switch offers them', async () => {
+    const counted: string[] = [];
+    const countUsage = async (tool: string) => { counted.push(tool); };
+    const occasion = rpc('tools/call', { name: 'get_occasion_sky', arguments: { occasion: 'wedding', date: '2027-06-12' } });
+    const milestones = rpc('tools/call', { name: 'get_life_milestones', arguments: { birthDate: '1997-03-15' } });
+    const off = await serve({ countUsage });
+    // Switched off, the tool is not offered: the call is refused like any unknown tool.
+    const refused = (await call(off, occasion)).message;
+    expect(refused.result?.isError ?? Boolean(refused.error)).toBe(true);
+    expect(counted).toEqual([]);
+    const on = await serve({ countUsage, env: { ZODIACS_OCCASIONS_ENABLED: '1' } });
+    expect((await call(on, occasion)).message.result.isError).toBe(false);
+    expect((await call(on, milestones)).message.result.isError).toBe(false);
+    expect(counted).toEqual(['get_occasion_sky', 'get_life_milestones']);
   });
 
   it('never delays, changes or fails a reply when counting fails, hangs or the platform hook throws', async () => {
