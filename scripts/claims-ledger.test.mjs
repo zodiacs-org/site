@@ -33,6 +33,7 @@ import {
   LEXICON_VERSION,
   nearestRecord,
   readLedger,
+  SCOPE_ADD,
   selectFileSentences,
   selectSentences,
   splitSentences,
@@ -342,6 +343,25 @@ describe('claims ledger', () => {
     for (const skill of ['zodiacs-developer/skills/build-with-zodiacs', 'zodiacs-developer/skills/test-astrology-integration', 'zodiacs-developer/skills/verify-astrology-output', 'zodiacs-sky/skills/explore-the-sky']) {
       expect(selection.files).toContain(`plugins/${skill}/SKILL.md`);
     }
+    controls.push({
+      // A plugin manifest is read string by string, as every JSON file in scope is.
+      path: 'plugins/zodiacs-sky/.claude-plugin/plugin.json',
+      inject: (source) => source.replace('"displayName": "Zodiacs",', '"displayName": "Zodiacs",\n  "summary": "Positions are verified against JPL to 2″. Nothing is sent to a server.",'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // The starter's pages are read as HTML.
+      path: 'examples/platform/src/widget.html',
+      inject: (source) => source.replace('<fieldset>', '<p>Positions are verified against <code>JPL</code> to 2″. Nothing is sent to a server.</p>\n<fieldset>'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // The adapter's NOTICE, like the archived reference's, is plain text.
+      path: 'examples/mcp-server/NOTICE',
+      inject: (source) => `${source}\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    for (const path of SCOPE_ADD) expect(selection.files).toContain(path);
     const missed = [];
     for (const control of controls) {
       const source = read(control.path);

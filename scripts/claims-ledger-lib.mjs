@@ -110,17 +110,34 @@ export function serializeLedger(ledger) {
  * Files outside the consumer surface that make claims to readers or to other
  * programs: the validation report, the llms file, the assistant's site guide,
  * the developer docs that ship inside the MCP adapter, platform starter and
- * plugin archives, and the precision alpha's README (finding F-23). The READMEs
- * under integrations/ are the maintainers' packaging and review notes, not
- * shipped.
+ * plugin archives (their READMEs, notices, candidate records, plugin
+ * manifests and the starter's pages), and the precision alpha's README
+ * (finding F-23). The developer plugin's ENGINE-NOTICE and ENGINE-LICENSING
+ * are the engine release's NOTICE and LICENSING, byte for byte, which are
+ * read under public/developers/engine/reference/release/; the tests hold the
+ * copies identical. The READMEs under integrations/ are the maintainers'
+ * packaging and review notes, not shipped.
  */
 export const SCOPE_ADD = Object.freeze([
   'docs/engine-validation/README.md',
+  'examples/mcp-server/NOTICE',
   'examples/mcp-server/README.md',
+  'examples/mcp-server/candidate.json',
   'examples/platform/README.md',
+  'examples/platform/candidate.json',
+  'examples/platform/src/natal.html',
+  'examples/platform/src/transits.html',
+  'examples/platform/src/widget.html',
   'examples/precision-alpha/README.md',
+  'plugins/zodiacs-developer/.codex-plugin/plugin.json',
+  'plugins/zodiacs-developer/NOTICE',
   'plugins/zodiacs-developer/README.md',
+  'plugins/zodiacs-developer/plugin.json',
+  'plugins/zodiacs-sky/.claude-plugin/plugin.json',
+  'plugins/zodiacs-sky/.codex-plugin/plugin.json',
+  'plugins/zodiacs-sky/NOTICE',
   'plugins/zodiacs-sky/README.md',
+  'plugins/zodiacs-sky/plugin.json',
   'public/llms-full.txt',
   'scripts/build-assistant-context.mjs',
 ]);
@@ -170,6 +187,10 @@ export const TRUST_PATTERNS = Object.freeze([
   /^src\/data\/developer-guides\.json$/u,
   /^(?:examples|plugins)\/[^/]+\/README\.md$/u,
   /^plugins\/[^/]+\/skills\/[^/]+\/SKILL\.md$/u,
+  /^plugins\/[^/]+\/(?:\.(?:claude|codex)-plugin\/)?plugin\.json$/u,
+  /^(?:examples\/mcp-server|plugins\/[^/]+)\/NOTICE$/u,
+  /^examples\/(?:mcp-server|platform)\/candidate\.json$/u,
+  /^examples\/platform\/src\/[^/]+\.html$/u,
   /^src\/mcp\/[^/]+\.ts$/u,
   /^src\/lib\/sky-api\/[^/]+\.ts$/u,
   /^src\/lib\/compute-api\/[^/]+\.ts$/u,

@@ -3,7 +3,7 @@
 ## F-23
 
 The claims ledger did not read the developer docs. It now reads all those the
-site serves or ships, in four parts:
+site serves or ships, in five parts:
 
 - **Shipped READMEs.** These are the READMEs inside the MCP adapter, the
   platform starter and the two plugin archives, and the developer guides'
@@ -14,6 +14,29 @@ site serves or ships, in four parts:
   `priv.chart-studio` and `product.ai-candidate`, restated to give the sky
   tools' 92-day event window. The developer plugin's skill said 31 days; it
   now says 92, and plugin 0.3.10 is packed with it.
+- **Shipped notices, manifests, records and pages.** The adapter's NOTICE and
+  `candidate.json`, the plugins' NOTICEs and manifests, and the starter's
+  three pages hold 82 selected sentences.
+  - The adapter's NOTICE ends with the engine's NOTICE, unchanged. Its 19
+    sentences from there keep the decisions made for the same sentences in
+    the release's NOTICE.
+  - The sky plugin's review test cases, the requests and expectations a
+    directory reviewer runs, are not claims, nor are the developer plugin's
+    starter prompts or the starter pages' form labels.
+  - The rest are held to claims. Two claims are new: what the developer
+    plugin's generated server bundles, and its three skills. Seven are
+    restated to cover what these files add: `product.mcp-licence`,
+    `product.mcp-candidate`, `product.ai-packages`, `priv.local-tools`,
+    `priv.widgets`, `acc.studio-replay` (Time Explorer's birth-time window)
+    and `time.visible-math` (Chart Studio without a birth time).
+  - New checks hold these sentences:
+    - `npm run ai:check` requires the developer plugin's ENGINE-NOTICE,
+      ENGINE-LICENSE and ENGINE-LICENSING to be the installed engine's files,
+      byte for byte, and ENGINE-NOTICE and ENGINE-LICENSING to be the served
+      release's, which the ledger already reads.
+    - The adapter's artifact test finds in `server.mjs` the leap-second
+      list, the UT1 − UTC table and the IAU 2000B series its NOTICE names.
+    - A starter test holds the widget page to its privacy note.
 - **The precision alpha's README.** It holds 16 sentences: three claims are
   new, and `acc.precision-preview` is restated.
 - **The engine references the site serves.** These are the 1.0.0 API

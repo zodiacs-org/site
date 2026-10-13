@@ -412,3 +412,20 @@ describe('starter archive extraction boundary', () => {
     expect(JSON.stringify(env)).not.toMatch(/secret|\/private\/(?:\.npmrc|cache)/);
   });
 });
+
+describe("the starter's widget page", () => {
+  const source = (name) => read(`examples/platform/src/${name}`).toString('utf8');
+  it('loads the frame with the referrer policy it states, and adds nothing else to it', () => {
+    const page = source('widget.html');
+    // One script, the bundle of widget.mjs, and two fields: the theme and the accent.
+    expect([...page.matchAll(/<script\b[^>]*>/giu)].map(([tag]) => tag)).toEqual(['<script type="module" src="/widget.js">']);
+    expect([...page.matchAll(/<(?:input|select|textarea)\b[^>]*\bid="([^"]+)"/giu)].map(([, id]) => id)).toEqual(['theme', 'accent']);
+    expect(page).toContain('<code>strict-origin-when-cross-origin</code> omits the parent path and query');
+    const loader = source('widget.mjs');
+    expect([...loader.matchAll(/^import .* from '([^']+)';$/gmu)].map(([, from]) => from)).toEqual(['./widget-contract.mjs']);
+    expect(loader).toContain("frame.referrerPolicy = 'strict-origin-when-cross-origin';");
+    for (const code of [loader, source('widget-contract.mjs')]) {
+      expect(code).not.toMatch(/postMessage|localStorage|sessionStorage|indexedDB|cookie|sendBeacon|fetch\(|XMLHttpRequest|WebSocket|PaymentRequest|ethereum|navigator\.credentials|import\(/u);
+    }
+  });
+});
