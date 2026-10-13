@@ -182,6 +182,12 @@ describe('compute API in the OpenAPI document', () => {
       ['sky-fact', { kind: 'ingress', body: 'Sun', sign: 'libra', date: '2026-09-29', zone: 'UTC' }, true],
       ['sky-fact', { kind: 'phase', phase: 'full', instant: '2026-09-29T00:00:00Z' }, false],
       ['sky-fact', { kind: 'eclipse', date: '2026-09-29' }, false],
+      ['sky-fact', { kind: 'aspect', body: 'Moon', other: 'Saturn', aspect: 'trine', date: '2026-10-14', zone: 'Europe/London' }, true],
+      ['sky-fact', { kind: 'aspect', body: 'Venus', other: 'Mars', aspect: 'square', instant: '2026-10-14T00:00:00Z' }, true],
+      ['sky-fact', { kind: 'aspect', body: 'Venus', other: 'Mars', aspect: 'quincunx', instant: '2026-10-14T00:00:00Z' }, false],
+      ['sky-fact', { kind: 'aspect', body: 'Venus', other: 'North Node', aspect: 'square', instant: '2026-10-14T00:00:00Z' }, false],
+      ['sky-fact', { kind: 'aspect', body: 'Venus', aspect: 'square', date: '2026-10-14' }, false],
+      ['sky-fact', { kind: 'aspect', body: 'Venus', other: 'Mars', aspect: 'square', instant: '2026-10-14T00:00:00Z', zone: 'UTC' }, false],
     ];
     for (const [endpoint, body, valid] of cases) {
       const schema = validator(requestComponentName(endpoint))(body);
