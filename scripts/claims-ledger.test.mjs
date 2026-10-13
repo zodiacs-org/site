@@ -367,6 +367,18 @@ describe('claims ledger', () => {
       inject: (source) => `${source}\nexport const control = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';\n`,
       texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
     });
+    controls.push({
+      // A fence with no language only lays prose out, so its lines are read.
+      path: 'examples/precision-alpha/README.md',
+      inject: (source) => `${source}\n\n\`\`\`\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n\`\`\`\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // An inline script on a page that is not a TypeDoc reference is read for its strings.
+      path: 'public/sdk/examples/simastry-aura/index.html',
+      inject: (source) => source.replace('</body>', "<script>document.title = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';</script></body>"),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
     for (const path of ['examples/platform/src/app.mjs', 'examples/platform/scripts/build.mjs', 'examples/platform/tests/receipt.check.mjs', 'examples/mcp-server/verify.mjs', 'plugins/zodiacs-developer/examples/calendar.mjs']) {
       expect(selection.files).toContain(path);
     }
@@ -389,6 +401,10 @@ describe('claims ledger', () => {
     expect(signature).not.toBe(page);
     expect((await selectFileSentences('public/developers/engine/reference/functions/engine.natalChart.html', signature))
       .filter((sentence) => sentence.text.includes('JPL'))).toEqual([]);
+    // Fenced code in a language is code: the same words there are not selected.
+    const fenced = `${read('examples/precision-alpha/README.md')}\n\n\`\`\`js\n// Positions are verified against JPL to 2″.\nconst note = 'Nothing is sent to a server.';\n\`\`\`\n`;
+    expect((await selectFileSentences('examples/precision-alpha/README.md', fenced))
+      .filter((sentence) => /JPL to 2″|Nothing is sent/u.test(sentence.text))).toEqual([]);
 
     expect(splitSentences('It is accurate, e.g. to 1″ in 2020. The next sentence starts here.'))
       .toEqual(['It is accurate, e.g. to 1″ in 2020.', 'The next sentence starts here.']);

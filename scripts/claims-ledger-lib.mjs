@@ -466,9 +466,13 @@ function markdownBlocks(source) {
   return source
     .replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/u, '')
     .replace(/<!--[\s\S]*?-->/gu, ' ')
-    // Fenced code is a command or an example output, not prose: the sentences
-    // an example prints are listed where the code that writes them is.
-    .replace(/^[ \t]{0,3}(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n[ \t]{0,3}\1[ \t]*$/gmu, '')
+    // Fenced code in a language is a command, an example or its output, not
+    // prose: the sentences an example prints are listed where the code that
+    // writes them is. A fence with no language, or a text one, only lays prose
+    // out (a file map, a note), so each of its lines is read as a block.
+    .replace(/^[ \t]{0,3}(`{3,}|~{3,})[ \t]*([^\n]*)\n([\s\S]*?)\n[ \t]{0,3}\1[ \t]*$/gmu,
+      (_fence, _marker, info, body) => (/^(?:|text|txt|plain|plaintext)$/iu.test(info.trim())
+        ? `\n\n${body.split(/\r?\n/u).filter((line) => line.trim()).join('\n\n')}\n\n` : ''))
     .split(/\r?\n\s*\r?\n/u)
     .filter((block) => !/^\s*(?:import|export)\s/u.test(block))
     .map((block) => block
@@ -530,13 +534,20 @@ function htmlElementsWithClass(source, className) {
  * code is from Markdown.
  */
 function htmlBlocks(source) {
+  const typedoc = /\bclass="[^"]*\btsd-page-toolbar\b/u.test(source);
+  // An inline script may write what a reader sees (a payload, a status line),
+  // so its strings are read, as a script file's are; JSON in a script tag is
+  // read as JSON. A TypeDoc page's scripts hold its search index and navigation.
+  const scripted = typedoc ? [] : [...source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/giu)]
+    .filter(([, attributes, code]) => !/\bsrc\s*=/iu.test(attributes) && code.trim())
+    .flatMap(([, attributes, code]) => (/\btype\s*=\s*["']?application\/(?:ld\+)?json/iu.test(attributes)
+      ? jsonBlocks(code) : scriptBlocks(code, 'inline-script.js')));
   const page = source
     .replace(/<!--[\s\S]*?-->/gu, ' ')
     .replace(/<(script|style|svg|template|noscript)\b[\s\S]*?<\/\1\s*>/giu, ' ')
     .replace(/<pre\b[\s\S]*?<\/pre\s*>/giu, ' ');
   const head = page.match(/<head\b[^>]*>([\s\S]*?)<\/head\s*>/iu)?.[1] ?? '';
   const body = page.replace(/<head\b[^>]*>[\s\S]*?<\/head\s*>/iu, ' ');
-  const typedoc = /\bclass="[^"]*\btsd-page-toolbar\b/u.test(source);
   const parts = typedoc
     ? [...htmlElementsWithClass(body, 'tsd-typography'), ...[...body.matchAll(/<footer\b[^>]*>([\s\S]*?)<\/footer\s*>/giu)].map((match) => match[1])]
     : [
@@ -545,10 +556,10 @@ function htmlBlocks(source) {
       body,
     ];
   // An inline element's text joins its neighbours' as a browser shows it.
-  return parts.flatMap((part) => part
+  return [...parts.flatMap((part) => part
     .replace(HTML_BREAKS, '\n\n')
     .replace(/<[^>]+>/gu, '')
-    .split(/\n\s*\n/u))
+    .split(/\n\s*\n/u)), ...scripted]
     .filter((block) => block.trim());
 }
 
