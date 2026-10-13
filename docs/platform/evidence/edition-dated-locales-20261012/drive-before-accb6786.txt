@@ -1,0 +1,286 @@
+Chromium 154.0.8037.98 · edition 2026-10-12 · dated clock 2026-10-13T00:17:00.000Z
+PASS  Today and Horoscopes share the edition date
+PASS  The Spanish and Portuguese pages share the edition date
+PASS  /today/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /today/ 360px dated: the edition is dated
+PASS  /today/ 360px dated: CLS is exactly 0
+PASS  /today/ 360px dated: the server sent relative wording to date
+PASS  /today/ 360px dated: every text node reads as the server dates it
+PASS  /today/ 360px dated: EditionText shows its dated form
+PASS  /today/ 360px dated: no relative wording remains, islands included
+PASS  /today/ 360px dated: no page errors
+PASS  /today/ dated: text appended after its start was dated reads as one dated text
+PASS  /today/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /today/ 412px dated: the edition is dated
+PASS  /today/ 412px dated: CLS is exactly 0
+PASS  /today/ 412px dated: the server sent relative wording to date
+PASS  /today/ 412px dated: every text node reads as the server dates it
+PASS  /today/ 412px dated: EditionText shows its dated form
+PASS  /today/ 412px dated: no relative wording remains, islands included
+PASS  /today/ 412px dated: no page errors
+PASS  /today/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /today/ 1280px dated: the edition is dated
+PASS  /today/ 1280px dated: CLS is exactly 0
+PASS  /today/ 1280px dated: the server sent relative wording to date
+PASS  /today/ 1280px dated: every text node reads as the server dates it
+PASS  /today/ 1280px dated: EditionText shows its dated form
+PASS  /today/ 1280px dated: no relative wording remains, islands included
+PASS  /today/ 1280px dated: no page errors
+PASS  /today/ 412px current: answers 200
+PASS  /today/ 412px current: the edition is current
+PASS  /today/ 412px current: CLS is exactly 0
+PASS  /today/ 412px current: EditionText shows its current form
+PASS  /today/ 412px current: every text node keeps the server's wording
+PASS  /today/ 412px current: no page errors
+PASS  /horoscopes/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/ 360px dated: the edition is dated
+PASS  /horoscopes/ 360px dated: CLS is exactly 0
+PASS  /horoscopes/ 360px dated: the server sent relative wording to date
+PASS  /horoscopes/ 360px dated: every text node reads as the server dates it
+PASS  /horoscopes/ 360px dated: EditionText shows its dated form
+PASS  /horoscopes/ 360px dated: no relative wording remains, islands included
+PASS  /horoscopes/ 360px dated: no page errors
+PASS  /horoscopes/ dated: text appended after its start was dated reads as one dated text
+PASS  /horoscopes/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/ 412px dated: the edition is dated
+PASS  /horoscopes/ 412px dated: CLS is exactly 0
+PASS  /horoscopes/ 412px dated: the server sent relative wording to date
+PASS  /horoscopes/ 412px dated: every text node reads as the server dates it
+PASS  /horoscopes/ 412px dated: EditionText shows its dated form
+PASS  /horoscopes/ 412px dated: no relative wording remains, islands included
+PASS  /horoscopes/ 412px dated: no page errors
+PASS  /horoscopes/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/ 1280px dated: the edition is dated
+PASS  /horoscopes/ 1280px dated: CLS is exactly 0
+PASS  /horoscopes/ 1280px dated: the server sent relative wording to date
+PASS  /horoscopes/ 1280px dated: every text node reads as the server dates it
+PASS  /horoscopes/ 1280px dated: EditionText shows its dated form
+PASS  /horoscopes/ 1280px dated: no relative wording remains, islands included
+PASS  /horoscopes/ 1280px dated: no page errors
+PASS  /horoscopes/ 412px current: answers 200
+PASS  /horoscopes/ 412px current: the edition is current
+PASS  /horoscopes/ 412px current: CLS is exactly 0
+PASS  /horoscopes/ 412px current: EditionText shows its current form
+PASS  /horoscopes/ 412px current: every text node keeps the server's wording
+PASS  /horoscopes/ 412px current: no page errors
+PASS  /horoscopes/aries/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/aries/ 360px dated: the edition is dated
+PASS  /horoscopes/aries/ 360px dated: CLS is exactly 0
+PASS  /horoscopes/aries/ 360px dated: the server sent relative wording to date
+PASS  /horoscopes/aries/ 360px dated: every text node reads as the server dates it
+PASS  /horoscopes/aries/ 360px dated: EditionText shows its dated form
+PASS  /horoscopes/aries/ 360px dated: no relative wording remains, islands included
+PASS  /horoscopes/aries/ 360px dated: no page errors
+PASS  /horoscopes/aries/ dated: text appended after its start was dated reads as one dated text
+PASS  /horoscopes/aries/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/aries/ 412px dated: the edition is dated
+PASS  /horoscopes/aries/ 412px dated: CLS is exactly 0
+PASS  /horoscopes/aries/ 412px dated: the server sent relative wording to date
+PASS  /horoscopes/aries/ 412px dated: every text node reads as the server dates it
+PASS  /horoscopes/aries/ 412px dated: EditionText shows its dated form
+PASS  /horoscopes/aries/ 412px dated: no relative wording remains, islands included
+PASS  /horoscopes/aries/ 412px dated: no page errors
+PASS  /horoscopes/aries/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /horoscopes/aries/ 1280px dated: the edition is dated
+PASS  /horoscopes/aries/ 1280px dated: CLS is exactly 0
+PASS  /horoscopes/aries/ 1280px dated: the server sent relative wording to date
+PASS  /horoscopes/aries/ 1280px dated: every text node reads as the server dates it
+PASS  /horoscopes/aries/ 1280px dated: EditionText shows its dated form
+PASS  /horoscopes/aries/ 1280px dated: no relative wording remains, islands included
+PASS  /horoscopes/aries/ 1280px dated: no page errors
+PASS  /horoscopes/aries/ 412px current: answers 200
+PASS  /horoscopes/aries/ 412px current: the edition is current
+PASS  /horoscopes/aries/ 412px current: CLS is exactly 0
+PASS  /horoscopes/aries/ 412px current: EditionText shows its current form
+PASS  /horoscopes/aries/ 412px current: every text node keeps the server's wording
+PASS  /horoscopes/aries/ 412px current: no page errors
+PASS  /es/today/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /es/today/ 360px dated: the edition is dated
+PASS  /es/today/ 360px dated: CLS is exactly 0
+PASS  /es/today/ 360px dated: the server sent relative wording to date
+FAIL  /es/today/ 360px dated: every text node reads as the server dates it · 165/165 nodes; [{"live":"Hoy","expected":"El cielo del 12 de octubre de 2026"},{"live":"Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo de hoy, leídas desde las casas solares de tu signo; los comprobantes bajo cada lectura dicen exactamente qué la produjo.","expected":"Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo del 12 de octubre de 2026, leídas desde las casas solares de tu signo; los comprobantes bajo cada lectura dicen exactamente qué la produjo."}]
+PASS  /es/today/ 360px dated: EditionText shows its dated form
+FAIL  /es/today/ 360px dated: no relative wording remains, islands included · Hoy
+PASS  /es/today/ 360px dated: no page errors
+FAIL  /es/today/ dated: text appended after its start was dated reads as one dated text · La Luna pasa hoy por tu octava casa: el cielo de hoy.
+PASS  /es/today/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /es/today/ 412px dated: the edition is dated
+PASS  /es/today/ 412px dated: CLS is exactly 0
+PASS  /es/today/ 412px dated: the server sent relative wording to date
+FAIL  /es/today/ 412px dated: every text node reads as the server dates it · 165/165 nodes; [{"live":"Hoy","expected":"El cielo del 12 de octubre de 2026"},{"live":"Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo de hoy, leídas desde las casas solares de tu signo; los comprobantes bajo cada lectura dicen exactamente qué la produjo.","expected":"Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo del 12 de octubre de 2026, leídas desde las casas solares de tu signo; los comprobantes bajo cada lectura dicen exactamente qué la produjo."}]
+PASS  /es/today/ 412px dated: EditionText shows its dated form
+FAIL  /es/today/ 412px dated: no relative wording remains, islands included · Hoy
+PASS  /es/today/ 412px dated: no page errors
+PASS  /es/today/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /es/today/ 1280px dated: the edition is dated
+PASS  /es/today/ 1280px dated: CLS is exactly 0
+PASS  /es/today/ 1280px dated: the server sent relative wording to date
+FAIL  /es/today/ 1280px dated: every text node reads as the server dates it · 165/165 nodes; [{"live":"Hoy","expected":"El cielo del 12 de octubre de 2026"},{"live":"Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo de hoy, leídas desde las casas solares de tu signo; los comprobantes bajo cada lectura dicen exactamente qué la produjo.","expected":"Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo del 12 de octubre de 2026, leídas desde las casas solares de tu signo; los comprobantes bajo cada lectura dicen exactamente qué la produjo."}]
+PASS  /es/today/ 1280px dated: EditionText shows its dated form
+FAIL  /es/today/ 1280px dated: no relative wording remains, islands included · Hoy
+PASS  /es/today/ 1280px dated: no page errors
+PASS  /es/today/ 412px current: answers 200
+PASS  /es/today/ 412px current: the edition is current
+PASS  /es/today/ 412px current: CLS is exactly 0
+PASS  /es/today/ 412px current: EditionText shows its current form
+PASS  /es/today/ 412px current: every text node keeps the server's wording
+PASS  /es/today/ 412px current: no page errors
+PASS  /es/horoscopes/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/ 360px dated: the edition is dated
+PASS  /es/horoscopes/ 360px dated: CLS is exactly 0
+PASS  /es/horoscopes/ 360px dated: the server sent relative wording to date
+FAIL  /es/horoscopes/ 360px dated: every text node reads as the server dates it · 56/56 nodes; [{"live":"Horóscopos de hoy","expected":"Horóscopos del 12 de octubre de 2026"},{"live":"Busca tu signo para la nota más concreta del cielo de hoy. Lee primero tu signo solar y, si lo conoces, también tu ascendente.","expected":"Busca tu signo para la nota más concreta del cielo del 12 de octubre de 2026. Lee primero tu signo solar y, si lo conoces, también tu ascendente."}]
+PASS  /es/horoscopes/ 360px dated: EditionText shows its dated form
+FAIL  /es/horoscopes/ 360px dated: no relative wording remains, islands included · Horóscopos de hoy
+PASS  /es/horoscopes/ 360px dated: no page errors
+FAIL  /es/horoscopes/ dated: text appended after its start was dated reads as one dated text · La Luna pasa hoy por tu octava casa: el cielo de hoy.
+PASS  /es/horoscopes/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/ 412px dated: the edition is dated
+PASS  /es/horoscopes/ 412px dated: CLS is exactly 0
+PASS  /es/horoscopes/ 412px dated: the server sent relative wording to date
+FAIL  /es/horoscopes/ 412px dated: every text node reads as the server dates it · 56/56 nodes; [{"live":"Horóscopos de hoy","expected":"Horóscopos del 12 de octubre de 2026"},{"live":"Busca tu signo para la nota más concreta del cielo de hoy. Lee primero tu signo solar y, si lo conoces, también tu ascendente.","expected":"Busca tu signo para la nota más concreta del cielo del 12 de octubre de 2026. Lee primero tu signo solar y, si lo conoces, también tu ascendente."}]
+PASS  /es/horoscopes/ 412px dated: EditionText shows its dated form
+FAIL  /es/horoscopes/ 412px dated: no relative wording remains, islands included · Horóscopos de hoy
+PASS  /es/horoscopes/ 412px dated: no page errors
+PASS  /es/horoscopes/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/ 1280px dated: the edition is dated
+PASS  /es/horoscopes/ 1280px dated: CLS is exactly 0
+PASS  /es/horoscopes/ 1280px dated: the server sent relative wording to date
+FAIL  /es/horoscopes/ 1280px dated: every text node reads as the server dates it · 56/56 nodes; [{"live":"Horóscopos de hoy","expected":"Horóscopos del 12 de octubre de 2026"},{"live":"Busca tu signo para la nota más concreta del cielo de hoy. Lee primero tu signo solar y, si lo conoces, también tu ascendente.","expected":"Busca tu signo para la nota más concreta del cielo del 12 de octubre de 2026. Lee primero tu signo solar y, si lo conoces, también tu ascendente."}]
+PASS  /es/horoscopes/ 1280px dated: EditionText shows its dated form
+FAIL  /es/horoscopes/ 1280px dated: no relative wording remains, islands included · Horóscopos de hoy
+PASS  /es/horoscopes/ 1280px dated: no page errors
+PASS  /es/horoscopes/ 412px current: answers 200
+PASS  /es/horoscopes/ 412px current: the edition is current
+PASS  /es/horoscopes/ 412px current: CLS is exactly 0
+PASS  /es/horoscopes/ 412px current: EditionText shows its current form
+PASS  /es/horoscopes/ 412px current: every text node keeps the server's wording
+PASS  /es/horoscopes/ 412px current: no page errors
+PASS  /es/horoscopes/aries/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/aries/ 360px dated: the edition is dated
+FAIL  /es/horoscopes/aries/ 360px dated: CLS is exactly 0 · [{"value":0.05881635742187499,"sources":["footer.zfooter","nav.zfooter__group.zfooter__group--wide"]}]
+PASS  /es/horoscopes/aries/ 360px dated: the server sent relative wording to date
+FAIL  /es/horoscopes/aries/ 360px dated: every text node reads as the server dates it · 21/21 nodes; [{"live":"Aries hoy","expected":"Aries, 12 de octubre de 2026"},{"live":"La Luna pasa hoy por tu octava casa: el dinero compartido, las deudas, la intimidad y lo que se fusiona.","expected":"El 12 de octubre de 2026, la Luna pasa por tu octava casa: el dinero compartido, las deudas, la intimidad y lo que se fusiona."}]
+PASS  /es/horoscopes/aries/ 360px dated: EditionText shows its dated form
+FAIL  /es/horoscopes/aries/ 360px dated: no relative wording remains, islands included · Aries hoy
+PASS  /es/horoscopes/aries/ 360px dated: no page errors
+FAIL  /es/horoscopes/aries/ dated: text appended after its start was dated reads as one dated text · La Luna pasa hoy por tu octava casa: el cielo de hoy.
+PASS  /es/horoscopes/aries/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/aries/ 412px dated: the edition is dated
+FAIL  /es/horoscopes/aries/ 412px dated: CLS is exactly 0 · [{"value":0.0782503662109375,"sources":["footer.zfooter","nav.zfooter__group.zfooter__twelve","nav.zfooter__group.zfooter__group--wide"]}]
+PASS  /es/horoscopes/aries/ 412px dated: the server sent relative wording to date
+FAIL  /es/horoscopes/aries/ 412px dated: every text node reads as the server dates it · 21/21 nodes; [{"live":"Aries hoy","expected":"Aries, 12 de octubre de 2026"},{"live":"La Luna pasa hoy por tu octava casa: el dinero compartido, las deudas, la intimidad y lo que se fusiona.","expected":"El 12 de octubre de 2026, la Luna pasa por tu octava casa: el dinero compartido, las deudas, la intimidad y lo que se fusiona."}]
+PASS  /es/horoscopes/aries/ 412px dated: EditionText shows its dated form
+FAIL  /es/horoscopes/aries/ 412px dated: no relative wording remains, islands included · Aries hoy
+PASS  /es/horoscopes/aries/ 412px dated: no page errors
+PASS  /es/horoscopes/aries/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /es/horoscopes/aries/ 1280px dated: the edition is dated
+FAIL  /es/horoscopes/aries/ 1280px dated: CLS is exactly 0 · [{"value":0.17301581632653062,"sources":["footer.zfooter","nav.zfooter__group"]}]
+PASS  /es/horoscopes/aries/ 1280px dated: the server sent relative wording to date
+FAIL  /es/horoscopes/aries/ 1280px dated: every text node reads as the server dates it · 21/21 nodes; [{"live":"Aries hoy","expected":"Aries, 12 de octubre de 2026"},{"live":"La Luna pasa hoy por tu octava casa: el dinero compartido, las deudas, la intimidad y lo que se fusiona.","expected":"El 12 de octubre de 2026, la Luna pasa por tu octava casa: el dinero compartido, las deudas, la intimidad y lo que se fusiona."}]
+PASS  /es/horoscopes/aries/ 1280px dated: EditionText shows its dated form
+FAIL  /es/horoscopes/aries/ 1280px dated: no relative wording remains, islands included · Aries hoy
+PASS  /es/horoscopes/aries/ 1280px dated: no page errors
+PASS  /es/horoscopes/aries/ 412px current: answers 200
+PASS  /es/horoscopes/aries/ 412px current: the edition is current
+FAIL  /es/horoscopes/aries/ 412px current: CLS is exactly 0 · [{"value":0.0782503662109375,"sources":["footer.zfooter","nav.zfooter__group.zfooter__twelve","nav.zfooter__group.zfooter__group--wide"]}]
+PASS  /es/horoscopes/aries/ 412px current: EditionText shows its current form
+PASS  /es/horoscopes/aries/ 412px current: every text node keeps the server's wording
+PASS  /es/horoscopes/aries/ 412px current: no page errors
+PASS  /pt/today/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /pt/today/ 360px dated: the edition is dated
+PASS  /pt/today/ 360px dated: CLS is exactly 0
+PASS  /pt/today/ 360px dated: the server sent relative wording to date
+FAIL  /pt/today/ 360px dated: every text node reads as the server dates it · 165/165 nodes; [{"live":"Hoje","expected":"O céu de 12 de outubro de 2026"},{"live":"Escolha o seu signo solar. Cada nota vem das posições registradas do céu de hoje, lidas a partir das casas solares do seu signo; os registros sob cada leitura dizem exatamente o que a produziu.","expected":"Escolha o seu signo solar. Cada nota vem das posições registradas do céu de 12 de outubro de 2026, lidas a partir das casas solares do seu signo; os registros sob cada leitura dizem exatamente o que a produziu."}]
+PASS  /pt/today/ 360px dated: EditionText shows its dated form
+FAIL  /pt/today/ 360px dated: no relative wording remains, islands included · Hoje
+PASS  /pt/today/ 360px dated: no page errors
+FAIL  /pt/today/ dated: text appended after its start was dated reads as one dated text · A Lua passa hoje por sua oitava casa: o céu de hoje.
+PASS  /pt/today/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /pt/today/ 412px dated: the edition is dated
+PASS  /pt/today/ 412px dated: CLS is exactly 0
+PASS  /pt/today/ 412px dated: the server sent relative wording to date
+FAIL  /pt/today/ 412px dated: every text node reads as the server dates it · 165/165 nodes; [{"live":"Hoje","expected":"O céu de 12 de outubro de 2026"},{"live":"Escolha o seu signo solar. Cada nota vem das posições registradas do céu de hoje, lidas a partir das casas solares do seu signo; os registros sob cada leitura dizem exatamente o que a produziu.","expected":"Escolha o seu signo solar. Cada nota vem das posições registradas do céu de 12 de outubro de 2026, lidas a partir das casas solares do seu signo; os registros sob cada leitura dizem exatamente o que a produziu."}]
+PASS  /pt/today/ 412px dated: EditionText shows its dated form
+FAIL  /pt/today/ 412px dated: no relative wording remains, islands included · Hoje
+PASS  /pt/today/ 412px dated: no page errors
+PASS  /pt/today/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /pt/today/ 1280px dated: the edition is dated
+PASS  /pt/today/ 1280px dated: CLS is exactly 0
+PASS  /pt/today/ 1280px dated: the server sent relative wording to date
+FAIL  /pt/today/ 1280px dated: every text node reads as the server dates it · 165/165 nodes; [{"live":"Hoje","expected":"O céu de 12 de outubro de 2026"},{"live":"Escolha o seu signo solar. Cada nota vem das posições registradas do céu de hoje, lidas a partir das casas solares do seu signo; os registros sob cada leitura dizem exatamente o que a produziu.","expected":"Escolha o seu signo solar. Cada nota vem das posições registradas do céu de 12 de outubro de 2026, lidas a partir das casas solares do seu signo; os registros sob cada leitura dizem exatamente o que a produziu."}]
+PASS  /pt/today/ 1280px dated: EditionText shows its dated form
+FAIL  /pt/today/ 1280px dated: no relative wording remains, islands included · Hoje
+PASS  /pt/today/ 1280px dated: no page errors
+PASS  /pt/today/ 412px current: answers 200
+PASS  /pt/today/ 412px current: the edition is current
+PASS  /pt/today/ 412px current: CLS is exactly 0
+PASS  /pt/today/ 412px current: EditionText shows its current form
+PASS  /pt/today/ 412px current: every text node keeps the server's wording
+PASS  /pt/today/ 412px current: no page errors
+PASS  /pt/horoscopes/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/ 360px dated: the edition is dated
+PASS  /pt/horoscopes/ 360px dated: CLS is exactly 0
+PASS  /pt/horoscopes/ 360px dated: the server sent relative wording to date
+FAIL  /pt/horoscopes/ 360px dated: every text node reads as the server dates it · 56/56 nodes; [{"live":"Horóscopos de hoje","expected":"Horóscopos de 12 de outubro de 2026"},{"live":"Encontre o seu signo para a nota mais concreta do céu de hoje. Leia primeiro o seu signo solar e, se souber, o seu ascendente também.","expected":"Encontre o seu signo para a nota mais concreta do céu de 12 de outubro de 2026. Leia primeiro o seu signo solar e, se souber, o seu ascendente também."}]
+PASS  /pt/horoscopes/ 360px dated: EditionText shows its dated form
+FAIL  /pt/horoscopes/ 360px dated: no relative wording remains, islands included · Horóscopos de hoje
+PASS  /pt/horoscopes/ 360px dated: no page errors
+FAIL  /pt/horoscopes/ dated: text appended after its start was dated reads as one dated text · A Lua passa hoje por sua oitava casa: o céu de hoje.
+PASS  /pt/horoscopes/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/ 412px dated: the edition is dated
+PASS  /pt/horoscopes/ 412px dated: CLS is exactly 0
+PASS  /pt/horoscopes/ 412px dated: the server sent relative wording to date
+FAIL  /pt/horoscopes/ 412px dated: every text node reads as the server dates it · 56/56 nodes; [{"live":"Horóscopos de hoje","expected":"Horóscopos de 12 de outubro de 2026"},{"live":"Encontre o seu signo para a nota mais concreta do céu de hoje. Leia primeiro o seu signo solar e, se souber, o seu ascendente também.","expected":"Encontre o seu signo para a nota mais concreta do céu de 12 de outubro de 2026. Leia primeiro o seu signo solar e, se souber, o seu ascendente também."}]
+PASS  /pt/horoscopes/ 412px dated: EditionText shows its dated form
+FAIL  /pt/horoscopes/ 412px dated: no relative wording remains, islands included · Horóscopos de hoje
+PASS  /pt/horoscopes/ 412px dated: no page errors
+PASS  /pt/horoscopes/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/ 1280px dated: the edition is dated
+PASS  /pt/horoscopes/ 1280px dated: CLS is exactly 0
+PASS  /pt/horoscopes/ 1280px dated: the server sent relative wording to date
+FAIL  /pt/horoscopes/ 1280px dated: every text node reads as the server dates it · 56/56 nodes; [{"live":"Horóscopos de hoje","expected":"Horóscopos de 12 de outubro de 2026"},{"live":"Encontre o seu signo para a nota mais concreta do céu de hoje. Leia primeiro o seu signo solar e, se souber, o seu ascendente também.","expected":"Encontre o seu signo para a nota mais concreta do céu de 12 de outubro de 2026. Leia primeiro o seu signo solar e, se souber, o seu ascendente também."}]
+PASS  /pt/horoscopes/ 1280px dated: EditionText shows its dated form
+FAIL  /pt/horoscopes/ 1280px dated: no relative wording remains, islands included · Horóscopos de hoje
+PASS  /pt/horoscopes/ 1280px dated: no page errors
+PASS  /pt/horoscopes/ 412px current: answers 200
+PASS  /pt/horoscopes/ 412px current: the edition is current
+PASS  /pt/horoscopes/ 412px current: CLS is exactly 0
+PASS  /pt/horoscopes/ 412px current: EditionText shows its current form
+PASS  /pt/horoscopes/ 412px current: every text node keeps the server's wording
+PASS  /pt/horoscopes/ 412px current: no page errors
+PASS  /pt/horoscopes/aries/ 360px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/aries/ 360px dated: the edition is dated
+FAIL  /pt/horoscopes/aries/ 360px dated: CLS is exactly 0 · [{"value":0.0367078125,"sources":["footer.zfooter"]}]
+PASS  /pt/horoscopes/aries/ 360px dated: the server sent relative wording to date
+FAIL  /pt/horoscopes/aries/ 360px dated: every text node reads as the server dates it · 21/21 nodes; [{"live":"Áries hoje","expected":"Áries em 12 de outubro de 2026"},{"live":"A Lua passa hoje por sua oitava casa: o dinheiro compartilhado, as dívidas, a intimidade e o que se une.","expected":"Em 12 de outubro de 2026, a Lua passa por sua oitava casa: o dinheiro compartilhado, as dívidas, a intimidade e o que se une."}]
+PASS  /pt/horoscopes/aries/ 360px dated: EditionText shows its dated form
+FAIL  /pt/horoscopes/aries/ 360px dated: no relative wording remains, islands included · Áries hoje
+PASS  /pt/horoscopes/aries/ 360px dated: no page errors
+FAIL  /pt/horoscopes/aries/ dated: text appended after its start was dated reads as one dated text · A Lua passa hoje por sua oitava casa: o céu de hoje.
+PASS  /pt/horoscopes/aries/ 412px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/aries/ 412px dated: the edition is dated
+FAIL  /pt/horoscopes/aries/ 412px dated: CLS is exactly 0 · [{"value":0.0585875,"sources":["footer.zfooter","nav.zfooter__group.zfooter__group--wide"]}]
+PASS  /pt/horoscopes/aries/ 412px dated: the server sent relative wording to date
+FAIL  /pt/horoscopes/aries/ 412px dated: every text node reads as the server dates it · 21/21 nodes; [{"live":"Áries hoje","expected":"Áries em 12 de outubro de 2026"},{"live":"A Lua passa hoje por sua oitava casa: o dinheiro compartilhado, as dívidas, a intimidade e o que se une.","expected":"Em 12 de outubro de 2026, a Lua passa por sua oitava casa: o dinheiro compartilhado, as dívidas, a intimidade e o que se une."}]
+PASS  /pt/horoscopes/aries/ 412px dated: EditionText shows its dated form
+FAIL  /pt/horoscopes/aries/ 412px dated: no relative wording remains, islands included · Áries hoje
+PASS  /pt/horoscopes/aries/ 412px dated: no page errors
+PASS  /pt/horoscopes/aries/ 1280px dated: answers 200 and streams a break after a relative word
+PASS  /pt/horoscopes/aries/ 1280px dated: the edition is dated
+FAIL  /pt/horoscopes/aries/ 1280px dated: CLS is exactly 0 · [{"value":0.17301581632653062,"sources":["footer.zfooter","nav.zfooter__group"]}]
+PASS  /pt/horoscopes/aries/ 1280px dated: the server sent relative wording to date
+FAIL  /pt/horoscopes/aries/ 1280px dated: every text node reads as the server dates it · 21/21 nodes; [{"live":"Áries hoje","expected":"Áries em 12 de outubro de 2026"},{"live":"A Lua passa hoje por sua oitava casa: o dinheiro compartilhado, as dívidas, a intimidade e o que se une.","expected":"Em 12 de outubro de 2026, a Lua passa por sua oitava casa: o dinheiro compartilhado, as dívidas, a intimidade e o que se une."}]
+PASS  /pt/horoscopes/aries/ 1280px dated: EditionText shows its dated form
+FAIL  /pt/horoscopes/aries/ 1280px dated: no relative wording remains, islands included · Áries hoje
+PASS  /pt/horoscopes/aries/ 1280px dated: no page errors
+PASS  /pt/horoscopes/aries/ 412px current: answers 200
+PASS  /pt/horoscopes/aries/ 412px current: the edition is current
+FAIL  /pt/horoscopes/aries/ 412px current: CLS is exactly 0 · [{"value":0.0585875,"sources":["footer.zfooter","nav.zfooter__group.zfooter__group--wide"]}]
+PASS  /pt/horoscopes/aries/ 412px current: EditionText shows its current form
+PASS  /pt/horoscopes/aries/ 412px current: every text node keeps the server's wording
+PASS  /pt/horoscopes/aries/ 412px current: no page errors
+PASS  /today/ without JavaScript: no state is decided
+PASS  /today/ without JavaScript: the heading is dated
+
+50 FAILURES
