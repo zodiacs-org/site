@@ -38,8 +38,9 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     expect(result.data.evening?.goldenHour?.start.local).toBe('Sat 12 Jun 2027, 20:13');
     expect(result.data.evening?.planetsAfterDusk).toEqual(expect.arrayContaining(['Mars', 'Jupiter']));
     expect(result.data.card.title.length).toBeGreaterThan(0);
-    expect(result.data.cardUrl.startsWith('https://zodiacs.org/occasions/#o=wedding&d=2027-06-12')).toBe(true);
+    expect(result.data.cardUrl?.startsWith('https://zodiacs.org/occasions/#o=wedding&d=2027-06-12')).toBe(true);
     expect(result.data.cardUrl).not.toContain('?');
+    expect(result.data.cardUrl).toContain('tz=Europe%2FRome');
     expect(OUTPUT_SCHEMAS.get_occasion_sky.safeParse(result).success).toBe(true);
   });
 
@@ -51,6 +52,11 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     expect(result.data.moonSignChange).toEqual({ from: 'pisces', to: 'aries' });
     const refused = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', time: '19:00' }, on);
     expect(refused).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+    // The page reads a zone only with coordinates, so a time and zone alone get no card link.
+    const zoneOnly = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', time: '19:00', zone: 'Europe/Rome' }, on);
+    if (!zoneOnly.ok || zoneOnly.tool !== 'get_occasion_sky') throw new Error('expected a card');
+    expect(zoneOnly.data.cardUrl).toBeNull();
+    expect(OUTPUT_SCHEMAS.get_occasion_sky.safeParse(zoneOnly).success).toBe(true);
     const half = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', zone: 'Europe/Rome', latitude: 43.77 }, on);
     expect(half.ok).toBe(false);
   });
@@ -63,6 +69,11 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     expect(result.data.next).toMatchObject({ kind: 'saturn-return', name: 'Saturn return', age: 29 });
     expect(result.data.numbers).toEqual({ fullMoons: 366, mercuryRetrogrades: 93, jupiterReturns: 2 });
     expect(result.data.cardUrl).toBe('https://zodiacs.org/occasions/milestones/#b=1997-03-15');
+    // The page's link holds the date only, so a timed answer gets no link that would recompute it differently.
+    const timed = await executeAiTool('get_life_milestones', { birthDate: '1997-03-15', time: '08:30', zone: 'Europe/Rome' }, on);
+    if (!timed.ok || timed.tool !== 'get_life_milestones') throw new Error('expected milestones');
+    expect(timed.data.cardUrl).toBeNull();
+    expect(OUTPUT_SCHEMAS.get_life_milestones.safeParse(timed).success).toBe(true);
     const future = await executeAiTool('get_life_milestones', { birthDate: '2027-01-01' }, on);
     expect(future).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
   });

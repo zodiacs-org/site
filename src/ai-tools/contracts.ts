@@ -127,7 +127,7 @@ const occasionSky = z.object({
     moonHighest: z.object({ at: clockTime, altitude: z.number() }).nullable(),
     planetsAfterDusk: z.array(z.string()), flags: z.array(z.string()),
   }).nullable(),
-  cardUrl: z.url(),
+  cardUrl: z.url().nullable(),
   note: z.literal(occasionNote),
 });
 const milestone = z.object({
@@ -138,7 +138,7 @@ const lifeMilestones = z.object({
   birthDate: z.string(), timeKnown: z.boolean(), asOf: z.string(),
   milestones: z.array(milestone), next: milestone.nullable(),
   numbers: z.object({ fullMoons: z.number(), mercuryRetrogrades: z.number(), jupiterReturns: z.number() }),
-  cardUrl: z.url(),
+  cardUrl: z.url().nullable(),
   note: z.literal('Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.'),
 });
 export const OCCASION_NOTE = occasionNote;

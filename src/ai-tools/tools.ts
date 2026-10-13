@@ -63,8 +63,13 @@ function clockTime(utc: string, zone: string | null) {
 }
 const optionalClock = (utc: string | null, zone: string | null) => (utc ? clockTime(utc, zone) : null);
 
-/** The card page with its details after the #, as the site's own Copy link makes it. */
-function occasionCardUrl(args: { occasion: string; date: string; time?: string; zone?: string; latitude?: number; longitude?: number; place?: string; names?: string }): string {
+/**
+ * The card page with its details after the #, as the site's own Copy link makes it. The page reads a
+ * zone only with the place's coordinates, so a zone without them gets no link rather than one that
+ * opens on a different card.
+ */
+function occasionCardUrl(args: { occasion: string; date: string; time?: string; zone?: string; latitude?: number; longitude?: number; place?: string; names?: string }): string | null {
+  if (args.zone && (args.latitude === undefined || args.longitude === undefined)) return null;
   const params = new URLSearchParams({ o: args.occasion, d: args.date });
   if (args.names) params.set('n', args.names);
   if (args.time) params.set('t', args.time);
@@ -226,7 +231,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           birthDate: args.birthDate, timeKnown: card.timeKnown, asOf: card.asOf,
           milestones: card.milestones.map(milestoneRow), next: card.next ? milestoneRow(card.next) : null,
           numbers: card.numbers,
-          cardUrl: `${ORIGIN}/occasions/milestones/#${new URLSearchParams({ b: args.birthDate }).toString()}`,
+          // The page's link carries the birth date only, so it reproduces an untimed answer and no other.
+          cardUrl: args.time === undefined && args.zone === undefined && args.longitude === undefined
+            ? `${ORIGIN}/occasions/milestones/#${new URLSearchParams({ b: args.birthDate }).toString()}`
+            : null,
           note: 'Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.',
         };
         links = [{ title: 'Life milestones on Zodiacs', url: `${ORIGIN}/occasions/milestones/` }, methodLink];

@@ -7417,7 +7417,7 @@ var occasionSky = z3.object({
     planetsAfterDusk: z3.array(z3.string()),
     flags: z3.array(z3.string())
   }).nullable(),
-  cardUrl: z3.url(),
+  cardUrl: z3.url().nullable(),
   note: z3.literal(occasionNote)
 });
 var milestone = z3.object({
@@ -7436,7 +7436,7 @@ var lifeMilestones = z3.object({
   milestones: z3.array(milestone),
   next: milestone.nullable(),
   numbers: z3.object({ fullMoons: z3.number(), mercuryRetrogrades: z3.number(), jupiterReturns: z3.number() }),
-  cardUrl: z3.url(),
+  cardUrl: z3.url().nullable(),
   note: z3.literal("Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.")
 });
 var OCCASION_NOTE = occasionNote;
@@ -8903,6 +8903,7 @@ function clockTime2(utc, zone3) {
 }
 var optionalClock = (utc, zone3) => utc ? clockTime2(utc, zone3) : null;
 function occasionCardUrl(args) {
+  if (args.zone && (args.latitude === void 0 || args.longitude === void 0)) return null;
   const params = new URLSearchParams({ o: args.occasion, d: args.date });
   if (args.names) params.set("n", args.names);
   if (args.time) params.set("t", args.time);
@@ -9084,7 +9085,8 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
           milestones: card.milestones.map(milestoneRow),
           next: card.next ? milestoneRow(card.next) : null,
           numbers: card.numbers,
-          cardUrl: `${ORIGIN}/occasions/milestones/#${new URLSearchParams({ b: args.birthDate }).toString()}`,
+          // The page's link carries the birth date only, so it reproduces an untimed answer and no other.
+          cardUrl: args.time === void 0 && args.zone === void 0 && args.longitude === void 0 ? `${ORIGIN}/occasions/milestones/#${new URLSearchParams({ b: args.birthDate }).toString()}` : null,
           note: "Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day."
         };
         links = [{ title: "Life milestones on Zodiacs", url: `${ORIGIN}/occasions/milestones/` }, methodLink];
