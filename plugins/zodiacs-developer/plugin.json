@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-developer",
-  "version": "0.3.9",
+  "version": "0.3.11",
   "description": "Build and verify astrology integrations with the published Zodiacs engine, bounded sky tools and local chart comparison.",
   "author": {
     "name": "Zodiacs LLC",
@@ -22,7 +22,7 @@
     "com.openai": {
       "onboardingSkill": "./skills/build-with-zodiacs/SKILL.md",
       "publication": {
-        "release_notes": "0.3.9: Its sky tools read a day's time zone with @zodiacs/engine/geo, the resolver the site's calculators and compute API now share, which reads dates before 1970 on the tzdb 2025c history it ships; its chart studio marks no fixed offset such as UTC as uncertain. Engine 1.0.0 and the external recipes are unchanged. 0.3.8, an earlier cut, was withdrawn before release. Earlier review archives remain available."
+        "release_notes": "0.3.11: Its Chart Studio no longer calls the Sun sign reliable without a birth time: it names its stand-in as 12:00 UTC on the birth date and, when the Sun changed sign around that date, the two signs it moved between. Its local chart tools are MCP adapter 0.1.0-rc.23's. That adapter's own check_sky_fact gained aspect facts; this plugin's check_sky_fact is the hosted tools' and keeps its four kinds, although get_local_chart_capabilities, which also describes the adapter's sky tools, lists aspect among their fact kinds. Earlier review archives remain available."
       },
       "interface": {
         "displayName": "Zodiacs Developer",

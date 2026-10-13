@@ -82,6 +82,10 @@ export const SUCCESS_EXAMPLES: Readonly<Record<ComputeEndpoint, Readonly<Record<
       summary: 'Is the Moon in Aries at an instant?',
       body: { kind: 'sign', body: 'Moon', sign: 'aries', instant: '2026-09-29T12:00:00Z' },
     },
+    aspect: {
+      summary: 'Is the Moon trine Saturn on a date in a zone? The aspect begins that morning.',
+      body: { kind: 'aspect', body: 'Moon', other: 'Saturn', aspect: 'trine', date: '2026-10-14', zone: 'Europe/London' },
+    },
   },
 };
 

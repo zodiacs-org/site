@@ -26,7 +26,8 @@ const titleDate = formatDate(locale, `${daily.date}T12:00:00Z`, {
   day: 'numeric', month: 'long', timeZone: 'UTC',
 });
 const cue = englishOnlyCue(locale);
-const description = `Horóscopo de ${name} hoy, ${dateLabel}: ${reading.lines.length} notas leídas desde sus casas solares, con las posiciones reales del cielo y sus comprobantes.`;
+const notes = reading.lines.length === 1 ? '1 nota leída' : `${reading.lines.length} notas leídas`;
+const description = `Horóscopo de ${name} hoy, ${dateLabel}: ${notes} desde sus casas solares, con las posiciones reales del cielo y sus comprobantes.`;
 ---
 <Base
   title={`Horóscopo de ${name} hoy, ${titleDate} | Zodiacs.org`}
@@ -44,7 +45,7 @@ const description = `Horóscopo de ${name} hoy, ${dateLabel}: ${reading.lines.le
         <img src={`/assets/zodiac-icons/128/${sign.slug}.webp`} width="44" height="44" alt="" decoding="async" />
         {name} hoy
       </h1>
-      <p class="sign-es__lead">{reading.headline}</p>
+      <p class="sign-es__lead">Lo que más importa para {name}.</p>
       <span class="sign-es__stamp mono">{signDates(sign, locale)} · {moonPhaseLabel(locale, daily.moon.phase)}</span>
     </header>
 

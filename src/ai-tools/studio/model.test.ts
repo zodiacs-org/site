@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { natalChart } from '@zodiacs/engine';
+import { readFileSync } from 'node:fs';
+import { findLongitudeCrossings, natalChart } from '@zodiacs/engine';
 import { parseNatalEnvelope, natalReplayInput } from '@zodiacs/engine/receipt';
-import { calculateStudio, compareStudio, EXAMPLE, recordText, selectionContext } from './model';
+import { calculateStudio, compareStudio, EXAMPLE, recordText, selectionContext, sunSignsForDate } from './model';
 import { buildSceneModel } from '../../lib/scene/build';
 import { entityId, type EntityRef } from '../../lib/scene/types';
 
@@ -50,5 +51,30 @@ describe('Chart Studio calculation and disclosure boundary', () => {
     }
     expect(JSON.parse(selectionContext(run, selections[0])).facts.body).toBe('Moon');
     expect(() => selectionContext(calculateStudio({ ...EXAMPLE, timeKnown: false }), { kind: 'house', house: 1 })).toThrow();
+  });
+});
+
+describe('the Sun without a birth time', () => {
+  it('names two signs on a date when the Sun changes sign in some time zone, and one otherwise', () => {
+    expect(sunSignsForDate('2026-03-20')).toEqual(['pisces', 'aries']);
+    expect(sunSignsForDate('2026-03-10')).toEqual(['pisces']);
+    // Every day of 2026 against the engine's own crossing search: two signs exactly when the Sun
+    // enters a sign between the date's 00:00 at UTC+14 and its 24:00 at UTC−12.
+    const ingresses = Array.from({ length: 12 }, (_, sign) => findLongitudeCrossings('Sun', sign * 30, '2025-12-30T00:00:00Z', '2027-01-03T00:00:00Z'))
+      .flat().map(crossing => new Date(crossing.at).getTime());
+    expect(ingresses).toHaveLength(12);
+    for (let day = Date.parse('2026-01-01T00:00:00Z'); day < Date.parse('2027-01-01T00:00:00Z'); day += 86_400_000) {
+      const date = new Date(day).toISOString().slice(0, 10);
+      const crosses = ingresses.some(at => at > day - 14 * 3_600_000 && at <= day + 36 * 3_600_000);
+      expect(sunSignsForDate(date).length, date).toBe(crosses ? 2 : 1);
+    }
+  });
+  it('refuses a date that is not a real one in range', () => {
+    for (const date of ['2026-02-30', '1799-12-31', '2200-01-01', '2026-3-1']) expect(() => sunSignsForDate(date), date).toThrow();
+  });
+  it('no longer tells a reader without a birth time that the Sun sign is certain, or calls 12:00 UTC midday', () => {
+    const app = readFileSync(new URL('./app.tsx', import.meta.url), 'utf8');
+    expect(app).not.toMatch(/Sun sign is reliable|midday/u);
+    expect(app).toContain('12:00 UTC on your birth date');
   });
 });

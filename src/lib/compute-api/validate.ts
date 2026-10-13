@@ -16,7 +16,7 @@
  * server's data knows, a window whose end is after its start) are enforced
  * here only.
  */
-import { HOUSE_SYSTEMS, type HouseSystem } from '@zodiacs/engine';
+import { ASPECT_TYPES, HOUSE_SYSTEMS, type AspectType, type HouseSystem } from '@zodiacs/engine';
 import { parseCivilDate, parseCivilTime } from '../time/civil-date.js';
 import {
   ANGULAR_MAX_ABS_LATITUDE,
@@ -91,7 +91,8 @@ export type SkyFactRequest =
   | { kind: 'sign'; body: EventBody; sign: SignSlug; when: FactWhen }
   | { kind: 'retrograde'; body: EventBody; when: FactWhen }
   | { kind: 'ingress'; body: EventBody; sign: SignSlug; day: FactDay }
-  | { kind: 'phase'; phase: PhaseName; day: FactDay };
+  | { kind: 'phase'; phase: PhaseName; day: FactDay }
+  | { kind: 'aspect'; body: EventBody; other: EventBody; aspect: AspectType; when: FactWhen };
 
 export type ElectionCondition =
   | { kind: 'phase'; phase: MoonHalf; not: boolean }
@@ -144,6 +145,8 @@ const TEXT = Object.freeze({
   factKind: `Must be one of: ${SKY_FACT_KINDS.join(', ')}.`,
   sign: `Must be a sign in lowercase: ${SIGN_SLUGS.join(', ')}.`,
   phase: `Must be one of: ${PHASE_NAMES.join(', ')}.`,
+  aspect: `Must be one of: ${ASPECT_TYPES.join(', ')}.`,
+  otherBody: `Must be one of: ${EVENT_BODIES.join(', ')}, and not the body itself.`,
   instantOrDate: 'Give exactly one of instant and date.',
   zoneNeedsDate: 'A zone goes with a date, not with an instant.',
   skippedDay: 'This date did not happen in this zone: its clocks went from the day before straight to the day after.',
@@ -166,7 +169,7 @@ const TEXT = Object.freeze({
 export const VALIDATION_POINTERS = Object.freeze([
   '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude',
   '/houseSystem', '/instants', '/bodies', '/from', '/to', '/kinds', '/kind', '/body', '/sign',
-  '/phase', '/instant', '/date', '/zone', '/conditions', '/place', '/place/latitude',
+  '/phase', '/other', '/aspect', '/instant', '/date', '/zone', '/conditions', '/place', '/place/latitude',
   '/place/longitude', '/place/houseSystem',
 ] as const);
 export const INDEXED_POINTERS = Object.freeze(['/instants', '/bodies', '/kinds', '/conditions'] as const);
@@ -430,6 +433,14 @@ export async function parseSkyFactRequest(value: unknown, zones: ZoneNames): Pro
       onlyFields(object, ['kind', 'phase', 'date', 'zone'], '');
       const phase = oneOf(required(object, 'phase', ''), '/phase', PHASE_NAMES, TEXT.phase);
       return { kind, phase, day: await factDay(object, zones) };
+    }
+    case 'aspect': {
+      onlyFields(object, ['kind', 'body', 'other', 'aspect', 'instant', 'date', 'zone'], '');
+      const body = oneOf(required(object, 'body', ''), '/body', EVENT_BODIES, TEXT.eventBody);
+      const other = oneOf(required(object, 'other', ''), '/other', EVENT_BODIES, TEXT.otherBody);
+      if (other === body) throw invalidRequest('/other', TEXT.otherBody);
+      const aspect = oneOf(required(object, 'aspect', ''), '/aspect', ASPECT_TYPES, TEXT.aspect);
+      return { kind, body, other, aspect, when: await factWhen(object, zones) };
     }
   }
 }

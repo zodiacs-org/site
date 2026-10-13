@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.21",
+  "version": "0.1.0-rc.23",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -85,6 +85,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.19",
-  "changedSince": "0.1.0-rc.21 is 0.1.0-rc.19 rebuilt after the compute API began reading local times with @zodiacs/engine/geo, and marks a fixed offset such as UTC as certain before 1970. The adapter resolves no time zone, so the bundled compute code that changed never runs in it; apart from the adapter version and the digests over it, every tool's arguments, results and receipts are rc.19's. The comparison record reports measured differences against 0.1.0-rc.19; it does not assert universal parity. Older archives remain unchanged. 0.1.0-rc.20, cut with the first of these changes in the same pull request, was withdrawn before release and is not served. The adapter itself is still not on npm."
+  "supersedes": "0.1.0-rc.22",
+  "changedSince": "0.1.0-rc.23 adds aspect facts to check_sky_fact: kind aspect, with a body, another body and one of the five major aspects, at an instant or on a date, which the compute API's sky-fact endpoint gained in the same change. At an instant the answer is the engine's matchAspect; on a date the engine's crossing search finds where the aspect begins, ends and is exact. Apart from the adapter version and the digests over it, every other tool's arguments, results and receipts are rc.22's, and so are check_sky_fact's answers to its four earlier kinds; its input and output schemas add the aspect fact. Like rc.21 and rc.22, it bundles the compute API's local-time code, which marks a fixed offset such as UTC as certain before 1970; the adapter resolves no time zone, so that bundled code never runs in it. Older archives remain unchanged. The adapter itself is still not on npm."
 }

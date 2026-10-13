@@ -487,7 +487,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       setRecordMode(null);
       // The button waits until the scope is known; a keep in flight and an
       // uncertain outcome for this result keep their own state.
-      setRecordKeep((current) => (current === 'busy' || current === 'uncertain' ? current : 'opening'));
+      // A confirmed keep also stands while the scope re-opens: it is withdrawn
+      // below only when its namespace changed or its record is gone, so a keep
+      // in another tab cannot turn "Kept" back into a live button.
+      setRecordKeep((current) => (current === 'busy' || current === 'uncertain'
+        || (current === 'kept' && recordKeptRef.current !== null) ? current : 'opening'));
       try {
         const [api, copyModule] = await Promise.all([
           recordAccessRef.current ?? import('../lib/profile/saved-record-access'),
@@ -541,7 +545,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       recordAccessRef.current = api;
       unsubscribe = api.subscribeSavedRecordScope(() => {
         recordKeepRunRef.current += 1;
-        setRecordKeep((current) => (current === 'busy' || current === 'uncertain' || current === 'changed' ? current : 'stale'));
+        setRecordKeep((current) => (current === 'busy' || current === 'uncertain' || current === 'changed'
+          || (current === 'kept' && recordKeptRef.current !== null) ? current : 'stale'));
         setTimeout(() => { if (live) void reopen(); }, 0);
       });
     }).catch(() => {});

@@ -333,12 +333,28 @@ export const EVENTS_OUTPUT = computeBody('find_events', z.strictObject({
 
 const bodyState = z.strictObject({ lon: z.number(), sign, degree: z.number(), speed: z.number(), retrograde: z.boolean() });
 
+/** The two bodies at one instant and the aspect between them. */
+const aspectState = {
+  body: bodyState,
+  other: bodyState,
+  separation: z.number().min(0).max(180).describe('The angle between the two longitudes, in degrees.'),
+  orb: z.number().min(0).describe('How far the separation is from the aspect\'s exact angle, in degrees.'),
+  motion: z.enum(['applying', 'separating', 'stationary'])
+    .describe('applying while the orb shrinks, separating while it grows, judged from the two daily motions; stationary when the two move at the same speed.'),
+};
+const allowedOrb = z.number().min(0)
+  .describe('The widest orb at which the aspect holds between these two bodies, in degrees: the wider one when the Sun or the Moon is one of them.');
+
 /** The fact as the compute API read it. This adapter reads no zone, so zone is always null. */
 const factEcho = z.union([
   z.strictObject({ kind: z.literal('sign'), body: z.enum(EVENT_BODIES), sign, instant: instantOut.nullable(), date: z.string().nullable(), zone: z.null() }),
   z.strictObject({ kind: z.literal('retrograde'), body: z.enum(EVENT_BODIES), instant: instantOut.nullable(), date: z.string().nullable(), zone: z.null() }),
   z.strictObject({ kind: z.literal('ingress'), body: z.enum(EVENT_BODIES), sign, date: z.string(), zone: z.null() }),
   z.strictObject({ kind: z.literal('phase'), phase: z.enum(PHASE_NAMES), date: z.string(), zone: z.null() }),
+  z.strictObject({
+    kind: z.literal('aspect'), body: z.enum(EVENT_BODIES), other: z.enum(EVENT_BODIES), aspect: z.enum(ASPECT_TYPES),
+    instant: instantOut.nullable(), date: z.string().nullable(), zone: z.null(),
+  }),
 ]);
 
 export const SKY_FACT_OUTPUT = computeBody('check_sky_fact', z.strictObject({
@@ -372,6 +388,21 @@ export const SKY_FACT_OUTPUT = computeBody('check_sky_fact', z.strictObject({
       lunations: z.array(z.strictObject({ at: instantOut, lon: z.number(), sign, degree: z.number() })),
       flags: spanFlags,
     }).describe('A phase on a date.'),
+    z.strictObject({ ...aspectState, allowedOrb, deltaT, timeScale, flags: spanFlags })
+      .describe('An aspect at an instant: true when orb is within allowedOrb.'),
+    z.strictObject({
+      atStart: z.strictObject(aspectState), atEnd: z.strictObject(aspectState), allowedOrb,
+      changes: z.array(z.strictObject({
+        at: instantOut,
+        holds: z.boolean().describe('Whether the aspect holds from this instant on: true where it begins, false where it ends.'),
+      })),
+      exact: z.array(z.strictObject({
+        at: instantOut,
+        body: z.strictObject({ lon: z.number(), sign, degree: z.number() }),
+        other: z.strictObject({ lon: z.number(), sign, degree: z.number() }),
+      })),
+      flags: spanFlags,
+    }).describe('An aspect on a date: where it begins or ends in the span, and where it is exact.'),
   ]).describe('The computed values that decide the answer.'),
 })).describe('The body of POST /api/v1/sky-fact for the same request, with this tool\'s cite. answer is never an interpretation.');
 

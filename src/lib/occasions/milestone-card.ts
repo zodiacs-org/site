@@ -4,8 +4,7 @@
  * the next one coming, and the sky numbers lived through. Runs in the browser
  * behind the lazy engine import and in the MCP runtime alike.
  */
-import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
-import { validOccasionDate } from './card';
+import { validOccasionDate, type OccasionClock } from './card';
 import { lifeMilestones, type LifeMilestones, type MilestoneKind } from './milestones';
 
 const DAY = 86_400_000;
@@ -37,12 +36,13 @@ export interface MilestoneCard extends LifeMilestones {
   timeKnown: boolean;
 }
 
-export async function milestoneCard(input: MilestoneInput, asOf = new Date()): Promise<MilestoneCard> {
+export async function milestoneCard(input: MilestoneInput, asOf: Date, clock: OccasionClock): Promise<MilestoneCard> {
   if (!validOccasionDate(input.birthDate)) throw new RangeError('The birth date must be a real date from 1800 to 2199.');
   if (input.time !== null && !/^([01]\d|2[0-3]):[0-5]\d$/u.test(input.time)) throw new RangeError('The time must be HH:MM.');
   if (input.time !== null && !input.timeZone) throw new RangeError('A birth time needs the birthplace.');
   let birth: Date;
   if (input.time !== null && input.timeZone) {
+    const { prepareLocalTime, resolveLocalToUtc } = clock;
     await prepareLocalTime(input.birthDate, input.timeZone);
     birth = (input.birthplace
       ? resolveLocalToUtc(input.birthDate, input.time, input.timeZone, { longitude: input.birthplace.lon })

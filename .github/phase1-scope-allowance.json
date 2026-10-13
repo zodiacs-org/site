@@ -1,29 +1,9 @@
 {
   "version": 1,
-  "id": "phone-menu-parity-20261012",
-  "baseCommit": "ec0451ffeb9a68a57f55f1efb1e3fdba422d0329",
+  "id": "pt-first-of-month-20261013",
+  "baseCommit": "7d12c0f1e5ee246091f1544531538390963db28d",
   "protectedPaths": [
-    "public/assets/app.js",
-    "public/registry/aquarius/index.html",
-    "public/registry/aries/index.html",
-    "public/registry/cancer/index.html",
-    "public/registry/capricorn/index.html",
-    "public/registry/gemini/index.html",
-    "public/registry/index.html",
-    "public/registry/leo/index.html",
-    "public/registry/libra/index.html",
-    "public/registry/pisces/index.html",
-    "public/registry/sagittarius/index.html",
-    "public/registry/scorpio/index.html",
-    "public/registry/taurus/index.html",
-    "public/registry/technical/index.html",
-    "public/registry/virgo/index.html",
-    "public/sdk/index.html",
-    "public/terminal/markets/index.html",
-    "scripts/registry-consumer-contract.test.mjs",
-    "scripts/registry-pastel-polish.test.mjs",
-    "scripts/registry-shell-parity.test.mjs",
-    "src/app.jsx"
+    "src/lib/i18n/dates.ts"
   ],
-  "authorization": "On October 10, 2026 the owner asked that “the navigation bar and drop down should be consistent on all the pages.” After the desktop menus were matched, the remaining difference was the phone menu on the Astrofolio, Terminal, Registry and SDK pages; asked whether to make it match the main site everywhere and which Astrofolio description to use, the owner replied on October 12, 2026: “yes and use the official token collection.” This one-time exact-path allowance covers only the shared wing navigation regenerated into the Registry, SDK and Terminal pages, the same phone menu in the Astrofolio and Terminal application with its regenerated bundle, and the navigation tests that pin it: the phone menu now has the main site’s groups, order and short explanations, a Developers link, and the owner-approved description “Official Zodiac token collection” under Astrofolio. Page content, token records, prices, disclosures and legal wording are unchanged."
+  "authorization": "On October 13, 2026 the owner asked to “fix the 1º date and the titles too” after F-88 left the pt-BR first of the month open. Asked “Do you approve a one-time Phase 1 scope allowance for exactly one protected file, src/lib/i18n/dates.ts, so that every Portuguese date writes the first of the month as “1º” (“1º de novembro de 2026”)? The tab-title fix needs no protected files.”, the owner chose “Approve allowance (Recommended)” on October 13, 2026. This one-time exact-path allowance covers only src/lib/i18n/dates.ts: formatDate and formatDateTime write day 1 as “1º” in Portuguese dates that name the month (“1º de novembro de 2026”, “1º de nov. de 2026”), as the review of F-88 asked and the review of this change confirmed. Numeric dates, days 11, 21 and 31, and every other language are unchanged."
 }

@@ -10,7 +10,7 @@
 import { describe, expect, it } from 'vitest';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,6 +18,7 @@ import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
 import { buildServerBundle } from './build-mcp-server.mjs';
 import { manifestFor } from './pack-mcp-server.mjs';
+import { readPackageArchive } from './verify-platform-starter.mjs';
 import { createServer } from '../src/mcp/create-server';
 import { receiptDigest } from '../src/lib/receipt-digest';
 
@@ -47,6 +48,17 @@ describe('the built server bundle', () => {
     'new Function', 'eval(', 'fetch(', 'XMLHttpRequest', 'WebSocket', 'localStorage',
   ])('carries no %s', (marker) => {
     expect(bundle.includes(marker), `${marker} appears in the bundle`).toBe(false);
+  });
+
+  // Sentences only the engine's calc and Vedic entries carry: neither is bundled.
+  it.each([
+    ['calc', 'calc.js', 'Gravitational light deflection is not modelled in this version.'],
+    ['calc', 'calc.js', 'The Earth is offered heliocentric or barycentric only.'],
+    ['Vedic', 'vedic.js', 'Odd signs: Leo, then Cancer'],
+  ])('bundles none of the %s entry of the engine (%s)', async (_entry, file, marker) => {
+    const entry = await readFile(resolve(ROOT, 'node_modules/@zodiacs/engine/dist', file), 'utf8');
+    expect(entry).toContain(marker);
+    expect(bundle).not.toContain(marker);
   });
 
   it('writes to stdout in exactly one place: handing it to the transport', () => {
@@ -207,6 +219,29 @@ describe('the archive the site distributes', () => {
     expect(manifest.releaseStatus).toBe('unpublished-candidate');
   });
 
+  it('supersedes the latest archive the site served before it', async () => {
+    // rc.22 was first cut saying it superseded rc.19, the version its branch
+    // began from, though the site had served rc.21 since; rc.23 repeated it.
+    // The archives served beside this one say which version came last.
+    const candidate = JSON.parse(await readFile(resolve(ROOT, 'examples/mcp-server/candidate.json'), 'utf8'));
+    const parts = (version) => version.replace(/^0\.1\.0-rc\./u, '').split('.').map(Number);
+    const compare = (a, b) => {
+      const [x, y] = [parts(a), parts(b)];
+      for (let index = 0; index < Math.max(x.length, y.length); index += 1) {
+        const difference = (x[index] ?? -1) - (y[index] ?? -1);
+        if (difference) return difference;
+      }
+      return 0;
+    };
+    const earlier = (await readdir(PUBLIC))
+      .map((name) => /^zodiacs-mcp-server-(0\.1\.0-rc\.\d+(?:\.\d+)*)\.tgz$/u.exec(name)?.[1])
+      .filter((version) => version && compare(version, manifest.version) < 0)
+      .sort(compare);
+    expect(earlier.length).toBeGreaterThan(0);
+    expect(candidate.version).toBe(manifest.version);
+    expect(candidate.supersedes).toBe(earlier.at(-1));
+  });
+
   it('ships a lockfile whose root version matches the package', async () => {
     // The published install command is `npm ci`, which reads this file. The root
     // version had drifted from rc.1 to rc.4 unnoticed while the command was
@@ -262,6 +297,12 @@ describe('the archive the site distributes', () => {
     expect(notice.endsWith(engineNotice), 'the engine NOTICE, unchanged, at the end').toBe(true);
     expect(notice).toContain('Table S15');
     expect(bundle).toContain('var SY = [');
+    // The rest of what the NOTICE says server.mjs carries: the leap-second
+    // list, the UT1 - UTC table and the IAU 2000B series.
+    expect(notice).toContain('It also carries the IAU 2000B nutation from NOVAS C 3.1');
+    expect(bundle).toContain('source: "IERS leap-seconds.list');
+    expect(bundle).toContain('var UT1_DATA = ');
+    expect(bundle).toContain('var COEFFICIENT_TEXT = "-172064161,');
   });
 
   it('pins every runtime dependency exactly, and locks the whole tree', async () => {
@@ -320,5 +361,15 @@ describe('the notice beside the 0.1.0-rc.8 to rc.10 archives', () => {
   it('is linked from the MCP page', async () => {
     const page = await readFile(resolve(ROOT, 'src/pages/developers/mcp/index.astro'), 'utf8');
     expect(page).toContain(`href="/examples/${NOTICE}"`);
+  });
+
+  it('says what each archive bundles: its engine with the ΔT values, and astronomy-engine with its notice', async () => {
+    for (const rc of ['8', '9', '10']) {
+      const server = readPackageArchive(await readFile(join(PUBLIC, `zodiacs-mcp-server-0.1.0-rc.${rc}.tgz`))).get('server.mjs').toString('utf8');
+      expect(server, `rc.${rc}`).toContain(`0.1.1-rc.${rc}`);
+      expect(server, `rc.${rc}`).toContain('var SY = [');
+      expect(server, `rc.${rc}`).toContain('Copyright (c) 2019-2023 Don Cross');
+      expect(server, `rc.${rc}`).toContain('Permission is hereby granted');
+    }
   });
 });
