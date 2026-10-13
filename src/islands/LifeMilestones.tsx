@@ -10,7 +10,7 @@ import type { Milestone } from '../lib/occasions/milestones';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import PlaceSearch from './PlaceSearch';
 
-const loadCard = () => import('../lib/occasions/milestone-card');
+const loadCard = () => Promise.all([import('../lib/occasions/milestone-card'), import('../lib/occasions/site-clock')]);
 const MILESTONE_NAMES: Record<Milestone['kind'], string> = {
   'jupiter-return': 'Jupiter return',
   'saturn-return': 'Saturn return',
@@ -47,14 +47,14 @@ export default function LifeMilestones() {
     setBusy(true);
     setError('');
     try {
-      const module = await loadCard();
+      const [module, { SITE_CLOCK }] = await loadCard();
       setAbout(module.MILESTONE_WORDS);
       setCard(await module.milestoneCard({
         birthDate: next.birth,
         time: next.time || null,
         timeZone: next.city?.tz ?? null,
         birthplace: next.city ? { lon: next.city.lon } : null,
-      }));
+      }, new Date(), SITE_CLOCK));
     } catch (cause) {
       setCard(null);
       setError(cause instanceof RangeError ? cause.message : 'The milestones could not be worked out. Please try again.');

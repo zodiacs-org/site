@@ -12,7 +12,7 @@ import type { OccasionCard } from '../lib/occasions/card';
 import PlaceSearch from './PlaceSearch';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 
-const loadCard = () => import('../lib/occasions/card');
+const loadCard = () => Promise.all([import('../lib/occasions/card'), import('../lib/occasions/site-clock')]);
 const NAMES_MAX = 60;
 
 function signName(slug: string): string {
@@ -85,14 +85,14 @@ export default function OccasionSky() {
     setBusy(true);
     setError('');
     try {
-      const { occasionCard } = await loadCard();
+      const [{ occasionCard }, { SITE_CLOCK }] = await loadCard();
       const result = await occasionCard({
         occasion: next.occasion,
         date: next.date,
         time: next.time || null,
         timeZone: next.city?.tz ?? null,
         place: next.city ? { name: placeLabel(next.city), lat: next.city.lat, lon: next.city.lon } : null,
-      });
+      }, SITE_CLOCK);
       setCard(result);
       setShown(next);
       requestAnimationFrame(() => cardRef.current?.focus());
