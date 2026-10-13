@@ -137,7 +137,7 @@ function aspectCorpus(): Args[] {
     const body = index % 2 === 0 ? 'Moon' : pick(random, EVENT_BODIES);
     const other = pick(random, EVENT_BODIES.filter((candidate) => candidate !== body));
     const when = random() < 0.5 ? { instant: instantFor(random) } : { date: dateFor(random) };
-    const at = 'instant' in when ? when.instant : `${when.date}T12:00:00Z`;
+    const at = when.instant ?? `${when.date}T12:00:00Z`;
     const rows = value(getPositions({ instants: [at], bodies: [body, other] })).result.instants[0].bodies as Array<{ lon: number }>;
     const difference = Math.abs(rows[0].lon - rows[1].lon) % 360;
     const apart = difference > 180 ? 360 - difference : difference;
