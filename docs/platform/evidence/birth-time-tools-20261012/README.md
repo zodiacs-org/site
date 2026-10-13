@@ -67,6 +67,16 @@ committed nodal speeds kept, as before.
   tests hold the bundled shards to the served files row for row, and, for 75
   queries at three limits each, the tool's places to those the site's search
   lists, in the same order.
+- The search reads one shard of the index, chosen by the first letter of the
+  query folded to ASCII, and the index is sharded by the first letter of each
+  place's ASCII name, so its contains tier finds only names that begin with
+  the query's first letter: "york" finds York but not New York City. #742's
+  second review found that the documents promised every name that contains
+  the query; they now say what the search does, and F-94 records the gap, on
+  the site and in the tool. The same review found that a query whose first
+  letter NFD leaves whole, such as Łódź, was read in shard `0` and found
+  nothing; such letters now fold to GeoNames' ASCII spellings first
+  (`src/lib/geo/rank.test.ts`), so Łódź is found, on the site and in the tool.
 - `get_capabilities` adds a `time` and a `places` section.
 - The developer plugin's server imports the chart tools and with them the
   capabilities reply. The time tool and the place constants live in modules
@@ -77,12 +87,12 @@ committed nodal speeds kept, as before.
 
 ## 0.1.0-rc.24 and plugin 0.3.12
 
-- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 910,032
+- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 910,722
   bytes, SHA-256
-  `2d27439075bd29548b85d248933f843c63e02ce0774621f241813ea90d46587a`, built
-  from commit `0310cdae9ae3ea58fc0c0f3dc22c8d7743cbd658`. Its `server.mjs` is
-  2,460,956 bytes, SHA-256
-  `d90de2807a965feffa0c04f6e6ca72b0ed82ba34a422d91906bcb875464b3d9b`: the build
+  `ffc3c568691e0cedbe605e9157dafefd459a73aa7b8ef779494c604ce72ade8a`, built
+  from commit `81ac01be322ca07fc7e4c42a0e35eed4d7f21614`. Its `server.mjs` is
+  2,462,555 bytes, SHA-256
+  `c37af00203df1a16829045a2e0d776e9f3eab74287f3dade4b6a40fd1aa675e1`: the build
   inlines every JSON table as a string parsed at its first import, as the
   compute API's local-time bundle does, so the zone-name table carries no
   CommonJS shim. It was first cut from `f148a386`, which also adds the time
@@ -94,8 +104,13 @@ committed nodal speeds kept, as before.
   review, which found that `resolve_birth_time` accepted an `atlasPlace` in
   another zone than `local.zone`, and that its stated limits denied the atlas.
   The parser now refuses such a place (`/atlasPlace`), and the limits name the
-  atlas as the exception to "no town-level clock records".
-- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,850,094 bytes. It
+  atlas as the exception to "no town-level clock records". It was packed again
+  after the second review, which found that tzdb's reading used the zone
+  reference city's mean time, or another town's longitude, beside the atlas's
+  reading of the place's own: tzdb now reads the place's longitude when none
+  is sent, and another longitude is refused (`/longitude`). Its change note
+  names the rule, and the search's documents name the shard (above).
+- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,850,870 bytes. It
   also carries Chart Studio's fix for a birth date without a time (F-91),
   which came with A1.b. Its release note first said it "bundles MCP adapter
   0.1.0-rc.24"; the plugin registers only the adapter's chart tools, beside

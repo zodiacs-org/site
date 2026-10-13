@@ -46,6 +46,19 @@ instant minus tzdb's. In the tests:
 - New York at 12:00 on 18 November 1883, when the city's clocks went back to
   Eastern time: two instants, both flagged `uncertain`.
 - Chicago in 1925: outside the window, no instant.
+- Brest at noon on 1 June 1880, before France's legal time: the atlas reads
+  Brest's mean time, and so does tzdb, on Brest's longitude, so the two agree
+  within a second (`secondsFromTzdb: -0.293`; tzdb's instant is to the
+  second, the atlas's to the millisecond).
+
+The place must lie in the request's `local.zone`, and tzdb's reading uses
+the place's own longitude, from the atlas's `places.json`: one sent with
+`atlasPlace` must be the place's, to 0.01°. A place in another zone
+(`/atlasPlace`) or another longitude (`/longitude`) is refused, so the two
+readings are always of one place's clock. #742's two reviews found each
+fault: before them, New York's reading could stand beside tzdb's for Paris,
+and, without a longitude, Brest's beside Paris mean time, about 27 minutes
+apart.
 
 `src/mcp/time-places.test.ts` adds 25 atlas requests to the adapter's corpus,
 one at each place at a seeded time and four at its changes, each answered as
