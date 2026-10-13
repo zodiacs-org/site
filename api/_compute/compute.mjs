@@ -10456,6 +10456,7 @@ var ATLAS_PLACE_IDS = Object.freeze([
   "us-saint-paul",
   "us-minneapolis"
 ]);
+var ATLAS_WINDOW = Object.freeze({ from: "1870-01-01T00:00:00", to: "1920-01-01T00:00:00" });
 
 // src/lib/compute-api/validate.ts
 var CALENDARS = Object.freeze(["gregorian", "julian"]);
