@@ -21,14 +21,26 @@ number:
 | --- | --- |
 | `day` | the UTC calendar date, taken from the database clock |
 | `scope` | `preview` or `production` (the deployment's `VERCEL_ENV`) |
-| `tool` | one of the six tool names: `get_capabilities`, `get_sky`, `get_upcoming_events`, `check_sky_fact`, `get_horoscope`, `open_chart_studio` |
+| `tool` | one of the six tool names: `get_capabilities`, `get_sky`, `get_upcoming_events`, `check_sky_fact`, `get_horoscope`, `open_chart_studio`; or, once the occasion-tools migration is applied, `get_occasion_sky` or `get_life_milestones` |
 | `host` | `chatgpt`, `claude` or `other` |
 | `calls` | how many calls that day |
 
 The host family comes from the request's `User-Agent` header: `chatgpt` if it
 contains "openai" or "chatgpt", otherwise `claude` if it contains "claude" or
 "anthropic" (upper or lower case), otherwise `other`. There are at most 36 rows a
-day (2 scopes × 6 tools × 3 families).
+day (2 scopes × 6 tools × 3 families). With the two occasion tools switched on, there are at most 48 (2 × 8 × 3).
+
+The occasion tools (`get_occasion_sky`, `get_life_milestones`) are counted only
+while `ZODIACS_OCCASIONS_ENABLED=1` offers them; switched off, a call naming
+them is refused like any unknown tool and not counted. Their names are added
+by a second migration,
+`supabase/migrations/20261013144500_zodiacs_mcp_usage_occasion_tools.sql`, which
+widens the table's tool check and the counting function's list and changes
+nothing else. It replays safely and keeps every earlier count
+(`supabase/tests/zodiacs_mcp_usage_occasion_tools.sql`). **Not applied yet:** it
+goes to the production database with the owner's approval, before the switch
+is turned on. Until then the counting function refuses the two names, and the
+server, which never waits on a count, drops those counts.
 
 A call is counted once, after its reply has been sent, whether the tool
 answered or returned an error result (an unknown time zone, an exhausted event

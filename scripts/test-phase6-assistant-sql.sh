@@ -134,6 +134,17 @@ run_phase6_sql_file \
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage.sql"
 
+# The occasion tools join the counted names. The widening must replay safely
+# and leave every earlier count as it was.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261013144500_zodiacs_mcp_usage_occasion_tools.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261013144500_zodiacs_mcp_usage_occasion_tools.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage_occasion_tools.sql"
+
 # Exercise the exact early-production table shape in a second database. The
 # same migration sequence must rename its legacy columns without replacing
 # rows or constraints, survive reviewed SQL Editor replays, restore both
