@@ -72,8 +72,9 @@ The adapter's README described the comparison benchmark as ten record pairs;
 it has been eighteen scenarios since an earlier change, and now says so. The
 README travels inside the archive, so the archive is cut again:
 
-- `zodiacs-mcp-server-0.1.0-rc.22.tgz`, 123,600 bytes, SHA-256 `aa03a11e…`,
-  pinned to `b57dbdf1`. The bundle is rc.21's code with the version
+- `zodiacs-mcp-server-0.1.0-rc.22.tgz`, 123,598 bytes, SHA-256 `d7d1cc6b…`,
+  pinned to `4d1b549b`. Its candidate record names rc.21 as the release it
+  supersedes (a first cut named rc.19). The bundle is rc.21's code with the version
   (`e945f67c…`, against rc.21's `a1731969…`).
 - Developer plugin 0.3.10 bundles it.
 - rc.21 and plugin 0.3.9, released with the geo adoption, stay served beside

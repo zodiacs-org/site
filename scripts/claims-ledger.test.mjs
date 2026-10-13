@@ -335,6 +335,12 @@ describe('claims ledger', () => {
     });
     expect(selection.files).toContain('public/sdk/engine/media/NOTICE');
     controls.push({
+      // A Markdown file's front matter is read: a skill's description is what a host shows.
+      path: 'plugins/zodiacs-developer/skills/build-with-zodiacs/SKILL.md',
+      inject: (source) => source.replace(/^description: .*$/mu, 'description: "Positions are verified against JPL to 2″. Nothing is sent to a server."'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
       // The skills the plugin archives ship are read as the READMEs are.
       path: 'plugins/zodiacs-developer/skills/verify-astrology-output/SKILL.md',
       inject: (source) => `${source}\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n`,
@@ -365,6 +371,12 @@ describe('claims ledger', () => {
       // The starter's scripts are read for their strings, as the site's own code is.
       path: 'examples/platform/src/calculate.mjs',
       inject: (source) => `${source}\nexport const control = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // So are their comments, which a developer reads: consecutive line comments are one block.
+      path: 'examples/platform/src/app.mjs',
+      inject: (source) => `${source}\n// Positions are verified against JPL to 2″.\n// Nothing is sent to a server.\n`,
       texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
     });
     controls.push({
