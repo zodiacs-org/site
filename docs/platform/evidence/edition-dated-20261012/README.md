@@ -76,9 +76,37 @@ of `astro preview` added a clock-shift script at the start of each HTML
 `<head>` and passed every other byte through, compression included. The
 current row ran on the real clock.
 
+## Production, 2026-10-13
+
+#728 was built on #726's branch, so its merge (`c8bd493d`, 04:12 UTC)
+brought #726's head `accb6786` to main, and GitHub marked #726 merged.
+Vercel deployed it to production as `dpl_9HgvWwPALVsK5cCoVzPnrYebmqSh`. Main's Site
+Check on `c8bd493d` (run 38345292287) passed, the new drive and the
+Lighthouse gate included.
+
+- **Deployment.** Read through the Vercel connector before the checks and
+  again after them (14:44 UTC), zodiacs.org named the same deployment,
+  `dpl_FF8v9Lp4xeRCaGMYPyAgmMPqRW3N`: READY, target production, commit
+  `7d12c0f1` (#730's merge), alias last updated at 10:13:52 UTC. It serves the
+  2026-10-13 edition and the new guard.
+- **Drive.** Main's `tests/edition-dated-drive.mjs`, run from `7d12c0f1` with
+  `ZODIACS_TEST_BASE_URL=https://zodiacs.org` and the page clock at
+  2026-10-14 00:17 UTC: 283 of 283 checks pass, over nine routes in English,
+  Spanish and Portuguese at 360, 412 and 1280 px
+  ([drive-production-7d12c0f1.txt](drive-production-7d12c0f1.txt)).
+- **Lighthouse.** The harness through a local proxy in front of zodiacs.org,
+  which adds the same clock shift to each HTML `<head>` and passes every
+  other byte through: CLS 0.000 in each of the three samples on `/today/`,
+  `/horoscopes/` and `/horoscopes/aries/` (`production-7d12c0f1-dated` in
+  [lighthouse-summary.json](lighthouse-summary.json)). Performance and LCP
+  ran over this machine's connection, so they do not compare with CI's.
+
 ## Not established here
 
 - **Other browsers.** Only Chromium ran. The appended-text case is checked by
   appending to a dated node, because Chromium holds a text run back until its
   end arrives; a parser that paints partial text was not observed.
-- **Production.** The fix is not deployed by this record.
+- **A real dated window in production.** Production was checked on a moved
+  clock. The daily commit landed between 00:08 and 05:40 UTC on 9 to 13
+  October (its schedule is 00:00 UTC, which GitHub delays), so the window's
+  length varies from minutes to hours.
