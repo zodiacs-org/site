@@ -1056,16 +1056,19 @@ adoption changes neither its status nor the fixed denominator.
   2026-10-13 04:12 UTC) brought #726's head `accb6786` to main, and GitHub
   marked #726 merged. Vercel deployed it to production as
   `dpl_9HgvWwPALVsK5cCoVzPnrYebmqSh`. Main's Site Check on `c8bd493d` (run
-  38345292287) passed, the new drive and the Lighthouse gate included.
+  38345292287) passed, the new drive and the Lighthouse gate included; that
+  run's edition was current, so only the drive covered the dated state.
 - **Checked.** zodiacs.org served `dpl_FF8v9Lp4xeRCaGMYPyAgmMPqRW3N` (main
-  `7d12c0f1`, #730's merge) before and after the checks. With the page clock
-  moved to 2026-10-14 00:17 UTC, main's `tests/edition-dated-drive.mjs` passed
-  all 283 of its checks against zodiacs.org, over nine routes in English,
-  Spanish and Portuguese. The Lighthouse harness measured CLS 0.000 in each
-  sample of `/today/`, `/horoscopes/` and `/horoscopes/aries/`
+  `7d12c0f1`, #730's merge) before and after the checks. The drive as it
+  stood at `7d12c0f1` passed all 283 of its checks against zodiacs.org, over
+  nine routes in English, Spanish and Portuguese, with its dated loads on a
+  page clock of 2026-10-14 00:17 UTC. On that clock the Lighthouse harness
+  measured CLS 0.000 in each sample of `/today/`, `/horoscopes/` and
+  `/horoscopes/aries/`
   ([record](../evidence/edition-dated-20261012/README.md#production-2026-10-13)).
 - **Remaining.** The moved clock stands in for a real dated window. The daily
   commit landed between 00:08 and 05:40 UTC from 9 to 13 October, so the
-  window lasts from minutes to hours. Of the points first left open, the
-  Spanish and Portuguese wording is F-86, fixed in #728. The bio drive's
+  window lasts from minutes to hours. Of the points first left open, an open
+  page still changes its wording at UTC midnight and can move then; the
+  Spanish and Portuguese wording is F-86, fixed in #728; and the bio drive's
   clock is F-85, in #727, still open.
