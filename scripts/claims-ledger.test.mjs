@@ -367,6 +367,32 @@ describe('claims ledger', () => {
       inject: (source) => `${source}\nexport const control = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';\n`,
       texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
     });
+    controls.push({
+      // A fence with no language only lays prose out, so its lines are read.
+      path: 'examples/precision-alpha/README.md',
+      inject: (source) => `${source}\n\n\`\`\`\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n\`\`\`\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // A page's social card and its text attributes are read as its description is.
+      path: 'examples/platform/src/widget.html',
+      inject: (source) => source
+        .replace('</head>', '<meta property="og:description" content="Positions are verified against JPL to 2″."></head>')
+        .replace('<fieldset>', '<fieldset><img src="x.png" alt="Nothing is sent to a server.">'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // A noscript block and a graphic's title are text a reader can meet.
+      path: 'examples/platform/src/natal.html',
+      inject: (source) => source.replace('</body>', '<noscript>Positions are verified against JPL to 2″.</noscript><svg><title>Nothing is sent to a server.</title></svg></body>'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // An inline script on a page that is not a TypeDoc reference is read for its strings.
+      path: 'public/sdk/examples/simastry-aura/index.html',
+      inject: (source) => source.replace('</body>', "<script>document.title = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';</script></body>"),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
     for (const path of ['examples/platform/src/app.mjs', 'examples/platform/scripts/build.mjs', 'examples/platform/tests/receipt.check.mjs', 'examples/mcp-server/verify.mjs', 'plugins/zodiacs-developer/examples/calendar.mjs']) {
       expect(selection.files).toContain(path);
     }
@@ -389,6 +415,10 @@ describe('claims ledger', () => {
     expect(signature).not.toBe(page);
     expect((await selectFileSentences('public/developers/engine/reference/functions/engine.natalChart.html', signature))
       .filter((sentence) => sentence.text.includes('JPL'))).toEqual([]);
+    // Fenced code in a language is code: the same words there are not selected.
+    const fenced = `${read('examples/precision-alpha/README.md')}\n\n\`\`\`js\n// Positions are verified against JPL to 2″.\nconst note = 'Nothing is sent to a server.';\n\`\`\`\n`;
+    expect((await selectFileSentences('examples/precision-alpha/README.md', fenced))
+      .filter((sentence) => /JPL to 2″|Nothing is sent/u.test(sentence.text))).toEqual([]);
 
     expect(splitSentences('It is accurate, e.g. to 1″ in 2020. The next sentence starts here.'))
       .toEqual(['It is accurate, e.g. to 1″ in 2020.', 'The next sentence starts here.']);
