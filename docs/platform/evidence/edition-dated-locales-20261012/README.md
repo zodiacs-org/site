@@ -226,7 +226,12 @@ edition's date label and the birthday pages. The reviews
 ([reviews-titles.md](reviews-titles.md)) accepted every title and "1º" form,
 and changed the Spanish and Portuguese birthday sky lines to join the year
 with "de". The drive now also checks the tab title on all nine routes: dated
-on a dated clock, the server's on a current one.
+on a dated clock, the server's on a current one. `dates.ts` and the guard are
+template sources: Browser Evidence run 38416946190 on `1483eb1f` took the
+captures for digest `091d850f`, which the later commit (a string file and
+records) did not move; its build, captures, visual comparison, Lighthouse and
+explorer drive passed
+([`browser-evidence-provenance-titles.json`](browser-evidence-provenance-titles.json)).
 
 ## Phase 1 captures
 
