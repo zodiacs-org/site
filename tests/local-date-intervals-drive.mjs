@@ -42,7 +42,7 @@ const cases = [
 await mkdir(out, { recursive: true });
 const bundle = await build({
   absWorkingDir: root,
-  stdin: { contents: "export { resolveLocalDateIntervals, createNativeTemporalTransitionProvider } from './src/lib/time/local-date-intervals'; export { assessLocalDateReference } from './src/lib/time/local-date-reference'; export { resolveLocalToUtc } from './src/lib/time/localToUtc';", resolveDir: root },
+  stdin: { contents: "export { resolveLocalDateIntervals, createNativeTemporalTransitionProvider } from './src/lib/time/local-date-intervals'; export { assessLocalDateReference } from './src/lib/time/local-date-reference'; export { prepareLocalTime, resolveLocalToUtc } from './src/lib/time/localToUtc';", resolveDir: root },
   bundle: true, write: false, format: 'iife', globalName: 'dateIntervalsSubject',
   platform: 'browser', target: 'es2022', metafile: true,
 });
@@ -91,8 +91,10 @@ try {
   await page.goto(origin, { waitUntil: 'load' });
   report.importEffects = await page.evaluate(() => ({ ...globalThis.moduleEffects }));
   assert.deepEqual(report.importEffects, { temporalReads: 0, intl: 0, storage: 0, idb: 0, fetch: 0, xhr: 0, beacon: 0 });
-  report.native = await page.evaluate((fixtures) => {
-    const { resolveLocalDateIntervals: resolve, createNativeTemporalTransitionProvider: provider, assessLocalDateReference: assess, resolveLocalToUtc: local } = globalThis.dateIntervalsSubject;
+  report.native = await page.evaluate(async (fixtures) => {
+    const { resolveLocalDateIntervals: resolve, createNativeTemporalTransitionProvider: provider, assessLocalDateReference: assess, prepareLocalTime: prepare, resolveLocalToUtc: local } = globalThis.dateIntervalsSubject;
+    // The resolver is the engine's, which loads on first use, with each zone's history before 1970.
+    for (const [date, zone] of fixtures) await prepare(date, zone);
     const nativeAvailable = provider() !== null;
     const rows = [];
     const iso = (n) => new Date(n).toISOString();

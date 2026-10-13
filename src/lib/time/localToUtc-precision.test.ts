@@ -31,33 +31,28 @@ const historicalGaps = [
   ["Pacific/Tongatapu", "1945-09-10", "1945-09-09T11:40:48.000Z", 740, 0.8, ["dst-gap"]],
 ] as const;
 
-// Without a longitude the site's resolver makes no `lmt` claim (the host's
-// history cannot tell a mean time from a legal time at the same offset), so the
-// readings on a zone's local mean time below carry no flag; the package, which
-// reads its own history, flags them.
+// The site's resolver is the package's, so without a longitude a wall time
+// read on the zone's own local mean time carries `lmt`, from the package's
+// history, as the readings before each change below do.
 const adjacentCases = [
-  ['1913-12-31', '23:59', 'America/Manaus', '1914-01-01T03:59:04.000Z', []],
+  ['1913-12-31', '23:59', 'America/Manaus', '1914-01-01T03:59:04.000Z', ['lmt']],
   ['1914-01-01', '00:01', 'America/Manaus', '1914-01-01T04:01:00.000Z', []],
   ['1914-01-01', '12:00', 'America/Manaus', '1914-01-01T16:00:00.000Z', []],
   ['1884-01-01', '00:01', 'America/Dawson_Creek', '1884-01-01T08:01:00.000Z', []],
   ['1890-01-01', '00:01', 'America/Caracas', '1890-01-01T04:28:40.000Z', []],
-  ['1883-11-18', '11:59', 'America/Denver', '1883-11-18T18:58:56.000Z', []],
-  ['1883-11-18', '12:00', 'America/Denver', '1883-11-18T18:59:56.000Z', ['dst-fold']],
+  ['1883-11-18', '11:59', 'America/Denver', '1883-11-18T18:58:56.000Z', ['lmt']],
+  ['1883-11-18', '12:00', 'America/Denver', '1883-11-18T18:59:56.000Z', ['dst-fold', 'lmt']],
   ['1883-11-18', '12:01', 'America/Denver', '1883-11-18T19:01:00.000Z', []],
-  ['1911-12-31', '23:59', 'Africa/Ndjamena', '1911-12-31T22:58:48.000Z', []],
+  ['1911-12-31', '23:59', 'Africa/Ndjamena', '1911-12-31T22:58:48.000Z', ['lmt']],
   ['1912-01-01', '00:00', 'Africa/Ndjamena', '1911-12-31T23:00:00.000Z', []],
 ] as const;
 
-/** The fields both resolvers give, without `lmt`, which the site claims only with a longitude. */
+/** The fields the site's resolution gives. */
 const reading = ({ utc, offsetMinutes, flags }: { utc: Date; offsetMinutes: number; flags: readonly string[] }) => ({
-  utc, offsetMinutes, flags: flags.filter((flag) => flag !== 'lmt'),
+  utc, offsetMinutes, flags: [...flags],
 });
 
-/**
- * What the site's resolution and the package's share. From rc.15 the package
- * reads a wall time before 1970 on its shipped tzdb history, which has to be
- * loaded first, and returns more fields than the site's resolver does.
- */
+/** The package's own resolution of the same wall time, in the site's fields. */
 async function packageReading(date: string, time: string, timeZone: string) {
   await preparePackageLocalTime(date, timeZone);
   return reading(packageResolveLocalToUtc(date, time, timeZone));
@@ -80,6 +75,7 @@ const withLongitude = [
 
 describe('second-precise site timezone adoption', () => {
   it.each(historicalGaps)('preserves the actual seconds-sized gap in %s on %s through the SDK receipt', async (timeZone, date, instant, offsetMinutes, gapShiftMinutes, flags) => {
+    await prepareLocalTime(date, timeZone);
     const resolved = resolveLocalToUtc(date, '00:00', timeZone);
     expect(reading(resolved)).toEqual(await packageReading(date, '00:00', timeZone));
     expect(resolved.utc.toISOString()).toBe(instant);
@@ -100,6 +96,7 @@ describe('second-precise site timezone adoption', () => {
   });
 
   it.each(adjacentCases)('keeps %s %s in %s precise without false folds', async (date, time, zone, instant, flags) => {
+    await prepareLocalTime(date, zone);
     const resolved = resolveLocalToUtc(date, time, zone);
     expect(reading(resolved)).toEqual(await packageReading(date, time, zone));
     expect(resolved.utc.toISOString()).toBe(instant);
@@ -117,7 +114,8 @@ describe('second-precise site timezone adoption', () => {
     expect(resolved.flags.filter((flag) => flag === 'lmt')).toEqual(flags);
   });
 
-  it('preserves the existing unknown-time local-noon reference immediately after the gap', () => {
+  it('preserves the existing unknown-time local-noon reference immediately after the gap', async () => {
+    await prepareLocalTime('1914-01-01', 'America/Manaus');
     const resolved = resolveLocalToUtc('1914-01-01', '12:00', 'America/Manaus');
     expect(resolved.utc.toISOString()).toBe('1914-01-01T16:00:00.000Z');
     expect(resolved.flags).toEqual([]);

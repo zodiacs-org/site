@@ -1,0 +1,23 @@
+---
+import Base from '../../../layouts/Base.astro';
+import BabyShowerSky from '../../../islands/BabyShowerSky.tsx';
+import '../../../styles/calculator.css';
+import '../../../styles/occasions.css';
+---
+<Base
+  clientUi
+  title="Baby Shower Sky Card — Zodiac Signs Around the Due Date | Zodiacs.org"
+  description="A printable baby-shower card: the Sun's signs across the due-date window, the day it changes sign, and the full and new moons, with a guessing game for guests. Free."
+  path="/occasions/baby-shower/"
+>
+  <section class="section--tight container container--narrow">
+    <div class="tool-hero reveal">
+      <h1 class="display">The sky around the due date</h1>
+      <p>
+        A card for the baby shower: which sign the Sun is in across the two weeks either side of the due date, the day
+        it changes sign, and the full and new moons. Guests can pick a day on the line; the birth fills in the answer.
+      </p>
+    </div>
+    <BabyShowerSky client:load />
+  </section>
+</Base>

@@ -1,37 +1,34 @@
 /**
- * Local birth time → UTC, honoring the history available for the IANA zone —
- * DST, wartime shifts, pre-standardization local mean time (which can
- * carry seconds, e.g. America/Mexico_City at −6:36:36 before 1922).
+ * Local birth time → UTC, through @zodiacs/engine/geo, the engine's own
+ * resolver. Nothing here converts a wall time itself: this module keeps the
+ * site's signatures, input checks and error messages, and maps the engine's
+ * resolution onto them.
  *
- * The browser/Node host's ICU data exposes its tzdb history through Intl.
- * Coverage and tzdb version therefore depend on that runtime. Without a
- * birthplace, and for every instant from 1970 on, legal offsets come from
- * there; nothing here hand-rolls a legal offset.
+ * The engine reads a wall time in an IANA zone (docs/time.md in the engine):
+ * - before 1970, on the zone's history from tzdata 2025c compiled with its
+ *   backzone file, which the engine ships in 16 files and loads lazily, one per
+ *   call of prepareLocalTime(date, timeZone);
+ * - from 1970, and in the fixed zones, on the host's Intl data;
+ * - given the birthplace's longitude, before the zone's local mean time era
+ *   ended, on the birthplace's own mean time instead of the zone's reference
+ *   city's (four minutes of time per degree of longitude).
+ * A wall time the clock showed twice takes the earlier instant; one it skipped
+ * moves forward by the jump. Await prepareLocalTime(date, timeZone) before
+ * resolving any wall time: it loads the engine's resolver, which no page loads
+ * until a calculation needs it, and for a date up to 1970 the zone's history;
+ * resolving without them throws.
  *
- * One era needs more than the zone: before a place adopted a legal time, its
- * clocks kept that place's own mean solar time, and tzdb records that only
- * for the zone's reference city. Given the birthplace's longitude, instants
- * before the zone's local mean time era ended use the birthplace's mean time
- * (four minutes of time per degree of longitude) instead of the reference
- * city's. When each era ended comes from src/data/tz-lmt.json, generated
- * from a pinned tzdb release that includes backzone.
- *
- * Given a longitude, instants before 1970 also take the zone's legal offsets
- * from that pinned release (src/data/tz-history/), not from Intl: browsers
- * carry tzdb's default build, which gives many places another city's history
- * before 1970 (Stockholm keeps Berlin's). Every later instant is Intl's. Both
- * tables load on demand, only for dates that can need them: await
- * prepareLocalTime(date, timeZone) before resolving a birthplace time.
+ * offsetAt and localDateContainsUtc read the host's Intl data directly: they
+ * answer questions about the host's clock, not about a birth.
  */
-import { loadModule } from '../module-load';
+import { ModuleLoadError } from '../module-load';
 import { TECHNICAL_OFFSET_LOCALE, TECHNICAL_WALL_LOCALE } from './technical-locales';
 import { parseCivilDate, parseCivilTime } from './civil-date';
 
 export interface LocalTimeOptions {
   /**
    * The birthplace's longitude, degrees east. Without it, a time from the
-   * local mean time era uses the zone reference city's mean time, and a time
-   * before 1970 the host's history.
+   * local mean time era uses the zone reference city's mean time.
    */
   longitude?: number;
 }
@@ -42,69 +39,95 @@ export interface LocalTimeResolution {
   offsetMinutes: number;
   flags: ('dst-gap' | 'dst-fold' | 'lmt')[];
   /**
-   * Present when the instant falls in the birthplace's own local mean time:
-   * the longitude used, and the offset the zone alone would have applied.
+   * Present when the birthplace's own mean time read the wall time (also in
+   * the gap at the end of its era): the longitude used, and the offset the
+   * zone alone would have applied.
    */
   localMeanTime?: { longitude: number; zoneOffsetMinutes: number };
 }
 
-type BirthplaceClock = typeof import('./birthplace-clock');
-/** The birthplace clock, once prepareLocalTime has loaded it. */
-let birthplace: BirthplaceClock | null = null;
-let birthplaceLoad: Promise<BirthplaceClock> | null = null;
-/** A wall time from 1970-01-02 on never reads before 1970, so it never needs the birthplace clock. */
-const BIRTHPLACE_WALL_END = 86_400_000;
-
 /**
- * Every era in the table ends before this instant (the last, Niue and
- * Rarotonga, in October 1952); a test holds the table to it.
- */
-export const LOCAL_MEAN_TIME_ERAS_END_BEFORE = Date.UTC(1953, 0, 1);
-
-/**
- * Whether a local date (YYYY-MM-DD) could fall in a local mean time era, so
- * that a birthplace's longitude can change how its wall time resolves. False
- * only for years after the last era ended.
- */
-export function localMeanTimeCanApply(date: string): boolean {
-  const year = Number(String(date).slice(0, 4));
-  return !(Number.isFinite(year) && year > new Date(LOCAL_MEAN_TIME_ERAS_END_BEFORE).getUTCFullYear());
-}
-
-/**
- * Whether a birthplace's longitude can change how a wall time on this local
- * date (YYYY-MM-DD) resolves, through its local mean time or its zone's
- * pinned history: for dates up to 1970.
+ * Whether a wall time on this local date (YYYY-MM-DD) reads the zone's history
+ * the engine ships: for dates up to 1970. Saved charts on such dates are the
+ * ones an earlier reading of the birthplace clock can have left with another
+ * summary (src/lib/profile/refresh.ts).
  */
 export function birthplaceTimeCanApply(date: string): boolean {
   return !(Number(String(date).slice(0, 4)) > 1970);
 }
 
 /**
- * Loads what resolving a birthplace time on `date` (YYYY-MM-DD) in
- * `timeZone` can need: for dates up to 1970, the birthplace clock with the
- * local mean time era table (up to 1953) and the zone's pinned history.
- * Later dates need nothing. Resolving such a date with a longitude without
- * them throws rather than guess. A failed download rejects with a
- * ModuleLoadError, like the calculators' other code downloads, and is not
- * remembered: the next call tries again. The rejection counts as observed,
- * so a caller that starts preparing early and stops waiting (the chart
- * calculator, when its engine fails to load first) raises no unhandled
- * rejection; a caller that awaits still sees it.
+ * Whether the host's Intl accepts a zone name; the engine is never asked about
+ * one it refuses. Uses offsetAt's formatter cache, which holds only accepted
+ * names and starts again at 1,024.
  */
-export function prepareLocalTime(date: string, timeZone: string): Promise<void> {
-  if (!birthplaceTimeCanApply(date)) return Promise.resolve();
-  if (!birthplaceLoad) {
-    const pending = loadModule(() => import('./birthplace-clock'));
-    birthplaceLoad = pending;
+function intlAccepts(timeZone: string): boolean {
+  try {
+    offsetFormatter(timeZone);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Whether resolveLocalToUtc can read this wall time once its zone's history is
+ * loaded: a real YYYY-MM-DD date, an HH:MM time and a zone the host's Intl
+ * accepts. It converts nothing and loads nothing, so a caller that only checks
+ * a stored record need not prepare the zone first.
+ */
+export function isResolvableLocalTime(date: string, time: string, timeZone: string): boolean {
+  return Boolean(parseCivilDate(date) && parseCivilTime(time)) && intlAccepts(timeZone);
+}
+
+type EngineGeo = typeof import('@zodiacs/engine/geo');
+/** The engine's resolver, once prepareLocalTime has loaded it. */
+let geo: EngineGeo | null = null;
+let geoLoad: Promise<EngineGeo> | null = null;
+
+/**
+ * Loads the engine's geo entry once; a failed download rejects with a
+ * ModuleLoadError and is not remembered. The import is made here rather than
+ * through loadModule, which callers' tests replace for their own downloads.
+ */
+function loadGeo(): Promise<EngineGeo> {
+  if (!geoLoad) {
+    const pending = import('@zodiacs/engine/geo').catch((cause: unknown) => {
+      throw new ModuleLoadError(cause);
+    });
+    geoLoad = pending;
     void pending.catch(() => {
-      if (birthplaceLoad === pending) birthplaceLoad = null;
+      if (geoLoad === pending) geoLoad = null;
     });
   }
-  const ready = birthplaceLoad.then((module) => {
-    birthplace = module;
-    return module.prepare(date, timeZone);
+  return geoLoad.then((module) => {
+    geo = module;
+    return module;
   });
+}
+
+/**
+ * Loads what resolving a wall time on `date` (YYYY-MM-DD) in `timeZone`
+ * needs: the engine's resolver, and for dates up to 1970 the zone's history
+ * from the engine. A failed download rejects with a ModuleLoadError, like the
+ * calculators' other code downloads, and is not remembered: the next call
+ * tries again. Nothing else rejects: a date that is not a real YYYY-MM-DD, or a
+ * name Intl refuses, loads no history, and resolving it then throws the input
+ * error. The rejection counts as observed, so a caller that starts preparing early
+ * and stops waiting (the chart calculator, when its engine fails to load
+ * first) raises no unhandled rejection; a caller that awaits still sees it.
+ */
+export function prepareLocalTime(date: string, timeZone: string): Promise<void> {
+  const ready = (async () => {
+    const engine = await loadGeo();
+    // The engine refuses such input with a RangeError, which is not a download failure.
+    if (!parseCivilDate(date) || !birthplaceTimeCanApply(date) || !intlAccepts(timeZone)) return;
+    try {
+      await engine.prepareLocalTime(date, timeZone);
+    } catch (cause) {
+      throw new ModuleLoadError(cause);
+    }
+  })();
   void ready.catch(() => {});
   return ready;
 }
@@ -207,31 +230,26 @@ export function localDateContainsUtc(date: string, utc: Date, timeZone: string):
 }
 
 /**
- * Resolve a wall-clock date + time in an IANA zone to UTC.
- * Inputs must be a real proleptic Gregorian YYYY-MM-DD (0000–9999) and
- * HH:MM (00:00–23:59). This syntax is not an astronomical accuracy claim;
- * callers such as birth sharing enforce their own narrower year window.
- * An explicit timezone supported by the host's Intl data is required;
- * omitted or invalid zones never fall back to the machine's timezone.
+ * Resolve a wall-clock date + time in an IANA zone to UTC, through
+ * @zodiacs/engine/geo. Inputs must be a real proleptic Gregorian YYYY-MM-DD
+ * (0000–9999) and HH:MM (00:00–23:59). This syntax is not an astronomical
+ * accuracy claim; callers such as birth sharing enforce their own narrower
+ * year window. An explicit timezone supported by the host's Intl data is
+ * required; omitted or invalid zones never fall back to the machine's
+ * timezone, and the error never repeats the zone given.
  *
- * Ambiguous times (clocks fell back — two instants match) resolve to the
+ * Ambiguous times (clocks fell back: two instants match) resolve to the
  * earlier instant with a `dst-fold` flag. Skipped times (clocks sprang
- * forward — no instant matches) shift forward by the gap with a
- * `dst-gap` flag. With a longitude, a wall time read on a local mean time
- * adds `lmt`, as @zodiacs/engine defines the flag from 0.1.1-rc.15: the
- * birthplace's own mean time, or the zone's, before the zone's local mean time
- * era ended (src/data/tz-lmt.json). A legal time that ran to seconds, such as
- * Paris Mean Time from 1891 or Madras time, does not, and a local mean time in
- * whole minutes does. Without a longitude nothing is claimed: the host's
- * history cannot tell a zone's local mean time from the national mean time
- * that kept its offset (Paris 1891–1911, Dublin 1880–1916).
+ * forward: no instant matches) shift forward by the gap with a `dst-gap`
+ * flag. A wall time read on a local mean time adds `lmt`: the birthplace's own
+ * mean time with a longitude, the zone's reference city's without one. A legal
+ * time that ran to seconds, such as Paris Mean Time from 1891 or Madras time,
+ * does not.
  *
  * Pass the birthplace's longitude whenever it is known: before the zone's
  * local mean time era ended, it replaces the reference city's mean time with
  * the birthplace's own, and the change out of that era is a gap or a fold
- * under the same policy; before 1970, the zone's legal offsets come from the
- * pinned release rather than the host. With a longitude, await
- * prepareLocalTime(date, tz) first.
+ * under the same policy. Await prepareLocalTime(date, tz) first.
  */
 export function resolveLocalToUtc(
   date: string, // 'YYYY-MM-DD'
@@ -239,85 +257,35 @@ export function resolveLocalToUtc(
   tz: string,
   options: LocalTimeOptions = {},
 ): LocalTimeResolution {
-  // Reject before any Date normalization or timezone conversion. An
-  // impossible date must not become a different date marked as a DST gap.
-  const civilDate = parseCivilDate(date);
-  const civilTime = parseCivilTime(time);
-  if (!civilDate || !civilTime) {
+  // Reject before any conversion. An impossible date must not become a
+  // different date marked as a DST gap.
+  if (!parseCivilDate(date) || !parseCivilTime(time)) {
     throw new RangeError('resolveLocalToUtc needs a valid YYYY-MM-DD date and HH:MM time.');
   }
-  // Date.UTC remaps years 0–99 into 1900–1999. Preserve the typed year,
-  // including year 0000's leap day, before asking Intl about its offset.
-  const wallDate = new Date(0);
-  wallDate.setUTCFullYear(civilDate.year, civilDate.month - 1, civilDate.day);
-  wallDate.setUTCHours(civilTime.hour, civilTime.minute, 0, 0);
-  const wallMs = wallDate.getTime();
-  // HH:MM denotes exactly zero seconds/milliseconds. Shortening a candidate
-  // to its minute hides historical gaps and creates false folds.
-  const wallStr = `${date}T${time}:00.000`;
-
-  // Candidate offsets sampled around the wall instant.
-  const sampled = [
-    offsetAt(tz, wallMs - 36 * 3600_000),
-    offsetAt(tz, wallMs),
-    offsetAt(tz, wallMs + 36 * 3600_000),
-  ];
-  const candidates = [...new Set(sampled)];
-
-  const matches: { utcMs: number; offset: number }[] = [];
-  for (const off of candidates) {
-    // IANA offsets have integral seconds. Remove floating-point conversion
-    // noise at millisecond precision without rounding away historical seconds.
-    const utcMs = wallMs - Math.round(off * 60_000);
-    if (wallStringAt(tz, utcMs) === wallStr) {
-      matches.push({ utcMs, offset: offsetAt(tz, utcMs) });
-    }
-  }
-
-  let flags: LocalTimeResolution['flags'] = [];
-  let chosen: { utcMs: number; offset: number };
-
-  if (matches.length === 1) {
-    chosen = matches[0];
-  } else if (matches.length > 1) {
-    // Fold: two readings of the same wall clock — take the earlier.
-    matches.sort((a, b) => a.utcMs - b.utcMs);
-    chosen = matches[0];
-    flags.push('dst-fold');
-  } else {
-    // Gap: this wall time never happened. Shift forward by the gap —
-    // apply the offset that was valid just before the transition.
-    const before = offsetAt(tz, wallMs - 36 * 3600_000);
-    const utcMs = wallMs - Math.round(before * 60_000);
-    chosen = { utcMs, offset: offsetAt(tz, utcMs) };
-    flags.push('dst-gap');
-  }
-
-  let zoneOffset = chosen.offset;
-  let inEra = false;
-  let readByBirthplace = false;
+  // Intl treats undefined as the machine's timezone, and its own refusal
+  // repeats the name given. Imported or stored inputs must select an explicit
+  // zone, and the error must not carry a potentially private value.
+  if (!intlAccepts(tz)) throw new RangeError('An explicit supported timezone is required.');
   const { longitude } = options;
-  if (typeof longitude === 'number' && Number.isFinite(longitude) && Math.abs(longitude) <= 180
-    && wallMs < BIRTHPLACE_WALL_END) {
-    if (!birthplace) {
-      throw new Error('The birthplace clock is not loaded: await prepareLocalTime(date, timeZone) before resolving.');
-    }
-    const place = birthplace.readBirthplace(tz, wallMs, longitude);
-    if (place) {
-      ({ chosen, flags, inEra } = place);
-      if (place.zoneOffset !== null) zoneOffset = place.zoneOffset;
-      readByBirthplace = true;
-    }
+  // A longitude the site cannot place is not a birthplace: as before, it is ignored.
+  const place = typeof longitude === 'number' && Number.isFinite(longitude) && Math.abs(longitude) <= 180
+    ? { longitude } : {};
+  if (!geo) {
+    throw new Error('The local-time resolver is not loaded: await prepareLocalTime(date, timeZone) before resolving.');
   }
-
-  // The birthplace clock read the wall time on a local mean time: before the
-  // zone's era ended in its table.
-  if (readByBirthplace && birthplace!.inMeanTimeEra(tz, chosen.utcMs)) flags.push('lmt');
-
+  let resolved: ReturnType<EngineGeo['resolveLocalToUtc']>;
+  try {
+    resolved = geo.resolveLocalToUtc(date, time, tz, place);
+  } catch (error) {
+    // Not loaded yet: the caller must await prepareLocalTime first.
+    if (error instanceof geo.ZoneHistoryNotLoadedError) throw error;
+    if (error instanceof RangeError) throw new RangeError('An explicit supported timezone is required.');
+    throw error;
+  }
   return {
-    utc: new Date(chosen.utcMs),
-    offsetMinutes: chosen.offset,
-    flags,
-    ...(inEra ? { localMeanTime: { longitude: longitude!, zoneOffsetMinutes: zoneOffset } } : {}),
+    utc: resolved.utc,
+    offsetMinutes: resolved.offsetMinutes,
+    flags: [...resolved.flags],
+    ...(resolved.localMeanTime ? { localMeanTime: { ...resolved.localMeanTime } } : {}),
   };
 }

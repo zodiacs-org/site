@@ -1,13 +1,16 @@
-import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import * as ephemeris from './full';
 import { findLongitudeCrossings } from './returns';
-import { resolveLocalToUtc } from '../time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 import type { Chart, ChartInput } from './types';
 import policy from './fixtures/independent-lunar-return-policy.json';
 import references from './fixtures/independent-lunar-returns.json';
 import applicability from './fixtures/swiss-lunar-fixed-target-applicability.json';
+
+// The resolver is the engine's, which the site loads on first use.
+beforeAll(() => prepareLocalTime('2000-01-01', 'UTC'));
 import {
   lunarReturnChart, lunarReturnInstant, LUNAR_RETURN_HORIZON_DAYS,
   LUNAR_RETURN_MAX_AFTER_UTC, LUNAR_RETURN_MAX_UTC, LUNAR_RETURN_MIN_UTC,

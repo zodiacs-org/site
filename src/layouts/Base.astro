@@ -202,60 +202,14 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         }
       } catch (e) {}
     </script>
-    {props.editionDate && (
-      <>
-        <script is:inline>
-          var editionRoot = document.documentElement;
-          var editionDate = editionRoot.getAttribute('data-edition-date');
-          var editionState = editionDate === new Date().toISOString().slice(0, 10) ? 'current' : 'dated';
-          editionRoot.setAttribute('data-edition-state', editionState);
-
-          /* EditionText keeps a dated server/no-JS fallback. On a current
-             edition, replace each span as the parser adds it so a warm-cache
-             paint can never briefly lay out the longer dated label. */
-          if (editionState === 'current' && 'MutationObserver' in window) {
-            var syncCurrentEditionText = function (node) {
-              if (node.nodeType === Node.TEXT_NODE) {
-                var parent = node.parentElement && node.parentElement.closest('[data-edition-text]');
-                if (parent) {
-                  var parentCurrent = parent.getAttribute('data-edition-current');
-                  if (parentCurrent !== null && parent.textContent !== parentCurrent) parent.textContent = parentCurrent;
-                }
-                return;
-              }
-              if (node.nodeType !== Node.ELEMENT_NODE && node.nodeType !== Node.DOCUMENT_NODE) return;
-              var nodes = [];
-              if (node.nodeType === Node.ELEMENT_NODE && node.matches('[data-edition-text]')) nodes.push(node);
-              node.querySelectorAll('[data-edition-text]').forEach(function (match) { nodes.push(match); });
-              nodes.forEach(function (match) {
-                var current = match.getAttribute('data-edition-current');
-                if (current !== null && match.textContent !== current) match.textContent = current;
-              });
-            };
-            var editionPrepaintObserver = new MutationObserver(function (records) {
-              records.forEach(function (record) {
-                // The streaming parser can append to the text node we already
-                // filled with the current label. Catch that coalesced text too.
-                if (record.type === 'characterData') syncCurrentEditionText(record.target);
-                record.addedNodes.forEach(syncCurrentEditionText);
-              });
-            });
-            editionPrepaintObserver.observe(editionRoot, { childList: true, characterData: true, subtree: true });
-            document.addEventListener('DOMContentLoaded', function () {
-              syncCurrentEditionText(document);
-              editionPrepaintObserver.disconnect();
-            }, { once: true });
-          }
-        </script>
-        <style is:inline>
-          [data-edition-current-only] { display: none; }
-          [data-edition-dated-only] { display: inline; }
-          :root[data-edition-state="current"] [data-edition-current-only] { display: inline; }
-          :root[data-edition-state="current"] [data-edition-dated-only] { display: none; }
-        </style>
-      </>
-    )}
-    {props.editionDate && <EditionFreshnessGuard />}
+    {props.editionDate && <EditionFreshnessGuard editionDate={props.editionDate} locale={locale} />}
+    <script is:inline>
+      // The footer's stylesheet loads late (see the loader after the footer).
+      // Hold the footer hidden from its first layout until the loader decides:
+      // one in or near the first viewport waits for its styles, so it never
+      // paints unstyled and then moves; any other is shown at once.
+      document.documentElement.setAttribute('data-footer-styles-pending', '');
+    </script>
     <script is:inline>
       // Capture Chromium's one-shot install event before calculator islands
       // hydrate. The prompt itself stays hidden until two successful charts.
@@ -496,13 +450,23 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           var stylesheet = document.createElement('link');
           stylesheet.rel = 'stylesheet';
           stylesheet.href = '/assets/site-footer.css?v=20261006';
+          // A held footer is shown by these styles; the hold goes once they
+          // have loaded, or if they fail or take over 3 s.
+          if (root.hasAttribute('data-footer-styles-pending')) {
+            var reveal = function () { root.removeAttribute('data-footer-styles-pending'); };
+            stylesheet.addEventListener('load', reveal);
+            stylesheet.addEventListener('error', reveal);
+            window.setTimeout(reveal, 3000);
+          }
           document.head.appendChild(stylesheet);
         }
         function appendAfterLoad() {
           window.setTimeout(appendStylesheet, 250);
         }
+        var root = document.documentElement;
         var footer = document.querySelector('.zfooter');
         var nearViewport = footer && footer.getBoundingClientRect().top <= window.innerHeight + 200;
+        if (!nearViewport) root.removeAttribute('data-footer-styles-pending');
         if (nearViewport) appendStylesheet();
         else {
           if (footer && 'IntersectionObserver' in window) {

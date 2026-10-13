@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { eventsCatalog } from '../src/lib/events/catalog.ts';
 import { bodyLongitude, computeChart } from '../src/lib/engine/full.ts';
 import { solarReturnInstant } from '../src/lib/engine/solar-return.ts';
-import { prepareLocalTime, resolveLocalToUtc } from '../src/lib/time/localToUtc.ts';
+import { offsetAt, prepareLocalTime, resolveLocalToUtc } from '../src/lib/time/localToUtc.ts';
 import { computeLunarReturn } from '../src/islands/lunar-return/compute.ts';
 import { computeSolarReturn } from '../src/islands/solar-return/compute.ts';
 
@@ -217,11 +217,15 @@ describe('the pinned zone history on the methodology page', () => {
     expect(measured.divergent['Europe/Stockholm']).toBeDefined();
   });
 
-  it('gives the Stockholm example as the resolver reads it', async () => {
+  it('gives the Stockholm example as the resolver and the browser read it', async () => {
     await prepareLocalTime('1947-07-01', 'Europe/Stockholm');
-    expect(resolveLocalToUtc('1947-07-01', '12:00', 'Europe/Stockholm').utc.toISOString()).toBe('1947-07-01T10:00:00.000Z');
-    expect(resolveLocalToUtc('1947-07-01', '12:00', 'Europe/Stockholm', { longitude: 18.07 }).utc.toISOString())
-      .toBe('1947-07-01T11:00:00.000Z');
+    // The browser's own history (Intl), which reads Berlin's summer time: noon at +2:00.
+    const browser = Date.UTC(1947, 6, 1, 12) - offsetAt('Europe/Stockholm', Date.UTC(1947, 6, 1, 10)) * 60_000;
+    expect(new Date(browser).toISOString()).toBe('1947-07-01T10:00:00.000Z');
+    // The chart's, from the history the engine ships, with or without the birthplace.
+    for (const options of [{}, { longitude: 18.07 }]) {
+      expect(resolveLocalToUtc('1947-07-01', '12:00', 'Europe/Stockholm', options).utc.toISOString()).toBe('1947-07-01T11:00:00.000Z');
+    }
     const page = read('src/pages/methodology/index.astro').replace(/\s+/g, ' ');
     expect(page).toContain('a Stockholm birth reads 10:00 UTC with Berlin\'s summer time in the browser\'s history, where Sweden kept +1:00 and the chart uses 11:00');
   });

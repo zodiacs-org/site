@@ -1,21 +1,24 @@
-import { describe, expect, it } from 'vitest';
-import { offsetAt, resolveLocalToUtc } from './localToUtc';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { offsetAt, prepareLocalTime, resolveLocalToUtc } from './localToUtc';
 
 describe('resolveLocalToUtc', () => {
+  // The resolver is the engine's, which the site loads on first use.
+  beforeAll(() => prepareLocalTime('2000-01-01', 'UTC'));
+
   it('resolves a plain modern time', () => {
     const r = resolveLocalToUtc('2024-06-15', '14:30', 'America/New_York');
     expect(r.utc.toISOString()).toBe('2024-06-15T18:30:00.000Z');
     expect(r.flags).toEqual([]);
   });
 
-  it('handles pre-standardization LMT with seconds (Mexico City 1907)', () => {
+  it('handles pre-standardization LMT with seconds (Mexico City 1907)', async () => {
     // America/Mexico_City used LMT −6:36:36 until 1922. Without a birthplace
-    // longitude, that reference city's mean time is the clock. Only a reading
-    // with a longitude says which clock it was (`lmt`), since the host's
-    // history cannot tell a mean time from a legal time at the same offset.
+    // longitude, that reference city's mean time is the clock, and the
+    // engine's own history says so (`lmt`).
+    await prepareLocalTime('1907-07-06', 'America/Mexico_City');
     const r = resolveLocalToUtc('1907-07-06', '08:30', 'America/Mexico_City');
     expect(r.utc.toISOString()).toBe('1907-07-06T15:06:36.000Z');
-    expect(r.flags).toEqual([]);
+    expect(r.flags).toEqual(['lmt']);
   });
 
   it('shifts forward through a DST spring gap', () => {

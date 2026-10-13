@@ -1,11 +1,15 @@
 import type { VNode } from 'preact';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computeLunarReturn } from './compute';
 const hooks = vi.hoisted(() => ({ focus: vi.fn() }));
 vi.mock('preact/hooks', () => ({ useMemo: (fn: () => unknown) => fn(), useRef: () => ({ current: { focus: hooks.focus } }), useEffect: (fn: () => unknown) => fn() }));
 import { LunarReturnResult } from './LunarReturnResult';
 import LunarReturnActions from './LunarReturnActions';
 import EvidenceDisclosure from '../EvidenceDisclosure';
+import { prepareLocalTime } from '../../lib/time/localToUtc';
+
+// The resolver is the engine's, which the site loads on first use.
+beforeAll(() => prepareLocalTime('2000-01-01', 'UTC'));
 const Wheel = () => null;
 const result = () => computeLunarReturn({ birthDate: '1990-02-01', birthTime: '12:00', timeKnown: true,
   birthplace: { name: 'Synthetic', lat: 0, lon: 0, tz: 'Etc/UTC' }, houseSystem: 'placidus', castLocation: null }, new Date('2026-03-01T00:00:00Z'));

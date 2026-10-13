@@ -6,28 +6,28 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-11T18:54:51.681Z",
+  "capturedAt": "2026-10-13T04:23:52.347Z",
   "browser": "Chromium 141.0.7390.37",
-  "dailyDate": "2026-10-11",
-  "publicationCanonicalSha256": "f149fc4e49b43db2f946388f0d23ca6246febca78ff6066b5fd2e1feccd929b9",
-  "templateSourceSha256": "c0623cf7047c149bf49fd314efd412c6259dd4a02e6cdfbeba04206a34ca7819",
+  "dailyDate": "2026-10-13",
+  "publicationCanonicalSha256": "3e78c2c73786b6a629218b053e60db01defcd8965cd885bcae7ef464740e30bc",
+  "templateSourceSha256": "0021057fd8aa7875205c5e1176b33c1a00cffa9102b3483c3562c1a5f9f5f11c",
   "renderPayloadSha256": {
-    "daily": "31c9c61928c74f4f4ee753b50375d5d3bf8cd8cbdec8739aa38942cbd5e6732c",
-    "dailyPublication": "75befc7a935d005372466d57365822481194c924aef7188694ad7d255c95f452",
-    "dailyPublicationManifest": "6e06585ad3046da6df118d553b36ec06d954ddd66bce3bbf699d3b98320e6539",
-    "horoscopeProgram": "6f4bfb7f7cd1af2fe1f86d53b6a6cf461f80cdafe9d5194709bd70c673a5f306"
+    "daily": "7f015533090964424929e0c1e6dadfcfe9cab02d5603e6a7f9e557fa7ccea53a",
+    "dailyPublication": "e55eb4301ed4e2d3de9afd0c3ffe39788bb54552ea0440d03fe2525883978152",
+    "dailyPublicationManifest": "ff4aec07d3f33134acdacab8191fbfafa61a7e46068138ebbd88804a6f1c62ec",
+    "horoscopeProgram": "b4cb61e5ece7fcea93d7926eb90cfbaf0130e8287bfff6bc49f194ca6c81ea47"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-11T18:54:18.494Z",
-    "templateSourceSha256": "c0623cf7047c149bf49fd314efd412c6259dd4a02e6cdfbeba04206a34ca7819",
-    "dailyDate": "2026-10-11",
-    "publicationCanonicalSha256": "f149fc4e49b43db2f946388f0d23ca6246febca78ff6066b5fd2e1feccd929b9",
+    "builtAt": "2026-10-13T04:21:52.155Z",
+    "templateSourceSha256": "0021057fd8aa7875205c5e1176b33c1a00cffa9102b3483c3562c1a5f9f5f11c",
+    "dailyDate": "2026-10-13",
+    "publicationCanonicalSha256": "3e78c2c73786b6a629218b053e60db01defcd8965cd885bcae7ef464740e30bc",
     "renderPayloadSha256": {
-      "daily": "31c9c61928c74f4f4ee753b50375d5d3bf8cd8cbdec8739aa38942cbd5e6732c",
-      "dailyPublication": "75befc7a935d005372466d57365822481194c924aef7188694ad7d255c95f452",
-      "dailyPublicationManifest": "6e06585ad3046da6df118d553b36ec06d954ddd66bce3bbf699d3b98320e6539",
-      "horoscopeProgram": "6f4bfb7f7cd1af2fe1f86d53b6a6cf461f80cdafe9d5194709bd70c673a5f306"
+      "daily": "7f015533090964424929e0c1e6dadfcfe9cab02d5603e6a7f9e557fa7ccea53a",
+      "dailyPublication": "e55eb4301ed4e2d3de9afd0c3ffe39788bb54552ea0440d03fe2525883978152",
+      "dailyPublicationManifest": "ff4aec07d3f33134acdacab8191fbfafa61a7e46068138ebbd88804a6f1c62ec",
+      "horoscopeProgram": "b4cb61e5ece7fcea93d7926eb90cfbaf0130e8287bfff6bc49f194ca6c81ea47"
     }
   },
   "captures": [
@@ -42,7 +42,7 @@
         "file": "today-360.png",
         "width": 360,
         "height": 6183,
-        "sha256": "f0770edf8f80f0d24c2ef64192d364b1e8d79039c9a955e65e463b182372513c"
+        "sha256": "5f00396dc5b05f551b5b26045b607118cc44a189d9fdd24d950300cab1bb9b92"
       },
       "layout": {
         "clientWidth": 360,
@@ -66,7 +66,7 @@
         "file": "today-1280.png",
         "width": 1280,
         "height": 3974,
-        "sha256": "13f71865f3f0f181ffaeaa2a170300d27d6b72c54925f3459c4c72e429858eae"
+        "sha256": "8128a526b88f87ab02695143a210a33798d3d9cdc177d98642b35e81b497be18"
       },
       "layout": {
         "clientWidth": 1280,
@@ -90,13 +90,13 @@
         "file": "horoscopes-hub-360.png",
         "width": 360,
         "height": 6155,
-        "sha256": "eeb86922c27f8230ad8d5ff1a7a14f13a30ed21c441573ff69c1891ea6890784"
+        "sha256": "40e80905cfa750310e3c046d6e8cde5a6c0b99558d0bdad4a6a478db927a3a34"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
         "scrollHeight": 6155,
-        "contentLength": 4010,
+        "contentLength": 3988,
         "overlay": false,
         "guideLauncher": true
       },
@@ -114,13 +114,13 @@
         "file": "horoscopes-hub-1280.png",
         "width": 1280,
         "height": 3131,
-        "sha256": "2429ae71941e84a96d9773ab100b424b91f42c7a1f8e3a6aad9f8d79307f15b0"
+        "sha256": "e3c35c11df474295335e361daef8c133767c4d6a107e65b172880ede27117b5b"
       },
       "layout": {
         "clientWidth": 1280,
         "scrollWidth": 1280,
         "scrollHeight": 3131,
-        "contentLength": 4351,
+        "contentLength": 4329,
         "overlay": false,
         "guideLauncher": true
       },
@@ -138,13 +138,13 @@
         "file": "daily-360.png",
         "width": 360,
         "height": 4303,
-        "sha256": "45b583d1746ac7f4a3b05ff3e4d8ca9d04c9359bb9e00fc973f9e009c1d63aeb"
+        "sha256": "d228ba4bbd651650ffca4a4deed7238dfe3aa27acd9d687c637a3fcdc25aa2b8"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
         "scrollHeight": 4303,
-        "contentLength": 2454,
+        "contentLength": 2466,
         "overlay": false,
         "guideLauncher": true
       },
@@ -161,14 +161,14 @@
       "screenshot": {
         "file": "daily-1280.png",
         "width": 1280,
-        "height": 3609,
-        "sha256": "6fe9ab63b9f91f70416bb34018b7bef8acd7ecbb38c544c2502f7259ea098971"
+        "height": 3636,
+        "sha256": "68f2c703fed3a60c38b22f45124bee6e4bdd8862836868ddd5df511725e2ec23"
       },
       "layout": {
         "clientWidth": 1280,
         "scrollWidth": 1280,
-        "scrollHeight": 3609,
-        "contentLength": 2904,
+        "scrollHeight": 3636,
+        "contentLength": 2916,
         "overlay": false,
         "guideLauncher": true
       },
@@ -185,14 +185,14 @@
       "screenshot": {
         "file": "tomorrow-360.png",
         "width": 360,
-        "height": 4374,
-        "sha256": "c9cafe02e08a1115afcae4bfb70b97e105c9f3c3b1c636ed7b0edd8405123346"
+        "height": 4428,
+        "sha256": "2c6ac19ca77458889ac9396627495bd8f51e16151ff588d98a858babb8414cf8"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
-        "scrollHeight": 4374,
-        "contentLength": 2510,
+        "scrollHeight": 4428,
+        "contentLength": 2573,
         "overlay": false,
         "guideLauncher": true
       },
@@ -210,13 +210,13 @@
         "file": "tomorrow-1280.png",
         "width": 1280,
         "height": 3725,
-        "sha256": "849449950269c7f6b175ca80f3e0fa2a2d6739ab83b28a98ebb8a652de193028"
+        "sha256": "6fc1be9207e1a15a747910b4d3b2eda63057da688502765f7babf941f3c8a505"
       },
       "layout": {
         "clientWidth": 1280,
         "scrollWidth": 1280,
         "scrollHeight": 3725,
-        "contentLength": 2948,
+        "contentLength": 3011,
         "overlay": false,
         "guideLauncher": true
       },
@@ -233,14 +233,14 @@
       "screenshot": {
         "file": "weekly-360.png",
         "width": 360,
-        "height": 5238,
-        "sha256": "b84b05c98e0417d3a819ce0e2d2626b7aa683e215ac26d4dabcaaa70074c0077"
+        "height": 5211,
+        "sha256": "156dc13f948c82afa39bb85a411cb2667ce5de8c1abfacb9aace0cab97172070"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
-        "scrollHeight": 5238,
-        "contentLength": 3482,
+        "scrollHeight": 5211,
+        "contentLength": 3504,
         "overlay": false,
         "guideLauncher": true
       },
@@ -258,13 +258,13 @@
         "file": "weekly-1280.png",
         "width": 1280,
         "height": 4081,
-        "sha256": "a1812521ecbb05d84fd096a015a4b637f04da732f50e583b79627c973855f54c"
+        "sha256": "6165d41e5adc76b9bc06042da0f1432a972363924f76641d80a65416bc8ed1c5"
       },
       "layout": {
         "clientWidth": 1280,
         "scrollWidth": 1280,
         "scrollHeight": 4081,
-        "contentLength": 3937,
+        "contentLength": 3960,
         "overlay": false,
         "guideLauncher": true
       },
@@ -329,14 +329,14 @@
       "screenshot": {
         "file": "love-360.png",
         "width": 360,
-        "height": 4180,
-        "sha256": "1847ada68bf48f0110f71e75364241727cb6ca2328482797bbf8d9d2c396bc42"
+        "height": 4153,
+        "sha256": "994e3fe17c2653d20fe8531807b49e1a130c878385c9a01a05eeea15e118b199"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
-        "scrollHeight": 4180,
-        "contentLength": 2370,
+        "scrollHeight": 4153,
+        "contentLength": 2355,
         "overlay": false,
         "guideLauncher": true
       },
@@ -354,13 +354,13 @@
         "file": "love-1280.png",
         "width": 1280,
         "height": 3479,
-        "sha256": "2a9a13943aa7ffee90d76833a086ab88ec4935e835bae9c30daf6fc3e7b5bdf2"
+        "sha256": "8caf88e7553d299f416cbb2f89dbf195d062be960fb6fa3494ee948d6fb4cf02"
       },
       "layout": {
         "clientWidth": 1280,
         "scrollWidth": 1280,
         "scrollHeight": 3479,
-        "contentLength": 2821,
+        "contentLength": 2806,
         "overlay": false,
         "guideLauncher": true
       },
@@ -378,7 +378,7 @@
         "file": "career-360.png",
         "width": 360,
         "height": 4144,
-        "sha256": "a46085389b097bddb531120c893e8c0ee9463eb0b7464ee5cd851287e644ebc0"
+        "sha256": "44def59d97042b455b2adab000c9cb1a80f5da7804467e1cb545765241c289eb"
       },
       "layout": {
         "clientWidth": 360,
@@ -402,7 +402,7 @@
         "file": "career-1280.png",
         "width": 1280,
         "height": 3498,
-        "sha256": "3f9a6ca3b19181bcf3b58923110f87c071e5714ec17b254a5929a6489b45e667"
+        "sha256": "fcf565ab8406a431975017733eb3b63d2513fa078c30b9a4e2e214ae757ee2a3"
       },
       "layout": {
         "clientWidth": 1280,

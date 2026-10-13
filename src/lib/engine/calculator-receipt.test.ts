@@ -1,5 +1,5 @@
 import { build } from 'esbuild';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { natalChart } from '@zodiacs/engine';
 import { natalReplayInput, parseNatalEnvelope } from '@zodiacs/engine/receipt';
 import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
@@ -57,6 +57,10 @@ const historicalGaps = [
 ] as const;
 
 describe('calculator capture from actual civil resolution', () => {
+  // Every early zone here reads the history the engine ships, loaded first.
+  beforeAll(() => Promise.all([...historicalGaps.map(([zone, date]) => prepareLocalTime(date, zone)),
+    prepareLocalTime('1907-07-06', 'America/Mexico_City')]));
+
   it.each([-90, 90])('preserves known-time exact-pole %s charts without entering portable calculation', (latitude) => {
     const input = { utc: new Date('2001-12-21T08:30:00Z'), latitude, longitude: 0,
       timeKnown: true, houseSystem: 'placidus' as const };
@@ -152,8 +156,8 @@ describe('calculator capture from actual civil resolution', () => {
     ['2024-11-03', '01:30', 'America/New_York', true, '2024-11-03T05:30:00.000Z', -240, 0, ['dst-fold']],
     ['2024-10-06', '02:15', 'Australia/Lord_Howe', true, '2024-10-05T15:45:00.000Z', 660, 30, ['dst-gap']],
     ['2011-12-30', '12:00', 'Pacific/Apia', false, '2011-12-30T22:00:00.000Z', 840, 1440, ['dst-gap']],
-    // Without a longitude the resolver claims no local mean time: see below.
-    ['1907-07-06', '08:30', 'America/Mexico_City', true, '1907-07-06T15:06:36.000Z', -396.6, 0, []],
+    // Without a longitude the zone's own mean time reads the time, and the engine's history says so.
+    ['1907-07-06', '08:30', 'America/Mexico_City', true, '1907-07-06T15:06:36.000Z', -396.6, 0, ['lmt']],
     ['0099-01-15', '08:30', 'UTC', true, '0099-01-15T08:30:00.000Z', 0, 0, []],
   ] as const)('captures %s %s in %s without a second natal call', (date, time, zone, known, instant, offset, shift, flags) => {
     const { captured, input, envelope } = calculate(date, time, zone, known);
