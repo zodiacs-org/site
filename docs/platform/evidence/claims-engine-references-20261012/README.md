@@ -3,8 +3,8 @@
 The claims ledger now reads the engine references the site serves: the 1.0.0 API
 reference under `public/developers/engine/reference/`, with the README,
 LICENSING and NOTICE of the release it documents, and the archived 0.1.1-rc.1
-reference and SDK pages under `public/sdk/` (F-23). Each of their 465 selected
-sentences is held to a claim or exempted. Eleven claims are overstated, and
+reference, its NOTICE and the SDK pages under `public/sdk/` (F-23). Each of
+their 470 selected sentences is held to a claim or exempted. Eleven claims are overstated, and
 `docs/claims/ledger.json` gives each one its resolution:
 
 - nine are F-89, wording the engine's next release corrects;

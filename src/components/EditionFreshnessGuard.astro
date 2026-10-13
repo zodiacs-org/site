@@ -1,40 +1,83 @@
-<script is:inline>
+---
+/**
+ * The whole browser side of a daily edition, inlined in <head> so it runs
+ * before the body is parsed. It decides once whether the page's UTC edition
+ * is the current day (`data-edition-state` on <html>), then writes each piece
+ * of edition text in its final form as the parser adds it: EditionText's
+ * relative wording on a current edition, dated wording inside
+ * [data-edition-content] on a dated one. The first paint already shows the
+ * final text, so nothing moves once the page is up. After parsing it keeps
+ * hydrated and later text honest, and decides again at UTC midnight, on
+ * pageshow and when the tab becomes visible. Without JavaScript, EditionText's
+ * server text is the dated form.
+ *
+ * `rules` below are the page locale's rules from src/lib/edition-freshness.ts,
+ * with the edition's date already in each replacement, so the browser dates
+ * text exactly as `datedEditionTextIn` does on the server;
+ * tests/edition-dated-drive.mjs holds the two to the same result.
+ */
+import { editionRules, inlineEditionRules, type EditionLocale } from '../lib/edition-freshness';
+
+interface Props {
+  editionDate: string;
+  locale: string;
+}
+
+const { editionDate, locale } = Astro.props;
+if (!editionRules(locale)) {
+  throw new Error(`EditionFreshnessGuard: no dated wording for locale "${locale}"; add its rules to src/lib/edition-freshness.ts`);
+}
+const rules = inlineEditionRules(locale as EditionLocale, editionDate);
+---
+<script is:inline define:vars={{ rules }}>
   (function () {
     var root = document.documentElement;
     var editionDate = root.getAttribute('data-edition-date');
     if (!editionDate) return;
 
-    function label() {
-      return new Intl.DateTimeFormat('en-US', {
-        month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
-      }).format(new Date(editionDate + 'T00:00:00.000Z'));
-    }
+    var compiled = rules.map(function (rule) { return [new RegExp(rule[0], rule[1]), rule[2]]; });
     function dated(value) {
-      var day = label();
-      return value
-        .replace(/\bToday[’']s\b/g, 'The ' + day + ' edition’s')
-        .replace(/\btoday[’']s\b/g, 'the ' + day + ' edition’s')
-        .replace(/\bToday,/g, 'For the ' + day + ' edition,')
-        .replace(/\bToday\b/g, 'The ' + day + ' edition')
-        .replace(/\bas of today\b/g, 'as of ' + day)
-        .replace(/\b(for|from|on|until|through|since|before|after|by) today\b/g, '$1 ' + day)
-        .replace(/\btoday\b/g, 'on ' + day);
+      return compiled.reduce(function (text, rule) { return text.replace(rule[0], rule[1]); }, value);
+    }
+    function decide() {
+      var state = editionDate === new Date().toISOString().slice(0, 10) ? 'current' : 'dated';
+      root.setAttribute('data-edition-state', state);
+      return state;
     }
     function editionText(node, state) {
-      if (!(node instanceof Element) || !node.matches('[data-edition-text]')) return false;
       var value = node.getAttribute(state === 'current' ? 'data-edition-current' : 'data-edition-dated');
       if (value !== null && node.textContent !== value) node.textContent = value;
-      return true;
+    }
+
+    var parsed = false;
+    // The parser can append the rest of a text node after its start was
+    // dated ("Today" before ", read"), so date the whole source again.
+    var sources = typeof WeakMap === 'function' ? new WeakMap() : null;
+    function dateText(node) {
+      var parent = node.parentElement;
+      if (!parent || parent.matches('script, style, noscript')
+        || parent.closest('[data-edition-text], [data-edition-current-only]')) return;
+      var value = node.nodeValue || '';
+      var seen = sources && sources.get(node);
+      var source = seen && value.indexOf(seen.dated) === 0
+        ? seen.source + value.slice(seen.dated.length)
+        : value;
+      var next = dated(source);
+      if (sources) sources.set(node, { source: source, dated: next });
+      if (next !== value) node.nodeValue = next;
     }
     function dateNode(node) {
       if (node.nodeType === Node.TEXT_NODE) {
-        if (node.parentElement && node.parentElement.closest('[data-edition-current-only]')) return;
-        var next = dated(node.nodeValue || '');
-        if (next !== node.nodeValue) node.nodeValue = next;
+        dateText(node);
         return;
       }
-      if (!(node instanceof Element) || node.matches('script, style, noscript')) return;
-      if (editionText(node, 'dated')) return;
+      if (node.nodeType !== Node.ELEMENT_NODE || node.matches('script, style, noscript')) return;
+      // A dated span's server text is final, but mid-parse it may still be
+      // arriving; put it back only after parsing.
+      if (node.matches('[data-edition-text]')) {
+        if (parsed) editionText(node, 'dated');
+        return;
+      }
       ['aria-label', 'title'].forEach(function (attribute) {
         var value = node.getAttribute(attribute);
         if (!value) return;
@@ -43,29 +86,57 @@
       });
       node.childNodes.forEach(dateNode);
     }
-    function isCurrent() {
-      return editionDate === new Date().toISOString().slice(0, 10);
-    }
     function update() {
-      var state = isCurrent() ? 'current' : 'dated';
-      root.setAttribute('data-edition-state', state);
+      var state = decide();
       document.querySelectorAll('[data-edition-text]').forEach(function (node) {
         editionText(node, state);
       });
       if (state === 'dated') document.querySelectorAll('[data-edition-content]').forEach(dateNode);
     }
-    function setup() {
-      update();
-      var observer = new MutationObserver(function (records) {
-        if (root.getAttribute('data-edition-state') !== 'dated') return;
-        records.forEach(function (record) {
-          if (record.type === 'characterData') dateNode(record.target);
-          record.addedNodes.forEach(dateNode);
+
+    // One node the parser, an island or a script has just added or changed.
+    function sync(node) {
+      var element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+      if (!element) return;
+      var span = element.closest('[data-edition-text]');
+      if (root.getAttribute('data-edition-state') === 'dated') {
+        if (span) dateNode(span);
+        else if (element.closest('[data-edition-content]')) dateNode(node);
+        return;
+      }
+      // Each span's server text is the longer dated label. Replace it as it
+      // arrives, and again if the parser appends more to the replacement.
+      if (span) editionText(span, 'current');
+      else if (node.nodeType === Node.ELEMENT_NODE) {
+        node.querySelectorAll('[data-edition-text]').forEach(function (match) {
+          editionText(match, 'current');
         });
+      }
+    }
+    function syncRecords(records) {
+      records.forEach(function (record) {
+        if (record.type === 'characterData') sync(record.target);
+        record.addedNodes.forEach(sync);
       });
-      document.querySelectorAll('[data-edition-content]').forEach(function (scope) {
-        observer.observe(scope, { childList: true, characterData: true, subtree: true });
-      });
+    }
+
+    decide();
+    var observer = 'MutationObserver' in window ? new MutationObserver(syncRecords) : null;
+    if (observer) observer.observe(root, { childList: true, characterData: true, subtree: true });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      parsed = true;
+      if (observer) {
+        syncRecords(observer.takeRecords());
+        observer.disconnect();
+      }
+      update();
+      // From here on only the edition scopes change, as islands hydrate.
+      if (observer) {
+        document.querySelectorAll('[data-edition-content]').forEach(function (scope) {
+          observer.observe(scope, { childList: true, characterData: true, subtree: true });
+        });
+      }
       function schedule() {
         var now = new Date();
         var next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
@@ -76,8 +147,12 @@
       });
       window.addEventListener('pageshow', update);
       schedule();
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup, { once: true });
-    else setup();
+    }, { once: true });
   })();
 </script>
+<style is:inline>
+  [data-edition-current-only] { display: none; }
+  [data-edition-dated-only] { display: inline; }
+  :root[data-edition-state="current"] [data-edition-current-only] { display: inline; }
+  :root[data-edition-state="current"] [data-edition-dated-only] { display: none; }
+</style>

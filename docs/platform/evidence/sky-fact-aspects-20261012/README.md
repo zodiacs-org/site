@@ -63,12 +63,25 @@ API's own parser and calculation.
 The local MCP adapter carries the change as 0.1.0-rc.23, and the developer
 plugin as 0.3.11.
 
-- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.23.tgz` is 125,468
+- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.23.tgz` is 125,534
   bytes, SHA-256
-  `113a8b8cac570769c27ff46f49bfff33ea56b629f11d2efa3af6d884507b2deb`, built
-  from commit `7c8ba924a45873cf75aa987f70f8a27d756c147c`. Its `server.mjs` has
+  `be720004e31cd583c34e2873799fb95654a7cf3b1d9ace4b18cff7deffd3f619`, built
+  from commit `7ec05433c18c708244673c3973bad55f97982e1c`. Its `server.mjs` has
   SHA-256 `cba42fac851f431f57e0578d593607844a8d8b80bf8b26850f46f479d19847fe`.
-- `integrations/packages/zodiacs-developer-0.3.11.zip` is 1,791,261 bytes.
+  It was packed again on 2026-10-13, after the merge of #730 and the
+  developer-query guides, because its `candidate.json` said it superseded
+  0.1.0-rc.19; it now names 0.1.0-rc.22, the latest archive the site served
+  before it, and `scripts/mcp-artifact.test.mjs` holds that field to the
+  served archives. The `server.mjs` the drives below ran is unchanged, byte for
+  byte.
+- `integrations/packages/zodiacs-developer-0.3.11.zip` is 1,835,229 bytes. Its
+  `mcp/server.mjs` also carries Chart Studio's fix for a birth date without a
+  time (F-91), which this change ships in the same plugin version. The plugin
+  registers the hosted tools' `check_sky_fact`, which keeps its four kinds and
+  refuses an aspect (`src/ai-tools/tools.test.ts`), and the adapter's chart
+  tools; its `get_local_chart_capabilities` still describes the adapter's sky
+  tools, which it does not register, and so lists `aspect` among their fact
+  kinds. Its release note says so.
 - [`../mcp-adapter/mcp-rc22-rc23.json`](../mcp-adapter/mcp-rc22-rc23.json)
   drives rc.22 and rc.23 with the same 278 tool calls, 10 of them refusals,
   after versions and digests are written out. One answer differs:

@@ -44,7 +44,7 @@ try {
       }
     }
   });
-  assert.equal(checked.length, 38);
+  assert.equal(checked.length, 52);
   console.log(JSON.stringify({ schema: 'zodiacs.developer-guide-browser.v1', browser: await browser.version(), checked }, null, 2));
 } finally {
   await browser.close();

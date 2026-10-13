@@ -137,7 +137,7 @@ function aspectCorpus(): Args[] {
     const body = index % 2 === 0 ? 'Moon' : pick(random, EVENT_BODIES);
     const other = pick(random, EVENT_BODIES.filter((candidate) => candidate !== body));
     const when = random() < 0.5 ? { instant: instantFor(random) } : { date: dateFor(random) };
-    const at = 'instant' in when && when.instant !== undefined ? when.instant : `${when.date}T12:00:00Z`;
+    const at = when.instant ?? `${when.date}T12:00:00Z`;
     const rows = value(getPositions({ instants: [at], bodies: [body, other] })).result.instants[0].bodies as Array<{ lon: number }>;
     const difference = Math.abs(rows[0].lon - rows[1].lon) % 360;
     const apart = difference > 180 ? 360 - difference : difference;
@@ -386,7 +386,7 @@ describe("refusals are the compute API's own sentences", () => {
     }
   });
 
-  it('refuses a zone, which check_sky_fact never reads, before any calculation, and keeps serving', async () => {
+  it('refuses a zone, which this adapter never reads, before any calculation, and keeps serving', async () => {
     const notes: string[] = [];
     const server = createServer((message) => notes.push(message));
     const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
@@ -462,7 +462,7 @@ describe('what the adapter says about the three tools', () => {
 
   it('describes them in the methodology resource', () => {
     const text = methodology();
-    expect(text).toContain('the eight tools');
+    expect(text).toContain('the six tools');
     expect(text).toContain('## Positions, events and sky facts');
     expect(text).toContain(ANY_ZONE_DAY_TEXT);
     expect(text).toContain('tested, not proven to miss nothing');

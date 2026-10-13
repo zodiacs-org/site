@@ -110,17 +110,34 @@ export function serializeLedger(ledger) {
  * Files outside the consumer surface that make claims to readers or to other
  * programs: the validation report, the llms file, the assistant's site guide,
  * the developer docs that ship inside the MCP adapter, platform starter and
- * plugin archives, and the precision alpha's README (finding F-23). The READMEs
- * under integrations/ are the maintainers' packaging and review notes, not
- * shipped.
+ * plugin archives (their READMEs, notices, candidate records, plugin
+ * manifests and the starter's pages), and the precision alpha's README
+ * (finding F-23). The developer plugin's ENGINE-NOTICE and ENGINE-LICENSING
+ * are the engine release's NOTICE and LICENSING, byte for byte, which are
+ * read under public/developers/engine/reference/release/; the tests hold the
+ * copies identical. The READMEs under integrations/ are the maintainers'
+ * packaging and review notes, not shipped.
  */
 export const SCOPE_ADD = Object.freeze([
   'docs/engine-validation/README.md',
+  'examples/mcp-server/NOTICE',
   'examples/mcp-server/README.md',
+  'examples/mcp-server/candidate.json',
   'examples/platform/README.md',
+  'examples/platform/candidate.json',
+  'examples/platform/src/natal.html',
+  'examples/platform/src/transits.html',
+  'examples/platform/src/widget.html',
   'examples/precision-alpha/README.md',
+  'plugins/zodiacs-developer/.codex-plugin/plugin.json',
+  'plugins/zodiacs-developer/NOTICE',
   'plugins/zodiacs-developer/README.md',
+  'plugins/zodiacs-developer/plugin.json',
+  'plugins/zodiacs-sky/.claude-plugin/plugin.json',
+  'plugins/zodiacs-sky/.codex-plugin/plugin.json',
+  'plugins/zodiacs-sky/NOTICE',
   'plugins/zodiacs-sky/README.md',
+  'plugins/zodiacs-sky/plugin.json',
   'public/llms-full.txt',
   'scripts/build-assistant-context.mjs',
 ]);
@@ -128,12 +145,34 @@ export const SCOPE_ADD = Object.freeze([
 /**
  * Generated developer docs the site serves as they were built (F-23): the
  * engine's API reference, with the README, licensing and notices of the
- * release it documents, and under /sdk/ the archived rc.1 reference and the
- * SDK pages, which Phase 1 froze.
+ * release it documents and its provenance record, and under /sdk/ the
+ * archived rc.1 reference, its notice, which has no extension, and the SDK
+ * pages, which Phase 1 froze; and what /examples/ serves beside the archives,
+ * their metadata and the notice for rc.8 to rc.10. Not read, each for its
+ * reason: the references' generated assets (TypeDoc's search index and
+ * navigation, built from the code's names and comments, which the pages
+ * render; its styles and icons); the archives of past releases, served
+ * unchanged as published, whose current files are read from their sources;
+ * and the sky benchmark's v0 files under /developers/sky-benchmark/, a frozen
+ * dataset of questions, answers and its scorer, which its page describes.
  */
 export const SCOPE_ADD_TREES = Object.freeze([
-  { root: 'public/developers/engine/reference', pattern: /\.(?:html|txt)$/u },
-  { root: 'public/sdk', pattern: /\.(?:html|md)$/u },
+  { root: 'public/developers/engine/reference', pattern: /\.(?:html|txt|json)$/u },
+  { root: 'public/examples', pattern: /^public\/examples\/[^/]+\.(?:json|txt)$/u },
+  { root: 'public/sdk', pattern: /(?:\.(?:html|md)|\/NOTICE)$/u },
+  // The skills the plugin archives ship, which a host loads as instructions.
+  { root: 'plugins', pattern: /^plugins\/[^/]+\/skills\/[^/]+\/SKILL\.md$/u },
+  // The hand-written files the starter, adapter and plugin archives ship
+  // beside their READMEs, notices and pages: the starter's scripts, sources
+  // and checks, the adapter's verify.mjs, the plugin's examples and the
+  // package manifests. Their generated bundles (the adapter's server.mjs, the
+  // plugin's mcp/server.mjs) are built from sources read here (src/mcp/,
+  // src/lib/compute-api/, src/ai-tools/), and mcp:build:check and ai:check
+  // require them to match; LICENSE files are licence texts, the lock files
+  // dependency data, and .mcp.json and mcp.json launch settings.
+  { root: 'examples/platform', pattern: /^examples\/platform\/(?:package\.json|(?:scripts|src|tests)\/[^/]+\.mjs)$/u },
+  { root: 'examples/mcp-server', pattern: /^examples\/mcp-server\/(?:package\.json|verify\.mjs)$/u },
+  { root: 'plugins', pattern: /^plugins\/[^/]+\/(?:package\.json|examples\/[^/]+\.mjs)$/u },
 ]);
 
 /** In the consumer surface, but not read here, each with its reason. */
@@ -149,9 +188,18 @@ export const SCOPE_DROP = Object.freeze([
   { pattern: /(?:^|\/)fixtures\/|\.fixture\.json$/u, reason: 'test fixtures, not copy' },
 ]);
 
-/** Trust files whose blocks are ledgered whole once any sentence in them is triggered. */
+/**
+ * Trust files whose blocks are ledgered whole once any sentence in them is
+ * triggered. The plugin manifests are among them: an assistant directory
+ * shows their descriptions as written, privacy sentences and all.
+ */
 export const DENSE_FILES = Object.freeze([
   'docs/engine-validation/README.md',
+  'plugins/zodiacs-developer/.codex-plugin/plugin.json',
+  'plugins/zodiacs-developer/plugin.json',
+  'plugins/zodiacs-sky/.claude-plugin/plugin.json',
+  'plugins/zodiacs-sky/.codex-plugin/plugin.json',
+  'plugins/zodiacs-sky/plugin.json',
   'public/llms-full.txt',
   'public/llms.txt',
   'src/pages/developers/engine/index.astro',
@@ -168,12 +216,21 @@ export const TRUST_PATTERNS = Object.freeze([
   /^src\/pages\/developers\//u,
   /^src\/data\/developer-guides\.json$/u,
   /^(?:examples|plugins)\/[^/]+\/README\.md$/u,
+  /^plugins\/[^/]+\/skills\/[^/]+\/SKILL\.md$/u,
+  /^plugins\/[^/]+\/(?:\.(?:claude|codex)-plugin\/)?plugin\.json$/u,
+  /^(?:examples\/mcp-server|plugins\/[^/]+)\/NOTICE$/u,
+  /^examples\/(?:mcp-server|platform)\/candidate\.json$/u,
+  /^examples\/platform\/src\/[^/]+\.html$/u,
+  /^examples\/platform\/(?:package\.json|(?:scripts|src|tests)\/[^/]+\.mjs)$/u,
+  /^examples\/mcp-server\/(?:package\.json|verify\.mjs)$/u,
+  /^plugins\/[^/]+\/(?:package\.json|examples\/[^/]+\.mjs)$/u,
   /^src\/mcp\/[^/]+\.ts$/u,
   /^src\/lib\/sky-api\/[^/]+\.ts$/u,
   /^src\/lib\/compute-api\/[^/]+\.ts$/u,
   /^scripts\/build-assistant-context\.mjs$/u,
   /^public\/developers\/engine\/reference\//u,
   /^public\/sdk\//u,
+  /^public\/examples\/[^/]+\.(?:json|txt)$/u,
 ]);
 
 /** Translated pages and catalogs, read with the NEUTRAL list. */
@@ -416,13 +473,51 @@ async function astroBlocks(source, file) {
   return blocks;
 }
 
+/**
+ * The string values of a Markdown file's front matter, which a host or a page
+ * shows (a skill's description, a page's title, FAQ answers): each scalar
+ * after a key or a list dash, quoted or plain, the items of an inline list and
+ * a block scalar's lines. Not a YAML parser: on the files in scope it gives
+ * the strings a YAML parser gives, and numbers and dates as text.
+ */
+function frontMatterStrings(block) {
+  const out = [];
+  const lines = block.split(/\r?\n/u);
+  const unquote = (raw) => {
+    const value = raw.trim();
+    if (value.startsWith('"') && value.endsWith('"') && value.length >= 2) return JSON.parse(value);
+    if (value.startsWith("'") && value.endsWith("'") && value.length >= 2) return value.slice(1, -1).replace(/''/gu, "'");
+    return value.replace(/\s+#.*$/u, '');
+  };
+  for (let i = 0; i < lines.length; i++) {
+    const match = lines[i].match(/^(\s*)(?:-\s+)?(?:[A-Za-z0-9_$-]+:\s*)?(.*)$/u);
+    if (!match || match[2] === '') continue;
+    const [, indent, value] = match;
+    if (/^[|>][+-]?\s*$/u.test(value)) {
+      const body = [];
+      while (i + 1 < lines.length && (lines[i + 1].trim() === '' || lines[i + 1].match(/^(\s*)/u)[1].length > indent.length)) body.push(lines[++i].trim());
+      out.push(body.join(value.startsWith('>') ? ' ' : '\n').trim());
+    } else if (/^\[.*\]$/u.test(value.trim())) {
+      for (const item of value.trim().slice(1, -1).match(/"(?:[^"\\]|\\.)*"|'(?:[^']|'')*'|[^,]+/gu) ?? []) out.push(unquote(item));
+    } else {
+      out.push(unquote(value));
+    }
+  }
+  return out.filter((string) => string.trim());
+}
+
 function markdownBlocks(source) {
-  return source
+  const front = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u);
+  return [...(front ? frontMatterStrings(front[1]) : []), ...source
     .replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/u, '')
     .replace(/<!--[\s\S]*?-->/gu, ' ')
-    // Fenced code is a command or an example output, not prose: the sentences
-    // an example prints are listed where the code that writes them is.
-    .replace(/^[ \t]{0,3}(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n[ \t]{0,3}\1[ \t]*$/gmu, '')
+    // Fenced code in a language is a command, an example or its output, not
+    // prose: the sentences an example prints are listed where the code that
+    // writes them is. A fence with no language, or a text one, only lays prose
+    // out (a file map, a note), so each of its lines is read as a block.
+    .replace(/^[ \t]{0,3}(`{3,}|~{3,})[ \t]*([^\n]*)\n([\s\S]*?)\n[ \t]{0,3}\1[ \t]*$/gmu,
+      (_fence, _marker, info, body) => (/^(?:|text|txt|plain|plaintext)$/iu.test(info.trim())
+        ? `\n\n${body.split(/\r?\n/u).filter((line) => line.trim()).join('\n\n')}\n\n` : ''))
     .split(/\r?\n\s*\r?\n/u)
     .filter((block) => !/^\s*(?:import|export)\s/u.test(block))
     .map((block) => block
@@ -431,7 +526,7 @@ function markdownBlocks(source) {
       .replace(/^\s{0,3}(?:#{1,6}|[-*+]|\d+\.|>)\s+/gmu, '')
       .replace(/[*`]+/gu, '')
       // Underscore emphasis only; an underscore inside a name (America/New_York) stays.
-      .replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:!?]|$)/gmu, '$1$2'));
+      .replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:!?]|$)/gmu, '$1$2'))];
 }
 
 function jsonBlocks(source) {
@@ -479,36 +574,91 @@ function htmlElementsWithClass(source, className) {
  * reference) is read for its prose: every doc comment, the README its index
  * renders, and its footer. Its signatures, member names and navigation are
  * generated from the code's own names, and its scripts hold the search index.
- * Any other page is read for its title, its description and the text of its
- * body. Scripts, styles, graphics and preformatted code are dropped, as fenced
- * code is from Markdown.
+ * Any other page is read for its title, its meta tags' content (the
+ * description and the social cards'), the text of its body (noscript blocks
+ * included) and its text attributes, its graphics' titles and descriptions,
+ * and the strings of its inline scripts. Styles, the rest of its graphics and
+ * preformatted code are dropped, as fenced code in a language is from
+ * Markdown.
  */
 function htmlBlocks(source) {
+  const typedoc = /\bclass="[^"]*\btsd-page-toolbar\b/u.test(source);
+  // An inline script may write what a reader sees (a payload, a status line),
+  // so its strings are read, as a script file's are; JSON in a script tag is
+  // read as JSON. A TypeDoc page's scripts hold its search index and navigation.
+  const scripted = typedoc ? [] : [...source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/giu)]
+    .filter(([, attributes, code]) => !/\bsrc\s*=/iu.test(attributes) && code.trim())
+    .flatMap(([, attributes, code]) => (/\btype\s*=\s*["']?application\/(?:ld\+)?json/iu.test(attributes)
+      ? jsonBlocks(code) : scriptBlocks(code, 'inline-script.js')));
+  // A graphic's title and description are its accessible text.
+  const graphics = typedoc ? [] : [...source.matchAll(/<svg\b[\s\S]*?<\/svg\s*>/giu)]
+    .flatMap(([svg]) => [...svg.matchAll(/<(title|desc)\b[^>]*>([\s\S]*?)<\/\1\s*>/giu)].map((match) => match[2]));
+  // A noscript block is read as body text: a reader without scripts sees it.
   const page = source
     .replace(/<!--[\s\S]*?-->/gu, ' ')
-    .replace(/<(script|style|svg|template|noscript)\b[\s\S]*?<\/\1\s*>/giu, ' ')
+    .replace(/<(script|style|svg|template)\b[\s\S]*?<\/\1\s*>/giu, ' ')
     .replace(/<pre\b[\s\S]*?<\/pre\s*>/giu, ' ');
   const head = page.match(/<head\b[^>]*>([\s\S]*?)<\/head\s*>/iu)?.[1] ?? '';
   const body = page.replace(/<head\b[^>]*>[\s\S]*?<\/head\s*>/iu, ' ');
-  const typedoc = /\bclass="[^"]*\btsd-page-toolbar\b/u.test(source);
   const parts = typedoc
     ? [...htmlElementsWithClass(body, 'tsd-typography'), ...[...body.matchAll(/<footer\b[^>]*>([\s\S]*?)<\/footer\s*>/giu)].map((match) => match[1])]
     : [
       head.match(/<title\b[^>]*>([\s\S]*?)<\/title\s*>/iu)?.[1] ?? '',
-      head.match(/<meta\s+name="description"\s+content="([^"]*)"/iu)?.[1] ?? '',
+      // Every meta tag's content: the description, and the social cards'
+      // (og:, twitter:) titles and descriptions a share shows.
+      ...[...head.matchAll(/<meta\b[^>]*\bcontent\s*=\s*"([^"]*)"[^>]*>/giu)].map((match) => match[1]),
+      // The text a reader meets in attributes: alternative text, titles,
+      // labels and placeholders.
+      ...[...body.matchAll(/\s(?:alt|title|aria-label|placeholder)\s*=\s*"([^"]*)"/giu)].map((match) => match[1]),
       body,
     ];
   // An inline element's text joins its neighbours' as a browser shows it.
-  return parts.flatMap((part) => part
+  return [...parts.flatMap((part) => part
     .replace(HTML_BREAKS, '\n\n')
     .replace(/<[^>]+>/gu, '')
-    .split(/\n\s*\n/u))
+    .split(/\n\s*\n/u)), ...scripted, ...graphics]
     .filter((block) => block.trim());
 }
 
+/** The hand-written scripts the archives ship, which a developer reads, comments included. */
+const SHIPPED_SCRIPT = /^(?:examples\/(?:platform|mcp-server)|plugins\/[^/]+\/examples)\/.*\.m?js$/u;
+
+/** A script's comments as blocks: a run of line comments on consecutive lines is one block. */
+function commentBlocks(source, file) {
+  const tree = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, scriptKindFor(file));
+  const ranges = new Map();
+  const collect = (position) => {
+    for (const range of [...(ts.getLeadingCommentRanges(source, position) ?? []), ...(ts.getTrailingCommentRanges(source, position) ?? [])]) ranges.set(range.pos, range);
+  };
+  const visit = (node) => {
+    collect(node.getFullStart());
+    collect(node.getEnd());
+    ts.forEachChild(node, visit);
+  };
+  visit(tree);
+  collect(tree.endOfFileToken.getFullStart());
+  const blocks = [];
+  let previous = null;
+  for (const range of [...ranges.values()].sort((a, b) => a.pos - b.pos)) {
+    const raw = source.slice(range.pos, range.end);
+    if (range.kind === ts.SyntaxKind.SingleLineCommentTrivia) {
+      const text = raw.replace(/^\/\/\s?/u, '');
+      if (previous && /^[ \t]*\r?\n[ \t]*$/u.test(source.slice(previous.end, range.pos))) blocks[blocks.length - 1] += ` ${text}`;
+      else blocks.push(text);
+      previous = range;
+    } else {
+      blocks.push(raw.replace(/^\/\*+|\*+\/$/gu, '').replace(/^\s*\*\s?/gmu, ' '));
+      previous = null;
+    }
+  }
+  return blocks.map((text) => text.replace(/\s+/gu, ' ').trim()).filter(Boolean);
+}
+
 export async function extractBlocks(file, source) {
+  if (SHIPPED_SCRIPT.test(file)) return [...scriptBlocks(source, file), ...commentBlocks(source, file)];
   if (file.endsWith('.astro')) return astroBlocks(source, file);
-  if (/\.(?:md|mdx|txt)$/u.test(file)) return markdownBlocks(source);
+  // A notice without an extension is plain text, read as Markdown reads it.
+  if (/\.(?:md|mdx|txt)$/u.test(file) || /(?:^|\/)NOTICE$/u.test(file)) return markdownBlocks(source);
   if (file.endsWith('.json')) return jsonBlocks(source);
   if (file.endsWith('.html')) return htmlBlocks(source);
   return scriptBlocks(source, file);

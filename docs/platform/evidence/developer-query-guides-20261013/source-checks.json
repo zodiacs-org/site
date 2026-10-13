@@ -1,0 +1,51 @@
+{
+  "schema": "zodiacs.s4-source-checks.v1",
+  "readAt": "2026-10-13",
+  "note": "Each file was fetched once on the date given; the digest is of the bytes read. The findings are this record's own summaries.",
+  "checks": [
+    {
+      "url": "https://raw.githubusercontent.com/aloistr/swisseph/master/LICENSE",
+      "sha256": "b6345743292c516d07799dfad46f1a641e5270da2160cc4d6bd54594d6faa991",
+      "finding": "Swiss Ephemeris is offered under a dual licence: the GNU AGPL or the Swiss Ephemeris Professional License."
+    },
+    {
+      "url": "https://api.github.com/repos/aloistr/swisseph/releases/latest",
+      "sha256": "54cb392b53c0e1b96575df51dd4aa67f25b9e61832f28c4743f17c4689b9cb83",
+      "finding": "Astrodienst's latest Swiss Ephemeris release is 2.10.3b final release (tag v2.10.3bfinal), published 2026-08-02."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mivion/swisseph/master/LICENSE",
+      "sha256": "a45d0bb572ed792ed34627a72621834b3ba92aab6e2cc4e04301dee7a728d753",
+      "finding": "The swisseph repository's licence file is the GNU GPL, version 2 (June 1991)."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/timotejroiko/sweph/master/README.md",
+      "sha256": "4bbd5d7e2adf376c21067b0c23520df6c1d208c1ea7aff23c8dc3e1b3d771265",
+      "finding": "sweph is GPL-2.0 up to 2.10.0, AGPL-3.0 from 2.10.1, and LGPL-3.0 for holders of a Swiss Ephemeris professional licence; its versions are locked to Swiss Ephemeris, 2.10.3-x being Swiss Ephemeris 2.10.03."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/g-battaglia/kerykeion/main/LICENSING.md",
+      "sha256": "62ce9003c5bc57c597246857805fe4139d331b53b9f5edff5f75d7c63af6b20d",
+      "finding": "kerykeion's licensing document is marked as a draft, not legally effective; its PyPI packages are AGPL-3.0."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/theriftlab/immanuel-python/master/README.md",
+      "sha256": "742ecd6fc96786d6552faf4684362bb89e1739ebd08b024493f34499b901b7c4",
+      "finding": "immanuel's README gives the GNU AGPL, version 3 or any later version."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/hemantgoswami/ephemeris/master/README.md",
+      "sha256": "db57acb44e0d971dab0e1a00c95b391fa91411919c5a87d20fc5a27a7edd97bc",
+      "finding": "ephemeris computes with Moshier's analytic ephemeris by default, in JavaScript, and can use Swiss Ephemeris through sweph instead."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/flatangle/flatlib/master/README.md",
+      "sha256": "25f731a068a9bc91b02995a5640a5298ce2343f1735471021948fb542d8210f3",
+      "finding": "flatlib's README says it is deprecated and no longer supported."
+    },
+    {
+      "url": "https://api.github.com/repos/flatangle/flatlib",
+      "finding": "The flatlib repository is archived; it was last pushed on 2026-10-09."
+    }
+  ]
+}

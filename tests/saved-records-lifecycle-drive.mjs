@@ -515,6 +515,29 @@ try {
       return { outcomes };
     });
 
+    await check('device mode: a confirmed keep stays confirmed when another tab keeps a different calculation', async () => {
+      const { context, blocked, errors } = await newContext();
+      const first = await context.newPage();
+      const second = await context.newPage();
+      await computeKnownTime(first);
+      await computeKnownTime(second, { date: '1985-03-02', time: '09:15', place: 'Paris' });
+      await waitKeepState(first, ['idle']);
+      assert.equal(await keep(first), 'kept');
+      await waitKeepState(second, ['idle']);
+      assert.equal(await keep(second), 'kept');
+      // The second keep re-opens the first tab's scope; the first tab's own
+      // record is still there, so its "Kept" must not fall back to a live
+      // button that would store the same calculation twice.
+      await first.waitForTimeout(1500);
+      assert.equal(await keepState(first), 'kept');
+      assert.equal(await first.isDisabled('[data-keep-calculation-record]'), true);
+      assert.equal(await gotoProfile(second), 'ready');
+      assert.equal(await recordCount(second), 2);
+      assert.deepEqual(blocked, []); assert.deepEqual(errors, []);
+      await context.close();
+      return {};
+    });
+
     await check('device mode: a single removal in another tab reaches open inventories and the calculator without reload', async () => {
       const { context, blocked, errors } = await newContext();
       const calculator = await context.newPage();

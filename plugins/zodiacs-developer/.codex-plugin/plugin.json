@@ -46,7 +46,7 @@
     "com.openai": {
       "onboardingSkill": "./skills/build-with-zodiacs/SKILL.md",
       "publication": {
-        "release_notes": "0.3.12: It bundles MCP adapter 0.1.0-rc.24. Its get_local_chart_capabilities now describes the chart tools alone, without the adapter's sky, time and place sections, their limits and their citation sentence, which name tools this plugin does not register; its tools and engine 1.0.0 are 0.3.11's. Earlier review archives remain available."
+        "release_notes": "0.3.12: Its local chart tools are MCP adapter 0.1.0-rc.24's. Its get_local_chart_capabilities now describes the chart tools alone, without the adapter's sky, time and place sections, their limits and their citation sentence, which name tools this plugin does not register, so it no longer lists aspect among their fact kinds. Earlier review archives remain available."
       }
     }
   }

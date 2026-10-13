@@ -33,6 +33,7 @@ import {
   LEXICON_VERSION,
   nearestRecord,
   readLedger,
+  SCOPE_ADD,
   selectFileSentences,
   selectSentences,
   splitSentences,
@@ -326,6 +327,90 @@ describe('claims ledger', () => {
       inject: (source) => source.replace('<div class="tsd-comment tsd-typography"><p>', '<div class="tsd-comment tsd-typography"><p>Positions are verified against <code>JPL</code> to 2″.</p><p>'),
       texts: ['Positions are verified against JPL to 2″.'],
     });
+    controls.push({
+      // The archived reference's notice has no extension; it is read as plain text, sentence by sentence.
+      path: 'public/sdk/engine/media/NOTICE',
+      inject: (source) => `${source}\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    expect(selection.files).toContain('public/sdk/engine/media/NOTICE');
+    controls.push({
+      // A Markdown file's front matter is read: a skill's description is what a host shows.
+      path: 'plugins/zodiacs-developer/skills/build-with-zodiacs/SKILL.md',
+      inject: (source) => source.replace(/^description: .*$/mu, 'description: "Positions are verified against JPL to 2″. Nothing is sent to a server."'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // The skills the plugin archives ship are read as the READMEs are.
+      path: 'plugins/zodiacs-developer/skills/verify-astrology-output/SKILL.md',
+      inject: (source) => `${source}\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    for (const skill of ['zodiacs-developer/skills/build-with-zodiacs', 'zodiacs-developer/skills/test-astrology-integration', 'zodiacs-developer/skills/verify-astrology-output', 'zodiacs-sky/skills/explore-the-sky']) {
+      expect(selection.files).toContain(`plugins/${skill}/SKILL.md`);
+    }
+    controls.push({
+      // A plugin manifest is read string by string, as every JSON file in scope is.
+      path: 'plugins/zodiacs-sky/.claude-plugin/plugin.json',
+      inject: (source) => source.replace('"displayName": "Zodiacs",', '"displayName": "Zodiacs",\n  "summary": "Positions are verified against JPL to 2″. Nothing is sent to a server.",'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // The starter's pages are read as HTML.
+      path: 'examples/platform/src/widget.html',
+      inject: (source) => source.replace('<fieldset>', '<p>Positions are verified against <code>JPL</code> to 2″. Nothing is sent to a server.</p>\n<fieldset>'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // The adapter's NOTICE, like the archived reference's, is plain text.
+      path: 'examples/mcp-server/NOTICE',
+      inject: (source) => `${source}\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // The starter's scripts are read for their strings, as the site's own code is.
+      path: 'examples/platform/src/calculate.mjs',
+      inject: (source) => `${source}\nexport const control = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // So are their comments, which a developer reads: consecutive line comments are one block.
+      path: 'examples/platform/src/app.mjs',
+      inject: (source) => `${source}\n// Positions are verified against JPL to 2″.\n// Nothing is sent to a server.\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // A fence with no language only lays prose out, so its lines are read.
+      path: 'examples/precision-alpha/README.md',
+      inject: (source) => `${source}\n\n\`\`\`\nPositions are verified against JPL to 2″. Nothing is sent to a server.\n\`\`\`\n`,
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // A page's social card and its text attributes are read as its description is.
+      path: 'examples/platform/src/widget.html',
+      inject: (source) => source
+        .replace('</head>', '<meta property="og:description" content="Positions are verified against JPL to 2″."></head>')
+        .replace('<fieldset>', '<fieldset><img src="x.png" alt="Nothing is sent to a server.">'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // A noscript block and a graphic's title are text a reader can meet.
+      path: 'examples/platform/src/natal.html',
+      inject: (source) => source.replace('</body>', '<noscript>Positions are verified against JPL to 2″.</noscript><svg><title>Nothing is sent to a server.</title></svg></body>'),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    controls.push({
+      // An inline script on a page that is not a TypeDoc reference is read for its strings.
+      path: 'public/sdk/examples/simastry-aura/index.html',
+      inject: (source) => source.replace('</body>', "<script>document.title = 'Positions are verified against JPL to 2″. Nothing is sent to a server.';</script></body>"),
+      texts: ['Positions are verified against JPL to 2″.', 'Nothing is sent to a server.'],
+    });
+    for (const path of ['examples/platform/src/app.mjs', 'examples/platform/scripts/build.mjs', 'examples/platform/tests/receipt.check.mjs', 'examples/mcp-server/verify.mjs', 'plugins/zodiacs-developer/examples/calendar.mjs']) {
+      expect(selection.files).toContain(path);
+    }
+    for (const path of SCOPE_ADD) expect(selection.files).toContain(path);
+    // A directory shows a manifest's description whole, so it is read whole.
+    for (const path of SCOPE_ADD.filter((file) => /plugin\.json$/u.test(file))) expect(tierOf(path), path).toBe('dense');
     const missed = [];
     for (const control of controls) {
       const source = read(control.path);
@@ -342,6 +427,10 @@ describe('claims ledger', () => {
     expect(signature).not.toBe(page);
     expect((await selectFileSentences('public/developers/engine/reference/functions/engine.natalChart.html', signature))
       .filter((sentence) => sentence.text.includes('JPL'))).toEqual([]);
+    // Fenced code in a language is code: the same words there are not selected.
+    const fenced = `${read('examples/precision-alpha/README.md')}\n\n\`\`\`js\n// Positions are verified against JPL to 2″.\nconst note = 'Nothing is sent to a server.';\n\`\`\`\n`;
+    expect((await selectFileSentences('examples/precision-alpha/README.md', fenced))
+      .filter((sentence) => /JPL to 2″|Nothing is sent/u.test(sentence.text))).toEqual([]);
 
     expect(splitSentences('It is accurate, e.g. to 1″ in 2020. The next sentence starts here.'))
       .toEqual(['It is accurate, e.g. to 1″ in 2020.', 'The next sentence starts here.']);

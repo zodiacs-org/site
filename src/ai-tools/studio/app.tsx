@@ -5,7 +5,7 @@ import { buildSceneModel } from '../../lib/scene/build';
 import { emphasisFor } from '../../lib/scene/emphasis';
 import { entityId, parseEntityId, type EntityRef } from '../../lib/scene/types';
 import { formatLongitude, SIGNS } from '../../lib/signs';
-import { calculateStudio, compareStudio, EXAMPLE, houseName, recordText, selectionContext, type StudioInput } from './model';
+import { calculateStudio, compareStudio, EXAMPLE, houseName, recordText, selectionContext, sunSignsForDate, type StudioInput } from './model';
 import { StudioBridge } from './bridge';
 import { TimeExplorer } from './TimeExplorer';
 import { RecordInspector } from './RecordInspector';
@@ -44,6 +44,8 @@ function RecordExport({ text }: { text: string }) {
   </div>;
 }
 
+const signLabel = (slug: string) => SIGNS.find(sign => sign.slug === slug)?.name ?? slug;
+
 function App() {
   const [draft, setDraft] = useState<StudioInput>({ ...EXAMPLE });
   const [applied, setApplied] = useState<StudioInput>({ ...EXAMPLE });
@@ -76,6 +78,8 @@ function App() {
   const scene = useMemo(() => buildSceneModel(run.chart, { wheelConventions: false }), [run]);
   const emphasis = useMemo(() => emphasisFor(scene, selection), [scene, selection]);
   const otherSystem = applied.houseSystem === 'placidus' ? 'whole' : 'placidus';
+  // Without a birth time, the Sun's sign may differ across the date's readings in the world's time zones.
+  const sunSigns = useMemo(() => run.chart.input.timeKnown ? [] : sunSignsForDate(applied.date), [run, applied]);
   const comparisonResult = useMemo(() => {
     if (!compare || !run.chart.houses) return { run: null, error: '' };
     try { return { run: calculateStudio({ ...applied, houseSystem: otherSystem }), error: '' }; }
@@ -115,7 +119,7 @@ function App() {
       <p class="lede">Your chart is worked out inside this panel. Nothing is saved, and the assistant sees only what you choose to share.</p>
       <LocalTimeEntry input={draft} title="Birth date, time and place" intro="Use the time on your birth certificate if you have it, and the town or city you were born in." applyLabel="Make my chart" onApply={input => { apply(input); setStarted(true); }} />
       <details class="unknown-time"><summary>I don't know my birth time</summary>
-        <p>Without a birth time we use midday as a stand-in. Your Sun sign is reliable; your rising sign and houses can't be shown, and the Moon may have changed sign that day.</p>
+        <p>Without a birth time we use 12:00 UTC on your birth date as a stand-in. Your rising sign and houses can't be shown, and the Moon may have changed sign that day. Your Sun sign holds unless the Sun changed sign around that date; the chart will say if it did.</p>
         <form onSubmit={e => { e.preventDefault(); if (unknownDate) { apply({ ...EXAMPLE, date: unknownDate, time: '12:00', timeKnown: false, latitude: '', longitude: '' }); setStarted(true); } }}>
           <label>Birth date<input type="date" required min="1800-01-01" max="2199-12-31" value={unknownDate} onInput={e => setUnknownDate(e.currentTarget.value)} /></label>
           <button type="submit" disabled={!unknownDate}>Make my chart without a time</button>
@@ -155,7 +159,7 @@ function App() {
         <div class="wheel-wrap" ref={wheelRoot}><Wheel bodies={run.chart.bodies} asc={run.chart.angles?.asc} mc={run.chart.angles?.mc} cusps={run.chart.houses?.cusps} aspects={run.chart.aspects} size={520} deferIcons interactive={{ scene, selection, emphasis, onSelect: select, label: 'Select a chart element' }} /></div>
         <div class="chart-caption"><span>Tropical zodiac</span><span>{run.chart.houses ? `${houseName(run.chart.houses.system)} houses` : 'No houses or angles'}</span><span>Engine {run.chart.engineVersion}</span></div>
         {run.chart.flags.includes('polar-fallback') && <p class="callout">Placidus is unavailable at this latitude. The engine used whole-sign houses; the receipt records the fallback.</p>}
-        {!run.chart.input.timeKnown && <p class="callout">Birth time unknown. Positions use midday as a stand-in, so the rising sign and houses aren't shown, and the Moon may have been in a different sign at your actual time of birth.</p>}
+        {!run.chart.input.timeKnown && <p class="callout">Birth time unknown. Positions are for 12:00 UTC on your birth date, so the rising sign and houses aren't shown, and the Moon may have been in a different sign at your actual time of birth.{sunSigns.length > 1 && ` The Sun moved from ${signLabel(sunSigns[0])} into ${signLabel(sunSigns[1])} around this date, so your Sun sign depends on when and where you were born.`}</p>}
         {run.chart.input.timeKnown && !run.chart.houses && <p class="callout">No location supplied. Add both coordinates to calculate houses and angles.</p>}
         <div class="compare-control"><label class="check"><input type="checkbox" checked={compare} disabled={!run.chart.houses} onChange={e => setCompare(e.currentTarget.checked)} /> Compare house systems</label>{comparison && <span>{changed} of {changes.length} placements change house</span>}</div>
         {comparisonResult.error && <p class="error" role="alert">{comparisonResult.error}</p>}
