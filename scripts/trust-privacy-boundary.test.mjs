@@ -14,6 +14,13 @@ describe('owner privacy boundaries', () => {
     expect(source).not.toMatch(/webcal:|api\/calendar|calendarToken|data-calendar-subscribe/);
     expect(read('api/calendar/transits.ts')).toContain("send(res, 410, 'text/plain'");
   });
+  it('describes neither retired path as live in the llms files', () => {
+    for (const file of ['public/llms.txt', 'public/llms-full.txt']) {
+      const text = read(file);
+      expect(text, file).not.toMatch(/preview service|link with a preview|calendar feed carries|receive at each refresh/u);
+    }
+    expect(read('public/llms-full.txt')).toContain('was retired on 2026-10-03 and answers 410 Gone');
+  });
   it('ships both approved notices in all six catalogs and privacy pages', () => {
     for (const locale of ['en', 'es', 'pt', 'fr', 'it', 'ru']) {
       const catalog = read(`src/lib/i18n/ui/${locale}.ts`);

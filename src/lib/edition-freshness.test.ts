@@ -4,9 +4,12 @@ import type { Daily } from './daily';
 import {
   datedEditionText,
   datedEditionTextIn,
+  datedEditionTitleIn,
   editionDateLabel,
   editionRules,
+  editionTitleRules,
   inlineEditionRules,
+  inlineEditionTitleRules,
   isCurrentUtcEdition,
   millisecondsUntilNextUtcDay,
   type EditionLocale,
@@ -69,10 +72,10 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       ['es', 'Hoy', 'El cielo del 12 de octubre de 2026'],
       ['es', 'Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo de hoy, leídas desde las casas solares de tu signo.',
         'Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo del 12 de octubre de 2026, leídas desde las casas solares de tu signo.'],
-      ['es', '¿Tienes tu carta natal? La comparación privada con el cielo de hoy vive en',
-        '¿Tienes tu carta natal? La comparación privada con el cielo del 12 de octubre de 2026 vive en'],
+      ['es', '¿Tienes tu carta natal? La comparación privada con el cielo de hoy está en',
+        '¿Tienes tu carta natal? La comparación privada con el cielo del 12 de octubre de 2026 está en'],
       ['es', 'Horóscopos de hoy', 'Horóscopos del 12 de octubre de 2026'],
-      ['es', 'Busca tu signo para la nota más concreta del cielo de hoy.', 'Busca tu signo para la nota más concreta del cielo del 12 de octubre de 2026.'],
+      ['es', 'Busca tu signo y encontrarás la nota más concreta del cielo de hoy.', 'Busca tu signo y encontrarás la nota más concreta del cielo del 12 de octubre de 2026.'],
       ['es', 'Leer hoy →', 'Lectura del 12 de octubre de 2026 →'],
       ['es', 'Un cielo tranquilo hoy.', 'Un cielo tranquilo el 12 de octubre de 2026.'],
       ['pt', 'Hoje', 'O céu de 12 de outubro de 2026'],
@@ -81,7 +84,7 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       ['pt', 'Já tem o seu mapa astral? A comparação privada com o céu de hoje está na',
         'Já tem o seu mapa astral? A comparação privada com o céu de 12 de outubro de 2026 está na'],
       ['pt', 'Horóscopos de hoje', 'Horóscopos de 12 de outubro de 2026'],
-      ['pt', 'Encontre o seu signo para a nota mais concreta do céu de hoje.', 'Encontre o seu signo para a nota mais concreta do céu de 12 de outubro de 2026.'],
+      ['pt', 'Encontre o seu signo e veja a nota mais concreta sobre o céu de hoje.', 'Encontre o seu signo e veja a nota mais concreta sobre o céu de 12 de outubro de 2026.'],
       ['pt', 'Ler hoje →', 'Leitura de 12 de outubro de 2026 →'],
       ['pt', 'Um céu tranquilo hoje.', 'Um céu tranquilo em 12 de outubro de 2026.'],
     ];
@@ -96,8 +99,8 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       const pt = signName(sign, 'pt');
       expect(datedEditionTextIn('es', `\n  ${es} hoy\n`, date)).toBe(`\n  ${es}, ${label.es}\n`);
       expect(datedEditionTextIn('pt', `\n  ${pt} hoje\n`, date)).toBe(`\n  ${pt} em ${label.pt}\n`);
-      expect(datedEditionTextIn('es', `Horóscopo de hoy de ${es}`, date)).toBe(`Horóscopo de ${es} del ${label.es}`);
-      expect(datedEditionTextIn('pt', `Horóscopo de hoje de ${pt}`, date)).toBe(`Horóscopo de ${pt} de ${label.pt}`);
+      expect(datedEditionTextIn('es', `Horóscopo de ${es} de hoy`, date)).toBe(`Horóscopo de ${es} del ${label.es}`);
+      expect(datedEditionTextIn('pt', `Horóscopo de ${pt} de hoje`, date)).toBe(`Horóscopo de ${pt} de ${label.pt}`);
     }
   });
 
@@ -164,8 +167,8 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
   it('inlines rules that date text in the browser exactly as on the server', () => {
     const samples = {
       en: ['Today', 'Compare today’s sky, as of today.', 'Today, read today’s sky.'],
-      es: ['Hoy', '\n  Piscis hoy\n', 'Horóscopo de hoy de Cáncer', 'La Luna pasa hoy por tu sexta casa: el trabajo.', 'Leer hoy →', 'Horóscopos de hoy'],
-      pt: ['Hoje', '\n  Leão hoje\n', 'Horóscopo de hoje de Gêmeos', 'Vênus entra hoje na sua décima segunda casa e coloca o foco', 'Ler hoje →', 'céu de hoje'],
+      es: ['Hoy', '\n  Piscis hoy\n', 'Horóscopo de Cáncer de hoy', 'La Luna pasa hoy por tu sexta casa: el trabajo.', 'Leer hoy →', 'Horóscopos de hoy'],
+      pt: ['Hoje', '\n  Leão hoje\n', 'Horóscopo de Gêmeos de hoje', 'Vênus entra hoje na sua décima segunda casa e coloca o foco', 'Ler hoje →', 'céu de hoje'],
     } as const;
     for (const locale of ['en', 'es', 'pt'] as const) {
       const rules = inlineEditionRules(locale, date).map(([source, flags, replacement]) => [new RegExp(source, flags), replacement] as const);
@@ -177,3 +180,47 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
     }
   });
 });
+
+describe('dated tab titles and the pt-BR first of the month', () => {
+  it('writes the first of a month as 1º in pt-BR, exactly as the pages print it', () => {
+    expect(editionDateLabel('2026-11-01', 'pt')).toBe('1º de novembro de 2026');
+    expect(editionDateLabel('2026-11-11', 'pt')).toBe('11 de novembro de 2026');
+    expect(editionDateLabel('2026-11-21', 'pt')).toBe('21 de novembro de 2026');
+    expect(editionDateLabel('2026-11-01', 'es')).toBe('1 de noviembre de 2026');
+    expect(editionDateLabel('2026-11-01', 'en')).toBe('November 1, 2026');
+    const options = { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' } as const;
+    expect(formatDate('pt', '2026-11-01T12:00:00Z', options)).toBe('1º de novembro de 2026');
+    expect(formatDate('pt', '2026-11-01T12:00:00Z', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' })).toBe('01/11/2026');
+    expect(datedEditionTextIn('pt', 'Hoje', '2026-11-01')).toBe('O céu de 1º de novembro de 2026');
+  });
+
+  it('dates each Spanish and Portuguese tab title and leaves English as it is', () => {
+    const titles: [string, string, string][] = [
+      ['es', 'Hoy — el cielo del 12 de octubre de 2026 | Zodiacs.org', 'El cielo del 12 de octubre de 2026 | Zodiacs.org'],
+      ['es', 'Horóscopos de hoy — 12 de octubre de 2026 | Zodiacs.org', 'Horóscopos del 12 de octubre de 2026 | Zodiacs.org'],
+      ['pt', 'Hoje — o céu de 1º de novembro de 2026 | Zodiacs.org', 'O céu de 1º de novembro de 2026 | Zodiacs.org'],
+      ['pt', 'Horóscopos de hoje — 12 de outubro de 2026 | Zodiacs.org', 'Horóscopos de 12 de outubro de 2026 | Zodiacs.org'],
+      ['en', 'Daily Horoscopes — October 12, 2026, All 12 Signs | Zodiacs.org', 'Daily Horoscopes — October 12, 2026, All 12 Signs | Zodiacs.org'],
+    ];
+    for (const [locale, title, dated] of titles) expect(datedEditionTitleIn(locale, title)).toBe(dated);
+    for (const sign of SIGNS) {
+      const es = signName(sign, 'es');
+      const pt = signName(sign, 'pt');
+      expect(datedEditionTitleIn('es', `Horóscopo de ${es} hoy, 12 de octubre | Zodiacs.org`)).toBe(`Horóscopo de ${es} del 12 de octubre | Zodiacs.org`);
+      expect(datedEditionTitleIn('pt', `Horóscopo de ${pt} hoje, 1º de novembro | Zodiacs.org`)).toBe(`Horóscopo de ${pt} de 1º de novembro | Zodiacs.org`);
+    }
+    expect(editionTitleRules('en')).toEqual([]);
+    expect(editionTitleRules('fr')).toEqual([]);
+  });
+
+  it('inlines title rules that date a title in the browser exactly as on the server', () => {
+    for (const [locale, title] of [['es', 'Horóscopo de Piscis hoy, 12 de octubre | Zodiacs.org'], ['pt', 'Hoje — o céu de 12 de outubro de 2026 | Zodiacs.org']] as const) {
+      const browser = inlineEditionTitleRules(locale)
+        .map(([source, flags, replacement]) => [new RegExp(source, flags), replacement] as const)
+        .reduce((value, [pattern, replacement]) => value.replace(pattern, replacement), title as string);
+      expect(browser).toBe(datedEditionTitleIn(locale, title));
+      expect(browser).not.toBe(title);
+    }
+  });
+});
+

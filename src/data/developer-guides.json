@@ -495,6 +495,382 @@
     ]
   },
   {
+    "slug": "astrology-api",
+    "title": "Astrology API",
+    "description": "Compute charts, positions, houses, events, local times and sky facts over HTTP: seven POST endpoints, no key, and a receipt with every answer.",
+    "installation": false,
+    "sections": [
+      {
+        "heading": "Call the Compute API",
+        "paragraphs": [
+          "The Compute API has seven POST endpoints under https://zodiacs.org/api/v1/: chart, positions, houses, events, time, sky-fact and elections. It needs no key and no account. You send JSON; each answer gives the result, a receipt that says how it was computed, and the name and version of the engine that computed it.",
+          "This example lists a month of sign changes, stations and new and full moons for three bodies. It is the API's own documented request, and the guide checks run this code against the API's committed answer to it."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "const response = await fetch('https://zodiacs.org/api/v1/events', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({\n    from: '2026-10-01T00:00:00Z',\n    to: '2026-11-01T00:00:00Z',\n    bodies: ['Sun', 'Mercury', 'Venus'],\n    kinds: ['ingress', 'station', 'lunation'],\n  }),\n});\nconst answer = await response.json();\nif (!response.ok) throw new Error(`The service refused this request: ${response.status} ${answer.error?.code}`);\nfor (const event of answer.result.events) console.log(event.at, event.kind, event.type ?? '', event.body ?? '', event.sign);\nconsole.log(answer.backend.name, answer.backend.version, answer.cite.receipt);"
+        }
+      },
+      {
+        "heading": "What comes back",
+        "paragraphs": [
+          "The receipt names the conventions behind the numbers, among them the tropical zodiac, apparent geocentric positions and the time scale, the engine and its ephemeris, and the coverage the answer can claim. Its SHA-256 is cite.receipt, to store beside a result and show later what produced it. For a chart or houses the receipt holds the birth instant and place, so its digest can identify them: keep it as you keep birth details.",
+          "A refusal is a fixed sentence with a code, such as invalid-request or budget-exhausted, and a 429 or 503 answer carries Retry-After. The limits, such as 92 days for an events window, are on the API reference."
+        ]
+      },
+      {
+        "heading": "This API or another",
+        "paragraphs": [
+          "The API runs @zodiacs/engine 1.0.0, which is on npm under MIT AND CC-BY-4.0. The same calculation can run in your own process instead, with no request leaving it, and its receipt names the same engine.",
+          "Swiss Ephemeris is licensed under the AGPL or Astrodienst's paid Swiss Ephemeris Professional License. This API does not use it: the engine's tests compare its positions with NASA JPL Horizons, and published records compare them with Swiss Ephemeris.",
+          "The function writes nothing from a request or its result to a log, a file or a database, but the host's short-lived logs keep the full web address and the IP address of every request: put birth details in the body, never in the address."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Compute API reference",
+        "url": "/developers/compute/"
+      },
+      {
+        "label": "OpenAPI",
+        "url": "/api/v1/openapi.json"
+      },
+      {
+        "label": "Engine validation",
+        "url": "/developers/engine/"
+      },
+      {
+        "label": "Swiss Ephemeris licensing (Astrodienst)",
+        "url": "https://www.astro.com/swisseph/swephinfo_e.htm"
+      }
+    ]
+  },
+  {
+    "slug": "birth-chart-api",
+    "title": "Birth chart API",
+    "description": "Calculate a birth chart over HTTP from a local birth time and place, with skipped and repeated clock times, local mean time and the zone history stated rather than guessed.",
+    "installation": false,
+    "sections": [
+      {
+        "heading": "A chart from a local birth time",
+        "paragraphs": [
+          "POST /api/v1/chart takes a local date and time with an IANA time zone, or a UTC instant, with a latitude, an east longitude and a house system. It answers with the Sun, the Moon, the planets and the lunar nodes, the angles, the house cusps and the major aspects, and the UTC instant it used.",
+          "The birth details here are synthetic, from the API's documented example; the guide checks run this code against the committed answer."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "const response = await fetch('https://zodiacs.org/api/v1/chart', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({\n    local: { date: '1990-06-15', time: '14:30', zone: 'Europe/Paris' },\n    latitude: 48.8566,\n    longitude: 2.3522,\n    houseSystem: 'whole',\n  }),\n});\nconst answer = await response.json();\nif (!response.ok) throw new Error(`The service refused this request: ${response.status} ${answer.error?.code}`);\nconst { instant, local, bodies, angles } = answer.result;\nconsole.log(instant, local.offsetMinutes, local.flags);\nfor (const { body, sign, degree } of bodies) console.log(body, sign, degree.toFixed(2));\nconsole.log('Ascendant', angles.asc.toFixed(2));"
+        }
+      },
+      {
+        "heading": "How the time was read",
+        "paragraphs": [
+          "For a local time the answer says how it was read: its offset from UTC, flags for a clock time that was skipped (dst-gap) or repeated (dst-fold) or read on local mean time (lmt), and which zone history answered. Before 1970 that history is tzdb 2025c with its backzone file; from 1970 it is the server runtime's own time zone data.",
+          "The endpoint needs a time; it has no form for an unknown birth time. Without one, do not send noon as if it were known: ask for positions on the date, show the rising sign and the houses as unknown, and say that the Moon can change sign during the day."
+        ]
+      },
+      {
+        "heading": "Hosted or on your machine",
+        "paragraphs": [
+          "The same engine runs in Node, Deno, Bun, browsers and Workers as @zodiacs/engine: natalChart for the chart and @zodiacs/engine/geo for local times. Use it when birth details should not leave the device, and the API when a server call is simpler.",
+          "Its thirteen house systems are each defined as Swiss Ephemeris defines them, and given the same sidereal time, latitude and obliquity, each agrees with Swiss Ephemeris's house function to within 0.0001″, and Placidus, which iterates, to 0.01″."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Compute API: chart",
+        "url": "/developers/compute/#chart"
+      },
+      {
+        "label": "Natal chart recipe",
+        "url": "/developers/docs/natal/"
+      },
+      {
+        "label": "Calculation conventions",
+        "url": "/developers/docs/conventions/"
+      }
+    ]
+  },
+  {
+    "slug": "swiss-ephemeris-alternative-javascript",
+    "title": "Swiss Ephemeris alternatives in JavaScript",
+    "description": "The JavaScript options for chart-grade planetary positions, from Swiss Ephemeris bindings to pure-JavaScript engines, with their licences and how far @zodiacs/engine is from Swiss Ephemeris and NASA JPL Horizons.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "The options",
+        "paragraphs": [
+          "Licences and versions are as Astrodienst's repository and the npm registry gave them on 13 October 2026.",
+          "Swiss Ephemeris is Astrodienst's C library, whose latest release is 2.10.3b, of August 2026, licensed under the AGPL or the paid Swiss Ephemeris Professional License.",
+          "sweph 2.10.3-8 binds it for Node. Its licence is AGPL-3.0-or-later, or LGPL-3.0-or-later for holders of the professional licence; its versions up to 2.10.0 were GPL-2.0.",
+          "swisseph 0.5.17, of January 2022, binds an earlier Swiss Ephemeris. It declares no licence on npm; its repository's licence file is the GNU GPL, version 2.",
+          "astronomy-engine 2.1.19, under MIT, computes the Sun, the Moon and the planets in JavaScript, with no astrological houses or charts.",
+          "ephemeris 3.2.1, under GPL-3.0, computes with a JavaScript port of Moshier's analytic ephemeris, or with Swiss Ephemeris through sweph.",
+          "@zodiacs/engine 1.0.0, under MIT AND CC-BY-4.0, builds charts on astronomy-engine: thirteen house systems, aspects, returns, transits, a sidereal zodiac with nine ayanamsas, and receipts that record how a result was computed. It has no Swiss Ephemeris code, dependency or table in it.",
+          "The two bindings are native Node addons, so they do not run in a browser or a Worker; @zodiacs/engine and astronomy-engine, which are JavaScript, do."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart } from '@zodiacs/engine';\nconst chart = natalChart({\n  utc: '1990-06-15T12:30:00Z',\n  latitude: 48.8566,\n  longitude: 2.3522,\n  houseSystem: 'placidus',\n});\nfor (const { body, lon, retrograde } of chart.bodies) console.log(body, lon.toFixed(4), retrograde ? 'R' : '');\nconsole.log(chart.houses.system, chart.houses.cusps.map((cusp) => cusp.toFixed(2)).join(' '));"
+        }
+      },
+      {
+        "heading": "How close @zodiacs/engine comes",
+        "paragraphs": [
+          "Against NASA JPL Horizons, the engine's tests hold ten bodies at 2020 and three at 1907; the largest difference is 14.8″, for Neptune in 2020.",
+          "Against Swiss Ephemeris 2.10.03, every tenth day from 1800 to 2199 at noon UTC, for the ten bodies and the North Node, its longitudes differed by a median of 2.0″ and at most 22.9″ (Venus, 1878) up to 2026 at the same UT. That record was measured on release candidate 0.1.1-rc.17.",
+          "Given the same sidereal time, latitude and obliquity, each of its thirteen house systems agrees with Swiss Ephemeris's house function to within 0.0001″, and Placidus, which iterates, to 0.01″."
+        ]
+      },
+      {
+        "heading": "What changes if you move",
+        "paragraphs": [
+          "It is not a port: there is no swe_calc_ut or swe_houses, so calls are rewritten, not renamed. It computes no asteroids. Outside 1800 to 2199 it still computes, and flags the result as outside its reference span."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine validation",
+        "url": "/developers/engine/"
+      },
+      {
+        "label": "Swiss Ephemeris licensing (Astrodienst)",
+        "url": "https://www.astro.com/swisseph/swephinfo_e.htm"
+      },
+      {
+        "label": "sweph on npm",
+        "url": "https://www.npmjs.com/package/sweph"
+      },
+      {
+        "label": "swisseph on npm",
+        "url": "https://www.npmjs.com/package/swisseph"
+      },
+      {
+        "label": "astronomy-engine on npm",
+        "url": "https://www.npmjs.com/package/astronomy-engine"
+      },
+      {
+        "label": "ephemeris on npm",
+        "url": "https://www.npmjs.com/package/ephemeris"
+      }
+    ]
+  },
+  {
+    "slug": "ephemeris-npm",
+    "title": "Ephemeris packages on npm",
+    "description": "The npm packages that compute planetary positions, compared by licence, latest release, where they run and what they compute, with a snippet that runs.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Positions in a few lines",
+        "paragraphs": [
+          "positions(date) returns the Sun, the Moon, eight planets and the true lunar nodes: each one's apparent geocentric longitude of date in degrees, its sign and its daily speed. It runs in Node, Deno, Bun, browsers and Workers and makes no network request."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { positions } from '@zodiacs/engine';\nfor (const { body, lon, sign, retrograde } of positions('2026-10-12T00:00:00Z')) {\n  console.log(body.padEnd(10), lon.toFixed(4), sign, retrograde ? 'retrograde' : '');\n}"
+        }
+      },
+      {
+        "heading": "The packages",
+        "paragraphs": [
+          "As the npm registry listed them on 13 October 2026:",
+          "@zodiacs/engine 1.0.0, of 11 October 2026, MIT AND CC-BY-4.0: positions, charts with thirteen house systems, aspects, events, returns and a sidereal zodiac, in JavaScript.",
+          "astronomy-engine 2.1.19, of December 2023, MIT: astronomical positions, rise and set times and phases, in JavaScript; @zodiacs/engine is built on it.",
+          "ephemeris 3.2.1, of August 2026, GPL-3.0: a JavaScript port of Moshier's analytic ephemeris, which can use Swiss Ephemeris through sweph instead.",
+          "sweph 2.10.3-8, of August 2026, AGPL-3.0-or-later or LGPL-3.0-or-later: a native Node binding of Swiss Ephemeris 2.10.03.",
+          "swisseph 0.5.17, of January 2022, with no licence declared on npm: a native Node binding of an earlier Swiss Ephemeris."
+        ]
+      },
+      {
+        "heading": "Choosing",
+        "paragraphs": [
+          "A chart needs more than positions: the angles and houses need a place and an exact instant, and a birth time needs its time zone at the date. The GPL and AGPL packages carry their licence terms into what you distribute, and the AGPL into a service others use over a network."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Node quickstart",
+        "url": "/developers/docs/node/"
+      },
+      {
+        "label": "Engine validation",
+        "url": "/developers/engine/"
+      },
+      {
+        "label": "astronomy-engine on npm",
+        "url": "https://www.npmjs.com/package/astronomy-engine"
+      },
+      {
+        "label": "ephemeris on npm",
+        "url": "https://www.npmjs.com/package/ephemeris"
+      },
+      {
+        "label": "sweph on npm",
+        "url": "https://www.npmjs.com/package/sweph"
+      },
+      {
+        "label": "swisseph on npm",
+        "url": "https://www.npmjs.com/package/swisseph"
+      }
+    ]
+  },
+  {
+    "slug": "vedic-astrology-api",
+    "title": "Vedic astrology API",
+    "description": "Sidereal charts, nakshatras, vargas, KP sub-lords and dashas with nine ayanamsas, computed by @zodiacs/engine/vedic on your own machine.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "A sidereal chart",
+        "paragraphs": [
+          "@zodiacs/engine/vedic turns a chart into sidereal longitudes with one of nine ayanamsas, lahiri, fagan-bradley, krishnamurti, raman, yukteswar, true-chitra, true-revati, true-pushya and galactic-center, or one of your own. The ayanamsa is taken at the chart's own instant, nutation included.",
+          "The birth details here are synthetic."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { siderealChart, nakshatraOf } from '@zodiacs/engine/vedic';\nconst chart = siderealChart({\n  utc: '2000-01-01T12:00:00Z',\n  latitude: 28.6139,\n  longitude: 77.209,\n  houseSystem: 'whole',\n}, 'lahiri');\nconst moon = chart.bodies.find(({ body }) => body === 'Moon');\nconst { name, pada, lord } = nakshatraOf(moon);\nconsole.log('Lahiri', chart.ayanamsaValue.true.toFixed(4), 'Moon', moon.lon.toFixed(4), name, pada, lord);"
+        }
+      },
+      {
+        "heading": "What else it computes",
+        "paragraphs": [
+          "nakshatraOf gives the nakshatra, its lord and the pada of a sidereal longitude; vargaOf the sixteen vargas of BPHS 6.2–4; kpLordsOf the KP lords; and vimshottariDasha, yoginiDasha and ashtottariDasha the dasha periods from the Moon."
+        ]
+      },
+      {
+        "heading": "Where it runs",
+        "paragraphs": [
+          "The Compute API answers in the tropical zodiac only, so Vedic calculation runs in your own process, with no request leaving it. Python has the sidereal modes of Swiss Ephemeris through pyswisseph, under AGPL-3.0."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Calculation conventions",
+        "url": "/developers/docs/conventions/"
+      },
+      {
+        "label": "Engine reference",
+        "url": "/developers/engine/reference/"
+      }
+    ]
+  },
+  {
+    "slug": "python-astrology-library",
+    "title": "Python astrology libraries",
+    "description": "Python's astrology and astronomy libraries compared by licence and status, and how to call the Zodiacs engine from Python over HTTP.",
+    "installation": false,
+    "sections": [
+      {
+        "heading": "The libraries",
+        "paragraphs": [
+          "As PyPI and the projects gave them on 13 October 2026:",
+          "pyswisseph 2.10.3.2, of June 2023, AGPL-3.0: the Swiss Ephemeris for Python, and with it its licence choice of the AGPL or Astrodienst's paid professional licence.",
+          "kerykeion 6.0.5, of October 2026, AGPL-3.0: charts with houses, aspects, returns and SVG drawings. Its commercial licence documents are marked as drafts.",
+          "immanuel 1.6.0, of September 2026: chart data built on the Swiss Ephemeris. Its README and licence file give the AGPL, version 3 or later; its PyPI entry names no licence.",
+          "flatlib 0.2.3, of April 2021, MIT: traditional astrology. Its repository was archived in October 2026 and its README calls it deprecated.",
+          "skyfield 1.55, of August 2026, MIT: research-grade astronomy; its PyPI page does not mention astrological houses."
+        ]
+      },
+      {
+        "heading": "Zodiacs from Python",
+        "paragraphs": [
+          "Zodiacs has no Python package. Python reaches the engine through the Compute API, with the standard library alone. The birth details are the API's synthetic example; the guide checks run this code against the committed answer, with ZODIACS_COMPUTE_ORIGIN pointing it at a local copy."
+        ],
+        "code": {
+          "language": "python",
+          "source": "import json\nimport os\nfrom urllib.error import HTTPError\nfrom urllib.request import Request, urlopen\n\nbody = {\n    \"local\": {\"date\": \"1990-06-15\", \"time\": \"14:30\", \"zone\": \"Europe/Paris\"},\n    \"latitude\": 48.8566,\n    \"longitude\": 2.3522,\n    \"houseSystem\": \"whole\",\n}\norigin = os.environ.get(\"ZODIACS_COMPUTE_ORIGIN\", \"https://zodiacs.org\")\nrequest = Request(\n    origin.rstrip(\"/\") + \"/api/v1/chart\",\n    data=json.dumps(body).encode(\"utf-8\"),\n    headers={\"Content-Type\": \"application/json\"},\n    method=\"POST\",\n)\ntry:\n    with urlopen(request, timeout=15) as response:\n        answer = json.load(response)\nexcept HTTPError as error:\n    raise SystemExit(f\"The service refused this request: {error.code}\")\nfor row in answer[\"result\"][\"bodies\"]:\n    print(row[\"body\"], row[\"sign\"], round(row[\"degree\"], 2))\nprint(answer[\"backend\"][\"name\"], answer[\"backend\"][\"version\"], answer[\"cite\"][\"receipt\"])"
+        }
+      },
+      {
+        "heading": "Choosing",
+        "paragraphs": [
+          "The AGPL adds to the GPL a condition for network use: if people reach a modified version over a network, they must be offered its source. The MIT libraries carry no such term; the Compute API is a service you call, not code you include."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Python hosted quickstart",
+        "url": "/developers/docs/python/"
+      },
+      {
+        "label": "Compute API reference",
+        "url": "/developers/compute/"
+      },
+      {
+        "label": "pyswisseph on PyPI",
+        "url": "https://pypi.org/project/pyswisseph/"
+      },
+      {
+        "label": "kerykeion on PyPI",
+        "url": "https://pypi.org/project/kerykeion/"
+      },
+      {
+        "label": "immanuel on PyPI",
+        "url": "https://pypi.org/project/immanuel/"
+      },
+      {
+        "label": "flatlib on PyPI",
+        "url": "https://pypi.org/project/flatlib/"
+      },
+      {
+        "label": "skyfield on PyPI",
+        "url": "https://pypi.org/project/skyfield/"
+      }
+    ]
+  },
+  {
+    "slug": "astrology-mcp-server",
+    "title": "Astrology MCP server",
+    "description": "Connect an assistant or your own code to Zodiacs over the Model Context Protocol: a hosted server with six read-only tools and no sign-in, or a local stdio server that computes on your machine.",
+    "installation": false,
+    "sections": [
+      {
+        "heading": "The hosted server",
+        "paragraphs": [
+          "https://zodiacs.org/mcp speaks MCP over Streamable HTTP. Its six tools are read-only and need no sign-in: get_sky, get_upcoming_events, check_sky_fact, get_horoscope, open_chart_studio and get_capabilities. In Claude, add it as a custom connector. In code, connect with the official SDK client, which npm install @modelcontextprotocol/client@2.3.1 installs, under Apache-2.0.",
+          "The guide checks run this code with that client against the hosted server's own handler, served locally; Mercury was direct at that instant, so the answer is false."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';\nconst client = new Client({ name: 'sky-check', version: '1.0.0' });\nawait client.connect(new StreamableHTTPClientTransport(new URL('https://zodiacs.org/mcp')));\ntry {\n  const { tools } = await client.listTools();\n  console.log(tools.map((tool) => tool.name));\n  const fact = await client.callTool({\n    name: 'check_sky_fact',\n    arguments: { kind: 'retrograde', body: 'Mercury', instant: '2026-10-12T12:00:00Z' },\n  });\n  console.log(fact.structuredContent.data.answer);\n} finally {\n  await client.close();\n}"
+        }
+      },
+      {
+        "heading": "The local server",
+        "paragraphs": [
+          "The local adapter runs over stdio on your own machine and opens no listener and no network connection. It adds natal-chart calculation and the comparison of calculation records to the sky tools. It is a release candidate, not on npm: its archive and digest are on the MCP page."
+        ]
+      },
+      {
+        "heading": "What either one does not do",
+        "paragraphs": [
+          "Neither server stores what an assistant sends it. A connected assistant still receives the arguments and the results, and its provider's own policies apply to them. The tools calculate the sky; they do not predict, schedule or advise."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "AI assistants",
+        "url": "/developers/ai/"
+      },
+      {
+        "label": "Local MCP server",
+        "url": "/developers/mcp/"
+      },
+      {
+        "label": "Model Context Protocol",
+        "url": "https://modelcontextprotocol.io/"
+      }
+    ]
+  },
+  {
     "slug": "deprecation",
     "title": "Deprecation policy",
     "description": "Understand public API stability, experimental exclusions and removal notice.",

@@ -1,7 +1,7 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, STUDIO_URI, LEGACY_STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName } from './contracts';
+import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, STUDIO_URI, LEGACY_STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName } from './contracts';
 import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
@@ -149,7 +149,9 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     let calledTool: AiToolName | undefined;
     if (message.method === 'tools/call' && message.params && typeof message.params === 'object') {
       const name = (message.params as Record<string, unknown>).name;
-      if ((AI_TOOL_NAMES as readonly string[]).includes(String(name))) operation = String(name);
+      // Only offered tools are counted: the occasion tools count only while their switch is on.
+      const offered: readonly string[] = env[OCCASIONS_SWITCH_ENV] === '1' ? ALL_AI_TOOL_NAMES : AI_TOOL_NAMES;
+      if (offered.includes(String(name))) operation = String(name);
       if (typeof name === 'string' && name === operation) calledTool = name as AiToolName;
     }
     const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
@@ -158,7 +160,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
-    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), allowEvents: async () => {
+    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), ...(env[OCCASIONS_SWITCH_ENV] === '1' ? { occasions: true } : {}), allowEvents: async () => {
       try {
         const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;

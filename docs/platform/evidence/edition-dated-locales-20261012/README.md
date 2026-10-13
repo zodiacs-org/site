@@ -169,6 +169,70 @@ drops the hold when the stylesheet has loaded, or if it fails or takes over
 the `@import` styles the footer as before. After it, the explorer's check
 passed 3 of 3 locally.
 
+## The F-88 corrections (#731)
+
+The reviews of F-86's wording also found faults in the existing Spanish and
+Portuguese daily copy (F-88). The owner approved a one-time allowance for the
+nine protected files on 2026-10-12, and #731, stacked on this branch, fixes
+them. The same two reviews read the corrections and real template output
+([reviews-f88.md](reviews-f88.md)), and their changes are applied as given:
+
+| | before | after |
+| --- | --- | --- |
+| an ingress | Sol entra hoy en tu octava casa… | El Sol entra hoy en tu octava casa… |
+| an opposition | Sol en oposición con Neptuno… / Sol em oposição com Netuno… | El Sol en oposición a Neptuno… / O Sol em oposição a Netuno… |
+| a Portuguese list | coloca o foco na carreira, a reputação e o que o público vê | coloca o foco na carreira, na reputação e no que o público vê |
+| a new Moon | Luna nueva en tu cuarta casa: abre un punto de partida en… | La Luna nueva en tu cuarta casa abre un nuevo ciclo en… |
+| a Portuguese receipt | Lua 10.9° Escorpião · casa 8 | Lua 10,9° Escorpião · casa 8 |
+| the note under "Por qué esta lectura" | leído desde las casas solares de tu signo. | Se lee desde las casas solares de tu signo. |
+| the closing notes | la edición en inglés — por ahora en inglés | la edición en inglés (the link keeps `hreflang` and its title) |
+| `/es/today/` note | …con el cielo de hoy vive en… | …con el cielo de hoy está en… |
+| the descriptions | cuatro notas / quatro notas; 1 notas | hasta cuatro / até quatro; 1 nota |
+| the sign links | Horóscopo de hoy de Aries | Horóscopo de Aries de hoy |
+| the sign pages' lead | the first reading line, again just below | Lo que más importa para Aries. / O que mais importa para Áries. |
+
+Remaining: the pt-BR first of the month ("1º de novembro"), which would change
+every Portuguese date on the site, and the tab titles and descriptions, which
+keep "hoy" and "hoje" in the dated window.
+
+The reading templates are a template source, so #731 has its own Phase 1
+digest. Browser Evidence run 38299435216 on `b347bec7` took its captures first
+(digest `53845b05`). Main then brought #733, whose template change moved the
+digest again, so after merging it run 38351380693 on `92fdcb17` took them for
+digest `b16d6533`: the committed manifest and captures are that artifact's,
+and its build, captures, visual comparison, Lighthouse and explorer drive
+passed ([`browser-evidence-provenance-f88.json`](browser-evidence-provenance-f88.json)).
+
+## Tab titles and the pt-BR first of the month (#737)
+
+The last two items F-86 and F-88 left open. In the dated window the head guard
+now dates the Spanish and Portuguese tab titles as they are parsed, keeping
+the date each title already names; the server titles that search engines read
+are unchanged, and English titles name only their date:
+
+| page | server title | dated window |
+| --- | --- | --- |
+| `/es/today/` | Hoy — el cielo del 12 de octubre de 2026 | El cielo del 12 de octubre de 2026 |
+| `/es/horoscopes/` | Horóscopos de hoy — 12 de octubre de 2026 | Horóscopos del 12 de octubre de 2026 |
+| `/es/horoscopes/aries/` | Horóscopo de Aries hoy, 12 de octubre | Horóscopo de Aries del 12 de octubre |
+| `/pt/today/` | Hoje — o céu de 12 de outubro de 2026 | O céu de 12 de outubro de 2026 |
+| `/pt/horoscopes/` | Horóscopos de hoje — 12 de outubro de 2026 | Horóscopos de 12 de outubro de 2026 |
+| `/pt/horoscopes/aries/` | Horóscopo de Áries hoje, 12 de outubro | Horóscopo de Áries de 12 de outubro |
+
+Every Portuguese date that names its month writes day 1 as "1º" ("1º de
+novembro de 2026", "1º de nov. de 2026"), through `formatDate` and
+`formatDateTime` (one-time allowance for `src/lib/i18n/dates.ts`), the
+edition's date label and the birthday pages. The reviews
+([reviews-titles.md](reviews-titles.md)) accepted every title and "1º" form,
+and changed the Spanish and Portuguese birthday sky lines to join the year
+with "de". The drive now also checks the tab title on all nine routes: dated
+on a dated clock, the server's on a current one. `dates.ts` and the guard are
+template sources: Browser Evidence run 38416946190 on `1483eb1f` took the
+captures for digest `091d850f`, which the later commit (a string file and
+records) did not move; its build, captures, visual comparison, Lighthouse and
+explorer drive passed
+([`browser-evidence-provenance-titles.json`](browser-evidence-provenance-titles.json)).
+
 ## Phase 1 captures
 
 The guard, the layout and the footer styles are template sources, so this

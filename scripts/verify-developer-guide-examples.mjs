@@ -16,7 +16,7 @@ const root = process.cwd();
 const guides = JSON.parse(await readFile(resolve(root, 'src/data/developer-guides.json'), 'utf8'));
 const candidate = JSON.parse(await readFile(resolve(root, 'src/data/platform-engine-candidate.json'), 'utf8'));
 const code = (slug) => guides.find((guide) => guide.slug === slug).sections.find((section) => section.code).code.source;
-assert.equal(guides.length, 18);
+assert.equal(guides.length, 25);
 assert.equal(new Set(guides.map((guide) => guide.slug)).size, guides.length);
 const scratch = await mkdtemp(join(tmpdir(), 'zodiacs-developer-guides-'));
 const outcomes = [];
@@ -37,6 +37,9 @@ const checks = {
   conventions: "assert.equal(result.status, 'ok'); assert.ok(result.ayanamsa); assert.ok(result.receipt);",
   errors: "assert.equal(calc({ body: 'Sun', time: '1700-06-01T12:00:00Z' }).reason, 'out-of-range');",
   receipts: "assert.equal(result.status, 'ok'); assert.deepEqual(chart(JSON.parse(JSON.stringify(result.receipt.request))), result);",
+  'swiss-ephemeris-alternative-javascript': "assert.equal(chart.bodies.length, 12); assert.equal(chart.houses.system, 'placidus'); assert.equal(chart.houses.cusps.length, 12);",
+  'ephemeris-npm': "assert.equal(positions('2026-10-12T00:00:00Z').length, 12);",
+  'vedic-astrology-api': "assert.equal(chart.ayanamsa, 'lahiri'); assert.equal(chart.bodies.length, 12); assert.equal(name, 'Swati'); assert.equal(pada, 4);",
 };
 try {
   const archivePath = resolve(root, candidate.artifactPath);
@@ -185,6 +188,105 @@ await import('./elections.mjs');
     } finally {
       await new Promise((closed) => mock.close(closed));
     }
+  }
+  // The hosted query guides (S4): each guide's snippet, run in Node with fetch pointed at a local fixture of
+  // the committed contract. The request must be the documented example; a 200 must reach the receipt's
+  // digest, and a refusal must stop the program with its status.
+  await writeFile(join(scratch, 'hosted-run.mjs'), `const target = process.env.MOCK_ORIGIN;
+const realFetch = globalThis.fetch;
+globalThis.fetch = (url, init) => realFetch(String(url).replace('https://zodiacs.org', target), init);
+const printed = [];
+console.log = (...values) => { printed.push(values.map(String).join(' ')); };
+process.on('exit', () => { process.stdout.write(JSON.stringify(printed)); });
+await import(process.env.GUIDE_FILE);
+`);
+  for (const { slug, endpoint, example, first, last } of [
+    { slug: 'astrology-api', endpoint: 'events', example: 'october',
+      first: (answer) => answer.result.events[0].at, last: (answer) => `${answer.backend.name} ${answer.backend.version} ${answer.cite.receipt}` },
+    { slug: 'birth-chart-api', endpoint: 'chart', example: 'local',
+      first: (answer) => answer.result.instant, last: (answer) => `Ascendant ${answer.result.angles.asc.toFixed(2)}` },
+  ]) {
+    const guideFile = join(scratch, `${slug}.mjs`);
+    await writeFile(guideFile, code(slug));
+    const documentedBody = SUCCESS_EXAMPLES[endpoint][example].body;
+    for (const fixture of [
+      { name: 'success', status: 200, headers: {}, response: examples.success[endpoint][example] },
+      { name: 'rate-limited', ...examples.refusals['rate-limited'] },
+    ]) {
+      let received = null;
+      const mock = createServer(async (request, response) => {
+        const chunks = [];
+        for await (const chunk of request) chunks.push(chunk);
+        received = { method: request.method, url: request.url, type: request.headers['content-type'], body: Buffer.concat(chunks).toString('utf8') };
+        response.writeHead(fixture.status, { ...fixture.headers, 'Content-Type': 'application/json' });
+        response.end(JSON.stringify(fixture.response));
+      });
+      await new Promise((ready) => mock.listen(0, '127.0.0.1', ready));
+      try {
+        let run;
+        try {
+          const { stdout, stderr } = await promisify(execFile)(process.execPath, [join(scratch, 'hosted-run.mjs')], {
+            cwd: scratch, encoding: 'utf8', timeout: 30000,
+            env: { ...process.env, MOCK_ORIGIN: 'http://127.0.0.1:' + mock.address().port, GUIDE_FILE: pathToFileURL(guideFile).href },
+          });
+          run = { status: 0, stdout, stderr };
+        } catch (error) {
+          assert.equal(typeof error.code, 'number', `the ${slug} snippet did not run: ${error.message}`);
+          run = { status: error.code, stdout: error.stdout, stderr: error.stderr };
+        }
+        assert.ok(received, `${slug}: the documented request reached the fixture`);
+        assert.equal(received.method, 'POST');
+        assert.equal(received.url, `/api/v1/${endpoint}`);
+        assert.equal(received.type, 'application/json');
+        assert.deepEqual(JSON.parse(received.body), documentedBody);
+        if (fixture.status === 200) {
+          assert.equal(run.status, 0, run.stderr);
+          const lines = JSON.parse(run.stdout);
+          assert.ok(lines[0].startsWith(first(fixture.response)), `${slug}: the snippet's first line reads the committed answer`);
+          assert.equal(lines.at(-1), last(fixture.response), `${slug}: the snippet's last line reads the committed answer`);
+        } else {
+          assert.notEqual(run.status, 0);
+          assert.match(run.stderr, new RegExp(`The service refused this request: ${fixture.status}`));
+        }
+        outcomes.push({ guide: slug, runtime: 'node, against a local fixture of the committed contract', case: fixture.name, status: 'pass' });
+      } finally {
+        await new Promise((closed) => mock.close(closed));
+      }
+    }
+  }
+  // The MCP query guide: its snippet, with the official SDK client, against the hosted server's own handler
+  // (src/ai-tools/http.ts) served here, fetch pointed at it as above. The guide names the tools the server lists.
+  await build({ entryPoints: [resolve(root, 'src/ai-tools/http.ts')], outfile: join(scratch, 'mcp-http.mjs'),
+    bundle: true, platform: 'node', format: 'esm', logLevel: 'silent',
+    banner: { js: "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);" } });
+  command('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '@modelcontextprotocol/client@2.3.1']);
+  const { createAiNodeHandler } = await import(pathToFileURL(join(scratch, 'mcp-http.mjs')).href);
+  // The committed horoscope window, as the hosted handler's own tests inject it, so all six tools are listed.
+  const horoscopeWindow = JSON.parse(await readFile(resolve(root, 'src/data/horoscope-window.json'), 'utf8'));
+  let mcpHost = '';
+  const mcp = createServer((request, response) => {
+    void createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1' }, allowedHosts: [mcpHost], atomicQuota: async () => 'allowed',
+      rateLimit: async () => 'allowed', countUsage: async () => {}, dependencies: { horoscopeWindow: async () => horoscopeWindow } })(request, response);
+  });
+  await new Promise((ready) => mcp.listen(0, '127.0.0.1', ready));
+  mcpHost = '127.0.0.1:' + mcp.address().port;
+  try {
+    const guideFile = join(scratch, 'astrology-mcp-server.mjs');
+    await writeFile(guideFile, code('astrology-mcp-server'));
+    const { stdout } = await promisify(execFile)(process.execPath, [join(scratch, 'hosted-run.mjs')], {
+      cwd: scratch, encoding: 'utf8', timeout: 60000,
+      env: { ...process.env, MOCK_ORIGIN: 'http://' + mcpHost, GUIDE_FILE: pathToFileURL(guideFile).href },
+    });
+    const lines = JSON.parse(stdout);
+    const listed = lines[0].split(',');
+    assert.deepEqual(listed, ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio']);
+    const text = guides.find((guide) => guide.slug === 'astrology-mcp-server').sections.flatMap((section) => section.paragraphs).join(' ');
+    for (const tool of listed) assert.ok(text.includes(tool), `the MCP guide names ${tool}`);
+    assert.equal(lines.at(-1), 'false', 'Mercury was direct at 2026-10-12T12:00Z');
+    const client = JSON.parse(await readFile(join(scratch, 'node_modules/@modelcontextprotocol/client/package.json'), 'utf8'));
+    outcomes.push({ guide: 'astrology-mcp-server', runtime: 'node, @modelcontextprotocol/client ' + client.version + ', against the hosted handler served locally', status: 'pass' });
+  } finally {
+    await new Promise((closed) => mcp.close(closed));
   }
   const source = createHash('sha256').update(await readFile(resolve(root, 'src/data/developer-guides.json'))).digest('hex');
   console.log(JSON.stringify({

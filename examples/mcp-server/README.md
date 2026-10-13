@@ -58,7 +58,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.21.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.22.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -441,7 +441,7 @@ are separate fields, so a fallback is visible rather than silent.
   "receipt": {
     "schema": "zodiacs.mcp-receipt.v1",
     "tool": "compare_calculation_records",
-    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.21" },
+    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.22" },
     "engine": {
       "name": "@zodiacs/engine",
       "version": "1.0.0",
@@ -451,7 +451,7 @@ are separate fields, so a fallback is visible rather than silent.
   },
   "cite": {
     "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
-    "receipt": "sha256:416e26ebbee192a21bb956563f67e280b3ebda393a6ca79d0f1223ea15577b75",
+    "receipt": "sha256:7d06030ff1aa3278faaac878aa4c69745a1f5c062739bc2be534154fe4934610",
     "engine": "@zodiacs/engine",
     "version": "1.0.0"
   }
@@ -525,7 +525,7 @@ request.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.21`, unpublished candidate |
+| adapter | `0.1.0-rc.22`, unpublished candidate |
 | engine | `@zodiacs/engine` `1.0.0`, on npm under `latest` since 2026-10-11, bundled into `server.mjs` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
@@ -578,11 +578,11 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   `registry: "npm"`. `server.mjs` is built from the engine's carried archive,
   whose bytes npm's tarball matches. 1.0.0 is 1.0.0-rc.2 with the version
   changed. This adapter does not import `calc` or Vedic; its finite comparison
-  with rc.18 is recorded in the site adoption. rc.21 is rc.19 rebuilt after the
-  hosted compute API began reading local times with `@zodiacs/engine/geo`; the
-  adapter resolves no time zone, and its comparison with rc.19 is recorded with
-  that change. rc.20, an earlier cut of the same change, was withdrawn before
-  release.
+  with rc.18 is recorded in the site adoption. rc.22 is rc.21 with this README
+  corrected; rc.21 is rc.19 rebuilt after the hosted compute API began reading
+  local times with `@zodiacs/engine/geo`. The adapter resolves no time zone, and
+  its comparisons with rc.19 and rc.21 are recorded with those changes. rc.20,
+  an earlier cut, was withdrawn before release.
 
 ## Uninstall
 
@@ -622,10 +622,11 @@ historical until rerun. The records establish different things:
   machine's real configuration proved byte-identical afterwards.
 - **`host-interop.md`** — a model actually calling these tools through that
   host, with the exact command and the exact reply.
-- **`benchmark.json`** — a fixed synthetic corpus of ten record pairs with the
-  classification each should receive, written from the comparison's rules before
-  the candidate ran against any of them. It is a regression corpus, not an
-  accuracy rate: both sides of every pair come from the same engine.
+- **`benchmark.json`** — a fixed synthetic corpus of record pairs in eighteen
+  scenarios, with the classification each should receive, written from the
+  comparison's rules before the candidate ran against any of them. It is a
+  regression corpus, not an accuracy rate: both sides of every pair come from
+  the same engine.
 
 Every chart in every test is synthetic — round coordinates for well-known cities
 on dates chosen for what they exercise.

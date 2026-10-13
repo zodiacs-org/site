@@ -1,3 +1,4 @@
+import { SITE_CLOCK } from './site-clock';
 import { describe, expect, it } from 'vitest';
 import { occasionCard, validOccasionDate } from './card';
 import { OCCASION_KINDS } from './kinds';
@@ -32,7 +33,7 @@ describe('occasion card', () => {
       time: '19:00',
       timeZone: 'Europe/Rome',
       place: { name: 'Florence, Italy', lat: 43.7696, lon: 11.2558 },
-    });
+    }, SITE_CLOCK);
     expect(card.instant).toBe('2027-06-12T17:00:00.000Z');
     expect(card.words.title).toBe('The sky on your wedding day');
     expect(card.words.interpretation).toContain('Gemini Sun');
@@ -42,9 +43,9 @@ describe('occasion card', () => {
 
   it('flags a day on which the Moon changes sign when no time is given', async () => {
     // The Moon moved from Pisces into Aries on 23 October 2026 (UTC).
-    const card = await occasionCard({ occasion: 'baby', date: '2026-10-23', time: null, timeZone: null, place: null });
+    const card = await occasionCard({ occasion: 'baby', date: '2026-10-23', time: null, timeZone: null, place: null }, SITE_CLOCK);
     expect(card.moonSignChange).toEqual({ from: 'pisces', to: 'aries' });
-    const next = await occasionCard({ occasion: 'baby', date: '2026-10-24', time: null, timeZone: null, place: null });
+    const next = await occasionCard({ occasion: 'baby', date: '2026-10-24', time: null, timeZone: null, place: null }, SITE_CLOCK);
     expect(next.moonSignChange).toBeNull();
   });
 
@@ -54,7 +55,7 @@ describe('occasion card', () => {
     const card = await occasionCard({
       occasion: 'wedding', date: '1900-06-15', time: null, timeZone: 'America/Sao_Paulo',
       place: { name: 'Rio de Janeiro, Brazil', lat: -22.9, lon: -43.2 },
-    });
+    }, SITE_CLOCK);
     expect(card.instant).toBe('1900-06-15T14:52:48.000Z');
     expect(card.evening?.utcOffsetMinutes).toBe(-173);
   });
@@ -62,6 +63,6 @@ describe('occasion card', () => {
   it('refuses impossible input', async () => {
     expect(validOccasionDate('2027-02-30')).toBe(false);
     expect(validOccasionDate('1799-12-31')).toBe(false);
-    await expect(occasionCard({ occasion: 'wedding', date: '2027-06-12', time: '19:00', timeZone: null, place: null })).rejects.toThrow(RangeError);
+    await expect(occasionCard({ occasion: 'wedding', date: '2027-06-12', time: '19:00', timeZone: null, place: null }, SITE_CLOCK)).rejects.toThrow(RangeError);
   });
 });

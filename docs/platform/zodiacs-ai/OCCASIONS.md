@@ -114,6 +114,52 @@ all run on one module, `src/lib/occasions/`.
 
 Remembrance ships last in each step, after the owner has read its wording.
 
+## Status, 13 October 2026
+
+- **Step 1 is done.** The module (#712) and the three pages (#720:
+  `/occasions/`, `/occasions/milestones/`, `/occasions/baby-shower/`) are live.
+- **Step 2 is under way.** `get_occasion_sky` and `get_life_milestones` are in
+  `src/ai-tools/` behind `ZODIACS_OCCASIONS_ENABLED=1`.
+  - **Switched off:** the hosted server lists neither tool, refuses a call to
+    either, and its capabilities and privacy text are unchanged.
+  - **Switched on:** both tools are listed. Capabilities add a privacy sentence
+    and a limitation: the tools take an occasion date or a birth date, save
+    nothing, and their card links carry the details after the `#`.
+  - **Local time:** the cards take their local-time resolver as a parameter.
+    The pages pass the site's own (`src/lib/occasions/site-clock.ts`); the
+    tools pass the compute API's bundled one. Both read
+    `@zodiacs/engine/geo`, so pre-1970 places use the pinned zone history and
+    local mean time.
+  - **Bundle:** the AI bundles replace `@zodiacs/engine/window` with a stub,
+    because no AI runtime computes a birth-time window. Bundled for real, it
+    would wrap the engine's module state where the lifetime review cannot
+    clear it.
+
+### Before the switch goes on in production
+
+- The `occasions-v1` panel (not built yet; for now the tools return
+  structured data and a link to the printable card).
+- **Usage counts: built, not applied.** The migration
+  `20261013144500_zodiacs_mcp_usage_occasion_tools.sql` adds the two tool
+  names to the anonymous daily counts, and the server counts them only while
+  the switch offers them (`docs/platform/zodiacs-ai/USAGE.md`). It needs the
+  owner's approval to apply to production before the switch goes on.
+- **Claims ledger: at switch-on.** The ledger takes a claim only when a public
+  sentence makes it, so this goes in with the privacy-page wording when the
+  switch goes on. Then `priv.ai-integration` ("requests no birth details")
+  gains "unless its occasion tools are switched on", and a new
+  `priv.ai-occasion-tools` claim says: the two tools take an occasion date or
+  a birth date, with an optional time, zone, coordinates and first names;
+  calculate for that call and store none of it; return a card link with the
+  details after its `#`, and only when the card page reproduces the answer;
+  and count one call each in the anonymous usage counts. Its evidence is in
+  `occasions.test.ts`, `http.test.ts`, `usage.test.ts` and the occasion usage
+  SQL test.
+- **Tool descriptions: approved** on 13 October (the owner delegated the
+  decision; merged in #734).
+- The ChatGPT submission file, evaluation cases and drives, then staging, then
+  0.5.0 after the current review ends.
+
 ## Samples (real computed facts)
 
 **Wedding, Florence, 12 June 2027, 19:00.** Sun in Gemini, Moon in Libra,

@@ -5,7 +5,8 @@
  * is the current day (`data-edition-state` on <html>), then writes each piece
  * of edition text in its final form as the parser adds it: EditionText's
  * relative wording on a current edition, dated wording inside
- * [data-edition-content] on a dated one. The first paint already shows the
+ * [data-edition-content] on a dated one, and on a dated Spanish or
+ * Portuguese page the tab title without its "hoy" or "hoje". The first paint already shows the
  * final text, so nothing moves once the page is up. After parsing it keeps
  * hydrated and later text honest, and decides again at UTC midnight, on
  * pageshow and when the tab becomes visible. Without JavaScript, EditionText's
@@ -16,7 +17,7 @@
  * text exactly as `datedEditionTextIn` does on the server;
  * tests/edition-dated-drive.mjs holds the two to the same result.
  */
-import { editionRules, inlineEditionRules, type EditionLocale } from '../lib/edition-freshness';
+import { editionRules, inlineEditionRules, inlineEditionTitleRules, type EditionLocale } from '../lib/edition-freshness';
 
 interface Props {
   editionDate: string;
@@ -28,8 +29,9 @@ if (!editionRules(locale)) {
   throw new Error(`EditionFreshnessGuard: no dated wording for locale "${locale}"; add its rules to src/lib/edition-freshness.ts`);
 }
 const rules = inlineEditionRules(locale as EditionLocale, editionDate);
+const titleRules = inlineEditionTitleRules(locale);
 ---
-<script is:inline define:vars={{ rules }}>
+<script is:inline define:vars={{ rules, titleRules }}>
   (function () {
     var root = document.documentElement;
     var editionDate = root.getAttribute('data-edition-date');
@@ -38,6 +40,22 @@ const rules = inlineEditionRules(locale as EditionLocale, editionDate);
     var compiled = rules.map(function (rule) { return [new RegExp(rule[0], rule[1]), rule[2]]; });
     function dated(value) {
       return compiled.reduce(function (text, rule) { return text.replace(rule[0], rule[1]); }, value);
+    }
+    // A Spanish or Portuguese tab title names its date beside "hoy" or
+    // "hoje"; dated, it keeps the date and loses the word. The title is
+    // parsed after this script, so it is dated as it arrives.
+    var titleCompiled = titleRules.map(function (rule) { return [new RegExp(rule[0], rule[1]), rule[2]]; });
+    var titleSource = null;
+    function datedTitle(value) {
+      return titleCompiled.reduce(function (text, rule) { return text.replace(rule[0], rule[1]); }, value);
+    }
+    function syncTitle() {
+      var title = titleCompiled.length ? document.querySelector('head > title') : null;
+      if (!title) return;
+      var value = title.textContent;
+      if (titleSource === null || (value !== titleSource && value !== datedTitle(titleSource))) titleSource = value;
+      var next = root.getAttribute('data-edition-state') === 'dated' ? datedTitle(titleSource) : titleSource;
+      if (value !== next) title.textContent = next;
     }
     function decide() {
       var state = editionDate === new Date().toISOString().slice(0, 10) ? 'current' : 'dated';
@@ -88,6 +106,7 @@ const rules = inlineEditionRules(locale as EditionLocale, editionDate);
     }
     function update() {
       var state = decide();
+      syncTitle();
       document.querySelectorAll('[data-edition-text]').forEach(function (node) {
         editionText(node, state);
       });
@@ -98,6 +117,10 @@ const rules = inlineEditionRules(locale as EditionLocale, editionDate);
     function sync(node) {
       var element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
       if (!element) return;
+      if (element.closest('head > title')) {
+        syncTitle();
+        return;
+      }
       var span = element.closest('[data-edition-text]');
       if (root.getAttribute('data-edition-state') === 'dated') {
         if (span) dateNode(span);
