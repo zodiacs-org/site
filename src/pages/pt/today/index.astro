@@ -19,7 +19,7 @@ const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
 });
 const readings = SIGNS.map((sign) => ({ sign, reading: dailyReadingForLocale(sign.slug, daily, locale) }));
 const cue = englishOnlyCue(locale);
-const description = `O céu de hoje para os doze signos solares: quatro notas por signo, calculadas a partir das posições reais de ${dateLabel}.`;
+const description = `O céu de hoje para os doze signos solares: até quatro notas por signo, calculadas a partir das posições reais de ${dateLabel}.`;
 ---
 <Base
   title={`Hoje — o céu de ${dateLabel} | Zodiacs.org`}
@@ -56,7 +56,7 @@ const description = `O céu de hoje para os doze signos solares: quatro notas po
         </h2>
         <DailyLocaleReading locale={locale} reading={reading} headingId={`${sign.slug}-title`} />
         <p class="today-pt__links">
-          <a href={`/pt/horoscopes/${sign.slug}/`}>Horóscopo de hoje de {signName(sign, locale)}</a> ·
+          <a href={`/pt/horoscopes/${sign.slug}/`}>Horóscopo de {signName(sign, locale)} de hoje</a> ·
           <a href={`/pt/${sign.slug}/`}>Guia de {signName(sign, locale)}</a>
         </p>
       </article>
@@ -64,7 +64,7 @@ const description = `O céu de hoje para os doze signos solares: quatro notas po
 
     <p class="today-pt__note">
       Já tem o seu mapa astral? A comparação privada com o céu de hoje está na{' '}
-      <a href="/today/" hreflang="en" title={cue?.aria}>edição em inglês{cue?.suffix}</a>; o seu{' '}
+      <a href="/today/" hreflang="en" title={cue?.aria}>edição em inglês</a>; o seu{' '}
       <a href="/pt/birth-chart/">mapa astral grátis</a> é calculado aqui, no seu navegador.
     </p>
   </section>

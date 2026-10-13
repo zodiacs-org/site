@@ -65,13 +65,13 @@
       "name": "zodiacs-developer",
       "version": "0.3.10",
       "file": "zodiacs-developer-0.3.10.zip",
-      "bytes": 1785277,
-      "sha256": "3ab8e406a1d42960f18c7e3d3c18e7bb4f227381c07621b03476e630c01131af",
+      "bytes": 1828010,
+      "sha256": "5199d36a5bfbaa7e28ece7b1904c1f352dc151a3cf140435af4f9990c292dd1c",
       "members": [
         {
           "path": ".codex-plugin/plugin.json",
-          "bytes": 2919,
-          "sha256": "fd7f5e4cd35ba62814695ac3ed8841d5b8042a3e7e11d218d96f7f3adb528f97"
+          "bytes": 3021,
+          "sha256": "750d8062267a16d6f51ea7187b967aca9506aff55ee174de332f34bd636c8311"
         },
         {
           "path": ".mcp.json",
@@ -135,8 +135,8 @@
         },
         {
           "path": "mcp/server.mjs",
-          "bytes": 1673347,
-          "sha256": "90d6b8545a41a56100ca1bcb5acef5410bfea2807c0eaeca4f067875d33c01ae"
+          "bytes": 1715876,
+          "sha256": "2d7728b08e8ce041628ff60bb25343515e6d6aec221dac25368c0bd0d8d19d91"
         },
         {
           "path": "package-lock.json",
@@ -150,8 +150,8 @@
         },
         {
           "path": "plugin.json",
-          "bytes": 3030,
-          "sha256": "1730541d4e0b44840ee0cbff9c283738fe51905aa3bd0def94b821a14614abdd"
+          "bytes": 3132,
+          "sha256": "3fb8e6e1df0e10c42952d8e58cbc2f77a8e9b9db7a240402efc76f3033bcfa95"
         },
         {
           "path": "skills/build-with-zodiacs/SKILL.md",

@@ -13,7 +13,8 @@ let allowedHost: string; const counted: string[] = [];
 let atomicRequest: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 let atomicEvent: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 const atomicCounted: string[] = [];
-const env = { get ZODIACS_MCP_ENABLED() { return enabled; } };
+let occasionsSwitch: string | undefined;
+const env = { get ZODIACS_MCP_ENABLED() { return enabled; }, get ZODIACS_OCCASIONS_ENABLED() { return occasionsSwitch; } };
 beforeAll(async () => {
   server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); return kind === 'request' ? atomicRequest : atomicEvent; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -178,6 +179,17 @@ describe('stateless MCP HTTP boundary', () => {
     expect(result.structuredContent.data.zoneSource).toBe('assistant');
     expect(result.structuredContent.data.zone).toBe('Asia/Bangkok');
     expect(JSON.stringify(result.structuredContent)).not.toContain('TH');
+  });
+  it('lists and runs the occasion tools only with ZODIACS_OCCASIONS_ENABLED=1', async () => {
+    const names = async () => (await readMessage(await post(rpc('tools/list')))).result.tools.map((tool: { name: string }) => tool.name);
+    expect(await names()).toEqual(AI_TOOL_NAMES);
+    occasionsSwitch = '1';
+    try {
+      expect(await names()).toEqual([...AI_TOOL_NAMES, 'get_occasion_sky', 'get_life_milestones']);
+      const call = await readMessage(await post(rpc('tools/call', { name: 'get_life_milestones', arguments: { birthDate: '1997-03-15' } })));
+      expect(call.result.structuredContent).toMatchObject({ ok: true, tool: 'get_life_milestones', data: { birthDate: '1997-03-15' } });
+    } finally { occasionsSwitch = undefined; }
+    expect(await names()).toEqual(AI_TOOL_NAMES);
   });
   it('serves the newer per-request protocol envelope without a session', async () => {
     const response = await post(rpc('tools/list', { _meta: {

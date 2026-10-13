@@ -69,10 +69,10 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       ['es', 'Hoy', 'El cielo del 12 de octubre de 2026'],
       ['es', 'Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo de hoy, leídas desde las casas solares de tu signo.',
         'Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo del 12 de octubre de 2026, leídas desde las casas solares de tu signo.'],
-      ['es', '¿Tienes tu carta natal? La comparación privada con el cielo de hoy vive en',
-        '¿Tienes tu carta natal? La comparación privada con el cielo del 12 de octubre de 2026 vive en'],
+      ['es', '¿Tienes tu carta natal? La comparación privada con el cielo de hoy está en',
+        '¿Tienes tu carta natal? La comparación privada con el cielo del 12 de octubre de 2026 está en'],
       ['es', 'Horóscopos de hoy', 'Horóscopos del 12 de octubre de 2026'],
-      ['es', 'Busca tu signo para la nota más concreta del cielo de hoy.', 'Busca tu signo para la nota más concreta del cielo del 12 de octubre de 2026.'],
+      ['es', 'Busca tu signo y encontrarás la nota más concreta del cielo de hoy.', 'Busca tu signo y encontrarás la nota más concreta del cielo del 12 de octubre de 2026.'],
       ['es', 'Leer hoy →', 'Lectura del 12 de octubre de 2026 →'],
       ['es', 'Un cielo tranquilo hoy.', 'Un cielo tranquilo el 12 de octubre de 2026.'],
       ['pt', 'Hoje', 'O céu de 12 de outubro de 2026'],
@@ -81,7 +81,7 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       ['pt', 'Já tem o seu mapa astral? A comparação privada com o céu de hoje está na',
         'Já tem o seu mapa astral? A comparação privada com o céu de 12 de outubro de 2026 está na'],
       ['pt', 'Horóscopos de hoje', 'Horóscopos de 12 de outubro de 2026'],
-      ['pt', 'Encontre o seu signo para a nota mais concreta do céu de hoje.', 'Encontre o seu signo para a nota mais concreta do céu de 12 de outubro de 2026.'],
+      ['pt', 'Encontre o seu signo e veja a nota mais concreta sobre o céu de hoje.', 'Encontre o seu signo e veja a nota mais concreta sobre o céu de 12 de outubro de 2026.'],
       ['pt', 'Ler hoje →', 'Leitura de 12 de outubro de 2026 →'],
       ['pt', 'Um céu tranquilo hoje.', 'Um céu tranquilo em 12 de outubro de 2026.'],
     ];
@@ -96,8 +96,8 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
       const pt = signName(sign, 'pt');
       expect(datedEditionTextIn('es', `\n  ${es} hoy\n`, date)).toBe(`\n  ${es}, ${label.es}\n`);
       expect(datedEditionTextIn('pt', `\n  ${pt} hoje\n`, date)).toBe(`\n  ${pt} em ${label.pt}\n`);
-      expect(datedEditionTextIn('es', `Horóscopo de hoy de ${es}`, date)).toBe(`Horóscopo de ${es} del ${label.es}`);
-      expect(datedEditionTextIn('pt', `Horóscopo de hoje de ${pt}`, date)).toBe(`Horóscopo de ${pt} de ${label.pt}`);
+      expect(datedEditionTextIn('es', `Horóscopo de ${es} de hoy`, date)).toBe(`Horóscopo de ${es} del ${label.es}`);
+      expect(datedEditionTextIn('pt', `Horóscopo de ${pt} de hoje`, date)).toBe(`Horóscopo de ${pt} de ${label.pt}`);
     }
   });
 
@@ -164,8 +164,8 @@ describe('dated wording on the Spanish and Portuguese daily pages', () => {
   it('inlines rules that date text in the browser exactly as on the server', () => {
     const samples = {
       en: ['Today', 'Compare today’s sky, as of today.', 'Today, read today’s sky.'],
-      es: ['Hoy', '\n  Piscis hoy\n', 'Horóscopo de hoy de Cáncer', 'La Luna pasa hoy por tu sexta casa: el trabajo.', 'Leer hoy →', 'Horóscopos de hoy'],
-      pt: ['Hoje', '\n  Leão hoje\n', 'Horóscopo de hoje de Gêmeos', 'Vênus entra hoje na sua décima segunda casa e coloca o foco', 'Ler hoje →', 'céu de hoje'],
+      es: ['Hoy', '\n  Piscis hoy\n', 'Horóscopo de Cáncer de hoy', 'La Luna pasa hoy por tu sexta casa: el trabajo.', 'Leer hoy →', 'Horóscopos de hoy'],
+      pt: ['Hoje', '\n  Leão hoje\n', 'Horóscopo de Gêmeos de hoje', 'Vênus entra hoje na sua décima segunda casa e coloca o foco', 'Ler hoje →', 'céu de hoje'],
     } as const;
     for (const locale of ['en', 'es', 'pt'] as const) {
       const rules = inlineEditionRules(locale, date).map(([source, flags, replacement]) => [new RegExp(source, flags), replacement] as const);

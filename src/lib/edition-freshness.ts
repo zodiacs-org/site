@@ -67,7 +67,7 @@ const PORTUGUESE_SIGNS = 'Áries|Touro|Gêmeos|Câncer|Leão|Virgem|Libra|Escorp
 const SPANISH_RULES: readonly EditionRule[] = [
   [/^(\s*)Hoy(\s*)$/gu, '$1El cielo del {date}$2'],
   [new RegExp(`^(\\s*)(${SPANISH_SIGNS}) hoy(\\s*)$`, 'gu'), '$1$2, {date}$3'],
-  [new RegExp(`\\bHoróscopo de hoy de (${SPANISH_SIGNS})(?=$|[\\s.,;:!?])`, 'gu'), 'Horóscopo de $1 del {date}'],
+  [new RegExp(`\\bHoróscopo de (${SPANISH_SIGNS}) de hoy\\b`, 'gu'), 'Horóscopo de $1 del {date}'],
   [/^(\s*)La Luna pasa hoy por\b/gu, '$1El {date}, la Luna pasa por'],
   [/\bentra hoy en tu (\S+) casa\b/gu, 'entra en tu $1 casa el {date}'],
   [/\balcanza hoy su punto exacto\b/gu, 'alcanza su punto exacto el {date}'],
@@ -80,7 +80,7 @@ const SPANISH_RULES: readonly EditionRule[] = [
 const PORTUGUESE_RULES: readonly EditionRule[] = [
   [/^(\s*)Hoje(\s*)$/gu, '$1O céu de {date}$2'],
   [new RegExp(`^(\\s*)(${PORTUGUESE_SIGNS}) hoje(\\s*)$`, 'gu'), '$1$2 em {date}$3'],
-  [new RegExp(`\\bHoróscopo de hoje de (${PORTUGUESE_SIGNS})(?=$|[\\s.,;:!?])`, 'gu'), 'Horóscopo de $1 de {date}'],
+  [new RegExp(`\\bHoróscopo de (${PORTUGUESE_SIGNS}) de hoje\\b`, 'gu'), 'Horóscopo de $1 de {date}'],
   [/^(\s*)A Lua passa hoje por\b/gu, '$1Em {date}, a Lua passa por'],
   [/\bentra hoje na sua (\S+(?: \S+)?) casa\b/gu, 'entra na sua $1 casa em {date}'],
   [/\bchega hoje ao ponto exato\b/gu, 'chega ao ponto exato em {date}'],

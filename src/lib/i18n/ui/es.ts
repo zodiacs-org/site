@@ -182,7 +182,7 @@ const es = {
     today: 'hoy',
     todayBySignTitle: 'El cielo de hoy, por signo',
     todayBySignPrompt: 'Toca tu signo solar para una lectura clara de hoy — no necesitas la hora de nacimiento.',
-    todaySolarNote: 'leído desde las casas solares de tu signo',
+    todaySolarNote: 'Se lee desde las casas solares de tu signo',
     whyThisReading: 'Por qué esta lectura',
     todayHoroscopeLink: 'Horóscopo de {sign}',
     or: 'o',
