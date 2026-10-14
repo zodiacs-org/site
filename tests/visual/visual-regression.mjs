@@ -224,12 +224,18 @@ async function settleFonts(page) {
       }
       return families;
     };
+    // A stalled font request leaves load() and fonts.ready pending, so each
+    // await also ends at the deadline, where the faces still pending are named.
+    const untilDeadline = (promise) => Promise.race([
+      promise,
+      new Promise((done) => setTimeout(done, Math.max(0, deadline - performance.now()))),
+    ]);
     let waitedFor = [];
     for (;;) {
       const families = usedFamilies();
       const faces = [...document.fonts].filter((face) => families.has(unquote(face.family)));
-      await Promise.all(faces.map((face) => face.load().catch(() => undefined)));
-      await document.fonts.ready;
+      await untilDeadline(Promise.all(faces.map((face) => face.load().catch(() => undefined))));
+      await untilDeadline(document.fonts.ready);
       const pending = [...new Set([
         ...[...document.fonts].filter((face) => face.status === 'loading'),
         ...faces.filter((face) => face.status !== 'loaded' && face.status !== 'error'),
