@@ -251,27 +251,49 @@ async function settleFonts(page) {
  * Records every face that starts loading from now on. Playwright's screenshot
  * waits for document.fonts.ready before it captures, so a face that races the
  * capture is one that starts loading during it, as the full page is laid out.
+ * The FontFaceSet `loading` event is the signal: it carries no faces (Chrome
+ * fires it with an empty list, as the CSS Font Loading spec does), so the faces
+ * are named from `loadingdone` and `loadingerror`, which list those that
+ * settled, and from those still loading. A face can start and finish within
+ * one capture and still leave it drawn without its text.
  */
 function recordFontLoads(page) {
   return page.evaluate(() => {
-    const started = [];
-    const record = (event) => {
-      for (const face of event.fontfaces) started.push(`${face.family} ${face.style} ${face.weight}`);
+    const record = { loadingEvents: 0, settled: [] };
+    const onLoading = () => { record.loadingEvents += 1; };
+    const onSettled = (event) => {
+      for (const face of event.fontfaces) record.settled.push(`${face.family} ${face.style} ${face.weight}`);
     };
-    document.fonts.addEventListener('loading', record);
-    globalThis.__visualFontLoads = { started, stop: () => document.fonts.removeEventListener('loading', record) };
+    document.fonts.addEventListener('loading', onLoading);
+    document.fonts.addEventListener('loadingdone', onSettled);
+    document.fonts.addEventListener('loadingerror', onSettled);
+    globalThis.__visualFontLoads = {
+      record,
+      stop: () => {
+        document.fonts.removeEventListener('loading', onLoading);
+        document.fonts.removeEventListener('loadingdone', onSettled);
+        document.fonts.removeEventListener('loadingerror', onSettled);
+      },
+    };
   });
 }
 
-/** The faces that started loading since recordFontLoads, and those still loading. */
+/**
+ * The faces that started loading since recordFontLoads: those that settled and
+ * those still loading, or an unnamed one when only the `loading` event fired.
+ * Font events are queued tasks, so it lets the queue run before it reads them.
+ */
 function fontLoadsSinceRecord(page) {
-  return page.evaluate(() => {
-    const { started, stop } = globalThis.__visualFontLoads;
+  return page.evaluate(async () => {
+    await new Promise((done) => setTimeout(done, 0));
+    const { record, stop } = globalThis.__visualFontLoads;
     stop();
     const loading = [...document.fonts]
       .filter((face) => face.status === 'loading')
       .map((face) => `${face.family} ${face.style} ${face.weight}`);
-    return [...new Set([...started, ...loading])];
+    const named = [...new Set([...record.settled, ...loading])];
+    if (named.length === 0 && record.loadingEvents > 0) return ['a face the loading event did not name'];
+    return named;
   });
 }
 
