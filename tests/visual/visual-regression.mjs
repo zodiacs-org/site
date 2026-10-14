@@ -210,19 +210,43 @@ async function settleFonts(page) {
     const deadline = started + 30_000;
     const unquote = (name) => name.trim().replace(/^["']|["']$/g, '');
     const describe = (face) => `${unquote(face.family)} ${face.style} ${face.weight}: ${face.status}`;
-    // The first family of each text node's computed font-family: the face the
-    // page draws with whenever that family has one. Later families are the
-    // platform fallbacks, some of which (local Roboto, Times) a platform lacks.
-    const usedFamilies = () => {
-      const families = new Set();
+    // Every text node the capture draws, with the first family of its
+    // computed font-family: the face the page draws with whenever that family
+    // has one. Later families are the platform fallbacks, some of which (local
+    // Roboto, Times) a platform lacks.
+    const drawnText = () => {
+      const drawn = [];
       const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
       for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-        if (!node.textContent.trim() || !node.parentElement) continue;
-        const style = getComputedStyle(node.parentElement);
-        if (style.display === 'none' || style.visibility === 'hidden') continue;
-        families.add(unquote(style.fontFamily.split(',')[0]));
+        const element = node.parentElement;
+        if (!node.textContent.trim() || !element) continue;
+        if (element.checkVisibility
+          ? !element.checkVisibility({ checkVisibilityCSS: true, visibilityProperty: true })
+          : getComputedStyle(element).display === 'none') continue;
+        const style = getComputedStyle(element);
+        if (style.visibility === 'hidden') continue;
+        drawn.push({ text: node.textContent.trim(), style, family: unquote(style.fontFamily.split(',')[0]) });
       }
-      return families;
+      return drawn;
+    };
+    const usedFamilies = () => new Set(drawnText().map(({ family }) => family));
+    // The faces drawn text needs that are not loaded once the waits are over:
+    // FontFaceSet.check() matches each text's family, style, weight and
+    // characters (so an unused subset does not count), and is false while a
+    // matching face is unloaded or has failed to load.
+    const missingFaces = () => {
+      const missing = new Set();
+      for (const { text, style, family } of drawnText()) {
+        const font = `${style.fontStyle} ${style.fontWeight} 16px "${family.replace(/"/g, '\\"')}"`;
+        let loaded = true;
+        try {
+          loaded = document.fonts.check(font, text.slice(0, 200));
+        } catch {
+          // A computed style the font shorthand cannot express is left to the pixel comparison.
+        }
+        if (!loaded) missing.add(`${family} ${style.fontStyle} ${style.fontWeight}`);
+      }
+      return [...missing];
     };
     // A stalled font request leaves load() and fonts.ready pending, so each
     // await also ends at the deadline, where the faces still pending are named.
@@ -248,6 +272,10 @@ async function settleFonts(page) {
         ...faces.filter((face) => face.status !== 'loaded' && face.status !== 'error'),
       ])].map(describe);
       if (pending.length === 0) {
+        // A face that failed to load leaves its text in a fallback, which must
+        // not be captured, nor become a baseline with --update.
+        const failed = missingFaces();
+        if (failed.length > 0) return { ok: false, failed, waitedFor };
         await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
         return { ok: true, families: families.size, waitedMs: Math.round(performance.now() - started), waitedFor };
       }
@@ -256,6 +284,7 @@ async function settleFonts(page) {
       await new Promise((done) => setTimeout(done, 250));
     }
   });
+  if (state.failed) throw new Error(`Faces the page draws with failed to load: ${state.failed.join('; ')}`);
   if (!state.ok) throw new Error(`Fonts the page draws with did not load within 30 s: ${state.pending.join('; ')}`);
   return state;
 }
