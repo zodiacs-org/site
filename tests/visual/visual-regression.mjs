@@ -234,6 +234,13 @@ async function settleFonts(page) {
     for (;;) {
       const families = usedFamilies();
       const faces = [...document.fonts].filter((face) => families.has(unquote(face.family)));
+      // Named before the waits, which end once they have loaded, so the log
+      // shows the faces that had to be waited for.
+      const unsettled = [...new Set([
+        ...[...document.fonts].filter((face) => face.status === 'loading'),
+        ...faces.filter((face) => face.status === 'unloaded' || face.status === 'loading'),
+      ])].map(describe);
+      waitedFor = [...new Set([...waitedFor, ...unsettled])];
       await untilDeadline(Promise.all(faces.map((face) => face.load().catch(() => undefined))));
       await untilDeadline(document.fonts.ready);
       const pending = [...new Set([
