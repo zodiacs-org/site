@@ -84,6 +84,11 @@ describe('analytics event contract', () => {
     });
   });
 
+  it('counts an arrival from an assistant link by the name of the assistant only', () => {
+    expect(sanitizeAnalyticsProperties('assistant_arrival', { assistant: 'chatgpt', url: '/birth-chart/?x' })).toEqual({ assistant: 'chatgpt' });
+    expect(sanitizeAnalyticsProperties('assistant_arrival', { assistant: 'someone-else' })).toEqual({});
+  });
+
   it('drops unknown events rather than forwarding them', () => {
     expect(sanitizeAnalyticsProperties('birth_details', { date: '1990-01-01' })).toBeNull();
   });

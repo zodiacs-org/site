@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_AI_TOOL_NAMES, AI_TOOL_NAMES, OUTPUT_SCHEMAS } from './contracts';
+import { ALL_AI_TOOL_NAMES, AI_TOOL_NAMES, OCCASION_TOOL_NAMES, OUTPUT_SCHEMAS } from './contracts';
 import { executeAiTool, offeredTools } from './tools';
 
 const off = { now: () => new Date('2026-10-11T12:00:00Z') };
@@ -8,13 +8,13 @@ const on = { ...off, occasions: true };
 describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
   it('are neither offered nor run until the switch is on', async () => {
     expect(offeredTools(off)).toEqual(AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope'));
-    expect(offeredTools(on)).toEqual([...AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope'), 'get_occasion_sky', 'get_life_milestones']);
+    expect(offeredTools(on)).toEqual([...AI_TOOL_NAMES.filter((tool) => tool !== 'get_horoscope'), ...OCCASION_TOOL_NAMES]);
     const hidden = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12' }, off);
     expect(hidden).toMatchObject({ ok: false, error: { code: 'unavailable' } });
     const capabilities = await executeAiTool('get_capabilities', {}, on);
     if (capabilities.ok && capabilities.tool === 'get_capabilities') {
       expect(capabilities.data.tools).toContain('get_life_milestones');
-      expect(capabilities.data.privacy).toContain('or a birth date');
+      expect(capabilities.data.privacy).toContain('birth dates with an optional time');
     }
     const plain = await executeAiTool('get_capabilities', {}, off);
     if (plain.ok && plain.tool === 'get_capabilities') expect(plain.data.privacy).not.toContain('occasion');

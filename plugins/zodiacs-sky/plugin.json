@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "zodiacs-sky",
-  "version": "0.4.0",
-  "description": "Check what's happening in the sky, read the horoscope for your sign, and explore your own birth chart.",
+  "version": "0.5.0",
+  "description": "Check what's happening in the sky, read the horoscope for your sign, explore your own birth chart, compare two charts and see the sky on the days that matter.",
   "author": {
     "name": "Zodiacs LLC",
     "email": "admin@zodiacs.org",
@@ -23,14 +23,18 @@
       "interface": {
         "displayName": "Zodiacs",
         "shortDescription": "Sky, horoscopes and charts",
-        "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. See what's changing in the sky this week, check whether a planet is retrograde, read the horoscope for your sign, and explore your own birth chart. No account is needed.\n\nZodiacs calculates the sky; what it means in astrology is offered as interpretation, for reflection. Horoscopes are dated Sun-sign readings written for your own day, in your time zone. Chart Studio asks for your birth date, place and, if you know it, time, and works out the chart inside the panel without saving it. The assistant sees only what you choose to share. Without a birth time, it shows what can still be known and says which parts it can't show, rather than guessing.\n\nThe sky calendar covers planets changing sign, turning retrograde or direct, and new and full Moons, up to 92 days at a time. Zodiacs does not list eclipses, set reminders or make personal predictions.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . How we calculate: https://zodiacs.org/methodology/ . Privacy and terms are linked in this profile.",
+        "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. See what's changing in the sky this week, check whether a planet is retrograde, read the horoscope for your sign, and explore your own birth chart. Compare your chart with a partner's, a friend's or a relative's. Find famous people who share your Sun or Moon sign, and look up a famous person's chart. See the sky on your birthday and when your solar return falls, make a card with the sky on a day that matters, such as a wedding or the day a baby arrived, and see your life milestones, such as your Saturn return. Subscribe to the sky calendar in Google Calendar, Apple Calendar or Outlook. No account is needed.\n\nZodiacs calculates the sky; what it means in astrology is offered as interpretation, for reflection. It never scores a relationship, chooses or ranks dates, or says how a day or a relationship will go. Horoscopes are dated Sun-sign readings written for your own day, in your time zone. Chart Studio asks for your birth date, place and, if you know it, time, and works out the chart inside the panel without saving it. The assistant sees only what you choose to share. The comparison, chart-twin, birthday, milestone and occasion tools use only the dates you give in the conversation and keep none of them. Famous charts come from the people Zodiacs publishes; if it has no chart for someone, it says so rather than making one up. Without a birth time, Zodiacs shows what can still be known and says which parts it can't show, rather than guessing.\n\nThe sky calendar in the conversation covers planets changing sign, turning retrograde or direct, and new and full Moons, up to 92 days at a time. The calendar subscription adds eclipses and retrograde periods and updates itself. Zodiacs does not add entries to your calendar, set reminders or make personal predictions.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . How we calculate: https://zodiacs.org/methodology/ . Privacy and terms are linked in this profile.",
         "developerName": "Zodiacs LLC",
         "category": "Education & Research",
         "capabilities": [
           "Sky calendar",
           "Horoscopes",
           "Sky fact checks",
-          "Interactive birth chart"
+          "Interactive birth chart",
+          "Chart comparison",
+          "Famous charts",
+          "Birthdays and occasions",
+          "Calendar subscription"
         ],
         "websiteURL": "https://zodiacs.org/",
         "supportURL": "https://zodiacs.org/about/",
@@ -48,22 +52,10 @@
         "test_cases": {
           "positive": [
             {
-              "description": "What changes in the sky this week, in the person's time zone.",
-              "prompt": "What's happening in the sky this week? I'm in Bangkok.",
-              "tools_triggered": "get_upcoming_events",
-              "expected_behavior": "Lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Bangkok, in plain words, and renders the sky calendar."
-            },
-            {
-              "description": "A yes-or-no sky question and where the planet is.",
-              "prompt": "Is Mercury retrograde right now, and where is it?",
-              "tools_triggered": "check_sky_fact, get_sky",
-              "expected_behavior": "Answers yes or no with the relevant dates and gives Mercury's current sign and position in plain words, keeping astronomy separate from astrological meaning."
-            },
-            {
-              "description": "Say what Zodiacs can check, then keep a date-only answer that depends on the time zone.",
-              "prompt": "What can Zodiacs check for me? For example, did the Sun enter Libra on September 23, 2026? I haven't said where I am.",
-              "tools_triggered": "get_capabilities, check_sky_fact",
-              "expected_behavior": "Summarises what Zodiacs offers in plain words, then keeps the 'depends' answer and explains that it changes with the time zone instead of turning it into a certainty."
+              "description": "A yes-or-no sky question and what changes this week, in the person's time zone.",
+              "prompt": "Is Mercury retrograde right now, and what else changes in the sky this week? I'm in Bangkok.",
+              "tools_triggered": "check_sky_fact, get_upcoming_events",
+              "expected_behavior": "Answers yes or no about Mercury, then lists this week's sign changes, retrograde or direct turns and new or full Moons with times in Bangkok, in plain words, and renders the sky calendar. Keeps astronomy separate from astrological meaning."
             },
             {
               "description": "A dated Sun-sign horoscope for the person's own day.",
@@ -72,10 +64,22 @@
               "expected_behavior": "Shows the Leo reading dated for the person's own day in their time zone, renders the horoscope panel, keeps the reading's date and presents it as reflection, not a personal forecast."
             },
             {
-              "description": "Open a personal chart without sending birth details as tool arguments.",
-              "prompt": "Help me read my birth chart.",
-              "tools_triggered": "open_chart_studio",
-              "expected_behavior": "Calls with {} and renders Chart Studio, which asks when and where the person was born and calculates inside the panel. An example chart is offered only as a labelled second choice. Selected facts are shared only after a preview and an explicit action."
+              "description": "Compare two people's charts without scoring the relationship.",
+              "prompt": "Compare my chart with my partner's: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992.",
+              "tools_triggered": "get_compatibility",
+              "expected_behavior": "Gives both Sun signs, a Moon sign only where the birth details settle it and a rising sign only for the person with a birth time and place, the closest contacts between the two charts with what each traditionally means, and the balance of elements, and renders the comparison card. Gives no score, percentage or verdict on whether they are a good match, and does not predict how the relationship will go."
+            },
+            {
+              "description": "Famous people who share the person's sign, and a famous person's published chart.",
+              "prompt": "I was born on 3 May 1990. Which famous people share my Sun sign? And what does Frida Kahlo's chart look like?",
+              "tools_triggered": "find_chart_twins, get_famous_chart",
+              "expected_behavior": "Names famous people Zodiacs publishes charts for who share the Taurus Sun, with a link to each chart, then gives Frida Kahlo's Sun sign and the planets' signs from her published page, noting they are read at a reference noon, not a birth time. Without a birth time it compares the Sun only and says so. It never makes up a chart for someone Zodiacs does not publish."
+            },
+            {
+              "description": "A card with the sky on a day that matters, without judging the date.",
+              "prompt": "We're getting married on 12 June 2027 at 17:00 in Florence. Make us a card with the sky for that day.",
+              "tools_triggered": "get_occasion_sky",
+              "expected_behavior": "Renders a wedding card with the Sun and Moon signs, the Moon's phase and any retrograde planets at 17:00 in Florence, the evening's sunset, golden hour and visible planets, and short lines the couple can use. It does not say whether the date is lucky or how the day will go."
             }
           ],
           "negative": [
@@ -101,7 +105,7 @@
         "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.4.0.mp4"
       },
       "publication": {
-        "release_notes": "0.4.0: Adds dated Sun-sign horoscopes written for the reader's own day, opens Chart Studio on your own birth details with the example as a labelled second choice, extends the sky calendar to 92 days, removes the catalogue search tool and rewrites the labels and answers in plain language."
+        "release_notes": "0.5.0: Adds seven tools that share one panel: compare two birth charts (contacts and element balance, never a score), find famous people who share your Sun or Moon sign, look up a famous person's published chart, describe a birthday with its solar return, make a card with the sky on a day that matters, list life milestones such as Saturn returns, and give the link to subscribe to the sky calendar in your own calendar app. Links to zodiacs.org now end in ?ref=chatgpt or ?ref=assistant so the site can count those visits."
       },
       "onboardingSkill": "./skills/explore-the-sky/SKILL.md"
     }

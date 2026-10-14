@@ -9,17 +9,20 @@ import { scanTransitContacts } from '../src/lib/engine/transit-scan';
 
 const cases = JSON.parse(await readFile(new URL('../integrations/chatgpt/evaluation-cases.json', import.meta.url), 'utf8'));
 const horoscopeWindow = JSON.parse(await readFile(new URL('../src/data/horoscope-window.json', import.meta.url), 'utf8'));
-assert.equal(cases.length, 40);
+assert.equal(cases.length, 54);
 const timings: number[] = [], results = [];
 for (const entry of cases) {
   const start = performance.now();
-  const result = await executeAiTool(entry.tool as AiToolName, entry.args, { now: () => new Date('2026-10-01T06:00:00Z'), horoscopeWindow: async () => horoscopeWindow });
+  // occasions: the 0.5.0 tools, as production offers them with ZODIACS_OCCASIONS_ENABLED=1.
+  const result = await executeAiTool(entry.tool as AiToolName, entry.args, { now: () => new Date('2026-10-01T06:00:00Z'), horoscopeWindow: async () => horoscopeWindow, occasions: true });
   timings.push(performance.now() - start);
   assert.equal(result.ok, entry.ok, `${entry.id}: expected ${entry.ok}, received ${JSON.stringify(result)}`);
   assert.ok(!JSON.stringify(result).includes('private-canary'));
   if (result.ok) {
     if (entry.answer && result.tool === 'check_sky_fact') assert.equal(result.data.answer, entry.answer);
     if (entry.empty && result.tool === 'get_upcoming_events') assert.equal(result.data.events.length, 0);
+    if (entry.found !== undefined && result.tool === 'get_famous_chart') assert.equal(result.data.found, entry.found);
+    if (result.tool === 'get_compatibility') assert.ok(!/score|percent|soulmate/iu.test(JSON.stringify(result.data.contacts)), `${entry.id}: no score`);
     for (const link of result.links) { const url = new URL(link.url); assert.equal(url.origin, 'https://zodiacs.org'); assert.equal(url.search, ''); }
   }
   results.push({ id: entry.id, passed: true, tool: entry.tool });
@@ -35,4 +38,4 @@ const out = new URL('../docs/platform/zodiacs-ai/evidence/', import.meta.url);
 await mkdir(out, { recursive: true });
 await writeFile(new URL('evaluation.json', out), `${JSON.stringify(report, null, 2)}\n`);
 await writeFile(new URL('synthetic-personal-week.json', out), `${JSON.stringify({ synthetic: true, description: 'Concept demonstration only; arbitrary date, unknown time, no angles or houses. Contacts are numerical facts, not predictions. Scanner completeness is not proven.', engine: ENGINE_VERSION, natal: envelope, from: '2026-10-01T00:00:00Z', to: '2026-10-08T00:00:00Z', contacts }, null, 2)}\n`);
-console.log(`AI adapter evaluation: ${results.length}/40 passed; synthetic personal-week concept generated.`);
+console.log(`AI adapter evaluation: ${results.length}/${cases.length} passed; synthetic personal-week concept generated.`);

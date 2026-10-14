@@ -24,7 +24,13 @@ set local role service_role;
 select public.zodiacs_mcp_usage_count_v1('production', 'get_occasion_sky', 'chatgpt');
 select public.zodiacs_mcp_usage_count_v1('production', 'get_occasion_sky', 'chatgpt');
 select public.zodiacs_mcp_usage_count_v1('preview', 'get_life_milestones', 'claude');
+select public.zodiacs_mcp_usage_count_v1('production', 'get_compatibility', 'chatgpt');
+select public.zodiacs_mcp_usage_count_v1('production', 'find_chart_twins', 'other');
+select public.zodiacs_mcp_usage_count_v1('production', 'get_famous_chart', 'chatgpt');
+select public.zodiacs_mcp_usage_count_v1('production', 'get_birthday', 'claude');
+select public.zodiacs_mcp_usage_count_v1('production', 'get_sky_calendar', 'chatgpt');
 commit;
+select pg_temp.assert_occasion_usage((select count(distinct tool) = 5 from zodiacs_mcp_private.usage_daily where tool in ('get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar')), 'every 0.5.0 tool counted');
 select pg_temp.assert_occasion_usage((select calls = 2 from zodiacs_mcp_private.usage_daily where scope = 'production' and tool = 'get_occasion_sky' and host = 'chatgpt'), 'occasion sky counted twice on one row');
 select pg_temp.assert_occasion_usage((select calls = 1 from zodiacs_mcp_private.usage_daily where scope = 'preview' and tool = 'get_life_milestones' and host = 'claude'), 'life milestones counted');
 do $$ begin
@@ -38,4 +44,4 @@ end; $$;
 select pg_temp.assert_occasion_usage((select count(*) = 0 from (
   select day, scope, tool, host, calls from occasion_usage_before
   except select day, scope, tool, host, calls from zodiacs_mcp_private.usage_daily) changed), 'earlier rows unchanged');
-select 'MCP occasion usage SQL passed: replayable widening, two new tool names counted, unknown names refused, earlier rows kept' as result;
+select 'MCP occasion usage SQL passed: replayable widening, the 0.5.0 tool names counted, unknown names refused, earlier rows kept' as result;

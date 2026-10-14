@@ -1,4 +1,6 @@
--- Adds the two occasion tools (get_occasion_sky, get_life_milestones) to the
+-- Adds the 0.5.0 tools (the occasion tools get_occasion_sky and
+-- get_life_milestones, then get_compatibility, find_chart_twins,
+-- get_famous_chart, get_birthday and get_sky_calendar) to the
 -- hosted MCP's anonymous daily usage counters. The counter's shape, privacy,
 -- grants and atomic increment are unchanged; only the allowed tool names grow.
 -- The server counts these names only while ZODIACS_OCCASIONS_ENABLED=1 offers
@@ -6,13 +8,13 @@
 -- UTC filename; not applied to any database until the owner approves it.
 alter table zodiacs_mcp_private.usage_daily drop constraint if exists usage_daily_tool_check;
 alter table zodiacs_mcp_private.usage_daily add constraint usage_daily_tool_check
-  check (tool in ('get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio', 'get_occasion_sky', 'get_life_milestones'));
+  check (tool in ('get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio', 'get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'));
 
 create or replace function public.zodiacs_mcp_usage_count_v1(usage_scope text, usage_tool text, usage_host text)
 returns void language plpgsql security invoker set search_path = '' as $$
 begin
   if usage_scope is null or usage_scope not in ('preview', 'production')
-    or usage_tool is null or usage_tool not in ('get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio', 'get_occasion_sky', 'get_life_milestones')
+    or usage_tool is null or usage_tool not in ('get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio', 'get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar')
     or usage_host is null or usage_host not in ('chatgpt', 'claude', 'other') then
     raise exception using errcode = '22023', message = 'Invalid MCP usage scope, tool or host';
   end if;

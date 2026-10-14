@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { OccasionsBridge, type PanelToolResult } from './bridge';
 import { OCCASION_LABELS, type OccasionKind } from '../../lib/occasions/kinds';
 import { MILESTONE_WORDS } from '../../lib/occasions/milestone-words';
+import { Actions, Birthday, ChartTwins, Compatibility, FamousChart, Signature, SkyCalendar } from './views';
+import type { CompatibilityData } from '../features/compatibility';
+import type { ChartTwinsData, FamousChartData } from '../features/people';
+import type { BirthdayData, SkyCalendarData } from '../features/birthday';
 import './style.css';
 
 declare const OCCASIONS_ICONS: Record<string, string>;
@@ -28,7 +32,10 @@ interface LifeMilestones {
   numbers: { fullMoons: number; mercuryRetrogrades: number; jupiterReturns: number };
   cardUrl: string | null; note: string;
 }
-type Shown = { tool: 'get_occasion_sky'; data: OccasionSky } | { tool: 'get_life_milestones'; data: LifeMilestones };
+type Shown = { tool: 'get_occasion_sky'; data: OccasionSky } | { tool: 'get_life_milestones'; data: LifeMilestones }
+  | { tool: 'get_compatibility'; data: CompatibilityData } | { tool: 'find_chart_twins'; data: ChartTwinsData } | { tool: 'get_famous_chart'; data: FamousChartData }
+  | { tool: 'get_birthday'; data: BirthdayData } | { tool: 'get_sky_calendar'; data: SkyCalendarData };
+const PANEL_TOOLS: readonly string[] = ['get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'];
 
 const signName = (slug: string) => slug.charAt(0).toUpperCase() + slug.slice(1);
 const longDate = (date: string) => new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date.slice(0, 10)}T12:00:00Z`));
@@ -43,31 +50,16 @@ const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seven
 const milestoneName = (milestone: Milestone) => (milestone.kind === 'uranus-opposition' ? 'Uranus opposition' : `${ORDINALS[milestone.index - 1] ?? `${milestone.index}th`} ${MILESTONE_WORDS[milestone.kind].name}`);
 const capital = (text: string) => text.replace(/^./u, (c) => c.toUpperCase());
 
-/** The panel shows a successful occasion or milestones result and nothing else. */
+/** The panel shows a successful result of one of its tools and nothing else. */
 function shownFrom(content: unknown): Shown | { error: string } | null {
   const result = content as { ok?: boolean; tool?: string; data?: unknown; error?: { message?: string } } | undefined;
-  if (!result || (result.tool !== 'get_occasion_sky' && result.tool !== 'get_life_milestones')) return null;
+  if (!result || !result.tool || !PANEL_TOOLS.includes(result.tool)) return null;
   if (!result.ok) return { error: result.error?.message ?? 'That could not be worked out.' };
   return { tool: result.tool, data: result.data } as Shown;
 }
 
 function Brand() {
-  return <header class="brand"><a href="https://zodiacs.org/occasions/" target="_blank" rel="noreferrer">Zodiacs</a></header>;
-}
-
-function Actions({ text, cardUrl, cardLabel }: { text: string; cardUrl: string | null; cardLabel: string }) {
-  const [status, setStatus] = useState('');
-  async function copy() {
-    try { await navigator.clipboard.writeText(text); setStatus('Copied.'); }
-    catch { setStatus('Copying isn’t allowed here. Select the text to copy it.'); }
-  }
-  return <>
-    <div class="actions">
-      <button onClick={copy}>Copy the card</button>
-      {cardUrl && <a href={cardUrl} target="_blank" rel="noreferrer">{cardLabel} ↗</a>}
-    </div>
-    <p role="status" class="quiet">{status}</p>
-  </>;
+  return <header class="brand"><a href="https://zodiacs.org/" target="_blank" rel="noreferrer">Zodiacs</a></header>;
 }
 
 function Occasion({ data }: { data: OccasionSky }) {
@@ -110,6 +102,7 @@ function Occasion({ data }: { data: OccasionSky }) {
       {data.moonSignChange && data.instantIs !== 'given-time' && <p class="quiet">The Moon changes sign that day. Add the time to pin it down.</p>}
       <Actions text={text} cardUrl={data.cardUrl} cardLabel="Open the printable card"/>
       <p class="disclosure">{data.note}</p>
+      <Signature/>
     </article>
     <Footer/>
   </main>;
@@ -145,6 +138,7 @@ function Milestones({ data }: { data: LifeMilestones }) {
       {!data.timeKnown && <p class="quiet">Without a birth time, a date can be a day off.</p>}
       <Actions text={text} cardUrl={data.cardUrl} cardLabel="Open the card on zodiacs.org"/>
       <p class="disclosure">{data.note}</p>
+      <Signature/>
     </article>
     <Footer/>
   </main>;
@@ -178,11 +172,20 @@ function App() {
 
   if (shown?.tool === 'get_occasion_sky') return <Occasion data={shown.data}/>;
   if (shown?.tool === 'get_life_milestones') return <Milestones data={shown.data}/>;
+  if (shown) return <main>
+    <Brand/>
+    {shown.tool === 'get_compatibility' ? <Compatibility data={shown.data}/>
+      : shown.tool === 'find_chart_twins' ? <ChartTwins data={shown.data}/>
+      : shown.tool === 'get_famous_chart' ? <FamousChart data={shown.data}/>
+      : shown.tool === 'get_birthday' ? <Birthday data={shown.data}/>
+      : <SkyCalendar data={shown.data}/>}
+    <Footer/>
+  </main>;
   return <main>
     <Brand/>
     {error ? <p role="alert" class="notice">{error}</p>
       : waiting ? <p role="status" class="quiet">Working out the sky…</p>
-      : <p class="quiet">Ask the assistant about a day that matters, or about your life milestones, and the card appears here.</p>}
+      : <p class="quiet">Ask the assistant about a day that matters, your life milestones, two charts, your chart twins, a famous chart or a birthday, and the card appears here.</p>}
   </main>;
 }
 

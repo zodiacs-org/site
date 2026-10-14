@@ -1,14 +1,20 @@
 import { z } from 'zod';
 import { BUDGETS, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS } from '../lib/compute-api/constants';
 import { OCCASION_KINDS } from '../lib/occasions/kinds';
+import { compatibilityData, compatibilityInput } from './features/compatibility';
+import { chartTwinsData, chartTwinsInput, famousChartData, famousChartInput } from './features/people';
+import { birthdayData, birthdayInput, skyCalendarData, skyCalendarInput } from './features/birthday';
 import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS } from './horoscope/reading';
 
-export const AI_VERSION = '0.4.0';
+export const AI_VERSION = '0.5.0';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
 /** The released tools: what the reviewed plugin offers. */
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'] as const;
-/** The occasion tools, offered only where ZODIACS_OCCASIONS_ENABLED=1 (docs/platform/zodiacs-ai/OCCASIONS.md). */
-export const OCCASION_TOOL_NAMES = ['get_occasion_sky', 'get_life_milestones'] as const;
+/**
+ * The 0.5.0 tools: the occasion tools, compatibility, famous people, birthdays and the calendar feed.
+ * Offered only where ZODIACS_OCCASIONS_ENABLED=1 (docs/platform/zodiacs-ai/OCCASIONS.md).
+ */
+export const OCCASION_TOOL_NAMES = ['get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'] as const;
 export const ALL_AI_TOOL_NAMES = [...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES] as const;
 export type AiToolName = typeof ALL_AI_TOOL_NAMES[number];
 export const OCCASIONS_SWITCH_ENV = 'ZODIACS_OCCASIONS_ENABLED';
@@ -42,6 +48,11 @@ export const TOOL_TITLES: Record<AiToolName, string> = {
   open_chart_studio: 'Chart Studio',
   get_occasion_sky: 'The sky on a day',
   get_life_milestones: 'Life milestones',
+  get_compatibility: 'Compare two charts',
+  find_chart_twins: 'Chart twins',
+  get_famous_chart: 'A famous birth chart',
+  get_birthday: 'Your birthday',
+  get_sky_calendar: 'Sky calendar for your calendar app',
 };
 
 const instant = z.string().min(20).max(29).describe('A moment as an ISO 8601 time with Z or an offset, such as 2026-10-08T09:00:00+07:00 (years 1800–2199).');
@@ -81,6 +92,11 @@ export const INPUT_SCHEMAS = {
   }).superRefine((args, context) => {
     if (args.time !== undefined && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time needs its time zone.' });
   }),
+  get_compatibility: compatibilityInput,
+  find_chart_twins: chartTwinsInput,
+  get_famous_chart: famousChartInput,
+  get_birthday: birthdayInput,
+  get_sky_calendar: skyCalendarInput,
   get_horoscope: z.strictObject({
     sign: z.enum(HOROSCOPE_SIGNS).optional().describe('Sun sign. Leave it out to let the person choose; never guess it.'),
     period: z.enum(HOROSCOPE_PERIODS).optional().describe('day (the default) or week.'),
@@ -159,6 +175,11 @@ const dataSchemas = {
   get_horoscope: horoscope,
   get_occasion_sky: occasionSky,
   get_life_milestones: lifeMilestones,
+  get_compatibility: compatibilityData,
+  find_chart_twins: chartTwinsData,
+  get_famous_chart: famousChartData,
+  get_birthday: birthdayData,
+  get_sky_calendar: skyCalendarData,
 };
 
 export const ERROR_SCHEMA = z.object({ schema: z.literal(AI_RESULT_SCHEMA), ok: z.literal(false), tool: z.enum(ALL_AI_TOOL_NAMES), error: z.object({ code: z.string(), message: z.string(), retryAfterSeconds: z.number().optional() }) });
@@ -175,6 +196,11 @@ export const OUTPUT_SCHEMAS = {
   get_horoscope: outputSchema('get_horoscope', dataSchemas.get_horoscope),
   get_occasion_sky: outputSchema('get_occasion_sky', dataSchemas.get_occasion_sky),
   get_life_milestones: outputSchema('get_life_milestones', dataSchemas.get_life_milestones),
+  get_compatibility: outputSchema('get_compatibility', dataSchemas.get_compatibility),
+  find_chart_twins: outputSchema('find_chart_twins', dataSchemas.find_chart_twins),
+  get_famous_chart: outputSchema('get_famous_chart', dataSchemas.get_famous_chart),
+  get_birthday: outputSchema('get_birthday', dataSchemas.get_birthday),
+  get_sky_calendar: outputSchema('get_sky_calendar', dataSchemas.get_sky_calendar),
 };
 
 /** Read by the assistant and shown to people in the plugin's details: plain first sentence, then routing detail. */
@@ -187,4 +213,9 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Use it when the person asks for a horoscope or reading, not to answer a request for certainty about a relationship, money or health. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written, keep its dates, and present it as reflection, not a personal birth-chart forecast.",
   get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, the day a baby arrived, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It does not choose or rank dates or say how the day will go: when asked which date is best, give the facts for each date they name.",
   get_life_milestones: "Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and how many full Moons and Mercury retrogrades the person has lived through. A birth date is enough; add the birth time and time zone if known. It makes no prediction.",
+  get_compatibility: "Compares two people's birth charts: their Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. Use it when someone asks about compatibility with a partner, friend or family member. Each person needs a birth date; add a birth time, time zone and birthplace coordinates when known, and first names if they want them shown. It never scores a relationship, says whether two people are a good match or predicts how a relationship will go; share the contacts as descriptions, not verdicts.",
+  find_chart_twins: "Finds famous people whose birth charts share the person's Sun sign, Moon sign or both, from the people Zodiacs publishes charts for, with a link to each person's chart. A birth date is enough for the Sun; the Moon needs the birth time and time zone. Use it when someone asks which famous people share their sign or chart.",
+  get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up.",
+  get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. Give a month and day (05-03), or a full birth date for the exact sign and that year's solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. It links to the date's birthday page. It makes no prediction.",
+  get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian.",
 };
