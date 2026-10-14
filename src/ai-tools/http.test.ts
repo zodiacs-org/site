@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI, OCCASIONS_URI } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI, OCCASIONS_URI, OCCASION_TOOL_NAMES } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
@@ -185,7 +185,7 @@ describe('stateless MCP HTTP boundary', () => {
     expect(await names()).toEqual(AI_TOOL_NAMES);
     occasionsSwitch = '1';
     try {
-      expect(await names()).toEqual([...AI_TOOL_NAMES, 'get_occasion_sky', 'get_life_milestones']);
+      expect(await names()).toEqual([...AI_TOOL_NAMES, ...OCCASION_TOOL_NAMES]);
       const call = await readMessage(await post(rpc('tools/call', { name: 'get_life_milestones', arguments: { birthDate: '1997-03-15' } })));
       expect(call.result.structuredContent).toMatchObject({ ok: true, tool: 'get_life_milestones', data: { birthDate: '1997-03-15' } });
     } finally { occasionsSwitch = undefined; }
@@ -198,7 +198,7 @@ describe('stateless MCP HTTP boundary', () => {
     try {
       expect(await resources()).toContain(OCCASIONS_URI);
       const tools = (await readMessage(await post(rpc('tools/list')))).result.tools;
-      for (const name of ['get_occasion_sky', 'get_life_milestones']) {
+      for (const name of OCCASION_TOOL_NAMES) {
         const meta = tools.find((tool: { name: string }) => tool.name === name)._meta;
         expect(meta['openai/outputTemplate']).toBe(OCCASIONS_URI);
         expect(meta.ui.resourceUri).toBe(OCCASIONS_URI);

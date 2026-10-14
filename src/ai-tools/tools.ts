@@ -9,6 +9,9 @@ import type { LocalTimeModule } from '../lib/compute-api/local-time';
 import { occasionCard } from '../lib/occasions/card';
 import { MILESTONE_WORDS, milestoneCard } from '../lib/occasions/milestone-card';
 import type { Milestone } from '../lib/occasions/milestones';
+import { computeCompatibility } from './features/compatibility';
+import { findChartTwins, getFamousChart } from './features/people';
+import { getBirthday, getSkyCalendar } from './features/birthday';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
@@ -96,12 +99,21 @@ export function refUrl(url: string, ref: 'chatgpt' | 'assistant'): string {
   const [base, fragment] = hash === -1 ? [url, ''] : [url.slice(0, hash), url.slice(hash)];
   return `${base}${base.includes('?') ? '&' : '?'}ref=${ref}${fragment}`;
 }
-/** Every page address in a result (fields named url or ending in Url) with its ?ref= added. */
+/** Every page address in a result (fields named url or ending in Url, except feeds) with its ?ref= added. */
 function withRef(value: unknown, ref: 'chatgpt' | 'assistant', key = ''): unknown {
-  if (typeof value === 'string') return /(^url|Url)$/u.test(key) ? refUrl(value, ref) : value;
+  // A calendar feed is fetched by calendar apps, not visited, so its address stays as published.
+  if (typeof value === 'string') return /(^url|Url)$/u.test(key) && key !== 'feedUrl' ? refUrl(value, ref) : value;
   if (Array.isArray(value)) return value.map((item) => withRef(item, ref));
   if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, withRef(item, ref, name)]));
   return value;
+}
+
+/** A feature's answer, or the plain message of the RangeError it refused the details with. */
+async function feature<T>(run: () => Promise<T>): Promise<T | { failure: string }> {
+  try { return await run(); } catch (error) {
+    if (error instanceof RangeError) return { failure: error.message };
+    throw error;
+  }
 }
 
 /** One typed operation per call. No network, persistence or logs; the horoscope window is read through its injected loader. */
@@ -114,7 +126,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
     const parsed = INPUT_SCHEMAS[tool].safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'Zodiacs could not use those details. Check the sign, date or time zone and try again.');
     let data: unknown;
-    let links = [methodLink];
+    let links: { title: string; url: string }[] = [methodLink];
     switch (tool) {
       case 'open_chart_studio': {
         data = { title: 'Chart Studio', calculation: 'browser-local', initialChart: 'birth-details', sharing: 'user-reviewed-selection-only' };
@@ -126,8 +138,9 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: offeredTools(dependencies), limits: LIMITS, conventions: statements.conventions, coverage: statements.coverage, privacy: PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', 'No eclipse or aspect search, birth-time rectification, personal predictions, reminders or account access.', 'Horoscopes are dated Sun-sign readings for the day before, the day of and the day after the current edition; they are interpretation, not personal birth-chart forecasts.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
         if (dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
-          capabilities.privacy += ' The occasion tools take the date of an occasion, or a birth date, with an optional time, time zone, place and first names; they calculate from them for that call and save none of it. The result, including a card link that carries the details after its #, goes to the assistant.';
+          capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result, including any card link that carries the details after its #, goes to the assistant. The famous-chart and sky-calendar tools need no personal details. Links to zodiacs.org end in ?ref= with the assistant\'s name so the site can count those visits.';
           capabilities.limitations.push('The occasion tools give the sky on a date and the dates of astrology\'s life milestones; they do not choose or rank dates or predict how a day will go.');
+          capabilities.limitations.push('Compatibility describes the contacts between two charts; it does not score a relationship or predict how one will go. Famous charts cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
         }
         if (dependencies.skyWatch) {
           const capabilities = data as { privacy: string; limitations: string[] };
@@ -255,6 +268,36 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           note: 'Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.',
         };
         links = [{ title: 'Life milestones on Zodiacs', url: `${ORIGIN}/occasions/milestones/` }, methodLink];
+        break;
+      }
+      case 'get_compatibility': {
+        const args = INPUT_SCHEMAS.get_compatibility.parse(input);
+        // Each zone is spelt as tzdb spells it first, as the other tools do.
+        const person = async (who: typeof args.a, path: string) => (who.zone ? { ...who, zone: await zoneAt(who.zone, path, resolveZone) } : who);
+        const pair = { a: await person(args.a, '/a/zone'), b: await person(args.b, '/b/zone') };
+        const result = await feature(() => computeCompatibility(pair, localTime()));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        ({ data, links } = result);
+        break;
+      }
+      case 'find_chart_twins': {
+        const result = await feature(() => findChartTwins(INPUT_SCHEMAS.find_chart_twins.parse(input), localTime()));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        ({ data, links } = result);
+        break;
+      }
+      case 'get_famous_chart': {
+        ({ data, links } = getFamousChart(INPUT_SCHEMAS.get_famous_chart.parse(input)));
+        break;
+      }
+      case 'get_birthday': {
+        const result = await feature(() => getBirthday(INPUT_SCHEMAS.get_birthday.parse(input), localTime(), dependencies.now?.() ?? new Date()));
+        if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
+        ({ data, links } = result);
+        break;
+      }
+      case 'get_sky_calendar': {
+        ({ data, links } = getSkyCalendar(INPUT_SCHEMAS.get_sky_calendar.parse(input), dependencies.now?.() ?? new Date()));
         break;
       }
     }

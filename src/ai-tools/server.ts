@@ -17,6 +17,11 @@ const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   get_horoscope: { uri: HOROSCOPE_URI, icon: 'horoscopes' },
   get_occasion_sky: { uri: OCCASIONS_URI, icon: 'occasions' },
   get_life_milestones: { uri: OCCASIONS_URI, icon: 'occasions' },
+  get_compatibility: { uri: OCCASIONS_URI, icon: 'occasions' },
+  find_chart_twins: { uri: OCCASIONS_URI, icon: 'occasions' },
+  get_famous_chart: { uri: OCCASIONS_URI, icon: 'occasions' },
+  get_birthday: { uri: OCCASIONS_URI, icon: 'occasions' },
+  get_sky_calendar: { uri: OCCASIONS_URI, icon: 'occasions' },
 };
 
 const panelMeta = (preferredDisplayMode: 'inline' | 'fullscreen') => ({ ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode } });
@@ -53,9 +58,9 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
     title: 'Zodiacs horoscopes', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it." },
   }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: HOROSCOPES_HTML, _meta: panelMeta('inline') }] }));
-  if (tools.includes('get_occasion_sky') || tools.includes('get_life_milestones')) server.registerResource('occasions', OCCASIONS_URI, {
+  if (tools.some((tool) => PANELS[tool]?.uri === OCCASIONS_URI)) server.registerResource('occasions', OCCASIONS_URI, {
     title: 'Zodiacs occasions', mimeType: 'text/html;profile=mcp-app',
-    _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'A card for a day that matters, or for life milestones, from what the assistant worked out.' },
+    _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar.' },
   }, () => ({ contents: [{ uri: OCCASIONS_URI, mimeType: 'text/html;profile=mcp-app', text: OCCASIONS_HTML, _meta: panelMeta('inline') }] }));
   for (const tool of tools) {
     const panel = PANELS[tool];
@@ -63,7 +68,7 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
       title: TOOL_TITLES[tool], description: TOOL_DESCRIPTIONS[tool],
       ...(panel ? { icons: [{ src: `https://zodiacs.org/assets/ai/${panel.icon}.svg`, mimeType: 'image/svg+xml', sizes: ['20x20'] }] } : {}),
       inputSchema: INPUT_SCHEMAS[tool], outputSchema: OUTPUT_SCHEMAS[tool],
-      annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: tool !== 'get_sky' && tool !== 'get_upcoming_events' && tool !== 'get_horoscope' && tool !== 'get_life_milestones' },
+      annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: tool !== 'get_sky' && tool !== 'get_upcoming_events' && tool !== 'get_horoscope' && tool !== 'get_life_milestones' && tool !== 'get_birthday' && tool !== 'get_sky_calendar' },
       _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {
       const context: AiCallContext = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };

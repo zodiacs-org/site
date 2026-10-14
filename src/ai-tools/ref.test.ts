@@ -25,6 +25,8 @@ describe('?ref= on zodiacs.org links from the tools', () => {
       expect(tagged.data.cardUrl).toBe('https://zodiacs.org/occasions/milestones/?ref=chatgpt#b=1997-03-15');
       for (const link of tagged.links) expect(link.url).toMatch(/\?ref=chatgpt$/u);
     }
+    const calendar = await executeAiTool('get_sky_calendar', {}, on, { ref: 'chatgpt' });
+    expect(calendar).toMatchObject({ ok: true, data: { feedUrl: 'https://zodiacs.org/sky-calendar.ics', pageUrl: 'https://zodiacs.org/sky-calendar/?ref=chatgpt' } });
     const plain = await executeAiTool('get_life_milestones', { birthDate: '1997-03-15' }, on);
     if (plain.ok && plain.tool === 'get_life_milestones') expect(JSON.stringify(plain)).not.toContain('ref=');
   });
