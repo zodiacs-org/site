@@ -304,6 +304,10 @@ describe('the IndexNow workflow', () => {
     expect(workflow).toContain('repository_dispatch:');
     expect(workflow).toContain("- 'vercel.deployment.ready'");
     expect(workflow).toContain("- 'vercel.deployment.promoted'");
+    // Instant Rollbacks send no dispatch: a run every six hours catches them, and lost dispatches.
+    expect(workflow).toMatch(/^ {2}schedule:\n {4}- cron: '41 \*\/6 \* \* \*'$/mu);
+    expect(workflow).toContain("github.event_name == 'schedule' || (");
+    expect([...workflow.matchAll(/^ {2}([a-z_]+):$/gmu)].map((match) => match[1]).slice(0, 2)).toEqual(['repository_dispatch', 'schedule']);
     expect(workflow).not.toMatch(/^\s*deployment_status\s*:/mu);
     expect(workflow).toContain("github.actor == 'vercel[bot]'");
     expect(workflow).toContain("github.event.client_payload.environment == 'production'");
