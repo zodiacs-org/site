@@ -1,6 +1,8 @@
 # IndexNow for every new, changed or removed URL (S8), 2026-10-14
 
-S8 is not accepted: two gaps remain (below).
+S8 is not accepted: Bing's verification rests on the owner's report (below). The
+other gap #745's review found, page changes the sitemap does not date, is closed
+by the sitemap-date check (F-97, below).
 
 S8 asks for IndexNow on every new or changed URL, covering the developer docs
 and the datasets, and for Bing Webmaster Tools and Google Search Console to be
@@ -49,14 +51,93 @@ changed since the last accepted sitemap.
   repository cannot observe the account, so the gate's Bing half rests on that
   report alone.
 
+## #745 in production
+
+#745, merged as `8ae5a7aff3c28b55f51020dcbc73a16e6b6c3a13` on 2026-10-14 at
+16:53:50Z, re-dated the three developer pages #740 and #742 had changed.
+
+- **Deployment.** Vercel `dpl_BCPzM8CJW4ZXCostxbedzoqwKppC` built the merge for
+  production and was READY at 16:57:55Z, with zodiacs.org on it.
+- **Sitemap.** `https://zodiacs.org/sitemap.xml`, read at 16:58:37Z, listed
+  1,838 URLs and dated `/developers/compare/` 2026-10-13 and
+  `/developers/compute/` and `/developers/mcp/` 2026-10-14; `/developers/` and
+  `/developers/docs/` kept 2026-10-12.
+- **IndexNow.** Run 38602573527 (`vercel.deployment.promoted`, 16:57:58Z) read
+  that sitemap against the one submitted at 15:47:19Z and found 0 new,
+  3 changed and 0 removed. It submitted exactly those three URLs (HTTP 200).
+- **Schedule.** The first scheduled run, 38607867003, started at 17:34:58Z: the
+  12:41Z slot of its six-hourly cron, about five hours late, as GitHub delays
+  scheduled runs. It found nothing to submit.
+- **Earlier deployments.** #746's run 38553968065 submitted `/privacy/` alone,
+  which #746 re-dated. #747's runs found nothing to submit, as it re-dated
+  nothing.
+
+## The sitemap-date check (F-97)
+
+The **Sitemap Dates** workflow (`.github/workflows/sitemap-dates.yml`) runs
+on every pull request.
+
+- **Two builds.** It builds the merge GitHub tests and its base branch with
+  production's feature flags.
+- **Fingerprints.** `scripts/sitemap-rendered-changes.mjs` fingerprints every
+  page of each build's sitemap: its title, its meta description, and the text,
+  link targets and image descriptions of its `<main>`.
+- **The rule.** A page whose content changed fails the check when its date did
+  not change and is earlier than the edition's day. A page already dated that
+  day passes, since a sitemap date says only which day a page last changed.
+- **One clock.** Some pages print when they were built, such as the
+  void-of-course Moon's "As of" line, or a body's position at that time, such
+  as the rising-sign pages' chart rulers. Both builds therefore read one
+  pinned clock, noon UTC of the head's daily edition, which
+  `scripts/frozen-clock.mjs` sets through `NODE_OPTIONS`.
+- **By hand.** Run by hand, the workflow compares any two commits of one
+  edition.
+
+The reports in [`sitemap-dates/`](sitemap-dates/) are this Mac's builds of
+2026-10-15, with production's flags and the pinned clock. Every prebuild step
+ran except `editorial:daily:verify`, which fails here by one last bit (F-95).
+
+- **Determinism** ([`determinism.txt`](sitemap-dates/determinism.txt)). Two
+  builds of main 2.5 minutes apart fingerprint all 1,838 pages alike. Without
+  the pinned clock, two builds half an hour apart differ on 36 pages, the
+  build-time ones above.
+- **#740** ([`merge-740.txt`](sitemap-dates/merge-740.txt)). Its merge against
+  its first parent fails four pages: `/developers/`, `/developers/compare/`,
+  `/developers/compute/` and `/developers/mcp/`.
+- **#742** ([`merge-742.txt`](sitemap-dates/merge-742.txt)). Its merge fails
+  four pages: `/developers/`, `/developers/compute/`,
+  `/developers/docs/astrology-mcp-server/` and `/developers/mcp/`.
+- **The 2026-10-13 edition**
+  ([`edition-2026-10-13.txt`](sitemap-dates/edition-2026-10-13.txt)). Six
+  merges (#728, #731, #730, #735, #737, #740) changed nine pages without
+  re-dating them. Besides the developer pages, these are `/developers/docs/`,
+  for #735's guides, and four Portuguese pages,
+  `/pt/eclipses/`, `/pt/full-moon-calendar/`, `/pt/mercury-retrograde/` and
+  `/pt/retrogrades/`, whose dates gained #737's first-day ordinal ("1º de
+  maio"). 28 Spanish and Portuguese daily pages also changed; they were already
+  dated 2026-10-13 and pass.
+- **The 2026-10-14 edition**
+  ([`edition-2026-10-14.txt`](sitemap-dates/edition-2026-10-14.txt)). Up to
+  main at `8ae5a7af`, two pages were still undated: `/developers/` and
+  `/developers/docs/astrology-mcp-server/`.
+- **Re-dated here** ([`redated.txt`](sitemap-dates/redated.txt)). The seven
+  pages still undated in production get the day they changed:
+  `/developers/` and `/developers/docs/astrology-mcp-server/` 2026-10-14;
+  `/developers/docs/` and the four Portuguese pages 2026-10-13. A build of this
+  branch against main changes exactly those seven dates and no page's content.
+
+Limits:
+
+- It compares two commits of one edition, so a pull request and its base, never
+  two days.
+- Changes before the 2026-10-13 edition were not audited.
+- It reads a page's `<main>`, title and description, not its JSON-LD or the
+  rest of its head.
+- It does not check a new page's date.
+
 ## What keeps S8 open
 
-- **Changed pages.** A run submits a page as changed only when its sitemap
-  `lastmod` changes, and `src/pages/sitemap.xml.ts` keeps the dates of
-  evergreen pages by hand, with no check that ties a rendered change to a new
-  date (F-97). #740 changed `/developers/compare/` and #742 changed
-  `/developers/compute/` and `/developers/mcp/` without re-dating them; the
-  first production run submitted all three only because it covered every URL
-  dated within 30 days. #745 re-dates them; the check is open.
+- **Changed pages.** Enforced from this change on, for every pull request
+  (F-97); the pages found undated are re-dated.
 - **Bing.** Evidence the repository can reproduce, such as an export from the
   owner's account, has to come from the owner.

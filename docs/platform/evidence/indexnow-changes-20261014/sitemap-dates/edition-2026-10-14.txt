@@ -1,0 +1,13 @@
+# The 2026-10-14 edition: main 8ae5a7af (with the check's files, which render no page) against ae2bcd30 (Daily sky: 2026-10-14)
+Pages in both builds: 1838; unchanged: 1832; changed and re-dated: 3; changed and already dated that day: 0; re-dated with no change in content: 1; new: 0; removed: 0.
+2 page(s) changed without a new sitemap date. Give each a new date in src/pages/sitemap.xml.ts (or the data it is dated from), so IndexNow Changes submits it:
+- /developers/ (still 2026-10-12)
+- /developers/docs/astrology-mcp-server/ (still 2026-10-12)
+
+/developers/
+  - Unpublished candidate · 0.1.0-rc.23 Connect an AI assistant A local MCP server, tested with Claude Code.
+  + Unpublished candidate · 0.1.0-rc.24 Connect an AI assistant A local MCP server, tested with Claude Code.
+
+/developers/docs/astrology-mcp-server/
+  - It adds natal-chart calculation and the comparison of calculation records to the sky tools.
+  + It adds natal-chart calculation, the comparison of calculation records, the conversion of a local birth time to UTC and a birthplace search to the sky tools.
