@@ -1,3 +1,24 @@
+IndexNow for changed URLs in production, 2026-10-14 (Asia/Bangkok): S8 stays
+partial.
+
+**Overall delivery: 43%** (42.587% to three decimals): 77.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **S8, partial.** #744 merged as `f4a6b344`. IndexNow Changes submits every
+  URL the live sitemap adds, re-dates or drops after each production
+  deployment and promotion, and every six hours, since Vercel sends no
+  dispatch for an Instant Rollback. Its first production run submitted 415 of
+  1,838 URLs, the 36 developer pages and the dataset pages among them (HTTP
+  200) ([the record](../evidence/indexnow-changes-20261014/README.md)). Two
+  gaps keep S8 open: a page counts as changed only when its sitemap date
+  changes, and the sitemap keeps evergreen pages' dates by hand, with no check
+  (F-97; three developer pages #740 and #742 changed are re-dated here); and
+  Bing's verification is the owner's report, which the repository cannot
+  observe. Google Search Console verifies zodiacs.org by DNS.
+- **Main's Site Check** passed on the merge (run 38526001370). #744's own first
+  run failed one visual-regression case on a page it does not change, whose
+  display faces had not loaded at capture (F-96, open).
+
 Birth-time tools in production, 2026-10-14 (Asia/Bangkok): the local MCP
 adapter reads a local birth time and searches birthplaces (#742), and the
 compute API's time endpoint and the adapter read the Zodiacs time atlas beside

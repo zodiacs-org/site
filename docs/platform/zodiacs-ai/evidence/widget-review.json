@@ -6,6 +6,7 @@
     "local dates and times",
     "no UTC or ISO times on screen",
     "coverage",
+    "a link to keep the sky dates in your own calendar",
     "no external requests",
     "text injection",
     "URL allowlist",

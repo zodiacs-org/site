@@ -5,12 +5,18 @@ import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { buildChartStudio } from './build-chart-studio.mjs';
 import { buildHoroscopePanel } from './build-horoscope-panel.mjs';
+import { buildOccasionsPanel } from './build-occasions-panel.mjs';
+import { peopleIndexCurrent, renderFromDisk, STALE_MESSAGE } from './build-ai-people.mjs';
 import { addAiLifetimeBoundary } from './ai-runtime-lifetime.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
 await buildChartStudio(check);
 await buildHoroscopePanel(check);
+await buildOccasionsPanel(check);
+// The famous-people tools read a compact index of the people the site publishes (scripts/build-ai-people.mjs).
+if (check) { if (!(await peopleIndexCurrent())) throw new Error(STALE_MESSAGE); }
+else await writeFile(new URL('../src/ai-tools/features/people-index.json', import.meta.url), await renderFromDisk());
 const outputs = [
   ['src/ai-tools/http.ts', 'api/_ai/runtime.mjs', ['@modelcontextprotocol/server', '@modelcontextprotocol/core', 'zod', '@vercel/firewall', '@supabase/supabase-js']],
   ['src/ai-tools/local.ts', 'plugins/zodiacs-developer/mcp/server.mjs', ['@modelcontextprotocol/server', '@modelcontextprotocol/core', 'zod']],

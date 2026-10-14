@@ -1,7 +1,18 @@
 # Zodiacs for ChatGPT — review candidate
 
-The 0.4.0 candidate has six read-only tools: capabilities, sky positions,
-events, sky fact checks, horoscopes and Chart Studio. No login is required.
+The 0.5.0 candidate has thirteen read-only tools. The six released in 0.4.0
+are capabilities, sky positions, events, sky fact checks, horoscopes and Chart
+Studio. The seven new ones share the occasions panel
+(`ui://zodiacs/occasions-v1.html`): `get_compatibility` compares two charts,
+`find_chart_twins` and `get_famous_chart` read the people Zodiacs publishes,
+`get_birthday` gives a birthday's sky and solar return, `get_occasion_sky`
+makes a card for a day that matters, `get_life_milestones` lists planetary
+returns, and `get_sky_calendar` gives the link to Zodiacs' published .ics feed.
+They are offered only where `ZODIACS_OCCASIONS_ENABLED=1`, which production
+sets right before submission. They compute from bundled data, never score a
+relationship, choose or rank dates, or predict outcomes, and never invent a
+famous person's chart. Links to zodiacs.org in results end in `?ref=chatgpt`
+or `?ref=assistant`. No login is required.
 The horoscope panel uses an explicit Sun sign and the reader’s local date.
 Chart Studio starts with birth details and offers the unknown-time path. An interactive sky calendar supports local times, UTC and coverage
 disclosure, with native sidebar/thread entrypoints and inline/fullscreen display.
@@ -20,8 +31,9 @@ Local MCP: `http://127.0.0.1:8787/mcp`. The local service binds only loopback an
 enforces development counters (40/minute overall; 10/minute event searches).
 It is not reachable from ChatGPT. Use an owner-controlled HTTPS staging endpoint
 for actual developer-mode tests. The existing production endpoint is `https://zodiacs.org/mcp`. The portal
-shows the 0.3.4 package in review and not published on 2026-10-07. The 0.4.0
-candidate is on draft PR #681; it is not merged or submitted.
+shows the 0.3.4 package in review and not published on 2026-10-07; that review
+was cancelled when 0.4.0 merged (#681). The 0.5.0 candidate is prepared locally;
+it is not merged or submitted.
 
 Hosting uses the existing `api/compatibility.ts` function. `/mcp` and `/mcp/health`
 rewrite into an underscore-directory bundle, so no new deployed function is
@@ -36,26 +48,33 @@ Protocol coverage includes stateless 2025 clients and the SDK's newer per-reques
 entry. Integration tests use the official SDK client, not a ChatGPT session.
 The public server offers no streaming subscriptions, schedules or chart storage.
 Chart Studio computes inside its browser panel. Arguments are at most 16 KiB;
-0.4.0 event windows are at most 92 days; search loops have
+event windows are at most 92 days; search loops have
 the existing synchronous sample budgets. Oversized responses refuse whole.
 
 Independent older-client verification uses a temporary installation of
 `@modelcontextprotocol/sdk@1.29.0`, the version referenced by OpenAI extensions:
 `node tests/ai-legacy-sdk-drive.mjs /path/to/that/node_modules/@modelcontextprotocol/sdk`.
 The earlier five-tool package passed discovery, empty-argument calendar launch
-and UI resource reads with this client. Rerun against 0.4.0 before applying that
-result to the new tool set. This still does not establish acceptance by the actual ChatGPT host.
+and UI resource reads with this client. Rerun against 0.5.0, with the occasion
+tools switched on, before applying that result to the new tool set. This still does not establish acceptance by the actual ChatGPT host.
 
 Privacy: the assistant provider receives arguments/results; remote calculations
 run on Zodiacs infrastructure. The adapter writes no request/result logs or
-stores, refuses personal fields, returns fixed errors and uses no-store. Host,
+stores, refuses personal fields on the public-sky tools, returns fixed errors and
+uses no-store. The 0.5.0 comparison, chart-twin, birthday, occasion and
+milestone tools accept birth dates and, if given, times, zones, coordinates,
+places and first names for that call only; their card links carry those
+details after the `#`, which browsers do not send to the server. Host,
 CDN and provider metadata retention still need owner review. Derived natal
 positions are also personal; local developer tools do not make the conversation
 local. Keep personal data out of URL parameters, screenshots, issues and metrics.
 
 `plugins/zodiacs-sky/` is the current portable package, with a root manifest,
 remote MCP connection, onboarding skill, icon, listing metadata and five positive
-and three negative review cases. `integrations/packages/` contains review ZIPs
+and three negative review cases. In 0.5.0 the positive cases keep one sky and
+one horoscope scenario and cover comparing two charts, chart twins with a famous
+chart, and an occasion card; thirteen tools cannot all fit in five cases.
+`integrations/packages/` contains review ZIPs
 and a reproducible SHA-256 manifest. Codex recognizes both candidates in the
 local marketplace. `chatgpt-app-submission.json` retains the earlier Apps SDK
 submission guidance shape as a reference. Case expectations remain proposed
@@ -70,7 +89,10 @@ Listing preparation:
   listing lengths, icon paths and public legal/support URLs were checked locally.
 - Browser screenshots are local widget QA, not screenshots of a ChatGPT session.
 - Capture the five positive and three negative cases in the current manifest
-  on the actual hosts before submission. See `AUDIT-0.4.0.md` for current evidence.
+  on the actual hosts, with the occasion tools switched on, before submission.
+  The demo recording in the manifest is still the 0.4.0 walkthrough; record a
+  0.5.0 one that shows the occasions panel. See `AUDIT-0.4.0.md` for the last
+  audited evidence.
 
 See `docs/platform/zodiacs-ai/CHECKPOINTS.md` and `LAUNCH.md` for tested evidence,
 explicit unresolved gates and rollback. No listing or approval is claimed.

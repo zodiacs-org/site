@@ -133,6 +133,9 @@ const ENGINE_RC2_ROUTES = [
 // retention for the hosted MCP server.
 const MCP_HOST_LOGS_LASTMOD = '2026-10-09';
 const MCP_HOST_LOGS_ROUTES = ['/privacy/'] as const;
+// The privacy page names the ?ref= on links from the Zodiacs app, and its 0.5.0 tools' wording.
+const ASSISTANT_REF_LASTMOD = '2026-10-14';
+const ASSISTANT_REF_ROUTES = ['/privacy/'] as const;
 // Engine 1.0.0, published on npm, adopted 2026-10-11 with MCP adapter 0.1.0-rc.19 and developer plugin 0.3.7:
 // the same pages, which name the engine's version, how to install it and that npm carries it.
 const ENGINE_100_LASTMOD = '2026-10-11';
@@ -144,6 +147,14 @@ const DEVELOPER_GUIDES_LASTMOD = '2026-10-12';
 // MCP page's adapter, now 0.1.0-rc.24 with resolve_birth_time and search_places.
 const ENGINE_GEO_LASTMOD = '2026-10-12';
 const ENGINE_GEO_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
+// The aspect facts of #740 (merged 2026-10-13): the compare page's section linking the guides that compare the
+// engine with other software.
+const ASPECT_FACTS_LASTMOD = '2026-10-13';
+const ASPECT_FACTS_ROUTES = ['/developers/compare/'] as const;
+// The birth-time tools of #742 (merged 2026-10-14): the compute API page's atlasPlace rules and the MCP page's
+// search_places and resolve_birth_time.
+const BIRTH_TIME_TOOLS_LASTMOD = '2026-10-14';
+const BIRTH_TIME_TOOLS_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -290,9 +301,12 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const),
   ...ENGINE_RC2_ROUTES.map((loc) => [loc, ENGINE_RC2_LASTMOD] as const),
   ...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const),
+  ...ASSISTANT_REF_ROUTES.map((loc) => [loc, ASSISTANT_REF_LASTMOD] as const),
   ...ENGINE_100_ROUTES.map((loc) => [loc, ENGINE_100_LASTMOD] as const),
   ['/developers/', DEVELOPER_GUIDES_LASTMOD] as const,
   ...ENGINE_GEO_ROUTES.map((loc) => [loc, ENGINE_GEO_LASTMOD] as const),
+  ...ASPECT_FACTS_ROUTES.map((loc) => [loc, ASPECT_FACTS_LASTMOD] as const),
+  ...BIRTH_TIME_TOOLS_ROUTES.map((loc) => [loc, BIRTH_TIME_TOOLS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

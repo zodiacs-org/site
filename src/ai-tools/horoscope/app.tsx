@@ -73,6 +73,9 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState('');
   const [theme, setTheme] = useState('');
+  // A reading is usually on its way when the panel opens. Show a quiet line until it
+  // arrives, and the sign picker only if nothing comes (the panel can open without a call).
+  const [waiting, setWaiting] = useState(true);
   // Once the person has chosen something here, a host repeating the turn's result must not undo it.
   const touched = useRef(false);
   const pick = (value: boolean) => { touched.current = true; setPicking(value); };
@@ -86,10 +89,13 @@ function App() {
       setView(startView(data, data.requested.zone ?? deviceZone()));
       setPicking(false);
       setMessage('');
+      setWaiting(false);
     } else if (answer?.status === 'choose-sign') {
       setPicking(true);
+      setWaiting(false);
     } else if (error) {
       setMessage(error);
+      setWaiting(false);
     }
   }
 
@@ -100,6 +106,7 @@ function App() {
     return () => link.dispose();
   }, []);
 
+  useEffect(() => { const timer = setTimeout(() => setWaiting(false), 1500); return () => clearTimeout(timer); }, []);
   useEffect(() => { document.documentElement.dataset.theme = theme || ''; }, [theme]);
   useEffect(() => { setStatus(''); }, [panel, view]);
 
@@ -120,6 +127,13 @@ function App() {
   const zone = panel?.requested.zone ?? deviceZone();
   const today = dateIn(zone);
   const showGrid = picking || !panel;
+
+  if (waiting && !panel && !picking && !message) {
+    return <main>
+      <header class="brand"><a href="https://zodiacs.org/horoscopes/" target="_blank" rel="noreferrer">Zodiacs</a></header>
+      <p role="status" class="quiet">Opening your horoscope…</p>
+    </main>;
+  }
 
   if (showGrid) {
     return <main>

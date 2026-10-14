@@ -301,7 +301,20 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         })();
       </script>
     )}
-    <script is:inline>window.zodiacsAnalytics = window.zodiacsAnalytics || Object.freeze({ track: function () {} });</script>
+    <script is:inline>window.zodiacsAnalytics = window.zodiacsAnalytics || Object.freeze({ track: function () {} });
+      // Links from the Zodiacs app in an assistant carry ?ref=chatgpt or ?ref=assistant. Note which,
+      // then take it out of the address so it is not copied into links people share.
+      (function () {
+        try {
+          var url = new URL(location.href);
+          var ref = url.searchParams.get('ref');
+          if (ref === null) return;
+          window.zodiacsArrival = ref === 'chatgpt' || ref === 'assistant' ? ref : null;
+          url.searchParams.delete('ref');
+          history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+        } catch (error) {}
+      })();
+    </script>
     {plausibleEnabled && (
       <>
         <script is:inline define:vars={{
@@ -363,6 +376,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
                 source: 'astrology', destination: destination
               });
             });
+            if (window.zodiacsArrival) window.zodiacsAnalytics.track('assistant_arrival', { assistant: window.zodiacsArrival });
             var remoteScript = document.createElement('script');
             remoteScript.defer = true;
             remoteScript.dataset.zodiacsRemoteAnalytics = '';
