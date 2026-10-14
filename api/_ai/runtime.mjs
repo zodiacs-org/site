@@ -16419,7 +16419,7 @@ var NORMALIZED = PEOPLE_INDEX.map((person) => {
 function score(query, queryTokens, entry) {
   if (entry.full === query) return 3;
   if (queryTokens.every((token) => entry.full.includes(token))) return 2;
-  if (queryTokens.some((token) => token.length >= 2 && entry.tokens.some((word) => word.startsWith(token)))) return 1;
+  if (queryTokens.every((token) => entry.tokens.some((word) => word.startsWith(token)))) return 1;
   return 0;
 }
 function searchPeople(name) {
@@ -25676,7 +25676,7 @@ async function getBirthday(input, localTime2, now, origin = DEFAULT_ORIGIN2) {
           text: `In ${birthYear} the Sun moved from ${row.before.name} into ${row.after.name} at ${row.atUtc} universal time on ${pageLabel}; the birth time decides.`
         };
       }
-      if (timeKnown && sunAtBirth && !(row?.kind === "whole")) {
+      if (timeKnown && sunAtBirth) {
         sign = signForLongitude2(sunAtBirth.longitude);
         signFrom = "birth-time";
       }

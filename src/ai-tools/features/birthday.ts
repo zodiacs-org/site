@@ -249,8 +249,9 @@ export async function getBirthday(
           text: `In ${birthYear} the Sun moved from ${row.before.name} into ${row.after.name} at ${row.atUtc} universal time on ${pageLabel}; the birth time decides.`,
         };
       }
-      // A birth time settles the sign from the computed degree, table or not.
-      if (timeKnown && sunAtBirth && !(row?.kind === 'whole')) {
+      // A birth time settles the sign from the computed degree, whatever the table's row:
+      // its rows are UTC dates, and a local date can reach into the next or previous one.
+      if (timeKnown && sunAtBirth) {
         sign = signForLongitude(sunAtBirth.longitude);
         signFrom = 'birth-time';
       }

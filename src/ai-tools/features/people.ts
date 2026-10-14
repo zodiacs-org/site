@@ -205,11 +205,12 @@ const NORMALIZED = PEOPLE_INDEX.map((person) => {
   return { person, full, tokens: full.split(' ') };
 });
 
-/** 3: the full name; 2: every query word inside the name; 1: a query word starts a name word; 0: no match. */
+/** 3: the full name; 2: every query word inside the name; 1: every query word starts a name word; 0: no match. */
 function score(query: string, queryTokens: string[], entry: typeof NORMALIZED[number]): number {
   if (entry.full === query) return 3;
   if (queryTokens.every((token) => entry.full.includes(token))) return 2;
-  if (queryTokens.some((token) => token.length >= 2 && entry.tokens.some((word) => word.startsWith(token)))) return 1;
+  // Every word given must start a word of the name, so 'Ada Nobody' is not Ada Lovelace.
+  if (queryTokens.every((token) => entry.tokens.some((word) => word.startsWith(token)))) return 1;
   return 0;
 }
 

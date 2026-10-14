@@ -115,3 +115,10 @@ describe('get_famous_chart', () => {
     expect(famousChartInput.safeParse({ name: 'A' }).success).toBe(false);
   });
 });
+
+describe('a name with a word no published person has (review)', () => {
+  it('is not taken for someone who shares only the other word', () => {
+    expect(getFamousChart({ name: 'Ada Nobody' }).data.found).toBe(false);
+    expect(getFamousChart({ name: 'Nietz' }).data.found).toBe(true);
+  });
+});

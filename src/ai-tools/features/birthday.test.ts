@@ -154,3 +154,12 @@ describe('get_sky_calendar', () => {
     expect(() => getSkyCalendar({ language: 'de' as never }, NOW)).toThrow();
   });
 });
+
+describe('a timed birth on a cusp date (review)', () => {
+  it('takes the sign from the birth instant when the local date reaches into the next UTC date', async () => {
+    // 23:00 on 19 January 2006 in Adak is 09:00 UTC on the 20th, after that day's ingress into Aquarius.
+    const { data } = await getBirthday({ birthDate: '2006-01-19', time: '23:00', zone: 'America/Adak' }, localTime, NOW);
+    expect(data.sign?.slug).toBe('aquarius');
+    expect(data.signFrom).toBe('birth-time');
+  });
+});
