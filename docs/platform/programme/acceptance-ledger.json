@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-13 share links described truthfully in production (site 7d12c0f1); P1.15 accepted",
+  "asOf": "2026-10-14 aspect facts and the developer-query guides in production (site 848e6087); A1.b and S4 accepted",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -2014,16 +2014,20 @@
       "weight": 1,
       "gate": "true/false/depends with computed facts and a receipt; never interpretive",
       "dependsOn": [],
-      "status": "partial",
+      "status": "accepted",
       "release": "deployed",
       "evidence": [
         "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.2, 2026-10-05\"",
         "src/mcp/sky-tools.ts: check_sky_fact runs the compute API's sky-fact calculation and answers true, false or depends with the computed values that decide it and a receipt; it interprets nothing",
         "src/mcp/sky-tools.test.ts (166 sky facts of the seeded corpus against the compute API's handler); docs/platform/evidence/mcp-adapter/protocol-drive.json 106/106",
         "production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy (READY 2026-10-05T02:16:43Z, aliased to zodiacs.org) serves site 3f09711a, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.2.tgz (123,817 bytes, SHA-256 2fc976c9…) pinned to commit 3acfae47, the archive /developers/mcp/ installs",
-        "production dpl_5hEgWFChgos3USWviHWVFEwHBeVW (READY 2026-10-05T18:05:51Z, aliased to zodiacs.org) serves site 51b64f3c, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.3.tgz (124,924 bytes, SHA-256 dde8e475…) pinned to commit dcb51a16, the archive /developers/mcp/ installs; docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.3, 2026-10-05\""
+        "production dpl_5hEgWFChgos3USWviHWVFEwHBeVW (READY 2026-10-05T18:05:51Z, aliased to zodiacs.org) serves site 51b64f3c, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.3.tgz (124,924 bytes, SHA-256 dde8e475…) pinned to commit dcb51a16, the archive /developers/mcp/ installs; docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.3, 2026-10-05\"",
+        "https://github.com/zodiacs-org/site/pull/740",
+        "https://github.com/zodiacs-org/site/actions/runs/38460692132",
+        "docs/platform/evidence/sky-fact-aspects-20261012/production/production.json: zodiacs.org at dpl_AHCoAbgz8RfLgSPZSeU4YKv7vohq, built from 848e6087, 6 of 6 checks (the same check before the merge: 0 of 6, control-before.json): the compute API's sky-fact endpoint answers the documented aspect example (the Moon trine Saturn on 2026-10-14 in Europe/London: depends) as documented, and the MCP adapter 0.1.0-rc.23 archive the site serves has its manifest's size and digest",
+        "tests/api/compute-api-aspects.test.ts: at an instant, true exactly when matchAspect names the aspect; on a date, depends exactly when the aspect begins or ends in the day, at the instants a minute scan finds"
       ],
-      "notes": "Checkpoint 16 (2026-10-05): partial. check_sky_fact answers true, false or depends with the computed facts and a receipt, never interpretively, which is the gate as written; it covers a sign at an instant or on a date, retrograde, an ingress on a date and a lunation on a date. The brief's Track A1 also asks for aspect facts, which it does not check. Checkpoint 19 (2026-10-05): still partial. The site now serves the MCP adapter 0.1.0-rc.16.3, re-cut in PR #655 because the compute API's elections endpoint changed the modules the adapter inlines. No tool changed: an independent drive of 3,275 calls against the rc.16.2 and rc.16.3 archives found no difference beyond the adapter's version and the citation of its own receipt."
+      "notes": "Accepted 2026-10-14: check_sky_fact now covers the brief's \"a position, a date, an aspect, a retrograde\": a body's sign at an instant or on a date, retrograde motion, ingresses, lunar phases and, from #740, aspects. Aspect facts (#740, merged as 848e6087) join sign, retrograde, ingress and lunar-phase facts in the compute API's sky-fact endpoint and the local MCP adapter 0.1.0-rc.23: true, false or depends, with the computed separation, orb, allowed orb and motion and the compute receipt; nothing interpretive. The hosted assistant tools keep four kinds (their contract), which their release notes state. Earlier: Checkpoint 16 (2026-10-05): partial. check_sky_fact answers true, false or depends with the computed facts and a receipt, never interpretively, which is the gate as written; it covers a sign at an instant or on a date, retrograde, an ingress on a date and a lunation on a date. The brief's Track A1 also asks for aspect facts, which it does not check. Checkpoint 19 (2026-10-05): still partial. The site now serves the MCP adapter 0.1.0-rc.16.3, re-cut in PR #655 because the compute API's elections endpoint changed the modules the adapter inlines. No tool changed: an independent drive of 3,275 calls against the rc.16.2 and rc.16.3 archives found no difference beyond the adapter's version and the citation of its own receipt."
     },
     {
       "id": "A1.c",
@@ -2241,10 +2245,17 @@
       "weight": 1.5,
       "gate": "pages for the S4 query list; /developers/compare/ updated per phase",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "/developers/compare/ exists; no pages for the S4 query list"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "https://github.com/zodiacs-org/site/pull/735",
+        "https://github.com/zodiacs-org/site/actions/runs/38430218511",
+        "docs/platform/evidence/developer-query-guides-20261013/production/production.json: zodiacs.org at dpl_8xXijxDCnn8daw1FzZatHZ6SzZBE, built from d205a673, serves the index, the 25 guides and their twins, both llms files and the sitemap as two local builds of the merge make them: 32 of 32 checks with 52 browser navigations; controls.json: three controls each fail what they target",
+        "https://github.com/zodiacs-org/site/pull/740",
+        "https://github.com/zodiacs-org/site/actions/runs/38460692132",
+        "docs/platform/evidence/sky-fact-aspects-20261012/production/production.json: zodiacs.org at dpl_AHCoAbgz8RfLgSPZSeU4YKv7vohq, built from 848e6087, 6 of 6 checks (the same check before the merge: 0 of 6, control-before.json): /developers/compare/ links the four guides that compare the engine with other software"
+      ],
+      "notes": "Accepted 2026-10-14: the seven pages for the S4 query list (astrology-api, birth-chart-api, swiss-ephemeris-alternative-javascript, ephemeris-npm, vedic-astrology-api, python-astrology-library, astrology-mcp-server) shipped in #735 (merged as d205a673), each with a snippet the guide checks run, comparisons citing the other projects' publishers, and receipts; /developers/compare/, the record-comparison page the gate names, points to the four guides that compare the engine with other software since #740 (merged as 848e6087). Earlier: /developers/compare/ exists; no pages for the S4 query list"
     },
     {
       "id": "S6",

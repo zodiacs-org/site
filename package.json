@@ -49,6 +49,7 @@
     "data:disclosure:bake": "node scripts/bake-thesis-disclosure-static.mjs",
     "data:registry-establishment": "node scripts/sync-registry-establishment.mjs",
     "data:cities": "node scripts/build-cities.mjs",
+    "data:cities:also": "vite-node --script scripts/build-cities-also.ts",
     "data:cabinet-materials": "node scripts/build-cabinet-materials.mjs",
     "data:figure-assets": "node scripts/build-figure-assets.mjs",
     "data:icons": "node scripts/build-icons.mjs",

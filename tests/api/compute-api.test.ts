@@ -36,6 +36,7 @@ import {
 import { computeApiRateLimit, createComputeApiHandler } from '../../src/lib/compute-api/handler';
 import * as localTime from '../../src/lib/compute-api/local-time-source';
 import { VALIDATION_MESSAGES } from '../../src/lib/compute-api/validate';
+import { ATLAS_SOURCE, atlasReading } from '../../src/lib/time-atlas/index';
 import { prepareLocalTime, resolveLocalToUtc } from '../../src/lib/time/localToUtc';
 import { run, type HarnessRequest } from '../../scripts/lib/compute-api-harness';
 import compatibilityHandler from '../../api/compatibility.js';
@@ -754,32 +755,41 @@ describe('compute API parity with the engine and the site resolver', () => {
   }, 60_000);
 
   it("time is the calculators' resolver's answer, TT and ΔT are a chart's at that instant, and the zone history is named", async () => {
+    // The last column: whether the runtime's tzdb default build gives the zone
+    // another offset than the pinned history. Stockholm's is +2:00 in July
+    // 1947 there and +1:00 with backzone (the engine's docs/time.md).
     const cases = [
-      [{ date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, 18.07, 'pinned', false],
+      [{ date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, 18.07, 'pinned', false, true],
       // The engine's history answers before 1970 with or without a longitude.
-      [{ date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, null, 'pinned', false],
-      [{ date: '1850-06-01', time: '12:00', zone: 'America/Mexico_City' }, -99.13, 'pinned', false],
+      [{ date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, null, 'pinned', false, true],
+      // On the birthplace's own mean time the zone's clock is what is compared.
+      [{ date: '1850-06-01', time: '12:00', zone: 'America/Mexico_City' }, -99.13, 'pinned', false, false],
       // Harbin's backzone history differs after 1970, so the engine ships the default build's for it.
-      [{ date: '1960-05-01', time: '12:00', zone: 'Asia/Harbin' }, 126.65, 'pinned', false],
+      [{ date: '1960-05-01', time: '12:00', zone: 'Asia/Harbin' }, 126.65, 'pinned', false, false],
       // A fixed offset reads the runtime's data at every date, and that cannot differ.
-      [{ date: '1950-06-01', time: '12:00', zone: 'UTC' }, 0, 'runtime', false],
-      [{ date: '1950-06-01', time: '12:00', zone: 'Etc/GMT+5' }, null, 'runtime', false],
+      [{ date: '1950-06-01', time: '12:00', zone: 'UTC' }, 0, 'runtime', false, false],
+      [{ date: '1950-06-01', time: '12:00', zone: 'Etc/GMT+5' }, null, 'runtime', false, false],
       // The release records no local time at Troll before the station was staffed in 2005.
-      [{ date: '1950-06-01', time: '12:00', zone: 'Antarctica/Troll' }, null, 'runtime', true],
-      [{ date: '2026-03-29', time: '02:30', zone: 'Europe/Paris' }, null, 'runtime', false],
-      [{ date: '2026-10-25', time: '02:30', zone: 'Europe/Paris' }, 2.35, 'runtime', false],
+      [{ date: '1950-06-01', time: '12:00', zone: 'Antarctica/Troll' }, null, 'runtime', true, false],
+      [{ date: '2026-03-29', time: '02:30', zone: 'Europe/Paris' }, null, 'runtime', false, false],
+      [{ date: '2026-10-25', time: '02:30', zone: 'Europe/Paris' }, 2.35, 'runtime', false, false],
     ] as const;
-    for (const [local, longitude, history, uncertain] of cases) {
+    for (const [local, longitude, history, uncertain, disputed] of cases) {
       await prepareLocalTime(local.date, local.zone);
       const resolved = resolveLocalToUtc(local.date, local.time, local.zone, longitude === null ? {} : { longitude });
       const answer = (await call('time', longitude === null ? { local } : { local, longitude })).json.result;
       const chart = natalChart({ utc: resolved.utc, timeKnown: false });
       expect(answer.utc).toBe(resolved.utc.toISOString());
       expect(answer.offsetMinutes).toBe(resolved.offsetMinutes);
-      expect(answer.flags).toEqual(resolved.flags);
+      expect(answer.flags).toEqual([...resolved.flags, ...(disputed ? ['zone-history-disputed'] : [])]);
       expect(answer.localMeanTime).toEqual(resolved.localMeanTime ?? null);
       expect(answer.zoneHistory, `${local.date} ${local.zone}`).toBe(history);
       expect(answer.zoneUncertain).toBe(uncertain);
+      // The site's wrapper keeps only what the calculators read; the engine's own reading carries the cross-check.
+      await localTime.prepareLocalTime(local.date, local.zone);
+      const engineReading = localTime.resolveLocalToUtc(local.date, local.time, local.zone, longitude === null ? {} : { longitude });
+      expect(answer.intlOffsetMinutes).toBe(history === 'pinned' ? engineReading.intlOffsetMinutes : null);
+      expect(answer).toMatchObject({ calendar: 'gregorian', writtenDate: local.date, date: local.date, adoption: null, calendarNote: null });
       expect(answer.deltaT).toEqual(chart.deltaT);
       expect(answer.timeScale).toEqual(chart.timeScale);
       // TT = UT1 + ΔT: UT1 is UTC plus IERS UT1 − UTC from 1972, the instant itself before.
@@ -791,6 +801,96 @@ describe('compute API parity with the engine and the site resolver', () => {
       }
     }
     expect(cases.some(([local]) => local.date >= '1972')).toBe(true);
+    // The disputed reading the developer page gives: +1:00 in the release, +2:00 in the default build.
+    const stockholm = (await call('time', { local: cases[1][0] })).json.result;
+    expect([stockholm.offsetMinutes, stockholm.intlOffsetMinutes, stockholm.flags]).toEqual([60, 120, ['zone-history-disputed']]);
+  });
+
+  it("time reads a date written in the Julian calendar as the engine does, and gives the birth forms' calendar note", async () => {
+    const at = (body: object) => call('time', body).then((response) => response.json.result);
+    const moscow = { time: '12:00', zone: 'Europe/Moscow' };
+    // The engine converts the Julian date itself; the compute API converts it with the birth forms' calendar.ts.
+    await localTime.prepareLocalTime('1917-11-07', 'Europe/Moscow');
+    const engine = localTime.resolveLocalToUtc('1917-10-25', '12:00', 'Europe/Moscow', { calendar: 'julian' });
+    const julian = await at({ local: { date: '1917-10-25', ...moscow }, calendar: 'julian', country: 'RU' });
+    expect(julian.utc).toBe(engine.utc.toISOString());
+    expect(julian).toMatchObject({
+      calendar: 'julian', writtenDate: '1917-10-25', date: engine.date, calendarNote: null,
+      adoption: { code: 'RU', firstGregorian: '1918-02-14', lastJulian: '1918-01-31', sources: ['tzdb', 'wikipedia'] },
+    });
+    expect(engine.date).toBe('1917-11-07');
+    // Written as Gregorian before Russia's first New Style day: the forms' old-style note.
+    expect(await at({ local: { date: '1917-10-25', ...moscow }, country: 'RU' })).toMatchObject({ calendar: 'gregorian', date: '1917-10-25', calendarNote: 'old-style' });
+    // Written as Julian on or after it: new-style. Julian 1918-02-14 is Gregorian 1918-02-27.
+    expect(await at({ local: { date: '1918-02-14', ...moscow }, calendar: 'julian', country: 'RU' })).toMatchObject({ date: '1918-02-27', calendarNote: 'new-style' });
+    // Japan's calendar before 1873 was not the Julian, which the forms do not convert.
+    expect(await at({ local: { date: '1850-01-01', time: '12:00', zone: 'Asia/Tokyo' }, country: 'JP' })).toMatchObject({ calendarNote: 'other-calendar', adoption: { code: 'JP', lastJulian: null } });
+    // A Julian leap day the Gregorian calendar lacks.
+    expect(await at({ local: { date: '1900-02-29', time: '12:00', zone: 'Europe/Athens' }, calendar: 'julian' })).toMatchObject({ date: '1900-03-13', adoption: null, calendarNote: null });
+    // A code the table does not date, and a date written from 1924 on: no note.
+    expect(await at({ local: { date: '1917-10-25', ...moscow }, country: 'ZZ' })).toMatchObject({ adoption: null, calendarNote: null });
+    expect(await at({ local: { date: '1924-06-01', ...moscow }, country: 'RU' })).toMatchObject({ adoption: { code: 'RU' }, calendarNote: null });
+  });
+
+  it("time gives the time atlas's reading at an atlas place, beside tzdb's, with its rule, its uncertainty and its citations", async () => {
+    const at = (body: object) => call('time', body).then((response) => response.json.result);
+    // Strasbourg was German in 1916 and kept German summer time; tzdb's Europe/Paris answers for Paris.
+    const strasbourg = await at({ local: { date: '1916-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-strasbourg' });
+    const reading = atlasReading('fr-strasbourg', '1916-06-01', '12:00');
+    expect(strasbourg.atlas).toEqual({ ...reading, secondsFromTzdb: -7200, source: { ...ATLAS_SOURCE } });
+    expect(strasbourg.atlas.instants[0]).toMatchObject({ utc: '1916-06-01T10:00:00.000Z', offsetSeconds: 7200, isDst: true });
+    expect(strasbourg.utc).toBe('1916-06-01T12:00:00.000Z');
+    // Where the atlas and tzdb agree, the difference is zero: Paris on Paris mean time in 1900.
+    expect((await at({ local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-paris' })).atlas)
+      .toMatchObject({ status: 'ok', secondsFromTzdb: 0 });
+    // The noon New York set its clocks back to Eastern time, which the atlas flags uncertain.
+    const changeover = (await at({ local: { date: '1883-11-18', time: '12:02', zone: 'America/New_York' }, atlasPlace: 'us-new-york' })).atlas;
+    expect(changeover.status).toBe('ambiguous');
+    expect(changeover.instants.map((instant: { uncertainty: { flag: string } }) => instant.uncertainty.flag)).toEqual(['uncertain', 'uncertain']);
+    // Outside the atlas's window there is no reading, and without an atlas place no atlas at all.
+    expect((await at({ local: { date: '1925-06-01', time: '12:00', zone: 'America/Chicago' }, atlasPlace: 'us-chicago' })).atlas)
+      .toMatchObject({ status: 'out-of-coverage', instants: [], secondsFromTzdb: null });
+    expect((await at({ local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' } })).atlas).toBeNull();
+    const refused = (await call('time', { local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-lille' })).json.error;
+    expect(refused).toMatchObject({ code: 'invalid-request', pointer: '/atlasPlace' });
+    // A place outside the request's zone is refused before anything is read: New York's clock beside
+    // tzdb's reading of Paris would set two places' clocks side by side.
+    const elsewhere = (await call('time', { local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'us-new-york' })).json.error;
+    expect(elsewhere).toMatchObject({ code: 'invalid-request', pointer: '/atlasPlace',
+      message: 'Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place\'s clock.' });
+    expect((await at({ local: { date: '1900-06-01', time: '12:00', zone: 'America/Indiana/Indianapolis' }, atlasPlace: 'us-indianapolis' })).atlas)
+      .toMatchObject({ place: 'us-indianapolis' });
+    // Before France's legal time, the atlas reads the place's own mean time, and so does tzdb's reading:
+    // without a longitude, Brest in 1880 is read on Brest's, not on Paris's, and the two agree.
+    const brest = await at({ local: { date: '1880-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-brest' });
+    expect(brest.localMeanTime).toMatchObject({ longitude: -4.48628 });
+    expect(Math.abs(brest.atlas.secondsFromTzdb)).toBeLessThan(1);
+    const elsewhereLongitude = (await call('time', { local: { date: '1880-06-01', time: '12:00', zone: 'Europe/Paris' }, longitude: 2.35, atlasPlace: 'fr-brest' })).json.error;
+    expect(elsewhereLongitude).toMatchObject({ code: 'invalid-request', pointer: '/longitude' });
+    expect((await at({ local: { date: '1880-06-01', time: '12:00', zone: 'Europe/Paris' }, longitude: -4.49, atlasPlace: 'fr-brest' })).localMeanTime)
+      .toMatchObject({ longitude: -4.49 });
+    // Nor may the calendar history be another country's: Russia's beside Paris's clock is refused.
+    const elsewhereCountry = (await call('time', { local: { date: '1917-06-01', time: '12:00', zone: 'Europe/Paris' }, country: 'RU', atlasPlace: 'fr-paris' })).json.error;
+    expect(elsewhereCountry).toMatchObject({ code: 'invalid-request', pointer: '/country',
+      message: 'With atlasPlace, must be the place\'s own country, FR or US, or be left out, so that the calendar history is that place\'s.' });
+    expect((await at({ local: { date: '1917-06-01', time: '12:00', zone: 'Europe/Paris' }, country: 'FR', atlasPlace: 'fr-paris' })).atlas)
+      .toMatchObject({ place: 'fr-paris' });
+  });
+
+  it('time refuses a Julian date the birth forms would not take, an unknown calendar and a malformed country', async () => {
+    const refusal = async (body: object) => (await call('time', body)).json.error;
+    const local = (date: string) => ({ date, time: '12:00', zone: 'Europe/Moscow' });
+    for (const date of ['1924-01-01', '1799-12-31', '1900-02-30', '1917-1-5']) {
+      expect(await refusal({ local: local(date), calendar: 'julian' }), date).toMatchObject({ code: 'invalid-request', pointer: '/local/date' });
+    }
+    for (const calendar of ['Julian', 'old-style', '', null, 1]) {
+      expect(await refusal({ local: local('1917-10-25'), calendar }), String(calendar)).toMatchObject({ code: 'invalid-request', pointer: '/calendar' });
+    }
+    for (const country of ['ru', 'RUS', 'R', '', null, 7]) {
+      expect(await refusal({ local: local('1917-10-25'), country }), String(country)).toMatchObject({ code: 'invalid-request', pointer: '/country' });
+    }
+    // 1900-02-29 is a Julian date and not a Gregorian one.
+    expect(await refusal({ local: local('1900-02-29') })).toMatchObject({ pointer: '/local/date' });
   });
 
   it('sky-fact answers from the computed values it returns, and depends only on the time of day or the zone', async () => {
