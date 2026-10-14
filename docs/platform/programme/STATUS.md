@@ -1,3 +1,22 @@
+IndexNow for every changed URL in production, 2026-10-14 (Asia/Bangkok): S8
+is accepted.
+
+**Overall delivery: 43%** (42.861% to three decimals): 78.2 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **S8.** #744 merged as `f4a6b344`. IndexNow Changes submits every URL the
+  live sitemap adds, re-dates or drops after each production deployment and
+  promotion, and every six hours, since Vercel sends no dispatch for an
+  Instant Rollback. Its first production run submitted 415 of 1,838 URLs, the
+  36 developer pages and the dataset pages among them (HTTP 200), and the next
+  found nothing changed
+  ([the record](../evidence/indexnow-changes-20261014/README.md)). Google
+  Search Console verifies zodiacs.org as a domain property by DNS; Bing
+  imported it from Search Console on 2026-09-30, by the owner's report.
+- **Main's Site Check** passed on the merge (run 38526001370). #744's own first
+  run failed one visual-regression case on a page it does not change, whose
+  display faces had not loaded at capture (F-96, open).
+
 Birth-time tools in production, 2026-10-14 (Asia/Bangkok): the local MCP
 adapter reads a local birth time and searches birthplaces (#742), and the
 compute API's time endpoint and the adapter read the Zodiacs time atlas beside
