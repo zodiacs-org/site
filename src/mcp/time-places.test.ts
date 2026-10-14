@@ -167,10 +167,11 @@ describe('resolve_birth_time is the compute API\'s time endpoint', () => {
     }
   });
 
-  it("refuses an atlas place outside the request's zone, or with another town's longitude, in the compute API's words", async () => {
+  it("refuses an atlas place outside the request's zone, or with another town's longitude or another country, in the compute API's words", async () => {
     for (const [args, pointer] of [
       [{ local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'us-new-york' }, '/atlasPlace'],
       [{ local: { date: '1880-06-01', time: '12:00', zone: 'Europe/Paris' }, longitude: 2.35, atlasPlace: 'fr-brest' }, '/longitude'],
+      [{ local: { date: '1917-06-01', time: '12:00', zone: 'Europe/Paris' }, country: 'RU', atlasPlace: 'fr-paris' }, '/country'],
     ] as const) {
       const outcome = await resolveBirthTime(args as any);
       const { error } = (await hosted(args)).json;

@@ -308,7 +308,7 @@ Terrestrial Time, the offset applied, and how the time was read:
   or `other-calendar`;
 - with `atlasPlace`, one of the 21 places of the Zodiacs time atlas in
   `local.zone`, whose longitude tzdb's reading then uses (one sent with it must
-  be the place's, to 0.01°), which
+  be the place's, to 0.01°, and a `country` sent with it the place's), which
   records with citations what the clocks said in France and the United States
   from 1870 to 1919, the reply adds the atlas's reading of the same wall time:
   one instant, every instant of a time the clocks repeated, or the instant of a

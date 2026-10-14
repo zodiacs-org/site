@@ -869,6 +869,12 @@ describe('compute API parity with the engine and the site resolver', () => {
     expect(elsewhereLongitude).toMatchObject({ code: 'invalid-request', pointer: '/longitude' });
     expect((await at({ local: { date: '1880-06-01', time: '12:00', zone: 'Europe/Paris' }, longitude: -4.49, atlasPlace: 'fr-brest' })).localMeanTime)
       .toMatchObject({ longitude: -4.49 });
+    // Nor may the calendar history be another country's: Russia's beside Paris's clock is refused.
+    const elsewhereCountry = (await call('time', { local: { date: '1917-06-01', time: '12:00', zone: 'Europe/Paris' }, country: 'RU', atlasPlace: 'fr-paris' })).json.error;
+    expect(elsewhereCountry).toMatchObject({ code: 'invalid-request', pointer: '/country',
+      message: 'With atlasPlace, must be the place\'s own country, FR or US, or be left out, so that the calendar history is that place\'s.' });
+    expect((await at({ local: { date: '1917-06-01', time: '12:00', zone: 'Europe/Paris' }, country: 'FR', atlasPlace: 'fr-paris' })).atlas)
+      .toMatchObject({ place: 'fr-paris' });
   });
 
   it('time refuses a Julian date the birth forms would not take, an unknown calendar and a malformed country', async () => {

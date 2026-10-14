@@ -20,7 +20,7 @@ import { ASPECT_TYPES, HOUSE_SYSTEMS, type AspectType, type HouseSystem } from '
 import { parseCivilDate, parseCivilTime } from '../time/civil-date.js';
 import { julianToGregorian } from '../time/calendar.js';
 import { CALENDAR_CHOICE_BEFORE } from '../time/calendar-choice.js';
-import { ATLAS_PLACE_IDS, ATLAS_PLACE_LONGITUDES, ATLAS_PLACE_ZONES, type AtlasPlaceId } from '../time-atlas/places.js';
+import { ATLAS_PLACE_COUNTRIES, ATLAS_PLACE_IDS, ATLAS_PLACE_LONGITUDES, ATLAS_PLACE_ZONES, type AtlasPlaceId } from '../time-atlas/places.js';
 import {
   ANGULAR_MAX_ABS_LATITUDE,
   BUDGETS,
@@ -152,6 +152,7 @@ const TEXT = Object.freeze({
   atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(', ')}.`,
   atlasPlaceZone: 'Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place\'s clock.',
   atlasPlaceLongitude: 'With atlasPlace, must be the place\'s own longitude, to 0.01°, or be left out, when the place\'s own is used.',
+  atlasPlaceCountry: 'With atlasPlace, must be the place\'s own country, FR or US, or be left out, so that the calendar history is that place\'s.',
   time: 'Must be a time written HH:MM, from 00:00 to 23:59.',
   zoneFormat: 'Must be an IANA time zone name, such as Europe/Paris.',
   zoneUnknown: 'Must be a time zone name the server\'s time zone data includes.',
@@ -460,6 +461,8 @@ export async function parseTimeRequest(value: unknown, zones: ZoneNames): Promis
   if (atlasPlace !== null && longitude !== null && Math.abs(longitude - ATLAS_PLACE_LONGITUDES[atlasPlace]) > 0.01) {
     throw invalidRequest('/longitude', TEXT.atlasPlaceLongitude);
   }
+  // Nor may the calendar history be another country's than the place's.
+  if (atlasPlace !== null && country !== null && country !== ATLAS_PLACE_COUNTRIES[atlasPlace]) throw invalidRequest('/country', TEXT.atlasPlaceCountry);
   const readOn = atlasPlace !== null && longitude === null ? ATLAS_PLACE_LONGITUDES[atlasPlace] : longitude;
   return { local: { date, time, zone }, longitude: readOn, calendar, writtenDate: writtenDate as string, country, atlasPlace };
 }

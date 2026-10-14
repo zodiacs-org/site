@@ -5338,6 +5338,29 @@ var ATLAS_PLACE_ZONES = Object.freeze({
   "us-saint-paul": "America/Chicago",
   "us-minneapolis": "America/Chicago"
 });
+var ATLAS_PLACE_COUNTRIES = Object.freeze({
+  "fr-paris": "FR",
+  "fr-brest": "FR",
+  "fr-nantes": "FR",
+  "fr-bordeaux": "FR",
+  "fr-rouen": "FR",
+  "fr-toulouse": "FR",
+  "fr-lyon": "FR",
+  "fr-marseille": "FR",
+  "fr-nice": "FR",
+  "fr-ajaccio": "FR",
+  "fr-strasbourg": "FR",
+  "fr-metz": "FR",
+  "us-new-york": "US",
+  "us-baltimore": "US",
+  "us-washington": "US",
+  "us-providence": "US",
+  "us-indianapolis": "US",
+  "us-louisville": "US",
+  "us-chicago": "US",
+  "us-saint-paul": "US",
+  "us-minneapolis": "US"
+});
 var ATLAS_PLACE_LONGITUDES = Object.freeze({
   "fr-paris": 2.3488,
   "fr-brest": -4.48628,
@@ -5422,6 +5445,7 @@ var TEXT = Object.freeze({
   atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(", ")}.`,
   atlasPlaceZone: "Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place's clock.",
   atlasPlaceLongitude: "With atlasPlace, must be the place's own longitude, to 0.01\xB0, or be left out, when the place's own is used.",
+  atlasPlaceCountry: "With atlasPlace, must be the place's own country, FR or US, or be left out, so that the calendar history is that place's.",
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",
@@ -5654,6 +5678,7 @@ async function parseTimeRequest(value, zones) {
   if (atlasPlace !== null && longitude2 !== null && Math.abs(longitude2 - ATLAS_PLACE_LONGITUDES[atlasPlace]) > 0.01) {
     throw invalidRequest("/longitude", TEXT.atlasPlaceLongitude);
   }
+  if (atlasPlace !== null && country !== null && country !== ATLAS_PLACE_COUNTRIES[atlasPlace]) throw invalidRequest("/country", TEXT.atlasPlaceCountry);
   const readOn = atlasPlace !== null && longitude2 === null ? ATLAS_PLACE_LONGITUDES[atlasPlace] : longitude2;
   return { local: { date, time, zone }, longitude: readOn, calendar, writtenDate: writtenDate2, country, atlasPlace };
 }
@@ -8601,7 +8626,7 @@ var TIME_INPUT = z4.strictObject({
   longitude: z4.number().optional().describe("The place's longitude in degrees east, from -180 to 180. With it, a time before the place adopted a legal time is read on the place's own mean time."),
   calendar: z4.enum(CALENDARS).optional().describe("The calendar local.date is written in; gregorian when omitted. julian, the Old Style, is accepted for a date written up to 1923-12-31 and converted to the Gregorian date before the time is read."),
   country: z4.string().max(2).optional().describe("The place's country as an ISO 3166-1 alpha-2 code in capitals, such as RU, for the note on when it changed to the Gregorian calendar."),
-  atlasPlace: z4.enum(ATLAS_PLACE_IDS).optional().describe("A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone, and tzdb's reading uses its longitude, so a longitude sent with it must be the place's, to 0.01\xB0. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.")
+  atlasPlace: z4.enum(ATLAS_PLACE_IDS).optional().describe("A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone, and tzdb's reading uses its longitude, so a longitude sent with it must be the place's, to 0.01\xB0, and a country sent with it must be the place's. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.")
 });
 async function resolveBirthTime(args) {
   try {

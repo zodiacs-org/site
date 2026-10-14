@@ -23,6 +23,31 @@ export const ATLAS_PLACE_ZONES: Readonly<Record<AtlasPlaceId, string>> = Object.
   'us-minneapolis': 'America/Chicago',
 });
 
+/** Each place's country, as the atlas's places.json gives it: the one whose calendar history a request may ask for with it. */
+export const ATLAS_PLACE_COUNTRIES: Readonly<Record<AtlasPlaceId, string>> = Object.freeze({
+  'fr-paris': 'FR',
+  'fr-brest': 'FR',
+  'fr-nantes': 'FR',
+  'fr-bordeaux': 'FR',
+  'fr-rouen': 'FR',
+  'fr-toulouse': 'FR',
+  'fr-lyon': 'FR',
+  'fr-marseille': 'FR',
+  'fr-nice': 'FR',
+  'fr-ajaccio': 'FR',
+  'fr-strasbourg': 'FR',
+  'fr-metz': 'FR',
+  'us-new-york': 'US',
+  'us-baltimore': 'US',
+  'us-washington': 'US',
+  'us-providence': 'US',
+  'us-indianapolis': 'US',
+  'us-louisville': 'US',
+  'us-chicago': 'US',
+  'us-saint-paul': 'US',
+  'us-minneapolis': 'US',
+});
+
 /** Each place's longitude, as the atlas's places.json gives it: the one its own mean time and tzdb's are read on. */
 export const ATLAS_PLACE_LONGITUDES: Readonly<Record<AtlasPlaceId, number>> = Object.freeze({
   'fr-paris': 2.3488,
