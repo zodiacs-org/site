@@ -3,7 +3,7 @@
  * Shards load on demand (first keystroke per letter) and stay cached.
  */
 
-import { byPopulation, foldedQuery, rankCities, shardKeys, type City, type CityIndex, type Row } from './rank';
+import { foldedQuery, queryRows, rankCities, shardKey, type City, type CityIndex, type Row } from './rank';
 
 export type { City } from './rank';
 
@@ -49,7 +49,7 @@ export async function searchCities(query: string, limit = 8): Promise<City[]> {
   if (!q) return [];
 
   const index = await preloadIndex();
-  const keys = shardKeys(q).filter((key) => index.shards.includes(key));
-  if (!keys.length) return [];
-  return rankCities(index, byPopulation(await Promise.all(keys.map(shard))), q, limit);
+  const key = shardKey(q);
+  if (!index.shards.includes(key)) return [];
+  return rankCities(index, queryRows(index, await shard(key), key), q, limit);
 }

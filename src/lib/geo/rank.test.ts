@@ -1,13 +1,12 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { byPopulation, fold, foldedQuery, rankCities, shardKey, shardKeys, type CityIndex, type Row } from './rank';
+import { byPopulation, filedElsewhere, fold, foldedQuery, queryRows, rankCities, shardKey, type CityIndex, type Row } from './rank';
 
 const cities = new URL('../../../public/data/cities/', import.meta.url);
 const shards: Record<string, Row[]> = Object.fromEntries(readdirSync(cities).filter((file) => /^[0a-z]\.json$/u.test(file))
   .map((file) => [file[0], JSON.parse(readFileSync(new URL(file, cities), 'utf8'))]));
+const index = JSON.parse(readFileSync(new URL('index.json', cities), 'utf8')) as CityIndex;
 const names = (row: Row) => (row[1] === 0 ? [row[0]] : [row[0], row[1]]);
-// Two places whose GeoNames name and ASCII name are different names: each is found by its ASCII one.
-const DIFFERENT_NAMES = ['Donostia / San Sebastián', 'Hondarribia'];
 
 describe('the birthplace search ranking', () => {
   it('folds accents, letter case, apostrophes, dashes and the letters NFD leaves whole', () => {
@@ -59,22 +58,25 @@ describe('the birthplace search ranking', () => {
     expect(byPopulation([a])).toBe(a);
   });
 
-  it('reads, for each first letter, every shard the index files names beginning with it under', () => {
-    const filed = new Map<string, Set<string>>();
+  it('lists under each first letter, as `also`, every place the index files under another whose name begins with it', () => {
+    expect(index.also).toEqual(filedElsewhere(shards));
+    // Đ written GJ, ASCII names that begin with an apostrophe, and names in two languages.
+    expect(index.also?.d?.map((row) => row[0])).toEqual(expect.arrayContaining(['Đồng Hới', 'Donostia / San Sebastián']));
+    expect(index.also?.h?.map((row) => row[0])).toEqual(['Hondarribia']);
+  });
+
+  it('reaches every place of the index by either of its names, from the shard of its first letter and its `also`', () => {
+    const sets = new Map<string, Set<string>>();
+    const listed = (letter: string) => sets.get(letter)
+      ?? sets.set(letter, new Set([...(shards[letter] ?? []), ...(index.also?.[letter] ?? [])].map((row) => JSON.stringify(row)))).get(letter)!;
     const unreached: string[] = [];
-    for (const [key, rows] of Object.entries(shards)) {
+    for (const rows of Object.values(shards)) {
       for (const row of rows) {
-        for (const name of names(row)) {
-          if (!shardKeys(fold(name)).includes(key)) unreached.push(name);
-          const first = shardKey(fold(name));
-          if (first !== key && !DIFFERENT_NAMES.includes(name)) filed.set(first, (filed.get(first) ?? new Set()).add(key));
-        }
+        for (const name of names(row)) if (!listed(shardKey(fold(name))).has(JSON.stringify(row))) unreached.push(name);
       }
     }
-    // Every place is reached by both of its names, but for the two whose names differ, reached by the ASCII one.
-    expect(unreached.sort()).toEqual([...DIFFERENT_NAMES].sort());
-    for (const letter of '0abcdefghijklmnopqrstuvwxyz') {
-      expect(shardKeys(letter).slice(1).sort(), letter).toEqual([...(filed.get(letter) ?? [])].sort());
-    }
+    expect(unreached).toEqual([]);
+    const donostia = queryRows(index, shards.d, 'd');
+    expect(rankCities(index, donostia, foldedQuery('Donostia') ?? '', 8).map((city) => city.name)).toEqual(['Donostia / San Sebastián']);
   });
 });

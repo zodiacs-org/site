@@ -20,6 +20,8 @@ export interface CityIndex {
   admin1: string[];
   countries: string[];
   shards: string[];
+  /** Under each first letter, the places filed under another whose name begins with it (filedElsewhere). */
+  also?: Record<string, Row[]>;
 }
 
 /** [name, asciiOrZero, admin1Idx, countryIdx, lat100, lon100, tzIdx, pop]; scripts/build-cities.mjs. */
@@ -55,24 +57,35 @@ export function shardKey(q: string): string {
 
 /**
  * The index files a place under the first letter of its ASCII name, so a few
- * names that begin with these letters are filed under another: GeoNames writes
- * Đ as GJ in some Vietnamese and Croatian ASCII names (Đồng Hới, GJong Hoi),
- * and some ASCII names begin with an apostrophe (‘Ibrī, 'Ibri), filed under
- * `0`. rank.test.ts holds this table to the index.
+ * places are filed under another letter than one of their names begins with:
+ * GeoNames writes Đ as GJ in some Vietnamese and Croatian ASCII names (Đồng
+ * Hới, GJong Hoi), begins some ASCII names with an apostrophe (‘Ibrī, 'Ibri,
+ * filed under `0`), and gives a few places names in two languages (Donostia /
+ * San Sebastián). For each first letter, these rows, by population: the index
+ * lists them as `also` (scripts/build-cities-also.ts), and a query reads them
+ * with its letter's shard, so either name finds a place.
  */
-const ALSO_FILED_UNDER: Readonly<Record<string, readonly string[]>> = {
-  a: ['0'], d: ['g'], e: ['0'], i: ['0'], s: ['0'], u: ['0'],
-};
-
-/** The shards a folded query reads: its first letter's, then those that file names beginning with it under another. */
-export function shardKeys(q: string): string[] {
-  const key = shardKey(q);
-  return [key, ...(ALSO_FILED_UNDER[key] ?? [])];
+export function filedElsewhere(shards: Readonly<Record<string, readonly Row[]>>): Record<string, Row[]> {
+  const also: Record<string, Row[]> = {};
+  for (const key of Object.keys(shards).sort()) {
+    for (const row of shards[key]) {
+      const letters = new Set((row[1] === 0 ? [row[0]] : [row[0], row[1]]).map((name) => shardKey(fold(name))));
+      for (const letter of letters) if (letter !== key) (also[letter] ??= []).push(row);
+    }
+  }
+  for (const rows of Object.values(also)) rows.sort((a, b) => b[7] - a[7]);
+  return Object.fromEntries(Object.keys(also).sort().map((letter) => [letter, also[letter]]));
 }
 
-/** The rows of the shards a query reads, in one order by population, as each shard's rows are. */
-export function byPopulation(shards: readonly (readonly Row[])[]): readonly Row[] {
-  return shards.length === 1 ? shards[0] : shards.flat().sort((a, b) => b[7] - a[7]);
+/** Rows of several lists in one order by population, as each list's rows are. */
+export function byPopulation(lists: readonly (readonly Row[])[]): readonly Row[] {
+  return lists.length === 1 ? lists[0] : lists.flat().sort((a, b) => b[7] - a[7]);
+}
+
+/** The rows a query reads: its letter's shard, and the places the index lists under the letter as `also`. */
+export function queryRows(index: CityIndex, shard: readonly Row[], key: string): readonly Row[] {
+  const also = index.also?.[key];
+  return also?.length ? byPopulation([shard, also]) : shard;
 }
 
 const foldedRows = new WeakMap<Row, readonly [string, string]>();
@@ -104,7 +117,7 @@ export function rankCities(index: CityIndex, rows: readonly Row[], q: string, li
     if (starts.length >= limit * 3) break;
   }
 
-  // The rows are in population order already (byPopulation for several shards).
+  // The rows are in population order already (queryRows merges a shard and its `also`).
   return [...starts, ...contains].slice(0, limit).map((r) => ({
     name: r[0],
     admin1: index.admin1[r[2]] ?? '',

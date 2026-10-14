@@ -76,14 +76,16 @@ committed nodal speeds kept, as before.
   "Düsseldorf" and "Dusseldorf" found nothing, on the site's birth forms and
   in the tool; Łódź and Əhmədbəyli chose shard `0`; and "Arkhangelsk" did not
   find Arkhangel’sk. Each is found now (`src/mcp/time-places.test.ts`).
-- The index files a place under the first letter of its ASCII name, and a
-  query reads the shard of its own first letter and the shards that file
-  names beginning with it under another: GeoNames writes Đ as GJ in some
-  Vietnamese and Croatian ASCII names (Đồng Hới, GJong Hoi), and some ASCII
-  names begin with an apostrophe (‘Ibrī). `src/lib/geo/rank.test.ts` holds
-  that table to the index: every place is reached by both its names, but for
-  two whose names are different names (Donostia / San Sebastián,
-  Hondarribia / Fuenterrabia), each reached by its ASCII one.
+- The index files a place under the first letter of its ASCII name, so 62
+  places are filed under another letter than one of their names begins
+  with: GeoNames writes Đ as GJ in some Vietnamese and Croatian ASCII names
+  (Đồng Hới, GJong Hoi), begins some with an apostrophe (‘Ibrī), and gives a
+  few places names in two languages (Donostia / San Sebastián). The index
+  lists them under each such letter (`also` in
+  `public/data/cities/index.json`, from `scripts/build-cities-also.ts`), and a
+  query reads them with its letter's shard, so no other shard is fetched.
+  `src/lib/geo/rank.test.ts` holds the list to the shards and reaches every
+  place of the index by either of its names.
 - The contains tier finds only names that begin with the query's first
   letter: "york" finds York but not New York City. The documents say so, and
   F-94 records it, with names the index does not give a place (Cologne for

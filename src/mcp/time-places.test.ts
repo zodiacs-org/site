@@ -248,7 +248,7 @@ describe('search_places is the site\'s birthplace search', () => {
   it('lists, for every query, the places the site lists, in the same order', async () => {
     const searchCities = await siteSearch();
     const random = generator(7);
-    const queries = ['Paris', 'par', 'PAR', 'são', 'sao paulo', 'new y', 'Zürich', 'Zurich', 'zu', 'ab', 'x', '  ', '12', 'Saint-', 'los', 'ko', 'Dong', 'Ibri', "'s-Her", 'arkhangelsk'];
+    const queries = ['Paris', 'par', 'PAR', 'são', 'sao paulo', 'new y', 'Zürich', 'Zurich', 'zu', 'ab', 'x', '  ', '12', 'Saint-', 'los', 'ko', 'Dong', 'Ibri', "'s-Her", 'arkhangelsk', 'Donostia', 'Hondarr'];
     for (let n = 0; n < 60; n += 1) {
       const key = pick(random, index.shards as string[]);
       const row = pick(random, PLACE_SHARDS[key]);
@@ -272,6 +272,7 @@ describe('search_places is the site\'s birthplace search', () => {
       ['Łódź', 'Łódź', 'Poland'], ['Zürich', 'Zürich', 'Switzerland'], ['Zurich', 'Zürich', 'Switzerland'], ['Zuerich', 'Zürich', 'Switzerland'],
       ['Düsseldorf', 'Düsseldorf', 'Germany'], ['Dusseldorf', 'Düsseldorf', 'Germany'], ['Đồng Hới', 'Đồng Hới', 'Vietnam'],
       ['Dong Hoi', 'Đồng Hới', 'Vietnam'], ['Əhmədbəyli', 'Əhmədbəyli', 'Azerbaijan'], ['Arkhangelsk', 'Arkhangel’sk', 'Russia'], ['Ibri', '‘Ibrī', 'Oman'],
+      ['Donostia', 'Donostia / San Sebastián', 'Spain'], ['San Sebastián', 'Donostia / San Sebastián', 'Spain'], ['Hondarribia', 'Hondarribia', 'Spain'],
     ]) expect(value(searchPlaces({ query })).places[0], query).toMatchObject({ name, country });
     expect(value(searchPlaces({ query: 'a' })).places).toEqual([]);
   });

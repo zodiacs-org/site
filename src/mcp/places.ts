@@ -7,7 +7,7 @@
  * leaves this process only in the reply.
  */
 import { z } from 'zod';
-import { byPopulation, foldedQuery, rankCities, shardKeys, type CityIndex, type Row } from '../lib/geo/rank';
+import { foldedQuery, queryRows, rankCities, shardKey, type CityIndex, type Row } from '../lib/geo/rank';
 import index from '../../public/data/cities/index.json';
 import shardDigits from '../../public/data/cities/0.json';
 import shardA from '../../public/data/cities/a.json';
@@ -88,7 +88,7 @@ const cityIndex = index as CityIndex;
 
 export function searchPlaces(args: z.infer<typeof PLACES_INPUT>): ToolOutcome {
   const q = foldedQuery(args.query);
-  const rows = q === null ? [] : byPopulation(shardKeys(q).filter((key) => key in PLACE_SHARDS).map((key) => PLACE_SHARDS[key]));
+  const rows = q === null ? [] : queryRows(cityIndex, PLACE_SHARDS[shardKey(q)] ?? [], shardKey(q));
   const places = q === null ? [] : rankCities(cityIndex, rows, q, args.limit ?? PLACES_DEFAULT).map((city) => ({
     name: city.name,
     admin1: city.admin1,
