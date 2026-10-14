@@ -94,6 +94,7 @@ jobs:
           {
             echo "base=$base"
             echo "head=$head"
+            echo "edition=$edition"
             echo "clock=${edition}T12:00:00Z"
             echo "tools=$tools"
           } >> "$GITHUB_OUTPUT"
@@ -125,10 +126,12 @@ jobs:
           node "$TOOLS/sitemap-rendered-changes.mjs" fingerprint dist "$TOOLS/base.json"
           mv dist "$TOOLS/base-dist"
 
+      # A page already dated the edition day passes: its date says it changed that day.
       - name: Every changed page has a new sitemap date
         env:
           TOOLS: ${{ steps.plan.outputs.tools }}
-        run: node "$TOOLS/sitemap-rendered-changes.mjs" compare "$TOOLS/base.json" "$TOOLS/head.json" --explain "$TOOLS/base-dist" "$TOOLS/head-dist" --summary "$GITHUB_STEP_SUMMARY"
+          EDITION: ${{ steps.plan.outputs.edition }}
+        run: node "$TOOLS/sitemap-rendered-changes.mjs" compare "$TOOLS/base.json" "$TOOLS/head.json" --today "$EDITION" --explain "$TOOLS/base-dist" "$TOOLS/head-dist" --summary "$GITHUB_STEP_SUMMARY"
 
       - name: Upload the fingerprints
         if: ${{ !cancelled() }}

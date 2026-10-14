@@ -133,6 +133,24 @@ describe('comparing two builds', () => {
       .toEqual({ removed: ['Ten guides.'], added: ['Ten guides, and how each compares.'] });
   });
 
+  it('passes a changed page already dated the day of the builds, as a daily page is', async () => {
+    const base = await build('day-base', [['/pt/today/', '2026-10-13'], ['/pt/eclipses/', '2026-07-10']], {
+      '/pt/today/': page({ main: '<p>1 de outubro</p>' }),
+      '/pt/eclipses/': page({ main: '<p>1 de maio</p>' }),
+    });
+    const head = await build('day-head', [['/pt/today/', '2026-10-13'], ['/pt/eclipses/', '2026-07-10']], {
+      '/pt/today/': page({ main: '<p>1º de outubro</p>' }),
+      '/pt/eclipses/': page({ main: '<p>1º de maio</p>' }),
+    });
+    const [a, b] = [await fingerprint(base), await fingerprint(head)];
+    expect(compare(a, b, { today: '2026-10-13' })).toMatchObject({
+      changedOnItsDate: ['/pt/today/'],
+      undated: [{ path: '/pt/eclipses/', lastmod: '2026-07-10' }],
+    });
+    expect(compare(a, b).undated.map(({ path }) => path)).toEqual(['/pt/eclipses/', '/pt/today/']);
+    expect(() => compare(a, b, { today: 'today' })).toThrow(/Not a date/);
+  });
+
   it('passes two builds of the same pages, and refuses a file that is not a fingerprint', async () => {
     const pages = { '/': page(), '/a/': page({ main: '<p>A</p>' }) };
     const a = await fingerprint(await build('a', [['/', '2026-10-14'], ['/a/', '2026-10-01']], pages));

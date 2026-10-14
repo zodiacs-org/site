@@ -3,7 +3,7 @@
  *
  *   node scripts/sitemap-rendered-changes.mjs fingerprint <dist> <out.json>
  *   node scripts/sitemap-rendered-changes.mjs compare <base.json> <head.json>
- *     [--explain <base dist> <head dist>] [--summary <file>]
+ *     [--today YYYY-MM-DD] [--explain <base dist> <head dist>] [--summary <file>]
  *
  * IndexNow Changes (.github/workflows/indexnow-changes.yml) submits a page as
  * changed only when its <lastmod> in the live sitemap changes, and
@@ -111,12 +111,20 @@ export async function fingerprint(dist) {
   return { schema: SCHEMA, urls };
 }
 
-/** Pages the head changed: those re-dated, and those changed without a new date (the failures). */
-export function compare(base, head) {
+/**
+ * Pages the head changed: those re-dated, and those changed without a new date
+ * (the failures). With `today`, the day both builds were made for, a page
+ * already dated that day passes: a sitemap date says only the day of the last
+ * change, so a second change that day needs no new one.
+ */
+export function compare(base, head, { today } = {}) {
   for (const side of [base, head]) {
     if (side?.schema !== SCHEMA) throw new Error(`Not a ${SCHEMA} fingerprint.`);
   }
-  const result = { compared: 0, unchanged: 0, changedAndRedated: [], redatedOnly: [], added: [], removed: [], undated: [] };
+  if (today !== undefined && !/^\d{4}-\d{2}-\d{2}$/u.test(today)) throw new Error(`Not a date: ${today}`);
+  const result = {
+    compared: 0, unchanged: 0, changedAndRedated: [], changedOnItsDate: [], redatedOnly: [], added: [], removed: [], undated: [],
+  };
   for (const [path, now] of Object.entries(head.urls)) {
     const before = base.urls[path];
     if (!before) {
@@ -130,6 +138,8 @@ export function compare(base, head) {
       else result.unchanged += 1;
     } else if (redated) {
       result.changedAndRedated.push(path);
+    } else if (today && now.lastmod && now.lastmod >= today) {
+      result.changedOnItsDate.push(path);
     } else {
       result.undated.push({ path, lastmod: now.lastmod });
     }
@@ -156,7 +166,7 @@ export function textDifference(beforeHtml, afterHtml, limit = 3) {
 
 function report(result) {
   const lines = [
-    `Pages in both builds: ${result.compared}; unchanged: ${result.unchanged}; changed and re-dated: ${result.changedAndRedated.length}; re-dated with no change in content: ${result.redatedOnly.length}; new: ${result.added.length}; removed: ${result.removed.length}.`,
+    `Pages in both builds: ${result.compared}; unchanged: ${result.unchanged}; changed and re-dated: ${result.changedAndRedated.length}; changed and already dated that day: ${result.changedOnItsDate.length}; re-dated with no change in content: ${result.redatedOnly.length}; new: ${result.added.length}; removed: ${result.removed.length}.`,
   ];
   if (result.undated.length === 0) {
     lines.push('Every page whose content changed has a new sitemap date.');
@@ -179,7 +189,8 @@ async function main(argv) {
   if (command === 'compare' && rest.length >= 2) {
     const [baseFile, headFile, ...options] = rest;
     const read = async (file) => JSON.parse(await readFile(file, 'utf8'));
-    const result = compare(await read(baseFile), await read(headFile));
+    const todayAt = options.indexOf('--today');
+    const result = compare(await read(baseFile), await read(headFile), todayAt >= 0 ? { today: options[todayAt + 1] } : {});
     let text = report(result);
     const explain = options.indexOf('--explain');
     if (explain >= 0 && result.undated.length > 0) {
@@ -197,7 +208,7 @@ async function main(argv) {
     if (summary >= 0) await writeFile(options[summary + 1], `## Sitemap dates\n\n${text}\n`, { flag: 'a' });
     return result.undated.length === 0 ? 0 : 1;
   }
-  console.error('usage: sitemap-rendered-changes.mjs fingerprint <dist> <out.json> | compare <base.json> <head.json> [--explain <base dist> <head dist>] [--summary <file>]');
+  console.error('usage: sitemap-rendered-changes.mjs fingerprint <dist> <out.json> | compare <base.json> <head.json> [--today YYYY-MM-DD] [--explain <base dist> <head dist>] [--summary <file>]');
   return 2;
 }
 
