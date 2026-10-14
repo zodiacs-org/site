@@ -17,6 +17,27 @@ weighted units accepted; blocked 2% (3), or 1.644%.
 - **What keeps S8 open:** Bing's verification is still the owner's report.
 - **Main's Site Check** passed on #745's merge (run 38601979991).
 
+OpenAPI examples for the static sky files, 2026-10-15 (Asia/Bangkok): P3.4
+stays partial.
+
+**Overall delivery: 43%** (42.587% to three decimals): 77.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.4, partial.** Each of the eleven GET operations of
+  `/api/v1/openapi.json` now names an example: the file the site serves at
+  that path, which `scripts/sky-api.test.mjs` validates against the
+  operation's response schema in every build. With the compute endpoints'
+  examples, every body the document describes has one
+  ([the record](../evidence/openapi-get-examples-20261015/README.md)). The
+  TypeScript and Python clients are private preparations; releasing them is
+  the owner's decision.
+- **F-96, fixed** (#748, merged as `75933efb`). Chromium's full-page capture
+  recreates a page's font faces, which load again during the capture, so a
+  capture could paint before they had. The visual harness now loads every face
+  the drawn text needs before each capture, and retakes a capture that misses
+  the unchanged 0.1% limit. With `--update`, it writes a baseline only when
+  two captures in a row agree.
+
 IndexNow for changed URLs in production, 2026-10-14 (Asia/Bangkok): S8 stays
 partial.
 
