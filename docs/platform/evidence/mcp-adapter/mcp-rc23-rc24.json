@@ -8,7 +8,7 @@
  },
  "new": {
   "file": "server.mjs",
-  "sha256": "a14597f3aa2d07168773d0c12b7ed813214360ce16b8f06a905f1874ee8ca8b5"
+  "sha256": "ba05617e838da364201a8d8e6c8fd536fec1af2282f07af3fdef97e4f60563ce"
  },
  "tools": [
   {
@@ -281,7 +281,7 @@
        "maxLength": 2
       },
       "atlasPlace": {
-       "description": "A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone, and tzdb's reading uses its longitude, so a longitude sent with it must be the place's, to 0.01°. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.",
+       "description": "A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone, and tzdb's reading uses its longitude, so a longitude sent with it must be the place's, to 0.01°, and a country sent with it must be the place's. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.",
        "type": "string",
        "enum": [
         "fr-paris",

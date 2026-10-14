@@ -53,12 +53,14 @@ instant minus tzdb's. In the tests:
 
 The place must lie in the request's `local.zone`, and tzdb's reading uses
 the place's own longitude, from the atlas's `places.json`: one sent with
-`atlasPlace` must be the place's, to 0.01°. A place in another zone
-(`/atlasPlace`) or another longitude (`/longitude`) is refused, so the two
-readings are always of one place's clock. #742's two reviews found each
-fault: before them, New York's reading could stand beside tzdb's for Paris,
-and, without a longitude, Brest's beside Paris mean time, about 27 minutes
-apart.
+`atlasPlace` must be the place's, to 0.01°, and a `country` the place's, FR
+or US. A place in another zone (`/atlasPlace`), another longitude
+(`/longitude`) or another country (`/country`) is refused, so the two
+readings are always of one place's clock, with that place's calendar
+history. #742's reviews found each fault: before them, New York's reading
+could stand beside tzdb's for Paris; without a longitude, Brest's beside
+Paris mean time, about 27 minutes apart; and Paris's clock beside Russia's
+calendar history.
 
 `src/mcp/time-places.test.ts` adds 25 atlas requests to the adapter's corpus,
 one at each place at a seeded time and four at its changes, each answered as
