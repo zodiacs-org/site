@@ -7,7 +7,7 @@
  * leaves this process only in the reply.
  */
 import { z } from 'zod';
-import { foldedQuery, rankCities, shardKey, type CityIndex, type Row } from '../lib/geo/rank';
+import { foldedQuery, queryRows, rankCities, shardKey, type CityIndex, type Row } from '../lib/geo/rank';
 import index from '../../public/data/cities/index.json';
 import shardDigits from '../../public/data/cities/0.json';
 import shardA from '../../public/data/cities/a.json';
@@ -79,16 +79,17 @@ export { PLACES_SOURCE, PLACE_QUERY_CHARS, PLACES_DEFAULT, PLACES_MAX } from './
 
 export const PLACES_INPUT = z.strictObject({
   query: z.string().max(PLACE_QUERY_CHARS)
-    .describe('A place name or its start, in any letter case, with or without accents; two characters or more. Places whose names start with it come first, then, from three characters, places whose names contain it, each in order of population.'),
+    .describe('A place name or its start, as GeoNames writes it or in its ASCII spelling (Zürich, Zurich or Zuerich), in any letter case, with or without accents and apostrophes; two characters or more. Places whose names start with it come first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population.'),
   limit: z.number().int().min(1).max(PLACES_MAX).optional()
     .describe(`How many places, 1 to ${PLACES_MAX}; ${PLACES_DEFAULT} when omitted, as the site's search lists.`),
 });
 
-const cityIndex = index as CityIndex;
+/** The index as scripts/build-cities.mjs and scripts/build-cities-also.ts write it; the tests check its rows. */
+const cityIndex = index as unknown as CityIndex;
 
 export function searchPlaces(args: z.infer<typeof PLACES_INPUT>): ToolOutcome {
   const q = foldedQuery(args.query);
-  const rows = q === null ? [] : PLACE_SHARDS[shardKey(q)] ?? [];
+  const rows = q === null ? [] : queryRows(cityIndex, PLACE_SHARDS[shardKey(q)] ?? [], shardKey(q));
   const places = q === null ? [] : rankCities(cityIndex, rows, q, args.limit ?? PLACES_DEFAULT).map((city) => ({
     name: city.name,
     admin1: city.admin1,

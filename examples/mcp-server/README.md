@@ -306,7 +306,9 @@ Terrestrial Time, the offset applied, and how the time was read:
   the site's table says that country changed calendar and, for a date written
   before 1924, the note the site's birth forms give: `old-style`, `new-style`
   or `other-calendar`;
-- with `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which
+- with `atlasPlace`, one of the 21 places of the Zodiacs time atlas in
+  `local.zone`, whose longitude tzdb's reading then uses (one sent with it must
+  be the place's, to 0.01°, and a `country` sent with it the place's), which
   records with citations what the clocks said in France and the United States
   from 1870 to 1919, the reply adds the atlas's reading of the same wall time:
   one instant, every instant of a time the clocks repeated, or the instant of a
@@ -322,9 +324,11 @@ into `server.mjs`. Pass the `utc` it returns to `calculate_natal_chart`.
 
 ### `search_places`
 
-Takes a `query`, a place name or its start, and optionally a `limit` from 1 to
-20, 8 when omitted. Returns the places whose names start with it, then, from
-three characters, those whose names contain it, each in order of population,
+Takes a `query`, a place name or its start, with or without accents and
+apostrophes (GeoNames' name or its ASCII spelling: Zürich, Zurich or Zuerich),
+and optionally a `limit` from 1 to 20, 8 when omitted. Returns the places whose names start with it, then, from
+three characters, those whose names begin with the same letter and contain
+it, each in order of population,
 with the region and country, the coordinates rounded to 0.01° (about 1.1 km)
 and the IANA time zone. It reads GeoNames cities15000, every place of 15,000
 people or more, which is the index the site's birthplace search reads, with the
@@ -609,7 +613,9 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   progressions, returns or eclipses.
 - **No interpretation.** Positions and differences, no readings.
 - **Time zones from tzdb, places from GeoNames.** `resolve_birth_time` reads
-  tzdb's zone histories, with no town-level clock records beyond them, and
+  tzdb's zone histories and, for a place of the time atlas named in
+  `atlasPlace`, the atlas's cited reading beside them, with no other town-level
+  clock records, and
   `search_places` finds only the places of 15,000 people or more that GeoNames
   lists. The other tools take an instant with an explicit offset, and
   `check_sky_fact` reads a date without a zone as that day in every UTC offset

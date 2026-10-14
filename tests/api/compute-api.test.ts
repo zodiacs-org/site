@@ -853,6 +853,28 @@ describe('compute API parity with the engine and the site resolver', () => {
     expect((await at({ local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' } })).atlas).toBeNull();
     const refused = (await call('time', { local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-lille' })).json.error;
     expect(refused).toMatchObject({ code: 'invalid-request', pointer: '/atlasPlace' });
+    // A place outside the request's zone is refused before anything is read: New York's clock beside
+    // tzdb's reading of Paris would set two places' clocks side by side.
+    const elsewhere = (await call('time', { local: { date: '1900-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'us-new-york' })).json.error;
+    expect(elsewhere).toMatchObject({ code: 'invalid-request', pointer: '/atlasPlace',
+      message: 'Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place\'s clock.' });
+    expect((await at({ local: { date: '1900-06-01', time: '12:00', zone: 'America/Indiana/Indianapolis' }, atlasPlace: 'us-indianapolis' })).atlas)
+      .toMatchObject({ place: 'us-indianapolis' });
+    // Before France's legal time, the atlas reads the place's own mean time, and so does tzdb's reading:
+    // without a longitude, Brest in 1880 is read on Brest's, not on Paris's, and the two agree.
+    const brest = await at({ local: { date: '1880-06-01', time: '12:00', zone: 'Europe/Paris' }, atlasPlace: 'fr-brest' });
+    expect(brest.localMeanTime).toMatchObject({ longitude: -4.48628 });
+    expect(Math.abs(brest.atlas.secondsFromTzdb)).toBeLessThan(1);
+    const elsewhereLongitude = (await call('time', { local: { date: '1880-06-01', time: '12:00', zone: 'Europe/Paris' }, longitude: 2.35, atlasPlace: 'fr-brest' })).json.error;
+    expect(elsewhereLongitude).toMatchObject({ code: 'invalid-request', pointer: '/longitude' });
+    expect((await at({ local: { date: '1880-06-01', time: '12:00', zone: 'Europe/Paris' }, longitude: -4.49, atlasPlace: 'fr-brest' })).localMeanTime)
+      .toMatchObject({ longitude: -4.49 });
+    // Nor may the calendar history be another country's: Russia's beside Paris's clock is refused.
+    const elsewhereCountry = (await call('time', { local: { date: '1917-06-01', time: '12:00', zone: 'Europe/Paris' }, country: 'RU', atlasPlace: 'fr-paris' })).json.error;
+    expect(elsewhereCountry).toMatchObject({ code: 'invalid-request', pointer: '/country',
+      message: 'With atlasPlace, must be the place\'s own country, FR or US, or be left out, so that the calendar history is that place\'s.' });
+    expect((await at({ local: { date: '1917-06-01', time: '12:00', zone: 'Europe/Paris' }, country: 'FR', atlasPlace: 'fr-paris' })).atlas)
+      .toMatchObject({ place: 'fr-paris' });
   });
 
   it('time refuses a Julian date the birth forms would not take, an unknown calendar and a malformed country', async () => {

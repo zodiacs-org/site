@@ -64,9 +64,32 @@ committed nodal speeds kept, as before.
   calculators fetch (`public/data/cities/`, GeoNames cities15000 under CC BY
   4.0, 33,934 places), built into `server.mjs`. The ranking moved to
   `src/lib/geo/rank.ts`, which the browser search and the tool share. The
-  tests hold the bundled shards to the served files row for row, and, for 75
+  tests hold the bundled shards to the served files row for row, and, for 80
   queries at three limits each, the tool's places to those the site's search
   lists, in the same order.
+- A place matches by its GeoNames name or its ASCII name, each folded as the
+  query is: accents, letter case and apostrophes set aside, dashes written as
+  hyphens, and ł, ø, ß, ə and the other letters NFD leaves whole written in
+  ASCII. Before #742's reviews the search compared a query only with the
+  ASCII name, which GeoNames writes with ue, oe and ae for ü, ö and ä in many
+  German, Swiss, Swedish and Turkish names, so "Zürich", "Zurich",
+  "Düsseldorf" and "Dusseldorf" found nothing, on the site's birth forms and
+  in the tool; Łódź and Əhmədbəyli chose shard `0`; and "Arkhangelsk" did not
+  find Arkhangel’sk. Each is found now (`src/mcp/time-places.test.ts`).
+- The index files a place under the first letter of its ASCII name, so 62
+  places are filed under another letter than one of their names begins
+  with: GeoNames writes Đ as GJ in some Vietnamese and Croatian ASCII names
+  (Đồng Hới, GJong Hoi), begins some with an apostrophe (‘Ibrī), and gives a
+  few places names in two languages (Donostia / San Sebastián). The index
+  lists them under each such letter (`also` in
+  `public/data/cities/index.json`, from `scripts/build-cities-also.ts`), and a
+  query reads them with its letter's shard, so no other shard is fetched.
+  `src/lib/geo/rank.test.ts` holds the list to the shards and reaches every
+  place of the index by either of its names.
+- The contains tier finds only names that begin with the query's first
+  letter: "york" finds York but not New York City. The documents say so, and
+  F-94 records it, with names the index does not give a place (Cologne for
+  Köln), as open; the reviews' other findings it records are fixed.
 - `get_capabilities` adds a `time` and a `places` section.
 - The developer plugin's server imports the chart tools and with them the
   capabilities reply. The time tool and the place constants live in modules
@@ -77,23 +100,36 @@ committed nodal speeds kept, as before.
 
 ## 0.1.0-rc.24 and plugin 0.3.12
 
-- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 909,656
+- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 911,940
   bytes, SHA-256
-  `1a669aab22ed7c7223bb4ac80bd40cabc4df13812c1c8cc5c4b4b6585fca82bb`, built
-  from commit `21691a8cda95c5fac910d79576cd3f734b03a8e1`. It was first cut
-  from `f148a386`, which also adds the time atlas (B3.b,
-  [`../time-atlas-reading-20261012/`](../time-atlas-reading-20261012/)), and
-  packed again on 2026-10-13, after the merge of A1.b's re-cut, because its
-  `candidate.json` said it superseded 0.1.0-rc.19; it now names 0.1.0-rc.23,
+  `23445637af974fa1ad77ed8f49b4807cc164e1f6572819ebae5ad8d295fffe49`, built
+  from commit `52c74477579acd49b934703d6e4a876b7b11fadd`. Its `server.mjs` is
+  2,468,640 bytes, SHA-256
+  `c61f6cac0b4f1bc059b1e6125405b57d424e660a844fa1828b9ef4b105123416`: the build
+  inlines every JSON table as a string parsed at its first import, as the
+  compute API's local-time bundle does, so the zone-name table carries no
+  CommonJS shim. It was first cut from `f148a386`, which also adds the time
+  atlas (B3.b, [`../time-atlas-reading-20261012/`](../time-atlas-reading-20261012/));
+  packed again on 2026-10-13 after the merge of A1.b's re-cut, because its
+  `candidate.json` said it superseded 0.1.0-rc.19 (it now names 0.1.0-rc.23,
   the latest archive the site served before it, as
-  `scripts/mcp-artifact.test.mjs` requires. The drives below ran on the same
-  `server.mjs`, byte for byte. Its
-  `server.mjs` is 2,459,502 bytes, SHA-256
-  `866e5a9c0756b96a5777c0a15117735f8bd60d6728d1a2a3a2f7e00094f5b959`: the
-  build now inlines every JSON table as a string parsed at its first import,
-  as the compute API's local-time bundle does, so the zone-name table carries
-  no CommonJS shim.
-- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,849,062 bytes. It
+  `scripts/mcp-artifact.test.mjs` requires); and packed again after #742's
+  review, which found that `resolve_birth_time` accepted an `atlasPlace` in
+  another zone than `local.zone`, and that its stated limits denied the atlas.
+  The parser now refuses such a place (`/atlasPlace`), and the limits name the
+  atlas as the exception to "no town-level clock records". It was packed again
+  after the second review, which found that tzdb's reading used the zone
+  reference city's mean time, or another town's longitude, beside the atlas's
+  reading of the place's own: tzdb now reads the place's longitude when none
+  is sent, and another longitude is refused (`/longitude`). Its change note
+  names the rule, and the search's documents name the shard (above). It was
+  packed again after the third review, with the search that matches either
+  name (above), and after the fourth, which found that a `country` other than
+  the atlas place's put another country's calendar history beside the place's
+  clock: it is refused (`/country`), so the zone, the longitude and the
+  country a request names are all the atlas place's; and after the fifth,
+  with the index's list of places filed under another letter (above).
+- `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,851,656 bytes. It
   also carries Chart Studio's fix for a birth date without a time (F-91),
   which came with A1.b. Its release note first said it "bundles MCP adapter
   0.1.0-rc.24"; the plugin registers only the adapter's chart tools, beside
@@ -106,21 +142,33 @@ committed nodal speeds kept, as before.
   new tools, the capabilities reply's schema, and the wording of
   `check_sky_fact`'s description and date argument. The methodology resource
   gains a section on local times and places.
-- The protocol drive passed 114 of 114 checks, the host drive with Claude Code
-  2.1.296 7 of 7, the comparison benchmark 18 of 18 cases and 112 of 112
-  assertions, and the archive's own `verify.mjs` 25 of 25
-  ([`../mcp-adapter/`](../mcp-adapter/)).
+- The comparison, the protocol drive (114 of 114 checks), the host drive with
+  Claude Code 2.1.296 (7 of 7) and the comparison benchmark (18 of 18 cases and
+  112 of 112 assertions) ran again on this `server.mjs`, with the same counts
+  ([`../mcp-adapter/`](../mcp-adapter/)); the archive's own `verify.mjs` passes
+  25 of 25 in `scripts/mcp-artifact.test.mjs`.
 
 ## Phase 1 captures
 
 The time endpoint and the time atlas change `src/lib`, which the Phase 1
-capture digest covers, so CI took the 18 captures again. Browser Evidence run
-38460766572 took them on `4fee71ac`, this branch merged with main at
-`848e6087` (#740), with Chromium 149.0.7827.55 at 2026-10-13T20:15:16Z, for
-the 2026-10-13 edition, bound to template source digest `96847a88…`. Its
-build, acceptance captures, receipt, visual comparison, Lighthouse and
-explorer drive passed ([browser-evidence-provenance.json](browser-evidence-provenance.json)
-is the run's own record).
+capture digest covers, so CI took the 18 captures again.
+
+- **Committed captures.** Browser Evidence run 38498881497 took them on
+  `f30d7f4c`, after #742's five reviews changed the time request parser and
+  the place search (`src/lib/geo/`) and the branch merged main's 2026-10-14
+  edition, with Chromium 149.0.7827.55 at 2026-10-14T02:06:05Z, bound to
+  template source digest `9644c29a…`. Its build, acceptance captures,
+  receipt, visual comparison, Lighthouse and explorer drive passed
+  ([browser-evidence-provenance.json](browser-evidence-provenance.json) is the
+  run's own record). Twelve of the 18 images, the pages that show the day's
+  edition (today, tomorrow, daily, love, career and the horoscopes hub, at
+  both widths), differ from the captures before because they show the
+  2026-10-14 edition; the weekly, monthly and yearly images are unchanged.
+- **Superseded runs.** Run 38460766572 on `4fee71ac`, before the reviews,
+  took them for digest `96847a88…`, and run 38478006905 on `2efc0a63`, after
+  the first, for digest `93a9f716…` and the 2026-10-13 edition; their
+  provenance is kept as `browser-evidence-provenance-4fee71ac.json` and
+  `browser-evidence-provenance-2efc0a63.json`.
 
 ## Not changed
 

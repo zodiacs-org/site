@@ -2,7 +2,9 @@
  * Builds the offline birthplace index used by the calculators' typeahead:
  *
  *   public/data/cities/index.json   — string tables (timezones, admin1,
- *                                     countries) + shard list
+ *                                     countries) + shard list, and, from
+ *                                     scripts/build-cities-also.ts, the
+ *                                     places filed under another letter
  *   public/data/cities/{a..z,0}.json — city rows sharded by first letter
  *
  * Source: GeoNames cities15000 (all cities with population ≥ 15,000),
@@ -151,5 +153,7 @@ await writeFile(
     shards: shardKeys,
   })
 );
+
+execFileSync('npx', ['vite-node', '--script', 'scripts/build-cities-also.ts'], { cwd: root, stdio: 'inherit' });
 
 console.log(`Done — ${count} cities across ${shardKeys.length} shards, ${tzTable.length} timezones.`);
