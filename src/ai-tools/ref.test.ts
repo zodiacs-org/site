@@ -30,4 +30,26 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     const plain = await executeAiTool('get_life_milestones', { birthDate: '1997-03-15' }, on);
     if (plain.ok && plain.tool === 'get_life_milestones') expect(JSON.stringify(plain)).not.toContain('ref=');
   });
+
+  it('offers the complete printable occasion link without losing its place or local clock', async () => {
+    const result = await executeAiTool('get_occasion_sky', {
+      occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome',
+      latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy',
+    }, on, { ref: 'chatgpt' });
+    if (!result.ok || result.tool !== 'get_occasion_sky') throw new Error('expected a card');
+    expect(result.links[0]).toEqual({ title: 'Open the printable card', url: result.data.cardUrl });
+    const url = new URL(result.links[0].url);
+    expect([...url.searchParams]).toEqual([['ref', 'chatgpt']]);
+    expect(Object.fromEntries(new URLSearchParams(url.hash.slice(1)))).toEqual({
+      o: 'wedding', d: '2027-06-12', t: '17:00', tz: 'Europe/Rome',
+      lat: '43.7696', lon: '11.2558', place: 'Florence, Italy',
+    });
+
+    const noPlace = await executeAiTool('get_occasion_sky', {
+      occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome',
+    }, on, { ref: 'chatgpt' });
+    if (!noPlace.ok || noPlace.tool !== 'get_occasion_sky') throw new Error('expected a card');
+    expect(noPlace.data.cardUrl).toBeNull();
+    expect(noPlace.links[0].url).toBe('https://zodiacs.org/occasions/?ref=chatgpt');
+  });
 });
