@@ -84,7 +84,8 @@ export const PLACES_INPUT = z.strictObject({
     .describe(`How many places, 1 to ${PLACES_MAX}; ${PLACES_DEFAULT} when omitted, as the site's search lists.`),
 });
 
-const cityIndex = index as CityIndex;
+/** The index as scripts/build-cities.mjs and scripts/build-cities-also.ts write it; the tests check its rows. */
+const cityIndex = index as unknown as CityIndex;
 
 export function searchPlaces(args: z.infer<typeof PLACES_INPUT>): ToolOutcome {
   const q = foldedQuery(args.query);
