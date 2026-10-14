@@ -1,13 +1,16 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, STUDIO_URI, LEGACY_STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName } from './contracts';
+import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_STUDIO_URIS, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName } from './contracts';
 import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 import { reserveAiQuota, type QuotaKind } from './quota';
 import { countAiToolCall, usageHostFamily, type UsageHost } from './usage';
 import { configuredSkyWatch, type SkyWatch } from './watch/service';
+
+/** The self-contained panels whose resources may exceed the usual reply budget. */
+const LARGE_PANEL_URIS: ReadonlySet<string> = new Set([STUDIO_URI, ...LEGACY_STUDIO_URIS, HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS]);
 
 // Browser-side MCP clients of the assistants Zodiacs is listed in, and the site itself.
 const ALLOWED_ORIGINS = new Set(['https://chatgpt.com', 'https://chat.openai.com', 'https://claude.ai', 'https://claude.com', ORIGIN]);
@@ -182,7 +185,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         const reply = await response.text();
         // Only the fixed, self-contained panel resources have a larger response budget.
         const resourceUri = (message.params as { uri?: unknown })?.uri;
-        const panelResource = message.method === 'resources/read' && (resourceUri === STUDIO_URI || resourceUri === LEGACY_STUDIO_URI || resourceUri === HOROSCOPE_URI);
+        const panelResource = message.method === 'resources/read' && typeof resourceUri === 'string' && LARGE_PANEL_URIS.has(resourceUri);
         if (Buffer.byteLength(reply) > (panelResource ? 2_100_000 : 262144)) throw new Error('output-budget');
         function sanitize(text: string) {
           return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text)));

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { BUDGETS, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS } from '../lib/compute-api/constants';
 import { OCCASION_KINDS } from '../lib/occasions/kinds';
-import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI } from './horoscope/reading';
+import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS } from './horoscope/reading';
 
 export const AI_VERSION = '0.4.0';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
@@ -18,11 +18,16 @@ export const MAX_HTTP_BYTES = 16_384;
 export const AI_ROUTE_PARAM = '__zodiacs_ai';
 export const AI_SWITCH_ENV = 'ZODIACS_MCP_ENABLED';
 export const ORIGIN = 'https://zodiacs.org';
-export const WIDGET_URI = 'ui://zodiacs/sky-events-v1.html';
-export const STUDIO_URI = 'ui://zodiacs/chart-studio-v2.html';
-// Keep existing host definitions readable while their tool metadata is refreshed.
+// ChatGPT keeps a panel by its URI, so a changed panel gets a new one. The
+// earlier URIs stay registered and serve the current panel, so conversations
+// and host definitions that still name them keep working.
+export const WIDGET_URI = 'ui://zodiacs/sky-events-v2.html';
+export const LEGACY_WIDGET_URIS = ['ui://zodiacs/sky-events-v1.html'] as const;
+export const STUDIO_URI = 'ui://zodiacs/chart-studio-v3.html';
+export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v2.html', 'ui://zodiacs/chart-studio-v1.html'] as const;
+/** The first Chart Studio URI, kept for existing callers. */
 export const LEGACY_STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
-export { HOROSCOPE_URI };
+export { HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS };
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 
 /** What people see on the tool-call line and in the plugin's details. */
