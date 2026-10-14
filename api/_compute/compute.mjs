@@ -933,8 +933,8 @@ function pieceOf({ timeScale, deltaT: deltaT2, utcMs, ut1Days }) {
   if (input === "tt") return "";
   const model = deltaT2.model === DELTA_T_MODEL ? ut1Days < MODEL_KNOTS_FROM ? "spline" : "knots" : deltaT2.model;
   if (input === "ut1") return `${basis} ${model}`;
-  const reading = ut1MinusUtc === null ? "as-ut1" : ut1MinusUtc.source === "fallback" ? "fallback" : taiMinusUtcAt(utcMs);
-  return `${basis} ${model} ${reading}`;
+  const reading2 = ut1MinusUtc === null ? "as-ut1" : ut1MinusUtc.source === "fallback" ? "fallback" : taiMinusUtcAt(utcMs);
+  return `${basis} ${model} ${reading2}`;
 }
 function elapsedDays(before2, after, days) {
   return pieceOf(before2) === pieceOf(after) ? days : after.ttDays - before2.ttDays;
@@ -2896,11 +2896,11 @@ function CalcVsopPosVel(model, tt) {
   return new body_state_t(tt, equ_pos, equ_vel);
 }
 function AdjustBarycenter(ssb, time, body, pmass) {
-  const shift2 = pmass / (pmass + SUN_GM);
+  const shift3 = pmass / (pmass + SUN_GM);
   const planet = CalcVsop(vsop[body], time);
-  ssb.x += shift2 * planet.x;
-  ssb.y += shift2 * planet.y;
-  ssb.z += shift2 * planet.z;
+  ssb.x += shift3 * planet.x;
+  ssb.y += shift3 * planet.y;
+  ssb.z += shift3 * planet.z;
 }
 function CalcSolarSystemBarycenter(time) {
   const ssb = new Vector(0, 0, 0, time);
@@ -3032,10 +3032,10 @@ function BodyStateFromTable(entry) {
   return new body_state_t(tt, new TerseVector(rx, ry, rz), new TerseVector(vx, vy, vz));
 }
 function AdjustBarycenterPosVel(ssb, tt, body, planet_gm) {
-  const shift2 = planet_gm / (planet_gm + SUN_GM);
+  const shift3 = planet_gm / (planet_gm + SUN_GM);
   const planet = CalcVsopPosVel(vsop[body], tt);
-  ssb.r.incr(planet.r.mul(shift2));
-  ssb.v.incr(planet.v.mul(shift2));
+  ssb.r.incr(planet.r.mul(shift3));
+  ssb.v.incr(planet.v.mul(shift3));
   return planet;
 }
 function AccelerationIncrement(small_pos, gm, major_pos) {
@@ -4670,22 +4670,22 @@ function validateLocal(value, receipt, timeBasis22) {
   const zone = text(local.timeZone, 128);
   if (!/^[A-Za-z][A-Za-z0-9._+-]*(?:\/[A-Za-z0-9._+-]+){0,3}$/.test(zone)) fail("invalid_context");
   const offset = number(local.offsetMinutes, -1440, 1440);
-  const shift2 = number(local.gapShiftMinutes, 0, 2880);
-  const offsetMs = offset * 6e4, shiftMs = shift2 * 6e4;
-  if (Math.abs(offsetMs - Math.round(offsetMs)) > 1e-6 || Math.abs(shiftMs - Math.round(shiftMs)) > 1e-6)
+  const shift3 = number(local.gapShiftMinutes, 0, 2880);
+  const offsetMs2 = offset * 6e4, shiftMs = shift3 * 6e4;
+  if (Math.abs(offsetMs2 - Math.round(offsetMs2)) > 1e-6 || Math.abs(shiftMs - Math.round(shiftMs)) > 1e-6)
     fail("invalid_context");
-  if (wall + Math.round(shiftMs) - Math.round(offsetMs) !== dateFrom(receipt.instant, "instant").getTime())
+  if (wall + Math.round(shiftMs) - Math.round(offsetMs2) !== dateFrom(receipt.instant, "instant").getTime())
     fail("invalid_context");
   fixedFields(local.policy, { fold: "earlier", gap: "shift-forward" });
-  if (receipt.inputFlags.includes("dst-gap") !== shift2 > 0) fail("invalid_context");
+  if (receipt.inputFlags.includes("dst-gap") !== shift3 > 0) fail("invalid_context");
   if (receipt.reference === "local-noon" && time !== "12:00") fail("invalid_context");
   if (!timeBasis22) {
     if (receipt.inputFlags.includes("lmt") !== Math.abs(offset % 1) > 1e-9) fail("invalid_context");
     return;
   }
-  validateLocalRecord(local, receipt, date, offset, shift2);
+  validateLocalRecord(local, receipt, date, offset, shift3);
 }
-function validateLocalRecord(local, receipt, date, offset, shift2) {
+function validateLocalRecord(local, receipt, date, offset, shift3) {
   const has2 = (key) => Object.hasOwn(local, key);
   const calendar = has2("calendar") ? choice(local.calendar, ["gregorian", "julian"]) : "gregorian";
   const written = has2("writtenDate") ? text(local.writtenDate, 10) : null;
@@ -4713,7 +4713,7 @@ function validateLocalRecord(local, receipt, date, offset, shift2) {
     const near = (a, b) => Math.abs(a - b) <= 1e-9;
     if (
       // A change of half a day or more moves the date: a move across the date line.
-      choice(transition.cause, ["dst", "legal-change", "date-line"]) === "date-line" !== Math.abs(after - before2) >= 720 || !(gap ? after > before2 && near(after - before2, shift2) && near(offset, after) && at <= instant : fold ? after < before2 && near(offset, before2) && at > instant : near(offset, after) && at <= instant)
+      choice(transition.cause, ["dst", "legal-change", "date-line"]) === "date-line" !== Math.abs(after - before2) >= 720 || !(gap ? after > before2 && near(after - before2, shift3) && near(offset, after) && at <= instant : fold ? after < before2 && near(offset, before2) && at > instant : near(offset, after) && at <= instant)
     )
       fail("invalid_context");
   }
@@ -5424,6 +5424,4797 @@ var DEG32 = Math.PI / 180;
 var ASEC2RAD3 = DEG32 / 3600;
 var RAD23 = 180 / Math.PI;
 
+// src/data/gregorian-adoption.ts
+var GREGORIAN_ADOPTION = [
+  // Transcaucasian Democratic Federative Republic, with Azerbaijan and Georgia.
+  { code: "AM", country: "Armenia", lastJulian: "1918-04-17", firstGregorian: "1918-05-01", sources: ["wikipedia"] },
+  // "Austria and Bohemia", 6 → 17 January 1584 (tzdb). The English list gives
+  // Salzburg February 1583 and the other Austrian lands October–December 1583;
+  // this is the later date.
+  { code: "AT", country: "Austria", lastJulian: "1584-01-06", firstGregorian: "1584-01-17", sources: ["tzdb", "wikipedia"] },
+  { code: "AZ", country: "Azerbaijan", lastJulian: "1918-04-17", firstGregorian: "1918-05-01", sources: ["wikipedia"] },
+  // The prince-bishopric of Liège, the last of the Belgian lands; Flanders,
+  // Brabant and the Spanish Netherlands changed in December 1582.
+  { code: "BE", country: "Belgium", lastJulian: "1583-02-10", firstGregorian: "1583-02-21", sources: ["tzdb", "wikipedia"] },
+  { code: "BG", country: "Bulgaria", lastJulian: "1916-03-31", firstGregorian: "1916-04-14", sources: ["wikipedia"] },
+  // The Soviet decree. The Grodno governorate, under German occupation,
+  // changed on 5 September 1915.
+  { code: "BY", country: "Belarus", lastJulian: "1918-01-31", firstGregorian: "1918-02-14", sources: ["wikipedia"] },
+  // The British colonies. New France kept France's date, 20 December 1582.
+  { code: "CA", country: "Canada", lastJulian: "1752-09-02", firstGregorian: "1752-09-14", sources: ["wikipedia"] },
+  // Appenzell Ausserrhoden, the last canton. The Catholic cantons changed in
+  // 1584 and the main Protestant ones on 12 January 1701; some Protestant
+  // communes of Graubünden held out until 1783–1812 (in Schiers and Grüsch,
+  // 25 December 1811 was followed by 7 January 1812).
+  { code: "CH", country: "Switzerland", lastJulian: "1798-12-13", firstGregorian: "1798-12-25", sources: ["wikipedia"] },
+  // The Chinese calendar before; the change was not complete until 1929, and
+  // the Chinese calendar stayed in wide use.
+  { code: "CN", country: "China", firstGregorian: "1912-01-01", sources: ["wikipedia"] },
+  // Moravia, the last region; Bohemia and Silesia changed on 17 January 1584.
+  { code: "CZ", country: "Czechia", lastJulian: "1584-10-15", firstGregorian: "1584-10-26", sources: ["wikipedia"] },
+  // The Protestant states; the Catholic states changed in 1583–1585.
+  { code: "DE", country: "Germany", lastJulian: "1700-02-18", firstGregorian: "1700-03-01", sources: ["tzdb", "wikipedia"] },
+  { code: "DK", country: "Denmark", lastJulian: "1700-02-18", firstGregorian: "1700-03-01", sources: ["tzdb", "wikipedia"] },
+  { code: "EE", country: "Estonia", lastJulian: "1918-02-15", firstGregorian: "1918-03-01", sources: ["wikipedia"] },
+  // The Coptic calendar (for fiscal purposes) and the Islamic calendar before.
+  { code: "EG", country: "Egypt", firstGregorian: "1875-09-11", sources: ["wikipedia"] },
+  { code: "ES", country: "Spain", lastJulian: "1582-10-04", firstGregorian: "1582-10-15", sources: ["tzdb", "wikipedia"] },
+  // With Sweden. The Grand Duchy kept the Gregorian calendar under Russian
+  // rule, 1809–1917 (fi); the list tzdb quotes counts Finland with Russia.
+  { code: "FI", country: "Finland", lastJulian: "1753-02-17", firstGregorian: "1753-03-01", sources: ["wikipedia", "fi"] },
+  // Protestant Alsace changed in 1682 and Lorraine in 1760. The Republican
+  // calendar was in civil use from 1793 to 1805; the forms do not convert it.
+  { code: "FR", country: "France", lastJulian: "1582-12-09", firstGregorian: "1582-12-20", sources: ["tzdb", "wikipedia"] },
+  { code: "GB", country: "United Kingdom", lastJulian: "1752-09-02", firstGregorian: "1752-09-14", sources: ["tzdb", "wikipedia"] },
+  { code: "GE", country: "Georgia", lastJulian: "1918-04-17", firstGregorian: "1918-05-01", sources: ["wikipedia"] },
+  // Mount Athos keeps the Julian calendar.
+  { code: "GR", country: "Greece", lastJulian: "1923-02-15", firstGregorian: "1923-03-01", sources: ["wikipedia"] },
+  // The legal change; tzdb dates its first use to 1584.
+  { code: "HU", country: "Hungary", lastJulian: "1587-10-21", firstGregorian: "1587-11-01", sources: ["tzdb", "wikipedia"] },
+  // The same act as Great Britain.
+  { code: "IE", country: "Ireland", lastJulian: "1752-09-02", firstGregorian: "1752-09-14", sources: ["wikipedia"] },
+  // Most states; Tyrol and Brixen changed in 1583.
+  { code: "IT", country: "Italy", lastJulian: "1582-10-04", firstGregorian: "1582-10-15", sources: ["tzdb", "wikipedia"] },
+  // The Japanese lunisolar calendar before.
+  { code: "JP", country: "Japan", firstGregorian: "1873-01-01", sources: ["wikipedia"] },
+  // The Korean calendar before, for both Koreas.
+  { code: "KP", country: "North Korea", firstGregorian: "1896-01-01", sources: ["wikipedia"] },
+  { code: "KR", country: "South Korea", firstGregorian: "1896-01-01", sources: ["wikipedia"] },
+  // The Kovno and Vilna governorates under German administration (its
+  // ordinance of 21 May 1915); Lithuania had kept the Julian calendar since
+  // Russian rule began (1800).
+  { code: "LT", country: "Lithuania", lastJulian: "1915-05-11", firstGregorian: "1915-05-25", sources: ["wikipedia"] },
+  { code: "LU", country: "Luxembourg", lastJulian: "1582-12-20", firstGregorian: "1582-12-31", sources: ["wikipedia"] },
+  // Vidzeme and Latgale, by the Iskolat's decree (lv). German-occupied
+  // Courland changed in 1915 and Riga in 1917.
+  { code: "LV", country: "Latvia", lastJulian: "1918-01-31", firstGregorian: "1918-02-14", sources: ["lv", "wikipedia"] },
+  // The Kingdom of Serbs, Croats and Slovenes, with North Macedonia and
+  // Serbia; Vojvodina, Hungarian until 1918, used the Gregorian calendar.
+  { code: "ME", country: "Montenegro", lastJulian: "1919-01-14", firstGregorian: "1919-01-28", sources: ["wikipedia"] },
+  { code: "MK", country: "North Macedonia", lastJulian: "1919-01-14", firstGregorian: "1919-01-28", sources: ["wikipedia"] },
+  // Drenthe, the last province. Holland and Zeeland changed in 1582–1583,
+  // the other provinces in 1700–1701.
+  { code: "NL", country: "The Netherlands", lastJulian: "1701-04-30", firstGregorian: "1701-05-12", sources: ["wikipedia"] },
+  { code: "NO", country: "Norway", lastJulian: "1700-02-18", firstGregorian: "1700-03-01", sources: ["tzdb", "wikipedia"] },
+  // Silesia changed in 1584 and the Brandenburg lands in 1700. Records of
+  // the Russian period often give both dates.
+  { code: "PL", country: "Poland", lastJulian: "1582-10-04", firstGregorian: "1582-10-15", sources: ["tzdb", "wikipedia"] },
+  { code: "PT", country: "Portugal", lastJulian: "1582-10-04", firstGregorian: "1582-10-15", sources: ["tzdb", "wikipedia"] },
+  // Transylvania, Banat and Bukovina, part of Austria-Hungary until 1918,
+  // used the Gregorian calendar.
+  { code: "RO", country: "Romania", lastJulian: "1919-03-31", firstGregorian: "1919-04-14", sources: ["wikipedia"] },
+  { code: "RS", country: "Serbia", lastJulian: "1919-01-14", firstGregorian: "1919-01-28", sources: ["wikipedia"] },
+  { code: "RU", country: "Russia", lastJulian: "1918-01-31", firstGregorian: "1918-02-14", sources: ["tzdb", "wikipedia"] },
+  // After the Swedish calendar of 1700–1712.
+  { code: "SE", country: "Sweden", lastJulian: "1753-02-17", firstGregorian: "1753-03-01", sources: ["tzdb", "wikipedia"] },
+  // The Rumi calendar kept Julian days and months until then, and its own
+  // year count until 1926, so a date given with its Common Era year is Old Style.
+  { code: "TR", country: "Turkey", lastJulian: "1917-02-15", firstGregorian: "1917-03-01", sources: ["wikipedia"] },
+  // The Ukrainian People's Republic. Areas under Soviet control followed
+  // Russia on 14 February; Galicia and Bukovina, Austrian until 1918, used the
+  // Gregorian calendar.
+  { code: "UA", country: "Ukraine", lastJulian: "1918-02-15", firstGregorian: "1918-03-01", sources: ["wikipedia"] },
+  // The British colonies. Alaska, Russian until 1867, kept the Julian
+  // calendar until 18 October 1867; the French and Spanish lands had the
+  // Gregorian from 1582.
+  { code: "US", country: "United States", lastJulian: "1752-09-02", firstGregorian: "1752-09-14", sources: ["wikipedia"] }
+];
+function gregorianAdoption(country) {
+  return country ? GREGORIAN_ADOPTION.find((row) => row.country === country) : void 0;
+}
+
+// src/lib/time/calendar.ts
+var julianLeap2 = (year) => year % 4 === 0;
+function parse(value, leap) {
+  if (typeof value !== "string" || value.length !== 10) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1) return null;
+  const days = month === 2 ? leap(year) ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  return day <= days ? { year, month, day } : null;
+}
+function parseJulianDate(value) {
+  return parse(value, julianLeap2);
+}
+function shift2(date) {
+  const a = Math.floor((14 - date.month) / 12);
+  return { y: date.year + 4800 - a, m: date.month + 12 * a - 3 };
+}
+function dayNumberFromJulian(date) {
+  const { y, m } = shift2(date);
+  return date.day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - 32083;
+}
+function fromDayNumber2(c, centuries) {
+  const d = Math.floor((4 * c + 3) / 1461);
+  const e = c - Math.floor(1461 * d / 4);
+  const m = Math.floor((5 * e + 2) / 153);
+  return {
+    day: e - Math.floor((153 * m + 2) / 5) + 1,
+    month: m + 3 - 12 * Math.floor(m / 10),
+    year: 100 * centuries + d - 4800 + Math.floor(m / 10)
+  };
+}
+function gregorianFromDayNumber(jdn) {
+  const a = jdn + 32044;
+  const b = Math.floor((4 * a + 3) / 146097);
+  return fromDayNumber2(a - Math.floor(146097 * b / 4), b);
+}
+function format2(date) {
+  if (date.year < 0 || date.year > 9999) return null;
+  return `${String(date.year).padStart(4, "0")}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+}
+function julianToGregorian2(value) {
+  const date = parseJulianDate(value);
+  return date ? format2(gregorianFromDayNumber(dayNumberFromJulian(date))) : null;
+}
+
+// src/lib/time/calendar-choice.ts
+var CALENDAR_CHOICE_BEFORE = "1924-01-01";
+
+// src/lib/time/civil-date.ts
+function parseCivilDate(value) {
+  if (typeof value !== "string" || value.length !== 10) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1) return null;
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  return day <= days ? { year, month, day } : null;
+}
+function parseCivilTime(value) {
+  if (typeof value !== "string" || value.length !== 5) return null;
+  const match = /^(\d{2}):(\d{2})$/.exec(value);
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  return hour <= 23 && minute <= 59 ? { hour, minute } : null;
+}
+
+// src/lib/time/birth-calendar.ts
+var BIRTH_DATE_FIRST = "1800-01-01";
+var BIRTH_DATE_LAST = "2199-12-31";
+var COMPLETE = /^\d{4}-\d{2}-\d{2}$/;
+function writtenDate(value) {
+  const text2 = value.trim();
+  const parts = /^(\d{4})[-./ ](\d{1,2})[-./ ](\d{1,2})$/.exec(text2) ?? /^(\d{4})(\d{2})(\d{2})$/.exec(text2);
+  return parts ? `${parts[1]}-${parts[2].padStart(2, "0")}-${parts[3].padStart(2, "0")}` : text2;
+}
+function readBirthDate(value, calendar) {
+  const written = writtenDate(value);
+  if (!COMPLETE.test(written)) return { problem: "format" };
+  if (written < BIRTH_DATE_FIRST || written > BIRTH_DATE_LAST) return { problem: "range" };
+  if (calendar === "gregorian" || written >= CALENDAR_CHOICE_BEFORE) {
+    return parseCivilDate(written) ? { date: written } : { problem: "gregorian" };
+  }
+  const date = julianToGregorian2(written);
+  return date ? { date, oldStyle: written } : { problem: "julian" };
+}
+function adoptionNote(value, calendar, country) {
+  const adoption = gregorianAdoption(country);
+  if (!adoption || writtenDate(value) >= CALENDAR_CHOICE_BEFORE) return null;
+  const reading2 = readBirthDate(value, calendar);
+  if ("problem" in reading2) return null;
+  const julian = calendar === "julian";
+  if (reading2.date >= adoption.firstGregorian) return julian ? { kind: "new-style", adoption } : null;
+  if (!adoption.lastJulian) return { kind: "other-calendar", adoption };
+  return julian ? null : { kind: "old-style", adoption };
+}
+
+// src/data/time-atlas/atlas.json
+var atlas_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-manifest",
+  name: "Zodiacs.org historical time atlas: United States and France, 1870-1919",
+  version: "0.1.0",
+  released: "2026-09-28",
+  license: "CC-BY-4.0",
+  coverage: {
+    start: "1870-01-01T00:00:00",
+    end: "1920-01-01T00:00:00",
+    countries: ["FR", "US"],
+    note: "Civil time from 1 January 1870 to the end of 1919, read on each place's own clock. See atlas/COVERAGE.md for the places and what is left out."
+  },
+  files: [
+    "places.json",
+    "leads.json",
+    "citations-fr.json",
+    "rules-fr.json",
+    "citations-als.json",
+    "rules-als.json",
+    "citations-us.json",
+    "rules-us.json",
+    "tzdb-explanations.json"
+  ],
+  longitudeSource: {
+    dataset: "GeoNames cities15000 (cities15000.zip)",
+    url: "https://download.geonames.org/export/dump/cities15000.zip",
+    retrieved: "2026-09-28",
+    sha256: "2b63225616ed25a77577883b073ba65531e545e682ca9e2eddfaa776d3bd3972",
+    license: "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    attribution: "Place names, coordinates and GeoNames ids from GeoNames (https://www.geonames.org/).",
+    changes: "For each covered place the atlas keeps only the GeoNames id, name, country code, latitude and longitude, copied unchanged (decimal degrees as published), and the name of its first-level administrative division from admin1CodesASCII.txt (https://download.geonames.org/export/dump/admin1CodesASCII.txt, retrieved 2026-09-28, SHA-256 1da92a6323a5fec3176f3f743bf4cf4040fd56a876da55e46fbca23c863aa60a). Nothing else from either file is redistributed."
+  }
+};
+
+// src/data/time-atlas/places.json
+var places_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-places",
+  description: "Covered places. Names, first-level administrative divisions (as GeoNames names them today), coordinates and ids are from GeoNames (https://www.geonames.org/, CC BY 4.0), copied unchanged; see longitudeSource in atlas.json.",
+  places: [
+    {
+      id: "fr-paris",
+      name: "Paris",
+      country: "FR",
+      admin1: "\xCEle-de-France",
+      jurisdiction: "fr-paris",
+      latitude: 48.85341,
+      longitude: 2.3488,
+      geonamesId: 2988507,
+      tzdbZone: "Europe/Paris",
+      note: "Legal time before 1891 is Paris mean time (+0:09:21), not the mean time of these coordinates."
+    },
+    {
+      id: "fr-brest",
+      name: "Brest",
+      country: "FR",
+      admin1: "Brittany",
+      jurisdiction: "fr-brest",
+      latitude: 48.39029,
+      longitude: -4.48628,
+      geonamesId: 3030300,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-nantes",
+      name: "Nantes",
+      country: "FR",
+      admin1: "Pays de la Loire",
+      jurisdiction: "fr-general",
+      latitude: 47.21725,
+      longitude: -1.55336,
+      geonamesId: 2990969,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-bordeaux",
+      name: "Bordeaux",
+      country: "FR",
+      admin1: "New Aquitaine",
+      jurisdiction: "fr-general",
+      latitude: 44.84124,
+      longitude: -0.58046,
+      geonamesId: 3031582,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-rouen",
+      name: "Rouen",
+      country: "FR",
+      admin1: "Normandy",
+      jurisdiction: "fr-general",
+      latitude: 49.44313,
+      longitude: 1.09932,
+      geonamesId: 2982652,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-toulouse",
+      name: "Toulouse",
+      country: "FR",
+      admin1: "Occitanie",
+      jurisdiction: "fr-general",
+      latitude: 43.60426,
+      longitude: 1.44367,
+      geonamesId: 2972315,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-lyon",
+      name: "Lyon",
+      country: "FR",
+      admin1: "Auvergne-Rh\xF4ne-Alpes",
+      jurisdiction: "fr-general",
+      latitude: 45.74906,
+      longitude: 4.84789,
+      geonamesId: 2996944,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-marseille",
+      name: "Marseille",
+      country: "FR",
+      admin1: "Provence-Alpes-C\xF4te d'Azur",
+      jurisdiction: "fr-general",
+      latitude: 43.29695,
+      longitude: 5.38107,
+      geonamesId: 2995469,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-nice",
+      name: "Nice",
+      country: "FR",
+      admin1: "Provence-Alpes-C\xF4te d'Azur",
+      jurisdiction: "fr-general",
+      latitude: 43.70313,
+      longitude: 7.26608,
+      geonamesId: 2990440,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-ajaccio",
+      name: "Ajaccio",
+      country: "FR",
+      admin1: "Corsica",
+      jurisdiction: "fr-general",
+      latitude: 41.91886,
+      longitude: 8.73812,
+      geonamesId: 3038334,
+      tzdbZone: "Europe/Paris"
+    },
+    {
+      id: "fr-strasbourg",
+      name: "Strasbourg",
+      country: "FR",
+      admin1: "Grand Est",
+      jurisdiction: "als-strasbourg",
+      latitude: 48.58392,
+      longitude: 7.74553,
+      geonamesId: 2973783,
+      tzdbZone: "Europe/Paris",
+      compareZones: ["Europe/Berlin"],
+      note: "German from 1871 to November 1918. tzdb has no zone for Alsace-Lorraine; Europe/Berlin is compared for information."
+    },
+    {
+      id: "fr-metz",
+      name: "Metz",
+      country: "FR",
+      admin1: "Grand Est",
+      jurisdiction: "mos-metz",
+      latitude: 49.11911,
+      longitude: 6.17269,
+      geonamesId: 2994160,
+      tzdbZone: "Europe/Paris",
+      compareZones: ["Europe/Berlin"],
+      note: "German from 1871 to November 1918. tzdb has no zone for Alsace-Lorraine; Europe/Berlin is compared for information."
+    },
+    {
+      id: "us-new-york",
+      name: "New York City",
+      country: "US",
+      admin1: "New York",
+      jurisdiction: "us-nyc",
+      latitude: 40.71427,
+      longitude: -74.00597,
+      geonamesId: 5128581,
+      tzdbZone: "America/New_York"
+    },
+    {
+      id: "us-baltimore",
+      name: "Baltimore",
+      country: "US",
+      admin1: "Maryland",
+      jurisdiction: "us-baltimore",
+      latitude: 39.29038,
+      longitude: -76.61219,
+      geonamesId: 4347778,
+      tzdbZone: "America/New_York"
+    },
+    {
+      id: "us-washington",
+      name: "Washington",
+      country: "US",
+      admin1: "District of Columbia",
+      jurisdiction: "us-washington",
+      latitude: 38.89511,
+      longitude: -77.03637,
+      geonamesId: 4140963,
+      tzdbZone: "America/New_York"
+    },
+    {
+      id: "us-providence",
+      name: "Providence",
+      country: "US",
+      admin1: "Rhode Island",
+      jurisdiction: "us-providence",
+      latitude: 41.82399,
+      longitude: -71.41283,
+      geonamesId: 5224151,
+      tzdbZone: "America/New_York"
+    },
+    {
+      id: "us-indianapolis",
+      name: "Indianapolis",
+      country: "US",
+      admin1: "Indiana",
+      jurisdiction: "us-indianapolis",
+      latitude: 39.76838,
+      longitude: -86.15804,
+      geonamesId: 4259418,
+      tzdbZone: "America/Indiana/Indianapolis"
+    },
+    {
+      id: "us-louisville",
+      name: "Louisville",
+      country: "US",
+      admin1: "Kentucky",
+      jurisdiction: "us-louisville",
+      latitude: 38.25424,
+      longitude: -85.75941,
+      geonamesId: 4299276,
+      tzdbZone: "America/Kentucky/Louisville"
+    },
+    {
+      id: "us-chicago",
+      name: "Chicago",
+      country: "US",
+      admin1: "Illinois",
+      jurisdiction: "us-chicago",
+      latitude: 41.85003,
+      longitude: -87.65005,
+      geonamesId: 4887398,
+      tzdbZone: "America/Chicago"
+    },
+    {
+      id: "us-saint-paul",
+      name: "Saint Paul",
+      country: "US",
+      admin1: "Minnesota",
+      jurisdiction: "us-saint-paul",
+      latitude: 44.94441,
+      longitude: -93.09327,
+      geonamesId: 5045360,
+      tzdbZone: "America/Chicago"
+    },
+    {
+      id: "us-minneapolis",
+      name: "Minneapolis",
+      country: "US",
+      admin1: "Minnesota",
+      jurisdiction: "us-minneapolis",
+      latitude: 44.97997,
+      longitude: -93.26384,
+      geonamesId: 5037649,
+      tzdbZone: "America/Chicago"
+    }
+  ]
+};
+
+// src/data/time-atlas/leads.json
+var leads_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-leads",
+  description: "Secondary works and tzdb comments that pointed to sources. They are not citations: nothing in the atlas rests on them.",
+  leads: [
+    {
+      id: "lead-tzdb-europe-france",
+      kind: "tzdb-comment",
+      title: "tzdb 2025c, file europe: comments before the France rules and Zone Europe/Paris",
+      url: "https://data.iana.org/time-zones/releases/tzdata2025c.tar.gz",
+      note: "Pointed to the law of 14 March 1891 in the Journal officiel of 15 March 1891, the law of 9 March 1911 in the Journal officiel of 10 March 1911, Le Petit Journal of 11 March 1911 on the pneumatic clocks and the railway change, and the five-minute lag of railway clocks. All were read at the source before being cited."
+    },
+    {
+      id: "lead-tzdb-northamerica-us",
+      kind: "tzdb-comment",
+      title: "tzdb 2025c, file northamerica: comments on the 1883 change, New York City Hall time, the Standard Time Act of 1918 and its repeal, and Louisville",
+      url: "https://data.iana.org/time-zones/releases/tzdata2025c.tar.gz",
+      note: "Pointed to the Statutes at Large for the acts of 1918 and 1919 (the PDF links it gives could not be fetched; the Library of Congress page images were read instead), to New York City Hall time being about 3 min 58 s fast of Eastern time, and to the Louisville & Nashville Railroad's trains standing still for 18 minutes at its change of 18 November 1883, which it takes from Bartky and says it cannot match to Louisville's civil time. The secondary works it names (Bartky 1989, Prerau 2005, the Monthly Notices note of 1884) were not consulted."
+    }
+  ]
+};
+
+// src/data/time-atlas/citations-fr.json
+var citations_fr_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-citations",
+  description: "France: the laws, decrees and notices on legal time, the 1891 Senate debate, a railway company's standing instruction on station clocks, Paris newspapers and a Chalon-sur-Sa\xF4ne paper reporting how the clock changes were made, and a New York paper's report of an official statement of September 1914 on the German advance into Seine-et-Marne. The excerpts were transcribed from page images, Gallica's (Biblioth\xE8que nationale de France) and, for the New York paper, the Library of Congress's, on the retrieval date and checked again against the archive's text of the cited page (for Gallica, the text its search service returns or its OCR text; for the Library of Congress, its OCR text) and, where that text could not confirm a word, against the page image (each citation's checks).",
+  citations: [
+    {
+      id: "fr-jo-1870-11-06-promulgation",
+      type: "decree",
+      title: "D\xE9cret relatif \xE0 la promulgation des lois et d\xE9crets par l'insertion au Journal officiel",
+      date: "1870-11-05",
+      issuer: "Gouvernement de la d\xE9fense nationale",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 6 novembre 1870, n\xB0 306",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6580187w/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 1, art. 2",
+      language: "fr",
+      excerpt: "Les lois et les d\xE9crets seront obligatoires \xE0 Paris un jour franc apr\xE8s la promulgation, et partout ailleurs dans l'\xE9tendue de chaque arrondissement, un jour franc apr\xE8s que le Journal officiel [...] sera parvenu au chef-lieu de cet arrondissement.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "Laws bind in Paris one clear day after promulgation (their printing in the Journal officiel), and elsewhere one clear day after the Journal reaches the seat of the arrondissement."
+    },
+    {
+      id: "fr-senat-1891-02-17-restoration",
+      type: "parliamentary-debate",
+      title: "S\xE9nat, s\xE9ance du 17 f\xE9vrier 1891: 1re d\xE9lib\xE9ration sur le projet de loi ayant pour objet l'adoption de l'heure, temps moyen de Paris, comme heure l\xE9gale en France et en Alg\xE9rie",
+      date: "1891-02-17",
+      issuer: "S\xE9nat",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise. D\xE9bats parlementaires. S\xE9nat, 18 f\xE9vrier 1891",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6217603f/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 72, col. 2 (speech of the commissaire du Gouvernement, M. Faye, president of the Bureau des longitudes, named on p. 71)",
+      language: "fr",
+      excerpt: "le gouvernement de la Restauration s'est d\xE9cid\xE9 \xE0 transformer l'heure l\xE9gale, qui \xE9tait alors l'heure vraie, en heure de temps moyen local pour toute la France.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "Since the Restoration the legal time of every place in France had been its own local mean time."
+    },
+    {
+      id: "fr-senat-1891-02-17-brest",
+      type: "parliamentary-debate",
+      title: "S\xE9nat, s\xE9ance du 17 f\xE9vrier 1891: 1re d\xE9lib\xE9ration sur le projet de loi ayant pour objet l'adoption de l'heure, temps moyen de Paris, comme heure l\xE9gale en France et en Alg\xE9rie",
+      date: "1891-02-17",
+      issuer: "S\xE9nat",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise. D\xE9bats parlementaires. S\xE9nat, 18 f\xE9vrier 1891",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6217603f/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 72, col. 1",
+      language: "fr",
+      excerpt: "Ainsi, \xE0 Brest, il y a vingt-sept minutes d'\xE9cart entre l'heure du chemin de fer et l'heure de la localit\xE9. [...] Actuellement, il n'y en a qu'une qui donne cette heure au public : c'est l'horloge de la gare.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "In Brest only the station clock showed Paris time; the town's other public clocks kept local time, 27 minutes behind."
+    },
+    {
+      id: "fr-senat-1891-02-17-towns",
+      type: "parliamentary-debate",
+      title: "S\xE9nat, s\xE9ance du 17 f\xE9vrier 1891: 1re d\xE9lib\xE9ration sur le projet de loi ayant pour objet l'adoption de l'heure, temps moyen de Paris, comme heure l\xE9gale en France et en Alg\xE9rie",
+      date: "1891-02-17",
+      issuer: "S\xE9nat",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise. D\xE9bats parlementaires. S\xE9nat, 18 f\xE9vrier 1891",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6217603f/f4.item",
+      retrieved: "2026-09-28",
+      locator: "p. 74, col. 2 (speech of M. Lacombe)",
+      language: "fr",
+      excerpt: "il y existe des horloges tenues, d'une mani\xE8re assez r\xE9guli\xE8re, en concordance avec l'heure de la gare du chemin de fer; elles marqueront ainsi d\xE9sormais l'heure l\xE9gale, l'heure moyenne de Paris.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "In towns some clocks were already kept to the railway station's time, which the law would make legal time; in the countryside the commune's clock could be fast or slow."
+    },
+    {
+      id: "fr-jo-1891-03-15-law",
+      type: "law",
+      title: "Loi ayant pour objet l'adoption de l'heure temps moyen de Paris comme heure l\xE9gale en France et en Alg\xE9rie (14 mars 1891)",
+      date: "1891-03-14",
+      issuer: "Pr\xE9sident de la R\xE9publique (S\xE9nat et Chambre des d\xE9put\xE9s)",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 15 mars 1891, n\xB0 73",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k64415343/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1233, col. 3",
+      language: "fr",
+      excerpt: "Article unique. \u2014 L'heure l\xE9gale, en France et en Alg\xE9rie, est l'heure temps moyen de Paris.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-orleans-1875-instruction-26",
+      type: "railway-notice",
+      title: "Instruction n\xB0 26: Entretien et r\xE9paration des horloges et r\xE9gulateurs",
+      date: "1875-07-01",
+      issuer: "Compagnie du chemin de fer de Paris \xE0 Orl\xE9ans, Service de l'exploitation",
+      publication: "Chemin de fer de Paris \xE0 Orl\xE9ans. Service de l'exploitation. Nouvelle collection des instructions et avis (Paris, Imprimerie centrale des chemins de fer A. Chaix et Cie, 1875)",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6208756z/f64.item",
+      retrieved: "2026-09-28",
+      locator: "p. 28 (instruction n\xB0 26, pp. 27-28)",
+      language: "fr",
+      excerpt: "Les horloges ou r\xE9gulateurs de la ligne seront r\xE9gl\xE9s sur l'heure du temps moyen de Paris; les cadrans int\xE9rieurs marcheront avec un retard constant de cinq minutes.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "On the Orl\xE9ans company's lines, clocks were set to Paris mean time and the dials inside stations ran five minutes slow.",
+      note: "The collection's preface is dated Paris, 1 July 1875, and signed by the chef de l'exploitation, G. Lemercier (p. vi)."
+    },
+    {
+      id: "fr-jo-1911-03-10-law",
+      type: "law",
+      title: "Loi portant modification de l'heure l\xE9gale fran\xE7aise, pour la mettre en concordance avec le syst\xE8me universel des fuseaux horaires (9 mars 1911)",
+      date: "1911-03-09",
+      issuer: "Pr\xE9sident de la R\xE9publique (S\xE9nat et Chambre des d\xE9put\xE9s)",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 10 mars 1911",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k2022333z/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1882, col. 3",
+      language: "fr",
+      excerpt: "Article unique. \u2014 L'heure l\xE9gale en France et en Alg\xE9rie est l'heure, temps moyen de Paris, retard\xE9e de neuf minutes vingt et une secondes.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-jo-1911-03-10-ptt",
+      type: "ministerial-decision",
+      title: "Arr\xEAt\xE9 du sous-secr\xE9taire d'\xC9tat des postes et des t\xE9l\xE9graphes sur l'heure des bureaux de poste, t\xE9l\xE9graphe et t\xE9l\xE9phone (9 mars 1911)",
+      date: "1911-03-09",
+      issuer: "Sous-secr\xE9taire d'\xC9tat des postes et des t\xE9l\xE9graphes (Charles Chaumet)",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 10 mars 1911",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k2022333z/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1882, col. 3, art. 1er",
+      language: "fr",
+      excerpt: "A partir de la nuit du 10 au 11 mars 1911, \xE0 minuit, l'heure de tous les bureaux de poste, t\xE9l\xE9graphe et t\xE9l\xE9phone est celle du temps moyen de Paris, retard\xE9e de neuf minutes et vingt et une secondes.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-jo-1911-03-10-etat-railways",
+      type: "railway-notice",
+      title: "Chemins de fer de l'\xC9tat: application de la loi modifiant l'heure l\xE9gale et suppression de la diff\xE9rence de cinq minutes existant entre les horloges int\xE9rieures et ext\xE9rieures des gares",
+      date: "1911-03-10",
+      issuer: "Administration des chemins de fer de l'\xC9tat",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 10 mars 1911, partie non officielle",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k2022333z/f31.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1911, col. 1",
+      language: "fr",
+      excerpt: "la diff\xE9rence de cinq minutes qui existe entre les horloges int\xE9rieures et ext\xE9rieures des gares sera supprim\xE9e. [...] La transition se fera \xE0 minuit (nuit du 10 au 11 mars).",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-petitjournal-1911-03-11-five-minutes",
+      type: "newspaper-report",
+      title: "La nouvelle heure l\xE9gale. Comment les horloges ont \xE9t\xE9 retard\xE9es cette nuit. Sur les chemins de fer",
+      date: "1911-03-11",
+      issuer: "Le Petit Journal",
+      publication: "Le Petit Journal, 11 mars 1911",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6192911/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 4",
+      language: "fr",
+      excerpt: "On sait que jusqu'\xE0 hier les pendules int\xE9rieures retardaient de 5 minutes sur l'ext\xE9rieur, en sorte qu'elles n'avaient plus \xE0 retarder que de 4 minutes 21 secondes pour avoir l'heure l\xE9gale nouvelle.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-petitjournal-1911-03-11-midnight",
+      type: "newspaper-report",
+      title: "La nouvelle heure l\xE9gale. Comment les horloges ont \xE9t\xE9 retard\xE9es cette nuit. Sur les chemins de fer",
+      date: "1911-03-11",
+      issuer: "Le Petit Journal",
+      publication: "Le Petit Journal, 11 mars 1911",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6192911/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 4",
+      language: "fr",
+      excerpt: "Pour les cadrans int\xE9rieurs, lorsqu'ils ont marqu\xE9 minuit pr\xE9cis, le balancier de l'horloge a \xE9t\xE9 arr\xEAt\xE9 pour n'\xEAtre remis en mouvement que 4 minutes apr\xE8s.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-petitjournal-1911-03-11-pneumatic",
+      type: "newspaper-report",
+      title: "La nouvelle heure l\xE9gale. Comment les horloges ont \xE9t\xE9 retard\xE9es cette nuit. Les pendules pneumatiques",
+      date: "1911-03-11",
+      issuer: "Le Petit Journal",
+      publication: "Le Petit Journal, 11 mars 1911",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6192911/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 4",
+      language: "fr",
+      excerpt: "A minuit, les pendules pneumatiques de Paris se sont arr\xEAt\xE9es sous les yeux de quelques passants observateurs. Elles sont rest\xE9es \xE0 cette heure neuf minutes vingt et une secondes et les aiguilles se sont alors remises en marche.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "Paris's public pneumatic clocks stopped at midnight for 9 min 21 s and then ran on."
+    },
+    {
+      id: "fr-courrier-sl-1911-03-11-midnight",
+      type: "newspaper-report",
+      title: "L'heure l\xE9gale (Chronique locale, renseignements g\xE9n\xE9raux)",
+      date: "1911-03-11",
+      issuer: "Le Courrier de Sa\xF4ne-et-Loire (Chalon-sur-Sa\xF4ne)",
+      publication: "Le Courrier de Sa\xF4ne-et-Loire, 11 mars 1911",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k4394254g/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2, foot of col. 1, continued at the top of col. 2",
+      language: "fr",
+      excerpt: "C'est aujourd'hui 10 mars que l'heure l\xE9gale, reculant \xE0 minuit de 9 minutes 25 secondes sur l'heure des horloges, des montres bien r\xE9gl\xE9es et des chronom\xE8tres, fera rentrer l'heure fran\xE7aise dans le fuseau horaire qui contient le m\xE9ridien de Greenwich.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "partial",
+          note: `Gallica's OCR text of the page garbles the second "l'heure" ("l\u2019ht). ,r e"), whose last letters a printing fault displaces on the page image, and reads the third as "1 heure"; the other words agree.`
+        },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ],
+      gloss: "A Chalon-sur-Sa\xF4ne paper, writing on 10 March 1911, told its readers that legal time would move back at midnight into the Greenwich time zone.",
+      note: "The paper gives 9 minutes 25 secondes; the law says nine minutes twenty-one seconds (fr-jo-1911-03-10-law)."
+    },
+    {
+      id: "fr-courrier-sl-1911-03-11-chalon",
+      type: "newspaper-report",
+      title: "Heure de Greenwich (Chalon, local news)",
+      date: "1911-03-11",
+      issuer: "Le Courrier de Sa\xF4ne-et-Loire (Chalon-sur-Sa\xF4ne)",
+      publication: "Le Courrier de Sa\xF4ne-et-Loire, 11 mars 1911",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k4394254g/f2.item",
+      retrieved: "2026-09-28",
+      locator: 'p. 2, col. 2, under "Chalon"',
+      language: "fr",
+      excerpt: "Heure de Greenwich. \u2014 Le public trouvera demain au r\xE9gulateur du Cr\xE9dit lyonnais la nouvelle heure l\xE9gale, que M. Lombard doit recevoir t\xE9l\xE9phoniquement de l'Observatoire.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "matches",
+          note: "Against Gallica's OCR text of the page (ALTO), allowing for OCR errors."
+        }
+      ],
+      gloss: "In Chalon-sur-Sa\xF4ne the public could read the new legal time on 11 March 1911 at the regulator clock of the Cr\xE9dit lyonnais, set by telephone from the Observatory. The item was written on 10 March, like the rest of the local news it belongs to."
+    },
+    {
+      id: "fr-nytribune-1914-09-08-coulommiers",
+      type: "newspaper-report",
+      title: "Allies Force Back Germans from Paris Along 160 Mile Line",
+      date: "1914-09-08",
+      issuer: "New York Tribune",
+      publication: "New York Tribune, 8 September 1914",
+      url: "https://www.loc.gov/resource/sn83030214/1914-09-08/ed-1/?sp=1",
+      retrieved: "2026-09-28",
+      locator: `p. 1, right-hand column, under the dateline "Paris, Sept. 7", after the subheading "Allies' Attack Vigorous"`,
+      language: "en",
+      excerpt: 'An earlier official statement to-day said [...] The text of the earlier official notice follows: [...] "The Germans had advanced Saturday and Sunday into the region between Coulommiers and La Ferte-Gaucher."',
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "partial",
+          note: 'The Library of Congress OCR text of the page has "tlsa" for the "the" before "region"; the other words agree.'
+        },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ],
+      gloss: "In its report from Paris of 7 September 1914, the paper prints an official statement of that day: German forces had advanced on the Saturday and Sunday, 5 and 6 September, into the region between Coulommiers and La Fert\xE9-Gaucher. The paper places Coulommiers in the department of Seine-et-Marne."
+    },
+    {
+      id: "fr-jo-1916-06-11-law",
+      type: "law",
+      title: "Loi ayant pour objet d'avancer l'heure l\xE9gale (9 juin 1916)",
+      date: "1916-06-09",
+      issuer: "Pr\xE9sident de la R\xE9publique (S\xE9nat et Chambre des d\xE9put\xE9s)",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 11 juin 1916",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k2024209k/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 5133, col. 3 to p. 5134, col. 1",
+      language: "fr",
+      excerpt: "Jusqu'au 1er octobre 1916, et \xE0 partir d'une date qui sera d\xE9termin\xE9e par d\xE9cret, l'heure l\xE9gale, telle qu'elle a \xE9t\xE9 fix\xE9e par la loi du 9 mars 1911, sera avanc\xE9e de soixante minutes.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "matches",
+          note: 'The passage runs over two views: the service finds its first part on view 1 and "\xE9t\xE9 fix\xE9e par la loi du 9 mars 1911, sera avanc\xE9e de soixante minutes" on view 2.'
+        }
+      ]
+    },
+    {
+      id: "fr-jo-1916-06-11-decree",
+      type: "decree",
+      title: "D\xE9cret fixant l'application de la loi du 9 juin 1916 (10 juin 1916)",
+      date: "1916-06-10",
+      issuer: "Pr\xE9sident de la R\xE9publique, sur le rapport du ministre de l'instruction publique, des beaux-arts et des inventions int\xE9ressant la d\xE9fense nationale",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 11 juin 1916",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k2024209k/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 5134, col. 1, art. 1er",
+      language: "fr",
+      excerpt: "Dans la nuit du 14 au 15 juin, \xE0 vingt-trois heures, l'heure l\xE9gale sera avanc\xE9e de soixante minutes. L'heure normale sera r\xE9tablie le 1er octobre.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-petitparisien-1916-09-30",
+      type: "newspaper-report",
+      title: "Aujourd'hui la journ\xE9e sera de 25 heures ! C'est la nuit prochaine qu'il faudra retarder les pendules d'une heure",
+      date: "1916-09-30",
+      issuer: "Le Petit Parisien",
+      publication: "Le Petit Parisien, 30 septembre 1916",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k565938p/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 5",
+      language: "fr",
+      excerpt: "celle de demain, 1er octobre, ne s'ouvrira qu'\xE0 une heure du matin. [...] On a fix\xE9 le changement d'heure \xE0 une heure du matin, au lieu de 23 heures 59, afin de ne pas cr\xE9er de confusion",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "matches",
+          note: "The corrected excerpt was first copied from the search service's text of the page and compared with it again."
+        },
+        {
+          method: "page-image",
+          date: "2026-09-28",
+          result: "matches",
+          note: "Read against the page image, the corrected excerpt matches it word for word; the excerpt is now based on the image."
+        }
+      ],
+      note: `Corrected on 2026-09-28. The excerpt first ended "au lieu de 23 heures", leaving out the "59" that follows. The corrected text, "au lieu de 23 heures 59, afin de ne pas cr\xE9er de confusion", was taken from the search service's text of the page and then read on the page image, which it matches.`
+    },
+    {
+      id: "fr-petitparisien-1916-09-30-public-clocks",
+      type: "newspaper-report",
+      title: "Aujourd'hui la journ\xE9e sera de 25 heures ! C'est la nuit prochaine qu'il faudra retarder les pendules d'une heure",
+      date: "1916-09-30",
+      issuer: "Le Petit Parisien",
+      publication: "Le Petit Parisien, 30 septembre 1916",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k565938p/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 5, the paragraph before the one quoted in fr-petitparisien-1916-09-30",
+      language: "fr",
+      excerpt: "Cette nuit, une minute apr\xE8s 24 heures 59, les aiguilles de toutes les horloges publiques \u2014 horloges des chemins de fer, des bureaux de poste, [...] des d\xE9partements et des communes \u2014 seront retard\xE9es d'une heure",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "matches",
+          note: "Against Gallica's OCR text of the page (ALTO)."
+        }
+      ],
+      gloss: "All public clocks, the railways', the post offices', the State's, the d\xE9partements' and the communes', were to be set back an hour at 01:00 in the night of 30 September to 1 October 1916."
+    },
+    {
+      id: "fr-petitjournal-1916-09-30",
+      type: "newspaper-report",
+      title: "Une heure pour rien cette nuit en chemin de fer",
+      date: "1916-09-30",
+      issuer: "Le Petit Journal",
+      publication: "Le Petit Journal, 30 septembre 1916",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k621317w/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2, col. 5",
+      language: "fr",
+      excerpt: "comme \xE0 une heure du matin, les aiguilles des horloges auront \xE9t\xE9 remises \xE0 0 heure, les trains stationneront soixante minutes dans une gare",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-jo-1917-03-21-law",
+      type: "law",
+      title: "Loi ayant pour objet d'avancer l'heure l\xE9gale pendant la p\xE9riode d'\xE9t\xE9 (19 mars 1917)",
+      date: "1917-03-19",
+      issuer: "Pr\xE9sident de la R\xE9publique (S\xE9nat et Chambre des d\xE9put\xE9s)",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 21 mars 1917",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k63035685/f6.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2258, col. 3",
+      language: "fr",
+      excerpt: "Pendant la dur\xE9e de la guerre et jusqu'au d\xE9cret fixant la cessation des hostilit\xE9s, le Gouvernement est autoris\xE9 \xE0 avancer d'une heure, par voie de d\xE9cret, [...] l'heure l\xE9gale fix\xE9e par la loi du 9 mars 1911.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "partial",
+          note: `The service's text is garbled here: "par voie de d\xE9cret" reads "par j[C;:r0 d\xE9cret", "l'heure" is missing and "1911" reads "1 ut J"; "cessation" and "autoris\xE9" are broken up. The other words agree.`
+        },
+        {
+          method: "page-image",
+          date: "2026-09-28",
+          result: "matches",
+          note: `The words the service garbles ("par voie de d\xE9cret", "l'heure", "1911") read as quoted on the page image.`
+        }
+      ]
+    },
+    {
+      id: "fr-jo-1917-03-21-decree",
+      type: "decree",
+      title: "D\xE9cret relatif \xE0 l'avance de l'heure l\xE9gale pendant la p\xE9riode d'\xE9t\xE9 (20 mars 1917)",
+      date: "1917-03-20",
+      issuer: "Pr\xE9sident de la R\xE9publique, sur le rapport du ministre des travaux publics, des transports et du ravitaillement",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 21 mars 1917",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k63035685/f22.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2274, col. 1, art. 1er and 2",
+      language: "fr",
+      excerpt: "Dans la nuit du 24 au 25 mars, \xE0 23 heures, l'heure l\xE9gale sera avanc\xE9e de 60 minutes. Art. 2. \u2014 L'heure normale sera r\xE9tablie le 7 octobre.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-petitjournal-1917-10-06",
+      type: "newspaper-report",
+      title: "Attention ! ce soir, retour \xE0 l'heure d'hiver",
+      date: "1917-10-06",
+      issuer: "Le Petit Journal",
+      publication: "Le Petit Journal, 6 octobre 1917",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6216890/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 2",
+      language: "fr",
+      excerpt: "C'est cette nuit que nous revenons \xE0 l'heure d'hiver. [...] on arr\xEAtera les horloges \xE0 minuit pendant une heure, ou bien \xE0 minuit 59 minutes 59 secondes on ram\xE8nera les aiguilles \xE0 minuit.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-petitparisien-1917-10-07",
+      type: "newspaper-report",
+      title: "Le retour \xE0 l'heure normale s'est effectu\xE9 cette nuit",
+      date: "1917-10-07",
+      issuer: "Le Petit Parisien",
+      publication: "Le Petit Parisien, 7 octobre 1917",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k566311r/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2, col. 1",
+      language: "fr",
+      excerpt: "C'est cette nuit, \xE0 une heure moins une minute, que les horloges des administrations ont \xE9t\xE9 ramen\xE9es \xE0 l'heure ancienne, c'est-\xE0-dire retard\xE9es d'une heure.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-jo-1918-03-01-decree",
+      type: "decree",
+      title: "D\xE9cret sur l'avance de l'heure l\xE9gale (28 f\xE9vrier 1918)",
+      date: "1918-02-28",
+      issuer: "Pr\xE9sident de la R\xE9publique, sur le rapport du ministre des travaux publics et des transports",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 1er mars 1918",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6542734b/f14.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2016, col. 2, art. 1er and 2",
+      language: "fr",
+      excerpt: "Dans la nuit du 9 au 10 mars, \xE0 23 heures, l'heure l\xE9gale sera avanc\xE9e de 60 minutes. Art. 2. \u2014 L'heure normale sera r\xE9tablie le 6 octobre.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      note: `The decree's preamble cites the enabling law as "la loi du 10 mars 1917"; the law is dated 19 March 1917 (fr-jo-1917-03-21-law).`
+    },
+    {
+      id: "fr-petitparisien-1918-10-04",
+      type: "newspaper-report",
+      title: "Demain retour \xE0 l'heure normale",
+      date: "1918-10-04",
+      issuer: "Le Petit Parisien",
+      publication: "Le Petit Parisien, 4 octobre 1918",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k566673h/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2, col. 2",
+      language: "fr",
+      excerpt: "Les instructions donn\xE9es \xE0 tous les r\xE9seaux portent qu'une minute apr\xE8s 24 heures 59 de la nuit du 5 au 6 octobre, toutes les horloges, pendules et montres devront \xEAtre retard\xE9es d'une heure",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "partial",
+          note: `The service's text reads "une minute apr\xE8s heures 59", without the "24" read on the page image; the other words agree. It goes on "c'est-\xE0-dire mises \xABsur 0 heure", which fits clocks set back from 01:00 to 00:00.`
+        },
+        {
+          method: "page-image",
+          date: "2026-09-28",
+          result: "matches",
+          note: 'The page image has "24 heures 59".'
+        }
+      ]
+    },
+    {
+      id: "fr-jo-1919-02-11-decree",
+      type: "decree",
+      title: "D\xE9cret avan\xE7ant l'heure l\xE9gale de soixante minutes dans la nuit du 1er au 2 mars et r\xE9tablissant l'heure normale le 5 octobre (9 f\xE9vrier 1919)",
+      date: "1919-02-09",
+      issuer: "Pr\xE9sident de la R\xE9publique, sur le rapport du ministre des travaux publics et des transports",
+      publication: "Journal officiel de la R\xE9publique fran\xE7aise, 11 f\xE9vrier 1919",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k6361181p/f28.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1604, col. 1, art. 1er and 2",
+      language: "fr",
+      excerpt: "Dans la nuit du 1er au 2 mars, \xE0 vingt-trois heures, l'heure l\xE9gale sera avanc\xE9e de soixante minutes. Art. 2. \u2014 L'heure normale sera r\xE9tablie le 5 octobre.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "fr-petitparisien-1919-03-01",
+      type: "newspaper-report",
+      title: "Ce soir, avancez d'une heure vos montres et vos pendules",
+      date: "1919-03-01",
+      issuer: "Le Petit Parisien",
+      publication: "Le Petit Parisien, 1er mars 1919",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k566821n/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2, col. 2",
+      language: "fr",
+      excerpt: "Dans les gares, \xE0 11 heures tapant, toutes les horloges seront avanc\xE9es de 60 minutes et inscriront subitement minuit \xE0 leur cadran.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "partial",
+          note: `The service's text reads "avanc\xE9es de minutes", without the "60" read on the page image; the other words agree. The decree (fr-jo-1919-02-11-decree) gives the same advance of sixty minutes.`
+        },
+        {
+          method: "page-image",
+          date: "2026-09-28",
+          result: "matches",
+          note: 'The page image has "60 minutes".'
+        }
+      ]
+    },
+    {
+      id: "fr-petitjournal-1919-10-05",
+      type: "newspaper-report",
+      title: "Heure d'hiver : heure normale (note of the sous-secr\xE9tariat d'\xC9tat aux Transports, 4 October 1919)",
+      date: "1919-10-05",
+      issuer: "Le Petit Journal, printing a note of the sous-secr\xE9tariat d'\xC9tat aux Transports",
+      publication: "Le Petit Journal, 5 octobre 1919",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k622418v/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 3",
+      language: "fr",
+      excerpt: "c'est au cours de la nuit du 4 au 5 octobre, ce soir, qu'aura lieu la reprise de l'heure normale. A une heure, l'heure l\xE9gale sera retard\xE9e de soixante minutes, \xE9tant ainsi recul\xE9e \xE0 0 heure.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    }
+  ]
+};
+
+// src/data/time-atlas/rules-fr.json
+var rules_fr_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-rules",
+  description: "France outside Alsace-Moselle: local mean time, Paris mean time from 1891, the legal time of 1911, summer time 1916-1919, and the clocks inside railway stations, five minutes slow until 1911.",
+  jurisdictions: [
+    {
+      id: "fr-paris",
+      name: "Paris",
+      country: "FR",
+      description: "The city of Paris. Its own mean time was Paris mean time, which the law of 1891 made the legal time of all France.",
+      timeline: {
+        civil: [
+          "fr-paris-mean-time-before-1891",
+          "fr-paris-pmt-1891",
+          "fr-wet-1911",
+          "fr-summer-1916",
+          "fr-wet-1916",
+          "fr-summer-1917",
+          "fr-wet-1917",
+          "fr-summer-1918",
+          "fr-wet-1918",
+          "fr-summer-1919",
+          "fr-wet-1919"
+        ],
+        railway: [
+          "fr-rail-interior-before-1911",
+          "fr-wet-1911",
+          "fr-summer-1916",
+          "fr-wet-1916",
+          "fr-summer-1917",
+          "fr-wet-1917",
+          "fr-summer-1918",
+          "fr-wet-1918",
+          "fr-summer-1919",
+          "fr-wet-1919"
+        ]
+      }
+    },
+    {
+      id: "fr-brest",
+      name: "Brest",
+      country: "FR",
+      description: "Brest, where the Senate debate of 1891 records the town's public clocks on local time and only the station clock on Paris time.",
+      timeline: {
+        civil: [
+          "fr-brest-lmt-before-1891",
+          "fr-pmt-1891",
+          "fr-wet-1911-provinces",
+          "fr-summer-1916",
+          "fr-wet-1916",
+          "fr-summer-1917",
+          "fr-wet-1917",
+          "fr-summer-1918",
+          "fr-wet-1918",
+          "fr-summer-1919",
+          "fr-wet-1919"
+        ],
+        railway: [
+          "fr-rail-interior-before-1911",
+          "fr-wet-1911",
+          "fr-summer-1916",
+          "fr-wet-1916",
+          "fr-summer-1917",
+          "fr-wet-1917",
+          "fr-summer-1918",
+          "fr-wet-1918",
+          "fr-summer-1919",
+          "fr-wet-1919"
+        ]
+      }
+    },
+    {
+      id: "fr-general",
+      name: "Other communes of France",
+      country: "FR",
+      description: "Every other commune of metropolitan France that was French from 1870 to 1919 and was not occupied by German forces in 1914-1918: its own local mean time until the law of 1891, national legal time after it. The places listed are examples. Another commune can be read by its longitude with its d\xE9partement, which is checked against the d\xE9partements and longitudes this jurisdiction covers (readByLongitude).",
+      timeline: {
+        civil: [
+          "fr-lmt-before-1891",
+          "fr-pmt-1891",
+          "fr-wet-1911-provinces",
+          "fr-summer-1916",
+          "fr-wet-1916",
+          "fr-summer-1917",
+          "fr-wet-1917",
+          "fr-summer-1918",
+          "fr-wet-1918",
+          "fr-summer-1919",
+          "fr-wet-1919"
+        ],
+        railway: [
+          "fr-rail-interior-before-1911",
+          "fr-wet-1911",
+          "fr-summer-1916",
+          "fr-wet-1916",
+          "fr-summer-1917",
+          "fr-wet-1917",
+          "fr-summer-1918",
+          "fr-wet-1918",
+          "fr-summer-1919",
+          "fr-wet-1919"
+        ]
+      },
+      readByLongitude: {
+        areas: [
+          {
+            name: "mainland France",
+            departments: [
+              "01",
+              "03",
+              "04",
+              "05",
+              "06",
+              "07",
+              "09",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18",
+              "19",
+              "21",
+              "22",
+              "23",
+              "24",
+              "25",
+              "26",
+              "27",
+              "28",
+              "29",
+              "30",
+              "31",
+              "32",
+              "33",
+              "34",
+              "35",
+              "36",
+              "37",
+              "38",
+              "39",
+              "40",
+              "41",
+              "42",
+              "43",
+              "44",
+              "45",
+              "46",
+              "47",
+              "48",
+              "49",
+              "50",
+              "52",
+              "53",
+              "56",
+              "58",
+              "61",
+              "63",
+              "64",
+              "65",
+              "66",
+              "69",
+              "70",
+              "71",
+              "72",
+              "73",
+              "74",
+              "76",
+              "78",
+              "79",
+              "81",
+              "82",
+              "83",
+              "84",
+              "85",
+              "86",
+              "87",
+              "89",
+              "90",
+              "91",
+              "92",
+              "93",
+              "94",
+              "95"
+            ],
+            minLongitude: -5.2,
+            maxLongitude: 7.6
+          },
+          { name: "Corsica", departments: ["2A", "2B"], minLongitude: 8.5, maxLongitude: 9.6 }
+        ],
+        excluded: [
+          {
+            departments: ["57", "67", "68"],
+            reason: "Alsace and Moselle were German from 1871 to 1918; only Strasbourg (als-strasbourg) and Metz (mos-metz) are covered"
+          },
+          {
+            departments: ["02", "08", "51", "54", "55", "59", "60", "62", "80", "88"],
+            reason: "parts of this d\xE9partement were occupied by German forces in 1914-1918, which the atlas does not cover, and it does not record where the front ran, so the whole d\xE9partement is refused"
+          },
+          {
+            departments: ["77"],
+            reason: "German forces entered it in September 1914, between Coulommiers and La Fert\xE9-Gaucher; the atlas does not cover the communes they reached and does not record which they were, so the whole d\xE9partement is refused",
+            citations: ["fr-nytribune-1914-09-08-coulommiers"]
+          },
+          { departments: ["75"], reason: "Paris has its own jurisdiction, fr-paris (place fr-paris)" }
+        ],
+        note: "The occupied d\xE9partements refused are the ten in the usual count (Aisne, Ardennes, Marne, Meurthe-et-Moselle, Meuse, Nord, Oise, Pas-de-Calais, Somme, Vosges) and Seine-et-Marne, which German forces entered in September 1914: an official statement of 7 September has them advancing on 5 and 6 September into the region between Coulommiers and La Fert\xE9-Gaucher (fr-nytribune-1914-09-08-coulommiers). No other d\xE9partement is refused: that German forces held communes elsewhere in September 1914, in the Aube for instance, was not established. The longitude limits are coarse: mainland France outside Alsace-Moselle lies between 5.2 degrees west (Ouessant) and 7.6 degrees east, Corsica between 8.5 and 9.6 degrees east. They catch a wrong d\xE9partement or a longitude from elsewhere, not every error: Tende and La Brigue (Alpes-Maritimes), Italian until 1947, fall inside the limits and are not covered."
+      }
+    }
+  ],
+  rules: [
+    {
+      id: "fr-paris-mean-time-before-1891",
+      version: 1,
+      title: "Paris: Paris mean time as local time",
+      scope: "Paris, before the law of 14 March 1891",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1891-03-17T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "day",
+        citations: ["fr-jo-1891-03-15-law", "fr-jo-1870-11-06-promulgation"],
+        note: "Paris mean time became the legal time of all France; in Paris the clocks did not change. The law bound Paris from 17 March, one clear day after the Journal officiel of 15 March."
+      },
+      offset: { type: "fixed", seconds: 561 },
+      isDst: false,
+      abbreviation: "PMT",
+      uncertainty: {
+        flag: "documented",
+        reason: "Legal time was each place's local mean time (Senate, 1891); Paris's own was Paris mean time, 9 min 21 s ahead of the time adopted in 1911."
+      },
+      citations: ["fr-senat-1891-02-17-restoration", "fr-jo-1911-03-10-law"],
+      note: "The offset is the 9 min 21 s by which the law of 9 March 1911 retarded Paris mean time to bring legal time into the universal system of time zones, whose zero is the Greenwich meridian. The mean time of the GeoNames point for Paris would be 2.7 s more."
+    },
+    {
+      id: "fr-brest-lmt-before-1891",
+      version: 3,
+      title: "Brest: local mean time",
+      scope: "Brest, before the law of 14 March 1891",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1891-03-17T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "days",
+        window: { earliest: "1891-03-16T00:00:00", latest: "1891-03-31T23:59:59" },
+        citations: ["fr-jo-1891-03-15-law", "fr-jo-1870-11-06-promulgation"],
+        note: "The law was printed in the Journal officiel of Sunday 15 March 1891. Under the decree of 5 November 1870 it bound Paris one clear day later, from 17 March, and each other arrondissement one clear day after the Journal reached its chef-lieu. When each town reset its public clocks is not recorded; the window runs to the end of March."
+      },
+      offset: { type: "local-mean-time" },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: "In February 1891 the Senate heard that Brest's public clocks, all but the station's, kept local time, 27 minutes behind Paris; that they did so from 1870 is assumed."
+      },
+      citations: ["fr-senat-1891-02-17-brest", "fr-senat-1891-02-17-restoration"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the Senate debate describes Brest's clocks in February 1891 only, and the rule carries that back to 1870."
+        },
+        {
+          version: 3,
+          date: "2026-09-28",
+          summary: "The window now ends at the end of 31 March, as its note says, not at the start of that day."
+        }
+      ],
+      note: "The offset comes from Brest's longitude; it puts Brest 27 min 18 s behind Paris mean time, as the debate says."
+    },
+    {
+      id: "fr-lmt-before-1891",
+      version: 2,
+      title: "Local mean time of each commune",
+      scope: "Communes of the fr-general jurisdiction, before the law of 14 March 1891",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1891-03-17T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "days",
+        window: { earliest: "1891-03-16T00:00:00", latest: "1891-03-31T23:59:59" },
+        citations: ["fr-jo-1891-03-15-law", "fr-jo-1870-11-06-promulgation"],
+        note: "The law was printed in the Journal officiel of Sunday 15 March 1891. Under the decree of 5 November 1870 it bound Paris one clear day later, from 17 March, and each other arrondissement one clear day after the Journal reached its chef-lieu. When each town reset its public clocks is not recorded; the window runs to the end of March."
+      },
+      offset: { type: "local-mean-time" },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "uncertain",
+        reason: "Legal time was each place's local mean time, but the same Senate debate says towns kept some clocks to the railway station's Paris time; which one a given town's clocks showed is not recorded."
+      },
+      citations: ["fr-senat-1891-02-17-restoration", "fr-senat-1891-02-17-towns"],
+      note: "The offset is computed from the place's longitude, 240 seconds per degree east of Greenwich. Where a town's public clocks already followed the station, they showed Paris mean time (+0:09:21) instead.",
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The window now ends at the end of 31 March, as its note says, not at the start of that day."
+        }
+      ]
+    },
+    {
+      id: "fr-pmt-1891",
+      version: 3,
+      title: "Paris mean time, legal time of France (law of 14 March 1891)",
+      scope: "Communes of metropolitan France other than Paris, outside Alsace-Moselle (German from 1871): civil clocks and the outside clocks of railway stations",
+      clock: "civil",
+      start: {
+        local: "1891-03-17T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "days",
+        window: { earliest: "1891-03-16T00:00:00", latest: "1891-03-31T23:59:59" },
+        citations: ["fr-jo-1891-03-15-law", "fr-jo-1870-11-06-promulgation"],
+        note: "The law was printed in the Journal officiel of Sunday 15 March 1891. Under the decree of 5 November 1870 it bound Paris one clear day later, from 17 March, and each other arrondissement one clear day after the Journal reached its chef-lieu. When each town reset its public clocks is not recorded; the window runs to the end of March."
+      },
+      end: {
+        local: "1911-03-11T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "weeks",
+        window: { earliest: "1911-03-11T00:00:00", latest: "1911-03-31T23:59:59" },
+        citations: [
+          "fr-jo-1911-03-10-ptt",
+          "fr-courrier-sl-1911-03-11-midnight",
+          "fr-courrier-sl-1911-03-11-chalon",
+          "fr-jo-1870-11-06-promulgation"
+        ],
+        note: "The law of 9 March 1911 names no date. Outside Paris the post offices changed at midnight Paris mean time in the night of 10 to 11 March 1911 (23:50:39 UTC), the instant used here. A Chalon-sur-Sa\xF4ne paper told its readers that legal time moved back at that midnight, and that on 11 March the new time could be read at a bank's regulator clock, set by telephone from the Observatory. When each commune reset its other public clocks is not recorded; the law bound each arrondissement one clear day after the Journal officiel reached it, as in 1891, so the window runs to the end of March."
+      },
+      offset: { type: "fixed", seconds: 561 },
+      isDst: false,
+      abbreviation: "PMT",
+      uncertainty: {
+        flag: "documented",
+        reason: "The law of 14 March 1891 makes Paris mean time the legal time of France."
+      },
+      citations: ["fr-jo-1891-03-15-law"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The window now ends at the end of 31 March, as its note says, not at the start of that day."
+        },
+        {
+          version: 3,
+          date: "2026-09-28",
+          summary: "Now the rule of the communes other than Paris; Paris has fr-paris-pmt-1891. Its end, the change of 1911, has a window to the end of March 1911 and cites a provincial report (fr-courrier-sl-1911-03-11-midnight, fr-courrier-sl-1911-03-11-chalon)."
+        }
+      ]
+    },
+    {
+      id: "fr-paris-pmt-1891",
+      version: 1,
+      title: "Paris: Paris mean time as legal time (law of 14 March 1891)",
+      scope: "Paris, from the law of 14 March 1891 to the law of 9 March 1911: civil clocks and the outside clocks of railway stations",
+      clock: "civil",
+      start: {
+        local: "1891-03-17T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "day",
+        citations: ["fr-jo-1891-03-15-law", "fr-jo-1870-11-06-promulgation"],
+        note: "Paris mean time became the legal time of all France; in Paris the clocks did not change. The law bound Paris from 17 March, one clear day after the Journal officiel of 15 March."
+      },
+      end: {
+        local: "1911-03-11T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-petitjournal-1911-03-11-pneumatic", "fr-jo-1911-03-10-ptt"],
+        note: "Midnight Paris mean time in the night of 10 to 11 March 1911 (23:50:39 UTC): Paris's pneumatic public clocks stopped at midnight for 9 min 21 s, and the post, telegraph and telephone offices changed at the same midnight. The law itself names no date."
+      },
+      offset: { type: "fixed", seconds: 561 },
+      isDst: false,
+      abbreviation: "PMT",
+      uncertainty: {
+        flag: "documented",
+        reason: "The law of 14 March 1891 makes Paris mean time the legal time of France; Paris's clocks already showed it."
+      },
+      citations: ["fr-jo-1891-03-15-law"],
+      note: "Split from fr-pmt-1891 on 2026-09-28, when the change of 1911 outside Paris was given a window."
+    },
+    {
+      id: "fr-rail-interior-before-1911",
+      version: 1,
+      title: "Railway time inside stations: Paris mean time less five minutes",
+      scope: "Clocks inside French railway stations, by which trains ran, until 10 March 1911",
+      clock: "railway",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1911-03-11T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1911-03-10-etat-railways", "fr-petitjournal-1911-03-11-midnight"],
+        note: "Midnight on the clocks inside stations in the night of 10 to 11 March 1911 (23:55:39 UTC). Their dials were stopped at midnight for about four minutes to reach the new legal time, and the five-minute difference between inside and outside clocks ended."
+      },
+      offset: { type: "fixed", seconds: 261 },
+      isDst: false,
+      uncertainty: {
+        flag: "inferred",
+        reason: "Stated for the Orl\xE9ans company's lines in 1875 and for the railways generally up to 10 March 1911; assumed for the other companies and the years between."
+      },
+      citations: [
+        "fr-orleans-1875-instruction-26",
+        "fr-petitjournal-1911-03-11-five-minutes",
+        "fr-jo-1911-03-10-etat-railways"
+      ],
+      note: "The clocks outside stations showed Paris mean time."
+    },
+    {
+      id: "fr-wet-1911",
+      version: 2,
+      title: "Legal time: Paris mean time retarded by 9 min 21 s (law of 9 March 1911)",
+      scope: "Paris's civil clocks, and the clocks inside the railway stations of metropolitan France outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918",
+      clock: "civil",
+      start: {
+        local: "1911-03-11T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: [
+          "fr-petitjournal-1911-03-11-pneumatic",
+          "fr-jo-1911-03-10-ptt",
+          "fr-jo-1911-03-10-etat-railways"
+        ],
+        note: "Midnight in the night of 10 to 11 March 1911 on the clock in force before: Paris mean time on civil clocks (23:50:39 UTC); inside stations, whose clocks ran five minutes slow, the railway midnight (23:55:39 UTC)."
+      },
+      end: {
+        local: "1916-06-14T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1916-06-11-decree"]
+      },
+      offset: { type: "fixed", seconds: 0 },
+      isDst: false,
+      abbreviation: "WET",
+      uncertainty: {
+        flag: "documented",
+        reason: "The law of 9 March 1911 fixes the offset; the post offices' order, the railways' notice and a report on Paris's public clocks fix the midnight of 10 to 11 March."
+      },
+      citations: ["fr-jo-1911-03-10-law", "fr-jo-1911-03-10-ptt", "fr-petitjournal-1911-03-11-pneumatic"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Now the rule of Paris's civil clocks and of the clocks inside railway stations; the other communes' civil clocks follow fr-wet-1911-provinces, whose start has a window."
+        }
+      ]
+    },
+    {
+      id: "fr-wet-1911-provinces",
+      version: 1,
+      title: "Legal time outside Paris: Paris mean time retarded by 9 min 21 s (law of 9 March 1911)",
+      scope: "Civil clocks of the communes of metropolitan France other than Paris, outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918",
+      clock: "civil",
+      start: {
+        local: "1911-03-11T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "weeks",
+        window: { earliest: "1911-03-11T00:00:00", latest: "1911-03-31T23:59:59" },
+        citations: [
+          "fr-jo-1911-03-10-ptt",
+          "fr-courrier-sl-1911-03-11-midnight",
+          "fr-courrier-sl-1911-03-11-chalon",
+          "fr-jo-1870-11-06-promulgation"
+        ],
+        note: "The law of 9 March 1911 names no date. Outside Paris the post offices changed at midnight Paris mean time in the night of 10 to 11 March 1911 (23:50:39 UTC), the instant used here. A Chalon-sur-Sa\xF4ne paper told its readers that legal time moved back at that midnight, and that on 11 March the new time could be read at a bank's regulator clock, set by telephone from the Observatory. When each commune reset its other public clocks is not recorded; the law bound each arrondissement one clear day after the Journal officiel reached it, as in 1891, so the window runs to the end of March."
+      },
+      end: {
+        local: "1916-06-14T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1916-06-11-decree"]
+      },
+      offset: { type: "fixed", seconds: 0 },
+      isDst: false,
+      abbreviation: "WET",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The law of 9 March 1911 fixes the offset. Outside Paris the post offices changed at midnight in the night of 10 to 11 March, and a Chalon-sur-Sa\xF4ne paper announced the new time at a bank's regulator clock for 11 March; that each commune's public clocks followed within the month is assumed."
+      },
+      citations: [
+        "fr-jo-1911-03-10-law",
+        "fr-jo-1911-03-10-ptt",
+        "fr-courrier-sl-1911-03-11-midnight",
+        "fr-courrier-sl-1911-03-11-chalon"
+      ]
+    },
+    {
+      id: "fr-summer-1916",
+      version: 3,
+      title: "Summer time 1916 (law of 9 June 1916)",
+      scope: "Metropolitan France outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918: civil clocks and the clocks inside railway stations",
+      clock: "civil",
+      start: {
+        local: "1916-06-14T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1916-06-11-decree"]
+      },
+      end: {
+        local: "1916-10-01T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: [
+          "fr-petitparisien-1916-09-30-public-clocks",
+          "fr-petitparisien-1916-09-30",
+          "fr-petitjournal-1916-09-30"
+        ],
+        note: "The decree says only that normal time would be restored on 1 October. Le Petit Parisien reports that all public clocks, the communes' among them, were to be set back from 01:00 to 00:00 in the night of 30 September to 1 October (00:00 UTC), the change being fixed at one in the morning rather than at 23:59."
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: true,
+      abbreviation: "WEST",
+      uncertainty: {
+        flag: "documented",
+        reason: "The law and decree fix the offset and the start; the decree gives only the date of the return, and Le Petit Parisien gives the hour for all public clocks."
+      },
+      citations: [
+        "fr-jo-1916-06-11-law",
+        "fr-jo-1916-06-11-decree",
+        "fr-petitparisien-1916-09-30-public-clocks",
+        "fr-petitparisien-1916-09-30",
+        "fr-petitjournal-1916-09-30"
+      ],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: 'Boundary note corrected to "rather than at 23:59" (it said 23:00): Le Petit Parisien reads "au lieu de 23 heures 59".'
+        },
+        {
+          version: 3,
+          date: "2026-09-28",
+          summary: "Now also cites Le Petit Parisien's statement that all public clocks, the communes' among them, were to be set back at 01:00 (fr-petitparisien-1916-09-30-public-clocks)."
+        }
+      ]
+    },
+    {
+      id: "fr-wet-1916",
+      version: 3,
+      title: "Normal time, winter 1916-1917",
+      scope: "Metropolitan France outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918: civil clocks and the clocks inside railway stations",
+      clock: "civil",
+      start: {
+        local: "1916-10-01T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: [
+          "fr-petitparisien-1916-09-30-public-clocks",
+          "fr-petitparisien-1916-09-30",
+          "fr-petitjournal-1916-09-30"
+        ],
+        note: "The decree says only that normal time would be restored on 1 October. Le Petit Parisien reports that all public clocks, the communes' among them, were to be set back from 01:00 to 00:00 in the night of 30 September to 1 October (00:00 UTC), the change being fixed at one in the morning rather than at 23:59."
+      },
+      end: {
+        local: "1917-03-24T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1917-03-21-decree"]
+      },
+      offset: { type: "fixed", seconds: 0 },
+      isDst: false,
+      abbreviation: "WET",
+      uncertainty: {
+        flag: "documented",
+        reason: "Normal time restored on 1 October 1916 as the decree of 10 June 1916 provided, until the decree of 20 March 1917."
+      },
+      citations: ["fr-jo-1911-03-10-law", "fr-jo-1916-06-11-decree", "fr-jo-1917-03-21-decree"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: 'Boundary note corrected to "rather than at 23:59" (it said 23:00): Le Petit Parisien reads "au lieu de 23 heures 59".'
+        },
+        {
+          version: 3,
+          date: "2026-09-28",
+          summary: "Now also cites Le Petit Parisien's statement that all public clocks, the communes' among them, were to be set back at 01:00 (fr-petitparisien-1916-09-30-public-clocks)."
+        }
+      ]
+    },
+    {
+      id: "fr-summer-1917",
+      version: 1,
+      title: "Summer time 1917 (law of 19 March 1917)",
+      scope: "Metropolitan France outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918: civil clocks and the clocks inside railway stations",
+      clock: "civil",
+      start: {
+        local: "1917-03-24T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1917-03-21-decree"]
+      },
+      end: {
+        local: "1917-10-07T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "hour",
+        window: { earliest: "1917-10-07T00:00:00", latest: "1917-10-07T01:00:00" },
+        citations: ["fr-petitjournal-1917-10-06", "fr-petitparisien-1917-10-07"],
+        note: "The decree says only that normal time would be restored on 7 October. Le Petit Journal gave two ways of adding the hour: stopping clocks at midnight for an hour, or setting them back to midnight at 00:59:59; Le Petit Parisien reports the administrations' clocks set back an hour at 00:59. Either way clocks read the old time again by 01:00 summer time (00:00 UTC), the instant used here; the window is the hour in which clocks may have stood still."
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: true,
+      abbreviation: "WEST",
+      uncertainty: {
+        flag: "documented",
+        reason: "The law and decree fix the offset and the start; the decree gives only the date of the return, which two Paris newspapers put in the hour after midnight."
+      },
+      citations: [
+        "fr-jo-1917-03-21-law",
+        "fr-jo-1917-03-21-decree",
+        "fr-petitjournal-1917-10-06",
+        "fr-petitparisien-1917-10-07"
+      ]
+    },
+    {
+      id: "fr-wet-1917",
+      version: 1,
+      title: "Normal time, winter 1917-1918",
+      scope: "Metropolitan France outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918: civil clocks and the clocks inside railway stations",
+      clock: "civil",
+      start: {
+        local: "1917-10-07T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "hour",
+        window: { earliest: "1917-10-07T00:00:00", latest: "1917-10-07T01:00:00" },
+        citations: ["fr-petitjournal-1917-10-06", "fr-petitparisien-1917-10-07"],
+        note: "The decree says only that normal time would be restored on 7 October. Le Petit Journal gave two ways of adding the hour: stopping clocks at midnight for an hour, or setting them back to midnight at 00:59:59; Le Petit Parisien reports the administrations' clocks set back an hour at 00:59. Either way clocks read the old time again by 01:00 summer time (00:00 UTC), the instant used here; the window is the hour in which clocks may have stood still."
+      },
+      end: {
+        local: "1918-03-09T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1918-03-01-decree"]
+      },
+      offset: { type: "fixed", seconds: 0 },
+      isDst: false,
+      abbreviation: "WET",
+      uncertainty: {
+        flag: "documented",
+        reason: "Normal time restored on 7 October 1917 as the decree of 20 March 1917 provided, until the decree of 28 February 1918."
+      },
+      citations: ["fr-jo-1911-03-10-law", "fr-jo-1917-03-21-decree", "fr-jo-1918-03-01-decree"]
+    },
+    {
+      id: "fr-summer-1918",
+      version: 2,
+      title: "Summer time 1918 (decree of 28 February 1918)",
+      scope: "Metropolitan France outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918: civil clocks and the clocks inside railway stations",
+      clock: "civil",
+      start: {
+        local: "1918-03-09T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1918-03-01-decree"]
+      },
+      end: {
+        local: "1918-10-06T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-petitparisien-1918-10-04"],
+        note: "The decree says only that normal time would be restored on 6 October. The instructions to the railway networks, as Le Petit Parisien printed them, set all clocks back an hour one minute after 24:59 in the night of 5 to 6 October, that is at 01:00 summer time on 6 October (00:00 UTC); the other public clocks are taken to have been set back at the same hour."
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: true,
+      abbreviation: "WEST",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The decree fixes the offset and the start and gives only the date of the return. The hour, 01:00 summer time, is that of the instructions to the railway networks as Le Petit Parisien printed them; that the other public clocks were set back at the same hour is assumed."
+      },
+      citations: ["fr-jo-1917-03-21-law", "fr-jo-1918-03-01-decree", "fr-petitparisien-1918-10-04"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the hour of the return to normal time comes from the instructions to the railway networks, and the other public clocks are assumed to have followed."
+        }
+      ]
+    },
+    {
+      id: "fr-wet-1918",
+      version: 2,
+      title: "Normal time, winter 1918-1919",
+      scope: "Metropolitan France outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918: civil clocks and the clocks inside railway stations",
+      clock: "civil",
+      start: {
+        local: "1918-10-06T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-petitparisien-1918-10-04"],
+        note: "The decree says only that normal time would be restored on 6 October. The instructions to the railway networks, as Le Petit Parisien printed them, set all clocks back an hour one minute after 24:59 in the night of 5 to 6 October, that is at 01:00 summer time on 6 October (00:00 UTC); the other public clocks are taken to have been set back at the same hour."
+      },
+      end: {
+        local: "1919-03-01T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1919-02-11-decree", "fr-petitparisien-1919-03-01"]
+      },
+      offset: { type: "fixed", seconds: 0 },
+      isDst: false,
+      abbreviation: "WET",
+      uncertainty: {
+        flag: "inferred",
+        reason: "Normal time was restored on 6 October 1918, as the decree of 28 February 1918 provided, until the decree of 9 February 1919. The hour of the return comes from the instructions to the railway networks; that the other public clocks followed is assumed."
+      },
+      citations: ["fr-jo-1911-03-10-law", "fr-jo-1918-03-01-decree", "fr-jo-1919-02-11-decree"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the hour of the return to normal time comes from the instructions to the railway networks, and the other public clocks are assumed to have followed."
+        }
+      ]
+    },
+    {
+      id: "fr-summer-1919",
+      version: 1,
+      title: "Summer time 1919 (decree of 9 February 1919)",
+      scope: "Metropolitan France outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918: civil clocks and the clocks inside railway stations",
+      clock: "civil",
+      start: {
+        local: "1919-03-01T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-jo-1919-02-11-decree", "fr-petitparisien-1919-03-01"]
+      },
+      end: {
+        local: "1919-10-05T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-petitjournal-1919-10-05"],
+        note: "The decree says only that normal time would be restored on 5 October. The note of the sous-secr\xE9tariat d'\xC9tat aux Transports set legal time back sixty minutes at one o'clock in the night of 4 to 5 October (00:00 UTC)."
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: true,
+      abbreviation: "WEST",
+      uncertainty: {
+        flag: "documented",
+        reason: "The decree fixes the offset and the start; it gives only the date of the return, and the Transport sub-ministry's note gives the hour."
+      },
+      citations: [
+        "fr-jo-1917-03-21-law",
+        "fr-jo-1919-02-11-decree",
+        "fr-petitparisien-1919-03-01",
+        "fr-petitjournal-1919-10-05"
+      ]
+    },
+    {
+      id: "fr-wet-1919",
+      version: 1,
+      title: "Normal time from 5 October 1919",
+      scope: "Metropolitan France outside Alsace-Moselle (German until November 1918) and outside the areas occupied by German forces in 1914-1918: civil clocks and the clocks inside railway stations",
+      clock: "civil",
+      start: {
+        local: "1919-10-05T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-petitjournal-1919-10-05"],
+        note: "The decree says only that normal time would be restored on 5 October. The note of the sous-secr\xE9tariat d'\xC9tat aux Transports set legal time back sixty minutes at one o'clock in the night of 4 to 5 October (00:00 UTC)."
+      },
+      end: { local: "1920-01-01T00:00:00", reckoning: "before", kind: "coverage", precision: "second" },
+      offset: { type: "fixed", seconds: 0 },
+      isDst: false,
+      abbreviation: "WET",
+      uncertainty: {
+        flag: "documented",
+        reason: "Normal time restored on 5 October 1919 as the decree of 9 February 1919 provided."
+      },
+      citations: ["fr-jo-1911-03-10-law", "fr-jo-1919-02-11-decree", "fr-petitjournal-1919-10-05"]
+    }
+  ]
+};
+
+// src/data/time-atlas/citations-als.json
+var citations_als_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-citations",
+  description: "Alsace and Moselle: the Reich law of 1893 (read on the Internet Archive scan of the Reichs-Gesetzblatt), and Strasbourg, Metz and Haguenau newspapers and a Paris daily read on Gallica. The excerpts were transcribed from page images on the retrieval date and checked again against the scan's OCR text (the Reichs-Gesetzblatt) or Gallica's text of the cited page (the text its search service returns, or its OCR text) and, where that text could not confirm a word, against the page image (each citation's checks).",
+  citations: [
+    {
+      id: "als-snn-1892-03-31-mez",
+      type: "newspaper-report",
+      title: "Mitteleurop\xE4ische Zeit (Stra\xDFburg, local news)",
+      date: "1892-03-31",
+      issuer: "Stra\xDFburger Neueste Nachrichten",
+      publication: "Stra\xDFburger Neueste Nachrichten, Nr. 77, Zweites Blatt, Donnerstag, 31. M\xE4rz 1892",
+      url: "https://gallica.bnf.fr/ark:/12148/bd6t528094756/f5.item",
+      retrieved: "2026-09-28",
+      locator: "Zweites Blatt, first page (Gallica view 5), col. 2",
+      language: "de",
+      excerpt: "Nachdem das k. Ministerium verf\xFCgt hat, da\xDF mit morgen die mitteleurop\xE4ische Zeit in Elsa\xDF-Lothringen auch als Ortszeit allgemein einzuf\xFChren ist, haben die Gemeindebeh\xF6rden Anweisung erhalten, dementsprechend morgen eine Richtigstellung der \xF6ffentlichen Uhren zu veranlassen.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "The Ministry for Alsace-Lorraine ordered Mid-European time to be introduced generally as local time from 1 April 1892; municipal authorities were to correct the public clocks that day, by the public clock of the nearest railway station."
+    },
+    {
+      id: "als-snn-1892-04-01-muenster",
+      type: "newspaper-report",
+      title: "M. E. Z.",
+      date: "1892-04-01",
+      issuer: "Stra\xDFburger Neueste Nachrichten",
+      publication: "Stra\xDFburger Neueste Nachrichten, Nr. 78, Zweites Blatt, Freitag, 1. April 1892",
+      url: "https://gallica.bnf.fr/ark:/12148/bd6t52809476m/f5.item",
+      retrieved: "2026-09-28",
+      locator: "Zweites Blatt, first page (Gallica view 5), col. 2",
+      language: "de",
+      excerpt: "Als wir heute Nacht die M\xFCnsterglocke die Mitternachtstunde und nach kaum einer Minute halb 1 Uhr schlagen h\xF6rten, da erfa\xDFte den H\xF6rer eine gewisse Aufregung",
+      excerptBasis: "page-image",
+      checks: [
+        { method: "search-service", date: "2026-09-28", result: "matches" },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ],
+      gloss: "In the night of 31 March to 1 April 1892 the cathedral clock struck midnight and, barely a minute later, half past twelve."
+    },
+    {
+      id: "als-snn-1892-04-01-ruprechtsau",
+      type: "newspaper-report",
+      title: "M. E. Z.",
+      date: "1892-04-01",
+      issuer: "Stra\xDFburger Neueste Nachrichten",
+      publication: "Stra\xDFburger Neueste Nachrichten, Nr. 78, Zweites Blatt, Freitag, 1. April 1892",
+      url: "https://gallica.bnf.fr/ark:/12148/bd6t52809476m/f5.item",
+      retrieved: "2026-09-28",
+      locator: "Zweites Blatt, first page (Gallica view 5), col. 2, the paragraph after the one quoted in als-snn-1892-04-01-muenster",
+      language: "de",
+      excerpt: "Unser Vorort Ruprechtsau hat \xFCbrigens mit der Einf\xFChrung der M. E. Z. den Vogel abgeschossen, dort zeigten die Thurmuhren bereits gestern Nachmittag die neue Zeit.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "matches",
+          note: "Against Gallica's OCR text of the page (ALTO)."
+        }
+      ],
+      gloss: "The tower clocks of the suburb of Ruprechtsau (Robertsau) already showed Mid-European time on the afternoon of 31 March 1892."
+    },
+    {
+      id: "mos-lz-1892-03-29-station",
+      type: "newspaper-report",
+      title: "Mitteleurop\xE4ische Zeit (Metz, local news)",
+      date: "1892-03-29",
+      issuer: "Lothringer Zeitung",
+      publication: "Lothringer Zeitung und amtliche Nachrichten (Metz), 29. M\xE4rz 1892",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k9340208n/f3.item",
+      retrieved: "2026-09-28",
+      locator: "p. 3, col. 2",
+      language: "de",
+      excerpt: "da\xDF in der Nacht vom 31. M\xE4rz auf den 1. April um 11 Uhr 25 Min. Ortszeit, die Uhren des hiesigen Bahnhofs auf 12 Uhr M. E. Z. umgestellt werden.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "Metz station's clocks were to be set from 23:25 local time to 00:00 Mid-European time in the night of 31 March to 1 April 1892."
+    },
+    {
+      id: "mos-lz-1892-03-29-city",
+      type: "newspaper-report",
+      title: "Mitteleurop\xE4ische Zeit (Metz, local news)",
+      date: "1892-03-29",
+      issuer: "Lothringer Zeitung",
+      publication: "Lothringer Zeitung und amtliche Nachrichten (Metz), 29. M\xE4rz 1892",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k9340208n/f3.item",
+      retrieved: "2026-09-28",
+      locator: "p. 3, col. 2",
+      language: "de",
+      excerpt: "Im Anschlu\xDF daran w\xFCrden die s\xE4mmtlichen der st\xE4dtischen Verwaltung unterstehenden Uhren, insbesondere auch die der Kathedrale in den fr\xFChesten Stunden des 1. April gleichfalls um 35 Minuten vorger\xFCckt werden.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "The city's clocks, the cathedral's among them, were to be put forward 35 minutes in the earliest hours of 1 April 1892."
+    },
+    {
+      id: "de-rgbl-1893-03-12-law",
+      type: "law",
+      title: "Gesetz, betreffend die Einf\xFChrung einer einheitlichen Zeitbestimmung. Vom 12. M\xE4rz 1893 (Nr. 2075)",
+      date: "1893-03-12",
+      issuer: "Deutsches Reich (the Emperor, with the Bundesrat and the Reichstag)",
+      publication: "Reichs-Gesetzblatt 1893, Nr. 7, ausgegeben zu Berlin den 16. M\xE4rz 1893 (scan from the Pomeranian Digital Library, on the Internet Archive)",
+      url: "https://archive.org/details/pbc.gda.pl.Nr_07_76958",
+      retrieved: "2026-09-28",
+      locator: "p. 93",
+      language: "de",
+      excerpt: "Die gesetzliche Zeit in Deutschland ist die mittlere Sonnenzeit des f\xFCnfzehnten L\xE4ngengrades \xF6stlich von Greenwich. Dieses Gesetz tritt mit dem Zeitpunkt in Kraft, in welchem nach der im vorhergehenden Absatz festgesetzten Zeitbestimmung der 1. April 1893 beginnt.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "matches",
+          note: "Against the scan's OCR text on the Internet Archive."
+        }
+      ]
+    },
+    {
+      id: "de-snn-1916-04-08-wtb",
+      type: "newspaper-report",
+      title: "Letzte Telegramme: WTB Berlin, 7. April. Amtlich (Verordnung des Bundesrats \xFCber die Sommerzeit)",
+      date: "1916-04-08",
+      issuer: "Stra\xDFburger Neueste Nachrichten, printing an official telegram of Wolff's Telegraphisches Bureau",
+      publication: "Stra\xDFburger Neueste Nachrichten, 8. April 1916",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k9429782d/f13.item",
+      retrieved: "2026-09-28",
+      locator: "Gallica view 13, col. 2",
+      language: "de",
+      excerpt: "Der 1. Mai beginnt am 30. April 11 Uhr nachmittags; zu diesem Zeitpunkte werden alle Uhren im Reiche auf Mitternacht vorgestellt. Der 30. September endet eine Stunde nach Mitternacht; zu diesem Zeitpunkte werden s\xE4mtliche Uhren auf Mitternacht zur\xFCckgestellt werden.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "partial",
+          note: `The service's snippets begin after "Der 1." (at "Nai beginnt am 30") and after the first "zu diesem", so those words are not confirmed; the other words agree, allowing for OCR errors.`
+        },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ],
+      gloss: "By order of the Bundesrat, every clock in the Reich went from 23:00 on 30 April 1916 to midnight, and back from 01:00 to midnight at the end of 30 September."
+    },
+    {
+      id: "de-snn-1917-04-16-beginn",
+      type: "newspaper-report",
+      title: "Beginn der Sommerzeit",
+      date: "1917-04-16",
+      issuer: "Stra\xDFburger Neueste Nachrichten",
+      publication: "Stra\xDFburger Neueste Nachrichten, Montag, 16. April 1917",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k9429988k/f5.item",
+      retrieved: "2026-09-28",
+      locator: "Gallica view 5, col. 1",
+      language: "de",
+      excerpt: "Die Zeitumschaltung wurde Montag 2 Uhr morgens durch Vorr\xFCcken des Zeigers auf 3 Uhr vollzogen.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "de-snn-1917-09-14-ende",
+      type: "newspaper-report",
+      title: "Das Ende der Sommerzeit",
+      date: "1917-09-14",
+      issuer: "Stra\xDFburger Neueste Nachrichten",
+      publication: "Stra\xDFburger Neueste Nachrichten, Nr. 215, Zweites Blatt, Freitag, 14. September 1917",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k94456119/f5.item",
+      retrieved: "2026-09-28",
+      locator: "Zweites Blatt, first page (Gallica view 5), col. 1",
+      language: "de",
+      excerpt: "In der Nacht vom Sonntag, den 16., auf Montag, den 17. September, um 3 Uhr morgens, geht die Sommerzeit zu Ende. Die \xF6ffentlichen Uhren werden um 3 Uhr auf 2 Uhr zur\xFCckgestellt.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "partial",
+          note: `"September, um 3 Uhr" reads "Seb\xBB & unt 31hr" in the service's text, so the month is not confirmed; the other words agree, allowing for OCR errors.`
+        },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ],
+      note: 'Corrected on 2026-09-28: the issue number was given as Nr. 255; the masthead reads "Nr. 215. Zweites Blatt".'
+    },
+    {
+      id: "de-snn-1918-03-08-sommerzeit",
+      type: "newspaper-report",
+      title: "Die Sommerzeit 1918",
+      date: "1918-03-08",
+      issuer: "Stra\xDFburger Neueste Nachrichten",
+      publication: "Stra\xDFburger Neueste Nachrichten, Nr. 57, Zweites Blatt, 8. M\xE4rz 1918",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k9433577t/f5.item",
+      retrieved: "2026-09-28",
+      locator: "Zweites Blatt, first page (Gallica view 5), col. 1",
+      language: "de",
+      excerpt: "Die \xF6ffentlichen Uhren sind am 15. April vormittags 2 Uhr auf 3 Uhr vorzustellen, am 16. September vormittags 3 Uhr auf 2 Uhr zur\xFCckzustellen.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "partial",
+          note: `"April vormittags" reads "Spru wrmittags" in the service's text, so the month is not confirmed; the other words agree, allowing for OCR errors.`
+        },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ]
+    },
+    {
+      id: "als-snn-1918-11-21-bekanntmachung",
+      type: "municipal-notice",
+      title: "Bekanntmachung, betreffend Einf\xFChrung der franz\xF6sischen Zeit an Stelle der mitteleurop\xE4ischen (Stra\xDFburg, den 20. November 1918)",
+      date: "1918-11-20",
+      issuer: "Der B\xFCrgermeister der Stadt Stra\xDFburg (Peirotes)",
+      publication: "Stra\xDFburger Neueste Nachrichten, Nr. 272, Donnerstag, 21. November 1918",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k9431850k/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 2",
+      language: "de",
+      excerpt: "Morgen mittag 12 Uhr werden die \xF6ffentlichen st\xE4dtischen Uhren auf franz\xF6sische Zeit gebracht und demgem\xE4\xDF auf 11 Uhr 5 Minuten zur\xFCckgestellt.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "partial",
+          note: `"auf franz\xF6sische Zeit gebracht" reads "auf fran \u2019^e Reit gebradt" in the service's text; the other words agree, allowing for OCR errors.`
+        },
+        {
+          method: "page-image",
+          date: "2026-09-28",
+          result: "matches",
+          note: 'The scan is faded in the middle of "franz\xF6sische": only "fran" and "sche" show. The heading of the notice, "Einf\xFChrung der franz\xF6sischen Zeit", is clear.'
+        }
+      ],
+      gloss: "At noon on 21 November 1918 the city's public clocks were to be put on French time by setting them back to 11:05.",
+      note: "Noon Mid-European time is 11:00 UTC, so the clocks were set five minutes ahead of Greenwich time, not to French legal time."
+    },
+    {
+      id: "als-elsasser-1918-12-16-pariser-zeit",
+      type: "newspaper-report",
+      title: "Pariser Zeit (reader's letter, Stra\xDFburger Stadtchronik)",
+      date: "1918-12-16",
+      issuer: "Der Els\xE4sser",
+      publication: "Der Els\xE4sser (Stra\xDFburg), 16. Dezember 1918",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k94432097/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2, col. 4",
+      language: "de",
+      excerpt: "Nach den Zeitungen sollten unsere Uhren 55 Minuten sp\xE4ter gestellt werden, was auch geschah am 21. November. [...] Auch in Stra\xDFburg geht die Bahnuhr 5 Minuten sp\xE4ter als die \xF6ffentlichen Uhren.",
+      excerptBasis: "page-image",
+      checks: [{ method: "search-service", date: "2026-09-28", result: "matches" }],
+      gloss: "A reader writes that the clocks were set back 55 minutes on 21 November and that Strasbourg's station clock runs five minutes behind the public clocks."
+    },
+    {
+      id: "mos-matin-1918-11-21-metz",
+      type: "newspaper-report",
+      title: "L'installation de M. Mirman comme commissaire de la R\xE9publique en Lorraine (Metz, 19 novembre)",
+      date: "1918-11-21",
+      issuer: "Le Matin",
+      publication: "Le Matin, 21 novembre 1918",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k572721g/f1.item",
+      retrieved: "2026-09-28",
+      locator: "p. 1, cols. 3-4 (dateline Metz, 19 novembre; the passage is in col. 4)",
+      language: "fr",
+      excerpt: "vers 16 h. 30 \u2014 heure fran\xE7aise, car depuis le matin l'horloge de la cath\xE9drale ne marque plus l'heure d'Europe centrale",
+      excerptBasis: "page-image",
+      checks: [
+        { method: "search-service", date: "2026-09-28", result: "matches" },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ],
+      note: `Shortened on 2026-09-28, when only the search service's text of the page could be read: it drops a line, and the words that follow the excerpt, "se d\xE9roulait \xE0 la pr\xE9fecture la c\xE9r\xE9monie d'ordre civil", could not be confirmed. Read again on the page image the same day, they are there as first transcribed; the shorter excerpt is kept.`
+    },
+    {
+      id: "als-jh-1919-02-28-railways",
+      type: "newspaper-report",
+      title: "Die Sommerzeit",
+      date: "1919-02-28",
+      issuer: "Journal de Haguenau",
+      publication: "Journal de Haguenau: indicateur g\xE9n\xE9ral du Bas-Rhin, 28 f\xE9vrier 1919",
+      url: "https://gallica.bnf.fr/ark:/12148/bpt6k3039456z/f2.item",
+      retrieved: "2026-09-28",
+      locator: "p. 2, col. 1",
+      language: "de",
+      excerpt: "In der Nacht vom 1. zum 2. M\xE4rz wird auf den Eisenbahnen in Elsa\xDF und Lothringen und der Wilhelm-Luxemburg-Eisenbahn die Sommerzeit eingef\xFChrt [...] Infolgedessen werden am 1. M\xE4rz um 23 Uhr die Bahnhofsuhren um eine Stunde vorger\xFCckt.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "search-service",
+          date: "2026-09-28",
+          result: "partial",
+          note: `Both "M\xE4rz" are garbled in the service's text ("Mrz", "Nr3"), so the month is not confirmed there; the other words agree, allowing for OCR errors.`
+        },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ]
+    }
+  ]
+};
+
+// src/data/time-atlas/rules-als.json
+var rules_als_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-rules",
+  description: "Alsace and Moselle: local mean time, Mid-European time as local time from 1 April 1892 and as legal time from 1 April 1893, German summer time 1916-1918, the change to French time in November 1918, and French summer time 1919.",
+  jurisdictions: [
+    {
+      id: "als-strasbourg",
+      name: "Strasbourg",
+      country: "FR",
+      description: "Strasbourg (Bas-Rhin): French until 1871, part of the German Reichsland Elsa\xDF-Lothringen from 1871 to November 1918, French again after.",
+      timeline: {
+        civil: [
+          "als-strasbourg-lmt-before-1892",
+          "als-strasbourg-mez-1892",
+          "de-mez-1893",
+          "de-summer-1916",
+          "de-mez-1916",
+          "de-summer-1917",
+          "de-mez-1917",
+          "de-summer-1918",
+          "als-strasbourg-mez-1918",
+          "als-strasbourg-french-1918",
+          "als-mos-summer-1919",
+          "als-mos-wet-1919"
+        ]
+      }
+    },
+    {
+      id: "mos-metz",
+      name: "Metz",
+      country: "FR",
+      description: "Metz (Moselle): French until 1871, part of the German Reichsland Elsa\xDF-Lothringen from 1871 to November 1918, French again after.",
+      timeline: {
+        civil: [
+          "mos-metz-lmt-before-1892",
+          "mos-metz-mez-1892",
+          "de-mez-1893",
+          "de-summer-1916",
+          "de-mez-1916",
+          "de-summer-1917",
+          "de-mez-1917",
+          "de-summer-1918",
+          "mos-metz-mez-1918",
+          "mos-metz-french-1918",
+          "als-mos-summer-1919",
+          "als-mos-wet-1919"
+        ]
+      }
+    }
+  ],
+  rules: [
+    {
+      id: "als-strasbourg-lmt-before-1892",
+      version: 3,
+      title: "Strasbourg: local mean time",
+      scope: "Strasbourg, French until 1871 and German from 1871, before 1 April 1892",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1892-04-01T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "days",
+        window: { earliest: "1892-03-31T12:00:00", latest: "1892-04-01T23:59:59" },
+        citations: ["als-snn-1892-04-01-muenster", "als-snn-1892-04-01-ruprechtsau", "als-snn-1892-03-31-mez"],
+        note: "The cathedral clock struck midnight Strasbourg mean time in the night of 31 March to 1 April 1892 and, barely a minute later, half past twelve (Mid-European time is 29 min 1 s ahead of Strasbourg's mean time); the atlas uses that instant. The tower clocks of the suburb of Ruprechtsau already showed the new time on the afternoon of 31 March, and the municipal authorities were to correct the other public clocks on 1 April, so the window runs from noon on 31 March to the end of 1 April."
+      },
+      offset: { type: "local-mean-time" },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The 1892 change (the cathedral clock struck midnight and, a minute later, half past twelve) fits Strasbourg mean time; that the city's clocks kept it from 1870, through the siege of 1870 and the annexation of 1871, is assumed."
+      },
+      citations: ["als-snn-1892-04-01-muenster", "als-snn-1892-03-31-mez", "fr-senat-1891-02-17-restoration"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred again: the sources show Strasbourg mean time only at the change of 1892, and the rule carries it back to 1870 across the siege and the annexation. The change is timed by the cathedral clock only; the other public clocks were corrected during 1 April, now a window."
+        },
+        {
+          version: 3,
+          date: "2026-09-28",
+          summary: "The window of the change now opens at noon on 31 March: the tower clocks of the suburb of Ruprechtsau already showed Mid-European time that afternoon (als-snn-1892-04-01-ruprechtsau)."
+        }
+      ],
+      note: "Legal time in France was each place's local mean time (the Senate debate of 1891 dates this from the Restoration), and no change is reported under German rule before 1892."
+    },
+    {
+      id: "mos-metz-lmt-before-1892",
+      version: 2,
+      title: "Metz: local mean time",
+      scope: "Metz, French until 1871 and German from 1871, before 1 April 1892",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1892-04-01T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "hour",
+        window: { earliest: "1892-03-31T23:25:00", latest: "1892-04-01T06:00:00" },
+        citations: ["mos-lz-1892-03-29-city", "mos-lz-1892-03-29-station"],
+        note: "Announced for the earliest hours of 1 April 1892, after the station's clocks changed at 23:25 Metz time (midnight Mid-European time); the hour is not reported. The window runs from the station's change to 06:00."
+      },
+      offset: { type: "local-mean-time" },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The city's clocks were put forward 35 minutes to Mid-European time in 1892, which fits Metz mean time; that they kept it from 1870, through the siege of 1870 and the annexation of 1871, is assumed."
+      },
+      citations: ["mos-lz-1892-03-29-city", "fr-senat-1891-02-17-restoration"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred again: the sources show Metz mean time only at the change of 1892, and the rule carries it back to 1870 across the siege and the annexation."
+        }
+      ],
+      note: "Mid-European time is 35 min 19 s ahead of Metz mean time."
+    },
+    {
+      id: "als-strasbourg-mez-1892",
+      version: 3,
+      title: "Strasbourg: Mid-European time as local time (order of the Ministry for Alsace-Lorraine, 1892)",
+      scope: "Strasbourg, 1 April 1892 to the Reich law of 12 March 1893",
+      clock: "civil",
+      start: {
+        local: "1892-04-01T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "days",
+        window: { earliest: "1892-03-31T12:00:00", latest: "1892-04-01T23:59:59" },
+        citations: ["als-snn-1892-04-01-muenster", "als-snn-1892-04-01-ruprechtsau", "als-snn-1892-03-31-mez"],
+        note: "The cathedral clock struck midnight Strasbourg mean time in the night of 31 March to 1 April 1892 and, barely a minute later, half past twelve (Mid-European time is 29 min 1 s ahead of Strasbourg's mean time); the atlas uses that instant. The tower clocks of the suburb of Ruprechtsau already showed the new time on the afternoon of 31 March, and the municipal authorities were to correct the other public clocks on 1 April, so the window runs from noon on 31 March to the end of 1 April."
+      },
+      end: {
+        local: "1893-04-01T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "second",
+        citations: ["de-rgbl-1893-03-12-law"],
+        note: "The law came into force at the moment 1 April 1893 began on Mid-European time. The clocks, already on Mid-European time, did not change."
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: false,
+      abbreviation: "MEZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "The Ministry ordered Mid-European time as local time throughout Alsace-Lorraine from 1 April 1892; the cathedral clock changed at midnight, and the tower clocks of Ruprechtsau the afternoon before."
+      },
+      citations: ["als-snn-1892-03-31-mez", "als-snn-1892-04-01-muenster", "als-snn-1892-04-01-ruprechtsau"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The start is timed by the cathedral clock only; the other public clocks were corrected during 1 April, now a window."
+        },
+        {
+          version: 3,
+          date: "2026-09-28",
+          summary: "The window of the change now opens at noon on 31 March: the tower clocks of the suburb of Ruprechtsau already showed Mid-European time that afternoon (als-snn-1892-04-01-ruprechtsau)."
+        }
+      ]
+    },
+    {
+      id: "mos-metz-mez-1892",
+      version: 1,
+      title: "Metz: Mid-European time as local time (order of the Ministry for Alsace-Lorraine, 1892)",
+      scope: "Metz, 1 April 1892 to the Reich law of 12 March 1893",
+      clock: "civil",
+      start: {
+        local: "1892-04-01T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "hour",
+        window: { earliest: "1892-03-31T23:25:00", latest: "1892-04-01T06:00:00" },
+        citations: ["mos-lz-1892-03-29-city", "mos-lz-1892-03-29-station"],
+        note: "Announced for the earliest hours of 1 April 1892, after the station's clocks changed at 23:25 Metz time (midnight Mid-European time); the hour is not reported. The window runs from the station's change to 06:00."
+      },
+      end: {
+        local: "1893-04-01T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "second",
+        citations: ["de-rgbl-1893-03-12-law"],
+        note: "The law came into force at the moment 1 April 1893 began on Mid-European time. The clocks, already on Mid-European time, did not change."
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: false,
+      abbreviation: "MEZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "The Ministry ordered Mid-European time as local time throughout Alsace-Lorraine from 1 April 1892; the city's clocks were to be put forward in the earliest hours of that day."
+      },
+      citations: ["als-snn-1892-03-31-mez", "mos-lz-1892-03-29-city"]
+    },
+    {
+      id: "de-mez-1893",
+      version: 1,
+      title: "Mid-European time, legal time of Germany (law of 12 March 1893)",
+      scope: "Alsace-Lorraine (Strasbourg, Metz) as part of the German Reich, from 1 April 1893",
+      clock: "civil",
+      start: {
+        local: "1893-04-01T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "second",
+        citations: ["de-rgbl-1893-03-12-law"],
+        note: "The law came into force at the moment 1 April 1893 began on Mid-European time. The clocks, already on Mid-European time, did not change."
+      },
+      end: {
+        local: "1916-04-30T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1916-04-08-wtb"]
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: false,
+      abbreviation: "MEZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "The law of 12 March 1893 makes the mean time of the 15th meridian east the legal time of Germany from 1 April 1893."
+      },
+      citations: ["de-rgbl-1893-03-12-law"]
+    },
+    {
+      id: "de-summer-1916",
+      version: 1,
+      title: "German summer time 1916 (Bundesrat order of 6 April 1916)",
+      scope: "Alsace-Lorraine (Strasbourg, Metz) as part of the German Reich",
+      clock: "civil",
+      start: {
+        local: "1916-04-30T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1916-04-08-wtb"]
+      },
+      end: {
+        local: "1916-10-01T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1916-04-08-wtb"],
+        note: "One hour after midnight at the end of 30 September, on summer time, clocks were set back to midnight."
+      },
+      offset: { type: "fixed", seconds: 7200 },
+      isDst: true,
+      abbreviation: "MESZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "The official telegram on the Bundesrat order gives the offset and both changes for every clock in the Reich."
+      },
+      citations: ["de-snn-1916-04-08-wtb"]
+    },
+    {
+      id: "de-mez-1916",
+      version: 1,
+      title: "Mid-European time, winter 1916-1917",
+      scope: "Alsace-Lorraine (Strasbourg, Metz) as part of the German Reich",
+      clock: "civil",
+      start: {
+        local: "1916-10-01T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1916-04-08-wtb"],
+        note: "One hour after midnight at the end of 30 September, on summer time, clocks were set back to midnight."
+      },
+      end: {
+        local: "1917-04-16T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1917-04-16-beginn"]
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: false,
+      abbreviation: "MEZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "Legal time under the law of 1893 between the summer times of 1916 and 1917."
+      },
+      citations: ["de-rgbl-1893-03-12-law", "de-snn-1916-04-08-wtb", "de-snn-1917-04-16-beginn"]
+    },
+    {
+      id: "de-summer-1917",
+      version: 1,
+      title: "German summer time 1917",
+      scope: "Alsace-Lorraine (Strasbourg, Metz) as part of the German Reich",
+      clock: "civil",
+      start: {
+        local: "1917-04-16T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1917-04-16-beginn"]
+      },
+      end: {
+        local: "1917-09-17T03:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1917-09-14-ende"]
+      },
+      offset: { type: "fixed", seconds: 7200 },
+      isDst: true,
+      abbreviation: "MESZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "A Strasbourg newspaper reports clocks put forward at 02:00 on Monday 16 April 1917 and announces the return at 03:00 on 17 September."
+      },
+      citations: ["de-snn-1917-04-16-beginn", "de-snn-1917-09-14-ende"]
+    },
+    {
+      id: "de-mez-1917",
+      version: 1,
+      title: "Mid-European time, winter 1917-1918",
+      scope: "Alsace-Lorraine (Strasbourg, Metz) as part of the German Reich",
+      clock: "civil",
+      start: {
+        local: "1917-09-17T03:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1917-09-14-ende"]
+      },
+      end: {
+        local: "1918-04-15T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1918-03-08-sommerzeit"]
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: false,
+      abbreviation: "MEZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "Legal time under the law of 1893 between the summer times of 1917 and 1918."
+      },
+      citations: ["de-rgbl-1893-03-12-law", "de-snn-1917-09-14-ende", "de-snn-1918-03-08-sommerzeit"]
+    },
+    {
+      id: "de-summer-1918",
+      version: 1,
+      title: "German summer time 1918",
+      scope: "Alsace-Lorraine (Strasbourg, Metz) as part of the German Reich",
+      clock: "civil",
+      start: {
+        local: "1918-04-15T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1918-03-08-sommerzeit"]
+      },
+      end: {
+        local: "1918-09-16T03:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1918-03-08-sommerzeit"]
+      },
+      offset: { type: "fixed", seconds: 7200 },
+      isDst: true,
+      abbreviation: "MESZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "A Strasbourg newspaper gives the public clocks forward at 02:00 on 15 April and back at 03:00 on 16 September 1918."
+      },
+      citations: ["de-snn-1918-03-08-sommerzeit"]
+    },
+    {
+      id: "als-strasbourg-mez-1918",
+      version: 1,
+      title: "Strasbourg: Mid-European time, autumn 1918",
+      scope: "Strasbourg, from the end of summer time to the change to French time",
+      clock: "civil",
+      start: {
+        local: "1918-09-16T03:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1918-03-08-sommerzeit"]
+      },
+      end: {
+        local: "1918-11-21T12:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["als-snn-1918-11-21-bekanntmachung", "als-elsasser-1918-12-16-pariser-zeit"],
+        note: "Noon Mid-European time on 21 November 1918 (11:00 UTC): the city's public clocks were set back to 11:05."
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: false,
+      abbreviation: "MEZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "Legal time under the law of 1893 until the mayor's notice put the public clocks on French time at noon on 21 November 1918."
+      },
+      citations: ["de-rgbl-1893-03-12-law", "als-snn-1918-11-21-bekanntmachung"]
+    },
+    {
+      id: "mos-metz-mez-1918",
+      version: 1,
+      title: "Metz: Mid-European time, autumn 1918",
+      scope: "Metz, from the end of summer time to the change to French time",
+      clock: "civil",
+      start: {
+        local: "1918-09-16T03:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["de-snn-1918-03-08-sommerzeit"]
+      },
+      end: {
+        local: "1918-11-19T06:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "day",
+        window: { earliest: "1918-11-19T00:00:00", latest: "1918-11-19T12:00:00" },
+        citations: ["mos-matin-1918-11-21-metz"],
+        note: "On 19 November 1918, the day French troops and Marshal P\xE9tain entered Metz, the cathedral clock had shown French time 'since the morning'; the hour of the change is not reported, and the window is that morning."
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: false,
+      abbreviation: "MEZ",
+      uncertainty: {
+        flag: "documented",
+        reason: "Legal time under the law of 1893 until the cathedral clock was put on French time on the morning of 19 November 1918."
+      },
+      citations: ["de-rgbl-1893-03-12-law", "mos-matin-1918-11-21-metz"]
+    },
+    {
+      id: "als-strasbourg-french-1918",
+      version: 2,
+      title: "Strasbourg: 'French time' as the city set it, five minutes ahead of Greenwich",
+      scope: "Strasbourg's public clocks, from noon on 21 November 1918",
+      clock: "civil",
+      start: {
+        local: "1918-11-21T12:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["als-snn-1918-11-21-bekanntmachung", "als-elsasser-1918-12-16-pariser-zeit"],
+        note: "Noon Mid-European time on 21 November 1918 (11:00 UTC): the city's public clocks were set back to 11:05."
+      },
+      end: {
+        local: "1919-03-01T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "weeks",
+        window: { earliest: "1918-12-16T12:00:00", latest: "1919-03-01T23:00:00" },
+        citations: ["als-elsasser-1918-12-16-pariser-zeit", "als-jh-1919-02-28-railways"],
+        note: "The public clocks were still five minutes ahead of Greenwich in mid-December 1918; when they were corrected is not known. The atlas ends the five minutes at the latest date the sources allow, the start of summer time at 23:00 on 1 March 1919 by these clocks (22:55 UTC), so that night the clocks go forward 55 minutes; it does not carry the five minutes into summer time as +1:05. The window covers every date on which the correction may have been made."
+      },
+      offset: { type: "fixed", seconds: 300 },
+      isDst: false,
+      uncertainty: {
+        flag: "uncertain",
+        reason: "The city set its clocks to 11:05 at noon Mid-European time, five minutes ahead of Greenwich and of French legal time, and they were still so in mid-December; when they were corrected is not known."
+      },
+      citations: ["als-snn-1918-11-21-bekanntmachung", "als-elsasser-1918-12-16-pariser-zeit"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The end note states the decision: the five minutes end at the latest date the sources allow, the start of summer time, and are not carried into summer time as +1:05."
+        }
+      ],
+      note: "The station clock ran five minutes behind the public clocks, that is on French legal time (+0:00). Offsets read on Strasbourg's public clocks during this rule are five minutes ahead of the railway's."
+    },
+    {
+      id: "mos-metz-french-1918",
+      version: 2,
+      title: "Metz: French time from 19 November 1918",
+      scope: "Metz, from 19 November 1918",
+      clock: "civil",
+      start: {
+        local: "1918-11-19T06:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "day",
+        window: { earliest: "1918-11-19T00:00:00", latest: "1918-11-19T12:00:00" },
+        citations: ["mos-matin-1918-11-21-metz"],
+        note: "On 19 November 1918, the day French troops and Marshal P\xE9tain entered Metz, the cathedral clock had shown French time 'since the morning'; the hour of the change is not reported, and the window is that morning."
+      },
+      end: {
+        local: "1919-03-01T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["als-jh-1919-02-28-railways"],
+        note: "The railways of Alsace and Lorraine put their station clocks forward an hour at 23:00 on 1 March 1919, as in the rest of France; the public clocks of Strasbourg and Metz are assumed to have followed."
+      },
+      offset: { type: "fixed", seconds: 0 },
+      isDst: false,
+      abbreviation: "WET",
+      uncertainty: {
+        flag: "uncertain",
+        reason: "A report has the cathedral clock on French time from the morning of 19 November 1918 without saying by how much it changed; the atlas takes French legal time (+0:00), but when Strasbourg went over to French time two days later, the city set its clocks five minutes ahead of Greenwich."
+      },
+      citations: ["mos-matin-1918-11-21-metz", "fr-jo-1911-03-10-law"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged uncertain: the size of the change is not reported, and Strasbourg's clocks, put on French time two days later, were five minutes ahead of Greenwich."
+        }
+      ]
+    },
+    {
+      id: "als-mos-summer-1919",
+      version: 2,
+      title: "French summer time 1919 in Alsace and Lorraine",
+      scope: "Strasbourg and Metz, 1919",
+      clock: "civil",
+      start: {
+        local: "1919-03-01T23:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["als-jh-1919-02-28-railways"],
+        note: "The railways of Alsace and Lorraine put their station clocks forward an hour at 23:00 on 1 March 1919, as in the rest of France; the public clocks of Strasbourg and Metz are assumed to have followed."
+      },
+      end: {
+        local: "1919-10-05T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-petitjournal-1919-10-05"],
+        note: "At 01:00 summer time on 5 October 1919 (00:00 UTC), as in the rest of France; no Alsatian or Lorraine source was found for this change."
+      },
+      offset: { type: "fixed", seconds: 3600 },
+      isDst: true,
+      abbreviation: "WEST",
+      uncertainty: {
+        flag: "uncertain",
+        reason: "The railways of Alsace and Lorraine put their clocks forward to French summer time at 23:00 on 1 March 1919; the atlas takes the cities' public clocks to have gone to it too (+1:00), though Strasbourg's had been five minutes fast that winter and could have become +1:05."
+      },
+      citations: ["als-jh-1919-02-28-railways", "fr-jo-1919-02-11-decree", "fr-petitjournal-1919-10-05"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged uncertain: whether the cities' public clocks went to French summer time (+1:00) or kept a five-minute difference (+1:05) is not known."
+        }
+      ]
+    },
+    {
+      id: "als-mos-wet-1919",
+      version: 1,
+      title: "French legal time from 5 October 1919 in Alsace and Lorraine",
+      scope: "Strasbourg and Metz, from 5 October 1919",
+      clock: "civil",
+      start: {
+        local: "1919-10-05T01:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["fr-petitjournal-1919-10-05"],
+        note: "At 01:00 summer time on 5 October 1919 (00:00 UTC), as in the rest of France; no Alsatian or Lorraine source was found for this change."
+      },
+      end: { local: "1920-01-01T00:00:00", reckoning: "before", kind: "coverage", precision: "second" },
+      offset: { type: "fixed", seconds: 0 },
+      isDst: false,
+      abbreviation: "WET",
+      uncertainty: {
+        flag: "inferred",
+        reason: "Assumed to follow the return to normal time in the rest of France on 5 October 1919; no Alsatian or Lorraine source was found for it."
+      },
+      citations: ["fr-jo-1911-03-10-law", "fr-petitjournal-1919-10-05"]
+    }
+  ]
+};
+
+// src/data/time-atlas/citations-us.json
+var citations_us_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-citations",
+  description: "United States: the Statutes at Large and newspapers of November 1883 and April 1918, read on Library of Congress page images (the newspapers in Chronicling America) on the retrieval date. The excerpts were checked again against the Library of Congress OCR text of each page, and against the page image where the OCR garbles a figure (each citation's checks).",
+  citations: [
+    {
+      id: "us-stat-1918-zones",
+      type: "law",
+      title: "An Act To save daylight and to provide standard time for the United States (ch. 24, approved March 19, 1918), section 1",
+      date: "1918-03-19",
+      issuer: "Congress of the United States (65th Congress)",
+      publication: "United States Statutes at Large, vol. 40, pp. 450-451",
+      url: "https://www.loc.gov/resource/llsalvol.llsal_040/?sp=468",
+      retrieved: "2026-09-28",
+      locator: "40 Stat. 450-451, ch. 24, sec. 1",
+      language: "en",
+      excerpt: "The standard time of the first zone shall be based on the mean astronomical time of the seventy-fifth degree of longitude west from Greenwich; that of the second zone on the ninetieth degree",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "matches",
+          note: "The passage runs from p. 450 to p. 451; the OCR of both pages was read."
+        }
+      ]
+    },
+    {
+      id: "us-stat-1918-dst",
+      type: "law",
+      title: "An Act To save daylight and to provide standard time for the United States (ch. 24, approved March 19, 1918), section 3",
+      date: "1918-03-19",
+      issuer: "Congress of the United States (65th Congress)",
+      publication: "United States Statutes at Large, vol. 40, p. 451",
+      url: "https://www.loc.gov/resource/llsalvol.llsal_040/?sp=469",
+      retrieved: "2026-09-28",
+      locator: "40 Stat. 451, ch. 24, sec. 3",
+      language: "en",
+      excerpt: "at two o'clock antemeridian of the last Sunday in March [...] the standard time of each zone shall be advanced one hour, and at two o'clock antemeridian of the last Sunday in October [...] by the retarding of one hour",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-stat-1919-repeal",
+      type: "law",
+      title: "An Act For the repeal of the daylight-saving law (ch. 51, August 20, 1919; passed over the President's veto)",
+      date: "1919-08-20",
+      issuer: "Congress of the United States (66th Congress)",
+      publication: "United States Statutes at Large, vol. 41, p. 280",
+      url: "https://www.loc.gov/resource/llsalvol.llsal_041/?sp=301",
+      retrieved: "2026-09-28",
+      locator: "41 Stat. 280, ch. 51",
+      language: "en",
+      excerpt: 'That section 3 of the Act entitled "An Act to save daylight and to provide standard time for the United States," approved March 19, 1918, is hereby repealed, effective on the last Sunday of October, 1919',
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-laramie-1918-04-10-zones",
+      type: "newspaper-report",
+      title: "Recognition of Zones",
+      date: "1918-04-10",
+      issuer: "The Laramie Republican (Laramie, Wyo.)",
+      publication: "The Laramie Republican, 10 April 1918",
+      url: "https://www.loc.gov/resource/sn92066979/1918-04-10/ed-1/?sp=5",
+      retrieved: "2026-09-28",
+      locator: "p. 5, foot of col. 4, continued at the top of col. 5",
+      language: "en",
+      excerpt: "The existing standard time zones have been recognized by the interstate commerce commission. [...] there was not time [...] to do other than recognize the existing limits; and that has been done.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }],
+      gloss: "With no time to draw new limits before the Standard Time Act took effect, the Interstate Commerce Commission recognized the existing standard time zones."
+    },
+    {
+      id: "us-stat-1884-dc",
+      type: "law",
+      title: "An act to establish a standard of time in the District of Columbia (ch. 12, approved March 13, 1884)",
+      date: "1884-03-13",
+      issuer: "Congress of the United States (48th Congress)",
+      publication: "United States Statutes at Large, vol. 23, p. 4",
+      url: "https://www.loc.gov/resource/llsalvol.llsal_023/?sp=32",
+      retrieved: "2026-09-28",
+      locator: "23 Stat. 4, ch. 12",
+      language: "en",
+      excerpt: "That the legal standard of time in the District of Columbia shall hereafter be the mean time of the seventy-fifth meridian of longitude west from Greenwich.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-star-1883-11-10-nyc",
+      type: "newspaper-report",
+      title: "Standard Time in New York",
+      date: "1883-11-10",
+      issuer: "Evening Star (Washington, D.C.)",
+      publication: "Evening Star, 10 November 1883",
+      url: "https://www.loc.gov/resource/sn83045462/1883-11-10/ed-1/?sp=5",
+      retrieved: "2026-09-28",
+      locator: "p. 5, col. 4",
+      language: "en",
+      excerpt: 'The mayor has signed the resolution changing the city time and reading "that at noon, November 18, 1883, and thereafter all time in the city of New York shall conform to the new standard [...]"',
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-sun-1883-11-19-cityhall",
+      type: "newspaper-report",
+      title: "New York Time at an End: the Old Standard Dropped, and the New One Adopted",
+      date: "1883-11-19",
+      issuer: "The Sun (New York)",
+      publication: "The Sun, 19 November 1883",
+      url: "https://www.loc.gov/resource/sn83030272/1883-11-19/ed-1/?sp=1",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 1",
+      language: "en",
+      excerpt: "lifting a pin, stopped the great clock at 12 minutes past 12 o'clock. Three minutes 58 seconds and 38-100 seconds later he started the works again. Thus the metropolis officially recognized the new time",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "partial",
+          note: 'The OCR garbles the figures ("tlire nilnutei 33 seconds and 8lui seconds").'
+        },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ],
+      gloss: "The City Hall clock was stopped for 3 min 58.38 s to bring it from New York time to Eastern standard time."
+    },
+    {
+      id: "us-star-1883-11-17-baltimore",
+      type: "newspaper-report",
+      title: "Standard Time in Baltimore",
+      date: "1883-11-17",
+      issuer: "Evening Star (Washington, D.C.)",
+      publication: "Evening Star, 17 November 1883",
+      url: "https://www.loc.gov/resource/sn83045462/1883-11-17/ed-1/?sp=5",
+      retrieved: "2026-09-28",
+      locator: "p. 5, col. 5",
+      language: "en",
+      excerpt: "The new time standard of the 75th meridian, which advances Baltimore time six minutes and twenty-eight seconds, goes into effect here at noon to-morrow. [...] and city time reckoned by it.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "partial",
+          note: 'The OCR reads "73 h meridian" for "75th meridian".'
+        },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ]
+    },
+    {
+      id: "us-star-1883-11-19-departments",
+      type: "newspaper-report",
+      title: "How Father Time Was Robbed of Eight Minutes Yesterday",
+      date: "1883-11-19",
+      issuer: "Evening Star (Washington, D.C.)",
+      publication: "Evening Star, 19 November 1883",
+      url: "https://www.loc.gov/resource/sn83045462/1883-11-19/ed-1/?sp=1",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 5",
+      language: "en",
+      excerpt: "The business men generally who have no connection with the railroads will keep the old time, regulating their watches by the bells at noon. [...] The clocks in the up-town departments have not been changed",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-star-1883-11-19-bells",
+      type: "newspaper-report",
+      title: "How Father Time Was Robbed of Eight Minutes Yesterday: the fire bells to give both times",
+      date: "1883-11-19",
+      issuer: "Evening Star (Washington, D.C.)",
+      publication: "Evening Star, 19 November 1883",
+      url: "https://www.loc.gov/resource/sn83045462/1883-11-19/ed-1/?sp=1",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 5",
+      language: "en",
+      excerpt: "the naval observatory will signal every day the new time, eight minutes and twelve seconds earlier, when the fire-alarm bells will each strike one simultaneously; then, eight minutes and twelve seconds later, they will strike the usual number (twelve)",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "partial",
+          note: 'The OCR garbles the first "twelve seconds" ("j tu v seconds").'
+        },
+        { method: "page-image", date: "2026-09-28", result: "matches" }
+      ],
+      gloss: "Washington noon came 8 min 12 s after Eastern standard noon."
+    },
+    {
+      id: "us-narragansett-1883-11-03-providence",
+      type: "newspaper-report",
+      title: "Local news (the railroads centering in Providence adopt standard time)",
+      date: "1883-11-03",
+      issuer: "Narragansett Herald (Narragansett Pier, R.I.)",
+      publication: "Narragansett Herald, 3 November 1883",
+      url: "https://www.loc.gov/resource/sn92063989/1883-11-03/ed-1/?sp=2",
+      retrieved: "2026-09-28",
+      locator: "p. 2, col. 1",
+      language: "en",
+      excerpt: "which will be a set back of 14 minutes and 40 seconds, thus the railroad time will be fifteen minutes slower than Providence time.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-pawtucket-1883-11-23-providence",
+      type: "newspaper-report",
+      title: "Local news (the new standard of time in Pawtucket and Providence)",
+      date: "1883-11-23",
+      issuer: "Pawtucket Gazette and Chronicle (Pawtucket, R.I.)",
+      publication: "Pawtucket Gazette and Chronicle, 23 November 1883",
+      url: "https://www.loc.gov/resource/sn83021578/1883-11-23/ed-1/?sp=2",
+      retrieved: "2026-09-28",
+      locator: "p. 2, col. 5",
+      language: "en",
+      excerpt: 'The Providence authorities, as in other important matters, procrastinated, and did not "come to (the new) time" until Tuesday.',
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }],
+      gloss: "Providence adopted standard time on Tuesday 20 November 1883."
+    },
+    {
+      id: "us-indj-1883-11-19-noon",
+      type: "newspaper-report",
+      title: "The Change in Time: the Standard Time Duly Adopted",
+      date: "1883-11-19",
+      issuer: "The Indianapolis Journal",
+      publication: "The Indianapolis Journal, 19 November 1883",
+      url: "https://www.loc.gov/resource/sn82015679/1883-11-19/ed-1/?sp=8",
+      retrieved: "2026-09-28",
+      locator: "p. 8, col. 1",
+      language: "en",
+      excerpt: "The new change in time, the central standard, as it is called, went into effect at 12 o'clock, noon, yesterday, and the jewelers of the city will to-day change their regulators to correspond.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-indj-1883-11-19-courthouse",
+      type: "newspaper-report",
+      title: "The Change in Time: the Standard Time Duly Adopted",
+      date: "1883-11-19",
+      issuer: "The Indianapolis Journal",
+      publication: "The Indianapolis Journal, 19 November 1883",
+      url: "https://www.loc.gov/resource/sn82015679/1883-11-19/ed-1/?sp=8",
+      retrieved: "2026-09-28",
+      locator: "p. 8, col. 1",
+      language: "en",
+      excerpt: "Yesterday afternoon the court-house clock was set back sixteen minutes, and is now speeding along, judging from its placid face, wholly oblivious of the change.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-bourbon-1883-11-20-louisville",
+      type: "newspaper-report",
+      title: "Local notes (standard time in Louisville)",
+      date: "1883-11-20",
+      issuer: "Semi-Weekly Bourbon News (Paris, Ky.)",
+      publication: "Semi-Weekly Bourbon News, 20 November 1883",
+      url: "https://www.loc.gov/resource/sn86069872/1883-11-20/ed-1/?sp=1",
+      retrieved: "2026-09-28",
+      locator: "p. 1, col. 2",
+      language: "en",
+      excerpt: `Dr. E. A. Grant, of Louisville, is the father of the "standard time" arrangement [...] In that city the fire bells rang at twelve o'clock, new time, and the city clock was turned back 18 minutes.`,
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-argus-1883-11-19-chicago",
+      type: "newspaper-report",
+      title: "By Meridian Ninety: the New Standard Time Went into Effect at Noon Yesterday",
+      date: "1883-11-19",
+      issuer: "The Rock Island Argus (Rock Island, Ill.)",
+      publication: "The Rock Island Argus, 19 November 1883",
+      url: "https://www.loc.gov/resource/sn92053943/1883-11-19/ed-1/?sp=4",
+      retrieved: "2026-09-28",
+      locator: "p. 4, col. 3",
+      language: "en",
+      excerpt: "The central time is based upon that of the 90th meridian, which is nine minutes slower than Chicago time.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-ottawa-1883-11-24-chicago",
+      type: "newspaper-report",
+      title: "Standard Time",
+      date: "1883-11-24",
+      issuer: "The Ottawa Free Trader (Ottawa, Ill.)",
+      publication: "The Ottawa Free Trader, 24 November 1883",
+      url: "https://www.loc.gov/resource/sn84038582/1883-11-24/ed-1/?sp=7",
+      retrieved: "2026-09-28",
+      locator: "p. 7, col. 4",
+      language: "en",
+      excerpt: "The Chicago papers of Sunday [...] the change in the standard time inaugurated in that city on Sunday noon. The new time standard has been adopted [...] by the Board of Trade and a number of hotels",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-globe-1883-11-25-stpaul",
+      type: "newspaper-report",
+      title: "New Standard Time: Its Adoption To-Day Throughout the Whole Northwest",
+      date: "1883-11-25",
+      issuer: "Daily Globe (St. Paul, Minn.)",
+      publication: "The St. Paul Sunday Globe, 25 November 1883",
+      url: "https://www.loc.gov/resource/sn83025287/1883-11-25/ed-1/?sp=5",
+      retrieved: "2026-09-28",
+      locator: "p. 5, col. 3",
+      language: "en",
+      excerpt: "At noon to-day in St. Paul and throughout this part of the northwest the new standard time will be inaugurated.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-globe-1883-11-25-meantime",
+      type: "newspaper-report",
+      title: "New Standard Time: Its Adoption To-Day Throughout the Whole Northwest",
+      date: "1883-11-25",
+      issuer: "Daily Globe (St. Paul, Minn.)",
+      publication: "The St. Paul Sunday Globe, 25 November 1883",
+      url: "https://www.loc.gov/resource/sn83025287/1883-11-25/ed-1/?sp=5",
+      retrieved: "2026-09-28",
+      locator: "p. 5, col. 3",
+      language: "en",
+      excerpt: "Our new time will be twelve minutes faster than the old time, which places us only three degrees east of our former meantime.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-globe-1883-11-25-omaha",
+      type: "newspaper-report",
+      title: "New Standard Time: Its Adoption To-Day Throughout the Whole Northwest",
+      date: "1883-11-25",
+      issuer: "Daily Globe (St. Paul, Minn.)",
+      publication: "The St. Paul Sunday Globe, 25 November 1883",
+      url: "https://www.loc.gov/resource/sn83025287/1883-11-25/ed-1/?sp=5",
+      retrieved: "2026-09-28",
+      locator: "p. 5, col. 3",
+      language: "en",
+      excerpt: "The Chicago, St. Paul, Minneapolis & Omaha Railway company, which formerly was goverened by Omaha time, make a change ahead of 23 minutes and 40 seconds, or ahead 12 minutes and 8 seconds by St. Paul time.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }],
+      gloss: `The railway moved its clocks from Omaha time to the new central time, 23 min 40 s ahead, which is 12 min 8 s ahead of Saint Paul time. "goverened" is the paper's spelling.`
+    },
+    {
+      id: "us-globe-1883-11-25-council",
+      type: "newspaper-report",
+      title: "New Standard Time: Its Adoption To-Day Throughout the Whole Northwest",
+      date: "1883-11-25",
+      issuer: "Daily Globe (St. Paul, Minn.)",
+      publication: "The St. Paul Sunday Globe, 25 November 1883",
+      url: "https://www.loc.gov/resource/sn83025287/1883-11-25/ed-1/?sp=5",
+      retrieved: "2026-09-28",
+      locator: "p. 5, col. 3",
+      language: "en",
+      excerpt: "The city council and chamber of commerce have adopted it.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-globe-1883-11-25-minneapolis",
+      type: "newspaper-report",
+      title: "Minneapolis Globules",
+      date: "1883-11-25",
+      issuer: "Daily Globe (St. Paul, Minn.)",
+      publication: "The St. Paul Sunday Globe, 25 November 1883",
+      url: "https://www.loc.gov/resource/sn83025287/1883-11-25/ed-1/?sp=6",
+      retrieved: "2026-09-28",
+      locator: "p. 6, col. 1",
+      language: "en",
+      excerpt: "The new standard time will be generally adopted in Minneapolis to-day.",
+      excerptBasis: "page-image",
+      checks: [{ method: "ocr", date: "2026-09-28", result: "matches" }]
+    },
+    {
+      id: "us-globe-1883-11-27-minneapolis",
+      type: "newspaper-report",
+      title: "Minneapolis Globelets",
+      date: "1883-11-27",
+      issuer: "Daily Globe (St. Paul, Minn.)",
+      publication: "The St. Paul Daily Globe, 27 November 1883",
+      url: "https://www.loc.gov/resource/sn83025287/1883-11-27/ed-1/?sp=6",
+      retrieved: "2026-09-28",
+      locator: "p. 6, col. 1",
+      language: "en",
+      excerpt: "The new standard time is working finely throughout Minneapolis. Some are slow in adopting it as the English nation was in adopting the Gregorian calendar, but the prejudice will soon die out.",
+      excerptBasis: "page-image",
+      checks: [
+        {
+          method: "ocr",
+          date: "2026-09-28",
+          result: "matches",
+          note: 'Against the Library of Congress OCR text of the page, which garbles "calendar" ("\u2022dendar"); its first letter is blotted on the page image too.'
+        }
+      ],
+      gloss: "Two days after the change, standard time was in general use in Minneapolis, though some were slow to adopt it."
+    }
+  ]
+};
+
+// src/data/time-atlas/rules-us.json
+var rules_us_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-rules",
+  description: "United States: city time until each city adopted standard time in November 1883 (Washington in March 1884), and the Standard Time Act of 1918 with daylight saving time in 1918 and 1919.",
+  jurisdictions: [
+    {
+      id: "us-nyc",
+      name: "New York",
+      country: "US",
+      description: "The city of New York (Manhattan).",
+      timeline: {
+        civil: [
+          "us-nyc-city-time-before-1883",
+          "us-nyc-eastern-1883",
+          "us-eastern-dst-1918",
+          "us-eastern-1918",
+          "us-eastern-dst-1919",
+          "us-eastern-1919"
+        ]
+      }
+    },
+    {
+      id: "us-baltimore",
+      name: "Baltimore",
+      country: "US",
+      description: "The city of Baltimore, Maryland.",
+      timeline: {
+        civil: [
+          "us-baltimore-city-time-before-1883",
+          "us-baltimore-eastern-1883",
+          "us-eastern-dst-1918",
+          "us-eastern-1918",
+          "us-eastern-dst-1919",
+          "us-eastern-1919"
+        ]
+      }
+    },
+    {
+      id: "us-washington",
+      name: "Washington",
+      country: "US",
+      description: "The city of Washington, District of Columbia.",
+      timeline: {
+        civil: [
+          "us-washington-city-time-before-1883",
+          "us-washington-two-times-1883",
+          "us-washington-eastern-1884",
+          "us-eastern-dst-1918",
+          "us-eastern-1918",
+          "us-eastern-dst-1919",
+          "us-eastern-1919"
+        ]
+      }
+    },
+    {
+      id: "us-providence",
+      name: "Providence",
+      country: "US",
+      description: "The city of Providence, Rhode Island.",
+      timeline: {
+        civil: [
+          "us-providence-city-time-before-1883",
+          "us-providence-eastern-1883",
+          "us-eastern-dst-1918",
+          "us-eastern-1918",
+          "us-eastern-dst-1919",
+          "us-eastern-1919"
+        ]
+      }
+    },
+    {
+      id: "us-indianapolis",
+      name: "Indianapolis",
+      country: "US",
+      description: "The city of Indianapolis, Indiana.",
+      timeline: {
+        civil: [
+          "us-indianapolis-city-time-before-1883",
+          "us-indianapolis-central-1883",
+          "us-central-dst-1918",
+          "us-central-1918",
+          "us-central-dst-1919",
+          "us-central-1919"
+        ]
+      }
+    },
+    {
+      id: "us-louisville",
+      name: "Louisville",
+      country: "US",
+      description: "The city of Louisville, Kentucky.",
+      timeline: {
+        civil: [
+          "us-louisville-city-time-before-1883",
+          "us-louisville-central-1883",
+          "us-central-dst-1918",
+          "us-central-1918",
+          "us-central-dst-1919",
+          "us-central-1919"
+        ]
+      }
+    },
+    {
+      id: "us-chicago",
+      name: "Chicago",
+      country: "US",
+      description: "The city of Chicago, Illinois.",
+      timeline: {
+        civil: [
+          "us-chicago-city-time-before-1883",
+          "us-chicago-central-1883",
+          "us-central-dst-1918",
+          "us-central-1918",
+          "us-central-dst-1919",
+          "us-central-1919"
+        ]
+      }
+    },
+    {
+      id: "us-saint-paul",
+      name: "Saint Paul",
+      country: "US",
+      description: "The city of Saint Paul, Minnesota.",
+      timeline: {
+        civil: [
+          "us-saint-paul-city-time-before-1883",
+          "us-saint-paul-central-1883",
+          "us-central-dst-1918",
+          "us-central-1918",
+          "us-central-dst-1919",
+          "us-central-1919"
+        ]
+      }
+    },
+    {
+      id: "us-minneapolis",
+      name: "Minneapolis",
+      country: "US",
+      description: "The city of Minneapolis, Minnesota.",
+      timeline: {
+        civil: [
+          "us-minneapolis-city-time-before-1883",
+          "us-minneapolis-central-1883",
+          "us-central-dst-1918",
+          "us-central-1918",
+          "us-central-dst-1919",
+          "us-central-1919"
+        ]
+      }
+    }
+  ],
+  rules: [
+    {
+      id: "us-eastern-dst-1918",
+      version: 2,
+      title: "Eastern daylight saving time 1918 (Standard Time Act, 1918)",
+      scope: "Eastern zone (the 75th meridian): the cities covered here that kept its time",
+      clock: "civil",
+      start: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      end: {
+        local: "1918-10-27T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -14400 },
+      isDst: true,
+      abbreviation: "EDT",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The Act of 19 March 1918 advances each zone's standard time one hour from 02:00 on the last Sunday in March to 02:00 on the last Sunday in October. The Interstate Commerce Commission's zone order was not read: a report says that for 1918 it recognized the zone limits already in use, and each covered city is taken to be in the zone whose time it had kept since 1883 or 1884."
+      },
+      citations: ["us-stat-1918-dst", "us-stat-1918-zones", "us-laramie-1918-04-10-zones"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the Interstate Commerce Commission's zone order was not read, so which zone each city was in is assumed from the time it had kept since 1883 or 1884. A report that the Commission recognized the existing zone limits for 1918 is now cited."
+        }
+      ],
+      note: "The Interstate Commerce Commission, charged by the Act with defining the zones, recognized the limits already in use for 1918 (a report; the order itself was not read)."
+    },
+    {
+      id: "us-eastern-1918",
+      version: 2,
+      title: "Eastern standard time, winter 1918-1919",
+      scope: "Eastern zone (the 75th meridian): the cities covered here that kept its time",
+      clock: "civil",
+      start: {
+        local: "1918-10-27T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      end: {
+        local: "1919-03-30T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -18e3 },
+      isDst: false,
+      abbreviation: "EST",
+      uncertainty: {
+        flag: "inferred",
+        reason: "Standard time of the zone under the Act of 19 March 1918 between its first and second summers; which zone each city was in is assumed, as for 1918."
+      },
+      citations: ["us-stat-1918-zones", "us-stat-1918-dst", "us-laramie-1918-04-10-zones"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the Interstate Commerce Commission's zone orders were not read, so which zone each city was in is assumed."
+        }
+      ],
+      note: "The Interstate Commerce Commission's zone orders were not read; a report says that for 1918 it recognized the zone limits already in use, and each covered city is taken to have stayed in the zone whose time it had kept since 1883 or 1884."
+    },
+    {
+      id: "us-eastern-dst-1919",
+      version: 2,
+      title: "Eastern daylight saving time 1919",
+      scope: "Eastern zone (the 75th meridian): the cities covered here that kept its time",
+      clock: "civil",
+      start: {
+        local: "1919-03-30T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      end: {
+        local: "1919-10-26T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst", "us-stat-1919-repeal"]
+      },
+      offset: { type: "fixed", seconds: -14400 },
+      isDst: true,
+      abbreviation: "EDT",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The Act again advanced the clocks on the last Sunday in March 1919, and the repeal of August 1919 took effect after the last Sunday in October; which zone each city was in is assumed, as for 1918."
+      },
+      citations: ["us-stat-1918-dst", "us-stat-1919-repeal", "us-laramie-1918-04-10-zones"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the Interstate Commerce Commission's zone orders were not read, so which zone each city was in is assumed."
+        }
+      ],
+      note: "The Interstate Commerce Commission's zone orders were not read; a report says that for 1918 it recognized the zone limits already in use, and each covered city is taken to have stayed in the zone whose time it had kept since 1883 or 1884."
+    },
+    {
+      id: "us-eastern-1919",
+      version: 2,
+      title: "Eastern standard time from 26 October 1919",
+      scope: "Eastern zone (the 75th meridian): the cities covered here that kept its time",
+      clock: "civil",
+      start: {
+        local: "1919-10-26T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst", "us-stat-1919-repeal"]
+      },
+      end: { local: "1920-01-01T00:00:00", reckoning: "before", kind: "coverage", precision: "second" },
+      offset: { type: "fixed", seconds: -18e3 },
+      isDst: false,
+      abbreviation: "EST",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The repeal returned each zone to the mean time of its meridian on the last Sunday in October 1919; which zone each city was in is assumed, as for 1918."
+      },
+      citations: ["us-stat-1918-zones", "us-stat-1919-repeal", "us-laramie-1918-04-10-zones"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the Interstate Commerce Commission's zone orders were not read, so which zone each city was in is assumed."
+        }
+      ],
+      note: "The Interstate Commerce Commission's zone orders were not read; a report says that for 1918 it recognized the zone limits already in use, and each covered city is taken to have stayed in the zone whose time it had kept since 1883 or 1884."
+    },
+    {
+      id: "us-central-dst-1918",
+      version: 2,
+      title: "Central daylight saving time 1918 (Standard Time Act, 1918)",
+      scope: "Central zone (the 90th meridian): the cities covered here that kept its time",
+      clock: "civil",
+      start: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      end: {
+        local: "1918-10-27T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -18e3 },
+      isDst: true,
+      abbreviation: "CDT",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The Act of 19 March 1918 advances each zone's standard time one hour from 02:00 on the last Sunday in March to 02:00 on the last Sunday in October. The Interstate Commerce Commission's zone order was not read: a report says that for 1918 it recognized the zone limits already in use, and each covered city is taken to be in the zone whose time it had kept since 1883 or 1884."
+      },
+      citations: ["us-stat-1918-dst", "us-stat-1918-zones", "us-laramie-1918-04-10-zones"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the Interstate Commerce Commission's zone order was not read, so which zone each city was in is assumed from the time it had kept since 1883 or 1884. A report that the Commission recognized the existing zone limits for 1918 is now cited."
+        }
+      ],
+      note: "The Interstate Commerce Commission, charged by the Act with defining the zones, recognized the limits already in use for 1918 (a report; the order itself was not read)."
+    },
+    {
+      id: "us-central-1918",
+      version: 2,
+      title: "Central standard time, winter 1918-1919",
+      scope: "Central zone (the 90th meridian): the cities covered here that kept its time",
+      clock: "civil",
+      start: {
+        local: "1918-10-27T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      end: {
+        local: "1919-03-30T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -21600 },
+      isDst: false,
+      abbreviation: "CST",
+      uncertainty: {
+        flag: "inferred",
+        reason: "Standard time of the zone under the Act of 19 March 1918 between its first and second summers; which zone each city was in is assumed, as for 1918."
+      },
+      citations: ["us-stat-1918-zones", "us-stat-1918-dst", "us-laramie-1918-04-10-zones"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the Interstate Commerce Commission's zone orders were not read, so which zone each city was in is assumed."
+        }
+      ],
+      note: "The Interstate Commerce Commission's zone orders were not read; a report says that for 1918 it recognized the zone limits already in use, and each covered city is taken to have stayed in the zone whose time it had kept since 1883 or 1884."
+    },
+    {
+      id: "us-central-dst-1919",
+      version: 2,
+      title: "Central daylight saving time 1919",
+      scope: "Central zone (the 90th meridian): the cities covered here that kept its time",
+      clock: "civil",
+      start: {
+        local: "1919-03-30T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      end: {
+        local: "1919-10-26T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst", "us-stat-1919-repeal"]
+      },
+      offset: { type: "fixed", seconds: -18e3 },
+      isDst: true,
+      abbreviation: "CDT",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The Act again advanced the clocks on the last Sunday in March 1919, and the repeal of August 1919 took effect after the last Sunday in October; which zone each city was in is assumed, as for 1918."
+      },
+      citations: ["us-stat-1918-dst", "us-stat-1919-repeal", "us-laramie-1918-04-10-zones"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the Interstate Commerce Commission's zone orders were not read, so which zone each city was in is assumed."
+        }
+      ],
+      note: "The Interstate Commerce Commission's zone orders were not read; a report says that for 1918 it recognized the zone limits already in use, and each covered city is taken to have stayed in the zone whose time it had kept since 1883 or 1884."
+    },
+    {
+      id: "us-central-1919",
+      version: 2,
+      title: "Central standard time from 26 October 1919",
+      scope: "Central zone (the 90th meridian): the cities covered here that kept its time",
+      clock: "civil",
+      start: {
+        local: "1919-10-26T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst", "us-stat-1919-repeal"]
+      },
+      end: { local: "1920-01-01T00:00:00", reckoning: "before", kind: "coverage", precision: "second" },
+      offset: { type: "fixed", seconds: -21600 },
+      isDst: false,
+      abbreviation: "CST",
+      uncertainty: {
+        flag: "inferred",
+        reason: "The repeal returned each zone to the mean time of its meridian on the last Sunday in October 1919; which zone each city was in is assumed, as for 1918."
+      },
+      citations: ["us-stat-1918-zones", "us-stat-1919-repeal", "us-laramie-1918-04-10-zones"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the Interstate Commerce Commission's zone orders were not read, so which zone each city was in is assumed."
+        }
+      ],
+      note: "The Interstate Commerce Commission's zone orders were not read; a report says that for 1918 it recognized the zone limits already in use, and each covered city is taken to have stayed in the zone whose time it had kept since 1883 or 1884."
+    },
+    {
+      id: "us-nyc-city-time-before-1883",
+      version: 2,
+      title: "New York: New York city time",
+      scope: "New York, before standard time",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "minute",
+        window: { earliest: "1883-11-18T12:00:00", latest: "1883-11-18T12:08:01.620" },
+        note: "The city resolved that its time conform to the new standard at noon on 18 November 1883; the Western Union time ball fell at noon Eastern time, and the City Hall clock was stopped at 12:12 city time (12:08:01.62 Eastern) until the new time caught up.",
+        citations: ["us-star-1883-11-10-nyc", "us-sun-1883-11-19-cityhall"]
+      },
+      offset: { type: "fixed", seconds: -17761.62 },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: 'The City Hall clock was stopped for "Three minutes 58 seconds and 38-100 seconds" to take up Eastern time, so city time was 4 h 56 min 1.62 s behind Greenwich (the longitude gives 4 h 56 min 1.4 s); that the city kept it from 1870 is assumed.'
+      },
+      citations: ["us-sun-1883-11-19-cityhall", "us-star-1883-11-10-nyc"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the report describes the city's time at the change of 1883 only, and the rule carries it back to 1870."
+        }
+      ]
+    },
+    {
+      id: "us-nyc-eastern-1883",
+      version: 1,
+      title: "New York: Eastern standard time",
+      scope: "New York, from its adoption of standard time to the Standard Time Act of 1918",
+      clock: "civil",
+      start: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "minute",
+        window: { earliest: "1883-11-18T12:00:00", latest: "1883-11-18T12:08:01.620" },
+        note: "The city resolved that its time conform to the new standard at noon on 18 November 1883; the Western Union time ball fell at noon Eastern time, and the City Hall clock was stopped at 12:12 city time (12:08:01.62 Eastern) until the new time caught up.",
+        citations: ["us-star-1883-11-10-nyc", "us-sun-1883-11-19-cityhall"]
+      },
+      end: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -18e3 },
+      isDst: false,
+      abbreviation: "EST",
+      uncertainty: {
+        flag: "documented",
+        reason: "The mayor signed the resolution that from noon on 18 November 1883 all time in the city conform to the 75th-meridian standard."
+      },
+      citations: ["us-star-1883-11-10-nyc", "us-sun-1883-11-19-cityhall"]
+    },
+    {
+      id: "us-baltimore-city-time-before-1883",
+      version: 2,
+      title: "Baltimore: Baltimore city time",
+      scope: "Baltimore, before standard time",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "minute",
+        window: { earliest: "1883-11-18T12:00:00", latest: "1883-11-18T12:06:28" },
+        note: "Announced for noon on 18 November 1883; whether noon by the old or the new time is not said, and the window covers both.",
+        citations: ["us-star-1883-11-17-baltimore"]
+      },
+      offset: { type: "fixed", seconds: -18388 },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: 'The new standard "advances Baltimore time six minutes and twenty-eight seconds", so city time was 5 h 6 min 28 s behind Greenwich (the longitude gives 5 h 6 min 26.9 s); that the city kept it from 1870 is assumed.'
+      },
+      citations: ["us-star-1883-11-17-baltimore"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the report describes the city's time at the change of 1883 only, and the rule carries it back to 1870."
+        }
+      ]
+    },
+    {
+      id: "us-baltimore-eastern-1883",
+      version: 1,
+      title: "Baltimore: Eastern standard time",
+      scope: "Baltimore, from its adoption of standard time to the Standard Time Act of 1918",
+      clock: "civil",
+      start: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "minute",
+        window: { earliest: "1883-11-18T12:00:00", latest: "1883-11-18T12:06:28" },
+        note: "Announced for noon on 18 November 1883; whether noon by the old or the new time is not said, and the window covers both.",
+        citations: ["us-star-1883-11-17-baltimore"]
+      },
+      end: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -18e3 },
+      isDst: false,
+      abbreviation: "EST",
+      uncertainty: {
+        flag: "documented",
+        reason: "The new standard was announced to take effect at noon on 18 November 1883, with city time reckoned by it."
+      },
+      citations: ["us-star-1883-11-17-baltimore"]
+    },
+    {
+      id: "us-washington-city-time-before-1883",
+      version: 2,
+      title: "Washington: Washington mean time",
+      scope: "Washington, before standard time",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1883-11-18T17:00:00",
+        reckoning: "utc",
+        kind: "event",
+        precision: "minute",
+        note: "Noon Eastern time on 18 November 1883, when the railroads and part of the city changed; the offset used here does not change.",
+        citations: ["us-star-1883-11-19-departments"]
+      },
+      offset: { type: "fixed", seconds: -18492 },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: 'The Naval Observatory was to signal the new time "eight minutes and twelve seconds earlier" than Washington noon, so Washington time was 5 h 8 min 12 s behind Greenwich (the longitude gives 5 h 8 min 8.7 s); that the city kept it from 1870 is assumed.'
+      },
+      citations: ["us-star-1883-11-19-bells"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred: the report describes the city's time at the change of 1883 only, and the rule carries it back to 1870."
+        }
+      ]
+    },
+    {
+      id: "us-washington-two-times-1883",
+      version: 2,
+      title: "Washington: Washington mean time kept officially while standard time spread",
+      scope: "Washington, 18 November 1883 to the act of 13 March 1884",
+      clock: "civil",
+      start: {
+        local: "1883-11-18T17:00:00",
+        reckoning: "utc",
+        kind: "event",
+        precision: "minute",
+        note: "Noon Eastern time on 18 November 1883, when the railroads and part of the city changed; the offset used here does not change.",
+        citations: ["us-star-1883-11-19-departments"]
+      },
+      end: {
+        local: "1884-03-13T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "weeks",
+        window: { earliest: "1884-03-13T00:00:00", latest: "1884-03-31T23:59:59" },
+        note: "The act took effect on its approval, 13 March 1884; when the departments and the fire bells changed is not recorded here, and the window runs to the end of March.",
+        citations: ["us-stat-1884-dc"]
+      },
+      offset: { type: "fixed", seconds: -18492 },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "uncertain",
+        reason: "From 18 November 1883 the railroads and the businesses dealing with them kept Eastern time, while other businesses, the government departments and the fire bells at noon kept Washington time until Congress acted; the atlas gives Washington time."
+      },
+      citations: ["us-star-1883-11-19-departments", "us-star-1883-11-19-bells"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The window now ends at the end of 31 March, as its note says, not at the start of that day."
+        }
+      ]
+    },
+    {
+      id: "us-washington-eastern-1884",
+      version: 2,
+      title: "Washington: Eastern standard time",
+      scope: "Washington, from its adoption of standard time to the Standard Time Act of 1918",
+      clock: "civil",
+      start: {
+        local: "1884-03-13T00:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "weeks",
+        window: { earliest: "1884-03-13T00:00:00", latest: "1884-03-31T23:59:59" },
+        note: "The act took effect on its approval, 13 March 1884; when the departments and the fire bells changed is not recorded here, and the window runs to the end of March.",
+        citations: ["us-stat-1884-dc"]
+      },
+      end: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -18e3 },
+      isDst: false,
+      abbreviation: "EST",
+      uncertainty: {
+        flag: "documented",
+        reason: "The act of 13 March 1884 makes the mean time of the 75th meridian the legal standard of time in the District of Columbia."
+      },
+      citations: ["us-stat-1884-dc"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The window now ends at the end of 31 March, as its note says, not at the start of that day."
+        }
+      ]
+    },
+    {
+      id: "us-providence-city-time-before-1883",
+      version: 2,
+      title: "Providence: Providence time (local mean time)",
+      scope: "Providence, before standard time",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1883-11-20T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "day",
+        window: { earliest: "1883-11-20T00:00:00", latest: "1883-11-20T23:59:59" },
+        note: "The city authorities adopted the new time on Tuesday 20 November 1883, two days after the railroads; the hour is not reported, and noon is used.",
+        citations: ["us-pawtucket-1883-11-23-providence"]
+      },
+      offset: { type: "fixed", seconds: -17120 },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: 'The railroads centering in Providence were to make "a set back of 14 minutes and 40 seconds", so that "the railroad time will be fifteen minutes slower than Providence time". Taking the set-back as measured from Providence time, the atlas puts Providence time 4 h 45 min 20 s behind Greenwich (the report rounds it to fifteen minutes; the longitude gives 4 h 45 min 39.1 s) and assumes the city kept it from 1870.'
+      },
+      citations: ["us-narragansett-1883-11-03-providence", "us-pawtucket-1883-11-23-providence"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: 'City time now taken from the report ("a set back of 14 minutes and 40 seconds"), as for every city whose change a report measures, instead of from the longitude; reason corrected.'
+        }
+      ]
+    },
+    {
+      id: "us-providence-eastern-1883",
+      version: 1,
+      title: "Providence: Eastern standard time",
+      scope: "Providence, from its adoption of standard time to the Standard Time Act of 1918",
+      clock: "civil",
+      start: {
+        local: "1883-11-20T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "day",
+        window: { earliest: "1883-11-20T00:00:00", latest: "1883-11-20T23:59:59" },
+        note: "The city authorities adopted the new time on Tuesday 20 November 1883, two days after the railroads; the hour is not reported, and noon is used.",
+        citations: ["us-pawtucket-1883-11-23-providence"]
+      },
+      end: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -18e3 },
+      isDst: false,
+      abbreviation: "EST",
+      uncertainty: {
+        flag: "documented",
+        reason: "The city authorities adopted the new time on Tuesday 20 November 1883."
+      },
+      citations: ["us-pawtucket-1883-11-23-providence"]
+    },
+    {
+      id: "us-indianapolis-city-time-before-1883",
+      version: 3,
+      title: "Indianapolis: Indianapolis local time (local mean time)",
+      scope: "Indianapolis, before standard time",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "hour",
+        window: { earliest: "1883-11-18T11:44:00", latest: "1883-11-18T18:00:00" },
+        note: "Central time went into effect at noon on 18 November 1883, whether noon by the old time or by the new is not said, and the court-house clock was set back that afternoon; the jewelers were to change their regulators the next day. The window runs from noon by the old city time (11:44 Central) to 18:00.",
+        citations: ["us-indj-1883-11-19-noon", "us-indj-1883-11-19-courthouse"]
+      },
+      offset: { type: "fixed", seconds: -20640 },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: '"Yesterday afternoon the court-house clock was set back sixteen minutes", so city time is taken as 5 h 44 min behind Greenwich, 16 minutes ahead of Central time (the report gives whole minutes; the longitude gives 5 h 44 min 37.9 s); that the city kept it from 1870 is assumed.'
+      },
+      citations: ["us-indj-1883-11-19-courthouse", "us-indj-1883-11-19-noon"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: 'City time now taken from the report ("set back sixteen minutes"), as for every city whose change a report measures, instead of from the longitude; the reason no longer mentions fifteen minutes, which no cited source says.'
+        },
+        {
+          version: 3,
+          date: "2026-09-28",
+          summary: "The window of the change now opens at noon by the old city time (11:44 Central): the report does not say whether the change came at noon by the old time or the new."
+        }
+      ]
+    },
+    {
+      id: "us-indianapolis-central-1883",
+      version: 2,
+      title: "Indianapolis: Central standard time",
+      scope: "Indianapolis, from its adoption of standard time to the Standard Time Act of 1918",
+      clock: "civil",
+      start: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "hour",
+        window: { earliest: "1883-11-18T11:44:00", latest: "1883-11-18T18:00:00" },
+        note: "Central time went into effect at noon on 18 November 1883, whether noon by the old time or by the new is not said, and the court-house clock was set back that afternoon; the jewelers were to change their regulators the next day. The window runs from noon by the old city time (11:44 Central) to 18:00.",
+        citations: ["us-indj-1883-11-19-noon", "us-indj-1883-11-19-courthouse"]
+      },
+      end: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -21600 },
+      isDst: false,
+      abbreviation: "CST",
+      uncertainty: {
+        flag: "documented",
+        reason: "Central standard time went into effect at noon on 18 November 1883 and the court-house clock was set back the same afternoon."
+      },
+      citations: ["us-indj-1883-11-19-noon", "us-indj-1883-11-19-courthouse"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The window of the change now opens at noon by the old city time (11:44 Central): the report does not say whether the change came at noon by the old time or the new."
+        }
+      ]
+    },
+    {
+      id: "us-louisville-city-time-before-1883",
+      version: 2,
+      title: "Louisville: Louisville city time",
+      scope: "Louisville, before standard time",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "day",
+        window: { earliest: "1883-11-18T11:42:00", latest: "1883-11-18T23:59:59" },
+        citations: ["us-bourbon-1883-11-20-louisville"],
+        note: "The fire bells rang noon by the new time on Sunday 18 November 1883, and the city clock was turned back 18 minutes, the report does not say at what hour. The atlas uses noon, new time; the window runs from noon by the old city time to the end of the day."
+      },
+      offset: { type: "fixed", seconds: -20520 },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "uncertain",
+        reason: `A Paris, Ky., paper reports that "the city clock was turned back 18 minutes", which puts city time at -5:42:00; the mean time of the city's longitude, -5:43:02.3, is 62 s behind that, and the 18 minutes may describe the railroad's change rather than the city clock's. The atlas uses the report.`
+      },
+      citations: ["us-bourbon-1883-11-20-louisville"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged uncertain: the 18 minutes come from one second-hand sentence and differ from the longitude by 62 seconds; both readings are given. The adoption instant now has a window: the source does not say whether the change was at noon by the old time or the new, or when that day the clocks were set."
+        }
+      ],
+      note: "The two readings differ by 62 seconds. tzdb's comments (a lead, not a source) say the Louisville & Nashville Railroad's trains were to stand still for 18 minutes at its change on 18 November 1883, which may be what the report's 18 minutes measures. The atlas takes the report's figure, as it does for every city whose change a report measures."
+    },
+    {
+      id: "us-louisville-central-1883",
+      version: 2,
+      title: "Louisville: Central standard time",
+      scope: "Louisville, from its adoption of standard time to the Standard Time Act of 1918",
+      clock: "civil",
+      start: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "day",
+        window: { earliest: "1883-11-18T11:42:00", latest: "1883-11-18T23:59:59" },
+        citations: ["us-bourbon-1883-11-20-louisville"],
+        note: "The fire bells rang noon by the new time on Sunday 18 November 1883, and the city clock was turned back 18 minutes, the report does not say at what hour. The atlas uses noon, new time; the window runs from noon by the old city time to the end of the day."
+      },
+      end: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -21600 },
+      isDst: false,
+      abbreviation: "CST",
+      uncertainty: {
+        flag: "documented",
+        reason: "The fire bells rang noon by Central time on 18 November 1883 and the city clock was set back to it."
+      },
+      citations: ["us-bourbon-1883-11-20-louisville"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The adoption instant now has a window: the source does not say whether the change was at noon by the old time or the new, or when that day the clocks were set."
+        }
+      ]
+    },
+    {
+      id: "us-chicago-city-time-before-1883",
+      version: 2,
+      title: "Chicago: Chicago time (local mean time)",
+      scope: "Chicago, before standard time",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "minute",
+        window: { earliest: "1883-11-18T11:51:00", latest: "1883-11-18T12:00:00" },
+        citations: ["us-ottawa-1883-11-24-chicago"],
+        note: "Inaugurated in the city at noon on Sunday 18 November 1883; whether noon by Chicago time or by the new time is not said, and the window covers both."
+      },
+      offset: { type: "fixed", seconds: -21060 },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: 'The new central time "is nine minutes slower than Chicago time", so Chicago time is taken as 5 h 51 min behind Greenwich (the report gives whole minutes; the longitude gives 5 h 50 min 36 s); that the city kept it from 1870 is assumed.'
+      },
+      citations: ["us-argus-1883-11-19-chicago", "us-ottawa-1883-11-24-chicago"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: `City time now taken from the report ("nine minutes slower than Chicago time"), as for every city whose change a report measures, instead of from the longitude; flagged inferred, the report describing the city's time at the change only. The adoption instant now has a window: the source does not say whether the change was at noon by the old time or the new, or when that day the clocks were set.`
+        }
+      ]
+    },
+    {
+      id: "us-chicago-central-1883",
+      version: 2,
+      title: "Chicago: Central standard time",
+      scope: "Chicago, from its adoption of standard time to the Standard Time Act of 1918",
+      clock: "civil",
+      start: {
+        local: "1883-11-18T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "minute",
+        window: { earliest: "1883-11-18T11:51:00", latest: "1883-11-18T12:00:00" },
+        citations: ["us-ottawa-1883-11-24-chicago"],
+        note: "Inaugurated in the city at noon on Sunday 18 November 1883; whether noon by Chicago time or by the new time is not said, and the window covers both."
+      },
+      end: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -21600 },
+      isDst: false,
+      abbreviation: "CST",
+      uncertainty: {
+        flag: "inferred",
+        reason: "Standard time was inaugurated in Chicago at noon on 18 November 1883 and adopted by the railroads, the Board of Trade, hotels and businesses; action by the city government is not reported, and the public clocks are assumed to have followed."
+      },
+      citations: ["us-ottawa-1883-11-24-chicago", "us-argus-1883-11-19-chicago"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The adoption instant now has a window: the source does not say whether the change was at noon by the old time or the new, or when that day the clocks were set. Flagged inferred: the city government's own action is not reported."
+        }
+      ]
+    },
+    {
+      id: "us-saint-paul-city-time-before-1883",
+      version: 2,
+      title: "Saint Paul: Saint Paul mean time",
+      scope: "Saint Paul, before standard time",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1883-11-25T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "minute",
+        window: { earliest: "1883-11-25T12:00:00", latest: "1883-11-25T12:12:08" },
+        citations: ["us-globe-1883-11-25-stpaul"],
+        note: "At noon on Sunday 25 November 1883, a week after the railroads of the east; whether noon by the old time or by the new is not said, and the window covers both."
+      },
+      offset: { type: "fixed", seconds: -22328 },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: `The new time was "twelve minutes faster than the old time", and a railroad's change was "ahead 12 minutes and 8 seconds by St. Paul time"; the atlas takes Saint Paul time as 6 h 12 min 8 s behind Greenwich (the longitude gives 6 h 12 min 22.4 s) and assumes the city kept it from 1870.`
+      },
+      citations: ["us-globe-1883-11-25-meantime", "us-globe-1883-11-25-omaha"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: `City time now taken from the report ("ahead 12 minutes and 8 seconds by St. Paul time"), as for every city whose change a report measures, instead of from the longitude; flagged inferred, the report describing the city's time at the change only. The adoption instant now has a window: the source does not say whether the change was at noon by the old time or the new, or when that day the clocks were set.`
+        }
+      ]
+    },
+    {
+      id: "us-saint-paul-central-1883",
+      version: 2,
+      title: "Saint Paul: Central standard time",
+      scope: "Saint Paul, from its adoption of standard time to the Standard Time Act of 1918",
+      clock: "civil",
+      start: {
+        local: "1883-11-25T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "minute",
+        window: { earliest: "1883-11-25T12:00:00", latest: "1883-11-25T12:12:08" },
+        citations: ["us-globe-1883-11-25-stpaul"],
+        note: "At noon on Sunday 25 November 1883, a week after the railroads of the east; whether noon by the old time or by the new is not said, and the window covers both."
+      },
+      end: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -21600 },
+      isDst: false,
+      abbreviation: "CST",
+      uncertainty: {
+        flag: "documented",
+        reason: "Standard time was inaugurated at noon on 25 November 1883, and the city council and chamber of commerce adopted it."
+      },
+      citations: ["us-globe-1883-11-25-stpaul", "us-globe-1883-11-25-council"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "The adoption instant now has a window: the source does not say whether the change was at noon by the old time or the new, or when that day the clocks were set."
+        }
+      ]
+    },
+    {
+      id: "us-minneapolis-city-time-before-1883",
+      version: 2,
+      title: "Minneapolis: Minneapolis local time (local mean time)",
+      scope: "Minneapolis, before standard time",
+      clock: "civil",
+      start: { local: "1870-01-01T00:00:00", reckoning: "after", kind: "coverage", precision: "second" },
+      end: {
+        local: "1883-11-25T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "day",
+        window: { earliest: "1883-11-25T00:00:00", latest: "1883-11-25T23:59:59" },
+        note: "Generally adopted on 25 November 1883; the hour is not reported, and noon is used, as in Saint Paul.",
+        citations: ["us-globe-1883-11-25-minneapolis"]
+      },
+      offset: { type: "local-mean-time" },
+      isDst: false,
+      abbreviation: "LMT",
+      uncertainty: {
+        flag: "inferred",
+        reason: `No report gives Minneapolis's own figure, so the mean time of the city's longitude is used, 13 min 3.3 s behind Central time; neighbouring Saint Paul called its old time its "former meantime". That the city kept it from 1870 is assumed.`
+      },
+      citations: ["us-globe-1883-11-25-minneapolis", "us-globe-1883-11-25-meantime"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Reason corrected: Saint Paul's time now comes from a report, so Minneapolis, which no report measures, is no longer said to follow it."
+        }
+      ],
+      note: "Offset computed from the city's longitude, 240 seconds per degree."
+    },
+    {
+      id: "us-minneapolis-central-1883",
+      version: 2,
+      title: "Minneapolis: Central standard time",
+      scope: "Minneapolis, from its adoption of standard time to the Standard Time Act of 1918",
+      clock: "civil",
+      start: {
+        local: "1883-11-25T12:00:00",
+        reckoning: "after",
+        kind: "event",
+        precision: "day",
+        window: { earliest: "1883-11-25T00:00:00", latest: "1883-11-25T23:59:59" },
+        note: "Generally adopted on 25 November 1883; the hour is not reported, and noon is used, as in Saint Paul.",
+        citations: ["us-globe-1883-11-25-minneapolis"]
+      },
+      end: {
+        local: "1918-03-31T02:00:00",
+        reckoning: "before",
+        kind: "event",
+        precision: "minute",
+        citations: ["us-stat-1918-dst"]
+      },
+      offset: { type: "fixed", seconds: -21600 },
+      isDst: false,
+      abbreviation: "CST",
+      uncertainty: {
+        flag: "inferred",
+        reason: 'Standard time was to be "generally adopted in Minneapolis" on 25 November 1883, and two days later it was "working finely throughout Minneapolis", though "some are slow in adopting it"; action by the city government is not reported, and the public clocks are assumed to have followed.'
+      },
+      citations: ["us-globe-1883-11-25-minneapolis", "us-globe-1883-11-27-minneapolis"],
+      changes: [
+        {
+          version: 2,
+          date: "2026-09-28",
+          summary: "Flagged inferred, as Chicago's adoption is: the reports describe general use, not the city government's action. A report of 27 November, after the change, is now cited (us-globe-1883-11-27-minneapolis)."
+        }
+      ]
+    }
+  ]
+};
+
+// src/data/time-atlas/tzdb-explanations.json
+var tzdb_explanations_default = {
+  $schema: "../schema/atlas.schema.json",
+  kind: "atlas-tzdb-explanations",
+  tzdb: "2025c",
+  description: "Why the atlas differs from tzdb 2025c with backzone. Each difference found by atlas/tools/compare-tzdb.mjs must match exactly one entry: its place, zone and atlas rule must be listed there, and its atlas and tzdb offsets (seconds east of Greenwich) must be among those listed. Every entry must explain at least one difference, and every value it lists must occur in a difference it explains, so a change on either side that alters a difference leaves it unexplained until the entry is reviewed. The citations are the atlas's own; tzdb decides nothing.",
+  explanations: [
+    {
+      id: "fr-summer-time-end-hour",
+      category: "transition-instant",
+      match: {
+        places: [
+          "fr-paris",
+          "fr-brest",
+          "fr-nantes",
+          "fr-bordeaux",
+          "fr-rouen",
+          "fr-toulouse",
+          "fr-lyon",
+          "fr-marseille",
+          "fr-nice",
+          "fr-ajaccio",
+          "fr-strasbourg",
+          "fr-metz"
+        ],
+        zones: ["Europe/Paris"],
+        rules: ["fr-wet-1916", "fr-wet-1917", "fr-wet-1918", "fr-wet-1919", "als-mos-wet-1919"],
+        atlasOffsets: [0],
+        tzdbOffsets: [3600]
+      },
+      explanation: "tzdb ends French summer time in 1916-1919 at 23:00 UTC on the October date each decree names (Rule France, Oct Sun>=1 23:00s). The decrees give only the date. The sources cited put the change at the start of that date, 00:00 UTC: in 1916 all public clocks were to be set back at 01:00 summer time; in 1917 the clocks were set back within the hour after midnight; in 1918 the instructions to the railway networks set all clocks back at 01:00, and the atlas applies that hour to the other public clocks (an inference); in 1919 legal time was set back at 01:00. The atlas ends summer time 23 hours before tzdb does; the starts agree. Strasbourg and Metz, French again in 1919, are taken to have changed with the rest of France that year.",
+      tzdbReport: "An apparent error in tzdb. Rule France ends summer time in 1916, 1917, 1918 and 1919 at Oct Sun>=1 23:00s, at the end of the Sunday on which each decree restores normal time. The decrees (Journal officiel of 11 June 1916, 21 March 1917, 1 March 1918 and 11 February 1919) name only that date. The Paris papers cited put the change at its start: all public clocks set back from 01:00 to 00:00 summer time on 1 October 1916, the clocks set back within the hour after midnight on 7 October 1917, legal time set back at 01:00 on 5 October 1919 (Le Petit Parisien, Le Petit Journal). For 6 October 1918 the source is the instructions to the railway networks, which set all clocks back at 01:00; that other clocks changed at that hour is an inference. That would read Oct Sun>=1 0:00s, 23 hours earlier.",
+      citations: [
+        "fr-jo-1916-06-11-decree",
+        "fr-jo-1917-03-21-decree",
+        "fr-jo-1918-03-01-decree",
+        "fr-jo-1919-02-11-decree",
+        "fr-petitparisien-1916-09-30-public-clocks",
+        "fr-petitparisien-1916-09-30",
+        "fr-petitjournal-1916-09-30",
+        "fr-petitjournal-1917-10-06",
+        "fr-petitparisien-1917-10-07",
+        "fr-petitparisien-1918-10-04",
+        "fr-petitjournal-1919-10-05"
+      ]
+    },
+    {
+      id: "fr-own-mean-time-before-1891",
+      category: "place-mean-time",
+      match: {
+        places: [
+          "fr-brest",
+          "fr-nantes",
+          "fr-bordeaux",
+          "fr-rouen",
+          "fr-toulouse",
+          "fr-lyon",
+          "fr-marseille",
+          "fr-nice",
+          "fr-ajaccio"
+        ],
+        zones: ["Europe/Paris"],
+        rules: ["fr-lmt-before-1891", "fr-brest-lmt-before-1891"],
+        atlasOffsets: [-1076.707, -372.806, -139.31, 263.837, 346.481, 1163.494, 1291.457, 1743.859, 2097.149],
+        tzdbOffsets: [561]
+      },
+      explanation: "Before the law of 14 March 1891 the legal time of each French commune was its own mean time. tzdb gives every place in Europe/Paris the mean time of Paris (+0:09:21) until then. The atlas uses each place's own mean time, from its longitude; for Brest the Senate debate of 1891 puts the town's time 27 minutes behind the railway's Paris time. tzdb also dates the law's effect from 16 March 1891 and the atlas from 17 March (one clear day after the Journal officiel of 15 March, under the decree of 5 November 1870); Paris's offset did not change, so the date shows only as the end of these periods.",
+      citations: [
+        "fr-senat-1891-02-17-restoration",
+        "fr-senat-1891-02-17-brest",
+        "fr-jo-1891-03-15-law",
+        "fr-jo-1870-11-06-promulgation"
+      ]
+    },
+    {
+      id: "als-strasbourg-five-minutes",
+      category: "local-adoption",
+      match: {
+        places: ["fr-strasbourg"],
+        zones: ["Europe/Paris"],
+        rules: ["als-strasbourg-french-1918", "als-mos-summer-1919"],
+        atlasOffsets: [300, 3600],
+        tzdbOffsets: [0]
+      },
+      explanation: "Strasbourg's public clocks were set to 11:05 at noon Mid-European time on 21 November 1918, five minutes ahead of Greenwich, and were still so in mid-December. tzdb has French legal time (+0:00) there. When the five minutes ended is not known. The atlas keeps them until the start of summer time at 23:00 on 1 March 1919 by Strasbourg's clocks (22:55 UTC): that night the clocks go forward 55 minutes, to French summer time (+1:00) rather than +1:05, and the atlas is an hour ahead of tzdb for the five minutes until tzdb's summer time starts at 23:00 UTC. Both rules are flagged uncertain.",
+      citations: [
+        "als-snn-1918-11-21-bekanntmachung",
+        "als-elsasser-1918-12-16-pariser-zeit",
+        "als-jh-1919-02-28-railways"
+      ]
+    },
+    {
+      id: "als-mos-german-rule",
+      category: "annexed-territory",
+      match: {
+        places: ["fr-strasbourg", "fr-metz"],
+        zones: ["Europe/Paris"],
+        rules: [
+          "als-strasbourg-lmt-before-1892",
+          "mos-metz-lmt-before-1892",
+          "als-strasbourg-mez-1892",
+          "mos-metz-mez-1892",
+          "de-mez-1893",
+          "de-summer-1916",
+          "de-mez-1916",
+          "de-summer-1917",
+          "de-mez-1917",
+          "de-summer-1918",
+          "als-strasbourg-mez-1918",
+          "mos-metz-mez-1918"
+        ],
+        atlasOffsets: [1858.927, 1481.446, 3600, 7200],
+        tzdbOffsets: [561, 0, 3600]
+      },
+      explanation: "tzdb has no zone for Alsace-Lorraine and gives Strasbourg and Metz the time of Paris throughout. Before 1871 their legal time was, as elsewhere in France, their own mean time. From 1871 to November 1918 they were German: local mean time until Mid-European time was made local time on 1 April 1892, legal time under the Reich law from 1 April 1893, German summer time 1916-1918. Metz changed to French time on 19 November 1918 and Strasbourg on 21 November.",
+      citations: [
+        "fr-senat-1891-02-17-restoration",
+        "als-snn-1892-03-31-mez",
+        "mos-lz-1892-03-29-city",
+        "de-rgbl-1893-03-12-law",
+        "de-snn-1916-04-08-wtb",
+        "mos-matin-1918-11-21-metz",
+        "als-snn-1918-11-21-bekanntmachung"
+      ]
+    },
+    {
+      id: "als-mos-not-berlin",
+      category: "annexed-territory",
+      match: {
+        places: ["fr-strasbourg", "fr-metz"],
+        zones: ["Europe/Berlin"],
+        rules: [
+          "als-strasbourg-lmt-before-1892",
+          "mos-metz-lmt-before-1892",
+          "als-strasbourg-mez-1892",
+          "mos-metz-mez-1892",
+          "als-strasbourg-french-1918",
+          "mos-metz-french-1918",
+          "als-mos-wet-1919"
+        ],
+        atlasOffsets: [1858.927, 1481.446, 3600, 300, 0],
+        tzdbOffsets: [3208, 3600]
+      },
+      explanation: "Europe/Berlin, compared for information, keeps Berlin's mean time (+0:53:28) until 1 April 1893. Strasbourg and Metz kept their own mean time until 1 April 1892 and Mid-European time from then. From 1 April 1893 to their change to French time in November 1918 the atlas and Europe/Berlin agree, German summer time included, except in the first minutes of 1 April 1893 (de-reich-law-1893-instant). After that the two cities were French.",
+      citations: [
+        "als-snn-1892-03-31-mez",
+        "mos-lz-1892-03-29-city",
+        "de-rgbl-1893-03-12-law",
+        "mos-matin-1918-11-21-metz",
+        "als-snn-1918-11-21-bekanntmachung"
+      ]
+    },
+    {
+      id: "de-reich-law-1893-instant",
+      category: "transition-instant",
+      match: {
+        places: ["fr-strasbourg", "fr-metz"],
+        zones: ["Europe/Berlin"],
+        rules: ["de-mez-1893"],
+        atlasOffsets: [3600],
+        tzdbOffsets: [3208]
+      },
+      explanation: "Europe/Berlin, compared for information, keeps Berlin's mean time (+0:53:28) until midnight Berlin mean time at the start of 1 April 1893, 23:06:32 UTC on 31 March (tzdb's 1893 Apr). The Reich law of 12 March 1893 came into force when 1 April 1893 began by Mid-European time, 23:00 UTC, where the atlas starts de-mez-1893. Strasbourg and Metz, on Mid-European time since 1892, did not change; for the 6 min 32 s between the two instants the atlas gives them +1:00 and Europe/Berlin +0:53:28.",
+      tzdbReport: `A difference between the legal instant and tzdb's entry, not a shown error. Zone Europe/Berlin keeps LMT until 1893 Apr, midnight Berlin mean time, 23:06:32 UTC on 31 March. The Reich law of 12 March 1893 (Reichs-Gesetzblatt 1893, p. 93) came into force at the moment "in welchem nach der im vorhergehenden Absatz festgesetzten Zeitbestimmung der 1. April 1893 beginnt": midnight Mid-European time, 23:00 UTC, when Berlin mean time read 23:53:28. As legal time that would read 1893 Mar 31 23:00u, the form tzdb uses for Rome's change of 1893, 6 min 32 s earlier; Zone Europe/Kaliningrad (K\xF6nigsberg, German in 1893) ends its LMT line the same way, 22 minutes before the law's instant there. Public clocks may have been set at local midnight instead, as Strasbourg's cathedral clock was when Alsace-Lorraine went over to Mid-European time in 1892; what the clocks of Berlin and K\xF6nigsberg did was not researched, and the atlas covers neither city.`,
+      citations: [
+        "de-rgbl-1893-03-12-law",
+        "als-snn-1892-03-31-mez",
+        "als-snn-1892-04-01-muenster",
+        "mos-lz-1892-03-29-city"
+      ]
+    },
+    {
+      id: "us-city-time-before-standard-time",
+      category: "place-mean-time",
+      match: {
+        places: ["us-baltimore", "us-washington", "us-providence", "us-saint-paul", "us-minneapolis"],
+        zones: ["America/New_York", "America/Chicago"],
+        rules: [
+          "us-baltimore-city-time-before-1883",
+          "us-washington-city-time-before-1883",
+          "us-providence-city-time-before-1883",
+          "us-saint-paul-city-time-before-1883",
+          "us-minneapolis-city-time-before-1883"
+        ],
+        atlasOffsets: [-18388, -18492, -17120, -22328, -22383.322],
+        tzdbOffsets: [-17762, -21036]
+      },
+      explanation: "Before standard time each city kept its own time. tzdb gives every place in America/New_York the mean time of New York (-4:56:02) and every place in America/Chicago that of Chicago (-5:50:36) until noon on 18 November 1883. The atlas gives each city its own: the city time the reports cited measure at the change for Baltimore (6 min 28 s behind Eastern time), Washington (8 min 12 s behind it), Providence (14 min 40 s ahead of it) and Saint Paul (12 min 8 s behind Central time), and the mean time of its longitude for Minneapolis, for which no report gives a figure.",
+      citations: [
+        "us-star-1883-11-17-baltimore",
+        "us-star-1883-11-19-bells",
+        "us-narragansett-1883-11-03-providence",
+        "us-globe-1883-11-25-omaha",
+        "us-globe-1883-11-25-meantime"
+      ]
+    },
+    {
+      id: "us-standard-time-adopted-later",
+      category: "local-adoption",
+      match: {
+        places: ["us-providence", "us-saint-paul", "us-minneapolis"],
+        zones: ["America/New_York", "America/Chicago"],
+        rules: [
+          "us-providence-city-time-before-1883",
+          "us-saint-paul-city-time-before-1883",
+          "us-minneapolis-city-time-before-1883"
+        ],
+        atlasOffsets: [-17120, -22328, -22383.322],
+        tzdbOffsets: [-18e3, -21600]
+      },
+      explanation: "tzdb puts these cities on standard time at noon on 18 November 1883, when the railroads changed. The Providence authorities adopted it on Tuesday 20 November, and Saint Paul and Minneapolis on Sunday 25 November; the atlas keeps each city's own time until then.",
+      citations: [
+        "us-pawtucket-1883-11-23-providence",
+        "us-globe-1883-11-25-stpaul",
+        "us-globe-1883-11-25-minneapolis"
+      ]
+    },
+    {
+      id: "us-city-time-whole-minutes",
+      category: "reference-offset",
+      match: {
+        places: ["us-indianapolis", "us-chicago"],
+        zones: ["America/Indiana/Indianapolis", "America/Chicago"],
+        rules: ["us-indianapolis-city-time-before-1883", "us-chicago-city-time-before-1883"],
+        atlasOffsets: [-20640, -21060],
+        tzdbOffsets: [-20678, -21036]
+      },
+      explanation: "tzdb gives Indianapolis and Chicago the mean time of their longitudes before standard time, -5:44:38 and -5:50:36. The reports cited measure each city's change in whole minutes: the Indianapolis court-house clock was set back sixteen minutes, and Central time was nine minutes slower than Chicago time. The atlas takes city time from the reports, -5:44:00 and -5:51:00, as it does wherever a report measures the change; the differences, 38 s and 24 s, are within the reports' rounding. The changes themselves agree.",
+      citations: ["us-indj-1883-11-19-courthouse", "us-argus-1883-11-19-chicago"]
+    },
+    {
+      id: "us-washington-until-1884",
+      category: "local-adoption",
+      match: {
+        places: ["us-washington"],
+        zones: ["America/New_York"],
+        rules: ["us-washington-two-times-1883"],
+        atlasOffsets: [-18492],
+        tzdbOffsets: [-18e3]
+      },
+      explanation: "tzdb puts Washington on Eastern time from noon on 18 November 1883. The government departments and the fire bells kept Washington time after that date, and the District's legal time became the mean time of the 75th meridian only by the act of 13 March 1884. The atlas keeps Washington time until then and flags the period uncertain, since the railroads and the businesses dealing with them used Eastern time from 18 November 1883.",
+      citations: ["us-star-1883-11-19-departments", "us-star-1883-11-19-bells", "us-stat-1884-dc"]
+    },
+    {
+      id: "us-louisville-city-clock",
+      category: "reference-offset",
+      match: {
+        places: ["us-louisville"],
+        zones: ["America/Kentucky/Louisville"],
+        rules: ["us-louisville-city-time-before-1883"],
+        atlasOffsets: [-20520],
+        tzdbOffsets: [-20582]
+      },
+      explanation: "tzdb gives Louisville the mean time of its longitude, -5:43:02, until noon Central time on 18 November 1883. The report cited has the fire bells ring noon by the new time and the city clock turned back 18 minutes, which puts Louisville city time at -5:42:00. The atlas uses the report's figure and flags the rule uncertain, giving both readings: tzdb's own comments (a lead, not a source) say the Louisville & Nashville Railroad's trains were to stand still for 18 minutes at its change that day, so the 18 minutes may measure the railroad's change rather than the city clock's. The change itself agrees.",
+      citations: ["us-bourbon-1883-11-20-louisville"]
+    }
+  ]
+};
+
+// src/lib/time-atlas/lib.mjs
+var CLOCKS = ["civil", "railway"];
+function loadAtlas(manifest, files) {
+  const atlas2 = {
+    manifest,
+    files: /* @__PURE__ */ new Map(),
+    citations: /* @__PURE__ */ new Map(),
+    leads: /* @__PURE__ */ new Map(),
+    places: /* @__PURE__ */ new Map(),
+    jurisdictions: /* @__PURE__ */ new Map(),
+    rules: /* @__PURE__ */ new Map(),
+    ruleFile: /* @__PURE__ */ new Map(),
+    problems: []
+  };
+  const add = (map, item, file, what) => {
+    if (map.has(item.id)) atlas2.problems.push(`${file}: duplicate ${what} id ${item.id}`);
+    map.set(item.id, item);
+  };
+  for (const file of manifest.files) {
+    const data = files[file];
+    if (!data) throw new RangeError(`the atlas manifest lists ${file}, which was not given`);
+    atlas2.files.set(file, data);
+    if (data.kind === "atlas-citations") for (const item of data.citations) add(atlas2.citations, item, file, "citation");
+    if (data.kind === "atlas-leads") for (const item of data.leads) add(atlas2.leads, item, file, "lead");
+    if (data.kind === "atlas-places") for (const item of data.places) add(atlas2.places, item, file, "place");
+    if (data.kind === "atlas-rules") {
+      for (const item of data.jurisdictions) add(atlas2.jurisdictions, item, file, "jurisdiction");
+      for (const item of data.rules) {
+        add(atlas2.rules, item, file, "rule");
+        atlas2.ruleFile.set(item.id, file);
+      }
+    }
+  }
+  return atlas2;
+}
+var LOCAL = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?$/;
+function parseLocal(text2) {
+  const match = LOCAL.exec(text2);
+  if (!match) throw new RangeError(`not a local time: ${text2}`);
+  const [, y, mo, d, h, mi, s, ms = "0"] = match;
+  if (Number(h) > 23 || Number(mi) > 59 || Number(s) > 59) throw new RangeError(`no such time: ${text2}`);
+  const wall = Date.UTC(Number(y), Number(mo) - 1, Number(d), Number(h), Number(mi), Number(s), Number(ms.padEnd(3, "0")));
+  const check = new Date(wall);
+  if (check.getUTCFullYear() !== Number(y) || check.getUTCMonth() !== Number(mo) - 1 || check.getUTCDate() !== Number(d)) {
+    throw new RangeError(`no such date: ${text2}`);
+  }
+  return wall;
+}
+function formatWall(ms) {
+  const iso2 = new Date(ms).toISOString();
+  const trimmed = iso2.endsWith(".000Z") ? iso2.slice(0, 19) : iso2.slice(0, 23);
+  return trimmed;
+}
+function formatUtc(ms) {
+  return `${formatWall(ms)}Z`;
+}
+function formatOffset(ms) {
+  const sign = ms < 0 ? "-" : "+";
+  let rest = Math.abs(ms);
+  const h = Math.floor(rest / 36e5);
+  rest -= h * 36e5;
+  const m = Math.floor(rest / 6e4);
+  rest -= m * 6e4;
+  const s = Math.floor(rest / 1e3);
+  const frac = rest - s * 1e3;
+  const base = `${sign}${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  return frac ? `${base}.${String(frac).padStart(3, "0")}` : base;
+}
+function offsetMs(offset, place) {
+  if (offset.type === "fixed") return Math.round(offset.seconds * 1e3);
+  if (offset.type === "local-mean-time") {
+    if (typeof place?.longitude !== "number" || !Number.isFinite(place.longitude)) {
+      throw new RangeError("local mean time needs the place's longitude");
+    }
+    return Math.round(place.longitude * 24e4);
+  }
+  throw new RangeError(`unknown offset type ${offset.type}`);
+}
+function boundaryUtc(boundary, beforeOffset, afterOffset, where) {
+  const wall = parseLocal(boundary.local);
+  if (boundary.reckoning === "utc") return wall;
+  const offset = boundary.reckoning === "before" ? beforeOffset : afterOffset;
+  if (offset === null || offset === void 0) {
+    throw new RangeError(`${where}: reckoning "${boundary.reckoning}" has no clock on that side`);
+  }
+  return wall - offset;
+}
+var PRECISION_MS = {
+  second: 0,
+  minute: 0,
+  hour: 36e5,
+  day: 864e5,
+  days: 3 * 864e5,
+  weeks: 14 * 864e5
+};
+function buildTimeline(atlas2, place, clock = "civil") {
+  const jurisdiction = atlas2.jurisdictions.get(place.jurisdiction);
+  if (!jurisdiction) throw new RangeError(`unknown jurisdiction ${place.jurisdiction}`);
+  const ids = jurisdiction.timeline[clock];
+  if (!ids) return null;
+  const segments = ids.map((id) => {
+    const rule = atlas2.rules.get(id);
+    if (!rule) throw new RangeError(`${jurisdiction.id}: unknown rule ${id}`);
+    return { rule, offsetMs: offsetMs(rule.offset, place) };
+  });
+  segments.forEach((segment, index) => {
+    const before2 = index > 0 ? segments[index - 1].offsetMs : null;
+    const after = index + 1 < segments.length ? segments[index + 1].offsetMs : null;
+    segment.startMs = boundaryUtc(segment.rule.start, before2, segment.offsetMs, `${segment.rule.id} start`);
+    segment.endMs = boundaryUtc(segment.rule.end, segment.offsetMs, after, `${segment.rule.id} end`);
+    segment.index = index;
+  });
+  for (const segment of segments) segment.uncertainSpans = [];
+  for (let index = 0; index + 1 < segments.length; index += 1) {
+    const left = segments[index];
+    const right = segments[index + 1];
+    if (left.offsetMs === right.offsetMs) continue;
+    const offsets = [left.offsetMs, right.offsetMs];
+    for (const boundary of [left.rule.end, right.rule.start]) {
+      if (boundary.kind !== "event") continue;
+      let span = null;
+      if (boundary.window) {
+        span = {
+          from: boundaryUtc({ ...boundary, local: boundary.window.earliest }, left.offsetMs, right.offsetMs, "window"),
+          to: boundaryUtc({ ...boundary, local: boundary.window.latest }, left.offsetMs, right.offsetMs, "window"),
+          boundary,
+          offsets
+        };
+      } else if (PRECISION_MS[boundary.precision] > 0) {
+        const width = PRECISION_MS[boundary.precision];
+        span = { from: right.startMs - width, to: right.startMs + width, boundary, offsets };
+      }
+      if (span) {
+        left.uncertainSpans.push(span);
+        right.uncertainSpans.push(span);
+      }
+    }
+  }
+  return segments;
+}
+function reading(segment, utcMs, given = "local") {
+  const rule = segment.rule;
+  const reasons = [`${rule.id}: ${rule.uncertainty.reason}`];
+  let flag = rule.uncertainty.flag;
+  const wallMs = utcMs + segment.offsetMs;
+  for (const span of segment.uncertainSpans) {
+    const near = given === "utc" ? utcMs >= span.from && utcMs <= span.to : span.offsets.some((offset) => wallMs >= span.from + offset && wallMs <= span.to + offset);
+    if (!near) continue;
+    flag = "uncertain";
+    const reason = `within the uncertain limits of the change at ${span.boundary.local} (${span.boundary.reckoning} clock)${span.boundary.note ? `: ${span.boundary.note}` : ""}`;
+    if (!reasons.includes(reason)) reasons.push(reason);
+  }
+  return {
+    utc: formatUtc(utcMs),
+    utcMs,
+    offset: formatOffset(segment.offsetMs),
+    offsetSeconds: segment.offsetMs / 1e3,
+    rule: rule.id,
+    ruleVersion: rule.version,
+    isDst: rule.isDst,
+    abbreviation: rule.abbreviation ?? null,
+    uncertainty: { flag, reasons },
+    citations: rule.citations
+  };
+}
+function resolveWall(timeline, wallMs) {
+  const first = timeline[0];
+  const last2 = timeline[timeline.length - 1];
+  const coverageStart = first.startMs + first.offsetMs;
+  const coverageEnd = last2.endMs + last2.offsetMs;
+  const found = [];
+  for (const segment of timeline) {
+    const utcMs = wallMs - segment.offsetMs;
+    if (utcMs >= segment.startMs && utcMs < segment.endMs) found.push({ segment, utcMs });
+  }
+  found.sort((a, b) => a.utcMs - b.utcMs);
+  if (found.length === 1) return { status: "ok", instants: [reading(found[0].segment, found[0].utcMs)] };
+  if (found.length > 1) {
+    return { status: "ambiguous", instants: found.map(({ segment, utcMs }) => reading(segment, utcMs)) };
+  }
+  if (wallMs < coverageStart || wallMs >= coverageEnd) return { status: "out-of-coverage", instants: [] };
+  for (let index = 0; index + 1 < timeline.length; index += 1) {
+    const before2 = timeline[index];
+    const after = timeline[index + 1];
+    const skippedFrom = before2.endMs + before2.offsetMs;
+    const skippedTo = after.startMs + after.offsetMs;
+    if (wallMs >= skippedFrom && wallMs < skippedTo) {
+      const utcMs = wallMs - before2.offsetMs;
+      const result = reading(after, utcMs);
+      result.uncertainty.reasons.unshift(
+        `clocks went from ${formatWall(skippedFrom)} to ${formatWall(skippedTo)}; this reading never occurred and is taken on the clock in force before the change`
+      );
+      return { status: "nonexistent", instants: [result], skipped: { from: formatWall(skippedFrom), to: formatWall(skippedTo) } };
+    }
+  }
+  throw new Error(`reading ${formatWall(wallMs)} fell between segments: the timeline is not contiguous`);
+}
+function adHocPlace(atlas2, { jurisdiction, longitude: longitude2, department }) {
+  const found = atlas2.jurisdictions.get(jurisdiction);
+  if (!found) throw new RangeError(`unknown jurisdiction ${jurisdiction}`);
+  const rule = found.readByLongitude;
+  if (!rule) {
+    const listed = [...atlas2.places.values()].filter((place) => place.jurisdiction === jurisdiction).map((place) => place.id);
+    throw new RangeError(`jurisdiction ${jurisdiction} covers only its listed places (${listed.join(", ")}); read them with --place`);
+  }
+  if (typeof longitude2 !== "number" || !Number.isFinite(longitude2)) throw new RangeError("give the place's longitude in degrees east");
+  if (!department) {
+    throw new RangeError(`give the place's d\xE9partement (--department): ${jurisdiction} covers some d\xE9partements and not others`);
+  }
+  const excluded = (rule.excluded ?? []).find((entry) => entry.departments.includes(department));
+  if (excluded) throw new RangeError(`d\xE9partement ${department} is not covered by ${jurisdiction}: ${excluded.reason}`);
+  const area = rule.areas.find((entry) => entry.departments.includes(department));
+  if (!area) throw new RangeError(`d\xE9partement ${department} is not covered by ${jurisdiction}`);
+  if (!(longitude2 >= area.minLongitude && longitude2 <= area.maxLongitude)) {
+    throw new RangeError(`longitude ${longitude2} is outside ${area.name} (${area.minLongitude} to ${area.maxLongitude} degrees east), where ${jurisdiction} applies`);
+  }
+  return { jurisdiction, longitude: longitude2, department };
+}
+function placeFor(atlas2, spec) {
+  if (typeof spec === "string") {
+    const place = atlas2.places.get(spec);
+    if (!place) throw new RangeError(`unknown place ${spec}`);
+    return place;
+  }
+  return adHocPlace(atlas2, spec);
+}
+function noSuchClock(atlas2, place, clock) {
+  const kept2 = Object.keys(atlas2.jurisdictions.get(place.jurisdiction).timeline).join(", ");
+  return {
+    status: "no-such-clock",
+    reason: `jurisdiction ${place.jurisdiction} keeps no ${clock} clock (it keeps: ${kept2}); the atlas has a separate railway clock only where the sources describe railway time differing from civil time`,
+    instants: []
+  };
+}
+function checkClock(clock) {
+  if (!CLOCKS.includes(clock)) throw new RangeError(`unknown clock ${clock}: give ${CLOCKS.join(" or ")}`);
+}
+function resolve(atlas2, spec, local, clock = "civil") {
+  checkClock(clock);
+  const place = placeFor(atlas2, spec);
+  const head = { place: place.id ?? null, jurisdiction: place.jurisdiction, clock, local };
+  const timeline = buildTimeline(atlas2, place, clock);
+  if (!timeline) return { ...head, ...noSuchClock(atlas2, place, clock) };
+  return { ...head, ...resolveWall(timeline, parseLocal(local)) };
+}
+
+// src/lib/time-atlas/index.ts
+var ATLAS_COMMIT = "7307665bdbc432269fdac006104f661be16000bc";
+var ATLAS_SOURCE = Object.freeze({
+  name: atlas_default.name,
+  version: atlas_default.version,
+  licence: "CC BY 4.0",
+  url: `https://github.com/zodiacs-org/engine/tree/${ATLAS_COMMIT}/atlas`
+});
+var ATLAS_PLACES = Object.freeze(places_default.places.map(({ id }) => id));
+var ATLAS_COVERAGE = Object.freeze({ start: atlas_default.coverage.start, end: atlas_default.coverage.end });
+var FILES = {
+  "places.json": places_default,
+  "leads.json": leads_default,
+  "citations-fr.json": citations_fr_default,
+  "rules-fr.json": rules_fr_default,
+  "citations-als.json": citations_als_default,
+  "rules-als.json": rules_als_default,
+  "citations-us.json": citations_us_default,
+  "rules-us.json": rules_us_default,
+  "tzdb-explanations.json": tzdb_explanations_default
+};
+var atlas = null;
+function loaded() {
+  atlas ??= loadAtlas(atlas_default, FILES);
+  return atlas;
+}
+function citation(id) {
+  const found = loaded().citations.get(id);
+  if (!found) throw new Error(`the atlas cites ${id}, which it does not list`);
+  return {
+    id,
+    title: found.title ?? id,
+    date: found.date ?? null,
+    url: found.url ?? "",
+    locator: found.locator ?? null,
+    gloss: found.gloss ?? null
+  };
+}
+function atlasReading(place, date, time) {
+  const result = resolve(loaded(), place, `${date}T${time}:00`, "civil");
+  if (result.status === "no-such-clock") throw new Error("every jurisdiction of the atlas keeps a civil clock");
+  return {
+    place,
+    name: String(loaded().places.get(place)?.name ?? place),
+    jurisdiction: result.jurisdiction,
+    clock: "civil",
+    status: result.status,
+    instants: result.instants.map((reading2) => ({
+      utc: new Date(reading2.utcMs).toISOString(),
+      offsetSeconds: reading2.offsetSeconds,
+      rule: reading2.rule,
+      ruleVersion: reading2.ruleVersion,
+      isDst: reading2.isDst,
+      abbreviation: reading2.abbreviation,
+      uncertainty: { flag: reading2.uncertainty.flag, reasons: [...reading2.uncertainty.reasons] },
+      citations: reading2.citations.map(citation)
+    })),
+    skipped: result.skipped ?? null
+  };
+}
+
 // src/lib/compute-api/errors.ts
 var ComputeApiError = class extends Error {
   status;
@@ -5539,8 +10330,14 @@ async function resolveLocal(module, input, longitude2) {
     localMeanTime: resolved.localMeanTime ? { ...resolved.localMeanTime } : null,
     zoneHistory: pinned ? "pinned" : "runtime",
     zoneUncertain: early && !pinned && !isFixedOffsetZone(input.zone),
-    gapShiftMinutes
+    gapShiftMinutes,
+    intlOffsetMinutes: pinned ? resolved.intlOffsetMinutes : null
   };
+}
+function zoneHistoriesDisagree(local) {
+  if (local.intlOffsetMinutes === null) return false;
+  const zoneOffset = local.localMeanTime ? local.localMeanTime.zoneOffsetMinutes : local.offsetMinutes;
+  return Math.abs(local.intlOffsetMinutes - zoneOffset) > 1e-9;
 }
 function runtimeTzdbVersion() {
   const version2 = typeof process === "object" ? process.versions?.tz : void 0;
@@ -5635,29 +10432,103 @@ function successBody(endpoint, result, receipt) {
   };
 }
 
-// src/lib/time/civil-date.ts
-function parseCivilDate(value) {
-  if (typeof value !== "string" || value.length !== 10) return null;
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  if (month < 1 || month > 12 || day < 1) return null;
-  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-  const days = month === 2 ? leap ? 29 : 28 : [4, 6, 9, 11].includes(month) ? 30 : 31;
-  return day <= days ? { year, month, day } : null;
-}
-function parseCivilTime(value) {
-  if (typeof value !== "string" || value.length !== 5) return null;
-  const match = /^(\d{2}):(\d{2})$/.exec(value);
-  if (!match) return null;
-  const hour = Number(match[1]);
-  const minute = Number(match[2]);
-  return hour <= 23 && minute <= 59 ? { hour, minute } : null;
-}
+// src/lib/time-atlas/places.ts
+var ATLAS_PLACE_IDS = Object.freeze([
+  "fr-paris",
+  "fr-brest",
+  "fr-nantes",
+  "fr-bordeaux",
+  "fr-rouen",
+  "fr-toulouse",
+  "fr-lyon",
+  "fr-marseille",
+  "fr-nice",
+  "fr-ajaccio",
+  "fr-strasbourg",
+  "fr-metz",
+  "us-new-york",
+  "us-baltimore",
+  "us-washington",
+  "us-providence",
+  "us-indianapolis",
+  "us-louisville",
+  "us-chicago",
+  "us-saint-paul",
+  "us-minneapolis"
+]);
+var ATLAS_PLACE_ZONES = Object.freeze({
+  "fr-paris": "Europe/Paris",
+  "fr-brest": "Europe/Paris",
+  "fr-nantes": "Europe/Paris",
+  "fr-bordeaux": "Europe/Paris",
+  "fr-rouen": "Europe/Paris",
+  "fr-toulouse": "Europe/Paris",
+  "fr-lyon": "Europe/Paris",
+  "fr-marseille": "Europe/Paris",
+  "fr-nice": "Europe/Paris",
+  "fr-ajaccio": "Europe/Paris",
+  "fr-strasbourg": "Europe/Paris",
+  "fr-metz": "Europe/Paris",
+  "us-new-york": "America/New_York",
+  "us-baltimore": "America/New_York",
+  "us-washington": "America/New_York",
+  "us-providence": "America/New_York",
+  "us-indianapolis": "America/Indiana/Indianapolis",
+  "us-louisville": "America/Kentucky/Louisville",
+  "us-chicago": "America/Chicago",
+  "us-saint-paul": "America/Chicago",
+  "us-minneapolis": "America/Chicago"
+});
+var ATLAS_PLACE_COUNTRIES = Object.freeze({
+  "fr-paris": "FR",
+  "fr-brest": "FR",
+  "fr-nantes": "FR",
+  "fr-bordeaux": "FR",
+  "fr-rouen": "FR",
+  "fr-toulouse": "FR",
+  "fr-lyon": "FR",
+  "fr-marseille": "FR",
+  "fr-nice": "FR",
+  "fr-ajaccio": "FR",
+  "fr-strasbourg": "FR",
+  "fr-metz": "FR",
+  "us-new-york": "US",
+  "us-baltimore": "US",
+  "us-washington": "US",
+  "us-providence": "US",
+  "us-indianapolis": "US",
+  "us-louisville": "US",
+  "us-chicago": "US",
+  "us-saint-paul": "US",
+  "us-minneapolis": "US"
+});
+var ATLAS_PLACE_LONGITUDES = Object.freeze({
+  "fr-paris": 2.3488,
+  "fr-brest": -4.48628,
+  "fr-nantes": -1.55336,
+  "fr-bordeaux": -0.58046,
+  "fr-rouen": 1.09932,
+  "fr-toulouse": 1.44367,
+  "fr-lyon": 4.84789,
+  "fr-marseille": 5.38107,
+  "fr-nice": 7.26608,
+  "fr-ajaccio": 8.73812,
+  "fr-strasbourg": 7.74553,
+  "fr-metz": 6.17269,
+  "us-new-york": -74.00597,
+  "us-baltimore": -76.61219,
+  "us-washington": -77.03637,
+  "us-providence": -71.41283,
+  "us-indianapolis": -86.15804,
+  "us-louisville": -85.75941,
+  "us-chicago": -87.65005,
+  "us-saint-paul": -93.09327,
+  "us-minneapolis": -93.26384
+});
+var ATLAS_WINDOW = Object.freeze({ from: "1870-01-01T00:00:00", to: "1920-01-01T00:00:00" });
 
 // src/lib/compute-api/validate.ts
+var CALENDARS = Object.freeze(["gregorian", "julian"]);
 var TEXT = Object.freeze({
   body: "The body must be a JSON object.",
   object: "Must be a JSON object.",
@@ -5672,6 +10543,13 @@ var TEXT = Object.freeze({
   instantOffset: "The offset must be from -14:00 to +14:00.",
   instantRange: `Must fall from ${EPOCH.from} to ${EPOCH.to}.`,
   date: `Must be a real date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31.`,
+  julianDate: `With calendar julian, must be a real Julian calendar date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to the day before ${CALENDAR_CHOICE_BEFORE}.`,
+  calendar: `Must be one of: ${CALENDARS.join(", ")}.`,
+  country: "Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.",
+  atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(", ")}.`,
+  atlasPlaceZone: "Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place's clock.",
+  atlasPlaceLongitude: "With atlasPlace, must be the place's own longitude, to 0.01\xB0, or be left out, when the place's own is used.",
+  atlasPlaceCountry: "With atlasPlace, must be the place's own country, FR or US, or be left out, so that the calendar history is that place's.",
   time: "Must be a time written HH:MM, from 00:00 to 23:59.",
   zoneFormat: "Must be an IANA time zone name, such as Europe/Paris.",
   zoneUnknown: "Must be a time zone name the server's time zone data includes.",
@@ -5710,6 +10588,9 @@ var VALIDATION_POINTERS = Object.freeze([
   "/local/zone",
   "/latitude",
   "/longitude",
+  "/calendar",
+  "/country",
+  "/atlasPlace",
   "/houseSystem",
   "/instants",
   "/bodies",
@@ -5793,6 +10674,12 @@ function dateAt(value, pointer) {
   const text2 = stringAt(value, pointer);
   if (!parseCivilDate(text2) || text2 < FIRST_DATE || text2 > LAST_DATE) throw invalidRequest(pointer, TEXT.date);
   return text2;
+}
+function julianDateAt(value, pointer) {
+  const text2 = stringAt(value, pointer);
+  const gregorian = text2 >= FIRST_DATE && text2 < CALENDAR_CHOICE_BEFORE ? julianToGregorian2(text2) : null;
+  if (!gregorian) throw invalidRequest(pointer, TEXT.julianDate);
+  return gregorian;
 }
 function timeAt2(value, pointer) {
   const text2 = stringAt(value, pointer);
@@ -5896,12 +10783,40 @@ function parseEventsRequest(value) {
     kinds: EVENT_KINDS.filter((kind) => kinds.includes(kind))
   };
 }
+var COUNTRY_CODE = /^[A-Z]{2}$/u;
+function sameZone(a, b) {
+  if (a === b) return true;
+  try {
+    const canonical = (zone) => new Intl.DateTimeFormat("en-US", { timeZone: zone }).resolvedOptions().timeZone;
+    return canonical(a) === canonical(b);
+  } catch {
+    return false;
+  }
+}
 async function parseTimeRequest(value, zones) {
   const object = bodyObject(value);
-  onlyFields(object, ["local", "longitude"], "");
-  const local = await localAt(required(object, "local", ""), "/local", zones);
+  onlyFields(object, ["local", "longitude", "calendar", "country", "atlasPlace"], "");
+  const calendar = has(object, "calendar") ? oneOf(object.calendar, "/calendar", CALENDARS, TEXT.calendar) : "gregorian";
+  const localObject = objectAt(required(object, "local", ""), "/local");
+  onlyFields(localObject, ["date", "time", "zone"], "/local");
+  const writtenDate2 = required(localObject, "date", "/local");
+  const date = calendar === "julian" ? julianDateAt(writtenDate2, "/local/date") : dateAt(writtenDate2, "/local/date");
+  const time = timeAt2(required(localObject, "time", "/local"), "/local/time");
+  const zone = await zoneAt(required(localObject, "zone", "/local"), "/local/zone", zones);
   const longitude2 = has(object, "longitude") ? longitudeAt2(object.longitude, "/longitude") : null;
-  return { local, longitude: longitude2 };
+  let country = null;
+  if (has(object, "country")) {
+    if (typeof object.country !== "string" || !COUNTRY_CODE.test(object.country)) throw invalidRequest("/country", TEXT.country);
+    country = object.country;
+  }
+  const atlasPlace = has(object, "atlasPlace") ? oneOf(object.atlasPlace, "/atlasPlace", ATLAS_PLACE_IDS, TEXT.atlasPlace) : null;
+  if (atlasPlace !== null && !sameZone(zone, ATLAS_PLACE_ZONES[atlasPlace])) throw invalidRequest("/atlasPlace", TEXT.atlasPlaceZone);
+  if (atlasPlace !== null && longitude2 !== null && Math.abs(longitude2 - ATLAS_PLACE_LONGITUDES[atlasPlace]) > 0.01) {
+    throw invalidRequest("/longitude", TEXT.atlasPlaceLongitude);
+  }
+  if (atlasPlace !== null && country !== null && country !== ATLAS_PLACE_COUNTRIES[atlasPlace]) throw invalidRequest("/country", TEXT.atlasPlaceCountry);
+  const readOn = atlasPlace !== null && longitude2 === null ? ATLAS_PLACE_LONGITUDES[atlasPlace] : longitude2;
+  return { local: { date, time, zone }, longitude: readOn, calendar, writtenDate: writtenDate2, country, atlasPlace };
 }
 async function factDay(object, zones) {
   const date = dateAt(required(object, "date", ""), "/date");
@@ -6245,6 +11160,28 @@ function computeEvents(request) {
   events.sort((a, b) => a.at.localeCompare(b.at) || KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || (BODY_ORDER.get("body" in a ? a.body : "Moon") ?? 0) - (BODY_ORDER.get("body" in b ? b.body : "Moon") ?? 0));
   return successBody("events", { from: iso(from), to: iso(to), events }, computeReceipt("events", { search: budget.facts() }));
 }
+function calendarFacts(request) {
+  const row = request.country === null ? void 0 : GREGORIAN_ADOPTION.find((entry) => entry.code === request.country);
+  const note = row ? adoptionNote(request.writtenDate, request.calendar, row.country) : null;
+  return {
+    calendar: request.calendar,
+    writtenDate: request.writtenDate,
+    date: request.local.date,
+    adoption: row ? {
+      code: row.code,
+      firstGregorian: row.firstGregorian,
+      lastJulian: row.lastJulian ?? null,
+      sources: [...row.sources]
+    } : null,
+    calendarNote: note ? note.kind : null
+  };
+}
+function atlasFacts(request, utc) {
+  if (request.atlasPlace === null) return null;
+  const reading2 = atlasReading(request.atlasPlace, request.local.date, request.local.time);
+  const first = reading2.instants[0];
+  return { ...reading2, secondsFromTzdb: first ? (Date.parse(first.utc) - utc.getTime()) / 1e3 : null, source: { ...ATLAS_SOURCE } };
+}
 async function computeTime(request, dependencies) {
   const local = await resolveLocal(dependencies.localTime, request.local, request.longitude);
   const { deltaT: deltaT2, timeScale, ttDays } = basisOf(local.utc);
@@ -6253,7 +11190,10 @@ async function computeTime(request, dependencies) {
   return successBody("time", {
     utc: iso(local.utc),
     ...summary,
-    flags: [...summary.flags, ...spanFlags(local.utc)],
+    flags: [...summary.flags, ...zoneHistoriesDisagree(local) ? ["zone-history-disputed"] : [], ...spanFlags(local.utc)],
+    intlOffsetMinutes: local.intlOffsetMinutes,
+    ...calendarFacts(request),
+    atlas: atlasFacts(request, local.utc),
     tt: iso(tt).slice(0, -1),
     deltaT: deltaT2,
     timeScale
@@ -6724,7 +11664,7 @@ function angularSpans(body, place, stretch, budget, step = HOUSE_STEP_MS) {
     }
     return b;
   };
-  const resolve = (lo, hi) => {
+  const resolve2 = (lo, hi) => {
     const h0 = at(lo);
     const h1 = at(hi);
     if (h0 === h1) return;
@@ -6737,10 +11677,10 @@ function angularSpans(body, place, stretch, budget, step = HOUSE_STEP_MS) {
       return;
     }
     const mid = Math.floor((lo + hi) / 2);
-    resolve(lo, mid);
-    resolve(mid, hi);
+    resolve2(lo, mid);
+    resolve2(mid, hi);
   };
-  for (let lo = stretch.from; lo < stretch.to; lo += step) resolve(lo, Math.min(lo + step, stretch.to));
+  for (let lo = stretch.from; lo < stretch.to; lo += step) resolve2(lo, Math.min(lo + step, stretch.to));
   return spansFromChanges(isAngular(at(stretch.from)), changes, stretch);
 }
 function negate(spans, condition, within) {
@@ -6901,7 +11841,7 @@ function readRaw(req) {
     if (preset instanceof Uint8Array) return Promise.resolve(Buffer.from(preset));
     return Promise.reject(invalidJson());
   }
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve2, reject) => {
     const chunks = [];
     let total = 0;
     let tooLarge = false;
@@ -6924,7 +11864,7 @@ function readRaw(req) {
       settled = true;
       cleanup();
       if (outcome instanceof ComputeApiError) reject(outcome);
-      else resolve(outcome);
+      else resolve2(outcome);
     };
     const onData = (chunk) => {
       if (settled || tooLarge) return;

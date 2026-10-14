@@ -1,0 +1,1638 @@
+{
+ "schemaVersion": 1,
+ "what": "Two builds of the local MCP adapter driven with the same tool list, resource reads and tool calls, compared after versions and sha256: digests are written out",
+ "node": "v22.22.2",
+ "old": {
+  "file": "server.mjs",
+  "sha256": "cba42fac851f431f57e0578d593607844a8d8b80bf8b26850f46f479d19847fe"
+ },
+ "new": {
+  "file": "server.mjs",
+  "sha256": "c61f6cac0b4f1bc059b1e6125405b57d424e660a844fa1828b9ef4b105123416"
+ },
+ "tools": [
+  {
+   "path": "$.0.outputSchema.properties.time",
+   "new": {
+    "type": "object",
+    "properties": {
+     "tool": {
+      "type": "string",
+      "const": "resolve_birth_time"
+     },
+     "sameAs": {
+      "type": "string"
+     },
+     "resolver": {
+      "type": "string",
+      "const": "@zodiacs/engine/geo"
+     },
+     "pinnedTzdb": {
+      "type": "object",
+      "properties": {
+       "release": {
+        "type": "string"
+       },
+       "appliesBefore": {
+        "type": "string",
+        "const": "1970-01-02"
+       }
+      },
+      "required": [
+       "release",
+       "appliesBefore"
+      ],
+      "additionalProperties": false
+     },
+     "calendars": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "enum": [
+        "gregorian",
+        "julian"
+       ]
+      }
+     },
+     "julianLastWritten": {
+      "type": "string",
+      "const": "1923-12-31"
+     },
+     "atlas": {
+      "type": "object",
+      "properties": {
+       "version": {
+        "type": "string"
+       },
+       "licence": {
+        "type": "string",
+        "const": "CC BY 4.0"
+       },
+       "window": {
+        "type": "object",
+        "properties": {
+         "from": {
+          "type": "string"
+         },
+         "to": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "from",
+         "to"
+        ],
+        "additionalProperties": false
+       },
+       "places": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "enum": [
+          "fr-paris",
+          "fr-brest",
+          "fr-nantes",
+          "fr-bordeaux",
+          "fr-rouen",
+          "fr-toulouse",
+          "fr-lyon",
+          "fr-marseille",
+          "fr-nice",
+          "fr-ajaccio",
+          "fr-strasbourg",
+          "fr-metz",
+          "us-new-york",
+          "us-baltimore",
+          "us-washington",
+          "us-providence",
+          "us-indianapolis",
+          "us-louisville",
+          "us-chicago",
+          "us-saint-paul",
+          "us-minneapolis"
+         ]
+        }
+       }
+      },
+      "required": [
+       "version",
+       "licence",
+       "window",
+       "places"
+      ],
+      "additionalProperties": false,
+      "description": "The Zodiacs time atlas, which resolve_birth_time reads for a place named in atlasPlace: what the clocks said there, with citations, for wall times from its window's start up to its end."
+     }
+    },
+    "required": [
+     "tool",
+     "sameAs",
+     "resolver",
+     "pinnedTzdb",
+     "calendars",
+     "julianLastWritten",
+     "atlas"
+    ],
+    "additionalProperties": false,
+    "description": "What resolve_birth_time accepts and how it reads a local time."
+   }
+  },
+  {
+   "path": "$.0.outputSchema.properties.places",
+   "new": {
+    "type": "object",
+    "properties": {
+     "tool": {
+      "type": "string",
+      "const": "search_places"
+     },
+     "source": {
+      "type": "string",
+      "const": "GeoNames cities15000"
+     },
+     "licence": {
+      "type": "string",
+      "const": "CC BY 4.0"
+     },
+     "url": {
+      "type": "string",
+      "const": "https://www.geonames.org/"
+     },
+     "rows": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+     },
+     "maxResults": {
+      "type": "number",
+      "const": 20
+     },
+     "coordinates": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "tool",
+     "source",
+     "licence",
+     "url",
+     "rows",
+     "maxResults",
+     "coordinates"
+    ],
+    "additionalProperties": false,
+    "description": "The place index search_places reads, which is built into this adapter."
+   }
+  },
+  {
+   "path": "$.0.outputSchema.required.5",
+   "old": "resources",
+   "new": "time"
+  },
+  {
+   "path": "$.0.outputSchema.required.6",
+   "old": "unsupported",
+   "new": "places"
+  },
+  {
+   "path": "$.0.outputSchema.required.7",
+   "old": "privacy",
+   "new": "resources"
+  },
+  {
+   "path": "$.0.outputSchema.required.8",
+   "old": "receipt",
+   "new": "unsupported"
+  },
+  {
+   "path": "$.0.outputSchema.required.9",
+   "old": "cite",
+   "new": "privacy"
+  },
+  {
+   "path": "$.0.outputSchema.required.10",
+   "new": "receipt"
+  },
+  {
+   "path": "$.0.outputSchema.required.11",
+   "new": "cite"
+  },
+  {
+   "path": "$.5.description",
+   "old": "Whether a stated fact holds: a body in a sign or retrograde at an instant or on a date, a body entering a sign on a date, the Moon reaching a phase on a date, or two bodies in an aspect at an instant or on a date. Answers true, false or depends, with the computed values that decide it and a receipt. It never interprets. This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset. The same calculation, result and receipt as POST https://zodiacs.org/api/v1/sky-fact for the same request without a zone, computed on this machine. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+   "new": "Whether a stated fact holds: a body in a sign or retrograde at an instant or on a date, a body entering a sign on a date, the Moon reaching a phase on a date, or two bodies in an aspect at an instant or on a date. Answers true, false or depends, with the computed values that decide it and a receipt. It never interprets. check_sky_fact takes no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset. The same calculation, result and receipt as POST https://zodiacs.org/api/v1/sky-fact for the same request without a zone, computed on this machine. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route."
+  },
+  {
+   "path": "$.5.inputSchema.properties.date.description",
+   "old": "YYYY-MM-DD, from 1800-01-01 to 2199-12-31. Needed for ingress and phase; for sign, retrograde and aspect, the alternative to instant. This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset.",
+   "new": "YYYY-MM-DD, from 1800-01-01 to 2199-12-31. Needed for ingress and phase; for sign, retrograde and aspect, the alternative to instant. check_sky_fact takes no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset."
+  },
+  {
+   "path": "$.6",
+   "new": {
+    "name": "resolve_birth_time",
+    "title": "Resolve a local birth time to UTC",
+    "description": "A local date and time in an IANA time zone, as UTC and Terrestrial Time, with flags: a time the clocks skipped (dst-gap) or repeated (dst-fold), a time read on a local mean time (lmt), and a zone history before 1970 that the runtime's own time zone data disputes (zone-history-disputed); zoneUncertain where the runtime's data has no local time for the place. It takes a date written in the Julian calendar up to 1923, and with a country code gives the site's note on when that country changed calendar. Give it the place's longitude, which search_places returns, so a time before standard time is read on the place's own mean time. Pass the utc it returns to calculate_natal_chart. The same calculation, result and receipt as POST https://zodiacs.org/api/v1/time for the same request, computed on this machine with the time zone histories built into this adapter. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+    "inputSchema": {
+     "type": "object",
+     "properties": {
+      "local": {
+       "type": "object",
+       "properties": {
+        "date": {
+         "type": "string",
+         "maxLength": 10,
+         "description": "YYYY-MM-DD in the calendar named by calendar: from 1800-01-01 to 2199-12-31, or with calendar julian from 1800-01-01 to 1923-12-31."
+        },
+        "time": {
+         "type": "string",
+         "maxLength": 5,
+         "description": "The time the clock showed, HH:MM, from 00:00 to 23:59."
+        },
+        "zone": {
+         "type": "string",
+         "maxLength": 64,
+         "description": "An IANA time zone name, such as Europe/Paris, in any letter case; search_places gives each place's zone."
+        }
+       },
+       "required": [
+        "date",
+        "time",
+        "zone"
+       ],
+       "additionalProperties": false,
+       "description": "A local date and time as a clock in the zone showed them."
+      },
+      "longitude": {
+       "description": "The place's longitude in degrees east, from -180 to 180. With it, a time before the place adopted a legal time is read on the place's own mean time.",
+       "type": "number"
+      },
+      "calendar": {
+       "description": "The calendar local.date is written in; gregorian when omitted. julian, the Old Style, is accepted for a date written up to 1923-12-31 and converted to the Gregorian date before the time is read.",
+       "type": "string",
+       "enum": [
+        "gregorian",
+        "julian"
+       ]
+      },
+      "country": {
+       "description": "The place's country as an ISO 3166-1 alpha-2 code in capitals, such as RU, for the note on when it changed to the Gregorian calendar.",
+       "type": "string",
+       "maxLength": 2
+      },
+      "atlasPlace": {
+       "description": "A place of the Zodiacs time atlas, which records, with citations, what the clocks said in 21 places of France and the United States from 1870 to 1919; the place must lie in local.zone, and tzdb's reading uses its longitude, so a longitude sent with it must be the place's, to 0.01°, and a country sent with it must be the place's. The reply then gives the atlas's reading of the same wall time there, with its rule, its uncertainty flag and its citations, beside tzdb's.",
+       "type": "string",
+       "enum": [
+        "fr-paris",
+        "fr-brest",
+        "fr-nantes",
+        "fr-bordeaux",
+        "fr-rouen",
+        "fr-toulouse",
+        "fr-lyon",
+        "fr-marseille",
+        "fr-nice",
+        "fr-ajaccio",
+        "fr-strasbourg",
+        "fr-metz",
+        "us-new-york",
+        "us-baltimore",
+        "us-washington",
+        "us-providence",
+        "us-indianapolis",
+        "us-louisville",
+        "us-chicago",
+        "us-saint-paul",
+        "us-minneapolis"
+       ]
+      }
+     },
+     "required": [
+      "local"
+     ],
+     "$schema": "https://json-schema.org/draft/2020-12/schema",
+     "additionalProperties": false
+    },
+    "outputSchema": {
+     "type": "object",
+     "properties": {
+      "schema": {
+       "type": "string",
+       "const": "zodiacs.compute-api.time.v1"
+      },
+      "result": {
+       "type": "object",
+       "properties": {
+        "utc": {
+         "type": "string",
+         "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+        },
+        "offsetMinutes": {
+         "type": "number",
+         "description": "Minutes east of UTC; fractional before standard time."
+        },
+        "flags": {
+         "type": "array",
+         "items": {
+          "type": "string",
+          "enum": [
+           "dst-gap",
+           "dst-fold",
+           "lmt",
+           "zone-history-disputed",
+           "outside-reference-span"
+          ]
+         },
+         "description": "dst-gap: the time was skipped and moved forward by the gap. dst-fold: it happened twice and the earlier was taken. lmt: it was read on a local mean time. zone-history-disputed: tzdb's default build, the runtime's own data, gives the zone another offset at the instant than the pinned history. outside-reference-span: the instant falls outside 1800 to 2200."
+        },
+        "localMeanTime": {
+         "anyOf": [
+          {
+           "type": "object",
+           "properties": {
+            "longitude": {
+             "type": "number"
+            },
+            "zoneOffsetMinutes": {
+             "type": "number"
+            }
+           },
+           "required": [
+            "longitude",
+            "zoneOffsetMinutes"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "type": "null"
+          }
+         ],
+         "description": "The place's own mean time, where the time was read on it, with the zone's offset then."
+        },
+        "zoneHistory": {
+         "type": "string",
+         "enum": [
+          "pinned",
+          "runtime"
+         ],
+         "description": "pinned: tzdb release 2025c with backzone, which the engine ships, read the offset. runtime: the runtime's own time zone data read it."
+        },
+        "zoneUncertain": {
+         "type": "boolean",
+         "description": "True for a date up to 1970-01-01 read on the runtime's data where the release records no local time, as at an Antarctic station before it was staffed."
+        },
+        "intlOffsetMinutes": {
+         "description": "Where the pinned history answered, the zone's offset at the same instant in the runtime's own data, tzdb's default build; null otherwise.",
+         "type": [
+          "number",
+          "null"
+         ]
+        },
+        "calendar": {
+         "type": "string",
+         "enum": [
+          "gregorian",
+          "julian"
+         ]
+        },
+        "writtenDate": {
+         "type": "string",
+         "description": "The date as written."
+        },
+        "date": {
+         "type": "string",
+         "description": "The proleptic Gregorian date the time was read on."
+        },
+        "adoption": {
+         "anyOf": [
+          {
+           "type": "object",
+           "properties": {
+            "code": {
+             "type": "string"
+            },
+            "firstGregorian": {
+             "type": "string"
+            },
+            "lastJulian": {
+             "type": [
+              "string",
+              "null"
+             ]
+            },
+            "sources": {
+             "type": "array",
+             "items": {
+              "type": "string",
+              "enum": [
+               "wikipedia",
+               "tzdb",
+               "lv",
+               "fi"
+              ]
+             }
+            }
+           },
+           "required": [
+            "code",
+            "firstGregorian",
+            "lastJulian",
+            "sources"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "type": "null"
+          }
+         ],
+         "description": "When the country named changed to the Gregorian calendar, from the site's birth forms' table; null when no country was named or the table does not date it."
+        },
+        "atlas": {
+         "anyOf": [
+          {
+           "type": "object",
+           "properties": {
+            "place": {
+             "type": "string",
+             "enum": [
+              "fr-paris",
+              "fr-brest",
+              "fr-nantes",
+              "fr-bordeaux",
+              "fr-rouen",
+              "fr-toulouse",
+              "fr-lyon",
+              "fr-marseille",
+              "fr-nice",
+              "fr-ajaccio",
+              "fr-strasbourg",
+              "fr-metz",
+              "us-new-york",
+              "us-baltimore",
+              "us-washington",
+              "us-providence",
+              "us-indianapolis",
+              "us-louisville",
+              "us-chicago",
+              "us-saint-paul",
+              "us-minneapolis"
+             ]
+            },
+            "name": {
+             "type": "string"
+            },
+            "jurisdiction": {
+             "type": "string"
+            },
+            "clock": {
+             "type": "string",
+             "const": "civil"
+            },
+            "status": {
+             "type": "string",
+             "enum": [
+              "ok",
+              "ambiguous",
+              "nonexistent",
+              "out-of-coverage"
+             ],
+             "description": "ok: one instant. ambiguous: the clocks were set back over the time; every instant is listed, earliest first. nonexistent: they were set forward over it; the instant listed is the time read on the clock before the change. out-of-coverage: outside 1870 to 1919."
+            },
+            "instants": {
+             "type": "array",
+             "items": {
+              "type": "object",
+              "properties": {
+               "utc": {
+                "type": "string",
+                "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+               },
+               "offsetSeconds": {
+                "type": "number"
+               },
+               "rule": {
+                "type": "string"
+               },
+               "ruleVersion": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+               },
+               "isDst": {
+                "type": "boolean"
+               },
+               "abbreviation": {
+                "type": [
+                 "string",
+                 "null"
+                ]
+               },
+               "uncertainty": {
+                "type": "object",
+                "properties": {
+                 "flag": {
+                  "type": "string",
+                  "enum": [
+                   "documented",
+                   "inferred",
+                   "uncertain"
+                  ]
+                 },
+                 "reasons": {
+                  "type": "array",
+                  "items": {
+                   "type": "string"
+                  }
+                 }
+                },
+                "required": [
+                 "flag",
+                 "reasons"
+                ],
+                "additionalProperties": false,
+                "description": "documented: the cited sources state the offset and the change. inferred: they follow from the sources by a stated assumption. uncertain: the sources leave it open or disagree, or the time falls within the limits they leave for a change."
+               },
+               "citations": {
+                "type": "array",
+                "items": {
+                 "type": "object",
+                 "properties": {
+                  "id": {
+                   "type": "string"
+                  },
+                  "title": {
+                   "type": "string"
+                  },
+                  "date": {
+                   "type": [
+                    "string",
+                    "null"
+                   ]
+                  },
+                  "url": {
+                   "type": "string"
+                  },
+                  "locator": {
+                   "type": [
+                    "string",
+                    "null"
+                   ]
+                  },
+                  "gloss": {
+                   "type": [
+                    "string",
+                    "null"
+                   ]
+                  }
+                 },
+                 "required": [
+                  "id",
+                  "title",
+                  "date",
+                  "url",
+                  "locator",
+                  "gloss"
+                 ],
+                 "additionalProperties": false
+                }
+               }
+              },
+              "required": [
+               "utc",
+               "offsetSeconds",
+               "rule",
+               "ruleVersion",
+               "isDst",
+               "abbreviation",
+               "uncertainty",
+               "citations"
+              ],
+              "additionalProperties": false
+             }
+            },
+            "skipped": {
+             "anyOf": [
+              {
+               "type": "object",
+               "properties": {
+                "from": {
+                 "type": "string"
+                },
+                "to": {
+                 "type": "string"
+                }
+               },
+               "required": [
+                "from",
+                "to"
+               ],
+               "additionalProperties": false
+              },
+              {
+               "type": "null"
+              }
+             ]
+            },
+            "secondsFromTzdb": {
+             "description": "The atlas's first instant minus the utc tzdb gave, in seconds: 0 where they agree.",
+             "type": [
+              "number",
+              "null"
+             ]
+            },
+            "source": {
+             "type": "object",
+             "properties": {
+              "name": {
+               "type": "string"
+              },
+              "version": {
+               "type": "string"
+              },
+              "licence": {
+               "type": "string",
+               "const": "CC BY 4.0"
+              },
+              "url": {
+               "type": "string"
+              }
+             },
+             "required": [
+              "name",
+              "version",
+              "licence",
+              "url"
+             ],
+             "additionalProperties": false
+            }
+           },
+           "required": [
+            "place",
+            "name",
+            "jurisdiction",
+            "clock",
+            "status",
+            "instants",
+            "skipped",
+            "secondsFromTzdb",
+            "source"
+           ],
+           "additionalProperties": false
+          },
+          {
+           "type": "null"
+          }
+         ],
+         "description": "The time atlas's reading of the wall time at the place named in atlasPlace, beside tzdb's; null when none was named."
+        },
+        "calendarNote": {
+         "anyOf": [
+          {
+           "type": "string",
+           "enum": [
+            "old-style",
+            "new-style",
+            "other-calendar"
+           ]
+          },
+          {
+           "type": "null"
+          }
+         ],
+         "description": "For a date written before 1924: old-style, written as Gregorian before the country's first New Style day; new-style, written as Julian on or after it; other-calendar, before the change in a country whose calendar before was not the Julian. Advice only."
+        },
+        "tt": {
+         "type": "string",
+         "description": "Terrestrial Time to the millisecond, with no zone designator because it is not UTC."
+        },
+        "deltaT": {
+         "type": "object",
+         "properties": {
+          "seconds": {
+           "type": "number"
+          },
+          "sigma": {
+           "type": "number"
+          },
+          "model": {
+           "type": "string",
+           "enum": [
+            "iers-utc/1",
+            "zodiacs-deltat/1"
+           ]
+          },
+          "table": {
+           "type": "string"
+          },
+          "tableDigest": {
+           "type": "string"
+          },
+          "segment": {
+           "type": "string",
+           "enum": [
+            "long-term",
+            "reconstructed",
+            "observed",
+            "predicted",
+            "extrapolated"
+           ]
+          }
+         },
+         "required": [
+          "seconds",
+          "sigma",
+          "model",
+          "table",
+          "tableDigest",
+          "segment"
+         ],
+         "additionalProperties": false,
+         "description": "ΔT = TT − UT1 in seconds, with its 1-sigma band and where it came from: iers-utc/1 from 1972 to the end of the engine's UT1 table, its model zodiacs-deltat/1 otherwise."
+        },
+        "timeScale": {
+         "type": "object",
+         "properties": {
+          "input": {
+           "type": "string",
+           "const": "utc"
+          },
+          "basis": {
+           "type": "string",
+           "enum": [
+            "iers",
+            "delta-t"
+           ]
+          },
+          "ut1MinusUtc": {
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "seconds": {
+               "type": "number"
+              },
+              "sigma": {
+               "type": "number"
+              },
+              "source": {
+               "type": "string",
+               "enum": [
+                "observed",
+                "predicted",
+                "fallback"
+               ]
+              }
+             },
+             "required": [
+              "seconds",
+              "sigma",
+              "source"
+             ],
+             "additionalProperties": false
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "leapSeconds": {
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "taiMinusUtc": {
+               "type": "number"
+              },
+              "listed": {
+               "type": "boolean"
+              }
+             },
+             "required": [
+              "taiMinusUtc",
+              "listed"
+             ],
+             "additionalProperties": false
+            },
+            {
+             "type": "null"
+            }
+           ]
+          }
+         },
+         "required": [
+          "input",
+          "basis",
+          "ut1MinusUtc",
+          "leapSeconds"
+         ],
+         "additionalProperties": false,
+         "description": "How the engine read the instant. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis delta-t, otherwise: the instant is read as UT1, and TT is UT1 plus the ΔT model."
+        }
+       },
+       "required": [
+        "utc",
+        "offsetMinutes",
+        "flags",
+        "localMeanTime",
+        "zoneHistory",
+        "zoneUncertain",
+        "intlOffsetMinutes",
+        "calendar",
+        "writtenDate",
+        "date",
+        "adoption",
+        "atlas",
+        "calendarNote",
+        "tt",
+        "deltaT",
+        "timeScale"
+       ],
+       "additionalProperties": false
+      },
+      "receipt": {
+       "type": "object",
+       "properties": {
+        "schema": {
+         "type": "string",
+         "const": "zodiacs.compute-receipt.v1"
+        },
+        "endpoint": {
+         "type": "string",
+         "const": "time"
+        },
+        "engine": {
+         "type": "object",
+         "properties": {
+          "name": {
+           "type": "string",
+           "const": "@zodiacs/engine"
+          },
+          "version": {
+           "type": "string"
+          },
+          "ephemeris": {
+           "type": "object",
+           "properties": {
+            "name": {
+             "type": "string",
+             "const": "astronomy-engine"
+            },
+            "version": {
+             "type": "string"
+            }
+           },
+           "required": [
+            "name",
+            "version"
+           ],
+           "additionalProperties": false
+          }
+         },
+         "required": [
+          "name",
+          "version",
+          "ephemeris"
+         ],
+         "additionalProperties": false
+        },
+        "conventions": {
+         "type": "object",
+         "propertyNames": {
+          "type": "string"
+         },
+         "additionalProperties": {
+          "type": "string"
+         }
+        },
+        "coverage": {
+         "type": "object",
+         "propertyNames": {
+          "type": "string"
+         },
+         "additionalProperties": {
+          "type": "string"
+         }
+        },
+        "referenceSpan": {
+         "type": "object",
+         "properties": {
+          "from": {
+           "type": "string",
+           "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+          },
+          "to": {
+           "type": "string",
+           "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+          }
+         },
+         "required": [
+          "from",
+          "to"
+         ],
+         "additionalProperties": false
+        },
+        "deltaT": {
+         "minItems": 2,
+         "maxItems": 2,
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "model": {
+            "type": "string",
+            "enum": [
+             "iers-utc/1",
+             "zodiacs-deltat/1"
+            ]
+           },
+           "table": {
+            "type": "string"
+           },
+           "tableDigest": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "model",
+           "table",
+           "tableDigest"
+          ],
+          "additionalProperties": false
+         },
+         "description": "The two sources of ΔT the engine's time basis uses: IERS from 1972 to the end of its UT1 table, and its model at every other instant."
+        },
+        "search": {
+         "description": "How a search searched: present when one ran.",
+         "type": "object",
+         "properties": {
+          "solver": {
+           "type": "string",
+           "const": "engine-longitude-crossings"
+          },
+          "stepDays": {
+           "type": "object",
+           "properties": {
+            "default": {
+             "type": "number",
+             "const": 5
+            },
+            "moon": {
+             "type": "number",
+             "const": 1
+            },
+            "elongation": {
+             "type": "number",
+             "const": 1
+            }
+           },
+           "required": [
+            "default",
+            "moon",
+            "elongation"
+           ],
+           "additionalProperties": false
+          },
+          "bisections": {
+           "type": "number",
+           "const": 24
+          },
+          "samples": {
+           "type": "integer",
+           "minimum": 0,
+           "maximum": 9007199254740991
+          },
+          "maxSamples": {
+           "type": "integer",
+           "minimum": 0,
+           "maximum": 9007199254740991
+          },
+          "window": {
+           "type": "string",
+           "const": "start-exclusive-end-inclusive"
+          },
+          "completeness": {
+           "type": "string",
+           "const": "tested-not-proven",
+           "description": "The search samples each motion at a fixed step and bisects every crossing it sees. It is tested, not proven to miss nothing."
+          }
+         },
+         "required": [
+          "solver",
+          "stepDays",
+          "bisections",
+          "samples",
+          "maxSamples",
+          "window",
+          "completeness"
+         ],
+         "additionalProperties": false
+        },
+        "timeResolution": {
+         "type": "object",
+         "properties": {
+          "resolver": {
+           "type": "string",
+           "const": "@zodiacs/engine/geo"
+          },
+          "policy": {
+           "type": "object",
+           "properties": {
+            "fold": {
+             "type": "string",
+             "const": "earlier"
+            },
+            "gap": {
+             "type": "string",
+             "const": "shift-forward"
+            }
+           },
+           "required": [
+            "fold",
+            "gap"
+           ],
+           "additionalProperties": false
+          },
+          "pinnedTzdb": {
+           "type": "object",
+           "properties": {
+            "release": {
+             "type": "string"
+            },
+            "sha256": {
+             "type": "string"
+            },
+            "dataForm": {
+             "type": "string",
+             "const": "main+backzone"
+            },
+            "appliesBefore": {
+             "type": "string",
+             "const": "1970-01-02"
+            }
+           },
+           "required": [
+            "release",
+            "sha256",
+            "dataForm",
+            "appliesBefore"
+           ],
+           "additionalProperties": false
+          },
+          "runtimeTzdb": {
+           "type": [
+            "string",
+            "null"
+           ]
+          }
+         },
+         "required": [
+          "resolver",
+          "policy",
+          "pinnedTzdb",
+          "runtimeTzdb"
+         ],
+         "additionalProperties": false,
+         "description": "How local times were read: the resolver and its policy, the tzdb release it ships for dates up to 1970-01-01, and the runtime's own tzdb, which reads the rest."
+        }
+       },
+       "required": [
+        "schema",
+        "endpoint",
+        "engine",
+        "conventions",
+        "coverage",
+        "referenceSpan",
+        "deltaT",
+        "timeResolution"
+       ],
+       "additionalProperties": false,
+       "description": "The compute API's receipt for this calculation: the engine, its conventions and coverage as its own receipts state them, and what this request used. The cite digest is of this object."
+      },
+      "backend": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "type": "string",
+         "const": "@zodiacs/engine"
+        },
+        "version": {
+         "type": "string"
+        },
+        "ephemeris": {
+         "type": "object",
+         "properties": {
+          "name": {
+           "type": "string",
+           "const": "astronomy-engine"
+          },
+          "version": {
+           "type": "string"
+          }
+         },
+         "required": [
+          "name",
+          "version"
+         ],
+         "additionalProperties": false
+        }
+       },
+       "required": [
+        "name",
+        "version",
+        "ephemeris"
+       ],
+       "additionalProperties": false
+      },
+      "cite": {
+       "type": "object",
+       "properties": {
+        "url": {
+         "type": "string",
+         "const": "https://zodiacs.org/developers/mcp/#resolve_birth_time"
+        },
+        "receipt": {
+         "type": "string",
+         "pattern": "^sha256:[0-9a-f]{64}$",
+         "description": "SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds no date, time or zone from the request. It is the digest the hosted compute API cites for the same request."
+        },
+        "engine": {
+         "type": "string",
+         "const": "@zodiacs/engine"
+        },
+        "version": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "url",
+        "receipt",
+        "engine",
+        "version"
+       ],
+       "additionalProperties": false,
+       "description": "What to quote as this result's source."
+      }
+     },
+     "required": [
+      "schema",
+      "result",
+      "receipt",
+      "backend",
+      "cite"
+     ],
+     "$schema": "https://json-schema.org/draft/2020-12/schema",
+     "additionalProperties": false,
+     "description": "The body of POST /api/v1/time for the same request, with this tool's cite."
+    },
+    "annotations": {
+     "readOnlyHint": true,
+     "destructiveHint": false,
+     "idempotentHint": true,
+     "openWorldHint": false
+    }
+   }
+  },
+  {
+   "path": "$.7",
+   "new": {
+    "name": "search_places",
+    "title": "Search places by name",
+    "description": "Places whose names start with the query, then, from three characters, places whose names begin with the same letter and contain it, from GeoNames cities15000, every place of 15,000 people or more, with coordinates rounded to 0.01° and IANA time zones: the index and ranking of the site's birthplace search, built into this adapter. A search opens no file and makes no request. GeoNames data is CC BY 4.0: credit GeoNames where you show its places. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+    "inputSchema": {
+     "type": "object",
+     "properties": {
+      "query": {
+       "type": "string",
+       "maxLength": 64,
+       "description": "A place name or its start, as GeoNames writes it or in its ASCII spelling (Zürich, Zurich or Zuerich), in any letter case, with or without accents and apostrophes; two characters or more. Places whose names start with it come first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population."
+      },
+      "limit": {
+       "description": "How many places, 1 to 20; 8 when omitted, as the site's search lists.",
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 20
+      }
+     },
+     "required": [
+      "query"
+     ],
+     "$schema": "https://json-schema.org/draft/2020-12/schema",
+     "additionalProperties": false
+    },
+    "outputSchema": {
+     "type": "object",
+     "properties": {
+      "places": {
+       "maxItems": 20,
+       "type": "array",
+       "items": {
+        "type": "object",
+        "properties": {
+         "name": {
+          "type": "string"
+         },
+         "admin1": {
+          "type": "string",
+          "description": "The region, as GeoNames names its first-level division; empty where it has none."
+         },
+         "country": {
+          "type": "string"
+         },
+         "latitude": {
+          "type": "number",
+          "description": "Degrees north, rounded to 0.01° as the index stores it."
+         },
+         "longitude": {
+          "type": "number",
+          "description": "Degrees east, rounded to 0.01° as the index stores it."
+         },
+         "timeZone": {
+          "type": "string",
+          "description": "The place's IANA time zone, for resolve_birth_time."
+         },
+         "population": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+         }
+        },
+        "required": [
+         "name",
+         "admin1",
+         "country",
+         "latitude",
+         "longitude",
+         "timeZone",
+         "population"
+        ],
+        "additionalProperties": false
+       },
+       "description": "Places whose names start with the query first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population."
+      },
+      "source": {
+       "type": "object",
+       "properties": {
+        "source": {
+         "type": "string",
+         "const": "GeoNames cities15000"
+        },
+        "licence": {
+         "type": "string",
+         "const": "CC BY 4.0"
+        },
+        "url": {
+         "type": "string",
+         "const": "https://www.geonames.org/"
+        },
+        "rows": {
+         "type": "integer",
+         "minimum": 0,
+         "maximum": 9007199254740991
+        }
+       },
+       "required": [
+        "source",
+        "licence",
+        "url",
+        "rows"
+       ],
+       "additionalProperties": false,
+       "description": "The index searched: GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0."
+      },
+      "receipt": {
+       "type": "object",
+       "properties": {
+        "schema": {
+         "type": "string",
+         "const": "zodiacs.mcp-receipt.v1"
+        },
+        "tool": {
+         "type": "string",
+         "const": "search_places"
+        },
+        "adapter": {
+         "type": "object",
+         "properties": {
+          "name": {
+           "type": "string",
+           "const": "zodiacs-mcp-server"
+          },
+          "version": {
+           "type": "string"
+          }
+         },
+         "required": [
+          "name",
+          "version"
+         ],
+         "additionalProperties": false
+        },
+        "engine": {
+         "type": "object",
+         "properties": {
+          "name": {
+           "type": "string",
+           "const": "@zodiacs/engine"
+          },
+          "version": {
+           "type": "string"
+          },
+          "ephemeris": {
+           "type": "object",
+           "properties": {
+            "name": {
+             "type": "string",
+             "const": "astronomy-engine"
+            },
+            "version": {
+             "type": "string"
+            }
+           },
+           "required": [
+            "name",
+            "version"
+           ],
+           "additionalProperties": false
+          }
+         },
+         "required": [
+          "name",
+          "version",
+          "ephemeris"
+         ],
+         "additionalProperties": false,
+         "description": "The engine that calculated, as its calculation record names it."
+        },
+        "places": {
+         "type": "object",
+         "properties": {
+          "source": {
+           "type": "string",
+           "const": "GeoNames cities15000"
+          },
+          "licence": {
+           "type": "string",
+           "const": "CC BY 4.0"
+          },
+          "rows": {
+           "type": "integer",
+           "minimum": 0,
+           "maximum": 9007199254740991
+          }
+         },
+         "required": [
+          "source",
+          "licence",
+          "rows"
+         ],
+         "additionalProperties": false
+        }
+       },
+       "required": [
+        "schema",
+        "tool",
+        "adapter",
+        "engine",
+        "places"
+       ],
+       "additionalProperties": false,
+       "description": "The adapter and the engine that answered. The cite digest is of this object."
+      },
+      "cite": {
+       "type": "object",
+       "properties": {
+        "url": {
+         "type": "string",
+         "const": "https://zodiacs.org/developers/mcp/#search_places"
+        },
+        "receipt": {
+         "type": "string",
+         "pattern": "^sha256:[0-9a-f]{64}$",
+         "description": "SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which names the place index searched and holds nothing from the query."
+        },
+        "engine": {
+         "type": "string",
+         "const": "@zodiacs/engine"
+        },
+        "version": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "url",
+        "receipt",
+        "engine",
+        "version"
+       ],
+       "additionalProperties": false,
+       "description": "What to quote as this result's source."
+      }
+     },
+     "required": [
+      "places",
+      "source",
+      "receipt",
+      "cite"
+     ],
+     "$schema": "https://json-schema.org/draft/2020-12/schema",
+     "additionalProperties": false
+    },
+    "annotations": {
+     "readOnlyHint": true,
+     "destructiveHint": false,
+     "idempotentHint": true,
+     "openWorldHint": false
+    }
+   }
+  }
+ ],
+ "resources": [
+  {
+   "path": "$.0.1.description",
+   "old": "What a chart holds, how an instant is read, unknown birth times, house systems, aspects, comparisons, positions, events and sky facts, the accepted dates, and what a result cites.",
+   "new": "What a chart holds, how an instant is read, unknown birth times, house systems, aspects, comparisons, positions, events and sky facts, local times and places, the accepted dates, and what a result cites."
+  },
+  {
+   "path": "$.1.1.contents.0.text",
+   "onlyOld": [
+    "The site's methodology page, https://zodiacs.org/methodology/, describes the same engine as the site's calculators use it, and https://zodiacs.org/developers/engine/ reports how far its results were from other software in dated measurements. This text says what the six tools do with it.",
+    "`utc`, and every instant the other tools take, must carry its zone, `Z` or an offset. This server applies the offset written there and nothing else: it looks up no place and no time zone. From 1972 to the end of the IERS table it carries, the engine reads the instant as UTC, taking Terrestrial Time from the IERS leap seconds and UT1 from IERS UT1 − UTC. It reads any other instant as UT1, with ΔT (TT − UT1) from its versioned model. A calculation record states the ΔT used, with its uncertainty and its source, and how the instant became UT1 and Terrestrial Time.",
+    "`check_sky_fact` answers `true`, `false` or `depends`, with the computed values that decide the answer. It never interprets. This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset.",
+    "Every result other than a refusal carries `cite`: `url`, the tool's entry on the developer page; `receipt`, `sha256:` and the SHA-256 of a receipt's RFC 8785 canonical JSON; and the engine and its version. A chart cites the engine's calculation receipt, which the record carries. That receipt holds the instant as it was written, offset included, the coordinates and the settings, so its digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With `timeKnown: false` the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison and the capabilities reply cite the adapter's own receipt, which they carry and which holds nothing from a record. `get_positions`, `find_events` and `check_sky_fact` cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date or body from the request, so their digest is the one the compute API cites for the same request."
+   ],
+   "onlyNew": [
+    "The site's methodology page, https://zodiacs.org/methodology/, describes the same engine as the site's calculators use it, and https://zodiacs.org/developers/engine/ reports how far its results were from other software in dated measurements. This text says what the eight tools do with it.",
+    "`utc`, and every instant the other tools take, must carry its zone, `Z` or an offset. They apply the offset written there and nothing else. From 1972 to the end of the IERS table it carries, the engine reads the instant as UTC, taking Terrestrial Time from the IERS leap seconds and UT1 from IERS UT1 − UTC. It reads any other instant as UT1, with ΔT (TT − UT1) from its versioned model. A calculation record states the ΔT used, with its uncertainty and its source, and how the instant became UT1 and Terrestrial Time.",
+    "`check_sky_fact` answers `true`, `false` or `depends`, with the computed values that decide the answer. It never interprets. check_sky_fact takes no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset.",
+    "## Local times and places",
+    "`resolve_birth_time` runs the compute API's time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place's own with its longitude, the zone reference city's without one. Up to 1970-01-01 the offsets are those of tzdb 2025c with its backzone file, which the engine ships; from then on, the runtime's own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone's offset at the same instant in the runtime's data, tzdb's default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms' note on when that country changed calendar. With `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which records with citations what the clocks said in France and the United States from 1870 to 1919, the reply adds the atlas's reading of the same wall time: each instant with the rule the atlas applies, its uncertainty flag (documented, inferred or uncertain) and reasons, and its citations, and how many seconds the first instant is from tzdb's. Pass the `utc` it returns to the other tools.",
+    "`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site's birthplace search, built into this server: names that start with the query first, then, from three characters, names that begin with the same letter and contain it, each by population; a place is matched by its GeoNames name or its ASCII spelling, with accents, letter case and apostrophes set aside. Coordinates are rounded to 0.01°, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.",
+    "Every result other than a refusal carries `cite`: `url`, the tool's entry on the developer page; `receipt`, `sha256:` and the SHA-256 of a receipt's RFC 8785 canonical JSON; and the engine and its version. A chart cites the engine's calculation receipt, which the record carries. That receipt holds the instant as it was written, offset included, the coordinates and the settings, so its digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With `timeKnown: false` the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison and the capabilities reply cite the adapter's own receipt, which they carry and which holds nothing from a record. `get_positions`, `find_events`, `check_sky_fact` and `resolve_birth_time` cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date, zone or body from the request, so their digest is the one the compute API cites for the same request. `search_places` cites the adapter's receipt, which names the place index and holds nothing from the query."
+   ]
+  }
+ ],
+ "calls": 278,
+ "refusals": 10,
+ "byTool": {
+  "get_capabilities": 1,
+  "calculate_natal_chart": 160,
+  "compare_calculation_records": 23,
+  "get_positions": 23,
+  "find_events": 14,
+  "check_sky_fact": 57
+ },
+ "differing": [
+  {
+   "index": 0,
+   "name": "get_capabilities",
+   "args": {},
+   "differences": [
+    {
+     "path": "$.structured.supported.referenceRules.local-noon",
+     "old": "not offered: it needs a captured local date, wall time, zone and offset, and this adapter resolves no timezones",
+     "new": "not offered: it needs a captured local date, wall time, zone and offset, and calculate_natal_chart takes an instant, not a local time"
+    },
+    {
+     "path": "$.structured.sky.dates",
+     "old": "This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset.",
+     "new": "check_sky_fact takes no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset."
+    },
+    {
+     "path": "$.structured.unsupported.2",
+     "old": "Resolving a place name or time zone: supply an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.",
+     "new": "Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb and the time atlas. search_places reads only that index; resolve_birth_time reads tzdb and, for one of the time atlas's 21 places named in atlasPlace, the atlas's cited reading beside it, and no other town-level clock record. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once."
+    },
+    {
+     "path": "$.structured.privacy.citation",
+     "old": "A chart's cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter's own receipt, which holds nothing from either record. get_positions, find_events and check_sky_fact cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date or body from the request.",
+     "new": "A chart's cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter's own receipt, which holds nothing from either record. get_positions, find_events, check_sky_fact and resolve_birth_time cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date, zone or body from the request. search_places cites the adapter's receipt, which names the place index and holds nothing from the query."
+    },
+    {
+     "path": "$.structured.time",
+     "new": {
+      "tool": "resolve_birth_time",
+      "sameAs": "POST https://zodiacs.org/api/v1/time: the same parser, resolver and receipt, so the same result and cite.receipt for the same request on a runtime with the same tzdb",
+      "resolver": "@zodiacs/engine/geo",
+      "pinnedTzdb": {
+       "release": "2025c",
+       "appliesBefore": "1970-01-02"
+      },
+      "calendars": [
+       "gregorian",
+       "julian"
+      ],
+      "julianLastWritten": "1923-12-31",
+      "atlas": {
+       "version": "0.1.0",
+       "licence": "CC BY 4.0",
+       "window": {
+        "from": "1870-01-01T00:00:00",
+        "to": "1920-01-01T00:00:00"
+       },
+       "places": [
+        "fr-paris",
+        "fr-brest",
+        "fr-nantes",
+        "fr-bordeaux",
+        "fr-rouen",
+        "fr-toulouse",
+        "fr-lyon",
+        "fr-marseille",
+        "fr-nice",
+        "fr-ajaccio",
+        "fr-strasbourg",
+        "fr-metz",
+        "us-new-york",
+        "us-baltimore",
+        "us-washington",
+        "us-providence",
+        "us-indianapolis",
+        "us-louisville",
+        "us-chicago",
+        "us-saint-paul",
+        "us-minneapolis"
+       ]
+      }
+     }
+    },
+    {
+     "path": "$.structured.places",
+     "new": {
+      "tool": "search_places",
+      "source": "GeoNames cities15000",
+      "licence": "CC BY 4.0",
+      "url": "https://www.geonames.org/",
+      "rows": 33934,
+      "maxResults": 20,
+      "coordinates": "Degrees, rounded to 0.01°, about 1.1 km, as the index stores them."
+     }
+    },
+    {
+     "path": "$.content.0.text",
+     "onlyOld": [
+      "   \"local-noon\": \"not offered: it needs a captured local date, wall time, zone and offset, and this adapter resolves no timezones\"",
+      "  \"dates\": \"This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset.\"",
+      "  \"Resolving a place name or time zone: supply an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.\",",
+      "  \"citation\": \"A chart's cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter's own receipt, which holds nothing from either record. get_positions, find_events and check_sky_fact cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date or body from the request.\""
+     ],
+     "onlyNew": [
+      "   \"local-noon\": \"not offered: it needs a captured local date, wall time, zone and offset, and calculate_natal_chart takes an instant, not a local time\"",
+      "  \"dates\": \"check_sky_fact takes no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset.\"",
+      " \"time\": {",
+      "  \"tool\": \"resolve_birth_time\",",
+      "  \"sameAs\": \"POST https://zodiacs.org/api/v1/time: the same parser, resolver and receipt, so the same result and cite.receipt for the same request on a runtime with the same tzdb\",",
+      "  \"resolver\": \"@zodiacs/engine/geo\",",
+      "  \"pinnedTzdb\": {",
+      "   \"release\": \"2025c\",",
+      "   \"appliesBefore\": \"1970-01-02\"",
+      "  \"calendars\": [",
+      "   \"gregorian\",",
+      "   \"julian\"",
+      "  \"julianLastWritten\": \"1923-12-31\",",
+      "  \"atlas\": {",
+      "   \"version\": \"0.1.0\",",
+      "   \"licence\": \"CC BY 4.0\",",
+      "   \"window\": {",
+      "    \"from\": \"1870-01-01T00:00:00\",",
+      "    \"to\": \"1920-01-01T00:00:00\"",
+      "   },",
+      "   \"places\": [",
+      "    \"fr-paris\",",
+      "    \"fr-brest\",",
+      "    \"fr-nantes\",",
+      "    \"fr-bordeaux\",",
+      "    \"fr-rouen\",",
+      "    \"fr-toulouse\",",
+      "    \"fr-lyon\",",
+      "    \"fr-marseille\",",
+      "    \"fr-nice\",",
+      "    \"fr-ajaccio\",",
+      "    \"fr-strasbourg\",",
+      "    \"fr-metz\",",
+      "    \"us-new-york\",",
+      "    \"us-baltimore\",",
+      "    \"us-washington\",",
+      "    \"us-providence\",",
+      "    \"us-indianapolis\",",
+      "    \"us-louisville\",",
+      "    \"us-chicago\",",
+      "    \"us-saint-paul\",",
+      "    \"us-minneapolis\"",
+      "   ]",
+      " \"places\": {",
+      "  \"tool\": \"search_places\",",
+      "  \"source\": \"GeoNames cities15000\",",
+      "  \"licence\": \"CC BY 4.0\",",
+      "  \"url\": \"https://www.geonames.org/\",",
+      "  \"rows\": 33934,",
+      "  \"maxResults\": 20,",
+      "  \"coordinates\": \"Degrees, rounded to 0.01°, about 1.1 km, as the index stores them.\"",
+      "  \"Places outside GeoNames cities15000, which lists every place of 15,000 people or more, and time zone rules outside tzdb and the time atlas. search_places reads only that index; resolve_birth_time reads tzdb and, for one of the time atlas's 21 places named in atlasPlace, the atlas's cited reading beside it, and no other town-level clock record. calculate_natal_chart and the sky tools take no zone: give them an instant with its offset, such as resolve_birth_time returns. check_sky_fact reads a date as that day in every UTC offset in use today at once.\",",
+      "  \"citation\": \"A chart's cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter's own receipt, which holds nothing from either record. get_positions, find_events, check_sky_fact and resolve_birth_time cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date, zone or body from the request. search_places cites the adapter's receipt, which names the place index and holds nothing from the query.\""
+     ]
+    }
+   ]
+  }
+ ]
+}
