@@ -77,13 +77,30 @@ await withPreview({ port: 8787 }, async baseURL => {
         // layout, rather than sampling below-fold geometry during hydration.
         await empty.scrollIntoViewIfNeeded();
         await page.evaluate(() => document.fonts.ready);
-        const spacing = await empty.evaluate(el => {
-          const button = el.querySelector('.btn').getBoundingClientRect();
-          const paragraph = el.querySelector('p').getBoundingClientRect();
-          const style = getComputedStyle(el);
+        // The island can still replace the panel after the check above, and a
+        // detached panel measures as all zeros. Measure in the page, polling
+        // once per animation frame, and accept only a connected panel whose
+        // button and paragraph have height and whose geometry held still over
+        // two frames (the same panel and boxes on three frames in a row).
+        // waitForFunction does not await a promise, so the predicate is
+        // synchronous and keeps the previous frame's reading on window.
+        const spacing = await (await page.waitForFunction(() => {
+          const panel = document.querySelector('.living-chart__empty-state');
+          const button = panel?.querySelector('.btn')?.getBoundingClientRect();
+          const paragraph = panel?.querySelector('p')?.getBoundingClientRect();
+          const probe = window.__spacingProbe ??= { panel: null, rects: '', frames: 0 };
+          if (!panel?.isConnected || !button?.height || !paragraph?.height) {
+            Object.assign(probe, { panel: null, rects: '', frames: 0 });
+            return false;
+          }
+          const rects = [button.top, button.bottom, button.left, paragraph.top, paragraph.bottom, paragraph.left].join();
+          if (probe.panel === panel && probe.rects === rects) probe.frames += 1;
+          else Object.assign(probe, { panel, rects, frames: 0 });
+          if (probe.frames < 2) return false;
+          const style = getComputedStyle(panel);
           return { gap: button.top - paragraph.bottom, display: style.display,
             cssGap: style.gap, buttonHeight: button.height, paragraphHeight: paragraph.height };
-        });
+        }, null, { polling: 'raf' })).jsonValue();
         if (spacing.gap < 20) {
           await empty.screenshot({ path: `${out}/${engine}-${width}-living-chart-failure.png` });
           await writeFile(`${out}/${engine}-${width}-spacing-failure.json`, JSON.stringify(spacing, null, 2));

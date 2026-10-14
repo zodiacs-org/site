@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import {
-  budgets, calibrations, describeMisses, gateRoute, MAX_STALL_RETAKES, stallSummary,
+  budgets, calibrations, describeMisses, formatCls, gateRoute, MAX_STALL_RETAKES, stallSummary,
 } from './lighthouse-gate.mjs';
 
 const trace = (name) => JSON.parse(readFileSync(new URL(`./fixtures/runner-stalls/${name}.json`, import.meta.url), 'utf8'));
@@ -162,5 +162,16 @@ describe('Lighthouse gate samples', () => {
     expect(describeMisses({ performance: 0.71, tbt: 2_518.4 }, ['performance', 'tbt'], route))
       .toBe('performance 71 (floor 95), TBT 2518 ms (budget 200 ms)');
     expect(describeMisses({ lcp: 3_210 }, ['lcp'], { name: 'home' })).toBe('LCP 3.21 s (budget 3.10 s)');
+    expect(describeMisses({ cls: 0.000213 }, ['cls'], route)).toBe('CLS 0.00021 (budget 0)');
+  });
+
+  it('never prints a failing CLS as zero', async () => {
+    // A route failed on 13 Oct 2026 with every printed value inside budget:
+    // a positive CLS below 0.0005 printed as 0.000.
+    const tiny = await gate([() => result({ cls: 0.0002 }, 'genuine'), pass, pass]);
+    expect(tiny.verdict).toMatchObject({ failed: true, misses: ['cls'] });
+    expect(formatCls(tiny.verdict.values.cls)).toBe('<0.001');
+    expect(formatCls(0)).toBe('0.000');
+    expect(formatCls(0.056)).toBe('0.056');
   });
 });

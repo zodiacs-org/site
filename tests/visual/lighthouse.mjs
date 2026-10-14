@@ -7,7 +7,7 @@ import * as chromeLauncher from 'chrome-launcher';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './browser.mjs';
 import { withPreview } from './preview-server.mjs';
 import { saveLighthouseAssets } from './lighthouse-assets.mjs';
-import { calibrations, describeMisses, gateRoute, MAX_STALL_RETAKES, stallSummary } from './lighthouse-gate.mjs';
+import { calibrations, describeMisses, formatCls, gateRoute, MAX_STALL_RETAKES, stallSummary } from './lighthouse-gate.mjs';
 import { describeStalls } from './runner-stalls.mjs';
 
 const visualRoot = dirname(fileURLToPath(import.meta.url));
@@ -91,7 +91,7 @@ function incompleteRunReason(lhr) {
 
 function formatValues(values) {
   if (!values) return '  —     —     —        —         —         —';
-  return `${Math.round(values.performance * 100).toString().padStart(3)}   ${Math.round(values.accessibility * 100).toString().padStart(3)}   ${Math.round(values.seo * 100).toString().padStart(3)}   ${(values.lcp / 1000).toFixed(2).padStart(6)}s   ${values.cls.toFixed(3).padStart(6)}   ${Math.round(values.tbt).toString().padStart(5)}ms`;
+  return `${Math.round(values.performance * 100).toString().padStart(3)}   ${Math.round(values.accessibility * 100).toString().padStart(3)}   ${Math.round(values.seo * 100).toString().padStart(3)}   ${(values.lcp / 1000).toFixed(2).padStart(6)}s   ${formatCls(values.cls).padStart(6)}   ${Math.round(values.tbt).toString().padStart(5)}ms`;
 }
 
 await rm(artifactRoot, { recursive: true, force: true });
@@ -147,12 +147,31 @@ async function takeSample(route, url, take) {
   return result;
 }
 
+/** The page's largest layout shifts, as Lighthouse's layout-shifts audit names them. */
+function describeLayoutShifts(lhr) {
+  const items = lhr.audits['layout-shifts']?.details?.items ?? [];
+  if (items.length === 0) return ['layout-shifts audit listed no shift.'];
+  return items.map((item) => {
+    const causes = (item.subItems?.items ?? []).map((sub) => sub.cause).filter(Boolean);
+    const node = item.node?.selector ?? item.node?.snippet ?? 'unattributed element';
+    return `shift ${Number(item.score.toPrecision(2))} at ${node}${causes.length > 0 ? ` (${causes.join('; ')})` : ''}`;
+  });
+}
+
 async function keepSample(route, result, sample) {
   // The audit and browser shutdown are complete before diagnostic disk I/O.
   if (sample.status === 'valid') {
     const name = `${route.name}-${sample.index}`;
     await writeFile(resolve(artifactRoot, `${name}.json`), JSON.stringify(result.lhr, null, 2));
     if (saveAssets) await saveLighthouseAssets(result, artifactRoot, name);
+    // The summary line shows the worst values rounded for the table; name
+    // the sample and the exact values that failed so the log explains it.
+    if (sample.misses.length > 0) {
+      console.warn(`     ↳ ${route.path} sample ${sample.take} missed ${describeMisses(sample.values, sample.misses, route)} (${name}.json).`);
+      if (sample.misses.includes('cls')) {
+        for (const shift of describeLayoutShifts(result.lhr)) console.warn(`       ${shift}`);
+      }
+    }
     return;
   }
   // A sample set aside for a runner stall always keeps its report and trace,

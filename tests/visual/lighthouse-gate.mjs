@@ -121,6 +121,20 @@ export function budgetMisses(values, route) {
   return misses;
 }
 
+/**
+ * CLS for the summary table, six characters wide. The budget is zero, so a
+ * shift too small for three decimals still fails; it prints as "<0.001",
+ * never as a passing-looking "0.000".
+ */
+export function formatCls(cls) {
+  return cls > 0 && cls < 0.0005 ? '<0.001' : cls.toFixed(3);
+}
+
+/** CLS to two significant figures: 0.00021, 0.056. */
+function exactCls(cls) {
+  return cls === 0 ? '0' : String(Number(cls.toPrecision(2)));
+}
+
 /** "TBT 2518 ms (budget 200 ms), performance 71 (floor 95)" */
 export function describeMisses(values, misses, route) {
   const calibration = calibrations[route.name] ?? {};
@@ -131,7 +145,7 @@ export function describeMisses(values, misses, route) {
     seo: () => `SEO ${score(values.seo)} (floor ${score(budgets.score)})`,
     noindex: () => 'noindex (the page became crawlable)',
     lcp: () => `LCP ${(values.lcp / 1000).toFixed(2)} s (budget ${((calibration.lcp ?? budgets.lcp) / 1000).toFixed(2)} s)`,
-    cls: () => `CLS ${values.cls.toFixed(3)} (budget ${budgets.cls})`,
+    cls: () => `CLS ${exactCls(values.cls)} (budget ${budgets.cls})`,
     tbt: () => `TBT ${Math.round(values.tbt)} ms (budget ${budgets.tbt} ms)`,
   };
   return misses.map((miss) => text[miss]()).join(', ');
