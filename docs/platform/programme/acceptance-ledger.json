@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-14 IndexNow for every changed URL in production (site f4a6b344); S8 accepted",
+  "asOf": "2026-10-14 birth-time tools and the time atlas in production (site ef463943); A1.c and B3.b accepted",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -2323,17 +2323,14 @@
       "weight": 0.5,
       "gate": "IndexNow covers developer docs and datasets; Bing and Google verified",
       "dependsOn": [],
-      "status": "accepted",
-      "release": "deployed",
+      "status": "partial",
+      "release": "none",
       "evidence": [
         "https://github.com/zodiacs-org/site/pull/744",
-        "https://github.com/zodiacs-org/site/actions/runs/38526001370",
         "https://github.com/zodiacs-org/site/actions/runs/38526348519: IndexNow Changes on dpl_GxWNXNnEYdwQdMskMP1Q6aq8zDu6 (f4a6b344) submitted 415 of the live sitemap's 1,838 URLs, those dated within 30 days, HTTP 200; 36 developer pages and the dataset pages of every locale among them",
-        "https://github.com/zodiacs-org/site/actions/runs/38526348438: the next run against the recorded sitemap, 0 new, 0 changed, 0 removed",
-        "docs/platform/evidence/indexnow-changes-20261014/README.md",
-        "scripts/indexnow-changed-urls.test.mjs"
+        "docs/platform/evidence/indexnow-changes-20261014/README.md"
       ],
-      "notes": "IndexNow runs for daily pages only; Bing Webmaster Tools imported zodiacs.org from Search Console on 2026-09-30, and the Search Console domain property is the one the owner exported (the owner's report) Accepted 2026-10-14: since #744 (merged as f4a6b344), IndexNow Changes submits every URL the live sitemap adds, re-dates or drops after each production deployment and promotion, and every six hours, as Vercel sends no dispatch for an Instant Rollback; its first production run submitted 415 URLs, the 36 developer pages and the dataset pages among them (HTTP 200). Google Search Console verifies zodiacs.org as a domain property by DNS (a google-site-verification TXT record is published); Bing Webmaster Tools imported it from Search Console on 2026-09-30, by the owner's report."
+      "notes": "IndexNow runs for daily pages only; Bing Webmaster Tools imported zodiacs.org from Search Console on 2026-09-30, and the Search Console domain property is the one the owner exported (the owner's report) Update 2026-10-14: still partial. Since #744 (f4a6b344) IndexNow Changes submits every URL the live sitemap adds, re-dates or drops after each production deployment and promotion, and every six hours; its first production run submitted 415 URLs, the 36 developer pages and the dataset pages among them (HTTP 200). Two gaps remain, both from #745's review: a page is submitted as changed only when its sitemap date changes, and src/pages/sitemap.xml.ts keeps evergreen pages' dates by hand, unenforced (F-97: #740 and #742 changed three developer pages without re-dating them); and Bing's verification is the owner's report, which this repository cannot observe. Google Search Console verifies zodiacs.org as a domain property by DNS (a google-site-verification TXT record is published)."
     },
     {
       "id": "S9",

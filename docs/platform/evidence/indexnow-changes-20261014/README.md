@@ -1,5 +1,7 @@
 # IndexNow for every new, changed or removed URL (S8), 2026-10-14
 
+S8 is not accepted: two gaps remain (below).
+
 S8 asks for IndexNow on every new or changed URL, covering the developer docs
 and the datasets, and for Bing Webmaster Tools and Google Search Console to be
 verified.
@@ -43,8 +45,18 @@ changed since the last accepted sitemap.
   the domain's public TXT records include a `google-site-verification` record
   (read on 2026-10-14; the token is not recorded here).
 - **Bing Webmaster Tools.** Bing imported zodiacs.org from Search Console on
-  2026-09-30, by the owner's report; Bing's import verifies through the
-  Search Console property. This record does not observe the account itself.
+  2026-09-30, by the owner's report. The import leaves nothing public, and this
+  repository cannot observe the account, so the gate's Bing half rests on that
+  report alone.
 
-IndexNow's own submissions reach Bing, which takes part in IndexNow, with the
-key file `https://zodiacs.org/<key>.txt` the daily workflow already uses.
+## What keeps S8 open
+
+- **Changed pages.** A run submits a page as changed only when its sitemap
+  `lastmod` changes, and `src/pages/sitemap.xml.ts` keeps the dates of
+  evergreen pages by hand, with no check that ties a rendered change to a new
+  date (F-97). #740 changed `/developers/compare/` and #742 changed
+  `/developers/compute/` and `/developers/mcp/` without re-dating them; the
+  first production run submitted all three only because it covered every URL
+  dated within 30 days. #745 re-dates them; the check is open.
+- **Bing.** Evidence the repository can reproduce, such as an export from the
+  owner's account, has to come from the owner.
