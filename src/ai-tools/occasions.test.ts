@@ -14,7 +14,7 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     const capabilities = await executeAiTool('get_capabilities', {}, on);
     if (capabilities.ok && capabilities.tool === 'get_capabilities') {
       expect(capabilities.data.tools).toContain('get_life_milestones');
-      expect(capabilities.data.privacy).toContain('or a birth date');
+      expect(capabilities.data.privacy).toContain('birth dates with an optional time');
     }
     const plain = await executeAiTool('get_capabilities', {}, off);
     if (plain.ok && plain.tool === 'get_capabilities') expect(plain.data.privacy).not.toContain('occasion');
