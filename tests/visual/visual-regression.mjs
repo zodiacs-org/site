@@ -193,6 +193,102 @@ async function settlePage(page, { result, normalizeEventsHub, name }) {
 }
 
 
+/**
+ * Waits until every face the page draws text with is loaded, then for two
+ * frames. A face still loading when the screenshot is taken draws nothing
+ * (the pinned test faces have blocking display) or its fallback (production
+ * swap faces), and the capture then fails on pixels that only reflect the race
+ * (F-96: Site Check run 38514642153 drew no serif or monospace text on the
+ * full-moon page). The families come from the computed style of every text
+ * node, so a face that starts loading after settlePage's general sweep counts
+ * too. Returns how long it waited and for which faces; throws, naming them, if
+ * they do not settle within 30 s.
+ */
+async function settleFonts(page) {
+  const state = await page.evaluate(async () => {
+    const started = performance.now();
+    const deadline = started + 30_000;
+    const unquote = (name) => name.trim().replace(/^["']|["']$/g, '');
+    const describe = (face) => `${unquote(face.family)} ${face.style} ${face.weight}: ${face.status}`;
+    // Every text node the capture draws, with the first family of its
+    // computed font-family: the face the page draws with whenever that family
+    // has one. Later families are the platform fallbacks, some of which (local
+    // Roboto, Times) a platform lacks.
+    const drawnText = () => {
+      const drawn = [];
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        const element = node.parentElement;
+        if (!node.textContent.trim() || !element) continue;
+        if (element.checkVisibility
+          ? !element.checkVisibility({ checkVisibilityCSS: true, visibilityProperty: true })
+          : getComputedStyle(element).display === 'none') continue;
+        const style = getComputedStyle(element);
+        if (style.visibility === 'hidden') continue;
+        drawn.push({ text: node.textContent.trim(), style, family: unquote(style.fontFamily.split(',')[0]) });
+      }
+      return drawn;
+    };
+    const usedFamilies = () => new Set(drawnText().map(({ family }) => family));
+    // The faces drawn text needs that are not loaded once the waits are over:
+    // FontFaceSet.check() matches each text's family, style, weight and
+    // characters (so an unused subset does not count), and is false while a
+    // matching face is unloaded or has failed to load.
+    const missingFaces = () => {
+      const missing = new Set();
+      for (const { text, style, family } of drawnText()) {
+        const font = `${style.fontStyle} ${style.fontWeight} 16px "${family.replace(/"/g, '\\"')}"`;
+        let loaded = true;
+        try {
+          loaded = document.fonts.check(font, text.slice(0, 200));
+        } catch {
+          // A computed style the font shorthand cannot express is left to the pixel comparison.
+        }
+        if (!loaded) missing.add(`${family} ${style.fontStyle} ${style.fontWeight}`);
+      }
+      return [...missing];
+    };
+    // A stalled font request leaves load() and fonts.ready pending, so each
+    // await also ends at the deadline, where the faces still pending are named.
+    const untilDeadline = (promise) => Promise.race([
+      promise,
+      new Promise((done) => setTimeout(done, Math.max(0, deadline - performance.now()))),
+    ]);
+    let waitedFor = [];
+    for (;;) {
+      const families = usedFamilies();
+      const faces = [...document.fonts].filter((face) => families.has(unquote(face.family)));
+      // Named before the waits, which end once they have loaded, so the log
+      // shows the faces that had to be waited for.
+      const unsettled = [...new Set([
+        ...[...document.fonts].filter((face) => face.status === 'loading'),
+        ...faces.filter((face) => face.status === 'unloaded' || face.status === 'loading'),
+      ])].map(describe);
+      waitedFor = [...new Set([...waitedFor, ...unsettled])];
+      await untilDeadline(Promise.all(faces.map((face) => face.load().catch(() => undefined))));
+      await untilDeadline(document.fonts.ready);
+      const pending = [...new Set([
+        ...[...document.fonts].filter((face) => face.status === 'loading'),
+        ...faces.filter((face) => face.status !== 'loaded' && face.status !== 'error'),
+      ])].map(describe);
+      if (pending.length === 0) {
+        // A face that failed to load leaves its text in a fallback, which must
+        // not be captured, nor become a baseline with --update.
+        const failed = missingFaces();
+        if (failed.length > 0) return { ok: false, failed, waitedFor };
+        await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+        return { ok: true, families: families.size, waitedMs: Math.round(performance.now() - started), waitedFor };
+      }
+      waitedFor = [...new Set([...waitedFor, ...pending])];
+      if (performance.now() > deadline) return { ok: false, pending, waitedFor };
+      await new Promise((done) => setTimeout(done, 250));
+    }
+  });
+  if (state.failed) throw new Error(`Faces the page draws with failed to load: ${state.failed.join('; ')}`);
+  if (!state.ok) throw new Error(`Fonts the page draws with did not load within 30 s: ${state.pending.join('; ')}`);
+  return state;
+}
+
 async function ariesFontReceipt(page, context, stem, phase) {
   const css = await page.evaluate(() => ({
     faces: [...document.fonts].map((face) => ({
@@ -233,7 +329,7 @@ async function ariesFontReceipt(page, context, stem, phase) {
   }
 }
 
-async function capture(browser, baseURL, testCase) {
+async function capture(browser, baseURL, testCase, judge) {
   const context = await browser.newContext({
     viewport: { width: testCase.viewport.width, height: testCase.viewport.height },
     deviceScaleFactor: 1,
@@ -418,25 +514,46 @@ async function capture(browser, baseURL, testCase) {
     }
   }
 
-  const masks = await page.locator(liveDailySelectors.join(', ')).evaluateAll((elements) => (
-    elements.flatMap((element) => {
-      const rect = element.getBoundingClientRect();
-      return rect.width > 0 && rect.height > 0
-        ? [{
-            x: rect.left + window.scrollX,
-            y: rect.top + window.scrollY,
-            width: rect.width,
-            height: rect.height,
-          }]
-        : [];
-    })
-  ));
-  const image = await page.screenshot({ fullPage: true, animations: 'disabled' });
+  // Chromium's full-page capture (Page.captureScreenshot with
+  // captureBeyondViewport) recreates the page's CSS font faces, which load
+  // again during the capture (F-96): every capture fires the FontFaceSet
+  // `loading` event, so no event can tell a capture that painted before
+  // they reloaded, which draws text in a blocking face blank. Each capture
+  // therefore starts with every face the page draws with loaded, and the
+  // caller judges the image: a capture it refuses is taken again, at most
+  // three times, and the last one is kept.
+  let image;
+  let masks;
+  let verdict;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const fonts = await settleFonts(page);
+    if (fonts.waitedFor.length > 0) {
+      console.log(`  fonts: ${fileStem(testCase)} waited ${fonts.waitedMs} ms for ${fonts.waitedFor.join('; ')}`);
+    }
+    // Measured after the fonts settle, since a late face moves what follows it.
+    masks = await page.locator(liveDailySelectors.join(', ')).evaluateAll((elements) => (
+      elements.flatMap((element) => {
+        const rect = element.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0
+          ? [{
+              x: rect.left + window.scrollX,
+              y: rect.top + window.scrollY,
+              width: rect.width,
+              height: rect.height,
+            }]
+          : [];
+      })
+    ));
+    image = await page.screenshot({ fullPage: true, animations: 'disabled' });
+    verdict = judge(image, masks);
+    if (verdict.ok) break;
+    if (attempt < 3) console.log(`  capture ${attempt} of ${fileStem(testCase)}: ${verdict.reason}; capturing again`);
+  }
   if (testCase.name === 'aries') {
     await ariesFontReceipt(page, context, fileStem(testCase), 'after');
   }
   await context.close();
-  return { image, masks };
+  return { image, masks, verdict };
 }
 
 function comparePng(expectedBuffer, actualBuffer, masks = []) {
@@ -497,8 +614,45 @@ try {
     for (const testCase of cases) {
       const stem = fileStem(testCase);
       const baselinePath = resolve(baselineRoot, `${stem}.png`);
-      const { image: actual, masks } = await capture(browser, baseURL, testCase);
       const expectedMaskCount = testCase.name === 'home' ? 2 : 0;
+      let expected = null;
+      if (!update) {
+        try {
+          expected = await readFile(baselinePath);
+        } catch {
+          // Reported once the page is captured.
+        }
+      }
+
+      // A capture is kept when it matches the baseline within the limit, or,
+      // with --update, the capture before it: a baseline is written only when
+      // two captures in a row agree, so a capture that raced the fonts cannot
+      // become one. A wrong mask count or a missing baseline is not retaken.
+      let comparison = null;
+      let previous = null;
+      const judge = (image, masks) => {
+        if (masks.length !== expectedMaskCount) return { ok: true };
+        if (update) {
+          if (!previous) {
+            previous = image;
+            return { ok: false, reason: 'a baseline needs a second capture that agrees' };
+          }
+          comparison = comparePng(previous, image, masks);
+          previous = image;
+          if (comparison.dimensionError) return { ok: false, reason: `${comparison.dimensionError} from the capture before` };
+          return comparison.diffRatio <= maxDiffRatio
+            ? { ok: true }
+            : { ok: false, reason: `${(comparison.diffRatio * 100).toFixed(4)}% differs from the capture before` };
+        }
+        if (!expected) return { ok: true };
+        comparison = comparePng(expected, image, masks);
+        if (comparison.dimensionError) return { ok: false, reason: comparison.dimensionError };
+        return comparison.diffRatio <= maxDiffRatio
+          ? { ok: true }
+          : { ok: false, reason: `${(comparison.diffRatio * 100).toFixed(4)}% differs from the baseline` };
+      };
+
+      const { image: actual, masks, verdict } = await capture(browser, baseURL, testCase, judge);
       if (masks.length !== expectedMaskCount) {
         failures += 1;
         await writeFile(resolve(artifactRoot, `${stem}.actual.png`), actual);
@@ -507,22 +661,24 @@ try {
       }
 
       if (update) {
+        if (!verdict.ok) {
+          failures += 1;
+          await writeFile(resolve(artifactRoot, `${stem}.actual.png`), actual);
+          console.error(`  FAIL ${stem}: no two captures in a row agreed (${verdict.reason})`);
+          continue;
+        }
         await writeFile(baselinePath, actual);
         console.log(`  updated ${stem}`);
         continue;
       }
 
-      let expected;
-      try {
-        expected = await readFile(baselinePath);
-      } catch {
+      if (!expected) {
         failures += 1;
         await writeFile(resolve(artifactRoot, `${stem}.actual.png`), actual);
         console.error(`  FAIL ${stem}: baseline missing (run npm run test:visual:update)`);
         continue;
       }
 
-      const comparison = comparePng(expected, actual, masks);
       if (comparison.dimensionError) {
         failures += 1;
         await writeFile(resolve(artifactRoot, `${stem}.actual.png`), actual);
