@@ -45,12 +45,14 @@ describe('public legal identity', () => {
     // paste-address-only notices on 3 October. About retains its prior date.
     // Privacy changed again on 5 October, when the compute API it describes
     // gained the elections endpoint, and on 9 October, when it named the host's
-    // 30-day request-log retention for the hosted MCP server.
+    // 30-day request-log retention for the hosted MCP server, and on 14 October,
+    // when it named the ?ref= on links from the Zodiacs app and the wording its
+    // 0.5.0 tools switch on.
     expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
     expect(terms).toContain("const updated = '3 October 2026'");
     expect(terms).toContain("const modifiedAt = '2026-10-03T00:00:00.000Z'");
     expect(privacy).toContain('AI integration candidates');
-    expect(privacy).toContain("const updated = '9 October 2026'");
-    expect(privacy).toContain("const modifiedAt = '2026-10-09T00:00:00.000Z'");
+    expect(privacy).toContain("const updated = '14 October 2026'");
+    expect(privacy).toContain("const modifiedAt = '2026-10-14T00:00:00.000Z'");
   });
 });
