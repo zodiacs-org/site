@@ -224,6 +224,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           throw error;
         }
         const evening = card.evening;
+        const cardUrl = occasionCardUrl({ ...args, ...(zone ? { zone } : {}) });
         data = {
           occasion: args.occasion, date: args.date, time: args.time ?? null, zone, place: args.place ?? null, names: args.names ?? null,
           card: card.words,
@@ -238,10 +239,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
             moonHighest: evening.moon.highest ? { at: clockTime(evening.moon.highest.at, zone), altitude: evening.moon.highest.altitude } : null,
             planetsAfterDusk: evening.planetsAfterDusk, flags: evening.flags,
           } : null,
-          cardUrl: occasionCardUrl({ ...args, ...(zone ? { zone } : {}) }),
+          cardUrl,
           note: OCCASION_NOTE,
         };
-        links = [occasionsLink, methodLink];
+        links = [...(cardUrl ? [{ title: 'Open the printable card', url: cardUrl }] : []), occasionsLink, methodLink];
         break;
       }
       case 'get_life_milestones': {
