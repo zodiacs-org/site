@@ -496,7 +496,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           cross-site identifier.
           Aura events carry only allowlisted categories such as an outcome and
           a coarse held-count bucket; other events similarly record “a chart was
-          saved,” never whose.
+          saved,” never whose. Links from the Zodiacs app in ChatGPT or
+          another assistant end in ?ref=chatgpt or ?ref=assistant. The page
+          takes that off its address as it opens, and Plausible counts the
+          visit under that name and nothing else from the link.
         </p>
       )}
       {webAnalyticsEnabled && !accountSyncV2Enabled && (

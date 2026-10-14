@@ -27,6 +27,11 @@ export function hostZoneFrom(meta: unknown): string | undefined {
   return typeof location?.timezone === 'string' && location.timezone.length <= 64 ? location.timezone : undefined;
 }
 
+/** ChatGPT marks its calls with openai/ metadata; any other host is counted as an assistant. */
+export function refFrom(meta: unknown): 'chatgpt' | 'assistant' {
+  return meta && typeof meta === 'object' && Object.keys(meta).some((key) => key.startsWith('openai/')) ? 'chatgpt' : 'assistant';
+}
+
 /** A fresh SDK server per HTTP request or local stdio connection. */
 export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }) {
   const server = new McpServer({ name: 'zodiacs', version: AI_VERSION }, {
@@ -61,7 +66,7 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
       annotations: { ...READ_ONLY, title: TOOL_TITLES[tool], idempotentHint: tool !== 'get_sky' && tool !== 'get_upcoming_events' && tool !== 'get_horoscope' && tool !== 'get_life_milestones' },
       _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : watch.service.oauth ? { securitySchemes: [{ type: 'oauth2', scopes: WATCH_SCOPES }] } : {}), ...(panel ? { ui: { resourceUri: panel.uri, visibility: ['model', 'app'] }, 'openai/outputTemplate': panel.uri, 'openai/ui': { entrypoints: [{ type: 'global' }, { type: 'thread' }] }, ...(tool === 'get_horoscope' ? { 'openai/widgetAccessible': true } : {}) } : {}) },
     }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {
-      const context: AiCallContext = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta) };
+      const context: AiCallContext = { hostZone: hostZoneFrom(ctx?.mcpReq?._meta), ref: refFrom(ctx?.mcpReq?._meta) };
       const result = await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch }, context);
       return {
         isError: !result.ok, content: [{ type: 'text' as const, text: JSON.stringify(result) }], structuredContent: result,

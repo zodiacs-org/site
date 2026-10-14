@@ -30,6 +30,8 @@ export interface AiDependencies {
 export interface AiCallContext {
   /** The time zone the assistant shares with the call, if any; validated before use. */
   hostZone?: string;
+  /** Which assistant the call came through, added to zodiacs.org links as ?ref= so the site can count those visits. */
+  ref?: 'chatgpt' | 'assistant';
   /** Set by get_horoscope: the selected sign's readings for the panel, never shown to the model. */
   horoscopePanel?: HoroscopePanelData;
 }
@@ -86,6 +88,21 @@ function milestoneRow(milestone: Milestone) {
   return { kind: milestone.kind, name: MILESTONE_WORDS[milestone.kind].name, index: milestone.index, age: milestone.age, first: milestone.first, last: milestone.last, passes: milestone.passes };
 }
 const occasionsLink = { title: 'Occasion cards on Zodiacs', url: `${ORIGIN}/occasions/` };
+
+/** A zodiacs.org page address with ?ref= added before any #, which the page reads and then removes. */
+export function refUrl(url: string, ref: 'chatgpt' | 'assistant'): string {
+  if (!url.startsWith(`${ORIGIN}/`)) return url;
+  const hash = url.indexOf('#');
+  const [base, fragment] = hash === -1 ? [url, ''] : [url.slice(0, hash), url.slice(hash)];
+  return `${base}${base.includes('?') ? '&' : '?'}ref=${ref}${fragment}`;
+}
+/** Every page address in a result (fields named url or ending in Url) with its ?ref= added. */
+function withRef(value: unknown, ref: 'chatgpt' | 'assistant', key = ''): unknown {
+  if (typeof value === 'string') return /(^url|Url)$/u.test(key) ? refUrl(value, ref) : value;
+  if (Array.isArray(value)) return value.map((item) => withRef(item, ref));
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, withRef(item, ref, name)]));
+  return value;
+}
 
 /** One typed operation per call. No network, persistence or logs; the horoscope window is read through its injected loader. */
 export async function executeAiTool(tool: AiToolName, input: unknown, dependencies: AiDependencies, context: AiCallContext = {}) {
@@ -240,6 +257,10 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         links = [{ title: 'Life milestones on Zodiacs', url: `${ORIGIN}/occasions/milestones/` }, methodLink];
         break;
       }
+    }
+    if (context.ref) {
+      data = withRef(data, context.ref);
+      links = links.map((link) => ({ ...link, url: refUrl(link.url, context.ref!) }));
     }
     const result = { schema: AI_RESULT_SCHEMA, ok: true as const, tool, data, links };
     // Validate our own output so callers never receive a success outside its contract.
