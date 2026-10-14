@@ -14,15 +14,15 @@
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     },
     "holderDispersion": {
-      "value": "baseline established, no widening yet · four weekly public snapshots since 2026-06-29 · median top-10 share 26.6% → 27.2% (slightly more concentrated)",
+      "value": "no fresh full capture at 2026-10-14 · getTokenLargestAccounts is budget-capped for this runner at the public RPC endpoints and the weekly distribution series stalled 2026-08-03 · a 2026-08-24 partial observed 4 of 12 signs: three slightly more concentrated than 2026-07-14 (+1.1 to +1.4pp), one slightly less (−0.5pp) — no widening · last full per-sign capture remains 2026-07-14: 23.0–30.6%, median ~27.2%",
       "status": "filled",
-      "asOf": "2026-07-23",
+      "asOf": "2026-10-14",
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     },
     "liquidityPersistence": {
-      "value": "12 of 12 canonical Raydium pools live at the 2026-07-23 capture · $11.9k–17.8k depth, $10–158 of 24h volume · pair creation 2024-07-05 per Dexscreener · continuous historical depth was not archived",
+      "value": "12 of 12 canonical Raydium pools live at the 2026-10-14 capture · $12.9k–24.2k reserves, $0–201 of 24h volume · matched at the reviewed pool addresses via GeckoTerminal; Dexscreener no longer indexes two quiet pairs (scorpio, pisces), both verified live · pair creation 2024-07-05 per Dexscreener · continuous historical depth is still not archived",
       "status": "filled",
-      "asOf": "2026-07-23",
+      "asOf": "2026-10-14",
       "verifyUrl": "https://zodiacs.org/thesis/thesis-candidacy-evidence.json"
     },
     "archiveContinuity": {
