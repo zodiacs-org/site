@@ -125,6 +125,65 @@ try {
   assert.equal(await timedPage.getByRole('link', { name: /Open the card/ }).count(), 0);
   assert.equal(await timedPage.getByText('Without a birth time, a date can be a day off.').count(), 0);
 
+  // Two charts compared: names, both Sun signs, the closest contacts, counts and no score.
+  const pair = await result('get_compatibility', {
+    a: { name: 'Ana', birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 },
+    b: { name: 'Luis', birthDate: '1992-08-10', time: '21:15', zone: 'America/Mexico_City', latitude: 19.4326, longitude: -99.1332 },
+  });
+  const compare = await open();
+  await show(compare, pair);
+  await compare.getByRole('heading', { name: 'Ana and Luis' }).waitFor();
+  const compareText = await compare.locator('article').innerText();
+  assert.match(compareText, /Taurus Sun/);
+  assert.match(compareText, /Leo Sun/);
+  assert.match(compareText, /The closest contacts/);
+  assert.match(compareText, /trines and sextiles/);
+  // The disclosure itself says Zodiacs does not score relationships; everything else must not score one.
+  assert.doesNotMatch(compareText.replace((pair as any).data.note, ''), /score|percent|%|soulmate|good match/iu);
+  assert.match(compareText, /zodiacs\.org$/u, 'Every card ends with the zodiacs.org signature');
+  assert.ok((await compare.getByRole('link', { name: /Open both charts on zodiacs\.org/ }).getAttribute('href'))!.startsWith('https://zodiacs.org/compatibility/#'));
+  await compare.screenshot({ path: new URL('occasions-compatibility-desktop.png', out).pathname, fullPage: true });
+  await compare.setViewportSize({ width: 375, height: 812 });
+  assert.equal(await compare.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await compare.screenshot({ path: new URL('occasions-compatibility-mobile.png', out).pathname, fullPage: true });
+
+  // Chart twins link to each person's page; a famous chart, and a name Zodiacs does not publish.
+  const twinsPage = await open();
+  await show(twinsPage, await result('find_chart_twins', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }));
+  await twinsPage.getByRole('heading', { name: 'Your chart twins' }).waitFor();
+  const twinLinks = await twinsPage.locator('.people a').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+  assert.ok(twinLinks.length > 0 && twinLinks.every((href) => /^https:\/\/zodiacs\.org\/people\/[a-z0-9-]+\/$/u.test(href ?? '')));
+  await twinsPage.screenshot({ path: new URL('occasions-twins-desktop.png', out).pathname, fullPage: true });
+  const famous = await open();
+  const frida = await result('get_famous_chart', { name: 'Frida Kahlo' });
+  await show(famous, frida);
+  await famous.locator('h1').waitFor();
+  if ((frida as any).data.found) {
+    assert.equal(await famous.locator('h1').innerText(), (frida as any).data.person.name);
+    assert.match(await famous.locator('article').innerText(), /12:00 civil time/);
+  }
+  await famous.screenshot({ path: new URL('occasions-famous-desktop.png', out).pathname, fullPage: true });
+  const unknown = await open();
+  await show(unknown, await result('get_famous_chart', { name: 'Nobody Anybody Zzyzx' }));
+  await unknown.getByRole('heading', { name: 'Not one Zodiacs publishes' }).waitFor();
+
+  // A birthday with its solar return, a cusp day, and the calendar subscription.
+  const birthdayPage = await open();
+  await show(birthdayPage, await result('get_birthday', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }));
+  await birthdayPage.getByRole('heading', { name: '3 May birthdays' }).waitFor();
+  const birthdayText = await birthdayPage.locator('article').innerText();
+  assert.match(birthdayText, /Taurus Sun/);
+  assert.match(birthdayText, /Solar return 2026/);
+  await birthdayPage.screenshot({ path: new URL('occasions-birthday-desktop.png', out).pathname, fullPage: true });
+  const cusp = await open();
+  await show(cusp, await result('get_birthday', { date: '03-20' }));
+  await cusp.locator('h1').waitFor();
+  const calendar = await open();
+  await show(calendar, await result('get_sky_calendar', {}));
+  await calendar.getByRole('heading', { name: 'The sky in your calendar' }).waitFor();
+  assert.equal(await calendar.getByRole('link', { name: 'Subscribe in your calendar app' }).getAttribute('href'), 'webcal://zodiacs.org/sky-calendar.ics');
+  await calendar.screenshot({ path: new URL('occasions-calendar-desktop.png', out).pathname, fullPage: true });
+
   // Names are text, never markup.
   const injected = structuredClone(wedding) as any;
   injected.data.names = '<img src=x onerror="window.pwned=1">';
@@ -168,7 +227,7 @@ try {
   await writeFile(new URL('occasions-review.json', out), JSON.stringify({
     scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance',
     timezone: 'Asia/Bangkok',
-    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'no external requests'],
+    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared without a score', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'the calendar subscription', 'the zodiacs.org signature on every card', 'no external requests'],
   }, null, 2) + '\n');
   console.log('Occasions panel browser QA passed.');
 } finally { await browser.close(); }
