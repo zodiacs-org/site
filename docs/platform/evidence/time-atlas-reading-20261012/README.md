@@ -67,6 +67,13 @@ one at each place at a seeded time and four at its changes, each answered as
 the compute API's handler answers it, and held to the output schemas and the
 OpenAPI response; together they reach all 21 places and all four statuses.
 
+## Production
+
+In production since #742 (`ef463943`, `dpl_BQLq9CNADcAhSKT3NCdyTASBBmxF`): the
+time endpoint reads Strasbourg in 1916 on the atlas as documented, Brest in
+1880 on its own longitude, and refuses another zone, longitude or country
+([the record](../birth-time-tools-20261012/README.md#production)).
+
 ## Not done
 
 The atlas is read only for a place it lists. It is not read for an unlisted

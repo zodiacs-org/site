@@ -170,6 +170,42 @@ capture digest covers, so CI took the 18 captures again.
   provenance is kept as `browser-evidence-provenance-4fee71ac.json` and
   `browser-evidence-provenance-2efc0a63.json`.
 
+## Production
+
+#742 merged as `ef46394374ae1ccd8de3ef8b312734e0f3f1e474` on 2026-10-14 at
+03:52:35Z. Vercel `dpl_BQLq9CNADcAhSKT3NCdyTASBBmxF` built it for production
+and was READY at 03:57:17Z; the zodiacs.org alias named it, built from the
+merge, when [`tools/production-check.mjs`](tools/production-check.mjs) ran at
+03:58:20Z. All 11 checks pass ([`production/production.json`](production/production.json)):
+
+- the MCP adapter's manifest is the merge's, byte for byte, and the rc.24
+  archive the site serves has its 911,940 bytes and digest `23445637…`;
+- the place index the site's search and `search_places` read is the merge's,
+  byte for byte, with its list of the places filed under another letter
+  (F-94);
+- the compute API's time endpoint, which `resolve_birth_time` runs, answers
+  its three documented examples as `src/lib/compute-api/examples.json`
+  documents them, apart from the runtime's own tzdb release and the citation
+  digest that covers it: a wall time the spring change skipped (`dst-gap`), a
+  date written in the Julian calendar with Russia's calendar note, and
+  Strasbourg on 1 June 1916 read on the time atlas beside tzdb
+  (`secondsFromTzdb: -7200`), with the rule, its uncertainty flag and its
+  citations;
+- Brest at noon on 1 June 1880 without a longitude is read on Brest's own,
+  −4.48628°, and agrees with the atlas within a second (`-0.293`);
+- another town's longitude, a place outside `local.zone` and another country
+  are each refused with the parser's own sentence, at `/longitude`,
+  `/atlasPlace` and `/country`.
+
+The same check before the merge, at 03:42:51Z with the branch head as the
+expected commit and the alias record read on 2026-10-13, which named #740's
+deployment ([`production/control-before.json`](production/control-before.json)),
+passed 0 of 11: production's adapter manifest was the earlier one and the
+rc.24 archive was 404, its place index had no list, and the time endpoint
+answered the skipped wall time without the fields the merge adds, refused the
+Julian and atlas examples (400) and refused `atlasPlace` as a field it does
+not accept.
+
 ## Not changed
 
 The hosted assistant tools and the remote MCP at zodiacs.org keep their own

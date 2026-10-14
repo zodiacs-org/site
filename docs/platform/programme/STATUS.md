@@ -1,3 +1,34 @@
+Birth-time tools in production, 2026-10-14 (Asia/Bangkok): the local MCP
+adapter reads a local birth time and searches birthplaces (#742), and the
+compute API's time endpoint and the adapter read the Zodiacs time atlas beside
+tzdb. A1.c and B3.b are accepted.
+
+**Overall delivery: 43%** (42.587% to three decimals): 77.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **A1.c.** #742 merged as `ef463943`: the MCP adapter 0.1.0-rc.24 that
+  zodiacs.org serves has `resolve_birth_time`, which flags a skipped or
+  repeated wall time, a local mean time, an uncertain or disputed zone history
+  and a date written in the Julian calendar with the birth forms' calendar
+  note, and `search_places`, the site's birthplace search. The time endpoint
+  the tool runs answers its documented examples as documented, 11 of 11
+  checks, 0 of 11 before the merge
+  ([the record](../evidence/birth-time-tools-20261012/README.md#production)).
+- **B3.b.** The same endpoint reads Strasbourg in 1916 on the time atlas with
+  its rule, uncertainty flag and citations, Brest in 1880 on its own longitude
+  within a second of the atlas, and refuses an atlas place in another zone,
+  with another longitude or with another country
+  ([the record](../evidence/time-atlas-reading-20261012/README.md#production)).
+- **F-94 (major).** Five Codex rounds on #742 found that the place search, on
+  the site's birth forms too, matched only GeoNames' ASCII names, so
+  "Zürich", "Zurich" and "Düsseldorf" found nothing; it now matches either
+  name, and every place of the index is reached by both. Open: a contains
+  tier across letters, and names the index does not give a place.
+- **F-95.** The daily publication check fails on arm64 when a recomputed fact
+  differs in its last bit, as the 2026-10-14 edition's Pluto longitude does;
+  CI, on x86-64, passes.
+- **Main's Site Check** passed on the merge (run 38508506592).
+
 Developer documentation in production, 2026-10-14 (Asia/Bangkok): the claims
 ledger reads every developer document the site serves (#730), seven guides
 answer the developer queries of the brief (#735), and `check_sky_fact` checks
