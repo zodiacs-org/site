@@ -1,0 +1,21 @@
+{
+  "scope": "Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance",
+  "timezone": "Asia/Bangkok",
+  "passed": [
+    "wedding card with the evening on the place's clock",
+    "plain dates, places and clock times",
+    "printable card link from the tool",
+    "copy as plain text",
+    "resize updates keep the card",
+    "375px phone: no sideways scroll, card at the top",
+    "date alone at noon UTC, said so, with the Moon's change of sign",
+    "life milestones: each pass, the numbers, every milestone",
+    "no card link when the page could not reproduce the answer",
+    "text injection",
+    "refusal message",
+    "other tools' results ignored",
+    "host dark theme",
+    "MCP Apps tool-result notification and height report",
+    "no external requests"
+  ]
+}

@@ -28,6 +28,8 @@ export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v2.html', 'ui://zo
 /** The first Chart Studio URI, kept for existing callers. */
 export const LEGACY_STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
 export { HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS };
+/** The occasion tools' panel, offered only while ZODIACS_OCCASIONS_ENABLED=1. */
+export const OCCASIONS_URI = 'ui://zodiacs/occasions-v1.html';
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 
 /** What people see on the tool-call line and in the plugin's details. */

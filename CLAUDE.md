@@ -158,6 +158,10 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
 - `integrations/generated/horoscopes.mjs` ← `scripts/build-horoscope-panel.mjs`
   through `npm run ai:build`; the get_horoscope panel (sources
   `src/ai-tools/horoscope/`). It carries no reading data.
+- `integrations/generated/occasions.mjs` ← `scripts/build-occasions-panel.mjs`
+  through `npm run ai:build`; the occasion tools' panel (sources
+  `src/ai-tools/occasions-panel/`), offered only with `ZODIACS_OCCASIONS_ENABLED=1`.
+  It carries no occasion data; `npx vite-node --script tests/ai-occasions-drive.ts` drives it in Chromium.
 - `src/data/horoscope-window.json` ← `vite-node --script
   scripts/build-horoscope-window.ts` (the daily workflow rebuilds it after the
   day's program; `verify-horoscope-window.ts --replay` checks it). It holds the
