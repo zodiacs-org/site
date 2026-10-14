@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-14 aspect facts and the developer-query guides in production (site 848e6087); A1.b and S4 accepted",
+  "asOf": "2026-10-14 birth-time tools and the time atlas in production (site ef463943); A1.c and B3.b accepted",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -2038,9 +2038,20 @@
       "weight": 0.75,
       "gate": "flags for gap/fold/LMT/uncertain zone/calendar",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "https://github.com/zodiacs-org/site/pull/742",
+        "https://github.com/zodiacs-org/site/actions/runs/38508506592",
+        "docs/platform/evidence/birth-time-tools-20261012/production/production.json: zodiacs.org at dpl_BQLq9CNADcAhSKT3NCdyTASBBmxF, built from ef463943, 11 of 11 checks (the same check before the merge: 0 of 11, control-before.json): the MCP adapter 0.1.0-rc.24 manifest, byte for byte, and its archive by size and digest; the compute API's time endpoint, which resolve_birth_time runs, answers its documented skipped-time and Julian-calendar examples as documented",
+        "src/mcp/time-places.test.ts: for 130 synthetic requests resolve_birth_time returns the body the compute API's handler answers, apart from cite.url; they reach dst-gap, dst-fold, lmt, zoneUncertain, zone-history-disputed, both zone histories and every calendar note; refusals are the handler's own sentences",
+        "src/mcp/time-places.test.ts: search_places carries every shard of the index the calculators fetch, row for row, and lists, for 75 queries at three limits, the places the site lists, in the same order",
+        "docs/platform/evidence/birth-time-tools-20261012/README.md",
+        "docs/platform/evidence/mcp-adapter/mcp-rc23-rc24.json",
+        "docs/platform/evidence/mcp-adapter/protocol-drive.json",
+        "docs/platform/evidence/mcp-adapter/host-drive.json"
+      ],
+      "notes": "Accepted 2026-10-14: the local MCP adapter's 0.1.0-rc.24 (archive served, not on npm) adds resolve_birth_time, which runs the compute API's time parser and function on the machine the adapter runs on and flags a skipped (dst-gap) or repeated (dst-fold) wall time, a local mean time (lmt), an uncertain zone history (zoneUncertain) and a pinned history the runtime disputes (zone-history-disputed), with a date written in the Julian calendar up to 1923 and the birth forms' calendar note for a country; and search_places, the site's birthplace search over GeoNames cities15000 (CC BY 4.0) with the site's ranking. Its contains tier reads only the shard of the query's first letter (F-94, open). Two Codex rounds on #742 fixed an atlas place outside local.zone, tzdb's reading on another longitude than the atlas place's, and letters NFD leaves whole in place queries."
     },
     {
       "id": "A1.d",
@@ -2615,9 +2626,17 @@
         "B3.a",
         "A1.c"
       ],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "https://github.com/zodiacs-org/site/pull/742",
+        "https://github.com/zodiacs-org/site/actions/runs/38508506592",
+        "docs/platform/evidence/birth-time-tools-20261012/production/production.json: zodiacs.org at dpl_BQLq9CNADcAhSKT3NCdyTASBBmxF, built from ef463943, 11 of 11 checks (the same check before the merge: 0 of 11, control-before.json): the compute API's time endpoint reads Strasbourg on 1 June 1916 on the atlas, with its rule, uncertainty flag and citations, as documented; Brest in 1880, on its own longitude, agrees with the atlas within a second; another longitude, a place outside local.zone and another country are refused with the parser's sentences",
+        "src/lib/time-atlas/index.test.ts: carries every data file the manifest lists, byte for byte as at the pinned commit; reads every wall time of the fixture as the engine repository's own resolver did; gives each instant in UTC with its rule, its uncertainty and its citations, titled and linked",
+        "tests/api/compute-api.test.ts: time gives the time atlas's reading at an atlas place, beside tzdb's, with its rule, its uncertainty and its citations",
+        "docs/platform/evidence/time-atlas-reading-20261012/README.md"
+      ],
+      "notes": "Accepted 2026-10-14: the compute API's time endpoint and resolve_birth_time read a wall time on the Zodiacs time atlas 0.1.0 (engine repository atlas/data at 7307665b, CC BY 4.0, byte for byte; its resolver under MIT with only the loader changed) at a place named with atlasPlace, beside tzdb's reading on the place's own longitude, each instant with its rule, its uncertainty flag (documented, inferred or uncertain) with reasons, and its citations; 2,100 fixture readings match the engine repository's resolver. The atlas is read only for its 21 listed places."
     },
     {
       "id": "B3.c",
