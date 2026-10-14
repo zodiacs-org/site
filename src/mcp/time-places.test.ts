@@ -180,6 +180,19 @@ describe('resolve_birth_time is the compute API\'s time endpoint', () => {
     }
   });
 
+  it('accepts, for every atlas place, the longitude search_places gives it and its country', async () => {
+    // The tool's description says to pass the longitude search_places returns; rounded to 0.01°, it is
+    // within the atlas place's own by less than the 0.01° the parser allows, for each of the 21.
+    for (const place of atlasPlaces.places) {
+      const found = value(searchPlaces({ query: place.name, limit: PLACES_MAX })).places
+        .find((candidate: { timeZone: string }) => candidate.timeZone === place.tzdbZone);
+      expect(found, place.id).toBeDefined();
+      const args = { local: { date: '1900-06-01', time: '12:00', zone: place.tzdbZone }, longitude: found.longitude, country: place.country, atlasPlace: place.id };
+      const outcome = await resolveBirthTime(args as any);
+      expect(outcome.ok ? '' : outcome.refusal, place.id).toBe('');
+    }
+  });
+
   it("holds every result to its output schema, to the JSON Schema a host reads, and to the compute API's OpenAPI response", async () => {
     const ajv = new Ajv2020({ allErrors: true, strict: false });
     addFormats(ajv);
