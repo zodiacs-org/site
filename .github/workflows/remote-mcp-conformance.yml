@@ -1,0 +1,77 @@
+name: Remote MCP Conformance
+
+# P3.6: the MCP project's conformance suite and its Inspector CLI against the
+# hosted MCP server (zodiacs.org/mcp), from pinned releases installed outside
+# the repository with no install scripts. scripts/remote-mcp-review.mjs judges
+# the suite's results, calls every listed tool through the Inspector and writes
+# one report. Read-only and anonymous: no credential, account or setting.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: MCP endpoint to review
+        required: true
+        default: https://zodiacs.org/mcp
+        type: string
+  pull_request:
+    paths:
+      - .github/workflows/remote-mcp-conformance.yml
+      - scripts/remote-mcp-review.mjs
+
+permissions:
+  contents: read
+
+concurrency:
+  group: remote-mcp-conformance-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  review:
+    name: Conformance suite and Inspector against every tool
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      MCP_URL: ${{ inputs.url || 'https://zodiacs.org/mcp' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+
+      - name: Install the pinned suite, Inspector and validator outside the repository
+        run: |
+          dir="$RUNNER_TEMP/mcp-tools"
+          mkdir -p "$dir"
+          echo '{"private":true}' > "$dir/package.json"
+          npm install --prefix "$dir" --ignore-scripts --no-audit --no-fund \
+            @modelcontextprotocol/conformance@0.1.16 @modelcontextprotocol/inspector@2.10.1 \
+            ajv@8.17.1 ajv-formats@3.0.1
+          echo "MCP_TOOLS_DIR=$dir" >> "$GITHUB_ENV"
+
+      # Its exit status is the suite's own verdict over every active scenario,
+      # most of which need its test server; the review step below judges the
+      # results scenario by scenario.
+      - name: Conformance suite, active server scenarios
+        run: |
+          node "$MCP_TOOLS_DIR/node_modules/@modelcontextprotocol/conformance/dist/index.js" \
+            server --url "$MCP_URL" --suite active -o "$RUNNER_TEMP/conformance-results" || true
+
+      - name: Judge the suite's results and call every tool through the Inspector
+        run: node scripts/remote-mcp-review.mjs --url "$MCP_URL" --conformance-results "$RUNNER_TEMP/conformance-results" --out remote-mcp-review.json
+
+      - name: Upload the report and the suite's results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: remote-mcp-conformance-${{ github.run_id }}
+          path: |
+            remote-mcp-review.json
+            ${{ runner.temp }}/conformance-results
+            ${{ runner.temp }}/mcp-tools/package-lock.json
+          if-no-files-found: warn
+          retention-days: 90
