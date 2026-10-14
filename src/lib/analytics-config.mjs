@@ -14,6 +14,8 @@ export const ANALYTICS_EVENT_PROPS = Object.freeze({
   terminal_view_switch: ['surface', 'direction'],
   sdk_click: ['source', 'destination'],
   bio_click: ['destination'],
+  // A visit that arrived from a link the Zodiacs app gave in ChatGPT or another assistant.
+  assistant_arrival: ['assistant'],
   wallet_chart_computed: ['chain', 'holds_registry_asset'],
   aura_view: [],
   aura_compose: ['outcome', 'held_bucket'],
@@ -96,6 +98,9 @@ const REGISTRY_BRIDGE_LOCALE_VALUES = Object.freeze([
 
 /** Closed-value contracts for non-identifying product dimensions. */
 export const ANALYTICS_EVENT_VALUES = Object.freeze({
+  assistant_arrival: Object.freeze({
+    assistant: Object.freeze(['chatgpt', 'assistant']),
+  }),
   bio_click: Object.freeze({
     destination: Object.freeze([
       'website', 'birth_chart', 'astrofolio', ...ZODIAC_SIGN_VALUES,
