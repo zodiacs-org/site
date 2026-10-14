@@ -193,6 +193,88 @@ async function settlePage(page, { result, normalizeEventsHub, name }) {
 }
 
 
+/**
+ * Waits until every face the page draws text with is loaded, then for two
+ * frames. A face still loading when the screenshot is taken draws nothing
+ * (the pinned test faces have blocking display) or its fallback (production
+ * swap faces), and the capture then fails on pixels that only reflect the race
+ * (F-96: Site Check run 38514642153 drew no serif or monospace text on the
+ * full-moon page). The families come from the computed style of every text
+ * node, so a face that starts loading after settlePage's general sweep counts
+ * too. Returns how long it waited and for which faces; throws, naming them, if
+ * they do not settle within 30 s.
+ */
+async function settleFonts(page) {
+  const state = await page.evaluate(async () => {
+    const started = performance.now();
+    const deadline = started + 30_000;
+    const unquote = (name) => name.trim().replace(/^["']|["']$/g, '');
+    const describe = (face) => `${unquote(face.family)} ${face.style} ${face.weight}: ${face.status}`;
+    // The first family of each text node's computed font-family: the face the
+    // page draws with whenever that family has one. Later families are the
+    // platform fallbacks, some of which (local Roboto, Times) a platform lacks.
+    const usedFamilies = () => {
+      const families = new Set();
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if (!node.textContent.trim() || !node.parentElement) continue;
+        const style = getComputedStyle(node.parentElement);
+        if (style.display === 'none' || style.visibility === 'hidden') continue;
+        families.add(unquote(style.fontFamily.split(',')[0]));
+      }
+      return families;
+    };
+    let waitedFor = [];
+    for (;;) {
+      const families = usedFamilies();
+      const faces = [...document.fonts].filter((face) => families.has(unquote(face.family)));
+      await Promise.all(faces.map((face) => face.load().catch(() => undefined)));
+      await document.fonts.ready;
+      const pending = [...new Set([
+        ...[...document.fonts].filter((face) => face.status === 'loading'),
+        ...faces.filter((face) => face.status !== 'loaded' && face.status !== 'error'),
+      ])].map(describe);
+      if (pending.length === 0) {
+        await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+        return { ok: true, families: families.size, waitedMs: Math.round(performance.now() - started), waitedFor };
+      }
+      waitedFor = [...new Set([...waitedFor, ...pending])];
+      if (performance.now() > deadline) return { ok: false, pending, waitedFor };
+      await new Promise((done) => setTimeout(done, 250));
+    }
+  });
+  if (!state.ok) throw new Error(`Fonts the page draws with did not load within 30 s: ${state.pending.join('; ')}`);
+  return state;
+}
+
+/**
+ * Records every face that starts loading from now on. Playwright's screenshot
+ * waits for document.fonts.ready before it captures, so a face that races the
+ * capture is one that starts loading during it, as the full page is laid out.
+ */
+function recordFontLoads(page) {
+  return page.evaluate(() => {
+    const started = [];
+    const record = (event) => {
+      for (const face of event.fontfaces) started.push(`${face.family} ${face.style} ${face.weight}`);
+    };
+    document.fonts.addEventListener('loading', record);
+    globalThis.__visualFontLoads = { started, stop: () => document.fonts.removeEventListener('loading', record) };
+  });
+}
+
+/** The faces that started loading since recordFontLoads, and those still loading. */
+function fontLoadsSinceRecord(page) {
+  return page.evaluate(() => {
+    const { started, stop } = globalThis.__visualFontLoads;
+    stop();
+    const loading = [...document.fonts]
+      .filter((face) => face.status === 'loading')
+      .map((face) => `${face.family} ${face.style} ${face.weight}`);
+    return [...new Set([...started, ...loading])];
+  });
+}
+
 async function ariesFontReceipt(page, context, stem, phase) {
   const css = await page.evaluate(() => ({
     faces: [...document.fonts].map((face) => ({
@@ -418,20 +500,38 @@ async function capture(browser, baseURL, testCase) {
     }
   }
 
-  const masks = await page.locator(liveDailySelectors.join(', ')).evaluateAll((elements) => (
-    elements.flatMap((element) => {
-      const rect = element.getBoundingClientRect();
-      return rect.width > 0 && rect.height > 0
-        ? [{
-            x: rect.left + window.scrollX,
-            y: rect.top + window.scrollY,
-            width: rect.width,
-            height: rect.height,
-          }]
-        : [];
-    })
-  ));
-  const image = await page.screenshot({ fullPage: true, animations: 'disabled' });
+  // Capture only with every face the page draws with loaded, and again if a
+  // face started loading while the full page was being captured (F-96).
+  let image;
+  let masks;
+  for (let attempt = 1; ; attempt += 1) {
+    const fonts = await settleFonts(page);
+    if (fonts.waitedFor.length > 0) {
+      console.log(`  fonts: ${fileStem(testCase)} waited ${fonts.waitedMs} ms for ${fonts.waitedFor.join('; ')}`);
+    }
+    // Measured after the fonts settle, since a late face moves what follows it.
+    masks = await page.locator(liveDailySelectors.join(', ')).evaluateAll((elements) => (
+      elements.flatMap((element) => {
+        const rect = element.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0
+          ? [{
+              x: rect.left + window.scrollX,
+              y: rect.top + window.scrollY,
+              width: rect.width,
+              height: rect.height,
+            }]
+          : [];
+      })
+    ));
+    await recordFontLoads(page);
+    image = await page.screenshot({ fullPage: true, animations: 'disabled' });
+    const loadingDuringCapture = await fontLoadsSinceRecord(page);
+    if (loadingDuringCapture.length === 0) break;
+    if (attempt === 3) {
+      throw new Error(`${fileStem(testCase)}: fonts were still loading after three captures: ${loadingDuringCapture.join('; ')}`);
+    }
+    console.log(`  fonts: ${fileStem(testCase)} capture ${attempt} raced ${loadingDuringCapture.join('; ')}; capturing again`);
+  }
   if (testCase.name === 'aries') {
     await ariesFontReceipt(page, context, fileStem(testCase), 'after');
   }
