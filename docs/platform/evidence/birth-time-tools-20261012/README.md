@@ -153,16 +153,22 @@ committed nodal speeds kept, as before.
 The time endpoint and the time atlas change `src/lib`, which the Phase 1
 capture digest covers, so CI took the 18 captures again.
 
-- **Committed captures.** Browser Evidence run 38478006905 took them on
-  `2efc0a63`, after the review fix changed the time request parser, with
-  Chromium 149.0.7827.55 at 2026-10-13T22:32:40Z, for the 2026-10-13 edition,
-  bound to template source digest `93a9f716…`. Its build, acceptance
-  captures, receipt, visual comparison, Lighthouse and explorer drive passed
+- **Committed captures.** Browser Evidence run 38498881497 took them on
+  `f30d7f4c`, after #742's five reviews changed the time request parser and
+  the place search (`src/lib/geo/`) and the branch merged main's 2026-10-14
+  edition, with Chromium 149.0.7827.55 at 2026-10-14T02:06:05Z, bound to
+  template source digest `9644c29a…`. Its build, acceptance captures,
+  receipt, visual comparison, Lighthouse and explorer drive passed
   ([browser-evidence-provenance.json](browser-evidence-provenance.json) is the
-  run's own record). The 18 images are byte for byte main's.
-- **Superseded run.** Run 38460766572 on `4fee71ac`, before the review fix,
-  took them for digest `96847a88…`; its provenance is kept as
-  `browser-evidence-provenance-4fee71ac.json`.
+  run's own record). Twelve of the 18 images, the pages that show the day's
+  edition (today, tomorrow, daily, love, career and the horoscopes hub, at
+  both widths), differ from the captures before because they show the
+  2026-10-14 edition; the weekly, monthly and yearly images are unchanged.
+- **Superseded runs.** Run 38460766572 on `4fee71ac`, before the reviews,
+  took them for digest `96847a88…`, and run 38478006905 on `2efc0a63`, after
+  the first, for digest `93a9f716…` and the 2026-10-13 edition; their
+  provenance is kept as `browser-evidence-provenance-4fee71ac.json` and
+  `browser-evidence-provenance-2efc0a63.json`.
 
 ## Not changed
 
