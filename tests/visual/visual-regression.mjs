@@ -289,56 +289,6 @@ async function settleFonts(page) {
   return state;
 }
 
-/**
- * Records every face that starts loading from now on. Playwright's screenshot
- * waits for document.fonts.ready before it captures, so a face that races the
- * capture is one that starts loading during it, as the full page is laid out.
- * The FontFaceSet `loading` event is the signal: it carries no faces (Chrome
- * fires it with an empty list, as the CSS Font Loading spec does), so the faces
- * are named from `loadingdone` and `loadingerror`, which list those that
- * settled, and from those still loading. A face can start and finish within
- * one capture and still leave it drawn without its text.
- */
-function recordFontLoads(page) {
-  return page.evaluate(() => {
-    const record = { loadingEvents: 0, settled: [] };
-    const onLoading = () => { record.loadingEvents += 1; };
-    const onSettled = (event) => {
-      for (const face of event.fontfaces) record.settled.push(`${face.family} ${face.style} ${face.weight}`);
-    };
-    document.fonts.addEventListener('loading', onLoading);
-    document.fonts.addEventListener('loadingdone', onSettled);
-    document.fonts.addEventListener('loadingerror', onSettled);
-    globalThis.__visualFontLoads = {
-      record,
-      stop: () => {
-        document.fonts.removeEventListener('loading', onLoading);
-        document.fonts.removeEventListener('loadingdone', onSettled);
-        document.fonts.removeEventListener('loadingerror', onSettled);
-      },
-    };
-  });
-}
-
-/**
- * The faces that started loading since recordFontLoads: those that settled and
- * those still loading, or an unnamed one when only the `loading` event fired.
- * Font events are queued tasks, so it lets the queue run before it reads them.
- */
-function fontLoadsSinceRecord(page) {
-  return page.evaluate(async () => {
-    await new Promise((done) => setTimeout(done, 0));
-    const { record, stop } = globalThis.__visualFontLoads;
-    stop();
-    const loading = [...document.fonts]
-      .filter((face) => face.status === 'loading')
-      .map((face) => `${face.family} ${face.style} ${face.weight}`);
-    const named = [...new Set([...record.settled, ...loading])];
-    if (named.length === 0 && record.loadingEvents > 0) return ['a face the loading event did not name'];
-    return named;
-  });
-}
-
 async function ariesFontReceipt(page, context, stem, phase) {
   const css = await page.evaluate(() => ({
     faces: [...document.fonts].map((face) => ({
@@ -379,7 +329,7 @@ async function ariesFontReceipt(page, context, stem, phase) {
   }
 }
 
-async function capture(browser, baseURL, testCase) {
+async function capture(browser, baseURL, testCase, judge) {
   const context = await browser.newContext({
     viewport: { width: testCase.viewport.width, height: testCase.viewport.height },
     deviceScaleFactor: 1,
@@ -564,11 +514,18 @@ async function capture(browser, baseURL, testCase) {
     }
   }
 
-  // Capture only with every face the page draws with loaded, and again if a
-  // face started loading while the full page was being captured (F-96).
+  // Chromium's full-page capture (Page.captureScreenshot with
+  // captureBeyondViewport) recreates the page's CSS font faces, which load
+  // again during the capture (F-96): every capture fires the FontFaceSet
+  // `loading` event, so no event can tell a capture that painted before
+  // they reloaded, which draws text in a blocking face blank. Each capture
+  // therefore starts with every face the page draws with loaded, and the
+  // caller judges the image: a capture it refuses is taken again, at most
+  // three times, and the last one is kept.
   let image;
   let masks;
-  for (let attempt = 1; ; attempt += 1) {
+  let verdict;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
     const fonts = await settleFonts(page);
     if (fonts.waitedFor.length > 0) {
       console.log(`  fonts: ${fileStem(testCase)} waited ${fonts.waitedMs} ms for ${fonts.waitedFor.join('; ')}`);
@@ -587,20 +544,16 @@ async function capture(browser, baseURL, testCase) {
           : [];
       })
     ));
-    await recordFontLoads(page);
     image = await page.screenshot({ fullPage: true, animations: 'disabled' });
-    const loadingDuringCapture = await fontLoadsSinceRecord(page);
-    if (loadingDuringCapture.length === 0) break;
-    if (attempt === 3) {
-      throw new Error(`${fileStem(testCase)}: fonts were still loading after three captures: ${loadingDuringCapture.join('; ')}`);
-    }
-    console.log(`  fonts: ${fileStem(testCase)} capture ${attempt} raced ${loadingDuringCapture.join('; ')}; capturing again`);
+    verdict = judge(image, masks);
+    if (verdict.ok) break;
+    if (attempt < 3) console.log(`  capture ${attempt} of ${fileStem(testCase)}: ${verdict.reason}; capturing again`);
   }
   if (testCase.name === 'aries') {
     await ariesFontReceipt(page, context, fileStem(testCase), 'after');
   }
   await context.close();
-  return { image, masks };
+  return { image, masks, verdict };
 }
 
 function comparePng(expectedBuffer, actualBuffer, masks = []) {
@@ -661,8 +614,45 @@ try {
     for (const testCase of cases) {
       const stem = fileStem(testCase);
       const baselinePath = resolve(baselineRoot, `${stem}.png`);
-      const { image: actual, masks } = await capture(browser, baseURL, testCase);
       const expectedMaskCount = testCase.name === 'home' ? 2 : 0;
+      let expected = null;
+      if (!update) {
+        try {
+          expected = await readFile(baselinePath);
+        } catch {
+          // Reported once the page is captured.
+        }
+      }
+
+      // A capture is kept when it matches the baseline within the limit, or,
+      // with --update, the capture before it: a baseline is written only when
+      // two captures in a row agree, so a capture that raced the fonts cannot
+      // become one. A wrong mask count or a missing baseline is not retaken.
+      let comparison = null;
+      let previous = null;
+      const judge = (image, masks) => {
+        if (masks.length !== expectedMaskCount) return { ok: true };
+        if (update) {
+          if (!previous) {
+            previous = image;
+            return { ok: false, reason: 'a baseline needs a second capture that agrees' };
+          }
+          comparison = comparePng(previous, image, masks);
+          previous = image;
+          if (comparison.dimensionError) return { ok: false, reason: `${comparison.dimensionError} from the capture before` };
+          return comparison.diffRatio <= maxDiffRatio
+            ? { ok: true }
+            : { ok: false, reason: `${(comparison.diffRatio * 100).toFixed(4)}% differs from the capture before` };
+        }
+        if (!expected) return { ok: true };
+        comparison = comparePng(expected, image, masks);
+        if (comparison.dimensionError) return { ok: false, reason: comparison.dimensionError };
+        return comparison.diffRatio <= maxDiffRatio
+          ? { ok: true }
+          : { ok: false, reason: `${(comparison.diffRatio * 100).toFixed(4)}% differs from the baseline` };
+      };
+
+      const { image: actual, masks, verdict } = await capture(browser, baseURL, testCase, judge);
       if (masks.length !== expectedMaskCount) {
         failures += 1;
         await writeFile(resolve(artifactRoot, `${stem}.actual.png`), actual);
@@ -671,22 +661,24 @@ try {
       }
 
       if (update) {
+        if (!verdict.ok) {
+          failures += 1;
+          await writeFile(resolve(artifactRoot, `${stem}.actual.png`), actual);
+          console.error(`  FAIL ${stem}: no two captures in a row agreed (${verdict.reason})`);
+          continue;
+        }
         await writeFile(baselinePath, actual);
         console.log(`  updated ${stem}`);
         continue;
       }
 
-      let expected;
-      try {
-        expected = await readFile(baselinePath);
-      } catch {
+      if (!expected) {
         failures += 1;
         await writeFile(resolve(artifactRoot, `${stem}.actual.png`), actual);
         console.error(`  FAIL ${stem}: baseline missing (run npm run test:visual:update)`);
         continue;
       }
 
-      const comparison = comparePng(expected, actual, masks);
       if (comparison.dimensionError) {
         failures += 1;
         await writeFile(resolve(artifactRoot, `${stem}.actual.png`), actual);
