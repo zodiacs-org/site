@@ -165,8 +165,10 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const OWNER_TRUST_LASTMOD = '2026-10-03'");
     expect(sitemap).toContain("...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const)");
     // So did the elections endpoint's sentence on the privacy page, on 5 October,
-    // and the hosted MCP server's request-log retention, on 9 October.
-    expect(privacy).toContain("const modifiedAt = '2026-10-09T00:00:00.000Z'");
+    // and the hosted MCP server's request-log retention, on 9 October, and the
+    // ?ref= on links from the Zodiacs app with its 0.5.0 tools' wording, on 14 October.
+    expect(privacy).toContain("const modifiedAt = '2026-10-14T00:00:00.000Z'");
+    expect(sitemap).toContain("const ASSISTANT_REF_LASTMOD = '2026-10-14'");
     expect(sitemap).toContain("const MCP_HOST_LOGS_LASTMOD = '2026-10-09'");
     expect(sitemap).toContain("...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const)");
     expect(sitemap).toContain("const ELECTIONS_LASTMOD = '2026-10-05'");

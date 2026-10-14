@@ -133,6 +133,9 @@ const ENGINE_RC2_ROUTES = [
 // retention for the hosted MCP server.
 const MCP_HOST_LOGS_LASTMOD = '2026-10-09';
 const MCP_HOST_LOGS_ROUTES = ['/privacy/'] as const;
+// The privacy page names the ?ref= on links from the Zodiacs app, and its 0.5.0 tools' wording.
+const ASSISTANT_REF_LASTMOD = '2026-10-14';
+const ASSISTANT_REF_ROUTES = ['/privacy/'] as const;
 // Engine 1.0.0, published on npm, adopted 2026-10-11 with MCP adapter 0.1.0-rc.19 and developer plugin 0.3.7:
 // the same pages, which name the engine's version, how to install it and that npm carries it.
 const ENGINE_100_LASTMOD = '2026-10-11';
@@ -290,6 +293,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const),
   ...ENGINE_RC2_ROUTES.map((loc) => [loc, ENGINE_RC2_LASTMOD] as const),
   ...MCP_HOST_LOGS_ROUTES.map((loc) => [loc, MCP_HOST_LOGS_LASTMOD] as const),
+  ...ASSISTANT_REF_ROUTES.map((loc) => [loc, ASSISTANT_REF_LASTMOD] as const),
   ...ENGINE_100_ROUTES.map((loc) => [loc, ENGINE_100_LASTMOD] as const),
   ['/developers/', DEVELOPER_GUIDES_LASTMOD] as const,
   ...ENGINE_GEO_ROUTES.map((loc) => [loc, ENGINE_GEO_LASTMOD] as const),
