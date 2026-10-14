@@ -6,7 +6,7 @@ import { chartTwinsData, chartTwinsInput, famousChartData, famousChartInput } fr
 import { birthdayData, birthdayInput, skyCalendarData, skyCalendarInput } from './features/birthday';
 import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS } from './horoscope/reading';
 
-export const AI_VERSION = '0.4.0';
+export const AI_VERSION = '0.5.0';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
 /** The released tools: what the reviewed plugin offers. */
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'] as const;

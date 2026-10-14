@@ -13,8 +13,23 @@ The public Zodiacs plugin: one onboarding skill and a remote MCP connection to
 | `get_horoscope` | Horoscopes | Horoscopes for the reader's own day or week |
 | `open_chart_studio` | Chart Studio | An interactive birth chart the person fills in |
 | `get_capabilities` | What Zodiacs can do | — |
+| `get_compatibility` | Compare two charts | Occasions panel |
+| `find_chart_twins` | Chart twins | Occasions panel |
+| `get_famous_chart` | A famous birth chart | Occasions panel |
+| `get_birthday` | Your birthday | Occasions panel |
+| `get_occasion_sky` | The sky on a day | Occasions panel |
+| `get_life_milestones` | Life milestones | Occasions panel |
+| `get_sky_calendar` | Sky calendar for your calendar app | Occasions panel |
 
-No account or birth details are sent as tool arguments. Horoscopes come from
+The last seven are new in 0.5.0. They share the panel
+`ui://zodiacs/occasions-v1.html` and are offered only where
+`ZODIACS_OCCASIONS_ENABLED=1`; production switches them on before the 0.5.0
+submission. The comparison, chart-twin, birthday, occasion and milestone tools
+take the dates, times and places a person gives in the conversation, calculate
+from them for that call and keep none of them; the famous-chart and calendar
+tools take no personal details.
+
+No account is needed. The first six tools take no birth details. Horoscopes come from
 `src/data/horoscope-window.json`, which the daily publication rebuilds each
 night with the editions for the day before, the day of and the day after, so
 every time zone has its own "today".
