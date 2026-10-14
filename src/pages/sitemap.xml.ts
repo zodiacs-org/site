@@ -147,6 +147,14 @@ const DEVELOPER_GUIDES_LASTMOD = '2026-10-12';
 // MCP page's adapter, now 0.1.0-rc.24 with resolve_birth_time and search_places.
 const ENGINE_GEO_LASTMOD = '2026-10-12';
 const ENGINE_GEO_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
+// The aspect facts of #740 (merged 2026-10-13): the compare page's section linking the guides that compare the
+// engine with other software.
+const ASPECT_FACTS_LASTMOD = '2026-10-13';
+const ASPECT_FACTS_ROUTES = ['/developers/compare/'] as const;
+// The birth-time tools of #742 (merged 2026-10-14): the compute API page's atlasPlace rules and the MCP page's
+// search_places and resolve_birth_time.
+const BIRTH_TIME_TOOLS_LASTMOD = '2026-10-14';
+const BIRTH_TIME_TOOLS_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -297,6 +305,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ENGINE_100_ROUTES.map((loc) => [loc, ENGINE_100_LASTMOD] as const),
   ['/developers/', DEVELOPER_GUIDES_LASTMOD] as const,
   ...ENGINE_GEO_ROUTES.map((loc) => [loc, ENGINE_GEO_LASTMOD] as const),
+  ...ASPECT_FACTS_ROUTES.map((loc) => [loc, ASPECT_FACTS_LASTMOD] as const),
+  ...BIRTH_TIME_TOOLS_ROUTES.map((loc) => [loc, BIRTH_TIME_TOOLS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
