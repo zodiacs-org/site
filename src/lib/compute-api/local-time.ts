@@ -48,6 +48,13 @@ export interface LocalResolution {
   zoneUncertain: boolean;
   /** Forward wall-clock shift of a DST gap, in minutes; 0 otherwise. */
   gapShiftMinutes: number;
+  /**
+   * The runtime's Intl offset of the zone at the same instant, minutes east,
+   * where the pinned history answered; null otherwise. Intl carries tzdb's
+   * default build, which before 1970 can give another offset (the engine's
+   * docs/time.md lists 122 such zones against tzdata 2025c).
+   */
+  intlOffsetMinutes: number | null;
 }
 
 /** A wall time from 1970-01-02 on never reads before 1970, so the pinned history cannot apply. */
@@ -87,7 +94,20 @@ export async function resolveLocal(
     zoneHistory: pinned ? 'pinned' : 'runtime',
     zoneUncertain: early && !pinned && !isFixedOffsetZone(input.zone),
     gapShiftMinutes,
+    intlOffsetMinutes: pinned ? resolved.intlOffsetMinutes : null,
   };
+}
+
+/**
+ * Whether the two time zone histories the resolver can read disagree here:
+ * the pinned history answered, and the runtime's Intl gives the zone another
+ * offset at the same instant. Compared with the zone's own offset, so a time
+ * read on the birthplace's own mean time is compared by the zone's clock.
+ */
+export function zoneHistoriesDisagree(local: LocalResolution): boolean {
+  if (local.intlOffsetMinutes === null) return false;
+  const zoneOffset = local.localMeanTime ? local.localMeanTime.zoneOffsetMinutes : local.offsetMinutes;
+  return Math.abs(local.intlOffsetMinutes - zoneOffset) > 1e-9;
 }
 
 /** The runtime's own tzdb version, which Intl reads from 1970 on. */

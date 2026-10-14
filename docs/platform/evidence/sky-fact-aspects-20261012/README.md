@@ -114,6 +114,34 @@ digest covers, so CI took the 18 captures again.
   for digest `51f4d297…`; its provenance is kept as
   `browser-evidence-provenance-37b3f056.json`.
 
+## Production
+
+#740 merged as `848e6087d3e3558aa37030749d010e33e73b4ab6`. Vercel
+`dpl_AHCoAbgz8RfLgSPZSeU4YKv7vohq` built it for production and was READY at
+2026-10-13T20:14:15Z; the zodiacs.org alias named it, built from the merge,
+when [`tools/production-check.mjs`](tools/production-check.mjs) ran at
+20:15:05Z. All 6 checks pass ([`production/production.json`](production/production.json)):
+
+- the MCP adapter's manifest is the merge's, byte for byte, and the rc.23
+  archive the site serves has its 125,534 bytes and digest `be720004…`;
+- the compute API's sky-fact endpoint answers the documented aspect example
+  (the Moon trine Saturn on 2026-10-14 in Europe/London) as
+  `src/lib/compute-api/examples.json` documents it: `depends`, read over the
+  local day;
+- the hosted MCP's Chart Studio (`resources/read` of
+  `ui://zodiacs/chart-studio-v2.html`) is the merge's
+  `integrations/generated/chart-studio.mjs`, byte for byte, with F-91's
+  wording;
+- `/developers/compare/` has the section linking the four guides that compare
+  the engine with other software (S4).
+
+The same check against production before the merge, with #740's head as the
+expected commit ([`production/control-before.json`](production/control-before.json)),
+passed 0 of 6: the deployment was #737's, production's adapter manifest was the
+earlier one, for rc.22, the rc.23 archive was 404, the sky-fact endpoint refused the
+aspect example (400), Chart Studio was the earlier one and the compare page had
+no such section.
+
 ## Not changed
 
 The hosted assistant tools (`src/ai-tools/`, the remote MCP at zodiacs.org) keep

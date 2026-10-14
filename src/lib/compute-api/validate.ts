@@ -18,6 +18,9 @@
  */
 import { ASPECT_TYPES, HOUSE_SYSTEMS, type AspectType, type HouseSystem } from '@zodiacs/engine';
 import { parseCivilDate, parseCivilTime } from '../time/civil-date.js';
+import { julianToGregorian } from '../time/calendar.js';
+import { CALENDAR_CHOICE_BEFORE } from '../time/calendar-choice.js';
+import { ATLAS_PLACE_COUNTRIES, ATLAS_PLACE_IDS, ATLAS_PLACE_LONGITUDES, ATLAS_PLACE_ZONES, type AtlasPlaceId } from '../time-atlas/places.js';
 import {
   ANGULAR_MAX_ABS_LATITUDE,
   BUDGETS,
@@ -75,9 +78,21 @@ export interface EventsRequest {
   kinds: EventKind[];
 }
 
+/** The calendars a local date may be written in, as the birth forms offer them. */
+export const CALENDARS = Object.freeze(['gregorian', 'julian'] as const);
+export type CalendarName = typeof CALENDARS[number];
+
 export interface TimeRequest {
+  /** Its date is the proleptic Gregorian date the written one names. */
   local: LocalInput;
   longitude: number | null;
+  /** The calendar the request wrote its date in, and that date as written. */
+  calendar: CalendarName;
+  writtenDate: string;
+  /** An ISO 3166-1 alpha-2 code, for the calendar note; null when none was given. */
+  country: string | null;
+  /** A place of the time atlas to read the wall time on as well; null when none was given. */
+  atlasPlace: AtlasPlaceId | null;
 }
 
 export interface FactDay {
@@ -131,6 +146,13 @@ const TEXT = Object.freeze({
   instantOffset: 'The offset must be from -14:00 to +14:00.',
   instantRange: `Must fall from ${EPOCH.from} to ${EPOCH.to}.`,
   date: `Must be a real date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to ${EPOCH.lastYear}-12-31.`,
+  julianDate: `With calendar julian, must be a real Julian calendar date written YYYY-MM-DD, from ${EPOCH.firstYear}-01-01 to the day before ${CALENDAR_CHOICE_BEFORE}.`,
+  calendar: `Must be one of: ${CALENDARS.join(', ')}.`,
+  country: 'Must be an ISO 3166-1 alpha-2 country code in capitals, such as RU.',
+  atlasPlace: `Must be one of the time atlas's places: ${ATLAS_PLACE_IDS.join(', ')}.`,
+  atlasPlaceZone: 'Must be a place of the time atlas in local.zone, so that the atlas and tzdb read the same place\'s clock.',
+  atlasPlaceLongitude: 'With atlasPlace, must be the place\'s own longitude, to 0.01°, or be left out, when the place\'s own is used.',
+  atlasPlaceCountry: 'With atlasPlace, must be the place\'s own country, FR or US, or be left out, so that the calendar history is that place\'s.',
   time: 'Must be a time written HH:MM, from 00:00 to 23:59.',
   zoneFormat: 'Must be an IANA time zone name, such as Europe/Paris.',
   zoneUnknown: 'Must be a time zone name the server\'s time zone data includes.',
@@ -167,7 +189,7 @@ const TEXT = Object.freeze({
  * request invented.
  */
 export const VALIDATION_POINTERS = Object.freeze([
-  '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude',
+  '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude', '/calendar', '/country', '/atlasPlace',
   '/houseSystem', '/instants', '/bodies', '/from', '/to', '/kinds', '/kind', '/body', '/sign',
   '/phase', '/other', '/aspect', '/instant', '/date', '/zone', '/conditions', '/place', '/place/latitude',
   '/place/longitude', '/place/houseSystem',
@@ -250,6 +272,19 @@ export function dateAt(value: unknown, pointer: string): string {
   const text = stringAt(value, pointer);
   if (!parseCivilDate(text) || text < FIRST_DATE || text > LAST_DATE) throw invalidRequest(pointer, TEXT.date);
   return text;
+}
+
+/**
+ * A Julian (Old Style) date as the birth forms take one: written from the
+ * first accepted year to the end of 1923, after which every country the forms
+ * know kept the Gregorian calendar. Returns the proleptic Gregorian date it
+ * names (src/lib/time/calendar.ts).
+ */
+function julianDateAt(value: unknown, pointer: string): string {
+  const text = stringAt(value, pointer);
+  const gregorian = text >= FIRST_DATE && text < CALENDAR_CHOICE_BEFORE ? julianToGregorian(text) : null;
+  if (!gregorian) throw invalidRequest(pointer, TEXT.julianDate);
+  return gregorian;
 }
 
 function timeAt(value: unknown, pointer: string): string {
@@ -385,12 +420,51 @@ export function parseEventsRequest(value: unknown): EventsRequest {
   };
 }
 
+const COUNTRY_CODE = /^[A-Z]{2}$/u;
+
+/** Two IANA names for one zone: the same name, or two that Intl resolves to one canonical zone. */
+function sameZone(a: string, b: string): boolean {
+  if (a === b) return true;
+  try {
+    const canonical = (zone: string) => new Intl.DateTimeFormat('en-US', { timeZone: zone }).resolvedOptions().timeZone;
+    return canonical(a) === canonical(b);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * time: a local time, whose date may be written in the Julian calendar, as
+ * the birth forms allow before 1924; the place's longitude; and its country,
+ * for the note on when it changed calendar.
+ */
 export async function parseTimeRequest(value: unknown, zones: ZoneNames): Promise<TimeRequest> {
   const object = bodyObject(value);
-  onlyFields(object, ['local', 'longitude'], '');
-  const local = await localAt(required(object, 'local', ''), '/local', zones);
+  onlyFields(object, ['local', 'longitude', 'calendar', 'country', 'atlasPlace'], '');
+  const calendar = has(object, 'calendar') ? oneOf(object.calendar, '/calendar', CALENDARS, TEXT.calendar) : 'gregorian';
+  const localObject = objectAt(required(object, 'local', ''), '/local');
+  onlyFields(localObject, ['date', 'time', 'zone'], '/local');
+  const writtenDate = required(localObject, 'date', '/local');
+  const date = calendar === 'julian' ? julianDateAt(writtenDate, '/local/date') : dateAt(writtenDate, '/local/date');
+  const time = timeAt(required(localObject, 'time', '/local'), '/local/time');
+  const zone = await zoneAt(required(localObject, 'zone', '/local'), '/local/zone', zones);
   const longitude = has(object, 'longitude') ? longitudeAt(object.longitude, '/longitude') : null;
-  return { local, longitude };
+  let country: string | null = null;
+  if (has(object, 'country')) {
+    if (typeof object.country !== 'string' || !COUNTRY_CODE.test(object.country)) throw invalidRequest('/country', TEXT.country);
+    country = object.country;
+  }
+  const atlasPlace = has(object, 'atlasPlace') ? oneOf(object.atlasPlace, '/atlasPlace', ATLAS_PLACE_IDS, TEXT.atlasPlace) : null;
+  if (atlasPlace !== null && !sameZone(zone, ATLAS_PLACE_ZONES[atlasPlace])) throw invalidRequest('/atlasPlace', TEXT.atlasPlaceZone);
+  // The atlas reads the place's own mean time, so tzdb's reading uses the same longitude: the place's,
+  // or one sent that rounds to it, never another town's or the zone's reference city's.
+  if (atlasPlace !== null && longitude !== null && Math.abs(longitude - ATLAS_PLACE_LONGITUDES[atlasPlace]) > 0.01) {
+    throw invalidRequest('/longitude', TEXT.atlasPlaceLongitude);
+  }
+  // Nor may the calendar history be another country's than the place's.
+  if (atlasPlace !== null && country !== null && country !== ATLAS_PLACE_COUNTRIES[atlasPlace]) throw invalidRequest('/country', TEXT.atlasPlaceCountry);
+  const readOn = atlasPlace !== null && longitude === null ? ATLAS_PLACE_LONGITUDES[atlasPlace] : longitude;
+  return { local: { date, time, zone }, longitude: readOn, calendar, writtenDate: writtenDate as string, country, atlasPlace };
 }
 
 async function factDay(object: JsonObject, zones: ZoneNames): Promise<FactDay> {

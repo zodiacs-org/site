@@ -31,6 +31,24 @@ export const EXTERNAL = Object.freeze([
   'zod',
 ]);
 
+/**
+ * Every JSON table as one string literal, parsed at its first import, as
+ * scripts/build-compute-local-time.mjs inlines them: the zone names
+ * resolve_birth_time loads on demand, which esbuild would otherwise wrap in
+ * a CommonJS shim, and the place index search_places reads. V8 parses JSON
+ * text faster than the same data as code.
+ */
+const jsonAsText = {
+  name: 'json-as-text',
+  setup(build) {
+    // esbuild takes Go regular expressions: no u flag.
+    build.onLoad({ filter: /\.json$/ }, async (args) => {
+      const text = JSON.stringify(JSON.parse(await readFile(args.path, 'utf8')));
+      return { contents: `export default JSON.parse(${JSON.stringify(text)});\n`, loader: 'js' };
+    });
+  },
+};
+
 const version = async (name) => JSON.parse(
   await readFile(resolve(ROOT, 'node_modules', name, 'package.json'), 'utf8'),
 ).version;
@@ -69,6 +87,7 @@ export async function buildServerBundle() {
     sourcemap: false,
     minify: false,
     write: false,
+    plugins: [jsonAsText],
   });
   const [file] = result.outputFiles;
   return { bytes: Buffer.from(file.contents), versions: { adapter, engine, sdk, zod, esbuild: esbuild.version } };
