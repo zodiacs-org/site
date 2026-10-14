@@ -1,7 +1,7 @@
 {
   "type": "official-SDK protocol interoperability against the real server process; not a named end-user host, and not a model-driven demonstration",
-  "startedAt": "2026-10-14T00:34:50.621Z",
-  "completedAt": "2026-10-14T00:34:53.867Z",
+  "startedAt": "2026-10-14T01:11:21.805Z",
+  "completedAt": "2026-10-14T01:11:25.131Z",
   "node": "v22.22.2",
   "client": {
     "package": "@modelcontextprotocol/client",
@@ -17,8 +17,8 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "bytes": 2464542,
-    "sha256": "ba05617e838da364201a8d8e6c8fd536fec1af2282f07af3fdef97e4f60563ce"
+    "bytes": 2468640,
+    "sha256": "c61f6cac0b4f1bc059b1e6125405b57d424e660a844fa1828b9ef4b105123416"
   },
   "wire": [
     {
@@ -1050,7 +1050,7 @@
     {
       "name": "the transport exposes the server process id, so the next check measures something",
       "ok": true,
-      "detail": 60624
+      "detail": 68839
     },
     {
       "name": "the server process is gone after the client closes",

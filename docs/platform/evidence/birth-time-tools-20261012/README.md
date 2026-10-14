@@ -100,12 +100,12 @@ committed nodal speeds kept, as before.
 
 ## 0.1.0-rc.24 and plugin 0.3.12
 
-- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 911,442
+- The archive `public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz` is 911,940
   bytes, SHA-256
-  `d664083965a317dde8075641bd9efd6897b5db9d9c158a712140652870651793`, built
-  from commit `52b3904437fbf7e536f6aee0b4adc171e5fd0f5e`. Its `server.mjs` is
-  2,464,542 bytes, SHA-256
-  `ba05617e838da364201a8d8e6c8fd536fec1af2282f07af3fdef97e4f60563ce`: the build
+  `23445637af974fa1ad77ed8f49b4807cc164e1f6572819ebae5ad8d295fffe49`, built
+  from commit `52c74477579acd49b934703d6e4a876b7b11fadd`. Its `server.mjs` is
+  2,468,640 bytes, SHA-256
+  `c61f6cac0b4f1bc059b1e6125405b57d424e660a844fa1828b9ef4b105123416`: the build
   inlines every JSON table as a string parsed at its first import, as the
   compute API's local-time bundle does, so the zone-name table carries no
   CommonJS shim. It was first cut from `f148a386`, which also adds the time
@@ -127,7 +127,8 @@ committed nodal speeds kept, as before.
   name (above), and after the fourth, which found that a `country` other than
   the atlas place's put another country's calendar history beside the place's
   clock: it is refused (`/country`), so the zone, the longitude and the
-  country a request names are all the atlas place's.
+  country a request names are all the atlas place's; and after the fifth,
+  with the index's list of places filed under another letter (above).
 - `integrations/packages/zodiacs-developer-0.3.12.zip` is 1,851,656 bytes. It
   also carries Chart Studio's fix for a birth date without a time (F-91),
   which came with A1.b. Its release note first said it "bundles MCP adapter
