@@ -6298,9 +6298,10 @@ var ASCII_LETTERS = {
   "\u014B": "n",
   "\u0138": "k",
   "\u017F": "s",
-  "\u0140": "l"
+  "\u0140": "l",
+  "\u0259": "a"
 };
-var fold = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[łøđðþæœßıħŧŋĸſŀ]/g, (letter) => ASCII_LETTERS[letter] ?? letter);
+var fold = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[łøđðþæœßıħŧŋĸſŀə]/g, (letter) => ASCII_LETTERS[letter] ?? letter).replace(/[\u2010-\u2015]/g, "-").replace(/['`\u00b4\u02bb\u02bc\u2018\u2019]/g, "");
 function foldedQuery(query) {
   const q = fold(query.trim());
   return q[1] ? q : null;
@@ -6308,14 +6309,38 @@ function foldedQuery(query) {
 function shardKey(q) {
   return /^[a-z]/.test(q) ? q[0] : "0";
 }
+var ALSO_FILED_UNDER = {
+  a: ["0"],
+  d: ["g"],
+  e: ["0"],
+  i: ["0"],
+  s: ["0"],
+  u: ["0"]
+};
+function shardKeys(q) {
+  const key = shardKey(q);
+  return [key, ...ALSO_FILED_UNDER[key] ?? []];
+}
+function byPopulation(shards) {
+  return shards.length === 1 ? shards[0] : shards.flat().sort((a, b) => b[7] - a[7]);
+}
+var foldedRows = /* @__PURE__ */ new WeakMap();
+function foldedNames(row) {
+  let names = foldedRows.get(row);
+  if (!names) {
+    const name = fold(row[0]);
+    names = [name, row[1] === 0 ? name : fold(row[1])];
+    foldedRows.set(row, names);
+  }
+  return names;
+}
 function rankCities(index, rows2, q, limit) {
   const starts = [];
   const contains = [];
   for (const row of rows2) {
-    const ascii = fold(row[1] === 0 ? row[0] : row[1]);
-    const match = ascii.indexOf(q);
-    if (!match) starts.push(row);
-    else if (q[2] && ~match) contains.push(row);
+    const [name, ascii] = foldedNames(row);
+    if (name.startsWith(q) || ascii.startsWith(q)) starts.push(row);
+    else if (q[2] && (name[0] === q[0] && name.includes(q) || ascii[0] === q[0] && ascii.includes(q))) contains.push(row);
     if (starts.length >= limit * 3) break;
   }
   return [...starts, ...contains].slice(0, limit).map((r) => ({
@@ -6445,13 +6470,13 @@ var PLACE_SHARDS = Object.freeze({
   z: rows(z_default)
 });
 var PLACES_INPUT = z2.strictObject({
-  query: z2.string().max(PLACE_QUERY_CHARS).describe("A place name or its start, in any letter case, with or without accents; two characters or more. Places whose names start with it come first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population."),
+  query: z2.string().max(PLACE_QUERY_CHARS).describe("A place name or its start, as GeoNames writes it or in its ASCII spelling (Z\xFCrich, Zurich or Zuerich), in any letter case, with or without accents and apostrophes; two characters or more. Places whose names start with it come first, then, from three characters, places whose names begin with the same letter and contain it, each in order of population."),
   limit: z2.number().int().min(1).max(PLACES_MAX).optional().describe(`How many places, 1 to ${PLACES_MAX}; ${PLACES_DEFAULT} when omitted, as the site's search lists.`)
 });
 var cityIndex = cities_default;
 function searchPlaces(args) {
   const q = foldedQuery(args.query);
-  const rows2 = q === null ? [] : PLACE_SHARDS[shardKey(q)] ?? [];
+  const rows2 = q === null ? [] : byPopulation(shardKeys(q).filter((key) => key in PLACE_SHARDS).map((key) => PLACE_SHARDS[key]));
   const places = q === null ? [] : rankCities(cityIndex, rows2, q, args.limit ?? PLACES_DEFAULT).map((city) => ({
     name: city.name,
     admin1: city.admin1,
@@ -8075,7 +8100,7 @@ var METHODOLOGY_SECTIONS = Object.freeze([
   `An aspect fact holds while the two bodies' separation is within the orb a chart uses for that aspect, the wider one when the Sun or the Moon is one of them. On a date, the reply gives where the aspect begins or ends and where it is exact, which the same crossing search finds on the difference between the two longitudes, at the Moon's step when the Moon is one of them.`,
   "## Local times and places",
   "`resolve_birth_time` runs the compute API's time endpoint, POST https://zodiacs.org/api/v1/time, on this machine, with the resolver its function uses, @zodiacs/engine/geo, and the zone histories it loads, which are built into this server. A local date and time in an IANA zone becomes UTC and Terrestrial Time. A time the clocks skipped moves forward by the gap (`dst-gap`); one they repeated takes the earlier instant (`dst-fold`). A time before the place adopted a legal time is read on a local mean time (`lmt`): the place's own with its longitude, the zone reference city's without one. Up to 1970-01-01 the offsets are those of tzdb 2025c with its backzone file, which the engine ships; from then on, the runtime's own time zone data. Where the shipped history answered, `intlOffsetMinutes` is the zone's offset at the same instant in the runtime's data, tzdb's default build, and the flags include `zone-history-disputed` where the two differ. A date written in the Julian calendar is accepted up to 1923-12-31 and converted before the time is read; with a country code the reply gives the birth forms' note on when that country changed calendar. With `atlasPlace`, one of the 21 places of the Zodiacs time atlas, which records with citations what the clocks said in France and the United States from 1870 to 1919, the reply adds the atlas's reading of the same wall time: each instant with the rule the atlas applies, its uncertainty flag (documented, inferred or uncertain) and reasons, and its citations, and how many seconds the first instant is from tzdb's. Pass the `utc` it returns to the other tools.",
-  "`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site's birthplace search, built into this server: names that start with the query first, then, from three characters, names that begin with the same letter and contain it, each by population. Coordinates are rounded to 0.01\xB0, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.",
+  "`search_places` searches GeoNames cities15000, every place of 15,000 people or more, under CC BY 4.0, with the index and the ranking of the site's birthplace search, built into this server: names that start with the query first, then, from three characters, names that begin with the same letter and contain it, each by population; a place is matched by its GeoNames name or its ASCII spelling, with accents, letter case and apostrophes set aside. Coordinates are rounded to 0.01\xB0, about 1.1 km. A place that is not in the index is not found, and no town-level clock record beyond tzdb is consulted.",
   "## Dates",
   'Requests are accepted from 1800 to 2199. That is the range the rest of Zodiacs supports, not a range in which every date has been checked: the engine\'s records state `broadDateRange: "not-certified"`.',
   "## Citing a result",
@@ -9532,7 +9557,7 @@ function createServer(note2) {
   server.registerTool("search_places", {
     title: "Search places by name",
     description: [
-      "Places whose names start with or contain the query, from GeoNames cities15000, every place of 15,000 people or more, with coordinates rounded to 0.01\xB0 and IANA time zones: the index and ranking of the site's birthplace search, built into this adapter.",
+      "Places whose names start with the query, then, from three characters, places whose names begin with the same letter and contain it, from GeoNames cities15000, every place of 15,000 people or more, with coordinates rounded to 0.01\xB0 and IANA time zones: the index and ranking of the site's birthplace search, built into this adapter.",
       "A search opens no file and makes no request. GeoNames data is CC BY 4.0: credit GeoNames where you show its places.",
       PRIVACY.assistant
     ].join(" "),

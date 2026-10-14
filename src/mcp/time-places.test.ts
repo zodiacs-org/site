@@ -234,7 +234,7 @@ describe('search_places is the site\'s birthplace search', () => {
   it('lists, for every query, the places the site lists, in the same order', async () => {
     const searchCities = await siteSearch();
     const random = generator(7);
-    const queries = ['Paris', 'par', 'PAR', 'são', 'sao paulo', 'new y', 'Zürich', 'zu', 'ab', 'x', '  ', '12', 'Saint-', 'los', 'ko'];
+    const queries = ['Paris', 'par', 'PAR', 'são', 'sao paulo', 'new y', 'Zürich', 'Zurich', 'zu', 'ab', 'x', '  ', '12', 'Saint-', 'los', 'ko', 'Dong', 'Ibri', "'s-Her", 'arkhangelsk'];
     for (let n = 0; n < 60; n += 1) {
       const key = pick(random, index.shards as string[]);
       const row = pick(random, PLACE_SHARDS[key]);
@@ -252,8 +252,13 @@ describe('search_places is the site\'s birthplace search', () => {
       }
     }
     expect(value(searchPlaces({ query: 'Paris' })).places[0]).toMatchObject({ name: 'Paris', country: 'France', timeZone: 'Europe/Paris' });
-    // A native spelling whose letters NFD leaves whole finds the place its ASCII name is indexed under.
-    expect(value(searchPlaces({ query: 'Łódź' })).places[0]).toMatchObject({ name: 'Łódź', country: 'Poland', timeZone: 'Europe/Warsaw' });
+    // A place is found by its GeoNames name or its ASCII spelling, with or without accents and apostrophes,
+    // including the names the index files under another letter than the one they begin with.
+    for (const [query, name, country] of [
+      ['Łódź', 'Łódź', 'Poland'], ['Zürich', 'Zürich', 'Switzerland'], ['Zurich', 'Zürich', 'Switzerland'], ['Zuerich', 'Zürich', 'Switzerland'],
+      ['Düsseldorf', 'Düsseldorf', 'Germany'], ['Dusseldorf', 'Düsseldorf', 'Germany'], ['Đồng Hới', 'Đồng Hới', 'Vietnam'],
+      ['Dong Hoi', 'Đồng Hới', 'Vietnam'], ['Əhmədbəyli', 'Əhmədbəyli', 'Azerbaijan'], ['Arkhangelsk', 'Arkhangel’sk', 'Russia'], ['Ibri', '‘Ibrī', 'Oman'],
+    ]) expect(value(searchPlaces({ query })).places[0], query).toMatchObject({ name, country });
     expect(value(searchPlaces({ query: 'a' })).places).toEqual([]);
   });
 

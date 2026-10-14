@@ -183,7 +183,7 @@ export function createServer(note: Note): McpServer {
   server.registerTool('search_places', {
     title: 'Search places by name',
     description: [
-      'Places whose names start with or contain the query, from GeoNames cities15000, every place of 15,000 people or more, with coordinates rounded to 0.01° and IANA time zones: the index and ranking of the site\'s birthplace search, built into this adapter.',
+      'Places whose names start with the query, then, from three characters, places whose names begin with the same letter and contain it, from GeoNames cities15000, every place of 15,000 people or more, with coordinates rounded to 0.01° and IANA time zones: the index and ranking of the site\'s birthplace search, built into this adapter.',
       'A search opens no file and makes no request. GeoNames data is CC BY 4.0: credit GeoNames where you show its places.',
       PRIVACY.assistant,
     ].join(' '),

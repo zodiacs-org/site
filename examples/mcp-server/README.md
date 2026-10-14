@@ -324,8 +324,9 @@ into `server.mjs`. Pass the `utc` it returns to `calculate_natal_chart`.
 
 ### `search_places`
 
-Takes a `query`, a place name or its start, and optionally a `limit` from 1 to
-20, 8 when omitted. Returns the places whose names start with it, then, from
+Takes a `query`, a place name or its start, with or without accents and
+apostrophes (GeoNames' name or its ASCII spelling: Zürich, Zurich or Zuerich),
+and optionally a `limit` from 1 to 20, 8 when omitted. Returns the places whose names start with it, then, from
 three characters, those whose names begin with the same letter and contain
 it, each in order of population,
 with the region and country, the coordinates rounded to 0.01° (about 1.1 km)
