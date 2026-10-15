@@ -2,7 +2,7 @@
 Pages in both builds: 1838; unchanged: 1838; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
 Every page whose content changed has a new sitemap date.
 
-# Without the pinned clock: a build of main with F-96 at 2026-10-14T16:58Z against one of main with P3.4 at 17:29Z (flags unset)
+# With the first fingerprint (a9957c53) and without the pinned clock: a build of main with F-96 at 2026-10-14T16:58Z against one of main with P3.4 at 17:29Z (flags unset)
 Pages in both builds: 1835; unchanged: 1799; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
 36 page(s) changed without a new sitemap date. Give each a new date in src/pages/sitemap.xml.ts (or the data it is dated from), so IndexNow Changes submits it:
 - /es/rising-sign/aries/ (still 2026-07-06)

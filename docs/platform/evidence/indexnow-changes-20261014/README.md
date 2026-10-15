@@ -91,8 +91,12 @@ on every pull request.
     which the stylesheets show with `content: attr()`;
   - the files its images, video and frames show, lazy-loaded ones
     (`data-src`) included;
-  - the words its stylesheets add with `content`, counted on a page whose
-    markup carries the classes their rule selects.
+  - the words its stylesheets add with `content`, from the stylesheets a
+    page links, holds and imports. Each word is kept with its rule's
+    selector and the rules around it, a media query or the rule a nested
+    rule sits in. It counts on a page whose markup, or an element its
+    content sits in such as `<body>`, carries the classes the rule
+    requires.
 - **The rule.** A page whose content changed fails the check when its date did
   not change and is not the edition's day. A page already dated that day
   passes, since a sitemap date says only which day a page last changed. A
@@ -145,16 +149,26 @@ ran except `editorial:daily:verify`, which fails here by one last bit (F-95).
   to the home page's second hero video source alone, against `26802bcd`,
   fails `/` with this fingerprint and passed with the previous one.
 - **Stylesheet words**
-  ([`stylesheet-control.txt`](sitemap-dates/stylesheet-control.txt)). A
-  change to the word `events.css` adds to the events hub's disclosure (Show
-  to Open), against `26802bcd`, fails `/events/` alone and passed with the
-  previous fingerprint. The 92 other sitemap pages that load `events.css`'s
-  rules, in a shared stylesheet, do not carry the class it selects.
+  ([`stylesheet-control.txt`](sitemap-dates/stylesheet-control.txt)). Against
+  `26802bcd`, each change fails `/events/` alone and passed with the previous
+  fingerprint:
+  - the word `events.css` adds to the events hub's disclosure, Show to Open;
+  - Show and Hide swapped between the closed and the open disclosure, which
+    keeps the same words (Codex's eleventh finding on #752).
+
+  The 92 other sitemap pages that load `events.css`'s rules, in a shared
+  stylesheet, do not carry the class it selects. The site's stylesheets hold
+  five rules that add a word, and none sits in a nested rule, an imported
+  stylesheet or a selector list with an argument, or needs an escaped class or
+  one outside `<main>`. For those cases the unit tests are the controls: each
+  of seven pairs fails one page, and found no change with the previous
+  fingerprint.
 - **Every other report** here was built again with the whole environment and
   this fingerprint, and found what it found before.
 - **Determinism** ([`determinism.txt`](sitemap-dates/determinism.txt)). Two
-  builds of main fingerprint all 1,838 pages alike. Without the pinned clock,
-  two builds half an hour apart differ on 36 pages, the build-time ones above.
+  builds of main fingerprint all 1,838 pages alike. With the first fingerprint
+  and no pinned clock, two builds half an hour apart differed on 36 pages, the
+  build-time ones above.
 - **#740** ([`merge-740.txt`](sitemap-dates/merge-740.txt)). Its merge against
   its first parent fails four pages: `/developers/`, `/developers/compare/`,
   `/developers/compute/` and `/developers/mcp/`.
@@ -193,6 +207,10 @@ Limits:
   `/people/`'s count after a search or a calculator's reading after a birth
   is entered, is not part of a page's indexable content and is not
   fingerprinted (Codex's eighth finding on #752).
+- It reads stylesheets without a browser. A word counts on every page that
+  carries the classes its rule requires, whether or not the rule's other
+  conditions (an attribute, a state, a position) hold there, so a change can
+  fail a page that never shows the word.
 - It does not check a new page's date.
 
 ## What keeps S8 open
