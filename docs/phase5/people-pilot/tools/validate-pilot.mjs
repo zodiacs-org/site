@@ -11,6 +11,7 @@ import { dirname, join } from 'node:path';
 import { resolvePeopleIndexPolicy } from '../../../../scripts/people-index-policy.mjs';
 import { inspectCohortSpacing } from './cohort-integrity.mjs';
 import { completeCivilDay } from './civil-day-bounds.mjs';
+import { birthplaceDisplay, isSettlement } from './birthplace-labels.mjs';
 import { createHash } from 'node:crypto';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -169,6 +170,21 @@ for (const person of people) {
   check(`birthplace coordinates ${person.slug}`, ok,
     `${coordinates.latitude}, ${coordinates.longitude} from ${coordinates.sourceEntityLabel} `
     + `(escalation ${coordinates.escalationSteps})`);
+}
+
+/* 9b — the birthplace is named by its reviewed, sourced display label.
+   Coordinates and the time zone still come from the recorded entity. */
+for (const person of people) {
+  const display = birthplaceDisplay(person.slug, person.birthPlace);
+  check(
+    `birthplace display label ${person.slug}`,
+    person.birthPlace.displayEntity === display.entity
+      && person.birthPlace.displayLabel === display.label
+      && person.birthPlace.normalisedLabel
+        === [display.label, person.birthPlace.country?.label].filter(Boolean).join(', '),
+    `${person.birthPlace.displayLabel} (${person.birthPlace.displayEntity}) for `
+      + `${person.birthPlace.entityLabel} (${person.birthPlace.entity})`,
+  );
 }
 
 /* 10 — unknown-time records carry no angle, house, rising or sect claim.
@@ -430,6 +446,14 @@ if (phase5c) {
     policy.directoryIndexable === (indexable.length >= policy.minimumIndexableProfilesForDirectory),
     `${indexable.length}/${policy.minimumIndexableProfilesForDirectory} → ${policy.directoryIndexable}`,
   );
+  for (const person of indexable) {
+    const { entities } = birthplaceDisplay(person.slug, person.birthPlace);
+    check(
+      `published birthplace names a settlement ${person.slug}`,
+      entities.some((entity) => isSettlement(entity)),
+      person.birthPlace.displayLabel,
+    );
+  }
 } else if (phase5b) {
   check('no /people/ entry in the sitemap', !/\/people\//u.test(sitemap), '');
   const directoryRoute = await readFile(join(REPO, 'src/pages/people/index.astro'), 'utf8').catch(() => '');

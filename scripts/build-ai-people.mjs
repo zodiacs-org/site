@@ -37,7 +37,7 @@ export function buildPeopleIndex(release) {
       shortDescription: person.shortDescription,
       born: person.birthDate.displayedDate,
       gregorian: person.birthDate.computedGregorianDate,
-      birthplace: person.birthPlace.entityLabel,
+      birthplace: person.birthPlace.displayLabel,
       sun: { sign: person.sunSign.slug, degree: round1(person.sunSign.degree) },
       moon: person.moon.uncertain
         ? { sign: null, degree: null }

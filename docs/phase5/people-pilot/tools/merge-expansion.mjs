@@ -12,6 +12,7 @@
 import { readFile, writeFile, copyFile, unlink } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { withBirthplaceDisplay } from './birthplace-labels.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PILOT = join(HERE, '..');
@@ -175,10 +176,9 @@ if (stage === 'post') {
       birthTime: null,
       timeQuality: 'unknown',
       birthTimeEvidence: evidence.birth.timeOfDayEvidence,
-      birthPlace: {
+      birthPlace: withBirthplaceDisplay(slug, {
         entity: evidence.birthPlace.entity,
         entityLabel: evidence.birthPlace.label,
-        normalisedLabel: [evidence.birthPlace.label, evidence.birthPlace.country?.label].filter(Boolean).join(', '),
         country: evidence.birthPlace.country,
         coordinates: {
           latitude: evidence.birthPlace.coordinates.latitude,
@@ -192,7 +192,7 @@ if (stage === 'post') {
             : null,
         },
         timeZone: computed.computation.timeZone,
-      },
+      }),
       computation: {
         ...computed.computation,
         meridianResidualMinutes: Number((

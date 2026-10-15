@@ -133,6 +133,8 @@ const personSchema = z.object({
   birthPlace: z.object({
     entity: z.string().regex(/^Q\d+$/u),
     entityLabel: z.string().min(1),
+    displayEntity: z.string().regex(/^Q\d+$/u),
+    displayLabel: z.string().min(1),
     normalisedLabel: z.string().min(1),
     country: z.object({
       entity: z.string().regex(/^Q\d+$/u),

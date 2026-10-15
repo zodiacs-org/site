@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { reviewedEvidence, sourceReviews } from './source-reviews.mjs';
 import { dirname, join } from 'node:path';
 import { PRINCIPAL_IDENTITIES, reviewedIdentity } from './principal-identities.mjs';
+import { withBirthplaceDisplay } from './birthplace-labels.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PILOT = join(HERE, '..');
@@ -111,14 +112,17 @@ const people = [];
 for (const candidate of candidates) {
   const existing = existingBySlug.get(candidate.slug);
   if (existing && !protectedLinkSlugs.has(candidate.slug) && !correctedSlugs.has(candidate.slug)) {
+    // A reviewed birthplace display label is the only birthPlace change a
+    // carried record takes; the recorded entity, coordinates and zone stay.
+    const birthPlace = withBirthplaceDisplay(candidate.slug, existing.birthPlace);
     if (Object.hasOwn(PRINCIPAL_IDENTITIES, candidate.slug)) {
       const evidence = reviewedEvidence(JSON.parse(await readFile(join(PILOT, 'evidence', `${candidate.slug}.json`), 'utf8')), candidate.slug);
       const copy = JSON.parse(await readFile(join(PILOT, 'copy', `${candidate.slug}.json`), 'utf8'));
       const identity = reviewedIdentity(candidate, evidence, existing.shortDescription);
       if (copy.identity !== identity) throw new Error(`${candidate.slug}: migrate the reviewed copy identity first`);
-      people.push({ ...existing, shortDescription: identity, disciplines: [...candidate.disciplines] });
+      people.push({ ...existing, shortDescription: identity, disciplines: [...candidate.disciplines], birthPlace });
     } else {
-      people.push(existing);
+      people.push({ ...existing, birthPlace });
     }
     continue;
   }
@@ -167,10 +171,9 @@ for (const candidate of candidates) {
     birthTime: null,
     timeQuality: 'unknown',
     birthTimeEvidence: evidence.birth.timeOfDayEvidence,
-    birthPlace: {
+    birthPlace: withBirthplaceDisplay(candidate.slug, {
       entity: evidence.birthPlace.entity,
       entityLabel: evidence.birthPlace.label,
-      normalisedLabel: [evidence.birthPlace.label, evidence.birthPlace.country?.label].filter(Boolean).join(', '),
       country: evidence.birthPlace.country,
       coordinates: {
         latitude: evidence.birthPlace.coordinates.latitude,
@@ -184,7 +187,7 @@ for (const candidate of candidates) {
           : null,
       },
       timeZone: computed.computation.timeZone,
-    },
+    }),
     computation: {
       ...computed.computation,
       // tzdb's pre-standardisation LMT is the local mean time of the

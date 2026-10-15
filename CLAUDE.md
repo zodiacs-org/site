@@ -206,6 +206,13 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   docs/phase5/people-pilot/tools/compose-copy.mjs` (released copy is frozen;
   approved article fixes use `--migrate-articles`, and the offline frozen-copy
   invariant/depth-report check uses `--check`)
+- `docs/phase5/people-pilot/birthplace-settlements.json` ← `node
+  docs/phase5/people-pilot/tools/fetch-birthplace-settlements.mjs` (Wikidata
+  evidence, network: each recorded birthplace's classes and P131 chain with
+  revision ids and the retrieval date. The reviewed display labels in
+  `tools/birthplace-labels.mjs` must lie on that chain; `build-manifest.mjs`
+  applies them to `birthPlace.displayLabel` and `validate-pilot.mjs` checks
+  them. Display only: coordinates and zones never read it)
 - `src/data/people.json` ← `node scripts/build-people-pilot.mjs` (sources:
   reviewed manifest, index policy, demand evidence, composed copy and
   computed charts; offline drift check uses `--check`)

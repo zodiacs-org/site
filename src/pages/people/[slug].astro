@@ -137,7 +137,7 @@ const jsonLd = [
     ...(!referenceLocation ? { birthPlace: {
       '@type': 'Place',
       name: person.birthPlace.normalisedLabel,
-      sameAs: `https://www.wikidata.org/wiki/${person.birthPlace.entity}`,
+      sameAs: `https://www.wikidata.org/wiki/${person.birthPlace.displayEntity}`,
     } } : {}),
     sameAs: [
       person.sources.wikidata.entityUrl,
@@ -249,7 +249,7 @@ const jsonLd = [
             ariaLabel={`Time-unknown chart wheel for ${person.displayName}: ten bodies at the noon reference, with no houses or angles`}
           />
           <p class="person-wheel__caption">
-            Positions at 12:00 civil time in {person.birthPlace.entityLabel}—a reference instant, not a birth time.
+            Positions at 12:00 civil time in {person.birthPlace.displayLabel}—a reference instant, not a birth time.
             No houses, rising sign, angles, or sect were computed.
           </p>
         </div>
@@ -302,9 +302,18 @@ const jsonLd = [
               <dt>{referenceLocation ? 'Calculation reference location' : 'Birthplace'}</dt>
               <dd>
                 {person.birthPlace.normalisedLabel} ·{' '}
-                <a href={`https://www.wikidata.org/wiki/${person.birthPlace.entity}`} target="_blank" rel="noopener noreferrer">
-                  {person.birthPlace.entity}
+                <a href={`https://www.wikidata.org/wiki/${person.birthPlace.displayEntity}`} target="_blank" rel="noopener noreferrer">
+                  {person.birthPlace.displayEntity}
                 </a>
+                {person.birthPlace.displayEntity !== person.birthPlace.entity && (
+                  <>
+                    {' · recorded on Wikidata as '}{person.birthPlace.entityLabel}{' ('}
+                    <a href={`https://www.wikidata.org/wiki/${person.birthPlace.entity}`} target="_blank" rel="noopener noreferrer">
+                      {person.birthPlace.entity}
+                    </a>
+                    {')'}
+                  </>
+                )}
               </dd>
             </div>
             {person.sourceReview && (

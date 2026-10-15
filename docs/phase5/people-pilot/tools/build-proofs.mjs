@@ -119,7 +119,7 @@ function wheel(person) {
       <circle cx="${cx}" cy="${cy}" r="${R - 46}" fill="none" stroke="rgba(198,204,218,0.10)"/>
       ${bodies}
       </svg>
-      <p class="mono wheel__caption">Positions at 12:00 civil time in ${escape(person.birthPlace.entityLabel)} — a reference instant, not a birth time.</p>
+      <p class="mono wheel__caption">Positions at 12:00 civil time in ${escape(person.birthPlace.displayLabel)} — a reference instant, not a birth time.</p>
     </div>`;
 }
 
@@ -167,7 +167,7 @@ function disclosureRows(person, { open = false } = {}) {
     ['Retrieved', person.sources.retrievedAtUtc],
     ['Birth date as stored', `${person.birthDate.storedValue} · day precision`],
     ['Calendar model', `${person.birthDate.calendarModel} · ${escape(person.birthDate.calendarConversion)}`],
-    ['Birthplace', `${escape(person.birthPlace.normalisedLabel)} · ${person.birthPlace.entity}`],
+    ['Birthplace', `${escape(person.birthPlace.normalisedLabel)} · ${person.birthPlace.displayEntity}${person.birthPlace.displayEntity !== person.birthPlace.entity ? ` · recorded on Wikidata as ${escape(person.birthPlace.entityLabel)} (${person.birthPlace.entity})` : ''}`],
     ['Coordinates', `${coordinates.latitude.toFixed(4)}, ${coordinates.longitude.toFixed(4)} · from ${escape(coordinates.sourceEntityLabel)}${coordinates.escalationSteps ? ` (one step up — ${escape(coordinates.precisionDowngrade)})` : ''}`],
     ['Zone and offset', `${person.computation.timeZone} · ${person.computation.utcOffsetMinutesAtBirth} min from UTC`],
     ['Reference instant', `${person.computation.utcInstant} · noon civil time, not a birth time`],

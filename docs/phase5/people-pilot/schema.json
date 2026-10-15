@@ -80,11 +80,19 @@
         "birthPlace": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["entity", "entityLabel", "normalisedLabel", "coordinates", "timeZone"],
+          "required": ["entity", "entityLabel", "displayEntity", "displayLabel", "normalisedLabel", "coordinates", "timeZone"],
           "properties": {
             "entity": { "type": "string", "pattern": "^Q[1-9][0-9]*$" },
             "entityLabel": { "type": "string" },
-            "normalisedLabel": { "type": "string" },
+            "displayEntity": {
+              "type": "string", "pattern": "^Q[1-9][0-9]*$",
+              "description": "The entity the display label names: the recorded birthplace, or the settlement that contains it (P131) under a reviewed label in tools/birthplace-labels.mjs."
+            },
+            "displayLabel": {
+              "type": "string", "minLength": 1,
+              "description": "The birthplace as pages and the AI people index name it. Display only: coordinates and the time zone always come from the recorded entity."
+            },
+            "normalisedLabel": { "type": "string", "description": "displayLabel, then the country label." },
             "country": {
               "oneOf": [{ "type": "null" }, {
                 "type": "object", "required": ["entity", "label"],
