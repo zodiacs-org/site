@@ -18,6 +18,15 @@ export function Signature() {
   </p>;
 }
 
+/** The big shareable number: a score out of 100 and its one-line verdict. */
+export function Score({ score, verdict, parts }: { score: number; verdict: string; parts?: [string, number][] }) {
+  return <div class="score">
+    <p class="score-main"><strong>{score}</strong><span>/100</span></p>
+    <p class="score-verdict">{verdict}</p>
+    {parts && <div class="numbers">{parts.map(([label, value]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>}
+  </div>;
+}
+
 export function Actions({ text, cardUrl, cardLabel, copyLabel = 'Copy the card' }: { text: string; cardUrl: string | null; cardLabel: string; copyLabel?: string }) {
   const [status, setStatus] = useState('');
   async function copy() {
@@ -44,7 +53,7 @@ const placementLine = (who: CompatibilityData['a']) => [who.sun && `${signName(w
 
 export function Compatibility({ data }: { data: CompatibilityData }) {
   const title = `${data.a.label} and ${data.b.label}`;
-  const text = [title, `${data.a.label}: ${placementLine(data.a)}`, `${data.b.label}: ${placementLine(data.b)}`,
+  const text = [title, `${data.score.overall}/100 · ${data.score.verdict}`, data.score.headline, `${data.a.label}: ${placementLine(data.a)}`, `${data.b.label}: ${placementLine(data.b)}`,
     data.signPair ? `${data.signPair.element.label}. ${data.signPair.modality.label}.` : '',
     ...data.contacts.map((contact) => `${contact.aBody} ${contact.aspect} ${contact.bBody} (${contact.orb}°): ${contact.line}`),
     data.note, data.pageUrl ? data.pageUrl.replace(/^https:\/\//u, '').replace(/\?.*$/u, '') : 'zodiacs.org/compatibility'].filter(Boolean).join('\n');
@@ -55,6 +64,8 @@ export function Compatibility({ data }: { data: CompatibilityData }) {
       <Disc sign={data.a.sun} label={data.a.label} detail={placementLine(data.a)}/>
       <Disc sign={data.b.sun} label={data.b.label} detail={placementLine(data.b)}/>
     </div>
+    <Score score={data.score.overall} verdict={data.score.verdict} parts={[['attraction', data.score.areas.attraction], ['communication', data.score.areas.communication], ['long-term stability', data.score.areas.stability]]}/>
+    <p class="words">{data.score.headline}</p>
     {data.signPair && <p class="words">{data.signPair.element.note} {data.signPair.modality.note}</p>}
     {data.contacts.length > 0 && <>
       <h2>The closest contacts</h2>
@@ -63,11 +74,6 @@ export function Compatibility({ data }: { data: CompatibilityData }) {
         <span>{contact.line}</span>
       </li>)}</ul>
     </>}
-    <div class="numbers">
-      <div><strong>{data.counts.easeful}</strong><span>trines and sextiles</span></div>
-      <div><strong>{data.counts.charged}</strong><span>squares and oppositions</span></div>
-      <div><strong>{data.counts.byAspect.conjunction}</strong><span>conjunctions</span></div>
-    </div>
     {data.notes.map((note) => <p class="quiet" key={note}>{note}</p>)}
     <Actions text={text} cardUrl={data.cardUrl ?? data.pageUrl} cardLabel={data.cardUrl ? 'Open both charts on zodiacs.org' : 'Read this pair on zodiacs.org'}/>
     <p class="disclosure">{data.note}</p>

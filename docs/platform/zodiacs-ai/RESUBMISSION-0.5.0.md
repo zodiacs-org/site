@@ -4,6 +4,27 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 15 October: predictions and scores
+
+After #759 merged, the owner chose full predictions, including scores, before
+resubmitting. Zodiacs now:
+
+- scores compatibility out of 100, with attraction, communication and
+  long-term stability, a verdict and a one-line headline
+  (`src/lib/compat-score.ts`);
+- rates any date someone names out of 100, with a verdict and plain reasons
+  such as Venus retrograde, Mercury retrograde and the Moon's phase and sign
+  (`src/lib/occasions/date-score.ts`);
+- writes the comparison notes as forecasts, on the plugin card and the
+  site's pair pages, in all five languages.
+
+Three lines stay: no investment picks, no health predictions and no
+guarantees. The listing, test cases 3 and 5, the tools' instructions, the
+skill, the claims ledger and the panel (now `ui://zodiacs/occasions-v4.html`)
+changed to match. The Sky package changed too, so
+`integrations/packages/zodiacs-sky-0.5.0.zip` must be uploaded again into
+the draft. Its version stays 0.5.0 because the draft was never submitted.
+
 ## Where it stands
 
 - **Portal.**
@@ -36,7 +57,8 @@ the release work done in #758.
 
 All of it is in one pull request, with tests and regenerated panels and
 packages. The Sky package `integrations/packages/zodiacs-sky-0.5.0.zip` is
-byte-for-byte unchanged, so nothing needs re-uploading. A rescan picks up
+byte-for-byte unchanged at that point. The predictions update below changes
+it, so it must be uploaded again. A rescan picks up
 the server's new descriptions and panel.
 
 ## The listing
@@ -50,28 +72,27 @@ The source of truth is `integrations/chatgpt/chatgpt-app-submission.json`.
   links. Support stays admin@zodiacs.org.
 - **Test cases:** the five positive and three negative cases in the
   submission file, unchanged.
-- **About** (1,428 characters):
+- **About** (1,568 characters):
 
-> Explore your birth chart, compare it with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then offers astrology's traditional meanings for reflection.
+> Explore your birth chart, see how compatible you are with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then tells you what astrology says about it.
 >
-> Build an interactive birth chart and see your planets' signs. Compare two people's charts—partners, friends or family—to see how they relate, without a score. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
+> Build an interactive birth chart and see your planets' signs. Compare two people's charts—partners, friends or family—and get a compatibility score out of 100 for attraction, communication and long-term stability. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
 >
 > Read daily and weekly Sun-sign horoscopes, follow Moon phases, retrogrades and planets changing signs, and subscribe to the sky calendar in Google Calendar, Apple Calendar or Outlook.
 >
-> See the sky on your birthday and when your solar return falls, find milestones such as your Saturn return, or make a keepsake card for a wedding or another day that matters. With a place, the card adds sunset, golden hour and the evening sky.
+> See the sky on your birthday and when your solar return falls, find milestones such as your Saturn return, or make a keepsake card for a wedding or another day that matters, with a rating of how the stars favour the date. With a place, the card adds sunset, golden hour and the evening sky.
 >
-> Zodiacs keeps calculated facts separate from interpretation. It doesn't score relationships, pick or rank dates, or promise how things will turn out. If a birth time or place is missing, it says what can still be worked out instead of guessing.
+> Zodiacs gives clear forecasts, scores and ratings, and always shows the astrology behind them. It doesn't pick investments, make health predictions or guarantee how things will turn out. If a birth time or place is missing, it says what can still be worked out instead of guessing.
 >
 > No Zodiacs account is needed. Chart Studio calculates your chart inside the panel, and you choose what to share with the assistant. Other tools use the details you give for that answer only; Zodiacs doesn't keep them. The sky calendar is a link you choose whether to add.
 
-**If the portal refuses that length,** use this 851-character version. It
-is under the 965 characters the portal already accepted.
+**If the portal refuses that length,** use this 792-character version:
 
-> Explore your birth chart, compare it with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then offers astrology's traditional meanings for reflection.
+> Explore your birth chart, see how compatible you are with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then tells you what astrology says about it.
 >
-> Compare two people's charts without a score, find famous people who share your Sun or Moon sign, read daily and weekly Sun-sign horoscopes, follow Moon phases and retrogrades, see your solar return and Saturn return, or make a keepsake card of the sky on a wedding or another day that matters.
+> Get a compatibility score out of 100, find famous people who share your Sun or Moon sign, read daily and weekly Sun-sign horoscopes, follow Moon phases and retrogrades, see your solar return and Saturn return, or rate a wedding or another day that matters and make a keepsake card of its sky.
 >
-> Zodiacs keeps calculated facts separate from interpretation. It doesn't score relationships, pick or rank dates, or promise how things will turn out. If a birth time or place is missing, it says what can still be worked out instead of guessing.
+> Zodiacs gives clear forecasts, scores and ratings, and always shows the astrology behind them. It doesn't pick investments, make health predictions or guarantee how things will turn out.
 >
 > No account is needed. Zodiacs uses the details you give for that answer only and doesn't keep them.
 
@@ -90,25 +111,20 @@ inputs, paste this:
   a listing names the app's name, icon, descriptions, categories and optional
   screenshots. So once Zodiacs is approved, the demo does nothing for traffic
   or the brand. Its only job is not to stand in the way of approval.
-- **Keep the demo already in the portal.** That is
-  `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`, 67 seconds.
-  - It opens with an honest disclosure card ("Edited captures · Private
-    staging · Synthetic examples").
-  - It shows the comparison, the chart twins and the whole wedding card.
-- **How it differs from the live app.**
-  - It predates the fixes, so it shows the old comparison wording, the old
-    people descriptions and the developer-mode name "Zodiacs Preview 0.5.0".
-  - Reviewers know a demo made before approval comes from developer mode.
-  - The live app they test now does everything the video shows, with better
-    wording.
-- **Re-record only if OpenAI asks.** Their request will say what they need.
-  The shot list below is ready for that case.
+- **Re-record it: the demo in the portal now contradicts the listing.** It
+  shows "Zodiacs does not score relationships" on screen, while the listing
+  now promises a compatibility score out of 100 and date ratings. Reviewers
+  compare the two.
+- **Keep it short and plain.** Polish doesn't matter, because the public
+  never sees it. Record only the comparison and the wedding card, with the
+  shot list below (about 45 seconds), and replace
+  `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`.
 - **Unconfirmed: mobile.** Third-party guides say the demo should cover web
   and mobile; OpenAI's own page couldn't be checked. The portal accepted the
   web-only video on 15 October without flagging it. If a reviewer asks, add
   a 20-second phone recording of one card.
 
-### If OpenAI asks for a new demo: before recording
+### Before recording
 
 - **Wait for the deploy.** Record only after the pull request is merged and
   production has redeployed. Otherwise the old wording and counts appear.
@@ -130,16 +146,13 @@ inputs, paste this:
     footage.
 - **Type each prompt exactly as written below,** with single spaces.
 
-### Shot list (about 85 seconds)
+### Shot list (about 45 seconds)
 
 | Time | Prompt | Must be visible | Then |
 | --- | --- | --- | --- |
 | 0:00–0:03 | none | Title card: "Zodiacs in ChatGPT · live recording · example birth details · waiting trimmed" | none |
-| 0:03–0:23 | Compare my chart with my partner's: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992. | Taurus Sun · Leo Moon · Gemini rising and Leo Sun; "Spark and soil" and "Two anchors" notes; the closest contacts; tiles 12, 13 and 6; the note on the missing birth time; "Zodiacs does not score relationships or predict how one will go." | Scroll the card top to bottom. Click "Read this pair on zodiacs.org" and show the Taurus–Leo page for 2 s. |
-| 0:23–0:43 | I was born on 3 May 1990. Which famous people share my Sun sign? And what does Frida Kahlo's chart look like? | All twelve Taurus-Sun people, scrolled through; "only your Sun is compared"; Frida Kahlo's card: "Painter · Mexico · 1907–1954 · born 6 Jul 1907", Cancer Sun 13.5°, Moon sign uncertain, "a reference instant, not a birth time" | Click her chart link and show it for 2 s. |
-| 0:43–1:03 | We're getting married on 12 June 2027 at 17:00 in Florence. Make us a card with the sky for that day. | Sat 12 Jun 2027, 17:00; Gemini Sun, Libra Moon, First Quarter; Mercury retrograde; golden hour 20:13–20:57, sunset 20:57; Mars and Jupiter after dusk; "Zodiacs does not choose or rank dates" | Click the printable card and show Florence, 12 June 2027 and 17:00 kept. |
-| 1:03–1:15 | Show today's horoscope for Leo. Then: Is Mercury retrograde right now, and what else changes in the sky this week? I'm in Bangkok. | The dated Leo reading; a plain yes or no on Mercury, with this week's changes in Bangkok time | none |
-| 1:15–1:25 | Rate how compatible we are out of 100. | No score, with the reason | End on that answer. |
+| 0:03–0:25 | Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992. | The score out of 100 and its verdict; attraction, communication and long-term stability; the headline; the forecast notes and closest contacts; "not a guarantee" | Scroll the card top to bottom. |
+| 0:25–0:45 | We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day. | The rating out of 100 and its verdict; the reasons, including Mercury retrograde; Gemini Sun, Libra Moon; golden hour 20:13–20:57, sunset 20:57 | Click the printable card and show Florence, 12 June 2027 and 17:00 kept. |
 
 - **Holds.** Hold each finished card for about 3 seconds.
 - **Cuts.** Cut only the waiting while a tool runs, never the middle of a card.
@@ -166,14 +179,12 @@ Save screenshots to `docs/platform/zodiacs-ai/evidence/0.5.0/`.
 1. **Positive cases.** Run all five, word for word, on production. For each:
    - the right tool runs and the panel renders;
    - links open and carry `?ref=chatgpt`;
-   - no score and no date ranking appear.
-2. **ChatGPT's own words in case 3.**
-   - In the old demo, ChatGPT's reply below the card added "strong attraction
-     potential". Those were ChatGPT's words, not Zodiacs'.
-   - Case 3 promises no verdict on whether two people are a good match.
-   - The tool already tells ChatGPT to share the contacts as descriptions,
-     not verdicts. If ChatGPT still adds a verdict, report the exact words so
-     the instruction can be tightened before submitting.
+   - the comparison shows its score out of 100 and the wedding card its rating;
+   - nothing guarantees an outcome, picks an investment or predicts health.
+2. **ChatGPT's own words in case 3.** ChatGPT should lead with the score
+   and verdict and present them as astrology's reading. If it promises an
+   outcome ("you will stay together"), report the exact words so the
+   instruction can be tightened before submitting.
 3. **Negative cases.** Run all three. ChatGPT should not call Zodiacs.
 4. **Scan.** After the deploy, rescan in the portal, only with the owner's
    yes.
@@ -186,20 +197,21 @@ Save screenshots to `docs/platform/zodiacs-ai/evidence/0.5.0/`.
 
 1. Read the new wording in the pull request and say "merge", or ask for
    changes.
-2. After the deploy, run the checks above, or watch Codex run them.
-3. Read the final listing, then authorize the resubmission and confirm the
-   attestations. The demo stays as it is.
+2. After the deploy, record the 45-second demo and run the checks above, or
+   watch Codex run them.
+3. Read the final listing and video, then authorize the resubmission and
+   confirm the attestations.
 
 **Codex**
 
 1. In the portal, under the owner's eye:
-   - paste the About;
+   - upload the changed `zodiacs-sky-0.5.0.zip` into the draft;
+   - paste the About and the two changed test cases;
    - confirm the subtitle and links;
    - rescan only with the owner's yes;
    - record what the scan says.
 2. Update `PORTAL_REVIEW.md` after each portal step.
-3. Only if OpenAI asks for a new demo: cut and publish it as described under
-   "After recording".
+3. Cut and publish the new demo as described under "After recording".
 
 **Claude, in the session that made these fixes**
 

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { OccasionsBridge, type PanelToolResult } from './bridge';
 import { OCCASION_LABELS, type OccasionKind } from '../../lib/occasions/kinds';
 import { MILESTONE_WORDS } from '../../lib/occasions/milestone-words';
-import { Actions, Birthday, ChartTwins, Compatibility, FamousChart, Signature, SkyCalendar } from './views';
+import { Actions, Score, Birthday, ChartTwins, Compatibility, FamousChart, Signature, SkyCalendar } from './views';
 import type { CompatibilityData } from '../features/compatibility';
 import type { ChartTwinsData, FamousChartData } from '../features/people';
 import type { BirthdayData, SkyCalendarData } from '../features/birthday';
@@ -23,6 +23,7 @@ interface OccasionSky {
     moonrise: ClockTime | null; moonset: ClockTime | null; moonHighest: { at: ClockTime; altitude: number } | null;
     planetsAfterDusk: string[]; flags: string[];
   } | null;
+  rating: { score: number; verdict: string; reasons: string[] };
   cardUrl: string | null; note: string;
 }
 type MilestoneKind = keyof typeof MILESTONE_WORDS;
@@ -85,7 +86,7 @@ function Occasion({ data }: { data: OccasionSky }) {
   if (evening?.flags.includes('sun-never-rises')) rows.push(['The Sun', 'does not rise that day']);
   if (data.sky.retrograde.length > 0) rows.push(['Also that day', `${list(data.sky.retrograde)} retrograde`]);
   const kicker = [OCCASION_LABELS[data.occasion], data.names?.trim()].filter(Boolean).join(' · ');
-  const text = [data.names?.trim(), data.card.title, when, sun ? `${signName(sun.sign)} Sun · ${moonLine}` : '', ...rows.map(([label, value]) => `${label}: ${value}`), `${data.card.interpretation} ${data.card.closing}`, data.note, 'zodiacs.org/occasions']
+  const text = [data.names?.trim(), data.card.title, when, `${data.rating.score}/100 · ${data.rating.verdict}`, sun ? `${signName(sun.sign)} Sun · ${moonLine}` : '', ...rows.map(([label, value]) => `${label}: ${value}`), `${data.card.interpretation} ${data.card.closing}`, data.note, 'zodiacs.org/occasions']
     .filter(Boolean).join('\n');
   return <main>
     <Brand/>
@@ -93,6 +94,8 @@ function Occasion({ data }: { data: OccasionSky }) {
       <p class="kicker">{kicker}</p>
       <h1>{data.card.title}</h1>
       <p class="when">{when}</p>
+      <Score score={data.rating.score} verdict={data.rating.verdict}/>
+      {data.rating.reasons.length > 0 && <ul class="reasons">{data.rating.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>}
       {sun && moon && <div class="discs">
         <div class="disc"><img src={OCCASIONS_ICONS[sun.sign]} alt="" width="56" height="56"/><div><strong>{signName(sun.sign)} Sun</strong><span class="quiet">{sun.degree.toFixed(1)}°</span></div></div>
         <div class="disc"><img src={OCCASIONS_ICONS[moon.sign]} alt="" width="56" height="56"/><div><strong>{moonLine}</strong><span class="quiet">{data.sky.moon.phase.toLowerCase()} · {data.sky.moon.illuminationPercent}% lit</span></div></div>

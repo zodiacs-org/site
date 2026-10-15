@@ -12,13 +12,17 @@ import {
 const localTime = createLocalTimeModule();
 afterAll(() => localTime.dispose());
 
-/** Verdicts, scores and predictions the tool must never produce. */
-const FORBIDDEN = /\bscores?\b|\bpercent|%|soul ?mates?|\bdoomed\b|\b(?:in)?compatible\b|\bwill\b|\bmatch(?:es)?\b|\bperfect\b|\bdestined\b/iu;
+/** Guarantees and fated outcomes the tool must never state; scores and forecasts are allowed. */
+const FORBIDDEN = /soul ?mates?|\bdoomed\b|\bdestined\b|\bguarantee|\bwill (?:last|stay together|break up|divorce|marry)\b|\bforever\b/iu;
 
 function stringsOf(data: CompatibilityData): string {
-  // The fixed note states the policy itself ("does not score ... how one will go"); everything else is checked.
+  // The fixed note names the limit itself ("not a guarantee"); everything else is checked.
   const { note, ...rest } = data;
   expect(note).toBe(COMPATIBILITY_NOTE);
+  for (const value of [rest.score.overall, ...Object.values(rest.score.areas)]) {
+    expect(Number.isInteger(value) && value >= 0 && value <= 100).toBe(true);
+  }
+  expect(rest.score.verdict).toMatch(/match\b/u);
   return JSON.stringify(rest);
 }
 

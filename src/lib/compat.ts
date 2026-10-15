@@ -3,9 +3,8 @@
  * composition over signs.ts — no engine imports, so pair pages compute
  * their panels at build time and the synastry island ships without the
  * ephemeris. Written in the interpretations.ts voice: dry, specific,
- * warm, no verdicts pretending to be scores. The notes describe what the
- * tradition reads into a pairing; they never forecast how a relationship
- * goes (the AI compatibility tool shows them beside that promise).
+ * warm. The notes forecast in astrology's terms what a pairing tends to be
+ * like; they never guarantee how a relationship turns out.
  */
 import { SIGNS, SIGN_SLUGS, signBySlug } from './signs';
 import type { Element, Modality, Sign } from './signs';
@@ -36,43 +35,43 @@ function comboKey(a: string, b: string): string {
 const ELEMENT_NOTES: Record<string, InteractionNote> = {
   'fire+fire': {
     label: 'Shared heat',
-    note: 'Two fire signs share a pace: quick to start, quick to forgive, and rarely short of energy.',
+    note: 'You two run hot: fast chemistry, quick fights and even quicker make-ups. Expect plenty of excitement.',
   },
   'earth+fire': {
     label: 'Spark and soil',
-    note: 'Fire tends to start things and earth to see them through: two different speeds, each covering what the other leaves.',
+    note: 'Fire starts, earth finishes: you’ll get a lot done together, but expect clashes over pace.',
   },
   'air+fire': {
     label: 'Oxygen',
-    note: 'Air feeds fire and fire warms air: a quick, talkative and restless combination.',
+    note: 'Air fans the flames: lively talk, big plans and a fun, fast-moving bond.',
   },
   'fire+water': {
     label: 'Steam',
-    note: 'Impulse meets feeling, and each holds what the other tends to lack. Astrology reads it as a strong mix, in both directions.',
+    note: 'Passion meets feeling: intense attraction, but tempers and moods can boil over. This pair needs patience.',
   },
   'earth+earth': {
     label: 'Bedrock',
-    note: 'Two earth signs share a taste for what is practical and lasting: a steady, grounded combination.',
+    note: 'Steady and loyal: you build something solid together, though romance can slip into routine.',
   },
   'air+earth': {
     label: 'Idea and estimate',
-    note: 'Air brings possibilities and earth asks what they would cost: ideas meeting practice.',
+    note: 'Ideas meet practicality: you balance each other, but one may find the other too dreamy or too cautious.',
   },
   'earth+water': {
     label: 'River and bank',
-    note: 'Water softens earth and earth gives water shape: astrology’s classic pairing of quiet strength.',
+    note: 'One of astrology’s best pairings: water softens earth, earth gives water shape, and deep trust grows.',
   },
   'air+air': {
     label: 'Crosswind',
-    note: 'Endless conversation and plenty of room for each other. Two air signs tend to meet in ideas first and feelings second.',
+    note: 'Best friends first: endless conversation and plenty of freedom, though deep feelings can go unspoken.',
   },
   'air+water': {
     label: 'Naming the weather',
-    note: 'Air wants a feeling named; water wants it felt. Two different languages for the same weather.',
+    note: 'Head meets heart: air wants to talk it through, water wants to feel it. Expect misunderstandings unless you’re patient.',
   },
   'water+water': {
     label: 'Deep water',
-    note: 'Two water signs read each other without subtitles and tend to share a mood as it arrives.',
+    note: 'You read each other instantly: a deep, intuitive bond, and you’ll feel each other’s moods.',
   },
 };
 
@@ -83,27 +82,27 @@ export function elementInteraction(a: Element, b: Element): InteractionNote {
 const MODALITY_NOTES: Record<string, InteractionNote> = {
   'cardinal+cardinal': {
     label: 'Two starters',
-    note: 'Both signs open a season, and both tend to arrive with a plan of their own.',
+    note: 'Two leaders: plenty of drive, and regular battles over who’s in charge.',
   },
   'cardinal+fixed': {
     label: 'Starter and keeper',
-    note: 'One tends to launch and the other to sustain: two halves of getting something done.',
+    note: 'One starts, one sustains: a productive team once you agree on the direction.',
   },
   'cardinal+mutable': {
     label: 'Starter and adapter',
-    note: 'One tends to set the direction and the other to adjust course along the way.',
+    note: 'One leads, one adapts: an easy partnership with few power struggles.',
   },
   'fixed+fixed': {
     label: 'Two anchors',
-    note: 'Two fixed signs: steady, loyal and slow to change course.',
+    note: 'Two loyal, stubborn signs: a lasting bond, but neither backs down in an argument.',
   },
   'fixed+mutable': {
     label: 'Anchor and sail',
-    note: 'Stability meets flexibility, each supplying what the other tends to skip.',
+    note: 'Stability meets flexibility: you balance each other well.',
   },
   'mutable+mutable': {
     label: 'Two sails',
-    note: 'Both signs adapt easily and rarely dig in, so decisions tend to stay open longer.',
+    note: 'Easygoing and adaptable: few fights, but decisions can drift.',
   },
 };
 
@@ -113,12 +112,12 @@ export function modalityInteraction(a: Modality, b: Modality): InteractionNote {
 
 export function polarityNote(a: Sign, b: Sign): string {
   if (a.polarity === 'day' && b.polarity === 'day') {
-    return 'Both day signs: energy runs outward on both sides, toward action and expression.';
+    return 'Both outgoing: an active, social, high-energy pair.';
   }
   if (a.polarity === 'night' && b.polarity === 'night') {
-    return 'Both night signs: both tend to process inward before anything shows.';
+    return 'Both private: a quiet, deeply felt bond that needs time alone together.';
   }
-  return 'One day sign, one night sign: one tends to think out loud, the other to think first.';
+  return 'One outgoing, one private: you balance each other, as one talks it out and the other thinks it through.';
 }
 
 /** Everything the pair-page panel renders, computed from the sign table. */
@@ -165,23 +164,23 @@ export const BODY_ROLE: Record<string, string> = {
 const ASPECT_PHRASE: Record<string, { verb: string; gloss: string }> = {
   conjunction: {
     verb: 'sits right on top of',
-    gloss: 'the two blend and are hard to tell apart',
+    gloss: 'you’ll feel this one strongly',
   },
   sextile: {
     verb: 'works easily with',
-    gloss: 'an easy link, traditionally read as an opening',
+    gloss: 'an easy spark that grows when you use it',
   },
   square: {
     verb: 'pushes against',
-    gloss: 'a tension, traditionally read as friction to work with',
+    gloss: 'expect friction here, especially under stress',
   },
   trine: {
     verb: 'flows with',
-    gloss: 'a natural fit, traditionally read as support',
+    gloss: 'this flows naturally and brings out the best in you both',
   },
   opposition: {
     verb: 'pulls against',
-    gloss: 'a pull between the two, traditionally read as a call for balance',
+    gloss: 'a strong pull that swings between attraction and tension',
   },
 };
 

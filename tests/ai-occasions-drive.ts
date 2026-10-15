@@ -59,7 +59,11 @@ try {
   assert.match(card, /Sunset\s+20:57/);
   assert.match(card, /Bright after dark\s+.*Mars.*Jupiter|Bright after dark\s+.*Jupiter.*Mars/);
   assert.match(card, /Mercury retrograde/);
-  assert.match(card, /Zodiacs does not choose or rank dates/);
+  // The date is rated out of 100 with a verdict and its reasons; Mercury retrograde counts against it.
+  assert.match(card, new RegExp(`${(data as any).rating.score}\\s*/100`, 'u'));
+  assert.match(card, /day for it/);
+  assert.match(card, /Mercury is retrograde: expect delays/);
+  assert.match(card, /not a guarantee/);
   assert.doesNotMatch(card, /Europe\/Rome|\d{4}-\d{2}-\d{2}|T\d{2}:\d{2}/, 'People see dates, places and clock times, not zone IDs or ISO instants');
   const link = page.getByRole('link', { name: /Open the printable card/ });
   assert.equal(await link.getAttribute('href'), data.cardUrl);
@@ -125,7 +129,7 @@ try {
   assert.equal(await timedPage.getByRole('link', { name: /Open the card/ }).count(), 0);
   assert.equal(await timedPage.getByText('Without a birth time, a date can be a day off.').count(), 0);
 
-  // Two charts compared: names, both Sun signs, the closest contacts, counts and no score.
+  // Two charts compared: names, both Sun signs, a score out of 100 with its three parts, and the closest contacts.
   const pair = await result('get_compatibility', {
     a: { name: 'Ana', birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 },
     b: { name: 'Luis', birthDate: '1992-08-10', time: '21:15', zone: 'America/Mexico_City', latitude: 19.4326, longitude: -99.1332 },
@@ -137,15 +141,14 @@ try {
   assert.match(compareText, /Taurus Sun/);
   assert.match(compareText, /Leo Sun/);
   assert.match(compareText, /The closest contacts/);
-  assert.match(compareText, /trines and sextiles/);
-  // The three counts add up to every contact: trines and sextiles, squares and oppositions, conjunctions.
-  const counts = (pair as any).data.counts;
-  assert.equal(counts.easeful + counts.charged + counts.byAspect.conjunction, counts.total);
-  assert.match(compareText, new RegExp(`${counts.byAspect.conjunction}\\s+conjunctions`, 'u'));
-  // Contacts are described as the tradition reads them, never as what will happen between two people.
-  assert.doesNotMatch(compareText, /starts fights|calcify|pays out|whiplash|depending on the week/iu);
-  // The disclosure itself says Zodiacs does not score relationships; everything else must not score one.
-  assert.doesNotMatch(compareText.replace((pair as any).data.note, ''), /score|percent|%|soulmate|good match/iu);
+  const score = (pair as any).data.score;
+  assert.match(compareText, new RegExp(`${score.overall}\\s*/100`, 'u'));
+  assert.match(compareText, new RegExp(score.verdict, 'u'));
+  assert.match(compareText, /attraction/);
+  assert.match(compareText, /long-term stability/);
+  // Forecasts, never guarantees.
+  assert.doesNotMatch(compareText.replace((pair as any).data.note, ''), /guarantee|soulmate|destined|doomed/iu);
+  assert.match(compareText, /not a guarantee/);
   assert.match(compareText, /zodiacs\.org$/u, 'Every card ends with the zodiacs.org signature');
   assert.ok((await compare.getByRole('link', { name: /Open both charts on zodiacs\.org/ }).getAttribute('href'))!.startsWith('https://zodiacs.org/compatibility/#'));
   await compare.screenshot({ path: new URL('occasions-compatibility-desktop.png', out).pathname, fullPage: true });

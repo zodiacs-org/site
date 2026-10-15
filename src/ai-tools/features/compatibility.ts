@@ -2,8 +2,9 @@
  * get_compatibility: two birth charts side by side (synastry) for the
  * Zodiacs MCP tools. It reports the chart contacts between the two people
  * and the sign-to-sign facts the compatibility pages show, in the site's
- * own wording (src/lib/compat.ts). It never scores the pair, ranks it, or
- * says how the relationship will go: "no verdicts pretending to be scores".
+ * own wording (src/lib/compat.ts), with a 0–100 compatibility score and its
+ * three parts (src/lib/compat-score.ts). It forecasts in astrology's terms;
+ * it never guarantees how a relationship will turn out.
  *
  * The local-time resolver is passed in, as the occasion tools do
  * (src/lib/occasions/card.ts): the MCP runtime passes the compute API's
@@ -14,6 +15,7 @@ import { z } from 'zod';
 import { SIGN_SLUGS } from '../../lib/compute-api/constants';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { pairFacts, pairSlug, synastryLine } from '../../lib/compat';
+import { scoreCompatibility } from '../../lib/compat-score';
 import { compatibilityHandoffPath } from '../../lib/chart-handoff';
 import { computeChart } from '../../lib/engine/full.js';
 import { isGenerationalContact, summarizePair, type MinimalBody } from '../../lib/engine/synastry';
@@ -27,7 +29,7 @@ export const COMPATIBILITY_MIN_YEAR = 1800;
 export const COMPATIBILITY_MAX_YEAR = 2199;
 /** How many contacts the result lists, as the compatibility page does. */
 export const COMPATIBILITY_TOP_CONTACTS = 8;
-export const COMPATIBILITY_NOTE = 'Chart contacts and their traditional meanings. Zodiacs does not score relationships or predict how one will go.';
+export const COMPATIBILITY_NOTE = 'Astrology’s reading of your two charts, for insight and fun — not a guarantee of how things will turn out.';
 
 // ── Input ────────────────────────────────────────────────────────────
 
@@ -85,6 +87,12 @@ const personResult = z.object({
 export const compatibilityData = z.object({
   a: personResult,
   b: personResult,
+  score: z.object({
+    overall: z.number().int().min(0).max(100),
+    areas: z.object({ attraction: z.number().int(), communication: z.number().int(), stability: z.number().int() }),
+    verdict: z.string(),
+    headline: z.string(),
+  }),
   signPair: z.object({
     slug: z.string(),
     signs: z.tuple([signSlug, signSlug]),
@@ -269,9 +277,15 @@ export async function computeCompatibility(
     ? `${origin}${compatibilityHandoffPath(shareB, { kind: 'input', input: shareA })}`
     : null;
 
+  const elementOf = (index: number | null) => (index === null ? null : SIGNS[index].element);
+  const elA = elementOf(a.sunIndex);
+  const elB = elementOf(b.sunIndex);
+  const score = scoreCompatibility(summary.aspects, elA && elB ? { a: elA, b: elB } : null);
+
   const data: CompatibilityData = {
     a: personRow(a),
     b: personRow(b),
+    score,
     signPair,
     contacts: summary.top.map((contact) => ({
       aBody: contact.a as CompatibilityData['contacts'][number]['aBody'],

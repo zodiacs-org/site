@@ -12,6 +12,7 @@ import type { Milestone } from '../lib/occasions/milestones';
 import { computeCompatibility } from './features/compatibility';
 import { findChartTwins, getFamousChart } from './features/people';
 import { getBirthday, getSkyCalendar } from './features/birthday';
+import { rateOccasionDate } from '../lib/occasions/date-score';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
@@ -235,6 +236,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           instant: clockTime(card.instant, zone), instantIs: args.time ? 'given-time' : zone ? 'local-noon' : 'utc-noon',
           sky: { bodies: card.sky.bodies, moon: card.sky.moon, retrograde: card.sky.retrograde },
           moonSignChange: card.moonSignChange,
+          rating: rateOccasionDate(args.occasion, card.sky),
           evening: evening ? {
             sunrise: optionalClock(evening.sunrise, zone), sunset: optionalClock(evening.sunset, zone),
             goldenHour: evening.goldenHour ? { start: clockTime(evening.goldenHour.start, zone), end: clockTime(evening.goldenHour.end, zone) } : null,
