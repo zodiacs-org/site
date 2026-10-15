@@ -85,10 +85,16 @@ on every pull request.
   equal.
 - **Fingerprints.** `scripts/sitemap-rendered-changes.mjs` fingerprints every
   page of each build's sitemap: its title, its meta description, and the text,
-  link targets and image descriptions of its `<main>`.
+  link targets and image descriptions of its `<main>`, with the copy its
+  attributes carry (a field's placeholder, an accessible name, a tooltip, a
+  shown input value).
 - **The rule.** A page whose content changed fails the check when its date did
   not change and is earlier than the edition's day. A page already dated that
   day passes, since a sitemap date says only which day a page last changed.
+  IndexNow Changes covers that case: it digests each live page dated the
+  run's day with the same fingerprint, keeps the digests in its snapshot, and
+  submits a page whose digest moved since its last run, so a second change
+  made the same day reaches IndexNow too (Codex's third finding on #752).
 - **One clock.** Some pages print when they were built, such as the
   void-of-course Moon's "As of" line, or a body's position at that time, such
   as the rising-sign pages' chart rulers. Both builds therefore read one
@@ -110,9 +116,15 @@ ran except `editorial:daily:verify`, which fails here by one last bit (F-95).
 - **The email chain** ([`brief-control.txt`](sitemap-dates/brief-control.txt)).
   Codex found that the check's first environment left out the daily email
   chain, which production has. A change to the post-chart brief's device note
-  alone, against `b3cbfae2`, fails `/birth-chart/` with production's
-  environment and passed with the first one. Every other report here was
-  built again with the whole environment; each found what it found before.
+  alone, against `4ce7fc06`, fails `/birth-chart/` with production's
+  environment and passed with the first one.
+- **Attribute copy**
+  ([`placeholder-control.txt`](sitemap-dates/placeholder-control.txt)).
+  Codex found that copy held in attributes changed no fingerprint. A change to
+  the people search's placeholder alone, against `4ce7fc06`, fails `/people/`
+  with this fingerprint and passed with the previous one.
+- **Every other report** here was built again with the whole environment and
+  this fingerprint, and found what it found before.
 - **Determinism** ([`determinism.txt`](sitemap-dates/determinism.txt)). Two
   builds of main fingerprint all 1,838 pages alike. Without the pinned clock,
   two builds half an hour apart differ on 36 pages, the build-time ones above.

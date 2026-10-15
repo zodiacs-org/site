@@ -14,6 +14,8 @@ weighted units accepted; blocked 2% (3), or 1.644%.
   of 2026-10-13 and 2026-10-14, it found seven pages still undated in
   production, which this change re-dates
   ([the record](../evidence/indexnow-changes-20261014/README.md)).
+  IndexNow Changes now also resubmits a page dated the day whose content
+  changed again that day.
 - **What keeps S8 open:** Bing's verification is still the owner's report.
 - **Main's Site Check** passed on #745's merge (run 38601979991).
 

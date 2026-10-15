@@ -1,0 +1,12 @@
+# Control: 4ce7fc06 plus a change to the people search's placeholder only, against 4ce7fc06 (edition 2026-10-15), with this fingerprint
+Pages in both builds: 1840; unchanged: 1839; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
+1 page(s) changed without a new sitemap date. Give each a new date in src/pages/sitemap.xml.ts (or the data it is dated from), so IndexNow Changes submits it:
+- /people/ (still 2026-09-23)
+
+/people/
+  - placeholder: Start typing a name…
+  + placeholder: Type a name…
+
+# The same control with the check's previous fingerprint, which read no attributes
+Pages in both builds: 1840; unchanged: 1840; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
+Every page whose content changed has a new sitemap date.
