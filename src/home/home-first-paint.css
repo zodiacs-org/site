@@ -179,10 +179,11 @@ html[data-local-chrome-typography][lang='en'] {
 
 .hero__trust {
   margin: -2px 0 0;
-  font-family: 'JetBrains Mono Hero', ui-monospace, Menlo, Consolas, monospace;
-  font-size: 10.5px;
-  line-height: 1.45;
-  letter-spacing: 0.055em;
+  font-family: 'Instrument Sans Hero', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  word-spacing: 0.1em;
   color: var(--faint);
   text-shadow: 0 1px 14px rgba(6, 7, 9, 0.72);
   text-align: center;

@@ -90,9 +90,10 @@
 .calc__submit:disabled { opacity: 0.5; cursor: default; }
 .calc__privacy {
   margin: 14px 0 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 11px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
   color: var(--faint);
 }
 .calc__error { margin: 12px 0 0; color: var(--sign-aries); font-size: var(--text-sm); }
@@ -2639,6 +2640,19 @@
 
 /* Keep one generous form boundary, with balanced fields on larger screens. */
 .calc > .shell { width: 100%; max-width: 880px; }
+/* One flat form card: no outer bezel or gradient; the border answers focus. */
+.calc__form.shell { padding: 0; border: 0; background: none; }
+.calc .calc__form.shell > .calc__core {
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-xl);
+  background: var(--void-1);
+  box-shadow: none;
+  transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.calc .calc__form.shell:focus-within > .calc__core {
+  border-color: var(--hair-3);
+  box-shadow: 0 0 0 4px rgba(198, 204, 218, 0.05);
+}
 .calc__context-cue, .calc__privacy { font-size: 12px; }
 @media (min-width: 720px) {
   .calc__fields > .field:has(.geo), .calc__fields > .field:has([role="combobox"]) { grid-column: 1 / -1; }

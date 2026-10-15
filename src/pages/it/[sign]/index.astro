@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import SignIcon from '../../../components/SignIcon.astro';
+import SignHeroArt from '../../../components/SignHeroArt.astro';
 import Faq from '../../../components/Faq.astro';
 import CollectBand from '../../../components/CollectBand.astro';
 import ShareRow from '../../../components/ShareRow.astro';
@@ -80,11 +81,11 @@ const jsonLd = [
 >
   <article style={`--sign:${sign.hue}`}>
     <header class="guide-es-hero container">
-      <SignIcon sign={sign.slug} size={168} loading="eager" class="guide-es-hero__icon" />
+      <SignHeroArt sign={sign.slug} locale="it" />
       <div>
-        <span class="eyebrow">{sign.glyph} · {elementLabel(sign.element, 'it')} · {signDates(sign, 'it')}</span>
         <h1 class="display">{signName(sign, 'it')}</h1>
         <p>{guide.intro[0]}</p>
+        <p class="guide-es-hero__facts">{elementLabel(sign.element, 'it')} · {signDates(sign, 'it')}</p>
         <div class="guide-es-hero__ctas">
           <a class="btn btn--primary" href={localizePath('it', '/birth-chart/')}><span>Calcola il tuo tema natale gratis</span><span class="orb">↗</span></a>
           <a class="btn btn--ghost" href={localizePath('it', '/compatibility/')}><span>Vedi la compatibilità</span></a>
@@ -169,12 +170,8 @@ const jsonLd = [
   @media (min-width: 760px) {
     .guide-es-hero { grid-template-columns: auto minmax(0, 1fr); }
   }
-  .guide-es-hero :global(.guide-es-hero__icon) {
-    width: clamp(118px, 16vw, 168px);
-    filter: drop-shadow(0 18px 44px color-mix(in oklab, var(--sign) 30%, transparent));
-  }
   .guide-es-hero h1 {
-    margin: 12px 0 14px;
+    margin: 0 0 14px;
     font-size: var(--text-hero);
     line-height: 0.96;
   }
@@ -185,6 +182,16 @@ const jsonLd = [
     font-size: var(--text-lg);
     line-height: 1.6;
     text-wrap: pretty;
+  }
+  .guide-es-hero .guide-es-hero__facts {
+    margin-top: 10px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.4;
+    letter-spacing: 0;
+    word-spacing: 0.1em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
   }
   .guide-es-hero__ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
   .guide-es-body { display: grid; gap: clamp(28px, 5vw, 46px); }

@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import SignIcon from '../../../components/SignIcon.astro';
+import SignHeroArt from '../../../components/SignHeroArt.astro';
 import Faq from '../../../components/Faq.astro';
 import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signDates, signName } from '../../../lib/signs';
 import { russianGuideFor } from '../../../data/ru-guides';
@@ -19,6 +20,8 @@ const next = SIGNS[(idx + 1) % 12];
 const metaTitle = `${signName(sign, 'ru')}: даты, характер, совместимость`;
 const metaDescription = `Гид по знаку ${signName(sign, 'ru')}: даты, стихия, управитель, сильные стороны и как знак ведёт себя в отношениях.`;
 const pluralSign = ['gemini', 'libra', 'pisces'].includes(sign.slug);
+// The facts line is sentence case; the Russian element labels are lowercase.
+const elementFact = elementLabel(sign.element, 'ru').replace(/^./u, (letter) => letter.toLocaleUpperCase('ru'));
 const easeful = {
   aries: ['leo', 'sagittarius', 'gemini'],
   taurus: ['virgo', 'capricorn', 'cancer'],
@@ -81,11 +84,11 @@ const jsonLd = [
 >
   <article style={`--sign:${sign.hue}`}>
     <header class="guide-ru-hero container">
-      <SignIcon sign={sign.slug} size={168} loading="eager" class="guide-ru-hero__icon" />
+      <SignHeroArt sign={sign.slug} locale="ru" />
       <div>
-        <span class="eyebrow">{sign.glyph} · {elementLabel(sign.element, 'ru')} · {signDates(sign, 'ru')}</span>
         <h1 class="display">{signName(sign, 'ru')}</h1>
         <p>{guide.intro[0]}</p>
+        <p class="guide-ru-hero__facts">{elementFact} · {signDates(sign, 'ru')}</p>
         <div class="guide-ru-hero__ctas">
           <a class="btn btn--primary" href="/ru/birth-chart/"><span>Постройте бесплатную натальную карту</span><span class="orb">↗</span></a>
           <a class="btn btn--ghost" href="/ru/compatibility/"><span>Проверить совместимость</span></a>
@@ -95,7 +98,7 @@ const jsonLd = [
 
     <div class="container container--narrow guide-ru-body">
       <aside class="collect-band reveal">
-        <span class="collect-band__label mono">Реестр</span>
+        <span class="collect-band__label">Реестр</span>
         <span class="collect-band__text">{signName(sign, 'ru')} — одна из двенадцати записей.</span>
         <a class="collect-band__link" href={`/registry/${sign.slug}/`} hreflang="en" title="Материал пока доступен по-английски">Открыть запись — пока по-английски</a>
       </aside>
@@ -173,12 +176,8 @@ const jsonLd = [
   @media (min-width: 760px) {
     .guide-ru-hero { grid-template-columns: auto minmax(0, 1fr); }
   }
-  .guide-ru-hero :global(.guide-ru-hero__icon) {
-    width: clamp(118px, 16vw, 168px);
-    filter: drop-shadow(0 18px 44px color-mix(in oklab, var(--sign) 30%, transparent));
-  }
   .guide-ru-hero h1 {
-    margin: 12px 0 14px;
+    margin: 0 0 14px;
     font-size: var(--text-hero);
     line-height: 0.96;
   }
@@ -190,13 +189,23 @@ const jsonLd = [
     line-height: 1.6;
     text-wrap: pretty;
   }
+  .guide-ru-hero .guide-ru-hero__facts {
+    margin-top: 10px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.4;
+    letter-spacing: 0;
+    word-spacing: 0.1em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
   .guide-ru-hero__ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
   .guide-ru-body { display: grid; gap: clamp(28px, 5vw, 46px); }
   .collect-band { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 18px; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: linear-gradient(90deg, rgba(198, 204, 218, 0.04), transparent 60%); }
-  .collect-band__label { font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--faint); }
+  .collect-band__label { font-family: var(--font-sans); font-size: 12.5px; letter-spacing: 0; text-transform: none; font-variant-numeric: tabular-nums; color: var(--faint); }
   .collect-band__text { font-size: 13px; color: var(--muted); }
   .collect-band__link { margin-inline-start: auto; font-size: 13px; font-weight: 550; color: var(--text-2); text-decoration: none; }
-  .identity-share { margin: 0; font-family: var(--font-mono); font-size: 10px; line-height: 1.8; letter-spacing: 0.04em; color: var(--faint); }
+  .identity-share { margin: 0; font-family: var(--font-sans); font-size: 13px; line-height: 1.8; letter-spacing: 0; word-spacing: 0.1em; color: var(--faint); }
   .identity-share a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--hair-1); }
   .guide-ru-panel__core { padding: clamp(22px, 4vw, 32px); display: grid; gap: 12px; }
   .guide-ru-panel h2 { margin: 0; font-size: var(--text-xl); }
