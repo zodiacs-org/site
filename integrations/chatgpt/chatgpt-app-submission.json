@@ -113,7 +113,7 @@
       "justifications": {
         "read_only_justification": "Compares two charts calculated for that call; the birth details and the comparison are not stored.",
         "open_world_justification": "Calculates locally from the bundled engine and fixed interpretation text; it looks nothing up about either person.",
-        "destructive_justification": "Changes or deletes nothing, and gives no score or verdict that could be acted on."
+        "destructive_justification": "Returns an astrological compatibility score and interpretation without changing or deleting any user data or external state."
       }
     },
     "find_chart_twins": {
