@@ -31,7 +31,7 @@ the release work done in #758.
 | ChatGPT keeps a panel by its address | The panel moves to `ui://zodiacs/occasions-v3.html`. The v2 and v1 addresses stay readable for older conversations. |
 | Test case 1 trap: a moment sent with a time zone was refused | `check_sky_fact` now ignores a time zone sent with a moment, because the moment already fixes the time. |
 | The scan flagged `get_occasion_sky` (reason not recorded; the likely cause is the optional coordinates and names) | Each optional input of `get_occasion_sky` and `get_compatibility` now says what it is for and that nothing is stored. |
-| Famous people's descriptions on screen, such as Charlotte Brontë as "Poet and teacher" | Corrected through the people pipeline's reviewed identities. See the pull request for the list. |
+| Famous people's descriptions on screen, such as Charlotte Brontë as "Poet and teacher" | 59 of the 104 published people now lead with what they are chiefly known for: Charlotte Brontë "Novelist and poet", Audrey Hepburn "Film actor", Karl Marx "Philosopher". Every label comes from the person's cached Wikidata occupations. The record is `docs/phase5/people-pilot/editorial-identities-2026-10-15.md`. |
 | About text | Rewritten. See the listing below. The subtitle stays "Birth charts & horoscopes". |
 
 All of it is in one pull request, with tests and regenerated panels and
@@ -190,6 +190,16 @@ Save screenshots to `docs/platform/zodiacs-ai/evidence/0.5.0/`.
   - It shows on their pages and in the famous-chart note.
   - The demo avoids it by using Frida Kahlo.
   - A town-level label needs sourced evidence through the people pipeline.
+- **Country in a description.**
+  - It is the birthplace's present-day country, not the person's
+    nationality. Sigmund Freud reads "Czech Republic", Florence Nightingale
+    "Italy" and George Orwell "India".
+  - Immanuel Kant's reads "Prussia", so the rule isn't applied evenly.
+  - Changing this means deciding between birthplace and nationality first.
+- **People's descriptions.** Sixteen were judgment calls and were left as
+  they are. Examples are Florence Nightingale's "Nurse and writer" and
+  Sigmund Freud's "Psychoanalyst and essayist". The identity record lists
+  each one with the label that would follow its description more closely.
 - **Translations.** The rewritten Spanish, Portuguese, French and Italian
   notes have had no native speaker's read.
 - **Test-case gaps.** Chart Studio, the birthday tool and the calendar still

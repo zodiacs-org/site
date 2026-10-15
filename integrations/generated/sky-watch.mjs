@@ -8097,7 +8097,7 @@ var people_index_default = {
     {
       slug: "alan-turing",
       name: "Alan Turing",
-      shortDescription: "Computer scientist and university teacher \xB7 United Kingdom \xB7 1912\u20131954",
+      shortDescription: "Computer scientist \xB7 United Kingdom \xB7 1912\u20131954",
       born: "1912-06-23",
       gregorian: "1912-06-23",
       birthplace: "Maida Vale",
@@ -8177,7 +8177,7 @@ var people_index_default = {
     {
       slug: "albert-camus",
       name: "Albert Camus",
-      shortDescription: "Writer and association football player \xB7 Algeria \xB7 1913\u20131960",
+      shortDescription: "Philosopher and writer \xB7 Algeria \xB7 1913\u20131960",
       born: "1913-11-07",
       gregorian: "1913-11-07",
       birthplace: "Dr\xE9an",
@@ -8337,7 +8337,7 @@ var people_index_default = {
     {
       slug: "alexander-graham-bell",
       name: "Alexander Graham Bell",
-      shortDescription: "Physicist \xB7 United Kingdom \xB7 1847\u20131922",
+      shortDescription: "Scientist and inventor \xB7 United Kingdom \xB7 1847\u20131922",
       born: "1847-03-03",
       gregorian: "1847-03-03",
       birthplace: "Edinburgh",
@@ -8417,7 +8417,7 @@ var people_index_default = {
     {
       slug: "alfred-hitchcock",
       name: "Alfred Hitchcock",
-      shortDescription: "Film director and writer \xB7 United Kingdom \xB7 1899\u20131980",
+      shortDescription: "Film director \xB7 United Kingdom \xB7 1899\u20131980",
       born: "1899-08-13",
       gregorian: "1899-08-13",
       birthplace: "Leytonstone",
@@ -8657,7 +8657,7 @@ var people_index_default = {
     {
       slug: "andy-warhol",
       name: "Andy Warhol",
-      shortDescription: "Film director and painter \xB7 United States \xB7 1928\u20131987",
+      shortDescription: "Visual artist and film director \xB7 United States \xB7 1928\u20131987",
       born: "1928-08-06",
       gregorian: "1928-08-06",
       birthplace: "Pittsburgh",
@@ -8977,7 +8977,7 @@ var people_index_default = {
     {
       slug: "audrey-hepburn",
       name: "Audrey Hepburn",
-      shortDescription: "Stage actor and philanthropist \xB7 Belgium \xB7 1929\u20131993",
+      shortDescription: "Film actor \xB7 Belgium \xB7 1929\u20131993",
       born: "1929-05-04",
       gregorian: "1929-05-04",
       birthplace: "Rue Keyenveld - Keienveldstraat",
@@ -9057,7 +9057,7 @@ var people_index_default = {
     {
       slug: "ayrton-senna",
       name: "Ayrton Senna",
-      shortDescription: "Formula One driver and philanthropist \xB7 Brazil \xB7 1960\u20131994",
+      shortDescription: "Formula One driver \xB7 Brazil \xB7 1960\u20131994",
       born: "1960-03-21",
       gregorian: "1960-03-21",
       birthplace: "maternity hospital of S\xE3o Paulo",
@@ -9217,7 +9217,7 @@ var people_index_default = {
     {
       slug: "bertrand-russell",
       name: "Bertrand Russell",
-      shortDescription: "Mathematician and essayist \xB7 United Kingdom \xB7 1872\u20131970",
+      shortDescription: "Analytic philosopher and logician \xB7 United Kingdom \xB7 1872\u20131970",
       born: "1872-05-18",
       gregorian: "1872-05-18",
       birthplace: "Trellech",
@@ -9297,7 +9297,7 @@ var people_index_default = {
     {
       slug: "bette-davis",
       name: "Bette Davis",
-      shortDescription: "Autobiographer and stage actor \xB7 United States \xB7 1908\u20131989",
+      shortDescription: "Film actor \xB7 United States \xB7 1908\u20131989",
       born: "1908-04-05",
       gregorian: "1908-04-05",
       birthplace: "Lowell",
@@ -9377,7 +9377,7 @@ var people_index_default = {
     {
       slug: "billie-holiday",
       name: "Billie Holiday",
-      shortDescription: "Actor and songwriter \xB7 United States \xB7 1915\u20131959",
+      shortDescription: "Jazz singer \xB7 United States \xB7 1915\u20131959",
       born: "1915-04-07",
       gregorian: "1915-04-07",
       birthplace: "Philadelphia",
@@ -9537,7 +9537,7 @@ var people_index_default = {
     {
       slug: "bruce-lee",
       name: "Bruce Lee",
-      shortDescription: "Film director and writer \xB7 United States \xB7 1940\u20131973",
+      shortDescription: "Martial artist and film actor \xB7 United States \xB7 1940\u20131973",
       born: "1940-11-27",
       gregorian: "1940-11-27",
       birthplace: "San Francisco Chinese Hospital",
@@ -9617,7 +9617,7 @@ var people_index_default = {
     {
       slug: "charles-darwin",
       name: "Charles Darwin",
-      shortDescription: "Geologist and explorer \xB7 United Kingdom \xB7 1809\u20131882",
+      shortDescription: "Naturalist and biologist \xB7 United Kingdom \xB7 1809\u20131882",
       born: "1809-02-12",
       gregorian: "1809-02-12",
       birthplace: "Shrewsbury",
@@ -9697,7 +9697,7 @@ var people_index_default = {
     {
       slug: "charles-dickens",
       name: "Charles Dickens",
-      shortDescription: "Writer and botanist \xB7 United Kingdom \xB7 1812\u20131870",
+      shortDescription: "Novelist and social critic \xB7 United Kingdom \xB7 1812\u20131870",
       born: "1812-02-07",
       gregorian: "1812-02-07",
       birthplace: "Landport",
@@ -9777,7 +9777,7 @@ var people_index_default = {
     {
       slug: "charlie-chaplin",
       name: "Charlie Chaplin",
-      shortDescription: "Film director and composer \xB7 United Kingdom \xB7 1889\u20131977",
+      shortDescription: "Film actor and film director \xB7 United Kingdom \xB7 1889\u20131977",
       born: "1889-04-16",
       gregorian: "1889-04-16",
       birthplace: "Walworth",
@@ -9857,7 +9857,7 @@ var people_index_default = {
     {
       slug: "charlotte-bronte",
       name: "Charlotte Bront\xEB",
-      shortDescription: "Poet and teacher \xB7 United Kingdom \xB7 1816\u20131855",
+      shortDescription: "Novelist and poet \xB7 United Kingdom \xB7 1816\u20131855",
       born: "1816-04-21",
       gregorian: "1816-04-21",
       birthplace: "Thornton",
@@ -10017,7 +10017,7 @@ var people_index_default = {
     {
       slug: "david-bowie",
       name: "David Bowie",
-      shortDescription: "Painter and singer-songwriter \xB7 United Kingdom \xB7 1947\u20132016",
+      shortDescription: "Singer-songwriter and film actor \xB7 United Kingdom \xB7 1947\u20132016",
       born: "1947-01-08",
       gregorian: "1947-01-08",
       birthplace: "Brixton",
@@ -10097,7 +10097,7 @@ var people_index_default = {
     {
       slug: "diego-maradona",
       name: "Diego Maradona",
-      shortDescription: "Association football player and actor \xB7 Argentina \xB7 1960\u20132020",
+      shortDescription: "Association football player \xB7 Argentina \xB7 1960\u20132020",
       born: "1960-10-30",
       gregorian: "1960-10-30",
       birthplace: "Lan\xFAs",
@@ -10337,7 +10337,7 @@ var people_index_default = {
     {
       slug: "ella-fitzgerald",
       name: "Ella Fitzgerald",
-      shortDescription: "Jazz musician and singer-songwriter \xB7 United States \xB7 1917\u20131996",
+      shortDescription: "Jazz singer \xB7 United States \xB7 1917\u20131996",
       born: "1917-04-25",
       gregorian: "1917-04-25",
       birthplace: "Newport News",
@@ -10417,7 +10417,7 @@ var people_index_default = {
     {
       slug: "elvis-presley",
       name: "Elvis Presley",
-      shortDescription: "Film actor and singer \xB7 United States \xB7 1935\u20131977",
+      shortDescription: "Singer and film actor \xB7 United States \xB7 1935\u20131977",
       born: "1935-01-08",
       gregorian: "1935-01-08",
       birthplace: "Tupelo",
@@ -10737,7 +10737,7 @@ var people_index_default = {
     {
       slug: "franz-kafka",
       name: "Franz Kafka",
-      shortDescription: "Novelist and lawyer \xB7 Czech Republic \xB7 1883\u20131924",
+      shortDescription: "Novelist \xB7 Czech Republic \xB7 1883\u20131924",
       born: "1883-07-03",
       gregorian: "1883-07-03",
       birthplace: "Prague",
@@ -10817,7 +10817,7 @@ var people_index_default = {
     {
       slug: "freddie-mercury",
       name: "Freddie Mercury",
-      shortDescription: "Singer-songwriter and painter \xB7 Tanzania \xB7 1946\u20131991",
+      shortDescription: "Singer-songwriter \xB7 Tanzania \xB7 1946\u20131991",
       born: "1946-09-05",
       gregorian: "1946-09-05",
       birthplace: "Zanzibar City",
@@ -10977,7 +10977,7 @@ var people_index_default = {
     {
       slug: "friedrich-nietzsche",
       name: "Friedrich Nietzsche",
-      shortDescription: "Philosopher and composer \xB7 Germany \xB7 1844\u20131900",
+      shortDescription: "Philosopher \xB7 Germany \xB7 1844\u20131900",
       born: "1844-10-15",
       gregorian: "1844-10-15",
       birthplace: "R\xF6cken",
@@ -11297,7 +11297,7 @@ var people_index_default = {
     {
       slug: "grace-kelly",
       name: "Grace Kelly",
-      shortDescription: "Film actor and musician \xB7 United States \xB7 1929\u20131982",
+      shortDescription: "Film actor \xB7 United States \xB7 1929\u20131982",
       born: "1929-11-12",
       gregorian: "1929-11-12",
       birthplace: "Philadelphia",
@@ -11377,7 +11377,7 @@ var people_index_default = {
     {
       slug: "haile-selassie",
       name: "Haile Selassie",
-      shortDescription: "Politician \xB7 Ethiopia \xB7 1892\u20131975",
+      shortDescription: "Monarch \xB7 Ethiopia \xB7 1892\u20131975",
       born: "1892-07-23",
       gregorian: "1892-07-23",
       birthplace: "Ejersa Goro",
@@ -11457,7 +11457,7 @@ var people_index_default = {
     {
       slug: "immanuel-kant",
       name: "Immanuel Kant",
-      shortDescription: "Philosopher and anthropologist \xB7 Prussia \xB7 1724\u20131804",
+      shortDescription: "Philosopher \xB7 Prussia \xB7 1724\u20131804",
       born: "1724-04-22",
       gregorian: "1724-04-22",
       birthplace: "K\xF6nigsberg",
@@ -11537,7 +11537,7 @@ var people_index_default = {
     {
       slug: "indira-gandhi",
       name: "Indira Gandhi",
-      shortDescription: "Politician and writer \xB7 India \xB7 1917\u20131984",
+      shortDescription: "Politician \xB7 India \xB7 1917\u20131984",
       born: "1917-11-19",
       gregorian: "1917-11-19",
       birthplace: "Prayagraj",
@@ -11617,7 +11617,7 @@ var people_index_default = {
     {
       slug: "ingrid-bergman",
       name: "Ingrid Bergman",
-      shortDescription: "Autobiographer and stage actor \xB7 Sweden \xB7 1915\u20131982",
+      shortDescription: "Film actor \xB7 Sweden \xB7 1915\u20131982",
       born: "1915-08-29",
       gregorian: "1915-08-29",
       birthplace: "Hedvig Eleonora parish",
@@ -11697,7 +11697,7 @@ var people_index_default = {
     {
       slug: "jane-austen",
       name: "Jane Austen",
-      shortDescription: "Writer \xB7 United Kingdom \xB7 1775\u20131817",
+      shortDescription: "Novelist \xB7 United Kingdom \xB7 1775\u20131817",
       born: "1775-12-16",
       gregorian: "1775-12-16",
       birthplace: "Steventon",
@@ -11857,7 +11857,7 @@ var people_index_default = {
     {
       slug: "jawaharlal-nehru",
       name: "Jawaharlal Nehru",
-      shortDescription: "Writer and politician \xB7 India \xB7 1889\u20131964",
+      shortDescription: "Politician \xB7 India \xB7 1889\u20131964",
       born: "1889-11-14",
       gregorian: "1889-11-14",
       birthplace: "Prayagraj",
@@ -11937,7 +11937,7 @@ var people_index_default = {
     {
       slug: "jean-michel-basquiat",
       name: "Jean-Michel Basquiat",
-      shortDescription: "Painter and composer \xB7 United States \xB7 1960\u20131988",
+      shortDescription: "Painter \xB7 United States \xB7 1960\u20131988",
       born: "1960-12-22",
       gregorian: "1960-12-22",
       birthplace: "Park Slope",
@@ -12177,7 +12177,7 @@ var people_index_default = {
     {
       slug: "john-lennon",
       name: "John Lennon",
-      shortDescription: "Writer and actor \xB7 United Kingdom \xB7 1940\u20131980",
+      shortDescription: "Singer-songwriter \xB7 United Kingdom \xB7 1940\u20131980",
       born: "1940-10-09",
       gregorian: "1940-10-09",
       birthplace: "Liverpool Maternity Hospital",
@@ -12257,7 +12257,7 @@ var people_index_default = {
     {
       slug: "judy-garland",
       name: "Judy Garland",
-      shortDescription: "Television actor and singer \xB7 United States \xB7 1922\u20131969",
+      shortDescription: "Film actor and singer \xB7 United States \xB7 1922\u20131969",
       born: "1922-06-10",
       gregorian: "1922-06-10",
       birthplace: "Grand Rapids",
@@ -12417,7 +12417,7 @@ var people_index_default = {
     {
       slug: "karl-marx",
       name: "Karl Marx",
-      shortDescription: "Economist and journalist \xB7 Germany \xB7 1818\u20131883",
+      shortDescription: "Philosopher \xB7 Germany \xB7 1818\u20131883",
       born: "1818-05-05",
       gregorian: "1818-05-05",
       birthplace: "Trier",
@@ -12497,7 +12497,7 @@ var people_index_default = {
     {
       slug: "katharine-hepburn",
       name: "Katharine Hepburn",
-      shortDescription: "Film actor and autobiographer \xB7 United States \xB7 1907\u20132003",
+      shortDescription: "Film actor \xB7 United States \xB7 1907\u20132003",
       born: "1907-05-12",
       gregorian: "1907-05-12",
       birthplace: "Hartford",
@@ -12657,7 +12657,7 @@ var people_index_default = {
     {
       slug: "lata-mangeshkar",
       name: "Lata Mangeshkar",
-      shortDescription: "Singer and film actor \xB7 India \xB7 1929\u20132022",
+      shortDescription: "Singer \xB7 India \xB7 1929\u20132022",
       born: "1929-09-28",
       gregorian: "1929-09-28",
       birthplace: "Indore",
@@ -12737,7 +12737,7 @@ var people_index_default = {
     {
       slug: "louis-armstrong",
       name: "Louis Armstrong",
-      shortDescription: "Actor and trumpeter \xB7 United States \xB7 1901\u20131971",
+      shortDescription: "Jazz musician and trumpeter \xB7 United States \xB7 1901\u20131971",
       born: "1901-08-04",
       gregorian: "1901-08-04",
       birthplace: "New Orleans",
@@ -12817,7 +12817,7 @@ var people_index_default = {
     {
       slug: "luciano-pavarotti",
       name: "Luciano Pavarotti",
-      shortDescription: "Opera singer and film actor \xB7 Italy \xB7 1935\u20132007",
+      shortDescription: "Opera singer \xB7 Italy \xB7 1935\u20132007",
       born: "1935-10-12",
       gregorian: "1935-10-12",
       birthplace: "Modena",
@@ -12977,7 +12977,7 @@ var people_index_default = {
     {
       slug: "mahatma-gandhi",
       name: "Mohandas K. Gandhi",
-      shortDescription: "Barrister and political writer \xB7 India \xB7 1869\u20131948",
+      shortDescription: "Freedom fighter \xB7 India \xB7 1869\u20131948",
       born: "1869-10-02",
       gregorian: "1869-10-02",
       birthplace: "Porbandar",
@@ -13057,7 +13057,7 @@ var people_index_default = {
     {
       slug: "maria-callas",
       name: "Maria Callas",
-      shortDescription: "Opera singer and actor \xB7 United States \xB7 1923\u20131977",
+      shortDescription: "Opera singer \xB7 United States \xB7 1923\u20131977",
       born: "1923-12-02",
       gregorian: "1923-12-02",
       birthplace: "New York City",
@@ -13137,7 +13137,7 @@ var people_index_default = {
     {
       slug: "marie-curie",
       name: "Marie Curie",
-      shortDescription: "Physicist and university teacher \xB7 Poland \xB7 1867\u20131934",
+      shortDescription: "Physicist and chemist \xB7 Poland \xB7 1867\u20131934",
       born: "1867-11-07",
       gregorian: "1867-11-07",
       birthplace: "Warsaw",
@@ -13297,7 +13297,7 @@ var people_index_default = {
     {
       slug: "mark-twain",
       name: "Mark Twain",
-      shortDescription: "Journalist and teacher \xB7 United States \xB7 1835\u20131910",
+      shortDescription: "Writer and humorist \xB7 United States \xB7 1835\u20131910",
       born: "1835-11-30",
       gregorian: "1835-11-30",
       birthplace: "Florida",
@@ -13697,7 +13697,7 @@ var people_index_default = {
     {
       slug: "michael-faraday",
       name: "Michael Faraday",
-      shortDescription: "Physicist and writer \xB7 United Kingdom \xB7 1791\u20131867",
+      shortDescription: "Physicist \xB7 United Kingdom \xB7 1791\u20131867",
       born: "1791-09-22",
       gregorian: "1791-09-22",
       birthplace: "Newington Butts",
@@ -13777,7 +13777,7 @@ var people_index_default = {
     {
       slug: "muhammad-ali-jinnah",
       name: "Muhammad Ali Jinnah",
-      shortDescription: "Lawyer \xB7 Pakistan \xB7 1876\u20131948",
+      shortDescription: "Politician \xB7 Pakistan \xB7 1876\u20131948",
       born: "1876-12-25",
       gregorian: "1876-12-25",
       birthplace: "Karachi",
@@ -13937,7 +13937,7 @@ var people_index_default = {
     {
       slug: "nelson-mandela",
       name: "Nelson Mandela",
-      shortDescription: "Politician and autobiographer \xB7 South Africa \xB7 1918\u20132013",
+      shortDescription: "Politician and political activist \xB7 South Africa \xB7 1918\u20132013",
       born: "1918-07-18",
       gregorian: "1918-07-18",
       birthplace: "Mvezo",
@@ -14097,7 +14097,7 @@ var people_index_default = {
     {
       slug: "pablo-picasso",
       name: "Pablo Picasso",
-      shortDescription: "Painter and costume designer \xB7 Spain \xB7 1881\u20131973",
+      shortDescription: "Painter and sculptor \xB7 Spain \xB7 1881\u20131973",
       born: "1881-10-25",
       gregorian: "1881-10-25",
       birthplace: "M\xE1laga",
@@ -14177,7 +14177,7 @@ var people_index_default = {
     {
       slug: "paul-newman",
       name: "Paul Newman",
-      shortDescription: "Television actor and racing automobile driver \xB7 United States \xB7 1925\u20132008",
+      shortDescription: "Film actor \xB7 United States \xB7 1925\u20132008",
       born: "1925-01-26",
       gregorian: "1925-01-26",
       birthplace: "Shaker Heights",
@@ -14257,7 +14257,7 @@ var people_index_default = {
     {
       slug: "prince",
       name: "Prince",
-      shortDescription: "Film actor and singer \xB7 United States \xB7 1958\u20132016",
+      shortDescription: "Singer-songwriter \xB7 United States \xB7 1958\u20132016",
       born: "1958-06-07",
       gregorian: "1958-06-07",
       birthplace: "Minneapolis",
@@ -14417,7 +14417,7 @@ var people_index_default = {
     {
       slug: "raj-kapoor",
       name: "Raj Kapoor",
-      shortDescription: "Film producer and screenwriter \xB7 Pakistan \xB7 1924\u20131988",
+      shortDescription: "Film actor and film producer \xB7 Pakistan \xB7 1924\u20131988",
       born: "1924-12-14",
       gregorian: "1924-12-14",
       birthplace: "Peshawar",
@@ -14497,7 +14497,7 @@ var people_index_default = {
     {
       slug: "rosa-parks",
       name: "Rosa Parks",
-      shortDescription: "Autobiographer and human rights defender \xB7 United States \xB7 1913\u20132005",
+      shortDescription: "Civil rights advocate \xB7 United States \xB7 1913\u20132005",
       born: "1913-02-04",
       gregorian: "1913-02-04",
       birthplace: "Tuskegee",
@@ -14577,7 +14577,7 @@ var people_index_default = {
     {
       slug: "sally-ride",
       name: "Sally Ride",
-      shortDescription: "Physicist and astronaut \xB7 United States \xB7 1951\u20132012",
+      shortDescription: "Astronaut and physicist \xB7 United States \xB7 1951\u20132012",
       born: "1951-05-26",
       gregorian: "1951-05-26",
       birthplace: "Los Angeles",
@@ -14657,7 +14657,7 @@ var people_index_default = {
     {
       slug: "selena",
       name: "Selena",
-      shortDescription: "Singer and actor \xB7 United States \xB7 1971\u20131995",
+      shortDescription: "Singer \xB7 United States \xB7 1971\u20131995",
       born: "1971-04-16",
       gregorian: "1971-04-16",
       birthplace: "Lake Jackson",
@@ -14977,7 +14977,7 @@ var people_index_default = {
     {
       slug: "stephen-hawking",
       name: "Stephen Hawking",
-      shortDescription: "Theoretical physicist and pedagogue \xB7 United Kingdom \xB7 1942\u20132018",
+      shortDescription: "Theoretical physicist and cosmologist \xB7 United Kingdom \xB7 1942\u20132018",
       born: "1942-01-08",
       gregorian: "1942-01-08",
       birthplace: "Oxford",
@@ -15057,7 +15057,7 @@ var people_index_default = {
     {
       slug: "subhas-chandra-bose",
       name: "Subhas Chandra Bose",
-      shortDescription: "Politician and writer \xB7 India \xB7 1897\u20131945",
+      shortDescription: "Politician \xB7 India \xB7 1897\u20131945",
       born: "1897-01-23",
       gregorian: "1897-01-23",
       birthplace: "Cuttack",
@@ -15217,7 +15217,7 @@ var people_index_default = {
     {
       slug: "swami-vivekananda",
       name: "Swami Vivekananda",
-      shortDescription: "Philosopher and teacher \xB7 India \xB7 1863\u20131902",
+      shortDescription: "Monk and philosopher \xB7 India \xB7 1863\u20131902",
       born: "1863-01-12",
       gregorian: "1863-01-12",
       birthplace: "Swami Vivekananda's Ancestral House & Cultural Centre",
@@ -15297,7 +15297,7 @@ var people_index_default = {
     {
       slug: "sylvia-plath",
       name: "Sylvia Plath",
-      shortDescription: "Poet and draftsperson \xB7 United States \xB7 1932\u20131963",
+      shortDescription: "Poet and writer \xB7 United States \xB7 1932\u20131963",
       born: "1932-10-27",
       gregorian: "1932-10-27",
       birthplace: "Boston",
@@ -15457,7 +15457,7 @@ var people_index_default = {
     {
       slug: "tina-turner",
       name: "Tina Turner",
-      shortDescription: "Singer and autobiographer \xB7 United States \xB7 1939\u20132023",
+      shortDescription: "Singer and songwriter \xB7 United States \xB7 1939\u20132023",
       born: "1939-11-26",
       gregorian: "1939-11-26",
       birthplace: "Brownsville",
@@ -15537,7 +15537,7 @@ var people_index_default = {
     {
       slug: "toni-morrison",
       name: "Toni Morrison",
-      shortDescription: "Writer and university teacher \xB7 United States \xB7 1931\u20132019",
+      shortDescription: "Novelist and essayist \xB7 United States \xB7 1931\u20132019",
       born: "1931-02-18",
       gregorian: "1931-02-18",
       birthplace: "Lorain",
@@ -15617,7 +15617,7 @@ var people_index_default = {
     {
       slug: "victor-hugo",
       name: "Victor Hugo",
-      shortDescription: "Politician and playwright \xB7 France \xB7 1802\u20131885",
+      shortDescription: "Novelist and poet \xB7 France \xB7 1802\u20131885",
       born: "1802-02-26",
       gregorian: "1802-02-26",
       birthplace: "Besan\xE7on",
@@ -16017,7 +16017,7 @@ var people_index_default = {
     {
       slug: "wilt-chamberlain",
       name: "Wilt Chamberlain",
-      shortDescription: "Basketball player and screenwriter \xB7 United States \xB7 1936\u20131999",
+      shortDescription: "Basketball player \xB7 United States \xB7 1936\u20131999",
       born: "1936-08-21",
       gregorian: "1936-08-21",
       birthplace: "Philadelphia",
