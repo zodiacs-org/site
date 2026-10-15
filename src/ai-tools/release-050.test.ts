@@ -102,3 +102,25 @@ describe('the 0.5.0 tools through the tool runner', () => {
     ]) expect(await executeAiTool('get_occasion_sky', args, on)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
   });
 });
+
+describe('review fixes for the predictions release', () => {
+  it('keeps a famous person’s name in the compatibility share link', async () => {
+    const result = await executeAiTool('get_compatibility', { a: { name: 'Sam', birthDate: '1994-02-01' }, b: { famous: 'Frida Kahlo' } }, on);
+    expect(result.ok).toBe(true);
+    if (result.ok && result.tool === 'get_compatibility' && 'shareUrl' in result.data) {
+      expect(new URL(result.data.shareUrl as string).searchParams.get('b')).toBe('Frida Kahlo');
+    }
+  });
+
+  it('refuses a horoscope birth time or zone without the birth date', async () => {
+    const refused = await executeAiTool('get_horoscope', { sign: 'leo', birthTime: '08:30', birthZone: 'Europe/Madrid' }, on);
+    expect(refused).toMatchObject({ ok: false });
+  });
+
+  it('describes personal forecasts in the capabilities only while the birth-date tools are on', async () => {
+    const withTools = await executeAiTool('get_capabilities', {}, on);
+    const without = await executeAiTool('get_capabilities', {}, off);
+    expect(JSON.stringify(withTools)).toMatch(/personal forecast for the week/u);
+    expect(JSON.stringify(without)).not.toMatch(/personal forecast for the week/u);
+  });
+});

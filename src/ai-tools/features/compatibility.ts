@@ -407,8 +407,8 @@ export async function computeCompatibility(
     pageUrl: sunA && sunB ? `${origin}/compatibility/${pairSlug(sunA, sunB)}/` : null,
     cardUrl,
     shareUrl: compatibilityShareUrl(origin, {
-      a: { name: a.person.name ?? null, sun: sunA },
-      b: { name: b.person.name ?? null, sun: sunB },
+      a: { name: a.famous?.name ?? a.person.name ?? null, sun: sunA },
+      b: { name: b.famous?.name ?? b.person.name ?? null, sun: sunB },
       score,
     }),
     notes: notesFor(a, b),

@@ -112,7 +112,7 @@ export const INPUT_SCHEMAS = {
     birthDate: date.optional().describe("Optional: the person's birth date, for a personal forecast of their week from their own chart. Not stored."),
     birthTime: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u).optional().describe('Optional birth time on the local clock; needs birthZone. Not stored.'),
     birthZone: zone.optional().describe("Optional: the birthplace's time zone, needed with birthTime. Not stored."),
-  }),
+  }).refine((args) => args.birthDate !== undefined || (args.birthTime === undefined && args.birthZone === undefined), { message: 'A birth time or birthplace zone needs the birth date.' }),
 };
 
 const link = z.object({ title: z.string(), url: z.url() });
