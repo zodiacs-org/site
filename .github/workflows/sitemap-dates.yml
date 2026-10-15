@@ -32,8 +32,11 @@ jobs:
     name: Changed pages carry new sitemap dates
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # The flags production builds with, as in site-check.yml's
-    # production-flags-build job, so both builds list production's pages.
+    # Exactly the environment of site-check.yml's production-flags-build job
+    # (scripts/sitemap-rendered-changes.test.mjs holds the two equal), so both
+    # builds render what production renders. That includes the daily email
+    # chain's stand-ins: with them /birth-chart/ renders the post-chart brief
+    # in its <main>. Nothing here sends email or contacts Supabase.
     env:
       PUBLIC_COMPAT_INVITES_ENABLED: "1"
       PUBLIC_REGISTRY_AURA_ENABLED: "1"
@@ -48,6 +51,16 @@ jobs:
       SOLANA_RPC_URL: https://production-flags-ci.invalid/rpc
       BASE_RPC_URL: https://production-flags-ci.invalid/base
       PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      SUPABASE_SERVICE_ROLE_KEY: ci_stand_in_service_role
+      DAILY_EMAIL_ENABLED: "1"
+      EMAIL_PROVIDER: resend
+      RESEND_API_KEY: re_ci_stand_in_sending
+      RESEND_CONTACTS_API_KEY: re_ci_stand_in_contacts
+      RESEND_FROM_EMAIL: "Zodiacs.org <ci@production-flags-ci.invalid>"
+      RESEND_DAILY_SEGMENT_ID: ci_stand_in_daily_segment
+      EMAIL_CONFIRM_SECRET: ci-stand-in-confirm-secret-00000000000000000000
+      DAILY_EMAIL_UNSUBSCRIBE_SECRET: ci-stand-in-unsubscribe-secret-000000000000000
+      DAILY_EMAIL_RECIPIENT_HASH_SECRET: ci-stand-in-recipient-secret-0000000000000000
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0

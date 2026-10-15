@@ -207,3 +207,30 @@ describe('the pinned clock', () => {
     expect(() => run({ ZODIACS_FROZEN_CLOCK: 'noon' })).toThrow(/not a date/);
   });
 });
+
+describe('the workflow', () => {
+  // A job's `env:` block as a map: the lines indented under it, comments aside.
+  async function jobEnv(workflow, job) {
+    const lines = (await readFile(join(root, '.github/workflows', workflow), 'utf8')).split('\n');
+    const start = lines.indexOf(`  ${job}:`);
+    if (start < 0) throw new Error(`${workflow} has no job ${job}`);
+    const end = lines.findIndex((line, index) => index > start && /^ {2}\S/.test(line));
+    const envAt = lines.findIndex((line, index) => index > start && (end < 0 || index < end) && line === '    env:');
+    if (envAt < 0) throw new Error(`${workflow}'s ${job} job has no env block`);
+    const env = {};
+    for (const line of lines.slice(envAt + 1)) {
+      if (/^\s*(#|$)/.test(line)) continue;
+      const match = /^ {6}([A-Z0-9_]+): (.*)$/.exec(line);
+      if (!match) break;
+      env[match[1]] = match[2].replace(/^"(.*)"$/, '$1');
+    }
+    return env;
+  }
+
+  it('builds with exactly the environment of site-check.yml\'s production build', async () => {
+    const production = await jobEnv('site-check.yml', 'production-flags-build');
+    expect(production).toHaveProperty('DAILY_EMAIL_ENABLED', '1');
+    expect(Object.keys(production).length).toBeGreaterThan(20);
+    expect(await jobEnv('sitemap-dates.yml', 'sitemap-dates')).toEqual(production);
+  });
+});
