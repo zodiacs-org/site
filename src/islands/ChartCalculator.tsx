@@ -72,6 +72,7 @@ import CalculationReload, { calculationError, calculationLoadMessage } from './C
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { profileAccessAllowed } from '../lib/account-v2/profile-access-reader';
 import { learningInputIdentity } from '../lib/learning-input-identity';
+import { useAccountSaveModule } from './account-save-loader';
 import type { AspectType } from '../lib/engine/types';
 import {
   clearPostChartContext,
@@ -363,6 +364,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<FormFieldErrors>({});
   const [saved, setSaved] = useState<'idle' | 'saved' | 'full' | 'error'>('idle');
+  const chartAccountSave = useAccountSaveModule(Boolean(chart) && mode === 'full' && locale === 'en');
   const [shareInput, setShareInput] = useState<ShareChartInput | null>(null);
   const [computedInput, setComputedInput] = useState<RunInput | null>(null);
   const [profileRevision, setProfileRevision] = useState(0);
@@ -2704,6 +2706,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           {saved === 'saved' && (subjectMode === 'self' && locale === 'en'
             ? <p class="calc__saved" data-your-page-ready>Saved as your chart on this device. Use it with Today, or <a href="/profile/">open your saved charts</a>. Account sync is a separate choice.</p>
             : <p class="calc__saved">{t(locale, 'chartSavedBeforeLink')} <a href={localizePath(locale, '/profile/')}>{t(locale, 'chartSavedLink')}</a> {t(locale, 'chartSavedAfterLink')}</p>)}
+          {chartAccountSave && mode === 'full' && locale === 'en' && <chartAccountSave.default kind="chart" />}
           {mode === 'full' && shareInput && (
             <details class="calc__more" data-chart-more>
               <summary class="calc__more-summary">

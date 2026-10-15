@@ -26,8 +26,10 @@ admin browser session.
 
 ## Auth Configuration
 
-Authentication is magic-link email only for this release. No OAuth providers are
-required.
+Authentication is magic-link email. Google and Apple sign-in are built but
+hidden behind `PUBLIC_AUTH_GOOGLE` / `PUBLIC_AUTH_APPLE` (both off); setting
+them up, and the `/auth/callback/**` redirect URLs they need, is in
+`docs/platform/accounts/PROVIDER_SETUP.md`.
 
 Current URL configuration observed in Supabase:
 

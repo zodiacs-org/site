@@ -4,6 +4,9 @@ import { tf, type CatalogLocale as Locale } from '../lib/i18n';
 import { pairSlug } from '../lib/pair-slug';
 import { shareCardText } from '../lib/share-card-copy';
 import { signForLongitude, signName } from '../lib/signs';
+import type { SavedPairSide } from '../lib/profile/pairs';
+import type { SavedChart } from '../lib/profile/schema';
+import { useAccountSaveModule } from './account-save-loader';
 
 interface CompatibilitySharePerson {
   label: string;
@@ -103,4 +106,19 @@ export function CompatibilityShareControl({
       )}
     </>
   );
+}
+
+/**
+ * "Save to your profile" under a compatibility result. It rides in this
+ * module, which the result already loads after it renders, so the
+ * compatibility page's first load carries nothing for it.
+ */
+export function CompatibilityAccountSave({ a, b, charts, locale }: {
+  a: SavedPairSide;
+  b: SavedPairSide;
+  charts: readonly SavedChart[];
+  locale: Locale;
+}) {
+  const account = useAccountSaveModule(locale === 'en');
+  return account ? <account.ComparisonSave a={a} b={b} charts={charts} /> : null;
 }

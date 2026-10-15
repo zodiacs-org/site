@@ -1643,6 +1643,10 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
               />
             ) : null
           )}
+          {/* Save to your profile (account), beside the device-local saved comparison. */}
+          {compatShareMod && result.sides[0] && result.sides[1] && (
+            <compatShareMod.CompatibilityAccountSave a={result.sides[0]} b={result.sides[1]} charts={charts} locale={locale} />
+          )}
           {/* Announcement rides the persistent status node above; these
               visible notes are for sighted users (alerts announce fine
               on insertion). */}

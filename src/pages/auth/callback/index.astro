@@ -1,0 +1,28 @@
+---
+import Base from '../../../layouts/Base.astro';
+import OAuthCallback from '../../../islands/OAuthCallback';
+---
+<Base
+  clientUi
+  title="Signing In | Zodiacs.org"
+  description="Finishing sign-in to your Zodiacs.org profile."
+  path="/auth/callback/"
+  noindex={true}
+  nofollow={true}
+  privateSurface={true}
+  noServiceWorker={true}
+  noAssistant={true}
+>
+  <section class="section--tight container container--narrow auth-callback">
+    <h1 class="display">Signing you in</h1>
+    <OAuthCallback client:load />
+    <noscript>
+      <p>Signing in needs JavaScript. Enable it, then start again from <a href="/profile/">your profile</a>.</p>
+    </noscript>
+  </section>
+</Base>
+
+<style>
+  .auth-callback { min-height: 40vh; }
+  .auth-callback h1 { margin: 0 0 14px; font-size: var(--text-2xl); }
+</style>

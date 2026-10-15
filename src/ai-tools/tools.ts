@@ -31,6 +31,8 @@ export interface AiDependencies {
   horoscopeWindow?: () => Promise<HoroscopeWindow>;
   /** The occasion tools (ZODIACS_OCCASIONS_ENABLED=1); off until their release. */
   occasions?: boolean;
+  /** save_to_zodiacs is offered (ZODIACS_ACCOUNTS_ENABLED=1 with the occasion tools); changes the declared privacy/limitations. */
+  accounts?: boolean;
 }
 
 /** Per-call facts from the host and results meant only for the panel. */
@@ -146,6 +148,11 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result, including any card link that carries the details after its #, goes to the assistant. The famous-chart and sky-calendar tools need no personal details.';
           capabilities.limitations.push('The occasion tools give the sky on a date, rate it from 0 to 100 by astrology\'s traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology\'s life milestones; they do not guarantee how a day will go.');
           capabilities.limitations.push('Compatibility scores two charts by astrology\'s reading of their contacts; it does not guarantee how a relationship will go. Famous charts, alone or compared with someone\'s own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
+        }
+        if (dependencies.accounts && dependencies.occasions) {
+          const capabilities = data as { privacy: string; limitations: string[] };
+          capabilities.privacy += ' Only the save tool needs an account: when the person signs in to their own Zodiacs account and asks to keep a chart, comparison, occasion card or personal week, Zodiacs works it out again from the same details and saves that result, including the birth dates and names in it, to their account until they delete it. It saves no conversation text.';
+          capabilities.limitations[2] = 'No eclipse or aspect search, birth-time rectification, personal predictions or reminders. Saving to a Zodiacs account needs the person to sign in; every other tool works without one.';
         }
         if (dependencies.skyWatch) {
           const capabilities = data as { privacy: string; limitations: string[] };
