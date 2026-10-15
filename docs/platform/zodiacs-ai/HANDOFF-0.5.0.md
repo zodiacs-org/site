@@ -1,5 +1,9 @@
 # Handoff: Zodiacs plugin 0.5.0 (for Codex)
 
+> **15 October:** the steps below were carried out in #758. The owner then
+> withdrew the submission. The plan for resubmitting is
+> [`RESUBMISSION-0.5.0.md`](RESUBMISSION-0.5.0.md).
+
 Written 14 October 2026 by Claude, which built 0.5.0 and drove it to `main`.
 The owner, who is not technical, has asked Codex to finish the release.
 Report to them in plain words, and never ask them to watch CI.

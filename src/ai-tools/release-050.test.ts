@@ -55,4 +55,13 @@ describe('the 0.5.0 tools through the tool runner', () => {
     const calendar = await executeAiTool('get_sky_calendar', {}, on);
     expect(calendar).toMatchObject({ ok: true, data: { feedUrl: 'https://zodiacs.org/sky-calendar.ics', subscribeUrl: 'webcal://zodiacs.org/sky-calendar.ics' } });
   });
+
+  it('answers a sky fact for an instant even when the assistant also sends the time zone', async () => {
+    const args = { kind: 'retrograde', body: 'Mercury', instant: '2026-10-15T17:00:00+07:00' } as const;
+    const plain = await executeAiTool('check_sky_fact', args, on);
+    const zoned = await executeAiTool('check_sky_fact', { ...args, zone: 'Asia/Bangkok' }, on);
+    expect(plain.ok).toBe(true);
+    expect(zoned.ok).toBe(true);
+    if (plain.ok && zoned.ok && plain.tool === 'check_sky_fact' && zoned.tool === 'check_sky_fact') expect(zoned.data.answer).toBe(plain.data.answer);
+  });
 });

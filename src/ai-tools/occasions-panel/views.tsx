@@ -66,7 +66,7 @@ export function Compatibility({ data }: { data: CompatibilityData }) {
     <div class="numbers">
       <div><strong>{data.counts.easeful}</strong><span>trines and sextiles</span></div>
       <div><strong>{data.counts.charged}</strong><span>squares and oppositions</span></div>
-      <div><strong>{data.counts.total}</strong><span>contacts in all</span></div>
+      <div><strong>{data.counts.byAspect.conjunction}</strong><span>conjunctions</span></div>
     </div>
     {data.notes.map((note) => <p class="quiet" key={note}>{note}</p>)}
     <Actions text={text} cardUrl={data.cardUrl ?? data.pageUrl} cardLabel={data.cardUrl ? 'Open both charts on zodiacs.org' : 'Read this pair on zodiacs.org'}/>
@@ -86,7 +86,7 @@ export function ChartTwins({ data }: { data: ChartTwinsData }) {
     {data.twins.length > 0
       ? <ul class="people">{data.twins.map((twin) => <li key={twin.slug}>
         <a href={twin.url} target="_blank" rel="noreferrer">{twin.name}</a>
-        <span class="quiet">{twin.shortDescription} · born {twin.born} · shares your {SHARES[twin.shares]}</span>
+        <span class="quiet">{twin.shortDescription} · born {day(twin.born)} · shares your {SHARES[twin.shares]}</span>
       </li>)}</ul>
       : <p class="words">No one in the people Zodiacs publishes shares these signs.</p>}
     {data.total > data.twins.length && <p class="quiet">{data.total} people in all; the page lists every one.</p>}
@@ -105,10 +105,10 @@ export function FamousChart({ data }: { data: FamousChartData }) {
     <Signature/>
   </article>;
   const person = data.person;
-  const text = [person.name, person.shortDescription, `Born ${person.born}`, `${signName(person.sun.sign)} Sun${person.moon.sign ? ` · ${signName(person.moon.sign)} Moon` : ''}`,
+  const text = [person.name, person.shortDescription, `Born ${day(person.born)}`, `${signName(person.sun.sign)} Sun${person.moon.sign ? ` · ${signName(person.moon.sign)} Moon` : ''}`,
     ...person.placements.map((placement) => `${placement.body}: ${signName(placement.sign)} ${placement.degree.toFixed(1)}°`), person.lede, data.note, person.url.replace(/\?.*$/u, '').replace(/^https:\/\//u, '')].join('\n');
   return <article class="card">
-    <p class="kicker">{person.shortDescription} · born {person.born}</p>
+    <p class="kicker">{person.shortDescription} · born {day(person.born)}</p>
     <h1>{person.name}</h1>
     <div class="discs">
       <Disc sign={person.sun.sign} label={`${signName(person.sun.sign)} Sun`} detail={`${person.sun.degree.toFixed(1)}°`}/>

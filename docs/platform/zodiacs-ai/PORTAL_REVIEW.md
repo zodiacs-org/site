@@ -1,5 +1,14 @@
 # OpenAI portal review record
 
+## 0.5.0 withdrawn for fixes — 15 October 2026
+
+Later the same day the owner withdrew the submission below. The owner's review
+brief of 15 October gives the last verified portal state as **Draft / Not
+submitted / Not published**. This is reported by the owner; it was not
+re-checked in the portal for this record. An independent review of the
+withdrawn package and the plan for resubmitting are in
+[`RESUBMISSION-0.5.0.md`](RESUBMISSION-0.5.0.md).
+
 ## 0.5.0 release — 15 October 2026
 
 The owner reported that the old public plugin had been deleted and explicitly

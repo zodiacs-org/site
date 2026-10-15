@@ -16,8 +16,9 @@ server offers thirteen read-only tools, all seven new tools returned results,
 the updated privacy disclosure is live, and anonymous production counts
 were verified for the seven new tool names.
 
-The current shared panel is `ui://zodiacs/occasions-v2.html`; the v1 address
-remains readable for existing conversations. Calendar, horoscope and Chart
+The current shared panel is `ui://zodiacs/occasions-v3.html` (15 October: the
+comparison counts add up and famous people's dates read as dates); the v2 and v1
+addresses remain readable for existing conversations. Calendar, horoscope and Chart
 Studio resource addresses were also refreshed to prevent stale host branding.
 
 The public name is **Zodiacs**, with **Birth charts & horoscopes** as its
