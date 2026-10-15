@@ -13,15 +13,15 @@
  * - new: a <loc> the last sitemap did not list;
  * - changed: a <loc> whose <lastmod> differs;
  * - removed: a <loc> the sitemap no longer lists, so engines recrawl it;
- * - changed the same day: a <loc> dated since the last run's day whose
- *   content changed since that run. A sitemap date says only which day a page
- *   last changed, so a second change the same day keeps it; the snapshot
- *   records the content digest of each page dated since the last run's day
+ * - changed again: a <loc> dated in the recent window (DIGEST_DAYS) whose
+ *   content changed since the last run. A sitemap date says only which day a
+ *   page last changed, so a second change that day keeps it; the snapshot
+ *   records the content digest of each page dated in the window
  *   (contentDigest in scripts/sitemap-rendered-changes.mjs, the digest the
  *   sitemap-date check compares, with the words the page's stylesheets add)
- *   and submits a page whose digest moved. Reading from the last run's day,
- *   not the run's own, keeps a change made late on one UTC day that reaches
- *   no run until the next.
+ *   and submits a page whose digest moved. The window reaches back two days,
+ *   or to the last run's day if that is earlier, so every run of the next
+ *   days still compares a page and keeps its digest.
  *
  * It submits those URLs to IndexNow, which shares them with every
  * participating engine, in requests of at most 10,000 URLs, and only then
@@ -46,6 +46,12 @@ export const SNAPSHOT_SCHEMA = 'zodiacs.indexnow-sitemap.v2';
 /** The previous schema, read as a snapshot without content digests. */
 const SNAPSHOT_SCHEMA_V1 = 'zodiacs.indexnow-sitemap.v1';
 const PAGE_FETCHES_AT_ONCE = 8;
+/**
+ * How many days before the run's day the digests reach. A page dated in that window is compared on every run, so a
+ * change that keeps its date (on its own day, on a deployment or promotion that becomes live a day later, or reaching
+ * only the next day's runs) is submitted; about 80 pages are dated on a given day.
+ */
+export const DIGEST_DAYS = 2;
 export const MAX_URLS_PER_REQUEST = 10_000;
 export const BOOTSTRAP_DAYS = 30;
 const DAY_MS = 86_400_000;
@@ -136,7 +142,7 @@ export function snapshotOf(urls, readAt, digests = new Map()) {
     sitemap: SITEMAP_URL,
     readAt,
     urls: Object.fromEntries([...urls].sort(byKey)),
-    // The content digest of each page dated since the last run's day, as read on this run.
+    // The content digest of each page dated in the recent window, as read on this run.
     digests: Object.fromEntries([...digests].sort(byKey)),
   };
 }
@@ -331,8 +337,11 @@ export async function runIndexNow({
     const since = bootstrapSince(date);
     result = { mode: 'bootstrap', since, urls: urlsDatedSince(current, since) };
   }
-  // A page dated since the last run's day can have changed again that day without a new date.
-  const since = previous && previous.readAt.slice(0, 10) < date ? previous.readAt.slice(0, 10) : date;
+  // A page dated in the recent window can have changed again without a new date: digest every page dated from the
+  // DIGEST_DAYS days before the run's day, or the last run's day if that is earlier, through the run's day.
+  const windowStart = bootstrapSince(date, DIGEST_DAYS);
+  const lastRunDay = previous ? previous.readAt.slice(0, 10) : date;
+  const since = lastRunDay < windowStart ? lastRunDay : windowStart;
   const digests = await digestPages(urlsDatedBetween(current, since, date), { fetchImpl, tries, pause });
   result.digested = digests.size;
   result.sameDay = previous ? changedSameDay(digests, previous.digests, new Set(result.urls)) : [];
@@ -360,7 +369,7 @@ export function renderReport(result) {
       ? 'Nothing to submit.'
       : `Submitted ${result.urls.length} URLs to IndexNow (HTTP ${[...new Set(result.statuses)].join(', ')}).`;
   if (result.mode === 'changes') {
-    lines.push(`The sitemap read at ${result.readAt} lists ${result.count} URLs. Against the ${result.previousCount} submitted from the sitemap read at ${result.previousReadAt}: ${result.added.length} new, ${result.changed.length} changed, ${result.removed.length} removed, and ${result.sameDay.length} of the ${result.digested} dated since that run's day changed again since it.`);
+    lines.push(`The sitemap read at ${result.readAt} lists ${result.count} URLs. Against the ${result.previousCount} submitted from the sitemap read at ${result.previousReadAt}: ${result.added.length} new, ${result.changed.length} changed, ${result.removed.length} removed, and ${result.sameDay.length} of the ${result.digested} dated in the last ${DIGEST_DAYS + 1} days changed again since that run.`);
   } else {
     lines.push(`No earlier sitemap was recorded. The sitemap read at ${result.readAt} lists ${result.count} URLs; ${result.urls.length} are dated ${result.since} or later.`);
   }

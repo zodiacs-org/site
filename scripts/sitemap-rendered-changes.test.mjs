@@ -5,6 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   LABEL_ATTRIBUTES,
+  MEDIA_ATTRIBUTES,
   SCHEMA,
   compare,
   contentDigest,
@@ -138,11 +139,29 @@ describe('a page’s content', () => {
     expect(label('Date')).not.toBe(label('Day'));
   });
 
-  it('changes when a picture is swapped under the same description', () => {
+  it('changes when a picture is swapped under the same description, lazy-loaded ones included', () => {
     const picture = (src) => contentDigest(Buffer.from(page({ main: `<p>Ten guides.</p><img src="${src}" alt="Aries">` })), '/p/');
     expect(picture('/assets/zodiac-icons/128/aries.webp')).not.toBe(picture('/assets/zodiac-icons/128/taurus.webp'));
     const video = (poster) => contentDigest(Buffer.from(page({ main: `<video src="/a.mp4" poster="${poster}"></video>` })), '/p/');
     expect(video('/a.jpg')).not.toBe(video('/b.jpg'));
+    const lazy = (src) => contentDigest(Buffer.from(page({ main: `<video muted playsinline><source data-src="${src}" type="video/mp4"></video>` })), '/p/');
+    expect(lazy('/assets/hero/a.mp4')).not.toBe(lazy('/assets/hero/b.mp4'));
+  });
+
+  it('reads every attribute the site names a media file in', async () => {
+    const used = new Set();
+    const walk = async (directory) => {
+      for (const entry of await readdir(directory, { withFileTypes: true })) {
+        const path = join(directory, entry.name);
+        if (entry.isDirectory()) await walk(path);
+        else if (/\.(?:astro|tsx|jsx|ts)$/u.test(entry.name) && !/\.test\./u.test(entry.name)) {
+          for (const [, name] of (await readFile(path, 'utf8')).matchAll(/\s(data-[a-z-]*(?:src|srcset|poster))\s*=/gu)) used.add(name);
+        }
+      }
+    };
+    await walk(join(root, 'src'));
+    expect([...used]).toContain('data-src');
+    for (const name of used) expect(MEDIA_ATTRIBUTES).toContain(name);
   });
 
   it('reads every attribute the site\'s stylesheets show with attr()', async () => {

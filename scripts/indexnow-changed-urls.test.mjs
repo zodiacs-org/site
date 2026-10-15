@@ -318,7 +318,7 @@ describe('runIndexNow', () => {
     const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now, fetchImpl, pause: noPause });
     expect(result).toMatchObject({ mode: 'changes', changed: [], added: [], removed: [], sameDay: [docs], digested: 2 });
     expect(posts.map(({ body }) => body.urlList)).toEqual([[docs]]);
-    expect(renderReport(result)).toContain('0 new, 0 changed, 0 removed, and 1 of the 2 dated since that run\'s day changed again since it.');
+    expect(renderReport(result)).toContain('0 new, 0 changed, 0 removed, and 1 of the 2 dated in the last 3 days changed again since that run.');
 
     // The new content is recorded: the next run on the same content submits nothing.
     const again = stub({ pages: { [docs]: livePage(docs, 'Revised the same day.') } });
@@ -348,6 +348,26 @@ describe('runIndexNow', () => {
     const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-13', now: () => '2026-10-13T00:41:00.000Z', fetchImpl, pause: noPause });
     expect(result.sameDay).toEqual([docs]);
     expect(posts.map(({ body }) => body.urlList)).toEqual([[docs]]);
+  });
+
+  it('keeps comparing a page for two days after its date, whatever the runs between', async () => {
+    const docs = site('/developers/docs/');
+    const at = (time) => () => time;
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now: at('2026-10-12T20:00:00.000Z'), fetchImpl: stub().fetchImpl, pause: noPause });
+    // Runs on the next day, before and after midnight's recovery run, find nothing new …
+    for (const time of ['2026-10-13T00:41:00.000Z', '2026-10-13T06:41:00.000Z']) {
+      const quiet = stub();
+      expect((await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-13', now: at(time), fetchImpl: quiet.fetchImpl, pause: noPause })).urls).toEqual([]);
+    }
+    // … and a deployment or promotion of the 12th's content that becomes live later still reaches IndexNow.
+    const { fetchImpl, posts } = stub({ pages: { [docs]: livePage(docs, 'Promoted on the 13th.') } });
+    const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-13', now: at('2026-10-13T12:41:00.000Z'), fetchImpl, pause: noPause });
+    expect(result.sameDay).toEqual([docs]);
+    expect(posts.map(({ body }) => body.urlList)).toEqual([[docs]]);
+    // Three days on, the page has left the window and is no longer fetched.
+    const later = stub();
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-15', now: at('2026-10-15T06:41:00.000Z'), fetchImpl: later.fetchImpl, pause: noPause });
+    expect(later.gets).toEqual([]);
   });
 
   it('digests the words a page\'s stylesheets add, reading each stylesheet once', async () => {

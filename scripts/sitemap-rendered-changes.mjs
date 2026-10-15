@@ -72,6 +72,8 @@ const squeeze = (text) => text.replace(/\s+/gu, ' ').trim();
 // stylesheets show with `content: attr(data-label)` (a test holds every attribute they show to this list).
 export const LABEL_ATTRIBUTES = ['placeholder', 'aria-label', 'aria-description', 'title', 'label', 'data-label'];
 const SHOWN_INPUT_VALUES = /^(?:|text|search|email|url|tel|number|submit|button|reset)$/iu;
+// Where a media element names the file it shows; the site lazy-loads with data-src (a test holds the site to this list).
+export const MEDIA_ATTRIBUTES = ['src', 'srcset', 'poster', 'data', 'data-src', 'data-srcset', 'data-poster'];
 
 /** The classes a selector requires, leaving out those inside :not(), attribute selectors and strings. */
 function requiredClasses(selector) {
@@ -152,11 +154,12 @@ export function pageContent(html, { generated = [] } = {}) {
     .replace(/<style\b[\s\S]*?<\/style>/giu, ' ');
   const links = [...cleaned.matchAll(/<a\b[^>]*>/giu)].map(([tag]) => attributes(tag).href).filter(Boolean);
   const images = [...cleaned.matchAll(/<img\b[^>]*>/giu)].map(([tag]) => attributes(tag).alt).filter(Boolean).map(squeeze);
-  // The files its images, video, audio and frames show: a picture swapped under the same description is a change.
+  // The files its images, video, audio and frames show, lazy-loaded ones included: a picture swapped under the same
+  // description is a change.
   const media = [];
   for (const [tag] of cleaned.matchAll(/<(?:img|source|video|audio|iframe|embed|object)\b[^>]*>/giu)) {
     const found = attributes(tag);
-    for (const name of ['src', 'srcset', 'poster', 'data']) if (found[name]) media.push(`${name}: ${squeeze(found[name])}`);
+    for (const name of MEDIA_ATTRIBUTES) if (found[name]) media.push(`${name}: ${squeeze(found[name])}`);
   }
   const labels = [];
   for (const [tag, element] of cleaned.matchAll(/<([a-z][a-z0-9-]*)\b[^>]*>/giu)) {
