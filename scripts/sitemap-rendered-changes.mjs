@@ -73,12 +73,27 @@ const squeeze = (text) => text.replace(/\s+/gu, ' ').trim();
 export const LABEL_ATTRIBUTES = ['placeholder', 'aria-label', 'aria-description', 'title', 'label', 'data-label'];
 const SHOWN_INPUT_VALUES = /^(?:|text|search|email|url|tel|number|submit|button|reset)$/iu;
 
-/** The words a stylesheet adds with `content`: each quoted string in a content declaration that holds a letter. */
+/** The classes a selector requires, leaving out those inside :not(), attribute selectors and strings. */
+function requiredClasses(selector) {
+  const plain = selector
+    .replace(/(["'])(?:\\.|(?!\1)[^\\])*\1/gu, ' ')
+    .replace(/\[[^\]]*\]/gu, ' ')
+    .replace(/:not\((?:[^()]|\([^()]*\))*\)/giu, ' ');
+  return [...plain.matchAll(/\.(-?[_a-zA-Z][\w-]*)/gu)].map(([, name]) => name);
+}
+
+/**
+ * The words a stylesheet adds with `content`: each quoted string holding a letter in a content declaration, with the
+ * classes each of its rule's selectors requires. The innermost rules are read, so rules inside @media count.
+ */
 export function stylesheetCopy(css) {
   const copy = [];
-  for (const [, value] of css.matchAll(/(?<![-\w])content\s*:\s*([^;}]+)/giu)) {
-    for (const [, , text] of value.matchAll(/(["'])((?:\\.|(?!\1)[^\\])*)\1/gu)) {
-      if (/\p{L}/u.test(text)) copy.push(text);
+  for (const [, selectorText, block] of css.replace(/\/\*[\s\S]*?\*\//gu, ' ').matchAll(/([^{}]*)\{([^{}]*)\}/gu)) {
+    const selectors = selectorText.split(',').map(requiredClasses);
+    for (const [, value] of block.matchAll(/(?<![-\w])content\s*:\s*([^;}]+)/giu)) {
+      for (const [, , text] of value.matchAll(/(["'])((?:\\.|(?!\1)[^\\])*)\1/gu)) {
+        if (/\p{L}/u.test(text)) copy.push({ text, selectors });
+      }
     }
   }
   return copy;
@@ -95,14 +110,28 @@ export function pageStylesheets(html) {
   return { hrefs, inline };
 }
 
+/** The region a page's content is read from: its <main>, or its <body> without one. */
+function contentRegion(html) {
+  return html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0]
+    ?? html.match(/<body\b[\s\S]*?<\/body>/iu)?.[0]
+    ?? html;
+}
+
 /**
- * The words a page's stylesheets add (stylesheetCopy over its linked and inline stylesheets), sorted and distinct.
+ * The words a page's stylesheets add to its content (stylesheetCopy over its linked and inline stylesheets), sorted and
+ * distinct: a word counts when one of its rule's selectors requires only classes the content's markup carries.
  * `readStylesheet(href)` returns a linked stylesheet's text: from the build, or for IndexNow Changes from the live site.
  */
 export async function generatedCopy(html, readStylesheet) {
   const { hrefs, inline } = pageStylesheets(html);
   const sheets = [...inline, ...await Promise.all(hrefs.map((href) => readStylesheet(href)))];
-  return [...new Set(sheets.flatMap(stylesheetCopy))].sort();
+  const classes = new Set();
+  for (const [tag] of contentRegion(html).matchAll(/<[a-z][a-z0-9-]*\b[^>]*>/giu)) {
+    for (const name of (attributes(tag).class ?? '').split(/\s+/u)) if (name) classes.add(name);
+  }
+  const shown = sheets.flatMap(stylesheetCopy)
+    .filter(({ selectors }) => selectors.some((required) => required.every((name) => classes.has(name))));
+  return [...new Set(shown.map(({ text }) => text))].sort();
 }
 
 /**
@@ -117,10 +146,7 @@ export function pageContent(html, { generated = [] } = {}) {
     const meta = attributes(tag);
     if (meta.name?.toLowerCase() === 'description') description = squeeze(meta.content ?? '');
   }
-  const region = html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0]
-    ?? html.match(/<body\b[\s\S]*?<\/body>/iu)?.[0]
-    ?? html;
-  const cleaned = region
+  const cleaned = contentRegion(html)
     .replace(/<!--[\s\S]*?-->/gu, ' ')
     .replace(/<script\b[\s\S]*?<\/script>/giu, ' ')
     .replace(/<style\b[\s\S]*?<\/style>/giu, ' ');

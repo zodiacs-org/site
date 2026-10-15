@@ -119,11 +119,16 @@ describe('a page’s content', () => {
 
   it('includes the words its stylesheets add, and the data-label they show', async () => {
     expect(stylesheetCopy('.a::after { content: "Show"; } .b::before{content:\'Hide\'} .c::after { content: "\\2192"; } .d::before { content: attr(data-label) ": "; } .e { align-content: center; background: url("a.png"); }'))
-      .toEqual(['Show', 'Hide']);
+      .toEqual([{ text: 'Show', selectors: [['a']] }, { text: 'Hide', selectors: [['b']] }]);
+    expect(stylesheetCopy('@media (min-width: 40em) { .x > summary::after, li:not(.y)[data-z="a.b"]::before { content: "Open"; } }'))
+      .toEqual([{ text: 'Open', selectors: [['x'], []] }]);
     expect(pageStylesheets('<head><link rel="preload stylesheet" href="/_astro/a.css"><link rel="icon" href="/i.png"><style>.x::after{content:"Go"}</style></head>'))
       .toEqual({ hrefs: ['/_astro/a.css'], inline: ['.x::after{content:"Go"}'] });
-    const base = await build('css-base', [['/events/', '2026-10-01']], { '/events/': page() }, { css: '.toggle::after { content: "Show"; }' });
-    const head = await build('css-head', [['/events/', '2026-10-01']], { '/events/': page() }, { css: '.toggle::after { content: "Open"; }' });
+    // The word reaches a page whose content carries the rule's class, and only that page.
+    const pages = { '/events/': page({ main: '<details class="toggle"><summary>Earlier</summary></details>' }), '/eclipses/': page() };
+    const dates = [['/events/', '2026-10-01'], ['/eclipses/', '2026-10-01']];
+    const base = await build('css-base', dates, pages, { css: '.toggle > summary::after { content: "Show"; }' });
+    const head = await build('css-head', dates, pages, { css: '.toggle > summary::after { content: "Open"; }' });
     const result = compare(await fingerprint(base), await fingerprint(head), { today: '2026-10-15' });
     expect(result.undated).toEqual([{ path: '/events/', lastmod: '2026-10-01' }]);
     const html = page();

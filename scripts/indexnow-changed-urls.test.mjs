@@ -354,7 +354,8 @@ describe('runIndexNow', () => {
     const docs = site('/developers/docs/');
     const compute = site('/developers/compute/');
     const sheet = site('/_astro/events.css');
-    const styled = (url) => livePage(url).replace('<head>', '<head><link rel="stylesheet" href="/_astro/events.css">');
+    const styled = (url) => livePage(url).replace('<head>', '<head><link rel="stylesheet" href="/_astro/events.css">')
+      .replace('<main>', '<main><details class="toggle"><summary>Earlier</summary></details>');
     const pages = (css) => ({ [docs]: styled(docs), [compute]: styled(compute), [sheet]: css });
     await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now: () => '2026-10-12T05:00:00.000Z', fetchImpl: stub({ pages: pages('.toggle::after { content: "Show"; }') }).fetchImpl, pause: noPause });
     const { fetchImpl, posts, gets } = stub({ pages: pages('.toggle::after { content: "Open"; }') });
