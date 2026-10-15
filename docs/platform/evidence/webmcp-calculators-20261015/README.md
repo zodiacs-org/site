@@ -53,7 +53,7 @@ These pages are not calculators, and register no tool of their own:
 - **Descriptors.** `/assets/webmcp-register.js` holds the descriptors and
   Search (4.6 KB gzip). A page imports it only when `modelContext` exists.
 - **Calculations.** `/assets/webmcp-calculators.js` holds the calculations
-  (120.6 KB gzip, under a 512 KB budget). It loads on the first call to a
+  (120.8 KB gzip, under a 512 KB budget). It loads on the first call to a
   calculator tool, never before.
 - **Input.** Each tool reads its input strictly, as its JSON Schema states it.
   Places are coordinates and an IANA time zone. Birth dates run from
