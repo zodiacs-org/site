@@ -1,5 +1,29 @@
 # Publisher review package
 
+## Current release packet — 15 October 2026
+
+The consumer listing is **Zodiacs — Birth charts & horoscopes**. Upload
+`integrations/packages/zodiacs-sky-0.5.0.zip`, which includes the remote MCP
+at `https://zodiacs.org/mcp`, the current description, five positive and three
+negative cases, and the 0.5.0 demo URL. The hand-authored submission JSON keeps
+the same name, subtitle, cases and demo URL as a form reference.
+
+Production now offers thirteen read-only tools. Staging, host acceptance,
+production calls, the privacy disclosure and anonymous usage counts were
+verified before preparing this packet. `WALKTHROUGH.md` records the actual
+three-card demo and its capture limitations.
+
+The owner confirmed the previous public plugin was deleted and requested a
+new plugin identity. This supersedes the earlier instruction to update the
+old identity. Use the approved business publisher and admin@zodiacs.org;
+keep personal contact information out of the public profile. The owner still
+reads and confirms portal attestations. Actual portal status and identifiers
+belong in `PORTAL_REVIEW.md`; this packet is not evidence of submission.
+
+The older package details below are dated history, not the 0.5.0 upload plan.
+
+## Earlier packet — 6 October 2026
+
 Updated 2026-10-06 against OpenAI's [submission reference], [package guide] and
 [plugin guidelines]. This packet prepares owner review; it does not authorize
 submission, attestations, merge, publication or production activation.
