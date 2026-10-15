@@ -7,7 +7,6 @@
 import * as engine from '../engine/full';
 import { NumerologyInputError } from '../numerology';
 import type { TwinPerson } from '../sharing/twins';
-import { prepareLocalTime } from '../time/localToUtc';
 import { babyZodiacResult } from './calculators/baby-zodiac';
 import {
   bigThreeResult, birthChartResult, chartPageNatal, moonSignResult, personNatal, risingSignResult,
@@ -78,8 +77,7 @@ async function moonPhase(input: unknown) {
   const day = need(readDate(date));
   const clock = need(readTime(time));
   const place = need(readPlace(rawPlace));
-  if (place) await prepareLocalTime(day, place.timeZone);
-  const lookup = lookupMoonPhase({
+  const lookup = await lookupMoonPhase({
     date: day,
     time: clock,
     place: place ? { lon: place.longitude, tz: place.timeZone } : null,

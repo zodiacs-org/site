@@ -12,6 +12,9 @@ export const LAST_DATE = '2199-12-31';
 
 export interface Place { latitude: number; longitude: number; timeZone: string }
 
+/** A place as the pages hold one (src/lib/geo/rank.ts City): `lat`, `lon` and `tz`. */
+export const asSite = (place: Place) => ({ lat: place.latitude, lon: place.longitude, tz: place.timeZone });
+
 /** A birth as the pages take it: a date, a clock time when it is known (null when not), and a place. */
 export interface Birth { date: string; time: string | null; place: Place }
 

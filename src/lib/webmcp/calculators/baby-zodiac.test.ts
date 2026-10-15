@@ -4,7 +4,7 @@ import { birthdaySlug } from '../../birthdays';
 import * as engine from '../../engine/full';
 import { signForLongitude } from '../../signs';
 import { babyZodiacResult } from './baby-zodiac';
-import { islandFunction, ref } from './island-code';
+import { islandFunction, ref } from '../../../../tests/webmcp/island-code';
 
 interface Reading {
   dueISO: string;

@@ -7,9 +7,9 @@ import type { ReturnSeason, SaturnReturnResult } from '../../engine/returns';
 import type { Chart } from '../../engine/types';
 import { prepareLocalTime, resolveLocalToUtc } from '../../time/localToUtc';
 import { position } from './format';
-import { BIRTHS, city, LONDON, SYDNEY } from './fixtures';
+import { BIRTHS, city, LONDON, SYDNEY } from '../../../../tests/webmcp/calculator-fixtures';
 import type { Birth, Place } from './input';
-import { islandFunction, ref } from './island-code';
+import { islandFunction, ref } from '../../../../tests/webmcp/island-code';
 import { lunarReturnResult, saturnReturnResult, solarReturnResult } from './returns';
 
 const PEOPLE = BIRTHS.filter(([label]) => label !== 'an untimed date the clock skipped');

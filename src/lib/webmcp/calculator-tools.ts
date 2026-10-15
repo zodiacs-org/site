@@ -61,7 +61,7 @@ const object = (properties: Record<string, unknown>, required: string[]) => ({
   type: 'object', properties, required, additionalProperties: false,
 });
 
-const CALCULATED = 'Calculated in the browser with the page\'s own code; nothing is sent.';
+const CALCULATED = 'Calculated in the browser with the page\'s own code; nothing about the person is sent.';
 
 export interface CalculatorToolDescriptor {
   name: string;

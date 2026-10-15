@@ -134,6 +134,10 @@
       "src": "^/assets/webmcp-register\\.js$"
     },
     {
+      "source": "/assets/webmcp-calculators.js",
+      "src": "^/assets/webmcp-calculators\\.js$"
+    },
+    {
       "source": "/assets/site-footer.css",
       "src": "^/assets/site-footer\\.css$"
     },

@@ -1,6 +1,6 @@
 /** Synthetic births for the calculator tools' tests: no real person's details. */
-import type { City } from '../../geo/search';
-import type { Birth } from './input';
+import type { City } from '../../src/lib/geo/search';
+import type { Birth } from '../../src/lib/webmcp/calculators/input';
 
 export const LONDON = { latitude: 51.5074, longitude: -0.1278, timeZone: 'Europe/London' };
 export const TOKYO = { latitude: 35.6762, longitude: 139.6503, timeZone: 'Asia/Tokyo' };

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { NumerologyInputError, numerologyProfile, type NumerologyProfile } from '../../numerology';
-import { islandFunction } from './island-code';
+import { islandFunction } from '../../../../tests/webmcp/island-code';
 import { numerologyResult } from './numerology';
 
 // NumerologyCalculator's compute, the code /numerology/ reckons with.

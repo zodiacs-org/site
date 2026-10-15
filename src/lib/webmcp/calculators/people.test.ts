@@ -12,9 +12,9 @@ import { signBySlug } from '../../signs';
 import { TRANSIT_ORB } from '../../transits';
 import { resolveLocalToUtc } from '../../time/localToUtc';
 import { personNatal } from './chart';
-import { BIRTHS, city } from './fixtures';
+import { BIRTHS, city } from '../../../../tests/webmcp/calculator-fixtures';
 import type { Birth } from './input';
-import { islandFunction, ref } from './island-code';
+import { islandFunction, ref } from '../../../../tests/webmcp/island-code';
 import {
   chartTwinsResult, compatibilityResult, DuplicatePersonError, groupChartResult, TRANSIT_BODIES, transitsResult,
 } from './people';

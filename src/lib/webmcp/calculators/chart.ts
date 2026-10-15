@@ -13,7 +13,7 @@ import { SIGNS, signForLongitude } from '../../signs';
 import { prepareLocalTime, resolveLocalToUtc } from '../../time/localToUtc';
 import { assessLocalDateReference } from '../../time/local-date-reference';
 import { ENGINE, fixed, pageUrl, position } from './format';
-import type { Birth } from './input';
+import { asSite, type Birth } from './input';
 import { LocalDateReferenceError } from './moon-phase';
 
 export interface NatalReading {
@@ -27,22 +27,23 @@ export interface NatalReading {
  * birth chart page), the chart its calculation receipt carries. Without a time no Moon sign is verified.
  */
 export async function chartPageNatal(birth: Birth, houseSystem: HouseSystem, { receipt }: { receipt: boolean }): Promise<NatalReading> {
-  const { date, place } = birth;
-  await prepareLocalTime(date, place.timeZone);
+  const { date } = birth;
+  const city = asSite(birth.place);
+  await prepareLocalTime(date, city.tz);
   const timeKnown = birth.time !== null;
   const effectiveTime = birth.time ?? '12:00';
-  const resolved = resolveLocalToUtc(date, effectiveTime, place.timeZone, { longitude: place.longitude });
+  const resolved = resolveLocalToUtc(date, effectiveTime, city.tz, { longitude: city.lon });
   if (!timeKnown) {
     try {
-      if (assessLocalDateReference(date, resolved.utc, place.timeZone).referenceStatus !== 'member') throw new LocalDateReferenceError();
+      if (assessLocalDateReference(date, resolved.utc, city.tz).referenceStatus !== 'member') throw new LocalDateReferenceError();
     } catch {
       throw new LocalDateReferenceError();
     }
   }
   const input = {
     utc: resolved.utc,
-    latitude: place.latitude,
-    longitude: place.longitude,
+    latitude: city.lat,
+    longitude: city.lon,
     houseSystem,
     timeKnown,
     flags: resolved.flags,
@@ -50,7 +51,7 @@ export async function chartPageNatal(birth: Birth, houseSystem: HouseSystem, { r
   const portable = receipt ? computeCalculatorReceipt(input, {
     date,
     time: effectiveTime,
-    timeZone: place.timeZone,
+    timeZone: city.tz,
     offsetMinutes: resolved.offsetMinutes,
     reference: timeKnown ? 'supplied-instant' : 'local-noon',
   }) : null;
@@ -64,13 +65,14 @@ export async function chartPageNatal(birth: Birth, houseSystem: HouseSystem, { r
  * that it falls within the date), whole-sign houses.
  */
 export async function personNatal(birth: Birth): Promise<NatalReading> {
-  const { date, place } = birth;
-  await prepareLocalTime(date, place.timeZone);
-  const resolved = resolveLocalToUtc(date, birth.time ?? '12:00', place.timeZone, { longitude: place.longitude });
+  const { date } = birth;
+  const city = asSite(birth.place);
+  await prepareLocalTime(date, city.tz);
+  const resolved = resolveLocalToUtc(date, birth.time ?? '12:00', city.tz, { longitude: city.lon });
   const chart = engine.computeChart({
     utc: resolved.utc,
-    latitude: place.latitude,
-    longitude: place.longitude,
+    latitude: city.lat,
+    longitude: city.lon,
     houseSystem: 'whole',
     timeKnown: birth.time !== null,
     flags: resolved.flags,

@@ -12,8 +12,8 @@ import {
 } from './chart';
 import { position } from './format';
 import type { Birth } from './input';
-import { BIRTHS, city } from './fixtures';
-import { islandFunction, ref } from './island-code';
+import { BIRTHS, city } from '../../../../tests/webmcp/calculator-fixtures';
+import { islandFunction, ref } from '../../../../tests/webmcp/island-code';
 import { LocalDateReferenceError } from './moon-phase';
 
 // ChartCalculator's runChart, the code /birth-chart/, /moon-sign/ and /rising-sign/ calculate with.

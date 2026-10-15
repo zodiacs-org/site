@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TWIN_DIRECTORY } from '../sharing/twin-directory';
 import { CALCULATOR_TOOL_NAMES, runCalculatorTool } from './calculator-runtime';
 import { CALCULATOR_TOOLS, calculatorToolForPath } from './calculator-tools';
-import { LONDON, PARIS, SYDNEY, TOKYO } from './calculators/fixtures';
+import { LONDON, PARIS, SYDNEY, TOKYO } from '../../../tests/webmcp/calculator-fixtures';
 import { calculatorTool, webMcpToolsForPage } from './register';
 
 const pages = new URL('../../pages/', import.meta.url);

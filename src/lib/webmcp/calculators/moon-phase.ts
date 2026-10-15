@@ -6,7 +6,7 @@
  * which must fall within that local date, or noon UTC without one. Without a place, a time is read as UTC.
  */
 import { moonPhaseNameFromAngle, type MoonPhaseName } from '../../engine/lite';
-import { resolveLocalToUtc } from '../../time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from '../../time/localToUtc';
 import { assessLocalDateReference } from '../../time/local-date-reference';
 
 export interface MoonPhasePlace {
@@ -57,15 +57,13 @@ export function moonIlluminationFromAngle(angle: number): number {
   return (1 - Math.cos((angle * Math.PI) / 180)) / 2;
 }
 
-/**
- * The lookup itself. With a place, `prepareLocalTime(date, place.tz)` must have resolved first, as the resolver's
- * zone data loads with it.
- */
-export function lookupMoonPhase(request: MoonPhaseRequest, engine: MoonPhaseEngine): MoonPhaseLookup {
+/** The lookup itself. With a place it first loads the zone's history the resolver needs, as the page does. */
+export async function lookupMoonPhase(request: MoonPhaseRequest, engine: MoonPhaseEngine): Promise<MoonPhaseLookup> {
   const { date, place } = request;
   const time = request.time === '' ? null : request.time;
   let utc: Date;
   if (place) {
+    await prepareLocalTime(date, place.tz);
     utc = resolveLocalToUtc(date, time ?? '12:00', place.tz, { longitude: place.lon }).utc;
     if (time === null) {
       try {

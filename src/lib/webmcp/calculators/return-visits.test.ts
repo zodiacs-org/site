@@ -7,9 +7,9 @@ import { wrappedTargets, wrappedWindow } from '../../return-visits/wrapped';
 import { calculateEntry, type ChartEntry } from '../../sharing/chart-entry';
 import { personNatal } from './chart';
 import { position } from './format';
-import { BIRTHS, city } from './fixtures';
+import { BIRTHS, city } from '../../../../tests/webmcp/calculator-fixtures';
 import type { Birth } from './input';
-import { islandFunction, ref } from './island-code';
+import { islandFunction, ref } from '../../../../tests/webmcp/island-code';
 import { chartPdfResult, yearWrappedResult } from './return-visits';
 
 const PEOPLE = BIRTHS.filter(([label]) => label !== 'an untimed date the clock skipped');

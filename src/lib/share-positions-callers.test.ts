@@ -243,6 +243,11 @@ const OPAQUE_LOADS: Record<string, { expression: string; loads: string[]; why: s
     loads: ['src/lib/assistant/open-assistant.ts'],
     why: '/assets/assistant-drawer.js, which scripts/build-assistant-ui.mjs builds from open-assistant.ts',
   }],
+  'src/lib/webmcp/register.ts': [{
+    expression: 'CALCULATOR_RUNTIME_URL',
+    loads: ['src/lib/webmcp/calculator-runtime.ts'],
+    why: '/assets/webmcp-calculators.js, which scripts/build-webmcp.mjs builds from calculator-runtime.ts',
+  }],
 };
 
 /**

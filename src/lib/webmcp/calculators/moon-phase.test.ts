@@ -39,7 +39,6 @@ async function page({ date, time, zone, lon = 0 }: Input) {
 }
 
 async function tool({ date, time, zone, lon = 0 }: Input) {
-  if (zone) await prepareLocalTime(date, zone);
   return lookupMoonPhase({ date, time: time || null, place: zone ? { lon, tz: zone } : null }, engine);
 }
 
@@ -72,14 +71,10 @@ describe('the moon-phase tool reads what the page shows', () => {
   });
 
   it('refuses local noon outside the local date, as the page does', async () => {
-    const input = { date: '2000-01-15', time: '', zone: 'Africa/Khartoum', lon: 32.5599 };
-    const shown = await page(input);
-    if (shown.error) {
-      expect(shown.error).toBe(t('en', 'localDateReferenceError'));
-      await expect(tool(input)).rejects.toBeInstanceOf(LocalDateReferenceError);
-    } else {
-      expect((await tool(input)).reference).toBe(true);
-    }
+    // Samoa skipped 30 December 2011: no local noon falls within that date.
+    const input = { date: '2011-12-30', time: '', zone: 'Pacific/Apia', lon: -171.7513 };
+    expect((await page(input)).error).toBe(t('en', 'localDateReferenceError'));
+    await expect(tool(input)).rejects.toBeInstanceOf(LocalDateReferenceError);
   });
 
   it('names the basis it read and the lit fraction', async () => {

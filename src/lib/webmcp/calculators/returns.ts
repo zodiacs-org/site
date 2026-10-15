@@ -10,9 +10,9 @@ import { houseOf } from '../../engine/houses';
 import type { Chart, HouseSystem } from '../../engine/types';
 import { prepareLocalTime, resolveLocalToUtc } from '../../time/localToUtc';
 import { ENGINE, pageUrl, position } from './format';
-import type { Birth, Place } from './input';
+import { asSite, type Birth, type Place } from './input';
 
-const asPagePlace = (place: Place) => ({ name: '', lat: place.latitude, lon: place.longitude, tz: place.timeZone });
+const asPagePlace = (place: Place) => ({ name: '', ...asSite(place) });
 
 /** A return chart as the result pages list it: each body with its house, and the angles when the chart has a place. */
 function returnChart(chart: Chart) {
@@ -37,9 +37,10 @@ function returnChart(chart: Chart) {
  * read at the place's local time (noon without a time); without one, at noon UTC.
  */
 export async function saturnReturnResult(date: string, time: string | null, place: Place | null, now: Date) {
-  if (place) await prepareLocalTime(date, place.timeZone);
-  const utc = place
-    ? resolveLocalToUtc(date, time ?? '12:00', place.timeZone, { longitude: place.longitude }).utc
+  const city = place ? asSite(place) : null;
+  if (city) await prepareLocalTime(date, city.tz);
+  const utc = city
+    ? resolveLocalToUtc(date, time ?? '12:00', city.tz, { longitude: city.lon }).utc
     : new Date(`${date}T12:00:00Z`);
   const result = saturnReturns(utc);
   return {

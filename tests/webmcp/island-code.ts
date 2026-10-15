@@ -48,7 +48,7 @@ export interface IslandFunction {
  * after the context; with `{ value: true }`, the selected expression's value itself (a const's Set, say).
  */
 export function islandFunction(file: string, selector: Selector, { value = false } = {}): IslandFunction {
-  const source = readFileSync(new URL(`../../../islands/${file}`, import.meta.url), 'utf8');
+  const source = readFileSync(new URL(`../../src/islands/${file}`, import.meta.url), 'utf8');
   const ast = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   const node = find(ast, selector);
   const text = node.getText(ast).replace(/\bimport\(/gu, '__import(');
