@@ -41,7 +41,7 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     pass: 'Pass {pass} of {count}.',
     unknownTime: 'Birth time unknown: the chart is set for noon at your birthplace, so this date is approximate.',
     more: 'More: {url}',
-    note: 'Dates are computed; what they mean is astrology’s reading, not a prediction.',
+    note: 'Dates are computed; what they mean is astrology’s forecast, not a guarantee.',
     milestones: {
       'jupiter-return': { name: 'Jupiter return', about: 'Jupiter is back where it was when you were born, about every twelve years. Astrologers read it as the start of a new twelve-year round.' },
       'saturn-return': { name: 'Saturn return', about: 'Saturn is back where it was at your birth, at about 29, 58 and 88. The oldest milestone in astrology: a time to take stock and build what lasts.' },
@@ -68,7 +68,7 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     pass: 'Paso {pass} de {count}.',
     unknownTime: 'Hora de nacimiento desconocida: la carta se calcula para el mediodía en tu lugar de nacimiento, así que esta fecha es aproximada.',
     more: 'Más: {url}',
-    note: 'Las fechas están calculadas; lo que significan es una lectura astrológica, no una predicción.',
+    note: 'Las fechas están calculadas; lo que significan es el pronóstico de la astrología, no una garantía.',
     milestones: {
       'jupiter-return': { name: 'Retorno de Júpiter', about: 'Júpiter vuelve a donde estaba cuando naciste, más o menos cada doce años. Los astrólogos lo leen como el comienzo de una nueva vuelta de doce años.' },
       'saturn-return': { name: 'Retorno de Saturno', about: 'Saturno vuelve a donde estaba al nacer, hacia los 29, los 58 y los 88 años. El hito más antiguo de la astrología: un momento para hacer balance y construir lo que dura.' },
@@ -104,7 +104,7 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     pass: 'Passagem {pass} de {count}.',
     unknownTime: 'Hora de nascimento desconhecida: o mapa é calculado para o meio-dia no seu local de nascimento, então esta data é aproximada.',
     more: 'Mais: {url}',
-    note: 'As datas são calculadas; o que significam é uma leitura astrológica, não uma previsão.',
+    note: 'As datas são calculadas; o que significam é a previsão da astrologia, não uma garantia.',
     milestones: {
       'jupiter-return': { name: 'Retorno de Júpiter', about: 'Júpiter volta para onde estava quando você nasceu, mais ou menos a cada doze anos. Os astrólogos o leem como o início de um novo ciclo de doze anos.' },
       'saturn-return': { name: 'Retorno de Saturno', about: 'Saturno volta para onde estava no seu nascimento, por volta dos 29, 58 e 88 anos. O marco mais antigo da astrologia: hora de fazer um balanço e construir o que dura.' },
@@ -140,7 +140,7 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     pass: 'Passage {pass} sur {count}.',
     unknownTime: 'Heure de naissance inconnue : le thème est calculé pour midi à ton lieu de naissance, donc cette date est approximative.',
     more: 'Plus : {url}',
-    note: 'Les dates sont calculées ; ce qu’elles signifient relève de la lecture astrologique, pas d’une prédiction.',
+    note: 'Les dates sont calculées ; ce qu’elles signifient relève de la prévision astrologique, pas d’une garantie.',
     milestones: {
       'jupiter-return': { name: 'Retour de Jupiter', about: 'Jupiter revient là où il était à ta naissance, environ tous les douze ans. Les astrologues y voient le début d’un nouveau cycle de douze ans.' },
       'saturn-return': { name: 'Retour de Saturne', about: 'Saturne revient là où il était à ta naissance, vers 29, 58 et 88 ans. Le plus ancien jalon de l’astrologie : le moment de faire le point et de bâtir ce qui dure.' },
@@ -176,7 +176,7 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     pass: 'Passaggio {pass} di {count}.',
     unknownTime: 'Ora di nascita sconosciuta: il tema è calcolato per mezzogiorno nel tuo luogo di nascita, quindi questa data è approssimativa.',
     more: 'Altro: {url}',
-    note: 'Le date sono calcolate; il loro significato è una lettura astrologica, non una previsione.',
+    note: 'Le date sono calcolate; il loro significato è la previsione dell’astrologia, non una garanzia.',
     milestones: {
       'jupiter-return': { name: 'Ritorno di Giove', about: 'Giove torna dove si trovava alla tua nascita, all’incirca ogni dodici anni. Gli astrologi lo leggono come l’inizio di un nuovo giro di dodici anni.' },
       'saturn-return': { name: 'Ritorno di Saturno', about: 'Saturno torna dove si trovava alla tua nascita, verso i 29, i 58 e gli 88 anni. La tappa più antica dell’astrologia: il momento di fare il punto e costruire ciò che dura.' },
@@ -212,7 +212,7 @@ export const PERSONAL_WORDS: Readonly<Record<CatalogLocale, PersonalWords>> = {
     pass: 'Прохождение {pass} из {count}.',
     unknownTime: 'Время рождения неизвестно: карта рассчитана на полдень в месте рождения, поэтому дата приблизительная.',
     more: 'Подробнее: {url}',
-    note: 'Даты рассчитаны; их значение — астрологическое толкование, а не предсказание.',
+    note: 'Даты рассчитаны; их значение — астрологический прогноз, а не гарантия.',
     milestones: {
       'jupiter-return': { name: 'Возвращение Юпитера', about: 'Юпитер возвращается туда, где был в момент вашего рождения, примерно раз в двенадцать лет. Астрологи считают это началом нового двенадцатилетнего круга.' },
       'saturn-return': { name: 'Возвращение Сатурна', about: 'Сатурн возвращается туда, где был при вашем рождении, примерно в 29, 58 и 88 лет. Самая старая веха астрологии: время подвести итоги и строить то, что останется.' },
