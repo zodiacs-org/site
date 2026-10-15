@@ -4,7 +4,7 @@ import { executeAiTool, offeredTools, type AiCallContext, type AiDependencies } 
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
 import { OCCASIONS_HTML } from '../../integrations/generated/occasions.mjs';
-import { WIDGET_HTML } from './widget';
+import { WIDGET_HTML } from '../../integrations/generated/sky-calendar.mjs';
 import { registerSkyWatch, type SkyWatch } from './watch/service';
 import type { Principal } from './watch/contracts';
 import { WATCH_SCOPES } from './watch/oauth';

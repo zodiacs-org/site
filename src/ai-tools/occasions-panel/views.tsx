@@ -1,3 +1,4 @@
+import { BrandRing } from '../panel-brand';
 import { useState } from 'preact/hooks';
 import type { CompatibilityData } from '../features/compatibility';
 import type { ChartTwinsData, FamousChartData } from '../features/people';
@@ -12,7 +13,7 @@ const ASPECT_SIGNS: Record<string, string> = { conjunction: '☌', sextile: '⚹
 /** Every card ends with the same mark, so a screenshot still says where it came from. */
 export function Signature() {
   return <p class="signature" aria-label="zodiacs.org">
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="12" cy="3" r="1.6" fill="currentColor"/></svg>
+    <BrandRing size={28}/>
     <span>zodiacs.org</span>
   </p>;
 }
