@@ -1,16 +1,19 @@
 import { execFileSync } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
+  LABEL_ATTRIBUTES,
   SCHEMA,
   compare,
   contentDigest,
   distFile,
   fingerprint,
   pageContent,
+  pageStylesheets,
   sitemapDates,
+  stylesheetCopy,
   textDifference,
 } from './sitemap-rendered-changes.mjs';
 
@@ -47,10 +50,12 @@ afterEach(async () => {
   await rm(dir, { recursive: true, force: true });
 });
 
-async function build(name, sitemapEntries, pages) {
+async function build(name, sitemapEntries, pages, { css = '.main { color: black; }' } = {}) {
   const dist = join(dir, name);
-  await mkdir(dist, { recursive: true });
+  await mkdir(join(dist, '_astro'), { recursive: true });
   await writeFile(join(dist, 'sitemap.xml'), sitemap(sitemapEntries));
+  // The stylesheet page() links.
+  await writeFile(join(dist, '_astro/a1b2.css'), css);
   for (const [path, html] of Object.entries(pages)) {
     const file = distFile(dist, path);
     await mkdir(dirname(file), { recursive: true });
@@ -68,7 +73,9 @@ describe('a page’s content', () => {
       text: 'Compare Ten guides & more.',
       links: ['/developers/docs/'],
       images: ['A wheel'],
+      media: ['src: /x.png'],
       labels: [],
+      generated: [],
     });
   });
 
@@ -108,6 +115,45 @@ describe('a page’s content', () => {
     expect(hidden('a')).toBe(hidden('b'));
     const explained = textDifference(form('placeholder="Search people" aria-label="Search"'), form('placeholder="Search everyone" aria-label="Search"'));
     expect(explained).toEqual({ removed: ['placeholder: Search people', 'placeholder: Search people'], added: ['placeholder: Search everyone', 'placeholder: Search everyone'] });
+  });
+
+  it('includes the words its stylesheets add, and the data-label they show', async () => {
+    expect(stylesheetCopy('.a::after { content: "Show"; } .b::before{content:\'Hide\'} .c::after { content: "\\2192"; } .d::before { content: attr(data-label) ": "; } .e { align-content: center; background: url("a.png"); }'))
+      .toEqual(['Show', 'Hide']);
+    expect(pageStylesheets('<head><link rel="preload stylesheet" href="/_astro/a.css"><link rel="icon" href="/i.png"><style>.x::after{content:"Go"}</style></head>'))
+      .toEqual({ hrefs: ['/_astro/a.css'], inline: ['.x::after{content:"Go"}'] });
+    const base = await build('css-base', [['/events/', '2026-10-01']], { '/events/': page() }, { css: '.toggle::after { content: "Show"; }' });
+    const head = await build('css-head', [['/events/', '2026-10-01']], { '/events/': page() }, { css: '.toggle::after { content: "Open"; }' });
+    const result = compare(await fingerprint(base), await fingerprint(head), { today: '2026-10-15' });
+    expect(result.undated).toEqual([{ path: '/events/', lastmod: '2026-10-01' }]);
+    const html = page();
+    expect(textDifference(html, html, 3, { beforeGenerated: ['Show'], afterGenerated: ['Open'] }))
+      .toEqual({ removed: ['stylesheet: Show'], added: ['stylesheet: Open'] });
+    const label = (text) => contentDigest(Buffer.from(page({ main: `<table><tr><td data-label="${text}">1</td></tr></table>` })), '/p/');
+    expect(label('Date')).not.toBe(label('Day'));
+  });
+
+  it('changes when a picture is swapped under the same description', () => {
+    const picture = (src) => contentDigest(Buffer.from(page({ main: `<p>Ten guides.</p><img src="${src}" alt="Aries">` })), '/p/');
+    expect(picture('/assets/zodiac-icons/128/aries.webp')).not.toBe(picture('/assets/zodiac-icons/128/taurus.webp'));
+    const video = (poster) => contentDigest(Buffer.from(page({ main: `<video src="/a.mp4" poster="${poster}"></video>` })), '/p/');
+    expect(video('/a.jpg')).not.toBe(video('/b.jpg'));
+  });
+
+  it('reads every attribute the site\'s stylesheets show with attr()', async () => {
+    const shown = new Set();
+    const walk = async (directory) => {
+      for (const entry of await readdir(directory, { withFileTypes: true })) {
+        const path = join(directory, entry.name);
+        if (entry.isDirectory()) await walk(path);
+        else if (/\.(?:css|astro)$/u.test(entry.name)) {
+          for (const [, name] of (await readFile(path, 'utf8')).matchAll(/content\s*:[^;}]*?attr\(\s*([a-z-]+)/giu)) shown.add(name);
+        }
+      }
+    };
+    await walk(join(root, 'src'));
+    expect([...shown]).toContain('data-label');
+    for (const name of shown) expect(LABEL_ATTRIBUTES).toContain(name);
   });
 
   it('falls back to the body without a main region, and counts other files by their bytes', () => {

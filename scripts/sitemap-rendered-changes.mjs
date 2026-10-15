@@ -68,15 +68,49 @@ function attributes(tag) {
 const squeeze = (text) => text.replace(/\s+/gu, ' ').trim();
 
 // Copy a reader sees or hears that lives in an attribute: a field's placeholder, an icon button's accessible name, a
-// tooltip, a button input's label, and a text field's value.
-const LABEL_ATTRIBUTES = ['placeholder', 'aria-label', 'aria-description', 'title', 'label'];
+// tooltip, a button input's label, a text field's value, and a responsive table's data-label, which the site's
+// stylesheets show with `content: attr(data-label)` (a test holds every attribute they show to this list).
+export const LABEL_ATTRIBUTES = ['placeholder', 'aria-label', 'aria-description', 'title', 'label', 'data-label'];
 const SHOWN_INPUT_VALUES = /^(?:|text|search|email|url|tel|number|submit|button|reset)$/iu;
 
+/** The words a stylesheet adds with `content`: each quoted string in a content declaration that holds a letter. */
+export function stylesheetCopy(css) {
+  const copy = [];
+  for (const [, value] of css.matchAll(/(?<![-\w])content\s*:\s*([^;}]+)/giu)) {
+    for (const [, , text] of value.matchAll(/(["'])((?:\\.|(?!\1)[^\\])*)\1/gu)) {
+      if (/\p{L}/u.test(text)) copy.push(text);
+    }
+  }
+  return copy;
+}
+
+/** A page's stylesheets: the href of each <link rel="stylesheet">, and the text of each <style> block. */
+export function pageStylesheets(html) {
+  const hrefs = [];
+  for (const [tag] of html.matchAll(/<link\b[^>]*>/giu)) {
+    const found = attributes(tag);
+    if (found.href && (found.rel ?? '').toLowerCase().split(/\s+/u).includes('stylesheet')) hrefs.push(found.href);
+  }
+  const inline = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/giu)].map(([, css]) => css);
+  return { hrefs, inline };
+}
+
 /**
- * What a page says: title, description, and its main content's text, link targets, image descriptions and the copy
- * its attributes carry (LABEL_ATTRIBUTES, and the value of an input that shows it).
+ * The words a page's stylesheets add (stylesheetCopy over its linked and inline stylesheets), sorted and distinct.
+ * `readStylesheet(href)` returns a linked stylesheet's text: from the build, or for IndexNow Changes from the live site.
  */
-export function pageContent(html) {
+export async function generatedCopy(html, readStylesheet) {
+  const { hrefs, inline } = pageStylesheets(html);
+  const sheets = [...inline, ...await Promise.all(hrefs.map((href) => readStylesheet(href)))];
+  return [...new Set(sheets.flatMap(stylesheetCopy))].sort();
+}
+
+/**
+ * What a page says: title, description, and its main content's text, link targets, image descriptions, the files its
+ * media show, and the copy its attributes carry (LABEL_ATTRIBUTES, and the value of an input that shows it); with
+ * `generated`, the words its stylesheets add (generatedCopy).
+ */
+export function pageContent(html, { generated = [] } = {}) {
   const title = squeeze(decodeEntities(html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/iu)?.[1] ?? ''));
   let description = '';
   for (const [tag] of html.matchAll(/<meta\b[^>]*>/giu)) {
@@ -92,6 +126,12 @@ export function pageContent(html) {
     .replace(/<style\b[\s\S]*?<\/style>/giu, ' ');
   const links = [...cleaned.matchAll(/<a\b[^>]*>/giu)].map(([tag]) => attributes(tag).href).filter(Boolean);
   const images = [...cleaned.matchAll(/<img\b[^>]*>/giu)].map(([tag]) => attributes(tag).alt).filter(Boolean).map(squeeze);
+  // The files its images, video, audio and frames show: a picture swapped under the same description is a change.
+  const media = [];
+  for (const [tag] of cleaned.matchAll(/<(?:img|source|video|audio|iframe|embed|object)\b[^>]*>/giu)) {
+    const found = attributes(tag);
+    for (const name of ['src', 'srcset', 'poster', 'data']) if (found[name]) media.push(`${name}: ${squeeze(found[name])}`);
+  }
   const labels = [];
   for (const [tag, element] of cleaned.matchAll(/<([a-z][a-z0-9-]*)\b[^>]*>/giu)) {
     const found = attributes(tag);
@@ -101,7 +141,7 @@ export function pageContent(html) {
     }
   }
   const text = squeeze(decodeEntities(cleaned.replace(/<[^>]+>/gu, ' ')));
-  return { title, description, text, links, images, labels };
+  return { title, description, text, links, images, media, labels, generated };
 }
 
 /** The file a sitemap path is served from, as scripts/check-dist.mjs resolves it. */
@@ -110,19 +150,34 @@ export function distFile(dist, path) {
   return path.endsWith('/') ? join(file, 'index.html') : file;
 }
 
-export function contentDigest(bytes, path) {
-  const isHtml = path.endsWith('/') || path.endsWith('.html');
-  const material = isHtml ? JSON.stringify(pageContent(bytes.toString('utf8'))) : bytes;
+const isHtmlPath = (path) => path.endsWith('/') || path.endsWith('.html');
+
+/** A page's digest: of its pageContent, with the words its stylesheets add, for HTML; of its bytes otherwise. */
+export function contentDigest(bytes, path, { generated = [] } = {}) {
+  const material = isHtmlPath(path) ? JSON.stringify(pageContent(bytes.toString('utf8'), { generated })) : bytes;
   return createHash('sha256').update(material).digest('hex');
+}
+
+/** Reads a build's stylesheets by href, each once; an href outside the build reads as empty. */
+export function buildStylesheets(dist) {
+  const cache = new Map();
+  return (pagePath) => (href) => {
+    const url = new URL(href, `${ORIGIN}${pagePath}`);
+    if (url.origin !== ORIGIN) return Promise.resolve('');
+    if (!cache.has(url.pathname)) cache.set(url.pathname, readFile(join(dist, url.pathname)).then((bytes) => bytes.toString('utf8')));
+    return cache.get(url.pathname);
+  };
 }
 
 /** Every sitemap page of a build: its date and its content's digest. */
 export async function fingerprint(dist) {
   const dates = sitemapDates(await readFile(join(dist, 'sitemap.xml'), 'utf8'));
+  const stylesheets = buildStylesheets(dist);
   const urls = {};
   for (const path of [...dates.keys()].sort()) {
     const bytes = await readFile(distFile(dist, path));
-    urls[path] = { lastmod: dates.get(path), sha256: contentDigest(bytes, path) };
+    const generated = isHtmlPath(path) ? await generatedCopy(bytes.toString('utf8'), stylesheets(path)) : [];
+    urls[path] = { lastmod: dates.get(path), sha256: contentDigest(bytes, path, { generated }) };
   }
   return { schema: SCHEMA, urls };
 }
@@ -165,13 +220,13 @@ export function compare(base, head, { today } = {}) {
 }
 
 /** The first lines of text that differ between two builds of a page, to show what changed. */
-export function textDifference(beforeHtml, afterHtml, limit = 3) {
-  const lines = (html) => {
-    const { title, description, text, links, images, labels } = pageContent(html);
-    return [`title: ${title}`, `description: ${description}`, ...text.split(/(?<=[.!?:])\s+/u), ...links.map((href) => `link: ${href}`), ...images.map((alt) => `image: ${alt}`), ...labels];
+export function textDifference(beforeHtml, afterHtml, limit = 3, { beforeGenerated = [], afterGenerated = [] } = {}) {
+  const lines = (html, generated) => {
+    const { title, description, text, links, images, media, labels } = pageContent(html, { generated });
+    return [`title: ${title}`, `description: ${description}`, ...text.split(/(?<=[.!?:])\s+/u), ...links.map((href) => `link: ${href}`), ...images.map((alt) => `image: ${alt}`), ...media, ...labels, ...generated.map((copy) => `stylesheet: ${copy}`)];
   };
-  const before = lines(beforeHtml);
-  const after = lines(afterHtml);
+  const before = lines(beforeHtml, beforeGenerated);
+  const after = lines(afterHtml, afterGenerated);
   const beforeSet = new Set(before);
   const afterSet = new Set(after);
   return {
@@ -211,11 +266,13 @@ async function main(argv) {
     const explain = options.indexOf('--explain');
     if (explain >= 0 && result.undated.length > 0) {
       const [baseDist, headDist] = options.slice(explain + 1, explain + 3);
+      const [baseSheets, headSheets] = [buildStylesheets(baseDist), buildStylesheets(headDist)];
       for (const { path } of result.undated.slice(0, 20)) {
-        const difference = textDifference(
-          await readFile(distFile(baseDist, path), 'utf8'),
-          await readFile(distFile(headDist, path), 'utf8'),
-        );
+        const [beforeHtml, afterHtml] = [await readFile(distFile(baseDist, path), 'utf8'), await readFile(distFile(headDist, path), 'utf8')];
+        const difference = textDifference(beforeHtml, afterHtml, 3, {
+          beforeGenerated: isHtmlPath(path) ? await generatedCopy(beforeHtml, baseSheets(path)) : [],
+          afterGenerated: isHtmlPath(path) ? await generatedCopy(afterHtml, headSheets(path)) : [],
+        });
         text += `\n\n${path}\n${difference.removed.map((line) => `  - ${line}`).join('\n')}\n${difference.added.map((line) => `  + ${line}`).join('\n')}`;
       }
     }
