@@ -21,7 +21,8 @@
  * Released copy is deliberately frozen. --migrate-articles applies the one
  * approved corpus-wide grammar migration; --check verifies that migration is
  * complete and that the derived depth report still matches the frozen copy.
- * --migrate-identities changes only the three reviewed A20 identity labels;
+ * --migrate-identities changes only the reviewed identity labels in the closed
+ * PRINCIPAL_IDENTITIES list (audit A20 and the 2026-10-15 directory review);
  * all readings, source facts, dates and measurements remain frozen.
  */
 import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';

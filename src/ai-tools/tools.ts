@@ -178,7 +178,11 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         break;
       }
       case 'check_sky_fact': {
-        const args = INPUT_SCHEMAS.check_sky_fact.parse(input);
+        const parsedArgs = INPUT_SCHEMAS.check_sky_fact.parse(input);
+        // An instant already fixes the moment, so a time zone sent with it ("right now, I'm in Bangkok")
+        // changes nothing; drop it rather than refuse a request an assistant naturally makes.
+        const { zone: _zone, ...withoutZone } = parsedArgs;
+        const args = parsedArgs.instant ? withoutZone : parsedArgs;
         const request = await parseSkyFactRequest(args, resolveZone);
         // Date-based facts also run bounded searches; count them as events at the hosted boundary.
         if (args.date && dependencies.allowEvents) {

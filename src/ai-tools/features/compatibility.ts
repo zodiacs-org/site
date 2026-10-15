@@ -40,13 +40,13 @@ const PLAIN_TEXT = /^[^\u0000-\u001f\u007f<>{}[\]\\`]+$/u;
 const plainText = (max: number) => z.string().trim().min(1).max(max).regex(PLAIN_TEXT, 'Use plain text.');
 
 export const compatibilityPerson = z.strictObject({
-  name: plainText(40).optional().describe('A first name to show, if the person wants one. Plain text.'),
+  name: plainText(40).optional().describe('Optional first name to show on the card, only if the person wants one. Display only, not stored.'),
   birthDate: z.string().regex(DATE_PATTERN).describe('The birth date, such as 1994-08-21 (years 1800–2199).'),
   time: z.string().regex(WALL_CLOCK).optional().describe('The birth time on the local clock, if known. Needs zone.'),
   zone: z.string().min(1).max(64).regex(ZONE_PATTERN).optional().describe("The birthplace's time zone, such as Europe/Madrid. Needed with a time or a place."),
-  latitude: z.number().min(-90).max(90).optional().describe("The birthplace's latitude. Give it with longitude and zone; with a birth time it adds the rising sign."),
-  longitude: z.number().min(-180).max(180).optional(),
-  place: plainText(80).optional().describe('The birthplace name, such as Madrid, Spain. Shown only.'),
+  latitude: z.number().min(-90).max(90).optional().describe("Optional. The birthplace's latitude; with a birth time it adds the rising sign. Give it with longitude and zone. Nothing is stored."),
+  longitude: z.number().min(-180).max(180).optional().describe("Optional. The birthplace's longitude, with latitude. Nothing is stored."),
+  place: plainText(80).optional().describe('Optional birthplace name, such as Madrid, Spain. Display only, not stored.'),
 }).superRefine((args, context) => {
   if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
   if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time or a place needs its time zone.' });

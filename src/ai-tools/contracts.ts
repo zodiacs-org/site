@@ -35,8 +35,8 @@ export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v3.html', 'ui://zo
 export const LEGACY_STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
 export { HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS };
 /** The occasion tools' panel, offered only while ZODIACS_OCCASIONS_ENABLED=1. */
-export const OCCASIONS_URI = 'ui://zodiacs/occasions-v2.html';
-export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v1.html'] as const;
+export const OCCASIONS_URI = 'ui://zodiacs/occasions-v3.html';
+export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 
 /** What people see on the tool-call line and in the plugin's details. */
@@ -77,10 +77,10 @@ export const INPUT_SCHEMAS = {
     date: date.describe('The day, such as 2027-06-12 (years 1800–2199).'),
     time: wallClock.optional().describe('The local clock time, such as 19:00, if the person gives one. Needs zone.'),
     zone: zone.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
-    latitude: z.number().min(-90).max(90).optional().describe('The place, for the evening sky. Give it with longitude and zone.'),
-    longitude: z.number().min(-180).max(180).optional(),
-    place: z.string().min(1).max(80).optional().describe('The place name for the card, such as Florence, Italy. Shown only.'),
-    names: z.string().min(1).max(60).optional().describe('Up to two first names to show on the card, if the person wants them.'),
+    latitude: z.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
+    longitude: z.number().min(-180).max(180).optional().describe("Optional. The place's longitude, with latitude, for the evening sky. Nothing is stored."),
+    place: z.string().min(1).max(80).optional().describe('Optional place name printed on the card, such as Florence, Italy. Display only: it is not used in the calculation and is not stored.'),
+    names: z.string().min(1).max(60).optional().describe('Optional: up to two first names to print on the card, only if the person asks for them. Display only, not stored.'),
   }).superRefine((args, context) => {
     if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
     if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A time or a place needs its time zone.' });

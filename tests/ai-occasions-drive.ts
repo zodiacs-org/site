@@ -138,6 +138,12 @@ try {
   assert.match(compareText, /Leo Sun/);
   assert.match(compareText, /The closest contacts/);
   assert.match(compareText, /trines and sextiles/);
+  // The three counts add up to every contact: trines and sextiles, squares and oppositions, conjunctions.
+  const counts = (pair as any).data.counts;
+  assert.equal(counts.easeful + counts.charged + counts.byAspect.conjunction, counts.total);
+  assert.match(compareText, new RegExp(`${counts.byAspect.conjunction}\\s+conjunctions`, 'u'));
+  // Contacts are described as the tradition reads them, never as what will happen between two people.
+  assert.doesNotMatch(compareText, /starts fights|calcify|pays out|whiplash|depending on the week/iu);
   // The disclosure itself says Zodiacs does not score relationships; everything else must not score one.
   assert.doesNotMatch(compareText.replace((pair as any).data.note, ''), /score|percent|%|soulmate|good match/iu);
   assert.match(compareText, /zodiacs\.org$/u, 'Every card ends with the zodiacs.org signature');
@@ -153,6 +159,9 @@ try {
   await twinsPage.getByRole('heading', { name: 'Your chart twins' }).waitFor();
   const twinLinks = await twinsPage.locator('.people a').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
   assert.ok(twinLinks.length > 0 && twinLinks.every((href) => /^https:\/\/zodiacs\.org\/people\/[a-z0-9-]+\/$/u.test(href ?? '')));
+  const twinsText = await twinsPage.locator('article').innerText();
+  assert.doesNotMatch(twinsText, /\b\d{4}-\d{2}-\d{2}\b/u, 'Birth dates read as dates, not ISO strings');
+  assert.match(twinsText, /born \d{1,2} [A-Z][a-z]{2,4} \d{4}/u);
   await twinsPage.screenshot({ path: new URL('occasions-twins-desktop.png', out).pathname, fullPage: true });
   const famous = await open();
   const frida = await result('get_famous_chart', { name: 'Frida Kahlo' });
@@ -161,6 +170,7 @@ try {
   if ((frida as any).data.found) {
     assert.equal(await famous.locator('h1').innerText(), (frida as any).data.person.name);
     assert.match(await famous.locator('article').innerText(), /12:00 civil time/);
+    assert.match(await famous.locator('.kicker').innerText(), /born 6 Jul 1907$/u);
   }
   await famous.screenshot({ path: new URL('occasions-famous-desktop.png', out).pathname, fullPage: true });
   const unknown = await open();
