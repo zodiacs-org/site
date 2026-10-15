@@ -94,8 +94,12 @@ on every pull request.
   - the words its stylesheets add with `content`, counted on a page whose
     markup carries the classes their rule selects.
 - **The rule.** A page whose content changed fails the check when its date did
-  not change and is earlier than the edition's day. A page already dated that
-  day passes, since a sitemap date says only which day a page last changed.
+  not change and is not the edition's day. A page already dated that day
+  passes, since a sitemap date says only which day a page last changed. A
+  page dated after that day fails, changed or not, since no page can have
+  changed later than the day it is built for (Codex's tenth finding on #752).
+  Every record here was compared again under this rule, from its saved
+  fingerprints, and found the same pages.
   IndexNow Changes covers that case. On every run it digests each live page
   dated in the last three days (the run's day and the two before, or back to
   its last run's day if that is earlier) with the same fingerprint, keeps the

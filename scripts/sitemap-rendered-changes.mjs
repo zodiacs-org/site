@@ -215,7 +215,9 @@ export async function fingerprint(dist) {
  * Pages the head changed: those re-dated, and those changed without a new date
  * (the failures). With `today`, the day both builds were made for, a page
  * already dated that day passes: a sitemap date says only the day of the last
- * change, so a second change that day needs no new one.
+ * change, so a second change that day needs no new one. A page the head dates
+ * after that day fails too, changed or not (`future`): no page can have
+ * changed later than the day it is built for.
  */
 export function compare(base, head, { today } = {}) {
   for (const side of [base, head]) {
@@ -224,8 +226,10 @@ export function compare(base, head, { today } = {}) {
   if (today !== undefined && !/^\d{4}-\d{2}-\d{2}$/u.test(today)) throw new Error(`Not a date: ${today}`);
   const result = {
     compared: 0, unchanged: 0, changedAndRedated: [], changedOnItsDate: [], redatedOnly: [], added: [], removed: [], undated: [],
+    future: [],
   };
   for (const [path, now] of Object.entries(head.urls)) {
+    if (today && now.lastmod && now.lastmod.slice(0, 10) > today) result.future.push({ path, lastmod: now.lastmod });
     const before = base.urls[path];
     if (!before) {
       result.added.push(path);
@@ -238,7 +242,7 @@ export function compare(base, head, { today } = {}) {
       else result.unchanged += 1;
     } else if (redated) {
       result.changedAndRedated.push(path);
-    } else if (today && now.lastmod && now.lastmod >= today) {
+    } else if (today && now.lastmod && now.lastmod.slice(0, 10) === today) {
       result.changedOnItsDate.push(path);
     } else {
       result.undated.push({ path, lastmod: now.lastmod });
@@ -274,6 +278,10 @@ function report(result) {
     lines.push(`${result.undated.length} page(s) changed without a new sitemap date. Give each a new date in src/pages/sitemap.xml.ts (or the data it is dated from), so IndexNow Changes submits it:`);
     for (const { path, lastmod } of result.undated) lines.push(`- ${path} (still ${lastmod ?? 'undated'})`);
   }
+  if (result.future.length > 0) {
+    lines.push(`${result.future.length} page(s) dated after the day the builds were made for. A sitemap date says when a page last changed, so date each no later than that day:`);
+    for (const { path, lastmod } of result.future) lines.push(`- ${path} (dated ${lastmod})`);
+  }
   return lines.join('\n');
 }
 
@@ -308,7 +316,7 @@ async function main(argv) {
     console.log(text);
     const summary = options.indexOf('--summary');
     if (summary >= 0) await writeFile(options[summary + 1], `## Sitemap dates\n\n${text}\n`, { flag: 'a' });
-    return result.undated.length === 0 ? 0 : 1;
+    return result.undated.length === 0 && result.future.length === 0 ? 0 : 1;
   }
   console.error('usage: sitemap-rendered-changes.mjs fingerprint <dist> <out.json> | compare <base.json> <head.json> [--today YYYY-MM-DD] [--explain <base dist> <head dist>] [--summary <file>]');
   return 2;

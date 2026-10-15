@@ -241,6 +241,33 @@ describe('comparing two builds', () => {
     expect(() => compare(a, b, { today: 'today' })).toThrow(/Not a date/);
   });
 
+  it('fails a page dated after the day of the builds, changed or not, and exempts only that day itself', async () => {
+    const dates = [['/a/', '2026-10-16'], ['/b/', '2026-10-16'], ['/c/', '2026-10-15'], ['/d/', '2026-10-14']];
+    const base = await build('future-base', dates, { '/a/': page(), '/b/': page(), '/c/': page(), '/d/': page() });
+    const head = await build('future-head', [...dates, ['/e/', '2026-11-01']], {
+      '/a/': page({ main: '<p>Changed.</p>' }), '/b/': page(), '/c/': page({ main: '<p>Changed.</p>' }), '/d/': page(), '/e/': page(),
+    });
+    const result = compare(await fingerprint(base), await fingerprint(head), { today: '2026-10-15' });
+    expect(result.future).toEqual([
+      { path: '/a/', lastmod: '2026-10-16' }, { path: '/b/', lastmod: '2026-10-16' }, { path: '/e/', lastmod: '2026-11-01' },
+    ]);
+    // A future date is not the day of the builds: the changed page is undated too.
+    expect(result.changedOnItsDate).toEqual(['/c/']);
+    expect(result.undated).toEqual([{ path: '/a/', lastmod: '2026-10-16' }]);
+    for (const [name, dist] of [['future-base', base], ['future-head', head]]) {
+      execFileSync(process.execPath, [script, 'fingerprint', dist, join(dir, `${name}.json`)]);
+    }
+    let failure;
+    try {
+      execFileSync(process.execPath, [script, 'compare', join(dir, 'future-base.json'), join(dir, 'future-head.json'), '--today', '2026-10-15'], { encoding: 'utf8' });
+    } catch (error) {
+      failure = error;
+    }
+    expect(failure?.status).toBe(1);
+    expect(failure.stdout).toContain('3 page(s) dated after the day the builds were made for.');
+    expect(failure.stdout).toContain('- /e/ (dated 2026-11-01)');
+  });
+
   it('passes two builds of the same pages, and refuses a file that is not a fingerprint', async () => {
     const pages = { '/': page(), '/a/': page({ main: '<p>A</p>' }) };
     const a = await fingerprint(await build('a', [['/', '2026-10-14'], ['/a/', '2026-10-01']], pages));
