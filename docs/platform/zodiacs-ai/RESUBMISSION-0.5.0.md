@@ -85,9 +85,30 @@ inputs, paste this:
 
 ## The demo
 
-Its job is to show the reviewer that the listing is true, case by case.
+- **Who sees it.** The demo is evidence for OpenAI's reviewers. Nothing
+  found suggests the directory shows it to users. OpenAI's own description of
+  a listing names the app's name, icon, descriptions, categories and optional
+  screenshots. So once Zodiacs is approved, the demo does nothing for traffic
+  or the brand. Its only job is not to stand in the way of approval.
+- **Keep the demo already in the portal.** That is
+  `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`, 67 seconds.
+  - It opens with an honest disclosure card ("Edited captures · Private
+    staging · Synthetic examples").
+  - It shows the comparison, the chart twins and the whole wedding card.
+- **How it differs from the live app.**
+  - It predates the fixes, so it shows the old comparison wording, the old
+    people descriptions and the developer-mode name "Zodiacs Preview 0.5.0".
+  - Reviewers know a demo made before approval comes from developer mode.
+  - The live app they test now does everything the video shows, with better
+    wording.
+- **Re-record only if OpenAI asks.** Their request will say what they need.
+  The shot list below is ready for that case.
+- **Unconfirmed: mobile.** Third-party guides say the demo should cover web
+  and mobile; OpenAI's own page couldn't be checked. The portal accepted the
+  web-only video on 15 October without flagging it. If a reviewer asks, add
+  a 20-second phone recording of one card.
 
-### Before recording
+### If OpenAI asks for a new demo: before recording
 
 - **Wait for the deploy.** Record only after the pull request is merged and
   production has redeployed. Otherwise the old wording and counts appear.
@@ -136,22 +157,28 @@ Its job is to show the reviewer that the listing is true, case by case.
   SHA-256, length and timeline.
 - **Check and merge.** Run `npm run ai:check`, then open a pull request.
 
-## Checks only a person in ChatGPT can do
+## Checks that decide approval
 
+The reviewer runs the eight test prompts live. Running them first costs
+about ten minutes; a failure found by the reviewer costs a whole review cycle.
 Save screenshots to `docs/platform/zodiacs-ai/evidence/0.5.0/`.
 
 1. **Positive cases.** Run all five, word for word, on production. For each:
    - the right tool runs and the panel renders;
    - links open and carry `?ref=chatgpt`;
    - no score and no date ranking appear.
-2. **Negative cases.** Run all three. ChatGPT should not call Zodiacs.
-3. **Phone.** Take a 20-second recording of one card on a phone.
+2. **ChatGPT's own words in case 3.**
+   - In the old demo, ChatGPT's reply below the card added "strong attraction
+     potential". Those were ChatGPT's words, not Zodiacs'.
+   - Case 3 promises no verdict on whether two people are a good match.
+   - The tool already tells ChatGPT to share the contacts as descriptions,
+     not verdicts. If ChatGPT still adds a verdict, report the exact words so
+     the instruction can be tightened before submitting.
+3. **Negative cases.** Run all three. ChatGPT should not call Zodiacs.
 4. **Scan.** After the deploy, rescan in the portal, only with the owner's
    yes.
    - If `get_occasion_sky` is still flagged, screenshot the detail.
    - Use the reviewer note above.
-5. **Cold viewer.** Show the demo once to someone who has never seen
-   Zodiacs. They should be able to say what it does and what it won't do.
 
 ## Who does what
 
@@ -159,21 +186,20 @@ Save screenshots to `docs/platform/zodiacs-ai/evidence/0.5.0/`.
 
 1. Read the new wording in the pull request and say "merge", or ask for
    changes.
-2. After the deploy, record the demo to the shot list. Or record it and have
-   Codex cut it.
-3. Run the checks above, or watch Codex run them.
-4. Read the final listing and video, then authorize the resubmission and
-   confirm the attestations.
+2. After the deploy, run the checks above, or watch Codex run them.
+3. Read the final listing, then authorize the resubmission and confirm the
+   attestations. The demo stays as it is.
 
 **Codex**
 
-1. Cut and publish the video as described under "After recording".
-2. In the portal, under the owner's eye:
+1. In the portal, under the owner's eye:
    - paste the About;
    - confirm the subtitle and links;
    - rescan only with the owner's yes;
    - record what the scan says.
-3. Update `PORTAL_REVIEW.md` after each portal step.
+2. Update `PORTAL_REVIEW.md` after each portal step.
+3. Only if OpenAI asks for a new demo: cut and publish it as described under
+   "After recording".
 
 **Claude, in the session that made these fixes**
 
@@ -188,7 +214,7 @@ Save screenshots to `docs/platform/zodiacs-ai/evidence/0.5.0/`.
     or house taken as-is from Wikidata. One example is Audrey Hepburn's
     "Rue Keyenveld - Keienveldstraat".
   - It shows on their pages and in the famous-chart note.
-  - The demo avoids it by using Frida Kahlo.
+  - The demo shows none of these birthplaces.
   - A town-level label needs sourced evidence through the people pipeline.
 - **Country in a description.**
   - It is the birthplace's present-day country, not the person's
