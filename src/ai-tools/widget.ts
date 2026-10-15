@@ -1,13 +1,17 @@
+import { SIGN_PNG_BASE64 } from '../lib/email/inline-images';
+import { BRAND_RING_SVG } from './brand-ring';
+
 /** Self-contained UI resource: no fetch, storage, personal data or external assets. */
 export const WIDGET_HTML = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Zodiacs sky calendar</title><style>
-:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0c0e16;color:#eef1f7}body{margin:0;padding:20px;max-width:760px;background:#0c0e16;color:#eef1f7}h1{font:normal 28px Georgia,serif;margin:0 0 12px}p{line-height:1.5;color:#b9bfce}ol{padding-left:22px}li{padding:12px 0;border-bottom:1px solid #272c3b}time{display:block;font-size:14px;color:#b9bfce;margin-top:5px}a{color:#c3d4ff;text-underline-offset:3px}nav{display:flex;flex-wrap:wrap;gap:16px;margin-top:20px}#status{min-height:20px}form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{display:grid;gap:6px;font-size:14px}input,select,button{font:inherit;color:inherit;background:#181c29;border:1px solid #454c61;border-radius:6px;padding:10px;min-width:0}button{cursor:pointer;align-self:end}button:disabled{opacity:.55;cursor:default}input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #c3d4ff;outline-offset:3px}#controls-help{font-size:13px} @media(max-width:420px){form{grid-template-columns:1fr}}
-</style></head><body><main><h1>Sky calendar</h1><p id="status" role="status">Ask about a week or month, or choose dates below.</p><form id="calendar" aria-describedby="controls-help"><label>From<input id="from" type="date" required></label><label>To<input id="to" type="date" required></label><label>Times for<select id="zone"></select></label><button id="update" type="submit" disabled>Show these dates</button></form><p id="controls-help">Up to 92 days at a time.</p><ol id="events"></ol><p id="coverage"></p><p id="keep"></p><nav id="links" aria-label="Explore on Zodiacs"></nav></main>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0c0e16;color:#eef1f7}body{margin:0;padding:20px;max-width:760px;background:#0c0e16;color:#eef1f7}h1{font:normal 28px Georgia,serif;margin:0 0 12px}p{line-height:1.5;color:#b9bfce}ol{padding:0;list-style:none}li{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #272c3b}.event-icon{width:44px;height:44px;flex:none}.event-copy{min-width:0}.brand{display:inline-flex;align-items:center;gap:8px;margin-bottom:20px;color:inherit;text-decoration:none;font:normal 24px Georgia,serif}.brand-ring{flex:none}time{display:block;font-size:14px;color:#b9bfce;margin-top:5px}a{color:#c3d4ff;text-underline-offset:3px}nav{display:flex;flex-wrap:wrap;gap:16px;margin-top:20px}#status{min-height:20px}form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{display:grid;gap:6px;font-size:14px}input,select,button{font:inherit;color:inherit;background:#181c29;border:1px solid #454c61;border-radius:6px;padding:10px;min-width:0}button{cursor:pointer;align-self:end}button:disabled{opacity:.55;cursor:default}input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #c3d4ff;outline-offset:3px}#controls-help{font-size:13px} @media(max-width:420px){form{grid-template-columns:1fr}}
+</style></head><body><main><a class="brand" href="https://zodiacs.org/" target="_blank" rel="noopener noreferrer">${BRAND_RING_SVG}Zodiacs·org</a><h1>Sky calendar</h1><p id="status" role="status">Ask about a week or month, or choose dates below.</p><form id="calendar" aria-describedby="controls-help"><label>From<input id="from" type="date" required></label><label>To<input id="to" type="date" required></label><label>Times for<select id="zone"></select></label><button id="update" type="submit" disabled>Show these dates</button></form><p id="controls-help">Up to 92 days at a time.</p><ol id="events"></ol><p id="coverage"></p><p id="keep"></p><nav id="links" aria-label="Explore on Zodiacs"></nav></main>
 <script>
 (() => {
   const status = document.getElementById('status'), list = document.getElementById('events'), coverage = document.getElementById('coverage'), keep = document.getElementById('keep'), links = document.getElementById('links');
   const form = document.getElementById('calendar'), from = document.getElementById('from'), to = document.getElementById('to'), zone = document.getElementById('zone'), update = document.getElementById('update');
+  const SIGN_ICONS = ${JSON.stringify(SIGN_PNG_BASE64)};
   const COMMON = ['America/Los_Angeles','America/Chicago','America/New_York','America/Sao_Paulo','Europe/London','Europe/Paris','Europe/Moscow','Africa/Lagos','Asia/Dubai','Asia/Kolkata','Asia/Bangkok','Asia/Singapore','Asia/Tokyo','Australia/Sydney','UTC'];
   const place = name => name === 'UTC' || name === 'Etc/UTC' ? 'UTC' : name.split('/').pop().replace(/_/g, ' ');
   let device = 'UTC'; try { device = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch {}
@@ -49,8 +53,12 @@ export const WIDGET_HTML = `<!doctype html>
     from.value = localDate(data.from, shown); to.value = localDate(new Date(new Date(data.to).getTime() - 1).toISOString(), shown);
     status.textContent = day(data.from, shown) + ' – ' + day(new Date(new Date(data.to).getTime() - 1).toISOString(), shown) + ' · times for ' + place(shown);
     for (const event of data.events) {
-      const item = document.createElement('li'); item.append(document.createTextNode(label(event)));
-      const time = document.createElement('time'); time.dateTime = event.at; time.textContent = when(event.at, shown); item.append(time); list.append(item);
+      const item = document.createElement('li');
+      if (Object.hasOwn(SIGN_ICONS, event.sign)) {
+        const icon = document.createElement('img'); icon.className = 'event-icon'; icon.src = 'data:image/png;base64,' + SIGN_ICONS[event.sign]; icon.alt = ''; icon.width = 44; icon.height = 44; item.append(icon);
+      }
+      const copy = document.createElement('div'); copy.className = 'event-copy'; copy.append(document.createTextNode(label(event)));
+      const time = document.createElement('time'); time.dateTime = event.at; time.textContent = when(event.at, shown); copy.append(time); item.append(copy); list.append(item);
     }
     if (!data.events.length) status.textContent += ' · Nothing changes in these dates.';
     coverage.textContent = 'Shows planets changing sign, turning retrograde or direct, and new and full Moons. It does not list eclipses.';
