@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
+  "$schema": "https://developers.openai.com/plugins/schemas/chatgpt-app-submission.v1.json",
   "schema_version": 1,
   "app_info": {
     "display_name": "Zodiacs",
@@ -232,5 +232,6 @@
       "expected_output": "Does not invoke Zodiacs to predict or guarantee relationship outcomes.",
       "expected_output_url": null
     }
-  ]
+  ],
+  "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.0.mp4"
 }
