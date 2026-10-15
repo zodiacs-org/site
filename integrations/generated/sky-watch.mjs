@@ -25794,8 +25794,8 @@ function getSkyCalendar(input, now, origin = DEFAULT_ORIGIN2) {
 }
 
 // src/ai-tools/horoscope/reading.ts
-var HOROSCOPE_URI = "ui://zodiacs/horoscopes-v2.html";
-var LEGACY_HOROSCOPE_URIS = ["ui://zodiacs/horoscopes-v1.html"];
+var HOROSCOPE_URI = "ui://zodiacs/horoscopes-v3.html";
+var LEGACY_HOROSCOPE_URIS = ["ui://zodiacs/horoscopes-v2.html", "ui://zodiacs/horoscopes-v1.html"];
 var HOROSCOPE_SIGNS = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
 var HOROSCOPE_FOCUSES = ["general", "love", "career"];
 var HOROSCOPE_PERIODS = ["day", "week"];
@@ -25963,11 +25963,12 @@ var MAX_HTTP_BYTES = 16384;
 var AI_ROUTE_PARAM = "__zodiacs_ai";
 var AI_SWITCH_ENV = "ZODIACS_MCP_ENABLED";
 var ORIGIN = "https://zodiacs.org";
-var WIDGET_URI = "ui://zodiacs/sky-events-v2.html";
-var LEGACY_WIDGET_URIS = ["ui://zodiacs/sky-events-v1.html"];
-var STUDIO_URI = "ui://zodiacs/chart-studio-v3.html";
-var LEGACY_STUDIO_URIS = ["ui://zodiacs/chart-studio-v2.html", "ui://zodiacs/chart-studio-v1.html"];
-var OCCASIONS_URI = "ui://zodiacs/occasions-v1.html";
+var WIDGET_URI = "ui://zodiacs/sky-events-v3.html";
+var LEGACY_WIDGET_URIS = ["ui://zodiacs/sky-events-v2.html", "ui://zodiacs/sky-events-v1.html"];
+var STUDIO_URI = "ui://zodiacs/chart-studio-v4.html";
+var LEGACY_STUDIO_URIS = ["ui://zodiacs/chart-studio-v3.html", "ui://zodiacs/chart-studio-v2.html", "ui://zodiacs/chart-studio-v1.html"];
+var OCCASIONS_URI = "ui://zodiacs/occasions-v2.html";
+var LEGACY_OCCASIONS_URIS = ["ui://zodiacs/occasions-v1.html"];
 var READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true };
 var TOOL_TITLES = {
   get_capabilities: "What Zodiacs can do",
@@ -27818,11 +27819,11 @@ function createAiServer(dependencies, watch) {
     mimeType: "text/html;profile=mcp-app",
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, "openai/widgetDescription": "A Sun-sign horoscope for the person's own day or week, with the sky facts behind it." }
   }, () => ({ contents: [{ uri, mimeType: "text/html;profile=mcp-app", text: HOROSCOPES_HTML, _meta: panelMeta("inline") }] }));
-  if (tools.some((tool) => PANELS[tool]?.uri === OCCASIONS_URI)) server.registerResource("occasions", OCCASIONS_URI, {
+  if (tools.some((tool) => PANELS[tool]?.uri === OCCASIONS_URI)) for (const { uri, name } of versions("occasions", [OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS])) server.registerResource(name, uri, {
     title: "Zodiacs occasions",
     mimeType: "text/html;profile=mcp-app",
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, "openai/widgetDescription": "A card from what the assistant worked out: a day that matters, life milestones, two charts compared, chart twins, a famous chart, a birthday or the sky calendar." }
-  }, () => ({ contents: [{ uri: OCCASIONS_URI, mimeType: "text/html;profile=mcp-app", text: OCCASIONS_HTML, _meta: panelMeta("inline") }] }));
+  }, () => ({ contents: [{ uri, mimeType: "text/html;profile=mcp-app", text: OCCASIONS_HTML, _meta: panelMeta("inline") }] }));
   for (const tool of tools) {
     const panel = PANELS[tool];
     server.registerTool(tool, {
