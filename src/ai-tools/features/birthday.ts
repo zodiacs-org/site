@@ -37,16 +37,14 @@ const zone = z.string().min(1).max(64).regex(ZONE_PATTERN);
 
 export const birthdayInput = z.strictObject({
   date: z.string().regex(/^\d{2}-\d{2}$/).optional()
-    .describe('A birthday without a year, as MM-DD, such as 05-03 for 3 May. Give this or birthDate.'),
+    .describe('A birthday without a year, as MM-DD, such as 05-03 for 3 May. This is enough for general birthday facts. Give this or birthDate.'),
   birthDate: z.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional()
-    .describe('The full birth date, such as 1997-05-03. Needed for the solar return and for a cusp date.'),
+    .describe('The full birth date, such as 1997-05-03. Use only for the solar return or to resolve the sign of a cusp date in that birth year.'),
   time: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional()
     .describe('The birth time on the local clock, if known. Needs zone.'),
   zone: zone.optional().describe("The birthplace's time zone, such as Europe/London."),
   longitude: z.number().min(-180).max(180).optional()
-    .describe("The birthplace's longitude, if known, for birth times before standard time."),
-  latitude: z.number().min(-90).max(90).optional()
-    .describe("The birthplace's latitude. Accepted with longitude; the Sun's position does not depend on it."),
+    .describe("Use only for historical birth dates when the birthplace used local mean time, to convert its clock to UTC. Needs zone. Do not request coordinates for modern birthdays."),
   year: z.number().int().min(MIN_YEAR + 1).max(MAX_YEAR).optional()
     .describe('The year of the solar return. Defaults to the current year. Needs birthDate.'),
 }).superRefine((args, context) => {
@@ -54,12 +52,12 @@ export const birthdayInput = z.strictObject({
     context.addIssue({ code: 'custom', message: 'Give either date (MM-DD) or birthDate (YYYY-MM-DD), not both.' });
   }
   if (args.birthDate === undefined && (args.time !== undefined || args.zone !== undefined
-    || args.longitude !== undefined || args.latitude !== undefined || args.year !== undefined)) {
+    || args.longitude !== undefined || args.year !== undefined)) {
     context.addIssue({ code: 'custom', message: 'A time, place or solar return year needs the full birthDate.' });
   }
   if (args.time !== undefined && !args.zone) context.addIssue({ code: 'custom', message: 'A birth time needs its time zone.' });
-  if (args.latitude !== undefined && args.longitude === undefined) {
-    context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
+  if (args.longitude !== undefined && !args.zone) {
+    context.addIssue({ code: 'custom', message: 'Historical longitude needs its time zone.' });
   }
 });
 export type BirthdayInput = z.infer<typeof birthdayInput>;

@@ -39,6 +39,11 @@ describe('the 0.5.0 tools through the tool runner', () => {
     expect(missing).toMatchObject({ ok: true, data: { found: false } });
   });
 
+  it('refuses latitude that the birthday calculation does not use', async () => {
+    expect(await executeAiTool('get_birthday', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', longitude: -3.7038, latitude: 40.4168 }, on))
+      .toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+  });
+
   it('describes a birthday with its solar return, and gives the calendar feed', async () => {
     const birthday = await executeAiTool('get_birthday', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }, on);
     expect(birthday.ok).toBe(true);
