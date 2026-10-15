@@ -643,12 +643,30 @@ if (!(await exists(searchUiPath))) {
   }
 }
 
+// The calculator pages' WebMCP tools (src/lib/webmcp/calculator-tools.ts): name, English path, and whether the page
+// is localized in the released locales.
+const WEBMCP_CALCULATOR_TOOLS = [
+  ['zodiacs.birth_chart', '/birth-chart/', true],
+  ['zodiacs.moon_sign', '/moon-sign/', true],
+  ['zodiacs.rising_sign', '/rising-sign/', true],
+  ['zodiacs.big_three', '/big-three/', true],
+  ['zodiacs.compatibility', '/compatibility/', true],
+  ['zodiacs.transits', '/transits/', true],
+  ['zodiacs.saturn_return', '/saturn-return/', true],
+  ['zodiacs.solar_return', '/solar-return/', false],
+  ['zodiacs.lunar_return', '/lunar-return/', false],
+  ['zodiacs.numerology', '/numerology/', false],
+  ['zodiacs.moon_phase', '/moon-phase/', true],
+  ['zodiacs.baby_zodiac', '/baby-zodiac/', true],
+  ['zodiacs.chart_twins', '/chart-twins/', true],
+  ['zodiacs.group_chart', '/group-charts/', true],
+];
 const webMcpPath = resolve(root, 'assets/webmcp-register.js');
 if (!(await exists(webMcpPath))) {
   fail('webmcp: missing assets/webmcp-register.js');
 } else {
   const webMcp = await readFile(webMcpPath, 'utf8');
-  for (const fingerprint of ['zodiacs.search', 'INVALID_INPUT', 'INDEX_UNAVAILABLE', 'zodiacs.moon_phase', 'webmcp-calculators.js?v=calculators-1']) {
+  for (const fingerprint of ['zodiacs.search', 'INVALID_INPUT', 'INDEX_UNAVAILABLE', 'webmcp-calculators.js?v=calculators-1', ...WEBMCP_CALCULATOR_TOOLS.map(([name]) => name)]) {
     if (!webMcp.includes(fingerprint)) {
       fail(`webmcp: assets/webmcp-register.js is missing ${fingerprint}`);
     }
@@ -659,7 +677,7 @@ if (!(await exists(webMcpCalculatorsPath))) {
   fail('webmcp: missing assets/webmcp-calculators.js');
 } else {
   const calculators = await readFile(webMcpCalculatorsPath, 'utf8');
-  for (const fingerprint of ['runCalculatorTool', 'zodiacs.moon_phase', 'UNKNOWN_TOOL']) {
+  for (const fingerprint of ['runCalculatorTool', 'UNKNOWN_TOOL', '/data/chart-twins.json', ...WEBMCP_CALCULATOR_TOOLS.map(([name]) => name)]) {
     if (!calculators.includes(fingerprint)) fail(`webmcp: assets/webmcp-calculators.js is missing ${fingerprint}`);
   }
 }
@@ -673,11 +691,33 @@ for (const relativePath of ['index.html', 'aries/index.html']) {
     }
   }
 }
-// Track A2: a calculator page registers its WebMCP tool in every released locale.
-for (const relativePath of ['moon-phase/index.html', 'es/moon-phase/index.html', 'pt/moon-phase/index.html', 'fr/moon-phase/index.html', 'it/moon-phase/index.html']) {
-  const html = await readFile(resolve(root, relativePath), 'utf8');
-  if (!html.includes('/assets/webmcp-register.js?v=calculators-1') || !html.includes('registerWebMcpPage')) {
-    fail(`webmcp: ${relativePath} must register its calculator tool`);
+// Track A2: a calculator page registers its WebMCP tool in every locale it is built in, and the English page and
+// every released locale's page exist where the page is localized.
+let webMcpCalculatorPages = 0;
+for (const [name, path, localized] of WEBMCP_CALCULATOR_TOOLS) {
+  for (const locale of ['', 'es', 'pt', 'fr', 'it', 'ru']) {
+    const relativePath = `${locale ? `${locale}` : ''}${path}index.html`.replace(/^\//, '');
+    if (!(await exists(resolve(root, relativePath)))) {
+      if (locale === '' || (localized && locale !== 'ru')) fail(`webmcp: ${name} has no page at /${relativePath}`);
+      continue;
+    }
+    const html = await readFile(resolve(root, relativePath), 'utf8');
+    if (!html.includes('/assets/webmcp-register.js?v=calculators-1') || !html.includes('registerWebMcpPage')) {
+      fail(`webmcp: ${relativePath} must register its calculator tool`);
+    }
+    webMcpCalculatorPages += 1;
+  }
+}
+if (webMcpCalculatorPages < 60) fail(`webmcp: only ${webMcpCalculatorPages} calculator pages register a tool`);
+const twinDirectoryPath = resolve(root, 'data/chart-twins.json');
+if (!(await exists(twinDirectoryPath))) {
+  fail('webmcp: missing data/chart-twins.json, which zodiacs.chart_twins reads');
+} else {
+  const twins = JSON.parse(await readFile(twinDirectoryPath, 'utf8'));
+  const keys = new Set(twins.people?.flatMap((person) => Object.keys(person)));
+  if (twins.schema !== 'zodiacs.chart-twins.v1' || !(twins.people?.length > 100)
+      || [...keys].sort().join() !== 'moon,name,slug,sun') {
+    fail('webmcp: data/chart-twins.json must list the directory\'s names and signs, and nothing else');
   }
 }
 for (const relativePath of [
