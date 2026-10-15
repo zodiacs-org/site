@@ -91,6 +91,9 @@ on every pull request.
     which the stylesheets show with `content: attr()`;
   - the files its images, video and frames show, lazy-loaded ones
     (`data-src`) included;
+  - what its inline SVGs draw: each element with the attributes that draw
+    it, leaving out those that only name it or hook it to scripts, styles
+    and assistive technology (`class`, `id`, `data-*`, `aria-*`);
   - the words its stylesheets add with `content`, from the stylesheets a
     page links, holds and imports. Each word is kept with its rule's
     selector and the rules around it, a media query or the rule a nested
@@ -144,6 +147,12 @@ ran except `editorial:daily:verify`, which fails here by one last bit (F-95).
   - the people search's placeholder alone now fails `/people/`;
   - the full-moon tables' time `data-label` alone now fails the four
     localized full-moon calendars.
+- **SVG drawings** ([`svg-control.txt`](sitemap-dates/svg-control.txt)). A
+  change to the radius of AspectWheel's two nodes alone (7 to 9), against
+  `26802bcd`, fails the five pages that draw it, `/learn/aspects/conjunction/`,
+  `/opposition/`, `/sextile/`, `/square/` and `/trine/`, and passed with the
+  previous fingerprint, which kept an SVG's text alone (Codex's twelfth
+  finding on #752).
 - **Lazy-loaded media**
   ([`lazy-media-control.txt`](sitemap-dates/lazy-media-control.txt)). A change
   to the home page's second hero video source alone, against `26802bcd`,
