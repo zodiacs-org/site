@@ -1,9 +1,12 @@
 {
   "version": 1,
-  "id": "pt-first-of-month-20261013",
-  "baseCommit": "7d12c0f1e5ee246091f1544531538390963db28d",
+  "id": "personal-calendar-privacy-20261015",
+  "baseCommit": "6c667c969aa68da787b9c17123f7395b0278a34f",
   "protectedPaths": [
-    "src/lib/i18n/dates.ts"
+    "src/pages/es/privacy/index.astro",
+    "src/pages/fr/privacy/index.astro",
+    "src/pages/it/privacy/index.astro",
+    "src/pages/pt/privacy/index.astro"
   ],
-  "authorization": "On October 13, 2026 the owner asked to “fix the 1º date and the titles too” after F-88 left the pt-BR first of the month open. Asked “Do you approve a one-time Phase 1 scope allowance for exactly one protected file, src/lib/i18n/dates.ts, so that every Portuguese date writes the first of the month as “1º” (“1º de novembro de 2026”)? The tab-title fix needs no protected files.”, the owner chose “Approve allowance (Recommended)” on October 13, 2026. This one-time exact-path allowance covers only src/lib/i18n/dates.ts: formatDate and formatDateTime write day 1 as “1º” in Portuguese dates that name the month (“1º de novembro de 2026”, “1º de nov. de 2026”), as the review of F-88 asked and the review of this change confirmed. Numeric dates, days 11, 21 and 31, and every other language are unchanged."
+  "authorization": "On October 15, 2026 the owner approved, as relayed to this branch by the coordinating session, a one-time Phase 1 scope allowance for adding the personal sky calendar's privacy paragraph to the Spanish, Brazilian Portuguese, French and Italian privacy pages. This one-time exact-path exception covers only those four files and only that one paragraph, placed after the existing calendar-file paragraph in the “calendar” section: the calendar file made on the sky calendar page is built in the browser, the birth details entered there are not sent or stored, its times give the birth date and, with a birth time, the time (without one, the birthplace's time zone or, before standard time, its longitude), and it has no contacts to the ascendant or midheaven. No other text in those pages changes."
 }
