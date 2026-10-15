@@ -2,6 +2,7 @@
 import { ruOgImageForPath } from '../../strings/seo.ru.mjs';
 import Base from '../../layouts/Base.astro';
 import ReturnPersonal from '../../islands/ReturnPersonal';
+import PersonalCalendar from '../../islands/PersonalCalendar';
 import ReturnToolLinks from './ReturnToolLinks.astro';
 import SkyMonth from './SkyMonth.astro';
 import { localizePath, type CatalogLocale } from '../../lib/i18n';
@@ -33,6 +34,13 @@ const jsonLd = kind === 'calendar' ? [] : [{ '@type': 'WebApplication', name: s(
       <ReturnPersonal kind={kind} locale={locale} client:load />
       <noscript><p>{sharingText(locale, 'jsRequired')}</p></noscript>
     </>}
+    {kind === 'calendar' && <section class="return-panel personal-calendar-panel" aria-labelledby="personal-calendar-title" data-personal-calendar>
+      <h2 id="personal-calendar-title">{s(locale, 'personalTitle')}</h2>
+      <p>{s(locale, 'personalLede')}</p>
+      <p class="sharing-note">{s(locale, 'personalSeparate')}</p>
+      <PersonalCalendar locale={locale} client:visible />
+      <noscript><p>{sharingText(locale, 'jsRequired')}</p></noscript>
+    </section>}
     <ReturnToolLinks locale={locale} current={path} />
   </section>
 </Base>
