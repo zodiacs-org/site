@@ -145,6 +145,24 @@ run_phase6_sql_file \
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage_occasion_tools.sql"
 
+# The account save tool joins the counted names. Same replay rule.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261015150100_zodiacs_mcp_usage_save_tool.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261015150100_zodiacs_mcp_usage_save_tool.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/zodiacs_mcp_usage_save_tool.sql"
+
+# Save to my Zodiacs account: OAuth clients, the Auth projection, the token
+# hook, saved items and their RPC. A reviewed SQL Editor replay must be harmless.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261015150000_zodiacs_accounts_assistant_saves.sql"
+
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/zodiacs_accounts.sql"
+
 # Exercise the exact early-production table shape in a second database. The
 # same migration sequence must rename its legacy columns without replacing
 # rows or constraints, survive reviewed SQL Editor replays, restore both

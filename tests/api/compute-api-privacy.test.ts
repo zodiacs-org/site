@@ -506,7 +506,8 @@ describe('the site and the compute API', () => {
       'src/ai-tools/quota.ts',
       // The 0.5.0 tools' server-only modules resolve local times and zones with the same pure operations.
       'src/ai-tools/features/birthday.ts', 'src/ai-tools/features/compatibility.ts', 'src/ai-tools/features/people.ts',
-      'src/ai-tools/features/personal-week.ts',
+      // The horoscope tool's personal week, and the account save tool that works results out again, are server-only too.
+      'src/ai-tools/features/personal-week.ts', 'src/ai-tools/accounts/save.ts',
     ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the

@@ -389,8 +389,11 @@ export async function handleResultShareNodeRequest(req: any, res: any, route: Re
   let params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
     if (key === RESULT_SHARE_ROUTE_KEY) continue;
+    // The page skips a key it does not use, such as the fbclid or utm_source an app adds to a
+    // link as it is opened, so the result still shows; the image takes only its own keys.
+    if (!target.keys.includes(key) && !route.endsWith('-image')) continue;
     if (!target.keys.includes(key) || typeof value !== 'string') {
-      // A repeated or unknown key: the image refuses, the page opens without a result.
+      // A repeated key, or an unknown key on the image: the image refuses, the page opens without a result.
       if (route.endsWith('-image')) {
         await writeNodeResponse(res, errorResponse(400));
         return;

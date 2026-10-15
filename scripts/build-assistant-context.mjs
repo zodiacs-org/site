@@ -90,9 +90,11 @@ const LOCALIZED_PAGE_PREFIXES = LOCALES
 // every Astrofolio/Fomo/Registry/Terminal route out of the consumer astrology
 // catalog, along with the experimental precision preview: it is noindex, it is
 // not the engine behind any chart on this site, and an assistant pointing a
-// visitor at it would be pointing them at a research surface.
+// visitor at it would be pointing them at a research surface. /auth/ holds the
+// sign-in return page, which does nothing without a provider's one-time code.
 const UNLISTED_ROUTE_PREFIXES = Object.freeze([
   '/astrofolio/',
+  '/auth/',
   '/bio/',
   '/developers/precision-preview/',
   '/disclosure/',

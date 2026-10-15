@@ -146,7 +146,7 @@ await withPreview({ port: 8791 }, async (plainBase) => {
         assert.equal(errors.length,0,errors.join('\n')); assert.deepEqual(await page.evaluate(() => window.__cspViolations), []); record(`${locale||'en/'}: localized unknown-time portrait card`);
         await page.goto(`${base}/${locale}saturn-return/`); await hydrate(page); await page.locator('#sr-date').fill('2000-01-01'); await page.locator('.calc__submit').click(); await page.locator('[data-saturn-countdown]').waitFor({ timeout: 30000 }); await overflow(page);
         await screenshot(page, resolve(out, `${locale.replace('/','')||'en'}-saturn.png`));
-        await page.goto(`${base}/${locale}sky-calendar/`); await page.locator('.return-panel').waitFor(); await page.evaluate(() => document.fonts.ready); await overflow(page); assert.equal(await page.locator('.return-actions a[href^="webcal://"]').count(),1);
+        await page.goto(`${base}/${locale}sky-calendar/`); await page.locator('.return-panel:not([data-personal-calendar])').waitFor(); assert.equal(await page.locator('[data-personal-calendar]').count(),1); await page.evaluate(() => document.fonts.ready); await overflow(page); assert.equal(await page.locator('.return-actions a[href^="webcal://"]').count(),1);
         await screenshot(page, resolve(out, `${locale.replace('/','')||'en'}-calendar.png`));
         assert.equal(errors.length,0,errors.join('\n')); assert.deepEqual(await page.evaluate(() => window.__cspViolations), []); record(`${locale||'en/'}: calendar subscription and localized Saturn countdown fit on mobile`); await context.close();
       }

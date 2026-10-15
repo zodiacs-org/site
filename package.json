@@ -136,6 +136,7 @@
     "editorial:transits:verify": "node scripts/verify-transits.mjs",
     "editorial:transits:verify-all": "node scripts/verify-transits.mjs --all",
     "test:games:sql": "bash scripts/test-games-sql.sh",
+    "test:account:saved-pages-sql": "bash scripts/test-saved-pages-sql.sh",
     "test:phase6:assistant-sql": "bash scripts/test-phase6-assistant-sql.sh",
     "test:account:sync-sql": "bash scripts/test-account-sync-v2-sql.sh",
     "test:phase7:living-sync-sql": "bash scripts/test-living-chart-sync-sql.sh",

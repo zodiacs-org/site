@@ -307,6 +307,15 @@ function personRow(side: PersonChart, origin: string): CompatibilityData['a'] {
   };
 }
 
+/**
+ * One person's chart exactly as get_compatibility works out each side: Sun,
+ * Moon and rising signs, or a famous person's published reference chart.
+ * Throws RangeError with a plain message, as computeCompatibility does.
+ */
+export async function computePersonChart(person: CompatibilityPerson, localTime: CompatibilityClock, origin = 'https://zodiacs.org'): Promise<CompatibilityData['a']> {
+  return personRow(await personChart(person, 'You', localTime), origin);
+}
+
 /** The note for a famous person's side: their birth time is not on record. */
 export function famousNote(famous: Pick<IndexPerson, 'name' | 'birthplace'>): string {
   return `${famous.name}'s birth time is not on record, so Zodiacs uses their published chart for 12:00 civil time in ${famous.birthplace}. Their Moon and rising sign are left out, and the other orbs can differ by about a degree.`;

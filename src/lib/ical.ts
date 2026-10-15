@@ -222,3 +222,123 @@ export function serializeSkyEvents(
 
   return lines.map(foldIcalLine).join(CRLF) + CRLF;
 }
+
+/**
+ * A display alarm (RFC 5545 §3.6.6). `trigger` is a dur-value relative to
+ * the event's start, e.g. `-P1D` or `-PT15H`; for an all-day event that is
+ * counted from the local midnight that begins its date.
+ */
+export interface IcalAlarm {
+  trigger: string;
+  description: string;
+}
+
+const DURATION = /^[+-]?P(?:\d+W|(?=\d|T\d)(?:\d+D)?(?:T(?=\d)(?:\d+H)?(?:\d+M)?(?:\d+S)?)?)$/;
+
+/** The VALARM component lines for one display alarm. */
+export function alarmLines(alarm: IcalAlarm): string[] {
+  if (!DURATION.test(alarm.trigger)) throw new RangeError(`Invalid alarm trigger: ${alarm.trigger}`);
+  if (!alarm.description.trim()) throw new RangeError('A display alarm needs a description.');
+  return [
+    'BEGIN:VALARM',
+    'ACTION:DISPLAY',
+    `TRIGGER:${alarm.trigger}`,
+    `DESCRIPTION:${escapeIcalText(alarm.description)}`,
+    'END:VALARM',
+  ];
+}
+
+/**
+ * A stable UID from the fields an event shows: two FNV-1a hashes over the
+ * joined parts, so the same event keeps its UID from one file to the next
+ * and a calendar that imports the file again updates it instead of adding
+ * a copy.
+ */
+export function stableIcalUid(prefix: string, parts: readonly string[]): string {
+  const shown = encoder.encode(parts.join('|'));
+  const hash = [0x811c9dc5, 0x050c5d1f]
+    .map((basis) => fnv1a32(shown, basis).toString(16).padStart(8, '0'))
+    .join('');
+  return `${slug(prefix)}-${hash}@zodiacs.org`;
+}
+
+/**
+ * A personal calendar event: a timed instant (one minute long), or an
+ * all-day event on a local calendar date, with optional display alarms.
+ */
+export type PersonalCalendarEvent = {
+  uid: string;
+  summary: string;
+  description: string;
+  url?: string;
+  alarms?: readonly IcalAlarm[];
+} & ({ start: Date | string; date?: never } | { date: string; start?: never });
+
+const CALENDAR_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+function icalDate(date: string): { value: string; next: string } {
+  const match = CALENDAR_DATE.exec(date);
+  const time = match ? Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : NaN;
+  if (!match || !Number.isFinite(time) || new Date(time).toISOString().slice(0, 10) !== date) {
+    throw new RangeError(`Invalid calendar date: ${date}`);
+  }
+  const next = new Date(time + 86_400_000).toISOString().slice(0, 10);
+  return { value: date.replace(/-/g, ''), next: next.replace(/-/g, '') };
+}
+
+function personalEventLines(event: PersonalCalendarEvent, dtstamp: string): string[] {
+  if (!/^[A-Za-z0-9._-]+@zodiacs\.org$/.test(event.uid)) throw new RangeError(`Invalid event UID: ${event.uid}`);
+  const when = event.date !== undefined
+    ? (() => { const day = icalDate(event.date); return [`DTSTART;VALUE=DATE:${day.value}`, `DTEND;VALUE=DATE:${day.next}`]; })()
+    : [`DTSTART:${formatIcalUtc(event.start)}`, 'DURATION:PT1M'];
+  return [
+    'BEGIN:VEVENT',
+    `UID:${event.uid}`,
+    `DTSTAMP:${dtstamp}`,
+    ...when,
+    'TRANSP:TRANSPARENT',
+    `SUMMARY:${escapeIcalText(event.summary)}`,
+    `DESCRIPTION:${escapeIcalText(event.description)}`,
+    ...(event.url ? [`URL:${event.url}`] : []),
+    ...(event.alarms ?? []).flatMap(alarmLines),
+    'END:VEVENT',
+  ];
+}
+
+function personalSortKey(event: PersonalCalendarEvent): string {
+  return event.date !== undefined ? `${event.date.replace(/-/g, '')}T000000` : formatIcalUtc(event.start);
+}
+
+/**
+ * Serialize a personal calendar. Input order does not affect output order;
+ * two events with the same UID are one event.
+ */
+export function serializePersonalEvents(
+  events: readonly PersonalCalendarEvent[],
+  options: Pick<TransitCalendarOptions, 'generatedAt' | 'calendarName'>,
+): string {
+  if (events.length === 0) throw new RangeError('A personal calendar requires at least one event.');
+  const dtstamp = formatIcalUtc(options.generatedAt);
+  const seen = new Set<string>();
+  const prepared = events
+    .map((event) => ({ event, key: personalSortKey(event) }))
+    .sort((a, b) => a.key.localeCompare(b.key) || a.event.uid.localeCompare(b.event.uid))
+    .filter(({ event }) => {
+      if (seen.has(event.uid)) return false;
+      seen.add(event.uid);
+      return true;
+    });
+
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Zodiacs.org//Personal Sky 1.0//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    `X-WR-CALNAME:${escapeIcalText(options.calendarName ?? 'Zodiacs.org personal sky')}`,
+    ...prepared.flatMap(({ event }) => personalEventLines(event, dtstamp)),
+    'END:VCALENDAR',
+  ];
+
+  return lines.map(foldIcalLine).join(CRLF) + CRLF;
+}

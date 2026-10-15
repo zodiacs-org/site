@@ -126,6 +126,14 @@ describe('the deployed entry', () => {
     expect(repeated.statusCode).toBe(200);
     expect(repeated.body.toString()).toContain('Compare two birth charts');
 
+    // Apps add their own keys as a link is opened; the page keeps the result.
+    const opened = nodeResponse();
+    await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'compatibility-link', ...Object.fromEntries(new URLSearchParams(COMPAT)), fbclid: 'IwAR0', utm_source: 'share' } }, opened, 'compatibility-link');
+    expect(opened.statusCode).toBe(200);
+    expect(opened.body.toString()).not.toContain('Compare two birth charts');
+    expect(opened.body.toString()).toContain('content="https://zodiacs.org/api/og/compatibility-image?');
+    expect(opened.body.toString()).not.toContain('fbclid');
+
     const page = nodeResponse();
     await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'evil.example' }, query: { __zodiacs_share: 'occasion-link', ...Object.fromEntries(new URLSearchParams(OCCASION)) } }, page, 'occasion-link');
     expect(page.statusCode).toBe(200);

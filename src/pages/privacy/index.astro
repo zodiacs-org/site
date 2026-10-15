@@ -5,6 +5,8 @@ import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../../lib/web-ana
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../lib/account-v2/feature-flags';
 import { weeklyDigestSignupEnabled } from '../../lib/weekly-digest/feature-flags';
 import { configuredWalletChains } from '../../lib/wallet/config';
+import { enabledOAuthProviders } from '../../lib/auth/oauth-config';
+import { accountSavesEnabled } from '../../lib/profile/saved-pages-config';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
@@ -17,6 +19,13 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
+// Google and Apple sign-in and saved pages are build flags, off until set up.
+const oauthProviders = enabledOAuthProviders({
+  PUBLIC_AUTH_GOOGLE: process.env.PUBLIC_AUTH_GOOGLE,
+  PUBLIC_AUTH_APPLE: process.env.PUBLIC_AUTH_APPLE,
+});
+const oauthProviderNames = oauthProviders.map((provider) => (provider === 'google' ? 'Google' : 'Apple')).join(' or ');
+const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
 const updated = '14 October 2026';
 const modifiedAt = '2026-10-14T00:00:00.000Z';
 
@@ -33,6 +42,8 @@ const jsonLd = [
 const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 // The hosted app's 0.5.0 tools (src/ai-tools, ZODIACS_OCCASIONS_ENABLED) take birth dates; the page says so only while they are offered.
 const assistantBirthToolsEnabled = (import.meta.env.ZODIACS_OCCASIONS_ENABLED ?? process.env.ZODIACS_OCCASIONS_ENABLED) === '1';
+// Save to my Zodiacs account (src/ai-tools/accounts, ZODIACS_ACCOUNTS_ENABLED) is offered only with those tools and the profile's saved list; the page says so only while it is.
+const assistantAccountsEnabled = assistantBirthToolsEnabled && accountSaves && (import.meta.env.ZODIACS_ACCOUNTS_ENABLED ?? process.env.ZODIACS_ACCOUNTS_ENABLED) === '1';
 ---
 <Base
   title="Privacy — How Your Data Is Handled | Zodiacs.org"
@@ -45,16 +56,20 @@ const assistantBirthToolsEnabled = (import.meta.env.ZODIACS_OCCASIONS_ENABLED ??
     <h1 class="method-title display">Your birth details leave your device only when you send them.</h1>
 
     <div class="prose">
-      <p class="lede"> Chart calculation runs in your browser. Birth fields are not sent as part of calculation or a Cabinet of Twelve lookup; they leave your device only if you sign in to sync saved charts, share a link that carries them, or type them into an assistant message. Aura sends one public wallet address—not your birth or chart data—to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'} remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by default. We show no ads and use no cross-site tracking. </p>
+      <p class="lede"> Chart calculation runs in your browser. Birth fields are not sent as part of calculation or a Cabinet of Twelve lookup; they leave your device only if you sign in to sync saved charts{accountSaves ? ' or save a reading to your profile' : ''}, share a link that carries them, or type them into an assistant message. Aura sends one public wallet address—not your birth or chart data—to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'} remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by default. We show no ads and use no cross-site tracking. </p>
 
       <h2 id="ai-integrations">AI integration candidates</h2>
-      {assistantBirthToolsEnabled ? (
+      {assistantAccountsEnabled ? (
+        <p>The Zodiacs app for ChatGPT and Claude needs no account except to save, and its sky and calendar tools need no birth information. Its horoscope tool takes a birth date, and a time and time zone if you add them, only when you ask for a personal forecast for your week. Its occasion, compatibility, chart-twin and birthday tools take the dates you give them: a birth date and, if you add them, a time, time zone, place and first names, for one or two people. They calculate from them for that answer; a card link carries the details after its #. If you choose to share a compatibility score or a date’s rating, its share link puts only first names, Sun and Moon signs, the scores, and the occasion’s date and place name in the address, so a link preview can show the result; it carries no birth date, time or coordinates, and the page and picture it opens are drawn from that address and saved nowhere. Like any page address, it appears in our host’s routine request logs. Saving is the one exception: if you sign in to your Zodiacs account from the assistant and ask it to save a chart, comparison, occasion card or weekly forecast, Zodiacs works that result out again from the same details and saves it to your account. Its tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no conversation text and no request or result you did not ask it to save, writes no argument logs and uses uncacheable responses. Our host, Vercel, keeps routine request logs for this site, such as IP address, time and browser details, for 30 days. The assistant you use handles your conversation under its own privacy policy. It is live at zodiacs.org/mcp.</p>
+      ) : assistantBirthToolsEnabled ? (
         <p>The Zodiacs app for ChatGPT and Claude needs no account, and its sky and calendar tools need no birth information. Its horoscope tool takes a birth date, and a time and time zone if you add them, only when you ask for a personal forecast for your week. Its occasion, compatibility, chart-twin and birthday tools take the dates you give them: a birth date and, if you add them, a time, time zone, place and first names, for one or two people. They calculate from them for that answer and save none of it; a card link carries the details after its #. If you choose to share a compatibility score or a date’s rating, its share link puts only first names, Sun and Moon signs, the scores, and the occasion’s date and place name in the address, so a link preview can show the result; it carries no birth date, time or coordinates, and the page and picture it opens are drawn from that address and saved nowhere. Like any page address, it appears in our host’s routine request logs. Its tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no requests or results, writes no argument logs and uses uncacheable responses. Our host, Vercel, keeps routine request logs for this site, such as IP address, time and browser details, for 30 days. The assistant you use handles your conversation under its own privacy policy. It is live at zodiacs.org/mcp.</p>
       ) : (
       <p>The public-sky ChatGPT candidate needs no birth information or account. When enabled, its tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no requests or results, writes no argument logs, uses uncacheable responses and refuses personal fields. Our host, Vercel, keeps routine request logs for this site, such as IP address, time and browser details, for 30 days. The assistant you use handles your conversation under its own privacy policy. It is live at zodiacs.org/mcp and has been submitted to the ChatGPT and Claude directories.</p>
       )}
       <p>The server keeps one count per day of how often each tool is used, and from which assistant. These counts hold no questions, answers, birth details, addresses or identifiers.</p>
-      {assistantBirthToolsEnabled ? (
+      {assistantAccountsEnabled ? (
+        <p>The developer plugin computes locally over stdio and makes no outbound requests. An assistant connected to it can still send its tool arguments and results to its provider. Natal positions and exported records can reveal a birth instant; they are not anonymous. Keep them out of public links, analytics, screenshots and issues. The hosted app computes a chart from birth details only for the answer it is giving, and stores one only when you ask it to save to your signed-in account.</p>
+      ) : assistantBirthToolsEnabled ? (
         <p>The developer plugin computes locally over stdio and makes no outbound requests. An assistant connected to it can still send its tool arguments and results to its provider. Natal positions and exported records can reveal a birth instant; they are not anonymous. Keep them out of public links, analytics, screenshots and issues. The hosted app computes a chart from birth details only for the answer it is giving, and stores none.</p>
       ) : (
         <p>The developer plugin computes locally over stdio and makes no outbound requests. An assistant connected to it can still send its tool arguments and results to its provider. Natal positions and exported records can reveal a birth instant; they are not anonymous. Keep them out of public links, analytics, screenshots and issues. The hosted candidate does not offer personal-chart computation or storage.</p>
@@ -362,6 +377,17 @@ const assistantBirthToolsEnabled = (import.meta.env.ZODIACS_OCCASIONS_ENABLED ??
               You sign in with a one-time link sent to your email address — there is
               no password to store.
             </li>
+            {oauthProviders.length > 0 && (
+              <li>
+                You can sign in with {oauthProviderNames} instead. You sign in on
+                the provider's own page, and the provider then gives Supabase your
+                email address and, if you allow it, your name; Google also gives
+                the address of your profile picture. Apple can give a private
+                relay address in place of your own. Supabase stores these with
+                your account. Nothing is posted to your Google or Apple account,
+                and the site gets no other access to it.
+              </li>
+            )}
             <li>
               We store your email address and every chart saved in your browser
               while you are signed in, including those saved before you signed
@@ -375,6 +401,23 @@ const assistantBirthToolsEnabled = (import.meta.env.ZODIACS_OCCASIONS_ENABLED ??
               you delete (its identifier and when), so the deletion reaches your
               other devices. These are kept until you delete the account.
             </li>
+            {accountSaves && (
+              <li>
+                If you choose Save to your profile under a compatibility reading
+                or an occasion card, its title and link are stored with your
+                account so it opens on your other devices. The link carries what
+                the page needs to open again: the birth dates, times and places of
+                a reading, or the names, date and place on a card. You can remove
+                each one from your profile.
+              </li>
+            )}
+            {accountSaves && (
+              <li>
+                If you choose Sign in to save before signing in, that page's title
+                and link wait in this browser for up to a day and are saved to
+                your profile when you sign in.
+              </li>
+            )}
             <li>
               While you are signed in, a sign-in token is kept in your browser so
               you stay logged in. Signing out removes it.
@@ -386,6 +429,22 @@ const assistantBirthToolsEnabled = (import.meta.env.ZODIACS_OCCASIONS_ENABLED ??
             </li>
           </ul>
         </>
+      )}
+
+      {assistantAccountsEnabled && (
+        <p>
+          If you connect your account to the Zodiacs app in ChatGPT or Claude,
+          the assistant can save the charts, comparisons, occasion cards and
+          weekly forecasts you ask it to keep. Each one is listed under Saved to
+          your profile with a title, a link that reopens it, a one-line summary
+          and what Zodiacs worked out, including the birth dates and first names
+          in it. Only you can read them; you can remove each one or download
+          them all from your profile, and they are deleted with your account.
+          The connection is an authorization you give through Supabase Auth: the
+          assistant receives a sign-in token that includes your account email,
+          it cannot read what is already in your account, and you can disconnect
+          it at any time at zodiacs.org/oauth/consent/.
+        </p>
       )}
 
       <h2>Email</h2>
@@ -421,6 +480,7 @@ const assistantBirthToolsEnabled = (import.meta.env.ZODIACS_OCCASIONS_ENABLED ??
         birthplace, so they give its time zone or, before standard time, its
         longitude.
       </p>
+      <p>A calendar file you make on the Sky calendar page, with your solar returns, life milestones and slow-planet contacts, is also built in your browser; the birth details you enter there are not sent to us or stored. Its times come from your chart, so anyone you share it with, or any online calendar you import it into, can work out from them your birth date and, with a birth time, the time; without one the chart is calculated for noon at your birthplace, so they give its time zone or, before standard time, its longitude. The file has no contacts to the ascendant or midheaven.</p>
       {webPushEnabled && (
         <p>
           If you turn on daily notifications, we store your browser's push

@@ -1594,18 +1594,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                 )}
                 {compatShareMod && (
                   <div class="calc__actions syn__result-secondary">
-                    <compatShareMod.CompatibilityPairingCta
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc }}
-                      locale={locale}
-                    />
-                    <compatShareMod.CompatibilityShareControl
-                      key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate, utc: result.a.utc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate, utc: result.b.utc }}
-                      summary={result.summary}
-                      locale={locale}
-                    />
+                    <compatShareMod.CompatibilityResultActions key={result.at} result={result} charts={charts} locale={locale} />
                   </div>
                 )}
               </div>
@@ -1625,20 +1614,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                   </button>
                 )}
                 secondary={compatShareMod ? (
-                  <>
-                    <compatShareMod.CompatibilityPairingCta
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc }}
-                      locale={locale}
-                    />
-                    <compatShareMod.CompatibilityShareControl
-                      key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate, utc: result.a.utc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate, utc: result.b.utc }}
-                      summary={result.summary}
-                      locale={locale}
-                    />
-                  </>
+                  <compatShareMod.CompatibilityResultActions key={result.at} result={result} charts={charts} locale={locale} />
                 ) : undefined}
               />
             ) : null

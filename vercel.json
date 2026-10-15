@@ -314,6 +314,18 @@
       "destination": "/api/compatibility?__zodiacs_ai=health"
     },
     {
+      "source": "/.well-known/oauth-protected-resource",
+      "destination": "/api/compatibility?__zodiacs_ai=resource"
+    },
+    {
+      "source": "/.well-known/oauth-protected-resource/mcp",
+      "destination": "/api/compatibility?__zodiacs_ai=resource"
+    },
+    {
+      "source": "/oauth/consent/",
+      "destination": "/api/compatibility?__zodiacs_ai=consent"
+    },
+    {
       "source": "/api/v1/positions",
       "destination": "/api/compatibility?__zodiacs_compute=positions"
     },
