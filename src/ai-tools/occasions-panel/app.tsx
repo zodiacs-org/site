@@ -26,7 +26,7 @@ interface OccasionSky {
   } | null;
   rating: { score: number; verdict: string; reasons: string[] };
   bestDays: { from: string; to: string; days: number; best: { date: string; score: number; verdict: string; reasons: string[] }[] } | null;
-  cardUrl: string | null; note: string;
+  cardUrl: string | null; shareUrl?: string | null; note: string;
 }
 type MilestoneKind = keyof typeof MILESTONE_WORDS;
 interface Milestone { kind: MilestoneKind; name: string; index: number; age: number; first: string; last: string; passes: { at: string; retrograde: boolean }[] }
@@ -118,7 +118,7 @@ function Occasion({ data }: { data: OccasionSky }) {
       {rows.length > 0 && <dl class="rows">{rows.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>}
       <p class="words">{data.card.interpretation} {data.card.closing}</p>
       {data.moonSignChange && data.instantIs !== 'given-time' && <p class="quiet">The Moon changes sign that day. Add the time to pin it down.</p>}
-      <Actions text={text} cardUrl={data.cardUrl} cardLabel="Open the printable card"/>
+      <Actions text={text} cardUrl={data.cardUrl} cardLabel="Open the printable card" shareUrl={data.shareUrl}/>
       <p class="disclosure">{data.note}</p>
       <Signature/>
     </article>

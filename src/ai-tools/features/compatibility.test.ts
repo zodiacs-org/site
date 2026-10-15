@@ -44,6 +44,13 @@ describe('computeCompatibility', () => {
     expect(data.signPair?.slug).toBe('aries-leo');
     expect(data.pageUrl).toBe('https://zodiacs.org/compatibility/aries-leo/');
     expect(data.cardUrl).toBeNull();
+    // The share link carries Person A/B's Sun signs and the scores only.
+    const share = new URL(data.shareUrl!);
+    expect(`${share.origin}${share.pathname}`).toBe('https://zodiacs.org/share/compatibility/');
+    expect(Object.fromEntries(share.searchParams)).toEqual({
+      as: 'leo', bs: 'aries', score: String(data.score.overall), attraction: String(data.score.areas.attraction),
+      communication: String(data.score.areas.communication), stability: String(data.score.areas.stability), v: expect.stringMatching(/^[a-z]+$/u),
+    });
     expect(links).toEqual([
       { title: 'Compatibility on Zodiacs', url: 'https://zodiacs.org/compatibility/' },
       { title: 'How we calculate', url: 'https://zodiacs.org/methodology/' },
@@ -66,6 +73,9 @@ describe('computeCompatibility', () => {
     expect(data.a.moon).not.toBeNull();
     expect(data.notes).toEqual([]);
     expect(data.pageUrl).toBe('https://example.test/compatibility/scorpio-aquarius/');
+    // Names and Sun signs go in the share link; birth dates, times, zones and places never do.
+    expect(data.shareUrl).toMatch(/^https:\/\/example\.test\/share\/compatibility\/\?a=Ana&as=aquarius&b=Ben&bs=scorpio&score=\d+&attraction=\d+&communication=\d+&stability=\d+&v=[a-z]+$/u);
+    expect(data.shareUrl).not.toMatch(/1991|1989|08|22%3A|Madrid|Europe|America|40\.|74/u);
 
     expect(data.cardUrl).toMatch(/^https:\/\/example\.test\/compatibility\/#a=1\.[\w-]+&b=1\.[\w-]+$/u);
     const fragment = new URLSearchParams(new URL(data.cardUrl!).hash.slice(1));

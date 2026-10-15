@@ -41,7 +41,7 @@ export function Score({ score, verdict, parts, hues = ['#B29DD0', '#B6D4E4'] }: 
   </div>;
 }
 
-export function Actions({ text, cardUrl, cardLabel, copyLabel = 'Copy the card' }: { text: string; cardUrl: string | null; cardLabel: string; copyLabel?: string }) {
+export function Actions({ text, cardUrl, cardLabel, copyLabel = 'Copy the card', shareUrl = null }: { text: string; cardUrl: string | null; cardLabel: string; copyLabel?: string; shareUrl?: string | null }) {
   const [status, setStatus] = useState('');
   async function copy() {
     try { await navigator.clipboard.writeText(text); setStatus('Copied.'); }
@@ -50,6 +50,7 @@ export function Actions({ text, cardUrl, cardLabel, copyLabel = 'Copy the card' 
   return <>
     <div class="actions">
       <button onClick={copy}>{copyLabel}</button>
+      {shareUrl && <a href={shareUrl} target="_blank" rel="noreferrer">Share ↗</a>}
       {cardUrl && <a href={cardUrl} target="_blank" rel="noreferrer">{cardLabel} ↗</a>}
     </div>
     <p role="status" class="quiet">{status}</p>
@@ -99,7 +100,7 @@ export function Compatibility({ data: result }: { data: CompatibilityData | Comp
       </li>)}</ul>
     </>}
     {data.notes.map((note) => <p class="quiet" key={note}>{note}</p>)}
-    <Actions text={text} cardUrl={data.cardUrl ?? data.pageUrl} cardLabel={data.cardUrl ? 'Open both charts on zodiacs.org' : 'Read this pair on zodiacs.org'}/>
+    <Actions text={text} cardUrl={data.cardUrl ?? data.pageUrl} cardLabel={data.cardUrl ? 'Open both charts on zodiacs.org' : 'Read this pair on zodiacs.org'} shareUrl={data.shareUrl}/>
     <p class="disclosure">{data.note}</p>
     <Signature/>
   </article>;

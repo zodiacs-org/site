@@ -23,6 +23,7 @@ import { SIGN_SLUGS } from '../../lib/compute-api/constants';
 import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { pairFacts, pairSlug, synastryLine } from '../../lib/compat';
 import { scoreCompatibility } from '../../lib/compat-score';
+import { compatibilityShareUrl } from '../../lib/share-results';
 import { compatibilityHandoffPath } from '../../lib/chart-handoff';
 import { computeChart } from '../../lib/engine/full.js';
 import { isGenerationalContact, summarizePair, type MinimalBody } from '../../lib/engine/synastry';
@@ -137,6 +138,8 @@ export const compatibilityData = z.object({
   modalities: z.object({ a: modalityTally, b: modalityTally }),
   pageUrl: z.string().nullable(),
   cardUrl: z.string().nullable(),
+  /** A link to share the score: first names or Person A/B, Sun signs and the scores, no birth details. */
+  shareUrl: z.string().nullable(),
   notes: z.array(z.string()),
   note: z.literal(COMPATIBILITY_NOTE),
 });
@@ -403,6 +406,11 @@ export async function computeCompatibility(
     modalities: { a: { ...summary.modalities.a }, b: { ...summary.modalities.b } },
     pageUrl: sunA && sunB ? `${origin}/compatibility/${pairSlug(sunA, sunB)}/` : null,
     cardUrl,
+    shareUrl: compatibilityShareUrl(origin, {
+      a: { name: a.person.name ?? null, sun: sunA },
+      b: { name: b.person.name ?? null, sun: sunB },
+      score,
+    }),
     notes: notesFor(a, b),
     note: COMPATIBILITY_NOTE,
   };

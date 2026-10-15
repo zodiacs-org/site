@@ -27,15 +27,25 @@ const GENTLE_MOON = new Set(['taurus', 'cancer', 'libra', 'pisces', 'leo']);
 
 const signName = (slug: string) => slug.charAt(0).toUpperCase() + slug.slice(1);
 
-function verdictFor(score: number): string {
-  if (score >= 82) return 'An excellent day for it';
-  if (score >= 68) return 'A good day for it';
-  if (score >= 55) return 'A fair day, with a few cautions';
-  return 'A challenging day for it';
+/** The verdicts, by the short key a share link carries. */
+export const DATE_VERDICTS = {
+  excellent: 'An excellent day for it',
+  good: 'A good day for it',
+  fair: 'A fair day, with a few cautions',
+  challenging: 'A challenging day for it',
+} as const;
+export type DateVerdictKey = keyof typeof DATE_VERDICTS;
+
+export function dateVerdictKey(score: number): DateVerdictKey {
+  if (score >= 82) return 'excellent';
+  if (score >= 68) return 'good';
+  if (score >= 55) return 'fair';
+  return 'challenging';
 }
 
 /** A reason with the points it moved the score by, for ranking reasons by weight. */
 export interface WeighedReason { points: number; reason: string }
+const verdictFor = (score: number): string => DATE_VERDICTS[dateVerdictKey(score)];
 
 export function rateOccasionDate(occasion: OccasionKind, sky: OccasionSkyFacts): DateRating {
   const { score, verdict, weighed } = weighOccasionDate(occasion, sky);

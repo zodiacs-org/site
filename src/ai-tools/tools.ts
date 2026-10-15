@@ -15,6 +15,7 @@ import { getBirthday, getSkyCalendar } from './features/birthday';
 import { rateOccasionDate } from '../lib/occasions/date-score';
 import { personalWeek } from './features/personal-week';
 import { bestDays, type BestDays } from '../lib/occasions/best-dates';
+import { occasionShareUrl } from '../lib/share-results';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
@@ -257,13 +258,17 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         }
         const evening = card.evening;
         const cardUrl = occasionCardUrl({ ...args, date, ...(zone ? { zone } : {}) });
+        const rating = rateOccasionDate(args.occasion, card.sky);
+        const signOf = (body: string) => card.sky.bodies.find((row) => row.body === body)?.sign ?? null;
+        // The share link carries the names, the day, a place name, the Sun and Moon signs and the rating; no time or coordinates.
+        const shareUrl = occasionShareUrl(ORIGIN, { occasion: args.occasion, date, names: args.names ?? null, place: args.place ?? null, sun: signOf('Sun'), moon: signOf('Moon'), score: rating.score });
         data = {
           occasion: args.occasion, date, time: args.time ?? null, zone, place: args.place ?? null, names: args.names ?? null,
           card: card.words,
           instant: clockTime(card.instant, zone), instantIs: args.time ? 'given-time' : zone ? 'local-noon' : 'utc-noon',
           sky: { bodies: card.sky.bodies, moon: card.sky.moon, retrograde: card.sky.retrograde },
           moonSignChange: card.moonSignChange,
-          rating: rateOccasionDate(args.occasion, card.sky),
+          rating,
           bestDays: best,
           evening: evening ? {
             sunrise: optionalClock(evening.sunrise, zone), sunset: optionalClock(evening.sunset, zone),
@@ -274,6 +279,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
             planetsAfterDusk: evening.planetsAfterDusk, flags: evening.flags,
           } : null,
           cardUrl,
+          shareUrl,
           note: OCCASION_NOTE,
         };
         links = [...(cardUrl ? [{ title: 'Open the printable card', url: cardUrl }] : []), occasionsLink, methodLink];
