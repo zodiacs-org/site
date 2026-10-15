@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import Faq from '../../../components/Faq.astro';
 import TransitTracker from '../../../islands/TransitTracker';
 import '../../../styles/calculator.css';
@@ -66,6 +67,7 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="sign-ring-hand" locale="ru" />
     <Faq items={faq} heading="Вопросы о транзитах" />
   </section>
 </Base>

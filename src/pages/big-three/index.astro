@@ -2,6 +2,7 @@
 import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
 import { sharingText } from '../../lib/sharing/copy';
 import Base from '../../layouts/Base.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import { SHARING_COPY } from '../../lib/sharing/copy';
 import BigThreeQuick from '../../islands/BigThreeQuick';
 import '../../styles/calculator.css';
@@ -69,6 +70,7 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="prose">
+      <HeroCrop crop="sun-moon-signs" />
       <h2>After the three</h2>
       <p>
         The Big Three are a summary, not the chart. The full calculator adds every planet, the twelve houses, and

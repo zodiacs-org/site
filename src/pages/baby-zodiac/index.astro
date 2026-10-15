@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import BabyZodiac from '../../islands/BabyZodiac.tsx';
 import '../../styles/calculator.css';
 
@@ -70,6 +71,7 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="zodiac-figures" />
     <div class="section-head reveal">
       <h2>What a due date can and cannot tell you</h2>
     </div>

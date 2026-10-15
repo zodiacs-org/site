@@ -91,7 +91,7 @@ export default function PersonalCalendar({ locale }: { locale: CatalogLocale }) 
       {!result.timeKnown && <p class="notice">{s(locale, 'personalUnknown')}</p>}
       <ul class="return-contact-list">{result.events.map((event) => <li key={event.uid}>
         <span>{event.summary}</span>
-        <time class="mono" dateTime={event.date ?? String(event.start)}>{shown(event)}</time>
+        <time dateTime={event.date ?? String(event.start)}>{shown(event)}</time>
       </li>)}</ul>
       <div class="return-actions"><button type="button" class="btn btn--primary" onClick={() => { void download(); }} data-personal-calendar-download><span>{s(locale, 'personalDownload')}</span><span class="orb">↓</span></button></div>
       <p class="sharing-note">{s(locale, 'personalHow')}</p>
