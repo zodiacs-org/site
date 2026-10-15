@@ -17,9 +17,10 @@
  * A page's content here is what a reader or a search engine gets from it: its
  * <title>, its meta description, and the text, link targets and image
  * descriptions of its <main> (of <body> when it has no <main>), with scripts,
- * styles and comments left out. Navigation, the footer and the head's other
- * tags are left out, so a site-wide header change re-dates nothing. Any other
- * file the sitemap lists counts by its bytes.
+ * styles and comments left out, the copy its attributes carry, the files its
+ * media show and the words its stylesheets add there (pageContent). Navigation,
+ * the footer and the head's other tags are left out, so a site-wide header
+ * change re-dates nothing. Any other file the sitemap lists counts by its bytes.
  *
  * This file imports nothing from the repository: the workflow runs one copy of
  * it on both builds, the base's included.
@@ -75,56 +76,106 @@ const SHOWN_INPUT_VALUES = /^(?:|text|search|email|url|tel|number|submit|button|
 // Where a media element names the file it shows; the site lazy-loads with data-src (a test holds the site to this list).
 export const MEDIA_ATTRIBUTES = ['src', 'srcset', 'poster', 'data', 'data-src', 'data-srcset', 'data-poster'];
 
-/** The classes a selector requires, leaving out those inside :not(), attribute selectors and strings. */
+/** Where the quoted string starting at `start` ends (its closing quote), backslash escapes read as one. */
+function stringEnd(text, start) {
+  let end = start + 1;
+  while (end < text.length && text[end] !== text[start]) end += text[end] === '\\' ? 2 : 1;
+  return Math.min(end, text.length - 1);
+}
+
+/** Calls `visit(character, index, depth)` for each character of CSS outside strings and escapes; depth counts brackets. */
+function scanCss(text, visit) {
+  let depth = 0;
+  for (let i = 0; i < text.length; i += 1) {
+    const character = text[i];
+    if (character === '"' || character === "'") i = stringEnd(text, i);
+    else if (character === '\\') i += 1;
+    else {
+      if (character === ')' || character === ']') depth = Math.max(0, depth - 1);
+      visit(character, i, depth);
+      if (character === '(' || character === '[') depth += 1;
+    }
+  }
+}
+
+/** A selector list's selectors: split at its own commas, not those inside parentheses, brackets or strings. */
+function selectorList(selector) {
+  const cuts = [];
+  scanCss(selector, (character, index, depth) => { if (character === ',' && depth === 0) cuts.push(index); });
+  return [-1, ...cuts].map((cut, at) => squeeze(selector.slice(cut + 1, cuts[at] ?? selector.length))).filter(Boolean);
+}
+
+// A class selector's name: an identifier, whose characters may be escaped (`.sm\:wide`, `.\31 0`).
+const ESCAPE = String.raw`\\(?:[0-9a-f]{1,6}[ \t\n]?|[\s\S])`;
+const CLASS_NAME = new RegExp(String.raw`\.((?:--|-?(?:[_a-z]|[^\x00-\x7f]|${ESCAPE}))(?:[\w-]|[^\x00-\x7f]|${ESCAPE})*)`, 'giu');
+const unescapeCss = (name) => name.replace(/\\([0-9a-f]{1,6})[ \t\n]?|\\([\s\S])/giu, (whole, hex, character) => {
+  if (character !== undefined) return character;
+  const code = Number.parseInt(hex, 16);
+  return code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : '\uFFFD';
+});
+
+/**
+ * The classes a selector requires, unescaped: those outside strings, attribute selectors and the arguments of
+ * functional pseudo-classes (:not(), :is(), :where(), :has() and the like, which a page may meet without them).
+ */
 function requiredClasses(selector) {
-  const plain = selector
-    .replace(/(["'])(?:\\.|(?!\1)[^\\])*\1/gu, ' ')
-    .replace(/\[[^\]]*\]/gu, ' ')
-    .replace(/:not\((?:[^()]|\([^()]*\))*\)/giu, ' ');
-  return [...plain.matchAll(/\.(-?[_a-zA-Z][\w-]*)/gu)].map(([, name]) => name);
+  let plain = selector.replace(/(["'])(?:\\.|(?!\1)[^\\])*\1/gu, ' ').replace(/\[[^\]]*\]/gu, ' ');
+  for (let previous = ''; previous !== plain;) {
+    previous = plain;
+    plain = plain.replace(/::?[a-z-]+\([^()]*\)/giu, ' ');
+  }
+  return [...plain.matchAll(CLASS_NAME)].map(([, found]) => unescapeCss(found));
 }
 
 /**
- * A stylesheet's innermost rules, each with the at-rules around it (such as `@media (max-width: 640px)`), its
- * selector and its declarations. Comments are dropped and quoted strings are read whole, so a brace inside one does
- * not count.
+ * A stylesheet's rules, each with its selector (or at-rule prelude), its own declarations and the rules around it:
+ * at-rules such as `@media (max-width: 640px)`, and the rule a nested rule sits in. Comments are dropped and quoted
+ * strings are read whole, so a brace inside either does not count; a statement before a rule, such as `@import …;`
+ * or a declaration of the rule it is nested in, is not part of its selector.
  */
 function cssRules(css) {
   const text = css.replace(/\/\*[\s\S]*?\*\//gu, ' ');
   const rules = [];
-  const stack = [];
-  let buffer = '';
-  for (let i = 0; i < text.length; i += 1) {
-    const character = text[i];
-    if (character === '"' || character === "'") {
-      let end = i + 1;
-      while (end < text.length && text[end] !== character) end += text[end] === '\\' ? 2 : 1;
-      buffer += text.slice(i, end + 1);
-      i = end;
-    } else if (character === '{') {
-      stack.push(squeeze(buffer));
-      buffer = '';
+  const open = [];
+  let start = 0;
+  const statementsEnd = (chunk) => {
+    let end = -1;
+    scanCss(chunk, (character, index, depth) => { if (character === ';' && depth === 0) end = index; });
+    return end;
+  };
+  scanCss(text, (character, index) => {
+    if (character === '{') {
+      const chunk = text.slice(start, index);
+      const end = statementsEnd(chunk);
+      if (open.length) open[open.length - 1].block += chunk.slice(0, end + 1);
+      open.push({ prelude: squeeze(chunk.slice(end + 1)), block: '' });
+      start = index + 1;
     } else if (character === '}') {
-      const selector = stack.pop() ?? '';
-      if (buffer.trim()) rules.push({ context: stack.filter((prelude) => prelude.startsWith('@')), selector, block: buffer });
-      buffer = '';
-    } else {
-      buffer += character;
+      const rule = open.pop();
+      if (rule) {
+        rule.block += text.slice(start, index);
+        if (rule.block.trim()) rules.push({ context: open.map(({ prelude }) => prelude), selector: rule.prelude, block: rule.block });
+      }
+      start = index + 1;
     }
-  }
+  });
   return rules;
 }
 
 /**
  * The words a stylesheet adds with `content`: each content declaration holding a quoted string with a letter, kept
- * whole (so the order of its parts counts), with its rule's selector and the at-rules around it (so a word moved
- * between two states, or into another media query, is a change), and the classes each of the selector's parts
- * requires.
+ * whole (so the order of its parts counts), with its rule's selector and the rules around it (so a word moved between
+ * two states, into another media query or under another parent rule is a change), and, for each way the selectors of
+ * its rule and of the style rules around it can match, the classes that requires.
  */
 export function stylesheetCopy(css) {
   const copy = [];
   for (const { context, selector, block } of cssRules(css)) {
-    const selectors = selector.split(',').map(requiredClasses);
+    let selectors = [[]];
+    for (const prelude of [...context, selector]) {
+      const own = prelude.startsWith('@') ? [] : selectorList(prelude).map(requiredClasses);
+      if (own.length) selectors = selectors.flatMap((outer) => own.map((inner) => [...outer, ...inner]));
+    }
     for (const [, value] of block.matchAll(/(?<![-\w])content\s*:\s*([^;]+)/giu)) {
       const strings = [...value.matchAll(/(["'])((?:\\.|(?!\1)[^\\])*)\1/gu)].map(([, , text]) => text);
       if (!strings.some((text) => /\p{L}/u.test(text))) continue;
@@ -145,6 +196,27 @@ export function pageStylesheets(html) {
   return { hrefs, inline };
 }
 
+const IMPORT = /@import\s+(?:url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)|"([^"]*)"|'([^']*)')([^;{}]*)(?:;|$)/giu;
+const IMPORT_DEPTH = 8;
+
+/**
+ * A stylesheet with the stylesheets it imports (`@import`) read in, each inside the conditions it is imported under,
+ * so their words count as the importing sheet's do. `url` is the sheet's own address, which its imports are relative
+ * to; a sheet is read once along each chain of imports.
+ */
+async function withImports(css, url, readStylesheet, seen = new Set([url])) {
+  const text = css.replace(/\/\*[\s\S]*?\*\//gu, ' ');
+  if (seen.size > IMPORT_DEPTH) return text;
+  const imported = await Promise.all([...text.matchAll(IMPORT)].map(async ([, ...groups]) => {
+    const target = new URL(groups.slice(0, 5).find((href) => href !== undefined), url).href;
+    if (seen.has(target)) return '';
+    const sheet = await withImports(await readStylesheet(target), target, readStylesheet, new Set([...seen, target]));
+    const conditions = squeeze(groups[5]);
+    return conditions ? `@import ${conditions} {${sheet}}` : sheet;
+  }));
+  return [...imported, text].join('\n');
+}
+
 /** The region a page's content is read from: its <main>, or its <body> without one. */
 function contentRegion(html) {
   return html.match(/<main\b[\s\S]*?<\/main>/iu)?.[0]
@@ -152,17 +224,45 @@ function contentRegion(html) {
     ?? html;
 }
 
+const VOID_ELEMENTS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
+
+/** The classes of the elements open at `at` in a page, such as the <body> and wrappers its content region sits in. */
+function enclosingClasses(html, at) {
+  const open = [];
+  const before = html.slice(0, at)
+    .replace(/<!--[\s\S]*?-->/gu, ' ')
+    .replace(/<(script|style|template|textarea|noscript)\b[^>]*>[\s\S]*?<\/\1\s*>/giu, ' ');
+  for (const [tag, closing, name] of before.matchAll(/<(\/?)([a-z][a-z0-9-]*)\b[^>]*>/giu)) {
+    const element = name.toLowerCase();
+    if (closing) {
+      const index = open.findLastIndex((entry) => entry.element === element);
+      if (index >= 0) open.length = index;
+    } else if (!VOID_ELEMENTS.has(element) && !tag.endsWith('/>')) {
+      open.push({ element, classes: attributes(tag).class ?? '' });
+    }
+  }
+  return open.flatMap(({ classes }) => classes.split(/\s+/u)).filter(Boolean);
+}
+
 /**
- * The words a page's stylesheets add to its content (stylesheetCopy over its linked and inline stylesheets), each with
- * its rule's selector, sorted and distinct: a word counts when one of its rule's selectors requires only classes the
- * content's markup carries.
- * `readStylesheet(href)` returns a linked stylesheet's text: from the build, or for IndexNow Changes from the live site.
+ * The words a page's stylesheets add to its content (stylesheetCopy over its linked and inline stylesheets and those
+ * they import), each with its rule's selector, sorted and distinct: a word counts when one way its rule can match
+ * requires only classes the content's markup, or an element it sits in, carries.
+ * `readStylesheet(url)` returns a stylesheet's text by its absolute address: from the build, or for IndexNow Changes
+ * from the live site. `page` is the page's own address, which its stylesheets' hrefs are relative to.
  */
-export async function generatedCopy(html, readStylesheet) {
+export async function generatedCopy(html, readStylesheet, { page = `${ORIGIN}/` } = {}) {
   const { hrefs, inline } = pageStylesheets(html);
-  const sheets = [...inline, ...await Promise.all(hrefs.map((href) => readStylesheet(href)))];
-  const classes = new Set();
-  for (const [tag] of contentRegion(html).matchAll(/<[a-z][a-z0-9-]*\b[^>]*>/giu)) {
+  const sheets = await Promise.all([
+    ...inline.map((css) => withImports(css, page, readStylesheet, new Set())),
+    ...hrefs.map(async (href) => {
+      const url = new URL(href, page).href;
+      return withImports(await readStylesheet(url), url, readStylesheet);
+    }),
+  ]);
+  const region = contentRegion(html);
+  const classes = new Set(enclosingClasses(html, html.indexOf(region)));
+  for (const [tag] of region.matchAll(/<[a-z][a-z0-9-]*\b[^>]*>/giu)) {
     for (const name of (attributes(tag).class ?? '').split(/\s+/u)) if (name) classes.add(name);
   }
   const shown = sheets.flatMap(stylesheetCopy)
@@ -239,7 +339,7 @@ export async function fingerprint(dist) {
   const urls = {};
   for (const path of [...dates.keys()].sort()) {
     const bytes = await readFile(distFile(dist, path));
-    const generated = isHtmlPath(path) ? await generatedCopy(bytes.toString('utf8'), stylesheets(path)) : [];
+    const generated = isHtmlPath(path) ? await generatedCopy(bytes.toString('utf8'), stylesheets(path), { page: `${ORIGIN}${path}` }) : [];
     urls[path] = { lastmod: dates.get(path), sha256: contentDigest(bytes, path, { generated }) };
   }
   return { schema: SCHEMA, urls };
@@ -341,8 +441,8 @@ async function main(argv) {
       for (const { path } of result.undated.slice(0, 20)) {
         const [beforeHtml, afterHtml] = [await readFile(distFile(baseDist, path), 'utf8'), await readFile(distFile(headDist, path), 'utf8')];
         const difference = textDifference(beforeHtml, afterHtml, 3, {
-          beforeGenerated: isHtmlPath(path) ? await generatedCopy(beforeHtml, baseSheets(path)) : [],
-          afterGenerated: isHtmlPath(path) ? await generatedCopy(afterHtml, headSheets(path)) : [],
+          beforeGenerated: isHtmlPath(path) ? await generatedCopy(beforeHtml, baseSheets(path), { page: `${ORIGIN}${path}` }) : [],
+          afterGenerated: isHtmlPath(path) ? await generatedCopy(afterHtml, headSheets(path), { page: `${ORIGIN}${path}` }) : [],
         });
         text += `\n\n${path}\n${difference.removed.map((line) => `  - ${line}`).join('\n')}\n${difference.added.map((line) => `  + ${line}`).join('\n')}`;
       }

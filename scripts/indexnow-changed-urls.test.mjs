@@ -385,6 +385,22 @@ describe('runIndexNow', () => {
     expect(gets.filter((url) => url === sheet)).toHaveLength(1);
   });
 
+  it('digests the words a stylesheet imports, relative to that stylesheet, reading it once', async () => {
+    const docs = site('/developers/docs/');
+    const compute = site('/developers/compute/');
+    const sheet = site('/_astro/events.css');
+    const imported = site('/assets/extra.css');
+    const styled = (url) => livePage(url).replace('<head>', '<head><link rel="stylesheet" href="/_astro/events.css">')
+      .replace('<main>', '<main><details class="toggle"><summary>Earlier</summary></details>');
+    const pages = (css) => ({ [docs]: styled(docs), [compute]: styled(compute), [sheet]: '@import "../assets/extra.css";', [imported]: css });
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now: () => '2026-10-12T05:00:00.000Z', fetchImpl: stub({ pages: pages('.toggle::after { content: "Show"; }') }).fetchImpl, pause: noPause });
+    const { fetchImpl, posts, gets } = stub({ pages: pages('.toggle::after { content: "Open"; }') });
+    const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now, fetchImpl, pause: noPause });
+    expect(result.sameDay).toEqual([compute, docs]);
+    expect(posts.map(({ body }) => body.urlList)).toEqual([[compute, docs]]);
+    expect(gets.filter((url) => url === imported)).toHaveLength(1);
+  });
+
   it('records nothing when a page dated the run\'s day cannot be read', async () => {
     await runIndexNow({ snapshotPath, publicDir, sitemapXml: previousSitemap, date: '2026-10-11', now: () => '2026-10-11T06:00:00.000Z', fetchImpl: stub().fetchImpl, pause: noPause });
     const before = await readFile(snapshotPath, 'utf8');

@@ -154,6 +154,45 @@ describe('a page’s content', () => {
     expect(label('Date')).not.toBe(label('Day'));
   });
 
+  it('reads nested rules, selector lists, escaped classes, imported stylesheets and the classes around the content', async () => {
+    // Each pair changes one word, or where it sits, and the previous reader found no change in any of them.
+    const dates = [['/events/', '2026-10-01'], ['/eclipses/', '2026-10-01']];
+    const pages = { '/events/': page({ main: '<details class="toggle sm:wide"><summary>Earlier</summary></details>' }), '/eclipses/': page() };
+    const changed = async (name, before, after, { html = pages, files = {} } = {}) => {
+      const [base, head] = [await build(`${name}-base`, dates, html, { css: before }), await build(`${name}-head`, dates, html, { css: after })];
+      for (const [file, texts] of Object.entries(files)) {
+        for (const [dist, text] of [[base, texts[0]], [head, texts[1]]]) {
+          await mkdir(dirname(join(dist, file)), { recursive: true });
+          await writeFile(join(dist, file), text);
+        }
+      }
+      return compare(await fingerprint(base), await fingerprint(head), { today: '2026-10-15' }).undated.map(({ path }) => path);
+    };
+    // A nested rule: the declarations before it stay its parent's, and a word moved between two parents is a change.
+    expect(await changed('nested', '.toggle { content: "Show"; &:hover { color: red; } }', '.toggle { content: "Open"; &:hover { color: red; } }'))
+      .toEqual(['/events/']);
+    const parents = (toggle, other) => `.toggle { & > summary::after { content: "${toggle}"; } } .other { & > summary::after { content: "${other}"; } }`;
+    expect(await changed('parents', parents('Show', 'Hide'), parents('Hide', 'Show'))).toEqual(['/events/']);
+    // A selector list splits at its own commas only, and :not(.a, .b) leaves the rule on a page with neither class.
+    const not = (word) => `.toggle:not(.a, .b) > summary::after { content: "${word}"; }`;
+    expect(await changed('not', not('Show'), not('Open'))).toEqual(['/events/']);
+    // An escaped class name.
+    const escaped = (word) => `.sm\\:wide > summary::after { content: "${word}"; }`;
+    expect(await changed('escaped', escaped('Show'), escaped('Open'))).toEqual(['/events/']);
+    // A class on an element the content sits in, such as <body>.
+    const inBody = { ...pages, '/events/': pages['/events/'].replace('<body>', '<body class="events-page">') };
+    const body = (word) => `.events-page .toggle > summary::after { content: "${word}"; }`;
+    expect(await changed('body', body('Show'), body('Open'), { html: inBody })).toEqual(['/events/']);
+    // A stylesheet another imports (relative to the importing one), and the condition it is imported under.
+    const extra = (word) => `.toggle > summary::after { content: "${word}"; }`;
+    expect(await changed('import', '@import url("/assets/extra.css");', '@import url("/assets/extra.css");', { files: { 'assets/extra.css': [extra('Show'), extra('Open')] } }))
+      .toEqual(['/events/']);
+    expect(await changed('condition', '@import "../assets/extra.css";', '@import "../assets/extra.css" (max-width: 640px);', { files: { 'assets/extra.css': [extra('Show'), extra('Show')] } }))
+      .toEqual(['/events/']);
+    expect(stylesheetCopy('@charset "utf-8"; .a, :is(.b, .c) > .d::after { content: "Go"; }'))
+      .toEqual([{ text: '"Go"', selector: '.a, :is(.b, .c) > .d::after', selectors: [['a'], ['d']] }]);
+  });
+
   it('changes when a picture is swapped under the same description, lazy-loaded ones included', () => {
     const picture = (src) => contentDigest(Buffer.from(page({ main: `<p>Ten guides.</p><img src="${src}" alt="Aries">` })), '/p/');
     expect(picture('/assets/zodiac-icons/128/aries.webp')).not.toBe(picture('/assets/zodiac-icons/128/taurus.webp'));

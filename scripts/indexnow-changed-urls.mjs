@@ -252,7 +252,7 @@ export async function digestPages(locs, { fetchImpl = fetch, tries = TRIES, paus
       const html = await fetchText(loc, 'text/html', options);
       const { pathname } = new URL(loc);
       const isHtml = pathname.endsWith('/') || pathname.endsWith('.html');
-      const generated = isHtml ? await generatedCopy(html, stylesheetsOf(loc)) : [];
+      const generated = isHtml ? await generatedCopy(html, stylesheetsOf(loc), { page: loc }) : [];
       return contentDigest(Buffer.from(html), pathname, { generated });
     }));
     batch.forEach((loc, index) => digests.set(loc, read[index]));
