@@ -23,8 +23,10 @@ Studio resource addresses were also refreshed to prevent stale host branding.
 The public name is **Zodiacs**, with **Birth charts & horoscopes** as its
 subtitle. The owner confirmed that the previous OpenAI plugin was deleted
 and directed a new public plugin submission. The existing directory connector
-remains the target for the other host. Submission and reviewer-notification
-status are recorded in `PORTAL_REVIEW.md` and `claude-directory/LISTING.md`.
+remains the target for the other host. The replacement OpenAI listing is now
+in review, and the existing connector's reviewer has been notified of all seven
+added tools. `PORTAL_REVIEW.md` and `claude-directory/LISTING.md` record the
+submission and notification; directory approval is still pending.
 
 The dated specification and 14 October status below are historical context.
 Remembrance and personal yearly reminders are still outside this release.

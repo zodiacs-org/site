@@ -1,9 +1,29 @@
-# Claude directory listing — draft
+# Claude directory listing
 
-Prepared 7 October 2026 from Anthropic's [connector submission guide], [plugin
-submission guide] and [publishing overview]. Nothing has been submitted. The
-owner chooses the account, answers the data-handling and compliance questions,
-and clicks Submit.
+## 0.5.0 review update — 15 October 2026
+
+The existing listing at https://claude.ai/directory/manage/zodiacs remains in
+review. A note was sent from admin@zodiacs.org to the submission contact,
+mcp-review@anthropic.com, describing the production update at the unchanged
+https://zodiacs.org/mcp endpoint. This is a reviewer notification, not evidence
+that the directory has approved or refreshed the listing.
+
+The server now offers thirteen read-only tools. Seven additions were explained:
+occasion sky cards, life milestone dates, two-chart comparisons, chart twins,
+published famous charts, birthday facts and solar returns, and sky-calendar
+subscription links. The note states that supplied birth and occasion details
+are not retained; anonymous daily call totals contain no request details or
+user identifiers. It also states that Zodiacs never chooses or ranks dates,
+scores relationships or predicts outcomes.
+
+The note gives the public name **Zodiacs**, subtitle **Birth charts & horoscopes**,
+the updated privacy page, documentation, and the
+[0.5.0 walkthrough](https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.0.mp4).
+The entries below preserve the original 7 October submission for reference.
+
+Originally prepared 7 October 2026 from Anthropic's [connector submission guide],
+[plugin submission guide] and [publishing overview]. The owner submitted the
+connector that day. The dated entries below distinguish submission from approval.
 
 [connector submission guide]: https://claude.com/docs/connectors/building/submission
 [plugin submission guide]: https://claude.com/docs/plugins/submit

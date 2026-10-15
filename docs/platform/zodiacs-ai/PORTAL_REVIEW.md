@@ -1,4 +1,44 @@
-# OpenAI portal snapshot before deployment — 6 October 2026
+# OpenAI portal review record
+
+## 0.5.0 release — 15 October 2026
+
+The owner reported that the old public plugin had been deleted and explicitly
+requested a new identity. The replacement listing is
+[Zodiacs](https://platform.openai.com/plugins/manage/plugin_asdk_app_6ad073182c5c8191ac05ef000b65058c?tab=details&version=appsub_6ad073182ca8819186c2cd4e686f03a6),
+with the subtitle **Birth charts & horoscopes**, under the verified Zodiacs LLC
+business identity. Public contact remains admin@zodiacs.org.
+
+Sky 0.5.0 is uploaded, the production endpoint https://zodiacs.org/mcp is connected
+without authentication, the domain is verified, and all thirteen read-only tools
+were scanned. The skill checks passed. All five positive and three negative
+review cases and the [0.5.0 demo](https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.0.mp4)
+are saved. The demo is an edited sequence of actual private-staging captures with
+synthetic examples; it is not a continuous recording.
+
+The first scan flagged unnecessary birthday input. [#756](https://github.com/zodiacs-org/site/pull/756)
+removed unused latitude, clarified the minimum birthday input and retained longitude
+only for interpreting historical local clocks. All 231 AI-tool tests, 54 evaluation
+cases, package checks and type checking passed. The deployed candidate passed
+18 staging checks with 14 tool calls; three focused checks passed on staging and
+production. The follow-up scan cleared the birthday finding. The claims-ledger
+registration missed in #756 was added in [#757](https://github.com/zodiacs-org/site/pull/757);
+all 36 relevant ledger, binding and birthday tests passed locally.
+
+The scan initially could not confirm the Education & Research category. The final
+submission dialog listed only MCP checks needing attention: get_occasion_sky needs
+further review before going live. The dialog classified this as non-blocking.
+Neither the scan nor acceptance of the submission is directory approval.
+
+Status: **submitted / in review, not published**, confirmed in the portal on
+15 October 2026 at about 14:21 Bangkok time (07:21 UTC). The owner explicitly
+confirmed all six attestations and authorized submission. An initial connection
+error was followed by a refreshed check that still showed Not submitted; the retry
+succeeded. The listing detail shows **Metadata & skills version 0.5.0 · In review**.
+The directory table labels its first review version 1.0.0; the uploaded package
+version remains 0.5.0.
+The old 0.4.0 support case 17133838 is already closed.
+
+## Historical snapshot before deployment — 6 October 2026
 
 Business verification is approved for Zodiacs LLC. The daily identity monitor is paused.
 This approval is separate from plugin-directory approval.
