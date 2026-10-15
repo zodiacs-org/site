@@ -85,16 +85,22 @@ on every pull request.
   equal.
 - **Fingerprints.** `scripts/sitemap-rendered-changes.mjs` fingerprints every
   page of each build's sitemap: its title, its meta description, and the text,
-  link targets and image descriptions of its `<main>`, with the copy its
-  attributes carry (a field's placeholder, an accessible name, a tooltip, a
-  shown input value).
+  link targets and image descriptions of its `<main>`, with:
+  - the copy its attributes carry: a field's placeholder, an accessible name,
+    a tooltip, a shown input value, and a responsive table's `data-label`,
+    which the stylesheets show with `content: attr()`;
+  - the files its images, video and frames show;
+  - the words its stylesheets add with `content`, counted on a page whose
+    markup carries the classes their rule selects.
 - **The rule.** A page whose content changed fails the check when its date did
   not change and is earlier than the edition's day. A page already dated that
   day passes, since a sitemap date says only which day a page last changed.
-  IndexNow Changes covers that case: it digests each live page dated the
-  run's day with the same fingerprint, keeps the digests in its snapshot, and
-  submits a page whose digest moved since its last run, so a second change
-  made the same day reaches IndexNow too (Codex's third finding on #752).
+  IndexNow Changes covers that case. It digests each live page dated since
+  its last run's day with the same fingerprint, keeps the digests in its
+  snapshot, and submits a page whose digest moved since that run. A second
+  change made the same day therefore reaches IndexNow too, and so does a
+  change made late in a UTC day that reaches no run until the next day
+  (Codex's third and fifth findings on #752).
 - **One clock.** Some pages print when they were built, such as the
   void-of-course Moon's "As of" line, or a body's position at that time, such
   as the rising-sign pages' chart rulers. Both builds therefore read one
@@ -116,13 +122,23 @@ ran except `editorial:daily:verify`, which fails here by one last bit (F-95).
 - **The email chain** ([`brief-control.txt`](sitemap-dates/brief-control.txt)).
   Codex found that the check's first environment left out the daily email
   chain, which production has. A change to the post-chart brief's device note
-  alone, against `4ce7fc06`, fails `/birth-chart/` with production's
+  alone, against `26802bcd`, fails `/birth-chart/` with production's
   environment and passed with the first one.
 - **Attribute copy**
-  ([`placeholder-control.txt`](sitemap-dates/placeholder-control.txt)).
-  Codex found that copy held in attributes changed no fingerprint. A change to
-  the people search's placeholder alone, against `4ce7fc06`, fails `/people/`
-  with this fingerprint and passed with the previous one.
+  ([`placeholder-control.txt`](sitemap-dates/placeholder-control.txt),
+  [`data-label-control.txt`](sitemap-dates/data-label-control.txt)). Codex
+  found that copy held in attributes changed no fingerprint. Against
+  `26802bcd`, each control changes one thing and passed with the earlier
+  fingerprint:
+  - the people search's placeholder alone now fails `/people/`;
+  - the full-moon tables' time `data-label` alone now fails the four
+    localized full-moon calendars.
+- **Stylesheet words**
+  ([`stylesheet-control.txt`](sitemap-dates/stylesheet-control.txt)). A
+  change to the word `events.css` adds to the events hub's disclosure (Show
+  to Open), against `26802bcd`, fails `/events/` alone and passed with the
+  previous fingerprint. The 92 other sitemap pages that load `events.css`'s
+  rules, in a shared stylesheet, do not carry the class it selects.
 - **Every other report** here was built again with the whole environment and
   this fingerprint, and found what it found before.
 - **Determinism** ([`determinism.txt`](sitemap-dates/determinism.txt)). Two
@@ -158,8 +174,8 @@ Limits:
 - It compares two commits of one edition, so a pull request and its base, never
   two days.
 - Changes before the 2026-10-13 edition were not audited.
-- It reads a page's `<main>`, title and description, not its JSON-LD or the
-  rest of its head.
+- It reads a page's `<main>`, title and description, with the copy above, not
+  its JSON-LD or the rest of its head.
 - It does not check a new page's date.
 
 ## What keeps S8 open
