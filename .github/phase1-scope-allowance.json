@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "personal-calendar-privacy-20261015",
-  "baseCommit": "6c667c969aa68da787b9c17123f7395b0278a34f",
+  "baseCommit": "fafa2be0638d8363357638e0b7a24ec599f9ef48",
   "protectedPaths": [
     "src/pages/es/privacy/index.astro",
     "src/pages/fr/privacy/index.astro",
