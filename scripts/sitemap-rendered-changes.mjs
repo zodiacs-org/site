@@ -18,9 +18,10 @@
  * <title>, its meta description, and the text, link targets and image
  * descriptions of its <main> (of <body> when it has no <main>), with scripts,
  * styles and comments left out, the copy its attributes carry, the files its
- * media show and the words its stylesheets add there (pageContent). Navigation,
- * the footer and the head's other tags are left out, so a site-wide header
- * change re-dates nothing. Any other file the sitemap lists counts by its bytes.
+ * media show, what its inline SVGs draw and the words its stylesheets add there
+ * (pageContent). Navigation, the footer and the head's other tags are left
+ * out, so a site-wide header change re-dates nothing. Any other file the
+ * sitemap lists counts by its bytes.
  *
  * This file imports nothing from the repository: the workflow runs one copy of
  * it on both builds, the base's included.
@@ -75,6 +76,9 @@ export const LABEL_ATTRIBUTES = ['placeholder', 'aria-label', 'aria-description'
 const SHOWN_INPUT_VALUES = /^(?:|text|search|email|url|tel|number|submit|button|reset)$/iu;
 // Where a media element names the file it shows; the site lazy-loads with data-src (a test holds the site to this list).
 export const MEDIA_ATTRIBUTES = ['src', 'srcset', 'poster', 'data', 'data-src', 'data-srcset', 'data-poster'];
+// What an inline SVG draws is in its elements and their attributes, not in its text: every attribute counts but those
+// that only name an element or hook it to scripts, styles and assistive technology.
+const UNDRAWN_ATTRIBUTES = /^(?:class|id|role|tabindex|focusable|xmlns(?::.*)?|data-.*|aria-.*)$/u;
 
 /** Where the quoted string starting at `start` ends (its closing quote), backslash escapes read as one. */
 function stringEnd(text, start) {
@@ -272,8 +276,8 @@ export async function generatedCopy(html, readStylesheet, { page = `${ORIGIN}/` 
 
 /**
  * What a page says: title, description, and its main content's text, link targets, image descriptions, the files its
- * media show, and the copy its attributes carry (LABEL_ATTRIBUTES, and the value of an input that shows it); with
- * `generated`, the words its stylesheets add (generatedCopy).
+ * media show, the copy its attributes carry (LABEL_ATTRIBUTES, and the value of an input that shows it) and what its
+ * inline SVGs draw (drawings); with `generated`, the words its stylesheets add (generatedCopy).
  */
 export function pageContent(html, { generated = [] } = {}) {
   const title = squeeze(decodeEntities(html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/iu)?.[1] ?? ''));
@@ -304,7 +308,36 @@ export function pageContent(html, { generated = [] } = {}) {
     }
   }
   const text = squeeze(decodeEntities(cleaned.replace(/<[^>]+>/gu, ' ')));
-  return { title, description, text, links, images, media, labels, generated };
+  return { title, description, text, links, images, media, labels, drawings: drawings(cleaned), generated };
+}
+
+/**
+ * The drawing of each inline SVG in a content region: its elements in order, each with the attributes that draw it
+ * (UNDRAWN_ATTRIBUTES left out), numbered by the SVG they belong to, so a diagram redrawn under the same title is a
+ * change. An SVG nested in another belongs to the outer one.
+ */
+function drawings(region) {
+  const drawn = [];
+  let depth = 0;
+  let count = 0;
+  for (const [tag, closing, name] of region.matchAll(/<(\/?)([a-z][a-z0-9:-]*)\b[^>]*>/giu)) {
+    const element = name.toLowerCase();
+    if (element === 'svg') {
+      if (closing) {
+        depth = Math.max(0, depth - 1);
+        continue;
+      }
+      if (depth === 0) count += 1;
+      if (!tag.endsWith('/>')) depth += 1;
+    } else if (closing || depth === 0) {
+      continue;
+    }
+    const found = attributes(tag);
+    const drawing = Object.keys(found).filter((attribute) => !UNDRAWN_ATTRIBUTES.test(attribute)).sort()
+      .map((attribute) => `${attribute}="${squeeze(found[attribute])}"`);
+    drawn.push(`drawing ${count}: ${[element, ...drawing].join(' ')}`);
+  }
+  return drawn;
 }
 
 /** The file a sitemap path is served from, as scripts/check-dist.mjs resolves it. */
@@ -389,8 +422,8 @@ export function compare(base, head, { today } = {}) {
 /** The first lines of text that differ between two builds of a page, to show what changed. */
 export function textDifference(beforeHtml, afterHtml, limit = 3, { beforeGenerated = [], afterGenerated = [] } = {}) {
   const lines = (html, generated) => {
-    const { title, description, text, links, images, media, labels } = pageContent(html, { generated });
-    return [`title: ${title}`, `description: ${description}`, ...text.split(/(?<=[.!?:])\s+/u), ...links.map((href) => `link: ${href}`), ...images.map((alt) => `image: ${alt}`), ...media, ...labels, ...generated.map((copy) => `stylesheet: ${copy}`)];
+    const { title, description, text, links, images, media, labels, drawings: drawn } = pageContent(html, { generated });
+    return [`title: ${title}`, `description: ${description}`, ...text.split(/(?<=[.!?:])\s+/u), ...links.map((href) => `link: ${href}`), ...images.map((alt) => `image: ${alt}`), ...media, ...labels, ...drawn, ...generated.map((copy) => `stylesheet: ${copy}`)];
   };
   const before = lines(beforeHtml, beforeGenerated);
   const after = lines(afterHtml, afterGenerated);

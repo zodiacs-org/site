@@ -76,6 +76,7 @@ describe('a page’s content', () => {
       images: ['A wheel'],
       media: ['src: /x.png'],
       labels: [],
+      drawings: [],
       generated: [],
     });
   });
@@ -191,6 +192,38 @@ describe('a page’s content', () => {
       .toEqual(['/events/']);
     expect(stylesheetCopy('@charset "utf-8"; .a, :is(.b, .c) > .d::after { content: "Go"; }'))
       .toEqual([{ text: '"Go"', selector: '.a, :is(.b, .c) > .d::after', selectors: [['a'], ['d']] }]);
+  });
+
+  it('changes when an inline SVG is redrawn under the same title, and not when only its names or hooks change', () => {
+    const wheel = ({ r = '7', d = 'M 100 20 A 80 80 0 0 1 180 100', node = 'aw-node', id = 'aw120-t', extra = '' } = {}) => page({ main:
+      `<figure class="aspect-wheel"><svg viewBox="0 0 200 200" width="200" role="img" aria-labelledby="${id}"><title id="${id}">Two bodies 120 degrees apart.</title>`
+      + `<circle class="aw-ring" cx="100" cy="100" r="80" /><path class="aw-arc" d="${d}" />`
+      + `<circle class="${node}" cx="100" cy="20" r="${r}" data-node="a" />${extra}</svg></figure><p>A trine.</p>` });
+    const digest = (html) => contentDigest(Buffer.from(html), '/learn/aspects/trine/');
+    const base = digest(wheel());
+    // The drawing: a radius, a path, an added element.
+    expect(digest(wheel({ r: '9' }))).not.toBe(base);
+    expect(digest(wheel({ d: 'M 100 20 A 80 80 0 0 1 169 140' }))).not.toBe(base);
+    expect(digest(wheel({ extra: '<line x1="100" y1="100" x2="180" y2="100" />' }))).not.toBe(base);
+    // Names and hooks: a class, an id, a data- or aria- attribute.
+    expect(digest(wheel({ node: 'aw-node aw-node--a', id: 'aw121-t' }))).toBe(base);
+    expect(digest(wheel().replace('data-node="a"', 'data-node="b"'))).toBe(base);
+    expect(pageContent(wheel()).drawings).toEqual([
+      'drawing 1: svg viewbox="0 0 200 200" width="200"',
+      'drawing 1: title',
+      'drawing 1: circle cx="100" cy="100" r="80"',
+      'drawing 1: path d="M 100 20 A 80 80 0 0 1 180 100"',
+      'drawing 1: circle cx="100" cy="20" r="7"',
+    ]);
+    expect(textDifference(wheel(), wheel({ r: '9' }))).toEqual({
+      removed: ['drawing 1: circle cx="100" cy="20" r="7"'],
+      added: ['drawing 1: circle cx="100" cy="20" r="9"'],
+    });
+    // Outside an SVG, markup draws nothing; a second SVG is numbered on, and one nested in it belongs to it.
+    expect(pageContent(page({ main: '<p class="a"><span>x</span></p>' })).drawings).toEqual([]);
+    expect(pageContent(page({ main: '<svg><svg x="1"><rect width="2"/></svg></svg><svg viewBox="0 0 1 1"/>' })).drawings).toEqual([
+      'drawing 1: svg', 'drawing 1: svg x="1"', 'drawing 1: rect width="2"', 'drawing 2: svg viewbox="0 0 1 1"',
+    ]);
   });
 
   it('changes when a picture is swapped under the same description, lazy-loaded ones included', () => {
