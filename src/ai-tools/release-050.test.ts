@@ -18,7 +18,7 @@ describe('the 0.5.0 tools through the tool runner', () => {
       b: { name: 'Luis', birthDate: '1992-08-10' },
     }, on, { ref: 'chatgpt' });
     expect(result.ok).toBe(true);
-    if (result.ok && result.tool === 'get_compatibility') {
+    if (result.ok && result.tool === 'get_compatibility' && !('found' in result.data)) {
       expect(OUTPUT_SCHEMAS.get_compatibility.safeParse(result).success).toBe(true);
       expect(result.data.a.sun).toBe('taurus');
       expect(result.data.pageUrl).toBe('https://zodiacs.org/compatibility/taurus-leo/?ref=chatgpt');
@@ -63,5 +63,64 @@ describe('the 0.5.0 tools through the tool runner', () => {
     expect(plain.ok).toBe(true);
     expect(zoned.ok).toBe(true);
     if (plain.ok && zoned.ok && plain.tool === 'check_sky_fact' && zoned.tool === 'check_sky_fact') expect(zoned.data.answer).toBe(plain.data.answer);
+  });
+
+  it('compares someone with a famous person, or says Zodiacs has no chart for the name', async () => {
+    const result = await executeAiTool('get_compatibility', { a: { birthDate: '1994-02-01' }, b: { famous: 'Frida Kahlo' } }, on, { ref: 'chatgpt' });
+    expect(OUTPUT_SCHEMAS.get_compatibility.safeParse(result).success).toBe(true);
+    if (!result.ok || result.tool !== 'get_compatibility' || 'found' in result.data) throw new Error('expected a comparison');
+    expect(result.data.b).toMatchObject({ famous: true, url: 'https://zodiacs.org/people/frida-kahlo/?ref=chatgpt' });
+    expect(result.data.score.overall).toBeGreaterThanOrEqual(0);
+    const missing = await executeAiTool('get_compatibility', { a: { birthDate: '1994-02-01' }, b: { famous: 'Nobody Anybody Zzyzx' } }, on);
+    expect(missing).toMatchObject({ ok: true, data: { found: false, side: 'b' } });
+    expect(OUTPUT_SCHEMAS.get_compatibility.safeParse(missing).success).toBe(true);
+  });
+
+  it('finds the three best days in a window and makes the card for the best one', async () => {
+    const result = await executeAiTool('get_occasion_sky', { occasion: 'wedding', searchFrom: '2027-06-01', searchTo: '2027-06-30', zone: 'Europe/Rome' }, on);
+    expect(OUTPUT_SCHEMAS.get_occasion_sky.safeParse(result).success).toBe(true);
+    if (!result.ok || result.tool !== 'get_occasion_sky') throw new Error('expected a card');
+    const best = result.data.bestDays!.best;
+    expect(best).toHaveLength(3);
+    expect(best[0].score).toBeGreaterThanOrEqual(best[1].score);
+    expect(best[1].score).toBeGreaterThanOrEqual(best[2].score);
+    expect(result.data.date).toBe(best[0].date);
+    expect(result.data.rating.score).toBe(best[0].score);
+    // With a date as well, the card stays on that date.
+    const chosen = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', searchFrom: '2027-06-01', searchTo: '2027-06-30' }, on);
+    if (!chosen.ok || chosen.tool !== 'get_occasion_sky') throw new Error('expected a card');
+    expect(chosen.data.date).toBe('2027-06-12');
+    expect(chosen.data.bestDays?.best).toHaveLength(3);
+    // A single date has no search.
+    const single = await executeAiTool('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12' }, on);
+    if (single.ok && single.tool === 'get_occasion_sky') expect(single.data.bestDays).toBeNull();
+    for (const args of [
+      { occasion: 'wedding', searchFrom: '2027-06-01', searchTo: '2027-09-30' },
+      { occasion: 'wedding', searchFrom: '2027-06-30', searchTo: '2027-06-01' },
+      { occasion: 'wedding', searchFrom: '2027-06-01' },
+      { occasion: 'wedding' },
+    ]) expect(await executeAiTool('get_occasion_sky', args, on)).toMatchObject({ ok: false, error: { code: 'invalid-request' } });
+  });
+});
+
+describe('review fixes for the predictions release', () => {
+  it('keeps a famous person’s name in the compatibility share link', async () => {
+    const result = await executeAiTool('get_compatibility', { a: { name: 'Sam', birthDate: '1994-02-01' }, b: { famous: 'Frida Kahlo' } }, on);
+    expect(result.ok).toBe(true);
+    if (result.ok && result.tool === 'get_compatibility' && 'shareUrl' in result.data) {
+      expect(new URL(result.data.shareUrl as string).searchParams.get('b')).toBe('Frida Kahlo');
+    }
+  });
+
+  it('refuses a horoscope birth time or zone without the birth date', async () => {
+    const refused = await executeAiTool('get_horoscope', { sign: 'leo', birthTime: '08:30', birthZone: 'Europe/Madrid' }, on);
+    expect(refused).toMatchObject({ ok: false });
+  });
+
+  it('describes personal forecasts in the capabilities only while the birth-date tools are on', async () => {
+    const withTools = await executeAiTool('get_capabilities', {}, on);
+    const without = await executeAiTool('get_capabilities', {}, off);
+    expect(JSON.stringify(withTools)).toMatch(/personal forecast for the week/u);
+    expect(JSON.stringify(without)).not.toMatch(/personal forecast for the week/u);
   });
 });

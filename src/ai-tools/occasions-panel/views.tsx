@@ -1,11 +1,13 @@
+import { SIGNS } from '../../lib/signs';
 import { BrandRing } from '../panel-brand';
 import { useState } from 'preact/hooks';
-import type { CompatibilityData } from '../features/compatibility';
+import type { CompatibilityData, CompatibilityNotFound } from '../features/compatibility';
 import type { ChartTwinsData, FamousChartData } from '../features/people';
 import type { BirthdayData, SkyCalendarData } from '../features/birthday';
 
 declare const OCCASIONS_ICONS: Record<string, string>;
 
+const hueOf = (slug: string | null) => SIGNS.find((sign) => sign.slug === slug)?.hue ?? '#B29DD0';
 export const signName = (slug: string) => slug.charAt(0).toUpperCase() + slug.slice(1);
 const day = (iso: string) => new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso));
 const ASPECT_SIGNS: Record<string, string> = { conjunction: '☌', sextile: '⚹', square: '□', trine: '△', opposition: '☍' };
@@ -18,7 +20,28 @@ export function Signature() {
   </p>;
 }
 
-export function Actions({ text, cardUrl, cardLabel, copyLabel = 'Copy the card' }: { text: string; cardUrl: string | null; cardLabel: string; copyLabel?: string }) {
+/** The big shareable number: a ring filled to the score, in the signs' own hues. */
+export function Score({ score, verdict, parts, hues = ['#B29DD0', '#B6D4E4'] }: { score: number; verdict: string; parts?: [string, number][]; hues?: [string, string] }) {
+  const radius = 52;
+  const length = 2 * Math.PI * radius;
+  const id = `ring-${hues[0].slice(1)}-${hues[1].slice(1)}`;
+  return <div class="score">
+    <div class="score-head">
+      <svg class="score-ring" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label={`${score} out of 100`}>
+        <defs><linearGradient id={id} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color={hues[0]}/><stop offset="1" stop-color={hues[1]}/></linearGradient></defs>
+        <circle cx="60" cy="60" r={radius} class="score-track"/>
+        <circle cx="60" cy="60" r={radius} stroke={`url(#${id})`} class="score-arc"
+          stroke-dasharray={`${(length * score) / 100} ${length}`} transform="rotate(-90 60 60)"/>
+        <text x="60" y="66" text-anchor="middle" class="score-number">{score}</text>
+        <text x="60" y="86" text-anchor="middle" class="score-out-of">/100</text>
+      </svg>
+      <p class="score-verdict">{verdict}</p>
+    </div>
+    {parts && <div class="numbers">{parts.map(([label, value]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>}
+  </div>;
+}
+
+export function Actions({ text, cardUrl, cardLabel, copyLabel = 'Copy the card', shareUrl = null }: { text: string; cardUrl: string | null; cardLabel: string; copyLabel?: string; shareUrl?: string | null }) {
   const [status, setStatus] = useState('');
   async function copy() {
     try { await navigator.clipboard.writeText(text); setStatus('Copied.'); }
@@ -27,6 +50,7 @@ export function Actions({ text, cardUrl, cardLabel, copyLabel = 'Copy the card' 
   return <>
     <div class="actions">
       <button onClick={copy}>{copyLabel}</button>
+      {shareUrl && <a href={shareUrl} target="_blank" rel="noreferrer">Share ↗</a>}
       {cardUrl && <a href={cardUrl} target="_blank" rel="noreferrer">{cardLabel} ↗</a>}
     </div>
     <p role="status" class="quiet">{status}</p>
@@ -42,9 +66,18 @@ function Disc({ sign, label, detail }: { sign: string | null; label: string; det
 
 const placementLine = (who: CompatibilityData['a']) => [who.sun && `${signName(who.sun)} Sun`, who.moon && `${signName(who.moon)} Moon`, who.rising && `${signName(who.rising)} rising`].filter(Boolean).join(' · ') || 'Sun sign unsettled that day';
 
-export function Compatibility({ data }: { data: CompatibilityData }) {
+export function Compatibility({ data: result }: { data: CompatibilityData | CompatibilityNotFound }) {
+  if ('found' in result) return <article class="card">
+    <p class="kicker">Two charts compared</p>
+    <h1>{result.query} is not one Zodiacs publishes</h1>
+    <p class="words">{result.note}</p>
+    <Actions text={result.note} cardUrl={result.directoryUrl} cardLabel="See the people Zodiacs publishes"/>
+    <Signature/>
+  </article>;
+  const data = result;
+  const famous = [data.a, data.b].filter((who) => who.famous && who.url);
   const title = `${data.a.label} and ${data.b.label}`;
-  const text = [title, `${data.a.label}: ${placementLine(data.a)}`, `${data.b.label}: ${placementLine(data.b)}`,
+  const text = [title, `${data.score.overall}/100 · ${data.score.verdict}`, data.score.headline, `${data.a.label}: ${placementLine(data.a)}`, `${data.b.label}: ${placementLine(data.b)}`,
     data.signPair ? `${data.signPair.element.label}. ${data.signPair.modality.label}.` : '',
     ...data.contacts.map((contact) => `${contact.aBody} ${contact.aspect} ${contact.bBody} (${contact.orb}°): ${contact.line}`),
     data.note, data.pageUrl ? data.pageUrl.replace(/^https:\/\//u, '').replace(/\?.*$/u, '') : 'zodiacs.org/compatibility'].filter(Boolean).join('\n');
@@ -55,6 +88,9 @@ export function Compatibility({ data }: { data: CompatibilityData }) {
       <Disc sign={data.a.sun} label={data.a.label} detail={placementLine(data.a)}/>
       <Disc sign={data.b.sun} label={data.b.label} detail={placementLine(data.b)}/>
     </div>
+    {famous.map((who) => <p class="quiet" key={who.label}>{who.label}, born {day(who.birthDate)}{who.place ? ` in ${who.place}` : ''} · <a href={who.url!} target="_blank" rel="noreferrer">{who.label}'s chart on zodiacs.org</a></p>)}
+    <Score score={data.score.overall} verdict={data.score.verdict} hues={[hueOf(data.a.sun), hueOf(data.b.sun)]} parts={[['attraction', data.score.areas.attraction], ['communication', data.score.areas.communication], ['long-term stability', data.score.areas.stability]]}/>
+    <p class="words">{data.score.headline}</p>
     {data.signPair && <p class="words">{data.signPair.element.note} {data.signPair.modality.note}</p>}
     {data.contacts.length > 0 && <>
       <h2>The closest contacts</h2>
@@ -63,13 +99,8 @@ export function Compatibility({ data }: { data: CompatibilityData }) {
         <span>{contact.line}</span>
       </li>)}</ul>
     </>}
-    <div class="numbers">
-      <div><strong>{data.counts.easeful}</strong><span>trines and sextiles</span></div>
-      <div><strong>{data.counts.charged}</strong><span>squares and oppositions</span></div>
-      <div><strong>{data.counts.byAspect.conjunction}</strong><span>conjunctions</span></div>
-    </div>
     {data.notes.map((note) => <p class="quiet" key={note}>{note}</p>)}
-    <Actions text={text} cardUrl={data.cardUrl ?? data.pageUrl} cardLabel={data.cardUrl ? 'Open both charts on zodiacs.org' : 'Read this pair on zodiacs.org'}/>
+    <Actions text={text} cardUrl={data.cardUrl ?? data.pageUrl} cardLabel={data.cardUrl ? 'Open both charts on zodiacs.org' : 'Read this pair on zodiacs.org'} shareUrl={data.shareUrl}/>
     <p class="disclosure">{data.note}</p>
     <Signature/>
   </article>;

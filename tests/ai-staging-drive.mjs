@@ -81,7 +81,7 @@ try {
   const resource = await client.readResource({ uri: 'ui://zodiacs/sky-events-v3.html' });
   assert.equal(resource.contents[0].mimeType, 'text/html;profile=mcp-app');
   record('native calendar resource');
-  for (const [current, earlier] of [['sky-events-v3', 'sky-events-v2'], ['sky-events-v3', 'sky-events-v1'], ['horoscopes-v3', 'horoscopes-v2'], ['chart-studio-v4', 'chart-studio-v3'], ['occasions-v3', 'occasions-v2'], ['occasions-v3', 'occasions-v1'], ['horoscopes-v3', 'horoscopes-v1'], ['chart-studio-v4', 'chart-studio-v2'], ['chart-studio-v4', 'chart-studio-v1']]) {
+  for (const [current, earlier] of [['sky-events-v3', 'sky-events-v2'], ['sky-events-v3', 'sky-events-v1'], ['horoscopes-v3', 'horoscopes-v2'], ['chart-studio-v4', 'chart-studio-v3'], ['occasions-v4', 'occasions-v3'], ['occasions-v4', 'occasions-v2'], ['occasions-v4', 'occasions-v1'], ['horoscopes-v3', 'horoscopes-v1'], ['chart-studio-v4', 'chart-studio-v2'], ['chart-studio-v4', 'chart-studio-v1']]) {
     const now = (await client.readResource({ uri: `ui://zodiacs/${current}.html` })).contents[0];
     const before = (await client.readResource({ uri: `ui://zodiacs/${earlier}.html` })).contents[0];
     assert.equal(before.text, now.text, `${earlier} serves the current panel`);
@@ -94,7 +94,7 @@ try {
   record('native horoscope resource matches the self-contained bundle', {
     bytes: Buffer.byteLength(horoscopes.text), sha256: createHash('sha256').update(horoscopes.text).digest('hex'),
   });
-  const occasions = (await client.readResource({ uri: 'ui://zodiacs/occasions-v3.html' })).contents[0];
+  const occasions = (await client.readResource({ uri: 'ui://zodiacs/occasions-v4.html' })).contents[0];
   assert.equal(occasions.mimeType, 'text/html;profile=mcp-app');
   assert.equal(occasions.text, OCCASIONS_HTML);
   assert.deepEqual(occasions._meta.ui.csp, { connectDomains: [], resourceDomains: [] });
