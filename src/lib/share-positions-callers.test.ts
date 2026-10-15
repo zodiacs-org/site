@@ -252,6 +252,7 @@ const OPAQUE_LOADS: Record<string, { expression: string; loads: string[]; why: s
 const BUILT_FILES: Record<string, { source: string; by: string }> = {
   'assets/search-ui.js': { source: 'src/lib/search/open-search.ts', by: 'scripts/build-search-ui.mjs' },
   'assets/webmcp-register.js': { source: 'src/lib/webmcp/register.ts', by: 'scripts/build-webmcp.mjs' },
+  'assets/webmcp-calculators.js': { source: 'src/lib/webmcp/calculator-runtime.ts', by: 'scripts/build-webmcp.mjs' },
   'assets/registry-token-chart.js': { source: 'src/registry/selected-token-chart.mjs', by: 'scripts/build-registry-token-chart.mjs' },
   'precision-preview/app.mjs': { source: 'src/precision-preview/app.src.mjs', by: 'scripts/build-precision-preview.mjs' },
   // The preview app loads its worker by URL, from beside the built app.mjs.

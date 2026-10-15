@@ -648,20 +648,36 @@ if (!(await exists(webMcpPath))) {
   fail('webmcp: missing assets/webmcp-register.js');
 } else {
   const webMcp = await readFile(webMcpPath, 'utf8');
-  for (const fingerprint of ['zodiacs.search', 'INVALID_INPUT', 'INDEX_UNAVAILABLE']) {
+  for (const fingerprint of ['zodiacs.search', 'INVALID_INPUT', 'INDEX_UNAVAILABLE', 'zodiacs.moon_phase', 'webmcp-calculators.js?v=calculators-1']) {
     if (!webMcp.includes(fingerprint)) {
       fail(`webmcp: assets/webmcp-register.js is missing ${fingerprint}`);
     }
   }
 }
+const webMcpCalculatorsPath = resolve(root, 'assets/webmcp-calculators.js');
+if (!(await exists(webMcpCalculatorsPath))) {
+  fail('webmcp: missing assets/webmcp-calculators.js');
+} else {
+  const calculators = await readFile(webMcpCalculatorsPath, 'utf8');
+  for (const fingerprint of ['runCalculatorTool', 'zodiacs.moon_phase', 'UNKNOWN_TOOL']) {
+    if (!calculators.includes(fingerprint)) fail(`webmcp: assets/webmcp-calculators.js is missing ${fingerprint}`);
+  }
+}
 
 for (const relativePath of ['index.html', 'aries/index.html']) {
   const html = await readFile(resolve(root, relativePath), 'utf8');
-  for (const asset of ['search-ui', 'webmcp-register']) {
-    if (!html.includes(`import('/assets/${asset}.js?v=search-ranking-2')`)
+  for (const [asset, key] of [['search-ui', 'search-ranking-2'], ['webmcp-register', 'calculators-1']]) {
+    if (!html.includes(`import('/assets/${asset}.js?v=${key}')`)
         || html.includes(`import('/assets/${asset}.js')`)) {
-      fail(`${asset}: ${relativePath} must use the refreshed Search ranking cache key`);
+      fail(`${asset}: ${relativePath} must use the cache key ?v=${key}`);
     }
+  }
+}
+// Track A2: a calculator page registers its WebMCP tool in every released locale.
+for (const relativePath of ['moon-phase/index.html', 'es/moon-phase/index.html', 'pt/moon-phase/index.html', 'fr/moon-phase/index.html', 'it/moon-phase/index.html']) {
+  const html = await readFile(resolve(root, relativePath), 'utf8');
+  if (!html.includes('/assets/webmcp-register.js?v=calculators-1') || !html.includes('registerWebMcpPage')) {
+    fail(`webmcp: ${relativePath} must register its calculator tool`);
   }
 }
 for (const relativePath of [

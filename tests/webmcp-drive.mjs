@@ -16,6 +16,66 @@ const polyfillPath = resolve(
 );
 await access(polyfillPath);
 
+const CALCULATOR_PAGES = ['/moon-phase/', '/es/moon-phase/', '/pt/moon-phase/', '/fr/moon-phase/', '/it/moon-phase/'];
+const MOON_PHASE_CALLS = [
+  { date: '2024-03-20', time: '21:45', place: { latitude: 13.7563, longitude: 100.5018, timeZone: 'Asia/Bangkok' } },
+  { date: '1990-01-04' },
+];
+
+/** A calculator page: its tools, the calculation bundle loading only on a call, and the tool's answers. */
+async function calculatorPage(page, path) {
+  await page.waitForFunction(() => (
+    navigator.modelContextTesting?.listTools().some((tool) => tool.name === 'zodiacs.moon_phase')
+  ));
+  const result = await page.evaluate(async (calls) => {
+    const testing = navigator.modelContextTesting;
+    const tools = testing.listTools().map(({ name }) => name).sort();
+    const loaded = () => performance.getEntriesByType('resource')
+      .some((entry) => new URL(entry.name).pathname === '/assets/webmcp-calculators.js');
+    const loadedBeforeCall = loaded();
+    const answers = [];
+    for (const call of calls) {
+      const decoded = JSON.parse(await testing.executeTool('zodiacs.moon_phase', JSON.stringify(call)));
+      answers.push(decoded?.structuredContent ?? decoded);
+    }
+    const refused = JSON.parse(await testing.executeTool('zodiacs.moon_phase', JSON.stringify({ date: '2024-02-30' })));
+    return { tools, loadedBeforeCall, loadedAfterCall: loaded(), answers, refusal: refused?.structuredContent ?? refused };
+  }, MOON_PHASE_CALLS);
+  return { path, ...result };
+}
+
+function assertCalculatorPage(label, result) {
+  const expected = result.path === '/moon-phase/' ? ['zodiacs.moon_phase', 'zodiacs.search'] : ['zodiacs.moon_phase'];
+  if (JSON.stringify(result.tools) !== JSON.stringify(expected)) {
+    throw new Error(`${label} ${result.path}: expected tools ${expected.join(', ')}, got ${result.tools.join(', ')}`);
+  }
+  if (result.loadedBeforeCall || !result.loadedAfterCall) {
+    throw new Error(`${label} ${result.path}: the calculation bundle must load on the first call, not before`);
+  }
+  const [local, utc] = result.answers;
+  if (!local?.ok || local.data.basis !== 'local-time' || typeof local.data.phase !== 'string') {
+    throw new Error(`${label} ${result.path}: the local-time moon phase failed`);
+  }
+  if (!utc?.ok || utc.data.basis !== 'utc-reference') throw new Error(`${label} ${result.path}: the noon UTC moon phase failed`);
+  if (result.refusal?.ok !== false || result.refusal.error?.code !== 'INVALID_INPUT') {
+    throw new Error(`${label} ${result.path}: a date that does not exist must be refused`);
+  }
+}
+
+/** Visits every calculator page in a context and checks it. */
+async function checkCalculatorPages(label, newPage, baseURL) {
+  const results = [];
+  for (const path of CALCULATOR_PAGES) {
+    const page = await newPage();
+    await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
+    const result = await calculatorPage(page, path);
+    assertCalculatorPage(label, result);
+    results.push(result);
+    await page.close();
+  }
+  return results;
+}
+
 async function enumerateAndCall(page) {
   await page.waitForFunction(() => (
     navigator.modelContextTesting?.listTools()
@@ -50,9 +110,9 @@ async function enumerateAndCall(page) {
 
 function assertCall(label, capture) {
   if (!capture.assetRequests.length || capture.assetRequests.some((url) => (
-    url !== '/assets/webmcp-register.js?v=search-ranking-2'
+    url !== '/assets/webmcp-register.js?v=calculators-1'
   ))) {
-    throw new Error(`${label}: WebMCP must load the refreshed Search ranking cache key`);
+    throw new Error(`${label}: WebMCP must load the bundle with the calculator tools (?v=calculators-1)`);
   }
   if (capture.tools.length !== 1 || capture.tools[0].name !== 'zodiacs.search') {
     throw new Error(`${label}: expected only zodiacs.search`);
@@ -85,8 +145,18 @@ await withPreview({ port: 4412 }, async (baseURL) => {
   try {
     const page = await nativeBrowser.newPage();
     await page.goto(`${baseURL}/`, { waitUntil: 'networkidle' });
-    native = await enumerateAndCall(page);
-    assertCall('Chrome testing flag', native);
+    // Chrome's testing surface comes and goes with its WebMCP flags (Chrome 155 exposes modelContext without
+    // modelContextTesting). Without it the native pass cannot enumerate or call tools, so it is reported as
+    // unavailable, with the browser's version, rather than counted; the polyfill pass below always runs.
+    const testing = await page.evaluate(() => Boolean(navigator.modelContextTesting));
+    if (testing) {
+      native = await enumerateAndCall(page);
+      assertCall('Chrome testing flag', native);
+      native.calculators = await checkCalculatorPages('Chrome testing flag', () => nativeBrowser.newPage(), baseURL);
+    } else {
+      native = { unavailable: `navigator.modelContextTesting is not exposed by ${await nativeBrowser.version()} with the WebMCP flags` };
+      console.warn(`native WebMCP pass not run: ${native.unavailable}`);
+    }
   } finally {
     await nativeBrowser.close();
   }
@@ -104,6 +174,7 @@ await withPreview({ port: 4412 }, async (baseURL) => {
     await page.goto(`${baseURL}/`, { waitUntil: 'networkidle' });
     polyfill = await enumerateAndCall(page);
     assertCall('MCP-B 4.0.0', polyfill);
+    polyfill.calculators = await checkCalculatorPages('MCP-B 4.0.0', () => context.newPage(), baseURL);
 
     exclusions = {};
     for (const path of ['/es/', '/terminal/', '/registry/', '/thesis/', '/sdk/', '/archive/']) {
@@ -118,7 +189,7 @@ await withPreview({ port: 4412 }, async (baseURL) => {
       await excludedPage.close();
     }
     if (Object.values(exclusions).some((entry) => entry.tools.length || entry.requestedAsset)) {
-      throw new Error('Spanish or registry pages loaded the English WebMCP tool');
+      throw new Error('A page without a calculator outside English, or a registry page, loaded WebMCP tools');
     }
   } finally {
     await polyfillBrowser.close();

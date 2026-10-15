@@ -20,6 +20,7 @@ import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../lib/account-v
 import { ACCOUNT_V2_PROFILE_ACCESS_KEY } from '../lib/account-v2/profile-access';
 import { GUIDE_PRIVATE_SESSION_KEY } from '../lib/assistant/guide-loader.mjs';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../lib/web-analytics.mjs';
+import { calculatorToolForPath } from '../lib/webmcp/calculator-tools';
 import {
   ACCOUNT_V2_LOCAL_OWNER_KEY,
   ACCOUNT_V2_RETAINED_OWNER_KEY,
@@ -96,6 +97,9 @@ interface Props {
 
 const props = Astro.props;
 const locale = normalizeCatalogLocale(props.locale);
+// WebMCP (Track A2): Search on English pages, and on a calculator page, in every locale, the page's own tool.
+const webMcpSearch = locale === 'en';
+const webMcpCalculator = calculatorToolForPath(Astro.url.pathname) !== null;
 // The daily-sky feed is English; its link title is localized so feed readers list it in the page's language.
 const FEED_TITLES: Record<typeof locale, { sky: string; horoscopes: string; almanac: string }> = {
   en: { sky: 'Zodiacs.org — the sky, daily', horoscopes: 'Zodiacs.org daily horoscopes', almanac: 'The Zodiacs.org Almanac' },
@@ -289,14 +293,16 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
          preload desktop-only; People profiles opt in at every width because
          late font discovery extends their measured first-render path. -->
     <SEO {...props} />
-    {locale === 'en' && !props.noAssistant && (
-      <script is:inline>
+    {(webMcpSearch || webMcpCalculator) && !props.noAssistant && (
+      <script is:inline define:vars={{ webMcpSearch }}>
         (function () {
           var context = document.modelContext || Reflect.get(navigator, 'modelContext');
           if (!context || typeof context.registerTool !== 'function') return;
-          // This bundle shares Search ranking; bypass the previous immutable URL.
-          import('/assets/webmcp-register.js?v=search-ranking-2')
-            .then(function (module) { return module.registerWebMcpSearch(context); })
+          // The bundle registers Search and the calculator tools; bypass the previous immutable URL.
+          import('/assets/webmcp-register.js?v=calculators-1')
+            .then(function (module) {
+              return module.registerWebMcpPage(context, { path: location.pathname, search: webMcpSearch });
+            })
             .catch(function () {});
         })();
       </script>
