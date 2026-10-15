@@ -32,6 +32,7 @@ const TOKYO = { latitude: 35.6762, longitude: 139.6503, timeZone: 'Asia/Tokyo' }
 const BIRTH = { date: '1990-06-15', time: '14:30', place: LONDON };
 const UNTIMED = { date: '1985-03-02', place: TOKYO };
 const LOCALES = ['es', 'pt', 'fr', 'it', 'ru'];
+const NOWHERE = { ...LONDON, timeZone: 'Mars/Olympus_Mons' };
 
 /**
  * Each calculator tool: its page, the locales its page is built in, a call and what its answer must hold, and a call
@@ -42,76 +43,103 @@ const CALCULATORS = [
     name: 'zodiacs.birth_chart', path: '/birth-chart/', locales: LOCALES,
     call: { ...BIRTH, houseSystem: 'placidus' },
     holds: (data) => data.houses?.length === 12 && data.bigThree?.rising?.sign && data.aspects?.length > 0,
-    refuse: { date: '1990-06-15' },
+    refuse: { date: '1990-06-15' }, unread: { ...BIRTH, place: NOWHERE },
   },
   {
     name: 'zodiacs.moon_sign', path: '/moon-sign/', locales: LOCALES, call: UNTIMED,
     holds: (data) => data.moon === null && data.moonSignStatus === 'unverified' && typeof data.moonPhase === 'string',
-    refuse: { ...UNTIMED, time: '25:00' },
+    refuse: { ...UNTIMED, time: '25:00' }, unread: { ...UNTIMED, date: '1985-02-29' },
   },
   {
     name: 'zodiacs.rising_sign', path: '/rising-sign/', locales: LOCALES, call: BIRTH,
-    holds: (data) => typeof data.rising?.sign === 'string', refuse: UNTIMED,
+    holds: (data) => typeof data.rising?.sign === 'string', refuse: UNTIMED, unread: { ...BIRTH, place: NOWHERE },
   },
   {
     name: 'zodiacs.big_three', path: '/big-three/', locales: LOCALES, call: BIRTH,
     holds: (data) => data.sun?.sign && data.moon?.sign && data.rising?.sign, refuse: UNTIMED,
+    unread: { ...BIRTH, date: '1990-02-30' },
   },
   {
     name: 'zodiacs.compatibility', path: '/compatibility/', locales: LOCALES, call: { first: BIRTH, second: UNTIMED },
     holds: (data) => data.people?.length === 2 && data.topContacts?.length > 0 && data.people[1].rising === null,
-    refuse: { first: BIRTH },
+    refuse: { first: BIRTH }, unread: { first: BIRTH, second: { ...UNTIMED, place: NOWHERE } },
   },
   {
     name: 'zodiacs.transits', path: '/transits/', locales: LOCALES, call: { birth: BIRTH, at: '2026-10-15T12:00:00Z' },
     holds: (data) => data.sky?.length === 10 && Array.isArray(data.contacts) && data.contacts.every((c) => c.orb <= 3),
-    refuse: { birth: BIRTH, at: 'tomorrow' },
+    refuse: { birth: BIRTH, at: 'tomorrow' }, unread: { birth: BIRTH, at: '2026-02-30T12:00:00Z' },
   },
   {
     name: 'zodiacs.saturn_return', path: '/saturn-return/', locales: LOCALES, call: BIRTH,
     holds: (data) => data.seasons?.length >= 2 && data.seasons[0].passes.length >= 1, refuse: { date: '1990-13-01' },
+    unread: { date: '1990-06-15', time: '14:30' },
   },
   {
     name: 'zodiacs.solar_return', path: '/solar-return/', locales: [], call: { birth: BIRTH, year: 2027 },
     holds: (data) => data.returnYear === 2027 && data.angles?.ascendant?.sign, refuse: { birth: BIRTH, year: 1500 },
+    unread: { birth: BIRTH, castPlace: NOWHERE },
   },
   {
     name: 'zodiacs.lunar_return', path: '/lunar-return/', locales: [], call: { birth: BIRTH, after: '2026-10-15T00:00:00Z' },
     holds: (data) => data.instant > '2026-10-15' && data.instant < '2026-11-15', refuse: { birth: UNTIMED },
+    unread: { birth: { ...BIRTH, date: '2021-03-28', time: '01:30' } },
   },
   {
     name: 'zodiacs.numerology', path: '/numerology/', locales: [],
     call: { birthDate: '1990-06-15', fullName: 'Alex Synthetic Example', today: '2026-10-15' },
     holds: (data) => data.lifePath?.value === 4 && data.nameUsed === true, refuse: { birthDate: '15/06/1990' },
+    unread: { birthDate: '1990-06-15', fullName: 'Алекс' },
   },
   {
     name: 'zodiacs.moon_phase', path: '/moon-phase/', locales: LOCALES,
     call: { date: '2024-03-20', time: '21:45', place: { latitude: 13.7563, longitude: 100.5018, timeZone: 'Asia/Bangkok' } },
     holds: (data) => data.basis === 'local-time' && typeof data.phase === 'string', refuse: { date: '2024-3-20' },
+    unread: { date: '2023-02-29' },
   },
   {
     name: 'zodiacs.baby_zodiac', path: '/baby-zodiac/', locales: LOCALES, call: { dueDate: '2027-02-10' },
     holds: (data) => data.sun?.signs?.length >= 1 && data.moonSpans?.length >= 1 && Array.isArray(data.retrograde),
-    refuse: { dueDate: '2035-01-01' },
+    refuse: { dueDate: '2035-01-01' }, unread: { dueDate: '2027-02-29' },
   },
   {
     name: 'zodiacs.chart_twins', path: '/chart-twins/', locales: LOCALES, call: BIRTH,
     holds: (data) => data.sunSign === 'Gemini' && data.matches?.length > 0, refuse: { date: '1990-06-15' },
+    unread: { ...BIRTH, place: NOWHERE },
   },
   {
     name: 'zodiacs.group_chart', path: '/group-charts/', locales: LOCALES,
     call: { people: [{ name: 'A', birth: BIRTH }, { name: 'B', birth: UNTIMED }, { name: 'C', birth: { ...BIRTH, date: '2003-11-20' } }] },
     holds: (data) => data.people?.length === 3 && data.people.every((person) => typeof person.role === 'string'),
     refuse: { people: [{ birth: BIRTH }] },
+    unread: { people: [{ name: 'A', birth: BIRTH }, { name: 'a', birth: BIRTH }, { birth: UNTIMED }] },
+  },
+  {
+    name: 'zodiacs.chart_pdf', path: '/astrologer-kit/', locales: LOCALES, call: UNTIMED,
+    holds: (data) => data.positions?.length === 12 && data.houses === null
+      && data.aspects.every((aspect) => aspect.a !== 'Moon' && aspect.b !== 'Moon'),
+    refuse: { place: TOKYO }, unread: { ...UNTIMED, place: NOWHERE },
+  },
+  {
+    name: 'zodiacs.year_wrapped', path: '/your-sky-wrapped/', locales: LOCALES, call: { birth: BIRTH, year: 2026 },
+    holds: (data) => data.year === 2026 && data.natalPoints?.length === 3 && Array.isArray(data.contacts),
+    refuse: { birth: BIRTH, year: 'this year' }, unread: { birth: { ...BIRTH, date: '1990-02-30' } },
   },
 ];
 
-/** A calculator page: its tools, the calculations loading only on a call, the tool's answer and its refusal. */
+/** The code each tool's own refusal (`unread`) must carry: inputs its schema passes and its reader cannot use. */
+const UNREAD_CODES = {
+  'zodiacs.saturn_return': 'TIME_NEEDS_PLACE',
+  'zodiacs.lunar_return': 'CLOCK_CHANGE',
+  'zodiacs.numerology': 'UNSUPPORTED_NAME',
+  'zodiacs.group_chart': 'DUPLICATE_PERSON',
+};
+
+/** A calculator page: its tools, the calculations loading only on a call, the tool's answer and its refusals. */
 async function calculatorPage(page, calculator, path) {
   await page.waitForFunction((name) => (
     navigator.modelContextTesting?.listTools().some((tool) => tool.name === name)
   ), calculator.name);
-  return page.evaluate(async ({ name, call, refuse }) => {
+  return page.evaluate(async ({ name, call, refuse, unread }) => {
     const testing = navigator.modelContextTesting;
     const loaded = () => performance.getEntriesByType('resource')
       .some((entry) => new URL(entry.name).pathname === '/assets/webmcp-calculators.js');
@@ -129,8 +157,12 @@ async function calculatorPage(page, calculator, path) {
       // MCP-B validates the input schema before the tool runs and rejects the call itself.
       refusal = { ok: false, rejectedBy: 'schema', message: String(error?.message ?? error) };
     }
-    return { tools, loadedBeforeCall, loadedAfterCall: loaded(), answer, refusal };
-  }, { name: calculator.name, call: calculator.call, refuse: calculator.refuse }).then((result) => ({ path, ...result }));
+    // An input the schema passes and the tool itself refuses, with its own envelope.
+    const unreadRefusal = decode(await testing.executeTool(name, JSON.stringify(unread)));
+    return { tools, loadedBeforeCall, loadedAfterCall: loaded(), answer, refusal, unreadRefusal };
+  }, {
+    name: calculator.name, call: calculator.call, refuse: calculator.refuse, unread: calculator.unread,
+  }).then((result) => ({ path, ...result }));
 }
 
 function assertCalculatorPage(label, calculator, result) {
@@ -150,6 +182,10 @@ function assertCalculatorPage(label, calculator, result) {
   }
   const refused = result.refusal?.ok === false && (result.refusal.rejectedBy === 'schema' || result.refusal.error?.code === 'INVALID_INPUT');
   if (!refused) throw new Error(`${label} ${result.path}: ${calculator.name} must refuse an input its schema refuses`);
+  const code = UNREAD_CODES[calculator.name] ?? 'INVALID_INPUT';
+  if (result.unreadRefusal?.ok !== false || result.unreadRefusal.error?.code !== code) {
+    throw new Error(`${label} ${result.path}: ${calculator.name} must refuse an input it cannot read with ${code}`);
+  }
 }
 
 /** The pages each calculator is built at: English, and each locale the build has the page in. */
@@ -173,7 +209,10 @@ async function checkCalculatorPages(label, newPage, baseURL) {
       await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
       const result = await calculatorPage(page, calculator, path);
       assertCalculatorPage(label, calculator, result);
-      results.push({ path, tool: calculator.name, refusedBy: result.refusal.rejectedBy ?? result.refusal.error.code });
+      results.push({
+        path, tool: calculator.name, refusedBy: result.refusal.rejectedBy ?? result.refusal.error.code,
+        toolRefusal: result.unreadRefusal.error.code,
+      });
       await page.close();
     }
   }

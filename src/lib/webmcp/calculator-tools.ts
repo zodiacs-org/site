@@ -229,6 +229,27 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
       },
     }, ['people']),
   },
+  {
+    name: 'zodiacs.chart_pdf',
+    path: '/astrologer-kit/',
+    title: 'Chart PDF',
+    description: 'The chart this page\'s PDF prints, as data: each body\'s sign, degree and motion; with a birth time, the '
+      + 'angles and whole-sign house cusps; and the aspects (without a birth time, none of the Moon\'s). The page\'s own '
+      + 'button makes the file. ' + CALCULATED,
+    inputSchema: BIRTH,
+  },
+  {
+    name: 'zodiacs.year_wrapped',
+    path: '/your-sky-wrapped/',
+    title: 'Your sky, wrapped',
+    description: 'A year in review, as this page finds it: each exact Jupiter and Saturn conjunction, square and '
+      + 'opposition that year to the natal Sun, and with a birth time to the Moon and the rising degree, with its UTC '
+      + 'instant. ' + CALCULATED,
+    inputSchema: object({
+      birth: BIRTH,
+      year: { type: 'integer', minimum: 1800, maximum: 2199, description: 'The year; omit for this year (UTC).' },
+    }, ['birth']),
+  },
 ]);
 
 /** The calculator tool a page path registers, or null when the page has none. */

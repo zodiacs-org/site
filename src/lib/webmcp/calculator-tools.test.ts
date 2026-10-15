@@ -35,6 +35,8 @@ const VALID: Record<string, unknown> = {
   'zodiacs.baby_zodiac': { dueDate: '2027-02-10' },
   'zodiacs.chart_twins': BIRTH,
   'zodiacs.group_chart': { people: [{ name: 'A', birth: BIRTH }, { birth: { date: '1985-03-02', place: TOKYO } }, { name: 'C', birth: { date: '2003-11-20', time: '23:59', place: SYDNEY } }] },
+  'zodiacs.chart_pdf': { date: '1985-03-02', place: TOKYO },
+  'zodiacs.year_wrapped': { birth: BIRTH, year: 2026 },
 };
 
 // Inputs each schema refuses, and the runtime with it.
@@ -59,6 +61,8 @@ const INVALID: Array<[string, unknown]> = [
   ['zodiacs.baby_zodiac', { dueDate: '2029-01-01' }],
   ['zodiacs.group_chart', { people: [{ birth: BIRTH }, { birth: BIRTH }] }],
   ['zodiacs.group_chart', { people: [{ name: 'x'.repeat(25), birth: BIRTH }, { birth: BIRTH }, { birth: BIRTH }] }],
+  ['zodiacs.chart_pdf', { date: BIRTH.date }],
+  ['zodiacs.year_wrapped', { birth: BIRTH, year: 1799 }],
 ];
 
 afterEach(() => { vi.unstubAllGlobals(); });

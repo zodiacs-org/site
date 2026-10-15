@@ -14,7 +14,9 @@ import ts from 'typescript';
 type Selector =
   | { function: string }
   | { const: string }
-  | { useMemo: string };
+  | { useMemo: string }
+  /** The function assigned to a target, such as a worker's `self.onmessage`. */
+  | { assigned: string };
 
 function find(ast: ts.SourceFile, selector: Selector): ts.Node {
   let found: ts.Node | null = null;
@@ -26,6 +28,8 @@ function find(ast: ts.SourceFile, selector: Selector): ts.Node {
     if ('useMemo' in selector && ts.isVariableDeclaration(node) && ts.isIdentifier(node.name)
       && node.name.text === selector.useMemo && node.initializer && ts.isCallExpression(node.initializer)
       && node.initializer.expression.getText(ast) === 'useMemo') found = node.initializer.arguments[0];
+    if ('assigned' in selector && ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.EqualsToken
+      && node.left.getText(ast) === selector.assigned) found = node.right;
     ts.forEachChild(node, visit);
   };
   visit(ast);

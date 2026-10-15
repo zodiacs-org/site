@@ -21,6 +21,7 @@ import { numerologyResult } from './calculators/numerology';
 import {
   chartTwinsResult, compatibilityResult, DuplicatePersonError, groupChartResult, transitsResult, type GroupMember,
 } from './calculators/people';
+import { chartPdfResult, yearWrappedResult } from './calculators/return-visits';
 import { lunarReturnResult, saturnReturnResult, solarReturnResult } from './calculators/returns';
 
 export type CalculatorErrorCode =
@@ -132,8 +133,9 @@ async function saturnReturn(input: unknown) {
   return saturnReturnResult(day, clock, place, new Date());
 }
 
-function year(value: unknown): 'current' | number {
-  if (value === undefined) return 'current';
+/** A year from 1800 through 2199; `absent` when none is given. */
+function year<T>(value: unknown, absent: T): T | number {
+  if (value === undefined) return absent;
   if (typeof value !== 'number' || !Number.isInteger(value) || value < 1800 || value > 2199) {
     throw new Refusal('INVALID_INPUT');
   }
@@ -145,7 +147,7 @@ async function solarReturn(input: unknown) {
     birth: natal, year: rawYear, castPlace, houseSystem,
   } = fields(input, ['birth', 'year', 'castPlace', 'houseSystem']);
   return solarReturnResult(
-    birth(natal), year(rawYear), need(readPlace(castPlace)), need(readHouseSystem(houseSystem)), new Date(),
+    birth(natal), year(rawYear, 'current' as const), need(readPlace(castPlace)), need(readHouseSystem(houseSystem)), new Date(),
   );
 }
 
@@ -229,6 +231,17 @@ async function groupChart(input: unknown) {
   }
 }
 
+async function chartPdf(input: unknown) {
+  return chartPdfResult(birth(input));
+}
+
+async function yearWrapped(input: unknown) {
+  const { birth: natal, year: rawYear } = fields(input, ['birth', 'year']);
+  const reading = birth(natal);
+  const now = new Date();
+  return yearWrappedResult(reading, year(rawYear, now.getUTCFullYear()), now);
+}
+
 const TOOLS: Record<string, (input: unknown) => Promise<Record<string, unknown>>> = {
   'zodiacs.birth_chart': birthChart,
   'zodiacs.moon_sign': moonSign,
@@ -244,6 +257,8 @@ const TOOLS: Record<string, (input: unknown) => Promise<Record<string, unknown>>
   'zodiacs.baby_zodiac': babyZodiac,
   'zodiacs.chart_twins': chartTwins,
   'zodiacs.group_chart': groupChart,
+  'zodiacs.chart_pdf': chartPdf,
+  'zodiacs.year_wrapped': yearWrapped,
 };
 
 export const CALCULATOR_TOOL_NAMES: readonly string[] = Object.freeze(Object.keys(TOOLS));

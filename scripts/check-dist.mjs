@@ -660,6 +660,8 @@ const WEBMCP_CALCULATOR_TOOLS = [
   ['zodiacs.baby_zodiac', '/baby-zodiac/', true],
   ['zodiacs.chart_twins', '/chart-twins/', true],
   ['zodiacs.group_chart', '/group-charts/', true],
+  ['zodiacs.chart_pdf', '/astrologer-kit/', true],
+  ['zodiacs.year_wrapped', '/your-sky-wrapped/', true],
 ];
 const webMcpPath = resolve(root, 'assets/webmcp-register.js');
 if (!(await exists(webMcpPath))) {
