@@ -78,12 +78,21 @@ jobs:
       # is the base branch it merges into. The clock is noon UTC of the head's
       # daily edition, so both builds pass the edition's freshness gates and
       # print the same "now", and a re-run reads the same pages.
+      #
+      # Only the daily publication rolls the edition, in a commit of its own
+      # package (FILES and REGISTRY_FILES in daily-horoscopes.yml), which it
+      # may publish through a pull request (scripts/publish-through-pr.sh).
+      # Its pages take their dates from the edition, and builds of two
+      # editions cannot share one clock, so such a pull request has nothing
+      # to compare and passes. A head that rolls the edition and changes
+      # anything else fails.
       - name: Choose the commits and the clock
         id: plan
         env:
           EVENT: ${{ github.event_name }}
           BASE_INPUT: ${{ inputs.base }}
           HEAD_INPUT: ${{ inputs.head }}
+          DAILY_PACKAGE: '^(src/data/(daily|daily-publication|daily-publication-manifest|horoscope-program|horoscope-window)\.json|src/data/registry-research/(drafts|publication)\.json|public/assets/(data/registry-market-history\.v1|registry-outlook|registry-research-feed)\.json|public/assets/data/registry-research/.+|public/registry/.+)$'
         run: |
           if [ "$EVENT" = pull_request ]; then
             head=$(git rev-parse HEAD)
@@ -97,7 +106,14 @@ jobs:
           }
           edition=$(edition_of "$head")
           if [ "$(edition_of "$base")" != "$edition" ]; then
-            echo "::error::The base and the head have different daily editions; compare two commits of one edition."
+            other=$(git diff --name-only "$base" "$head" | grep -v -E "$DAILY_PACKAGE" || true)
+            if [ -z "$other" ]; then
+              echo "::notice::The head rolls the daily edition to $edition and changes nothing else, so there is nothing to compare."
+              echo "The head rolls the daily edition to $edition and changes nothing else: nothing to compare." >> "$GITHUB_STEP_SUMMARY"
+              echo "compare=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "::error::The head rolls the daily edition and changes $(printf '%s\n' "$other" | wc -l | tr -d ' ') other file(s); compare two commits of one edition."
             exit 1
           fi
           tools="$RUNNER_TEMP/sitemap-dates"
@@ -105,6 +121,7 @@ jobs:
           # One copy of the tools, from this checkout, reads both builds.
           cp scripts/sitemap-rendered-changes.mjs scripts/frozen-clock.mjs "$tools/"
           {
+            echo "compare=true"
             echo "base=$base"
             echo "head=$head"
             echo "edition=$edition"
@@ -114,6 +131,7 @@ jobs:
           echo "Comparing $base (base) with $head (head), clock ${edition}T12:00:00Z"
 
       - name: Build the head under the pinned clock
+        if: steps.plan.outputs.compare == 'true'
         env:
           COMMIT: ${{ steps.plan.outputs.head }}
           TOOLS: ${{ steps.plan.outputs.tools }}
@@ -127,6 +145,7 @@ jobs:
           mv dist "$TOOLS/head-dist"
 
       - name: Build the base under the same clock
+        if: steps.plan.outputs.compare == 'true'
         env:
           COMMIT: ${{ steps.plan.outputs.base }}
           TOOLS: ${{ steps.plan.outputs.tools }}
@@ -141,13 +160,14 @@ jobs:
 
       # A page already dated the edition day passes: its date says it changed that day.
       - name: Every changed page has a new sitemap date
+        if: steps.plan.outputs.compare == 'true'
         env:
           TOOLS: ${{ steps.plan.outputs.tools }}
           EDITION: ${{ steps.plan.outputs.edition }}
         run: node "$TOOLS/sitemap-rendered-changes.mjs" compare "$TOOLS/base.json" "$TOOLS/head.json" --today "$EDITION" --explain "$TOOLS/base-dist" "$TOOLS/head-dist" --summary "$GITHUB_STEP_SUMMARY"
 
       - name: Upload the fingerprints
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.plan.outputs.compare == 'true' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: sitemap-dates-${{ github.run_id }}

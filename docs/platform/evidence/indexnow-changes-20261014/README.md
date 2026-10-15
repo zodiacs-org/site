@@ -96,6 +96,12 @@ on every pull request.
   `scripts/frozen-clock.mjs` sets through `NODE_OPTIONS`.
 - **By hand.** Run by hand, the workflow compares any two commits of one
   edition.
+- **Edition rolls.** Only the daily publication rolls the edition, in a commit
+  of its own package, which it may publish through a pull request. Its pages
+  take their dates from the edition, and builds of two editions cannot share
+  one clock, so a pull request that changes nothing but that package passes
+  with nothing to compare. One that rolls the edition and changes anything
+  else fails (Codex's second finding on #752).
 
 The reports in [`sitemap-dates/`](sitemap-dates/) are this Mac's builds of
 2026-10-15, with that environment and the pinned clock. Every prebuild step

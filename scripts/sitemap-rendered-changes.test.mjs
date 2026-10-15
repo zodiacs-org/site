@@ -234,3 +234,108 @@ describe('the workflow', () => {
     expect(await jobEnv('sitemap-dates.yml', 'sitemap-dates')).toEqual(production);
   });
 });
+
+describe('a pull request that rolls the daily edition', () => {
+  // The plan step's script and its daily-package pattern, as the workflow runs them.
+  async function planStep() {
+    const lines = (await readFile(join(root, '.github/workflows/sitemap-dates.yml'), 'utf8')).split('\n');
+    const at = lines.indexOf('        id: plan');
+    const pattern = lines.slice(at).find((line) => line.startsWith('          DAILY_PACKAGE: '));
+    const runAt = lines.findIndex((line, index) => index > at && line === '        run: |');
+    const end = lines.findIndex((line, index) => index > runAt && /^ {6}- name: /.test(line));
+    const script = lines.slice(runAt + 1, end).map((line) => line.replace(/^ {10}/, '')).join('\n');
+    return { script, pattern: pattern.replace('          DAILY_PACKAGE: ', '').replace(/^'(.*)'$/, '$1') };
+  }
+
+  it('names every file the daily publication commits as its package', async () => {
+    const { pattern } = await planStep();
+    const daily = await readFile(join(root, '.github/workflows/daily-horoscopes.yml'), 'utf8');
+    // The paths quoted from FILES=( to the commit that adds them.
+    const section = daily.slice(daily.indexOf('FILES=('), daily.indexOf('git add "${FILES[@]}"'));
+    const listed = [...section.matchAll(/"((?:src|public)\/[^"]+)"/gu)].map((match) => match[1]);
+    expect(listed).toEqual(expect.arrayContaining(['src/data/daily.json', 'src/data/horoscope-window.json', 'public/registry']));
+    const regex = new RegExp(pattern);
+    for (const path of listed) {
+      // A directory in the list stands for the files under it.
+      expect(regex.test(/\.[a-z0-9]+$/.test(path) ? path : `${path}/aries/index.html`)).toBe(true);
+    }
+    for (const path of ['src/pages/sitemap.xml.ts', 'src/data/sky.json', 'public/robots.txt', 'src/data/daily.json.bak']) {
+      expect(regex.test(path)).toBe(false);
+    }
+  });
+
+  describe('the plan step', () => {
+    let repo;
+    beforeEach(async () => {
+      repo = await mkdtemp(join(tmpdir(), 'sitemap-plan-'));
+      execFileSync('git', ['init', '-q'], { cwd: repo });
+    });
+    afterEach(async () => { await rm(repo, { recursive: true, force: true }); });
+
+    const git = (...args) => execFileSync('git', args, { cwd: repo, encoding: 'utf8' }).trim();
+    async function commit(files) {
+      for (const [path, content] of Object.entries(files)) {
+        await mkdir(dirname(join(repo, path)), { recursive: true });
+        await writeFile(join(repo, path), content);
+      }
+      git('add', '-A');
+      git('-c', 'user.name=t', '-c', 'user.email=t@invalid', 'commit', '-qm', 'c');
+      return git('rev-parse', 'HEAD');
+    }
+    async function plan(base, head) {
+      const { script, pattern } = await planStep();
+      const output = join(repo, 'output.txt');
+      await writeFile(output, '');
+      let status = 0;
+      let stdout = '';
+      try {
+        stdout = execFileSync('bash', ['-e', '-c', script], {
+          cwd: repo,
+          encoding: 'utf8',
+          stdio: ['ignore', 'pipe', 'pipe'],
+          env: {
+            ...process.env, EVENT: 'workflow_dispatch', BASE_INPUT: base, HEAD_INPUT: head, DAILY_PACKAGE: pattern,
+            GITHUB_OUTPUT: output, GITHUB_STEP_SUMMARY: join(repo, 'summary.txt'), RUNNER_TEMP: join(repo, 'temp'),
+          },
+        });
+      } catch (error) {
+        status = error.status;
+        stdout = error.stdout;
+      }
+      const outputs = Object.fromEntries((await readFile(output, 'utf8')).split('\n').filter(Boolean).map((line) => line.split('=')));
+      return { status, stdout, outputs };
+    }
+    const edition = (date) => JSON.stringify({ date });
+
+    it('compares two commits of one edition', async () => {
+      const base = await commit({ 'src/data/daily.json': edition('2026-10-15'), 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '' });
+      const head = await commit({ 'src/pages/a.astro': 'a' });
+      const { status, outputs } = await plan(base, head);
+      expect(status).toBe(0);
+      expect(outputs).toMatchObject({ compare: 'true', edition: '2026-10-15', clock: '2026-10-15T12:00:00Z' });
+    });
+
+    it('passes a head that only rolls the edition, with nothing to compare', async () => {
+      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '' });
+      const head = await commit({
+        'src/data/daily.json': edition('2026-10-15'),
+        'src/data/daily-publication.json': '{}',
+        'public/registry/aries/index.html': '<p>',
+        'public/assets/data/registry-research/items/brief.json': '{}',
+      });
+      const { status, stdout, outputs } = await plan(base, head);
+      expect(status).toBe(0);
+      expect(outputs).toEqual({ compare: 'false' });
+      expect(stdout).toContain('rolls the daily edition to 2026-10-15 and changes nothing else');
+    });
+
+    it('fails a head that rolls the edition and changes anything else', async () => {
+      const base = await commit({ 'src/data/daily.json': edition('2026-10-14'), 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '' });
+      const head = await commit({ 'src/data/daily.json': edition('2026-10-15'), 'src/pages/sitemap.xml.ts': 'x' });
+      const { status, stdout, outputs } = await plan(base, head);
+      expect(status).toBe(1);
+      expect(stdout).toContain('::error::The head rolls the daily edition and changes 1 other file(s)');
+      expect(outputs).toEqual({});
+    });
+  });
+});
