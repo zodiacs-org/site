@@ -3,6 +3,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
+import { buildSkyCalendar } from './build-sky-calendar.mjs';
 import { buildChartStudio } from './build-chart-studio.mjs';
 import { buildHoroscopePanel } from './build-horoscope-panel.mjs';
 import { buildOccasionsPanel } from './build-occasions-panel.mjs';
@@ -11,6 +12,7 @@ import { addAiLifetimeBoundary } from './ai-runtime-lifetime.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
+await buildSkyCalendar(check);
 await buildChartStudio(check);
 await buildHoroscopePanel(check);
 await buildOccasionsPanel(check);

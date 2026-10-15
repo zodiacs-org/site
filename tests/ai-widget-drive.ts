@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
-import { WIDGET_HTML } from '../src/ai-tools/widget';
+import { WIDGET_HTML } from '../integrations/generated/sky-calendar.mjs';
 import { executeAiTool } from '../src/ai-tools/tools';
 
 const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS, headless: true });
@@ -40,7 +40,7 @@ try {
   injected.data.events[0].body = '<img src=x onerror="window.pwned=1">'; injected.data.events[0].kind = 'ingress';
   injected.links.push({ title: '<script>attack</script>', url: 'https://attacker.example/' }, { title: 'Private URL', url: 'https://zodiacs.org/?birth=secret' });
   await page.evaluate(result => window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: result } } })), injected);
-  assert.equal(await page.locator('img:not([src^="data:image/png;base64,"])').count(), 0); assert.equal(await page.evaluate(() => (window as any).pwned), undefined); assert.equal(await page.locator('a[href*="attacker"]').count(), 0); assert.equal(await page.locator('a[href*="birth="]').count(), 0);
+  assert.equal(await page.locator('img:not([src^="data:image/webp;base64,"])').count(), 0); assert.equal(await page.evaluate(() => (window as any).pwned), undefined); assert.equal(await page.locator('a[href*="attacker"]').count(), 0); assert.equal(await page.locator('a[href*="birth="]').count(), 0);
   await page.evaluate(() => window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: { tool: 'get_upcoming_events', ok: false, error: { message: 'The search was refused.' } } } } })));
   assert.equal(await page.locator('li').count(), 0); assert.equal(await page.locator('#links a, #keep a').count(), 0); assert.equal(await page.locator('#coverage').innerText(), '');
   const changed = await executeAiTool('get_upcoming_events', { from: '2026-10-02T00:00:00Z', to: '2026-10-09T00:00:00Z', zone: 'America/New_York' }, {});
