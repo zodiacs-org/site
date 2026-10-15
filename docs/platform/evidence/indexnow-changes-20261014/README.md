@@ -89,18 +89,21 @@ on every pull request.
   - the copy its attributes carry: a field's placeholder, an accessible name,
     a tooltip, a shown input value, and a responsive table's `data-label`,
     which the stylesheets show with `content: attr()`;
-  - the files its images, video and frames show;
+  - the files its images, video and frames show, lazy-loaded ones
+    (`data-src`) included;
   - the words its stylesheets add with `content`, counted on a page whose
     markup carries the classes their rule selects.
 - **The rule.** A page whose content changed fails the check when its date did
   not change and is earlier than the edition's day. A page already dated that
   day passes, since a sitemap date says only which day a page last changed.
-  IndexNow Changes covers that case. It digests each live page dated since
-  its last run's day with the same fingerprint, keeps the digests in its
-  snapshot, and submits a page whose digest moved since that run. A second
-  change made the same day therefore reaches IndexNow too, and so does a
-  change made late in a UTC day that reaches no run until the next day
-  (Codex's third and fifth findings on #752).
+  IndexNow Changes covers that case. On every run it digests each live page
+  dated in the last three days (the run's day and the two before, or back to
+  its last run's day if that is earlier) with the same fingerprint, keeps the
+  digests in its snapshot, and submits a page whose digest moved since the
+  last run. A second change made the same day therefore reaches IndexNow, as
+  does a change that becomes live a day later through a late deployment, a
+  promotion or a recovery run (Codex's third, fifth and seventh findings on
+  #752).
 - **One clock.** Some pages print when they were built, such as the
   void-of-course Moon's "As of" line, or a body's position at that time, such
   as the rising-sign pages' chart rulers. Both builds therefore read one
@@ -133,6 +136,10 @@ ran except `editorial:daily:verify`, which fails here by one last bit (F-95).
   - the people search's placeholder alone now fails `/people/`;
   - the full-moon tables' time `data-label` alone now fails the four
     localized full-moon calendars.
+- **Lazy-loaded media**
+  ([`lazy-media-control.txt`](sitemap-dates/lazy-media-control.txt)). A change
+  to the home page's second hero video source alone, against `26802bcd`,
+  fails `/` with this fingerprint and passed with the previous one.
 - **Stylesheet words**
   ([`stylesheet-control.txt`](sitemap-dates/stylesheet-control.txt)). A
   change to the word `events.css` adds to the events hub's disclosure (Show
@@ -176,6 +183,12 @@ Limits:
 - Changes before the 2026-10-13 edition were not audited.
 - It reads a page's `<main>`, title and description, with the copy above, not
   its JSON-LD or the rest of its head.
+- It reads the HTML a page is served with, which is what a crawler reads
+  without interacting. Every island renders on the server (no page uses
+  `client:only`). Text a script writes in answer to the visitor, such as
+  `/people/`'s count after a search or a calculator's reading after a birth
+  is entered, is not part of a page's indexable content and is not
+  fingerprinted (Codex's eighth finding on #752).
 - It does not check a new page's date.
 
 ## What keeps S8 open
