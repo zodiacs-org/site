@@ -78,13 +78,25 @@ const AREA_WORDS: Record<CompatArea, string> = {
   attraction: 'attraction', communication: 'communication', stability: 'long-term stability',
 };
 
-function verdictFor(score: number): string {
-  if (score >= 85) return 'An exceptional match';
-  if (score >= 72) return 'A strong match';
-  if (score >= 58) return 'A good match, with some work to do';
-  if (score >= 45) return 'A mixed match';
-  return 'A challenging match';
+/** The verdicts, by the short key a share link carries. */
+export const COMPAT_VERDICTS = {
+  exceptional: 'An exceptional match',
+  strong: 'A strong match',
+  good: 'A good match, with some work to do',
+  mixed: 'A mixed match',
+  challenging: 'A challenging match',
+} as const;
+export type CompatVerdictKey = keyof typeof COMPAT_VERDICTS;
+
+export function compatVerdictKey(score: number): CompatVerdictKey {
+  if (score >= 85) return 'exceptional';
+  if (score >= 72) return 'strong';
+  if (score >= 58) return 'good';
+  if (score >= 45) return 'mixed';
+  return 'challenging';
 }
+
+const verdictFor = (score: number): string => COMPAT_VERDICTS[compatVerdictKey(score)];
 
 export function scoreCompatibility(
   contacts: readonly InterAspect[],

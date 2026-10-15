@@ -246,6 +246,22 @@
       "destination": "/api/compatibility?__zodiacs_og_route=image"
     },
     {
+      "source": "/share/compatibility/",
+      "destination": "/api/compatibility?__zodiacs_share=compatibility-link"
+    },
+    {
+      "source": "/api/og/compatibility-image",
+      "destination": "/api/compatibility?__zodiacs_share=compatibility-image"
+    },
+    {
+      "source": "/share/occasion/",
+      "destination": "/api/compatibility?__zodiacs_share=occasion-link"
+    },
+    {
+      "source": "/api/og/occasion-image",
+      "destination": "/api/compatibility?__zodiacs_share=occasion-image"
+    },
+    {
       "source": "/api/games",
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },
