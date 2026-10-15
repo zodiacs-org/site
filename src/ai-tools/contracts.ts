@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { BUDGETS, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS } from '../lib/compute-api/constants';
 import { OCCASION_KINDS } from '../lib/occasions/kinds';
-import { compatibilityData, compatibilityInput } from './features/compatibility';
+import { BEST_DAYS_MAX_WINDOW } from '../lib/occasions/best-dates';
+import { compatibilityInput, compatibilityResult } from './features/compatibility';
 import { chartTwinsData, chartTwinsInput, famousChartData, famousChartInput } from './features/people';
 import { birthdayData, birthdayInput, skyCalendarData, skyCalendarInput } from './features/birthday';
 import { HOROSCOPE_FOCUSES, HOROSCOPE_PERIODS, HOROSCOPE_SIGNS, HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS } from './horoscope/reading';
@@ -74,7 +75,9 @@ export const INPUT_SCHEMAS = {
   check_sky_fact: z.strictObject({ kind: z.enum(['sign', 'retrograde', 'ingress', 'phase']), body: z.enum(EVENT_BODIES).optional(), sign: z.enum(SIGN_SLUGS).optional(), phase: z.enum(PHASE_NAMES).optional(), instant: instant.optional(), date: date.optional(), zone: zone.optional() }),
   get_occasion_sky: z.strictObject({
     occasion: z.enum(OCCASION_KINDS).describe('What the day is: wedding, anniversary, met (the day they met), birthday, baby (the day a baby arrived), pet, home, job, graduation, retirement, coming-of-age or gathering.'),
-    date: date.describe('The day, such as 2027-06-12 (years 1800–2199).'),
+    date: date.optional().describe('The day, such as 2027-06-12 (years 1800–2199). Needed unless searchFrom and searchTo are given.'),
+    searchFrom: date.optional().describe('To find the best days: the first day of the window to search, such as 2027-06-01. Give it with searchTo.'),
+    searchTo: date.optional().describe('The last day of the window to search, such as 2027-06-30, at most 92 days after searchFrom counting both days. Every day is rated and the three best come back.'),
     time: wallClock.optional().describe('The local clock time, such as 19:00, if the person gives one. Needs zone.'),
     zone: zone.optional().describe("The place's time zone, such as Europe/Rome. Needed with a time or a place."),
     latitude: z.number().min(-90).max(90).optional().describe("Optional. The place's latitude, used only to work out sunset, golden hour and the evening sky there. Give it with longitude and zone. Nothing is stored."),
@@ -84,6 +87,8 @@ export const INPUT_SCHEMAS = {
   }).superRefine((args, context) => {
     if ((args.latitude === undefined) !== (args.longitude === undefined)) context.addIssue({ code: 'custom', message: 'Give latitude and longitude together.' });
     if ((args.time !== undefined || args.latitude !== undefined) && !args.zone) context.addIssue({ code: 'custom', message: 'A time or a place needs its time zone.' });
+    if ((args.searchFrom === undefined) !== (args.searchTo === undefined)) context.addIssue({ code: 'custom', message: 'Give searchFrom and searchTo together.' });
+    if (args.date === undefined && args.searchFrom === undefined) context.addIssue({ code: 'custom', message: 'Give a date, or a window to search.' });
   }),
   get_life_milestones: z.strictObject({
     birthDate: date.describe('The birth date, such as 1997-03-15.'),
@@ -157,6 +162,11 @@ const occasionSky = z.object({
     planetsAfterDusk: z.array(z.string()), flags: z.array(z.string()),
   }).nullable(),
   rating: z.object({ score: z.number().int().min(0).max(100), verdict: z.string(), reasons: z.array(z.string()) }),
+  /** With a search window: the three best-rated days in it, best first; the card is for date, else the best day. */
+  bestDays: z.object({
+    from: z.string(), to: z.string(), days: z.number().int().min(1).max(BEST_DAYS_MAX_WINDOW),
+    best: z.array(z.object({ date: z.string(), score: z.number().int().min(0).max(100), verdict: z.string(), reasons: z.array(z.string()) })).max(3),
+  }).nullable(),
   cardUrl: z.url().nullable(),
   note: z.literal(occasionNote),
 });
@@ -182,7 +192,7 @@ const dataSchemas = {
   get_horoscope: horoscope,
   get_occasion_sky: occasionSky,
   get_life_milestones: lifeMilestones,
-  get_compatibility: compatibilityData,
+  get_compatibility: compatibilityResult,
   find_chart_twins: chartTwinsData,
   get_famous_chart: famousChartData,
   get_birthday: birthdayData,
@@ -218,9 +228,9 @@ export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
   get_upcoming_events: "Shows what changes in the sky over the coming days or weeks: planets changing sign, turning retrograde or direct, and new and full Moons, for up to 92 days. Supply from and to, and the person's time zone. With no arguments it opens the calendar for the next seven days. It does not list eclipses or every aspect.",
   check_sky_fact: "Checks a claim such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?' and answers yes, no, or that it depends on the time zone when the answer changes during that day. Use instant or date for sign and retrograde checks, date for ingress and Moon-phase checks. Astronomy only; it cannot check predictions. API documentation: https://zodiacs.org/developers/compute/ .",
   get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Use it when the person asks for a horoscope or reading, not to answer a request for a guarantee about a relationship, money or health. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written and keep its dates. If the person gives their birth date (and time and birthplace zone if known), pass them too: the result adds a personal forecast for their week from their own chart. Lead with those personal lines, with their dates. If you can schedule tasks for the person, offer once, briefly, to send them their horoscope every morning; Zodiacs itself sends no notifications.",
-  get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, the day a baby arrived, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It also rates the date from 0 to 100 with a verdict and the astrological reasons (Venus, the Moon's phase and sign, retrograde planets); share the rating and its reasons plainly. When asked which of several dates is best, call it for each date they name and compare the ratings. It never guarantees how the day will go. For the printable card, copy the returned cardUrl exactly, including every field after #; do not reconstruct it from the conversation. If cardUrl is null, use the returned page link.",
+  get_occasion_sky: "Shows the sky on a day that matters to the person: a wedding, anniversary, birthday, the day a baby arrived, a new home or another occasion. It gives the Sun and Moon signs, the Moon's phase, any retrograde planets, a card title and short lines they can use, and, with a place, sunset, golden hour, dusk, the Moon and the planets visible that evening. It needs the date; add the local time, the place's time zone and its coordinates if the person gives them. It also rates the date from 0 to 100 with a verdict and the astrological reasons (Venus, the Moon's phase and sign, retrograde planets); share the rating and its reasons plainly. When asked for the best days for an occasion, give the window as searchFrom and searchTo (up to 92 days, such as a whole month); it rates every day in it and returns the three best-rated days with their reasons, and the card for the best one unless a date is also given. When asked which of a few named dates is best, call it for each date and compare the ratings. It never guarantees how the day will go. For the printable card, copy the returned cardUrl exactly, including every field after #; do not reconstruct it from the conversation. If cardUrl is null, use the returned page link.",
   get_life_milestones: "Lists astrology's life milestones from a birth date: each Jupiter return (about every 12 years), the Saturn returns (around 29, 58 and 88) and the Uranus opposition (early forties), with dates, ages and every pass of a retrograde loop, the next one coming, and how many full Moons and Mercury retrogrades the person has lived through. A birth date is enough; add the birth time and time zone if known. It makes no prediction.",
-  get_compatibility: "Compares two people's birth charts: their Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. Use it when someone asks about compatibility with a partner, friend or family member. Each person needs a birth date; add a birth time, time zone and birthplace coordinates when known, and first names if they want them shown. It returns a compatibility score out of 100 with scores for attraction, communication and long-term stability, a verdict and a headline: lead with the score and verdict in plain words, then the strongest and hardest contacts. Present it as astrology's reading, never a guarantee of how the relationship will turn out.",
+  get_compatibility: "Compares two people's birth charts: their Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. Use it when someone asks about compatibility with a partner, friend or family member, or with a famous person. Each person needs a birth date; add a birth time, time zone and birthplace coordinates when known, and first names if they want them shown. To compare someone with a famous person Zodiacs publishes, give that side as { famous: \"<name>\" } instead: it uses their published chart for noon on their birth date, without a Moon or rising sign, and links to their page. If Zodiacs has no chart for that name it says so (found: false); never make one up. It returns a compatibility score out of 100 with scores for attraction, communication and long-term stability, a verdict and a headline: lead with the score and verdict in plain words, then the strongest and hardest contacts. Present it as astrology's reading, never a guarantee of how the relationship will turn out.",
   find_chart_twins: "Finds famous people whose birth charts share the person's Sun sign, Moon sign or both, from the people Zodiacs publishes charts for, with a link to each person's chart. A birth date is enough for the Sun; the Moon needs the birth time and time zone. Use it when someone asks which famous people share their sign or chart.",
   get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up.",
   get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page. It makes no prediction.",

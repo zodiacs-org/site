@@ -1,7 +1,7 @@
 import { SIGNS } from '../../lib/signs';
 import { BrandRing } from '../panel-brand';
 import { useState } from 'preact/hooks';
-import type { CompatibilityData } from '../features/compatibility';
+import type { CompatibilityData, CompatibilityNotFound } from '../features/compatibility';
 import type { ChartTwinsData, FamousChartData } from '../features/people';
 import type { BirthdayData, SkyCalendarData } from '../features/birthday';
 
@@ -65,7 +65,16 @@ function Disc({ sign, label, detail }: { sign: string | null; label: string; det
 
 const placementLine = (who: CompatibilityData['a']) => [who.sun && `${signName(who.sun)} Sun`, who.moon && `${signName(who.moon)} Moon`, who.rising && `${signName(who.rising)} rising`].filter(Boolean).join(' · ') || 'Sun sign unsettled that day';
 
-export function Compatibility({ data }: { data: CompatibilityData }) {
+export function Compatibility({ data: result }: { data: CompatibilityData | CompatibilityNotFound }) {
+  if ('found' in result) return <article class="card">
+    <p class="kicker">Two charts compared</p>
+    <h1>{result.query} is not one Zodiacs publishes</h1>
+    <p class="words">{result.note}</p>
+    <Actions text={result.note} cardUrl={result.directoryUrl} cardLabel="See the people Zodiacs publishes"/>
+    <Signature/>
+  </article>;
+  const data = result;
+  const famous = [data.a, data.b].filter((who) => who.famous && who.url);
   const title = `${data.a.label} and ${data.b.label}`;
   const text = [title, `${data.score.overall}/100 · ${data.score.verdict}`, data.score.headline, `${data.a.label}: ${placementLine(data.a)}`, `${data.b.label}: ${placementLine(data.b)}`,
     data.signPair ? `${data.signPair.element.label}. ${data.signPair.modality.label}.` : '',
@@ -78,6 +87,7 @@ export function Compatibility({ data }: { data: CompatibilityData }) {
       <Disc sign={data.a.sun} label={data.a.label} detail={placementLine(data.a)}/>
       <Disc sign={data.b.sun} label={data.b.label} detail={placementLine(data.b)}/>
     </div>
+    {famous.map((who) => <p class="quiet" key={who.label}>{who.label}, born {day(who.birthDate)}{who.place ? ` in ${who.place}` : ''} · <a href={who.url!} target="_blank" rel="noreferrer">{who.label}'s chart on zodiacs.org</a></p>)}
     <Score score={data.score.overall} verdict={data.score.verdict} hues={[hueOf(data.a.sun), hueOf(data.b.sun)]} parts={[['attraction', data.score.areas.attraction], ['communication', data.score.areas.communication], ['long-term stability', data.score.areas.stability]]}/>
     <p class="words">{data.score.headline}</p>
     {data.signPair && <p class="words">{data.signPair.element.note} {data.signPair.modality.note}</p>}

@@ -156,6 +156,46 @@ try {
   assert.equal(await compare.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   await compare.screenshot({ path: new URL('occasions-compatibility-mobile.png', out).pathname, fullPage: true });
 
+  // Compared with a famous person: their name, their page, the score, and that their birth time is unknown.
+  const celebrity = await result('get_compatibility', { a: { name: 'Sam', birthDate: '1994-02-01' }, b: { famous: 'Frida Kahlo' } });
+  const celebrityPage = await open();
+  await show(celebrityPage, celebrity);
+  await celebrityPage.getByRole('heading', { name: 'Sam and Frida Kahlo' }).waitFor();
+  const celebrityText = await celebrityPage.locator('article').innerText();
+  assert.match(celebrityText, /Aquarius Sun/);
+  assert.match(celebrityText, /Cancer Sun/);
+  assert.match(celebrityText, /Frida Kahlo, born 6 Jul 1907 in Coyoacán/);
+  assert.match(celebrityText, new RegExp(`${(celebrity as any).data.score.overall}\\s*/100`, 'u'));
+  assert.match(celebrityText, /Frida Kahlo's birth time is not on record/);
+  assert.equal(await celebrityPage.getByRole('link', { name: "Frida Kahlo's chart on zodiacs.org" }).getAttribute('href'), 'https://zodiacs.org/people/frida-kahlo/');
+  await celebrityPage.screenshot({ path: new URL('occasions-celebrity-desktop.png', out).pathname, fullPage: true });
+  await celebrityPage.setViewportSize({ width: 375, height: 812 });
+  assert.equal(await celebrityPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await celebrityPage.screenshot({ path: new URL('occasions-celebrity-mobile.png', out).pathname, fullPage: true });
+  // A famous name Zodiacs does not publish: said plainly, with no chart and no score.
+  const unpublished = await open();
+  await show(unpublished, await result('get_compatibility', { a: { birthDate: '1994-02-01' }, b: { famous: 'Nobody Anybody Zzyzx' } }));
+  await unpublished.getByRole('heading', { name: 'Nobody Anybody Zzyzx is not one Zodiacs publishes' }).waitFor();
+  assert.doesNotMatch(await unpublished.locator('article').innerText(), /\/100/u);
+
+  // The best days in a month: three days, best first, and the card for the best one.
+  const bestDays = await result('get_occasion_sky', { occasion: 'wedding', searchFrom: '2027-06-01', searchTo: '2027-06-30', zone: 'Europe/Rome', latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy' });
+  const best = (bestDays as any).data.bestDays.best;
+  assert.equal(best.length, 3);
+  assert.equal((bestDays as any).data.date, best[0].date);
+  const bestPage = await open();
+  await show(bestPage, bestDays);
+  await bestPage.getByRole('heading', { name: 'The best days from 1 Jun 2027 to 30 Jun 2027' }).waitFor();
+  const bestItems = await bestPage.locator('.best-days li').allInnerTexts();
+  assert.equal(bestItems.length, 3);
+  for (const [index, row] of best.entries()) assert.match(bestItems[index], new RegExp(`${row.score}/100`, 'u'));
+  assert.match(await bestPage.locator('.best-days').innerText(), /The card below is for the best day\./u);
+  assert.doesNotMatch(await bestPage.locator('article').innerText(), /\d{4}-\d{2}-\d{2}/u);
+  await bestPage.screenshot({ path: new URL('occasions-best-days-desktop.png', out).pathname, fullPage: true });
+  await bestPage.setViewportSize({ width: 375, height: 812 });
+  assert.equal(await bestPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await bestPage.screenshot({ path: new URL('occasions-best-days-mobile.png', out).pathname, fullPage: true });
+
   // Chart twins link to each person's page; a famous chart, and a name Zodiacs does not publish.
   const twinsPage = await open();
   await show(twinsPage, await result('find_chart_twins', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }));
@@ -240,7 +280,7 @@ try {
   await writeFile(new URL('occasions-review.json', out), JSON.stringify({
     scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance',
     timezone: 'Asia/Bangkok',
-    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared without a score', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'the calendar subscription', 'the zodiacs.org signature on every card', 'no external requests'],
+    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'the calendar subscription', 'the zodiacs.org signature on every card', 'no external requests'],
   }, null, 2) + '\n');
   console.log('Occasions panel browser QA passed.');
 } finally { await browser.close(); }

@@ -5,7 +5,7 @@ import { OccasionsBridge, type PanelToolResult } from './bridge';
 import { OCCASION_LABELS, type OccasionKind } from '../../lib/occasions/kinds';
 import { MILESTONE_WORDS } from '../../lib/occasions/milestone-words';
 import { Actions, Score, Birthday, ChartTwins, Compatibility, FamousChart, Signature, SkyCalendar } from './views';
-import type { CompatibilityData } from '../features/compatibility';
+import type { CompatibilityData, CompatibilityNotFound } from '../features/compatibility';
 import type { ChartTwinsData, FamousChartData } from '../features/people';
 import type { BirthdayData, SkyCalendarData } from '../features/birthday';
 import './style.css';
@@ -25,6 +25,7 @@ interface OccasionSky {
     planetsAfterDusk: string[]; flags: string[];
   } | null;
   rating: { score: number; verdict: string; reasons: string[] };
+  bestDays: { from: string; to: string; days: number; best: { date: string; score: number; verdict: string; reasons: string[] }[] } | null;
   cardUrl: string | null; note: string;
 }
 type MilestoneKind = keyof typeof MILESTONE_WORDS;
@@ -35,7 +36,7 @@ interface LifeMilestones {
   cardUrl: string | null; note: string;
 }
 type Shown = { tool: 'get_occasion_sky'; data: OccasionSky } | { tool: 'get_life_milestones'; data: LifeMilestones }
-  | { tool: 'get_compatibility'; data: CompatibilityData } | { tool: 'find_chart_twins'; data: ChartTwinsData } | { tool: 'get_famous_chart'; data: FamousChartData }
+  | { tool: 'get_compatibility'; data: CompatibilityData | CompatibilityNotFound } | { tool: 'find_chart_twins'; data: ChartTwinsData } | { tool: 'get_famous_chart'; data: FamousChartData }
   | { tool: 'get_birthday'; data: BirthdayData } | { tool: 'get_sky_calendar'; data: SkyCalendarData };
 const PANEL_TOOLS: readonly string[] = ['get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'];
 
@@ -51,6 +52,9 @@ function list(items: string[]): string {
 const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'];
 const milestoneName = (milestone: Milestone) => (milestone.kind === 'uranus-opposition' ? 'Uranus opposition' : `${ORDINALS[milestone.index - 1] ?? `${milestone.index}th`} ${MILESTONE_WORDS[milestone.kind].name}`);
 const capital = (text: string) => text.replace(/^./u, (c) => c.toUpperCase());
+/** A best day's strongest reason that the other listed days do not all share, so the rows say what sets each apart. */
+const gist = (reason: string) => reason.replace(/\s*\([^)]*\)/gu, '');
+const telling = (reasons: string[], rows: { reasons: string[] }[]) => reasons.find((reason) => !rows.every((row) => row.reasons.some((other) => gist(other) === gist(reason)))) ?? reasons[0] ?? '';
 
 /** The panel shows a successful result of one of its tools and nothing else. */
 function shownFrom(content: unknown): Shown | { error: string } | null {
@@ -87,13 +91,23 @@ function Occasion({ data }: { data: OccasionSky }) {
   if (evening?.flags.includes('sun-never-rises')) rows.push(['The Sun', 'does not rise that day']);
   if (data.sky.retrograde.length > 0) rows.push(['Also that day', `${list(data.sky.retrograde)} retrograde`]);
   const kicker = [OCCASION_LABELS[data.occasion], data.names?.trim()].filter(Boolean).join(' · ');
-  const text = [data.names?.trim(), data.card.title, when, `${data.rating.score}/100 · ${data.rating.verdict}`, sun ? `${signName(sun.sign)} Sun · ${moonLine}` : '', ...rows.map(([label, value]) => `${label}: ${value}`), `${data.card.interpretation} ${data.card.closing}`, data.note, 'zodiacs.org/occasions']
+  const best = data.bestDays;
+  const bestTitle = best ? `The best days from ${day(best.from)} to ${day(best.to)}` : '';
+  const text = [data.names?.trim(), ...(best ? [bestTitle, ...best.best.map((row) => `${longDate(row.date)}: ${row.score}/100 · ${row.verdict}`), ''] : []), data.card.title, when, `${data.rating.score}/100 · ${data.rating.verdict}`, sun ? `${signName(sun.sign)} Sun · ${moonLine}` : '', ...rows.map(([label, value]) => `${label}: ${value}`), `${data.card.interpretation} ${data.card.closing}`, data.note, 'zodiacs.org/occasions']
     .filter(Boolean).join('\n');
   return <main>
     <Brand/>
     <article class="card">
       <p class="kicker">{kicker}</p>
       <h1>{data.card.title}</h1>
+      {best && <section class="best-days" aria-label={bestTitle}>
+        <h2>{bestTitle}</h2>
+        <ol>{best.best.map((row) => <li key={row.date}>
+          <span class="best-day-head"><strong>{longDate(row.date)}</strong><span>{row.score}/100</span></span>
+          <span class="quiet">{row.verdict}. {telling(row.reasons, best.best)}</span>
+        </li>)}</ol>
+        <p class="quiet">Every day was rated at {data.time ?? (data.zone ? 'noon' : 'noon UTC')}. The card below is for {data.date === best.best[0]?.date ? 'the best day' : longDate(data.date)}.</p>
+      </section>}
       <p class="when">{when}</p>
       <Score score={data.rating.score} verdict={data.rating.verdict} hues={[SIGNS.find((sign) => sign.slug === sun?.sign)?.hue ?? '#B29DD0', SIGNS.find((sign) => sign.slug === moon?.sign)?.hue ?? '#B6D4E4']}/>
       {data.rating.reasons.length > 0 && <ul class="reasons">{data.rating.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>}

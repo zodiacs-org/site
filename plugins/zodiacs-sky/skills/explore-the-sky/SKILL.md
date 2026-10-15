@@ -28,7 +28,10 @@ time zone.
   date, and a birth time, time zone and birthplace coordinates when they give
   them. Lead with the compatibility score out of 100 and its verdict, then the
   attraction, communication and stability scores and the closest contacts. Say
-  plainly that it is astrology's reading, not a guarantee.
+  plainly that it is astrology's reading, not a guarantee. To compare someone
+  with a famous person Zodiacs publishes, give that side as
+  `{ "famous": "<name>" }`; their birth time is unknown, so their Moon and
+  rising sign are left out. If Zodiacs has no chart for the name, say so.
 - **Famous people.** Use `find_chart_twins` for famous people who share the
   person's Sun or Moon sign, and `get_famous_chart` for one famous person's
   chart. If Zodiacs has no chart for someone, say so; never make one up.
@@ -36,9 +39,10 @@ time zone.
   birthday and that year's solar return, `get_occasion_sky` for a card with the
   sky on a wedding, anniversary or other day, and `get_life_milestones` for
   Jupiter and Saturn returns and the Uranus opposition. Never guess a birth
-  time. Each occasion card rates the date out of 100 with its reasons; when
-  asked which of several dates is best, rate each date the person names and
-  compare them.
+  time. Each occasion card rates the date out of 100 with its reasons. When
+  asked for the best days for an occasion, give the window as `searchFrom` and
+  `searchTo` (up to 92 days); it returns the three best-rated days. When asked
+  which of a few named dates is best, rate each one and compare them.
 - **The sky calendar in their own calendar app.** Use `get_sky_calendar` and
   share the subscription link and how to add it. It creates no calendar
   entries.

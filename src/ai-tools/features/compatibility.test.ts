@@ -1,11 +1,14 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { decodeChartLink } from '../../lib/share';
+import { NOT_FOUND_NOTE } from './people';
 import {
   COMPATIBILITY_NOTE,
   compatibilityData,
   compatibilityInput,
+  compatibilityMissing,
   computeCompatibility,
+  famousNote,
   type CompatibilityData,
 } from './compatibility';
 
@@ -117,5 +120,44 @@ describe('computeCompatibility', () => {
     expect(compatibilityInput.safeParse({ a: { birthDate: '1990-01-01', extra: 1 }, b: { birthDate: '1990-01-01' } }).success).toBe(false);
     await expect(computeCompatibility({ a: { birthDate: '1990-02-30' }, b: { birthDate: '1990-01-01' } }, localTime)).rejects.toThrow(RangeError);
     await expect(computeCompatibility({ a: { birthDate: '1990-01-01', time: '10:00', zone: 'Nowhere/Atlantis' }, b: { birthDate: '1990-01-01' } }, localTime)).rejects.toThrow(RangeError);
+  });
+});
+
+describe('computeCompatibility with a famous person', () => {
+  it('compares someone with a published famous chart, scored, with the person marked and linked', async () => {
+    const args = compatibilityInput.parse({ a: { name: 'Sam', birthDate: '1994-02-01' }, b: { famous: 'frida kahlo' } });
+    expect(compatibilityMissing(args)).toBeNull();
+    const { data, links } = await computeCompatibility(args, localTime);
+    expect(compatibilityData.parse(data)).toEqual(data);
+    expect(data.a).toMatchObject({ label: 'Sam', famous: false, url: null });
+    expect(data.b).toMatchObject({ name: 'Frida Kahlo', label: 'Frida Kahlo', birthDate: '1907-07-06', famous: true, timeKnown: false, moon: null, rising: null, sun: 'cancer', url: 'https://zodiacs.org/people/frida-kahlo/' });
+    expect(data.contacts.length).toBeGreaterThan(0);
+    expect(data.contacts.every((row) => row.aBody !== 'Moon' && row.bBody !== 'Moon')).toBe(true);
+    expect(data.contacts[0].line).toContain('Frida Kahlo’s');
+    expect(data.notes).toContain(famousNote({ name: 'Frida Kahlo', birthplace: 'Coyoacán' }));
+    expect(data.cardUrl).toBeNull();
+    expect(links[0]).toEqual({ title: "Frida Kahlo's chart on Zodiacs", url: 'https://zodiacs.org/people/frida-kahlo/' });
+    expect(stringsOf(data)).not.toMatch(FORBIDDEN);
+  });
+
+  it('uses the published noon placements for both sides when both are famous', async () => {
+    const { data } = await computeCompatibility(compatibilityInput.parse({ a: { famous: 'Ada Lovelace' }, b: { famous: 'Alan Turing' } }), localTime);
+    expect(data.a).toMatchObject({ sun: 'sagittarius', famous: true });
+    expect(data.b.famous).toBe(true);
+    expect(data.notes).toHaveLength(2);
+    expect(stringsOf(data)).not.toMatch(FORBIDDEN);
+  });
+
+  it('says plainly when the directory has no such person and never builds a chart', async () => {
+    const args = compatibilityInput.parse({ a: { birthDate: '1994-02-01' }, b: { famous: 'Nobody Anybody Zzyzx' } });
+    expect(compatibilityMissing(args)).toEqual({ found: false, side: 'b', query: 'Nobody Anybody Zzyzx', directoryUrl: 'https://zodiacs.org/people/', note: NOT_FOUND_NOTE });
+    await expect(computeCompatibility(args, localTime)).rejects.toThrow(RangeError);
+  });
+
+  it('takes a famous name alone, never with birth details', () => {
+    expect(compatibilityInput.safeParse({ a: { birthDate: '1990-01-01' }, b: { famous: 'Frida Kahlo', birthDate: '1907-07-06' } }).success).toBe(false);
+    expect(compatibilityInput.safeParse({ a: { birthDate: '1990-01-01' }, b: { famous: 'Frida Kahlo', name: 'Frida' } }).success).toBe(false);
+    expect(compatibilityInput.safeParse({ a: { birthDate: '1990-01-01' }, b: {} }).success).toBe(false);
+    expect(compatibilityInput.safeParse({ a: { famous: '<script>' }, b: { birthDate: '1990-01-01' } }).success).toBe(false);
   });
 });
