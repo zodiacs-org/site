@@ -1,12 +1,12 @@
 {
   "schema": "zodiacs.registry-research-feed.v1",
-  "generatedAt": "2026-10-14T00:08:14.804Z",
+  "generatedAt": "2026-10-15T00:07:36.177Z",
   "publisher": "Zodiacs.org Research System",
   "window": {
     "previousDays": 30,
     "futureDays": 7,
-    "startsAt": "2026-09-14T00:00:00.000Z",
-    "endsBefore": "2026-10-22T00:00:00.000Z"
+    "startsAt": "2026-09-15T00:00:00.000Z",
+    "endsBefore": "2026-10-23T00:00:00.000Z"
   },
   "items": [
     {
@@ -75,6 +75,28 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-daily-market-brief-2026-10-15",
+      "slug": "daily-market-brief-2026-10-15",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-15T12:00:00.000Z",
+      "visibleAt": "2026-10-15T12:00:00.000Z",
+      "title": "Sun sextile Jupiter · daily market brief",
+      "summary": "Sun sextile Jupiter leads the disclosed symbolic index; Leo market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-15/",
+      "signs": [
+        "libra",
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "aspect"
+      ],
+      "status": "scheduled"
+    },
+    {
       "id": "zrx-event-brief-aspect-2026-10-15t08-21-27-267z-sun-sextile-jupiter",
       "slug": "event-brief-aspect-2026-10-15t08-21-27-267z-sun-sextile-jupiter",
       "kind": "event-brief",
@@ -97,6 +119,26 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-market-check-2026-10-15",
+      "slug": "market-check-2026-10-15",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-15T00:07:36.177Z",
+      "visibleAt": "2026-10-15T00:07:36.177Z",
+      "title": "Leo market check · 2026-10-15",
+      "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-15/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
       "id": "zrx-daily-market-brief-2026-10-14",
       "slug": "daily-market-brief-2026-10-14",
       "kind": "daily-market-brief",
@@ -115,7 +157,7 @@
         "daily-sky",
         "occupancy"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-market-check-2026-10-07-observation-168h",
@@ -3028,133 +3070,6 @@
       "url": "/terminal/research/market-check-2026-09-15/",
       "signs": [
         "scorpio"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-07-observation-168h",
-      "slug": "market-check-2026-09-07-observation-168h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-14T13:24:17.615Z",
-      "visibleAt": "2026-09-14T13:24:17.615Z",
-      "title": "Virgo 7-day observation update",
-      "summary": "7-day follow-up using the first qualifying archived snapshot (168.34 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-07-observation-168h/",
-      "signs": [
-        "virgo"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-daily-market-brief-2026-09-14",
-      "slug": "daily-market-brief-2026-09-14",
-      "kind": "daily-market-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-14T12:00:00.000Z",
-      "visibleAt": "2026-09-14T12:00:00.000Z",
-      "title": "Mercury trine Uranus · daily market brief",
-      "summary": "Mercury trine Uranus leads the disclosed symbolic index; Gemini market measures are recorded separately.",
-      "url": "/terminal/research/daily-market-brief-2026-09-14/",
-      "signs": [
-        "libra",
-        "gemini"
-      ],
-      "topics": [
-        "markets",
-        "daily-sky",
-        "aspect"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-weekly-outlook-2026-09-14",
-      "slug": "weekly-outlook-2026-09-14",
-      "kind": "weekly-outlook",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-14T12:00:00.000Z",
-      "visibleAt": "2026-09-14T12:00:00.000Z",
-      "title": "Weekly symbolic outlook · 2026-09-14",
-      "summary": "Aries, Libra, Aquarius hold the three highest disclosed attention ranks for the next seven UTC days.",
-      "url": "/terminal/research/weekly-outlook-2026-09-14/",
-      "signs": [
-        "aries",
-        "libra",
-        "aquarius"
-      ],
-      "topics": [
-        "markets",
-        "weekly-outlook",
-        "astrology"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-event-brief-aspect-2026-09-14t02-39-54-936z-mercury-trine-uranus",
-      "slug": "event-brief-aspect-2026-09-14t02-39-54-936z-mercury-trine-uranus",
-      "kind": "event-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-09T12:00:00.000Z",
-      "visibleAt": "2026-09-14T02:39:54.936Z",
-      "title": "Mercury Trine Uranus · event brief",
-      "summary": "Mercury Trine Uranus becomes exact at 2026-09-14T02:39:54.936Z. Its symbolic reading and later market observations remain separate.",
-      "url": "/terminal/research/event-brief-aspect-2026-09-14t02-39-54-936z-mercury-trine-uranus/",
-      "signs": [
-        "gemini",
-        "libra"
-      ],
-      "topics": [
-        "calendar",
-        "astrology",
-        "aspect"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-13-observation-24h",
-      "slug": "market-check-2026-09-13-observation-24h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-14T00:13:00.538Z",
-      "visibleAt": "2026-09-14T00:13:00.538Z",
-      "title": "Aries 24-hour observation update",
-      "summary": "24-hour follow-up using the first qualifying archived snapshot (24.06 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-13-observation-24h/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-14",
-      "slug": "market-check-2026-09-14",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-14T00:09:07.175Z",
-      "visibleAt": "2026-09-14T00:09:07.175Z",
-      "title": "Gemini market check · 2026-09-14",
-      "summary": "Gemini price, market cap, liquidity, volume, and collection medians at one archived observation.",
-      "url": "/terminal/research/market-check-2026-09-14/",
-      "signs": [
-        "gemini"
       ],
       "topics": [
         "markets",
