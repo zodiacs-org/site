@@ -4,6 +4,15 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 15 October: what this release now includes
+
+Besides the predictions below: comparing yourself with a famous person Zodiacs
+publishes, the three best days in a date range, a personal forecast for the
+week from the person's own chart in the horoscope tool, share links whose
+previews show the score or rating as a picture, and a score ring on the cards.
+Re-record the demo after these are live (shot list below), and add one shot
+of a share link's preview if time allows.
+
 ## Update, 15 October: predictions and scores
 
 After #759 merged, the owner chose full predictions, including scores, before
@@ -72,15 +81,15 @@ The source of truth is `integrations/chatgpt/chatgpt-app-submission.json`.
   links. Support stays admin@zodiacs.org.
 - **Test cases:** the five positive and three negative cases in the
   submission file, unchanged.
-- **About** (1,568 characters):
+- **About** (1,774 characters):
 
 > Explore your birth chart, see how compatible you are with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then tells you what astrology says about it.
 >
-> Build an interactive birth chart and see your planets' signs. Compare two people's charts—partners, friends or family—and get a compatibility score out of 100 for attraction, communication and long-term stability. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
+> Build an interactive birth chart and see your planets' signs. Compare two people's charts—partners, friends or family—and get a compatibility score out of 100 for attraction, communication and long-term stability, or see how you match with a famous person Zodiacs publishes. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
 >
-> Read daily and weekly Sun-sign horoscopes, follow Moon phases, retrogrades and planets changing signs, and subscribe to the sky calendar in Google Calendar, Apple Calendar or Outlook.
+> Read daily and weekly Sun-sign horoscopes and a personal forecast for your week from your own chart, follow Moon phases, retrogrades and planets changing signs, and subscribe to the sky calendar in Google Calendar, Apple Calendar or Outlook.
 >
-> See the sky on your birthday and when your solar return falls, find milestones such as your Saturn return, or make a keepsake card for a wedding or another day that matters, with a rating of how the stars favour the date. With a place, the card adds sunset, golden hour and the evening sky.
+> See the sky on your birthday and when your solar return falls, find milestones such as your Saturn return, or make a keepsake card for a wedding or another day that matters, with a rating of how the stars favour the date, or find the best days in a month for it. Share your score or rating as a picture link. With a place, the card adds sunset, golden hour and the evening sky.
 >
 > Zodiacs gives clear forecasts, scores and ratings, and always shows the astrology behind them. It doesn't pick investments, make health predictions or guarantee how things will turn out. If a birth time or place is missing, it says what can still be worked out instead of guessing.
 >
