@@ -1,4 +1,4 @@
-# The 2026-10-14 edition: main 8ae5a7af (with the check's files, which render no page) against ae2bcd30 (Daily sky: 2026-10-14)
+# The 2026-10-14 edition: main 8ae5a7af with the check's files (377967fc, which renders no page differently) against ae2bcd30 (Daily sky: 2026-10-14)
 Pages in both builds: 1838; unchanged: 1832; changed and re-dated: 3; changed and already dated that day: 0; re-dated with no change in content: 1; new: 0; removed: 0.
 2 page(s) changed without a new sitemap date. Give each a new date in src/pages/sitemap.xml.ts (or the data it is dated from), so IndexNow Changes submits it:
 - /developers/ (still 2026-10-12)

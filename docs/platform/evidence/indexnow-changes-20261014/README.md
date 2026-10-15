@@ -78,7 +78,11 @@ The **Sitemap Dates** workflow (`.github/workflows/sitemap-dates.yml`) runs
 on every pull request.
 
 - **Two builds.** It builds the merge GitHub tests and its base branch with
-  production's feature flags.
+  exactly the environment of `site-check.yml`'s production-flags build:
+  production's feature flags and the daily email chain's stand-ins, with which
+  `/birth-chart/` renders the post-chart brief as production does.
+  `scripts/sitemap-rendered-changes.test.mjs` holds the two environments
+  equal.
 - **Fingerprints.** `scripts/sitemap-rendered-changes.mjs` fingerprints every
   page of each build's sitemap: its title, its meta description, and the text,
   link targets and image descriptions of its `<main>`.
@@ -94,13 +98,18 @@ on every pull request.
   edition.
 
 The reports in [`sitemap-dates/`](sitemap-dates/) are this Mac's builds of
-2026-10-15, with production's flags and the pinned clock. Every prebuild step
+2026-10-15, with that environment and the pinned clock. Every prebuild step
 ran except `editorial:daily:verify`, which fails here by one last bit (F-95).
 
+- **The email chain** ([`brief-control.txt`](sitemap-dates/brief-control.txt)).
+  Codex found that the check's first environment left out the daily email
+  chain, which production has. A change to the post-chart brief's device note
+  alone, against `b3cbfae2`, fails `/birth-chart/` with production's
+  environment and passed with the first one. Every other report here was
+  built again with the whole environment; each found what it found before.
 - **Determinism** ([`determinism.txt`](sitemap-dates/determinism.txt)). Two
-  builds of main 2.5 minutes apart fingerprint all 1,838 pages alike. Without
-  the pinned clock, two builds half an hour apart differ on 36 pages, the
-  build-time ones above.
+  builds of main fingerprint all 1,838 pages alike. Without the pinned clock,
+  two builds half an hour apart differ on 36 pages, the build-time ones above.
 - **#740** ([`merge-740.txt`](sitemap-dates/merge-740.txt)). Its merge against
   its first parent fails four pages: `/developers/`, `/developers/compare/`,
   `/developers/compute/` and `/developers/mcp/`.
