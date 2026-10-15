@@ -1,3 +1,4 @@
+import { SIGNS } from '../../lib/signs';
 import { render } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { OccasionsBridge, type PanelToolResult } from './bridge';
@@ -94,7 +95,7 @@ function Occasion({ data }: { data: OccasionSky }) {
       <p class="kicker">{kicker}</p>
       <h1>{data.card.title}</h1>
       <p class="when">{when}</p>
-      <Score score={data.rating.score} verdict={data.rating.verdict}/>
+      <Score score={data.rating.score} verdict={data.rating.verdict} hues={[SIGNS.find((sign) => sign.slug === sun?.sign)?.hue ?? '#B29DD0', SIGNS.find((sign) => sign.slug === moon?.sign)?.hue ?? '#B6D4E4']}/>
       {data.rating.reasons.length > 0 && <ul class="reasons">{data.rating.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>}
       {sun && moon && <div class="discs">
         <div class="disc"><img src={OCCASIONS_ICONS[sun.sign]} alt="" width="56" height="56"/><div><strong>{signName(sun.sign)} Sun</strong><span class="quiet">{sun.degree.toFixed(1)}°</span></div></div>

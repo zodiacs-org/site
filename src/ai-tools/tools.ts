@@ -13,6 +13,7 @@ import { computeCompatibility } from './features/compatibility';
 import { findChartTwins, getFamousChart } from './features/people';
 import { getBirthday, getSkyCalendar } from './features/birthday';
 import { rateOccasionDate } from '../lib/occasions/date-score';
+import { personalWeek } from './features/personal-week';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
@@ -210,6 +211,20 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const localDate = dateInZone(dependencies.now?.() ?? new Date(), zone);
         const request = { period: args.period ?? 'day', focus: args.focus ?? 'general', ...(args.sign ? { sign: args.sign } : {}), ...(args.date ? { date: args.date } : {}) } as const;
         data = resolveHoroscope(window, request, zone, zoneSource, localDate);
+        // A personal forecast takes a birth date, so it follows the same switch as the other birth-date tools.
+        if (args.birthDate && dependencies.occasions) {
+          let birthZone: string | undefined;
+          if (args.birthZone) {
+            try { birthZone = await zoneAt(args.birthZone, '/zone', resolveZone); }
+            catch { return failure(tool, 'invalid-timezone', "Zodiacs doesn't recognise that birthplace time zone. Use a name such as Europe/London."); }
+          }
+          try {
+            (data as { personal?: unknown }).personal = await personalWeek({ birthDate: args.birthDate, ...(args.birthTime ? { birthTime: args.birthTime } : {}), ...(birthZone ? { birthZone } : {}) }, dependencies.now?.() ?? new Date(), localTime(), zone);
+          } catch (error) {
+            if (error instanceof RangeError) return failure(tool, 'invalid-request', error.message);
+            throw error;
+          }
+        }
         if (args.sign) context.horoscopePanel = horoscopePanel(window, args.sign, { period: request.period, focus: request.focus, ...(args.date ? { date: args.date } : {}), ...(zoneSource === 'default' ? {} : { zone }) });
         links = [...(args.sign ? [{ title: `${args.sign[0].toUpperCase()}${args.sign.slice(1)} on Zodiacs`, url: `${ORIGIN}/horoscopes/${args.sign}/` }] : []), methodLink];
         break;

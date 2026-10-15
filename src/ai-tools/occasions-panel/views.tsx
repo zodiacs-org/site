@@ -1,3 +1,4 @@
+import { SIGNS } from '../../lib/signs';
 import { BrandRing } from '../panel-brand';
 import { useState } from 'preact/hooks';
 import type { CompatibilityData } from '../features/compatibility';
@@ -6,6 +7,7 @@ import type { BirthdayData, SkyCalendarData } from '../features/birthday';
 
 declare const OCCASIONS_ICONS: Record<string, string>;
 
+const hueOf = (slug: string | null) => SIGNS.find((sign) => sign.slug === slug)?.hue ?? '#B29DD0';
 export const signName = (slug: string) => slug.charAt(0).toUpperCase() + slug.slice(1);
 const day = (iso: string) => new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso));
 const ASPECT_SIGNS: Record<string, string> = { conjunction: '☌', sextile: '⚹', square: '□', trine: '△', opposition: '☍' };
@@ -18,11 +20,23 @@ export function Signature() {
   </p>;
 }
 
-/** The big shareable number: a score out of 100 and its one-line verdict. */
-export function Score({ score, verdict, parts }: { score: number; verdict: string; parts?: [string, number][] }) {
+/** The big shareable number: a ring filled to the score, in the signs' own hues. */
+export function Score({ score, verdict, parts, hues = ['#B29DD0', '#B6D4E4'] }: { score: number; verdict: string; parts?: [string, number][]; hues?: [string, string] }) {
+  const radius = 52;
+  const length = 2 * Math.PI * radius;
+  const id = `ring-${hues[0].slice(1)}-${hues[1].slice(1)}`;
   return <div class="score">
-    <p class="score-main"><strong>{score}</strong><span>/100</span></p>
-    <p class="score-verdict">{verdict}</p>
+    <div class="score-head">
+      <svg class="score-ring" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label={`${score} out of 100`}>
+        <defs><linearGradient id={id} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color={hues[0]}/><stop offset="1" stop-color={hues[1]}/></linearGradient></defs>
+        <circle cx="60" cy="60" r={radius} class="score-track"/>
+        <circle cx="60" cy="60" r={radius} stroke={`url(#${id})`} class="score-arc"
+          stroke-dasharray={`${(length * score) / 100} ${length}`} transform="rotate(-90 60 60)"/>
+        <text x="60" y="66" text-anchor="middle" class="score-number">{score}</text>
+        <text x="60" y="86" text-anchor="middle" class="score-out-of">/100</text>
+      </svg>
+      <p class="score-verdict">{verdict}</p>
+    </div>
     {parts && <div class="numbers">{parts.map(([label, value]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>}
   </div>;
 }
@@ -64,7 +78,7 @@ export function Compatibility({ data }: { data: CompatibilityData }) {
       <Disc sign={data.a.sun} label={data.a.label} detail={placementLine(data.a)}/>
       <Disc sign={data.b.sun} label={data.b.label} detail={placementLine(data.b)}/>
     </div>
-    <Score score={data.score.overall} verdict={data.score.verdict} parts={[['attraction', data.score.areas.attraction], ['communication', data.score.areas.communication], ['long-term stability', data.score.areas.stability]]}/>
+    <Score score={data.score.overall} verdict={data.score.verdict} hues={[hueOf(data.a.sun), hueOf(data.b.sun)]} parts={[['attraction', data.score.areas.attraction], ['communication', data.score.areas.communication], ['long-term stability', data.score.areas.stability]]}/>
     <p class="words">{data.score.headline}</p>
     {data.signPair && <p class="words">{data.signPair.element.note} {data.signPair.modality.note}</p>}
     {data.contacts.length > 0 && <>
