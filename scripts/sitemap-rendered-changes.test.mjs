@@ -68,6 +68,7 @@ describe('a page’s content', () => {
       text: 'Compare Ten guides & more.',
       links: ['/developers/docs/'],
       images: ['A wheel'],
+      labels: [],
     });
   });
 
@@ -88,6 +89,25 @@ describe('a page’s content', () => {
     ]) {
       expect(contentDigest(Buffer.from(changed), '/p/')).not.toBe(before);
     }
+  });
+
+  it('changes with copy held in attributes: a placeholder, an accessible name, a tooltip or a shown input value', () => {
+    const form = (attrs) => page({ main: `<p>Ten guides.</p><form><input type="search" ${attrs}><button ${attrs}></button></form>` });
+    const before = contentDigest(Buffer.from(form('placeholder="Search people" aria-label="Search"')), '/p/');
+    for (const changed of [
+      form('placeholder="Search everyone" aria-label="Search"'),
+      form('placeholder="Search people" aria-label="Find"'),
+      form('placeholder="Search people" aria-label="Search" title="Search the directory"'),
+      page({ main: '<p>Ten guides.</p><input type="submit" value="Read the group">' }),
+    ]) {
+      expect(contentDigest(Buffer.from(changed), '/p/')).not.toBe(before);
+    }
+    expect(pageContent('<main><input type="search" placeholder="Search &amp; find"></main>').labels).toEqual(['placeholder: Search & find']);
+    // A value no reader sees is not copy.
+    const hidden = (value) => contentDigest(Buffer.from(page({ main: `<p>Ten guides.</p><input type="hidden" value="${value}">` })), '/p/');
+    expect(hidden('a')).toBe(hidden('b'));
+    const explained = textDifference(form('placeholder="Search people" aria-label="Search"'), form('placeholder="Search everyone" aria-label="Search"'));
+    expect(explained).toEqual({ removed: ['placeholder: Search people', 'placeholder: Search people'], added: ['placeholder: Search everyone', 'placeholder: Search everyone'] });
   });
 
   it('falls back to the body without a main region, and counts other files by their bytes', () => {

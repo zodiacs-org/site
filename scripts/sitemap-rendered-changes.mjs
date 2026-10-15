@@ -29,7 +29,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-export const SCHEMA = 'zodiacs.sitemap-rendered.v1';
+export const SCHEMA = 'zodiacs.sitemap-rendered.v2';
 const ORIGIN = 'https://zodiacs.org';
 const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 
@@ -67,7 +67,15 @@ function attributes(tag) {
 
 const squeeze = (text) => text.replace(/\s+/gu, ' ').trim();
 
-/** What a page says: title, description, and its main content's text, link targets and image descriptions. */
+// Copy a reader sees or hears that lives in an attribute: a field's placeholder, an icon button's accessible name, a
+// tooltip, a button input's label, and a text field's value.
+const LABEL_ATTRIBUTES = ['placeholder', 'aria-label', 'aria-description', 'title', 'label'];
+const SHOWN_INPUT_VALUES = /^(?:|text|search|email|url|tel|number|submit|button|reset)$/iu;
+
+/**
+ * What a page says: title, description, and its main content's text, link targets, image descriptions and the copy
+ * its attributes carry (LABEL_ATTRIBUTES, and the value of an input that shows it).
+ */
 export function pageContent(html) {
   const title = squeeze(decodeEntities(html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/iu)?.[1] ?? ''));
   let description = '';
@@ -84,8 +92,16 @@ export function pageContent(html) {
     .replace(/<style\b[\s\S]*?<\/style>/giu, ' ');
   const links = [...cleaned.matchAll(/<a\b[^>]*>/giu)].map(([tag]) => attributes(tag).href).filter(Boolean);
   const images = [...cleaned.matchAll(/<img\b[^>]*>/giu)].map(([tag]) => attributes(tag).alt).filter(Boolean).map(squeeze);
+  const labels = [];
+  for (const [tag, element] of cleaned.matchAll(/<([a-z][a-z0-9-]*)\b[^>]*>/giu)) {
+    const found = attributes(tag);
+    for (const name of LABEL_ATTRIBUTES) if (found[name]) labels.push(`${name}: ${squeeze(found[name])}`);
+    if (element.toLowerCase() === 'input' && found.value && SHOWN_INPUT_VALUES.test(found.type ?? '')) {
+      labels.push(`value: ${squeeze(found.value)}`);
+    }
+  }
   const text = squeeze(decodeEntities(cleaned.replace(/<[^>]+>/gu, ' ')));
-  return { title, description, text, links, images };
+  return { title, description, text, links, images, labels };
 }
 
 /** The file a sitemap path is served from, as scripts/check-dist.mjs resolves it. */
@@ -151,8 +167,8 @@ export function compare(base, head, { today } = {}) {
 /** The first lines of text that differ between two builds of a page, to show what changed. */
 export function textDifference(beforeHtml, afterHtml, limit = 3) {
   const lines = (html) => {
-    const { title, description, text, links, images } = pageContent(html);
-    return [`title: ${title}`, `description: ${description}`, ...text.split(/(?<=[.!?:])\s+/u), ...links.map((href) => `link: ${href}`), ...images.map((alt) => `image: ${alt}`)];
+    const { title, description, text, links, images, labels } = pageContent(html);
+    return [`title: ${title}`, `description: ${description}`, ...text.split(/(?<=[.!?:])\s+/u), ...links.map((href) => `link: ${href}`), ...images.map((alt) => `image: ${alt}`), ...labels];
   };
   const before = lines(beforeHtml);
   const after = lines(afterHtml);

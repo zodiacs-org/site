@@ -12,7 +12,13 @@
  *
  * - new: a <loc> the last sitemap did not list;
  * - changed: a <loc> whose <lastmod> differs;
- * - removed: a <loc> the sitemap no longer lists, so engines recrawl it.
+ * - removed: a <loc> the sitemap no longer lists, so engines recrawl it;
+ * - changed the same day: a <loc> dated the run's day whose content changed
+ *   since the last run. A sitemap date says only which day a page last
+ *   changed, so a second change the same day keeps it; the snapshot records
+ *   the content digest of each page dated that day (pageContent in
+ *   scripts/sitemap-rendered-changes.mjs, the digest the sitemap-date check
+ *   compares) and submits a page whose digest moved.
  *
  * It submits those URLs to IndexNow, which shares them with every
  * participating engine, in requests of at most 10,000 URLs, and only then
@@ -28,11 +34,15 @@
 import { appendFile, mkdir, readdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { contentDigest } from './sitemap-rendered-changes.mjs';
 
 export const SITE_ORIGIN = 'https://zodiacs.org';
 export const SITEMAP_URL = `${SITE_ORIGIN}/sitemap.xml`;
 export const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow';
-export const SNAPSHOT_SCHEMA = 'zodiacs.indexnow-sitemap.v1';
+export const SNAPSHOT_SCHEMA = 'zodiacs.indexnow-sitemap.v2';
+/** The previous schema, read as a snapshot without content digests. */
+const SNAPSHOT_SCHEMA_V1 = 'zodiacs.indexnow-sitemap.v1';
+const PAGE_FETCHES_AT_ONCE = 8;
 export const MAX_URLS_PER_REQUEST = 10_000;
 export const BOOTSTRAP_DAYS = 30;
 const DAY_MS = 86_400_000;
@@ -115,16 +125,36 @@ export async function readIndexNowKey(publicDir) {
   return { key: keys[0], keyLocation: `${SITE_ORIGIN}/${keys[0]}.txt` };
 }
 
-export function snapshotOf(urls, readAt) {
+const byKey = ([a], [b]) => (a < b ? -1 : a > b ? 1 : 0);
+
+export function snapshotOf(urls, readAt, digests = new Map()) {
   return {
     schema: SNAPSHOT_SCHEMA,
     sitemap: SITEMAP_URL,
     readAt,
-    urls: Object.fromEntries([...urls].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))),
+    urls: Object.fromEntries([...urls].sort(byKey)),
+    // The content digest of each page dated the run's day, as read on this run.
+    digests: Object.fromEntries([...digests].sort(byKey)),
   };
 }
 
-/** The previous snapshot as { readAt, urls }, or null when there is none. */
+/** The URLs of a parsed sitemap dated `date` (YYYY-MM-DD), sorted. */
+export function urlsDatedOn(current, date) {
+  return [...current].filter(([, lastmod]) => lastmod !== null && lastmod.slice(0, 10) === date).map(([loc]) => loc).sort();
+}
+
+/**
+ * Of the URLs dated the run's day, those whose content digest differs from the last run's, or that the last run did
+ * not digest; `skip` holds URLs already submitted as new or changed.
+ */
+export function changedSameDay(digests, previousDigests, skip = new Set()) {
+  return [...digests]
+    .filter(([loc, digest]) => !skip.has(loc) && previousDigests?.get(loc) !== digest)
+    .map(([loc]) => loc)
+    .sort();
+}
+
+/** The previous snapshot as { readAt, urls, digests }, or null when there is none. */
 export async function readSnapshot(path) {
   let text;
   try {
@@ -134,11 +164,17 @@ export async function readSnapshot(path) {
     throw error;
   }
   const snapshot = JSON.parse(text);
-  if (snapshot?.schema !== SNAPSHOT_SCHEMA || snapshot.sitemap !== SITEMAP_URL
-    || typeof snapshot.urls !== 'object' || snapshot.urls === null) {
+  if (![SNAPSHOT_SCHEMA, SNAPSHOT_SCHEMA_V1].includes(snapshot?.schema) || snapshot.sitemap !== SITEMAP_URL
+    || typeof snapshot.urls !== 'object' || snapshot.urls === null
+    || (snapshot.schema === SNAPSHOT_SCHEMA && (typeof snapshot.digests !== 'object' || snapshot.digests === null))) {
     throw new Error(`${path} is not a ${SNAPSHOT_SCHEMA} snapshot of ${SITEMAP_URL}.`);
   }
-  return { readAt: snapshot.readAt, urls: new Map(Object.entries(snapshot.urls)) };
+  return {
+    readAt: snapshot.readAt,
+    urls: new Map(Object.entries(snapshot.urls)),
+    // A v1 snapshot recorded no digests: every page dated the run's day counts as changed once.
+    digests: snapshot.schema === SNAPSHOT_SCHEMA ? new Map(Object.entries(snapshot.digests)) : null,
+  };
 }
 
 async function writeSnapshot(path, snapshot) {
@@ -164,6 +200,35 @@ async function fetchSitemap({ fetchImpl, tries, pause }) {
     if (attempt < tries) await pause(attempt * 5_000);
   }
   throw new Error(`Could not read ${SITEMAP_URL}: ${problem}`);
+}
+
+async function fetchPage(loc, { fetchImpl, tries, pause }) {
+  let problem = null;
+  for (let attempt = 1; attempt <= tries; attempt += 1) {
+    try {
+      const response = await fetchImpl(loc, {
+        headers: { accept: 'text/html', 'user-agent': 'zodiacs-indexnow/1.0' },
+        signal: AbortSignal.timeout(30_000),
+      });
+      if (response.status === 200) return await response.text();
+      problem = `HTTP ${response.status}`;
+    } catch (error) {
+      problem = error.message;
+    }
+    if (attempt < tries) await pause(attempt * 5_000);
+  }
+  throw new Error(`Could not read ${loc}: ${problem}`);
+}
+
+/** The content digest of each live page in `locs`, a few at a time. */
+export async function digestPages(locs, { fetchImpl = fetch, tries = TRIES, pause = wait } = {}) {
+  const digests = new Map();
+  for (let start = 0; start < locs.length; start += PAGE_FETCHES_AT_ONCE) {
+    const batch = locs.slice(start, start + PAGE_FETCHES_AT_ONCE);
+    const pages = await Promise.all(batch.map((loc) => fetchPage(loc, { fetchImpl, tries, pause })));
+    batch.forEach((loc, index) => digests.set(loc, contentDigest(Buffer.from(pages[index]), new URL(loc).pathname)));
+  }
+  return digests;
 }
 
 /**
@@ -207,8 +272,9 @@ export async function submitUrls(urls, { key, keyLocation, fetchImpl = fetch, tr
 
 /**
  * Reads the sitemap, submits what changed since the snapshot, and writes the
- * new snapshot. Throws, writing nothing, when the sitemap cannot be read or
- * parsed, has lost more than half its URLs, or IndexNow refuses the URLs.
+ * new snapshot. Throws, writing nothing, when the sitemap or a page dated the
+ * run's day cannot be read, the sitemap cannot be parsed or has lost more than
+ * half its URLs, or IndexNow refuses the URLs.
  */
 export async function runIndexNow({
   snapshotPath,
@@ -242,6 +308,11 @@ export async function runIndexNow({
     const since = bootstrapSince(date);
     result = { mode: 'bootstrap', since, urls: urlsDatedSince(current, since) };
   }
+  // A page dated the run's day can change again that day without a new date.
+  const digests = await digestPages(urlsDatedOn(current, date), { fetchImpl, tries, pause });
+  result.datedToday = digests.size;
+  result.sameDay = previous ? changedSameDay(digests, previous.digests, new Set(result.urls)) : [];
+  result.urls = [...result.urls, ...result.sameDay].sort();
   result.readAt = readAt;
   result.count = current.size;
   result.dryRun = dryRun;
@@ -251,7 +322,7 @@ export async function runIndexNow({
     const { key, keyLocation } = await readIndexNowKey(publicDir);
     result.statuses = await submitUrls(result.urls, { key, keyLocation, fetchImpl, tries, pause, maxPerRequest });
   }
-  await writeSnapshot(snapshotPath, snapshotOf(current, readAt));
+  await writeSnapshot(snapshotPath, snapshotOf(current, readAt, digests));
   return result;
 }
 
@@ -265,7 +336,7 @@ export function renderReport(result) {
       ? 'Nothing to submit.'
       : `Submitted ${result.urls.length} URLs to IndexNow (HTTP ${[...new Set(result.statuses)].join(', ')}).`;
   if (result.mode === 'changes') {
-    lines.push(`The sitemap read at ${result.readAt} lists ${result.count} URLs. Against the ${result.previousCount} submitted from the sitemap read at ${result.previousReadAt}: ${result.added.length} new, ${result.changed.length} changed, ${result.removed.length} removed.`);
+    lines.push(`The sitemap read at ${result.readAt} lists ${result.count} URLs. Against the ${result.previousCount} submitted from the sitemap read at ${result.previousReadAt}: ${result.added.length} new, ${result.changed.length} changed, ${result.removed.length} removed, and ${result.sameDay.length} of the ${result.datedToday} dated today changed again since that run.`);
   } else {
     lines.push(`No earlier sitemap was recorded. The sitemap read at ${result.readAt} lists ${result.count} URLs; ${result.urls.length} are dated ${result.since} or later.`);
   }
