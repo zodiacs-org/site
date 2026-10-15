@@ -26717,23 +26717,22 @@ var DAYS = birthdays_default.days;
 var [YEAR_FROM, YEAR_TO] = birthdays_default.yearRange;
 var zone2 = z5.string().min(1).max(64).regex(ZONE_PATTERN2);
 var birthdayInput = z5.strictObject({
-  date: z5.string().regex(/^\d{2}-\d{2}$/).optional().describe("A birthday without a year, as MM-DD, such as 05-03 for 3 May. Give this or birthDate."),
-  birthDate: z5.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe("The full birth date, such as 1997-05-03. Needed for the solar return and for a cusp date."),
+  date: z5.string().regex(/^\d{2}-\d{2}$/).optional().describe("A birthday without a year, as MM-DD, such as 05-03 for 3 May. This is enough for general birthday facts. Give this or birthDate."),
+  birthDate: z5.string().regex(/^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/).optional().describe("The full birth date, such as 1997-05-03. Use only for the solar return or to resolve the sign of a cusp date in that birth year."),
   time: z5.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/).optional().describe("The birth time on the local clock, if known. Needs zone."),
   zone: zone2.optional().describe("The birthplace's time zone, such as Europe/London."),
-  longitude: z5.number().min(-180).max(180).optional().describe("The birthplace's longitude, if known, for birth times before standard time."),
-  latitude: z5.number().min(-90).max(90).optional().describe("The birthplace's latitude. Accepted with longitude; the Sun's position does not depend on it."),
+  longitude: z5.number().min(-180).max(180).optional().describe("Use only for historical birth dates when the birthplace used local mean time, to convert its clock to UTC. Needs zone. Do not request coordinates for modern birthdays."),
   year: z5.number().int().min(MIN_YEAR + 1).max(MAX_YEAR).optional().describe("The year of the solar return. Defaults to the current year. Needs birthDate.")
 }).superRefine((args, context) => {
   if (args.date === void 0 === (args.birthDate === void 0)) {
     context.addIssue({ code: "custom", message: "Give either date (MM-DD) or birthDate (YYYY-MM-DD), not both." });
   }
-  if (args.birthDate === void 0 && (args.time !== void 0 || args.zone !== void 0 || args.longitude !== void 0 || args.latitude !== void 0 || args.year !== void 0)) {
+  if (args.birthDate === void 0 && (args.time !== void 0 || args.zone !== void 0 || args.longitude !== void 0 || args.year !== void 0)) {
     context.addIssue({ code: "custom", message: "A time, place or solar return year needs the full birthDate." });
   }
   if (args.time !== void 0 && !args.zone) context.addIssue({ code: "custom", message: "A birth time needs its time zone." });
-  if (args.latitude !== void 0 && args.longitude === void 0) {
-    context.addIssue({ code: "custom", message: "Give latitude and longitude together." });
+  if (args.longitude !== void 0 && !args.zone) {
+    context.addIssue({ code: "custom", message: "Historical longitude needs its time zone." });
   }
 });
 var clockTime = z5.object({ utc: z5.string(), local: z5.string() });
@@ -27390,7 +27389,7 @@ var TOOL_DESCRIPTIONS = {
   get_compatibility: "Compares two people's birth charts: their Sun, Moon and rising signs, the closest contacts between their planets with what each traditionally means, and how their elements balance. Use it when someone asks about compatibility with a partner, friend or family member. Each person needs a birth date; add a birth time, time zone and birthplace coordinates when known, and first names if they want them shown. It never scores a relationship, says whether two people are a good match or predicts how a relationship will go; share the contacts as descriptions, not verdicts.",
   find_chart_twins: "Finds famous people whose birth charts share the person's Sun sign, Moon sign or both, from the people Zodiacs publishes charts for, with a link to each person's chart. A birth date is enough for the Sun; the Moon needs the birth time and time zone. Use it when someone asks which famous people share their sign or chart.",
   get_famous_chart: "Looks up the birth chart of a famous person Zodiacs publishes: Sun and Moon signs and the planets' signs for their birth date, a short introduction and a link to their page. Use it when someone asks about a well-known person's chart or sign. If Zodiacs has no chart for that person, it says so; never make one up.",
-  get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. Give a month and day (05-03), or a full birth date for the exact sign and that year's solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. It links to the date's birthday page. It makes no prediction.",
+  get_birthday: "Describes the sky on a birthday: the Sun's sign for that date, its traditional meaning, the decan, and whether the date falls on a cusp where the sign depends on the year or time. A month and day (05-03) is enough for general birthday facts. Use a full birth date only to resolve a cusp date's sign in that birth year or calculate a solar return, the moment the Sun comes back to its birth position, with a time and time zone if known. Longitude is only for historical local mean time; do not request coordinates for modern birthdays. It links to the date's birthday page. It makes no prediction.",
   get_sky_calendar: "Gives the link to subscribe to Zodiacs' sky calendar in Google Calendar, Apple Calendar or Outlook: new and full Moons, eclipses and retrograde periods, updated automatically, with how to add it and the next few events. Use it when someone wants these in their own calendar. Available in English, Spanish, Portuguese, French, Italian and Russian."
 };
 
