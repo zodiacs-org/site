@@ -1,6 +1,9 @@
 WebMCP tools on every calculator page, 2026-10-15 (Asia/Bangkok): A2 stays
 partial until production.
 
+**Overall delivery: 43%** (42.587% to three decimals): 77.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
 - **A2, partial.** Each of the sixteen calculator pages registers its own
   WebMCP tool when the browser or an extension provides `modelContext`, in
   every locale it is built in: 81 pages. English pages keep `zodiacs.search`.
