@@ -275,8 +275,8 @@
     }
   ],
   "localMilliseconds": {
-    "median": 2.8933109999998123,
-    "p95": 58.04770899999994
+    "median": 4.10043799999994,
+    "p95": 62.88014999999996
   },
   "unverified": [
     "Actual ChatGPT and Codex host acceptance",

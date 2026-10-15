@@ -1,8 +1,9 @@
 /**
  * How the sky favours a date someone has chosen: a 0–100 rating with a
  * plain verdict and the reasons behind it, read the way electional
- * astrology reads a day. It rates the date it is given; it never searches
- * for other dates. Pure: a function of the occasion and the sky facts.
+ * astrology reads a day. It rates the sky it is given; the best-days search
+ * (./best-dates.ts) calls it once for each day of a window. Pure: a function
+ * of the occasion and the sky facts.
  */
 import type { OccasionKind } from './kinds';
 import type { OccasionSkyFacts } from './sky';
@@ -33,10 +34,19 @@ function verdictFor(score: number): string {
   return 'A challenging day for it';
 }
 
+/** A reason with the points it moved the score by, for ranking reasons by weight. */
+export interface WeighedReason { points: number; reason: string }
+
 export function rateOccasionDate(occasion: OccasionKind, sky: OccasionSkyFacts): DateRating {
+  const { score, verdict, weighed } = weighOccasionDate(occasion, sky);
+  return { score, verdict, reasons: weighed.map((item) => item.reason) };
+}
+
+/** The rating with each reason's points, in the order the reasons are found. */
+export function weighOccasionDate(occasion: OccasionKind, sky: OccasionSkyFacts): { score: number; verdict: string; weighed: WeighedReason[] } {
   let score = 68;
-  const reasons: string[] = [];
-  const add = (points: number, reason: string) => { score += points; reasons.push(reason); };
+  const weighed: WeighedReason[] = [];
+  const add = (points: number, reason: string) => { score += points; weighed.push({ points, reason }); };
   const place = (body: string) => sky.bodies.find((row) => row.body === body);
   const retro = new Set<string>(sky.retrograde);
   const venus = place('Venus');
@@ -65,5 +75,5 @@ export function rateOccasionDate(occasion: OccasionKind, sky: OccasionSkyFacts):
   if (retro.has('Jupiter') && chosen) add(-2, 'Jupiter is retrograde: good luck arrives, but slowly.');
 
   const clamped = Math.max(20, Math.min(97, Math.round(score)));
-  return { score: clamped, verdict: verdictFor(clamped), reasons };
+  return { score: clamped, verdict: verdictFor(clamped), weighed };
 }

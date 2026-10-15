@@ -9,10 +9,11 @@ import type { LocalTimeModule } from '../lib/compute-api/local-time';
 import { occasionCard } from '../lib/occasions/card';
 import { MILESTONE_WORDS, milestoneCard } from '../lib/occasions/milestone-card';
 import type { Milestone } from '../lib/occasions/milestones';
-import { computeCompatibility } from './features/compatibility';
+import { compatibilityMissing, computeCompatibility } from './features/compatibility';
 import { findChartTwins, getFamousChart } from './features/people';
 import { getBirthday, getSkyCalendar } from './features/birthday';
 import { rateOccasionDate } from '../lib/occasions/date-score';
+import { bestDays, type BestDays } from '../lib/occasions/best-dates';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
@@ -140,8 +141,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         if (dependencies.occasions) {
           const capabilities = data as { privacy: string; limitations: string[] };
           capabilities.privacy += ' The occasion, compatibility, chart-twin and birthday tools take dates, and birth dates with an optional time, time zone, place and first names, for one or two people; they calculate from them for that call and save none of it. The result, including any card link that carries the details after its #, goes to the assistant. The famous-chart and sky-calendar tools need no personal details.';
-          capabilities.limitations.push('The occasion tools give the sky on a date and the dates of astrology\'s life milestones; they do not choose or rank dates or predict how a day will go.');
-          capabilities.limitations.push('Compatibility describes the contacts between two charts; it does not score a relationship or predict how one will go. Famous charts cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
+          capabilities.limitations.push('The occasion tools give the sky on a date, rate it from 0 to 100 by astrology\'s traditional reading, can rate every day in a window of up to 92 days and name the three best, and give the dates of astrology\'s life milestones; they do not guarantee how a day will go.');
+          capabilities.limitations.push('Compatibility scores two charts by astrology\'s reading of their contacts; it does not guarantee how a relationship will go. Famous charts, alone or compared with someone\'s own, cover only the people Zodiacs publishes, cast for local noon because their birth times are not on record.');
         }
         if (dependencies.skyWatch) {
           const capabilities = data as { privacy: string; limitations: string[] };
@@ -219,9 +220,20 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const zone = args.zone ? await zoneAt(args.zone, '/zone', resolveZone) : null;
         const hasPlace = args.latitude !== undefined && args.longitude !== undefined;
         let card;
+        let best: BestDays | null = null;
+        let date: string;
         try {
+          // With a window, every day in it is rated at the same clock time and the three best come back.
+          if (args.searchFrom !== undefined && args.searchTo !== undefined) {
+            best = await bestDays({
+              occasion: args.occasion, from: args.searchFrom, to: args.searchTo, time: args.time ?? null, timeZone: zone,
+              longitude: hasPlace ? args.longitude! : null,
+            }, localTime());
+          }
+          // The card is for the day asked about, else for the best day found.
+          date = args.date ?? best!.best[0].date;
           card = await occasionCard({
-            occasion: args.occasion, date: args.date, time: args.time ?? null, timeZone: zone,
+            occasion: args.occasion, date, time: args.time ?? null, timeZone: zone,
             place: hasPlace ? { name: args.place ?? '', lat: args.latitude!, lon: args.longitude! } : null,
           }, localTime());
         } catch (error) {
@@ -229,14 +241,15 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
           throw error;
         }
         const evening = card.evening;
-        const cardUrl = occasionCardUrl({ ...args, ...(zone ? { zone } : {}) });
+        const cardUrl = occasionCardUrl({ ...args, date, ...(zone ? { zone } : {}) });
         data = {
-          occasion: args.occasion, date: args.date, time: args.time ?? null, zone, place: args.place ?? null, names: args.names ?? null,
+          occasion: args.occasion, date, time: args.time ?? null, zone, place: args.place ?? null, names: args.names ?? null,
           card: card.words,
           instant: clockTime(card.instant, zone), instantIs: args.time ? 'given-time' : zone ? 'local-noon' : 'utc-noon',
           sky: { bodies: card.sky.bodies, moon: card.sky.moon, retrograde: card.sky.retrograde },
           moonSignChange: card.moonSignChange,
           rating: rateOccasionDate(args.occasion, card.sky),
+          bestDays: best,
           evening: evening ? {
             sunrise: optionalClock(evening.sunrise, zone), sunset: optionalClock(evening.sunset, zone),
             goldenHour: evening.goldenHour ? { start: clockTime(evening.goldenHour.start, zone), end: clockTime(evening.goldenHour.end, zone) } : null,
@@ -282,6 +295,13 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         // Each zone is spelt as tzdb spells it first, as the other tools do.
         const person = async (who: typeof args.a, path: string) => (who.zone ? { ...who, zone: await zoneAt(who.zone, path, resolveZone) } : who);
         const pair = { a: await person(args.a, '/a/zone'), b: await person(args.b, '/b/zone') };
+        // A famous name the directory does not have is answered as get_famous_chart answers it: plainly, with no chart.
+        const missing = compatibilityMissing(pair);
+        if (missing) {
+          data = missing;
+          links = [{ title: 'Famous birth charts on Zodiacs', url: missing.directoryUrl }];
+          break;
+        }
         const result = await feature(() => computeCompatibility(pair, localTime()));
         if ('failure' in result) return failure(tool, 'invalid-request', result.failure);
         ({ data, links } = result);
