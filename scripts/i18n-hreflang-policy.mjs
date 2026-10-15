@@ -1,25 +1,28 @@
 import { readFileSync } from 'node:fs';
 const approvedDailyDays = JSON.parse(readFileSync(new URL('../src/data/chart-of-the-day.json', import.meta.url), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
-// Each approved edition, plus the chart-of-the-day index once any edition exists, in six languages.
-const dailyBlocks = (approvedDailyDays.length + (approvedDailyDays.length ? 1 : 0)) * 6;
 /**
+ * expectedBlocks counts the sitemap's alternate links per hreflang. The
+ * sitemap is the keep list in src/lib/seo/indexing.mjs: 160 of its URLs carry
+ * alternates, Russian is on 84 of them, and French and Italian lack the
+ * Spanish and Portuguese daily pages.
+ *
  * Hreflang activation is explicit and per locale. Declaring metadata in the
  * TypeScript locale union never changes this release policy.
  */
 export const HREFLANG_LOCALE_POLICY = Object.freeze([
-  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 1129 + dailyBlocks },
-  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 763 + dailyBlocks },
-  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 763 + dailyBlocks },
-  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 721 + dailyBlocks },
-  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 721 + dailyBlocks },
-  { locale: 'ru', hreflang: 'ru', indexEligible: true, routeFamilies: ['core'], expectedBlocks: 126 + dailyBlocks },
+  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 160 },
+  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 160 },
+  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 160 },
+  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 154 },
+  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 154 },
+  { locale: 'ru', hreflang: 'ru', indexEligible: true, routeFamilies: ['core'], expectedBlocks: 84 },
   { locale: 'ar', hreflang: 'ar', indexEligible: false, routeFamilies: [], expectedBlocks: 0 },
 ]);
 
 export const X_DEFAULT_HREFLANG = Object.freeze({
   hreflang: 'x-default',
   locale: 'en',
-  expectedBlocks: 1129 + dailyBlocks,
+  expectedBlocks: 160,
 });
 
 export const ACTIVE_HREFLANGS = Object.freeze(

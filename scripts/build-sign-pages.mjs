@@ -34,6 +34,7 @@ import { brandIconLinkMarkup } from '../src/lib/brand-icons.mjs';
 import { EN } from '../src/strings/en.mjs';
 import { GUIDE_LOADER_MARKER, guideLoaderSource } from '../src/lib/assistant/guide-loader.mjs';
 import { SITE_FOOTER_STYLESHEET, renderStaticFooter } from './site-footer.mjs';
+import { noindexRuleFor, ruleRobotsMeta } from '../src/lib/seo/indexing.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
@@ -514,7 +515,8 @@ function render(m) {
   <meta name="color-scheme" content="dark" />
   <title>${esc(`${p.glyph.replace('︎', '')} ${m.name}`)} · Zodiac sign ${m.order} of 12 | Zodiacs.org</title>
   <meta name="description" content="${esc(`${m.name} dates, famous birthdays, Wikipedia views, current price and rank, and verified token address.`)}" />
-  <link rel="canonical" href="${signUrl(m.slug)}" />
+  <link rel="canonical" href="${signUrl(m.slug)}" />${noindexRuleFor(signPath(m.slug)) ? `
+  ${ruleRobotsMeta(noindexRuleFor(signPath(m.slug)))}` : ''}
   <meta property="og:site_name" content="Zodiacs" />
   <meta property="og:title" content="${esc(`${p.glyph.replace('︎', '')} ${m.name}`)} · Zodiac sign ${m.order} of 12 — Zodiacs" />
   <meta property="og:description" content="${esc(`${m.name} dates, famous birthdays, Wikipedia views, current price and rank, and verified token address.`)}" />

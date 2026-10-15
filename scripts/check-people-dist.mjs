@@ -16,13 +16,18 @@ const searchPeople = new Set(searchIndex
 const NOINDEX_NOFOLLOW = /<meta name="robots" content="noindex, nofollow, max-image-preview:large"\s*\/?>/u;
 const NOINDEX_FOLLOW = /<meta name="robots" content="noindex, follow, max-image-preview:large"\s*\/?>/u;
 const INDEXABLE = /<meta name="robots" content="max-image-preview:large"\s*\/?>/u;
+// Profiles are noindex under the shared rule (src/lib/seo/indexing.mjs); an
+// eligible profile carries the rule's marker and stays in the site's search.
+const ruleNoindex = (follow) => new RegExp(`<meta name="robots" data-noindex-rule="People pages" content="noindex, ${follow}, max-image-preview:large"\\s*\\/?>`, 'u');
 
 for (const person of people) {
   const route = `/people/${person.slug}/`;
   const html = await readFile(resolve(dist, route.slice(1), 'index.html'), 'utf8').catch(() => '');
   if (!html) { failures.push(`${route}: missing`); continue; }
   const eligible = person.indexEligibility.eligible;
-  if (eligible && !INDEXABLE.test(html)) failures.push(`${route}: expected indexable robots`);
+  if (eligible && !ruleNoindex(person.living ? 'nofollow' : 'follow').test(html)) {
+    failures.push(`${route}: expected the shared rule's noindex`);
+  }
   if (!eligible && person.living && !NOINDEX_NOFOLLOW.test(html)) {
     failures.push(`${route}: living protection lost`);
   }
@@ -33,8 +38,8 @@ for (const person of people) {
   if (!html.includes(`<link rel="canonical" href="https://zodiacs.org${route}"`)) {
     failures.push(`${route}: self-canonical missing`);
   }
-  if (eligible !== sitemap.includes(`https://zodiacs.org${route}`)) {
-    failures.push(`${route}: sitemap membership must equal eligibility (${eligible})`);
+  if (sitemap.includes(`https://zodiacs.org${route}`)) {
+    failures.push(`${route}: profiles stay out of the sitemap`);
   }
   if (eligible !== searchPeople.has(route)) {
     failures.push(`${route}: search membership must equal eligibility (${eligible})`);
@@ -45,7 +50,6 @@ const directoryHtml = await readFile(resolve(dist, 'people/index.html'), 'utf8')
 if (!directoryHtml) failures.push('/people/: missing');
 if (data.directoryIndexable) {
   if (!INDEXABLE.test(directoryHtml)) failures.push('/people/: expected indexable robots');
-  if (!sitemap.includes('https://zodiacs.org/people/</loc>')) failures.push('/people/: sitemap row missing');
 } else if (!NOINDEX_NOFOLLOW.test(directoryHtml)) {
   failures.push('/people/: expected noindex robots');
 }
@@ -88,4 +92,4 @@ if (failures.length) {
 const eligibleCount = people.filter((person) => person.indexEligibility.eligible).length;
 const deferredCount = people.filter((person) => !person.indexEligibility.eligible && !person.living).length;
 const protectedCount = people.filter((person) => person.living).length;
-console.log(`people-dist: OK — ${people.length + 1} routes; ${eligibleCount} indexable (+ directory ${data.directoryIndexable ? 'indexable' : 'noindex'}); ${deferredCount} deferred; ${protectedCount} living protected; sitemap/search membership exact`);
+console.log(`people-dist: OK — ${people.length + 1} routes; ${eligibleCount} searchable, noindex by the shared rule (+ directory ${data.directoryIndexable ? 'indexable' : 'noindex'}); ${deferredCount} deferred; ${protectedCount} living protected; no profile in the sitemap; search membership exact`);

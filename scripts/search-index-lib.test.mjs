@@ -31,6 +31,7 @@ describe('search-index HTML extraction', () => {
       title: 'Birth Chart & Rising Sign',
       description: 'Charts & exact times',
       noindex: false,
+      searchable: true,
     });
     expect(isEnglishHtml('<html lang="en-US"><head></head></html>')).toBe(true);
     expect(isEnglishHtml('<html lang="es"><head></head></html>')).toBe(false);
@@ -41,6 +42,14 @@ describe('search-index HTML extraction', () => {
       <meta name='description' content='Not for search'>
       <meta content='nofollow, NOINDEX' name='robots'>`;
     expect(extractPageMetadata(html).noindex).toBe(true);
+    expect(extractPageMetadata(html).searchable).toBe(false);
+  });
+
+  it('keeps a page noindexed only by the shared template rule searchable', () => {
+    const html = `<title>Aries and Leo | Zodiacs.org</title>
+      <meta name="description" content="A pair">
+      <meta name="robots" data-noindex-rule="compatibility pair pages" content="noindex, follow, max-image-preview:large">`;
+    expect(extractPageMetadata(html)).toMatchObject({ noindex: true, searchable: true });
   });
 
   it('maps built files, exclusions, and kinds deterministically', () => {

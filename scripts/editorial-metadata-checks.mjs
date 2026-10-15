@@ -1,4 +1,5 @@
 import { EDITORIAL_METADATA } from '../src/lib/editorial-metadata.mjs';
+import { SITEMAP_PATHS } from '../src/lib/seo/indexing.mjs';
 
 const hasType = (node, type) => Array.isArray(node?.['@type'])
   ? node['@type'].includes(type) : node?.['@type'] === type;
@@ -20,12 +21,19 @@ export function editorialGraphErrors(path, nodes) {
   return errors;
 }
 
-/** Every editorial owner must have exactly one matching sitemap entry. */
-export function editorialSitemapErrors(xml) {
+/**
+ * An editorial owner on the sitemap keep list has exactly one sitemap entry,
+ * dated by its receipt; an owner off the list has none.
+ */
+export function editorialSitemapErrors(xml, listed = new Set(SITEMAP_PATHS)) {
   const errors = [];
   const blocks = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/gu)].map((match) => match[1]);
   for (const [path, owner] of Object.entries(EDITORIAL_METADATA)) {
     const matches = blocks.filter((block) => block.includes(`<loc>https://zodiacs.org${path}</loc>`));
+    if (!listed.has(path)) {
+      if (matches.length) errors.push(`${path}: is not on the sitemap keep list`);
+      continue;
+    }
     if (matches.length !== 1) errors.push(`${path}: needs exactly one sitemap entry`);
     else if (!matches[0].includes(`<lastmod>${owner.modified}</lastmod>`)) errors.push(`${path}: sitemap date differs from editorial receipt`);
   }

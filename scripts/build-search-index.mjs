@@ -49,7 +49,7 @@ export async function buildSearchIndex({ distRoot = DEFAULT_DIST, minEntries = 4
     const html = await readFile(file, 'utf8');
     if (!isEnglishHtml(html)) continue;
     const metadata = extractPageMetadata(html);
-    if (metadata.noindex) continue;
+    if (!metadata.searchable) continue;
     if (!metadata.title || !metadata.description) {
       throw new Error(`Search index metadata missing for ${path}`);
     }

@@ -2,6 +2,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { RU_OG_ROUTE_CARDS } from '../src/strings/seo.ru.mjs';
+import { SITEMAP_PATHS, isIndexable } from '../src/lib/seo/indexing.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(repo, 'dist');
@@ -178,7 +179,8 @@ for (const [route, file] of expectedFiles) {
     continue;
   }
   const text = visibleText(html);
-  const noindex = route === notFoundRoute || route === withheldDailyRoute || noindexSignRoutes.has(route);
+  const noindex = route === notFoundRoute || route === withheldDailyRoute || noindexSignRoutes.has(route)
+    || !isIndexable(route);
   if (!/<html\b[^>]*\blang=["']ru["']/u.test(html)) fail(`${route}: html lang is not ru`);
   if (/<html\b[^>]*\bdir=/u.test(html)) fail(`${route}: Russian LTR page must not emit dir`);
   const robots = metaContent(html, 'robots');
@@ -266,7 +268,7 @@ for (const contentPath of core) {
     }
     const self = propertyMetaContents(html, 'og:locale');
     const alternates = propertyMetaContents(html, 'og:locale:alternate');
-    const expectedAlternates = signPaths.has(contentPath) && locale.prefix === '/ru'
+    const expectedAlternates = (signPaths.has(contentPath) && locale.prefix === '/ru') || !isIndexable(contentPath)
       ? []
       : discoveryLocaleCards
         .filter((entry) => entry.ogLocale !== locale.ogLocale)
@@ -283,8 +285,14 @@ for (const contentPath of core) {
 const sitemap = await readFile(resolve(dist, 'sitemap.xml'), 'utf8');
 const russianSitemapRoutes = [...sitemap.matchAll(/<loc>https:\/\/zodiacs\.org(\/ru\/[^<]*)<\/loc>/gu)]
   .map((match) => match[1]);
-if (JSON.stringify([...russianSitemapRoutes].sort()) !== JSON.stringify([...indexedRoutes].sort())) {
-  fail(`sitemap.xml has ${russianSitemapRoutes.length}/${indexedRoutes.length} exact indexable Russian core routes`);
+// The sitemap carries the Russian entries of the shared keep list, each an
+// indexable Russian core route.
+const sitemapRussianRoutes = SITEMAP_PATHS.filter((path) => path.startsWith('/ru/'));
+if (JSON.stringify(russianSitemapRoutes) !== JSON.stringify(sitemapRussianRoutes)) {
+  fail(`sitemap.xml has ${russianSitemapRoutes.length}/${sitemapRussianRoutes.length} Russian keep-list routes`);
+}
+for (const route of sitemapRussianRoutes) {
+  if (!indexedRoutes.includes(route) || !isIndexable(route)) fail(`sitemap.xml lists ${route}, which is not an indexable Russian route`);
 }
 if (sitemap.includes('/ru/404/')) fail('sitemap.xml contains the noindex Russian 404');
 

@@ -16,8 +16,10 @@
  *      existing id.
  *   6. search-index.json — valid, populated, sorted, and every path resolves;
  *      deferred search/WebMCP assets exist with their expected fingerprints.
- *   7. sitemap.xml — unique dated locs resolve, exclude noindex, and cover
- *      every indexable built page's same-origin canonical.
+ *   7. sitemap.xml — exactly SITEMAP_PATHS (src/lib/seo/indexing.mjs), in
+ *      order and under its ceiling; unique dated locs resolve and exclude
+ *      noindex; every page the shared rule matches carries noindex; every
+ *      indexable built page has a same-origin canonical.
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
  */
@@ -30,6 +32,12 @@ import {
   searchIndexShapeFailures, shouldIndexPath,
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
+import {
+  SITEMAP_MAX_URLS,
+  SITEMAP_PATHS,
+  isIndexable,
+  noindexRuleFor,
+} from '../src/lib/seo/indexing.mjs';
 import {
   ABSENT_LOCALES,
   HREFLANG_LOCALE_POLICY,
@@ -837,7 +845,7 @@ if (!(await exists(searchIndexPath))) {
         if (!pagePath || !shouldIndexPath(pagePath)) continue;
         const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
         if (!isEnglishHtml(html)) continue;
-        if (extractPageMetadata(html).noindex) continue;
+        if (!extractPageMetadata(html).searchable) continue;
         if (!indexedPaths.has(pagePath)) {
           fail(`search-index: indexable page missing from the index — ${pagePath}`);
         }
@@ -927,6 +935,7 @@ for (const m of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {
   if (target.endsWith('.html')) {
     const html = idCache.get(target) ?? (await readFile(target, 'utf8'));
     if (hasNoindex(html)) fail(`sitemap.xml: noindex page included — ${m[1]}`);
+    if (canonicalHref(html) !== m[1]) fail(`sitemap.xml: loc is not self-canonical — ${m[1]}`);
   }
 }
 for (const block of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
@@ -978,6 +987,23 @@ for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.regist
     fail(`Packet F: machine artifact no longer resolves — ${artifact}`);
   }
 }
+// The shared indexing rule: the sitemap is the keep list, in its order, and
+// nothing the rule marks noindex reaches it or its alternates.
+{
+  const sitemapOrder = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+  if (sitemapOrder.length > SITEMAP_MAX_URLS) {
+    fail(`sitemap.xml: ${sitemapOrder.length} URLs exceeds the ceiling of ${SITEMAP_MAX_URLS}`);
+  }
+  const firstDifference = Array.from({ length: Math.max(sitemapOrder.length, SITEMAP_PATHS.length) }, (_, index) => index)
+    .find((index) => sitemapOrder[index] !== SITEMAP_PATHS[index]);
+  if (firstDifference !== undefined) {
+    fail(`sitemap.xml: entry ${firstDifference + 1} is ${sitemapOrder[firstDifference] ?? 'missing'}, SITEMAP_PATHS has ${SITEMAP_PATHS[firstDifference] ?? 'nothing'}`);
+  }
+  for (const path of new Set([...sitemapLocs, ...sitemapAlternatePaths])) {
+    const rule = noindexRuleFor(path);
+    if (rule) fail(`sitemap.xml: ${path} is noindex by the shared rule (${rule.label})`);
+  }
+}
 {
   const todayBlock = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)]
     .find((match) => match[1].includes('<loc>https://zodiacs.org/today/</loc>'))?.[1];
@@ -986,22 +1012,6 @@ for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.regist
     fail(
       `sitemap.xml: /today/ lastmod ${todayLastmod ?? 'missing'} does not match daily publication ${dailyPublicationManifest.date}`,
     );
-  }
-}
-{
-  const sourceHoroscopeProgram = JSON.parse(await readFile(
-    resolve(repo, 'src/data/horoscope-program.json'),
-    'utf8',
-  ));
-  for (const sign of sourceHoroscopeProgram.signs) {
-    const loc = `https://zodiacs.org/horoscopes/${sign.sign}/weekly/`;
-    const block = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)]
-      .find((match) => match[1].includes(`<loc>${loc}</loc>`))?.[1];
-    const lastmod = block?.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
-    const expected = sign.readings?.weekly?.period?.from;
-    if (lastmod !== expected) {
-      fail(`sitemap.xml: /horoscopes/${sign.sign}/weekly/ lastmod ${lastmod ?? 'missing'} does not match weekly period ${expected ?? 'missing'}`);
-    }
   }
 }
 
@@ -1109,9 +1119,6 @@ const registryAuraThesisLinked = /href=["']\/registry\/collection\/["']/.test(th
 if (registryAuraThesisLinked !== registryAuraBuildEnabled) {
   fail('thesis/index.html: Registry Collection action does not match the Registry build marker');
 }
-if (sitemapLocs.has('/registry/collection/') !== registryAuraBuildEnabled) {
-  fail('sitemap.xml: Registry Collection inclusion does not match the Registry build marker');
-}
 if (registryAuraBuildEnabled) {
   const collectionHtml = await readFile(resolve(root, 'registry/collection/index.html'), 'utf8');
   const collectionCanonical = collectionHtml.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)?.[1]
@@ -1124,138 +1131,30 @@ if (registryAuraBuildEnabled) {
   }
 }
 
-// Coordinated indexing baseline (2026-07-19): compatibility prose remains
-// English-only under D9, while birthdays, Chinese zodiac, and the Registry
-// disclosure ship on every locale rail. The shareable birth-chart page
-// (/birth-chart/someone-else/) joined the index with the cabinet release. The
-// seven-surface horoscope program contributes 84 English-only sign pages.
-// Keep exact counts so sitemap drift fails loudly.
-const registryAuraIndexed = sitemapLocs.has('/registry/collection/');
-// The Race follows the PUBLIC_ZODIAC_GAMES_ENABLED build flag the same way
-// the Registry Collection follows its own: the sitemap entry and the built
-// page appear and disappear together.
-const raceIndexed = sitemapLocs.has('/race/');
-const trophyHallIndexed = sitemapLocs.has('/games/history/');
+// Every page the shared rule matches says noindex in its head, whether
+// SEO.astro or a static generator wrote it, so the head and the sitemap
+// agree.
+{
+  const ruleCounts = new Map();
+  for (const file of files) {
+    const pagePath = htmlFileToPath(relative(root, file).split(sep).join('/'));
+    const rule = noindexRuleFor(pagePath);
+    if (!rule) continue;
+    const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
+    if (/<meta\b[^>]*http-equiv=["']refresh["']/i.test(html)) continue;
+    ruleCounts.set(rule.label, (ruleCounts.get(rule.label) ?? 0) + 1);
+    if (!hasNoindex(html)) fail(`${pagePath}: the shared rule (${rule.label}) requires noindex`);
+  }
+  if (!ruleCounts.size) fail('indexing rule: no built page matched NOINDEX_RULES');
+}
+
+// Packet F's deliberate previews: noindex for their own reasons, before and
+// apart from the shared rule.
 const indexablePeoplePaths = new Set(
   JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).people
     .filter((person) => person.indexEligibility.eligible)
     .map((person) => `/people/${person.slug}/`),
 );
-const registryResearchPublication = JSON.parse(await readFile(
-  resolve(repo, 'src/data/registry-research/publication.json'),
-  'utf8',
-));
-const indexedRegistryResearchPaths = new Set([
-  '/terminal/research/',
-  ...registryResearchPublication.items
-    .filter((item) => item.status === 'published' && item.visibleAt <= registryResearchPublication.generatedAt)
-    .map((item) => item.url),
-]);
-const developerGuidePaths = new Set([
-  '/developers/docs/',
-  ...JSON.parse(await readFile(resolve(repo, 'src/data/developer-guides.json'), 'utf8'))
-    .map((guide) => `/developers/docs/${guide.slug}/`),
-]);
-const sitemapPolicy = {
-  // 944 reflects Packet F's removal of 1,464 localized birthday previews,
-  // twelve thin Russian sign guides, and three machine-contract artifacts;
-  // +1 for the /developers/ sky data API documentation page;
-  // +1 for the /big-three/ calculator;
-  // +28 for the Spanish and Portuguese daily surfaces (today, hub, twelve signs each).
-  // +3 for the 2027 full-moon, eclipse, and Mercury-retrograde year pages.
-  // +1 for the English-only lunar-return calculator.
-  // +1 for /fomo/, the Astrofolio-on-Fomo landing page (wing register, indexable).
-  // +13 for the numerology calculator and the twelve English-only Life Path pages.
-  // +1 for the void-of-course Moon calendar.
-  // +2 for the platform support contract and runnable developer examples.
-  // +1 for /developers/compare/, the browser-local chart-difference tool.
-  // +1 for /developers/mcp/, the local MCP adapter's install and privacy page.
-  // +1 for /developers/engine/, the engine's own product page.
-  // +1 for /developers/conformance/, the conformance suite's results page.
-  // +1 for /developers/compute/, the compute API's page.
-  // +1 for /developers/sky-benchmark/, the sky-fact benchmark's page.
-  // +23 for three six-language sharing tools and five Big Three translations.
-  // +18 for three six-language return-visit tools.
-  // +48 for the twelve rising-sign profiles translated into es, pt, fr and it.
-  // +16 for the four sky-calendar hubs translated into es, pt, fr and it.
-  // +312 translated compatibility pairs and +1 AI integration candidates page.
-  // + one version-bound developer guide page per entry of the shared catalogue, and its index
-  //   (developerGuidePaths, below; 26 with the seven S4 query pages).
-  // +3 for the English-only occasion cards (/occasions/, milestones, baby shower).
-  total: 1422 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
-    + publishedEventPaths.size + indexablePeoplePaths.size
-    + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
-    + indexedRegistryResearchPaths.size + developerGuidePaths.size,
-  // 78 pairs in English and in es, pt, fr and it.
-  compatibilityPairs: 390,
-  birthdays: 366,
-  chineseZodiac: 65,
-  disclosures: 6,
-  extendedHoroscopePages: 72,
-  dailyReadingPages: 42,
-  eventPages: publishedEventPaths.size,
-  peoplePages: indexablePeoplePaths.size,
-  registryResearchPages: indexedRegistryResearchPaths.size,
-  translatedBlocks: 641,
-};
-const indexedFamilies = [
-  { label: 'compatibility pairs', pattern: /^\/(?:(?:es|pt|fr|it)\/)?compatibility\/[a-z]+-[a-z]+\/$/, expected: sitemapPolicy.compatibilityPairs, localized: true },
-  { label: 'birthdays', pattern: /^\/(?:(?:es|pt|fr|it)\/)?birthday\/[a-z]+-\d{1,2}\/$/, expected: sitemapPolicy.birthdays, localized: true },
-  { label: 'Chinese zodiac', pattern: /^\/(?:(?:es|pt|fr|it)\/)?learn\/chinese-zodiac(?:\/[a-z]+)?\/$/, expected: sitemapPolicy.chineseZodiac, localized: true },
-  { label: 'disclosures', pattern: /^\/(?:(?:es|pt|fr|it|ru)\/)?disclosure\/$/, expected: sitemapPolicy.disclosures, localized: true },
-  {
-    label: 'English-only extended horoscope pages',
-    pattern: /^\/horoscopes\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/(?:tomorrow|weekly|monthly|love|career|2027)\/$/,
-    expected: sitemapPolicy.extendedHoroscopePages,
-    localized: false,
-  },
-  {
-    label: 'published daily editions',
-    pattern: /^\/(?:(?:es|pt)\/)?(?:today|horoscopes(?:\/(?:aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces))?)\/$/,
-    expected: sitemapPolicy.dailyReadingPages,
-    localized: true,
-  },
-  {
-    label: 'Phase 2 event pages',
-    pattern: /^(?:\/events\/(?:[a-z0-9-]+\/)?|\/(?:full-moon|new-moon|eclipses|(?:mercury|venus|mars)-retrograde)\/\d{4}-\d{2}-\d{2}\/)$/,
-    expected: sitemapPolicy.eventPages,
-    localized: false,
-  },
-  {
-    label: 'Phase 5 People profiles',
-    pattern: /^\/people\/[a-z0-9-]+\/$/,
-    expected: sitemapPolicy.peoplePages,
-    localized: false,
-  },
-  { label: 'Life Path pages', pattern: /^\/numerology\/life-path\/(?:[1-9]|11|22|33)\/$/, expected: 12, localized: false },
-  { label: 'Registry Collection', pattern: /^\/registry\/collection\/$/, expected: Number(registryAuraIndexed), localized: false },
-  { label: 'The Race', pattern: /^\/race\/$/, expected: Number(raceIndexed), localized: false },
-  { label: 'Trophy Hall', pattern: /^\/games\/history\/$/, expected: Number(trophyHallIndexed), localized: false },
-  { label: 'Registry technical record', pattern: /^\/registry\/technical\/$/, expected: 1, localized: false },
-  { label: 'Terminal Research', pattern: /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/, expected: sitemapPolicy.registryResearchPages, localized: false },
-];
-
-requireExactSet(
-  'sitemap.xml Phase 2 event routes',
-  new Set([...sitemapLocs].filter(isPhase2EventPath)),
-  publishedEventPaths,
-);
-requireExactSet(
-  'sitemap.xml Russian core routes',
-  new Set([...sitemapLocs].filter((path) => path === '/ru/' || path.startsWith('/ru/'))),
-  RUSSIAN_INDEXED_PATHS,
-);
-requireExactSet(
-  'sitemap.xml Phase 5 People profiles',
-  new Set([...sitemapLocs].filter((path) => /^\/people\/[a-z0-9-]+\/$/u.test(path))),
-  indexablePeoplePaths,
-);
-requireExactSet(
-  'sitemap.xml Terminal Research routes',
-  new Set([...sitemapLocs].filter((path) => /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/u.test(path))),
-  indexedRegistryResearchPaths,
-);
-
 const packetFNoindexCounts = { localizedBirthdays: 0, russianSignGuides: 0, people: 0 };
 for (const file of files) {
   const rel = relative(root, file).split(sep).join('/');
@@ -1287,61 +1186,8 @@ if (packetFNoindexCounts.people !== 501 - indexablePeoplePaths.size) {
   fail(`Packet F: ${packetFNoindexCounts.people}/${501 - indexablePeoplePaths.size} deferred People profiles are present`);
 }
 
-if (sitemapLocs.size !== sitemapPolicy.total) {
-  fail(`sitemap.xml: ${sitemapLocs.size} locs vs coordinated baseline ${sitemapPolicy.total}`);
-}
-requireExactSet(
-  'sitemap.xml developer guide routes',
-  new Set([...sitemapLocs].filter((path) => path.startsWith('/developers/docs/'))),
-  developerGuidePaths,
-);
-requireExactSet(
-  'sitemap.xml lunar-return routes',
-  new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?lunar-return\/$/u.test(path))),
-  new Set(['/lunar-return/']),
-);
-if (!sitemapBlocksByPath.get('/lunar-return/')?.includes('<lastmod>2026-09-06</lastmod>')) {
-  fail('sitemap.xml: lunar-return modification date must match the reviewed source revision');
-}
-requireExactSet(
-  'sitemap.xml numerology routes',
-  new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?numerology\/$/u.test(path))),
-  new Set(['/numerology/']),
-);
 if (!sitemapBlocksByPath.get('/numerology/')?.includes('<lastmod>2026-09-07</lastmod>')) {
   fail('sitemap.xml: numerology modification date must match the reviewed source revision');
-}
-requireExactSet(
-  'sitemap.xml void-of-course routes',
-  new Set([...sitemapLocs].filter((path) => /^\/(?:(?:es|pt|fr|it|ru)\/)?void-of-course-moon\/$/u.test(path))),
-  new Set(['/void-of-course-moon/']),
-);
-for (const family of indexedFamilies) {
-  const locs = [...sitemapLocs].filter((loc) => family.pattern.test(loc));
-  if (locs.length !== family.expected) {
-    fail(`sitemap.xml: ${locs.length} ${family.label} vs baseline ${family.expected}`);
-  }
-  for (const loc of locs) {
-    const target = targetPath(loc);
-    if (!target || !(await exists(target))) continue;
-    const html = idCache.get(target) ?? (await readFile(target, 'utf8'));
-    const canonical = canonicalHref(html);
-    if (canonical !== `https://zodiacs.org${loc}`) {
-      fail(`sitemap.xml: ${loc} is not self-canonical — ${canonical ?? 'missing'}`);
-    }
-    const block = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)]
-      .find((match) => match[1].includes(`<loc>https://zodiacs.org${loc}</loc>`))?.[1] ?? '';
-    if (!family.localized && /hreflang=/.test(block)) {
-      fail(`sitemap.xml: English-only ${family.label} route has hreflang alternates — ${loc}`);
-    }
-    if (family.localized) {
-      for (const hreflang of expectedHreflangsForPath(loc)) {
-        if (!block.includes(`hreflang="${hreflang}"`)) {
-          fail(`sitemap.xml: localized ${family.label} route is missing ${hreflang} alternate — ${loc}`);
-        }
-      }
-    }
-  }
 }
 for (const policy of HREFLANG_LOCALE_POLICY) {
   const count = [...sitemap.matchAll(new RegExp(`hreflang="${policy.hreflang}"`, 'g'))].length;
@@ -1422,7 +1268,10 @@ for (const event of eventsPublication.timeline ?? []) {
   const url = new URL(event.path, SITE_ORIGIN);
   if (publishedEventPaths.has(url.pathname)) continue;
   const target = targetPath(url.pathname);
-  if (!sitemapLocs.has(url.pathname) || !target || !(await exists(target))) {
+  const timelineHtml = target && (await exists(target))
+    ? idCache.get(target) ?? (await readFile(target, 'utf8'))
+    : null;
+  if (!timelineHtml || !extractPageMetadata(timelineHtml).searchable) {
     fail(`events-publication: timeline ${event.id} links outside the public index — ${event.path}`);
     continue;
   }
@@ -1445,11 +1294,12 @@ for (const file of files) {
   const noindex = hasNoindex(html);
   const canonical = canonicalHref(html);
   if (published) {
-    if (noindex) fail(`events-publication: published route is noindex — ${pagePath}`);
+    if (noindex !== !isIndexable(pagePath)) {
+      fail(`events-publication: published route noindex (${noindex}) disagrees with the shared rule — ${pagePath}`);
+    }
     if (canonical !== `${SITE_ORIGIN}${pagePath}`) {
       fail(`events-publication: ${pagePath} is not self-canonical — ${canonical ?? 'missing'}`);
     }
-    if (!sitemapLocs.has(pagePath)) fail(`events-publication: sitemap is missing ${pagePath}`);
     if (!indexedSearchPaths.has(pagePath)) fail(`events-publication: search is missing ${pagePath}`);
     if (!html.includes('href="/feeds/events.xml"')) {
       fail(`events-publication: ${pagePath} has no events-feed autodiscovery link`);
@@ -1461,8 +1311,9 @@ for (const file of files) {
   }
 }
 
-// Reverse coverage: every indexable HTML page must declare a same-origin
-// canonical URL that appears in the sitemap.
+// Every indexable HTML page must declare a same-origin canonical URL. The
+// sitemap is the short keep list above, so an indexable page outside it is
+// expected and is found through links.
 for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   if (hasNoindex(html)) continue;
@@ -1481,10 +1332,6 @@ for (const file of files) {
   }
   if (url.origin !== 'https://zodiacs.org') {
     fail(`${rel}: canonical on unexpected origin — ${canonical}`);
-    continue;
-  }
-  if (!sitemapLocs.has(url.pathname)) {
-    fail(`${rel}: canonical missing from sitemap — ${url.pathname}`);
   }
 }
 

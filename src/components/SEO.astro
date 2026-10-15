@@ -24,6 +24,7 @@ import {
   schemaCatalog,
 } from '../strings/seo';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
+import { noindexRuleFor } from '../lib/seo/indexing.mjs';
 
 interface Props {
   title: string;
@@ -47,13 +48,18 @@ const {
   image: explicitImage,
   imageAlt: explicitImageAlt,
   type = 'website',
-  noindex = false,
+  noindex: pageNoindex = false,
   nofollow = false,
   jsonLd = [],
   locale: rawLocale = 'en',
 } = Astro.props;
 
 const site = 'https://zodiacs.org';
+// Template detail pages are noindex by the shared rule the sitemap also
+// reads; a page can still opt in on its own. A page noindexed only by the
+// rule says so on its robots tag, so the site's own search keeps it.
+const noindexRule = pageNoindex ? null : noindexRuleFor(path) ?? noindexRuleFor(canonicalPath);
+const noindex = pageNoindex || noindexRule !== null;
 const locale = normalizeCatalogLocale(rawLocale);
 const schema = schemaCatalog(locale);
 const canonical = site + canonicalPath;
@@ -270,6 +276,7 @@ const graph = graphNodes.length
 )}
 <meta
   name="robots"
+  data-noindex-rule={noindexRule?.label}
   content={noindex
     ? `${nofollow ? 'noindex, nofollow' : 'noindex, follow'}, max-image-preview:large`
     : 'max-image-preview:large'}

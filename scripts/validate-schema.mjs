@@ -4,6 +4,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { EDITORIAL_METADATA } from '../src/lib/editorial-metadata.mjs';
+import { NOINDEX_RULE_ATTRIBUTE } from '../src/lib/seo/indexing.mjs';
 import { editorialGraphErrors, editorialSitemapErrors } from './editorial-metadata-checks.mjs';
 import { organizationIdentityErrors } from './organization-identity.mjs';
 import { WEB_APPLICATION_PATHS } from '../src/strings/seo.en.mjs';
@@ -229,7 +230,12 @@ function validateApplication(node, label) {
 for (const file of await htmlFiles(dist)) {
   const html = await readFile(file, 'utf8');
   const label = relative(dist, file).split(sep).join('/');
-  if (attr(html, 'name', 'robots')) continue;
+  // A page noindexed only by the shared template rule (src/lib/seo/indexing.mjs)
+  // still owns its editorial and developer graph; check those, not the
+  // requirements of an indexable page.
+  const noindex = attr(html, 'name', 'robots');
+  const ruleOnlyNoindex = noindex && new RegExp(`<meta\\b[^>]*\\b${NOINDEX_RULE_ATTRIBUTE}=`, 'i').test(html);
+  if (noindex && !ruleOnlyNoindex) continue;
   const builtPath = label === 'index.html'
     ? '/'
     : label.endsWith('/index.html')
@@ -264,7 +270,7 @@ for (const file of await htmlFiles(dist)) {
   documentCount += documents.length;
   nodeCount += nodes.length;
 
-  if (pathname !== '/') {
+  if (pathname !== '/' && !noindex) {
     const breadcrumb = nodes.find((node) => hasType(node, 'BreadcrumbList'));
     if (!breadcrumb) failures.push(`${label}: indexable page is missing BreadcrumbList`);
     else validateBreadcrumb(breadcrumb, label, pathname);
@@ -359,10 +365,10 @@ for (const file of await htmlFiles(dist)) {
 }
 
 for (const path of Object.keys(EDITORIAL_METADATA)) {
-  if (!seenEditorial.has(path)) failures.push(`${path}: editorial owner missing from indexable output`);
+  if (!seenEditorial.has(path)) failures.push(`${path}: editorial owner missing from output`);
 }
 for (const path of Object.keys(DEVELOPER_PAGES)) {
-  if (!seenDeveloper.has(path)) failures.push(`${path}: developer page missing from indexable output`);
+  if (!seenDeveloper.has(path)) failures.push(`${path}: developer page missing from output`);
 }
 failures.push(...editorialSitemapErrors(await readFile(resolve(dist, 'sitemap.xml'), 'utf8')));
 

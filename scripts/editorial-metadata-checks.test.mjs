@@ -47,11 +47,18 @@ describe('editorial metadata ownership', () => {
     expect(editorialGraphErrors(path, [{ ...article, dateModified: '2026-09-06T00:00:00.000Z' }])).not.toEqual([]);
   });
 
-  it('requires all 70 sitemap dates and rejects missing, duplicate or stale entries', () => {
+  it('requires a listed owner\'s sitemap date and rejects missing, duplicate or stale entries', () => {
+    const listed = new Set(Object.keys(EDITORIAL_METADATA));
     const xml = Object.entries(EDITORIAL_METADATA).map(([path, x]) => `<url><loc>https://zodiacs.org${path}</loc><lastmod>${x.modified}</lastmod></url>`).join('');
-    expect(editorialSitemapErrors(xml)).toEqual([]);
-    expect(editorialSitemapErrors(xml.replace('<lastmod>2026-09-05</lastmod>', '<lastmod>2026-08-23</lastmod>'))).not.toEqual([]);
-    expect(editorialSitemapErrors(xml.replace(/<url>.*?<\/url>/u, ''))).not.toEqual([]);
-    expect(editorialSitemapErrors(xml + xml)).toHaveLength(70);
+    expect(editorialSitemapErrors(xml, listed)).toEqual([]);
+    expect(editorialSitemapErrors(xml.replace('<lastmod>2026-09-05</lastmod>', '<lastmod>2026-08-23</lastmod>'), listed)).not.toEqual([]);
+    expect(editorialSitemapErrors(xml.replace(/<url>.*?<\/url>/u, ''), listed)).not.toEqual([]);
+    expect(editorialSitemapErrors(xml + xml, listed)).toHaveLength(70);
+  });
+
+  it('keeps owners off the sitemap keep list out of the sitemap', () => {
+    const xml = Object.entries(EDITORIAL_METADATA).map(([path, x]) => `<url><loc>https://zodiacs.org${path}</loc><lastmod>${x.modified}</lastmod></url>`).join('');
+    expect(editorialSitemapErrors('<urlset></urlset>')).toEqual([]);
+    expect(editorialSitemapErrors(xml)).toHaveLength(70);
   });
 });

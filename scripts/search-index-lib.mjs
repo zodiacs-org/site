@@ -1,3 +1,5 @@
+import { NOINDEX_RULE_ATTRIBUTE } from '../src/lib/seo/indexing.mjs';
+
 export const SEARCH_KINDS = Object.freeze([
   'tool',
   'sign',
@@ -167,6 +169,7 @@ export function extractPageMetadata(html) {
     .trim();
   let description = '';
   let noindex = false;
+  let noindexRuleOnly = false;
 
   for (const match of html.matchAll(/<meta\b[^>]*>/gi)) {
     const attrs = attributes(match[0]);
@@ -179,11 +182,16 @@ export function extractPageMetadata(html) {
         .toLowerCase()
         .split(/[\s,]+/)
         .filter(Boolean);
-      if (directives.includes('noindex')) noindex = true;
+      if (directives.includes('noindex')) {
+        noindex = true;
+        noindexRuleOnly = attrs.has(NOINDEX_RULE_ATTRIBUTE);
+      }
     }
   }
 
-  return { title, description, noindex };
+  // `searchable`: the site's own search lists the page. A page kept out of
+  // search engines only by the shared template rule stays searchable here.
+  return { title, description, noindex, searchable: !noindex || noindexRuleOnly };
 }
 
 export function isEnglishHtml(html) {

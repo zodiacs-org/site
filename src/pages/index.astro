@@ -13,6 +13,7 @@ import WelcomeBack from '../islands/WelcomeBack';
 import glassMaps from '../data/glass-maps.json';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import { UI } from '../lib/i18n';
+import { TOOLS_HUB } from '../lib/nav-tools';
 import { SIGNS } from '../lib/signs';
 import { ORGANIZATION_NAME, SOCIAL_PROFILES } from '../strings/seo.en.mjs';
 import homeFirstPaintCss from '../home/home-first-paint.css?inline';
@@ -73,6 +74,13 @@ const tools = [
   { href: '/rising-sign/', title: 'Rising sign', promise: 'How people first meet you.', hue: 'var(--sign-libra)', kind: 'rising' as const },
   { href: '/compatibility/', title: 'Compatibility', promise: 'See how two charts connect.', hue: 'var(--sign-leo)', kind: 'compat' as const },
 ];
+const hubTool = (href: string) => {
+  const tool = TOOLS_HUB.find((entry) => entry.href === href);
+  if (!tool) throw new Error(`No tools-hub entry for ${href}`);
+  return tool;
+};
+const voidOfCourse = hubTool('/void-of-course-moon/');
+const numerology = hubTool('/numerology/');
 ---
 <Base
   inlineCriticalCss
@@ -592,6 +600,9 @@ const tools = [
           <strong>Eclipses.</strong> Every solar and lunar eclipse through
           2028, with peak times in UTC — <a href="/eclipses/">see the dates</a>.
         </li>
+        <li>
+          <strong><a href={voidOfCourse.href}>{voidOfCourse.title}</a>.</strong> {voidOfCourse.promise}
+        </li>
       </ul>
     </div>
   </section>
@@ -636,6 +647,7 @@ const tools = [
         <h3>Free astrology tools</h3>
         <p>Birth chart, moon, rising, compatibility, and <AstroTerm term="transit" label="transits" surface="home-pillars" />, calculated privately in your browser.</p>
         <a href="/tools/">Astrology tools →</a>
+        <a href={numerology.href}>{numerology.title} →</a>
       </div>
       <div class="pillar reveal" style="--reveal-delay:160ms">
         <em class="kicker">Keep</em>

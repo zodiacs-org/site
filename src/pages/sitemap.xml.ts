@@ -1,8 +1,11 @@
 /**
- * The sitemap must cover BOTH wings — Astro routes and the legacy pages
- * served verbatim from public/ — which is why this is a custom endpoint
- * rather than @astrojs/sitemap (which only sees Astro routes and would
- * move the sitemap URL robots.txt points at).
+ * A custom endpoint rather than @astrojs/sitemap (which only sees Astro
+ * routes and would move the sitemap URL robots.txt points at).
+ *
+ * The sitemap lists exactly SITEMAP_PATHS from src/lib/seo/indexing.mjs, in
+ * that order. Every route below still dates itself the way it always has;
+ * the list only selects which of them are offered to crawlers, and a listed
+ * page that the shared noindex rule matches fails the build.
  */
 import type { APIRoute } from 'astro';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
@@ -31,6 +34,7 @@ import registryResearchPublicationData from '../data/registry-research/publicati
 import type { EventsPublication } from '../lib/events/publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
+import { SITEMAP_MAX_URLS, SITEMAP_PATHS, isIndexable } from '../lib/seo/indexing.mjs';
 
 const SITE = 'https://zodiacs.org';
 const eventsPublication = eventsPublicationData as EventsPublication;
@@ -543,10 +547,16 @@ export const GET: APIRoute = async () => {
       }];
     });
   });
-  const allUrls = [
-    ...urls,
-    ...localizedUrls,
-  ];
+  const routesByLoc = new Map([...urls, ...localizedUrls].map((url) => [url.loc, url] as const));
+  const allUrls = SITEMAP_PATHS.map((loc) => {
+    const url = routesByLoc.get(loc);
+    if (!url) throw new Error(`Sitemap path has no route: ${loc}`);
+    if (!isIndexable(loc)) throw new Error(`Sitemap path is noindex: ${loc}`);
+    return url;
+  });
+  if (allUrls.length > SITEMAP_MAX_URLS) {
+    throw new Error(`Sitemap has ${allUrls.length} URLs; the ceiling is ${SITEMAP_MAX_URLS}`);
+  }
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
