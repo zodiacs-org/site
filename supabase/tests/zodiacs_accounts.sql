@@ -111,6 +111,14 @@ begin
   reset role;
   perform pg_temp.assert_accounts((select count(*) = 3 from public.saved_pages where user_id = u), 'the owner removed one item; site and assistant rows share the list');
 
+  -- The assistant saving a link already saved on the site replaces that link-only row with its fuller record.
+  set local role service_role;
+  next := public.zodiacs_accounts_v1('save', who || jsonb_build_object('kind', 'compatibility', 'title', 'Ana and Luis', 'href', '/compatibility/#a=x&b=y', 'summary', 'A strong match.', 'detail', record));
+  perform pg_temp.assert_accounts((next->>'created')::boolean, 'a site row is replaced, reported as a new save');
+  reset role;
+  perform pg_temp.assert_accounts((select count(*) = 1 and bool_and(source = 'assistant' and summary = 'A strong match.' and detail = record) from public.saved_pages where user_id = u and href = '/compatibility/#a=x&b=y'), 'one row, now the assistant''s');
+  perform pg_temp.assert_accounts((select count(*) = 3 from public.saved_pages where user_id = u), 'the replacement keeps the count');
+
   -- One limit for both: 100 rows per account.
   insert into public.saved_pages(user_id, kind, title, href)
     select u, 'occasion', 'Filler', '/occasions/#filler=' || n from generate_series(1, 97) n;

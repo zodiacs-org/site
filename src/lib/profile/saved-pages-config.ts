@@ -205,6 +205,27 @@ export function takePendingSave(
   return readPending(raw, now);
 }
 
+/**
+ * Saves the waiting item with `save` and removes it only once it is saved (or
+ * was already), so a full profile or a failed request does not lose it.
+ */
+export async function settlePendingSave<Outcome extends string>(
+  save: (draft: SavedPageDraft) => Promise<Outcome>,
+  now: number = Date.now(),
+  storage: StorageLike | null = defaultStorage(),
+): Promise<{ draft: SavedPageDraft; outcome: Outcome | 'error' } | null> {
+  const draft = peekPendingSave(now, storage);
+  if (!draft) return null;
+  let outcome: Outcome | 'error';
+  try {
+    outcome = await save(draft);
+  } catch {
+    outcome = 'error';
+  }
+  if (outcome === 'saved' || outcome === 'exists') takePendingSave(now, storage);
+  return { draft, outcome };
+}
+
 /** The project ref Supabase names its browser storage after (the URL's first label). */
 export function supabaseProjectRef(url: string | undefined): string | null {
   if (!url) return null;

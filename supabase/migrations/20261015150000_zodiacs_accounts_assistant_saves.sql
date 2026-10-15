@@ -187,7 +187,8 @@ alter table public.saved_pages add constraint saved_pages_assistant_detail check
   and (detail is null or (jsonb_typeof(detail) = 'object' and octet_length(detail::text) <= 16384
     and detail->>'schema' = 'zodiacs.assistant-save.v1'))
 );
-grant select, insert on public.saved_pages to service_role;
+-- Delete only for the RPC's replacement of a site row with the assistant's fuller record.
+grant select, insert, delete on public.saved_pages to service_role;
 
 -- 5. The server's only entry point. Security invoker with an empty-ish path; only
 -- the service role may call it.
@@ -204,9 +205,14 @@ begin
   end if;
   if operation = 'oauth' then return to_jsonb(true); end if;
   owner := (input->>'user')::uuid;
-  -- The same link again: one row, left exactly as it was.
+  -- The same link saved by the assistant again: one row, left exactly as it was.
+  -- The same link saved on the site holds only the link, so the assistant's
+  -- record (with its summary and worked-out result) takes its place.
   select * into saved from public.saved_pages where user_id = owner and href = input->>'href';
-  if found then return jsonb_build_object('id', saved.id, 'saved_at', saved.saved_at, 'created', false); end if;
+  if found and saved.source = 'assistant' then
+    return jsonb_build_object('id', saved.id, 'saved_at', saved.saved_at, 'created', false);
+  end if;
+  if found then delete from public.saved_pages where id = saved.id; end if;
   begin
     -- saved_pages' own trigger serialises per account and enforces the 100-row limit.
     insert into public.saved_pages(user_id, kind, title, href, source, summary, detail)

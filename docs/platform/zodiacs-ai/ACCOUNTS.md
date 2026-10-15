@@ -256,7 +256,9 @@ synthetic birth details only.
 - [ ] Save each kind once. Each row appears under "Saved to your profile" with
       its summary, "from your assistant", a working link and Remove, for that
       account only, under RLS. Another account sees none. A repeat save returns
-      `alreadySaved: true` and leaves the row unchanged. "Download as JSON"
+      `alreadySaved: true` and leaves the row unchanged. Saving from the assistant a link
+      already saved on the site replaces that link-only row with the assistant's
+      record, still one row. "Download as JSON"
       includes the rows with their `detail`.
 - [ ] Forged inputs: extra fields such as a `result` or `score`, markup in the
       label, a famous name Zodiacs lacks, and an oversized window are refused.

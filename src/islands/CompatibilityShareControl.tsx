@@ -108,12 +108,40 @@ export function CompatibilityShareControl({
   );
 }
 
+interface CompatibilityResult {
+  a: CompatibilitySharePerson;
+  b: CompatibilitySharePerson;
+  summary: PairSummary;
+  sides: readonly [SavedPairSide | null, SavedPairSide | null];
+}
+
 /**
- * "Save to your profile" under a compatibility result. It rides in this
- * module, which the result already loads after it renders, so the
- * compatibility page's first load carries nothing for it.
+ * The actions under a compatibility result: the pair guide, the share card
+ * and, where the build has it on, "Save to your profile". The calculator
+ * hands over the whole result, and the fields each action needs are picked
+ * here, in this module that loads after the result renders, so the
+ * compatibility page's first load carries none of it.
  */
-export function CompatibilityAccountSave({ a, b, charts, locale }: {
+export function CompatibilityResultActions({ result, charts, locale }: {
+  result: CompatibilityResult;
+  charts: readonly SavedChart[];
+  locale: Locale;
+}) {
+  const person = ({ label, bodies, asc, untimedDate, utc }: CompatibilitySharePerson): CompatibilitySharePerson => (
+    { label, bodies, asc, untimedDate, utc }
+  );
+  const [a, b] = result.sides;
+  return (
+    <>
+      <CompatibilityPairingCta a={person(result.a)} b={person(result.b)} locale={locale} />
+      <CompatibilityShareControl a={person(result.a)} b={person(result.b)} summary={result.summary} locale={locale} />
+      {a && b && <CompatibilityAccountSave a={a} b={b} charts={charts} locale={locale} />}
+    </>
+  );
+}
+
+/** "Save to your profile" under a compatibility result, in English, where the build has it on. */
+function CompatibilityAccountSave({ a, b, charts, locale }: {
   a: SavedPairSide;
   b: SavedPairSide;
   charts: readonly SavedChart[];

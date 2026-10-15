@@ -9,6 +9,7 @@ import {
   hasStoredAuthSession,
   parseSavedPageRow,
   peekPendingSave,
+  settlePendingSave,
   savedPageDraft,
   savedPageHref,
   stashPendingSave,
@@ -115,6 +116,24 @@ describe('pending save', () => {
 
     stashPendingSave(occasion, 1_000, storage);
     expect(takePendingSave(1_000 + PENDING_SAVE_TTL_MS + 1, storage)).toBeNull();
+    expect(storage.map.has(PENDING_SAVE_KEY)).toBe(false);
+  });
+
+  it('keeps the waiting page until it is saved, so a full profile or a failure does not lose it', async () => {
+    const storage = memoryStorage();
+    stashPendingSave(occasion, 1_000, storage);
+    for (const failure of ['full', 'error', 'signed-out'] as const) {
+      expect(await settlePendingSave(async () => failure, 2_000, storage)).toEqual({ draft: occasion, outcome: failure });
+      expect(peekPendingSave(2_000, storage)).toEqual(occasion);
+    }
+    expect(await settlePendingSave(async () => { throw new Error('offline'); }, 2_000, storage)).toEqual({ draft: occasion, outcome: 'error' });
+    expect(peekPendingSave(2_000, storage)).toEqual(occasion);
+    expect(await settlePendingSave(async () => 'saved' as const, 2_000, storage)).toEqual({ draft: occasion, outcome: 'saved' });
+    expect(storage.map.has(PENDING_SAVE_KEY)).toBe(false);
+    expect(await settlePendingSave(async () => 'saved' as const, 3_000, storage)).toBeNull();
+
+    stashPendingSave(occasion, 1_000, storage);
+    expect(await settlePendingSave(async () => 'exists' as const, 2_000, storage)).toEqual({ draft: occasion, outcome: 'exists' });
     expect(storage.map.has(PENDING_SAVE_KEY)).toBe(false);
   });
 

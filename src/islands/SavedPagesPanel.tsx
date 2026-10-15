@@ -8,7 +8,7 @@ import { useEffect, useState } from 'preact/hooks';
 import {
   SAVED_PAGE_KIND_LABELS,
   peekPendingSave,
-  takePendingSave,
+  settlePendingSave,
   type SavedPage,
   type SavedPageDraft,
 } from '../lib/profile/saved-pages-config';
@@ -27,6 +27,8 @@ const COPY = {
   empty: 'Nothing saved yet. Use “Save to your profile” under a compatibility reading or an occasion card.',
   pending: 'Sign in above and this will be saved to your profile:',
   justSaved: 'Saved to your profile:',
+  pendingFull: 'Your profile is full, so this was not saved yet. Remove a page below, then reload to save it:',
+  pendingError: 'This could not be saved yet. Reload the page to try again:',
   remove: 'Remove',
   removed: 'Removed from your profile.',
   loadError: 'Your saved pages could not be loaded. Reload the page to try again.',
@@ -63,12 +65,11 @@ export default function SavedPagesPanel({ enabled }: Props) {
         // synchronously; let the callback return first.
         setTimeout(() => void (async () => {
           try {
-            const waiting = takePendingSave();
-            if (waiting) {
-              const outcome = await cloud.saveSavedPage(waiting);
-              if (active && (outcome === 'saved' || outcome === 'exists')) {
-                setStatus({ text: `${COPY.justSaved} ${waiting.title}` });
-              }
+            const settled = await settlePendingSave((draft) => cloud.saveSavedPage(draft));
+            if (settled && active) {
+              const { draft, outcome } = settled;
+              if (outcome === 'saved' || outcome === 'exists') setStatus({ text: `${COPY.justSaved} ${draft.title}` });
+              else setStatus({ text: `${outcome === 'full' ? COPY.pendingFull : COPY.pendingError} ${draft.title}`, error: true });
             }
             const rows = await cloud.listSavedPages();
             if (!active) return;
