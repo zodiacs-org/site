@@ -120,9 +120,12 @@ describe('a page’s content', () => {
 
   it('includes the words its stylesheets add, and the data-label they show', async () => {
     expect(stylesheetCopy('.a::after { content: "Show"; } .b::before{content:\'Hide\'} .c::after { content: "\\2192"; } .d::before { content: attr(data-label) ": "; } .e { align-content: center; background: url("a.png"); }'))
-      .toEqual([{ text: 'Show', selectors: [['a']] }, { text: 'Hide', selectors: [['b']] }]);
-    expect(stylesheetCopy('@media (min-width: 40em) { .x > summary::after, li:not(.y)[data-z="a.b"]::before { content: "Open"; } }'))
-      .toEqual([{ text: 'Open', selectors: [['x'], []] }]);
+      .toEqual([{ text: '"Show"', selector: '.a::after', selectors: [['a']] }, { text: "'Hide'", selector: '.b::before', selectors: [['b']] }]);
+    expect(stylesheetCopy('/* a { } */ @media (min-width: 40em) { .x > summary::after, li:not(.y)[data-z="a.b"]::before { content: "Open" " now"; } } .q::after { content: "a } b"; }'))
+      .toEqual([
+        { text: '"Open" " now"', selector: '@media (min-width: 40em) .x > summary::after, li:not(.y)[data-z="a.b"]::before', selectors: [['x'], []] },
+        { text: '"a } b"', selector: '.q::after', selectors: [['q']] },
+      ]);
     expect(pageStylesheets('<head><link rel="preload stylesheet" href="/_astro/a.css"><link rel="icon" href="/i.png"><style>.x::after{content:"Go"}</style></head>'))
       .toEqual({ hrefs: ['/_astro/a.css'], inline: ['.x::after{content:"Go"}'] });
     // The word reaches a page whose content carries the rule's class, and only that page.
@@ -135,6 +138,18 @@ describe('a page’s content', () => {
     const html = page();
     expect(textDifference(html, html, 3, { beforeGenerated: ['Show'], afterGenerated: ['Open'] }))
       .toEqual({ removed: ['stylesheet: Show'], added: ['stylesheet: Open'] });
+    // Words moved between two states of one element are a change too: each word keeps its selector.
+    const states = (closed, open) => `.toggle > summary::after { content: "${closed}"; } .toggle[open] > summary::after { content: "${open}"; }`;
+    const swapBase = await build('swap-base', dates, pages, { css: states('Show', 'Hide') });
+    const swapHead = await build('swap-head', dates, pages, { css: states('Hide', 'Show') });
+    expect(compare(await fingerprint(swapBase), await fingerprint(swapHead), { today: '2026-10-15' }).undated)
+      .toEqual([{ path: '/events/', lastmod: '2026-10-01' }]);
+    // So are a word moved into a media query, and the parts of one declaration reordered.
+    const narrow = await build('narrow-head', dates, pages, { css: `@media (max-width: 640px) { ${states('Show', 'Hide')} }` });
+    const reordered = await build('reordered-head', dates, pages, { css: '.toggle > summary::after { content: " more" "Show"; }' });
+    const ordered = await build('ordered-base', dates, pages, { css: '.toggle > summary::after { content: "Show" " more"; }' });
+    expect(compare(await fingerprint(swapBase), await fingerprint(narrow), { today: '2026-10-15' }).undated.map(({ path }) => path)).toEqual(['/events/']);
+    expect(compare(await fingerprint(ordered), await fingerprint(reordered), { today: '2026-10-15' }).undated.map(({ path }) => path)).toEqual(['/events/']);
     const label = (text) => contentDigest(Buffer.from(page({ main: `<table><tr><td data-label="${text}">1</td></tr></table>` })), '/p/');
     expect(label('Date')).not.toBe(label('Day'));
   });

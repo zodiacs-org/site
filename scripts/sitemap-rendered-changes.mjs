@@ -85,17 +85,50 @@ function requiredClasses(selector) {
 }
 
 /**
- * The words a stylesheet adds with `content`: each quoted string holding a letter in a content declaration, with the
- * classes each of its rule's selectors requires. The innermost rules are read, so rules inside @media count.
+ * A stylesheet's innermost rules, each with the at-rules around it (such as `@media (max-width: 640px)`), its
+ * selector and its declarations. Comments are dropped and quoted strings are read whole, so a brace inside one does
+ * not count.
+ */
+function cssRules(css) {
+  const text = css.replace(/\/\*[\s\S]*?\*\//gu, ' ');
+  const rules = [];
+  const stack = [];
+  let buffer = '';
+  for (let i = 0; i < text.length; i += 1) {
+    const character = text[i];
+    if (character === '"' || character === "'") {
+      let end = i + 1;
+      while (end < text.length && text[end] !== character) end += text[end] === '\\' ? 2 : 1;
+      buffer += text.slice(i, end + 1);
+      i = end;
+    } else if (character === '{') {
+      stack.push(squeeze(buffer));
+      buffer = '';
+    } else if (character === '}') {
+      const selector = stack.pop() ?? '';
+      if (buffer.trim()) rules.push({ context: stack.filter((prelude) => prelude.startsWith('@')), selector, block: buffer });
+      buffer = '';
+    } else {
+      buffer += character;
+    }
+  }
+  return rules;
+}
+
+/**
+ * The words a stylesheet adds with `content`: each content declaration holding a quoted string with a letter, kept
+ * whole (so the order of its parts counts), with its rule's selector and the at-rules around it (so a word moved
+ * between two states, or into another media query, is a change), and the classes each of the selector's parts
+ * requires.
  */
 export function stylesheetCopy(css) {
   const copy = [];
-  for (const [, selectorText, block] of css.replace(/\/\*[\s\S]*?\*\//gu, ' ').matchAll(/([^{}]*)\{([^{}]*)\}/gu)) {
-    const selectors = selectorText.split(',').map(requiredClasses);
-    for (const [, value] of block.matchAll(/(?<![-\w])content\s*:\s*([^;}]+)/giu)) {
-      for (const [, , text] of value.matchAll(/(["'])((?:\\.|(?!\1)[^\\])*)\1/gu)) {
-        if (/\p{L}/u.test(text)) copy.push({ text, selectors });
-      }
+  for (const { context, selector, block } of cssRules(css)) {
+    const selectors = selector.split(',').map(requiredClasses);
+    for (const [, value] of block.matchAll(/(?<![-\w])content\s*:\s*([^;]+)/giu)) {
+      const strings = [...value.matchAll(/(["'])((?:\\.|(?!\1)[^\\])*)\1/gu)].map(([, , text]) => text);
+      if (!strings.some((text) => /\p{L}/u.test(text))) continue;
+      copy.push({ text: squeeze(value), selector: [...context, selector].join(' '), selectors });
     }
   }
   return copy;
@@ -120,8 +153,9 @@ function contentRegion(html) {
 }
 
 /**
- * The words a page's stylesheets add to its content (stylesheetCopy over its linked and inline stylesheets), sorted and
- * distinct: a word counts when one of its rule's selectors requires only classes the content's markup carries.
+ * The words a page's stylesheets add to its content (stylesheetCopy over its linked and inline stylesheets), each with
+ * its rule's selector, sorted and distinct: a word counts when one of its rule's selectors requires only classes the
+ * content's markup carries.
  * `readStylesheet(href)` returns a linked stylesheet's text: from the build, or for IndexNow Changes from the live site.
  */
 export async function generatedCopy(html, readStylesheet) {
@@ -133,7 +167,7 @@ export async function generatedCopy(html, readStylesheet) {
   }
   const shown = sheets.flatMap(stylesheetCopy)
     .filter(({ selectors }) => selectors.some((required) => required.every((name) => classes.has(name))));
-  return [...new Set(shown.map(({ text }) => text))].sort();
+  return [...new Set(shown.map(({ selector, text }) => `${selector} → ${text}`))].sort();
 }
 
 /**
