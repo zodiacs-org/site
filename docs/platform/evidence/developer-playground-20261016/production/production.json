@@ -1,0 +1,67 @@
+{
+  "base": "https://zodiacs.org",
+  "checkedAt": "2026-10-16T22:42:40.017Z",
+  "results": [
+    {
+      "name": "the page is served, with the playground on it",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "examples.json is the one the merge builds: every documented request with its documented answer",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "served": 17,
+        "built": 17
+      }
+    },
+    {
+      "name": "the Markdown twin lists every request, each with a cURL command that sends its text as typed",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "missing": []
+      }
+    },
+    {
+      "name": "the browser bundle is byte for byte the one its sources build",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "served": "ea9be255eb216f80833afcb302684505086884859a3f3628f9ec1e87583b77fe",
+        "built": "ea9be255eb216f80833afcb302684505086884859a3f3628f9ec1e87583b77fe"
+      }
+    },
+    {
+      "name": "llms.txt lists the playground, its twin and examples.json",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "the sitemap lists the page",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "/developers/ links to the playground",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "/developers/compute/ links to the playground",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    }
+  ]
+}

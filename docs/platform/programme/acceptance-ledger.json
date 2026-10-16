@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-14 birth-time tools and the time atlas in production (site ef463943); A1.c and B3.b accepted",
+  "asOf": "2026-10-17 the compute API playground in production (site 6bbda021); P3.8 accepted",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1797,9 +1797,18 @@
       "dependsOn": [
         "P3.3"
       ],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "https://github.com/zodiacs-org/site/pull/767",
+        "https://github.com/zodiacs-org/site/actions/runs/38976740729",
+        "docs/platform/evidence/developer-playground-20261016/production/production.json: zodiacs.org at dpl_Bs8UKEC7igJeo1qBg2cUYVhrBUY7, built from 6bbda021, 8 of 8 checks (the same check before the merge: 0 of 8, control-before.json): the page, examples.json as the merge builds it, the Markdown twin with a --data-raw cURL command per request, the browser bundle byte for byte, llms.txt, the sitemap and the two pages that link to it",
+        "docs/platform/evidence/developer-playground-20261016/production/drive-production.json: tests/developer-playground-drive.mjs against zodiacs.org, 53 of 53: each of the 17 documented requests reproduces by an agent's path (the twin and the hosted API) and a person's path (the link, Send, Run in this browser, both citations), and its controls (a moved Sun, a forged citation) are called out",
+        "tests/api/compute-api-playground.test.ts: the browser entry and its bundle answer every documented request, and the refusals a body provokes, as the handler does",
+        "tests/api/compute-api-playground-code.test.ts: the code the page shows runs in cURL, JavaScript, Python, Swift and Ruby against the handler and prints its answer, and sends exactly the text the page shows",
+        "docs/platform/evidence/developer-playground-20261016/README.md"
+      ],
+      "notes": "Accepted 2026-10-17: /developers/playground/ offers the compute API's 14 documented requests and the three refusals a body provokes. Send posts a request to the hosted API, Run in this browser answers it with the API's own calculations bundled for the browser, and the page compares the answers with each other and with the documented one, path by path, and checks each citation against its receipt. Code in five languages and a link, which carries the request only when asked, reproduce it; /developers/playground.md and examples.json give agents the same. Its dependency P3.3 stays merged: its own gate (a negative control on the logs, latency and cost) touches nothing this gate needs, as P3.2's sidereal zodiac did not touch P2.D.frames."
     },
     {
       "id": "P3.10",

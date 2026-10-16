@@ -177,6 +177,38 @@ the 18 captures again.
   text and images. Every capture records the same size, layout and content
   length as main's; only the drawn pixels differ.
 
+## Production, 2026-10-17
+
+#767 merged as `6bbda021` on 2026-10-16 at 22:36 UTC (05:36 on 2026-10-17
+in Bangkok). Its tree is the tree of `520a058c`, the head every check above
+ran on.
+
+- **Deployment.** The zodiacs.org alias names
+  `dpl_Bs8UKEC7igJeo1qBg2cUYVhrBUY7`: readyState READY, target production,
+  githubCommitSha `6bbda021eb0886bb18bac953c883be4170dc4f10`, ready and
+  aliased at 2026-10-16T22:40:06Z.
+- **What production serves.**
+  [tools/production-check.mjs](tools/production-check.mjs) passed 8 of 8 at
+  2026-10-16T22:42:40Z ([production.json](production/production.json)): the
+  page with the playground on it; `examples.json` as the merge builds it,
+  every documented request with its documented answer; the Markdown twin,
+  with a `--data-raw` cURL command for each request; the browser bundle, byte
+  for byte the one its sources build; `llms.txt`; the sitemap; and
+  `/developers/` and `/developers/compute/`, which link to the page. The same
+  check before the merge, at 2026-10-16T19:51:15Z, passed 0 of 8
+  ([control-before.json](production/control-before.json)): the page and its
+  files answered 404, and nothing listed or linked to them.
+- **The drive against production.**
+  `node tests/developer-playground-drive.mjs --base-url https://zodiacs.org`
+  passed 53 of 53 at 2026-10-16T22:44:28Z
+  ([drive-production.json](production/drive-production.json)). Each of the
+  17 requests reproduces by an agent's path, the twin and the hosted API, and
+  by a person's path, the link, Send, Run in this browser and both
+  citations; the API, the browser and the documentation agree. Its controls
+  hold in production: an API answer with the Sun moved 0.001° is called
+  different, and a citation that is not its receipt's digest is called out.
+- **Main's Site Check** passed on the merge (run 38976740729).
+
 ## Privacy
 
 The compute API's privacy claim said no page, island or script of the site
