@@ -185,7 +185,8 @@ html[data-local-chrome-typography][lang='en'] {
   text-shadow: 0 1px 14px rgba(6, 7, 9, 0.72);
 }
 
-/* The sky line under the hero starts inside a short first screen. */
+/* The sky line under the hero starts inside a short first screen, so all
+   of its homepage geometry is here rather than in the deferred route CSS. */
 .home-sky {
   display: flex;
   align-items: center;
@@ -194,6 +195,19 @@ html[data-local-chrome-typography][lang='en'] {
   margin: 18px auto 0;
   padding-block: 14px;
 }
+.home-sky .skyticker {
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-wrap: nowrap;
+  gap: 10px 22px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  font-size: 0.875rem;
+  color: var(--ink-1);
+}
+.home-sky .skyticker::-webkit-scrollbar { display: none; }
+.home-sky .skyticker > * { flex: none; }
+.home-sky__link { flex: none; font-size: 0.875rem; }
 
 @media (max-width: 760px) {
   .hero__credit { display: none; }
@@ -209,6 +223,8 @@ html[data-local-chrome-typography][lang='en'] {
   .hero__ctas { flex-direction: column; align-items: stretch; width: 100%; margin-top: 22px; }
   .hero__ctas .btn { width: 100%; }
   .home-sky { flex-direction: column; align-items: flex-start; width: calc(100% - 40px); }
+  .home-sky .skyticker { flex-wrap: wrap; gap: 10px 16px; overflow: visible; }
+  .home-sky :is(.skyticker__item--direct, .skyticker__item--retro) { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -964,33 +964,8 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
   /* Welcome-back strip + sky ticker styles live in ../styles/today.css
      (shared with the localized homes, which render the same islands). */
 
-  /* ── Sky line ── */
-  .home-sky {
-    display: flex;
-    align-items: center;
-    gap: 10px 24px;
-    width: min(100% - 48px, 1200px);
-    margin: 18px auto 0;
-    padding-block: 14px;
-  }
-  .home-sky :global(.skyticker) {
-    flex: 1 1 auto;
-    min-width: 0;
-    flex-wrap: nowrap;
-    gap: 10px 22px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    font-size: 0.875rem;
-    color: var(--ink-1);
-  }
-  .home-sky :global(.skyticker::-webkit-scrollbar) { display: none; }
-  .home-sky :global(.skyticker > *) { flex: none; }
-  .home-sky__link { flex: none; font-size: 0.875rem; }
-  @media (max-width: 760px) {
-    .home-sky { flex-direction: column; align-items: flex-start; width: calc(100% - 40px); }
-    .home-sky :global(.skyticker) { flex-wrap: wrap; gap: 10px 16px; overflow: visible; }
-    .home-sky :global(:is(.skyticker__item--direct, .skyticker__item--retro)) { display: none; }
-  }
+  /* ── Sky line: its rules live in src/home/home-first-paint.css, since the
+     line is on the first screen of a phone and must not restyle later. ── */
 
   /* ── The sky today, by sign ── */
   .home-today { padding-block: clamp(64px, 8vw, 120px) 72px; }
