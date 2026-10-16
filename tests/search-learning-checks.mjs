@@ -5,7 +5,7 @@ const PROGRESS_KEY = 'zodiacs:learning-path:v2';
 const LEGACY_KEY = 'zodiacs:learning-path:v1';
 const PROFILE_KEY = 'zodiacs.profile.v1';
 const PROFILE_ID = '11111111-1111-4111-8111-111111111111';
-const STEP_LINKS = ['/birth-chart/', '/learn/houses/', '/learn/aspects/', '/today/', '/horoscopes/'];
+const STEP_LINKS = ['#signs', '/learn/planets/', '/learn/houses/', '/learn/aspects/', '/big-three/'];
 const PROFILE = JSON.stringify({
   version: 1,
   settings: { houseSystem: 'whole' },
@@ -170,12 +170,14 @@ export async function runSearchLearningChecks({ browser, baseURL, check, outDir 
       await page.evaluate(({ key, value }) => localStorage.setItem(key, value), { key: PROFILE_KEY, value: PROFILE });
       await expectProgress(page, 0, 0);
       await shot(page, `learning-new-${width}`);
+      // The big three lesson opens the big three page: the form only, never a
+      // calculation, even with a saved chart on the device.
       const first = page.locator('[data-learning-step="big-three"]');
       await first.locator('.learning-step__action').click();
-      await page.waitForURL((url) => url.pathname === '/birth-chart/');
+      await page.waitForURL((url) => url.pathname === '/big-three/');
       await page.locator('.calc__form').waitFor({ state: 'visible' });
-      check(`learning ${width}: opening the first lesson only opens the empty chart form`,
-        await page.locator('.calc__result').count() === 0);
+      check(`learning ${width}: opening the big three lesson only opens the empty chart form`,
+        await page.locator('.calc__result, [data-big-three-result]').count() === 0);
       await page.goBack({ waitUntil: 'domcontentloaded' });
       await ready(page);
       await expectProgress(page, 0, 1);

@@ -11,6 +11,7 @@ import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { GLOSSARY } from '../src/data/glossary.ts';
+import { LEARN_TOPICS } from '../src/lib/learn-topics.ts';
 import { CHINESE_ZODIAC_COPY } from '../src/data/chinese-zodiac.ts';
 import { DEFAULT_LOCALE, LOCALES } from '../src/lib/i18n/core.ts';
 import { EN } from '../src/strings/en.mjs';
@@ -275,18 +276,16 @@ async function loadStaticPages(repoRoot, context) {
   return pages.sort((a, b) => compareText(a.route, b.route));
 }
 
-export function extractLearnTopics(source) {
-  const topics = [];
-  const pattern = /<a\s+class="tile clusters__card"\s+href="([^"]+)">([\s\S]*?)<\/a>/g;
-  for (const match of source.matchAll(pattern)) {
-    const body = match[2];
-    const title = clean(body.match(/<strong>([\s\S]*?)<\/strong>/)?.[1] ?? '');
-    const description = clean(body.match(/<p>([\s\S]*?)<\/p>/)?.[1] ?? '');
-    if (!title || !description) throw new Error(`Incomplete learn topic ${match[1]}`);
-    topics.push({ route: match[1], title, description });
+/** The learn hub's library topics, as the hub prints them (src/lib/learn-topics.ts). */
+export function learnTopics(topics = LEARN_TOPICS) {
+  const list = topics.map(({ route, title, description }) => ({ route, title: clean(title), description: clean(description) }));
+  for (const topic of list) {
+    if (!topic.route.startsWith('/learn/') || !topic.title || !topic.description) {
+      throw new Error(`Incomplete learn topic ${topic.route}`);
+    }
   }
-  if (!topics.length) throw new Error('No learn topics found');
-  return topics;
+  if (!list.length) throw new Error('No learn topics found');
+  return list;
 }
 
 export function extractCanonicalLabels(strategy) {
@@ -382,8 +381,7 @@ export async function generateAssistantContext({ repoRoot = repo } = {}) {
     if (!staticByRoute.has(route)) throw new Error(`Tool route has no static page: ${route}`);
   }
 
-  const learnSource = await readFile(resolve(repoRoot, 'src/pages/learn/index.astro'), 'utf8');
-  const topics = extractLearnTopics(learnSource);
+  const topics = learnTopics();
   const strategy = await readFile(resolve(repoRoot, 'docs/STRATEGY.md'), 'utf8');
   const labels = extractCanonicalLabels(strategy).filter((label) => (
     !/\b(?:Astrofolio|Registry|Registro)\b|\bthe Twelve\b|\bView the record\b|\bgold sculpture\b/iu.test(label)
