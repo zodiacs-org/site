@@ -2,6 +2,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { contentDigest } from './sitemap-rendered-changes.mjs';
 import {
   BOOTSTRAP_DAYS,
   INDEXNOW_ENDPOINT,
@@ -37,8 +38,14 @@ function sitemap(entries) {
   ].join('\n');
 }
 
-/** A stand-in for IndexNow (and the live sitemap) that records each request. */
-function stub({ statuses = [200], sitemapXml = null } = {}) {
+/** A live page: its title and its main region's text. */
+const livePage = (url, text = 'As published.') => `<html><head><title>${url}</title></head><body><main><p>${text}</p></main></body></html>`;
+
+/**
+ * A stand-in for IndexNow, the live sitemap and the live pages that records each request. `pages` overrides a page's
+ * HTML, or with a number its HTTP status.
+ */
+function stub({ statuses = [200], sitemapXml = null, pages = {} } = {}) {
   const posts = [];
   const gets = [];
   const fetchImpl = async (url, init = {}) => {
@@ -49,7 +56,9 @@ function stub({ statuses = [200], sitemapXml = null } = {}) {
       return new Response(status === 200 || status === 202 ? '' : 'refused', { status });
     }
     gets.push(url);
-    return new Response(sitemapXml, { status: sitemapXml ? 200 : 503 });
+    if (url === SITEMAP_URL) return new Response(sitemapXml, { status: sitemapXml ? 200 : 503 });
+    const page = pages[url] ?? livePage(url);
+    return typeof page === 'number' ? new Response('', { status: page }) : new Response(page, { status: 200 });
   };
   return { fetchImpl, posts, gets };
 }
@@ -211,6 +220,11 @@ describe('runIndexNow', () => {
         [site('/developers/docs/')]: '2026-10-12',
         [site('/eclipses/')]: '2026-07-10',
       },
+      // The pages dated the run's day, digested as the sitemap-date check digests them.
+      digests: {
+        [site('/developers/compute/')]: contentDigest(Buffer.from(livePage(site('/developers/compute/'))), '/developers/compute/'),
+        [site('/developers/docs/')]: contentDigest(Buffer.from(livePage(site('/developers/docs/'))), '/developers/docs/'),
+      },
     });
     expect(renderReport(result)).toContain('No earlier sitemap was recorded. The sitemap read at 2026-10-12T06:00:00.000Z lists 4 URLs; 3 are dated 2026-09-12 or later.');
   });
@@ -285,7 +299,7 @@ describe('runIndexNow', () => {
   it('reads the live sitemap, and records nothing when it cannot', async () => {
     const live = stub({ sitemapXml: currentSitemap });
     await runIndexNow({ snapshotPath, publicDir, date: '2026-10-12', now, fetchImpl: live.fetchImpl, pause: noPause });
-    expect(live.gets).toEqual([SITEMAP_URL]);
+    expect(live.gets).toEqual([SITEMAP_URL, site('/developers/compute/'), site('/developers/docs/')]);
     expect(live.posts).toHaveLength(1);
 
     await rm(snapshotPath);
@@ -295,6 +309,106 @@ describe('runIndexNow', () => {
     expect(down.gets).toHaveLength(3);
     expect(down.posts).toHaveLength(0);
     await expect(readFile(snapshotPath, 'utf8')).rejects.toThrow('ENOENT');
+  });
+
+  it('submits a page dated the run\'s day whose content changed again that day, and only that page', async () => {
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now: () => '2026-10-12T05:00:00.000Z', fetchImpl: stub().fetchImpl, pause: noPause });
+    const docs = site('/developers/docs/');
+    const { fetchImpl, posts } = stub({ pages: { [docs]: livePage(docs, 'Revised the same day.') } });
+    const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now, fetchImpl, pause: noPause });
+    expect(result).toMatchObject({ mode: 'changes', changed: [], added: [], removed: [], sameDay: [docs], digested: 2 });
+    expect(posts.map(({ body }) => body.urlList)).toEqual([[docs]]);
+    expect(renderReport(result)).toContain('0 new, 0 changed, 0 removed, and 1 of the 2 dated in the last 3 days changed again since that run.');
+
+    // The new content is recorded: the next run on the same content submits nothing.
+    const again = stub({ pages: { [docs]: livePage(docs, 'Revised the same day.') } });
+    expect((await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now, fetchImpl: again.fetchImpl, pause: noPause })).urls).toEqual([]);
+    expect(again.posts).toHaveLength(0);
+  });
+
+  it('reads a snapshot from before content digests, and submits the pages dated the run\'s day once', async () => {
+    await mkdir(join(dir, '.indexnow'));
+    await writeFile(snapshotPath, JSON.stringify({
+      schema: 'zodiacs.indexnow-sitemap.v1', sitemap: SITEMAP_URL, readAt: '2026-10-12T05:00:00.000Z', urls: Object.fromEntries(parseSitemap(currentSitemap)),
+    }));
+    const { fetchImpl, posts } = stub();
+    const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now, fetchImpl, pause: noPause });
+    expect(result.sameDay).toEqual([site('/developers/compute/'), site('/developers/docs/')]);
+    expect(posts.map(({ body }) => body.urlList)).toEqual([[site('/developers/compute/'), site('/developers/docs/')]]);
+    expect((await snapshot()).schema).toBe(SNAPSHOT_SCHEMA);
+    const quiet = stub();
+    expect((await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now, fetchImpl: quiet.fetchImpl, pause: noPause })).urls).toEqual([]);
+  });
+
+  it('reads from the last run\'s day, so a late change reaches the first run of the next UTC day', async () => {
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now: () => '2026-10-12T20:00:00.000Z', fetchImpl: stub().fetchImpl, pause: noPause });
+    const docs = site('/developers/docs/');
+    // A deployment at 23:00 changed the page and its dispatch was lost; the next run is the scheduled one after midnight.
+    const { fetchImpl, posts } = stub({ pages: { [docs]: livePage(docs, 'Changed late on the 12th.') } });
+    const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-13', now: () => '2026-10-13T00:41:00.000Z', fetchImpl, pause: noPause });
+    expect(result.sameDay).toEqual([docs]);
+    expect(posts.map(({ body }) => body.urlList)).toEqual([[docs]]);
+  });
+
+  it('keeps comparing a page for two days after its date, whatever the runs between', async () => {
+    const docs = site('/developers/docs/');
+    const at = (time) => () => time;
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now: at('2026-10-12T20:00:00.000Z'), fetchImpl: stub().fetchImpl, pause: noPause });
+    // Runs on the next day, before and after midnight's recovery run, find nothing new …
+    for (const time of ['2026-10-13T00:41:00.000Z', '2026-10-13T06:41:00.000Z']) {
+      const quiet = stub();
+      expect((await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-13', now: at(time), fetchImpl: quiet.fetchImpl, pause: noPause })).urls).toEqual([]);
+    }
+    // … and a deployment or promotion of the 12th's content that becomes live later still reaches IndexNow.
+    const { fetchImpl, posts } = stub({ pages: { [docs]: livePage(docs, 'Promoted on the 13th.') } });
+    const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-13', now: at('2026-10-13T12:41:00.000Z'), fetchImpl, pause: noPause });
+    expect(result.sameDay).toEqual([docs]);
+    expect(posts.map(({ body }) => body.urlList)).toEqual([[docs]]);
+    // Three days on, the page has left the window and is no longer fetched.
+    const later = stub();
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-15', now: at('2026-10-15T06:41:00.000Z'), fetchImpl: later.fetchImpl, pause: noPause });
+    expect(later.gets).toEqual([]);
+  });
+
+  it('digests the words a page\'s stylesheets add, reading each stylesheet once', async () => {
+    const docs = site('/developers/docs/');
+    const compute = site('/developers/compute/');
+    const sheet = site('/_astro/events.css');
+    const styled = (url) => livePage(url).replace('<head>', '<head><link rel="stylesheet" href="/_astro/events.css">')
+      .replace('<main>', '<main><details class="toggle"><summary>Earlier</summary></details>');
+    const pages = (css) => ({ [docs]: styled(docs), [compute]: styled(compute), [sheet]: css });
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now: () => '2026-10-12T05:00:00.000Z', fetchImpl: stub({ pages: pages('.toggle::after { content: "Show"; }') }).fetchImpl, pause: noPause });
+    const { fetchImpl, posts, gets } = stub({ pages: pages('.toggle::after { content: "Open"; }') });
+    const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now, fetchImpl, pause: noPause });
+    expect(result.sameDay).toEqual([compute, docs]);
+    expect(posts.map(({ body }) => body.urlList)).toEqual([[compute, docs]]);
+    expect(gets.filter((url) => url === sheet)).toHaveLength(1);
+  });
+
+  it('digests the words a stylesheet imports, relative to that stylesheet, reading it once', async () => {
+    const docs = site('/developers/docs/');
+    const compute = site('/developers/compute/');
+    const sheet = site('/_astro/events.css');
+    const imported = site('/assets/extra.css');
+    const styled = (url) => livePage(url).replace('<head>', '<head><link rel="stylesheet" href="/_astro/events.css">')
+      .replace('<main>', '<main><details class="toggle"><summary>Earlier</summary></details>');
+    const pages = (css) => ({ [docs]: styled(docs), [compute]: styled(compute), [sheet]: '@import "../assets/extra.css";', [imported]: css });
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now: () => '2026-10-12T05:00:00.000Z', fetchImpl: stub({ pages: pages('.toggle::after { content: "Show"; }') }).fetchImpl, pause: noPause });
+    const { fetchImpl, posts, gets } = stub({ pages: pages('.toggle::after { content: "Open"; }') });
+    const result = await runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now, fetchImpl, pause: noPause });
+    expect(result.sameDay).toEqual([compute, docs]);
+    expect(posts.map(({ body }) => body.urlList)).toEqual([[compute, docs]]);
+    expect(gets.filter((url) => url === imported)).toHaveLength(1);
+  });
+
+  it('records nothing when a page dated the run\'s day cannot be read', async () => {
+    await runIndexNow({ snapshotPath, publicDir, sitemapXml: previousSitemap, date: '2026-10-11', now: () => '2026-10-11T06:00:00.000Z', fetchImpl: stub().fetchImpl, pause: noPause });
+    const before = await readFile(snapshotPath, 'utf8');
+    const { fetchImpl, posts } = stub({ pages: { [site('/developers/docs/')]: 503 } });
+    await expect(runIndexNow({ snapshotPath, publicDir, sitemapXml: currentSitemap, date: '2026-10-12', now, fetchImpl, pause: noPause }))
+      .rejects.toThrow(`Could not read ${site('/developers/docs/')}: HTTP 503`);
+    expect(posts).toHaveLength(0);
+    expect(await readFile(snapshotPath, 'utf8')).toBe(before);
   });
 });
 

@@ -155,8 +155,18 @@ const ASPECT_FACTS_ROUTES = ['/developers/compare/'] as const;
 // search_places and resolve_birth_time.
 const BIRTH_TIME_TOOLS_LASTMOD = '2026-10-14';
 const BIRTH_TIME_TOOLS_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
+// Pages that changed without a new date, as the Sitemap Dates check (F-97) found them on 2026-10-15 by building
+// each day's merges: the developer hub names the MCP adapter, 0.1.0-rc.23 with #740 and 0.1.0-rc.24 with #742;
+// the MCP guide gained the birth-time tools with #742; the guide index listed #735's seven guides; and
+// #737's pt-BR first-day ordinal ("1º de maio") changed the dates these Portuguese pages print.
+const ADAPTER_RC24_LASTMOD = '2026-10-14';
+const ADAPTER_RC24_ROUTES = ['/developers/', '/developers/docs/astrology-mcp-server/'] as const;
+const QUERY_GUIDES_INDEX_LASTMOD = '2026-10-13';
+const QUERY_GUIDES_INDEX_ROUTES = ['/developers/docs/'] as const;
+const PT_FIRST_DAY_LASTMOD = '2026-10-13';
+const PT_FIRST_DAY_ROUTES = ['/pt/eclipses/', '/pt/full-moon-calendar/', '/pt/mercury-retrograde/', '/pt/retrogrades/'] as const;
 // The compute API playground (P3.8): the page, and the developer index and compute API page that link to it.
-const PLAYGROUND_LASTMOD = '2026-10-15';
+const PLAYGROUND_LASTMOD = '2026-10-16';
 const PLAYGROUND_ROUTES = ['/developers/playground/', '/developers/', '/developers/compute/'] as const;
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
@@ -310,6 +320,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ENGINE_GEO_ROUTES.map((loc) => [loc, ENGINE_GEO_LASTMOD] as const),
   ...ASPECT_FACTS_ROUTES.map((loc) => [loc, ASPECT_FACTS_LASTMOD] as const),
   ...BIRTH_TIME_TOOLS_ROUTES.map((loc) => [loc, BIRTH_TIME_TOOLS_LASTMOD] as const),
+  ...ADAPTER_RC24_ROUTES.map((loc) => [loc, ADAPTER_RC24_LASTMOD] as const),
+  ...QUERY_GUIDES_INDEX_ROUTES.map((loc) => [loc, QUERY_GUIDES_INDEX_LASTMOD] as const),
+  ...PT_FIRST_DAY_ROUTES.map((loc) => [loc, PT_FIRST_DAY_LASTMOD] as const),
   ...PLAYGROUND_ROUTES.map((loc) => [loc, PLAYGROUND_LASTMOD] as const),
 ]);
 
@@ -434,7 +447,7 @@ export const GET: APIRoute = async () => {
 
   const urls: { loc: string; priority: number; lastmod?: string }[] = [
     ...evergreenUrls,
-    ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: DEVELOPER_GUIDES_LASTMOD })),
+    ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: EVERGREEN_LASTMOD.get(loc) ?? DEVELOPER_GUIDES_LASTMOD })),
     ...(registryAuraEntry ? [registryAuraEntry] : []),
     ...(gamesEnabled ? [
       { loc: '/race/', priority: 0.8, lastmod: '2026-08-19' },

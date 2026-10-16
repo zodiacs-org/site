@@ -1,0 +1,184 @@
+name: Sitemap Dates
+
+# F-97. IndexNow Changes (indexnow-changes.yml) submits a page as changed only
+# when its <lastmod> in the live sitemap changes, and src/pages/sitemap.xml.ts
+# keeps many of those dates by hand. This builds a pull request's base and its
+# head with production's feature flags, under one pinned clock, and fails when
+# a page's content changed while its sitemap date did not
+# (scripts/sitemap-rendered-changes.mjs). Run by hand, it compares any two
+# commits of the same daily edition, such as a merge and its first parent.
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: Commit to compare with (the same daily edition as head)
+        required: true
+        type: string
+      head:
+        description: Commit whose changed pages need new sitemap dates
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sitemap-dates-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  sitemap-dates:
+    name: Changed pages carry new sitemap dates
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Exactly the environment of site-check.yml's production-flags-build job
+    # (scripts/sitemap-rendered-changes.test.mjs holds the two equal), so both
+    # builds render what production renders. That includes the daily email
+    # chain's stand-ins: with them /birth-chart/ renders the post-chart brief
+    # in its <main>. Nothing here sends email or contacts Supabase.
+    env:
+      PUBLIC_COMPAT_INVITES_ENABLED: "1"
+      PUBLIC_REGISTRY_AURA_ENABLED: "1"
+      PUBLIC_REGISTRY_COLLECTION_ENABLED: "1"
+      PUBLIC_REGISTRY_TRADE_ENABLED: "1"
+      PUBLIC_SAVED_RECORDS_ENABLED: "1"
+      PUBLIC_WEEKLY_DIGEST_ENABLED: "1"
+      PUBLIC_ZODIAC_GAMES_ENABLED: "1"
+      PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_stand_in
+      PUBLIC_VAPID_KEY: ci-stand-in-vapid-public-key
+      PUBLIC_PLAUSIBLE_SCRIPT_URL: https://plausible.io/js/script.js
+      SOLANA_RPC_URL: https://production-flags-ci.invalid/rpc
+      BASE_RPC_URL: https://production-flags-ci.invalid/base
+      PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      SUPABASE_SERVICE_ROLE_KEY: ci_stand_in_service_role
+      DAILY_EMAIL_ENABLED: "1"
+      EMAIL_PROVIDER: resend
+      RESEND_API_KEY: re_ci_stand_in_sending
+      RESEND_CONTACTS_API_KEY: re_ci_stand_in_contacts
+      RESEND_FROM_EMAIL: "Zodiacs.org <ci@production-flags-ci.invalid>"
+      RESEND_DAILY_SEGMENT_ID: ci_stand_in_daily_segment
+      EMAIL_CONFIRM_SECRET: ci-stand-in-confirm-secret-00000000000000000000
+      DAILY_EMAIL_UNSUBSCRIBE_SECRET: ci-stand-in-unsubscribe-secret-000000000000000
+      DAILY_EMAIL_RECIPIENT_HASH_SECRET: ci-stand-in-recipient-secret-0000000000000000
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      # A pull request's checkout is the merge GitHub tests; its first parent
+      # is the base branch it merges into. The clock is noon UTC of the head's
+      # daily edition, so both builds pass the edition's freshness gates and
+      # print the same "now", and a re-run reads the same pages.
+      #
+      # Only the daily publication rolls the edition, in a commit of its own
+      # package (FILES and REGISTRY_FILES in daily-horoscopes.yml), which it
+      # may publish through a pull request (scripts/publish-through-pr.sh).
+      # Its pages take their dates from the edition, and builds of two
+      # editions cannot share one clock, so such a pull request has nothing
+      # to compare and passes. A head that rolls the edition and changes
+      # anything else fails.
+      - name: Choose the commits and the clock
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_INPUT: ${{ inputs.base }}
+          HEAD_INPUT: ${{ inputs.head }}
+          # The files the daily publication writes (.github/workflows/daily-horoscopes.yml stages their directories):
+          # under public/registry/ only the twelve sign pages (scripts/build-sign-pages.mjs), and under
+          # public/assets/data/registry-research/ its index and its items (scripts/build-registry-research.mjs).
+          DAILY_PACKAGE: '^(src/data/(daily|daily-publication|daily-publication-manifest|horoscope-program|horoscope-window)\.json|src/data/registry-research/(drafts|publication)\.json|public/assets/(data/registry-market-history\.v1|registry-outlook|registry-research-feed)\.json|public/assets/data/registry-research/(index\.json|items/[a-z0-9-]+\.json)|public/registry/(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)/index\.html)$'
+          # The publication adds and rewrites these files and deletes none; a research item it writes once and never
+          # rewrites, so the package holds an item only as a new file.
+          DAILY_ADDED_ONLY: '^public/assets/data/registry-research/items/'
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            head=$(git rev-parse HEAD)
+            base=$(git rev-parse HEAD^1)
+          else
+            head=$(git rev-parse --verify "${HEAD_INPUT}^{commit}")
+            base=$(git rev-parse --verify "${BASE_INPUT}^{commit}")
+          fi
+          edition_of() {
+            git show "${1}:src/data/daily.json" | node -e 'let s="";process.stdin.on("data",(c)=>s+=c).on("end",()=>{const d=JSON.parse(s).date;if(!/^\d{4}-\d{2}-\d{2}$/.test(d))throw new Error("no edition date");console.log(d)})'
+          }
+          edition=$(edition_of "$head")
+          if [ "$(edition_of "$base")" != "$edition" ]; then
+            other=$(git diff --name-status --no-renames "$base" "$head" | awk -F '\t' '{ path = $NF; if (path ~ ENVIRON["DAILY_PACKAGE"] && ($1 == "A" || ($1 == "M" && path !~ ENVIRON["DAILY_ADDED_ONLY"]))) next; print path }')
+            if [ -z "$other" ]; then
+              echo "::notice::The head rolls the daily edition to $edition and changes nothing else, so there is nothing to compare."
+              echo "The head rolls the daily edition to $edition and changes nothing else: nothing to compare." >> "$GITHUB_STEP_SUMMARY"
+              echo "compare=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "::error::The head rolls the daily edition and changes $(printf '%s\n' "$other" | wc -l | tr -d ' ') other file(s); compare two commits of one edition."
+            exit 1
+          fi
+          tools="$RUNNER_TEMP/sitemap-dates"
+          mkdir -p "$tools"
+          # One copy of the tools, from this checkout, reads both builds.
+          cp scripts/sitemap-rendered-changes.mjs scripts/frozen-clock.mjs "$tools/"
+          {
+            echo "compare=true"
+            echo "base=$base"
+            echo "head=$head"
+            echo "edition=$edition"
+            echo "clock=${edition}T12:00:00Z"
+            echo "tools=$tools"
+          } >> "$GITHUB_OUTPUT"
+          echo "Comparing $base (base) with $head (head), clock ${edition}T12:00:00Z"
+
+      - name: Build the head under the pinned clock
+        if: steps.plan.outputs.compare == 'true'
+        env:
+          COMMIT: ${{ steps.plan.outputs.head }}
+          TOOLS: ${{ steps.plan.outputs.tools }}
+          ZODIACS_FROZEN_CLOCK: ${{ steps.plan.outputs.clock }}
+        run: |
+          git checkout --force --quiet "$COMMIT"
+          git clean -fdxq
+          npm ci
+          NODE_OPTIONS="--import=$TOOLS/frozen-clock.mjs" npm run build
+          node "$TOOLS/sitemap-rendered-changes.mjs" fingerprint dist "$TOOLS/head.json"
+          mv dist "$TOOLS/head-dist"
+
+      - name: Build the base under the same clock
+        if: steps.plan.outputs.compare == 'true'
+        env:
+          COMMIT: ${{ steps.plan.outputs.base }}
+          TOOLS: ${{ steps.plan.outputs.tools }}
+          ZODIACS_FROZEN_CLOCK: ${{ steps.plan.outputs.clock }}
+        run: |
+          git checkout --force --quiet "$COMMIT"
+          git clean -fdxq
+          npm ci
+          NODE_OPTIONS="--import=$TOOLS/frozen-clock.mjs" npm run build
+          node "$TOOLS/sitemap-rendered-changes.mjs" fingerprint dist "$TOOLS/base.json"
+          mv dist "$TOOLS/base-dist"
+
+      # A page already dated the edition day passes: its date says it changed that day.
+      - name: Every changed page has a new sitemap date
+        if: steps.plan.outputs.compare == 'true'
+        env:
+          TOOLS: ${{ steps.plan.outputs.tools }}
+          EDITION: ${{ steps.plan.outputs.edition }}
+        run: node "$TOOLS/sitemap-rendered-changes.mjs" compare "$TOOLS/base.json" "$TOOLS/head.json" --today "$EDITION" --explain "$TOOLS/base-dist" "$TOOLS/head-dist" --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the fingerprints
+        if: ${{ !cancelled() && steps.plan.outputs.compare == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sitemap-dates-${{ github.run_id }}
+          path: |
+            ${{ steps.plan.outputs.tools }}/base.json
+            ${{ steps.plan.outputs.tools }}/head.json
+          if-no-files-found: warn
+          retention-days: 30
