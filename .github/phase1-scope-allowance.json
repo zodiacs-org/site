@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "id": "design-taste-pass-v2-20261016",
+  "id": "design-top10-redesign-20261017",
   "baseCommit": "cb1e411f2f1c2a4c141d9dcd5b987e1522754702",
   "protectedPaths": [
     "src/content/guides/aquarius.mdx",
@@ -177,6 +177,7 @@
     "src/lib/i18n/english-only.ts",
     "src/lib/i18n/index.test.ts",
     "src/lib/i18n/ru-runtime/server.ts",
+    "src/lib/i18n/ui/build-audit.test.ts",
     "src/lib/i18n/ui/en.ts",
     "src/lib/i18n/ui/es.ts",
     "src/lib/i18n/ui/fr.ts",
@@ -271,5 +272,5 @@
     "src/strings/additions.it.mjs",
     "src/strings/additions.pt.mjs"
   ],
-  "authorization": "On October 16, 2026 the owner, Dias, asked in the working session to \"run the full deeper sweep\" of the zodiacs.org \"AI-website tells\" design pass that followed PR #764, and to \"include icons on this page too - https://zodiacs.org/tools/\". This one-time exact-path exception covers only the listed files and only these changes. Visual and design: tracked all-caps labels set in the brand sans in sentence case; flat panels with hover and focus feedback instead of static bezels and gradients; decorative kickers above headlines turned into section back-links or datelines, or removed where they only repeated the page name; transform-only hover and disclosure motion behind prefers-reduced-motion; an inline EN language tag for English-only navigation destinations; pastel tool discs on the tools pages; lavender hues moved off non-sign tools. Punctuation: em and en dashes in live consumer copy rewritten with commas, periods, colons, parentheses or range words, in every released locale; wording changes are limited to letter case after a new sentence, range words such as \"to\" or \"del ... al\" where a dash joined two values, and the rare connective a sentence needs to stay grammatical. Dates: the frontmatter \"updated\" and editorial dates the sitemap-dates check requires for the pages whose copy changed. No meaning, facts, links or numbers change. Legal and disclosure pages, the Registry wing, the SDK and published dated editions are not edited."
+  "authorization": "On October 16, 2026 the owner, Dias, asked in the working session to \"run the full deeper sweep\" of the zodiacs.org \"AI-website tells\" design pass that followed PR #764, and to \"include icons on this page too - https://zodiacs.org/tools/\". This one-time exact-path exception covers only the listed files and only these changes. Visual and design: tracked all-caps labels set in the brand sans in sentence case; flat panels with hover and focus feedback instead of static bezels and gradients; decorative kickers above headlines turned into section back-links or datelines, or removed where they only repeated the page name; transform-only hover and disclosure motion behind prefers-reduced-motion; an inline EN language tag for English-only navigation destinations; pastel tool discs on the tools pages; lavender hues moved off non-sign tools. Punctuation: em and en dashes in live consumer copy rewritten with commas, periods, colons, parentheses or range words, in every released locale; wording changes are limited to letter case after a new sentence, range words such as \"to\" or \"del ... al\" where a dash joined two values, and the rare connective a sentence needs to stay grammatical. Dates: the frontmatter \"updated\" and editorial dates the sitemap-dates check requires for the pages whose copy changed. No meaning, facts, links or numbers change. Legal and disclosure pages, the Registry wing, the SDK and published dated editions are not edited. On October 17, 2026 the owner, Dias, approved the top-ten page redesign mockups (home, birth chart, sign guides, horoscopes, Today, Learn, compatibility pairs, birthdays, tools, rising sign) and asked for them to be built into the real templates, applied to every locale where a template is shared. This branch carries that build on top of the sweep, so this one-time exact-path exception also covers it: the sign guide template and the twelve guides (sections wrapped in components, the element partner paragraph and the closing chart sentence replaced by the partner discs and the wheel panel, verbatim pull quotes), the Learn hub, the localized sign guides and tools pages (the shared hero, facts strip and tool rows in strings they already carry), and the build-audit test that follows the horoscope page. Generated readings, published editions, legal and disclosure pages, the Registry wing and the SDK are not edited."
 }
