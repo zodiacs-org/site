@@ -4,10 +4,32 @@
  * imports; a developer page does not pull in the calculator stylesheet.
  */
 .pg { margin: clamp(18px, 4vw, 30px) 0; }
-.pg__core { display: grid; gap: 22px; padding: clamp(18px, 4vw, 24px); min-width: 0; }
-.pg__request { display: grid; gap: 14px; min-width: 0; }
-.pg__body textarea { min-height: 15rem; font-size: 13px; line-height: 1.6; resize: vertical; }
-.pg select.field__input { min-height: 44px; }
+/* One column that may shrink below its content's width: a select's longest option sets its own width otherwise. */
+.pg__core { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; padding: clamp(18px, 4vw, 24px); min-width: 0; }
+.pg__request { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; min-width: 0; }
+/* The calculators' fields (src/styles/calculator-first-paint.css), which this page does not load. */
+.pg__field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.pg__label { color: var(--muted); font-family: var(--font-sans); font-size: 14px; font-weight: 550; }
+.pg__input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-md);
+  color: var(--text);
+  background: var(--void-1);
+  color-scheme: dark;
+  font-size: 16px;
+  text-overflow: ellipsis;
+  transition: border-color var(--dur-1) var(--ease);
+}
+.pg__input:hover { border-color: var(--hair-3); }
+.pg__input:focus-visible { outline: 2px solid color-mix(in oklab, var(--accent) 75%, white); outline-offset: 2px; }
+.pg__input:disabled { opacity: 0.45; }
+.pg__input--code { min-height: 15rem; padding: 12px 14px; font-family: var(--font-mono); font-size: 13px; line-height: 1.6; resize: vertical; }
 .pg__actions, .pg__tabs { display: flex; flex-wrap: wrap; gap: 8px; }
 .pg__tabs .cmp__btn[aria-pressed="true"] { border-color: var(--ink-0); color: var(--text); }
 .pg__note { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.65; }
@@ -27,3 +49,5 @@
 .pg__check { display: flex; gap: 10px; align-items: center; min-height: 44px; font-size: var(--text-sm); color: var(--text-2); }
 .pg__check input { width: 18px; height: 18px; }
 .pg__url { margin: 0; font-size: 12.5px; color: var(--text-2); overflow-wrap: anywhere; }
+/* The copy button's mark sits apart from its label, as it does on .btn. */
+.pg__link .cmp__btn { gap: 10px; }

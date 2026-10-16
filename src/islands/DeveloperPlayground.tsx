@@ -29,6 +29,8 @@ interface Answer {
 type Side = 'hosted' | 'here';
 
 const SIDE_NAMES: Record<Side, string> = { hosted: 'The API', here: 'This browser' };
+// The same, inside a sentence.
+const SIDE_IN_TEXT: Record<Side, string> = { hosted: 'the API', here: 'this browser' };
 
 const pretty = (value: unknown) => (typeof value === 'string' ? value : JSON.stringify(value, null, 2));
 
@@ -232,10 +234,10 @@ export default function DeveloperPlayground() {
     <div class="shell pg" data-playground>
       <div class="core pg__core">
         <div class="pg__request">
-          <label class="field">
-            <span class="field__label">Example</span>
+          <label class="pg__field">
+            <span class="pg__label">Example</span>
             <select
-              class="field__input"
+              class="pg__input"
               value={exampleId ?? ''}
               onChange={(event) => {
                 const chosen = examples?.find((candidate) => candidate.id === (event.currentTarget as HTMLSelectElement).value);
@@ -254,10 +256,10 @@ export default function DeveloperPlayground() {
               ))}
             </select>
           </label>
-          <label class="field">
-            <span class="field__label">Endpoint</span>
+          <label class="pg__field">
+            <span class="pg__label">Endpoint</span>
             <select
-              class="field__input"
+              class="pg__input"
               value={endpoint}
               onChange={(event) => setEndpoint((event.currentTarget as HTMLSelectElement).value as ComputeEndpoint)}
               data-endpoint-select
@@ -265,10 +267,10 @@ export default function DeveloperPlayground() {
               {COMPUTE_ENDPOINTS.map((name) => <option key={name} value={name}>POST {computePath(name)}</option>)}
             </select>
           </label>
-          <label class="field pg__body">
-            <span class="field__label">Request body (JSON)</span>
+          <label class="pg__field pg__body">
+            <span class="pg__label">Request body (JSON)</span>
             <textarea
-              class="field__input mono"
+              class="pg__input pg__input--code mono"
               rows={12}
               spellcheck={false}
               value={text}
@@ -318,7 +320,7 @@ export default function DeveloperPlayground() {
               const found = differences(documented.answer, answer.body);
               return (
                 <div key={side} data-documented={side} data-documented-verdict={answer.status === documented.status ? verdict(found) : 'different'}>
-                  <VerdictLine found={answer.status === documented.status ? found : [{ path: '', kind: 'value', left: documented.status, right: answer.status }]} left="The documentation" right={SIDE_NAMES[side].toLowerCase()} />
+                  <VerdictLine found={answer.status === documented.status ? found : [{ path: '', kind: 'value', left: documented.status, right: answer.status }]} left="The documentation" right={SIDE_IN_TEXT[side]} />
                 </div>
               );
             })}

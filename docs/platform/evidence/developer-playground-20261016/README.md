@@ -1,4 +1,4 @@
-# The compute API playground (P3.8), 2026-10-15
+# The compute API playground (P3.8), 2026-10-16
 
 P3.8 asks for a playground at `/developers/playground/` with "live requests
 against the hosted API beside the in-browser engine, a receipt viewer, code
@@ -49,9 +49,66 @@ from it".
 
 ## Evidence
 
-TESTS
+### Tests
 
-DRIVE
+- **The browser run** (`tests/api/compute-api-playground.test.ts`). The
+  browser entry and the built bundle answer every documented request and four
+  refusals a body provokes exactly as the handler does, status and body:
+  `invalid-request`, `invalid-json`, `budget-exhausted` and a counted
+  `payload-too-large`. The bundle must be what its sources build and between
+  145 and 165 KB with gzip -9. Its SHA-256 must equal node:crypto's on 16
+  lengths up to 64 KB and on multi-byte text.
+- **The code** (`tests/api/compute-api-playground-code.test.ts`). The code the
+  page shows runs in every language the machine has, against the handler
+  served locally at `/api/v1/<endpoint>`, for every offered request (Swift
+  once per endpoint, as it compiles each file), and prints the handler's
+  answer. On this Mac all five ran: cURL, JavaScript (Node 22), Python 3.9,
+  Swift 6.2 and Ruby 2.6.
+- **The helpers** (`src/lib/developer-playground.test.ts`):
+  - `examples.json` offers every documented request with its documented
+    answer;
+  - the code quotes a body that holds each language's quoting characters;
+  - links carry a request only when asked, after the `#`;
+  - the citation digest the page computes equals the API's for every
+    documented answer, and a tampered receipt does not match;
+  - the comparison names each kind of difference and gives one verdict.
+- **Privacy** (`tests/api/compute-api-privacy.test.ts`):
+  - the playground is the API's one caller, by the Send button alone;
+  - the bundle and the helpers make no request and use no storage;
+  - the page loads no analytics.
+
+The scripts' tests and the claims ledger
+(`product.compute-playground`, `priv.compute-api`) hold these statements to
+their evidence.
+
+### The drive
+
+`node tests/developer-playground-drive.mjs` drove a build of this branch in
+Chromium on 2026-10-16
+([drive-local.json](drive-local.json)). The API was answered by the function's
+own bundle, `api/_compute/compute.mjs`. 42 of 42 checks passed:
+
+- **An agent's path.** For each of the 17 requests, the Markdown twin lists it
+  with its cURL request, and the API's answer to that body reproduces the
+  documented one.
+- **A person's path.** Each request opens by its link. Send and Run in this
+  browser both answer with the documented status, and both citations match
+  their receipts. The API, the browser and the documentation agree: the same
+  answer, or one whose receipts differ only where each names its runtime.
+- **Controls.** The page calls the answers different when the API's answer
+  has the Sun moved by 0.001°. It calls out a citation that is not its
+  receipt's digest.
+- **Behaviour.**
+  - An edited request runs in the browser without a request to the API, and
+    no documented answer is applied to it.
+  - The link carries the request only once the box is ticked, after the `#`,
+    and such a link reopens the request.
+  - The code shows the request in all five languages.
+  - At 375 px nothing scrolls sideways. The first run caught a 639 px
+    overflow from the example list, which this page's own field styles fixed.
+
+The same drive runs against production once the page is live:
+`node tests/developer-playground-drive.mjs --base-url https://zodiacs.org`.
 
 ## Privacy
 
