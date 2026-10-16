@@ -118,7 +118,7 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
     ? {
         cue: 'Your card',
         title: 'This is your own card.',
-        body: 'This is how it opens for the people you send it to — on their own page, not yours.',
+        body: 'This is how it opens for the people you send it to, on their own page, not yours.',
       }
     : added
       ? {

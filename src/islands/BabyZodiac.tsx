@@ -210,7 +210,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
             <div class="baby-block">
               <h3>{t(locale, 'babyRetroHead')}</h3>
               <p>
-                {reading.retro.map((planet) => planetLabel(locale, planet)).join(' · ')} — {t(locale, 'babyRetroBody')}
+                {reading.retro.map((planet) => planetLabel(locale, planet)).join(' · ')}, {t(locale, 'babyRetroBody')}
               </p>
             </div>
           )}
@@ -226,7 +226,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
               href={reading.birthdayHref}
               title={locale === 'ru' ? 'Материал пока доступен по-английски' : undefined}
             >
-              <span>{t(locale, 'babyDateLink')}{locale === 'ru' ? ' — пока по-английски' : ''}</span><span class="orb">→</span>
+              <span>{t(locale, 'babyDateLink')}{locale === 'ru' ? ' (пока по-английски)' : ''}</span><span class="orb">→</span>
             </a>
             <a class="btn btn--primary" href={localizePath(locale, '/birth-chart/')}>
               <span>{t(locale, 'babyChartLink')}</span><span class="orb">↗</span>

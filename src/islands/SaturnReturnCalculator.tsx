@@ -216,7 +216,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
               href="/learn/planets/saturn/"
               title={locale === 'ru' ? 'Материал пока доступен по-английски' : undefined}
             >
-              <span>{t(locale, 'whatSaturnMeans')}{locale === 'ru' ? ' — пока по-английски' : ''}</span><span class="orb">→</span>
+              <span>{t(locale, 'whatSaturnMeans')}{locale === 'ru' ? ' (пока по-английски)' : ''}</span><span class="orb">→</span>
             </a>
           </div>
         </div>

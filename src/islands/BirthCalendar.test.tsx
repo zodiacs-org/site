@@ -35,7 +35,7 @@ describe('the calendar choice in the birth forms', () => {
   it('reads an Old Style date as the Gregorian date the chart uses, with one line for the result', async () => {
     const entry = await birthDateForChart('en', '1917-10-25', 'julian');
     expect(entry).toEqual({ date: '1917-11-07', oldStyle: expect.any(String) });
-    expect(plain((entry as { oldStyle: string }).oldStyle)).toBe('October 25, 1917 (Old Style) — November 7, 1917 (New Style)');
+    expect(plain((entry as { oldStyle: string }).oldStyle)).toBe('October 25, 1917 (Old Style), November 7, 1917 (New Style)');
     await expect(birthDateForChart('en', '1917-10-25', 'gregorian')).resolves.toEqual({ date: '1917-10-25' });
   });
 
@@ -63,8 +63,8 @@ describe('dates and notes as the reader sees them', () => {
   });
 
   it('puts the entered date beside the Gregorian one in each locale', () => {
-    expect(plain(oldStyleLine('ru', '1917-10-25', '1917-11-07'))).toBe('25 октября 1917 г. (старый стиль) — 7 ноября 1917 г. (новый стиль)');
-    expect(plain(oldStyleLine('fr', '1917-10-25', '1917-11-07'))).toBe('25 octobre 1917 (ancien style) — 7 novembre 1917 (nouveau style)');
+    expect(plain(oldStyleLine('ru', '1917-10-25', '1917-11-07'))).toBe('25 октября 1917 г. (старый стиль), 7 ноября 1917 г. (новый стиль)');
+    expect(plain(oldStyleLine('fr', '1917-10-25', '1917-11-07'))).toBe('25 octobre 1917 (ancien style), 7 novembre 1917 (nouveau style)');
   });
 
   it('names the birthplace\'s country and its first New Style day', () => {
@@ -95,7 +95,7 @@ describe('dates and notes as the reader sees them', () => {
       for (const key of ['oldStyleNote', 'newStyleNote', 'otherCalendarNote'] as const) {
         expect(copy[key], `${locale}.${key}`).toMatch(/^\{country\}\u202f?: .*\{date\}/);
       }
-      expect(copy.converted, locale).toMatch(/^\{julian\} \(.+\) — \{gregorian\} \(.+\)$/);
+      expect(copy.converted, locale).toMatch(/^\{julian\} \(.+\), \{gregorian\} \(.+\)$/);
       if (locale !== 'en') expect(copy.oldStyleNote, locale).toContain(standard[locale]);
     }
   });
@@ -133,7 +133,7 @@ describe('the compatibility page\'s two people', () => {
     expect(Array.isArray(read)).toBe(true);
     const [a, b] = read as SlotState[];
     expect(a.date).toBe('1917-11-07');
-    expect(plain(a.oldStyle!)).toBe('October 25, 1917 (Old Style) — November 7, 1917 (New Style)');
+    expect(plain(a.oldStyle!)).toBe('October 25, 1917 (Old Style), November 7, 1917 (New Style)');
     expect(b).toEqual(side('1990-06-15'));
   });
 

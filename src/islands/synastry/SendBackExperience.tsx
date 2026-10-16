@@ -69,9 +69,9 @@ type BigThreeModule = Pick<
 const COPY = {
   sendCue: 'Before anything else',
   sendTitle: 'Send the result back.',
-  sendBody: "{label} can't see this reading — it happened here, on your device. One tap makes a picture of it and a private link that carries the positions and the two labels back, with no birth details.",
+  sendBody: "{label} can't see this reading. It happened here, on your device. One tap makes a picture of it and a private link that carries the positions and the two labels back, with no birth details.",
   sendShare: 'Share it back',
-  sendShareText: 'Our charts, read together — from zodiacs.org',
+  sendShareText: 'Our charts, read together, from zodiacs.org',
   sendCopy: 'Copy the private link',
   sendCopied: 'Link copied. It carries chart positions and the two labels, with no birth details.',
   sendImage: 'Download the picture',
@@ -84,7 +84,7 @@ const SHARE_COPY = {
   sendTitle: 'Send this to {label}.',
   sendBody: 'One tap makes a picture of this reading and a private link that carries both charts as positions, with the labels you typed and no birth details.',
   sendShare: 'Send it',
-  sendShareText: 'Our charts, read together — from zodiacs.org',
+  sendShareText: 'Our charts, read together, from zodiacs.org',
   sendCopy: 'Copy the private link',
   sendCopied: 'Link copied. It carries chart positions and the two labels, with no birth details.',
   sendImage: 'Download the picture',
@@ -192,7 +192,7 @@ export function SendBackCard({
     if (!url || !navigator.share) return;
     const file = blob ? new File([blob], 'zodiacs-compatibility.png', { type: 'image/png' }) : null;
     const data: ShareData = {
-      title: 'Our charts, read together — Zodiacs.org',
+      title: 'Our charts, read together | Zodiacs.org',
       text: wording.sendShareText,
       url,
       ...(file && navigator.canShare?.({ files: [file] }) ? { files: [file] } : {}),
@@ -304,7 +304,7 @@ export function ReturnBand({
           <h2 id="syn-return-title">{invalid ? "This result link isn't right." : 'A reading, sent back.'}</h2>
           <p>{invalid
             ? 'It may have been copied incompletely.'
-            : 'Two sides, compared — carried here as chart positions and labels, with no birth details. If one of them is yours, the rest of your chart is a minute away.'}</p>
+            : 'Two sides, compared, carried here as chart positions and labels, with no birth details. If one of them is yours, the rest of your chart is a minute away.'}</p>
         </div>
         <div class="syn-return__actions">
           {!invalid && <a class="btn btn--primary" href="/birth-chart/">Get your free birth chart</a>}
@@ -353,7 +353,7 @@ export function InvitationConversionCard({
       className="syn-conversion"
       cue="Before you go"
       title="Keep your half."
-      body={`Save your chart on this device and your full reading — houses, aspects, the year ahead — is one tap away anytime. ${inviterLabel}'s side isn't kept unless you save the comparison too.`}
+      body={`Save your chart on this device and your full reading (houses, aspects, the year ahead) is one tap away anytime. ${inviterLabel}'s side isn't kept unless you save the comparison too.`}
       headingLevel={3}
       primary={(
         <button
@@ -375,7 +375,7 @@ export function InvitationConversionCard({
           )}
           <a class="text-link" href="/profile/">Prefer it on every device? An account syncs it.</a>
           <button type="button" class="btn btn--ghost" onClick={startOwn}>
-            Start your own — invite someone to compare with you
+            Start your own: invite someone to compare with you
           </button>
           {saveState === 'saved' && (
             <p class="field__help" role="status">Saved on this device. Your full chart is in your profile.</p>

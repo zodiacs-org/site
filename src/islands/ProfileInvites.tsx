@@ -35,7 +35,7 @@ const FORBIDDEN_ROW_KEYS = new Set([
 
 export const PF_INVITE_COPY = {
   title: 'Compatibility invitations',
-  body: "Links you've made that carry one chart's positions. Each closes once it's read — or after 14 days at the latest.",
+  body: "Links you've made that carry one chart's positions. Each closes once it's read, or after 14 days at the latest.",
   empty: 'No invitations yet. Make one from any comparison on the compatibility page.',
   create: 'Make an invitation',
   status: {
@@ -52,9 +52,9 @@ export const PF_INVITE_COPY = {
   endError: "Couldn't end it just now. Please try again.",
   hide: 'Remove from this list',
   hidden: 'Removed.',
-  stale: "Statuses may be out of date — this device is offline or the check didn't go through.",
-  paused: "Invitations are off right now, so these links won't open. You can still end one — ending always works.",
-  anyDevice: "Invitations belong to your account — manage them from any device you're signed in to.",
+  stale: "Statuses may be out of date. This device is offline or the check didn't go through.",
+  paused: "Invitations are off right now, so these links won't open. You can still end one. Ending always works.",
+  anyDevice: "Invitations belong to your account. Manage them from any device you're signed in to.",
 } as const;
 
 interface ProfileInvitesProps {

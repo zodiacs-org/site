@@ -146,7 +146,7 @@ const faq = [
 const jsonLd = [
   {
     '@type': 'Article',
-    headline: `${sign.name} ${reading.title} — ${reading.label}`,
+    headline: `${sign.name} ${reading.title}, ${reading.label}`,
     description: displayText(reading.description),
     url: canonicalUrl,
     datePublished: reading.datePublished,
@@ -192,17 +192,17 @@ const skyMarkers = reading.skyStrip.markers;
 <Base
   inlineCriticalCss={compactHeroIcon}
   stableTypography
-  title={`${sign.name} ${reading.title} — ${reading.label} | Zodiacs.org`}
+  title={`${sign.name} ${reading.title}, ${reading.label} | Zodiacs.org`}
   description={displayText(reading.description)}
   path={path}
   image={ogImage}
-  imageAlt={`${sign.name} ${meta.nav.toLowerCase()} horoscope — Zodiacs.org`}
+  imageAlt={`${sign.name} ${meta.nav.toLowerCase()} horoscope | Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   editionDate={editionDate ?? undefined}
   rssFeed={{
     href: `/feeds/horoscopes/${sign.slug}.xml`,
-    title: `Zodiacs.org — ${sign.name} daily horoscope`,
+    title: `Zodiacs.org | ${sign.name} daily horoscope`,
   }}
 >
   {surface === 'today' && (
@@ -386,7 +386,7 @@ const skyMarkers = reading.skyStrip.markers;
       <Faq items={faq} heading={`${sign.name} ${meta.nav.toLowerCase()} horoscope, answered`} />
     </section>
 
-    <ShareRow text={`${sign.name} ${reading.title} — ${reading.label}`} url={canonicalUrl} />
+    <ShareRow text={`${sign.name} ${reading.title}, ${reading.label}`} url={canonicalUrl} />
 
     <a class="program__guide-link" href={`/${sign.slug}/`}>Full {sign.name} guide →</a>
 

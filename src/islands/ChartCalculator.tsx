@@ -153,11 +153,11 @@ const LENS_LABELS: Record<ReleasedLocale, Record<'rail' | 'natal' | LensId, stri
   it: { rail: 'Il tema nel tempo', natal: 'Natale', sky: 'Cielo attuale', progressed: 'Progredito', return: 'Rivoluzione solare' },
 };
 const DETAIL_LABELS: Record<ReleasedLocale, { lead: string; placements: string; aspects: string }> = {
-  en: { lead: 'See exact chart data — ', placements: ' placements · ', aspects: ' aspects' },
-  es: { lead: 'Ver los datos exactos — ', placements: ' posiciones · ', aspects: ' aspectos' },
-  pt: { lead: 'Ver os dados exatos — ', placements: ' posições · ', aspects: ' aspectos' },
-  fr: { lead: 'Voir les données exactes — ', placements: ' positions · ', aspects: ' aspects' },
-  it: { lead: 'Vedi i dati esatti — ', placements: ' posizioni · ', aspects: ' aspetti' },
+  en: { lead: 'See exact chart data: ', placements: ' placements · ', aspects: ' aspects' },
+  es: { lead: 'Ver los datos exactos: ', placements: ' posiciones · ', aspects: ' aspectos' },
+  pt: { lead: 'Ver os dados exatos: ', placements: ' posições · ', aspects: ' aspectos' },
+  fr: { lead: 'Voir les données exactes\u00a0: ', placements: ' positions · ', aspects: ' aspects' },
+  it: { lead: 'Vedi i dati esatti: ', placements: ' posizioni · ', aspects: ' aspetti' },
 };
 const DETAIL_STORAGE_KEY = 'zodiacs.detail.v1';
 const CHART_BOOK_COPY = {
@@ -168,7 +168,7 @@ const CHART_BOOK_COPY = {
   it: { label: 'Di chi è questo tema?', save: 'Salva', skip: 'Salta' },
 } as const satisfies Record<ReleasedLocale, { label: string; save: string; skip: string }>;
 const PERSON_CHART_COPY = {
-  en: (name: string) => `${name}'s chart — "you" below means ${name}.`,
+  en: (name: string) => `${name}'s chart: "you" below means ${name}.`,
   es: (name: string) => `La carta de ${name}: el "tú" de abajo se refiere a ${name}.`,
   pt: (name: string) => `O mapa de ${name}: o "você" abaixo se refere a ${name}.`,
   fr: (name: string) => `Le thème de ${name}\u00a0: le «\u00a0tu\u00a0» ci-dessous désigne ${name}.`,
@@ -2091,7 +2091,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                         How the chart divides into twelve areas of life.{' '}
                         <AstroTerm term="whole-sign-houses" label="Whole sign" surface="birth-chart-form" /> gives
                         each sign one house; <AstroTerm term="placidus" label="Placidus" surface="birth-chart-form" />{' '}
-                        varies house sizes by exact birth time and place. Planets stay put — only house
+                        varies house sizes by exact birth time and place. Planets stay put. Only house
                         boundaries move.
                       </p>
                       <p class="field__help calc__context-cue">{t(locale, 'contextHelpCue')}</p>
@@ -2300,7 +2300,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             <details class="evidence-disclosure evidence-disclosure--quiet" data-evidence-disclosure data-evidence-variant="quiet">
               <summary>
                 <span class="evidence-disclosure__summary">
-                  <strong>{detailLabels.lead.replace(/\s*—\s*$/, '')}</strong>
+                  <strong>{detailLabels.lead.replace(/\s*[—:]\s*$/, '')}</strong>
                 </span>
               </summary>
               <div class="evidence-disclosure__body">

@@ -162,7 +162,7 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
       class="insp__more"
       href={path}
       title={locale === 'ru' && englishOnly ? 'Материал пока доступен по-английски' : undefined}
-    >{label}{locale === 'ru' && englishOnly ? ' — пока по-английски' : ''} →</a>
+    >{label}{locale === 'ru' && englishOnly ? ' (пока по-английски)' : ''} →</a>
   );
   const signButton = (slug: SignSlug, label: string) => {
     const sign = signBySlug(slug);
@@ -213,7 +213,7 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
           {sb.dignity && (
             <Receipt label={t(locale, 'dignity')}>
               {showsEnglishInterpretation
-                ? <AstroTerm term={sb.dignity} label={t(locale, DIGNITY_KEY[sb.dignity])} surface="chart-inspector" whyItMatters="This is a traditional kind of support—not a verdict that the placement is good or bad." />
+                ? <AstroTerm term={sb.dignity} label={t(locale, DIGNITY_KEY[sb.dignity])} surface="chart-inspector" whyItMatters="This is a traditional kind of support, not a verdict that the placement is good or bad." />
                 : t(locale, DIGNITY_KEY[sb.dignity])}
             </Receipt>
           )}
