@@ -1,11 +1,24 @@
 ---
 import Base from '../../layouts/Base.astro';
-import AstroTerm from '../../components/AstroTerm.astro';
+import ArtFrame from '../../components/ArtFrame.astro';
+import PlanetGlyph from '../../components/PlanetGlyph';
+import ToolIcon from '../../components/ToolIcon.astro';
 import ChartCalculator from '../../islands/ChartCalculator';
+import SkyTicker from '../../islands/SkyTicker';
 import { PostChartDailyBrief } from '../../islands/PostChartDailyBrief';
 import EmailCapture from '../../components/EmailCapture.astro';
-import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
+import Wheel from '../../lib/wheel/Wheel';
 import { hasDailyChartEmailProvider } from '../../lib/email/daily-config';
+import {
+  SAMPLE_ASPECTS,
+  SAMPLE_BIRTH,
+  SAMPLE_COORDINATES,
+  SAMPLE_HOURS_AFTER_FULL_MOON,
+  SAMPLE_MOON_ALL_DAY,
+  SAMPLE_PLACEMENTS,
+  SAMPLE_RISING,
+  SAMPLE_WHEEL,
+} from '../../lib/sample-chart';
 import '../../styles/calculator.css';
 import '../../styles/explorer.css';
 import '../../styles/post-chart-daily.css';
@@ -15,23 +28,24 @@ const postChartDailyEnabled = hasDailyChartEmailProvider(process.env);
 const faq = [
   {
     q: 'What is a birth chart?',
-    a: 'A birth chart (or natal chart) is a map of where every planet sat, from your point of view on Earth, at the exact moment and place you were born. It records your Sun, Moon, and Rising signs plus the positions of Mercury through Pluto across twelve houses.',
+    a: 'A birth chart, or natal chart, is a map of where every planet sat, seen from Earth, at the moment and place you were born. It records your Sun, Moon and rising signs, plus Mercury through Pluto across twelve houses.',
   },
   {
     q: 'Do I need my exact birth time?',
-    a: 'For your rising sign and houses, yes. The ascendant changes roughly every two hours. Without a time, we use 12:00 local civil time as a reference for body positions and omit the rising sign, angles, and houses. Because the Moon can change sign during a day, the result marks the Moon sign as unverified until you add a time. Birth certificates, baby books, and parents are the usual sources.',
+    a: 'For your rising sign and houses, yes: the rising sign changes about every two hours. Without a time we use 12:00 local time as a reference, leave out the rising sign and houses, and show both Moon signs if the Moon changed sign that day.',
   },
   {
     q: 'How accurate is this calculator?',
-    a: 'Planetary positions are computed with an astronomical engine and tested against NASA JPL reference data to within a few hundredths of a degree. Historical clock changes from 1970 on are resolved from the IANA time-zone history supplied by your browser or device runtime, and earlier ones from a pinned release of the IANA database, including the older records it keeps apart for places whose clocks later matched another city’s, which its maintainers consider less reliable. A birth from before its place adopted a legal time uses the local mean time of the birthplace itself.',
+    a: 'Planet positions come from an astronomical engine tested against NASA JPL reference data to within a few hundredths of a degree. Historical clock changes come from the IANA time zone records. Astrology itself is an interpretive practice, not a scientific prediction.',
+  },
+  {
+    q: 'Whole sign or Placidus houses: which should I pick?',
+    a: 'Whole sign is the oldest system and the easiest to read: each house is one full sign. Placidus is the most common modern choice and uses your exact time and place, so house sizes vary. Try both: your planets stay put, only the house lines move.',
+    id: 'houses',
   },
   {
     q: 'What happens to my birth data?',
-    a: 'The entire chart is computed in your browser; the calculator uses no server-side chart API and needs no account. If you save a chart, it stays on this device first; optional account sync uploads saved charts only after you sign in.',
-  },
-  {
-    q: 'Whole sign or Placidus houses, which should I pick?',
-    a: 'Whole sign is the oldest system and the friendliest to read: each house is one full sign. Placidus is the most common modern default and divides houses by time of rising, so their sizes vary. Try both. Your planets stay put; only the house boundaries move.',
+    a: 'The chart is computed entirely in your browser, with no account. A saved chart stays on this device unless you choose account sync.',
   },
 ];
 
@@ -62,6 +76,46 @@ const jsonLd = [
     ],
   },
 ];
+
+const sun = SAMPLE_PLACEMENTS.find((p) => p.body === 'Sun')!;
+const moon = SAMPLE_PLACEMENTS.find((p) => p.body === 'Moon')!;
+const rising = SAMPLE_RISING;
+const ordinal = (n: number) => `${n}${n % 10 === 1 && n !== 11 ? 'st' : n % 10 === 2 && n !== 12 ? 'nd' : n % 10 === 3 && n !== 13 ? 'rd' : 'th'}`;
+
+/* The four numbered parts of the anatomy wheel, placed with the Wheel's own
+   geometry: its viewBox pads the drawing by 5% on every side, and longitude
+   runs counterclockwise from the rising degree at nine o'clock. */
+const WHEEL_SIZE = 430;
+const PAD = WHEEL_SIZE * 0.05;
+const FRAME = WHEEL_SIZE + PAD * 2;
+const at = (lon: number, radius: number) => {
+  const phi = ((180 + (lon - SAMPLE_WHEEL.asc)) * Math.PI) / 180;
+  return {
+    x: ((WHEEL_SIZE / 2 + radius * WHEEL_SIZE * Math.cos(phi) + PAD) / FRAME) * 100,
+    y: ((WHEEL_SIZE / 2 - radius * WHEEL_SIZE * Math.sin(phi) + PAD) / FRAME) * 100,
+  };
+};
+const boundaryNear = (lon: number) => Math.round(lon / 30) * 30;
+const anatomyMarks = [
+  { n: 1, ...at(boundaryNear(SAMPLE_WHEEL.asc - 125), 0.435) },
+  { n: 2, ...at(boundaryNear(SAMPLE_WHEEL.asc + 185), 0.255) },
+  { n: 3, ...at(moon.lon + 9, 0.31) },
+  { n: 4, ...at(sun.lon, 0.02) },
+];
+
+/* Sign pictures on a chart page are only ever asked for as a whole set of
+   twelve in zodiac order (audit finding F-18, tests/sign-icon-requests-drive):
+   the sample's discs carry their own query, wait as data attributes, and the
+   script at the end of the page asks for the sample wheel's twelve first,
+   in order, before any other sample disc. */
+const SAMPLE_SET = 'surface=sample-chart';
+const sampleDisc = (slug: string) => `/assets/zodiac-icons/128/${slug}.webp?${SAMPLE_SET}`;
+
+const ASPECT_WORD: Record<string, string> = {
+  conjunction: 'conjunct', sextile: 'sextile', square: 'square', trine: 'trine', opposition: 'opposite',
+};
+const shownAspects = SAMPLE_ASPECTS.slice(0, 3);
+const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
 ---
 <Base
   clientUi
@@ -108,103 +162,711 @@ const jsonLd = [
     }
     .calc__result > * { min-width: 0; max-width: 100%; }
   </style>
-  <section class="section--tight container">
-    <div class="tool-hero">
-      <h1 class="display">Get your free birth chart.</h1>
-      <p>
-        See your Sun, Moon, rising sign, and what they mean.
-      </p>
-    </div>
 
-    <ChartCalculator mode="full" client:idle />
+<!-- The whole route stylesheet rides inline: this page puts only Base and
+     calculator.css on the render path and defers other stylesheets, and the
+     form-and-sample grid must hold its geometry from the first paint. -->
+<style slot="head" is:inline>
+  .bc-mono { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .bc-section { padding-block: clamp(64px, 8vw, 120px); }
+  /* The sample's sign discs: a quiet circle until the set arrives. */
+  .bc-disc { flex: none; display: inline-block; vertical-align: middle; border-radius: 50%; background: rgba(198, 204, 218, 0.06); }
+
+  /* ── Hero: the form first, the sample wheel beside it ── */
+  .bc-hero { position: relative; padding: clamp(8px, 2vw, 24px) 0 clamp(48px, 5vw, 72px); }
+  .bc-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+    grid-template-areas: 'head head' 'main aside';
+    column-gap: clamp(40px, 5.5vw, 80px);
+    row-gap: 36px;
+    align-items: start;
+  }
+  .bc-head { grid-area: head; }
+  .bc-main { grid-area: main; min-width: 0; }
+  .bc-aside { grid-area: aside; min-width: 0; }
+  /* Once a chart is on the page (or arriving from a shared link), the result
+     takes the full width and the sample steps aside. */
+  .bc-grid:has(.calc > :not(form)),
+  html[data-chart-share-receiver] .bc-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'head' 'main'; }
+  .bc-grid:has(.calc > :not(form)) .bc-aside,
+  html[data-chart-share-receiver] .bc-aside { display: none; }
+  .bc-grid:has(.calc > :not(form)) .calc > .shell,
+  html[data-chart-share-receiver] .calc > .shell { max-width: 640px; }
+  .bc-crumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; font-size: 13px; color: var(--faint); }
+  .bc-crumbs a { color: var(--muted); text-decoration: none; }
+  .bc-crumbs a:hover { color: var(--ink-0); }
+  .bc-crumbs span[aria-hidden] { opacity: 0.6; }
+  .bc-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: clamp(2.6rem, 1.5rem + 3.6vw, 4.4rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    font-variant-numeric: oldstyle-figures;
+    text-wrap: balance;
+  }
+  .bc-lede { margin: 14px 0 0; max-width: 64ch; color: var(--text-2); font-size: var(--text-lg); line-height: 1.5; text-wrap: pretty; }
+
+  /* The calculator's form, as the mockup's single-column panel. The island
+     keeps its own markup and hooks; this route only arranges and dresses it. */
+  .bc-main .calc > .shell { max-width: none; }
+  .bc-main .calc .calc__form.shell > .calc__core {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 16px;
+    padding: 28px 28px 20px;
+    border-radius: 26px;
+    border-color: var(--hair-2);
+    background: linear-gradient(180deg, rgba(21, 25, 37, 0.86), rgba(15, 18, 26, 0.86));
+    box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .bc-main .calc__core > *,
+  .bc-main .calc__fields > * { grid-column: 1 / -1; }
+  .bc-main .calc__fields { display: contents; }
+  .bc-main .calc__fields > .field + .field { margin-top: 24px; }
+  .bc-main .field__label { min-height: 0; margin-bottom: 0; color: var(--ink-1); font-size: 0.875rem; }
+  .bc-main .field__input { height: 52px; border-radius: 14px; background: rgba(6, 7, 9, 0.55); }
+  .bc-main .field__help { font-size: 12.5px; line-height: 1.45; }
+  /* "I don't know it" reads as a switch, set as a row under the time box. */
+  .bc-main .field:has(> .field__labelrow .field__toggle) { display: flex; }
+  .bc-main .field__labelrow:has(.field__toggle) { display: contents; }
+  .bc-main .field:has(> .field__labelrow .field__toggle) > .field__input { order: 1; }
+  .bc-main .field:has(> .field__labelrow .field__toggle) > .field__error { order: 2; }
+  .bc-main .field__labelrow .field__toggle {
+    order: 3;
+    gap: 12px;
+    min-height: 44px;
+    margin-top: 4px;
+    padding: 10px 16px;
+    border: 1px solid var(--hair-1);
+    border-radius: 14px;
+    background: rgba(198, 204, 218, 0.025);
+    color: var(--ink-0);
+    font-size: 0.9375rem;
+    font-weight: 550;
+  }
+  .bc-main .field:has(> .field__labelrow .field__toggle) > .field__help {
+    order: 4;
+    margin-top: -9px;
+    padding: 0 16px 12px 66px;
+    border: 1px solid var(--hair-1);
+    border-top: 0;
+    border-radius: 0 0 14px 14px;
+    background: rgba(198, 204, 218, 0.025);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .bc-main .field:has(> .field__labelrow .field__toggle):has(> .field__help) .field__toggle { border-bottom: 0; border-radius: 14px 14px 0 0; }
+  .bc-main .field__toggle input {
+    flex: none;
+    width: 38px;
+    height: 22px;
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid var(--hair-3);
+    border-radius: 999px;
+    background: radial-gradient(circle at 11px 50%, var(--ink-2) 0 7px, transparent 7.5px), rgba(198, 204, 218, 0.06);
+    cursor: pointer;
+    transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+  }
+  .bc-main .field__toggle input:checked {
+    border-color: var(--sign-cancer);
+    background: radial-gradient(circle at 26px 50%, var(--void-0) 0 7px, transparent 7.5px), var(--sign-cancer);
+  }
+  .bc-main .field__toggle input:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 2px; }
+  .bc-main .calc__submit {
+    width: 100%;
+    min-height: 56px;
+    margin-top: 28px;
+    padding: 12px 10px 12px 28px;
+    font-size: 1.06rem;
+  }
+  .bc-main .calc__submit .orb { width: 38px; height: 38px; }
+  .bc-main .calc__privacy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 14px;
+    color: var(--ink-2);
+    font-size: 13.5px;
+    text-align: center;
+  }
+  .bc-main .calc__privacy::before {
+    content: '';
+    flex: none;
+    width: 14px;
+    height: 14px;
+    background: var(--sign-cancer);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.4'%3E%3Crect x='3' y='7' width='10' height='7' rx='2'/%3E%3Cpath d='M5.5 7V5a2.5 2.5 0 0 1 5 0v2'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.4'%3E%3Crect x='3' y='7' width='10' height='7' rx='2'/%3E%3Cpath d='M5.5 7V5a2.5 2.5 0 0 1 5 0v2'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  /* House options and the Guide line close the panel as one quiet row. */
+  .bc-main .calc__options {
+    order: 10;
+    grid-column: 1;
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid var(--hair-1);
+  }
+  .bc-main .calc__guide {
+    order: 11;
+    grid-column: 2;
+    align-self: start;
+    margin: 20px 0 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--hair-1);
+    font-size: 13px;
+    color: var(--faint);
+  }
+  .bc-main .calc__options summary { min-height: 44px; color: var(--faint); font-size: 13px; }
+  .bc-main .calc__options summary span { color: var(--ink-1); }
+
+  /* The sample result */
+  .bc-proof {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: radial-gradient(70% 55% at 50% 42%, rgba(21, 25, 37, 0.96), rgba(10, 12, 17, 0.7));
+    box-shadow: 0 40px 80px -48px rgba(0, 0, 0, 0.9);
+  }
+  .bc-proof__top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 22px 0; }
+  .bc-proof__top .kfacts { font-size: 12.5px; }
+  .bc-proof__wheel { padding: 10px 28px 18px; }
+  .bc-wheel svg.wheel, .bc-wheel > svg { display: block; width: 100%; height: auto; aspect-ratio: 1; }
+  .bc-proof__b3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--hair-1); }
+  .bc-proof__b3 > div { display: flex; align-items: center; gap: 12px; padding: 16px 18px; }
+  .bc-proof__b3 > div + div { border-left: 1px solid var(--hair-1); }
+  .bc-proof__b3 small { display: block; font-size: 12px; color: var(--faint); line-height: 1.3; }
+  .bc-proof__b3 b { display: block; font-size: 0.9375rem; font-weight: 600; line-height: 1.3; white-space: nowrap; }
+  .bc-proof__b3 .bc-mono { font-size: 11.5px; color: var(--muted); }
+  .bc-proof__cap { max-width: 58ch; margin: 16px 0 0; padding-inline: 4px; font-size: 13.5px; line-height: 1.55; color: var(--faint); }
+  .bc-proof__cap b { color: var(--ink-1); font-weight: 550; }
+  .bc-email:empty { display: none; }
+
+  /* ── What you get ── */
+  .bc-what { padding-top: clamp(24px, 4vw, 48px); }
+  .bc-what .kicker { margin-bottom: 4px; }
+  .bc-what .section-head { max-width: 40ch; }
+  .bc-b3cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .bc-b3card { display: flex; flex-direction: column; padding: 24px 24px 22px; }
+  .bc-b3card__top { display: flex; align-items: center; gap: 14px; }
+  .bc-b3card__top small { display: block; font-size: 13px; color: var(--faint); line-height: 1.3; }
+  .bc-b3card__top b { display: block; font-family: var(--font-serif); font-weight: 500; font-size: 1.6rem; line-height: 1.1; }
+  .bc-b3card__top .bc-mono { margin-left: auto; align-self: flex-start; font-size: 12px; }
+  .bc-b3card p { flex: 1; margin: 16px 0 0; color: var(--text-2); font-size: 0.9875rem; line-height: 1.6; }
+  .bc-b3card .textlink { align-self: flex-start; margin-top: 18px; font-size: 0.875rem; }
+  .bc-b3card--sun { border-color: color-mix(in oklab, var(--sign) 32%, transparent); background: linear-gradient(180deg, color-mix(in oklab, var(--sign) 7%, transparent), color-mix(in oklab, var(--sign) 1.5%, transparent)); }
+  .bc-anat {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+    gap: clamp(28px, 4.5vw, 64px);
+    align-items: center;
+    margin-top: 16px;
+  }
+  .bc-anat__wheel { position: relative; }
+  .bc-anat__mark {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: var(--ink-0);
+    color: var(--void-0);
+    font-size: 13px;
+    font-weight: 650;
+    box-shadow: 0 0 0 4px rgba(10, 12, 17, 0.8);
+  }
+  .bc-pos-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .bc-pos-head .h-4 { font-size: 1.12rem; }
+  .bc-pos-head .kfacts { font-size: 12px; }
+  .bc-pos-scroll { overflow-x: auto; }
+  .bc-pos { width: 100%; border-collapse: collapse; font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+  .bc-pos thead th { padding: 0 8px 9px 0; border-bottom: 1px solid var(--hair-2); color: var(--faint); font-size: 12px; font-weight: 550; text-align: left; }
+  .bc-pos td, .bc-pos tbody th { padding: 8px 8px 8px 0; border-bottom: 1px solid var(--hair-1); white-space: nowrap; vertical-align: middle; line-height: 1.4; text-align: left; }
+  .bc-pos tbody th { color: var(--ink-0); font-weight: 500; }
+  .bc-pos :is(th, td):last-child { padding-right: 2px; text-align: right; }
+  .bc-pos .bc-pos__g { display: inline-flex; width: 22px; color: var(--muted); vertical-align: -0.15em; }
+  .bc-pos__ac { display: inline-block; width: 22px; color: var(--muted); font-size: 11px; font-weight: 650; }
+  .bc-pos__sign { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-1); vertical-align: middle; }
+  .bc-pos td.bc-mono { color: var(--ink-1); font-size: 0.875rem; }
+  .bc-pos__rx { color: var(--sign-aries); }
+  .bc-pos__h { color: var(--muted); font-family: var(--font-mono); font-size: 0.8125rem; }
+  .bc-pos tr.is-on > * { background: color-mix(in oklab, var(--sign) 7%, transparent); }
+  .bc-pos tr.is-on > th { box-shadow: inset 2px 0 0 var(--sign); padding-left: 10px; }
+  .bc-pos tr.is-asc > * { border-bottom: 0; }
+  .bc-asp { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+  .bc-asp .pill { min-height: 30px; gap: 6px; padding: 0 12px; font-size: 0.8125rem; }
+  .bc-asp .pill .pglyph { color: var(--ink-0); }
+  .bc-asp .pill i { font-style: normal; color: var(--faint); font-family: var(--font-mono); font-size: 11.5px; }
+  .bc-notes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin: 32px 0 0; padding: 0; list-style: none; }
+  .bc-notes li { padding-top: 18px; border-top: 1px solid var(--hair-2); }
+  .bc-notes__n { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--ink-0); color: var(--void-0); font-weight: 650; font-size: 14px; }
+  .bc-notes .h-4 { margin-top: 14px; }
+  .bc-notes p { margin: 6px 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .bc-result-links { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-top: 30px; }
+
+  /* ── No birth time ── */
+  .bc-nt { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: clamp(36px, 6vw, 88px); align-items: center; }
+  .bc-nt .kicker { margin-bottom: 4px; }
+  .bc-nt__lede { margin-top: 14px; }
+  .bc-nt__art { max-width: 560px; aspect-ratio: 16 / 10; }
+  .bc-nt__art::after { background: radial-gradient(ellipse 58% 62% at 46% 48%, transparent 0 34%, rgba(6, 7, 9, 0.42) 72%, rgba(6, 7, 9, 0.8) 100%); }
+  .bc-cmp { max-width: 560px; margin-top: 14px; border: 1px solid var(--hair-2); border-radius: 18px; background: rgba(198, 204, 218, 0.025); }
+  .bc-cmp > div { display: grid; grid-template-columns: 112px repeat(3, minmax(0, 1fr)); gap: 10px; align-items: center; padding: 14px 16px; }
+  .bc-cmp > div + div { border-top: 1px solid var(--hair-1); }
+  .bc-cmp__lbl { color: var(--muted); font-size: 13px; line-height: 1.35; }
+  .bc-cmp__lbl b { display: block; color: var(--ink-0); font-weight: 600; font-size: 13.5px; }
+  .bc-cmp__it { display: flex; align-items: center; gap: 8px; color: var(--ink-1); font-size: 13px; line-height: 1.25; }
+  .bc-cmp__it small { display: block; color: var(--faint); font-size: 11.5px; }
+  .bc-cmp__it.is-missing { color: var(--faint); }
+  .bc-cmp__ghost { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border: 1px dashed var(--hair-3); border-radius: 50%; color: var(--faint); font-size: 13px; }
+  .bc-opts { margin: 28px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--hair-1); }
+  .bc-opts li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--hair-1); }
+  .bc-ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: #0b0d12; }
+  .bc-ic svg { width: 20px; height: 20px; }
+  .bc-opts b { display: block; font-weight: 600; font-size: 1.0625rem; }
+  .bc-opts p { max-width: 52ch; margin: 4px 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .bc-opts p em { font-style: normal; color: var(--ink-1); }
+  .bc-where { margin: 20px 0 0; color: var(--muted); font-size: 0.9375rem; }
+  .bc-where b { color: var(--ink-1); font-weight: 550; }
+
+  /* ── Private by design ── */
+  .bc-trust {
+    position: relative;
+    padding-block: clamp(40px, 5vw, 72px);
+    border-block: 1px solid var(--hair-1);
+    background: linear-gradient(180deg, rgba(15, 18, 26, 0.7), rgba(10, 12, 17, 0.4));
+  }
+  .bc-trust__grid { display: grid; grid-template-columns: minmax(0, 0.9fr) repeat(3, minmax(0, 1fr)); gap: clamp(24px, 3.5vw, 48px); }
+  .bc-trust__head p { margin: 10px 0 0; color: var(--muted); font-size: 0.9375rem; }
+  .bc-trust__head .textlink { margin-top: 18px; font-size: 0.875rem; }
+  .bc-ti .h-4 { margin-top: 18px; }
+  .bc-ti p { margin: 6px 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.6; }
+
+  /* ── After your chart ── */
+  .bc-skyline {
+    display: flex;
+    align-items: center;
+    gap: 10px 24px;
+    margin-bottom: 22px;
+    padding: 14px 0;
+    border-block: 1px solid var(--hair-1);
+  }
+  .bc-skyline .skyticker { flex: 1 1 auto; min-width: 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; font-size: 0.875rem; color: var(--ink-1); }
+  .bc-skyline .skyticker > * { flex: none; }
+  .bc-skyline .textlink { flex: none; font-size: 0.875rem; }
+  .bc-nextcard { display: flex; flex-direction: column; min-height: 236px; padding: 26px; }
+  .bc-nextcard .h-4 { margin-top: 40px; font-size: 1.2rem; }
+  .bc-nextcard p { padding-right: 36px; }
+
+  .bc-faq { padding-top: 0; }
+  .bc-inline { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+  .bc-close { padding-bottom: clamp(64px, 8vw, 104px); }
+  .bc-close .closing-panel { min-height: 400px; }
+  .bc-close .closing-panel > img { object-position: 50% 30%; }
+
+  @media (max-width: 1100px) {
+    .bc-trust__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .bc-trust__head { grid-column: 1 / -1; max-width: 48ch; }
+    .bc-notes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 960px) {
+    .bc-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'head' 'main' 'aside'; row-gap: 0; }
+    .bc-main { margin-top: 24px; }
+    .bc-aside { max-width: 620px; margin-top: 40px; }
+    .bc-anat { grid-template-columns: minmax(0, 1fr); }
+    .bc-anat__wheel { width: 100%; max-width: 520px; margin-inline: auto; }
+    .bc-nt { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .bc-title { font-size: clamp(2.3rem, 10vw, 2.65rem); }
+    .bc-lede { font-size: 1.06rem; }
+    .bc-main .calc .calc__form.shell > .calc__core { padding: 20px 18px 16px; border-radius: 22px; }
+    .bc-main .calc__fields > .field + .field { margin-top: 20px; }
+    .bc-main .calc__privacy { align-items: flex-start; justify-content: flex-start; font-size: 13px; text-align: left; }
+    .bc-main .calc__privacy::before { margin-top: 3px; }
+    .bc-main .calc__submit { padding-left: 22px; }
+    .bc-main .calc__guide { grid-column: 1 / -1; order: 12; margin-top: 4px; padding-top: 0; border-top: 0; }
+    .bc-proof__top { padding: 16px 16px 0; }
+    .bc-proof__time { display: none; }
+    .bc-proof__wheel { padding: 8px 10px 12px; }
+    .bc-proof__b3 > div { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 12px; }
+    .bc-proof__b3 b { font-size: 0.875rem; white-space: normal; }
+    .bc-b3cards { display: flex; gap: 12px; margin-right: -20px; padding-right: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .bc-b3card { flex: 0 0 84%; padding: 20px; scroll-snap-align: start; }
+    .bc-b3card__top .bc-mono { display: none; }
+    .bc-b3card p { margin-top: 12px; font-size: 0.9375rem; }
+    .bc-b3card .textlink { margin-top: 14px; }
+    .bc-anat { padding: 18px; }
+    .bc-pos { font-size: 0.875rem; }
+    .bc-pos .bc-pos__g, .bc-pos__ac { width: 20px; }
+    .bc-notes { grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 24px; }
+    .bc-notes li { display: grid; grid-template-columns: 28px minmax(0, 1fr); column-gap: 14px; padding: 14px 0; }
+    .bc-notes__n { grid-row: 1 / span 2; }
+    .bc-notes .h-4 { margin-top: 2px; font-size: 1rem; }
+    .bc-notes p { margin-top: 2px; font-size: 0.875rem; }
+    .bc-result-links { flex-direction: column; gap: 14px; margin-top: 22px; }
+    .bc-result-links .textlink { align-self: flex-start; }
+    .bc-nt__art { aspect-ratio: 16 / 9; }
+    .bc-cmp.only-mobile { margin-top: 22px; }
+    .bc-cmp > div { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 12px; padding: 14px; }
+    .bc-cmp__lbl { grid-column: 1 / -1; }
+    .bc-cmp__lbl b { display: inline; margin-right: 6px; }
+    .bc-cmp__it { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 12.5px; }
+    .bc-opts li { grid-template-columns: 40px minmax(0, 1fr); gap: 14px; padding: 16px 0; }
+    .bc-ic { width: 40px; height: 40px; }
+    .bc-trust__grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .bc-trust__head { margin-bottom: 8px; }
+    .bc-ti { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 16px; padding: 18px 0; border-top: 1px solid var(--hair-1); }
+    .bc-ti .bc-ic { grid-row: 1 / span 2; }
+    .bc-ti .h-4 { margin-top: 0; }
+    .bc-skyline { flex-direction: column; align-items: flex-start; }
+    .bc-skyline .skyticker { flex-wrap: wrap; gap: 10px 16px; overflow: visible; }
+    .bc-skyline :is(.skyticker__item--direct, .skyticker__item--retro) { display: none; }
+    .bc-nextgrid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .bc-nextcard { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 16px; align-items: start; min-height: 0; padding: 18px; }
+    .bc-nextcard .tool-icon { grid-row: 1 / span 2; --tool-icon-size: 44px; }
+    .bc-nextcard .h-4 { margin-top: 0; font-size: 1.06rem; }
+    .bc-nextcard p { margin-top: 4px; padding-right: 0; }
+    .bc-nextcard .kcard__go { display: none; }
+    .bc-close .closing-panel { min-height: 360px; padding: 40px 20px; }
+  }
+  @media (max-width: 420px) {
+    .bc-pos-head .kfacts { display: none; }
+  }
+</style>
+
+  <!-- 01 · The tool first: the form, and a real calculated chart beside it. -->
+  <section class="bc-hero">
+    <div class="kwrap bc-grid">
+      <div class="bc-head">
+        <nav class="bc-crumbs" aria-label="Breadcrumb"><a href="/tools/">Tools</a><span aria-hidden="true">/</span><span aria-current="page">Birth chart</span></nav>
+        <h1 class="bc-title">Get your free birth chart.</h1>
+        <p class="bc-lede">Your Sun, Moon and rising sign, every planet and house, and what each one means.</p>
+      </div>
+
+      <div class="bc-main" id="bc-form">
+        <ChartCalculator mode="full" client:idle />
+        <noscript>
+          <p>This birth chart calculator needs JavaScript. Enable it and reload to calculate your Sun, Moon, rising sign, planets, and houses in your browser.</p>
+        </noscript>
+      </div>
+
+      <aside class="bc-aside" aria-label="Sample result" data-sample-set>
+        <figure class="bc-proof">
+          <div class="bc-proof__top">
+            <span class="pill">Sample result</span>
+            <span class="kfacts"><span>{SAMPLE_BIRTH.date}</span><span class="bc-proof__time">{SAMPLE_BIRTH.time}</span><span>{SAMPLE_BIRTH.place}</span></span>
+          </div>
+          <div class="bc-proof__wheel bc-wheel">
+            <Wheel {...SAMPLE_WHEEL} size={WHEEL_SIZE} deferIcons ariaLabel="Sample birth chart wheel" />
+          </div>
+          <div class="bc-proof__b3">
+            {[['Sun', sun], ['Moon', moon], ['Rising', rising]].map(([label, p]) => (
+              <div>
+                <img class="bc-disc" data-sample-src={sampleDisc((p as typeof sun).sign.slug)} width="34" height="34" alt="" decoding="async" />
+                <span><small>{label as string}</small><b>{(p as typeof sun).sign.name}</b><span class="bc-mono">{(p as typeof sun).degree}</span></span>
+              </div>
+            ))}
+          </div>
+        </figure>
+        <p class="bc-proof__cap">
+          <b>A real calculation, not an illustration.</b>
+          {SAMPLE_HOURS_AFTER_FULL_MOON !== null && ` This person was born about ${SAMPLE_HOURS_AFTER_FULL_MOON === 1 ? 'an hour' : `${['', '', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven'][SAMPLE_HOURS_AFTER_FULL_MOON]} hours`} after a full moon, so the Sun and Moon sit almost exactly opposite each other on the wheel.`}
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="kwrap bc-email">
     <EmailCapture placement="chart" revealOnChart postChartManaged={postChartDailyEnabled}>
       {postChartDailyEnabled && (
         <PostChartDailyBrief slot="post-chart" idPrefix="email-chart-en" client:load />
       )}
     </EmailCapture>
-    <noscript>
-      <p>This birth chart calculator needs JavaScript. Enable it and reload to calculate your Sun, Moon, rising sign, planets, and houses in your browser.</p>
-    </noscript>
+  </div>
+
+  <!-- 02 · What the result looks like: the sample, laid out like a result page. -->
+  <section class="kwrap bc-section bc-what" data-sample-set>
+    <div class="section-head">
+      <span class="kicker">What you get</span>
+      <h2 class="h-2">Your chart, explained as you read it</h2>
+      <p>This is the sample chart above, laid out the way your result page shows it: your big three first, then the wheel and every exact position.</p>
+    </div>
+
+    <div class="bc-b3cards">
+      <article class="kcard bc-b3card bc-b3card--sun" style={`--sign:${sun.sign.hue}`}>
+        <div class="bc-b3card__top"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>Sun · who you are</small><b>{sun.sign.name}</b></div><span class="bc-mono">{ordinal(sun.house)} house</span></div>
+        <p>Fairness, partnership and a feel for balance sit near the centre of this person. With the Sun in the tenth house, that often shows most in work and public life.</p>
+        <a class="textlink" href={`/${sun.sign.slug}/`}>Read {sun.sign.name} <span class="arr" aria-hidden="true">→</span></a>
+      </article>
+      <article class="kcard bc-b3card" style={`--sign:${moon.sign.hue}`}>
+        <div class="bc-b3card__top"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>Moon · how you feel</small><b>{moon.sign.name}</b></div><span class="bc-mono">{ordinal(moon.house)} house</span></div>
+        <p>Feelings tend to arrive fast and honestly. A useful question for an Aries Moon in the fourth house: where at home is there room to be direct?</p>
+        <a class="textlink" href={`/${moon.sign.slug}/`}>Read {moon.sign.name} <span class="arr" aria-hidden="true">→</span></a>
+      </article>
+      <article class="kcard bc-b3card" style={`--sign:${rising.sign.hue}`}>
+        <div class="bc-b3card__top"><img class="bc-disc" data-sample-src={sampleDisc(rising.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>Rising · how people meet you</small><b>{rising.sign.name}</b></div><span class="bc-mono">1st house</span></div>
+        <p>People often meet a Capricorn rising as steady, capable and a little reserved, before they notice the warmth underneath. It also sets where the houses begin.</p>
+        <a class="textlink" href={`/${rising.sign.slug}/`}>Read {rising.sign.name} <span class="arr" aria-hidden="true">→</span></a>
+      </article>
+    </div>
+
+    <div class="kpanel bc-anat">
+      <div class="bc-anat__wheel bc-wheel">
+        <Wheel {...SAMPLE_WHEEL} size={WHEEL_SIZE} deferIcons ariaLabel="Sample birth chart wheel, with its four parts numbered" />
+        {anatomyMarks.map((mark) => (
+          <span class="bc-anat__mark" style={`left:${mark.x.toFixed(2)}%;top:${mark.y.toFixed(2)}%`} aria-hidden="true">{mark.n}</span>
+        ))}
+      </div>
+      <div>
+        <div class="bc-pos-head">
+          <h3 class="h-4">Exact positions</h3>
+          <span class="kfacts"><span>{SAMPLE_COORDINATES}</span><span>Whole sign houses</span></span>
+        </div>
+        <div class="bc-pos-scroll">
+          <table class="bc-pos">
+            <thead><tr><th scope="col">Body</th><th scope="col">Sign</th><th scope="col">Degree</th><th scope="col">House</th></tr></thead>
+            <tbody>
+              {[...SAMPLE_PLACEMENTS, rising].map((p) => (
+                <tr class:list={[p.body === 'Sun' && 'is-on', p.body === 'Rising' && 'is-asc']} style={`--sign:${p.sign.hue}`}>
+                  <th scope="row">
+                    {p.body === 'Rising' ? <span class="bc-pos__ac" aria-hidden="true">AC</span> : <PlanetGlyph body={p.body} size={15} class="bc-pos__g" />}
+                    {p.body}
+                  </th>
+                  <td><span class="bc-pos__sign"><img class="bc-disc" data-sample-src={sampleDisc(p.sign.slug)} width="20" height="20" alt="" decoding="async" />{p.sign.name}</span></td>
+                  <td class="bc-mono">{p.degree}{p.retrograde && <span class="bc-pos__rx" title="Retrograde"> ℞<span class="sr-only"> retrograde</span></span>}</td>
+                  <td class="bc-pos__h">{p.house}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <ul class="bc-asp" role="list">
+          {shownAspects.map((aspect) => (
+            <li class="pill">
+              <PlanetGlyph body={aspect.a} size={14} title={aspect.a} />
+              {ASPECT_WORD[aspect.type] ?? aspect.type}
+              <PlanetGlyph body={aspect.b} size={14} title={aspect.b} />
+              <i>{aspect.orb.toFixed(1)}°</i>
+            </li>
+          ))}
+          {moreAspects > 0 && <li class="pill">{moreAspects} more</li>}
+        </ul>
+      </div>
+    </div>
+
+    <ol class="bc-notes" role="list">
+      <li><span class="bc-notes__n" aria-hidden="true">1</span><h3 class="h-4">The signs</h3><p>The twelve signs ring the outside. Every planet sits in one of them.</p></li>
+      <li><span class="bc-notes__n" aria-hidden="true">2</span><h3 class="h-4">The houses</h3><p>Twelve areas of life, counted from your <a class="bc-inline" href="/learn/glossary/#rising-sign">rising sign</a>. With whole sign houses, each sign is one house.</p></li>
+      <li><span class="bc-notes__n" aria-hidden="true">3</span><h3 class="h-4">The planets</h3><p>Each one placed at its exact degree. Sun, Moon and rising carry most of the story.</p></li>
+      <li><span class="bc-notes__n" aria-hidden="true">4</span><h3 class="h-4">The aspects</h3><p>Lines between planets, read as <a class="bc-inline" href="/learn/glossary/#aspect">conversations</a>: trines flow, squares push, oppositions negotiate.</p></li>
+    </ol>
+    <div class="bc-result-links">
+      <a class="textlink" href="/learn/how-to-read-a-birth-chart/">How to read a birth chart <span class="arr" aria-hidden="true">→</span></a>
+      <a class="textlink" href="/birth-chart/three-dimensions/">The birth chart in three dimensions <span class="arr" aria-hidden="true">→</span></a>
+    </div>
   </section>
 
-  <section class="section--tight container container--narrow">
-    <div class="prose">
-      <h2>What you're looking at</h2>
-      <p>
-        A <a href="/learn/glossary/#birth-chart">birth chart</a> is a snapshot of the sky from where you were born, at the
-        minute you were born. The wheel shows the twelve signs around the
-        outside, the twelve houses inside, and each planet placed at its exact{' '}
-        <AstroTerm term="degree" label="degree" surface="birth-chart-page" />. Three <AstroTerm term="placement" label="placements" surface="birth-chart-page" /> carry most of the story for beginners:
-      </p>
-      <ul>
-        <li><strong>Sun</strong>: your core identity; the sign most people already know.</li>
-        <li><strong>Moon</strong>: your emotional weather; how you feel and recharge.</li>
-        <li><strong>Rising</strong> (ascendant): the sign coming over the eastern horizon as you were born; how people first read you, and what lays out your houses.</li>
+  <div class="kwrap"><hr class="rule" /></div>
+
+  <!-- 03 · The most common worry, answered in full. -->
+  <section class="kwrap bc-section bc-nt" id="no-time" data-sample-set>
+    <div>
+      <ArtFrame
+        class="bc-nt__art"
+        src="/assets/hero-crops/clock-hand-560.webp"
+        srcset="/assets/hero-crops/clock-hand-360.webp 360w, /assets/hero-crops/clock-hand-560.webp 560w"
+        sizes="(min-width: 960px) 560px, 100vw"
+        width={560}
+        height={350}
+        alt="A brass clock hand crossing the painted zodiac dial"
+        spot="46% 48%"
+      />
+      <div class="bc-cmp only-desktop" aria-label="The sample chart with and without a birth time">
+        <div>
+          <span class="bc-cmp__lbl"><b>With a time</b>{SAMPLE_BIRTH.time}</span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{moon.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(rising.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Rising<small>{rising.sign.name}</small></span></span>
+        </div>
+        <div>
+          <span class="bc-cmp__lbl"><b>Without one</b>time unknown</span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{SAMPLE_MOON_ALL_DAY ? `${moon.sign.name}, all day` : 'Two possible signs'}</small></span></span>
+          <span class="bc-cmp__it is-missing"><span class="bc-cmp__ghost" aria-hidden="true">?</span><span>Rising<small>Needs a birth time</small></span></span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="kicker">Birth time</span>
+      <h2 class="h-2">No birth time? You still get a chart.</h2>
+      <p class="klede bc-nt__lede">Many people don’t know it. Here is exactly what changes, so nothing in your chart is guessed.</p>
+      <div class="bc-cmp only-mobile" aria-label="The sample chart with and without a birth time">
+        <div>
+          <span class="bc-cmp__lbl"><b>With a time</b>{SAMPLE_BIRTH.time}</span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{moon.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(rising.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Rising<small>{rising.sign.name}</small></span></span>
+        </div>
+        <div>
+          <span class="bc-cmp__lbl"><b>Without one</b>time unknown</span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{SAMPLE_MOON_ALL_DAY ? `${moon.sign.name}, all day` : 'Two possible signs'}</small></span></span>
+          <span class="bc-cmp__it is-missing"><span class="bc-cmp__ghost" aria-hidden="true">?</span><span>Rising<small>Needs a birth time</small></span></span>
+        </div>
+      </div>
+      <ul class="bc-opts" role="list">
+        <li>
+          <span class="bc-ic" style="background:var(--sign-virgo)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M10 6v4l2.6 1.6" /></svg></span>
+          <div><b>I know it</b><p>The full chart: rising sign, all twelve houses, and the Moon to the exact degree.</p></div>
+        </li>
+        <li>
+          <span class="bc-ic" style="background:var(--sign-sagittarius)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 10h14M6 7l-3 3 3 3M14 7l3 3-3 3" /></svg></span>
+          <div><b>I know it roughly</b><p>Enter your best guess. On the result, <em>Check a time window</em> shows which parts could change if the time is a little off.</p></div>
+        </li>
+        <li>
+          <span class="bc-ic" style="background:var(--sign-cancer)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M8 8a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.7M10 14h.01" /></svg></span>
+          <div><b>I don’t know it</b><p>You get your Sun, planets and aspects from a noon reference. We leave out the rising sign and houses, and if the Moon changed sign that day we show both options.</p></div>
+        </li>
       </ul>
-      <p>
-        The lines across the middle are <a href="/learn/glossary/#aspect">aspects</a>, angles between planets that
-        astrologers read as conversations: trines flow, squares argue
-        productively, oppositions negotiate.
-      </p>
-      <p>
-        Prefer to learn the shape of a chart before running your numbers?{' '}
-        <a href="/learn/how-to-read-a-birth-chart/">How to read a birth
-        chart</a> walks the same four steps the results do, and{' '}
-        <a href="/birth-chart/three-dimensions/">the birth chart in three
-        dimensions</a> covers what the flat wheel leaves out.
-      </p>
-      <EvidenceDisclosure
-        label="How this chart is calculated"
-        description="Coordinates, house system, and astronomical checks"
-      >
-        <p>
-          Every chart lists the exact time and place used, its coordinates, and
-          its <AstroTerm term="house-system" label="house system" surface="birth-chart-page" />. Planetary
-          positions are checked against astronomical reference data.
-        </p>
-        <p class="evidence-disclosure__links"><a href="/methodology/">Read the full methodology →</a></p>
-      </EvidenceDisclosure>
+      <p class="bc-where"><b>Where to look:</b> a birth certificate, a baby book, a hospital record, or a parent. You can add the time later and run your chart again.</p>
     </div>
   </section>
 
-  <section class="section--tight container container--narrow">
-    <div class="section-head"><h2>Questions, answered</h2></div>
-    <div class="faq">
-      {faq.map(({ q, a }) => (
-        <details class="faq__item">
-          <summary>{q}</summary>
-          <p>{a}</p>
-        </details>
-      ))}
+  <!-- 04 · Privacy, said plainly. -->
+  <section class="bc-trust">
+    <div class="kwrap bc-trust__grid">
+      <div class="bc-trust__head">
+        <h2 class="h-3">Private by design.</h2>
+        <p>No account, no signup, and no chart service on our servers.</p>
+        <a class="textlink" href="/methodology/">How charts are calculated <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="bc-ti">
+        <span class="bc-ic" style="background:var(--sign-cancer)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="14" height="10" rx="2" /><path d="M7 17h6M10 14v3" /></svg></span>
+        <h3 class="h-4">Calculated in your browser</h3>
+        <p>The whole chart is worked out on your device. There is no server-side chart service to send your details to.</p>
+      </div>
+      <div class="bc-ti">
+        <span class="bc-ic" style="background:var(--sign-pisces)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h10v13l-5-3.2-5 3.2z" /></svg></span>
+        <h3 class="h-4">Saved on this device</h3>
+        <p>Save a chart and it stays here. Account sync is a separate choice, and it only happens after you sign in.</p>
+      </div>
+      <div class="bc-ti">
+        <span class="bc-ic" style="background:var(--sign-virgo)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M6.8 10.2l2.2 2.2 4.3-4.6" /></svg></span>
+        <h3 class="h-4">Checked against the sky</h3>
+        <p>Positions are tested against NASA JPL reference data, with historical time zones and GeoNames place data. Every result lists its exact inputs.</p>
+      </div>
     </div>
   </section>
+
+  <!-- 05 · What to do once you have a chart. -->
+  <section class="kwrap bc-section bc-next">
+    <div class="section-head section-head--row">
+      <div>
+        <h2 class="h-2">After your chart</h2>
+        <p>Keep it, compare it, and see how today’s sky touches it.</p>
+      </div>
+      <a class="textlink only-desktop" href="/tools/">All tools <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+    <div class="bc-skyline">
+      <SkyTicker discs={false} />
+      <a class="textlink" href="/today/">Today’s sky <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+    <div class="grid-4 bc-nextgrid">
+      <a class="kcard bc-nextcard" href="/profile/">
+        <ToolIcon name="today" size={52} />
+        <h3 class="h-4">Save it for Today</h3><p>Keep your chart on this device and open a daily reading made for it.</p>
+        <span class="kcard__go" aria-hidden="true">→</span>
+      </a>
+      <a class="kcard bc-nextcard" href="/transits/">
+        <ToolIcon name="transits" size={52} />
+        <h3 class="h-4">Transits</h3><p>Today’s planets laid over your chart, and the connections they make.</p>
+        <span class="kcard__go" aria-hidden="true">→</span>
+      </a>
+      <a class="kcard bc-nextcard" href="/compatibility/">
+        <ToolIcon name="compatibility" size={52} />
+        <h3 class="h-4">Compatibility</h3><p>Add a second chart and see where the two connect and grow.</p>
+        <span class="kcard__go" aria-hidden="true">→</span>
+      </a>
+      <a class="kcard bc-nextcard" href="/big-three/">
+        <ToolIcon name="big-three" size={52} />
+        <h3 class="h-4">Big three card</h3><p>Your Sun, Moon and rising on one card, ready to share.</p>
+        <span class="kcard__go" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 06 · Questions, plain answers. -->
+  <section class="kwrap bc-section bc-faq">
+    <div class="qa">
+      <div>
+        <h2 class="h-2">Questions, answered</h2>
+        <p>Still curious? <a class="bc-inline" href="/learn/glossary/">Browse the glossary</a>.</p>
+      </div>
+      <div class="kfaq">
+        {faq.map(({ q, a, id }, index) => (
+          <details id={id} open={index === 0}>
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · One closing invitation. -->
+  <section class="kwrap bc-close">
+    <div class="closing-panel">
+      <img src="/assets/hero/zodiacs-hero-poster.avif" width="1600" height="900" alt="" loading="lazy" decoding="async" />
+      <div>
+        <h2 class="h-2">Your chart takes about twenty seconds.</h2>
+        <p>Birth date, time, and place. Private in your browser.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary btn--lg" href="#bc-form"><span>Get your free birth chart</span><span class="orb" aria-hidden="true">↑</span></a>
+          <a class="textlink" href="/birth-chart/someone-else/">Make a chart for someone else <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    // The sample's sign pictures, as one whole set: when any part of the
+    // sample nears the screen, the first wheel's twelve discs are asked for
+    // in zodiac order, then the second wheel and every other sample disc,
+    // which by then are the same twelve files. A phone, where the sample sits
+    // below the form, fetches none of it while the page loads.
+    (function () {
+      var query = '?surface=sample-chart';
+      var parts = document.querySelectorAll('[data-sample-set]');
+      var done = false;
+      function load() {
+        if (done) return;
+        done = true;
+        document.querySelectorAll('.bc-wheel image[data-href]').forEach(function (image) {
+          image.setAttribute('href', image.getAttribute('data-href') + query);
+          image.removeAttribute('data-href');
+        });
+        document.querySelectorAll('img[data-sample-src]').forEach(function (image) {
+          image.src = image.getAttribute('data-sample-src');
+          image.removeAttribute('data-sample-src');
+        });
+      }
+      if (!('IntersectionObserver' in window)) { load(); return; }
+      var watch = new IntersectionObserver(function (entries) {
+        if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+        watch.disconnect();
+        load();
+      }, { rootMargin: '200px 0px' });
+      parts.forEach(function (part) { watch.observe(part); });
+    })();
+  </script>
 </Base>
-
-<style>
-  .tool-hero { max-width: 62ch; margin-bottom: clamp(20px, 3vw, 32px); }
-  .tool-hero h1 {
-    margin: 0 0 16px;
-    font-family: var(--font-serif);
-    font-size: var(--text-2xl);
-    font-weight: 500;
-    letter-spacing: -0.005em;
-    line-height: 1.04;
-    font-variant-numeric: oldstyle-figures;
-    text-wrap: balance;
-  }
-  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-  .faq { display: grid; gap: 8px; }
-  .faq__item {
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-md);
-    background: var(--void-1);
-    padding: 4px 18px;
-  }
-  .faq__item summary {
-    cursor: pointer;
-    padding: 12px 0;
-    font-weight: 550;
-    color: var(--text);
-  }
-  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
-</style>
