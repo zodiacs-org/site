@@ -158,7 +158,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
               <span class="mono--label">{t(locale, 'natalSaturn')}</span>
               <span class="sr__natal-sign">
                 <SignChip lon={result.natalLon} locale={locale} />
-                <span class="mono sr__natal-deg">
+                <span class="sr__natal-deg">
                   {formatLongitude(result.natalLon, locale)}{result.natalRetrograde ? ' · Rx' : ''}
                 </span>
               </span>
@@ -182,16 +182,16 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
                   <div class={`core sr__season-core ${status === 'active' ? 'tinted' : ''}`}>
                     <div class="sr__season-head">
                       <strong>{tf(locale, 'saturnReturnHeading', { ordinal: ordinal[i] ?? String(i + 1) })}</strong>
-                      <span class="mono sr__season-status">{statusLabel[status]}</span>
+                      <span class="sr__season-status">{statusLabel[status]}</span>
                     </div>
-                    <p class="sr__season-span mono">
+                    <p class="sr__season-span">
                       {fmt(season.first)}
                       {season.crossings.length > 1 ? ` – ${fmt(season.last)}` : ''}
                       {ageHint[i] ? ` · ${ageHint[i]}` : ''}
                     </p>
                     <ul class="sr__crossings">
                       {season.crossings.map((c) => (
-                        <li class="mono" key={`${c.at.toISOString()}-${c.retrograde ? 'rx' : 'direct'}`}>
+                        <li key={`${c.at.toISOString()}-${c.retrograde ? 'rx' : 'direct'}`}>
                           {fmt(c.at)}{c.retrograde ? ` · ${t(locale, 'retrogradePass')}` : ''}
                         </li>
                       ))}

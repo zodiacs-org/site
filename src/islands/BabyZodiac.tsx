@@ -135,7 +135,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
       <form class="calc__form" onSubmit={compute} aria-busy={busy}>
         <div class="calc__grid">
           <label class="field">
-            <span class="field__label mono">{t(locale, 'babyDueDate')}</span>
+            <span class="field__label">{t(locale, 'babyDueDate')}</span>
             <input
               class="field__input"
               type="date"
@@ -173,7 +173,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
                     <> {t(locale, 'babySunNearEdge')} {signName(reading.sun.nearEdge, locale)} {t(locale, 'babySunNearEdgeTail')}</>
                   )}
                 </p>
-                <span class="mono baby-receipt">
+                <span class="baby-receipt">
                   {fmtDay(reading.dueISO, locale)} · {t(locale, 'babyNoonNote')}
                 </span>
               </>
@@ -183,7 +183,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
                   {t(locale, 'babySunSplitA')} <strong>{signName(reading.sun.a, locale)}</strong> {t(locale, 'babySunSplitOr')}{' '}
                   <strong>{signName(reading.sun.b, locale)}</strong> {t(locale, 'babySunSplitTail')}
                 </p>
-                <span class="mono baby-receipt">
+                <span class="baby-receipt">
                   {fmtDay(reading.dueISO, locale)} · {signName(reading.sun.a, locale)} → {signName(reading.sun.b, locale)}
                 </span>
               </>
@@ -196,7 +196,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
             <ul class="baby-spans">
               {reading.moonSpans.map((s) => (
                 <li key={s.fromISO}>
-                  <span class="mono baby-receipt">
+                  <span class="baby-receipt">
                     {fmtDay(s.fromISO, locale)}
                     {s.toISO !== s.fromISO && <> – {fmtDay(s.toISO, locale)}</>}
                   </span>

@@ -1,3 +1,24 @@
+Sitemap dates follow page changes, 2026-10-15 (Asia/Bangkok): S8 stays
+partial, for Bing alone.
+
+**Overall delivery: 43%** (42.587% to three decimals): 77.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **S8, partial.** #745 merged as `8ae5a7af` and production serves it
+  (`dpl_BCPzM8CJW4ZXCostxbedzoqwKppC`). The sitemap dates the three developer
+  pages it re-dated, and IndexNow run 38602573527 submitted exactly those
+  three (HTTP 200).
+- **F-97, fixed.** The Sitemap Dates workflow now fails a pull request whose
+  changed pages keep their sitemap dates. It builds the base and the head under
+  one pinned clock and compares each sitemap page's content. Run on the merges
+  of 2026-10-13 and 2026-10-14, it found seven pages still undated in
+  production, which this change re-dates
+  ([the record](../evidence/indexnow-changes-20261014/README.md)).
+  IndexNow Changes now also resubmits a page dated in the last three days
+  whose content changed again.
+- **What keeps S8 open:** Bing's verification is still the owner's report.
+- **Main's Site Check** passed on #745's merge (run 38601979991).
+
 OpenAPI examples for the static sky files, 2026-10-15 (Asia/Bangkok): P3.4
 stays partial.
 

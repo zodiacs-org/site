@@ -1,6 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import Faq from '../../../components/Faq.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import ChartCalculator from '../../../islands/ChartCalculator';
 import SignIcon from '../../../components/SignIcon.astro';
 import { SIGNS, signName } from '../../../lib/signs';
@@ -73,6 +74,7 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="sign-ring" locale="es" />
     <div class="section-head">
       <h2>Los doce ascendentes</h2>
       <p>Cuando la calculadora encuentre el tuyo, lee cómo colorea tu presencia y tu carta.</p>

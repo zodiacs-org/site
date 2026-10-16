@@ -43,9 +43,9 @@ const description = `Horóscopos de hoje, ${dateLabel}: uma nota clara para cada
         <a class="tile horo-pt__card" href={`/pt/horoscopes/${sign.slug}/`} style={`--sign:${sign.hue}`}>
           <img src={`/assets/zodiac-icons/48/${sign.slug}.webp`} width="48" height="48" alt="" loading="lazy" decoding="async" />
           <span class="horo-pt__name">{signName(sign, locale)}</span>
-          <span class="horo-pt__dates mono">{signDates(sign, locale)}</span>
+          <span class="horo-pt__dates">{signDates(sign, locale)}</span>
           <span class="horo-pt__teaser">{teaser}</span>
-          <span class="horo-pt__go mono">Ler hoje →</span>
+          <span class="horo-pt__go">Ler hoje →</span>
         </a>
       ))}
     </div>
@@ -71,12 +71,12 @@ const description = `Horóscopos de hoje, ${dateLabel}: uma nota clara para cada
   }
   .horo-pt__card img { border-radius: 50%; }
   .horo-pt__name { font-weight: 650; letter-spacing: -0.01em; }
-  .horo-pt__dates { color: var(--faint); font-size: 10px; letter-spacing: 0.06em; }
+  .horo-pt__dates { color: var(--faint); font-size: 12.5px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
   .horo-pt__teaser {
     margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--hair-1);
     color: var(--text-2); font-size: 12px; line-height: 1.5; text-wrap: pretty;
   }
-  .horo-pt__go { margin-top: 4px; color: var(--faint); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .horo-pt__go { margin-top: 4px; color: var(--faint); font-size: 12.5px; letter-spacing: 0; }
   .horo-pt__card:hover .horo-pt__go { color: var(--text); }
   .horo-pt__note { margin-top: clamp(22px, 4vw, 34px); color: var(--muted); font-size: var(--text-sm); }
   .horo-pt__note a { color: var(--text); }

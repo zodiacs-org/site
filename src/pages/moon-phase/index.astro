@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import MoonPhaseTool from '../../islands/MoonPhaseTool';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
@@ -97,8 +98,8 @@ const jsonLd = [
       {upcoming.map((m) => (
         <li class="lunations__row">
           <span class="lunations__type">{m.type}</span>
-          <span class="lunations__when mono">{m.when}</span>
-          <span class="lunations__where mono">{m.where}</span>
+          <span class="lunations__when">{m.when}</span>
+          <span class="lunations__where">{m.where}</span>
         </li>
       ))}
     </ul>
@@ -106,6 +107,7 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="prose">
+      <HeroCrop crop="crescent" />
       <h2>Reading a birthday moon</h2>
       <p>
         The Moon runs its full cycle in about 29.5 days, but its phase can
@@ -163,7 +165,7 @@ const jsonLd = [
   }
   .lunations__row:first-child { border-top: 1px solid var(--hair-1); }
   .lunations__type { font-weight: 600; font-size: var(--text-sm); color: var(--text); }
-  .lunations__when, .lunations__where { font-size: 12px; color: var(--muted); }
+  .lunations__when, .lunations__where { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
   @media (max-width: 540px) {
     .lunations__row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 4px 12px; }

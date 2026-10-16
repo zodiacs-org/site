@@ -1,10 +1,13 @@
 .return-countdown { margin-block: 28px; padding: 24px; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
 .return-countdown h2 { margin: 0 0 12px; font-size: 18px; font-weight: 500; }
 .return-countdown__count { font-family: var(--font-serif); font-size: clamp(28px, 5vw, 44px); line-height: 1.1; color: var(--sign-capricorn); margin: 0 0 14px; }
-.return-countdown time { font-size: 14px; font-family: var(--font-mono); }
+.return-countdown time { font-size: 14px; font-variant-numeric: tabular-nums; }
 .return-page { max-width: 850px; }
 .return-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-block: 26px; }
-.return-panel { margin-block: 26px; padding: clamp(20px, 4vw, 32px); border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
+.return-panel { margin-block: 26px; padding: clamp(20px, 4vw, 32px); border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); transition: border-color var(--dur-1) var(--ease); }
+/* The panels hold the subscribe actions and the personal-dates form; the
+   border answers when one of them has focus. */
+.return-panel:focus-within { border-color: var(--hair-3); }
 .return-panel h2 { margin: 0 0 16px; font-family: var(--font-serif); font-weight: 400; font-size: 32px; }
 .return-panel p { color: var(--text-2); max-width: 65ch; }
 .return-panel .btn { margin-top: 16px; }
@@ -14,7 +17,7 @@
 .return-personal .btn { justify-self: start; }
 .return-contact-list { padding: 0; list-style: none; display: grid; gap: 14px; }
 .return-contact-list li { padding-block: 14px; border-bottom: 1px solid var(--hair-1); display: grid; gap: 8px; }
-.return-contact-list time { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.return-contact-list time { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .return-upcoming { color: var(--sign-gemini); font-size: 13px; }
 .return-card-preview { display: block; width: min(100%, 270px); height: auto; margin-top: 24px; border: 1px solid var(--hair-1); border-radius: var(--r-md); }
 .return-personal fieldset { min-width: 0; display: grid; gap: 16px; padding: 22px; border: 1px solid var(--hair-1); border-radius: var(--r-md); }

@@ -217,6 +217,17 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     line-height: 1.65;
   }
   .today-provenance { margin-top: 18px; }
+  /* One flat surface for the brief: no outer bezel, sign wash or lit edge.
+     The border answers when a control inside has focus; paint changes are
+     immediate here, as on every Phase 1 surface. */
+  .today-card.shell { padding: 0; border: 0; background: none; }
+  .today-card.shell > .today-card__core {
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+    box-shadow: none;
+  }
+  .today-card.shell:focus-within > .today-card__core { border-color: var(--hair-3); }
   .today-card__core { padding: clamp(22px, 5vw, 38px); }
   .today-card__head {
     display: flex;

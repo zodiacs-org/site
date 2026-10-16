@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import Faq from '../../../components/Faq.astro';
 import BabyZodiac from '../../../islands/BabyZodiac';
 import '../../../styles/calculator.css';
@@ -74,6 +75,7 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="zodiac-figures" locale="fr" />
     <div class="prose reveal">
       <p>
         Le Soleil passe un mois dans chaque signe : la date prévue permet donc
