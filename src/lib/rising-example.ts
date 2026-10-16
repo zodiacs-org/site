@@ -22,12 +22,15 @@ export const RISING_EXAMPLE = {
 const MINUTE = 60_000;
 
 function chartAt(minutes: number) {
-  return natalChart({
+  const chart = natalChart({
     utc: new Date(RISING_EXAMPLE.dayStartUtc + minutes * MINUTE).toISOString(),
     latitude: RISING_EXAMPLE.latitude,
     longitude: RISING_EXAMPLE.longitude,
     houseSystem: 'whole',
   });
+  // A birthplace is given, so the engine returns the angles.
+  if (!chart.angles) throw new Error('rising-example: the engine returned no angles');
+  return { ...chart, angles: chart.angles };
 }
 
 /** 410 → "6:50 am": a minute of the local day, on a 12-hour clock. */

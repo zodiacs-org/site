@@ -48,8 +48,11 @@ const chart = natalChart({
   houseSystem: 'whole',
 });
 
+// A birthplace and a time are given, so the engine returns angles and houses.
+if (!chart.angles || !chart.houses) throw new Error('sample-chart: the engine returned no angles or houses');
+const angles = chart.angles;
 const cusps = chart.houses.cusps;
-const asc = chart.angles.asc;
+const asc = angles.asc;
 
 /** Sun through Pluto, then the rising sign, as the result page lists them. */
 export const SAMPLE_PLACEMENTS: SamplePlacement[] = PLANETS.map((name) => {
@@ -79,7 +82,7 @@ export const SAMPLE_WHEEL = {
     .filter((body) => body.body !== 'South Node')
     .map((body) => ({ body: body.body, lon: body.lon, retrograde: body.retrograde })),
   asc,
-  mc: chart.angles.mc,
+  mc: angles.mc,
   cusps,
   aspects: chart.aspects
     .filter((aspect) => PLANETS.includes(aspect.a as never) && PLANETS.includes(aspect.b as never))
