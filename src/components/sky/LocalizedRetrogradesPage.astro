@@ -1,4 +1,5 @@
 ---
+import { phraseUntil, rangeWords, sincePhrase } from '../../lib/range-words';
 /**
  * Translated retrograde calendar (es, pt, fr, it). The English page
  * (src/pages/retrogrades/index.astro) is the reference: same data logic,
@@ -445,7 +446,9 @@ const windows = (sky.retrogrades as { planet: BodyName; from: string; to: string
     from,
     to,
     clamped,
-    label: `${clamped ? c.clampedFrom : fmt(from)} – ${to ? fmt(to) : c.openEnd}`,
+    label: clamped
+      ? (to ? phraseUntil(locale, c.clampedFrom, fmt(to)) : c.clampedFrom)
+      : (to ? rangeWords(locale, fmt(from), fmt(to)) : sincePhrase(locale, fmt(from), c.openEnd)),
     stationRx: clamped ? null : formatLongitude(bodyLongitude(r.planet, from), locale),
     stationDirect: to ? formatLongitude(bodyLongitude(r.planet, to), locale) : null,
     state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',

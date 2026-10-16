@@ -1,4 +1,5 @@
 ---
+import { phraseUntil, rangeWords, sincePhrase } from '../../lib/range-words';
 import Base from '../../layouts/Base.astro';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
@@ -44,7 +45,9 @@ const windows = (sky.retrogrades as { planet: BodyName; from: string; to: string
     from,
     to,
     clamped,
-    label: `${clamped ? 'already retrograde as 2026 opened' : fmt(from)} to ${to ? fmt(to) : 'past the data horizon'}`,
+    label: clamped
+      ? (to ? phraseUntil('en', 'already retrograde as 2026 opened', fmt(to)) : 'already retrograde as 2026 opened')
+      : (to ? rangeWords('en', fmt(from), fmt(to)) : sincePhrase('en', fmt(from), 'past the data horizon')),
     stationRx: clamped ? null : formatLongitude(bodyLongitude(r.planet, from)),
     stationDirect: to ? formatLongitude(bodyLongitude(r.planet, to)) : null,
     state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',
@@ -172,7 +175,7 @@ const jsonLd = [
     </div>
     <details class="calendar-method"><summary>How this calendar works</summary>
       <p>
-        All eight <a href="/learn/glossary/#planet">planets</a> that do it, 2026 through 2027 &mdash; each window
+        All eight <a href="/learn/glossary/#planet">planets</a> that do it, 2026 through 2027, each window
         computed <a href="/learn/glossary/#station">station to station</a> from real motion, with the <a href="/learn/glossary/#degree">degree</a>{' '}
         where each turnaround happens.
       </p>
@@ -220,23 +223,23 @@ const jsonLd = [
         each other on different orbits, the same illusion as a slower train
         seeming to roll backward. What the tables make plain is how
         ordinary it is. The <a href="/learn/glossary/#outer-planets">outer planets</a> spend a third to half of every
-        year retrograde &mdash; on any given day the sky usually has one or two,
+        year retrograde. On any given day the sky usually has one or two,
         and today is no exception.
       </p>
       <p>
         The tradition scales its readings to the rhythm.
         <a href="/mercury-retrograde/">Mercury&rsquo;s</a> three-week flips are
         review season for plans and paperwork. A{' '}
-        <a href="/learn/planets/venus/">Venus</a> retrograde &mdash; the rarest,
-        every 19 months &mdash; gets read as a reassessment of what you want and
+        <a href="/learn/planets/venus/">Venus</a> retrograde, the rarest,
+        every 19 months, gets read as a reassessment of what you want and
         whom; <a href="/learn/planets/mars/">Mars</a>, every 26 months, as
         an engine rebuild for drive itself. The yearly outer-planet spans
         pass mostly unremarked, felt only where they cross something exact
-        in your own chart &mdash; which is what the{' '}
+        in your own chart, which is what the{' '}
         <a href="/transits/">transit tracker</a> checks.
       </p>
       <p>
-        Born during a retrograde? Common and unalarming &mdash; roughly one
+        Born during a retrograde? Common and unalarming: roughly one
         person in five has natal Mercury retrograde. Your{' '}
         <a href="/birth-chart/">birth chart</a> marks every planet that was
         moving backward when you arrived, with an ℞.

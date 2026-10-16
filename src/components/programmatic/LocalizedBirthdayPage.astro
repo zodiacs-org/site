@@ -1,4 +1,5 @@
 ---
+import { rangeWords } from '../../lib/range-words';
 import type { CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Faq from '../Faq.astro';
@@ -61,7 +62,7 @@ const nowReading = data.cusp ? cuspYearReading(data.cusp, data.now.year) : null;
 const decan = sign ? decanSpan(data) : null;
 const longitudeMin = formatLongitude(data.lonMin, locale);
 const longitudeMax = formatLongitude(data.lonMax, locale);
-const spanLabel = `${longitudeMin} – ${longitudeMax}`;
+const spanLabel = rangeWords(locale, longitudeMin, longitudeMax, 'plain');
 const moonName = signName(data.now.moonSign, locale);
 const heroSign = sign ?? (cusp ? cusp.majority ?? cusp.a : null);
 const hue = heroSign?.hue ?? 'var(--text-2)';
@@ -187,7 +188,7 @@ const jsonLd = [
               </dd>
             </div>
             <div class="bday-panel__row">
-              <dt>{yearFrom}–{yearTo}</dt>
+              <dt>{rangeWords(locale, String(yearFrom), String(yearTo), 'plain')}</dt>
               <dd>{text('rangeSummary', {
                 a: localName(cusp.a),
                 b: localName(cusp.b),

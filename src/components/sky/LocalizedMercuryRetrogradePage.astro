@@ -1,4 +1,5 @@
 ---
+import { rangeWords, sincePhrase } from '../../lib/range-words';
 /**
  * Translated Mercury retrograde hub (es, pt, fr, it). The English page
  * (src/pages/mercury-retrograde/index.astro) is the reference: same data
@@ -381,7 +382,7 @@ const windows = (sky.retrogrades as { planet: string; from: string; to: string |
     return {
       from,
       to,
-      label: `${fmt(from)} – ${to ? fmt(to) : c.ongoing}`,
+      label: to ? rangeWords(locale, fmt(from), fmt(to)) : sincePhrase(locale, fmt(from), c.ongoing),
       stationRx: formatLongitude(bodyLongitude('Mercury', from), locale),
       stationDirect: to ? formatLongitude(bodyLongitude('Mercury', to), locale) : null,
       state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',

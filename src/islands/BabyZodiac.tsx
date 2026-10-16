@@ -7,6 +7,7 @@ import { CheckOurMath } from './ChartTrust';
  * is named as unknowable before the birth minute. Engine loads lazily
  * on first compute (bundle rule: only full.ts touches the ephemeris).
  */
+import { rangeWords } from '../lib/range-words';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { signForLongitude, signName, signPrepositional, type Sign } from '../lib/signs';
 import { birthdaySlug } from '../lib/birthdays';
@@ -197,8 +198,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
               {reading.moonSpans.map((s) => (
                 <li key={s.fromISO}>
                   <span class="baby-receipt">
-                    {fmtDay(s.fromISO, locale)}
-                    {s.toISO !== s.fromISO && <> – {fmtDay(s.toISO, locale)}</>}
+                    {s.toISO !== s.fromISO ? rangeWords(locale, fmtDay(s.fromISO, locale), fmtDay(s.toISO, locale)) : fmtDay(s.fromISO, locale)}
                   </span>
                   <span>{t(locale, 'moonIn')} {locale === 'ru' ? signPrepositional(s.sign) : signName(s.sign, locale)}</span>
                 </li>
