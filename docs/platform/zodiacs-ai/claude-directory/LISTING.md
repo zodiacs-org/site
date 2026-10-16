@@ -1,5 +1,36 @@
 # Claude directory listing
 
+## Review-state update — 16 October 2026
+
+With the owner's explicit approval, the in-review directory entry's description
+was replaced with `app_info.description` from
+`integrations/chatgpt/chatgpt-app-submission.json`, and **Sync from server**
+updated the displayed tool list from six to the thirteen public production
+tools. The overview confirmed both changes, the unchanged
+`https://zodiacs.org/mcp` URL, no authentication, and **In review** status.
+This was an edit to the existing submission; the approved tool sync was its
+only server refresh.
+
+The production connector was then checked in Claude web and desktop with the
+comparison and Florence wedding prompts from `RESUBMISSION-0.5.0.md`. Both hosts
+rendered the comparison panel's 58/100 score ring, three component scores and
+missing-time caveat. Both rendered the wedding panel's 69/100 rating, Florence
+on 12 June 2027 at 17:00, reasons including Mercury retrograde, and golden hour
+20:13–20:57. The initial plain comparison request in each host did not reliably
+select the connector; explicitly asking to use Zodiacs produced the panels.
+
+The browser and desktop host screenshots remain in local release evidence;
+they include host chrome and are not carousel assets. The app-only,
+source-generated carousel candidates are
+[`06-comparison-card.png`](06-comparison-card.png) and
+[`07-wedding-card.png`](07-wedding-card.png), with matching copies prepared for
+`/assets/ai/review/` when this branch is published. The editor accepts an
+image URL on a Zodiacs-controlled HTTPS domain paired with an example prompt.
+No new images were uploaded, no further scan was requested, and no reviewer
+email was sent. The original
+one-liner and older reviewer test instructions below have not yet been revised
+in the portal.
+
 ## Correction sent — 15 October 2026, 18:01 UTC
 
 After #761 reached production, a correction was sent from admin@zodiacs.org to
@@ -128,10 +159,10 @@ ChatGPT profile. Anthropic can't edit it after submission.
 
 ## Carousel screenshots
 
-Five PNGs in this folder, made by `tests/claude-directory-shots.ts` from this
+Seven PNGs in this folder, made by `tests/claude-directory-shots.ts` from this
 branch's panels with live answers from the server: dark theme, Bangkok time,
 1,440–1,520 pixels wide, the app only, no prompt in the image. The birth date
-in 05 is made up.
+in 05 and the details in 06 and 07 are synthetic examples.
 
 | File | Paired prompt |
 | --- | --- |
@@ -140,6 +171,8 @@ in 05 is made up.
 | `03-sky-this-week.png` | Use Zodiacs to show this week's sky calendar for Bangkok. |
 | `04-chart-studio-start.png` | Help me read my birth chart. |
 | `05-chart-without-birth-time.png` | Help me read my birth chart. I don't know my birth time. |
+| `06-comparison-card.png` | Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992. |
+| `07-wedding-card.png` | We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day. |
 
 Re-run the script just before submitting so the readings and dates are current.
 

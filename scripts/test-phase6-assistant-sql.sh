@@ -163,6 +163,12 @@ run_phase6_sql_file \
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/zodiacs_accounts.sql"
 
+# Shared preview hook must replay safely and preserve both original contracts.
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/migrations/20261016090639_shared_preview_access_token_hook.sql"
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/shared_preview_access_token_hook.sql"
+
 # Exercise the exact early-production table shape in a second database. The
 # same migration sequence must rename its legacy columns without replacing
 # rows or constraints, survive reviewed SQL Editor replays, restore both
