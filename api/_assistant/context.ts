@@ -105,18 +105,18 @@ PAGE INVENTORY — EVERGREEN PAGES AND HUBS
 - /tools/ — Free astrology tools, no signup.
 
 PAGE INVENTORY — THE TWELVE SIGN GUIDES
-- /aquarius/ — Aquarius (Jan 20.
-- /aries/ — Aries (Mar 21.
-- /cancer/ — Cancer (Jun 21.
-- /capricorn/ — Capricorn (Dec 22.
-- /gemini/ — Gemini (May 21.
-- /leo/ — Leo (Jul 23.
-- /libra/ — Libra (Sep 23.
-- /pisces/ — Pisces (Feb 19.
-- /sagittarius/ — Sagittarius (Nov 22.
-- /scorpio/ — Scorpio (Oct 23.
-- /taurus/ — Taurus (Apr 20.
-- /virgo/ — Virgo (Aug 23.
+- /aquarius/ — Aquarius (Jan 20 to Feb 18).
+- /aries/ — Aries (Mar 21 to Apr 19).
+- /cancer/ — Cancer (Jun 21 to Jul 22).
+- /capricorn/ — Capricorn (Dec 22 to Jan 19).
+- /gemini/ — Gemini (May 21 to Jun 20).
+- /leo/ — Leo (Jul 23 to Aug 22).
+- /libra/ — Libra (Sep 23 to Oct 22).
+- /pisces/ — Pisces (Feb 19 to Mar 20).
+- /sagittarius/ — Sagittarius (Nov 22 to Dec 21).
+- /scorpio/ — Scorpio (Oct 23 to Nov 21).
+- /taurus/ — Taurus (Apr 20 to May 20).
+- /virgo/ — Virgo (Aug 23 to Sep 22).
 
 PAGE INVENTORY — DAILY AND MONTHLY HOROSCOPES
 The hub and stable sign routes publish a dated daily edition. Treat “today” as an exact UTC-date claim: use it only when the edition date printed on the page matches the current UTC date. If it does not match, name the printed date and say the current edition is pending rather than relabeling stale copy. Monthly readings use the /monthly/ subroutes.
