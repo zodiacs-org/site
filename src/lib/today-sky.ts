@@ -60,6 +60,11 @@ export function longDate(day: string): string {
 }
 
 const sameUtcDay = (iso: string, day: string) => iso.slice(0, 10) === day;
+/** The sign `step` places along the zodiac from `slug` (−1 is the one before). */
+const neighbourSign = (slug: string, step: number) => {
+  const index = SIGNS.findIndex((sign) => sign.slug === slug);
+  return SIGNS[(index + step + 12) % 12].slug;
+};
 
 /** The whole-sign house a body's sign falls in, counted from a Sun sign. */
 export function houseFrom(sunSign: string, bodySign: string): number {
@@ -71,6 +76,31 @@ export function houseFrom(sunSign: string, bodySign: string): number {
 export function ordinal(value: number): string {
   const suffix = value % 100 >= 11 && value % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[value % 10] ?? 'th';
   return `${value}${suffix}`;
+}
+
+/** "Waxing Crescent" → "Waxing crescent", as the page prints a phase. */
+export function phaseLabel(phase: string): string {
+  const lower = phase.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
+
+/**
+ * The events on the edition's own UTC date, in time order, as short plain
+ * phrases ("Pluto turns direct", "Mars and Saturn form an exact trine").
+ * Facts only: what happens and to which bodies, never what it means.
+ */
+export function editionDayEvents(daily: Daily): string[] {
+  if (daily.eventsCoverage === 'unavailable') return [];
+  const name = (body: string | undefined) => (body === 'Sun' || body === 'Moon' ? `the ${body}` : body ?? '');
+  return daily.events
+    .filter((event) => sameUtcDay(event.at, daily.date))
+    .sort((a, b) => a.at.localeCompare(b.at))
+    .map((event) => {
+      if (event.kind === 'station') return `${name(event.planet)} turns ${event.type}`;
+      if (event.kind === 'aspect') return `${name(event.a)} and ${name(event.b)} form an exact ${event.type}`;
+      if (event.kind === 'ingress') return `${name(event.planet)} enters ${signWord(event.sign ?? '')}`;
+      return `the ${event.type} moon falls in ${signWord(event.sign ?? '')}`;
+    });
 }
 
 export interface PlanetRow {
@@ -107,8 +137,10 @@ export interface MoonCycleNode {
 }
 
 /**
- * The lunation before the edition, the edition itself, and the next two
- * lunations: the cycle the Moon is in and the one it is heading for.
+ * The lunar cycle the edition falls in: the new moon before it, the full
+ * moon of the same cycle, the next new moon, and the edition itself in its
+ * place among them. Quarter moons are not in the committed tables, so the
+ * cycle has four points.
  */
 export function moonCycle(daily: Daily, moons: readonly SkyMoon[], catalogs: readonly TransitCatalog[]): MoonCycleNode[] {
   const snapshot = daily.snapshotAt ?? `${daily.date}T12:00:00.000Z`;
@@ -116,16 +148,20 @@ export function moonCycle(daily: Daily, moons: readonly SkyMoon[], catalogs: rea
     .flatMap((catalog) => catalog.lunations)
     .find((lunation) => Math.abs(Date.parse(lunation.at) - Date.parse(at)) < 60_000)?.sign;
   const sorted = [...moons].sort((a, b) => a.at.localeCompare(b.at));
-  const before = sorted.filter((moon) => moon.at <= snapshot).at(-1);
-  const after = sorted.filter((moon) => moon.at > snapshot).slice(0, 3);
-  const nodes: MoonCycleNode[] = [];
-  if (before) nodes.push({ kind: before.type as 'new' | 'full', at: before.at, sign: signOf(before.at) });
-  nodes.push({ kind: 'now', at: snapshot });
-  for (const moon of after) {
-    nodes.push({ kind: moon.type as 'new' | 'full', at: moon.at, sign: signOf(moon.at) });
-    if (nodes.length >= 5) break;
-  }
-  return nodes;
+  const lastNew = sorted.filter((moon) => moon.type === 'new' && moon.at <= snapshot).at(-1);
+  const nextNew = sorted.find((moon) => moon.type === 'new' && moon.at > snapshot);
+  const full = sorted.find((moon) => (
+    moon.type === 'full'
+    && (!lastNew || moon.at > lastNew.at)
+    && (!nextNew || moon.at < nextNew.at)
+  ));
+  const nodes: MoonCycleNode[] = [
+    ...[lastNew, full, nextNew]
+      .filter((moon): moon is SkyMoon => Boolean(moon))
+      .map((moon) => ({ kind: moon.type as 'new' | 'full', at: moon.at, sign: signOf(moon.at) })),
+    { kind: 'now' as const, at: snapshot },
+  ];
+  return nodes.sort((a, b) => a.at.localeCompare(b.at));
 }
 
 /** Days since the last new moon at the snapshot, to one decimal. */
@@ -157,9 +193,11 @@ export function moonFromEachSign(daily: Daily): SignRow[] {
 
 export interface ComingEvent {
   at: string;
-  kind: 'ingress' | 'lunation' | 'station' | 'eclipse';
+  kind: 'ingress' | 'lunation' | 'station' | 'eclipse' | 'aspect';
   body: string;
   sign: string;
+  /** The other body of an aspect. */
+  other?: string;
   title: string;
   detail: string;
   /** The published event page for the same instant, when there is one. */
@@ -168,8 +206,10 @@ export interface ComingEvent {
 
 /**
  * Ingresses, lunations, stations and eclipses after the edition's snapshot,
- * through `days` days, as dated facts in UTC. Lunations that are eclipses
- * appear once, as the eclipse.
+ * through `days` days, as dated facts in UTC, with the exact aspects that
+ * have their own published page. Lunations that are eclipses appear once, as
+ * the eclipse. Every published event page in the window is linked from its
+ * event (tests/events-drive.mjs holds /today/ to that).
  */
 export function comingUp(
   daily: Daily,
@@ -208,7 +248,7 @@ export function comingUp(
         body: ingress.planet,
         sign: ingress.sign,
         title: `${ingress.planet} enters ${signWord(ingress.sign)}`,
-        detail: `${ingress.retrograde ? 'Moving retrograde · ' : ''}${utcClock(ingress.at)} UTC`,
+        detail: `${ingress.retrograde ? 'Retrograde, from' : 'From'} ${signWord(neighbourSign(ingress.sign, ingress.retrograde ? 1 : -1))} · ${utcClock(ingress.at)} UTC`,
         path: pageAt(ingress.at, ['ingress', 'season']),
       });
     }
@@ -234,6 +274,21 @@ export function comingUp(
         title: `${station.planet} stations ${station.type}`,
         detail: `${degreeMinutes(station.degree)} ${signWord(station.sign)} · ${utcClock(station.at)} UTC`,
         path: pageAt(station.at, ['retrograde']),
+      });
+    }
+    for (const aspect of catalog.aspects) {
+      if (!within(aspect.at)) continue;
+      const path = pageAt(aspect.at, ['aspect']);
+      if (!path) continue;
+      events.push({
+        at: aspect.at,
+        kind: 'aspect',
+        body: aspect.a,
+        other: aspect.b,
+        sign: aspect.aSign,
+        title: `${aspect.a} ${aspect.type} ${aspect.b}`,
+        detail: `${signWord(aspect.aSign)} and ${signWord(aspect.bSign)} · ${utcClock(aspect.at)} UTC`,
+        path,
       });
     }
   }
