@@ -51,7 +51,7 @@ const chartWire = {
 const chartFragment = `#c=1.${Buffer.from(JSON.stringify(chartWire)).toString('base64url')}`;
 
 const offlineRoutes = [
-  { path: '/today/', heading: 'Today' },
+  { path: '/today/', heading: 'The sky today' },
   { path: '/birth-chart/', heading: 'Get your free birth chart.' },
   { path: '/tools/', heading: 'Free astrology tools' },
 ];
