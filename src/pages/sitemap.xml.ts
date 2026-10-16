@@ -41,7 +41,7 @@ type RegistryResearchPublication = {
 const registryResearchPublication = registryResearchPublicationData as unknown as RegistryResearchPublication;
 const birthdayFacts = birthdayFactsData as unknown as { days: Record<string, { cusp?: unknown }> };
 const researchLastmod = terminalResearchLastmod(registryResearchPublication);
-const YEARLY_HOROSCOPE_LASTMOD = '2026-07-19';
+const YEARLY_HOROSCOPE_LASTMOD = '2026-10-16';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 const THESIS_LASTMOD = '2026-09-05';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
@@ -93,7 +93,6 @@ const DELTAT_ATTRIBUTION_ROUTES = ['/methodology/', '/terms/'] as const;
 const COMPUTE_API_LASTMOD = '2026-09-29';
 const COMPUTE_API_ROUTES = [
   '/developers/', '/developers/compute/', '/developers/support/', '/birth-chart/', '/ru/birth-chart/',
-  '/privacy/',
 ] as const;
 // Its review of 2026-09-30 changed what these say about availability, logs,
 // memory and citations, and the four translated birth chart FAQs.
@@ -165,6 +164,134 @@ const QUERY_GUIDES_INDEX_LASTMOD = '2026-10-13';
 const QUERY_GUIDES_INDEX_ROUTES = ['/developers/docs/'] as const;
 const PT_FIRST_DAY_LASTMOD = '2026-10-13';
 const PT_FIRST_DAY_ROUTES = ['/pt/eclipses/', '/pt/full-moon-calendar/', '/pt/mercury-retrograde/', '/pt/retrogrades/'] as const;
+// The October 16 design sweep: decorative labels above headlines removed or
+// turned into back-links and datelines, tool discs added to the tools hubs, and
+// em and en dashes in the copy rewritten as commas, periods and range words.
+const DESIGN_SWEEP_LASTMOD = '2026-10-16';
+const DESIGN_SWEEP_ROUTES = [
+  '/',
+  '/about/',
+  '/almanac/',
+  '/ask/',
+  '/baby-zodiac/',
+  '/big-three/',
+  '/birth-chart/',
+  '/birth-chart/someone-else/',
+  '/birth-chart/three-dimensions/',
+  '/birthday/',
+  '/compatibility/',
+  '/corrections/',
+  '/developers/',
+  '/developers/compare/',
+  '/eclipses/',
+  '/eclipses/2027/',
+  '/es/',
+  '/es/baby-zodiac/',
+  '/es/birth-chart/',
+  '/es/chart-of-the-day/',
+  '/es/compatibility/',
+  '/es/eclipses/',
+  '/es/full-moon-calendar/',
+  '/es/mercury-retrograde/',
+  '/es/methodology/',
+  '/es/profile/',
+  '/es/retrogrades/',
+  '/es/rising-sign/',
+  '/es/sky-calendar/',
+  '/es/tools/',
+  '/es/transits/',
+  '/events/',
+  '/feeds/',
+  '/fr/',
+  '/fr/baby-zodiac/',
+  '/fr/birth-chart/',
+  '/fr/chart-of-the-day/',
+  '/fr/compatibility/',
+  '/fr/eclipses/',
+  '/fr/full-moon-calendar/',
+  '/fr/mercury-retrograde/',
+  '/fr/methodology/',
+  '/fr/profile/',
+  '/fr/retrogrades/',
+  '/fr/rising-sign/',
+  '/fr/sky-calendar/',
+  '/fr/tools/',
+  '/fr/transits/',
+  '/full-moon-calendar/',
+  '/full-moon-calendar/2027/',
+  '/it/',
+  '/it/baby-zodiac/',
+  '/it/birth-chart/',
+  '/it/chart-of-the-day/',
+  '/it/compatibility/',
+  '/it/eclipses/',
+  '/it/full-moon-calendar/',
+  '/it/mercury-retrograde/',
+  '/it/methodology/',
+  '/it/profile/',
+  '/it/retrogrades/',
+  '/it/rising-sign/',
+  '/it/sky-calendar/',
+  '/it/tools/',
+  '/it/transits/',
+  '/learn/communication/',
+  '/learn/glossary/',
+  '/learn/how-to-read-a-birth-chart/',
+  '/learn/zodiac-dates/',
+  '/lunar-return/',
+  '/mercury-retrograde/',
+  '/mercury-retrograde/2027/',
+  '/methodology/',
+  '/moon-phase/',
+  '/moon-sign/',
+  '/numerology/',
+  '/occasions/',
+  '/occasions/baby-shower/',
+  '/occasions/milestones/',
+  '/privacy/',
+  '/profile/',
+  '/pt/',
+  '/pt/baby-zodiac/',
+  '/pt/birth-chart/',
+  '/pt/chart-of-the-day/',
+  '/pt/compatibility/',
+  '/pt/eclipses/',
+  '/pt/full-moon-calendar/',
+  '/pt/mercury-retrograde/',
+  '/pt/methodology/',
+  '/pt/profile/',
+  '/pt/retrogrades/',
+  '/pt/rising-sign/',
+  '/pt/sky-calendar/',
+  '/pt/tools/',
+  '/pt/transits/',
+  '/retrogrades/',
+  '/rising-sign/',
+  '/ru/',
+  '/ru/baby-zodiac/',
+  '/ru/birth-chart/',
+  '/ru/chart-of-the-day/',
+  '/ru/compatibility/',
+  '/ru/methodology/',
+  '/ru/moon-phase/',
+  '/ru/moon-sign/',
+  '/ru/profile/',
+  '/ru/rising-sign/',
+  '/ru/saturn-return/',
+  '/ru/sky-calendar/',
+  '/ru/tools/',
+  '/ru/transits/',
+  '/saturn-return/',
+  '/sky-calendar/',
+  '/solar-return/',
+  '/tools/',
+  '/transits/',
+  '/void-of-course-moon/',
+  '/widgets/',
+] as const;
+// Horoscope templates changed the same day; dated readings keep their own date when it is later.
+const HOROSCOPE_TEMPLATE_LASTMOD = '2026-10-16';
+const laterDate = (left: string, right: string): string => (left > right ? left : right);
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -320,6 +447,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ADAPTER_RC24_ROUTES.map((loc) => [loc, ADAPTER_RC24_LASTMOD] as const),
   ...QUERY_GUIDES_INDEX_ROUTES.map((loc) => [loc, QUERY_GUIDES_INDEX_LASTMOD] as const),
   ...PT_FIRST_DAY_ROUTES.map((loc) => [loc, PT_FIRST_DAY_LASTMOD] as const),
+  ...DESIGN_SWEEP_ROUTES.map((loc) => [loc, DESIGN_SWEEP_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -445,8 +573,8 @@ export const GET: APIRoute = async () => {
     ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: EVERGREEN_LASTMOD.get(loc) ?? DEVELOPER_GUIDES_LASTMOD })),
     ...(registryAuraEntry ? [registryAuraEntry] : []),
     ...(gamesEnabled ? [
-      { loc: '/race/', priority: 0.8, lastmod: '2026-08-19' },
-      { loc: '/games/history/', priority: 0.6, lastmod: '2026-08-19' },
+      { loc: '/race/', priority: 0.8, lastmod: DESIGN_SWEEP_LASTMOD },
+      { loc: '/games/history/', priority: 0.6, lastmod: DESIGN_SWEEP_LASTMOD },
     ] : []),
     { loc: '/horoscopes/', priority: 0.8, lastmod: horoscopeProgram.anchorDate },
     // Spanish and Portuguese daily surfaces render the same edition from the
@@ -499,8 +627,8 @@ export const GET: APIRoute = async () => {
       return [
         { loc: root, priority: 0.8, lastmod: horoscopeProgram.anchorDate },
         { loc: `${root}tomorrow/`, priority: 0.72, lastmod: horoscopeProgram.anchorDate },
-        { loc: `${root}weekly/`, priority: 0.74, lastmod: signProgram.readings.weekly.period.from },
-        { loc: `${root}monthly/`, priority: 0.72, lastmod: monthlyLastmod },
+        { loc: `${root}weekly/`, priority: 0.74, lastmod: laterDate(signProgram.readings.weekly.period.from, HOROSCOPE_TEMPLATE_LASTMOD) },
+        { loc: `${root}monthly/`, priority: 0.72, lastmod: laterDate(monthlyLastmod, HOROSCOPE_TEMPLATE_LASTMOD) },
         { loc: `${root}love/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
         { loc: `${root}career/`, priority: 0.7, lastmod: horoscopeProgram.anchorDate },
         { loc: `${root}2027/`, priority: 0.68, lastmod: YEARLY_HOROSCOPE_LASTMOD },

@@ -97,7 +97,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 2,
@@ -160,7 +160,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 3,
@@ -223,7 +223,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 4,
@@ -286,7 +286,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 5,
@@ -349,7 +349,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 6,
@@ -412,7 +412,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 7,
@@ -475,7 +475,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 8,
@@ -538,7 +538,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 9,
@@ -601,7 +601,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 11,
@@ -664,7 +664,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 22,
@@ -727,7 +727,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 33,
@@ -790,7 +790,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
 ];
 
