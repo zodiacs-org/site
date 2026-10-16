@@ -178,11 +178,24 @@ async function settlePage(page, { result, normalizeEventsHub, name }) {
   // After hydration is done: the live row keeps its element (the mask
   // presence check still counts it) but reads the canonical line, so the
   // day's receipt can never change how many lines it wraps to.
-  if (name === 'home') {
+  if (name === 'home' || name === 'birth-chart-kahlo') {
     await page.evaluate((text) => {
       const ticker = document.querySelector('.skyticker');
       if (ticker) ticker.textContent = text;
     }, canonicalSkyTicker);
+  }
+  // The homepage marks the sign the Sun is in on the day's edition, which
+  // moves once a month. Mark the canonical line's sign (Leo) instead, so the
+  // tile row compares the same way every day.
+  if (name === 'home') {
+    await page.evaluate(() => {
+      for (const tile of document.querySelectorAll('.home-today__grid a')) {
+        const small = tile.querySelector('small[data-dates]');
+        const now = tile.getAttribute('href') === '/horoscopes/leo/';
+        tile.classList.toggle('is-now', now);
+        if (small) small.textContent = now ? 'Sun is here now' : small.dataset.dates;
+      }
+    });
   }
 
   // Long editorial pages can introduce below-the-fold font faces only after

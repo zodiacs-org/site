@@ -483,7 +483,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
           >
             <SignIcon sign={s.slug} size={52} />
             <b>{s.name}</b>
-            <small>{s.slug === sunNow ? 'Sun is here now' : compactDates(s.slug)}</small>
+            <small data-dates={compactDates(s.slug)}>{s.slug === sunNow ? 'Sun is here now' : compactDates(s.slug)}</small>
           </a>
         </li>
       ))}
