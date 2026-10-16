@@ -220,6 +220,33 @@ deploy, set `enabled = false` on its row in
 live check, and the hook stops granting the permission. Saved items stay with
 their owners.
 
+## Sharing the existing staging database
+
+The owner selected reuse of the Sky Watch test project on 16 October 2026
+because the organization has reached its two-free-project limit. Keep distinct
+OAuth clients and distinct Vercel preview deployments. Neither preview gains
+the other's tool permissions.
+
+After the account migrations, apply
+`20261016090639_shared_preview_access_token_hook.sql` to staging only. Select
+`zodiacs_auth_private.access_token_hook` as the project's token hook. It dispatches
+to the original hooks, refuses ambiguous client membership, and leaves website
+tokens unchanged. The old hooks remain available for rollback.
+
+The provider has one consent URL, so use the accounts preview's `/oauth/consent/`
+as the shared consent page. Set `ZODIACS_ACCOUNTS_PREVIEW_WATCH_CLIENTS` to the
+existing Sky Watch client UUIDs on that preview only. The setting is refused in
+production and must not overlap the account client list. It changes only consent
+wording and the disconnect list; the account MCP still accepts only account
+clients. Preserve the old Sky Watch redirect allow-list entries, signing keys,
+client callbacks, scheduler and deployment. Verify both connection flows before
+calling this shared setup complete. Roll back the provider's site URL, consent
+path and token hook together if either flow fails.
+
+The SQL suite tests both hook contracts under the Auth role, disabled and unknown
+clients, ambiguous membership and ordinary website sign-in. Hosted tests are
+still required after configuration.
+
 ## Release gates still open
 
 1. Native ChatGPT and Claude connection, sign-in, save, repeat save, disconnect

@@ -1,0 +1,56 @@
+{
+  "schema": "zodiacs.accounts-native-evidence.v1",
+  "capturedAt": "2026-10-16T10:55:53.796626+00:00",
+  "deployment": "dpl_4bXjN91hZDc3KQ6t6dX59X8apyyC",
+  "source": "d03fd5e2",
+  "host": "https://zodiacs-accounts-test.vercel.app",
+  "syntheticDataOnly": true,
+  "hosts": {
+    "ChatGPT": {
+      "oauthConnection": "passed",
+      "saveKinds": [
+        "chart",
+        "comparison",
+        "occasion",
+        "week"
+      ],
+      "repeatSave": "existing ID and original timestamp returned",
+      "revocation": "save failed; generic internal tool error, no inline sign-in request",
+      "reconnect": "passed through settings; subsequent save alreadySaved true"
+    },
+    "Claude": {
+      "oauthConnection": "passed through explicit settings connection",
+      "saveKinds": [
+        "chart",
+        "comparison",
+        "occasion",
+        "week"
+      ],
+      "repeatSave": "existing ID and original timestamp returned",
+      "revocation": "save refused and reconnect prompt shown",
+      "reconnect": "passed through settings; subsequent save alreadySaved true"
+    }
+  },
+  "profile": {
+    "rows": 6,
+    "allAssistantSource": true,
+    "allFourStoredReadingsOpen": true,
+    "chartLink": "birth date, time and Madrid restored",
+    "weddingLink": "date, 17:00 and Florence restored",
+    "jsonExport": "six records, all with detail"
+  },
+  "ownerPrivacyReview": "approved the staging account-saving wording on 2026-10-16",
+  "sharedSkyWatch": {
+    "freshReviewerOAuth": "passed in the existing private preview",
+    "existingConnection": "left connected and unchanged",
+    "reviewerWatches": 0
+  },
+  "hostedRlsIsolation": "a read-only query as another synthetic account returned zero reviewer saved rows; native second-account profile check remains pending",
+  "pending": [
+    "Native second-account profile isolation",
+    "Hosted full revocation/account deletion matrix",
+    "Hosted anonymous-save inline ChatGPT sign-in prompt",
+    "Email-link sign-in and cancellation paths"
+  ],
+  "productionAssistantSavingEnabled": false
+}
