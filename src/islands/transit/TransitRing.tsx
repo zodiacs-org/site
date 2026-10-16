@@ -427,7 +427,7 @@ export default function TransitRing({ locale, natal, computeSky, nowMs, focusReq
   return (
     <div class="tring">
       <CheckOurMath locale={locale} utc={when} />
-      <p class="tring__caption mono">{c.outerRing}</p>
+      <p class="tring__caption">{c.outerRing}</p>
 
       <div class="tring__wheelbox">
         <Wheel
@@ -468,7 +468,7 @@ export default function TransitRing({ locale, natal, computeSky, nowMs, focusReq
           aria-valuetext={whenLabel}
         />
         {/* Exact slow-transit dates as jump markers along the same timeline. */}
-        {scanState.status === 'loading' && <p class="tring__scan mono" role="status">{c.scanning}</p>}
+        {scanState.status === 'loading' && <p class="tring__scan" role="status">{c.scanning}</p>}
         {scanState.status === 'error' && (
           <div class="tring__scan">
             <p role="alert">{scanError}</p>
@@ -502,10 +502,10 @@ export default function TransitRing({ locale, natal, computeSky, nowMs, focusReq
           </div>
         )}
         {events !== null && events.length === 0 && (
-          <p class="tring__scan mono">{c.noSlowExact}</p>
+          <p class="tring__scan">{c.noSlowExact}</p>
         )}
         {nextUp.length > 0 && (
-          <p class="tring__next mono">
+          <p class="tring__next">
             <span class="mono--label">{c.nextUp}</span>{' '}
             {nextUp.map((e, i) => (
               <button class="tring__next-link" type="button" key={e.exactUtc + e.transitBody} onClick={() => goToEvent(e)}>

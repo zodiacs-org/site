@@ -1,0 +1,65 @@
+---
+/**
+ * The sign guide's hero picture: the sign's illustrated panel, with the
+ * pastel glyph disc overlapping its lower edge as a small badge. It is the
+ * page's LCP, so it loads eagerly at high priority.
+ */
+import SignIcon from './SignIcon.astro';
+import { SIGN_ART_SIZE, signArtAlt, signArtSrc, signArtSrcset } from '../lib/sign-art';
+import type { CatalogLocale } from '../lib/i18n/core';
+
+interface Props {
+  sign: string;
+  locale?: CatalogLocale;
+  class?: string;
+}
+
+const { sign, locale = 'en', class: className } = Astro.props;
+---
+<div class:list={['sign-art', className]}>
+  <img
+    class="sign-art__img"
+    src={signArtSrc(sign, 1200)}
+    srcset={signArtSrcset(sign)}
+    sizes="(min-width: 1200px) 480px, (min-width: 760px) 40vw, calc(100vw - 40px)"
+    width={SIGN_ART_SIZE.width}
+    height={SIGN_ART_SIZE.height}
+    alt={signArtAlt(sign, locale)}
+    loading="eager"
+    fetchpriority="high"
+  />
+  <SignIcon sign={sign} size={84} loading="eager" webpOnly class="sign-art__badge" />
+</div>
+
+<style>
+  .sign-art {
+    position: relative;
+    flex: none;
+    width: 100%;
+    margin-bottom: 26px;
+  }
+  @media (min-width: 760px) {
+    .sign-art { width: clamp(280px, 40vw, 480px); margin-bottom: 30px; }
+  }
+  .sign-art__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--r-lg);
+    background: var(--void-1);
+  }
+  /* A ring of the page colour cuts the disc out of the picture's edge. */
+  .sign-art :global(.sign-art__badge) {
+    position: absolute;
+    left: 16px;
+    bottom: -26px;
+    width: 68px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px var(--void-0);
+  }
+  @media (min-width: 760px) {
+    .sign-art :global(.sign-art__badge) { left: 20px; bottom: -30px; width: 84px; }
+  }
+</style>

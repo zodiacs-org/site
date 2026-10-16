@@ -63,7 +63,7 @@ const jsonLd = [
         Find your sign for <EditionText current="today’s" editionDate={program.anchorDate} /> focus, pressure point, and most useful move.
         Read your Sun sign first—and your rising sign too, if you know it.
       </p>
-      <span class="horo-hero__stamp mono">Updated daily · {dateLabel}</span>
+      <span class="horo-hero__stamp">Updated daily · {dateLabel}</span>
     </div>
 
     <p class="horo-jump-label">Jump to your sign</p>
@@ -82,12 +82,12 @@ const jsonLd = [
         <a class="tile horo-card" href={`/horoscopes/${sign.slug}/`} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={48} class="horo-card__icon" />
           <span class="horo-card__name">{sign.name}</span>
-          <span class="horo-card__dates mono">{sign.dates}</span>
+          <span class="horo-card__dates">{sign.dates}</span>
           <span class="horo-card__today">
-            <span class="horo-card__today-label mono">{reading.label}</span>
+            <span class="horo-card__today-label">{reading.label}</span>
             <EditionText current={teaser} editionDate={program.anchorDate} />
           </span>
-          <span class="horo-card__go mono"><EditionText current="Read today →" editionDate={program.anchorDate} /></span>
+          <span class="horo-card__go"><EditionText current="Read today →" editionDate={program.anchorDate} /></span>
         </a>
       ))}
     </div>
@@ -132,9 +132,9 @@ const jsonLd = [
     display: block;
     margin-top: 14px;
     color: var(--faint);
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
   }
 
   .horo-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 28px; }
@@ -163,7 +163,7 @@ const jsonLd = [
   }
   .horo-card :global(img) { border-radius: 50%; }
   .horo-card__name { font-weight: 650; letter-spacing: -0.01em; }
-  .horo-card__dates { color: var(--faint); font-size: 12px; letter-spacing: 0.03em; }
+  .horo-card__dates { color: var(--faint); font-size: 12.5px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
   .horo-card__today {
     margin-top: 6px;
     padding-top: 10px;
@@ -177,16 +177,15 @@ const jsonLd = [
     display: block;
     margin-bottom: 5px;
     color: var(--faint);
-    font-size: 9px;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
   }
   .horo-card__go {
     margin-top: 4px;
     color: var(--faint);
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 12.5px;
+    letter-spacing: 0;
   }
   .horo-card:hover .horo-card__go { color: var(--text); }
 

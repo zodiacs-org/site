@@ -244,7 +244,7 @@ export default function DemoChart() {
       <div class="demo__wheel shell">
         <div class="core demo__wheel-core">
           <div class="demo__wheel-stage">
-            <span class="demo__sample-badge mono">Sample chart · Frida Kahlo</span>
+            <span class="demo__sample-badge">Sample chart · Frida Kahlo</span>
             <Wheel
               bodies={bodies}
               asc={asc}
@@ -366,8 +366,8 @@ export default function DemoChart() {
               ))}
             </div>
           </div>
-          <p class="demo__preview-hint mono">Select a mark on the wheel—or choose a starting point.</p>
-          <p class="demo__receipt mono">
+          <p class="demo__preview-hint">Select a mark on the wheel—or choose a starting point.</p>
+          <p class="demo__receipt">
             {demo.name} · {demo.birth} · computed as {demo.utc.replace('T', ' ').slice(0, 19)} UTC ·{' '}
             <a href="https://www.astro.com/astro-databank/Kahlo%2C_Frida" target="_blank" rel="noopener noreferrer">
               published time source

@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import ChartCalculator from '../../islands/ChartCalculator';
 import SignIcon from '../../components/SignIcon.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
@@ -75,6 +76,7 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="prose">
+      <HeroCrop crop="sign-ring" />
       <h2>Why the clock matters this much</h2>
       <p>
         The Earth turns through the whole <a href="/learn/glossary/#zodiac">zodiac</a> every day, so the ascendant

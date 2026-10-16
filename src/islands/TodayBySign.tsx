@@ -38,7 +38,7 @@ export default function TodayBySign({ locale: rawLocale = 'en' }: Props) {
     <section class="tbs" aria-label={t(locale, 'todayBySignTitle')}>
       <div class="tbs__head">
         <h2>{t(locale, 'todayBySignTitle')}</h2>
-        <span class="mono tbs__stamp">
+        <span class="tbs__stamp">
           {formatDate(locale, `${daily.date}T12:00:00Z`, {
             year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
           })} · {moonPhaseLabel(locale, daily.moon.phase)}

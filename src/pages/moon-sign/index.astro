@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import ChartCalculator from '../../islands/ChartCalculator';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
@@ -69,6 +70,7 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="prose">
+      <HeroCrop crop="crescent-band" />
       <h2>What your moon sign describes</h2>
       <p>
         Most people meet astrology through their <a href="/learn/glossary/#sun-sign">sun sign</a> and shrug. The <a href="/learn/glossary/#moon-sign">moon

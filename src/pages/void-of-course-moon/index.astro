@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import { voidOfCourseAt, voidOfCourseWindows, type VoidOfCourseWindow } from '@zodiacs/engine/techniques';
 import { signBySlug } from '../../lib/signs';
 
@@ -123,7 +124,7 @@ const description = 'Void-of-course Moon times for this month and the next two, 
     <div class="voc-now tile" data-voc-now data-computed={buildNow.toISOString()}>
       <span class="mono--label">Right now</span>
       <p class="voc-now__text" data-voc-now-text>{statusLine}</p>
-      <p class="voc-now__note mono">Times in <span data-voc-zone>UTC</span>, converted to your time zone when JavaScript is on.</p>
+      <p class="voc-now__note">Times in <span data-voc-zone>UTC</span>, converted to your time zone when JavaScript is on.</p>
     </div>
     <script is:inline type="application/json" id="voc-windows" set:html={windowsJson}></script>
     <script is:inline>
@@ -230,6 +231,7 @@ const description = 'Void-of-course Moon times for this month and the next two, 
 
   <section class="section--tight container container--narrow">
     <div class="prose">
+      <HeroCrop crop="crescent" />
       <h2>What void of course means</h2>
       <p>
         As the Moon crosses a sign it makes a run of exact aspects to the Sun and the planets. After the last
@@ -281,7 +283,7 @@ const description = 'Void-of-course Moon times for this month and the next two, 
   .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
   .voc-now { max-width: 62ch; padding: 18px 20px; display: grid; gap: 8px; }
   .voc-now__text { margin: 0; color: var(--text); font-size: var(--text-base); line-height: 1.55; text-wrap: pretty; }
-  .voc-now__note { margin: 0; color: var(--faint); font-size: var(--text-xs); }
+  .voc-now__note { margin: 0; color: var(--faint); font-family: var(--font-sans); font-size: 13px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
   /* Reserve the timezone label so localization does not move the period. */
   .section-head [data-voc-zone] { display: inline-block; min-width: 10ch; }
   .voc-table-wrap { overflow-x: auto; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
