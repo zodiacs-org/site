@@ -68,6 +68,19 @@ export interface SkyMonthOptions {
   today?: { y: number; m: number; d: number };
 }
 
+/** Italian elides "dal"/"al" before the days read with a vowel: 1, 8, 11. */
+const ITALIAN_ELIDED_DAY = /^(?:1|8|11)(?!\d)/u;
+
+/** A retrograde window in words, in the visitor's language ("Oct 3 to Nov 13"). */
+const DAY_RANGE: Record<CatalogLocale, (from: string, to: string) => string> = {
+  en: (from, to) => `${from} to ${to}`,
+  es: (from, to) => `del ${from} al ${to}`,
+  pt: (from, to) => `de ${from} a ${to}`,
+  fr: (from, to) => `du ${from} au ${to}`,
+  it: (from, to) => `${ITALIAN_ELIDED_DAY.test(from) ? "dall'" : 'dal '}${from} ${ITALIAN_ELIDED_DAY.test(to) ? "all'" : 'al '}${to}`,
+  ru: (from, to) => `${/^2(?!\d)/u.test(from) ? 'со' : 'с'} ${from} по ${to}`,
+};
+
 export function skyMonthHtml(events: SkyMonthEvent[], options: SkyMonthOptions): string {
   const { year, month, locale, timeZone, today } = options;
   const lang = locale === 'pt' ? 'pt-BR' : locale;
@@ -111,7 +124,7 @@ export function skyMonthHtml(events: SkyMonthEvent[], options: SkyMonthOptions):
 
   const list = [
     ...points.map(({ e }) => ({ at: e.at, html: `<li><span class="skym__mark">${MARK[e.kind as Exclude<SkyMonthKind, 'retro'>]}</span>${linkOpen(e.href, 'skym__name')}${escapeHtml(e.label)}${linkClose(e.href)}<time datetime="${e.at}">${escapeHtml(dateFmt.format(new Date(e.at)))} · ${escapeHtml(timeFmt.format(new Date(e.at)))}</time></li>` })),
-    ...retros.map((r) => ({ at: r.e.at, html: `<li><span class="skym__mark skym__mark--retro" style="--hue:${r.hue}"></span>${linkOpen(r.e.href, 'skym__name')}${escapeHtml(r.e.label)}${linkClose(r.e.href)}<time datetime="${r.e.at}">${escapeHtml(dateFmt.format(new Date(r.e.at)))} – ${escapeHtml(dateFmt.format(new Date(r.e.end!)))}</time></li>` })),
+    ...retros.map((r) => ({ at: r.e.at, html: `<li><span class="skym__mark skym__mark--retro" style="--hue:${r.hue}"></span>${linkOpen(r.e.href, 'skym__name')}${escapeHtml(r.e.label)}${linkClose(r.e.href)}<time datetime="${r.e.at}">${escapeHtml(DAY_RANGE[locale](dateFmt.format(new Date(r.e.at)), dateFmt.format(new Date(r.e.end!))))}</time></li>` })),
   ].sort((a, b) => a.at.localeCompare(b.at)).map((item) => item.html).join('');
 
   return `<div class="skym__grid">${cells.join('')}</div><ul class="skym__list">${list}</ul>`;

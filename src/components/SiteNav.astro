@@ -5,7 +5,8 @@ import { initProfileNavigation } from '../lib/profile/navigation-avatar.mjs';
  * the icons are the navigation. The profile glyph fills once the visitor
  * has saved something (read from localStorage, progressive).
  */
-import { SIGNS, signDates, signName } from '../lib/signs';
+import { SIGNS, signName } from '../lib/signs';
+import { signDateRange } from '../lib/sign-display';
 import SignIcon from './SignIcon.astro';
 import { availableLocalesForPath, englishOnlyCue, localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
 import { ALL_TOOLS_LABEL, NAV_MORE, NAV_MORE_LABEL, NAV_TOOLS, navToolLabelHasEnglishCue, type NavTool } from '../lib/nav-tools';
@@ -72,9 +73,11 @@ const profileLabel: Record<Locale, string> = {
 };
 // Shared English-only courtesy (src/lib/i18n/english-only.ts): hreflang="en"
 // plus a visible cue on every link whose destination has no localized route.
+// In the bar the cue is a compact inline language tag, so a label never
+// stacks onto two lines; the full sentence stays in title and aria-label.
 const englishOnly = englishOnlyCue(locale);
 const englishOnlyAria = englishOnly?.aria;
-const englishOnlyBadge = englishOnly?.suffix.replace(/^ /, '');
+const englishOnlyBadge = englishOnly ? 'EN' : undefined;
 const visibleNavTools = locale === 'ru'
   ? NAV_TOOLS.filter((tool) => tool.href !== '/birthday/')
   : NAV_TOOLS;
@@ -108,7 +111,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
           aria-label={englishOnlyHref(l.href) ? `${l.label}. ${englishOnlyAria}` : undefined}
         >
           {englishOnlyHref(l.href) ? (
-            <><span>{l.label}</span><small class="nav__deferred">{englishOnlyBadge}</small></>
+            <><span>{l.label}</span><small class="nav__deferred" aria-hidden="true">{englishOnlyBadge}</small></>
           ) : l.label}
         </a>
       ))}
@@ -147,7 +150,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       aria-label={englishOnly ? `${t(locale, 'navCollect')}. ${englishOnlyAria}` : undefined}
     >
       {englishOnly ? (
-        <><span>{t(locale, 'navCollect')}</span><small class="nav__deferred">{englishOnlyBadge}</small></>
+        <><span>{t(locale, 'navCollect')}</span><small class="nav__deferred" aria-hidden="true">{englishOnlyBadge}</small></>
       ) : t(locale, 'navCollect')}
     </a>
 
@@ -198,7 +201,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
         <a class="signs-menu__item" href={localizePath(locale, `/${s.slug}/`)} style={`--sign:${s.hue}`}>
           <SignIcon sign={s.slug} size={32} deferred />
           <span class="signs-menu__name">{signName(s, locale)}</span>
-          <span class="signs-menu__dates">{signDates(s, locale)}</span>
+          <span class="signs-menu__dates">{signDateRange(s, locale)}</span>
         </a>
       ))}
     </div>
@@ -370,22 +373,32 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   .nav__link[aria-current='page'] { color: var(--text); }
   .nav__link--deferred,
   .nav__chip--deferred {
-    flex-direction: column;
-    justify-content: center;
-    gap: 1px;
-    line-height: 1.05;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
   }
+  /* English-only destinations carry a small inline language tag on the same
+     line as the label, never a second line under it. */
   .nav__deferred {
-    display: block;
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    min-width: 21px;
+    height: 15px;
+    padding: 0 4px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-full);
     font-family: var(--font-nav-sans);
-    font-size: 7.5px;
-    font-weight: 400;
-    letter-spacing: 0;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     line-height: 1;
     text-transform: none;
-    color: var(--faint);
+    color: var(--muted);
     white-space: nowrap;
   }
+  .nav__link--deferred:hover .nav__deferred,
+  .nav__chip--deferred:hover .nav__deferred { color: var(--text-2); border-color: var(--hair-3); }
 
   .nav__search {
     grid-area: search;
@@ -533,10 +546,10 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     .nav--localized {
       width: 992px;
       grid-template-areas: 'mark links profile search chip';
-      grid-template-columns: 116px minmax(0, 1fr) 44px 44px 120px;
+      grid-template-columns: 116px minmax(0, 1fr) 44px 44px 148px;
       gap: 18px;
     }
-    .nav--without-search { grid-template-areas: 'mark links profile chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 120px; }
+    .nav--without-search { grid-template-areas: 'mark links profile chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 148px; }
     .nav--localized .nav__links { display: grid; }
     .nav--localized .nav__sep,
     .nav--localized .nav__dim { display: inline; }
@@ -675,9 +688,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     display: block;
     margin-bottom: 14px;
     font-family: var(--font-nav-mono);
-    font-size: 10px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0;
     color: var(--faint);
   }
   .mobile-menu__link {
@@ -815,13 +827,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       background: var(--hair-3);
       transform: translateY(-50%);
     }
-    /* The English-only cue hangs under the word, so both words keep one line. */
-    :global(html[lang]) .nav__chip--deferred .nav__deferred {
-      position: absolute;
-      inset-inline: 13px 0;
-      top: calc(50% + 10px);
-      text-align: center;
-    }
+    /* The English-only tag sits inline after the word, in the bar's own line. */
+    :global(html[lang]) .nav__chip--deferred .nav__deferred { letter-spacing: 0.02em; }
     /* A bare two-line menu mark that still folds into the X. */
     :global(html[lang]) .nav__burger { border-color: transparent; }
     :global(html[lang]) .nav__burger-line { width: 20px; }
@@ -893,13 +900,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       background: var(--hair-3);
       transform: translateY(-50%);
     }
-    /* The English-only cue hangs under the word, so both words keep one line. */
-    :global(html:not(:lang(en))) .nav__chip--deferred .nav__deferred {
-      position: absolute;
-      inset-inline: 13px 0;
-      top: calc(50% + 10px);
-      text-align: center;
-    }
+    /* The English-only tag sits inline after the word, in the bar's own line. */
+    :global(html:not(:lang(en))) .nav__chip--deferred .nav__deferred { letter-spacing: 0.02em; }
     /* A bare two-line menu mark that still folds into the X. */
     :global(html:not(:lang(en))) .nav__burger { border-color: transparent; }
     :global(html:not(:lang(en))) .nav__burger-line { width: 20px; }

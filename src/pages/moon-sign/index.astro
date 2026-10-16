@@ -13,14 +13,14 @@ const faq = [
   },
   {
     q: 'Do I need my birth time to find my moon sign?',
-    a: 'Usually not — the Moon spends about two and a half days in each sign, so most days it only occupies one. But it changes signs roughly every 60 hours, so on boundary days the time matters. Without a time, this calculator shows a reference result and marks the Moon sign as unverified instead of guessing.',
+    a: 'Usually not. The Moon spends about two and a half days in each sign, so most days it only occupies one. But it changes signs roughly every 60 hours, so on boundary days the time matters. Without a time, this calculator shows a reference result and marks the Moon sign as unverified instead of guessing.',
   },
   {
     q: 'Why is my moon sign different from what another site said?',
     a: 'A time-zone difference is often the cause, especially for older dates or places with historical clock changes. This calculator uses a pinned release of the IANA clock history for births before 1970 and the IANA/ICU history supplied by your browser or device runtime after that, and shows the UTC instant used in the chart details.',
   },
   {
-    q: 'Sun, moon, and rising — what’s the difference?',
+    q: 'Sun, moon, and rising: what’s the difference?',
     a: 'The classic shorthand: the Sun is who you are, the Moon is how you feel, the Rising is how people first read you. Together they’re called the big three, and they’re the fastest useful summary of a birth chart.',
   },
 ];
@@ -46,11 +46,11 @@ const jsonLd = [
 ---
 <Base
   clientUi
-  title="Moon Sign Calculator — What Is My Moon Sign? | Zodiacs.org"
-  description="Find your moon sign free, in seconds — how you feel, what soothes you, and what you need to feel safe. No signup."
+  title="Moon Sign Calculator: What Is My Moon Sign? | Zodiacs.org"
+  description="Find your moon sign free, in seconds: how you feel, what soothes you, and what you need to feel safe. No signup."
   path="/moon-sign/"
   image="/assets/og/v2/tool/moon-sign.png"
-  imageAlt="Free moon sign calculator — Zodiacs.org"
+  imageAlt="Free moon sign calculator, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
@@ -74,12 +74,12 @@ const jsonLd = [
       <h2>What your moon sign describes</h2>
       <p>
         Most people meet astrology through their <a href="/learn/glossary/#sun-sign">sun sign</a> and shrug. The <a href="/learn/glossary/#moon-sign">moon
-        sign</a> is where it tends to get uncomfortably accurate — because the Moon
+        sign</a> is where it tends to get uncomfortably accurate, because the Moon
         describes the private layer: what you're like at 2 a.m., mid-argument,
         or three days into needing a hug you haven't asked for.
       </p>
       <p>
-        Once you know your moon sign, read its guide — every sign's guide has
+        Once you know your moon sign, read its guide. Every sign's guide has
         a section on what that <AstroTerm term="placement" label="placement" surface="moon-sign-page" /> means for the Moon specifically. Then{' '}
         <a href="/birth-chart/">get your birth chart</a>: sun, moon, and rising
         together are the real summary of you.
@@ -101,7 +101,7 @@ const jsonLd = [
   <section class="section--tight container container--narrow">
     <div class="section-head">
       <h2>The twelve moons, read closely</h2>
-      <p>A full page on each Moon placement — how it feels, what it needs, where it grows.</p>
+      <p>A full page on each Moon placement: how it feels, what it needs, where it grows.</p>
     </div>
     <div class="moon-placements">
       {['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'].map((slug) => (

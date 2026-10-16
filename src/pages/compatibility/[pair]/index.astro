@@ -4,6 +4,7 @@ import Base from '../../../layouts/Base.astro';
 import SignIcon from '../../../components/SignIcon.astro';
 import SynastryCalculator from '../../../islands/SynastryCalculator';
 import { SIGNS, ELEMENT_LABEL, MODALITY_LABEL } from '../../../lib/signs';
+import { signDateRange } from '../../../lib/sign-display';
 import { pairFacts, pairSlug } from '../../../lib/compat';
 import '../../../styles/calculator.css';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
@@ -73,13 +74,13 @@ const jsonLd = [
   description={entry.data.description}
   path={`/compatibility/${facts.slug}/`}
   image={`/assets/og/v2/pair/${facts.slug}.png`}
-  imageAlt={`${a.name} and ${b.name} compatibility — Zodiacs.org`}
+  imageAlt={`${a.name} and ${b.name} compatibility, Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
 >
   <article>
     <header class="pair-hero container container--narrow">
-      <em class="kicker">Compatibility</em>
+      <a class="crumb" href="/compatibility/"><span class="crumb__arrow" aria-hidden="true">←</span>Compatibility</a>
       <div class="pair-hero__lockup reveal">
         <span class="pair-hero__icons">
           <SignIcon sign={a.slug} size={104} loading="eager" class="pair-hero__icon" />
@@ -109,7 +110,7 @@ const jsonLd = [
               <a class="pair-panel__sign tile" href={`/${s.slug}/`} style={`--sign:${s.hue}`}>
                 <SignIcon sign={s.slug} size={44} class="pair-panel__sign-icon" />
                 <span class="pair-panel__sign-name">{s.name}{same ? ` ${i === 0 ? 'A' : 'B'}` : ''}</span>
-                <span class="pair-panel__sign-meta mono">{s.dates}</span>
+                <span class="pair-panel__sign-meta mono">{signDateRange(s)}</span>
                 <span class="pair-panel__sign-meta mono">
                   {ELEMENT_LABEL[s.element]} · {MODALITY_LABEL[s.modality]} · {s.ruler}
                 </span>

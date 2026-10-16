@@ -54,12 +54,12 @@ const jsonLd = [
 ---
 <Base
   clientUi
-  title="Асцендент по времени и месту рождения — рассчитать"
-  description="Асцендент меняется каждые два часа. Рассчитайте свой по дате, времени и месту — приватно в браузере."
+  title="Асцендент по времени и месту рождения: рассчитать"
+  description="Асцендент меняется каждые два часа. Рассчитайте свой по дате, времени и месту, приватно в браузере."
   path="/ru/rising-sign/"
   locale="ru"
   image="/assets/og/v2/tool/rising-sign.png"
-  imageAlt="Калькулятор асцендента — Zodiacs.org"
+  imageAlt="Калькулятор асцендента, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
@@ -83,7 +83,7 @@ const jsonLd = [
       {SIGNS.map((s) => (
         <a class="risings__chip" href={`/rising-sign/${s.slug}/`} hreflang="en" title="Материал пока доступен по-английски" aria-label={`${signName(s, 'ru')} — асцендент. Материал пока доступен по-английски`} style={`--sign:${s.hue}`}>
           <SignIcon sign={s.slug} size={26} class="risings__disc" />
-          <span>{signName(s, 'ru')} — асцендент <span class="sr-only">— пока по-английски</span></span>
+          <span>{signName(s, 'ru')} — асцендент <span class="sr-only">(пока по-английски)</span></span>
         </a>
       ))}
     </div>

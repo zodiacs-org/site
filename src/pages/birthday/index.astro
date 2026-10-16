@@ -44,16 +44,15 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Birthday Astrology by Date — Signs, Traits & Cusp Answers"
+  title="Birthday Astrology by Date: Signs, Traits & Cusp Answers"
   description="Choose your birthday for a date-specific reading of character, relationships, work, and growth, with an exact Sun-sign answer when the birth year matters."
   path="/birthday/"
   image="/assets/og/v2/tool/birthday.png"
-  imageAlt="Birthday astrology — Zodiacs.org"
+  imageAlt="Birthday astrology, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <div class="container bday-hub">
     <header class="bday-hub__hero reveal">
-      <em class="kicker">Birthdays</em>
       <h1 class="display">Your birthday, read closely.</h1>
       <p class="bday-hub__lede">
         Choose a date for a distinct reading of character, love, work, and growth.
@@ -93,7 +92,7 @@ const jsonLd = [
               href={`/birthday/${d.slug}/`}
               style={`--dot:${d.hue}`}
               role="listitem"
-              title={d.cusp ? `${name} ${d.day} — cusp date` : `${name} ${d.day}`}
+              title={d.cusp ? `${name} ${d.day}, cusp date` : `${name} ${d.day}`}
             >
               <span class="bday-day__dot" aria-hidden="true"></span>
               {d.day}
@@ -142,9 +141,10 @@ const jsonLd = [
     color: var(--text-2);
     font-size: 12.5px;
     text-decoration: none;
-    transition: border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+    transition: border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
   }
-  .bday-day:hover { color: var(--text); border-color: var(--hair-2); background: var(--void-1); }
+  .bday-day:hover { color: var(--text); border-color: var(--hair-2); background: var(--void-1); transform: translateY(-1px); }
+  @media (prefers-reduced-motion: reduce) { .bday-day { transition: none; } .bday-day:hover { transform: none; } }
   .bday-day__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--dot); opacity: 0.85; }
   .bday-day--cusp .bday-day__dot { background: transparent; border: 1px solid var(--faint); }
 

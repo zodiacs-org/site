@@ -140,10 +140,9 @@
 
 .reading-path__big-label {
   color: var(--faint);
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
 }
 
 .reading-path__sign-disc {
@@ -519,10 +518,9 @@
 .reading-path__orb {
   margin-bottom: 14px;
   color: var(--faint);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
 }
 
 .reading-path__aspect-list .reading-path__show {

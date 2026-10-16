@@ -1,8 +1,10 @@
 ---
 import { localizePath, type CatalogLocale } from '../../lib/i18n';
 import { sharingText as s } from '../../lib/sharing/copy';
-interface Props { locale?: CatalogLocale; current?: string }
-const { locale = 'en', current = '' } = Astro.props;
+import { toolDisc } from '../../lib/nav-tools';
+import ToolGlyph from '../ToolGlyph.astro';
+interface Props { locale?: CatalogLocale; current?: string; icons?: boolean }
+const { locale = 'en', current = '', icons = false } = Astro.props;
 const links = [
   { path: '/big-three/', key: 'bigTitle' },
   { path: '/compatibility/invite/', key: 'inviteTitle' },
@@ -12,7 +14,10 @@ const links = [
 ---
 <nav class="sharing-discovery" aria-label={s(locale, 'sharingTools')}>
   <h2>{s(locale, 'sharingTools')}</h2>
-  <ul>{links.filter((link) => link.path !== current).map((link) => <li><a href={localizePath(locale, link.path)}>{s(locale, link.key)} <span aria-hidden="true">↗</span></a></li>)}</ul>
+  <ul class:list={{ 'sharing-discovery__list--icons': icons }}>{links.filter((link) => link.path !== current).map((link) => {
+    const disc = icons ? toolDisc(link.path) : undefined;
+    return <li><a href={localizePath(locale, link.path)} style={disc ? `--sign:${disc.hue}` : undefined}>{disc && <ToolGlyph kind={disc.kind} />}{s(locale, link.key)} <span aria-hidden="true">↗</span></a></li>;
+  })}</ul>
 </nav>
 <style>
   .sharing-discovery { margin-block: 36px 20px; padding-top: 22px; border-top: 1px solid var(--hair-1); }
@@ -20,4 +25,17 @@ const links = [
   .sharing-discovery ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; }
   .sharing-discovery a { min-height: 44px; display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-size: 14px; text-underline-offset: 5px; }
   .sharing-discovery a span { color: var(--muted); }
+  /* On the tools hub each entry wears its tool's pastel disc. */
+  .sharing-discovery__list--icons a :global(.tool-glyph) {
+    width: 34px;
+    height: 34px;
+    margin: 0;
+    flex: none;
+    transition: box-shadow var(--dur-1) var(--ease);
+  }
+  .sharing-discovery__list--icons a :global(.tool-glyph svg) { width: 18px; height: 18px; }
+  @media (hover: hover) and (pointer: fine) {
+    .sharing-discovery__list--icons a:hover :global(.tool-glyph) { box-shadow: 0 0 0 4px color-mix(in oklab, var(--sign) 22%, transparent); }
+  }
+  @media (prefers-reduced-motion: reduce) { .sharing-discovery__list--icons a :global(.tool-glyph) { transition: none; } }
 </style>

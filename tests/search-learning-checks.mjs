@@ -144,10 +144,10 @@ export async function runSearchLearningChecks({ browser, baseURL, check, outDir 
       // Click the actual rendered search result so the badge and destination
       // are verified together; index-only assertions would miss dialog bugs.
       for (const [query, title, path] of [
-        ['birth charts', 'Free Birth Chart Calculator — Sun, Moon & Rising', '/birth-chart/'],
-        ['BIRTH CHARTS', 'Free Birth Chart Calculator — Sun, Moon & Rising', '/birth-chart/'],
-        ['big three', 'Big Three Calculator — Sun, Moon, and Rising in Seconds', '/big-three/'],
-        ['solar return', 'Solar Return Calculator — Your Birthday Chart for Any Year', '/solar-return/'],
+        ['birth charts', 'Free Birth Chart Calculator: Sun, Moon & Rising', '/birth-chart/'],
+        ['BIRTH CHARTS', 'Free Birth Chart Calculator: Sun, Moon & Rising', '/birth-chart/'],
+        ['big three', 'Big Three Calculator: Sun, Moon, and Rising in Seconds', '/big-three/'],
+        ['solar return', 'Solar Return Calculator: Your Birthday Chart for Any Year', '/solar-return/'],
       ]) {
         await page.goto(`${baseURL}/learn/`, { waitUntil: 'domcontentloaded' });
         await page.locator('[data-search-open]').click();

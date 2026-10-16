@@ -80,7 +80,7 @@ const NAV_SUBLABELS = {
     pt: 'Veja seu Sol, sua Lua, seu ascendente, os planetas, as casas e o que tudo isso significa.',
     fr: 'Découvre ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.',
     it: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.',
-    ru: 'Солнце, Луна, асцендент, планеты, дома — и что всё это значит.',
+    ru: 'Солнце, Луна, асцендент, планеты, дома и что всё это значит.',
   },
   compatibility: {
     en: 'Compare two charts and see where they click, clash, and grow.',
@@ -153,7 +153,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   },
   {
     href: '/birth-chart/someone-else/',
-    hub: { order: 2, title: "Someone else's chart", promise: 'Use birth details, the Big Three, or a Zodiacs link — with their permission.', hue: 'var(--sign-pisces)', kind: 'birth', group: 'start' },
+    hub: { order: 2, title: "Someone else's chart", promise: 'Use birth details, the Big Three, or a Zodiacs link, with their permission.', hue: 'var(--sign-pisces)', kind: 'birth', group: 'start' },
   },
   {
     href: '/big-three/',
@@ -165,11 +165,11 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   },
   {
     href: '/compatibility/invite/',
-    hub: { order: 21, title: 'Invite a friend to compare', promise: 'Send a link; your friend adds their chart and the comparison opens for both of you.', hue: 'var(--sign-libra)', kind: 'invite', group: 'start' },
+    hub: { order: 21, title: 'Invite a friend to compare', promise: 'Send a link; your friend adds their chart and the comparison opens for both of you.', hue: 'var(--sign-leo)', kind: 'invite', group: 'start' },
   },
   {
     href: '/chart-twins/',
-    hub: { order: 22, title: 'Chart twins', promise: 'Public figures in the sourced directory who share your Sun and Moon signs.', hue: 'var(--sign-gemini)', kind: 'compat', group: 'start' },
+    hub: { order: 22, title: 'Chart twins', promise: 'Public figures in the sourced directory who share your Sun and Moon signs.', hue: 'var(--sign-pisces)', kind: 'compat', group: 'start' },
   },
   {
     href: '/astrologer-kit/',
@@ -177,7 +177,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   },
   {
     href: '/sky-calendar/',
-    hub: { order: 24, title: 'Sky calendar', promise: 'New and full moons, eclipses, and retrogrades in your own calendar app.', hue: 'var(--sign-aquarius)', kind: 'calendar', group: 'sky' },
+    hub: { order: 24, title: 'Sky calendar', promise: 'New and full moons, eclipses, and retrogrades in your own calendar app.', hue: 'var(--sign-scorpio)', kind: 'calendar', group: 'sky' },
   },
   {
     href: '/chart-of-the-day/',
@@ -191,14 +191,14 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     href: '/today/', label: 'today', footerOrder: 2, footerUsesLocalizedPath: true,
     footerLabel: {
       en: 'Today', es: 'Hoy', pt: 'Hoje',
-      fr: 'Aujourd’hui (en anglais)', it: 'Oggi (in inglese)', ru: 'Сегодня — пока по-английски',
+      fr: 'Aujourd’hui (en anglais)', it: 'Oggi (in inglese)', ru: 'Сегодня (пока по-английски)',
     },
     hub: { order: 3, title: 'Today', promise: 'A plain-language daily brief once you have saved a chart.', hue: 'var(--sign-cancer)', kind: 'transit', group: 'start' },
   },
   {
     href: '/compatibility/', label: 'compatibility', sublabel: NAV_SUBLABELS.compatibility,
     navOrder: 2, footerOrder: 3, footerUsesLocalizedPath: true,
-    hub: { order: 4, title: 'Compatibility', promise: NAV_SUBLABELS.compatibility.en, hue: 'var(--sign-libra)', kind: 'compat', group: 'start' },
+    hub: { order: 4, title: 'Compatibility', promise: NAV_SUBLABELS.compatibility.en, hue: 'var(--sign-leo)', kind: 'compat', group: 'start' },
   },
   {
     href: '/transits/', label: 'transits', sublabel: NAV_SUBLABELS.transits,
@@ -213,7 +213,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   {
     href: '/rising-sign/', label: 'risingSign', sublabel: NAV_SUBLABELS.rising,
     navOrder: 5, footerOrder: 5, footerUsesLocalizedPath: true,
-    hub: { order: 6, title: 'Rising sign calculator', promise: NAV_SUBLABELS.rising.en, hue: 'var(--sign-gemini)', kind: 'rising', group: 'start' },
+    hub: { order: 6, title: 'Rising sign calculator', promise: NAV_SUBLABELS.rising.en, hue: 'var(--sign-aries)', kind: 'rising', group: 'start' },
   },
   {
     href: '/moon-phase/', label: 'moonPhase', sublabel: NAV_SUBLABELS.moonPhase,
@@ -222,7 +222,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   },
   {
     href: '/events/',
-    hub: { order: 8, title: 'Sky events', promise: 'The full moons, eclipses, retrogrades, sign changes, and rare alignments ahead.', hue: 'var(--sign-aquarius)', kind: 'transit', group: 'sky' },
+    hub: { order: 8, title: 'Sky events', promise: 'The full moons, eclipses, retrogrades, sign changes, and rare alignments ahead.', hue: 'var(--sign-scorpio)', kind: 'transit', group: 'sky' },
   },
   {
     href: '/saturn-return/', label: 'saturnReturn', sublabel: NAV_SUBLABELS.saturn,
@@ -289,6 +289,12 @@ export const TOOLS_HUB: readonly ToolsHubEntry[] = TOOL_CATALOG
   .filter((tool): tool is typeof tool & Required<Pick<ToolCatalogEntry, 'hub'>> => tool.hub !== undefined)
   .sort((left, right) => left.hub.order - right.hub.order)
   .map(({ href, hub }) => ({ href, ...hub }));
+
+/** The pastel disc (hue and glyph) a tool wears wherever it is listed. */
+export function toolDisc(href: string): { hue: string; kind: ToolGlyphKind } | undefined {
+  const entry = TOOLS_HUB.find((tool) => tool.href === href);
+  return entry ? { hue: entry.hue, kind: entry.kind } : undefined;
+}
 
 export const ALL_TOOLS_LABEL = {
   en: 'All tools',

@@ -11,9 +11,9 @@ const tools = [
   { href: '/birth-chart/', title: 'Tema natale', promise: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/birth-chart/someone-else/', title: 'Tema di un’altra persona (in inglese)', promise: 'Usa i dati di nascita, i tre segni principali o un link Zodiacs, con il suo permesso.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
   { href: '/today/', title: 'Oggi (in inglese)', promise: 'Il tuo ultimo tema salvato a confronto con il cielo di mezzogiorno, gradi compresi.', hue: 'var(--sign-cancer)', kind: 'transit' as const, englishOnly: true },
-  { href: '/compatibility/', title: 'Compatibilità', promise: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.', hue: 'var(--sign-libra)', kind: 'compat' as const },
+  { href: '/compatibility/', title: 'Compatibilità', promise: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.', hue: 'var(--sign-leo)', kind: 'compat' as const },
   { href: '/moon-sign/', title: 'Segno lunare', promise: 'Come vivi le emozioni e che cosa ti calma.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
-  { href: '/rising-sign/', title: 'Ascendente', promise: 'Il segno che mostri agli altri al primo incontro. L’ora di nascita aiuta.', hue: 'var(--sign-gemini)', kind: 'rising' as const },
+  { href: '/rising-sign/', title: 'Ascendente', promise: 'Il segno che mostri agli altri al primo incontro. L’ora di nascita aiuta.', hue: 'var(--sign-aries)', kind: 'rising' as const },
   { href: '/moon-phase/', title: 'Fase lunare', promise: 'La Luna di oggi e quella di qualsiasi data importante per te.', hue: 'var(--sign-cancer)', kind: 'moonphase' as const },
   { href: '/saturn-return/', title: 'Ritorno di Saturno', promise: 'Quando arriva il tuo, con precisione, e che cosa tende a chiedere.', hue: 'var(--sign-capricorn)', kind: 'saturn' as const },
   { href: '/transits/', title: 'Transiti', promise: 'Il cielo di oggi a confronto con il tuo tema.', hue: 'var(--sign-aries)', kind: 'transit' as const },
@@ -36,7 +36,7 @@ const jsonLd = [
   path="/it/tools/"
   locale="it"
   image="/assets/og/v2/tool/tools.png"
-  imageAlt="Strumenti astrologici gratuiti — Zodiacs.org"
+  imageAlt="Strumenti astrologici gratuiti, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section container">
@@ -59,7 +59,7 @@ const jsonLd = [
       <button
         class="shell tinted assistant-tool"
         type="button"
-        style="--sign:var(--sign-aquarius)"
+        style="--sign:var(--ink-1)"
         data-assistant-open
         data-assistant-locale="it"
         aria-haspopup="dialog"
@@ -74,24 +74,24 @@ const jsonLd = [
     </div>
 
     <div class="tools-upcoming">
-      <em class="kicker">Calendari del cielo</em>
+      <h2 class="list-heading">Calendari del cielo</h2>
       <ul>
-        <li><a href="/it/full-moon-calendar/"><strong>Lune piene</strong></a>: date, segni e nomi fino al 2027.</li>
-        <li><a href="/it/eclipses/"><strong>Eclissi</strong></a>: solari e lunari fino al 2028.</li>
-        <li><a href="/it/mercury-retrograde/"><strong>Mercurio retrogrado</strong></a>: ogni periodo, con le stazioni.</li>
-        <li><a href="/it/retrogrades/"><strong>Pianeti retrogradi</strong></a>: da Mercurio a Plutone.</li>
+        <li style="--sign:var(--sign-taurus)"><ToolGlyph kind="fullmoon" /><span><a href="/it/full-moon-calendar/"><strong>Lune piene</strong></a>: date, segni e nomi fino al 2027.</span></li>
+        <li style="--sign:var(--sign-leo)"><ToolGlyph kind="eclipse" /><span><a href="/it/eclipses/"><strong>Eclissi</strong></a>: solari e lunari fino al 2028.</span></li>
+        <li style="--sign:var(--sign-virgo)"><ToolGlyph kind="retrograde" /><span><a href="/it/mercury-retrograde/"><strong>Mercurio retrogrado</strong></a>: ogni periodo, con le stazioni.</span></li>
+        <li style="--sign:var(--sign-capricorn)"><ToolGlyph kind="retrograde" /><span><a href="/it/retrogrades/"><strong>Pianeti retrogradi</strong></a>: da Mercurio a Plutone.</span></li>
       </ul>
     </div>
 
     <div class="tools-upcoming">
-      <em class="kicker">Disponibile anche in inglese</em>
+      <h2 class="list-heading">Disponibile anche in inglese</h2>
       <ul>
-        <li><strong>Oroscopi.</strong> Il cielo di oggi, segno per segno. L’edizione inglese include anche le letture della settimana e del mese: <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>scegliere un segno</a>.</li>
+        <li style="--sign:var(--sign-sagittarius)"><ToolGlyph kind="sun" /><span><strong>Oroscopi.</strong> Il cielo di oggi, segno per segno. L’edizione inglese include anche le letture della settimana e del mese: <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>scegliere un segno</a>.</span></li>
       </ul>
     </div>
   </section>
-<section class="section--tight container"><SharingToolLinks locale="it" /></section>
-<section class="section--tight container"><ReturnToolLinks locale="it" /></section>
+<section class="section--tight container"><SharingToolLinks locale="it" icons /></section>
+<section class="section--tight container"><ReturnToolLinks locale="it" icons /></section>
 </Base>
 
 <style>
@@ -108,7 +108,10 @@ const jsonLd = [
   .assistant-tool:hover .core { border-color: color-mix(in oklab, var(--sign) 28%, transparent); }
   .tools-upcoming { margin-top: clamp(28px, 5vw, 44px); padding-top: 24px; border-top: 1px solid var(--hair-1); }
   .tools-upcoming ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-  .tools-upcoming li { font-size: var(--text-sm); color: var(--muted); }
+  .tools-upcoming li { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: var(--text-sm); color: var(--muted); }
+  /* Each entry wears its tool's pastel disc, at list size. */
+  .tools-upcoming li :global(.tool-glyph) { width: 34px; height: 34px; margin: 0; flex: none; }
+  .tools-upcoming li :global(.tool-glyph svg) { width: 18px; height: 18px; }
   .tools-upcoming strong { color: var(--text-2); font-weight: 600; }
   .tools-upcoming a { color: var(--text); }
 </style>

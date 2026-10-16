@@ -26,10 +26,10 @@ const EXACT_DATE_FORMATTER = new Intl.DateTimeFormat('en', {
 
 const SEARCH_COPY = {
   title: 'Find a transit',
-  intro: 'Pick a moving planet, a point in your chart, and a window — get the exact dates, computed on this device.',
+  intro: 'Pick a moving planet, a point in your chart, and a window. Get the exact dates, computed on this device.',
   fastBodyNote: 'Sun through Mars make these contacts every few weeks; the search really earns its keep on the slow planets.',
   empty: 'No exact contacts in this window. Widen the range or add bodies.',
-  cap: (count: number) => `Showing the first 200 of ${count} contacts — narrow the range or the bodies to see the rest.`,
+  cap: (count: number) => `Showing the first 200 of ${count} contacts. Narrow the range or the bodies to see the rest.`,
   running: (body: TransitBody) => `Scanning ${body}…`,
   calendar: 'Calendar file for these dates',
   calendarNote: 'The times in the file come from your exact chart, so anyone you share it with, or any online calendar you import it into, can work out your birth time from them, and your birthplace from those for your Ascendant or Midheaven.',

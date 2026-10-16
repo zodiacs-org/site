@@ -91,7 +91,7 @@ const PF_EMAIL_COPY = {
 const PF_DAILY_COPY = {
   title: 'Personal daily brief',
   body: 'One synced chart, read against each morning’s sky, in your inbox.',
-  noChartsBeforeLink: 'This needs a synced chart. Charts saved only on this device never enter email — sync one first if you want the brief.',
+  noChartsBeforeLink: 'This needs a synced chart. Charts saved only on this device never enter email. Sync one first if you want the brief.',
   syncLink: 'How chart sync works',
   chartLegend: 'Which chart should the brief read?',
   timezoneLabel: 'Deliver around 7:00 in',
@@ -99,7 +99,7 @@ const PF_DAILY_COPY = {
   consentNote: 'One email each morning for this chart. Stop anytime here, or from any email’s unsubscribe link.',
   enroll: 'Start my daily brief',
   pendingTitle: 'Confirm from your inbox.',
-  pendingBody: (maskedEmail: string) => `We sent a link to ${maskedEmail}. The brief begins after you confirm — until then, nothing is sent.`,
+  pendingBody: (maskedEmail: string) => `We sent a link to ${maskedEmail}. The brief begins after you confirm. Until then, nothing is sent.`,
   pendingAddressChanged: 'A confirmation is still pending. Resend the link to your current account email, then confirm it to begin the brief.',
   pendingResend: 'Resend the link',
   pendingAgain: 'Another confirmation link is on its way. The newest link is the one that works.',
@@ -113,7 +113,7 @@ const PF_DAILY_COPY = {
   timezoneChanged: (timezone: string) => `Saved. Tomorrow arrives around 7:00, ${timezone}.`,
   stop: 'Stop the daily brief',
   stopNote: 'Stops the personal brief immediately. If this address also has the sun-sign daily, that one resumes on its own.',
-  pausedBanner: 'Paused — the chart this brief read was deleted. Delivery stays stopped until you choose another below.',
+  pausedBanner: 'Paused. The chart this brief read was deleted. Delivery stays stopped until you choose another below.',
   vsWeekly: 'Separate from the weekly: the “Personalized weekly sky email” below remains its own choice.',
   error: "Couldn't update this preference. Please try again.",
 } as const;
@@ -129,7 +129,7 @@ export const PF_BOOK_COPY = {
   en: {
     count: (n: number) => n === 1
       ? '1 birth chart saved.'
-      : `${n} birth charts saved — yours and the people you read for.`,
+      : `${n} birth charts saved, yours and the people you read for.`,
     add: "Add someone's chart",
     privacy: 'Saved on this device. Nothing is uploaded unless you turn sync on.',
     details: 'Birth details',
@@ -167,7 +167,7 @@ export const PF_BOOK_COPY = {
     details: 'Dati di nascita',
   },
   ru: {
-    count: (n: number) => `${tp('ru', 'savedCharts', n, russianRuntime().plurals)} — ваши и тех, для кого вы читаете.`,
+    count: (n: number) => `${tp('ru', 'savedCharts', n, russianRuntime().plurals)}, ваши и тех, для кого вы читаете.`,
     add: 'Добавить карту другого человека',
     privacy: 'Сохранено на этом устройстве. Ничего не загружается, пока вы сами не включите синхронизацию.',
     details: 'Данные рождения',
@@ -1059,7 +1059,7 @@ export default function ProfileManager({
       {pairsBlock}
 
       {profile.charts.length >= 2 && (
-        <div class="pf-next shell tinted" style="--sign:var(--sign-libra)">
+        <div class="pf-next shell tinted" style="--sign:var(--sign-leo)">
           <div class="core tinted pf-next__core">
             <strong>
               {tf(locale, 'compareSavedHeading', {

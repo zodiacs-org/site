@@ -1,6 +1,7 @@
 ---
 import type { Sign } from '../lib/signs';
 import { ELEMENT_LABEL, MODALITY_LABEL } from '../lib/signs';
+import { signDateRange } from '../lib/sign-display';
 
 interface Props {
   sign: Sign;
@@ -10,12 +11,12 @@ interface Props {
 const { sign, star, babylonianRecord } = Astro.props;
 
 const rows: [string, string][] = [
-  ['Dates', sign.dates],
+  ['Dates', signDateRange(sign)],
   ['Element', ELEMENT_LABEL[sign.element]],
   ['Modality', MODALITY_LABEL[sign.modality]],
   ['Ruling planet', sign.classicRuler ? `${sign.ruler} (${sign.classicRuler}, traditional)` : sign.ruler],
   ['Polarity', sign.polarity === 'day' ? 'Day (yang)' : 'Night (yin)'],
-  ['Principal star', `${star.name} — ${star.note}`],
+  ['Principal star', `${star.name}, ${star.note}`],
   ['Babylonian record', babylonianRecord],
 ];
 ---

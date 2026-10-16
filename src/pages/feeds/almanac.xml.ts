@@ -39,7 +39,7 @@ export const GET: APIRoute = async () => {
     <title>The Zodiacs.org Almanac</title>
     <link>${SITE}/almanac/</link>
     <atom:link href="${SITE}/feeds/almanac.xml" rel="self" type="application/rss+xml" />
-    <description>The sky, written down — what is happening up there and what the astrological tradition makes of it.</description>
+    <description>The sky, written down: what is happening up there and what the astrological tradition makes of it.</description>
     <language>en</language>
     <lastBuildDate>${latest.toUTCString()}</lastBuildDate>
 ${items}

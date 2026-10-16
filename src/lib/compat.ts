@@ -203,5 +203,5 @@ export function synastryLine(
     aBody === bBody
       ? `${aName}’s ${roleA} ${phrase.verb} ${bName}’s`
       : `${aName}’s ${roleA} ${phrase.verb} ${bName}’s ${roleB}`;
-  return `${subject} — ${phrase.gloss}.`;
+  return `${subject}. ${phrase.gloss.charAt(0).toUpperCase()}${phrase.gloss.slice(1)}.`;
 }

@@ -11,9 +11,9 @@ const tools = [
   { href: '/birth-chart/', title: 'Calculadora de mapa astral', promise: 'Veja seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o que tudo isso significa.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/birth-chart/someone-else/', title: 'Mapa de outra pessoa (em inglês)', promise: 'Use os dados de nascimento, os três signos ou um link do Zodiacs, com a permissão dela.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
   { href: '/today/', title: 'Hoje', promise: 'O céu de hoje, lido para os doze signos solares.', hue: 'var(--sign-cancer)', kind: 'transit' as const },
-  { href: '/compatibility/', title: 'Compatibilidade', promise: 'Compare dois mapas e veja onde eles se conectam, entram em conflito e crescem.', hue: 'var(--sign-libra)', kind: 'compat' as const },
+  { href: '/compatibility/', title: 'Compatibilidade', promise: 'Compare dois mapas e veja onde eles se conectam, entram em conflito e crescem.', hue: 'var(--sign-leo)', kind: 'compat' as const },
   { href: '/moon-sign/', title: 'Calculadora de signo lunar', promise: 'Como você vive as emoções e o que ajuda a voltar ao seu centro.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
-  { href: '/rising-sign/', title: 'Calculadora de ascendente', promise: 'Descubra como as outras pessoas percebem você de início.', hue: 'var(--sign-gemini)', kind: 'rising' as const },
+  { href: '/rising-sign/', title: 'Calculadora de ascendente', promise: 'Descubra como as outras pessoas percebem você de início.', hue: 'var(--sign-aries)', kind: 'rising' as const },
   { href: '/moon-phase/', title: 'Fase da Lua', promise: 'A Lua de hoje e a Lua de qualquer data importante para você.', hue: 'var(--sign-cancer)', kind: 'moonphase' as const },
   { href: '/saturn-return/', title: 'Retorno de Saturno', promise: 'Quando o seu acontece e o que ele costuma pedir.', hue: 'var(--sign-capricorn)', kind: 'saturn' as const },
   { href: '/transits/', title: 'Trânsitos', promise: 'O céu de hoje comparado com seu mapa.', hue: 'var(--sign-aries)', kind: 'transit' as const },
@@ -32,11 +32,11 @@ const jsonLd = [
 ---
 <Base
   title="Ferramentas gratuitas de astrologia | Zodiacs.org"
-  description="Calculadoras gratuitas de astrologia: mapa astral, compatibilidade, signo lunar, ascendente, fase da Lua e trânsitos — privadas, no seu navegador."
+  description="Calculadoras gratuitas de astrologia: mapa astral, compatibilidade, signo lunar, ascendente, fase da Lua e trânsitos, privadas, no seu navegador."
   path="/pt/tools/"
   locale="pt"
   image="/assets/og/v2/tool/tools.png"
-  imageAlt="Ferramentas gratuitas de astrologia — Zodiacs.org"
+  imageAlt="Ferramentas gratuitas de astrologia, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section container">
@@ -59,7 +59,7 @@ const jsonLd = [
       <button
         class="shell tinted assistant-tool"
         type="button"
-        style="--sign:var(--sign-aquarius)"
+        style="--sign:var(--ink-1)"
         data-assistant-open
         data-assistant-locale="pt"
         aria-haspopup="dialog"
@@ -74,24 +74,24 @@ const jsonLd = [
     </div>
 
     <div class="tools-upcoming">
-      <em class="kicker">Calendários do céu</em>
+      <h2 class="list-heading">Calendários do céu</h2>
       <ul>
-        <li><a href="/pt/full-moon-calendar/"><strong>Luas cheias</strong></a>: datas, signos e nomes até 2027.</li>
-        <li><a href="/pt/eclipses/"><strong>Eclipses</strong></a>: solares e lunares até 2028.</li>
-        <li><a href="/pt/mercury-retrograde/"><strong>Mercúrio retrógrado</strong></a>: cada período, com as estações.</li>
-        <li><a href="/pt/retrogrades/"><strong>Planetas retrógrados</strong></a>: de Mercúrio a Plutão.</li>
+        <li style="--sign:var(--sign-taurus)"><ToolGlyph kind="fullmoon" /><span><a href="/pt/full-moon-calendar/"><strong>Luas cheias</strong></a>: datas, signos e nomes até 2027.</span></li>
+        <li style="--sign:var(--sign-leo)"><ToolGlyph kind="eclipse" /><span><a href="/pt/eclipses/"><strong>Eclipses</strong></a>: solares e lunares até 2028.</span></li>
+        <li style="--sign:var(--sign-virgo)"><ToolGlyph kind="retrograde" /><span><a href="/pt/mercury-retrograde/"><strong>Mercúrio retrógrado</strong></a>: cada período, com as estações.</span></li>
+        <li style="--sign:var(--sign-capricorn)"><ToolGlyph kind="retrograde" /><span><a href="/pt/retrogrades/"><strong>Planetas retrógrados</strong></a>: de Mercúrio a Plutão.</span></li>
       </ul>
     </div>
 
     <div class="tools-upcoming">
-      <em class="kicker">Também disponível em inglês</em>
+      <h2 class="list-heading">Também disponível em inglês</h2>
       <ul>
-        <li><strong>Horóscopos.</strong> O céu de hoje, signo por signo. A edição em inglês também inclui leituras semanais e mensais: <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>escolher signo</a>.</li>
+        <li style="--sign:var(--sign-sagittarius)"><ToolGlyph kind="sun" /><span><strong>Horóscopos.</strong> O céu de hoje, signo por signo. A edição em inglês também inclui leituras semanais e mensais: <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>escolher signo</a>.</span></li>
       </ul>
     </div>
   </section>
-<section class="section--tight container"><SharingToolLinks locale="pt" /></section>
-<section class="section--tight container"><ReturnToolLinks locale="pt" /></section>
+<section class="section--tight container"><SharingToolLinks locale="pt" icons /></section>
+<section class="section--tight container"><ReturnToolLinks locale="pt" icons /></section>
 </Base>
 
 <style>
@@ -107,7 +107,10 @@ const jsonLd = [
   .assistant-tool:hover .core { border-color: color-mix(in oklab, var(--sign) 28%, transparent); }
   .tools-upcoming { margin-top: clamp(28px, 5vw, 44px); padding-top: 24px; border-top: 1px solid var(--hair-1); }
   .tools-upcoming ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-  .tools-upcoming li { font-size: var(--text-sm); color: var(--muted); }
+  .tools-upcoming li { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: var(--text-sm); color: var(--muted); }
+  /* Each entry wears its tool's pastel disc, at list size. */
+  .tools-upcoming li :global(.tool-glyph) { width: 34px; height: 34px; margin: 0; flex: none; }
+  .tools-upcoming li :global(.tool-glyph svg) { width: 18px; height: 18px; }
   .tools-upcoming strong { color: var(--text-2); font-weight: 600; }
   .tools-upcoming a { color: var(--text); }
 </style>

@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { signDates } from '../src/lib/signs';
+import { signDateRange } from '../src/lib/sign-display';
 
 const read = (path: string) => readFileSync(resolve(path), 'utf8');
 
@@ -26,7 +27,7 @@ describe('localized discovery surfaces', () => {
     for (const locale of ['es', 'pt'] as const) {
       for (const route of ['index.astro', '[sign]/index.astro']) {
         const page = read(`src/pages/${locale}/horoscopes/${route}`);
-        expect(page).toContain('{signDates(sign, locale)}');
+        expect(page).toContain('{signDateRange(sign, locale)}');
         expect(page).not.toContain('{sign.dates}');
       }
     }
@@ -34,6 +35,10 @@ describe('localized discovery surfaces', () => {
     expect(signDates('capricorn', 'es')).toBe('22 dic – 19 ene');
     expect(signDates('sagittarius', 'pt')).toBe('22 nov – 21 dez');
     expect(signDates('aquarius', 'pt')).toBe('20 jan – 18 fev');
+    expect(signDateRange('aries', 'es')).toBe('del 21 mar al 19 abr');
+    expect(signDateRange('capricorn', 'es')).toBe('del 22 dic al 19 ene');
+    expect(signDateRange('sagittarius', 'pt')).toBe('de 22 nov a 21 dez');
+    expect(signDateRange('aquarius', 'pt')).toBe('de 20 jan a 18 fev');
   });
 
   it('labels the localized Today card for its sign edition, not saved-chart personalization', () => {
@@ -53,7 +58,7 @@ describe('localized discovery surfaces', () => {
       pt: { action: 'escolher signo', daily: 'O céu de hoje', longer: 'leituras semanais e mensais' },
       fr: { action: 'choisir un signe', daily: 'Le ciel du jour', longer: 'lectures de la semaine et du mois' },
       it: { action: 'scegliere un segno', daily: 'Il cielo di oggi', longer: 'letture della settimana e del mese' },
-      ru: { action: 'выбрать знак — пока по-английски', daily: 'Сегодняшнее небо', longer: 'прогнозы на неделю и месяц' },
+      ru: { action: 'выбрать знак (пока по-английски)', daily: 'Сегодняшнее небо', longer: 'прогнозы на неделю и месяц' },
     };
     for (const [locale, expected] of Object.entries(links)) {
       const page = read(`src/pages/${locale}/tools/index.astro`);

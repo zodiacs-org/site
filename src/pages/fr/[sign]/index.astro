@@ -5,7 +5,8 @@ import SignHeroArt from '../../../components/SignHeroArt.astro';
 import Faq from '../../../components/Faq.astro';
 import CollectBand from '../../../components/CollectBand.astro';
 import ShareRow from '../../../components/ShareRow.astro';
-import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signDates, signName } from '../../../lib/signs';
+import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signName } from '../../../lib/signs';
+import { signDateRange } from '../../../lib/sign-display';
 import { localizePath } from '../../../lib/i18n';
 import { frenchGuideFor } from '../../../data/fr-guides';
 import { pairSlug } from '../../../lib/compat';
@@ -74,7 +75,7 @@ const jsonLd = [
   description={guide.description}
   path={`/fr/${sign.slug}/`}
   image={`/assets/og/v2/sign/${sign.slug}.png`}
-  imageAlt={`${signName(sign, 'fr')} — guide du signe sur Zodiacs.org`}
+  imageAlt={`${signName(sign, 'fr')}, guide du signe sur Zodiacs.org`}
   type="article"
   locale="fr"
   jsonLd={jsonLd}
@@ -85,7 +86,7 @@ const jsonLd = [
       <div>
         <h1 class="display">{signName(sign, 'fr')}</h1>
         <p>{guide.intro[0]}</p>
-        <p class="guide-es-hero__facts">{elementLabel(sign.element, 'fr')} · {signDates(sign, 'fr')}</p>
+        <p class="guide-es-hero__facts">{elementLabel(sign.element, 'fr')} · {signDateRange(sign, 'fr')}</p>
         <div class="guide-es-hero__ctas">
           <a class="btn btn--primary" href={localizePath('fr', '/birth-chart/')}><span>Obtiens ton thème astral gratuit</span><span class="orb">↗</span></a>
           <a class="btn btn--ghost" href={localizePath('fr', '/compatibility/')}><span>Voir la compatibilité</span></a>
@@ -141,7 +142,7 @@ const jsonLd = [
       </section>
 
       <ShareRow
-        text={`${signName(sign, 'fr')} — le guide complet`}
+        text={`${signName(sign, 'fr')}, le guide complet`}
         url={`https://zodiacs.org/fr/${sign.slug}/`}
         locale="fr"
       />

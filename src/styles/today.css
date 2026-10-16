@@ -42,7 +42,7 @@
 }
 .tbs__read-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; }
 .tbs__read-head strong { font-size: var(--text-lg); font-weight: 620; letter-spacing: -0.01em; }
-.tbs__read-stamp { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+.tbs__read-stamp { font-size: 12px; letter-spacing: 0; color: var(--faint); }
 .tbs__lines { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
 .tbs__lines p { margin: 0 0 3px; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; max-width: 64ch; }
 .tbs__receipt { font-size: 10.5px; color: var(--faint); letter-spacing: 0.05em; }

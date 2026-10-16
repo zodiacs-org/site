@@ -4,7 +4,7 @@ import type { UiCatalog } from "./schema";
 const it = {
     trustDueIntro: "La data prevista offre uno sguardo al cielo intorno all’arrivo del tuo bambino, senza definirne il tema natale.",
     buyWithFomo: "Acquista con Fomo",
-    trustSkyReference: "Istante UTC di riferimento — nessuna ora fornita",
+    trustSkyReference: "Istante UTC di riferimento (nessuna ora fornita)",
     trustRecordInstant: "Istante UTC del registro pubblico",
     trustAddressGuide: "Come acquistare uno Zodiac",
     trustAddressIntro: "Scegli un segno per verificare il suo indirizzo pubblico ufficiale. L’acquisto avviene presso un servizio indipendente.",
@@ -18,10 +18,10 @@ const it = {
     trustMethodology: "Come calcoliamo i temi",
     trustMath: "Verifica i nostri calcoli",
     trustInstant: "Istante UTC calcolato",
-    trustReference: "Istante UTC di riferimento — ora di nascita sconosciuta; senza ascendente né case",
+    trustReference: "Istante UTC di riferimento (ora di nascita sconosciuta; senza ascendente né case)",
     trustMissingInstant: "L’istante UTC originale non è stato condiviso con queste posizioni.",
     trustReturnInstant: "Istante UTC del ritorno",
-    trustApproxReturn: "Istante UTC approssimativo del ritorno — basato su un’ora di nascita di riferimento",
+    trustApproxReturn: "Istante UTC approssimativo del ritorno, basato su un’ora di nascita di riferimento",
     trustIntro: "Il tuo tema può aiutarti a riflettere sui tuoi bisogni, punti di forza e relazioni.",
     trustOtherIntro: "Questo tema può aiutarti a riflettere sui bisogni, punti di forza e relazioni di questa persona.",
     trustPairIntro: "Le vostre differenze possono essere un punto di partenza per capirvi.",
@@ -132,9 +132,9 @@ const it = {
   placePlaceholder: "Inizia a digitare una città…",
   placeChange: "Cambia luogo di nascita",
   placePickHint: "Scegli il luogo di nascita dall’elenco.",
-  placeNoResults: "Non è nell’elenco? Scegli la città più vicina — pochi chilometri cambiano raramente il tema.",
+  placeNoResults: "Non è nell’elenco? Scegli la città più vicina. Pochi chilometri cambiano raramente il tema.",
   placeError:
-    "Non è stato possibile caricare l’indice dei luoghi — controlla la connessione e riprova.",
+    "Non è stato possibile caricare l’indice dei luoghi. Controlla la connessione e riprova.",
   searchGeo: "Inserisci la tua città di nascita. Dati: GeoNames (CC BY 4.0).",
   chartError:
     "Si è verificato un problema durante il calcolo del tema. Riprova.",
@@ -148,14 +148,14 @@ const it = {
   compareError:
     "Si è verificato un problema durante il confronto dei temi. Riprova.",
   noBirthTime: "Non la conosco",
-  risingTimeHelp: "L’ascendente cambia ogni due ore — qui l’orario conta.",
+  risingTimeHelp: "L’ascendente cambia ogni due ore. Qui l’orario conta.",
   chartTimeHelp: "Puoi continuare senza l’ora di nascita. Non possiamo mostrare l’ascendente né le case, e il tuo segno lunare potrebbe essere incerto.",
   chartSavedDevice: "Salvato · su questo dispositivo",
   saveThisChart: "Salva questo tema",
   chartSavedStatus: "Tema salvato su questo dispositivo.",
-  chartSaveFull: "Puoi salvare fino a 40 temi — prima rimuovine uno.",
+  chartSaveFull: "Puoi salvare fino a 40 temi. Prima rimuovine uno.",
   chartSaveError:
-    "Non è stato possibile salvare — il browser potrebbe bloccare l’archiviazione locale.",
+    "Non è stato possibile salvare. Il browser potrebbe bloccare l’archiviazione locale.",
   chartSavedMessage:
     "Salvato tra i tuoi temi. Accedi qui quando vorrai ritrovarli su ogni dispositivo.",
   linkCopied: "Link copiato",
@@ -168,7 +168,7 @@ const it = {
   chartLinkCopied: "Link al tema copiato negli appunti.",
   chartCardSaved: "Immagine del tema salvata.",
   cardError:
-    "Non è stato possibile creare l’immagine in questo browser — puoi anche acquisire una schermata della ruota qui sopra.",
+    "Non è stato possibile creare l’immagine in questo browser. Puoi anche acquisire una schermata della ruota qui sopra.",
   shareNote:
     "Il link contiene i dati di nascita che hai inserito. Non ci vengono inviati, ma chiunque abbia il link può aprirlo, anche chi lo riceve inoltrato. L’immagine 1080×1350 viene creata sul tuo dispositivo.",
   needsBirthTime: "Serve l’ora di nascita",
@@ -188,7 +188,7 @@ const it = {
     "Dall’alto verso il basso, come farebbe un astrologo. Le tabelle qui sopra sono i dati; ecco che cosa raccontano.",
   readBigThree: "Inizia dai tre pilastri",
   readBigThreeBody:
-    "Sole, Luna, ascendente — le tre schede in alto. Identità, istinto, modo di entrare nel mondo. Tutto il resto li precisa; nulla li sostituisce.",
+    "Sole, Luna, ascendente: le tre schede in alto. Identità, istinto, modo di entrare nel mondo. Tutto il resto li precisa; nulla li sostituisce.",
   readRooms: "I pianeti, casa per casa",
   readNoHouses:
     "Senza l’ora di nascita non ci sono case, quindi ogni pianeta si legge solo nel segno. Aggiungi l’ora e in questa sezione compariranno le case.",
@@ -198,7 +198,7 @@ const it = {
   today: "oggi",
   todayBySignTitle: "Il cielo di oggi, segno per segno",
   todayBySignPrompt:
-    "Tocca il tuo segno solare per una lettura chiara di oggi — non serve l’ora di nascita.",
+    "Tocca il tuo segno solare per una lettura chiara di oggi. Non serve l’ora di nascita.",
   todaySolarNote: "letto dalle case solari del tuo segno",
   whyThisReading: 'Perché questa lettura',
   todayHoroscopeLink: "Oroscopo {sign}",
@@ -227,7 +227,7 @@ const it = {
   inviteWith:
     "Invita qualcuno a confrontare il proprio tema con quello di {name}",
   inviteNamedNote:
-    "Il link contiene i dati di nascita di {name} e apre questa pagina con quel lato già compilato — non ci viene inviato nulla. Se non sei tu, è bene avere il suo consenso.",
+    "Il link contiene i dati di nascita di {name} e apre questa pagina con quel lato già compilato. Non ci viene inviato nulla. Se non sei tu, è bene avere il suo consenso.",
   transitMiddayUtc: "{date} · mezzogiorno UTC",
   planetReturn: "Ritorno di {planet}",
   natalPlanet: "{planet} natale",
@@ -235,15 +235,15 @@ const it = {
   pfdComing: "In arrivo per questo tema",
   pfdYearAhead: "I prossimi dodici mesi per questo tema",
   pfdYearBusy:
-    "Calcolo dell’anno sul tuo dispositivo — ancora qualche secondo…",
+    "Calcolo dell’anno sul tuo dispositivo, ancora qualche secondo…",
   pfdYearNote:
     "Calcolato dal tuo tema salvato: date esatte per i prossimi dodici mesi.",
   saveYearAheadNote:
     "Salva il tema per usarlo con Oggi e tornare senza reinserire i dati di nascita.",
   recordLabel: "Ala della collezione",
   recordOneOfTwelve:
-    "esiste anche come uno dei Dodici — una scheda di riferimento nel registro.",
-  recordViewLink: "Vedi la scheda — per ora in inglese →",
+    "esiste anche come uno dei Dodici, una scheda di riferimento nel registro.",
+  recordViewLink: "Vedi la scheda (per ora in inglese) →",
   recordChartSun: "Il tuo Sole è in {sign}.",
   recordChartBody:
     "{sign} è uno dei Dodici, con la propria arte, storia e scheda ufficiale nel Registro.",
@@ -253,30 +253,30 @@ const it = {
   babyNeedDate: "Inserisci prima una data prevista.",
   babyError:
     "Si è verificato un problema durante il calcolo del cielo. Riprova.",
-  babySunHead: "Segno solare — quasi certo",
+  babySunHead: "Segno solare, quasi certo",
   babySunSingle: "Una nascita in questa data avrà il Sole in",
   babySunNearEdge:
     "La data è vicina al confine del segno, quindi nascere più di un giorno prima o dopo può portare il Sole in",
-  babySunNearEdgeTail: "— decide la data di nascita.",
+  babySunNearEdgeTail: "(decide la data di nascita).",
   babySunSplitA: "In questa data il Sole cambia segno: alla nascita sarà in",
   babySunSplitOr: "oppure in",
   babySunSplitTail:
     "a seconda dell’ora. Decide il momento esatto della nascita.",
   babyNoonNote: "segni letti a mezzogiorno nel tempo universale",
-  babyMoonHead: "Segno lunare — una fra poche possibilità",
+  babyMoonHead: "Segno lunare, una fra poche possibilità",
   babyMoonBody:
-    "La Luna cambia segno ogni due o tre giorni, quindi la settimana prevista di solito comprende due o tre segni lunari. Chi nasce nella stessa settimana può avere un segno lunare diverso — decidono il giorno e l’ora di nascita.",
+    "La Luna cambia segno ogni due o tre giorni, quindi la settimana prevista di solito comprende due o tre segni lunari. Chi nasce nella stessa settimana può avere un segno lunare diverso. Decidono il giorno e l’ora di nascita.",
   babyRetroHead: "Retrogradi alla nascita",
   babyRetroBody:
-    "questi pianeti attraversano il loro periodo retrogrado intorno alla data prevista. In un tema natale, un pianeta retrogrado si interpreta come più introspettivo del solito — è comune e non c’è nulla da correggere.",
-  babyRisingHead: "Ascendente — impossibile saperlo fino al minuto esatto",
+    "questi pianeti attraversano il loro periodo retrogrado intorno alla data prevista. In un tema natale, un pianeta retrogrado si interpreta come più introspettivo del solito. È comune e non c’è nulla da correggere.",
+  babyRisingHead: "Ascendente, impossibile saperlo fino al minuto esatto",
   babyRisingBody:
     "L’ascendente cambia all’incirca ogni due ore, quindi nessuna data prevista può predirlo. È l’unico elemento che deve aspettare il certificato di nascita.",
   babyDateLink: "Leggi questa data di nascita in dettaglio",
   babyChartLink: "Dopo la nascita: il tema completo",
   pfdChartPick: "Tema",
   pfdQuietSky:
-    "Un cielo tranquillo per questo tema oggi — nessun transito cade entro 3° da un punto natale.",
+    "Un cielo tranquillo per questo tema oggi. Nessun transito cade entro 3° da un punto natale.",
   pfdQuietAhead:
     "Niente di importante all’orizzonte di questo tema nella finestra calcolata.",
   pfdSaturnBusy: "Calcolo delle finestre di Saturno sul tuo dispositivo…",
@@ -290,7 +290,7 @@ const it = {
   dignityDetriment: "esilio",
   dignityFall: "caduta",
   explorerHint:
-    "Tocca un pianeta, un segno, una casa o una linea d’aspetto per esaminarli — oppure seleziona la ruota e usa i tasti freccia.",
+    "Tocca un pianeta, un segno, una casa o una linea d’aspetto per esaminarli, oppure seleziona la ruota e usa i tasti freccia.",
   explorerLabel: "Tema natale interattivo",
   explorerSelectPart: 'Scegli una parte del tema',
   explorerNoSelection: 'Nessuna selezione',
@@ -312,15 +312,15 @@ const it = {
   cusp: "Cuspide",
   span: "Ampiezza",
   emptyHouseNote:
-    "Nessun pianeta qui. Una casa vuota non è un vuoto — i suoi temi passano attraverso il pianeta che la governa.",
+    "Nessun pianeta qui. Una casa vuota non è un vuoto. I suoi temi passano attraverso il pianeta che la governa.",
   angleAscNote:
-    "L’ascendente — il grado che sorge all’orizzonte orientale al momento della nascita. È il punto di riferimento dell’intera ruota.",
+    "L’ascendente, il grado che sorge all’orizzonte orientale al momento della nascita. È il punto di riferimento dell’intera ruota.",
   angleDscNote:
-    "Il Discendente — il grado che tramonta a ovest, opposto all’ascendente. La porta tradizionale verso le relazioni.",
+    "Il Discendente, il grado che tramonta a ovest, opposto all’ascendente. La porta tradizionale verso le relazioni.",
   angleMcNote:
-    "Il Medio Cielo — il grado che culmina sopra di te alla nascita. Carriera, reputazione, vita visibile.",
+    "Il Medio Cielo, il grado che culmina sopra di te alla nascita. Carriera, reputazione, vita visibile.",
   angleIcNote:
-    "Il Fondo Cielo — il punto più basso della ruota, opposto al Medio Cielo. Casa, radici, vita privata.",
+    "Il Fondo Cielo, il punto più basso della ruota, opposto al Medio Cielo. Casa, radici, vita privata.",
   layersLabel: "Livelli del tema",
   layerHouses: "Case",
   editedBy: "Pubblicato da",
@@ -334,7 +334,7 @@ const it = {
   firstReadingExplore: "Esplora in autonomia",
   firstReadingResume: "Continua la mia lettura",
   firstReadingStep: "Passo",
-  firstReadingFullTour: "Scopri come funziona il tema — tour avanzato",
+  firstReadingFullTour: "Scopri come funziona il tema (tour avanzato)",
   firstReadingReplay: "Rivedi la storia del mio tema",
   chartActionsMore: "Altri modi per usare questo tema",
   chartReceiptDownload: "Scarica il resoconto del calcolo (.json)",
@@ -345,11 +345,11 @@ const it = {
   contextHelpCue: "Tocca i termini sottolineati con puntini per una spiegazione semplice.",
   editorialHow: "standard editoriali",
   dstGapNotice:
-    "Quell’ora è stata saltata quando gli orologi sono stati spostati in avanti, quindi non è mai esistita davvero — l’abbiamo spostata in avanti oltre quel salto, secondo la convenzione standard.",
+    "Quell’ora è stata saltata quando gli orologi sono stati spostati in avanti, quindi non è mai esistita davvero. L’abbiamo spostata in avanti oltre quel salto, secondo la convenzione standard.",
   dstFoldNotice:
-    "Nel tuo luogo di nascita quell’ora si è ripetuta; abbiamo usato il primo passaggio. Se sai che era il secondo, il tema cambia appena — la Luna si muove di circa mezzo grado all’ora.",
+    "Nel tuo luogo di nascita quell’ora si è ripetuta; abbiamo usato il primo passaggio. Se sai che era il secondo, il tema cambia appena. La Luna si muove di circa mezzo grado all’ora.",
   lmtNotice:
-    "La tua nascita precede la standardizzazione dei fusi orari — abbiamo usato il tempo medio locale dell’epoca, la stessa convenzione dei software professionali.",
+    "La tua nascita precede la standardizzazione dei fusi orari. Abbiamo usato il tempo medio locale dell’epoca, la stessa convenzione dei software professionali.",
   polarNotice:
     "Le case Placidus non sono definite così vicino al polo, quindi questo tema usa invece le case a segno intero.",
   referenceChartName: "Riferimento",
@@ -357,9 +357,9 @@ const it = {
   noTimeNotice: "Senza l’ora di nascita, mostriamo posizioni di riferimento e omettiamo ascendente, angoli e case.",
   moonUnverifiedNotice: "I possibili segni della Luna nell’arco di questa data di nascita non sono verificati. Aggiungi un’ora di nascita per ottenere un risultato relativo a quel momento.",
   moonAmbiguousNotice:
-    "Anche la Luna ha cambiato segno quel giorno — finché non trovi l’ora, è corretto leggere entrambi i segni vicini.",
+    "Anche la Luna ha cambiato segno quel giorno. Finché non trovi l’ora, è corretto leggere entrambi i segni vicini.",
   fromLinkNotice:
-    "Aperto da un link condiviso — i dati di nascita erano nel link e il tema è stato appena calcolato sul tuo dispositivo.",
+    "Aperto da un link condiviso. I dati di nascita erano nel link e il tema è stato appena calcolato sul tuo dispositivo.",
   howWeCompute: "Come calcoliamo",
   welcomeBack: "Felici di rivederti.",
   savedChartAria: "Il tuo tema salvato",
@@ -377,7 +377,7 @@ const it = {
   placeHelpMoon: "Converte la data e l’ora locali in tempo universale.",
   referenceLocalCaption: "Risultato di riferimento per questa data locale. Il segno e la fase della Luna possono essere diversi in altri momenti della giornata. Aggiungi un’ora di nascita per calcolare un momento specifico.",
   utcTimeCaption:
-    "L’ora è letta come tempo universale — aggiungi il luogo di nascita per convertire l’ora locale.",
+    "L’ora è letta come tempo universale. Aggiungi il luogo di nascita per convertire l’ora locale.",
   referenceUtcCaption: "Risultato di riferimento per questa data UTC. Il segno e la fase della Luna possono essere diversi in altri momenti della giornata. Aggiungi un’ora e un luogo per calcolare un momento locale.",
   moonPhaseAtReference: "Fase lunare al momento di riferimento",
   birthChartForDate: "Calcola il tema natale per questa data",
@@ -385,7 +385,7 @@ const it = {
   addBirthDetails: "Aggiungi ora e luogo di nascita (facoltativo)",
   findSaturnReturn: "Trova il tuo ritorno di Saturno",
   returnApprox:
-    "Date calcolate da una lettura a mezzogiorno — con ora e luogo di nascita possono spostarsi di qualche giorno in anticipo o in ritardo.",
+    "Date calcolate da una lettura a mezzogiorno. Con ora e luogo di nascita possono spostarsi di qualche giorno in anticipo o in ritardo.",
   complete: "Completato",
   underwayNow: "In corso ora",
   aheadOfYou: "Davanti a te",
@@ -404,21 +404,21 @@ const it = {
   yourChart: "Il tuo tema",
   theSky: "Il cielo",
   transitRingLede:
-    "Disegna il tuo tema, poi sposta il cursore per osservare i pianeti che lo attraversano — avanti o indietro, fino a un anno.",
+    "Disegna il tuo tema, poi sposta il cursore per osservare i pianeti che lo attraversano, avanti o indietro, fino a un anno.",
   checkTransits: "Controlla i tuoi transiti",
   savedChartHelp:
     "I temi che calcoli e salvi compaiono qui come scelte immediate, così al controllo successivo non dovrai reinserire i dati.",
   noTransitTimeNotice:
-    "Questo tema non ha un’ora di nascita, quindi la sua Luna è una stima di mezzogiorno — la posizione può essere imprecisa fino a sei gradi e un transito alla Luna vicino al limite dell’orbe può comparire o scomparire con l’ora reale.",
+    "Questo tema non ha un’ora di nascita, quindi la sua Luna è una stima di mezzogiorno. La posizione può essere imprecisa fino a sei gradi e un transito alla Luna vicino al limite dell’orbe può comparire o scomparire con l’ora reale.",
   skyAt: "Cielo del",
   noTransitsWithin: "Nessun transito entro",
   activeTransitsWithin: "transiti attivi entro",
   activeTransitWithin: "transito attivo entro",
   ofExact: "dall’aspetto esatto",
   transitMoonOmitted:
-    "Luna in transito esclusa — attraversa l’intero tema ogni mese",
+    "Luna in transito esclusa (attraversa l’intero tema ogni mese)",
   quietSky:
-    "Un cielo tranquillo entro l’orbe stretto usato in questa pagina. Nulla di urgente — torna fra qualche giorno oppure allarga la lettura agli eventi del mese qui sotto.",
+    "Un cielo tranquillo entro l’orbe stretto usato in questa pagina. Nulla di urgente. Torna fra qualche giorno oppure allarga la lettura agli eventi del mese qui sotto.",
   natal: "Natale",
   forYourChart: "Per il tuo tema",
   orb: "orbe",
@@ -430,16 +430,16 @@ const it = {
   sharedWithYou: "condiviso con te",
   removeSharedChart: "Rimuovi il tema condiviso",
   sharedSideHelp:
-    "Questo lato è arrivato nel link — svuotalo per inserire un’altra persona.",
+    "Questo lato è arrivato nel link. Svuotalo per inserire un’altra persona.",
   name: "Nome",
   compareCharts: "Confronta i temi",
   sameChart:
-    "È lo stesso tema due volte — scegline due diversi da confrontare.",
+    "È lo stesso tema due volte. Scegline due diversi da confrontare.",
   compareSavedHelp:
     "I temi che calcoli e salvi compaiono qui come scelte immediate, così il secondo confronto sarà più rapido del primo.",
   compareNoTimeNotice: "Ora di nascita assente per",
   moonMiddayEstimate:
-    "quindi quella Luna è una stima di mezzogiorno — la posizione può essere imprecisa fino a sei gradi e un aspetto alla Luna vicino al limite dell’orbe può comparire o scomparire con l’ora reale.",
+    "quindi quella Luna è una stima di mezzogiorno. La posizione può essere imprecisa fino a sei gradi e un aspetto alla Luna vicino al limite dell’orbe può comparire o scomparire con l’ora reale.",
   crossChartAspects: "aspetti fra i due temi",
   easeful: "armonici",
   charged: "intensi",
@@ -447,7 +447,7 @@ const it = {
   inviteCompare: "Invita qualcuno al confronto",
   inviteLink: "Link di invito",
   inviteNote:
-    "Il link contiene i dati di nascita di questa persona e apre la pagina con quel lato già compilato — non ci viene inviato nulla. Se non sei tu, è bene avere il suo consenso.",
+    "Il link contiene i dati di nascita di questa persona e apre la pagina con quel lato già compilato. Non ci viene inviato nulla. Se non sei tu, è bene avere il suo consenso.",
   inviteCopied: "Link di invito copiato negli appunti.",
   syncOn: "Sincronizzazione attiva",
   keepEveryDevice: "Ritrova i temi su ogni dispositivo",
@@ -509,7 +509,7 @@ const it = {
   emailCaptureError:
     "Non è stato possibile avviare l’iscrizione. Riprova.",
   emailCapturePrivacy:
-    "Conserviamo solo il tuo indirizzo email e il segno scelto — mai i tuoi dati di nascita.",
+    "Conserviamo solo il tuo indirizzo email e il segno scelto, mai i tuoi dati di nascita.",
   emailCaptureHoneypot: "Lascia vuoto questo campo",
   emailPendingTitle: "Controlla la posta.",
   emailPendingBody:

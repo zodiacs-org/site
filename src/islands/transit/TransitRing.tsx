@@ -492,8 +492,8 @@ export default function TransitRing({ locale, natal, computeSky, nowMs, focusReq
                   class="tring__mark"
                   type="button"
                   style={`left:${(((d + WINDOW_DAYS) / (WINDOW_DAYS * 2)) * 100).toFixed(2)}%`}
-                  aria-label={`${eventLabel(e)} — ${dateLabel}`}
-                  title={`${eventLabel(e)} — ${dateLabel}`}
+                  aria-label={`${eventLabel(e)}, ${dateLabel}`}
+                  title={`${eventLabel(e)}, ${dateLabel}`}
                   onClick={() => goToEvent(e)}
                   data-transit-mark
                 />

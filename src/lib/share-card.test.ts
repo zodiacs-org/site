@@ -188,7 +188,7 @@ describe('chart sheet formatting', () => {
   });
 
   it('states aspect scope, limits, exact orb, and motion', () => {
-    expect(CHART_SHEET_ASPECT_SCOPE).toBe('Major aspects · Sun–Pluto · Nodes & angles excluded');
+    expect(CHART_SHEET_ASPECT_SCOPE).toBe('Major aspects · Sun-Pluto · Nodes & angles excluded');
     expect(CHART_SHEET_ASPECT_LEGEND).toContain('A applying');
     expect(chartSheetOrbLimits().join(' ')).toContain('☌ 10/8');
     expect(chartSheetOrbLimits().join(' ')).toContain('☍ 10/8');

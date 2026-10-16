@@ -91,8 +91,8 @@ describe('ReadingPath', () => {
     }));
     expect(markup).toContain(natalAspectLine('Sun', 'conjunction', 'Neptune'));
     expect(markup).toContain(natalAspectLine('Venus', 'conjunction', 'Pluto'));
-    expect(markup).toContain('imagination can be woven into your sense of self');
-    expect(markup).toContain('affection and taste can invite deep investment');
+    expect(markup).toContain('Imagination can be woven into your sense of self');
+    expect(markup).toContain('Affection and taste can invite deep investment');
     expect(markup).toContain('0.6° orb');
     expect(markup).toContain('1.1° orb');
     expect(markup).toContain('Show on chart: Neptune conjunction Sun');

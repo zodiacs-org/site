@@ -7,7 +7,7 @@ interface Props {
 const { signName, slug } = Astro.props;
 ---
 <aside class="guide-horoscopes" aria-label={`${signName} horoscopes`}>
-  <em class="guide-horoscopes__kicker">Your {signName} horoscope</em>
+  <p class="guide-horoscopes__label">Your {signName} horoscope</p>
   <p>
     <a href={`/horoscopes/${slug}/`}>{signName} today</a>
     <span aria-hidden="true">·</span>
@@ -23,13 +23,20 @@ const { signName, slug } = Astro.props;
     border: 1px solid color-mix(in srgb, var(--sign) 24%, var(--hair-2));
     border-radius: var(--r-md);
     background: color-mix(in srgb, var(--sign) 5%, var(--void-1));
+    transition: border-color var(--dur-1) var(--ease);
   }
-  .guide-horoscopes__kicker {
+  .guide-horoscopes:focus-within { border-color: color-mix(in srgb, var(--sign) 46%, var(--hair-2)); }
+  @media (hover: hover) and (pointer: fine) {
+    .guide-horoscopes:hover { border-color: color-mix(in srgb, var(--sign) 36%, var(--hair-2)); }
+  }
+  @media (prefers-reduced-motion: reduce) { .guide-horoscopes { transition: none; } }
+  .guide-horoscopes .guide-horoscopes__label {
     display: block;
-    margin-bottom: 7px;
-    color: var(--muted);
-    font-family: var(--font-serif);
+    margin: 0 0 7px;
+    color: var(--text-2);
+    font-family: var(--font-sans);
     font-size: var(--text-sm);
+    font-weight: 600;
   }
   .guide-horoscopes p {
     display: flex;
@@ -45,5 +52,6 @@ const { signName, slug } = Astro.props;
     text-decoration-color: color-mix(in srgb, var(--sign) 52%, transparent);
     text-underline-offset: 4px;
   }
+  .guide-horoscopes a { transition: color var(--dur-1) var(--ease); }
   .guide-horoscopes a:hover { color: var(--sign); }
 </style>

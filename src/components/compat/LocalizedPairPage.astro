@@ -10,7 +10,8 @@ import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../SignIcon.astro';
 import SynastryCalculator from '../../islands/SynastryCalculator';
-import { SIGNS, signName, signDates, elementLabel, modalityLabel } from '../../lib/signs';
+import { SIGNS, signName, elementLabel, modalityLabel } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 import { pairSlug } from '../../lib/compat';
 import { localizedPairFacts, type PairLocale } from '../../lib/compat-i18n';
 import { planetLabel } from '../../lib/i18n/astrology';
@@ -51,7 +52,7 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilidad',
     and: 'y',
     pairName: (x, y) => `${x} y ${y}`,
-    imageAlt: (x, y) => `Compatibilidad entre ${x} y ${y} — Zodiacs.org`,
+    imageAlt: (x, y) => `Compatibilidad entre ${x} y ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrología)`,
     basisTitle: 'Por qué esta combinación se lee así',
     basisNote: 'Elementos, modalidades, polaridad y el patrón básico de cada signo',
@@ -71,7 +72,7 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilidade',
     and: 'e',
     pairName: (x, y) => `${x} e ${y}`,
-    imageAlt: (x, y) => `Compatibilidade entre ${x} e ${y} — Zodiacs.org`,
+    imageAlt: (x, y) => `Compatibilidade entre ${x} e ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrologia)`,
     basisTitle: 'Por que esse par é lido assim',
     basisNote: 'Elementos, modalidades, polaridade e o padrão básico de cada signo',
@@ -91,7 +92,7 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilité',
     and: 'et',
     pairName: (x, y) => `${x} et ${y}`,
-    imageAlt: (x, y) => `Compatibilité ${x} et ${y} — Zodiacs.org`,
+    imageAlt: (x, y) => `Compatibilité ${x} et ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrologie)`,
     basisTitle: 'Pourquoi ce duo se lit ainsi',
     basisNote: 'Éléments, modalités, polarité et le schéma de base de chaque signe',
@@ -111,7 +112,7 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilità',
     and: 'e',
     pairName: (x, y) => `${x} e ${y}`,
-    imageAlt: (x, y) => `Compatibilità tra ${x} e ${y} — Zodiacs.org`,
+    imageAlt: (x, y) => `Compatibilità tra ${x} e ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrologia)`,
     basisTitle: 'Perché questa coppia si legge così',
     basisNote: 'Elementi, modalità, polarità e lo schema di base di ciascun segno',
@@ -188,7 +189,7 @@ const jsonLd = [
 >
   <article>
     <header class="pair-hero container container--narrow">
-      <em class="kicker">{c.kicker}</em>
+      <a class="crumb" href={`${prefix}/compatibility/`}><span class="crumb__arrow" aria-hidden="true">←</span>{c.kicker}</a>
       <div class="pair-hero__lockup reveal">
         <span class="pair-hero__icons">
           <SignIcon sign={a.slug} size={104} loading="eager" class="pair-hero__icon" />
@@ -218,7 +219,7 @@ const jsonLd = [
               <a class="pair-panel__sign tile" href={`${prefix}/${s.slug}/`} style={`--sign:${s.hue}`}>
                 <SignIcon sign={s.slug} size={44} class="pair-panel__sign-icon" />
                 <span class="pair-panel__sign-name">{name(s.slug)}{same ? ` ${i === 0 ? 'A' : 'B'}` : ''}</span>
-                <span class="pair-panel__sign-meta mono">{signDates(s, locale)}</span>
+                <span class="pair-panel__sign-meta mono">{signDateRange(s, locale)}</span>
                 <span class="pair-panel__sign-meta mono">
                   {elementLabel(s.element, locale)} · {modalityLabel(s.modality, locale)} · {planetLabel(locale, s.ruler)}
                 </span>

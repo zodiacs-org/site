@@ -9,11 +9,11 @@ import { signIcon } from '../../lib/sign-icon';
 
 const COPY = {
   invTitle: 'Invite them to fill in their half.',
-  invBody: 'Your side travels as chart positions — where everything sits in your sky — carried by a private link. They add theirs, and the reading appears for them right away.',
+  invBody: 'Your side travels as chart positions, where everything sits in your sky, carried by a private link. They add theirs, and the reading appears for them right away.',
   invChartLegend: 'Which chart carries your side?',
   invConsentLabel: "Share this chart's positions with whoever opens the link",
   invTerm1: "The link carries your chart's name or label and its computed positions. It never carries your birth date, time, or place.",
-  invTerm2: 'Meant for one person — it closes once their reading is made, and after 14 days at the latest.',
+  invTerm2: 'Meant for one person. It closes once their reading is made, and after 14 days at the latest.',
   invTerm3: "You can end it early anytime from your profile, on any device you're signed in to.",
   invNotifyLabel: 'Email me once, when their reading is ready',
   invNotifyNote: "One email for this invitation, to your account address. It isn't a subscription, and it doesn't touch your daily email choices.",
@@ -22,17 +22,17 @@ const COPY = {
   invCopy: 'Copy link',
   invShare: 'Share…',
   invReadyNote: 'Ready. One reading, until {expiryDate}.',
-  invNotifyOn: 'Ready. One reading, until {expiryDate} — and one email to you when it happens.',
+  invNotifyOn: 'Ready. One reading, until {expiryDate}, and one email to you when it happens.',
   invManageNote: 'Watch or end it from your profile.',
   invPrivacyLine: 'The link carries a label and chart positions. No birth details.',
   invError: "Couldn't create the link. Please try again.",
-  invThrottled: 'Too many new links just now — give it a minute.',
+  invThrottled: 'Too many new links just now. Give it a minute.',
   invCapNote: 'Twelve invitations are open on your account. End one in your profile before making another.',
   siTitle: 'Invitations need an account.',
   siBody: "An invitation keeps your side ready for up to 14 days, so it needs a place that belongs to you. Sign in, sync the chart you'd share, and the invitation button appears right here.",
   siCta: 'Sign in from your profile',
   siNoSyncedTitle: 'Sync a chart to invite with it.',
-  siNoSyncedBody: 'Invitations read a saved, synced chart. Charts kept only on this device stay here — sync one from your profile if you want it to carry an invitation.',
+  siNoSyncedBody: 'Invitations read a saved, synced chart. Charts kept only on this device stay here. Sync one from your profile if you want it to carry an invitation.',
   siNoSyncedCta: 'Open your profile',
 } as const;
 
@@ -338,7 +338,7 @@ export function InvitePanel({ enabled, visible, charts }: InvitePanelProps) {
     if (!created || !navigator.share) return;
     try {
       await navigator.share({
-        title: 'An invitation — Zodiacs.org',
+        title: 'An invitation | Zodiacs.org',
         text: 'Compare our charts privately on Zodiacs.org.',
         url: created.url,
       });
@@ -500,7 +500,7 @@ export function InviteArrival({
           <h2 id="syn-arrival-title">{offline ? "You're offline." : "This invitation isn't available."}</h2>
           <p>{offline
             ? "Opening an invitation needs a connection once, to fetch their side. Reconnect and try again."
-            : 'It may have closed, been used, or been copied incompletely. Ask for a fresh link — or read any two charts below.'}</p>
+            : 'It may have closed, been used, or been copied incompletely. Ask for a fresh link, or read any two charts below.'}</p>
           <button type="button" class="btn btn--ghost" onClick={onRetry}>Try again</button>
         </div>
       </section>
@@ -515,9 +515,9 @@ export function InviteArrival({
         <PastelSign sign={payload.sunSign} size={44} />
         <div class="syn-arrival__copy">
           <h2 id="syn-arrival-title">{payload.label} wants to read your charts together.</h2>
-          <p>Their side is already here — a {signName} Sun, shared by them on purpose as chart positions, with no birth details. Add yours and the reading appears below, worked out in your browser. Your details stay here — {payload.label} won't see them, and neither do we.</p>
+          <p>Their side is already here: a {signName} Sun, shared by them on purpose as chart positions, with no birth details. Add yours and the reading appears below, worked out in your browser. Your details stay here. {payload.label} won't see them, and neither do we.</p>
           {!payload.timeKnown && <p class="field__help">They shared without a birth time, so their Moon is close rather than exact, and houses sit this reading out.</p>}
-          <p class="mono syn-arrival__fine">Invitation links close once they're read — and after 14 days at the latest.</p>
+          <p class="mono syn-arrival__fine">Invitation links close once they're read, and after 14 days at the latest.</p>
         </div>
         <button type="button" class="btn btn--ghost syn-arrival__clear" onClick={onClear}>Remove shared chart</button>
       </div>

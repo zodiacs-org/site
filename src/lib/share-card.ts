@@ -1227,9 +1227,9 @@ export function chartSheetSettings(
   return `${reference}Apparent geocentric · Tropical of date · ${houses} · True Node`;
 }
 
-export const CHART_SHEET_ASPECT_SCOPE = 'Major aspects · Sun–Pluto · Nodes & angles excluded';
+export const CHART_SHEET_ASPECT_SCOPE = 'Major aspects · Sun-Pluto · Nodes & angles excluded';
 /** The scope of an image of a chart without a birth time, which leaves the Moon's aspects out. */
-export const CHART_SHEET_ASPECT_SCOPE_NO_MOON = 'Major aspects · Sun–Pluto · Moon, nodes & angles excluded';
+export const CHART_SHEET_ASPECT_SCOPE_NO_MOON = 'Major aspects · Sun-Pluto · Moon, nodes & angles excluded';
 export const CHART_SHEET_ASPECT_LEGEND = 'Orb · A applying · S separating';
 
 export function chartSheetOrbLimits(): string[] {

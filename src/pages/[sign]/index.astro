@@ -12,6 +12,7 @@ import ShareRow from '../../components/ShareRow.astro';
 import GuideHoroscopeBand from '../../components/GuideHoroscopeBand.astro';
 import GuideProfileHook from '../../components/GuideProfileHook.astro';
 import { SIGNS, SIGN_SLUGS, signBySlug, ELEMENT_LABEL } from '../../lib/signs';
+import { signDateRange, signTagline } from '../../lib/sign-display';
 import { pairSlug } from '../../lib/compat';
 import { heritage } from '../../lib/legacy/sign-lore';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
@@ -78,7 +79,7 @@ const jsonLd = [
   description={guide.data.description}
   path={`/${sign.slug}/`}
   image={`/assets/og/v2/sign/${sign.slug}.png`}
-  imageAlt={`${sign.name} — sign guide on Zodiacs.org`}
+  imageAlt={`${sign.name}, sign guide on Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   sources={guide.data.sources}
@@ -91,8 +92,8 @@ const jsonLd = [
         <SignHeroArt sign={sign.slug} />
         <div>
           <h1>{sign.name}</h1>
-          <p class="guide-hero__essence">{sign.essence}</p>
-          <p class="guide-hero__facts">{ELEMENT_LABEL[sign.element]} sign · {sign.dates}</p>
+          <p class="guide-hero__essence">{signTagline(sign)}</p>
+          <p class="guide-hero__facts">{ELEMENT_LABEL[sign.element]} sign · {signDateRange(sign)}</p>
           <div class="guide-hero__ctas">
             <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
             <a class="btn btn--ghost" href="/moon-sign/"><span>Find your moon sign</span></a>
@@ -154,7 +155,7 @@ const jsonLd = [
             </div>
           </div>
           <p class="guide-compat__note">
-            Sun-sign chemistry is the first sentence, not the story — for the
+            Sun-sign chemistry is the first sentence, not the story. For the
             whole thing, <a href="/compatibility/">compare two full charts</a>.
           </p>
         </section>
@@ -162,7 +163,7 @@ const jsonLd = [
         <section class="guide-placements reveal">
           <h2>Planets in {sign.name}</h2>
           <p class="guide-placements__note">
-            The Sun is one of ten planets that can wear this sign — each
+            The Sun is one of ten planets that can wear this sign. Each
             reads differently.
           </p>
           <div class="guide-placements__chips">
@@ -178,7 +179,7 @@ const jsonLd = [
           <Faq items={guide.data.faq} heading={`${sign.name}, asked and answered`} />
         </section>
 
-        <ShareRow text={`${sign.name} — the full guide`} url={`https://zodiacs.org/${sign.slug}/`} />
+        <ShareRow text={`${sign.name}, the full guide`} url={`https://zodiacs.org/${sign.slug}/`} />
         <GuideProfileHook signName={sign.name} slug={sign.slug} />
       </div>
 
@@ -193,7 +194,7 @@ const jsonLd = [
         <div class="guide-side__cta shell tinted">
           <div class="core tinted guide-side__cta-core">
             <strong>Is {sign.name} your sun sign?</strong>
-            <p>Get your birth chart — moon, rising, planets, and all — then save what matters.</p>
+            <p>Get your birth chart (moon, rising, planets, and all), then save what matters.</p>
             <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
           </div>
         </div>
@@ -363,7 +364,7 @@ const jsonLd = [
     font-weight: 500;
     color: var(--text);
     text-decoration: none;
-    transition: background var(--dur-1) var(--ease);
+    transition: background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
   }
   .chip:hover { background: color-mix(in oklab, var(--sign, var(--accent)) 16%, transparent); }
   .chip :global(.chip__icon img) { border-radius: 50%; }

@@ -5,6 +5,7 @@
  */
 import Wheel from '../lib/wheel/Wheel';
 import { formatLongitude, SIGNS, signForLongitude } from '../lib/signs';
+import { signTagline } from '../lib/sign-display';
 import { t } from '../lib/i18n';
 import { matchAspect } from '../lib/engine/aspects';
 import { houseOf, norm } from '../lib/engine/houses';
@@ -144,7 +145,7 @@ export default function DemoChart() {
       label: `${sign.name} sign`,
       kind: 'Sign',
       title: sign.name,
-      caption: `${sign.essence} ${signOccupantLine(occupants)}`,
+      caption: `${signTagline(sign)} ${signOccupantLine(occupants)}`,
       hue: sign.hue,
       point: point(index * 30 + 15, R_SIGNS),
       path: annularSectorPath(index * 30 + 1.5, 27, R_SIGN_FOCUS_INNER, R_SIGN_FOCUS_OUTER),
@@ -366,7 +367,7 @@ export default function DemoChart() {
               ))}
             </div>
           </div>
-          <p class="demo__preview-hint">Select a mark on the wheel—or choose a starting point.</p>
+          <p class="demo__preview-hint">Select a mark on the wheel, or choose a starting point.</p>
           <p class="demo__receipt">
             {demo.name} · {demo.birth} · computed as {demo.utc.replace('T', ' ').slice(0, 19)} UTC ·{' '}
             <a href="https://www.astro.com/astro-databank/Kahlo%2C_Frida" target="_blank" rel="noopener noreferrer">
@@ -378,7 +379,6 @@ export default function DemoChart() {
 
       <div class="demo__guide">
         <div class="demo__guide-head">
-          <em class="kicker">Try the preview</em>
           <h3>Three ways into a chart</h3>
           <p>Choose a starting point below, or select any symbol on the wheel.</p>
         </div>

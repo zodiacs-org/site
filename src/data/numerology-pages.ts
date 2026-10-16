@@ -43,7 +43,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "Life Path 1 in Pythagorean numerology: the independent, initiating reading, the six totals that reduce to it, the 19/1 karmic debt, and a calculator for your date.",
     intro: [
       "Life Path 1 is the number of the person who goes first. In Pythagorean numerology the Life Path is the birth date reduced: month, day, and year each brought down to a single digit or a master number, then added and reduced once more. When that final total lands on 1, the tradition reads a life organised around independence, initiative, and the plain wish to be the one who decides.",
-      "Six different totals reduce to 1 — 10, 19, 28, 37, 46, and 55 — and it is one of the more common life paths, at 11.1 per cent of birth dates from 1900 to 2099. One of those routes, 19, is a karmic debt number in the tradition and gets its own note below.",
+      "Six different totals reduce to 1 (10, 19, 28, 37, 46, and 55), and it is one of the more common life paths, at 11.1 per cent of birth dates from 1900 to 2099. One of those routes, 19, is a karmic debt number in the tradition and gets its own note below.",
     ],
     sections: [
       {
@@ -97,7 +97,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 2,
@@ -106,7 +106,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "What Life Path 2 means: the cooperative, diplomatic reading the tradition gives it, why 20 is the only total that reaches it, and a calculator for your own date.",
     intro: [
       "Life Path 2 is the number of the person who makes a pair work. Pythagorean numerology reads the Life Path off nothing but the birth date. Month, day, and year are cut to one figure apiece, master numbers kept whole, then added and reduced a last time. When that final total lands on 2, the tradition reads a life organised around cooperation, diplomacy, and the quiet work of keeping people together.",
-      "Only one total reduces to 2 — 20 — so it is one of the less common life paths. Across the two centuries from 1900, it accounts for 5.0 per cent of birth dates. Four other totals would reduce to 2 but stop at 11, the first master number, and have their own page. None of the karmic debt numbers, 13, 14, 16, and 19, reduces to 2, so there is no debt note here.",
+      "Only one total reduces to 2 (20), so it is one of the less common life paths. Across the two centuries from 1900, it accounts for 5.0 per cent of birth dates. Four other totals would reduce to 2 but stop at 11, the first master number, and have their own page. None of the karmic debt numbers, 13, 14, 16, and 19, reduces to 2, so there is no debt note here.",
     ],
     sections: [
       {
@@ -160,7 +160,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 3,
@@ -223,7 +223,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 4,
@@ -232,7 +232,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "Life Path 4, the builder's number: how the tradition reads it at work and at home, the five totals that come down to 4, the 13/4 karmic debt, and a calculator.",
     intro: [
       "Life Path 4 is the number of the person who builds. Pythagorean numerology takes the Life Path from the birth date: month, day, and year are each cut down to one digit or a master number, added, and reduced a final time. When that final total lands on 4, the tradition reads a life organised around structure, reliability, and the plain satisfaction of work that holds.",
-      "Five totals land on 4 — 4 itself, 13, 31, 40, and 49 — covering 7.7 per cent of all birth dates between 1900 and 2099. A total of 22 stays 22, a master number, rather than coming down to 4. The tradition counts 13 as a karmic debt, and 49 passes through 13 on its way down; the note is further down.",
+      "Five totals land on 4 (4 itself, 13, 31, 40, and 49), covering 7.7 per cent of all birth dates between 1900 and 2099. A total of 22 stays 22, a master number, rather than coming down to 4. The tradition counts 13 as a karmic debt, and 49 passes through 13 on its way down; the note is further down.",
     ],
     sections: [
       {
@@ -286,7 +286,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 5,
@@ -349,7 +349,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 6,
@@ -358,7 +358,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "Life Path 6, the caretaker's number in Pythagorean numerology: what it looks like in a life, the five routes a birth date takes to 6, and a calculator.",
     intro: [
       "Life Path 6 is the number of the person other people lean on. Pythagorean numerology gets it from the date of birth: month, day, and year are reduced to one digit apiece, or stop at a master number, and their sum is reduced the same way. When that final total lands on 6, the tradition reads a life organised around responsibility, home, and the people who rely on you.",
-      "Five different totals reduce to 6 — 6, 15, 24, 42, and 51. No karmic debt number is among them, so this page carries no debt note. Across the birth dates from 1900 to 2099, 10.6 per cent reduce to 6, a little over one date in ten.",
+      "Five different totals reduce to 6: 6, 15, 24, 42, and 51. No karmic debt number is among them, so this page carries no debt note. Across the birth dates from 1900 to 2099, 10.6 per cent reduce to 6, a little over one date in ten.",
     ],
     sections: [
       {
@@ -412,7 +412,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 7,
@@ -421,7 +421,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "Life Path 7 in Pythagorean numerology: analysis, privacy, and depth, the five totals that reduce to 7, the 16/7 karmic debt, and a calculator for any date.",
     intro: [
       "Life Path 7 is the number of the person who wants to see the evidence first. Pythagorean numerology derives the Life Path from three reductions: the month, the day, and the year each come to a digit or a master number, and their total is reduced one last time. A final 7 is read by the tradition as a life organised around study, privacy, and a scepticism that is closer to care than to contempt.",
-      "Five different totals reduce to 7 — 7 itself, 16, 25, 34, and 52 — and about 11.1 per cent of birth dates in the two centuries from 1900 arrive at it. The 16 in that list is a karmic debt number; the tradition's reading of it comes in the last section.",
+      "Five different totals reduce to 7 (7 itself, 16, 25, 34, and 52), and about 11.1 per cent of birth dates in the two centuries from 1900 arrive at it. The 16 in that list is a karmic debt number; the tradition's reading of it comes in the last section.",
     ],
     sections: [
       {
@@ -475,7 +475,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 8,
@@ -484,7 +484,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "Life Path 8 and the tradition's reading of it: ambition, authority, and results, where it works well and badly, the six totals that make an 8, and a calculator.",
     intro: [
       "Life Path 8 is the number of the person who takes charge. Pythagorean numerology works the Life Path from the birth date and from nothing else. Month, day, and year are each cut to a digit, unless one is a master number, and the three are summed and reduced in turn. When that final total lands on 8, the tradition reads a life organised around ambition, authority, and the wish to be judged by what got done.",
-      "Six different totals reduce to 8 — 8, 17, 26, 35, 44, and 53. None of the six is a karmic debt number, so an 8 carries no second reading. Of the birth dates from 1900 to 2099, 11.1 per cent arrive at 8.",
+      "Six different totals reduce to 8: 8, 17, 26, 35, 44, and 53. None of the six is a karmic debt number, so an 8 carries no second reading. Of the birth dates from 1900 to 2099, 11.1 per cent arrive at 8.",
     ],
     sections: [
       {
@@ -538,7 +538,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 9,
@@ -547,7 +547,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "Life Path 9, the last single digit: compassion, breadth, and endings in the tradition's reading, the five totals that reduce to 9, and a calculator.",
     intro: [
       "Life Path 9 is the number of the person who sees past their own concerns. In the Pythagorean method the Life Path is read off the birth date: the month, the day, and the year are each taken down to a digit, a master number excepted, and the sum of the three is reduced for the last time. Where the total settles at 9, the tradition reads a life organised around compassion, breadth, and knowing when a thing is finished.",
-      "Five totals come down to 9 — 9, 18, 27, 36, and 45 — and among birth dates from 1900 to 2099 about 11.1 per cent end there, which is as common as a life path gets. No karmic debt total is among the five, so a 9 carries no extra note; the arithmetic is set out below.",
+      "Five totals come down to 9 (9, 18, 27, 36, and 45), and among birth dates from 1900 to 2099 about 11.1 per cent end there, which is as common as a life path gets. No karmic debt total is among the five, so a 9 carries no extra note; the arithmetic is set out below.",
     ],
     sections: [
       {
@@ -601,7 +601,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 11,
@@ -610,7 +610,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "Life Path 11, the first master number: how an 11 differs from the 2 it lives as, the four totals that stop at 11, and a calculator that shows the whole chain.",
     intro: [
       "Life Path 11 is the first of the three master numbers, and the tradition reads it as a 2 pitched higher than a 2 usually goes. In Pythagorean numerology the birth date supplies the Life Path: month, day, and year each become a digit or a master number; the three are then added and brought down once more. When that final total is 11 it stays 11. The tradition reads a life organised around intuition, sensitivity, and the restlessness of noticing more than most people do.",
-      "Four totals give an 11 — 11 itself, plus 29, 38, and 47, which add to 11 and stop there. None of the four is a karmic debt number. The share of birth dates from 1900 to 2099 that reach an 11 is about 6.1 per cent.",
+      "Four totals give an 11: 11 itself, plus 29, 38, and 47, which add to 11 and stop there. None of the four is a karmic debt number. The share of birth dates from 1900 to 2099 that reach an 11 is about 6.1 per cent.",
     ],
     sections: [
       {
@@ -664,7 +664,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 22,
@@ -673,7 +673,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "Life Path 22, the master builder: how the tradition reads it, why 22 is the only total that reaches it, what living as a 4 means, and a calculator.",
     intro: [
       "Life Path 22 belongs to the person who builds at scale. The Life Path in Pythagorean numerology comes out of the birth date, with month, day, and year each brought to a digit or left as a master number, and the three then added and reduced a final time. A final total of 22 is left whole. The tradition reads a life organised around long plans, practical method, and leaving something standing that other people will use.",
-      "Only one total reaches 22 — 22 itself — and none of the karmic debt numbers is involved. About 3.4 per cent of birth dates between 1900 and 2099 arrive here, one of the less common life paths. The tradition writes it 22/4, and on ordinary days a 22 lives as a 4.",
+      "Only one total reaches 22 (22 itself), and none of the karmic debt numbers is involved. About 3.4 per cent of birth dates between 1900 and 2099 arrive here, one of the less common life paths. The tradition writes it 22/4, and on ordinary days a 22 lives as a 4.",
     ],
     sections: [
       {
@@ -727,7 +727,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
   {
     number: 33,
@@ -736,7 +736,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       "Life Path 33, the rarest master number: the teacher's reading, why only a total of 33 reaches it, how it lives as a 6, and a calculator for your birth date.",
     intro: [
       "Life Path 33 is the number of the teacher, and the rarest of the three master numbers. Pythagorean numerology works the Life Path down from a birth date: month, day, and year each come to one digit unless they stop at a master number, and the sum is then reduced once more. When that final total is 33, the tradition reads a life organised around service, guidance, and a responsibility that does not stop at the family.",
-      "Only one total reduces to 33 — 33 itself. It covers about 0.5 per cent of the dates between 1900 and 2099, the smallest share of any life path. It is not a karmic debt number. The tradition writes it 33/6: the 33 is the calling, and the 6 is the number it answers to most days.",
+      "Only one total reduces to 33: 33 itself. It covers about 0.5 per cent of the dates between 1900 and 2099, the smallest share of any life path. It is not a karmic debt number. The tradition writes it 33/6: the 33 is the calling, and the 6 is the number it answers to most days.",
     ],
     sections: [
       {
@@ -790,7 +790,7 @@ export const LIFE_PATH_PAGES: readonly LifePathPage[] = [
       },
     ],
     published: '2026-09-07',
-    updated: '2026-09-07',
+    updated: '2026-10-16',
   },
 ];
 

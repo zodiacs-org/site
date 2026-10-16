@@ -1,13 +1,18 @@
 ---
 import { localizePath, type CatalogLocale } from '../../lib/i18n';
 import { returnText as s } from '../../lib/return-visits/copy';
-interface Props { locale?: CatalogLocale; current?: string }
-const { locale = 'en', current = '' } = Astro.props;
+interface Props { locale?: CatalogLocale; current?: string; icons?: boolean }
+const { locale = 'en', current = '', icons = false } = Astro.props;
 const links = [{ path: '/sky-calendar/', key: 'calendarTitle' }, { path: '/saturn-return/', key: 'saturn' }, { path: '/astrologer-kit/', key: 'kitTitle' }, { path: '/your-sky-wrapped/', key: 'wrappedTitle' }, { path: '/chart-of-the-day/', key: 'dayTitle' }] as const;
 import { t } from '../../lib/i18n';
+import { toolDisc } from '../../lib/nav-tools';
+import ToolGlyph from '../ToolGlyph.astro';
 import '../../styles/return-visits.css';
 ---
 <nav class="return-discovery" aria-label={s(locale, 'discovery')}>
   <h2>{s(locale, 'discovery')}</h2>
-  <ul>{links.filter((link) => link.path !== current).map((link) => <li><a href={localizePath(locale, link.path)}><span>{link.key === 'saturn' ? t(locale, 'saturnReturn') : s(locale, link.key)}</span><span class="return-discovery__arrow" aria-hidden="true">→</span></a></li>)}</ul>
+  <ul class:list={{ 'return-discovery__list--icons': icons }}>{links.filter((link) => link.path !== current).map((link) => {
+    const disc = icons ? toolDisc(link.path) : undefined;
+    return <li><a href={localizePath(locale, link.path)} style={disc ? `--sign:${disc.hue}` : undefined}><span class="return-discovery__name">{disc && <ToolGlyph kind={disc.kind} />}<span>{link.key === 'saturn' ? t(locale, 'saturnReturn') : s(locale, link.key)}</span></span><span class="return-discovery__arrow" aria-hidden="true">→</span></a></li>;
+  })}</ul>
 </nav>

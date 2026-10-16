@@ -23,7 +23,7 @@ const dateOf = (other: CatalogEvent): string => other.facts.at
 
 /** Titles carry a date suffix for catalog-wide uniqueness; the tiles print
  * the date separately, so the suffix comes off here. */
-const shortTitle = (other: CatalogEvent): string => other.facts.title.replace(/ — .*$/, '');
+const shortTitle = (other: CatalogEvent): string => other.facts.title.replace(/(?:,| —) .*$/, '');
 
 const crossrefs: { link: EventLink; target: CatalogEvent }[] = [];
 for (const link of [relations.eclipse, relations.lunation, relations.cycle]) {

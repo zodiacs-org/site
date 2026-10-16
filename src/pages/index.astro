@@ -14,6 +14,7 @@ import glassMaps from '../data/glass-maps.json';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import { UI } from '../lib/i18n';
 import { SIGNS } from '../lib/signs';
+import { signDateRange } from '../lib/sign-display';
 import { ORGANIZATION_NAME, SOCIAL_PROFILES } from '../strings/seo.en.mjs';
 import homeFirstPaintCss from '../home/home-first-paint.css?inline';
 import '../styles/today.css';
@@ -53,7 +54,7 @@ const jsonLd = [
     '@id': 'https://zodiacs.org/#site',
     url: 'https://zodiacs.org/',
     name: 'Zodiacs.org',
-    description: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides — private in your browser.',
+    description: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides, private in your browser.',
     publisher: { '@id': 'https://zodiacs.org/#org' },
     inLanguage: 'en',
   },
@@ -69,8 +70,8 @@ const jsonLd = [
 
 const tools = [
   { href: '/birth-chart/', title: 'Birth chart', promise: 'Your sun, moon, rising, planets, houses, and what they mean.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
-  { href: '/moon-sign/', title: 'Moon sign', promise: 'How you feel — and what helps you feel at home.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
-  { href: '/rising-sign/', title: 'Rising sign', promise: 'How people first meet you.', hue: 'var(--sign-libra)', kind: 'rising' as const },
+  { href: '/moon-sign/', title: 'Moon sign', promise: 'How you feel, and what helps you feel at home.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
+  { href: '/rising-sign/', title: 'Rising sign', promise: 'How people first meet you.', hue: 'var(--sign-aries)', kind: 'rising' as const },
   { href: '/compatibility/', title: 'Compatibility', promise: 'See how two charts connect.', hue: 'var(--sign-leo)', kind: 'compat' as const },
 ];
 ---
@@ -79,7 +80,7 @@ const tools = [
   stableTypography
   localTypography
   localChromeTypography
-  title="Zodiacs.org — Free Birth Charts, Sign Guides & Astrology Tools"
+  title="Zodiacs.org | Free Birth Charts, Sign Guides & Astrology Tools"
   description="Free birth charts calculated in your browser, plus moon signs, compatibility, horoscopes, and sign guides with clear explanations."
   path="/"
   image="/assets/og/v2/share-pastel-wheel-20260809.png"
@@ -443,7 +444,6 @@ const tools = [
   <!-- 02b · Interactive proof of the hero promise -->
   <section class="container chart-preview pace-act" id="chart-preview">
     <div class="section-head reveal">
-      <em class="kicker">Interactive preview</em>
       <h2>See how a birth chart becomes a story.</h2>
       <p>Explore a real chart without entering anything. Select a sign, planet, house, or connection to see what it means.</p>
     </div>
@@ -586,11 +586,10 @@ const tools = [
       ))}
     </div>
     <div class="tools-upcoming reveal">
-      <em class="kicker">And for the month ahead</em>
       <ul>
         <li>
           <strong>Eclipses.</strong> Every solar and lunar eclipse through
-          2028, with peak times in UTC — <a href="/eclipses/">see the dates</a>.
+          2028, with peak times in UTC. <a href="/eclipses/">See the dates</a>.
         </li>
       </ul>
     </div>
@@ -610,7 +609,7 @@ const tools = [
           <div class="twelve__card">
             <SignIcon sign={s.slug} size={64} />
             <strong>{s.name}</strong>
-            <span class="twelve__dates">{s.dates}</span>
+            <span class="twelve__dates">{signDateRange(s)}</span>
           </div>
         </a>
       ))}
@@ -627,21 +626,18 @@ const tools = [
     <div class="pillars">
       <div class="pillar reveal">
         <img class="pillar__art" src="/assets/hero-crops/learn-560.webp" srcset="/assets/hero-crops/learn-360.webp 360w, /assets/hero-crops/learn-560.webp 560w" sizes="(min-width: 860px) 360px, calc(100vw - 40px)" width="560" height="350" alt="Painted water bearer pouring from a jar on a dark zodiac band" loading="lazy" decoding="async" />
-        <em class="kicker">Learn</em>
         <h3>A guide to every sign</h3>
         <p>Twelve sign guides, the <AstroTerm term="big-three" label="big three" surface="home-pillars" /> explained, and plain-language help for reading your chart.</p>
         <a href="/learn/">Learn astrology →</a>
       </div>
       <div class="pillar reveal" style="--reveal-delay:80ms">
         <img class="pillar__art" src="/assets/hero-crops/calculate-560.webp" srcset="/assets/hero-crops/calculate-360.webp 360w, /assets/hero-crops/calculate-560.webp 560w" sizes="(min-width: 860px) 360px, calc(100vw - 40px)" width="560" height="350" alt="Ornate brass scrollwork across an engraved clock dial" loading="lazy" decoding="async" />
-        <em class="kicker">Calculate</em>
         <h3>Free astrology tools</h3>
         <p>Birth chart, moon, rising, compatibility, and <AstroTerm term="transit" label="transits" surface="home-pillars" />, calculated privately in your browser.</p>
         <a href="/tools/">Astrology tools →</a>
       </div>
       <div class="pillar reveal" style="--reveal-delay:160ms">
         <img class="pillar__art" src="/assets/hero-crops/keep-560.webp" srcset="/assets/hero-crops/keep-360.webp 360w, /assets/hero-crops/keep-560.webp 560w" sizes="(min-width: 860px) 360px, calc(100vw - 40px)" width="560" height="350" alt="Gilded sun face above a painted band of zodiac figures" loading="lazy" decoding="async" />
-        <em class="kicker">Keep</em>
         <h3>Saved charts</h3>
         <p>Save a chart, return to it, and keep the people you care about close. Sign in only when you want sync.</p>
         <a href="/profile/">Saved charts →</a>
@@ -1184,9 +1180,13 @@ const tools = [
     padding: clamp(18px, 3vw, 28px);
     border: 1px solid var(--hair-1);
     border-radius: var(--r-lg);
-    background:
-      radial-gradient(circle at 100% 0%, rgba(182, 212, 228, 0.08), transparent 42%),
-      rgba(13, 16, 23, 0.58);
+    background: rgba(13, 16, 23, 0.58);
+    transition: border-color var(--dur-1) var(--ease);
+  }
+  /* The reading card answers while its link is pointed at or focused. */
+  :global(.demo__insight:focus-within) { border-color: var(--hair-3); }
+  @media (hover: hover) and (pointer: fine) {
+    :global(.demo__insight:hover) { border-color: var(--hair-2); }
   }
   :global(.demo__insight h3) { margin: 0; font-size: var(--text-lg); letter-spacing: -0.015em; }
   :global(.demo__insight p) {

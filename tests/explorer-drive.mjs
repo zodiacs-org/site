@@ -156,8 +156,8 @@ async function checkKahloNatalReading(page, viewport) {
   const sunNeptune = lines['Sun conjunction Neptune'];
   const venusPluto = lines['Venus conjunction Pluto'];
   check(`${viewport}: conjunction readings depend on the actual planet pair`,
-    sunNeptune?.text?.includes('imagination can be woven into your sense of self')
-      && venusPluto?.text?.includes('affection and taste can invite deep investment')
+    sunNeptune?.text?.includes('Imagination can be woven into your sense of self')
+      && venusPluto?.text?.includes('Affection and taste can invite deep investment')
       && sunNeptune.text !== venusPluto.text
       && sunNeptune.orb === 'Conjunction · 1.0° orb'
       && venusPluto.orb === 'Conjunction · 0.6° orb');
@@ -329,10 +329,10 @@ try {
     const navBreakpointsDetail = [];
     for (const [prefix, desktopBreakpoint, englishOnlyCue] of [
       ['', 920, ''],
-      ['/es', 1040, '— por ahora en inglés'],
-      ['/pt', 1040, '— por enquanto em inglês'],
-      ['/fr', 1040, '— pour l’instant en anglais'],
-      ['/it', 1040, '— per ora in inglese'],
+      ['/es', 1040, 'EN'],
+      ['/pt', 1040, 'EN'],
+      ['/fr', 1040, 'EN'],
+      ['/it', 1040, 'EN'],
     ]) {
       // Retain the old 819/820 checks as compact-layout regressions, and check
       // both sides of the new reserved-shell desktop thresholds independently.
@@ -658,14 +658,14 @@ try {
     performance.getEntriesByType('resource').some((entry) => /\/CommunicationRead\.[^/]+\.js$/.test(new URL(entry.name).pathname))));
   check('communication read: Kahlo corpus line is byte-identical',
     await page.locator('.calc__comm-part').first().locator(':scope > p').first().textContent()
-      === 'You communicate like a performance with an audience of one — warm, committed, a story where a sentence would do. It works because you mean it; flattery without conviction reads as static to you.');
+      === 'You communicate like a performance with an audience of one: warm, committed, a story where a sentence would do. It works because you mean it; flattery without conviction reads as static to you.');
   check('communication read: analytics fires once with no properties', await page.evaluate(() => {
     const events = window.__detailEvents.filter((event) => event.name === 'comm_read_view');
     return events.length === 1 && Object.keys(events[0].props ?? {}).length === 0;
   }));
   check('plain-first: detail is closed by default', !(await detail.evaluate((node) => node.open)));
   check('plain-first: EN summary is exact with mono counts',
-    await detailSummary.textContent() === `See exact chart data — ${placementCount} placements · ${aspectCount} aspects`
+    await detailSummary.textContent() === `See exact chart data: ${placementCount} placements · ${aspectCount} aspects`
     && await detailSummary.locator('.mono').count() === 2,
     await detailSummary.textContent() ?? '');
   check('plain-first: aspects are a section with no nested details',
@@ -982,7 +982,7 @@ try {
   const esAspects = await esDetail.locator('.calc__aspects li').count();
   const esSummary = await esDetail.locator('summary').textContent();
   check('plain-first: ES summary line is exact',
-    esSummary === `Ver los datos exactos — ${esPlacements} posiciones · ${esAspects} aspectos`,
+    esSummary === `Ver los datos exactos: ${esPlacements} posiciones · ${esAspects} aspectos`,
     esSummary ?? '');
   check('communication read: absent from Spanish',
     await es.locator('.calc__comm').count() === 0
