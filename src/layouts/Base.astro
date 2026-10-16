@@ -532,7 +532,12 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
                   if (entry.isIntersecting || box.width === 0 || box.height === 0) return;
                   entry.target.style.setProperty('--font-sans', family);
                   if (serifIsLocal) entry.target.style.setProperty('--font-serif', serif);
-                  entry.target.style.fontFamily = 'var(--font-sans)';
+                  // Re-declare the inherited body face only on blocks that
+                  // wear it. A serif heading at this depth keeps its own rule,
+                  // which reads the upgraded --font-serif set just above.
+                  if (/Instrument Sans/.test(getComputedStyle(entry.target).fontFamily)) {
+                    entry.target.style.fontFamily = 'var(--font-sans)';
+                  }
                   observer.unobserve(entry.target);
                 });
               });

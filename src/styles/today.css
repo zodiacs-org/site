@@ -72,38 +72,5 @@
   .wb__three dt { padding-inline-start: 0; }
 }
 
-/* ── Sky ticker (the "right now" proof strip; shared en/es) ── */
-.ticker-band { border-block: 1px solid var(--hair-1); padding-block: 14px; }
-.skyticker {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 20px;
-  font-family: var(--font-sans);
-  font-size: 13.5px;
-  letter-spacing: 0;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-2);
-}
-.skyticker__label {
-  font-style: italic;
-  font-family: var(--font-serif);
-  font-size: 14px;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--muted);
-  margin-right: 2px;
-}
-.skyticker__item { display: inline-flex; align-items: center; gap: 6px; }
-.skyticker__icon { display: inline-flex; color: var(--text-2); }
-.skyticker__icon svg {
-  width: 13px;
-  height: 13px;
-  display: block;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+/* ── Sky ticker: its rules live in kit.css (Base), since the home page,
+   the birth chart and the localized homes all carry the line. ── */

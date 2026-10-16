@@ -294,3 +294,41 @@ a.kcard { transition: border-color var(--dur-1) var(--ease), background var(--du
   .only-mobile { display: revert !important; }
   .only-desktop { display: none !important; }
 }
+
+/* ── The sky line (SkyTicker): the "right now" proof strip ─────── */
+.ticker-band { border-block: 1px solid var(--hair-1); padding-block: 14px; }
+.skyticker {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-2);
+}
+.skyticker__label {
+  font-style: italic;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+  margin-right: 2px;
+}
+.skyticker__item { display: inline-flex; align-items: center; gap: 6px; }
+.skyticker__icon { display: inline-flex; color: var(--text-2); }
+/* The Sun and the Moon wear the pastel disc of the sign they are in. */
+.skyticker__icon--disc img { display: block; width: 18px; height: 18px; border-radius: 50%; }
+.skyticker__icon svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
