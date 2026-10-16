@@ -28,7 +28,7 @@ const pt = {
     trustReturnIntro: "Seu mapa de retorno oferece um momento para pensar no que você quer cultivar a seguir.",
     trustSaturnIntro: "Seu retorno de Saturno é uma oportunidade para pensar nos compromissos que você quer manter.",
     trustGamesTitle: "Jogos do Zodíaco",
-    trustGamesScore: "Doze equipes zodiacais competem por pontos de participação: 100 na primeira adesão e 25 por um check-in a cada semana UTC. Compartilhamentos e compras de tokens não dão pontos.",
+    trustGamesScore: "Doze equipes zodiacais competem por pontos de participação: 100 na primeira adesão e 25 por um check-in a cada semana UTC.",
     trustGamesLink: "Ver a classificação",
     trustGamesIndependent: "Participar é grátis. A posse de tokens e seus preços não afetam a pontuação.",
 

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
+import SignHeroArt from '../../components/SignHeroArt.astro';
 import FactTable from '../../components/FactTable.astro';
 import HeritageTimeline from '../../components/HeritageTimeline.astro';
 import CollectBand from '../../components/CollectBand.astro';
@@ -87,11 +88,11 @@ const jsonLd = [
       {/* No reveal on the masthead: it is the LCP and must paint before any
           script runs — the RU release set this pattern. */}
       <div class="guide-hero__id">
-        <SignIcon sign={sign.slug} size={200} loading="eager" fetchPriority="high" webpOnly class="guide-hero__icon" />
+        <SignHeroArt sign={sign.slug} />
         <div>
-          <span class="eyebrow">{sign.glyph} · {ELEMENT_LABEL[sign.element]} · {sign.dates}</span>
           <h1>{sign.name}</h1>
           <p class="guide-hero__essence">{sign.essence}</p>
+          <p class="guide-hero__facts">{ELEMENT_LABEL[sign.element]} sign · {sign.dates}</p>
           <div class="guide-hero__ctas">
             <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
             <a class="btn btn--ghost" href="/moon-sign/"><span>Find your moon sign</span></a>
@@ -232,12 +233,8 @@ const jsonLd = [
   @media (min-width: 760px) {
     .guide-hero__id { flex-direction: row; align-items: center; gap: 44px; }
   }
-  .guide-hero :global(.guide-hero__icon) {
-    width: clamp(120px, 18vw, 200px);
-    filter: drop-shadow(0 18px 44px color-mix(in oklab, var(--sign) 30%, transparent));
-  }
   .guide-hero h1 {
-    margin: 14px 0 12px;
+    margin: 0 0 12px;
     font-family: var(--font-serif);
     font-size: var(--text-hero);
     font-weight: 500;
@@ -246,11 +243,21 @@ const jsonLd = [
     font-variant-numeric: oldstyle-figures;
   }
   .guide-hero__essence {
-    margin: 0 0 22px;
+    margin: 0 0 10px;
     max-width: 44ch;
     color: var(--muted);
     font-size: var(--text-lg);
     text-wrap: pretty;
+  }
+  .guide-hero__facts {
+    margin: 0 0 24px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.4;
+    letter-spacing: 0;
+    word-spacing: 0.1em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
   }
   .guide-hero__ctas { display: flex; flex-wrap: wrap; gap: 10px; }
 

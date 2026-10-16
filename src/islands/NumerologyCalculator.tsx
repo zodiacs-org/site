@@ -130,7 +130,7 @@ interface CardProps {
   chain?: string;
   /** Replaces the first-sentence summary from NUMBER_MEANINGS when set. */
   summary?: string;
-  /** An extra mono line under the number (personal month and day). */
+  /** An extra line under the number (personal month and day). */
   meta?: string;
 }
 
@@ -144,12 +144,12 @@ function NumberCard({ position, value, chain = '', summary, meta }: CardProps) {
         <span class="display num__number">{value}</span>
         {chain && <span class="mono num__chain">{chain}</span>}
       </div>
-      {meta && <span class="mono num__meta">{meta}</span>}
+      {meta && <span class="num__meta">{meta}</span>}
       {meaning ? (
         <>
           <p class="num__epithet">
             <strong>{meaning.name}</strong>
-            <span class="mono num__keywords">{meaning.keywords.join(' · ')}</span>
+            <span class="num__keywords">{meaning.keywords.join(' · ')}</span>
           </p>
           <p class="num__summary">{summary ?? firstSentence(meaning.summary)}</p>
         </>
@@ -170,7 +170,7 @@ function LetterTable({
     <div class="num__part">
       <span class="num__part-name">
         <span>{part.raw}</span>
-        {folded && <span class="mono num__part-folded">read as {part.letters}</span>}
+        {folded && <span class="num__part-folded">read as {part.letters}</span>}
       </span>
       <ol class="num__letters" aria-label={`Letters of ${part.raw} with their values`}>
         {part.cells.map((cell) => (
@@ -359,12 +359,12 @@ export default function NumerologyCalculator({ currentLifePath }: Props) {
                 <>
                   <p class="num__epithet num__epithet--lead">
                     <strong>{lifePathMeaning.name}</strong>
-                    <span class="mono num__keywords">{lifePathMeaning.keywords.join(' · ')}</span>
+                    <span class="num__keywords">{lifePathMeaning.keywords.join(' · ')}</span>
                   </p>
                   <p class="num__summary num__summary--lead">{lifePathMeaning.summary}</p>
                 </>
               )}
-              <p class="mono num__source">From your birth date, {profile.date.iso}</p>
+              <p class="num__source">From your birth date, {profile.date.iso}</p>
               {lifePath.value !== currentLifePath && (
                 <a class="btn btn--ghost num__read" href={`/numerology/life-path/${lifePath.value}/`}>
                   <span>Read about Life Path {lifePath.value}</span><span class="orb">→</span>

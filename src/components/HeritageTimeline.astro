@@ -28,7 +28,7 @@ const beats = [
 <ol class="timeline" style={`--sign:${hue}`}>
   {beats.map((b) => (
     <li class="timeline__item">
-      <div class="timeline__era mono">{b.era} <span>· {b.place}</span></div>
+      <div class="timeline__era">{b.era} <span>· {b.place}</span></div>
       <p>{b.body}</p>
     </li>
   ))}
@@ -67,9 +67,12 @@ const beats = [
   }
   .timeline__era {
     margin-bottom: 5px;
-    font-size: 10.5px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 550;
+    letter-spacing: 0;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
     color: var(--sign);
   }
   .timeline__era span { color: var(--faint); }

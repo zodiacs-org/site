@@ -213,13 +213,19 @@ const id = `email-${placement}-${locale}`;
   @media (min-width: 860px) {
     .email-capture { grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr); align-items: start; }
   }
-  .email-capture__kicker,
-  .email-capture__field label,
-  .email-capture__signs legend {
+  .email-capture__kicker {
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
+    color: var(--faint);
+  }
+  .email-capture__field label,
+  .email-capture__signs legend {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--faint);
   }
   .email-capture h2 {

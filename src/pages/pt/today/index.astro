@@ -36,7 +36,7 @@ const description = `O céu de hoje para os doze signos solares: até quatro not
         Escolha o seu signo solar. Cada nota vem das posições registradas do céu de hoje, lidas a partir das casas
         solares do seu signo; os registros sob cada leitura dizem exatamente o que a produziu.
       </p>
-      <span class="today-pt__stamp mono">{dateLabel} · {moonPhaseLabel(locale, daily.moon.phase)}</span>
+      <span class="today-pt__stamp">{dateLabel} · {moonPhaseLabel(locale, daily.moon.phase)}</span>
     </header>
 
     <nav class="today-pt__signs" aria-label="Signos">
@@ -74,7 +74,7 @@ const description = `O céu de hoje para os doze signos solares: até quatro not
   .today-pt__hero { max-width: 62ch; margin-bottom: clamp(22px, 4vw, 34px); }
   .today-pt__hero h1 { margin: 14px 0; font-size: var(--text-2xl); line-height: 1.04; }
   .today-pt__hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-  .today-pt__stamp { display: block; margin-top: 14px; color: var(--faint); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .today-pt__stamp { display: block; margin-top: 14px; color: var(--faint); font-size: 13px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
   .today-pt__signs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(22px, 4vw, 34px); }
   .today-pt__chip {
     display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px 6px 8px;

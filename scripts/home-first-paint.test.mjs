@@ -121,9 +121,9 @@ describe('homepage first-paint assets', () => {
     expect(css).toMatch(/\.hero__title\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
     expect(css).toMatch(/\.hero__sub\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
     expect(css).toMatch(/\.hero__ctas\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
-    expect(css).toMatch(/\.hero__trust\s*\{[^}]*font-family: 'JetBrains Mono Hero'/su);
+    expect(css).toMatch(/\.hero__trust\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
     expect(page).toMatch(/\.hero__title\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
-    expect(page).toMatch(/\.hero__trust\s*\{[^}]*font-family: 'JetBrains Mono Hero'/su);
+    expect(page).toMatch(/\.hero__trust\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
     expect(page).toContain('<h1 class="hero__title">Your whole chart, <em>not just your sign.</em></h1>');
     expect(page).toContain('Birth charts calculated in your browser.');
     expect(page).toContain('Clear astrology readings and tools, free to explore.');
@@ -171,7 +171,7 @@ describe('homepage first-paint assets', () => {
 
       // The receipt remains available without JavaScript, and its static
       // dependency tree must not become a home hydration root again.
-      expect(html).toContain('class="skyticker mono"');
+      expect(html).toContain('class="skyticker"');
       expect(html).toContain('class="skyticker__label"');
       expect(html.match(/class="skyticker__item"/gu)?.length).toBeGreaterThanOrEqual(3);
       expect(html).not.toMatch(/component-url="[^"]*\/SkyTicker\.[^"]*"/u);
