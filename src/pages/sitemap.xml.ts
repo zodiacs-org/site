@@ -4,6 +4,7 @@
  * rather than @astrojs/sitemap (which only sees Astro routes and would
  * move the sitemap URL robots.txt points at).
  */
+import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
 import { getCollection } from 'astro:content';
@@ -238,13 +239,11 @@ const DESIGN_SWEEP_ROUTES = [
   '/learn/glossary/',
   '/learn/how-to-read-a-birth-chart/',
   '/learn/zodiac-dates/',
-  '/lunar-return/',
   '/mercury-retrograde/',
   '/mercury-retrograde/2027/',
   '/methodology/',
   '/moon-phase/',
   '/moon-sign/',
-  '/numerology/',
   '/occasions/',
   '/occasions/baby-shower/',
   '/occasions/milestones/',
@@ -289,9 +288,6 @@ const DESIGN_SWEEP_ROUTES = [
   '/void-of-course-moon/',
   '/widgets/',
 ] as const;
-// Horoscope templates changed the same day; dated readings keep their own date when it is later.
-const HOROSCOPE_TEMPLATE_LASTMOD = '2026-10-16';
-const laterDate = (left: string, right: string): string => (left > right ? left : right);
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
