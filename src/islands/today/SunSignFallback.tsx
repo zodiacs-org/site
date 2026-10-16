@@ -5,13 +5,15 @@ import { editionDateLabel } from '../../lib/edition-freshness';
 
 export const TODAY_SUN_SIGN_STORAGE_KEY = 'zodiacs:today-sun-sign:v1';
 
-type NextAction = 'choose-sun-sign' | 'open-horoscope' | 'get-birth-chart';
+type NextAction = 'choose-sun-sign' | 'open-horoscope' | 'open-transits' | 'get-birth-chart';
 
 interface Props {
   noChartConfirmed?: boolean;
   selfChartUnselected?: boolean;
   comparisonUnavailable?: boolean;
   sunSignLines: Record<string, string>;
+  /** The house the edition's Moon falls in, counted from each Sun sign. */
+  sunSignHouses?: Record<string, number>;
   editionDate: string;
 }
 
@@ -19,18 +21,24 @@ interface PastelSignIconProps {
   sign: Sign;
   size: number;
   className: string;
+  /**
+   * 48 (AVIF with a WebP fallback) for the small picker discs; 128 (WebP)
+   * for the larger note discs, the same files the sky wheel above already
+   * asked for, all twelve.
+   */
+  tier?: 48 | 128;
 }
 
-function PastelSignIcon({ sign, size, className }: PastelSignIconProps) {
+function PastelSignIcon({ sign, size, className, tier = 48 }: PastelSignIconProps) {
   return (
     <picture
       class={className}
       aria-hidden="true"
       style={`display:block;inline-size:${size}px;block-size:${size}px;aspect-ratio:1;contain:layout size`}
     >
-      <source srcset={`/assets/zodiac-icons/48/${sign.slug}.avif`} type="image/avif" />
+      {tier === 48 && <source srcset={`/assets/zodiac-icons/48/${sign.slug}.avif`} type="image/avif" />}
       <img
-        src={`/assets/zodiac-icons/48/${sign.slug}.webp`}
+        src={`/assets/zodiac-icons/${tier}/${sign.slug}.webp`}
         width={size}
         height={size}
         alt=""
@@ -39,6 +47,14 @@ function PastelSignIcon({ sign, size, className }: PastelSignIconProps) {
       />
     </picture>
   );
+}
+
+const ORDINAL_SUFFIX: Record<number, string> = { 1: 'st', 2: 'nd', 3: 'rd' };
+
+function houseLabel(house: number | undefined): string | null {
+  if (!house) return null;
+  const suffix = house >= 11 && house <= 13 ? 'th' : ORDINAL_SUFFIX[house % 10] ?? 'th';
+  return `${house}${suffix} house${house === 1 ? ' · Moon in your sign' : ''}`;
 }
 
 function trackNextAction(state: 'no-chart' | 'sun-sign', action: NextAction): void {
@@ -73,6 +89,7 @@ export default function SunSignFallback({
   selfChartUnselected = false,
   comparisonUnavailable = false,
   sunSignLines,
+  sunSignHouses = {},
   editionDate,
 }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
@@ -82,6 +99,16 @@ export default function SunSignFallback({
     const saved = readSavedSign();
     setSelected(saved);
   }, []);
+
+  // On a narrow screen the picker is one scrolling row; bring a remembered
+  // sign into it. Only the row scrolls, never the page.
+  useEffect(() => {
+    if (!selected || hasInteracted) return;
+    const chip = document.querySelector<HTMLElement>(`.today-sign[href="#today-sun-sign-${selected}"]`);
+    const strip = chip?.parentElement;
+    if (!chip || !strip || strip.scrollWidth <= strip.clientWidth) return;
+    strip.scrollLeft = Math.max(0, chip.offsetLeft - strip.offsetLeft - 12);
+  }, [selected]);
 
   const active = useMemo<Sign | null>(
     () => SIGNS.find((sign) => sign.slug === selected) ?? null,
@@ -109,7 +136,7 @@ export default function SunSignFallback({
   return (
     <div class="today-fallback">
       <div class="today-fallback__intro">
-        <h2>Start with your Sun sign</h2>
+        <h3>Start with your Sun sign</h3>
         <p>{introCopy}</p>
         {/* Keep this line in the server layout. Revealing it after local profile
             lookup must not push the sign picker down after first paint. */}
@@ -143,7 +170,7 @@ export default function SunSignFallback({
                 window.setTimeout(() => chooseSign(sign.slug), 0);
               }}
             >
-              <PastelSignIcon sign={sign} size={34} className="today-sign__icon" />
+              <PastelSignIcon sign={sign} size={30} className="today-sign__icon" />
               <span class="today-sign__name">{sign.name}</span>
               <span class="today-sign__dates">{signDateRange(sign)}</span>
             </a>
@@ -163,10 +190,11 @@ export default function SunSignFallback({
             style={`--sign:${active.hue}`}
             data-today-sun-sign={active.slug}
           >
+            <PastelSignIcon sign={active} size={46} tier={128} className="today-sign-reading__icon" />
             <p class="kicker">Your quick read</p>
             <h3 class="today-sign-reading__title">
-              <PastelSignIcon sign={active} size={28} className="today-sign-reading__icon" />
-              <span>{active.name} · {editionLabel}</span>
+              <span>{active.name}</span>
+              {houseLabel(sunSignHouses[active.slug]) && <small>{houseLabel(sunSignHouses[active.slug])}</small>}
             </h3>
             <p class="today-sign-reading__line">{dailyLine}</p>
             <a
@@ -188,10 +216,10 @@ export default function SunSignFallback({
                 style={`--sign:${sign.hue}`}
                 data-today-sun-sign={sign.slug}
               >
-                <p class="kicker">{signDateRange(sign)}</p>
+                <PastelSignIcon sign={sign} size={38} tier={128} className="today-sign-reading__icon" />
                 <h3 class="today-sign-reading__title">
-                  <PastelSignIcon sign={sign} size={28} className="today-sign-reading__icon" />
-                  <span>{sign.name} · {editionLabel}</span>
+                  <span>{sign.name}</span>
+                  {houseLabel(sunSignHouses[sign.slug]) && <small>{houseLabel(sunSignHouses[sign.slug])}</small>}
                 </h3>
                 <p class="today-sign-reading__line">{line}</p>
                 <a
@@ -199,7 +227,8 @@ export default function SunSignFallback({
                   href={`/horoscopes/${sign.slug}/`}
                   onClick={() => trackNextAction('sun-sign', 'open-horoscope')}
                 >
-                  Read the full {sign.name} horoscope <span aria-hidden="true">→</span>
+                  <span class="today-sign-reading__more-label">Read the full {sign.name} horoscope</span>{' '}
+                  <span class="today-sign-reading__arrow" aria-hidden="true">→</span>
                 </a>
               </article>
             ))}
@@ -209,17 +238,26 @@ export default function SunSignFallback({
 
       <div class="today-fallback__personalize">
         <div>
-          <strong>Want a reading based on your whole chart?</strong>
-          <p>Add your birth time and place for a more personal daily comparison.</p>
+          <strong>Want the version that is only yours?</strong>
+          <p>Your birth chart shows where the day’s planets fall for you, house by house. A saved chart stays on this device unless you choose account sync.</p>
         </div>
-        <a
-          class="btn btn--ghost"
-          href="/birth-chart/"
-          onClick={() => trackNextAction('sun-sign', 'get-birth-chart')}
-        >
-          <span>Get your birth chart</span>
-          <span class="orb" aria-hidden="true">→</span>
-        </a>
+        <div class="today-fallback__actions">
+          <a
+            class="btn btn--primary"
+            href="/transits/"
+            onClick={() => trackNextAction('sun-sign', 'open-transits')}
+          >
+            <span>Compare with your chart</span>
+            <span class="orb" aria-hidden="true">↗</span>
+          </a>
+          <a
+            class="textlink"
+            href="/birth-chart/"
+            onClick={() => trackNextAction('sun-sign', 'get-birth-chart')}
+          >
+            No chart yet? Make one free <span class="arr" aria-hidden="true">→</span>
+          </a>
+        </div>
       </div>
     </div>
   );

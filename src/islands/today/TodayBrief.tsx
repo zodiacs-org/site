@@ -71,7 +71,7 @@ const REFERENCE_NOTICE = 'Birth time is unknown. This comparison uses one time o
 interface Props {
   editionDate: string;
   bodies: DailyBody[];
-  sunSignReadings: Record<string, { text: string; receipt: string }>;
+  sunSignReadings: Record<string, { text: string; receipt: string; house?: number }>;
   livingChartEnabled?: boolean;
   livingChartSyncEnabled?: boolean;
   generatorVersion: string;
@@ -216,6 +216,19 @@ export default function TodayBrief({
     ))),
     [editionDate, sunSignReadings],
   );
+  // The twelve notes print the publication's own words. On a dated edition
+  // the page's edition guard dates them as the parser adds them, as it does
+  // every other line of the page, so the first paint is already final.
+  const publishedSunSignLines = useMemo(
+    () => Object.fromEntries(Object.entries(sunSignReadings).map(([sign, reading]) => [sign, reading.text])),
+    [sunSignReadings],
+  );
+  const sunSignHouses = useMemo(
+    () => Object.fromEntries(Object.entries(sunSignReadings).flatMap(([sign, reading]) => (
+      typeof reading.house === 'number' ? [[sign, reading.house]] : []
+    ))),
+    [sunSignReadings],
+  );
   const snapshotCapturedAt = useMemo(
     () => new Date().toISOString(),
     [chart?.id],
@@ -271,10 +284,6 @@ export default function TodayBrief({
     >
       <div class="today-card__core core tinted">
         <header class="today-card__head">
-          <div>
-            <p class="today-card__date">{editionLabel}</p>
-            <p class="today-card__time">Your daily astrology snapshot</p>
-          </div>
           {/* The fixed two-column shell is present during SSR, so recording the
               local streak never changes header geometry after hydration. */}
           <p
@@ -292,7 +301,7 @@ export default function TodayBrief({
           <>
             <div class="today-returning-chart-placeholder today-reading" aria-label="Saved-chart fallback">
               <div class="today-reading__head">
-                <h2>For your saved chart</h2>
+                <h3>For your saved chart</h3>
                 <p>A few themes from the {editionLabel} sky, compared with your saved birth chart.</p>
                 {chartSourceLine}
               </div>
@@ -364,7 +373,8 @@ export default function TodayBrief({
               noChartConfirmed={ready && !chart && profile.charts.length === 0}
               selfChartUnselected={ready && !chart && profile.charts.length > 0}
               comparisonUnavailable={comparisonUnavailable}
-              sunSignLines={editionSunSignLines}
+              sunSignLines={publishedSunSignLines}
+              sunSignHouses={sunSignHouses}
               editionDate={editionDate}
             />
 
@@ -374,7 +384,7 @@ export default function TodayBrief({
             class={`today-reading today-reading--resolved${personalized.reading.contacts.length > 0 ? ' today-reading--active' : ' today-reading--quiet'}`}
           >
             <div class="today-reading__head">
-              <h2 aria-label={`For ${personalized.chart.name || (livingChartEnabled ? 'your chart' : 'your latest chart')}`}>
+              <h3 aria-label={`For ${personalized.chart.name || (livingChartEnabled ? 'your chart' : 'your latest chart')}`}>
                 <span>For</span>{' '}
                 <span
                   class="today-reading__chart-name"
@@ -382,7 +392,7 @@ export default function TodayBrief({
                 >
                   {personalized.chart.name || (livingChartEnabled ? 'your chart' : 'your latest chart')}
                 </span>
-              </h2>
+              </h3>
               <p>{personalized.chart.birth?.timeKnown !== true
                 ? REFERENCE_NOTICE
                 : <>A few themes from the {editionLabel} sky, compared with your saved birth chart.</>}</p>

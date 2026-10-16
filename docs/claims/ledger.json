@@ -1680,6 +1680,7 @@
     {"path":"src/islands/synastry/SendBackExperience.tsx","text":"Save your chart on this device and your full reading (houses, aspects, the year ahead) is one tap away anytime.","claim":"priv.local-storage"},
     {"path":"src/islands/synastry/SendBackExperience.tsx","text":"Saved on this device","claim":"priv.local-storage"},
     {"path":"src/islands/synastry/SendBackExperience.tsx","text":"Saved on this device.","claim":"priv.local-storage"},
+    {"path":"src/islands/today/SunSignFallback.tsx","text":"A saved chart stays on this device unless you choose account sync.","claim":"priv.local-storage"},
     {"path":"src/islands/today/SunSignFallback.tsx","text":"No saved chart on this device.","claim":"priv.local-storage"},
     {"path":"src/islands/today/TodayBrief.tsx","text":"Saved moments start on this device.","claim":"priv.living-chart"},
     {"path":"src/islands/today/TodayBrief.tsx","text":"Saved moments stay on this device now.","claim":"priv.living-chart"},
