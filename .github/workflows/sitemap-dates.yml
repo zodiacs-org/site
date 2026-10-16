@@ -92,7 +92,13 @@ jobs:
           EVENT: ${{ github.event_name }}
           BASE_INPUT: ${{ inputs.base }}
           HEAD_INPUT: ${{ inputs.head }}
-          DAILY_PACKAGE: '^(src/data/(daily|daily-publication|daily-publication-manifest|horoscope-program|horoscope-window)\.json|src/data/registry-research/(drafts|publication)\.json|public/assets/(data/registry-market-history\.v1|registry-outlook|registry-research-feed)\.json|public/assets/data/registry-research/.+|public/registry/.+)$'
+          # The files the daily publication writes (.github/workflows/daily-horoscopes.yml stages their directories):
+          # under public/registry/ only the twelve sign pages (scripts/build-sign-pages.mjs), and under
+          # public/assets/data/registry-research/ its index and its items (scripts/build-registry-research.mjs).
+          DAILY_PACKAGE: '^(src/data/(daily|daily-publication|daily-publication-manifest|horoscope-program|horoscope-window)\.json|src/data/registry-research/(drafts|publication)\.json|public/assets/(data/registry-market-history\.v1|registry-outlook|registry-research-feed)\.json|public/assets/data/registry-research/(index\.json|items/[a-z0-9-]+\.json)|public/registry/(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)/index\.html)$'
+          # The publication adds and rewrites these files and deletes none; a research item it writes once and never
+          # rewrites, so the package holds an item only as a new file.
+          DAILY_ADDED_ONLY: '^public/assets/data/registry-research/items/'
         run: |
           if [ "$EVENT" = pull_request ]; then
             head=$(git rev-parse HEAD)
@@ -106,7 +112,7 @@ jobs:
           }
           edition=$(edition_of "$head")
           if [ "$(edition_of "$base")" != "$edition" ]; then
-            other=$(git diff --name-only "$base" "$head" | grep -v -E "$DAILY_PACKAGE" || true)
+            other=$(git diff --name-status --no-renames "$base" "$head" | awk -F '\t' '{ path = $NF; if (path ~ ENVIRON["DAILY_PACKAGE"] && ($1 == "A" || ($1 == "M" && path !~ ENVIRON["DAILY_ADDED_ONLY"]))) next; print path }')
             if [ -z "$other" ]; then
               echo "::notice::The head rolls the daily edition to $edition and changes nothing else, so there is nothing to compare."
               echo "The head rolls the daily edition to $edition and changes nothing else: nothing to compare." >> "$GITHUB_STEP_SUMMARY"

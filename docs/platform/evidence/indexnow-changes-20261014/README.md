@@ -127,7 +127,15 @@ on every pull request.
   take their dates from the edition, and builds of two editions cannot share
   one clock, so a pull request that changes nothing but that package passes
   with nothing to compare. One that rolls the edition and changes anything
-  else fails (Codex's second finding on #752).
+  else fails (Codex's second finding on #752). The package is what the
+  publication writes, which it adds or rewrites and never deletes: under
+  `public/registry/` only the twelve sign pages, and under
+  `public/assets/data/registry-research/` its index and its items, an item
+  only as a new file, since the publication never rewrites one. A Registry
+  page beside the sign pages, a research item rewritten or a sign page
+  deleted is not the package
+  ([`edition-roll-control.txt`](sitemap-dates/edition-roll-control.txt);
+  Codex's thirteenth finding on #752).
 
 The reports in [`sitemap-dates/`](sitemap-dates/) are this Mac's builds of
 2026-10-15, with that environment and the pinned clock. Every prebuild step

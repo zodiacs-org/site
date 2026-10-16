@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { SIGN_ORDER } from './sign-data.mjs';
 import {
   LABEL_ATTRIBUTES,
   MEDIA_ATTRIBUTES,
@@ -444,28 +445,49 @@ describe('a pull request that rolls the daily edition', () => {
   async function planStep() {
     const lines = (await readFile(join(root, '.github/workflows/sitemap-dates.yml'), 'utf8')).split('\n');
     const at = lines.indexOf('        id: plan');
-    const pattern = lines.slice(at).find((line) => line.startsWith('          DAILY_PACKAGE: '));
+    const value = (name) => lines.slice(at).find((line) => line.startsWith(`          ${name}: `))
+      .replace(`          ${name}: `, '').replace(/^'(.*)'$/, '$1');
     const runAt = lines.findIndex((line, index) => index > at && line === '        run: |');
     const end = lines.findIndex((line, index) => index > runAt && /^ {6}- name: /.test(line));
     const script = lines.slice(runAt + 1, end).map((line) => line.replace(/^ {10}/, '')).join('\n');
-    return { script, pattern: pattern.replace('          DAILY_PACKAGE: ', '').replace(/^'(.*)'$/, '$1') };
+    return { script, pattern: value('DAILY_PACKAGE'), addedOnly: value('DAILY_ADDED_ONLY') };
   }
 
   it('names every file the daily publication commits as its package', async () => {
-    const { pattern } = await planStep();
+    const { pattern, addedOnly } = await planStep();
     const daily = await readFile(join(root, '.github/workflows/daily-horoscopes.yml'), 'utf8');
     // The paths quoted from FILES=( to the commit that adds them.
     const section = daily.slice(daily.indexOf('FILES=('), daily.indexOf('git add "${FILES[@]}"'));
     const listed = [...section.matchAll(/"((?:src|public)\/[^"]+)"/gu)].map((match) => match[1]);
     expect(listed).toEqual(expect.arrayContaining(['src/data/daily.json', 'src/data/horoscope-window.json', 'public/registry']));
     const regex = new RegExp(pattern);
+    // A directory in the list stands for the files its generators write there: the twelve sign pages
+    // (scripts/build-sign-pages.mjs) and the research index and items (scripts/build-registry-research.mjs).
+    const written = {
+      'public/registry': SIGN_ORDER.map((sign) => `public/registry/${sign}/index.html`),
+      'public/assets/data/registry-research': ['public/assets/data/registry-research/index.json', 'public/assets/data/registry-research/items/zrx-market-check-2026-10-16.json'],
+    };
     for (const path of listed) {
-      // A directory in the list stands for the files under it.
-      expect(regex.test(/\.[a-z0-9]+$/.test(path) ? path : `${path}/aries/index.html`)).toBe(true);
+      const files = /\.[a-z0-9]+$/.test(path) ? [path] : written[path];
+      expect(files, path).toBeDefined();
+      for (const file of files) expect(regex.test(file), file).toBe(true);
     }
-    for (const path of ['src/pages/sitemap.xml.ts', 'src/data/sky.json', 'public/robots.txt', 'src/data/daily.json.bak']) {
-      expect(regex.test(path)).toBe(false);
+    for (const path of [
+      'src/pages/sitemap.xml.ts', 'src/data/sky.json', 'public/robots.txt', 'src/data/daily.json.bak',
+      // What else lives in those directories, which the daily publication does not write (Codex's thirteenth finding on #752).
+      'public/registry/index.html', 'public/registry/technical/index.html', 'public/registry/registry-meta.json',
+      'public/registry/zodiacs.registry.json', 'public/registry/aries/other.html', 'public/registry/aries/index.html.bak',
+      'public/assets/data/registry-research/other.json', 'public/assets/data/registry-research/items/nested/item.json',
+    ]) {
+      expect(regex.test(path), path).toBe(false);
     }
+    // In the repository, the package holds the twelve sign pages and nothing else of public/registry/.
+    const registry = (await readdir(join(root, 'public/registry'), { recursive: true })).map((file) => `public/registry/${file}`);
+    expect(registry.filter((file) => regex.test(file)).sort()).toEqual(written['public/registry'].slice().sort());
+    // The research generator never rewrites an item, so the package holds an item only as a new file.
+    expect(await readFile(join(root, 'scripts/build-registry-research.mjs'), 'utf8')).toContain('Refusing to rewrite immutable Registry Research item');
+    expect(new RegExp(addedOnly).test('public/assets/data/registry-research/items/zrx-market-check-2026-10-16.json')).toBe(true);
+    expect(new RegExp(addedOnly).test('public/assets/data/registry-research/index.json')).toBe(false);
   });
 
   describe('the plan step', () => {
@@ -487,7 +509,7 @@ describe('a pull request that rolls the daily edition', () => {
       return git('rev-parse', 'HEAD');
     }
     async function plan(base, head) {
-      const { script, pattern } = await planStep();
+      const { script, pattern, addedOnly } = await planStep();
       const output = join(repo, 'output.txt');
       await writeFile(output, '');
       let status = 0;
@@ -498,7 +520,7 @@ describe('a pull request that rolls the daily edition', () => {
           encoding: 'utf8',
           stdio: ['ignore', 'pipe', 'pipe'],
           env: {
-            ...process.env, EVENT: 'workflow_dispatch', BASE_INPUT: base, HEAD_INPUT: head, DAILY_PACKAGE: pattern,
+            ...process.env, EVENT: 'workflow_dispatch', BASE_INPUT: base, HEAD_INPUT: head, DAILY_PACKAGE: pattern, DAILY_ADDED_ONLY: addedOnly,
             GITHUB_OUTPUT: output, GITHUB_STEP_SUMMARY: join(repo, 'summary.txt'), RUNNER_TEMP: join(repo, 'temp'),
           },
         });
@@ -531,6 +553,42 @@ describe('a pull request that rolls the daily edition', () => {
       expect(status).toBe(0);
       expect(outputs).toEqual({ compare: 'false' });
       expect(stdout).toContain('rolls the daily edition to 2026-10-15 and changes nothing else');
+    });
+
+    it('fails a head that rolls the edition and changes a file of those directories the publication does not write', async () => {
+      const base = await commit({
+        'src/data/daily.json': edition('2026-10-14'), 'scripts/sitemap-rendered-changes.mjs': '', 'scripts/frozen-clock.mjs': '',
+        'public/registry/aries/index.html': '<p>', 'public/registry/technical/index.html': '<p>',
+        'public/assets/data/registry-research/items/brief.json': '{}',
+      });
+      const roll = { 'src/data/daily.json': edition('2026-10-15'), 'public/registry/aries/index.html': '<p>2' };
+      // A Registry page beside the sign pages.
+      let head = await commit({ ...roll, 'public/registry/technical/index.html': '<p>2' });
+      let result = await plan(base, head);
+      expect(result.status).toBe(1);
+      expect(result.stdout).toContain('changes 1 other file(s)');
+      // A research item the publication wrote before, rewritten.
+      git('reset', '-q', '--hard', base);
+      git('clean', '-fdq');
+      head = await commit({ ...roll, 'public/assets/data/registry-research/items/brief.json': '{"x":1}' });
+      result = await plan(base, head);
+      expect(result.status).toBe(1);
+      expect(result.stdout).toContain('changes 1 other file(s)');
+      // A sign page deleted.
+      git('reset', '-q', '--hard', base);
+      git('clean', '-fdq');
+      git('rm', '-q', 'public/registry/aries/index.html');
+      head = await commit({ 'src/data/daily.json': edition('2026-10-15') });
+      result = await plan(base, head);
+      expect(result.status).toBe(1);
+      expect(result.stdout).toContain('changes 1 other file(s)');
+      // The same roll with a new item and a rewritten sign page passes.
+      git('reset', '-q', '--hard', base);
+      git('clean', '-fdq');
+      head = await commit({ ...roll, 'public/assets/data/registry-research/items/brief-2.json': '{}' });
+      result = await plan(base, head);
+      expect(result.status).toBe(0);
+      expect(result.outputs).toEqual({ compare: 'false' });
     });
 
     it('fails a head that rolls the edition and changes anything else', async () => {
