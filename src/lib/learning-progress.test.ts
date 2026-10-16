@@ -24,7 +24,7 @@ describe('cooperating learning progress transactions', () => {
     const one = a.act({ type: 'start', id: 'aspects' }); const two = b.act({ type: 'start', id: 'big-three' });
     expect(h.write).not.toHaveBeenCalled(); h.commit(); h.commit();
     expect(await one).toBe(true); expect(await two).toBe(true);
-    expect(h.disk()).toEqual({ version: 2, started: ['big-three', 'aspects'], completed: [] });
+    expect(h.disk()).toEqual({ version: 2, started: ['aspects', 'big-three'], completed: [] });
     a.refresh(); expect(a.snapshot()).toEqual(b.snapshot());
   });
   it('does not complete an unstarted lesson and preserves legacy visits as starts', async () => {
@@ -79,7 +79,7 @@ describe('cooperating learning progress transactions', () => {
     const first = a.act({ type: 'start', id: 'big-three' }); await vi.advanceTimersByTimeAsync(1000);
     const second = a.act({ type: 'start', id: 'aspects' }); await vi.advanceTimersByTimeAsync(500);
     expect(await first).toBe(true); h.commit(); h.commit(); expect(await second).toBe(true);
-    expect(h.write).not.toHaveBeenCalled(); expect(a.snapshot().started).toEqual(['big-three', 'aspects']);
+    expect(h.write).not.toHaveBeenCalled(); expect(a.snapshot().started).toEqual(['aspects', 'big-three']);
   });
   it.each(['missing', 'denied', 'write'] as const)('uses truthful page-only fallback when coordination/storage is %s', async (failure) => {
     const h = harness(); h.storage.set(LEARNING_STORAGE_KEY, '{"version":2,"started":["big-three"],"completed":[]}');
