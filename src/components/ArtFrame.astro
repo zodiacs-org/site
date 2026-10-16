@@ -1,0 +1,85 @@
+---
+/**
+ * The spotlit sign art: one of the twelve 3:2 sign panels (or another
+ * piece of the hero art) in a rounded frame, dimmed toward the edges so
+ * the focal figure sits in the light. Styles live in src/styles/kit.css
+ * (.artframe), so a page that renders this imports the kit.
+ *
+ * Pass `sign` for a sign panel (alt text and srcset come from
+ * src/lib/sign-art.ts), or `src` with explicit `width`/`height`/`alt` for
+ * any other art. The intrinsic size is always set, so the frame reserves
+ * its space before the image arrives.
+ */
+import { SIGN_ART_SIZE, signArtAlt, signArtSrc, signArtSrcset } from '../lib/sign-art';
+import type { CatalogLocale } from '../lib/i18n/core';
+
+interface Props {
+  sign?: string;
+  locale?: CatalogLocale;
+  src?: string;
+  srcset?: string;
+  width?: number;
+  height?: number;
+  sizes?: string;
+  /** Empty string marks the art decorative. Defaults to the sign panel's alt. */
+  alt?: string;
+  /** object-position of the picture, e.g. "70% 40%". */
+  focus?: string;
+  /** Centre of the spotlight, e.g. "68% 46%". */
+  spot?: string;
+  /** Mirror the art horizontally (two figures facing each other). */
+  flip?: boolean;
+  /** Fade the bottom edge into the page. */
+  fade?: boolean;
+  /** Load at high priority: only for art that is the page's first picture. */
+  eager?: boolean;
+  caption?: string;
+  class?: string;
+  style?: string;
+}
+
+const {
+  sign,
+  locale = 'en',
+  src,
+  srcset,
+  width,
+  height,
+  sizes = '(min-width: 1200px) 600px, 100vw',
+  alt,
+  focus,
+  spot,
+  flip = false,
+  fade = false,
+  eager = false,
+  caption,
+  class: className,
+  style,
+} = Astro.props;
+
+const imgSrc = src ?? (sign ? signArtSrc(sign, 1200) : undefined);
+if (!imgSrc) throw new Error('ArtFrame needs a sign or a src.');
+const imgSrcset = srcset ?? (sign && !src ? signArtSrcset(sign) : undefined);
+const imgWidth = width ?? SIGN_ART_SIZE.width;
+const imgHeight = height ?? SIGN_ART_SIZE.height;
+const imgAlt = alt ?? (sign ? signArtAlt(sign, locale) : '');
+const vars = [
+  focus ? `--focus:${focus}` : '',
+  spot ? `--spot:${spot}` : '',
+  style ?? '',
+].filter(Boolean).join(';');
+---
+<figure class:list={['artframe', flip && 'artframe--flip', fade && 'artframe--fade', className]} style={vars || undefined}>
+  <img
+    src={imgSrc}
+    srcset={imgSrcset}
+    sizes={imgSrcset ? sizes : undefined}
+    width={imgWidth}
+    height={imgHeight}
+    alt={imgAlt}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+    decoding={eager ? undefined : 'async'}
+  />
+  {caption && <figcaption class="artframe__cap">{caption}</figcaption>}
+</figure>
