@@ -1,0 +1,39 @@
+---
+/** One card of the strengths and growth edges pair: the guide's own list. */
+interface Props {
+  kind: 'strengths' | 'growth';
+  title: string;
+}
+const { kind, title } = Astro.props;
+---
+<div class:list={['kpanel', 'guide-edge', kind === 'strengths' && 'guide-edge--strength']}>
+  <span class="kicker">{kind === 'strengths' ? 'Strengths' : 'Growth edges'}</span>
+  <h3 class="h-3">{title}</h3>
+  <slot />
+</div>
+
+<style>
+  .guide-edge { padding: 30px 30px 26px; }
+  .guide-edge--strength { border-top: 2px solid var(--hue); }
+  .guide-edge .kicker { margin: 0; font-size: 1.05rem; }
+  .guide-edge--strength .kicker { color: var(--hue); }
+  .guide-edge .h-3 { margin: 2px 0 0; font-size: 1.6rem; font-weight: 500; line-height: 1.15; letter-spacing: 0; color: var(--ink-0); }
+  .guide-edge :global(ul) { list-style: none; padding: 0; margin: 18px 0 0; border-top: 1px solid var(--hair-1); }
+  .guide-edge :global(li) {
+    margin: 0;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--hair-1);
+    color: var(--muted);
+    font-size: 0.96875rem;
+    line-height: 1.55;
+  }
+  .guide-edge :global(li:last-child) { border-bottom: 0; padding-bottom: 0; }
+  .guide-edge :global(li > strong:first-child) {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--ink-0);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  @media (max-width: 760px) { .guide-edge { padding: 22px 20px 18px; } }
+</style>
