@@ -1,4 +1,10 @@
-export const LEARNING_STEP_IDS = ['big-three', 'planets-houses', 'aspects', 'whole-chart', 'follow-sky'] as const;
+/**
+ * The five lessons on /learn/, in reading order: the signs, the planets, the
+ * houses, the aspects, then the big three. 'planets-houses', 'aspects' and
+ * 'big-three' keep the ids the saved-chart practice exercises and earlier
+ * stored progress use; ids no longer on the path are dropped on read.
+ */
+export const LEARNING_STEP_IDS = ['signs', 'planets', 'planets-houses', 'aspects', 'big-three'] as const;
 export type StepId = (typeof LEARNING_STEP_IDS)[number];
 export type LearningStepCue = 'Start here' | 'Up next';
 
