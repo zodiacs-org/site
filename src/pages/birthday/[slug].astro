@@ -1,16 +1,23 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Faq from '../../components/Faq.astro';
+import ArtFrame from '../../components/ArtFrame.astro';
 import ShareRow from '../../components/ShareRow.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import CollectBand from '../../components/CollectBand.astro';
 import PeopleCard from '../../components/people/PeopleCard.astro';
+import BirthdayHero from '../../components/birthday/BirthdayHero.astro';
+import BirthdayDial from '../../components/birthday/BirthdayDial.astro';
+import BirthdayCalendar from '../../components/birthday/BirthdayCalendar.astro';
+import BirthdayChartForm from '../../components/birthday/BirthdayChartForm.astro';
 import '../../styles/people.css';
-import { signBySlug, formatLongitude } from '../../lib/signs';
-import { signTagline } from '../../lib/sign-display';
+import { signBySlug, formatLongitude, seasonSign } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
+import { BIRTHDAY_HERO_SIZES, signArtSrc, signArtSrcset } from '../../lib/sign-art';
+import { HERO_CROP_SIZE, heroCropAlt, heroCropSrc, heroCropSrcset } from '../../lib/hero-crops';
+import { birthdayGrowthLine, birthdayPull, parseBirthdayBody } from '../../lib/birthday-reading';
 import {
-  birthdaySlug, birthdayLabel, prevDate, nextDate,
+  birthdaySlug, birthdayLabel, prevDate, nextDate, MONTH_NAMES,
   decanSpan, decanOrdinal, cuspSummary, cuspYearReading, boundaryDistance,
   type BirthdayEntry,
 } from '../../lib/birthdays';
@@ -42,7 +49,7 @@ const { entry } = Astro.props;
 const { month, day } = entry.data;
 const slug = entry.id;
 const label = birthdayLabel(month, day);
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 
 const data = (birthdays.days as Record<string, BirthdayEntry>)[slug];
 if (!data) throw new Error(`No computed data for ${slug} — rerun scripts/build-birthdays.mjs`);
@@ -107,6 +114,36 @@ faq.push({
   a: `Between ${formatLongitude(data.lonMin)} and ${formatLongitude(data.lonMax)} at noon universal time, depending on the year. The calendar drifts about a quarter degree per year against the Sun and resets on leap years. Your exact degree needs your birth date, year, and time.`,
 });
 
+
+// ── The redesigned page's quick answers and reading parts ──────────────
+const reading = parseBirthdayBody(entry.body ?? '');
+const pull = birthdayPull(reading);
+const growthLine = birthdayGrowthLine(reading);
+const sections = headings.filter((h) => h.depth === 2);
+const capFirst = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+const answers = sign && decan
+  ? [
+      `Sun in ${sign.name}, every year`,
+      dist >= 1.5 ? 'Not a cusp date' : 'Near a boundary, never across it',
+      decan.lo === decan.hi
+        ? `${capFirst(decanOrdinal(decan.lo))} decan · ${decan.ruler}`
+        : `${capFirst(decanOrdinal(decan.lo))} or ${decanOrdinal(decan.hi)} decan`,
+    ]
+  : cusp
+    ? [`${cusp.a.name} or ${cusp.b.name}, by year`, 'A cusp date', `Last decan of ${cusp.a.name} or first of ${cusp.b.name}`]
+    : [];
+const neighbourSign = (m: number, d: number) => {
+  const facts = (birthdays.days as Record<string, BirthdayEntry>)[birthdaySlug(m, d)];
+  if (facts?.cusp) {
+    const summary = cuspSummary(facts.cusp);
+    return { label: `${summary.a.name} or ${summary.b.name}`, icon: summary.a.slug };
+  }
+  const s = facts?.sign ? signBySlug(facts.sign) : seasonSign(m, d);
+  return { label: s.name, icon: s.slug };
+};
+const prevInfo = neighbourSign(prevDate(month, day).month, prevDate(month, day).day);
+const nextInfo = neighbourSign(nextDate(month, day).month, nextDate(month, day).day);
+
 // ── Links ──────────────────────────────────────────────────────────────
 const prev = prevDate(month, day);
 const next = nextDate(month, day);
@@ -170,317 +207,661 @@ const jsonLd = [
   type="article"
   jsonLd={jsonLd}
 >
-  <article class="container container--narrow bday" style={`--sign:${hue}`}>
-    <header class="bday__hero reveal">
-      <a class="crumb" href="/birthday/"><span class="crumb__arrow" aria-hidden="true">←</span>Birthdays</a>
-      <div class="bday-lockup">
-        {heroSign && <SignIcon sign={heroSign.slug} size={128} class="bday-disc" />}
-        {cusp && <SignIcon sign={cusp.b.slug} size={128} class="bday-disc bday-disc--b" />}
-        <h1 class="display">Born on {label}</h1>
+  {heroSign && (
+    <link
+      slot="head"
+      rel="preload"
+      as="image"
+      href={signArtSrc(heroSign.slug, 1200)}
+      imagesrcset={signArtSrcset(heroSign.slug)}
+      imagesizes={BIRTHDAY_HERO_SIZES}
+      fetchpriority="high"
+    />
+  )}
+  <article class="bday" style={`--sign:${hue};--hue:${hue}`}>
+    {/* 1. The answer first, the sign art in the light. */}
+    <BirthdayHero
+      sign={heroSign!.slug}
+      caption={`${heroSign!.name} · ${signDateRange(heroSign!)}`}
+      stepperLabel="Other birthdays"
+      prev={{ href: `/birthday/${prevSlug}/`, label: birthdayLabel(prev.month, prev.day), short: `${MONTH_NAMES[prev.month - 1].slice(0, 3)} ${prev.day}` }}
+      middle={{ href: '#dates', label: 'Another date' }}
+      next={{ href: `/birthday/${nextSlug}/`, label: birthdayLabel(next.month, next.day), short: `${MONTH_NAMES[next.month - 1].slice(0, 3)} ${next.day}` }}
+    >
+      <nav class="bday-crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span><a href="/birthday/">Birthdays</a><span aria-hidden="true">/</span><span aria-current="page">{label}</span>
+      </nav>
+      <h1 class="display bday-title">Born on <em>{label}</em></h1>
+      <p class="bday-hero__lede">{entry.data.description}</p>
+      <ul class="bday-answers" aria-label="The short answer">
+        {answers.map((answer, index) => (
+          <li class:list={['bday-answer', index > 0 && 'bday-answer--plain']}>
+            {index === 0 && sign && <SignIcon sign={sign.slug} size={22} loading="eager" fetchPriority="low" webpOnly />}
+            {index === 0 && cusp && <><SignIcon sign={cusp.a.slug} size={22} loading="eager" fetchPriority="low" webpOnly /><SignIcon sign={cusp.b.slug} size={22} loading="eager" fetchPriority="low" webpOnly class="bday-answer__second" /></>}
+            {answer}
+          </li>
+        ))}
+      </ul>
+      <div class="btn-row bday-hero__actions">
+        <a class="btn btn--primary btn--lg" href="#chart"><span>Get your free birth chart</span><span class="orb" aria-hidden="true">↗</span></a>
+        <a class="btn btn--glass btn--lg" href={`/${heroSign!.slug}/`}><span>Read the {heroSign!.name} guide</span></a>
       </div>
+      <p class="reassure bday-hero__reassure">Free · No signup · {label} is already filled in</p>
+    </BirthdayHero>
 
-      <p class="bday__lede">{entry.data.description}</p>
-
-      <p class="bday__identity">
-        <span class="mono">Sun sign</span>
-        {sign ? (
-          <>
-            <strong><a href={`/${sign.slug}/`}>{sign.name}</a></strong>
-            <span>{signTagline(sign)}</span>
-          </>
-        ) : cusp && (
-          <>
-            <strong>
-              <a href={`/${cusp.a.slug}/`}>{cusp.a.name}</a>{' '}or{' '}
-              <a href={`/${cusp.b.slug}/`}>{cusp.b.name}</a>
-            </strong>
-            <span>Your birth year and time decide.</span>
-          </>
-        )}
-      </p>
-
-      <details class="bday-facts">
-        <summary>
-          <span>
-            <strong>Exact date &amp; cusp check</strong>
-            <small>{cusp ? 'Sun sign by year, degrees, decan, and this year’s sky' : 'Sun degrees, decan, and this year’s sky'}</small>
-          </span>
-          <span class="bday-facts__mark" aria-hidden="true"></span>
-        </summary>
-        <div class="bday-facts__body">
-          <dl class="bday-panel mono">
-            {sign ? (
-              <div class="bday-panel__row">
+    {/* 2. Where the Sun stands, open by default. */}
+    <section class="kwrap bday-measure" id="measure" aria-labelledby="bday-measure-title">
+      <div class="bday-measure__dial">
+        <BirthdayDial label={label} lonMin={data.lonMin} lonMax={data.lonMax} sign={sign} cusp={cusp} decan={decan} />
+      </div>
+      <div class="bday-measure__head">
+        <span class="kicker">Exact date and cusp check</span>
+        <h2 class="h-2" id="bday-measure-title">Where the Sun stands on {label}</h2>
+        <p class="klede">
+          {sign
+            ? `Checked for every year from ${yearFrom} to ${yearTo}, at noon universal time. The sign is the same each year; only the degree shifts a little.`
+            : `Checked for every year from ${yearFrom} to ${yearTo}, at noon universal time. The Sun changes sign on or near this date, so the birth year, and sometimes the birth time, decides.`}
+        </p>
+      </div>
+      <div class="bday-measure__list">
+        <dl class="bday-factlist">
+          {sign ? (
+            <div>
+              <dt>Sun sign</dt>
+              <dd><SignIcon sign={sign.slug} size={20} /><b><a href={`/${sign.slug}/`}>{sign.name}</a></b>, every year from {yearFrom} to {yearTo}</dd>
+            </div>
+          ) : cusp && (
+            <>
+              <div>
                 <dt>Sun sign</dt>
-                <dd><strong><a href={`/${sign.slug}/`}>{sign.name}</a></strong>, every year, {yearFrom} to {yearTo}</dd>
+                <dd><b><a href={`/${cusp.a.slug}/`}>{cusp.a.name}</a></b> or <b><a href={`/${cusp.b.slug}/`}>{cusp.b.name}</a></b>, the {cusp.a.name} and {cusp.b.name} boundary lands here</dd>
               </div>
-            ) : cusp && (
-              <>
-                <div class="bday-panel__row">
-                  <dt>Sun sign</dt>
+              <div>
+                <dt>{yearFrom} to {yearTo}</dt>
+                <dd>Whole day {cusp.a.name} in {cusp.wholeA} years, whole day {cusp.b.name} in {cusp.wholeB}, split at the ingress in {cusp.split}</dd>
+              </div>
+              {nowReading && (
+                <div>
+                  <dt>In {data.now.year}</dt>
                   <dd>
-                    <strong><a href={`/${cusp.a.slug}/`}>{cusp.a.name}</a></strong> or <strong><a href={`/${cusp.b.slug}/`}>{cusp.b.name}</a></strong>, the {cusp.a.name}-{cusp.b.name} boundary lands here
+                    {nowReading.kind === 'whole'
+                      ? `${nowReading.sign.name} all day`
+                      : `${nowReading.before.name} until ${nowReading.atUtc} UTC, then ${nowReading.after.name}`}
                   </dd>
                 </div>
-                <div class="bday-panel__row">
-                  <dt>{yearFrom} to {yearTo}</dt>
-                  <dd>whole day {cusp.a.name} in {cusp.wholeA} years · whole day {cusp.b.name} in {cusp.wholeB} · split at the ingress in {cusp.split}</dd>
-                </div>
-                {nowReading && (
-                  <div class="bday-panel__row">
-                    <dt>In {data.now.year}</dt>
-                    <dd>
-                      {nowReading.kind === 'whole'
-                        ? `${nowReading.sign.name} all day`
-                        : `${nowReading.before.name} until ${nowReading.atUtc} UTC, then ${nowReading.after.name}`}
-                    </dd>
-                  </div>
-                )}
-              </>
-            )}
-            <div class="bday-panel__row">
-              <dt>Sun degrees</dt>
-              <dd>{spanLabel} · noon UTC, {yearFrom} to {yearTo}</dd>
-            </div>
-            {decan && sign && (
-              <div class="bday-panel__row">
-                <dt>Decan</dt>
-                <dd>
-                  {decan.lo === decan.hi
-                    ? <>{decanOrdinal(decan.lo)} decan of {sign.name}, traditional ruler <strong>{decan.ruler}</strong></>
-                    : <>{decanOrdinal(decan.lo)} to {decanOrdinal(decan.hi)} decan of {sign.name}, the {decan.lo * 10}° line falls inside this date's span (rulers {decan.ruler} / {decan.hiRuler})</>}
-                </dd>
-              </div>
-            )}
-            {cusp && (
-              <div class="bday-panel__row">
-                <dt>Decan</dt>
-                <dd>last decan of {cusp.a.name} or first of {cusp.b.name}, the ingress decides</dd>
-              </div>
-            )}
-            <div class="bday-panel__row">
-              <dt>This year</dt>
-              <dd>{label}, {data.now.year}: Sun {formatLongitude(data.now.lon)} · Moon in {moonSign.name} at noon UTC</dd>
-            </div>
-          </dl>
-
-          {cusp && (
-            <details class="bday-years mono">
-              <summary>The year-by-year table, {yearFrom} to {yearTo}</summary>
-              <div class="bday-years__grid">
-                {Object.entries(data.cusp!.years).map(([year, v]) => (
-                  <span class="bday-years__cell">
-                    <span class="bday-years__year">{year}</span>
-                    {v === 'a' ? cusp.a.name : v === 'b' ? cusp.b.name : `${cusp.a.name} → ${cusp.b.name} ${v} UTC`}
-                  </span>
-                ))}
-              </div>
-              <p class="bday-years__note">Times are universal time. Convert your birth time before reading your year.</p>
-            </details>
+              )}
+            </>
           )}
-        </div>
-      </details>
-    </header>
-
-    <div class="prose reveal">
-      <Content />
-    </div>
-
-    <section class="reveal">
-      <Faq items={faq} heading="The date, answered" />
+          <div>
+            <dt>Sun degrees</dt>
+            <dd><b>{spanLabel}</b>, depending on the year</dd>
+          </div>
+          {decan && sign && (
+            <div>
+              <dt>Decan</dt>
+              <dd>
+                {decan.lo === decan.hi
+                  ? <><b>{capFirst(decanOrdinal(decan.lo))} decan</b> of {sign.name} ({(decan.lo - 1) * 10}° to {decan.lo * 10}°), traditional ruler {decan.ruler}</>
+                  : <><b>{capFirst(decanOrdinal(decan.lo))} or {decanOrdinal(decan.hi)} decan</b> of {sign.name}: the {decan.lo * 10}° line falls inside this date's span (traditional rulers {decan.ruler} and {decan.hiRuler})</>}
+              </dd>
+            </div>
+          )}
+          {cusp && (
+            <div>
+              <dt>Decan</dt>
+              <dd>Last decan of {cusp.a.name} or first of {cusp.b.name}; the ingress decides</dd>
+            </div>
+          )}
+          {sign && (
+            <div>
+              <dt>On the cusp?</dt>
+              <dd>
+                {dist >= 1.5
+                  ? <><b>No.</b> The Sun sits at least {dist}° inside {sign.name}, so the sign never changes with the year.</>
+                  : <><b>Close, but no.</b> About {dist}° from the {nearPrev ? 'previous' : 'next'} sign at the nearest, and on the {sign.name} side in every year.</>}
+              </dd>
+            </div>
+          )}
+          <div>
+            <dt>This year</dt>
+            <dd><b>{label}, {data.now.year}:</b> Sun {formatLongitude(data.now.lon)}, Moon in {moonSign.name} at noon UTC</dd>
+          </div>
+        </dl>
+        {cusp && (
+          <details class="bday-years">
+            <summary>The year-by-year table, {yearFrom} to {yearTo}</summary>
+            <div class="bday-years__grid">
+              {Object.entries(data.cusp!.years).map(([year, v]) => (
+                <span class="bday-years__cell">
+                  <span class="bday-years__year">{year}</span>
+                  {v === 'a' ? cusp.a.name : v === 'b' ? cusp.b.name : `${cusp.a.name} → ${cusp.b.name} ${v} UTC`}
+                </span>
+              ))}
+            </div>
+            <p class="bday-years__note">Times are universal time. Convert your birth time before reading your year.</p>
+          </details>
+        )}
+        <p class="bday-measure__foot">
+          <span>Your exact degree needs your birth year and time.</span>
+          <a class="textlink" href="#chart">Find it in your chart <span class="arr" aria-hidden="true">→</span></a>
+        </p>
+      </div>
     </section>
 
-    <div class="bday__cta shell tinted reveal">
-      <div class="core tinted bday__cta-core">
-        <strong>The date gives you the Sun. The rest takes a chart.</strong>
-        <p>See the Moon, rising sign, houses, and aspects that make the reading unmistakably yours, free, with no signup.</p>
-        <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
-      </div>
-    </div>
+    <div class="kwrap"><hr class="bday-rule" /></div>
 
-    {sign && (
-      <div class="reveal">
-        <CollectBand signName={sign.name} slug={sign.slug} surface="birthday" />
-      </div>
-    )}
-
-    <nav class="bday-more reveal" aria-label="Nearby dates and deeper reading">
-      <div class="bday-more__col">
-        <span class="bday-more__head">The calendar</span>
-        <div class="bday-more__chips">
-          <a class="bday-chip" href={`/birthday/${prevSlug}/`}>← {birthdayLabel(prev.month, prev.day)}</a>
-          <a class="bday-chip" href="/birthday/">All birthdays</a>
-          <a class="bday-chip" href={`/birthday/${nextSlug}/`}>{birthdayLabel(next.month, next.day)} →</a>
+    {/* 3. The reading, set like a magazine page. */}
+    <section class="kwrap bday-reading" aria-label={`${label}, the reading`}>
+      <aside class="bday-gist">
+        <div class="kpanel">
+          <span class="kicker">{label}, in short</span>
+          <dl>
+            {sections.map((section, index) => (
+              <div>
+                <dt>{['The character', 'Love and work', 'The growth edge'][index]}</dt>
+                <dd><a href={`#${section.slug}`}>{section.text}</a></dd>
+              </div>
+            ))}
+          </dl>
         </div>
-      </div>
-      <div class="bday-more__col">
-        <span class="bday-more__head">Deeper into {linkSigns.map((s) => s.name).join(' and ')}</span>
-        <div class="bday-more__chips">
+        <div class="bday-gist__links">
           {linkSigns.map((s) => (
             <>
-              <a class="bday-chip" href={`/${s.slug}/`}>{s.name} guide</a>
-              <a class="bday-chip" href={`/learn/placements/sun-in-${s.slug}/`}>Sun in {s.name}</a>
-              <a class="bday-chip" href={`/horoscopes/${s.slug}/`}>{s.name} horoscope</a>
+              <a class="textlink" href={`/learn/placements/sun-in-${s.slug}/`}>Sun in {s.name} <span class="arr" aria-hidden="true">→</span></a>
+              <a class="textlink" href={`/${s.slug}/`}>The {s.name} guide <span class="arr" aria-hidden="true">→</span></a>
             </>
           ))}
         </div>
-      </div>
-    </nav>
-
-    {birthdayPeople.length > 0 && (
-      <section class="bday-people reveal" aria-labelledby="bday-people-heading">
-        <span class="bday-more__head" id="bday-people-heading">People born on this date</span>
-        <div class="bday-people__grid">
-          {birthdayPeopleVisible.map((person) => <PeopleCard person={person} compact />)}
+      </aside>
+      <div class="bday-article">
+        <span class="kicker">The character of the date</span>
+        <div class="prose bday-prose">
+          {pull && (
+            <blockquote class="bday-pull" aria-hidden="true">
+              {heroSign && <SignIcon sign={heroSign.slug} size={40} />}
+              <p>“{pull}”</p>
+            </blockquote>
+          )}
+          <Content />
         </div>
-        {birthdayPeopleMore.length > 0 && (
-          <details class="bday-people__more">
-            <summary>{birthdayPeopleMore.length} more born this day</summary>
-            <div class="bday-people__grid">
-              {birthdayPeopleMore.map((person) => <PeopleCard person={person} compact />)}
+      </div>
+    </section>
+
+    {/* 4. The date gives the Sun; the chart gives the rest. */}
+    <section class="kwrap bday-next" id="chart" aria-labelledby="bday-next-title">
+      <div>
+        <span class="kicker">Your birth chart</span>
+        <h2 class="h-2" id="bday-next-title">The date gives you the Sun. The rest takes a chart.</h2>
+        <p class="klede">See the Moon, rising sign, houses, and aspects that make the reading unmistakably yours, free, with no signup.</p>
+        <div class="bday-layers">
+          <div>
+            {heroSign && <SignIcon sign={heroSign.slug} size={46} />}
+            <div>
+              <b>{sign ? `Sun in ${sign.name}` : `${cusp!.a.name} or ${cusp!.b.name}`}</b>
+              <span>{sign ? `From the date alone. The same every year for ${label}.` : `From the date and the year: ${label} sits on the boundary.`}</span>
             </div>
-          </details>
-        )}
+            <span class="bday-tag bday-tag--on">From the date</span>
+          </div>
+          <div>
+            <span class="bday-layers__glyph" style="--g:var(--sign-pisces)" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 4.4a8 8 0 1 0 0 15.2 6.5 6.5 0 0 1 0-15.2Z" /></svg>
+            </span>
+            <div>
+              <b>Moon sign</b>
+              <span>Needs the birth year. The Moon changes sign every two to three days.</span>
+            </div>
+            <span class="bday-tag">Add the year</span>
+          </div>
+          <div>
+            <span class="bday-layers__glyph" style="--g:var(--sign-libra)" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 17h18M7 17a5 5 0 0 1 10 0M12 6v3M5.6 9.6l1.8 1.8M18.4 9.6l-1.8 1.8" /></svg>
+            </span>
+            <div>
+              <b>Rising sign and houses</b>
+              <span>Need the birth time and place. The rising sign moves on about every two hours.</span>
+            </div>
+            <span class="bday-tag">Add time and place</span>
+          </div>
+        </div>
+      </div>
+      <BirthdayChartForm month={month} day={day} label={label} />
+    </section>
+
+    {/* 5. A birthday question, from the date's own growth edge. */}
+    {growthLine && (
+      <section class="kwrap bday-reflect-wrap" aria-labelledby="bday-reflect-title">
+        <div class="bday-reflect">
+          <ArtFrame
+            src={heroCropSrc('sun-moon', 560)}
+            srcset={heroCropSrcset('sun-moon')}
+            sizes="(min-width: 960px) 500px, calc(100vw - 60px)"
+            width={HERO_CROP_SIZE.width}
+            height={HERO_CROP_SIZE.height}
+            alt={heroCropAlt('sun-moon')}
+            class="bday-reflect__art"
+          />
+          <div class="bday-reflect__body">
+            <span class="kicker" id="bday-reflect-title">For your birthday</span>
+            <p class:list={['bday-reflect__line', growthLine.length > 120 && 'bday-reflect__line--long']}>{growthLine}</p>
+            <p class="bday-reflect__from">From “{reading.sections[2].heading}”, this date’s growth edge.</p>
+            <p class="bday-reflect__note">Around each birthday the Sun comes back to the degree it held when you were born, so it is a natural moment to look back. This line is offered for reflection, not as a forecast.</p>
+          </div>
+        </div>
       </section>
     )}
 
-    <ShareRow text={`Born ${label}, here's what that sky says`} url={`https://zodiacs.org/birthday/${slug}/`} />
+    {/* 6. Questions people search for. */}
+    <section class="kwrap qa bday-questions" aria-labelledby="bday-questions-title">
+      <div>
+        <h2 class="h-2" id="bday-questions-title">The date, answered</h2>
+        <p>Short answers to what people ask about a {label} birthday. <a href="/methodology/">How the positions are calculated</a>.</p>
+      </div>
+      <div class="kfaq">
+        {faq.map(({ q, a }, index) => (
+          <details open={index === 0}>
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    {/* 7. Another birthday. */}
+    <section class="kwrap bday-dates" id="dates" aria-labelledby="bday-dates-title">
+      <div>
+        <span class="kicker">Birthdays</span>
+        <h2 class="h-2" id="bday-dates-title">Look up another birthday</h2>
+        <p class="klede">Every date of the year has its own page, with a clear answer for the dates near a sign change.</p>
+        <nav class="bday-neighbours" aria-label="Nearby dates">
+          <a href={`/birthday/${prevSlug}/`}>
+            <span class="bday-neighbours__dir">← Previous day</span>
+            <b>{birthdayLabel(prev.month, prev.day)}</b>
+            <span class="bday-neighbours__sign"><SignIcon sign={prevInfo.icon} size={18} />{prevInfo.label}</span>
+          </a>
+          <a class="bday-neighbours__next" href={`/birthday/${nextSlug}/`}>
+            <span class="bday-neighbours__dir">Next day →</span>
+            <b>{birthdayLabel(next.month, next.day)}</b>
+            <span class="bday-neighbours__sign"><SignIcon sign={nextInfo.icon} size={18} />{nextInfo.label}</span>
+          </a>
+        </nav>
+        <a class="textlink bday-dates__all" href="/birthday/">All birthdays <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <BirthdayCalendar month={month} day={day} />
+    </section>
+
+    {/* 8. Deeper into the sign, the people, sharing. */}
+    {heroSign && (
+      <section class="kwrap bday-deeper" aria-labelledby="bday-deeper-title">
+        <div class="section-head--row bday-deeper__head">
+          <div>
+            <h2 class="h-2" id="bday-deeper-title">Deeper into {heroSign.name}</h2>
+            <p>The sign behind the date, in more detail.</p>
+          </div>
+        </div>
+        <div class="grid-3 bday-deeper__grid">
+          <a class="bday-dcard" href={`/${heroSign.slug}/`}>
+            <ArtFrame sign={heroSign.slug} src={signArtSrc(heroSign.slug, 720)} width={720} height={480} alt="" class="bday-dcard__art" />
+            <span class="bday-dcard__row"><SignIcon sign={heroSign.slug} size={26} /><span class="h-4">{heroSign.name} guide</span></span>
+            <span class="bday-dcard__text">Character, relationships, history, and what the sign means across a chart.</span>
+          </a>
+          <a class="bday-dcard" href={`/learn/placements/sun-in-${heroSign.slug}/`}>
+            <ArtFrame src={heroCropSrc('sign-ring', 560)} srcset={heroCropSrcset('sign-ring')} sizes="(min-width: 960px) 380px, 112px" width={HERO_CROP_SIZE.width} height={HERO_CROP_SIZE.height} alt="" class="bday-dcard__art" />
+            <span class="bday-dcard__row"><span class="bday-dcard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7.4" /><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" /></svg></span><span class="h-4">Sun in {heroSign.name}</span></span>
+            <span class="bday-dcard__text">What the Sun in {heroSign.name} means in any chart, for every {heroSign.name} birthday.</span>
+          </a>
+          <a class="bday-dcard" href={`/horoscopes/${heroSign.slug}/`}>
+            <ArtFrame src={heroCropSrc('zodiac-figures', 560)} srcset={heroCropSrcset('zodiac-figures')} sizes="(min-width: 960px) 380px, 112px" width={HERO_CROP_SIZE.width} height={HERO_CROP_SIZE.height} alt="" class="bday-dcard__art" spot="30% 70%" />
+            <span class="bday-dcard__row"><SignIcon sign={heroSign.slug} size={26} /><span class="h-4">{heroSign.name} horoscope</span></span>
+            <span class="bday-dcard__text">The daily reading for {heroSign.name}, for reflection.</span>
+          </a>
+        </div>
+        {cusp && (
+          <p class="bday-deeper__also">
+            <span>Also {cusp.a.slug === heroSign.slug ? cusp.b.name : cusp.a.name}:</span>
+            {(() => {
+              const other = cusp.a.slug === heroSign.slug ? cusp.b : cusp.a;
+              return (
+                <>
+                  <a class="pill" href={`/${other.slug}/`}><SignIcon sign={other.slug} size={22} />{other.name} guide</a>
+                  <a class="pill" href={`/learn/placements/sun-in-${other.slug}/`}>Sun in {other.name}</a>
+                  <a class="pill" href={`/horoscopes/${other.slug}/`}>{other.name} horoscope</a>
+                </>
+              );
+            })()}
+          </p>
+        )}
+
+        {birthdayPeople.length > 0 && (
+          <section class="bday-people" aria-labelledby="bday-people-heading">
+            <h2 class="bday-people__head" id="bday-people-heading">People born on this date</h2>
+            <div class="bday-people__grid">
+              {birthdayPeopleVisible.map((person) => <PeopleCard person={person} compact />)}
+            </div>
+            {birthdayPeopleMore.length > 0 && (
+              <details class="bday-people__more">
+                <summary>{birthdayPeopleMore.length} more born this day</summary>
+                <div class="bday-people__grid">
+                  {birthdayPeopleMore.map((person) => <PeopleCard person={person} compact />)}
+                </div>
+              </details>
+            )}
+          </section>
+        )}
+
+        <div class="bday-share">
+          <ShareRow text={`Born ${label}, here's what that sky says`} url={`https://zodiacs.org/birthday/${slug}/`} />
+        </div>
+
+        {sign && (
+          <div class="bday-collect">
+            <CollectBand signName={sign.name} slug={sign.slug} surface="birthday" />
+          </div>
+        )}
+      </section>
+    )}
   </article>
 </Base>
 
 <style>
-  .bday { display: grid; gap: clamp(28px, 5vw, 44px); padding-block: clamp(24px, 5vw, 56px) clamp(36px, 6vw, 72px); }
-  .bday__hero { display: grid; gap: 18px; justify-items: start; }
+  .bday { padding-bottom: clamp(48px, 6vw, 88px); }
 
-  .bday-lockup { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .bday-lockup :global(.bday-disc) { border-radius: 50%; }
-  .bday-lockup :global(.bday-disc--b) { margin-left: -34px; }
-  .bday-lockup h1 {
-    margin: 0;
-    font-size: clamp(2.1rem, 1.4rem + 3.4vw, 3.6rem);
-    line-height: 1.02;
-    flex-basis: 100%;
+  /* ── 1. Hero (the frame is BirthdayHero.astro) ─────────────── */
+  .bday-crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; color: var(--faint); }
+  .bday-crumbs a { color: var(--muted); text-decoration: none; }
+  .bday-crumbs a:hover { color: var(--ink-0); }
+  .bday-crumbs span[aria-hidden] { opacity: 0.6; }
+  .bday-title {
+    margin: 26px 0 0;
+    font-size: clamp(3.5rem, 1.6rem + 5vw, 6.6rem);
+    line-height: 0.94;
+    letter-spacing: -0.02em;
+    color: var(--ink-0);
   }
-  @media (min-width: 700px) { .bday-lockup h1 { flex-basis: auto; } }
+  .bday-hero__lede { margin: 24px 0 0; max-width: 41ch; font-size: clamp(1.06rem, 0.98rem + 0.35vw, 1.22rem); line-height: 1.5; color: var(--ink-1); text-wrap: pretty; }
+  .bday-answers { display: flex; flex-wrap: wrap; gap: 8px; margin: 26px 0 0; padding: 0; list-style: none; }
+  .bday-answer {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 0 14px 0 6px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-full);
+    background: rgba(10, 12, 17, 0.5);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ink-0);
+  }
+  .bday-answer :global(.sign-icon) { width: 22px; }
+  .bday-answer :global(.bday-answer__second) { margin-left: -14px; box-shadow: 0 0 0 2px var(--void-1); border-radius: 50%; }
+  .bday-answer--plain { padding-left: 14px; color: var(--ink-1); }
+  .bday-hero__actions { margin-top: 30px; }
+  .bday-hero__reassure { margin-top: 16px; color: var(--ink-2); }
 
-  .bday__lede {
-    margin: 0;
-    max-width: 62ch;
-    color: var(--text-2);
-    font-size: var(--text-lg);
-    line-height: 1.6;
-    text-wrap: pretty;
+  /* ── 2. Where the Sun stands ─────────────────────────────────── */
+  .bday-measure {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    grid-template-areas: 'dial head' 'dial list';
+    column-gap: clamp(36px, 6vw, 96px);
+    align-items: center;
+    padding-top: clamp(64px, 6vw, 88px);
   }
-  .bday__identity {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 5px 12px;
-    margin: 0;
-    color: var(--text-2);
-    font-size: var(--text-sm);
+  .bday-measure__dial {
+    grid-area: dial;
+    padding: clamp(10px, 2vw, 26px);
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
   }
-  .bday__identity > .mono {
-    color: var(--faint);
-    font-size: 12px;
+  .bday-measure__head { grid-area: head; align-self: end; }
+  .bday-measure__head .h-2 { margin-top: 4px; color: var(--ink-0); }
+  .bday-measure__head .klede { margin-top: 14px; }
+  .bday-measure__list { grid-area: list; align-self: start; }
+  .bday-factlist { margin: 30px 0 0; border-top: 1px solid var(--hair-1); }
+  .bday-factlist > div { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--hair-1); }
+  .bday-factlist dt { padding-top: 1px; font-size: 0.9375rem; color: var(--muted); }
+  .bday-factlist dd { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--ink-1); }
+  .bday-factlist dd :global(.sign-icon) { width: 20px; margin-right: 8px; vertical-align: -4px; }
+  .bday-factlist b { font-weight: 600; color: var(--ink-0); }
+  .bday-factlist a { color: inherit; text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+  .bday-measure__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin: 22px 0 0; font-size: 0.9375rem; color: var(--muted); }
+  .bday-years { margin-top: 18px; padding: 4px 16px; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); font-size: 0.8125rem; }
+  .bday-years summary { padding: 10px 0; cursor: pointer; color: var(--ink-1); }
+  .bday-years__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 4px 18px; padding: 8px 0 12px; font-variant-numeric: tabular-nums; }
+  .bday-years__cell { display: flex; align-items: baseline; gap: 8px; color: var(--muted); }
+  .bday-years__year { font-size: 0.75rem; color: var(--faint); }
+  .bday-years__note { margin: 0 0 12px; font-size: 0.75rem; color: var(--faint); }
+
+  .bday-rule { margin: clamp(56px, 7vw, 104px) 0 0; border: 0; border-top: 1px solid var(--hair-1); }
+
+  /* ── 3. The reading ──────────────────────────────────────────── */
+  .bday-reading {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 680px);
+    justify-content: center;
+    column-gap: clamp(40px, 7vw, 112px);
+    align-items: start;
+    padding-top: clamp(56px, 7vw, 104px);
+  }
+  .bday-gist { position: sticky; top: 96px; }
+  .bday-gist .kpanel { padding: 26px; }
+  .bday-gist .kicker { margin: 0; font-size: 1.05rem; color: var(--sign); }
+  .bday-gist dl { margin: 10px 0 0; }
+  .bday-gist dl > div { padding: 14px 0; border-top: 1px solid var(--hair-1); }
+  .bday-gist dl > div:first-child { padding-top: 6px; border-top: 0; }
+  .bday-gist dt { font-size: 0.875rem; color: var(--muted); }
+  .bday-gist dd { margin: 2px 0 0; font-size: 1rem; font-weight: 600; line-height: 1.4; color: var(--ink-0); }
+  .bday-gist dd a { color: inherit; text-decoration: none; }
+  .bday-gist dd a:hover { text-decoration: underline; text-decoration-color: var(--sign); text-underline-offset: 3px; }
+  .bday-gist__links { display: grid; justify-items: start; gap: 12px; margin-top: 22px; padding-left: 4px; }
+  .bday-article > .kicker { margin: 0; }
+
+  /* The date's own text, set as a feature. One flex column so the pull
+     quote can sit between the love-and-work and growth-edge sections, and
+     the first heading can lead, without touching the 366 source files. */
+  .bday-prose { display: flex; flex-direction: column; max-width: none; margin-top: 6px; }
+  .bday-prose > :global(*) { margin-top: 0; }
+  .bday-prose > :global(p) { margin: 0 0 1.05em; font-size: 1.125rem; line-height: 1.75; }
+  .bday-prose > :global(h2) {
+    margin: 1.9em 0 0.55em;
+    font-family: var(--font-serif);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    line-height: 1.12;
     letter-spacing: 0;
+    color: var(--ink-0);
   }
-  .bday__identity strong { font-size: var(--text-md); }
-  .bday__identity a { color: var(--text); text-decoration-color: var(--hair-2); }
+  .bday-prose > :global(h2:first-of-type) {
+    order: -1;
+    margin: 0 0 30px;
+    font-size: var(--text-2xl);
+    line-height: 1.04;
+    letter-spacing: -0.005em;
+  }
+  .bday-prose > :global(p:first-of-type::first-letter) {
+    float: left;
+    padding: 6px 10px 0 0;
+    font-family: var(--font-serif);
+    font-size: 4.1em;
+    line-height: 0.82;
+    color: var(--sign);
+  }
+  .bday-prose > :global(h2:nth-of-type(3)),
+  .bday-prose > :global(h2:nth-of-type(3) ~ *) { order: 2; }
+  .bday-prose > :global(p:last-child) {
+    margin: 38px 0 0;
+    padding-top: 26px;
+    max-width: 40ch;
+    border-top: 1px solid var(--hair-1);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.32rem;
+    line-height: 1.45;
+    color: var(--ink-1);
+  }
+  .bday-pull {
+    order: 1;
+    margin: clamp(40px, 5vw, 64px) 0;
+    padding: clamp(36px, 4.5vw, 56px) 8px;
+    border-top: 1px solid var(--hair-1);
+    border-bottom: 1px solid var(--hair-1);
+    border-inline-start: 0;
+    font-style: normal;
+    text-align: center;
+  }
+  .bday-pull :global(.sign-icon) { display: block; width: 40px; margin: 0 auto 22px; }
+  .bday-pull p {
+    margin: 0 auto;
+    max-width: 23ch;
+    font-family: var(--font-serif);
+    font-size: clamp(1.9rem, 1.2rem + 2.2vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--ink-0);
+    text-wrap: balance;
+  }
 
-  .bday-people { display: grid; gap: 12px; }
+  /* ── 4. The chart ────────────────────────────────────────────── */
+  .bday-next { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 470px); gap: clamp(40px, 7vw, 112px); align-items: center; padding-top: clamp(72px, 8vw, 120px); }
+  .bday-next .h-2 { margin-top: 4px; color: var(--ink-0); }
+  .bday-next .klede { margin-top: 14px; }
+  .bday-layers { margin-top: 34px; border-top: 1px solid var(--hair-1); }
+  .bday-layers > div { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--hair-1); }
+  .bday-layers > div > :global(.sign-icon) { width: 46px; }
+  .bday-layers__glyph { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: var(--g); color: #0b0d12; }
+  .bday-layers b { display: block; font-size: 1.0625rem; font-weight: 600; color: var(--ink-0); }
+  .bday-layers b + span { display: block; margin-top: 2px; font-size: 0.9375rem; line-height: 1.5; color: var(--muted); }
+  .bday-tag { padding: 5px 12px; border: 1px solid var(--hair-2); border-radius: var(--r-full); font-size: 12.5px; font-weight: 550; color: var(--muted); white-space: nowrap; }
+  .bday-tag--on { border-color: color-mix(in oklab, var(--sign) 38%, transparent); background: color-mix(in oklab, var(--sign) 8%, transparent); color: var(--sign); }
+
+  /* ── 5. For your birthday ────────────────────────────────────── */
+  .bday-reflect-wrap { padding-top: clamp(72px, 8vw, 120px); }
+  .bday-reflect {
+    display: grid;
+    grid-template-columns: minmax(0, 500px) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 80px);
+    align-items: center;
+    padding: clamp(16px, 2vw, 22px);
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-xl);
+    background: color-mix(in oklab, var(--sign) 4%, var(--void-1));
+  }
+  .bday-reflect :global(.bday-reflect__art) { aspect-ratio: 16 / 10; border-radius: 20px; }
+  .bday-reflect__body { padding: 12px clamp(0px, 3vw, 40px) 12px 0; }
+  .bday-reflect .kicker { margin: 0; color: var(--sign); }
+  .bday-reflect__line { margin: 14px 0 0; font-family: var(--font-serif); font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.6rem); font-weight: 500; line-height: 1.12; letter-spacing: -0.01em; color: var(--ink-0); text-wrap: pretty; }
+  .bday-reflect__line--long { font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); line-height: 1.22; }
+  .bday-reflect__from { margin: 16px 0 0; font-family: var(--font-serif); font-style: italic; font-size: 1.05rem; color: var(--muted); }
+  .bday-reflect__note { margin: 22px 0 0; max-width: 60ch; font-size: 13px; line-height: 1.55; color: var(--faint); }
+
+  /* ── 6. Questions ────────────────────────────────────────────── */
+  .bday-questions { padding-top: clamp(72px, 8vw, 120px); }
+  .bday-questions .h-2 { color: var(--ink-0); }
+  .bday-questions > div:first-child > p { max-width: 34ch; }
+  .bday-questions a { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+  /* ── 7. Another birthday ─────────────────────────────────────── */
+  .bday-dates { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(36px, 6vw, 96px); align-items: start; padding-top: clamp(72px, 8vw, 120px); }
+  .bday-dates .h-2 { margin-top: 4px; color: var(--ink-0); }
+  .bday-dates .klede { margin-top: 14px; }
+  .bday-neighbours { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 30px; }
+  .bday-neighbours a { display: grid; gap: 6px; padding: 18px 20px; border: 1px solid var(--hair-2); border-radius: 18px; background: rgba(198, 204, 218, 0.025); color: var(--ink-0); text-decoration: none; }
+  .bday-neighbours a:hover { border-color: var(--hair-3); }
+  .bday-neighbours__dir { font-size: 12.5px; color: var(--faint); }
+  .bday-neighbours b { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 500; line-height: 1.05; }
+  .bday-neighbours__sign { display: inline-flex; align-items: center; gap: 8px; font-size: 0.875rem; color: var(--muted); }
+  .bday-neighbours__sign :global(.sign-icon) { width: 18px; }
+  .bday-neighbours .bday-neighbours__next { justify-items: end; text-align: right; }
+  .bday-dates__all { margin-top: 22px; }
+
+  /* ── 8. Deeper, people, sharing ──────────────────────────────── */
+  .bday-deeper { padding-top: clamp(72px, 8vw, 120px); }
+  .bday-deeper__head { margin-bottom: clamp(28px, 4vw, 48px); }
+  .bday-deeper__head .h-2 { color: var(--ink-0); }
+  .bday-dcard { display: block; color: var(--ink-0); text-decoration: none; }
+  .bday-dcard :global(.bday-dcard__art) { aspect-ratio: 16 / 10; border-radius: 18px; }
+  .bday-dcard__row { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+  .bday-dcard__row :global(.sign-icon) { width: 26px; }
+  .bday-dcard__glyph { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--sign); color: #0b0d12; }
+  .bday-dcard__row .h-4 { font-size: 1.15rem; }
+  .bday-dcard__text { display: block; margin-top: 6px; max-width: 38ch; font-size: 0.9375rem; line-height: 1.55; color: var(--muted); }
+  .bday-dcard:hover .h-4 { text-decoration: underline; text-decoration-color: var(--sign); text-underline-offset: 4px; }
+  .bday-deeper__also { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 24px 0 0; font-size: 0.9375rem; color: var(--muted); }
+  .bday-deeper__also .pill :global(.sign-icon) { width: 22px; }
+
+  .bday-people { display: grid; gap: 12px; margin-top: clamp(48px, 6vw, 72px); }
+  .bday-people__head { margin: 0; font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; color: var(--ink-0); }
   .bday-people__more { border: 1px solid var(--hair-1); border-radius: var(--r-md); padding: 2px 14px; }
   .bday-people__more > summary { cursor: pointer; padding: 9px 0; color: var(--text-2); font-size: var(--text-sm); }
   .bday-people__more > .bday-people__grid { padding: 4px 0 12px; }
   .bday-people__grid { display: grid; gap: 8px; }
-  @media (min-width: 700px) {
-    .bday-people__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
+  @media (min-width: 700px) { .bday-people__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-  .bday-facts {
-    width: 100%;
-    max-width: 640px;
-    padding: 3px 16px;
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-md);
-    background: var(--void-1);
-  }
-  .bday-facts > summary {
-    display: flex;
+  .bday-share { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--hair-1); }
+  .bday-share :global(.identity-share) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-size: 0.9375rem; color: var(--muted); }
+  .bday-share :global(.identity-share a) {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 11px 0;
-    cursor: pointer;
-    list-style: none;
-  }
-  .bday-facts > summary::-webkit-details-marker { display: none; }
-  .bday-facts > summary > span:first-child { display: grid; gap: 2px; }
-  .bday-facts > summary strong { color: var(--text); font-size: var(--text-sm); }
-  .bday-facts > summary small { color: var(--faint); font-size: var(--text-xs); }
-  .bday-facts__mark::before { content: '+'; color: var(--muted); font-family: var(--font-mono); }
-  .bday-facts[open] .bday-facts__mark::before { content: '−'; }
-  .bday-facts__body { display: grid; gap: 14px; padding: 2px 0 13px; }
-
-  .bday-panel { margin: 0; display: grid; width: 100%; max-width: 640px; }
-  .bday-panel__row {
-    display: grid;
-    gap: 2px 20px;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--hair-1);
-    font-size: 11.5px;
-    letter-spacing: 0.05em;
-  }
-  .bday-panel__row:first-child { border-top: 1px solid var(--hair-1); }
-  @media (min-width: 560px) { .bday-panel__row { grid-template-columns: 150px 1fr; } }
-  .bday-panel__row dt { color: var(--faint); font-family: var(--font-sans); font-size: 12px; letter-spacing: 0; align-self: baseline; }
-  .bday-panel__row dd { margin: 0; color: var(--text-2); }
-  .bday-panel__row strong { color: var(--text); font-weight: 600; }
-  .bday-panel__row a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--hair-2); }
-  .bday-panel__row a:hover { color: var(--text); border-bottom-color: var(--sign); }
-
-  .bday-years {
-    width: 100%;
-    max-width: 640px;
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-md);
-    background: var(--void-1);
-    padding: 4px 16px;
-    font-size: 11.5px;
-  }
-  .bday-years summary { cursor: pointer; padding: 10px 0; color: var(--text-2); }
-  .bday-years__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 4px 18px;
-    padding: 8px 0 12px;
-  }
-  .bday-years__cell { color: var(--muted); display: flex; gap: 8px; align-items: baseline; }
-  .bday-years__year { color: var(--faint); font-size: 10.5px; }
-  .bday-years__note { margin: 0 0 12px; color: var(--faint); font-size: 10.5px; }
-
-  .bday__cta-core { padding: clamp(22px, 4vw, 32px); display: grid; gap: 10px; justify-items: start; }
-  .bday__cta-core strong { font-size: var(--text-lg); letter-spacing: -0.01em; }
-  .bday__cta-core p { margin: 0; font-size: var(--text-sm); color: var(--text-2); max-width: 54ch; }
-
-  .bday-more {
-    display: grid;
-    gap: 20px;
-    padding-top: 18px;
-    border-top: 1px solid var(--hair-1);
-    grid-template-columns: 1fr;
-  }
-  @media (min-width: 700px) { .bday-more { grid-template-columns: auto 1fr; gap: 20px 48px; } }
-  .bday-more__col { display: grid; gap: 10px; align-content: start; }
-  .bday-more__head { font-weight: 600; font-size: var(--text-sm); color: var(--text); }
-  .bday-more__chips { display: flex; flex-wrap: wrap; gap: 4px 2px; }
-  .bday-chip {
-    padding: 4px 9px;
+    min-height: 34px;
+    padding: 0 14px;
+    border: 1px solid var(--hair-2);
     border-radius: var(--r-full);
-    font-size: 12.5px;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+    background: rgba(198, 204, 218, 0.03);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-1);
   }
-  .bday-chip:hover { color: var(--text); background: color-mix(in oklab, var(--sign) 12%, transparent); }
+  .bday-share :global(.identity-share a:hover) { border-color: var(--hair-3); color: var(--ink-0); }
+  .bday-collect { margin-top: 32px; }
+
+  /* ── Breakpoints ─────────────────────────────────────────────── */
+  @media (max-width: 1100px) {
+    .bday-reading { grid-template-columns: 260px minmax(0, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .bday-measure, .bday-next, .bday-dates, .bday-reflect { grid-template-columns: minmax(0, 1fr); }
+    .bday-measure { grid-template-areas: 'head' 'dial' 'list'; row-gap: 28px; }
+    .bday-measure__dial { max-width: 520px; }
+    .bday-reading { grid-template-columns: minmax(0, 1fr); }
+    .bday-gist { position: static; margin-bottom: 44px; }
+  }
+  @media (max-width: 760px) {
+    .bday-crumbs { font-size: 12.5px; }
+    .bday-title { margin-top: 14px; font-size: 3.5rem; }
+    .bday-hero__lede { margin-top: 16px; font-size: 1.03rem; }
+    .bday-answers { margin-top: 20px; gap: 6px; }
+    .bday-answer { min-height: 34px; font-size: 0.84rem; }
+    .bday-hero__actions { flex-direction: column; align-items: stretch; margin-top: 24px; }
+    .bday-hero__actions .btn { width: 100%; }
+    .bday-hero__reassure { text-align: center; }
+
+    .bday-measure__dial { padding: 4px; }
+    .bday-factlist > div { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 14px 0; }
+    .bday-factlist dt { font-size: 0.8125rem; }
+
+    .bday-gist .kpanel { padding: 20px; }
+    .bday-prose > :global(p) { font-size: 1.0625rem; line-height: 1.7; }
+    .bday-pull { margin: 40px 0; padding: 36px 4px; }
+    .bday-pull p { font-size: 2rem; }
+    .bday-prose > :global(p:last-child) { font-size: 1.18rem; }
+
+    .bday-layers > div { grid-template-columns: 40px minmax(0, 1fr); gap: 14px; align-items: start; }
+    .bday-layers > div > :global(.sign-icon), .bday-layers__glyph { width: 40px; height: 40px; }
+    .bday-tag { display: none; }
+
+    .bday-reflect { padding: 10px; border-radius: 24px; }
+    .bday-reflect__body { padding: 6px 12px 16px; }
+
+    .bday-neighbours b { font-size: 1.35rem; }
+    .bday-neighbours a { padding: 14px 16px; }
+
+    .bday-deeper__grid { gap: 0; }
+    .bday-dcard { display: grid; grid-template-columns: 112px minmax(0, 1fr); column-gap: 16px; align-items: center; padding: 16px 0; border-top: 1px solid var(--hair-1); }
+    .bday-dcard :global(.bday-dcard__art) { grid-row: 1 / span 2; aspect-ratio: 1; border-radius: 14px; }
+    .bday-dcard__row { margin-top: 0; }
+    .bday-dcard__text { margin-top: 4px; font-size: 0.875rem; }
+    .bday-share { margin-top: 24px; }
+  }
 </style>
