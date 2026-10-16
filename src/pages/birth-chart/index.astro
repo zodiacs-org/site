@@ -15,11 +15,11 @@ const postChartDailyEnabled = hasDailyChartEmailProvider(process.env);
 const faq = [
   {
     q: 'What is a birth chart?',
-    a: 'A birth chart (or natal chart) is a map of where every planet sat — from your point of view on Earth — at the exact moment and place you were born. It records your Sun, Moon, and Rising signs plus the positions of Mercury through Pluto across twelve houses.',
+    a: 'A birth chart (or natal chart) is a map of where every planet sat, from your point of view on Earth, at the exact moment and place you were born. It records your Sun, Moon, and Rising signs plus the positions of Mercury through Pluto across twelve houses.',
   },
   {
     q: 'Do I need my exact birth time?',
-    a: 'For your rising sign and houses, yes — the ascendant changes roughly every two hours. Without a time, we use 12:00 local civil time as a reference for body positions and omit the rising sign, angles, and houses. Because the Moon can change sign during a day, the result marks the Moon sign as unverified until you add a time. Birth certificates, baby books, and parents are the usual sources.',
+    a: 'For your rising sign and houses, yes. The ascendant changes roughly every two hours. Without a time, we use 12:00 local civil time as a reference for body positions and omit the rising sign, angles, and houses. Because the Moon can change sign during a day, the result marks the Moon sign as unverified until you add a time. Birth certificates, baby books, and parents are the usual sources.',
   },
   {
     q: 'How accurate is this calculator?',
@@ -30,8 +30,8 @@ const faq = [
     a: 'The entire chart is computed in your browser; the calculator uses no server-side chart API and needs no account. If you save a chart, it stays on this device first; optional account sync uploads saved charts only after you sign in.',
   },
   {
-    q: 'Whole sign or Placidus houses — which should I pick?',
-    a: 'Whole sign is the oldest system and the friendliest to read: each house is one full sign. Placidus is the most common modern default and divides houses by time of rising, so their sizes vary. Try both — your planets stay put; only the house boundaries move.',
+    q: 'Whole sign or Placidus houses, which should I pick?',
+    a: 'Whole sign is the oldest system and the friendliest to read: each house is one full sign. Placidus is the most common modern default and divides houses by time of rising, so their sizes vary. Try both. Your planets stay put; only the house boundaries move.',
   },
 ];
 
@@ -43,7 +43,7 @@ const jsonLd = [
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Web',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    featureList: 'Sun, Moon, Rising, planets Mercury–Pluto, True Node, whole sign and Placidus houses, aspects',
+    featureList: 'Sun, Moon, Rising, planets Mercury through Pluto, True Node, whole sign and Placidus houses, aspects',
   },
   {
     '@type': 'FAQPage',
@@ -67,11 +67,11 @@ const jsonLd = [
   clientUi
   glass
   inlineCriticalCss
-  title="Free Birth Chart Calculator — Sun, Moon & Rising | Zodiacs.org"
-  description="Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean — computed privately, in your browser."
+  title="Free Birth Chart Calculator | Sun, Moon & Rising | Zodiacs.org"
+  description="Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean, computed privately, in your browser."
   path="/birth-chart/"
   image="/assets/og/v2/tool/birth-chart.png"
-  imageAlt="Free birth chart calculator — Zodiacs.org"
+  imageAlt="Free birth chart calculator, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <script slot="head" is:inline>
@@ -137,12 +137,12 @@ const jsonLd = [
         <AstroTerm term="degree" label="degree" surface="birth-chart-page" />. Three <AstroTerm term="placement" label="placements" surface="birth-chart-page" /> carry most of the story for beginners:
       </p>
       <ul>
-        <li><strong>Sun</strong> — your core identity; the sign most people already know.</li>
-        <li><strong>Moon</strong> — your emotional weather; how you feel and recharge.</li>
-        <li><strong>Rising</strong> (ascendant) — the sign coming over the eastern horizon as you were born; how people first read you, and what lays out your houses.</li>
+        <li><strong>Sun</strong>: your core identity; the sign most people already know.</li>
+        <li><strong>Moon</strong>: your emotional weather; how you feel and recharge.</li>
+        <li><strong>Rising</strong> (ascendant): the sign coming over the eastern horizon as you were born; how people first read you, and what lays out your houses.</li>
       </ul>
       <p>
-        The lines across the middle are <a href="/learn/glossary/#aspect">aspects</a> — angles between planets that
+        The lines across the middle are <a href="/learn/glossary/#aspect">aspects</a>, angles between planets that
         astrologers read as conversations: trines flow, squares argue
         productively, oppositions negotiate.
       </p>

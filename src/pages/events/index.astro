@@ -45,7 +45,7 @@ const listJoin = (items: string[]) =>
 
 const nowLine = activeCycles.length
   ? `Retrograde right now: ${listJoin(activeCycles.map((event) => event.facts.bodies[0]))}. Everything else is moving forward.`
-  : 'Every planet is moving forward right now — it never lasts long.';
+  : 'Every planet is moving forward right now. It never lasts long.';
 
 const monthKey = (event: CatalogEvent) => (event.facts.at ?? event.facts.start!).slice(0, 7);
 const monthLabel = (key: string) => formatDate('en', new Date(`${key}-15T00:00:00Z`), {
@@ -95,7 +95,7 @@ const types = [
   {
     sample: timeline.find((event) => event.facts.family === 'eclipse'),
     name: 'Eclipses',
-    what: 'Lunations with exact aim — the years\' hinge dates.',
+    what: 'Lunations with exact aim, the years\' hinge dates.',
     links: [{ href: '/eclipses/', label: 'every eclipse through 2028' }],
   },
   {
@@ -107,7 +107,7 @@ const types = [
   {
     sample: timeline.find((event) => event.facts.family === 'ingress'),
     name: 'Sign changes',
-    what: 'A slow planet entering a new sign — scenery that lasts years.',
+    what: 'A slow planet entering a new sign, scenery that lasts years.',
     links: [{ href: '/transits/', label: 'track them against your chart' }],
   },
   {
@@ -121,7 +121,7 @@ const types = [
 const jsonLd = [
   {
     '@type': 'CollectionPage',
-    name: 'Sky events — astrology calendar 2026–2027',
+    name: 'Sky events, astrology calendar 2026 to 2027',
     url: 'https://zodiacs.org/events/',
     description: 'Upcoming astrology events with exact universal-time instants: lunations, eclipses, retrogrades, stations, ingresses, and exact aspects.',
   },
@@ -154,15 +154,15 @@ const sources = [
 ---
 <Base
   stableTypography
-  title="Astrology Events 2026 & 2027 — Full Moons, Eclipses, Retrogrades, Dated | Zodiacs.org"
-  description="Every notable sky event of 2026 and 2027, with its time in universal time: full and new moons, eclipses, retrogrades and their stations, slow-planet sign changes, and rare exact alignments — with what each one means."
+  title="Astrology Events 2026 & 2027 | Full Moons, Eclipses, Retrogrades, Dated | Zodiacs.org"
+  description="Every notable sky event of 2026 and 2027, with its time in universal time: full and new moons, eclipses, retrogrades and their stations, slow-planet sign changes, and rare exact alignments, with what each one means."
   path="/events/"
   image={eventsPublication.hub.card}
-  imageAlt="Sky events — Zodiacs.org"
+  imageAlt="Sky events, Zodiacs.org"
   noindex={!eventsPublication.hub.indexEligible}
   jsonLd={jsonLd}
   sources={sources}
-  rssFeed={{ href: '/feeds/events.xml', title: 'Zodiacs.org — sky events' }}
+  rssFeed={{ href: '/feeds/events.xml', title: 'Zodiacs.org | sky events' }}
 >
   <noscript>
     <style>
@@ -175,7 +175,7 @@ const sources = [
       <h1 class="display">Sky events</h1>
       <p>
         Every date the sky does something worth knowing about, through the
-        end of 2027 — <a href="/learn/glossary/#full-moon">full moons</a> and new moons,{' '}
+        end of 2027: <a href="/learn/glossary/#full-moon">full moons</a> and new moons,{' '}
         <a href="/learn/glossary/#eclipse">eclipses</a>, <a href="/learn/glossary/#retrograde">retrogrades</a>,
         slow planets changing signs, and the rare exact
         <a href="/learn/glossary/#aspect"> alignments</a> between them. The
@@ -220,7 +220,7 @@ const sources = [
   <section class="section--tight container container--narrow" aria-labelledby="calendar-head">
     <div class="section-head reveal">
       <h2 id="calendar-head">The calendar, month by month</h2>
-      <p>Dates are universal time — in the Americas an instant can fall the evening before.</p>
+      <p>Dates are universal time. In the Americas an instant can fall the evening before.</p>
     </div>
 
     <div class="evhub-filter reveal" data-event-filter role="group" aria-label="Show one kind of event">
@@ -319,12 +319,12 @@ const sources = [
       <h2>How to use this calendar</h2>
       <p>
         Skim the month you are in, note the two or three dates ahead, and
-        open the ones that name a sign that matters to you — your{' '}
+        open the ones that name a sign that matters to you: your{' '}
         <a href="/learn/glossary/#sun-sign">Sun sign</a>, your{' '}
         <a href="/rising-sign/">rising sign</a>, or anything prominent in
         your <a href="/birth-chart/">birth chart</a>. Every event page says
         what the moment is, when it is exact, and what the tradition makes
-        of it — and the <a href="/horoscopes/">daily horoscopes</a> carry
+        of it, and the <a href="/horoscopes/">daily horoscopes</a> carry
         each one into day-by-day readings as it approaches.
       </p>
       <p>
@@ -348,7 +348,7 @@ const sources = [
       <p>
         Events cover {eventsPublication.window.from.slice(0, 4)} through the end of{' '}
         {String(Number(eventsPublication.window.to.slice(0, 4)) - 1)}, drawn from the
-        site's committed sky catalogs — the same astronomy behind the{' '}
+        site's committed sky catalogs, the same astronomy behind the{' '}
         <a href="/almanac/">Almanac</a>, the <a href="/retrogrades/">retrograde tables</a>,
         and the <a href="/eclipses/">eclipse calendar</a>. Instants are
         universal time, exact as printed. Lunations and eclipses list the

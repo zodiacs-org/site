@@ -17,26 +17,26 @@ const label = month ? monthLabel(month) : null;
 const faq = [
   {
     q: 'What is a transit?',
-    a: 'The planets kept moving after you were born. A transit is the current position of a planet measured against a position in your birth chart — transiting Saturn square your natal Moon means Saturn, today, stands ninety degrees from where your Moon was at birth. Transits are the main tool astrologers use to time things.',
+    a: 'The planets kept moving after you were born. A transit is the current position of a planet measured against a position in your birth chart. Transiting Saturn square your natal Moon means Saturn, today, stands ninety degrees from where your Moon was at birth. Transits are the main tool astrologers use to time things.',
   },
   {
     q: 'Which transits does this page show?',
-    a: 'Aspects from the ten planets in the sky to the ten planets of your birth chart, within 3 degrees of exact — the tight window where a transit is generally read as active. The sky starts at today; the slider moves it up to a year forward or back. The transiting Moon is left out of the list because it crosses your whole chart every month, but it stays on the outer ring, so you can watch it circle.',
+    a: 'Aspects from the ten planets in the sky to the ten planets of your birth chart, within 3 degrees of exact, the tight window where a transit is generally read as active. The sky starts at today; the slider moves it up to a year forward or back. The transiting Moon is left out of the list because it crosses your whole chart every month, but it stays on the outer ring, so you can watch it circle.',
   },
   {
     q: 'Why do slow transits matter more?',
-    a: 'Speed sets duration. The Sun crosses a natal point in about two days, Mars in a week or two, but Saturn can sit inside three degrees of one point for months and Pluto for a couple of years — and retrograde loops mean the slow planets often make three passes. The long visits are the ones astrologers treat as chapters rather than weather.',
+    a: 'Speed sets duration. The Sun crosses a natal point in about two days, Mars in a week or two, but Saturn can sit inside three degrees of one point for months and Pluto for a couple of years, and retrograde loops mean the slow planets often make three passes. The long visits are the ones astrologers treat as chapters rather than weather.',
   },
   {
     q: 'Do I need my exact birth time?',
-    a: 'Not for most of it. Planet-to-planet transits work from your birth date and place alone. The exception is the Moon: without a time it is computed for midday and can sit up to six degrees off, so Moon transits near the edge of the orb are uncertain — the tool says so when that applies.',
+    a: 'Not for most of it. Planet-to-planet transits work from your birth date and place alone. The exception is the Moon: without a time it is computed for midday and can sit up to six degrees off, so Moon transits near the edge of the orb are uncertain. The tool says so when that applies.',
   },
 ];
 
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Transit tracker — the sky moving over your chart',
+    name: 'Transit tracker, the sky moving over your chart',
     url: 'https://zodiacs.org/transits/',
     description:
       'See what is active in your birth chart today, then move the date to watch each influence build, peak, and release.',
@@ -53,11 +53,11 @@ const jsonLd = [
 ---
 <Base
   clientUi
-  title="Transit Tracker — The Sky Moving Over Your Birth Chart | Zodiacs.org"
+  title="Transit Tracker | The Sky Moving Over Your Birth Chart | Zodiacs.org"
   description="See what is active in your birth chart today, then move the date up to a year forward or back to watch each transit build and release."
   path="/transits/"
   image="/assets/og/v2/tool/transits.png"
-  imageAlt="Transit tracker — Zodiacs.org"
+  imageAlt="Transit tracker, Zodiacs.org"
   jsonLd={jsonLd}
   glass
 >

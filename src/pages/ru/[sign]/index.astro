@@ -76,7 +76,7 @@ const jsonLd = [
   description={metaDescription}
   path={`/ru/${sign.slug}/`}
   image={`/assets/og/v2/ru/sign/${sign.slug}.png`}
-  imageAlt={`${signName(sign, 'ru')} — гид по знаку на Zodiacs.org`}
+  imageAlt={`${signName(sign, 'ru')}, гид по знаку на Zodiacs.org`}
   type="article"
   locale="ru"
   noindex
@@ -100,7 +100,7 @@ const jsonLd = [
       <aside class="collect-band reveal">
         <span class="collect-band__label">Реестр</span>
         <span class="collect-band__text">{signName(sign, 'ru')} — одна из двенадцати записей.</span>
-        <a class="collect-band__link" href={`/registry/${sign.slug}/`} hreflang="en" title="Материал пока доступен по-английски">Открыть запись — пока по-английски</a>
+        <a class="collect-band__link" href={`/registry/${sign.slug}/`} hreflang="en" title="Материал пока доступен по-английски">Открыть запись (пока по-английски)</a>
       </aside>
 
       <div class="prose reveal">
@@ -112,7 +112,7 @@ const jsonLd = [
             {section.risingProfile && (
               <p>
                 <a href={`/rising-sign/${sign.slug}/`} hreflang="en" title="Материал пока доступен по-английски" aria-label={`Полный профиль асцендента «${signName(sign, 'ru')}». Материал пока доступен по-английски`}>
-                  Полный профиль асцендента «{signName(sign, 'ru')}» — пока по-английски →
+                  Полный профиль асцендента «{signName(sign, 'ru')}» (пока по-английски) →
                 </a>
               </p>
             )}
@@ -133,7 +133,7 @@ const jsonLd = [
               const s = signBySlug(slug);
               return (
                 <a class="chip" href={`/compatibility/${pairSlug(sign.slug, s.slug)}/`} hreflang="en" title="Материал пока доступен по-английски" aria-label={`${signName(sign, 'ru')} и ${signName(s, 'ru')}. Материал пока доступен по-английски`} style={`--sign:${s.hue}`}>
-                  <SignIcon sign={s.slug} size={18} class="chip__icon" /> {signName(sign, 'ru')} и {signName(s, 'ru')}<span class="sr-only"> — пока по-английски</span>
+                  <SignIcon sign={s.slug} size={18} class="chip__icon" /> {signName(sign, 'ru')} и {signName(s, 'ru')}<span class="sr-only"> (пока по-английски)</span>
                 </a>
               );
             })}

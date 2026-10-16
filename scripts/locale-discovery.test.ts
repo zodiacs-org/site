@@ -53,7 +53,7 @@ describe('localized discovery surfaces', () => {
       pt: { action: 'escolher signo', daily: 'O céu de hoje', longer: 'leituras semanais e mensais' },
       fr: { action: 'choisir un signe', daily: 'Le ciel du jour', longer: 'lectures de la semaine et du mois' },
       it: { action: 'scegliere un segno', daily: 'Il cielo di oggi', longer: 'letture della settimana e del mese' },
-      ru: { action: 'выбрать знак — пока по-английски', daily: 'Сегодняшнее небо', longer: 'прогнозы на неделю и месяц' },
+      ru: { action: 'выбрать знак (пока по-английски)', daily: 'Сегодняшнее небо', longer: 'прогнозы на неделю и месяц' },
     };
     for (const [locale, expected] of Object.entries(links)) {
       const page = read(`src/pages/${locale}/tools/index.astro`);

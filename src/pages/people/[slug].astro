@@ -159,7 +159,7 @@ const jsonLd = [
   description={metaDescription}
   path={`/people/${person.slug}/`}
   image={image}
-  imageAlt={`${person.displayName}'s ${adoptedDate ? 'adopted, uncertain birth-date' : 'sourced birth-date'} chart — ${publishedTimeRecord ? 'date-only profile source' : 'birth time unknown'}`}
+  imageAlt={`${person.displayName}'s ${adoptedDate ? 'adopted, uncertain birth-date' : 'sourced birth-date'} chart, ${publishedTimeRecord ? 'date-only profile source' : 'birth time unknown'}`}
   noindex={!person.indexEligibility.eligible}
   nofollow={person.living}
   jsonLd={jsonLd}
@@ -249,7 +249,7 @@ const jsonLd = [
             ariaLabel={`Time-unknown chart wheel for ${person.displayName}: ten bodies at the noon reference, with no houses or angles`}
           />
           <p class="person-wheel__caption">
-            Positions at 12:00 civil time in {person.birthPlace.entityLabel}—a reference instant, not a birth time.
+            Positions at 12:00 civil time in {person.birthPlace.entityLabel}, a reference instant, not a birth time.
             No houses, rising sign, angles, or sect were computed.
           </p>
         </div>
@@ -343,7 +343,7 @@ const jsonLd = [
               <dt>Reference instant</dt>
               <dd>{person.computation.utcInstant} · noon civil time, not a birth time</dd>
             </div>
-            <div><dt>Omitted</dt><dd>Rising sign, houses, angles, and sect—all require a birth time.</dd></div>
+            <div><dt>Omitted</dt><dd>Rising sign, houses, angles, and sect. All require a birth time.</dd></div>
             <div>
               <dt>Unknown-time range</dt>
               <dd>

@@ -17,7 +17,7 @@ const faq = [
   },
   {
     q: 'Are the answers generated?',
-    a: 'Yes. Replies are generated on the spot and can be wrong. Astrology here is a symbolic tradition read over precisely computed astronomy: positions are facts, meanings are interpretation — never fate, diagnosis, or a prediction of events.',
+    a: 'Yes. Replies are generated on the spot and can be wrong. Astrology here is a symbolic tradition read over precisely computed astronomy: positions are facts, meanings are interpretation, never fate, diagnosis, or a prediction of events.',
   },
   {
     q: 'What happens to my conversation?',
@@ -38,7 +38,7 @@ const jsonLd = [
     '@type': 'WebPage',
     '@id': 'https://zodiacs.org/ask/#page',
     url: 'https://zodiacs.org/ask/',
-    name: 'Guide — astrology and birth-chart help from Zodiacs.org',
+    name: 'Guide, astrology and birth-chart help from Zodiacs.org',
     description: 'Ask Guide about birth charts, astrology, or Zodiacs.org tools and guides. Signed-out conversations are not stored by Zodiacs.org.',
     isPartOf: { '@id': 'https://zodiacs.org/#site' },
   },
@@ -60,11 +60,11 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Guide — astrology and birth-chart help from Zodiacs.org"
+  title="Guide | astrology and birth-chart help from Zodiacs.org"
   description="Ask Guide about birth charts, astrology, or Zodiacs.org tools and guides. Signed-out conversations are not stored by Zodiacs.org."
   path="/ask/"
   image="/assets/og/v2/tool/ask.png"
-  imageAlt="Guide — astrology and birth-chart help from Zodiacs.org"
+  imageAlt="Guide, astrology and birth-chart help from Zodiacs.org"
   jsonLd={jsonLd}
   privateSurface
 >
@@ -101,7 +101,7 @@ const jsonLd = [
         <h2 id="ask-astro">General astrology</h2>
         <p>“Is Mercury retrograde right now?” “What does a Saturn square feel
         like?” “What is a cusp, really?” Plain-language answers in the same
-        register as the Learn pages — tradition read over computed astronomy,
+        register as the Learn pages: tradition read over computed astronomy,
         never fate.</p>
         <p class="ask__links"><a href="/learn/">Learn</a> · <a href="/learn/houses/">The houses</a> · <a href="/learn/aspects/">The aspects</a></p>
       </section>
@@ -124,7 +124,7 @@ const jsonLd = [
           <li><strong>Private.</strong> Each message goes to OpenAI to be answered; signed-out conversations are kept in this browser session and are not stored by Zodiacs.org. A chart is attached only after you confirm a preview of the exact placement text.</li>
           <li><strong>Bounded.</strong> No medical, legal, or financial advice; no event predictions; no third-party readings. Fair-use limits keep it available: a short per-minute pace and thirty questions a day.</li>
         </ul>
-        <p class="ask__rest">When Guide is resting — unavailable, or over its daily fair-use budget — this page and the site's own guides remain useful. Nothing else here requires Guide or an account.</p>
+        <p class="ask__rest">When Guide is resting (unavailable, or over its daily fair-use budget), this page and the site's own guides remain useful. Nothing else here requires Guide or an account.</p>
       </div>
     </section>
 

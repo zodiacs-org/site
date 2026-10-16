@@ -119,7 +119,7 @@ function fitInputsTo(coverage) {
 async function load(msg, label) {
   text($('pp-pack-state'), `${label} …`, '', 'busy');
   const r = await ask(msg);
-  if (!r.ok) { text($('pp-pack-state'), `refused: ${r.refused} — ${r.detail}`, 'pp-bad'); $('pp-info').innerHTML = ''; return; }
+  if (!r.ok) { text($('pp-pack-state'), `refused: ${r.refused}, ${r.detail}`, 'pp-bad'); $('pp-info').innerHTML = ''; return; }
   text($('pp-pack-state'), r.info.synthetic ? 'synthetic fixture ready' : 'pack loaded and verified', 'pp-ok');
   renderInfo(r.info);
 }
@@ -150,8 +150,8 @@ $('pp-places').addEventListener('click', async () => {
   text($('pp-places-state'), 'working …', '', 'busy');
   const r = await ask({ type: 'places', iso: $('pp-instant').value.trim() });
   if (mine !== gen.places) return;
-  if (!r.ok) { text($('pp-places-state'), `refused: ${r.refused} — ${r.detail}`, 'pp-bad'); $('pp-places-out').innerHTML = ''; return; }
-  text($('pp-places-state'), r.synthetic ? 'synthetic fixture — these are not planetary positions' : 'apparent geocentric, ecliptic of date');
+  if (!r.ok) { text($('pp-places-state'), `refused: ${r.refused}, ${r.detail}`, 'pp-bad'); $('pp-places-out').innerHTML = ''; return; }
+  text($('pp-places-state'), r.synthetic ? 'synthetic fixture. These are not planetary positions' : 'apparent geocentric, ecliptic of date');
   $('pp-places-out').innerHTML = `<table><tr><th>body</th><th class="num">longitude °</th><th class="num">latitude °</th><th class="num">distance km</th><th>note</th></tr>${
     r.rows.map((x) => `<tr><td>${esc(x.body)}</td><td class="num">${x.lon.toFixed(6)}</td><td class="num">${x.lat.toFixed(6)}</td><td class="num">${x.distKm.toExponential(6)}</td><td class="pp-dim">${x.isSystemBarycentre ? 'system barycentre' : ''}</td></tr>`).join('')
   }</table>`;
@@ -161,11 +161,11 @@ $('pp-places').addEventListener('click', async () => {
 function explain(v) {
   const parts = [];
   if (v.execution.status !== 'finished') {
-    parts.push(`The run did not finish: ${esc(v.execution.status)}${v.execution.reason ? ` — ${esc(v.execution.reason)}` : ''}. What is listed is what it found before it stopped.`);
+    parts.push(`The run did not finish: ${esc(v.execution.status)}${v.execution.reason ? `, ${esc(v.execution.reason)}` : ''}. What is listed is what it found before it stopped.`);
   } else if (v.completeness.established) {
     parts.push('Every part of the interval was accounted for by bounds that are true of the stored polynomial, so this list is complete for the function the pack defines. That is a statement about the pack, not about the sky.');
   } else if (v.completeness.support === 'conditional') {
-    parts.push('The run finished and accounted for the whole interval — but only if the assumptions below hold. They were measured on a grid, not proved, so this is not a guarantee that nothing else is there.');
+    parts.push('The run finished and accounted for the whole interval, but only if the assumptions below hold. They were measured on a grid, not proved, so this is not a guarantee that nothing else is there.');
   } else {
     parts.push('Nothing about completeness was established. There may be events here that this run did not find.');
   }
@@ -192,7 +192,7 @@ $('pp-search').addEventListener('click', async () => {
     maxRateDegPerDay: Number($('pp-rate').value) || undefined,
   });
   if (mine !== gen.search) return;
-  if (!r.ok) { text($('pp-search-state'), `refused: ${r.refused} — ${r.detail}`, 'pp-bad'); $('pp-search-out').innerHTML = ''; return; }
+  if (!r.ok) { text($('pp-search-state'), `refused: ${r.refused}, ${r.detail}`, 'pp-bad'); $('pp-search-out').innerHTML = ''; return; }
   const v = r.verdict;
   text($('pp-search-state'), `${v.mode} · ${v.execution.status} · ${v.eventCount.found} event${v.eventCount.found === 1 ? '' : 's'}`, r.synthetic ? 'pp-warn' : '');
   const claim = [
@@ -223,7 +223,7 @@ $('pp-cancel').addEventListener('click', () => {
     return;
   }
   hardStop();
-  text($('pp-search-state'), 'cancelled. Stopping a calculation means stopping the worker, which drops the loaded data — load it again below.', 'pp-warn');
+  text($('pp-search-state'), 'cancelled. Stopping a calculation means stopping the worker, which drops the loaded data. Load it again below.', 'pp-warn');
   text($('pp-pack-state'), 'nothing loaded: the worker was stopped to cancel a calculation.');
   $('pp-info').innerHTML = '';
   $('pp-corrections').innerHTML = '';

@@ -27,7 +27,7 @@ const champion = currentAnnouncement(championSeasons(), buildInstant);
 const championSignEntry = champion ? signBySlug(champion.champion) : null;
 const runnerUpName = champion ? signBySlug(champion.runnerUp).name : '';
 
-const title = 'The Race — The Zodiac Games | Zodiacs.org';
+const title = 'The Race | The Zodiac Games | Zodiacs.org';
 const description =
   'Twelve signs. One race. Every season crowns a champion. Join your sign for free, check in weekly, and watch the standings.';
 ---
@@ -59,7 +59,7 @@ const description =
           src={`/assets/sculptures/512/${champion.champion}.webp`}
           width={160}
           height={160}
-          alt={`The ${championSignEntry.name} Zodiac design — the ${champion.seasonName} Season trophy, completed`}
+          alt={`The ${championSignEntry.name} Zodiac design, the ${champion.seasonName} Season trophy, completed`}
           loading="eager"
           decoding="async"
         />
@@ -106,7 +106,7 @@ const description =
 
       <h2>How seasons work</h2>
       <p>
-        Each zodiac season is one championship — about a month long, twelve a
+        Each zodiac season is one championship, about a month long, twelve a
         year. All twelve signs compete in every season. When a season closes,
         the leader becomes Season Champion, the trophy is engraved, and the
         next season starts from zero.
@@ -128,7 +128,7 @@ const description =
       <dt>Can someone buy a win?</dt>
       <dd>
         No. Money can’t add points. Not ours, not anyone’s. If anything ever
-        makes you think otherwise, tell us — we’ll treat it as a bug.
+        makes you think otherwise, tell us. We’ll treat it as a bug.
       </dd>
 
       <dt>What does the winner get?</dt>
@@ -142,7 +142,7 @@ const description =
 
       <dt>What happens to my data?</dt>
       <dd>
-        Almost nothing. No cookies for tracking, no names or accounts — we
+        Almost nothing. No cookies for tracking, no names or accounts. We
         count, we don’t watch. Joining sets one signed cookie so your check-ins count
         for your team, and it identifies a browser, not a person. Email is
         optional and only sends standings. Unsubscribe anytime.

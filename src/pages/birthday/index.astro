@@ -44,11 +44,11 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Birthday Astrology by Date — Signs, Traits & Cusp Answers"
+  title="Birthday Astrology by Date | Signs, Traits & Cusp Answers"
   description="Choose your birthday for a date-specific reading of character, relationships, work, and growth, with an exact Sun-sign answer when the birth year matters."
   path="/birthday/"
   image="/assets/og/v2/tool/birthday.png"
-  imageAlt="Birthday astrology — Zodiacs.org"
+  imageAlt="Birthday astrology, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <div class="container bday-hub">
@@ -92,7 +92,7 @@ const jsonLd = [
               href={`/birthday/${d.slug}/`}
               style={`--dot:${d.hue}`}
               role="listitem"
-              title={d.cusp ? `${name} ${d.day} — cusp date` : `${name} ${d.day}`}
+              title={d.cusp ? `${name} ${d.day}, cusp date` : `${name} ${d.day}`}
             >
               <span class="bday-day__dot" aria-hidden="true"></span>
               {d.day}

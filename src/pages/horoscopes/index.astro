@@ -27,7 +27,7 @@ const cards = SIGNS.map((sign) => {
 const jsonLd = [
   {
     '@type': 'CollectionPage',
-    name: `Daily horoscopes — ${dateLabel}`,
+    name: `Daily horoscopes, ${dateLabel}`,
     url: 'https://zodiacs.org/horoscopes/',
     description: `Daily horoscopes for all twelve signs on ${dateLabel}, with a clear theme and one useful move for each sign.`,
     dateModified: `${program.anchorDate}T00:00:00.000Z`,
@@ -47,12 +47,12 @@ const jsonLd = [
 <Base
   stableTypography
   localTypography
-  title={`Daily Horoscopes — ${dateLabel}, All 12 Signs | Zodiacs.org`}
+  title={`Daily Horoscopes | ${dateLabel}, All 12 Signs | Zodiacs.org`}
   description={`Daily horoscopes for all twelve signs on ${dateLabel}, with a clear theme and one useful move for each sign.`}
   path="/horoscopes/"
   editionDate={program.anchorDate}
   image="/assets/og/v2/tool/horoscopes.png"
-  imageAlt="Daily horoscopes for all twelve signs — Zodiacs.org"
+  imageAlt="Daily horoscopes for all twelve signs, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container container--narrow" data-edition-content="true">
@@ -61,7 +61,7 @@ const jsonLd = [
       <p class="dateline">Daily edition · {dateLabel}</p>
       <p>
         Find your sign for <EditionText current="today’s" editionDate={program.anchorDate} /> focus, pressure point, and most useful move.
-        Read your Sun sign first—and your rising sign too, if you know it.
+        Read your Sun sign first, and your rising sign too, if you know it.
       </p>
       <span class="horo-hero__stamp">Updated daily · {dateLabel}</span>
     </div>

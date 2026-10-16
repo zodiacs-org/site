@@ -29,7 +29,7 @@ const windows = (sky.retrogrades as { planet: string; from: string; to: string |
       id,
       from,
       to,
-      label: `${formatShortDate('en', from)} – ${to ? formatShortDate('en', to) : 'ongoing'}`,
+      label: `${formatShortDate('en', from)} to ${to ? formatShortDate('en', to) : 'ongoing'}`,
       stationRx: formatLongitude(rxLon),
       stationDirect: directLon === null ? null : formatLongitude(directLon),
       signRx: signForLongitude(rxLon),
@@ -81,11 +81,11 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Mercury Retrograde 2027 — Exact Dates and Stations | Zodiacs.org"
+  title="Mercury Retrograde 2027 | Exact Dates and Stations | Zodiacs.org"
   description="Every Mercury retrograde window of 2027 with exact dates in universal time and the degree Mercury stations at, plus a calendar file so the windows sit in your own calendar."
   path={`/mercury-retrograde/${YEAR}/`}
   image="/assets/og/v2/tool/mercury-retrograde.png"
-  imageAlt="Mercury retrograde 2027 — Zodiacs.org"
+  imageAlt="Mercury retrograde 2027, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >
@@ -116,7 +116,7 @@ const jsonLd = [
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">
       <h2>The windows, {YEAR}</h2>
-      <p>Dates in universal time. The position shown is where Mercury stands still each time — the stations.</p>
+      <p>Dates in universal time. The position shown is where Mercury stands still each time, the stations.</p>
     </div>
     <div class="table-wrap reveal">
       <table class="rx-table">
@@ -142,7 +142,7 @@ const jsonLd = [
       <h2>What the window asks</h2>
       <p>
         The appearance is an optical effect: Mercury overtakes Earth on the inside of its orbit and seems to slide
-        backward through the zodiac for about three weeks. The practical reading is the same each time — reread before
+        backward through the zodiac for about three weeks. The practical reading is the same each time: reread before
         you send, confirm the time and the place, and expect the conversation you thought was finished to come back
         once. Which part of your life it visits depends on the <a href="/learn/houses/">house</a> those degrees fall in
         for you; the birth-chart calculator shows which.
