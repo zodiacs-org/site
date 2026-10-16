@@ -103,8 +103,8 @@
 .event-limits {
   margin: clamp(26px, 5vw, 40px) 0 0;
   padding: 14px 18px;
-  border: 1px solid var(--hair-2);
   border-radius: var(--r-md);
+  background: var(--void-2);
   color: var(--muted);
   font-size: var(--text-sm);
   line-height: 1.6;
@@ -245,7 +245,13 @@
 }
 .evhub-month > h2 { display: block; margin-bottom: 14px; }
 .evhub-rows { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.evhub-row { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
+.evhub-row { border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); transition: border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease); }
+/* Each dated row is one link: the row answers the pointer and the keyboard. */
+.evhub-row:focus-within { border-color: var(--hair-3); }
+@media (hover: hover) and (pointer: fine) {
+  .evhub-row:hover { border-color: var(--hair-2); background: var(--void-2); }
+}
+@media (prefers-reduced-motion: reduce) { .evhub-row { transition: none; } }
 .evhub-row[hidden] { display: none; }
 .evhub-row__in {
   display: grid;
@@ -257,7 +263,7 @@
   color: inherit;
 }
 .evhub-row__in:is(a):hover .evhub-row__title { text-decoration: underline; text-underline-offset: 3px; }
-.evhub-row__date { color: var(--faint); font-size: 11.5px; letter-spacing: 0.05em; padding-top: 3px; }
+.evhub-row__date { color: var(--faint); font-size: 12px; letter-spacing: 0; padding-top: 3px; }
 .evhub-row .evmark { grid-row: 1 / span 2; margin-top: 0; }
 .evhub-row__title { font-weight: 550; color: var(--text); line-height: 1.4; }
 .evhub-row__family {

@@ -170,9 +170,8 @@ const jsonLd = [
         <p>These fifteen explain most of what you will meet in a first birth chart.</p>
       </div>
       <div class="glossary__starter-grid">
-        {beginnerTerms.map((entry, index) => (
+        {beginnerTerms.map((entry) => (
           <a class="glossary__starter-card" href={`#${entry.slug}`}>
-            <span class="mono">{String(index + 1).padStart(2, '0')}</span>
             <strong>{entry.term}</strong>
             <span>{entry.plainDefinition}</span>
           </a>
@@ -465,8 +464,8 @@ const jsonLd = [
 
   .glossary__starter-card {
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 5px 12px;
+    align-content: start;
+    gap: 5px;
     min-height: 132px;
     padding: 18px;
     border: 1px solid var(--hair-1);
@@ -487,11 +486,6 @@ const jsonLd = [
     outline-offset: 2px;
   }
 
-  .glossary__starter-card > .mono {
-    grid-row: 1 / span 2;
-    color: var(--faint);
-    font-size: 0.68rem;
-  }
 
   .glossary__starter-card strong {
     color: var(--text);

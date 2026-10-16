@@ -291,7 +291,10 @@ const jsonLd = [
     padding: 18px 20px;
     border: 1px solid var(--hair-1, #242936);
     border-radius: 12px;
+    transition: border-color var(--dur-1) var(--ease);
   }
+  .td-cta:focus-within { border-color: var(--hair-3); }
+  @media (hover: hover) and (pointer: fine) { .td-cta:hover { border-color: var(--hair-2); } }
   .td-cta p { margin: 0; line-height: 1.6; text-wrap: pretty; }
   .td-faq-head { margin-top: 40px; }
   .faq { display: grid; gap: 8px; }

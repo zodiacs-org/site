@@ -1179,9 +1179,13 @@ const tools = [
     padding: clamp(18px, 3vw, 28px);
     border: 1px solid var(--hair-1);
     border-radius: var(--r-lg);
-    background:
-      radial-gradient(circle at 100% 0%, rgba(182, 212, 228, 0.08), transparent 42%),
-      rgba(13, 16, 23, 0.58);
+    background: rgba(13, 16, 23, 0.58);
+    transition: border-color var(--dur-1) var(--ease);
+  }
+  /* The reading card answers while its link is pointed at or focused. */
+  :global(.demo__insight:focus-within) { border-color: var(--hair-3); }
+  @media (hover: hover) and (pointer: fine) {
+    :global(.demo__insight:hover) { border-color: var(--hair-2); }
   }
   :global(.demo__insight h3) { margin: 0; font-size: var(--text-lg); letter-spacing: -0.015em; }
   :global(.demo__insight p) {

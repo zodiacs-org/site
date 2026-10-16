@@ -204,11 +204,9 @@ const id = `email-${placement}-${locale}`;
     border: 1px solid var(--hair-2);
     border-radius: var(--r-lg);
     background: var(--void-1);
-    transition: border-color var(--dur-1) var(--ease);
   }
   /* The signup answers when someone starts using it. */
   .email-capture:focus-within { border-color: var(--hair-3); }
-  @media (prefers-reduced-motion: reduce) { .email-capture { transition: none; } }
   .email-capture[hidden] { display: none; }
   .email-capture__copy[hidden],
   .email-capture__form[hidden],
@@ -268,7 +266,6 @@ const id = `email-${placement}-${locale}`;
     color: var(--text-2);
     font-size: 13px;
   }
-  .email-capture__sign-summary { transition: border-color var(--dur-1) var(--ease); }
   .email-capture__sign-summary:focus-within { border-color: var(--hair-3); }
   @media (hover: hover) and (pointer: fine) { .email-capture__sign-summary:hover { border-color: var(--hair-3); } }
   .email-capture__sign-summary[hidden] { display: none; }
