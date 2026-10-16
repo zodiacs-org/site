@@ -27,7 +27,7 @@
  *   npm run data:og -- --only-wing        # refresh the shared Astrofolio / Terminal card
  *   npm run data:og -- --only-sharing-ru # refresh the four Russian sharing cards
  *   npm run data:og -- --only-fomo        # refresh the /fomo/ card
- *   npm run data:og -- --review-people-identities # three A20 candidates, artifacts only
+ *   npm run data:og -- --review-people-identities # reviewed identity cards, artifacts only
  *
  * Deterministic and offline: fonts and disc art are inlined as data:
  * URIs; Chromium comes from playwright-core (PLAYWRIGHT_MODULE and

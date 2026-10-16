@@ -19,169 +19,169 @@ const ELEMENT_NOTES: Record<PairLocale, NoteTable> = {
   es: {
     'fire+fire': {
       label: 'Calor compartido',
-      note: 'Dos signos de fuego avanzan a la misma velocidad y perdonan a la misma velocidad. La pregunta abierta es quién se ocupa de los frenos.',
+      note: 'Ustedes van a todo gas: química inmediata, peleas rápidas y reconciliaciones aún más rápidas. Esperen mucha emoción.',
     },
     'earth+fire': {
       label: 'Chispa y suelo',
-      note: 'El fuego pone el encendido; la tierra, la constancia. Funciona cuando cada signo deja de calificar el ritmo del otro.',
+      note: 'El fuego empieza y la tierra termina: juntos harán mucho, pero esperen choques por el ritmo.',
     },
     'air+fire': {
       label: 'Oxígeno',
-      note: 'El aire alimenta al fuego y el fuego mantiene tibio al aire: una combinación rápida, conversadora y móvil. Alguien tiene que sostener el calendario de todos modos.',
+      note: 'El aire aviva el fuego: conversaciones animadas, grandes planes y un vínculo divertido y veloz.',
     },
     'fire+water': {
       label: 'Vapor',
-      note: 'El impulso se encuentra con el sentimiento: cada signo puede lo que el otro no. Manejado sin cuidado, quema; bien manejado, mueve cosas.',
+      note: 'La pasión se encuentra con el sentimiento: atracción intensa, pero los ánimos pueden desbordarse. Esta pareja necesita paciencia.',
     },
     'earth+earth': {
       label: 'Roca firme',
-      note: 'Dos signos de tierra construyen una vida que funciona en el papel y en la práctica. Agendar las sorpresas se vuelve una tarea compartida.',
+      note: 'Estables y leales: construyen algo sólido juntos, aunque el romance puede caer en la rutina.',
     },
     'air+earth': {
       label: 'Idea y presupuesto',
-      note: 'El aire trae posibilidades; la tierra pregunta cuánto cuestan. Con respeto, eso es una sociedad; con impaciencia, un comité.',
+      note: 'Las ideas se encuentran con lo práctico: se equilibran, pero uno puede ver al otro demasiado soñador o demasiado prudente.',
     },
     'earth+water': {
       label: 'Río y orilla',
-      note: 'El agua suaviza a la tierra y la tierra le da forma al agua: la combinación clásica de fuerza tranquila, con muy poca fricción.',
+      note: 'Una de las mejores parejas de la astrología: el agua suaviza a la tierra, la tierra le da forma al agua y crece una confianza profunda.',
     },
     'air+air': {
       label: 'Viento cruzado',
-      note: 'Conversación sin fin e independencia mutua. Los sentimientos necesitan una cita: hecha a propósito y cumplida.',
+      note: 'Primero mejores amigos: conversación sin fin y mucha libertad, aunque los sentimientos profundos pueden quedar sin decir.',
     },
     'air+water': {
       label: 'Ponerle nombre al clima',
-      note: 'El aire quiere nombrar el sentimiento; el agua quiere sentirlo. El trabajo de traducción nunca termina del todo, y vale la pena hacerlo.',
+      note: 'La cabeza se encuentra con el corazón: el aire quiere hablarlo y el agua quiere sentirlo. Esperen malentendidos si falta paciencia.',
     },
     'water+water': {
       label: 'Agua profunda',
-      note: 'Dos signos de agua se leen sin subtítulos. La marea sube y baja para ambos a la vez: conviene tener un barómetro.',
+      note: 'Se leen al instante: un vínculo profundo e intuitivo, y sentirán el estado de ánimo del otro.',
     },
   },
   pt: {
     'fire+fire': {
       label: 'Calor compartilhado',
-      note: 'Dois signos de fogo andam na mesma velocidade e perdoam na mesma velocidade. A pergunta em aberto é quem cuida dos freios.',
+      note: 'Vocês esquentam rápido: química imediata, brigas rápidas e reconciliações ainda mais rápidas. Esperem muita emoção.',
     },
     'earth+fire': {
       label: 'Faísca e solo',
-      note: 'O fogo dá a ignição; a terra, a continuidade. Funciona quando cada signo para de dar nota ao ritmo do outro.',
+      note: 'O fogo começa e a terra termina: juntos vocês fazem muito, mas esperem atritos por causa do ritmo.',
     },
     'air+fire': {
       label: 'Oxigênio',
-      note: 'O ar alimenta o fogo e o fogo mantém o ar aquecido: uma combinação rápida, falante e móvel. Alguém ainda precisa segurar a agenda.',
+      note: 'O ar aviva o fogo: conversas animadas, grandes planos e um vínculo divertido e veloz.',
     },
     'fire+water': {
       label: 'Vapor',
-      note: 'O impulso encontra o sentimento: cada signo consegue o que o outro não consegue. Sem cuidado, escalda; com cuidado, põe as coisas em movimento.',
+      note: 'A paixão encontra o sentimento: atração intensa, mas os ânimos podem transbordar. Este casal precisa de paciência.',
     },
     'earth+earth': {
       label: 'Rocha firme',
-      note: 'Dois signos de terra constroem uma vida que funciona no papel e na prática. Agendar as surpresas vira tarefa compartilhada.',
+      note: 'Estáveis e leais: vocês constroem algo sólido juntos, embora o romance possa cair na rotina.',
     },
     'air+earth': {
       label: 'Ideia e orçamento',
-      note: 'O ar traz possibilidades; a terra pergunta quanto custam. Com respeito, isso é uma parceria; com impaciência, um comitê.',
+      note: 'As ideias encontram o lado prático: vocês se equilibram, mas um pode achar o outro sonhador demais ou cauteloso demais.',
     },
     'earth+water': {
       label: 'Rio e margem',
-      note: 'A água amacia a terra e a terra dá forma à água: a combinação clássica de força tranquila, com pouquíssimo atrito.',
+      note: 'Um dos melhores pares da astrologia: a água amacia a terra, a terra dá forma à água e cresce uma confiança profunda.',
     },
     'air+air': {
       label: 'Vento cruzado',
-      note: 'Conversa sem fim e independência mútua. Os sentimentos precisam de hora marcada: marcada de propósito e cumprida.',
+      note: 'Melhores amigos primeiro: conversa sem fim e muita liberdade, embora os sentimentos profundos possam ficar sem ser ditos.',
     },
     'air+water': {
       label: 'Dar nome ao tempo',
-      note: 'O ar quer dar nome ao sentimento; a água quer senti-lo. O trabalho de tradução nunca termina de vez, e vale a pena.',
+      note: 'A cabeça encontra o coração: o ar quer conversar e a água quer sentir. Esperem mal-entendidos se faltar paciência.',
     },
     'water+water': {
       label: 'Águas profundas',
-      note: 'Dois signos de água se leem sem legenda. A maré sobe e desce para os dois ao mesmo tempo: vale ter um barômetro.',
+      note: 'Vocês se leem na hora: um vínculo profundo e intuitivo, e vão sentir o humor um do outro.',
     },
   },
   fr: {
     'fire+fire': {
       label: 'Chaleur partagée',
-      note: 'Deux signes de feu avancent à la même vitesse et pardonnent à la même vitesse. Reste à savoir qui surveille les freins.',
+      note: 'Vous deux, ça brûle : une alchimie immédiate, des disputes rapides et des réconciliations encore plus rapides. Attendez-vous à beaucoup d’intensité.',
     },
     'earth+fire': {
       label: 'Étincelle et terreau',
-      note: 'Le feu apporte l’allumage, la terre la suite dans les idées. Ça marche dès que chaque signe cesse de noter le tempo de l’autre.',
+      note: 'Le feu lance, la terre termine : vous accomplirez beaucoup ensemble, mais attendez-vous à des frictions sur le rythme.',
     },
     'air+fire': {
       label: 'Oxygène',
-      note: 'L’air nourrit le feu et le feu garde l’air au chaud : une alliance rapide, bavarde et mobile. Il faut quand même quelqu’un pour tenir le calendrier.',
+      note: 'L’air attise le feu : des conversations animées, de grands projets et un lien vif et joyeux.',
     },
     'fire+water': {
       label: 'Vapeur',
-      note: 'L’élan rencontre le sentiment : chaque signe sait faire ce que l’autre ne sait pas. Mal dosé, ça brûle ; bien dosé, ça fait avancer les choses.',
+      note: 'La passion rencontre le sentiment : une attirance intense, mais les humeurs peuvent déborder. Ce duo a besoin de patience.',
     },
     'earth+earth': {
       label: 'Socle',
-      note: 'Deux signes de terre bâtissent une vie qui tient sur le papier comme en pratique. Programmer les surprises devient une corvée partagée.',
+      note: 'Stables et fidèles : vous bâtissez quelque chose de solide ensemble, même si la romance peut tomber dans la routine.',
     },
     'air+earth': {
       label: 'Idée et devis',
-      note: 'L’air apporte des possibilités, la terre demande ce qu’elles coûtent. Avec du respect, c’est un partenariat ; avec de l’impatience, un comité.',
+      note: 'Les idées rencontrent le concret : vous vous équilibrez, mais l’un peut trouver l’autre trop rêveur ou trop prudent.',
     },
     'earth+water': {
       label: 'Rivière et berge',
-      note: 'L’eau adoucit la terre et la terre donne une forme à l’eau : l’alliance classique de la force tranquille, avec très peu de frottement.',
+      note: 'L’un des meilleurs duos de l’astrologie : l’eau adoucit la terre, la terre donne forme à l’eau, et une confiance profonde s’installe.',
     },
     'air+air': {
       label: 'Vent de travers',
-      note: 'Conversation sans fin et indépendance mutuelle. Les sentiments ont besoin d’un rendez-vous, pris exprès et tenu.',
+      note: 'Meilleurs amis d’abord : une conversation sans fin et beaucoup de liberté, même si les sentiments profonds restent parfois tus.',
     },
     'air+water': {
       label: 'Nommer la météo',
-      note: 'L’air veut nommer le sentiment ; l’eau veut le ressentir. Le travail de traduction ne s’arrête jamais vraiment, et il en vaut la peine.',
+      note: 'La tête rencontre le cœur : l’air veut en parler, l’eau veut le ressentir. Attendez-vous à des malentendus sans patience.',
     },
     'water+water': {
       label: 'Eaux profondes',
-      note: 'Deux signes d’eau se lisent sans sous-titres. La marée monte et descend pour les deux en même temps : mieux vaut garder un baromètre.',
+      note: 'Vous vous lisez instantanément : un lien profond et intuitif, et vous ressentirez les humeurs l’un de l’autre.',
     },
   },
   it: {
     'fire+fire': {
       label: 'Calore condiviso',
-      note: 'Due segni di fuoco vanno alla stessa velocità e perdonano alla stessa velocità. La domanda aperta è chi bada ai freni.',
+      note: 'Voi due bruciate in fretta: intesa immediata, litigi veloci e riappacificazioni ancora più veloci. Aspettatevi tanta emozione.',
     },
     'earth+fire': {
       label: 'Scintilla e terreno',
-      note: 'Il fuoco mette l’accensione, la terra la costanza. Funziona quando ciascun segno smette di dare i voti al ritmo dell’altro.',
+      note: 'Il fuoco comincia, la terra finisce: insieme farete molto, ma aspettatevi scontri sul ritmo.',
     },
     'air+fire': {
       label: 'Ossigeno',
-      note: 'L’aria alimenta il fuoco e il fuoco tiene calda l’aria: una combinazione rapida, loquace e mobile. Qualcuno deve comunque tenere fermo il calendario.',
+      note: 'L’aria attizza il fuoco: conversazioni vivaci, grandi progetti e un legame divertente e veloce.',
     },
     'fire+water': {
       label: 'Vapore',
-      note: 'L’impulso incontra il sentimento: ciascun segno sa fare ciò che l’altro non sa. Gestito male scotta; gestito bene muove le cose.',
+      note: 'La passione incontra il sentimento: attrazione intensa, ma gli animi possono traboccare. Questa coppia ha bisogno di pazienza.',
     },
     'earth+earth': {
       label: 'Fondamenta',
-      note: 'Due segni di terra costruiscono una vita che funziona sulla carta e nella pratica. Mettere in agenda le sorprese diventa un compito condiviso.',
+      note: 'Stabili e leali: costruite insieme qualcosa di solido, anche se il romanticismo può scivolare nella routine.',
     },
     'air+earth': {
       label: 'Idea e preventivo',
-      note: 'L’aria porta possibilità, la terra chiede quanto costano. Con il rispetto è una società; con l’impazienza, un comitato.',
+      note: 'Le idee incontrano la concretezza: vi bilanciate, ma uno può trovare l’altro troppo sognatore o troppo prudente.',
     },
     'earth+water': {
       label: 'Fiume e argine',
-      note: 'L’acqua ammorbidisce la terra e la terra dà forma all’acqua: la classica combinazione dalla forza tranquilla, con pochissimo attrito.',
+      note: 'Una delle coppie migliori dell’astrologia: l’acqua ammorbidisce la terra, la terra dà forma all’acqua e cresce una fiducia profonda.',
     },
     'air+air': {
       label: 'Vento di traverso',
-      note: 'Conversazione infinita e indipendenza reciproca. I sentimenti hanno bisogno di un appuntamento: preso apposta e rispettato.',
+      note: 'Prima migliori amici: conversazione infinita e tanta libertà, anche se i sentimenti profondi possono restare taciuti.',
     },
     'air+water': {
       label: 'Dare un nome al tempo',
-      note: 'L’aria vuole dare un nome al sentimento; l’acqua vuole sentirlo. Il lavoro di traduzione non finisce mai del tutto, e vale la pena farlo.',
+      note: 'La testa incontra il cuore: l’aria vuole parlarne, l’acqua vuole sentirlo. Aspettatevi malintesi se manca la pazienza.',
     },
     'water+water': {
       label: 'Acque profonde',
-      note: 'Due segni d’acqua si leggono senza sottotitoli. La marea sale e scende per tutti e due insieme: conviene tenere un barometro.',
+      note: 'Vi leggete all’istante: un legame profondo e intuitivo, e sentirete l’uno gli stati d’animo dell’altro.',
     },
   },
 };
@@ -190,129 +190,129 @@ const MODALITY_NOTES: Record<PairLocale, NoteTable> = {
   es: {
     'cardinal+cardinal': {
       label: 'Dos que inician',
-      note: 'Ambos signos abren estaciones; ambos llegan con un plan. La negociación real es cuál plan se aplica este trimestre.',
+      note: 'Dos líderes: mucho empuje y batallas frecuentes por quién manda.',
     },
     'cardinal+fixed': {
       label: 'Quien inicia y quien sostiene',
-      note: 'Un signo lanza, el otro mantiene. Reparte el trabajo de maravilla, siempre que también se reparta el crédito.',
+      note: 'Uno empieza y el otro sostiene: un equipo productivo cuando se ponen de acuerdo en el rumbo.',
     },
     'cardinal+mutable': {
       label: 'Quien inicia y quien se adapta',
-      note: 'Un signo marca el rumbo, el otro corrige el curso sin ego. Poca fricción: cuida que la deriva no reemplace al timón.',
+      note: 'Uno guía y el otro se adapta: una relación fácil, con pocas luchas de poder.',
     },
     'fixed+fixed': {
       label: 'Dos anclas',
-      note: 'Dos signos duraderos, leales e inamovibles en la misma discusión. Los desacuerdos se calcifican si nadie cede con cita previa.',
+      note: 'Dos signos leales y tercos: un vínculo duradero, pero ninguno cede en una discusión.',
     },
     'fixed+mutable': {
       label: 'Ancla y vela',
-      note: 'Estabilidad más flexibilidad: cada signo aporta lo que el otro se salta. Solo molesta cuando alguno niega la función del otro.',
+      note: 'La estabilidad se encuentra con la flexibilidad: se equilibran muy bien.',
     },
     'mutable+mutable': {
       label: 'Dos velas',
-      note: 'Dos signos adaptables sin fin y rara vez en conflicto abierto. Las decisiones pueden orbitar meses sin aterrizar: conviene poner una fecha límite.',
+      note: 'Tranquilos y adaptables: pocas peleas, pero las decisiones pueden quedarse en el aire.',
     },
   },
   pt: {
     'cardinal+cardinal': {
       label: 'Dois que começam',
-      note: 'Os dois signos abrem estações; os dois chegam com um plano. A negociação de verdade é qual plano vale neste trimestre.',
+      note: 'Dois líderes: muita garra e disputas frequentes sobre quem manda.',
     },
     'cardinal+fixed': {
       label: 'Quem começa e quem mantém',
-      note: 'Um signo lança, o outro sustenta. Divide o trabalho lindamente, desde que o crédito também seja dividido.',
+      note: 'Um começa e o outro sustenta: uma equipe produtiva quando vocês concordam no rumo.',
     },
     'cardinal+mutable': {
       label: 'Quem começa e quem se adapta',
-      note: 'Um signo define a direção, o outro ajusta o curso sem ego. Pouco atrito: cuidado para a deriva não tomar o lugar do leme.',
+      note: 'Um guia e o outro se adapta: uma parceria tranquila, com poucas disputas de poder.',
     },
     'fixed+fixed': {
       label: 'Duas âncoras',
-      note: 'Dois signos duráveis, leais e irremovíveis na mesma discussão. As divergências calcificam, a menos que alguém ceda com hora marcada.',
+      note: 'Dois signos leais e teimosos: um vínculo duradouro, mas nenhum cede numa discussão.',
     },
     'fixed+mutable': {
       label: 'Âncora e vela',
-      note: 'Estabilidade mais flexibilidade: cada signo oferece o que o outro pula. Só vira ressentimento quando um nega a função do outro.',
+      note: 'A estabilidade encontra a flexibilidade: vocês se equilibram muito bem.',
     },
     'mutable+mutable': {
       label: 'Duas velas',
-      note: 'Dois signos infinitamente adaptáveis e raramente em conflito aberto. As decisões podem orbitar por meses sem pousar: vale definir um prazo.',
+      note: 'Tranquilos e adaptáveis: poucas brigas, mas as decisões podem ficar no ar.',
     },
   },
   fr: {
     'cardinal+cardinal': {
       label: 'Deux signes qui lancent',
-      note: 'Les deux ouvrent une saison ; les deux arrivent avec un plan. La vraie négociation porte sur le plan qui s’applique ce trimestre.',
+      note: 'Deux meneurs : beaucoup d’élan, et des batailles régulières pour savoir qui décide.',
     },
     'cardinal+fixed': {
       label: 'Lancer et tenir',
-      note: 'Un signe lance, l’autre fait durer. La répartition du travail est superbe, tant que le mérite est réparti lui aussi.',
+      note: 'L’un lance, l’autre fait durer : une équipe efficace dès que vous êtes d’accord sur la direction.',
     },
     'cardinal+mutable': {
       label: 'Lancer et ajuster',
-      note: 'Un signe fixe le cap, l’autre corrige la route sans ego. Peu de frottement : attention à ce que la dérive ne remplace pas la barre.',
+      note: 'L’un mène, l’autre s’adapte : une relation facile, avec peu de luttes de pouvoir.',
     },
     'fixed+fixed': {
       label: 'Deux ancres',
-      note: 'Deux signes durables, loyaux et inébranlables dans la même dispute. Les désaccords se figent, sauf si quelqu’un cède sur rendez-vous.',
+      note: 'Deux signes fidèles et têtus : un lien durable, mais aucun ne cède dans une dispute.',
     },
     'fixed+mutable': {
       label: 'Ancre et voile',
-      note: 'Stabilité plus souplesse : chaque signe fournit ce que l’autre saute. Le ressentiment ne vient que lorsque l’un nie la fonction de l’autre.',
+      note: 'La stabilité rencontre la souplesse : vous vous équilibrez très bien.',
     },
     'mutable+mutable': {
       label: 'Deux voiles',
-      note: 'Deux signes adaptables à l’infini et rarement en conflit ouvert. Les décisions peuvent rester en orbite pendant des mois : mieux vaut fixer une échéance.',
+      note: 'Faciles à vivre et adaptables : peu de disputes, mais les décisions peuvent traîner.',
     },
   },
   it: {
     'cardinal+cardinal': {
       label: 'Due segni che avviano',
-      note: 'Entrambi aprono una stagione; entrambi arrivano con un piano. La vera trattativa è quale piano vale in questo trimestre.',
+      note: 'Due leader: tanta grinta e battaglie frequenti su chi comanda.',
     },
     'cardinal+fixed': {
       label: 'Chi avvia e chi mantiene',
-      note: 'Un segno lancia, l’altro fa durare. Divide il lavoro benissimo, purché si divida anche il merito.',
+      note: 'Uno comincia e l’altro sostiene: una squadra produttiva quando siete d’accordo sulla direzione.',
     },
     'cardinal+mutable': {
       label: 'Chi avvia e chi si adatta',
-      note: 'Un segno fissa la direzione, l’altro corregge la rotta senza ego. Poco attrito: attenzione che la deriva non prenda il posto del timone.',
+      note: 'Uno guida e l’altro si adatta: un rapporto facile, con poche lotte di potere.',
     },
     'fixed+fixed': {
       label: 'Due ancore',
-      note: 'Due segni durevoli, leali e irremovibili nella stessa discussione. I disaccordi si calcificano, a meno che qualcuno non ceda su appuntamento.',
+      note: 'Due segni leali e testardi: un legame duraturo, ma nessuno dei due cede in una discussione.',
     },
     'fixed+mutable': {
       label: 'Ancora e vela',
-      note: 'Stabilità più flessibilità: ciascun segno fornisce ciò che l’altro salta. Il risentimento nasce solo quando uno nega la funzione dell’altro.',
+      note: 'La stabilità incontra la flessibilità: vi bilanciate molto bene.',
     },
     'mutable+mutable': {
       label: 'Due vele',
-      note: 'Due segni adattabili all’infinito e di rado in conflitto aperto. Le decisioni possono restare in orbita per mesi senza atterrare: conviene fissare una scadenza.',
+      note: 'Tranquilli e adattabili: pochi litigi, ma le decisioni possono restare in sospeso.',
     },
   },
 };
 
 const POLARITY_NOTES: Record<PairLocale, { day: string; night: string; mixed: string }> = {
   es: {
-    day: 'Dos signos diurnos: la energía va hacia afuera en ambos lados, hacia la acción y la expresión. El descanso es el punto ciego compartido.',
-    night: 'Dos signos nocturnos: ambos procesan hacia adentro antes de que algo se note. Aquí los silencios suelen ser trabajo, no distancia.',
-    mixed: 'Un signo diurno y uno nocturno: uno piensa en voz alta, el otro piensa primero. Cada uno aporta el registro que el otro se salta.',
+    day: 'Los dos extrovertidos: una pareja activa, sociable y llena de energía.',
+    night: 'Los dos reservados: un vínculo íntimo y profundo que necesita tiempo a solas.',
+    mixed: 'Uno extrovertido y uno reservado: se equilibran, porque uno lo habla y el otro lo piensa.',
   },
   pt: {
-    day: 'Dois signos diurnos: a energia corre para fora dos dois lados, rumo à ação e à expressão. O descanso é o ponto cego em comum.',
-    night: 'Dois signos noturnos: os dois processam por dentro antes que algo apareça. Aqui os silêncios costumam ser trabalho, não distância.',
-    mixed: 'Um signo diurno e um noturno: um pensa em voz alta, o outro pensa primeiro. Cada um oferece o registro que o outro pula.',
+    day: 'Os dois extrovertidos: um casal ativo, sociável e cheio de energia.',
+    night: 'Os dois reservados: um vínculo íntimo e profundo que precisa de tempo a sós.',
+    mixed: 'Um extrovertido e um reservado: vocês se equilibram, porque um fala e o outro pensa.',
   },
   fr: {
-    day: 'Deux signes diurnes : l’énergie part vers l’extérieur des deux côtés, vers l’action et l’expression. Le repos est l’angle mort commun.',
-    night: 'Deux signes nocturnes : les deux digèrent à l’intérieur avant que rien ne se voie. Ici, les silences sont en général du travail, pas de la distance.',
-    mixed: 'Un signe diurne et un signe nocturne : l’un pense à voix haute, l’autre pense d’abord. Chacun apporte le registre que l’autre saute.',
+    day: 'Deux extravertis : un duo actif, sociable et plein d’énergie.',
+    night: 'Deux réservés : un lien intime et profond, qui a besoin de moments à deux.',
+    mixed: 'Un extraverti et un réservé : vous vous équilibrez, l’un en parle, l’autre y réfléchit.',
   },
   it: {
-    day: 'Due segni diurni: l’energia va verso l’esterno da entrambe le parti, verso l’azione e l’espressione. Il riposo è il punto cieco in comune.',
-    night: 'Due segni notturni: entrambi elaborano dentro prima che si veda qualcosa. Qui i silenzi di solito sono lavoro, non distanza.',
-    mixed: 'Un segno diurno e uno notturno: uno pensa ad alta voce, l’altro prima pensa. Ciascuno porta il registro che l’altro salta.',
+    day: 'Due estroversi: una coppia attiva, socievole e piena di energia.',
+    night: 'Due riservati: un legame intimo e profondo, che ha bisogno di tempo da soli.',
+    mixed: 'Un estroverso e un riservato: vi bilanciate, perché uno ne parla e l’altro ci riflette.',
   },
 };
 

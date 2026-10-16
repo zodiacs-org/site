@@ -6,6 +6,7 @@ import PrivateCompatibilityInvite from '../../islands/PrivateCompatibilityInvite
 import GroupCharts from '../../islands/GroupCharts';
 import ChartTwins from '../../islands/ChartTwins';
 import SharingToolLinks from './SharingToolLinks.astro';
+import HeroCrop from '../HeroCrop.astro';
 import { localizePath, type CatalogLocale } from '../../lib/i18n';
 import { SHARING_COPY, sharingText as s } from '../../lib/sharing/copy';
 import { DIRECTORY_PEOPLE } from '../../lib/people';
@@ -58,6 +59,8 @@ const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), descript
     {kind === 'group' && <GroupCharts locale={locale} client:load />}
     {kind === 'twins' && <ChartTwins locale={locale} directory={directory} client:load />}
     <noscript><p>{s(locale, 'jsRequired')}</p><a href={localizePath(locale, '/tools/')}>{s(locale, 'toolsLabel')}</a></noscript>
+    {kind === 'big' && <HeroCrop crop="sun-moon-signs" locale={locale} class="sharing-art" />}
+    {kind === 'twins' && <HeroCrop crop="twins" locale={locale} class="sharing-art" />}
     <SharingToolLinks locale={locale} current={path} />
   </section>
 </Base>

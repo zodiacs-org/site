@@ -10,7 +10,7 @@ import { chromium, type Page } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { HOROSCOPES_HTML } from '../integrations/generated/horoscopes.mjs';
 import { STUDIO_HTML } from '../integrations/generated/chart-studio.mjs';
-import { WIDGET_HTML } from '../src/ai-tools/widget';
+import { WIDGET_HTML } from '../integrations/generated/sky-calendar.mjs';
 
 const SERVER = 'https://zodiacs.org/mcp';
 let session: string | undefined;

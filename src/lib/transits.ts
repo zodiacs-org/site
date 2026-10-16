@@ -38,7 +38,7 @@ const ASPECT_VERB: Record<string, { verb: string; gloss: string }> = {
   },
   sextile: {
     verb: 'opens a door for',
-    gloss: 'an opening that pays out only if you take it',
+    gloss: 'an opening that rewards you if you take it',
   },
   square: {
     verb: 'pushes against',

@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import ReturnToolLinks from '../../components/return-visits/ReturnToolLinks.astro';
 import SaturnReturnCalculator from '../../islands/SaturnReturnCalculator';
 import '../../styles/calculator.css';
@@ -74,6 +75,7 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="prose">
+      <HeroCrop crop="clock-dial" />
       <h2>What the return actually is</h2>
       <p>
         Saturn moves slowly — about two and a half years to a <a href="/learn/glossary/#zodiac-sign">sign</a>, 29.4 years

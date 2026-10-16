@@ -1,0 +1,42 @@
+---
+/**
+ * A crop of the hero artwork that leads a page's explainer, below the tool.
+ * It is never the LCP, so it loads lazily.
+ */
+import { HERO_CROP_SIZE, heroCropAlt, heroCropSrc, heroCropSrcset, type HeroCropName } from '../lib/hero-crops';
+import type { CatalogLocale } from '../lib/i18n/core';
+
+interface Props {
+  crop: HeroCropName;
+  locale?: CatalogLocale;
+  class?: string;
+}
+
+const { crop, locale = 'en', class: className } = Astro.props;
+---
+<img
+  class:list={['hero-crop', className]}
+  src={heroCropSrc(crop, 560)}
+  srcset={heroCropSrcset(crop)}
+  sizes="(min-width: 760px) 440px, calc(100vw - 40px)"
+  width={HERO_CROP_SIZE.width}
+  height={HERO_CROP_SIZE.height}
+  alt={heroCropAlt(crop, locale)}
+  loading="lazy"
+  decoding="async"
+/>
+
+<style>
+  .hero-crop {
+    display: block;
+    width: min(100%, 440px);
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    margin: 0 0 clamp(22px, 3.5vw, 30px);
+    border-radius: 14px;
+    background: var(--void-1);
+  }
+  /* The heading it leads sits right under it, not a section's gap away. */
+  .hero-crop + :global(h2) { margin-top: 0; }
+</style>

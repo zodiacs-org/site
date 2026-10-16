@@ -166,7 +166,7 @@
     {
       "slug": "alan-turing",
       "name": "Alan Turing",
-      "shortDescription": "Computer scientist and university teacher · United Kingdom · 1912–1954",
+      "shortDescription": "Computer scientist · United Kingdom · 1912–1954",
       "born": "1912-06-23",
       "gregorian": "1912-06-23",
       "birthplace": "Maida Vale",
@@ -246,7 +246,7 @@
     {
       "slug": "albert-camus",
       "name": "Albert Camus",
-      "shortDescription": "Writer and association football player · Algeria · 1913–1960",
+      "shortDescription": "Philosopher and writer · Algeria · 1913–1960",
       "born": "1913-11-07",
       "gregorian": "1913-11-07",
       "birthplace": "Dréan",
@@ -406,7 +406,7 @@
     {
       "slug": "alexander-graham-bell",
       "name": "Alexander Graham Bell",
-      "shortDescription": "Physicist · United Kingdom · 1847–1922",
+      "shortDescription": "Scientist and inventor · United Kingdom · 1847–1922",
       "born": "1847-03-03",
       "gregorian": "1847-03-03",
       "birthplace": "Edinburgh",
@@ -486,7 +486,7 @@
     {
       "slug": "alfred-hitchcock",
       "name": "Alfred Hitchcock",
-      "shortDescription": "Film director and writer · United Kingdom · 1899–1980",
+      "shortDescription": "Film director · United Kingdom · 1899–1980",
       "born": "1899-08-13",
       "gregorian": "1899-08-13",
       "birthplace": "Leytonstone",
@@ -726,7 +726,7 @@
     {
       "slug": "andy-warhol",
       "name": "Andy Warhol",
-      "shortDescription": "Film director and painter · United States · 1928–1987",
+      "shortDescription": "Visual artist and film director · United States · 1928–1987",
       "born": "1928-08-06",
       "gregorian": "1928-08-06",
       "birthplace": "Pittsburgh",
@@ -1046,7 +1046,7 @@
     {
       "slug": "audrey-hepburn",
       "name": "Audrey Hepburn",
-      "shortDescription": "Stage actor and philanthropist · Belgium · 1929–1993",
+      "shortDescription": "Film actor · Belgium · 1929–1993",
       "born": "1929-05-04",
       "gregorian": "1929-05-04",
       "birthplace": "Rue Keyenveld - Keienveldstraat",
@@ -1126,7 +1126,7 @@
     {
       "slug": "ayrton-senna",
       "name": "Ayrton Senna",
-      "shortDescription": "Formula One driver and philanthropist · Brazil · 1960–1994",
+      "shortDescription": "Formula One driver · Brazil · 1960–1994",
       "born": "1960-03-21",
       "gregorian": "1960-03-21",
       "birthplace": "maternity hospital of São Paulo",
@@ -1286,7 +1286,7 @@
     {
       "slug": "bertrand-russell",
       "name": "Bertrand Russell",
-      "shortDescription": "Mathematician and essayist · United Kingdom · 1872–1970",
+      "shortDescription": "Analytic philosopher and logician · United Kingdom · 1872–1970",
       "born": "1872-05-18",
       "gregorian": "1872-05-18",
       "birthplace": "Trellech",
@@ -1366,7 +1366,7 @@
     {
       "slug": "bette-davis",
       "name": "Bette Davis",
-      "shortDescription": "Autobiographer and stage actor · United States · 1908–1989",
+      "shortDescription": "Film actor · United States · 1908–1989",
       "born": "1908-04-05",
       "gregorian": "1908-04-05",
       "birthplace": "Lowell",
@@ -1446,7 +1446,7 @@
     {
       "slug": "billie-holiday",
       "name": "Billie Holiday",
-      "shortDescription": "Actor and songwriter · United States · 1915–1959",
+      "shortDescription": "Jazz singer · United States · 1915–1959",
       "born": "1915-04-07",
       "gregorian": "1915-04-07",
       "birthplace": "Philadelphia",
@@ -1606,7 +1606,7 @@
     {
       "slug": "bruce-lee",
       "name": "Bruce Lee",
-      "shortDescription": "Film director and writer · United States · 1940–1973",
+      "shortDescription": "Martial artist and film actor · United States · 1940–1973",
       "born": "1940-11-27",
       "gregorian": "1940-11-27",
       "birthplace": "San Francisco Chinese Hospital",
@@ -1686,7 +1686,7 @@
     {
       "slug": "charles-darwin",
       "name": "Charles Darwin",
-      "shortDescription": "Geologist and explorer · United Kingdom · 1809–1882",
+      "shortDescription": "Naturalist and biologist · United Kingdom · 1809–1882",
       "born": "1809-02-12",
       "gregorian": "1809-02-12",
       "birthplace": "Shrewsbury",
@@ -1766,7 +1766,7 @@
     {
       "slug": "charles-dickens",
       "name": "Charles Dickens",
-      "shortDescription": "Writer and botanist · United Kingdom · 1812–1870",
+      "shortDescription": "Novelist and social critic · United Kingdom · 1812–1870",
       "born": "1812-02-07",
       "gregorian": "1812-02-07",
       "birthplace": "Landport",
@@ -1846,7 +1846,7 @@
     {
       "slug": "charlie-chaplin",
       "name": "Charlie Chaplin",
-      "shortDescription": "Film director and composer · United Kingdom · 1889–1977",
+      "shortDescription": "Film actor and film director · United Kingdom · 1889–1977",
       "born": "1889-04-16",
       "gregorian": "1889-04-16",
       "birthplace": "Walworth",
@@ -1926,7 +1926,7 @@
     {
       "slug": "charlotte-bronte",
       "name": "Charlotte Brontë",
-      "shortDescription": "Poet and teacher · United Kingdom · 1816–1855",
+      "shortDescription": "Novelist and poet · United Kingdom · 1816–1855",
       "born": "1816-04-21",
       "gregorian": "1816-04-21",
       "birthplace": "Thornton",
@@ -2086,7 +2086,7 @@
     {
       "slug": "david-bowie",
       "name": "David Bowie",
-      "shortDescription": "Painter and singer-songwriter · United Kingdom · 1947–2016",
+      "shortDescription": "Singer-songwriter and film actor · United Kingdom · 1947–2016",
       "born": "1947-01-08",
       "gregorian": "1947-01-08",
       "birthplace": "Brixton",
@@ -2166,7 +2166,7 @@
     {
       "slug": "diego-maradona",
       "name": "Diego Maradona",
-      "shortDescription": "Association football player and actor · Argentina · 1960–2020",
+      "shortDescription": "Association football player · Argentina · 1960–2020",
       "born": "1960-10-30",
       "gregorian": "1960-10-30",
       "birthplace": "Lanús",
@@ -2406,7 +2406,7 @@
     {
       "slug": "ella-fitzgerald",
       "name": "Ella Fitzgerald",
-      "shortDescription": "Jazz musician and singer-songwriter · United States · 1917–1996",
+      "shortDescription": "Jazz singer · United States · 1917–1996",
       "born": "1917-04-25",
       "gregorian": "1917-04-25",
       "birthplace": "Newport News",
@@ -2486,7 +2486,7 @@
     {
       "slug": "elvis-presley",
       "name": "Elvis Presley",
-      "shortDescription": "Film actor and singer · United States · 1935–1977",
+      "shortDescription": "Singer and film actor · United States · 1935–1977",
       "born": "1935-01-08",
       "gregorian": "1935-01-08",
       "birthplace": "Tupelo",
@@ -2806,7 +2806,7 @@
     {
       "slug": "franz-kafka",
       "name": "Franz Kafka",
-      "shortDescription": "Novelist and lawyer · Czech Republic · 1883–1924",
+      "shortDescription": "Novelist · Czech Republic · 1883–1924",
       "born": "1883-07-03",
       "gregorian": "1883-07-03",
       "birthplace": "Prague",
@@ -2886,7 +2886,7 @@
     {
       "slug": "freddie-mercury",
       "name": "Freddie Mercury",
-      "shortDescription": "Singer-songwriter and painter · Tanzania · 1946–1991",
+      "shortDescription": "Singer-songwriter · Tanzania · 1946–1991",
       "born": "1946-09-05",
       "gregorian": "1946-09-05",
       "birthplace": "Zanzibar City",
@@ -3046,7 +3046,7 @@
     {
       "slug": "friedrich-nietzsche",
       "name": "Friedrich Nietzsche",
-      "shortDescription": "Philosopher and composer · Germany · 1844–1900",
+      "shortDescription": "Philosopher · Germany · 1844–1900",
       "born": "1844-10-15",
       "gregorian": "1844-10-15",
       "birthplace": "Röcken",
@@ -3366,7 +3366,7 @@
     {
       "slug": "grace-kelly",
       "name": "Grace Kelly",
-      "shortDescription": "Film actor and musician · United States · 1929–1982",
+      "shortDescription": "Film actor · United States · 1929–1982",
       "born": "1929-11-12",
       "gregorian": "1929-11-12",
       "birthplace": "Philadelphia",
@@ -3446,7 +3446,7 @@
     {
       "slug": "haile-selassie",
       "name": "Haile Selassie",
-      "shortDescription": "Politician · Ethiopia · 1892–1975",
+      "shortDescription": "Monarch · Ethiopia · 1892–1975",
       "born": "1892-07-23",
       "gregorian": "1892-07-23",
       "birthplace": "Ejersa Goro",
@@ -3526,7 +3526,7 @@
     {
       "slug": "immanuel-kant",
       "name": "Immanuel Kant",
-      "shortDescription": "Philosopher and anthropologist · Prussia · 1724–1804",
+      "shortDescription": "Philosopher · Prussia · 1724–1804",
       "born": "1724-04-22",
       "gregorian": "1724-04-22",
       "birthplace": "Königsberg",
@@ -3606,7 +3606,7 @@
     {
       "slug": "indira-gandhi",
       "name": "Indira Gandhi",
-      "shortDescription": "Politician and writer · India · 1917–1984",
+      "shortDescription": "Politician · India · 1917–1984",
       "born": "1917-11-19",
       "gregorian": "1917-11-19",
       "birthplace": "Prayagraj",
@@ -3686,7 +3686,7 @@
     {
       "slug": "ingrid-bergman",
       "name": "Ingrid Bergman",
-      "shortDescription": "Autobiographer and stage actor · Sweden · 1915–1982",
+      "shortDescription": "Film actor · Sweden · 1915–1982",
       "born": "1915-08-29",
       "gregorian": "1915-08-29",
       "birthplace": "Hedvig Eleonora parish",
@@ -3766,7 +3766,7 @@
     {
       "slug": "jane-austen",
       "name": "Jane Austen",
-      "shortDescription": "Writer · United Kingdom · 1775–1817",
+      "shortDescription": "Novelist · United Kingdom · 1775–1817",
       "born": "1775-12-16",
       "gregorian": "1775-12-16",
       "birthplace": "Steventon",
@@ -3926,7 +3926,7 @@
     {
       "slug": "jawaharlal-nehru",
       "name": "Jawaharlal Nehru",
-      "shortDescription": "Writer and politician · India · 1889–1964",
+      "shortDescription": "Politician · India · 1889–1964",
       "born": "1889-11-14",
       "gregorian": "1889-11-14",
       "birthplace": "Prayagraj",
@@ -4006,7 +4006,7 @@
     {
       "slug": "jean-michel-basquiat",
       "name": "Jean-Michel Basquiat",
-      "shortDescription": "Painter and composer · United States · 1960–1988",
+      "shortDescription": "Painter · United States · 1960–1988",
       "born": "1960-12-22",
       "gregorian": "1960-12-22",
       "birthplace": "Park Slope",
@@ -4246,7 +4246,7 @@
     {
       "slug": "john-lennon",
       "name": "John Lennon",
-      "shortDescription": "Writer and actor · United Kingdom · 1940–1980",
+      "shortDescription": "Singer-songwriter · United Kingdom · 1940–1980",
       "born": "1940-10-09",
       "gregorian": "1940-10-09",
       "birthplace": "Liverpool Maternity Hospital",
@@ -4326,7 +4326,7 @@
     {
       "slug": "judy-garland",
       "name": "Judy Garland",
-      "shortDescription": "Television actor and singer · United States · 1922–1969",
+      "shortDescription": "Film actor and singer · United States · 1922–1969",
       "born": "1922-06-10",
       "gregorian": "1922-06-10",
       "birthplace": "Grand Rapids",
@@ -4486,7 +4486,7 @@
     {
       "slug": "karl-marx",
       "name": "Karl Marx",
-      "shortDescription": "Economist and journalist · Germany · 1818–1883",
+      "shortDescription": "Philosopher · Germany · 1818–1883",
       "born": "1818-05-05",
       "gregorian": "1818-05-05",
       "birthplace": "Trier",
@@ -4566,7 +4566,7 @@
     {
       "slug": "katharine-hepburn",
       "name": "Katharine Hepburn",
-      "shortDescription": "Film actor and autobiographer · United States · 1907–2003",
+      "shortDescription": "Film actor · United States · 1907–2003",
       "born": "1907-05-12",
       "gregorian": "1907-05-12",
       "birthplace": "Hartford",
@@ -4726,7 +4726,7 @@
     {
       "slug": "lata-mangeshkar",
       "name": "Lata Mangeshkar",
-      "shortDescription": "Singer and film actor · India · 1929–2022",
+      "shortDescription": "Singer · India · 1929–2022",
       "born": "1929-09-28",
       "gregorian": "1929-09-28",
       "birthplace": "Indore",
@@ -4806,7 +4806,7 @@
     {
       "slug": "louis-armstrong",
       "name": "Louis Armstrong",
-      "shortDescription": "Actor and trumpeter · United States · 1901–1971",
+      "shortDescription": "Jazz musician and trumpeter · United States · 1901–1971",
       "born": "1901-08-04",
       "gregorian": "1901-08-04",
       "birthplace": "New Orleans",
@@ -4886,7 +4886,7 @@
     {
       "slug": "luciano-pavarotti",
       "name": "Luciano Pavarotti",
-      "shortDescription": "Opera singer and film actor · Italy · 1935–2007",
+      "shortDescription": "Opera singer · Italy · 1935–2007",
       "born": "1935-10-12",
       "gregorian": "1935-10-12",
       "birthplace": "Modena",
@@ -5046,7 +5046,7 @@
     {
       "slug": "mahatma-gandhi",
       "name": "Mohandas K. Gandhi",
-      "shortDescription": "Barrister and political writer · India · 1869–1948",
+      "shortDescription": "Freedom fighter · India · 1869–1948",
       "born": "1869-10-02",
       "gregorian": "1869-10-02",
       "birthplace": "Porbandar",
@@ -5126,7 +5126,7 @@
     {
       "slug": "maria-callas",
       "name": "Maria Callas",
-      "shortDescription": "Opera singer and actor · United States · 1923–1977",
+      "shortDescription": "Opera singer · United States · 1923–1977",
       "born": "1923-12-02",
       "gregorian": "1923-12-02",
       "birthplace": "New York City",
@@ -5206,7 +5206,7 @@
     {
       "slug": "marie-curie",
       "name": "Marie Curie",
-      "shortDescription": "Physicist and university teacher · Poland · 1867–1934",
+      "shortDescription": "Physicist and chemist · Poland · 1867–1934",
       "born": "1867-11-07",
       "gregorian": "1867-11-07",
       "birthplace": "Warsaw",
@@ -5366,7 +5366,7 @@
     {
       "slug": "mark-twain",
       "name": "Mark Twain",
-      "shortDescription": "Journalist and teacher · United States · 1835–1910",
+      "shortDescription": "Writer and humorist · United States · 1835–1910",
       "born": "1835-11-30",
       "gregorian": "1835-11-30",
       "birthplace": "Florida",
@@ -5766,7 +5766,7 @@
     {
       "slug": "michael-faraday",
       "name": "Michael Faraday",
-      "shortDescription": "Physicist and writer · United Kingdom · 1791–1867",
+      "shortDescription": "Physicist · United Kingdom · 1791–1867",
       "born": "1791-09-22",
       "gregorian": "1791-09-22",
       "birthplace": "Newington Butts",
@@ -5846,7 +5846,7 @@
     {
       "slug": "muhammad-ali-jinnah",
       "name": "Muhammad Ali Jinnah",
-      "shortDescription": "Lawyer · Pakistan · 1876–1948",
+      "shortDescription": "Politician · Pakistan · 1876–1948",
       "born": "1876-12-25",
       "gregorian": "1876-12-25",
       "birthplace": "Karachi",
@@ -6006,7 +6006,7 @@
     {
       "slug": "nelson-mandela",
       "name": "Nelson Mandela",
-      "shortDescription": "Politician and autobiographer · South Africa · 1918–2013",
+      "shortDescription": "Politician and political activist · South Africa · 1918–2013",
       "born": "1918-07-18",
       "gregorian": "1918-07-18",
       "birthplace": "Mvezo",
@@ -6166,7 +6166,7 @@
     {
       "slug": "pablo-picasso",
       "name": "Pablo Picasso",
-      "shortDescription": "Painter and costume designer · Spain · 1881–1973",
+      "shortDescription": "Painter and sculptor · Spain · 1881–1973",
       "born": "1881-10-25",
       "gregorian": "1881-10-25",
       "birthplace": "Málaga",
@@ -6246,7 +6246,7 @@
     {
       "slug": "paul-newman",
       "name": "Paul Newman",
-      "shortDescription": "Television actor and racing automobile driver · United States · 1925–2008",
+      "shortDescription": "Film actor · United States · 1925–2008",
       "born": "1925-01-26",
       "gregorian": "1925-01-26",
       "birthplace": "Shaker Heights",
@@ -6326,7 +6326,7 @@
     {
       "slug": "prince",
       "name": "Prince",
-      "shortDescription": "Film actor and singer · United States · 1958–2016",
+      "shortDescription": "Singer-songwriter · United States · 1958–2016",
       "born": "1958-06-07",
       "gregorian": "1958-06-07",
       "birthplace": "Minneapolis",
@@ -6486,7 +6486,7 @@
     {
       "slug": "raj-kapoor",
       "name": "Raj Kapoor",
-      "shortDescription": "Film producer and screenwriter · Pakistan · 1924–1988",
+      "shortDescription": "Film actor and film producer · Pakistan · 1924–1988",
       "born": "1924-12-14",
       "gregorian": "1924-12-14",
       "birthplace": "Peshawar",
@@ -6566,7 +6566,7 @@
     {
       "slug": "rosa-parks",
       "name": "Rosa Parks",
-      "shortDescription": "Autobiographer and human rights defender · United States · 1913–2005",
+      "shortDescription": "Civil rights advocate · United States · 1913–2005",
       "born": "1913-02-04",
       "gregorian": "1913-02-04",
       "birthplace": "Tuskegee",
@@ -6646,7 +6646,7 @@
     {
       "slug": "sally-ride",
       "name": "Sally Ride",
-      "shortDescription": "Physicist and astronaut · United States · 1951–2012",
+      "shortDescription": "Astronaut and physicist · United States · 1951–2012",
       "born": "1951-05-26",
       "gregorian": "1951-05-26",
       "birthplace": "Los Angeles",
@@ -6726,7 +6726,7 @@
     {
       "slug": "selena",
       "name": "Selena",
-      "shortDescription": "Singer and actor · United States · 1971–1995",
+      "shortDescription": "Singer · United States · 1971–1995",
       "born": "1971-04-16",
       "gregorian": "1971-04-16",
       "birthplace": "Lake Jackson",
@@ -7046,7 +7046,7 @@
     {
       "slug": "stephen-hawking",
       "name": "Stephen Hawking",
-      "shortDescription": "Theoretical physicist and pedagogue · United Kingdom · 1942–2018",
+      "shortDescription": "Theoretical physicist and cosmologist · United Kingdom · 1942–2018",
       "born": "1942-01-08",
       "gregorian": "1942-01-08",
       "birthplace": "Oxford",
@@ -7126,7 +7126,7 @@
     {
       "slug": "subhas-chandra-bose",
       "name": "Subhas Chandra Bose",
-      "shortDescription": "Politician and writer · India · 1897–1945",
+      "shortDescription": "Politician · India · 1897–1945",
       "born": "1897-01-23",
       "gregorian": "1897-01-23",
       "birthplace": "Cuttack",
@@ -7286,7 +7286,7 @@
     {
       "slug": "swami-vivekananda",
       "name": "Swami Vivekananda",
-      "shortDescription": "Philosopher and teacher · India · 1863–1902",
+      "shortDescription": "Monk and philosopher · India · 1863–1902",
       "born": "1863-01-12",
       "gregorian": "1863-01-12",
       "birthplace": "Swami Vivekananda's Ancestral House & Cultural Centre",
@@ -7366,7 +7366,7 @@
     {
       "slug": "sylvia-plath",
       "name": "Sylvia Plath",
-      "shortDescription": "Poet and draftsperson · United States · 1932–1963",
+      "shortDescription": "Poet and writer · United States · 1932–1963",
       "born": "1932-10-27",
       "gregorian": "1932-10-27",
       "birthplace": "Boston",
@@ -7526,7 +7526,7 @@
     {
       "slug": "tina-turner",
       "name": "Tina Turner",
-      "shortDescription": "Singer and autobiographer · United States · 1939–2023",
+      "shortDescription": "Singer and songwriter · United States · 1939–2023",
       "born": "1939-11-26",
       "gregorian": "1939-11-26",
       "birthplace": "Brownsville",
@@ -7606,7 +7606,7 @@
     {
       "slug": "toni-morrison",
       "name": "Toni Morrison",
-      "shortDescription": "Writer and university teacher · United States · 1931–2019",
+      "shortDescription": "Novelist and essayist · United States · 1931–2019",
       "born": "1931-02-18",
       "gregorian": "1931-02-18",
       "birthplace": "Lorain",
@@ -7686,7 +7686,7 @@
     {
       "slug": "victor-hugo",
       "name": "Victor Hugo",
-      "shortDescription": "Politician and playwright · France · 1802–1885",
+      "shortDescription": "Novelist and poet · France · 1802–1885",
       "born": "1802-02-26",
       "gregorian": "1802-02-26",
       "birthplace": "Besançon",
@@ -8086,7 +8086,7 @@
     {
       "slug": "wilt-chamberlain",
       "name": "Wilt Chamberlain",
-      "shortDescription": "Basketball player and screenwriter · United States · 1936–1999",
+      "shortDescription": "Basketball player · United States · 1936–1999",
       "born": "1936-08-21",
       "gregorian": "1936-08-21",
       "birthplace": "Philadelphia",

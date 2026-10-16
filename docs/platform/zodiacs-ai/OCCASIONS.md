@@ -1,7 +1,36 @@
 # Occasions: "The sky on…" and life-cycle milestones
 
-Status: spec, 11 October 2026. Owner direction the same day: build all of it,
-consolidated into the existing Zodiacs Sky plugin rather than separate plugins.
+The design below began on 11 October 2026. Owner direction: keep these
+features in the Zodiacs plugin rather than create separate plugins.
+
+## Current release — 15 October 2026
+
+Version 0.5.0 is enabled in production. The anonymous usage migration was
+applied and verified before staging. Merged-main staging passed 18 checks
+and 14 tool calls; the natural-language host checks passed in both web hosts,
+and the owner accepted the iPhone functional checks. Pastel sign icons and the
+twelve-color ring were checked in the refreshed cards.
+
+`ZODIACS_OCCASIONS_ENABLED=1` is set for Production only. The rebuilt public
+server offers thirteen read-only tools, all seven new tools returned results,
+the updated privacy disclosure is live, and anonymous production counts
+were verified for the seven new tool names.
+
+The current shared panel is `ui://zodiacs/occasions-v3.html` (15 October: the
+comparison counts add up and famous people's dates read as dates); the v2 and v1
+addresses remain readable for existing conversations. Calendar, horoscope and Chart
+Studio resource addresses were also refreshed to prevent stale host branding.
+
+The public name is **Zodiacs**, with **Birth charts & horoscopes** as its
+subtitle. The owner confirmed that the previous OpenAI plugin was deleted
+and directed a new public plugin submission. The existing directory connector
+remains the target for the other host. The replacement OpenAI listing is now
+in review, and the existing connector's reviewer has been notified of all seven
+added tools. `PORTAL_REVIEW.md` and `claude-directory/LISTING.md` record the
+submission and notification; directory approval is still pending.
+
+The dated specification and 14 October status below are historical context.
+Remembrance and personal yearly reminders are still outside this release.
 
 ## What it is
 

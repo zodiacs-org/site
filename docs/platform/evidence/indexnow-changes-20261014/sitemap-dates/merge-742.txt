@@ -1,0 +1,31 @@
+# #742: ef463943 against its first parent ae2bcd30 (edition 2026-10-14)
+Pages in both builds: 1838; unchanged: 1834; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
+4 page(s) changed without a new sitemap date. Give each a new date in src/pages/sitemap.xml.ts (or the data it is dated from), so IndexNow Changes submits it:
+- /developers/ (still 2026-10-12)
+- /developers/compute/ (still 2026-10-12)
+- /developers/docs/astrology-mcp-server/ (still 2026-10-12)
+- /developers/mcp/ (still 2026-10-12)
+
+/developers/
+  - Unpublished candidate · 0.1.0-rc.23 Connect an AI assistant A local MCP server, tested with Claude Code.
+  + Unpublished candidate · 0.1.0-rc.24 Connect an AI assistant A local MCP server, tested with Claude Code.
+
+/developers/compute/
+  - POST /api/v1/time A local civil time as UTC and Terrestrial Time, with flags for skipped and repeated clock times.
+  - 2.761513782029283 } ] } Time POST /api/v1/time takes local and, optionally, the place's longitude .
+  - It returns the instant in UTC, the offset from UTC in minutes, flags, the local mean time used if any, which zone history was read, whether the zone is uncertain, the instant in Terrestrial Time, and ΔT.
+  + POST /api/v1/time A local civil time as UTC and Terrestrial Time, with flags for skipped and repeated clock times, and a date written in the Julian calendar.
+  + 2.761513782029283 } ] } Time POST /api/v1/time takes local and, optionally, the place's longitude , the calendar its date is written in, its country and a place of the time atlas, atlasPlace .
+  + It returns the instant in UTC, the offset from UTC in minutes, flags, the local mean time used if any, which zone history was read, whether the zone is uncertain, the date as written and as read, the instant in Terrestrial Time, and ΔT.
+
+/developers/docs/astrology-mcp-server/
+  - It adds natal-chart calculation and the comparison of calculation records to the sky tools.
+  + It adds natal-chart calculation, the comparison of calculation records, the conversion of a local birth time to UTC and a birthplace search to the sky tools.
+
+/developers/mcp/
+  - Unpublished candidate· zodiacs-mcp-server 0.1.0-rc.23.
+  - FILE='zodiacs-mcp-server-0.1.0-rc.23.tgz' DEST='zodiacs-mcp-server-0.1.0-rc.23' for path in "$FILE" "$DEST"; do if test -e "$path" || test -L "$path"; then echo "Stop:
+  - BASE=$(pwd) trap 'status=$?; if test "$status" -ne 0; then rm -rf "$BASE/$DEST" "$BASE/$FILE"; fi; exit $status' EXIT curl --disable --fail --silent --show-error --location --proto '=https' --max-time 60 \ 'https://raw.githubusercontent.com/zodiacs-org/site/7ec05433c18c708244673c3973bad55f97982e1c/public/examples/zodiacs-mcp-server-0.1.0-rc.23.tgz' -o "$FILE" test -s "$FILE" || { echo "Stop:
+  + Unpublished candidate· zodiacs-mcp-server 0.1.0-rc.24.
+  + FILE='zodiacs-mcp-server-0.1.0-rc.24.tgz' DEST='zodiacs-mcp-server-0.1.0-rc.24' for path in "$FILE" "$DEST"; do if test -e "$path" || test -L "$path"; then echo "Stop:
+  + BASE=$(pwd) trap 'status=$?; if test "$status" -ne 0; then rm -rf "$BASE/$DEST" "$BASE/$FILE"; fi; exit $status' EXIT curl --disable --fail --silent --show-error --location --proto '=https' --max-time 60 \ 'https://raw.githubusercontent.com/zodiacs-org/site/52c74477579acd49b934703d6e4a876b7b11fadd/public/examples/zodiacs-mcp-server-0.1.0-rc.24.tgz' -o "$FILE" test -s "$FILE" || { echo "Stop:

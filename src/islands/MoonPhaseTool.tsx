@@ -200,14 +200,14 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
           <div class="mp__tonight-facts">
             <em class="kicker">{t(locale, 'rightNow')}</em>
             <strong class="mp__phase">{now ? moonPhaseLabel(locale, moonPhaseName(now)) : t(locale, 'moonReadingSky')}</strong>
-            <span class="mono mp__meta">
+            <span class="mp__meta">
               {now
                 ? `${Math.round(moonIllumination(now) * 100)}% ${t(locale, 'illuminated')} · ${t(locale, 'moonIn')} ${locale === 'ru' ? signPrepositional(signForLongitude(moonLongitude(now))) : signName(signForLongitude(moonLongitude(now)), locale)}`
                 : '—'}
             </span>
             {now && (
               <EvidenceDisclosure label={t(locale, 'howWeCompute')}>
-                <span class="mono mp__meta mp__meta--faint">
+                <span class="mp__meta mp__meta--faint">
                   {formatDateTime(locale, now, {
                     year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
                     timeZone: 'UTC', hour12: false,
@@ -274,14 +274,14 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
               <PhaseDisc angle={result.angle} locale={locale} />
               <div class="mp__tonight-facts">
                 <strong class="mp__phase">{moonPhaseLabel(locale, result.phase)}</strong>
-                <span class="mono mp__meta">{Math.round(result.illum * 100)}% {t(locale, 'illuminated')}</span>
+                <span class="mp__meta">{Math.round(result.illum * 100)}% {t(locale, 'illuminated')}</span>
                 <span class="mp__signline">
                   {t(locale, 'moonIn')} {locale === 'ru'
                     ? signPrepositional(signForLongitude(result.lon))
                     : <SignChip lon={result.lon} locale={locale} />}
                 </span>
                 <EvidenceDisclosure label={t(locale, 'howWeCompute')}>
-                  <span class="mono mp__meta mp__meta--faint">{formatLongitude(result.lon, locale)}</span>
+                  <span class="mp__meta mp__meta--faint">{formatLongitude(result.lon, locale)}</span>
                 </EvidenceDisclosure>
               </div>
             </div>

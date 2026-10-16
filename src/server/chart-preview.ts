@@ -16,7 +16,7 @@ export const PREVIEW_KICKER = 'Your chart signature';
 export const CHART_PREVIEW_ROUTE_KEY = '__zodiacs_og_route';
 export type ChartPreviewRoute = 'link' | 'image';
 
-const PRIVACY_HEADERS = {
+export const PRIVACY_HEADERS = {
   'cache-control': 'no-store, max-age=0',
   'X-Robots-Tag': 'noindex, nofollow, noarchive',
   'Referrer-Policy': 'no-referrer',
@@ -26,7 +26,7 @@ const PRIVACY_HEADERS = {
 let previewFonts: Promise<[ArrayBuffer, ArrayBuffer, ArrayBuffer]> | null = null;
 let previewBrandIcon: Promise<string> | null = null;
 
-function exactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+export function exactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 }
 
@@ -48,7 +48,7 @@ function prepareFonts(): Promise<[ArrayBuffer, ArrayBuffer, ArrayBuffer]> {
   return pending;
 }
 
-function prepareBrandIcon(): Promise<string> {
+export function prepareBrandIcon(): Promise<string> {
   if (previewBrandIcon) return previewBrandIcon;
   const pending = readFile(
     new URL('../../public/assets/app-icons/v3/icon-512.png', import.meta.url),
@@ -60,7 +60,7 @@ function prepareBrandIcon(): Promise<string> {
   return pending;
 }
 
-function htmlEscape(value: string): string {
+export function htmlEscape(value: string): string {
   return value.replace(/[&<>"']/g, (char) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
   })[char]!);
@@ -202,7 +202,7 @@ function firstHeader(value: unknown): string {
   return typeof value === 'string' ? value : '';
 }
 
-function requestOrigin(req: any): string {
+export function requestOrigin(req: any): string {
   const forwarded = firstHeader(req.headers?.['x-forwarded-host']).split(',')[0]?.trim();
   const host = forwarded || firstHeader(req.headers?.host).trim();
   const trusted = /^(?:zodiacs\.org|www\.zodiacs\.org|[a-z0-9-]+(?:\.[a-z0-9-]+)*\.vercel\.app|localhost(?::\d{1,5})?)$/iu.test(host)
@@ -223,7 +223,7 @@ function strictNodeQuery(req: any, route: ChartPreviewRoute): URLSearchParams | 
   return params;
 }
 
-async function writeNodeResponse(res: any, response: Response): Promise<void> {
+export async function writeNodeResponse(res: any, response: Response): Promise<void> {
   res.statusCode = response.status;
   response.headers.forEach((value, name) => res.setHeader(name, value));
   res.end(Buffer.from(await response.arrayBuffer()));

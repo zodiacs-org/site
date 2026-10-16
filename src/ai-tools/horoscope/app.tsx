@@ -1,3 +1,4 @@
+import { BrandLink } from '../panel-brand';
 import { render } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { HoroscopeBridge, type PanelToolResult } from './bridge';
@@ -130,14 +131,14 @@ function App() {
 
   if (waiting && !panel && !picking && !message) {
     return <main>
-      <header class="brand"><a href="https://zodiacs.org/horoscopes/" target="_blank" rel="noreferrer">Zodiacs</a></header>
+      <header class="brand"><BrandLink href="https://zodiacs.org/horoscopes/"/></header>
       <p role="status" class="quiet">Opening your horoscope…</p>
     </main>;
   }
 
   if (showGrid) {
     return <main>
-      <header class="brand"><a href="https://zodiacs.org/horoscopes/" target="_blank" rel="noreferrer">Zodiacs</a></header>
+      <header class="brand"><BrandLink href="https://zodiacs.org/horoscopes/"/></header>
       <section class="intro"><h1>Your horoscope</h1><p>Choose your sign. Not sure? It follows your birthday.</p></section>
       <nav class="grid" aria-label="Choose your Sun sign">{HOROSCOPE_SIGN_TABLE.map((sign) => <button key={sign.slug} disabled={busy} aria-pressed={panel?.sign === sign.slug} onClick={() => choose(sign.slug)}>
         <img src={HOROSCOPE_ICONS[sign.slug]} alt="" width="40" height="40"/><span class="name">{sign.name}</span><span class="quiet">{sign.dates}</span>
@@ -171,6 +172,7 @@ function App() {
   }
 
   return <main>
+    <header class="brand"><BrandLink href="https://zodiacs.org/horoscopes/"/></header>
     <header class="sign-head">
       <img src={HOROSCOPE_ICONS[panel.sign]} alt="" width="56" height="56"/>
       <div><p class="eyebrow">Your horoscope</p><h1>{panel.signName}</h1><p class="quiet">{signInfo(panel.sign)?.dates}</p></div>

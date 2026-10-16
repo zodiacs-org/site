@@ -90,9 +90,10 @@
 .calc__submit:disabled { opacity: 0.5; cursor: default; }
 .calc__privacy {
   margin: 14px 0 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 11px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
   color: var(--faint);
 }
 .calc__error { margin: 12px 0 0; color: var(--sign-aries); font-size: var(--text-sm); }
@@ -194,7 +195,7 @@
 }
 .three-card__icon { line-height: 0; flex-shrink: 0; }
 .three-card__icon img { border-radius: 50%; }
-.three-card__deg { color: var(--faint); font-size: 12px; }
+.three-card__deg { color: var(--faint); font-size: 13px; font-variant-numeric: tabular-nums; }
 .three-card__read { margin: 2px 0 0; font-size: var(--text-sm); line-height: 1.6; color: var(--text-2); }
 .three-card__more {
   margin-top: auto;
@@ -1369,8 +1370,8 @@
 .mp__disc { flex-shrink: 0; }
 .mp__tonight-facts { display: grid; gap: 7px; justify-items: start; }
 .mp__phase { font-size: var(--text-xl); font-weight: 620; letter-spacing: -0.015em; }
-.mp__meta { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
-.mp__meta--faint { color: var(--faint); font-size: 11px; }
+.mp__meta { font-size: 13px; color: var(--muted); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.mp__meta--faint { color: var(--faint); font-size: 12.5px; }
 .mp__signline { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: var(--text-sm); color: var(--text-2); }
 
 /* ── Saturn return ────────────────────────────────────────────────── */
@@ -1386,17 +1387,17 @@
 .sr__more:hover { color: var(--text); }
 .sr__natal-core { padding: clamp(20px, 4vw, 30px); display: grid; gap: 12px; justify-items: start; }
 .sr__natal-sign { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.sr__natal-deg { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+.sr__natal-deg { font-size: 13px; color: var(--muted); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .sr__reading { margin: 0; max-width: 58ch; font-size: var(--text-sm); color: var(--text-2); line-height: 1.65; }
 
 .sr__seasons { display: grid; gap: 14px; }
 .sr__season-core { padding: 20px; display: grid; gap: 10px; }
 .sr__season-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
 .sr__season-head strong { font-size: var(--text-lg); letter-spacing: -0.01em; }
-.sr__season-status { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-.sr__season-span { margin: 0; font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+.sr__season-status { font-size: 12.5px; letter-spacing: 0; text-transform: none; color: var(--muted); }
+.sr__season-span { margin: 0; font-size: 13px; color: var(--muted); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .sr__crossings { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
-.sr__crossings li { font-size: 11.5px; color: var(--faint); letter-spacing: 0.03em; }
+.sr__crossings li { font-size: 13px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .sr__season-note { margin: 4px 0 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; max-width: 54ch; }
 
 /* ── Transit tracker ──────────────────────────────────────────────── */
@@ -1891,7 +1892,7 @@
 .baby-block:first-child { padding-top: 0; }
 .baby-block h3 { margin: 0; font-size: var(--text-md); font-weight: 620; letter-spacing: -0.01em; }
 .baby-block p { margin: 0; max-width: 62ch; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; }
-.baby-receipt { font-size: 10.5px; color: var(--faint); letter-spacing: 0.05em; }
+.baby-receipt { font-size: 12.5px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .baby-spans { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
 .baby-spans li { display: flex; align-items: baseline; gap: 14px; font-size: var(--text-sm); color: var(--text-2); }
 .baby-spans .baby-receipt { flex-shrink: 0; min-width: 110px; }
@@ -1900,13 +1901,13 @@
 
 /* ── The Transit Ring — the animated bi-wheel + time scrubber ── */
 .tring { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; gap: 18px; }
-/* Diagram legend for the bi-wheel — the .calc__receipt register (quiet mono,
-   no uppercase), not a mono-caps label: it's two full sentences. */
+/* Diagram legend for the bi-wheel: two full sentences, so quiet sans text,
+   not a mono-caps label. */
 .tring__caption {
   text-align: center;
   color: var(--faint);
-  font-size: 11px;
-  letter-spacing: 0.05em;
+  font-size: 12.5px;
+  letter-spacing: 0;
 }
 .tring__wheelbox {
   max-width: 480px;
@@ -2037,8 +2038,8 @@
 }
 .tring__scan {
   margin: 0;
-  font-size: 11px;
-  letter-spacing: 0.05em;
+  font-size: 12.5px;
+  letter-spacing: 0;
   color: var(--faint);
 }
 .tring__next {
@@ -2123,9 +2124,8 @@
   background: color-mix(in oklab, var(--surface) 68%, transparent);
   color: var(--muted);
   font: inherit;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.03em;
+  font-size: 12.5px;
+  letter-spacing: 0;
   cursor: pointer;
 }
 .tsearch__chip:hover { border-color: var(--hair-3); color: var(--text); }
@@ -2143,7 +2143,7 @@
 @media (min-width: 620px) {
   .tsearch__selects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.tsearch__status { margin: 0; color: var(--muted); font-size: 11px; letter-spacing: 0.04em; }
+.tsearch__status { margin: 0; color: var(--muted); font-size: 13px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .tsearch__results { min-width: 0; display: grid; gap: 18px; }
 .tsearch__result-head {
   min-width: 0;
@@ -2153,7 +2153,7 @@
   justify-content: space-between;
   gap: 12px;
 }
-.tsearch__result-head p { margin: 0; color: var(--muted); font-size: 11px; }
+.tsearch__result-head p { margin: 0; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .tsearch__result-head .btn { max-width: 100%; white-space: normal; text-align: start; }
 .tsearch__months { min-width: 0; display: grid; gap: 28px; }
 .tsearch__month { min-width: 0; display: grid; gap: 16px; }
@@ -2185,7 +2185,7 @@
   color: var(--muted);
   font-size: 12px;
 }
-.tsearch__contact li .mono { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+.tsearch__contact li .tsearch__when { min-width: 0; white-space: normal; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 .tsearch__show {
   border: 0;
   padding: 2px 0;
@@ -2498,14 +2498,14 @@
 }
 .num__number--lead { font-size: clamp(4.2rem, 2.6rem + 6.5vw, 7.5rem); }
 .num__chain { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
-.num__meta { font-size: 11.5px; color: var(--muted); letter-spacing: 0.04em; }
+.num__meta { font-size: 13px; color: var(--muted); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .num__epithet { margin: 0; display: grid; gap: 4px; }
 .num__epithet strong { font-size: var(--text-base); font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
 .num__epithet--lead strong { font-size: var(--text-lg); }
-.num__keywords { font-size: 11px; color: var(--faint); letter-spacing: 0.06em; }
+.num__keywords { font-size: 12.5px; color: var(--faint); letter-spacing: 0; }
 .num__summary { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; }
 .num__summary--lead { max-width: 58ch; font-size: var(--text-base); }
-.num__source { font-size: 11px; color: var(--faint); letter-spacing: 0.04em; }
+.num__source { font-size: 12.5px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 .num__read { margin-top: 4px; max-width: 100%; white-space: normal; }
 
 .num__grid { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
@@ -2546,7 +2546,7 @@
 .num__part { display: grid; gap: 8px; }
 .num__part + .num__part { margin-top: 6px; }
 .num__part-name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; font-size: var(--text-sm); font-weight: 600; color: var(--text); }
-.num__part-folded { font-size: 11px; color: var(--faint); font-weight: 400; }
+.num__part-folded { font-size: 12.5px; color: var(--faint); font-weight: 400; }
 .num__letters { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px; }
 .num__cell {
   display: grid;
@@ -2639,6 +2639,57 @@
 
 /* Keep one generous form boundary, with balanced fields on larger screens. */
 .calc > .shell { width: 100%; max-width: 880px; }
+/* One flat form card: no outer bezel or gradient; the border answers focus. */
+.calc__form.shell { padding: 0; border: 0; background: none; }
+.calc .calc__form.shell > .calc__core {
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-xl);
+  background: var(--void-1);
+  box-shadow: none;
+  transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.calc .calc__form.shell:focus-within > .calc__core {
+  border-color: var(--hair-3);
+  box-shadow: 0 0 0 4px rgba(198, 204, 218, 0.05);
+}
+/* Result cards get the same single flat surface: no bezel, sign wash or lit
+   edge. The border brightens when a link inside takes focus. */
+:is(.three-card, .sr__natal, .sr__season, .num__lead, .mp__tonight, .mp__lookup).shell {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+:is(.three-card, .sr__natal, .sr__season, .num__lead, .mp__tonight, .mp__lookup).shell > .core {
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-xl);
+  background: var(--void-1);
+  box-shadow: none;
+  transition: border-color var(--dur-1) var(--ease);
+}
+/* The season in progress keeps its sign hue, as a border rather than a wash. */
+.sr__season.tinted > .core { border-color: color-mix(in oklab, var(--sign) 42%, var(--hair-2)); }
+:is(.three-card, .sr__natal, .sr__season, .num__lead, .mp__tonight, .mp__lookup).shell:focus-within > .core {
+  border-color: var(--hair-3);
+}
+/* The collapsed transit panels: one bordered surface that answers hover and
+   focus, with a plain divider above the opened content. */
+.tsearch-host.shell {
+  padding: 0;
+  border: 1px solid var(--hair-2);
+  background: var(--void-1);
+  transition: border-color var(--dur-1) var(--ease);
+}
+.tsearch-host.shell > .core {
+  border: 0;
+  border-top: 1px solid var(--hair-2);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.tsearch-host.shell:focus-within { border-color: var(--hair-3); }
+@media (hover: hover) and (pointer: fine) {
+  .tsearch-host.shell:hover { border-color: var(--hair-3); }
+}
 .calc__context-cue, .calc__privacy { font-size: 12px; }
 @media (min-width: 720px) {
   .calc__fields > .field:has(.geo), .calc__fields > .field:has([role="combobox"]) { grid-column: 1 / -1; }

@@ -35,7 +35,7 @@ const englishCue = englishOnlyCue(locale);
       signName ? null : `--sign:${season.sign.hue}`,
     ].filter(Boolean).join(';') || undefined}
   >
-    <span class="race-ramp__label mono">{t(locale, 'trustGamesTitle')}</span>
+    <span class="race-ramp__label">{t(locale, 'trustGamesTitle')}</span>
     <span class="race-ramp__text">{t(locale, 'trustGamesScore')}</span>
     <a class="race-ramp__link" href="/race/" hreflang={englishCue ? 'en' : undefined} title={englishCue?.aria}>
       {t(locale, 'trustGamesLink')}{englishCue?.suffix ?? ''} →
@@ -56,9 +56,11 @@ const englishCue = englishOnlyCue(locale);
     background: linear-gradient(90deg, rgba(198, 204, 218, 0.04), transparent 60%);
   }
   .race-ramp__label {
-    font-size: 9.5px;
-    letter-spacing: 0.22em;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    letter-spacing: 0;
     text-transform: none;
+    font-variant-numeric: tabular-nums;
     color: var(--faint);
   }
   .race-ramp__text {

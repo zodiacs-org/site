@@ -476,7 +476,7 @@ export default function TodayBrief({
                     ))}
                   </ul>
                 ) : personalized.reading.nearest ? (
-                  <p class="mono">Nearest contact: {personalized.transits.contactReceipt(personalized.reading.nearest)}</p>
+                  <p>Nearest contact: {personalized.transits.contactReceipt(personalized.reading.nearest)}</p>
                 ) : null}
               </div>
             </details>

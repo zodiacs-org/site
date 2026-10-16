@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
 import { bodyLongitude } from '../../lib/engine/full';
@@ -157,7 +158,7 @@ const jsonLd = [
       <div class="core tinted rx-now__core">
         <span class="mono--label">As of {asOf}</span>
         <strong class="rx-now__line">{status}</strong>
-        <span class="rx-now__all mono">
+        <span class="rx-now__all">
           Just next year: <a href="/full-moon-calendar/2027/">the 2027 full moon calendar</a> ·
           Tonight's phase, any date's moon: <a href="/moon-phase/">the moon phase tool</a>
         </span>
@@ -197,6 +198,7 @@ const jsonLd = [
 
   <section class="section--tight container container--narrow">
     <div class="prose reveal">
+      <HeroCrop crop="sun-moon" />
       <h2>What a full moon is</h2>
       <p>
         Once every 29.5 days the Moon swings around to stand exactly
@@ -255,8 +257,19 @@ const jsonLd = [
   .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
 
   .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
+  /* One flat status card: no outer bezel, sign wash or lit edge. Its links
+     brighten the border when focused. */
+  .rx-now.shell { padding: 0; border: 0; background: none; }
+  .rx-now.shell > .rx-now__core {
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+    box-shadow: none;
+    transition: border-color var(--dur-1) var(--ease);
+  }
+  .rx-now.shell:focus-within > .rx-now__core { border-color: var(--hair-3); }
   .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
-  .rx-now__all { font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
+  .rx-now__all { font-size: 13px; color: var(--faint); letter-spacing: 0; }
   .rx-now__all a { color: var(--muted); }
   .rx-now__all a:hover { color: var(--text); }
 

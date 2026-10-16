@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import ReturnToolLinks from '../../../components/return-visits/ReturnToolLinks.astro';
 import Faq from '../../../components/Faq.astro';
 import SaturnReturnCalculator from '../../../islands/SaturnReturnCalculator';
@@ -73,6 +74,7 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="clock-dial" locale="es" />
     <Faq items={faq} heading="Preguntas sobre el retorno de Saturno" />
   </section>
   <section class="section--tight container container--narrow"><ReturnToolLinks locale="es" current="/saturn-return/" /></section>

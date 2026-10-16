@@ -28,7 +28,7 @@ const fr = {
     trustReturnIntro: "Ton thème de retour offre un moment pour réfléchir à ce que tu veux cultiver ensuite.",
     trustSaturnIntro: "Ton retour de Saturne est l’occasion de réfléchir aux engagements que tu souhaites garder.",
     trustGamesTitle: "Jeux du Zodiaque",
-    trustGamesScore: "Douze équipes zodiacales concourent pour des points de participation : 100 à votre première inscription, puis 25 pour une participation par semaine UTC. Les partages et achats de jetons ne rapportent aucun point.",
+    trustGamesScore: "Douze équipes zodiacales concourent pour des points de participation : 100 à votre première inscription, puis 25 pour une participation par semaine UTC.",
     trustGamesLink: "Voir le classement",
     trustGamesIndependent: "La participation est gratuite. La détention de jetons et leurs prix n’affectent pas le score.",
 

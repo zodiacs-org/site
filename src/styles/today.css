@@ -2,7 +2,7 @@
 .tbs { display: grid; gap: 20px; }
 .tbs__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
 .tbs__head h2 { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: clamp(1.5rem, 1.2rem + 1.6vw, 2.1rem); letter-spacing: -0.005em; }
-.tbs__stamp { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+.tbs__stamp { font-family: var(--font-sans); font-size: 13px; letter-spacing: 0; text-transform: none; font-variant-numeric: tabular-nums; color: var(--faint); }
 .tbs__signs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
 @media (max-width: 680px) { .tbs__signs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (max-width: 400px) { .tbs__signs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
@@ -79,9 +79,11 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 7px 16px;
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  gap: 8px 20px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
   color: var(--text-2);
 }
 .skyticker__label {
