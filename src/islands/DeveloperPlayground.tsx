@@ -132,8 +132,11 @@ export default function DeveloperPlayground() {
   const [problems, setProblems] = useState<Record<Side, string | null>>({ hosted: null, here: null });
   const [language, setLanguage] = useState<Language>('curl');
   const [includeRequest, setIncludeRequest] = useState(false);
-  const [copyState, setCopyState] = useState<CopyLinkState>('idle');
-  const [codeCopy, setCodeCopy] = useState<'idle' | 'copied' | 'manual'>('idle');
+  // What each copy button last put on the clipboard, and how that went. A button reports it only while the page still
+  // shows exactly that text, so a copy that finishes after the request, the language or the link changed is not
+  // credited to what the page shows now.
+  const [codeCopy, setCodeCopy] = useState<{ text: string; state: 'copied' | 'manual' } | null>(null);
+  const [linkCopy, setLinkCopy] = useState<{ text: string; state: CopyLinkState } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -179,7 +182,8 @@ export default function DeveloperPlayground() {
     setAnswers({ hosted: null, here: null });
     setProblems({ hosted: null, here: null });
     setRunning({ hosted: null, here: null });
-    setCopyState('idle');
+    setCodeCopy(null);
+    setLinkCopy(null);
   }
 
   function choose(example: PlaygroundExample) {
@@ -196,6 +200,8 @@ export default function DeveloperPlayground() {
   // The page renders on the server too, where there is no window: links name zodiacs.org until the browser takes over.
   const origin = typeof window === 'undefined' ? undefined : window.location.origin;
   const link = shareLink({ endpoint, example: documented ? documented.id : null, text }, includeRequest, origin);
+  const codeCopied = codeCopy?.text === samples[language] ? codeCopy.state : 'idle';
+  const linkCopied = linkCopy?.text === link ? linkCopy.state : 'idle';
 
   /** Runs one side for the request on the page, and shows what it gives only if that is still the request. */
   async function run(side: Side, work: (request: string) => Promise<Answer>, failure: string) {
@@ -235,11 +241,12 @@ export default function DeveloperPlayground() {
   }
 
   async function copyCode() {
+    const sample = samples[language];
     try {
-      await navigator.clipboard.writeText(samples[language]);
-      setCodeCopy('copied');
+      await navigator.clipboard.writeText(sample);
+      setCodeCopy({ text: sample, state: 'copied' });
     } catch {
-      setCodeCopy('manual');
+      setCodeCopy({ text: sample, state: 'manual' });
     }
   }
 
@@ -353,7 +360,7 @@ export default function DeveloperPlayground() {
                 aria-pressed={language === name}
                 onClick={() => {
                   setLanguage(name);
-                  setCodeCopy('idle');
+                  setCodeCopy(null);
                 }}
                 data-language={name}
               >
@@ -364,10 +371,10 @@ export default function DeveloperPlayground() {
           <pre tabindex={0} role="region" aria-label={`${LANGUAGE_NAMES[language]} code`} data-code={language}><code>{samples[language]}</code></pre>
           <div class="pg__actions">
             <button type="button" class="cmp__btn" onClick={() => void copyCode()} data-copy-code>
-              {codeCopy === 'copied' ? 'Copied' : 'Copy the code'}
+              {codeCopied === 'copied' ? 'Copied' : 'Copy the code'}
             </button>
           </div>
-          {codeCopy === 'manual' && <p class="pg__note">Copying did not work here; select the code above instead.</p>}
+          {codeCopied === 'manual' && <p class="pg__note">Copying did not work here; select the code above instead.</p>}
           <p class="pg__note">Each uses its language's standard library and prints the answer's body.</p>
         </section>
 
@@ -379,7 +386,7 @@ export default function DeveloperPlayground() {
               checked={includeRequest}
               onChange={(event) => {
                 setIncludeRequest((event.currentTarget as HTMLInputElement).checked);
-                setCopyState('idle');
+                setLinkCopy(null);
               }}
               data-include-request
             />
@@ -395,8 +402,8 @@ export default function DeveloperPlayground() {
           <p class="pg__url mono" data-link>{link}</p>
           <CopyLinkButton
             url={link}
-            state={copyState}
-            onStateChange={setCopyState}
+            state={linkCopied}
+            onStateChange={(state) => setLinkCopy({ text: link, state })}
             idleLabel="Copy the link"
             copiedLabel="Link copied"
             ariaLabel="The playground link"

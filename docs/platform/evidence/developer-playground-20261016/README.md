@@ -86,7 +86,7 @@ their evidence.
 `node tests/developer-playground-drive.mjs` drove a build of this branch in
 Chromium on 2026-10-16
 ([drive-local.json](drive-local.json)). The API was answered by the function's
-own bundle, `api/_compute/compute.mjs`. 44 of 44 checks passed:
+own bundle, `api/_compute/compute.mjs`. 49 of 49 checks passed:
 
 - **An agent's path.** For each of the 17 requests, the Markdown twin lists it
   with its cURL request, and the API's answer to that body reproduces the
@@ -104,11 +104,17 @@ own bundle, `api/_compute/compute.mjs`. 44 of 44 checks passed:
   - The link carries the request only once the box is ticked, after the `#`,
     and such a link reopens the request.
   - The code shows the request in all five languages.
+  - A copy button says the code or the link was copied only while the page
+    still shows what it copied. Changing the request takes "Copied" away, and
+    a copy that finishes after the request, the language or the box changed is
+    not shown as done. The drive gives the page a clipboard whose writes finish
+    when it says. With the island as it was before Codex's second review, these
+    five checks fail (44 of 49).
   - An answer is shown only beside the request that produced it. An API
     answer that arrives after its request was edited is not shown, and
     changing the request takes both answers and their comparison away. With
-    the island as it was before Codex's review asked for this, these two checks
-    fail (42 of 44).
+    the island as it was before Codex's first review asked for this, these two
+    checks fail (42 of the 44 checks the drive had then).
   - At 375 px, with both answers and their comparison on the page, nothing
     scrolls sideways. The first run caught a 639 px overflow from the example
     list, which this page's own field styles fixed.

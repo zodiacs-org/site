@@ -218,6 +218,70 @@ async function drive(baseURL) {
     }
     check('the code shows the request in cURL, JavaScript, Python, Swift and Ruby', Object.values(languages).every((code) => code.includes('/api/v1/chart') && code.includes('40.4168')), Object.keys(languages));
 
+    // A copy button says so only while the page still shows what it copied (Codex's second finding on #767). The
+    // clipboard is a stand-in whose writes finish when the drive says, so a copy can finish after the page changed.
+    await openRequest(page, baseURL, '?example=chart.utc');
+    await page.evaluate(() => {
+      window.copies = [];
+      window.copyDelay = 0;
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: {
+          writeText: (text) => new Promise((resolve) => {
+            setTimeout(() => {
+              window.copies.push(text);
+              resolve();
+            }, window.copyDelay);
+          }),
+        },
+      });
+    });
+    const settle = async (count) => {
+      await page.waitForFunction((n) => window.copies.length === n, count, { timeout: 10_000 });
+      await page.waitForTimeout(200);
+    };
+    const codeButton = () => page.locator('[data-copy-code]').innerText();
+    const linkButton = () => page.locator('.pg__link [data-details-link]').innerText();
+    const withLatitude = (latitude) => JSON.stringify({ ...chart.body, latitude }, null, 2);
+
+    await page.locator('[data-copy-code]').click();
+    await settle(1);
+    const copiedCode = {
+      button: await codeButton(),
+      same: (await page.evaluate(() => window.copies[0])) === (await page.locator('[data-code]').textContent()),
+    };
+    await page.locator('[data-request-body]').fill(withLatitude(12));
+    const afterEdit = await codeButton();
+    check('after the code is copied, changing the request takes "Copied" away', copiedCode.button === 'Copied' && copiedCode.same && afterEdit === 'Copy the code', { copiedCode, afterEdit });
+
+    await page.evaluate(() => {
+      window.copyDelay = 1500;
+    });
+    await page.locator('[data-copy-code]').click();
+    await page.locator('[data-request-body]').fill(withLatitude(13));
+    await settle(2);
+    const lateRequest = await codeButton();
+    check('a code copy that finishes after the request changed is not shown as done', lateRequest === 'Copy the code', { lateRequest });
+
+    await page.locator('[data-copy-code]').click();
+    await page.locator('[data-language="python"]').click();
+    await settle(3);
+    const lateLanguage = await codeButton();
+    check('a code copy that finishes after the language changed is not shown as done', lateLanguage === 'Copy the code', { lateLanguage });
+
+    await page.locator('[data-include-request]').check();
+    await page.locator('.pg__link [data-details-link]').click();
+    await page.locator('[data-request-body]').fill(withLatitude(14));
+    await settle(4);
+    const lateLink = await linkButton();
+    check('a link copy that finishes after the request in the link changed is not shown as done', lateLink.includes('Copy the link'), { lateLink });
+
+    await page.locator('.pg__link [data-details-link]').click();
+    await page.locator('[data-include-request]').uncheck();
+    await settle(5);
+    const lateBox = await linkButton();
+    check('a link copy that finishes after the box changed the link is not shown as done', lateBox.includes('Copy the link'), { lateBox });
+
     // An answer is shown only beside the request that produced it (Codex's first finding on #767).
     await openRequest(page, baseURL, '?example=chart.utc');
     let lateAnswered = false;

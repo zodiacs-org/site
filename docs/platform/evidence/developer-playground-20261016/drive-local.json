@@ -1,6 +1,6 @@
 {
   "baseUrl": "local build",
-  "checkedAt": "2026-10-16T12:15:10.996Z",
+  "checkedAt": "2026-10-16T17:34:01.182Z",
   "results": [
     {
       "name": "examples.json offers the documented requests and the refusals a body provokes",
@@ -529,6 +529,45 @@
         "swift",
         "ruby"
       ]
+    },
+    {
+      "name": "after the code is copied, changing the request takes \"Copied\" away",
+      "ok": true,
+      "detail": {
+        "copiedCode": {
+          "button": "Copied",
+          "same": true
+        },
+        "afterEdit": "Copy the code"
+      }
+    },
+    {
+      "name": "a code copy that finishes after the request changed is not shown as done",
+      "ok": true,
+      "detail": {
+        "lateRequest": "Copy the code"
+      }
+    },
+    {
+      "name": "a code copy that finishes after the language changed is not shown as done",
+      "ok": true,
+      "detail": {
+        "lateLanguage": "Copy the code"
+      }
+    },
+    {
+      "name": "a link copy that finishes after the request in the link changed is not shown as done",
+      "ok": true,
+      "detail": {
+        "lateLink": "Copy the link\n⧉"
+      }
+    },
+    {
+      "name": "a link copy that finishes after the box changed the link is not shown as done",
+      "ok": true,
+      "detail": {
+        "lateBox": "Copy the link\n⧉"
+      }
     },
     {
       "name": "an answer that arrives after its request was edited is not shown, and nothing is compared",
