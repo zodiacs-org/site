@@ -171,8 +171,8 @@ describe('Phase 1 layout and motion contract', () => {
     // from the head, with its intrinsic size reserved by ArtFrame.
     expect(program).toMatch(/<ArtFrame\s+sign=\{sign\.slug\}\s+class="hz-hero__art"[\s\S]*?\beager\b[\s\S]*?\/>/u);
     expect(program).toMatch(/rel="preload"\s+as="image"[\s\S]*?imagesrcset=\{signArtSrcset\(sign\.slug\)\}[\s\S]*?fetchpriority="high"/u);
-    expect(program).toContain("const criticalCssRoute = surface === 'today' || surface === 'love' || surface === 'career';");
-    expect(program).toContain('inlineCriticalCss={criticalCssRoute}');
+    // Postbuild inlines every period's stylesheets (scripts/inline-critical-styles.mjs).
+    expect(program).toMatch(/<Base\s+inlineCriticalCss\s/u);
     expect(fallback).toContain('inline-size:${size}px;block-size:${size}px;aspect-ratio:1;contain:layout size');
     expect(fallback).toContain('decoding="sync"');
     expect(fallback).toContain('/assets/zodiac-icons/48/${sign.slug}.avif');

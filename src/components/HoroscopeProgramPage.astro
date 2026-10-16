@@ -148,9 +148,6 @@ const ogImage = `/assets/og/v2/horoscope/${sign.slug}${meta.slug ? `-${meta.slug
 const canonicalUrl = `https://zodiacs.org${path}`;
 const hasEditorial = Astro.slots.has('editorial');
 const hasEnhancement = Astro.slots.has('enhancement');
-// Daily, love and career are the routes whose stylesheets postbuild inlines
-// (scripts/inline-critical-styles.mjs); their first paint is the hero art.
-const criticalCssRoute = surface === 'today' || surface === 'love' || surface === 'career';
 const editionDate = surface === 'today' ? reading.datePublished.slice(0, 10) : null;
 const displayText = (value: string) => editionDate ? datedEditionText(value, editionDate) : value;
 const shortDate = (iso: string) => new Intl.DateTimeFormat('en-US', {
@@ -340,7 +337,7 @@ const ctaLede = edgeMoon && moonHouse
   : `This reading counts the wheel from ${sign.name}. Your birth chart counts from your own rising sign, so the same sky may touch a different part of your life.`;
 ---
 <Base
-  inlineCriticalCss={criticalCssRoute}
+  inlineCriticalCss
   stableTypography
   title={`${sign.name} ${reading.title}, ${reading.label} | Zodiacs.org`}
   description={displayText(reading.description)}
