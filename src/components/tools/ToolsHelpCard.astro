@@ -1,0 +1,41 @@
+---
+/**
+ * A closing panel on the tools hub: an icon from the tool set, a short
+ * heading, and the page's own copy and action in the default slot.
+ */
+import ToolIcon from '../ToolIcon.astro';
+import type { ToolIconName } from '../../lib/tool-icons';
+
+interface Props {
+  icon: ToolIconName;
+  title: string;
+}
+
+const { icon, title } = Astro.props;
+---
+<div class="tools-help-card">
+  <ToolIcon name={icon} size={52} />
+  <div class="tools-help-card__body">
+    <h2 class="h-4">{title}</h2>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .tools-help-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+    padding: 28px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-lg);
+    background: linear-gradient(180deg, rgba(198, 204, 218, 0.045), rgba(198, 204, 218, 0.015));
+  }
+  .tools-help-card .h-4 { font-size: 1.15rem; margin-top: 2px; }
+  .tools-help-card__body :global(p) { margin: 6px 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; max-width: 48ch; }
+  .tools-help-card__body :global(:is(.btn, .textlink)) { margin-top: 16px; }
+  @media (max-width: 760px) {
+    .tools-help-card { padding: 20px; gap: 16px; --tool-icon-size: 44px; }
+  }
+</style>

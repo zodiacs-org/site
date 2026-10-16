@@ -1,6 +1,11 @@
 import type { CatalogLocale as Locale, UiKey } from './i18n';
+import { TOOL_ICON_FOR_PATH, type ToolIconName } from './tool-icons';
 
-export type ToolGroup = 'start' | 'sky' | 'milestones' | 'numbers';
+/**
+ * The English /tools/ hub's sections: the birth chart leads on its own, then
+ * four groups named for the question a visitor arrives with.
+ */
+export type ToolGroup = 'lead' | 'you' | 'together' | 'sky' | 'year';
 export type ToolGlyphKind =
   | 'birth'
   | 'moon'
@@ -23,9 +28,8 @@ export type ToolGlyphKind =
 interface ToolHubCard {
   order: number;
   title: string;
+  /** One plain line under the name: what the tool does. */
   promise: string;
-  hue: string;
-  kind: ToolGlyphKind;
   group: ToolGroup;
 }
 
@@ -71,6 +75,8 @@ export interface FooterTool {
 
 export interface ToolsHubEntry extends ToolHubCard {
   href: string;
+  /** The tool's icon in the shared set (src/lib/tool-icons.ts). */
+  icon: ToolIconName;
 }
 
 const NAV_SUBLABELS = {
@@ -149,43 +155,43 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   {
     href: '/birth-chart/', label: 'birthChart', sublabel: NAV_SUBLABELS.birth,
     navOrder: 1, footerOrder: 1, footerUsesLocalizedPath: true,
-    hub: { order: 1, title: 'Birth chart calculator', promise: NAV_SUBLABELS.birth.en, hue: 'var(--sign-cancer)', kind: 'birth', group: 'start' },
+    hub: { order: 1, title: 'Birth chart', promise: 'Your sun, moon, rising, planets, and houses, with what each one means.', group: 'lead' },
   },
   {
     href: '/birth-chart/someone-else/',
-    hub: { order: 2, title: "Someone else's chart", promise: 'Use birth details, the Big Three, or a Zodiacs link, with their permission.', hue: 'var(--sign-pisces)', kind: 'birth', group: 'start' },
+    hub: { order: 9, title: 'Someone else’s chart', promise: 'Anyone’s chart, with their permission.', group: 'together' },
   },
   {
     href: '/big-three/',
-    hub: { order: 16, title: 'Big Three calculator', promise: 'Sun, Moon, and Rising in seconds, with a card to share and one tap into the full chart.', hue: 'var(--sign-leo)', kind: 'birth', group: 'start' },
+    hub: { order: 4, title: 'Big three card', promise: 'Sun, Moon and Rising, as a card to share.', group: 'you' },
   },
   {
     href: '/group-charts/',
-    hub: { order: 20, title: 'Group charts', promise: 'Three to eight people: who brings the spark, the anchor, the connector, and the glue.', hue: 'var(--sign-aries)', kind: 'group', group: 'start' },
+    hub: { order: 11, title: 'Group charts', promise: 'How three to eight people fit together.', group: 'together' },
   },
   {
     href: '/compatibility/invite/',
-    hub: { order: 21, title: 'Invite a friend to compare', promise: 'Send a link; your friend adds their chart and the comparison opens for both of you.', hue: 'var(--sign-leo)', kind: 'invite', group: 'start' },
+    hub: { order: 10, title: 'Invite a friend', promise: 'Send a link, then compare your charts.', group: 'together' },
   },
   {
     href: '/chart-twins/',
-    hub: { order: 22, title: 'Chart twins', promise: 'Public figures in the sourced directory who share your Sun and Moon signs.', hue: 'var(--sign-pisces)', kind: 'compat', group: 'start' },
+    hub: { order: 12, title: 'Chart twins', promise: 'Public figures with your Sun and Moon.', group: 'together' },
   },
   {
     href: '/astrologer-kit/',
-    hub: { order: 23, title: 'Chart PDF', promise: 'A clean chart with placement and aspect tables, made on your device to print or send.', hue: 'var(--sign-virgo)', kind: 'document', group: 'start' },
+    hub: { order: 7, title: 'Chart PDF', promise: 'A clean copy of your chart to print or send.', group: 'you' },
   },
   {
     href: '/sky-calendar/',
-    hub: { order: 24, title: 'Sky calendar', promise: 'New and full moons, eclipses, and retrogrades in your own calendar app.', hue: 'var(--sign-scorpio)', kind: 'calendar', group: 'sky' },
+    hub: { order: 27, title: 'Sky calendar', promise: 'New and full moons in your calendar app.', group: 'year' },
   },
   {
     href: '/chart-of-the-day/',
-    hub: { order: 25, title: 'Chart of the day', promise: 'A public figure in the news, with sourced birth data and its limits stated.', hue: 'var(--sign-sagittarius)', kind: 'birth', group: 'sky' },
+    hub: { order: 19, title: 'Chart of the day', promise: 'A figure in the news, with sourced data.', group: 'sky' },
   },
   {
     href: '/your-sky-wrapped/',
-    hub: { order: 26, title: 'Your sky, wrapped', promise: 'The year’s Jupiter and Saturn contacts to your chart, with a card to share.', hue: 'var(--sign-capricorn)', kind: 'transit', group: 'milestones' },
+    hub: { order: 23, title: 'Your sky, wrapped', promise: 'Your year in the sky, as a card to share.', group: 'year' },
   },
   {
     href: '/today/', label: 'today', footerOrder: 2, footerUsesLocalizedPath: true,
@@ -193,76 +199,81 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
       en: 'Today', es: 'Hoy', pt: 'Hoje',
       fr: 'Aujourd’hui (en anglais)', it: 'Oggi (in inglese)', ru: 'Сегодня (пока по-английски)',
     },
-    hub: { order: 3, title: 'Today', promise: 'A plain-language daily brief once you have saved a chart.', hue: 'var(--sign-cancer)', kind: 'transit', group: 'start' },
+    hub: { order: 14, title: 'Today', promise: 'Today’s sky, read against your saved chart.', group: 'sky' },
   },
   {
     href: '/compatibility/', label: 'compatibility', sublabel: NAV_SUBLABELS.compatibility,
     navOrder: 2, footerOrder: 3, footerUsesLocalizedPath: true,
-    hub: { order: 4, title: 'Compatibility', promise: NAV_SUBLABELS.compatibility.en, hue: 'var(--sign-leo)', kind: 'compat', group: 'start' },
+    hub: { order: 8, title: 'Compatibility', promise: 'Where two charts click, clash and grow.', group: 'together' },
   },
   {
     href: '/transits/', label: 'transits', sublabel: NAV_SUBLABELS.transits,
     navOrder: 3, footerOrder: 8, footerUsesLocalizedPath: true,
-    hub: { order: 11, title: 'Transit tracker', promise: NAV_SUBLABELS.transits.en, hue: 'var(--sign-aries)', kind: 'transit', group: 'sky' },
+    hub: { order: 17, title: 'Transit tracker', promise: 'Today’s planets against your own chart.', group: 'sky' },
   },
   {
     href: '/moon-sign/', label: 'moonSign', sublabel: NAV_SUBLABELS.moon,
     navOrder: 4, footerOrder: 4, footerUsesLocalizedPath: true,
-    hub: { order: 5, title: 'Moon sign calculator', promise: NAV_SUBLABELS.moon.en, hue: 'var(--sign-pisces)', kind: 'moon', group: 'start' },
+    hub: { order: 2, title: 'Moon sign', promise: NAV_SUBLABELS.moon.en, group: 'you' },
   },
   {
     href: '/rising-sign/', label: 'risingSign', sublabel: NAV_SUBLABELS.rising,
     navOrder: 5, footerOrder: 5, footerUsesLocalizedPath: true,
-    hub: { order: 6, title: 'Rising sign calculator', promise: NAV_SUBLABELS.rising.en, hue: 'var(--sign-aries)', kind: 'rising', group: 'start' },
+    hub: { order: 3, title: 'Rising sign', promise: 'The sign people meet first. Birth time helps.', group: 'you' },
   },
   {
     href: '/moon-phase/', label: 'moonPhase', sublabel: NAV_SUBLABELS.moonPhase,
     navOrder: 6, footerOrder: 6, footerUsesLocalizedPath: true,
-    hub: { order: 7, title: 'Moon phase', promise: NAV_SUBLABELS.moonPhase.en, hue: 'var(--sign-cancer)', kind: 'moonphase', group: 'sky' },
+    hub: { order: 15, title: 'Moon phase', promise: 'Tonight’s moon, or the moon on any date.', group: 'sky' },
   },
   {
     href: '/events/',
-    hub: { order: 8, title: 'Sky events', promise: 'The full moons, eclipses, retrogrades, sign changes, and rare alignments ahead.', hue: 'var(--sign-scorpio)', kind: 'transit', group: 'sky' },
+    hub: { order: 28, title: 'Sky events', promise: 'Sign changes, alignments and rarer sights.', group: 'year' },
   },
   {
     href: '/saturn-return/', label: 'saturnReturn', sublabel: NAV_SUBLABELS.saturn,
     navOrder: 7, footerOrder: 7, footerUsesLocalizedPath: true,
-    hub: { order: 9, title: 'Saturn return', promise: NAV_SUBLABELS.saturn.en, hue: 'var(--sign-capricorn)', kind: 'saturn', group: 'milestones' },
+    hub: { order: 20, title: 'Saturn return', promise: 'Saturn back where it was at your birth.', group: 'year' },
   },
   {
     href: '/solar-return/',
-    hub: { order: 10, title: 'Solar return', promise: 'Cast the exact chart of your personal new year, for any year and place.', hue: 'var(--sign-leo)', kind: 'sun', group: 'milestones' },
+    hub: { order: 21, title: 'Solar return', promise: 'The chart of your personal new year.', group: 'year' },
   },
   {
     href: '/lunar-return/',
-    hub: { order: 17, title: 'Lunar return', promise: 'Find your next Moon return, explore its chart, and save a moment to check in.', hue: 'var(--sign-cancer)', kind: 'moon', group: 'sky' },
+    hub: { order: 22, title: 'Lunar return', promise: 'Your monthly Moon return, and its chart.', group: 'year' },
   },
   {
     href: '/baby-zodiac/',
-    hub: { order: 12, title: 'Baby zodiac', promise: 'What sign a due date makes likely, and what has to wait.', hue: 'var(--sign-cancer)', kind: 'baby', group: 'milestones' },
+    hub: { order: 13, title: 'Baby zodiac', promise: 'The Sun sign a due date falls in.', group: 'together' },
   },
   {
     href: '/void-of-course-moon/',
-    hub: { order: 19, title: 'Void-of-course Moon', promise: 'Every void this month and the next two, to the minute, with the aspect that starts it.', hue: 'var(--sign-cancer)', kind: 'moonphase', group: 'sky' },
+    hub: { order: 18, title: 'Void-of-course Moon', promise: 'The pause before the Moon changes sign.', group: 'sky' },
   },
   {
     href: '/full-moon-calendar/',
-    hub: { order: 13, title: 'Full moon calendar', promise: 'Every full moon through 2027: date, sign, and name.', hue: 'var(--sign-taurus)', kind: 'fullmoon', group: 'sky' },
+    hub: { order: 26, title: 'Full moon calendar', promise: 'Every full moon through 2027, with its sign.', group: 'year' },
   },
   {
     href: '/eclipses/',
-    hub: { order: 14, title: 'Eclipses', promise: 'Solar and lunar through 2028, with exact peak times.', hue: 'var(--sign-leo)', kind: 'eclipse', group: 'sky' },
+    hub: { order: 24, title: 'Eclipses', promise: 'Solar and lunar eclipses through 2028.', group: 'year' },
   },
   {
     href: '/retrogrades/', label: 'retrogrades', footerOrder: 9, footerUsesLocalizedPath: true,
-    hub: { order: 15, title: 'Retrogrades', promise: "See each planet's retrograde dates at a glance.", hue: 'var(--sign-virgo)', kind: 'retrograde', group: 'sky' },
+    hub: { order: 25, title: 'Retrogrades', promise: 'Each planet’s retrograde dates at a glance.', group: 'year' },
   },
   {
     href: '/birthday/', label: 'birthday', sublabel: NAV_SUBLABELS.birthday, navOrder: 8,
+    hub: { order: 5, title: 'Birthday sign', promise: 'Your Sun sign, even near a sign change.', group: 'you' },
   },
   {
     href: '/numerology/',
-    hub: { order: 18, title: 'Numerology', promise: 'Life Path, Expression, Soul Urge, and Personal Year, with every step shown.', hue: 'var(--sign-virgo)', kind: 'numerology', group: 'numbers' },
+    hub: { order: 6, title: 'Numerology', promise: 'Life Path and more, with every step shown.', group: 'you' },
+  },
+  {
+    href: '/horoscopes/',
+    hub: { order: 16, title: 'Horoscopes', promise: 'A reading for every sign, every morning.', group: 'sky' },
   },
 ];
 
@@ -288,13 +299,11 @@ export const FOOTER_TOOLS: readonly FooterTool[] = TOOL_CATALOG
 export const TOOLS_HUB: readonly ToolsHubEntry[] = TOOL_CATALOG
   .filter((tool): tool is typeof tool & Required<Pick<ToolCatalogEntry, 'hub'>> => tool.hub !== undefined)
   .sort((left, right) => left.hub.order - right.hub.order)
-  .map(({ href, hub }) => ({ href, ...hub }));
-
-/** The pastel disc (hue and glyph) a tool wears wherever it is listed. */
-export function toolDisc(href: string): { hue: string; kind: ToolGlyphKind } | undefined {
-  const entry = TOOLS_HUB.find((tool) => tool.href === href);
-  return entry ? { hue: entry.hue, kind: entry.kind } : undefined;
-}
+  .map(({ href, hub }) => {
+    const icon = TOOL_ICON_FOR_PATH[href];
+    if (!icon) throw new Error(`The tools hub lists ${href} without an icon in src/lib/tool-icons.ts.`);
+    return { href, icon, ...hub };
+  });
 
 export const ALL_TOOLS_LABEL = {
   en: 'All tools',

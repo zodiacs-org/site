@@ -5,14 +5,25 @@ interface Props { locale?: CatalogLocale; current?: string; icons?: boolean }
 const { locale = 'en', current = '', icons = false } = Astro.props;
 const links = [{ path: '/sky-calendar/', key: 'calendarTitle' }, { path: '/saturn-return/', key: 'saturn' }, { path: '/astrologer-kit/', key: 'kitTitle' }, { path: '/your-sky-wrapped/', key: 'wrappedTitle' }, { path: '/chart-of-the-day/', key: 'dayTitle' }] as const;
 import { t } from '../../lib/i18n';
-import { toolDisc } from '../../lib/nav-tools';
-import ToolGlyph from '../ToolGlyph.astro';
+import { toolIconForPath } from '../../lib/tool-icons';
+import ToolIcon from '../ToolIcon.astro';
 import '../../styles/return-visits.css';
 ---
-<nav class="return-discovery" aria-label={s(locale, 'discovery')}>
-  <h2>{s(locale, 'discovery')}</h2>
-  <ul class:list={{ 'return-discovery__list--icons': icons }}>{links.filter((link) => link.path !== current).map((link) => {
-    const disc = icons ? toolDisc(link.path) : undefined;
-    return <li><a href={localizePath(locale, link.path)} style={disc ? `--sign:${disc.hue}` : undefined}><span class="return-discovery__name">{disc && <ToolGlyph kind={disc.kind} />}<span>{link.key === 'saturn' ? t(locale, 'saturnReturn') : s(locale, link.key)}</span></span><span class="return-discovery__arrow" aria-hidden="true">→</span></a></li>;
-  })}</ul>
-</nav>
+{icons ? (
+  /* On the localized tools hubs: rows with the tool icons, styled by
+     src/styles/tools-hub.css, which those pages import. */
+  <nav class="tools-discovery" aria-label={s(locale, 'discovery')}>
+    <h2 class="tools-section-title">{s(locale, 'discovery')}</h2>
+    <ul class="tools-list">{links.filter((link) => link.path !== current).map((link) => {
+      const icon = toolIconForPath(link.path);
+      return <li><a class="tools-row" href={localizePath(locale, link.path)}>{icon && <ToolIcon name={icon} size={52} />}<span class="tools-row__name">{link.key === 'saturn' ? t(locale, 'saturnReturn') : s(locale, link.key)}</span></a></li>;
+    })}</ul>
+  </nav>
+) : (
+  <nav class="return-discovery" aria-label={s(locale, 'discovery')}>
+    <h2>{s(locale, 'discovery')}</h2>
+    <ul>{links.filter((link) => link.path !== current).map((link) => (
+      <li><a href={localizePath(locale, link.path)}><span class="return-discovery__name"><span>{link.key === 'saturn' ? t(locale, 'saturnReturn') : s(locale, link.key)}</span></span><span class="return-discovery__arrow" aria-hidden="true">→</span></a></li>
+    ))}</ul>
+  </nav>
+)}
