@@ -143,6 +143,29 @@ own bundle, `api/_compute/compute.mjs`. 52 of 52 checks passed:
 The same drive runs against production once the page is live:
 `node tests/developer-playground-drive.mjs --base-url https://zodiacs.org`.
 
+### Phase 1 captures
+
+The playground's island and helpers are in `src/islands` and `src/lib`, which
+the Phase 1 capture digest covers, as are the files #766 changed, so CI took
+the 18 captures again.
+
+- **Committed captures.** Browser Evidence run 38952005658 took them on
+  `4e4e026c`, this branch with main `cb1e411f` merged in, with Chromium
+  149.0.7827.55 at 2026-10-16T19:07:28Z, for the 2026-10-16 edition, bound to
+  template source digest `e9abefa9…`. Its build, acceptance captures,
+  receipt, visual comparison, Lighthouse and explorer drive passed
+  ([browser-evidence-provenance.json](browser-evidence-provenance.json) is the
+  run's own record).
+- **Against the same browser before.** All 18 are identical, pixel for pixel,
+  to the captures run 38935927506 took on `38596f49` with the same Chromium
+  and edition, before #766 and the last two rounds of review: neither changed
+  a Phase 1 page.
+- **Against main's captures.** #766 committed captures taken with Chromium
+  155.0.8059.80, where CI pins 149.0.7827.55. Against them each capture
+  differs in 7.38% to 54.60% of its pixels, as the two browser versions draw
+  text and images. Every capture records the same size, layout and content
+  length as main's; only the drawn pixels differ.
+
 ## Privacy
 
 The compute API's privacy claim said no page, island or script of the site
