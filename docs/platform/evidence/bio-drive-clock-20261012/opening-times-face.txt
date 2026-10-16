@@ -1,0 +1,41 @@
+chromium 154.0.8037.98 · edition 2026-10-12 · heading font "EB Garamond Fallback Times"
+current  current  October 12, 2026    desktop     2 lines  CTA 328–404px of 900  Times New Roman   Your chart and today’s sky
+current  current  October 12, 2026    tablet      2 lines  CTA 316–392px of 900  Times New Roman   Your chart and today’s sky
+current  current  October 12, 2026    mobile      2 lines  CTA 286–358px of 844  Times New Roman   Your chart and today’s sky
+current  current  October 12, 2026    annotation  2 lines  CTA 291–363px of 915  Times New Roman   Your chart and today’s sky
+current  current  October 12, 2026    narrow      2 lines  CTA 291–363px of 780  Times New Roman   Your chart and today’s sky
+dated    dated    October 12, 2026    desktop     4 lines  CTA 420–496px of 900  Times New Roman   Your chart and the October 12, 2026 edition’s sky
+dated    dated    October 12, 2026    tablet      4 lines  CTA 397–473px of 900  Times New Roman   Your chart and the October 12, 2026 edition’s sky
+dated    dated    October 12, 2026    mobile      4 lines  CTA 365–437px of 844  Times New Roman   Your chart and the October 12, 2026 edition’s sky
+dated    dated    October 12, 2026    annotation  4 lines  CTA 374–446px of 915  Times New Roman   Your chart and the October 12, 2026 edition’s sky
+dated    dated    October 12, 2026    narrow      4 lines  CTA 356–428px of 780  Times New Roman   Your chart and the October 12, 2026 edition’s sky
+dated    dated    May 1, 2026         desktop     3 lines  CTA 374–450px of 900  Times New Roman   Your chart and the May 1, 2026 edition’s sky
+dated    dated    May 1, 2026         tablet      3 lines  CTA 357–433px of 900  Times New Roman   Your chart and the May 1, 2026 edition’s sky
+dated    dated    May 1, 2026         mobile      3 lines  CTA 326–398px of 844  Times New Roman   Your chart and the May 1, 2026 edition’s sky
+dated    dated    May 1, 2026         annotation  3 lines  CTA 332–404px of 915  Times New Roman   Your chart and the May 1, 2026 edition’s sky
+dated    dated    May 1, 2026         narrow      3 lines  CTA 323–395px of 780  Times New Roman   Your chart and the May 1, 2026 edition’s sky
+dated    dated    February 28, 2026   desktop     4 lines  CTA 420–496px of 900  Times New Roman   Your chart and the February 28, 2026 edition’s sky
+dated    dated    February 28, 2026   tablet      4 lines  CTA 397–473px of 900  Times New Roman   Your chart and the February 28, 2026 edition’s sky
+dated    dated    February 28, 2026   mobile      4 lines  CTA 365–437px of 844  Times New Roman   Your chart and the February 28, 2026 edition’s sky
+dated    dated    February 28, 2026   annotation  4 lines  CTA 374–446px of 915  Times New Roman   Your chart and the February 28, 2026 edition’s sky
+dated    dated    February 28, 2026   narrow      4 lines  CTA 356–428px of 780  Times New Roman   Your chart and the February 28, 2026 edition’s sky
+dated    dated    November 30, 2026   desktop     4 lines  CTA 420–496px of 900  Times New Roman   Your chart and the November 30, 2026 edition’s sky
+dated    dated    November 30, 2026   tablet      4 lines  CTA 397–473px of 900  Times New Roman   Your chart and the November 30, 2026 edition’s sky
+dated    dated    November 30, 2026   mobile      4 lines  CTA 365–437px of 844  Times New Roman   Your chart and the November 30, 2026 edition’s sky
+dated    dated    November 30, 2026   annotation  4 lines  CTA 374–446px of 915  Times New Roman   Your chart and the November 30, 2026 edition’s sky
+dated    dated    November 30, 2026   narrow      4 lines  CTA 356–428px of 780  Times New Roman   Your chart and the November 30, 2026 edition’s sky
+dated    dated    December 31, 2026   desktop     4 lines  CTA 420–496px of 900  Times New Roman   Your chart and the December 31, 2026 edition’s sky
+dated    dated    December 31, 2026   tablet      4 lines  CTA 397–473px of 900  Times New Roman   Your chart and the December 31, 2026 edition’s sky
+dated    dated    December 31, 2026   mobile      4 lines  CTA 365–437px of 844  Times New Roman   Your chart and the December 31, 2026 edition’s sky
+dated    dated    December 31, 2026   annotation  4 lines  CTA 374–446px of 915  Times New Roman   Your chart and the December 31, 2026 edition’s sky
+dated    dated    December 31, 2026   narrow      4 lines  CTA 356–428px of 780  Times New Roman   Your chart and the December 31, 2026 edition’s sky
+dated    dated    September 28, 2026  desktop     4 lines  CTA 420–496px of 900  Times New Roman   Your chart and the September 28, 2026 edition’s sky
+dated    dated    September 28, 2026  tablet      4 lines  CTA 397–473px of 900  Times New Roman   Your chart and the September 28, 2026 edition’s sky
+dated    dated    September 28, 2026  mobile      4 lines  CTA 365–437px of 844  Times New Roman   Your chart and the September 28, 2026 edition’s sky
+dated    dated    September 28, 2026  annotation  4 lines  CTA 374–446px of 915  Times New Roman   Your chart and the September 28, 2026 edition’s sky
+dated    dated    September 28, 2026  narrow      4 lines  CTA 356–428px of 780  Times New Roman   Your chart and the September 28, 2026 edition’s sky
+dated    dated    September 30, 2026  desktop     4 lines  CTA 420–496px of 900  Times New Roman   Your chart and the September 30, 2026 edition’s sky
+dated    dated    September 30, 2026  tablet      4 lines  CTA 397–473px of 900  Times New Roman   Your chart and the September 30, 2026 edition’s sky
+dated    dated    September 30, 2026  mobile      4 lines  CTA 365–437px of 844  Times New Roman   Your chart and the September 30, 2026 edition’s sky
+dated    dated    September 30, 2026  annotation  4 lines  CTA 374–446px of 915  Times New Roman   Your chart and the September 30, 2026 edition’s sky
+dated    dated    September 30, 2026  narrow      4 lines  CTA 356–428px of 780  Times New Roman   Your chart and the September 30, 2026 edition’s sky
