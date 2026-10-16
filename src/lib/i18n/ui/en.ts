@@ -27,7 +27,7 @@ const en = {
     trustReturnIntro: "Your return chart offers a moment to reflect on what you want to nurture next.",
     trustSaturnIntro: "Your Saturn return is a chance to reflect on the commitments you want to keep.",
     trustGamesTitle: "Zodiac Games",
-    trustGamesScore: "Twelve zodiac teams compete for participation points: 100 for your first join, then 25 for one check-in per UTC week. Shares and token purchases earn no points.",
+    trustGamesScore: "Twelve zodiac teams compete for participation points: 100 for your first join, then 25 for one check-in per UTC week.",
     trustGamesLink: "See the standings",
     trustGamesIndependent: "Participation is free. Token ownership and prices do not affect the score.",
 
