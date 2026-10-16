@@ -39,10 +39,15 @@
     "weddingLink": "date, 17:00 and Florence restored",
     "jsonExport": "six records, all with detail"
   },
+  "ownerPrivacyReview": "approved the staging account-saving wording on 2026-10-16",
+  "sharedSkyWatch": {
+    "freshReviewerOAuth": "passed in the existing private preview",
+    "existingConnection": "left connected and unchanged",
+    "reviewerWatches": 0
+  },
+  "hostedRlsIsolation": "a read-only query as another synthetic account returned zero reviewer saved rows; native second-account profile check remains pending",
   "pending": [
-    "Owner privacy wording review",
-    "Fresh Sky Watch OAuth flow",
-    "Hosted second-account isolation",
+    "Native second-account profile isolation",
     "Hosted full revocation/account deletion matrix",
     "Hosted anonymous-save inline ChatGPT sign-in prompt",
     "Email-link sign-in and cancellation paths"

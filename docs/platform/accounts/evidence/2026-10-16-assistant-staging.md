@@ -1,6 +1,6 @@
 # Assistant saving staging — 16 October 2026
 
-Status: native saving, duplicate checks and revocation exercised in both hosts; profile-reading fix verified on hosted staging, shared Sky Watch sign-in and owner privacy review still pending.
+Status: native saving, duplicate checks and revocation exercised in both hosts; profile-reading fix, fresh shared Sky Watch sign-in and owner privacy review verified on hosted staging. The remaining native isolation and account-lifecycle checks are listed below.
 
 The owner delegated the capacity decision after the two free database slots were
 found occupied. Reuse the existing Sky Watch test database with distinct client
@@ -90,10 +90,14 @@ ChatGPT's private connector form now supplies a unique callback,
   The weekly dates and time zone, comparison score and caveats, and wedding
   local time and rating are all visible directly in the profile.
 - Existing Sky Watch capability calls still succeed after the shared hook
-  change. Fresh sign-in has not yet been verified; do not claim this gate passed.
-- Hosted second-account isolation and the full destructive account lifecycle
-  matrix remain unverified. The PostgreSQL 17 suite covers those database
-  contracts; this is not a substitute for native host evidence.
+  change. A fresh OAuth grant for the synthetic reviewer account also passed
+  in the existing private Sky Watch preview. The original connection stayed
+  connected; the reviewer has zero watches, and no watch or reminder was made.
+- A hosted read-only RLS query authenticated as another synthetic account
+  returned zero of the reviewer's saved rows. A native second-account profile
+  check and the full destructive account lifecycle matrix remain unverified.
+  The PostgreSQL 17 suite covers those database contracts; this is not a
+  substitute for native host evidence.
 
 ## Shared provider rollback baseline
 
@@ -132,11 +136,14 @@ reports 0 errors, 0 warnings and 44 existing hints.
   explicitly separates pending checks from passes.
 - `2026-10-16-saved-week.png` shows the saved weekly reading in the profile.
 - `2026-10-16-assistants-reconnected.png` shows both restored grants.
-- Owner review of the enabled privacy wording is pending.
-- Fresh Sky Watch authorization with the synthetic reviewer is pending owner
-  confirmation for that additional app grant. Do not mark shared staging ready
-  until that flow is checked.
-- The directory remains In review. Its editor permits changes during review,
-  currently displays the older description and six tools, and offers a
-  separate Sync from server action for the current thirteen tools. No directory
-  fields, submission, scan, or email were changed in this verification.
+- The owner approved the enabled privacy wording on 16 October 2026.
+- The fresh Sky Watch authorization passed. Its screenshot stays in the local
+  release evidence because it displays test-account addresses; it is not
+  included in this public pull request.
+- Native second-account isolation, the full hosted revocation and deletion
+  matrix, anonymous-save inline sign-in in ChatGPT, and email-link/cancel
+  paths remain pending. Do not mark all staging gates passed yet.
+- The directory remains In review. With the owner's explicit approval, its
+  description was replaced by the current submission description and its
+  displayed tool list was synced from six to thirteen. No new submission,
+  further scan, carousel upload, or email was made in this verification.
