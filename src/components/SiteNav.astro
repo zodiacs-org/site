@@ -5,7 +5,8 @@ import { initProfileNavigation } from '../lib/profile/navigation-avatar.mjs';
  * the icons are the navigation. The profile glyph fills once the visitor
  * has saved something (read from localStorage, progressive).
  */
-import { SIGNS, signDates, signName } from '../lib/signs';
+import { SIGNS, signName } from '../lib/signs';
+import { signDateRange } from '../lib/sign-display';
 import SignIcon from './SignIcon.astro';
 import { availableLocalesForPath, englishOnlyCue, localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
 import { ALL_TOOLS_LABEL, NAV_MORE, NAV_MORE_LABEL, NAV_TOOLS, navToolLabelHasEnglishCue, type NavTool } from '../lib/nav-tools';
@@ -200,7 +201,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
         <a class="signs-menu__item" href={localizePath(locale, `/${s.slug}/`)} style={`--sign:${s.hue}`}>
           <SignIcon sign={s.slug} size={32} deferred />
           <span class="signs-menu__name">{signName(s, locale)}</span>
-          <span class="signs-menu__dates">{signDates(s, locale)}</span>
+          <span class="signs-menu__dates">{signDateRange(s, locale)}</span>
         </a>
       ))}
     </div>

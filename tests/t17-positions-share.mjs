@@ -277,7 +277,7 @@ try {
       for (const label of [
         'Birth chart', 'Birth details hidden', 'Positions', 'Aspect grid',
         'Apparent geocentric · Tropical of date · Whole sign houses · True Node',
-        'Major aspects · Sun–Pluto · Nodes & angles excluded',
+        'Major aspects · Sun-Pluto · Nodes & angles excluded',
         'Orb · A applying · S separating',
         'Sun', 'Moon', 'Merc', 'Venus', 'Mars', 'Jup', 'Sat', 'Ura', 'Nep', 'Plu',
         'T.Node', 'S.Node', 'ASC', 'DSC', 'MC', 'IC', 'Rx',

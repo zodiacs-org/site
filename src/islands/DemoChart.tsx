@@ -5,6 +5,7 @@
  */
 import Wheel from '../lib/wheel/Wheel';
 import { formatLongitude, SIGNS, signForLongitude } from '../lib/signs';
+import { signTagline } from '../lib/sign-display';
 import { t } from '../lib/i18n';
 import { matchAspect } from '../lib/engine/aspects';
 import { houseOf, norm } from '../lib/engine/houses';
@@ -144,7 +145,7 @@ export default function DemoChart() {
       label: `${sign.name} sign`,
       kind: 'Sign',
       title: sign.name,
-      caption: `${sign.essence} ${signOccupantLine(occupants)}`,
+      caption: `${signTagline(sign)} ${signOccupantLine(occupants)}`,
       hue: sign.hue,
       point: point(index * 30 + 15, R_SIGNS),
       path: annularSectorPath(index * 30 + 1.5, 27, R_SIGN_FOCUS_INNER, R_SIGN_FOCUS_OUTER),

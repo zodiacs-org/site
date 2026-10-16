@@ -3,7 +3,8 @@ import Base from '../../../layouts/Base.astro';
 import SignIcon from '../../../components/SignIcon.astro';
 import SignHeroArt from '../../../components/SignHeroArt.astro';
 import Faq from '../../../components/Faq.astro';
-import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signDates, signName } from '../../../lib/signs';
+import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signName } from '../../../lib/signs';
+import { signDateRange } from '../../../lib/sign-display';
 import { russianGuideFor } from '../../../data/ru-guides';
 import { pairSlug } from '../../../lib/compat';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
@@ -88,7 +89,7 @@ const jsonLd = [
       <div>
         <h1 class="display">{signName(sign, 'ru')}</h1>
         <p>{guide.intro[0]}</p>
-        <p class="guide-ru-hero__facts">{elementFact} · {signDates(sign, 'ru')}</p>
+        <p class="guide-ru-hero__facts">{elementFact} · {signDateRange(sign, 'ru')}</p>
         <div class="guide-ru-hero__ctas">
           <a class="btn btn--primary" href="/ru/birth-chart/"><span>Постройте бесплатную натальную карту</span><span class="orb">↗</span></a>
           <a class="btn btn--ghost" href="/ru/compatibility/"><span>Проверить совместимость</span></a>

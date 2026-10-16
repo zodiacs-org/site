@@ -9,9 +9,10 @@ import PlanetGlyph from '../../components/PlanetGlyph';
 import AspectGlyph from '../../components/AspectGlyph';
 import AstroTerm from '../AstroTerm';
 import {
-  formatLongitude, signBySlug, signDates, signEssence, signForLongitude,
+  formatLongitude, signBySlug, signForLongitude,
   signName, signPrepositional, elementLabel, modalityLabel,
 } from '../../lib/signs';
+import { signDateRange, signTagline } from '../../lib/sign-display';
 import { signIcon } from '../../lib/sign-icon';
 import { NATAL_HOUSE_THEME, natalAspectLine, planetInHouseLine } from '../../lib/natal';
 import { placementContext } from '../../lib/natal-context';
@@ -306,7 +307,7 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
       ].filter(Boolean).join(' ');
       const exact = (
         <>
-          <Receipt label={t(locale, 'dates')}>{signDates(sign, locale)}</Receipt>
+          <Receipt label={t(locale, 'dates')}>{signDateRange(sign, locale)}</Receipt>
           <Receipt label={t(locale, 'element')}>
             {showsEnglishInterpretation
               ? <AstroTerm term="element" label={elementLabel(sign.element, locale)} surface="chart-inspector" />
@@ -332,7 +333,7 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
         <>
           <div class="insp__story">
             <Insight label="What it represents">A sign describes the style a planet or chart point uses. It is the “how,” not a separate personality by itself.</Insight>
-            <Insight label="How this sign works">{signEssence(sign)} It belongs to the {sign.element} element and the {sign.modality} modality.</Insight>
+            <Insight label="How this sign works">{signTagline(sign)} It belongs to the {sign.element} element and the {sign.modality} modality.</Insight>
             <Insight label="Where it shows up">{signWhere}</Insight>
             <Insight label="Why it matters here">{occupants.length > 1 ? `With ${occupants.length} chart bodies here, ${sign.name} is a repeating tone rather than a one-off detail.` : 'Read the sign together with the selected planet or point to understand what is being expressed in this style.'}</Insight>
           </div>
@@ -475,7 +476,7 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
         <>
           <div class="insp__story">
             <Insight label="What it represents">{angle.what}</Insight>
-            <Insight label="How the sign shapes it">In {sign.name}, this angle takes on this style: {signEssence(sign)}</Insight>
+            <Insight label="How the sign shapes it">In {sign.name}, this angle takes on this style: {signTagline(sign)}</Insight>
             <Insight label="Where it shows up">{t(locale, KEY[selection.angle])}</Insight>
             <Insight label="Why it matters here">{angle.why}</Insight>
           </div>

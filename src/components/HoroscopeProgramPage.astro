@@ -12,6 +12,7 @@ import EditionText from './EditionText.astro';
 import { datedEditionText } from '../lib/edition-freshness';
 import { EDITOR_AUTHOR } from '../lib/editorial';
 import { SIGNS, signBySlug } from '../lib/signs';
+import { signDateRange } from '../lib/sign-display';
 import type {
   HoroscopePageSurface as HoroscopeSurface,
   HoroscopeProgramPageReading,
@@ -269,7 +270,7 @@ const skyMarkers = reading.skyStrip.markers;
             ? <EditionText current={reading.description} editionDate={editionDate} />
             : reading.description}
         </p>
-        <span class="program__dates mono">{sign.dates} · {capitalize(sign.element)} · {capitalize(sign.modality)} · Ruled by {sign.ruler}</span>
+        <span class="program__dates mono">{signDateRange(sign)} · {capitalize(sign.element)} · {capitalize(sign.modality)} · Ruled by {sign.ruler}</span>
       </div>
     </header>
 

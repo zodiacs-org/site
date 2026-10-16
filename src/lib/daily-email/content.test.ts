@@ -133,7 +133,7 @@ describe('daily email content', () => {
       },
       daily, publication: subjectPublication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
     });
-    expect(leo.subject).toBe('Leo today — messages come to the front');
+    expect(leo.subject).toBe('Leo today: messages come to the front');
 
     const collectivePublication = publicationWithCollectiveLine();
     const timed = renderDailyEmail({
@@ -214,10 +214,10 @@ describe('daily email content', () => {
     const eventDate = new Intl.DateTimeFormat('en', {
       month: 'long', day: 'numeric', timeZone: 'UTC',
     }).format(new Date(futureEvent.anchor));
-    const expected = `Ahead: Fixture event 1 on ${eventDate} falls in your ${ORDINAL[house]} house — a checkpoint for ${HOUSE_THEME[house]}.`;
+    const expected = `Ahead: Fixture event 1 on ${eventDate} falls in your ${ORDINAL[house]} house, a checkpoint for ${HOUSE_THEME[house]}.`;
     expect(message.text).toContain(expected);
     expect(message.html).toContain(`Ahead: Fixture event 1 on ${eventDate}`);
-    expect(message.html).toContain(`falls in your ${ORDINAL[house]} house — a checkpoint for ${HOUSE_THEME[house]}.`);
+    expect(message.html).toContain(`falls in your ${ORDINAL[house]} house, a checkpoint for ${HOUSE_THEME[house]}.`);
     expect(message.text).not.toContain(futureEvent.summary);
 
     const ambiguous = renderDailyEmail({
@@ -274,7 +274,7 @@ describe('daily email content', () => {
       recipient: sun, daily, publication, program, nearbyEvent: futureEvent,
       baseUrl: 'https://zodiacs.org', unsubscribeUrl,
     });
-    expect(sunFuture.text).toContain(`Ahead: ${futureEvent.title} — ${futureEvent.summary}`);
+    expect(sunFuture.text).toContain(`Ahead: ${futureEvent.title}. ${futureEvent.summary}`);
 
     const chart = chartWithBodies([{ body: 'Sun', lon: 120, retrograde: false }], 120);
     const recipients = [
@@ -326,13 +326,13 @@ describe('daily email content', () => {
     const known = messageFor(timed), unknown = messageFor(reference);
     expect(known.text).toContain('Sun-sign baseline');
     expect(known.preheader).not.toContain('Birth time is unknown');
-    expect(known.subject).toBe('Your chart today — a quieter sky');
+    expect(known.subject).toBe('Your chart today: a quieter sky');
     for (const body of [unknown.text, unknown.html]) {
       expect(body).not.toContain('Sun-sign baseline');
       expect(body).toContain('reference-moment positions');
       expect(body).toContain('the Sun sign has not been verified across the whole birth date');
     }
-    expect(unknown.subject).toBe('Your reference chart today — a quieter sky');
+    expect(unknown.subject).toBe('Your reference chart today: a quieter sky');
     expect(unknown.preheader).toContain('Birth time is unknown');
     expect(JSON.stringify(reference)).toBe(before);
   });

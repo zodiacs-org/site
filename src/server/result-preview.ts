@@ -306,7 +306,7 @@ function htmlResponse(html: string): Response {
 
 const withRef = (path: string, ref: ShareRef | null) => (ref ? `${path}?ref=${ref}` : path);
 
-export const SHARE_NOTE = 'Astrology’s reading, for insight and fun — not a guarantee of how things will turn out.';
+export const SHARE_NOTE = 'Astrology’s reading, for insight and fun, not a guarantee of how things will turn out.';
 
 /** A link whose query is not a share query opens the plain page, with the site's own card. */
 function defaultCompatibilityPage(origin: string): SharePage {

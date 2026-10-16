@@ -641,7 +641,7 @@ function eventCard(event) {
   const clock = instant.toLocaleTimeString('en-US', {
     hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC',
   });
-  const cardTitle = event.title.replace(/\s+[—–]\s+.*\b20(?:26|27)\s*$/, '');
+  const cardTitle = event.title.replace(/(?:,|\s+[—–])\s+.*\b20(?:26|27)\s*$/, '');
   const title = escapeHtml(cardTitle);
   const size = cardTitle.length > 62 ? 52 : cardTitle.length > 46 ? 58 : cardTitle.length > 32 ? 66 : 74;
   const accent = sign

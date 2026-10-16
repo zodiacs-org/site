@@ -10,6 +10,7 @@ import programData from '../../data/horoscope-program.json';
 import { horoscopeHubTeaser, pageReadingFromProgram } from '../../lib/horoscope-page-data';
 import type { HoroscopeProgram } from '../../lib/horoscope-program';
 import { SIGNS } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 
 const program = programData as HoroscopeProgram;
 const dateLabel = new Intl.DateTimeFormat('en-US', {
@@ -82,7 +83,7 @@ const jsonLd = [
         <a class="tile horo-card" href={`/horoscopes/${sign.slug}/`} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={48} class="horo-card__icon" />
           <span class="horo-card__name">{sign.name}</span>
-          <span class="horo-card__dates">{sign.dates}</span>
+          <span class="horo-card__dates">{signDateRange(sign)}</span>
           <span class="horo-card__today">
             <span class="horo-card__today-label">{reading.label}</span>
             <EditionText current={teaser} editionDate={program.anchorDate} />

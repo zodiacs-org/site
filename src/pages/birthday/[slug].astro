@@ -8,6 +8,7 @@ import CollectBand from '../../components/CollectBand.astro';
 import PeopleCard from '../../components/people/PeopleCard.astro';
 import '../../styles/people.css';
 import { signBySlug, formatLongitude } from '../../lib/signs';
+import { signTagline } from '../../lib/sign-display';
 import {
   birthdaySlug, birthdayLabel, prevDate, nextDate,
   decanSpan, decanOrdinal, cuspSummary, cuspYearReading, boundaryDistance,
@@ -185,7 +186,7 @@ const jsonLd = [
         {sign ? (
           <>
             <strong><a href={`/${sign.slug}/`}>{sign.name}</a></strong>
-            <span>{sign.essence}</span>
+            <span>{signTagline(sign)}</span>
           </>
         ) : cusp && (
           <>

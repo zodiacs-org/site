@@ -251,7 +251,7 @@ const sources = [
                     <span class="evhub-row__date mono">{dayLabel(event)}</span>
                     <EventMark facts={event.facts} />
                     <span>
-                      <span class="evhub-row__title">{event.facts.title.replace(/ — .*$/, '')}</span>
+                      <span class="evhub-row__title">{event.facts.title.replace(/(?:,| —) .*$/, '')}</span>
                       <span class="evhub-row__family">{FAMILY_LABEL[rowFamily(event)]}</span>
                     </span>
                     <p class="evhub-row__line">{timelineLine(event.facts)}</p>
@@ -278,7 +278,7 @@ const sources = [
                 <span class="evhub-row__date mono">{dayLabel(event)}</span>
                 <EventMark facts={event.facts} />
                 <span>
-                  <span class="evhub-row__title">{event.facts.title.replace(/ — .*$/, '')}</span>
+                  <span class="evhub-row__title">{event.facts.title.replace(/(?:,| —) .*$/, '')}</span>
                   <span class="evhub-row__family">{FAMILY_LABEL[rowFamily(event)]}</span>
                 </span>
                 <p class="evhub-row__line">{timelineLine(event.facts)}</p>

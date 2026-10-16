@@ -14,6 +14,7 @@ import glassMaps from '../data/glass-maps.json';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import { UI } from '../lib/i18n';
 import { SIGNS } from '../lib/signs';
+import { signDateRange } from '../lib/sign-display';
 import { ORGANIZATION_NAME, SOCIAL_PROFILES } from '../strings/seo.en.mjs';
 import homeFirstPaintCss from '../home/home-first-paint.css?inline';
 import '../styles/today.css';
@@ -608,7 +609,7 @@ const tools = [
           <div class="twelve__card">
             <SignIcon sign={s.slug} size={64} />
             <strong>{s.name}</strong>
-            <span class="twelve__dates">{s.dates}</span>
+            <span class="twelve__dates">{signDateRange(s)}</span>
           </div>
         </a>
       ))}

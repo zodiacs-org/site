@@ -7,8 +7,8 @@ import { observeFooterStyles, observeViewportRegions, viewportRegionFailures,
 // are real preview navigations; screenshots are review evidence, not baselines.
 const DAILY = [
   { code: 'en', prefix: '', lang: 'en', today: 'Today' },
-  { code: 'es', prefix: '/es', lang: 'es', today: 'Hoy', dates: '22 dic – 19 ene', intl: 'es-419' },
-  { code: 'pt', prefix: '/pt', lang: 'pt-BR', today: 'Hoje', dates: '22 dez – 19 jan', intl: 'pt-BR' },
+  { code: 'es', prefix: '/es', lang: 'es', today: 'Hoy', dates: 'del 22 dic al 19 ene', intl: 'es-419' },
+  { code: 'pt', prefix: '/pt', lang: 'pt-BR', today: 'Hoje', dates: 'de 22 dez a 19 jan', intl: 'pt-BR' },
 ];
 const TOOLS = [
   { code: 'es', title: 'Herramientas gratis de astrología', promise: 'doce signos solares' },

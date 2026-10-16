@@ -5,7 +5,8 @@ import type { Daily } from '../../../lib/daily';
 import { dailyReadingForLocale } from '../../../lib/i18n/daily-reading';
 import { formatDate } from '../../../lib/i18n/dates';
 import { englishOnlyCue } from '../../../lib/i18n/english-only';
-import { SIGNS, signDates, signName } from '../../../lib/signs';
+import { SIGNS, signName } from '../../../lib/signs';
+import { signDateRange } from '../../../lib/sign-display';
 
 const locale = 'es' as const;
 const daily = dailyData as Daily;
@@ -43,7 +44,7 @@ const description = `Horóscopos de hoy, ${dateLabel}: una nota clara para cada 
         <a class="tile horo-es__card" href={`/es/horoscopes/${sign.slug}/`} style={`--sign:${sign.hue}`}>
           <img src={`/assets/zodiac-icons/48/${sign.slug}.webp`} width="48" height="48" alt="" loading="lazy" decoding="async" />
           <span class="horo-es__name">{signName(sign, locale)}</span>
-          <span class="horo-es__dates">{signDates(sign, locale)}</span>
+          <span class="horo-es__dates">{signDateRange(sign, locale)}</span>
           <span class="horo-es__teaser">{teaser}</span>
           <span class="horo-es__go">Leer hoy →</span>
         </a>

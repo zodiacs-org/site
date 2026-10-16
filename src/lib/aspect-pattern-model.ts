@@ -48,8 +48,8 @@ export function buildAspectPatternModel(input: AspectPatternInput): AspectPatter
     ? 'At the reference positions; birth time unknown; Moon excluded.'
     : 'At the reference midpoint positions; one or both birth times unknown; Moon excluded.';
   const scope = input.timeKnown
-    ? input.context === 'natal' ? 'Sun–Pluto only. Nodes, angles and houses are excluded.'
-      : 'Sun–Pluto midpoint positions only. This is a relationship model, not an event chart.'
+    ? input.context === 'natal' ? 'Sun-Pluto only. Nodes, angles and houses are excluded.'
+      : 'Sun-Pluto midpoint positions only. This is a relationship model, not an event chart.'
     : `${reference} These patterns have not been checked across the whole birth day.`;
   return {
     identity: JSON.stringify([input.context, input.sourceKey, input.timeKnown, input.points, input.aspects, 'en']),

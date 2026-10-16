@@ -8,7 +8,8 @@ import ToolGlyph from '../../components/ToolGlyph.astro';
 import SkyTicker from '../../islands/SkyTicker';
 import TodayBySign from '../../islands/TodayBySign';
 import WelcomeBack from '../../islands/WelcomeBack';
-import { SIGNS, signDates, signName } from '../../lib/signs';
+import { SIGNS, signName } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 import { localizePath } from '../../lib/i18n';
 import glassMaps from '../../data/glass-maps.json';
 import '../../styles/today.css';
@@ -181,7 +182,7 @@ const jsonLd = [
           <div class="twelve-es__card">
             <SignIcon sign={sign.slug} size={64} />
             <strong>{signName(sign, 'es')}</strong>
-            <span class="mono twelve-es__dates">{signDates(sign, 'es')}</span>
+            <span class="mono twelve-es__dates">{signDateRange(sign, 'es')}</span>
           </div>
         </a>
       ))}

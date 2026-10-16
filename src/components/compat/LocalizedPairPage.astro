@@ -10,7 +10,8 @@ import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../SignIcon.astro';
 import SynastryCalculator from '../../islands/SynastryCalculator';
-import { SIGNS, signName, signDates, elementLabel, modalityLabel } from '../../lib/signs';
+import { SIGNS, signName, elementLabel, modalityLabel } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 import { pairSlug } from '../../lib/compat';
 import { localizedPairFacts, type PairLocale } from '../../lib/compat-i18n';
 import { planetLabel } from '../../lib/i18n/astrology';
@@ -218,7 +219,7 @@ const jsonLd = [
               <a class="pair-panel__sign tile" href={`${prefix}/${s.slug}/`} style={`--sign:${s.hue}`}>
                 <SignIcon sign={s.slug} size={44} class="pair-panel__sign-icon" />
                 <span class="pair-panel__sign-name">{name(s.slug)}{same ? ` ${i === 0 ? 'A' : 'B'}` : ''}</span>
-                <span class="pair-panel__sign-meta mono">{signDates(s, locale)}</span>
+                <span class="pair-panel__sign-meta mono">{signDateRange(s, locale)}</span>
                 <span class="pair-panel__sign-meta mono">
                   {elementLabel(s.element, locale)} · {modalityLabel(s.modality, locale)} · {planetLabel(locale, s.ruler)}
                 </span>

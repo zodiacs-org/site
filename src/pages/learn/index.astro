@@ -6,6 +6,7 @@ import SignIcon from '../../components/SignIcon.astro';
 import ToolGlyph from '../../components/ToolGlyph.astro';
 import LearningPath from '../../islands/LearningPath';
 import { SIGNS, ELEMENT_LABEL, MODALITY_LABEL } from '../../lib/signs';
+import { signDateRange, signTagline } from '../../lib/sign-display';
 import { GLOSSARY } from '../../data/glossary';
 
 const jsonLd = [
@@ -86,8 +87,8 @@ const jsonLd = [
             <SignIcon sign={s.slug} size={64} />
             <div>
               <strong>{s.name}</strong>
-              <span class="mono learn-card__dates">{s.dates}</span>
-              <p>{s.essence}</p>
+              <span class="mono learn-card__dates">{signDateRange(s)}</span>
+              <p>{signTagline(s)}</p>
             </div>
           </div>
         </a>
@@ -158,7 +159,7 @@ const jsonLd = [
           {SIGNS.map((s) => (
             <tr style={`--sign:${s.hue}`}>
               <td><a href={`/${s.slug}/`}><SignIcon sign={s.slug} size={20} /> {s.name}</a></td>
-              <td class="mono">{s.dates}</td>
+              <td class="mono">{signDateRange(s)}</td>
               <td>{ELEMENT_LABEL[s.element]}</td>
               <td>{MODALITY_LABEL[s.modality]}</td>
               <td>{s.ruler}{s.classicRuler ? ` (${s.classicRuler})` : ''}</td>

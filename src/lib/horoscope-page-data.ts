@@ -90,7 +90,7 @@ function dateLabel(date: string, short = false): string {
 function periodLabel(reading: HoroscopeReading, surface: Exclude<HoroscopePageSurface, 'monthly'>): string {
   if (surface === 'year') return '2027';
   if (surface === 'weekly') {
-    return `${dateLabel(reading.period.from, true)}–${dateLabel(reading.period.through, true)}`;
+    return `${dateLabel(reading.period.from, true)} to ${dateLabel(reading.period.through, true)}`;
   }
   return dateLabel(reading.period.from);
 }

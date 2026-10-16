@@ -7,7 +7,8 @@ import { dailyReadingForLocale } from '../../../../lib/i18n/daily-reading';
 import { formatDate } from '../../../../lib/i18n/dates';
 import { moonPhaseLabel } from '../../../../lib/i18n/astrology';
 import { englishOnlyCue } from '../../../../lib/i18n/english-only';
-import { SIGNS, signBySlug, signDates, signName } from '../../../../lib/signs';
+import { SIGNS, signBySlug, signName } from '../../../../lib/signs';
+import { signDateRange } from '../../../../lib/sign-display';
 
 export function getStaticPaths() {
   return SIGNS.map((sign) => ({ params: { sign: sign.slug } }));
@@ -46,7 +47,7 @@ const description = `Horóscopo de ${name} hoje, ${dateLabel}: ${notes} a partir
       </h1>
       <p class="dateline">Horóscopo diário · {dateLabel}</p>
       <p class="sign-pt__lead">O que mais importa para {name}.</p>
-      <span class="sign-pt__stamp mono">{signDates(sign, locale)} · {moonPhaseLabel(locale, daily.moon.phase)}</span>
+      <span class="sign-pt__stamp mono">{signDateRange(sign, locale)} · {moonPhaseLabel(locale, daily.moon.phase)}</span>
     </header>
 
     <div class="sign-pt__reading shell tinted">

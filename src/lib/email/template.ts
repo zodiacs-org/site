@@ -291,7 +291,7 @@ export function renderEmailText(doc: EmailDocument): string {
     for (const paragraph of section.paragraphs ?? []) lines.push(paragraph, '');
     const rows = section.rows ?? [];
     for (const row of rows) {
-      lines.push(row.label ? `${row.label} — ${row.body}` : row.body);
+      lines.push(row.label ? `${row.label}: ${row.body}` : row.body);
       if (row.receipt) lines.push(`  ${row.receipt}`);
     }
     if (rows.length) lines.push('');
