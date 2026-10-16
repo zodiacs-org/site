@@ -11,6 +11,8 @@
   color: var(--faint);
   font-family: var(--font-sans);
   font-size: 12px;
+  /* The search slot reserves its first-paint height around a 16px label line. */
+  line-height: 16px;
   letter-spacing: 0;
 }
 
