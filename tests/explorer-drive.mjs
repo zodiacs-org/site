@@ -665,7 +665,7 @@ try {
   }));
   check('plain-first: detail is closed by default', !(await detail.evaluate((node) => node.open)));
   check('plain-first: EN summary is exact with mono counts',
-    await detailSummary.textContent() === `See exact chart data — ${placementCount} placements · ${aspectCount} aspects`
+    await detailSummary.textContent() === `See exact chart data: ${placementCount} placements · ${aspectCount} aspects`
     && await detailSummary.locator('.mono').count() === 2,
     await detailSummary.textContent() ?? '');
   check('plain-first: aspects are a section with no nested details',
@@ -982,7 +982,7 @@ try {
   const esAspects = await esDetail.locator('.calc__aspects li').count();
   const esSummary = await esDetail.locator('summary').textContent();
   check('plain-first: ES summary line is exact',
-    esSummary === `Ver los datos exactos — ${esPlacements} posiciones · ${esAspects} aspectos`,
+    esSummary === `Ver los datos exactos: ${esPlacements} posiciones · ${esAspects} aspectos`,
     esSummary ?? '');
   check('communication read: absent from Spanish',
     await es.locator('.calc__comm').count() === 0

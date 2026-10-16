@@ -88,7 +88,7 @@ export default function SunSignFallback({
   );
   const dailyLine = active ? sunSignLines[active.slug] ?? null : null;
   const editionLabel = editionDateLabel(editionDate);
-  const introCopy = `This is usually the zodiac sign you know from your birthday. Choose it for one clear note for the ${editionLabel} edition — no birth time needed.`;
+  const introCopy = `This is usually the zodiac sign you know from your birthday. Choose it for one clear note for the ${editionLabel} edition, no birth time needed.`;
   const allReadings = useMemo(
     () => SIGNS.map((sign) => ({
       sign,

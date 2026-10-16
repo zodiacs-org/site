@@ -74,8 +74,8 @@ const factLead = (() => {
   switch (facts.family) {
     case 'lunation':
       return facts.subtype === 'full'
-        ? `The Moon stands exactly opposite the Sun on ${eventDay(facts.at!)}, in ${signName(primarySign)}${facts.moonName ? ` — ${moonNameLabel(facts.moonName)} of its year` : ''}. The full write-up for this date is still to come; the timing, position, and surrounding events below are already exact.`
-        : `Sun and Moon meet in ${signName(primarySign)} on ${eventDay(facts.at!)} — the month's reset point. The full write-up for this date is still to come; the timing, position, and surrounding events below are already exact.`;
+        ? `The Moon stands exactly opposite the Sun on ${eventDay(facts.at!)}, in ${signName(primarySign)}${facts.moonName ? `, ${moonNameLabel(facts.moonName)} of its year` : ''}. The full write-up for this date is still to come; the timing, position, and surrounding events below are already exact.`
+        : `Sun and Moon meet in ${signName(primarySign)} on ${eventDay(facts.at!)}, the month's reset point. The full write-up for this date is still to come; the timing, position, and surrounding events below are already exact.`;
     case 'eclipse':
       return `On ${eventDay(facts.at!)} the ${facts.subtype === 'solar' ? 'new moon crosses the Sun\'s face' : 'full moon passes through Earth\'s shadow'} in ${signName(primarySign)}. The full write-up for this date is still to come; the timing and geometry below are already exact.`;
     case 'retrograde':
@@ -180,12 +180,12 @@ const sources = [
   description={metaDescription(facts)}
   path={facts.path}
   image={published?.card}
-  imageAlt={`${facts.title} — Zodiacs.org`}
+  imageAlt={`${facts.title} | Zodiacs.org`}
   type="article"
   noindex={!event.indexEligible}
   jsonLd={jsonLd}
   sources={sources}
-  rssFeed={{ href: '/feeds/events.xml', title: 'Zodiacs.org — sky events' }}
+  rssFeed={{ href: '/feeds/events.xml', title: 'Zodiacs.org | sky events' }}
 >
   <noscript>
     <style>
@@ -197,7 +197,7 @@ const sources = [
   <article class="section--tight container container--narrow">
     {event.fixture && (
       <p class="event-sample" data-event-sample>
-        Sample page for template review — the dates and figures here are
+        Sample page for template review. The dates and figures here are
         placeholders, not sky facts.
       </p>
     )}
@@ -214,7 +214,7 @@ const sources = [
         ) : (
           <>
             <time datetime={facts.start!}>{eventDay(facts.start!)}</time>
-            <span>–</span>
+            <span>to</span>
             {facts.end
               ? <time datetime={facts.end}>{eventDay(facts.end)}</time>
               : <span>past the data horizon</span>}

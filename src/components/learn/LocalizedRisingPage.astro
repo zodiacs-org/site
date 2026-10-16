@@ -211,7 +211,7 @@ const jsonLd = [
   path={pagePath}
   locale={locale}
   image={`/assets/og/v2/rising/${sign.slug}.png`}
-  imageAlt={`${c.heading(name)} — Zodiacs.org`}
+  imageAlt={`${c.heading(name)} | Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   sources={entry.data.sources}
@@ -227,7 +227,7 @@ const jsonLd = [
       <dl class="plc-panel mono">
         <div class="plc-panel__row">
           <dt>{c.rulerLabel}</dt>
-          <dd><strong>{rulerName}</strong> — {c.rulerText}{modernNote}</dd>
+          <dd><strong>{rulerName}</strong>, {c.rulerText}{modernNote}</dd>
         </div>
         {rulerNow ? (
           <div class="plc-panel__row">

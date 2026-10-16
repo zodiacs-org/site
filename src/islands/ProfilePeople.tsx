@@ -135,7 +135,7 @@ export default function ProfilePeople({ accountBound = false }: { accountBound?:
           <div class="pf-people__empty">
             <span class="pf-people__ghosts" aria-hidden="true"><span /><span /><span /></span>
             <p>
-              No one here yet. Save a chart for someone you read for, or send your card — when they
+              No one here yet. Save a chart for someone you read for, or send your card. When they
               send theirs back, they appear here.
             </p>
           </div>

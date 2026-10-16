@@ -173,7 +173,7 @@ const jsonLd = [
         {sign ? (
           <div class="bday-panel__row">
             <dt>{text('sunSign')}</dt>
-            <dd><strong><a href={localizePath(locale, `/${sign.slug}/`)}>{localName(sign)}</a></strong> — {text('everyYear', { from: yearFrom, to: yearTo })}</dd>
+            <dd><strong><a href={localizePath(locale, `/${sign.slug}/`)}>{localName(sign)}</a></strong>, {text('everyYear', { from: yearFrom, to: yearTo })}</dd>
           </div>
         ) : cusp && (
           <>
@@ -182,7 +182,7 @@ const jsonLd = [
               <dd>
                 <strong><a href={localizePath(locale, `/${cusp.a.slug}/`)}>{localName(cusp.a)}</a></strong>{' '}
                 {text('or')}{' '}
-                <strong><a href={localizePath(locale, `/${cusp.b.slug}/`)}>{localName(cusp.b)}</a></strong> —{' '}
+                <strong><a href={localizePath(locale, `/${cusp.b.slug}/`)}>{localName(cusp.b)}</a></strong>,{' '}
                 {text('boundaryHere', { a: localName(cusp.a), b: localName(cusp.b) })}
               </dd>
             </div>

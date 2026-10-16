@@ -19,13 +19,13 @@ import { runCompositeBrowserChecks } from './composite-browser-checks.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const PORT = 4399;
-const CURATED_SUN_MOON = 'One of you runs on purpose, the other on feeling, and here they agree — what one wants to do is what the other wants to come home to. This is the classic ease that makes a relationship feel inevitable in retrospect.';
+const CURATED_SUN_MOON = 'One of you runs on purpose, the other on feeling, and here they agree. What one wants to do is what the other wants to come home to. This is the classic ease that makes a relationship feel inevitable in retrospect.';
 const FALLBACK_NEPTUNE_URANUS = 'Frida’s imagination pushes against Diego’s independence — expect friction here, especially under stress.';
-const COMPOSITE_NOTE = "A composite chart is the midpoint of two charts — a portrait of the relationship itself rather than either person. Composite houses need a location convention we won't fake, so this chart is shown without houses.";
-const COMMUNICATION_FIRE_FIRE = 'Two minds that think at speaking speed — conversation as sparring, fast and warm. Nobody finishes their sentences here; nobody minds.';
-const COMMUNICATION_MERCURY_MERCURY = 'Your minds are running compatible operating systems — shorthand develops fast, and it lasts. You will never run out of conversation, only of evening.';
+const COMPOSITE_NOTE = "A composite chart is the midpoint of two charts, a portrait of the relationship itself rather than either person. Composite houses need a location convention we won't fake, so this chart is shown without houses.";
+const COMMUNICATION_FIRE_FIRE = 'Two minds that think at speaking speed. Conversation as sparring, fast and warm. Nobody finishes their sentences here; nobody minds.';
+const COMMUNICATION_MERCURY_MERCURY = 'Your minds are running compatible operating systems. Shorthand develops fast, and it lasts. You will never run out of conversation, only of evening.';
 const COMMUNICATION_MOON_MERCURY = 'Analysis meets emotion mid-sentence: one wants the feeling named precisely, the other wants it felt first. Ask "solve or listen?" and this aspect behaves.';
-const COMMUNICATION_NO_CONTACT = "Your Mercuries make no major contact — the tradition reads that as neutral, not bad: your minds neither collide nor complete each other by default, so your conversational style is built, not given. The sign pairing above is the material you're building with.";
+const COMMUNICATION_NO_CONTACT = "Your Mercuries make no major contact. The tradition reads that as neutral, not bad: your minds neither collide nor complete each other by default, so your conversational style is built, not given. The sign pairing above is the material you're building with.";
 const SAVED_MC = {
   'drive-frida': 53.32837167390386,
   'drive-diego': 16.9870696472928,

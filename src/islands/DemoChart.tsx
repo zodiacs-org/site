@@ -366,7 +366,7 @@ export default function DemoChart() {
               ))}
             </div>
           </div>
-          <p class="demo__preview-hint">Select a mark on the wheel—or choose a starting point.</p>
+          <p class="demo__preview-hint">Select a mark on the wheel, or choose a starting point.</p>
           <p class="demo__receipt">
             {demo.name} · {demo.birth} · computed as {demo.utc.replace('T', ' ').slice(0, 19)} UTC ·{' '}
             <a href="https://www.astro.com/astro-databank/Kahlo%2C_Frida" target="_blank" rel="noopener noreferrer">

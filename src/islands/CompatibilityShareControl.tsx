@@ -46,7 +46,7 @@ export function CompatibilityPairingCta({
       <span>{tf(locale, 'pairingCta', {
         a: signName(signA, locale),
         b: signName(signB, locale),
-      })}{locale === 'ru' ? ' — пока по-английски' : ''}</span>
+      })}{locale === 'ru' ? ' (пока по-английски)' : ''}</span>
       <span class="orb">→</span>
     </a>
   );

@@ -471,8 +471,8 @@ await withPreview({ port: 4426 }, async (baseURL) => {
             && await note.locator('button, input, select, textarea').count() === 0);
           check(`${prefix} sync explainer target`, await note.locator('a').getAttribute('href') === '/profile/#profile-sync');
           check(`${prefix} exact device-only note`, (await note.innerText()).replace(/\s+/gu, ' ').trim() === (
-            'Prefer a brief matched to this exact chart? That exists only for account-synced charts — '
-            + 'syncing is always your call, and this chart stays on your device until you make it. '
+            'Prefer a brief matched to this exact chart? That exists only for account-synced charts. '
+            + 'Syncing is always your call, and this chart stays on your device until you make it. '
             + 'How chart sync works'
           ));
           const text = (await shell.innerText()).replace(testCase.expected, '').trim();
@@ -489,7 +489,7 @@ await withPreview({ port: 4426 }, async (baseURL) => {
           check(`${prefix} one setup CTA`, await cta.count() === 1
             && await cta.getAttribute('href') === '/profile/#daily-brief');
           check(`${prefix} exact setup body`, await shell.getByText(
-            'A personal morning email for Frida Kahlo — where each day’s sky touches its saved placements, not just its Sun sign.',
+            'A personal morning email for Frida Kahlo, where each day’s sky touches its saved placements, not just its Sun sign.',
             { exact: true },
           ).count() === 1);
           check(`${prefix} Sun submit is the lighter action`, await shell.locator('.email-capture__submit.btn--ghost').count() === 1
@@ -527,7 +527,7 @@ await withPreview({ port: 4426 }, async (baseURL) => {
             name: 'Your daily brief is paused.', exact: true,
           }).count() === 1);
           check(`${prefix} exact paused body`, await shell.getByText(
-            'The chart it read was deleted, so delivery stopped. Choose another synced chart whenever you’re ready — nothing is chosen for you.',
+            'The chart it read was deleted, so delivery stopped. Choose another synced chart whenever you’re ready. Nothing is chosen for you.',
             { exact: true },
           ).count() === 1);
           check(`${prefix} one explicit replacement CTA`, await choose.count() === 1

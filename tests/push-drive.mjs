@@ -306,13 +306,13 @@ await withPreview({ port: Number(process.env.PUSH_DRIVE_PORT ?? 4399) }, async (
     await profileSettings.page.waitForSelector('[data-push-optin][data-push-context="profile"]');
     check('Profile exposes the exact active Sky Alerts status row',
       await profileSettings.page.getByText(
-        'Sky alerts · On — the dates that matter, by notification.',
+        'Sky alerts · On. The dates that matter, by notification.',
         { exact: true },
       ).isVisible()
         && await profileSettings.page.getByRole('button', { name: 'Turn off' }).isVisible());
     await profileSettings.page.getByRole('button', { name: 'Turn off' }).click();
     await profileSettings.page.getByText(
-      'Sky alerts · Off — the dates that matter, by notification.',
+      'Sky alerts · Off. The dates that matter, by notification.',
       { exact: true },
     ).waitFor();
     const profileOff = await profileSettings.page.evaluate(() => ({
@@ -349,7 +349,7 @@ await withPreview({ port: Number(process.env.PUSH_DRIVE_PORT ?? 4399) }, async (
     }));
     check('Profile never reports Off when server revocation fails',
       await serverFailure.page.getByText(
-        'Sky alerts · On — the dates that matter, by notification.',
+        'Sky alerts · On. The dates that matter, by notification.',
         { exact: true },
       ).isVisible()
         && await serverFailure.page.getByRole('button', { name: 'Turn off' }).isVisible()
@@ -376,7 +376,7 @@ await withPreview({ port: Number(process.env.PUSH_DRIVE_PORT ?? 4399) }, async (
     }));
     check('Profile never reports Off when browser revocation fails',
       await browserFailure.page.getByText(
-        'Sky alerts · On — the dates that matter, by notification.',
+        'Sky alerts · On. The dates that matter, by notification.',
         { exact: true },
       ).isVisible()
         && await browserFailure.page.getByRole('button', { name: 'Turn off' }).isVisible()
@@ -402,7 +402,7 @@ await withPreview({ port: Number(process.env.PUSH_DRIVE_PORT ?? 4399) }, async (
     }));
     check('Profile reports Off with a retry when failed enrollment rolls back cleanly',
       await enrollmentRollback.page.getByText(
-        'Sky alerts · Off — the dates that matter, by notification.',
+        'Sky alerts · Off. The dates that matter, by notification.',
         { exact: true },
       ).isVisible()
         && await enrollmentRollback.page.getByRole('button', { name: 'Turn on sky alerts' }).isVisible()
@@ -431,7 +431,7 @@ await withPreview({ port: Number(process.env.PUSH_DRIVE_PORT ?? 4399) }, async (
     }));
     check('Profile reports On when failed enrollment leaves the browser subscription active',
       await enrollmentRollbackFailure.page.getByText(
-        'Sky alerts · On — the dates that matter, by notification.',
+        'Sky alerts · On. The dates that matter, by notification.',
         { exact: true },
       ).isVisible()
         && await enrollmentRollbackFailure.page.getByRole('button', { name: 'Turn off' }).isVisible()
