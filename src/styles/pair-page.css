@@ -358,8 +358,6 @@
 .ph-basis__m { color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
 .ph-basis__m--wide { grid-column: 2 / -1; }
 .ph-basis__note { margin: 16px 0 0; font-size: 0.9375rem; color: var(--ink-1); }
-.ph-byline { margin: 28px 0 0; font-size: 13px; color: var(--faint); }
-.ph-byline a { color: var(--muted); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
 
 .ph-rule { height: 1px; margin: 0; border: 0; background: var(--hair-1); }
 
