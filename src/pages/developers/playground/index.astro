@@ -1,0 +1,128 @@
+---
+import Base from '../../../layouts/Base.astro';
+import '../../../styles/chart-compare.css';
+import '../../../styles/developer-playground.css';
+import DeveloperPlayground from '../../../islands/DeveloperPlayground';
+import examples from '../../../lib/compute-api/examples.json';
+import { COMPUTE_ORIGIN } from '../../../lib/compute-api/constants';
+import { ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
+import { playgroundExamples } from '../../../lib/developer-playground-examples';
+
+const title = 'Compute API Playground — Run the Documented Examples | Zodiacs.org';
+// A plain literal: scripts/build-assistant-context.mjs reads it from the source.
+const description = 'Send a documented request to the compute API, run the same request with the API\'s own code in your browser, and compare both answers with the documented one. Code in cURL, JavaScript, Python, Swift and Ruby.';
+
+const offered = playgroundExamples();
+const backend = examples.success.chart.utc.backend;
+
+const jsonLd = [
+  {
+    '@type': 'WebApplication',
+    name: 'Zodiacs compute API playground',
+    url: 'https://zodiacs.org/developers/playground/',
+    description,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Any',
+    isAccessibleForFree: true,
+    provider: ORGANIZATION,
+  },
+  developerBreadcrumb('/developers/playground/', 'Playground'),
+];
+---
+
+<!--
+  privateSurface: a request typed here can hold a birth, so the page opts out of
+  the site-wide analytics scripts, as /developers/compare/ does.
+-->
+<Base title={title} description={description} path="/developers/playground/" jsonLd={jsonLd} privateSurface>
+  <section class="section container container--narrow playground-page">
+    <em class="kicker">Playground</em>
+    <h1 class="display">Run the compute API's examples.</h1>
+    <div class="prose">
+      <p>
+        Pick one of the {offered.examples.length} documented requests, or write your own, then send it to the{' '}
+        <a href="/developers/compute/">compute API</a> and run it in this browser. The browser run uses the API's
+        own code, <code>{backend.name}</code> {backend.version} with {backend.ephemeris.name}{' '}
+        {backend.ephemeris.version}, so the two answers can be compared field by field, and each with the answer the
+        documentation gives.
+      </p>
+      <p>
+        Nothing leaves this page unless you send it. A request sent to the API follows its{' '}
+        <a href="/developers/compute/#privacy">privacy rules</a>: birth data goes only in the body, and the function
+        writes nothing from a request to a log, a file or a database.
+      </p>
+    </div>
+
+    <DeveloperPlayground client:load />
+
+    <h2 id="what-it-compares">What it compares</h2>
+    <div class="prose">
+      <p>
+        The two answers are compared as JSON, path by path. Where they differ, each difference is named for its
+        cause:
+      </p>
+      <ul>
+        <li><strong>runtime</strong>: a receipt names the runtime that read local times, the tzdb release its{' '}
+          <code>Intl</code> reads. A browser does not report that release, so a receipt computed here records
+          <code>null</code> where the server records Node's.</li>
+        <li><strong>citation</strong>: the digest of a receipt that differs, which differs with it.</li>
+        <li><strong>rounding</strong>: two numbers within 1e-8 of each other. Speeds are central differences, and a
+          runtime's own sine and cosine can move their last digits.</li>
+        <li><strong>value</strong>: anything else. The playground calls such answers different.</li>
+      </ul>
+      <p>
+        While the request is still a documented one, both answers are also compared with the documented answer,
+        which the API's handler produced (<a href="/api/v1/openapi.json">the OpenAPI document</a> carries the same
+        examples).
+      </p>
+    </div>
+
+    <h2 id="citations">Citations</h2>
+    <div class="prose">
+      <p>
+        Every answer carries a receipt and a <code>cite</code>. Its <code>cite.receipt</code> is{' '}
+        <code>sha256:</code> and the hex SHA-256 of the receipt's RFC 8785 canonical JSON. The playground computes
+        that digest again with this browser's own SHA-256 and says whether it matches.
+      </p>
+    </div>
+
+    <h2 id="the-browser-run">The browser run</h2>
+    <div class="prose">
+      <p>
+        <a href="/developers/playground/engine.mjs">The bundle</a> holds the API's request parsing and calculations,
+        the engine, astronomy-engine and the engine's zone histories before 1970, about 155 KB compressed. It loads
+        the first time you run a request here, reads the body as the API does once a request has arrived (its size,
+        then its JSON), and answers with the same statuses and refusals. Refusals that come from how a request is
+        framed or from the server's state, such as the rate limit, are not part of it; the{' '}
+        <a href="/developers/compute/#errors">errors section</a> documents them.
+      </p>
+    </div>
+
+    <h2 id="links">Links</h2>
+    <div class="prose">
+      <p>
+        A link to the playground names the endpoint, and the documented example while the request is still that
+        example. It carries the request itself only when you tick the box, and then after the <code>#</code>, which
+        a browser never sends to a server. Anyone with such a link can read what it carries.
+      </p>
+    </div>
+
+    <h2 id="for-agents">For agents</h2>
+    <div class="prose">
+      <p>
+        <a href="/developers/playground.md">The Markdown version of this page</a> lists every request with a cURL
+        command and its documented citation digest, and{' '}
+        <a href="/developers/playground/examples.json">examples.json</a> holds each request with its documented
+        answer. An agent reproduces an example by sending its body to <code>{`${COMPUTE_ORIGIN}/api/v1/`}</code> and
+        comparing the answer with the documented one.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .playground-page h1 { margin: var(--s-1) 0 var(--s-4); }
+  .playground-page h2 { margin: var(--s-12) 0 var(--s-4); font-size: var(--text-lg); scroll-margin-top: 96px; }
+  .playground-page .prose { max-width: 68ch; }
+  .playground-page .prose code { font-family: var(--font-mono); font-size: .9em; overflow-wrap: anywhere; }
+</style>

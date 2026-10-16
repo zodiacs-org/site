@@ -1182,7 +1182,8 @@ const sitemapPolicy = {
   // + one version-bound developer guide page per entry of the shared catalogue, and its index
   //   (developerGuidePaths, below; 26 with the seven S4 query pages).
   // +3 for the English-only occasion cards (/occasions/, milestones, baby shower).
-  total: 1422 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /developers/playground/, the compute API playground.
+  total: 1423 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size + developerGuidePaths.size,

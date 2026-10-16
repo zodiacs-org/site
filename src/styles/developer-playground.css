@@ -1,0 +1,29 @@
+/*
+ * The compute API playground at /developers/playground/. Its buttons reuse the
+ * chart-difference tool's (src/styles/chart-compare.css), which the page also
+ * imports; a developer page does not pull in the calculator stylesheet.
+ */
+.pg { margin: clamp(18px, 4vw, 30px) 0; }
+.pg__core { display: grid; gap: 22px; padding: clamp(18px, 4vw, 24px); min-width: 0; }
+.pg__request { display: grid; gap: 14px; min-width: 0; }
+.pg__body textarea { min-height: 15rem; font-size: 13px; line-height: 1.6; resize: vertical; }
+.pg select.field__input { min-height: 44px; }
+.pg__actions, .pg__tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.pg__tabs .cmp__btn[aria-pressed="true"] { border-color: var(--ink-0); color: var(--text); }
+.pg__note { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.65; }
+.pg__error { margin: 0; color: var(--sign-aries); font-size: var(--text-sm); }
+.pg__answers { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); min-width: 0; }
+.pg__answer, .pg__compare, .pg__code, .pg__link { display: grid; gap: 10px; min-width: 0; }
+.pg h3 { margin: 0; font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 500; letter-spacing: -0.01em; }
+.pg__status { margin: 0; font-size: var(--text-sm); color: var(--text-2); }
+.pg pre { margin: 0; padding: 14px; max-height: 26rem; overflow: auto; border: 1px solid var(--hair-2); border-radius: var(--radius-sm); font-size: 12.5px; line-height: 1.6; }
+.pg pre:focus-visible, .pg__table-wrap:focus-visible { outline: 2px solid var(--text-2); outline-offset: 2px; }
+.pg__verdict { margin: 0; font-size: var(--text-sm); line-height: 1.65; color: var(--text-2); }
+.pg__verdict--different { color: var(--sign-aries); }
+.pg__table-wrap { overflow-x: auto; }
+.pg__table { width: 100%; border-collapse: collapse; font-size: 12.5px; line-height: 1.5; }
+.pg__table th, .pg__table td { padding: 6px 8px; border-top: 1px solid var(--hair-2); text-align: left; vertical-align: top; }
+.pg__table code { font-family: var(--font-mono); overflow-wrap: anywhere; }
+.pg__check { display: flex; gap: 10px; align-items: center; min-height: 44px; font-size: var(--text-sm); color: var(--text-2); }
+.pg__check input { width: 18px; height: 18px; }
+.pg__url { margin: 0; font-size: 12.5px; color: var(--text-2); overflow-wrap: anywhere; }

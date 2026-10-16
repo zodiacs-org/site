@@ -155,6 +155,9 @@ const ASPECT_FACTS_ROUTES = ['/developers/compare/'] as const;
 // search_places and resolve_birth_time.
 const BIRTH_TIME_TOOLS_LASTMOD = '2026-10-14';
 const BIRTH_TIME_TOOLS_ROUTES = ['/developers/compute/', '/developers/mcp/'] as const;
+// The compute API playground (P3.8): the page, and the developer index and compute API page that link to it.
+const PLAYGROUND_LASTMOD = '2026-10-15';
+const PLAYGROUND_ROUTES = ['/developers/playground/', '/developers/', '/developers/compute/'] as const;
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -307,6 +310,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ENGINE_GEO_ROUTES.map((loc) => [loc, ENGINE_GEO_LASTMOD] as const),
   ...ASPECT_FACTS_ROUTES.map((loc) => [loc, ASPECT_FACTS_LASTMOD] as const),
   ...BIRTH_TIME_TOOLS_ROUTES.map((loc) => [loc, BIRTH_TIME_TOOLS_LASTMOD] as const),
+  ...PLAYGROUND_ROUTES.map((loc) => [loc, PLAYGROUND_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -405,6 +409,7 @@ export const GET: APIRoute = async () => {
     { loc: '/developers/ai/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
+    { loc: '/developers/playground/', priority: 0.6 },
     { loc: '/developers/sky-benchmark/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },
     { loc: '/disclosure/', priority: 0.5 },
