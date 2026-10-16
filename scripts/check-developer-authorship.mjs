@@ -27,12 +27,14 @@ export const generatedDeveloperDocuments = Object.freeze({
     'developers/docs/index.md',
     ...developerGuides.map((guide) => `developers/docs/${guide.slug}.md`),
   ],
+  'playground.md.ts': ['developers/playground.md'],
+  'playground/examples.json.ts': ['developers/playground/examples.json'],
 });
 
 export const requiredDocuments = [
   ...Object.values(generatedDeveloperDocuments).flat(),
   ...['', 'ai/', 'compare/', 'compute/', 'conformance/', 'engine/', 'examples/',
-    'mcp/', 'precision-preview/', 'sky-benchmark/', 'support/'].map((route) => `developers/${route}index.html`),
+    'mcp/', 'playground/', 'precision-preview/', 'sky-benchmark/', 'support/'].map((route) => `developers/${route}index.html`),
   'developers/engine/reference/index.html', 'developers/engine/reference/modules.html',
   'developers/engine/reference/provenance.json',
   'developers/engine/reference/release/LICENSE.txt',

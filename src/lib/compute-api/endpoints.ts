@@ -55,7 +55,7 @@ import {
 import { budgetExhausted, invalidRequest } from './errors.js';
 import {
   resolveLocal,
-  runtimeTzdbVersion,
+  runtimeIdentity,
   timeResolutionFacts,
   zoneHistoriesDisagree,
   type LocalResolution,
@@ -279,8 +279,7 @@ async function placeInstantChart(
         policy: { fold: 'earlier', gap: 'shift-forward' },
       };
     }
-    const tzdb = runtimeTzdbVersion();
-    context.provenance = { runtime: { name: 'node', ...(tzdb ? { tzdbVersion: tzdb } : {}) } };
+    context.provenance = { runtime: runtimeIdentity() };
   }
   const { receipt } = createNatalEnvelope(chart, context);
   return { chart, receipt, local };
