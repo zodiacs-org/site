@@ -331,7 +331,7 @@ export async function driveLocaleDiscovery({ browser, baseURL, check, outDir }) 
             if (locale.code !== 'en') {
               const date = new Intl.DateTimeFormat(locale.intl, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
                 .format(new Date(`${daily.date}T12:00:00Z`));
-              const heading = await page.locator(`[data-edition-content] .kicker`).first().textContent();
+              const heading = await page.locator(`[data-edition-content] .dateline`).first().textContent();
               record(`${locale.code} ${slug} edition date@${viewport.width}`, heading.includes(date), heading.trim());
               if (slug !== 'today') {
                 const dates = slug === 'horoscopes'

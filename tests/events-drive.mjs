@@ -239,8 +239,8 @@ await withPreview({ port: 4412 }, async (BASE) => {
         await page.locator('link[rel="canonical"]').getAttribute('href') === `https://zodiacs.org${route}`);
       check(`${route}: event RSS is discoverable`,
         await page.locator('link[rel="alternate"][href="/feeds/events.xml"]').count() === 1);
-      check(`${route}: kicker links back to the hub`,
-        await page.locator('.event-hero .kicker[href="/events/"]').count() === 1);
+      check(`${route}: back-link leads to the hub`,
+        await page.locator('.event-hero .crumb[href="/events/"]').count() === 1);
       check(`${route}: desktop has no horizontal overflow`, (await overflow(page)) <= 0);
       check(`${route}: zero console or page errors`, errors.length === 0, errors.join(' | '));
 
