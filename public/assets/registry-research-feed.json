@@ -1,14 +1,35 @@
 {
   "schema": "zodiacs.registry-research-feed.v1",
-  "generatedAt": "2026-10-15T00:07:36.177Z",
+  "generatedAt": "2026-10-16T00:07:50.402Z",
   "publisher": "Zodiacs.org Research System",
   "window": {
     "previousDays": 30,
     "futureDays": 7,
-    "startsAt": "2026-09-15T00:00:00.000Z",
-    "endsBefore": "2026-10-23T00:00:00.000Z"
+    "startsAt": "2026-09-16T00:00:00.000Z",
+    "endsBefore": "2026-10-24T00:00:00.000Z"
   },
   "items": [
+    {
+      "id": "zrx-event-brief-ingress-2026-10-23t09-38-28-721z-sun-scorpio",
+      "slug": "event-brief-ingress-2026-10-23t09-38-28-721z-sun-scorpio",
+      "kind": "event-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-16T12:00:00.000Z",
+      "visibleAt": "2026-10-23T09:38:28.721Z",
+      "title": "Sun enters Scorpio · event brief",
+      "summary": "Sun enters Scorpio becomes exact at 2026-10-23T09:38:28.721Z. Its symbolic reading and later market observations remain separate.",
+      "url": "/terminal/research/event-brief-ingress-2026-10-23t09-38-28-721z-sun-scorpio/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "calendar",
+        "astrology",
+        "ingress"
+      ],
+      "status": "scheduled"
+    },
     {
       "id": "zrx-event-brief-aspect-2026-10-20t06-43-09-751z-venus-square-pluto",
       "slug": "event-brief-aspect-2026-10-20t06-43-09-751z-venus-square-pluto",
@@ -27,6 +48,28 @@
       "topics": [
         "calendar",
         "astrology",
+        "aspect"
+      ],
+      "status": "scheduled"
+    },
+    {
+      "id": "zrx-daily-market-brief-2026-10-16",
+      "slug": "daily-market-brief-2026-10-16",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-16T12:00:00.000Z",
+      "visibleAt": "2026-10-16T12:00:00.000Z",
+      "title": "Mars trine Saturn · daily market brief",
+      "summary": "Mars trine Saturn leads the disclosed symbolic index; Leo market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-16/",
+      "signs": [
+        "leo",
+        "aries"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
         "aspect"
       ],
       "status": "scheduled"
@@ -75,6 +118,86 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-market-check-2026-10-08-observation-168h",
+      "slug": "market-check-2026-10-08-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-16T00:07:50.402Z",
+      "visibleAt": "2026-10-16T00:07:50.402Z",
+      "title": "Leo 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (191.98 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-08-observation-168h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-14-observation-24h",
+      "slug": "market-check-2026-10-14-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-16T00:07:50.402Z",
+      "visibleAt": "2026-10-16T00:07:50.402Z",
+      "title": "Leo 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (47.99 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-14-observation-24h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-15-observation-24h",
+      "slug": "market-check-2026-10-15-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-16T00:07:50.402Z",
+      "visibleAt": "2026-10-16T00:07:50.402Z",
+      "title": "Leo 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (24 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-15-observation-24h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-16",
+      "slug": "market-check-2026-10-16",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-16T00:07:50.402Z",
+      "visibleAt": "2026-10-16T00:07:50.402Z",
+      "title": "Leo market check · 2026-10-16",
+      "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-16/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
       "id": "zrx-daily-market-brief-2026-10-15",
       "slug": "daily-market-brief-2026-10-15",
       "kind": "daily-market-brief",
@@ -94,7 +217,7 @@
         "daily-sky",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-event-brief-aspect-2026-10-15t08-21-27-267z-sun-sextile-jupiter",
@@ -116,7 +239,7 @@
         "astrology",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-market-check-2026-10-15",
@@ -2966,110 +3089,6 @@
       "url": "/terminal/research/market-check-2026-09-16/",
       "signs": [
         "aries"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-event-brief-aspect-2026-09-15t18-41-31-944z-venus-square-pluto",
-      "slug": "event-brief-aspect-2026-09-15t18-41-31-944z-venus-square-pluto",
-      "kind": "event-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-09T12:00:00.000Z",
-      "visibleAt": "2026-09-15T18:41:31.944Z",
-      "title": "Venus Square Pluto · event brief",
-      "summary": "Venus Square Pluto becomes exact at 2026-09-15T18:41:31.944Z. Its symbolic reading and later market observations remain separate.",
-      "url": "/terminal/research/event-brief-aspect-2026-09-15t18-41-31-944z-venus-square-pluto/",
-      "signs": [
-        "scorpio",
-        "aquarius"
-      ],
-      "topics": [
-        "calendar",
-        "astrology",
-        "aspect"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-08-observation-168h",
-      "slug": "market-check-2026-09-08-observation-168h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-15T12:13:40.990Z",
-      "visibleAt": "2026-09-15T12:13:40.990Z",
-      "title": "Virgo 7-day observation update",
-      "summary": "7-day follow-up using the first qualifying archived snapshot (168.45 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-08-observation-168h/",
-      "signs": [
-        "virgo"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-daily-market-brief-2026-09-15",
-      "slug": "daily-market-brief-2026-09-15",
-      "kind": "daily-market-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-15T12:00:00.000Z",
-      "visibleAt": "2026-09-15T12:00:00.000Z",
-      "title": "Venus square Pluto · daily market brief",
-      "summary": "Venus square Pluto leads the disclosed symbolic index; Scorpio market measures are recorded separately.",
-      "url": "/terminal/research/daily-market-brief-2026-09-15/",
-      "signs": [
-        "scorpio",
-        "aquarius"
-      ],
-      "topics": [
-        "markets",
-        "daily-sky",
-        "aspect"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-14-observation-24h",
-      "slug": "market-check-2026-09-14-observation-24h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-15T00:14:08.796Z",
-      "visibleAt": "2026-09-15T00:14:08.796Z",
-      "title": "Gemini 24-hour observation update",
-      "summary": "24-hour follow-up using the first qualifying archived snapshot (24.08 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-14-observation-24h/",
-      "signs": [
-        "gemini"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-15",
-      "slug": "market-check-2026-09-15",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-15T00:08:45.603Z",
-      "visibleAt": "2026-09-15T00:08:45.603Z",
-      "title": "Scorpio market check · 2026-09-15",
-      "summary": "Scorpio price, market cap, liquidity, volume, and collection medians at one archived observation.",
-      "url": "/terminal/research/market-check-2026-09-15/",
-      "signs": [
-        "scorpio"
       ],
       "topics": [
         "markets",
