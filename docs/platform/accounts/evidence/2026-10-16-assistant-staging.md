@@ -1,6 +1,6 @@
 # Assistant saving staging — 16 October 2026
 
-Status: database and public OAuth clients prepared; hosted connection tests pending.
+Status: native saving, duplicate checks and revocation exercised in both hosts; profile-reading fix verified on hosted staging, shared Sky Watch sign-in and owner privacy review still pending.
 
 The owner delegated the capacity decision after the two free database slots were
 found occupied. Reuse the existing Sky Watch test database with distinct client
@@ -22,8 +22,9 @@ Verified RLS on saved pages and the private account authorization tables. The
 security advisor reported no errors; existing Sky Watch default-deny RLS notices
 and the existing unavailable leaked-password protection warning remain.
 
-The new hook has not yet been selected in Auth. Creating its function alone
-does not change either live preview. The account allowlist is not enabled yet.
+The shared hook is now selected and enabled in staging Auth. Both new account clients are enabled in the
+account allowlist for `https://zodiacs-accounts-test.vercel.app/mcp`. The two
+existing Sky Watch clients remain in their original, separate allowlist.
 
 ## Public OAuth clients
 
@@ -32,11 +33,67 @@ without a client secret:
 
 | Client | ID | Exact callback |
 | --- | --- | --- |
-| ChatGPT · Zodiacs Account Saves | `bc20c0be-2688-4b12-95b1-ab9a0ad261bb` | `https://chatgpt.com/connector_platform_oauth_redirect` |
+| ChatGPT · Zodiacs Account Saves | `bc20c0be-2688-4b12-95b1-ab9a0ad261bb` | `https://chatgpt.com/connector/oauth/3hCcdQiy23Tg` |
 | Claude · Zodiacs Account Saves | `ddccf28a-7cee-4fc7-904d-93d08ad6cd2d` | `https://claude.ai/api/mcp/auth_callback` |
 
 The owner created the reviewer account directly. Verified that it exists, has
 a confirmed email and has a password. No password was read or recorded.
+
+ChatGPT's private connector form now supplies a unique callback,
+`https://chatgpt.com/connector/oauth/3hCcdQiy23Tg`. The provider callback was updated to that exact address with the owner's approval.
+
+## Hosted preview
+
+- Dedicated Vercel project: `zodiacs-accounts-test`.
+- Source: `d03fd5e2` on `codex/accounts-setup-050`.
+- Preview deployment: `dpl_4bXjN91hZDc3KQ6t6dX59X8apyyC`.
+- Alias: `https://zodiacs-accounts-test.vercel.app`.
+- Settings are deployment-only; no persistent Preview variables were added.
+- Local build used Node 24.19.0; the deployed package engine selects Node 22.
+- The new project initially lacked the on-demand `zodiacs-compute-api` firewall
+  rule, so the handler correctly failed closed before calling the database.
+  Added the staging rule at 30 requests per IP per 60 seconds, matching the
+  existing production rule. No production firewall changes were made.
+- A protected diagnostic independently confirmed the staging database quota
+  RPC returns HTTP 200 and `true` from the hosted Node 22 runtime.
+- All six hosted pre-authentication checks passed: exact resource/issuer,
+  shared consent configuration and CSP, thirteen anonymous tools plus one OAuth
+  save tool, anonymous capability call, sign-in challenge on anonymous saving,
+  and refusal of an invalid bearer. See `2026-10-16-hosted-preauth.json`.
+- Both private host connections were created and authorized with the reviewer
+  account. The consent page lists both clients. Each host saved a chart, and
+  both rows appear in the staging profile with summaries and assistant labels.
+- The shared provider Site URL now uses the accounts preview, with authorization
+  path `/oauth/consent/`. Added consent and website callback return paths while
+  preserving the Sky Watch entry. No signing keys or existing clients changed.
+- Claude initially connected anonymously with "Sign in when needed". Its first
+  save refused correctly, but no automatic sign-in control appeared. Explicit
+  disconnect/reconnect in connector settings completed OAuth successfully.
+  Record this limitation when assessing host sign-in usability.
+- The saved synthetic chart link restores its original date, time and place,
+  computes locally, and matches the stored Sun/Moon/rising summary.
+- All four save kinds succeeded in both hosts. Six synthetic records exist: two
+  charts, two comparison variants, one wedding and one weekly forecast. Repeated
+  saves returned the original record without changing its timestamp.
+- Download as JSON contains all six rows and their full `detail` values.
+- Disconnecting each client on the consent page blocked its next save. Claude
+  displayed a reconnect request. ChatGPT returned a generic internal tool
+  failure instead of a sign-in prompt; explicit reconnect in settings restored
+  saving and returned the existing chart (`alreadySaved: true`). Claude also
+  saved successfully after explicit settings reconnection, returning the same
+  comparison ID and original save time with `alreadySaved: true`.
+- The native weekly link opened the general horoscope page, and a comparison
+  without coordinates opened the sign-pair guide. The profile now offers an
+  on-demand saved reading for every assistant row. It displays the stored
+  content directly and clears it on an account change. Source: `d03fd5e2`;
+  hosted UI verification passed for chart, comparison, occasion and week.
+  The weekly dates and time zone, comparison score and caveats, and wedding
+  local time and rating are all visible directly in the profile.
+- Existing Sky Watch capability calls still succeed after the shared hook
+  change. Fresh sign-in has not yet been verified; do not claim this gate passed.
+- Hosted second-account isolation and the full destructive account lifecycle
+  matrix remain unverified. The PostgreSQL 17 suite covers those database
+  contracts; this is not a substitute for native host evidence.
 
 ## Shared provider rollback baseline
 
@@ -63,3 +120,23 @@ Preserve the existing redirect URLs, signing keys and worker scheduler.
 - Generated runtime and consent files rebuilt with `npm run ai:build`.
 
 No assistant-account production migration, flag, submission or rescan was made.
+
+Profile reading follow-up: 30 focused tests pass, including real saved-result
+rendering, markup escaping, bounded parsing and current-account query isolation.
+The full build, distribution checks and bundle budgets pass; type checking
+reports 0 errors, 0 warnings and 44 existing hints.
+
+## Native evidence and remaining checks
+
+- `2026-10-16-native-account-saves.json` records observed host outcomes and
+  explicitly separates pending checks from passes.
+- `2026-10-16-saved-week.png` shows the saved weekly reading in the profile.
+- `2026-10-16-assistants-reconnected.png` shows both restored grants.
+- Owner review of the enabled privacy wording is pending.
+- Fresh Sky Watch authorization with the synthetic reviewer is pending owner
+  confirmation for that additional app grant. Do not mark shared staging ready
+  until that flow is checked.
+- The directory remains In review. Its editor permits changes during review,
+  currently displays the older description and six tools, and offers a
+  separate Sync from server action for the current thirteen tools. No directory
+  fields, submission, scan, or email were changed in this verification.
