@@ -24,9 +24,9 @@ const DISMISSED_KEY = 'zodiacs.install.dismissed.v1';
 const REGISTRY_AUTHORITY_PATH = '/registry/zodiacs.registry.json';
 
 const expectedManifest = {
-  name: 'Zodiacs — birth charts and daily astrology',
+  name: 'Zodiacs | birth charts and daily astrology',
   short_name: 'Zodiacs',
-  description: 'Birth charts, daily horoscopes, compatibility, and sign guides — free and private on your device.',
+  description: 'Birth charts, daily horoscopes, compatibility, and sign guides, free and private on your device.',
   start_url: '/',
   scope: '/',
   display: 'standalone',

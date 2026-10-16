@@ -5,7 +5,7 @@ import { createServer } from 'node:http';
 
 const TIMEOUT = 30_000;
 const LOAD_ERROR = 'The calculation files could not load. Check your connection and try again.';
-const PLACE_ERROR = "Couldn't load the place index — check your connection and try again.";
+const PLACE_ERROR = "Couldn't load the place index. Check your connection and try again.";
 const RELOAD_WARNING = 'Reloading clears unsaved entries.';
 const EMPTY_TRANSITS = 'No slow transits go exact in this window.';
 const FULL_CHUNK = /\/_astro\/full\.[^/]+\.js$/;
