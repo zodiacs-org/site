@@ -155,7 +155,7 @@
   display: block;
   margin: 0 0 13px;
   color: var(--zf-faint);
-  font: 500 12.5px/1.25 var(--zf-sans);
+  font: 500 12px/12.5px var(--zf-sans);
   letter-spacing: 0;
   text-transform: none;
 }
