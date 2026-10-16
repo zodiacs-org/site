@@ -12,6 +12,8 @@ export interface AccountsService {
   save: SaveStore;
   /** The predefined OAuth client IDs the consent page accepts. */
   clients: readonly string[];
+  /** Consent UI only on shared staging; never accepted by the save tool. */
+  previewWatchClients?: readonly string[];
   supabaseUrl: string;
   publishableKey: string;
 }
@@ -64,6 +66,9 @@ export function configuredAccounts(env: Environment, rpc?: AccountsRpc): Account
   if (!url || !/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(url) || !key?.startsWith('sb_publishable_')
     || !clients.length || clients.length > 8 || clients.some(client => !UUID.test(client))) throw new Error('accounts-unavailable');
   const origin = accountsResourceOrigin(env);
+  const previewWatchClients = (env.ZODIACS_ACCOUNTS_PREVIEW_WATCH_CLIENTS ?? '').split(',').map(value => value.trim()).filter(Boolean);
+  if (previewWatchClients.length && (env.VERCEL_ENV !== 'preview' || previewWatchClients.length > 8
+    || previewWatchClients.some(client => !UUID.test(client) || clients.some(account => account.toLowerCase() === client.toLowerCase())))) throw new Error('accounts-unavailable');
   const resource = `${origin}/mcp`;
   const call = rpc ?? accountsRpc(env);
   const oauth = supabaseOAuthResource<AccountPrincipal>({
@@ -82,7 +87,8 @@ export function configuredAccounts(env: Environment, rpc?: AccountsRpc): Account
   // One row in the site's public.saved_pages, listed and removed on the profile with everything else saved there.
   const save: SaveStore = async (principal: AccountPrincipal, record: SavedRecord) =>
     call<StoredSave | 'full' | null>('save', { ...principal, resource, kind: PAGE_KINDS[record.kind], title: record.title, href: record.href, summary: record.summary, detail: record });
-  return { oauth, save, clients, supabaseUrl: url, publishableKey: key };
+  return { oauth, save, clients, supabaseUrl: url, publishableKey: key,
+    ...(previewWatchClients.length ? { previewWatchClients } : {}) };
 }
 
 /** The WWW-Authenticate value for a token that was present but is no longer usable. */

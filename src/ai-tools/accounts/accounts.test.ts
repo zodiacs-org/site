@@ -9,7 +9,7 @@ import { COUNTED_TOOL_NAMES } from '../usage';
 import { ACCOUNT_PERMISSION, ACCOUNT_SCOPES, MAX_SAVED_RECORD_BYTES, SAVE_TOOL_NAME, saveInput } from './contracts';
 import { accountsResourceOrigin, configuredAccounts, invalidTokenChallenge, signInChallenge } from './service';
 import { buildSavedRecord, recordDigest, recordProblem, saveToZodiacs, type SavedRecord } from './save';
-import { allowedRedirect } from './consent';
+import { allowedRedirect, consentKind } from './consent';
 import { CONSENT_HTML, CONSENT_SCRIPT_HASH, CONSENT_STYLE_HASH } from '../../../integrations/generated/accounts-consent.mjs';
 
 const root = fileURLToPath(new URL('../../../', import.meta.url));
@@ -43,6 +43,18 @@ describe('account sign-in: audience, scope and permission', () => {
 });
 
 describe('account configuration', () => {
+  it('allows shared consent only in preview, with disjoint valid client lists', () => {
+    const watch = '11111111-2222-4333-8444-555555555555';
+    const env = { ...production, VERCEL_ENV: 'preview', ZODIACS_MCP_STAGING_HOST: 'zodiacs-accounts-test.vercel.app', ZODIACS_ACCOUNTS_PREVIEW_WATCH_CLIENTS: watch };
+    const service = configuredAccounts(env, vi.fn())!;
+    expect(service.clients).toEqual([CLIENT]);
+    expect(service.previewWatchClients).toEqual([watch]);
+    for (const patch of [{ VERCEL_ENV: 'production' }, { ZODIACS_ACCOUNTS_PREVIEW_WATCH_CLIENTS: CLIENT },
+      { ZODIACS_ACCOUNTS_PREVIEW_WATCH_CLIENTS: CLIENT.toUpperCase() }, { ZODIACS_ACCOUNTS_PREVIEW_WATCH_CLIENTS: 'not-a-client' }]) {
+      expect(() => configuredAccounts({ ...env, ...patch }, vi.fn())).toThrow('accounts-unavailable');
+    }
+    expect(configuredAccounts(production, vi.fn())!.previewWatchClients).toBeUndefined();
+  });
   it('is off unless the switch is exactly 1, and refuses a half-configured switch-on', () => {
     for (const value of [undefined, '', '0', 'true', ' 1', '1 ']) expect(configuredAccounts({ ...production, ZODIACS_ACCOUNTS_ENABLED: value })).toBeUndefined();
     for (const patch of [{ PUBLIC_SUPABASE_URL: undefined }, { PUBLIC_SUPABASE_URL: 'https://evil.example' }, { PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'eyJhbGciOi' },
@@ -208,6 +220,14 @@ describe('what can be saved', () => {
 });
 
 describe('the consent page', () => {
+  it('selects the correct consent permissions and refuses unknown or ambiguous clients', () => {
+    const config = { clients: ['account'], previewWatchClients: ['watch'] };
+    expect(consentKind('account', config)).toBe('accounts');
+    expect(consentKind('watch', config)).toBe('watch');
+    expect(consentKind('unknown', config)).toBeUndefined();
+    expect(consentKind('account', { ...config, previewWatchClients: ['account'] })).toBeUndefined();
+    expect(consentKind('watch', { clients: ['account'] })).toBeUndefined();
+  });
   it('returns only to the assistants’ own OAuth addresses', () => {
     for (const url of ['https://chatgpt.com/connector_platform_oauth_redirect', 'https://chatgpt.com/connector/oauth/abc', 'https://claude.ai/api/mcp/auth_callback', 'https://claude.com/api/mcp/auth_callback']) expect(allowedRedirect(url), url).toBe(true);
     for (const url of ['https://evil.example/connector_platform_oauth_redirect', 'http://chatgpt.com/connector_platform_oauth_redirect', 'https://chatgpt.com.evil.example/connector/oauth/x',

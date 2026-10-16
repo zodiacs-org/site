@@ -86,3 +86,14 @@ export async function removeSavedPage(id: string, client = getSupabaseClient()):
   const { error } = await session.client.from('saved_pages').delete().eq('id', id);
   return !error;
 }
+
+/** Fetch one saved reading only when opened, with the current account's RLS. */
+export async function loadSavedPageDetail(id: string, client = getSupabaseClient()): Promise<unknown | null> {
+  if (!/^[0-9a-f-]{36}$/iu.test(id)) return null;
+  const session = await signedIn(client);
+  if (!session) return null;
+  const { data, error } = await session.client.from('saved_pages').select('detail')
+    .eq('id', id).eq('user_id', session.userId).eq('source', 'assistant').maybeSingle();
+  if (error) throw error;
+  return data?.detail ?? null;
+}

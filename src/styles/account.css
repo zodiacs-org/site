@@ -163,3 +163,12 @@
 @media print {
   .acct-save { display: none; }
 }
+
+.saved-pages__reading { grid-column: 1 / -1; padding-top: 8px; min-width: 0; font-size: var(--text-sm); line-height: 1.6; scroll-margin-top: 100px; }
+.saved-pages__reading summary { cursor: pointer; color: var(--text); min-height: 36px; }
+.saved-pages__reading-content { display: grid; gap: 18px; padding: 12px 0 18px; overflow-wrap: anywhere; }
+.saved-pages__reading-content h3 { margin: 0 0 6px; font-family: var(--font-serif); font-weight: 500; font-size: var(--text-lg); }
+.saved-pages__reading-content p { margin: 4px 0; color: var(--muted); }
+.saved-pages__reading a { color: var(--text); text-underline-offset: 3px; }
+
+.saved-pages__open { padding: 0; border: 0; background: transparent; font-family: inherit; text-align: left; cursor: pointer; }

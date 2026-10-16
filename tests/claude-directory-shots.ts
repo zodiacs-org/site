@@ -5,12 +5,13 @@
  * Run with: npx vite-node --script tests/claude-directory-shots.ts
  */
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, writeFile } from 'node:fs/promises';
 import { chromium, type Page } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { HOROSCOPES_HTML } from '../integrations/generated/horoscopes.mjs';
 import { STUDIO_HTML } from '../integrations/generated/chart-studio.mjs';
 import { WIDGET_HTML } from '../integrations/generated/sky-calendar.mjs';
+import { OCCASIONS_HTML } from '../integrations/generated/occasions.mjs';
 
 const SERVER = 'https://zodiacs.org/mcp';
 let session: string | undefined;
@@ -42,9 +43,21 @@ const now = new Date();
 const picker = await call('get_horoscope', { zone: 'Asia/Bangkok' });
 const leo = await call('get_horoscope', { sign: 'leo', zone: 'Asia/Bangkok' });
 const week = await call('get_upcoming_events', { from: now.toISOString(), to: new Date(now.getTime() + 7 * 86400000).toISOString(), zone: 'Asia/Bangkok' });
+const comparisonPrompt = "Compare my chart with my partner's and tell us how compatible we are: I was born 3 May 1990 at 8:30 in Madrid, he was born 10 August 1992.";
+const comparison = await call('get_compatibility', {
+  a: { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038, place: 'Madrid, Spain' },
+  b: { birthDate: '1992-08-10' },
+});
+const weddingPrompt = "We're getting married on 12 June 2027 at 17:00 in Florence. Is it a good day for it? Make us a card with the sky for that day.";
+const wedding = await call('get_occasion_sky', {
+  occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome',
+  latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy',
+});
 
 const out = new URL('../docs/platform/zodiacs-ai/claude-directory/', import.meta.url);
+const hostedOut = new URL('../public/assets/ai/review/', import.meta.url);
 await mkdir(out, { recursive: true });
+await mkdir(hostedOut, { recursive: true });
 const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS, headless: true });
 const shots: { file: string; prompt: string }[] = [];
 try {
@@ -87,6 +100,16 @@ try {
   await page.locator('.wheel-wrap').waitFor();
   await save('05-chart-without-birth-time.png', "Help me read my birth chart. I don't know my birth time.", page.locator('.workspace'));
 
-  await writeFile(new URL('screenshots.json', out), JSON.stringify({ made: now.toISOString(), source: 'Real panels from this build with live answers from https://zodiacs.org/mcp; dark theme; Bangkok time zone; the birth date in 05 is made up', screenshots: shots }, null, 2) + '\n');
+  await page.setContent(OCCASIONS_HTML); await host(page, comparison);
+  await page.getByText('Two charts compared').waitFor();
+  await save('06-comparison-card.png', comparisonPrompt);
+  await copyFile(new URL('06-comparison-card.png', out), new URL('zodiacs-comparison-card-0.5.0.png', hostedOut));
+
+  await page.setContent(OCCASIONS_HTML); await host(page, wedding);
+  await page.getByRole('heading', { name: 'The sky on your wedding day' }).waitFor();
+  await save('07-wedding-card.png', weddingPrompt);
+  await copyFile(new URL('07-wedding-card.png', out), new URL('zodiacs-wedding-card-0.5.0.png', hostedOut));
+
+  await writeFile(new URL('screenshots.json', out), JSON.stringify({ made: now.toISOString(), source: 'Real panels from this build with live answers from https://zodiacs.org/mcp; dark theme; Bangkok time zone; personal details in 05–07 are synthetic examples', screenshots: shots }, null, 2) + '\n');
   console.log(`Saved ${shots.length} listing screenshots.`);
 } finally { await browser.close(); }
