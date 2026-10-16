@@ -3,8 +3,9 @@
    The primitives the approved mockups share: display scale, the spotlit
    sign-art frame, light cards and panels, neutral pills, the segmented
    switch, the twelve-disc picker, the flat question list and the closing
-   panel over the hero art. Imported only by the pages that use them, so
-   every other route keeps its CSS bytes. Names that already mean something
+   panel over the hero art. Base.astro imports it, so the primitives are
+   in the first-paint stylesheet on every page: no late restyle, and no
+   extra stylesheet on the critical-CSS pages. Names that already mean something
    elsewhere on the site carry a k- prefix (kwrap, kcard, kpanel, klede,
    kfacts, kfaq); the rest are new.
    ──────────────────────────────────────────────────────────────────── */
