@@ -175,7 +175,7 @@ describe('homepage first-paint assets', () => {
       // dependency tree must not become a home hydration root again.
       expect(html).toContain('class="skyticker"');
       expect(html).toContain('class="skyticker__label"');
-      expect(html.match(/class="skyticker__item"/gu)?.length).toBeGreaterThanOrEqual(3);
+      expect(html.match(/class="skyticker__item(?: [^"]*)?"/gu)?.length).toBeGreaterThanOrEqual(3);
       expect(html).not.toMatch(/component-url="[^"]*\/SkyTicker\.[^"]*"/u);
     },
   );

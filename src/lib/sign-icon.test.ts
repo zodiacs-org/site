@@ -89,6 +89,8 @@ const LISTED: Record<string, string> = {
   'src/islands/MiniBirthChartWidget.tsx': 'its header shows all twelve; the result uses signIcon',
   'src/islands/PwaInstallPrompt.tsx': 'shows all twelve',
   'src/islands/TodayBySign.tsx': 'shows all twelve',
+  'src/islands/SkyTicker.tsx': 'the day’s Sun and Moon from the published edition, the same for every visitor; chart pages pass discs={false}',
+  'src/islands/DemoChart.tsx': 'the sample chart’s big three (Frida Kahlo), the same for every visitor',
   'src/islands/ZodiacWheelHero.tsx': 'shows all twelve',
   'src/islands/today/SunSignFallback.tsx': 'the picker shows all twelve before any choice',
   'src/islands/PrefilledPairNotice.tsx': 'the two signs come from the page address, which the host already has',

@@ -572,7 +572,7 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
           <div class="bc-proof__b3">
             {[['Sun', sun], ['Moon', moon], ['Rising', rising]].map(([label, p]) => (
               <div>
-                <img class="bc-disc" data-sample-src={sampleDisc((p as typeof sun).sign.slug)} width="34" height="34" alt="" decoding="async" />
+                <img class="bc-disc" data-src={sampleDisc((p as typeof sun).sign.slug)} width="34" height="34" alt="" decoding="async" />
                 <span><small>{label as string}</small><b>{(p as typeof sun).sign.name}</b><span class="bc-mono">{(p as typeof sun).degree}</span></span>
               </div>
             ))}
@@ -604,17 +604,17 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
 
     <div class="bc-b3cards">
       <article class="kcard bc-b3card bc-b3card--sun" style={`--sign:${sun.sign.hue}`}>
-        <div class="bc-b3card__top"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>Sun · who you are</small><b>{sun.sign.name}</b></div><span class="bc-mono">{ordinal(sun.house)} house</span></div>
+        <div class="bc-b3card__top"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>Sun · who you are</small><b>{sun.sign.name}</b></div><span class="bc-mono">{ordinal(sun.house)} house</span></div>
         <p>Fairness, partnership and a feel for balance sit near the centre of this person. With the Sun in the tenth house, that often shows most in work and public life.</p>
         <a class="textlink" href={`/${sun.sign.slug}/`}>Read {sun.sign.name} <span class="arr" aria-hidden="true">→</span></a>
       </article>
       <article class="kcard bc-b3card" style={`--sign:${moon.sign.hue}`}>
-        <div class="bc-b3card__top"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>Moon · how you feel</small><b>{moon.sign.name}</b></div><span class="bc-mono">{ordinal(moon.house)} house</span></div>
+        <div class="bc-b3card__top"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>Moon · how you feel</small><b>{moon.sign.name}</b></div><span class="bc-mono">{ordinal(moon.house)} house</span></div>
         <p>Feelings tend to arrive fast and honestly. A useful question for an Aries Moon in the fourth house: where at home is there room to be direct?</p>
         <a class="textlink" href={`/${moon.sign.slug}/`}>Read {moon.sign.name} <span class="arr" aria-hidden="true">→</span></a>
       </article>
       <article class="kcard bc-b3card" style={`--sign:${rising.sign.hue}`}>
-        <div class="bc-b3card__top"><img class="bc-disc" data-sample-src={sampleDisc(rising.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>Rising · how people meet you</small><b>{rising.sign.name}</b></div><span class="bc-mono">1st house</span></div>
+        <div class="bc-b3card__top"><img class="bc-disc" data-src={sampleDisc(rising.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>Rising · how people meet you</small><b>{rising.sign.name}</b></div><span class="bc-mono">1st house</span></div>
         <p>People often meet a Capricorn rising as steady, capable and a little reserved, before they notice the warmth underneath. It also sets where the houses begin.</p>
         <a class="textlink" href={`/${rising.sign.slug}/`}>Read {rising.sign.name} <span class="arr" aria-hidden="true">→</span></a>
       </article>
@@ -642,7 +642,7 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
                     {p.body === 'Rising' ? <span class="bc-pos__ac" aria-hidden="true">AC</span> : <PlanetGlyph body={p.body} size={15} class="bc-pos__g" />}
                     {p.body}
                   </th>
-                  <td><span class="bc-pos__sign"><img class="bc-disc" data-sample-src={sampleDisc(p.sign.slug)} width="20" height="20" alt="" decoding="async" />{p.sign.name}</span></td>
+                  <td><span class="bc-pos__sign"><img class="bc-disc" data-src={sampleDisc(p.sign.slug)} width="20" height="20" alt="" decoding="async" />{p.sign.name}</span></td>
                   <td class="bc-mono">{p.degree}{p.retrograde && <span class="bc-pos__rx" title="Retrograde"> ℞<span class="sr-only"> retrograde</span></span>}</td>
                   <td class="bc-pos__h">{p.house}</td>
                 </tr>
@@ -694,14 +694,14 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
       <div class="bc-cmp only-desktop" aria-label="The sample chart with and without a birth time">
         <div>
           <span class="bc-cmp__lbl"><b>With a time</b>{SAMPLE_BIRTH.time}</span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{moon.sign.name}</small></span></span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(rising.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Rising<small>{rising.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{moon.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(rising.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Rising<small>{rising.sign.name}</small></span></span>
         </div>
         <div>
           <span class="bc-cmp__lbl"><b>Without one</b>time unknown</span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{SAMPLE_MOON_ALL_DAY ? `${moon.sign.name}, all day` : 'Two possible signs'}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{SAMPLE_MOON_ALL_DAY ? `${moon.sign.name}, all day` : 'Two possible signs'}</small></span></span>
           <span class="bc-cmp__it is-missing"><span class="bc-cmp__ghost" aria-hidden="true">?</span><span>Rising<small>Needs a birth time</small></span></span>
         </div>
       </div>
@@ -713,14 +713,14 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
       <div class="bc-cmp only-mobile" aria-label="The sample chart with and without a birth time">
         <div>
           <span class="bc-cmp__lbl"><b>With a time</b>{SAMPLE_BIRTH.time}</span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{moon.sign.name}</small></span></span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(rising.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Rising<small>{rising.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{moon.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(rising.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Rising<small>{rising.sign.name}</small></span></span>
         </div>
         <div>
           <span class="bc-cmp__lbl"><b>Without one</b>time unknown</span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
-          <span class="bc-cmp__it"><img class="bc-disc" data-sample-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{SAMPLE_MOON_ALL_DAY ? `${moon.sign.name}, all day` : 'Two possible signs'}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Sun<small>{sun.sign.name}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>Moon<small>{SAMPLE_MOON_ALL_DAY ? `${moon.sign.name}, all day` : 'Two possible signs'}</small></span></span>
           <span class="bc-cmp__it is-missing"><span class="bc-cmp__ghost" aria-hidden="true">?</span><span>Rising<small>Needs a birth time</small></span></span>
         </div>
       </div>
@@ -855,9 +855,9 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
           image.setAttribute('href', image.getAttribute('data-href') + query);
           image.removeAttribute('data-href');
         });
-        document.querySelectorAll('img[data-sample-src]').forEach(function (image) {
-          image.src = image.getAttribute('data-sample-src');
-          image.removeAttribute('data-sample-src');
+        document.querySelectorAll('[data-sample-set] img[data-src]').forEach(function (image) {
+          image.src = image.getAttribute('data-src');
+          image.removeAttribute('data-src');
         });
       }
       if (!('IntersectionObserver' in window)) { load(); return; }
