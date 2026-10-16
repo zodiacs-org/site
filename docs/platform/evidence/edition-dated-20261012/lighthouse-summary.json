@@ -620,5 +620,115 @@
       "tbtMs": 0,
       "shiftedElements": []
     }
+  ],
+  "production-7d12c0f1-dated": [
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-13T14:41:53.413Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1765,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-13T14:42:02.265Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1626,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-13T14:42:12.825Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1539,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-13T14:41:24.914Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1765,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-13T14:41:34.128Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1454,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/horoscopes/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-13T14:41:44.290Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1615,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 1,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-13T14:40:57.102Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 994,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 2,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-13T14:41:06.583Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 1299,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    },
+    {
+      "route": "/today/",
+      "sample": 3,
+      "setAsideForRunnerStall": false,
+      "fetchTime": "2026-10-13T14:41:15.782Z",
+      "chrome": "154.0.0.0",
+      "performance": 1,
+      "lcpMs": 999,
+      "cls": 0,
+      "tbtMs": 0,
+      "shiftedElements": []
+    }
   ]
 }
