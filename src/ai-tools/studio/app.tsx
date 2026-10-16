@@ -1,3 +1,4 @@
+import { BrandLink } from '../panel-brand';
 import { render } from 'preact';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import Wheel from '../../lib/wheel/Wheel';
@@ -116,7 +117,7 @@ function App() {
     finally { setSharing(false); }
   }
   if (!started) return <main>
-    <header class="studio-header"><a href="https://zodiacs.org/" target="_blank" rel="noreferrer">Zodiacs<span>·</span>org</a><span class="header-note">Your birth chart</span></header>
+    <header class="studio-header"><BrandLink/><span class="header-note">Your birth chart</span></header>
     <section class="onboarding" aria-label="Your birth details">
       <h1>When and where were you born?</h1>
       <p class="lede">Your chart is worked out inside this panel. Nothing is saved, and the assistant sees only what you choose to share.</p>
@@ -134,7 +135,7 @@ function App() {
     <footer class="studio-footer"><a href="https://zodiacs.org/methodology/" target="_blank" rel="noreferrer">How we calculate</a><a href="https://zodiacs.org/privacy/" target="_blank" rel="noreferrer">Privacy</a></footer>
   </main>;
   return <main>
-    <header class="studio-header"><a href="https://zodiacs.org/" target="_blank" rel="noreferrer">Zodiacs<span>·</span>org</a><span class="header-note">An interactive chart workspace</span></header>
+    <header class="studio-header"><BrandLink/><span class="header-note">An interactive chart workspace</span></header>
     <div class="studio-title"><div><p class="kicker">Explore the details</p><h1>Chart Studio</h1><p class="lede">A chart you can explore, compare, and bring into the conversation.</p></div><button class="quiet" onClick={() => { setStarted(false); setWorkspaceEpoch(value => value + 1); }}>Start over</button></div>
     <nav class="workspace-tabs" aria-label="Chart Studio workspaces">{([['chart', 'Chart'], ['time', 'Time Explorer'], ['inspect', 'Chart Inspector']] as const).map(([value, label]) => <button key={value} aria-pressed={workspace === value} onClick={() => setWorkspace(value)}>{label}</button>)}</nav>
     {error && <p class="error" role="alert">{error} The displayed chart still uses its previous inputs.</p>}

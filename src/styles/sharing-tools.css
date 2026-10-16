@@ -47,6 +47,8 @@
 }
 
 .sharing-page .mono--label { text-transform: none; letter-spacing: .04em; }
+/* A crop of the hero artwork between the tool and the related tools. */
+.sharing-page .hero-crop.sharing-art { margin-top: clamp(32px, 6vw, 48px); }
 
 /* Build-time sample results drawn from the sourced people directory. */
 .sharing-sample { margin: 0 0 clamp(28px, 5vw, 40px); padding: 20px 0 4px; border-top: 1px solid var(--hair-1); }

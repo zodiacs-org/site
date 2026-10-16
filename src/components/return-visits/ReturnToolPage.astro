@@ -2,8 +2,10 @@
 import { ruOgImageForPath } from '../../strings/seo.ru.mjs';
 import Base from '../../layouts/Base.astro';
 import ReturnPersonal from '../../islands/ReturnPersonal';
+import PersonalCalendar from '../../islands/PersonalCalendar';
 import ReturnToolLinks from './ReturnToolLinks.astro';
 import SkyMonth from './SkyMonth.astro';
+import HeroCrop from '../HeroCrop.astro';
 import { localizePath, type CatalogLocale } from '../../lib/i18n';
 import { returnText as s } from '../../lib/return-visits/copy';
 import { sharingText } from '../../lib/sharing/copy';
@@ -24,6 +26,7 @@ const jsonLd = kind === 'calendar' ? [] : [{ '@type': 'WebApplication', name: s(
     <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, titleKey)}</h1><p>{s(locale, ledeKey)}</p></header>
     {kind === 'calendar' && <SkyMonth locale={locale} />}
     {kind === 'calendar' ? <div class="return-panel">
+      <HeroCrop crop="sun-moon" locale={locale} />
       <p>{s(locale, 'calendarRange')}</p>
       <div class="return-actions"><a class="btn btn--primary" href={feed.replace('https:', 'webcal:')}>{s(locale, 'subscribe')}</a><a class="btn btn--ghost" href={feed} download={`zodiacs-sky-${locale}.ics`}>{s(locale, 'downloadCalendar')}</a></div>
       <h2>{s(locale, 'calendarUrl')}</h2><a class="return-url mono" href={feed}>{feed}</a>
@@ -33,6 +36,13 @@ const jsonLd = kind === 'calendar' ? [] : [{ '@type': 'WebApplication', name: s(
       <ReturnPersonal kind={kind} locale={locale} client:load />
       <noscript><p>{sharingText(locale, 'jsRequired')}</p></noscript>
     </>}
+    {kind === 'calendar' && <section class="return-panel personal-calendar-panel" aria-labelledby="personal-calendar-title" data-personal-calendar>
+      <h2 id="personal-calendar-title">{s(locale, 'personalTitle')}</h2>
+      <p>{s(locale, 'personalLede')}</p>
+      <p class="sharing-note">{s(locale, 'personalSeparate')}</p>
+      <PersonalCalendar locale={locale} client:visible />
+      <noscript><p>{sharingText(locale, 'jsRequired')}</p></noscript>
+    </section>}
     <ReturnToolLinks locale={locale} current={path} />
   </section>
 </Base>

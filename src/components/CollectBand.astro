@@ -28,7 +28,7 @@ const englishOnly = englishOnlyCue(locale);
   data-registry-bridge-surface={surface}
   data-registry-bridge-locale={locale}
 >
-  <span class="collect-band__label mono">{copy.label}</span>
+  <span class="collect-band__label">{copy.label}</span>
   <span class="collect-band__text">
     {copy.text}
   </span>
@@ -73,9 +73,11 @@ const englishOnly = englishOnlyCue(locale);
     background: linear-gradient(90deg, rgba(198, 204, 218, 0.04), transparent 60%);
   }
   .collect-band__label {
-    font-size: 9.5px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    letter-spacing: 0;
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
     color: var(--faint);
   }
   .collect-band__text {

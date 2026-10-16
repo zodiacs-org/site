@@ -38,6 +38,7 @@ describe('?ref= on zodiacs.org links from the tools', () => {
     }, on, { ref: 'chatgpt' });
     if (!result.ok || result.tool !== 'get_occasion_sky') throw new Error('expected a card');
     expect(result.links[0]).toEqual({ title: 'Open the printable card', url: result.data.cardUrl });
+    expect(new URL(result.data.shareUrl!).searchParams.get('ref')).toBe('chatgpt');
     const url = new URL(result.links[0].url);
     expect([...url.searchParams]).toEqual([['ref', 'chatgpt']]);
     expect(Object.fromEntries(new URLSearchParams(url.hash.slice(1)))).toEqual({

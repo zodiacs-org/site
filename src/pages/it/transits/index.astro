@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import Faq from '../../../components/Faq.astro';
 import TransitTracker from '../../../islands/TransitTracker';
 import PlanetGlyph from '../../../components/PlanetGlyph';
@@ -74,13 +75,14 @@ const jsonLd = [
 
   {month && (
     <section class="section--tight container container--narrow">
+      <HeroCrop crop="sign-ring-hand" locale="it" />
       <div class="section-head reveal">
         <h2>Il cielo di {label}</h2>
         <p>Eventi del mese calcolati dal motore: ingressi nei segni, lunazioni, stazioni e aspetti esatti. Gli orari sono in tempo universale.</p>
       </div>
       <ul class="trn-events reveal">
         {events.map((event) => (
-          <li><span class="trn-events__date mono">{dayLabel(event.at, 'it')}</span><span class="trn-events__label"><PlanetGlyph body={event.body} hue={event.hue} size={14} class="rcpt-glyph" />{event.label}</span></li>
+          <li><span class="trn-events__date">{dayLabel(event.at, 'it')}</span><span class="trn-events__label"><PlanetGlyph body={event.body} hue={event.hue} size={14} class="rcpt-glyph" />{event.label}</span></li>
         ))}
       </ul>
     </section>
@@ -97,6 +99,6 @@ const jsonLd = [
   .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
   .trn-events { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; }
   .trn-events li { display: flex; align-items: baseline; gap: 16px; padding-bottom: 7px; border-bottom: 1px solid var(--hair-1); }
-  .trn-events__date { flex-shrink: 0; width: 58px; font-size: 11px; color: var(--faint); letter-spacing: 0.05em; }
+  .trn-events__date { flex-shrink: 0; width: 58px; font-size: 13px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
   .trn-events__label { font-size: var(--text-sm); color: var(--text-2); }
 </style>

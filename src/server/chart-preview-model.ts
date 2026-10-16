@@ -1,7 +1,7 @@
 import { decodePositionsLink } from '../lib/share-positions.js';
 import { previewPlacements, type PreviewPlacements } from '../lib/share-preview.js';
 
-const HUES: Record<string, string> = {
+export const HUES: Record<string, string> = {
   aries: '#DE8E79', taurus: '#B9D4BE', gemini: '#B29DD0', cancer: '#B6D4E4',
   leo: '#E0A9B4', virgo: '#B7D9B0', libra: '#D3A9DE', scorpio: '#B9DCE8',
   sagittarius: '#E0B080', capricorn: '#C0DEA8', aquarius: '#AE8FC9', pisces: '#A9D4C4',

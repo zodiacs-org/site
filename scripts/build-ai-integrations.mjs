@@ -3,17 +3,22 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
+import { buildSkyCalendar } from './build-sky-calendar.mjs';
 import { buildChartStudio } from './build-chart-studio.mjs';
 import { buildHoroscopePanel } from './build-horoscope-panel.mjs';
 import { buildOccasionsPanel } from './build-occasions-panel.mjs';
+import { buildAccountsConsent } from './build-accounts-consent.mjs';
 import { peopleIndexCurrent, renderFromDisk, STALE_MESSAGE } from './build-ai-people.mjs';
 import { addAiLifetimeBoundary } from './ai-runtime-lifetime.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
+await buildSkyCalendar(check);
 await buildChartStudio(check);
 await buildHoroscopePanel(check);
 await buildOccasionsPanel(check);
+// The account consent page; the hosted function serves it only while ZODIACS_ACCOUNTS_ENABLED=1.
+await buildAccountsConsent(check);
 // The famous-people tools read a compact index of the people the site publishes (scripts/build-ai-people.mjs).
 if (check) { if (!(await peopleIndexCurrent())) throw new Error(STALE_MESSAGE); }
 else await writeFile(new URL('../src/ai-tools/features/people-index.json', import.meta.url), await renderFromDisk());

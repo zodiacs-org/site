@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import HeroCrop from '../../components/HeroCrop.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import TransitTracker from '../../islands/TransitTracker.tsx';
 import PlanetGlyph from '../../components/PlanetGlyph';
@@ -77,6 +78,7 @@ const jsonLd = [
 
   {month && (
     <section class="section--tight container container--narrow">
+      <HeroCrop crop="sign-ring-hand" />
       <div class="section-head reveal">
         <h2>The sky in {label}</h2>
         <p>
@@ -89,7 +91,7 @@ const jsonLd = [
       <ul class="trn-events reveal">
         {events.map((e) => (
           <li>
-              <span class="trn-events__date mono">{dayLabel(e.at)}</span>
+              <span class="trn-events__date">{dayLabel(e.at)}</span>
             <span class="trn-events__label">
               <PlanetGlyph body={e.body} hue={e.hue} size={14} class="rcpt-glyph" />{e.label}
             </span>
@@ -134,7 +136,7 @@ const jsonLd = [
     padding-bottom: 7px;
     border-bottom: 1px solid var(--hair-1);
   }
-  .trn-events__date { flex-shrink: 0; width: 58px; font-size: 11px; color: var(--faint); letter-spacing: 0.05em; }
+  .trn-events__date { flex-shrink: 0; width: 58px; font-size: 13px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
   .trn-events__label { font-size: var(--text-sm); color: var(--text-2); }
 
   .faq { display: grid; gap: 8px; }

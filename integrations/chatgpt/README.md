@@ -9,9 +9,9 @@ Studio. The seven new ones share the occasions panel
 makes a card for a day that matters, `get_life_milestones` lists planetary
 returns, and `get_sky_calendar` gives the link to Zodiacs' published .ics feed.
 They are offered only where `ZODIACS_OCCASIONS_ENABLED=1`, which production
-sets right before submission. They compute from bundled data, never score a
-relationship, choose or rank dates, or predict outcomes, and never invent a
-famous person's chart. Links to zodiacs.org in results end in `?ref=chatgpt`
+sets right before submission. They compute from bundled data, score compatibility
+out of 100 and rate the dates people name, always with the astrological
+reasons, never guarantee outcomes, and never invent a famous person's chart. Links to zodiacs.org in results end in `?ref=chatgpt`
 or `?ref=assistant`. No login is required.
 The horoscope panel uses an explicit Sun sign and the reader’s local date.
 Chart Studio starts with birth details and offers the unknown-time path. An interactive sky calendar supports local times, UTC and coverage

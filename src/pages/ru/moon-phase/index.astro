@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import HeroCrop from '../../../components/HeroCrop.astro';
 import Faq from '../../../components/Faq.astro';
 import MoonPhaseTool from '../../../islands/MoonPhaseTool';
 import '../../../styles/calculator.css';
@@ -67,6 +68,7 @@ const jsonLd = [
   </section>
 
   <section class="section--tight container container--narrow">
+    <HeroCrop crop="crescent" locale="ru" />
     <Faq items={faq} heading="Вопросы о фазах Луны" />
   </section>
 </Base>

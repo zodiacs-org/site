@@ -1,9 +1,11 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import type { MinimalBody, PairSummary } from '../lib/engine/synastry';
 import { tf, type CatalogLocale as Locale } from '../lib/i18n';
 import { pairSlug } from '../lib/pair-slug';
 import { shareCardText } from '../lib/share-card-copy';
 import { signForLongitude, signName } from '../lib/signs';
+import type { SavedPairSide } from '../lib/profile/pairs';
+import type { SavedChart } from '../lib/profile/schema';
 
 interface CompatibilitySharePerson {
   label: string;
@@ -103,4 +105,60 @@ export function CompatibilityShareControl({
       )}
     </>
   );
+}
+
+interface CompatibilityResult {
+  a: CompatibilitySharePerson;
+  b: CompatibilitySharePerson;
+  summary: PairSummary;
+  sides: readonly [SavedPairSide | null, SavedPairSide | null];
+}
+
+/**
+ * The actions under a compatibility result: the pair guide, the share card
+ * and, where the build has it on, "Save to your profile". The calculator
+ * hands over the whole result, and the fields each action needs are picked
+ * here, in this module that loads after the result renders, so the
+ * compatibility page's first load carries none of it.
+ */
+export function CompatibilityResultActions({ result, charts, locale }: {
+  result: CompatibilityResult;
+  charts: readonly SavedChart[];
+  locale: Locale;
+}) {
+  const person = ({ label, bodies, asc, untimedDate, utc }: CompatibilitySharePerson): CompatibilitySharePerson => (
+    { label, bodies, asc, untimedDate, utc }
+  );
+  const [a, b] = result.sides;
+  return (
+    <>
+      <CompatibilityPairingCta a={person(result.a)} b={person(result.b)} locale={locale} />
+      <CompatibilityShareControl a={person(result.a)} b={person(result.b)} summary={result.summary} locale={locale} />
+      {ACCOUNT_SAVES && a && b && <CompatibilityAccountSave a={a} b={b} charts={charts} locale={locale} />}
+    </>
+  );
+}
+
+/**
+ * "Save to your profile" under a compatibility result, in English, where the
+ * build has it on. It loads the save line itself rather than through
+ * account-save-loader: a static import of that shared chunk would add its name
+ * to the compatibility page's first-load preload list.
+ */
+const ACCOUNT_SAVES = import.meta.env.PUBLIC_ACCOUNT_SAVES_ENABLED === '1' && Boolean(import.meta.env.PUBLIC_SUPABASE_URL);
+
+function CompatibilityAccountSave({ a, b, charts, locale }: {
+  a: SavedPairSide;
+  b: SavedPairSide;
+  charts: readonly SavedChart[];
+  locale: Locale;
+}) {
+  const [account, setAccount] = useState<typeof import('./AccountSaveAction') | null>(null);
+  useEffect(() => {
+    if (!ACCOUNT_SAVES || locale !== 'en') return;
+    let active = true;
+    void import('./AccountSaveAction').then((loaded) => { if (active) setAccount(loaded); }).catch(() => {});
+    return () => { active = false; };
+  }, [locale]);
+  return account ? <account.ComparisonSave a={a} b={b} charts={charts} /> : null;
 }

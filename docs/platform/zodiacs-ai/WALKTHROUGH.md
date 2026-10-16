@@ -1,5 +1,40 @@
 # Native ChatGPT walkthroughs
 
+## 0.5.0 — 15 October 2026
+
+Video: `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`
+SHA-256: `29051c30c4dbe0261c1cb57feb563fcf1800c371bfebfe6460722f315381b7e1`
+
+A silent 67-second walkthrough, 1280 × 720, assembled from actual ChatGPT
+web captures of the private Zodiacs Preview 0.5.0 connection. The title
+identifies the footage as edited captures with synthetic examples. Each
+completed card is held long enough to read; this is not continuous recording
+or a recording of the phone app. The card contents were not edited or
+fabricated. The title is the only added visual.
+
+The captures use runtime 0.5.0 from commit `40657ac7`, with the refreshed
+occasion resource address and canonical pastel sign icons and twelve-color
+zodiac ring. A fresh call rendered each card after the private tool list was
+refreshed. The same generated panel is checked against the release deployment.
+
+| Time | Shown |
+| --- | --- |
+| 0:00 | Title and capture disclosure |
+| 0:05 | Two synthetic birth charts compared |
+| 0:17 | Unknown-time limits, element balance, no-score disclaimer and signature |
+| 0:27 | Published famous people sharing a Taurus Sun |
+| 0:37 | Chart-twin limits and signature |
+| 0:45 | Wedding sky for Florence, 12 June 2027 at 17:00 |
+| 0:57 | Printable-card link, no-date-ranking disclaimer and signature |
+
+The comparison uses 3 May 1990 at 08:30 in Madrid and 10 August 1992 with
+unknown birth time. Chart twins use 3 May 1990. The wedding details are a
+synthetic example. No account records, calendar writes or real birth details
+are included. The separate host acceptance evidence covers the other handoff
+prompts and the owner's phone check; this short video demonstrates the three
+new card flows only.
+
+
 ## 0.4.0 — 7 October 2026
 
 Video: `public/assets/ai/review/zodiacs-sky-0.4.0.mp4`

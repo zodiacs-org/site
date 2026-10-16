@@ -276,7 +276,7 @@ export function TransitSearch({
       </form>
 
       {busy && progress && (
-        <p class="tsearch__status mono" role="status">{SEARCH_COPY.running(progress)}</p>
+        <p class="tsearch__status" role="status">{SEARCH_COPY.running(progress)}</p>
       )}
       {error && <p class="calc__error" role="alert">{error}</p>}
 
@@ -287,7 +287,7 @@ export function TransitSearch({
       {grouped && grouped.total > 0 && (
         <div class="tsearch__results" data-search-results>
           <div class="tsearch__result-head">
-            <p class="mono">{grouped.total} exact {grouped.total === 1 ? 'contact' : 'contacts'}</p>
+            <p>{grouped.total} exact {grouped.total === 1 ? 'contact' : 'contacts'}</p>
             <button class="btn btn--glass" type="button" onClick={downloadCalendar} data-search-calendar>
               <span>{SEARCH_COPY.calendar}</span>
             </button>
@@ -314,7 +314,7 @@ export function TransitSearch({
                           data-search-exact={contact.exactUtc}
                           data-search-pass-count={contact.passCount}
                         >
-                          <span class="mono">{formatExactDate(contact.exactUtc)}</span>
+                          <span class="tsearch__when">{formatExactDate(contact.exactUtc)}</span>
                           {contact.passCount > 1 && (
                             <span>Pass {contact.pass} of {contact.passCount}</span>
                           )}

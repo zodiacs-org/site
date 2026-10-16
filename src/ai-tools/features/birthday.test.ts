@@ -77,7 +77,7 @@ describe('get_birthday', () => {
   });
 
   it('gives a timed solar return on the birthplace clock', async () => {
-    const { data, links } = await getBirthday({ birthDate: '1990-05-03', time: '14:30', zone: 'europe/london', longitude: -0.13, latitude: 51.5 }, localTime, NOW);
+    const { data, links } = await getBirthday({ birthDate: '1990-05-03', time: '14:30', zone: 'europe/london' }, localTime, NOW);
     const sr = data.solarReturn!;
     expect(sr.year).toBe(2026);
     expect(sr.timeKnown).toBe(true);
@@ -90,6 +90,13 @@ describe('get_birthday', () => {
     expect(data.sunAtBirth?.timeKnown).toBe(true);
     expect(links.map((link) => link.url)).toEqual(['https://zodiacs.org/birthday/may-3/', 'https://zodiacs.org/solar-return/']);
     expectPlain(data);
+  });
+
+  it('uses longitude to resolve historical local mean time', async () => {
+    const west = await getBirthday({ birthDate: '1800-05-03', time: '12:00', zone: 'Europe/London', longitude: -3 }, localTime, NOW);
+    const east = await getBirthday({ birthDate: '1800-05-03', time: '12:00', zone: 'Europe/London', longitude: 3 }, localTime, NOW);
+    expect(west.data.sunAtBirth!.longitude).toBeGreaterThan(east.data.sunAtBirth!.longitude);
+    expect(birthdayInput.safeParse({ birthDate: '1800-05-03', longitude: -3 }).success).toBe(false);
   });
 
   it('gives an untimed solar return with its range', async () => {

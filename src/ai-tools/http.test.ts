@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI, OCCASIONS_URI, OCCASION_TOOL_NAMES } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI, OCCASIONS_URI, LEGACY_OCCASIONS_URIS, OCCASION_TOOL_NAMES } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
@@ -191,12 +191,12 @@ describe('stateless MCP HTTP boundary', () => {
     } finally { occasionsSwitch = undefined; }
     expect(await names()).toEqual(AI_TOOL_NAMES);
   });
-  it('offers the occasions panel only with the switch on, and both occasion tools open it', async () => {
+  it('offers the occasions panel only with the switch on, and all occasion tools open it', async () => {
     const resources = async () => (await readMessage(await post(rpc('resources/list')))).result.resources.map((resource: { uri: string }) => resource.uri);
-    expect(await resources()).not.toContain(OCCASIONS_URI);
+    for (const uri of [OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS]) expect(await resources()).not.toContain(uri);
     occasionsSwitch = '1';
     try {
-      expect(await resources()).toContain(OCCASIONS_URI);
+      for (const uri of [OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS]) expect(await resources()).toContain(uri);
       const tools = (await readMessage(await post(rpc('tools/list')))).result.tools;
       for (const name of OCCASION_TOOL_NAMES) {
         const meta = tools.find((tool: { name: string }) => tool.name === name)._meta;
@@ -208,6 +208,10 @@ describe('stateless MCP HTTP boundary', () => {
       const content = (await readMessage(read)).result.contents[0];
       expect(content.mimeType).toBe('text/html;profile=mcp-app');
       expect(content.text).toContain('<div id="occasions">');
+      for (const uri of LEGACY_OCCASIONS_URIS) {
+        const previous = (await readMessage(await post(rpc('resources/read', { uri })))).result.contents[0];
+        expect(previous).toEqual({ ...content, uri });
+      }
       // Self-contained: no remote script, style, font or image.
       expect(content.text).not.toMatch(/(?:src|href)=["']https?:/u);
     } finally { occasionsSwitch = undefined; }

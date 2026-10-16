@@ -41,6 +41,8 @@ describe('occasion tools behind ZODIACS_OCCASIONS_ENABLED', () => {
     expect(result.data.cardUrl?.startsWith('https://zodiacs.org/occasions/#o=wedding&d=2027-06-12')).toBe(true);
     expect(result.data.cardUrl).not.toContain('?');
     expect(result.data.cardUrl).toContain('tz=Europe%2FRome');
+    // The share link has the names, the day, the place name, the signs and the rating; no time, zone or coordinates.
+    expect(result.data.shareUrl).toBe(`https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&n=Ana+%26+Luca&p=Florence%2C+Italy&sun=gemini&moon=libra&score=${result.data.rating.score}&v=${{ 'An excellent day for it': 'excellent', 'A good day for it': 'good', 'A fair day, with a few cautions': 'fair', 'A challenging day for it': 'challenging' }[result.data.rating.verdict]}`);
     expect(OUTPUT_SCHEMAS.get_occasion_sky.safeParse(result).success).toBe(true);
   });
 
