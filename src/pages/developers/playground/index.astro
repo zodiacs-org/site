@@ -34,7 +34,7 @@ const jsonLd = [
   privateSurface: a request typed here can hold a birth, so the page opts out of
   the site-wide analytics scripts, as /developers/compare/ does.
 -->
-<Base title={title} description={description} path="/developers/playground/" jsonLd={jsonLd} privateSurface>
+<Base title={title} description={description} path="/developers/playground/" jsonLd={jsonLd} clientUi privateSurface>
   <section class="section container container--narrow playground-page">
     <em class="kicker">Playground</em>
     <h1 class="display">Run the compute API's examples.</h1>
@@ -63,7 +63,7 @@ const jsonLd = [
       </p>
       <ul>
         <li><strong>runtime</strong>: a receipt names the runtime that read local times, the tzdb release its{' '}
-          <code>Intl</code> reads. A browser does not report that release, so a receipt computed here records
+          <code>Intl</code> reads. A browser does not report that release, so a receipt computed here records{' '}
           <code>null</code> where the server records Node's.</li>
         <li><strong>citation</strong>: the digest of a receipt that differs, which differs with it.</li>
         <li><strong>rounding</strong>: two numbers within 1e-8 of each other. Speeds are central differences, and a
