@@ -1391,6 +1391,7 @@
     {"path":"src/ai-tools/studio/local-time.ts","text":"Choose a city or enter a supported IANA time zone, such as Europe/London.","exempt":"input-validation"},
     {"path":"src/ai-tools/watch/contracts.ts","text":"IANA time zone for display; UTC by default.","claim":"time.host-icu"},
     {"path":"src/components/EmailCapture.astro","text":"Syncing is always your call, and this chart stays on your device until you make it.","claim":"priv.account-sync"},
+    {"path":"src/components/HoroscopeProgramPage.astro","text":"Calculated in your browser, no account needed","claim":"priv.on-device"},
     {"path":"src/components/events/EventPageLayout.astro","text":"Choose a chart already saved in this browser, or enter your birth details there.","claim":"priv.local-storage"},
     {"path":"src/components/events/EventPageLayout.astro","text":"IANA Time Zone Database","exempt":"navigation"},
     {"path":"src/components/guide/GuideWhere.astro","text":"The chart is computed on your device.","claim":"priv.on-device"},

@@ -167,10 +167,12 @@ describe('Phase 1 layout and motion contract', () => {
     expect(icon).toContain('aspect-ratio: 1;');
     expect(icon).toContain('.sign-icon img { display: block; width: 100%; height: auto; aspect-ratio: 1;');
     expect(icon).toContain('fetchpriority={fetchPriority}');
-    expect(program).toContain('fetchPriority="high"');
-    expect(program).toContain("const compactHeroIcon = surface === 'today' || surface === 'love' || surface === 'career';");
-    expect(program).toContain('webpOnly={compactHeroIcon}');
-    expect(program).toContain("decoding={compactHeroIcon ? 'sync' : 'async'}");
+    // The horoscope hero is the sign art: eager, high priority, preloaded
+    // from the head, with its intrinsic size reserved by ArtFrame.
+    expect(program).toMatch(/<ArtFrame\s+sign=\{sign\.slug\}\s+class="hz-hero__art"[\s\S]*?\beager\b[\s\S]*?\/>/u);
+    expect(program).toMatch(/rel="preload"\s+as="image"[\s\S]*?imagesrcset=\{signArtSrcset\(sign\.slug\)\}[\s\S]*?fetchpriority="high"/u);
+    expect(program).toContain("const criticalCssRoute = surface === 'today' || surface === 'love' || surface === 'career';");
+    expect(program).toContain('inlineCriticalCss={criticalCssRoute}');
     expect(fallback).toContain('inline-size:${size}px;block-size:${size}px;aspect-ratio:1;contain:layout size');
     expect(fallback).toContain('decoding="sync"');
     expect(fallback).toContain('/assets/zodiac-icons/48/${sign.slug}.avif');
