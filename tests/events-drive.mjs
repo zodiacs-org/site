@@ -28,6 +28,7 @@ const eventsPublication = JSON.parse(await readFile(
   new URL('../src/data/events-publication.json', import.meta.url),
   'utf8',
 ));
+const dailyFacts = JSON.parse(await readFile(new URL('../src/data/daily.json', import.meta.url), 'utf8'));
 const dailyPublication = JSON.parse(await readFile(
   new URL('../src/data/daily-publication.json', import.meta.url),
   'utf8',
@@ -44,6 +45,26 @@ const isPhase2EventPath = (path) => (
 const exactSet = (actual, expected) => (
   actual.size === expected.size && [...actual].every((value) => expected.has(value))
 );
+
+// /today/ lists the coming month in the sky (src/lib/today-sky.ts comingUp)
+// and links every published event page from after the edition's noon UTC
+// snapshot through 31 days on; an eclipse stands for its lunation.
+function expectedTodayLinks(date, snapshotAt = `${date}T12:00:00.000Z`) {
+  const start = new Date(snapshotAt).getTime();
+  const end = new Date(`${date}T00:00:00.000Z`).getTime() + 32 * 86_400_000;
+  const candidates = eventsPublication.pages
+    .filter((event) => {
+      const anchor = new Date(event.anchor).getTime();
+      return anchor > start && anchor < end;
+    })
+    .sort((left, right) => left.anchor.localeCompare(right.anchor) || left.id.localeCompare(right.id));
+  const eclipseDays = new Set(candidates
+    .filter((event) => event.family === 'eclipse')
+    .map((event) => event.anchor.slice(0, 10)));
+  return candidates
+    .filter((event) => event.family !== 'lunation' || !eclipseDays.has(event.anchor.slice(0, 10)))
+    .map((event) => event.path);
+}
 
 function expectedDailyLinks(date) {
   const start = new Date(`${date}T00:00:00.000Z`).getTime();
@@ -418,14 +439,16 @@ await withPreview({ port: 4412 }, async (BASE) => {
         `actual=${feedPaths.size} expected=${expectedFeedPaths.size}`,
       );
 
-      const expectedLinks = expectedDailyLinks(dailyPublication.date);
-      for (const route of ['/today/', '/horoscopes/aries/']) {
+      for (const [route, expectedLinks, window] of [
+        ['/today/', expectedTodayLinks(dailyPublication.date, dailyFacts.snapshotAt), 'coming-month'],
+        ['/horoscopes/aries/', expectedDailyLinks(dailyPublication.date), 'next-five-day'],
+      ]) {
         await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle' });
         const actualLinks = await page.locator('[data-daily-event-links] a').evaluateAll((anchors) => (
           anchors.map((anchor) => anchor.getAttribute('href'))
         ));
         check(
-          `${route}: exact next-five-day event links`,
+          `${route}: exact ${window} event links`,
           JSON.stringify(actualLinks) === JSON.stringify(expectedLinks),
           `actual=${actualLinks.join(',')} expected=${expectedLinks.join(',')}`,
         );
