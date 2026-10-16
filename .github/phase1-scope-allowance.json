@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "design-taste-pass-v2-20261016",
-  "baseCommit": "6c4886e0efb8a6ac83f13f479fe986f6ad88a5f5",
+  "baseCommit": "cb1e411f2f1c2a4c141d9dcd5b987e1522754702",
   "protectedPaths": [
     "src/content/guides/aquarius.mdx",
     "src/content/guides/aries.mdx",
