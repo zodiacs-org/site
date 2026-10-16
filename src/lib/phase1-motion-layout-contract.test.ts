@@ -132,7 +132,7 @@ describe('Phase 1 layout and motion contract', () => {
       /\.today-page\[data-living-chart-enabled\] \.today-reading__body\s*\{\s*min-height:\s*570px;\s*\}/u,
     );
     expect(today).toMatch(
-      /\.today-page\[data-living-chart-enabled\] \.today-returning-chart-placeholder \.today-reading__head h2\s*\{[^}]*overflow:\s*hidden;[^}]*text-overflow:\s*ellipsis;[^}]*white-space:\s*nowrap;/u,
+      /\.today-page\[data-living-chart-enabled\] \.today-returning-chart-placeholder \.today-reading__head h3\s*\{[^}]*overflow:\s*hidden;[^}]*text-overflow:\s*ellipsis;[^}]*white-space:\s*nowrap;/u,
     );
     expect(today).not.toContain('.today-returning-chart-placeholder { min-height:');
     expect(today).not.toContain(':root[data-today-saved-chart] .today-reading { min-height:');
@@ -180,7 +180,7 @@ describe('Phase 1 layout and motion contract', () => {
 
   it('pins every Today sign-picker child to a fixed card track during hydration', async () => {
     const today = await source('pages/today/index.astro');
-    expect(today).toMatch(/\.today-sign\s*\{[^}]*grid-template-rows:\s*34px 18px 16px;[^}]*align-content:\s*start;[^}]*block-size:\s*88px;/u);
+    expect(today).toMatch(/\.today-sign\s*\{[^}]*grid-template-rows:\s*30px 18px 14px;[^}]*align-content:\s*start;[^}]*block-size:\s*82px;/u);
     expect(today).toMatch(/\.today-sign__icon\s*\{[^}]*grid-row:\s*1;/u);
     expect(today).toMatch(/\.today-sign__name\s*\{[^}]*grid-row:\s*2;/u);
     expect(today).toMatch(/\.today-sign__dates\s*\{[^}]*grid-row:\s*3;/u);
