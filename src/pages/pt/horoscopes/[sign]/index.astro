@@ -40,11 +40,11 @@ const description = `Horóscopo de ${name} hoje, ${dateLabel}: ${notes} a partir
 >
   <section class="section--tight container container--narrow" data-edition-content="true" style={`--sign:${sign.hue}`}>
     <header class="sign-pt__hero">
-      <em class="kicker">Horóscopo diário · {dateLabel}</em>
       <h1 class="display">
         <img src={`/assets/zodiac-icons/128/${sign.slug}.webp`} width="44" height="44" alt="" decoding="async" />
         {name} hoje
       </h1>
+      <p class="dateline">Horóscopo diário · {dateLabel}</p>
       <p class="sign-pt__lead">O que mais importa para {name}.</p>
       <span class="sign-pt__stamp mono">{signDates(sign, locale)} · {moonPhaseLabel(locale, daily.moon.phase)}</span>
     </header>
@@ -75,7 +75,7 @@ const description = `Horóscopo de ${name} hoje, ${dateLabel}: ${notes} a partir
   .sign-pt__hero h1 { display: flex; align-items: center; gap: 12px; margin: 14px 0; font-size: var(--text-2xl); line-height: 1.04; }
   .sign-pt__hero h1 img { border-radius: 50%; }
   .sign-pt__lead { margin: 0; color: var(--text-2); font-size: var(--text-lg); text-wrap: pretty; }
-  .sign-pt__stamp { display: block; margin-top: 14px; color: var(--faint); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .sign-pt__stamp { display: block; margin-top: 14px; color: var(--faint); font-size: 12px; letter-spacing: 0; }
   .sign-pt__core { padding: 22px 20px; }
   .sign-pt__links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: clamp(18px, 3vw, 26px); }
   .sign-pt__note { margin-top: clamp(18px, 3vw, 26px); color: var(--muted); font-size: var(--text-sm); }

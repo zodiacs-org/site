@@ -11,9 +11,9 @@ const tools = [
   { href: '/birth-chart/', title: 'Calculadora de carta natal', promise: 'Descubre tu Sol, tu Luna, tu ascendente, los planetas, las casas y lo que significan.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/birth-chart/someone-else/', title: 'Carta de otra persona (en inglés)', promise: 'Usa sus datos de nacimiento, sus tres grandes o un enlace de Zodiacs, con su permiso.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
   { href: '/today/', title: 'Hoy', promise: 'El cielo de hoy, leído para los doce signos solares.', hue: 'var(--sign-cancer)', kind: 'transit' as const },
-  { href: '/compatibility/', title: 'Compatibilidad', promise: 'Compara dos cartas y mira dónde conectan, chocan y crecen.', hue: 'var(--sign-libra)', kind: 'compat' as const },
+  { href: '/compatibility/', title: 'Compatibilidad', promise: 'Compara dos cartas y mira dónde conectan, chocan y crecen.', hue: 'var(--sign-leo)', kind: 'compat' as const },
   { href: '/moon-sign/', title: 'Calculadora de signo lunar', promise: 'Cómo sientes las cosas y qué te calma.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
-  { href: '/rising-sign/', title: 'Calculadora de ascendente', promise: 'El signo que los demás ven primero. La hora de nacimiento ayuda.', hue: 'var(--sign-gemini)', kind: 'rising' as const },
+  { href: '/rising-sign/', title: 'Calculadora de ascendente', promise: 'El signo que los demás ven primero. La hora de nacimiento ayuda.', hue: 'var(--sign-aries)', kind: 'rising' as const },
   { href: '/moon-phase/', title: 'Fase lunar', promise: 'La Luna de hoy y la Luna de cualquier fecha importante.', hue: 'var(--sign-cancer)', kind: 'moonphase' as const },
   { href: '/saturn-return/', title: 'Retorno de Saturno', promise: 'Cuándo llega el tuyo y qué suele pedir.', hue: 'var(--sign-capricorn)', kind: 'saturn' as const },
   { href: '/transits/', title: 'Tránsitos', promise: 'El cielo de hoy comparado con tu carta.', hue: 'var(--sign-aries)', kind: 'transit' as const },
@@ -59,7 +59,7 @@ const jsonLd = [
       <button
         class="shell tinted assistant-tool"
         type="button"
-        style="--sign:var(--sign-aquarius)"
+        style="--sign:var(--ink-1)"
         data-assistant-open
         data-assistant-locale="es"
         aria-haspopup="dialog"
@@ -74,24 +74,24 @@ const jsonLd = [
     </div>
 
     <div class="tools-upcoming">
-      <em class="kicker">Calendarios del cielo</em>
+      <h2 class="list-heading">Calendarios del cielo</h2>
       <ul>
-        <li><a href="/es/full-moon-calendar/"><strong>Lunas llenas</strong></a>: fechas, signos y nombres hasta 2027.</li>
-        <li><a href="/es/eclipses/"><strong>Eclipses</strong></a>: solares y lunares hasta 2028.</li>
-        <li><a href="/es/mercury-retrograde/"><strong>Mercurio retrógrado</strong></a>: cada periodo, con sus estaciones.</li>
-        <li><a href="/es/retrogrades/"><strong>Planetas retrógrados</strong></a>: de Mercurio a Plutón.</li>
+        <li style="--sign:var(--sign-taurus)"><ToolGlyph kind="fullmoon" /><span><a href="/es/full-moon-calendar/"><strong>Lunas llenas</strong></a>: fechas, signos y nombres hasta 2027.</span></li>
+        <li style="--sign:var(--sign-leo)"><ToolGlyph kind="eclipse" /><span><a href="/es/eclipses/"><strong>Eclipses</strong></a>: solares y lunares hasta 2028.</span></li>
+        <li style="--sign:var(--sign-virgo)"><ToolGlyph kind="retrograde" /><span><a href="/es/mercury-retrograde/"><strong>Mercurio retrógrado</strong></a>: cada periodo, con sus estaciones.</span></li>
+        <li style="--sign:var(--sign-capricorn)"><ToolGlyph kind="retrograde" /><span><a href="/es/retrogrades/"><strong>Planetas retrógrados</strong></a>: de Mercurio a Plutón.</span></li>
       </ul>
     </div>
 
     <div class="tools-upcoming">
-      <em class="kicker">También disponible en inglés</em>
+      <h2 class="list-heading">También disponible en inglés</h2>
       <ul>
-        <li><strong>Horóscopos.</strong> El cielo de hoy, signo por signo. La edición inglesa también incluye lecturas semanales y mensuales: <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>elegir signo</a>.</li>
+        <li style="--sign:var(--sign-sagittarius)"><ToolGlyph kind="sun" /><span><strong>Horóscopos.</strong> El cielo de hoy, signo por signo. La edición inglesa también incluye lecturas semanales y mensuales: <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>elegir signo</a>.</span></li>
       </ul>
     </div>
   </section>
-<section class="section--tight container"><SharingToolLinks locale="es" /></section>
-<section class="section--tight container"><ReturnToolLinks locale="es" /></section>
+<section class="section--tight container"><SharingToolLinks locale="es" icons /></section>
+<section class="section--tight container"><ReturnToolLinks locale="es" icons /></section>
 </Base>
 
 <style>
@@ -108,7 +108,10 @@ const jsonLd = [
   .assistant-tool:hover .core { border-color: color-mix(in oklab, var(--sign) 28%, transparent); }
   .tools-upcoming { margin-top: clamp(28px, 5vw, 44px); padding-top: 24px; border-top: 1px solid var(--hair-1); }
   .tools-upcoming ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-  .tools-upcoming li { font-size: var(--text-sm); color: var(--muted); }
+  .tools-upcoming li { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: var(--text-sm); color: var(--muted); }
+  /* Each entry wears its tool's pastel disc, at list size. */
+  .tools-upcoming li :global(.tool-glyph) { width: 34px; height: 34px; margin: 0; flex: none; }
+  .tools-upcoming li :global(.tool-glyph svg) { width: 18px; height: 18px; }
   .tools-upcoming strong { color: var(--text-2); font-weight: 600; }
   .tools-upcoming a { color: var(--text); }
 </style>

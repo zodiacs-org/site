@@ -1059,7 +1059,7 @@ export default function ProfileManager({
       {pairsBlock}
 
       {profile.charts.length >= 2 && (
-        <div class="pf-next shell tinted" style="--sign:var(--sign-libra)">
+        <div class="pf-next shell tinted" style="--sign:var(--sign-leo)">
           <div class="core tinted pf-next__core">
             <strong>
               {tf(locale, 'compareSavedHeading', {

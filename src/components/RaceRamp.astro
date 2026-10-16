@@ -53,7 +53,14 @@ const englishCue = englishOnlyCue(locale);
     padding: 12px 18px;
     border: 1px solid var(--hair-1);
     border-radius: var(--r-md);
-    background: linear-gradient(90deg, rgba(198, 204, 218, 0.04), transparent 60%);
+    background: var(--void-1);
+    transition: border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
+  }
+  /* The strip is one link: it answers the pointer and keyboard as a whole. */
+  .race-ramp:focus-within { border-color: var(--hair-3); }
+  @media (hover: hover) and (pointer: fine) {
+    .race-ramp:hover { border-color: var(--hair-2); background: var(--void-2); }
+    .race-ramp:hover .race-ramp__link { color: var(--text); transform: translateX(2px); }
   }
   .race-ramp__label {
     font-family: var(--font-sans);
@@ -75,8 +82,13 @@ const englishCue = englishOnlyCue(locale);
     color: var(--text-2);
     text-decoration: none;
     white-space: nowrap;
+    transition: color var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
   }
   .race-ramp__link:hover { color: var(--text); }
+  @media (prefers-reduced-motion: reduce) {
+    .race-ramp, .race-ramp__link { transition: none; }
+    .race-ramp:hover .race-ramp__link { transform: none; }
+  }
   @media (max-width: 560px) {
     .race-ramp__link {
       /* Keep the tap target clear of the fixed 48px Guide launcher. */

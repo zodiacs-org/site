@@ -65,7 +65,7 @@ body { min-height: 100dvh; overflow-x: clip; }
   opacity: 0.5;
   background-image:
     radial-gradient(1px 1px at 11% 17%, rgba(238, 241, 247, 0.35), transparent 60%),
-    radial-gradient(1px 1px at 27% 64%, rgba(178, 157, 208, 0.28), transparent 60%),
+    radial-gradient(1px 1px at 27% 64%, rgba(238, 241, 247, 0.24), transparent 60%),
     radial-gradient(1px 1px at 52% 31%, rgba(238, 241, 247, 0.22), transparent 60%),
     radial-gradient(1.5px 1.5px at 69% 78%, rgba(182, 212, 228, 0.26), transparent 60%),
     radial-gradient(1px 1px at 84% 22%, rgba(238, 241, 247, 0.30), transparent 60%),
@@ -78,7 +78,7 @@ a { color: inherit; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 input, select { font: inherit; }
 
-::selection { background: rgba(178, 157, 208, 0.32); color: var(--ink-0); }
+::selection { background: rgba(198, 204, 218, 0.28); color: var(--ink-0); }
 
 :focus-visible {
   outline: 1.5px solid var(--accent);
@@ -94,10 +94,9 @@ input, select { font: inherit; }
   background: var(--void-3);
   color: var(--text);
   padding: 10px 16px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 550;
   border: 1px solid var(--hair-3);
   border-radius: var(--r-full);
   z-index: 60;
@@ -183,19 +182,17 @@ main :is(.tools-grid, .learn-grid) > a.shell > .core {
   color: var(--muted);
 }
 
-/* ── Eyebrow pill ──────────────────────────────────────────────── */
-/* Reserved for genuine data kickers only (e.g. a guide's element + dates).
-   Never a slogan, never with a status dot. Most sections use no kicker,
-   or the sentence-case .kicker above. */
+/* ── Facts line ─────────────────────────────────────────────────── */
+/* Genuine data only (a guide's element and dates), set as a plain
+   sentence-case line in the brand sans. Never a tracked all-caps label. */
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 400;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   color: var(--faint);
 }
 
@@ -269,17 +266,15 @@ main :is(.tools-grid, .learn-grid) > a.shell > .core {
    G3 (lens): pages that include GlassDefs.astro upgrade G1/G2 to the SVG
    displacement lens on Chromium — those rules live with the defs. */
 .btn--glass {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 48%),
-    rgba(22, 26, 36, 0.55);
+  /* Over the plain void a flat translucent fill reads the same as glass;
+     the sheen and rim light only belong over footage (G2 below). */
+  background: rgba(22, 26, 36, 0.55);
   backdrop-filter: blur(12px) saturate(140%) brightness(1.16);
   -webkit-backdrop-filter: blur(12px) saturate(140%) brightness(1.16);
   border: 1px solid rgba(238, 241, 247, 0.40);
   color: var(--ink-0, #EEF1F7);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.34),
-    inset 0 -12px 22px -14px rgba(255, 255, 255, 0.08),
-    0 8px 26px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: none;
+  transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
 }
 .btn--glass .orb {
   background: var(--ink-0, #EEF1F7);
@@ -288,9 +283,7 @@ main :is(.tools-grid, .learn-grid) > a.shell > .core {
 }
 @media (hover: hover) and (pointer: fine) {
   .btn--glass:hover {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 48%),
-      rgba(30, 35, 47, 0.62);
+    background: rgba(30, 35, 47, 0.62);
     border-color: rgba(238, 241, 247, 0.5);
   }
   .btn--glass:hover .orb { background: #ffffff; }
@@ -379,11 +372,10 @@ main :is(.tools-grid, .learn-grid) > a.shell > .core {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: radial-gradient(118% 118% at 30% 22%, color-mix(in oklab, var(--sign, var(--accent)) 82%, #ffffff 18%), var(--sign, var(--accent)) 68%);
+  /* Flat pastel disc, the same treatment as the sign icons: no sheen, no glow. */
+  background: var(--sign, var(--accent));
   color: var(--void-0);
-  box-shadow:
-    0 4px 12px -6px color-mix(in oklab, var(--sign, var(--accent)) 55%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: none;
 }
 
 /* Learn detail-page hero badge — the planet/house disc or aspect glyph that
@@ -395,35 +387,48 @@ main :is(.tools-grid, .learn-grid) > a.shell > .core {
 .learn-hero-glyph.aglyph { color: var(--text-2); }
 .cluster-row__num.house-badge { width: 28px; height: 28px; font-size: 14px; box-shadow: none; }
 
-/* ── Double-bezel card: outer shell + inner core ───────────────── */
+/* ── Card: one flat surface ────────────────────────────────────── */
+/* The shell is now only a layout wrapper; the core is the one surface. A
+   panel that holds controls keeps its hairline and answers the pointer and
+   the keyboard; a panel that only shows information sits on tone alone, so
+   no outline is left sitting there without a reason. */
 .shell {
-  background: rgba(198, 204, 218, 0.035);
-  border: 1px solid var(--hair-1);
   border-radius: var(--r-xl);
-  padding: var(--bezel);
 }
 .core {
-  background: linear-gradient(180deg, var(--void-2) 0%, var(--void-1) 100%);
+  background: var(--void-1);
   border: 1px solid var(--hair-1);
-  border-radius: calc(var(--r-xl) - var(--bezel));
-  box-shadow: inset 0 1px 0 rgba(238, 241, 247, 0.05);
+  border-radius: var(--r-xl);
+  box-shadow: none;
   height: 100%;
+  transition: border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
+}
+.core:not(:has(a[href], button, input, select, textarea, summary)) {
+  border-color: transparent;
+  background: var(--void-2);
+}
+.core:focus-within { border-color: var(--hair-3); }
+@media (hover: hover) and (pointer: fine) {
+  .core:has(a[href], button, input, select, textarea, summary):hover { border-color: var(--hair-2); }
+  .core:focus-within:hover { border-color: var(--hair-3); }
 }
 
 /* Interactive card variant. Paint changes are immediate; only the small
    positional response is animated, and only on a real hover-capable pointer. */
 a.shell { display: block; text-decoration: none; transition: transform var(--dur-1) var(--ease); }
 @media (hover: hover) and (pointer: fine) {
-  a.shell:hover { border-color: color-mix(in oklab, var(--sign, var(--accent)) 45%, transparent); transform: translateY(-2px); }
-  a.shell:hover .core { border-color: color-mix(in oklab, var(--sign, var(--accent)) 28%, transparent); }
+  a.shell:hover { transform: translateY(-2px); }
+  a.shell:hover .core { border-color: color-mix(in oklab, var(--sign, var(--accent)) 42%, transparent); }
 }
 
-/* Sign-tinted wash (set --sign on the element) */
+/* Sign tint: a flat wash of the sign's own hue, no gradient. */
 .tinted .core,
 .core.tinted {
-  background:
-    radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, var(--sign, var(--accent)) 9%, transparent), transparent 60%),
-    linear-gradient(180deg, var(--void-2) 0%, var(--void-1) 100%);
+  background: color-mix(in oklab, var(--sign, var(--accent)) 5%, var(--void-1));
+}
+.tinted .core:not(:has(a[href], button, input, select, textarea, summary)),
+.core.tinted:not(:has(a[href], button, input, select, textarea, summary)) {
+  background: color-mix(in oklab, var(--sign, var(--accent)) 5%, var(--void-2));
 }
 
 /* ── Recommended next action ─────────────────────────────────────
@@ -438,12 +443,13 @@ a.shell { display: block; text-decoration: none; transition: transform var(--dur
   padding: clamp(22px, 3.4vw, 34px);
 }
 .next-action__copy { min-width: 0; }
-.next-action__cue {
+.next-action__cue,
+.next-action__cue.mono {
   margin: 0 0 8px;
   color: var(--faint);
-  font-size: 10px;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
 }
 .next-action__title {
   margin: 0;
@@ -525,9 +531,11 @@ a.shell { display: block; text-decoration: none; transition: transform var(--dur
   font-variant-numeric: tabular-nums;
 }
 .mono--label {
-  font-size: 10.5px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--faint);
 }
 
@@ -663,9 +671,7 @@ body:has(:focus-visible) .reveal { animation: none; }
 }
 .zsearch__kind {
   flex-shrink: 0;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--faint);
 }
 .zsearch__status {
@@ -699,3 +705,118 @@ main > .section--tight:first-child:where(:not(.aura-page)) { padding-top: clamp(
 
 .calendar-method { margin-top: 16px; color: var(--muted); font-size: 14px; }
 .calendar-method summary { cursor: pointer; min-height: 44px; line-height: 44px; }
+
+/* ── Question rows (FAQ) ─────────────────────────────────────────
+   Every answer row answers the pointer, shows which way it opens, and
+   unfolds its answer with a short settle. The row itself never moves. */
+details:is(.faq__item, .pair-faq__item) {
+  transition: border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
+}
+details:is(.faq__item, .pair-faq__item) > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  list-style: none;
+  transition: color var(--dur-1) var(--ease);
+}
+details:is(.faq__item, .pair-faq__item) > summary::-webkit-details-marker { display: none; }
+details:is(.faq__item, .pair-faq__item) > summary::after {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-inline-end: 4px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  color: var(--faint);
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--dur-2) var(--ease-soft), color var(--dur-1) var(--ease);
+}
+details[open]:is(.faq__item, .pair-faq__item) > summary::after {
+  transform: translateY(2px) rotate(-135deg);
+}
+details[open]:is(.faq__item, .pair-faq__item) > :not(summary) {
+  animation: answer-settle 280ms var(--ease-soft) both;
+}
+details.faq__item:focus-within,
+details.pair-faq__item:focus-within { border-color: var(--hair-3); }
+@media (hover: hover) and (pointer: fine) {
+  details.faq__item:hover { border-color: var(--hair-2); background: var(--void-2); }
+  details:is(.faq__item, .pair-faq__item):hover > summary::after { color: var(--text-2); }
+}
+@keyframes answer-settle {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  details:is(.faq__item, .pair-faq__item),
+  details:is(.faq__item, .pair-faq__item) > summary,
+  details:is(.faq__item, .pair-faq__item) > summary::after { transition: none; }
+  details[open]:is(.faq__item, .pair-faq__item) > :not(summary) { animation: none; }
+}
+
+/* ── Section back-link and dateline ─────────────────────────────
+   Pages no longer stack a decorative label over the headline. A page that
+   belongs to a section starts with a plain link back to it; a dated page
+   states its date under the headline, in the body face. */
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  margin-block: -8px 2px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  font-style: normal;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color var(--dur-1) var(--ease);
+}
+.crumb__arrow { display: inline-block; transition: transform var(--dur-1) var(--ease); }
+.crumb:hover { color: var(--text); }
+.crumb:hover .crumb__arrow { transform: translateX(-3px); }
+.dateline {
+  margin: 10px 0 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) {
+  .crumb, .crumb__arrow { transition: none; }
+  .crumb:hover .crumb__arrow { transform: none; }
+}
+/* A small heading that names the list under it (not a label over a headline). */
+.list-heading {
+  margin: 0 0 4px;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-2);
+}
+
+/* ── Small responses to the pointer ─────────────────────────────
+   A card's "go" label takes one step toward where it leads, and a data
+   table's row answers the row being read. Nothing moves on its own. */
+:is(.home-tool__go, .home-share__go, .home-tool-es__go, .tool-card__go, .featured-card__go, .horo-card__go, .horo-es__go, .horo-pt__go, .compat-choice__go, .feeds__go) {
+  transition: transform var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+:is(.rx-table, .voc-table, .dates-table, .method-table) tbody tr {
+  transition: background-color var(--dur-1) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(a, button, .tile, .featured-card, .horo-card, .compat-choice):hover :is(.home-tool__go, .home-share__go, .home-tool-es__go, .tool-card__go, .featured-card__go, .horo-card__go, .horo-es__go, .horo-pt__go, .compat-choice__go, .feeds__go) {
+    transform: translateX(3px);
+  }
+  :is(.rx-table, .voc-table, .dates-table, .method-table) tbody tr:hover {
+    background-color: rgba(198, 204, 218, 0.035);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.home-tool__go, .home-share__go, .home-tool-es__go, .tool-card__go, .featured-card__go, .horo-card__go, .horo-es__go, .horo-pt__go, .compat-choice__go, .feeds__go) { transition: none; transform: none !important; }
+}

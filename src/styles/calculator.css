@@ -417,10 +417,9 @@
   text-align: start;
   padding-block: 10px;
   padding-inline: 0 14px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
   font-weight: 500;
   color: var(--faint);
   border-bottom: 1px solid var(--hair-2);
@@ -850,12 +849,16 @@
   padding: 12px 18px;
   border: 1px solid var(--hair-1);
   border-radius: var(--r-md);
-  background: linear-gradient(90deg, rgba(198, 204, 218, 0.04), transparent 60%);
+  background: var(--void-1);
+  transition: border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
+}
+.calc__record:focus-within { border-color: var(--hair-3); }
+@media (hover: hover) and (pointer: fine) {
+  .calc__record:hover { border-color: var(--hair-2); background: var(--void-2); }
 }
 .calc__record-label {
-  font-size: 9.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0;
   color: var(--faint);
 }
 .calc__record-copy {
@@ -1288,10 +1291,9 @@
   margin: 6px 0 0;
 }
 .field__optional {
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  font-size: 12px;
+  letter-spacing: 0;
   color: var(--faint);
-  text-transform: uppercase;
   margin-inline-start: 6px;
 }
 
@@ -1404,7 +1406,7 @@
 .trans__grid { display: grid; gap: clamp(20px, 4vw, 34px); margin-bottom: 24px; }
 @media (min-width: 720px) { .trans__grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); } }
 .trans__side { display: grid; gap: 14px; align-content: start; min-width: 0; }
-.trans__when { margin: 0 0 10px; font-size: 11px; letter-spacing: 0.08em; color: var(--faint); text-transform: uppercase; }
+.trans__when { margin: 0 0 10px; font-size: 12px; letter-spacing: 0; color: var(--faint); }
 .trans__sky {
   display: flex;
   flex-wrap: wrap;
@@ -1873,9 +1875,9 @@
 .pfd__core { padding: 20px; display: grid; gap: 14px; }
 .pfd__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
 .pfd__head h2 { margin: 0; font-size: var(--text-lg); font-weight: 620; letter-spacing: -0.015em; }
-.pfd__stamp { font-size: 10.5px; letter-spacing: 0.08em; color: var(--faint); text-transform: uppercase; }
+.pfd__stamp { font-size: 12px; letter-spacing: 0; color: var(--faint); }
 .pfd__pick { display: flex; align-items: center; gap: 10px; }
-.pfd__pick .mono { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.pfd__pick .mono { font-size: 12px; letter-spacing: 0; color: var(--muted); }
 .pfd__pick .field__input { height: 38px; max-width: 320px; }
 .pfd__lines { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
 .pfd__lines p { margin: 0 0 3px; max-width: 62ch; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; }

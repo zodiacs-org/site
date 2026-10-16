@@ -111,7 +111,7 @@ const jsonLd = [
 >
   <article class="container container--narrow learn-detail" style={`--sign:${sign.hue}`}>
     <header class="learn-detail__hero reveal">
-      <em class="kicker">Rising signs</em>
+      <a class="crumb" href="/rising-sign/"><span class="crumb__arrow" aria-hidden="true">←</span>Rising signs</a>
       <div class="plc-lockup">
         <SignIcon sign={sign.slug} size={64} class="plc-disc" loading="eager" />
         <h1 class="display">{sign.name} rising</h1>
@@ -212,7 +212,7 @@ const jsonLd = [
   }
   .plc-panel__row:first-child { border-top: 1px solid var(--hair-1); }
   @media (min-width: 560px) { .plc-panel__row { grid-template-columns: 170px 1fr; } }
-  .plc-panel__row dt { color: var(--faint); text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; align-self: baseline; }
+  .plc-panel__row dt { color: var(--faint); font-size: 12px; letter-spacing: 0; align-self: baseline; }
   .plc-panel__row dd { margin: 0; color: var(--text-2); }
   .plc-panel__row strong { color: var(--text); font-weight: 600; }
 

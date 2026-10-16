@@ -503,6 +503,60 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     </script>
     <noscript><style>@import url('/assets/site-footer.css?v=20261006');</style></noscript>
 
+    {props.localTypography && locale === 'en' && (
+      <script is:inline>
+        /* Pages on the local type tier paint their body copy in the metric-
+           matched local face, so a late webfont can never move the first
+           screen. Once the page has loaded, the brand face is fetched once and
+           handed to each section only while that section is off screen, so
+           visible text never changes face and nothing a reader sees shifts. */
+        (function upgradeBodyFace() {
+          if (!('FontFace' in window) || !document.fonts || !('IntersectionObserver' in window)) return;
+          var family = "'Instrument Sans Body', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif";
+          // The home page's display serif is its own preloaded subset; other
+          // pages on this tier fall back to Georgia and take EB Garamond too.
+          var serifIsLocal = /^['"]?EB Garamond Fallback/.test(getComputedStyle(document.documentElement).getPropertyValue('--font-serif').trim());
+          var serif = "'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif";
+          function start() {
+            var upright = new FontFace('Instrument Sans Body', 'url(/fonts/instrument-sans-latin-wght-normal.woff2) format("woff2-variations")', { weight: '400 700', style: 'normal', display: 'swap' });
+            var italic = new FontFace('Instrument Sans Body', 'url(/fonts/instrument-sans-latin-wght-italic.woff2) format("woff2-variations")', { weight: '400 700', style: 'italic', display: 'swap' });
+            document.fonts.add(italic);
+            upright.load().then(function (face) {
+              document.fonts.add(face);
+              var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                  if (entry.isIntersecting) return;
+                  entry.target.style.setProperty('--font-sans', family);
+                  if (serifIsLocal) entry.target.style.setProperty('--font-serif', serif);
+                  entry.target.style.fontFamily = 'var(--font-sans)';
+                  observer.unobserve(entry.target);
+                });
+              });
+              // Sections and their direct blocks: a section taller than the
+              // screen never leaves it while it is being read, its blocks do.
+              var blocks = document.querySelectorAll('main > *, main > * > *, main > * > * > *, .zfooter');
+              blocks.forEach(function (block) { observer.observe(block); });
+              // While the tab is hidden nothing can be seen to move, so the
+              // rest of the page takes the brand face then.
+              document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState !== 'hidden') return;
+                observer.disconnect();
+                var main = document.querySelector('main');
+                [main, document.querySelector('.zfooter')].forEach(function (block) {
+                  if (!block) return;
+                  block.style.setProperty('--font-sans', family);
+                  if (serifIsLocal) block.style.setProperty('--font-serif', serif);
+                  block.style.fontFamily = 'var(--font-sans)';
+                });
+              }, { once: true });
+            }).catch(function () {});
+          }
+          if (document.readyState === 'complete') window.setTimeout(start, 400);
+          else window.addEventListener('load', function () { window.setTimeout(start, 400); }, { once: true });
+        })();
+      </script>
+    )}
+
     <script>
       // A small heading entrance, once, before it enters the reading area.
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

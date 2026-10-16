@@ -329,10 +329,10 @@ try {
     const navBreakpointsDetail = [];
     for (const [prefix, desktopBreakpoint, englishOnlyCue] of [
       ['', 920, ''],
-      ['/es', 1040, '— por ahora en inglés'],
-      ['/pt', 1040, '— por enquanto em inglês'],
-      ['/fr', 1040, '— pour l’instant en anglais'],
-      ['/it', 1040, '— per ora in inglese'],
+      ['/es', 1040, 'EN'],
+      ['/pt', 1040, 'EN'],
+      ['/fr', 1040, 'EN'],
+      ['/it', 1040, 'EN'],
     ]) {
       // Retain the old 819/820 checks as compact-layout regressions, and check
       // both sides of the new reserved-shell desktop thresholds independently.

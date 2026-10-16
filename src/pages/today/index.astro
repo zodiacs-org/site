@@ -122,7 +122,6 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     data-living-chart-enabled={livingChartEnabled ? '' : undefined}
   >
     <header class="today-hero">
-      <em class="kicker">Your daily brief</em>
       <h1 class="display"><EditionText current="Today" editionDate={publication.date} /></h1>
       <p>
         {livingChartEnabled
@@ -827,10 +826,9 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     display: block;
     margin-bottom: 6px;
     color: var(--faint);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0;
   }
   .today-useful {
     padding: 15px 16px;

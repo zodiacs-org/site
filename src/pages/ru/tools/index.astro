@@ -8,9 +8,9 @@ const tools = [
   { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/birth-chart/someone-else/', title: 'Карта другого человека — пока по-английски', promise: 'Используйте данные рождения, большую тройку или ссылку Zodiacs — с согласия человека.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
   { href: '/today/', title: 'Сегодня — пока по-английски', promise: 'Последняя сохранённая карта на фоне полуденного неба, с точными градусами.', hue: 'var(--sign-cancer)', kind: 'transit' as const, englishOnly: true },
-  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-libra)', kind: 'compat' as const },
+  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-leo)', kind: 'compat' as const },
   { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете и что помогает вернуться к себе.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
-  { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Энергия, которую другие замечают первой.', hue: 'var(--sign-gemini)', kind: 'rising' as const },
+  { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Энергия, которую другие замечают первой.', hue: 'var(--sign-aries)', kind: 'rising' as const },
   { href: '/ru/moon-phase/', title: 'Фаза Луны', promise: 'Луна сегодня и в любую важную для вас дату.', hue: 'var(--sign-cancer)', kind: 'moonphase' as const },
   { href: '/ru/saturn-return/', title: 'Возвращение Сатурна', promise: 'Когда оно наступает и какие темы обычно поднимает.', hue: 'var(--sign-capricorn)', kind: 'saturn' as const },
   { href: '/ru/transits/', title: 'Транзиты', promise: 'Сегодняшнее небо на фоне вашей карты.', hue: 'var(--sign-aries)', kind: 'transit' as const },
@@ -56,15 +56,15 @@ const jsonLd = [
     </div>
 
     <div class="tools-upcoming">
-      <em class="kicker">Пока доступно по-английски</em>
+      <h2 class="list-heading">Пока доступно по-английски</h2>
       <ul>
-        <li><strong>Гороскопы.</strong> Сегодняшнее небо для каждого знака. Английская версия также включает прогнозы на неделю и месяц: <a href="/horoscopes/" hreflang="en" title="Материал пока доступен по-английски">выбрать знак — пока по-английски</a>.</li>
-        <li><strong>Ретроградный Меркурий.</strong> Точные периоды до 2027 года: <a href="/mercury-retrograde/" hreflang="en" title="Материал пока доступен по-английски">посмотреть даты — пока по-английски</a>.</li>
+        <li style="--sign:var(--sign-sagittarius)"><ToolGlyph kind="sun" /><span><strong>Гороскопы.</strong> Сегодняшнее небо для каждого знака. Английская версия также включает прогнозы на неделю и месяц: <a href="/horoscopes/" hreflang="en" title="Материал пока доступен по-английски">выбрать знак — пока по-английски</a>.</span></li>
+        <li style="--sign:var(--sign-virgo)"><ToolGlyph kind="retrograde" /><span><strong>Ретроградный Меркурий.</strong> Точные периоды до 2027 года: <a href="/mercury-retrograde/" hreflang="en" title="Материал пока доступен по-английски">посмотреть даты — пока по-английски</a>.</span></li>
       </ul>
     </div>
   </section>
-<section class="section--tight container"><SharingToolLinks locale="ru" /></section>
-<section class="section--tight container"><ReturnToolLinks locale="ru" /></section>
+<section class="section--tight container"><SharingToolLinks locale="ru" icons /></section>
+<section class="section--tight container"><ReturnToolLinks locale="ru" icons /></section>
 </Base>
 
 <style>
@@ -78,7 +78,10 @@ const jsonLd = [
   .tool-card__go { margin-top: auto; font-size: 13px; font-weight: 550; color: var(--text); }
   .tools-upcoming { margin-top: clamp(28px, 5vw, 44px); padding-top: 24px; border-top: 1px solid var(--hair-1); }
   .tools-upcoming ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-  .tools-upcoming li { font-size: var(--text-sm); color: var(--muted); }
+  .tools-upcoming li { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: var(--text-sm); color: var(--muted); }
+  /* Each entry wears its tool's pastel disc, at list size. */
+  .tools-upcoming li :global(.tool-glyph) { width: 34px; height: 34px; margin: 0; flex: none; }
+  .tools-upcoming li :global(.tool-glyph svg) { width: 18px; height: 18px; }
   .tools-upcoming strong { color: var(--text-2); font-weight: 600; }
   .tools-upcoming a { color: var(--text); }
 </style>

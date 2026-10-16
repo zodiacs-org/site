@@ -63,7 +63,6 @@ const jsonLd = [
 >
   <section class="section container tools-page">
     <div class="section-head tools-head">
-      <em class="kicker">Free, no signup</em>
       <h1 class="display tools-title">Free astrology tools</h1>
       <p>
         Most people start with one of these five: a <AstroTerm term="birth-chart" label="birth chart" surface="tools-index" />, today’s sky, compatibility, a horoscope, or their <AstroTerm term="moon-sign" label="moon sign" surface="tools-index" /> and <AstroTerm term="rising-sign" label="rising sign" surface="tools-index" />.
@@ -93,7 +92,7 @@ const jsonLd = [
             <ul>
               {rest.filter((tool) => tool.group === group.id).map((t) => (
                 <li>
-                  <a href={t.href} title={t.promise}>
+                  <a href={t.href} title={t.promise} style={`--sign:${t.hue}`}>
                     <ToolGlyph kind={t.kind} />
                     <span>{t.title}</span>
                   </a>
@@ -101,7 +100,7 @@ const jsonLd = [
               ))}
               {group.id === 'numbers' && (
                 <li>
-                  <button class="tools-more__ask" type="button" data-assistant-open data-assistant-locale="en" aria-haspopup="dialog">
+                  <button class="tools-more__ask" type="button" data-assistant-open data-assistant-locale="en" aria-haspopup="dialog" style="--sign:var(--ink-1)">
                     <ToolGlyph kind="assistant" />
                     <span>Not sure? Ask Guide</span>
                   </button>
@@ -212,14 +211,15 @@ const jsonLd = [
   @media (min-width: 600px) { .tools-more__cols { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 1000px) { .tools-more__cols { grid-template-columns: repeat(4, 1fr); } }
   .tool-group h3 { margin: 0 0 10px; font-size: var(--text-sm); font-weight: 600; color: var(--text-2); }
-  .tool-group ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+  .tool-group ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
   .tool-group a,
   .tools-more__ask {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 6px 0;
-    color: var(--muted);
+    gap: 12px;
+    min-height: 44px;
+    padding: 4px 0;
+    color: var(--text-2);
     font: inherit;
     font-size: var(--text-sm);
     text-decoration: none;
@@ -227,20 +227,30 @@ const jsonLd = [
     border: 0;
     cursor: pointer;
     text-align: start;
+    transition: color var(--dur-1) var(--ease);
   }
   .tool-group a:hover, .tools-more__ask:hover { color: var(--text); }
-  /* In the list the glyph is a small ink line drawing, not a pastel disc. */
+  /* Every entry wears its tool's pastel disc, the same flat disc as the
+     home and Learn tool cards, at list size. */
   .tool-group :global(.tool-glyph) {
-    width: 18px;
-    height: 18px;
+    width: 34px;
+    height: 34px;
     margin: 0;
-    background: none;
-    box-shadow: none;
-    color: var(--faint);
     flex: none;
+    transition: box-shadow var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
   }
   .tool-group :global(.tool-glyph svg) { width: 18px; height: 18px; }
-  .tool-group a:hover :global(.tool-glyph), .tools-more__ask:hover :global(.tool-glyph) { color: var(--text-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .tool-group a:hover :global(.tool-glyph),
+    .tools-more__ask:hover :global(.tool-glyph) {
+      box-shadow: 0 0 0 4px color-mix(in oklab, var(--sign) 22%, transparent);
+      transform: scale(1.04);
+    }
+  }
+  .tool-group a:focus-visible :global(.tool-glyph),
+  .tools-more__ask:focus-visible :global(.tool-glyph) {
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--sign) 30%, transparent);
+  }
   .tools-privacy {
     margin: 0;
     color: var(--faint);
@@ -249,5 +259,9 @@ const jsonLd = [
   }
   .tools-privacy strong { color: var(--text-2); }
   .tools-privacy a { color: var(--muted); }
-  @media (prefers-reduced-motion: reduce) { .featured-card { transition: none; } .featured-card:hover { transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .featured-card, .tool-group :global(.tool-glyph) { transition: none; }
+    .featured-card:hover { transform: none; }
+    .tool-group a:hover :global(.tool-glyph), .tools-more__ask:hover :global(.tool-glyph) { transform: none; }
+  }
 </style>

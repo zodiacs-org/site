@@ -70,7 +70,7 @@ const dayLabel = (event: CatalogEvent) => formatDate('en', new Date(event.facts.
   month: 'short', day: 'numeric', timeZone: 'UTC',
 });
 
-const hue = nextEvent?.facts.signs[0] ? signBySlug(nextEvent.facts.signs[0]).hue : 'var(--sign-aquarius)';
+const hue = nextEvent?.facts.signs[0] ? signBySlug(nextEvent.facts.signs[0]).hue : 'var(--accent)';
 const asOf = formatShortDate('en', buildNow);
 const pageIds = new Set(eventsPublication.pages.map((page) => page.id));
 
@@ -172,7 +172,6 @@ const sources = [
 
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
-      <span class="kicker">The sky, dated</span>
       <h1 class="display">Sky events</h1>
       <p>
         Every date the sky does something worth knowing about, through the

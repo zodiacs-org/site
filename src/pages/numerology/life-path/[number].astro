@@ -103,7 +103,7 @@ const jsonLd = [
 >
   <article class="container container--narrow lp-page">
     <header class="lp-hero">
-      <em class="kicker">Life path numbers</em>
+      <a class="crumb" href="/numerology/"><span class="crumb__arrow" aria-hidden="true">←</span>Life path numbers</a>
       <h1 class="display">Life Path {number}</h1>
       <p class="lp-lead">
         <strong>{meaning.name}.</strong> {meaning.keywords.join(', ')}.
@@ -214,7 +214,7 @@ const jsonLd = [
   }
   .plc-panel__row:first-child { border-top: 1px solid var(--hair-1); }
   @media (min-width: 560px) { .plc-panel__row { grid-template-columns: 190px 1fr; } }
-  .plc-panel__row dt { color: var(--faint); text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; align-self: baseline; }
+  .plc-panel__row dt { color: var(--faint); font-size: 12px; letter-spacing: 0; align-self: baseline; }
   .plc-panel__row dd { margin: 0; color: var(--text-2); overflow-wrap: anywhere; }
 
   .lp-calc { display: grid; gap: 18px; }

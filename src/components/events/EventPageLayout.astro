@@ -203,7 +203,7 @@ const sources = [
     )}
 
     <header class="event-hero reveal">
-      <a class="kicker" href="/events/">Sky events · {monthLabel}</a>
+      <a class="crumb" href="/events/"><span class="crumb__arrow" aria-hidden="true">←</span>Sky events</a>
       <h1 class="display">{heading}</h1>
       <p class="event-hero__when">
         {facts.at ? (
@@ -256,7 +256,6 @@ const sources = [
     <aside class="next-action shell tinted reveal" style={hue ? `--sign:${hue}` : undefined}>
       <div class="next-action__core core tinted">
         <div class="next-action__copy">
-          <p class="next-action__cue mono">Where it lands for you</p>
           <h2 class="next-action__title">Compare this sky with your chart</h2>
           <p class="next-action__body">
             Open the transit tool at this event’s exact time. Choose a chart

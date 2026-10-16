@@ -201,10 +201,16 @@ const jsonLd = [
   }
   .guide-ru-hero__ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
   .guide-ru-body { display: grid; gap: clamp(28px, 5vw, 46px); }
-  .collect-band { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 18px; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: linear-gradient(90deg, rgba(198, 204, 218, 0.04), transparent 60%); }
+  .collect-band { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 12px 18px; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); transition: border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease); }
+  .collect-band:focus-within { border-color: var(--hair-3); }
+  @media (hover: hover) and (pointer: fine) {
+    .collect-band:hover { border-color: var(--hair-2); background: var(--void-2); }
+    .collect-band:hover .collect-band__link { color: var(--text); transform: translateX(2px); }
+  }
   .collect-band__label { font-family: var(--font-sans); font-size: 12.5px; letter-spacing: 0; text-transform: none; font-variant-numeric: tabular-nums; color: var(--faint); }
   .collect-band__text { font-size: 13px; color: var(--muted); }
-  .collect-band__link { margin-inline-start: auto; font-size: 13px; font-weight: 550; color: var(--text-2); text-decoration: none; }
+  .collect-band__link { margin-inline-start: auto; font-size: 13px; font-weight: 550; color: var(--text-2); text-decoration: none; transition: color var(--dur-1) var(--ease), transform var(--dur-1) var(--ease); }
+  @media (prefers-reduced-motion: reduce) { .collect-band, .collect-band__link { transition: none; } .collect-band:hover .collect-band__link { transform: none; } }
   .identity-share { margin: 0; font-family: var(--font-sans); font-size: 13px; line-height: 1.8; letter-spacing: 0; word-spacing: 0.1em; color: var(--faint); }
   .identity-share a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--hair-1); }
   .guide-ru-panel__core { padding: clamp(22px, 4vw, 32px); display: grid; gap: 12px; }

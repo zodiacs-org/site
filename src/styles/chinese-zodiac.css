@@ -7,14 +7,14 @@
 .cz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-top: 20px; }
 .cz-card { display: grid; gap: 6px; min-height: 160px; padding: 20px; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); color: var(--text); text-decoration: none; }
 .cz-card:hover { border-color: var(--hair-2); background: var(--void-2); }
-.cz-card__no { color: var(--faint); font: 10px/1 var(--font-mono); letter-spacing: .2em; text-transform: uppercase; }
+.cz-card__no { color: var(--faint); font: 10px/1 var(--font-mono); letter-spacing: 0; }
 .cz-card strong { font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; }
 .cz-card span:last-child { color: var(--muted); font-size: var(--text-sm); line-height: 1.55; }
 .cz-years { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; list-style: none; }
 .cz-years li { padding: 6px 10px; border: 1px solid var(--hair-1); border-radius: var(--r-full); color: var(--text-2); font: 12px/1 var(--font-mono); }
 .cz-facts { display: grid; margin: 24px 0; }
 .cz-facts div { display: grid; gap: 4px; padding: 12px 0; border-bottom: 1px solid var(--hair-1); }
-.cz-facts dt { color: var(--faint); font: 10px/1.3 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+.cz-facts dt { color: var(--faint); font: 10px/1.3 var(--font-mono); letter-spacing: 0; }
 .cz-facts dd { margin: 0; color: var(--text-2); }
 .cz-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--hair-1); }
 .cz-sources { font-size: var(--text-sm); color: var(--muted); }

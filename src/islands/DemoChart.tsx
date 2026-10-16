@@ -378,7 +378,6 @@ export default function DemoChart() {
 
       <div class="demo__guide">
         <div class="demo__guide-head">
-          <em class="kicker">Try the preview</em>
           <h3>Three ways into a chart</h3>
           <p>Choose a starting point below, or select any symbol on the wheel.</p>
         </div>

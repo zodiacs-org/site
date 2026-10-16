@@ -114,8 +114,8 @@ const generatedReceipt = INGRESS_GENERATED_AT.slice(0, 10)
   <article class="zodiac-dates">
     <header class="dates-hero container">
       <div class="dates-hero__text">
-        <em class="kicker">Zodiac dates, {currentYear}–{nextYear}</em>
         <h1 class="display">{headline}.</h1>
+        <p class="dateline">Zodiac dates, {currentYear} to {nextYear}</p>
         <p class="dates-hero__lede">
           {'Twelve tropical signs, their exact 30-degree boundaries and standard correspondences, plus the UTC minute when the Sun enters each sign in '
             + currentYear + ' and ' + nextYear + '.'}
@@ -359,10 +359,9 @@ const generatedReceipt = INGRESS_GENERATED_AT.slice(0, 10)
     display: inline-block;
     min-width: 48px;
     color: var(--faint);
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0;
   }
   .ingress {
     min-width: 144px;

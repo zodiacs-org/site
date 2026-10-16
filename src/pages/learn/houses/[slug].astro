@@ -90,8 +90,8 @@ const jsonLd = [
   <article class="container container--narrow learn-detail">
     <header class="learn-detail__hero learn-detail__hero--figured reveal">
       <div class="learn-detail__heroText">
+      <a class="crumb" href="/learn/houses/"><span class="crumb__arrow" aria-hidden="true">←</span>The houses</a>
       <span class="learn-hero-glyph house-badge" style={`--sign:${houseHue}`} aria-hidden="true">{n}</span>
-      <em class="kicker">The houses</em>
       <h1 id={slug} class="display">The {ORDINALS[n - 1]} house</h1>
       <p class="learn-detail__role">{entry.data.theme}</p>
       <p class="learn-detail__facts mono">
@@ -153,9 +153,11 @@ const jsonLd = [
   .learn-detail__role { margin: 0; font-size: var(--text-lg); color: var(--muted); max-width: 52ch; text-wrap: pretty; }
   .learn-detail__facts {
     margin: 2px 0 0;
-    font-size: 11px;
+    font-family: var(--font-sans);
+    font-size: 14px;
     color: var(--faint);
-    letter-spacing: 0.06em;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
     display: inline-flex;
     align-items: center;
     gap: 6px;

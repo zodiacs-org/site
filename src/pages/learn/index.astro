@@ -65,7 +65,7 @@ const jsonLd = [
           <span class="bigthree__head"><ToolGlyph kind="moon" /><span class="mono--label">Moon</span></span>
           <p><strong>How you feel.</strong> Your emotional weather, comforts, and needs. Changes sign every ~2.5 days — <a href="/moon-sign/">find yours</a>.</p>
         </div>
-        <div class="bigthree__item" style="--sign:var(--sign-libra)">
+        <div class="bigthree__item" style="--sign:var(--sign-aries)">
           <span class="bigthree__head"><ToolGlyph kind="rising" /><span class="mono--label">Rising</span></span>
           <p><strong>How people first read you.</strong> The sign on the eastern horizon at your birth — needs your birth time. <a href="/rising-sign/">Calculate it</a>.</p>
         </div>
@@ -286,7 +286,7 @@ const jsonLd = [
   }
   .learning-step--active .learning-step__eyebrow { color: color-mix(in oklab, var(--path-accent) 72%, var(--text)); }
   .learning-step--done .learning-step__check { border-color: var(--sign-taurus); background: color-mix(in oklab, var(--sign-taurus) 14%, var(--void-0)); color: var(--text); }
-  .learning-step__eyebrow { display: block; margin-bottom: 3px; color: var(--faint); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .learning-step__eyebrow { display: block; margin-bottom: 3px; color: var(--faint); font-size: 12px; letter-spacing: 0; }
   .learning-step__copy h3 { margin: 0; color: var(--text); font-size: var(--text-lg); letter-spacing: -0.015em; }
   .learning-step__copy p { margin: 5px 0 0; max-width: 61ch; color: var(--text-2); font-size: var(--text-sm); line-height: 1.55; }
   .learning-step__copy .learning-step__why {
@@ -309,11 +309,10 @@ const jsonLd = [
   }
   .learning-step__next-cue {
     color: color-mix(in oklab, var(--path-accent) 74%, var(--text));
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 650;
-    letter-spacing: 0.12em;
+    letter-spacing: 0;
     line-height: 1;
-    text-transform: uppercase;
   }
   .learning-step__action { white-space: nowrap; }
   @media (max-width: 719.5px) {
@@ -343,10 +342,9 @@ const jsonLd = [
   .dates-table th {
     text-align: left;
     padding: 10px 16px 10px 0;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0;
     font-weight: 500;
     color: var(--faint);
     border-bottom: 1px solid var(--hair-2);
