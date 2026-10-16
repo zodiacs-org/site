@@ -303,7 +303,7 @@ await withPreview({ port: 4393 }, async (baseURL) => {
     try {
       check('/today/ without JavaScript: no state is decided', await page.getAttribute('html', 'data-edition-state') === null);
       const heading = await page.locator('.today-hero h1').innerText();
-      check('/today/ without JavaScript: the heading is dated', heading === `The ${editionDateLabel(editionDate)} edition`, heading);
+      check('/today/ without JavaScript: the heading is dated', heading === `The sky on ${editionDateLabel(editionDate)}`, heading);
     } finally {
       await context.close();
     }

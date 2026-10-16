@@ -465,7 +465,7 @@ async function drive(BASE, browser) {
   );
   check(
     'sign notes use all twelve pastel icon assets',
-    await empty.locator('[data-today-all-signs] .today-sign-reading__icon img[src^="/assets/zodiac-icons/48/"]').count() === 12,
+    await empty.locator('[data-today-all-signs] .today-sign-reading__icon img[src^="/assets/zodiac-icons/128/"]').count() === 12,
   );
   check('no-chart state links to the calculator', await empty.locator('.today-fallback__personalize a[href="/birth-chart/"]').isVisible());
   check(
@@ -559,7 +559,10 @@ async function drive(BASE, browser) {
         cardHeights: cardRects.map((rect) => rect.height),
         iconSizes: iconRects.map((rect) => [rect.width, rect.height]),
         iconInsets: iconRects.map((rect, index) => rect.top - cardRects[index].top),
-        rowPitches: cardRects.slice(3).map((rect, index) => rect.top - cardRects[index].top),
+        // One scrolling row on a phone: every card shares the row's top and
+        // the same column pitch.
+        rowTops: cardRects.map((rect) => rect.top - cardRects[0].top),
+        columnPitches: cardRects.slice(1).map((rect, index) => rect.left - cardRects[index].left),
       });
     }));
   }));
@@ -576,10 +579,11 @@ async function drive(BASE, browser) {
   check(
     '412px Sun-sign picker keeps fixed card and icon geometry',
     fallbackEvidence.cardHeights.length === 12
-      && fallbackEvidence.cardHeights.every((height) => height === 88)
-      && fallbackEvidence.iconSizes.every(([width, height]) => width === 34 && height === 34)
+      && fallbackEvidence.cardHeights.every((height) => height === 82)
+      && fallbackEvidence.iconSizes.every(([width, height]) => width === 30 && height === 30)
       && fallbackEvidence.iconInsets.every((inset) => inset === 10)
-      && fallbackEvidence.rowPitches.every((pitch) => pitch === 96),
+      && fallbackEvidence.rowTops.every((top) => top === 0)
+      && fallbackEvidence.columnPitches.every((pitch) => pitch === fallbackEvidence.columnPitches[0] && pitch > 0),
     JSON.stringify(fallbackEvidence),
   );
   await fallbackMobile.setViewportSize({ width: 375, height: 812 });
