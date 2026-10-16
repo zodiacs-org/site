@@ -516,7 +516,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           // The home page's display serif is its own preloaded subset; other
           // pages on this tier fall back to Georgia and take EB Garamond too.
           var serifIsLocal = /^['"]?EB Garamond Fallback/.test(getComputedStyle(document.documentElement).getPropertyValue('--font-serif').trim());
-          var serif = "'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif";
+          var serif = "'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', Georgia, serif";
           function start() {
             var upright = new FontFace('Instrument Sans Body', 'url(/fonts/instrument-sans-latin-wght-normal.woff2) format("woff2-variations")', { weight: '400 700', style: 'normal', display: 'swap' });
             var italic = new FontFace('Instrument Sans Body', 'url(/fonts/instrument-sans-latin-wght-italic.woff2) format("woff2-variations")', { weight: '400 700', style: 'italic', display: 'swap' });
