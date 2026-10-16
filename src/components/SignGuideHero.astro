@@ -1,0 +1,166 @@
+---
+/**
+ * The sign guide's first spread: the sign's illustrated panel as a large,
+ * rounded hero with the figure spotlit on the right, and the name, one line
+ * and the main actions set in the dark on the left (stacked under the art on
+ * phones). The art is the page's LCP: eager, high priority, with its
+ * intrinsic size set. Shared by the English and the localized guides; every
+ * word on it comes from the caller.
+ */
+import SignIcon from './SignIcon.astro';
+import { SIGN_ART_SIZE, SIGN_GUIDE_HERO_SIZES, signArtAlt, signArtSrc, signArtSrcset } from '../lib/sign-art';
+import { signBySlug } from '../lib/signs';
+import type { CatalogLocale } from '../lib/i18n/core';
+
+interface Props {
+  sign: string;
+  locale?: CatalogLocale;
+  title: string;
+  kicker?: string;
+  line?: string;
+  sub?: string;
+  crumbs?: { label: string; href?: string }[];
+  crumbsLabel?: string;
+  credit?: string;
+}
+
+const { sign: slug, locale = 'en', title, kicker, line, sub, crumbs, crumbsLabel = 'Breadcrumb', credit } = Astro.props;
+const sign = signBySlug(slug);
+// Long names step the display size down so every name fits the column.
+const fit = Math.min(1, 9 / [...title].length).toFixed(3);
+---
+<header class="sg-hero" style={`--sign:${sign.hue};--fit:${fit}`}>
+  <img
+    class="sg-hero__art"
+    src={signArtSrc(slug, 1200)}
+    srcset={signArtSrcset(slug)}
+    sizes={SIGN_GUIDE_HERO_SIZES}
+    width={SIGN_ART_SIZE.width}
+    height={SIGN_ART_SIZE.height}
+    alt={signArtAlt(slug, locale)}
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="sg-hero__body">
+    {crumbs && crumbs.length > 0 && (
+      <nav class="sg-hero__crumbs" aria-label={crumbsLabel}>
+        {crumbs.map((crumb, index) => (
+          <>
+            {index > 0 && <span aria-hidden="true">/</span>}
+            {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : <span aria-current="page">{crumb.label}</span>}
+          </>
+        ))}
+      </nav>
+    )}
+    <div class="sg-hero__kicker">
+      <SignIcon sign={slug} size={34} loading="eager" fetchPriority="low" webpOnly class="sg-hero__disc" />
+      {kicker && <span class="kicker">{kicker}</span>}
+    </div>
+    <h1 class="h-hero sg-hero__title">{title}</h1>
+    {line && <p class="sg-hero__line guide-hero__essence">{line}</p>}
+    {sub && <p class="sg-hero__sub">{sub}</p>}
+    <div class="btn-row sg-hero__actions"><slot /></div>
+  </div>
+  {credit && <span class="sg-hero__credit" aria-hidden="true">{credit}</span>}
+</header>
+
+<!-- Inline, not bundled: the English and the five localized guides share this
+     component, and a shared stylesheet chunk would add a render-blocking
+     request to the sign guides' first paint (scripts/inline-critical-styles.mjs
+     holds their stylesheet shape). The class names are unique to this file. -->
+<style is:inline>
+  .sg-hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: 668px;
+    /* The hero runs under the floating nav, as the home page's does. */
+    margin: calc(12px - var(--nav-space, 96px)) 12px 12px;
+    padding: 120px 28px clamp(40px, 5vw, 64px) max(28px, calc((100% - 1200px) / 2 - 12px));
+    overflow: hidden;
+    border-radius: var(--r-xl);
+    background: #07080b;
+  }
+  .sg-hero__art {
+    position: absolute;
+    inset: 0 0 0 auto;
+    z-index: -2;
+    width: 72%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 56%;
+    filter: saturate(0.94) brightness(0.92);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 24%);
+  }
+  /* The art's own vignette: dark behind the words, the figure left in the light. */
+  .sg-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 30% 46% at 63% 53%, rgba(6, 7, 9, 0) 0 40%, rgba(6, 7, 9, 0.32) 100%),
+      linear-gradient(90deg, rgba(6, 7, 9, 0.9) 0%, rgba(6, 7, 9, 0.62) 30%, rgba(6, 7, 9, 0) 52%),
+      linear-gradient(0deg, rgba(6, 7, 9, 0.7) 0%, rgba(6, 7, 9, 0) 34%),
+      linear-gradient(180deg, rgba(6, 7, 9, 0.55) 0%, rgba(6, 7, 9, 0) 22%);
+  }
+  .sg-hero__body { position: relative; max-width: 600px; }
+  .sg-hero__crumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; font-size: 13px; color: var(--faint); }
+  .sg-hero__crumbs a { color: var(--muted); text-decoration: none; }
+  .sg-hero__crumbs a:hover { color: var(--ink-0); }
+  .sg-hero__crumbs span[aria-hidden] { opacity: 0.6; }
+  .sg-hero__kicker { display: flex; align-items: center; gap: 12px; }
+  .sg-hero__kicker .kicker { margin: 0; font-size: 1.2rem; color: var(--ink-1); }
+  .sg-hero__kicker .sg-hero__disc { width: 34px; }
+  .sg-hero__title {
+    margin-top: 10px;
+    font-size: calc(clamp(4.4rem, 2rem + 6.6vw, 8.4rem) * var(--fit, 1));
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: var(--ink-0);
+  }
+  .sg-hero__line {
+    margin: 20px 0 0;
+    max-width: 30ch;
+    font-size: clamp(1.2rem, 1rem + 0.6vw, 1.45rem);
+    line-height: 1.38;
+    letter-spacing: -0.01em;
+    color: var(--ink-0);
+    text-wrap: balance;
+  }
+  .sg-hero__sub { margin: 10px 0 0; max-width: 44ch; font-size: 1.0625rem; line-height: 1.5; color: var(--ink-1); }
+  .sg-hero__actions { margin-top: 30px; }
+  .sg-hero__actions:empty { display: none; }
+  .sg-hero__credit { position: absolute; right: 26px; bottom: 22px; font-size: 12px; color: rgba(198, 204, 218, 0.55); }
+
+  @media (max-width: 760px) {
+    .sg-hero { min-height: 724px; margin: calc(8px - var(--nav-space, 64px)) 8px 8px; padding: 330px 20px 24px; border-radius: 24px; }
+    .sg-hero__art {
+      inset: 0 0 auto 0;
+      width: 100%;
+      height: 442px;
+      object-position: 54% 56%;
+      -webkit-mask-image: linear-gradient(180deg, #000 0, #000 70%, transparent 100%);
+      mask-image: linear-gradient(180deg, #000 0, #000 70%, transparent 100%);
+    }
+    .sg-hero::before {
+      background:
+        linear-gradient(180deg, rgba(6, 7, 9, 0.6) 0%, rgba(6, 7, 9, 0) 20%),
+        radial-gradient(ellipse 70% 40% at 48% 30%, rgba(6, 7, 9, 0) 0 50%, rgba(6, 7, 9, 0.35) 100%),
+        linear-gradient(0deg, rgba(6, 7, 9, 0.96) 0%, rgba(6, 7, 9, 0.9) 36%, rgba(6, 7, 9, 0) 56%);
+    }
+    .sg-hero__body { width: 100%; max-width: none; }
+    .sg-hero__crumbs { display: none; }
+    .sg-hero__kicker .kicker { font-size: 1.05rem; }
+    .sg-hero__kicker .sg-hero__disc { width: 28px; }
+    .sg-hero__title { margin-top: 6px; font-size: calc(4.6rem * var(--fit, 1)); }
+    .sg-hero__line { margin-top: 14px; font-size: 1.16rem; }
+    .sg-hero__sub { margin-top: 8px; font-size: 0.96875rem; }
+    .sg-hero__actions { flex-direction: column; align-items: stretch; margin-top: 22px; gap: 10px; }
+    .sg-hero__actions .btn { width: 100%; }
+    .sg-hero__credit { display: none; }
+  }
+</style>

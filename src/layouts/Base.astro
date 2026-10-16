@@ -441,7 +441,8 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
 
     <main id="main">
       <slot />
-      <ArticleContents enabled={locale === 'en' && (props.path.startsWith('/learn/') || props.path === '/methodology/' || /^\/(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/.test(props.path)) && props.path !== '/learn/glossary/'} />
+      {/* Sign guides carry their own contents rail (src/pages/[sign]/index.astro). */}
+      <ArticleContents enabled={locale === 'en' && (props.path.startsWith('/learn/') || props.path === '/methodology/') && props.path !== '/learn/glossary/'} />
     </main>
 
     {(props.editorialLine ?? props.type === 'article') && <EditorialLine locale={locale} />}

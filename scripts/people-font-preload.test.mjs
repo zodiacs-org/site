@@ -22,13 +22,15 @@ function monoPreloads(html) {
 }
 
 describe('People profile mono font discovery', () => {
-  it('source: keeps full mono preloading an explicit People profile and sign guide opt-in', async () => {
+  // The sign guides opted in while their essentials panel and labels were
+  // set in mono; the redesigned guide (October 2026) has no mono on its first
+  // screen, so it discovers the face from CSS like most routes.
+  it('source: keeps full mono preloading an explicit People profile opt-in', async () => {
     const pages = await astroPages(resolve(root, 'src/pages'));
     const optedIn = (await Promise.all(pages.map(async (path) => (
       /\bpreloadMonoFont\b/.test(await readFile(path, 'utf8')) ? path : null
     )))).filter(Boolean);
     expect(optedIn).toEqual([
-      resolve(root, 'src/pages/[sign]/index.astro'),
       resolve(root, 'src/pages/people/[slug].astro'),
     ]);
     const base = await readFile(resolve(root, 'src/layouts/Base.astro'), 'utf8');

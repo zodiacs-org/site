@@ -1,4 +1,5 @@
 ---
+/** The sign guide's quiet profile prompt, in the contents rail. */
 interface Props {
   signName: string;
   slug: string;
@@ -6,33 +7,12 @@ interface Props {
 
 const { signName, slug } = Astro.props;
 ---
-<aside class="guide-profile">
-  <p><strong>Is {signName} your sun sign?</strong></p>
-  <a href={`/profile/?sun=${slug}`}>Add it to your profile.</a>
-</aside>
+<p class="guide-profile">
+  <span>Is {signName} your Sun sign?</span>
+  <a class="textlink" href={`/profile/?sun=${slug}`}>Save it to your profile <span class="arr" aria-hidden="true">→</span></a>
+</p>
 
 <style>
-  .guide-profile {
-    display: flex;
-    min-height: 64px;
-    padding: 13px 16px;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px 14px;
-    border: 1px solid color-mix(in srgb, var(--sign) 22%, var(--hair-2));
-    border-radius: var(--r-md);
-    background: color-mix(in srgb, var(--sign) 4%, var(--void-1));
-  }
-  .guide-profile p { margin: 0; color: var(--text-2); }
-  .guide-profile a {
-    min-height: 44px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    color: var(--text);
-    text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, var(--sign) 52%, transparent);
-    text-underline-offset: 4px;
-  }
-  .guide-profile a:hover { color: var(--sign); }
+  .guide-profile { display: grid; justify-items: start; gap: 6px; margin: 0; font-size: 0.875rem; color: var(--muted); }
+  .guide-profile .textlink { min-height: 32px; font-size: 0.875rem; }
 </style>
