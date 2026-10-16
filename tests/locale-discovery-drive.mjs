@@ -18,8 +18,8 @@ const TOOLS = [
   { code: 'ru', title: 'Бесплатные астроинструменты', cue: 'по-английски' },
 ];
 const ENGLISH_CUES = {
-  fr: { text: '— pour l’instant en anglais', title: 'Contenu pour l’instant en anglais' },
-  it: { text: '— per ora in inglese', title: 'Contenuto per ora in inglese' },
+  fr: { text: '(pour l’instant en anglais)', title: 'Contenu pour l’instant en anglais' },
+  it: { text: '(per ora in inglese)', title: 'Contenuto per ora in inglese' },
 };
 const BIRTHDAY = {
   en: { label: 'Birthday', cue: null, title: null },

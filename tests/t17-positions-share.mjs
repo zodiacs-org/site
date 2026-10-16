@@ -906,9 +906,9 @@ try {
         items.map((item) => ({ label: item.querySelector('.mono')?.textContent?.replace(/\s+/g, ' ').trim(), text: item.querySelector('p + p')?.textContent?.trim() })));
       const imagination = pairReadings.find((item) => item.label?.includes('Sun conjunction Neptune'));
       const affection = pairReadings.find((item) => item.label?.includes('Venus conjunction Pluto'));
-      assert.match(imagination?.text ?? '', /imagination can be woven into your sense of self/,
+      assert.match(imagination?.text ?? '', /Imagination can be woven into your sense of self/,
         'positions receiver must retain the Sun–Neptune reading');
-      assert.match(affection?.text ?? '', /affection and taste can invite deep investment/,
+      assert.match(affection?.text ?? '', /Affection and taste can invite deep investment/,
         'positions receiver must use a distinct Venus–Pluto reading');
       assert.match(imagination.label, /orb 1\.0°$/i);
       assert.match(affection.label, /orb 0\.6°$/i);

@@ -156,8 +156,8 @@ async function checkKahloNatalReading(page, viewport) {
   const sunNeptune = lines['Sun conjunction Neptune'];
   const venusPluto = lines['Venus conjunction Pluto'];
   check(`${viewport}: conjunction readings depend on the actual planet pair`,
-    sunNeptune?.text?.includes('imagination can be woven into your sense of self')
-      && venusPluto?.text?.includes('affection and taste can invite deep investment')
+    sunNeptune?.text?.includes('Imagination can be woven into your sense of self')
+      && venusPluto?.text?.includes('Affection and taste can invite deep investment')
       && sunNeptune.text !== venusPluto.text
       && sunNeptune.orb === 'Conjunction · 1.0° orb'
       && venusPluto.orb === 'Conjunction · 0.6° orb');
