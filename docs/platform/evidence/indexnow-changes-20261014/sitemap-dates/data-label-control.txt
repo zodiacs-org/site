@@ -1,0 +1,43 @@
+# Control: 26802bcd plus a change to the full-moon tables' time data-label only, against 26802bcd (edition 2026-10-15), with this fingerprint
+Pages in both builds: 1840; unchanged: 1836; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
+4 page(s) changed without a new sitemap date. Give each a new date in src/pages/sitemap.xml.ts (or the data it is dated from), so IndexNow Changes submits it:
+- /es/full-moon-calendar/ (still 2026-09-23)
+- /fr/full-moon-calendar/ (still 2026-09-23)
+- /it/full-moon-calendar/ (still 2026-09-23)
+- /pt/full-moon-calendar/ (still 2026-10-13)
+
+/es/full-moon-calendar/
+  - data-label: Hora UTC
+  - data-label: Hora UTC
+  - data-label: Hora UTC
+  + data-label: Hora UTC (UTC)
+  + data-label: Hora UTC (UTC)
+  + data-label: Hora UTC (UTC)
+
+/fr/full-moon-calendar/
+  - data-label: Heure UTC
+  - data-label: Heure UTC
+  - data-label: Heure UTC
+  + data-label: Heure UTC (UTC)
+  + data-label: Heure UTC (UTC)
+  + data-label: Heure UTC (UTC)
+
+/it/full-moon-calendar/
+  - data-label: Ora UTC
+  - data-label: Ora UTC
+  - data-label: Ora UTC
+  + data-label: Ora UTC (UTC)
+  + data-label: Ora UTC (UTC)
+  + data-label: Ora UTC (UTC)
+
+/pt/full-moon-calendar/
+  - data-label: Hora UTC
+  - data-label: Hora UTC
+  - data-label: Hora UTC
+  + data-label: Hora UTC (UTC)
+  + data-label: Hora UTC (UTC)
+  + data-label: Hora UTC (UTC)
+
+# The same control with the previous fingerprint, which read no data-label
+Pages in both builds: 1840; unchanged: 1840; changed and re-dated: 0; changed and already dated that day: 0; re-dated with no change in content: 0; new: 0; removed: 0.
+Every page whose content changed has a new sitemap date.
