@@ -570,12 +570,12 @@ describe('the site and the compute API', () => {
     const island = read('src/islands/DeveloperPlayground.tsx');
     // One request to the API, in sendToApi, which only the Send button's click calls.
     expect(island.match(/\bfetch\(/gu)).toHaveLength(2);
-    expect(island.match(/\bfetch\(computePath\(endpoint\)/gu)).toHaveLength(1);
     expect(island.match(/\bfetch\(PLAYGROUND_EXAMPLES_PATH\)/gu)).toHaveLength(1);
     expect(island.match(/\bsendToApi\b/gu)).toHaveLength(2);
     expect(island).toContain('onClick={() => void sendToApi()}');
-    const sendToApi = island.slice(island.indexOf('async function sendToApi()'), island.indexOf('async function runHere()'));
-    expect(sendToApi).toContain('fetch(computePath(endpoint)');
+    const sendToApi = island.slice(island.indexOf('function sendToApi()'), island.indexOf('function runHere()'));
+    expect(sendToApi).toContain('computePath(endpoint)');
+    expect(sendToApi.match(/\bfetch\(/gu)).toHaveLength(1);
     // The browser run and the helpers make no network request and use no storage.
     const quiet = /\bfetch\(|XMLHttpRequest|WebSocket|sendBeacon|EventSource|localStorage|sessionStorage|indexedDB|document\.cookie/u;
     for (const path of ['public/developers/playground/engine.mjs', 'src/lib/compute-api/playground.ts']) {

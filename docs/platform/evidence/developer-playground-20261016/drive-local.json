@@ -1,6 +1,6 @@
 {
   "baseUrl": "local build",
-  "checkedAt": "2026-10-16T10:19:44.792Z",
+  "checkedAt": "2026-10-16T12:15:10.996Z",
   "results": [
     {
       "name": "examples.json offers the documented requests and the refusals a body provokes",
@@ -531,10 +531,61 @@
       ]
     },
     {
+      "name": "an answer that arrives after its request was edited is not shown, and nothing is compared",
+      "ok": true,
+      "detail": {
+        "hosted": null,
+        "here": null,
+        "hostedCitation": null,
+        "hereCitation": null,
+        "between": null,
+        "documentedHosted": null,
+        "documentedHere": null,
+        "body": "{\n  \"utc\": \"2000-01-01T12:00:00Z\",\n  \"latitude\": 10,\n  \"longitude\": -0.0015,\n  \"houseSystem\": \"placidus\"\n}",
+        "example": "chart.utc",
+        "link": "http://127.0.0.1:4347/developers/playground/?endpoint=chart",
+        "problems": [],
+        "lateAnswered": true
+      }
+    },
+    {
       "name": "at 375 px the page does not scroll sideways",
       "ok": true,
       "detail": {
-        "overflow": 0
+        "overflow": 0,
+        "between": "rounding"
+      }
+    },
+    {
+      "name": "changing the request clears both answers and the comparison",
+      "ok": true,
+      "detail": {
+        "answered": {
+          "hosted": "200",
+          "here": "200",
+          "hostedCitation": "matches",
+          "hereCitation": "matches",
+          "between": "rounding",
+          "documentedHosted": null,
+          "documentedHere": null,
+          "body": "{\n  \"utc\": \"2000-01-01T12:00:00Z\",\n  \"latitude\": 10,\n  \"longitude\": -0.0015,\n  \"houseSystem\": \"placidus\"\n}",
+          "example": "chart.utc",
+          "link": "http://127.0.0.1:4347/developers/playground/?endpoint=chart",
+          "problems": []
+        },
+        "read": {
+          "hosted": null,
+          "here": null,
+          "hostedCitation": null,
+          "hereCitation": null,
+          "between": null,
+          "documentedHosted": null,
+          "documentedHere": null,
+          "body": "{\n  \"utc\": \"2000-01-01T12:00:00Z\",\n  \"latitude\": 11,\n  \"longitude\": -0.0015,\n  \"houseSystem\": \"placidus\"\n}",
+          "example": "chart.utc",
+          "link": "http://127.0.0.1:4347/developers/playground/?endpoint=chart",
+          "problems": []
+        }
       }
     }
   ]

@@ -218,10 +218,38 @@ async function drive(baseURL) {
     }
     check('the code shows the request in cURL, JavaScript, Python, Swift and Ruby', Object.values(languages).every((code) => code.includes('/api/v1/chart') && code.includes('40.4168')), Object.keys(languages));
 
-    // A phone's width: nothing scrolls sideways.
+    // An answer is shown only beside the request that produced it (Codex's first finding on #767).
+    await openRequest(page, baseURL, '?example=chart.utc');
+    let lateAnswered = false;
+    await page.route('**/api/v1/chart', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      if (BASE_URL) {
+        await route.continue();
+      } else {
+        const answer = await localAnswer('chart', route.request().postData() ?? '', route.request().headers());
+        await route.fulfill({ status: answer.status, headers: answer.headers, body: answer.body });
+      }
+      lateAnswered = true;
+    }, { times: 1 });
+    await pause();
+    await page.locator('[data-send]').click();
+    await page.locator('[data-request-body]').fill(JSON.stringify({ ...chart.body, latitude: 10 }, null, 2));
+    await page.waitForTimeout(4500);
+    read = await readPage(page);
+    check('an answer that arrives after its request was edited is not shown, and nothing is compared', lateAnswered && read.hosted === null && read.here === null && read.between === null && read.problems.length === 0, { ...read, lateAnswered });
+
+    // A phone's width, with both answers and their comparison on the page: nothing scrolls sideways.
+    await pause();
+    await sendAndRun(page);
+    const answered = await readPage(page);
     await page.setViewportSize({ width: 375, height: 800 });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    check('at 375 px the page does not scroll sideways', overflow <= 0, { overflow });
+    check('at 375 px the page does not scroll sideways', overflow <= 0 && answered.between !== null, { overflow, between: answered.between });
+
+    // Changing the request takes both answers and their comparison away.
+    await page.locator('[data-request-body]').fill(JSON.stringify({ ...chart.body, latitude: 11 }, null, 2));
+    read = await readPage(page);
+    check('changing the request clears both answers and the comparison', answered.hosted === '200' && answered.here === '200' && read.hosted === null && read.here === null && read.between === null, { answered, read });
     await context.close();
   } finally {
     await browser.close();

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { COMPUTE_ENDPOINTS, computePath, type ComputeEndpoint } from '../lib/compute-api/constants';
 import {
   LANGUAGES,
@@ -19,6 +19,8 @@ import {
 import { CopyLinkButton, type CopyLinkState } from './CopyLinkButton';
 
 interface Answer {
+  /** The request it answers (requestKey): an answer is shown only beside the request that produced it. */
+  request: string;
   status: number;
   /** The parsed body, or the text when it is not JSON. */
   body: unknown;
@@ -42,8 +44,10 @@ function parse(text: string): unknown {
   }
 }
 
-async function answerOf(status: number, body: unknown, started: number): Promise<Answer> {
-  return { status, body, milliseconds: Math.round(performance.now() - started), citation: await citesItsReceipt(body) };
+const requestKey = (endpoint: ComputeEndpoint, text: string) => `${endpoint}\n${text}`;
+
+async function answerOf(request: string, status: number, body: unknown, started: number): Promise<Answer> {
+  return { request, status, body, milliseconds: Math.round(performance.now() - started), citation: await citesItsReceipt(body) };
 }
 
 function VerdictLine({ found, left, right }: { found: Difference[]; left: string; right: string }) {
@@ -123,7 +127,8 @@ export default function DeveloperPlayground() {
   const [endpoint, setEndpoint] = useState<ComputeEndpoint>('chart');
   const [text, setText] = useState('');
   const [answers, setAnswers] = useState<Record<Side, Answer | null>>({ hosted: null, here: null });
-  const [running, setRunning] = useState<Record<Side, boolean>>({ hosted: false, here: false });
+  // The request each side is working on, if any.
+  const [running, setRunning] = useState<Record<Side, string | null>>({ hosted: null, here: null });
   const [problems, setProblems] = useState<Record<Side, string | null>>({ hosted: null, here: null });
   const [language, setLanguage] = useState<Language>('curl');
   const [includeRequest, setIncludeRequest] = useState(false);
@@ -162,13 +167,24 @@ export default function DeveloperPlayground() {
     };
   }, []);
 
-  function choose(example: PlaygroundExample) {
-    setExampleId(example.id);
-    setEndpoint(example.endpoint);
-    setText(typeof example.body === 'string' ? example.body : JSON.stringify(example.body, null, 2));
+  // The request on the page now. An answer, or a problem, that arrives for another request is dropped, and a change
+  // to the request clears both sides, so the page never compares answers to two different requests.
+  const current = useRef('');
+  current.current = requestKey(endpoint, text);
+
+  function changeRequest(next: { endpoint?: ComputeEndpoint; text?: string }) {
+    if (next.endpoint !== undefined) setEndpoint(next.endpoint);
+    if (next.text !== undefined) setText(next.text);
+    current.current = requestKey(next.endpoint ?? endpoint, next.text ?? text);
     setAnswers({ hosted: null, here: null });
     setProblems({ hosted: null, here: null });
+    setRunning({ hosted: null, here: null });
     setCopyState('idle');
+  }
+
+  function choose(example: PlaygroundExample) {
+    setExampleId(example.id);
+    changeRequest({ endpoint: example.endpoint, text: typeof example.body === 'string' ? example.body : JSON.stringify(example.body, null, 2) });
   }
 
   const example = useMemo(() => examples?.find((candidate) => candidate.id === exampleId) ?? null, [examples, exampleId]);
@@ -181,41 +197,41 @@ export default function DeveloperPlayground() {
   const origin = typeof window === 'undefined' ? undefined : window.location.origin;
   const link = shareLink({ endpoint, example: documented ? documented.id : null, text }, includeRequest, origin);
 
-  async function sendToApi() {
-    setRunning((state) => ({ ...state, hosted: true }));
-    setProblems((state) => ({ ...state, hosted: null }));
-    const started = performance.now();
+  /** Runs one side for the request on the page, and shows what it gives only if that is still the request. */
+  async function run(side: Side, work: (request: string) => Promise<Answer>, failure: string) {
+    const request = current.current;
+    setRunning((state) => ({ ...state, [side]: request }));
+    setProblems((state) => ({ ...state, [side]: null }));
+    let answer: Answer | null = null;
+    let problem: string | null = null;
     try {
-      const response = await fetch(computePath(endpoint), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: text,
-      });
-      const answer = await answerOf(response.status, parse(await response.text()), started);
-      setAnswers((state) => ({ ...state, hosted: answer }));
+      answer = await work(request);
     } catch {
-      setAnswers((state) => ({ ...state, hosted: null }));
-      setProblems((state) => ({ ...state, hosted: 'The API did not answer from this address.' }));
-    } finally {
-      setRunning((state) => ({ ...state, hosted: false }));
+      problem = failure;
     }
+    if (current.current !== request) return;
+    setAnswers((state) => ({ ...state, [side]: answer }));
+    setProblems((state) => ({ ...state, [side]: problem }));
+    setRunning((state) => ({ ...state, [side]: state[side] === request ? null : state[side] }));
   }
 
-  async function runHere() {
-    setRunning((state) => ({ ...state, here: true }));
-    setProblems((state) => ({ ...state, here: null }));
-    const started = performance.now();
-    try {
+  function sendToApi() {
+    const [path, body] = [computePath(endpoint), text];
+    return run('hosted', async (request) => {
+      const started = performance.now();
+      const response = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+      return answerOf(request, response.status, parse(await response.text()), started);
+    }, 'The API did not answer from this address.');
+  }
+
+  function runHere() {
+    const [name, body] = [endpoint, text];
+    return run('here', async (request) => {
+      const started = performance.now();
       const engine = await import(/* @vite-ignore */ PLAYGROUND_ENGINE_PATH);
-      const result = await engine.answerHere(endpoint, text);
-      const answer = await answerOf(result.status, result.body, started);
-      setAnswers((state) => ({ ...state, here: answer }));
-    } catch {
-      setAnswers((state) => ({ ...state, here: null }));
-      setProblems((state) => ({ ...state, here: 'The engine did not load in this browser.' }));
-    } finally {
-      setRunning((state) => ({ ...state, here: false }));
-    }
+      const result = await engine.answerHere(name, body);
+      return answerOf(request, result.status, result.body, started);
+    }, 'The engine did not load in this browser.');
   }
 
   async function copyCode() {
@@ -227,8 +243,10 @@ export default function DeveloperPlayground() {
     }
   }
 
-  const both = answers.hosted && answers.here ? differences(answers.hosted.body, answers.here.body) : null;
-  const statusesDiffer = answers.hosted && answers.here && answers.hosted.status !== answers.here.status;
+  const shown = (side: Side) => (answers[side]?.request === current.current ? answers[side] : null);
+  const [hosted, here] = [shown('hosted'), shown('here')];
+  const both = hosted && here ? differences(hosted.body, here.body) : null;
+  const statusesDiffer = hosted && here && hosted.status !== here.status;
 
   return (
     <div class="shell pg" data-playground>
@@ -261,7 +279,7 @@ export default function DeveloperPlayground() {
             <select
               class="pg__input"
               value={endpoint}
-              onChange={(event) => setEndpoint((event.currentTarget as HTMLSelectElement).value as ComputeEndpoint)}
+              onChange={(event) => changeRequest({ endpoint: (event.currentTarget as HTMLSelectElement).value as ComputeEndpoint })}
               data-endpoint-select
             >
               {COMPUTE_ENDPOINTS.map((name) => <option key={name} value={name}>POST {computePath(name)}</option>)}
@@ -274,19 +292,16 @@ export default function DeveloperPlayground() {
               rows={12}
               spellcheck={false}
               value={text}
-              onInput={(event) => {
-                setText((event.currentTarget as HTMLTextAreaElement).value);
-                setCopyState('idle');
-              }}
+              onInput={(event) => changeRequest({ text: (event.currentTarget as HTMLTextAreaElement).value })}
               data-request-body
             />
           </label>
           {loadProblem && <p class="pg__error" role="alert">{loadProblem}</p>}
           <div class="pg__actions">
-            <button type="button" class="cmp__btn" onClick={() => void sendToApi()} disabled={running.hosted} data-send>
+            <button type="button" class="cmp__btn" onClick={() => void sendToApi()} disabled={running.hosted === current.current} data-send>
               Send to the API
             </button>
-            <button type="button" class="cmp__btn" onClick={() => void runHere()} disabled={running.here} data-run-here>
+            <button type="button" class="cmp__btn" onClick={() => void runHere()} disabled={running.here === current.current} data-run-here>
               Run in this browser
             </button>
             {example && !documented && (
@@ -300,8 +315,8 @@ export default function DeveloperPlayground() {
         </div>
 
         <div class="pg__answers" aria-live="polite">
-          <AnswerPanel side="hosted" answer={answers.hosted} running={running.hosted} problem={problems.hosted} />
-          <AnswerPanel side="here" answer={answers.here} running={running.here} problem={problems.here} />
+          <AnswerPanel side="hosted" answer={hosted} running={running.hosted === current.current} problem={problems.hosted} />
+          <AnswerPanel side="here" answer={here} running={running.here === current.current} problem={problems.here} />
         </div>
 
         {(both || documented) && (
@@ -315,7 +330,7 @@ export default function DeveloperPlayground() {
               </>
             )}
             {documented && (['hosted', 'here'] as Side[]).map((side) => {
-              const answer = answers[side];
+              const answer = shown(side);
               if (!answer) return null;
               const found = differences(documented.answer, answer.body);
               return (
