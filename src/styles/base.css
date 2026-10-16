@@ -814,3 +814,41 @@ details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-w
 @media (hover: hover) and (pointer: fine) {
   details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):hover { border-color: var(--hair-2); }
 }
+
+/* Chips, small cards and reading tabs rise a step under the pointer; the
+   rise is a transform, so nothing around them reflows. */
+:is(.chip, .glossary__starter-card, .plc-index__chip, .communication__chip, .guide-prompts__chip, .program__period, .cz-card) {
+  transition: transform var(--dur-1) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(.chip, .glossary__starter-card, .plc-index__chip, .communication__chip, .guide-prompts__chip, .program__period):hover {
+    transform: translateY(-1px);
+  }
+  .cz-card:hover { transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.chip, .glossary__starter-card, .plc-index__chip, .communication__chip, .guide-prompts__chip, .program__period, .cz-card) {
+    transition: none;
+    transform: none !important;
+  }
+}
+
+/* "On this page": the same turning chevron and settle as the question rows. */
+.article-contents summary { list-style: none; display: inline-flex; align-items: center; gap: 10px; }
+.article-contents summary::-webkit-details-marker { display: none; }
+.article-contents summary::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  color: var(--faint);
+  transform: rotate(-45deg);
+  transition: transform var(--dur-2) var(--ease-soft);
+}
+.article-contents details[open] > summary::before { transform: translateY(-2px) rotate(45deg); }
+.article-contents details[open] > ol { animation: answer-settle 280ms var(--ease-soft) both; }
+@media (prefers-reduced-motion: reduce) {
+  .article-contents summary::before { transition: none; }
+  .article-contents details[open] > ol { animation: none; }
+}

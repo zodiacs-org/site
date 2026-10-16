@@ -141,9 +141,10 @@ const jsonLd = [
     color: var(--text-2);
     font-size: 12.5px;
     text-decoration: none;
-    transition: border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+    transition: border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
   }
-  .bday-day:hover { color: var(--text); border-color: var(--hair-2); background: var(--void-1); }
+  .bday-day:hover { color: var(--text); border-color: var(--hair-2); background: var(--void-1); transform: translateY(-1px); }
+  @media (prefers-reduced-motion: reduce) { .bday-day { transition: none; } .bday-day:hover { transform: none; } }
   .bday-day__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--dot); opacity: 0.85; }
   .bday-day--cusp .bday-day__dot { background: transparent; border: 1px solid var(--faint); }
 

@@ -6,7 +6,7 @@
 .cz-note p { margin: 0; color: var(--text-2); line-height: 1.7; }
 .cz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-top: 20px; }
 .cz-card { display: grid; gap: 6px; min-height: 160px; padding: 20px; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); color: var(--text); text-decoration: none; }
-.cz-card { transition: border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease); }
+.cz-card { transition: border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease), transform var(--dur-1) var(--ease); }
 .cz-card:hover { border-color: var(--hair-2); background: var(--void-2); }
 .cz-card__no { color: var(--faint); font: 10px/1 var(--font-mono); letter-spacing: 0; }
 .cz-card strong { font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; }
