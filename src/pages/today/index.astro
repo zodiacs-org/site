@@ -616,6 +616,7 @@ const monthDay = (iso: string) => ({
   .today-head { margin-bottom: clamp(24px, 3.4vw, 40px); }
   .today-head > div { max-width: 720px; }
   .today-head p { max-width: 62ch; }
+  .today-head > .textlink { flex: none; white-space: nowrap; }
   @media (max-width: 760px) { .today-hide-m { display: none; } }
 
   /* ── 1. Hero: the day in one sentence, the wheel beside it ─────── */
@@ -707,9 +708,11 @@ const monthDay = (iso: string) => ({
 
   /* ── 2. The sky line ──────────────────────────────────────────── */
   .today-skyline { margin-top: 18px; }
-  .today-skyline .skyticker { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-  .today-skyline .skyticker::-webkit-scrollbar { display: none; }
-  .today-skyline .skyticker > * { flex: none; }
+  @media (min-width: 1101px) {
+    .today-skyline .skyticker { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .today-skyline .skyticker::-webkit-scrollbar { display: none; }
+    .today-skyline .skyticker > * { flex: none; }
+  }
 
   /* ── 3. The Sun, the Moon and the lunar cycle ─────────────────── */
   .today-lights { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
@@ -797,6 +800,8 @@ const monthDay = (iso: string) => ({
     right: 0;
   }
   :root[data-today-saved-chart] .today-card__head { top: clamp(22px, 4vw, 36px); right: clamp(22px, 4vw, 36px); }
+  /* The self-chart chooser leads the brief: the streak takes its own line. */
+  :root[data-living-chart-needs-self] .today-card__head { position: static; display: flex; justify-content: flex-end; margin-bottom: 10px; }
   .today-streak {
     display: grid;
     grid-template-columns: 3.75rem max-content;
@@ -1310,13 +1315,13 @@ const monthDay = (iso: string) => ({
   .today-method { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: clamp(28px, 6vw, 96px); margin-top: clamp(56px, 5.8vw, 84px); padding-top: 32px; border-top: 1px solid var(--hair-1); }
   .today-method .h-4 { margin: 0; }
   .today-method p { max-width: 66ch; margin: 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.65; }
-  .today-method__links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 16px !important; }
-  .today-coverage-note {
-    margin: 18px 0 0 !important;
+  .today-method p.today-method__links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 16px; }
+  .today-method p.today-coverage-note {
+    margin: 18px 0 0;
     padding: 12px 14px;
     border-left: 2px solid var(--hair-2);
-    color: var(--faint) !important;
-    font-size: var(--text-xs) !important;
+    color: var(--faint);
+    font-size: var(--text-xs);
     line-height: 1.65;
   }
   .today-provenance { margin-top: 16px; }
@@ -1331,6 +1336,8 @@ const monthDay = (iso: string) => ({
   }
   @media (max-width: 960px) {
     .today-split { grid-template-columns: minmax(0, 1fr); }
+    .today-prow { grid-template-columns: 36px minmax(0, 1fr) 116px 60px 156px; }
+    .today-prow .today-pm { grid-column: auto; justify-self: end; margin-top: 0; }
     .today-rt__row { grid-template-columns: 200px minmax(0, 1fr); }
     .today-fallback__personalize { flex-direction: column; align-items: flex-start; }
   }
@@ -1356,8 +1363,7 @@ const monthDay = (iso: string) => ({
     .today-hero__actions { flex-direction: column; align-items: stretch; margin-top: 24px; }
     .today-hero__actions .btn { width: 100%; }
     .today-legend { gap: 6px 14px; font-size: 12px; }
-    .today-skyline .skyticker { flex-wrap: wrap; gap: 10px 18px; overflow: visible; }
-    .today-skyline .skyticker > * { flex: initial; }
+    .today-skyline .skyticker { gap: 10px 18px; }
     .today-lights { grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .today-light__art .artframe { aspect-ratio: 16 / 9; }
     .today-light__body { padding: 20px 20px 22px; }
