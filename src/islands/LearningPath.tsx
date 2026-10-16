@@ -138,7 +138,7 @@ export default function LearningPath({ lessons = {}, children }: {
           >
             {STEPS.map((step) => <i key={step.id} class={completedSet.has(step.id) ? 'is-on' : undefined} />)}
           </div>}
-          <small class="learning-path__note">{progress.pageOnly ? PAGE_ONLY_COPY : 'Your progress stays on this device.'}</small>
+          <small class={`learning-path__note${progress.pageOnly ? ' learning-path__note--warn' : ''}`}>{progress.pageOnly ? PAGE_ONLY_COPY : 'Your progress stays on this device.'}</small>
         </div>
       </header>
 

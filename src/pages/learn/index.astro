@@ -593,16 +593,17 @@ const jsonLd = [
     gap: 10px;
     min-height: 44px;
     max-width: min(64ch, calc(100% - 300px));
-    margin: -8px 0 16px 316px;
-    padding: 12px 14px;
-    border: 1px solid var(--hair-1);
-    border-radius: 12px;
-    background: rgba(198, 204, 218, 0.025);
+    margin: 0 0 14px 316px;
+    /* A plain row, not a rounded box: every pixel of it, corners included,
+       is the native checkbox's click target. */
+    padding: 12px 0;
     color: var(--text-2);
     font-size: 13px;
     line-height: 1.5;
     cursor: pointer;
   }
+  /* The lesson link and its reflection never overlap: each keeps its own target. */
+  .learning-step:has(> .learning-step__reflection) > .lesson { padding-bottom: 12px; }
   .learning-step__reflection input { flex: 0 0 auto; width: 18px; height: 18px; margin: 0; accent-color: var(--path-accent); }
   .learning-step__reflection input:focus-visible,
   .learning-path__restart:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 3px; }
@@ -762,9 +763,11 @@ const jsonLd = [
 
     .learn-start { padding-block: 36px 56px; }
     .learning-path__head { gap: 16px; margin-bottom: 20px; }
-    .learning-path__progress { grid-auto-flow: column; align-items: center; gap: 12px; }
+    .learning-path__progress { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
     .learning-path__bar i { width: 20px; }
-    .learning-path__note { display: none; }
+    /* The quiet storage line hides on phones; the page-only warning never does. */
+    .learning-path__note:not(.learning-path__note--warn) { display: none; }
+    .learning-path__note--warn { flex-basis: 100%; white-space: normal; text-align: left; }
     .lesson { position: relative; grid-template-columns: 92px minmax(0, 1fr); column-gap: 16px; align-items: start; padding: 18px 0; }
     .learning-step--active::before { display: none; }
     .lesson__n { position: absolute; z-index: 4; left: 6px; top: 24px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(6, 7, 9, 0.78); border: 1px solid var(--hair-2); font-size: 1rem; color: var(--ink-0); }
@@ -775,7 +778,7 @@ const jsonLd = [
     .lesson__minis { display: none; }
     .lesson__meta { grid-column: 2; grid-row: 2; display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 12.5px; }
     .lesson__go { display: none; }
-    .learning-step__reflection { margin: -6px 0 16px; max-width: calc(100% - 64px); }
+    .learning-step__reflection { margin: 0 0 16px; max-width: calc(100% - 64px); }
     .path-end { grid-template-columns: 1fr; row-gap: 14px; padding: 22px 20px; }
     .path-end h3 { font-size: 1.6rem; }
     .path-end .btn { width: 100%; justify-content: space-between; box-sizing: border-box; }
