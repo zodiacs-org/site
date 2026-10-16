@@ -6,8 +6,8 @@ import ToolGlyph from '../../../components/ToolGlyph.astro';
 import ToolsPageHeading from '../../../components/ToolsPageHeading.astro';
 const tools = [
   { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
-  { href: '/birth-chart/someone-else/', title: 'Карта другого человека — пока по-английски', promise: 'Используйте данные рождения, большую тройку или ссылку Zodiacs — с согласия человека.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
-  { href: '/today/', title: 'Сегодня — пока по-английски', promise: 'Последняя сохранённая карта на фоне полуденного неба, с точными градусами.', hue: 'var(--sign-cancer)', kind: 'transit' as const, englishOnly: true },
+  { href: '/birth-chart/someone-else/', title: 'Карта другого человека (пока по-английски)', promise: 'Используйте данные рождения, большую тройку или ссылку Zodiacs, с согласия человека.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
+  { href: '/today/', title: 'Сегодня (пока по-английски)', promise: 'Последняя сохранённая карта на фоне полуденного неба, с точными градусами.', hue: 'var(--sign-cancer)', kind: 'transit' as const, englishOnly: true },
   { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-libra)', kind: 'compat' as const },
   { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете и что помогает вернуться к себе.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
   { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Энергия, которую другие замечают первой.', hue: 'var(--sign-gemini)', kind: 'rising' as const },
@@ -28,12 +28,12 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Астрологические калькуляторы — натальная карта, транзиты"
+  title="Астрологические калькуляторы | натальная карта, транзиты"
   description="Бесплатные инструменты: натальная карта, лунный знак, асцендент, фаза Луны, возвращение Сатурна, транзиты. Приватно, в браузере."
   path="/ru/tools/"
   locale="ru"
   image="/assets/og/v2/tool/tools.png"
-  imageAlt="Астроинструменты — Zodiacs.org"
+  imageAlt="Астроинструменты, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section container">
@@ -58,8 +58,8 @@ const jsonLd = [
     <div class="tools-upcoming">
       <em class="kicker">Пока доступно по-английски</em>
       <ul>
-        <li><strong>Гороскопы.</strong> Сегодняшнее небо для каждого знака. Английская версия также включает прогнозы на неделю и месяц: <a href="/horoscopes/" hreflang="en" title="Материал пока доступен по-английски">выбрать знак — пока по-английски</a>.</li>
-        <li><strong>Ретроградный Меркурий.</strong> Точные периоды до 2027 года: <a href="/mercury-retrograde/" hreflang="en" title="Материал пока доступен по-английски">посмотреть даты — пока по-английски</a>.</li>
+        <li><strong>Гороскопы.</strong> Сегодняшнее небо для каждого знака. Английская версия также включает прогнозы на неделю и месяц: <a href="/horoscopes/" hreflang="en" title="Материал пока доступен по-английски">выбрать знак (пока по-английски)</a>.</li>
+        <li><strong>Ретроградный Меркурий.</strong> Точные периоды до 2027 года: <a href="/mercury-retrograde/" hreflang="en" title="Материал пока доступен по-английски">посмотреть даты (пока по-английски)</a>.</li>
       </ul>
     </div>
   </section>

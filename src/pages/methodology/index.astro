@@ -19,7 +19,7 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="How We Compute Your Chart — Methodology & Privacy | Zodiacs.org"
+  title="How We Compute Your Chart | Methodology & Privacy | Zodiacs.org"
   description="How zodiacs.org computes a chart: ephemeris and house methods, historical timezone handling, NASA JPL accuracy tests, uncertainty rules, and local-first privacy."
   path="/methodology/"
   type="article"
@@ -42,7 +42,7 @@ const jsonLd = [
         NOVAS reduction, with a custom integrator for Pluto, which VSOP87 does
         not cover. Its Moon comes from the Nautical Almanac Office's{' '}
         <em>Improved Lunar Ephemeris</em>, which descends from E. W. Brown's
-        theory. It is designed to stay within one arcminute of NOVAS — that
+        theory. It is designed to stay within one arcminute of NOVAS: that
         is the library's own target, not a measurement of this site, and what
         we measured is in the next section.
       </p>
@@ -56,7 +56,7 @@ const jsonLd = [
         of date with full IAU 2000B nutation but neither light-time nor aberration. The
         whole of the Moon's disagreement with Swiss Ephemeris, which does
         apply both, is at most 7.6 arcseconds over the span measured below,
-        with a median of 0.9 — so the omission costs no more than that, rather
+        with a median of 0.9, so the omission costs no more than that, rather
         than adding a separate error on top of it. The lunar node is the <em>true node</em>,
         derived from the Moon's instantaneous orbit.
       </p>
@@ -68,7 +68,7 @@ const jsonLd = [
         to 0.2° for the Moon. The test suite also checks the sky against itself,
         with the tolerance each check actually deserves: at solar culmination
         the computed midheaven sits within 0.2° of the Sun's longitude, and at
-        sunrise the ascendant within 2.5° — looser because sunrise is when the
+        sunrise the ascendant within 2.5°, looser because sunrise is when the
         Sun's upper limb clears a refracted horizon, which is a different
         instant from the one the ecliptic ascendant marks.
       </p>
@@ -78,7 +78,7 @@ const jsonLd = [
         On 20 September 2026 we measured this engine against{' '}
         <strong>Swiss Ephemeris 2.10.03</strong> reading its own JPL-derived
         data files: 18 charts × 10 bodies, on dates written down before any
-        number was taken and picked to include the awkward ones — 1801, the
+        number was taken and picked to include the awkward ones: 1801, the
         poles, sign boundaries, an unknown birth time. Both sides were put in
         the same frame, checked by switching each effect off and watching the
         difference move rather than by assuming it matched. On 25 September,
@@ -89,12 +89,12 @@ const jsonLd = [
         Across the 160 measurements from 1801 to 2026, the median
         disagreement in longitude is <strong>1.6 arcseconds</strong>, the
         95th percentile is <strong>12.1 arcseconds</strong>, and the largest
-        is <strong>18.6 arcseconds</strong> — Pluto in 1801. Dates picked in
+        is <strong>18.6 arcseconds</strong> (Pluto in 1801). Dates picked in
         advance can miss a body's worst moments, so we also compared every
         tenth day from 1800 to 2199, at noon UTC, for the ten bodies and the
         North Node. Up to 2026 that is 91,201 comparisons, with a median of 2.0
-        arcseconds and a largest of <strong>22.9 arcseconds</strong> — Venus
-        in 1878. A zodiac sign is 30 degrees, which is 108,000 arcseconds, so a
+        arcseconds and a largest of <strong>22.9 arcseconds</strong> (Venus
+        in 1878). A zodiac sign is 30 degrees, which is 108,000 arcseconds, so a
         difference that size changes a sign only for a body within 23
         arcseconds of its edge.
       </p>
@@ -152,7 +152,7 @@ const jsonLd = [
         sidereal time, your birthplace coordinates, and the true obliquity of
         the ecliptic of date: the mean obliquity (IAU 2006) plus the nutation in
         obliquity, the same model the sidereal time uses. We offer <strong>whole sign</strong> houses (the
-        oldest system — each house is one complete sign) and{' '}
+        oldest system: each house is one complete sign) and{' '}
         <strong>Placidus</strong> (the most common modern system, computed by
         iterative semi-arc division). Placidus is mathematically undefined
         inside the polar circle; where the latitude is 90° minus the obliquity
@@ -197,7 +197,7 @@ const jsonLd = [
       <p>
         Secondary progressions use the day-for-a-year method: one civil day after
         birth stands for one tropical year (365.2422 days) of life. We progress the
-        planets only — progressed house angles require a convention we haven't
+        planets only. Progressed house angles require a convention we haven't
         adopted, so we don't show them. A solar-return chart is a full chart cast
         for the instant the Sun returns to its natal longitude. The Sun moves
         slowly, so a small error in its position becomes a larger one in time:
@@ -220,7 +220,7 @@ const jsonLd = [
         birthplace's own <em>local mean time</em>, which runs to seconds.
       </p>
       <ul>
-        <li><strong>Skipped times</strong> (spring-forward gaps) shift forward across the gap — the standard convention — and the chart says so.</li>
+        <li><strong>Skipped times</strong> (spring-forward gaps) shift forward across the gap, the standard convention, and the chart says so.</li>
         <li><strong>Repeated times</strong> (fall-back folds) use the earlier pass, flagged on the chart.</li>
         <li><strong>Very old dates</strong>, from before a place adopted a legal time, use the local mean time of the birthplace itself, worked out from its longitude at four minutes of time per degree, as professional software does. The time zone data records only its reference city's mean time, which for a town a few hundred kilometres away can be off by a quarter of an hour or more; Buffalo in 1870 ran 19 minutes 29 seconds behind New York. The date each place's local mean time ended comes from the IANA database's fuller historical records (release 2025c).</li>
         <li><strong>From then until 1970</strong>, the legal time comes from the same release. That includes national mean times, such as Paris Mean Time from 1891, and the older records the database keeps apart for places whose clocks have matched another city's since 1970; its maintainers consider those records less reliable than the rest. Browsers leave them out and give such a place the other city's history, so for about 85 of the 356 time zones in our city index the browser's legal time before 1970 differs from the one used here at some point, 55 of them by an hour or more. Sweden, Norway, Denmark, Iceland and the Netherlands are among those 55. At noon on 1 July 1947, for example, a Stockholm birth reads 10:00 UTC with Berlin's summer time in the browser's history, where Sweden kept +1:00 and the chart uses 11:00. A handful of old zone names, none of them in the city index, keep the browser's history throughout, because their records differ after 1970 as well or browsers do not know them.</li>
@@ -235,7 +235,7 @@ const jsonLd = [
         Place lookup runs against a bundled index of ~34,000 cities from{' '}
         <a href="https://www.geonames.org/" rel="noopener noreferrer">GeoNames</a>{' '}
         (CC BY 4.0), each carrying its IANA time zone. Coordinates are stored
-        to ~1 km precision — far finer than a birth chart needs.
+        to ~1 km precision, far finer than a birth chart needs.
       </p>
 
       <h2 id="numerology">Numerology</h2>
@@ -284,7 +284,7 @@ const jsonLd = [
       <ul>
         <li>Chiron and the asteroids aren't included yet (the engine's remit is major bodies); they're planned via public-domain JPL data.</li>
         <li>When birth time is unknown, the site uses 12:00 local civil time as a reference for body positions. It omits the rising sign, angles, and houses, and it marks the Moon's sign as unverified, because the Moon can change sign during the day. A link, calendar, invitation, or card shared from such a chart carries the positions at 12:00 UTC on the birth date instead, because noon at the birthplace would give away its time zone or, before standard time, its longitude.</li>
-        <li>Supported birth years: 1800–2199.</li>
+        <li>Supported birth years: 1800 to 2199.</li>
         <li>The JPL checks validate astronomical position calculations, not astrological interpretation. Interpretations here are traditional and reflective, not scientifically validated predictions.</li>
       </ul>
 
@@ -328,8 +328,8 @@ const jsonLd = [
       </p>
 
       <p>
-        The computed dates behind the calendars — retrogrades, ingresses, moon
-        phases, eclipses, and today's snapshot — are also published for reuse
+        The computed dates behind the calendars (retrogrades, ingresses, moon
+        phases, eclipses, and today's snapshot) are also published for reuse
         as <a href="/developers/">machine-readable JSON</a> under CC BY 4.0.
       </p>
 

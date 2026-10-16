@@ -36,7 +36,7 @@ const citations = sources.map((source) => ({
 const dataset = {
   '@type': 'Dataset',
   '@id': PAGE_URL + '#dataset',
-  name: 'Tropical zodiac correspondences and Sun ingress instants, ' + currentYear + '–' + nextYear,
+  name: 'Tropical zodiac correspondences and Sun ingress instants, ' + currentYear + ' to ' + nextYear,
   description,
   url: PAGE_URL,
   creator: { '@id': 'https://zodiacs.org/#org' },
@@ -102,12 +102,12 @@ const generatedReceipt = INGRESS_GENERATED_AT.slice(0, 10)
   + ' at ' + INGRESS_GENERATED_AT.slice(11, 16) + ' UTC';
 ---
 <Base
-  title={'Zodiac Dates ' + currentYear + '–' + nextYear + ' — Exact Sun Ingress Times | Zodiacs.org'}
+  title={'Zodiac Dates ' + currentYear + ' to ' + nextYear + ' | Exact Sun Ingress Times | Zodiacs.org'}
   description={description}
   path="/learn/zodiac-dates/"
   type="article"
   image="/assets/og/v2/tool/learn.png"
-  imageAlt="The living correspondence chart — Zodiacs.org"
+  imageAlt="The living correspondence chart, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >

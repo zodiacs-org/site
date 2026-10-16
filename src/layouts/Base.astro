@@ -98,12 +98,12 @@ const props = Astro.props;
 const locale = normalizeCatalogLocale(props.locale);
 // The daily-sky feed is English; its link title is localized so feed readers list it in the page's language.
 const FEED_TITLES: Record<typeof locale, { sky: string; horoscopes: string; almanac: string }> = {
-  en: { sky: 'Zodiacs.org — the sky, daily', horoscopes: 'Zodiacs.org daily horoscopes', almanac: 'The Zodiacs.org Almanac' },
-  es: { sky: 'Zodiacs.org — el cielo, cada día (en inglés)', horoscopes: 'Horóscopos diarios de Zodiacs.org (en inglés)', almanac: 'Almanaque de Zodiacs.org (en inglés)' },
-  pt: { sky: 'Zodiacs.org — o céu, todo dia (em inglês)', horoscopes: 'Horóscopos diários do Zodiacs.org (em inglês)', almanac: 'Almanaque do Zodiacs.org (em inglês)' },
-  fr: { sky: 'Zodiacs.org — le ciel, chaque jour (en anglais)', horoscopes: 'Horoscopes quotidiens de Zodiacs.org (en anglais)', almanac: 'Almanach de Zodiacs.org (en anglais)' },
-  it: { sky: 'Zodiacs.org — il cielo, ogni giorno (in inglese)', horoscopes: 'Oroscopi quotidiani di Zodiacs.org (in inglese)', almanac: 'Almanacco di Zodiacs.org (in inglese)' },
-  ru: { sky: 'Zodiacs.org — небо каждый день (по-английски)', horoscopes: 'Ежедневные гороскопы Zodiacs.org (по-английски)', almanac: 'Альманах Zodiacs.org (по-английски)' },
+  en: { sky: 'Zodiacs.org | the sky, daily', horoscopes: 'Zodiacs.org daily horoscopes', almanac: 'The Zodiacs.org Almanac' },
+  es: { sky: 'Zodiacs.org | el cielo, cada día (en inglés)', horoscopes: 'Horóscopos diarios de Zodiacs.org (en inglés)', almanac: 'Almanaque de Zodiacs.org (en inglés)' },
+  pt: { sky: 'Zodiacs.org | o céu, todo dia (em inglês)', horoscopes: 'Horóscopos diários do Zodiacs.org (em inglês)', almanac: 'Almanaque do Zodiacs.org (em inglês)' },
+  fr: { sky: 'Zodiacs.org | le ciel, chaque jour (en anglais)', horoscopes: 'Horoscopes quotidiens de Zodiacs.org (en anglais)', almanac: 'Almanach de Zodiacs.org (en anglais)' },
+  it: { sky: 'Zodiacs.org | il cielo, ogni giorno (in inglese)', horoscopes: 'Oroscopi quotidiani di Zodiacs.org (in inglese)', almanac: 'Almanacco di Zodiacs.org (in inglese)' },
+  ru: { sky: 'Zodiacs.org | небо каждый день (по-английски)', horoscopes: 'Ежедневные гороскопы Zodiacs.org (по-английски)', almanac: 'Альманах Zodiacs.org (по-английски)' },
 };
 const clientUi = props.clientUi ? UI[locale] : null;
 const russianRuntime = props.clientUi && locale === 'ru' ? RUSSIAN_RUNTIME : null;

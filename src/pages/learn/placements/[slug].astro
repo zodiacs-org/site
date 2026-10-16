@@ -17,16 +17,16 @@ const PLANET_GLYPHS: Record<string, string> = {
 const PLANET_ORDER = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
 /** Where each planet's reader most naturally goes next. */
 const PLANET_CTA: Record<string, { href: string; label: string; blurb: string }> = {
-  Sun: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'Your Sun is one line of the chart — see the houses and aspects that make it yours.' },
-  Moon: { href: '/moon-sign/', label: 'Find your moon sign', blurb: 'Not sure this is your Moon? The calculator reads it from your birth date — and says honestly when the day is ambiguous.' },
+  Sun: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'Your Sun is one line of the chart. See the houses and aspects that make it yours.' },
+  Moon: { href: '/moon-sign/', label: 'Find your moon sign', blurb: 'Not sure this is your Moon? The calculator reads it from your birth date, and says honestly when the day is ambiguous.' },
   Mercury: { href: '/mercury-retrograde/', label: 'See the retrograde calendar', blurb: 'Mercury’s review seasons are computed to the hour, through 2027.' },
-  Venus: { href: '/compatibility/', label: 'Compare two charts', blurb: 'Venus placements matter most in synastry — see how yours meets another chart.' },
-  Mars: { href: '/compatibility/', label: 'Compare two charts', blurb: 'Mars placements matter most in synastry — see how yours meets another chart.' },
-  Jupiter: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'The house Jupiter occupies says where the appetite points — that takes your birth time.' },
+  Venus: { href: '/compatibility/', label: 'Compare two charts', blurb: 'Venus placements matter most in synastry. See how yours meets another chart.' },
+  Mars: { href: '/compatibility/', label: 'Compare two charts', blurb: 'Mars placements matter most in synastry. See how yours meets another chart.' },
+  Jupiter: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'The house Jupiter occupies says where the appetite points. That takes your birth time.' },
   Saturn: { href: '/saturn-return/', label: 'Find your Saturn return', blurb: 'The return dates this placement matures through, computed exactly.' },
-  Uranus: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'The house does the individual work for a generational planet — see yours.' },
-  Neptune: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'The house does the individual work for a generational planet — see yours.' },
-  Pluto: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'The house does the individual work for a generational planet — see yours.' },
+  Uranus: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'The house does the individual work for a generational planet. See yours.' },
+  Neptune: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'The house does the individual work for a generational planet. See yours.' },
+  Pluto: { href: '/birth-chart/', label: 'Get your free birth chart', blurb: 'The house does the individual work for a generational planet. See yours.' },
 };
 
 export async function getStaticPaths() {
@@ -87,7 +87,7 @@ const past = wins.filter((w) => new Date(w.to) < buildNow);
 // born in — show it when nothing is current.
 const OUTER = ['Uranus', 'Neptune', 'Pluto'];
 const recentEras = OUTER.includes(planet) && !current ? past.slice(-3) : [];
-const windowLabel = (w: Win) => `${fmt(w.from)} – ${fmt(w.to)}`;
+const windowLabel = (w: Win) => `${fmt(w.from)} to ${fmt(w.to)}`;
 // A fast planet with nothing at or after the build date means the
 // committed horizon has lapsed — warn loudly at build, never fail.
 if (planet !== 'Moon' && !OUTER.includes(planet) && !current && upcoming.length === 0 && wins.length > 0) {
@@ -142,7 +142,7 @@ const jsonLd = [
   description={entry.data.description}
   path={`/learn/placements/${slug}/`}
   image={`/assets/og/v2/placements/${pl}.png`}
-  imageAlt={`${planet} in ${sign.name} — Zodiacs.org`}
+  imageAlt={`${planet} in ${sign.name}, Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   sources={entry.data.sources}
@@ -160,17 +160,17 @@ const jsonLd = [
         {dignity ? (
           <div class="plc-panel__row">
             <dt>Classical standing</dt>
-            <dd><strong><AstroTerm term={dignity} label={dignity} surface="placement-guide" whyItMatters="A dignity is a traditional description of support, not a score for whether a placement is good or bad." /></strong> — {DIGNITY_GLOSS[dignity]}</dd>
+            <dd><strong><AstroTerm term={dignity} label={dignity} surface="placement-guide" whyItMatters="A dignity is a traditional description of support, not a score for whether a placement is good or bad." /></strong>, {DIGNITY_GLOSS[dignity]}</dd>
           </div>
         ) : hasClassicalDignities(planet) ? (
           <div class="plc-panel__row">
             <dt>Classical standing</dt>
-            <dd>neutral — no special <AstroTerm term="essential-dignity" label="dignity" surface="placement-guide" /> here</dd>
+            <dd>neutral, no special <AstroTerm term="essential-dignity" label="dignity" surface="placement-guide" /> here</dd>
           </div>
         ) : (
           <div class="plc-panel__row">
             <dt>Classical standing</dt>
-            <dd>none — {planet} postdates the classical dignity system</dd>
+            <dd>none, {planet} postdates the classical dignity system</dd>
           </div>
         )}
         {planet === 'Moon' ? (
@@ -209,7 +209,7 @@ const jsonLd = [
 
     {planet === 'Mercury' && (
       <p class="plc-communication reveal">
-        Part of how your chart talks — <a href="/learn/communication/">the communication guide →</a>
+        Part of how your chart talks: <a href="/learn/communication/">the communication guide →</a>
       </p>
     )}
 

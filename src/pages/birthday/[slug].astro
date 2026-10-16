@@ -52,7 +52,7 @@ const sign = data.sign ? signBySlug(data.sign) : null;
 const cusp = data.cusp ? cuspSummary(data.cusp) : null;
 const nowReading = data.cusp ? cuspYearReading(data.cusp, data.now.year) : null;
 const decan = sign ? decanSpan(data) : null;
-const spanLabel = `${formatLongitude(data.lonMin)} – ${formatLongitude(data.lonMax)}`;
+const spanLabel = `${formatLongitude(data.lonMin)} to ${formatLongitude(data.lonMax)}`;
 const moonSign = signBySlug(data.now.moonSign);
 
 // Nearest-boundary honesty for non-cusp dates.
@@ -71,39 +71,39 @@ const faq: { q: string; a: string }[] = [];
 if (sign && decan) {
   faq.push({
     q: `What zodiac sign is ${label}?`,
-    a: `${sign.name}. In every year from ${yearFrom} through ${yearTo}, the Sun is in ${sign.name} on ${label} — between ${formatLongitude(data.lonMin)} and ${formatLongitude(data.lonMax)} at noon universal time.`,
+    a: `${sign.name}. In every year from ${yearFrom} through ${yearTo}, the Sun is in ${sign.name} on ${label}, between ${formatLongitude(data.lonMin)} and ${formatLongitude(data.lonMax)} at noon universal time.`,
   });
   faq.push({
     q: `Is ${label} on the cusp?`,
     a: dist >= 1.5
-      ? `No. Across ${yearFrom}–${yearTo} the Sun sits at least ${dist}° inside ${sign.name} on ${label}, so the sign never changes with the year.`
-      : `It sits close to the ${nearPrev ? 'previous' : 'next'} sign's boundary — about ${dist}° at the nearest — but it stays on the ${sign.name} side in every year from ${yearFrom} to ${yearTo}. Your sun sign is ${sign.name} regardless of birth year.`,
+      ? `No. Across ${yearFrom} to ${yearTo} the Sun sits at least ${dist}° inside ${sign.name} on ${label}, so the sign never changes with the year.`
+      : `It sits close to the ${nearPrev ? 'previous' : 'next'} sign's boundary, about ${dist}° at the nearest, but it stays on the ${sign.name} side in every year from ${yearFrom} to ${yearTo}. Your sun sign is ${sign.name} regardless of birth year.`,
   });
   faq.push({
     q: `What decan is ${label}?`,
     a: decan.lo === decan.hi
-      ? `The ${decanOrdinal(decan.lo)} decan of ${sign.name} (${(decan.lo - 1) * 10}°–${decan.lo * 10}°), whose traditional ruler is ${decan.ruler}.`
+      ? `The ${decanOrdinal(decan.lo)} decan of ${sign.name} (${(decan.lo - 1) * 10}° to ${decan.lo * 10}°), whose traditional ruler is ${decan.ruler}.`
       : `The date straddles the ${decan.lo * 10}° line: depending on your birth year and hour, the Sun falls in the ${decanOrdinal(decan.lo)} or ${decanOrdinal(decan.hi)} decan of ${sign.name} (traditional rulers ${decan.ruler} and ${decan.hiRuler}). A birth chart pins the exact degree.`,
   });
 } else if (cusp) {
   faq.push({
     q: `What zodiac sign is ${label}?`,
-    a: `${cusp.a.name} or ${cusp.b.name} — this date sits on the boundary. In ${cusp.wholeA} of the years from ${yearFrom} to ${yearTo} the whole day belonged to ${cusp.a.name}; in ${cusp.wholeB} it belonged to ${cusp.b.name}; in ${cusp.split} the Sun crossed over during the day. The year table above gives your answer, and a birth chart settles it to the minute.`,
+    a: `${cusp.a.name} or ${cusp.b.name}. This date sits on the boundary. In ${cusp.wholeA} of the years from ${yearFrom} to ${yearTo} the whole day belonged to ${cusp.a.name}; in ${cusp.wholeB} it belonged to ${cusp.b.name}; in ${cusp.split} the Sun crossed over during the day. The year table above gives your answer, and a birth chart settles it to the minute.`,
   });
   faq.push({
     q: `What time does the sign change on ${label}?`,
     a: splitTimes.length > 0
       ? `In years when the ingress lands on ${label}, it falls between ${splitTimes[0]} and ${splitTimes[splitTimes.length - 1]} universal time. In the other years the whole day is one sign. Convert your birth time to UTC before reading the table.`
-      : `In the ${yearFrom}–${yearTo} range the ingress never lands inside this date — each year the whole day belongs to one sign, listed in the table above.`,
+      : `In the ${yearFrom} to ${yearTo} range the ingress never lands inside this date. Each year the whole day belongs to one sign, listed in the table above.`,
   });
   faq.push({
     q: `Which sign should I read?`,
-    a: `Check your birth year in the table. If your year is a split year, the deciding fact is your birth time converted to universal time — or skip the table and compute your chart, which reads the Sun's exact degree for your birth moment.`,
+    a: `Check your birth year in the table. If your year is a split year, the deciding fact is your birth time converted to universal time, or skip the table and compute your chart, which reads the Sun's exact degree for your birth moment.`,
   });
 }
 faq.push({
   q: `What degree is the Sun on ${label}?`,
-  a: `Between ${formatLongitude(data.lonMin)} and ${formatLongitude(data.lonMax)} at noon universal time, depending on the year — the calendar drifts about a quarter degree per year against the Sun and resets on leap years. Your exact degree needs your birth date, year, and time.`,
+  a: `Between ${formatLongitude(data.lonMin)} and ${formatLongitude(data.lonMax)} at noon universal time, depending on the year. The calendar drifts about a quarter degree per year against the Sun and resets on leap years. Your exact degree needs your birth date, year, and time.`,
 });
 
 // ── Links ──────────────────────────────────────────────────────────────
@@ -165,7 +165,7 @@ const jsonLd = [
   description={entry.data.description}
   path={`/birthday/${slug}/`}
   image={ogImage}
-  imageAlt={`${label} birthday astrology — Zodiacs.org`}
+  imageAlt={`${label} birthday astrology, Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
 >
@@ -211,18 +211,18 @@ const jsonLd = [
             {sign ? (
               <div class="bday-panel__row">
                 <dt>Sun sign</dt>
-                <dd><strong><a href={`/${sign.slug}/`}>{sign.name}</a></strong> — every year, {yearFrom}–{yearTo}</dd>
+                <dd><strong><a href={`/${sign.slug}/`}>{sign.name}</a></strong>, every year, {yearFrom} to {yearTo}</dd>
               </div>
             ) : cusp && (
               <>
                 <div class="bday-panel__row">
                   <dt>Sun sign</dt>
                   <dd>
-                    <strong><a href={`/${cusp.a.slug}/`}>{cusp.a.name}</a></strong> or <strong><a href={`/${cusp.b.slug}/`}>{cusp.b.name}</a></strong> — the {cusp.a.name}–{cusp.b.name} boundary lands here
+                    <strong><a href={`/${cusp.a.slug}/`}>{cusp.a.name}</a></strong> or <strong><a href={`/${cusp.b.slug}/`}>{cusp.b.name}</a></strong>, the {cusp.a.name}-{cusp.b.name} boundary lands here
                   </dd>
                 </div>
                 <div class="bday-panel__row">
-                  <dt>{yearFrom}–{yearTo}</dt>
+                  <dt>{yearFrom} to {yearTo}</dt>
                   <dd>whole day {cusp.a.name} in {cusp.wholeA} years · whole day {cusp.b.name} in {cusp.wholeB} · split at the ingress in {cusp.split}</dd>
                 </div>
                 {nowReading && (
@@ -239,22 +239,22 @@ const jsonLd = [
             )}
             <div class="bday-panel__row">
               <dt>Sun degrees</dt>
-              <dd>{spanLabel} · noon UTC, {yearFrom}–{yearTo}</dd>
+              <dd>{spanLabel} · noon UTC, {yearFrom} to {yearTo}</dd>
             </div>
             {decan && sign && (
               <div class="bday-panel__row">
                 <dt>Decan</dt>
                 <dd>
                   {decan.lo === decan.hi
-                    ? <>{decanOrdinal(decan.lo)} decan of {sign.name} — traditional ruler <strong>{decan.ruler}</strong></>
-                    : <>{decanOrdinal(decan.lo)}–{decanOrdinal(decan.hi)} decan of {sign.name} — the {decan.lo * 10}° line falls inside this date's span (rulers {decan.ruler} / {decan.hiRuler})</>}
+                    ? <>{decanOrdinal(decan.lo)} decan of {sign.name}, traditional ruler <strong>{decan.ruler}</strong></>
+                    : <>{decanOrdinal(decan.lo)} to {decanOrdinal(decan.hi)} decan of {sign.name}, the {decan.lo * 10}° line falls inside this date's span (rulers {decan.ruler} / {decan.hiRuler})</>}
                 </dd>
               </div>
             )}
             {cusp && (
               <div class="bday-panel__row">
                 <dt>Decan</dt>
-                <dd>last decan of {cusp.a.name} or first of {cusp.b.name} — the ingress decides</dd>
+                <dd>last decan of {cusp.a.name} or first of {cusp.b.name}, the ingress decides</dd>
               </div>
             )}
             <div class="bday-panel__row">
@@ -265,7 +265,7 @@ const jsonLd = [
 
           {cusp && (
             <details class="bday-years mono">
-              <summary>The year-by-year table, {yearFrom}–{yearTo}</summary>
+              <summary>The year-by-year table, {yearFrom} to {yearTo}</summary>
               <div class="bday-years__grid">
                 {Object.entries(data.cusp!.years).map(([year, v]) => (
                   <span class="bday-years__cell">
@@ -274,7 +274,7 @@ const jsonLd = [
                   </span>
                 ))}
               </div>
-              <p class="bday-years__note">Times are universal time — convert your birth time before reading your year.</p>
+              <p class="bday-years__note">Times are universal time. Convert your birth time before reading your year.</p>
             </details>
           )}
         </div>
@@ -292,7 +292,7 @@ const jsonLd = [
     <div class="bday__cta shell tinted reveal">
       <div class="core tinted bday__cta-core">
         <strong>The date gives you the Sun. The rest takes a chart.</strong>
-        <p>See the Moon, rising sign, houses, and aspects that make the reading unmistakably yours — free, with no signup.</p>
+        <p>See the Moon, rising sign, houses, and aspects that make the reading unmistakably yours, free, with no signup.</p>
         <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
       </div>
     </div>
@@ -343,7 +343,7 @@ const jsonLd = [
       </section>
     )}
 
-    <ShareRow text={`Born ${label} — here's what that sky says`} url={`https://zodiacs.org/birthday/${slug}/`} />
+    <ShareRow text={`Born ${label}, here's what that sky says`} url={`https://zodiacs.org/birthday/${slug}/`} />
   </article>
 </Base>
 

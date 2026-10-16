@@ -70,19 +70,19 @@ const faq = [
   },
   {
     q: 'Why does the full moon date sometimes differ by a day?',
-    a: 'The full moon is one instant — the moment the Moon stands exactly opposite the Sun — and this page lists that instant in universal time. If it lands at 2 a.m. UTC, it is still the previous evening in the Americas, so a local calendar can honestly print the neighboring date. The Moon looks full to the eye for a night on either side regardless.',
+    a: 'The full moon is one instant, the moment the Moon stands exactly opposite the Sun, and this page lists that instant in universal time. If it lands at 2 a.m. UTC, it is still the previous evening in the Americas, so a local calendar can honestly print the neighboring date. The Moon looks full to the eye for a night on either side regardless.',
   },
   {
     q: 'What is a blue moon?',
-    a: 'The common modern meaning is the second full moon inside one calendar month, which happens every two to three years because lunar months run about 29.5 days. The next one is on May 31, 2026. The older almanac meaning — a fourth full moon in one season — survives mostly in trivia contests. Neither kind looks blue.',
+    a: 'The common modern meaning is the second full moon inside one calendar month, which happens every two to three years because lunar months run about 29.5 days. The next one is on May 31, 2026. The older almanac meaning, a fourth full moon in one season, survives mostly in trivia contests. Neither kind looks blue.',
   },
   {
     q: 'Where do full moon names come from?',
-    a: 'The Wolf, Snow, Worm sequence comes from North American almanac tradition, which drew on Algonquian and colonial seasonal names. They describe the farming and hunting year, not astrology — the astrological content of a full moon is its zodiac sign and degree, which is why the table lists both.',
+    a: 'The Wolf, Snow, Worm sequence comes from North American almanac tradition, which drew on Algonquian and colonial seasonal names. They describe the farming and hunting year, not astrology. The astrological content of a full moon is its zodiac sign and degree, which is why the table lists both.',
   },
   {
     q: 'What does a full moon mean in astrology?',
-    a: 'A full moon is the Sun and Moon in exact opposition, so it always pairs two opposite signs — a Capricorn full moon happens in Cancer season. Astrologers read it as a culmination or a coming-to-light in the part of your chart holding the Moon’s sign. Which part that is takes your birth chart.',
+    a: 'A full moon is the Sun and Moon in exact opposition, so it always pairs two opposite signs. A Capricorn full moon happens in Cancer season. Astrologers read it as a culmination or a coming-to-light in the part of your chart holding the Moon’s sign. Which part that is takes your birth chart.',
   },
 ];
 
@@ -103,7 +103,7 @@ const eventNodes = upcomingEvents.map((full) => {
 const dataset = {
   '@type': 'Dataset',
   '@id': 'https://zodiacs.org/full-moon-calendar/#dataset',
-  name: 'Full moon calendar, 2026–2027',
+  name: 'Full moon calendar, 2026 to 2027',
   description: 'Exact universal-time instants, tropical zodiac positions, and traditional names for every full moon in 2026 and 2027.',
   url: 'https://zodiacs.org/full-moon-calendar/',
   creator: { '@id': 'https://zodiacs.org/#org' },
@@ -121,7 +121,7 @@ const jsonLd = [
     name: 'Full moon calendar 2026 & 2027',
     url: 'https://zodiacs.org/full-moon-calendar/',
     description:
-      'Every full moon in 2026 and 2027 with exact universal time, zodiac sign and degree, and its traditional name — computed from the Moon’s real motion.',
+      'Every full moon in 2026 and 2027 with exact universal time, zodiac sign and degree, and its traditional name, computed from the Moon’s real motion.',
   },
   {
     '@type': 'FAQPage',
@@ -136,11 +136,11 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Full Moon Calendar 2026 & 2027 — Dates, Signs, Names | Zodiacs.org"
-  description="Every full moon in 2026 and 2027: exact date and universal time, the Moon's zodiac sign and degree, and the traditional name — Wolf to Cold, blue moon included."
+  title="Full Moon Calendar 2026 & 2027 | Dates, Signs, Names | Zodiacs.org"
+  description="Every full moon in 2026 and 2027: exact date and universal time, the Moon's zodiac sign and degree, and the traditional name, Wolf to Cold, blue moon included."
   path="/full-moon-calendar/"
   image="/assets/og/v2/tool/full-moon-calendar.png"
-  imageAlt="Full moon calendar — Zodiacs.org"
+  imageAlt="Full moon calendar, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >
@@ -171,7 +171,7 @@ const jsonLd = [
       <div class="section-head reveal">
         <h2>Full moons of {year}</h2>
         {year === years[0] && (
-          <p>Times are universal time — in the Americas the instant often falls the evening before.</p>
+          <p>Times are universal time. In the Americas the instant often falls the evening before.</p>
         )}
       </div>
       <div class="table-wrap reveal">

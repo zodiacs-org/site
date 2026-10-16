@@ -15,7 +15,7 @@ const jsonLd = [
   { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
 ];
 ---
-<Base clientUi inlineCriticalCss title="Lunar Return Calculator — Your Next Moon Return" description="Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar." path="/lunar-return/" jsonLd={jsonLd}>
+<Base clientUi inlineCriticalCss title="Lunar Return Calculator | Your Next Moon Return" description="Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar." path="/lunar-return/" jsonLd={jsonLd}>
   <section class="section--tight container">
     <div class="tool-hero"><h1 class="display">Your lunar return</h1><p>Find the next time the Moon returns to its place in your birth chart. Explore a fresh set of prompts for everyday care, connection, and attention.</p></div>
     <!-- Use the existing intent trigger and automatic post-load fallback so

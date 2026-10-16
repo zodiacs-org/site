@@ -104,7 +104,7 @@ const jsonLd = [
   description={entry.data.description}
   path={`/rising-sign/${sign.slug}/`}
   image={`/assets/og/v2/rising/${sign.slug}.png`}
-  imageAlt={`${sign.name} rising — Zodiacs.org`}
+  imageAlt={`${sign.name} rising, Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   sources={entry.data.sources}
@@ -120,7 +120,7 @@ const jsonLd = [
       <dl class="plc-panel mono">
         <div class="plc-panel__row">
           <dt>Chart ruler</dt>
-          <dd><strong>{chartRuler}</strong> — the planet that steers this chart{modernNote}</dd>
+          <dd><strong>{chartRuler}</strong>, the planet that steers this chart{modernNote}</dd>
         </div>
         {rulerNow ? (
           <div class="plc-panel__row">
@@ -130,7 +130,7 @@ const jsonLd = [
         ) : (
           <div class="plc-panel__row">
             <dt>The Moon's pace</dt>
-            <dd>a sign every two and a half days — your natal Moon is the steady anchor</dd>
+            <dd>a sign every two and a half days. Your natal Moon is the steady anchor</dd>
           </div>
         )}
         <div class="plc-panel__row">
@@ -139,7 +139,7 @@ const jsonLd = [
         </div>
         <div class="plc-panel__row">
           <dt>The turnover</dt>
-          <dd>the ascendant changes sign about every two hours — twelve risings every day</dd>
+          <dd>the ascendant changes sign about every two hours, twelve risings every day</dd>
         </div>
       </dl>
     </header>
@@ -152,7 +152,7 @@ const jsonLd = [
       <div class="section-head">
         <h2>Find your rising sign</h2>
         <p>
-          Birth date, time, and place — the ascendant needs all three.
+          Birth date, time, and place. The ascendant needs all three.
           Computed on your device; your birth details are not sent anywhere.
         </p>
       </div>

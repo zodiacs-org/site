@@ -78,7 +78,7 @@ const jsonLd = [
   description={guide.data.description}
   path={`/${sign.slug}/`}
   image={`/assets/og/v2/sign/${sign.slug}.png`}
-  imageAlt={`${sign.name} — sign guide on Zodiacs.org`}
+  imageAlt={`${sign.name}, sign guide on Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   sources={guide.data.sources}
@@ -154,7 +154,7 @@ const jsonLd = [
             </div>
           </div>
           <p class="guide-compat__note">
-            Sun-sign chemistry is the first sentence, not the story — for the
+            Sun-sign chemistry is the first sentence, not the story. For the
             whole thing, <a href="/compatibility/">compare two full charts</a>.
           </p>
         </section>
@@ -162,7 +162,7 @@ const jsonLd = [
         <section class="guide-placements reveal">
           <h2>Planets in {sign.name}</h2>
           <p class="guide-placements__note">
-            The Sun is one of ten planets that can wear this sign — each
+            The Sun is one of ten planets that can wear this sign. Each
             reads differently.
           </p>
           <div class="guide-placements__chips">
@@ -178,7 +178,7 @@ const jsonLd = [
           <Faq items={guide.data.faq} heading={`${sign.name}, asked and answered`} />
         </section>
 
-        <ShareRow text={`${sign.name} — the full guide`} url={`https://zodiacs.org/${sign.slug}/`} />
+        <ShareRow text={`${sign.name}, the full guide`} url={`https://zodiacs.org/${sign.slug}/`} />
         <GuideProfileHook signName={sign.name} slug={sign.slug} />
       </div>
 
@@ -193,7 +193,7 @@ const jsonLd = [
         <div class="guide-side__cta shell tinted">
           <div class="core tinted guide-side__cta-core">
             <strong>Is {sign.name} your sun sign?</strong>
-            <p>Get your birth chart — moon, rising, planets, and all — then save what matters.</p>
+            <p>Get your birth chart (moon, rising, planets, and all), then save what matters.</p>
             <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
           </div>
         </div>

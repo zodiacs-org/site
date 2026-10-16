@@ -7,7 +7,7 @@ import '../../styles/calculator.css';
 const faq = [
   {
     q: 'What zodiac sign will my baby be?',
-    a: 'Enter the due date above: the Sun’s sign on that date is near certain, because the Sun spends about a month in each sign. The honest caveats are the edges — a due date near a sign boundary, or a baby arriving a couple of weeks early or late, can shift the answer. The tool computes both cases instead of guessing.',
+    a: 'Enter the due date above: the Sun’s sign on that date is near certain, because the Sun spends about a month in each sign. The honest caveats are the edges. A due date near a sign boundary, or a baby arriving a couple of weeks early or late, can shift the answer. The tool computes both cases instead of guessing.',
   },
   {
     q: 'Can I know the moon sign before the birth?',
@@ -19,11 +19,11 @@ const faq = [
   },
   {
     q: 'Does a retrograde planet at birth mean something bad?',
-    a: 'No. Retrogrades are ordinary — Mercury alone is retrograde about a fifth of the time, and everyone is born with some planet in some state. In a birth chart a retrograde planet is usually read as running more inward than usual, which is a texture, not a flaw.',
+    a: 'No. Retrogrades are ordinary. Mercury alone is retrograde about a fifth of the time, and everyone is born with some planet in some state. In a birth chart a retrograde planet is usually read as running more inward than usual, which is a texture, not a flaw.',
   },
   {
     q: 'When should I compute the real chart?',
-    a: 'Once the birth time is on paper. Date, exact time, and place give the full chart — Moon pinned to its sign, rising sign, houses, aspects. The calculator computes it on your device and it takes about twenty seconds.',
+    a: 'Once the birth time is on paper. Date, exact time, and place give the full chart: Moon pinned to its sign, rising sign, houses, aspects. The calculator computes it on your device and it takes about twenty seconds.',
   },
 ];
 
@@ -47,11 +47,11 @@ const jsonLd = [
 ---
 <Base
   clientUi
-  title="Baby Zodiac Calculator — What Sign Will My Baby Be? | Zodiacs.org"
+  title="Baby Zodiac Calculator | What Sign Will My Baby Be? | Zodiacs.org"
   description="Enter a due date: the near-certain sun sign (cusp caveats computed, not guessed), the week's possible moon signs, and what has to wait for the birth minute. Free."
   path="/baby-zodiac/"
   image="/assets/og/v2/tool/baby-zodiac.png"
-  imageAlt="Baby zodiac calculator — Zodiacs.org"
+  imageAlt="Baby zodiac calculator, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container container--narrow">
@@ -78,7 +78,7 @@ const jsonLd = [
     <div class="prose reveal">
       <p>
         The <a href="/learn/glossary/#sun">Sun</a> moves about one <a href="/learn/glossary/#degree">degree</a> a day and spends a month in each
-        sign, so a due date fixes the sun sign with high confidence — the
+        sign, so a due date fixes the sun sign with high confidence. The
         exceptions are due dates that land on a sign boundary, and babies
         who arrive well ahead of schedule. Both are computed above rather
         than hand-waved: boundary dates show the split, and edge-of-sign
@@ -87,7 +87,7 @@ const jsonLd = [
       <p>
         The Moon is a different instrument. It crosses a sign in two or
         three days, which means the same due week holds two or three
-        possible moon signs — the list above shows exactly which, with
+        possible moon signs. The list above shows exactly which, with
         dates. And the rising sign turns through the whole zodiac every
         day, changing roughly every two hours, so nothing about it can be
         known in advance. That one belongs to the birth minute, which is
@@ -96,7 +96,7 @@ const jsonLd = [
       </p>
       <p>
         If the due date is firm, its <a href="/birthday/">birthday page</a>{' '}
-        carries the deeper read — the degree span, the decan, and the
+        carries the deeper read: the degree span, the decan, and the
         year-by-year table where the date sits on a cusp.
       </p>
     </div>

@@ -24,10 +24,10 @@ export const GET: APIRoute = () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Zodiacs.org — sky events</title>
+    <title>Zodiacs.org | sky events</title>
     <link>${SITE}${eventsPublication.hub.path}</link>
     <atom:link href="${SITE}/feeds/events.xml" rel="self" type="application/rss+xml" />
-    <description>Full moons, eclipses, retrograde stations, slow-planet sign changes, and rare exact alignments — dated in universal time.</description>
+    <description>Full moons, eclipses, retrograde stations, slow-planet sign changes, and rare exact alignments, dated in universal time.</description>
     <language>en</language>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
 ${items}

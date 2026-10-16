@@ -48,12 +48,12 @@ const jsonLd = [
 ---
 <Base privateSurface
   clientUi
-  title="Совместимость по натальным картам — синастрия онлайн"
+  title="Совместимость по натальным картам | синастрия онлайн"
   description="Сравните две карты: каждый межкартный аспект, рассчитанный честно и приватно на вашем устройстве."
   path="/ru/compatibility/"
   locale="ru"
   image="/assets/og/v2/tool/compatibility.png"
-  imageAlt="Совместимость по натальным картам — Zodiacs.org"
+  imageAlt="Совместимость по натальным картам, Zodiacs.org"
   jsonLd={jsonLd}
   glass
 >
@@ -84,7 +84,7 @@ const jsonLd = [
           <div class="compat-row__pairs">
             {SIGNS.map((b) => (
               <a class="compat-row__pair" href={`/compatibility/${pairSlug(a.slug, b.slug)}/`} hreflang="en" title="Материал пока доступен по-английски" aria-label={`${signName(a, 'ru')} и ${signName(b, 'ru')}. Материал пока доступен по-английски`}>
-                {signName(b, 'ru')}<span class="sr-only"> — пока по-английски</span>
+                {signName(b, 'ru')}<span class="sr-only"> (пока по-английски)</span>
               </a>
             ))}
           </div>
