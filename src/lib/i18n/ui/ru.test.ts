@@ -79,7 +79,7 @@ describe('Russian staged catalog', () => {
       'Овен', 'Телец', 'Близнецы', 'Рак', 'Лев', 'Дева',
       'Весы', 'Скорпион', 'Стрелец', 'Козерог', 'Водолей', 'Рыбы',
     ]);
-    expect(signDates('aries', 'ru')).toBe('21 мар – 19 апр');
+    expect(signDates('aries', 'ru')).toBe('с 21 мар по 19 апр');
     expect(signEssence('taurus', 'ru')).toBe('Твёрдые руки, хороший вкус и долгая память на уют.');
     expect(signPrepositional('aquarius')).toBe('Водолее');
     expect(elementLabel('water', 'ru')).toBe('вода');

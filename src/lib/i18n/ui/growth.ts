@@ -16,7 +16,7 @@ export const GROWTH_UI_EN = {
   emailCaptureSuccess: 'Check your email to confirm your subscription.',
   emailCaptureErrorTitle: 'Subscription unavailable',
   emailCaptureError: "Couldn't start the subscription. Please try again.",
-  emailCapturePrivacy: 'We store your email with your chosen sign only — never your birth data.',
+  emailCapturePrivacy: 'We store your email with your chosen sign only, never your birth data.',
   emailCaptureHoneypot: 'Leave this field blank',
   emailPendingTitle: 'Check your email.',
   emailPendingBody: 'Use the confirmation link we sent before your weekly forecast begins.',
