@@ -5,9 +5,13 @@ interface Props {
   text: string;
   url: string;
   locale?: Locale;
+  /** Replaces the localized lead ("Send this page:"); the caller owns its language. */
+  label?: string;
+  /** `pills`: the same links as neutral pills (the kit's `.pill`), for reading pages. */
+  variant?: 'line' | 'pills';
 }
 
-const { text, url, locale = 'en' } = Astro.props;
+const { text, url, locale = 'en', label, variant = 'line' } = Astro.props;
 const LABEL = {
   en: 'Send this page:',
   es: 'Comparte esta página:',
@@ -23,13 +27,23 @@ const encodedText = encode(text);
 const encodedUrl = encode(url);
 const encodedMessage = encode(message);
 ---
+{variant === 'pills' ? (
+<div class="identity-share identity-share--pills">
+  <span class="identity-share__label">{label ?? LABEL[locale].replace(/[:\u00a0]+$/u, '')}</span>
+  <a class="pill" href={`https://x.com/intent/post?text=${encodedMessage}`} target="_blank" rel="noopener noreferrer">X</a>
+  <a class="pill" href={`https://wa.me/?text=${encodedMessage}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+  <a class="pill" href={`https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`} target="_blank" rel="noopener noreferrer">Telegram</a>
+  <a class="pill" href={`mailto:?subject=${encodedText}&body=${encodedMessage}`} target="_blank" rel="noopener noreferrer">{locale === 'fr' || locale === 'it' ? 'E-mail' : 'Email'}</a>
+</div>
+) : (
 <p class="identity-share">
-  {LABEL[locale]}{' '}
+  {label ?? LABEL[locale]}{' '}
   <a href={`https://x.com/intent/post?text=${encodedMessage}`} target="_blank" rel="noopener noreferrer">X</a>{' · '}
   <a href={`https://wa.me/?text=${encodedMessage}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>{' · '}
   <a href={`https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`} target="_blank" rel="noopener noreferrer">Telegram</a>{' · '}
   <a href={`mailto:?subject=${encodedText}&body=${encodedMessage}`} target="_blank" rel="noopener noreferrer">{locale === 'fr' || locale === 'it' ? 'E-mail' : 'Email'}</a>
 </p>
+)}
 
 <style>
   .identity-share {
@@ -43,4 +57,8 @@ const encodedMessage = encode(message);
   }
   .identity-share a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--hair-1); }
   .identity-share a:hover { color: var(--muted); border-bottom-color: var(--hair-2); }
+  .identity-share--pills { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; word-spacing: normal; line-height: 1.3; }
+  .identity-share__label { margin-right: 4px; color: var(--muted); font-size: 0.875rem; }
+  .identity-share--pills .pill { min-height: 32px; border-bottom: 1px solid var(--hair-2); font-size: 0.8125rem; color: var(--ink-1); }
+  .identity-share--pills .pill:hover { border-bottom-color: var(--hair-3); color: var(--ink-0); }
 </style>

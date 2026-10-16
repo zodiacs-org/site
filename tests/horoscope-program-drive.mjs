@@ -81,24 +81,24 @@ const TOMORROW_MOON_PHASE = PROGRAM.evidence.find((receipt) => (
   receipt.id === `fact:${tomorrowDate}:body:moon:1200z`
 ))?.moonPhase;
 
-const PERIODS = [
-  ['Daily', ''],
-  ['Tomorrow', 'tomorrow'],
-  ['Weekly', 'weekly'],
-  ['Monthly', 'monthly'],
-  ['Love', 'love'],
-  ['Career', 'career'],
-  ['2027', '2027'],
+// Today, This week and This month form the period switch; Tomorrow, Love,
+// Career and the year (with the week and month again) are the "More for"
+// list under the reading. Every canonical period stays one link away.
+const SWITCH = [
+  ['Today', ''],
+  ['This week', 'weekly'],
+  ['This month', 'monthly'],
 ];
+const PERIOD_SUFFIXES = ['', 'tomorrow', 'weekly', 'monthly', 'love', 'career', '2027'];
 
 const ROUTES = [
-  { key: 'daily', sign: 'aries', name: 'Aries', suffix: '', title: 'daily horoscope', active: 'Daily', minWords: 90 },
+  { key: 'daily', sign: 'aries', name: 'Aries', suffix: '', title: 'daily horoscope', active: 'Today', minWords: 90 },
   { key: 'tomorrow', sign: 'taurus', name: 'Taurus', suffix: 'tomorrow', title: 'tomorrow horoscope', active: 'Tomorrow', minWords: 90 },
-  { key: 'weekly', sign: 'libra', name: 'Libra', suffix: 'weekly', title: 'weekly horoscope', active: 'Weekly', minWords: 200 },
-  { key: 'monthly', sign: 'cancer', name: 'Cancer', suffix: 'monthly', title: 'monthly horoscope', active: 'Monthly', minWords: 250 },
+  { key: 'weekly', sign: 'libra', name: 'Libra', suffix: 'weekly', title: 'weekly horoscope', active: 'This week', minWords: 200 },
+  { key: 'monthly', sign: 'cancer', name: 'Cancer', suffix: 'monthly', title: 'monthly horoscope', active: 'This month', minWords: 250 },
   { key: 'love', sign: 'scorpio', name: 'Scorpio', suffix: 'love', title: 'love horoscope', active: 'Love', minWords: 60 },
   { key: 'career', sign: 'capricorn', name: 'Capricorn', suffix: 'career', title: 'career horoscope', active: 'Career', minWords: 60 },
-  { key: 'year', sign: 'pisces', name: 'Pisces', suffix: '2027', title: '2027 horoscope', active: '2027', minWords: 1_200 },
+  { key: 'year', sign: 'pisces', name: 'Pisces', suffix: '2027', title: '2027 horoscope', active: 'Pisces in 2027', minWords: 1_200 },
 ].map((route) => ({
   ...route,
   path: `/horoscopes/${route.sign}/${route.suffix ? `${route.suffix}/` : ''}`,
@@ -145,6 +145,9 @@ async function inspectReturningDailyForYou(browser, baseURL) {
       localStorage.setItem('zodiacs.profile.v1', JSON.stringify(value));
     }, RETURNING_PROFILE);
     await page.goto('/horoscopes/aries/', { waitUntil: 'networkidle' });
+    // DailyForYou hydrates with client:visible, and the reading now fills the
+    // first screen above it. Bring its reserved block into view first.
+    await page.locator('.dfy').first().scrollIntoViewIfNeeded();
     await page.waitForSelector('.dfy:not(.dfy--placeholder)');
     const evidence = await page.evaluate(() => new Promise((resolveEvidence) => {
       requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -191,6 +194,7 @@ async function inspectReturningDailyForYouMobile(browser, baseURL, fixtureProfil
       localStorage.setItem('zodiacs.profile.v1', JSON.stringify(value));
     }, fixtureProfile);
     await page.goto('/horoscopes/aries/', { waitUntil: 'networkidle' });
+    await page.locator('.dfy').first().scrollIntoViewIfNeeded();
     await page.waitForSelector(`.dfy${state === 'quiet' ? ':has(.dfy__quiet)' : ':has(.dfy__lines)'}`);
     const evidence = await page.evaluate(() => new Promise((resolveEvidence) => {
       requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -221,7 +225,8 @@ async function inspectReturningDailyForYouMobile(browser, baseURL, fixtureProfil
     check(`DailyForYou 360px ${state}: hydration has exactly zero CLS`, evidence.cls === 0, JSON.stringify(evidence));
     check(
       `DailyForYou 360px ${state}: resolved card has no outer fallback reservation or dead body tail`,
-      evidence.blockMinHeight === 'auto'
+      // 'auto' as a grid item, '0px' in block flow: either way, no reservation.
+      ['auto', '0px'].includes(evidence.blockMinHeight)
         && Math.abs(evidence.bodyBottomGap) <= 1
         && evidence.bodyScrollHeight <= evidence.bodyClientHeight + 1,
       JSON.stringify(evidence),
@@ -436,7 +441,7 @@ async function checkStaticHtml(baseURL, route) {
     canonical,
   );
   check(`${route.key}: shared reading is server-rendered`, html.includes('class="program__reading'));
-  check(`${route.key}: sky strip is server-rendered`, html.includes('class="program__sky"'));
+  check(`${route.key}: sky behind the reading is server-rendered`, html.includes('class="program__sky"'));
   if (route.key === 'daily') {
     check(`${route.key}: sky strip includes the current Moon phase`, html.includes(DAILY.moon.phase));
   }
@@ -444,10 +449,35 @@ async function checkStaticHtml(baseURL, route) {
     check(`${route.key}: sky strip includes tomorrow’s Moon phase`, html.includes(TOMORROW_MOON_PHASE));
   }
   check(
-    `${route.key}: pastel hero icon is present in initial HTML`,
-    html.includes(`/assets/zodiac-icons/400/${route.sign}.webp`),
+    `${route.key}: sign hero art is present in initial HTML`,
+    html.includes(`/assets/sign-art/${route.sign}-1200.webp`),
   );
-  check(`${route.key}: period navigation is present in initial HTML`, html.includes('class="program__periods"'));
+  check(
+    `${route.key}: hero art is preloaded from the document head`,
+    new RegExp(`<link[^>]+rel="preload"[^>]+as="image"[^>]+imagesrcset="[^"]*/assets/sign-art/${route.sign}-720\\.webp`).test(html),
+  );
+  check(`${route.key}: period navigation is present in initial HTML`, /class="[^"]*\bprogram__periods\b/.test(html));
+  check(`${route.key}: more periods are present in initial HTML`, html.includes('class="program__more"'));
+  const wheelSurface = { daily: 'today', year: 'year' }[route.key] ?? route.key;
+  const wheelPath = `/horoscopes/${route.sign}/sky-wheel-${wheelSurface}.svg`;
+  check(
+    `${route.key}: the wheel of the edition sky is a lazy, sized image`,
+    new RegExp(`<img[^>]+src="${wheelPath}"[^>]+width="462"[^>]+height="462"[^>]+alt="The sky at noon UTC[^"]+"[^>]+loading="lazy"`).test(html),
+    wheelPath,
+  );
+  const wheelResponse = await fetch(`${baseURL}${wheelPath}`);
+  const wheelSvg = await wheelResponse.text();
+  check(
+    `${route.key}: the wheel SVG is built by the shared Wheel and loads nothing else`,
+    wheelResponse.status === 200
+      && /^image\/svg\+xml/.test(wheelResponse.headers.get('content-type') ?? '')
+      && wheelSvg.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')
+      && wheelSvg.includes('class="wheel"')
+      && (wheelSvg.match(/<image href="data:image\/webp;base64,/g) ?? []).length === 12
+      && !/href="\//.test(wheelSvg),
+    `${wheelResponse.status} · ${wheelSvg.length} bytes`,
+  );
+  check(`${route.key}: the Zodiac Games strip is not on the reading`, !html.includes('race-ramp'));
   check(
     `${route.key}: sign feed is discoverable in the document head`,
     new RegExp(`<link[^>]+rel="alternate"[^>]+type="application/rss\\+xml"[^>]+href="/feeds/horoscopes/${route.sign}\\.xml"`).test(html),
@@ -476,26 +506,31 @@ async function inspectRenderedPage(page, route, viewportKey) {
     headingText || 'missing',
   );
 
-  const iconNode = page.locator('.program__hero .sign-icon img');
-  const iconPath = await iconNode.count() > 0 ? await iconNode.getAttribute('src') : null;
+  const artNode = page.locator('.program__hero .artframe img');
+  const art = await artNode.count() === 1 ? await artNode.evaluate((image) => ({
+    src: image.getAttribute('src'),
+    current: new URL(image.currentSrc).pathname,
+    loading: image.getAttribute('loading'),
+    priority: image.getAttribute('fetchpriority'),
+    width: image.getAttribute('width'),
+    height: image.getAttribute('height'),
+    alt: image.getAttribute('alt'),
+  })) : null;
   check(
-    `${route.key} ${viewportKey}: hero uses the pastel zodiac asset`,
-    iconPath === `/assets/zodiac-icons/400/${route.sign}.webp`,
-    iconPath ?? 'missing',
+    `${route.key} ${viewportKey}: hero uses the sign art in the cinematic frame`,
+    art?.src === `/assets/sign-art/${route.sign}-1200.webp` && Boolean(art?.alt),
+    JSON.stringify(art),
   );
-  if (['daily', 'love', 'career'].includes(route.key)) {
-    const selectedIconPath = await iconNode.evaluate((image) => new URL(image.currentSrc).pathname);
-    check(
-      `${route.key} ${viewportKey}: LCP selects the smaller WebP derivative`,
-      selectedIconPath === `/assets/zodiac-icons/400/${route.sign}.webp`,
-      selectedIconPath,
-    );
-    check(
-      `${route.key} ${viewportKey}: LCP icon decodes with first paint`,
-      await iconNode.getAttribute('decoding') === 'sync',
-      await iconNode.getAttribute('decoding') ?? 'missing',
-    );
-  }
+  check(
+    `${route.key} ${viewportKey}: hero art loads first, at a reserved size`,
+    art?.loading === 'eager' && art?.priority === 'high' && art?.width === '1200' && art?.height === '800',
+    JSON.stringify(art),
+  );
+  check(
+    `${route.key} ${viewportKey}: hero art selects a published derivative`,
+    [`/assets/sign-art/${route.sign}-720.webp`, `/assets/sign-art/${route.sign}-1200.webp`].includes(art?.current ?? ''),
+    art?.current ?? 'missing',
+  );
 
   const signFeed = page.locator(
     `head link[rel="alternate"][type="application/rss+xml"][href="/feeds/horoscopes/${route.sign}.xml"]`,
@@ -507,10 +542,10 @@ async function inspectRenderedPage(page, route, viewportKey) {
 
   const skyStrip = page.locator('.program__sky');
   check(
-    `${route.key} ${viewportKey}: quiet sky strip has concise fact markers`,
+    `${route.key} ${viewportKey}: the sky behind the reading lists one to four planets`,
     await skyStrip.count() === 1
       && await skyStrip.locator('.program__sky-marker').count() >= 1
-      && await skyStrip.locator('.program__sky-marker').count() <= 2,
+      && await skyStrip.locator('.program__sky-marker').count() <= 4,
   );
   if (route.key === 'daily') {
     check(
@@ -542,25 +577,46 @@ async function inspectRenderedPage(page, route, viewportKey) {
     skyAnimation,
   );
 
-  const periodLinks = await page.locator('.program__periods a').evaluateAll((links) => links.map((link) => ({
-    text: (link.textContent ?? '').trim(),
+  const linkFacts = (links) => links.map((link) => ({
+    text: (link.querySelector('.program__more-label')?.textContent ?? link.textContent ?? '').trim(),
     href: link.getAttribute('href'),
     current: link.getAttribute('aria-current'),
-  })));
-  const expectedLinks = PERIODS.map(([label, suffix]) => ({
+  }));
+  const switchLinks = await page.locator('.program__periods a').evaluateAll(linkFacts);
+  const moreLinks = await page.locator('.program__more a').evaluateAll(linkFacts);
+  const periodLinks = [...switchLinks, ...moreLinks];
+  const expectedSwitch = SWITCH.map(([label, suffix]) => ({
     text: label,
     href: `/horoscopes/${route.sign}/${suffix ? `${suffix}/` : ''}`,
   }));
   check(
-    `${route.key} ${viewportKey}: period navigation exposes all seven canonical links`,
-    JSON.stringify(periodLinks.map(({ text, href }) => ({ text, href }))) === JSON.stringify(expectedLinks),
-    JSON.stringify(periodLinks),
+    `${route.key} ${viewportKey}: the period switch is Today, This week and This month`,
+    JSON.stringify(switchLinks.map(({ text, href }) => ({ text, href }))) === JSON.stringify(expectedSwitch),
+    JSON.stringify(switchLinks),
+  );
+  const reachable = new Set(periodLinks.map(({ href }) => href));
+  check(
+    `${route.key} ${viewportKey}: period navigation reaches all seven canonical periods`,
+    PERIOD_SUFFIXES.every((suffix) => reachable.has(`/horoscopes/${route.sign}/${suffix ? `${suffix}/` : ''}`)),
+    JSON.stringify([...reachable]),
   );
   check(
     `${route.key} ${viewportKey}: one period is marked current`,
     periodLinks.filter(({ current }) => current === 'page').length === 1
-      && periodLinks.find(({ current }) => current === 'page')?.text === route.active,
+      && periodLinks.find(({ current }) => current === 'page')?.text === route.active
+      && periodLinks.find(({ current }) => current === 'page')?.href === route.path,
     JSON.stringify(periodLinks.filter(({ current }) => current === 'page')),
+  );
+  const signRail = await page.locator('nav[aria-label="Switch sign"] a').evaluateAll((links) => links.map((link) => ({
+    href: link.getAttribute('href'),
+    current: link.getAttribute('aria-current'),
+  })));
+  check(
+    `${route.key} ${viewportKey}: the sign switch keeps the period for all twelve signs`,
+    signRail.length === 12
+      && signRail.every(({ href }) => href?.endsWith(`/${route.suffix ? `${route.suffix}/` : ''}`))
+      && signRail.filter(({ current }) => current === 'page').map(({ href }) => href).join() === route.path,
+    JSON.stringify(signRail),
   );
 
   const readingNode = page.locator('.program__reading');
@@ -598,6 +654,7 @@ async function inspectRenderedPage(page, route, viewportKey) {
       body: body.scrollWidth,
       periodClient: document.querySelector('.program__periods')?.clientWidth ?? 0,
       periodScroll: document.querySelector('.program__periods')?.scrollWidth ?? 0,
+      periodRight: document.querySelector('.program__periods')?.getBoundingClientRect().right ?? Infinity,
     };
   });
   check(
@@ -607,8 +664,8 @@ async function inspectRenderedPage(page, route, viewportKey) {
   );
   if (viewportKey === 'mobile') {
     check(
-      `${route.key} mobile: period strip contains its own overflow`,
-      layout.periodScroll > layout.periodClient,
+      `${route.key} mobile: the period switch fits the screen without scrolling`,
+      layout.periodScroll <= layout.periodClient + 1 && layout.periodRight <= layout.viewport,
       JSON.stringify(layout),
     );
   }
@@ -644,9 +701,12 @@ async function inspectNoJavaScript(browser, baseURL, route) {
       await page.locator('.program__sky').isVisible()
         && await page.locator('.program__sky-marker').count() >= 1,
     );
+    const noJsHrefs = new Set(await page.locator('.program__periods a, .program__more a')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('href'))));
     check(
       `${route.key} no-JavaScript: native period links remain available`,
-      await page.locator('.program__periods a').count() === PERIODS.length,
+      await page.locator('.program__periods a').count() === SWITCH.length
+        && PERIOD_SUFFIXES.every((suffix) => noJsHrefs.has(`/horoscopes/${route.sign}/${suffix ? `${suffix}/` : ''}`)),
     );
     const basis = page.locator('.program__basis');
     await basis.locator('summary').click();
@@ -690,7 +750,7 @@ async function inspectKeyboardAndDefaultMotion(browser, baseURL) {
       await page.locator('.program__basis').evaluate((node) => node.hasAttribute('open')),
     );
 
-    const tomorrow = page.locator('.program__periods a', { hasText: 'Tomorrow' });
+    const tomorrow = page.locator('.program__more a', { hasText: 'Tomorrow' });
     await tomorrow.focus();
     await Promise.all([
       page.waitForURL('**/horoscopes/aries/tomorrow/'),
