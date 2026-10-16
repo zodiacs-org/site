@@ -157,17 +157,20 @@ The playground's island and helpers are in `src/islands` and `src/lib`, which
 the Phase 1 capture digest covers, as are the files #766 changed, so CI took
 the 18 captures again.
 
-- **Committed captures.** Browser Evidence run 38952005658 took them on
-  `4e4e026c`, this branch with main `cb1e411f` merged in, with Chromium
-  149.0.7827.55 at 2026-10-16T19:07:28Z, for the 2026-10-16 edition, bound to
-  template source digest `e9abefa9…`. Its build, acceptance captures,
-  receipt, visual comparison, Lighthouse and explorer drive passed
+- **Committed captures.** Browser Evidence run 38966349900 took them on
+  `3833312a`, this branch's last code head, with main `cb1e411f` merged in,
+  with Chromium 149.0.7827.55 at 2026-10-16T21:05:05Z, for the 2026-10-16
+  edition, bound to template source digest `6338aed1…`. Its build, acceptance
+  captures, receipt, visual comparison, Lighthouse and explorer drive passed
   ([browser-evidence-provenance.json](browser-evidence-provenance.json) is the
   run's own record).
-- **Against the same browser before.** All 18 are identical, pixel for pixel,
-  to the captures run 38935927506 took on `38596f49` with the same Chromium
-  and edition, before #766 and the last two rounds of review: neither changed
-  a Phase 1 page.
+- **Against the same browser before.** Run 38952005658 took the captures on
+  `4e4e026c`, and they were identical, pixel for pixel, to those run 38935927506
+  took on `38596f49`, before #766 and the last two rounds of review. Against
+  `4e4e026c`'s, 17 of these are identical. `love-360.png` differs in 24 pixels
+  at the lower edge of the period tabs' labels (Daily to Monthly), a glyph
+  edge two runs of the same browser drew differently; it records the same
+  size and layout.
 - **Against main's captures.** #766 committed captures taken with Chromium
   155.0.8059.80, where CI pins 149.0.7827.55. Against them each capture
   differs in 7.38% to 54.60% of its pixels, as the two browser versions draw
