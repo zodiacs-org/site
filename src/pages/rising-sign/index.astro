@@ -1,32 +1,50 @@
 ---
 import Base from '../../layouts/Base.astro';
-import HeroCrop from '../../components/HeroCrop.astro';
+import ArtFrame from '../../components/ArtFrame.astro';
+import HorizonDiagram from '../../components/HorizonDiagram.astro';
+import PlanetGlyph from '../../components/PlanetGlyph';
 import ChartCalculator from '../../islands/ChartCalculator';
 import SignIcon from '../../components/SignIcon.astro';
-import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import { SIGNS } from '../../lib/signs';
+import { RISING } from '../../lib/interpretations';
+import {
+  RISING_AT,
+  RISING_DAY,
+  RISING_EXAMPLE,
+  RISING_LATER,
+  RISING_LONGEST,
+  RISING_SHORTEST,
+  clockLabel,
+  durationLabel,
+  traditionalRuler,
+} from '../../lib/rising-example';
 import '../../styles/calculator.css';
 
 const faq = [
   {
     q: 'What is a rising sign?',
-    a: 'Your rising sign, the ascendant, is the zodiac sign that was coming up over the eastern horizon at the moment you were born. It shapes first impressions: how strangers read you, the vibe you give off before anyone knows your sun sign. It also sets the layout of your entire chart’s houses.',
+    a: 'Your rising sign, also called the ascendant, is the zodiac sign that was coming up over the eastern horizon at the moment you were born. In astrology it describes first impressions: how strangers read you before they know your Sun sign. It also sets the layout of your chart’s twelve houses.',
   },
   {
     q: 'Why do I need my exact birth time?',
-    a: 'The ascendant moves through all twelve signs every 24 hours, a new sign roughly every two hours, sometimes faster. Even 15 minutes can matter near a boundary. Birth certificates are the gold standard; hospital records and family memory are next best.',
+    a: 'The ascendant moves through all twelve signs every 24 hours, a new sign roughly every two hours and sometimes faster. Near a sign change, even 15 minutes can matter. A birth certificate is the best source; hospital records and family memory come next.',
   },
   {
     q: 'What if my birth time is rounded, like exactly 7:00?',
-    a: 'Rounded times are common on birth records. If your computed rising sits within the first or last degree or two of a sign, treat the neighboring sign as a live possibility and read both. The one that describes how strangers see you is usually yours.',
+    a: 'Rounded times are common on birth records. If your result sits in the first or last degree or two of a sign, treat the neighbouring sign as a real possibility and read both. The one that sounds like how strangers see you is usually yours.',
   },
   {
     q: 'What is a chart ruler?',
-    a: 'The planet that rules your rising sign is called your chart ruler, and astrologers treat its sign and house as a major theme of your life. This calculator names yours automatically, using the traditional rulerships for consistency.',
+    a: 'The planet that rules your rising sign is your chart ruler. Astrologers treat its sign and house as a major theme of the chart. The calculator names yours, using the traditional rulerships for consistency.',
   },
   {
     q: 'Is the rising sign really that important?',
-    a: 'In chart reading, arguably the most important single point: it anchors the houses, so it decides which parts of life every other planet lands in. It’s also why two people with identical birthdays can have very differently shaped lives.',
+    a: 'In chart reading it is arguably the most important single point. It anchors the houses, so it decides which area of life every other planet falls in. It is also why two people born on the same day can have very differently shaped charts.',
+  },
+  {
+    q: 'How is the rising sign calculated?',
+    a: 'From the Earth’s rotation at the moment and place of your birth: local sidereal time, the tilt of the Earth’s axis, and some spherical trigonometry. As a check, the rising degree at sunrise matches the Sun’s own position. It all runs privately in your browser.',
+    link: { href: '/methodology/', label: 'Read the full methodology' },
   },
 ];
 
@@ -47,7 +65,50 @@ const jsonLd = [
       acceptedAnswer: { '@type': 'Answer', text: a },
     })),
   },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/' },
+      { '@type': 'ListItem', position: 2, name: 'Tools', item: 'https://zodiacs.org/tools/' },
+      { '@type': 'ListItem', position: 3, name: 'Rising sign calculator', item: 'https://zodiacs.org/rising-sign/' },
+    ],
+  },
 ];
+
+const example = RISING_AT;
+const later = RISING_LATER;
+/** The one-line manner of each rising, condensed from the calculator's own readings. */
+const RISING_LINE: Record<string, string> = {
+  aries: 'Momentum first: decisive, direct, already halfway out the door.',
+  taurus: 'Calm, solid and unhurried. People tend to trust it on sight.',
+  gemini: 'Quick, verbal and visibly curious. Strangers tell you things.',
+  cancer: 'Approachable and receptive, softer than you are: a safe place to land.',
+  leo: 'Warm and slightly luminous. The entrance gets noticed, and so does the exit.',
+  virgo: 'Composed, precise, quietly evaluating: the competent one in the room.',
+  libra: 'Agreeable and polished, with real steel under the diplomacy.',
+  scorpio: 'Private and magnetic. People feel noticed, and most of them like it.',
+  sagittarius: 'Open, funny, and about to suggest something.',
+  capricorn: 'Serious, capable and dry: the one who read the contract.',
+  aquarius: 'Interesting before friendly, with an original angle people remember.',
+  pisces: 'Gentle and a little hard to place. Your attention reads as empathy.',
+};
+
+/* The day strip: one band per rising sign, sized by its minutes. The phone
+   shows the same day as two half-day strips, so a band that crosses noon
+   appears in both, cut at noon. */
+const NOON = 720;
+const half = (from: number, to: number) => RISING_DAY
+  .filter((band) => band.end > from && band.start < to)
+  .map((band) => ({ ...band, start: Math.max(band.start, from), end: Math.min(band.end, to) }));
+const bandTitle = (band: { sign: { name: string }; start: number; end: number }) =>
+  `${band.sign.name} rising, ${clockLabel(band.start)} to ${clockLabel(band.end)}, ${band.end - band.start} minutes`;
+const isPinned = (slug: string) => slug === example.sign.slug || slug === later.sign.slug;
+const pct = (minutes: number, from = 0, span = 1440) => `${(((minutes - from) / span) * 100).toFixed(2)}%`;
+const AXIS = [0, 180, 360, 540, 720, 900, 1080, 1260, 1440];
+const shortestNames = RISING_SHORTEST.map((band) => band.sign.name);
+const shortestLine = `${shortestNames.length > 1 ? `${shortestNames.slice(0, -1).join(', ')} and ${shortestNames.at(-1)}` : shortestNames[0]} took ${durationLabel(RISING_SHORTEST[0].end - RISING_SHORTEST[0].start)}${shortestNames.length > 1 ? ' each' : ''}.`;
+const unevenLine = `${RISING_LONGEST.sign.name} took ${durationLabel(RISING_LONGEST.end - RISING_LONGEST.start)} to rise. ${shortestLine}`;
+const gap = later.minutes - example.minutes;
 ---
 <Base
   clientUi
@@ -58,125 +119,565 @@ const jsonLd = [
   imageAlt="Free rising sign calculator, Zodiacs.org"
   jsonLd={jsonLd}
 >
-  <section class="section--tight container">
-    <div class="tool-hero">
-      <h1 class="display">Find your rising sign.</h1>
-      <p>
-        The <a href="/learn/glossary/#ascendant">ascendant</a> is how the world first meets you: the sign climbing the
-        eastern horizon the moment you were born. It needs your birth time, and
-        it repays the precision.
-      </p>
-    </div>
+  <!-- 01 · The calculator first, with an example of what it gives back. -->
+  <section class="rs-tool">
+    <div class="kwrap rs-grid">
+      <div class="rs-main">
+        <nav class="rs-crumbs" aria-label="Breadcrumb"><a href="/tools/">Tools</a><span aria-hidden="true">/</span><span aria-current="page">Rising sign</span></nav>
+        <h1 class="rs-title">Find your rising sign.</h1>
+        <p class="klede rs-lede">The sign that was coming up on the eastern horizon the moment you were born. It describes how people first meet you, and it sets the shape of your whole chart.</p>
 
-    <ChartCalculator mode="rising" client:load />
-    <noscript>
-      <p>This rising sign calculator needs JavaScript. Enable it and reload with your birth date, exact time, and place to calculate your ascendant.</p>
-    </noscript>
-  </section>
+        <ChartCalculator mode="rising" client:load />
+        <noscript>
+          <p>This rising sign calculator needs JavaScript. Enable it and reload with your birth date, exact time, and place to calculate your ascendant.</p>
+        </noscript>
 
-  <section class="section--tight container container--narrow">
-    <div class="prose">
-      <HeroCrop crop="sign-ring" />
-      <h2>Why the clock matters this much</h2>
-      <p>
-        The Earth turns through the whole <a href="/learn/glossary/#zodiac">zodiac</a> every day, so the ascendant
-        sweeps all twelve signs in 24 hours, around two hours per sign, and
-        quicker than that for some signs at some latitudes. That's why the{' '}
-        <a href="/learn/glossary/#rising-sign">rising sign</a> is the first thing serious astrologers ask your birth time
-        for, and why we won't guess it without one.
-      </p>
-      <p>
-        Your rising sign also chooses your <em><a href="/learn/glossary/#chart-ruler">chart ruler</a></em>, the planet
-        that rules that sign, whose own placement becomes a headline of your
-        chart. The calculator names it for you; the full picture lives in{' '}
-        <a href="/birth-chart/">your complete birth chart</a>.
-      </p>
-      <EvidenceDisclosure
-        label="How the ascendant is calculated"
-        description="Earth rotation, birthplace, and the horizon"
-      >
-        <p>
-          The calculation uses the Earth’s rotation at your birth instant and
-          birthplace, including sidereal time, the obliquity of the{' '}
-          <a href="/learn/glossary/#ecliptic">ecliptic</a>, and spherical trigonometry.
-          Sunrise checks provide a practical validation against the Sun’s position.
+        <p class="rs-notime">
+          <span class="rs-notime__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 3.6a8.6 8.6 0 1 0 4.9 13.9A7 7 0 0 1 15.5 3.6z" /></svg></span>
+          <span>No exact time? The moon sign works from your birth date alone. <a href="/moon-sign/">Find your moon sign</a></span>
         </p>
-        <p class="evidence-disclosure__links"><a href="/methodology/">Read the full methodology →</a></p>
-      </EvidenceDisclosure>
+      </div>
+
+      <aside class="rs-example" aria-label="Example result">
+        <ArtFrame
+          class="rs-example__art"
+          sign={example.sign.slug}
+          sizes="(min-width: 960px) 540px, 100vw"
+          eager
+          focus="50% 64%"
+          spot="47% 56%"
+        />
+        <span class="pill rs-example__tag">What you get · example</span>
+        <div class="rs-example__body">
+          <div class="rs-example__head">
+            <SignIcon sign={example.sign.slug} size={68} loading="eager" class="rs-example__disc" />
+            <p class="rs-example__who"><b>Your rising sign</b>Born {RISING_EXAMPLE.date} · {example.clock} · {RISING_EXAMPLE.place}</p>
+          </div>
+          <div class="rs-example__sign"><h2 class="h-2">{example.sign.name} rising</h2><span class="rs-mono">{example.degree}</span></div>
+          <p class="rs-example__read">{RISING[example.sign.slug]}</p>
+          <div class="rs-example__rows">
+            <div>
+              <span class="rs-example__ri" aria-hidden="true"><PlanetGlyph body={example.ruler} size={15} /></span>
+              <span><b>Chart ruler: {example.ruler} in {example.rulerSign.name}.</b> <span class="rs-m">The planet steering your rising sign.</span></span>
+            </div>
+          </div>
+          <div class="rs-example__links">
+            <a class="textlink" href={`/rising-sign/${example.sign.slug}/`}>Read {example.sign.name} rising <span class="arr" aria-hidden="true">→</span></a>
+            <a class="textlink" href="/birth-chart/">See the full birth chart <span class="arr" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </aside>
     </div>
   </section>
 
-  <section class="section--tight container container--narrow">
-    <div class="section-head">
-      <h2>The twelve risings</h2>
-      <p>
-        Once the calculator names yours, read what it does to a chart:
-        the manner, the chart ruler, the whole cast of the houses.
-      </p>
+  <div class="kwrap"><hr class="rule" /></div>
+
+  <!-- 02 · Why the birth time matters, shown rather than described. -->
+  <section class="kwrap ksection rs-why-band">
+    <div class="rs-why">
+      <div>
+        <span class="kicker">Why we ask for the time</span>
+        <h2 class="h-2">The rising sign changes about every two hours.</h2>
+        <div class="rs-prose">
+          <p>The Earth turns once a day, so the eastern horizon passes through all twelve signs of the <a href="/learn/glossary/#zodiac">zodiac</a> every 24 hours. Your <a href="/learn/glossary/#rising-sign">rising sign</a> is whichever one was crossing it at the moment you were born.</p>
+          <p>The signs don’t take equal time. Depending on the sign and how far from the equator you were born, one can rise in just over an hour and another in two and a half. That is why we ask for your exact time, and why we never guess it.</p>
+        </div>
+        <p class="rs-tip">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2.5h7l3 3v12H5z" /><path d="M8 9h4M8 12h4" /></svg>
+          <span><b>Where to find your time:</b> a birth certificate is best, then hospital records, then family memory. If it was rounded to exactly 7:00, read the sign either side too.</span>
+        </p>
+      </div>
+      <div class="kpanel rs-horizon">
+        <HorizonDiagram asc={example.asc} />
+      </div>
     </div>
-    <div class="risings">
-      {SIGNS.map((s) => (
-        <a class="risings__chip" href={`/rising-sign/${s.slug}/`} style={`--sign:${s.hue}`}>
-          <SignIcon sign={s.slug} size={26} class="risings__disc" />
-          <span>{s.name} rising</span>
-        </a>
+
+    <!-- One day of rising signs: one strip on a wide screen, two half days on a phone. -->
+    <div class="rs-day rs-day--d">
+      <div class="rs-day__head">
+        <h3 class="h-3">One day in {RISING_EXAMPLE.place}, {RISING_EXAMPLE.date}</h3>
+        <p>Each band is one rising sign. Wider bands took longer to rise.</p>
+      </div>
+      <div class="rs-track">
+        <div class="rs-pin rs-pin--l" style={`left:${pct(example.minutes)}`}><span class="rs-pin__l"><b>{example.clock}</b>{example.sign.name} rising</span></div>
+        <div class="rs-pin rs-pin--r" style={`left:${pct(later.minutes)}`}><span class="rs-pin__l"><b>{later.clock}</b>{later.sign.name} rising</span></div>
+        <div class="rs-strip">
+          {RISING_DAY.map((band, index) => (
+            <span
+              class:list={['rs-strip__b', isPinned(band.sign.slug) && 'is-on', band.sign.slug === example.sign.slug && 'is-start']}
+              style={`flex:${band.end - band.start} 0 0;--c:${band.sign.hue}`}
+              title={bandTitle(band)}
+            >
+              {index > 0 && band.end - band.start >= 30 && <img src={`/assets/zodiac-icons/48/${band.sign.slug}.webp`} width="26" height="26" alt="" loading="lazy" decoding="async" />}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div class="rs-axis" aria-hidden="true">
+        {AXIS.map((minutes) => <span style={`left:${pct(minutes)}`}>{minutes === 1440 ? '12 am' : clockLabel(minutes).replace(':00', '')}</span>)}
+      </div>
+      <div class="rs-day__notes">
+        <div><SignIcon sign={example.sign.slug} size={32} /><span><b>{example.clock}: {example.sign.name} rising</b>Chart ruler {example.ruler}, in {example.rulerSign.name}.</span></div>
+        <div><SignIcon sign={later.sign.slug} size={32} /><span><b>{later.clock}: {later.sign.name} rising</b>Same day, same city, {gap} minutes later. Chart ruler {later.ruler}, in {later.rulerSign.name}.</span></div>
+        <div><span class="rs-n" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7.2" /><path d="M10 6v4l2.6 1.6" /></svg></span><span><b>Uneven by design</b>{unevenLine}</span></div>
+      </div>
+    </div>
+
+    <div class="rs-day rs-day--m">
+      <div class="rs-day__head">
+        <h3 class="h-3">One day in {RISING_EXAMPLE.place}, {RISING_EXAMPLE.date}</h3>
+        <p>Each band is one rising sign. Wider bands took longer to rise.</p>
+      </div>
+      {[[0, NOON, 'Midnight to noon'], [NOON, 1440, 'Noon to midnight']].map(([from, to, caption]) => (
+        <>
+          <p class="rs-sub">{caption}</p>
+          <div class:list={['rs-track', from !== 0 && 'rs-track--plain']}>
+            {from === 0 && (
+              <>
+                <div class="rs-pin rs-pin--l" style={`left:${pct(example.minutes, 0, NOON)}`}><span class="rs-pin__l"><b>{example.clock}</b>{example.sign.name} rising</span></div>
+                <div class="rs-pin rs-pin--r" style={`left:${pct(later.minutes, 0, NOON)}`}><span class="rs-pin__l"><b>{later.clock}</b>{later.sign.name}</span></div>
+              </>
+            )}
+            <div class="rs-strip">
+              {half(from as number, to as number).map((band) => (
+                <span
+                  class:list={['rs-strip__b', isPinned(band.sign.slug) && 'is-on', band.sign.slug === example.sign.slug && 'is-start']}
+                  style={`flex:${band.end - band.start} 0 0;--c:${band.sign.hue}`}
+                  title={bandTitle(band)}
+                >
+                  {band.end - band.start >= 30 && <img src={`/assets/zodiac-icons/48/${band.sign.slug}.webp`} width="20" height="20" alt="" loading="lazy" decoding="async" />}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div class="rs-axis" aria-hidden="true">
+            {[0, 180, 360, 540, 720].map((offset) => {
+              const minutes = (from as number) + offset;
+              return <span style={`left:${pct(offset, 0, NOON)}`}>{minutes === 1440 ? '12 am' : clockLabel(minutes).replace(':00', '')}</span>;
+            })}
+          </div>
+        </>
       ))}
+      <div class="rs-day__notes">
+        <div><SignIcon sign={later.sign.slug} size={32} /><span><b>{gap} minutes, a different sign</b>Born at {example.clock}: {example.sign.name} rising. Born at {later.clock} the same day: {later.sign.name} rising.</span></div>
+        <div><span class="rs-n" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7.2" /><path d="M10 6v4l2.6 1.6" /></svg></span><span><b>Uneven by design</b>{unevenLine}</span></div>
+      </div>
     </div>
   </section>
 
-  <section class="section--tight container container--narrow">
-    <div class="section-head"><h2>Questions, answered</h2></div>
-    <div class="faq">
-      {faq.map(({ q, a }) => (
-        <details class="faq__item">
-          <summary>{q}</summary>
-          <p>{a}</p>
-        </details>
-      ))}
+  <!-- 03 · What the result tells you. -->
+  <section class="kwrap rs-band">
+    <div class="rs-shows-wrap">
+      <div class="section-head">
+        <h2 class="h-2">What your rising sign shows</h2>
+        <p>Three things. The calculator gives you the first two straight away.</p>
+      </div>
+      <div class="rs-shows">
+        <div>
+          <span class="rs-tg" style="background:var(--sign-libra)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.5" /><path d="M5 20a7 7 0 0 1 14 0" /></svg></span>
+          <h3 class="h-4">How people first meet you</h3>
+          <p>The manner strangers notice before they know your Sun sign: how you walk into a room, and the first impression you leave.</p>
+        </div>
+        <div>
+          <span class="rs-tg" style="background:var(--sign-sagittarius)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" /><path d="M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3" /><path d="M9.5 14.5l1.2-3.8 3.8-1.2-1.2 3.8z" /></svg></span>
+          <h3 class="h-4">Your chart ruler</h3>
+          <p>The planet that rules your rising sign. Astrologers read its sign and house as one of the main themes of a chart.</p>
+        </div>
+        <div>
+          <span class="rs-tg" style="background:var(--sign-cancer)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.5" /><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18" /></svg></span>
+          <h3 class="h-4">The layout of your houses</h3>
+          <p>Your rising sign starts the <a href="/learn/glossary/#first-house">first house</a>, so it decides which area of life every other planet falls in. The full birth chart shows them all.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · The twelve rising guides, as cards. -->
+  <section class="kwrap rs-band">
+    <div class="section-head section-head--row">
+      <div>
+        <h2 class="h-2">The twelve risings</h2>
+        <p>Once you know yours, read what it does to a chart: the manner, the chart ruler, and how the houses fall.</p>
+      </div>
+      <p class="rs-rnote only-desktop">Rulers follow the traditional system, the same one the calculator uses. <a href="/learn/glossary/#chart-ruler">What is a chart ruler?</a></p>
+    </div>
+    <div class="rs-risings">
+      {SIGNS.map((sign) => {
+        const ruler = traditionalRuler(sign);
+        return (
+          <a class:list={['rs-rc', sign.slug === example.sign.slug && 'is-ex']} href={`/rising-sign/${sign.slug}/`} style={`--sign:${sign.hue}`}>
+            <span class="rs-rc__top">
+              <SignIcon sign={sign.slug} size={44} />
+              <span><b>{sign.name} <span class="rs-rc__r">rising</span></b><small>Ruler <PlanetGlyph body={ruler} size={12} /> {ruler}</small></span>
+            </span>
+            <p>{RISING_LINE[sign.slug]}</p>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- 05 · Keep going: the full birth chart, and the moon sign for people without a time. -->
+  <section class="kwrap rs-band">
+    <div class="rs-next">
+      <article class="rs-bc">
+        <div class="rs-bc__art"><img class="rs-bc__bg" src="/assets/hero/zodiacs-hero-poster.avif" width="1600" height="900" alt="The painted zodiac band with its pastel sign discs and the gilded sun, from the Zodiacs hero film" loading="lazy" decoding="async" /></div>
+        <div class="rs-bc__body">
+          <span class="kicker">Next step</span>
+          <h2 class="h-2">Your rising sign is one of three.</h2>
+          <p class="rs-bc__l">The free birth chart adds your Sun and Moon signs, every planet, and the twelve houses your rising sign sets up, with what each one means.</p>
+          <div class="rs-bc__list">
+            <div><SignIcon sign={example.sign.slug} size={26} />Rising sign, from this page</div>
+            <div><span class="rs-bc__x"><PlanetGlyph body="Sun" size={13} /></span>Sun sign, your core identity</div>
+            <div><span class="rs-bc__x"><PlanetGlyph body="Moon" size={13} /></span>Moon sign, how you feel</div>
+          </div>
+          <div class="btn-row">
+            <a class="btn btn--primary btn--lg" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb" aria-hidden="true">↗</span></a>
+          </div>
+          <p class="reassure">Same birth date, time and place. Private in your browser.</p>
+        </div>
+      </article>
+      <article class="kcard rs-ms">
+        <ArtFrame
+          class="rs-ms__art"
+          src="/assets/hero-crops/crescent-560.webp"
+          srcset="/assets/hero-crops/crescent-360.webp 360w, /assets/hero-crops/crescent-560.webp 560w"
+          sizes="(min-width: 1100px) 440px, 100vw"
+          width={560}
+          height={350}
+          alt="Gilded crescent moon on a dark painted ceiling"
+          spot="40% 40%"
+        />
+        <div class="rs-ms__body">
+          <span class="kicker">Sister tool</span>
+          <h3 class="h-3">Find your moon sign</h3>
+          <p>How you feel, and what settles you. It works from your birth date alone, and a time makes it exact.</p>
+          <a class="textlink" href="/moon-sign/">Moon sign calculator <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    </div>
+    <div class="rs-also">
+      <span class="rs-also__label">Also useful:</span>
+      <a class="pill" href="/big-three/">Big three card to share</a>
+      <a class="pill" href="/chart-twins/">Chart twins</a>
+      <a class="pill" href="/learn/glossary/#ascendant">Ascendant, in plain words</a>
+    </div>
+  </section>
+
+  <!-- 06 · Questions. -->
+  <section class="kwrap rs-band rs-faq">
+    <div class="qa">
+      <div>
+        <h2 class="h-2">Questions, answered</h2>
+        <p>Still curious? <a class="rs-inline" href="/methodology/">See how charts are calculated</a>, or <a class="rs-inline" href="/ask/" data-assistant-open>ask Guide</a>.</p>
+      </div>
+      <div class="kfaq">
+        {faq.map(({ q, a, link }, index) => (
+          <details open={index === 0}>
+            <summary>{q}</summary>
+            <p>{a}{link && <> <a href={link.href}>{link.label}</a>.</>}</p>
+          </details>
+        ))}
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
-  .tool-hero h1 {
-    margin: 0 0 16px;
+  .rs-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .rs-band { padding-bottom: clamp(64px, 8vw, 120px); }
+
+  /* ── The tool, with an example result beside it ── */
+  .rs-tool { position: relative; padding: clamp(8px, 2vw, 24px) 0 clamp(64px, 7vw, 104px); }
+  .rs-grid { display: grid; grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+  /* Once a result is on the page, the example steps aside. */
+  .rs-grid:has(.calc > :not(form)) { grid-template-columns: minmax(0, 1fr); }
+  .rs-grid:has(.calc > :not(form)) .rs-example { display: none; }
+  .rs-crumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; font-size: 13px; color: var(--faint); }
+  .rs-crumbs a { color: var(--muted); text-decoration: none; }
+  .rs-crumbs span[aria-hidden] { opacity: 0.6; }
+  .rs-title {
+    margin: 0;
     font-family: var(--font-serif);
-    font-size: var(--text-2xl);
     font-weight: 500;
-    letter-spacing: -0.005em;
-    line-height: 1.04;
-    font-variant-numeric: oldstyle-figures;
+    font-size: clamp(2.6rem, 1.7rem + 3.1vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
     text-wrap: balance;
   }
-  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-  .faq { display: grid; gap: 8px; }
-  .faq__item {
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-md);
-    background: var(--void-1);
-    padding: 4px 18px;
-  }
-  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
-  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  .rs-lede { margin-top: 16px; }
 
-  .risings { display: flex; flex-wrap: wrap; gap: 8px; }
-  .risings__chip {
-    display: inline-flex;
+  /* The calculator's form, dressed as the mockup's panel: date and time side
+     by side, the time note full width under them, then the birthplace. */
+  .rs-main :global(.calc) { margin-top: 30px; }
+  .rs-main :global(.calc > .shell) { max-width: none; }
+  .rs-main :global(.calc .calc__form.shell > .calc__core) {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 9px;
-    padding: 7px 14px 7px 8px;
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-full);
-    font-size: var(--text-sm);
-    color: var(--text-2);
-    text-decoration: none;
-    transition: color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+    gap: 12px 20px;
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, rgba(21, 25, 37, 0.86), rgba(15, 18, 26, 0.86));
+    box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
-  .risings__chip :global(.risings__disc) { border-radius: 50%; }
-  .risings__chip:hover {
-    color: var(--text);
-    border-color: color-mix(in oklab, var(--sign) 45%, transparent);
-    background: color-mix(in oklab, var(--sign) 8%, transparent);
+  .rs-main :global(.calc__core > *) { flex: 1 1 100%; }
+  .rs-main :global(.calc__fields) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 8px;
+    margin-bottom: 4px;
+  }
+  .rs-main :global(.calc__fields > .field:first-child) { grid-column: 1; grid-row: 1 / span 2; }
+  .rs-main :global(.calc__fields > .field:nth-child(2)) { display: contents; }
+  .rs-main :global(.calc__fields > .field:nth-child(2) > .field__labelrow) { grid-column: 2; grid-row: 1; }
+  .rs-main :global(.calc__fields > .field:nth-child(2) > .field__input) { grid-column: 2; grid-row: 2; }
+  .rs-main :global(.calc__fields > .field:nth-child(2) > .field__error) { grid-column: 1 / -1; }
+  .rs-main :global(.calc__fields > .field:nth-child(3)) { grid-column: 1 / -1; margin-top: 12px; }
+  .rs-main :global(.field__label) { min-height: 0; color: var(--ink-1); font-size: 0.875rem; }
+  .rs-main :global(.field__input) { height: 52px; border-radius: 14px; background: rgba(6, 7, 9, 0.55); }
+  .rs-main :global(#birth-time) { border-color: color-mix(in oklab, var(--sign-libra) 45%, transparent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--sign-libra) 7%, transparent); }
+  .rs-main :global(#birth-time-help) {
+    grid-column: 1 / -1;
+    position: relative;
+    margin-top: 6px;
+    padding: 14px 16px 14px 64px;
+    border: 1px solid color-mix(in oklab, var(--sign-libra) 20%, transparent);
+    border-radius: 14px;
+    background: color-mix(in oklab, var(--sign-libra) 6.5%, transparent);
+    color: var(--ink-1);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .rs-main :global(#birth-time-help::before) {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230b0d12' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='10' r='7.2'/%3E%3Cpath d='M10 6v4l2.6 1.6'/%3E%3C/svg%3E") center / 18px no-repeat,
+      var(--sign-libra);
+  }
+  .rs-main :global(#birth-time-help b) { color: var(--ink-0); font-weight: 600; }
+  .rs-main :global(#birth-time-help small) { display: block; margin-top: 3px; font-size: 13px; color: var(--muted); }
+  .rs-main :global(.calc__submit) { flex: none; min-height: 56px; padding: 12px 10px 12px 28px; font-size: 1.06rem; }
+  .rs-main :global(.calc__submit .orb) { width: 38px; height: 38px; }
+  .rs-main :global(.calc__privacy) { flex: 1 1 200px; margin: 0; font-size: 13px; color: var(--faint); }
+  .rs-main :global(.calc__guide) { margin: 0; }
+  .rs-notime { display: flex; align-items: center; gap: 12px; margin: 18px 0 0; padding-left: 4px; color: var(--muted); font-size: 0.9375rem; }
+  .rs-notime__ic { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--sign-pisces); color: #0b0d12; }
+  .rs-notime__ic svg { width: 15px; height: 15px; }
+  .rs-notime a { color: var(--ink-0); }
+
+  /* The example result */
+  .rs-example {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, rgba(21, 25, 37, 0.92), rgba(10, 12, 17, 0.92));
+    box-shadow: 0 40px 80px -48px rgba(0, 0, 0, 0.9);
+  }
+  .rs-example :global(.rs-example__art) { aspect-ratio: 16 / 9; border-radius: 0; }
+  .rs-example :global(.rs-example__art::after) { background: radial-gradient(ellipse 44% 62% at var(--spot), transparent 0 34%, rgba(6, 7, 9, 0.4) 72%, rgba(6, 7, 9, 0.82) 100%); }
+  .rs-example :global(.rs-example__art::before) { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, rgba(10, 12, 17, 0) 58%, rgba(17, 20, 30, 0.96) 100%); }
+  .rs-example__tag {
+    position: absolute;
+    z-index: 4;
+    top: 16px;
+    left: 16px;
+    border-color: rgba(238, 241, 247, 0.22);
+    background: rgba(10, 12, 17, 0.62);
+    color: var(--ink-0);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .rs-example__body { position: relative; z-index: 3; margin-top: -40px; padding: 0 28px 26px; }
+  .rs-example__head { display: flex; align-items: flex-end; gap: 16px; }
+  .rs-example__head :global(.rs-example__disc) { border-radius: 50%; box-shadow: 0 0 0 5px rgba(17, 20, 30, 1), 0 12px 30px -10px color-mix(in oklab, var(--sign) 45%, transparent); }
+  .rs-example__who { margin: 0; padding-bottom: 4px; color: var(--faint); font-size: 13px; line-height: 1.4; }
+  .rs-example__who b { display: block; color: var(--muted); font-weight: 550; }
+  .rs-example__sign { display: flex; align-items: baseline; gap: 14px; margin-top: 16px; }
+  .rs-example__sign .h-2 { font-size: clamp(2rem, 1.5rem + 1.4vw, 2.6rem); }
+  .rs-example__sign .rs-mono { color: var(--sign-libra); font-size: 0.95rem; }
+  .rs-example__read { max-width: 48ch; margin: 10px 0 0; color: var(--ink-1); font-size: 1rem; line-height: 1.6; }
+  .rs-example__rows { margin-top: 18px; border-top: 1px solid var(--hair-1); }
+  .rs-example__rows > div { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--hair-1); color: var(--ink-1); font-size: 0.9375rem; line-height: 1.45; }
+  .rs-example__ri { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--hair-2); border-radius: 50%; color: var(--ink-1); }
+  .rs-example__rows b { color: var(--ink-0); font-weight: 600; }
+  .rs-m { color: var(--muted); }
+  .rs-example__links { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 18px; }
+
+  /* ── Why the time matters ── */
+  .rs-why { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(32px, 6vw, 88px); align-items: center; }
+  .rs-why .kicker { margin-bottom: 4px; }
+  .rs-why .h-2 { max-width: 21ch; }
+  .rs-prose { margin-top: 20px; }
+  .rs-prose p { max-width: 62ch; margin: 0; color: var(--text-2); font-size: 1.0625rem; line-height: 1.72; }
+  .rs-prose p + p { margin-top: 1.05em; }
+  .rs-prose a { text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+  .rs-tip { display: flex; gap: 12px; max-width: 56ch; margin: 24px 0 0; padding-top: 18px; border-top: 1px solid var(--hair-1); color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .rs-tip svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--ink-1); }
+  .rs-tip b { color: var(--ink-0); font-weight: 600; }
+  .rs-horizon { padding: clamp(18px, 2.4vw, 30px) clamp(16px, 2.4vw, 30px) 22px; }
+
+  .rs-day { margin-top: clamp(40px, 5vw, 64px); }
+  .rs-day__head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 8px; }
+  .rs-day__head .h-3 { font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.7rem); }
+  .rs-day__head p { margin: 0; color: var(--muted); font-size: 0.9375rem; }
+  .rs-track { position: relative; padding-top: 64px; }
+  .rs-strip { display: flex; height: 58px; overflow: hidden; border: 1px solid var(--hair-2); border-radius: 14px; background: var(--void-2); }
+  .rs-strip__b { display: grid; place-items: center; min-width: 0; border-right: 1px solid rgba(6, 7, 9, 0.7); background: color-mix(in oklab, var(--c) 20%, #0F121A); }
+  .rs-strip__b:last-child { border-right: 0; }
+  .rs-strip__b.is-on { background: color-mix(in oklab, var(--c) 38%, #0F121A); }
+  .rs-strip__b img { border-radius: 50%; }
+  .rs-strip__b.is-start { justify-items: start; padding-left: 12px; }
+  .rs-pin { position: absolute; top: 0; bottom: -8px; z-index: 2; width: 0; }
+  .rs-pin::before { content: ''; position: absolute; left: -1px; top: 44px; bottom: 0; width: 2px; border-radius: 2px; background: var(--ink-0); }
+  .rs-pin::after { content: ''; position: absolute; left: -5px; top: 40px; width: 10px; height: 10px; border-radius: 50%; background: var(--ink-0); box-shadow: 0 0 0 4px var(--void-0); }
+  .rs-pin__l { position: absolute; top: 0; color: var(--muted); font-size: 13px; line-height: 1.3; white-space: nowrap; }
+  .rs-pin__l b { display: block; color: var(--ink-0); font-weight: 600; font-size: 14px; }
+  .rs-pin--l .rs-pin__l { right: 12px; text-align: right; }
+  .rs-pin--r .rs-pin__l { left: 12px; }
+  .rs-axis { position: relative; height: 34px; margin-top: 2px; color: var(--faint); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .rs-axis span { position: absolute; top: 10px; transform: translateX(-50%); white-space: nowrap; }
+  .rs-axis span::before { content: ''; position: absolute; left: 50%; top: -9px; width: 1px; height: 6px; background: var(--hair-3); }
+  .rs-axis span:first-child { transform: none; }
+  .rs-axis span:first-child::before { left: 0; }
+  .rs-axis span:last-child { transform: translateX(-100%); }
+  .rs-axis span:last-child::before { left: auto; right: 0; }
+  .rs-day__notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+  .rs-day__notes > div { display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px; border: 1px solid var(--hair-1); border-radius: 16px; background: rgba(198, 204, 218, 0.02); color: var(--muted); font-size: 0.9375rem; line-height: 1.5; }
+  .rs-day__notes b { display: block; color: var(--ink-0); font-weight: 600; }
+  .rs-n { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--hair-2); border-radius: 50%; color: var(--ink-1); }
+  .rs-n svg { width: 16px; height: 16px; }
+  .rs-day--m { display: none; }
+
+  /* ── What it shows ── */
+  .rs-shows-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(32px, 4vw, 56px); align-items: start; }
+  .rs-shows-wrap .section-head { margin-bottom: 0; }
+  .rs-shows { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .rs-shows > div { padding-top: 24px; border-top: 1px solid var(--hair-2); }
+  .rs-tg { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; color: #0b0d12; }
+  .rs-tg svg { width: 24px; height: 24px; }
+  .rs-shows .h-4 { margin-top: 20px; font-size: 1.15rem; }
+  .rs-shows p { max-width: 36ch; margin: 8px 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.6; }
+  .rs-shows p a { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+  /* ── Twelve risings ── */
+  .rs-risings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .rs-rc { display: block; padding: 18px 18px 20px; border: 1px solid var(--hair-1); border-radius: 18px; background: rgba(198, 204, 218, 0.02); color: inherit; text-decoration: none; transition: border-color var(--dur-1) var(--ease); }
+  .rs-rc__top { display: flex; align-items: center; gap: 12px; }
+  .rs-rc b { display: block; font-weight: 600; font-size: 1rem; line-height: 1.25; }
+  .rs-rc small { display: flex; align-items: center; gap: 4px; margin-top: 2px; color: var(--faint); font-size: 12.5px; }
+  .rs-rc small :global(.pglyph) { color: var(--muted); }
+  .rs-rc p { margin: 12px 0 0; color: var(--muted); font-size: 0.875rem; line-height: 1.5; }
+  .rs-rc.is-ex { border-color: color-mix(in oklab, var(--sign) 32%, transparent); background: color-mix(in oklab, var(--sign) 5%, transparent); }
+  @media (hover: hover) and (pointer: fine) {
+    .rs-rc:hover { border-color: color-mix(in oklab, var(--sign) 42%, transparent); }
+  }
+  .rs-rnote { max-width: 34ch; margin: 0; color: var(--faint); font-size: 0.9375rem; text-align: right; }
+  .rs-rnote a { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+  /* ── Keep going ── */
+  .rs-next { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 20px; }
+  .rs-bc { position: relative; min-height: 520px; overflow: hidden; border: 1px solid var(--hair-2); border-radius: var(--r-xl); background: linear-gradient(180deg, rgba(21, 25, 37, 0.92), rgba(10, 12, 17, 0.92)); isolation: isolate; }
+  .rs-bc__art { position: absolute; top: 0; right: 0; bottom: 0; z-index: 0; width: 60%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.5) 24%, #000 52%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.5) 24%, #000 52%); }
+  .rs-bc__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 66% 0%; filter: saturate(0.95) brightness(0.9); }
+  .rs-bc__art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(10, 12, 17, 0.75) 0%, rgba(10, 12, 17, 0) 34%); }
+  .rs-bc__body { position: relative; z-index: 1; display: flex; flex-direction: column; max-width: 430px; min-height: 100%; padding: clamp(28px, 3.4vw, 44px); }
+  .rs-bc__body .h-2 { margin-top: 4px; font-size: clamp(2rem, 1.5rem + 1.6vw, 2.75rem); }
+  .rs-bc__l { max-width: 35ch; margin: 14px 0 0; color: var(--ink-1); font-size: 1.0625rem; line-height: 1.55; }
+  .rs-bc__list { display: grid; gap: 10px; margin-top: 20px; }
+  .rs-bc__list div { display: flex; align-items: center; gap: 12px; color: var(--ink-1); font-size: 0.9375rem; }
+  .rs-bc__x { display: grid; place-items: center; width: 26px; height: 26px; border: 1px dashed var(--hair-3); border-radius: 50%; background: rgba(6, 7, 9, 0.5); color: var(--ink-1); }
+  .rs-bc .btn-row { margin-top: auto; padding-top: 28px; }
+  .rs-bc .reassure { margin-top: 12px; color: var(--ink-2); }
+  .rs-ms { display: flex; flex-direction: column; overflow: hidden; padding: 0; border-radius: var(--r-xl); }
+  .rs-ms :global(.rs-ms__art) { aspect-ratio: 16 / 9; border-radius: 0; }
+  .rs-ms__body { display: flex; flex: 1; flex-direction: column; padding: 22px 28px 28px; }
+  .rs-ms__body .kicker { font-size: 1.02rem; }
+  .rs-ms__body .h-3 { margin-top: 2px; }
+  .rs-ms__body p { max-width: 40ch; margin: 10px 0 18px; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .rs-ms__body .textlink { align-self: flex-start; margin-top: auto; }
+  .rs-also { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 18px; }
+  .rs-also__label { margin-right: 4px; color: var(--muted); font-size: 0.9375rem; }
+
+  .rs-inline { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+  @media (max-width: 1100px) {
+    .rs-risings { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .rs-next { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 960px) {
+    .rs-grid { grid-template-columns: minmax(0, 1fr); }
+    .rs-example { max-width: 620px; }
+    .rs-why { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .rs-crumbs { margin-bottom: 12px; }
+    .rs-title { font-size: 2.55rem; line-height: 1.02; }
+    .rs-lede { margin-top: 12px; font-size: 1.0625rem; }
+    .rs-main :global(.calc) { margin-top: 22px; }
+    .rs-main :global(.calc .calc__form.shell > .calc__core) { padding: 18px 16px 20px; border-radius: 24px; }
+    .rs-main :global(.calc__fields) { column-gap: 10px; }
+    .rs-main :global(.field__input) { height: 50px; padding: 0 12px; font-size: 0.9375rem; }
+    .rs-main :global(#birth-time-help) { padding: 12px 14px 12px 56px; font-size: 0.875rem; }
+    .rs-main :global(#birth-time-help::before) { left: 14px; top: 12px; width: 30px; height: 30px; }
+    .rs-main :global(.calc__submit) { flex: 1 1 100%; }
+    .rs-main :global(.calc__privacy) { text-align: center; }
+    .rs-notime { align-items: flex-start; font-size: 0.875rem; }
+    .rs-example { border-radius: 24px; }
+    .rs-example__body { padding: 0 20px 22px; }
+    .rs-example__head :global(.rs-example__disc) { width: 60px; }
+    .rs-example__sign { margin-top: 14px; }
+    .rs-example__sign .h-2 { font-size: 2.1rem; }
+    .rs-example__read { font-size: 0.9375rem; }
+    .rs-example__rows > div { font-size: 0.875rem; }
+    .rs-example__links { flex-direction: column; align-items: flex-start; }
+    .rs-why .h-2 { max-width: none; }
+    .rs-horizon { padding: 14px 4px 16px; }
+    .rs-day--d { display: none; }
+    .rs-day--m { display: block; }
+    .rs-day__head { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .rs-sub { margin: 18px 0 0; color: var(--ink-1); font-size: 13px; font-weight: 600; }
+    .rs-track { padding-top: 54px; }
+    .rs-track--plain { padding-top: 8px; }
+    .rs-strip { height: 48px; border-radius: 12px; }
+    .rs-strip__b.is-start { padding-left: 7px; }
+    .rs-pin::before { top: 38px; }
+    .rs-pin::after { top: 34px; }
+    .rs-pin__l { font-size: 12px; }
+    .rs-pin__l b { font-size: 13px; }
+    .rs-axis { font-size: 11.5px; }
+    .rs-day__notes { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .rs-day__notes > div { padding: 14px 16px; font-size: 0.875rem; }
+    .rs-shows-wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .rs-shows { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .rs-shows > div { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 16px; padding: 20px 0; border-top: 1px solid var(--hair-1); }
+    .rs-tg { grid-row: span 2; width: 44px; height: 44px; }
+    .rs-tg svg { width: 22px; height: 22px; }
+    .rs-shows .h-4 { margin-top: 0; font-size: 1.05rem; }
+    .rs-shows p { margin-top: 4px; font-size: 0.875rem; }
+    .rs-risings { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .rs-rc { padding: 14px 12px; border-radius: 16px; }
+    .rs-rc__top { gap: 10px; }
+    .rs-rc__top :global(.sign-icon) { width: 36px; }
+    .rs-rc b { font-size: 0.9375rem; }
+    .rs-rc__r, .rs-rc p { display: none; }
+    .rs-rc small { font-size: 12px; }
+    .rs-bc { display: flex; flex-direction: column; min-height: 0; border-radius: 24px; }
+    .rs-bc__art { position: relative; width: auto; aspect-ratio: 16 / 10; -webkit-mask-image: linear-gradient(0deg, transparent 0%, #000 45%); mask-image: linear-gradient(0deg, transparent 0%, #000 45%); }
+    .rs-bc__art::after { display: none; }
+    .rs-bc__bg { object-position: 58% 0%; }
+    .rs-bc__body { max-width: none; min-height: 0; margin-top: -24px; padding: 0 20px 24px; }
+    .rs-bc .btn-row { padding-top: 24px; }
+    .rs-bc .btn-row .btn { width: 100%; }
+    .rs-ms { border-radius: 24px; }
+    .rs-ms__body { padding: 18px 20px 22px; }
+    .rs-also { gap: 8px; }
   }
 </style>

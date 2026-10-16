@@ -2052,7 +2052,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               }}
               showUnknownTime={mode !== 'rising'}
               requireKnownTime
-              timeHelp={mode === 'rising' ? t(locale, 'risingTimeHelp') : !timeKnown
+              timeHelp={mode === 'rising' ? locale === 'en' ? (
+                <>
+                  <b>Your time matters here.</b> The rising sign changes about every two hours, so even 15 minutes can change the answer.{' '}
+                  <small>Your birth certificate is the best source.</small>
+                </>
+              ) : t(locale, 'risingTimeHelp') : !timeKnown
                 ? mode === 'moon' && locale === 'en'
                   ? 'Without a birth time, we show a reference position. Your Moon sign may be uncertain.'
                   : t(locale, 'chartTimeHelp')

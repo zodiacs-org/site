@@ -2754,6 +2754,8 @@
     {"path":"src/pages/race/index.astro","text":"No cookies for tracking, no names or accounts.","claim":"priv.no-ads-tracking"},
     {"path":"src/pages/retrogrades/index.astro","text":"IANA Time Zone Database","exempt":"navigation"},
     {"path":"src/pages/rising-sign/[sign].astro","text":"Computed on your device; your birth details are not sent anywhere.","claim":"priv.on-device"},
+    {"path":"src/pages/rising-sign/index.astro","text":"It all runs privately in your browser.","claim":"priv.on-device"},
+    {"path":"src/pages/rising-sign/index.astro","text":"Private in your browser.","claim":"priv.on-device"},
     {"path":"src/pages/ru/birth-chart/index.astro","text":"Если время неизвестно, мы используем 12:00 местного гражданского времени как ориентир для положений и не показываем асцендент, углы и дома.","claim":"time.unknown-time"},
     {"path":"src/pages/ru/birth-chart/index.astro","text":"Исторические изменения часов с 1970 года берутся из истории IANA, предоставленной браузером или системой устройства, а более ранние — из зафиксированного выпуска базы IANA вместе со старыми записями, которые база хранит отдельно для мест, чьи часы позже совпали с часами другого города; её составители считают эти записи менее надёжными.","claim":"time.pinned-history"},
     {"path":"src/pages/ru/birth-chart/index.astro","text":"Положения планет рассчитываются астрономическим движком и сверяются с эталонными данными NASA JPL с точностью до сотых долей градуса.","claim":"acc.jpl-gate"},

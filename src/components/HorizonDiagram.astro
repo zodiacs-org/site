@@ -1,0 +1,138 @@
+---
+/**
+ * The zodiac wheel cut by the horizon: the signs above the line have already
+ * risen, the ones below are still to rise, and the sign on the eastern
+ * horizon is the rising sign. Drawn the way the chart wheel is, with the
+ * ascendant at nine o'clock and the zodiac running counterclockwise, from
+ * one real ascendant. Static SVG, no script.
+ */
+import { SIGNS, signForLongitude } from '../lib/signs';
+
+interface Props {
+  /** Ecliptic longitude of the ascendant, in degrees. */
+  asc: number;
+  class?: string;
+}
+
+const { asc, class: className } = Astro.props;
+const rising = signForLongitude(asc);
+const next = SIGNS[(SIGNS.findIndex((sign) => sign.slug === rising.slug) + 1) % 12];
+
+const R_OUT = 232;
+const R_IN = 178;
+const R_DISC = (R_OUT + R_IN) / 2;
+const at = (lon: number, r: number) => {
+  const theta = ((180 + (lon - asc)) * Math.PI) / 180;
+  return { x: r * Math.cos(theta), y: -r * Math.sin(theta) };
+};
+const f = (n: number) => n.toFixed(2);
+const segment = (from: number) => {
+  const a = at(from, R_OUT);
+  const b = at(from + 30, R_OUT);
+  const c = at(from + 30, R_IN);
+  const d = at(from, R_IN);
+  return `M${f(a.x)},${f(a.y)} A${R_OUT},${R_OUT} 0 0 0 ${f(b.x)},${f(b.y)} L${f(c.x)},${f(c.y)} A${R_IN},${R_IN} 0 0 1 ${f(d.x)},${f(d.y)} Z`;
+};
+const signs = SIGNS.map((sign, index) => ({
+  sign,
+  path: segment(index * 30),
+  disc: at(index * 30 + 15, R_DISC),
+  isRising: sign.slug === rising.slug,
+}));
+const risingDisc = signs.find((item) => item.isRising)!.disc;
+const ticks = Array.from({ length: 72 }, (_, index) => {
+  const lon = index * 5;
+  const inner = at(lon, R_IN);
+  const outer = at(lon, R_IN + (index % 2 === 0 ? 7 : 4));
+  return { x1: f(inner.x), y1: f(inner.y), x2: f(outer.x), y2: f(outer.y) };
+});
+/* A fixed scatter of faint stars in the sky above the line. */
+const STARS: [number, number, number, number][] = [
+  [94.2, -237.5, 1.13, 0.3], [-275.8, -132.7, 0.73, 0.32], [-268.4, -233.1, 1.04, 0.44], [-234.7, -201.2, 1.2, 0.48],
+  [297.2, -243.8, 1.39, 0.27], [-222, -226.6, 0.95, 0.44], [-274.8, -205.4, 1.24, 0.32], [-116, -113.9, 1.06, 0.28],
+  [15.7, -44.1, 1.28, 0.27], [299.6, -226.5, 1.03, 0.42], [-217.2, -137.2, 0.73, 0.39], [234.3, -179.4, 1.26, 0.37],
+  [49.9, -145.1, 1.37, 0.48], [-16.2, -94.9, 0.75, 0.4], [91.8, -15.7, 1.36, 0.27], [-71.3, -93.9, 0.72, 0.33],
+  [-207.1, -226.8, 0.75, 0.43], [-231.3, -195.3, 1.01, 0.46], [-261.7, -146.7, 1.14, 0.46], [-88.1, -41.9, 1.47, 0.23],
+  [-202, -199.1, 0.89, 0.34], [-309.4, -154, 1, 0.36], [282.7, -88.6, 1.11, 0.38], [109.9, -242, 1.42, 0.43],
+  [-247.4, -102.1, 0.75, 0.2], [-181.7, -215.9, 0.97, 0.2], [-311.9, -218.5, 0.78, 0.3], [-296.1, -44.3, 1.19, 0.23],
+  [-21.2, -138.4, 0.77, 0.21],
+];
+const id = `hz-${rising.slug}`;
+const label = `Diagram: the zodiac wheel cut by your horizon. ${rising.name} sits on the eastern horizon, so ${rising.name} is rising. Signs above the line have already risen; signs below are still to rise.`;
+---
+<figure class:list={['horizon-figure', className]}>
+  <svg class="horizon" viewBox="-320 -262 640 392" role="img" aria-label={label} style={`--rise:${rising.hue}`}>
+    <defs>
+      <linearGradient id={`${id}-fade`} x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.42" />
+        <stop offset="1" stop-color="#fff" stop-opacity="0" />
+      </linearGradient>
+      <mask id={`${id}-mask`} maskUnits="userSpaceOnUse" x="-320" y="-262" width="640" height="392">
+        <rect x="-320" y="-262" width="640" height="262" fill="#fff" />
+        <rect x="-320" y="0" width="640" height="130" fill={`url(#${id}-fade)`} />
+      </mask>
+      <radialGradient id={`${id}-glow`}>
+        <stop offset="0" stop-color={rising.hue} stop-opacity="0.42" />
+        <stop offset="0.55" stop-color={rising.hue} stop-opacity="0.12" />
+        <stop offset="1" stop-color={rising.hue} stop-opacity="0" />
+      </radialGradient>
+      <marker id={`${id}-arrow`} viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M1 1.5 L7 5 L1 8.5" fill="none" stroke="#C6CCDA" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+      </marker>
+    </defs>
+    {STARS.map(([cx, cy, r, opacity]) => <circle cx={cx} cy={cy} r={r} fill="#C6CCDA" fill-opacity={opacity} />)}
+    <g mask={`url(#${id}-mask)`}>
+      <circle r={R_OUT} fill="rgba(10,12,17,0.55)" stroke="rgba(198,204,218,0.24)" />
+      {signs.map(({ sign, path, disc, isRising }) => (
+        <>
+          <path d={path} fill={sign.hue} fill-opacity={isRising ? 0.2 : 0.07} stroke="rgba(198,204,218,0.16)" />
+          {!isRising && <image href={`/assets/zodiac-icons/48/${sign.slug}.webp`} x={f(disc.x - 17)} y={f(disc.y - 17)} width="34" height="34" />}
+        </>
+      ))}
+      {ticks.map((tick) => <line {...tick} stroke="rgba(198,204,218,0.2)" />)}
+      <circle r={R_IN} fill="none" stroke="rgba(198,204,218,0.2)" />
+      <circle r="96" fill="none" stroke="rgba(198,204,218,0.07)" />
+    </g>
+    <path d="M-213.89,144.27 A258,258 0 0 1 -239.21,-96.65" fill="none" stroke="rgba(198,204,218,0.55)" stroke-width="1.3" stroke-linecap="round" marker-end={`url(#${id}-arrow)`} />
+    <line x1="-316" y1="0" x2="316" y2="0" stroke="rgba(238,241,247,0.62)" stroke-width="1.3" />
+    <circle r="9" fill="rgba(238,241,247,0.08)" />
+    <circle r="4" fill="#EEF1F7" />
+    <circle cx={f(risingDisc.x)} cy={f(risingDisc.y)} r="58" fill={`url(#${id}-glow)`} />
+    <circle cx={f(risingDisc.x)} cy={f(risingDisc.y)} r="33" fill="none" stroke={rising.hue} stroke-opacity="0.75" stroke-width="1.4" />
+    <image href={`/assets/zodiac-icons/128/${rising.slug}.webp`} x={f(risingDisc.x - 28)} y={f(risingDisc.y - 28)} width="56" height="56" />
+    <text class="hz-side hz-side--east" x="-316" y="24">East</text>
+    <text class="hz-side" x="316" y="24" text-anchor="end">West</text>
+    <text class="hz-asc" x="-162" y="-12">Ascendant</text>
+    <text class="hz-place" x="0" y="28" text-anchor="middle">Your birthplace</text>
+    <text class="hz-zone" x="0" y="-122" text-anchor="middle">already risen</text>
+    <text class="hz-zone hz-zone--below" x="0" y="86" text-anchor="middle">still to rise</text>
+  </svg>
+  <figcaption>The zodiac wheel cut by the horizon at your birthplace. {rising.name} is crossing the eastern horizon, so {rising.name} is rising. As the Earth turns, {next.name} climbs into its place.</figcaption>
+</figure>
+
+<style>
+  .horizon-figure { margin: 0; }
+  .horizon { display: block; width: 100%; height: auto; }
+  .horizon text { font-family: var(--font-sans); }
+  .hz-side { font-size: 13px; font-weight: 600; fill: var(--ink-2); }
+  .hz-side--east { fill: var(--ink-0); }
+  .hz-asc { font-size: 13px; font-weight: 600; fill: var(--ink-1); }
+  .hz-place { font-size: 12.5px; fill: var(--ink-2); }
+  .horizon .hz-zone { font-family: var(--font-serif); font-style: italic; font-size: 19px; fill: var(--ink-2); }
+  .horizon .hz-zone--below { fill: var(--ink-3); }
+  figcaption {
+    max-width: 52ch;
+    margin: 12px auto 0;
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.5;
+    text-align: center;
+  }
+  /* On a phone the drawing scales down, so its labels scale back up. */
+  @media (max-width: 760px) {
+    .hz-side, .hz-asc { font-size: 22.8px; }
+    .hz-place { font-size: 21.9px; }
+    .horizon .hz-zone { font-size: 33.2px; }
+    figcaption { padding-inline: 14px; }
+  }
+</style>
