@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import examples from './compute-api/examples.json';
-import { COMPUTE_ENDPOINTS } from './compute-api/constants';
+import { COMPUTE_ENDPOINTS, MAX_BODY_BYTES } from './compute-api/constants';
 import { REFUSAL_EXAMPLES, SUCCESS_EXAMPLES } from './compute-api/examples';
 import { receiptDigest } from '../lib/receipt-digest';
 import {
@@ -40,19 +40,23 @@ describe('the playground\'s examples', () => {
 });
 
 describe('the code the playground shows', () => {
-  it('sends the request in five languages, each to the endpoint with the compact body', () => {
+  it('sends the request in five languages, each to the endpoint with the text as it stands', () => {
     const body = JSON.stringify(SUCCESS_EXAMPLES.chart.utc.body, null, 2);
     const samples = codeSamples('chart', body);
     expect(Object.keys(samples)).toEqual([...LANGUAGES]);
-    const compact = JSON.stringify(SUCCESS_EXAMPLES.chart.utc.body);
     for (const language of LANGUAGES) {
       expect(samples[language], language).toContain('https://zodiacs.org/api/v1/chart');
     }
-    expect(samples.curl).toContain(`--data-raw '${compact}'`);
-    expect(samples.javascript).toContain(`body: ${JSON.stringify(compact)},`);
-    expect(samples.python).toContain(`body = ${JSON.stringify(compact)}`);
-    expect(samples.swift).toContain(`Data(#"${compact}"#.utf8)`);
-    expect(samples.ruby).toContain(`body = '${compact}'`);
+    expect(samples.curl).toContain(`--data-raw '${body}'`);
+    expect(samples.javascript).toContain(`body: ${JSON.stringify(body)},`);
+    expect(samples.python).toContain(`body = ${JSON.stringify(body)}`);
+    expect(samples.swift).toContain(`Data(#"${body.replaceAll('\n', '\\#n')}"#.utf8)`);
+    expect(samples.ruby).toContain(`body = '${body}'`);
+  });
+
+  it('keeps the whitespace that takes a body past the size the API measures before it reads one', () => {
+    const padded = `${JSON.stringify(SUCCESS_EXAMPLES.chart.utc.body)}${' '.repeat(MAX_BODY_BYTES)}`;
+    expect(codeSamples('chart', padded).curl).toContain(`--data-raw '${padded}'`);
   });
 
   it('quotes a body that holds the quoting characters of each language', () => {

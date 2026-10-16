@@ -327,6 +327,20 @@ async function drive(baseURL) {
     })();
     check('when the examples do not load, a link that carries its request still opens it, ready to send', latitude === 40.4168 && usable.every((disabled) => disabled === false), { body: failed.body, usable });
 
+    // The code and the documented answer follow the request as it stands: an example padded past the size the API
+    // measures before it reads a body is refused as sent, the code sends the padding too, and no documented answer
+    // applies (Codex's fourth review).
+    await openRequest(page, baseURL, '?example=chart.utc');
+    const paddedText = `${JSON.stringify(chart.body)}${' '.repeat(16_384)}`;
+    await page.locator('[data-request-body]').fill(paddedText);
+    await pause();
+    await page.locator('[data-send]').click();
+    await page.locator('[data-answer="hosted"] [data-status]').waitFor({ timeout: 30_000 });
+    const padded = await readPage(page);
+    await page.locator('[data-language="curl"]').click();
+    const paddedCode = (await page.locator('[data-code="curl"]').textContent()).includes(paddedText);
+    check('an example padded past the size limit is refused as sent, its code sends the padding too, and no documented answer applies', padded.hosted === '413' && padded.documentedHosted === null && paddedCode && !padded.link.includes('example='), { hosted: padded.hosted, documentedHosted: padded.documentedHosted, paddedCode, link: padded.link });
+
     // An answer is shown only beside the request that produced it (Codex's first finding on #767).
     await openRequest(page, baseURL, '?example=chart.utc');
     let lateAnswered = false;

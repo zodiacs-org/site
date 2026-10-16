@@ -38,7 +38,8 @@ from it".
   it is `cite.receipt`.
 - **Code in five languages.** cURL, JavaScript, Python, Swift and Ruby, each
   with its standard library, for the request as it stands. Each sends exactly
-  the text the page shows: cURL with `--data-raw`, since `--data` would upload
+  the text the page shows, its layout with it, since the API measures a body
+  before it reads one: cURL with `--data-raw`, since `--data` would upload
   the file a text starting with `@` names; Swift's raw string with more hashes
   than any run of them after a quote or a backslash, so `\#(` is never an
   interpolation, and its control characters escaped; Ruby's carriage returns
@@ -73,8 +74,12 @@ from it".
   server that keeps what it receives, and it receives exactly that text: one
   starts with `@` and holds each language's quotes, escapes and
   interpolations, Swift's delimiters, line breaks, a tab, U+0001, DEL and text
-  beyond ASCII; the other holds `\#(` with no quote before it. With the code
-  as it was before Codex's third review, cURL fails first. (No shell command
+  beyond ASCII; the other holds `\#(` with no quote before it. A JSON text
+  arrives with its layout, and a documented request padded past the 16,384
+  bytes the API measures is refused with 413 in every language, as the
+  page's own request is. With the code as it was before Codex's third
+  review, cURL fails first; before its fourth, the padded request is
+  answered 200, and the JSON arrives compacted. (No shell command
   line can carry a NUL, so that one character is not offered.)
 - **The helpers** (`src/lib/developer-playground.test.ts`):
   - `examples.json` offers every documented request with its documented
@@ -98,7 +103,7 @@ their evidence.
 `node tests/developer-playground-drive.mjs` drove a build of this branch in
 Chromium on 2026-10-16
 ([drive-local.json](drive-local.json)). The API was answered by the function's
-own bundle, `api/_compute/compute.mjs`. 52 of 52 checks passed:
+own bundle, `api/_compute/compute.mjs`. 53 of 53 checks passed:
 
 - **An agent's path.** For each of the 17 requests, the Markdown twin lists it
   with its cURL request (`--data-raw`), and the API's answer to that body
@@ -133,9 +138,12 @@ own bundle, `api/_compute/compute.mjs`. 52 of 52 checks passed:
     the request the page opens with never replaces one someone has started;
     then it is the example the link names. If the examples do not load, a
     link that carries its request still opens it, ready to send.
-  - With the build as it was before Codex's third review, 32 of 52 checks
-    pass: those three fail, and so do the 17 agent checks, whose twin still
-    wrote `--data`.
+  - With the build as it was before Codex's third review, 32 of the 52 checks
+    the drive had then pass: those three fail, and so do the 17 agent checks,
+    whose twin still wrote `--data`.
+  - An example padded past the size limit is refused as sent, its code sends
+    the padding too, and no documented answer applies to it. With the build
+    as it was before Codex's fourth review, that check fails (52 of 53).
   - At 375 px, with both answers and their comparison on the page, nothing
     scrolls sideways. The first run caught a 639 px overflow from the example
     list, which this page's own field styles fixed.

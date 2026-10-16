@@ -1,6 +1,6 @@
 {
   "baseUrl": "local build",
-  "checkedAt": "2026-10-16T18:49:08.924Z",
+  "checkedAt": "2026-10-16T20:45:01.423Z",
   "results": [
     {
       "name": "examples.json offers the documented requests and the refusals a body provokes",
@@ -611,6 +611,16 @@
           false,
           false
         ]
+      }
+    },
+    {
+      "name": "an example padded past the size limit is refused as sent, its code sends the padding too, and no documented answer applies",
+      "ok": true,
+      "detail": {
+        "hosted": "413",
+        "documentedHosted": null,
+        "paddedCode": true,
+        "link": "http://127.0.0.1:4347/developers/playground/?endpoint=chart"
       }
     },
     {

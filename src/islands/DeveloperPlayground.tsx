@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { COMPUTE_ENDPOINTS, computePath, type ComputeEndpoint } from '../lib/compute-api/constants';
+import { COMPUTE_ENDPOINTS, MAX_BODY_BYTES, computePath, type ComputeEndpoint } from '../lib/compute-api/constants';
 import {
   LANGUAGES,
   LANGUAGE_NAMES,
@@ -201,9 +201,11 @@ export default function DeveloperPlayground() {
   const ready = examples !== null || loadProblem !== null;
 
   const example = useMemo(() => examples?.find((candidate) => candidate.id === exampleId) ?? null, [examples, exampleId]);
-  // The documented answer applies while the request is still the example's, whatever its layout.
+  // The documented answer applies while the request is still the example's, whatever its layout, unless the layout
+  // alone takes it past the size the API measures before it reads a body.
   const documented = example && example.endpoint === endpoint
     && compactBody(text) === compactBody(typeof example.body === 'string' ? example.body : JSON.stringify(example.body))
+    && new TextEncoder().encode(text).byteLength <= MAX_BODY_BYTES
     ? example : null;
   const samples = useMemo(() => codeSamples(endpoint, text), [endpoint, text]);
   // The page renders on the server too, where there is no window: links name zodiacs.org until the browser takes over.

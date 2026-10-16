@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { COMPUTE_FUNCTION_PATH, COMPUTE_ROUTE_PARAM } from '../../src/lib/compute-api/constants';
+import { COMPUTE_FUNCTION_PATH, COMPUTE_ROUTE_PARAM, MAX_BODY_BYTES } from '../../src/lib/compute-api/constants';
 import { createComputeApiHandler } from '../../src/lib/compute-api/handler';
 import * as localTime from '../../src/lib/compute-api/local-time-source';
 import { LANGUAGES, codeSamples, type Language } from '../../src/lib/developer-playground';
@@ -79,6 +79,18 @@ describe('the code the playground shows', () => {
         expect(JSON.parse(stdout), `${language} ${example.id}`).toEqual(expected.json);
       }
     }
+    // A body past the size the API measures before it reads one, only because of its whitespace: the code sends it as
+    // it stands and is refused as the page's own request is.
+    const padded = `${JSON.stringify(offered.examples[0].body)}${' '.repeat(MAX_BODY_BYTES)}`;
+    const refused = await run(handler, { endpoint: offered.examples[0].endpoint, body: padded });
+    expect(refused.status).toBe(413);
+    for (const language of languages) {
+      const runner = RUNNERS[language];
+      const file = join(dir, runner.file);
+      await writeFile(file, `${codeSamples(offered.examples[0].endpoint, padded, origin)[language]}\n`);
+      const { stdout } = await exec(runner.command, runner.args(file), { timeout: 120_000, cwd: dir, maxBuffer: 16 * 1024 * 1024 });
+      expect(JSON.parse(stdout), `${language} padded`).toEqual(refused.json);
+    }
     console.log(`playground code ran in: ${languages.join(', ')}`);
   }, 600_000);
 
@@ -102,6 +114,8 @@ describe('the code the playground shows', () => {
     const texts = [
       `@not-a-file '"' \\ \\n $HOME \${1 + 1} #{1 + 1} \\(1 + 1) "# \\#(1 + 1) "## \\##n %s naïve – 🌍\nsecond line\r\nthird\tline \u0001\u007f end`,
       '\\#(1 + 1) and \\##(2) with no quote',
+      // JSON is sent as it stands too, its layout with it.
+      JSON.stringify({ utc: '2000-01-01T12:00:00Z', latitude: 0, longitude: 0 }, null, 2),
     ];
     try {
       for (const language of LANGUAGES) {

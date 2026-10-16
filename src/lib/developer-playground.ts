@@ -35,7 +35,7 @@ export const LANGUAGE_NAMES: Readonly<Record<Language, string>> = {
   ruby: 'Ruby',
 };
 
-/** A JSON text written compactly, as the code sends it; text that is not JSON is sent as it is. */
+/** A JSON text written compactly, to compare requests whatever their layout; text that is not JSON as it is. */
 export function compactBody(text: string): string {
   try {
     return JSON.stringify(JSON.parse(text));
@@ -47,13 +47,15 @@ export function compactBody(text: string): string {
 const SWIFT_ESCAPES: Readonly<Record<string, string>> = { '\n': 'n', '\r': 'r', '\t': 't' };
 
 /**
- * The code that sends `text` to an endpoint and prints the answer's body, in
- * each language with its standard library only. `origin` is where the API
- * answers; the tests point it at a local copy of the handler.
+ * The code that sends `text` to an endpoint as it stands, the request the
+ * page's own buttons send, and prints the answer's body, in each language with
+ * its standard library only. `origin` is where the API answers; the tests
+ * point it at a local copy of the handler.
  */
 export function codeSamples(endpoint: ComputeEndpoint, text: string, origin: string = COMPUTE_ORIGIN): Record<Language, string> {
   const url = `${origin}${computePath(endpoint)}`;
-  const body = compactBody(text);
+  // Not compacted: the API measures the body before it reads it, so whitespace can decide its answer.
+  const body = text;
   // Swift's raw string ends at a quote followed by its hashes, and reads a backslash followed by them as an escape
   // (`\#(` would run code), so it takes more hashes than any run of them the text has after either. Swift refuses
   // control characters in a string literal, line breaks and tabs among them, so they are written as escapes.
