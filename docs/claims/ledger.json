@@ -2038,6 +2038,7 @@
     {"path":"src/pages/c/index.astro","text":"Their side is entered, yours stays in your browser.","claim":"priv.on-device"},
     {"path":"src/pages/c/index.astro","text":"Your own details stay in your browser.","claim":"priv.on-device"},
     {"path":"src/pages/compatibility/[pair]/index.astro","text":"Enable it and reload to compare two birth charts in your browser.","claim":"priv.on-device"},
+    {"path":"src/pages/compatibility/[pair]/index.astro","text":"Free · No scores or verdicts · Private in your browser","claim":"priv.on-device"},
     {"path":"src/pages/compatibility/index.astro","text":"Enable it and reload to compare two birth charts in your browser.","claim":"priv.on-device"},
     {"path":"src/pages/compatibility/index.astro","text":"Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings.","claim":"priv.on-device"},
     {"path":"src/pages/developers/ai/index.astro","text":"A receipt supports reproduction; it does not certify an imported record's authenticity or validate astrological interpretation.","exempt":"limitation","why":"Explicitly limits what a receipt establishes; it promises neither authenticity nor scientific validity."},
