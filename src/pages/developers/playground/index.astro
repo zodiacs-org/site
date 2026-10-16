@@ -62,9 +62,9 @@ const jsonLd = [
         cause:
       </p>
       <ul>
-        <li><strong>runtime</strong>: a receipt names the runtime that read local times, the tzdb release its{' '}
-          <code>Intl</code> reads. A browser does not report that release, so a receipt computed here records{' '}
-          <code>null</code> where the server records Node's.</li>
+        <li><strong>runtime</strong>: a receipt names the runtime that read local times: Node and the tzdb release its{' '}
+          <code>Intl</code> reads, or a browser, which does not report that release. A receipt computed here names the{' '}
+          browser and records <code>null</code> where the server's names Node and its release.</li>
         <li><strong>citation</strong>: the digest of a receipt that differs, which differs with it.</li>
         <li><strong>rounding</strong>: two numbers within 1e-8 of each other. Speeds are central differences, and a
           runtime's own sine and cosine can move their last digits.</li>

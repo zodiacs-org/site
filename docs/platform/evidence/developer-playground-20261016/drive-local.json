@@ -1,6 +1,6 @@
 {
   "baseUrl": "local build",
-  "checkedAt": "2026-10-16T17:34:01.182Z",
+  "checkedAt": "2026-10-16T18:49:08.924Z",
   "results": [
     {
       "name": "examples.json offers the documented requests and the refusals a body provokes",
@@ -567,6 +567,50 @@
       "ok": true,
       "detail": {
         "lateBox": "Copy the link\n⧉"
+      }
+    },
+    {
+      "name": "a receipt computed in this browser names the browser as its runtime, with no tzdb release",
+      "ok": true,
+      "detail": {
+        "provenance": {
+          "runtime": {
+            "name": "browser"
+          },
+          "status": "claimed"
+        }
+      }
+    },
+    {
+      "name": "until the examples load, the request can be neither edited nor sent; then it is the example the link names",
+      "ok": true,
+      "detail": {
+        "whileLoading": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "afterLoading": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "example": "chart.utc"
+      }
+    },
+    {
+      "name": "when the examples do not load, a link that carries its request still opens it, ready to send",
+      "ok": true,
+      "detail": {
+        "body": "{\n  \"utc\": \"2000-01-01T12:00:00Z\",\n  \"latitude\": 40.4168,\n  \"longitude\": -3.7038,\n  \"houseSystem\": \"placidus\"\n}",
+        "usable": [
+          false,
+          false,
+          false,
+          false
+        ]
       }
     },
     {

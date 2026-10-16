@@ -10,8 +10,9 @@
  * (src/lib/compute-api/handler.ts), with the same parsers, calculations and
  * refusals. tests/api/compute-api-playground.test.ts holds the two to the same
  * answer for every documented example. The one thing that differs is what a
- * receipt says about the runtime's own tzdb: a browser does not report the
- * release its Intl reads, so `runtimeTzdb` is null here.
+ * receipt says about its runtime: in a browser it names the browser, and a
+ * browser does not report the tzdb release its Intl reads, so `runtimeTzdb` is
+ * null here (runtimeIdentity in local-time.ts).
  */
 import { TZDB, prepareLocalTime, resolveLocalToUtc } from '@zodiacs/engine/geo';
 import { canonicalZoneName } from '../time/zone-names';

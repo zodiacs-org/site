@@ -122,7 +122,7 @@ async function drive(baseURL) {
   for (const example of offered) {
     const listed = twin.includes(`### ${example.id}: `) && twin.includes(`?example=${example.id}`);
     const text = typeof example.body === 'string' ? example.body : JSON.stringify(example.body);
-    const curl = twin.includes(`--data '${text.replaceAll("'", "'\\''")}'`);
+    const curl = twin.includes(`--data-raw '${text.replaceAll("'", "'\\''")}'`);
     let answer;
     if (BASE_URL) {
       await pause();
@@ -281,6 +281,51 @@ async function drive(baseURL) {
     await settle(5);
     const lateBox = await linkButton();
     check('a link copy that finishes after the box changed the link is not shown as done', lateBox.includes('Copy the link'), { lateBox });
+
+    // A receipt computed in this browser names the browser as its runtime, and no tzdb release (Codex's third review).
+    const local = document.examples.find((example) => example.id === 'chart.local');
+    const provenance = await page.evaluate(async ([path, body]) => {
+      const engine = await import(path);
+      const answer = await engine.answerHere('chart', body);
+      return answer.body?.receipt?.provenance ?? null;
+    }, ['/developers/playground/engine.mjs', JSON.stringify(local.body)]);
+    check('a receipt computed in this browser names the browser as its runtime, with no tzdb release', JSON.stringify(provenance?.runtime) === '{"name":"browser"}', { provenance });
+
+    // Until the examples load, the request can be neither edited nor sent, so the request the page opens with never
+    // replaces one someone has started (Codex's third review).
+    const controls = () => page.evaluate(() => ['[data-endpoint-select]', '[data-request-body]', '[data-send]', '[data-run-here]']
+      .map((selector) => document.querySelector(selector)?.disabled ?? null));
+    let release;
+    const held = new Promise((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/developers/playground/examples.json', async (route) => {
+      await held;
+      await route.continue();
+    }, { times: 1 });
+    await page.goto(`${baseURL}/developers/playground/?example=chart.utc`, { waitUntil: 'load' });
+    await page.waitForTimeout(1000);
+    const whileLoading = await controls();
+    release();
+    await page.locator('[data-example-select]:not([disabled])').waitFor({ timeout: 20_000 });
+    const afterLoading = await controls();
+    const opened = await readPage(page);
+    check('until the examples load, the request can be neither edited nor sent; then it is the example the link names', whileLoading.every((disabled) => disabled === true) && afterLoading.every((disabled) => disabled === false) && opened.example === 'chart.utc', { whileLoading, afterLoading, example: opened.example });
+
+    // If the examples do not load, a link that carries its request still opens it, ready to send.
+    await page.route('**/developers/playground/examples.json', (route) => route.abort(), { times: 1 });
+    await page.goto(carrying.href.replace(carrying.origin, baseURL), { waitUntil: 'load' });
+    await page.locator('.pg__error').first().waitFor({ timeout: 20_000 });
+    const failed = await readPage(page);
+    const usable = await controls();
+    const latitude = (() => {
+      try {
+        return JSON.parse(failed.body).latitude;
+      } catch {
+        return null;
+      }
+    })();
+    check('when the examples do not load, a link that carries its request still opens it, ready to send', latitude === 40.4168 && usable.every((disabled) => disabled === false), { body: failed.body, usable });
 
     // An answer is shown only beside the request that produced it (Codex's first finding on #767).
     await openRequest(page, baseURL, '?example=chart.utc');

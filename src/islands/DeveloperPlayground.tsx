@@ -163,7 +163,12 @@ export default function DeveloperPlayground() {
         }
       })
       .catch(() => {
-        if (!cancelled) setLoadProblem('The documented examples did not load. You can still write a request and send it.');
+        if (cancelled) return;
+        // A link that carries its request needs no example to open it.
+        const link = readLink(window.location.href, COMPUTE_ENDPOINTS);
+        if (link.endpoint) setEndpoint(link.endpoint as ComputeEndpoint);
+        if (link.text !== null) setText(link.text);
+        setLoadProblem('The documented examples did not load. You can still write a request and send it.');
       });
     return () => {
       cancelled = true;
@@ -190,6 +195,10 @@ export default function DeveloperPlayground() {
     setExampleId(example.id);
     changeRequest({ endpoint: example.endpoint, text: typeof example.body === 'string' ? example.body : JSON.stringify(example.body, null, 2) });
   }
+
+  // The request can be edited and sent once the examples have loaded or failed to, so the request the page opens with,
+  // an example's or the link's, never replaces one someone has started.
+  const ready = examples !== null || loadProblem !== null;
 
   const example = useMemo(() => examples?.find((candidate) => candidate.id === exampleId) ?? null, [examples, exampleId]);
   // The documented answer applies while the request is still the example's, whatever its layout.
@@ -287,6 +296,7 @@ export default function DeveloperPlayground() {
               class="pg__input"
               value={endpoint}
               onChange={(event) => changeRequest({ endpoint: (event.currentTarget as HTMLSelectElement).value as ComputeEndpoint })}
+              disabled={!ready}
               data-endpoint-select
             >
               {COMPUTE_ENDPOINTS.map((name) => <option key={name} value={name}>POST {computePath(name)}</option>)}
@@ -300,15 +310,16 @@ export default function DeveloperPlayground() {
               spellcheck={false}
               value={text}
               onInput={(event) => changeRequest({ text: (event.currentTarget as HTMLTextAreaElement).value })}
+              disabled={!ready}
               data-request-body
             />
           </label>
           {loadProblem && <p class="pg__error" role="alert">{loadProblem}</p>}
           <div class="pg__actions">
-            <button type="button" class="cmp__btn" onClick={() => void sendToApi()} disabled={running.hosted === current.current} data-send>
+            <button type="button" class="cmp__btn" onClick={() => void sendToApi()} disabled={!ready || running.hosted === current.current} data-send>
               Send to the API
             </button>
-            <button type="button" class="cmp__btn" onClick={() => void runHere()} disabled={running.here === current.current} data-run-here>
+            <button type="button" class="cmp__btn" onClick={() => void runHere()} disabled={!ready || running.here === current.current} data-run-here>
               Run in this browser
             </button>
             {example && !documented && (

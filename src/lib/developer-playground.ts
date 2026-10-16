@@ -44,6 +44,8 @@ export function compactBody(text: string): string {
   }
 }
 
+const SWIFT_ESCAPES: Readonly<Record<string, string>> = { '\n': 'n', '\r': 'r', '\t': 't' };
+
 /**
  * The code that sends `text` to an endpoint and prints the answer's body, in
  * each language with its standard library only. `origin` is where the API
@@ -52,13 +54,19 @@ export function compactBody(text: string): string {
 export function codeSamples(endpoint: ComputeEndpoint, text: string, origin: string = COMPUTE_ORIGIN): Record<Language, string> {
   const url = `${origin}${computePath(endpoint)}`;
   const body = compactBody(text);
+  // Swift's raw string ends at a quote followed by its hashes, and reads a backslash followed by them as an escape
+  // (`\#(` would run code), so it takes more hashes than any run of them the text has after either. Swift refuses
+  // control characters in a string literal, line breaks and tabs among them, so they are written as escapes.
   let hashes = '#';
-  while (body.includes(`"${hashes}`)) hashes += '#';
+  while (body.includes(`"${hashes}`) || body.includes(`\\${hashes}`)) hashes += '#';
+  const swiftBody = body.replace(/[\u0000-\u001f\u007f]/gu, (character) =>
+    `\\${hashes}${SWIFT_ESCAPES[character] ?? `u{${character.codePointAt(0)!.toString(16)}}`}`);
   return {
     curl: [
       `curl --silent --show-error ${url} \\`,
       "  --header 'Content-Type: application/json' \\",
-      `  --data '${body.replaceAll("'", "'\\''")}'`,
+      // --data would read a text that starts with @ as a file to upload.
+      `  --data-raw '${body.replaceAll("'", "'\\''")}'`,
     ].join('\n'),
     javascript: [
       '// Node 18 or later, Deno, Bun or a browser.',
@@ -97,7 +105,7 @@ export function codeSamples(endpoint: ComputeEndpoint, text: string, origin: str
       `var request = URLRequest(url: URL(string: "${url}")!)`,
       'request.httpMethod = "POST"',
       'request.setValue("application/json", forHTTPHeaderField: "Content-Type")',
-      `request.httpBody = Data(${hashes}"${body}"${hashes}.utf8)`,
+      `request.httpBody = Data(${hashes}"${swiftBody}"${hashes}.utf8)`,
       'let (data, _) = try await URLSession.shared.data(for: request)',
       'print(String(decoding: data, as: UTF8.self))',
     ].join('\n'),
@@ -106,7 +114,9 @@ export function codeSamples(endpoint: ComputeEndpoint, text: string, origin: str
       "require 'net/http'",
       '',
       `uri = URI('${url}')`,
-      `body = '${body.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`,
+      // Ruby reads a carriage return before a line feed in its source as the line break alone, so each carriage return
+      // is a "\r" of its own, joined to the text around it as adjacent literals are.
+      `body = ${body.split('\r').map((part) => `'${part.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`).join(' "\\r" ')}`,
       "response = Net::HTTP.post(uri, body, 'Content-Type' => 'application/json')",
       'puts response.body',
     ].join('\n'),
@@ -209,8 +219,9 @@ export interface Difference {
   right: unknown;
 }
 
-// Where a receipt names the runtime that computed it: the tzdb release its Intl
-// reads, which a browser does not report (src/lib/compute-api/local-time.ts).
+// Where a receipt names the runtime that computed it: Node and the tzdb release
+// its Intl reads, or a browser, which reports none (runtimeIdentity in
+// src/lib/compute-api/local-time.ts).
 const RUNTIME_PATHS = [/^\/receipt\/provenance\/runtime(?:\/|$)/u, /^\/receipt\/timeResolution\/runtimeTzdb$/u];
 // Speeds are central differences, and a runtime's own sine and cosine can move
 // the last digits of one (tests/api/compute-api-openapi.test.ts bounds nodal

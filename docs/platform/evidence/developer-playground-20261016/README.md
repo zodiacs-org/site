@@ -25,8 +25,8 @@ from it".
   uses no storage. It answers as the handler does once a request has arrived.
 - **The comparison.** Two answers are compared as JSON, path by path. Each
   difference is named:
-  - runtime: a receipt names the runtime's tzdb, which a browser does not
-    report;
+  - runtime: a receipt names the runtime that computed it, Node with its
+    tzdb or the browser, which reports none;
   - citation: the digest of a receipt that differs;
   - rounding: numbers within 1e-8;
   - value: anything else.
@@ -37,7 +37,13 @@ from it".
   8785 canonical JSON with the browser's own `crypto.subtle`, and says whether
   it is `cite.receipt`.
 - **Code in five languages.** cURL, JavaScript, Python, Swift and Ruby, each
-  with its standard library, for the request as it stands.
+  with its standard library, for the request as it stands. Each sends exactly
+  the text the page shows: cURL with `--data-raw`, since `--data` would upload
+  the file a text starting with `@` names; Swift's raw string with more hashes
+  than any run of them after a quote or a backslash, so `\#(` is never an
+  interpolation, and its control characters escaped; Ruby's carriage returns
+  as `"\r"` beside the single-quoted text, since Ruby reads one before a line
+  feed as the line break alone.
 - **Links.** A link names the endpoint, and the documented example while the
   request is still that example. It carries the request only when the box is
   ticked, base64url after `#request=`, which a browser never sends to a
@@ -63,7 +69,13 @@ from it".
   served locally at `/api/v1/<endpoint>`, for every offered request (Swift
   once per endpoint, as it compiles each file), and prints the handler's
   answer. On this Mac all five ran: cURL, JavaScript (Node 22), Python 3.9,
-  Swift 6.2 and Ruby 2.6.
+  Swift 6.2 and Ruby 2.6. Each also sends two texts that are not JSON to a
+  server that keeps what it receives, and it receives exactly that text: one
+  starts with `@` and holds each language's quotes, escapes and
+  interpolations, Swift's delimiters, line breaks, a tab, U+0001, DEL and text
+  beyond ASCII; the other holds `\#(` with no quote before it. With the code
+  as it was before Codex's third review, cURL fails first. (No shell command
+  line can carry a NUL, so that one character is not offered.)
 - **The helpers** (`src/lib/developer-playground.test.ts`):
   - `examples.json` offers every documented request with its documented
     answer;
@@ -86,11 +98,11 @@ their evidence.
 `node tests/developer-playground-drive.mjs` drove a build of this branch in
 Chromium on 2026-10-16
 ([drive-local.json](drive-local.json)). The API was answered by the function's
-own bundle, `api/_compute/compute.mjs`. 49 of 49 checks passed:
+own bundle, `api/_compute/compute.mjs`. 52 of 52 checks passed:
 
 - **An agent's path.** For each of the 17 requests, the Markdown twin lists it
-  with its cURL request, and the API's answer to that body reproduces the
-  documented one.
+  with its cURL request (`--data-raw`), and the API's answer to that body
+  reproduces the documented one.
 - **A person's path.** Each request opens by its link. Send and Run in this
   browser both answer with the documented status, and both citations match
   their receipts. The API, the browser and the documentation agree: the same
@@ -115,6 +127,15 @@ own bundle, `api/_compute/compute.mjs`. 49 of 49 checks passed:
     changing the request takes both answers and their comparison away. With
     the island as it was before Codex's first review asked for this, these two
     checks fail (42 of the 44 checks the drive had then).
+  - A receipt computed in the browser names the browser as its runtime, with
+    no tzdb release.
+  - Until the examples load, the request can be neither edited nor sent, so
+    the request the page opens with never replaces one someone has started;
+    then it is the example the link names. If the examples do not load, a
+    link that carries its request still opens it, ready to send.
+  - With the build as it was before Codex's third review, 32 of 52 checks
+    pass: those three fail, and so do the 17 agent checks, whose twin still
+    wrote `--data`.
   - At 375 px, with both answers and their comparison on the page, nothing
     scrolls sideways. The first run caught a 639 px overflow from the example
     list, which this page's own field styles fixed.
@@ -140,5 +161,5 @@ network request and use no storage. The page loads no analytics script
   `/developers/compute/#errors` with the handler's own answers. They are not a
   body the playground sends.
 - A browser does not report the tzdb release its `Intl` reads, so a receipt
-  computed there records `null` where the server's records Node's, and its
-  citation differs with it.
+  computed there names the browser as its runtime and records `null` where the
+  server's name Node and its tzdb, and its citation differs with it.

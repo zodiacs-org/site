@@ -81,4 +81,42 @@ describe('the code the playground shows', () => {
     }
     console.log(`playground code ran in: ${languages.join(', ')}`);
   }, 600_000);
+
+  it('sends exactly the text the page shows, in every language this machine has: quotes, escapes, line breaks and control characters', async () => {
+    // A server that keeps what it is sent.
+    const received: string[] = [];
+    const echo = createServer((req, res) => {
+      const chunks: Buffer[] = [];
+      req.on('data', (chunk: Buffer) => chunks.push(chunk));
+      req.on('end', () => {
+        received.push(Buffer.concat(chunks).toString('utf8'));
+        res.writeHead(200, { 'Content-Type': 'application/json' }).end('{}');
+      });
+    });
+    await new Promise<void>((resolve) => echo.listen(0, '127.0.0.1', resolve));
+    const address = echo.address();
+    const echoOrigin = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`;
+    // Text that is not JSON is sent as typed. These hold cURL's @file, each language's quotes, escapes and
+    // interpolations, Swift's raw-string delimiters with and without a quote before them, line breaks, control
+    // characters and text beyond ASCII. (No shell command line can carry a NUL, so cURL's could not.)
+    const texts = [
+      `@not-a-file '"' \\ \\n $HOME \${1 + 1} #{1 + 1} \\(1 + 1) "# \\#(1 + 1) "## \\##n %s naïve – 🌍\nsecond line\r\nthird\tline \u0001\u007f end`,
+      '\\#(1 + 1) and \\##(2) with no quote',
+    ];
+    try {
+      for (const language of LANGUAGES) {
+        if (!(await available(language))) continue;
+        const runner = RUNNERS[language];
+        const file = join(dir, runner.file);
+        for (const text of texts) {
+          await writeFile(file, `${codeSamples('chart', text, echoOrigin)[language]}\n`);
+          received.length = 0;
+          await exec(runner.command, runner.args(file), { timeout: 120_000, cwd: dir });
+          expect(received, `${language}: ${JSON.stringify(text)}`).toEqual([text]);
+        }
+      }
+    } finally {
+      await new Promise((resolve) => echo.close(resolve));
+    }
+  }, 600_000);
 });

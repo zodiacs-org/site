@@ -48,7 +48,7 @@ describe('the code the playground shows', () => {
     for (const language of LANGUAGES) {
       expect(samples[language], language).toContain('https://zodiacs.org/api/v1/chart');
     }
-    expect(samples.curl).toContain(`--data '${compact}'`);
+    expect(samples.curl).toContain(`--data-raw '${compact}'`);
     expect(samples.javascript).toContain(`body: ${JSON.stringify(compact)},`);
     expect(samples.python).toContain(`body = ${JSON.stringify(compact)}`);
     expect(samples.swift).toContain(`Data(#"${compact}"#.utf8)`);
@@ -58,11 +58,18 @@ describe('the code the playground shows', () => {
   it('quotes a body that holds the quoting characters of each language', () => {
     const awkward = JSON.stringify({ note: "it's \"quoted\" \\ and \"#raw" });
     const samples = codeSamples('time', awkward, 'http://127.0.0.1:1');
-    expect(samples.curl).toContain(`--data '${awkward.replaceAll("'", "'\\''")}'`);
+    expect(samples.curl).toContain(`--data-raw '${awkward.replaceAll("'", "'\\''")}'`);
     expect(samples.swift).toContain(`Data(##"${awkward}"##.utf8)`);
     expect(samples.ruby).toContain(`body = '${awkward.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`);
     // JSON text that is not valid JSON is sent as it is.
-    expect(codeSamples('chart', '{"utc": ').curl).toContain(`--data '{"utc": '`);
+    expect(codeSamples('chart', '{"utc": ').curl).toContain(`--data-raw '{"utc": '`);
+    // cURL's --data would upload the file a text starting with @ names.
+    expect(codeSamples('chart', '@/etc/hosts').curl).toContain(`--data-raw '@/etc/hosts'`);
+  });
+
+  it('keeps a Swift raw string from reading the text as an escape, an interpolation or a line break', () => {
+    const swift = codeSamples('chart', 'not JSON: \\#(1 + 1) and \\##n\nnext', 'http://127.0.0.1:1').swift;
+    expect(swift).toContain('Data(###"not JSON: \\#(1 + 1) and \\##n\\###nnext"###.utf8)');
   });
 });
 
