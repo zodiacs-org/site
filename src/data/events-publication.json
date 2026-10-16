@@ -16,7 +16,7 @@
     {
       "id": "full-moon-2026-01-03",
       "path": "/full-moon/2026-01-03/",
-      "title": "Full moon in Cancer — January 3, 2026",
+      "title": "Full moon in Cancer, January 3, 2026",
       "anchor": "2026-01-03T10:02:55.863Z",
       "family": "lunation",
       "subtype": "full",
@@ -27,14 +27,14 @@
       "signs": [
         "cancer"
       ],
-      "summary": "The Wolf Moon — the Moon stands opposite the Sun in Cancer.",
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Cancer.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-01-03.png"
     },
     {
       "id": "new-moon-2026-01-18",
       "path": "/new-moon/2026-01-18/",
-      "title": "New moon in Capricorn — January 18, 2026",
+      "title": "New moon in Capricorn, January 18, 2026",
       "anchor": "2026-01-18T19:52:01.736Z",
       "family": "lunation",
       "subtype": "new",
@@ -52,7 +52,7 @@
     {
       "id": "saturn-sextile-uranus-2026-01-20",
       "path": "/events/saturn-sextile-uranus-2026-01-20/",
-      "title": "Saturn sextile Uranus — January 20, 2026",
+      "title": "Saturn sextile Uranus, January 20, 2026",
       "anchor": "2026-01-20T05:44:16.218Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -71,7 +71,7 @@
     {
       "id": "neptune-enters-aries-2026-01-26",
       "path": "/events/neptune-enters-aries-2026-01-26/",
-      "title": "Neptune enters Aries — January 26, 2026",
+      "title": "Neptune enters Aries, January 26, 2026",
       "anchor": "2026-01-26T14:30:44.561Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -88,7 +88,7 @@
     {
       "id": "full-moon-2026-02-01",
       "path": "/full-moon/2026-02-01/",
-      "title": "Full moon in Leo — February 1, 2026",
+      "title": "Full moon in Leo, February 1, 2026",
       "anchor": "2026-02-01T22:09:17.527Z",
       "family": "lunation",
       "subtype": "full",
@@ -99,14 +99,14 @@
       "signs": [
         "leo"
       ],
-      "summary": "The Snow Moon — the Moon stands opposite the Sun in Leo.",
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Leo.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-02-01.png"
     },
     {
       "id": "saturn-enters-aries-2026-02-14",
       "path": "/events/saturn-enters-aries-2026-02-14/",
-      "title": "Saturn enters Aries — February 14, 2026",
+      "title": "Saturn enters Aries, February 14, 2026",
       "anchor": "2026-02-14T00:39:37.844Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -123,7 +123,7 @@
     {
       "id": "new-moon-2026-02-17",
       "path": "/new-moon/2026-02-17/",
-      "title": "New moon in Aquarius — February 17, 2026",
+      "title": "New moon in Aquarius, February 17, 2026",
       "anchor": "2026-02-17T12:01:12.344Z",
       "family": "lunation",
       "subtype": "new",
@@ -141,7 +141,7 @@
     {
       "id": "eclipse-2026-02-17",
       "path": "/eclipses/2026-02-17/",
-      "title": "Annular solar eclipse in Aquarius — February 17, 2026",
+      "title": "Annular solar eclipse in Aquarius, February 17, 2026",
       "anchor": "2026-02-17T12:11:59.944Z",
       "family": "eclipse",
       "subtype": "solar",
@@ -159,7 +159,7 @@
     {
       "id": "saturn-conjunction-neptune-2026-02-20",
       "path": "/events/saturn-conjunction-neptune-2026-02-20/",
-      "title": "Saturn conjunction Neptune — February 20, 2026",
+      "title": "Saturn conjunction Neptune, February 20, 2026",
       "anchor": "2026-02-20T18:29:22.728Z",
       "family": "aspect",
       "subtype": "conjunction",
@@ -178,7 +178,7 @@
     {
       "id": "mercury-retrograde-2026-02-26",
       "path": "/mercury-retrograde/2026-02-26/",
-      "title": "Mercury retrograde — February 2026",
+      "title": "Mercury retrograde, February 2026",
       "anchor": "2026-02-26T06:47:25.019Z",
       "family": "retrograde",
       "subtype": "cycle",
@@ -195,7 +195,7 @@
     {
       "id": "eclipse-2026-03-03",
       "path": "/eclipses/2026-03-03/",
-      "title": "Total lunar eclipse in Virgo — March 3, 2026",
+      "title": "Total lunar eclipse in Virgo, March 3, 2026",
       "anchor": "2026-03-03T11:33:46.313Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -213,7 +213,7 @@
     {
       "id": "full-moon-2026-03-03",
       "path": "/full-moon/2026-03-03/",
-      "title": "Full moon in Virgo — March 3, 2026",
+      "title": "Full moon in Virgo, March 3, 2026",
       "anchor": "2026-03-03T11:37:57.684Z",
       "family": "lunation",
       "subtype": "full",
@@ -224,14 +224,14 @@
       "signs": [
         "virgo"
       ],
-      "summary": "The Worm Moon — the Moon stands opposite the Sun in Virgo.",
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Virgo.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-03-03.png"
     },
     {
       "id": "new-moon-2026-03-19",
       "path": "/new-moon/2026-03-19/",
-      "title": "New moon in Pisces — March 19, 2026",
+      "title": "New moon in Pisces, March 19, 2026",
       "anchor": "2026-03-19T01:23:33.883Z",
       "family": "lunation",
       "subtype": "new",
@@ -249,7 +249,7 @@
     {
       "id": "saturn-sextile-pluto-2026-03-28",
       "path": "/events/saturn-sextile-pluto-2026-03-28/",
-      "title": "Saturn sextile Pluto — March 28, 2026",
+      "title": "Saturn sextile Pluto, March 28, 2026",
       "anchor": "2026-03-28T22:34:36.112Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -268,7 +268,7 @@
     {
       "id": "full-moon-2026-04-02",
       "path": "/full-moon/2026-04-02/",
-      "title": "Full moon in Libra — April 2, 2026",
+      "title": "Full moon in Libra, April 2, 2026",
       "anchor": "2026-04-02T02:12:00.538Z",
       "family": "lunation",
       "subtype": "full",
@@ -279,14 +279,14 @@
       "signs": [
         "libra"
       ],
-      "summary": "The Pink Moon — the Moon stands opposite the Sun in Libra.",
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Libra.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-04-02.png"
     },
     {
       "id": "new-moon-2026-04-17",
       "path": "/new-moon/2026-04-17/",
-      "title": "New moon in Aries — April 17, 2026",
+      "title": "New moon in Aries, April 17, 2026",
       "anchor": "2026-04-17T11:51:52.041Z",
       "family": "lunation",
       "subtype": "new",
@@ -304,7 +304,7 @@
     {
       "id": "uranus-enters-gemini-2026-04-26",
       "path": "/events/uranus-enters-gemini-2026-04-26/",
-      "title": "Uranus enters Gemini — April 26, 2026",
+      "title": "Uranus enters Gemini, April 26, 2026",
       "anchor": "2026-04-26T01:01:21.002Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -321,7 +321,7 @@
     {
       "id": "full-moon-2026-05-01",
       "path": "/full-moon/2026-05-01/",
-      "title": "Full moon in Scorpio — May 1, 2026",
+      "title": "Full moon in Scorpio, May 1, 2026",
       "anchor": "2026-05-01T17:23:09.934Z",
       "family": "lunation",
       "subtype": "full",
@@ -332,14 +332,14 @@
       "signs": [
         "scorpio"
       ],
-      "summary": "The Flower Moon — the Moon stands opposite the Sun in Scorpio.",
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-05-01.png"
     },
     {
       "id": "new-moon-2026-05-16",
       "path": "/new-moon/2026-05-16/",
-      "title": "New moon in Taurus — May 16, 2026",
+      "title": "New moon in Taurus, May 16, 2026",
       "anchor": "2026-05-16T20:01:04.323Z",
       "family": "lunation",
       "subtype": "new",
@@ -357,7 +357,7 @@
     {
       "id": "full-moon-2026-05-31",
       "path": "/full-moon/2026-05-31/",
-      "title": "Full moon in Sagittarius — May 31, 2026",
+      "title": "Full moon in Sagittarius, May 31, 2026",
       "anchor": "2026-05-31T08:45:10.106Z",
       "family": "lunation",
       "subtype": "full",
@@ -368,14 +368,14 @@
       "signs": [
         "sagittarius"
       ],
-      "summary": "A blue moon — the Moon stands opposite the Sun in Sagittarius.",
+      "summary": "A blue moon: the Moon stands opposite the Sun in Sagittarius.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-05-31.png"
     },
     {
       "id": "new-moon-2026-06-15",
       "path": "/new-moon/2026-06-15/",
-      "title": "New moon in Gemini — June 15, 2026",
+      "title": "New moon in Gemini, June 15, 2026",
       "anchor": "2026-06-15T02:54:11.458Z",
       "family": "lunation",
       "subtype": "new",
@@ -393,7 +393,7 @@
     {
       "id": "mercury-retrograde-2026-06-29",
       "path": "/mercury-retrograde/2026-06-29/",
-      "title": "Mercury retrograde — June 2026",
+      "title": "Mercury retrograde, June 2026",
       "anchor": "2026-06-29T17:37:11.542Z",
       "family": "retrograde",
       "subtype": "cycle",
@@ -410,7 +410,7 @@
     {
       "id": "full-moon-2026-06-29",
       "path": "/full-moon/2026-06-29/",
-      "title": "Full moon in Capricorn — June 29, 2026",
+      "title": "Full moon in Capricorn, June 29, 2026",
       "anchor": "2026-06-29T23:56:39.855Z",
       "family": "lunation",
       "subtype": "full",
@@ -421,14 +421,14 @@
       "signs": [
         "capricorn"
       ],
-      "summary": "The Strawberry Moon — the Moon stands opposite the Sun in Capricorn.",
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Capricorn.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-06-29.png"
     },
     {
       "id": "jupiter-enters-leo-2026-06-30",
       "path": "/events/jupiter-enters-leo-2026-06-30/",
-      "title": "Jupiter enters Leo — June 30, 2026",
+      "title": "Jupiter enters Leo, June 30, 2026",
       "anchor": "2026-06-30T05:56:21.335Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -445,7 +445,7 @@
     {
       "id": "new-moon-2026-07-14",
       "path": "/new-moon/2026-07-14/",
-      "title": "New moon in Cancer — July 14, 2026",
+      "title": "New moon in Cancer, July 14, 2026",
       "anchor": "2026-07-14T09:43:36.119Z",
       "family": "lunation",
       "subtype": "new",
@@ -463,7 +463,7 @@
     {
       "id": "uranus-sextile-neptune-2026-07-15",
       "path": "/events/uranus-sextile-neptune-2026-07-15/",
-      "title": "Uranus sextile Neptune — July 15, 2026",
+      "title": "Uranus sextile Neptune, July 15, 2026",
       "anchor": "2026-07-15T22:23:00.761Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -482,7 +482,7 @@
     {
       "id": "uranus-trine-pluto-2026-07-18",
       "path": "/events/uranus-trine-pluto-2026-07-18/",
-      "title": "Uranus trine Pluto — July 18, 2026",
+      "title": "Uranus trine Pluto, July 18, 2026",
       "anchor": "2026-07-18T04:39:50.707Z",
       "family": "aspect",
       "subtype": "trine",
@@ -501,7 +501,7 @@
     {
       "id": "jupiter-trine-neptune-2026-07-20",
       "path": "/events/jupiter-trine-neptune-2026-07-20/",
-      "title": "Jupiter trine Neptune — July 20, 2026",
+      "title": "Jupiter trine Neptune, July 20, 2026",
       "anchor": "2026-07-20T07:47:59.076Z",
       "family": "aspect",
       "subtype": "trine",
@@ -520,7 +520,7 @@
     {
       "id": "jupiter-opposition-pluto-2026-07-20",
       "path": "/events/jupiter-opposition-pluto-2026-07-20/",
-      "title": "Jupiter opposition Pluto — July 20, 2026",
+      "title": "Jupiter opposition Pluto, July 20, 2026",
       "anchor": "2026-07-20T14:45:49.903Z",
       "family": "aspect",
       "subtype": "opposition",
@@ -539,7 +539,7 @@
     {
       "id": "jupiter-sextile-uranus-2026-07-21",
       "path": "/events/jupiter-sextile-uranus-2026-07-21/",
-      "title": "Jupiter sextile Uranus — July 21, 2026",
+      "title": "Jupiter sextile Uranus, July 21, 2026",
       "anchor": "2026-07-21T11:13:13.623Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -558,7 +558,7 @@
     {
       "id": "neptune-sextile-pluto-2026-07-24",
       "path": "/events/neptune-sextile-pluto-2026-07-24/",
-      "title": "Neptune sextile Pluto — July 24, 2026",
+      "title": "Neptune sextile Pluto, July 24, 2026",
       "anchor": "2026-07-24T23:09:38.401Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -577,7 +577,7 @@
     {
       "id": "full-moon-2026-07-29",
       "path": "/full-moon/2026-07-29/",
-      "title": "Full moon in Aquarius — July 29, 2026",
+      "title": "Full moon in Aquarius, July 29, 2026",
       "anchor": "2026-07-29T14:35:42.223Z",
       "family": "lunation",
       "subtype": "full",
@@ -588,14 +588,14 @@
       "signs": [
         "aquarius"
       ],
-      "summary": "The Buck Moon — the Moon stands opposite the Sun in Aquarius.",
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Aquarius.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-07-29.png"
     },
     {
       "id": "new-moon-2026-08-12",
       "path": "/new-moon/2026-08-12/",
-      "title": "New moon in Leo — August 12, 2026",
+      "title": "New moon in Leo, August 12, 2026",
       "anchor": "2026-08-12T17:36:41.548Z",
       "family": "lunation",
       "subtype": "new",
@@ -613,7 +613,7 @@
     {
       "id": "eclipse-2026-08-12",
       "path": "/eclipses/2026-08-12/",
-      "title": "Total solar eclipse in Leo — August 12, 2026",
+      "title": "Total solar eclipse in Leo, August 12, 2026",
       "anchor": "2026-08-12T17:45:53.037Z",
       "family": "eclipse",
       "subtype": "solar",
@@ -631,7 +631,7 @@
     {
       "id": "eclipse-2026-08-28",
       "path": "/eclipses/2026-08-28/",
-      "title": "Partial lunar eclipse in Pisces — August 28, 2026",
+      "title": "Partial lunar eclipse in Pisces, August 28, 2026",
       "anchor": "2026-08-28T04:12:55.340Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -649,7 +649,7 @@
     {
       "id": "full-moon-2026-08-28",
       "path": "/full-moon/2026-08-28/",
-      "title": "Full moon in Pisces — August 28, 2026",
+      "title": "Full moon in Pisces, August 28, 2026",
       "anchor": "2026-08-28T04:18:31.156Z",
       "family": "lunation",
       "subtype": "full",
@@ -660,14 +660,14 @@
       "signs": [
         "pisces"
       ],
-      "summary": "The Sturgeon Moon — the Moon stands opposite the Sun in Pisces.",
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Pisces.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-08-28.png"
     },
     {
       "id": "jupiter-trine-saturn-2026-08-31",
       "path": "/events/jupiter-trine-saturn-2026-08-31/",
-      "title": "Jupiter trine Saturn — August 31, 2026",
+      "title": "Jupiter trine Saturn, August 31, 2026",
       "anchor": "2026-08-31T22:05:22.447Z",
       "family": "aspect",
       "subtype": "trine",
@@ -686,7 +686,7 @@
     {
       "id": "new-moon-2026-09-11",
       "path": "/new-moon/2026-09-11/",
-      "title": "New moon in Virgo — September 11, 2026",
+      "title": "New moon in Virgo, September 11, 2026",
       "anchor": "2026-09-11T03:26:56.471Z",
       "family": "lunation",
       "subtype": "new",
@@ -704,7 +704,7 @@
     {
       "id": "neptune-sextile-pluto-2026-09-16",
       "path": "/events/neptune-sextile-pluto-2026-09-16/",
-      "title": "Neptune sextile Pluto — September 16, 2026",
+      "title": "Neptune sextile Pluto, September 16, 2026",
       "anchor": "2026-09-16T08:31:19.127Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -723,7 +723,7 @@
     {
       "id": "full-moon-2026-09-26",
       "path": "/full-moon/2026-09-26/",
-      "title": "Full moon in Aries — September 26, 2026",
+      "title": "Full moon in Aries, September 26, 2026",
       "anchor": "2026-09-26T16:48:59.556Z",
       "family": "lunation",
       "subtype": "full",
@@ -734,14 +734,14 @@
       "signs": [
         "aries"
       ],
-      "summary": "The Corn Moon — the Moon stands opposite the Sun in Aries.",
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Aries.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-09-26.png"
     },
     {
       "id": "venus-retrograde-2026-10-03",
       "path": "/venus-retrograde/2026-10-03/",
-      "title": "Venus retrograde — October 2026",
+      "title": "Venus retrograde, October 2026",
       "anchor": "2026-10-03T07:10:25.341Z",
       "family": "retrograde",
       "subtype": "cycle",
@@ -759,7 +759,7 @@
     {
       "id": "new-moon-2026-10-10",
       "path": "/new-moon/2026-10-10/",
-      "title": "New moon in Libra — October 10, 2026",
+      "title": "New moon in Libra, October 10, 2026",
       "anchor": "2026-10-10T15:50:02.149Z",
       "family": "lunation",
       "subtype": "new",
@@ -777,7 +777,7 @@
     {
       "id": "mercury-retrograde-2026-10-24",
       "path": "/mercury-retrograde/2026-10-24/",
-      "title": "Mercury retrograde — October 2026",
+      "title": "Mercury retrograde, October 2026",
       "anchor": "2026-10-24T07:14:22.646Z",
       "family": "retrograde",
       "subtype": "cycle",
@@ -794,7 +794,7 @@
     {
       "id": "full-moon-2026-10-26",
       "path": "/full-moon/2026-10-26/",
-      "title": "Full moon in Taurus — October 26, 2026",
+      "title": "Full moon in Taurus, October 26, 2026",
       "anchor": "2026-10-26T04:11:45.019Z",
       "family": "lunation",
       "subtype": "full",
@@ -805,14 +805,14 @@
       "signs": [
         "taurus"
       ],
-      "summary": "The Hunter’s Moon — the Moon stands opposite the Sun in Taurus.",
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Taurus.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-10-26.png"
     },
     {
       "id": "new-moon-2026-11-09",
       "path": "/new-moon/2026-11-09/",
-      "title": "New moon in Scorpio — November 9, 2026",
+      "title": "New moon in Scorpio, November 9, 2026",
       "anchor": "2026-11-09T07:02:05.269Z",
       "family": "lunation",
       "subtype": "new",
@@ -830,7 +830,7 @@
     {
       "id": "full-moon-2026-11-24",
       "path": "/full-moon/2026-11-24/",
-      "title": "Full moon in Gemini — November 24, 2026",
+      "title": "Full moon in Gemini, November 24, 2026",
       "anchor": "2026-11-24T14:53:35.120Z",
       "family": "lunation",
       "subtype": "full",
@@ -841,14 +841,14 @@
       "signs": [
         "gemini"
       ],
-      "summary": "The Beaver Moon — the Moon stands opposite the Sun in Gemini.",
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Gemini.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-11-24.png"
     },
     {
       "id": "uranus-trine-pluto-2026-11-29",
       "path": "/events/uranus-trine-pluto-2026-11-29/",
-      "title": "Uranus trine Pluto — November 29, 2026",
+      "title": "Uranus trine Pluto, November 29, 2026",
       "anchor": "2026-11-29T11:27:06.991Z",
       "family": "aspect",
       "subtype": "trine",
@@ -867,7 +867,7 @@
     {
       "id": "new-moon-2026-12-09",
       "path": "/new-moon/2026-12-09/",
-      "title": "New moon in Sagittarius — December 9, 2026",
+      "title": "New moon in Sagittarius, December 9, 2026",
       "anchor": "2026-12-09T00:51:52.151Z",
       "family": "lunation",
       "subtype": "new",
@@ -885,7 +885,7 @@
     {
       "id": "full-moon-2026-12-24",
       "path": "/full-moon/2026-12-24/",
-      "title": "Full moon in Cancer — December 24, 2026",
+      "title": "Full moon in Cancer, December 24, 2026",
       "anchor": "2026-12-24T01:28:16.590Z",
       "family": "lunation",
       "subtype": "full",
@@ -896,14 +896,14 @@
       "signs": [
         "cancer"
       ],
-      "summary": "The Cold Moon — the Moon stands opposite the Sun in Cancer.",
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Cancer.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2026-12-24.png"
     },
     {
       "id": "new-moon-2027-01-07",
       "path": "/new-moon/2027-01-07/",
-      "title": "New moon in Capricorn — January 7, 2027",
+      "title": "New moon in Capricorn, January 7, 2027",
       "anchor": "2027-01-07T20:24:26.069Z",
       "family": "lunation",
       "subtype": "new",
@@ -921,7 +921,7 @@
     {
       "id": "mars-retrograde-2027-01-10",
       "path": "/mars-retrograde/2027-01-10/",
-      "title": "Mars retrograde — January 2027",
+      "title": "Mars retrograde, January 2027",
       "anchor": "2027-01-10T13:00:54.491Z",
       "family": "retrograde",
       "subtype": "cycle",
@@ -939,7 +939,7 @@
     {
       "id": "uranus-sextile-neptune-2027-01-15",
       "path": "/events/uranus-sextile-neptune-2027-01-15/",
-      "title": "Uranus sextile Neptune — January 15, 2027",
+      "title": "Uranus sextile Neptune, January 15, 2027",
       "anchor": "2027-01-15T07:21:23.862Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -958,7 +958,7 @@
     {
       "id": "full-moon-2027-01-22",
       "path": "/full-moon/2027-01-22/",
-      "title": "Full moon in Leo — January 22, 2027",
+      "title": "Full moon in Leo, January 22, 2027",
       "anchor": "2027-01-22T12:17:21.585Z",
       "family": "lunation",
       "subtype": "full",
@@ -969,14 +969,14 @@
       "signs": [
         "leo"
       ],
-      "summary": "The Wolf Moon — the Moon stands opposite the Sun in Leo.",
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Leo.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-01-22.png"
     },
     {
       "id": "new-moon-2027-02-06",
       "path": "/new-moon/2027-02-06/",
-      "title": "New moon in Aquarius — February 6, 2027",
+      "title": "New moon in Aquarius, February 6, 2027",
       "anchor": "2027-02-06T15:56:08.653Z",
       "family": "lunation",
       "subtype": "new",
@@ -994,7 +994,7 @@
     {
       "id": "eclipse-2027-02-06",
       "path": "/eclipses/2027-02-06/",
-      "title": "Annular solar eclipse in Aquarius — February 6, 2027",
+      "title": "Annular solar eclipse in Aquarius, February 6, 2027",
       "anchor": "2027-02-06T15:59:39.357Z",
       "family": "eclipse",
       "subtype": "solar",
@@ -1012,7 +1012,7 @@
     {
       "id": "mercury-retrograde-2027-02-09",
       "path": "/mercury-retrograde/2027-02-09/",
-      "title": "Mercury retrograde — February 2027",
+      "title": "Mercury retrograde, February 2027",
       "anchor": "2027-02-09T17:35:41.894Z",
       "family": "retrograde",
       "subtype": "cycle",
@@ -1030,7 +1030,7 @@
     {
       "id": "eclipse-2027-02-20",
       "path": "/eclipses/2027-02-20/",
-      "title": "Penumbral lunar eclipse in Virgo — February 20, 2027",
+      "title": "Penumbral lunar eclipse in Virgo, February 20, 2027",
       "anchor": "2027-02-20T23:12:50.555Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -1048,7 +1048,7 @@
     {
       "id": "full-moon-2027-02-20",
       "path": "/full-moon/2027-02-20/",
-      "title": "Full moon in Virgo — February 20, 2027",
+      "title": "Full moon in Virgo, February 20, 2027",
       "anchor": "2027-02-20T23:23:37.619Z",
       "family": "lunation",
       "subtype": "full",
@@ -1059,14 +1059,14 @@
       "signs": [
         "virgo"
       ],
-      "summary": "The Snow Moon — the Moon stands opposite the Sun in Virgo.",
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Virgo.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-02-20.png"
     },
     {
       "id": "new-moon-2027-03-08",
       "path": "/new-moon/2027-03-08/",
-      "title": "New moon in Pisces — March 8, 2027",
+      "title": "New moon in Pisces, March 8, 2027",
       "anchor": "2027-03-08T09:29:31.050Z",
       "family": "lunation",
       "subtype": "new",
@@ -1084,7 +1084,7 @@
     {
       "id": "full-moon-2027-03-22",
       "path": "/full-moon/2027-03-22/",
-      "title": "Full moon in Libra — March 22, 2027",
+      "title": "Full moon in Libra, March 22, 2027",
       "anchor": "2027-03-22T10:43:48.340Z",
       "family": "lunation",
       "subtype": "full",
@@ -1095,14 +1095,14 @@
       "signs": [
         "libra"
       ],
-      "summary": "The Worm Moon — the Moon stands opposite the Sun in Libra.",
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Libra.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-03-22.png"
     },
     {
       "id": "jupiter-trine-saturn-2027-04-03",
       "path": "/events/jupiter-trine-saturn-2027-04-03/",
-      "title": "Jupiter trine Saturn — April 3, 2027",
+      "title": "Jupiter trine Saturn, April 3, 2027",
       "anchor": "2027-04-03T13:23:03.398Z",
       "family": "aspect",
       "subtype": "trine",
@@ -1121,7 +1121,7 @@
     {
       "id": "new-moon-2027-04-06",
       "path": "/new-moon/2027-04-06/",
-      "title": "New moon in Aries — April 6, 2027",
+      "title": "New moon in Aries, April 6, 2027",
       "anchor": "2027-04-06T23:51:12.161Z",
       "family": "lunation",
       "subtype": "new",
@@ -1139,7 +1139,7 @@
     {
       "id": "full-moon-2027-04-20",
       "path": "/full-moon/2027-04-20/",
-      "title": "Full moon in Scorpio — April 20, 2027",
+      "title": "Full moon in Scorpio, April 20, 2027",
       "anchor": "2027-04-20T22:27:11.909Z",
       "family": "lunation",
       "subtype": "full",
@@ -1150,14 +1150,14 @@
       "signs": [
         "scorpio"
       ],
-      "summary": "The Pink Moon — the Moon stands opposite the Sun in Scorpio.",
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Scorpio.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-04-20.png"
     },
     {
       "id": "new-moon-2027-05-06",
       "path": "/new-moon/2027-05-06/",
-      "title": "New moon in Taurus — May 6, 2027",
+      "title": "New moon in Taurus, May 6, 2027",
       "anchor": "2027-05-06T10:58:40.128Z",
       "family": "lunation",
       "subtype": "new",
@@ -1175,7 +1175,7 @@
     {
       "id": "full-moon-2027-05-20",
       "path": "/full-moon/2027-05-20/",
-      "title": "Full moon in Scorpio — May 20, 2027",
+      "title": "Full moon in Scorpio, May 20, 2027",
       "anchor": "2027-05-20T10:59:04.599Z",
       "family": "lunation",
       "subtype": "full",
@@ -1186,14 +1186,14 @@
       "signs": [
         "scorpio"
       ],
-      "summary": "The Flower Moon — the Moon stands opposite the Sun in Scorpio.",
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-05-20.png"
     },
     {
       "id": "new-moon-2027-06-04",
       "path": "/new-moon/2027-06-04/",
-      "title": "New moon in Gemini — June 4, 2027",
+      "title": "New moon in Gemini, June 4, 2027",
       "anchor": "2027-06-04T19:40:22.676Z",
       "family": "lunation",
       "subtype": "new",
@@ -1211,7 +1211,7 @@
     {
       "id": "uranus-sextile-neptune-2027-06-06",
       "path": "/events/uranus-sextile-neptune-2027-06-06/",
-      "title": "Uranus sextile Neptune — June 6, 2027",
+      "title": "Uranus sextile Neptune, June 6, 2027",
       "anchor": "2027-06-06T12:03:37.528Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -1230,7 +1230,7 @@
     {
       "id": "mercury-retrograde-2027-06-10",
       "path": "/mercury-retrograde/2027-06-10/",
-      "title": "Mercury retrograde — June 2027",
+      "title": "Mercury retrograde, June 2027",
       "anchor": "2027-06-10T18:19:04.335Z",
       "family": "retrograde",
       "subtype": "cycle",
@@ -1248,7 +1248,7 @@
     {
       "id": "uranus-trine-pluto-2027-06-15",
       "path": "/events/uranus-trine-pluto-2027-06-15/",
-      "title": "Uranus trine Pluto — June 15, 2027",
+      "title": "Uranus trine Pluto, June 15, 2027",
       "anchor": "2027-06-15T08:01:32.585Z",
       "family": "aspect",
       "subtype": "trine",
@@ -1267,7 +1267,7 @@
     {
       "id": "full-moon-2027-06-19",
       "path": "/full-moon/2027-06-19/",
-      "title": "Full moon in Sagittarius — June 19, 2027",
+      "title": "Full moon in Sagittarius, June 19, 2027",
       "anchor": "2027-06-19T00:44:24.732Z",
       "family": "lunation",
       "subtype": "full",
@@ -1278,14 +1278,14 @@
       "signs": [
         "sagittarius"
       ],
-      "summary": "The Strawberry Moon — the Moon stands opposite the Sun in Sagittarius.",
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Sagittarius.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-06-19.png"
     },
     {
       "id": "neptune-sextile-pluto-2027-06-28",
       "path": "/events/neptune-sextile-pluto-2027-06-28/",
-      "title": "Neptune sextile Pluto — June 28, 2027",
+      "title": "Neptune sextile Pluto, June 28, 2027",
       "anchor": "2027-06-28T20:34:28.560Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -1304,7 +1304,7 @@
     {
       "id": "new-moon-2027-07-04",
       "path": "/new-moon/2027-07-04/",
-      "title": "New moon in Cancer — July 4, 2027",
+      "title": "New moon in Cancer, July 4, 2027",
       "anchor": "2027-07-04T03:02:05.654Z",
       "family": "lunation",
       "subtype": "new",
@@ -1322,7 +1322,7 @@
     {
       "id": "jupiter-trine-saturn-2027-07-11",
       "path": "/events/jupiter-trine-saturn-2027-07-11/",
-      "title": "Jupiter trine Saturn — July 11, 2027",
+      "title": "Jupiter trine Saturn, July 11, 2027",
       "anchor": "2027-07-11T22:45:55.067Z",
       "family": "aspect",
       "subtype": "trine",
@@ -1341,7 +1341,7 @@
     {
       "id": "full-moon-2027-07-18",
       "path": "/full-moon/2027-07-18/",
-      "title": "Full moon in Capricorn — July 18, 2027",
+      "title": "Full moon in Capricorn, July 18, 2027",
       "anchor": "2027-07-18T15:44:58.351Z",
       "family": "lunation",
       "subtype": "full",
@@ -1352,14 +1352,14 @@
       "signs": [
         "capricorn"
       ],
-      "summary": "The Buck Moon — the Moon stands opposite the Sun in Capricorn.",
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Capricorn.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-07-18.png"
     },
     {
       "id": "eclipse-2027-07-18",
       "path": "/eclipses/2027-07-18/",
-      "title": "Penumbral lunar eclipse in Capricorn — July 18, 2027",
+      "title": "Penumbral lunar eclipse in Capricorn, July 18, 2027",
       "anchor": "2027-07-18T16:03:01.519Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -1377,7 +1377,7 @@
     {
       "id": "jupiter-enters-virgo-2027-07-26",
       "path": "/events/jupiter-enters-virgo-2027-07-26/",
-      "title": "Jupiter enters Virgo — July 26, 2027",
+      "title": "Jupiter enters Virgo, July 26, 2027",
       "anchor": "2027-07-26T04:45:27.093Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -1394,7 +1394,7 @@
     {
       "id": "new-moon-2027-08-02",
       "path": "/new-moon/2027-08-02/",
-      "title": "New moon in Leo — August 2, 2027",
+      "title": "New moon in Leo, August 2, 2027",
       "anchor": "2027-08-02T10:05:15.113Z",
       "family": "lunation",
       "subtype": "new",
@@ -1412,7 +1412,7 @@
     {
       "id": "eclipse-2027-08-02",
       "path": "/eclipses/2027-08-02/",
-      "title": "Total solar eclipse in Leo — August 2, 2027",
+      "title": "Total solar eclipse in Leo, August 2, 2027",
       "anchor": "2027-08-02T10:06:41.309Z",
       "family": "eclipse",
       "subtype": "solar",
@@ -1430,7 +1430,7 @@
     {
       "id": "eclipse-2027-08-17",
       "path": "/eclipses/2027-08-17/",
-      "title": "Penumbral lunar eclipse in Aquarius — August 17, 2027",
+      "title": "Penumbral lunar eclipse in Aquarius, August 17, 2027",
       "anchor": "2027-08-17T07:13:51.637Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -1448,7 +1448,7 @@
     {
       "id": "full-moon-2027-08-17",
       "path": "/full-moon/2027-08-17/",
-      "title": "Full moon in Aquarius — August 17, 2027",
+      "title": "Full moon in Aquarius, August 17, 2027",
       "anchor": "2027-08-17T07:28:42.380Z",
       "family": "lunation",
       "subtype": "full",
@@ -1459,14 +1459,14 @@
       "signs": [
         "aquarius"
       ],
-      "summary": "The Sturgeon Moon — the Moon stands opposite the Sun in Aquarius.",
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Aquarius.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-08-17.png"
     },
     {
       "id": "new-moon-2027-08-31",
       "path": "/new-moon/2027-08-31/",
-      "title": "New moon in Virgo — August 31, 2027",
+      "title": "New moon in Virgo, August 31, 2027",
       "anchor": "2027-08-31T17:41:13.048Z",
       "family": "lunation",
       "subtype": "new",
@@ -1484,7 +1484,7 @@
     {
       "id": "jupiter-square-uranus-2027-09-10",
       "path": "/events/jupiter-square-uranus-2027-09-10/",
-      "title": "Jupiter square Uranus — September 10, 2027",
+      "title": "Jupiter square Uranus, September 10, 2027",
       "anchor": "2027-09-10T16:36:59.814Z",
       "family": "aspect",
       "subtype": "square",
@@ -1503,7 +1503,7 @@
     {
       "id": "full-moon-2027-09-15",
       "path": "/full-moon/2027-09-15/",
-      "title": "Full moon in Pisces — September 15, 2027",
+      "title": "Full moon in Pisces, September 15, 2027",
       "anchor": "2027-09-15T23:03:33.051Z",
       "family": "lunation",
       "subtype": "full",
@@ -1514,14 +1514,14 @@
       "signs": [
         "pisces"
       ],
-      "summary": "The Corn Moon — the Moon stands opposite the Sun in Pisces.",
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-09-15.png"
     },
     {
       "id": "new-moon-2027-09-30",
       "path": "/new-moon/2027-09-30/",
-      "title": "New moon in Libra — September 30, 2027",
+      "title": "New moon in Libra, September 30, 2027",
       "anchor": "2027-09-30T02:36:05.212Z",
       "family": "lunation",
       "subtype": "new",
@@ -1539,7 +1539,7 @@
     {
       "id": "mercury-retrograde-2027-10-07",
       "path": "/mercury-retrograde/2027-10-07/",
-      "title": "Mercury retrograde — October 2027",
+      "title": "Mercury retrograde, October 2027",
       "anchor": "2027-10-07T14:39:08.875Z",
       "family": "retrograde",
       "subtype": "cycle",
@@ -1557,7 +1557,7 @@
     {
       "id": "full-moon-2027-10-15",
       "path": "/full-moon/2027-10-15/",
-      "title": "Full moon in Aries — October 15, 2027",
+      "title": "Full moon in Aries, October 15, 2027",
       "anchor": "2027-10-15T13:46:59.502Z",
       "family": "lunation",
       "subtype": "full",
@@ -1568,14 +1568,14 @@
       "signs": [
         "aries"
       ],
-      "summary": "The Hunter’s Moon — the Moon stands opposite the Sun in Aries.",
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Aries.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-10-15.png"
     },
     {
       "id": "neptune-sextile-pluto-2027-10-16",
       "path": "/events/neptune-sextile-pluto-2027-10-16/",
-      "title": "Neptune sextile Pluto — October 16, 2027",
+      "title": "Neptune sextile Pluto, October 16, 2027",
       "anchor": "2027-10-16T18:03:57.633Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -1594,7 +1594,7 @@
     {
       "id": "new-moon-2027-10-29",
       "path": "/new-moon/2027-10-29/",
-      "title": "New moon in Scorpio — October 29, 2027",
+      "title": "New moon in Scorpio, October 29, 2027",
       "anchor": "2027-10-29T13:36:32.787Z",
       "family": "lunation",
       "subtype": "new",
@@ -1612,7 +1612,7 @@
     {
       "id": "full-moon-2027-11-14",
       "path": "/full-moon/2027-11-14/",
-      "title": "Full moon in Taurus — November 14, 2027",
+      "title": "Full moon in Taurus, November 14, 2027",
       "anchor": "2027-11-14T03:25:53.355Z",
       "family": "lunation",
       "subtype": "full",
@@ -1623,14 +1623,14 @@
       "signs": [
         "taurus"
       ],
-      "summary": "The Beaver Moon — the Moon stands opposite the Sun in Taurus.",
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-11-14.png"
     },
     {
       "id": "new-moon-2027-11-28",
       "path": "/new-moon/2027-11-28/",
-      "title": "New moon in Sagittarius — November 28, 2027",
+      "title": "New moon in Sagittarius, November 28, 2027",
       "anchor": "2027-11-28T03:24:24.613Z",
       "family": "lunation",
       "subtype": "new",
@@ -1648,7 +1648,7 @@
     {
       "id": "full-moon-2027-12-13",
       "path": "/full-moon/2027-12-13/",
-      "title": "Full moon in Gemini — December 13, 2027",
+      "title": "Full moon in Gemini, December 13, 2027",
       "anchor": "2027-12-13T16:08:48.111Z",
       "family": "lunation",
       "subtype": "full",
@@ -1659,14 +1659,14 @@
       "signs": [
         "gemini"
       ],
-      "summary": "The Cold Moon — the Moon stands opposite the Sun in Gemini.",
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
       "lastModified": "2026-07-20",
       "card": "/assets/og/v2/events/full-moon-2027-12-13.png"
     },
     {
       "id": "new-moon-2027-12-27",
       "path": "/new-moon/2027-12-27/",
-      "title": "New moon in Capricorn — December 27, 2027",
+      "title": "New moon in Capricorn, December 27, 2027",
       "anchor": "2027-12-27T20:12:18.829Z",
       "family": "lunation",
       "subtype": "new",
@@ -1686,7 +1686,7 @@
     {
       "id": "full-moon-2026-01-03",
       "path": "/full-moon/2026-01-03/",
-      "title": "Full moon in Cancer — January 3, 2026",
+      "title": "Full moon in Cancer, January 3, 2026",
       "anchor": "2026-01-03T10:02:55.863Z",
       "family": "lunation",
       "subtype": "full",
@@ -1697,13 +1697,13 @@
       "signs": [
         "cancer"
       ],
-      "summary": "The Wolf Moon — the Moon stands opposite the Sun in Cancer.",
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Cancer.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2026-01-18",
       "path": "/new-moon/2026-01-18/",
-      "title": "New moon in Capricorn — January 18, 2026",
+      "title": "New moon in Capricorn, January 18, 2026",
       "anchor": "2026-01-18T19:52:01.736Z",
       "family": "lunation",
       "subtype": "new",
@@ -1720,7 +1720,7 @@
     {
       "id": "saturn-sextile-uranus-2026-01-20",
       "path": "/events/saturn-sextile-uranus-2026-01-20/",
-      "title": "Saturn sextile Uranus — January 20, 2026",
+      "title": "Saturn sextile Uranus, January 20, 2026",
       "anchor": "2026-01-20T05:44:16.218Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -1738,7 +1738,7 @@
     {
       "id": "neptune-enters-aries-2026-01-26",
       "path": "/events/neptune-enters-aries-2026-01-26/",
-      "title": "Neptune enters Aries — January 26, 2026",
+      "title": "Neptune enters Aries, January 26, 2026",
       "anchor": "2026-01-26T14:30:44.561Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -1754,7 +1754,7 @@
     {
       "id": "full-moon-2026-02-01",
       "path": "/full-moon/2026-02-01/",
-      "title": "Full moon in Leo — February 1, 2026",
+      "title": "Full moon in Leo, February 1, 2026",
       "anchor": "2026-02-01T22:09:17.527Z",
       "family": "lunation",
       "subtype": "full",
@@ -1765,13 +1765,13 @@
       "signs": [
         "leo"
       ],
-      "summary": "The Snow Moon — the Moon stands opposite the Sun in Leo.",
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Leo.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "uranus-stations-direct-2026-02-04",
       "path": "/retrogrades/#retrograde-uranus-2026-01-01",
-      "title": "Uranus stations direct — February 4, 2026",
+      "title": "Uranus stations direct, February 4, 2026",
       "anchor": "2026-02-04T02:32:26.776Z",
       "family": "station",
       "subtype": "direct",
@@ -1787,7 +1787,7 @@
     {
       "id": "saturn-enters-aries-2026-02-14",
       "path": "/events/saturn-enters-aries-2026-02-14/",
-      "title": "Saturn enters Aries — February 14, 2026",
+      "title": "Saturn enters Aries, February 14, 2026",
       "anchor": "2026-02-14T00:39:37.844Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -1803,7 +1803,7 @@
     {
       "id": "new-moon-2026-02-17",
       "path": "/new-moon/2026-02-17/",
-      "title": "New moon in Aquarius — February 17, 2026",
+      "title": "New moon in Aquarius, February 17, 2026",
       "anchor": "2026-02-17T12:01:12.344Z",
       "family": "lunation",
       "subtype": "new",
@@ -1820,7 +1820,7 @@
     {
       "id": "eclipse-2026-02-17",
       "path": "/eclipses/2026-02-17/",
-      "title": "Annular solar eclipse in Aquarius — February 17, 2026",
+      "title": "Annular solar eclipse in Aquarius, February 17, 2026",
       "anchor": "2026-02-17T12:11:59.944Z",
       "family": "eclipse",
       "subtype": "solar",
@@ -1837,7 +1837,7 @@
     {
       "id": "saturn-conjunction-neptune-2026-02-20",
       "path": "/events/saturn-conjunction-neptune-2026-02-20/",
-      "title": "Saturn conjunction Neptune — February 20, 2026",
+      "title": "Saturn conjunction Neptune, February 20, 2026",
       "anchor": "2026-02-20T18:29:22.728Z",
       "family": "aspect",
       "subtype": "conjunction",
@@ -1855,7 +1855,7 @@
     {
       "id": "mercury-stations-retrograde-2026-02-26",
       "path": "/mercury-retrograde/2026-02-26/",
-      "title": "Mercury stations retrograde — February 26, 2026",
+      "title": "Mercury stations retrograde, February 26, 2026",
       "anchor": "2026-02-26T06:47:25.019Z",
       "family": "station",
       "subtype": "retrograde",
@@ -1871,7 +1871,7 @@
     {
       "id": "eclipse-2026-03-03",
       "path": "/eclipses/2026-03-03/",
-      "title": "Total lunar eclipse in Virgo — March 3, 2026",
+      "title": "Total lunar eclipse in Virgo, March 3, 2026",
       "anchor": "2026-03-03T11:33:46.313Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -1888,7 +1888,7 @@
     {
       "id": "full-moon-2026-03-03",
       "path": "/full-moon/2026-03-03/",
-      "title": "Full moon in Virgo — March 3, 2026",
+      "title": "Full moon in Virgo, March 3, 2026",
       "anchor": "2026-03-03T11:37:57.684Z",
       "family": "lunation",
       "subtype": "full",
@@ -1899,13 +1899,13 @@
       "signs": [
         "virgo"
       ],
-      "summary": "The Worm Moon — the Moon stands opposite the Sun in Virgo.",
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Virgo.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "jupiter-stations-direct-2026-03-11",
       "path": "/retrogrades/#retrograde-jupiter-2026-01-01",
-      "title": "Jupiter stations direct — March 11, 2026",
+      "title": "Jupiter stations direct, March 11, 2026",
       "anchor": "2026-03-11T03:29:02.870Z",
       "family": "station",
       "subtype": "direct",
@@ -1921,7 +1921,7 @@
     {
       "id": "new-moon-2026-03-19",
       "path": "/new-moon/2026-03-19/",
-      "title": "New moon in Pisces — March 19, 2026",
+      "title": "New moon in Pisces, March 19, 2026",
       "anchor": "2026-03-19T01:23:33.883Z",
       "family": "lunation",
       "subtype": "new",
@@ -1938,7 +1938,7 @@
     {
       "id": "mercury-stations-direct-2026-03-20",
       "path": "/mercury-retrograde/2026-02-26/",
-      "title": "Mercury stations direct — March 20, 2026",
+      "title": "Mercury stations direct, March 20, 2026",
       "anchor": "2026-03-20T19:35:04.540Z",
       "family": "station",
       "subtype": "direct",
@@ -1954,7 +1954,7 @@
     {
       "id": "saturn-sextile-pluto-2026-03-28",
       "path": "/events/saturn-sextile-pluto-2026-03-28/",
-      "title": "Saturn sextile Pluto — March 28, 2026",
+      "title": "Saturn sextile Pluto, March 28, 2026",
       "anchor": "2026-03-28T22:34:36.112Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -1972,7 +1972,7 @@
     {
       "id": "full-moon-2026-04-02",
       "path": "/full-moon/2026-04-02/",
-      "title": "Full moon in Libra — April 2, 2026",
+      "title": "Full moon in Libra, April 2, 2026",
       "anchor": "2026-04-02T02:12:00.538Z",
       "family": "lunation",
       "subtype": "full",
@@ -1983,13 +1983,13 @@
       "signs": [
         "libra"
       ],
-      "summary": "The Pink Moon — the Moon stands opposite the Sun in Libra.",
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Libra.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2026-04-17",
       "path": "/new-moon/2026-04-17/",
-      "title": "New moon in Aries — April 17, 2026",
+      "title": "New moon in Aries, April 17, 2026",
       "anchor": "2026-04-17T11:51:52.041Z",
       "family": "lunation",
       "subtype": "new",
@@ -2006,7 +2006,7 @@
     {
       "id": "uranus-enters-gemini-2026-04-26",
       "path": "/events/uranus-enters-gemini-2026-04-26/",
-      "title": "Uranus enters Gemini — April 26, 2026",
+      "title": "Uranus enters Gemini, April 26, 2026",
       "anchor": "2026-04-26T01:01:21.002Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -2022,7 +2022,7 @@
     {
       "id": "full-moon-2026-05-01",
       "path": "/full-moon/2026-05-01/",
-      "title": "Full moon in Scorpio — May 1, 2026",
+      "title": "Full moon in Scorpio, May 1, 2026",
       "anchor": "2026-05-01T17:23:09.934Z",
       "family": "lunation",
       "subtype": "full",
@@ -2033,13 +2033,13 @@
       "signs": [
         "scorpio"
       ],
-      "summary": "The Flower Moon — the Moon stands opposite the Sun in Scorpio.",
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "pluto-stations-retrograde-2026-05-06",
       "path": "/retrogrades/#retrograde-pluto-2026-05-06",
-      "title": "Pluto stations retrograde — May 6, 2026",
+      "title": "Pluto stations retrograde, May 6, 2026",
       "anchor": "2026-05-06T15:34:24.550Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2055,7 +2055,7 @@
     {
       "id": "new-moon-2026-05-16",
       "path": "/new-moon/2026-05-16/",
-      "title": "New moon in Taurus — May 16, 2026",
+      "title": "New moon in Taurus, May 16, 2026",
       "anchor": "2026-05-16T20:01:04.323Z",
       "family": "lunation",
       "subtype": "new",
@@ -2072,7 +2072,7 @@
     {
       "id": "full-moon-2026-05-31",
       "path": "/full-moon/2026-05-31/",
-      "title": "Full moon in Sagittarius — May 31, 2026",
+      "title": "Full moon in Sagittarius, May 31, 2026",
       "anchor": "2026-05-31T08:45:10.106Z",
       "family": "lunation",
       "subtype": "full",
@@ -2083,13 +2083,13 @@
       "signs": [
         "sagittarius"
       ],
-      "summary": "A blue moon — the Moon stands opposite the Sun in Sagittarius.",
+      "summary": "A blue moon: the Moon stands opposite the Sun in Sagittarius.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2026-06-15",
       "path": "/new-moon/2026-06-15/",
-      "title": "New moon in Gemini — June 15, 2026",
+      "title": "New moon in Gemini, June 15, 2026",
       "anchor": "2026-06-15T02:54:11.458Z",
       "family": "lunation",
       "subtype": "new",
@@ -2106,7 +2106,7 @@
     {
       "id": "mercury-stations-retrograde-2026-06-29",
       "path": "/mercury-retrograde/2026-06-29/",
-      "title": "Mercury stations retrograde — June 29, 2026",
+      "title": "Mercury stations retrograde, June 29, 2026",
       "anchor": "2026-06-29T17:37:11.542Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2122,7 +2122,7 @@
     {
       "id": "full-moon-2026-06-29",
       "path": "/full-moon/2026-06-29/",
-      "title": "Full moon in Capricorn — June 29, 2026",
+      "title": "Full moon in Capricorn, June 29, 2026",
       "anchor": "2026-06-29T23:56:39.855Z",
       "family": "lunation",
       "subtype": "full",
@@ -2133,13 +2133,13 @@
       "signs": [
         "capricorn"
       ],
-      "summary": "The Strawberry Moon — the Moon stands opposite the Sun in Capricorn.",
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Capricorn.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "jupiter-enters-leo-2026-06-30",
       "path": "/events/jupiter-enters-leo-2026-06-30/",
-      "title": "Jupiter enters Leo — June 30, 2026",
+      "title": "Jupiter enters Leo, June 30, 2026",
       "anchor": "2026-06-30T05:56:21.335Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -2155,7 +2155,7 @@
     {
       "id": "neptune-stations-retrograde-2026-07-07",
       "path": "/retrogrades/#retrograde-neptune-2026-07-07",
-      "title": "Neptune stations retrograde — July 7, 2026",
+      "title": "Neptune stations retrograde, July 7, 2026",
       "anchor": "2026-07-07T11:01:01.523Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2171,7 +2171,7 @@
     {
       "id": "new-moon-2026-07-14",
       "path": "/new-moon/2026-07-14/",
-      "title": "New moon in Cancer — July 14, 2026",
+      "title": "New moon in Cancer, July 14, 2026",
       "anchor": "2026-07-14T09:43:36.119Z",
       "family": "lunation",
       "subtype": "new",
@@ -2188,7 +2188,7 @@
     {
       "id": "uranus-sextile-neptune-2026-07-15",
       "path": "/events/uranus-sextile-neptune-2026-07-15/",
-      "title": "Uranus sextile Neptune — July 15, 2026",
+      "title": "Uranus sextile Neptune, July 15, 2026",
       "anchor": "2026-07-15T22:23:00.761Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -2206,7 +2206,7 @@
     {
       "id": "uranus-trine-pluto-2026-07-18",
       "path": "/events/uranus-trine-pluto-2026-07-18/",
-      "title": "Uranus trine Pluto — July 18, 2026",
+      "title": "Uranus trine Pluto, July 18, 2026",
       "anchor": "2026-07-18T04:39:50.707Z",
       "family": "aspect",
       "subtype": "trine",
@@ -2224,7 +2224,7 @@
     {
       "id": "jupiter-trine-neptune-2026-07-20",
       "path": "/events/jupiter-trine-neptune-2026-07-20/",
-      "title": "Jupiter trine Neptune — July 20, 2026",
+      "title": "Jupiter trine Neptune, July 20, 2026",
       "anchor": "2026-07-20T07:47:59.076Z",
       "family": "aspect",
       "subtype": "trine",
@@ -2242,7 +2242,7 @@
     {
       "id": "jupiter-opposition-pluto-2026-07-20",
       "path": "/events/jupiter-opposition-pluto-2026-07-20/",
-      "title": "Jupiter opposition Pluto — July 20, 2026",
+      "title": "Jupiter opposition Pluto, July 20, 2026",
       "anchor": "2026-07-20T14:45:49.903Z",
       "family": "aspect",
       "subtype": "opposition",
@@ -2260,7 +2260,7 @@
     {
       "id": "jupiter-sextile-uranus-2026-07-21",
       "path": "/events/jupiter-sextile-uranus-2026-07-21/",
-      "title": "Jupiter sextile Uranus — July 21, 2026",
+      "title": "Jupiter sextile Uranus, July 21, 2026",
       "anchor": "2026-07-21T11:13:13.623Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -2278,7 +2278,7 @@
     {
       "id": "mercury-stations-direct-2026-07-23",
       "path": "/mercury-retrograde/2026-06-29/",
-      "title": "Mercury stations direct — July 23, 2026",
+      "title": "Mercury stations direct, July 23, 2026",
       "anchor": "2026-07-23T22:56:24.667Z",
       "family": "station",
       "subtype": "direct",
@@ -2294,7 +2294,7 @@
     {
       "id": "neptune-sextile-pluto-2026-07-24",
       "path": "/events/neptune-sextile-pluto-2026-07-24/",
-      "title": "Neptune sextile Pluto — July 24, 2026",
+      "title": "Neptune sextile Pluto, July 24, 2026",
       "anchor": "2026-07-24T23:09:38.401Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -2312,7 +2312,7 @@
     {
       "id": "saturn-stations-retrograde-2026-07-26",
       "path": "/retrogrades/#retrograde-saturn-2026-07-26",
-      "title": "Saturn stations retrograde — July 26, 2026",
+      "title": "Saturn stations retrograde, July 26, 2026",
       "anchor": "2026-07-26T19:53:13.505Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2328,7 +2328,7 @@
     {
       "id": "full-moon-2026-07-29",
       "path": "/full-moon/2026-07-29/",
-      "title": "Full moon in Aquarius — July 29, 2026",
+      "title": "Full moon in Aquarius, July 29, 2026",
       "anchor": "2026-07-29T14:35:42.223Z",
       "family": "lunation",
       "subtype": "full",
@@ -2339,13 +2339,13 @@
       "signs": [
         "aquarius"
       ],
-      "summary": "The Buck Moon — the Moon stands opposite the Sun in Aquarius.",
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Aquarius.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2026-08-12",
       "path": "/new-moon/2026-08-12/",
-      "title": "New moon in Leo — August 12, 2026",
+      "title": "New moon in Leo, August 12, 2026",
       "anchor": "2026-08-12T17:36:41.548Z",
       "family": "lunation",
       "subtype": "new",
@@ -2362,7 +2362,7 @@
     {
       "id": "eclipse-2026-08-12",
       "path": "/eclipses/2026-08-12/",
-      "title": "Total solar eclipse in Leo — August 12, 2026",
+      "title": "Total solar eclipse in Leo, August 12, 2026",
       "anchor": "2026-08-12T17:45:53.037Z",
       "family": "eclipse",
       "subtype": "solar",
@@ -2379,7 +2379,7 @@
     {
       "id": "eclipse-2026-08-28",
       "path": "/eclipses/2026-08-28/",
-      "title": "Partial lunar eclipse in Pisces — August 28, 2026",
+      "title": "Partial lunar eclipse in Pisces, August 28, 2026",
       "anchor": "2026-08-28T04:12:55.340Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -2396,7 +2396,7 @@
     {
       "id": "full-moon-2026-08-28",
       "path": "/full-moon/2026-08-28/",
-      "title": "Full moon in Pisces — August 28, 2026",
+      "title": "Full moon in Pisces, August 28, 2026",
       "anchor": "2026-08-28T04:18:31.156Z",
       "family": "lunation",
       "subtype": "full",
@@ -2407,13 +2407,13 @@
       "signs": [
         "pisces"
       ],
-      "summary": "The Sturgeon Moon — the Moon stands opposite the Sun in Pisces.",
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Pisces.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "jupiter-trine-saturn-2026-08-31",
       "path": "/events/jupiter-trine-saturn-2026-08-31/",
-      "title": "Jupiter trine Saturn — August 31, 2026",
+      "title": "Jupiter trine Saturn, August 31, 2026",
       "anchor": "2026-08-31T22:05:22.447Z",
       "family": "aspect",
       "subtype": "trine",
@@ -2431,7 +2431,7 @@
     {
       "id": "uranus-stations-retrograde-2026-09-10",
       "path": "/retrogrades/#retrograde-uranus-2026-09-10",
-      "title": "Uranus stations retrograde — September 10, 2026",
+      "title": "Uranus stations retrograde, September 10, 2026",
       "anchor": "2026-09-10T18:28:28.593Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2447,7 +2447,7 @@
     {
       "id": "new-moon-2026-09-11",
       "path": "/new-moon/2026-09-11/",
-      "title": "New moon in Virgo — September 11, 2026",
+      "title": "New moon in Virgo, September 11, 2026",
       "anchor": "2026-09-11T03:26:56.471Z",
       "family": "lunation",
       "subtype": "new",
@@ -2464,7 +2464,7 @@
     {
       "id": "neptune-sextile-pluto-2026-09-16",
       "path": "/events/neptune-sextile-pluto-2026-09-16/",
-      "title": "Neptune sextile Pluto — September 16, 2026",
+      "title": "Neptune sextile Pluto, September 16, 2026",
       "anchor": "2026-09-16T08:31:19.127Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -2482,7 +2482,7 @@
     {
       "id": "full-moon-2026-09-26",
       "path": "/full-moon/2026-09-26/",
-      "title": "Full moon in Aries — September 26, 2026",
+      "title": "Full moon in Aries, September 26, 2026",
       "anchor": "2026-09-26T16:48:59.556Z",
       "family": "lunation",
       "subtype": "full",
@@ -2493,13 +2493,13 @@
       "signs": [
         "aries"
       ],
-      "summary": "The Corn Moon — the Moon stands opposite the Sun in Aries.",
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Aries.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "venus-stations-retrograde-2026-10-03",
       "path": "/venus-retrograde/2026-10-03/",
-      "title": "Venus stations retrograde — October 3, 2026",
+      "title": "Venus stations retrograde, October 3, 2026",
       "anchor": "2026-10-03T07:10:25.341Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2515,7 +2515,7 @@
     {
       "id": "new-moon-2026-10-10",
       "path": "/new-moon/2026-10-10/",
-      "title": "New moon in Libra — October 10, 2026",
+      "title": "New moon in Libra, October 10, 2026",
       "anchor": "2026-10-10T15:50:02.149Z",
       "family": "lunation",
       "subtype": "new",
@@ -2532,7 +2532,7 @@
     {
       "id": "pluto-stations-direct-2026-10-16",
       "path": "/retrogrades/#retrograde-pluto-2026-05-06",
-      "title": "Pluto stations direct — October 16, 2026",
+      "title": "Pluto stations direct, October 16, 2026",
       "anchor": "2026-10-16T02:39:22.059Z",
       "family": "station",
       "subtype": "direct",
@@ -2548,7 +2548,7 @@
     {
       "id": "mercury-stations-retrograde-2026-10-24",
       "path": "/mercury-retrograde/2026-10-24/",
-      "title": "Mercury stations retrograde — October 24, 2026",
+      "title": "Mercury stations retrograde, October 24, 2026",
       "anchor": "2026-10-24T07:14:22.646Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2564,7 +2564,7 @@
     {
       "id": "full-moon-2026-10-26",
       "path": "/full-moon/2026-10-26/",
-      "title": "Full moon in Taurus — October 26, 2026",
+      "title": "Full moon in Taurus, October 26, 2026",
       "anchor": "2026-10-26T04:11:45.019Z",
       "family": "lunation",
       "subtype": "full",
@@ -2575,13 +2575,13 @@
       "signs": [
         "taurus"
       ],
-      "summary": "The Hunter’s Moon — the Moon stands opposite the Sun in Taurus.",
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Taurus.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2026-11-09",
       "path": "/new-moon/2026-11-09/",
-      "title": "New moon in Scorpio — November 9, 2026",
+      "title": "New moon in Scorpio, November 9, 2026",
       "anchor": "2026-11-09T07:02:05.269Z",
       "family": "lunation",
       "subtype": "new",
@@ -2598,7 +2598,7 @@
     {
       "id": "mercury-stations-direct-2026-11-13",
       "path": "/mercury-retrograde/2026-10-24/",
-      "title": "Mercury stations direct — November 13, 2026",
+      "title": "Mercury stations direct, November 13, 2026",
       "anchor": "2026-11-13T15:53:06.474Z",
       "family": "station",
       "subtype": "direct",
@@ -2614,7 +2614,7 @@
     {
       "id": "venus-stations-direct-2026-11-14",
       "path": "/venus-retrograde/2026-10-03/",
-      "title": "Venus stations direct — November 14, 2026",
+      "title": "Venus stations direct, November 14, 2026",
       "anchor": "2026-11-14T00:21:21.444Z",
       "family": "station",
       "subtype": "direct",
@@ -2630,7 +2630,7 @@
     {
       "id": "full-moon-2026-11-24",
       "path": "/full-moon/2026-11-24/",
-      "title": "Full moon in Gemini — November 24, 2026",
+      "title": "Full moon in Gemini, November 24, 2026",
       "anchor": "2026-11-24T14:53:35.120Z",
       "family": "lunation",
       "subtype": "full",
@@ -2641,13 +2641,13 @@
       "signs": [
         "gemini"
       ],
-      "summary": "The Beaver Moon — the Moon stands opposite the Sun in Gemini.",
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Gemini.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "uranus-trine-pluto-2026-11-29",
       "path": "/events/uranus-trine-pluto-2026-11-29/",
-      "title": "Uranus trine Pluto — November 29, 2026",
+      "title": "Uranus trine Pluto, November 29, 2026",
       "anchor": "2026-11-29T11:27:06.991Z",
       "family": "aspect",
       "subtype": "trine",
@@ -2665,7 +2665,7 @@
     {
       "id": "new-moon-2026-12-09",
       "path": "/new-moon/2026-12-09/",
-      "title": "New moon in Sagittarius — December 9, 2026",
+      "title": "New moon in Sagittarius, December 9, 2026",
       "anchor": "2026-12-09T00:51:52.151Z",
       "family": "lunation",
       "subtype": "new",
@@ -2682,7 +2682,7 @@
     {
       "id": "saturn-stations-direct-2026-12-10",
       "path": "/retrogrades/#retrograde-saturn-2026-07-26",
-      "title": "Saturn stations direct — December 10, 2026",
+      "title": "Saturn stations direct, December 10, 2026",
       "anchor": "2026-12-10T23:28:30.790Z",
       "family": "station",
       "subtype": "direct",
@@ -2698,7 +2698,7 @@
     {
       "id": "neptune-stations-direct-2026-12-12",
       "path": "/retrogrades/#retrograde-neptune-2026-07-07",
-      "title": "Neptune stations direct — December 12, 2026",
+      "title": "Neptune stations direct, December 12, 2026",
       "anchor": "2026-12-12T22:23:17.899Z",
       "family": "station",
       "subtype": "direct",
@@ -2714,7 +2714,7 @@
     {
       "id": "jupiter-stations-retrograde-2026-12-13",
       "path": "/retrogrades/#retrograde-jupiter-2026-12-13",
-      "title": "Jupiter stations retrograde — December 13, 2026",
+      "title": "Jupiter stations retrograde, December 13, 2026",
       "anchor": "2026-12-13T00:57:26.191Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2730,7 +2730,7 @@
     {
       "id": "full-moon-2026-12-24",
       "path": "/full-moon/2026-12-24/",
-      "title": "Full moon in Cancer — December 24, 2026",
+      "title": "Full moon in Cancer, December 24, 2026",
       "anchor": "2026-12-24T01:28:16.590Z",
       "family": "lunation",
       "subtype": "full",
@@ -2741,13 +2741,13 @@
       "signs": [
         "cancer"
       ],
-      "summary": "The Cold Moon — the Moon stands opposite the Sun in Cancer.",
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Cancer.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2027-01-07",
       "path": "/new-moon/2027-01-07/",
-      "title": "New moon in Capricorn — January 7, 2027",
+      "title": "New moon in Capricorn, January 7, 2027",
       "anchor": "2027-01-07T20:24:26.069Z",
       "family": "lunation",
       "subtype": "new",
@@ -2764,7 +2764,7 @@
     {
       "id": "mars-stations-retrograde-2027-01-10",
       "path": "/mars-retrograde/2027-01-10/",
-      "title": "Mars stations retrograde — January 10, 2027",
+      "title": "Mars stations retrograde, January 10, 2027",
       "anchor": "2027-01-10T13:00:54.491Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2780,7 +2780,7 @@
     {
       "id": "uranus-sextile-neptune-2027-01-15",
       "path": "/events/uranus-sextile-neptune-2027-01-15/",
-      "title": "Uranus sextile Neptune — January 15, 2027",
+      "title": "Uranus sextile Neptune, January 15, 2027",
       "anchor": "2027-01-15T07:21:23.862Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -2798,7 +2798,7 @@
     {
       "id": "full-moon-2027-01-22",
       "path": "/full-moon/2027-01-22/",
-      "title": "Full moon in Leo — January 22, 2027",
+      "title": "Full moon in Leo, January 22, 2027",
       "anchor": "2027-01-22T12:17:21.585Z",
       "family": "lunation",
       "subtype": "full",
@@ -2809,13 +2809,13 @@
       "signs": [
         "leo"
       ],
-      "summary": "The Wolf Moon — the Moon stands opposite the Sun in Leo.",
+      "summary": "The Wolf Moon: the Moon stands opposite the Sun in Leo.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2027-02-06",
       "path": "/new-moon/2027-02-06/",
-      "title": "New moon in Aquarius — February 6, 2027",
+      "title": "New moon in Aquarius, February 6, 2027",
       "anchor": "2027-02-06T15:56:08.653Z",
       "family": "lunation",
       "subtype": "new",
@@ -2832,7 +2832,7 @@
     {
       "id": "eclipse-2027-02-06",
       "path": "/eclipses/2027-02-06/",
-      "title": "Annular solar eclipse in Aquarius — February 6, 2027",
+      "title": "Annular solar eclipse in Aquarius, February 6, 2027",
       "anchor": "2027-02-06T15:59:39.357Z",
       "family": "eclipse",
       "subtype": "solar",
@@ -2849,7 +2849,7 @@
     {
       "id": "uranus-stations-direct-2027-02-08",
       "path": "/retrogrades/#retrograde-uranus-2026-09-10",
-      "title": "Uranus stations direct — February 8, 2027",
+      "title": "Uranus stations direct, February 8, 2027",
       "anchor": "2027-02-08T12:28:27.274Z",
       "family": "station",
       "subtype": "direct",
@@ -2865,7 +2865,7 @@
     {
       "id": "mercury-stations-retrograde-2027-02-09",
       "path": "/mercury-retrograde/2027-02-09/",
-      "title": "Mercury stations retrograde — February 9, 2027",
+      "title": "Mercury stations retrograde, February 9, 2027",
       "anchor": "2027-02-09T17:35:41.894Z",
       "family": "station",
       "subtype": "retrograde",
@@ -2881,7 +2881,7 @@
     {
       "id": "eclipse-2027-02-20",
       "path": "/eclipses/2027-02-20/",
-      "title": "Penumbral lunar eclipse in Virgo — February 20, 2027",
+      "title": "Penumbral lunar eclipse in Virgo, February 20, 2027",
       "anchor": "2027-02-20T23:12:50.555Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -2898,7 +2898,7 @@
     {
       "id": "full-moon-2027-02-20",
       "path": "/full-moon/2027-02-20/",
-      "title": "Full moon in Virgo — February 20, 2027",
+      "title": "Full moon in Virgo, February 20, 2027",
       "anchor": "2027-02-20T23:23:37.619Z",
       "family": "lunation",
       "subtype": "full",
@@ -2909,13 +2909,13 @@
       "signs": [
         "virgo"
       ],
-      "summary": "The Snow Moon — the Moon stands opposite the Sun in Virgo.",
+      "summary": "The Snow Moon: the Moon stands opposite the Sun in Virgo.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "mercury-stations-direct-2027-03-03",
       "path": "/mercury-retrograde/2027-02-09/",
-      "title": "Mercury stations direct — March 3, 2027",
+      "title": "Mercury stations direct, March 3, 2027",
       "anchor": "2027-03-03T12:35:47.606Z",
       "family": "station",
       "subtype": "direct",
@@ -2931,7 +2931,7 @@
     {
       "id": "new-moon-2027-03-08",
       "path": "/new-moon/2027-03-08/",
-      "title": "New moon in Pisces — March 8, 2027",
+      "title": "New moon in Pisces, March 8, 2027",
       "anchor": "2027-03-08T09:29:31.050Z",
       "family": "lunation",
       "subtype": "new",
@@ -2948,7 +2948,7 @@
     {
       "id": "full-moon-2027-03-22",
       "path": "/full-moon/2027-03-22/",
-      "title": "Full moon in Libra — March 22, 2027",
+      "title": "Full moon in Libra, March 22, 2027",
       "anchor": "2027-03-22T10:43:48.340Z",
       "family": "lunation",
       "subtype": "full",
@@ -2959,13 +2959,13 @@
       "signs": [
         "libra"
       ],
-      "summary": "The Worm Moon — the Moon stands opposite the Sun in Libra.",
+      "summary": "The Worm Moon: the Moon stands opposite the Sun in Libra.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "mars-stations-direct-2027-04-01",
       "path": "/mars-retrograde/2027-01-10/",
-      "title": "Mars stations direct — April 1, 2027",
+      "title": "Mars stations direct, April 1, 2027",
       "anchor": "2027-04-01T14:11:19.833Z",
       "family": "station",
       "subtype": "direct",
@@ -2981,7 +2981,7 @@
     {
       "id": "jupiter-trine-saturn-2027-04-03",
       "path": "/events/jupiter-trine-saturn-2027-04-03/",
-      "title": "Jupiter trine Saturn — April 3, 2027",
+      "title": "Jupiter trine Saturn, April 3, 2027",
       "anchor": "2027-04-03T13:23:03.398Z",
       "family": "aspect",
       "subtype": "trine",
@@ -2999,7 +2999,7 @@
     {
       "id": "new-moon-2027-04-06",
       "path": "/new-moon/2027-04-06/",
-      "title": "New moon in Aries — April 6, 2027",
+      "title": "New moon in Aries, April 6, 2027",
       "anchor": "2027-04-06T23:51:12.161Z",
       "family": "lunation",
       "subtype": "new",
@@ -3016,7 +3016,7 @@
     {
       "id": "jupiter-stations-direct-2027-04-13",
       "path": "/retrogrades/#retrograde-jupiter-2026-12-13",
-      "title": "Jupiter stations direct — April 13, 2027",
+      "title": "Jupiter stations direct, April 13, 2027",
       "anchor": "2027-04-13T02:08:29.765Z",
       "family": "station",
       "subtype": "direct",
@@ -3032,7 +3032,7 @@
     {
       "id": "full-moon-2027-04-20",
       "path": "/full-moon/2027-04-20/",
-      "title": "Full moon in Scorpio — April 20, 2027",
+      "title": "Full moon in Scorpio, April 20, 2027",
       "anchor": "2027-04-20T22:27:11.909Z",
       "family": "lunation",
       "subtype": "full",
@@ -3043,13 +3043,13 @@
       "signs": [
         "scorpio"
       ],
-      "summary": "The Pink Moon — the Moon stands opposite the Sun in Scorpio.",
+      "summary": "The Pink Moon: the Moon stands opposite the Sun in Scorpio.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2027-05-06",
       "path": "/new-moon/2027-05-06/",
-      "title": "New moon in Taurus — May 6, 2027",
+      "title": "New moon in Taurus, May 6, 2027",
       "anchor": "2027-05-06T10:58:40.128Z",
       "family": "lunation",
       "subtype": "new",
@@ -3066,7 +3066,7 @@
     {
       "id": "pluto-stations-retrograde-2027-05-08",
       "path": "/retrogrades/#retrograde-pluto-2027-05-08",
-      "title": "Pluto stations retrograde — May 8, 2027",
+      "title": "Pluto stations retrograde, May 8, 2027",
       "anchor": "2027-05-08T12:55:38.085Z",
       "family": "station",
       "subtype": "retrograde",
@@ -3082,7 +3082,7 @@
     {
       "id": "full-moon-2027-05-20",
       "path": "/full-moon/2027-05-20/",
-      "title": "Full moon in Scorpio — May 20, 2027",
+      "title": "Full moon in Scorpio, May 20, 2027",
       "anchor": "2027-05-20T10:59:04.599Z",
       "family": "lunation",
       "subtype": "full",
@@ -3093,13 +3093,13 @@
       "signs": [
         "scorpio"
       ],
-      "summary": "The Flower Moon — the Moon stands opposite the Sun in Scorpio.",
+      "summary": "The Flower Moon: the Moon stands opposite the Sun in Scorpio.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2027-06-04",
       "path": "/new-moon/2027-06-04/",
-      "title": "New moon in Gemini — June 4, 2027",
+      "title": "New moon in Gemini, June 4, 2027",
       "anchor": "2027-06-04T19:40:22.676Z",
       "family": "lunation",
       "subtype": "new",
@@ -3116,7 +3116,7 @@
     {
       "id": "uranus-sextile-neptune-2027-06-06",
       "path": "/events/uranus-sextile-neptune-2027-06-06/",
-      "title": "Uranus sextile Neptune — June 6, 2027",
+      "title": "Uranus sextile Neptune, June 6, 2027",
       "anchor": "2027-06-06T12:03:37.528Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -3134,7 +3134,7 @@
     {
       "id": "mercury-stations-retrograde-2027-06-10",
       "path": "/mercury-retrograde/2027-06-10/",
-      "title": "Mercury stations retrograde — June 10, 2027",
+      "title": "Mercury stations retrograde, June 10, 2027",
       "anchor": "2027-06-10T18:19:04.335Z",
       "family": "station",
       "subtype": "retrograde",
@@ -3150,7 +3150,7 @@
     {
       "id": "uranus-trine-pluto-2027-06-15",
       "path": "/events/uranus-trine-pluto-2027-06-15/",
-      "title": "Uranus trine Pluto — June 15, 2027",
+      "title": "Uranus trine Pluto, June 15, 2027",
       "anchor": "2027-06-15T08:01:32.585Z",
       "family": "aspect",
       "subtype": "trine",
@@ -3168,7 +3168,7 @@
     {
       "id": "full-moon-2027-06-19",
       "path": "/full-moon/2027-06-19/",
-      "title": "Full moon in Sagittarius — June 19, 2027",
+      "title": "Full moon in Sagittarius, June 19, 2027",
       "anchor": "2027-06-19T00:44:24.732Z",
       "family": "lunation",
       "subtype": "full",
@@ -3179,13 +3179,13 @@
       "signs": [
         "sagittarius"
       ],
-      "summary": "The Strawberry Moon — the Moon stands opposite the Sun in Sagittarius.",
+      "summary": "The Strawberry Moon: the Moon stands opposite the Sun in Sagittarius.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "neptune-sextile-pluto-2027-06-28",
       "path": "/events/neptune-sextile-pluto-2027-06-28/",
-      "title": "Neptune sextile Pluto — June 28, 2027",
+      "title": "Neptune sextile Pluto, June 28, 2027",
       "anchor": "2027-06-28T20:34:28.560Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -3203,7 +3203,7 @@
     {
       "id": "new-moon-2027-07-04",
       "path": "/new-moon/2027-07-04/",
-      "title": "New moon in Cancer — July 4, 2027",
+      "title": "New moon in Cancer, July 4, 2027",
       "anchor": "2027-07-04T03:02:05.654Z",
       "family": "lunation",
       "subtype": "new",
@@ -3220,7 +3220,7 @@
     {
       "id": "mercury-stations-direct-2027-07-04",
       "path": "/mercury-retrograde/2027-06-10/",
-      "title": "Mercury stations direct — July 4, 2027",
+      "title": "Mercury stations direct, July 4, 2027",
       "anchor": "2027-07-04T19:39:55.898Z",
       "family": "station",
       "subtype": "direct",
@@ -3236,7 +3236,7 @@
     {
       "id": "neptune-stations-retrograde-2027-07-09",
       "path": "/retrogrades/#retrograde-neptune-2027-07-09",
-      "title": "Neptune stations retrograde — July 9, 2027",
+      "title": "Neptune stations retrograde, July 9, 2027",
       "anchor": "2027-07-09T22:44:01.113Z",
       "family": "station",
       "subtype": "retrograde",
@@ -3252,7 +3252,7 @@
     {
       "id": "jupiter-trine-saturn-2027-07-11",
       "path": "/events/jupiter-trine-saturn-2027-07-11/",
-      "title": "Jupiter trine Saturn — July 11, 2027",
+      "title": "Jupiter trine Saturn, July 11, 2027",
       "anchor": "2027-07-11T22:45:55.067Z",
       "family": "aspect",
       "subtype": "trine",
@@ -3270,7 +3270,7 @@
     {
       "id": "full-moon-2027-07-18",
       "path": "/full-moon/2027-07-18/",
-      "title": "Full moon in Capricorn — July 18, 2027",
+      "title": "Full moon in Capricorn, July 18, 2027",
       "anchor": "2027-07-18T15:44:58.351Z",
       "family": "lunation",
       "subtype": "full",
@@ -3281,13 +3281,13 @@
       "signs": [
         "capricorn"
       ],
-      "summary": "The Buck Moon — the Moon stands opposite the Sun in Capricorn.",
+      "summary": "The Buck Moon: the Moon stands opposite the Sun in Capricorn.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "eclipse-2027-07-18",
       "path": "/eclipses/2027-07-18/",
-      "title": "Penumbral lunar eclipse in Capricorn — July 18, 2027",
+      "title": "Penumbral lunar eclipse in Capricorn, July 18, 2027",
       "anchor": "2027-07-18T16:03:01.519Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -3304,7 +3304,7 @@
     {
       "id": "jupiter-enters-virgo-2027-07-26",
       "path": "/events/jupiter-enters-virgo-2027-07-26/",
-      "title": "Jupiter enters Virgo — July 26, 2027",
+      "title": "Jupiter enters Virgo, July 26, 2027",
       "anchor": "2027-07-26T04:45:27.093Z",
       "family": "ingress",
       "subtype": "ingress",
@@ -3320,7 +3320,7 @@
     {
       "id": "new-moon-2027-08-02",
       "path": "/new-moon/2027-08-02/",
-      "title": "New moon in Leo — August 2, 2027",
+      "title": "New moon in Leo, August 2, 2027",
       "anchor": "2027-08-02T10:05:15.113Z",
       "family": "lunation",
       "subtype": "new",
@@ -3337,7 +3337,7 @@
     {
       "id": "eclipse-2027-08-02",
       "path": "/eclipses/2027-08-02/",
-      "title": "Total solar eclipse in Leo — August 2, 2027",
+      "title": "Total solar eclipse in Leo, August 2, 2027",
       "anchor": "2027-08-02T10:06:41.309Z",
       "family": "eclipse",
       "subtype": "solar",
@@ -3354,7 +3354,7 @@
     {
       "id": "saturn-stations-retrograde-2027-08-09",
       "path": "/retrogrades/#retrograde-saturn-2027-08-09",
-      "title": "Saturn stations retrograde — August 9, 2027",
+      "title": "Saturn stations retrograde, August 9, 2027",
       "anchor": "2027-08-09T18:00:44.823Z",
       "family": "station",
       "subtype": "retrograde",
@@ -3370,7 +3370,7 @@
     {
       "id": "eclipse-2027-08-17",
       "path": "/eclipses/2027-08-17/",
-      "title": "Penumbral lunar eclipse in Aquarius — August 17, 2027",
+      "title": "Penumbral lunar eclipse in Aquarius, August 17, 2027",
       "anchor": "2027-08-17T07:13:51.637Z",
       "family": "eclipse",
       "subtype": "lunar",
@@ -3387,7 +3387,7 @@
     {
       "id": "full-moon-2027-08-17",
       "path": "/full-moon/2027-08-17/",
-      "title": "Full moon in Aquarius — August 17, 2027",
+      "title": "Full moon in Aquarius, August 17, 2027",
       "anchor": "2027-08-17T07:28:42.380Z",
       "family": "lunation",
       "subtype": "full",
@@ -3398,13 +3398,13 @@
       "signs": [
         "aquarius"
       ],
-      "summary": "The Sturgeon Moon — the Moon stands opposite the Sun in Aquarius.",
+      "summary": "The Sturgeon Moon: the Moon stands opposite the Sun in Aquarius.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2027-08-31",
       "path": "/new-moon/2027-08-31/",
-      "title": "New moon in Virgo — August 31, 2027",
+      "title": "New moon in Virgo, August 31, 2027",
       "anchor": "2027-08-31T17:41:13.048Z",
       "family": "lunation",
       "subtype": "new",
@@ -3421,7 +3421,7 @@
     {
       "id": "jupiter-square-uranus-2027-09-10",
       "path": "/events/jupiter-square-uranus-2027-09-10/",
-      "title": "Jupiter square Uranus — September 10, 2027",
+      "title": "Jupiter square Uranus, September 10, 2027",
       "anchor": "2027-09-10T16:36:59.814Z",
       "family": "aspect",
       "subtype": "square",
@@ -3439,7 +3439,7 @@
     {
       "id": "uranus-stations-retrograde-2027-09-15",
       "path": "/retrogrades/#retrograde-uranus-2027-09-15",
-      "title": "Uranus stations retrograde — September 15, 2027",
+      "title": "Uranus stations retrograde, September 15, 2027",
       "anchor": "2027-09-15T09:10:05.125Z",
       "family": "station",
       "subtype": "retrograde",
@@ -3455,7 +3455,7 @@
     {
       "id": "full-moon-2027-09-15",
       "path": "/full-moon/2027-09-15/",
-      "title": "Full moon in Pisces — September 15, 2027",
+      "title": "Full moon in Pisces, September 15, 2027",
       "anchor": "2027-09-15T23:03:33.051Z",
       "family": "lunation",
       "subtype": "full",
@@ -3466,13 +3466,13 @@
       "signs": [
         "pisces"
       ],
-      "summary": "The Corn Moon — the Moon stands opposite the Sun in Pisces.",
+      "summary": "The Corn Moon: the Moon stands opposite the Sun in Pisces.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2027-09-30",
       "path": "/new-moon/2027-09-30/",
-      "title": "New moon in Libra — September 30, 2027",
+      "title": "New moon in Libra, September 30, 2027",
       "anchor": "2027-09-30T02:36:05.212Z",
       "family": "lunation",
       "subtype": "new",
@@ -3489,7 +3489,7 @@
     {
       "id": "mercury-stations-retrograde-2027-10-07",
       "path": "/mercury-retrograde/2027-10-07/",
-      "title": "Mercury stations retrograde — October 7, 2027",
+      "title": "Mercury stations retrograde, October 7, 2027",
       "anchor": "2027-10-07T14:39:08.875Z",
       "family": "station",
       "subtype": "retrograde",
@@ -3505,7 +3505,7 @@
     {
       "id": "full-moon-2027-10-15",
       "path": "/full-moon/2027-10-15/",
-      "title": "Full moon in Aries — October 15, 2027",
+      "title": "Full moon in Aries, October 15, 2027",
       "anchor": "2027-10-15T13:46:59.502Z",
       "family": "lunation",
       "subtype": "full",
@@ -3516,13 +3516,13 @@
       "signs": [
         "aries"
       ],
-      "summary": "The Hunter’s Moon — the Moon stands opposite the Sun in Aries.",
+      "summary": "The Hunter’s Moon: the Moon stands opposite the Sun in Aries.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "neptune-sextile-pluto-2027-10-16",
       "path": "/events/neptune-sextile-pluto-2027-10-16/",
-      "title": "Neptune sextile Pluto — October 16, 2027",
+      "title": "Neptune sextile Pluto, October 16, 2027",
       "anchor": "2027-10-16T18:03:57.633Z",
       "family": "aspect",
       "subtype": "sextile",
@@ -3540,7 +3540,7 @@
     {
       "id": "pluto-stations-direct-2027-10-18",
       "path": "/retrogrades/#retrograde-pluto-2027-05-08",
-      "title": "Pluto stations direct — October 18, 2027",
+      "title": "Pluto stations direct, October 18, 2027",
       "anchor": "2027-10-18T03:49:21.034Z",
       "family": "station",
       "subtype": "direct",
@@ -3556,7 +3556,7 @@
     {
       "id": "mercury-stations-direct-2027-10-28",
       "path": "/mercury-retrograde/2027-10-07/",
-      "title": "Mercury stations direct — October 28, 2027",
+      "title": "Mercury stations direct, October 28, 2027",
       "anchor": "2027-10-28T14:11:14.559Z",
       "family": "station",
       "subtype": "direct",
@@ -3572,7 +3572,7 @@
     {
       "id": "new-moon-2027-10-29",
       "path": "/new-moon/2027-10-29/",
-      "title": "New moon in Scorpio — October 29, 2027",
+      "title": "New moon in Scorpio, October 29, 2027",
       "anchor": "2027-10-29T13:36:32.787Z",
       "family": "lunation",
       "subtype": "new",
@@ -3589,7 +3589,7 @@
     {
       "id": "full-moon-2027-11-14",
       "path": "/full-moon/2027-11-14/",
-      "title": "Full moon in Taurus — November 14, 2027",
+      "title": "Full moon in Taurus, November 14, 2027",
       "anchor": "2027-11-14T03:25:53.355Z",
       "family": "lunation",
       "subtype": "full",
@@ -3600,13 +3600,13 @@
       "signs": [
         "taurus"
       ],
-      "summary": "The Beaver Moon — the Moon stands opposite the Sun in Taurus.",
+      "summary": "The Beaver Moon: the Moon stands opposite the Sun in Taurus.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "new-moon-2027-11-28",
       "path": "/new-moon/2027-11-28/",
-      "title": "New moon in Sagittarius — November 28, 2027",
+      "title": "New moon in Sagittarius, November 28, 2027",
       "anchor": "2027-11-28T03:24:24.613Z",
       "family": "lunation",
       "subtype": "new",
@@ -3623,7 +3623,7 @@
     {
       "id": "full-moon-2027-12-13",
       "path": "/full-moon/2027-12-13/",
-      "title": "Full moon in Gemini — December 13, 2027",
+      "title": "Full moon in Gemini, December 13, 2027",
       "anchor": "2027-12-13T16:08:48.111Z",
       "family": "lunation",
       "subtype": "full",
@@ -3634,13 +3634,13 @@
       "signs": [
         "gemini"
       ],
-      "summary": "The Cold Moon — the Moon stands opposite the Sun in Gemini.",
+      "summary": "The Cold Moon: the Moon stands opposite the Sun in Gemini.",
       "lastModified": "2026-07-20"
     },
     {
       "id": "neptune-stations-direct-2027-12-15",
       "path": "/retrogrades/#retrograde-neptune-2027-07-09",
-      "title": "Neptune stations direct — December 15, 2027",
+      "title": "Neptune stations direct, December 15, 2027",
       "anchor": "2027-12-15T09:13:20.243Z",
       "family": "station",
       "subtype": "direct",
@@ -3656,7 +3656,7 @@
     {
       "id": "saturn-stations-direct-2027-12-24",
       "path": "/retrogrades/#retrograde-saturn-2027-08-09",
-      "title": "Saturn stations direct — December 24, 2027",
+      "title": "Saturn stations direct, December 24, 2027",
       "anchor": "2027-12-24T02:41:54.989Z",
       "family": "station",
       "subtype": "direct",
@@ -3672,7 +3672,7 @@
     {
       "id": "new-moon-2027-12-27",
       "path": "/new-moon/2027-12-27/",
-      "title": "New moon in Capricorn — December 27, 2027",
+      "title": "New moon in Capricorn, December 27, 2027",
       "anchor": "2027-12-27T20:12:18.829Z",
       "family": "lunation",
       "subtype": "new",

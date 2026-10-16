@@ -371,8 +371,8 @@ function nearbyReason(subject: EventFacts, other: EventFacts): string {
   switch (other.family) {
     case 'station':
       return other.direction === 'retrograde'
-        ? `${other.bodies[0]} turns retrograde ${gap} — its review colors this moment`
-        : `${other.bodies[0]} turns direct ${gap} — a stalled thread starts moving`;
+        ? `${other.bodies[0]} turns retrograde ${gap}. Its review colors this moment`
+        : `${other.bodies[0]} turns direct ${gap}. A stalled thread starts moving`;
     case 'eclipse':
       return `The ${other.subtype} eclipse ${gap} makes this an eclipse-season moment`;
     case 'lunation':
@@ -380,9 +380,9 @@ function nearbyReason(subject: EventFacts, other: EventFacts): string {
         ? `The full moon ${gap} brings this thread to light`
         : `The new moon ${gap} opens the next chapter of this story`;
     case 'ingress':
-      return `${other.bodies[0]} changes sign ${gap} — the backdrop shifts with it`;
+      return `${other.bodies[0]} changes sign ${gap}. The backdrop shifts with it`;
     case 'aspect':
-      return `${other.bodies[0]} and ${other.bodies[1]} are exact ${gap} — part of the same sky`;
+      return `${other.bodies[0]} and ${other.bodies[1]} are exact ${gap}, part of the same sky`;
     case 'retrograde':
       return `${other.bodies[0]} is retrograde through this period`;
   }
@@ -452,8 +452,8 @@ function buildCatalog(): EventsCatalog {
         && other.subtype === wanted
         && Math.abs(anchor(other) - anchor(facts)) <= ECLIPSE_MATCH_MS);
       if (match) eclipse = linkFor(match, facts.subtype === 'new'
-        ? 'This new moon is also a solar eclipse — the fuller story is there'
-        : 'This full moon is also a lunar eclipse — the fuller story is there');
+        ? 'This new moon is also a solar eclipse. The fuller story is there'
+        : 'This full moon is also a lunar eclipse. The fuller story is there');
     }
 
     // Nearby: dated moments within the window, closest first, capped at

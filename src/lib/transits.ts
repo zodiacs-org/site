@@ -65,7 +65,7 @@ export function transitLine(transiting: string, type: string, natal: string): st
   const mover = MOVER[transiting];
   const phrase = ASPECT_VERB[type];
   if (!phrase || !mover) return `${transiting} aspects your ${role}.`;
-  return `${transiting} ${phrase.verb} your ${role} — ${mover}, ${phrase.gloss}.`;
+  return `${transiting} ${phrase.verb} your ${role}: ${mover}, ${phrase.gloss}.`;
 }
 
 /** Compact, reproducible evidence for a saved daily contact. */

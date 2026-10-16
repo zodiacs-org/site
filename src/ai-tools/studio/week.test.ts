@@ -151,7 +151,7 @@ describe('Your week in words', () => {
     expect(weekTitle(item({}))).toBe('Mars square your Sun');
     expect(weekTitle(item({ natalPoint: 'ASC', aspect: 'trine', transitBody: 'Jupiter' }))).toBe('Jupiter trine your rising sign');
     expect(weekTitle(item({ natalPoint: 'MC', aspect: 'opposition' }))).toBe('Mars opposition your Midheaven');
-    expect(weekLine(item({}))).toBe('Mars pushes against your sense of self — a charged stretch of heat and urgency, friction that will not resolve on its own.');
+    expect(weekLine(item({}))).toBe('Mars pushes against your sense of self: a charged stretch of heat and urgency, friction that will not resolve on its own.');
   });
 
   it('shows no ISO dates, UTC or time-zone names for the fixed weeks', () => {

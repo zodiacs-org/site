@@ -80,7 +80,7 @@ const NAV_SUBLABELS = {
     pt: 'Veja seu Sol, sua Lua, seu ascendente, os planetas, as casas e o que tudo isso significa.',
     fr: 'Découvre ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.',
     it: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.',
-    ru: 'Солнце, Луна, асцендент, планеты, дома — и что всё это значит.',
+    ru: 'Солнце, Луна, асцендент, планеты, дома и что всё это значит.',
   },
   compatibility: {
     en: 'Compare two charts and see where they click, clash, and grow.',
@@ -153,7 +153,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   },
   {
     href: '/birth-chart/someone-else/',
-    hub: { order: 2, title: "Someone else's chart", promise: 'Use birth details, the Big Three, or a Zodiacs link — with their permission.', hue: 'var(--sign-pisces)', kind: 'birth', group: 'start' },
+    hub: { order: 2, title: "Someone else's chart", promise: 'Use birth details, the Big Three, or a Zodiacs link, with their permission.', hue: 'var(--sign-pisces)', kind: 'birth', group: 'start' },
   },
   {
     href: '/big-three/',
@@ -191,7 +191,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     href: '/today/', label: 'today', footerOrder: 2, footerUsesLocalizedPath: true,
     footerLabel: {
       en: 'Today', es: 'Hoy', pt: 'Hoje',
-      fr: 'Aujourd’hui (en anglais)', it: 'Oggi (in inglese)', ru: 'Сегодня — пока по-английски',
+      fr: 'Aujourd’hui (en anglais)', it: 'Oggi (in inglese)', ru: 'Сегодня (пока по-английски)',
     },
     hub: { order: 3, title: 'Today', promise: 'A plain-language daily brief once you have saved a chart.', hue: 'var(--sign-cancer)', kind: 'transit', group: 'start' },
   },

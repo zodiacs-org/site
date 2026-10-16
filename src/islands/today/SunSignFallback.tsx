@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { SIGNS, type Sign } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 import { editionDateLabel } from '../../lib/edition-freshness';
 
 export const TODAY_SUN_SIGN_STORAGE_KEY = 'zodiacs:today-sun-sign:v1';
@@ -144,7 +145,7 @@ export default function SunSignFallback({
             >
               <PastelSignIcon sign={sign} size={34} className="today-sign__icon" />
               <span class="today-sign__name">{sign.name}</span>
-              <span class="today-sign__dates">{sign.dates}</span>
+              <span class="today-sign__dates">{signDateRange(sign)}</span>
             </a>
           ))}
         </div>
@@ -187,7 +188,7 @@ export default function SunSignFallback({
                 style={`--sign:${sign.hue}`}
                 data-today-sun-sign={sign.slug}
               >
-                <p class="kicker">{sign.dates}</p>
+                <p class="kicker">{signDateRange(sign)}</p>
                 <h3 class="today-sign-reading__title">
                   <PastelSignIcon sign={sign} size={28} className="today-sign-reading__icon" />
                   <span>{sign.name} · {editionLabel}</span>

@@ -62,7 +62,7 @@ describe('today contact selection', () => {
       ['Jupiter', 'trine', 'Sun', 1.5],
     ]);
     expect(transitLine(contacts[0].transiting, contacts[0].type, contacts[0].natal)).toBe(
-      'Saturn pushes against your sense of self — a long season of pressure and accounting, friction that will not resolve on its own.',
+      'Saturn pushes against your sense of self: a long season of pressure and accounting, friction that will not resolve on its own.',
     );
   });
 

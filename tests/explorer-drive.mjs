@@ -658,7 +658,7 @@ try {
     performance.getEntriesByType('resource').some((entry) => /\/CommunicationRead\.[^/]+\.js$/.test(new URL(entry.name).pathname))));
   check('communication read: Kahlo corpus line is byte-identical',
     await page.locator('.calc__comm-part').first().locator(':scope > p').first().textContent()
-      === 'You communicate like a performance with an audience of one — warm, committed, a story where a sentence would do. It works because you mean it; flattery without conviction reads as static to you.');
+      === 'You communicate like a performance with an audience of one: warm, committed, a story where a sentence would do. It works because you mean it; flattery without conviction reads as static to you.');
   check('communication read: analytics fires once with no properties', await page.evaluate(() => {
     const events = window.__detailEvents.filter((event) => event.name === 'comm_read_view');
     return events.length === 1 && Object.keys(events[0].props ?? {}).length === 0;

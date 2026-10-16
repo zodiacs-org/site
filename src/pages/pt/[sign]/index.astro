@@ -5,7 +5,8 @@ import SignHeroArt from '../../../components/SignHeroArt.astro';
 import Faq from '../../../components/Faq.astro';
 import CollectBand from '../../../components/CollectBand.astro';
 import ShareRow from '../../../components/ShareRow.astro';
-import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signDates, signName } from '../../../lib/signs';
+import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signName } from '../../../lib/signs';
+import { signDateRange } from '../../../lib/sign-display';
 import { localizePath } from '../../../lib/i18n';
 import { portugueseGuideFor } from '../../../data/pt-guides';
 import { pairSlug } from '../../../lib/compat';
@@ -85,7 +86,7 @@ const jsonLd = [
       <div>
         <h1 class="display">{signName(sign, 'pt')}</h1>
         <p>{guide.intro[0]}</p>
-        <p class="guide-pt-hero__facts">{elementLabel(sign.element, 'pt')} · {signDates(sign, 'pt')}</p>
+        <p class="guide-pt-hero__facts">{elementLabel(sign.element, 'pt')} · {signDateRange(sign, 'pt')}</p>
         <div class="guide-pt-hero__ctas">
           <a class="btn btn--primary" href={localizePath('pt', '/birth-chart/')}><span>Calcule seu mapa astral grátis</span><span class="orb">↗</span></a>
           <a class="btn btn--ghost" href={localizePath('pt', '/compatibility/')}><span>Ver compatibilidade</span></a>

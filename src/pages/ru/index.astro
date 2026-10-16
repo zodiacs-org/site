@@ -7,7 +7,8 @@ import SignIcon from '../../components/SignIcon.astro';
 import ToolGlyph from '../../components/ToolGlyph.astro';
 import SkyTicker from '../../islands/SkyTicker';
 import WelcomeBack from '../../islands/WelcomeBack';
-import { SIGNS, signDates, signName } from '../../lib/signs';
+import { SIGNS, signName } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 import glassMaps from '../../data/glass-maps.json';
 import '../../styles/today.css';
 
@@ -349,7 +350,7 @@ const jsonLd = [
           <div class="twelve-ru__card">
             <SignIcon sign={sign.slug} size={64} />
             <strong>{signName(sign, 'ru')}</strong>
-            <span class="mono twelve-ru__dates">{signDates(sign, 'ru')}</span>
+            <span class="mono twelve-ru__dates">{signDateRange(sign, 'ru')}</span>
           </div>
         </a>
       ))}
