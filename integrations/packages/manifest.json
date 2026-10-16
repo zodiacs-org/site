@@ -6,8 +6,8 @@
       "name": "zodiacs-sky",
       "version": "0.5.0",
       "file": "zodiacs-sky-0.5.0.zip",
-      "bytes": 74612,
-      "sha256": "92ba6d583be760d1b195d0e74b436a1dd4d6b7a55842c339474770c5b7030f70",
+      "bytes": 75688,
+      "sha256": "fb99180c775ef2be9a82389a6c7c0a827f5419cfaabf4bed9225cf0d364a080d",
       "members": [
         {
           "path": ".claude-plugin/plugin.json",
@@ -16,8 +16,8 @@
         },
         {
           "path": ".codex-plugin/plugin.json",
-          "bytes": 8894,
-          "sha256": "1d7a7ff74bac25135f6222b34a00d8c87200dbe045be35b2b3f4d88e2e3eb2b0"
+          "bytes": 9154,
+          "sha256": "d921d0f9aed56639a23ee607c62a323b6f37bfacb8e9c70d1f72c13efe2c2903"
         },
         {
           "path": ".mcp.json",
@@ -51,13 +51,13 @@
         },
         {
           "path": "plugin.json",
-          "bytes": 9025,
-          "sha256": "4679bf0ca1b7c35129a1692341675448c2e280631f34ba0f3d9d472f5130bc7b"
+          "bytes": 9285,
+          "sha256": "39f2e24db356785bbb07c431d96470175f06200509dc953218fd6e289d867d6f"
         },
         {
           "path": "skills/explore-the-sky/SKILL.md",
-          "bytes": 3388,
-          "sha256": "8ced584c114b0391d39ddf1f6cfabfb87fcd80b5f25c57242578d97299c519ee"
+          "bytes": 3944,
+          "sha256": "0bfc721fa8b3b910e90c57f68d1deb5958a00b082580689be4ab95bc1b70de0e"
         }
       ]
     },
@@ -65,8 +65,8 @@
       "name": "zodiacs-developer",
       "version": "0.3.13",
       "file": "zodiacs-developer-0.3.13.zip",
-      "bytes": 2757147,
-      "sha256": "c901ef331471779dc81a563ebfcd507de8273054ff6b117abc34bed0009ea609",
+      "bytes": 2837896,
+      "sha256": "2e6b037993620f383e3f68732cf91b6457fb24d14fbf10a92ad182a9f4beb49a",
       "members": [
         {
           "path": ".codex-plugin/plugin.json",
@@ -135,8 +135,8 @@
         },
         {
           "path": "mcp/server.mjs",
-          "bytes": 2644994,
-          "sha256": "e375ad031a6da3cb406d9de5f5ffa3c0aaebd45e77bb55f1512a757858ad8eb9"
+          "bytes": 2725743,
+          "sha256": "5987f48fbbb232f4f52c2ddc80e5e600368a2380f8b4e8e6c2680ab9357aefeb"
         },
         {
           "path": "package-lock.json",

@@ -2,7 +2,8 @@
  * "The sky on…": a keepsake card for a wedding, a birthday, a new home or
  * another day, from a date, an optional time and an optional place. Computed
  * on the device behind the lazy engine import; the card's link carries its
- * inputs, so nothing is stored anywhere.
+ * inputs, so nothing is stored unless a signed-in person saves that link to
+ * their profile (PUBLIC_ACCOUNT_SAVES_ENABLED).
  */
 import { signIcon } from '../lib/sign-icon';
 import { useEffect, useRef, useState } from 'preact/hooks';
@@ -11,6 +12,8 @@ import { OCCASION_KINDS, OCCASION_LABELS, type OccasionKind } from '../lib/occas
 import type { OccasionCard } from '../lib/occasions/card';
 import PlaceSearch from './PlaceSearch';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
+import { savedPageHref, type SavedPageDraft } from '../lib/profile/saved-pages-config';
+import { useAccountSaveModule } from './account-save-loader';
 
 const loadCard = () => Promise.all([import('../lib/occasions/card'), import('../lib/occasions/site-clock')]);
 const NAMES_MAX = 60;
@@ -136,6 +139,17 @@ export default function OccasionSky() {
     }
   }
 
+  const accountSave = useAccountSaveModule(Boolean(card));
+  const saveDraft: SavedPageDraft | null = card && shown ? (() => {
+    const href = savedPageHref(
+      'occasion',
+      cardLink(shown.occasion, shown.names, shown.date, shown.time, shown.city),
+      window.location.origin,
+    );
+    const title = [shown.names.trim(), card.words.title, longDate(card.input.date)].filter(Boolean).join(' · ');
+    return href ? { kind: 'occasion', title, href } : null;
+  })() : null;
+
   const tz = card?.input.timeZone ?? null;
   const sun = card?.sky.bodies.find((row) => row.body === 'Sun');
   const moon = card?.sky.bodies.find((row) => row.body === 'Moon');
@@ -227,6 +241,7 @@ export default function OccasionSky() {
           {card.moonSignChange && (
             <p class="field__help">The Moon changes sign that day. Add the time to pin it down.</p>
           )}
+          {accountSave && <accountSave.default kind="page" noun="card" draft={saveDraft} />}
         </div>
       )}
     </div>

@@ -13,6 +13,8 @@ import ProfileCardInbox from '../../islands/ProfileCardInbox';
 import ProfilePeople from '../../islands/ProfilePeople';
 import ProfileKeepClose from '../../islands/ProfileKeepClose';
 import SavedRecordsPanel from '../../islands/SavedRecordsPanel';
+import SavedPagesPanel from '../../islands/SavedPagesPanel';
+import { accountSavesEnabled } from '../../lib/profile/saved-pages-config';
 import { savedRecordsEnabled } from '../../lib/profile/saved-record-flags';
 import LivingChartTimeline from '../../islands/living-chart/LivingChartTimeline';
 import { hasDailyChartEmailProvider } from '../../lib/email/daily-config';
@@ -32,6 +34,9 @@ const livingChartSyncPrivacyEnabled = livingChartSyncEnabled({
   PUBLIC_LIVING_CHART_SYNC_ENABLED: process.env.PUBLIC_LIVING_CHART_SYNC_ENABLED,
 });
 const livingChartSurfaceEnabled = true;
+const accountSavesSurfaceEnabled = syncConfigured && accountSavesEnabled({
+  PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED,
+});
 const savedRecordsSurfaceEnabled = savedRecordsEnabled({
   PUBLIC_SAVED_RECORDS_ENABLED: process.env.PUBLIC_SAVED_RECORDS_ENABLED,
 });
@@ -79,6 +84,8 @@ const savedRecordsSurfaceEnabled = savedRecordsEnabled({
     )}
 
     {accountSyncV2Enabled && <ProfilePeople accountBound client:idle />}
+
+    {accountSavesSurfaceEnabled && <SavedPagesPanel enabled client:load />}
 
     <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="en" client:load />
 

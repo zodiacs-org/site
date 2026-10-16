@@ -3,7 +3,8 @@
  * composition over signs.ts — no engine imports, so pair pages compute
  * their panels at build time and the synastry island ships without the
  * ephemeris. Written in the interpretations.ts voice: dry, specific,
- * warm, no verdicts pretending to be scores.
+ * warm. The notes forecast in astrology's terms what a pairing tends to be
+ * like; they never guarantee how a relationship turns out.
  */
 import { SIGNS, SIGN_SLUGS, signBySlug } from './signs';
 import type { Element, Modality, Sign } from './signs';
@@ -34,43 +35,43 @@ function comboKey(a: string, b: string): string {
 const ELEMENT_NOTES: Record<string, InteractionNote> = {
   'fire+fire': {
     label: 'Shared heat',
-    note: 'Two fire signs move at the same speed and forgive at the same speed. The open question is who minds the brakes.',
+    note: 'You two run hot: fast chemistry, quick fights and even quicker make-ups. Expect plenty of excitement.',
   },
   'earth+fire': {
     label: 'Spark and soil',
-    note: 'Fire supplies ignition, earth supplies follow-through. It works once each stops grading the other’s tempo.',
+    note: 'Fire starts, earth finishes: you’ll get a lot done together, but expect clashes over pace.',
   },
   'air+fire': {
     label: 'Oxygen',
-    note: 'Air feeds fire and fire keeps air warm — quick, talkative, and mobile. Somebody still has to anchor the calendar.',
+    note: 'Air fans the flames: lively talk, big plans and a fun, fast-moving bond.',
   },
   'fire+water': {
     label: 'Steam',
-    note: 'Impulse meets feeling: each can do what the other can’t. Handled carelessly it scalds; handled well it moves things.',
+    note: 'Passion meets feeling: intense attraction, but tempers and moods can boil over. This pair needs patience.',
   },
   'earth+earth': {
     label: 'Bedrock',
-    note: 'Two earth signs build a life that works on paper and in practice. Booking the surprises becomes a shared chore.',
+    note: 'Steady and loyal: you build something solid together, though romance can slip into routine.',
   },
   'air+earth': {
     label: 'Idea and estimate',
-    note: 'Air brings possibilities, earth asks what they cost. Respect makes that a partnership; impatience makes it a committee.',
+    note: 'Ideas meet practicality: you balance each other, but one may find the other too dreamy or too cautious.',
   },
   'earth+water': {
     label: 'River and bank',
-    note: 'Water softens earth and earth gives water shape — the classic quiet-strength pairing, genuinely low-friction.',
+    note: 'One of astrology’s best pairings: water softens earth, earth gives water shape, and deep trust grows.',
   },
   'air+air': {
     label: 'Crosswind',
-    note: 'Endless conversation and mutual independence. Feelings need an appointment, made on purpose, kept.',
+    note: 'Best friends first: endless conversation and plenty of freedom, though deep feelings can go unspoken.',
   },
   'air+water': {
     label: 'Naming the weather',
-    note: 'Air wants the feeling named; water wants it felt. The translation work never fully ends, and it’s worth doing.',
+    note: 'Head meets heart: air wants to talk it through, water wants to feel it. Expect misunderstandings unless you’re patient.',
   },
   'water+water': {
     label: 'Deep water',
-    note: 'Two water signs read each other without subtitles. The tide comes in together and goes out together — keep a barometer.',
+    note: 'You read each other instantly: a deep, intuitive bond, and you’ll feel each other’s moods.',
   },
 };
 
@@ -81,27 +82,27 @@ export function elementInteraction(a: Element, b: Element): InteractionNote {
 const MODALITY_NOTES: Record<string, InteractionNote> = {
   'cardinal+cardinal': {
     label: 'Two starters',
-    note: 'Both open seasons; both arrive with a plan. The real negotiation is whose plan runs this quarter.',
+    note: 'Two leaders: plenty of drive, and regular battles over who’s in charge.',
   },
   'cardinal+fixed': {
     label: 'Starter and keeper',
-    note: 'One launches, the other sustains. It divides labor beautifully as long as the credit gets divided too.',
+    note: 'One starts, one sustains: a productive team once you agree on the direction.',
   },
   'cardinal+mutable': {
     label: 'Starter and adapter',
-    note: 'One sets the direction, the other adjusts course without ego. Low friction — watch that drift doesn’t replace steering.',
+    note: 'One leads, one adapts: an easy partnership with few power struggles.',
   },
   'fixed+fixed': {
     label: 'Two anchors',
-    note: 'Durable, loyal, and immovable in the same argument. Disagreements calcify unless someone blinks by appointment.',
+    note: 'Two loyal, stubborn signs: a lasting bond, but neither backs down in an argument.',
   },
   'fixed+mutable': {
     label: 'Anchor and sail',
-    note: 'Stability plus flexibility, each supplying what the other skips — resented only when either denies the other’s function.',
+    note: 'Stability meets flexibility: you balance each other well.',
   },
   'mutable+mutable': {
     label: 'Two sails',
-    note: 'Endlessly adaptable and rarely in open conflict. Decisions can orbit for months without landing; name a deadline.',
+    note: 'Easygoing and adaptable: few fights, but decisions can drift.',
   },
 };
 
@@ -111,12 +112,12 @@ export function modalityInteraction(a: Modality, b: Modality): InteractionNote {
 
 export function polarityNote(a: Sign, b: Sign): string {
   if (a.polarity === 'day' && b.polarity === 'day') {
-    return 'Both day signs: energy runs outward on both sides, toward action and expression. Rest is the shared blind spot.';
+    return 'Both outgoing: an active, social, high-energy pair.';
   }
   if (a.polarity === 'night' && b.polarity === 'night') {
-    return 'Both night signs: both process inward before anything shows. Silences here are usually work, not distance.';
+    return 'Both private: a quiet, deeply felt bond that needs time alone together.';
   }
-  return 'One day sign, one night sign: one thinks out loud, the other thinks first. Each supplies the register the other skips.';
+  return 'One outgoing, one private: you balance each other, as one talks it out and the other thinks it through.';
 }
 
 /** Everything the pair-page panel renders, computed from the sign table. */
@@ -154,7 +155,7 @@ export const BODY_ROLE: Record<string, string> = {
   Venus: 'way of loving',
   Mars: 'drive',
   Jupiter: 'appetite for more',
-  Saturn: 'standards',
+  Saturn: 'sense of duty',
   Uranus: 'independence',
   Neptune: 'imagination',
   Pluto: 'intensity',
@@ -163,23 +164,23 @@ export const BODY_ROLE: Record<string, string> = {
 const ASPECT_PHRASE: Record<string, { verb: string; gloss: string }> = {
   conjunction: {
     verb: 'sits right on top of',
-    gloss: 'the two run together, hard to tell apart, for better and worse',
+    gloss: 'you’ll feel this one strongly',
   },
   sextile: {
     verb: 'works easily with',
-    gloss: 'an ease that pays out whenever either of you bothers to use it',
+    gloss: 'an easy spark that grows when you use it',
   },
   square: {
     verb: 'pushes against',
-    gloss: 'friction that forces growth or starts fights, depending on the week',
+    gloss: 'expect friction here, especially under stress',
   },
   trine: {
     verb: 'flows with',
-    gloss: 'support so natural it can go unnoticed and unthanked',
+    gloss: 'this flows naturally and brings out the best in you both',
   },
   opposition: {
     verb: 'pulls against',
-    gloss: 'a seesaw — balance when both sit down, whiplash when one stands up',
+    gloss: 'a strong pull that swings between attraction and tension',
   },
 };
 

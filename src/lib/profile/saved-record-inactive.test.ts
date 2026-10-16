@@ -142,7 +142,7 @@ describe('inactive saved receipt integration boundary', () => {
     expect([...visited].filter((path) => legacy.has(path)
       || path.startsWith(resolve(ROOT, 'src/lib/living-chart') + '/')
       || path.startsWith(resolve(ROOT, 'src/lib/supabase') + '/')).map((path) => relative(ROOT, path))).toEqual([]);
-  });
+  }, 60_000); // It reads every file under src/ and api/; under a full parallel run that can pass 5 s.
 
   it('imports without storage discovery, writes, auth subscription or network activity', async () => {
     const forbidden = vi.fn(() => { throw new Error('Unexpected activation.'); });

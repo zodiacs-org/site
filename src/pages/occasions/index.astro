@@ -3,6 +3,9 @@ import Base from '../../layouts/Base.astro';
 import OccasionSky from '../../islands/OccasionSky.tsx';
 import '../../styles/calculator.css';
 import '../../styles/occasions.css';
+import { accountSavesEnabled } from '../../lib/profile/saved-pages-config';
+
+const accountSaves = accountSavesEnabled({ PUBLIC_ACCOUNT_SAVES_ENABLED: process.env.PUBLIC_ACCOUNT_SAVES_ENABLED });
 
 const faq = [
   {
@@ -19,7 +22,9 @@ const faq = [
   },
   {
     q: 'Is anything stored?',
-    a: 'No. The sky is worked out on your device. The card’s link keeps the names, date, time and place after the # sign, which browsers do not send to our server, so sharing the link shares the card.',
+    a: accountSaves
+      ? 'Only if you save it to your profile. The sky is worked out on your device, and the card’s link keeps the names, date, time and place after the # sign, which browsers do not send to our server. If you are signed in and choose Save to your profile, that link is stored with your account so it opens on your other devices.'
+      : 'No. The sky is worked out on your device. The card’s link keeps the names, date, time and place after the # sign, which browsers do not send to our server, so sharing the link shares the card.',
   },
 ];
 

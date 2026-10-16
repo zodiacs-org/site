@@ -1,9 +1,49 @@
-# Claude directory listing — draft
+# Claude directory listing
 
-Prepared 7 October 2026 from Anthropic's [connector submission guide], [plugin
-submission guide] and [publishing overview]. Nothing has been submitted. The
-owner chooses the account, answers the data-handling and compliance questions,
-and clicks Submit.
+## Correction sent — 15 October 2026, 18:01 UTC
+
+After #761 reached production, a correction was sent from admin@zodiacs.org to
+mcp-review@anthropic.com as a reply on ticket #145701231, with the owner's
+authorization. It withdraws the earlier statement that Zodiacs never chooses or
+ranks dates, scores relationships or predicts outcomes, and says what changed:
+
+- the comparison tool gives a score out of 100, with attraction, communication
+  and long-term stability, and can compare someone with a published famous chart;
+- the occasion tool rates a date out of 100 and can list the best-rated days in
+  a range of up to 92 days;
+- a horoscope can include a personal forecast for the person's week;
+- comparison and date results can be shared as a link whose preview shows the score.
+
+It states that every result gives its astrological reasons and says it is
+astrology's reading, not a guarantee; that Zodiacs does not pick investments,
+make health predictions or guarantee outcomes; that storage is unchanged; that
+share links carry only first names, signs, scores and an occasion's date and
+place; and that all tools stay read-only with no sign-in. No reply yet.
+
+## 0.5.0 review update — 15 October 2026
+
+The existing listing at https://claude.ai/directory/manage/zodiacs remains in
+review. A note was sent from admin@zodiacs.org to the submission contact,
+mcp-review@anthropic.com, describing the production update at the unchanged
+https://zodiacs.org/mcp endpoint. This is a reviewer notification, not evidence
+that the directory has approved or refreshed the listing.
+
+The server now offers thirteen read-only tools. Seven additions were explained:
+occasion sky cards, life milestone dates, two-chart comparisons, chart twins,
+published famous charts, birthday facts and solar returns, and sky-calendar
+subscription links. The note states that supplied birth and occasion details
+are not retained; anonymous daily call totals contain no request details or
+user identifiers. It also states that Zodiacs never chooses or ranks dates,
+scores relationships or predicts outcomes.
+
+The note gives the public name **Zodiacs**, subtitle **Birth charts & horoscopes**,
+the updated privacy page, documentation, and the
+[0.5.0 walkthrough](https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.0.mp4).
+The entries below preserve the original 7 October submission for reference.
+
+Originally prepared 7 October 2026 from Anthropic's [connector submission guide],
+[plugin submission guide] and [publishing overview]. The owner submitted the
+connector that day. The dated entries below distinguish submission from approval.
 
 [connector submission guide]: https://claude.com/docs/connectors/building/submission
 [plugin submission guide]: https://claude.com/docs/plugins/submit

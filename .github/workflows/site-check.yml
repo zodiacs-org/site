@@ -616,6 +616,17 @@ jobs:
       - name: PostgreSQL 17 migration, privacy, and concurrency gates
         run: bash scripts/test-games-sql.sh
 
+  saved-pages-sql:
+    name: Saved pages SQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: PostgreSQL 17 migration, row-level security and limit gates
+        run: bash scripts/test-saved-pages-sql.sh
+
   phase4-sharing-drive:
     name: Phase 4 sharing drive
     runs-on: ubuntu-latest

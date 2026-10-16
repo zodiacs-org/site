@@ -2,8 +2,9 @@
 
 ## Current release packet — 15 October 2026
 
-The consumer listing is **Zodiacs — Birth charts & horoscopes**. Upload
-`integrations/packages/zodiacs-sky-0.5.0.zip`, which includes the remote MCP
+The consumer listing is **Zodiacs — Birth charts & horoscopes**.
+`integrations/packages/zodiacs-sky-0.5.0.zip` was uploaded and submitted on
+15 October 2026 after the owner confirmed all six final attestations. It includes the remote MCP
 at `https://zodiacs.org/mcp`, the current description, five positive and three
 negative cases, and the 0.5.0 demo URL. The hand-authored submission JSON keeps
 the same name, subtitle, cases and demo URL as a form reference.
@@ -15,10 +16,11 @@ three-card demo and its capture limitations.
 
 The owner confirmed the previous public plugin was deleted and requested a
 new plugin identity. This supersedes the earlier instruction to update the
-old identity. Use the approved business publisher and admin@zodiacs.org;
-keep personal contact information out of the public profile. The owner still
-reads and confirms portal attestations. Actual portal status and identifiers
-belong in `PORTAL_REVIEW.md`; this packet is not evidence of submission.
+old identity. The replacement was submitted under the verified Zodiacs LLC
+business identity, with admin@zodiacs.org as public contact. The portal shows
+0.5.0 in review, not published. `PORTAL_REVIEW.md` records the identity, scans
+and submission confirmation; `claude-directory/LISTING.md` records the reviewer
+notification sent for the existing connector.
 
 The older package details below are dated history, not the 0.5.0 upload plan.
 

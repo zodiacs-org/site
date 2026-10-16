@@ -3,6 +3,7 @@ import { sendInviteJson } from '../src/lib/invite/api.js';
 import { handleGamesApi } from '../src/lib/games/server.js';
 import { handleRegistryNews } from './_registry/news-handler.js';
 import { handleChartPreviewNodeRequest } from '../src/server/chart-preview.js';
+import { handleResultShareNodeRequest, isResultShareRoute, RESULT_SHARE_ROUTE_KEY } from '../src/server/result-preview.js';
 import completeHandler from '../src/lib/invite/routes/invite-complete.js';
 import exchangeHandler from '../src/lib/invite/routes/invite-exchange.js';
 import hideHandler from '../src/lib/invite/routes/invite-hide.js';
@@ -60,6 +61,12 @@ export default async function handler(req: any, res: any): Promise<void> {
   const previewRoute = req.query?.__zodiacs_og_route;
   if (previewRoute === 'link' || previewRoute === 'image') {
     await handleChartPreviewNodeRequest(req, res, previewRoute);
+    return;
+  }
+  // Share links for a compatibility score and a date's rating, and their preview images.
+  const shareRoute = req.query?.[RESULT_SHARE_ROUTE_KEY];
+  if (isResultShareRoute(shareRoute)) {
+    await handleResultShareNodeRequest(req, res, shareRoute);
     return;
   }
   // /api/games rewrites here (vercel.json) so the Zodiac Games do not add a

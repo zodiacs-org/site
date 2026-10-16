@@ -12,8 +12,9 @@
  *
  * OUT_DIR is optional — screenshots are skipped without it. In the
  * remote container, Chromium lives at /opt/pw-browsers/chromium.
- * The three A20 OG candidates always use the generator's fixed review-artifact
- * directory; production OG files are never updated by this drive.
+ * The reviewed People identity OG candidates (PRINCIPAL_IDENTITIES) always use
+ * the generator's fixed review-artifact directory; production OG files are
+ * never updated by this drive.
  */
 import { chromium } from 'playwright-core';
 import { execFile, spawn } from 'node:child_process';
@@ -40,6 +41,7 @@ import { runTransitItineraryChecks } from './transit-itinerary-checks.mjs';
 import { runEditorialMetadataChecks } from './editorial-metadata-drive.mjs';
 import { verifyWidgetBuilder } from './widgets-drive.mjs';
 import { awaitAppliedFooter, runFooterStyleChecks } from './footer-style-checks.mjs';
+import { PEOPLE_IDENTITY_REVIEW_SLUGS } from '../scripts/people-identity-og-review.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? await findChromium();
@@ -1287,11 +1289,12 @@ try {
   const ogReview = await promisify(execFile)(process.execPath,
     ['scripts/build-og-void.mjs', '--review-people-identities'], {
       env: { ...process.env, CHROMIUM_PATH: CHROMIUM },
-      timeout: 120000,
+      timeout: 300000,
       maxBuffer: 2 * 1024 * 1024,
     });
-  check('People identity OG: three review candidates rendered with production files unchanged',
-    /Reviewed 3 People identity cards; production OG files unchanged\./u.test(ogReview.stdout), ogReview.stdout.trim());
+  check(`People identity OG: ${PEOPLE_IDENTITY_REVIEW_SLUGS.length} reviewed identity cards rendered with production files unchanged`,
+    ogReview.stdout.includes(`Reviewed ${PEOPLE_IDENTITY_REVIEW_SLUGS.length} People identity cards; production OG files unchanged.`),
+    ogReview.stdout.trim());
   const factsReview = await promisify(execFile)(process.execPath,
     ['scripts/build-og-void.mjs', '--review-people-facts'], {
       env: { ...process.env, CHROMIUM_PATH: CHROMIUM }, timeout: 120000, maxBuffer: 2 * 1024 * 1024,

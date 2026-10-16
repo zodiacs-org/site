@@ -33,6 +33,7 @@ import {
 } from '../lib/profile/daily-email-client';
 import { weeklyDigestSignupEnabled } from '../lib/weekly-digest/feature-flags';
 import EvidenceDisclosure from './EvidenceDisclosure';
+import OAuthButtons from './OAuthButtons';
 
 type PushOptInModule = typeof import('./PushOptIn');
 
@@ -916,6 +917,8 @@ export default function ProfileManager({
             <button class="pf-chart__action" type="button" onClick={onSignOut}>{t(locale, 'signOut')}</button>
           </div>
         ) : (
+          <div class="pf-sync__signin">
+          {locale === 'en' && <OAuthButtons next="/profile/" />}
           <form class="pf-sync__form" onSubmit={onSendLink}>
             <input
               class="field__input"
@@ -932,6 +935,7 @@ export default function ProfileManager({
               <span>{syncState === 'sending' ? t(locale, 'sending') : t(locale, 'sendSignIn')}</span><span class="orb">↗</span>
             </button>
           </form>
+          </div>
         )}
         {dailyPanel}
         {/* Keep the return fragment present before the asynchronous session resolves. */}

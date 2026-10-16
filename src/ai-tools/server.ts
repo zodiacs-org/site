@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/server';
-import { AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, type AiToolName } from './contracts';
+import { AI_RESULT_SCHEMA, AI_VERSION, HOROSCOPE_URI, OCCASIONS_URI, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, LEGACY_WIDGET_URIS, type AiToolName } from './contracts';
 import { executeAiTool, offeredTools, type AiCallContext, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { HOROSCOPES_HTML } from '../../integrations/generated/horoscopes.mjs';
@@ -8,8 +8,11 @@ import { WIDGET_HTML } from '../../integrations/generated/sky-calendar.mjs';
 import { registerSkyWatch, type SkyWatch } from './watch/service';
 import type { Principal } from './watch/contracts';
 import { WATCH_SCOPES } from './watch/oauth';
+import { ACCOUNT_SCOPES, SAVE_DESCRIPTION, SAVE_OUTPUT_SCHEMA, SAVE_TITLE, SAVE_TOOL_NAME, saveInput } from './accounts/contracts';
+import { saveToZodiacs, type AccountPrincipal } from './accounts/save';
+import { signInChallenge, type AccountsService } from './accounts/service';
 
-const INSTRUCTIONS = 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never guess a birth time or a sign. Zodiacs does not schedule anything, pick investments, or promise how a relationship, health or money will turn out; do not call its tools for those requests, and say plainly that it cannot.';
+const INSTRUCTIONS = 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never guess a birth time or a sign. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology’s reading. Zodiacs does not schedule anything, pick investments, make health predictions or guarantee how anything will turn out; do not call its tools for those requests, and say plainly that it cannot.';
 
 const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   get_upcoming_events: { uri: WIDGET_URI, icon: 'sky-calendar' },
@@ -37,8 +40,11 @@ export function refFrom(meta: unknown): 'chatgpt' | 'assistant' {
   return meta && typeof meta === 'object' && Object.keys(meta).some((key) => key.startsWith('openai/')) ? 'chatgpt' : 'assistant';
 }
 
+/** The signed-in person behind a request to a server offering accounts, or null for an anonymous request. */
+export interface AccountContext { service: AccountsService; principal: AccountPrincipal | null }
+
 /** A fresh SDK server per HTTP request or local stdio connection. */
-export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }) {
+export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }, account?: AccountContext) {
   const server = new McpServer({ name: 'zodiacs', version: AI_VERSION }, {
     capabilities: { tools: {}, resources: {}, ...(watch ? { events: {} } : {}) },
     instructions: INSTRUCTIONS,
@@ -79,6 +85,26 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
       };
     });
   }
+  // Mixed authentication: every tool above stays anonymous; saving needs the person's own account.
+  if (account && dependencies.occasions) registerSaveTool(server, dependencies, account);
   if (watch) registerSkyWatch(server, watch.service, watch.owner);
   return server;
+}
+
+function registerSaveTool(server: McpServer, dependencies: AiDependencies, account: AccountContext) {
+  server.registerTool(SAVE_TOOL_NAME, {
+    title: SAVE_TITLE, description: SAVE_DESCRIPTION, inputSchema: saveInput, outputSchema: SAVE_OUTPUT_SCHEMA,
+    // It writes only to the signed-in person's own account, and saving the same item again keeps one copy.
+    annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false, idempotentHint: true, title: SAVE_TITLE },
+    _meta: { securitySchemes: [{ type: 'oauth2', scopes: [...ACCOUNT_SCOPES] }] },
+  }, async (args: unknown, ctx?: { mcpReq?: { _meta?: unknown } }) => {
+    if (!account.principal) {
+      const refusal = { schema: AI_RESULT_SCHEMA, ok: false as const, tool: SAVE_TOOL_NAME, error: { code: 'authentication-required', message: 'Sign in to your Zodiacs account to save this. Nothing was saved.' } };
+      // The Apps SDK convention: ChatGPT reads this challenge and shows its sign-in prompt.
+      return { isError: true, content: [{ type: 'text' as const, text: JSON.stringify(refusal) }], structuredContent: refusal,
+        _meta: { 'mcp/www_authenticate': [signInChallenge(account.service.oauth)] } };
+    }
+    const result = await saveToZodiacs(args, account.principal, account.service.save, { ...(dependencies.localTime ? { localTime: dependencies.localTime } : {}), ...(dependencies.now ? { now: dependencies.now } : {}) }, refFrom(ctx?.mcpReq?._meta));
+    return { isError: !result.ok, content: [{ type: 'text' as const, text: JSON.stringify(result) }], structuredContent: result };
+  });
 }
