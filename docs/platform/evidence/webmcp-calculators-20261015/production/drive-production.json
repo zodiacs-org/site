@@ -1,0 +1,3438 @@
+{
+  "schema": "zodiacs.webmcp-production-drive.v1",
+  "command": "node tests/webmcp-drive.mjs --base-url https://zodiacs.org",
+  "startedAt": "2026-10-17T13:14:57Z",
+  "finishedAt": "2026-10-17T13:32:05Z",
+  "deployment": {
+    "deploymentId": "dpl_64gyTAnwkNLdFsEUnD9s3WoVkmNB",
+    "aliasUpdatedAt": "2026-10-17T13:12:18.049Z",
+    "readyState": "READY",
+    "target": "production",
+    "githubCommitSha": "069ef13e79783370a1cfe6c3aaf8aa9ab2658140"
+  },
+  "deploymentAfter": {
+    "deploymentId": "dpl_64gyTAnwkNLdFsEUnD9s3WoVkmNB",
+    "aliasUpdatedAt": "2026-10-17T13:12:18.049Z",
+    "readyState": "READY",
+    "target": "production",
+    "githubCommitSha": "069ef13e79783370a1cfe6c3aaf8aa9ab2658140"
+  },
+  "exit": 0,
+  "summary": "webmcp drive: 543 calculator pages and their tools checked against https://zodiacs.org",
+  "result": {
+    "base": "https://zodiacs.org",
+    "native": {
+      "skipped": "the production check drives the polyfill only"
+    },
+    "polyfill": {
+      "tools": [
+        {
+          "name": "zodiacs.search",
+          "description": "Search English astrology tools and reference pages on zodiacs.org.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 200,
+                "pattern": "\\S[\\s\\S]*\\S",
+                "description": "Words to find on zodiacs.org."
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ],
+      "assetRequests": [
+        "/assets/webmcp-register.js?v=calculators-1"
+      ],
+      "responseShape": "CallToolResult",
+      "envelope": {
+        "ok": true,
+        "data": {
+          "results": [
+            {
+              "title": "Birth chart (natal chart)",
+              "path": "/learn/glossary/#birth-chart",
+              "kind": "term",
+              "description": "A birth chart is a map of apparent geocentric positions for one birth moment."
+            },
+            {
+              "title": "Birth chart API | Zodiacs developer guides",
+              "path": "/developers/docs/birth-chart-api/",
+              "kind": "page",
+              "description": "Calculate a birth chart over HTTP from a local birth time and place, with skipped and repeated clock times, local mean time and the zone history stated rather than guessed."
+            },
+            {
+              "title": "Free Birth Chart Calculator — Sun, Moon & Rising",
+              "path": "/birth-chart/",
+              "kind": "tool",
+              "description": "Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean — computed privately, in your browser."
+            },
+            {
+              "title": "Someone Else’s Birth Chart",
+              "path": "/birth-chart/someone-else/",
+              "kind": "tool",
+              "description": "Open someone else’s astrology chart with their permission, using birth details, the Big Three, or a Zodiacs chart link."
+            },
+            {
+              "title": "The Birth Chart in Three Dimensions — Declination, Parallels, Sect",
+              "path": "/birth-chart/three-dimensions/",
+              "kind": "tool",
+              "description": "What the flat chart wheel leaves out: declination and out-of-bounds planets, parallel aspects across the whole zodiac, and whether yours is a day or night chart."
+            }
+          ]
+        }
+      },
+      "calculators": [
+        {
+          "path": "/birth-chart/",
+          "tool": "zodiacs.birth_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/birth-chart/",
+          "tool": "zodiacs.birth_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/birth-chart/",
+          "tool": "zodiacs.birth_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/birth-chart/",
+          "tool": "zodiacs.birth_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/birth-chart/",
+          "tool": "zodiacs.birth_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/birth-chart/",
+          "tool": "zodiacs.birth_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/moon-sign/",
+          "tool": "zodiacs.moon_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/moon-sign/",
+          "tool": "zodiacs.moon_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/moon-sign/",
+          "tool": "zodiacs.moon_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/moon-sign/",
+          "tool": "zodiacs.moon_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/moon-sign/",
+          "tool": "zodiacs.moon_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/moon-sign/",
+          "tool": "zodiacs.moon_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/rising-sign/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/aries/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/aries/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/aries/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/aries/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/aries/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/taurus/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/taurus/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/taurus/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/taurus/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/taurus/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/gemini/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/gemini/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/gemini/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/gemini/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/gemini/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/cancer/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/cancer/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/cancer/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/cancer/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/cancer/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/leo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/leo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/leo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/leo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/leo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/virgo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/virgo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/virgo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/virgo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/virgo/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/libra/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/libra/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/libra/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/libra/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/libra/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/scorpio/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/scorpio/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/scorpio/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/scorpio/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/scorpio/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/sagittarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/sagittarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/sagittarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/sagittarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/sagittarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/capricorn/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/capricorn/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/capricorn/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/capricorn/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/capricorn/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/aquarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/aquarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/aquarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/aquarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/aquarius/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/rising-sign/pisces/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/rising-sign/pisces/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/rising-sign/pisces/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/rising-sign/pisces/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/rising-sign/pisces/",
+          "tool": "zodiacs.rising_sign",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/big-three/",
+          "tool": "zodiacs.big_three",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/big-three/",
+          "tool": "zodiacs.big_three",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/big-three/",
+          "tool": "zodiacs.big_three",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/big-three/",
+          "tool": "zodiacs.big_three",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/big-three/",
+          "tool": "zodiacs.big_three",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/big-three/",
+          "tool": "zodiacs.big_three",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/compatibility/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-aries/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-aries/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-aries/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-aries/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-aries/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aries-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aries-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aries-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aries-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aries-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-taurus/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/taurus-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/taurus-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/taurus-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/taurus-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/taurus-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-gemini/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/gemini-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/gemini-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/gemini-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/gemini-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/gemini-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/cancer-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/cancer-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/cancer-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/cancer-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/cancer-cancer/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/cancer-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/cancer-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/cancer-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/cancer-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/cancer-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/cancer-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/cancer-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/cancer-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/cancer-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/cancer-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/cancer-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/cancer-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/cancer-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/cancer-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/cancer-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/cancer-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/cancer-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/cancer-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/cancer-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/cancer-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/cancer-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/cancer-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/cancer-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/cancer-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/cancer-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/cancer-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/cancer-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/cancer-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/cancer-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/cancer-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/cancer-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/cancer-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/cancer-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/cancer-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/cancer-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/cancer-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/cancer-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/cancer-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/cancer-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/cancer-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/leo-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/leo-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/leo-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/leo-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/leo-leo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/leo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/leo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/leo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/leo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/leo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/leo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/leo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/leo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/leo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/leo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/leo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/leo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/leo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/leo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/leo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/leo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/leo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/leo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/leo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/leo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/leo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/leo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/leo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/leo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/leo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/leo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/leo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/leo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/leo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/leo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/leo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/leo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/leo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/leo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/leo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/virgo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/virgo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/virgo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/virgo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/virgo-virgo/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/virgo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/virgo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/virgo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/virgo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/virgo-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/virgo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/virgo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/virgo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/virgo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/virgo-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/virgo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/virgo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/virgo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/virgo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/virgo-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/virgo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/virgo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/virgo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/virgo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/virgo-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/virgo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/virgo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/virgo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/virgo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/virgo-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/virgo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/virgo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/virgo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/virgo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/virgo-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/libra-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/libra-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/libra-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/libra-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/libra-libra/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/libra-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/libra-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/libra-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/libra-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/libra-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/libra-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/libra-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/libra-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/libra-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/libra-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/libra-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/libra-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/libra-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/libra-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/libra-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/libra-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/libra-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/libra-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/libra-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/libra-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/libra-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/libra-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/libra-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/libra-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/libra-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/scorpio-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/scorpio-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/scorpio-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/scorpio-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/scorpio-scorpio/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/scorpio-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/scorpio-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/scorpio-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/scorpio-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/scorpio-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/scorpio-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/scorpio-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/scorpio-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/scorpio-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/scorpio-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/scorpio-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/scorpio-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/scorpio-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/scorpio-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/scorpio-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/scorpio-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/scorpio-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/scorpio-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/scorpio-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/scorpio-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/sagittarius-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/sagittarius-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/sagittarius-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/sagittarius-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/sagittarius-sagittarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/sagittarius-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/sagittarius-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/sagittarius-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/sagittarius-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/sagittarius-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/sagittarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/sagittarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/sagittarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/sagittarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/sagittarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/sagittarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/sagittarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/sagittarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/sagittarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/sagittarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/capricorn-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/capricorn-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/capricorn-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/capricorn-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/capricorn-capricorn/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/capricorn-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/capricorn-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/capricorn-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/capricorn-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/capricorn-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/capricorn-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/capricorn-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/capricorn-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/capricorn-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/capricorn-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aquarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aquarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aquarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aquarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aquarius-aquarius/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/aquarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/aquarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/aquarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/aquarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/aquarius-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/compatibility/pisces-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/compatibility/pisces-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/compatibility/pisces-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/compatibility/pisces-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/compatibility/pisces-pisces/",
+          "tool": "zodiacs.compatibility",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/transits/",
+          "tool": "zodiacs.transits",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/transits/",
+          "tool": "zodiacs.transits",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/transits/",
+          "tool": "zodiacs.transits",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/transits/",
+          "tool": "zodiacs.transits",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/transits/",
+          "tool": "zodiacs.transits",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/transits/",
+          "tool": "zodiacs.transits",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/saturn-return/",
+          "tool": "zodiacs.saturn_return",
+          "refusedBy": "schema",
+          "toolRefusal": "TIME_NEEDS_PLACE"
+        },
+        {
+          "path": "/es/saturn-return/",
+          "tool": "zodiacs.saturn_return",
+          "refusedBy": "schema",
+          "toolRefusal": "TIME_NEEDS_PLACE"
+        },
+        {
+          "path": "/pt/saturn-return/",
+          "tool": "zodiacs.saturn_return",
+          "refusedBy": "schema",
+          "toolRefusal": "TIME_NEEDS_PLACE"
+        },
+        {
+          "path": "/fr/saturn-return/",
+          "tool": "zodiacs.saturn_return",
+          "refusedBy": "schema",
+          "toolRefusal": "TIME_NEEDS_PLACE"
+        },
+        {
+          "path": "/it/saturn-return/",
+          "tool": "zodiacs.saturn_return",
+          "refusedBy": "schema",
+          "toolRefusal": "TIME_NEEDS_PLACE"
+        },
+        {
+          "path": "/ru/saturn-return/",
+          "tool": "zodiacs.saturn_return",
+          "refusedBy": "schema",
+          "toolRefusal": "TIME_NEEDS_PLACE"
+        },
+        {
+          "path": "/solar-return/",
+          "tool": "zodiacs.solar_return",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/lunar-return/",
+          "tool": "zodiacs.lunar_return",
+          "refusedBy": "schema",
+          "toolRefusal": "CLOCK_CHANGE"
+        },
+        {
+          "path": "/numerology/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/1/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/2/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/3/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/4/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/5/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/6/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/7/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/8/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/9/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/11/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/22/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/numerology/life-path/33/",
+          "tool": "zodiacs.numerology",
+          "refusedBy": "schema",
+          "toolRefusal": "UNSUPPORTED_NAME"
+        },
+        {
+          "path": "/moon-phase/",
+          "tool": "zodiacs.moon_phase",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/moon-phase/",
+          "tool": "zodiacs.moon_phase",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/moon-phase/",
+          "tool": "zodiacs.moon_phase",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/moon-phase/",
+          "tool": "zodiacs.moon_phase",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/moon-phase/",
+          "tool": "zodiacs.moon_phase",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/moon-phase/",
+          "tool": "zodiacs.moon_phase",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/baby-zodiac/",
+          "tool": "zodiacs.baby_zodiac",
+          "refusedBy": "schema",
+          "toolRefusal": null
+        },
+        {
+          "path": "/es/baby-zodiac/",
+          "tool": "zodiacs.baby_zodiac",
+          "refusedBy": "schema",
+          "toolRefusal": null
+        },
+        {
+          "path": "/pt/baby-zodiac/",
+          "tool": "zodiacs.baby_zodiac",
+          "refusedBy": "schema",
+          "toolRefusal": null
+        },
+        {
+          "path": "/fr/baby-zodiac/",
+          "tool": "zodiacs.baby_zodiac",
+          "refusedBy": "schema",
+          "toolRefusal": null
+        },
+        {
+          "path": "/it/baby-zodiac/",
+          "tool": "zodiacs.baby_zodiac",
+          "refusedBy": "schema",
+          "toolRefusal": null
+        },
+        {
+          "path": "/ru/baby-zodiac/",
+          "tool": "zodiacs.baby_zodiac",
+          "refusedBy": "schema",
+          "toolRefusal": null
+        },
+        {
+          "path": "/chart-twins/",
+          "tool": "zodiacs.chart_twins",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/chart-twins/",
+          "tool": "zodiacs.chart_twins",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/chart-twins/",
+          "tool": "zodiacs.chart_twins",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/chart-twins/",
+          "tool": "zodiacs.chart_twins",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/chart-twins/",
+          "tool": "zodiacs.chart_twins",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/chart-twins/",
+          "tool": "zodiacs.chart_twins",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/group-charts/",
+          "tool": "zodiacs.group_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "DUPLICATE_PERSON"
+        },
+        {
+          "path": "/es/group-charts/",
+          "tool": "zodiacs.group_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "DUPLICATE_PERSON"
+        },
+        {
+          "path": "/pt/group-charts/",
+          "tool": "zodiacs.group_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "DUPLICATE_PERSON"
+        },
+        {
+          "path": "/fr/group-charts/",
+          "tool": "zodiacs.group_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "DUPLICATE_PERSON"
+        },
+        {
+          "path": "/it/group-charts/",
+          "tool": "zodiacs.group_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "DUPLICATE_PERSON"
+        },
+        {
+          "path": "/ru/group-charts/",
+          "tool": "zodiacs.group_chart",
+          "refusedBy": "schema",
+          "toolRefusal": "DUPLICATE_PERSON"
+        },
+        {
+          "path": "/astrologer-kit/",
+          "tool": "zodiacs.chart_pdf",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/astrologer-kit/",
+          "tool": "zodiacs.chart_pdf",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/astrologer-kit/",
+          "tool": "zodiacs.chart_pdf",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/astrologer-kit/",
+          "tool": "zodiacs.chart_pdf",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/astrologer-kit/",
+          "tool": "zodiacs.chart_pdf",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/astrologer-kit/",
+          "tool": "zodiacs.chart_pdf",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/your-sky-wrapped/",
+          "tool": "zodiacs.year_wrapped",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/es/your-sky-wrapped/",
+          "tool": "zodiacs.year_wrapped",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/pt/your-sky-wrapped/",
+          "tool": "zodiacs.year_wrapped",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/fr/your-sky-wrapped/",
+          "tool": "zodiacs.year_wrapped",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/it/your-sky-wrapped/",
+          "tool": "zodiacs.year_wrapped",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        },
+        {
+          "path": "/ru/your-sky-wrapped/",
+          "tool": "zodiacs.year_wrapped",
+          "refusedBy": "schema",
+          "toolRefusal": "INVALID_INPUT"
+        }
+      ]
+    },
+    "addresses": [
+      {
+        "address": "/birth-chart/index.html",
+        "opened": "/birth-chart/index.html",
+        "tool": "zodiacs.birth_chart"
+      },
+      {
+        "address": "/es/moon-phase/index.html",
+        "opened": "/es/moon-phase/index.html",
+        "tool": "zodiacs.moon_phase"
+      },
+      {
+        "address": "/rising-sign/aries/index.html",
+        "opened": "/rising-sign/aries/index.html",
+        "tool": "zodiacs.rising_sign"
+      },
+      {
+        "address": "/birth%2Dchart/",
+        "opened": "/birth%2Dchart/",
+        "tool": "zodiacs.birth_chart"
+      },
+      {
+        "address": "/fr/compatibility/aries%2Dleo/",
+        "opened": "/fr/compatibility/aries%2Dleo/",
+        "tool": "zodiacs.compatibility"
+      },
+      {
+        "address": "/numerology/life-path/7",
+        "opened": "/numerology/life-path/7/",
+        "tool": "zodiacs.numerology"
+      },
+      {
+        "address": "/it/transits",
+        "opened": "/it/transits/",
+        "tool": "zodiacs.transits"
+      }
+    ],
+    "chartPage": {
+      "shown": [
+        "24°11′ Gemini",
+        "16°11′ Pisces",
+        "11°14′ Libra"
+      ],
+      "told": [
+        "24°11′ Gemini",
+        "16°11′ Pisces",
+        "11°14′ Libra"
+      ]
+    },
+    "exclusions": {
+      "/es/": {
+        "tools": [],
+        "requestedAsset": false
+      },
+      "/fr/horoscopes/": {
+        "tools": [],
+        "requestedAsset": false
+      },
+      "/terminal/": {
+        "tools": [],
+        "requestedAsset": false
+      },
+      "/registry/": {
+        "tools": [],
+        "requestedAsset": false
+      },
+      "/thesis/": {
+        "tools": [],
+        "requestedAsset": false
+      },
+      "/sdk/": {
+        "tools": [],
+        "requestedAsset": false
+      },
+      "/archive/": {
+        "tools": [],
+        "requestedAsset": false
+      },
+      "/birth-chart/someone-else/": {
+        "tools": [
+          "zodiacs.search"
+        ]
+      }
+    },
+    "calculatorPages": 543
+  }
+}
