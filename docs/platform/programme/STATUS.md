@@ -1,3 +1,20 @@
+The hosted MCP tools reviewed in production, 2026-10-18 (Asia/Bangkok): P3.6
+stays partial.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.6, partial.** #777 merged as `b8b3b54c`. zodiacs.org serves it from
+  `dpl_GTcEdh5MKK1fBMTCY5AEnnwKqHYz`, built from the merge.
+  - The Inspector's `--strict` check (2.10.1) exits 0 there, with no error and
+    no untyped part; before the deploy it exited 6.
+  - All 13 tools answer within the output schemas they advertise.
+  - None of the MCP conformance suite's 32 server scenarios fails. The
+    review ran from this machine and from the workflow on main (run
+    39079719569) ([the record](../evidence/hosted-mcp-review-20261018/README.md)).
+- **What keeps P3.6 open.** The registry entry, which needs the owner's
+  approval to publish and a verified `org.zodiacs` namespace.
+
 The hosted MCP tools typed and reviewed, 2026-10-18 (Asia/Bangkok): P3.6
 stays partial.
 
