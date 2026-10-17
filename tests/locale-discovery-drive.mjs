@@ -316,12 +316,14 @@ export async function driveLocaleDiscovery({ browser, baseURL, check, outDir }) 
             if (locale.code !== 'en') {
               const date = new Intl.DateTimeFormat(locale.intl, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
                 .format(new Date(`${daily.date}T12:00:00Z`));
-              const heading = await page.locator(`[data-edition-content] .dateline`).first().textContent();
+              // The hub keeps its dateline; Today and the sign pages carry the
+              // full date in the hero kicker, as the English pages do.
+              const heading = await page.locator(`[data-edition-content] :is(.dateline, .tdl-hero__kicker, .hzl-hero__kicker)`).first().textContent();
               record(`${locale.code} ${slug} edition date@${viewport.width}`, heading.includes(date), heading.trim());
               if (slug !== 'today') {
                 const dates = slug === 'horoscopes'
-                  ? page.locator(`.horo-${locale.code}__card[href="${locale.prefix}/horoscopes/capricorn/"] .horo-${locale.code}__dates`)
-                  : page.locator(`.sign-${locale.code}__stamp`);
+                  ? page.locator(`.hhl-card[href="${locale.prefix}/horoscopes/capricorn/"] .hhl-card__dates`)
+                  : page.locator('.hzl-hero__facts');
                 const text = await dates.textContent();
                 record(`${locale.code} ${slug} localized sign dates@${viewport.width}`, text.includes(locale.dates), text.trim());
               }
