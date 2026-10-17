@@ -1,10 +1,8 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import Faq from '../../../components/Faq.astro';
-import ChartCalculator from '../../../islands/ChartCalculator';
+import LocalizedBirthChart from '../../../components/localized/LocalizedBirthChart.astro';
+import birthChartCss from '../../../components/localized/LocalizedBirthChart.css?inline';
 import calculatorFirstPaintCss from '../../../styles/calculator-first-paint.css?inline';
-import '../../../styles/calculator.css';
-import '../../../styles/explorer.css';
 
 const faq = [
   {
@@ -26,6 +24,7 @@ const faq = [
   {
     q: 'Дома целых знаков или Плацидус: что выбрать?',
     a: 'Система целых знаков — более древняя и простая для чтения: каждый дом занимает целый знак. Плацидус делит дома по времени их восхождения, поэтому их размер различается. Попробуйте обе: планеты не двигаются, меняются только границы домов.',
+    id: 'houses',
   },
 ];
 
@@ -104,33 +103,7 @@ const jsonLd = [
     data-zdx-calculator-first-paint
     set:html={calculatorFirstPaintCss}
   />
-  <section class="section--tight container">
-    <div class="tool-hero">
-      <h1 class="display">Постройте бесплатную натальную карту.</h1>
-      <p>Введите дату, время и место рождения, чтобы увидеть Солнце, Луну, асцендент, планеты, дома и их значение.</p>
-    </div>
-    <ChartCalculator mode="full" locale="ru" client:interaction={{ eagerHash: true }} />
-    <noscript>
-      <p>Для расчёта натальной карты нужен JavaScript. Включите его и перезагрузите страницу, чтобы рассчитать Солнце, Луну, асцендент, планеты и дома в вашем браузере.</p>
-    </noscript>
-  </section>
+  <style slot="head" is:inline data-zdx-birth-chart-route set:html={birthChartCss} />
 
-  <section class="section--tight container container--narrow">
-    <div class="prose">
-      <h2>Что перед вами</h2>
-      <p>Натальная карта — снимок неба из места вашего рождения в момент рождения. Она показывает знаки, дома и планеты в точных градусах.</p>
-      <p>Начните с Солнца, Луны и асцендента: это идентичность, эмоциональная жизнь и первое впечатление. Затем карту можно сохранить и вернуться к ней в любое время.</p>
-      <p>Подробности — в разделе <a href="/ru/methodology/">«Как мы считаем»</a>.</p>
-    </div>
-  </section>
-
-  <section class="section--tight container container--narrow">
-    <Faq items={faq} heading="Вопросы о натальной карте" />
-  </section>
+  <LocalizedBirthChart locale="ru" faq={faq} />
 </Base>
-
-<style>
-  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
-  .tool-hero h1 { margin: 0 0 16px; font-size: var(--text-2xl); line-height: 1.04; }
-  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-</style>

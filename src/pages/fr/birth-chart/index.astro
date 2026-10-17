@@ -1,11 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import AskGuideLine from '../../../components/AskGuideLine.astro';
-import Faq from '../../../components/Faq.astro';
-import EmailCapture from '../../../components/EmailCapture.astro';
-import ChartCalculator from '../../../islands/ChartCalculator';
-import '../../../styles/calculator.css';
-import '../../../styles/explorer.css';
+import LocalizedBirthChart from '../../../components/localized/LocalizedBirthChart.astro';
+import birthChartCss from '../../../components/localized/LocalizedBirthChart.css?inline';
 
 const faq = [
   {
@@ -27,6 +23,7 @@ const faq = [
   {
     q: 'Maisons en signes entiers ou Placidus : que choisir ?',
     a: 'Le système des maisons en signes entiers est le plus ancien et le plus simple à lire : chaque maison occupe un signe complet. Placidus est l’option moderne la plus courante et divise les maisons selon leur temps d’ascension, si bien que leur taille varie. Essaie les deux : tes planètes ne bougent pas ; seules les limites des maisons changent.',
+    id: 'houses',
   },
 ];
 
@@ -96,35 +93,7 @@ const jsonLd = [
     html[data-chart-share-receiver] .footer__col:has(a[href^="/registry/"]),
     html[data-chart-share-receiver] .zfooter__group:has(a[href^="/registry/"]) { display: none !important; }
   </style>
-  <section class="section--tight container">
-    <div class="tool-hero">
-      <h1 class="display">Obtiens ton thème astral gratuit.</h1>
-      <p>Indique ta date, ton heure et ton lieu de naissance pour voir ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.</p>
-    </div>
-    <ChartCalculator mode="full" locale="fr" client:idle />
-    <EmailCapture placement="chart" locale="fr" revealOnChart />
-    <noscript>
-      <p>Ce calculateur de thème astral nécessite JavaScript. Active JavaScript et recharge la page pour calculer ton Soleil, ta Lune, ton ascendant, tes planètes et tes maisons dans ton navigateur.</p>
-    </noscript>
-    <AskGuideLine lead="Des questions sur une position de ton thème ?" locale="fr" />
-  </section>
+  <style slot="head" is:inline data-zdx-birth-chart-route set:html={birthChartCss} />
 
-  <section class="section--tight container container--narrow">
-    <div class="prose">
-      <h2>Ce que tu regardes</h2>
-      <p>Un thème astral est une photographie du ciel prise depuis ton lieu de naissance, au moment où tu es né·e. Il montre les signes, les maisons et les planètes à des degrés précis.</p>
-      <p>Commence par ton Soleil, ta Lune et ton ascendant : identité, vie émotionnelle et première impression. Tu peux ensuite enregistrer le thème et y revenir quand tu veux.</p>
-      <p>Retrouve toute la méthodologie dans <a href="/fr/methodology/">notre méthode de calcul</a>.</p>
-    </div>
-  </section>
-
-  <section class="section--tight container container--narrow">
-    <Faq items={faq} heading="Questions sur le thème astral" />
-  </section>
+  <LocalizedBirthChart locale="fr" faq={faq} />
 </Base>
-
-<style>
-  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
-  .tool-hero h1 { margin: 0 0 16px; font-size: var(--text-2xl); line-height: 1.04; }
-  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-</style>

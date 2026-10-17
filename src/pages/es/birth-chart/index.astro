@@ -1,11 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import AskGuideLine from '../../../components/AskGuideLine.astro';
-import Faq from '../../../components/Faq.astro';
-import EmailCapture from '../../../components/EmailCapture.astro';
-import ChartCalculator from '../../../islands/ChartCalculator';
-import '../../../styles/calculator.css';
-import '../../../styles/explorer.css';
+import LocalizedBirthChart from '../../../components/localized/LocalizedBirthChart.astro';
+import birthChartCss from '../../../components/localized/LocalizedBirthChart.css?inline';
 
 const faq = [
   {
@@ -27,6 +23,7 @@ const faq = [
   {
     q: 'Casas de signos completos o Placidus: ¿cuál elijo?',
     a: 'El sistema de casas de signos completos es el más antiguo y el más fácil de leer: cada casa ocupa un signo completo. Placidus es la opción moderna más habitual y divide las casas según el tiempo que tardan en ascender, por lo que su tamaño varía. Prueba ambos: tus planetas no se mueven; solo cambian los límites de las casas.',
+    id: 'houses',
   },
 ];
 
@@ -96,35 +93,7 @@ const jsonLd = [
     html[data-chart-share-receiver] .footer__col:has(a[href^="/registry/"]),
     html[data-chart-share-receiver] .zfooter__group:has(a[href^="/registry/"]) { display: none !important; }
   </style>
-  <section class="section--tight container">
-    <div class="tool-hero">
-      <h1 class="display">Obtén tu carta natal gratis.</h1>
-      <p>Ingresa tu fecha, hora y lugar de nacimiento para ver tu Sol, Luna, ascendente, planetas, casas y lo que significan.</p>
-    </div>
-    <ChartCalculator mode="full" locale="es" client:idle />
-    <EmailCapture placement="chart" locale="es" revealOnChart />
-    <noscript>
-      <p>Esta calculadora de carta natal necesita JavaScript. Activa JavaScript y recarga la página para calcular tu Sol, Luna, ascendente, planetas y casas en tu navegador.</p>
-    </noscript>
-    <AskGuideLine lead="¿Preguntas sobre una posición de tu carta?" locale="es" />
-  </section>
+  <style slot="head" is:inline data-zdx-birth-chart-route set:html={birthChartCss} />
 
-  <section class="section--tight container container--narrow">
-    <div class="prose">
-      <h2>Qué estás viendo</h2>
-      <p>Una carta natal es una foto del cielo desde el lugar donde naciste, en el momento en que naciste. Muestra los signos, las casas y los planetas a grados exactos.</p>
-      <p>Para empezar, mira tu Sol, Luna y ascendente: identidad, vida emocional y primera impresión. Después puedes guardar la carta y volver a ella cuando quieras.</p>
-      <p>La metodología completa está en <a href="/es/methodology/">cómo calculamos</a>.</p>
-    </div>
-  </section>
-
-  <section class="section--tight container container--narrow">
-    <Faq items={faq} heading="Preguntas sobre la carta natal" />
-  </section>
+  <LocalizedBirthChart locale="es" faq={faq} />
 </Base>
-
-<style>
-  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
-  .tool-hero h1 { margin: 0 0 16px; font-size: var(--text-2xl); line-height: 1.04; }
-  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-</style>
