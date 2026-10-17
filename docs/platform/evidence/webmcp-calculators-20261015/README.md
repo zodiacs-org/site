@@ -175,16 +175,17 @@ These pages are not calculators, and register no tool of their own:
 `src/layouts/Base.astro` and `src/lib` are in the Phase 1 capture digest, so
 CI took the 18 captures again.
 
-- **Committed captures.** Browser Evidence run 39016692892 took them on
-  `bd622793`, this branch with main `013b93d5` merged in, with Chromium
-  149.0.7827.55 at 2026-10-17T08:20:14Z, for the 2026-10-17 edition, bound to
-  template source digest `24e7c40b…`, the digest the local build's Phase 1
+- **Committed captures.** Browser Evidence run 39024415260 took them on
+  `753ec8cc`, this branch with main `013b93d5` merged in, with Chromium
+  149.0.7827.55 at 2026-10-17T10:22:36Z, for the 2026-10-17 edition, bound to
+  template source digest `86e20838…`, the digest the local build's Phase 1
   receipt gives. Its build, acceptance captures, receipt, visual comparison,
   Lighthouse and explorer drive passed
   ([browser-evidence-provenance.json](browser-evidence-provenance.json) is the
   run's own record). Its 18 images are identical, pixel for pixel, to the ones
-  run 39001094966 took on `48592f4e` for the same edition, before Codex's
-  later reviews changed `src/lib`; only the digest and the time changed.
+  run 39001094966 took on `48592f4e` and run 39016692892 on `bd622793` for the
+  same edition, before and between Codex's later reviews of `src/lib`; only
+  the digest and the time changed.
 - **Against main's captures**, which the same Chromium took for the
   2026-10-16 edition: the monthly, weekly and yearly pages are identical,
   pixel for pixel. The pages that show the day's readings changed with the
