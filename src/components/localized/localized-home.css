@@ -279,6 +279,20 @@ html.zdx-lens .nav-wrap .nav {
   font-size: 0.875rem;
   color: var(--ink-1);
 }
+/* The sky line can sit inside a short first screen, so, as on the English
+   home, it draws in faces that never swap in late: the hero's optional text
+   face, and the local serif for its label. A late face moved the line. */
+.lhome-sky {
+  --lsky-face: 'Instrument Sans Phase1', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif;
+}
+html:lang(ru) .lhome-sky {
+  --lsky-face: 'Golos Text Hero', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, sans-serif;
+}
+.lhome-sky .skyticker,
+.lhome-sky__link { font-family: var(--lsky-face); }
+.lhome-sky .skyticker__label {
+  font-family: 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif;
+}
 .lhome-sky .skyticker::-webkit-scrollbar { display: none; }
 .lhome-sky .skyticker > * { flex: none; }
 .lhome-sky__link { flex: none; font-size: 0.875rem; }
