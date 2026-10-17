@@ -42,6 +42,7 @@ import { formatDate } from '../../lib/i18n/dates';
 import { heroCropAlt } from '../../lib/hero-crops';
 import { NAV_MORE, NAV_TOOLS } from '../../lib/nav-tools';
 import { RU_GUIDES } from '../../data/ru-guides';
+import { ART, artSrc, artSrcset } from '../../lib/art';
 import '../../styles/calculator.css';
 
 export type RisingLocale = 'es' | 'pt' | 'fr' | 'it' | 'ru';
@@ -112,7 +113,6 @@ interface Copy {
   nextLede: string;
   nextList: [string, string, string];
   reassure: string;
-  posterAlt: string;
   moonKicker: string;
   moonText: string;
   moonLink: string;
@@ -220,7 +220,6 @@ const COPY: Record<RisingLocale, Copy> = {
     nextLede: 'La carta natal gratuita suma tu signo solar y tu signo lunar, todos los planetas y las doce casas que organiza tu ascendente, con lo que significa cada uno.',
     nextList: ['Ascendente, el de esta página', 'Signo solar, tu identidad central', 'Signo lunar, cómo sientes las cosas'],
     reassure: 'Con la misma fecha, hora y lugar de nacimiento. Privado en tu navegador.',
-    posterAlt: 'La banda zodiacal pintada, con sus discos de signos en tonos pastel y el sol dorado, de la película principal de Zodiacs',
     moonKicker: 'Herramienta relacionada',
     moonText: 'Funciona solo con tu fecha de nacimiento, y la hora lo vuelve exacto.',
     moonLink: 'Calculadora de signo lunar',
@@ -298,7 +297,6 @@ const COPY: Record<RisingLocale, Copy> = {
     nextLede: 'O mapa astral gratuito acrescenta seu signo solar e seu signo lunar, todos os planetas e as doze casas que seu ascendente organiza, com o significado de cada um.',
     nextList: ['Ascendente, o desta página', 'Signo solar, sua identidade central', 'Signo lunar, como você vive as emoções'],
     reassure: 'A mesma data, hora e local de nascimento. Calculado com privacidade no seu navegador.',
-    posterAlt: 'A faixa do zodíaco pintada, com os discos dos signos em tons pastel e o sol dourado, do filme de abertura do Zodiacs',
     moonKicker: 'Ferramenta relacionada',
     moonText: 'Funciona só com a data de nascimento, e a hora o torna exato.',
     moonLink: 'Calculadora de signo lunar',
@@ -376,7 +374,6 @@ const COPY: Record<RisingLocale, Copy> = {
     nextLede: 'Le thème astral gratuit ajoute ton signe solaire et ton signe lunaire, chaque planète et les douze maisons que ton ascendant met en place, avec la signification de chacun.',
     nextList: ['Ascendant, celui de cette page', 'Signe solaire, ton identité profonde', 'Signe lunaire, ta manière de ressentir'],
     reassure: 'Mêmes date, heure et lieu de naissance. Tout reste dans ton navigateur.',
-    posterAlt: 'La bande zodiacale peinte, avec ses disques des signes aux tons pastel et le soleil doré, tirée du film d’accueil de Zodiacs',
     moonKicker: 'Outil associé',
     moonText: 'Il fonctionne avec ta seule date de naissance, et l’heure le rend exact.',
     moonLink: 'Calculateur de signe lunaire',
@@ -454,7 +451,6 @@ const COPY: Record<RisingLocale, Copy> = {
     nextLede: 'Il tema natale gratuito aggiunge il segno solare e quello lunare, tutti i pianeti e le dodici case che il tuo ascendente imposta, con il significato di ciascuno.',
     nextList: ['Ascendente, da questa pagina', 'Segno solare, la tua identità di fondo', 'Segno lunare, come vivi le emozioni'],
     reassure: 'Gli stessi dati di nascita: data, ora e luogo. Tutto resta nel tuo browser.',
-    posterAlt: 'La fascia zodiacale dipinta, con i dischi dei segni in tonalità pastello e il sole dorato, dal filmato di apertura di Zodiacs',
     moonKicker: 'Strumento collegato',
     moonText: 'Funziona anche solo con la data di nascita, e l’ora lo rende esatto.',
     moonLink: 'Calcolatore del segno lunare',
@@ -531,7 +527,6 @@ const COPY: Record<RisingLocale, Copy> = {
     nextLede: 'Бесплатная натальная карта добавит солнечный и лунный знаки, все планеты и двенадцать домов, которые задаёт асцендент, с объяснением каждого.',
     nextList: ['Асцендент, с этой страницы', 'Солнечный знак, ваша основа', 'Лунный знак, ваши чувства'],
     reassure: 'Те же дата, время и место рождения. Приватно в браузере.',
-    posterAlt: 'Расписанная полоса зодиака с пастельными дисками знаков и золотым солнцем, кадр из заставки Zodiacs',
     moonKicker: 'Связанный инструмент',
     moonText: 'Достаточно даты рождения, а время сделает расчёт точным.',
     moonLink: 'Калькулятор лунного знака',
@@ -845,7 +840,7 @@ const steering = cap(t(locale, 'planetSteering'));
 <section class="kwrap rs-band">
   <div class="rs-next">
     <article class="rs-bc">
-      <div class="rs-bc__art"><img class="rs-bc__bg" src="/assets/hero/zodiacs-hero-poster.avif" width="1600" height="900" alt={c.posterAlt} loading="lazy" decoding="async" /></div>
+      <div class="rs-bc__art" aria-hidden="true"><img class="rs-bc__bg" src={artSrc('rising-horizon')} srcset={artSrcset('rising-horizon')} sizes="(min-width: 761px) 924px, calc(100vw - 40px)" width={ART['rising-horizon'].width} height={ART['rising-horizon'].height} alt="" loading="lazy" decoding="async" /></div>
       <div class="rs-bc__body">
         <span class="kicker">{c.nextKicker}</span>
         <h2 class="h-2">{c.nextTitle}</h2>
@@ -1113,7 +1108,10 @@ const steering = cap(t(locale, 'planetSteering'));
   .rs-next { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 20px; }
   .rs-bc { position: relative; min-height: 520px; overflow: hidden; border: 1px solid var(--hair-2); border-radius: var(--r-xl); background: linear-gradient(180deg, rgba(21, 25, 37, 0.92), rgba(10, 12, 17, 0.92)); isolation: isolate; }
   .rs-bc__art { position: absolute; top: 0; right: 0; bottom: 0; z-index: 0; width: 60%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.5) 24%, #000 52%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.5) 24%, #000 52%); }
-  .rs-bc__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 66% 0%; filter: saturate(0.95) brightness(0.9); }
+  /* The lilac disc rises on the painting's left; mirrored, it rises clear of
+     the fade, on the side away from the words. The picture fills the panel's
+     height, so it is drawn about 924px wide on a wide screen. */
+  .rs-bc__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 28% 40%; transform: scaleX(-1); filter: saturate(0.95) brightness(0.86); }
   .rs-bc__art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(10, 12, 17, 0.75) 0%, rgba(10, 12, 17, 0) 34%); }
   .rs-bc__body { position: relative; z-index: 1; display: flex; flex-direction: column; max-width: 430px; min-height: 100%; padding: clamp(28px, 3.4vw, 44px); }
   .rs-bc__body .h-2 { margin-top: 4px; font-size: clamp(2rem, 1.5rem + 1.6vw, 2.75rem); text-wrap: balance; }
@@ -1202,7 +1200,6 @@ const steering = cap(t(locale, 'planetSteering'));
     .rs-bc { display: flex; flex-direction: column; min-height: 0; border-radius: 24px; }
     .rs-bc__art { position: relative; width: auto; aspect-ratio: 16 / 10; -webkit-mask-image: linear-gradient(0deg, transparent 0%, #000 45%); mask-image: linear-gradient(0deg, transparent 0%, #000 45%); }
     .rs-bc__art::after { display: none; }
-    .rs-bc__bg { object-position: 58% 0%; }
     .rs-bc__body { max-width: none; min-height: 0; margin-top: -24px; padding: 0 20px 24px; }
     .rs-bc .btn-row { padding-top: 24px; }
     .rs-bc .btn-row .btn { width: 100%; }

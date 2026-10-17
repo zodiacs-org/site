@@ -41,6 +41,7 @@ import { localizePath, t } from '../../lib/i18n';
 import { rangeWords } from '../../lib/range-words';
 import { SIGNS, elementLabel, modalityLabel, signBySlug, signEssence, signName } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
+import { ART, artSrc, artSrcset } from '../../lib/art';
 import { toolIconForPath } from '../../lib/tool-icons';
 import {
   aspectsToday,
@@ -801,7 +802,21 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
       </div>
     </section>
 
-    <!-- 5. Every planet, then the dates ahead as calendar facts. -->
+    <!-- 5. Every planet, then the dates ahead as calendar facts, opened by
+         the brass orrery: the Sun at the centre, the planets on their arms. -->
+    <div class="kwrap tdl-sec tdl-art-band">
+      <ArtFrame
+        class="tdl-orrery"
+        src={artSrc('today-orrery')}
+        srcset={artSrcset('today-orrery')}
+        sizes="(min-width: 1240px) 1200px, calc(100vw - 40px)"
+        width={ART['today-orrery'].width}
+        height={ART['today-orrery'].height}
+        alt=""
+        spot="51% 42%"
+        fade
+      />
+    </div>
     <section class="kwrap tdl-sec tdl-split">
       <div>
         <h2 class="h-3">{c.planetsTitle}</h2>
@@ -1219,6 +1234,8 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
   .tdl-personal__actions { display: flex; flex: none; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
 
   /* ── 5. Planets and dates ahead ───────────────────────────────── */
+  .tdl-orrery { aspect-ratio: 3 / 1; --focus: 50% 26%; }
+  .tdl-art-band + .tdl-split { padding-top: clamp(24px, 2.6vw, 36px); }
   .tdl-split { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr); align-items: start; gap: clamp(32px, 5vw, 72px); }
   .tdl-split .h-3 { margin: 0 0 6px; }
   .tdl-sub { margin: 0 0 18px; color: var(--muted); font-size: 0.9375rem; }
@@ -1349,6 +1366,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
     .tdl-asps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 960px) {
+    .tdl-orrery { aspect-ratio: 2 / 1; }
     .tdl-split { grid-template-columns: minmax(0, 1fr); }
     .tdl-prow { grid-template-columns: 36px minmax(0, 1fr) 132px 60px 150px; }
     .tdl-prow .tdl-pm { grid-column: auto; justify-self: end; margin-top: 0; }
@@ -1363,6 +1381,7 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
     .tdl-method { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   }
   @media (max-width: 760px) {
+    .tdl-orrery { aspect-ratio: 16 / 10; --focus: 50% 30%; }
     .tdl-hero {
       gap: 36px;
       margin: calc(8px - var(--nav-space, 64px)) 8px 0;

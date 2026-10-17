@@ -21,6 +21,7 @@ import LocalizedSignTitles from './LocalizedSignTitles.astro';
 import ChartCalculator from '../../islands/ChartCalculator';
 import SkyTicker from '../../islands/SkyTicker';
 import Wheel from '../../lib/wheel/Wheel';
+import { ART, artSrc, artSrcset } from '../../lib/art';
 import { englishOnlyCue, localizePath, t } from '../../lib/i18n';
 import { aspectLabel, planetLabel } from '../../lib/i18n/astrology';
 import { formatDate, formatTime, intlLocale } from '../../lib/i18n/dates';
@@ -85,7 +86,6 @@ interface Copy {
   notes: readonly [Pair, Pair, Pair, Pair];
   readLink: string;
   depthLink: string;
-  artAlt: string;
   compare: string;
   withTime: string;
   withoutTime: string;
@@ -161,7 +161,6 @@ const COPY: Record<BirthChartLocale, Copy> = {
     ],
     readLink: 'Cómo leer una carta natal',
     depthLink: 'La carta natal en tres dimensiones',
-    artAlt: 'Una manecilla de reloj de latón cruza la esfera pintada del zodíaco',
     compare: 'La carta de ejemplo con y sin hora de nacimiento',
     withTime: 'Con hora',
     withoutTime: 'Sin hora',
@@ -233,7 +232,6 @@ const COPY: Record<BirthChartLocale, Copy> = {
     ],
     readLink: 'Como ler um mapa astral',
     depthLink: 'O mapa astral em três dimensões',
-    artAlt: 'Um ponteiro de relógio de latão cruza o mostrador pintado do zodíaco',
     compare: 'O mapa de exemplo com e sem hora de nascimento',
     withTime: 'Com horário',
     withoutTime: 'Sem horário',
@@ -305,7 +303,6 @@ const COPY: Record<BirthChartLocale, Copy> = {
     ],
     readLink: 'Comment lire un thème astral',
     depthLink: 'Le thème astral en trois dimensions',
-    artAlt: 'Une aiguille d’horloge en laiton traverse le cadran peint du zodiaque',
     compare: 'Le thème d’exemple avec et sans heure de naissance',
     withTime: 'Avec l’heure',
     withoutTime: 'Sans l’heure',
@@ -377,7 +374,6 @@ const COPY: Record<BirthChartLocale, Copy> = {
     ],
     readLink: 'Come leggere un tema natale',
     depthLink: 'Il tema natale in tre dimensioni',
-    artAlt: 'Una lancetta d’ottone attraversa il quadrante dipinto dello zodiaco',
     compare: 'Il tema di esempio con e senza ora di nascita',
     withTime: 'Con l’ora',
     withoutTime: 'Senza ora',
@@ -448,7 +444,6 @@ const COPY: Record<BirthChartLocale, Copy> = {
     ],
     readLink: 'Как читать натальную карту',
     depthLink: 'Натальная карта в трёх измерениях',
-    artAlt: 'Латунная часовая стрелка пересекает расписной циферблат зодиака',
     compare: 'Карта-пример со временем рождения и без него',
     withTime: 'Со временем',
     withoutTime: 'Без времени',
@@ -697,13 +692,13 @@ const nextCards = [
     <div>
       <ArtFrame
         class="bc-nt__art"
-        src="/assets/hero-crops/clock-hand-560.webp"
-        srcset="/assets/hero-crops/clock-hand-360.webp 360w, /assets/hero-crops/clock-hand-560.webp 560w"
-        sizes="(min-width: 960px) 560px, 100vw"
-        width={560}
-        height={350}
-        alt={c.artAlt}
-        spot="46% 48%"
+        src={artSrc('pocket-orrery')}
+        srcset={artSrcset('pocket-orrery')}
+        sizes="(min-width: 960px) 560px, calc(100vw - 40px)"
+        width={ART['pocket-orrery'].width}
+        height={ART['pocket-orrery'].height}
+        alt=""
+        focus="50% 52%"
       />
       <div class="bc-cmp only-desktop" aria-label={c.compare}>
         <div>
@@ -827,7 +822,7 @@ const nextCards = [
   <!-- 07 · One closing invitation. -->
   <section class="kwrap bc-close">
     <div class="closing-panel">
-      <img src="/assets/hero/zodiacs-hero-poster.avif" width="1600" height="900" alt="" loading="lazy" decoding="async" />
+      <img src={artSrc('birth-chart-astrolabe')} srcset={artSrcset('birth-chart-astrolabe')} sizes="(min-width: 1240px) 1200px, calc(100vw - 40px)" width={ART['birth-chart-astrolabe'].width} height={ART['birth-chart-astrolabe'].height} alt="" aria-hidden="true" loading="lazy" decoding="async" />
       <div>
         <h2 class="h-2">{c.closeTitle}</h2>
         <p>{c.closeText}</p>
