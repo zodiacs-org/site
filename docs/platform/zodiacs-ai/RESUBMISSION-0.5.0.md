@@ -4,6 +4,25 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 18 October: every output schema typed
+
+The owner asked for the hosted tools' output schemas to be fixed before the
+resubmission. The MCP Inspector's `--strict` check now finds no untyped part
+and no error in any of the 13 tools; it found 14 untyped parts and 3 errors
+before.
+
+- The values the compute API returns (a receipt, its backend, a result, ΔT and
+  the time scale) carry the schemas the API documents for them in
+  `/api/v1/openapi.json`. The capabilities' limits, conventions and coverage
+  have exact types.
+- The three pairs that were written as tuples are two-item arrays.
+
+`integrations/packages/zodiacs-sky-0.5.0.zip` is unchanged: it carries no
+tool schemas, and the portal reads them from `https://zodiacs.org/mcp`. After
+the deploy, a rescan, only with the owner's yes, shows the new schemas.
+`zodiacs-developer-0.3.13.zip` is rebuilt in place, because its local server
+carries the same contracts.
+
 ## Update, 15 October: what this release now includes
 
 Besides the predictions below: comparing yourself with a famous person Zodiacs

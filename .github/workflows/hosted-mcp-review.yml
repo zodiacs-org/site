@@ -1,0 +1,75 @@
+name: Hosted MCP Review
+
+# P3.6. The official MCP Inspector lists the hosted tools with --strict and calls each one, and each result must
+# match the outputSchema its tool advertises; the MCP conformance suite runs its server scenarios
+# (scripts/hosted-mcp-review.mjs). On a pull request that changes the AI tools, it reviews that change's own
+# runtime, served on the runner with production's switches (scripts/serve-hosted-mcp.mjs). Run by hand, it reviews
+# a deployed endpoint, zodiacs.org's by default; production limits how often one address may call it, so that run
+# waits out the limit and takes longer.
+on:
+  pull_request:
+    paths:
+      - 'src/ai-tools/**'
+      - 'src/lib/compute-api/openapi.ts'
+      - 'api/_ai/**'
+      - 'scripts/hosted-mcp-review.mjs'
+      - 'scripts/serve-hosted-mcp.mjs'
+      - '.github/workflows/hosted-mcp-review.yml'
+  workflow_dispatch:
+    inputs:
+      url:
+        description: MCP endpoint to review
+        required: true
+        default: https://zodiacs.org/mcp
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hosted-mcp-review-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  review:
+    name: Inspector and conformance
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Serve this change's runtime
+        if: github.event_name == 'pull_request'
+        run: |
+          node scripts/serve-hosted-mcp.mjs 4521 > serve.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if grep -q serving serve.log; then exit 0; fi
+            sleep 1
+          done
+          cat serve.log
+          exit 1
+
+      - name: Review
+        env:
+          REVIEW_URL: ${{ github.event_name == 'pull_request' && 'http://127.0.0.1:4521/mcp' || inputs.url }}
+        run: node scripts/hosted-mcp-review.mjs --url "$REVIEW_URL" --out hosted-mcp-review
+
+      - name: Keep the review
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hosted-mcp-review-${{ github.run_id }}
+          path: hosted-mcp-review
+          retention-days: 30
