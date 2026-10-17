@@ -10,7 +10,7 @@
  *
  * --occasions and --horoscopes name a generated panel module (default: this
  * build's integrations/generated/ files), so an earlier build can be captured
- * with the same results. Writes <card>-<width>-<theme>.png and captures.json.
+ * with the same results. Writes <card>-<width>-<theme>.png (760 or 390) and captures.json.
  */
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -64,7 +64,7 @@ const CARDS: { card: string; html: string; result: () => Promise<{ structuredCon
   { card: 'chart-comparison-famous', html: OCCASIONS, result: () => result('get_compatibility', { a: { name: 'Sam', birthDate: '1994-02-01' }, b: { famous: 'Frida Kahlo' } }) },
   { card: 'wedding-best-days', html: OCCASIONS, result: () => result('get_occasion_sky', { occasion: 'wedding', searchFrom: '2027-06-01', searchTo: '2027-06-30', zone: 'Europe/Rome', latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy' }) },
 ];
-const WIDTHS = [{ name: 'desktop', width: 760 }, { name: 'phone', width: 390 }];
+const WIDTHS = [760, 390];
 const THEMES = ['light', 'dark'] as const;
 
 async function deliver(page: Page, value: { structuredContent: unknown; _meta: unknown }, theme: string) {
@@ -80,7 +80,7 @@ const captures: { file: string; card: string; width: number; theme: string; heig
 try {
   for (const { card, html, result: make } of CARDS) {
     const value = await make();
-    for (const { name, width } of WIDTHS) {
+    for (const width of WIDTHS) {
       for (const theme of THEMES) {
         const context = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: 2, colorScheme: theme, timezoneId: 'Asia/Bangkok', reducedMotion: 'reduce' });
         await context.clock.setFixedTime(new Date(`${window.generatedFor}T05:00:00Z`));
@@ -104,7 +104,7 @@ try {
         });
         await page.setViewportSize({ width, height });
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
-        const file = `${card}-${name}-${theme}.png`;
+        const file = `${card}-${width}-${theme}.png`;
         await page.screenshot({ path: resolve(out, file), fullPage: true });
         assert.deepEqual(errors, [], `${file}: no page errors`);
         assert.equal(network, 0, `${file}: no network requests`);

@@ -3,7 +3,7 @@
  * a day that matters, life milestones, two charts compared, chart twins, a
  * famous chart, a birthday and the sky calendar.
  */
-import type { ComponentChildren, JSX } from 'preact';
+import type { ComponentChildren, CSSProperties } from 'preact';
 import { OCCASION_LABELS, type OccasionKind } from '../../lib/occasions/kinds';
 import { MILESTONE_WORDS } from '../../lib/occasions/milestone-words';
 import { Actions, Card, Chips, Data, Facts, FinePrint, Head, Hero, More, NumberRing, Reasons, ScoreRing, Section, SignDisc, Tiles, type Fact } from '../card-kit/parts';
@@ -77,7 +77,7 @@ export function Occasion({ data }: { data: OccasionSky }) {
       meta={<><span class="when">{date}{at && <> at <strong>{at}</strong></>}{data.place && <> in <strong>{data.place}</strong></>}</span>{noonLine && <><br/>{noonLine}</>}</>}/>
     {best && <Section title={bestTitle}>
       <ol class="best-days">{best.best.map((row) => <li key={row.date}>
-        <div class="ring ring-small" role="img" aria-label={`${row.score} out of 100`} style={{ '--score': String(row.score) } as JSX.CSSProperties}><span class="ring-number" aria-hidden="true">{row.score}</span></div>
+        <div class="ring ring-small" role="img" aria-label={`${row.score} out of 100`} style={{ '--score': String(row.score) } as CSSProperties}><span class="ring-number" aria-hidden="true">{row.score}</span></div>
         <span class="best-day-words"><strong>{longDate(row.date)}</strong><span class="quiet">{row.verdict}. {telling(row.reasons, best.best)}</span></span>
       </li>)}</ol>
       <p class="quiet">Every day was rated at {data.time ?? (data.zone ? 'noon' : 'noon UTC')}. The card below is for {data.date === best.best[0]?.date ? 'the best day' : longDate(data.date)}.</p>
@@ -158,7 +158,7 @@ export function Compatibility({ data: result }: { data: CompatibilityData | Comp
   const title = `${data.a.label} and ${data.b.label}`;
   const famous = [data.a, data.b].filter((who) => who.famous && who.url);
   const meta = famous.length > 0
-    ? famous.map((who) => <span key={who.label}>{who.label}, born {fullDate(who.birthDate)}{who.place && <> in <strong>{who.place}</strong></>}, birth time not on record. </span>)
+    ? famous.map((who) => <span key={who.label}>{who.label}, born {fullDate(who.birthDate)}{who.place && <> in <strong>{who.place}</strong></>}. </span>)
     : basis(data.a) === basis(data.b) ? `Both charts from ${basis(data.a)}.` : `${data.a.label} from ${basis(data.a)}, ${data.b.label} from ${basis(data.b)}.`;
   const contact = (item: CompatibilityData['contacts'][number]) => <>
     <span class="reason-head">{item.aBody} {item.aspect} {item.bBody} <Data>{item.orb}°</Data></span>
@@ -184,7 +184,7 @@ export function Compatibility({ data: result }: { data: CompatibilityData | Comp
     {data.notes.map((note) => <p class="quiet" key={note}>{plain(note)}</p>)}
     <Actions copyText={text} links={[
       data.shareUrl && { label: 'Share the reading', href: data.shareUrl },
-      { label: data.cardUrl ? 'Open both charts' : 'Read this pair', href: data.cardUrl ?? data.pageUrl },
+      (data.cardUrl ?? data.pageUrl) && { label: data.cardUrl ? 'Open both charts' : 'Read this pair', href: (data.cardUrl ?? data.pageUrl)! },
       ...famous.map((who) => ({ label: `${who.label}’s chart`, href: who.url! })),
     ]}/>
     <FinePrint>{plain(data.note)}</FinePrint>

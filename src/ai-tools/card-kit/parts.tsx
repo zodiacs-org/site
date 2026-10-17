@@ -4,7 +4,7 @@
  * hairlines (a score ring or a sign disc beside a verdict), sign chips,
  * number tiles, reasons, facts, text actions and the fine print.
  */
-import type { ComponentChildren, JSX } from 'preact';
+import type { ComponentChildren, CSSProperties } from 'preact';
 import { useState } from 'preact/hooks';
 import { BrandRing } from '../panel-brand';
 import { hueVars } from './hue';
@@ -19,7 +19,7 @@ export function Nameplate({ href = 'https://zodiacs.org/' }: { href?: string }) 
 }
 
 export function Card({ hue, hue2, label, children }: { hue: string | null; hue2?: string | null; label?: string; children: ComponentChildren }) {
-  return <article class="card" style={hueVars(hue, hue2) as JSX.CSSProperties} aria-label={label}>
+  return <article class="card" style={hueVars(hue, hue2) as CSSProperties} aria-label={label}>
     <Nameplate/>
     {children}
   </article>;
@@ -38,7 +38,7 @@ export function Head({ kicker, title, meta, aside }: { kicker: ComponentChildren
 
 /** A score out of 100: a ring filled to the score, drawn from one hue to the other. */
 export function ScoreRing({ score }: { score: number }) {
-  return <div class="ring" role="img" aria-label={`${score} out of 100`} style={{ '--score': String(score) } as JSX.CSSProperties}>
+  return <div class="ring" role="img" aria-label={`${score} out of 100`} style={{ '--score': String(score) } as CSSProperties}>
     <span class="ring-number" aria-hidden="true">{score}</span>
     <span class="ring-out" aria-hidden="true">out of 100</span>
   </div>;
@@ -102,7 +102,7 @@ export function More({ label, children }: { label: string; children: ComponentCh
 
 export interface Action { label: string; href: string }
 /** Underlined text actions: links that open on zodiacs.org, and a copy button that gives the card as text. */
-export function Actions({ links, copyText, copyLabel = 'Copy the card' }: { links: (Action | null | false | undefined)[]; copyText: string; copyLabel?: string }) {
+export function Actions({ links, copyText, copyLabel = 'Copy the card' }: { links: (Action | null | false | undefined | '')[]; copyText: string; copyLabel?: string }) {
   const [status, setStatus] = useState('');
   async function copy() {
     try { await navigator.clipboard.writeText(copyText); setStatus('Copied.'); }
