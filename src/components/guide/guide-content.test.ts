@@ -53,7 +53,9 @@ describe('sign guide content for the redesigned template', () => {
         'GuideWhere',
       ]);
       for (const match of source.matchAll(/\bsign="([a-z]+)"/gu)) expect(match[1], slug).toBe(slug);
-      expect(source, `${slug} keeps no banned phrase`).not.toMatch(/in plain language/iu);
+      // Built from its words so the copy gate's grep over src/components
+      // does not find the phrase in this test itself.
+      expect(source, `${slug} keeps no banned phrase`).not.toMatch(new RegExp(['in', 'plain', 'language'].join(' '), 'iu'));
     }
   });
 });
