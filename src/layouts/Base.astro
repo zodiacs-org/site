@@ -525,38 +525,22 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
             document.fonts.add(italic);
             upright.load().then(function (face) {
               document.fonts.add(face);
-              // Blocks take the face a few per frame. Handing every off-screen
-              // block the face in one go relaid the whole page out in one long
-              // task; a block that comes on screen while it waits is skipped.
-              var waiting = [];
-              var frame = 0;
-              function upgrade(block) {
-                block.style.setProperty('--font-sans', family);
-                if (serifIsLocal) block.style.setProperty('--font-serif', serif);
-                // Re-declare the inherited body face only on blocks that
-                // wear it. A serif heading at this depth keeps its own rule,
-                // which reads the upgraded --font-serif set just above.
-                if (/Instrument Sans/.test(getComputedStyle(block).fontFamily)) {
-                  block.style.fontFamily = 'var(--font-sans)';
-                }
-                observer.unobserve(block);
-              }
-              function drain() {
-                frame = 0;
-                waiting.splice(0, 4).forEach(upgrade);
-                if (waiting.length) frame = window.requestAnimationFrame(drain);
-              }
               var observer = new IntersectionObserver(function (entries) {
                 entries.forEach(function (entry) {
-                  var at = waiting.indexOf(entry.target);
-                  if (at !== -1) waiting.splice(at, 1);
                   // A zero-area box (an island's display:contents wrapper, a
                   // hidden block) says nothing about where its children are.
                   var box = entry.boundingClientRect;
                   if (entry.isIntersecting || box.width === 0 || box.height === 0) return;
-                  waiting.push(entry.target);
+                  entry.target.style.setProperty('--font-sans', family);
+                  if (serifIsLocal) entry.target.style.setProperty('--font-serif', serif);
+                  // Re-declare the inherited body face only on blocks that
+                  // wear it. A serif heading at this depth keeps its own rule,
+                  // which reads the upgraded --font-serif set just above.
+                  if (/Instrument Sans/.test(getComputedStyle(entry.target).fontFamily)) {
+                    entry.target.style.fontFamily = 'var(--font-sans)';
+                  }
+                  observer.unobserve(entry.target);
                 });
-                if (waiting.length && !frame) frame = window.requestAnimationFrame(drain);
               });
               // Sections and their direct blocks: a section taller than the
               // screen never leaves it while it is being read, its blocks do.
@@ -567,7 +551,6 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
               document.addEventListener('visibilitychange', function () {
                 if (document.visibilityState !== 'hidden') return;
                 observer.disconnect();
-                waiting = [];
                 var main = document.querySelector('main');
                 [main, document.querySelector('.zfooter')].forEach(function (block) {
                   if (!block) return;
