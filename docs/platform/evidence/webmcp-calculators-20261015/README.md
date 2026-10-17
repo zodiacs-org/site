@@ -98,6 +98,11 @@ These pages are not calculators, and register no tool of their own:
 - **Nothing is sent.** Everything is computed in the browser. Chart twins reads
   the public directory it matches against from `/data/chart-twins.json`
   (names and signs). The page's own list now comes from the same module.
+  The site's service worker fetches that file from the network and keeps
+  its copy only for offline use: the file can change while the worker's
+  cache version stands, which covers the hashed bundles and the city shards
+  alone, and those are the only data it serves cache-first (Codex's sixth
+  review; `scripts/build-service-worker.test.mjs`).
 
 ## Evidence
 
