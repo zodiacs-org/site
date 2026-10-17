@@ -1,0 +1,353 @@
+{
+  "schema": "zodiacs.hosted-mcp-review.v1",
+  "url": "http://127.0.0.1:4521/mcp",
+  "at": "2026-10-17T19:12:36.577Z",
+  "tools": {
+    "inspector": "@modelcontextprotocol/inspector@2.10.1",
+    "conformance": "@modelcontextprotocol/conformance@0.1.16"
+  },
+  "inspector": {
+    "strictExit": 0,
+    "tools": [
+      "get_capabilities",
+      "get_sky",
+      "get_upcoming_events",
+      "check_sky_fact",
+      "get_horoscope",
+      "open_chart_studio",
+      "get_occasion_sky",
+      "get_life_milestones",
+      "get_compatibility",
+      "find_chart_twins",
+      "get_famous_chart",
+      "get_birthday",
+      "get_sky_calendar"
+    ],
+    "findings": {
+      "errors": 0,
+      "warnings": 18,
+      "byIssue": {
+        "warning: `type` is an array ([\"string\",\"null\"])": 17,
+        "warning: `type` is an array ([\"number\",\"null\"])": 1
+      }
+    },
+    "calls": [
+      {
+        "tool": "get_capabilities",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "get_sky",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "get_upcoming_events",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "check_sky_fact",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "get_horoscope",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "open_chart_studio",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "get_occasion_sky",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "get_life_milestones",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "get_compatibility",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "find_chart_twins",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "get_famous_chart",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "get_birthday",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      },
+      {
+        "tool": "get_sky_calendar",
+        "ok": true,
+        "exit": 0,
+        "rateLimitWaits": 0,
+        "isError": false,
+        "resultOk": true,
+        "matchesOutputSchema": true
+      }
+    ],
+    "missing": []
+  },
+  "conformance": {
+    "scenarios": 32,
+    "passed": [
+      "server-initialize",
+      "ping",
+      "tools-list",
+      "resources-list",
+      "dns-rebinding-protection"
+    ],
+    "warningsOnly": [
+      "server-sse-polling",
+      "server-sse-multiple-streams"
+    ],
+    "notApplicable": 25,
+    "failed": [],
+    "detail": [
+      {
+        "scenario": "server-initialize",
+        "verdict": "pass",
+        "passed": 1,
+        "warnings": []
+      },
+      {
+        "scenario": "logging-set-level",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "ping",
+        "verdict": "pass",
+        "passed": 1,
+        "warnings": []
+      },
+      {
+        "scenario": "completion-complete",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "tools-list",
+        "verdict": "pass",
+        "passed": 1,
+        "warnings": []
+      },
+      {
+        "scenario": "tools-call-simple-text",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "tools-call-image",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "tools-call-audio",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "tools-call-embedded-resource",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "tools-call-mixed-content",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "tools-call-with-logging",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "tools-call-error",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "tools-call-with-progress",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "tools-call-sampling",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "tools-call-elicitation",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "json-schema-2020-12",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "elicitation-sep1034-defaults",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "server-sse-polling",
+        "verdict": "warnings-only",
+        "passed": 0,
+        "warnings": [
+          "server-sse-polling-session",
+          "server-sse-priming-event",
+          "server-sse-retry-field"
+        ]
+      },
+      {
+        "scenario": "server-sse-multiple-streams",
+        "verdict": "warnings-only",
+        "passed": 0,
+        "warnings": [
+          "server-sse-multiple-streams-session"
+        ]
+      },
+      {
+        "scenario": "elicitation-sep1330-enums",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "resources-list",
+        "verdict": "pass",
+        "passed": 1,
+        "warnings": []
+      },
+      {
+        "scenario": "resources-read-text",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "resources-read-binary",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "resources-templates-read",
+        "verdict": "not-applicable",
+        "reason": "calls the conformance reference server's own test tools, prompts or resources, which this server does not have"
+      },
+      {
+        "scenario": "resources-subscribe",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "resources-unsubscribe",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "prompts-list",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "prompts-get-simple",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "prompts-get-with-args",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "prompts-get-embedded-resource",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "prompts-get-with-image",
+        "verdict": "not-applicable",
+        "reason": "needs a capability this server does not offer (logging, completions, prompts or resource subscriptions); the server answers that the operation is not supported"
+      },
+      {
+        "scenario": "dns-rebinding-protection",
+        "verdict": "pass",
+        "passed": 1,
+        "warnings": [],
+        "notApplicableChecks": [
+          {
+            "check": "localhost-host-valid-accepted",
+            "reason": "expects a server on a local machine to accept a localhost Host and Origin; this server answers only for its own hostname and the assistant origins it allows"
+          }
+        ]
+      }
+    ]
+  },
+  "ok": true
+}
