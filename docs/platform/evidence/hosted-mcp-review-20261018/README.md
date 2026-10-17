@@ -110,7 +110,9 @@ Inspector 2.10.1 and the MCP conformance suite 0.1.16.
     warnings only.
 
   The pinned suite lists 32 server scenarios. A listing of any other number
-  fails the review.
+  fails the review. Each attempt writes into a directory of its own and is
+  read from there alone. Codex's review found that a second review into the
+  same folder could read the first one's checks.
 - **The rate limit.** Production answers 429 when one address calls it too
   often. A limited step is retried after a minute, so the limit slows a
   review but never decides it.

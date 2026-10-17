@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { CALLS, NOT_APPLICABLE, RATE_LIMITED, classify, strictFindings } from './hosted-mcp-review.mjs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { CALLS, NOT_APPLICABLE, RATE_LIMITED, classify, runScenario, strictFindings } from './hosted-mcp-review.mjs';
 import { ALL_AI_TOOL_NAMES } from '../src/ai-tools/contracts';
 
 const failure = (id, errorMessage) => ({ id, status: 'FAILURE', errorMessage });
@@ -42,6 +45,31 @@ describe('the hosted MCP review', () => {
     const remote = 'DNS rebinding tests require a localhost server URL (localhost, 127.0.0.1, or [::1])';
     expect(classify('dns-rebinding-protection', [failure('localhost-host-rebinding-rejected', remote), failure('localhost-host-valid-accepted', remote)]))
       .toMatchObject({ verdict: 'not-applicable', reason: NOT_APPLICABLE['dns-rebinding-protection'] });
+  });
+
+  it('reads only the checks this run of a scenario wrote, never an earlier run\'s', () => {
+    const out = mkdtempSync(join(tmpdir(), 'hosted-mcp-review-'));
+    try {
+      const root = join(out, 'conformance');
+      // An earlier review into the same directory left a passing run of the scenario, in every folder name it used.
+      for (const leftover of ['tools-list.1', 'tools-list.2', 'tools-list.']) {
+        mkdirSync(join(root, leftover, 'server-tools-list-2026-01-01T00-00-00-000Z'), { recursive: true });
+        writeFileSync(join(root, leftover, 'server-tools-list-2026-01-01T00-00-00-000Z', 'checks.json'), JSON.stringify([success('tools-list')]));
+      }
+      // This run fails.
+      const failing = runScenario('tools-list', root, (dir) => {
+        mkdirSync(join(dir, 'server-tools-list-2026-10-18T00-00-00-000Z'));
+        writeFileSync(join(dir, 'server-tools-list-2026-10-18T00-00-00-000Z', 'checks.json'), JSON.stringify([failure('tools-list', 'Failed: fetch failed')]));
+        return { status: 1, stdout: '', stderr: '' };
+      });
+      expect(classify('tools-list', failing.checks, failing.status)).toMatchObject({ verdict: 'fail' });
+      // This run stops before it writes anything.
+      const silent = runScenario('tools-list', root, () => ({ status: 1, stdout: '', stderr: '' }));
+      expect(silent.checks).toEqual([]);
+      expect(silent.dir).not.toBe(failing.dir);
+    } finally {
+      rmSync(out, { recursive: true, force: true });
+    }
   });
 
   it('reads the Inspector\'s --strict findings', () => {

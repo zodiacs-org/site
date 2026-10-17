@@ -22,7 +22,7 @@
  * already installed (its node_modules/.bin is used instead).
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
@@ -153,6 +153,20 @@ function run(command, args, env = {}) {
 
 const firstJson = (text) => JSON.parse(text.slice(text.indexOf('{')));
 
+/**
+ * Runs one conformance scenario into a directory made for this attempt alone, under root, and reads the checks it
+ * wrote there. A rerun into the same output directory, or an earlier attempt, can leave a scenario's folder behind;
+ * a fresh directory per attempt means only this run's checks are ever read. runInto(dir) runs the suite with -o dir.
+ */
+export function runScenario(scenario, root, runInto) {
+  mkdirSync(root, { recursive: true });
+  const dir = mkdtempSync(join(root, `${scenario}.`));
+  const ran = runInto(dir);
+  const folder = readdirSync(dir).find((entry) => entry.startsWith(`server-${scenario}-`));
+  const file = folder ? join(dir, folder, 'checks.json') : null;
+  return { ...ran, dir, checks: file && existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : [] };
+}
+
 /** The hosted server's answer when one address calls it too often: HTTP 429, "Zodiacs is busy. Try again in a minute." */
 export const RATE_LIMITED = /\b429\b|rate-limited|Zodiacs is busy/u;
 const RETRY_AFTER_MS = 61_000;
@@ -172,6 +186,8 @@ async function paced(step, limited) {
 
 export async function review({ url, out }) {
   mkdirSync(out, { recursive: true });
+  // A report left by an earlier review into the same directory must not outlive a run that stops before writing one.
+  rmSync(join(out, 'report.json'), { force: true });
   // The Inspector keeps a catalog of servers; keep it with this run's output, not in the home directory.
   const inspectorEnv = { MCP_CATALOG_PATH: resolve(out, 'inspector-catalog.json') };
   const inspector = (args) => run(tool('mcp-inspector', INSPECTOR), ['--cli', url, '--transport', 'http', ...args], inspectorEnv);
@@ -212,18 +228,10 @@ export async function review({ url, out }) {
   const scenarios = [];
   const log = [];
   for (const scenario of names) {
-    // Each scenario writes its own folder; a rate-limited attempt is run again into a fresh one.
-    const checksOf = (dir) => {
-      const folder = existsSync(dir) ? readdirSync(dir).find((entry) => entry.startsWith(`server-${scenario}-`)) : undefined;
-      return folder ? JSON.parse(readFileSync(join(dir, folder, 'checks.json'), 'utf8')) : [];
-    };
-    let attempt = 0;
-    const result = await paced(() => {
-      attempt += 1;
-      const dir = join(out, 'conformance', `${scenario}.${attempt}`);
-      const ran = run(conformanceTool, ['server', '--url', url, '--scenario', scenario, '-o', dir]);
-      return { ...ran, checks: checksOf(dir) };
-    }, (ran) => ran.checks.some((check) => check.status === 'FAILURE' && RATE_LIMITED.test(check.errorMessage ?? '')));
+    const result = await paced(
+      () => runScenario(scenario, join(out, 'conformance'), (dir) => run(conformanceTool, ['server', '--url', url, '--scenario', scenario, '-o', dir])),
+      (ran) => ran.checks.some((check) => check.status === 'FAILURE' && RATE_LIMITED.test(check.errorMessage ?? '')),
+    );
     log.push(`== ${scenario} (attempts ${result.waits + 1})\n${result.stdout}${result.stderr}`);
     scenarios.push({ ...classify(scenario, result.checks, result.status), ...(result.waits ? { rateLimitWaits: result.waits } : {}) });
   }
