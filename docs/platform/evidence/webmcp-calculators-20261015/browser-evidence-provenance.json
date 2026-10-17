@@ -1,16 +1,16 @@
 {
   "schema": "zodiacs.browser-evidence.v1",
   "mode": "compare",
-  "headSha": "48592f4e5da8e46aa256ca4be8e8c613586dd303",
+  "headSha": "bd62279399d055d1c6dcd4288c963f4808c88129",
   "baseSha": "013b93d535038c8f306856d5c1d7e95cb9a63e59",
-  "actualHead": "48592f4e5da8e46aa256ca4be8e8c613586dd303",
+  "actualHead": "bd62279399d055d1c6dcd4288c963f4808c88129",
   "repository": "zodiacs-org/site",
-  "runUrl": "https://github.com/zodiacs-org/site/actions/runs/39001094966",
+  "runUrl": "https://github.com/zodiacs-org/site/actions/runs/39016692892",
   "runAttempt": "1",
-  "recordedAt": "2026-10-17T04:27:40.005Z",
+  "recordedAt": "2026-10-17T08:44:17.008Z",
   "node": "v22.23.3",
   "requiredBrowser": "149.0.7827.55",
-  "templateSourceSha256": "697f6259df88079a1decc3a6348e2436576077ab426100c945574fe104f7bca4",
+  "templateSourceSha256": "24e7c40b0f87f436e1658d35656baee1974d18264f317da486d6b029f0281904",
   "outcomes": {
     "checkout": "success",
     "node": "success",
@@ -71,7 +71,7 @@
     {
       "path": "docs/acceptance/phase1/screenshots/manifest.json",
       "bytes": 12353,
-      "sha256": "e65605cbeff4bbac5a02cee5f9454445f8165efa04895cdc8aa83b23b64b19a6"
+      "sha256": "30e7b9e6fefeef841f507efb202b2372b80954621685f2653f8cfd4d84c7b591"
     },
     {
       "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
@@ -795,13 +795,13 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/crowded-wheel/frida-kahlo-sky-1440.png",
-      "bytes": 272178,
-      "sha256": "c1efc3412ac4977d2f3aab2ddba79845fe148f10e7d21946f0594bf904187d39"
+      "bytes": 271960,
+      "sha256": "00f8b754a42cf56c1d1dd7bb3339ebb7c4f58e4481c26351e8ec6711f9d3cdfa"
     },
     {
       "path": "tests/visual/artifacts/explorer/crowded-wheel/frida-kahlo-sky-390.png",
-      "bytes": 171402,
-      "sha256": "373c58c4d9fad1cc53c66f5fb64e2baba21668e53f27ca6bbcc60e3d128382fb"
+      "bytes": 171589,
+      "sha256": "0b9ceb99fae50ebdb7cedfd65801a45e9e5640f171870402070f79133041cbeb"
     },
     {
       "path": "tests/visual/artifacts/explorer/crowded-wheel/measurements.json",
@@ -815,8 +815,8 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/desktop-mars-selected.png",
-      "bytes": 120744,
-      "sha256": "36396cbd18ba19f90ee698ec2d26f696395ff83ad2c4aa4c9a9298c4c2dd207f"
+      "bytes": 119705,
+      "sha256": "39d7cf9cc6a7d3616026417c9d8b4cdfe68ec2293919d4c460f25caac73488d0"
     },
     {
       "path": "tests/visual/artifacts/explorer/desktop-natal-aspect-signature.png",
@@ -986,27 +986,27 @@
     {
       "path": "tests/visual/artifacts/explorer/entity-picker-en-1440.png",
       "bytes": 246823,
-      "sha256": "cc6896d61760380654b1f57129cb01ff9f7e1186ece2c25e175e0a88f92f87f7"
+      "sha256": "abaada1330de65fa4b694c47671ac626d3e9bf92999a24d5cde41e5e58e617da"
     },
     {
       "path": "tests/visual/artifacts/explorer/entity-picker-es-390.png",
-      "bytes": 89115,
-      "sha256": "56ec5b5e08a699e238b54d7ac2cfcc050b3878694cb693932e8bbdbf85f21814"
+      "bytes": 89140,
+      "sha256": "53696db0fb005a4691e2a40e2248ffbd27fd924729a0211f8e412f38cada41e0"
     },
     {
       "path": "tests/visual/artifacts/explorer/entity-picker-fr-390.png",
-      "bytes": 86175,
-      "sha256": "a3f68e831860c7fe0bcd08d70cc53fe9fa22302070d2a4967c78a29d59d150f4"
+      "bytes": 86179,
+      "sha256": "6e5f98af416cdf16df66cc188353f295cac8bc7cb75c6ab058780ca3d459f182"
     },
     {
       "path": "tests/visual/artifacts/explorer/entity-picker-it-390.png",
-      "bytes": 90150,
-      "sha256": "d5daf9ebb6a18f7e09d3d0f53ef1b3de4ac38b78136741a61b03666e4cba19ea"
+      "bytes": 90129,
+      "sha256": "387ad5bce378111a9180ae13dfc610c9f9a5fcb62c58222e70f6b21be60add3e"
     },
     {
       "path": "tests/visual/artifacts/explorer/entity-picker-pt-390.png",
-      "bytes": 88071,
-      "sha256": "3a66cb68cd0af736fb3faf62d86201891082d3fd41a69adf35b1d20791899a84"
+      "bytes": 88060,
+      "sha256": "c6eb2a11f6156081a65bde28e2ac845f5fc841e2b280e9430808bc647b28bc19"
     },
     {
       "path": "tests/visual/artifacts/explorer/entity-picker-recovery-390.png",
@@ -1015,8 +1015,8 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/entity-picker-ru-390.png",
-      "bytes": 95708,
-      "sha256": "7eb6fa0fdecea9a74ce0582ab58ad7a193b313a53cb63e3131c754fc03712918"
+      "bytes": 95712,
+      "sha256": "8431f23df8d589ea768d6363a28875ea76d23db0b5d86a9254ec762aec7e749c"
     },
     {
       "path": "tests/visual/artifacts/explorer/event-transits/event-eclipse-2026-08-28-1440.png",
@@ -1100,8 +1100,8 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/footer-styles/footer-style-receipt.json",
-      "bytes": 4468,
-      "sha256": "72c559012d815e6b14a72567cb48c816953c51f7d37069a24bb39f97435a8ab5"
+      "bytes": 4457,
+      "sha256": "93b19fc6abbb4e1a3af1cb3a479a9eebb0edafcd83e04fe7c5520b50c28c5e2e"
     },
     {
       "path": "tests/visual/artifacts/explorer/footer-styles/initial-near-1280.png",
@@ -1195,18 +1195,18 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/legacy-polar-natal.png",
-      "bytes": 1227127,
-      "sha256": "f8a62fe663b16da89dfa5d2cdd727ae9492614d5704ba859c9f3ee463ab3a1c2"
+      "bytes": 1228331,
+      "sha256": "280806b743839ad5f1d28d7cccd98d90c42940ec832a6d188d0db12932fd0aa4"
     },
     {
       "path": "tests/visual/artifacts/explorer/legacy-polar-profile.png",
-      "bytes": 608907,
-      "sha256": "491f50ae8eff5e78f0c49e2b3cae18083ca7b1fdfdfd0e1095fa2140a6177366"
+      "bytes": 612871,
+      "sha256": "0c712f557d94ae8141313e1e765ca7e57a0d5db773d05560109d4ababdc43055"
     },
     {
       "path": "tests/visual/artifacts/explorer/legacy-polar-synastry.png",
-      "bytes": 518396,
-      "sha256": "d773a07869af5365d8a4f1104f35195e4433017271329c3a2c05c0d22ed96d06"
+      "bytes": 522038,
+      "sha256": "1bf28c8530897aae70b215d204b7d1745e394b4d97cc7c0f27d3470f88e699fe"
     },
     {
       "path": "tests/visual/artifacts/explorer/legacy-polar-today-asc.png",
@@ -1240,8 +1240,8 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/locales/en-today-390.png",
-      "bytes": 438824,
-      "sha256": "b7393bb2dee31685198b3337c997e70c347fd331f5d2cc2b6832ce8e3cfe1628"
+      "bytes": 442512,
+      "sha256": "753d6818feece852d085c626e72c0510e866d1dfadae305ddb6bec96a5a80825"
     },
     {
       "path": "tests/visual/artifacts/explorer/locales/en-today-menu-390-birthday-focus.png",
@@ -1295,8 +1295,8 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/locales/es-today-1440.png",
-      "bytes": 734624,
-      "sha256": "0814169c3b86d1510ac6512d92541078798815f2efdab88d071e0d90c3ae7ff7"
+      "bytes": 739095,
+      "sha256": "bf46c73848d550de795bb8191f5d33fd5bbddd8456f77fc05c3ed3dcafd9123e"
     },
     {
       "path": "tests/visual/artifacts/explorer/locales/es-today-390.png",
@@ -1376,7 +1376,7 @@
     {
       "path": "tests/visual/artifacts/explorer/locales/it-home-selected-sign-390-overview.png",
       "bytes": 80249,
-      "sha256": "f5d686e5337f43d73e2f18d0b7a10cd2498d8e0e2f0a7fa92411f4fd28e50807"
+      "sha256": "119774edacbbbf8d4411d3c924ca8ef516115cec062f53bf61967309ebc89006"
     },
     {
       "path": "tests/visual/artifacts/explorer/locales/it-home-selected-sign-390-reading.png",
@@ -1441,12 +1441,12 @@
     {
       "path": "tests/visual/artifacts/explorer/locales/pt-today-menu-320-birthday-focus.png",
       "bytes": 63265,
-      "sha256": "c5533355e8fd4c4a2b596b2cb4fd69e27e38fadce0c0599757508961a28ae68e"
+      "sha256": "90f7d7f78b2c04d1c70e933122aaead9ffc449b87b6f5f1d3181e76e14c498df"
     },
     {
       "path": "tests/visual/artifacts/explorer/locales/pt-today-menu-320.png",
-      "bytes": 62774,
-      "sha256": "e7d256bfc0fe185d459895d7e31f315278a12499148a62ed3a8271a0954ea4d0"
+      "bytes": 62771,
+      "sha256": "2d936c0eb9f9a20c1d9dfc2421d11b03f02e9f21d318068d7842a76e48f379cd"
     },
     {
       "path": "tests/visual/artifacts/explorer/locales/pt-today-menu-390-birthday-focus.png",
@@ -1465,8 +1465,8 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/locales/pt-tools-390.png",
-      "bytes": 355437,
-      "sha256": "2f82c4cb5520277cd23d642fc604000d429ee7efb9a89068bd8be433b8e73552"
+      "bytes": 358233,
+      "sha256": "065b82325e03c2c7f1311c8448bdd1c315090ead87185039129306876b26e83f"
     },
     {
       "path": "tests/visual/artifacts/explorer/locales/results.json",
@@ -1640,13 +1640,13 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/mobile-sheet-half.png",
-      "bytes": 236836,
-      "sha256": "eef55c9a06514bce97b076a6f8e6f2d4a36d6cef124589dd2f9dab568e74b2a5"
+      "bytes": 235029,
+      "sha256": "16d645ff91cfe4375f15c744d23d81f5a65856deee916d93e951a3c87cc11270"
     },
     {
       "path": "tests/visual/artifacts/explorer/mobile-tour-sheet.png",
-      "bytes": 286077,
-      "sha256": "741099407abf0894d2bd8aa9df27d0575860c7d84df0815b9897055a8f936160"
+      "bytes": 165826,
+      "sha256": "a1d0b36132c70050b1bda355591ae46766986e9515fc287ab9c4c4d95745e70c"
     },
     {
       "path": "tests/visual/artifacts/explorer/moon-boundary-hero-1440.png",
@@ -1670,13 +1670,13 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/moon-tour-guide-bootstrap-390.png",
-      "bytes": 51082,
-      "sha256": "96ed55209226743890f6e2b040ee04d21d9a5f55e477a95ce087919348c6a719"
+      "bytes": 51098,
+      "sha256": "1080e442f1a06f31cffed0b44f004683cfb29bf52985b5efa3dc92295340e7cd"
     },
     {
       "path": "tests/visual/artifacts/explorer/moon-tour-guide-loaded-390.png",
-      "bytes": 51082,
-      "sha256": "96ed55209226743890f6e2b040ee04d21d9a5f55e477a95ce087919348c6a719"
+      "bytes": 51098,
+      "sha256": "1080e442f1a06f31cffed0b44f004683cfb29bf52985b5efa3dc92295340e7cd"
     },
     {
       "path": "tests/visual/artifacts/explorer/people-amelia-earhart-1060.png",
@@ -2395,18 +2395,18 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/recovery/transit-scan-failure-1440.png",
-      "bytes": 300549,
-      "sha256": "3203d4c0697b56c92e02bb025c48539e6ed045b49b9cf5fe9b8f253829a5958d"
+      "bytes": 300873,
+      "sha256": "5c07bc0407d3ea575693c1d5ff5004d15409d5316764d0e233b7d074a713a092"
     },
     {
       "path": "tests/visual/artifacts/explorer/recovery/transit-scan-recovered-1440.png",
-      "bytes": 315523,
-      "sha256": "f3a9ed8dcebf8530a2b35ba8fe2f5ea363f25bdca2f6116a24c911d3e4614a67"
+      "bytes": 315702,
+      "sha256": "6eb3d0351bc98df30515e5572f641df9bd01ff965dad0f39cf14a44a2304b45a"
     },
     {
       "path": "tests/visual/artifacts/explorer/solar-return/export-receipt.json",
       "bytes": 2155,
-      "sha256": "65ae27326e6255f182ed7c818aa03e783589868d97e9235d1d6bf4101c528444"
+      "sha256": "fc7d8bd332fdf623ea0a93b9aaa315a3d10eda63e77584a6b213a92024349708"
     },
     {
       "path": "tests/visual/artifacts/explorer/solar-return/image-encode-failure-390.png",
@@ -2421,7 +2421,7 @@
     {
       "path": "tests/visual/artifacts/explorer/solar-return/known-2024.ics",
       "bytes": 465,
-      "sha256": "129620ebadb361ff83d0498a347a2b40d7de8f0e10a75d48bb388b5f1f866aeb"
+      "sha256": "9528529394be744e404dec4a30d11014a9b504398e136fea967828a1de55dce2"
     },
     {
       "path": "tests/visual/artifacts/explorer/solar-return/known-2024.png",
@@ -2446,7 +2446,7 @@
     {
       "path": "tests/visual/artifacts/explorer/solar-return/known-no-place-2024.ics",
       "bytes": 465,
-      "sha256": "87da564daddc4a6bed3a3d845697d67d53f31c4138fb55fa36aa78af79e615f8"
+      "sha256": "26f549331f891d6def1b52120bcf8cdf8b4bc925e74c98974e4d2a5e3fdfafc4"
     },
     {
       "path": "tests/visual/artifacts/explorer/solar-return/known-no-place-2024.png",
@@ -2486,12 +2486,12 @@
     {
       "path": "tests/visual/artifacts/explorer/solar-return/module-failure-2024.ics",
       "bytes": 465,
-      "sha256": "d846ae68cff26c9ddebf7a0cd4b1ba48374ceabd41ab314d96ff66dc942b0a34"
+      "sha256": "4e4bdd5faa3cfa267230e43494bdda12c572310f2aa3a4b17abc3ae24adeee3d"
     },
     {
       "path": "tests/visual/artifacts/explorer/solar-return/relocated-2024.ics",
       "bytes": 465,
-      "sha256": "87da564daddc4a6bed3a3d845697d67d53f31c4138fb55fa36aa78af79e615f8"
+      "sha256": "03820749e1458d7d7aaf6719d43c532ed4badb84a6b0ad15f9141a27ff0c2473"
     },
     {
       "path": "tests/visual/artifacts/explorer/solar-return/relocated-2024.png",
@@ -2511,7 +2511,7 @@
     {
       "path": "tests/visual/artifacts/explorer/solar-return/unknown-2024.ics",
       "bytes": 547,
-      "sha256": "eae531040ace6d75a88895ba377ac5fcf6f024dfcc77e18472d5aef8fc8b143e"
+      "sha256": "6a0c9ef6ac7de2b30fd7c5ea88b709a9a07763a30dcba8513e3613e000bae105"
     },
     {
       "path": "tests/visual/artifacts/explorer/solar-return/unknown-2024.png",
@@ -2550,8 +2550,8 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/tour-ch1-sky.png",
-      "bytes": 339811,
-      "sha256": "86887de127c29dd2cb6ea7a00d09f9cc5863a84ede3d1bee11fb1b1566c84dfa"
+      "bytes": 342791,
+      "sha256": "103cc95d80c2f7f0aaa37941809d7834a2c1ba9c5ddc3acc130b862edc8170a2"
     },
     {
       "path": "tests/visual/artifacts/explorer/tour-ch2-aries-anchor.png",
@@ -2570,18 +2570,18 @@
     },
     {
       "path": "tests/visual/artifacts/explorer/tour-ch8-whole.png",
-      "bytes": 276146,
-      "sha256": "1fe636808b2da0755bd7aa695f8e7650fc39b52e2c59b18b715b8364385eae39"
+      "bytes": 149751,
+      "sha256": "7317de4e976995d159025b054d9f0ca4f1c62c9a7e6c59276083af899de4a10a"
     },
     {
       "path": "tests/visual/artifacts/explorer/tour-no-time.png",
-      "bytes": 307867,
-      "sha256": "0ee95532f8710b11bb704c953d85968ecf1589d7f64499263ac6600a6ac827e0"
+      "bytes": 311638,
+      "sha256": "0e0c54480f1017e03019ee999ce79c2662fb1365625d0705b2278b6eec09cc6d"
     },
     {
       "path": "tests/visual/artifacts/explorer/transit-itinerary/itinerary-known-1440.ics",
       "bytes": 12726,
-      "sha256": "f48f27ccb917bcde577a4f6ba9c63a77e128a3fca85834ab3e9b4f9d46b5bd6a"
+      "sha256": "8b9a3f189b65d416800cd26e553d650fa140e7cf30c518834c5cfb345fb91204"
     },
     {
       "path": "tests/visual/artifacts/explorer/transit-itinerary/itinerary-known-1440.png",
@@ -2591,7 +2591,7 @@
     {
       "path": "tests/visual/artifacts/explorer/transit-itinerary/itinerary-known-390.ics",
       "bytes": 12726,
-      "sha256": "fefdf171f001e882f4363f6579bef92d22e45debc465b74b8401efa677af6c07"
+      "sha256": "4590c58a0979129bf79dbe5c774033dc93ee81b74ba37ce428f05a75b4e62a49"
     },
     {
       "path": "tests/visual/artifacts/explorer/transit-itinerary/itinerary-known-390.png",
@@ -2630,1353 +2630,1353 @@
     },
     {
       "path": "tests/visual/artifacts/lighthouse/aries-1.devtoolslog.json",
-      "bytes": 97557,
-      "sha256": "8a2fc34ec2960444b638ffda4438882ca340a21c5aa27f8a65dc6f2899fdae57"
+      "bytes": 96960,
+      "sha256": "256b3d94436ec53d370207d4caf408e8e1703c915bd1b2a996be2dbb6039246e"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/aries-1.json",
-      "bytes": 682511,
-      "sha256": "15195536baf409ba882bd11b5caa7d71f82dc7f006e4d54e7844609347512c3d"
+      "bytes": 682609,
+      "sha256": "2b91b19d17867b82a4a2c706f6be2868791f842455f3ce8646279bec649e3cb7"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/aries-1.trace.json",
-      "bytes": 1663704,
-      "sha256": "141342f14e13eb06309feb57a11d9ff5c9a8ca89838ab977b04cfb7e628e390a"
+      "bytes": 1659777,
+      "sha256": "0845f75d379cc32aa903854e51822e5a5db8c050dc986285ac655a5394bf7390"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/aries-2.devtoolslog.json",
-      "bytes": 96975,
-      "sha256": "52c03fe352b271bba4bd72778c10731b2f9c0367d61ffdbb736d76d648295e91"
+      "bytes": 96580,
+      "sha256": "d371d7da4939c6bfc83e3c5c6bd9afb6a6f9113a37f4413457adfebb18e0ba60"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/aries-2.json",
-      "bytes": 682503,
-      "sha256": "1115b224b976e2a7a9e63799bd5d7b13b3616c07d637a1be8a9a64c294780b89"
+      "bytes": 682521,
+      "sha256": "8294b6c1a32a8ba9b26461e963913a47a5a0d55fde9b876b8de041d5ee704a31"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/aries-2.trace.json",
-      "bytes": 1621392,
-      "sha256": "444cc5f593702a25feeae6c126eed59c94851bb47fe97b3eaa1197e63ae88fd2"
+      "bytes": 1667823,
+      "sha256": "920e59cf708f84ac2256652bd0f984b4c14066f81227d1a7fe9799d4f363e09c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/aries-3.devtoolslog.json",
-      "bytes": 96556,
-      "sha256": "2d1da03c6dbca9c6c5f12c450a1296410641124ca68fd62cc9148886aa9c30cc"
+      "bytes": 97360,
+      "sha256": "a3a983c36d28bc729428625eb995985b3dc551ffb488b3b45d0dc86fdfb54d54"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/aries-3.json",
-      "bytes": 681816,
-      "sha256": "a55ba38a8288d8b6182fdf6acf709d08b8bb7d603d2d11ef37a4b92e89028c55"
+      "bytes": 683135,
+      "sha256": "c0b85382a040a1951d0ad8ad013030c0629dccbe658b6458852a22de15456cc0"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/aries-3.trace.json",
-      "bytes": 1590185,
-      "sha256": "b84908514c2636da7cac3e38e5dc780cf057b238bfac11fb2812929b875b7a74"
+      "bytes": 1647749,
+      "sha256": "74c727389d16e516b8e20dd69759afe2ff9bc55f39e649745035c20e6581ea0f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/birth-chart-1.devtoolslog.json",
-      "bytes": 354680,
-      "sha256": "fc76337632c17285483bd11b41f8ff98fedde6a009305c3fccfe7b3455d5c325"
+      "bytes": 354142,
+      "sha256": "c5982d79ed8defba540d3b37615c8cec4e549027d5fea769c479d6f569684020"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/birth-chart-1.json",
-      "bytes": 493309,
-      "sha256": "2b18d6ff0c12d220550ce6489b97090131ed2497d2ff335286bcfba75a333639"
+      "bytes": 493552,
+      "sha256": "89327eaa57172110fc6383ddcaa2c1f773dab69fd1dbb75b70230fab74e3edbf"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/birth-chart-1.trace.json",
-      "bytes": 2735812,
-      "sha256": "c46b2ab860139cd22e4db504c3b6f3093e370bb8f489a444bced85b69760e5fb"
+      "bytes": 2711083,
+      "sha256": "a80ddb2fb5f9f32a8bc6511e57916846623ff19ba2ceeb3196932cba300e157e"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/birth-chart-2.devtoolslog.json",
-      "bytes": 354703,
-      "sha256": "eeadf4cfba153058fab2ef4c6474206be03bdec2815fc0e6179094aa09b1358b"
+      "bytes": 354307,
+      "sha256": "ad439b2da35e06e19c7f434da222802c26ae42a60597e75f40b7ebbc9c1a2d48"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/birth-chart-2.json",
-      "bytes": 493180,
-      "sha256": "e42245db2282062d2ea7a7501a468300a6e6c3e776a6bb56548fd57233e3ec7e"
+      "bytes": 493762,
+      "sha256": "de6dc8102717b4af7b0b9304261a87c3f2f2caa3ab2547b84c0923ef6220e7c8"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/birth-chart-2.trace.json",
-      "bytes": 2694623,
-      "sha256": "53820eea931c3394d76fd3f7b7ba38fe2d14ae3df205f440a210c030edb023d3"
+      "bytes": 2740676,
+      "sha256": "be78e42e17f4cc52d0ff7431ed6a0a9a39a020e39549d5a40a980ba752b21238"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/birth-chart-3.devtoolslog.json",
-      "bytes": 354074,
-      "sha256": "debd47c151279d0425435e56798a3e4c31c1c26700827138fed69c02096f7dbb"
+      "bytes": 354136,
+      "sha256": "8d81e3539627df05a0818b818d60732fe504a9e8b8f9bc5f8217d433e70c5228"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/birth-chart-3.json",
-      "bytes": 492361,
-      "sha256": "bd467e32f2fe1c7597d4ccf3628106027ed7ca420c4801b3ff48d58f3be9aeb7"
+      "bytes": 493640,
+      "sha256": "18f4cbb68704c7ffd6658fb4bde7833641843414c5df142e9e2be3ec358157f7"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/birth-chart-3.trace.json",
-      "bytes": 2680763,
-      "sha256": "edc4d3859516adb238f384664ed2055e1b8ba947a5d451ec1965b6cc38a46194"
+      "bytes": 2740465,
+      "sha256": "16c74633c8ed19a831b116f0e4b902eb65d8a9c86280492f3ab2790ac64b2ac3"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-aspect-1.devtoolslog.json",
-      "bytes": 104300,
-      "sha256": "54a63b4ed557266b980cca8b10d022a9661fbde18da7ac9ae11cface90f1415f"
+      "bytes": 104098,
+      "sha256": "5ad129d6cf3cc64e9d4c854826a84a85d3bd884ba5f6f9232cbfa061b761a8e3"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-aspect-1.json",
-      "bytes": 480726,
-      "sha256": "a1da506a8ea7e6b0155719dc0742b8434501bc369f4cce3e25d38e21c2f9ec0e"
+      "bytes": 481081,
+      "sha256": "07d8998a91e01001e336a2437b4a98e0db2340047344280557566424567e8b19"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-aspect-1.trace.json",
-      "bytes": 1701729,
-      "sha256": "7c0ab4d4dacd28af6570b5db75db9f737e3f1e8b5dc49e02b9628b4b55e4f69e"
+      "bytes": 1729085,
+      "sha256": "9bd86e030cc535b6efcbb196bda2257647db4b72c2a31b31aafbd63f00f73c81"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-aspect-2.devtoolslog.json",
-      "bytes": 104098,
-      "sha256": "7166558d936772e44d0437a6a2f536c8c2b31df4c24ff0d35084f4ca4b929582"
+      "bytes": 104884,
+      "sha256": "cd39113650ecfe42f4878d61bfdde26b50471713417ebafdce5332e52df3b149"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-aspect-2.json",
-      "bytes": 481592,
-      "sha256": "546b1a38b937b596e71791685f62b7b9e0b558ebc6c98a8206721e194b76ea7c"
+      "bytes": 480898,
+      "sha256": "f1fb281635286d5933947872bdb37ea3742df0c203d47bfb60efcc6c5cf6d3c8"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-aspect-2.trace.json",
-      "bytes": 1724108,
-      "sha256": "7758941af5933acc8233d4f67e793dcb1f6dadcf0b948b25ee43937a57565ce1"
+      "bytes": 1749106,
+      "sha256": "9ebb162887f41978cd7de606024de3d04e3173c1e7055b0ee1b3f58b238b9060"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-aspect-3.devtoolslog.json",
-      "bytes": 104302,
-      "sha256": "fa824e18898f93f346e795669c7af8b16bd7de18436b408879e26b41668467ea"
+      "bytes": 104446,
+      "sha256": "c2a5336a3f2d69dba2c74adb37d32506b31cfb15f7d0d9223bcab24c2272406b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-aspect-3.json",
-      "bytes": 480795,
-      "sha256": "67581e6f09c68e0aac7a0e7d354adab85e0d85fcd1c48547b3b2ded18ac7fa1a"
+      "bytes": 481809,
+      "sha256": "deb09c191790bb1065df57eff19a055684bb8306251d222fc03b3bf5b17c8305"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-aspect-3.trace.json",
-      "bytes": 1698980,
-      "sha256": "c4ce2ffb240c683f47cfd26a1444247df3b9aeb7967a7d90883ae37e4f98a533"
+      "bytes": 1771797,
+      "sha256": "dcf1555c28d74ad868c21ce71d86d517e67c4e94559d11cfcaf658601318c843"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-eclipse-1.devtoolslog.json",
-      "bytes": 98326,
-      "sha256": "7093b47b1826134326a6b49cb226e6d45dafadfd62a970bb574bc302a85d2aa6"
+      "bytes": 98061,
+      "sha256": "0688dfe796e6646bafba2c1959ec9bbce6edfe985efbe552009039828ec89f08"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-eclipse-1.json",
-      "bytes": 492699,
-      "sha256": "559b46867f8778c3068b33f93937fa1b917b5f2866b097160ec8a1f0c8de5ca4"
+      "bytes": 492652,
+      "sha256": "a5c3b7082ddbcfc29fb0a59d39c2bd1c920e0e8290b1ffc62d6de184363089eb"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-eclipse-1.trace.json",
-      "bytes": 1738897,
-      "sha256": "a9c59760cc359a2d3929c85bfa7047c20cae13f6b072a8aeaebef14c95886044"
+      "bytes": 1738254,
+      "sha256": "3c37fa2f18a9bc40518b05aa2ddf158b374a3ae054411f1e89ffe23ec2ff6136"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-eclipse-2.devtoolslog.json",
-      "bytes": 97532,
-      "sha256": "924fa1e8f8135364181982a0edda31bd9042e8c69912095443450cca78c936ac"
+      "bytes": 97853,
+      "sha256": "ce3328fe5e919f701b78e071a19883249c97726433c21d09314a1f418b7c04fa"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-eclipse-2.json",
-      "bytes": 493659,
-      "sha256": "b7d5c15142d465041f7e6b8f9b50afb2f5f7d8803fd9552002f278b391aab458"
+      "bytes": 492808,
+      "sha256": "e3d9d66dbf3d9853207a4c9befb6e1ca39a0d174e74d20c487e09be5a84b9677"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-eclipse-2.trace.json",
-      "bytes": 1769341,
-      "sha256": "59c65682afe55ab0a8583ac29a441a6d5437c9367581beb83452a34971ddf263"
+      "bytes": 1717438,
+      "sha256": "c7398844538612806502ca3543c81073f3a8fc8b995dd65f098cf04a663b85ba"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-eclipse-3.devtoolslog.json",
-      "bytes": 97871,
-      "sha256": "a9a827779da4d0035590362b929e6882c9c86ba239e17bb70d8fee98e20d18c2"
+      "bytes": 97843,
+      "sha256": "e56b512262cbe4b7470608d74b1e19acde9623ac5ed967e8780adaf8e8ef316a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-eclipse-3.json",
-      "bytes": 493447,
-      "sha256": "8b85ef9812160a03f0729df14fd23c88341a8ceca4bb2d95989e55a648c4c465"
+      "bytes": 492915,
+      "sha256": "09a71585b435f43173fdeb43e9b2d6209feb5e1b85426d2d74277a74ec87db14"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-eclipse-3.trace.json",
-      "bytes": 1715349,
-      "sha256": "7e9f0d9adf2e49e035ddbf0fc5bee659c7eee7b5bf04465f44adcc69eefaedce"
+      "bytes": 1758558,
+      "sha256": "1812e742bc8f4963f4e142716b4cd4eb256caa3c4ec0176064b405a8f58511dd"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-full-moon-1.devtoolslog.json",
-      "bytes": 107837,
-      "sha256": "4df05076c071b00608811f8155a7e53fdc013198f8b3fba16bcae225e5970ecb"
+      "bytes": 107625,
+      "sha256": "7427ecfd7d46a66139071d4fa7e7ed88c43233a2644782bdc8b4703b25eac931"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-full-moon-1.json",
-      "bytes": 543908,
-      "sha256": "be4c7b4800cef8fe96bee2766cc5b7ebd3e36b08527c02e46d3aaca2908103ea"
+      "bytes": 544065,
+      "sha256": "ba7cd461acfe7ce28e9c6057890bba2add6a30495da31124a42876674c82861c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-full-moon-1.trace.json",
-      "bytes": 1735238,
-      "sha256": "d5914e4f1e76f269079bd212ee2ac09bea96dab9f34ceeec0e305e9ecd61c414"
+      "bytes": 1808080,
+      "sha256": "69042184b51d049ed6a509b7f5cfa2015f7c5121035615bd24ddd0b8d496f41d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-full-moon-2.devtoolslog.json",
-      "bytes": 108220,
-      "sha256": "3ed8d9d10f78144c69bb58dd59ca9c15e98f965ab16ecd248797654eaf24ed58"
+      "bytes": 108425,
+      "sha256": "9eb99a1a41debd81d4955c643bdc13c017dfee6f3ba4255b50271956f38341bf"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-full-moon-2.json",
-      "bytes": 543816,
-      "sha256": "e3e80c1f61b0130512f756e058c6bc53049757cf5a8fb15a5256f7d541e55817"
+      "bytes": 543197,
+      "sha256": "dd97f2ad05c4364633619fc2dc217f3708623144383f11cccd3269a3fbdbc809"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-full-moon-2.trace.json",
-      "bytes": 1723495,
-      "sha256": "ae4c89fa2a4b16508761e836e3a3225a3a5dac7eb481da8edbb64e48971603a5"
+      "bytes": 1764072,
+      "sha256": "f0c87ec9f40285e9f4657bc59a46ee2c7063e74a21ca247505ea395cb788766f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-full-moon-3.devtoolslog.json",
-      "bytes": 108634,
-      "sha256": "ff01ae3e82a761a3ab1d1e7a6096517ce40a7c644ed98773f0165e0619849685"
+      "bytes": 108427,
+      "sha256": "eb31a3b5cf0c4f10b055d4c0b2875f6a05921006b84f4df68655db22f554d6bd"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-full-moon-3.json",
-      "bytes": 543804,
-      "sha256": "4bd2b114045dc4fab35a175f5ba3d74e3d9b9b556f8805de014ecf751a39e8f0"
+      "bytes": 543319,
+      "sha256": "4355b70a86ad83ce1f023d7cbfeda049d8e101ba2e0c762dd086e9bdf6caa12f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-full-moon-3.trace.json",
-      "bytes": 1756281,
-      "sha256": "fc857237ef3487b1323532690058997729674dc642141651f88c24ad1bbd9560"
+      "bytes": 1750426,
+      "sha256": "895f7395408188458ee06e9fc5851dfc9802f6bc74a18b3ddab49ba476f4ccbb"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-ingress-1.devtoolslog.json",
-      "bytes": 104483,
-      "sha256": "1096356dc2265466110cd9987ed70cfa0895234311d0b5464ee0555402bd6e91"
+      "bytes": 104413,
+      "sha256": "d848c0d51c10cc29b89d6dfba87c085e0ec802c35e67c553f226da55a79bc3fd"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-ingress-1.json",
-      "bytes": 481370,
-      "sha256": "1bf746fb9852b7ac702f586a005ad2f0b53abfbbda0df211aac7cd8f25a2bd17"
+      "bytes": 480751,
+      "sha256": "ea53df6e8943b4d768b657ef35e8c23b0881058ce367a4d210626791ec3c86e5"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-ingress-1.trace.json",
-      "bytes": 1750502,
-      "sha256": "d595f7dc4644ab5094fe05a30abfaaa8365e105fd3095c924d6f1278a73d586c"
+      "bytes": 1757581,
+      "sha256": "c4d36dda907ad453a52f0dfea438ca536269893be0f2509a03d1d335c005d2c1"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-ingress-2.devtoolslog.json",
-      "bytes": 104408,
-      "sha256": "d89ebc855636e3d875745a8346ec73140cea744fddeb64c0aacb7736a88e7254"
+      "bytes": 104625,
+      "sha256": "2354b70eea0f408dd8493842af44284b43809d62266962892ccb14622e5269e4"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-ingress-2.json",
-      "bytes": 481076,
-      "sha256": "5bc3c5582a15dfa6927470c02ffe15ad79ad9cccfde20d5e86fb8fe56c5efe27"
+      "bytes": 480595,
+      "sha256": "d20792dee9dfb45e11555e171b9163214b3ba2df8bb809aeb7c471e04f9959bd"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-ingress-2.trace.json",
-      "bytes": 1699929,
-      "sha256": "c1c143894a0eb7732a81c78457ecea6ffe45fcba6d88bc1fba8068511418ab5a"
+      "bytes": 1727497,
+      "sha256": "a0082c4dd23d5664c1d4277c86e08a4f5a9f47dd4a78be712cbd8cbb9b114102"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-ingress-3.devtoolslog.json",
-      "bytes": 104204,
-      "sha256": "8e2bd0137da9eec86108b4553f52b8c2827d6e4bc8a65881b3e2b48447e50854"
+      "bytes": 104288,
+      "sha256": "1d6ed6d06fefe78456431a6771a1c716bd0ab26f1f9502d5dbc52029f735128e"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-ingress-3.json",
-      "bytes": 480387,
-      "sha256": "e1bd9818c0a04f16ea913641fda4b3f4d0cf0212e625a7d77d8704bee4ae0632"
+      "bytes": 481639,
+      "sha256": "5805955b4f90e393e305bd9d9460f3d7aa22a5b0e72c72af593c859721dd6f10"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-ingress-3.trace.json",
-      "bytes": 1700117,
-      "sha256": "152838cd866baa2abc7277cdb3d2ffc291b7c7a42106ce4d90ed0a50a88b3e73"
+      "bytes": 1798262,
+      "sha256": "55a31c8997392da958734d6417231d2eb3b5a776d98047efdd898d2bc4c9a9b4"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-retrograde-1.devtoolslog.json",
-      "bytes": 99342,
-      "sha256": "172c7b4d2fe1457c0ffedcf1435b0d16f8570b7917e385805f5733dafcf0b81f"
+      "bytes": 97777,
+      "sha256": "fd71beb087c92d1941a660944112799b7588ff1deb983ead162ece6228315033"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-retrograde-1.json",
-      "bytes": 482105,
-      "sha256": "bde593be1601640760a49affc972b27f68c4bc62523c894bf13d747b3cec81f1"
+      "bytes": 483160,
+      "sha256": "6ff534c8735a7365a8ca3730e30b080ed1d8f0de03d31863febba0e3a6814b82"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-retrograde-1.trace.json",
-      "bytes": 1716561,
-      "sha256": "422f478141d36dc9a56ba04dce5c6d35d383ae9ba939fa8ddbb47a5d323ae5de"
+      "bytes": 1745868,
+      "sha256": "cf253f994dd6b145d09149c4e3310345abf06c551b2b4bec72df879e9b2c8223"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-retrograde-2.devtoolslog.json",
-      "bytes": 98641,
-      "sha256": "effc0d6b4ca297876be8170f2a00ffc066165e715da12416a1e7e8631ce1aa01"
+      "bytes": 97958,
+      "sha256": "db3343fb07711b92efade9798ef86f4b2a5c6b0d402dbb043858162b73db984b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-retrograde-2.json",
-      "bytes": 482355,
-      "sha256": "335e7d606b7c01c12b815a5fdfc235fac1fe0ee80353bf03224666b04d4098ec"
+      "bytes": 483389,
+      "sha256": "87313b844a2638338ad08208f2b67e72d82bebc0bb26f541eebb787374b70a8f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-retrograde-2.trace.json",
-      "bytes": 1729972,
-      "sha256": "afe6aa7b3bed564043bd2efbbdb0c39f63881429db723f97eb23f3c988279ef9"
+      "bytes": 1739015,
+      "sha256": "1a9732ccaa73ea16ff8376c5ef8302000acddb6408e36aab7ec5eb2f11f573e4"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-retrograde-3.devtoolslog.json",
-      "bytes": 98355,
-      "sha256": "d8653cd8422f117d2f5971a26cbc22e9d76f440d9bd35c7375523bf8834ac218"
+      "bytes": 98160,
+      "sha256": "cf5b8f5403563e7cda653435a03be64488b9b5a45ded3e99e2d09e80af691d9d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-retrograde-3.json",
-      "bytes": 482236,
-      "sha256": "db85e9fe9f41abd7b947c9638bddcff831e6490b058d1516f72b4b29a2103edd"
+      "bytes": 483321,
+      "sha256": "2b32a5abd19a4b4980362f9c1cc7c6f18dbd5d6cd7a3fc4db39f4e93434e417e"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/event-retrograde-3.trace.json",
-      "bytes": 1693608,
-      "sha256": "3844b4ee1d1cbd80403c85ab150021ed9d470b5e23ddd33f754056cd2df46678"
+      "bytes": 1735554,
+      "sha256": "51e5fe6a78124c13edda715de5ce78bc939806b22381fe477f336e2756a54fb6"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/events-hub-1.devtoolslog.json",
-      "bytes": 91700,
-      "sha256": "9d9f3ae5350479427474b6cde6eca6635de2fc565e4e3c05638d698d6a499610"
+      "bytes": 91931,
+      "sha256": "96213c5b885343939b46c50a321593a1c11346552cb238ab267b48de15dc668c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/events-hub-1.json",
-      "bytes": 736953,
-      "sha256": "2400ccb0e032e10afcf5f2595dcae53ab0b6fdabef65a8c91fb2a56832382d3e"
+      "bytes": 737736,
+      "sha256": "fa15037a125e3826f6341b2e11d86e2f14c546654011fc4be11ae154f8e0cb6a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/events-hub-1.trace.json",
-      "bytes": 1786958,
-      "sha256": "b6d0ee5593fcc9c2e12df8d121ba4ce3d065626707f1cabf68131a09d0af57de"
+      "bytes": 1828984,
+      "sha256": "3cf6c7997b9f1c3b09d86c84a1062decacecab12aa47c3cfd8fdff7f5cbd3c05"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/events-hub-2.devtoolslog.json",
-      "bytes": 91133,
-      "sha256": "9eefe6db484e39323b11da5d1ab1e37618be82b89e9c7ec974fcd32c92fc50a5"
+      "bytes": 91919,
+      "sha256": "4ea0b3981a4e6031c069dedb1e425bbbed8c3b32249b116cf473b39ad642562c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/events-hub-2.json",
-      "bytes": 736168,
-      "sha256": "c94f0102dad3023cf3754c51efe034dd0c3694f89ddf529ed57f5248ca63794c"
+      "bytes": 737478,
+      "sha256": "464100ea203a86d004275bc3a58f15da46a9f4bfa32c13690db686267fa5f400"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/events-hub-2.trace.json",
-      "bytes": 1758372,
-      "sha256": "dc78c011dc6b53eb1af7acdc61c43b2d362251b8ce57a249600de667babfed1b"
+      "bytes": 1797219,
+      "sha256": "fd223987eaa52270ac592191f3c82b3ac448e4fda5e06a6c8de6d8fd5757368b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/events-hub-3.devtoolslog.json",
-      "bytes": 91923,
-      "sha256": "020a1bf20a9452e84f1fac57a4a378f7dd1b0a7934c1835c8f2e491ab1fa8e61"
+      "bytes": 91126,
+      "sha256": "9ba88ecd85a19d389f9706eea49cf41da8e5de8e1f67cb6c438f2221232ec11d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/events-hub-3.json",
-      "bytes": 736887,
-      "sha256": "58a814857c0614b3241f9e4cfa288b50b5d4eb5df9a7de1c8705142d10ea7c7c"
+      "bytes": 737288,
+      "sha256": "cb32be2becedc4a357e91dc5151e5db7bf89b2b50f7624e09a949a11da016f90"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/events-hub-3.trace.json",
-      "bytes": 1770748,
-      "sha256": "b8f5e1f2d19b68d0ba5ad0f620cbcc5752649d7213583eaede7b1a0282d740d1"
+      "bytes": 1815064,
+      "sha256": "8787a10b04123473ab2897ea37c5c9df343daf11f2bac2a33156de68ebed4825"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/home-1.devtoolslog.json",
-      "bytes": 228547,
-      "sha256": "75c1cd86d99089c94057f44eca9d00839dd0d43a91e93a02bf182fbed274fda7"
+      "bytes": 228193,
+      "sha256": "51f2aaf427bc62c5fd6ecb2daff715d9d4e45fa46e8a3f9c6a73a47bced4a665"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/home-1.json",
-      "bytes": 691215,
-      "sha256": "92d105e22466153d960d7b25dfa097cdeaa7139f0354e4b32ed0ac77bb317800"
+      "bytes": 691107,
+      "sha256": "fc61082ae0bc25647d6984274d31cfd074da233366d8ede8970fe9b86f4085df"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/home-1.trace.json",
-      "bytes": 5769446,
-      "sha256": "27ab1e318348b1db301242d24c0578703241b571cb3a40b4367154419d3d4130"
+      "bytes": 5832118,
+      "sha256": "cd9b9363089346de5c255fe24fa9ebb517834311e468b0e822d3b7aac5dd3316"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/home-2.devtoolslog.json",
-      "bytes": 228940,
-      "sha256": "933dc0198f86b77664cdf972b06ff29efec11661380a0f08b74b2fb199d6226d"
+      "bytes": 228613,
+      "sha256": "b2a8577243f675c27ede9670da73d01db396c3a52005ab5aee05a7f611de33f8"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/home-2.json",
-      "bytes": 690746,
-      "sha256": "10dedd526188791ed1bbdefa6847e75b26f1542e4457c6190a6deb624e5550fd"
+      "bytes": 691177,
+      "sha256": "ebcc7d35147e2e11d727aa8c1000ec25da1a4a99f2357db5360c56820a506b38"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/home-2.trace.json",
-      "bytes": 5758112,
-      "sha256": "36204a515723d3630c4df82265596f6d9c685b6f852e987502fa65b43ccb3eb3"
+      "bytes": 5838189,
+      "sha256": "0ccd11400b6d514ab183d0563eb3ece49d13d2fb56699f66dbc3ab3cbeb91624"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/home-3.devtoolslog.json",
-      "bytes": 228378,
-      "sha256": "bbccc9c7bdea8d252db92aa592e47146e42f6d4a0e71777bb3ab8fedfda3261d"
+      "bytes": 229175,
+      "sha256": "eed605ee602da2161ecedc47d594419e5c2c4bb9ab6906c5c187edc2926220ef"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/home-3.json",
-      "bytes": 690955,
-      "sha256": "b22e072ce14815c3acdfbf4a24d5615187315b2b562aeee6227a0e786ba81625"
+      "bytes": 691049,
+      "sha256": "0da4bcdfead27890c3bd12eb65a54247ef129c692065dcdf273f5f047341764d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/home-3.trace.json",
-      "bytes": 5797311,
-      "sha256": "65877c99dab8efe3a09473b278a8eb7fbd69ba771ebef0dee60614b8f91e3d48"
+      "bytes": 5907347,
+      "sha256": "97f54efa05bb0d9e3dddc90fdeb9b410d5d994231d49be3d222dc24915847f14"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-career-1.devtoolslog.json",
-      "bytes": 87778,
-      "sha256": "d0a040bc3a670599c97d7e67ab0db6e548cb6aa2fedbc968db29e7a1c8f056d6"
+      "bytes": 87769,
+      "sha256": "dfe4678fbdec15578689d1b4756b56cda359ce326ca927639f88c2fa5f914556"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-career-1.json",
-      "bytes": 429476,
-      "sha256": "216cdc80e1b52f7c5016b8fe950218e2969657837545e3025723bf8bfe22beb9"
+      "bytes": 428669,
+      "sha256": "47409f1dc4441860afe3022131761e91032a5f4e6f9ba721e52c1bc364623d2e"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-career-1.trace.json",
-      "bytes": 2793972,
-      "sha256": "b74873a5b116b4c4163303f36b894722718dbb8cc2c22cf41a2553f73e11457e"
+      "bytes": 2844253,
+      "sha256": "a9f112f41c5af37bcfc5b3977b7743d56b94b5faa7e910071404e04767a93a6f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-career-2.devtoolslog.json",
-      "bytes": 87166,
-      "sha256": "b9423533db317b9a9618c31dbda1f9de737f09a9f546747ade892c975fb9fa37"
+      "bytes": 87770,
+      "sha256": "789ffb961d55b85a3d404e071b3167b1723b85d259afe5e56e6393c4a89f8d95"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-career-2.json",
-      "bytes": 429407,
-      "sha256": "f9ba48cad3788ecd9566ae895f6c4b64a8f682d12c86f941bdc0560969bfcffd"
+      "bytes": 429737,
+      "sha256": "14347aa0f253483bd641c1e7652768e8bf9195b0f73f8df0894c953dea872325"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-career-2.trace.json",
-      "bytes": 2773605,
-      "sha256": "71fa20b5869741d9d6db0cb8889a2a967db2699435c23dd1502b4cb8a1a854d7"
+      "bytes": 2819173,
+      "sha256": "e29566af51a16bdd95e4da375eb215f74171e33515c9ee9957507d0569d7c430"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-career-3.devtoolslog.json",
-      "bytes": 87752,
-      "sha256": "c4003440f08f4c19e459c57bad71456f3ba5b7e253265e9050a2074848b1d3c1"
+      "bytes": 87376,
+      "sha256": "3ba867370c3db24396f42927a53151a71b2baf95b67808ec52b4f522ba7de0ef"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-career-3.json",
-      "bytes": 428483,
-      "sha256": "93a54216ec10504e72a8cb38b455404f8a1c51b1e8ed11431b5614e8c9b72df0"
+      "bytes": 429554,
+      "sha256": "5f33264cb609bbfcc1ef5929545f5ef35d1c58975fc136ed81f831aa9e0c0b50"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-career-3.trace.json",
-      "bytes": 2765904,
-      "sha256": "01b6ce2249bbe2949feca4948bd9d1b9b6221954d117f6f203e32418fc85f1bc"
+      "bytes": 2833615,
+      "sha256": "20d7e2f51e936a8925c2a2174e5deb942de511d66d361ece62a2fdd9ce08f3d6"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-daily-1.devtoolslog.json",
-      "bytes": 87295,
-      "sha256": "6a19db4e09138a47b756294084f6527eca47ab7d59c46a3d50c3d8526c468e05"
+      "bytes": 87090,
+      "sha256": "e5faaed62b2774d36527e6c6b8d64f2144b766bc2c387cb48123ca493c598d0e"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-daily-1.json",
-      "bytes": 438470,
-      "sha256": "bde813a6c08b6af09f673262312fe1240b265f4646d762714b6bb6a7729aa82a"
+      "bytes": 438375,
+      "sha256": "3b79f20c0a4732a364e9e553c4b6d1bf3047c0da801a9e17cccf711d15301401"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-daily-1.trace.json",
-      "bytes": 2892043,
-      "sha256": "d116470b1c415c2fd18e8e970b65c7a0313cacdd4b65e96434c2abf75a1b4f61"
+      "bytes": 2919737,
+      "sha256": "dd3d3ab3e4c27a3ebbbf758381d366019eb0b8ac5bb8c239d9342f8d30f5efc4"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-daily-2.devtoolslog.json",
-      "bytes": 86703,
-      "sha256": "99bdf5a88b60bce98aa1046e380195958494e514ce1af411a370605b41a323fe"
+      "bytes": 87285,
+      "sha256": "a1c6df23a824bcd4f2f6bad0d3ed26709934b4fb8dc3d361f0ff2e9ceb1f29c3"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-daily-2.json",
-      "bytes": 437493,
-      "sha256": "c0b707b242eab0c27f703786250d9b194c9226117aa3b02e36d1cca4c4233b0c"
+      "bytes": 438541,
+      "sha256": "20bf913d4956d11ae5b692bbc27d508330601614ed120c758317901fc72ba6f0"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-daily-2.trace.json",
-      "bytes": 2843600,
-      "sha256": "62accd16eb9a65c914a6d6e023e63d8a2f4056498f7ab6017c4e9178460dc30f"
+      "bytes": 2900059,
+      "sha256": "83d58eb3c126febc2613b3648f2a1d91ad7ee06b7303cf87f1c0f313c552fe5b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-daily-3.devtoolslog.json",
-      "bytes": 87097,
-      "sha256": "b63f2e960fdfacf20e27397ac7a5088d10dda8ffc7963044df8ec4cbbbcb24f8"
+      "bytes": 87088,
+      "sha256": "d0c853e869e7fb78cf34cbdc2330d684282951a3886d85efa47e51c0dcacd8ca"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-daily-3.json",
-      "bytes": 438367,
-      "sha256": "da71bd675e5ae0da1f44a79dca97bc857dd403998acc4f50b61f417b377203f7"
+      "bytes": 438658,
+      "sha256": "c682ce4f8a4ce2e6cabed4b1ac0d5fe43e1d658fa39319e4b584303738cdf56a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-daily-3.trace.json",
-      "bytes": 2900685,
-      "sha256": "8b22dedf9ee27edf7228e8d9e82c704f0c726d7ec4c64eb7cd9e792e5f870041"
+      "bytes": 2899698,
+      "sha256": "ff3bf158bdcdffd36a3a81fbbb852834acd6d4b8764d59ccc52e75e0e1e2a6ef"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-love-1.devtoolslog.json",
-      "bytes": 87630,
-      "sha256": "1bee7bde5e544c3edacc5b3812af70505bae2ef9daaeea496ef33631c40377f8"
+      "bytes": 87632,
+      "sha256": "45aa6cab2d5dcfaa08109511edb2dff33b2af150273d6ad1425d006f5b0c2257"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-love-1.json",
-      "bytes": 430977,
-      "sha256": "9aac8d59db481a4505a68a9c539af51358a241cfd30dde075cb64e591910467f"
+      "bytes": 430859,
+      "sha256": "34cc5f9e76a0ea544e674ebe4b9b3071d86c0c4195d4abb2f4135c4dee52edd3"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-love-1.trace.json",
-      "bytes": 2787190,
-      "sha256": "77cef1455fbbbef3cbbd43a4b1e9b8b346382a8d4afc8b5b7525fa05b0eb59bf"
+      "bytes": 2802189,
+      "sha256": "8fa11d6408c9479dfd2a4214d710cb004646765eb554efda35fa9d38bb11c81b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-love-2.devtoolslog.json",
-      "bytes": 88028,
-      "sha256": "abaf1607093b5283b8c2c51237bfef2ee8ad1ce089c00660d43952fee8b1f02d"
+      "bytes": 87630,
+      "sha256": "4689c5069ea1fdaff64431c2be83982e2d91b4679a250fb65d4f645d51cea3fe"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-love-2.json",
-      "bytes": 433703,
-      "sha256": "34b53497dccaddd3f61bb91dc878afb48c58ad94de944c5c965b6f12ee905f3e"
+      "bytes": 430914,
+      "sha256": "607ddb2af1baa242fea6e975e72e3587bd12a29613ae9a38fd92a735541cc2a3"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-love-2.trace.json",
-      "bytes": 2767787,
-      "sha256": "53c4979031addef7c7fff327640853a96fc53aa96e82930f67b8482efbf9f616"
+      "bytes": 2821760,
+      "sha256": "b64d76782a6465d01fbfa1c66fae0e7b5d73c80593520be8d078a6969f2c69fa"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-love-3.devtoolslog.json",
-      "bytes": 87427,
-      "sha256": "66797710e3a2ba8fb8c13f811150067bedcf935c6e3530f1813da63a48711098"
+      "bytes": 88034,
+      "sha256": "87ea817ea8f43396e0139b92ca8a1f7d9e7aa49152815b690bea68b059a7e3c9"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-love-3.json",
-      "bytes": 431557,
-      "sha256": "6acb192d7feea5b24a15aea5135225f364d7072b07245b0e3f0c06f4c1be0ca1"
+      "bytes": 431586,
+      "sha256": "3d57cd0f3af043018713a60056a306716a5aa1695f47635873126c8cad55f2bf"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-love-3.trace.json",
-      "bytes": 2756818,
-      "sha256": "ffdea6effcec33271b9a93dfaadd9a92a9d086e80eaf6439bccb04f3f38e1a56"
+      "bytes": 2822455,
+      "sha256": "539dd22ad8130035dc79e2d7d23321e5918846a6b5d418eb004b11bba7a9c6f4"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-monthly-1.devtoolslog.json",
-      "bytes": 97860,
-      "sha256": "a64fdf6e67b264f0f3cfdf5d59f62047ad930dc3858700eea74abf864e635b5f"
+      "bytes": 97845,
+      "sha256": "9c05be8e83bcf13502cb42ae33b65558b9152b8617ebf2416b04de477de5e72a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-monthly-1.json",
-      "bytes": 486847,
-      "sha256": "2ae32540f1fe92de3db1b92669e06239c96c08aeabaee47a8a4b5849ab1f4a78"
+      "bytes": 486852,
+      "sha256": "5cda0a711a3905cbc39b598b9802f85a8a475ce1c709b0ee9629b5f60543338c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-monthly-1.trace.json",
-      "bytes": 2861383,
-      "sha256": "642f7e9ebdcf0ba37b3787ee81c3b5e833bb195cb4d1360fc3dcbf057562f956"
+      "bytes": 2908834,
+      "sha256": "887781d685ffbb3355bb2abe07012a65572fb095657c626106d5c6d747d081e6"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-monthly-2.devtoolslog.json",
-      "bytes": 98040,
-      "sha256": "e72b3e3f09677b4730311085e6bcfb6acad220e54ff90b4fd51b4c1d89d3f71d"
+      "bytes": 98245,
+      "sha256": "cb583b58c8c663ccb86f6f4c7a488884a719273708774a2f8287ceb95d551c34"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-monthly-2.json",
-      "bytes": 485634,
-      "sha256": "81e8110ef1fa8ee56bcc0674ba1e887c6d86d3f75915a283c809797e2d53e6b3"
+      "bytes": 486720,
+      "sha256": "0df0342a7fbb3ec121b69df189278bedc85b61fd3b07ac786e285b053fd83401"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-monthly-2.trace.json",
-      "bytes": 2829350,
-      "sha256": "22cf66fd66cb9aba4e80e1df43d33fc0d73d6ba8e54ab8b2fa2a15d59e1c38ba"
+      "bytes": 2869350,
+      "sha256": "1a12697a1e15f39ee65544afa8b29dbcd45db5840368ba301ade1a37440ed6dd"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-monthly-3.devtoolslog.json",
-      "bytes": 98044,
-      "sha256": "1ecf90a6273896d815bc746522d88de556c4cce2adff5110acd734ca94152160"
+      "bytes": 97447,
+      "sha256": "ff42bb5aed2a629ceb013adf6a4a29486d70148381038dcd173c8361cf7bb373"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-monthly-3.json",
-      "bytes": 486311,
-      "sha256": "11b6c1dee7785bcf286693c499d5d24f1b80ea10b8126a91aacbf302ac81e637"
+      "bytes": 486583,
+      "sha256": "51ba3ae0aa70a3640b892d7bc685ab3d8a992a642b7a512c9df6e440c825263a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-monthly-3.trace.json",
-      "bytes": 2879445,
-      "sha256": "6f29b6220c4ea28219892db7256c0f660cf4a7f23fffcbe199e327e4e55d4180"
+      "bytes": 2872012,
+      "sha256": "051524d16502080ad9ee55af9e92dfd0b42153d4fdd8d82b0d42ef50c1a610f0"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-tomorrow-1.devtoolslog.json",
-      "bytes": 98112,
-      "sha256": "36a2812995e3e25d1c28bf41951eb2d16f46ec3c43ed43f5d1c30957bfc73447"
+      "bytes": 98720,
+      "sha256": "3e15466128631f4aa6b5997108cbcb91a200aa4a3dbba6494e5a1e45c98160d8"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-tomorrow-1.json",
-      "bytes": 446497,
-      "sha256": "ec8d1224e9b22c369d9059f9a9ef53c4967606e7c9721d5a9f132dc004ac8eb5"
+      "bytes": 446712,
+      "sha256": "c0e88003c84a4302a503ea2b45cbc05d496fa9eef1bd5a17364964093b503945"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-tomorrow-1.trace.json",
-      "bytes": 2851325,
-      "sha256": "e1099ab97dd4a7566689a791db45c2065a8e744df74ecc9f7506da43bd492066"
+      "bytes": 2889615,
+      "sha256": "277f6a5c5ebcfbf38fb2518a8b31e78d1b94bae1372fd433555e900440d6dd21"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-tomorrow-2.devtoolslog.json",
-      "bytes": 97931,
-      "sha256": "f40aad8795febca9db087a0b97441524eb1d7f64d94a2cebdbab0517fdf22a45"
+      "bytes": 98512,
+      "sha256": "d44049cfd752661332179a6039feef3cc91c66e5366b71574fcffab53a09d720"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-tomorrow-2.json",
-      "bytes": 445907,
-      "sha256": "f981bc8381d94db91000d071d4d4cfe2824a8bb3e09cc77c1c791e61f8f12cea"
+      "bytes": 446065,
+      "sha256": "6dfc26381b8d6ddc7facfde545dddc2f3f0aec75309b8d385461fd0b279557a6"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-tomorrow-2.trace.json",
-      "bytes": 2835081,
-      "sha256": "c29272897befaaffe017537374f627cc135754fe0ca38a6c4423af411a471443"
+      "bytes": 2903514,
+      "sha256": "e649e36d38384070a6f05942e5fcad2a7260919c52d26bff946a34ed435fde14"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-tomorrow-3.devtoolslog.json",
-      "bytes": 98106,
-      "sha256": "880a842193692d6aa771dadcb90a882ee8eefae16c24ce6d14afb9d2080fac07"
+      "bytes": 97749,
+      "sha256": "623a442b0077d44b86cc86c1b9e7494045915b8fb167acf7db8a6da1d4830128"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-tomorrow-3.json",
-      "bytes": 445699,
-      "sha256": "63599c0660e8c15105d77289c9b55cba4a2ec2b64d8dd45e4a7c5ff990f6a960"
+      "bytes": 446756,
+      "sha256": "b2a682407715c84eaf1c1890f2ef887af052c80329ea20eaad25877428c1ce08"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-tomorrow-3.trace.json",
-      "bytes": 2792441,
-      "sha256": "52c19ca434f4c7725491985f9cc39453419c2ca6554d6e30fff85912cafe9689"
+      "bytes": 2893748,
+      "sha256": "cc5b4be2e7c45fa00c54888adc01d51576396b796875baedf1dc7efcb7dd8900"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-weekly-1.devtoolslog.json",
-      "bytes": 97973,
-      "sha256": "6fb43c2f71cc36323432a80f7fcfa1579cd4ccbac2e1f1a2f5631864013b1e17"
+      "bytes": 98844,
+      "sha256": "4b633f129744b5dd201c253b80bf0fda32899c47575fcd6dc96e25d7df677414"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-weekly-1.json",
-      "bytes": 478063,
-      "sha256": "522859180982f26ea65dc4963de485041d3834f63f0d78565c98ab3daafb8dff"
+      "bytes": 479031,
+      "sha256": "84829d704592da3d6b17973774c6c4c46f5ac9ae510efc458b1e3fd4b1fa92d7"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-weekly-1.trace.json",
-      "bytes": 2813689,
-      "sha256": "78b399c0268121f4bf0103fe5f6b5b7423ef225f0941b836b585efbb5a06f378"
+      "bytes": 2899483,
+      "sha256": "467e3575edb8dcf84c4e6fe7c7520c8965d511331d2bcb623c3032f0ed2b5370"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-weekly-2.devtoolslog.json",
-      "bytes": 98590,
-      "sha256": "6553eaabc365d399f34f35e9e5f43a00449e057715a7da9a1613c3d72864fd35"
+      "bytes": 98375,
+      "sha256": "a2d07315b838e8a11823b2a3705ea8400ecee2b77c9292d8606a661ab436517d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-weekly-2.json",
-      "bytes": 478277,
-      "sha256": "3c9338fa6a7652a3802b872e75ffa7fad08f2ec44ca24f372b2d960ac8af1353"
+      "bytes": 479080,
+      "sha256": "2ed1a0d581903d5add8ed5353fd18298d030031840419ca9c14be57144bfd9d9"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-weekly-2.trace.json",
-      "bytes": 2820094,
-      "sha256": "55d39ce5bcd5d28358421d2f804c7d5bf4f93e1af228fbda804c2b3733a3a3af"
+      "bytes": 2867683,
+      "sha256": "6b9f2fece6190310d65d0827a4189f24890e4d6d29aa09c8f6d57510618899de"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-weekly-3.devtoolslog.json",
-      "bytes": 98360,
-      "sha256": "1c230bc5d9957ad6fbf59034184ba0cfad3cb44033b4d6a77d793afdcc7fd9f5"
+      "bytes": 98375,
+      "sha256": "64cea0a9185207b544b72ee1b37d899474d28f976fb9e8c54c2b0cfe2df00c97"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-weekly-3.json",
-      "bytes": 478879,
-      "sha256": "b8659c441c2e1cc29c7703346071235ec0afc3ae91f810c6d153290d242bb284"
+      "bytes": 479567,
+      "sha256": "d7d0b70c648495c779c82e23d657c6523f00215d96a01f34e54a37602e964edd"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-weekly-3.trace.json",
-      "bytes": 2865976,
-      "sha256": "2a6086291f54fc5462f11122a34e91d323187f86acfba93bb29a0545247607c5"
+      "bytes": 2909424,
+      "sha256": "5fe9017189a386fba5d20283670d214f1f8d1d67fb99965f090b477ae2e22958"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-yearly-1.devtoolslog.json",
-      "bytes": 97432,
-      "sha256": "7fed9f7ca704ca59701b8864332bf4180ad188bfed10a893d5b5db6d5a3776df"
+      "bytes": 98046,
+      "sha256": "39ab18b2734800b36201f45d1312da511b75d2f27efdf5f6099669723f00fc38"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-yearly-1.json",
-      "bytes": 795959,
-      "sha256": "07520f7d46bb6d8f5ab46f605958458dd0e70ff285d3bbd7dff0e8a4ec1236ed"
+      "bytes": 796158,
+      "sha256": "46de98cb36ce14f7ce0139365748679b17ea498ca90cc1d3c1e5e83ac2483f2c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-yearly-1.trace.json",
-      "bytes": 1590240,
-      "sha256": "00fc5081e865eb67409b4fa4df7cefcf8cc4c8d5dd82422b7b4bc2a7e091242d"
+      "bytes": 1640267,
+      "sha256": "78c1781755c70023601d6a23ddf0edeaef7b8c2b50e5cc43fa260e3e40e0cfd9"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-yearly-2.devtoolslog.json",
-      "bytes": 98499,
-      "sha256": "898ae6213e66f511fad0b7e4f3e7bb06bd539cbda74704b34b404562a1435aa7"
+      "bytes": 97126,
+      "sha256": "3cef4ab08004d477fe5fdcee17b061d1550495534f7bb7ec7c089f60259759b1"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-yearly-2.json",
-      "bytes": 795915,
-      "sha256": "c002802874eb1a8364bf02b044608b2d2b87ffcdff9c851e9803a4b0cefd4415"
+      "bytes": 796236,
+      "sha256": "22268e35a97d67f629482eb55a7a49114dabc877cea4bfe07eae71e6f757253e"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-yearly-2.trace.json",
-      "bytes": 1646444,
-      "sha256": "96db48c8c9ad9c79a47d2e59283eb43763ace3e2fc35016dfcebdaa4a0d8e480"
+      "bytes": 1648187,
+      "sha256": "1b25696dc2ad98d5df8ad45d8975c371342a62abbd980da3570c9c766a89e401"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-yearly-3.devtoolslog.json",
-      "bytes": 98291,
-      "sha256": "e7a9427adea55997d28417125ba89658171053ba0cd42e429b62f2f5163f793d"
+      "bytes": 97509,
+      "sha256": "94a9c9900117a433b8c588dad680aac525c100e565fe4ebc14311a83c57037fa"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-yearly-3.json",
-      "bytes": 796023,
-      "sha256": "48bdcebee2d2006e5161d1bda7768f267d4ddef4d2832bcc4f93d850f579a95e"
+      "bytes": 796225,
+      "sha256": "d3108e05049d6ea1abd8b761af74d02ec9e3633b0eec5c81fcd4b30ddeb9eed1"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscope-yearly-3.trace.json",
-      "bytes": 1656159,
-      "sha256": "75affa0de7bfe9adf1d5e18eadde8a404483e6ceeae89eba5670c4c1639a0f0f"
+      "bytes": 1692475,
+      "sha256": "2a986bae076feee17e0796a38e14e4583b128220adde18ac0db6f615ba7b0d2f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscopes-1.devtoolslog.json",
-      "bytes": 162004,
-      "sha256": "d92b38b4cf3385f1f9bf494e8366f90d77dc24040c287194b522d5aa3e30483d"
+      "bytes": 161645,
+      "sha256": "c2d4220e63411ecc60e6399820bc138aa4ec1417117ccc6108707765a391ecc2"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscopes-1.json",
-      "bytes": 484438,
-      "sha256": "479680e4f82ec94f2e4949a980b2bbe35b5863b0f6061f149952f130f9cd96f4"
+      "bytes": 484544,
+      "sha256": "ca6a1cd7192e95b934949688c7826d349bb1bc22f818435aeddc6721560e2f19"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscopes-1.trace.json",
-      "bytes": 1868069,
-      "sha256": "3015fdc188f9e5b9ca66e7d82b3e179803d4fe28e4465d53d6d6887174eaac4f"
+      "bytes": 1896209,
+      "sha256": "d78fb667a92dc6bf1ebc6ad5eb2d1739789ca40c91aa68e2512ac70abf992723"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscopes-2.devtoolslog.json",
-      "bytes": 160786,
-      "sha256": "b179dbe8da8d90a975c8fe65306cd4d5776516e5c05ccecca4ec9154d02c2a45"
+      "bytes": 161558,
+      "sha256": "de98e026b852a46325232df823e550e3beeef6d6e02896c7a8b88a2bee8a9964"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscopes-2.json",
-      "bytes": 484362,
-      "sha256": "6a39b963a4d43d1bcc4082fbde33a2e18c884eb677102997b7937bc4dbac8428"
+      "bytes": 485289,
+      "sha256": "0493e00d5bad77b3720168a903f5c8fb6502946bc620253a4d3611eb133d34ae"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscopes-2.trace.json",
-      "bytes": 1801899,
-      "sha256": "bcb6b50d55a06a37c41caff4cbc9c619d252f3c33b63f515710b0ac3df6f8009"
+      "bytes": 1894988,
+      "sha256": "9b7f766d41c46c7779b633a0576703672586c2166390f09706a5d60c4b041bb9"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscopes-3.devtoolslog.json",
-      "bytes": 161187,
-      "sha256": "5982e79ceada462416a96b1634b8601ea840288d6fdcc8aa4060b10b8a218ab7"
+      "bytes": 161955,
+      "sha256": "4bccd3012219f379703209d6b313ec811f61107f7b40631f1f7ebde431b5db03"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscopes-3.json",
-      "bytes": 485130,
-      "sha256": "3bd7753d8f52c2b7731afec2290ed119e0343882935410bb831e999a230d0b0f"
+      "bytes": 484551,
+      "sha256": "73b04d5e7a6a67aacb2c57d6918e2d52f300a1331b24c26b84b0fe5c9ab0d87f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/horoscopes-3.trace.json",
-      "bytes": 1824598,
-      "sha256": "b397b3db2537a4dc6fa28fa240a51da60b44bc6ad1fe457eab186cda2fd1dfe9"
+      "bytes": 1871062,
+      "sha256": "c7e62d7238144d44e15831db3c984dae4c858bb56e06ca5e5c8f1512f7387a68"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/life-path-7-1.devtoolslog.json",
-      "bytes": 95917,
-      "sha256": "a38e04c4450dcd514ef9521fc002532447f96185cf9f7e3619359bd8488bce15"
+      "bytes": 95343,
+      "sha256": "eff665e898401ae12e57386bdba0311bde1803d6091f932b4cc228377f826cd0"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/life-path-7-1.json",
-      "bytes": 506268,
-      "sha256": "26490072df8f7edd941813950e858c5b8574947e8a73759d734cb7a1ba57a9c3"
+      "bytes": 507159,
+      "sha256": "f4af366334ff4e2c96750b8aee5b748c7468a3e1ffc7728efe3ab80280195648"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/life-path-7-1.trace.json",
-      "bytes": 1676408,
-      "sha256": "a7b17b632db66858dce36f1a7a1f1861054927efe098aaeab0eab413275d3380"
+      "bytes": 1704543,
+      "sha256": "1e52903cfd52437da14df785d7ffa2a8939436c63d5219079902c4c4503133fa"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/life-path-7-2.devtoolslog.json",
-      "bytes": 95928,
-      "sha256": "8cee602140a7c05415c6559cab0ab0b3831fca611b77546f61c64b3b7d0af47d"
+      "bytes": 95550,
+      "sha256": "03eb980b3f16bf15d2cc240c4519097bc94a380ec80d7807370b7926f8cf02e8"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/life-path-7-2.json",
-      "bytes": 507118,
-      "sha256": "d93fbabc4c3aaae163fc302c6983970a7ed275c8a6d06b9bd3967bde7e107384"
+      "bytes": 506511,
+      "sha256": "8834248c6053509b12f10b918295b10117000d694e9de9e21e54adff4d0714c9"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/life-path-7-2.trace.json",
-      "bytes": 1719741,
-      "sha256": "b61dd400d0f7df021a498d52a590128ea480a94dc7e28b23cdf64f9974aaba88"
+      "bytes": 1712012,
+      "sha256": "7e8cd205957a086c342e30d60b29cebc958e28729bfcc5fc800ec33f54e794b2"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/life-path-7-3.devtoolslog.json",
-      "bytes": 94872,
-      "sha256": "a078f2a503c206fe5f6ec0f064f84fb7c446468c828e299001664f577b985969"
+      "bytes": 95934,
+      "sha256": "722908fd46bf5ed27876ca698ba4aa22f5658d57143e431fe09ecdd63609944b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/life-path-7-3.json",
-      "bytes": 506358,
-      "sha256": "d0c62122247b5fc81f9ede9d770edb0168ff29d2f5e13252fe1d9600050ecdaa"
+      "bytes": 506533,
+      "sha256": "9d7e0db84e4f9f0289440a8e6485763d3b4704964d0cf9565942a1b6e8635324"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/life-path-7-3.trace.json",
-      "bytes": 1636931,
-      "sha256": "9c92084cd890f06e0633f5ad1c64845f6e61f9470d084f64741693a9d9d70644"
+      "bytes": 1726293,
+      "sha256": "04e604029627f9d43d07dc516a39d3ca88f6855cd6f650690a7f12c3b35e9c1a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/lunar-return-1.devtoolslog.json",
-      "bytes": 199149,
-      "sha256": "aac56fbd59ef32073b1b3fd0452c451eff64fafe7863d3e8953c5a0a2cf491d6"
+      "bytes": 198164,
+      "sha256": "a643b1494d0af1e7f324b69f3150fb985ed6e4ae1f39e694768fe4c757365532"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/lunar-return-1.json",
-      "bytes": 409996,
-      "sha256": "7eff7f2a2d05ff5ce71bc49313671a967cc003d0ff8a06cb2412cfd4633e87e3"
+      "bytes": 409307,
+      "sha256": "5b1268e3b27edc4a62298654f726a0ed318319517a2124e614f5c0a48a610180"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/lunar-return-1.trace.json",
-      "bytes": 2237693,
-      "sha256": "01989c13eb533196ac82a857297f6b3021903835110a2ee38d7b12314787eddb"
+      "bytes": 2261096,
+      "sha256": "042b35b50c52808bb8a7128bdb982b0c0d811aa408d01e6195dcaec6911d775f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/lunar-return-2.devtoolslog.json",
-      "bytes": 197783,
-      "sha256": "ecfb2e7a18a57e4ddbe6dc41884f6278cf1d880c73ca6c00c64c7834a5096eb2"
+      "bytes": 198671,
+      "sha256": "e1ebc07e7bd124246b216f543c7129a2660549ac9dec1bd3c6c1a96b59ab10b9"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/lunar-return-2.json",
-      "bytes": 410023,
-      "sha256": "a028f3238fee8afe3a76ab3de02d702d03ae1bcb55e5975699c0495b8354165b"
+      "bytes": 410511,
+      "sha256": "0b948e846254b95f69a102cf0e981761b6b41c8151b01bf0d74a2cc659427e7f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/lunar-return-2.trace.json",
-      "bytes": 2249133,
-      "sha256": "31d4a0fdb92f1ae8b5a4c054fa393e122730113bc627d591a9b288195f53da9b"
+      "bytes": 2270827,
+      "sha256": "57565d3247a40da555f3257633c47d0d0da18fff5761dcda529ba91550209fc7"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/lunar-return-3.devtoolslog.json",
-      "bytes": 198168,
-      "sha256": "d973e2071f3943624d6dae20adcb9e8b0a2f4b23cabd0edcf5898b601670b993"
+      "bytes": 198173,
+      "sha256": "9321c41e3ad89492348e35438fadbe8b27da6f6b4b05a7225ab99832932bb603"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/lunar-return-3.json",
-      "bytes": 409396,
-      "sha256": "c104042f2dcac1ac202b9f75dc6a5e4447741825a8ced7b85cf26c60e1919b10"
+      "bytes": 410155,
+      "sha256": "31657360420d4c6b0ac7dda6a26946c3753c312d2ce5b5520fbcd740513b32e3"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/lunar-return-3.trace.json",
-      "bytes": 2241788,
-      "sha256": "ae3274f6595be3aacaf9ffd235702c7e78573c296e47cfec909102265aa81796"
+      "bytes": 2277574,
+      "sha256": "b78022d8afa051a5193162537f66fc4ebfe29f363d563b216ded59a7ab0f1ecd"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/numerology-1.devtoolslog.json",
-      "bytes": 123419,
-      "sha256": "47b83c2b13077bbe755b1a407c5bfd54c8b101ff77cf557d31926454b97f5a5d"
+      "bytes": 122821,
+      "sha256": "ec0eac0f194ae4ff5d9d3b3d91e1239da0115739560fb6ac486ff29d2b5dff64"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/numerology-1.json",
-      "bytes": 528928,
-      "sha256": "eded9117e8f9ce257ed7a473982bf13b5129a3d0cdb2990c7d1294b6c7473173"
+      "bytes": 529819,
+      "sha256": "98a38c4e9fcb4253969b01418b8de77d247f230e67b47a9a711fc8e02a58412b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/numerology-1.trace.json",
-      "bytes": 1841637,
-      "sha256": "6d51bc2ca60eab6f4be5d9f3a13c88d5ec093443bf58367cbabb76201d7af04b"
+      "bytes": 1906550,
+      "sha256": "1b8a037754620ebc22bfbeca1279c588024f438de97bee1443e95d558a6f8380"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/numerology-2.devtoolslog.json",
-      "bytes": 122791,
-      "sha256": "59993cdc0940e7aebebc30884a64219e9bfc2724244abb0402170e7be0de2c8b"
+      "bytes": 122842,
+      "sha256": "5037c35db5f782bb1f6ec1ebcf2726dfdcf71fe530ad24ecd827f12d1098afd1"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/numerology-2.json",
-      "bytes": 529710,
-      "sha256": "b42c4ae71abc6b86ea562ae1302b88ee87e932df24c3c9aa0c1a0e39b3207695"
+      "bytes": 529509,
+      "sha256": "dce976bc8a6775c4d710cf557724baf17b66c0d21a06006b40c83658e6bb33b8"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/numerology-2.trace.json",
-      "bytes": 1893412,
-      "sha256": "97b13c68d3c94eb262a7dea4af267ac1918c9fe6011cb751f8354bfd52c04d01"
+      "bytes": 1899684,
+      "sha256": "351cd6056e992a1f46d90e3963b6821f0ec7b33dd4bf38f23d36aa8a1336d724"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/numerology-3.devtoolslog.json",
-      "bytes": 122619,
-      "sha256": "55503f72c4dc8fbb24f6a59894a42d1b82ad0361f689da29fd76111df3cf583f"
+      "bytes": 123017,
+      "sha256": "30340bbcabceba29e8f26b7b8ca7cb0cd94c27455df3b56c8ec488723693cfa4"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/numerology-3.json",
-      "bytes": 529927,
-      "sha256": "2d390dc1f00c51ff341feb43d499caf9a55d4edce683cd239889fd0aed31fcdf"
+      "bytes": 530137,
+      "sha256": "fec909ca2b7336fee037823bd918df02acc3dc7ba6dbcf4138abeadb22130e84"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/numerology-3.trace.json",
-      "bytes": 1901240,
-      "sha256": "4276bbe8833381b049550e066381506fddba2ee022b971b1bbb198bbafe28fab"
+      "bytes": 1886078,
+      "sha256": "9a3b6200deeedf2ae74a9d88bf7e253c1dc95f679b52f635fb4dfa2ea2359af8"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-directory-1.devtoolslog.json",
-      "bytes": 131937,
-      "sha256": "211c8829480a9bef8fc954954e53d921c90f867e69e8f1e41695f364b3b82c7a"
+      "bytes": 131139,
+      "sha256": "6dea0586cdc02162ad657f4c0b1b01ab0a04174a2c0726150539d18573c5ea96"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-directory-1.json",
-      "bytes": 752872,
-      "sha256": "45d059b91cbf014bc3766deca5b8a23ea95a209bc0b2e979a4d6928356a38d9a"
+      "bytes": 754197,
+      "sha256": "c5996f142f9030ecb7b8e3e07badb4ab29b800ab0c4c1d2bcbe70881738dbd8f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-directory-1.trace.json",
-      "bytes": 2096109,
-      "sha256": "9b5c841d44da9fc1513dc8c4ddf808417bd09f36f3c699aa820b1a4c2307cffa"
+      "bytes": 2157238,
+      "sha256": "603da09a22921011d2a35d87c9536ad1ba474dce4ccc06ed3cc0df7ae710bb9f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-directory-2.devtoolslog.json",
-      "bytes": 130335,
-      "sha256": "600460648f49b305759eef441ce91308976721a48d43642b051e11c55a79beb4"
+      "bytes": 132875,
+      "sha256": "d44ed7845375f96238632d60da621bc55f0e8085dfcf092e9964afe2bd1c047c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-directory-2.json",
-      "bytes": 754407,
-      "sha256": "34fad1f0af70fb45c199eedad1aac4edcbe89d2628a9bdbd52b1847529be724b"
+      "bytes": 754177,
+      "sha256": "124621dae352762e1467bd4833003c5f2d9ae53e3e35ee582f837fb8a2cfa183"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-directory-2.trace.json",
-      "bytes": 2131778,
-      "sha256": "d8906ca3ff7b87dc08cd3b163ac81003303d24a55e1e3c58517200fa674c3086"
+      "bytes": 2174956,
+      "sha256": "a1e7e7315e7ef6c282e8098fcf97912a8d5e3268cecc85ebaa9bd74523ef2fd3"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-directory-3.devtoolslog.json",
-      "bytes": 131067,
-      "sha256": "10ebc703dc295d6f87af31a76029541b30b4e71fca7bde7af745b5f29d441e1a"
+      "bytes": 130635,
+      "sha256": "493d337de6e85e3852e1af4c7de832b735e1f2b637014feeae385bfd66a6baa3"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-directory-3.json",
-      "bytes": 753685,
-      "sha256": "a1f8222edd1983864d140e184af9649a4a7c1ed1d06c67ab27bf2371c5fd6fe3"
+      "bytes": 753166,
+      "sha256": "d06aecaa0bbad89a5028a601eee31b6afa9e5f520d718010d3ad50efe1151eb5"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-directory-3.trace.json",
-      "bytes": 2074574,
-      "sha256": "15b655e7ecf079e0678f15805a1572802d572828593870d9a9eb889dc3392ab2"
+      "bytes": 2159911,
+      "sha256": "a6321bcdf1fcdb360f1dec6be4787af05cfbd3427e6afb42399a403ef6b03604"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-living-profile-1.devtoolslog.json",
-      "bytes": 164306,
-      "sha256": "5b6a50f1457bd1ce976d1aad83bdf749663030e80e353ea50998fd179687f491"
+      "bytes": 164303,
+      "sha256": "a48fa0953799646cf7b6fff9ed72d7aefd45d6a782d8309b76901faded764dbd"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-living-profile-1.json",
-      "bytes": 497885,
-      "sha256": "9004316819ddee34cb662471d898e1e3b25996de9bd9869257efc6b1417af36f"
+      "bytes": 497427,
+      "sha256": "f07c88f2ea5d694ab9a1106d903a51aaf29e41bf8eb98fa803174ec88afd7532"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-living-profile-1.trace.json",
-      "bytes": 1776462,
-      "sha256": "2a9b400869362a6feead73d0472740bf480548fa1fe14ae3b0c9822ae4caa414"
+      "bytes": 1761882,
+      "sha256": "8a976bb64189a230a264d5dbad4e4349c18259bd8ee9a33831e69eb4ad5d954f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-living-profile-2.devtoolslog.json",
-      "bytes": 163630,
-      "sha256": "2cefc7778764690f0d30afc4cce8424695c1b908260b3cf46f7db1ed3b34db4d"
+      "bytes": 164100,
+      "sha256": "e77d4141daf1e31b415102135060f73ff8b17321d525bbfe3f023c379693c4d7"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-living-profile-2.json",
-      "bytes": 498099,
-      "sha256": "757f8caeb470835f094289a51874cef5e78e95afcde6d801f89f455f42a828f1"
+      "bytes": 497356,
+      "sha256": "5798888e97a19f57fa9a13332d0449f4de80a8b19e538fb819ca9483f9d1483c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-living-profile-2.trace.json",
-      "bytes": 1777152,
-      "sha256": "c57be155f12ac002c3c974fe9780b6b4951430a0ba6f5dfb30de700352e2a85b"
+      "bytes": 1789504,
+      "sha256": "4905f619988e9d983b97edb3cc564bd04fcec85db4d75368e97c11b09bdc678a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-living-profile-3.devtoolslog.json",
-      "bytes": 163643,
-      "sha256": "2574e9632c0168acfd0d929f668c0caac67f916e0f8819832bd54773047ba4a7"
+      "bytes": 164510,
+      "sha256": "706b8c94896d0f72e1afd3475ac29cbc72464cd3cde87c638eb77fd4337e9bb8"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-living-profile-3.json",
-      "bytes": 497178,
-      "sha256": "2b12e4b7113fc360011217461027d6d55feec455b387b238e346017b938d40b0"
+      "bytes": 498324,
+      "sha256": "c8245c640dad20b5c350dd7cb4e3d15b699f1398f30d83314f5dd88e0e7acf53"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-living-profile-3.trace.json",
-      "bytes": 1726113,
-      "sha256": "a9f9dec17233e322c388d8f772a4117e2c440577728d394e59bc52330ff1541f"
+      "bytes": 1793952,
+      "sha256": "af4e38fcc154f545d806dd5cb6bfbacacb028b63ea8336b253d5854a5569054d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-1.devtoolslog.json",
-      "bytes": 162689,
-      "sha256": "4c0c1cbbd728794f4d789b6e6ece239e2c5cc83f69e8dfa485f0f0b45eeeff56"
+      "bytes": 163337,
+      "sha256": "8fabe5b031ef955319dd531296ce7ea30cfc1dd81e9c4085e89cac3c9f5099f5"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-1.json",
-      "bytes": 494125,
-      "sha256": "e27426e7942bf33298ff0732ec7347872592a4760172001d7926407ddd6daaa8"
+      "bytes": 493476,
+      "sha256": "a6e2495a08b19ab8456d75838fd5d7d398667b46bb314456cce25e37bb290505"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-1.trace.json",
-      "bytes": 1762658,
-      "sha256": "c179b1c3fe50bfc400b62e88b67ecc012c3596b4ef1b0a47f917402fe81955f3"
+      "bytes": 1759611,
+      "sha256": "c0f8d9274a29166875463271c50128d23b3fb0be755a96be4bb0e96fd82258be"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-2.devtoolslog.json",
-      "bytes": 163092,
-      "sha256": "3b44feaddedd5954dff19b3c6198467506b933082fa0a3533849fa89b3a01cee"
+      "bytes": 163994,
+      "sha256": "65a5c6234025c39c0872d0344aa85abb425035ebbb05bd08c80cab67dce9110a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-2.json",
-      "bytes": 493317,
-      "sha256": "bde999cb709e0b1cfa9eb7c7d353dad0f6f4e1e9cdef03f2c8c8ab8b4573414b"
+      "bytes": 493578,
+      "sha256": "d55ed9809a7d2a8750692a839ae5ad6345a177f3549e4d875ac0b5248234ecf6"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-2.trace.json",
-      "bytes": 1716307,
-      "sha256": "0645ecf2f599f16f98b30d3670f8ee92caeb49387a211d7969a43429ea5bde5b"
+      "bytes": 1829165,
+      "sha256": "4cd4cb8b540abfc2caf10f47cf9af106aaf6492b530274e64a035286a5df2b10"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-3.devtoolslog.json",
-      "bytes": 163352,
-      "sha256": "cb213cffc99bcaaebb0db66f6a53612ba89b236e3afadea68fedaf5a8fcd0dd3"
+      "bytes": 163129,
+      "sha256": "7ce18a15c72a88a0ffc392ee402bfb985c34cadc3989509f3195657a53412e13"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-3.json",
-      "bytes": 493993,
-      "sha256": "42e6478e9992ef3f9e59c3a312764be8cbcaf2744291fdf05d4d85fc1d9c836f"
+      "bytes": 493673,
+      "sha256": "3c7ddac70888218eb5614d80bf7bf5401c7d2181085e9d74a61437ad15afd743"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-3.trace.json",
-      "bytes": 1778818,
-      "sha256": "3058725bcb1eae0c0e28f11a6027111a6e75782710d8577e89be2dd3591dbf9d"
+      "bytes": 1780341,
+      "sha256": "6785e1de0ead356df72b6b0862c594901b6e8c15ada69fc48b8472bfe7f304fe"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-new-1.devtoolslog.json",
-      "bytes": 162549,
-      "sha256": "8818bf8c093cc42027dd6452d47f2329e77ae7dbca041b2bdf74cb1221474fb7"
+      "bytes": 163858,
+      "sha256": "af1913eb7dfb86fb9927e2f0822c95563f3594b9b4fa31f4cf23a671ac80fd0e"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-new-1.json",
-      "bytes": 511462,
-      "sha256": "5cd8e642af01aa46aeaa1783a856075a708f1d15dd0413a3a82082480f1b5c9a"
+      "bytes": 510788,
+      "sha256": "1c989173c0a1151d4f9e08a141953af3cd675d77a816e51141b20a30a101dd51"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-new-1.trace.json",
-      "bytes": 1741355,
-      "sha256": "c9011ac09e8146330da0625979a2ee64a124c954d809d719e0d5843ef97bd33c"
+      "bytes": 1787618,
+      "sha256": "43929a94e6995f009fd9f28cde8d02b3ff7dc0a5e4e17f301e0d1a115a2f3809"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-new-2.devtoolslog.json",
-      "bytes": 163141,
-      "sha256": "4ff4033d05675e9bba45e64d1751c905df03fce86f375dfe5d3ef78ce2d7181a"
+      "bytes": 162768,
+      "sha256": "93d449601c8a7aa383fedebb3a4f736a394b6e17a945a0c19d96f552e2a50102"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-new-2.json",
-      "bytes": 510719,
-      "sha256": "d7a9454afc748d2d3408200c8dd72bb1f67e8b759d394d9e0fcdb95732b3d5b8"
+      "bytes": 511639,
+      "sha256": "3ebdf29e9c3c4079e164e0c73e90bd179d38099703d63413e3a7cf8c2c4d5a8a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-new-2.trace.json",
-      "bytes": 1705563,
-      "sha256": "5589459a6f995350d39a2addd4483c9ff540172b384aa8d5c099edcd03fd62d8"
+      "bytes": 1784225,
+      "sha256": "c8f4c2d600507b582de3bbc3c8db5920c12f3c155aaca143f4dc79b3b63e37a4"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-new-3.devtoolslog.json",
-      "bytes": 162927,
-      "sha256": "225e04675253a76d1b137c2fb5c415a9f8c7282a67ee4993a3239d7f306bbcd8"
+      "bytes": 163363,
+      "sha256": "3c1849e19ae29ab80781af32f3efd7e51de63a7d715543c8691900b54f4ddf9b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-new-3.json",
-      "bytes": 510692,
-      "sha256": "9456bfe218fb68ecf5730b359186b665181fb41c9f3bf4e49a240dd8ba909d84"
+      "bytes": 511657,
+      "sha256": "863b49be67fdf48eaf81fdadcd3a3a41c0b791fa49948540b7da61032ef39897"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/people-profile-new-3.trace.json",
-      "bytes": 1695977,
-      "sha256": "406055a67e1000c649d950325ee26c01eb9cf12fe993203680d200c5534af4f4"
+      "bytes": 1783781,
+      "sha256": "63f9634f74f755a1c85bc253e4e16e5d652ae651ae3ad332133ed3d0e7883f74"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-birth-chart-1.devtoolslog.json",
-      "bytes": 320211,
-      "sha256": "766a09ce13f44d2b2760b240cf502ff64c8e2e4b6a2712947b4c05d6141dde6e"
+      "bytes": 321042,
+      "sha256": "5b99cc7e7fe145d39c54e762034439c32e05e1b816586ab3162d57521ac7777d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-birth-chart-1.json",
-      "bytes": 473730,
-      "sha256": "02e130bfcf32f4dd1873544ba6822b04a34c69d69f4b11317a8c09c031233b1b"
+      "bytes": 475024,
+      "sha256": "648297cf403fde65c9a2725773e655e676def0a7a939e38f493ca8f4e8acd840"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-birth-chart-1.trace.json",
-      "bytes": 2803007,
-      "sha256": "5e29570eef222b52023a654e5db7f8ca9729e4f90bd244ca0246ee069984e7cd"
+      "bytes": 2874502,
+      "sha256": "c6f7217aced1c815ce5e334a261f63a1f38138ec2198952beecfcf510aef8bf7"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-birth-chart-2.devtoolslog.json",
-      "bytes": 320548,
-      "sha256": "886a26da34ebc49a8dbe269fbeff207d1bd553aa63210af54c518f70dd6c5fb4"
+      "bytes": 321695,
+      "sha256": "32c292099aea570221be188a34ca602637dbb3a51bf4b77bd32c36dd44c99dd1"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-birth-chart-2.json",
-      "bytes": 474715,
-      "sha256": "9d4571ce7e8918abfb6f8fe2a78273d3a83ce2d13cc554b4a4ac11f5544fdeda"
+      "bytes": 474749,
+      "sha256": "b2df7fcf2684e646d17bb158a7eb806aed32fb1f789cc63b498b9553e798c834"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-birth-chart-2.trace.json",
-      "bytes": 2829665,
-      "sha256": "aca112105761bbb7e31d13a928a776c74f2fbb4ae876961ea12e4d07a4f1db80"
+      "bytes": 2866858,
+      "sha256": "8e3ebb6dc6a4b5fc011ee5b90a5e1c15e127582dce7211980a2bf1f785d0107c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-birth-chart-3.devtoolslog.json",
-      "bytes": 320571,
-      "sha256": "c6cb2b29bbe78a8c229cd598d931861902254f0b62b94de919328c63ea8e37c0"
+      "bytes": 321252,
+      "sha256": "866401d33c49a82ca3cd625dfd39bed3dc2954cfc30491868315f44f09216891"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-birth-chart-3.json",
-      "bytes": 474651,
-      "sha256": "5242a6fa2d8907e6dab3e02b4854b46c3bfbf978ac714119bdd28161881f619f"
+      "bytes": 474723,
+      "sha256": "6529f4bb4e7abf43a1bf98ea0843df75e09761aadbafd594e08c1ed28bd7e49c"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-birth-chart-3.trace.json",
-      "bytes": 2851987,
-      "sha256": "c162e6cd694be8c1415cf29c62e767243b6957e2461846400b034f831cbb9818"
+      "bytes": 2872102,
+      "sha256": "f3489ea475fe1f5442a914cf776b50d589ffd8dd7a8a6f0a7daadb8ebd6237f7"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-home-1.devtoolslog.json",
-      "bytes": 238559,
-      "sha256": "3b144f629dceea10cbdd342651a8c88fee49cf856096bb0da788093062d0f8b4"
+      "bytes": 238855,
+      "sha256": "5723bf7ee4cafb40e30fde15baca987cc2dcb57964a010dc161d1040c5afd48b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-home-1.json",
-      "bytes": 572404,
-      "sha256": "3c8a9a484f5dd4402b4f90970e5ea3d204fdeb897ab2f1eaf6b39b3fe746d8ed"
+      "bytes": 573734,
+      "sha256": "b220f6eca1daab628f2e4c9b1c54cb1044fc0e359ea21f2d1ac842089e27a810"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-home-1.trace.json",
-      "bytes": 5701539,
-      "sha256": "3c3a6716495d9d3836b5d95225c462c90613ac9b913747341a4504f3427af513"
+      "bytes": 5787170,
+      "sha256": "c4fa7fe81e4b961e63ec7d0a84f06a4f7507422118383d194c8d0d05dc117e04"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-home-2.devtoolslog.json",
-      "bytes": 238309,
-      "sha256": "bf889f70dfd4fee414b604334d9eb44845ee0db81889eb650bf8d1cd322be12a"
+      "bytes": 239445,
+      "sha256": "b8c76153a42750786ceae0f0df0b29fab3d51ea0cd869155319e1b9ac1c95f94"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-home-2.json",
-      "bytes": 573189,
-      "sha256": "1a334513cc1f582e603ddc99fbc47e21bf0d1482a439b4e87a377561d4a942eb"
+      "bytes": 573213,
+      "sha256": "7666bd8a2d50241ff957ddf162ec63040779ae7054dc4e41a3d608281120ac91"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-home-2.trace.json",
-      "bytes": 5699646,
-      "sha256": "2309ff407b2ec2e35506a5f16fdeacdd5ac469cad0d69d0f8e07cc379d6d0877"
+      "bytes": 5768391,
+      "sha256": "a2f056ea9bedea4aa57388cc08eef5762b959b28aeb60205a14f46cc8b7dfd11"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-home-3.devtoolslog.json",
-      "bytes": 238739,
-      "sha256": "526e9f3965b8289b6282a886056149cdb07f5945bfd2a1769abaddee5dd226fc"
+      "bytes": 238863,
+      "sha256": "a28c7711190fb1ef209e747b5128c3b663c01db5c518deed1f31b4d9c8e5166e"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-home-3.json",
-      "bytes": 573246,
-      "sha256": "39a14ea0d507300aee411414476e81b32e6f17a8da01333edb9a8848293b7bce"
+      "bytes": 572512,
+      "sha256": "f7fa67ae7bfc8b7c9710853a20c0bec64ed6ac2a8ecdcad7948240f4543e9aae"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-home-3.trace.json",
-      "bytes": 5742219,
-      "sha256": "c1ca61a2a17a3d94683ded96ed3930746154b0a85d3ecc32bcaace86ab5fb2c1"
+      "bytes": 5754124,
+      "sha256": "86e43b8123d653e2b1d2624257da2eaef9e7a9827d6fcc4dc340c8a89cde197f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-sign-guide-1.devtoolslog.json",
-      "bytes": 86053,
-      "sha256": "031be1b990fe363f5e574c37618594eeab6d6ecbb2b49d5b50e70d874567609d"
+      "bytes": 85863,
+      "sha256": "bdeaf6d32855aa56f5d2df5390b6bd711b5a3c162c15806895c348d18a90a4f4"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-sign-guide-1.json",
-      "bytes": 699216,
-      "sha256": "5f11011603b23de74ce2c162f43efaf8bb55377703a6ec611dfd938283297af3"
+      "bytes": 698411,
+      "sha256": "36f891bba68672d2d4203ad5d09f7a1baa5d15fd3f583081b5f0c9f6d8d17a3d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-sign-guide-1.trace.json",
-      "bytes": 1747668,
-      "sha256": "59032b3a8a63ac2e75f3a52e39ca05ebf98a3421124ff4b321228513d4f7b1ca"
+      "bytes": 1714237,
+      "sha256": "0970d8d8431bb6cae35e6fcf96dd36c872be9b22c0576e1c2e7d68697bda295a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-sign-guide-2.devtoolslog.json",
-      "bytes": 86240,
-      "sha256": "fdc1a96f317a166e76802e190ac30b9813ebb58994185fd98ff1da8a4cc6e211"
+      "bytes": 85863,
+      "sha256": "4dc703efcb8d7cedcf9bfde7da54a59a0351711bf080234a1aa5ffbb57eae540"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-sign-guide-2.json",
-      "bytes": 698280,
-      "sha256": "cb1786554c20fa547db62604d4f4de998e02db5a5f67a00f328826b2a4ab1d88"
+      "bytes": 698471,
+      "sha256": "7b768788147077ddf8b6394533debd62d2db7417f1568b51fb5ee371a89f2fc3"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-sign-guide-2.trace.json",
-      "bytes": 1669357,
-      "sha256": "c2d132b84990e6b965134941eb19e74158fb00b8df7c182cd86770ad6d5afabc"
+      "bytes": 1739059,
+      "sha256": "37c19843c2a58da68377b46e0474c0a63486f3c2c1434e70ca9159950c305440"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-sign-guide-3.devtoolslog.json",
-      "bytes": 86448,
-      "sha256": "f4def943bd33797c57f44edc45fc8908f1b907f660940a25b005a1f41e6a81e8"
+      "bytes": 86718,
+      "sha256": "463c4f4cd2fbea76516e6a3ca38e31f093e66815067c4557f9cf3401adcee89d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-sign-guide-3.json",
-      "bytes": 699073,
-      "sha256": "05cb1b4052ad6dac971e29813fcc09c99a81dc142218e4d5915ae79f9a019c17"
+      "bytes": 698422,
+      "sha256": "e3e4d8a099c0cef4d42023ab997c25bd457eb3bdd7c4ec2f0740e3211a6c21b9"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/ru-sign-guide-3.trace.json",
-      "bytes": 1734489,
-      "sha256": "0fab5f6f55fa718a4c05c78187b6b018b276936d02c6974d70e66b31c69f4143"
+      "bytes": 1723428,
+      "sha256": "cd5bd128539f8c90836d2f31cb2d852323b8364e777310842cbb9360abe69509"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/thesis-1.devtoolslog.json",
-      "bytes": 156790,
-      "sha256": "23b764f03c93e1a5bdadf42e75a1a9bb9177a90380faae988ce2343e733e4261"
+      "bytes": 156379,
+      "sha256": "2663bd1942e75daea92700cbd7c57da048b8b0d049ca58895cdfe881743349fc"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/thesis-1.json",
-      "bytes": 869927,
-      "sha256": "f2f5b8a1edff11121e6f1d86aa2cc0db5e07cc0cf0a2c9ed1541f0f9d7daa896"
+      "bytes": 870642,
+      "sha256": "63ec789cf4073ef990581b7bcac0963510c543d9c7bf02d961300f39a6e59b6a"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/thesis-1.trace.json",
-      "bytes": 2721445,
-      "sha256": "62cb35b9ba07ba6269a3a2358fb4c64c0f99a520efc6af1a4610a902f730dd0c"
+      "bytes": 2716908,
+      "sha256": "adc251ff8e1bfd0ca3522de387a2839a8a6a75c170e105562d3c2ae1bacc2358"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/thesis-2.devtoolslog.json",
-      "bytes": 156590,
-      "sha256": "e6305509c0d1242353b2786649e0a894b0cb2d66110365cfb3ae5e783c101cbb"
+      "bytes": 156003,
+      "sha256": "704f6da5b518363702a514749d0f492d6b1cfa44eff60932e1d081514943d8eb"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/thesis-2.json",
-      "bytes": 870281,
-      "sha256": "2cc390a438f1208de4c6bfd7124ea86e856034a495e1c7cf39d29ae395571f1b"
+      "bytes": 870514,
+      "sha256": "8de619f1d335163021ef943145d997a2bf95ab48b6c892c0932eb6212f6c80b1"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/thesis-2.trace.json",
-      "bytes": 2734063,
-      "sha256": "27ba03408b3bb95ef9420e429672f07aa8b3e11305dcda39e38e9d1d4632c8ae"
+      "bytes": 2780372,
+      "sha256": "0debe26419042b4e022795663284f09d97d693aacfa2ab35a1ad5162e84e039b"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/thesis-3.devtoolslog.json",
-      "bytes": 155714,
-      "sha256": "1434c6e407349519118712cd3ca914488d75407bb607908b003b95f67d97e41e"
+      "bytes": 155786,
+      "sha256": "f21c71ea76d7314d39e0b32feb1b2ce7741a874e80b41b69efc8345db887ee24"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/thesis-3.json",
-      "bytes": 869219,
-      "sha256": "11a528ff1fe72c40d4d8957c8a9c204742412b1393f3ab49385bc1908c66b07d"
+      "bytes": 870338,
+      "sha256": "5e48bc189ccd8a22a774c362efce0624390c6d5a2f1b7e65a37db530faa54a78"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/thesis-3.trace.json",
-      "bytes": 2696520,
-      "sha256": "c932c0834a36d51b7a9053f46e2a8e201e1440cbb4bf9e8db56b8b2c6b11a163"
+      "bytes": 2698242,
+      "sha256": "b4920bad0d1a45cfd89e0859c7527a4934044d40315bea0c40d2a4b8e981b512"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/today-1.devtoolslog.json",
-      "bytes": 191808,
-      "sha256": "d4a8fa44003a4381551d4baa0714fb327c0158a603a9b40b281bbe6fb55cbd3c"
+      "bytes": 191817,
+      "sha256": "57b92f73d60fd19f1392d0f15ca2d9b2b913548c9428777052c6fb75058b0a40"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/today-1.json",
-      "bytes": 524167,
-      "sha256": "94db2fc732f0ce7cd0dcc96dd71fe82ed200d9f9ac4e9a1bb6380309876bfce1"
+      "bytes": 526000,
+      "sha256": "16ad5544c5fcc0bccefdb9886890188dfa743b6ebf65bc464576b1149ec020d6"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/today-1.trace.json",
-      "bytes": 2168392,
-      "sha256": "69dc40a8d39ec1a112e4c714774a9e2e59b3c5edb08d8d276955d9e68a75634b"
+      "bytes": 2246452,
+      "sha256": "f7185946e85c1fa47b11aa614a20cf23f5ccd85b49384fb00cd622025e62e480"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/today-2.devtoolslog.json",
-      "bytes": 192025,
-      "sha256": "34ddb3541ffbc16bc1ae9ee0555cabeeb599fc8898922445d9bac64ad15ae724"
+      "bytes": 192006,
+      "sha256": "3554e7abae215aa8df60a7139433a3c70b4e91d7c10eb1137fb28bf7cc763ae1"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/today-2.json",
-      "bytes": 524227,
-      "sha256": "12dc177e5e98d48ac56c2f0385522c79496287135a189daa5f4a95566ed0bbc5"
+      "bytes": 525633,
+      "sha256": "9134a6c2226a32a731e73187322e771a663311ffe6fa571d6e06776558d3a483"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/today-2.trace.json",
-      "bytes": 2215994,
-      "sha256": "2185ac4d322901ca713d6f1f4175d1df6269453c1f7dadf13ca4c5fc53f41d29"
+      "bytes": 2224975,
+      "sha256": "a7299d91e04f6315580db9f57fad6b27a21570920dfd002847b2d633baef5366"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/today-3.devtoolslog.json",
-      "bytes": 192225,
-      "sha256": "2485d165397413dc3d9a5fe606111f9ec5443ee3c99c311d3edbee65ab68d1ee"
+      "bytes": 191643,
+      "sha256": "ae555c599831f4c5fd79a602efd0d841c5e7c48bccdf350da501db295b946e6f"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/today-3.json",
-      "bytes": 524235,
-      "sha256": "ccd7b621383b20b35cd1c9a0a10768c1b474c5ec17a0512535daaed3b7e709fa"
+      "bytes": 525878,
+      "sha256": "1e9f4a8b93c9f368e5c41f97557dcf28ba988e406fdc8c2a0c540ba56edd4586"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/today-3.trace.json",
-      "bytes": 2204946,
-      "sha256": "9aeb9961f641767686d3458c1d4cc9bf064d02a54e0a39e8ed28cfa1558bf724"
+      "bytes": 2220445,
+      "sha256": "4741add8dff0b2971291d1ca7115eb90b3835c5dc58de95693957a3f0d4224ca"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/void-of-course-moon-1.devtoolslog.json",
-      "bytes": 87459,
-      "sha256": "5c58f6e6d1dc58522f429eb6a5885ce096eab252ddcf5a8e60da2c0140316605"
+      "bytes": 87325,
+      "sha256": "abf68b18423790ca43003b1fe65e9cd4d685f70e3c819904f4d0f5cb1584d94d"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/void-of-course-moon-1.json",
-      "bytes": 559664,
-      "sha256": "c31b410b32e594704a31d5d2b43c8de8edce0e449bd39f47b73f0292a70d5ef2"
+      "bytes": 559006,
+      "sha256": "e6d5b2af33cbc66f0844e0acfba8108fdfc4a3cd6c399e8261d47c78ee0d09a9"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/void-of-course-moon-1.trace.json",
-      "bytes": 1706022,
-      "sha256": "5f65ca625c6ff83d8d5e0af692f4d6200378000f5268826ddd3c308d2dc45a44"
+      "bytes": 1734470,
+      "sha256": "c41511db6c578d3340aca287a69f63af6daf9d0052d48dad0fc834de9099ccd9"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/void-of-course-moon-2.devtoolslog.json",
-      "bytes": 86658,
-      "sha256": "501828323d35828f4193904f7ed5cc5e2d7e1333bdf42ca057e34773fda7af6b"
+      "bytes": 87258,
+      "sha256": "dc61f3fac132c71b6e044e5564e86cdb65c30d4ef064c44b0e33fddc28597f76"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/void-of-course-moon-2.json",
-      "bytes": 558918,
-      "sha256": "7ddec2a991bdd816cb4ebad082324d756355c57dbbd2ec55a0abccbd32b25d3c"
+      "bytes": 559806,
+      "sha256": "c8ec5b5e053004fe7e5cbd1ce1d06f4bb9775ad5527d52b603135badb6c4da63"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/void-of-course-moon-2.trace.json",
-      "bytes": 1649647,
-      "sha256": "f8e25e220ce01e96e8862a4ea7308d7ebd20d9832ea0cf4b766125b7e55cb47f"
+      "bytes": 1706206,
+      "sha256": "a5252c52fc47477869d9ed0a7a4aa9683e08ede94475890f62c35bb4cdca0baf"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/void-of-course-moon-3.devtoolslog.json",
-      "bytes": 87064,
-      "sha256": "fb6c071bd4ca1efac1b3b23e45d1684a1287b57e4896645b1ddfee6bbb28143d"
+      "bytes": 87242,
+      "sha256": "7c8a48a4296936bdc37da24a300b2b27071029e485beb5cd03dcb4d3d951e8a5"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/void-of-course-moon-3.json",
-      "bytes": 558847,
-      "sha256": "4865cd477e02f7d27fdb8cab8533760dfb9db4d820e14b30f8f23264f13403dd"
+      "bytes": 559090,
+      "sha256": "4d901dd35286c5cefc20a5418955850a0ace5c3a69f0618fc8b4d05cbe4bf593"
     },
     {
       "path": "tests/visual/artifacts/lighthouse/void-of-course-moon-3.trace.json",
-      "bytes": 1673844,
-      "sha256": "18edbd4ce636910e7df3a432d9f8c19c4dc822fed133af4f53bf68c56ef78159"
+      "bytes": 1688874,
+      "sha256": "d185566b4c89a6c1b11f1359eb16a6d1a72d1a75642f25c693178e7907408132"
     },
     {
       "path": "tests/visual/artifacts/visual/aries-desktop-reduced-motion.fonts.after.json",
