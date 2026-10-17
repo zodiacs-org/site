@@ -1,0 +1,109 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [
+    {
+      "kind": "append-only-follow-up",
+      "parentId": "zrx-market-check-2026-10-16"
+    }
+  ],
+  "id": "zrx-market-check-2026-10-16-observation-24h",
+  "slug": "market-check-2026-10-16-observation-24h",
+  "kind": "observation-update",
+  "templateId": "observation-update.v1",
+  "parentId": "zrx-market-check-2026-10-16",
+  "issuedAt": "2026-10-17T00:07:54.530Z",
+  "visibleAt": "2026-10-17T00:07:54.530Z",
+  "title": "Leo 24-hour observation update",
+  "summary": "24-hour follow-up using the first qualifying archived snapshot (24 actual hours elapsed).",
+  "url": "/terminal/research/market-check-2026-10-16-observation-24h/",
+  "signs": [
+    "leo"
+  ],
+  "topics": [
+    "markets",
+    "observation-update"
+  ],
+  "symbolicScore": {
+    "sign": "leo",
+    "attention": 28,
+    "tone": 9,
+    "eventIntensity": 3,
+    "calculation": "14 attention / 10 tone / 3 event intensity × 0.9121 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "The original zrx-market-check-2026-10-16 sky score and traditional reading remain unchanged.",
+      "evidence": [
+        "/assets/data/registry-research/items/zrx-market-check-2026-10-16.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "This follow-up does not reinterpret the sky after observing the market.",
+      "evidence": [
+        "/assets/data/registry-research/items/zrx-market-check-2026-10-16.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "24 hours after the original market observation, indexed price change was unavailable and indexed liquidity change was unavailable. This temporal comparison does not establish causation.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-10-17:2026-10-17T00:07:54.530Z",
+    "observedAt": "2026-10-17T00:07:54.530Z",
+    "provider": "DexScreener",
+    "sign": "leo",
+    "priceUsd": 0.00005936,
+    "change24hPct": 1.88,
+    "marketCapUsd": 59362,
+    "fdvUsd": 59362,
+    "liquidityUsd": 13772,
+    "volume24hUsd": 132.61,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/48erbgmqizekyloccebd7cs5knqpzqr7qqak9mzapqgq",
+    "baselineSnapshotId": "registry-market:2026-10-16:2026-10-16T00:07:50.402Z",
+    "baselineObservedAt": "2026-10-16T00:07:50.402Z",
+    "requestedElapsedHours": 24,
+    "actualElapsedHours": 24,
+    "priceChangePct": null,
+    "liquidityChangePct": null
+  },
+  "evidence": {
+    "parentId": "zrx-market-check-2026-10-16",
+    "baselineSnapshotId": "registry-market:2026-10-16:2026-10-16T00:07:50.402Z",
+    "marketSnapshotId": "registry-market:2026-10-17:2026-10-17T00:07:54.530Z",
+    "coverage": "first-qualifying-archive-observation"
+  },
+  "artifactHash": "d5938ba2b6bb7ab907ea1a25d08bcf563bbbf3ce79a63223afa72501e3d683a3",
+  "publishedAt": "2026-10-17T00:07:54.530Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-17T00:07:54.530Z",
+    "reviewer": null,
+    "artifactSha256": "d5938ba2b6bb7ab907ea1a25d08bcf563bbbf3ce79a63223afa72501e3d683a3"
+  },
+  "status": "approved"
+}
