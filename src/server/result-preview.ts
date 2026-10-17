@@ -102,6 +102,45 @@ async function discImages(signs: readonly PreviewSign[]): Promise<Map<ShareSign,
   return new Map(await Promise.all(slugs.map(async (slug) => [slug, await disc(slug)] as const)));
 }
 
+// The cards' hero art at 640px (scripts/build-card-art.mjs), as JPEG because the renderer cannot decode WebP.
+// One literal address per piece, so the deployment's file tracing packs them all.
+export type ShareArt = ShareSign | 'wedding-hero' | 'sky-calendar-hero';
+const ART_FILES: Readonly<Record<ShareArt, URL>> = {
+  aries: new URL('../../public/assets/card-art/share/aries-640.jpg', import.meta.url),
+  taurus: new URL('../../public/assets/card-art/share/taurus-640.jpg', import.meta.url),
+  gemini: new URL('../../public/assets/card-art/share/gemini-640.jpg', import.meta.url),
+  cancer: new URL('../../public/assets/card-art/share/cancer-640.jpg', import.meta.url),
+  leo: new URL('../../public/assets/card-art/share/leo-640.jpg', import.meta.url),
+  virgo: new URL('../../public/assets/card-art/share/virgo-640.jpg', import.meta.url),
+  libra: new URL('../../public/assets/card-art/share/libra-640.jpg', import.meta.url),
+  scorpio: new URL('../../public/assets/card-art/share/scorpio-640.jpg', import.meta.url),
+  sagittarius: new URL('../../public/assets/card-art/share/sagittarius-640.jpg', import.meta.url),
+  capricorn: new URL('../../public/assets/card-art/share/capricorn-640.jpg', import.meta.url),
+  aquarius: new URL('../../public/assets/card-art/share/aquarius-640.jpg', import.meta.url),
+  pisces: new URL('../../public/assets/card-art/share/pisces-640.jpg', import.meta.url),
+  'wedding-hero': new URL('../../public/assets/card-art/share/wedding-hero-640.jpg', import.meta.url),
+  'sky-calendar-hero': new URL('../../public/assets/card-art/share/sky-calendar-hero-640.jpg', import.meta.url),
+};
+const arts = new Map<ShareArt, Promise<string>>();
+
+function artImage(key: ShareArt): Promise<string> {
+  const known = arts.get(key);
+  if (known) return known;
+  const pending = readFile(ART_FILES[key]).then((bytes) => `data:image/jpeg;base64,${bytes.toString('base64')}`);
+  arts.set(key, pending);
+  void pending.catch(() => { if (arts.get(key) === pending) arts.delete(key); });
+  return pending;
+}
+
+/** A compatibility image shows both Sun signs' panels; a date's shows the wedding piece or the Sun sign's panel. */
+export function compatibilityArt(share: { aSun: ShareSign | null; bSun: ShareSign | null }): ShareArt[] {
+  const signs = [share.aSun, share.bSun].filter((slug): slug is ShareSign => slug !== null);
+  return signs.length > 0 ? signs : ['sky-calendar-hero'];
+}
+export function occasionArt(share: { occasion: string; sun: ShareSign | null }): ShareArt[] {
+  return [share.occasion === 'wedding' || share.occasion === 'anniversary' ? 'wedding-hero' : share.sun ?? 'sky-calendar-hero'];
+}
+
 // ── Cards ────────────────────────────────────────────────────────────
 
 const SERIF = 'EB Garamond, EB Garamond Ext';
@@ -122,11 +161,11 @@ function kicker(text: string, hue: string) {
   return h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: 36, color: hue, lineHeight: 1.2 } }, text);
 }
 
-const RING = 340;
+const RING = 236;
 
 /** The score inside a ring drawn from one sign's hue to the other's, as on the card. */
 function ring(score: number, hues: [string, string]) {
-  const stroke = 22;
+  const stroke = 16;
   const radius = (RING - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const arc = Math.max(0.001, (score / 100) * circumference);
@@ -144,8 +183,8 @@ function ring(score: number, hues: [string, string]) {
         transform: `rotate(-90 ${centre} ${centre})`,
       })),
     h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-4px' } },
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 150, lineHeight: 1, color: INK, letterSpacing: '-3px' } }, String(score)),
-      h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 25, color: CARD_MUTED, marginTop: '6px' } }, 'out of 100')));
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 104, lineHeight: 1, color: INK, letterSpacing: '-2px' } }, String(score)),
+      h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 21, color: CARD_MUTED, marginTop: '4px' } }, 'out of 100')));
 }
 
 function signChip(sign: PreviewSign, images: Map<ShareSign, string>, size: number) {
@@ -160,7 +199,7 @@ function signChip(sign: PreviewSign, images: Map<ShareSign, string>, size: numbe
 /** One area of a compatibility score as a tile: its number over its name, no bar. */
 function areaTile(area: { label: string; value: number }, index: number) {
   return h('div', { style: {
-      display: 'flex', flexDirection: 'column', width: '204px', marginLeft: index === 0 ? '0px' : '14px',
+      display: 'flex', flexDirection: 'column', width: '172px', marginLeft: index === 0 ? '0px' : '12px',
       padding: '14px 18px 16px', borderRadius: '16px', background: TILE,
     } },
     h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 50, lineHeight: 1, color: INK } }, String(area.value)),
@@ -173,15 +212,36 @@ function fit(lines: string[], width: number, max: number, min: number): number {
   return Math.max(min, Math.min(max, Math.floor(width / (longest * 0.5))));
 }
 
-const LEFT_WIDTH = 680;
+const LEFT_WIDTH = 560;
+const ART_WIDTH = 560;
 
-function frame(left: VNode<any>, score: number, hues: [string, string]) {
+/**
+ * The art panel on the right: the hero art (one panel, or two stacked) dimmed
+ * and vignetted like the card's frame, faded into the card on its left edge,
+ * with the score ring in its lower corner on a dark disc, so the number never
+ * sits on busy art and the figures stay in view.
+ */
+function artPanel(images: string[], score: number, hues: [string, string]) {
+  const height = 630 / images.length;
+  return h('div', { style: { display: 'flex', position: 'relative', width: `${ART_WIDTH}px`, height: '630px', background: '#0B0C10' } },
+    ...images.map((src, index) => h('img', { src, width: ART_WIDTH, height, style: {
+      position: 'absolute', left: 0, top: `${index * height}px`, width: `${ART_WIDTH}px`, height: `${height}px`, objectFit: 'cover', opacity: 0.94,
+    } })),
+    h('div', { style: { display: 'flex', position: 'absolute', left: 0, top: 0, width: `${ART_WIDTH}px`, height: '630px',
+      backgroundImage: 'radial-gradient(circle at 55% 45%, rgba(6,7,9,0) 0%, rgba(6,7,9,0.12) 50%, rgba(6,7,9,0.6) 100%)' } }),
+    h('div', { style: { display: 'flex', position: 'absolute', left: 0, top: 0, width: '150px', height: '630px',
+      backgroundImage: `linear-gradient(90deg, ${CARD} 0%, rgba(22,25,31,0) 100%)` } }),
+    h('div', { style: { display: 'flex', position: 'absolute', left: `${ART_WIDTH - RING - 24 - 30}px`, top: `${630 - RING - 24 - 30}px`,
+      width: `${RING + 24}px`, height: `${RING + 24}px`, borderRadius: `${RING}px`, background: 'rgba(13,15,19,0.78)', alignItems: 'center', justifyContent: 'center' } },
+      ring(score, hues)));
+}
+
+function frame(left: VNode<any>, score: number, hues: [string, string], art: string[]) {
   return h('div', { style: {
-      width: '1200px', height: '630px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      padding: '52px 64px 54px', background: CARD, color: INK, fontFamily: 'Noto',
+      width: '1200px', height: '630px', display: 'flex', background: CARD, color: INK, fontFamily: 'Noto',
     } },
-    left,
-    ring(score, hues));
+    h('div', { style: { display: 'flex', padding: '52px 20px 54px 64px', width: `${1200 - ART_WIDTH}px`, height: '630px' } }, left),
+    artPanel(art, score, hues));
 }
 
 const column = (...children: VNode<any>[]) => h('div', { style: {
@@ -190,7 +250,7 @@ const column = (...children: VNode<any>[]) => h('div', { style: {
 
 const verdictLine = (verdict: string) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: fit([verdict], LEFT_WIDTH, 44, 34), color: INK, marginTop: '18px', lineHeight: 1.15 } }, verdict);
 
-export function compatibilityCard(model: CompatibilityCardModel, images: Map<ShareSign, string>) {
+export function compatibilityCard(model: CompatibilityCardModel, images: Map<ShareSign, string>, art: string[]) {
   const oneLine = `${model.first} and ${model.second}`;
   const lines = fit([oneLine], LEFT_WIDTH, 84, 40) >= 64 ? [oneLine] : [model.first, `and ${model.second}`];
   const nameSize = fit(lines, LEFT_WIDTH, 84, 48);
@@ -202,10 +262,10 @@ export function compatibilityCard(model: CompatibilityCardModel, images: Map<Sha
       verdictLine(model.verdict),
       h('div', { style: { display: 'flex', marginTop: '20px' } }, ...model.people.map((person) => signChip(person, images, 48)))),
     h('div', { style: { display: 'flex' } }, ...model.areas.map((area, index) => areaTile(area, index))),
-  ), model.score, model.ring);
+  ), model.score, model.ring, art);
 }
 
-export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>) {
+export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>, art: string[]) {
   const title = model.names ?? model.headline;
   const headSize = fit([title], LEFT_WIDTH, 92, 56);
   return frame(column(
@@ -219,7 +279,7 @@ export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, st
       ...(model.signs.length > 0
         ? model.signs.map((sign) => signChip(sign, images, 52))
         : [h('div', { style: { display: 'flex', fontSize: 26, color: CARD_MUTED } }, 'Rated from the sky that day')])),
-  ), model.score, model.ring);
+  ), model.score, model.ring, art);
 }
 
 // ── Responses ────────────────────────────────────────────────────────
@@ -259,9 +319,9 @@ export async function handleCompatibilityImageRequest(request: Request): Promise
   const share = parseCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
-  const images = await discImages(model.people).catch(() => null);
-  if (!images) return errorResponse(503);
-  return renderPng(compatibilityCard(model, images));
+  const [images, art] = await Promise.all([discImages(model.people), Promise.all(compatibilityArt(share).map(artImage))]).catch(() => [null, null] as const);
+  if (!images || !art) return errorResponse(503);
+  return renderPng(compatibilityCard(model, images, art));
 }
 
 export async function handleOccasionImageRequest(request: Request): Promise<Response> {
@@ -269,9 +329,9 @@ export async function handleOccasionImageRequest(request: Request): Promise<Resp
   const share = parseOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
-  const images = await discImages(model.signs).catch(() => null);
-  if (!images) return errorResponse(503);
-  return renderPng(occasionCard(model, images));
+  const [images, art] = await Promise.all([discImages(model.signs), Promise.all(occasionArt(share).map(artImage))]).catch(() => [null, null] as const);
+  if (!images || !art) return errorResponse(503);
+  return renderPng(occasionCard(model, images, art));
 }
 
 // ── The page a share link opens ──────────────────────────────────────

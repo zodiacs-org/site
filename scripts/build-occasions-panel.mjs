@@ -1,13 +1,20 @@
-/** Self-contained MCP App for the occasion tools: sign icons and the three brand faces inlined, no asset requests, no occasion data. */
+/** Self-contained MCP App for the occasion tools: sign icons, card art and the three brand faces inlined, no asset requests, no occasion data. */
 import { build } from 'esbuild';
 import { fileURLToPath } from 'node:url';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+const ART_PIECES = ['wedding-hero', 'sky-calendar-hero', 'milestones-hero', 'twins-hero'];
 
 export async function buildOccasionsPanel(check = false) {
-  const icons = Object.fromEntries(await Promise.all(SIGNS.map(async (slug) => [slug, 'data:image/webp;base64,' + (await readFile(new URL(`public/assets/zodiac-icons/400/${slug}.webp`, root))).toString('base64')])));
-  const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/occasions-panel/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { OCCASIONS_ICONS: JSON.stringify(icons), 'process.env.NODE_ENV': '"production"' } });
+  const inline = async (path) => 'data:image/webp;base64,' + (await readFile(new URL(path, root))).toString('base64');
+  const icons = Object.fromEntries(await Promise.all(SIGNS.map(async (slug) => [slug, await inline(`public/assets/zodiac-icons/128/${slug}.webp`)])));
+  // The hero art (scripts/build-card-art.mjs): sign panels at 400px, the cards' own pieces at 480px.
+  const art = Object.fromEntries(await Promise.all([
+    ...SIGNS.map(async (slug) => [slug, await inline(`public/assets/card-art/panel/${slug}-400.webp`)]),
+    ...ART_PIECES.map(async (key) => [key, await inline(`public/assets/card-art/panel/${key}-480.webp`)]),
+  ]));
+  const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/occasions-panel/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { OCCASIONS_ICONS: JSON.stringify(icons), CARD_ART: JSON.stringify(art), 'process.env.NODE_ENV': '"production"' } });
   const js = result.outputFiles.find(file => file.path.endsWith('.js')).text.replace(/<\/script/gi, '<\\/script');
   let css = result.outputFiles.find(file => file.path.endsWith('.css')).text;
   for (const [family, file, weight, style] of [['Instrument Sans', 'instrument-sans-latin-wght-normal.woff2', '100 900', 'normal'], ['EB Garamond', 'eb-garamond-latin-400-normal.woff2', '400', 'normal'], ['EB Garamond', 'eb-garamond-latin-500-normal.woff2', '500', 'normal'], ['EB Garamond', 'eb-garamond-latin-400-italic.woff2', '400', 'italic'], ['JetBrains Mono', 'jetbrains-mono-latin-wght-normal.woff2', '100 800', 'normal']]) {

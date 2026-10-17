@@ -1,9 +1,10 @@
 /**
  * Accessibility and layout checks for every assistant card, at 760px and
  * 390px in the light and dark host themes: rendered text contrast (every
- * text element against the surface it sits on, WCAG AA), no sideways
- * overflow, every link and button reachable by Tab with a visible focus
- * ring, and no motion when the system asks for reduced motion.
+ * text element against the surface it sits on, WCAG AA), hero art that is
+ * decorative with no text over it, no sideways overflow, every link and
+ * button reachable by Tab with a visible focus ring, and no motion when the
+ * system asks for reduced motion.
  * Real Chromium, synthetic host bridge, no network.
  *
  *   npx vite-node --script tests/ai-cards-qa.ts [-- --out <report.json>]
@@ -97,6 +98,19 @@ try {
         const contrast = await lowestContrast(page);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth
           || [...document.querySelectorAll('.card *, .shell *')].some((element) => { const box = element.getBoundingClientRect(); return box.width > 0 && box.right > innerWidth + 0.5; }));
+        // Hero art: decorative (empty alt, hidden from assistive technology, its size set), and no text sits over it.
+        const art = await page.evaluate(() => {
+          const frames = [...document.querySelectorAll('.art-frame')];
+          const boxes = frames.map((frame) => frame.getBoundingClientRect());
+          const textOver = [...document.querySelectorAll('body *')].filter((element) => {
+            if (element.closest('.art')) return false;
+            if (![...element.childNodes].some((node) => node.nodeType === 3 && node.textContent!.trim())) return false;
+            const box = element.getBoundingClientRect();
+            return boxes.some((frame) => box.left < frame.right && box.right > frame.left && box.top < frame.bottom && box.bottom > frame.top);
+          }).length;
+          const decorative = frames.every((frame) => frame.closest('[aria-hidden="true"]') && frame.querySelector('img')?.getAttribute('alt') === '' && frame.querySelector('img')?.getAttribute('width'));
+          return { frames: frames.length, textOver, decorative };
+        });
         // Keyboard: Tab reaches every link, button and disclosure, each with a visible focus ring.
         const focusable = await page.locator('a[href], button:not([disabled]), summary').count();
         const reached: string[] = [];
@@ -118,10 +132,13 @@ try {
           animations: document.getAnimations().filter((animation) => animation.playState === 'running').length,
           transitions: [...document.querySelectorAll('*')].filter((element) => getComputedStyle(element).transitionDuration.split(',').some((value) => parseFloat(value) > 0)).length,
         }));
-        const row = { card, width, theme, lowestContrast: contrast, overflow, focusable, reachedByTab: reached.length, focusWithoutRing: unringed, runningAnimations: motion.animations, transitions: motion.transitions, network };
+        const row = { card, width, theme, lowestContrast: contrast, overflow, artFrames: art.frames, textOverArt: art.textOver, focusable, reachedByTab: reached.length, focusWithoutRing: unringed, runningAnimations: motion.animations, transitions: motion.transitions, network };
         report.push(row);
         assert.ok(contrast.ratio >= 4.5, `${card} ${width} ${theme}: text contrast ${contrast.ratio}:1 for "${contrast.text}" (${contrast.color} on ${contrast.on})`);
         assert.equal(overflow, false, `${card} ${width} ${theme}: nothing runs off the side`);
+        assert.equal(art.textOver, 0, `${card} ${width} ${theme}: no text over the hero art`);
+        assert.ok(art.decorative, `${card} ${width} ${theme}: hero art is decorative, with its size set`);
+        if (!['horoscope-picker'].includes(card)) assert.ok(art.frames > 0, `${card} ${width} ${theme}: the card has its hero art`);
         assert.equal(reached.length, focusable, `${card} ${width} ${theme}: Tab reaches all ${focusable} controls (reached ${reached.length})`);
         assert.equal(unringed, 0, `${card} ${width} ${theme}: every focused control shows a ring`);
         assert.equal(motion.animations + motion.transitions, 0, `${card} ${width} ${theme}: no motion under reduced motion`);
@@ -142,4 +159,4 @@ try {
 } finally { await browser.close(); }
 const lowest = report.reduce((min, row: any) => Math.min(min, row.lowestContrast.ratio), 99);
 if (out) await writeFile(out, JSON.stringify({ checked: report.length, lowestTextContrast: lowest, rows: report }, null, 2) + '\n');
-console.log(`Assistant card QA passed: ${report.length} renders, lowest text contrast ${lowest}:1, no overflow, every control reachable by Tab with a focus ring, no motion under reduced motion.`);
+console.log(`Assistant card QA passed: ${report.length} renders, lowest text contrast ${lowest}:1, hero art on every card with no text over it, no overflow, every control reachable by Tab with a focus ring, no motion under reduced motion.`);

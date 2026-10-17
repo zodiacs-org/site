@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'preact';
-import { Nameplate, PanelFooter, SignDisc } from '../card-kit/parts';
+import { Art, artOf, Nameplate, PanelFooter } from '../card-kit/parts';
 import { hueVars, hueOf } from '../card-kit/hue';
 import { plain } from '../card-kit/words';
 import { render } from 'preact';
@@ -179,13 +179,13 @@ function App() {
   return <main>
     <article class="card horoscope" style={hueVars(hueOf(panel.sign)) as CSSProperties}>
       <Nameplate href="https://zodiacs.org/horoscopes/"/>
-      <header class="card-head">
+      <header class="card-head has-art">
         <div class="card-head-text">
           <p class="kicker">Your horoscope</p>
           <h1>{panel.signName}</h1>
           <p class="meta">{plain(signInfo(panel.sign)?.dates ?? '')} <button class="text" onClick={() => pick(true)}>Change sign</button></p>
         </div>
-        <SignDisc src={HOROSCOPE_ICONS[panel.sign]} size="head"/>
+        <Art panels={[{ src: artOf(panel.sign) }]}/>
       </header>
       <div class="controls">
         <div class="pills" role="group" aria-label="Day or week">

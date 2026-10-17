@@ -1,7 +1,7 @@
 import { render } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { OccasionsBridge, type PanelToolResult } from './bridge';
-import { Nameplate, PanelFooter } from '../card-kit/parts';
+import { Art, artOf, Nameplate, PanelFooter } from '../card-kit/parts';
 import { Birthday, ChartTwins, Compatibility, FamousChart, Milestones, Occasion, SkyCalendar, type LifeMilestones, type OccasionSky } from './views';
 import type { CompatibilityData, CompatibilityNotFound } from '../features/compatibility';
 import type { ChartTwinsData, FamousChartData } from '../features/people';
@@ -60,7 +60,7 @@ function App() {
       <Nameplate/>
       {error ? <p role="alert" class="notice">{error}</p>
         : waiting ? <p role="status" class="quiet">Working out the sky…</p>
-        : <p class="quiet">Ask the assistant about a day that matters, your life milestones, two charts, your chart twins, a famous chart or a birthday, and the card appears here.</p>}
+        : <><Art panels={[{ src: artOf('sky-calendar-hero') }]}/><p class="quiet">Ask the assistant about a day that matters, your life milestones, two charts, your chart twins, a famous chart or a birthday, and the card appears here.</p></>}
     </div>}
     <PanelFooter>This panel shows what the assistant worked out and saves nothing.</PanelFooter>
   </main>;

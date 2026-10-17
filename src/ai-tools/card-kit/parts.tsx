@@ -1,7 +1,7 @@
 /**
  * The parts every assistant card is made of, so the eight cards read as one
- * family: the nameplate, a head (kicker, title, meta), a hero row between
- * hairlines (a score ring or a sign disc beside a verdict), sign chips,
+ * family: the nameplate, a head (kicker, title, meta) beside the hero art,
+ * a hero row between hairlines (a score ring beside a verdict), sign chips,
  * number tiles, reasons, facts, text actions and the fine print.
  */
 import type { ComponentChildren, CSSProperties } from 'preact';
@@ -25,14 +25,34 @@ export function Card({ hue, hue2, label, children }: { hue: string | null; hue2?
   </article>;
 }
 
-export function Head({ kicker, title, meta, aside }: { kicker: ComponentChildren; title: ComponentChildren; meta?: ComponentChildren; aside?: ComponentChildren }) {
-  return <header class="card-head">
+declare const CARD_ART: Record<string, string>;
+/** A card's hero art: a sign panel (by slug) or one of the cards' own pieces (by name), inlined at build time. */
+export const artOf = (key: string | null | undefined) => (key ? CARD_ART[key] ?? CARD_ART[key.toLowerCase()] : undefined);
+
+export interface ArtPanel { src: string | undefined; flip?: boolean; focus?: string }
+/**
+ * The hero art: one 3:2 panel, or two panels facing each other, in the
+ * site's dimmed, spotlit frame. Decorative, so hidden from assistive
+ * technology; the words around it say what it shows. Nothing is set over it.
+ */
+export function Art({ panels }: { panels: ArtPanel[] }) {
+  const shown = panels.filter((panel) => panel.src);
+  if (shown.length === 0) return null;
+  return <div class={`art art-${shown.length}`} aria-hidden="true">{shown.map((panel, index) => <figure key={index} class={`art-frame${panel.flip ? ' art-flip' : ''}`} style={panel.focus ? { '--focus': panel.focus } as CSSProperties : undefined}>
+    <img src={panel.src} alt="" width="480" height="320" decoding="async" loading="lazy"/>
+  </figure>)}</div>;
+}
+
+export function Head({ kicker, title, meta, aside, art }: { kicker: ComponentChildren; title: ComponentChildren; meta?: ComponentChildren; aside?: ComponentChildren; art?: ArtPanel[] }) {
+  const plate = art ? <Art panels={art}/> : null;
+  return <header class={`card-head${plate && art!.some((panel) => panel.src) ? ' has-art' : ''}`}>
     <div class="card-head-text">
       <p class="kicker">{kicker}</p>
       <h1>{title}</h1>
       {meta && <p class="meta">{meta}</p>}
     </div>
     {aside}
+    {plate}
   </header>;
 }
 
@@ -56,10 +76,10 @@ export function SignDisc({ src, size }: { src: string | undefined; size: 'hero' 
   return src ? <img class={`disc disc-${size}`} src={src} alt=""/> : <span class={`disc disc-${size} disc-empty`} aria-hidden="true"/>;
 }
 
-/** The hero row: a figure (score ring, number ring or sign disc) beside the verdict and one line about it. */
-export function Hero({ figure, verdict, summary }: { figure: ComponentChildren; verdict: ComponentChildren; summary?: ComponentChildren }) {
-  return <section class="hero">
-    <div class="hero-figure">{figure}</div>
+/** The hero row: a figure (score ring or number ring), when the card has one, beside the verdict and one line about it. */
+export function Hero({ figure, verdict, summary }: { figure?: ComponentChildren; verdict: ComponentChildren; summary?: ComponentChildren }) {
+  return <section class={`hero${figure ? '' : ' hero-words-only'}`}>
+    {figure && <div class="hero-figure">{figure}</div>}
     <div class="hero-words">
       <p class="verdict">{verdict}</p>
       {summary && <p class="summary">{summary}</p>}

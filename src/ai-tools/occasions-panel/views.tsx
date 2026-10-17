@@ -6,7 +6,7 @@
 import type { ComponentChildren, CSSProperties } from 'preact';
 import { OCCASION_LABELS, type OccasionKind } from '../../lib/occasions/kinds';
 import { MILESTONE_WORDS } from '../../lib/occasions/milestone-words';
-import { Actions, Card, Chips, Data, Facts, FinePrint, Head, Hero, More, NumberRing, Reasons, ScoreRing, Section, SignDisc, Tiles, type Fact } from '../card-kit/parts';
+import { Actions, artOf, Card, Chips, Data, Facts, FinePrint, Head, Hero, More, NumberRing, Reasons, ScoreRing, Section, SignDisc, Tiles, type Fact } from '../card-kit/parts';
 import { hueOf } from '../card-kit/hue';
 import { capital, dateRange, fullDate, list, longDate, plain, shortDate, signName } from '../card-kit/words';
 import type { CompatibilityData, CompatibilityNotFound } from '../features/compatibility';
@@ -37,6 +37,8 @@ export interface OccasionSky {
   cardUrl: string | null; shareUrl?: string | null; note: string;
 }
 
+/** Occasions whose hero is the wedding piece; the others show the Sun sign's panel. */
+const WEDDING_ART: readonly OccasionKind[] = ['wedding', 'anniversary'];
 /** "20:57" from "Sat 12 Jun 2027, 20:57" (or "…, 20:57 UTC"), as the tool gives it. */
 const clock = (time: ClockTime | null | undefined) => (time ? time.local.split(', ').pop() ?? time.local : '');
 /** A best day's strongest reason that the other listed days do not all share, so the rows say what sets each apart. */
@@ -73,7 +75,7 @@ export function Occasion({ data }: { data: OccasionSky }) {
     plain(`${data.card.interpretation} ${data.card.closing}`), plain(data.note), 'zodiacs.org/occasions']
     .filter(Boolean).join('\n');
   return <Card hue={hueOf(sun?.sign)} hue2={hueOf(moon?.sign)}>
-    <Head kicker={names ? data.card.title : label} title={names ?? data.card.title}
+    <Head kicker={names ? data.card.title : label} title={names ?? data.card.title} art={[{ src: artOf(WEDDING_ART.includes(data.occasion) ? 'wedding-hero' : sun?.sign) }]}
       meta={<><span class="when">{date}{at && <> at <strong>{at}</strong></>}{data.place && <> in <strong>{data.place}</strong></>}</span>{noonLine && <><br/>{noonLine}</>}</>}/>
     {best && <Section title={bestTitle}>
       <ol class="best-days">{best.best.map((row) => <li key={row.date}>
@@ -127,7 +129,7 @@ export function Milestones({ data }: { data: LifeMilestones }) {
     `${tiles[0][1]} full moons, ${tiles[1][1]} Mercury retrogrades and ${tiles[2][1]} Jupiter returns lived through, as of ${shortDate(data.asOf)}`, plain(data.note), 'zodiacs.org/occasions/milestones']
     .filter(Boolean).join('\n');
   return <Card hue={hueOf(MILESTONE_SIGN[(next ?? data.milestones[0])?.kind ?? 'saturn-return'])}>
-    <Head kicker="Life milestones" title="Your sky milestones" meta={<>{born}{data.timeKnown ? '' : ', no birth time given'}</>}/>
+    <Head kicker="Life milestones" title="Your sky milestones" meta={<>{born}{data.timeKnown ? '' : ', no birth time given'}</>} art={[{ src: artOf('milestones-hero') }]}/>
     {next && <Hero figure={<NumberRing value={next.age} caption="your age"/>} verdict={lead} summary={MILESTONE_WORDS[next.kind].about}/>}
     {next && <Facts rows={next.passes.map((pass, index) => [passLabel(next, index, pass), <strong>{shortDate(pass.at)}</strong>] as Fact)}/>}
     <Tiles label="Lived through so far" tiles={tiles}/>
@@ -170,7 +172,7 @@ export function Compatibility({ data: result }: { data: CompatibilityData | Comp
     ...data.contacts.map((item) => `${item.aBody} ${item.aspect} ${item.bBody} (${item.orb}°): ${plain(item.line)}`),
     plain(data.note), data.pageUrl ? bare(data.pageUrl) : 'zodiacs.org/compatibility'].filter(Boolean).join('\n');
   return <Card hue={hueOf(data.a.sun)} hue2={hueOf(data.b.sun)}>
-    <Head kicker="Two charts compared" title={title} meta={meta}/>
+    <Head kicker="Two charts compared" title={title} meta={meta} art={[{ src: artOf(data.a.sun), flip: true }, { src: artOf(data.b.sun) }]}/>
     <Hero figure={<ScoreRing score={data.score.overall}/>} verdict={data.score.verdict} summary={plain(data.score.headline)}/>
     <Chips chips={[data.a, data.b].map((who) => ({ icon: icon(who.sun), name: who.label, detail: placementLine(who) }))}/>
     <Tiles label="The score's three parts" tiles={[['Attraction', data.score.areas.attraction], ['Communication', data.score.areas.communication], ['Long-term stability', data.score.areas.stability]]}/>
@@ -211,8 +213,8 @@ export function ChartTwins({ data }: { data: ChartTwinsData }) {
   const count = data.total === 0 ? 'No one Zodiacs publishes shares these signs yet'
     : data.total === 1 ? `One famous person shares your ${signs}` : `${data.total} famous people share your ${signs}`;
   return <Card hue={hueOf(data.you.sun)} hue2={hueOf(data.you.moon)}>
-    <Head kicker="Chart twins" title="Your chart twins" meta={<>Born {fullDate(data.birthDate)}{yours && <>: <strong>{yours}</strong></>}</>}/>
-    <Hero figure={<SignDisc src={icon(data.you.sun)} size="hero"/>} verdict={count} summary={data.notes[0] && plain(data.notes[0])}/>
+    <Head kicker="Chart twins" title="Your chart twins" meta={<>Born {fullDate(data.birthDate)}{yours && <>: <strong>{yours}</strong></>}</>} art={[{ src: artOf('twins-hero') }]}/>
+    <Hero verdict={count} summary={data.notes[0] && plain(data.notes[0])}/>
     {data.twins.length > 0 && <ul class="people">{data.twins.slice(0, SHOWN_TWINS).map(person)}</ul>}
     {data.twins.length > SHOWN_TWINS && <More label={`${data.twins.length - SHOWN_TWINS} more`}><ul class="people">{data.twins.slice(SHOWN_TWINS).map(person)}</ul></More>}
     {data.total > data.twins.length && <p class="quiet">{data.total} people in all; the page lists every one.</p>}
@@ -235,9 +237,9 @@ export function FamousChart({ data }: { data: FamousChartData }) {
   const text = [person.name, plain(person.shortDescription), `Born ${fullDate(person.born)} in ${person.birthplace}`, `${signName(person.sun.sign)} Sun${person.moon.sign ? `, ${signName(person.moon.sign)} Moon` : ''}`,
     ...person.placements.map((placement) => `${placement.body}: ${signName(placement.sign)} ${placement.degree.toFixed(1)}°`), plain(person.lede), plain(data.note), bare(person.url)].join('\n');
   return <Card hue={hueOf(person.sun.sign)} hue2={hueOf(person.moon.sign)}>
-    <Head kicker="A famous birth chart" title={person.name}
+    <Head kicker="A famous birth chart" title={person.name} art={[{ src: artOf(person.sun.sign) }]}
       meta={<>{plain(person.shortDescription)}<br/>Born {fullDate(person.born)} in <strong>{person.birthplace}</strong></>}/>
-    <Hero figure={<SignDisc src={icon(person.sun.sign)} size="hero"/>} verdict={`${signName(person.sun.sign)} Sun at ${person.sun.degree.toFixed(1)}°`} summary={moonLine}/>
+    <Hero verdict={`${signName(person.sun.sign)} Sun at ${person.sun.degree.toFixed(1)}°`} summary={moonLine}/>
     <p class="insight">{plain(person.lede)}</p>
     <Section title="The other planets">
       <Facts rows={others.map((placement) => [placement.body, <span class="sign-value"><SignDisc src={icon(placement.sign)} size="row"/>{signName(placement.sign)} <Data>{placement.degree.toFixed(1)}°</Data>{placement.settled ? '' : ' (sign changes that day)'}</span>] as Fact)}/>
@@ -260,8 +262,9 @@ export function Birthday({ data }: { data: BirthdayData }) {
     ...(data.decan ? [`Decan: ${plain(data.decan.text)}`] : []), ...(data.solarReturn ? [`Solar return ${data.solarReturn.year}: ${data.solarReturn.instant.local}`] : []),
     plain(sign?.meaning ?? ''), plain(data.note), bare(data.pageUrl)].filter(Boolean).join('\n');
   return <Card hue={hueOf(sign?.slug)}>
-    <Head kicker="Your birthday" title={`${data.label} birthdays`} meta={plain(data.sunSpan.text)}/>
-    <Hero figure={<SignDisc src={icon(sign?.slug)} size="hero"/>} verdict={sign ? `${sign.name} Sun` : 'On the cusp'} summary={about ?? (data.cusp ? plain(data.cusp.summary) : undefined)}/>
+    <Head kicker="Your birthday" title={`${data.label} birthdays`} meta={plain(data.sunSpan.text)}
+      art={sign ? [{ src: artOf(sign.slug) }] : data.cusp ? [{ src: artOf(data.cusp.signs[0]), flip: true }, { src: artOf(data.cusp.signs[1]) }] : undefined}/>
+    <Hero verdict={sign ? `${sign.name} Sun` : 'On the cusp'} summary={about ?? (data.cusp ? plain(data.cusp.summary) : undefined)}/>
     {data.cusp && <p class="insight">{plain(data.cusp.reading?.text ?? data.cusp.summary)}</p>}
     {rows.length > 0 && <Facts rows={rows}/>}
     {sign && <p class="insight">{plain(sign.meaning)}</p>}
@@ -277,7 +280,7 @@ export function SkyCalendar({ data }: { data: SkyCalendarData }) {
   const when = (iso: string) => new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(iso));
   const span = (event: SkyCalendarData['next'][number]) => (event.end ? `${when(event.start)} to ${when(event.end)}` : when(event.start));
   return <Card hue={hueOf('scorpio')} hue2={hueOf('cancer')}>
-    <Head kicker="Sky calendar" title="The sky in your calendar" meta="New and full Moons, eclipses and retrogrades, kept up to date in your calendar app."/>
+    <Head kicker="Sky calendar" title="The sky in your calendar" meta="New and full Moons, eclipses and retrogrades, kept up to date in your calendar app." art={[{ src: artOf('sky-calendar-hero') }]}/>
     <div class="actions"><a class="primary" href={data.subscribeUrl} target="_blank" rel="noreferrer">Subscribe in your calendar app</a></div>
     {data.next.length > 0 && <Section title="Coming up">
       <Facts rows={data.next.map((event) => [event.title, span(event)] as Fact)}/>
