@@ -1,60 +1,37 @@
-:root {
-  --paper: #fbfaf7; --card: #ffffff; --ink: #1d1b22; --muted: #5f5a68; --line: #e4e0e8;
-  --accent: #6b4fa0; --accent-soft: #efe9f8; --notice: #8a5300;
-  --serif: 'EB Garamond', Georgia, 'Times New Roman', serif;
-  --sans: 'Instrument Sans', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --paper: #141218; --card: #1c1a21; --ink: #f1eef5; --muted: #a9a3b4; --line: #2e2b35;
-  --accent: #b9a2e6; --accent-soft: #2a2335; --notice: #f0b866; color-scheme: dark;
-} }
-:root[data-theme="dark"] {
-  --paper: #141218; --card: #1c1a21; --ink: #f1eef5; --muted: #a9a3b4; --line: #2e2b35;
-  --accent: #b9a2e6; --accent-soft: #2a2335; --notice: #f0b866; color-scheme: dark;
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.6 var(--sans); }
-main { max-width: 720px; margin: 0 auto; padding: 20px 18px 28px; display: grid; gap: 16px; }
-a { color: var(--accent); }
-button { font: inherit; color: inherit; cursor: pointer; }
-button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.quiet { color: var(--muted); font-size: 14px; }
-.brand { color: var(--ink); }
-.intro h1, .sign-head h1 { font: 500 34px/1.1 var(--serif); margin: 0; }
-.intro p { margin: 6px 0 0; color: var(--muted); }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
-.grid button { display: grid; justify-items: center; gap: 2px; padding: 10px 6px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
-.grid button[aria-pressed="true"] { border-color: var(--accent); }
-.grid .name { font-weight: 600; }
-.grid .quiet { font-size: 12.5px; }
-.sign-head { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
-.sign-head p { margin: 0; }
-.eyebrow { font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.text { background: none; border: 0; color: var(--accent); padding: 4px 0; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chips button { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 14px; font-size: 14.5px; }
-.chips button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); font-weight: 600; }
-article { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 14px; display: grid; gap: 10px; }
-.when { margin: 0; font-size: 14px; color: var(--muted); }
-.prose p { margin: 0 0 12px; font: 400 19px/1.55 var(--serif); }
-.prose h3 { margin: 6px 0 4px; font: 600 15px/1.3 var(--sans); }
-.why { border-top: 1px solid var(--line); padding-top: 10px; }
-.why summary { cursor: pointer; font-weight: 600; }
-.why p { margin: 8px 0; color: var(--muted); font-size: 14.5px; }
-.why ul { margin: 6px 0 10px; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 14.5px; }
-.facts li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; }
+/* The horoscope panel's own controls and reading; everything else is the shared card kit (../card-kit/card.css). */
+.text { padding: 2px 0; border: 0; background: none; color: var(--ink); font-family: var(--sans); font-weight: 500; font-size: inherit; line-height: inherit; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+.meta .text { margin-left: 8px; }
+.shell > .text { justify-self: start; }
+
+.controls { display: grid; gap: 10px; }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pills button { padding: 7px 16px; border: 1px solid var(--line); border-radius: 999px; background: none; font-size: 14.5px; line-height: 1.3; transition: border-color .15s ease, background-color .15s ease; }
+.pills button:hover { border-color: var(--accent); }
+.pills button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--card); font-weight: 600; }
+
+.reading { display: grid; gap: 12px; padding-top: 18px; border-top: 1px solid var(--line-soft); }
+.when { color: var(--muted); font-size: 14.5px; }
+.prose { display: grid; gap: 14px; }
+.prose p { font: 400 20px/1.55 var(--serif); max-width: 62ch; }
+.prose h3 { margin: 4px 0 2px; font: 600 15px/1.3 var(--sans); }
+.why { padding-top: 4px; }
+.why > p { margin-top: 10px; }
+.why ul { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 14.5px; }
+.facts-list li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 14px; padding-bottom: 6px; }
+.facts-list li + li { padding-top: 6px; border-top: 1px solid var(--line-soft); }
 .houses li { color: var(--muted); }
-.actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-.actions button { border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 7px 14px; }
-.disclosure { margin: 0; font-size: 13.5px; color: var(--muted); }
-.notice { margin: 0; color: var(--notice); }
-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; font-size: 13px; color: var(--muted); }
-footer p { margin: 0; }
-@media (max-width: 420px) {
-  main { padding: 16px 14px 22px; }
-  .sign-head { grid-template-columns: auto 1fr; }
-  .sign-head .text { grid-column: 1 / -1; }
-  .prose p { font-size: 18px; }
+.why .method { display: inline-block; margin-top: 10px; font-size: 14.5px; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 8px; }
+.grid button { display: grid; justify-items: center; gap: 3px; padding: 12px 6px 10px; background: var(--tile); border: 1px solid transparent; border-radius: 14px; transition: border-color .15s ease; }
+.grid button:hover { border-color: var(--line); }
+.grid button[aria-pressed="true"] { border-color: var(--ink); }
+.grid img { display: block; width: 44px; height: 44px; margin-bottom: 3px; }
+.grid .name { font-weight: 600; font-size: 15px; }
+.grid .quiet { font-size: 12.5px; line-height: 1.3; text-align: center; }
+
+@media (max-width: 530px) {
+  .prose p { font-size: 18.5px; }
+  .pills button { padding: 7px 14px; font-size: 14px; }
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
