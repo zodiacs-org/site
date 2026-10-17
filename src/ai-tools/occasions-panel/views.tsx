@@ -161,7 +161,7 @@ export function Compatibility({ data: result }: { data: CompatibilityData | Comp
     ? famous.map((who) => <span key={who.label}>{who.label}, born {fullDate(who.birthDate)}{who.place && <> in <strong>{who.place}</strong></>}, birth time not on record. </span>)
     : basis(data.a) === basis(data.b) ? `Both charts from ${basis(data.a)}.` : `${data.a.label} from ${basis(data.a)}, ${data.b.label} from ${basis(data.b)}.`;
   const contact = (item: CompatibilityData['contacts'][number]) => <>
-    <span class="reason-head">{item.aBody} {item.aspect} {item.bBody}<Data>{item.orb}°</Data></span>
+    <span class="reason-head">{item.aBody} {item.aspect} {item.bBody} <Data>{item.orb}°</Data></span>
     <span>{plain(item.line)}</span>
   </>;
   const text = [title, `${data.score.overall}/100: ${data.score.verdict}`, data.score.headline, `Attraction ${data.score.areas.attraction}, communication ${data.score.areas.communication}, long-term stability ${data.score.areas.stability}`,

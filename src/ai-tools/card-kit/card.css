@@ -35,7 +35,7 @@ p { margin: 0; }
 .nameplate { display: inline-flex; align-items: center; width: fit-content; color: var(--ink); text-decoration: none; }
 .nameplate svg { margin-right: 9px; }
 .nameplate-name { font: 500 20px/1 var(--serif); letter-spacing: .01em; }
-.nameplate-tld { margin-left: 3px; padding-top: 6px; font: 400 10.5px/1 var(--mono); letter-spacing: .02em; color: var(--muted); }
+.nameplate-tld { margin-left: 3px; font: 400 10.5px/1 var(--mono); letter-spacing: .02em; color: var(--muted); vertical-align: baseline; }
 .nameplate:hover svg { animation: nameplate-turn 14s linear infinite; }
 @keyframes nameplate-turn { to { transform: rotate(360deg); } }
 
@@ -94,7 +94,7 @@ p { margin: 0; }
 .reasons li { position: relative; padding-left: 20px; line-height: 1.5; }
 .reasons li::before { content: ''; position: absolute; left: 2px; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--ring-a); }
 .reason-head { display: block; font-weight: 600; }
-.reason-head .data { margin-left: 6px; font-weight: 400; color: var(--muted); }
+.reason-head .data { margin-left: 2px; font-weight: 400; color: var(--muted); }
 
 .facts { margin: 0; display: grid; }
 .facts div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 16px; padding: 9px 0; }

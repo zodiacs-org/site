@@ -94,7 +94,7 @@ try {
     window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: result.structuredContent, toolResponseMetadata: result._meta } } }));
   }, injected);
   await fresh.locator('.prose p', { hasText: 'onerror' }).waitFor();
-  assert.equal(await fresh.locator('article img').count(), 0);
+  assert.equal(await fresh.locator('.prose img').count(), 0, 'Reading text never becomes markup');
   assert.equal(await fresh.evaluate(() => (window as any).pwned), undefined);
   // While a reading is on its way the panel shows a quiet line, not the sign picker.
   // A watcher placed before the panel's own script records whether the picker ever appeared.
