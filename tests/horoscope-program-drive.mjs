@@ -577,11 +577,20 @@ async function inspectRenderedPage(page, route, viewportKey) {
     skyAnimation,
   );
 
-  const linkFacts = (links) => links.map((link) => ({
-    text: (link.querySelector('.program__more-label')?.textContent ?? link.textContent ?? '').trim(),
-    href: link.getAttribute('href'),
-    current: link.getAttribute('aria-current'),
-  }));
+  // A label set as edition text reads "Today" while the edition is the day's
+  // and its dated form ("Oct 16") once a day has passed. Either is right, so
+  // a correctly dated label is compared by the current form it carries.
+  const linkFacts = (links) => links.map((link) => {
+    const shown = (link.querySelector('.program__more-label')?.textContent ?? link.textContent ?? '').trim();
+    const edition = link.querySelector('[data-edition-text]');
+    return {
+      text: edition && shown === edition.getAttribute('data-edition-dated')?.trim()
+        ? edition.getAttribute('data-edition-current') ?? shown
+        : shown,
+      href: link.getAttribute('href'),
+      current: link.getAttribute('aria-current'),
+    };
+  });
   const switchLinks = await page.locator('.program__periods a').evaluateAll(linkFacts);
   const moreLinks = await page.locator('.program__more a').evaluateAll(linkFacts);
   const periodLinks = [...switchLinks, ...moreLinks];

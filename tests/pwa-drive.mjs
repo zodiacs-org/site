@@ -339,10 +339,21 @@ try {
       await context.setOffline(true);
       for (const route of offlineRoutes) {
         const offlineResponse = await page.goto(`${baseURL}${route.path}`, { waitUntil: 'domcontentloaded' });
-        const content = await page.evaluate(() => ({
-          heading: document.querySelector('main h1')?.textContent?.replace(/\s+/gu, ' ').trim() ?? '',
-          textLength: document.querySelector('main')?.textContent?.replace(/\s+/gu, ' ').trim().length ?? 0,
-        }));
+        const content = await page.evaluate(() => {
+          const h1 = document.querySelector('main h1');
+          // An edition heading reads its current form ("The sky today") while
+          // the edition is the day's, and its dated form once a day has passed.
+          // Either is right; compare by the current form it carries.
+          const edition = h1?.querySelector('[data-edition-text]');
+          const shown = h1?.textContent?.replace(/\s+/gu, ' ').trim() ?? '';
+          return {
+            heading: edition && shown === edition.getAttribute('data-edition-dated')
+              ? edition.getAttribute('data-edition-current') ?? shown
+              : shown,
+            shown,
+            textLength: document.querySelector('main')?.textContent?.replace(/\s+/gu, ' ').trim().length ?? 0,
+          };
+        });
         check(`${route.path} navigates offline from the real worker cache with meaningful content`,
           offlineResponse?.status() === 200
             && offlineResponse.fromServiceWorker()
