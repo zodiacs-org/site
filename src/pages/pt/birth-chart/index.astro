@@ -1,11 +1,7 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import AskGuideLine from '../../../components/AskGuideLine.astro';
-import Faq from '../../../components/Faq.astro';
-import EmailCapture from '../../../components/EmailCapture.astro';
-import ChartCalculator from '../../../islands/ChartCalculator';
-import '../../../styles/calculator.css';
-import '../../../styles/explorer.css';
+import LocalizedBirthChart from '../../../components/localized/LocalizedBirthChart.astro';
+import birthChartCss from '../../../components/localized/LocalizedBirthChart.css?inline';
 
 const faq = [
   {
@@ -27,6 +23,7 @@ const faq = [
   {
     q: 'Casas de signos inteiros ou Placidus: qual sistema escolher?',
     a: 'O sistema de casas de signos inteiros é o mais antigo e o mais fácil de ler: cada casa ocupa um signo completo. Placidus é a opção moderna mais comum e divide as casas conforme o tempo de ascensão, por isso seus tamanhos variam. Experimente os dois: os planetas não mudam de lugar; apenas os limites das casas mudam.',
+    id: 'houses',
   },
 ];
 
@@ -96,35 +93,7 @@ const jsonLd = [
     html[data-chart-share-receiver] .footer__col:has(a[href^="/registry/"]),
     html[data-chart-share-receiver] .zfooter__group:has(a[href^="/registry/"]) { display: none !important; }
   </style>
-  <section class="section--tight container">
-    <div class="tool-hero">
-      <h1 class="display">Calcule seu mapa astral grátis.</h1>
-      <p>Informe sua data, hora e local de nascimento para ver seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o que tudo isso significa.</p>
-    </div>
-    <ChartCalculator mode="full" locale="pt" client:idle />
-    <EmailCapture placement="chart" locale="pt" revealOnChart />
-    <noscript>
-      <p>Esta calculadora de mapa astral precisa de JavaScript. Ative-o e recarregue a página para calcular seu Sol, sua Lua, seu ascendente, seus planetas e suas casas no navegador.</p>
-    </noscript>
-    <AskGuideLine lead="Perguntas sobre uma posição do seu mapa?" locale="pt" />
-  </section>
+  <style slot="head" is:inline data-zdx-birth-chart-route set:html={birthChartCss} />
 
-  <section class="section--tight container container--narrow">
-    <div class="prose">
-      <h2>O que você está vendo</h2>
-      <p>Um mapa astral é uma fotografia do céu visto do lugar onde você nasceu, no momento do nascimento. Ele mostra os signos, as casas e os planetas em graus exatos.</p>
-      <p>Para começar, observe seu Sol, sua Lua e seu ascendente: identidade, vida emocional e primeira impressão. Depois, você pode salvar o mapa e voltar a ele quando quiser.</p>
-      <p>Veja a metodologia completa em <a href="/pt/methodology/">como calculamos seu mapa</a>.</p>
-    </div>
-  </section>
-
-  <section class="section--tight container container--narrow">
-    <Faq items={faq} heading="Perguntas sobre o mapa astral" />
-  </section>
+  <LocalizedBirthChart locale="pt" faq={faq} />
 </Base>
-
-<style>
-  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
-  .tool-hero h1 { margin: 0 0 16px; font-size: var(--text-2xl); line-height: 1.04; }
-  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-</style>
