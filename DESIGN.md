@@ -97,19 +97,22 @@ Anatomy, top to bottom (use only the parts a card needs, in this order):
    the card, so a cropped screenshot still says where it came from.
 2. The head: an italic EB Garamond kicker in the card's sign hue ("Two charts
    compared", "Life milestones"), a large serif title (names when the person
-   gave them, otherwise the card's own title) and one muted meta line. A
-   date, time and place in the meta line read as a sentence ("Saturday, 12
-   June 2027 at 17:00 in Florence, Italy"), with the time and place in ink,
-   exactly as the person gave them. Without a time the card says how the sky
-   was read ("No time given, so the sky is read at noon UTC.").
-3. The hero row, between two hairlines: a figure beside an italic serif
-   verdict and one muted line. A score is a 126px ring (102px at 530px and
-   below) filled to the score with a conic sweep from the first sign's hue
-   to the second's, the number in serif and "out of 100" under it, and the
-   label "60 out of 100" for assistive technology. A card without a score
-   shows the sign disc at the same size, or a plain ring around a number
-   (an age).
-4. Sign chips (disc, name, one detail line), two across, stacked at 530px.
+   gave them, otherwise the card's own title) and one muted meta line, beside
+   the hero art (see Artwork below). A date, time and place in the meta line
+   read as a sentence ("Saturday, 12 June 2027 at 17:00 in Florence,
+   Italy"), with the time and place in ink, exactly as the person gave them.
+   Without a time the card says how the sky was read ("No time given, so the
+   sky is read at noon UTC.").
+3. The hero row, between two hairlines: an italic serif verdict and one
+   muted line, beside a figure when the card has a number. A score is a 126px
+   ring (102px at 530px and below) filled to the score with a conic sweep
+   from the first sign's hue to the second's, the number in serif and "out
+   of 100" under it, and the label "60 out of 100" for assistive technology.
+   An age sits in a plain ring. Cards without a number show the verdict
+   alone; the art carries the picture.
+4. Sign chips (pastel disc, name, one detail line), two across, stacked at
+   530px. The small pastel icon discs stay the mark for chips and list rows;
+   they are never replaced by artwork.
 5. Number tiles: up to three, flat tone, label under a serif number. No bars
    and no filled tracks.
 6. Words: a serif insight line; reasons as a list between hairlines with
@@ -123,6 +126,43 @@ Anatomy, top to bottom (use only the parts a card needs, in this order):
 8. The fine print in small muted text, then, outside the card, the panel's
    one-line privacy footer.
 
+Artwork:
+
+- The cards reuse the website redesign's sign panels: the twelve spotlit
+  figures on clockwork dials in `public/assets/sign-art/<sign>-720.webp`.
+  The chart comparison shows both people's Sun signs, the left panel mirrored
+  so the two figures face each other; birthday, famous chart, horoscope and
+  occasions other than weddings show the Sun sign's panel; a cusp birthday
+  shows both signs.
+- Where a sign panel does not fit, the cards use their own pieces, in
+  `public/assets/card-art/<name>-720.webp`: `wedding-hero` (weddings and
+  anniversaries), `sky-calendar-hero` (the sky calendar and the panel's empty
+  state), `milestones-hero` and `twins-hero`. New pieces follow the same
+  style: painterly, dimmed, one warm spotlight on the subject, ornate brass
+  clockwork dials, the pastel sign palette as the only accents, a hero camera
+  angle (frontal, slightly elevated), 3:2, no people, no text, letters or
+  numbers. Prompts for the four pieces are in
+  `docs/platform/zodiacs-ai/CARD-ART.md`.
+- The frame matches the site's `.artframe`: 14px radius, a dark plate
+  (`#0b0c10`) in both host themes with a hairline edge, the picture at
+  saturate .92 and brightness .86, and a radial vignette toward the edges.
+  It is decorative (empty alt, hidden from assistive technology) and nothing
+  is ever set over it. On desktop it sits beside the head at 272px wide (3:2),
+  or as two 4:5 panels in 300px for a pair; at 530px and below it goes above
+  the kicker, full width, at 16:9 (two square panels for a pair).
+- Size budgets: the panels make no image requests, so the art is inlined.
+  `node scripts/build-card-art.mjs` makes 400px and 480px WebP variants and
+  640px JPEGs for the share images (the image renderer cannot read WebP).
+  The occasions panel inlines the sign panels at 400px (about 9 to 10 KB
+  each) and its own four pieces at 480px (15 to 25 KB); the horoscope panel
+  inlines the sign panels at 480px. Each panel stays under its 600 KB build
+  budget (occasions about 541 KB, horoscope about 498 KB). Every image has
+  its width and height set and decodes asynchronously.
+- Share images put the art in a 560px panel on the right, faded into the
+  card on its left edge, with the score ring in its lower corner on a dark
+  disc so the number never sits on busy art. A pair stacks the two sign
+  panels.
+
 Colour and theme:
 
 - Dark host theme: the Cosmic Void card, `#16191f` on `#0d0f13`, a 1px
@@ -135,8 +175,9 @@ Colour and theme:
   dots keep the pastels.
 - A card's hue is its subject's sign: the Sun sign (two charts: the first
   person's Sun, then the second's), the sign a milestone's planet rules,
-  Scorpio and Cancer for the sky calendar. No other chroma, no gold, no
-  gradients outside the score ring.
+  Scorpio and Cancer for the sky calendar. No other chroma in the interface
+  and no gold accents; the artwork's own brass stays inside its frame. The
+  only gradients are the score ring's sweep and the art frame's vignette.
 
 Words: plain and specific, as on the site. Scores, ratings and forecasts are
 stated plainly as astrology's reading; never a guarantee, and nothing about
@@ -149,15 +190,19 @@ released contract stay byte-for-byte. No zone IDs or ISO dates on a card.
 Share images: `/api/og/compatibility-image` and `/api/og/occasion-image`
 (`src/server/result-preview.ts`) draw the same dark card at 1200x630: the
 nameplate top left, the kicker in the first sign's hue, the serif title,
-the italic verdict, sign chips, score tiles and the score ring on the right.
+the italic verdict, sign chips and score tiles on the left, and the art
+panel with the score ring on the right.
 
-Checks before a card change ships: `npm run ai:build`, `npm run ai:package`,
+Checks before a card change ships: `node scripts/build-card-art.mjs` when
+art changes, then `npm run ai:build`, `npm run ai:package`,
 `npm run ai:check`, `npm run ai:test`, both browser drives
-(`tests/ai-occasions-drive.ts`, `tests/ai-horoscope-drive.ts`), and
-full-length captures of every card at 760px and 390px in both themes with
-`tests/ai-cards-capture.ts` (share images: `tests/ai-share-images-capture.ts`).
-Each panel stays self-contained (no network requests) and under its 600 KB
-build budget; motion stops under `prefers-reduced-motion`.
+(`tests/ai-occasions-drive.ts`, `tests/ai-horoscope-drive.ts`),
+`tests/ai-cards-qa.ts` (contrast, art with no text over it, overflow,
+keyboard, reduced motion), and full-length captures of every card at 760px
+and 390px in both themes with `tests/ai-cards-capture.ts` (share images:
+`tests/ai-share-images-capture.ts`). Each panel stays self-contained (no
+network requests) and under its 600 KB build budget; motion stops under
+`prefers-reduced-motion`.
 
 ## Guardrails
 

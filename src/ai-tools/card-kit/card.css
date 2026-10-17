@@ -9,10 +9,12 @@
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --art-edge: rgba(238, 241, 247, .07);
   --paper: #0d0f13; --card: #16191f; --tile: #1c2029; --line: #34394a; --line-soft: #272c38;
   --ink: #eef1f7; --ink-2: #c6ccda; --muted: #a0a8ba; --track: #2a303d; --notice: #f0b866; color-scheme: dark;
 } }
 :root[data-theme="dark"] {
+  --art-edge: rgba(238, 241, 247, .07);
   --paper: #0d0f13; --card: #16191f; --tile: #1c2029; --line: #34394a; --line-soft: #272c38;
   --ink: #eef1f7; --ink-2: #c6ccda; --muted: #a0a8ba; --track: #2a303d; --notice: #f0b866; color-scheme: dark;
 }
@@ -49,7 +51,22 @@ p { margin: 0; }
 
 /* The hero row, between hairlines */
 .hero { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 24px; padding: 20px 0; border-block: 1px solid var(--line-soft); }
+.hero-words-only { grid-template-columns: minmax(0, 1fr); }
 .hero-words { display: grid; gap: 6px; }
+
+/* The hero art: the site's sign panels and the cards' own pieces in a dimmed,
+   spotlit frame (src/styles/kit.css .artframe). A dark plate in both host
+   themes, edged with a hairline; nothing is ever set over it. */
+.card-head.has-art { display: grid; grid-template-columns: minmax(0, 1fr) 272px; align-items: center; gap: 22px; }
+.card-head.has-art:has(.art-2) { grid-template-columns: minmax(0, 1fr) 300px; }
+.art { display: grid; gap: 6px; }
+.art-2 { grid-template-columns: 1fr 1fr; }
+.art-frame { position: relative; margin: 0; overflow: hidden; aspect-ratio: 3 / 2; border-radius: 14px; background: #0b0c10; isolation: isolate; box-shadow: 0 0 0 1px var(--art-edge, var(--line)); }
+.art-2 .art-frame { aspect-ratio: 4 / 5; }
+.art-frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 50%); filter: saturate(.92) brightness(.86); }
+.art-flip img { transform: scaleX(-1); }
+.art-frame::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse 50% 56% at var(--spot, 50% 52%), transparent 0 40%, rgba(6, 7, 9, .34) 72%, rgba(6, 7, 9, .74) 100%); }
 .verdict { font: italic 400 27px/1.2 var(--serif); text-wrap: balance; }
 .summary { color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 56ch; }
 
@@ -127,6 +144,7 @@ code { font: 400 13px/1.5 var(--mono); overflow-wrap: anywhere; }
 
 /* A panel shell for the states before a card (waiting, a refusal, the sign picker) */
 .shell { display: grid; gap: 16px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
+.shell > .art { max-width: 320px; }
 
 @media (max-width: 530px) {
   main { padding: 10px 10px 14px; gap: 10px; }
@@ -138,6 +156,10 @@ code { font: 400 13px/1.5 var(--mono); overflow-wrap: anywhere; }
   .ring-number { font-size: 37px; }
   .ring-out { font-size: 11px; }
   .disc-hero { width: 102px; height: 102px; }
+  .card-head.has-art, .card-head.has-art:has(.art-2) { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .card-head.has-art .art { order: -1; }
+  .art-1 .art-frame { aspect-ratio: 16 / 9; }
+  .art-2 .art-frame { aspect-ratio: 1 / 1; }
   .disc-head { width: 60px; height: 60px; }
   .verdict { font-size: 22px; }
   .summary { font-size: 14px; }

@@ -1,4 +1,4 @@
-/** Self-contained MCP App for get_horoscope: sign icons and the three brand faces inlined, no asset requests, no reading data. */
+/** Self-contained MCP App for get_horoscope: sign icons, sign art and the three brand faces inlined, no asset requests, no reading data. */
 import { build } from 'esbuild';
 import { fileURLToPath } from 'node:url';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -14,8 +14,11 @@ async function signTable() {
 
 export async function buildHoroscopePanel(check = false) {
   const signs = await signTable();
-  const icons = Object.fromEntries(await Promise.all(signs.map(async ({ slug }) => [slug, 'data:image/webp;base64,' + (await readFile(new URL(`public/assets/zodiac-icons/400/${slug}.webp`, root))).toString('base64')])));
-  const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/horoscope/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { HOROSCOPE_ICONS: JSON.stringify(icons), HOROSCOPE_SIGN_TABLE: JSON.stringify(signs), 'process.env.NODE_ENV': '"production"' } });
+  const inline = async (path) => 'data:image/webp;base64,' + (await readFile(new URL(path, root))).toString('base64');
+  const icons = Object.fromEntries(await Promise.all(signs.map(async ({ slug }) => [slug, await inline(`public/assets/zodiac-icons/128/${slug}.webp`)])));
+  // The sign panels as hero art (scripts/build-card-art.mjs), at 480px.
+  const art = Object.fromEntries(await Promise.all(signs.map(async ({ slug }) => [slug, await inline(`public/assets/card-art/panel/${slug}-480.webp`)])));
+  const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/horoscope/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { HOROSCOPE_ICONS: JSON.stringify(icons), CARD_ART: JSON.stringify(art), HOROSCOPE_SIGN_TABLE: JSON.stringify(signs), 'process.env.NODE_ENV': '"production"' } });
   const js = result.outputFiles.find(file => file.path.endsWith('.js')).text.replace(/<\/script/gi, '<\\/script');
   let css = result.outputFiles.find(file => file.path.endsWith('.css')).text;
   for (const [family, file, weight, style] of [['Instrument Sans', 'instrument-sans-latin-wght-normal.woff2', '100 900', 'normal'], ['EB Garamond', 'eb-garamond-latin-400-normal.woff2', '400', 'normal'], ['EB Garamond', 'eb-garamond-latin-500-normal.woff2', '500', 'normal'], ['EB Garamond', 'eb-garamond-latin-400-italic.woff2', '400', 'italic'], ['JetBrains Mono', 'jetbrains-mono-latin-wght-normal.woff2', '100 800', 'normal']]) {
