@@ -5,6 +5,7 @@
  * the code the page uses, so it answers what the page shows (calculators/*.test.ts hold each to its page).
  */
 import * as engine from '../engine/full';
+import { LUNAR_RETURN_MAX_UTC, LUNAR_RETURN_MIN_UTC } from '../engine/lunar-return';
 import { NumerologyInputError } from '../numerology';
 import type { TwinPerson } from '../sharing/twins';
 import { babyZodiacResult } from './calculators/baby-zodiac';
@@ -20,12 +21,13 @@ import { numerologyResult } from './calculators/numerology';
 import {
   chartTwinsResult, compatibilityResult, DuplicatePersonError, groupChartResult, transitsResult, type GroupMember,
 } from './calculators/people';
-import { chartPdfResult, yearWrappedResult } from './calculators/return-visits';
+import { chartPdfResult, OutsideReferenceSpanError, yearWrappedResult } from './calculators/return-visits';
 import { lunarReturnResult, saturnReturnResult, solarReturnResult } from './calculators/returns';
 
 export type CalculatorErrorCode =
   | 'INVALID_INPUT' | 'TIME_NEEDS_PLACE' | 'LOCAL_DATE_REFERENCE' | 'CLOCK_CHANGE' | 'UNSUPPORTED_NAME'
-  | 'DUPLICATE_PERSON' | 'DIRECTORY_UNAVAILABLE' | 'CALCULATION_FAILED' | 'UNKNOWN_TOOL';
+  | 'DUPLICATE_PERSON' | 'OUTSIDE_REFERENCE_SPAN' | 'REFERENCE_BEFORE_BIRTH' | 'DIRECTORY_UNAVAILABLE' | 'CALCULATION_FAILED'
+  | 'UNKNOWN_TOOL';
 
 export type CalculatorEnvelope =
   | { ok: true; data: Record<string, unknown> }
@@ -41,6 +43,9 @@ const MESSAGES: Record<CalculatorErrorCode, string> = {
   UNSUPPORTED_NAME: 'The name uses letters outside A to Z once accents are removed; the Pythagorean table covers only '
     + 'the Latin alphabet.',
   DUPLICATE_PERSON: 'The same person is entered twice.',
+  OUTSIDE_REFERENCE_SPAN: 'This calculation covers 1800 through 2199 in Universal Time (a lunar return from 2 January '
+    + '1800), and the birth, or the dates it needs, fall outside that span.',
+  REFERENCE_BEFORE_BIRTH: 'A lunar return is found after an instant from the birth on; give an instant after the birth.',
   DIRECTORY_UNAVAILABLE: 'The public directory could not be read from this site; try again.',
   CALCULATION_FAILED: 'The calculation could not be completed for that input.',
   UNKNOWN_TOOL: 'This page has no calculator tool of that name.',
@@ -144,17 +149,29 @@ async function solarReturn(input: unknown) {
   const {
     birth: natal, year: rawYear, castPlace, houseSystem,
   } = fields(input, ['birth', 'year', 'castPlace', 'houseSystem']);
-  return solarReturnResult(
-    birth(natal), year(rawYear, 'current' as const), need(readPlace(castPlace)), need(readHouseSystem(houseSystem)), new Date(),
-  );
+  const requested = year(rawYear, 'current' as const);
+  try {
+    return await solarReturnResult(
+      birth(natal), requested, need(readPlace(castPlace)), need(readHouseSystem(houseSystem)), new Date(),
+    );
+  } catch (error) {
+    // A return is found every year; only the span's edge, which clips the scan in 1800 or 2199, can hide it.
+    if (error instanceof RangeError && (requested === 1800 || requested === 2199)) throw new Refusal('OUTSIDE_REFERENCE_SPAN');
+    throw error;
+  }
 }
 
 async function lunarReturn(input: unknown) {
   const { birth: natal, after, castPlace, houseSystem } = fields(input, ['birth', 'after', 'castPlace', 'houseSystem']);
   const reading = birth(natal, true);
-  const from = need(readInstant(after)) ?? new Date();
+  // The reference leaves the 40-day scan within 1800 through 2199 (src/lib/engine/lunar-return.ts).
+  const from = need(readInstant(after, '1800-01-02', '2199-11-21')) ?? new Date();
   const cast = need(readPlace(castPlace));
   const system = need(readHouseSystem(houseSystem));
+  // The engine takes a birth from 1800-01-02 through 2199 in Universal Time, and no later than the reference.
+  const born = (await personNatal(reading)).chart.input.utc.getTime();
+  if (born < Date.parse(LUNAR_RETURN_MIN_UTC) || born > Date.parse(LUNAR_RETURN_MAX_UTC)) throw new Refusal('OUTSIDE_REFERENCE_SPAN');
+  if (born > from.getTime()) throw new Refusal('REFERENCE_BEFORE_BIRTH');
   try {
     return await lunarReturnResult(reading, from, cast, system);
   } catch (error) {
@@ -274,6 +291,7 @@ export async function runCalculatorTool(name: string, input: unknown): Promise<C
   } catch (error) {
     if (error instanceof Refusal) return refuse(error.code);
     if (error instanceof LocalDateReferenceError) return refuse('LOCAL_DATE_REFERENCE');
+    if (error instanceof OutsideReferenceSpanError) return refuse('OUTSIDE_REFERENCE_SPAN');
     return refuse('CALCULATION_FAILED');
   }
 }

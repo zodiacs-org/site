@@ -190,21 +190,30 @@ describe('each tool\'s schema and its reader agree', () => {
         }
       }
     }
-    // Instants: leap and common century years across the four digits, and clock times at and past their limits.
-    for (const year of ['0000', '0004', '0100', '0400', '1600', '1700', '1900', '2000', '2023', '2024', '2100', '2400', '9996', '9999']) {
+    // Instants: every date from just before the span to just after it at clock times on and past their limits, and
+    // years far outside it. Transits take the pages' span; a lunar return's reference stops where its scan would
+    // leave it.
+    const reference = property('zodiacs.lunar_return', 'after');
+    const times = ['00:00', '23:59:59.999', '24:00', '23:60', '12:00:60', '12:00:00.1234'];
+    const instants = (year: number | string) => {
+      const out: string[] = [];
       for (let month = 0; month <= 13; month += 1) {
-        for (let day = 0; day <= 32; day += 1) {
-          for (const time of ['00:00', '23:59', '24:00', '24:00:00', '23:60', '12:00:59', '12:00:60', '12:00:00.123', '12:00:00.1234']) {
-            const at = `${year}-${two(month)}-${two(day)}T${time}Z`;
-            if (instant(at) !== (readInstant(at) !== undefined)) disagree.push(at);
-          }
-        }
+        for (let day = 0; day <= 32; day += 1) for (const time of times) out.push(`${year}-${two(month)}-${two(day)}T${time}Z`);
+      }
+      return out;
+    };
+    for (const year of [1799, 1800, 1801, 1900, 2000, 2024, 2100, 2198, 2199, 2200, '0000', '9999']) {
+      for (const at of instants(year)) {
+        if (instant(at) !== (readInstant(at) !== undefined)) disagree.push(at);
+        if (reference(at) !== (readInstant(at, '1800-01-02', '2199-11-21') !== undefined)) disagree.push(`after ${at}`);
       }
     }
     expect(disagree).toEqual([]);
     // The patterns are not trivially permissive or empty.
     expect([pageDate('2000-02-29'), pageDate('1900-02-29'), pageDate('2023-02-29'), pageDate('1990-02-30')]).toEqual([true, false, false, false]);
     expect([dueDate('2028-02-29'), dueDate('2027-02-29'), instant('2024-02-29T23:59Z'), instant('2024-01-01T24:00Z')]).toEqual([true, false, true, false]);
+    expect([instant('1800-01-01T00:00Z'), instant('2199-12-31T23:59:59.999Z'), instant('1799-12-31T23:59Z'), instant('2200-01-01T00:00Z')]).toEqual([true, true, false, false]);
+    expect([reference('1800-01-02T00:00Z'), reference('2199-11-21T23:59:59.999Z'), reference('1800-01-01T23:59Z'), reference('2199-11-22T00:00Z')]).toEqual([true, true, false, false]);
   });
 });
 

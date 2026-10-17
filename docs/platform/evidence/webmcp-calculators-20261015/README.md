@@ -66,21 +66,31 @@ These pages are not calculators, and register no tool of their own:
 ## How a tool works
 
 - **Descriptors.** `/assets/webmcp-register.js` holds the descriptors and
-  Search (4.8 KB gzip). A page imports it only when `modelContext` exists.
+  Search (5.1 KB gzip). A page imports it only when `modelContext` exists.
 - **Calculations.** `/assets/webmcp-calculators.js` holds the calculations
-  (120.8 KB gzip, under a 512 KB budget). It loads on the first call to a
+  (121.1 KB gzip, under a 512 KB budget). It loads on the first call to a
   calculator tool, never before.
 - **Input.** Each tool reads its input strictly, as its JSON Schema states it.
   Places are coordinates and an IANA time zone. Birth dates run from
-  1800-01-01 through 2199-12-31, as the pages' date fields do.
+  1800-01-01 through 2199-12-31, as the pages' date fields do. Instants run
+  through the same span in Universal Time; a lunar return's reference runs
+  from 1800-01-02 through 2199-11-21, so the 40-day scan for the return stays
+  inside it.
 - **Answers.** The answer is the result the page computes, in a stable shape:
   longitudes cut to four decimals (a degree just short of a sign's end stays
   in that sign), with the page's own label, such as `24°11′ Gemini`.
 - **Refusals.** A refusal is `{ ok: false, error: { code, message } }`, with a
   fixed sentence that repeats nothing it was given. The codes are
   `INVALID_INPUT`, `TIME_NEEDS_PLACE`, `LOCAL_DATE_REFERENCE`, `CLOCK_CHANGE`,
-  `UNSUPPORTED_NAME`, `DUPLICATE_PERSON`, `DIRECTORY_UNAVAILABLE`,
-  `CALCULATION_FAILED` and `UNKNOWN_TOOL`.
+  `UNSUPPORTED_NAME`, `DUPLICATE_PERSON`, `OUTSIDE_REFERENCE_SPAN`,
+  `REFERENCE_BEFORE_BIRTH`, `DIRECTORY_UNAVAILABLE`, `CALCULATION_FAILED` and
+  `UNKNOWN_TOOL`. A birth on 1800-01-01 east of Greenwich or on 2199-12-31
+  west of it falls outside 1800-2199 in Universal Time: the birth chart
+  answers with the flag `outside-reference-span`, as its page does, and the
+  calculations that cannot run there (Chart PDF, Your sky wrapped, a lunar
+  return, a solar return the span cuts off) refuse with
+  `OUTSIDE_REFERENCE_SPAN`. A lunar return asked for before the birth refuses
+  with `REFERENCE_BEFORE_BIRTH`.
 - **Nothing is sent.** Everything is computed in the browser. Chart twins reads
   the public directory it matches against from `/data/chart-twins.json`
   (names and signs). The page's own list now comes from the same module.
@@ -110,6 +120,13 @@ These pages are not calculators, and register no tool of their own:
   month and day apart, so `1990-02-30` passed a schema whose reader refused
   it. Instants run from 00:00 through 23:59, and `24:00`, which `Date` would
   roll into the next day, is refused.
+- **At the extremes.** `calculators/edges.test.ts` runs every tool at the
+  extremes its schema accepts: the first and last dates, at the start and end
+  of the day, east and west of Greenwich, and the first and last instants.
+  Each answers or refuses with a code that names the reason; none fails with
+  `CALCULATION_FAILED`. With the code before Codex's third review, 26 of those
+  calls failed that way, among them a lunar return asked for in 2200, which
+  the schema then accepted.
 - **check-dist.** It checks that every calculator page in every locale
   imports the registration with `registerWebMcpPage`. It checks that the
   bundles carry every tool and that `/data/chart-twins.json` lists names and

@@ -28,9 +28,10 @@ const calendarDate = (years: string, leapYears: string) => `(?:${years}-${MONTH_
 
 // The pages' date fields run from 1800-01-01 through 2199-12-31; of those centuries' first years only 2000 is a leap
 // year.
+const PAGE_DATES = calendarDate('(?:18|19|20|21)\\d{2}', '(?:(?:18|19|20|21)(?:0[48]|[2468][048]|[13579][26])|2000)');
 const DATE = {
   type: 'string',
-  pattern: `^${calendarDate('(?:18|19|20|21)\\d{2}', '(?:(?:18|19|20|21)(?:0[48]|[2468][048]|[13579][26])|2000)')}$`,
+  pattern: `^${PAGE_DATES}$`,
   description: 'A Gregorian calendar date, YYYY-MM-DD, from 1800-01-01 through 2199-12-31.',
 } as const;
 const TIME = {
@@ -67,12 +68,29 @@ const HOUSE_SYSTEM = {
   enum: ['whole', 'placidus'],
   description: 'House system: whole sign (the pages\' default) or Placidus.',
 } as const;
-// Any year, 0000 through 9999, at a UTC clock time from 00:00 through 23:59, with seconds and milliseconds if given.
+// A UTC clock time from 00:00 through 23:59, with seconds and milliseconds if given.
+const CLOCK = 'T(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d{1,3})?)?Z';
+// An instant within the span the site's calculations cover, 1800-01-01T00:00Z up to 2200-01-01T00:00Z.
 const INSTANT = {
   type: 'string',
-  pattern: `^${calendarDate('\\d{4}', '(?:\\d{2}(?:0[48]|[2468][048]|[13579][26])|(?:[02468][048]|[13579][26])00)')}`
-    + 'T(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d{1,3})?)?Z$',
-  description: 'A UTC instant, ISO 8601 with Z, such as 2026-10-15T12:00:00Z.',
+  pattern: `^${PAGE_DATES}${CLOCK}$`,
+  description: 'A UTC instant from 1800 through 2199, ISO 8601 with Z, such as 2026-10-15T12:00:00Z.',
+} as const;
+// A lunar return's reference, from 1800-01-02 through 2199-11-21, so its 40-day scan stays within that span
+// (src/lib/engine/lunar-return.ts). Neither 1800 nor 2199 is a leap year.
+const LUNAR_REFERENCE_DATES = '(?:'
+  + '1800-(?:01-(?:0[2-9]|[12]\\d|3[01])|(?:0[3578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)'
+  + '|02-(?:0[1-9]|1\\d|2[0-8]))'
+  + `|${calendarDate('(?:180[1-9]|18[1-9]\\d|19\\d{2}|20\\d{2}|21[0-8]\\d|219[0-8])', '(?:18(?:0[48]|[2468][048]|[13579][26])'
+    + '|19(?:0[48]|[2468][048]|[13579][26])|20(?:[02468][048]|[13579][26])|21(?:0[48]|[2468][048]|[13579][26]))')}`
+  + '|2199-(?:(?:0[13578]|10)-(?:0[1-9]|[12]\\d|3[01])|0[469]-(?:0[1-9]|[12]\\d|30)|02-(?:0[1-9]|1\\d|2[0-8])'
+  + '|11-(?:0[1-9]|1\\d|2[01]))'
+  + ')';
+const LUNAR_REFERENCE = {
+  type: 'string',
+  pattern: `^${LUNAR_REFERENCE_DATES}${CLOCK}$`,
+  description: 'A UTC instant from 1800-01-02 through 2199-11-21, ISO 8601 with Z, such as 2026-10-15T00:00:00Z; the '
+    + 'scan for the return runs 40 days from it.',
 } as const;
 
 const object = (properties: Record<string, unknown>, required: string[]) => ({
@@ -181,7 +199,7 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
       + CALCULATED,
     inputSchema: object({
       birth: TIMED_BIRTH,
-      after: INSTANT,
+      after: LUNAR_REFERENCE,
       castPlace: { ...PLACE, description: 'Where to cast the return, if not the birthplace.' },
       houseSystem: HOUSE_SYSTEM,
     }, ['birth']),
