@@ -185,6 +185,14 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   pages reference `v2/sign/{slug}.png` + `v2/share.png`; the 13 legacy gilt
   cards at `public/assets/og/*.png` are frozen and unreferenced — leave
   the files alone, don't regenerate or re-reference them)
+- `public/assets/card-art/panel/` and `public/assets/card-art/share/` ←
+  `node scripts/build-card-art.mjs` (small AVIF variants of both twins of
+  every piece, dark and daylight, for the AI panels to inline, and JPEGs of
+  the dark twins for the share images; sources are the sign panels, the
+  cards' own pieces `public/assets/card-art/<name>-720.webp` and the daylight
+  twins `public/assets/card-art/<key>-light-720.webp`, which `--masters <dir>`
+  writes from 1536px source PNGs. libvips output, so not in the drift job;
+  rerun it when a source changes, then `npm run ai:build`)
 - `public/assets/og/registry/v3/` ← `node scripts/build-registry-og.mjs`
   (immutable Registry lot cards derived from the established v2 editorial
   plate plus the canonical 1024px pastel icon and gold sculpture sources;

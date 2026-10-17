@@ -10,7 +10,6 @@ import { h, type VNode } from 'preact';
 import {
   exactArrayBuffer,
   htmlEscape,
-  prepareBrandIcon,
   PRIVACY_HEADERS,
   requestOrigin,
   writeNodeResponse,
@@ -22,6 +21,7 @@ import {
   type OccasionCardModel,
   type PreviewSign,
 } from './result-preview-model.js';
+import { HUES } from './chart-preview-model.js';
 import {
   COMPATIBILITY_SHARE_IMAGE_PATH,
   COMPATIBILITY_SHARE_KEYS,
@@ -45,7 +45,13 @@ const VOID = '#060709';
 const INK = '#EEF1F7';
 const MUTED = '#8E96AB';
 const HAIRLINE = 'rgba(198,204,218,0.16)';
-const TRACK = 'rgba(198,204,218,0.12)';
+// The share image is the dark assistant card (DESIGN.md, "Assistant cards"): its surface, tiles and ring track.
+const CARD = '#16191F';
+const TILE = '#1C2029';
+const CARD_MUTED = '#A0A8BA';
+const TRACK = '#2A303D';
+// The twelve-dot ring in zodiac order, as the site's BrandMark draws it.
+const RING_ORDER: readonly ShareSign[] = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 
 // ── Assets ───────────────────────────────────────────────────────────
 
@@ -96,25 +102,70 @@ async function discImages(signs: readonly PreviewSign[]): Promise<Map<ShareSign,
   return new Map(await Promise.all(slugs.map(async (slug) => [slug, await disc(slug)] as const)));
 }
 
+// The cards' hero art at 640px (scripts/build-card-art.mjs), as JPEG because the renderer cannot decode WebP.
+// One literal address per piece, so the deployment's file tracing packs them all.
+export type ShareArt = ShareSign | 'wedding-hero' | 'sky-calendar-hero';
+const ART_FILES: Readonly<Record<ShareArt, URL>> = {
+  aries: new URL('../../public/assets/card-art/share/aries-640.jpg', import.meta.url),
+  taurus: new URL('../../public/assets/card-art/share/taurus-640.jpg', import.meta.url),
+  gemini: new URL('../../public/assets/card-art/share/gemini-640.jpg', import.meta.url),
+  cancer: new URL('../../public/assets/card-art/share/cancer-640.jpg', import.meta.url),
+  leo: new URL('../../public/assets/card-art/share/leo-640.jpg', import.meta.url),
+  virgo: new URL('../../public/assets/card-art/share/virgo-640.jpg', import.meta.url),
+  libra: new URL('../../public/assets/card-art/share/libra-640.jpg', import.meta.url),
+  scorpio: new URL('../../public/assets/card-art/share/scorpio-640.jpg', import.meta.url),
+  sagittarius: new URL('../../public/assets/card-art/share/sagittarius-640.jpg', import.meta.url),
+  capricorn: new URL('../../public/assets/card-art/share/capricorn-640.jpg', import.meta.url),
+  aquarius: new URL('../../public/assets/card-art/share/aquarius-640.jpg', import.meta.url),
+  pisces: new URL('../../public/assets/card-art/share/pisces-640.jpg', import.meta.url),
+  'wedding-hero': new URL('../../public/assets/card-art/share/wedding-hero-640.jpg', import.meta.url),
+  'sky-calendar-hero': new URL('../../public/assets/card-art/share/sky-calendar-hero-640.jpg', import.meta.url),
+};
+const arts = new Map<ShareArt, Promise<string>>();
+
+function artImage(key: ShareArt): Promise<string> {
+  const known = arts.get(key);
+  if (known) return known;
+  const pending = readFile(ART_FILES[key]).then((bytes) => `data:image/jpeg;base64,${bytes.toString('base64')}`);
+  arts.set(key, pending);
+  void pending.catch(() => { if (arts.get(key) === pending) arts.delete(key); });
+  return pending;
+}
+
+/** A compatibility image shows both Sun signs' panels; a date's shows the wedding piece or the Sun sign's panel. */
+export function compatibilityArt(share: { aSun: ShareSign | null; bSun: ShareSign | null }): ShareArt[] {
+  const signs = [share.aSun, share.bSun].filter((slug): slug is ShareSign => slug !== null);
+  return signs.length > 0 ? signs : ['sky-calendar-hero'];
+}
+export function occasionArt(share: { occasion: string; sun: ShareSign | null }): ShareArt[] {
+  return [share.occasion === 'wedding' || share.occasion === 'anniversary' ? 'wedding-hero' : share.sun ?? 'sky-calendar-hero'];
+}
+
 // ── Cards ────────────────────────────────────────────────────────────
 
 const SERIF = 'EB Garamond, EB Garamond Ext';
 
-function kicker(text: string) {
-  return h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: 34, color: MUTED } }, text);
+/** The site's nameplate: the twelve-dot ring, "Zodiacs" in the masthead serif and a small ".org". */
+function nameplate() {
+  const dots = RING_ORDER.map((slug, index) => {
+    const angle = (index / 12) * 2 * Math.PI - Math.PI / 2;
+    return h('circle', { cx: (12 + 9 * Math.cos(angle)).toFixed(3), cy: (12 + 9 * Math.sin(angle)).toFixed(3), r: '1.9', fill: HUES[slug] });
+  });
+  return h('div', { style: { display: 'flex', alignItems: 'center' } },
+    h('svg', { width: 40, height: 40, viewBox: '0 0 24 24', style: { marginRight: '14px' } }, ...dots),
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 36, color: INK, lineHeight: 1 } }, 'Zodiacs'),
+    h('div', { style: { display: 'flex', fontSize: 19, color: CARD_MUTED, marginLeft: '6px', marginTop: '12px', letterSpacing: '1px' } }, '.org'));
 }
 
-function brand(brandIcon: string) {
-  return h('div', { style: { display: 'flex', alignItems: 'center', alignSelf: 'flex-end', fontFamily: SERIF, fontSize: 30, color: MUTED } },
-    h('img', { src: brandIcon, width: 44, height: 44, style: { width: '44px', height: '44px', marginRight: '12px' } }),
-    h('div', { style: { display: 'flex' } }, 'zodiacs.org'));
+function kicker(text: string, hue: string) {
+  return h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: 36, color: hue, lineHeight: 1.2 } }, text);
 }
 
-const RING = 384;
+const RING = 236;
 
-/** The score inside a ring drawn from one sign's hue to the other's. */
+/** The score inside a ring drawn from one sign's hue to the other's, as on the card. */
 function ring(score: number, hues: [string, string]) {
-  const stroke = 20;
+  const stroke = 16;
   const radius = (RING - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const arc = Math.max(0.001, (score / 100) * circumference);
@@ -128,12 +179,12 @@ function ring(score: number, hues: [string, string]) {
       h('circle', { cx: centre, cy: centre, r: radius, fill: 'none', stroke: TRACK, 'stroke-width': stroke }),
       h('circle', {
         cx: centre, cy: centre, r: radius, fill: 'none', stroke: 'url(#arc)', 'stroke-width': stroke,
-        'stroke-linecap': 'round', 'stroke-dasharray': `${arc.toFixed(2)} ${circumference.toFixed(2)}`,
+        'stroke-dasharray': `${arc.toFixed(2)} ${circumference.toFixed(2)}`,
         transform: `rotate(-90 ${centre} ${centre})`,
       })),
-    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-6px' } },
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 168, lineHeight: 1, color: INK, letterSpacing: '-3px' } }, String(score)),
-      h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 28, color: MUTED, marginTop: '4px', letterSpacing: '1px' } }, 'out of 100')));
+    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-4px' } },
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 104, lineHeight: 1, color: INK, letterSpacing: '-2px' } }, String(score)),
+      h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 21, color: CARD_MUTED, marginTop: '4px' } }, 'out of 100')));
 }
 
 function signChip(sign: PreviewSign, images: Map<ShareSign, string>, size: number) {
@@ -142,68 +193,105 @@ function signChip(sign: PreviewSign, images: Map<ShareSign, string>, size: numbe
     src
       ? h('img', { src, width: size, height: size, style: { width: `${size}px`, height: `${size}px` } })
       : h('div', { style: { display: 'flex', width: `${size}px`, height: `${size}px`, borderRadius: `${size}px`, border: `2px solid ${HAIRLINE}` } }),
-    h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 30, color: INK, marginLeft: '14px' } }, sign.label));
+    h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 27, color: INK, marginLeft: '14px' } }, sign.label));
 }
 
-/** One area of a compatibility score: its name, its number and a bar. */
-function areaMeter(area: { label: string; value: number }, index: number) {
-  return h('div', { style: { display: 'flex', flexDirection: 'column', width: '196px', marginLeft: index === 0 ? '0px' : '28px' } },
-    h('div', { style: { display: 'flex', fontSize: 23, color: MUTED } }, area.label),
-    h('div', { style: { display: 'flex', alignItems: 'center', marginTop: '2px' } },
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 44, lineHeight: 1.1, color: INK, width: '58px', flexShrink: 0 } }, String(area.value)),
-      h('div', { style: { display: 'flex', width: '132px', height: '5px', borderRadius: '5px', background: TRACK, marginLeft: '6px' } },
-        h('div', { style: { display: 'flex', width: `${Math.round(1.32 * area.value)}px`, height: '5px', borderRadius: '5px', background: 'rgba(238,241,247,0.82)' } }))));
+/** One area of a compatibility score as a tile: its number over its name, no bar. */
+function areaTile(area: { label: string; value: number }, index: number) {
+  return h('div', { style: {
+      display: 'flex', flexDirection: 'column', width: '172px', marginLeft: index === 0 ? '0px' : '12px',
+      padding: '14px 16px 16px', borderRadius: '16px', background: TILE,
+    } },
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 50, lineHeight: 1, color: INK } }, String(area.value)),
+    h('div', { style: { display: 'flex', fontSize: 19, color: CARD_MUTED, marginTop: '6px' } }, area.label));
 }
 
 /** A display size that keeps the longest line inside the column. */
 function fit(lines: string[], width: number, max: number, min: number): number {
   const longest = Math.max(...lines.map((line) => line.length));
-  return Math.max(min, Math.min(max, Math.floor(width / (longest * 0.52))));
+  return Math.max(min, Math.min(max, Math.floor(width / (longest * 0.5))));
 }
 
-const LEFT_WIDTH = 660;
+const LEFT_WIDTH = 560;
+const ART_WIDTH = 560;
 
-function frame(left: VNode<any>, score: number, hues: [string, string], brandIcon: string) {
-  return h('div', { style: {
-      width: '1200px', height: '630px', display: 'flex', justifyContent: 'space-between',
-      padding: '54px 64px 56px', background: VOID, color: INK, fontFamily: 'Noto',
-    } },
-    left,
-    h('div', { style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' } },
-      brand(brandIcon),
+/**
+ * The art panel on the right: the hero art (one panel, or two stacked) dimmed
+ * like the card's frame and faded into the card on every side, so no edge of
+ * a picture shows, with the score ring in its lower corner on a dark disc, so
+ * the number never sits on busy art and the figures stay in view.
+ */
+function artPanel(images: string[], score: number, hues: [string, string]) {
+  const height = 630 / images.length;
+  const clear = 'rgba(22,25,31,0)';
+  const fade = (style: Record<string, string>, direction: string, size: number) => h('div', { style: {
+    display: 'flex', position: 'absolute', ...style, backgroundImage: `linear-gradient(${direction}, ${CARD} 0%, rgba(22,25,31,0.6) ${Math.round(size * 0.35)}px, ${clear} ${size}px)`,
+  } });
+  return h('div', { style: { display: 'flex', position: 'relative', width: `${ART_WIDTH}px`, height: '630px', background: CARD } },
+    ...images.flatMap((src, index) => {
+      const top = index * height;
+      const edge = Math.round(height * 0.24);
+      return [
+        h('img', { src, width: ART_WIDTH, height, style: {
+          position: 'absolute', left: 0, top: `${top}px`, width: `${ART_WIDTH}px`, height: `${height}px`, objectFit: 'cover', opacity: 0.94,
+        } }),
+        h('div', { style: { display: 'flex', position: 'absolute', left: 0, top: `${top}px`, width: `${ART_WIDTH}px`, height: `${height}px`,
+          backgroundImage: `radial-gradient(circle at 55% 45%, ${clear} 0%, rgba(22,25,31,0.14) 50%, rgba(22,25,31,0.5) 100%)` } }),
+        fade({ left: '0px', top: `${top}px`, width: `${ART_WIDTH}px`, height: `${edge}px` }, '180deg', edge),
+        fade({ left: '0px', top: `${top + height - edge}px`, width: `${ART_WIDTH}px`, height: `${edge}px` }, '0deg', edge),
+      ];
+    }),
+    fade({ left: '0px', top: '0px', width: '170px', height: '630px' }, '90deg', 170),
+    fade({ left: `${ART_WIDTH - 120}px`, top: '0px', width: '120px', height: '630px' }, '270deg', 120),
+    h('div', { style: { display: 'flex', position: 'absolute', left: `${ART_WIDTH - RING - 24 - 30}px`, top: `${630 - RING - 24 - 30}px`,
+      width: `${RING + 24}px`, height: `${RING + 24}px`, borderRadius: `${RING}px`, background: 'rgba(13,15,19,0.78)', alignItems: 'center', justifyContent: 'center' } },
       ring(score, hues)));
+}
+
+function frame(left: VNode<any>, score: number, hues: [string, string], art: string[]) {
+  return h('div', { style: {
+      width: '1200px', height: '630px', display: 'flex', background: CARD, color: INK, fontFamily: 'Noto',
+    } },
+    h('div', { style: { display: 'flex', padding: '52px 20px 54px 64px', width: `${1200 - ART_WIDTH}px`, height: '630px' } }, left),
+    artPanel(art, score, hues));
 }
 
 const column = (...children: VNode<any>[]) => h('div', { style: {
   display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: `${LEFT_WIDTH}px`, height: '100%',
 } }, ...children);
 
-export function compatibilityCard(model: CompatibilityCardModel, brandIcon: string, images: Map<ShareSign, string>) {
-  const lines = [model.first, `& ${model.second}`];
-  const nameSize = fit(lines, LEFT_WIDTH, 92, 48);
+const verdictLine = (verdict: string) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: fit([verdict], LEFT_WIDTH, 44, 34), color: INK, marginTop: '18px', lineHeight: 1.15 } }, verdict);
+
+export function compatibilityCard(model: CompatibilityCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const oneLine = `${model.first} and ${model.second}`;
+  const lines = fit([oneLine], LEFT_WIDTH, 84, 40) >= 64 ? [oneLine] : [model.first, `and ${model.second}`];
+  const nameSize = fit(lines, LEFT_WIDTH, lines.length > 1 ? 68 : 84, 48);
   return frame(column(
-    kicker('Compatibility'),
+    nameplate(),
     h('div', { style: { display: 'flex', flexDirection: 'column' } },
-      ...lines.map((line) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: nameSize, lineHeight: 1.02, color: INK } }, line)),
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: fit([model.verdict], LEFT_WIDTH, 46, 34), color: INK, marginTop: '18px' } }, model.verdict),
-      h('div', { style: { display: 'flex', marginTop: '22px' } }, ...model.people.map((person) => signChip(person, images, 54)))),
-    h('div', { style: { display: 'flex' } }, ...model.areas.map((area, index) => areaMeter(area, index))),
-  ), model.score, model.ring, brandIcon);
+      kicker('Two charts compared', model.people[0].hue),
+      ...lines.map((line) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: nameSize, lineHeight: 1.04, color: INK, marginTop: '4px' } }, line)),
+      verdictLine(model.verdict),
+      h('div', { style: { display: 'flex', marginTop: '20px' } }, ...model.people.map((person) => signChip(person, images, 48)))),
+    h('div', { style: { display: 'flex' } }, ...model.areas.map((area, index) => areaTile(area, index))),
+  ), model.score, model.ring, art);
 }
 
-export function occasionCard(model: OccasionCardModel, brandIcon: string, images: Map<ShareSign, string>) {
-  const headSize = fit([model.headline], LEFT_WIDTH, 100, 64);
+export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const title = model.names ?? model.headline;
+  const headSize = fit([title], LEFT_WIDTH, 92, 56);
   return frame(column(
-    kicker(model.names ?? 'The sky on the day'),
+    nameplate(),
     h('div', { style: { display: 'flex', flexDirection: 'column' } },
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: headSize, lineHeight: 1.02, color: INK } }, model.headline),
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 34, lineHeight: 1.25, color: MUTED, marginTop: '16px' } }, model.when),
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: fit([model.verdict], LEFT_WIDTH, 46, 34), color: INK, marginTop: '26px' } }, model.verdict)),
+      kicker(model.names ? model.headline : 'The sky on the day', model.ring[0]),
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: headSize, lineHeight: 1.04, color: INK, marginTop: '6px' } }, title),
+      h('div', { style: { display: 'flex', fontSize: 27, lineHeight: 1.3, color: CARD_MUTED, marginTop: '14px' } }, model.when),
+      verdictLine(model.verdict)),
     h('div', { style: { display: 'flex', alignItems: 'center' } },
       ...(model.signs.length > 0
-        ? model.signs.map((sign) => signChip(sign, images, 54))
-        : [h('div', { style: { display: 'flex', fontSize: 28, color: MUTED } }, 'Rated from the sky that day')])),
-  ), model.score, model.ring, brandIcon);
+        ? model.signs.map((sign) => signChip(sign, images, 52))
+        : [h('div', { style: { display: 'flex', fontSize: 26, color: CARD_MUTED } }, 'Rated from the sky that day')])),
+  ), model.score, model.ring, art);
 }
 
 // ── Responses ────────────────────────────────────────────────────────
@@ -243,9 +331,9 @@ export async function handleCompatibilityImageRequest(request: Request): Promise
   const share = parseCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
-  const [brandIcon, images] = await Promise.all([prepareBrandIcon(), discImages(model.people)]).catch(() => [null, null] as const);
-  if (!brandIcon || !images) return errorResponse(503);
-  return renderPng(compatibilityCard(model, brandIcon, images));
+  const [images, art] = await Promise.all([discImages(model.people), Promise.all(compatibilityArt(share).map(artImage))]).catch(() => [null, null] as const);
+  if (!images || !art) return errorResponse(503);
+  return renderPng(compatibilityCard(model, images, art));
 }
 
 export async function handleOccasionImageRequest(request: Request): Promise<Response> {
@@ -253,9 +341,9 @@ export async function handleOccasionImageRequest(request: Request): Promise<Resp
   const share = parseOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
-  const [brandIcon, images] = await Promise.all([prepareBrandIcon(), discImages(model.signs)]).catch(() => [null, null] as const);
-  if (!brandIcon || !images) return errorResponse(503);
-  return renderPng(occasionCard(model, brandIcon, images));
+  const [images, art] = await Promise.all([discImages(model.signs), Promise.all(occasionArt(share).map(artImage))]).catch(() => [null, null] as const);
+  if (!images || !art) return errorResponse(503);
+  return renderPng(occasionCard(model, images, art));
 }
 
 // ── The page a share link opens ──────────────────────────────────────
@@ -268,6 +356,7 @@ body{margin:0;background:var(--void);color:var(--ink);font:400 17px/1.55 "Instru
 main{max-width:880px;margin:0 auto;padding:28px 16px 56px}
 .brand{display:inline-flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font:500 22px/1 "EB Garamond",Georgia,serif}
 .brand img{width:28px;height:28px}
+.brand small{margin-left:3px;font:400 11px/1 ui-monospace,Menlo,Consolas,monospace;color:var(--muted)}
 h1{font:500 clamp(30px,6vw,46px)/1.1 "EB Garamond",Georgia,serif;margin:28px 0 18px;letter-spacing:-.01em}
 .card{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--hairline);border-radius:18px;background:var(--void)}
 .lede{margin:22px 0 0;color:var(--ink);max-width:62ch}
@@ -290,7 +379,7 @@ export interface SharePage {
 
 export function sharePageHtml(page: SharePage): string {
   const e = htmlEscape;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/"><img src="/assets/app-icons/v3/favicon.svg" width="28" height="28" alt=""><span>Zodiacs</span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p><a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a><p class="note">${e(page.note)}</p></main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/"><img src="/assets/app-icons/v3/favicon.svg" width="28" height="28" alt=""><span>Zodiacs<small>.org</small></span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p><a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a><p class="note">${e(page.note)}</p></main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
 }
 
 function htmlResponse(html: string): Response {

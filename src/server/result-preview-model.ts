@@ -85,14 +85,14 @@ export function compatibilityCardModel(share: CompatibilityShare): Compatibility
 
 const LONG_DATE = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
-/** "Saturday 12 June 2027", built from parts: runtimes differ on the comma after the weekday. */
+/** "Saturday, 12 June 2027", built from parts: runtimes differ on the comma after the weekday. */
 export function longDate(date: string): string {
   const parts = Object.fromEntries(LONG_DATE.formatToParts(new Date(`${date}T12:00:00Z`)).map((part) => [part.type, part.value]));
-  return `${parts.weekday} ${parts.day} ${parts.month} ${parts.year}`;
+  return `${parts.weekday}, ${parts.day} ${parts.month} ${parts.year}`;
 }
 
 export function occasionCardModel(share: OccasionShare): OccasionCardModel {
-  const when = [longDate(share.date), share.place].filter(Boolean).join(' · ');
+  const when = share.place ? `${longDate(share.date)} in ${share.place}` : longDate(share.date);
   const signs = [
     previewSign(share.sun, 'Sun', 'Sun'),
     previewSign(share.moon, 'Moon', 'Moon'),

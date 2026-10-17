@@ -51,11 +51,11 @@ describe('share card models', () => {
   it('give a date its headline, the day in words, the place and the Sun and Moon', () => {
     const model = occasionCardModel(parseOccasionShare(new URLSearchParams(OCCASION))!);
     expect(model).toMatchObject({
-      names: 'Ana & Luis', headline: 'Our wedding', when: 'Saturday 12 June 2027 · Florence', score: 84, verdict: 'An excellent day for it',
+      names: 'Ana & Luis', headline: 'Our wedding', when: 'Saturday, 12 June 2027 in Florence', score: 84, verdict: 'An excellent day for it',
       signs: [{ label: 'Gemini Sun' }, { label: 'Libra Moon' }],
       title: 'Ana & Luis: Wedding, 84/100',
     });
-    expect(longDate('1999-08-11')).toBe('Wednesday 11 August 1999');
+    expect(longDate('1999-08-11')).toBe('Wednesday, 11 August 1999');
   });
 });
 
