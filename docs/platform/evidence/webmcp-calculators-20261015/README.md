@@ -131,6 +131,27 @@ These pages are not calculators, and register no tool of their own:
   but not `modelContextTesting`, so the native pass cannot enumerate or call
   tools. It is reported as unavailable, as in the pilot.
 
+## Phase 1 captures
+
+`src/layouts/Base.astro` and `src/lib` are in the Phase 1 capture digest, so
+CI took the 18 captures again.
+
+- **Committed captures.** Browser Evidence run 39001094966 took them on
+  `48592f4e`, this branch with main `013b93d5` merged in, with Chromium
+  149.0.7827.55 at 2026-10-17T04:06:36Z, for the 2026-10-17 edition, bound to
+  template source digest `697f6259…`. Its build, acceptance captures,
+  receipt, visual comparison, Lighthouse and explorer drive passed
+  ([browser-evidence-provenance.json](browser-evidence-provenance.json) is the
+  run's own record).
+- **Against main's captures**, which the same Chromium took for the
+  2026-10-16 edition: the monthly, weekly and yearly pages are identical,
+  pixel for pixel. The pages that show the day's readings changed with the
+  edition. The daily page holds 76 characters less text and is 16 px
+  shorter; the love page holds 4 more and the horoscope hub 1 more; today's,
+  tomorrow's and the career pages keep their layout. Each differs in 0.07% to
+  3.20% of its pixels. None of these pages is a calculator, and none
+  registers a tool.
+
 ## In production
 
 To be recorded after the merge.
