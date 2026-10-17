@@ -109,7 +109,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
     slot="head"
     rel="preload"
     as="image"
-    href="/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
+    href="/assets/hero/zodiacs-hero-poster-mobile-v3.avif"
     media="(max-width: 719px)"
     fetchpriority="high"
   />
@@ -168,7 +168,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
       <picture>
         <source
           media="(max-width: 719px)"
-          srcset="/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
+          srcset="/assets/hero/zodiacs-hero-poster-mobile-v3.avif"
           type="image/avif"
         />
         <img
@@ -481,7 +481,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
             style={`--sign:${s.hue}`}
             aria-label={s.slug === sunNow ? `${s.name}, the Sun is here now` : `${s.name}, ${signDateRange(s)}`}
           >
-            <SignIcon sign={s.slug} size={52} />
+            <SignIcon sign={s.slug} size={52} webpOnly />
             <b>{s.name}</b>
             <small data-dates={compactDates(s.slug)}>{s.slug === sunNow ? 'Sun is here now' : compactDates(s.slug)}</small>
           </a>
