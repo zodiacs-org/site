@@ -1,0 +1,85 @@
+{
+  "base": "https://zodiacs.org",
+  "checkedAt": "2026-10-16T19:51:15.901Z",
+  "results": [
+    {
+      "name": "the page is served, with the playground on it",
+      "ok": false,
+      "detail": {
+        "status": 404
+      }
+    },
+    {
+      "name": "examples.json is the one the merge builds: every documented request with its documented answer",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "served": null,
+        "built": 17
+      }
+    },
+    {
+      "name": "the Markdown twin lists every request, each with a cURL command that sends its text as typed",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "missing": [
+          "chart.utc",
+          "chart.local",
+          "positions.two",
+          "houses.koch",
+          "events.october",
+          "time.pinned",
+          "time.gap",
+          "time.julian",
+          "time.atlas",
+          "elections.london",
+          "sky-fact.retrograde",
+          "sky-fact.phase",
+          "sky-fact.sign",
+          "sky-fact.aspect",
+          "chart.invalid-request",
+          "chart.invalid-json",
+          "events.budget-exhausted"
+        ]
+      }
+    },
+    {
+      "name": "the browser bundle is byte for byte the one its sources build",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "served": null,
+        "built": "ea9be255eb216f80833afcb302684505086884859a3f3628f9ec1e87583b77fe"
+      }
+    },
+    {
+      "name": "llms.txt lists the playground, its twin and examples.json",
+      "ok": false,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "the sitemap lists the page",
+      "ok": false,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "/developers/ links to the playground",
+      "ok": false,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "/developers/compute/ links to the playground",
+      "ok": false,
+      "detail": {
+        "status": 200
+      }
+    }
+  ]
+}

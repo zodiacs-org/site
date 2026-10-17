@@ -372,7 +372,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
   // The occasion cards, first published 2026-10-11.
-  ['/occasions/', '2026-10-11'] as const,
+  ['/occasions/', '2026-10-17'] as const,
   ['/occasions/milestones/', '2026-10-11'] as const,
   ['/occasions/baby-shower/', '2026-10-11'] as const,
   ['/tools/', '2026-09-06'] as const,
