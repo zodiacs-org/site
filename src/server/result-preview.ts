@@ -200,10 +200,10 @@ function signChip(sign: PreviewSign, images: Map<ShareSign, string>, size: numbe
 function areaTile(area: { label: string; value: number }, index: number) {
   return h('div', { style: {
       display: 'flex', flexDirection: 'column', width: '172px', marginLeft: index === 0 ? '0px' : '12px',
-      padding: '14px 18px 16px', borderRadius: '16px', background: TILE,
+      padding: '14px 16px 16px', borderRadius: '16px', background: TILE,
     } },
     h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 50, lineHeight: 1, color: INK } }, String(area.value)),
-    h('div', { style: { display: 'flex', fontSize: 21, color: CARD_MUTED, marginTop: '6px' } }, area.label));
+    h('div', { style: { display: 'flex', fontSize: 19, color: CARD_MUTED, marginTop: '6px' } }, area.label));
 }
 
 /** A display size that keeps the longest line inside the column. */
@@ -253,7 +253,7 @@ const verdictLine = (verdict: string) => h('div', { style: { display: 'flex', fo
 export function compatibilityCard(model: CompatibilityCardModel, images: Map<ShareSign, string>, art: string[]) {
   const oneLine = `${model.first} and ${model.second}`;
   const lines = fit([oneLine], LEFT_WIDTH, 84, 40) >= 64 ? [oneLine] : [model.first, `and ${model.second}`];
-  const nameSize = fit(lines, LEFT_WIDTH, 84, 48);
+  const nameSize = fit(lines, LEFT_WIDTH, lines.length > 1 ? 68 : 84, 48);
   return frame(column(
     nameplate(),
     h('div', { style: { display: 'flex', flexDirection: 'column' } },
