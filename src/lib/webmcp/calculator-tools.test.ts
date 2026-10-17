@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TWIN_DIRECTORY } from '../sharing/twin-directory';
 import { CALCULATOR_TOOL_NAMES, runCalculatorTool } from './calculator-runtime';
 import { CALCULATOR_TOOLS, calculatorToolForPath } from './calculator-tools';
+import { readDate, readInstant } from './calculators/input';
 import { pairSlug } from '../pair-slug';
 import { SIGN_SLUGS } from '../signs';
 import { LIFE_PATH_NUMBERS } from '../../data/numerology-pages';
@@ -168,6 +169,42 @@ describe('each tool\'s schema and its reader agree', () => {
     expect(validators.get(name)!(input)).toBe(false);
     const envelope = await runCalculatorTool(name, input);
     expect(envelope).toEqual({ ok: false, error: { code: 'INVALID_INPUT', message: expect.any(String) } });
+  });
+
+  it('take exactly the calendar dates and the instants their readers take', () => {
+    const property = (name: string, key: string) => ajv.compile(
+      (CALCULATOR_TOOLS.find((tool) => tool.name === name)!.inputSchema as { properties: Record<string, object> }).properties[key],
+    );
+    const pageDate = property('zodiacs.numerology', 'birthDate');
+    const dueDate = property('zodiacs.baby_zodiac', 'dueDate');
+    const instant = property('zodiacs.transits', 'at');
+    const two = (n: number) => String(n).padStart(2, '0');
+    const disagree: string[] = [];
+    // Every year from just before the pages' range to just after it, every month and day from 00 to an impossible one.
+    for (let year = 1799; year <= 2200; year += 1) {
+      for (let month = 0; month <= 13; month += 1) {
+        for (let day = 0; day <= 32; day += 1) {
+          const date = `${year}-${two(month)}-${two(day)}`;
+          if (pageDate(date) !== (readDate(date) !== undefined)) disagree.push(date);
+          if (dueDate(date) !== (readDate(date, '1990-01-01', '2028-12-31') !== undefined)) disagree.push(`due ${date}`);
+        }
+      }
+    }
+    // Instants: leap and common century years across the four digits, and clock times at and past their limits.
+    for (const year of ['0000', '0004', '0100', '0400', '1600', '1700', '1900', '2000', '2023', '2024', '2100', '2400', '9996', '9999']) {
+      for (let month = 0; month <= 13; month += 1) {
+        for (let day = 0; day <= 32; day += 1) {
+          for (const time of ['00:00', '23:59', '24:00', '24:00:00', '23:60', '12:00:59', '12:00:60', '12:00:00.123', '12:00:00.1234']) {
+            const at = `${year}-${two(month)}-${two(day)}T${time}Z`;
+            if (instant(at) !== (readInstant(at) !== undefined)) disagree.push(at);
+          }
+        }
+      }
+    }
+    expect(disagree).toEqual([]);
+    // The patterns are not trivially permissive or empty.
+    expect([pageDate('2000-02-29'), pageDate('1900-02-29'), pageDate('2023-02-29'), pageDate('1990-02-30')]).toEqual([true, false, false, false]);
+    expect([dueDate('2028-02-29'), dueDate('2027-02-29'), instant('2024-02-29T23:59Z'), instant('2024-01-01T24:00Z')]).toEqual([true, false, true, false]);
   });
 });
 

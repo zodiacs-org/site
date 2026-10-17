@@ -76,10 +76,13 @@ export function readHouseSystem(value: unknown): HouseSystem | undefined {
   return value === 'whole' || value === 'placidus' ? value : undefined;
 }
 
-/** An instant as an ISO 8601 UTC date-time (…Z): null when absent, undefined when given and invalid. */
+/**
+ * An instant as an ISO 8601 UTC date-time (…Z) from 00:00 through 23:59: null when absent, undefined when given and
+ * invalid. 24:00, which Date would roll into the next day, is refused rather than rolled.
+ */
 export function readInstant(value: unknown): Date | null | undefined {
   if (value === undefined) return null;
-  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?Z$/.test(value)) return undefined;
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d{1,3})?)?Z$/.test(value)) return undefined;
   if (!parseCivilDate(value.slice(0, 10))) return undefined;
   const instant = new Date(value);
   return Number.isNaN(instant.getTime()) ? undefined : instant;

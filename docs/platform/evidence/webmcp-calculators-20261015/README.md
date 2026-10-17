@@ -102,7 +102,14 @@ These pages are not calculators, and register no tool of their own:
 - **Schemas and readers agree.** `calculator-tools.test.ts` compiles each
   schema with Ajv. A valid input passes both the schema and the tool; each
   invalid one fails both. It also checks that each refusal names the problem
-  without echoing the input.
+  without echoing the input. The date
+  fields state the calendar as their readers do, leap days included: the
+  test checks every date from 1799 through 2200, the due dates' range, and
+  instants across edge years and clock times against the readers, and they
+  agree on each. Codex's second review found that the patterns had bounded
+  month and day apart, so `1990-02-30` passed a schema whose reader refused
+  it. Instants run from 00:00 through 23:59, and `24:00`, which `Date` would
+  roll into the next day, is refused.
 - **check-dist.** It checks that every calculator page in every locale
   imports the registration with `registerWebMcpPage`. It checks that the
   bundles carry every tool and that `/data/chart-twins.json` lists names and
@@ -120,7 +127,8 @@ These pages are not calculators, and register no tool of their own:
   - that the calculations do not load before the first call;
   - one answer;
   - a refusal by the schema;
-  - a refusal by the tool itself.
+  - a refusal by the tool itself, where the tool checks more than its schema
+    states: an unknown time zone, a clock change or a name in another script.
 
   On `/birth-chart/` it also opens the page on the same birth through a
   chart link. The page shows `24°11′ Gemini`, `16°11′ Pisces` and

@@ -20,10 +20,17 @@ const SIGNS_IN_ORDER = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', '
   'capricorn', 'aquarius', 'pisces'];
 const LIFE_PATH_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
 
-// The pages' date fields run from 1800-01-01 through 2199-12-31.
+// Calendar dates as the tools' readers take them (parseCivilDate in src/lib/time/civil-date.ts): each month's own
+// days, and 29 February only in a leap year. calculator-tools.test.ts checks each pattern against its reader on every
+// date in its range.
+const MONTH_DAYS = '(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|02-(?:0[1-9]|1\\d|2[0-8]))';
+const calendarDate = (years: string, leapYears: string) => `(?:${years}-${MONTH_DAYS}|${leapYears}-02-29)`;
+
+// The pages' date fields run from 1800-01-01 through 2199-12-31; of those centuries' first years only 2000 is a leap
+// year.
 const DATE = {
   type: 'string',
-  pattern: '^(?:18|19|20|21)\\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])$',
+  pattern: `^${calendarDate('(?:18|19|20|21)\\d{2}', '(?:(?:18|19|20|21)(?:0[48]|[2468][048]|[13579][26])|2000)')}$`,
   description: 'A Gregorian calendar date, YYYY-MM-DD, from 1800-01-01 through 2199-12-31.',
 } as const;
 const TIME = {
@@ -60,9 +67,11 @@ const HOUSE_SYSTEM = {
   enum: ['whole', 'placidus'],
   description: 'House system: whole sign (the pages\' default) or Placidus.',
 } as const;
+// Any year, 0000 through 9999, at a UTC clock time from 00:00 through 23:59, with seconds and milliseconds if given.
 const INSTANT = {
   type: 'string',
-  pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d{1,3})?)?Z$',
+  pattern: `^${calendarDate('\\d{4}', '(?:\\d{2}(?:0[48]|[2468][048]|[13579][26])|(?:[02468][048]|[13579][26])00)')}`
+    + 'T(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d{1,3})?)?Z$',
   description: 'A UTC instant, ISO 8601 with Z, such as 2026-10-15T12:00:00Z.',
 } as const;
 
@@ -212,7 +221,7 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
     inputSchema: object({
       dueDate: {
         type: 'string',
-        pattern: '^(?:199\\d|20[01]\\d|202[0-8])-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])$',
+        pattern: `^${calendarDate('(?:199\\d|20[01]\\d|202[0-8])', '(?:199[26]|20(?:0[048]|1[26]|2[048]))')}$`,
         description: 'The due date, YYYY-MM-DD, from 1990-01-01 through 2028-12-31.',
       },
     }, ['dueDate']),

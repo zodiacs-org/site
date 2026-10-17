@@ -55,7 +55,7 @@ const CALCULATORS = [
   {
     name: 'zodiacs.moon_sign', path: '/moon-sign/', locales: LOCALES, call: UNTIMED,
     holds: (data) => data.moon === null && data.moonSignStatus === 'unverified' && typeof data.moonPhase === 'string',
-    refuse: { ...UNTIMED, time: '25:00' }, unread: { ...UNTIMED, date: '1985-02-29' },
+    refuse: { ...UNTIMED, time: '25:00' }, unread: { ...UNTIMED, place: NOWHERE },
   },
   {
     name: 'zodiacs.rising_sign', path: '/rising-sign/', locales: LOCALES, call: BIRTH,
@@ -65,7 +65,7 @@ const CALCULATORS = [
   {
     name: 'zodiacs.big_three', path: '/big-three/', locales: LOCALES, call: BIRTH,
     holds: (data) => data.sun?.sign && data.moon?.sign && data.rising?.sign, refuse: UNTIMED,
-    unread: { ...BIRTH, date: '1990-02-30' },
+    unread: { ...BIRTH, place: NOWHERE },
   },
   {
     name: 'zodiacs.compatibility', path: '/compatibility/', locales: LOCALES, call: { first: BIRTH, second: UNTIMED },
@@ -76,7 +76,7 @@ const CALCULATORS = [
   {
     name: 'zodiacs.transits', path: '/transits/', locales: LOCALES, call: { birth: BIRTH, at: '2026-10-15T12:00:00Z' },
     holds: (data) => data.sky?.length === 10 && Array.isArray(data.contacts) && data.contacts.every((c) => c.orb <= 3),
-    refuse: { birth: BIRTH, at: 'tomorrow' }, unread: { birth: BIRTH, at: '2026-02-30T12:00:00Z' },
+    refuse: { birth: BIRTH, at: '2026-02-30T12:00:00Z' }, unread: { birth: { ...BIRTH, place: NOWHERE } },
   },
   {
     name: 'zodiacs.saturn_return', path: '/saturn-return/', locales: LOCALES, call: BIRTH,
@@ -104,12 +104,14 @@ const CALCULATORS = [
     name: 'zodiacs.moon_phase', path: '/moon-phase/', locales: LOCALES,
     call: { date: '2024-03-20', time: '21:45', place: { latitude: 13.7563, longitude: 100.5018, timeZone: 'Asia/Bangkok' } },
     holds: (data) => data.basis === 'local-time' && typeof data.phase === 'string', refuse: { date: '2024-3-20' },
-    unread: { date: '2023-02-29' },
+    unread: { date: '2024-03-20', time: '21:45', place: NOWHERE },
   },
   {
     name: 'zodiacs.baby_zodiac', path: '/baby-zodiac/', locales: LOCALES, call: { dueDate: '2027-02-10' },
     holds: (data) => data.sun?.signs?.length >= 1 && data.moonSpans?.length >= 1 && Array.isArray(data.retrograde),
-    refuse: { dueDate: '2035-01-01' }, unread: { dueDate: '2027-02-29' },
+    refuse: { dueDate: '2027-02-29' },
+    // Its schema states everything its reader checks, so no input passes the one and not the other.
+    unread: null,
   },
   {
     name: 'zodiacs.chart_twins', path: '/chart-twins/', locales: LOCALES, call: BIRTH,
@@ -132,7 +134,7 @@ const CALCULATORS = [
   {
     name: 'zodiacs.year_wrapped', path: '/your-sky-wrapped/', locales: LOCALES, call: { birth: BIRTH, year: 2026 },
     holds: (data) => data.year === 2026 && data.natalPoints?.length === 3 && Array.isArray(data.contacts),
-    refuse: { birth: BIRTH, year: 'this year' }, unread: { birth: { ...BIRTH, date: '1990-02-30' } },
+    refuse: { birth: BIRTH, year: 'this year' }, unread: { birth: { ...BIRTH, place: NOWHERE } },
   },
 ];
 
@@ -170,7 +172,7 @@ async function calculatorPage(page, calculator, path) {
       refusal = { ok: false, rejectedBy: 'schema', message: String(error?.message ?? error) };
     }
     // An input the schema passes and the tool itself refuses, with its own envelope.
-    const unreadRefusal = decode(await testing.executeTool(name, JSON.stringify(unread)));
+    const unreadRefusal = unread === null ? null : decode(await testing.executeTool(name, JSON.stringify(unread)));
     return { tools, loadedBeforeCall, loadedAfterCall: loaded(), answer, refusal, unreadRefusal };
   }, {
     name: calculator.name, call: calculator.call, refuse: calculator.refuse, unread: calculator.unread,
@@ -195,7 +197,7 @@ function assertCalculatorPage(label, calculator, result) {
   const refused = result.refusal?.ok === false && (result.refusal.rejectedBy === 'schema' || result.refusal.error?.code === 'INVALID_INPUT');
   if (!refused) throw new Error(`${label} ${result.path}: ${calculator.name} must refuse an input its schema refuses`);
   const code = UNREAD_CODES[calculator.name] ?? 'INVALID_INPUT';
-  if (result.unreadRefusal?.ok !== false || result.unreadRefusal.error?.code !== code) {
+  if (calculator.unread !== null && (result.unreadRefusal?.ok !== false || result.unreadRefusal.error?.code !== code)) {
     throw new Error(`${label} ${result.path}: ${calculator.name} must refuse an input it cannot read with ${code}`);
   }
 }
@@ -227,7 +229,7 @@ async function checkCalculatorPages(label, newPage, baseURL) {
       assertCalculatorPage(label, calculator, result);
       results.push({
         path, tool: calculator.name, refusedBy: result.refusal.rejectedBy ?? result.refusal.error.code,
-        toolRefusal: result.unreadRefusal.error.code,
+        toolRefusal: result.unreadRefusal?.error.code ?? null,
       });
       await page.close();
     }
