@@ -4,6 +4,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TWIN_DIRECTORY } from '../sharing/twin-directory';
 import { CALCULATOR_TOOL_NAMES, runCalculatorTool } from './calculator-runtime';
 import { CALCULATOR_TOOLS, calculatorToolForPath } from './calculator-tools';
+import { pairSlug } from '../pair-slug';
+import { SIGN_SLUGS } from '../signs';
+import { LIFE_PATH_NUMBERS } from '../../data/numerology-pages';
 import { LONDON, PARIS, SYDNEY, TOKYO } from '../../../tests/webmcp/calculator-fixtures';
 import { calculatorTool, webMcpToolsForPage } from './register';
 
@@ -102,6 +105,23 @@ describe('the calculator tools', () => {
     expect(calculatorToolForPath('/')).toBeNull();
     expect(calculatorToolForPath('/birth-chart/someone-else/')).toBeNull();
     expect(calculatorToolForPath('/registry/')).toBeNull();
+  });
+
+  it('are found on the pages that embed a calculator: each rising sign, each compatibility pair, each Life Path', () => {
+    const embedded: Array<[string, string]> = [
+      ...SIGN_SLUGS.map((sign): [string, string] => [`/rising-sign/${sign}/`, 'zodiacs.rising_sign']),
+      ...SIGN_SLUGS.flatMap((first, index) => SIGN_SLUGS.slice(index)
+        .map((second): [string, string] => [`/compatibility/${pairSlug(first, second)}/`, 'zodiacs.compatibility'])),
+      ...LIFE_PATH_NUMBERS.map((n): [string, string] => [`/numerology/life-path/${n}/`, 'zodiacs.numerology']),
+    ];
+    expect(embedded).toHaveLength(12 + 78 + 12);
+    for (const [path, name] of embedded) {
+      expect(calculatorToolForPath(path)?.name, path).toBe(name);
+      expect(calculatorToolForPath(`/es${path}`)?.name, path).toBe(name);
+    }
+    for (const path of ['/compatibility/invite/', '/compatibility/taurus-aries/', '/rising-sign/aries/more/', '/numerology/life-path/10/']) {
+      expect(calculatorToolForPath(path), path).toBeNull();
+    }
   });
 
   it('are all checked in the built site by scripts/check-dist.mjs', () => {

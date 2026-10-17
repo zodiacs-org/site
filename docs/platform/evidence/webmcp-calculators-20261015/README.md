@@ -16,6 +16,21 @@ Each registers one tool when the browser or an extension provides
 locales (es, pt, fr, it) and the Russian preview wherever that is built.
 English pages also register `zodiacs.search`, as before.
 
+Three calculators are also embedded in other pages, and those pages register
+the same tool (Codex's first review of #772 found them):
+
+- ChartCalculator, in rising mode, in each rising sign's profile
+  (`/rising-sign/aries/` and the other eleven), in English and the released
+  locales: `zodiacs.rising_sign`.
+- SynastryCalculator on each of the 78 compatibility pairs
+  (`/compatibility/aries-taurus/` and so on), in English and the released
+  locales: `zodiacs.compatibility`.
+- NumerologyCalculator on each Life Path page (`/numerology/life-path/7/` and
+  the other eleven), in English: `zodiacs.numerology`.
+
+With them, 543 pages register a calculator tool: the 81 calculator pages and
+the 462 that embed one.
+
 | Tool | Page | Built in | The page's code the tool runs |
 | --- | --- | --- | --- |
 | `zodiacs.birth_chart` | `/birth-chart/` | en es pt fr it ru | ChartCalculator's `runChart`, with the chart its calculation receipt carries |
@@ -51,7 +66,7 @@ These pages are not calculators, and register no tool of their own:
 ## How a tool works
 
 - **Descriptors.** `/assets/webmcp-register.js` holds the descriptors and
-  Search (4.6 KB gzip). A page imports it only when `modelContext` exists.
+  Search (4.8 KB gzip). A page imports it only when `modelContext` exists.
 - **Calculations.** `/assets/webmcp-calculators.js` holds the calculations
   (120.8 KB gzip, under a 512 KB budget). It loads on the first call to a
   calculator tool, never before.
@@ -91,9 +106,15 @@ These pages are not calculators, and register no tool of their own:
 - **check-dist.** It checks that every calculator page in every locale
   imports the registration with `registerWebMcpPage`. It checks that the
   bundles carry every tool and that `/data/chart-twins.json` lists names and
-  signs only.
+  signs only. It also reads every built page: a page that renders a
+  calculator island must register that calculator's tool, as the shipped
+  bundle's own lookup finds it, and a page that registers a calculator tool
+  must render its calculator. On a build from before Codex's review it names
+  the 462 pages that embed a calculator and register no tool.
 - **The WebMCP drive** (`tests/webmcp-drive.mjs`, local build of `HEAD`)
-  visits 81 calculator pages with the MCP-B 4.0.0 polyfill. On each it
+  visits 543 pages with the MCP-B 4.0.0 polyfill: the 81 calculator pages
+  and the 462 that embed one. On a build from before Codex's review it stops
+  at `/rising-sign/aries/`, whose tool never registers. On each page it
   checks:
   - the tools registered;
   - that the calculations do not load before the first call;

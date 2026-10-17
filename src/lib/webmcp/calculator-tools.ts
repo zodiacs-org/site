@@ -5,11 +5,20 @@
  * browser, as the page's own does: nothing about the person is sent anywhere.
  *
  * A page's tool is found from its path, with any locale's prefix removed, so /es/moon-phase/ registers the same tool
- * as /moon-phase/. Descriptions are written for agents, in English, in every locale.
+ * as /moon-phase/. A page that embeds a calculator registers that calculator's tool too: each rising sign's profile,
+ * each compatibility pair and each Life Path page. Descriptions are written for agents, in English, in every locale.
  */
 export const CALCULATOR_RUNTIME_URL = '/assets/webmcp-calculators.js?v=calculators-1';
 
 const LOCALE_PREFIX = /^\/(?:es|pt|fr|it|ru)(?=\/)/u;
+
+// The slugs of the pages that embed a calculator, written out so this small bundle imports nothing. calculator-tools
+// .test.ts holds them to the lists the pages are built from (SIGN_SLUGS in src/lib/signs.ts, pairSlug in
+// src/lib/pair-slug.ts, LIFE_PATH_NUMBERS in src/data/numerology-pages.ts), and check-dist.mjs holds every built page
+// with a calculator to its tool.
+const SIGNS_IN_ORDER = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius',
+  'capricorn', 'aquarius', 'pisces'];
+const LIFE_PATH_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
 
 // The pages' date fields run from 1800-01-01 through 2199-12-31.
 const DATE = {
@@ -67,6 +76,8 @@ export interface CalculatorToolDescriptor {
   name: string;
   /** The page's path without a locale prefix. */
   path: string;
+  /** Other pages, without a locale prefix, that embed the same calculator and so register its tool. */
+  alsoOn?: readonly string[];
   title: string;
   description: string;
   inputSchema: Readonly<Record<string, unknown>>;
@@ -93,6 +104,7 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
   {
     name: 'zodiacs.rising_sign',
     path: '/rising-sign/',
+    alsoOn: SIGNS_IN_ORDER.map((sign) => `/rising-sign/${sign}/`),
     title: 'Rising sign',
     description: 'The rising sign (ascendant) and the midheaven at birth, as this page calculates them. It needs the '
       + 'birth time. ' + CALCULATED,
@@ -109,6 +121,9 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
   {
     name: 'zodiacs.compatibility',
     path: '/compatibility/',
+    // Each pair's page names both signs in zodiac order.
+    alsoOn: SIGNS_IN_ORDER.flatMap((first, index) => SIGNS_IN_ORDER.slice(index)
+      .map((second) => `/compatibility/${first}-${second}/`)),
     title: 'Compatibility',
     description: 'Synastry between two people, as this page compares them: each person\'s Sun, Moon and rising signs, '
       + 'the eight contacts it ranks first (generational ones last), the count of each aspect, and the two charts\' '
@@ -165,6 +180,7 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
   {
     name: 'zodiacs.numerology',
     path: '/numerology/',
+    alsoOn: LIFE_PATH_NUMBERS.map((number) => `/numerology/life-path/${number}/`),
     title: 'Numerology',
     description: 'Pythagorean numerology, as this page reckons it: Life Path, Birthday and Attitude from the birth '
       + 'date; Expression, Soul Urge, Personality and Maturity from the full birth name (Latin letters); karmic debts; '
@@ -255,5 +271,5 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
 /** The calculator tool a page path registers, or null when the page has none. */
 export function calculatorToolForPath(path: string): CalculatorToolDescriptor | null {
   const plain = path.replace(LOCALE_PREFIX, '');
-  return CALCULATOR_TOOLS.find((tool) => tool.path === plain) ?? null;
+  return CALCULATOR_TOOLS.find((tool) => tool.path === plain || tool.alsoOn?.includes(plain)) ?? null;
 }

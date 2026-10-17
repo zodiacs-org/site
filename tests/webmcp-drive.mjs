@@ -5,8 +5,8 @@
  *   npm run test:webmcp
  *   node tests/webmcp-drive.mjs --base-url https://zodiacs.org   (the production check; polyfill only)
  *
- * Search registers on English pages. Every calculator page registers its own tool in every locale it is built in
- * (Track A2): the drive visits each, calls the tool with a synthetic input and with one its schema refuses, and checks
+ * Search registers on English pages. Every calculator page, and every page that embeds a calculator, registers that
+ * calculator's tool in every locale it is built in (Track A2): the drive visits each, calls the tool with a synthetic input and with one its schema refuses, and checks
  * that the calculations load only on the first call. On /birth-chart/ it also opens the page itself on the same birth
  * and compares the Sun, Moon and rising the page prints with the tool's.
  */
@@ -34,9 +34,16 @@ const UNTIMED = { date: '1985-03-02', place: TOKYO };
 const LOCALES = ['es', 'pt', 'fr', 'it', 'ru'];
 const NOWHERE = { ...LONDON, timeZone: 'Mars/Olympus_Mons' };
 
+// The pages that embed a calculator, and so register its tool too: each rising sign's profile, each compatibility
+// pair (both signs in zodiac order) and each Life Path page.
+const SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn',
+  'aquarius', 'pisces'];
+const PAIRS = SIGNS.flatMap((first, index) => SIGNS.slice(index).map((second) => `${first}-${second}`));
+const LIFE_PATHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
+
 /**
- * Each calculator tool: its page, the locales its page is built in, a call and what its answer must hold, and a call
- * its schema refuses.
+ * Each calculator tool: its page, the pages that embed it, the locales its pages are built in, a call and what its
+ * answer must hold, and a call its schema refuses.
  */
 const CALCULATORS = [
   {
@@ -52,6 +59,7 @@ const CALCULATORS = [
   },
   {
     name: 'zodiacs.rising_sign', path: '/rising-sign/', locales: LOCALES, call: BIRTH,
+    alsoOn: SIGNS.map((sign) => `/rising-sign/${sign}/`),
     holds: (data) => typeof data.rising?.sign === 'string', refuse: UNTIMED, unread: { ...BIRTH, place: NOWHERE },
   },
   {
@@ -61,6 +69,7 @@ const CALCULATORS = [
   },
   {
     name: 'zodiacs.compatibility', path: '/compatibility/', locales: LOCALES, call: { first: BIRTH, second: UNTIMED },
+    alsoOn: PAIRS.map((pair) => `/compatibility/${pair}/`),
     holds: (data) => data.people?.length === 2 && data.topContacts?.length > 0 && data.people[1].rising === null,
     refuse: { first: BIRTH }, unread: { first: BIRTH, second: { ...UNTIMED, place: NOWHERE } },
   },
@@ -86,6 +95,7 @@ const CALCULATORS = [
   },
   {
     name: 'zodiacs.numerology', path: '/numerology/', locales: [],
+    alsoOn: LIFE_PATHS.map((number) => `/numerology/life-path/${number}/`),
     call: { birthDate: '1990-06-15', fullName: 'Alex Synthetic Example', today: '2026-10-15' },
     holds: (data) => data.lifePath?.value === 4 && data.nameUsed === true, refuse: { birthDate: '15/06/1990' },
     unread: { birthDate: '1990-06-15', fullName: 'Алекс' },
@@ -138,7 +148,9 @@ const UNREAD_CODES = {
 async function calculatorPage(page, calculator, path) {
   await page.waitForFunction((name) => (
     navigator.modelContextTesting?.listTools().some((tool) => tool.name === name)
-  ), calculator.name);
+  ), calculator.name).catch((error) => {
+    throw new Error(`${path}: ${calculator.name} never registered (${String(error.message).split('\n')[0]})`);
+  });
   return page.evaluate(async ({ name, call, refuse, unread }) => {
     const testing = navigator.modelContextTesting;
     const loaded = () => performance.getEntriesByType('resource')
@@ -188,14 +200,18 @@ function assertCalculatorPage(label, calculator, result) {
   }
 }
 
-/** The pages each calculator is built at: English, and each locale the build has the page in. */
+/**
+ * The pages each calculator is built at: its page and the pages that embed it, in English and in each released locale
+ * the calculator is localized in (the Russian preview where the build has the page).
+ */
 async function calculatorPaths(baseURL, calculator) {
-  const paths = [calculator.path];
-  for (const locale of calculator.locales) {
-    const path = `/${locale}${calculator.path}`;
-    const response = await fetch(`${baseURL}${path}`, { redirect: 'manual' });
-    if (response.status === 200) paths.push(path);
-    else if (locale !== 'ru') throw new Error(`${path}: expected the page, got HTTP ${response.status}`);
+  const paths = [];
+  for (const english of [calculator.path, ...(calculator.alsoOn ?? [])]) {
+    for (const path of [english, ...calculator.locales.map((locale) => `/${locale}${english}`)]) {
+      const response = await fetch(`${baseURL}${path}`, { redirect: 'manual' });
+      if (response.status === 200) paths.push(path);
+      else if (!path.startsWith('/ru/')) throw new Error(`${path}: expected the page, got HTTP ${response.status}`);
+    }
   }
   return paths;
 }

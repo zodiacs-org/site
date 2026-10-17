@@ -4,9 +4,11 @@ partial until production.
 **Overall delivery: 43%** (43.409% to three decimals): 79.2 of 182.45
 weighted units accepted; blocked 2% (3), or 1.644%.
 
-- **A2, partial.** Each of the sixteen calculator pages registers its own
-  WebMCP tool when the browser or an extension provides `modelContext`, in
-  every locale it is built in: 81 pages. English pages keep `zodiacs.search`.
+- **A2, partial.** Each of the sixteen calculator pages, and each page that
+  embeds one (the rising signs' profiles, the compatibility pairs and the Life
+  Path pages), registers the calculator's WebMCP tool when the browser or an
+  extension provides `modelContext`, in every locale it is built in: 543
+  pages. English pages keep `zodiacs.search`.
   The calculations load only on a call and run in the browser with the
   page's own code. Tests run each island's code beside its tool, and the
   WebMCP drive calls every tool on every page of a local build

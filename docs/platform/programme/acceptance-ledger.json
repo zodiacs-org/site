@@ -2109,7 +2109,7 @@
       "evidence": [
         "docs/platform/evidence/webmcp-calculators-20261015/README.md: the sixteen calculator pages, their tools, the pages that are not calculators and why, and the tests and drive that hold each tool to its page"
       ],
-      "notes": "WebMCP registers one tool (zodiacs.search) on English pages. Update 2026-10-15: each of the sixteen calculator pages (a page whose own code computes a result from a typed birth, date or name) registers its own tool when modelContext exists, in every locale it is built in, 81 pages in all; English pages keep zodiacs.search. The calculations load only on a call and run in the browser with the page's own code: tests run each island's code beside its tool, and the WebMCP drive calls every tool on every page of a local build. Partial until it is merged, deployed and checked in production."
+      "notes": "WebMCP registers one tool (zodiacs.search) on English pages. Update 2026-10-15: each of the sixteen calculator pages (a page whose own code computes a result from a typed birth, date or name) registers its own tool when modelContext exists, in every locale it is built in, and so does each page that embeds one (the rising signs' profiles, the compatibility pairs and the Life Path pages): 543 pages in all; English pages keep zodiacs.search. The calculations load only on a call and run in the browser with the page's own code: tests run each island's code beside its tool, and the WebMCP drive calls every tool on every page of a local build. Partial until it is merged, deployed and checked in production."
     },
     {
       "id": "A3",

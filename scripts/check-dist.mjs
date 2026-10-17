@@ -711,6 +711,51 @@ for (const [name, path, localized] of WEBMCP_CALCULATOR_TOOLS) {
   }
 }
 if (webMcpCalculatorPages < 60) fail(`webmcp: only ${webMcpCalculatorPages} calculator pages register a tool`);
+
+// Track A2, by what each page renders: a built page with a calculator island registers that calculator's tool, as
+// the shipped bundle's own lookup finds it, and no page registers a calculator tool without its calculator. Pages
+// that embed a calculator (a rising sign's profile, a compatibility pair, a Life Path page) count too. ChartCalculator
+// serves three tools and ReturnPersonal two, told apart by the page's first path segment; an island not named here,
+// or on a page no tool matches, fails until it is given one.
+const WEBMCP_ISLAND_TOOLS = {
+  ChartCalculator: { 'birth-chart': 'zodiacs.birth_chart', 'moon-sign': 'zodiacs.moon_sign', 'rising-sign': 'zodiacs.rising_sign' },
+  SynastryCalculator: { compatibility: 'zodiacs.compatibility' },
+  NumerologyCalculator: { numerology: 'zodiacs.numerology' },
+  BigThreeQuick: { 'big-three': 'zodiacs.big_three' },
+  TransitTracker: { transits: 'zodiacs.transits' },
+  SaturnReturnCalculator: { 'saturn-return': 'zodiacs.saturn_return' },
+  SolarReturnCalculator: { 'solar-return': 'zodiacs.solar_return' },
+  LunarReturnCalculator: { 'lunar-return': 'zodiacs.lunar_return' },
+  MoonPhaseTool: { 'moon-phase': 'zodiacs.moon_phase' },
+  BabyZodiac: { 'baby-zodiac': 'zodiacs.baby_zodiac' },
+  ChartTwins: { 'chart-twins': 'zodiacs.chart_twins' },
+  GroupCharts: { 'group-charts': 'zodiacs.group_chart' },
+  ReturnPersonal: { 'astrologer-kit': 'zodiacs.chart_pdf', 'your-sky-wrapped': 'zodiacs.year_wrapped' },
+};
+if (await exists(webMcpPath)) {
+  const { webMcpToolsForPage } = await import(pathToFileURL(webMcpPath).href);
+  let webMcpToolPages = 0;
+  for (const file of await htmlFiles(root)) {
+    const html = idCache.get(file) ?? await readFile(file, 'utf8');
+    const path = `/${relative(root, file).split(sep).join('/').replace(/index\.html$/u, '')}`;
+    const plain = path.replace(/^\/(?:es|pt|fr|it|ru)(?=\/)/u, '');
+    const islands = [...new Set([...html.matchAll(/<astro-island[^>]*component-url="\/_astro\/([A-Za-z0-9_-]+?)\.[A-Za-z0-9_-]+\.js"/gu)]
+      .map((match) => match[1]).filter((island) => Object.hasOwn(WEBMCP_ISLAND_TOOLS, island)))];
+    const expected = [...new Set(islands.map((island) => WEBMCP_ISLAND_TOOLS[island][plain.split('/')[1]] ?? `none for ${island}`))].sort();
+    const registered = webMcpToolsForPage({ path, search: path === plain })
+      .map((tool) => tool.name).filter((name) => name !== 'zodiacs.search').sort();
+    if (JSON.stringify(expected) !== JSON.stringify(registered)) {
+      fail(`webmcp: ${path} renders ${islands.join(', ') || 'no calculator'} but registers ${registered.join(', ') || 'no calculator tool'}`);
+    }
+    if (registered.length === 0) continue;
+    if (!html.includes('/assets/webmcp-register.js?v=calculators-1') || !html.includes('registerWebMcpPage')) {
+      fail(`webmcp: ${path} must load the registration of its calculator tool`);
+    }
+    webMcpToolPages += 1;
+  }
+  // 81 calculator pages, 60 rising-sign profiles, 390 compatibility pairs and 12 Life Path pages on 2026-10-17.
+  if (webMcpToolPages < 540) fail(`webmcp: only ${webMcpToolPages} pages register a calculator tool`);
+}
 const twinDirectoryPath = resolve(root, 'data/chart-twins.json');
 if (!(await exists(twinDirectoryPath))) {
   fail('webmcp: missing data/chart-twins.json, which zodiacs.chart_twins reads');
