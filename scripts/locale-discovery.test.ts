@@ -24,12 +24,19 @@ describe('localized discovery surfaces', () => {
   });
 
   it('uses localized sign dates on both daily horoscope surfaces', () => {
-    for (const locale of ['es', 'pt'] as const) {
-      for (const route of ['index.astro', '[sign]/index.astro']) {
+    // The es and pt routes are thin; the shared localized components render them.
+    const surfaces = [
+      { route: 'index.astro', component: 'src/components/localized/LocalizedHoroscopeHub.astro', tag: '<LocalizedHoroscopeHub ' },
+      { route: '[sign]/index.astro', component: 'src/components/localized/LocalizedHoroscope.astro', tag: '<LocalizedHoroscope ' },
+    ];
+    for (const { route, component, tag } of surfaces) {
+      for (const locale of ['es', 'pt'] as const) {
         const page = read(`src/pages/${locale}/horoscopes/${route}`);
-        expect(page).toContain('{signDateRange(sign, locale)}');
-        expect(page).not.toContain('{sign.dates}');
+        expect(page).toContain(`${tag}locale="${locale}"`);
       }
+      const source = read(component);
+      expect(source).toContain('{signDateRange(sign, locale)}');
+      expect(source).not.toContain('{sign.dates}');
     }
     expect(signDates('aries', 'es')).toBe('21 mar – 19 abr');
     expect(signDates('capricorn', 'es')).toBe('22 dic – 19 ene');

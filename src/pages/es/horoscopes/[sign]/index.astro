@@ -1,84 +1,10 @@
 ---
-import Base from '../../../../layouts/Base.astro';
-import DailyLocaleReading from '../../../../components/DailyLocaleReading.astro';
-import dailyData from '../../../../data/daily.json';
-import type { Daily } from '../../../../lib/daily';
-import { dailyReadingForLocale } from '../../../../lib/i18n/daily-reading';
-import { formatDate } from '../../../../lib/i18n/dates';
-import { moonPhaseLabel } from '../../../../lib/i18n/astrology';
-import { englishOnlyCue } from '../../../../lib/i18n/english-only';
-import { SIGNS, signBySlug, signName } from '../../../../lib/signs';
-import { signDateRange } from '../../../../lib/sign-display';
+// Horóscopo diario de cada signo en español: la página vive en LocalizedHoroscope.
+import LocalizedHoroscope from '../../../../components/localized/LocalizedHoroscope.astro';
+import { SIGNS } from '../../../../lib/signs';
 
 export function getStaticPaths() {
   return SIGNS.map((sign) => ({ params: { sign: sign.slug } }));
 }
-
-const locale = 'es' as const;
-const daily = dailyData as Daily;
-const sign = signBySlug(Astro.params.sign!);
-const name = signName(sign, locale);
-const reading = dailyReadingForLocale(sign.slug, daily, locale);
-const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
-  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
-});
-// El título usa la fecha sin año para caber en 60 caracteres con el nombre de signo más largo.
-const titleDate = formatDate(locale, `${daily.date}T12:00:00Z`, {
-  day: 'numeric', month: 'long', timeZone: 'UTC',
-});
-const cue = englishOnlyCue(locale);
-const notes = reading.lines.length === 1 ? '1 nota leída' : `${reading.lines.length} notas leídas`;
-const description = `Horóscopo de ${name} hoy, ${dateLabel}: ${notes} desde sus casas solares, con las posiciones reales del cielo y sus comprobantes.`;
 ---
-<Base
-  title={`Horóscopo de ${name} hoy, ${titleDate} | Zodiacs.org`}
-  description={description}
-  path={`/es/horoscopes/${sign.slug}/`}
-  locale={locale}
-  editionDate={daily.date}
-  image={`/assets/og/v2/sign/${sign.slug}.png`}
-  imageAlt={`${name}, horóscopo de hoy, Zodiacs.org`}
->
-  <section class="section--tight container container--narrow" data-edition-content="true" style={`--sign:${sign.hue}`}>
-    <header class="sign-es__hero">
-      <h1 class="display">
-        <img src={`/assets/zodiac-icons/128/${sign.slug}.webp`} width="44" height="44" alt="" decoding="async" />
-        {name} hoy
-      </h1>
-      <p class="dateline">Horóscopo diario · {dateLabel}</p>
-      <p class="sign-es__lead">Lo que más importa para {name}.</p>
-      <span class="sign-es__stamp mono">{signDateRange(sign, locale)} · {moonPhaseLabel(locale, daily.moon.phase)}</span>
-    </header>
-
-    <div class="sign-es__reading shell tinted">
-      <div class="core tinted sign-es__core">
-        <DailyLocaleReading locale={locale} reading={reading} />
-      </div>
-    </div>
-
-    <nav class="sign-es__links" aria-label="Más sobre este signo">
-      <a class="btn btn--glass" href={`/es/${sign.slug}/`}><span>Guía de {name}</span><span class="orb">→</span></a>
-      <a class="btn btn--ghost" href="/es/horoscopes/"><span>Todos los signos</span><span class="orb">→</span></a>
-      <a class="btn btn--ghost" href={`/horoscopes/${sign.slug}/`} hreflang="en" title={cue?.aria}>
-        <span>Mañana, semana y mes{cue?.suffix}</span><span class="orb">↗</span>
-      </a>
-    </nav>
-
-    <p class="sign-es__note">
-      Estas notas se leen desde el signo solar. Con tu hora y lugar de nacimiento, la{' '}
-      <a href="/es/birth-chart/">carta natal gratis</a> muestra en qué casa cae cada tránsito para ti.
-    </p>
-  </section>
-</Base>
-
-<style>
-  .sign-es__hero { max-width: 62ch; margin-bottom: clamp(22px, 4vw, 34px); }
-  .sign-es__hero h1 { display: flex; align-items: center; gap: 12px; margin: 14px 0; font-size: var(--text-2xl); line-height: 1.04; }
-  .sign-es__hero h1 img { border-radius: 50%; }
-  .sign-es__lead { margin: 0; color: var(--text-2); font-size: var(--text-lg); text-wrap: pretty; }
-  .sign-es__stamp { display: block; margin-top: 14px; color: var(--faint); font-size: 12px; letter-spacing: 0; }
-  .sign-es__core { padding: 22px 20px; }
-  .sign-es__links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: clamp(18px, 3vw, 26px); }
-  .sign-es__note { margin-top: clamp(18px, 3vw, 26px); color: var(--muted); font-size: var(--text-sm); }
-  .sign-es__note a { color: var(--text); }
-</style>
+<LocalizedHoroscope locale="es" signSlug={Astro.params.sign!} />
