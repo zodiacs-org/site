@@ -18,6 +18,10 @@ export const asSite = (place: Place) => ({ lat: place.latitude, lon: place.longi
 /** A birth as the pages take it: a date, a clock time when it is known (null when not), and a place. */
 export interface Birth { date: string; time: string | null; place: Place }
 
+/** A string's length in Unicode code points, as JSON Schema's maxLength counts it (JavaScript's .length counts UTF-16
+ * code units, two for an emoji). */
+export const characters = (text: string) => [...text].length;
+
 export const isRecord = (value: unknown): value is Record<string, unknown> => (
   typeof value === 'object' && value !== null && !Array.isArray(value)
 );
@@ -53,7 +57,7 @@ export function readPlace(value: unknown): Place | null | undefined {
   const { latitude, longitude, timeZone } = value;
   if (typeof latitude !== 'number' || !Number.isFinite(latitude) || Math.abs(latitude) > 90) return undefined;
   if (typeof longitude !== 'number' || !Number.isFinite(longitude) || Math.abs(longitude) > 180) return undefined;
-  if (typeof timeZone !== 'string' || timeZone.length === 0 || timeZone.length > 64 || !supportedZone(timeZone)) return undefined;
+  if (typeof timeZone !== 'string' || timeZone.length === 0 || characters(timeZone) > 64 || !supportedZone(timeZone)) return undefined;
   return { latitude, longitude, timeZone };
 }
 

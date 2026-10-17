@@ -108,7 +108,7 @@ These pages are not calculators, and register no tool of their own:
     skipped and the range's last day.
   - On the day the clock skipped, page and tool both refuse an untimed
     chart, because local noon is not in that date.
-  - All 213 tests pass.
+  - All 249 tests under `src/lib/webmcp/` pass.
 - **Schemas and readers agree.** `calculator-tools.test.ts` compiles each
   schema with Ajv. A valid input passes both the schema and the tool; each
   invalid one fails both. It also checks that each refusal names the problem
@@ -119,7 +119,12 @@ These pages are not calculators, and register no tool of their own:
   agree on each. Codex's second review found that the patterns had bounded
   month and day apart, so `1990-02-30` passed a schema whose reader refused
   it. Instants run from 00:00 through 23:59, and `24:00`, which `Date` would
-  roll into the next day, is refused.
+  roll into the next day, is refused. Text fields count their length in code
+  points, as JSON Schema's `maxLength` does, so a group member's name of 24
+  emoji fits both. Codex's fourth review found the tool counting UTF-16 code
+  units, which refused a name the schema accepted. The test lists every
+  bounded text field in the schemas and checks the free-text ones at their
+  limits.
 - **At the extremes.** `calculators/edges.test.ts` runs every tool at the
   extremes its schema accepts: the first and last dates, at the start and end
   of the day, east and west of Greenwich, and the first and last instants.

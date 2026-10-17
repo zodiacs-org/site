@@ -14,7 +14,7 @@ import {
 } from './calculators/chart';
 import { ENGINE, fixed, pageUrl, position } from './calculators/format';
 import {
-  isRecord, onlyKeys, readBirth, readDate, readHouseSystem, readInstant, readPlace, readTime, type Birth,
+  characters, isRecord, onlyKeys, readBirth, readDate, readHouseSystem, readInstant, readPlace, readTime, type Birth,
 } from './calculators/input';
 import { LocalDateReferenceError, lookupMoonPhase } from './calculators/moon-phase';
 import { numerologyResult } from './calculators/numerology';
@@ -184,7 +184,7 @@ async function lunarReturn(input: unknown) {
 async function numerology(input: unknown) {
   const { birthDate, fullName, today } = fields(input, ['birthDate', 'fullName', 'today']);
   const date = need(readDate(birthDate));
-  if (fullName !== undefined && (typeof fullName !== 'string' || fullName.length > 200)) {
+  if (fullName !== undefined && (typeof fullName !== 'string' || characters(fullName) > 200)) {
     throw new Refusal('INVALID_INPUT');
   }
   const forDate = today === undefined ? localToday(new Date()) : need(readDate(today));
@@ -235,7 +235,7 @@ async function groupChart(input: unknown) {
   if (!Array.isArray(people) || people.length < 3 || people.length > 8) throw new Refusal('INVALID_INPUT');
   const members: GroupMember[] = people.map((entry, index) => {
     const { name, birth: natal } = fields(entry, ['name', 'birth']);
-    if (name !== undefined && (typeof name !== 'string' || name.length > 24)) throw new Refusal('INVALID_INPUT');
+    if (name !== undefined && (typeof name !== 'string' || characters(name) > 24)) throw new Refusal('INVALID_INPUT');
     return { name: (name as string | undefined)?.trim() || `Person ${index + 1}`, birth: birth(natal) };
   });
   try {

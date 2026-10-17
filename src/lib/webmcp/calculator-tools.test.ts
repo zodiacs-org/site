@@ -171,6 +171,45 @@ describe('each tool\'s schema and its reader agree', () => {
     expect(envelope).toEqual({ ok: false, error: { code: 'INVALID_INPUT', message: expect.any(String) } });
   });
 
+  it('count a text\'s length as the schema does, in code points rather than UTF-16 code units', async () => {
+    // Every bounded text field in the schemas. A field added later fails here until it is checked below; a time zone
+    // name is ASCII, so only free text can tell the two counts apart.
+    const bounded = new Set<string>();
+    const walk = (node: unknown, key: string) => {
+      if (Array.isArray(node)) node.forEach((item) => walk(item, key));
+      else if (node && typeof node === 'object') {
+        const schema = node as Record<string, unknown>;
+        if (schema.type === 'string' && ('maxLength' in schema || 'minLength' in schema)) bounded.add(key);
+        for (const [child, value] of Object.entries(schema)) {
+          if (child === 'properties') for (const [property, field] of Object.entries(value as object)) walk(field, property);
+          else walk(value, key);
+        }
+      }
+    };
+    for (const tool of CALCULATOR_TOOLS) walk(tool.inputSchema, '');
+    expect([...bounded].sort()).toEqual(['fullName', 'name', 'timeZone']);
+    // A crescent moon is one code point and two UTF-16 code units; a lone surrogate is one of each.
+    const moon = '\u{1F319}';
+    const group = (name: string) => ({ people: [{ name, birth: BIRTH }, ...(VALID['zodiacs.group_chart'] as { people: unknown[] }).people.slice(1)] });
+    const cases: Array<[string, unknown, boolean]> = [
+      ['zodiacs.group_chart', group(moon.repeat(24)), true],
+      ['zodiacs.group_chart', group(`Ana ${moon.repeat(20)}`), true],
+      ['zodiacs.group_chart', group('\uD83D'.repeat(24)), true],
+      ['zodiacs.group_chart', group(moon.repeat(25)), false],
+      ['zodiacs.group_chart', group(`${'x'.repeat(24)}\uDE19`), false],
+      ['zodiacs.numerology', { birthDate: '1990-06-15', fullName: moon.repeat(200), today: '2026-10-15' }, true],
+      ['zodiacs.numerology', { birthDate: '1990-06-15', fullName: moon.repeat(201), today: '2026-10-15' }, false],
+    ];
+    for (const [name, input, fits] of cases) {
+      expect(validators.get(name)!(input), JSON.stringify(input)).toBe(fits);
+      const envelope = await runCalculatorTool(name, input);
+      expect(envelope.ok || envelope.error.code !== 'INVALID_INPUT', JSON.stringify(input)).toBe(fits);
+    }
+    // A name that fits is shown as given.
+    const named = await runCalculatorTool('zodiacs.group_chart', group(moon.repeat(24)));
+    expect(JSON.stringify(named)).toContain(moon.repeat(24));
+  });
+
   it('take exactly the calendar dates and the instants their readers take', () => {
     const property = (name: string, key: string) => ajv.compile(
       (CALCULATOR_TOOLS.find((tool) => tool.name === name)!.inputSchema as { properties: Record<string, object> }).properties[key],
