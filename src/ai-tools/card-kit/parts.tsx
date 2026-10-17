@@ -26,20 +26,31 @@ export function Card({ hue, hue2, label, children }: { hue: string | null; hue2?
 }
 
 declare const CARD_ART: Record<string, string>;
-/** A card's hero art: a sign panel (by slug) or one of the cards' own pieces (by name), inlined at build time. */
-export const artOf = (key: string | null | undefined) => (key ? CARD_ART[key] ?? CARD_ART[key.toLowerCase()] : undefined);
-
-export interface ArtPanel { src: string | undefined; flip?: boolean; focus?: string }
+/** A piece of hero art in its two twins: the dark one for the dark host theme and its daylight twin for the light theme. */
+export interface ArtSource { dark: string; light?: string }
 /**
- * The hero art: one 3:2 panel, or two panels facing each other, in the
- * site's dimmed, spotlit frame. Decorative, so hidden from assistive
+ * A card's hero art: a sign panel (by slug) or one of the cards' own pieces
+ * (by name), inlined at build time, with its light twin under "<key>-light".
+ */
+export const artOf = (key: string | null | undefined): ArtSource | undefined => {
+  const name = key && (CARD_ART[key] ? key : key.toLowerCase());
+  return name && CARD_ART[name] ? { dark: CARD_ART[name], light: CARD_ART[`${name}-light`] } : undefined;
+};
+
+export interface ArtPanel { src: ArtSource | undefined; flip?: boolean; focus?: string }
+/**
+ * The hero art: one 3:2 panel, or two panels facing each other. Each panel
+ * carries both twins and the stylesheet shows the one for the host theme, so
+ * nothing swaps after paint; the other is never decoded. The panel fades into
+ * the card on every side, with no frame. Decorative, so hidden from assistive
  * technology; the words around it say what it shows. Nothing is set over it.
  */
 export function Art({ panels }: { panels: ArtPanel[] }) {
   const shown = panels.filter((panel) => panel.src);
   if (shown.length === 0) return null;
-  return <div class={`art art-${shown.length}`} aria-hidden="true">{shown.map((panel, index) => <figure key={index} class={`art-frame${panel.flip ? ' art-flip' : ''}`} style={panel.focus ? { '--focus': panel.focus } as CSSProperties : undefined}>
-    <img src={panel.src} alt="" width="480" height="320" decoding="async" loading="lazy"/>
+  return <div class={`art art-${shown.length}`} aria-hidden="true">{shown.map((panel, index) => <figure key={index} class={`art-frame${panel.flip ? ' art-flip' : ''}${panel.src!.light ? ' art-twins' : ''}`} style={panel.focus ? { '--focus': panel.focus } as CSSProperties : undefined}>
+    <img class="art-dark" src={panel.src!.dark} alt="" width="480" height="320" decoding="async" loading="lazy"/>
+    {panel.src!.light && <img class="art-light" src={panel.src!.light} alt="" width="480" height="320" decoding="async" loading="lazy"/>}
   </figure>)}</div>;
 }
 

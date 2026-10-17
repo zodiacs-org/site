@@ -2,7 +2,8 @@
  * Accessibility and layout checks for every assistant card, at 760px and
  * 390px in the light and dark host themes: rendered text contrast (every
  * text element against the surface it sits on, WCAG AA), hero art that is
- * decorative with no text over it, no sideways overflow, every link and
+ * decorative with no text over it, shows the twin for the host theme and
+ * fades into the card on every side with no frame, no sideways overflow, every link and
  * button reachable by Tab with a visible focus ring, and no motion when the
  * system asks for reduced motion.
  * Real Chromium, synthetic host bridge, no network.
@@ -98,8 +99,9 @@ try {
         const contrast = await lowestContrast(page);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth
           || [...document.querySelectorAll('.card *, .shell *')].some((element) => { const box = element.getBoundingClientRect(); return box.width > 0 && box.right > innerWidth + 0.5; }));
-        // Hero art: decorative (empty alt, hidden from assistive technology, its size set), and no text sits over it.
-        const art = await page.evaluate(() => {
+        // Hero art: decorative (empty alt, hidden from assistive technology, its size set), no text over it,
+        // exactly one twin shown (the daylight twin in the light theme), and faded on every side with no frame.
+        const art = await page.evaluate((theme) => {
           const frames = [...document.querySelectorAll('.art-frame')];
           const boxes = frames.map((frame) => frame.getBoundingClientRect());
           const textOver = [...document.querySelectorAll('body *')].filter((element) => {
@@ -108,9 +110,18 @@ try {
             const box = element.getBoundingClientRect();
             return boxes.some((frame) => box.left < frame.right && box.right > frame.left && box.top < frame.bottom && box.bottom > frame.top);
           }).length;
-          const decorative = frames.every((frame) => frame.closest('[aria-hidden="true"]') && frame.querySelector('img')?.getAttribute('alt') === '' && frame.querySelector('img')?.getAttribute('width'));
-          return { frames: frames.length, textOver, decorative };
-        });
+          const decorative = frames.every((frame) => frame.closest('[aria-hidden="true"]') && [...frame.querySelectorAll('img')].every((img) => img.getAttribute('alt') === '' && img.getAttribute('width')));
+          const twin = frames.every((frame) => {
+            const shown = [...frame.querySelectorAll('img')].filter((img) => getComputedStyle(img).display !== 'none');
+            return shown.length === 1 && frame.classList.contains('art-twins') && shown[0].classList.contains(theme === 'light' ? 'art-light' : 'art-dark');
+          });
+          const faded = frames.every((frame) => {
+            const style = getComputedStyle(frame);
+            const mask = style.maskImage || style.getPropertyValue('-webkit-mask-image');
+            return (mask.match(/linear-gradient/g) ?? []).length === 2 && style.borderTopWidth === '0px' && style.boxShadow === 'none' && style.backgroundImage === 'none' && parseFloat(style.borderTopLeftRadius) === 0;
+          });
+          return { frames: frames.length, textOver, decorative, twin, faded };
+        }, theme);
         // Keyboard: Tab reaches every link, button and disclosure, each with a visible focus ring.
         const focusable = await page.locator('a[href], button:not([disabled]), summary').count();
         const reached: string[] = [];
@@ -138,6 +149,8 @@ try {
         assert.equal(overflow, false, `${card} ${width} ${theme}: nothing runs off the side`);
         assert.equal(art.textOver, 0, `${card} ${width} ${theme}: no text over the hero art`);
         assert.ok(art.decorative, `${card} ${width} ${theme}: hero art is decorative, with its size set`);
+        assert.ok(art.twin, `${card} ${width} ${theme}: hero art shows its ${theme} twin, and only that one`);
+        assert.ok(art.faded, `${card} ${width} ${theme}: hero art fades into the card on every side, with no frame`);
         if (!['horoscope-picker'].includes(card)) assert.ok(art.frames > 0, `${card} ${width} ${theme}: the card has its hero art`);
         assert.equal(reached.length, focusable, `${card} ${width} ${theme}: Tab reaches all ${focusable} controls (reached ${reached.length})`);
         assert.equal(unringed, 0, `${card} ${width} ${theme}: every focused control shows a ring`);
@@ -159,4 +172,4 @@ try {
 } finally { await browser.close(); }
 const lowest = report.reduce((min, row: any) => Math.min(min, row.lowestContrast.ratio), 99);
 if (out) await writeFile(out, JSON.stringify({ checked: report.length, lowestTextContrast: lowest, rows: report }, null, 2) + '\n');
-console.log(`Assistant card QA passed: ${report.length} renders, lowest text contrast ${lowest}:1, hero art on every card with no text over it, no overflow, every control reachable by Tab with a focus ring, no motion under reduced motion.`);
+console.log(`Assistant card QA passed: ${report.length} renders, lowest text contrast ${lowest}:1, hero art on every card in its theme's twin, faded on every side with no text over it, no overflow, every control reachable by Tab with a focus ring, no motion under reduced motion.`);

@@ -9,12 +9,10 @@
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --art-edge: rgba(238, 241, 247, .07);
   --paper: #0d0f13; --card: #16191f; --tile: #1c2029; --line: #34394a; --line-soft: #272c38;
   --ink: #eef1f7; --ink-2: #c6ccda; --muted: #a0a8ba; --track: #2a303d; --notice: #f0b866; color-scheme: dark;
 } }
 :root[data-theme="dark"] {
-  --art-edge: rgba(238, 241, 247, .07);
   --paper: #0d0f13; --card: #16191f; --tile: #1c2029; --line: #34394a; --line-soft: #272c38;
   --ink: #eef1f7; --ink-2: #c6ccda; --muted: #a0a8ba; --track: #2a303d; --notice: #f0b866; color-scheme: dark;
 }
@@ -54,19 +52,37 @@ p { margin: 0; }
 .hero-words-only { grid-template-columns: minmax(0, 1fr); }
 .hero-words { display: grid; gap: 6px; }
 
-/* The hero art: the site's sign panels and the cards' own pieces in a dimmed,
-   spotlit frame (src/styles/kit.css .artframe). A dark plate in both host
-   themes, edged with a hairline; nothing is ever set over it. */
+/* The hero art: the site's sign panels and the cards' own pieces, each in two
+   twins (dark for the dark host theme, a daylight twin for the light one).
+   No frame, plate or border: the picture fades into the card on every side
+   through two crossed linear masks, so no edge shows in either theme. Nothing
+   is ever set over it. */
 .card-head.has-art { display: grid; grid-template-columns: minmax(0, 1fr) 272px; align-items: center; gap: 22px; }
 .card-head.has-art:has(.art-2) { grid-template-columns: minmax(0, 1fr) 300px; }
 .art { display: grid; gap: 6px; }
-.art-2 { grid-template-columns: 1fr 1fr; }
-.art-frame { position: relative; margin: 0; overflow: hidden; aspect-ratio: 3 / 2; border-radius: 14px; background: #0b0c10; isolation: isolate; box-shadow: 0 0 0 1px var(--art-edge, var(--line)); }
-.art-2 .art-frame { aspect-ratio: 4 / 5; }
-.art-frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 50%); filter: saturate(.92) brightness(.86); }
+.art-2 { grid-template-columns: 1fr 1fr; gap: 0; }
+/* Eased ramps on all four sides, crossed: --fade-l/-r are shares of the width, --fade-t/-b of the height. */
+.art-frame { --fade-l: 24%; --fade-r: 24%; --fade-t: 28%; --fade-b: 28%; position: relative; margin: 0; overflow: hidden; aspect-ratio: 3 / 2;
+  --art-mask: linear-gradient(90deg, transparent, rgba(0, 0, 0, .1) calc(var(--fade-l) * .25), rgba(0, 0, 0, .38) calc(var(--fade-l) * .5), rgba(0, 0, 0, .78) calc(var(--fade-l) * .75), #000 var(--fade-l), #000 calc(100% - var(--fade-r)), rgba(0, 0, 0, .78) calc(100% - var(--fade-r) * .75), rgba(0, 0, 0, .38) calc(100% - var(--fade-r) * .5), rgba(0, 0, 0, .1) calc(100% - var(--fade-r) * .25), transparent),
+    linear-gradient(180deg, transparent, rgba(0, 0, 0, .1) calc(var(--fade-t) * .25), rgba(0, 0, 0, .38) calc(var(--fade-t) * .5), rgba(0, 0, 0, .78) calc(var(--fade-t) * .75), #000 var(--fade-t), #000 calc(100% - var(--fade-b)), rgba(0, 0, 0, .78) calc(100% - var(--fade-b) * .75), rgba(0, 0, 0, .38) calc(100% - var(--fade-b) * .5), rgba(0, 0, 0, .1) calc(100% - var(--fade-b) * .25), transparent);
+  -webkit-mask-image: var(--art-mask);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--art-mask);
+  mask-composite: intersect; }
+/* A pair faces each other across a narrow soft seam; the outer sides fade wider. */
+.art-2 .art-frame { aspect-ratio: 4 / 5; --fade-l: 26%; --fade-r: 9%; --fade-t: 22%; --fade-b: 22%; }
+.art-2 .art-frame + .art-frame { --fade-l: 9%; --fade-r: 26%; }
+.art-frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 50%); }
 .art-flip img { transform: scaleX(-1); }
-.art-frame::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: radial-gradient(ellipse 50% 56% at var(--spot, 50% 52%), transparent 0 40%, rgba(6, 7, 9, .34) 72%, rgba(6, 7, 9, .74) 100%); }
+/* Which twin shows: the daylight twin in the light theme, the dark one in the
+   dark theme, by the same rules as the colour tokens above. A piece with no
+   light twin keeps its dark picture in both. */
+.art-twins .art-dark { display: none; }
+.art-twins .art-light { display: block; filter: saturate(.94); }
+.art-dark { filter: saturate(.92) brightness(.86); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .art-twins .art-dark { display: block; } :root:not([data-theme="light"]) .art-twins .art-light { display: none; } }
+:root[data-theme="dark"] .art-twins .art-dark { display: block; }
+:root[data-theme="dark"] .art-twins .art-light { display: none; }
 .verdict { font: italic 400 27px/1.2 var(--serif); text-wrap: balance; }
 .summary { color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 56ch; }
 
@@ -158,7 +174,7 @@ code { font: 400 13px/1.5 var(--mono); overflow-wrap: anywhere; }
   .disc-hero { width: 102px; height: 102px; }
   .card-head.has-art, .card-head.has-art:has(.art-2) { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .card-head.has-art .art { order: -1; }
-  .art-1 .art-frame { aspect-ratio: 16 / 9; }
+  .art-1 .art-frame { aspect-ratio: 16 / 9; --fade-l: 18%; --fade-r: 18%; --fade-t: 26%; --fade-b: 26%; }
   .art-2 .art-frame { aspect-ratio: 1 / 1; }
   .disc-head { width: 60px; height: 60px; }
   .verdict { font-size: 22px; }
