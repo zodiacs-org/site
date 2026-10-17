@@ -34,7 +34,6 @@ const pattern = pairPattern(entry.data.signs[0], entry.data.signs[1]);
 const { facts } = pattern;
 const { a, b, same } = facts;
 const { Content, headings } = await render(entry);
-const { lede, glance, rooms, pull } = entry.data;
 
 const sections = headings.filter((heading) => heading.depth === 2);
 const words = (entry.body ?? '').replace(/^---[\s\S]*?---/, '').split(/\s+/).filter(Boolean).length;
@@ -52,8 +51,6 @@ const rulerSentence = (sign: Sign) => {
 };
 const rulersNote = same || a.ruler === b.ruler ? rulerSentence(a) : `${rulerSentence(a)} ${rulerSentence(b)}`;
 
-/** "Criticism goes private, *appreciation goes public.*" as text and emphasis runs. */
-const pullRuns = pull.quote.split(/\*([^*]+)\*/).map((text, index) => ({ text, em: index % 2 === 1 })).filter((run) => run.text);
 
 const people = same ? [a] : [a, b];
 const otherPairs = (sign: Sign) => SIGNS.map((other) => {
@@ -134,7 +131,7 @@ const jsonLd = [
       <div class="ph-hero__body">
         <span class="kicker"><a href="/compatibility/">Compatibility</a>, {pattern.elementPhrase}</span>
         <h1 class="h-hero">{a.name} <em>and</em> {b.name}</h1>
-        <p class="ph-hero__cap">{lede} How the pairing tends to move, where it can rub, and what each of you may want to notice.</p>
+        <p class="ph-hero__cap">{entry.data.description}</p>
         <div class="btn-row">
           <a class="btn btn--primary btn--lg" href="#compare"><span>Compare your birth charts</span><span class="orb" aria-hidden="true">↗</span></a>
           <a class="btn btn--glass btn--lg ph-change" href="#switch">
@@ -165,43 +162,6 @@ const jsonLd = [
       </div>
     </div>
 
-    <section class="ksection ph-glance" aria-labelledby="glance-title">
-      <div class="kwrap">
-        <div class="section-head section-head--row ph-glance__head">
-          <div>
-            <span class="kicker">At a glance</span>
-            <h2 class="h-2" id="glance-title">{glance.head}</h2>
-            <p>{glance.intro}</p>
-          </div>
-          <a class="textlink only-desktop" href="#read">Read the full pairing <span class="arr" aria-hidden="true">→</span></a>
-        </div>
-        <div class="ph-glance__grid">
-          <article class="ph-gcard ph-gcard--easy">
-            <span class="ph-gcard__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="12" r="5.5" /><circle cx="15" cy="12" r="5.5" /></svg></span>
-            <h3>What tends to feel easy</h3>
-            <ul>
-              {glance.easy.map((item) => <li><b>{item.t}</b><span>{item.d}</span></li>)}
-            </ul>
-          </article>
-          <article class="ph-gcard ph-gcard--rub">
-            <span class="ph-gcard__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M13.5 3L6 13.5h5.2L10 21l8-11h-5.4L13.5 3z" /></svg></span>
-            <h3>What can rub</h3>
-            <ul>
-              {glance.rub.map((item) => <li><b>{item.t}</b><span>{item.d}</span></li>)}
-            </ul>
-          </article>
-          <article class="ph-gcard ph-gcard--notice">
-            <span class="ph-gcard__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 12s3.6-6 9.5-6 9.5 6 9.5 6-3.6 6-9.5 6-9.5-6-9.5-6z" /><circle cx="12" cy="12" r="2.6" /></svg></span>
-            <h3>What each may want to notice</h3>
-            <ul>
-              {glance.notice.map((item) => (
-                <li><b>{item.sign && <SignIcon sign={item.sign} size={20} />}{item.t}</b><span>{item.d}</span></li>
-              ))}
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
 
     <section class="ksection ph-readsec" id="read" aria-label={`The full ${a.name} and ${b.name} read`}>
       <div class="kwrap ph-read">
@@ -225,7 +185,6 @@ const jsonLd = [
             <div slot="rooms" class="ph-rooms">
               {[a, b].map((sign, index) => {
                 const point = detail(sign);
-                const room = rooms[index];
                 return (
                   <figure>
                     <div class="ph-rooms__art" style={`--spot:${index === 0 ? '60% 46%' : '40% 46%'}`}>
@@ -243,15 +202,11 @@ const jsonLd = [
                         />
                       </div>
                     </div>
-                    <figcaption><b><SignIcon sign={sign.slug} size={20} />{room.t}</b>{room.d}</figcaption>
+                    <figcaption><b><SignIcon sign={sign.slug} size={20} />{sign.name}</b>{SIGN_FIGURE[sign.slug]}</figcaption>
                   </figure>
                 );
               })}
             </div>
-            <blockquote slot="pull" class="ph-pull">
-              <p>{pullRuns.map((run) => run.em ? <em>{run.text}</em> : run.text)}</p>
-              {pull.cite && <cite>{pull.cite}</cite>}
-            </blockquote>
           </PairProse>
 
           <section class="ph-basis" id="basis" aria-labelledby="basis-title">

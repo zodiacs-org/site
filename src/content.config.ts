@@ -2,7 +2,7 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { SIGN_SLUGS } from './lib/signs';
-import { derivedPairQuestions } from './lib/compat-reading';
+import { pairFacts } from './lib/compat';
 import { localizedPairFaq } from './lib/compat-i18n';
 
 const signEnum = z.enum(SIGN_SLUGS as [string, ...string[]]);
@@ -10,23 +10,25 @@ const faqSchema = z.array(z.object({ q: z.string(), a: z.string() }));
 const sourcesSchema = z.array(z.object({ label: z.string(), href: z.url().optional() })).default([]);
 
 function derivedPairFaq([slugA, slugB]: [string, string]) {
-  return derivedPairQuestions(slugA, slugB);
-}
+  const facts = pairFacts(slugA, slugB);
+  const names = facts.same ? `two ${facts.a.name} people` : `${facts.a.name} and ${facts.b.name}`;
+  const subject = facts.same ? `Two ${facts.a.name} people` : `${facts.a.name} and ${facts.b.name}`;
 
-/** Pair-page copy is set without dashes (the pair-page voice since October 2026). */
-const pairCopy = (max: number) => z.string().min(2).max(max).refine(
-  (value) => !/[\u2013\u2014]/.test(value),
-  { message: 'Pair-page copy carries no en or em dashes.' },
-);
-const glanceItem = z.object({
-  /** A short bold lead, two to five words. */
-  t: pairCopy(40),
-  /** One or two sentences condensed from this pair's own text. */
-  d: pairCopy(190),
-  /** The sign the line speaks to, for "If you are the Aries". */
-  sign: signEnum.optional(),
-});
-const roomItem = z.object({ t: pairCopy(32), d: pairCopy(80) });
+  return [
+    {
+      q: `How do ${names} work in a relationship?`,
+      a: `${facts.element.label} is the starting pattern: ${facts.element.note} The rest of both birth charts decides how that pattern is lived.`,
+    },
+    {
+      q: `Where do ${names} tend to clash?`,
+      a: `${facts.modality.label} describes how decisions and pacing meet: ${facts.modality.note}`,
+    },
+    {
+      q: `Are ${names} compatible?`,
+      a: `${subject} can be. Sun signs describe a baseline, not a verdict. ${facts.polarity} A full comparison also reads both Moons, Venuses, Marses, and the aspects between the charts.`,
+    },
+  ];
+}
 
 const guides = defineCollection({
   loader: glob({ pattern: '*.mdx', base: './src/content/guides' }),
@@ -65,20 +67,6 @@ const pairs = defineCollection({
     title: z.string(),
     description: z.string().max(170),
     faq: faqSchema.min(3).optional(),
-    /** The hero's opening sentence, condensed from the page's first paragraph. */
-    lede: pairCopy(130),
-    /** "At a glance": three short cards condensed from the page's own text. */
-    glance: z.object({
-      head: pairCopy(64),
-      intro: pairCopy(260),
-      easy: z.array(glanceItem).length(3),
-      rub: z.array(glanceItem).length(3),
-      notice: z.array(glanceItem).length(3),
-    }),
-    /** Captions for the two close details of the sign art, first sign first. */
-    rooms: z.tuple([roomItem, roomItem]),
-    /** The one pull quote, a line from the page itself; *asterisks* mark the emphasis. */
-    pull: z.object({ quote: pairCopy(110), cite: pairCopy(60).optional() }),
     published: z.coerce.date(),
     updated: z.coerce.date(),
     draft: z.boolean().default(false),
