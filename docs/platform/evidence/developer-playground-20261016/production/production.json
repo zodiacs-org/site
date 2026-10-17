@@ -1,7 +1,45 @@
 {
+  "schema": "zodiacs.developer-playground-production.v1",
   "base": "https://zodiacs.org",
-  "checkedAt": "2026-10-17T00:31:41.962Z",
-  "results": [
+  "mergeCommit": "6bbda021eb0886bb18bac953c883be4170dc4f10",
+  "deployment": {
+    "deploymentId": "dpl_88MT9GVVRQMFif9ZX1ykvb725283",
+    "aliasUpdatedAt": "2026-10-17T00:11:53.966Z",
+    "readyState": "READY",
+    "target": "production",
+    "githubCommitSha": "1601135f87b70847f20631de2e1843e39be861c2"
+  },
+  "clone": {
+    "head": "1601135f87b70847f20631de2e1843e39be861c2",
+    "clean": true,
+    "containsMerge": true,
+    "builtAt": "2026-10-17T01:09:08.643Z",
+    "templateSourceSha256": "6338aed1750b739c60bc29ab578ccdbe2b3904b9463db6a33628add67d919471"
+  },
+  "readAt": "2026-10-17T01:09:09.895Z",
+  "passed": 9,
+  "of": 9,
+  "checks": [
+    {
+      "name": "the zodiacs.org alias names a READY production deployment built from this clean clone's commit, which contains the merge",
+      "ok": true,
+      "detail": {
+        "deployment": {
+          "deploymentId": "dpl_88MT9GVVRQMFif9ZX1ykvb725283",
+          "aliasUpdatedAt": "2026-10-17T00:11:53.966Z",
+          "readyState": "READY",
+          "target": "production",
+          "githubCommitSha": "1601135f87b70847f20631de2e1843e39be861c2"
+        },
+        "clone": {
+          "head": "1601135f87b70847f20631de2e1843e39be861c2",
+          "clean": true,
+          "containsMerge": true,
+          "builtAt": "2026-10-17T01:09:08.643Z",
+          "templateSourceSha256": "6338aed1750b739c60bc29ab578ccdbe2b3904b9463db6a33628add67d919471"
+        }
+      }
+    },
     {
       "name": "the page is served, with the playground on it",
       "ok": true,
@@ -10,7 +48,7 @@
       }
     },
     {
-      "name": "examples.json is the one the merge builds: every documented request with its documented answer",
+      "name": "examples.json is the one the commit builds: every documented request with its documented answer",
       "ok": true,
       "detail": {
         "status": 200,
@@ -29,12 +67,12 @@
       }
     },
     {
-      "name": "the browser bundle is byte for byte the one its sources build",
+      "name": "the browser bundle is byte for byte the commit's, which its sources build",
       "ok": true,
       "detail": {
         "status": 200,
         "served": "ea9be255eb216f80833afcb302684505086884859a3f3628f9ec1e87583b77fe",
-        "built": "ea9be255eb216f80833afcb302684505086884859a3f3628f9ec1e87583b77fe"
+        "committed": "ea9be255eb216f80833afcb302684505086884859a3f3628f9ec1e87583b77fe"
       }
     },
     {

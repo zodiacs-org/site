@@ -183,36 +183,49 @@ the 18 captures again.
 in Bangkok). Its tree is the tree of `520a058c`, the head every check above
 ran on.
 
-- **Deployment.** The zodiacs.org alias names
-  `dpl_Bs8UKEC7igJeo1qBg2cUYVhrBUY7`: readyState READY, target production,
-  githubCommitSha `6bbda021eb0886bb18bac953c883be4170dc4f10`, ready and
-  aliased at 2026-10-16T22:40:06Z.
+- **The merge's own deployment.** The zodiacs.org alias named
+  `dpl_Bs8UKEC7igJeo1qBg2cUYVhrBUY7` (READY, target production, built from
+  `6bbda021`) from 2026-10-16T22:40:06Z until 2026-10-17T00:11:53Z, when the
+  day's edition replaced it ([alias-at-merge.json](production/alias-at-merge.json),
+  read from Vercel at 22:42Z and again on the 17th). The drive passed 53 of
+  53 against zodiacs.org at 22:44:28Z, inside that window
+  ([drive-at-merge.json](production/drive-at-merge.json)).
+- **The deployment checked last.** The alias names
+  `dpl_88MT9GVVRQMFif9ZX1ykvb725283`: READY, target production, built from
+  `1601135f` (the 2026-10-17 edition), which contains the merge
+  ([alias.json](production/alias.json), read from Vercel before and after the
+  two runs below, unchanged). Each run below ran from a clean clone checked out
+  at `1601135f` and built there.
 - **What production serves.**
-  [tools/production-check.mjs](tools/production-check.mjs) passed 8 of 8 at
-  2026-10-17T00:31:41Z ([production.json](production/production.json)): the
-  page with the playground on it; `examples.json` as the merge builds it,
-  every documented request with its documented answer; the Markdown twin,
-  each request in a section of its own with its endpoint, documented status,
-  link, citation digest and the `--data-raw` cURL command that sends its body
-  as typed, and no other section; the browser bundle, byte for byte the one
-  its sources build; `llms.txt`; the sitemap; and `/developers/` and
+  [tools/production-check.mjs](tools/production-check.mjs) passed 9 of 9 at
+  2026-10-17T01:09:09Z ([production.json](production/production.json), which
+  records the deployment, the merge, the clone's commit and its build
+  receipt). The alias names that READY production deployment, built from the
+  clone's commit, which contains the merge; and production serves the page
+  with the playground on it; `examples.json` as the commit builds it, every
+  documented request with its documented answer; the Markdown twin, each
+  request in a section of its own with its endpoint, documented status, link,
+  citation digest and the `--data-raw` cURL command that sends its body as
+  typed, and no other section; the browser bundle, byte for byte the
+  commit's; `llms.txt`; the sitemap; and `/developers/` and
   `/developers/compute/`, which link to the page.
-- **Controls.** The check before the merge, at 2026-10-16T19:51:15Z, passed 0
-  of 8 ([control-before.json](production/control-before.json)): the page and
-  its files answered 404, and nothing listed or linked to them. That run's
-  twin check counted the commands; the per-section check Codex asked for on
-  #769 also fails a build whose twin has one request's body changed
-  (`chart.local`'s latitude), 7 of 8
-  ([control-twin-one-body-changed.json](production/control-twin-one-body-changed.json)).
 - **The drive against production.**
   `node tests/developer-playground-drive.mjs --base-url https://zodiacs.org`
-  passed 53 of 53 at 2026-10-16T22:44:28Z
+  passed 53 of 53 at 2026-10-17T01:11:02Z
   ([drive-production.json](production/drive-production.json)). Each of the
   17 requests reproduces by an agent's path, the twin and the hosted API, and
   by a person's path, the link, Send, Run in this browser and both
   citations; the API, the browser and the documentation agree. Its controls
   hold in production: an API answer with the Sun moved 0.001° is called
   different, and a citation that is not its receipt's digest is called out.
+- **Controls.** The check before the merge, at 2026-10-16T19:51:15Z, passed 0
+  of 8 ([control-before.json](production/control-before.json)): the page and
+  its files answered 404, and nothing listed or linked to them; no commit on
+  main had the playground before `6bbda021`. That run used the check's first
+  version, which counted the twin's commands; its current version fails a
+  build of `1601135f` whose twin has one request's body changed
+  (`chart.local`'s latitude) on the twin check alone, 7 of 8
+  ([control-twin-one-body-changed.json](production/control-twin-one-body-changed.json)).
 - **Main's Site Check** passed on the merge (run 38976740729).
 
 ## Privacy
