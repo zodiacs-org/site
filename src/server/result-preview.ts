@@ -217,20 +217,32 @@ const ART_WIDTH = 560;
 
 /**
  * The art panel on the right: the hero art (one panel, or two stacked) dimmed
- * and vignetted like the card's frame, faded into the card on its left edge,
- * with the score ring in its lower corner on a dark disc, so the number never
- * sits on busy art and the figures stay in view.
+ * like the card's frame and faded into the card on every side, so no edge of
+ * a picture shows, with the score ring in its lower corner on a dark disc, so
+ * the number never sits on busy art and the figures stay in view.
  */
 function artPanel(images: string[], score: number, hues: [string, string]) {
   const height = 630 / images.length;
-  return h('div', { style: { display: 'flex', position: 'relative', width: `${ART_WIDTH}px`, height: '630px', background: '#0B0C10' } },
-    ...images.map((src, index) => h('img', { src, width: ART_WIDTH, height, style: {
-      position: 'absolute', left: 0, top: `${index * height}px`, width: `${ART_WIDTH}px`, height: `${height}px`, objectFit: 'cover', opacity: 0.94,
-    } })),
-    h('div', { style: { display: 'flex', position: 'absolute', left: 0, top: 0, width: `${ART_WIDTH}px`, height: '630px',
-      backgroundImage: 'radial-gradient(circle at 55% 45%, rgba(6,7,9,0) 0%, rgba(6,7,9,0.12) 50%, rgba(6,7,9,0.6) 100%)' } }),
-    h('div', { style: { display: 'flex', position: 'absolute', left: 0, top: 0, width: '150px', height: '630px',
-      backgroundImage: `linear-gradient(90deg, ${CARD} 0%, rgba(22,25,31,0) 100%)` } }),
+  const clear = 'rgba(22,25,31,0)';
+  const fade = (style: Record<string, string>, direction: string, size: number) => h('div', { style: {
+    display: 'flex', position: 'absolute', ...style, backgroundImage: `linear-gradient(${direction}, ${CARD} 0%, rgba(22,25,31,0.6) ${Math.round(size * 0.35)}px, ${clear} ${size}px)`,
+  } });
+  return h('div', { style: { display: 'flex', position: 'relative', width: `${ART_WIDTH}px`, height: '630px', background: CARD } },
+    ...images.flatMap((src, index) => {
+      const top = index * height;
+      const edge = Math.round(height * 0.24);
+      return [
+        h('img', { src, width: ART_WIDTH, height, style: {
+          position: 'absolute', left: 0, top: `${top}px`, width: `${ART_WIDTH}px`, height: `${height}px`, objectFit: 'cover', opacity: 0.94,
+        } }),
+        h('div', { style: { display: 'flex', position: 'absolute', left: 0, top: `${top}px`, width: `${ART_WIDTH}px`, height: `${height}px`,
+          backgroundImage: `radial-gradient(circle at 55% 45%, ${clear} 0%, rgba(22,25,31,0.14) 50%, rgba(22,25,31,0.5) 100%)` } }),
+        fade({ left: '0px', top: `${top}px`, width: `${ART_WIDTH}px`, height: `${edge}px` }, '180deg', edge),
+        fade({ left: '0px', top: `${top + height - edge}px`, width: `${ART_WIDTH}px`, height: `${edge}px` }, '0deg', edge),
+      ];
+    }),
+    fade({ left: '0px', top: '0px', width: '170px', height: '630px' }, '90deg', 170),
+    fade({ left: `${ART_WIDTH - 120}px`, top: '0px', width: '120px', height: '630px' }, '270deg', 120),
     h('div', { style: { display: 'flex', position: 'absolute', left: `${ART_WIDTH - RING - 24 - 30}px`, top: `${630 - RING - 24 - 30}px`,
       width: `${RING + 24}px`, height: `${RING + 24}px`, borderRadius: `${RING}px`, background: 'rgba(13,15,19,0.78)', alignItems: 'center', justifyContent: 'center' } },
       ring(score, hues)));

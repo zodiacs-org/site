@@ -143,25 +143,57 @@ Artwork:
   angle (frontal, slightly elevated), 3:2, no people, no text, letters or
   numbers. Prompts for the four pieces are in
   `docs/platform/zodiacs-ai/CARD-ART.md`.
-- The frame matches the site's `.artframe`: 14px radius, a dark plate
-  (`#0b0c10`) in both host themes with a hairline edge, the picture at
-  saturate .92 and brightness .86, and a radial vignette toward the edges.
-  It is decorative (empty alt, hidden from assistive technology) and nothing
-  is ever set over it. On desktop it sits beside the head at 272px wide (3:2),
-  or as two 4:5 panels in 300px for a pair; at 530px and below it goes above
-  the kicker, full width, at 16:9 (two square panels for a pair).
-- Size budgets: the panels make no image requests, so the art is inlined.
-  `node scripts/build-card-art.mjs` makes 400px and 480px WebP variants and
-  640px JPEGs for the share images (the image renderer cannot read WebP).
-  The occasions panel inlines the sign panels at 400px (about 9 to 10 KB
-  each) and its own four pieces at 480px (15 to 25 KB); the horoscope panel
-  inlines the sign panels at 480px. Each panel stays under its 600 KB build
-  budget (occasions about 541 KB, horoscope about 498 KB). Every image has
-  its width and height set and decodes asynchronously.
-- Share images put the art in a 560px panel on the right, faded into the
-  card on its left edge, with the score ring in its lower corner on a dark
-  disc so the number never sits on busy art. A pair stacks the two sign
-  panels.
+- Light and dark twins: every piece, sign panels included, has a daylight
+  twin with the same subject, figure, framing, camera and spotlight, painted
+  on warm parchment and cream instead of the night: the dark one shows in
+  the dark host theme and the daylight twin in the light theme. The twins'
+  720px masters are `public/assets/card-art/<key>-light-720.webp` (sign
+  panels and the cards' own pieces alike). The card carries both twins and
+  the stylesheet shows one by the same host-theme rules as the colour tokens
+  (`data-theme` from the host, else `prefers-color-scheme`), so nothing
+  swaps after paint and the hidden twin is never decoded. A piece without a
+  light twin keeps its dark picture in both themes, which is allowed only
+  while its twin is being made.
+- Faded edges, no frame: the picture fades into the card on every side in
+  both themes, through two crossed linear masks with an eased ramp
+  (`mask-image` with the `-webkit-` prefix, `mask-composite: intersect`).
+  There is no plate, radius, hairline, shadow or vignette around the art,
+  and no edge of a picture shows. The ramps are set per layout with
+  `--fade-l`, `--fade-r`, `--fade-t` and `--fade-b` (shares of the width and
+  height): about a quarter on each side for a single panel; for a pair the
+  outer sides fade wider and the two panels meet across a narrow soft seam,
+  the left one mirrored so the figures face each other. The dark twin is
+  shown at saturate .92 and brightness .86, the daylight twin at saturate
+  .94. It is decorative (empty alt, hidden from assistive technology) and
+  nothing is ever set over it. On desktop it sits beside the head at 272px
+  wide (3:2), or as two 4:5 panels in 300px for a pair; at 530px and below
+  it goes above the kicker, full width, at 16:9 (two square panels for a
+  pair).
+- Size budgets: the panels make no image requests, so the art is inlined,
+  both twins of every piece. `node scripts/build-card-art.mjs` makes 400px
+  and 480px AVIF variants of each twin (quality 36; AVIF because both twins
+  must fit and at the same size it is about half the bytes of WebP) and
+  640px JPEGs of the dark twins for the share images (the image renderer
+  cannot read WebP or AVIF). The occasions panel inlines the sign panels at
+  400px and its own four pieces at 480px; the horoscope panel inlines the
+  sign panels at 480px. Each panel stays under its 600 KB build budget
+  (occasions about 572 KB, horoscope about 531 KB). Every image has its
+  width and height set and decodes asynchronously. A host browser without
+  AVIF shows the card without its picture, never a broken frame.
+- Adding art: generate the dark piece at 1536x1024 (3:2) in the style
+  above, then its daylight twin from it with the same subject, framing and
+  camera, edges calm and low in detail so they fade cleanly. Name them
+  `<key>-source.png` and `<key>-light-source.png`, run
+  `node scripts/build-card-art.mjs --masters <dir>` for the 720px masters,
+  add the key to `CARD_ART_PIECES` in `scripts/build-card-art.mjs` and to the
+  panel that uses it, run `node scripts/build-card-art.mjs`, then
+  `npm run ai:build`, and check both panels stay under budget. Record the
+  prompts in `docs/platform/zodiacs-ai/CARD-ART.md`.
+- Share images are dark cards, so they use the dark twins. The art sits in
+  a 560px panel on the right, faded into the card on every side (a pair
+  stacks the two sign panels, each faded top and bottom, so no seam shows),
+  with the score ring in its lower corner on a dark disc so the number
+  never sits on busy art.
 
 Colour and theme:
 
@@ -176,8 +208,8 @@ Colour and theme:
 - A card's hue is its subject's sign: the Sun sign (two charts: the first
   person's Sun, then the second's), the sign a milestone's planet rules,
   Scorpio and Cancer for the sky calendar. No other chroma in the interface
-  and no gold accents; the artwork's own brass stays inside its frame. The
-  only gradients are the score ring's sweep and the art frame's vignette.
+  and no gold accents; the artwork's own brass stays inside the picture. The
+  only gradients are the score ring's sweep and the art's edge fades.
 
 Words: plain and specific, as on the site. Scores, ratings and forecasts are
 stated plainly as astrology's reading; never a guarantee, and nothing about
@@ -197,7 +229,8 @@ Checks before a card change ships: `node scripts/build-card-art.mjs` when
 art changes, then `npm run ai:build`, `npm run ai:package`,
 `npm run ai:check`, `npm run ai:test`, both browser drives
 (`tests/ai-occasions-drive.ts`, `tests/ai-horoscope-drive.ts`),
-`tests/ai-cards-qa.ts` (contrast, art with no text over it, overflow,
+`tests/ai-cards-qa.ts` (contrast, art in the theme's twin, faded on every
+side, with no text over it, overflow,
 keyboard, reduced motion), and full-length captures of every card at 760px
 and 390px in both themes with `tests/ai-cards-capture.ts` (share images:
 `tests/ai-share-images-capture.ts`). Each panel stays self-contained (no
