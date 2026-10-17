@@ -10,7 +10,6 @@ import { h, type VNode } from 'preact';
 import {
   exactArrayBuffer,
   htmlEscape,
-  prepareBrandIcon,
   PRIVACY_HEADERS,
   requestOrigin,
   writeNodeResponse,
@@ -22,6 +21,7 @@ import {
   type OccasionCardModel,
   type PreviewSign,
 } from './result-preview-model.js';
+import { HUES } from './chart-preview-model.js';
 import {
   COMPATIBILITY_SHARE_IMAGE_PATH,
   COMPATIBILITY_SHARE_KEYS,
@@ -45,7 +45,13 @@ const VOID = '#060709';
 const INK = '#EEF1F7';
 const MUTED = '#8E96AB';
 const HAIRLINE = 'rgba(198,204,218,0.16)';
-const TRACK = 'rgba(198,204,218,0.12)';
+// The share image is the dark assistant card (DESIGN.md, "Assistant cards"): its surface, tiles and ring track.
+const CARD = '#16191F';
+const TILE = '#1C2029';
+const CARD_MUTED = '#A0A8BA';
+const TRACK = '#2A303D';
+// The twelve-dot ring in zodiac order, as the site's BrandMark draws it.
+const RING_ORDER: readonly ShareSign[] = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 
 // ── Assets ───────────────────────────────────────────────────────────
 
@@ -100,21 +106,27 @@ async function discImages(signs: readonly PreviewSign[]): Promise<Map<ShareSign,
 
 const SERIF = 'EB Garamond, EB Garamond Ext';
 
-function kicker(text: string) {
-  return h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: 34, color: MUTED } }, text);
+/** The site's nameplate: the twelve-dot ring, "Zodiacs" in the masthead serif and a small ".org". */
+function nameplate() {
+  const dots = RING_ORDER.map((slug, index) => {
+    const angle = (index / 12) * 2 * Math.PI - Math.PI / 2;
+    return h('circle', { cx: (12 + 9 * Math.cos(angle)).toFixed(3), cy: (12 + 9 * Math.sin(angle)).toFixed(3), r: '1.9', fill: HUES[slug] });
+  });
+  return h('div', { style: { display: 'flex', alignItems: 'center' } },
+    h('svg', { width: 40, height: 40, viewBox: '0 0 24 24', style: { marginRight: '14px' } }, ...dots),
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 36, color: INK, lineHeight: 1 } }, 'Zodiacs'),
+    h('div', { style: { display: 'flex', fontSize: 19, color: CARD_MUTED, marginLeft: '6px', marginTop: '12px', letterSpacing: '1px' } }, '.org'));
 }
 
-function brand(brandIcon: string) {
-  return h('div', { style: { display: 'flex', alignItems: 'center', alignSelf: 'flex-end', fontFamily: SERIF, fontSize: 30, color: MUTED } },
-    h('img', { src: brandIcon, width: 44, height: 44, style: { width: '44px', height: '44px', marginRight: '12px' } }),
-    h('div', { style: { display: 'flex' } }, 'zodiacs.org'));
+function kicker(text: string, hue: string) {
+  return h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: 36, color: hue, lineHeight: 1.2 } }, text);
 }
 
-const RING = 384;
+const RING = 340;
 
-/** The score inside a ring drawn from one sign's hue to the other's. */
+/** The score inside a ring drawn from one sign's hue to the other's, as on the card. */
 function ring(score: number, hues: [string, string]) {
-  const stroke = 20;
+  const stroke = 22;
   const radius = (RING - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const arc = Math.max(0.001, (score / 100) * circumference);
@@ -128,12 +140,12 @@ function ring(score: number, hues: [string, string]) {
       h('circle', { cx: centre, cy: centre, r: radius, fill: 'none', stroke: TRACK, 'stroke-width': stroke }),
       h('circle', {
         cx: centre, cy: centre, r: radius, fill: 'none', stroke: 'url(#arc)', 'stroke-width': stroke,
-        'stroke-linecap': 'round', 'stroke-dasharray': `${arc.toFixed(2)} ${circumference.toFixed(2)}`,
+        'stroke-dasharray': `${arc.toFixed(2)} ${circumference.toFixed(2)}`,
         transform: `rotate(-90 ${centre} ${centre})`,
       })),
-    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-6px' } },
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 168, lineHeight: 1, color: INK, letterSpacing: '-3px' } }, String(score)),
-      h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 28, color: MUTED, marginTop: '4px', letterSpacing: '1px' } }, 'out of 100')));
+    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-4px' } },
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 150, lineHeight: 1, color: INK, letterSpacing: '-3px' } }, String(score)),
+      h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 25, color: CARD_MUTED, marginTop: '6px' } }, 'out of 100')));
 }
 
 function signChip(sign: PreviewSign, images: Map<ShareSign, string>, size: number) {
@@ -142,68 +154,72 @@ function signChip(sign: PreviewSign, images: Map<ShareSign, string>, size: numbe
     src
       ? h('img', { src, width: size, height: size, style: { width: `${size}px`, height: `${size}px` } })
       : h('div', { style: { display: 'flex', width: `${size}px`, height: `${size}px`, borderRadius: `${size}px`, border: `2px solid ${HAIRLINE}` } }),
-    h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 30, color: INK, marginLeft: '14px' } }, sign.label));
+    h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 27, color: INK, marginLeft: '14px' } }, sign.label));
 }
 
-/** One area of a compatibility score: its name, its number and a bar. */
-function areaMeter(area: { label: string; value: number }, index: number) {
-  return h('div', { style: { display: 'flex', flexDirection: 'column', width: '196px', marginLeft: index === 0 ? '0px' : '28px' } },
-    h('div', { style: { display: 'flex', fontSize: 23, color: MUTED } }, area.label),
-    h('div', { style: { display: 'flex', alignItems: 'center', marginTop: '2px' } },
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 44, lineHeight: 1.1, color: INK, width: '58px', flexShrink: 0 } }, String(area.value)),
-      h('div', { style: { display: 'flex', width: '132px', height: '5px', borderRadius: '5px', background: TRACK, marginLeft: '6px' } },
-        h('div', { style: { display: 'flex', width: `${Math.round(1.32 * area.value)}px`, height: '5px', borderRadius: '5px', background: 'rgba(238,241,247,0.82)' } }))));
+/** One area of a compatibility score as a tile: its number over its name, no bar. */
+function areaTile(area: { label: string; value: number }, index: number) {
+  return h('div', { style: {
+      display: 'flex', flexDirection: 'column', width: '204px', marginLeft: index === 0 ? '0px' : '14px',
+      padding: '14px 18px 16px', borderRadius: '16px', background: TILE,
+    } },
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 50, lineHeight: 1, color: INK } }, String(area.value)),
+    h('div', { style: { display: 'flex', fontSize: 21, color: CARD_MUTED, marginTop: '6px' } }, area.label));
 }
 
 /** A display size that keeps the longest line inside the column. */
 function fit(lines: string[], width: number, max: number, min: number): number {
   const longest = Math.max(...lines.map((line) => line.length));
-  return Math.max(min, Math.min(max, Math.floor(width / (longest * 0.52))));
+  return Math.max(min, Math.min(max, Math.floor(width / (longest * 0.5))));
 }
 
-const LEFT_WIDTH = 660;
+const LEFT_WIDTH = 680;
 
-function frame(left: VNode<any>, score: number, hues: [string, string], brandIcon: string) {
+function frame(left: VNode<any>, score: number, hues: [string, string]) {
   return h('div', { style: {
-      width: '1200px', height: '630px', display: 'flex', justifyContent: 'space-between',
-      padding: '54px 64px 56px', background: VOID, color: INK, fontFamily: 'Noto',
+      width: '1200px', height: '630px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      padding: '52px 64px 54px', background: CARD, color: INK, fontFamily: 'Noto',
     } },
     left,
-    h('div', { style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' } },
-      brand(brandIcon),
-      ring(score, hues)));
+    ring(score, hues));
 }
 
 const column = (...children: VNode<any>[]) => h('div', { style: {
   display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: `${LEFT_WIDTH}px`, height: '100%',
 } }, ...children);
 
-export function compatibilityCard(model: CompatibilityCardModel, brandIcon: string, images: Map<ShareSign, string>) {
-  const lines = [model.first, `& ${model.second}`];
-  const nameSize = fit(lines, LEFT_WIDTH, 92, 48);
+const verdictLine = (verdict: string) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: fit([verdict], LEFT_WIDTH, 44, 34), color: INK, marginTop: '18px', lineHeight: 1.15 } }, verdict);
+
+export function compatibilityCard(model: CompatibilityCardModel, images: Map<ShareSign, string>) {
+  const oneLine = `${model.first} and ${model.second}`;
+  const lines = fit([oneLine], LEFT_WIDTH, 84, 40) >= 64 ? [oneLine] : [model.first, `and ${model.second}`];
+  const nameSize = fit(lines, LEFT_WIDTH, 84, 48);
   return frame(column(
-    kicker('Compatibility'),
+    nameplate(),
     h('div', { style: { display: 'flex', flexDirection: 'column' } },
-      ...lines.map((line) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: nameSize, lineHeight: 1.02, color: INK } }, line)),
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: fit([model.verdict], LEFT_WIDTH, 46, 34), color: INK, marginTop: '18px' } }, model.verdict),
-      h('div', { style: { display: 'flex', marginTop: '22px' } }, ...model.people.map((person) => signChip(person, images, 54)))),
-    h('div', { style: { display: 'flex' } }, ...model.areas.map((area, index) => areaMeter(area, index))),
-  ), model.score, model.ring, brandIcon);
+      kicker('Two charts compared', model.people[0].hue),
+      ...lines.map((line) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: nameSize, lineHeight: 1.04, color: INK, marginTop: '4px' } }, line)),
+      verdictLine(model.verdict),
+      h('div', { style: { display: 'flex', marginTop: '20px' } }, ...model.people.map((person) => signChip(person, images, 48)))),
+    h('div', { style: { display: 'flex' } }, ...model.areas.map((area, index) => areaTile(area, index))),
+  ), model.score, model.ring);
 }
 
-export function occasionCard(model: OccasionCardModel, brandIcon: string, images: Map<ShareSign, string>) {
-  const headSize = fit([model.headline], LEFT_WIDTH, 100, 64);
+export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>) {
+  const title = model.names ?? model.headline;
+  const headSize = fit([title], LEFT_WIDTH, 92, 56);
   return frame(column(
-    kicker(model.names ?? 'The sky on the day'),
+    nameplate(),
     h('div', { style: { display: 'flex', flexDirection: 'column' } },
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: headSize, lineHeight: 1.02, color: INK } }, model.headline),
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 34, lineHeight: 1.25, color: MUTED, marginTop: '16px' } }, model.when),
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: fit([model.verdict], LEFT_WIDTH, 46, 34), color: INK, marginTop: '26px' } }, model.verdict)),
+      kicker(model.names ? model.headline : 'The sky on the day', model.ring[0]),
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: headSize, lineHeight: 1.04, color: INK, marginTop: '6px' } }, title),
+      h('div', { style: { display: 'flex', fontSize: 27, lineHeight: 1.3, color: CARD_MUTED, marginTop: '14px' } }, model.when),
+      verdictLine(model.verdict)),
     h('div', { style: { display: 'flex', alignItems: 'center' } },
       ...(model.signs.length > 0
-        ? model.signs.map((sign) => signChip(sign, images, 54))
-        : [h('div', { style: { display: 'flex', fontSize: 28, color: MUTED } }, 'Rated from the sky that day')])),
-  ), model.score, model.ring, brandIcon);
+        ? model.signs.map((sign) => signChip(sign, images, 52))
+        : [h('div', { style: { display: 'flex', fontSize: 26, color: CARD_MUTED } }, 'Rated from the sky that day')])),
+  ), model.score, model.ring);
 }
 
 // ── Responses ────────────────────────────────────────────────────────
@@ -243,9 +259,9 @@ export async function handleCompatibilityImageRequest(request: Request): Promise
   const share = parseCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
-  const [brandIcon, images] = await Promise.all([prepareBrandIcon(), discImages(model.people)]).catch(() => [null, null] as const);
-  if (!brandIcon || !images) return errorResponse(503);
-  return renderPng(compatibilityCard(model, brandIcon, images));
+  const images = await discImages(model.people).catch(() => null);
+  if (!images) return errorResponse(503);
+  return renderPng(compatibilityCard(model, images));
 }
 
 export async function handleOccasionImageRequest(request: Request): Promise<Response> {
@@ -253,9 +269,9 @@ export async function handleOccasionImageRequest(request: Request): Promise<Resp
   const share = parseOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
-  const [brandIcon, images] = await Promise.all([prepareBrandIcon(), discImages(model.signs)]).catch(() => [null, null] as const);
-  if (!brandIcon || !images) return errorResponse(503);
-  return renderPng(occasionCard(model, brandIcon, images));
+  const images = await discImages(model.signs).catch(() => null);
+  if (!images) return errorResponse(503);
+  return renderPng(occasionCard(model, images));
 }
 
 // ── The page a share link opens ──────────────────────────────────────
