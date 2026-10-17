@@ -275,7 +275,7 @@ const jsonLd = [
         <nav class="guide-wheelrow" aria-label="All twelve sign guides">
           {SIGNS.map((s) => (
             <a href={`/${s.slug}/`} aria-current={s.slug === sign.slug ? 'page' : undefined} style={`--sign:${s.hue}`}>
-              <SignIcon sign={s.slug} size={40} />
+              <SignIcon sign={s.slug} size={40} webpOnly />
               <b>{s.name}</b>
               <small>{s.slug === sign.slug ? 'You are here' : signDateRange(s)}</small>
             </a>

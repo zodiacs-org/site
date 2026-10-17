@@ -105,12 +105,23 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
   imageAlt="Zodiacs homepage preview on black with a large ring of twelve pastel zodiac symbols and the headline “Your whole chart, not just your sign.”"
   jsonLd={jsonLd}
 >
+  <!-- Portrait phones take the narrow cut of the phone poster: the window a
+       frame up to 479px wide can show at the 28% focus, the same pixels on
+       screen. Wider phones keep the 4:3 cut. -->
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href="/assets/hero/zodiacs-hero-poster-mobile-narrow-v3.avif"
+    media="(max-width: 479px)"
+    fetchpriority="high"
+  />
   <link
     slot="head"
     rel="preload"
     as="image"
     href="/assets/hero/zodiacs-hero-poster-mobile-v3.avif"
-    media="(max-width: 719px)"
+    media="(min-width: 480px) and (max-width: 719px)"
     fetchpriority="high"
   />
   <link
@@ -166,6 +177,11 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
         before any script runs — the RU release set this pattern. */}
     <div class="hero__frame">
       <picture>
+        <source
+          media="(max-width: 479px)"
+          srcset="/assets/hero/zodiacs-hero-poster-mobile-narrow-v3.avif"
+          type="image/avif"
+        />
         <source
           media="(max-width: 719px)"
           srcset="/assets/hero/zodiacs-hero-poster-mobile-v3.avif"
@@ -353,24 +369,36 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
         v.dataset.heroMotion = reducedQuery.matches || manuallyPaused ? 'static' : 'drift';
         p.dataset.heroMotion = v.dataset.heroMotion;
         v.dataset.heroPlayback = 'poster';
-        setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
 
         // Preserve the released desktop experience. The interaction gate is for
         // compact viewports, where the poster must remain the LCP surface.
-        if (!compactViewport && !constrained && !reducedQuery.matches) {
-          playbackRequested = true;
-          tryPlay();
-        }
+        var startDesktopPlayback = function () {
+          if (!compactViewport && !constrained && !reducedQuery.matches) {
+            playbackRequested = true;
+            tryPlay();
+          }
+        };
 
         ['pointerdown', 'touchstart', 'keydown'].forEach(function (eventName) {
           window.addEventListener(eventName, beginPlayback, { once: true, passive: true, capture: true });
         });
 
+        // The observer's first report, right after the first layout, is the
+        // frame's starting visibility. Reading the frame's rect here instead
+        // laid the whole page out mid-parse, ahead of the poster's paint.
         if (frame && 'IntersectionObserver' in window) {
+          var observed = false;
           var observer = new IntersectionObserver(function (entries) {
             setVisible(entries[0] && entries[0].isIntersecting);
+            if (!observed) {
+              observed = true;
+              startDesktopPlayback();
+            }
           }, { threshold: 0.01 });
           observer.observe(frame);
+        } else {
+          setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
+          startDesktopPlayback();
         }
 
         document.addEventListener('visibilitychange', function () {
@@ -472,7 +500,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
       </div>
       <a class="textlink only-desktop" href="/horoscopes/">All horoscopes <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <ul class="home-today__grid" role="list">
+    <ul class="home-today__grid" role="list" data-today-icons>
       {SIGNS.map((s) => (
         <li>
           <a
@@ -481,7 +509,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
             style={`--sign:${s.hue}`}
             aria-label={s.slug === sunNow ? `${s.name}, the Sun is here now` : `${s.name}, ${signDateRange(s)}`}
           >
-            <SignIcon sign={s.slug} size={52} webpOnly />
+            <SignIcon sign={s.slug} size={52} webpOnly deferred />
             <b>{s.name}</b>
             <small data-dates={compactDates(s.slug)}>{s.slug === sunNow ? 'Sun is here now' : compactDates(s.slug)}</small>
           </a>
@@ -492,6 +520,29 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
       <span>Readings are published fresh each day and are meant for reflection.</span>
       <span class="tbs__stamp">{editionStamp}</span>
     </p>
+    <script is:inline>
+      // The twelve sign pictures wait until the grid nears the screen, the
+      // way the birth chart's sample does. The grid sits just below the
+      // first screen, where the browser's own lazy loading still fetched all
+      // twelve while the hero poster was loading.
+      (function () {
+        var grid = document.querySelector('[data-today-icons]');
+        if (!grid) return;
+        function load() {
+          grid.querySelectorAll('img[data-src]').forEach(function (image) {
+            image.src = image.getAttribute('data-src');
+            image.removeAttribute('data-src');
+          });
+        }
+        if (!('IntersectionObserver' in window)) { load(); return; }
+        var watch = new IntersectionObserver(function (entries) {
+          if (!entries[0] || !entries[0].isIntersecting) return;
+          watch.disconnect();
+          load();
+        }, { rootMargin: '200px 0px' });
+        watch.observe(grid);
+      })();
+    </script>
   </section>
 
   <div class="kwrap"><hr class="rule" /></div>
@@ -512,15 +563,17 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
           if (!root) return;
 
           // The wheel's twelve sign discs ship as data-href (Wheel
-          // deferIcons) so they cost nothing while the hero paints; lift
-          // them to real hrefs as the section approaches. The 200px margin
-          // keeps the swap invisible without pulling the fetches back into
-          // the initial load on tall phone viewports.
-          var discs = root.querySelectorAll('image[data-href]');
+          // deferIcons), and the big three's discs as data-src, so they cost
+          // nothing while the hero paints; lift them to real addresses as the
+          // section approaches. The 200px margin keeps the swap invisible
+          // without pulling the fetches back into the initial load on tall
+          // phone viewports.
+          var discs = root.querySelectorAll('image[data-href], img[data-src]');
           function liftDiscs() {
             for (var i = 0; i < discs.length; i += 1) {
-              discs[i].setAttribute('href', discs[i].getAttribute('data-href'));
-              discs[i].removeAttribute('data-href');
+              var attribute = discs[i].tagName.toLowerCase() === 'img' ? 'src' : 'href';
+              discs[i].setAttribute(attribute, discs[i].getAttribute('data-' + attribute));
+              discs[i].removeAttribute('data-' + attribute);
             }
           }
           if (discs.length) {

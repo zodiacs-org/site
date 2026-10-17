@@ -1149,7 +1149,10 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     if (!wrap || !window.matchMedia || root.hasAttribute('data-chart-share-receiver')) return;
     var phone = window.matchMedia(nav.classList.contains('nav--localized')
       ? '(max-width: 1039.5px)' : '(max-width: 919.5px)');
-    var last = Math.max(0, window.scrollY);
+    // The first scroll frame records where the page starts. Reading scrollY
+    // here, while the page is still parsing, forced a full layout before
+    // the first paint.
+    var last = -1;
     var away = false;
     var frame = 0;
     function set(next) {
@@ -1165,7 +1168,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     function tick() {
       frame = 0;
       var y = Math.max(0, window.scrollY);
-      if (!phone.matches || y < 64 || held()) {
+      if (last < 0 || !phone.matches || y < 64 || held()) {
         set(false);
         last = y;
         return;

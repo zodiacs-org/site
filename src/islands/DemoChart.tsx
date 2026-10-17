@@ -389,7 +389,7 @@ export default function DemoChart() {
                 data-demo-jump={row.id}
                 key={row.id}
               >
-                <img class="demo__jump-disc" src={`/assets/zodiac-icons/128/${s.slug}.webp`} width="44" height="44" alt="" loading="lazy" decoding="async" />
+                <img class="demo__jump-disc" data-src={`/assets/zodiac-icons/128/${s.slug}.webp`} width="44" height="44" alt="" decoding="async" />
                 <span class="demo__jump-text">
                   <strong>{row.title}</strong>
                   <span class="demo__jump-copy">{row.copy}</span>

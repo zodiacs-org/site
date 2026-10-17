@@ -310,7 +310,7 @@ const monthDay = (iso: string) => ({
       <div class="today-lights">
         <article class="today-light" style={`--sign:${sunSign.hue}`}>
           <div class="today-light__art">
-            <ArtFrame sign={sun.sign} sizes="(min-width: 761px) 600px, 100vw" focus="50% 40%" spot="48% 52%" />
+            <ArtFrame sign={sun.sign} sizes="(min-width: 761px) 600px, calc(100vw - 40px)" focus="50% 40%" spot="48% 52%" />
             <span class="today-light__tag">Sun · {degreeMinutes(sun.degree)}</span>
           </div>
           <div class="today-light__body">
@@ -321,7 +321,7 @@ const monthDay = (iso: string) => ({
         </article>
         <article class="today-light" style={`--sign:${moonSign.hue}`}>
           <div class="today-light__art">
-            <ArtFrame sign={moon.sign} sizes="(min-width: 761px) 600px, 100vw" focus="50% 40%" spot="52% 52%" />
+            <ArtFrame sign={moon.sign} sizes="(min-width: 761px) 600px, calc(100vw - 40px)" focus="50% 40%" spot="52% 52%" />
             <span class="today-light__tag">Moon · {degreeMinutes(moon.degree)} · {illumination}% lit</span>
           </div>
           <div class="today-light__body">
@@ -613,6 +613,21 @@ const monthDay = (iso: string) => ({
     padding-bottom: clamp(48px, 7vw, 96px);
   }
   .today-sec { padding-top: clamp(56px, 5.8vw, 84px); }
+  /* From the twelve signs down, each section is laid out as it nears the
+     screen, so the first layout, and the relayout when the body face
+     arrives, stop at the Sun and the Moon. The sizes are settled heights. */
+  .today-signs,
+  .today-signs ~ .today-sec,
+  .today-method { content-visibility: auto; contain-intrinsic-size: auto 760px; }
+  .today-signs { contain-intrinsic-size: auto 1130px; }
+  .today-sec.today-split { contain-intrinsic-size: auto 810px; }
+  .today-method { contain-intrinsic-size: auto 210px; }
+  @media (max-width: 760px) {
+    .today-signs ~ .today-sec { contain-intrinsic-size: auto 880px; }
+    .today-signs { contain-intrinsic-size: auto 2080px; }
+    .today-sec.today-split { contain-intrinsic-size: auto 1740px; }
+    .today-method { contain-intrinsic-size: auto 300px; }
+  }
   .today-head { margin-bottom: clamp(24px, 3.4vw, 40px); }
   .today-head > div { max-width: 720px; }
   .today-head p { max-width: 62ch; }
