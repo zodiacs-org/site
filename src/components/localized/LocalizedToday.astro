@@ -1057,7 +1057,10 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
   }
   .tdl-hero__actions { margin-top: 30px; }
   .tdl-hero__note { margin-top: 18px; color: var(--ink-2); }
-  .tdl-hero__wheel { position: relative; align-self: center; min-width: 0; margin: 0; }
+  /* Top-aligned like the text, as on the English Today: a centred wheel
+     moved whenever a late face or the rest of the stream changed the
+     height of a taller text column. */
+  .tdl-hero__wheel { position: relative; align-self: start; min-width: 0; margin: 0; }
   .tdl-wheel { position: relative; }
   /* The wheel's own rings are open; a dark disc behind them keeps the art
      from showing through the sky. */
