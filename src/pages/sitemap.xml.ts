@@ -330,6 +330,11 @@ const PLAYGROUND_ROUTES = ['/developers/playground/', '/developers/', '/develope
 // The design sweep's change to /developers/ (the dash in its sky embed's title)
 // arrives after the playground dated that page 2026-10-16, so it takes the next day.
 const DESIGN_SWEEP_DEVELOPERS_LASTMOD = '2026-10-17';
+// The top-ten redesign reaches the translated homes, birth chart and rising
+// sign pages (their Today and horoscope pages date with the edition).
+const TOP10_LOCALES_LASTMOD = '2026-10-17';
+const TOP10_LOCALES_ROUTES = ['es', 'pt', 'fr', 'it', 'ru']
+  .flatMap((locale) => ['/', '/birth-chart/', '/rising-sign/'].map((path) => `/${locale}${path}`));
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -488,6 +493,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...DESIGN_SWEEP_ROUTES.map((loc) => [loc, DESIGN_SWEEP_LASTMOD] as const),
   ...PLAYGROUND_ROUTES.map((loc) => [loc, PLAYGROUND_LASTMOD] as const),
   ['/developers/', DESIGN_SWEEP_DEVELOPERS_LASTMOD] as const,
+  ...TOP10_LOCALES_ROUTES.map((loc) => [loc, TOP10_LOCALES_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

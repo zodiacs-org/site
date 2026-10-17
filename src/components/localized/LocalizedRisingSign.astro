@@ -1,0 +1,1210 @@
+---
+/**
+ * The translated rising sign calculator page (es, pt, fr, it, ru). The
+ * English page, src/pages/rising-sign/index.astro, is the reference layout:
+ * the calculator first with an example result, why the birth time matters,
+ * what the result shows, the twelve risings, where to go next, questions.
+ * Each locale page passes its FAQ (it also feeds that page's JSON-LD); every
+ * other word is in COPY below.
+ *
+ * The example, the day of rising signs and the rulers are the English page's
+ * own build-time values (src/lib/rising-example.ts), so every language shows
+ * the same computed chart. The one-line manner on each card and the example
+ * reading come from the translated rising profiles
+ * (src/content/learn-i18n/{locale}/rising/): the first answer of each
+ * profile defines the ascendant, then gives the manner after a colon.
+ * Russian has no translated profiles yet; its lines are the rising lines of
+ * the Russian sign guides (src/data/ru-guides.ts), and its cards link the
+ * English profiles with the English-only cue.
+ */
+import { getCollection } from 'astro:content';
+import ArtFrame from '../ArtFrame.astro';
+import PlanetGlyph from '../PlanetGlyph';
+import SignIcon from '../SignIcon.astro';
+import ChartCalculator from '../../islands/ChartCalculator';
+import LocalizedHorizonDiagram from './LocalizedHorizonDiagram.astro';
+import type { HorizonLabels } from './LocalizedHorizonDiagram.astro';
+import { SIGNS, signName, signPrepositional, type Sign } from '../../lib/signs';
+import {
+  RISING_AT,
+  RISING_DAY,
+  RISING_EXAMPLE,
+  RISING_LATER,
+  RISING_LONGEST,
+  RISING_SHORTEST,
+  traditionalRuler,
+  type RisingBand,
+  type RisingMoment,
+} from '../../lib/rising-example';
+import { englishOnlyCue, localizePath, pluralText, t } from '../../lib/i18n';
+import { planetLabel } from '../../lib/i18n/astrology';
+import { formatDate } from '../../lib/i18n/dates';
+import { heroCropAlt } from '../../lib/hero-crops';
+import { NAV_MORE, NAV_TOOLS } from '../../lib/nav-tools';
+import { RU_GUIDES } from '../../data/ru-guides';
+import { ART, artSrc, artSrcset } from '../../lib/art';
+import '../../styles/calculator.css';
+
+export type RisingLocale = 'es' | 'pt' | 'fr' | 'it' | 'ru';
+export interface RisingFaqItem {
+  q: string;
+  a: string;
+  link?: { href: string; label: string };
+}
+
+interface Props {
+  locale: RisingLocale;
+  faq: RisingFaqItem[];
+}
+
+const { locale, faq } = Astro.props;
+
+interface Copy {
+  crumbs: string;
+  title: string;
+  lede: string;
+  noscript: string;
+  noTime: string;
+  exampleAria: string;
+  exampleTag: string;
+  /** "Born", before the example's date, time and place. */
+  bornLead: string;
+  /** The example's city, kept on one line. */
+  place: string;
+  /** "Libra rising", as the language says it. */
+  rising: (sign: Sign) => string;
+  /** "Venus in Libra". */
+  inSign: (planet: string, sign: Sign) => string;
+  readGuide: (sign: Sign) => string;
+  fullChart: string;
+  whyKicker: string;
+  whyTitle: string;
+  whyProse: [string, string];
+  tipLead: string;
+  tip: string;
+  /** "One day in" + the city as the heading says it + the joint before the date. */
+  dayTitle: [string, string, string];
+  dayLede: string;
+  halves: [string, string];
+  clock: (minutes: number) => string;
+  axis: (minutes: number) => string;
+  /** "at 6:40", with the article the hour takes. */
+  at: (minutes: number) => string;
+  range: (from: number, to: number) => string;
+  minutes: (n: number) => string;
+  laterLine: (gap: number) => string;
+  gapTitle: (gap: number) => string;
+  gapBody: (first: RisingMoment, second: RisingMoment) => string;
+  unevenTitle: string;
+  uneven: (longest: RisingBand, shortest: RisingBand[]) => string;
+  showsTitle: string;
+  showsLede: string;
+  shows: [
+    { title: string; body: string },
+    { title: string; body: string },
+    { title: string; before: string; link: string; after: string },
+  ];
+  risingsTitle: string;
+  risingsLede: string;
+  rulerNote: string;
+  rulerLink: string;
+  nextKicker: string;
+  nextTitle: string;
+  nextLede: string;
+  nextList: [string, string, string];
+  reassure: string;
+  moonKicker: string;
+  moonText: string;
+  moonLink: string;
+  alsoLabel: string;
+  faqTitle: string;
+  faqLead: string;
+  faqMethod: string;
+  faqOr: string;
+  faqGuide: string;
+  horizon: HorizonLabels;
+}
+
+const pad = (n: number) => String(n).padStart(2, '0');
+/** A minute of the local day as hours and minutes; 1440 stays the end of the day. */
+const hm = (minutes: number) => ({ h: Math.floor(minutes / 60) % 24, m: minutes % 60 });
+const cap = (text: string) => text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
+const lower = (text: string) => text.charAt(0).toLocaleLowerCase(locale) + text.slice(1);
+const joinNames = (names: string[], and: string) => (
+  names.length > 1 ? `${names.slice(0, -1).join(', ')} ${and} ${names.at(-1)}` : names[0]
+);
+/** Two hours or more as hours and minutes, under two hours as minutes alone. */
+const longDuration = (n: number, hours: string, and: string, minutes: (n: number) => string) => (
+  n < 120 ? minutes(n) : `${Math.floor(n / 60)} ${hours}${n % 60 ? ` ${and} ${minutes(n % 60)}` : ''}`
+);
+const spanOf = (band: RisingBand) => band.end - band.start;
+const NNBSP = ' ';
+const NBSP = ' ';
+
+const RU_MINUTES = { one: '{n} минута', few: '{n} минуты', many: '{n} минут', other: '{n} минуты' } as const;
+const RU_MINUTES_ACC = { one: '{n} минуту', few: '{n} минуты', many: '{n} минут', other: '{n} минуты' } as const;
+const RU_HOURS = { one: '{n} час', few: '{n} часа', many: '{n} часов', other: '{n} часа' } as const;
+const ruDuration = (n: number, minuteForms: typeof RU_MINUTES | typeof RU_MINUTES_ACC) => (
+  n < 120
+    ? pluralText('ru', minuteForms, n)
+    : [pluralText('ru', RU_HOURS, Math.floor(n / 60)), n % 60 ? pluralText('ru', minuteForms, n % 60) : '']
+      .filter(Boolean)
+      .join(' ')
+);
+
+const name = (sign: Sign) => signName(sign, locale);
+/* French and Italian give a sign its article in running text; Gemini and Pisces are plural. */
+const isPlural = (sign: Sign) => sign.slug === 'gemini' || sign.slug === 'pisces';
+const FR_ARTICLE: Record<string, string> = { virgo: 'la', libra: 'la', gemini: 'les', pisces: 'les' };
+const IT_ARTICLE: Record<string, string> = {
+  aries: 'l’', aquarius: 'l’', scorpio: 'lo ', virgo: 'la ', libra: 'la ', gemini: 'i ', pisces: 'i ',
+};
+const frSign = (sign: Sign) => `${FR_ARTICLE[sign.slug] ?? 'le'} ${signName(sign, 'fr')}`;
+const itSign = (sign: Sign) => `${IT_ARTICLE[sign.slug] ?? 'il '}${signName(sign, 'it')}`;
+
+const COPY: Record<RisingLocale, Copy> = {
+  es: {
+    crumbs: 'Ruta de navegación',
+    title: 'Encuentra tu ascendente.',
+    lede: 'El signo que subía por el horizonte oriental en el momento en que naciste. Describe cómo te conoce la gente y da forma a toda tu carta.',
+    noscript: 'Esta calculadora del ascendente necesita JavaScript. Activa JavaScript y recarga la página con tu fecha, hora exacta y lugar de nacimiento.',
+    noTime: '¿No sabes la hora exacta? El signo lunar se calcula solo con tu fecha de nacimiento.',
+    exampleAria: 'Ejemplo de resultado',
+    exampleTag: 'Lo que obtienes · ejemplo',
+    bornLead: 'Nacimiento:',
+    place: 'Nueva York',
+    rising: (sign) => `Ascendente ${name(sign)}`,
+    inSign: (planet, sign) => `${planet} en ${name(sign)}`,
+    readGuide: (sign) => `Lee sobre el ascendente ${name(sign)}`,
+    fullChart: 'Ve la carta natal completa',
+    whyKicker: 'Por qué te pedimos la hora',
+    whyTitle: 'El ascendente cambia más o menos cada dos horas.',
+    whyProse: [
+      'La Tierra gira una vez al día, así que el horizonte oriental recorre los doce signos del zodiaco cada 24 horas. Tu ascendente es el que lo estaba cruzando en el momento en que naciste.',
+      'Los signos no tardan lo mismo. Según el signo y la distancia del ecuador a la que naciste, uno puede ascender en poco más de una hora y otro en dos horas y media. Por eso te pedimos la hora exacta, y por eso nunca la adivinamos.',
+    ],
+    tipLead: 'Dónde encontrar tu hora:',
+    tip: 'lo mejor es el certificado de nacimiento; después, los registros del hospital y la memoria familiar. Si está redondeada a las 7:00 en punto, revisa también los signos a cada lado.',
+    dayTitle: ['Un día en', 'Nueva York', ', '],
+    dayLede: 'Cada franja es un ascendente. Las más anchas tardaron más en ascender.',
+    halves: ['De medianoche a mediodía', 'De mediodía a medianoche'],
+    clock: (minutes) => { const { h, m } = hm(minutes); return `${h}:${pad(m)}`; },
+    axis: (minutes) => `${minutes / 60}:00`,
+    at: (minutes) => `${hm(minutes).h === 1 ? 'a la' : 'a las'} ${COPY.es.clock(minutes)}`,
+    range: (from, to) => `${hm(from).h === 1 ? 'de la' : 'de las'} ${COPY.es.clock(from)} ${hm(to).h === 1 ? 'a la' : 'a las'} ${COPY.es.clock(to)}`,
+    minutes: (n) => `${n} ${n === 1 ? 'minuto' : 'minutos'}`,
+    laterLine: (gap) => `El mismo día, en la misma ciudad, ${COPY.es.minutes(gap)} después.`,
+    gapTitle: (gap) => `${COPY.es.minutes(gap)}, otro signo`,
+    gapBody: (a, b) => `Nacimiento ${COPY.es.at(a.minutes)}: ${lower(COPY.es.rising(a.sign))}. ${cap(COPY.es.at(b.minutes))} del mismo día: ${lower(COPY.es.rising(b.sign))}.`,
+    unevenTitle: 'Tiempos desiguales',
+    uneven: (longest, shortest) => {
+      const duration = (n: number) => longDuration(n, 'horas', 'y', COPY.es.minutes);
+      const fast = shortest.length > 1
+        ? `${joinNames(shortest.map((band) => name(band.sign)), 'y')} tardaron ${duration(spanOf(shortest[0]))} cada uno.`
+        : `${name(shortest[0].sign)} tardó ${duration(spanOf(shortest[0]))}.`;
+      return `${name(longest.sign)} tardó ${duration(spanOf(longest))} en ascender. ${fast}`;
+    },
+    showsTitle: 'Lo que muestra tu ascendente',
+    showsLede: 'Tres cosas. La calculadora te da al instante tu ascendente y el regente de tu carta.',
+    shows: [
+      { title: 'Cómo te conoce la gente', body: 'Las maneras que notan los desconocidos antes de saber tu signo solar: cómo entras en una sala y la primera impresión que dejas.' },
+      { title: 'El regente de tu carta', body: 'El planeta que rige tu ascendente. Los astrólogos leen su signo y su casa como uno de los grandes temas de la carta.' },
+      { title: 'La distribución de tus casas', before: 'Tu ascendente abre la primera casa, así que decide en qué área de la vida cae cada uno de los demás planetas. ', link: 'La carta natal completa', after: ' los muestra todos.' },
+    ],
+    risingsTitle: 'Los doce ascendentes',
+    risingsLede: 'Cuando sepas cuál es el tuyo, lee lo que hace en una carta: las maneras, el regente y cómo caen las casas.',
+    rulerNote: 'Los regentes siguen el sistema tradicional, el mismo que usa la calculadora.',
+    rulerLink: '¿Qué es el regente de la carta?',
+    nextKicker: 'Siguiente paso',
+    nextTitle: 'Tu ascendente es uno de tres.',
+    nextLede: 'La carta natal gratuita suma tu signo solar y tu signo lunar, todos los planetas y las doce casas que organiza tu ascendente, con lo que significa cada uno.',
+    nextList: ['Ascendente, el de esta página', 'Signo solar, tu identidad central', 'Signo lunar, cómo sientes las cosas'],
+    reassure: 'Con la misma fecha, hora y lugar de nacimiento. Privado en tu navegador.',
+    moonKicker: 'Herramienta relacionada',
+    moonText: 'Funciona solo con tu fecha de nacimiento, y la hora lo vuelve exacto.',
+    moonLink: 'Calculadora de signo lunar',
+    alsoLabel: 'También te puede servir:',
+    faqTitle: 'Preguntas sobre el ascendente',
+    faqLead: '¿Te queda alguna duda?',
+    faqMethod: 'Mira cómo calculamos las cartas',
+    faqOr: ' o ',
+    faqGuide: 'pregúntale a Guide',
+    horizon: {
+      east: 'Este',
+      west: 'Oeste',
+      ascendant: 'Ascendente',
+      birthplace: 'Tu lugar de nacimiento',
+      risen: 'ya ascendieron',
+      toRise: 'aún por ascender',
+      aria: (rising) => `Diagrama: la rueda del zodiaco cortada por tu horizonte. ${name(rising)} está en el horizonte oriental, así que el ascendente es ${name(rising)}. Los signos sobre la línea ya ascendieron; los de abajo aún están por ascender.`,
+      caption: (rising, next) => `La rueda del zodiaco cortada por el horizonte de tu lugar de nacimiento. ${name(rising)} cruza el horizonte oriental, así que el ascendente es ${name(rising)}. A medida que la Tierra gira, ${name(next)} sube a ocupar su lugar.`,
+    },
+  },
+  pt: {
+    crumbs: 'Trilha de navegação',
+    title: 'Descubra seu ascendente.',
+    lede: 'O signo que surgia no horizonte leste no momento em que você nasceu. Ele descreve como as pessoas conhecem você e dá forma a todo o seu mapa.',
+    noscript: 'Esta calculadora de ascendente precisa de JavaScript. Ative-o e recarregue a página com sua data, hora exata e local de nascimento.',
+    noTime: 'Não sabe a hora exata? O signo lunar funciona só com a data de nascimento.',
+    exampleAria: 'Exemplo de resultado',
+    exampleTag: 'O que você recebe · exemplo',
+    bornLead: 'Nascimento:',
+    place: 'Nova York',
+    rising: (sign) => `Ascendente em ${name(sign)}`,
+    inSign: (planet, sign) => `${planet} em ${name(sign)}`,
+    readGuide: (sign) => `Leia sobre o ascendente em ${name(sign)}`,
+    fullChart: 'Veja o mapa astral completo',
+    whyKicker: 'Por que pedimos a hora',
+    whyTitle: 'O ascendente muda mais ou menos a cada duas horas.',
+    whyProse: [
+      'A Terra gira uma vez por dia, então o horizonte leste passa pelos doze signos do zodíaco a cada 24 horas. Seu ascendente é aquele que o estava cruzando no momento em que você nasceu.',
+      'Os signos não levam o mesmo tempo. Dependendo do signo e da distância entre o lugar onde você nasceu e a linha do equador, um pode subir em pouco mais de uma hora e outro em duas horas e meia. Por isso pedimos a hora exata, e por isso nunca tentamos adivinhá-la.',
+    ],
+    tipLead: 'Onde encontrar sua hora:',
+    tip: 'a certidão de nascimento é a melhor fonte; depois vêm os registros do hospital e a memória da família. Se a hora foi arredondada para 7h em ponto, confira também os signos vizinhos.',
+    dayTitle: ['Um dia em', 'Nova York', ', '],
+    dayLede: 'Cada faixa é um ascendente. As faixas mais largas levaram mais tempo para subir.',
+    halves: ['Da meia-noite ao meio-dia', 'Do meio-dia à meia-noite'],
+    clock: (minutes) => { const { h, m } = hm(minutes); return m ? `${h}h${pad(m)}` : `${h}h`; },
+    axis: (minutes) => `${minutes / 60}h`,
+    at: (minutes) => `${hm(minutes).h === 1 ? 'à' : 'às'} ${COPY.pt.clock(minutes)}`,
+    range: (from, to) => `${hm(from).h === 1 ? 'da' : 'das'} ${COPY.pt.clock(from)} ${hm(to).h === 1 ? 'à' : 'às'} ${COPY.pt.clock(to)}`,
+    minutes: (n) => `${n} ${n === 1 ? 'minuto' : 'minutos'}`,
+    laterLine: (gap) => `No mesmo dia, na mesma cidade, ${COPY.pt.minutes(gap)} depois.`,
+    gapTitle: (gap) => `${COPY.pt.minutes(gap)}, outro signo`,
+    gapBody: (a, b) => `Nascimento ${COPY.pt.at(a.minutes)}: ${lower(COPY.pt.rising(a.sign))}. ${cap(COPY.pt.at(b.minutes))} do mesmo dia: ${lower(COPY.pt.rising(b.sign))}.`,
+    unevenTitle: 'Tempos desiguais',
+    uneven: (longest, shortest) => {
+      const duration = (n: number) => longDuration(n, 'horas', 'e', COPY.pt.minutes);
+      const fast = shortest.length > 1
+        ? `${joinNames(shortest.map((band) => name(band.sign)), 'e')} levaram ${duration(spanOf(shortest[0]))} cada um.`
+        : `${name(shortest[0].sign)} levou ${duration(spanOf(shortest[0]))}.`;
+      return `${name(longest.sign)} levou ${duration(spanOf(longest))} para subir. ${fast}`;
+    },
+    showsTitle: 'O que seu ascendente mostra',
+    showsLede: 'Três coisas. A calculadora mostra na hora seu ascendente e o regente do seu mapa.',
+    shows: [
+      { title: 'Como as pessoas conhecem você', body: 'O jeito que os desconhecidos notam antes de saber seu signo solar: como você entra numa sala e a primeira impressão que deixa.' },
+      { title: 'O regente do seu mapa', body: 'O planeta que rege seu ascendente. Os astrólogos leem o signo e a casa desse planeta como um dos grandes temas do mapa.' },
+      { title: 'A distribuição das suas casas', before: 'Seu ascendente inicia a primeira casa, então define em que área da vida cai cada um dos outros planetas. ', link: 'O mapa astral completo', after: ' mostra todos.' },
+    ],
+    risingsTitle: 'Os doze ascendentes',
+    risingsLede: 'Quando souber qual é o seu, leia o que ele faz num mapa: o jeito, o regente e como as casas se distribuem.',
+    rulerNote: 'Os regentes seguem o sistema tradicional, o mesmo que a calculadora usa.',
+    rulerLink: 'O que é o regente do mapa?',
+    nextKicker: 'Próximo passo',
+    nextTitle: 'Seu ascendente é um de três.',
+    nextLede: 'O mapa astral gratuito acrescenta seu signo solar e seu signo lunar, todos os planetas e as doze casas que seu ascendente organiza, com o significado de cada um.',
+    nextList: ['Ascendente, o desta página', 'Signo solar, sua identidade central', 'Signo lunar, como você vive as emoções'],
+    reassure: 'A mesma data, hora e local de nascimento. Calculado com privacidade no seu navegador.',
+    moonKicker: 'Ferramenta relacionada',
+    moonText: 'Funciona só com a data de nascimento, e a hora o torna exato.',
+    moonLink: 'Calculadora de signo lunar',
+    alsoLabel: 'Também pode ser útil:',
+    faqTitle: 'Perguntas sobre o ascendente',
+    faqLead: 'Ainda tem dúvidas?',
+    faqMethod: 'Veja como calculamos os mapas',
+    faqOr: ' ou ',
+    faqGuide: 'pergunte ao Guide',
+    horizon: {
+      east: 'Leste',
+      west: 'Oeste',
+      ascendant: 'Ascendente',
+      birthplace: 'Seu local de nascimento',
+      risen: 'já subiram',
+      toRise: 'ainda vão subir',
+      aria: (rising) => `Diagrama: a roda do zodíaco cortada pelo seu horizonte. ${name(rising)} está no horizonte leste, então o ascendente é ${name(rising)}. Os signos acima da linha já subiram; os de baixo ainda vão subir.`,
+      caption: (rising, next) => `A roda do zodíaco cortada pelo horizonte do seu local de nascimento. ${name(rising)} está cruzando o horizonte leste, então o ascendente é ${name(rising)}. À medida que a Terra gira, ${name(next)} sobe para ocupar o lugar.`,
+    },
+  },
+  fr: {
+    crumbs: 'Fil d’Ariane',
+    title: 'Découvre ton ascendant.',
+    lede: 'Le signe qui se levait à l’est au moment de ta naissance. Il décrit la façon dont les gens te découvrent, et il donne sa forme à tout ton thème.',
+    noscript: 'Ce calculateur d’ascendant nécessite JavaScript. Active JavaScript et recharge la page avec ta date, ton heure exacte et ton lieu de naissance.',
+    noTime: `Tu ne connais pas l’heure exacte${NNBSP}? Le signe lunaire se calcule avec ta seule date de naissance.`,
+    exampleAria: 'Exemple de résultat',
+    exampleTag: 'Ce que tu obtiens · exemple',
+    bornLead: `Naissance${NNBSP}:`,
+    place: 'New York',
+    rising: (sign) => `Ascendant ${name(sign)}`,
+    inSign: (planet, sign) => `${planet} en ${name(sign)}`,
+    readGuide: (sign) => `Découvre l’ascendant ${name(sign)}`,
+    fullChart: 'Voir le thème astral complet',
+    whyKicker: 'Pourquoi nous te demandons l’heure',
+    whyTitle: 'L’ascendant change de signe toutes les deux heures environ.',
+    whyProse: [
+      `La Terre fait un tour sur elle-même par jour${NNBSP}: en 24 heures, les douze signes du zodiaque passent donc tous sur l’horizon oriental. Ton ascendant est celui qui le franchissait au moment de ta naissance.`,
+      'Les signes ne mettent pas tous le même temps. Selon le signe et la distance entre ton lieu de naissance et l’équateur, l’un peut se lever en un peu plus d’une heure, un autre en deux heures et demie. C’est pourquoi nous te demandons ton heure exacte, et pourquoi nous ne la devinons jamais.',
+    ],
+    tipLead: `Où trouver ton heure${NNBSP}:`,
+    tip: `l’acte de naissance est la meilleure source, puis les dossiers de la maternité, puis les souvenirs de ta famille. Si elle a été arrondie à 7${NBSP}h pile, regarde aussi les signes voisins.`,
+    dayTitle: ['Une journée à', 'New York', ', le '],
+    dayLede: 'Chaque bande correspond à un ascendant. Plus elle est large, plus le signe a mis de temps à se lever.',
+    halves: ['De minuit à midi', 'De midi à minuit'],
+    clock: (minutes) => { const { h, m } = hm(minutes); return m ? `${h}${NBSP}h${NBSP}${pad(m)}` : `${h}${NBSP}h`; },
+    axis: (minutes) => `${minutes / 60}${NBSP}h`,
+    at: (minutes) => `à ${COPY.fr.clock(minutes)}`,
+    range: (from, to) => `de ${COPY.fr.clock(from)} à ${COPY.fr.clock(to)}`,
+    minutes: (n) => `${n} ${n < 2 ? 'minute' : 'minutes'}`,
+    laterLine: (gap) => `Même jour, même ville, ${COPY.fr.minutes(gap)} plus tard.`,
+    gapTitle: (gap) => `${COPY.fr.minutes(gap)}, un autre signe`,
+    gapBody: (a, b) => `Naissance ${COPY.fr.at(a.minutes)}${NNBSP}: ${lower(COPY.fr.rising(a.sign))}. ${cap(COPY.fr.at(b.minutes))} le même jour${NNBSP}: ${lower(COPY.fr.rising(b.sign))}.`,
+    unevenTitle: 'Des durées inégales',
+    uneven: (longest, shortest) => {
+      const duration = (n: number) => longDuration(n, 'heures', 'et', COPY.fr.minutes);
+      const fast = shortest.length > 1
+        ? `${joinNames(shortest.map((band) => name(band.sign)), 'et')}${NNBSP}: ${duration(spanOf(shortest[0]))} chacun.`
+        : `${name(shortest[0].sign)}${NNBSP}: ${duration(spanOf(shortest[0]))}.`;
+      return `${name(longest.sign)}${NNBSP}: ${duration(spanOf(longest))} pour se lever. ${fast}`;
+    },
+    showsTitle: 'Ce que montre ton ascendant',
+    showsLede: 'Trois choses. Le calculateur te donne tout de suite ton ascendant et le maître de ton thème.',
+    shows: [
+      { title: 'La façon dont on te découvre', body: `L’allure que les inconnus remarquent avant de connaître ton signe solaire${NNBSP}: ta façon d’entrer dans une pièce, et la première impression que tu laisses.` },
+      { title: 'Le maître de ton thème', body: 'La planète qui gouverne ton ascendant. Les astrologues lisent son signe et sa maison comme l’un des grands fils conducteurs du thème.' },
+      { title: 'La répartition de tes maisons', before: `Ton ascendant ouvre la première maison${NNBSP}: c’est lui qui décide du domaine de vie où tombe chacune des autres planètes. `, link: 'Le thème astral complet', after: ' les montre toutes.' },
+    ],
+    risingsTitle: 'Les douze ascendants',
+    risingsLede: `Une fois le tien connu, découvre ce qu’il change dans un thème${NNBSP}: l’allure, le maître du thème et la répartition des maisons.`,
+    rulerNote: 'Les maîtres suivent le système traditionnel, celui qu’utilise le calculateur.',
+    rulerLink: `Qu’est-ce que le maître du thème${NNBSP}?`,
+    nextKicker: 'Étape suivante',
+    nextTitle: 'Ton ascendant est l’un des trois.',
+    nextLede: 'Le thème astral gratuit ajoute ton signe solaire et ton signe lunaire, chaque planète et les douze maisons que ton ascendant met en place, avec la signification de chacun.',
+    nextList: ['Ascendant, celui de cette page', 'Signe solaire, ton identité profonde', 'Signe lunaire, ta manière de ressentir'],
+    reassure: 'Mêmes date, heure et lieu de naissance. Tout reste dans ton navigateur.',
+    moonKicker: 'Outil associé',
+    moonText: 'Il fonctionne avec ta seule date de naissance, et l’heure le rend exact.',
+    moonLink: 'Calculateur de signe lunaire',
+    alsoLabel: `À voir aussi${NNBSP}:`,
+    faqTitle: 'Questions sur l’ascendant',
+    faqLead: `Il te reste une question${NNBSP}?`,
+    faqMethod: 'Découvre comment nous calculons les thèmes',
+    faqOr: ' ou ',
+    faqGuide: 'demande à Guide',
+    horizon: {
+      east: 'Est',
+      west: 'Ouest',
+      ascendant: 'Ascendant',
+      birthplace: 'Ton lieu de naissance',
+      risen: 'déjà levés',
+      toRise: 'encore à venir',
+      aria: (rising) => `Schéma${NNBSP}: la roue du zodiaque coupée par ton horizon. ${cap(frSign(rising))} ${isPlural(rising) ? 'sont' : 'est'} sur l’horizon oriental${NNBSP}: c’est l’ascendant. Les signes au-dessus de la ligne se sont déjà levés${NNBSP}; ceux du dessous ne se sont pas encore levés.`,
+      caption: (rising, next) => `La roue du zodiaque coupée par l’horizon de ton lieu de naissance. ${cap(frSign(rising))} ${isPlural(rising) ? 'franchissent' : 'franchit'} l’horizon oriental${NNBSP}: c’est l’ascendant. À mesure que la Terre tourne, ${frSign(next)} ${isPlural(next) ? 'montent' : 'monte'} prendre sa place.`,
+    },
+  },
+  it: {
+    crumbs: 'Percorso di navigazione',
+    title: 'Scopri il tuo ascendente.',
+    lede: 'Il segno che sorgeva a est nel momento della tua nascita. Descrive come ti conoscono gli altri e dà forma a tutto il tuo tema.',
+    noscript: 'Questo calcolatore dell’ascendente richiede JavaScript. Attiva JavaScript e ricarica la pagina con data, ora esatta e luogo di nascita.',
+    noTime: 'Non conosci l’ora esatta? Il segno lunare si calcola anche solo con la data di nascita.',
+    exampleAria: 'Esempio di risultato',
+    exampleTag: 'Cosa ottieni · esempio',
+    bornLead: 'Nascita:',
+    place: 'New York',
+    rising: (sign) => `Ascendente ${name(sign)}`,
+    inSign: (planet, sign) => `${planet} in ${name(sign)}`,
+    readGuide: (sign) => `Scopri l’ascendente ${name(sign)}`,
+    fullChart: 'Vedi il tema natale completo',
+    whyKicker: 'Perché ti chiediamo l’ora',
+    whyTitle: 'L’ascendente cambia segno ogni due ore circa.',
+    whyProse: [
+      'La Terra compie un giro su sé stessa al giorno, quindi in 24 ore tutti e dodici i segni dello zodiaco passano sull’orizzonte orientale. Il tuo ascendente è quello che lo stava attraversando nel momento della tua nascita.',
+      'I segni non impiegano tutti lo stesso tempo. A seconda del segno e di quanto il tuo luogo di nascita è lontano dall’equatore, uno può sorgere in poco più di un’ora e un altro in due ore e mezza. Per questo ti chiediamo l’ora esatta, e per questo non tiriamo mai a indovinare.',
+    ],
+    tipLead: 'Dove trovare l’ora:',
+    tip: 'il certificato di nascita è la fonte migliore, poi i documenti dell’ospedale, poi i ricordi della famiglia. Se è arrotondata alle 7:00 in punto, guarda anche i segni vicini.',
+    dayTitle: ['Un giorno a', 'New York', ', il '],
+    dayLede: 'Ogni fascia è un ascendente. Le fasce più larghe hanno impiegato più tempo a sorgere.',
+    halves: ['Da mezzanotte a mezzogiorno', 'Da mezzogiorno a mezzanotte'],
+    clock: (minutes) => { const { h, m } = hm(minutes); return `${h}:${pad(m)}`; },
+    axis: (minutes) => `${minutes / 60}:00`,
+    at: (minutes) => (hm(minutes).h === 1 ? `all’${COPY.it.clock(minutes)}` : `alle ${COPY.it.clock(minutes)}`),
+    range: (from, to) => `${hm(from).h === 1 ? 'dall’' : 'dalle '}${COPY.it.clock(from)} ${COPY.it.at(to)}`,
+    minutes: (n) => `${n} ${n === 1 ? 'minuto' : 'minuti'}`,
+    laterLine: (gap) => `Stesso giorno, stessa città, ${COPY.it.minutes(gap)} dopo.`,
+    gapTitle: (gap) => `${COPY.it.minutes(gap)}, un altro segno`,
+    gapBody: (a, b) => `Nascita ${COPY.it.at(a.minutes)}: ${lower(COPY.it.rising(a.sign))}. ${cap(COPY.it.at(b.minutes))} dello stesso giorno: ${lower(COPY.it.rising(b.sign))}.`,
+    unevenTitle: 'Tempi diversi',
+    uneven: (longest, shortest) => {
+      const duration = (n: number) => longDuration(n, 'ore', 'e', COPY.it.minutes);
+      const fast = shortest.length > 1
+        ? `${joinNames(shortest.map((band) => name(band.sign)), 'e')}: ${duration(spanOf(shortest[0]))} ciascuno.`
+        : `${name(shortest[0].sign)}: ${duration(spanOf(shortest[0]))}.`;
+      return `${name(longest.sign)}: ${duration(spanOf(longest))} per sorgere. ${fast}`;
+    },
+    showsTitle: 'Che cosa mostra il tuo ascendente',
+    showsLede: 'Tre cose. Il calcolatore ti dà subito il tuo ascendente e il governatore del tuo tema.',
+    shows: [
+      { title: 'Come ti conoscono gli altri', body: 'Il modo di fare che gli sconosciuti notano prima di sapere il tuo segno solare: come entri in una stanza e la prima impressione che lasci.' },
+      { title: 'Il governatore del tuo tema', body: 'Il pianeta che governa il tuo ascendente. Gli astrologi leggono il suo segno e la sua casa come uno dei fili conduttori del tema natale.' },
+      { title: 'La disposizione delle tue case', before: 'L’ascendente apre la prima casa, quindi decide in quale ambito della vita cade ogni altro pianeta. ', link: 'Il tema natale completo', after: ' li mostra tutti.' },
+    ],
+    risingsTitle: 'I dodici ascendenti',
+    risingsLede: 'Quando conosci il tuo, scopri che cosa cambia nel tema: il modo di fare, il governatore e come cadono le case.',
+    rulerNote: 'I governatori seguono il sistema tradizionale, lo stesso che usa il calcolatore.',
+    rulerLink: 'Che cos’è il governatore del tema?',
+    nextKicker: 'Il passo successivo',
+    nextTitle: 'Il tuo ascendente è uno dei tre.',
+    nextLede: 'Il tema natale gratuito aggiunge il segno solare e quello lunare, tutti i pianeti e le dodici case che il tuo ascendente imposta, con il significato di ciascuno.',
+    nextList: ['Ascendente, da questa pagina', 'Segno solare, la tua identità di fondo', 'Segno lunare, come vivi le emozioni'],
+    reassure: 'Gli stessi dati di nascita: data, ora e luogo. Tutto resta nel tuo browser.',
+    moonKicker: 'Strumento collegato',
+    moonText: 'Funziona anche solo con la data di nascita, e l’ora lo rende esatto.',
+    moonLink: 'Calcolatore del segno lunare',
+    alsoLabel: 'Può esserti utile anche:',
+    faqTitle: 'Domande sull’ascendente',
+    faqLead: 'Hai ancora dubbi?',
+    faqMethod: 'Guarda come calcoliamo i temi',
+    faqOr: ' o ',
+    faqGuide: 'chiedi a Guide',
+    horizon: {
+      east: 'Est',
+      west: 'Ovest',
+      ascendant: 'Ascendente',
+      birthplace: 'Il tuo luogo di nascita',
+      risen: 'già sorti',
+      toRise: 'ancora da sorgere',
+      aria: (rising) => `Schema: la ruota dello zodiaco tagliata dal tuo orizzonte. ${cap(itSign(rising))} ${isPlural(rising) ? 'si trovano' : 'si trova'} sull’orizzonte orientale, quindi l’ascendente è in ${name(rising)}. I segni sopra la linea sono già sorti; quelli sotto devono ancora sorgere.`,
+      caption: (rising, next) => `La ruota dello zodiaco tagliata dall’orizzonte del tuo luogo di nascita. ${cap(itSign(rising))} ${isPlural(rising) ? 'stanno' : 'sta'} attraversando l’orizzonte orientale, quindi l’ascendente è in ${name(rising)}. Man mano che la Terra gira, ${itSign(next)} ${isPlural(next) ? 'salgono' : 'sale'} a prenderne il posto.`,
+    },
+  },
+  ru: {
+    crumbs: 'Навигационная цепочка',
+    title: 'Найдите свой асцендент.',
+    lede: 'Знак, который восходил на востоке в момент вашего рождения. Он описывает, каким вас видят при первой встрече, и задаёт устройство всей карты.',
+    noscript: 'Для расчёта асцендента нужен JavaScript. Включите его и перезагрузите страницу, затем введите дату, точное время и место рождения.',
+    noTime: 'Не знаете точного времени? Лунный знак можно рассчитать по одной дате рождения.',
+    exampleAria: 'Пример результата',
+    exampleTag: 'Что вы получите · пример',
+    bornLead: 'Рождение:',
+    place: 'Нью-Йорк',
+    rising: (sign) => `Асцендент в ${signPrepositional(sign)}`,
+    inSign: (planet, sign) => `${planet} в ${signPrepositional(sign)}`,
+    readGuide: (sign) => `Подробнее об асценденте в ${signPrepositional(sign)}`,
+    fullChart: 'Посмотреть полную натальную карту',
+    whyKicker: 'Почему мы спрашиваем время',
+    whyTitle: 'Асцендент меняет знак примерно каждые два часа.',
+    whyProse: [
+      'Земля делает оборот вокруг своей оси за сутки, поэтому за 24 часа через восточный горизонт проходят все двенадцать знаков зодиака. Асцендентом становится тот знак, который пересекал горизонт в момент вашего рождения.',
+      'Знаки восходят не одинаково долго. В зависимости от знака и от того, насколько далеко от экватора вы родились, один может взойти чуть больше чем за час, а другой за два с половиной. Поэтому мы спрашиваем точное время и никогда его не угадываем.',
+    ],
+    tipLead: 'Где найти время:',
+    tip: 'лучше всего свидетельство о рождении, затем медицинская запись, затем память семьи. Если время округлено, например до 7:00, посмотрите и соседние знаки.',
+    dayTitle: ['Один день в', 'Нью-Йорке', ', '],
+    dayLede: 'Каждая полоса соответствует одному асценденту. Чем шире полоса, тем дольше восходил знак.',
+    halves: ['С полуночи до полудня', 'С полудня до полуночи'],
+    clock: (minutes) => { const { h, m } = hm(minutes); return `${h}:${pad(m)}`; },
+    axis: (minutes) => `${minutes / 60}:00`,
+    at: (minutes) => `в ${COPY.ru.clock(minutes)}`,
+    range: (from, to) => `с ${COPY.ru.clock(from)} до ${COPY.ru.clock(to)}`,
+    minutes: (n) => pluralText('ru', RU_MINUTES, n),
+    laterLine: (gap) => `Тот же день, тот же город, на ${pluralText('ru', RU_MINUTES_ACC, gap)} позже.`,
+    gapTitle: (gap) => `${COPY.ru.minutes(gap)}, и уже другой знак`,
+    gapBody: (a, b) => `Рождение ${COPY.ru.at(a.minutes)}: ${lower(COPY.ru.rising(a.sign))}. ${cap(COPY.ru.at(b.minutes))} того же дня: ${lower(COPY.ru.rising(b.sign))}.`,
+    unevenTitle: 'Неравные отрезки',
+    uneven: (longest, shortest) => {
+      const fast = shortest.length > 1
+        ? `Быстрее всех взошли знаки ${joinNames(shortest.map((band) => name(band.sign)), 'и')}, каждый за ${ruDuration(spanOf(shortest[0]), RU_MINUTES_ACC)}.`
+        : `Быстрее всех взошёл знак ${name(shortest[0].sign)}, за ${ruDuration(spanOf(shortest[0]), RU_MINUTES_ACC)}.`;
+      return `Дольше всех восходил знак ${name(longest.sign)}: ${ruDuration(spanOf(longest), RU_MINUTES)}. ${fast}`;
+    },
+    showsTitle: 'Что показывает асцендент',
+    showsLede: 'Три вещи. Калькулятор сразу называет ваш асцендент и управителя карты.',
+    shows: [
+      { title: 'Каким вас видят при знакомстве', body: 'Манера, которую незнакомые люди замечают раньше, чем узнают ваш солнечный знак: как вы входите в комнату и какое первое впечатление оставляете.' },
+      { title: 'Управитель карты', body: 'Планета, которая управляет вашим асцендентом. Астрологи читают её знак и дом как одну из главных тем карты.' },
+      { title: 'Расположение домов', before: 'Асцендент начинает первый дом, поэтому от него зависит, в какую сферу жизни попадает каждая планета. ', link: 'Полная натальная карта', after: ' показывает их все.' },
+    ],
+    risingsTitle: 'Двенадцать асцендентов',
+    risingsLede: 'Когда узнаете свой, прочитайте, что он меняет в карте: манеру, управителя и расположение домов. Полные профили асцендентов пока доступны по-английски.',
+    rulerNote: 'Управители указаны по традиционной системе, той же, что использует калькулятор.',
+    rulerLink: 'Что такое управитель карты?',
+    nextKicker: 'Следующий шаг',
+    nextTitle: 'Ваш асцендент лишь один из трёх.',
+    nextLede: 'Бесплатная натальная карта добавит солнечный и лунный знаки, все планеты и двенадцать домов, которые задаёт асцендент, с объяснением каждого.',
+    nextList: ['Асцендент, с этой страницы', 'Солнечный знак, ваша основа', 'Лунный знак, ваши чувства'],
+    reassure: 'Те же дата, время и место рождения. Приватно в браузере.',
+    moonKicker: 'Связанный инструмент',
+    moonText: 'Достаточно даты рождения, а время сделает расчёт точным.',
+    moonLink: 'Калькулятор лунного знака',
+    alsoLabel: 'Ещё может пригодиться:',
+    faqTitle: 'Вопросы об асценденте',
+    faqLead: 'Остались вопросы?',
+    faqMethod: 'Посмотрите, как мы рассчитываем карты',
+    faqOr: ' или ',
+    faqGuide: 'спросите Guide',
+    horizon: {
+      east: 'Восток',
+      west: 'Запад',
+      ascendant: 'Асцендент',
+      birthplace: 'Место рождения',
+      risen: 'уже взошли',
+      toRise: 'ещё взойдут',
+      aria: (rising) => `Схема: круг зодиака, рассечённый вашим горизонтом. На восточном горизонте ${name(rising)}, значит, асцендент в ${signPrepositional(rising)}. Знаки над линией уже взошли, знаки под ней ещё взойдут.`,
+      caption: (rising, next) => `Круг зодиака, рассечённый горизонтом места рождения. На восточном горизонте ${name(rising)}, значит, асцендент в ${signPrepositional(rising)}. Земля вращается, и следующим поднимется знак ${name(next)}.`,
+    },
+  },
+};
+
+/*
+ * Russian card lines: the rising lines of src/data/ru-guides.ts, which the
+ * guides set after "первое впечатление:", here in the nominative.
+ */
+const RU_LINES: Record<string, string> = {
+  aries: 'Прямая, деятельная манера входить в ситуацию так, будто первый шаг уже сделан.',
+  taurus: 'Спокойное, основательное и притягательное присутствие, которое трудно сдвинуть внешним давлением.',
+  gemini: 'Лёгкое, выразительное и внимательное присутствие, быстро считывающее происходящее.',
+  cancer: 'Наблюдательное и чувствительное присутствие, которое сначала может казаться закрытым, а затем становится очень тёплым.',
+  leo: 'Магнетичное, выразительное и запоминающееся присутствие, которое трудно не заметить.',
+  virgo: 'Аккуратное, внимательное и сдержанное присутствие, быстро замечающее недостающую деталь.',
+  libra: 'Элегантное и общительное присутствие, часто смягчающее атмосферу прежде, чем показать собственную интенсивность.',
+  scorpio: 'Магнетичное и наблюдательное присутствие, рядом с которым другие могут почувствовать себя замеченными.',
+  sagittarius: 'Открытое, честное и временами неудержимое присутствие, будто уже направленное к следующему рубежу.',
+  capricorn: 'Спокойное, компетентное и немного недоступное присутствие, пока не появится доверие.',
+  aquarius: 'Необычное, свежее и слегка непредсказуемое присутствие с заметной независимостью.',
+  pisces: 'Мягкое, меняющееся и трудно определимое присутствие, на которое окружающие могут многое проецировать.',
+};
+
+const c = COPY[locale];
+const colon = locale === 'fr' ? `${NNBSP}:` : ':';
+const sentences = (text: string) => text.split(/(?<=[.!?])\s+(?=\p{Lu})/u);
+
+/* The card line and the example reading for each sign, in this language. */
+const LINES: Record<string, { card: string; read: string }> = {};
+if (locale === 'ru') {
+  for (const sign of SIGNS) {
+    const body = RU_GUIDES[sign.slug]?.sections.find((section) => section.risingProfile)?.body[0] ?? '';
+    const read = sentences(body).find((sentence) => sentence.startsWith('Асцендент в '));
+    if (!read) throw new Error(`LocalizedRisingSign: the Russian ${sign.slug} guide no longer has its rising sentence.`);
+    LINES[sign.slug] = { card: RU_LINES[sign.slug], read };
+  }
+} else {
+  const entries = await getCollection(
+    'learnLocalized',
+    (entry) => entry.data.locale === locale && entry.data.kind === 'rising' && !entry.data.draft,
+  );
+  for (const entry of entries) {
+    const [, manner = '', ...rest] = sentences(entry.data.faq[0].a);
+    const line = manner.slice(manner.indexOf(':') + 1).trim();
+    if (!manner.includes(':') || !line) {
+      throw new Error(`LocalizedRisingSign: the first answer of ${entry.id}.mdx no longer gives the manner after a colon in its second sentence.`);
+    }
+    LINES[entry.data.sign] = { card: cap(line), read: [manner, ...rest].join(' ') };
+  }
+  const missing = SIGNS.filter((sign) => !LINES[sign.slug]);
+  if (missing.length) throw new Error(`LocalizedRisingSign: no ${locale} rising profile for ${missing.map((sign) => sign.slug).join(', ')}.`);
+}
+
+/* Links: a destination with no page in this language says so. */
+const cue = englishOnlyCue(locale)!;
+const href = (path: string) => localizePath(locale, path);
+const englishOnly = (path: string) => !href(path).startsWith(`/${locale}/`);
+const linkAttrs = (path: string) => (englishOnly(path) ? { hreflang: 'en', title: cue.aria } : {});
+const linkCue = (path: string) => (englishOnly(path) ? cue.suffix : '');
+const guidePath = (sign: Sign) => `/rising-sign/${sign.slug}/`;
+
+const example = RISING_AT;
+const later = RISING_LATER;
+const date = formatDate(locale, new Date(RISING_EXAMPLE.dayStartUtc), {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+const planet = (body: string) => planetLabel(locale, body);
+const rulerLine = (moment: RisingMoment) => `${t(locale, 'chartRuler')}${colon} ${c.inSign(planet(moment.ruler), moment.rulerSign)}.`;
+
+/* The day strip: one band per rising sign, sized by its minutes. The phone
+   shows the same day as two half-day strips, so a band that crosses noon
+   appears in both, cut at noon. */
+const NOON = 720;
+const half = (from: number, to: number) => RISING_DAY
+  .filter((band) => band.end > from && band.start < to)
+  .map((band) => ({ ...band, start: Math.max(band.start, from), end: Math.min(band.end, to) }));
+const bandTitle = (band: RisingBand) => `${c.rising(band.sign)}, ${c.range(band.start, band.end)}, ${c.minutes(band.end - band.start)}`;
+const isPinned = (slug: string) => slug === example.sign.slug || slug === later.sign.slug;
+const pct = (minutes: number, from = 0, span = 1440) => `${(((minutes - from) / span) * 100).toFixed(2)}%`;
+const AXIS = [0, 180, 360, 540, 720, 900, 1080, 1260, 1440];
+const unevenLine = c.uneven(RISING_LONGEST, RISING_SHORTEST);
+const gap = later.minutes - example.minutes;
+
+const moonPromise = NAV_TOOLS.find((tool) => tool.href === '/moon-sign/')?.sublabel[locale] ?? '';
+const moreLabel = (path: string) => NAV_MORE.find((item) => item.href === path)?.label[locale] ?? '';
+const steering = cap(t(locale, 'planetSteering'));
+---
+<!-- 01 · The calculator first, with an example of what it gives back. -->
+<section class="rs-tool">
+  <div class="kwrap rs-grid">
+    <div class="rs-main">
+      <nav class="rs-crumbs" aria-label={c.crumbs}><a href={href('/tools/')}>{t(locale, 'navTools')}</a><span aria-hidden="true">/</span><span aria-current="page">{t(locale, 'risingSign')}</span></nav>
+      <h1 class="rs-title">{c.title}</h1>
+      <p class="klede rs-lede">{c.lede}</p>
+
+      <ChartCalculator mode="rising" locale={locale} client:load />
+      <noscript>
+        <p>{c.noscript}</p>
+      </noscript>
+
+      <p class="rs-notime">
+        <span class="rs-notime__ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 3.6a8.6 8.6 0 1 0 4.9 13.9A7 7 0 0 1 15.5 3.6z" /></svg></span>
+        <span>{c.noTime} <a href={href('/moon-sign/')}>{t(locale, 'findMoonSign')}</a></span>
+      </p>
+    </div>
+
+    <aside class="rs-example" aria-label={c.exampleAria}>
+      <ArtFrame
+        class="rs-example__art"
+        sign={example.sign.slug}
+        locale={locale}
+        sizes="(min-width: 960px) 540px, calc(100vw - 40px)"
+        eager
+        focus="50% 64%"
+        spot="47% 56%"
+      />
+      <span class="pill rs-example__tag">{c.exampleTag}</span>
+      <div class="rs-example__body">
+        <div class="rs-example__head">
+          <SignIcon sign={example.sign.slug} size={68} loading="eager" class="rs-example__disc" />
+          <p class="rs-example__who"><b>{t(locale, 'yourRisingSign')}</b>{c.bornLead} {date} · {c.clock(example.minutes)} · <span class="rs-nowrap">{c.place}</span></p>
+        </div>
+        <div class="rs-example__sign"><h2 class="h-2">{c.rising(example.sign)}</h2><span class="rs-mono">{example.degree}</span></div>
+        <p class="rs-example__read">{LINES[example.sign.slug].read}</p>
+        <div class="rs-example__rows">
+          <div>
+            <span class="rs-example__ri" aria-hidden="true"><PlanetGlyph body={example.ruler} size={15} /></span>
+            <span><b>{rulerLine(example)}</b> <span class="rs-m">{steering}</span></span>
+          </div>
+        </div>
+        <div class="rs-example__links">
+          <a class="textlink" href={href(guidePath(example.sign))} {...linkAttrs(guidePath(example.sign))}>{c.readGuide(example.sign)}{linkCue(guidePath(example.sign))} <span class="arr" aria-hidden="true">→</span></a>
+          <a class="textlink" href={href('/birth-chart/')}>{c.fullChart} <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<div class="kwrap"><hr class="rule" /></div>
+
+<!-- 02 · Why the birth time matters, shown rather than described. -->
+<section class="kwrap ksection rs-why-band">
+  <div class="rs-why">
+    <div>
+      <span class="kicker">{c.whyKicker}</span>
+      <h2 class="h-2">{c.whyTitle}</h2>
+      <div class="rs-prose">
+        {c.whyProse.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <p class="rs-tip">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2.5h7l3 3v12H5z" /><path d="M8 9h4M8 12h4" /></svg>
+        <span><b>{c.tipLead}</b> {c.tip}</span>
+      </p>
+    </div>
+    <div class="kpanel rs-horizon">
+      <LocalizedHorizonDiagram asc={example.asc} labels={c.horizon} />
+    </div>
+  </div>
+
+  <!-- One day of rising signs: one strip on a wide screen, two half days on a phone. -->
+  <div class="rs-day rs-day--d">
+    <div class="rs-day__head">
+      <h3 class="h-3">{c.dayTitle[0]} <span class="rs-nowrap">{c.dayTitle[1]}</span>{c.dayTitle[2]}{date}</h3>
+      <p>{c.dayLede}</p>
+    </div>
+    <div class="rs-track">
+      <div class="rs-pin rs-pin--l" style={`left:${pct(example.minutes)}`}><span class="rs-pin__l"><b>{c.clock(example.minutes)}</b>{c.rising(example.sign)}</span></div>
+      <div class="rs-pin rs-pin--r" style={`left:${pct(later.minutes)}`}><span class="rs-pin__l"><b>{c.clock(later.minutes)}</b>{c.rising(later.sign)}</span></div>
+      <div class="rs-strip">
+        {RISING_DAY.map((band, index) => (
+          <span
+            class:list={['rs-strip__b', isPinned(band.sign.slug) && 'is-on', band.sign.slug === example.sign.slug && 'is-start']}
+            style={`flex:${band.end - band.start} 0 0;--c:${band.sign.hue}`}
+            title={bandTitle(band)}
+          >
+            {index > 0 && band.end - band.start >= 30 && <img src={`/assets/zodiac-icons/48/${band.sign.slug}.webp`} width="26" height="26" alt="" loading="lazy" decoding="async" />}
+          </span>
+        ))}
+      </div>
+    </div>
+    <div class="rs-axis" aria-hidden="true">
+      {AXIS.map((minutes) => <span style={`left:${pct(minutes)}`}>{c.axis(minutes)}</span>)}
+    </div>
+    <div class="rs-day__notes">
+      <div><SignIcon sign={example.sign.slug} size={32} /><span><b>{c.clock(example.minutes)} · {c.rising(example.sign)}</b>{rulerLine(example)}</span></div>
+      <div><SignIcon sign={later.sign.slug} size={32} /><span><b>{c.clock(later.minutes)} · {c.rising(later.sign)}</b>{c.laterLine(gap)} {rulerLine(later)}</span></div>
+      <div><span class="rs-n" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7.2" /><path d="M10 6v4l2.6 1.6" /></svg></span><span><b>{c.unevenTitle}</b>{unevenLine}</span></div>
+    </div>
+  </div>
+
+  <div class="rs-day rs-day--m">
+    <div class="rs-day__head">
+      <h3 class="h-3">{c.dayTitle[0]} <span class="rs-nowrap">{c.dayTitle[1]}</span>{c.dayTitle[2]}{date}</h3>
+      <p>{c.dayLede}</p>
+    </div>
+    {[[0, NOON, c.halves[0]], [NOON, 1440, c.halves[1]]].map(([from, to, caption]) => (
+      <>
+        <p class="rs-sub">{caption}</p>
+        <div class:list={['rs-track', from !== 0 && 'rs-track--plain']}>
+          {from === 0 && (
+            <>
+              <div class="rs-pin rs-pin--l" style={`left:${pct(example.minutes, 0, NOON)}`}><span class="rs-pin__l"><b>{c.clock(example.minutes)}</b>{c.rising(example.sign)}</span></div>
+              <div class="rs-pin rs-pin--r" style={`left:${pct(later.minutes, 0, NOON)}`}><span class="rs-pin__l"><b>{c.clock(later.minutes)}</b>{name(later.sign)}</span></div>
+            </>
+          )}
+          <div class="rs-strip">
+            {half(from as number, to as number).map((band) => (
+              <span
+                class:list={['rs-strip__b', isPinned(band.sign.slug) && 'is-on', band.sign.slug === example.sign.slug && 'is-start']}
+                style={`flex:${band.end - band.start} 0 0;--c:${band.sign.hue}`}
+                title={bandTitle(band)}
+              >
+                {band.end - band.start >= 30 && <img src={`/assets/zodiac-icons/48/${band.sign.slug}.webp`} width="20" height="20" alt="" loading="lazy" decoding="async" />}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div class="rs-axis" aria-hidden="true">
+          {[0, 180, 360, 540, 720].map((offset) => (
+            <span style={`left:${pct(offset, 0, NOON)}`}>{c.axis((from as number) + offset)}</span>
+          ))}
+        </div>
+      </>
+    ))}
+    <div class="rs-day__notes">
+      <div><SignIcon sign={later.sign.slug} size={32} /><span><b>{c.gapTitle(gap)}</b>{c.gapBody(example, later)}</span></div>
+      <div><span class="rs-n" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7.2" /><path d="M10 6v4l2.6 1.6" /></svg></span><span><b>{c.unevenTitle}</b>{unevenLine}</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 · What the result tells you. -->
+<section class="kwrap rs-band">
+  <div class="rs-shows-wrap">
+    <div class="section-head">
+      <h2 class="h-2">{c.showsTitle}</h2>
+      <p>{c.showsLede}</p>
+    </div>
+    <div class="rs-shows">
+      <div>
+        <span class="rs-tg" style="background:var(--sign-libra)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.5" /><path d="M5 20a7 7 0 0 1 14 0" /></svg></span>
+        <h3 class="h-4">{c.shows[0].title}</h3>
+        <p>{c.shows[0].body}</p>
+      </div>
+      <div>
+        <span class="rs-tg" style="background:var(--sign-sagittarius)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5" /><path d="M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3" /><path d="M9.5 14.5l1.2-3.8 3.8-1.2-1.2 3.8z" /></svg></span>
+        <h3 class="h-4">{c.shows[1].title}</h3>
+        <p>{c.shows[1].body}</p>
+      </div>
+      <div>
+        <span class="rs-tg" style="background:var(--sign-cancer)" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.5" /><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18" /></svg></span>
+        <h3 class="h-4">{c.shows[2].title}</h3>
+        <p>{c.shows[2].before}<a href={href('/birth-chart/')}>{c.shows[2].link}</a>{c.shows[2].after}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · The twelve rising guides, as cards. -->
+<section class="kwrap rs-band">
+  <div class="section-head section-head--row">
+    <div>
+      <h2 class="h-2">{c.risingsTitle}</h2>
+      <p>{c.risingsLede}</p>
+    </div>
+    <p class="rs-rnote only-desktop">{c.rulerNote} <a href="#faq">{c.rulerLink}</a></p>
+  </div>
+  <div class="rs-risings">
+    {SIGNS.map((sign) => {
+      const ruler = traditionalRuler(sign);
+      const path = guidePath(sign);
+      return (
+        <a class:list={['rs-rc', sign.slug === example.sign.slug && 'is-ex']} href={href(path)} {...linkAttrs(path)} style={`--sign:${sign.hue}`}>
+          <span class="rs-rc__top">
+            <SignIcon sign={sign.slug} size={44} />
+            <span>
+              <b><span class="rs-rc__long">{c.rising(sign)}</span><span class="rs-rc__short">{name(sign)}</span>{englishOnly(path) && <span class="sr-only">{cue.suffix}</span>}</b>
+              <small>{t(locale, 'ruler')} <span class="rs-rc__planet"><PlanetGlyph body={ruler} size={12} /> {planet(ruler)}</span></small>
+            </span>
+          </span>
+          <p>{LINES[sign.slug].card}</p>
+        </a>
+      );
+    })}
+  </div>
+</section>
+
+<!-- 05 · Keep going: the full birth chart, and the moon sign for people without a time. -->
+<section class="kwrap rs-band">
+  <div class="rs-next">
+    <article class="rs-bc">
+      <div class="rs-bc__art" aria-hidden="true"><img class="rs-bc__bg" src={artSrc('rising-horizon')} srcset={artSrcset('rising-horizon')} sizes="(min-width: 761px) 924px, calc(100vw - 40px)" width={ART['rising-horizon'].width} height={ART['rising-horizon'].height} alt="" loading="lazy" decoding="async" /></div>
+      <div class="rs-bc__body">
+        <span class="kicker">{c.nextKicker}</span>
+        <h2 class="h-2">{c.nextTitle}</h2>
+        <p class="rs-bc__l">{c.nextLede}</p>
+        <div class="rs-bc__list">
+          <div><SignIcon sign={example.sign.slug} size={26} />{c.nextList[0]}</div>
+          <div><span class="rs-bc__x"><PlanetGlyph body="Sun" size={13} /></span>{c.nextList[1]}</div>
+          <div><span class="rs-bc__x"><PlanetGlyph body="Moon" size={13} /></span>{c.nextList[2]}</div>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn--primary btn--lg" href={href('/birth-chart/')}><span>{t(locale, 'getBirthChart')}</span><span class="orb" aria-hidden="true">↗</span></a>
+        </div>
+        <p class="reassure">{c.reassure}</p>
+      </div>
+    </article>
+    <article class="kcard rs-ms">
+      <ArtFrame
+        class="rs-ms__art"
+        src="/assets/hero-crops/crescent-560.webp"
+        srcset="/assets/hero-crops/crescent-360.webp 360w, /assets/hero-crops/crescent-560.webp 560w"
+        sizes="(min-width: 1100px) 440px, 100vw"
+        width={560}
+        height={350}
+        alt={heroCropAlt('crescent', locale)}
+        spot="40% 40%"
+      />
+      <div class="rs-ms__body">
+        <span class="kicker">{c.moonKicker}</span>
+        <h3 class="h-3">{t(locale, 'findMoonSign')}</h3>
+        <p>{moonPromise} {c.moonText}</p>
+        <a class="textlink" href={href('/moon-sign/')}>{c.moonLink} <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </article>
+  </div>
+  <div class="rs-also">
+    <span class="rs-also__label">{c.alsoLabel}</span>
+    <a class="pill" href={href('/big-three/')}>{moreLabel('/big-three/')}</a>
+    <a class="pill" href={href('/chart-twins/')}>{moreLabel('/chart-twins/')}</a>
+  </div>
+</section>
+
+<!-- 06 · Questions. -->
+<section class="kwrap rs-band rs-faq" id="faq">
+  <div class="qa">
+    <div>
+      <h2 class="h-2">{c.faqTitle}</h2>
+      <p>{c.faqLead} <a class="rs-inline" href={href('/methodology/')}>{c.faqMethod}</a>{c.faqOr}<a class="rs-inline" href="/ask/" hreflang="en" title={cue.aria} data-assistant-open data-assistant-locale={locale}>{c.faqGuide}{cue.suffix}</a>.</p>
+    </div>
+    <div class="kfaq">
+      {faq.map(({ q, a, link }, index) => (
+        <details open={index === 0}>
+          <summary>{q}</summary>
+          <p>{a}{link && <> <a href={link.href}>{link.label}</a>.</>}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .rs-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .rs-nowrap { white-space: nowrap; }
+  .rs-band { padding-bottom: clamp(64px, 8vw, 120px); }
+
+  /* ── The tool, with an example result beside it ── */
+  .rs-tool { position: relative; padding: clamp(8px, 2vw, 24px) 0 clamp(64px, 7vw, 104px); }
+  .rs-grid { display: grid; grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+  /* Once a result is on the page, the example steps aside. */
+  .rs-grid:has(.calc > :not(form)) { grid-template-columns: minmax(0, 1fr); }
+  .rs-grid:has(.calc > :not(form)) .rs-example { display: none; }
+  .rs-crumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; font-size: 13px; color: var(--faint); }
+  .rs-crumbs a { color: var(--muted); text-decoration: none; }
+  .rs-crumbs span[aria-hidden] { opacity: 0.6; }
+  .rs-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: clamp(2.6rem, 1.7rem + 3.1vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .rs-lede { margin-top: 16px; }
+
+  /* The calculator's form, dressed as the mockup's panel: date and time side
+     by side, the time note full width under them, then the birthplace. */
+  .rs-main :global(.calc) { margin-top: 30px; }
+  .rs-main :global(.calc > .shell) { max-width: none; }
+  .rs-main :global(.calc .calc__form.shell > .calc__core) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, rgba(21, 25, 37, 0.86), rgba(15, 18, 26, 0.86));
+    box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .rs-main :global(.calc__core > *) { flex: 1 1 100%; }
+  .rs-main :global(.calc__fields) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 8px;
+    margin-bottom: 4px;
+  }
+  .rs-main :global(.calc__fields > .field:first-child) { grid-column: 1; grid-row: 1 / span 2; }
+  .rs-main :global(.calc__fields > .field:nth-child(2)) { display: contents; }
+  .rs-main :global(.calc__fields > .field:nth-child(2) > .field__labelrow) { grid-column: 2; grid-row: 1; }
+  .rs-main :global(.calc__fields > .field:nth-child(2) > .field__input) { grid-column: 2; grid-row: 2; }
+  .rs-main :global(.calc__fields > .field:nth-child(2) > .field__error) { grid-column: 1 / -1; }
+  .rs-main :global(.calc__fields > .field:nth-child(3)) { grid-column: 1 / -1; margin-top: 12px; }
+  .rs-main :global(.field__label) { min-height: 0; color: var(--ink-1); font-size: 0.875rem; }
+  .rs-main :global(.field__input) { height: 52px; border-radius: 14px; background: rgba(6, 7, 9, 0.55); }
+  .rs-main :global(#birth-time) { border-color: color-mix(in oklab, var(--sign-libra) 45%, transparent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--sign-libra) 7%, transparent); }
+  .rs-main :global(#birth-time-help) {
+    grid-column: 1 / -1;
+    position: relative;
+    margin-top: 6px;
+    padding: 14px 16px 14px 64px;
+    border: 1px solid color-mix(in oklab, var(--sign-libra) 20%, transparent);
+    border-radius: 14px;
+    background: color-mix(in oklab, var(--sign-libra) 6.5%, transparent);
+    color: var(--ink-1);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  /* The translated note is one line; centre it on the clock disc. */
+  .rs-main :global(#birth-time-help) { display: flex; align-items: center; min-height: 62px; }
+  .rs-main :global(#birth-time-help::before) {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230b0d12' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='10' r='7.2'/%3E%3Cpath d='M10 6v4l2.6 1.6'/%3E%3C/svg%3E") center / 18px no-repeat,
+      var(--sign-libra);
+  }
+  .rs-main :global(.calc__submit) { flex: none; min-height: 56px; padding: 12px 10px 12px 28px; font-size: 1.06rem; }
+  .rs-main :global(.calc__submit .orb) { width: 38px; height: 38px; }
+  .rs-main :global(.calc__privacy) { flex: 1 1 200px; margin: 0; font-size: 13px; color: var(--faint); }
+  .rs-main :global(.calc__guide) { margin: 0; }
+  .rs-notime { display: flex; align-items: center; gap: 12px; margin: 18px 0 0; padding-left: 4px; color: var(--muted); font-size: 0.9375rem; }
+  .rs-notime__ic { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--sign-pisces); color: #0b0d12; }
+  .rs-notime__ic svg { width: 15px; height: 15px; }
+  .rs-notime a { color: var(--ink-0); }
+
+  /* The example result */
+  .rs-example {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, rgba(21, 25, 37, 0.92), rgba(10, 12, 17, 0.92));
+    box-shadow: 0 40px 80px -48px rgba(0, 0, 0, 0.9);
+  }
+  .rs-example :global(.rs-example__art) { aspect-ratio: 16 / 9; border-radius: 0; }
+  .rs-example :global(.rs-example__art::after) { background: radial-gradient(ellipse 44% 62% at var(--spot), transparent 0 34%, rgba(6, 7, 9, 0.4) 72%, rgba(6, 7, 9, 0.82) 100%); }
+  .rs-example :global(.rs-example__art::before) { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, rgba(10, 12, 17, 0) 58%, rgba(17, 20, 30, 0.96) 100%); }
+  .rs-example__tag {
+    position: absolute;
+    z-index: 4;
+    top: 16px;
+    left: 16px;
+    border-color: rgba(238, 241, 247, 0.22);
+    background: rgba(10, 12, 17, 0.62);
+    color: var(--ink-0);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .rs-example__body { position: relative; z-index: 3; margin-top: -40px; padding: 0 28px 26px; }
+  .rs-example__head { display: flex; align-items: flex-end; gap: 16px; }
+  .rs-example__head :global(.rs-example__disc) { flex: none; border-radius: 50%; box-shadow: 0 0 0 5px rgba(17, 20, 30, 1), 0 12px 30px -10px color-mix(in oklab, var(--sign) 45%, transparent); }
+  .rs-example__who { margin: 0; padding-bottom: 4px; color: var(--faint); font-size: 13px; line-height: 1.4; }
+  .rs-example__who b { display: block; color: var(--muted); font-weight: 550; }
+  .rs-example__sign { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-top: 16px; }
+  .rs-example__sign .h-2 { font-size: clamp(2rem, 1.5rem + 1.4vw, 2.6rem); text-wrap: balance; }
+  .rs-example__sign .rs-mono { color: var(--sign-libra); font-size: 0.95rem; }
+  .rs-example__read { max-width: 48ch; margin: 10px 0 0; color: var(--ink-1); font-size: 1rem; line-height: 1.6; text-wrap: pretty; }
+  .rs-example__rows { margin-top: 18px; border-top: 1px solid var(--hair-1); }
+  .rs-example__rows > div { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--hair-1); color: var(--ink-1); font-size: 0.9375rem; line-height: 1.45; }
+  .rs-example__ri { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--hair-2); border-radius: 50%; color: var(--ink-1); }
+  .rs-example__rows b { color: var(--ink-0); font-weight: 600; }
+  .rs-m { color: var(--muted); }
+  .rs-example__links { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 18px; }
+
+  /* ── Why the time matters ── */
+  .rs-why { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(32px, 6vw, 88px); align-items: center; }
+  .rs-why .kicker { margin-bottom: 4px; }
+  .rs-why .h-2 { max-width: 22ch; text-wrap: balance; }
+  .rs-prose { margin-top: 20px; }
+  .rs-prose p { max-width: 62ch; margin: 0; color: var(--text-2); font-size: 1.0625rem; line-height: 1.72; text-wrap: pretty; }
+  .rs-prose p + p { margin-top: 1.05em; }
+  .rs-tip { display: flex; gap: 12px; max-width: 56ch; margin: 24px 0 0; padding-top: 18px; border-top: 1px solid var(--hair-1); color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .rs-tip svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--ink-1); }
+  .rs-tip b { color: var(--ink-0); font-weight: 600; }
+  .rs-horizon { padding: clamp(18px, 2.4vw, 30px) clamp(16px, 2.4vw, 30px) 22px; }
+
+  .rs-day { margin-top: clamp(40px, 5vw, 64px); }
+  .rs-day__head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 8px; }
+  .rs-day__head .h-3 { flex: 1 1 auto; font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.7rem); text-wrap: balance; }
+  .rs-day__head p { flex: 0 1 46ch; margin: 0; color: var(--muted); font-size: 0.9375rem; text-align: right; text-wrap: pretty; }
+  .rs-track { position: relative; padding-top: 64px; }
+  .rs-strip { display: flex; height: 58px; overflow: hidden; border: 1px solid var(--hair-2); border-radius: 14px; background: var(--void-2); }
+  .rs-strip__b { display: grid; place-items: center; min-width: 0; border-right: 1px solid rgba(6, 7, 9, 0.7); background: color-mix(in oklab, var(--c) 20%, #0F121A); }
+  .rs-strip__b:last-child { border-right: 0; }
+  .rs-strip__b.is-on { background: color-mix(in oklab, var(--c) 38%, #0F121A); }
+  .rs-strip__b img { border-radius: 50%; }
+  .rs-strip__b.is-start { justify-items: start; padding-left: 12px; }
+  .rs-pin { position: absolute; top: 0; bottom: -8px; z-index: 2; width: 0; }
+  .rs-pin::before { content: ''; position: absolute; left: -1px; top: 44px; bottom: 0; width: 2px; border-radius: 2px; background: var(--ink-0); }
+  .rs-pin::after { content: ''; position: absolute; left: -5px; top: 40px; width: 10px; height: 10px; border-radius: 50%; background: var(--ink-0); box-shadow: 0 0 0 4px var(--void-0); }
+  .rs-pin__l { position: absolute; top: 0; color: var(--muted); font-size: 13px; line-height: 1.3; white-space: nowrap; }
+  .rs-pin__l b { display: block; color: var(--ink-0); font-weight: 600; font-size: 14px; }
+  .rs-pin--l .rs-pin__l { right: 12px; text-align: right; }
+  .rs-pin--r .rs-pin__l { left: 12px; }
+  .rs-axis { position: relative; height: 34px; margin-top: 2px; color: var(--faint); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .rs-axis span { position: absolute; top: 10px; transform: translateX(-50%); white-space: nowrap; }
+  .rs-axis span::before { content: ''; position: absolute; left: 50%; top: -9px; width: 1px; height: 6px; background: var(--hair-3); }
+  .rs-axis span:first-child { transform: none; }
+  .rs-axis span:first-child::before { left: 0; }
+  .rs-axis span:last-child { transform: translateX(-100%); }
+  .rs-axis span:last-child::before { left: auto; right: 0; }
+  .rs-day__notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+  .rs-day__notes > div { display: flex; align-items: flex-start; gap: 12px; padding: 16px 18px; border: 1px solid var(--hair-1); border-radius: 16px; background: rgba(198, 204, 218, 0.02); color: var(--muted); font-size: 0.9375rem; line-height: 1.5; }
+  .rs-day__notes > div > :global(.sign-icon) { flex: none; }
+  .rs-day__notes b { display: block; color: var(--ink-0); font-weight: 600; }
+  .rs-n { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--hair-2); border-radius: 50%; color: var(--ink-1); }
+  .rs-n svg { width: 16px; height: 16px; }
+  .rs-day--m { display: none; }
+
+  /* ── What it shows ── */
+  .rs-shows-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(32px, 4vw, 56px); align-items: start; }
+  .rs-shows-wrap .section-head { margin-bottom: 0; }
+  .rs-shows { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .rs-shows > div { padding-top: 24px; border-top: 1px solid var(--hair-2); }
+  .rs-tg { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; color: #0b0d12; }
+  .rs-tg svg { width: 24px; height: 24px; }
+  .rs-shows .h-4 { margin-top: 20px; font-size: 1.15rem; text-wrap: balance; }
+  .rs-shows p { max-width: 36ch; margin: 8px 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.6; text-wrap: pretty; }
+  .rs-shows p a { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+  /* ── Twelve risings ── */
+  .rs-risings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .rs-rc { display: block; padding: 18px 18px 20px; border: 1px solid var(--hair-1); border-radius: 18px; background: rgba(198, 204, 218, 0.02); color: inherit; text-decoration: none; transition: border-color var(--dur-1) var(--ease); }
+  .rs-rc__top { display: flex; align-items: center; gap: 12px; }
+  .rs-rc__top :global(.sign-icon) { flex: none; }
+  .rs-rc__top > span { min-width: 0; }
+  .rs-rc b { display: block; font-weight: 600; font-size: 1rem; line-height: 1.25; overflow-wrap: break-word; }
+  .rs-rc__short { display: none; }
+  .rs-rc small { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 2px; color: var(--faint); font-size: 12.5px; }
+  .rs-rc small :global(.pglyph) { color: var(--muted); }
+  .rs-rc__planet { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .rs-rc p { margin: 12px 0 0; color: var(--muted); font-size: 0.875rem; line-height: 1.5; text-wrap: pretty; }
+  .rs-rc.is-ex { border-color: color-mix(in oklab, var(--sign) 32%, transparent); background: color-mix(in oklab, var(--sign) 5%, transparent); }
+  @media (hover: hover) and (pointer: fine) {
+    .rs-rc:hover { border-color: color-mix(in oklab, var(--sign) 42%, transparent); }
+  }
+  .rs-rnote { max-width: 34ch; margin: 0; color: var(--faint); font-size: 0.9375rem; text-align: right; }
+  .rs-rnote a { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+  /* ── Keep going ── */
+  .rs-next { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 20px; }
+  .rs-bc { position: relative; min-height: 520px; overflow: hidden; border: 1px solid var(--hair-2); border-radius: var(--r-xl); background: linear-gradient(180deg, rgba(21, 25, 37, 0.92), rgba(10, 12, 17, 0.92)); isolation: isolate; }
+  .rs-bc__art { position: absolute; top: 0; right: 0; bottom: 0; z-index: 0; width: 60%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.5) 24%, #000 52%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.5) 24%, #000 52%); }
+  /* The lilac disc rises on the painting's left; mirrored, it rises clear of
+     the fade, on the side away from the words. The picture fills the panel's
+     height, so it is drawn about 924px wide on a wide screen. */
+  .rs-bc__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 28% 40%; transform: scaleX(-1); filter: saturate(0.95) brightness(0.86); }
+  .rs-bc__art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(10, 12, 17, 0.75) 0%, rgba(10, 12, 17, 0) 34%); }
+  .rs-bc__body { position: relative; z-index: 1; display: flex; flex-direction: column; max-width: 430px; min-height: 100%; padding: clamp(28px, 3.4vw, 44px); }
+  .rs-bc__body .h-2 { margin-top: 4px; font-size: clamp(2rem, 1.5rem + 1.6vw, 2.75rem); text-wrap: balance; }
+  .rs-bc__l { max-width: 35ch; margin: 14px 0 0; color: var(--ink-1); font-size: 1.0625rem; line-height: 1.55; text-wrap: pretty; }
+  .rs-bc__list { display: grid; gap: 10px; margin-top: 20px; }
+  .rs-bc__list div { display: flex; align-items: center; gap: 12px; color: var(--ink-1); font-size: 0.9375rem; }
+  .rs-bc__list div > :global(.sign-icon) { flex: none; }
+  .rs-bc__x { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border: 1px dashed var(--hair-3); border-radius: 50%; background: rgba(6, 7, 9, 0.5); color: var(--ink-1); }
+  .rs-bc .btn-row { margin-top: auto; padding-top: 28px; }
+  .rs-bc .reassure { margin-top: 12px; color: var(--ink-2); }
+  .rs-ms { display: flex; flex-direction: column; overflow: hidden; padding: 0; border-radius: var(--r-xl); }
+  .rs-ms :global(.rs-ms__art) { aspect-ratio: 16 / 9; border-radius: 0; }
+  .rs-ms__body { display: flex; flex: 1; flex-direction: column; padding: 22px 28px 28px; }
+  .rs-ms__body .kicker { font-size: 1.02rem; }
+  .rs-ms__body .h-3 { margin-top: 2px; }
+  .rs-ms__body p { max-width: 40ch; margin: 10px 0 18px; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; text-wrap: pretty; }
+  .rs-ms__body .textlink { align-self: flex-start; margin-top: auto; }
+  .rs-also { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 18px; }
+  .rs-also__label { margin-right: 4px; color: var(--muted); font-size: 0.9375rem; }
+
+  .rs-inline { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+  @media (max-width: 1100px) {
+    .rs-risings { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .rs-next { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 960px) {
+    .rs-grid { grid-template-columns: minmax(0, 1fr); }
+    .rs-example { max-width: 620px; }
+    .rs-why { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .rs-crumbs { margin-bottom: 12px; }
+    .rs-title { font-size: 2.55rem; line-height: 1.02; }
+    .rs-lede { margin-top: 12px; font-size: 1.0625rem; }
+    .rs-main :global(.calc) { margin-top: 22px; }
+    .rs-main :global(.calc .calc__form.shell > .calc__core) { padding: 18px 16px 20px; border-radius: 24px; }
+    .rs-main :global(.calc__fields) { column-gap: 10px; }
+    .rs-main :global(.field__input) { height: 50px; padding: 0 12px; font-size: 0.9375rem; }
+    .rs-main :global(#birth-time-help) { min-height: 56px; padding: 12px 14px 12px 56px; font-size: 0.875rem; }
+    .rs-main :global(#birth-time-help::before) { left: 14px; top: 12px; width: 30px; height: 30px; }
+    .rs-main :global(.calc__submit) { flex: 1 1 100%; }
+    .rs-main :global(.calc__privacy) { text-align: center; }
+    .rs-notime { align-items: flex-start; font-size: 0.875rem; }
+    .rs-example { border-radius: 24px; }
+    .rs-example__body { padding: 0 20px 22px; }
+    .rs-example__head :global(.rs-example__disc) { width: 60px; }
+    .rs-example__sign { margin-top: 14px; }
+    .rs-example__sign .h-2 { font-size: 2.1rem; }
+    .rs-example__read { font-size: 0.9375rem; }
+    .rs-example__rows > div { font-size: 0.875rem; }
+    .rs-example__links { flex-direction: column; align-items: flex-start; }
+    .rs-why .h-2 { max-width: none; }
+    .rs-horizon { padding: 14px 4px 16px; }
+    .rs-day--d { display: none; }
+    .rs-day--m { display: block; }
+    .rs-day__head { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .rs-day__head p { flex: none; text-align: left; }
+    .rs-sub { margin: 18px 0 0; color: var(--ink-1); font-size: 13px; font-weight: 600; }
+    .rs-track { padding-top: 54px; }
+    .rs-track--plain { padding-top: 8px; }
+    .rs-strip { height: 48px; border-radius: 12px; }
+    .rs-strip__b.is-start { padding-left: 7px; }
+    .rs-pin::before { top: 38px; }
+    .rs-pin::after { top: 34px; }
+    .rs-pin__l { font-size: 12px; }
+    .rs-pin__l b { font-size: 13px; }
+    .rs-axis { font-size: 11.5px; }
+    .rs-day__notes { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .rs-day__notes > div { padding: 14px 16px; font-size: 0.875rem; }
+    .rs-shows-wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .rs-shows { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .rs-shows > div { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 16px; padding: 20px 0; border-top: 1px solid var(--hair-1); }
+    .rs-tg { grid-row: span 2; width: 44px; height: 44px; }
+    .rs-tg svg { width: 22px; height: 22px; }
+    .rs-shows .h-4 { margin-top: 0; font-size: 1.05rem; }
+    .rs-shows p { margin-top: 4px; font-size: 0.875rem; }
+    .rs-risings { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .rs-rc { padding: 14px 12px; border-radius: 16px; }
+    .rs-rc__top { gap: 10px; }
+    .rs-rc__top :global(.sign-icon) { width: 36px; }
+    .rs-rc b { font-size: 0.9375rem; }
+    .rs-rc__long, .rs-rc p { display: none; }
+    .rs-rc__short { display: inline; }
+    .rs-rc small { font-size: 12px; }
+    .rs-bc { display: flex; flex-direction: column; min-height: 0; border-radius: 24px; }
+    .rs-bc__art { position: relative; width: auto; aspect-ratio: 16 / 10; -webkit-mask-image: linear-gradient(0deg, transparent 0%, #000 45%); mask-image: linear-gradient(0deg, transparent 0%, #000 45%); }
+    .rs-bc__art::after { display: none; }
+    .rs-bc__body { max-width: none; min-height: 0; margin-top: -24px; padding: 0 20px 24px; }
+    .rs-bc .btn-row { padding-top: 24px; }
+    .rs-bc .btn-row .btn { width: 100%; }
+    .rs-ms { border-radius: 24px; }
+    .rs-ms__body { padding: 18px 20px 22px; }
+    .rs-also { gap: 8px; }
+  }
+</style>

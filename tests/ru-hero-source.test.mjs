@@ -1,12 +1,25 @@
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
 
-const source = await readFile(new URL('../src/pages/ru/index.astro', import.meta.url), 'utf8');
+// The Russian hero, markup, playback script and drift rules, lives in its
+// own component; the Russian page renders it through the shared home.
+const source = await readFile(new URL('../src/components/localized/RuHomeHero.astro', import.meta.url), 'utf8');
+const page = await readFile(new URL('../src/pages/ru/index.astro', import.meta.url), 'utf8');
+const home = await readFile(new URL('../src/components/localized/LocalizedHome.astro', import.meta.url), 'utf8');
+const head = await readFile(new URL('../src/components/localized/LocalizedHomeHead.astro', import.meta.url), 'utf8');
 const footerSource = await readFile(new URL('../src/components/SiteFooter.astro', import.meta.url), 'utf8');
 const navSource = await readFile(new URL('../src/components/SiteNav.astro', import.meta.url), 'utf8');
 const englishOnlySource = await readFile(new URL('../src/lib/i18n/english-only.ts', import.meta.url), 'utf8');
 
 describe('hidden Russian homepage hero media contract', () => {
+  it('is the hero the Russian page renders, with its own poster hints', () => {
+    expect(page).toContain('<LocalizedHome locale="ru"');
+    expect(page).toContain('<LocalizedHomeHead slot="head" locale="ru" />');
+    expect(home).toMatch(/\{locale === 'ru' \? \(\s*<RuHomeHero\b/u);
+    expect(head).toContain('href="/assets/hero/zodiacs-hero-poster-ru-mobile.avif" media="(max-width: 719px)" fetchpriority="high"');
+    expect(head).toContain('href="/assets/hero/zodiacs-hero-poster-ru.avif" media="(min-width: 720px)" fetchpriority="high"');
+  });
+
   it('keeps the poster as LCP and every video source detached initially', () => {
     expect(source).toContain('src="/assets/hero/zodiacs-hero-poster-ru.avif"');
     expect(source).toContain('srcset="/assets/hero/zodiacs-hero-poster-ru-mobile.avif"');
