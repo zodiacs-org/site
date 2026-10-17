@@ -41,6 +41,19 @@ const SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', '
 const PAIRS = SIGNS.flatMap((first, index) => SIGNS.slice(index).map((second) => `${first}-${second}`));
 const LIFE_PATHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
 
+// Other addresses a host serves as a calculator page, each of which must find the page's tool: with index.html, with
+// a character percent-encoded, and without the trailing slash (a deployment redirects it to the page; a preview built
+// with trailingSlash 'ignore' serves it as it stands).
+const ADDRESSES = [
+  ['/birth-chart/index.html', 'zodiacs.birth_chart'],
+  ['/es/moon-phase/index.html', 'zodiacs.moon_phase'],
+  ['/rising-sign/aries/index.html', 'zodiacs.rising_sign'],
+  ['/birth%2Dchart/', 'zodiacs.birth_chart'],
+  ['/fr/compatibility/aries%2Dleo/', 'zodiacs.compatibility'],
+  ['/numerology/life-path/7', 'zodiacs.numerology'],
+  ['/it/transits', 'zodiacs.transits'],
+];
+
 /**
  * Each calculator tool: its page, the pages that embed it, the locales its pages are built in, a call and what its
  * answer must hold, and a call its schema refuses.
@@ -350,6 +363,7 @@ async function drive(baseURL) {
     args: STABLE_CHROMIUM_ARGS,
   });
   let polyfill;
+  let addresses;
   let exclusions;
   let chartPage;
   try {
@@ -359,6 +373,15 @@ async function drive(baseURL) {
     await page.goto(`${baseURL}/`, { waitUntil: 'networkidle' });
     polyfill = await enumerateAndCall(page);
     assertCall('MCP-B 4.0.0', polyfill);
+    addresses = [];
+    for (const [address, name] of ADDRESSES) {
+      const calculator = CALCULATORS.find((entry) => entry.name === name);
+      const addressPage = await context.newPage();
+      await addressPage.goto(`${baseURL}${address}`, { waitUntil: 'networkidle' });
+      assertCalculatorPage('MCP-B 4.0.0', calculator, await calculatorPage(addressPage, calculator, address));
+      addresses.push({ address, opened: new URL(addressPage.url()).pathname, tool: name });
+      await addressPage.close();
+    }
     polyfill.calculators = await checkCalculatorPages('MCP-B 4.0.0', () => context.newPage(), baseURL);
     chartPage = await chartPageAgainstTool(() => context.newPage(), baseURL);
 
@@ -393,7 +416,7 @@ async function drive(baseURL) {
   }
 
   const pages = polyfill.calculators.length;
-  console.log(JSON.stringify({ base: baseURL, native, polyfill, chartPage, exclusions, calculatorPages: pages }, null, 2));
+  console.log(JSON.stringify({ base: baseURL, native, polyfill, addresses, chartPage, exclusions, calculatorPages: pages }, null, 2));
   console.log(`webmcp drive: ${pages} calculator pages and their tools checked against ${baseURL}`);
 }
 

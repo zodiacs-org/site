@@ -108,6 +108,27 @@ describe('the calculator tools', () => {
     expect(calculatorToolForPath('/registry/')).toBeNull();
   });
 
+  it('are found from every address the host serves as the page', () => {
+    // Vercel serves /birth-chart/index.html and /birth%2Dchart/ as /birth-chart/; a build with trailingSlash 'ignore'
+    // serves /birth-chart too. location.pathname keeps the address as it was opened.
+    const routes = CALCULATOR_TOOLS.flatMap((tool) => [tool.path, ...(tool.alsoOn ?? [])].map((path): [string, string] => [path, tool.name]));
+    let addresses = 0;
+    for (const [route, name] of routes) {
+      for (const path of [route, ...LOCALES.map((locale) => `/${locale}${route}`)]) {
+        const escaped = path.replace(/[a-z]/u, (letter) => `%${letter.charCodeAt(0).toString(16).toUpperCase()}`);
+        for (const address of [path, path.slice(0, -1), `${path}index.html`, escaped]) {
+          expect(calculatorToolForPath(address)?.name, address).toBe(name);
+          addresses += 1;
+        }
+      }
+    }
+    expect(addresses).toBe(routes.length * (1 + LOCALES.length) * 4);
+    for (const path of ['/index.html', '/es', '/es/index.html', '/birth-chart/someone-else', '/birth-chart/someone-else/index.html',
+      '/birth-chart/index.htm', '/birth-chart/index', '/birth-chartx/', '/birth-chart/x/', '/birth-chart/%', '/%E0%A4%A']) {
+      expect(calculatorToolForPath(path), path).toBeNull();
+    }
+  });
+
   it('are found on the pages that embed a calculator: each rising sign, each compatibility pair, each Life Path', () => {
     const embedded: Array<[string, string]> = [
       ...SIGN_SLUGS.map((sign): [string, string] => [`/rising-sign/${sign}/`, 'zodiacs.rising_sign']),

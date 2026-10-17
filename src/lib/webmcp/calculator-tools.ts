@@ -5,8 +5,10 @@
  * browser, as the page's own does: nothing about the person is sent anywhere.
  *
  * A page's tool is found from its path, with any locale's prefix removed, so /es/moon-phase/ registers the same tool
- * as /moon-phase/. A page that embeds a calculator registers that calculator's tool too: each rising sign's profile,
- * each compatibility pair and each Life Path page. Descriptions are written for agents, in English, in every locale.
+ * as /moon-phase/. Every address the host serves as the page finds it too: without the trailing slash, with
+ * index.html, or with a character percent-encoded. A page that embeds a calculator registers that calculator's tool
+ * too: each rising sign's profile, each compatibility pair and each Life Path page. Descriptions are written for
+ * agents, in English, in every locale.
  */
 export const CALCULATOR_RUNTIME_URL = '/assets/webmcp-calculators.js?v=calculators-1';
 
@@ -295,8 +297,24 @@ export const CALCULATOR_TOOLS: readonly CalculatorToolDescriptor[] = Object.free
   },
 ]);
 
+/**
+ * The page an address names, as the host serves it: Vercel serves /birth-chart/index.html and /birth%2Dchart/ as
+ * /birth-chart/, and a build with trailingSlash 'ignore' serves /birth-chart as well, while location.pathname keeps
+ * each address as it was opened.
+ */
+function pagePath(path: string): string {
+  let decoded = path;
+  try {
+    decoded = decodeURI(path);
+  } catch {
+    // A malformed escape names no page, and is matched as it stands.
+  }
+  const directory = decoded.replace(/\/index\.html$/u, '/');
+  return (directory.endsWith('/') ? directory : `${directory}/`).replace(LOCALE_PREFIX, '');
+}
+
 /** The calculator tool a page path registers, or null when the page has none. */
 export function calculatorToolForPath(path: string): CalculatorToolDescriptor | null {
-  const plain = path.replace(LOCALE_PREFIX, '');
+  const plain = pagePath(path);
   return CALCULATOR_TOOLS.find((tool) => tool.path === plain || tool.alsoOn?.includes(plain)) ?? null;
 }

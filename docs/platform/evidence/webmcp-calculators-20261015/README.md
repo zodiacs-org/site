@@ -29,7 +29,11 @@ the same tool (Codex's first review of #772 found them):
   the other eleven), in English: `zodiacs.numerology`.
 
 With them, 543 pages register a calculator tool: the 81 calculator pages and
-the 462 that embed one.
+the 462 that embed one. Each finds its tool from every address the host serves
+as the page: Vercel serves `/birth-chart/index.html` and `/birth%2Dchart/` as
+`/birth-chart/`, and a preview serves `/birth-chart` as well, while the page
+reads its address as it was opened (Codex's fifth review found the slashless
+one).
 
 | Tool | Page | Built in | The page's code the tool runs |
 | --- | --- | --- | --- |
@@ -108,7 +112,7 @@ These pages are not calculators, and register no tool of their own:
     skipped and the range's last day.
   - On the day the clock skipped, page and tool both refuse an untimed
     chart, because local noon is not in that date.
-  - All 249 tests under `src/lib/webmcp/` pass.
+  - All 250 tests under `src/lib/webmcp/` pass.
 - **Schemas and readers agree.** `calculator-tools.test.ts` compiles each
   schema with Ajv. A valid input passes both the schema and the tool; each
   invalid one fails both. It also checks that each refusal names the problem
@@ -156,7 +160,12 @@ These pages are not calculators, and register no tool of their own:
   chart link. The page shows `24°11′ Gemini`, `16°11′ Pisces` and
   `11°14′ Libra`, and the tool says the same. Pages without a calculator
   outside English, the wings, and `/birth-chart/someone-else/` register
-  nothing new.
+  nothing new. It also opens seven other addresses of calculator pages, with
+  `index.html`, with a character percent-encoded and without the trailing
+  slash, in English and three locales, and checks each as above. On a build
+  from before Codex's fifth review it stops at `/birth-chart/index.html`,
+  whose tool never registers. `calculator-tools.test.ts` checks the same
+  three forms for every route in every locale.
 - **Native Chrome.** Chrome 155 exposes `modelContext` under its WebMCP flags
   but not `modelContextTesting`, so the native pass cannot enumerate or call
   tools. It is reported as unavailable, as in the pilot.
