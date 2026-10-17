@@ -212,7 +212,7 @@ export default function DemoChart({ locale = 'en' }: { locale?: CatalogLocale })
       caption: l10n
         ? `${l10n.houseSign(signName(signForLongitude(cusp + 1), locale))} ${occupants.length
           ? l10n.houseOccupants(list(occupants.map((body) => planetLabel(locale, body.body))))
-          : t(locale, 'emptyHouseNote')}`
+          : l10n.emptyHouse ?? t(locale, 'emptyHouseNote')}`
         : occupant
         ? aboutHer(planetInHouseLine(occupant.body, house))
         : t('en', 'emptyHouseNote'),

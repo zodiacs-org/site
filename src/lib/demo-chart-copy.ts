@@ -34,6 +34,8 @@ export interface DemoChartCopy {
   colon: string;
   occupants: (list: string) => string;
   noOccupants: string;
+  /** The empty-house note, where the catalogue's own reads poorly here. */
+  emptyHouse?: string;
   houseSign: (name: string) => string;
   houseOccupants: (list: string) => string;
   aspectGloss: Readonly<Record<string, string>>;
@@ -209,6 +211,7 @@ export const DEMO_CHART_COPY: Record<DemoChartLocale, DemoChartCopy> = {
     colon: ': ',
     occupants: (list) => `В её карте здесь: ${list}.`,
     noOccupants: 'В её карте в этом знаке нет ни одной точки.',
+    emptyHouse: 'Планет здесь нет. Пустой дом не означает пробела: его темы идут через планету, которая им управляет.',
     houseSign: (name) => `Знак дома: ${name}.`,
     houseOccupants: (list) => `В нём: ${list}.`,
     aspectGloss: {
