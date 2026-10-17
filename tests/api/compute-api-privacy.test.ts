@@ -505,6 +505,8 @@ describe('the site and the compute API', () => {
       // send browser calculations to the hosted compute API.
       'src/ai-tools/contracts.ts', 'src/ai-tools/http.ts', 'src/ai-tools/local.ts', 'src/ai-tools/tools.ts',
       'src/ai-tools/http.test.ts', 'src/ai-tools/tools.test.ts',
+      // It holds the tools' schemas to the compute API's documented ones and calls the tools across its span.
+      'src/ai-tools/schema-types.test.ts',
       'src/ai-tools/quota.ts',
       // The 0.5.0 tools' server-only modules resolve local times and zones with the same pure operations.
       'src/ai-tools/features/birthday.ts', 'src/ai-tools/features/compatibility.ts', 'src/ai-tools/features/people.ts',

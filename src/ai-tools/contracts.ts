@@ -143,7 +143,7 @@ function computeValue(component: string): z.ZodType<Record<string, unknown>> {
     .refine((value) => typeof value === 'object' && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` })
     .meta(inlined(COMPUTE_SCHEMAS[component]) as Record<string, unknown>) as z.ZodType<Record<string, unknown>>;
 }
-const calculationOf = (result: z.ZodType) => z.object({
+const calculationOf = <R extends z.ZodType>(result: R) => z.object({
   schema: z.string(), result, receipt: computeValue('ComputeReceipt'), backend: computeValue('Backend'),
   cite: z.object({ url: z.url(), receipt: z.string(), engine: z.string(), version: z.string() }),
 });
