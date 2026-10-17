@@ -674,7 +674,10 @@ const monthDay = (iso: string) => ({
   .today-cta-chart { display: none; }
   :root[data-today-saved-chart] .today-cta-sign { display: none; }
   :root[data-today-saved-chart] .today-cta-chart { display: inline; }
-  .today-hero__wheel { position: relative; align-self: center; min-width: 0; margin: 0; }
+  /* Top-aligned like the text: on a dated edition the three-line headline
+     makes the text the taller column, and a centred wheel moved whenever a
+     late face or the rest of the stream changed that column's height. */
+  .today-hero__wheel { position: relative; align-self: start; min-width: 0; margin: 0; }
   .today-wheel { position: relative; }
   /* The wheel's own rings are open; a dark disc behind them keeps the art
      from showing through the sky. */
