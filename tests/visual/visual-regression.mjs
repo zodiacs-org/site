@@ -651,7 +651,9 @@ try {
     for (const testCase of cases) {
       const stem = fileStem(testCase);
       const baselinePath = resolve(baselineRoot, `${stem}.png`);
-      const expectedMaskCount = testCase.name === 'home' ? 2 : 0;
+      // The home page masks its sky line and the edition stamp; the birth
+      // chart's "After your chart" section carries the sky line too.
+      const expectedMaskCount = testCase.name === 'home' ? 2 : testCase.name === 'birth-chart-kahlo' ? 1 : 0;
       let expected = null;
       if (!update) {
         try {
