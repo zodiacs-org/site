@@ -14,7 +14,7 @@ import './card.css';
 export function Nameplate({ href = 'https://zodiacs.org/' }: { href?: string }) {
   return <a class="nameplate" href={href} target="_blank" rel="noreferrer">
     <BrandRing size={22}/>
-    <span class="nameplate-name">Zodiacs</span><span class="nameplate-tld">.org</span>
+    <span class="nameplate-name">Zodiacs<span class="nameplate-tld">.org</span></span>
   </a>;
 }
 
