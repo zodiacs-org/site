@@ -1,11 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import Faq from '../../../components/Faq.astro';
-import HeroCrop from '../../../components/HeroCrop.astro';
-import ChartCalculator from '../../../islands/ChartCalculator';
-import SignIcon from '../../../components/SignIcon.astro';
-import { SIGNS, signName } from '../../../lib/signs';
-import '../../../styles/calculator.css';
+import LocalizedRisingSign from '../../../components/localized/LocalizedRisingSign.astro';
 
 const faq = [
   {
@@ -27,6 +22,11 @@ const faq = [
   {
     q: 'O ascendente é mesmo tão importante?',
     a: 'Na leitura de um mapa, ele é possivelmente o ponto mais importante: define as casas e determina em quais áreas da vida cada planeta aparece. Também ajuda a explicar por que duas pessoas nascidas no mesmo dia podem organizar a vida de formas muito diferentes.',
+  },
+  {
+    q: 'Como o ascendente é calculado?',
+    a: 'A partir da rotação da Terra no momento e no local do seu nascimento: o tempo sideral local, a inclinação do eixo da Terra e um pouco de trigonometria esférica. Como verificação, o grau que sobe no nascer do sol coincide com a posição do próprio Sol. Tudo é calculado com privacidade no seu navegador.',
+    link: { href: '/pt/methodology/', label: 'Leia a metodologia completa' },
   },
 ];
 
@@ -50,6 +50,14 @@ const jsonLd = [
       acceptedAnswer: { '@type': 'Answer', text: a },
     })),
   },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: 'https://zodiacs.org/pt/' },
+      { '@type': 'ListItem', position: 2, name: 'Ferramentas', item: 'https://zodiacs.org/pt/tools/' },
+      { '@type': 'ListItem', position: 3, name: 'Calculadora de ascendente', item: 'https://zodiacs.org/pt/rising-sign/' },
+    ],
+  },
 ];
 ---
 <Base
@@ -62,43 +70,5 @@ const jsonLd = [
   imageAlt="Calculadora de ascendente, Zodiacs.org"
   jsonLd={jsonLd}
 >
-  <section class="section--tight container">
-    <div class="tool-hero">
-      <h1 class="display">Descubra seu ascendente.</h1>
-      <p>O ascendente é o signo que surgia no horizonte quando você nasceu. Ele depende da hora do nascimento, e a precisão importa.</p>
-    </div>
-    <ChartCalculator mode="rising" locale="pt" client:load />
-    <noscript>
-      <p>Esta calculadora de ascendente precisa de JavaScript. Ative-o e recarregue a página com sua data, hora exata e local de nascimento.</p>
-    </noscript>
-  </section>
-
-  <section class="section--tight container container--narrow">
-    <HeroCrop crop="sign-ring" locale="pt" />
-    <div class="section-head">
-      <h2>Os doze ascendentes</h2>
-      <p>Quando a calculadora encontrar o seu, veja como ele colore sua presença e seu mapa.</p>
-    </div>
-    <div class="risings">
-      {SIGNS.map((s) => (
-        <a class="risings__chip" href={`/pt/rising-sign/${s.slug}/`} style={`--sign:${s.hue}`}>
-          <SignIcon sign={s.slug} size={26} class="risings__disc" />
-          <span>Ascendente em {signName(s, 'pt')}</span>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <section class="section--tight container container--narrow">
-    <Faq items={faq} heading="Perguntas sobre o ascendente" />
-  </section>
+  <LocalizedRisingSign locale="pt" faq={faq} />
 </Base>
-
-<style>
-  .tool-hero { max-width: 62ch; margin-bottom: clamp(28px, 5vw, 44px); }
-  .tool-hero h1 { margin: 0 0 16px; font-size: var(--text-2xl); line-height: 1.04; }
-  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-  .risings { display: flex; flex-wrap: wrap; gap: 8px; }
-  .risings__chip { display: inline-flex; align-items: center; gap: 9px; padding: 7px 14px 7px 8px; border: 1px solid var(--hair-1); border-radius: var(--r-full); color: var(--text-2); text-decoration: none; }
-  .risings__chip:hover { color: var(--text); border-color: color-mix(in oklab, var(--sign) 45%, transparent); }
-</style>
