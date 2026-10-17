@@ -270,6 +270,11 @@
 .ph-basis dd { margin: 0; }
 .ph-basis__v { font-family: var(--font-serif); font-size: 1.2rem; color: var(--ink-0); line-height: 1.2; }
 .ph-basis__m { color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+/* The element medallions under the element pair: one per sign, overlapping
+   like the hero's pair of discs. */
+.ph-el { display: flex; margin-top: 12px; }
+.ph-el img { display: block; width: 64px; height: 64px; filter: saturate(0.94) drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45)); }
+.ph-el img + img { margin-left: -16px; }
 .ph-basis__m--wide { grid-column: 2 / -1; }
 .ph-basis__note { margin: 16px 0 0; font-size: 0.9375rem; color: var(--ink-1); }
 

@@ -63,13 +63,16 @@ const imgSrcset = srcset ?? (sign && !src ? signArtSrcset(sign) : undefined);
 const imgWidth = width ?? SIGN_ART_SIZE.width;
 const imgHeight = height ?? SIGN_ART_SIZE.height;
 const imgAlt = alt ?? (sign ? signArtAlt(sign, locale) : '');
+// A frame with no alt text and no caption is decoration: keep it out of the
+// accessibility tree entirely.
+const decorative = imgAlt === '' && !caption;
 const vars = [
   focus ? `--focus:${focus}` : '',
   spot ? `--spot:${spot}` : '',
   style ?? '',
 ].filter(Boolean).join(';');
 ---
-<figure class:list={['artframe', flip && 'artframe--flip', fade && 'artframe--fade', className]} style={vars || undefined}>
+<figure class:list={['artframe', flip && 'artframe--flip', fade && 'artframe--fade', className]} style={vars || undefined} aria-hidden={decorative ? 'true' : undefined}>
   <img
     src={imgSrc}
     srcset={imgSrcset}

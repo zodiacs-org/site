@@ -9,6 +9,7 @@ import { PostChartDailyBrief } from '../../islands/PostChartDailyBrief';
 import EmailCapture from '../../components/EmailCapture.astro';
 import Wheel from '../../lib/wheel/Wheel';
 import { hasDailyChartEmailProvider } from '../../lib/email/daily-config';
+import { ART, artSrc, artSrcset } from '../../lib/art';
 import {
   SAMPLE_ASPECTS,
   SAMPLE_BIRTH,
@@ -418,7 +419,7 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   .bc-nt .kicker { margin-bottom: 4px; }
   .bc-nt__lede { margin-top: 14px; }
   .bc-nt__art { max-width: 560px; aspect-ratio: 16 / 10; }
-  .bc-nt__art::after { background: radial-gradient(ellipse 58% 62% at 46% 48%, transparent 0 34%, rgba(6, 7, 9, 0.42) 72%, rgba(6, 7, 9, 0.8) 100%); }
+  .bc-nt__art::after { background: radial-gradient(ellipse 54% 62% at 50% 52%, transparent 0 36%, rgba(6, 7, 9, 0.42) 72%, rgba(6, 7, 9, 0.8) 100%); }
   .bc-cmp { max-width: 560px; margin-top: 14px; border: 1px solid var(--hair-2); border-radius: 18px; background: rgba(198, 204, 218, 0.025); }
   .bc-cmp > div { display: grid; grid-template-columns: 112px repeat(3, minmax(0, 1fr)); gap: 10px; align-items: center; padding: 14px 16px; }
   .bc-cmp > div + div { border-top: 1px solid var(--hair-1); }
@@ -471,7 +472,10 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   .bc-inline { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
   .bc-close { padding-bottom: clamp(64px, 8vw, 104px); }
   .bc-close .closing-panel { min-height: 400px; }
-  .bc-close .closing-panel > img { object-position: 50% 30%; }
+  .bc-close .closing-panel > img { object-position: 50% 50%; filter: saturate(0.92); }
+  /* The astrolabe's hub sits behind the headline: keep the middle dark for
+     the words and let the ring of sign discs catch the light around them. */
+  .bc-close .closing-panel::before { background: radial-gradient(ellipse 46% 62% at 50% 50%, rgba(6, 7, 9, 0.84) 0 34%, rgba(6, 7, 9, 0.6) 66%, rgba(6, 7, 9, 0.9) 100%); }
 
   @media (max-width: 1100px) {
     .bc-trust__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -538,6 +542,7 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
     .bc-nextcard p { margin-top: 4px; padding-right: 0; }
     .bc-nextcard .kcard__go { display: none; }
     .bc-close .closing-panel { min-height: 360px; padding: 40px 20px; }
+    .bc-close .closing-panel::before { background: radial-gradient(ellipse 80% 62% at 50% 50%, rgba(6, 7, 9, 0.86) 0 40%, rgba(6, 7, 9, 0.7) 76%, rgba(6, 7, 9, 0.9) 100%); }
   }
   @media (max-width: 420px) {
     .bc-pos-head .kfacts { display: none; }
@@ -683,13 +688,13 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
     <div>
       <ArtFrame
         class="bc-nt__art"
-        src="/assets/hero-crops/clock-hand-560.webp"
-        srcset="/assets/hero-crops/clock-hand-360.webp 360w, /assets/hero-crops/clock-hand-560.webp 560w"
-        sizes="(min-width: 960px) 560px, 100vw"
-        width={560}
-        height={350}
-        alt="A brass clock hand crossing the painted zodiac dial"
-        spot="46% 48%"
+        src={artSrc('pocket-orrery')}
+        srcset={artSrcset('pocket-orrery')}
+        sizes="(min-width: 960px) 560px, calc(100vw - 40px)"
+        width={ART['pocket-orrery'].width}
+        height={ART['pocket-orrery'].height}
+        alt=""
+        focus="50% 52%"
       />
       <div class="bc-cmp only-desktop" aria-label="The sample chart with and without a birth time">
         <div>
@@ -826,7 +831,7 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   <!-- 07 · One closing invitation. -->
   <section class="kwrap bc-close">
     <div class="closing-panel">
-      <img src="/assets/hero/zodiacs-hero-poster.avif" width="1600" height="900" alt="" loading="lazy" decoding="async" />
+      <img src={artSrc('birth-chart-astrolabe')} srcset={artSrcset('birth-chart-astrolabe')} sizes="(min-width: 1240px) 1200px, calc(100vw - 40px)" width={ART['birth-chart-astrolabe'].width} height={ART['birth-chart-astrolabe'].height} alt="" aria-hidden="true" loading="lazy" decoding="async" />
       <div>
         <h2 class="h-2">Your chart takes about twenty seconds.</h2>
         <p>Birth date, time, and place. Private in your browser.</p>

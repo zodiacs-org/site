@@ -23,6 +23,7 @@ import { ASPECT_GLYPH, PLANET_GLYPH } from '../../lib/glyphs/paths';
 import { livingChartCaptureEnabled, livingChartSyncEnabled } from '../../lib/living-chart/feature-flags';
 import { NATAL_BODY_THEME } from '../../lib/natal-context';
 import { TOOLS_HUB } from '../../lib/nav-tools';
+import { ART, artSrc, artSrcset } from '../../lib/art';
 import { signBySlug } from '../../lib/signs';
 import { signDateRange, signTagline } from '../../lib/sign-display';
 import {
@@ -383,7 +384,21 @@ const monthDay = (iso: string) => ({
       />
     </section>
 
-    <!-- 5. Every planet, then the dates ahead as calendar facts. -->
+    <!-- 5. Every planet, then the dates ahead as calendar facts, opened by
+         the brass orrery: the Sun at the centre, the planets on their arms. -->
+    <div class="kwrap today-sec today-art-band">
+      <ArtFrame
+        class="today-orrery"
+        src={artSrc('today-orrery')}
+        srcset={artSrcset('today-orrery')}
+        sizes="(min-width: 1240px) 1200px, calc(100vw - 40px)"
+        width={ART['today-orrery'].width}
+        height={ART['today-orrery'].height}
+        alt=""
+        spot="51% 42%"
+        fade
+      />
+    </div>
     <section class="kwrap today-sec today-split">
       <div>
         <h2 class="h-3">Where the planets are</h2>
@@ -1205,6 +1220,8 @@ const monthDay = (iso: string) => ({
   .today-method-details__body li { overflow-wrap: anywhere; font-family: var(--font-mono); font-size: 10.5px; }
 
   /* ── 5. Planets and dates ahead ───────────────────────────────── */
+  .today-orrery { aspect-ratio: 3 / 1; --focus: 50% 26%; }
+  .today-art-band + .today-split { padding-top: clamp(24px, 2.6vw, 36px); }
   .today-split { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr); align-items: start; gap: clamp(32px, 5vw, 72px); }
   .today-split .h-3 { margin: 0 0 6px; }
   .today-sub { margin: 0 0 18px; color: var(--muted); font-size: 0.9375rem; }
@@ -1338,6 +1355,7 @@ const monthDay = (iso: string) => ({
     .today-asps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 960px) {
+    .today-orrery { aspect-ratio: 2 / 1; }
     .today-split { grid-template-columns: minmax(0, 1fr); }
     .today-prow { grid-template-columns: 36px minmax(0, 1fr) 116px 60px 156px; }
     .today-prow .today-pm { grid-column: auto; justify-self: end; margin-top: 0; }
@@ -1351,6 +1369,7 @@ const monthDay = (iso: string) => ({
     .today-method { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   }
   @media (max-width: 760px) {
+    .today-orrery { aspect-ratio: 16 / 10; --focus: 50% 30%; }
     .today-hero {
       gap: 36px;
       margin: calc(8px - var(--nav-space, 64px)) 8px 0;

@@ -11,6 +11,7 @@ import { signDateRange } from '../../../lib/sign-display';
 import { pairSlug } from '../../../lib/compat';
 import { pairPattern, rulerName, SIGN_ART_DETAIL, SIGN_FIGURE } from '../../../lib/compat-reading';
 import { signArtSrc, signArtSrcset, SIGN_ART_SIZE } from '../../../lib/sign-art';
+import { elementMedallionSrc, elementMedallionSrcset } from '../../../lib/art';
 import '../../../styles/calculator.css';
 import '../../../styles/pair-page.css';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
@@ -221,7 +222,7 @@ const jsonLd = [
               ))}
             </div>
             <dl>
-              <div><dt>Element</dt><dd class="ph-basis__v">{pattern.elementPair}</dd><dd class="ph-basis__m">{pattern.elementNote}</dd></div>
+              <div><dt>Element</dt><dd class="ph-basis__v">{pattern.elementPair}<span class="ph-el" aria-hidden="true">{people.map((sign) => <img src={elementMedallionSrc(sign.element)} srcset={elementMedallionSrcset(sign.element)} sizes="64px" width="128" height="128" alt="" loading="lazy" decoding="async" />)}</span></dd><dd class="ph-basis__m">{pattern.elementNote}</dd></div>
               <div><dt>Mode</dt><dd class="ph-basis__v">{pattern.modalityPair}</dd><dd class="ph-basis__m">{pattern.modalityNote}</dd></div>
               <div><dt>Polarity</dt><dd class="ph-basis__v">{pattern.polarity}</dd><dd class="ph-basis__m">{pattern.polarityNote}</dd></div>
               <div><dt>{same || a.ruler === b.ruler ? 'Ruler' : 'Rulers'}</dt><dd class="ph-basis__v">{pattern.rulers}</dd><dd class="ph-basis__m">{rulersNote}</dd></div>

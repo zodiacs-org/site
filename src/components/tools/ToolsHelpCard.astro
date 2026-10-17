@@ -1,24 +1,41 @@
 ---
 /**
  * A closing panel on the tools hub: an icon from the tool set, a short
- * heading, and the page's own copy and action in the default slot.
+ * heading, and the page's own copy and action in the default slot. With
+ * `art`, one of the painted pieces fills the card's far side (on top on a
+ * phone), in the spotlit frame.
  */
+import ArtFrame from '../ArtFrame.astro';
 import ToolIcon from '../ToolIcon.astro';
+import { ART, artSrc, artSrcset, type ArtName } from '../../lib/art';
 import type { ToolIconName } from '../../lib/tool-icons';
 
 interface Props {
   icon: ToolIconName;
   title: string;
+  art?: ArtName;
 }
 
-const { icon, title } = Astro.props;
+const { icon, title, art } = Astro.props;
 ---
-<div class="tools-help-card">
+<div class:list={['tools-help-card', art && 'tools-help-card--art']}>
   <ToolIcon name={icon} size={52} />
   <div class="tools-help-card__body">
     <h2 class="h-4">{title}</h2>
     <slot />
   </div>
+  {art && (
+    <ArtFrame
+      class="tools-help-card__art"
+      src={artSrc(art)}
+      srcset={artSrcset(art)}
+      sizes="(min-width: 761px) 360px, calc(100vw - 40px)"
+      width={ART[art].width}
+      height={ART[art].height}
+      alt=""
+      spot="40% 46%"
+    />
+  )}
 </div>
 
 <style>
@@ -35,7 +52,25 @@ const { icon, title } = Astro.props;
   .tools-help-card .h-4 { font-size: 1.15rem; margin-top: 2px; }
   .tools-help-card__body :global(p) { margin: 6px 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; max-width: 48ch; }
   .tools-help-card__body :global(:is(.btn, .textlink)) { margin-top: 16px; }
+
+  /* The art takes the card's far edge, bleeding to its border. */
+  .tools-help-card--art { position: relative; grid-template-columns: auto minmax(0, 1fr) minmax(0, 0.82fr); overflow: hidden; }
+  .tools-help-card--art :global(.tools-help-card__art) {
+    --focus: 34% 46%;
+    align-self: stretch;
+    min-height: 100%;
+    margin: -28px -28px -28px 0;
+    border-radius: 0;
+  }
   @media (max-width: 760px) {
     .tools-help-card { padding: 20px; gap: 16px; --tool-icon-size: 44px; }
+    .tools-help-card--art { grid-template-columns: auto minmax(0, 1fr); }
+    .tools-help-card--art :global(.tools-help-card__art) {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      aspect-ratio: 16 / 7;
+      min-height: 0;
+      margin: -20px -20px 0;
+    }
   }
 </style>
