@@ -114,7 +114,7 @@ export const compatibilityData = z.object({
   }),
   signPair: z.object({
     slug: z.string(),
-    signs: z.tuple([signSlug, signSlug]),
+    signs: z.array(signSlug).length(2),
     same: z.boolean(),
     element: interaction,
     modality: interaction,
