@@ -10343,6 +10343,11 @@ function runtimeTzdbVersion() {
   const version2 = typeof process === "object" ? process.versions?.tz : void 0;
   return typeof version2 === "string" && version2 ? version2 : null;
 }
+function runtimeIdentity() {
+  if (typeof process !== "object" || process === null || typeof process.versions?.node !== "string") return { name: "browser" };
+  const tzdb = runtimeTzdbVersion();
+  return { name: "node", ...tzdb ? { tzdbVersion: tzdb } : {} };
+}
 function timeResolutionFacts(module) {
   return {
     resolver: "@zodiacs/engine/geo",
@@ -11068,8 +11073,7 @@ async function placeInstantChart(request, dependencies) {
         policy: { fold: "earlier", gap: "shift-forward" }
       };
     }
-    const tzdb = runtimeTzdbVersion();
-    context.provenance = { runtime: { name: "node", ...tzdb ? { tzdbVersion: tzdb } : {} } };
+    context.provenance = { runtime: runtimeIdentity() };
   }
   const { receipt } = createNatalEnvelope(chart, context);
   return { chart, receipt, local };
