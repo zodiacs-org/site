@@ -177,7 +177,7 @@ try {
   const celebrityText = await celebrityPage.locator('article').innerText();
   assert.match(celebrityText, /Aquarius Sun/);
   assert.match(celebrityText, /Cancer Sun/);
-  assert.match(celebrityText, /Frida Kahlo, born 6 July 1907 in Coyoacán, birth time not on record/);
+  assert.match(celebrityText, /Frida Kahlo, born 6 July 1907 in Coyoacán\./);
   assert.match(celebrityText, new RegExp(`${(celebrity as any).data.score.overall}\\s*out of 100`, 'u'));
   assert.match(celebrityText, /Frida Kahlo's birth time is not on record/);
   assert.equal(await celebrityPage.getByRole('link', { name: 'Frida Kahlo’s chart' }).getAttribute('href'), 'https://zodiacs.org/people/frida-kahlo/');

@@ -81,6 +81,84 @@ Polish may refine spacing, type scale, contrast, crop, responsive rhythm,
 button treatment, and section-to-section flow. Do not replace the hero concept
 with a split layout or a generic marketing section.
 
+## Assistant Cards
+
+The cards Zodiacs draws inside ChatGPT and Claude (the occasions panel's
+seven cards in `src/ai-tools/occasions-panel/` and the horoscope panel in
+`src/ai-tools/horoscope/`) are one family, built from the shared kit in
+`src/ai-tools/card-kit/` (`parts.tsx`, `card.css`, `hue.ts`, `words.ts`).
+Many people meet Zodiacs through a screenshot of one, so every card has to
+read as Zodiacs on its first screen and stay legible at phone size.
+
+Anatomy, top to bottom (use only the parts a card needs, in this order):
+
+1. The nameplate: the twelve-dot ring, "Zodiacs" in EB Garamond 500 and a
+   small JetBrains Mono ".org", linking to zodiacs.org. Always first, inside
+   the card, so a cropped screenshot still says where it came from.
+2. The head: an italic EB Garamond kicker in the card's sign hue ("Two charts
+   compared", "Life milestones"), a large serif title (names when the person
+   gave them, otherwise the card's own title) and one muted meta line. A
+   date, time and place in the meta line read as a sentence ("Saturday, 12
+   June 2027 at 17:00 in Florence, Italy"), with the time and place in ink,
+   exactly as the person gave them. Without a time the card says how the sky
+   was read ("No time given, so the sky is read at noon UTC.").
+3. The hero row, between two hairlines: a figure beside an italic serif
+   verdict and one muted line. A score is a 126px ring (102px at 530px and
+   below) filled to the score with a conic sweep from the first sign's hue
+   to the second's, the number in serif and "out of 100" under it, and the
+   label "60 out of 100" for assistive technology. A card without a score
+   shows the sign disc at the same size, or a plain ring around a number
+   (an age).
+4. Sign chips (disc, name, one detail line), two across, stacked at 530px.
+5. Number tiles: up to three, flat tone, label under a serif number. No bars
+   and no filled tracks.
+6. Words: a serif insight line; reasons as a list between hairlines with
+   small dots in the card's hue; facts as label and value rows with hairlines
+   between rows only. Clock times and degrees are set in JetBrains Mono.
+   Long lists show the first few rows and fold the rest behind a disclosure
+   ("4 more contacts").
+7. Actions as underlined text in the card's order: "Share the reading",
+   "Open printable card" or "Open both charts", then "Copy the card". The
+   sky calendar's subscribe link is the one filled button in the family.
+8. The fine print in small muted text, then, outside the card, the panel's
+   one-line privacy footer.
+
+Colour and theme:
+
+- Dark host theme: the Cosmic Void card, `#16191f` on `#0d0f13`, a 1px
+  `#34394a` hairline, 18px radius (16px at 530px), 24px padding (20px/18px
+  on phones), ink `#eef1f7`, muted `#a0a8ba`. The kicker and markers use the
+  pastel hue itself.
+- Light host theme: the same layout on white with `#d8dbe4` hairlines, ink
+  `#161922`, muted `#565e72`. Kicker text uses a deeper tone of the same hue,
+  computed in `hue.ts` to read at 4.5:1 or better on white; rings, discs and
+  dots keep the pastels.
+- A card's hue is its subject's sign: the Sun sign (two charts: the first
+  person's Sun, then the second's), the sign a milestone's planet rules,
+  Scorpio and Cancer for the sky calendar. No other chroma, no gold, no
+  gradients outside the score ring.
+
+Words: plain and specific, as on the site. Scores, ratings and forecasts are
+stated plainly as astrology's reading; never a guarantee, and nothing about
+money or health. No em or en dashes and no middle-dot separators in card
+copy: ranges read "20:13 to 20:57", lists use commas. Text a card shows but
+does not own (published people copy, sign table ranges, tool notes) passes
+through `plain()` in `words.ts` at display time; the tools' output and the
+released contract stay byte-for-byte. No zone IDs or ISO dates on a card.
+
+Share images: `/api/og/compatibility-image` and `/api/og/occasion-image`
+(`src/server/result-preview.ts`) draw the same dark card at 1200x630: the
+nameplate top left, the kicker in the first sign's hue, the serif title,
+the italic verdict, sign chips, score tiles and the score ring on the right.
+
+Checks before a card change ships: `npm run ai:build`, `npm run ai:package`,
+`npm run ai:check`, `npm run ai:test`, both browser drives
+(`tests/ai-occasions-drive.ts`, `tests/ai-horoscope-drive.ts`), and
+full-length captures of every card at 760px and 390px in both themes with
+`tests/ai-cards-capture.ts` (share images: `tests/ai-share-images-capture.ts`).
+Each panel stays self-contained (no network requests) and under its 600 KB
+build budget; motion stops under `prefers-reduced-motion`.
+
 ## Guardrails
 
 - Keep `src/lib/engine/full.ts` as the only direct `astronomy-engine` importer.

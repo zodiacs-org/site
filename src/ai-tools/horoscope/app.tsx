@@ -1,4 +1,4 @@
-import type { JSX } from 'preact';
+import type { CSSProperties } from 'preact';
 import { Nameplate, PanelFooter, SignDisc } from '../card-kit/parts';
 import { hueVars, hueOf } from '../card-kit/hue';
 import { plain } from '../card-kit/words';
@@ -177,7 +177,7 @@ function App() {
   }
 
   return <main>
-    <article class="card horoscope" style={hueVars(hueOf(panel.sign)) as JSX.CSSProperties}>
+    <article class="card horoscope" style={hueVars(hueOf(panel.sign)) as CSSProperties}>
       <Nameplate href="https://zodiacs.org/horoscopes/"/>
       <header class="card-head">
         <div class="card-head-text">
