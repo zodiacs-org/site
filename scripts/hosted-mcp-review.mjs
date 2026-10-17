@@ -30,6 +30,8 @@ import addFormats from 'ajv-formats';
 
 export const INSPECTOR = '@modelcontextprotocol/inspector@2.10.1';
 export const CONFORMANCE = '@modelcontextprotocol/conformance@0.1.16';
+/** How many server scenarios the pinned suite lists; any other number means the listing was misread. */
+export const SERVER_SCENARIOS = 32;
 
 /** One call per tool production offers, with synthetic inputs (Inspector --tool-arg pairs; JSON values are parsed). */
 export const CALLS = {
@@ -96,9 +98,13 @@ const EXPECTED_FAILURE = {
 /**
  * A scenario's verdict from its checks: not-applicable when it is listed and every failed check fails as its reason
  * predicts; fail when any other check fails; pass when a check succeeds and none fails; warnings-only when nothing
- * failed but nothing was confirmed either, only warned about (warnings are kept with the verdict).
+ * failed and nothing was confirmed, but the scenario warned (warnings are kept with the verdict). A scenario that
+ * recorded no checks did not run, and one that neither confirmed nor warned of anything checked nothing: both fail.
  */
-export function classify(scenario, checks) {
+export function classify(scenario, checks, exit = 0) {
+  if (checks.length === 0) {
+    return { scenario, verdict: 'fail', failures: [{ check: null, message: `recorded no checks (exit ${exit}): the scenario did not run` }] };
+  }
   const failures = checks.filter((check) => check.status === 'FAILURE');
   const reason = NOT_APPLICABLE[scenario];
   if (reason && failures.length > 0 && failures.every((check) => EXPECTED_FAILURE[reason].test(check.errorMessage ?? ''))) {
@@ -110,13 +116,16 @@ export function classify(scenario, checks) {
   });
   const excused = failures.filter((check) => !real.includes(check)).map((check) => ({ check: check.id, reason: NOT_APPLICABLE_CHECKS[check.id] }));
   const passed = checks.filter((check) => check.status === 'SUCCESS').length;
+  const warnings = checks.filter((check) => check.status === 'WARNING').map((check) => check.id);
+  const unconfirmed = real.length === 0 && passed === 0 && warnings.length === 0;
   return {
     scenario,
-    verdict: real.length ? 'fail' : passed > 0 ? 'pass' : 'warnings-only',
+    verdict: real.length || unconfirmed ? 'fail' : passed > 0 ? 'pass' : 'warnings-only',
     passed,
-    warnings: checks.filter((check) => check.status === 'WARNING').map((check) => check.id),
+    warnings,
     ...(excused.length ? { notApplicableChecks: excused } : {}),
     ...(real.length ? { failures: real.map((check) => ({ check: check.id, message: check.errorMessage })) } : {}),
+    ...(unconfirmed ? { failures: [{ check: null, message: 'confirmed nothing and warned of nothing' }] } : {}),
   };
 }
 
@@ -171,7 +180,9 @@ export async function review({ url, out }) {
   const listed = await paced(() => inspector(['--method', 'tools/list', '--strict']), limitedRun);
   writeFileSync(join(out, 'tools-list.json'), listed.stdout);
   writeFileSync(join(out, 'tools-list.strict.txt'), listed.stderr);
-  const tools = firstJson(listed.stdout).tools;
+  let tools = [];
+  let listProblem = null;
+  try { tools = firstJson(listed.stdout).tools ?? []; } catch { listProblem = `unreadable tools/list (exit ${listed.status}): ${listed.stderr.slice(0, 300)}`; }
   const findings = strictFindings(listed.stderr);
 
   const ajv = new Ajv2020({ strict: false, allErrors: true });
@@ -214,7 +225,7 @@ export async function review({ url, out }) {
       return { ...ran, checks: checksOf(dir) };
     }, (ran) => ran.checks.some((check) => check.status === 'FAILURE' && RATE_LIMITED.test(check.errorMessage ?? '')));
     log.push(`== ${scenario} (attempts ${result.waits + 1})\n${result.stdout}${result.stderr}`);
-    scenarios.push({ ...classify(scenario, result.checks), ...(result.waits ? { rateLimitWaits: result.waits } : {}) });
+    scenarios.push({ ...classify(scenario, result.checks, result.status), ...(result.waits ? { rateLimitWaits: result.waits } : {}) });
   }
   writeFileSync(join(out, 'conformance.log'), log.join('\n'));
 
@@ -226,6 +237,7 @@ export async function review({ url, out }) {
     tools: { inspector: INSPECTOR, conformance: CONFORMANCE },
     inspector: {
       strictExit: listed.status,
+      ...(listProblem ? { listProblem } : {}),
       tools: tools.map((listedTool) => listedTool.name),
       findings: { errors: errors.length, warnings: findings.filter((finding) => finding.severity === 'warning').length, byIssue: countBy(findings) },
       calls,
@@ -240,8 +252,8 @@ export async function review({ url, out }) {
       detail: scenarios,
     },
   };
-  report.ok = listed.status === 0 && errors.length === 0 && tools.length > 0 && missing.length === 0
-    && calls.every((call) => call.ok) && scenarios.length > 0 && report.conformance.failed.length === 0;
+  report.ok = listed.status === 0 && !listProblem && errors.length === 0 && tools.length > 0 && missing.length === 0
+    && calls.every((call) => call.ok) && scenarios.length === SERVER_SCENARIOS && report.conformance.failed.length === 0;
   writeFileSync(join(out, 'report.json'), JSON.stringify(report, null, 2) + '\n');
   return report;
 }

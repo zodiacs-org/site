@@ -104,7 +104,13 @@ Inspector 2.10.1 and the MCP conformance suite 0.1.16.
 
     A scenario counts as not applicable only when it fails in the way its
     reason predicts.
-  - **Failed.**
+  - **Failed.** This includes a scenario that recorded no checks, which did
+    not run, and one that confirmed nothing and warned of nothing, which
+    checked nothing. Codex's review found that the first had counted as
+    warnings only.
+
+  The pinned suite lists 32 server scenarios. A listing of any other number
+  fails the review.
 - **The rate limit.** Production answers 429 when one address calls it too
   often. A limited step is retried after a minute, so the limit slows a
   review but never decides it.

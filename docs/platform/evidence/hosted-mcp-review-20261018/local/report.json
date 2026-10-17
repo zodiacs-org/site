@@ -1,7 +1,7 @@
 {
   "schema": "zodiacs.hosted-mcp-review.v1",
   "url": "http://127.0.0.1:4521/mcp",
-  "at": "2026-10-17T19:12:36.577Z",
+  "at": "2026-10-17T20:51:34.158Z",
   "tools": {
     "inspector": "@modelcontextprotocol/inspector@2.10.1",
     "conformance": "@modelcontextprotocol/conformance@0.1.16"

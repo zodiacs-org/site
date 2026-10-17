@@ -24,6 +24,14 @@ describe('the hosted MCP review', () => {
     expect(classify('server-sse-polling', [{ id: 'server-sse-retry-field', status: 'WARNING' }])).toMatchObject({ verdict: 'warnings-only', warnings: ['server-sse-retry-field'] });
   });
 
+  it('fails a scenario that did not run, or that checked nothing', () => {
+    // The suite exits before writing checks.json: no checks at all, whatever the scenario.
+    expect(classify('tools-list', [], 1)).toMatchObject({ verdict: 'fail', failures: [{ message: expect.stringContaining('did not run') }] });
+    expect(classify('prompts-list', [], 1)).toMatchObject({ verdict: 'fail' });
+    // Notes alone confirm nothing and warn of nothing.
+    expect(classify('server-sse-polling', [{ id: 'outgoing-request', status: 'INFO' }])).toMatchObject({ verdict: 'fail' });
+  });
+
   it('excuses the localhost check of DNS rebinding protection, never the rejection, and the whole scenario only off localhost', () => {
     const localhost = failure('localhost-host-valid-accepted', 'Expected HTTP 2xx for valid localhost Host/Origin headers, got 403');
     expect(classify('dns-rebinding-protection', [success('localhost-host-rebinding-rejected'), localhost]))
