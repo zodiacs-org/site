@@ -1,3 +1,23 @@
+The hosted MCP tools typed and reviewed, 2026-10-18 (Asia/Bangkok): P3.6
+stays partial.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.6, partial.** The Inspector's `--strict` check (2.10.1) found 14
+  untyped parts, 3 errors and 15 nullable-type warnings in the 13 tools
+  production offers. The owner asked for the fix before the 0.5.0
+  resubmission.
+  - The compute API's values now carry the schemas the API documents for
+    them. The capabilities' limits, conventions and coverage have exact
+    types, and the pairs are two-item arrays.
+  - Served locally, the change passes `--strict` with no error and no untyped
+    part. Every tool answers within its advertised output schema.
+  - None of the conformance suite's 32 server scenarios fails
+    ([the record](../evidence/hosted-mcp-review-20261018/README.md)).
+- **What keeps P3.6 open.** The same review of production after the deploy,
+  and the registry entry, which needs the owner's approval to publish.
+
 WebMCP tools on every calculator page in production, 2026-10-17
 (Asia/Bangkok): A2 accepted.
 
