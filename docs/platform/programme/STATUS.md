@@ -1,3 +1,22 @@
+WebMCP tools on every calculator page in production, 2026-10-17
+(Asia/Bangkok): A2 accepted.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **A2, accepted.** Each of the sixteen calculator pages, and each page that
+  embeds one (the rising signs' profiles, the compatibility pairs and the Life
+  Path pages), registers the calculator's WebMCP tool when the browser or an
+  extension provides `modelContext`, in every locale it is built in: 543
+  pages, each found from every address the host serves as the page. English
+  pages keep `zodiacs.search`. The calculations load only on a call and run
+  in the browser with the page's own code. #772 merged as `069ef13e`, and
+  zodiacs.org serves it from `dpl_64gyTAnwkNLdFsEUnD9s3WoVkmNB`, built from
+  the merge. There the WebMCP drive passes on all 543 pages and seven other
+  addresses of them; before the merge it stopped at once
+  ([the record](../evidence/webmcp-calculators-20261015/README.md)).
+- **Main's Site Check** passed on #772's merge (run 39035340598).
+
 WebMCP tools on every calculator page, 2026-10-17 (Asia/Bangkok): A2 stays
 partial until production.
 
