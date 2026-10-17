@@ -14,6 +14,7 @@ import SynastryCalculator from '../../islands/SynastryCalculator';
 import { SIGNS, signName, elementLabel, modalityLabel, type Sign } from '../../lib/signs';
 import { signDateRange } from '../../lib/sign-display';
 import { pairSlug } from '../../lib/compat';
+import { elementMedallionSrc, elementMedallionSrcset } from '../../lib/art';
 import { localizedPairFacts, type PairLocale } from '../../lib/compat-i18n';
 import { planetLabel } from '../../lib/i18n/astrology';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
@@ -251,7 +252,7 @@ const jsonLd = [
               ))}
             </div>
             <dl>
-              <div><dt>{c.elements}</dt><dd class="ph-basis__v">{facts.element.label}</dd><dd class="ph-basis__m">{facts.element.note}</dd></div>
+              <div><dt>{c.elements}</dt><dd class="ph-basis__v">{facts.element.label}<span class="ph-el" aria-hidden="true">{people.map((sign) => <img src={elementMedallionSrc(sign.element)} srcset={elementMedallionSrcset(sign.element)} sizes="64px" width="128" height="128" alt="" loading="lazy" decoding="async" />)}</span></dd><dd class="ph-basis__m">{facts.element.note}</dd></div>
               <div><dt>{c.modes}</dt><dd class="ph-basis__v">{facts.modality.label}</dd><dd class="ph-basis__m">{facts.modality.note}</dd></div>
               <div><dt>{c.polarity}</dt><dd class="ph-basis__m ph-basis__m--wide">{facts.polarity}</dd></div>
             </dl>

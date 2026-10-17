@@ -6,11 +6,11 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-17T13:32:01.488Z",
+  "capturedAt": "2026-10-17T16:04:23.664Z",
   "browser": "Chromium 155.0.8059.84",
   "dailyDate": "2026-10-17",
   "publicationCanonicalSha256": "2189d35b758747977742bc646d8d8e4b49942c507539653f6c6f03ebd520d8e9",
-  "templateSourceSha256": "6ecb66ba8624f9583014d0d1428780fe6451526548b5bed35ce5dd8c104fa911",
+  "templateSourceSha256": "a4ab31a96697845569762fbbbb173078a8e139888cc2637fa2fbe110179350ad",
   "renderPayloadSha256": {
     "daily": "3f6cd5d791dc54be1a14a4737a01f1a36f54ca8362b37666573acd3d8d60bddf",
     "dailyPublication": "78b05cbe08c7247f57b1e31b9a66510efe0d40cffe75d9e29b3d56956d47bd88",
@@ -19,8 +19,8 @@
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-17T13:31:26.135Z",
-    "templateSourceSha256": "6ecb66ba8624f9583014d0d1428780fe6451526548b5bed35ce5dd8c104fa911",
+    "builtAt": "2026-10-17T12:00:00.000Z",
+    "templateSourceSha256": "a4ab31a96697845569762fbbbb173078a8e139888cc2637fa2fbe110179350ad",
     "dailyDate": "2026-10-17",
     "publicationCanonicalSha256": "2189d35b758747977742bc646d8d8e4b49942c507539653f6c6f03ebd520d8e9",
     "renderPayloadSha256": {
@@ -41,13 +41,13 @@
       "screenshot": {
         "file": "today-360.png",
         "width": 360,
-        "height": 11064,
-        "sha256": "1a0783b36811b1f1f46a952c9d8e8b9ea2ada111036b83663d816662a70b690a"
+        "height": 11288,
+        "sha256": "4962ed5e725d4b0e17dda4683c5ebd8c45be12c5f1c2bcc653784c18726fcffa"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
-        "scrollHeight": 11064,
+        "scrollHeight": 11288,
         "contentLength": 7945,
         "overlay": false,
         "guideLauncher": true
@@ -65,13 +65,13 @@
       "screenshot": {
         "file": "today-1280.png",
         "width": 1280,
-        "height": 7324,
-        "sha256": "fe2b954651ccaf4570ca1c92e7e8f055507dc1a7a1ac79589ee5ad5ffe5c67bc"
+        "height": 7757,
+        "sha256": "f9e7e66c3655bde6681c284c66f37317b9395d66883d6776da8b09c2a24226ed"
       },
       "layout": {
         "clientWidth": 1280,
         "scrollWidth": 1280,
-        "scrollHeight": 7324,
+        "scrollHeight": 7757,
         "contentLength": 8600,
         "overlay": false,
         "guideLauncher": true

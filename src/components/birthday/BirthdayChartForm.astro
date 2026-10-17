@@ -10,7 +10,7 @@
  * reaches a URL query or a server.
  */
 import ArtFrame from '../ArtFrame.astro';
-import { HERO_CROP_SIZE, heroCropAlt, heroCropSrc, heroCropSrcset } from '../../lib/hero-crops';
+import { ART, artSrc, artSrcset } from '../../lib/art';
 
 interface Props {
   month: number;
@@ -24,14 +24,14 @@ const dd = String(day).padStart(2, '0');
 ---
 <form class="kpanel bday-form" action="/birth-chart/" method="get" data-bday-handoff data-month={mm} data-day={dd} novalidate>
   <ArtFrame
-    src={heroCropSrc('clock-hand', 560)}
-    srcset={heroCropSrcset('clock-hand')}
+    src={artSrc('birthday-sundial')}
+    srcset={artSrcset('birthday-sundial')}
     sizes="(min-width: 960px) 470px, calc(100vw - 40px)"
-    width={HERO_CROP_SIZE.width}
-    height={HERO_CROP_SIZE.height}
-    alt={heroCropAlt('clock-hand')}
+    width={ART['birthday-sundial'].width}
+    height={ART['birthday-sundial'].height}
+    alt=""
     class="bday-form__art"
-    spot="30% 40%"
+    spot="50% 64%"
   />
   <div class="bday-form__body">
     <p class="bday-form__title">Your birth chart, starting from {label}</p>
@@ -104,7 +104,7 @@ const dd = String(day).padStart(2, '0');
 <style>
   .bday-form { padding: 0; overflow: hidden; }
   .bday-form :global(.bday-form__art) { aspect-ratio: 16 / 7; border-radius: 0; }
-  .bday-form :global(.bday-form__art > img) { object-position: 30% 30%; }
+  .bday-form :global(.bday-form__art > img) { object-position: 50% 60%; }
   .bday-form__body { display: grid; gap: 18px; padding: 26px 28px 28px; }
   .bday-form__title { margin: 0; font-family: var(--font-serif); font-size: 1.45rem; font-weight: 500; line-height: 1.15; color: var(--ink-0); }
   .bday-form__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
