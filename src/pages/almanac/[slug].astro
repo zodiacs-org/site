@@ -47,14 +47,14 @@ const jsonLd = [
   description={entry.data.description}
   path={path}
   image={`/assets/og/v2/almanac/${slug}.png`}
-  imageAlt={`${entry.data.title} — The Almanac at Zodiacs.org`}
+  imageAlt={`${entry.data.title}, The Almanac at Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   sources={entry.data.sources}
 >
   <article class="container container--narrow almanac-article">
     <header class="almanac-article__hero reveal">
-      <a class="kicker" href="/almanac/">The Almanac</a>
+      <a class="crumb" href="/almanac/"><span class="crumb__arrow" aria-hidden="true">←</span>The Almanac</a>
       <h1 class="display">{entry.data.title}</h1>
       <p>{entry.data.description}</p>
       <time class="mono" datetime={entry.data.published.toISOString()}>{dateLabel}</time>

@@ -1,5 +1,5 @@
 export const WIDGET_EN = Object.freeze({
-  pageMetaTitle: 'Free Astrology Widgets — Moon, Sky & Birth Chart | Zodiacs.org',
+  pageMetaTitle: 'Free Astrology Widgets: Moon, Sky & Birth Chart | Zodiacs.org',
   pageMetaDescription: 'Embed a moon phase, current sky, or private mini birth chart on any site. Sandboxed iframe and script modes, free with the Zodiacs.org credit intact.',
   pageKicker: 'Widgets',
   pageTitle: 'The sky, on your site.',
@@ -40,7 +40,7 @@ export const WIDGET_EN = Object.freeze({
   noRetrograde: 'No planets retrograde',
   poweredBy: 'Powered by Zodiacs.org',
   chartTitle: 'Mini birth chart',
-  chartIntro: 'Sun, Moon, and rising—computed privately here.',
+  chartIntro: 'Sun, Moon, and rising, computed privately here.',
   dateLabel: 'Birth date',
   timeLabel: 'Birth time',
   placeLabel: 'Birthplace',
@@ -57,9 +57,9 @@ export const WIDGET_EN = Object.freeze({
   sun: 'Sun',
   moon: 'Moon',
   rising: 'Rising',
-  widgetTitleMoon: 'Moon phase today — Zodiacs.org',
-  widgetTitleSky: 'The sky today — Zodiacs.org',
-  widgetTitleChart: 'Mini birth chart — Zodiacs.org',
+  widgetTitleMoon: 'Moon phase today | Zodiacs.org',
+  widgetTitleSky: 'The sky today | Zodiacs.org',
+  widgetTitleChart: 'Mini birth chart | Zodiacs.org',
 });
 
 export const WIDGET_SIGN_NAMES_EN = Object.freeze({

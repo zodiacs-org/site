@@ -1,0 +1,179 @@
+/* ────────────────────────────────────────────────────────────────────
+   The tools hub (/tools/ and its localized pages). Imported only by those
+   six pages. The start-here panel and the closing panels style themselves
+   (src/components/tools/); this file lays out the page around them: the
+   title beside the panel, the contents list, the chapters with their small
+   dimmed pictures, and the rows of tools with their icons (ToolIcon).
+   ──────────────────────────────────────────────────────────────────── */
+
+/* Title and contents on the left, the birth chart on the right. main
+   already clears the fixed navigation (--nav-space). */
+.tools-hub {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 560px;
+  grid-template-areas: 'intro lead' 'toc lead';
+  grid-template-rows: auto 1fr;
+  column-gap: clamp(40px, 6vw, 88px);
+  align-items: start;
+  padding-top: 32px;
+}
+.tools-hub__intro { grid-area: intro; padding-top: 14px; }
+.tools-hub > .tools-lead { grid-area: lead; }
+.tools-hub > .tools-toc { grid-area: toc; }
+.tools-hub--solo { grid-template-areas: 'intro lead'; grid-template-rows: auto; }
+.tools-crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; color: var(--faint); }
+.tools-crumbs a { color: var(--muted); text-decoration: none; }
+.tools-crumbs a:hover { color: var(--text); }
+.tools-crumbs span[aria-hidden] { opacity: 0.6; }
+.tools-hub .kicker { margin-top: 26px; }
+.tools-hub__title {
+  margin: 4px 0 0;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(2.4rem, 1.4rem + 2.9vw, 3.9rem);
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+.tools-hub__lede { margin-top: 18px; max-width: 40ch; text-wrap: balance; }
+
+/* Contents: one row per group, its first three icons overlapping. */
+.tools-toc { margin-top: 44px; }
+.tools-toc__label { margin: 0 0 10px; font-size: 0.9375rem; color: var(--muted); }
+.tools-toc__list { list-style: none; margin: 0; padding: 0; }
+.tools-toc__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 0;
+  border-top: 1px solid var(--hair-1);
+  color: inherit;
+  text-decoration: none;
+}
+.tools-toc__list li:last-child .tools-toc__row { border-bottom: 1px solid var(--hair-1); }
+.tools-stack { display: flex; padding-left: 3px; }
+.tools-stack .tool-icon { box-shadow: 0 0 0 3px var(--void-0); }
+.tools-stack .tool-icon + .tool-icon { margin-left: -4px; }
+.tools-toc__txt b { display: block; font-weight: 600; font-size: 1.0625rem; color: var(--ink-0); line-height: 1.3; letter-spacing: -0.01em; }
+.tools-toc__txt small { display: block; font-size: 0.875rem; color: var(--muted); line-height: 1.4; }
+.tools-toc__n { font-family: var(--font-mono); font-size: 12px; color: var(--faint); }
+.tools-toc__arr {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--hair-2);
+  color: var(--ink-1);
+  font-size: 13px;
+  transition: transform var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tools-toc__row:hover .tools-toc__txt b { color: #fff; }
+  .tools-toc__row:hover .tools-toc__arr { border-color: var(--hair-3); transform: translateY(2px); }
+}
+
+/* One chapter per question: a small dimmed picture, then its tools. */
+.tools-chapter { padding-top: clamp(64px, 7vw, 104px); scroll-margin-top: 84px; }
+.tools-chapter + .tools-chapter { padding-top: clamp(56px, 6vw, 88px); }
+.tools-chapter__head { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 32px; align-items: center; padding-bottom: 28px; }
+.artframe.tools-chapter__art { aspect-ratio: 16 / 10; border-radius: 16px; }
+.artframe.tools-chapter__art > img { filter: saturate(0.95) brightness(1.08); }
+.artframe.tools-chapter__art::after {
+  background: radial-gradient(ellipse 72% 80% at var(--spot, 50% 50%), transparent 0 44%, rgba(6, 7, 9, 0.32) 82%, rgba(6, 7, 9, 0.62) 100%);
+}
+.tools-chapter__title p { margin: 10px 0 0; color: var(--muted); font-size: var(--text-lg); line-height: 1.45; max-width: 48ch; text-wrap: pretty; }
+/* A plain section heading where a page has no chapter picture. */
+.tools-section-title { margin: 0 0 20px; font-family: var(--font-serif); font-weight: 500; font-size: clamp(1.6rem, 1.2rem + 1.2vw, 2.1rem); line-height: 1.1; }
+
+/* Rows of tools: icon, name, one plain line. Three columns on a desktop. */
+.tools-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 40px; }
+.tools-list > li { border-top: 1px solid var(--hair-1); }
+.tools-list > li:nth-last-child(-n + 3) { border-bottom: 1px solid var(--hair-1); }
+.tools-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  height: 100%;
+  padding: 20px 0;
+  color: inherit;
+  text-decoration: none;
+}
+.tools-row :is(.tools-row__name, h2) {
+  display: block;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  color: var(--ink-0);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.tools-row :is(.tools-row__line, p) { display: block; margin: 3px 0 0; font-size: 0.9375rem; color: var(--muted); line-height: 1.45; text-wrap: pretty; }
+/* Rows whose text carries its own links (a name, a colon, a line). */
+.tools-row__text { font-size: 0.9375rem; color: var(--muted); line-height: 1.5; text-wrap: pretty; }
+.tools-row__text a { color: var(--ink-0); text-decoration: none; }
+.tools-row__text a:hover { text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+.tools-row__text strong { font-weight: 600; }
+.tools-row .tool-icon { transition: box-shadow var(--dur-1) var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  a.tools-row:hover :is(.tools-row__name, h2) { color: #fff; }
+  a.tools-row:hover .tool-icon { box-shadow: 0 0 0 4px color-mix(in oklab, var(--tool-icon-hue) 22%, transparent); }
+}
+a.tools-row:focus-visible { outline: 2px solid var(--ink-1); outline-offset: 4px; border-radius: 8px; }
+.tools-block { padding-top: clamp(56px, 6vw, 88px); }
+
+/* Help and privacy, side by side. */
+.tools-help { padding-top: clamp(64px, 6.5vw, 92px); }
+.tools-help__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.tools-help__grid--one { grid-template-columns: minmax(0, 1fr); max-width: 590px; }
+
+@media (max-width: 1100px) { .tools-hub { grid-template-columns: minmax(0, 1fr) 470px; } }
+@media (max-width: 960px) {
+  .tools-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tools-list > li:nth-last-child(-n + 3) { border-bottom: 0; }
+  .tools-list > li:nth-last-child(-n + 2) { border-bottom: 1px solid var(--hair-1); }
+}
+@media (max-width: 860px) {
+  .tools-hub,
+  .tools-hub--solo { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'intro' 'lead' 'toc'; grid-template-rows: auto; }
+  .tools-hub > .tools-lead { margin-top: 28px; }
+}
+@media (max-width: 760px) {
+  .tools-hub { padding-top: 28px; }
+  .tools-hub__intro { padding-top: 0; }
+  .tools-hub .kicker { margin-top: 18px; font-size: 1.05rem; }
+  .tools-hub__title { font-size: 2.3rem; }
+  .tools-hub__lede { font-size: 1.0625rem; margin-top: 12px; text-wrap: pretty; }
+  .tools-hub > .tools-lead { margin-top: 26px; }
+  .tools-toc { margin-top: 40px; }
+  .tools-toc__label { margin-bottom: 6px; }
+  .tools-toc__row { gap: 14px; padding: 13px 0; }
+  .tools-stack { --tool-icon-size: 30px; }
+  .tools-stack .tool-icon + .tool-icon { margin-left: -5px; }
+  .tools-toc__n { display: none; }
+  .tools-toc__txt b { font-size: 1rem; }
+  .tools-toc__txt small { font-size: 0.8125rem; }
+  .tools-chapter { padding-top: 64px; }
+  .tools-chapter + .tools-chapter { padding-top: 56px; }
+  .tools-chapter__head { grid-template-columns: 76px minmax(0, 1fr); gap: 16px; padding-bottom: 18px; }
+  .artframe.tools-chapter__art { aspect-ratio: 1; border-radius: 14px; }
+  .tools-chapter__title .h-2 { font-size: 1.85rem; }
+  .tools-chapter__title p { font-size: 0.9375rem; margin-top: 6px; }
+  .tools-list { grid-template-columns: minmax(0, 1fr); }
+  .tools-list > li:nth-last-child(-n + 2) { border-bottom: 0; }
+  .tools-list > li:last-child { border-bottom: 1px solid var(--hair-1); }
+  .tools-row { padding: 14px 0; gap: 14px; --tool-icon-size: 46px; }
+  .tools-row :is(.tools-row__name, h2) { font-size: 1rem; }
+  .tools-row :is(.tools-row__line, p) { font-size: 0.875rem; margin-top: 2px; }
+  .tools-row__text { font-size: 0.875rem; }
+  .tools-block { padding-top: 48px; }
+  .tools-help { padding-top: 64px; }
+  .tools-help__grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tools-toc__arr, .tools-row .tool-icon { transition: none; }
+  .tools-toc__row:hover .tools-toc__arr { transform: none; }
+}

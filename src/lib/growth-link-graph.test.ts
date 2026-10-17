@@ -23,7 +23,8 @@ describe('growth link graph', () => {
 
   it('keeps horoscope programs linked back to their full sign guide', async () => {
     const program = await source('../components/HoroscopeProgramPage.astro');
-    expect(program).toContain('href={`/${sign.slug}/`}>Full {sign.name} guide →</a>');
+    expect(program).toContain('<a class="hz-guide" href={`/${sign.slug}/`}>');
+    expect(program).toContain('Full {sign.name} guide <span class="arr">→</span>');
   });
 
   it('links published calendar rows while preserving their stable anchor IDs', async () => {

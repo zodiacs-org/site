@@ -1,0 +1,17 @@
+---
+/** The love section's closing paragraph beside the compare button. */
+---
+<div class="guide-love-close">
+  <div class="guide-love-close__text"><slot /></div>
+  <a class="btn" href="/compatibility/"><span>Compare two full charts</span><span class="orb" aria-hidden="true">→</span></a>
+</div>
+
+<style>
+  .guide-love-close { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-top: 26px; }
+  .guide-love-close__text :global(p) { margin: 0; max-width: 58ch; color: var(--muted); font-size: 0.96875rem; line-height: 1.6; }
+  .guide-love-close .btn { flex: none; }
+  @media (max-width: 760px) {
+    .guide-love-close { flex-direction: column; align-items: stretch; }
+    .guide-love-close .btn { width: 100%; }
+  }
+</style>

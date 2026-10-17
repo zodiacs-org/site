@@ -32,15 +32,15 @@ export function ogAltForPathAndLocale(path: string, locale: Locale): string {
     : `/${String(path || '/').split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, '')}/`;
   const tool = OG_EN.tools.find((entry) => entry.path === normalized);
   if (tool) {
-    if (locale === 'ru') return `${RU_OG_TOOL_TITLES[tool.key] ?? tool.title} — Zodiacs.org`;
-    return `${additionText(locale, `og.tools.${tool.key}.title`, tool.title)} — Zodiacs.org`;
+    if (locale === 'ru') return `${RU_OG_TOOL_TITLES[tool.key] ?? tool.title} | Zodiacs.org`;
+    return `${additionText(locale, `og.tools.${tool.key}.title`, tool.title)} | Zodiacs.org`;
   }
   const special = ogSpecialForPath(normalized);
   if (special) {
     if (locale === 'ru') return RU_OG_SPECIAL_ALT[special.key] ?? special.value.alt;
     return additionText(locale, `og.${special.key}.alt`, special.value.alt);
   }
-  if (locale === 'ru') return 'Zodiacs.org — бесплатные натальные карты, гиды по знакам и астрологические инструменты.';
+  if (locale === 'ru') return 'Zodiacs.org: бесплатные натальные карты, гиды по знакам и астрологические инструменты.';
   return additionText(locale, 'og.fallbackAlt', OG_EN.fallbackAlt);
 }
 

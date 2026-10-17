@@ -67,9 +67,9 @@ const targetPaths = [
   ...signs.map((sign) => `${sign}/index.html`),
   'today/index.html',
   ...signs.map((sign) => `horoscopes/${sign}/index.html`),
-  // Compact love/career heroes make the sign icon their mobile LCP. Keep
-  // their existing stylesheet contents on the same delivery path as Daily.
-  ...signs.flatMap((sign) => ['love', 'career'].map((surface) => `horoscopes/${sign}/${surface}/index.html`)),
+  // Every horoscope period opens on the same sign-art hero, which is its
+  // mobile LCP. Keep all seven periods on the same delivery path as Daily.
+  ...signs.flatMap((sign) => ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2027'].map((surface) => `horoscopes/${sign}/${surface}/index.html`)),
   'ru/index.html',
   'ru/birth-chart/index.html',
 ];
@@ -406,9 +406,11 @@ async function main() {
     stylesheets += result.stylesheets;
     bytes += result.bytes;
   }
-  if (pages + alreadyInlined !== 55 || stylesheets !== 108) {
+  // 103 pages since all seven horoscope periods are inlined (was 55 with
+  // daily, love and career only): 48 more pages, two stylesheets each.
+  if (pages + alreadyInlined !== 103 || stylesheets !== 204) {
     throw new Error(
-      `inline-critical-styles: expected 55 pages / 108 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
+      `inline-critical-styles: expected 103 pages / 204 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
     );
   }
   const state = pages > 0

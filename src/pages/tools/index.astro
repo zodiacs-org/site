@@ -1,55 +1,65 @@
 ---
 import Base from '../../layouts/Base.astro';
-import ToolGlyph from '../../components/ToolGlyph.astro';
-import ToolEmblem from '../../components/ToolEmblem.astro';
-import AstroTerm from '../../components/AstroTerm.astro';
-import { TOOLS_HUB as tools } from '../../lib/nav-tools';
+import ArtFrame from '../../components/ArtFrame.astro';
+import ToolIcon from '../../components/ToolIcon.astro';
+import ToolsHelpCard from '../../components/tools/ToolsHelpCard.astro';
+import ToolsLead from '../../components/tools/ToolsLead.astro';
+import { TOOLS_HUB, type ToolGroup } from '../../lib/nav-tools';
+import { HERO_CROP_SIZE, heroCropSrc, heroCropSrcset, type HeroCropName } from '../../lib/hero-crops';
+import '../../styles/tools-hub.css';
 
-// The five tools most visitors come for get the large cards; everything else
-// in TOOLS_HUB follows as a grouped list of plain links.
-const featured = [
-  { href: '/birth-chart/', title: 'Birth chart', promise: 'Your sun, moon, rising, planets, and houses, with what each one means. It takes about twenty seconds.', emblem: 'birth', go: 'Get your free birth chart' },
-  { href: '/today/', title: 'Today', promise: 'Today’s sky read against your saved chart.', emblem: 'today', go: 'Open today' },
-  { href: '/compatibility/', title: 'Compatibility', promise: 'Compare two charts, or send someone a link to add theirs.', emblem: 'compat', go: 'Compare charts' },
-  { href: '/horoscopes/', title: 'Horoscopes', promise: 'This month for every sign, written from the real dates.', emblem: 'horoscopes', go: 'Read yours' },
-  { href: '/moon-sign/', title: 'Moon and rising', promise: 'The two signs that matter most after your sun sign.', emblem: 'moonrise', go: 'Find your moon sign', also: { href: '/rising-sign/', label: 'or your rising sign' } },
-] as const;
-const featuredHrefs = new Set<string>(['/birth-chart/', '/today/', '/compatibility/', '/moon-sign/', '/rising-sign/']);
-const rest = tools.filter((tool) => !featuredHrefs.has(tool.href));
+// The birth chart leads on its own; every other tool sits in one of four
+// groups named for the question a visitor arrives with. Membership, order,
+// names, one-line descriptions and icons all come from the shared catalogue.
+const lead = TOOLS_HUB.find((tool) => tool.group === 'lead');
+if (!lead) throw new Error('The tools hub needs a lead tool.');
 
-const groups = [
-  {
-    id: 'start',
-    eyebrow: 'Start here',
-    title: 'Charts and people',
-    copy: 'These tools explain the basics first and introduce the chart a piece at a time.',
-  },
-  {
-    id: 'sky',
-    eyebrow: 'When you know the basics',
-    title: 'Follow the sky',
-    copy: 'See what is changing now, with the dates and calculations available when you want them.',
-  },
-  {
-    id: 'milestones',
-    eyebrow: 'For a specific question',
-    title: 'Life moments',
-    copy: 'Use these when you are looking at a birthday, due date, Saturn return, or personal new year.',
-  },
-  {
-    id: 'numbers',
-    eyebrow: 'A different tradition',
-    title: 'Another tradition',
-    copy: 'Numerology is not astrology: it reduces a birth date and a name to numbers and reads them by convention. It sits here because people ask for both.',
-  },
-] as const;
+interface Chapter {
+  id: string;
+  group: Exclude<ToolGroup, 'lead'>;
+  title: string;
+  /** What the group holds, for the contents list. */
+  summary: string;
+  /** One line under the chapter title. */
+  copy: string;
+  art: HeroCropName;
+  focus: string;
+}
+
+const chapters = ([
+  { id: 'about-you', group: 'you', title: 'About you', summary: 'Moon, rising, big three, numbers', copy: 'Your own chart, one piece at a time.', art: 'sun-moon', focus: '50% 30%' },
+  { id: 'together', group: 'together', title: 'You and someone else', summary: 'Compatibility, group charts', copy: 'Partners, friends, family, and people who share your sky.', art: 'twins', focus: '45% 50%' },
+  { id: 'sky-now', group: 'sky', title: 'The sky now', summary: 'Today, moon phase, horoscopes', copy: 'What the Sun, Moon and planets are doing today.', art: 'crescent', focus: '40% 45%' },
+  { id: 'the-year', group: 'year', title: 'Through the year', summary: 'Returns, eclipses, retrogrades', copy: 'Your returns, and the sky’s calendar of moons, eclipses and retrogrades.', art: 'clock-dial', focus: '50% 50%' },
+] satisfies Chapter[]).map((chapter) => ({ ...chapter, tools: TOOLS_HUB.filter((tool) => tool.group === chapter.group) }));
+
+const UNITS = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+function inWords(n: number): string {
+  if (n < 20) return UNITS[n];
+  if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? `-${UNITS[n % 10]}` : '');
+  return String(n);
+}
+const toolCount = TOOLS_HUB.length;
+const countWords = inWords(toolCount);
+const countTitle = countWords.charAt(0).toUpperCase() + countWords.slice(1);
 
 const jsonLd = [
   {
     '@type': 'CollectionPage',
     name: 'Free astrology tools',
     url: 'https://zodiacs.org/tools/',
-    description: 'Free birth charts, compatibility, moon and rising signs, transits, returns, and sky calendars — no signup required.',
+    description: 'Free birth charts, compatibility, moon and rising signs, transits, returns, and sky calendars, no signup required.',
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: toolCount,
+      itemListElement: TOOLS_HUB.map((tool, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: tool.title,
+        url: `https://zodiacs.org${tool.href}`,
+      })),
+    },
   },
 ];
 ---
@@ -58,196 +68,90 @@ const jsonLd = [
   description="Free astrology tools, no signup: birth chart, compatibility, moon sign, rising sign, transits, returns, eclipses, and more."
   path="/tools/"
   image="/assets/og/v2/tool/tools.png"
-  imageAlt="Free astrology tools — Zodiacs.org"
+  imageAlt="Free astrology tools, Zodiacs.org"
   jsonLd={jsonLd}
 >
-  <section class="section container tools-page">
-    <div class="section-head tools-head">
-      <em class="kicker">Free, no signup</em>
-      <h1 class="display tools-title">Free astrology tools</h1>
-      <p>
-        Most people start with one of these five: a <AstroTerm term="birth-chart" label="birth chart" surface="tools-index" />, today’s sky, compatibility, a horoscope, or their <AstroTerm term="moon-sign" label="moon sign" surface="tools-index" /> and <AstroTerm term="rising-sign" label="rising sign" surface="tools-index" />.
-      </p>
+  <header class="tools-hub kwrap">
+    <div class="tools-hub__intro">
+      <nav class="tools-crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Tools</span></nav>
+      <span class="kicker">Free, no signup</span>
+      <h1 class="tools-hub__title">Free astrology tools</h1>
+      <p class="klede tools-hub__lede">{countTitle} tools, sorted by what you want to know. New here? Start with your birth chart.</p>
     </div>
 
-    <div class="tools-grid tools-featured">
-      {featured.map((t, i) => (
-        <div class={`featured-card${i === 0 ? ' featured-card--lead' : ''}${'also' in t ? ' featured-card--also' : ''}`}>
-          <a class="featured-card__link" href={t.href}>
-            <ToolEmblem kind={t.emblem} />
-            <h2>{t.title}</h2>
-            <p>{t.promise}</p>
-            <span class={i === 0 ? 'featured-card__cta' : 'featured-card__go'}>{t.go} {i === 0 ? '↗' : '→'}</span>
-          </a>
-          {'also' in t && <a class="featured-card__also" href={t.also.href}>{t.also.label} →</a>}
-        </div>
-      ))}
-    </div>
+    <ToolsLead
+      href={lead.href}
+      title="Your birth chart"
+      text={`${lead.promise} Most of the tools below build on it.`}
+      needsLabel="You need"
+      needs={['Birth date', 'Birth time, if known', 'Birth place']}
+      cta="Get your free birth chart"
+      reassure="About twenty seconds · Private in your browser"
+      tag="Start here"
+    />
 
-    <section class="tools-more" aria-labelledby="tools-more">
-      <h2 id="tools-more" class="tools-more__title">Everything else</h2>
-      <div class="tools-more__cols">
-        {groups.map((group) => (
-          <section class="tool-group" aria-labelledby={`tools-${group.id}`}>
-            <h3 id={`tools-${group.id}`}>{group.title}</h3>
-            <ul>
-              {rest.filter((tool) => tool.group === group.id).map((t) => (
-                <li>
-                  <a href={t.href} title={t.promise}>
-                    <ToolGlyph kind={t.kind} />
-                    <span>{t.title}</span>
-                  </a>
-                </li>
-              ))}
-              {group.id === 'numbers' && (
-                <li>
-                  <button class="tools-more__ask" type="button" data-assistant-open data-assistant-locale="en" aria-haspopup="dialog">
-                    <ToolGlyph kind="assistant" />
-                    <span>Not sure? Ask Guide</span>
-                  </button>
-                </li>
-              )}
-            </ul>
-          </section>
+    <nav class="tools-toc" aria-label="Tool groups">
+      <p class="tools-toc__label">Or go straight to what you want to know</p>
+      <ul class="tools-toc__list">
+        {chapters.map((chapter) => (
+          <li>
+            <a class="tools-toc__row" href={`#${chapter.id}`}>
+              <span class="tools-stack">
+                {chapter.tools.slice(0, 3).map((tool) => <ToolIcon name={tool.icon} size={34} inset={false} />)}
+              </span>
+              <span class="tools-toc__txt"><b>{chapter.title}</b><small>{chapter.summary}</small></span>
+              <span class="tools-toc__n">{chapter.tools.length}<span class="sr-only"> tools</span></span>
+              <span class="tools-toc__arr" aria-hidden="true">→</span>
+            </a>
+          </li>
         ))}
+      </ul>
+    </nav>
+  </header>
+
+  {chapters.map((chapter) => (
+    <section class="tools-chapter" id={chapter.id} aria-labelledby={`${chapter.id}-h`}>
+      <div class="kwrap">
+        <div class="tools-chapter__head">
+          <ArtFrame
+            class="tools-chapter__art"
+            src={heroCropSrc(chapter.art, 360)}
+            srcset={heroCropSrcset(chapter.art)}
+            sizes="(min-width: 761px) 232px, 76px"
+            width={HERO_CROP_SIZE.width}
+            height={HERO_CROP_SIZE.height}
+            alt=""
+            focus={chapter.focus}
+          />
+          <div class="tools-chapter__title">
+            <h2 class="h-2" id={`${chapter.id}-h`}>{chapter.title}</h2>
+            <p>{chapter.copy}</p>
+          </div>
+        </div>
+        <ul class="tools-list">
+          {chapter.tools.map((tool) => (
+            <li>
+              <a class="tools-row" href={tool.href}>
+                <ToolIcon name={tool.icon} size={52} />
+                <span><span class="tools-row__name">{tool.title}</span><span class="tools-row__line">{tool.promise}</span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
+  ))}
 
-    <p class="tools-privacy"><strong>Private by default.</strong> Birth-chart calculations stay in your browser. <a href="/privacy/">Privacy and method →</a></p>
+  <section class="tools-help" aria-label="Help and privacy">
+    <div class="kwrap tools-help__grid">
+      <ToolsHelpCard icon="guide" art="tools-lens" title="Not sure which tool?">
+        <p>Ask Guide, the site’s AI assistant, in your own words. It answers astrology questions and points you to the right page.</p>
+        <a class="btn btn--sm" href="/ask/" data-assistant-open data-assistant-locale="en">Ask Guide</a>
+      </ToolsHelpCard>
+      <ToolsHelpCard icon="privacy" title="Private by default">
+        <p>Birth-chart calculations stay in your browser. A saved chart stays on this device unless you turn sync on.</p>
+        <a class="textlink" href="/privacy/">Privacy and method <span class="arr" aria-hidden="true">→</span></a>
+      </ToolsHelpCard>
+    </div>
   </section>
 </Base>
-
-<style>
-  .tools-page { display: grid; gap: clamp(40px, 6vw, 64px); }
-  .tools-head { display: grid; gap: 10px; max-width: 58ch; }
-  .tools-title {
-    margin: 0;
-    font-size: var(--text-2xl);
-    line-height: 1.05;
-  }
-  .tools-head p { margin: 0; }
-  .tools-featured {
-    display: grid;
-    gap: 14px;
-    grid-template-columns: 1fr;
-  }
-  @media (min-width: 700px) {
-    .tools-featured { grid-template-columns: repeat(2, 1fr); }
-    .featured-card--lead { grid-column: 1 / -1; }
-  }
-  @media (min-width: 1000px) {
-    .tools-featured { grid-template-columns: 1.35fr 1fr 1fr; grid-template-rows: auto auto; }
-    .featured-card--lead { grid-column: 1; grid-row: span 2; }
-  }
-  .featured-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--hair-2);
-    border-radius: var(--r-lg);
-    background: var(--void-2);
-    transition: border-color var(--dur-1) var(--ease), transform var(--dur-2) var(--ease-soft);
-  }
-  .featured-card:hover { border-color: var(--hair-3); transform: translateY(-2px); }
-  .featured-card__link {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 26px 24px 22px;
-    color: inherit;
-    text-decoration: none;
-    flex: 1;
-  }
-  .featured-card__link:focus-visible { outline: 2px solid var(--ink-1); outline-offset: 3px; border-radius: var(--r-lg); }
-  .featured-card h2 {
-    margin: 8px 0 0;
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: var(--text-xl);
-    letter-spacing: -0.01em;
-    color: var(--text);
-  }
-  .featured-card p { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; max-width: 40ch; }
-  .featured-card__go { margin-top: auto; padding-top: 6px; font-size: 13px; font-weight: 550; color: var(--text); }
-  /* The second link sits under the first, so the two never collide on
-     narrower cards. */
-  .featured-card--also .featured-card__link { padding-bottom: 48px; }
-  .featured-card__also {
-    position: absolute;
-    left: 24px;
-    bottom: 22px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-  .featured-card--lead { background: var(--void-2); border-color: var(--hair-3); }
-  .featured-card--lead .featured-card__link { justify-content: flex-end; padding: 32px 30px 30px; gap: 14px; }
-
-  .featured-card--lead h2 { font-size: var(--text-2xl); }
-  .featured-card :global(.tool-emblem) { --emblem-size: 96px; }
-  .featured-card.featured-card--lead :global(.tool-emblem) { --emblem-size: clamp(180px, 22vw, 280px); margin: 0 auto auto; }
-  .featured-card__cta {
-    align-self: flex-start;
-    margin-top: 8px;
-    padding: 12px 22px;
-    border-radius: var(--r-full);
-    background: var(--ink-0);
-    color: var(--void-0);
-    font-weight: 600;
-    font-size: var(--text-sm);
-  }
-  .tools-more { display: grid; gap: 20px; }
-  .tools-more__title {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: var(--text-xl);
-  }
-  .tools-more__cols {
-    display: grid;
-    gap: 28px;
-    grid-template-columns: 1fr;
-    padding-top: 22px;
-    border-top: 1px solid var(--hair-2);
-  }
-  @media (min-width: 600px) { .tools-more__cols { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1000px) { .tools-more__cols { grid-template-columns: repeat(4, 1fr); } }
-  .tool-group h3 { margin: 0 0 10px; font-size: var(--text-sm); font-weight: 600; color: var(--text-2); }
-  .tool-group ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
-  .tool-group a,
-  .tools-more__ask {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 0;
-    color: var(--muted);
-    font: inherit;
-    font-size: var(--text-sm);
-    text-decoration: none;
-    background: none;
-    border: 0;
-    cursor: pointer;
-    text-align: start;
-  }
-  .tool-group a:hover, .tools-more__ask:hover { color: var(--text); }
-  /* In the list the glyph is a small ink line drawing, not a pastel disc. */
-  .tool-group :global(.tool-glyph) {
-    width: 18px;
-    height: 18px;
-    margin: 0;
-    background: none;
-    box-shadow: none;
-    color: var(--faint);
-    flex: none;
-  }
-  .tool-group :global(.tool-glyph svg) { width: 18px; height: 18px; }
-  .tool-group a:hover :global(.tool-glyph), .tools-more__ask:hover :global(.tool-glyph) { color: var(--text-2); }
-  .tools-privacy {
-    margin: 0;
-    color: var(--faint);
-    font-size: var(--text-sm);
-    line-height: 1.6;
-  }
-  .tools-privacy strong { color: var(--text-2); }
-  .tools-privacy a { color: var(--muted); }
-  @media (prefers-reduced-motion: reduce) { .featured-card { transition: none; } .featured-card:hover { transform: none; } }
-</style>

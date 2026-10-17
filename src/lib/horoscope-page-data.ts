@@ -15,6 +15,30 @@ export interface HoroscopeSkyMarker {
   datetime?: string;
 }
 
+/**
+ * One planet (or one exact event) behind a part of the reading, already in
+ * reader wording. Built from the same evidence receipts as the sky strip;
+ * the reading's own sentences are never touched.
+ */
+export interface HoroscopeSkyPlanet {
+  /** The evidence receipt this row stands for. */
+  id: string;
+  body: string;
+  /** Sign slug the body occupies, when the receipt or its solar-house mapping names one. */
+  sign?: string;
+  /** "Moon in Sagittarius", "Sun sextile Jupiter". */
+  title: string;
+  /** One dry line: the Moon's phase, the motion, or the exact event time. */
+  detail: string;
+  /** The page sign's solar house for this body, when the reading maps one. */
+  house?: number;
+  /** Degree in sign ("29°31′"), or the date when no degree is recorded. */
+  value: string;
+  /** Short UTC date of the receipt ("Oct 16"). */
+  date: string;
+  at: string;
+}
+
 export interface HoroscopeProgramPageReading {
   label: string;
   title: string;
@@ -24,11 +48,17 @@ export interface HoroscopeProgramPageReading {
     heading: string;
     body: string;
     receipt?: string;
+    /** The planet the section starts from, for the section's subhead. */
+    planet?: HoroscopeSkyPlanet;
   }>;
   skyStrip: {
     label: string;
     markers: HoroscopeSkyMarker[];
   };
+  /** The distinct planets behind the reading, in reading order (at most four). */
+  sky?: HoroscopeSkyPlanet[];
+  /** Words in the reading itself, for the reading-time note. */
+  wordCount?: number;
   sourceNote: string;
   datePublished: string;
   dateModified: string;
@@ -53,8 +83,8 @@ const TITLE: Record<Exclude<HoroscopePageSurface, 'monthly'>, string> = {
 };
 
 const SECTION_HEADS: Record<Exclude<HoroscopePageSurface, 'monthly' | 'year'>, string[]> = {
-  today: ['What matters now', 'Where to focus', 'A moment to watch'],
-  tomorrow: ['What matters tomorrow', 'Where to focus', 'A moment to watch'],
+  today: ['What matters now', 'Where to focus', 'Something to notice'],
+  tomorrow: ['What matters tomorrow', 'Where to focus', 'Something to notice'],
   weekly: ['The week begins', 'Early week', 'Midweek', 'A turning point', 'The week closes'],
   love: ['How to connect', 'What you need emotionally'],
   career: ['Where to focus', 'What supports progress'],
@@ -90,7 +120,7 @@ function dateLabel(date: string, short = false): string {
 function periodLabel(reading: HoroscopeReading, surface: Exclude<HoroscopePageSurface, 'monthly'>): string {
   if (surface === 'year') return '2027';
   if (surface === 'weekly') {
-    return `${dateLabel(reading.period.from, true)}–${dateLabel(reading.period.through, true)}`;
+    return `${dateLabel(reading.period.from, true)} to ${dateLabel(reading.period.through, true)}`;
   }
   return dateLabel(reading.period.from);
 }
@@ -155,6 +185,82 @@ function skyStripFor(
         datetime: receipt.at,
       };
     }),
+  };
+}
+
+const SKY_ROWS_MAX = 4;
+
+function utcShortDate(at: string): string {
+  return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(at));
+}
+
+function utcClock(at: string): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC',
+  }).format(new Date(at));
+}
+
+/** 29.53 → "29°31′", truncated like formatLongitude in signs.ts. */
+export function degreeLabel(degree: number): string {
+  const d = Math.floor(degree);
+  const m = Math.floor((degree - d) * 60);
+  return `${d}°${String(m).padStart(2, '0')}′`;
+}
+
+function signWord(slug: string | undefined): string {
+  return slug ? signBySlug(slug).name : '';
+}
+
+/**
+ * The planet a passage starts from: its first cited position or exact
+ * event, with the page sign's solar house for that body when the passage
+ * maps one.
+ */
+function passagePlanet(
+  refs: readonly string[],
+  receipts: ReadonlyMap<string, HoroscopeEvidenceReceipt>,
+): HoroscopeSkyPlanet | undefined {
+  const cited = refs
+    .map((ref) => receipts.get(ref))
+    .filter((receipt): receipt is HoroscopeEvidenceReceipt => Boolean(receipt));
+  const primary = cited.find((receipt) => receipt.kind !== 'solar-house');
+  if (!primary) return undefined;
+  const mapped = cited.find((receipt) => (
+    receipt.kind === 'solar-house'
+    && receipt.body === primary.body
+    && (receipt.sourceFactId === undefined || receipt.sourceFactId === primary.id)
+  ));
+  const sign = primary.sign ?? mapped?.sign;
+  const body = primary.body ?? 'Sky';
+  const date = utcShortDate(primary.at);
+  const exact = `${date}, ${utcClock(primary.at)} UTC`;
+  let title = `${body} in ${signWord(sign)}`;
+  let detail = primary.label;
+  if (primary.kind === 'body-position') {
+    detail = primary.moonPhase ?? (primary.retrograde ? 'Retrograde' : 'Moving direct');
+  } else if (primary.eventKind === 'station') {
+    detail = `Stations ${primary.eventType ?? ''} ${exact}`.replace(/\s+/gu, ' ');
+  } else if (primary.eventKind === 'ingress') {
+    detail = `Enters ${signWord(sign)} ${exact}`;
+  } else if (primary.eventKind === 'eclipse') {
+    title = `${cap(primary.eventType ?? 'an')} eclipse in ${signWord(sign)}`;
+    detail = `Exact ${exact}`;
+  } else if (primary.eventKind === 'aspect' && primary.a && primary.b) {
+    title = `${primary.a} ${primary.eventType ?? 'aspect'} ${primary.b}`;
+    detail = `Exact ${exact}`;
+  } else if (!sign) {
+    title = primary.label;
+  }
+  return {
+    id: primary.id,
+    body,
+    sign,
+    title,
+    detail,
+    house: mapped?.house,
+    value: typeof primary.degree === 'number' ? degreeLabel(primary.degree) : date,
+    date,
+    at: primary.at,
   };
 }
 
@@ -232,7 +338,17 @@ export function pageReadingFromProgram(
       ?? yearHeading(passage.evidenceRefs, receipts, index, reading.passages.length),
     body: passage.text,
     receipt: receiptLine(passage.evidenceRefs, receipts),
+    planet: passagePlanet(passage.evidenceRefs, receipts),
   }));
+  const sky = [...new Map(
+    sections
+      .map((section) => section.planet)
+      .filter((planet): planet is HoroscopeSkyPlanet => Boolean(planet))
+      .map((planet) => [planet.id, planet] as const),
+  ).values()].slice(0, SKY_ROWS_MAX);
+  const wordCount = reading.passages
+    .map((passage) => passage.text.trim().split(/\s+/u).filter(Boolean).length)
+    .reduce((sum, count) => sum + count, 0);
   const skyStrip = skyStripFor(reading, surface, receipts);
   const datePublished = surface === 'year'
     ? '2026-07-19T00:00:00.000Z'
@@ -256,6 +372,8 @@ export function pageReadingFromProgram(
     intro: introFor(signData.name, surface),
     sections,
     skyStrip,
+    sky,
+    wordCount,
     sourceNote,
     datePublished,
     dateModified,

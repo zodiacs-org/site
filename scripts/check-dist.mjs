@@ -21,6 +21,7 @@
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
  */
+import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -1101,9 +1102,12 @@ for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.regist
     const block = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)]
       .find((match) => match[1].includes(`<loc>${loc}</loc>`))?.[1];
     const lastmod = block?.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
-    const expected = sign.readings?.weekly?.period?.from;
+    // The page last changed when its week began or when the shared reading
+    // template last changed, whichever is later.
+    const period = sign.readings?.weekly?.period?.from;
+    const expected = period ? laterDate(period, HOROSCOPE_TEMPLATE_LASTMOD) : undefined;
     if (lastmod !== expected) {
-      fail(`sitemap.xml: /horoscopes/${sign.sign}/weekly/ lastmod ${lastmod ?? 'missing'} does not match weekly period ${expected ?? 'missing'}`);
+      fail(`sitemap.xml: /horoscopes/${sign.sign}/weekly/ lastmod ${lastmod ?? 'missing'} does not match weekly period ${period ?? 'missing'} or template revision ${HOROSCOPE_TEMPLATE_LASTMOD}`);
     }
   }
 }

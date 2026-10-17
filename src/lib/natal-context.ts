@@ -8,7 +8,8 @@
  */
 import type { BodyName } from './engine/types';
 import { NATAL_HOUSE_THEME } from './natal';
-import { signBySlug, signEssence, type Sign } from './signs';
+import { signBySlug, type Sign } from './signs';
+import { signTagline } from './sign-display';
 
 interface BodyTheme {
   what: string;
@@ -86,7 +87,7 @@ function isNode(body: BodyName): body is 'North Node' | 'South Node' {
 }
 
 function signContext(sign: Sign): string {
-  const essence = signEssence(sign);
+  const essence = signTagline(sign);
   return `In ${sign.name}, it takes on a ${sign.modality} ${sign.element} style. ${essence}`;
 }
 

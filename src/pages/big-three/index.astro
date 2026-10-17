@@ -17,7 +17,7 @@ const faq = [
   },
   {
     q: 'Why does it need my birth time?',
-    a: 'The Rising sign changes roughly every two hours, so the time decides it. The Sun and Moon usually do not need it — the Moon changes sign about every two and a half days — but on a boundary day the time matters for them too. Without a time, the calculators show reference positions and mark the Moon sign as unverified instead of guessing.',
+    a: 'The Rising sign changes roughly every two hours, so the time decides it. The Sun and Moon usually do not need it (the Moon changes sign about every two and a half days), but on a boundary day the time matters for them too. Without a time, the calculators show reference positions and mark the Moon sign as unverified instead of guessing.',
   },
   {
     q: 'Where does my birth data go?',
@@ -46,16 +46,15 @@ const jsonLd = [
 ---
 <Base privateSurface
   clientUi
-  title="Big Three Calculator — Sun, Moon, and Rising in Seconds | Zodiacs.org"
+  title="Big Three Calculator: Sun, Moon, and Rising in Seconds | Zodiacs.org"
   description="Enter a birth date, time, and place and get your Sun, Moon, and Rising signs with exact degrees, a card to share, and one tap into the full birth chart. Free, computed in your browser."
   path="/big-three/"
   image="/assets/og/v2/tool/big-three.png"
-  imageAlt="Big Three calculator — Zodiacs.org"
+  imageAlt="Big Three calculator, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
     <div class="tool-hero">
-      <em class="kicker">Sun · Moon · Rising</em>
       <h1 class="display">{sharingText('en', 'bigTitle')}</h1>
       <p>
         Three fields, three placements. The <a href="/learn/glossary/#sun">Sun</a> is who you are, the{' '}

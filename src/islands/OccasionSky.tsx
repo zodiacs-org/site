@@ -221,7 +221,7 @@ export default function OccasionSky() {
               </div>
             </div>
             <dl class="occasion-card__rows">
-              {evening?.goldenHour && <div><dt>Golden hour</dt><dd>{clock(evening.goldenHour.start, tz)} – {clock(evening.goldenHour.end, tz)}</dd></div>}
+              {evening?.goldenHour && <div><dt>Golden hour</dt><dd>{clock(evening.goldenHour.start, tz)} to {clock(evening.goldenHour.end, tz)}</dd></div>}
               {evening?.sunset && <div><dt>Sunset</dt><dd>{clock(evening.sunset, tz)}</dd></div>}
               {evening?.civilDusk && <div><dt>Dusk</dt><dd>{clock(evening.civilDusk, tz)}</dd></div>}
               {evening?.moon.highest && evening.moon.highest.altitude > 0 && (

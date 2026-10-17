@@ -1,4 +1,5 @@
 import SaturnCountdown from './SaturnCountdown';
+import { rangeWords } from '../lib/range-words';
 import { CheckOurMath, ResultOpening } from './ChartTrust';
 /**
  * Saturn return calculator: birth date in, return seasons out. The
@@ -185,8 +186,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
                       <span class="sr__season-status">{statusLabel[status]}</span>
                     </div>
                     <p class="sr__season-span">
-                      {fmt(season.first)}
-                      {season.crossings.length > 1 ? ` – ${fmt(season.last)}` : ''}
+                      {season.crossings.length > 1 ? rangeWords(locale, fmt(season.first), fmt(season.last)) : fmt(season.first)}
                       {ageHint[i] ? ` · ${ageHint[i]}` : ''}
                     </p>
                     <ul class="sr__crossings">
@@ -216,7 +216,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
               href="/learn/planets/saturn/"
               title={locale === 'ru' ? 'Материал пока доступен по-английски' : undefined}
             >
-              <span>{t(locale, 'whatSaturnMeans')}{locale === 'ru' ? ' — пока по-английски' : ''}</span><span class="orb">→</span>
+              <span>{t(locale, 'whatSaturnMeans')}{locale === 'ru' ? ' (пока по-английски)' : ''}</span><span class="orb">→</span>
             </a>
           </div>
         </div>

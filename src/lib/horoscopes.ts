@@ -69,7 +69,7 @@ const TRANSIT_EVENT_LABELS = {
     station: (event) =>
       `${event.planet} stations ${event.type} at ${Math.round(event.degree)}° ${sn(event.sign)}`,
     aspect: (event) =>
-      `${event.a} ${event.type} ${event.b} (${sn(event.aSign)}–${sn(event.bSign)})`,
+      `${event.a} ${event.type} ${event.b} (${sn(event.aSign)}-${sn(event.bSign)})`,
   },
   es: {
     ingress: (event) =>
@@ -79,7 +79,7 @@ const TRANSIT_EVENT_LABELS = {
     station: (event) =>
       `${planetLabel('es', event.planet)} estaciona ${event.type === 'retrograde' ? 'retrógrado' : 'directo'} a ${Math.round(event.degree)}° de ${sn(event.sign, 'es')}`,
     aspect: (event) =>
-      `${planetLabel('es', event.a)} en ${aspectLabel('es', event.type)} con ${planetLabel('es', event.b)} (${sn(event.aSign, 'es')}–${sn(event.bSign, 'es')})`,
+      `${planetLabel('es', event.a)} en ${aspectLabel('es', event.type)} con ${planetLabel('es', event.b)} (${sn(event.aSign, 'es')}-${sn(event.bSign, 'es')})`,
   },
   pt: {
     ingress: (event) =>
@@ -89,7 +89,7 @@ const TRANSIT_EVENT_LABELS = {
     station: (event) =>
       `${planetLabel('pt', event.planet)} estaciona ${event.type === 'retrograde' ? 'retrógrado' : 'direto'} a ${Math.round(event.degree)}° de ${sn(event.sign, 'pt')}`,
     aspect: (event) =>
-      `${planetLabel('pt', event.a)} em ${aspectLabel('pt', event.type)} com ${planetLabel('pt', event.b)} (${sn(event.aSign, 'pt')}–${sn(event.bSign, 'pt')})`,
+      `${planetLabel('pt', event.a)} em ${aspectLabel('pt', event.type)} com ${planetLabel('pt', event.b)} (${sn(event.aSign, 'pt')}-${sn(event.bSign, 'pt')})`,
   },
   fr: {
     ingress: (event) =>
@@ -99,7 +99,7 @@ const TRANSIT_EVENT_LABELS = {
     station: (event) =>
       `${planetLabel('fr', event.planet)} ${event.type === 'retrograde' ? 'devient rétrograde' : 'redevient direct'} à ${Math.round(event.degree)}° en ${sn(event.sign, 'fr')}`,
     aspect: (event) =>
-      `${planetLabel('fr', event.a)} en ${aspectLabel('fr', event.type)} avec ${planetLabel('fr', event.b)} (${sn(event.aSign, 'fr')}–${sn(event.bSign, 'fr')})`,
+      `${planetLabel('fr', event.a)} en ${aspectLabel('fr', event.type)} avec ${planetLabel('fr', event.b)} (${sn(event.aSign, 'fr')}-${sn(event.bSign, 'fr')})`,
   },
   it: {
     ingress: (event) =>
@@ -109,7 +109,7 @@ const TRANSIT_EVENT_LABELS = {
     station: (event) =>
       `${planetLabel('it', event.planet)} staziona in moto ${event.type === 'retrograde' ? 'retrogrado' : 'diretto'} a ${Math.round(event.degree)}° in ${sn(event.sign, 'it')}`,
     aspect: (event) =>
-      `${planetLabel('it', event.a)} in ${aspectLabel('it', event.type)} con ${planetLabel('it', event.b)} (${sn(event.aSign, 'it')}–${sn(event.bSign, 'it')})`,
+      `${planetLabel('it', event.a)} in ${aspectLabel('it', event.type)} con ${planetLabel('it', event.b)} (${sn(event.aSign, 'it')}-${sn(event.bSign, 'it')})`,
   },
   ru: {
     ingress: (event) =>
@@ -119,7 +119,7 @@ const TRANSIT_EVENT_LABELS = {
     station: (event) =>
       `${planetLabel('ru', event.planet)}: стационар, далее ${event.type === 'retrograde' ? 'ретроградное' : 'директное'} движение · ${Math.round(event.degree)}° · ${sn(event.sign, 'ru')}`,
     aspect: (event) =>
-      `${planetLabel('ru', event.a)} и ${planetLabel('ru', event.b)}: ${aspectLabel('ru', event.type)} (${sn(event.aSign, 'ru')}–${sn(event.bSign, 'ru')})`,
+      `${planetLabel('ru', event.a)} и ${planetLabel('ru', event.b)}: ${aspectLabel('ru', event.type)} (${sn(event.aSign, 'ru')}-${sn(event.bSign, 'ru')})`,
   },
 } satisfies Record<Locale, TransitEventLabels>;
 

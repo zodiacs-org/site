@@ -154,7 +154,7 @@ try { await withPreview({ port: 8784 }, async baseURL => {
       await journey('startup-input', page => earlyTyping(page, baseURL, engine));
       await journey('quick-horoscope', async page => {
         await page.goto(baseURL);
-        await page.getByRole('link', { name: 'Your horoscope', exact: true }).click();
+        await page.getByRole('link', { name: 'See your horoscope', exact: true }).click();
         await page.locator('main a[href="/horoscopes/cancer/"]').first().click();
         await page.getByRole('heading', { level: 1 }).waitFor();
         check(`${engine}: sign reading requires no chart`, /Cancer/.test(await page.locator('h1').textContent()));
@@ -168,7 +168,8 @@ try { await withPreview({ port: 8784 }, async baseURL => {
       let savedState;
       await journey('known-time-first-chart', async (page, context) => {
         await page.goto(baseURL);
-        await page.getByRole('link', { name: 'Get your free birth chart ↗', exact: true }).click();
+        // The hero and the closing panel both offer it; the hero comes first.
+        await page.getByRole('link', { name: 'Get your free birth chart ↗', exact: true }).first().click();
         await calculate(page);
         await page.locator('[data-first-reading-start]').click();
         for (let step = 1; step <= 4; step++) {

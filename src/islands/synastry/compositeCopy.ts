@@ -1,6 +1,6 @@
 import type { CatalogLocale as Locale } from '../../lib/i18n';
 
-export const COMPOSITE_NOTE = `A composite chart is the midpoint of two charts — a portrait of the relationship itself rather than either person. Composite houses need a location convention we won't fake, so this chart is shown without houses.`;
+export const COMPOSITE_NOTE = `A composite chart is the midpoint of two charts, a portrait of the relationship itself rather than either person. Composite houses need a location convention we won't fake, so this chart is shown without houses.`;
 
 export type CompositeCopyKey =
   | "title"

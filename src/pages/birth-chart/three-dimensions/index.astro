@@ -63,19 +63,19 @@ const SECT_BODIES = ['Sun', 'Moon', 'Jupiter', 'Saturn', 'Venus', 'Mars'].map((b
 const faq = [
   {
     q: 'What is declination in astrology?',
-    a: 'Declination is a body’s angle north or south of the celestial equator — a different measurement from its zodiac position, which runs along the ecliptic. Two planets can stand far apart on the wheel and still share a declination. This site computes it for the ten Sun-through-Pluto bodies in the birth chart’s three-dimensional view.',
+    a: 'Declination is a body’s angle north or south of the celestial equator, a different measurement from its zodiac position, which runs along the ecliptic. Two planets can stand far apart on the wheel and still share a declination. This site computes it for the ten Sun-through-Pluto bodies in the birth chart’s three-dimensional view.',
   },
   {
     q: 'What is an out-of-bounds planet?',
-    a: `A planet is out of bounds when its declination passes ±23.44°, further north or south of the celestial equator than the Sun ever travels. The Moon and Mercury go out of bounds most often, Venus and Mars less often, and the Sun never can — the limit is the Sun’s own path. In this published-time Frida Kahlo sample, Mars is ${KAHLO_MARS_DECLINATION.toFixed(1)}° south, well past it.`,
+    a: `A planet is out of bounds when its declination passes ±23.44°, further north or south of the celestial equator than the Sun ever travels. The Moon and Mercury go out of bounds most often, Venus and Mars less often, and the Sun never can. The limit is the Sun’s own path. In this published-time Frida Kahlo sample, Mars is ${KAHLO_MARS_DECLINATION.toFixed(1)}° south, well past it.`,
   },
   {
     q: 'What is a parallel aspect?',
-    a: 'A parallel joins two bodies at the same declination on the same side of the celestial equator, and is traditionally read much like a conjunction. A contraparallel — equal declinations on opposite sides — reads like an opposition. Both are invisible on a flat chart wheel, which plots zodiac longitude only. This site marks them within 1° of exact, or 1.5° when the Sun or Moon is involved.',
+    a: 'A parallel joins two bodies at the same declination on the same side of the celestial equator, and is traditionally read much like a conjunction. A contraparallel, equal declinations on opposite sides, reads like an opposition. Both are invisible on a flat chart wheel, which plots zodiac longitude only. This site marks them within 1° of exact, or 1.5° when the Sun or Moon is involved.',
   },
   {
     q: 'What is a day chart?',
-    a: 'A chart is a day chart when the Sun stood above the horizon at the moment of birth, and a night chart when it sat below — the division traditional astrology calls sect. Sun, Jupiter, and Saturn belong to the day; Moon, Venus, and Mars to the night; Mercury goes with the half it rises in. It takes a birth time and place to answer, because it takes a horizon.',
+    a: 'A chart is a day chart when the Sun stood above the horizon at the moment of birth, and a night chart when it sat below, the division traditional astrology calls sect. Sun, Jupiter, and Saturn belong to the day; Moon, Venus, and Mars to the night; Mercury goes with the half it rises in. It takes a birth time and place to answer, because it takes a horizon.',
   },
 ];
 
@@ -86,7 +86,7 @@ const jsonLd = [
     headline: 'The birth chart in three dimensions',
     url: PAGE_URL,
     datePublished: '2026-07-28T18:50:00+07:00',
-    dateModified: '2026-09-23T00:00:00+07:00',
+    dateModified: '2026-10-16T00:00:00+07:00',
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': PAGE_URL },
@@ -112,22 +112,21 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="The Birth Chart in Three Dimensions — Declination, Parallels, Sect | Zodiacs.org"
+  title="The Birth Chart in Three Dimensions: Declination, Parallels, Sect | Zodiacs.org"
   description="What the flat chart wheel leaves out: declination and out-of-bounds planets, parallel aspects across the whole zodiac, and whether yours is a day or night chart."
   path="/birth-chart/three-dimensions/"
   image="/assets/og/v2/tool/birth-chart.png"
-  imageAlt="The birth chart in three dimensions — Zodiacs.org"
+  imageAlt="The birth chart in three dimensions, Zodiacs.org"
   type="article"
   jsonLd={jsonLd}
 >
   <section class="section container container--narrow">
-    <em class="kicker">The chart, in depth</em>
     <h1 class="display td-title">The birth chart in three dimensions.</h1>
     <p class="td-lead">
       A chart wheel records one angle for each planet: its position around the
-      zodiac. The sky has more angles than that, and the ones the wheel drops —
-      how far a body sits from the Sun's path, how far from the celestial
-      equator, whether it stood above your horizon — carry readings of their
+      zodiac. The sky has more angles than that, and the ones the wheel drops
+      (how far a body sits from the Sun's path, how far from the celestial
+      equator, whether it stood above your horizon) carry readings of their
       own. This page walks through them on two real charts. To turn the sphere
       yourself, <a href="/birth-chart/">calculate your chart</a> and press
       “See it in three dimensions”.
@@ -152,7 +151,7 @@ const jsonLd = [
       <h2 id="latitude">The wheel is a shadow</h2>
       <p>
         Every planet's position is a direction in space, and the wheel keeps
-        only the part of that direction that runs along the ecliptic — the
+        only the part of that direction that runs along the ecliptic, the
         Sun's apparent path. The other part, ecliptic latitude, is computed
         for every chart and then flattened away. It is not small. Between 1930
         and 2030, Pluto strays up to 17.7° from the plane, Venus up to 8.0°,
@@ -164,7 +163,7 @@ const jsonLd = [
       <h2 id="declination">Declination, the second angle</h2>
       <p>
         Measure from the celestial equator instead of the ecliptic and you get
-        declination — the same north–south angle that decides where on Earth a
+        declination, the same north-south angle that decides where on Earth a
         star can pass overhead. Because the two reference circles tilt 23.44°
         against each other, a body's declination is not a restatement of its
         zodiac position; it is independent information the wheel has no room
@@ -172,7 +171,7 @@ const jsonLd = [
       </p>
       <h3 id="out-of-bounds">Out of bounds</h3>
       <p>
-        The Sun's own declination never passes ±23.44° — that limit is what
+        The Sun's own declination never passes ±23.44°. That limit is what
         the tropics are. A planet that crosses it is called out of bounds,
         and modern astrological practice often describes it as operating past
         the Sun's rule. In this sample, Mars stands at {KAHLO_MARS_DECLINATION.toFixed(1)}° south declination, {KAHLO_MARS_EXCESS.toFixed(1)}° beyond
@@ -187,7 +186,7 @@ const jsonLd = [
       showBounds
       declRings={[VENUS_SATURN_RING]}
       chord
-      caption="Greenwich noon, 2026-07-28: Venus at 4.1° north declination and Saturn at 3.5° north ride the same circle to within 0.56° — a parallel — while standing 155.7° apart on the wheel. The Moon, at 24.6° south, sits outside the dotted bounds the Sun never passes."
+      caption="Greenwich noon, 2026-07-28: Venus at 4.1° north declination and Saturn at 3.5° north ride the same circle to within 0.56°, a parallel, while standing 155.7° apart on the wheel. The Moon, at 24.6° south, sits outside the dotted bounds the Sun never passes."
     />
 
     <div class="prose">
@@ -199,7 +198,7 @@ const jsonLd = [
         The pair above is the point: Venus and Saturn share a circle to half a
         degree while sitting more than 150° apart in longitude, further than
         any aspect the wheel draws can reach. The same chart carries Mars at
-        23.2° north against Pluto at 23.3° south — a contraparallel within
+        23.2° north against Pluto at 23.3° south, a contraparallel within
         0.19°. This site marks both families within 1° of exact, 1.5° when
         the Sun or Moon is one of the pair, and the three-dimensional view
         draws the ring the pair shares.
@@ -210,7 +209,7 @@ const jsonLd = [
         Everything above is true of the sky in general. The horizon is not: it
         belongs to a minute and a place, and it is the circle that turns a sky
         map into somebody's chart. Where it cuts the zodiac on the eastern
-        side is the ascendant — the reason birth time matters — and it divides
+        side is the ascendant, the reason birth time matters, and it divides
         every chart into a visible half and a hidden one.
       </p>
     </div>
@@ -222,25 +221,25 @@ const jsonLd = [
       longitude={KAHLO.longitude}
       utcMs={KAHLO_UTC_MS}
       showHorizon
-      caption={`The same horizon, asking one question: was the Sun above it? In this sample it stood ${KAHLO_SUN_ALTITUDE.toFixed(1)}° high — a day chart, so the Sun leads as sect light, ringed here.`}
+      caption={`The same horizon, asking one question: was the Sun above it? In this sample it stood ${KAHLO_SUN_ALTITUDE.toFixed(1)}° high, a day chart, so the Sun leads as sect light, ringed here.`}
     />
 
     <div class="prose">
       <h2 id="sect">Sect: day charts and night charts</h2>
       <p>
         Whether the Sun stood above or below the horizon at birth divides all
-        charts into two families — sect, the oldest sorting rule in the
+        charts into two families: sect, the oldest sorting rule in the
         tradition. Sun, Jupiter and Saturn are the day's planets; Moon, Venus
         and Mars the night's; whichever team matches the chart is in sect and
         carries more of its weight. Mercury takes the half it rises in: ahead
         of the Sun as a morning star it joins the day, trailing behind as an
-        evening star, the night. The chart's own luminary — Sun by day, Moon
-        by night — is its sect light. Uranus, Neptune and Pluto sit outside
+        evening star, the night. The chart's own luminary (Sun by day, Moon
+        by night) is its sect light. Uranus, Neptune and Pluto sit outside
         the scheme; it was settled long before anyone saw them.
       </p>
       <p>
         None of this needs new data. It falls out of the same birth minute
-        and place the chart already asked for — geometry first, doctrine
+        and place the chart already asked for, geometry first, doctrine
         second.
       </p>
     </div>
@@ -249,8 +248,8 @@ const jsonLd = [
       <p>
         <strong>See your own chart this way.</strong>{' '}The{' '}
         <a href="/birth-chart/">birth chart calculator</a> computes all of it
-        in your browser — declinations, out-of-bounds bodies, parallels, sect
-        — and the “See it in three dimensions” control under the wheel puts
+        in your browser (declinations, out-of-bounds bodies, parallels, sect),
+        and the “See it in three dimensions” control under the wheel puts
         you inside the instrument. Terms are defined in the{' '}
         <a href="/learn/glossary/#declination">glossary</a>.
       </p>
@@ -292,7 +291,10 @@ const jsonLd = [
     padding: 18px 20px;
     border: 1px solid var(--hair-1, #242936);
     border-radius: 12px;
+    transition: border-color var(--dur-1) var(--ease);
   }
+  .td-cta:focus-within { border-color: var(--hair-3); }
+  @media (hover: hover) and (pointer: fine) { .td-cta:hover { border-color: var(--hair-2); } }
   .td-cta p { margin: 0; line-height: 1.6; text-wrap: pretty; }
   .td-faq-head { margin-top: 40px; }
   .faq { display: grid; gap: 8px; }

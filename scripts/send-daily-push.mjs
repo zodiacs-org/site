@@ -226,7 +226,7 @@ export function buildEventAlert(event) {
     });
   }
   return checkedAlert({
-    title: `${event.title.split(/\s+—/u)[0].trim()} today`,
+    title: `${event.title.split(/,\s|\s+—/u)[0].trim()} today`,
     body: summary,
     url: event.path,
   });

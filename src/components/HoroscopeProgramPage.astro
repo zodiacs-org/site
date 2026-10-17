@@ -1,20 +1,34 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import ArtFrame from './ArtFrame.astro';
 import AskGuideLine from './AskGuideLine.astro';
 import GuideQuickPrompts from './GuideQuickPrompts.astro';
 import EmailCapture from './EmailCapture.astro';
-import Faq from './Faq.astro';
-import RaceRamp from './RaceRamp.astro';
 import ShareRow from './ShareRow.astro';
 import SignIcon from './SignIcon.astro';
 import UpcomingEventLinks from './events/UpcomingEventLinks.astro';
 import EditionText from './EditionText.astro';
-import { datedEditionText } from '../lib/edition-freshness';
+import dailyData from '../data/daily.json';
+import programData from '../data/horoscope-program.json';
+import { HOUSE_THEME, type Daily } from '../lib/daily';
+import { HOROSCOPE_WHEEL_SIZE, horoscopeWheelFocus } from '../lib/horoscope-wheel';
+import { datedEditionText, editionDateLabel } from '../lib/edition-freshness';
 import { EDITOR_AUTHOR } from '../lib/editorial';
+import { PLANET_GLYPH } from '../lib/glyphs/paths';
+import { currentHoroscopeMonth, utcMonth } from '../lib/horoscope-month.mjs';
+import { monthLabel } from '../lib/horoscopes';
+import type { HoroscopeProgram } from '../lib/horoscope-program';
+import { signArtSrc, signArtSrcset } from '../lib/sign-art';
 import { SIGNS, signBySlug } from '../lib/signs';
-import type {
-  HoroscopePageSurface as HoroscopeSurface,
-  HoroscopeProgramPageReading,
+import { signDateRange } from '../lib/sign-display';
+import {
+  degreeLabel,
+  horoscopeHubTeaser,
+  pageReadingFromProgram,
+  type HoroscopePageSurface as HoroscopeSurface,
+  type HoroscopeProgramPageReading,
+  type HoroscopeSkyPlanet,
 } from '../lib/horoscope-page-data';
 
 interface Props {
@@ -25,29 +39,31 @@ interface Props {
 
 const { signSlug, surface, reading } = Astro.props;
 const sign = signBySlug(signSlug);
+const daily = dailyData as Daily;
+const program = programData as HoroscopeProgram;
 
 // Ready questions for Guide, one row per surface. The third always points
 // back to the visitor's own chart, which is where a horoscope stops being
-// general.
+// general. None asks Guide to rank or pick dates.
 const CHART_PROMPT = 'How do I read this against my birth chart?';
 const QUICK_PROMPTS: Record<HoroscopeSurface, readonly string[]> = {
   today: [
     `What does today’s sky mean for ${sign.name}?`,
-    'Which of today’s transits matters most for me?',
+    'Which planets does this reading draw on?',
     CHART_PROMPT,
   ],
   tomorrow: [
-    `What should ${sign.name} get ready for tomorrow?`,
+    `What does tomorrow’s sky mean for ${sign.name}?`,
     'What changes between today and tomorrow?',
     CHART_PROMPT,
   ],
   weekly: [
-    `Which days this week matter most for ${sign.name}?`,
-    'How should I pace this week?',
+    `What does this week’s sky mean for ${sign.name}?`,
+    'Which sky events fall this week?',
     CHART_PROMPT,
   ],
   monthly: [
-    `What are the key dates this month for ${sign.name}?`,
+    `What does this month’s sky mean for ${sign.name}?`,
     'Which of this month’s transits touches my chart?',
     CHART_PROMPT,
   ],
@@ -63,7 +79,7 @@ const QUICK_PROMPTS: Record<HoroscopeSurface, readonly string[]> = {
   ],
   year: [
     `What are the big themes of 2027 for ${sign.name}?`,
-    `Which 2027 transits should ${sign.name} plan around?`,
+    'Which 2027 sky events does this reading follow?',
     CHART_PROMPT,
   ],
 };
@@ -72,60 +88,113 @@ const SURFACE_META = {
   today: {
     slug: '',
     nav: 'Daily',
+    label: 'Today',
     kicker: 'Daily horoscope',
     faq: 'Your daily horoscope highlights the themes most likely to matter today, with one practical way to work with them.',
   },
   tomorrow: {
     slug: 'tomorrow',
     nav: 'Tomorrow',
+    label: 'Tomorrow',
     kicker: 'Next-day outlook',
     faq: 'It gives you an early look at tomorrow’s emotional tone, priorities, and one useful way to prepare.',
   },
   weekly: {
     slug: 'weekly',
     nav: 'Weekly',
+    label: 'This week',
     kicker: 'Seven-day outlook',
     faq: 'A weekly horoscope widens the frame from one day to the choices and themes that can develop across seven days.',
   },
   monthly: {
     slug: 'monthly',
     nav: 'Monthly',
+    label: 'This month',
     kicker: 'Monthly outlook',
     faq: 'A monthly horoscope follows the month’s dated lunations, stations, ingresses, and major aspects through the solar houses of your sun sign.',
   },
   love: {
     slug: 'love',
     nav: 'Love',
+    label: 'Love',
     kicker: 'Relationships',
     faq: 'A love horoscope narrows the current sky to relating, attraction, boundaries, and repair. Your Venus, Moon, Mars, and seventh house add much more personal detail.',
   },
   career: {
     slug: 'career',
     nav: 'Career',
+    label: 'Career',
     kicker: 'Work and direction',
     faq: 'A career horoscope narrows the current sky to work, reputation, money, collaboration, and decision-making. Your full chart can change where those themes land.',
   },
   year: {
     slug: '2027',
     nav: '2027',
+    label: `${sign.name} in 2027`,
     kicker: 'Year ahead',
     faq: 'A year-ahead sun-sign horoscope is a broad map of the year’s major cycles. A birth time allows a personal chart to place those cycles in your actual houses.',
   },
 } as const;
 
+type SurfaceKey = keyof typeof SURFACE_META;
 const meta = SURFACE_META[surface];
-const path = meta.slug
-  ? `/horoscopes/${sign.slug}/${meta.slug}/`
-  : `/horoscopes/${sign.slug}/`;
+const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
+const surfacePath = (signSlugValue: string, key: SurfaceKey) => {
+  const slug = SURFACE_META[key].slug;
+  return slug ? `/horoscopes/${signSlugValue}/${slug}/` : `/horoscopes/${signSlugValue}/`;
+};
+const path = surfacePath(sign.slug, surface);
 const ogImage = `/assets/og/v2/horoscope/${sign.slug}${meta.slug ? `-${meta.slug}` : ''}.png`;
 const canonicalUrl = `https://zodiacs.org${path}`;
 const hasEditorial = Astro.slots.has('editorial');
 const hasEnhancement = Astro.slots.has('enhancement');
-// These compact heroes make the sign icon the largest visible element on
-// phones. Use the smaller derivative on their first-paint path, as Daily does.
-const compactHeroIcon = surface === 'today' || surface === 'love' || surface === 'career';
 const editionDate = surface === 'today' ? reading.datePublished.slice(0, 10) : null;
 const displayText = (value: string) => editionDate ? datedEditionText(value, editionDate) : value;
+const shortDate = (iso: string) => new Intl.DateTimeFormat('en-US', {
+  month: 'short', day: 'numeric', timeZone: 'UTC',
+}).format(new Date(iso.length === 10 ? `${iso}T12:00:00.000Z` : iso));
+const longDate = (iso: string) => new Intl.DateTimeFormat('en-US', {
+  weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+}).format(new Date(`${iso}T12:00:00.000Z`));
+const utcClock = (iso: string) => new Intl.DateTimeFormat('en-GB', {
+  hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC',
+}).format(new Date(iso));
+
+// ── The program's own periods, for the switch and the "More for" list ──
+const programSurfaces = ['tomorrow', 'weekly', 'love', 'career', 'year'] as const;
+const programReadings = Object.fromEntries(programSurfaces.map((key) => [
+  key,
+  key === surface ? reading : pageReadingFromProgram(program, sign.slug as never, key),
+])) as Record<(typeof programSurfaces)[number], HoroscopeProgramPageReading>;
+const signProgram = program.signs.find((entry) => entry.sign === sign.slug);
+const monthlyEntries = await getCollection('horoscopes', ({ data }) => !data.draft);
+const monthShown = currentHoroscopeMonth(monthlyEntries.map((entry) => entry.data.month), utcMonth(daily.date));
+const monthlyEntry = monthlyEntries.find((entry) => entry.data.month === monthShown && entry.data.sign === sign.slug);
+const monthlyLead = (monthlyEntry?.body ?? '')
+  .split(/\n\s*\n/u)
+  .map((paragraph) => paragraph.replace(/\s+/gu, ' ').trim())
+  .find((paragraph) => paragraph.length > 0 && !paragraph.startsWith('import ') && !paragraph.startsWith('<')) ?? '';
+const firstPassage = (key: (typeof programSurfaces)[number]) => programReadings[key].sections[0]?.body ?? programReadings[key].intro;
+const weekPeriod = signProgram?.readings.weekly.period;
+const tomorrowPeriod = signProgram?.readings.tomorrow.period;
+const moreRows: Array<{ key: SurfaceKey; title: string; note: string; teaser: string }> = ([
+  { key: 'tomorrow', title: SURFACE_META.tomorrow.label, note: tomorrowPeriod ? shortDate(tomorrowPeriod.from) : '', teaser: firstPassage('tomorrow') },
+  {
+    key: 'weekly',
+    title: SURFACE_META.weekly.label,
+    note: weekPeriod ? `${shortDate(weekPeriod.from)} to ${shortDate(weekPeriod.through)}` : '',
+    teaser: firstPassage('weekly'),
+  },
+  { key: 'monthly', title: SURFACE_META.monthly.label, note: monthShown ? monthLabel(monthShown) : '', teaser: monthlyLead },
+  { key: 'love', title: SURFACE_META.love.label, note: SURFACE_META.love.kicker, teaser: firstPassage('love') },
+  { key: 'career', title: SURFACE_META.career.label, note: SURFACE_META.career.kicker, teaser: firstPassage('career') },
+  { key: 'year', title: SURFACE_META.year.label, note: SURFACE_META.year.kicker, teaser: firstPassage('year') },
+] as Array<{ key: SurfaceKey; title: string; note: string; teaser: string }>)
+  .map((row) => ({ ...row, teaser: row.teaser ? horoscopeHubTeaser(row.teaser, 132) : '' }));
+// Today, This week and This month are the switch; the current page stays in
+// the list only when the switch does not already mark it.
+const switchKeys: SurfaceKey[] = ['today', 'weekly', 'monthly'];
+const moreList = moreRows.filter((row) => row.key !== surface || !switchKeys.includes(row.key));
 
 const faq = [
   {
@@ -145,7 +214,7 @@ const faq = [
 const jsonLd = [
   {
     '@type': 'Article',
-    headline: `${sign.name} ${reading.title} — ${reading.label}`,
+    headline: `${sign.name} ${reading.title}, ${reading.label}`,
     description: displayText(reading.description),
     url: canonicalUrl,
     datePublished: reading.datePublished,
@@ -179,31 +248,119 @@ const jsonLd = [
   },
 ];
 
-const periodLinks = Object.entries(SURFACE_META).map(([key, item]) => ({
-  key,
-  label: item.nav,
-  href: item.slug
-    ? `/horoscopes/${sign.slug}/${item.slug}/`
-    : `/horoscopes/${sign.slug}/`,
+// ── Hero ──
+const heroKicker = reading.datePublished && ['today', 'tomorrow', 'love', 'career'].includes(surface)
+  ? longDate(surface === 'tomorrow' && tomorrowPeriod ? tomorrowPeriod.from : reading.datePublished.slice(0, 10))
+  : reading.label;
+// The description's own words after its "Sign … for <date>:" lead.
+const descriptionTail = reading.description.includes(': ')
+  ? reading.description.slice(reading.description.indexOf(': ') + 2)
+  : reading.description;
+const heroCaption = capitalize(descriptionTail);
+const heroArtSizes = '(min-width: 761px) 74vw, calc(100vw - 16px)';
+
+// ── The sky behind the reading ──
+const daySpan = surface === 'today' || surface === 'tomorrow' || surface === 'love' || surface === 'career';
+const fallbackSky: HoroscopeSkyPlanet[] = reading.skyStrip.markers.map((marker, index) => ({
+  id: `marker-${index}`,
+  body: '',
+  title: marker.value.includes(' · ') ? marker.value.slice(marker.value.indexOf(' · ') + 3) : marker.value,
+  detail: marker.label,
+  value: marker.datetime ? shortDate(marker.datetime) : '',
+  date: marker.datetime ? shortDate(marker.datetime) : '',
+  at: marker.datetime ?? reading.datePublished,
 }));
-const skyMarkers = reading.skyStrip.markers;
+const skyRows = (reading.sky && reading.sky.length > 0 ? reading.sky : fallbackSky).map((row) => {
+  const hue = row.sign ? signBySlug(row.sign).hue : 'var(--ink-2)';
+  const sameEditionMoon = row.body === 'Moon' && row.at.slice(0, 10) === daily.date && !row.detail.startsWith('Exact');
+  const detail = sameEditionMoon && row.detail === daily.moon.phase
+    ? `${row.detail}, ${Math.round(daily.moon.illumination * 100)}% lit`
+    : row.detail;
+  const dated = !daySpan && !/\d{1,2}:\d{2} UTC$/u.test(detail) && row.body ? `${row.date}: ${detail}` : detail;
+  const house = row.house ? HOUSE_THEME[row.house] : '';
+  return { ...row, hue, line: house ? `${dated}. For ${sign.name}: ${house}.` : dated };
+});
+const skySub = daySpan
+  ? 'Each part of the reading starts from one of these.'
+  : surface === 'weekly'
+    ? 'The skies this week’s reading follows, day by day.'
+    : 'Dated markers this reading follows.';
+const skyBasis = surface === 'monthly' || surface === 'year' ? 'UTC' : 'noon UTC';
+const moonRow = skyRows.find((row) => row.body === 'Moon' && reading.sky?.some((planet) => planet.id === row.id) && !row.detail.startsWith('Exact'));
+const moonPhase = daySpan && moonRow ? reading.sky?.find((planet) => planet.id === moonRow.id)?.detail : undefined;
+const showPlanets = surface !== 'year';
+
+// "Also in this sky": the edition's other exact events and the Sun, when
+// the reading itself does not already name them.
+const alsoInSky = surface === 'today'
+  ? [
+      ...(skyRows.some((row) => row.body === 'Sun')
+        ? []
+        : daily.bodies.filter((body) => body.body === 'Sun').map((body) => `Sun ${degreeLabel(body.degree)} ${capitalize(body.sign)}`)),
+      ...daily.events
+        .filter((event) => !skyRows.some((row) => row.at === event.at))
+        .map((event) => {
+          const at = `${utcClock(event.at)} UTC`;
+          if (event.kind === 'aspect') return `${event.a} ${event.type} ${event.b}, exact at ${at}`;
+          if (event.kind === 'station') return `${event.planet} stations ${event.type} at ${at}`;
+          if (event.kind === 'ingress') return `${event.planet} enters ${capitalize(event.sign ?? '')} at ${at}`;
+          return `${capitalize(event.type ?? '')} moon in ${capitalize(event.sign ?? '')} at ${at}`;
+        }),
+    ]
+  : [];
+
+// ── Reading meta line ──
+const words = reading.wordCount ?? reading.sections
+  .map((section) => section.body.trim().split(/\s+/u).length)
+  .reduce((sum, count) => sum + count, 0);
+const minutes = Math.max(1, Math.round(words / 200));
+const noteLabel = surface === 'year' ? `2027 for ${sign.name}` : `${meta.label} for ${sign.name}`;
+
+// ── The wheel: the edition's sky at noon UTC, counted from this sign ──
+const signIndex = SIGNS.findIndex((entry) => entry.slug === sign.slug);
+// Monthly rows are the month's dated events, so its wheel lights none.
+const focusBodies = surface === 'monthly' ? [] : horoscopeWheelFocus(reading.sky, daily);
+const listWords = (items: string[]) => items.length <= 1
+  ? items.join('')
+  : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`;
+const focusNames = focusBodies.map((body) => (body === 'Sun' || body === 'Moon' ? `the ${body}` : body));
+const editionLabel = editionDateLabel(daily.date);
+const wheelCaption = `The sky at noon UTC on ${editionLabel}, set on the ${sign.name} wheel.${
+  focusNames.length > 0
+    ? ` In colour: ${listWords(focusNames)}, the ${focusNames.length === 1 ? 'planet' : 'planets'} this reading draws on.`
+    : ''
+}`;
+const edgeMoon = daily.bodies.find((body) => body.body === 'Moon');
+const moonHouse = edgeMoon ? ((SIGNS.findIndex((entry) => entry.slug === edgeMoon.sign) - signIndex + 12) % 12) + 1 : null;
+const ctaLede = edgeMoon && moonHouse
+  ? `This reading counts the wheel from ${sign.name}, so the Moon in ${capitalize(edgeMoon.sign)} falls in the part linked with ${HOUSE_THEME[moonHouse]}. Your birth chart counts from your own rising sign, so the same Moon may touch a different part of your life.`
+  : `This reading counts the wheel from ${sign.name}. Your birth chart counts from your own rising sign, so the same sky may touch a different part of your life.`;
 ---
 <Base
-  inlineCriticalCss={compactHeroIcon}
+  inlineCriticalCss
   stableTypography
-  title={`${sign.name} ${reading.title} — ${reading.label} | Zodiacs.org`}
+  title={`${sign.name} ${reading.title}, ${reading.label} | Zodiacs.org`}
   description={displayText(reading.description)}
   path={path}
   image={ogImage}
-  imageAlt={`${sign.name} ${meta.nav.toLowerCase()} horoscope — Zodiacs.org`}
+  imageAlt={`${sign.name} ${meta.nav.toLowerCase()} horoscope | Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   editionDate={editionDate ?? undefined}
   rssFeed={{
     href: `/feeds/horoscopes/${sign.slug}.xml`,
-    title: `Zodiacs.org — ${sign.name} daily horoscope`,
+    title: `Zodiacs.org | ${sign.name} daily horoscope`,
   }}
 >
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href={signArtSrc(sign.slug, 1200)}
+    imagesrcset={signArtSrcset(sign.slug)}
+    imagesizes={heroArtSizes}
+    fetchpriority="high"
+  />
   {surface === 'today' && (
     <script slot="head" is:inline define:vars={{ dailyEnhancementSign: sign.slug }}>
       /* Route-local first-paint hint for DailyForYou. Only the current sign is
@@ -236,362 +393,566 @@ const skyMarkers = reading.skyStrip.markers;
     </script>
   )}
   <article
-    class="program container container--narrow"
-    style={`--sign:${sign.hue}`}
+    class="program"
+    style={`--sign:${sign.hue};--hue:${sign.hue}`}
     data-edition-content={editionDate ? 'true' : undefined}
   >
-    <nav class="program__crumbs mono" aria-label="Breadcrumb">
-      <a href="/horoscopes/">Horoscopes</a><span aria-hidden="true">/</span>
-      {meta.slug ? (
-        <>
-          <a href={`/horoscopes/${sign.slug}/`}>{sign.name}</a><span aria-hidden="true">/</span>
-          <span aria-current="page">{meta.nav}</span>
-        </>
-      ) : <span aria-current="page">{sign.name}</span>}
-    </nav>
-
-    <header class="program__hero">
-      <SignIcon
+    <header class="program__hero hz-hero">
+      <ArtFrame
         sign={sign.slug}
-        size={88}
-        loading="eager"
-        fetchPriority="high"
-        webpOnly={compactHeroIcon}
-        decoding={compactHeroIcon ? 'sync' : 'async'}
-        class="program__icon"
+        class="hz-hero__art"
+        sizes={heroArtSizes}
+        focus="50% 60%"
+        spot="55% 56%"
+        eager
       />
-      <div class="program__hero-copy">
-        <em class="kicker">{meta.kicker} · {reading.label}</em>
-        <h1 class="display">{sign.name} {reading.title}</h1>
-        <p class="program__description">
-          {editionDate
-            ? <EditionText current={reading.description} editionDate={editionDate} />
-            : reading.description}
+      <nav class="program__crumbs hz-hero__crumbs" aria-label="Breadcrumb">
+        <a href="/horoscopes/">Horoscopes</a><span aria-hidden="true">/</span>
+        {meta.slug ? (
+          <>
+            <a href={`/horoscopes/${sign.slug}/`}>{sign.name}</a><span aria-hidden="true">/</span>
+            <span aria-current="page">{meta.nav}</span>
+          </>
+        ) : <span aria-current="page">{sign.name}</span>}
+      </nav>
+      <div class="hz-hero__body">
+        <span class="kicker hz-hero__kicker">{heroKicker}</span>
+        <h1 class="hz-hero__title">{sign.name} {reading.title}</h1>
+        <p class="program__description hz-hero__cap">{heroCaption}</p>
+        <p class="kfacts hz-hero__facts">
+          <span><SignIcon sign={sign.slug} size={20} webpOnly class="hz-hero__disc" />{signDateRange(sign)}</span>
+          <span>{capitalize(sign.element)}</span>
+          <span>{capitalize(sign.modality)}</span>
+          <span class="hz-hero__ruler">Ruled by {sign.ruler}</span>
         </p>
-        <span class="program__dates mono">{sign.dates} · {sign.element} · {sign.modality} · ruled by {sign.ruler}</span>
       </div>
+      <span class="hz-hero__credit" aria-hidden="true">{sign.name}, from the Zodiacs sign art</span>
     </header>
 
-    <p class="experience-note">This reading is for your sign. <a href="/today/">Today</a> compares the sky with your saved birth chart.</p>
-
-    <nav class="program__periods" aria-label={`${sign.name} horoscope periods`}>
-      {periodLinks.map((item) => (
-        <a
-          href={item.href}
-          aria-current={item.key === surface ? 'page' : undefined}
-          class:list={{ program__period: true, 'program__period--active': item.key === surface }}
-        >
-          {item.label}
-        </a>
-      ))}
-    </nav>
-
-    <section class="program__reading" aria-labelledby="reading-heading">
-      <p class="experience-note">The sky positions are calculated; their meaning is an astrological interpretation. Use what helps you reflect, without treating it as a prediction of events.</p>
-      <div class="program__reading-head">
-        <span class="mono">The reading</span>
-        <h2 id="reading-heading">
-          {editionDate ? <EditionText current={reading.intro} editionDate={editionDate} /> : reading.intro}
-        </h2>
-      </div>
-
-      {hasEditorial && (
-        <div class="program__editorial prose">
-          <slot name="editorial" />
-        </div>
-      )}
-
-      {hasEnhancement && <slot name="enhancement" />}
-
-      {reading.sections.length > 0 && (
-        <div class="program__sections">
-          {reading.sections.map((section) => (
-            <section class="program__section">
-              <h3>
-                {editionDate ? <EditionText current={section.heading} editionDate={editionDate} /> : section.heading}
-              </h3>
-              <p>
-                {editionDate ? <EditionText current={section.body} editionDate={editionDate} /> : section.body}
-              </p>
-            </section>
-          ))}
-        </div>
-      )}
-
-      <AskGuideLine lead="Questions about this reading, or what it means for your chart?" />
-      <GuideQuickPrompts prompts={QUICK_PROMPTS[surface]} />
-
-    </section>
-
-    {skyMarkers.length > 0 && (
-      <aside class="program__sky" aria-label={displayText(reading.skyStrip.label)}>
-        <div class="program__sky-heading">
-          <span class="program__sky-dot" aria-hidden="true"></span>
-          <span class="mono">
-            {editionDate
-              ? <EditionText current={reading.skyStrip.label} editionDate={editionDate} />
-              : reading.skyStrip.label}
-          </span>
-        </div>
-        <div class="program__sky-markers">
-          {skyMarkers.map((marker) => (
-            <p class="program__sky-marker">
-              <span class="mono">{marker.label}</span>
-              {marker.datetime
-                ? <time datetime={marker.datetime}>{marker.value}</time>
-                : <strong>{marker.value}</strong>}
-            </p>
-          ))}
-        </div>
-      </aside>
-    )}
-
-    {surface === 'today' && (
-      <UpcomingEventLinks date={reading.datePublished.slice(0, 10)} compact />
-    )}
-
-    <details class="program__basis">
-      <summary>
-        <span class="program__basis-summary">
-          <strong>Behind this reading</strong>
-          <small>Exact sky, dates, and method</small>
-        </span>
-        <span class="program__basis-open" aria-hidden="true">+</span>
-        <span class="program__basis-close" aria-hidden="true">−</span>
-      </summary>
-      <div class="program__basis-body">
-        <p class="program__description">
-          {editionDate ? <EditionText current={reading.sourceNote} editionDate={editionDate} /> : reading.sourceNote}
-        </p>
-        {reading.sections.some((section) => section.receipt) && (
-          <ul class="program__basis-receipts">
-            {reading.sections.filter((section) => section.receipt).map((section) => (
-              <li>
-                <strong>{section.heading}</strong>
-                <span class="mono">{section.receipt}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div class="program__basis-links">
-          <a href="/methodology/">Read our method and sources →</a>
-          <a href={`/feeds/horoscopes/${sign.slug}.xml`} type="application/rss+xml">Follow {sign.name} by RSS →</a>
-        </div>
-      </div>
-    </details>
-
-    <EmailCapture placement="horoscopes" sign={sign.slug} />
-
-    <section class="program__faq" aria-label={`${sign.name} ${meta.nav.toLowerCase()} horoscope questions`}>
-      <Faq items={faq} heading={`${sign.name} ${meta.nav.toLowerCase()} horoscope, answered`} />
-    </section>
-
-    <ShareRow text={`${sign.name} ${reading.title} — ${reading.label}`} url={canonicalUrl} />
-
-    <a class="program__guide-link" href={`/${sign.slug}/`}>Full {sign.name} guide →</a>
-
-    <RaceRamp signName={sign.name} gap="28px" />
-
-    <nav class="program__signs" aria-label={`Other signs for ${meta.nav.toLowerCase()} horoscopes`}>
-      <span class="program__signs-head">The other eleven signs</span>
-      <div class="program__sign-grid">
-        {SIGNS.filter((other) => other.slug !== sign.slug).map((other) => (
+    <div class="kwrap hz-controls">
+      <nav class="seg program__periods hz-seg" aria-label={`${sign.name} horoscope periods`}>
+        {switchKeys.map((key) => (
+          <a href={surfacePath(sign.slug, key)} aria-current={key === surface ? 'page' : undefined}>
+            {key === 'today' && editionDate
+              ? <EditionText current="Today" dated={shortDate(editionDate)} editionDate={editionDate} />
+              : SURFACE_META[key].label}
+          </a>
+        ))}
+      </nav>
+      <nav class="hz-signrail" aria-label="Switch sign">
+        <span class="hz-signrail__label">Switch sign</span>
+        {SIGNS.map((other) => (
           <a
-            href={meta.slug ? `/horoscopes/${other.slug}/${meta.slug}/` : `/horoscopes/${other.slug}/`}
+            href={surfacePath(other.slug, surface)}
+            aria-current={other.slug === sign.slug ? 'page' : undefined}
             style={`--other-sign:${other.hue}`}
           >
-            <SignIcon sign={other.slug} size={20} />
+            <SignIcon sign={other.slug} size={24} webpOnly fetchPriority="low" class="hz-signrail__disc" />
             <span>{other.name}</span>
           </a>
         ))}
+      </nav>
+      <script is:inline>
+        /* On a phone the row scrolls sideways: start it at the current sign. */
+        (function () {
+          var rail = document.currentScript && document.currentScript.previousElementSibling;
+          var current = rail && rail.querySelector('[aria-current="page"]');
+          if (!current || rail.scrollWidth <= rail.clientWidth) return;
+          var start = current.offsetLeft - rail.offsetLeft;
+          if (start + current.offsetWidth > rail.clientWidth) rail.scrollLeft = Math.max(0, start - 8);
+        })();
+      </script>
+    </div>
+
+    <div class="kwrap hz-reading">
+      <section class="program__reading hz-note" aria-labelledby="reading-heading">
+        <p class="hz-note__meta">
+          <SignIcon sign={sign.slug} size={24} webpOnly class="hz-note__disc" />
+          <b>
+            {surface === 'today' && editionDate
+              ? <EditionText current={noteLabel} dated={`${sign.name}, ${shortDate(editionDate)}`} editionDate={editionDate} />
+              : noteLabel}
+          </b>
+          {moonPhase && <><i aria-hidden="true">·</i><span>{moonPhase} Moon</span></>}
+          <i class="hz-hide-m" aria-hidden="true">·</i><span class="hz-hide-m">{minutes} minute read</span>
+        </p>
+        <h2 id="reading-heading" class="hz-note__title">
+          {editionDate ? <EditionText current={reading.intro} editionDate={editionDate} /> : reading.intro}
+        </h2>
+
+        {hasEditorial && (
+          <div class="program__editorial prose hz-note__body hz-note__prose">
+            <slot name="editorial" />
+          </div>
+        )}
+
+        {reading.sections.length > 0 && (
+          <div class="program__sections hz-note__body">
+            {reading.sections.map((section, index) => {
+              const planet = showPlanets ? section.planet : undefined;
+              const planetHue = planet?.sign ? signBySlug(planet.sign).hue : 'var(--ink-2)';
+              const planetLabel = planet
+                ? (surface === 'weekly' && planet.date ? `${planet.title}, ${planet.date}` : planet.title)
+                : '';
+              return (
+                <section class="program__section hz-note__part">
+                  <h3 class="hz-note__h">
+                    <span>{editionDate ? <EditionText current={section.heading} editionDate={editionDate} /> : section.heading}</span>
+                    {planetLabel && <small style={`--c:${planetHue}`}>{planetLabel}</small>}
+                  </h3>
+                  <p class:list={[index === 0 && 'dropcap']}>
+                    {editionDate ? <EditionText current={section.body} editionDate={editionDate} /> : section.body}
+                  </p>
+                </section>
+              );
+            })}
+          </div>
+        )}
+
+        {hasEnhancement && <slot name="enhancement" />}
+
+        <p class="hz-note__foot">
+          Written for {sign.name} as a Sun sign. The sky positions are calculated; their meaning is an astrological interpretation. Use what helps you reflect, without treating it as a prediction of events.{' '}
+          <a href="/methodology/">How our readings are written</a>
+        </p>
+
+        <details class="program__basis">
+          <summary>
+            <span class="program__basis-summary">
+              <strong>Behind this reading</strong>
+              <small>Exact sky, dates, and method</small>
+            </span>
+            <span class="program__basis-open" aria-hidden="true">+</span>
+            <span class="program__basis-close" aria-hidden="true">−</span>
+          </summary>
+          <div class="program__basis-body">
+            <p class="program__description">
+              {editionDate ? <EditionText current={reading.sourceNote} editionDate={editionDate} /> : reading.sourceNote}
+            </p>
+            {reading.sections.some((section) => section.receipt) && (
+              <ul class="program__basis-receipts">
+                {reading.sections.filter((section) => section.receipt).map((section) => (
+                  <li>
+                    <strong>{section.heading}</strong>
+                    <span class="mono">{section.receipt}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div class="program__basis-links">
+              <a href="/methodology/">Read our method and sources →</a>
+              <a href={`/feeds/horoscopes/${sign.slug}.xml`} type="application/rss+xml">Follow {sign.name} by RSS →</a>
+            </div>
+          </div>
+        </details>
+
+        <ShareRow
+          text={`${sign.name} ${reading.title}, ${reading.label}`}
+          url={canonicalUrl}
+          label="Send this reading"
+          variant="pills"
+        />
+
+        <AskGuideLine lead="Questions about this reading?" />
+        <GuideQuickPrompts prompts={QUICK_PROMPTS[surface]} />
+      </section>
+
+      <aside class="hz-rail" aria-label="About this reading">
+        <section class="program__sky" aria-labelledby="reading-sky-heading">
+          <div class="hz-sky__head">
+            <h3 id="reading-sky-heading" class="h-4">The sky behind this reading</h3>
+            <span class="mono">{skyBasis}</span>
+          </div>
+          <p class="hz-sky__sub">{skySub}</p>
+          <ul class="program__sky-markers hz-sky__rows">
+            {skyRows.map((row) => (
+              <li class="program__sky-marker hz-sky__row" style={`--c:${row.hue}`}>
+                <span class="hz-pg" aria-hidden="true">
+                  {row.body && PLANET_GLYPH[row.body]
+                    ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[row.body]} />
+                    : null}
+                </span>
+                <div>
+                  <strong>{row.title}</strong>
+                  <span class="hz-sky__m">{row.line}</span>
+                </div>
+                <time class="mono" datetime={row.at}>{row.value}</time>
+              </li>
+            ))}
+          </ul>
+          {alsoInSky.length > 0 && (
+            <p class="hz-sky__also">Also in this sky: {alsoInSky.join(' · ')}</p>
+          )}
+          <a class="textlink hz-sky__link" href="/today/">
+            {editionDate
+              ? <EditionText current="Today’s full sky" dated={`The full sky on ${shortDate(editionDate)}`} editionDate={editionDate} />
+              : 'The full sky, planet by planet'}
+            <span class="arr" aria-hidden="true">→</span>
+          </a>
+        </section>
+
+        {surface === 'today' && (
+          <UpcomingEventLinks date={reading.datePublished.slice(0, 10)} compact />
+        )}
+
+        <EmailCapture placement="horoscopes" sign={sign.slug} />
+      </aside>
+    </div>
+
+    <section class="kwrap hz-section" aria-labelledby="chart-cta-heading">
+      <div class="hz-cta">
+        <figure class="hz-cta__wheel hz-wheel">
+          <img
+            src={`/horoscopes/${sign.slug}/sky-wheel-${surface}.svg`}
+            width={HOROSCOPE_WHEEL_SIZE}
+            height={HOROSCOPE_WHEEL_SIZE}
+            alt={`The sky at noon UTC on ${editionLabel}, counted from ${sign.name} as the first house${focusNames.length > 0 ? `, with ${listWords(focusNames)} picked out` : ''}`}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>{wheelCaption}</figcaption>
+        </figure>
+        <div class="hz-cta__head">
+          <span class="kicker">Beyond your Sun sign</span>
+          <h2 id="chart-cta-heading" class="h-2">See where this sky falls in your own chart.</h2>
+        </div>
+        <div class="hz-cta__body">
+          <p class="klede">{ctaLede}</p>
+          <ul class="hz-ticks">
+            <li>Your Sun, Moon and rising, and what each one means</li>
+            <li>Each day’s sky read against your own chart</li>
+            <li>Calculated in your browser, no account needed</li>
+          </ul>
+          <div class="btn-row">
+            <a class="btn btn--primary btn--lg" href="/birth-chart/">Get your free birth chart <span class="orb" aria-hidden="true">↗</span></a>
+            <span class="reassure">Birth date, time, and place.<br />About twenty seconds.</span>
+          </div>
+          <p class="hz-cta__saved">Saved a chart already? <a href="/today/">Open your daily brief</a></p>
+        </div>
       </div>
-    </nav>
+    </section>
+
+    <section class="kwrap hz-section hz-more" aria-labelledby="more-heading">
+      <div>
+        <div class="section-head hz-head">
+          <h2 id="more-heading" class="h-2">More for {sign.name}</h2>
+          <p>The same sky, read over a longer stretch or through one part of life.</p>
+        </div>
+        <nav class="program__more" aria-labelledby="more-heading">
+          {moreList.map((row) => (
+            <a href={surfacePath(sign.slug, row.key)} aria-current={row.key === surface ? 'page' : undefined}>
+              <div><b class="program__more-label">{row.title}</b><small>{row.key === surface ? 'Reading now' : row.note}</small></div>
+              <p>{row.teaser}</p>
+              <span class="hz-go" aria-hidden="true">→</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+      <a class="hz-guide" href={`/${sign.slug}/`}>
+        <ArtFrame sign={sign.slug} alt="" fade focus="34% 40%" spot="40% 42%" sizes="(min-width: 1021px) 420px, calc(100vw - 40px)" class="hz-guide__art" />
+        <span class="hz-guide__cap">
+          <span class="kicker">The sign guide</span>
+          <span class="h-3">{sign.name}, in full</span>
+          <span class="hz-guide__copy">Personality, strengths, love and compatibility, myth and history, and what {sign.name} means in your chart.</span>
+          <span class="textlink">Full {sign.name} guide <span class="arr">→</span></span>
+        </span>
+      </a>
+    </section>
+
+    <section class="kwrap hz-section" aria-labelledby="signs-heading">
+      <div class="section-head--row hz-head">
+        <div>
+          <h2 id="signs-heading" class="h-2">Read another sign</h2>
+          <p>{surface === 'today' ? 'Today’s reading for all twelve signs, written from the same sky.' : `The ${meta.nav.toLowerCase()} reading for all twelve signs, written from the same sky.`}</p>
+        </div>
+        <a class="textlink only-desktop" href="/horoscopes/">All horoscopes <span class="arr">→</span></a>
+      </div>
+      <nav class="program__signs" aria-label={`Other signs for ${meta.nav.toLowerCase()} horoscopes`}>
+        <ul class="signgrid">
+          {SIGNS.map((other) => (
+            <li>
+              <a
+                href={surfacePath(other.slug, surface)}
+                aria-current={other.slug === sign.slug ? 'page' : undefined}
+                style={`--sign:${other.hue}`}
+              >
+                <SignIcon sign={other.slug} size={44} webpOnly />
+                <b>{other.name}</b>
+                <small>{other.slug === sign.slug ? 'Reading now' : signDateRange(other)}</small>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </section>
+
+    <section class="kwrap hz-section qa program__faq" aria-labelledby="faq-heading">
+      <div>
+        <h2 id="faq-heading" class="h-2">{sign.name} {meta.nav.toLowerCase()} horoscope, answered</h2>
+        <p>More on our approach: <a href="/methodology/">editorial standards and method</a>.</p>
+      </div>
+      <div class="kfaq">
+        {faq.map(({ q, a }, index) => (
+          <details open={index === 0}>
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
   </article>
 </Base>
 
 <style>
   .program {
-    display: grid;
-    gap: clamp(26px, 5vw, 44px);
-    padding-block: clamp(22px, 5vw, 52px) clamp(42px, 7vw, 76px);
+    display: block;
+    padding-bottom: clamp(48px, 7vw, 96px);
   }
-  .program__guide-link {
-    width: fit-content;
-    color: var(--text-2);
-    font-family: var(--font-serif);
-    font-size: var(--text-lg);
-    font-style: italic;
-    text-decoration-color: color-mix(in srgb, var(--sign) 52%, transparent);
-    text-underline-offset: 5px;
+
+  /* ── Hero: the sign art in the rounded cinematic frame ─────────── */
+  .hz-hero {
+    position: relative;
+    height: 548px;
+    /* The frame sits under the floating nav, as the home hero does. */
+    margin: calc(12px - var(--nav-space, 96px)) 12px 0;
+    overflow: hidden;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+    isolation: isolate;
   }
-  .program__guide-link:hover { color: var(--sign); }
+  .hz-hero :global(.hz-hero__art) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2;
+    width: 74%;
+    border-radius: 0;
+  }
+  .hz-hero :global(.hz-hero__art > img) { filter: saturate(0.94) brightness(0.9); }
+  .hz-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, var(--void-1) 0%, var(--void-1) 25%, rgba(10, 12, 17, 0.86) 33%, rgba(10, 12, 17, 0.28) 45%, rgba(10, 12, 17, 0) 56%),
+      linear-gradient(0deg, rgba(6, 7, 9, 0.55) 0%, rgba(6, 7, 9, 0) 32%);
+  }
   .program__crumbs {
+    position: absolute;
+    top: 92px;
+    left: clamp(28px, 5vw, 72px);
     display: flex;
     flex-wrap: wrap;
-    gap: 7px;
+    gap: 8px;
+    font-size: 13px;
     color: var(--faint);
-    font-size: 10px;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
   }
-  .program__crumbs a { color: inherit; text-decoration: none; }
+  .program__crumbs a { color: var(--muted); text-decoration: none; }
   .program__crumbs a:hover { color: var(--text); }
-
-  .program__hero { display: flex; align-items: center; gap: clamp(18px, 4vw, 32px); }
-  :global(.program__icon) {
-    width: clamp(66px, 9vw, 88px);
-    height: clamp(66px, 9vw, 88px);
-    filter: drop-shadow(0 16px 36px color-mix(in oklab, var(--sign) 28%, transparent));
+  .program__crumbs span[aria-hidden] { opacity: 0.6; }
+  .hz-hero__body {
+    position: absolute;
+    left: clamp(28px, 5vw, 72px);
+    bottom: 50px;
+    max-width: 620px;
   }
-  .program__hero-copy { min-width: 0; }
-  .program__hero h1 {
-    margin: 10px 0 12px;
-    font-size: clamp(2.25rem, 1.6rem + 3vw, 4rem);
+  .hz-hero__kicker { color: var(--ink-1); }
+  .hz-hero__title {
+    margin: 10px 0 0;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: clamp(2.7rem, 1.5rem + 3.6vw, 4.6rem);
     line-height: 0.98;
+    letter-spacing: -0.012em;
     text-wrap: balance;
   }
-  .program__hero p {
-    max-width: 61ch;
-    margin: 0 0 12px;
-    color: var(--text-2);
+  .hz-hero__cap {
+    margin: 20px 0 0;
+    max-width: 40ch;
+    color: var(--ink-1);
     font-size: var(--text-lg);
-    line-height: 1.55;
+    line-height: 1.5;
     text-wrap: pretty;
   }
-  @media (max-width: 599px) { .program__description { display: none; } .program__hero h1 { margin-bottom: 8px; } }
-  .program__dates { color: var(--faint); font-size: 12px; letter-spacing: 0.03em; text-transform: uppercase; }
-
-  .program__periods {
-    display: flex;
-    gap: 7px;
-    overflow-x: auto;
-    padding: 4px 0 8px;
-    scrollbar-width: thin;
-  }
-  .program__period {
-    flex: 0 0 auto;
-    display: inline-flex; align-items: center; min-height: 44px; padding: 7px 14px;
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-full);
-    color: var(--muted);
-    font-size: 12px;
-    text-decoration: none;
-  }
-  .program__period:hover { color: var(--text); border-color: var(--hair-2); }
-  .program__period--active {
-    color: var(--text);
-    border-color: color-mix(in oklab, var(--sign) 48%, transparent);
-    background: color-mix(in oklab, var(--sign) 11%, transparent);
-  }
-
-  .program__sky {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(112px, 0.42fr) minmax(0, 1.58fr);
-    align-items: center;
-    gap: 14px clamp(20px, 4vw, 38px);
-    overflow: hidden;
-    padding: 14px clamp(14px, 3vw, 20px);
-    border-block: 1px solid var(--hair-1);
-    background: color-mix(in oklab, var(--sign) 3%, transparent);
-  }
-  .program__sky::before {
+  .hz-hero__facts { margin: 22px 0 0; color: var(--muted); }
+  .hz-hero__facts > span { display: inline-flex; align-items: center; }
+  .hz-hero :global(.hz-hero__disc) { margin-right: 8px; }
+  .hz-hero__credit {
     position: absolute;
-    inset: -1px auto auto 0;
-    width: clamp(72px, 18%, 150px);
-    height: 1px;
-    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--sign) 72%, white), transparent);
-    content: '';
-    opacity: 0.72;
-    transform: translateX(-110%);
-    animation: program-sky-drift 12s linear infinite;
-    pointer-events: none;
+    right: 22px;
+    bottom: 18px;
+    color: rgba(198, 204, 218, 0.5);
+    font-size: 12px;
   }
-  .program__sky-heading {
+
+  /* ── Period switch and one-tap sign switch ─────────────────────── */
+  .hz-controls {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 18px;
+    padding: 12px 0;
+    border-block: 1px solid var(--hair-1);
+  }
+  .hz-seg { flex: none; }
+  .hz-seg > a { min-height: 38px; padding-inline: 20px; font-size: 0.9375rem; }
+  /* Sized to its content and right-aligned, so the switch beside it can
+     never move it; narrower screens stack the two (see 1240px below). */
+  .hz-signrail {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    margin-left: auto;
+  }
+  .hz-signrail__label {
+    margin-right: 12px;
     color: var(--muted);
-    font-size: 9px;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-style: italic;
     white-space: nowrap;
   }
-  .program__sky-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--sign);
-    box-shadow: 0 0 12px color-mix(in oklab, var(--sign) 45%, transparent);
-  }
-  .program__sky-markers {
+  .hz-signrail a {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px clamp(16px, 3vw, 28px);
-  }
-  .program__sky-marker {
-    display: grid;
-    min-width: 0;
-    gap: 3px;
-    margin: 0;
-  }
-  .program__sky-marker > span {
+    flex: none;
+    justify-items: center;
+    gap: 4px;
+    width: 58px;
+    padding: 6px 0 4px;
+    border-radius: 12px;
     color: var(--faint);
-    font-size: 8px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .program__sky-marker time,
-  .program__sky-marker strong {
-    overflow-wrap: anywhere;
-    color: var(--text-2);
     font-size: 11px;
-    font-weight: 500;
-    line-height: 1.45;
+    line-height: 1.2;
+    text-decoration: none;
   }
-  @keyframes program-sky-drift {
-    0% { opacity: 0; transform: translateX(-110%); }
-    12% { opacity: 0.72; }
-    76% { opacity: 0.72; }
-    100% { opacity: 0; transform: translateX(760%); }
+  /* The 48px derivative keeps twelve first-screen discs light; shown at 30px. */
+  .hz-signrail a :global(.hz-signrail__disc) { width: 30px; opacity: 0.78; }
+  .hz-signrail a[aria-current='page'] {
+    background: color-mix(in oklab, var(--other-sign) 10%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--other-sign) 32%, transparent);
+    color: var(--ink-0);
+    font-weight: 600;
+  }
+  .hz-signrail a[aria-current='page'] :global(.hz-signrail__disc) { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .hz-signrail a:hover { color: var(--ink-1); }
+    .hz-signrail a:hover :global(.hz-signrail__disc) { opacity: 1; }
   }
 
-  .program__reading { display: grid; gap: clamp(24px, 4vw, 34px); }
-  .program__reading-head { display: grid; gap: 9px; max-width: 66ch; }
-  .program__reading-head > span {
-    color: var(--faint);
-    font-size: 10px;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
+  /* ── The reading: one editorial note, with its sky beside it ───── */
+  .hz-reading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: clamp(40px, 7vw, 104px);
+    padding-block: clamp(40px, 4.4vw, 64px) clamp(64px, 8vw, 112px);
   }
-  .program__reading-head h2 {
+  .hz-note { min-width: 0; max-width: 700px; }
+  .hz-note__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
     margin: 0;
-    font-family: var(--font-serif);
-    font-size: clamp(1.65rem, 1.3rem + 1.5vw, 2.45rem);
+    color: var(--muted);
+    font-size: 0.875rem;
     font-weight: 500;
-    line-height: 1.18;
+  }
+  .hz-note__meta :global(.hz-note__disc) { width: 26px; margin-right: 2px; }
+  .hz-note__meta b { color: var(--ink-0); font-weight: 600; }
+  .hz-note__meta i { color: var(--hair-3); font-style: normal; }
+  .hz-note__title {
+    max-width: 21ch;
+    margin: 18px 0 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.2rem, 1.3rem + 2.4vw, 3.35rem);
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.01em;
     text-wrap: balance;
   }
-  .program__editorial { max-width: 68ch; }
-  .program__sections { display: grid; gap: 12px; }
-  .program__section {
-    padding: clamp(18px, 3vw, 24px);
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-md);
-    background: color-mix(in oklab, var(--sign) 3%, var(--void-1));
+  .hz-note__body { margin-top: 34px; }
+  .hz-note__part + .hz-note__part .hz-note__h {
+    margin-top: 38px;
+    padding-top: 22px;
+    border-top: 1px solid var(--hair-1);
   }
-  .program__section h3 { margin: 0 0 8px; font-size: var(--text-lg); letter-spacing: -0.01em; }
-  .program__section p { margin: 0; color: var(--text-2); line-height: 1.68; text-wrap: pretty; }
-  .program__basis {
-    border-block: 1px solid var(--hair-1);
+  .hz-note__h {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    margin: 0 0 12px;
+    color: var(--ink-0);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
   }
+  .hz-note__h small { color: var(--faint); font-size: 0.8125rem; font-weight: 500; }
+  .hz-note__h small::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 7px;
+    border-radius: 50%;
+    background: var(--c);
+    vertical-align: 1px;
+  }
+  .hz-note__part p,
+  .hz-note__prose :global(p) {
+    max-width: 34em;
+    margin: 0;
+    color: var(--ink-1);
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    font-variant-numeric: oldstyle-figures;
+    line-height: 1.58;
+    text-wrap: pretty;
+  }
+  .hz-note__prose :global(p + p) { margin-top: 0.8em; }
+  .hz-note__prose :global(p:first-child::first-letter) {
+    float: left;
+    padding: 7px 12px 0 0;
+    color: var(--hue);
+    font-family: var(--font-serif);
+    font-size: 3.5em;
+    line-height: 0.8;
+  }
+  .hz-note__part .dropcap::first-letter { padding: 7px 12px 0 0; font-size: 3.5em; line-height: 0.8; }
+  .hz-note__foot {
+    max-width: 62ch;
+    margin: 40px 0 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--hair-1);
+    color: var(--faint);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .hz-note__foot a { color: var(--muted); text-underline-offset: 3px; }
+  .hz-note > :global(.identity-share) { margin-top: 18px; }
+  .hz-note > :global(.ask-guide-line) { margin-top: 18px; font-size: 0.9375rem; }
+  /* Guide's ready questions stay one quiet row under the line. */
+  .hz-note > :global(.guide-prompts) { margin-top: 10px; }
+  .hz-note :global(.guide-prompts__chip) { color: var(--muted); font-size: 0.8125rem; }
+  .hz-note :global(.guide-prompts__chip:is(:hover, :focus-visible)) { color: var(--text); }
+
+  .program__basis { margin-top: 14px; border-block: 1px solid var(--hair-1); }
   .program__basis summary {
     display: flex;
     min-height: 48px;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 12px 2px;
+    padding: 10px 2px;
     color: var(--muted);
     cursor: pointer;
     list-style: none;
@@ -602,9 +963,9 @@ const skyMarkers = reading.skyStrip.markers;
     outline-offset: 4px;
     border-radius: var(--r-sm);
   }
-  .program__basis-summary { display: grid; gap: 2px; }
-  .program__basis-summary strong { color: var(--text-2); font-size: var(--text-sm); }
-  .program__basis-summary small { color: var(--faint); font-size: 11px; }
+  .program__basis-summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+  .program__basis-summary strong { color: var(--text-2); font-size: var(--text-sm); font-weight: 600; }
+  .program__basis-summary small { color: var(--faint); font-size: 12px; }
   .program__basis-open,
   .program__basis-close { color: var(--faint); font-size: 20px; line-height: 1; }
   .program__basis-close,
@@ -617,20 +978,15 @@ const skyMarkers = reading.skyStrip.markers;
     border-top: 1px solid var(--hair-1);
   }
   .program__basis-body > p { margin: 0; max-width: 68ch; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; }
-  .program__basis-receipts {
-    display: grid;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
+  .program__basis-receipts { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
   .program__basis-receipts li {
+    display: grid;
+    gap: 2px;
     color: var(--faint);
     font-size: 10px;
     line-height: 1.5;
     letter-spacing: 0.04em;
   }
-  .program__basis-receipts li { display: grid; gap: 2px; }
   .program__basis-receipts strong { color: var(--muted); font-family: var(--font-sans); font-size: 11px; letter-spacing: 0; }
   .program__basis-links { display: flex; flex-wrap: wrap; gap: 7px 18px; }
   .program__basis-links a { color: var(--text-2); font-size: var(--text-sm); }
@@ -638,10 +994,79 @@ const skyMarkers = reading.skyStrip.markers;
     .program__basis summary:hover { color: var(--text); }
   }
 
-  .program :global(.email-capture) { margin: 0; }
+  /* ── The rail: the sky behind the reading, then the signup ─────── */
+  .hz-rail { display: grid; gap: 16px; min-width: 0; }
+  .program__sky {
+    position: relative;
+    overflow: hidden;
+    padding: 22px 22px 20px;
+    border: 1px solid var(--hair-2);
+    border-radius: 18px;
+    background: var(--void-2);
+  }
+  .program__sky::before {
+    position: absolute;
+    inset: -1px auto auto 0;
+    width: clamp(72px, 30%, 150px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--sign) 72%, white), transparent);
+    content: '';
+    opacity: 0.72;
+    transform: translateX(-110%);
+    animation: program-sky-drift 12s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes program-sky-drift {
+    0% { opacity: 0; transform: translateX(-110%); }
+    12% { opacity: 0.72; }
+    76% { opacity: 0.72; }
+    100% { opacity: 0; transform: translateX(420%); }
+  }
+  .hz-sky__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .hz-sky__head .mono { color: var(--faint); font-size: 0.75rem; white-space: nowrap; }
+  .hz-sky__sub { margin: 2px 0 0; color: var(--faint); font-size: 0.8125rem; }
+  .hz-sky__rows { margin: 14px 0 0; padding: 0; border-top: 1px solid var(--hair-1); list-style: none; }
+  .hz-sky__row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--hair-1);
+  }
+  .hz-pg {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--c);
+    color: #0b0d12;
+  }
+  .hz-pg :global(svg) { width: 19px; height: 19px; }
+  .hz-sky__row strong { display: block; color: var(--ink-0); font-size: 0.9375rem; font-weight: 600; line-height: 1.3; }
+  .hz-sky__m { display: block; margin-top: 3px; color: var(--muted); font-size: 0.8125rem; line-height: 1.45; }
+  .hz-sky__row time { padding-top: 2px; color: var(--ink-2); font-size: 0.8125rem; white-space: nowrap; }
+  .hz-sky__also { margin: 14px 0 0; color: var(--faint); font-size: 0.8125rem; line-height: 1.5; }
+  .hz-sky__link { margin-top: 14px; font-size: 0.875rem; }
+
+  .hz-rail :global(.upcoming-events) { border-color: var(--hair-2); border-radius: 18px; }
+  .hz-rail :global(.email-capture) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    margin: 0;
+    padding: 22px;
+    border-radius: 18px;
+  }
+  .hz-rail :global(.email-capture h2) { margin-top: 0; font-family: var(--font-sans); font-size: 1.06rem; font-weight: 600; line-height: 1.3; }
+  .hz-rail :global(.email-capture__email-row) { grid-template-columns: minmax(0, 1fr); }
+  .hz-rail :global(.email-capture__submit) { width: 100%; }
+
+  /* DailyForYou (saved charts only) keeps its reserved geometry. */
   .program :global(.dfy) {
     display: grid;
     gap: 12px;
+    margin-top: 32px;
     padding: clamp(16px, 3vw, 22px);
     border: 1px solid color-mix(in oklab, var(--sign) 30%, transparent);
     border-radius: var(--r-md);
@@ -714,33 +1139,172 @@ const skyMarkers = reading.skyStrip.markers;
   .program :global(.dfy__primary) { font-size: var(--text-sm); }
   .program :global(.dfy__more) { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: var(--text-sm); text-decoration: none; }
   .program :global(.dfy__more:hover) { color: var(--text); }
-  .program__faq { display: grid; gap: 14px; }
-  .program__signs { display: grid; gap: 12px; padding-top: 18px; border-top: 1px solid var(--hair-1); }
-  .program__signs-head { color: var(--text); font-size: var(--text-sm); font-weight: 600; }
-  .program__sign-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-  .program__sign-grid a {
-    display: inline-flex;
+
+  /* ── Sections after the reading ───────────────────────────────── */
+  .hz-section { padding-bottom: clamp(64px, 8vw, 120px); }
+  .hz-head { margin-bottom: clamp(28px, 4vw, 48px); }
+  .hz-head .h-2 { margin: 0 0 12px; }
+  .section-head.hz-head { max-width: 40ch; }
+  .section-head.hz-head p { margin: 0; color: var(--muted); font-size: var(--text-lg); line-height: 1.5; text-wrap: pretty; }
+
+  /* The next step: this sky on the sign's wheel, then your own chart */
+  .hz-cta {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    grid-template-areas: 'wheel head' 'wheel body';
     align-items: center;
-    gap: 7px;
-    padding: 4px 10px 4px 4px;
-    border: 1px solid color-mix(in oklab, var(--other-sign) 35%, transparent);
-    border-radius: var(--r-full);
-    background: color-mix(in oklab, var(--other-sign) 8%, transparent);
-    color: var(--text);
-    font-size: 13px;
+    column-gap: clamp(32px, 6vw, 88px);
+    padding: clamp(24px, 4vw, 56px);
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, rgba(198, 204, 218, 0.04), rgba(198, 204, 218, 0.012));
+  }
+  .hz-cta__wheel { grid-area: wheel; margin: 0; }
+  .hz-cta__wheel img { display: block; width: 100%; height: auto; }
+  .hz-cta__wheel figcaption {
+    max-width: 46ch;
+    margin: 14px auto 0;
+    color: var(--faint);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+  .hz-cta__head { grid-area: head; align-self: end; }
+  .hz-cta__head .h-2 { max-width: 15ch; margin-top: 4px; }
+  .hz-cta__body { grid-area: body; align-self: start; }
+  .hz-cta__body .klede { margin-top: 16px; }
+  .hz-ticks { display: grid; gap: 12px; margin: 24px 0 0; padding: 0; list-style: none; }
+  .hz-ticks li { display: flex; align-items: center; gap: 12px; color: var(--ink-1); font-size: 1rem; }
+  .hz-ticks li::before {
+    content: '';
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--hue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6.5 11.3l3 3 6-6.4' fill='none' stroke='%230B0D12' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 22px no-repeat;
+  }
+  .hz-cta .btn-row { gap: 14px 22px; margin-top: 30px; }
+  .hz-cta .reassure { line-height: 1.5; }
+  .hz-cta__saved { margin: 20px 0 0; padding-top: 18px; border-top: 1px solid var(--hair-1); color: var(--muted); font-size: 0.9375rem; }
+  .hz-cta__saved a { color: var(--ink-1); text-underline-offset: 3px; }
+
+
+  /* More for the sign */
+  .hz-more {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(32px, 6vw, 88px);
+  }
+  .program__more { border-top: 1px solid var(--hair-1); }
+  .program__more > a {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) 32px;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--hair-1);
+    color: inherit;
     text-decoration: none;
   }
-  .program__sign-grid a:hover { background: color-mix(in oklab, var(--other-sign) 15%, transparent); }
+  .program__more b { display: block; color: var(--ink-0); font-size: 1.0625rem; font-weight: 600; }
+  .program__more small { display: block; margin-top: 2px; color: var(--faint); font-size: 0.8125rem; }
+  .program__more p { margin: 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .program__more a[aria-current='page'] small { color: var(--hue); }
+  .hz-go {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border: 1px solid var(--hair-2);
+    border-radius: 50%;
+    color: var(--ink-1);
+    font-size: 14px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .program__more > a:hover .hz-go { border-color: var(--hair-3); color: var(--ink-0); }
+    .program__more > a:hover b { color: var(--ink-0); }
+  }
+  .hz-guide { position: relative; display: block; margin-top: 8px; color: inherit; text-decoration: none; }
+  .hz-guide :global(.hz-guide__art) { aspect-ratio: 4 / 5; border-radius: var(--r-lg); }
+  .hz-guide :global(.hz-guide__art > img) { transform: scale(1.55); transform-origin: 30% 40%; }
+  .hz-guide__cap { position: absolute; z-index: 3; left: 24px; right: 24px; bottom: 22px; display: grid; justify-items: start; }
+  .hz-guide__cap .kicker { color: var(--ink-1); font-size: 1.05rem; }
+  .hz-guide__cap .h-3 { margin-top: 2px; }
+  .hz-guide__copy { max-width: 34ch; margin-top: 8px; color: var(--ink-1); font-size: 0.9375rem; line-height: 1.5; }
+  .hz-guide__cap .textlink { margin-top: 14px; }
 
-  @media (min-width: 720px) {
-    .program__sections { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .program__section:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  /* Read another sign */
+  .program__signs li { display: contents; }
+  .program__signs a[aria-current='page'] small { color: var(--sign); }
+
+  .program__faq .h-2 { margin: 0; }
+  .program__faq > div:first-child p a { color: var(--ink-1); text-underline-offset: 3px; }
+
+  /* ── Narrower screens ─────────────────────────────────────────── */
+  @media (max-width: 1240px) {
+    .hz-controls { flex-direction: column; align-items: stretch; }
+    .hz-seg { align-self: flex-start; }
+    .hz-signrail { flex: initial; margin-left: 0; overflow-x: auto; scrollbar-width: none; }
+    .hz-signrail::-webkit-scrollbar { display: none; }
+  }
+  @media (max-width: 1020px) {
+    .hz-reading { grid-template-columns: minmax(0, 1fr); }
+    .hz-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .hz-cta { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'head' 'wheel' 'body'; row-gap: 28px; }
+    .hz-cta__wheel { width: 100%; max-width: 520px; margin-inline: auto; }
+    .hz-more { grid-template-columns: minmax(0, 1fr); }
+    .hz-guide { max-width: 480px; }
+  }
+  @media (max-width: 760px) {
+    .hz-hero { height: 524px; margin: calc(8px - var(--nav-space, 64px)) 8px 0; border-radius: 24px; }
+    .hz-hero :global(.hz-hero__art) { width: 100%; bottom: auto; height: 70%; }
+    .hz-hero :global(.hz-hero__art > img) { object-position: 60% 50%; }
+    .hz-hero::before {
+      background:
+        linear-gradient(0deg, var(--void-1) 0%, var(--void-1) 26%, rgba(10, 12, 17, 0.8) 36%, rgba(10, 12, 17, 0) 54%),
+        linear-gradient(180deg, rgba(10, 12, 17, 0.55) 0%, rgba(10, 12, 17, 0) 24%);
+    }
+    .program__crumbs { top: 80px; left: 20px; }
+    .hz-hero__body { left: 20px; right: 20px; bottom: 26px; }
+    .hz-hero__title { font-size: 2.75rem; }
+    .hz-hero__cap { display: none; }
+    .hz-hero__facts { margin-top: 16px; font-size: 12.5px; gap: 4px 8px; }
+    .hz-hero__facts > span + span::before { margin-right: 8px; }
+    .hz-hero__credit { display: none; }
+    .hz-controls { gap: 12px; margin-top: 14px; padding: 12px 0 10px; }
+    .hz-seg { display: flex; width: 100%; align-self: stretch; }
+    .hz-seg > a { flex: 1; justify-content: center; padding-inline: 6px; }
+    .hz-signrail { gap: 0; margin-right: -20px; padding-right: 20px; }
+    .hz-signrail__label { display: none; }
+    .hz-signrail a { width: 58px; }
+    .hz-reading { gap: 48px; padding-top: 36px; }
+    .hz-hide-m { display: none; }
+    .hz-note__meta { font-size: 0.8125rem; }
+    .hz-note__title { margin-top: 14px; font-size: 2.15rem; }
+    .hz-note__body { margin-top: 26px; }
+    .hz-note__part p,
+    .hz-note__prose :global(p) { font-size: 1.2rem; line-height: 1.55; }
+    .hz-note__part + .hz-note__part .hz-note__h { margin-top: 30px; padding-top: 18px; }
+    .hz-note__foot { margin-top: 32px; }
+    .hz-rail { grid-template-columns: minmax(0, 1fr); }
+    .hz-cta { padding: 22px 18px 26px; border-radius: 24px; }
+    .hz-cta .btn-row { flex-direction: column; align-items: stretch; }
+    .hz-cta .btn { width: 100%; }
+    .hz-cta .reassure { text-align: center; }
+    .hz-ticks li { align-items: flex-start; font-size: 0.9375rem; }
+    .program__more > a { grid-template-columns: minmax(0, 1fr) 32px; gap: 6px 16px; padding: 18px 0; }
+    .program__more > a > div,
+    .program__more p { grid-column: 1; }
+    .program__more p { font-size: 0.9rem; }
+    .program__more .hz-go { grid-column: 2; grid-row: 1 / span 2; }
+    .hz-guide__cap { left: 18px; right: 18px; bottom: 18px; }
+  }
+  @media (max-width: 420px) {
+    /* One line of facts on a phone; the ruler is in the sign guide. */
+    .hz-hero__facts > .hz-hero__ruler { display: none; }
   }
   @media (max-width: 560px) {
-    .program__hero { align-items: flex-start; }
-    .program__hero p { font-size: var(--text-base); }
-    .program__sky { grid-template-columns: 1fr; }
-    .program__sky-markers { gap-inline: 14px; }
     .program :global(.dfy__actions) { align-items: stretch; }
     .program :global(.dfy__primary) { width: 100%; justify-content: space-between; }
     .program :global(.dfy__body) { height: 292px; }
@@ -748,9 +1312,6 @@ const skyMarkers = reading.skyStrip.markers;
       height: auto;
       min-height: 292px;
     }
-  }
-  @media (max-width: 380px) {
-    .program__sky-markers { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: reduce) {
     .program__sky::before {

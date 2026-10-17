@@ -1,0 +1,153 @@
+---
+/**
+ * The birthday page's first spread: the date's sign art in a rounded frame,
+ * lit on the right, the answer set in the dark on the left, and a stepper to
+ * the neighbouring dates. The art is the page's LCP (eager, high priority,
+ * sized; the page preloads it). Shared by the English and the localized
+ * birthday pages; every word comes from the caller.
+ */
+import { BIRTHDAY_HERO_SIZES, SIGN_ART_SIZE, signArtAlt, signArtSrc, signArtSrcset } from '../../lib/sign-art';
+import type { CatalogLocale } from '../../lib/i18n/core';
+
+interface StepLink {
+  href: string;
+  label: string;
+  /** A shorter form for phones, e.g. 'Dec 20'. */
+  short?: string;
+}
+
+interface Props {
+  sign: string;
+  locale?: CatalogLocale;
+  caption?: string;
+  stepperLabel: string;
+  prev: StepLink;
+  next: StepLink;
+  /** The stepper's middle link (the page's own calendar), where the page has one. */
+  middle?: StepLink;
+}
+
+const { sign, locale = 'en', caption, stepperLabel, prev, next, middle } = Astro.props;
+---
+<header class="bday-hero">
+  <img
+    class="bday-hero__art"
+    src={signArtSrc(sign, 1200)}
+    srcset={signArtSrcset(sign)}
+    sizes={BIRTHDAY_HERO_SIZES}
+    width={SIGN_ART_SIZE.width}
+    height={SIGN_ART_SIZE.height}
+    alt={signArtAlt(sign, locale)}
+    loading="eager"
+    fetchpriority="high"
+  />
+  {caption && <span class="bday-hero__cap" aria-hidden="true">{caption}</span>}
+  <div class="bday-hero__body"><slot /></div>
+  <nav class="bday-stepper" aria-label={stepperLabel}>
+    <a class:list={[prev.short && 'has-short']} href={prev.href}><span aria-hidden="true">←</span><span class="bday-stepper__long">{prev.label}</span>{prev.short && <span class="bday-stepper__short" aria-hidden="true">{prev.short}</span>}</a>
+    {middle && (
+      <a class="bday-stepper__mid" href={middle.href}>
+        <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2.5" /><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" /></svg>
+        <span class="bday-stepper__label">{middle.label}</span>
+      </a>
+    )}
+    <a class:list={[next.short && 'has-short']} href={next.href}><span class="bday-stepper__long">{next.label}</span>{next.short && <span class="bday-stepper__short" aria-hidden="true">{next.short}</span>}<span aria-hidden="true">→</span></a>
+  </nav>
+</header>
+
+<style>
+  .bday-hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: 720px;
+    /* The hero runs under the floating nav, as the home page's does. */
+    margin: calc(12px - var(--nav-space, 96px)) 12px 12px;
+    overflow: hidden;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+  }
+  .bday-hero__art {
+    position: absolute;
+    inset: 0 0 0 auto;
+    z-index: -2;
+    width: 62%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 56%;
+    filter: saturate(0.94) brightness(0.9);
+  }
+  .bday-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 31% 56% at 70% 56%, transparent 0 34%, rgba(10, 12, 17, 0.4) 68%, rgba(10, 12, 17, 0.88) 100%),
+      linear-gradient(90deg, var(--void-1) 0%, var(--void-1) 38%, rgba(10, 12, 17, 0.55) 46%, rgba(10, 12, 17, 0) 56%),
+      linear-gradient(0deg, rgba(10, 12, 17, 0.65) 0%, rgba(10, 12, 17, 0) 26%);
+  }
+  .bday-hero__body { position: relative; max-width: 700px; padding: 128px clamp(28px, 5vw, 72px) clamp(44px, 5vw, 64px); }
+  .bday-hero__cap { position: absolute; right: 30px; top: 92px; font-size: 12px; color: rgba(198, 204, 218, 0.55); }
+  .bday-stepper {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 5px;
+    border: 1px solid rgba(238, 241, 247, 0.26);
+    border-radius: var(--r-full);
+    background: rgba(10, 12, 17, 0.62);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+  .bday-stepper a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: var(--r-full);
+    font-size: 0.9rem;
+    font-weight: 550;
+    color: var(--ink-1);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .bday-stepper a:hover { color: var(--ink-0); }
+  .bday-stepper a > span[aria-hidden='true']:not(.bday-stepper__short) { color: var(--muted); }
+  .bday-stepper__long, .bday-stepper__label { color: inherit; }
+  .bday-stepper__short { display: none; }
+  .bday-stepper .bday-stepper__mid { background: rgba(238, 241, 247, 0.1); color: var(--ink-0); }
+  /* Below the wide layout the art sits on top and the answer under it, so
+     the text never runs over the figure and the stepper follows the text. */
+  @media (max-width: 1100px) {
+    .bday-hero { --art-h: clamp(392px, 48vw, 500px); display: block; min-height: 0; }
+    .bday-hero__art { inset: 0 0 auto 0; width: 100%; height: var(--art-h); object-position: 46% 50%; }
+    .bday-hero::before {
+      background:
+        radial-gradient(ellipse 66% 30% at 50% 26%, transparent 0 40%, rgba(10, 12, 17, 0.45) 78%, rgba(10, 12, 17, 0.8) 100%),
+        linear-gradient(180deg, rgba(10, 12, 17, 0.55) 0px, rgba(10, 12, 17, 0) 110px, rgba(10, 12, 17, 0) calc(var(--art-h) - 142px), var(--void-1) var(--art-h));
+    }
+    .bday-hero__body { max-width: 760px; padding: calc(var(--art-h) - 66px) clamp(20px, 5vw, 48px) 24px; }
+    .bday-hero__cap { display: none; }
+    .bday-stepper { position: static; justify-content: space-between; max-width: 560px; margin: 0 clamp(20px, 5vw, 48px) 20px; }
+  }
+  @media (max-width: 760px) {
+    .bday-hero { margin: calc(8px - var(--nav-space, 64px)) 8px 8px; border-radius: 24px; }
+    .bday-stepper a { padding: 0 12px; font-size: 0.875rem; }
+  }
+  @media (max-width: 520px) {
+    /* Phones: short dates, and the calendar link as its icon alone. */
+    .has-short .bday-stepper__long {
+      position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+    }
+    .bday-stepper__short { display: inline; color: inherit; }
+    .bday-stepper__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  }
+</style>

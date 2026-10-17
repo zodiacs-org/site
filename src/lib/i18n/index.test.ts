@@ -264,7 +264,7 @@ describe('i18n helpers', () => {
   it('renders the chart Registry bridge as complete localized sentences', () => {
     expect(tf('en', 'recordChartSun', { sign: 'Leo' })).toBe('Your Sun is in Leo.');
     expect(tf('en', 'recordChartBody', { sign: 'Leo' })).toBe(
-      'Leo is one of the Twelve—with its own artwork, history, and official Registry record.',
+      'Leo is one of the Twelve, with its own artwork, history, and official Registry record.',
     );
     expect(tf('en', 'recordChartLink', { sign: 'Leo' })).toBe('Explore the Leo Registry →');
 
@@ -279,9 +279,9 @@ describe('i18n helpers', () => {
     expect(UI.pt.navCollect).toBe('Astrofolio');
     expect(UI.pt.recordLabel).toBe('Ala do acervo');
     expect(UI.pt.recordOneOfTwelve).toBe(
-      'também integra os Doze — um registro canônico no acervo.',
+      'também integra os Doze, um registro canônico no acervo.',
     );
-    expect(UI.pt.recordViewLink).toBe('Ver o registro — por enquanto em inglês →');
+    expect(UI.pt.recordViewLink).toBe('Ver o registro (por enquanto em inglês) →');
   });
 
   it('uses the approved French registry register', () => {
@@ -289,9 +289,9 @@ describe('i18n helpers', () => {
     expect(UI.fr.footerRegistry).toBe('Registry');
     expect(UI.fr.recordLabel).toBe('Aile des collections');
     expect(UI.fr.recordOneOfTwelve).toBe(
-      'figure aussi parmi les Douze — une notice de référence dans le registre.',
+      'figure aussi parmi les Douze, une notice de référence dans le registre.',
     );
-    expect(UI.fr.recordViewLink).toBe('Voir la notice — pour l’instant en anglais →');
+    expect(UI.fr.recordViewLink).toBe('Voir la notice (pour l’instant en anglais) →');
   });
 
   it('uses the approved Italian registry register', () => {
@@ -299,14 +299,14 @@ describe('i18n helpers', () => {
     expect(UI.it.footerRegistry).toBe('Registry');
     expect(UI.it.recordLabel).toBe('Ala della collezione');
     expect(UI.it.recordOneOfTwelve).toBe(
-      'esiste anche come uno dei Dodici — una scheda di riferimento nel registro.',
+      'esiste anche come uno dei Dodici, una scheda di riferimento nel registro.',
     );
-    expect(UI.it.recordViewLink).toBe('Vedi la scheda — per ora in inglese →');
+    expect(UI.it.recordViewLink).toBe('Vedi la scheda (per ora in inglese) →');
   });
 
   it('keeps the Spanish baby result sentences grammatical when signs are inserted', () => {
     expect(`${UI.es.babySunNearEdge} Géminis ${UI.es.babySunNearEdgeTail}`).toBe(
-      'La fecha está cerca del borde del signo: si el bebé nace más de un día antes o después, puede tener el Sol en Géminis — la fecha de nacimiento decide.',
+      'La fecha está cerca del borde del signo: si el bebé nace más de un día antes o después, puede tener el Sol en Géminis (la fecha de nacimiento decide).',
     );
     expect(`${UI.es.babySunSplitA} Aries ${UI.es.babySunSplitOr} Tauro ${UI.es.babySunSplitTail}`).toBe(
       'El Sol cambia de signo ese día: el bebé nace con el Sol en Aries o en Tauro según la hora. El momento exacto del nacimiento decide.',
@@ -316,7 +316,7 @@ describe('i18n helpers', () => {
 
   it('keeps the Portuguese baby result sentences grammatical when signs are inserted', () => {
     expect(UI.pt.babySunNearEdge + ' Gêmeos ' + UI.pt.babySunNearEdgeTail).toBe(
-      'A data fica perto da transição de signo, então nascer mais de um dia antes ou depois pode levar o Sol para Gêmeos — a data do nascimento é que decide.',
+      'A data fica perto da transição de signo, então nascer mais de um dia antes ou depois pode levar o Sol para Gêmeos (a data do nascimento é que decide).',
     );
     expect(
       UI.pt.babySunSplitA + ' Áries ' + UI.pt.babySunSplitOr + ' Touro ' + UI.pt.babySunSplitTail,
@@ -328,7 +328,7 @@ describe('i18n helpers', () => {
 
   it('keeps the Italian baby result sentences grammatical when signs are inserted', () => {
     expect(UI.it.babySunNearEdge + ' Gemelli ' + UI.it.babySunNearEdgeTail).toBe(
-      'La data è vicina al confine del segno, quindi nascere più di un giorno prima o dopo può portare il Sole in Gemelli — decide la data di nascita.',
+      'La data è vicina al confine del segno, quindi nascere più di un giorno prima o dopo può portare il Sole in Gemelli (decide la data di nascita).',
     );
     expect(
       UI.it.babySunSplitA + ' Ariete ' + UI.it.babySunSplitOr + ' Toro ' + UI.it.babySunSplitTail,

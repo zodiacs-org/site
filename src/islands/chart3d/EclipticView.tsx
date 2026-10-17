@@ -787,7 +787,7 @@ export default function EclipticView({
             <span>{copy.timeLabel}</span>
             <input type="range" min={-SCRUB_LIMIT} max={SCRUB_LIMIT} step="5" value={scrub}
                    aria-label={copy.timeAria}
-                   aria-valuetext={`${scrubLabel.offset} — ${scrubLabel.ascText}`}
+                   aria-valuetext={`${scrubLabel.offset}, ${scrubLabel.ascText}`}
                    onInput={(e) => { halt(); setScrub(Number((e.target as HTMLInputElement).value)); armIdle(); }} />
             <span class="mono">{scrubLabel.offset}</span>
           </label>

@@ -93,7 +93,7 @@ describe('Solar Return calendar handoff', () => {
       expect(new TextEncoder().encode(line).byteLength).toBeLessThanOrEqual(75);
     }
     expect(property(calendar, 'DESCRIPTION')).toBe(
-      'DESCRIPTION:Calendar marker — the one-minute duration is for display only\\, not a duration of the solar return.'
+      'DESCRIPTION:Calendar marker. The one-minute duration is for display only\\, not a duration of the solar return.'
       + '\\nThe return instant can shift by hours with your exact birth time.',
     );
   });

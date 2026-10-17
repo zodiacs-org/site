@@ -116,7 +116,7 @@ const yearOf = (id) => Number(new RegExp(`c\\('${id}',[^)]*'(\\d{4})-`, 'u').exe
  * survives an author who adds a claim instead of editing one.
  */
 const ARCMINUTE_SENTENCES = [
-  'It is designed to stay within one arcminute of NOVAS — that is the library\'s own target,'
+  'It is designed to stay within one arcminute of NOVAS: that is the library\'s own target,'
   + ' not a measurement of this site, and what we measured is in the next section.',
   'The other 20 measurements are the far-future cases, and none of them reaches one arcminute:'
   + ' the largest is 24.8 arcseconds, Pluto at 2190, where the two ephemerides differ.',
@@ -183,7 +183,7 @@ describe('the accuracy claim on /methodology/', () => {
     const worst = withinRecord.worstCase;
     const worstYear = /c\('historic-03',[^)]*'(\d{4})-/u.exec(corpus);
     expect(worst.id).toBe('historic-03');
-    expect(prose).toContain(`the largest is ${max} arcseconds — ${worst.body} in ${worstYear[1]}`);
+    expect(prose).toContain(`the largest is ${max} arcseconds (${worst.body} in ${worstYear[1]})`);
   });
 
   it('states the width of a sign correctly', () => {
@@ -409,7 +409,7 @@ describe('the every-tenth-day comparison, 1800 to 2199', () => {
   it('gives the page its worst case up to 2026, and the width of sign edge that follows from it', () => {
     expect(prose).toContain(`Up to 2026 that is ${upTo2026.n.toLocaleString('en-US')} comparisons,`
       + ` with a median of ${tenth(upTo2026.p50)} arcseconds and a largest of ${tenth(upTo2026.max)} arcseconds`
-      + ` — ${upTo2026.maxBody} in ${worstYear}`);
+      + ` (${upTo2026.maxBody} in ${worstYear})`);
     expect(prose).toContain(`changes a sign only for a body within ${Math.round(upTo2026.max)} arcseconds of its edge`);
     expect(enginePage).toContain(`the median is ${tenth(upTo2026.p50)} arcseconds and the largest`
       + ` ${tenth(upTo2026.max)} arcseconds (${upTo2026.maxBody}, ${worstYear})`);

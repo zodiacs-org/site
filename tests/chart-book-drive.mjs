@@ -167,7 +167,7 @@ await withPreview({ port: 4410 }, async (baseURL) => {
       return Boolean(rect && rect.top >= 0 && rect.bottom <= window.innerHeight);
     });
     check('blocked storage surfaces a clear error',
-      await alert.textContent() === "Couldn't save — your browser may be blocking local storage."
+      await alert.textContent() === "Couldn't save. Your browser may be blocking local storage."
       && await page.locator('.xplr__aside > [role="alert"]').count() === 1
       && await page.evaluate(() => {
         const element = document.querySelector('.xplr__aside > [role="alert"]');
@@ -203,7 +203,7 @@ await withPreview({ port: 4410 }, async (baseURL) => {
     const alert = page.locator('.calc__result > .calc__error[role="alert"]');
     await alert.waitFor();
     check('reduced chart keeps blocked-storage feedback',
-      await alert.textContent() === "Couldn't save — your browser may be blocking local storage."
+      await alert.textContent() === "Couldn't save. Your browser may be blocking local storage."
       && await saveButtonHasFocus(page));
     await page.close();
   }
@@ -433,7 +433,7 @@ await withPreview({ port: 4410 }, async (baseURL) => {
     await openChart(page);
     await openPrompt(page);
     await page.getByRole('button', { name: 'Skip', exact: true }).click();
-    const capAlert = page.getByText('You can save up to 40 charts — remove one first.', { exact: true });
+    const capAlert = page.getByText('You can save up to 40 charts. Remove one first.', { exact: true });
     await capAlert.waitFor();
     const count = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)).charts.length, PROFILE_KEY);
     check('41st chart triggers the new cap without growing storage', count === 40, String(count));

@@ -301,6 +301,17 @@ describe('sky-alert event selection and copy', () => {
       body: 'Neptune moves into Aries from Pisces.',
       url: '/events/neptune-enters-aries-2026-01-26/',
     });
+    expect(buildEventAlert(event({
+      id: 'neptune-enters-aries-2026-01-26',
+      path: '/events/neptune-enters-aries-2026-01-26/',
+      title: 'Neptune enters Aries, January 26, 2026',
+      anchor: '2026-01-26T14:30:38.567Z',
+      family: 'ingress',
+      subtype: 'ingress',
+      bodies: ['Neptune'],
+      signs: ['aries'],
+      summary: 'Neptune moves into Aries from Pisces.',
+    })).title).toBe('Neptune enters Aries today');
   });
 
   it('fails closed on an unverified schema or unsafe event URL', () => {
@@ -335,7 +346,7 @@ describe('sky-alert event selection and copy', () => {
       expect(JSON.stringify(alert).length).toBeLessThan(4_096);
     }
     expect(Math.max(...rendered.map(({ alert }) => alert.title.length))).toBe(30);
-    expect(Math.max(...rendered.map(({ alert }) => alert.body.length))).toBe(114);
+    expect(Math.max(...rendered.map(({ alert }) => alert.body.length))).toBe(113);
   });
 
   it('totally orders every committed day and resolves independently of input order', () => {

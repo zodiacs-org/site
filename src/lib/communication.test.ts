@@ -163,9 +163,9 @@ describe('canonical fixture', () => {
     expect(communicationRead(kahlo)).toMatchInlineSnapshot(`
       {
         "aspects": [],
-        "mars": "Anger gets processed like everything else — privately, on a schedule, converted into distance or doubled workload. The people close to you would rather have the sentence than the silence.",
+        "mars": "Anger gets processed like everything else: privately, on a schedule, converted into distance or doubled workload. The people close to you would rather have the sentence than the silence.",
         "marsSign": "capricorn",
-        "mercury": "You communicate like a performance with an audience of one — warm, committed, a story where a sentence would do. It works because you mean it; flattery without conviction reads as static to you.",
+        "mercury": "You communicate like a performance with an audience of one: warm, committed, a story where a sentence would do. It works because you mean it; flattery without conviction reads as static to you.",
         "mercuryAddendum": null,
         "mercurySign": "leo",
         "moon": "You settle yourself through the senses: food, comfort, routine, one unhurried evening. Emotional safety means knowing nothing important will change without warning.",

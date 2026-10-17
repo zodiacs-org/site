@@ -10,6 +10,7 @@ import programData from '../../data/horoscope-program.json';
 import { horoscopeHubTeaser, pageReadingFromProgram } from '../../lib/horoscope-page-data';
 import type { HoroscopeProgram } from '../../lib/horoscope-program';
 import { SIGNS } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 
 const program = programData as HoroscopeProgram;
 const dateLabel = new Intl.DateTimeFormat('en-US', {
@@ -27,7 +28,7 @@ const cards = SIGNS.map((sign) => {
 const jsonLd = [
   {
     '@type': 'CollectionPage',
-    name: `Daily horoscopes — ${dateLabel}`,
+    name: `Daily horoscopes, ${dateLabel}`,
     url: 'https://zodiacs.org/horoscopes/',
     description: `Daily horoscopes for all twelve signs on ${dateLabel}, with a clear theme and one useful move for each sign.`,
     dateModified: `${program.anchorDate}T00:00:00.000Z`,
@@ -47,21 +48,21 @@ const jsonLd = [
 <Base
   stableTypography
   localTypography
-  title={`Daily Horoscopes — ${dateLabel}, All 12 Signs | Zodiacs.org`}
+  title={`Daily Horoscopes | ${dateLabel}, All 12 Signs | Zodiacs.org`}
   description={`Daily horoscopes for all twelve signs on ${dateLabel}, with a clear theme and one useful move for each sign.`}
   path="/horoscopes/"
   editionDate={program.anchorDate}
   image="/assets/og/v2/tool/horoscopes.png"
-  imageAlt="Daily horoscopes for all twelve signs — Zodiacs.org"
+  imageAlt="Daily horoscopes for all twelve signs, Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container container--narrow" data-edition-content="true">
     <div class="horo-hero">
-      <em class="kicker">Daily edition · {dateLabel}</em>
       <h1 class="display">Daily horoscopes</h1>
+      <p class="dateline">Daily edition · {dateLabel}</p>
       <p>
         Find your sign for <EditionText current="today’s" editionDate={program.anchorDate} /> focus, pressure point, and most useful move.
-        Read your Sun sign first—and your rising sign too, if you know it.
+        Read your Sun sign first, and your rising sign too, if you know it.
       </p>
       <span class="horo-hero__stamp">Updated daily · {dateLabel}</span>
     </div>
@@ -82,7 +83,7 @@ const jsonLd = [
         <a class="tile horo-card" href={`/horoscopes/${sign.slug}/`} style={`--sign:${sign.hue}`}>
           <SignIcon sign={sign.slug} size={48} class="horo-card__icon" />
           <span class="horo-card__name">{sign.name}</span>
-          <span class="horo-card__dates">{sign.dates}</span>
+          <span class="horo-card__dates">{signDateRange(sign)}</span>
           <span class="horo-card__today">
             <span class="horo-card__today-label">{reading.label}</span>
             <EditionText current={teaser} editionDate={program.anchorDate} />

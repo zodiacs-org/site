@@ -9,13 +9,17 @@
 import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../SignIcon.astro';
+import ArtFrame from '../ArtFrame.astro';
 import SynastryCalculator from '../../islands/SynastryCalculator';
-import { SIGNS, signName, signDates, elementLabel, modalityLabel } from '../../lib/signs';
+import { SIGNS, signName, elementLabel, modalityLabel, type Sign } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 import { pairSlug } from '../../lib/compat';
+import { elementMedallionSrc, elementMedallionSrcset } from '../../lib/art';
 import { localizedPairFacts, type PairLocale } from '../../lib/compat-i18n';
 import { planetLabel } from '../../lib/i18n/astrology';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import '../../styles/calculator.css';
+import '../../styles/pair-page.css';
 
 interface Props { entry: CollectionEntry<'pairsLocalized'> }
 
@@ -51,7 +55,7 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilidad',
     and: 'y',
     pairName: (x, y) => `${x} y ${y}`,
-    imageAlt: (x, y) => `Compatibilidad entre ${x} y ${y} — Zodiacs.org`,
+    imageAlt: (x, y) => `Compatibilidad entre ${x} y ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrología)`,
     basisTitle: 'Por qué esta combinación se lee así',
     basisNote: 'Elementos, modalidades, polaridad y el patrón básico de cada signo',
@@ -71,7 +75,7 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilidade',
     and: 'e',
     pairName: (x, y) => `${x} e ${y}`,
-    imageAlt: (x, y) => `Compatibilidade entre ${x} e ${y} — Zodiacs.org`,
+    imageAlt: (x, y) => `Compatibilidade entre ${x} e ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrologia)`,
     basisTitle: 'Por que esse par é lido assim',
     basisNote: 'Elementos, modalidades, polaridade e o padrão básico de cada signo',
@@ -91,7 +95,7 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilité',
     and: 'et',
     pairName: (x, y) => `${x} et ${y}`,
-    imageAlt: (x, y) => `Compatibilité ${x} et ${y} — Zodiacs.org`,
+    imageAlt: (x, y) => `Compatibilité ${x} et ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrologie)`,
     basisTitle: 'Pourquoi ce duo se lit ainsi',
     basisNote: 'Éléments, modalités, polarité et le schéma de base de chaque signe',
@@ -111,7 +115,7 @@ const CHROME: Record<PairLocale, Chrome> = {
     kicker: 'Compatibilità',
     and: 'e',
     pairName: (x, y) => `${x} e ${y}`,
-    imageAlt: (x, y) => `Compatibilità tra ${x} e ${y} — Zodiacs.org`,
+    imageAlt: (x, y) => `Compatibilità tra ${x} e ${y} | Zodiacs.org`,
     about: (s) => `${s} (astrologia)`,
     basisTitle: 'Perché questa coppia si legge così',
     basisNote: 'Elementi, modalità, polarità e lo schema di base di ciascun segno',
@@ -135,8 +139,14 @@ const pageUrl = `https://zodiacs.org${pagePath}`;
 const inLanguage = locale === 'pt' ? 'pt-BR' : locale;
 const name = (slug: string) => signName(slug, locale);
 
-const othersFor = (slug: string) =>
-  SIGNS.filter((s) => pairSlug(slug, s.slug) !== facts.slug);
+const people = same ? [a] : [a, b];
+const lower = (value: string) => value.charAt(0).toLocaleLowerCase(locale) + value.slice(1);
+const pairOf = (x: string, y: string) => `${x} ${c.and} ${lower(y)}`;
+const otherPairs = (sign: Sign) => SIGNS.map((other) => {
+  const slug = pairSlug(sign.slug, other.slug);
+  return { other, slug, now: slug === facts.slug };
+});
+const signFacts = (sign: Sign) => `${signDateRange(sign, locale)} · ${elementLabel(sign.element, locale)} · ${modalityLabel(sign.modality, locale)} · ${planetLabel(locale, sign.ruler)}`;
 
 const jsonLd = [
   {
@@ -186,253 +196,126 @@ const jsonLd = [
   type="article"
   jsonLd={jsonLd}
 >
-  <article>
-    <header class="pair-hero container container--narrow">
-      <em class="kicker">{c.kicker}</em>
-      <div class="pair-hero__lockup reveal">
-        <span class="pair-hero__icons">
-          <SignIcon sign={a.slug} size={104} loading="eager" class="pair-hero__icon" />
-          {!same && <SignIcon sign={b.slug} size={104} loading="eager" class="pair-hero__icon pair-hero__icon--b" />}
-        </span>
-        <h1 class="display">{nameA} <span class="pair-hero__amp">{c.and}</span> {nameB}</h1>
+  <article class="ph ph--localized" style={`--a:${a.hue};--b:${b.hue}`}>
+    <header class="ph-hero">
+      <div class="ph-hero__art">
+        <ArtFrame sign={a.slug} locale={locale} flip eager class="ph-pane ph-pane--a" sizes="(max-width: 760px) 128vw, 66vw" />
+        <ArtFrame sign={b.slug} locale={locale} eager alt={same ? '' : undefined} class="ph-pane ph-pane--b" sizes="(max-width: 760px) 128vw, 66vw" />
       </div>
-      <p class="pair-hero__lede">{entry.data.description}</p>
+      <div class="ph-hero__pair" aria-hidden="true">
+        {people.map((sign) => <SignIcon sign={sign.slug} size={84} loading="eager" class="ph-hero__disc" />)}
+      </div>
+      <div class="ph-hero__body">
+        <span class="kicker"><a href={`${prefix}/compatibility/`}>{c.kicker}</a></span>
+        <h1 class="h-hero">{nameA} <em>{c.and}</em> {nameB}</h1>
+        <p class="ph-hero__cap">{entry.data.description}</p>
+        <div class="btn-row">
+          <a class="btn btn--primary btn--lg" href="#compare"><span>{c.toolHeading}</span><span class="orb" aria-hidden="true">↗</span></a>
+          <a class="btn btn--glass btn--lg ph-change" href="#switch">
+            <span class="ph-change__minis" aria-hidden="true">
+              {people.map((sign) => <SignIcon sign={sign.slug} size={22} loading="eager" />)}
+            </span>
+            <span>{c.moreAria}</span>
+            <svg class="ph-change__swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4" /></svg>
+          </a>
+        </div>
+      </div>
+      <span class="ph-hero__label ph-hero__label--l">{nameA} · {signDateRange(a, locale)}</span>
+      {!same && <span class="ph-hero__label ph-hero__label--r">{nameB} · {signDateRange(b, locale)}</span>}
     </header>
 
-    <div class="container container--narrow pair-body">
-      <div class="prose reveal">
-        <Content />
+    <div class="kwrap ph-pattern">
+      <div class:list={['ph-ticker', same && 'ph-ticker--one']} role="group" aria-label={c.basisAria}>
+        {people.map((sign) => (
+          <span class="ph-ticker__item ph-ticker__item--sign"><SignIcon sign={sign.slug} size={18} /><b>{name(sign.slug)}</b><span>{signDateRange(sign, locale)}</span></span>
+        ))}
+        <span class="ph-ticker__item">{pairOf(elementLabel(a.element, locale), elementLabel(b.element, locale))}</span>
+        <span class="ph-ticker__item">{pairOf(modalityLabel(a.modality, locale), modalityLabel(b.modality, locale))}</span>
+        <a class="textlink" href="#basis">{c.basisTitle} <span class="arr" aria-hidden="true">→</span></a>
       </div>
+    </div>
 
-      <details class="pair-basis reveal">
-        <summary>
-          <span>
-            <strong>{c.basisTitle}</strong>
-            <small>{c.basisNote}</small>
-          </span>
-          <span class="pair-basis__mark" aria-hidden="true"></span>
-        </summary>
-        <section class="pair-panel" aria-label={c.basisAria}>
-          <div class="pair-panel__signs">
-            {[a, b].map((s, i) => (
-              <a class="pair-panel__sign tile" href={`${prefix}/${s.slug}/`} style={`--sign:${s.hue}`}>
-                <SignIcon sign={s.slug} size={44} class="pair-panel__sign-icon" />
-                <span class="pair-panel__sign-name">{name(s.slug)}{same ? ` ${i === 0 ? 'A' : 'B'}` : ''}</span>
-                <span class="pair-panel__sign-meta mono">{signDates(s, locale)}</span>
-                <span class="pair-panel__sign-meta mono">
-                  {elementLabel(s.element, locale)} · {modalityLabel(s.modality, locale)} · {planetLabel(locale, s.ruler)}
-                </span>
-              </a>
-            ))}
-          </div>
-          <dl class="pair-panel__rows">
-            <div class="pair-panel__row">
-              <dt><span class="mono--label">{c.elements}</span> {facts.element.label}</dt>
-              <dd>{facts.element.note}</dd>
-            </div>
-            <div class="pair-panel__row">
-              <dt><span class="mono--label">{c.modes}</span> {facts.modality.label}</dt>
-              <dd>{facts.modality.note}</dd>
-            </div>
-            <div class="pair-panel__row">
-              <dt><span class="mono--label">{c.polarity}</span></dt>
-              <dd>{facts.polarity}</dd>
-            </div>
-          </dl>
-        </section>
-      </details>
+    <section class="ksection ph-readsec ph-readsec--localized">
+      <div class="kwrap kwrap--narrow">
+        <div class="ph-feature">
+          <div class="prose pair-prose"><Content /></div>
 
-      <section class="pair-faq reveal">
-        <div class="section-head">
-          <h2>{c.faqHeading}</h2>
+          <section class="ph-basis" id="basis" aria-label={c.basisAria}>
+            <h2 class="h-3">{c.basisTitle}</h2>
+            <p class="ph-basis__sub">{c.basisNote}</p>
+            <div class:list={['ph-basis__signs', same && 'ph-basis__signs--one']}>
+              {people.map((sign) => (
+                <a href={`${prefix}/${sign.slug}/`}>
+                  <SignIcon sign={sign.slug} size={40} />
+                  <span><b>{name(sign.slug)}</b><small>{signFacts(sign)}</small></span>
+                </a>
+              ))}
+            </div>
+            <dl>
+              <div><dt>{c.elements}</dt><dd class="ph-basis__v">{facts.element.label}<span class="ph-el" aria-hidden="true">{people.map((sign) => <img src={elementMedallionSrc(sign.element)} srcset={elementMedallionSrcset(sign.element)} sizes="64px" width="128" height="128" alt="" loading="lazy" decoding="async" />)}</span></dd><dd class="ph-basis__m">{facts.element.note}</dd></div>
+              <div><dt>{c.modes}</dt><dd class="ph-basis__v">{facts.modality.label}</dd><dd class="ph-basis__m">{facts.modality.note}</dd></div>
+              <div><dt>{c.polarity}</dt><dd class="ph-basis__m ph-basis__m--wide">{facts.polarity}</dd></div>
+            </dl>
+          </section>
         </div>
-        <div class="pair-faq__list">
-          {entry.data.faq.map(({ q, a: answer }) => (
-            <details class="pair-faq__item">
+      </div>
+    </section>
+
+    <div class="kwrap"><hr class="ph-rule" /></div>
+
+    <section class="ksection ph-comparesec" id="compare" aria-labelledby="compare-title">
+      <div class="kwrap ph-compare">
+        <div class="ph-compare__intro">
+          <h2 class="h-2" id="compare-title">{c.toolHeading}</h2>
+          <p class="klede">{c.toolLede}</p>
+        </div>
+        <SynastryCalculator locale={locale} client:visible />
+        <noscript>
+          <p class="ph-compare__noscript">{c.noscript}</p>
+        </noscript>
+      </div>
+    </section>
+
+    <section class="ksection ph-questions" aria-labelledby="questions-title">
+      <div class="kwrap qa">
+        <div>
+          <h2 class="h-2" id="questions-title">{c.faqHeading}</h2>
+        </div>
+        <div class="kfaq">
+          {entry.data.faq.map(({ q, a: answer }, index) => (
+            <details open={index === 0}>
               <summary>{q}</summary>
               <p>{answer}</p>
             </details>
           ))}
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="pair-tool reveal">
-        <div class="section-head">
-          <h2>{c.toolHeading}</h2>
-          <p>{c.toolLede}</p>
+    <section class="ksection ph-switch" id="switch" aria-labelledby="switch-title">
+      <div class="kwrap">
+        <div class="section-head ph-switch__head">
+          <h2 class="h-2" id="switch-title">{c.moreAria}</h2>
         </div>
-        <p>
-          <a class="btn btn--glass" href={`${prefix}/compatibility/?sign1=${a.slug}&sign2=${b.slug}#calculator`}>
-            <span>{c.prefill(nameA, nameB)}</span><span class="orb">→</span>
-          </a>
-        </p>
-        <SynastryCalculator locale={locale} client:visible />
-        <noscript>
-          <p>{c.noscript}</p>
-        </noscript>
-      </section>
-
-      <nav class="pair-more reveal" aria-label={c.moreAria}>
-        <div class="pair-more__col">
-          <span class="pair-more__head">{c.withOthers(nameA)}</span>
-          <div class="pair-more__chips">
-            {othersFor(a.slug).map((s) => (
-              <a class="pair-more__chip" href={`${prefix}/compatibility/${pairSlug(a.slug, s.slug)}/`}>{name(s.slug)}</a>
-            ))}
-          </div>
-        </div>
-        {!same && (
-          <div class="pair-more__col">
-            <span class="pair-more__head">{c.withOthers(nameB)}</span>
-            <div class="pair-more__chips">
-              {othersFor(b.slug).map((s) => (
-                <a class="pair-more__chip" href={`${prefix}/compatibility/${pairSlug(b.slug, s.slug)}/`}>{name(s.slug)}</a>
-              ))}
+        {people.map((sign) => (
+          <div class="ph-others">
+            <div class="ph-others__head">
+              <h3><SignIcon sign={sign.slug} size={26} />{c.withOthers(name(sign.slug))}</h3>
             </div>
+            <ul class="ph-pairs" role="list">
+              {otherPairs(sign).map(({ other, slug, now }) => (
+                <li>
+                  <a href={`${prefix}/compatibility/${slug}/`} class:list={[now && 'is-now']} aria-current={now ? 'page' : undefined} style={`--now:${(now && !same ? (sign.slug === a.slug ? b : a) : sign).hue}`}>
+                    <SignIcon sign={other.slug} size={38} />
+                    <b>{name(other.slug)}</b>
+                    <small>{elementLabel(other.element, locale)}</small>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-        )}
-      </nav>
-    </div>
+        ))}
+      </div>
+    </section>
   </article>
 </Base>
-
-<style>
-  .pair-hero { padding-block: clamp(24px, 5vw, 56px) clamp(18px, 3vw, 30px); }
-  .pair-hero__lockup {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 14px;
-  }
-  @media (min-width: 700px) {
-    .pair-hero__lockup { flex-direction: row; align-items: center; gap: 30px; }
-  }
-  .pair-hero__icons { display: inline-flex; }
-  .pair-hero :global(.pair-hero__icon) {
-    width: clamp(72px, 10vw, 104px);
-    border-radius: 50%;
-  }
-  .pair-hero :global(.pair-hero__icon--b) { margin-left: -18px; }
-  .pair-hero h1 {
-    margin: 0;
-    font-size: clamp(2.1rem, 1.4rem + 3.4vw, 3.6rem);
-    line-height: 1.02;
-  }
-  .pair-hero__amp {
-    font-style: italic;
-    color: var(--muted);
-  }
-  .pair-hero__lede {
-    margin: 18px 0 0;
-    max-width: 60ch;
-    color: var(--muted);
-    font-size: var(--text-lg);
-    text-wrap: pretty;
-  }
-
-  .pair-body { display: grid; gap: clamp(30px, 5vw, 52px); padding-bottom: clamp(36px, 6vw, 72px); }
-
-  .pair-basis {
-    padding: 3px 18px;
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-md);
-    background: var(--void-1);
-  }
-  .pair-basis > summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 13px 0;
-    cursor: pointer;
-    list-style: none;
-  }
-  .pair-basis > summary::-webkit-details-marker { display: none; }
-  .pair-basis > summary > span:first-child { display: grid; gap: 2px; }
-  .pair-basis > summary strong { color: var(--text); font-size: var(--text-sm); }
-  .pair-basis > summary small { color: var(--faint); font-size: var(--text-xs); }
-  .pair-basis__mark::before { content: '+'; color: var(--muted); font-family: var(--font-mono); }
-  .pair-basis[open] .pair-basis__mark::before { content: '−'; }
-
-  .pair-panel { display: grid; gap: 18px; padding: 2px 0 15px; }
-  .pair-panel__signs {
-    display: grid;
-    gap: 12px;
-    grid-template-columns: 1fr;
-  }
-  @media (min-width: 560px) { .pair-panel__signs { grid-template-columns: 1fr 1fr; } }
-  .pair-panel__sign {
-    display: grid;
-    justify-items: start;
-    gap: 6px;
-    padding: 18px;
-    text-decoration: none;
-    color: var(--text);
-  }
-  @media (min-width: 560px) {
-    .pair-panel__sign {
-      grid-template-columns: auto 1fr;
-      column-gap: 16px;
-      align-content: center;
-      align-items: start;
-    }
-    .pair-panel__sign :global(.pair-panel__sign-icon) { grid-row: 1 / span 3; align-self: center; }
-  }
-  .pair-panel__sign :global(img) { border-radius: 50%; }
-  .pair-panel__sign-name { font-weight: 620; font-size: var(--text-lg); letter-spacing: -0.01em; }
-  .pair-panel__sign-meta { font-size: 10.5px; letter-spacing: 0.07em; color: var(--faint); }
-
-  .pair-panel__rows { margin: 0; display: grid; }
-  .pair-panel__row {
-    display: grid;
-    gap: 4px 26px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--hair-1);
-  }
-  .pair-panel__row:first-child { border-top: 1px solid var(--hair-1); }
-  @media (min-width: 700px) {
-    .pair-panel__row { grid-template-columns: 220px minmax(0, 1fr); }
-  }
-  .pair-panel__row dt {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    font-weight: 600;
-    font-size: var(--text-sm);
-    color: var(--text);
-  }
-  .pair-panel__row dd { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.65; max-width: 58ch; }
-
-  .pair-tool :global(.section-head) { margin-bottom: 22px; }
-
-  .pair-faq__list { display: grid; gap: 8px; }
-  .pair-faq__item {
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-md);
-    background: var(--void-1);
-    padding: 4px 18px;
-  }
-  .pair-faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
-  .pair-faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
-
-  .pair-more {
-    display: grid;
-    gap: 24px;
-    padding-top: clamp(20px, 4vw, 32px);
-    border-top: 1px solid var(--hair-1);
-    grid-template-columns: 1fr;
-  }
-  @media (min-width: 700px) { .pair-more { grid-template-columns: 1fr 1fr; } }
-  .pair-more__col { display: grid; gap: 10px; align-content: start; }
-  .pair-more__head { font-weight: 600; font-size: var(--text-sm); color: var(--text); }
-  .pair-more__chips { display: flex; flex-wrap: wrap; gap: 4px 2px; }
-  .pair-more__chip {
-    padding: 4px 9px;
-    border-radius: var(--r-full);
-    font-size: 12.5px;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
-  }
-  .pair-more__chip:hover { color: var(--text); background: color-mix(in oklab, var(--ink-2) 12%, transparent); }
-</style>

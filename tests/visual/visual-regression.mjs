@@ -35,6 +35,17 @@ const canonicalSkyTicker =
   'jul 10 · ☉ Sun 15°00′ Leo · ☽ Moon in Aries · ☿ Mercury direct · '
   + '♄ Saturn retrograde · ♆ Neptune retrograde · ♇ Pluto retrograde · '
   + '○ New moon — Aug 12';
+// The sign guide quotes the day's published Aries reading in its horoscope
+// card. Like the ticker, its words are replaced with a fixed set before
+// capture, so the page's height never depends on the day's data while the
+// card's layout stays under comparison. None of these lines carries a
+// relative date word, so the edition guard leaves them as written.
+const canonicalGuideDaily = {
+  label: 'Aries horoscope',
+  date: 'Friday, July 10 · Waxing gibbous',
+  text: 'Name the one task that would make the rest easier, then start it before lunch. For Aries, a clean first move matters more than a dramatic sprint.',
+  receipt: 'Moon 12.0° Capricorn at 12:00 UTC',
+};
 const liveDailySelectors = [
   '.skyticker',
   '.tbs__stamp',
@@ -178,11 +189,24 @@ async function settlePage(page, { result, normalizeEventsHub, name }) {
   // After hydration is done: the live row keeps its element (the mask
   // presence check still counts it) but reads the canonical line, so the
   // day's receipt can never change how many lines it wraps to.
-  if (name === 'home') {
+  if (name === 'home' || name === 'birth-chart-kahlo') {
     await page.evaluate((text) => {
       const ticker = document.querySelector('.skyticker');
       if (ticker) ticker.textContent = text;
     }, canonicalSkyTicker);
+  }
+  // The homepage marks the sign the Sun is in on the day's edition, which
+  // moves once a month. Mark the canonical line's sign (Leo) instead, so the
+  // tile row compares the same way every day.
+  if (name === 'home') {
+    await page.evaluate(() => {
+      for (const tile of document.querySelectorAll('.home-today__grid a')) {
+        const small = tile.querySelector('small[data-dates]');
+        const now = tile.getAttribute('href') === '/horoscopes/leo/';
+        tile.classList.toggle('is-now', now);
+        if (small) small.textContent = now ? 'Sun is here now' : small.dataset.dates;
+      }
+    });
   }
 
   // Long editorial pages can introduce below-the-fold font faces only after
@@ -444,6 +468,19 @@ async function capture(browser, baseURL, testCase, judge) {
   });
   await settlePage(page, testCase);
   if (testCase.name === 'aries') {
+    const replaced = await page.evaluate((lines) => {
+      let count = 0;
+      for (const [key, text] of Object.entries(lines)) {
+        for (const node of document.querySelectorAll(`[data-guide-daily="${key}"]`)) {
+          node.textContent = text;
+          count += 1;
+        }
+      }
+      return count;
+    }, canonicalGuideDaily);
+    if (replaced !== Object.keys(canonicalGuideDaily).length) {
+      throw new Error(`Aries guide daily card: expected ${Object.keys(canonicalGuideDaily).length} fields, found ${replaced}`);
+    }
     // The general sweep includes optional/local faces whose failures can be
     // legitimate. The sign guide's required body font must load explicitly:
     // do not swallow its error or accept CSS family names as proof of rendering.
@@ -614,7 +651,9 @@ try {
     for (const testCase of cases) {
       const stem = fileStem(testCase);
       const baselinePath = resolve(baselineRoot, `${stem}.png`);
-      const expectedMaskCount = testCase.name === 'home' ? 2 : 0;
+      // The home page masks its sky line and the edition stamp; the birth
+      // chart's "After your chart" section carries the sky line too.
+      const expectedMaskCount = testCase.name === 'home' ? 2 : testCase.name === 'birth-chart-kahlo' ? 1 : 0;
       let expected = null;
       if (!update) {
         try {

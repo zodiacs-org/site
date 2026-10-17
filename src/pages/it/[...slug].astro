@@ -33,15 +33,15 @@ const slug = Astro.params.slug ?? '';
 const englishPath = `/${slug}/`;
 ---
 <Base
-  title="Contenuto in inglese — Zodiacs.org"
+  title="Contenuto in inglese | Zodiacs.org"
   description="Questa pagina non è ancora tradotta in italiano. Puoi leggere la versione completa in inglese."
   path={`/it/${slug}/`}
   locale="it"
   noindex
 >
   <section class="section container container--narrow fallback-es">
-    <em class="kicker">Disponibile in inglese</em>
     <h1 class="display">Questa pagina non è ancora tradotta.</h1>
+    <p class="dateline">Disponibile in inglese</p>
     <p>
       La versione completa resta disponibile in inglese mentre traduciamo il
       resto del sito.

@@ -129,7 +129,7 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
           && evidence.robots?.includes('noindex') && evidence.robots?.includes('follow'),
         JSON.stringify(evidence));
       check('document title stays focused on the link hub',
-        evidence.title === 'Zodiacs.org Links — Birth Chart, Horoscopes & Astrofolio', evidence.title);
+        evidence.title === 'Zodiacs.org Links: Birth Chart, Horoscopes & Astrofolio', evidence.title);
 
       await page.evaluate(() => {
         window.__bioShares = [];

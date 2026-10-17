@@ -1,20 +1,31 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import ArtFrame from '../../components/ArtFrame.astro';
 import SignIcon from '../../components/SignIcon.astro';
-import SignHeroArt from '../../components/SignHeroArt.astro';
-import FactTable from '../../components/FactTable.astro';
+import SignGuideHero from '../../components/SignGuideHero.astro';
+import SignGuideFacts from '../../components/SignGuideFacts.astro';
+import type { SignGuideFact } from '../../components/SignGuideFacts.astro';
 import HeritageTimeline from '../../components/HeritageTimeline.astro';
 import CollectBand from '../../components/CollectBand.astro';
-import RaceRamp from '../../components/RaceRamp.astro';
-import Faq from '../../components/Faq.astro';
 import ShareRow from '../../components/ShareRow.astro';
 import GuideHoroscopeBand from '../../components/GuideHoroscopeBand.astro';
 import GuideProfileHook from '../../components/GuideProfileHook.astro';
-import { SIGNS, SIGN_SLUGS, signBySlug, ELEMENT_LABEL } from '../../lib/signs';
-import { pairSlug } from '../../lib/compat';
-import { heritage } from '../../lib/legacy/sign-lore';
+import GuidePull from '../../components/guide/GuidePull.astro';
+import GuideEdges from '../../components/guide/GuideEdges.astro';
+import GuideEdge from '../../components/guide/GuideEdge.astro';
+import GuidePartners from '../../components/guide/GuidePartners.astro';
+import GuideLoveClose from '../../components/guide/GuideLoveClose.astro';
+import GuidePlaces from '../../components/guide/GuidePlaces.astro';
+import GuidePlace from '../../components/guide/GuidePlace.astro';
+import GuideWhere from '../../components/guide/GuideWhere.astro';
+import programData from '../../data/horoscope-program.json';
+import { SIGNS, SIGN_SLUGS, signBySlug, ELEMENT_LABEL, MODALITY_LABEL } from '../../lib/signs';
+import { signDateRange, signTagline } from '../../lib/sign-display';
+import { guideLede, heritage, plainDashes } from '../../lib/legacy/sign-lore';
+import { guideFacts, guideReadingMinutes, signFigure, signOrdinal } from '../../lib/guide-facts';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { SIGN_GUIDE_HERO_SIZES, signArtSrc, signArtSrcset } from '../../lib/sign-art';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides', ({ data }) => !data.draft);
@@ -28,12 +39,46 @@ export async function getStaticPaths() {
 const { guide } = Astro.props;
 const sign = signBySlug(guide.data.sign);
 const lore = heritage(sign.slug);
-const { Content } = await render(guide);
+const { Content, headings } = await render(guide);
 
 const idx = SIGNS.findIndex((s) => s.slug === sign.slug);
 const prev = SIGNS[(idx + 11) % 12];
 const next = SIGNS[(idx + 1) % 12];
 const siblings = SIGNS.filter((s) => s.element === sign.element && s.slug !== sign.slug);
+const facts = guideFacts(sign, lore.principalStar);
+const figure = signFigure(lore.epithet);
+const elementWord = ELEMENT_LABEL[sign.element].toLowerCase();
+const rulerLine = sign.classicRuler ? `${sign.ruler} (traditionally ${sign.classicRuler})` : sign.ruler;
+const minutes = guideReadingMinutes(guide.body ?? '', [lore.lede, ...lore.paragraphs]);
+// The daily card quotes this edition; Base dates its relative words if the
+// deploy outlives the day (see GuideHoroscopeBand).
+const editionDate = (programData as { anchorDate: string }).anchorDate;
+
+const factRows: SignGuideFact[] = [
+  { label: 'Dates', value: signDateRange(sign), note: 'Edges shift a day in some years.', link: { href: '/birthday/', label: 'Check yours' } },
+  { label: 'Element', value: ELEMENT_LABEL[sign.element], note: `With ${siblings[0].name} and ${siblings[1].name}` },
+  { label: 'Modality', value: MODALITY_LABEL[sign.modality], note: facts.modalityNote },
+  { label: 'Ruling planet', value: sign.ruler, glyph: sign.ruler, note: facts.rulerNote },
+  { label: 'Polarity', value: sign.polarity === 'day' ? 'Day (yang)' : 'Night (yin)', note: facts.polarityNote },
+  { label: 'Principal star', value: lore.principalStar.name, note: facts.starNote },
+];
+
+const contents = [
+  ...headings.filter((h) => h.depth === 2).map((h) => ({ href: `#${h.slug}`, label: h.text })),
+  { href: '#history', label: 'Myth and history' },
+  { href: '#questions', label: 'Questions' },
+];
+
+const mdxComponents = {
+  GuidePull,
+  GuideEdges,
+  GuideEdge,
+  GuidePartners,
+  GuideLoveClose,
+  GuidePlaces,
+  GuidePlace,
+  GuideWhere,
+};
 
 const jsonLd = [
   {
@@ -72,299 +117,431 @@ const jsonLd = [
 ];
 ---
 <Base
-  preloadMonoFont
   inlineCriticalCss
   title={guide.data.title}
   description={guide.data.description}
   path={`/${sign.slug}/`}
   image={`/assets/og/v2/sign/${sign.slug}.png`}
-  imageAlt={`${sign.name} — sign guide on Zodiacs.org`}
+  imageAlt={`${sign.name}, sign guide on Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   sources={guide.data.sources}
+  editionDate={editionDate}
 >
-  <article style={`--sign:${sign.hue}`}>
-    <header class="guide-hero container">
-      {/* No reveal on the masthead: it is the LCP and must paint before any
-          script runs — the RU release set this pattern. */}
-      <div class="guide-hero__id">
-        <SignHeroArt sign={sign.slug} />
-        <div>
-          <h1>{sign.name}</h1>
-          <p class="guide-hero__essence">{sign.essence}</p>
-          <p class="guide-hero__facts">{ELEMENT_LABEL[sign.element]} sign · {sign.dates}</p>
-          <div class="guide-hero__ctas">
-            <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
-            <a class="btn btn--ghost" href="/moon-sign/"><span>Find your moon sign</span></a>
+  {/* The hero art is the LCP: announce it before the inlined stylesheets
+      finish streaming, with the same candidates and sizes as the <img>. */}
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href={signArtSrc(sign.slug, 1200)}
+    imagesrcset={signArtSrcset(sign.slug)}
+    imagesizes={SIGN_GUIDE_HERO_SIZES}
+    fetchpriority="high"
+  />
+  <article class="guide" style={`--sign:${sign.hue};--hue:${sign.hue}`}>
+    {/* No reveal on the masthead: the art is the LCP and must paint before
+        any script runs. */}
+    <SignGuideHero
+      sign={sign.slug}
+      title={sign.name}
+      kicker={`The ${signOrdinal(idx)} sign of the zodiac`}
+      line={signTagline(sign)}
+      sub={`The Sun sign for birthdays from ${facts.longRange}. ${MODALITY_LABEL[sign.modality]} ${elementWord}, ruled by ${rulerLine}.`}
+      crumbs={[{ label: 'Home', href: '/' }, { label: 'Signs', href: '/learn/' }, { label: sign.name }]}
+      credit={`${figure}, from the Zodiacs sign art`}
+    >
+      <a class="btn btn--primary btn--lg" href={`/horoscopes/${sign.slug}/`}><span>Today’s {sign.name} horoscope</span><span class="orb" aria-hidden="true">↗</span></a>
+      <a class="btn btn--glass btn--lg" href="/birth-chart/"><span>Get your free birth chart</span></a>
+    </SignGuideHero>
+
+    <div class="kwrap">
+      <SignGuideFacts facts={factRows} label={`${sign.name} essentials`} />
+
+      <GuideHoroscopeBand signName={sign.name} slug={sign.slug} />
+
+      <div class="guide-read">
+        <div class="guide-rail">
+          <nav class="guide-rail__nav" aria-label="On this page">
+            <p class="guide-rail__title">On this page</p>
+            <ol>
+              {contents.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+            </ol>
+          </nav>
+          <div class="guide-rail__meta">
+            <span>A {minutes} minute read</span>
+            <GuideProfileHook signName={sign.name} slug={sign.slug} />
+            <ShareRow text={`${sign.name}, the full guide`} url={`https://zodiacs.org/${sign.slug}/`} />
           </div>
+        </div>
+
+        <div class="guide-main">
+          <div class="prose guide-prose">
+            <Content components={mdxComponents} />
+          </div>
+
+          <section class="guide-history" id="history" aria-labelledby="guide-history-title">
+            <h2 class="h-2" id="guide-history-title">Myth, history, and the long record</h2>
+            <p class="guide-history__lede">{guideLede(lore.lede)}</p>
+            <div class="guide-history__prose">
+              {lore.paragraphs.map((p) => <p>{plainDashes(p)}</p>)}
+            </div>
+            <div class="guide-history__figs">
+              <figure class="guide-history__fig">
+                <ArtFrame
+                  sign={sign.slug}
+                  class="guide-history__detail"
+                  src={`/assets/sign-art/${sign.slug}-720.webp`}
+                  width={720}
+                  height={480}
+                />
+                <figcaption>{figure}, as the Zodiacs sign art paints it.</figcaption>
+              </figure>
+              <figure class="guide-history__fig guide-history__stars">
+                <div class="guide-history__frame">
+                  <img
+                    src={`/assets/constellations/${sign.slug}.svg`}
+                    width="720"
+                    height="460"
+                    loading="lazy"
+                    decoding="async"
+                    alt={`Map of the brighter ${sign.name} constellation stars, with ${lore.principalStar.name} highlighted`}
+                  />
+                </div>
+                <figcaption>
+                  The brighter stars of {sign.name}, plotted from catalogue positions, with {lore.principalStar.name} highlighted.
+                  The lines are a reading guide, not official constellation boundaries.
+                  Star data: <a href="https://github.com/astronexus/HYG-Database" rel="noopener noreferrer">HYG Database v4.0</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener noreferrer">CC BY-SA 4.0</a>.
+                </figcaption>
+              </figure>
+            </div>
+            <HeritageTimeline lore={lore} hue={sign.hue} />
+          </section>
         </div>
       </div>
-    </header>
-
-    <div class="container guide-grid">
-      <div class="guide-main">
-        <div class="reveal">
-          <GuideHoroscopeBand signName={sign.name} slug={sign.slug} />
-        </div>
-
-        <div class="prose reveal">
-          <Content />
-        </div>
-
-        <div class="guide-band reveal">
-          <CollectBand signName={sign.name} slug={sign.slug} />
-          <RaceRamp signName={sign.name} gap="10px" />
-        </div>
-
-        <section class="guide-heritage reveal">
-          <h2>Myth, history &amp; the long record</h2>
-          <p class="guide-heritage__lede">{lore.lede}</p>
-          {lore.paragraphs.map((p) => <p class="guide-heritage__p">{p}</p>)}
-          <HeritageTimeline lore={lore} hue={sign.hue} />
-        </section>
-
-        <section class="guide-compat reveal">
-          <h2>{sign.name} compatibility, at a glance</h2>
-          <div class="guide-compat__rows">
-            <div class="guide-compat__row">
-              <span class="mono--label">Easeful with</span>
-              <div class="guide-compat__chips">
-                {guide.data.compat.easeful.map((slug) => {
-                  const s = signBySlug(slug);
-                  return (
-                    <a class="chip" href={`/compatibility/${pairSlug(sign.slug, s.slug)}/`} style={`--sign:${s.hue}`}>
-                      <SignIcon sign={s.slug} size={18} class="chip__icon" /> {sign.name} &amp; {s.name}
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-            <div class="guide-compat__row">
-              <span class="mono--label">Charged with</span>
-              <div class="guide-compat__chips">
-                {guide.data.compat.charged.map((slug) => {
-                  const s = signBySlug(slug);
-                  return (
-                    <a class="chip" href={`/compatibility/${pairSlug(sign.slug, s.slug)}/`} style={`--sign:${s.hue}`}>
-                      <SignIcon sign={s.slug} size={18} class="chip__icon" /> {sign.name} &amp; {s.name}
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-          <p class="guide-compat__note">
-            Sun-sign chemistry is the first sentence, not the story — for the
-            whole thing, <a href="/compatibility/">compare two full charts</a>.
-          </p>
-        </section>
-
-        <section class="guide-placements reveal">
-          <h2>Planets in {sign.name}</h2>
-          <p class="guide-placements__note">
-            The Sun is one of ten planets that can wear this sign — each
-            reads differently.
-          </p>
-          <div class="guide-placements__chips">
-            {['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'].map((p) => (
-              <a class="chip" href={`/learn/placements/${p.toLowerCase()}-in-${sign.slug}/`} style={`--sign:${sign.hue}`}>
-                {p} in {sign.name}
-              </a>
-            ))}
-          </div>
-        </section>
-
-        <section class="reveal">
-          <Faq items={guide.data.faq} heading={`${sign.name}, asked and answered`} />
-        </section>
-
-        <ShareRow text={`${sign.name} — the full guide`} url={`https://zodiacs.org/${sign.slug}/`} />
-        <GuideProfileHook signName={sign.name} slug={sign.slug} />
-      </div>
-
-      <aside class="guide-side">
-        <div class="shell">
-          <div class="core guide-side__core">
-            <span class="mono--label">The essentials</span>
-            <FactTable sign={sign} star={lore.principalStar} babylonianRecord={lore.babylonianRecord} />
-            <a class="guide-side__bdays" href="/birthday/">Look up your exact birthday →</a>
-          </div>
-        </div>
-        <div class="guide-side__cta shell tinted">
-          <div class="core tinted guide-side__cta-core">
-            <strong>Is {sign.name} your sun sign?</strong>
-            <p>Get your birth chart — moon, rising, planets, and all — then save what matters.</p>
-            <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
-          </div>
-        </div>
-      </aside>
     </div>
 
-    <nav class="container guide-nav reveal" aria-label="More signs">
-      <a class="guide-nav__adjacent" href={`/${prev.slug}/`} style={`--sign:${prev.hue}`}>
-        <span class="mono--label">← Previous</span>
-        <span class="guide-nav__name"><SignIcon sign={prev.slug} size={24} /> {prev.name}</span>
-      </a>
-      <div class="guide-nav__siblings">
-        <span class="mono--label">Fellow {ELEMENT_LABEL[sign.element].toLowerCase()} signs</span>
+    <section class="guide-questions" id="questions" aria-labelledby="guide-questions-title">
+      <div class="kwrap qa">
         <div>
-          {siblings.map((s) => (
-            <a class="chip" href={`/${s.slug}/`} style={`--sign:${s.hue}`}>
-              <SignIcon sign={s.slug} size={18} class="chip__icon" /> {s.name}
-            </a>
+          <h2 class="h-2" id="guide-questions-title">{sign.name}, asked and answered</h2>
+          <p>Born near the edge of the dates? <a href="/birthday/">Look up your exact birthday</a>.</p>
+        </div>
+        <div class="kfaq">
+          {guide.data.faq.map(({ q, a }, index) => (
+            <details open={index === 0}>
+              <summary>{q}</summary>
+              <p>{a}</p>
+            </details>
           ))}
         </div>
       </div>
-      <a class="guide-nav__adjacent guide-nav__adjacent--next" href={`/${next.slug}/`} style={`--sign:${next.hue}`}>
-        <span class="mono--label">Next →</span>
-        <span class="guide-nav__name"><SignIcon sign={next.slug} size={24} /> {next.name}</span>
-      </a>
-    </nav>
+    </section>
+
+    <section class="guide-wheel" aria-labelledby="guide-wheel-title">
+      <div class="kwrap">
+        <div class="section-head--row guide-wheel__head">
+          <div>
+            <h2 class="h-2" id="guide-wheel-title">Keep reading the wheel</h2>
+            <p>The sign before {sign.name}, the sign after, and the other ten.</p>
+          </div>
+          <a class="textlink only-desktop" href="/learn/zodiac-dates/">All zodiac dates <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+
+        <nav class="guide-neighbours" aria-label="Neighbouring signs">
+          {[{ s: prev, rel: 'prev', kicker: `Before ${sign.name}`, arrow: '←' }, { s: next, rel: 'next', kicker: `After ${sign.name}`, arrow: '→' }].map(({ s, rel, kicker, arrow }) => (
+            <a class="guide-nb" href={`/${s.slug}/`} rel={rel} style={`--sign:${s.hue}`}>
+              <ArtFrame
+                sign={s.slug}
+                class="guide-nb__art"
+                src={`/assets/sign-art/${s.slug}-720.webp`}
+                width={720}
+                height={480}
+                alt=""
+                spot="62% 50%"
+              />
+              <span class="guide-nb__body">
+                <span>
+                  <span class="kicker">{kicker}</span>
+                  <span class="h-3 guide-nb__name"><SignIcon sign={s.slug} size={34} />{s.name}</span>
+                  <span class="guide-nb__line">{signDateRange(s)}. {signTagline(s)}</span>
+                </span>
+                <span class="guide-nb__go" aria-hidden="true">{arrow}</span>
+              </span>
+            </a>
+          ))}
+        </nav>
+
+        <nav class="guide-wheelrow" aria-label="All twelve sign guides">
+          {SIGNS.map((s) => (
+            <a href={`/${s.slug}/`} aria-current={s.slug === sign.slug ? 'page' : undefined} style={`--sign:${s.hue}`}>
+              <SignIcon sign={s.slug} size={40} webpOnly />
+              <b>{s.name}</b>
+              <small>{s.slug === sign.slug ? 'You are here' : signDateRange(s)}</small>
+            </a>
+          ))}
+        </nav>
+
+        <div class="guide-siblings">
+          <span class="guide-siblings__label">Fellow {elementWord} signs:</span>
+          {siblings.map((s) => (
+            <a class="pill" href={`/${s.slug}/`}><SignIcon sign={s.slug} size={22} />{s.name}</a>
+          ))}
+        </div>
+
+        <div class="guide-collect">
+          <CollectBand signName={sign.name} slug={sign.slug} />
+        </div>
+      </div>
+    </section>
   </article>
 </Base>
 
 <style>
-  .guide-hero { padding-block: clamp(20px, 5vw, 56px) clamp(24px, 4vw, 40px); }
-  .guide-hero__id {
-    display: flex;
-    flex-direction: column;
-    gap: 26px;
+  /* ── Reading column with its contents rail ───────────────────── */
+  .guide-read {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 88px;
+    margin-top: clamp(64px, 7vw, 104px);
   }
-  @media (min-width: 760px) {
-    .guide-hero__id { flex-direction: row; align-items: center; gap: 44px; }
-  }
-  .guide-hero h1 {
-    margin: 0 0 12px;
-    font-family: var(--font-serif);
-    font-size: var(--text-hero);
-    font-weight: 500;
-    letter-spacing: -0.005em;
-    line-height: 0.96;
-    font-variant-numeric: oldstyle-figures;
-  }
-  .guide-hero__essence {
-    margin: 0 0 10px;
-    max-width: 44ch;
+  .guide-rail { position: sticky; top: 96px; align-self: start; }
+  .guide-rail__title { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--ink-1); }
+  .guide-rail ol { margin: 0; padding: 0; list-style: none; border-left: 1px solid var(--hair-2); }
+  .guide-rail li a {
+    display: block;
+    margin-left: -1px;
+    padding: 7px 0 7px 16px;
+    border-left: 2px solid transparent;
+    font-size: 0.9375rem;
+    line-height: 1.35;
     color: var(--muted);
-    font-size: var(--text-lg);
-    text-wrap: pretty;
-  }
-  .guide-hero__facts {
-    margin: 0 0 24px;
-    font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 1.4;
-    letter-spacing: 0;
-    word-spacing: 0.1em;
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-  }
-  .guide-hero__ctas { display: flex; flex-wrap: wrap; gap: 10px; }
-
-  .guide-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: clamp(28px, 5vw, 56px);
-    padding-bottom: clamp(32px, 6vw, 64px);
-  }
-  @media (min-width: 960px) {
-    .guide-grid { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
-    .guide-side { position: sticky; top: 96px; }
-  }
-  .guide-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 5vw, 48px); min-width: 0; }
-  .guide-band { margin-bottom: -6px; }
-
-  .guide-heritage h2, .guide-compat h2 {
-    margin: 0 0 16px;
-    font-size: var(--text-xl);
-    font-weight: 620;
-    letter-spacing: -0.02em;
-  }
-  .guide-heritage__lede {
-    margin: 0 0 14px;
-    font-size: var(--text-lg);
-    line-height: 1.6;
-    color: var(--text);
-    max-width: 62ch;
-    text-wrap: pretty;
-  }
-  .guide-heritage__p {
-    margin: 0 0 14px;
-    max-width: 66ch;
-    color: var(--text-2);
-    line-height: 1.7;
-  }
-  .guide-heritage :global(.timeline) { margin-top: 22px; }
-
-  /* Label → chips as an aligned two-column set: both labels share one column
-     so the two rows line up, chips flow in the second column (the wb__three
-     treatment). display:contents lets each row's parts join the shared grid. */
-  .guide-compat__rows {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    align-items: baseline;
-    gap: 12px 16px;
-    padding: 6px 0;
-  }
-  .guide-compat__row { display: contents; }
-  .guide-compat__chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .guide-compat__note { margin: 8px 0 0; font-size: var(--text-sm); color: var(--faint); }
-
-  .guide-placements h2 {
-    margin: 0 0 8px;
-    font-size: var(--text-xl);
-    font-weight: 620;
-    letter-spacing: -0.02em;
-  }
-  .guide-placements__note { margin: 0 0 14px; font-size: var(--text-sm); color: var(--faint); }
-  .guide-placements__chips { display: flex; flex-wrap: wrap; gap: 8px; }
-
-  .guide-side { display: grid; gap: 14px; }
-  .guide-side__core { padding: 20px; display: grid; gap: 12px; }
-  .guide-side__bdays { justify-self: start; font-size: 12.5px; color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--hair-2); }
-  .guide-side__bdays:hover { color: var(--text); border-bottom-color: var(--sign); }
-  .guide-side__cta-core { padding: 22px 20px; display: grid; gap: 10px; }
-  .guide-side__cta-core strong { font-size: var(--text-lg); letter-spacing: -0.01em; }
-  .guide-side__cta-core p { margin: 0; font-size: var(--text-sm); color: var(--text-2); }
-  .guide-side__cta-core .btn { width: fit-content; }
-
-  .guide-nav {
-    display: grid;
-    gap: 18px;
-    padding-block: clamp(20px, 4vw, 36px) clamp(28px, 5vw, 48px);
-    border-top: 1px solid var(--hair-1);
-    grid-template-columns: 1fr;
-  }
-  @media (min-width: 760px) {
-    .guide-nav { grid-template-columns: 1fr auto 1fr; align-items: center; }
-  }
-  .guide-nav__adjacent { text-decoration: none; display: grid; gap: 8px; }
-  .guide-nav__adjacent--next { text-align: end; justify-items: end; }
-  .guide-nav__name {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: var(--text-lg);
-    font-weight: 600;
-    color: var(--text);
-  }
-  .guide-nav__siblings { display: grid; gap: 10px; justify-items: center; text-align: center; }
-  .guide-nav__siblings > div { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 3px 10px 3px 4px;
-    border-radius: var(--r-full);
-    border: 1px solid color-mix(in oklab, var(--sign, var(--accent)) 35%, transparent);
-    background: color-mix(in oklab, var(--sign, var(--accent)) 9%, transparent);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
     text-decoration: none;
-    transition: background var(--dur-1) var(--ease);
   }
-  .chip:hover { background: color-mix(in oklab, var(--sign, var(--accent)) 16%, transparent); }
-  .chip :global(.chip__icon img) { border-radius: 50%; }
+  .guide-rail li a:hover { color: var(--ink-0); }
+  .guide-rail li a:focus-visible { color: var(--ink-0); border-left-color: var(--hue); }
+  .guide-rail__meta {
+    display: grid;
+    gap: 14px;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid var(--hair-1);
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  .guide-main { min-width: 0; }
+
+  /* The guide's own text, set as a feature. */
+  .guide-prose { max-width: none; }
+  .guide-prose > :global(p) { max-width: 64ch; }
+  .guide-prose > :global(p:not(h2 ~ *)) { font-size: 1.1875rem; line-height: 1.66; color: var(--ink-1); }
+  .guide-prose > :global(p:first-child::first-letter) {
+    float: left;
+    padding: 8px 8px 0 0;
+    font-family: var(--font-serif);
+    font-size: 4.6em;
+    line-height: 0.82;
+    color: var(--hue);
+  }
+  .guide-prose > :global(h2) {
+    margin: clamp(64px, 6.5vw, 96px) 0 20px;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 1.5rem + 1.7vw, 2.8rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.005em;
+    color: var(--ink-0);
+  }
+  .guide-prose > :global(h2:first-of-type) { margin-top: 56px; }
+  .guide-prose > :global(.guide-pull) {
+    max-width: 620px;
+    margin: 36px 0;
+    padding: 4px 0 4px 28px;
+    border-inline-start: 2px solid var(--hue);
+    font-style: normal;
+  }
+  .guide-prose > :global(.guide-pull p) { font-size: clamp(1.7rem, 1.2rem + 1.4vw, 2.3rem); line-height: 1.16; }
+
+  /* ── History ─────────────────────────────────────────────────── */
+  .guide-history { margin-top: clamp(64px, 6.5vw, 96px); }
+  .guide-history .h-2 { margin: 0 0 20px; font-size: clamp(2rem, 1.5rem + 1.7vw, 2.8rem); line-height: 1.05; }
+  .guide-history__lede {
+    margin: 0;
+    max-width: 40ch;
+    font-family: var(--font-serif);
+    font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.7rem);
+    line-height: 1.38;
+    color: var(--ink-0);
+    text-wrap: pretty;
+  }
+  .guide-history__prose { margin-top: 22px; }
+  .guide-history__prose p { margin: 0 0 1.05em; max-width: 64ch; font-size: 1.0625rem; line-height: 1.72; color: var(--text-2); text-wrap: pretty; }
+  .guide-history__figs { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); gap: 16px; margin-top: 36px; }
+  .guide-history__fig { margin: 0; display: flex; flex-direction: column; }
+  .guide-history__fig :global(.guide-history__detail) { aspect-ratio: 4 / 5; }
+  .guide-history__fig :global(.guide-history__detail > img) { object-position: 52% 50%; transform: scale(1.15); transform-origin: 52% 52%; }
+  .guide-history__frame {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-lg);
+    background: #090b10;
+  }
+  .guide-history__frame img { display: block; width: 100%; height: auto; }
+  .guide-history figcaption { margin-top: 10px; max-width: 56ch; font-size: 12.5px; line-height: 1.5; color: var(--faint); }
+  .guide-history figcaption a { color: var(--muted); text-decoration: underline; text-decoration-color: var(--hair-2); text-underline-offset: 3px; }
+
+  /* ── Questions ───────────────────────────────────────────────── */
+  .guide-questions { padding-top: clamp(64px, 8vw, 120px); }
+  .guide-questions .h-2 { font-size: clamp(2.1rem, 1.5rem + 2.8vw, 3.2rem); }
+  .guide-questions a { text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+  /* ── Keep reading the wheel ──────────────────────────────────── */
+  .guide-wheel { padding-block: clamp(64px, 8vw, 120px) clamp(48px, 6vw, 88px); }
+  .guide-wheel__head { margin-bottom: clamp(28px, 4vw, 48px); }
+  .guide-wheel__head > div { max-width: 60ch; }
+  .guide-wheel__head .h-2 { color: var(--ink-0); }
+  .guide-neighbours { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .guide-nb {
+    position: relative;
+    isolation: isolate;
+    display: block;
+    min-height: 340px;
+    overflow: hidden;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-xl);
+    color: var(--ink-0);
+    text-decoration: none;
+  }
+  .guide-nb :global(.guide-nb__art) { position: absolute; inset: 0; z-index: -1; border-radius: 0; }
+  .guide-nb :global(.guide-nb__art::after) {
+    background:
+      radial-gradient(ellipse 50% 60% at 62% 50%, transparent 0 34%, rgba(6, 7, 9, 0.45) 74%, rgba(6, 7, 9, 0.85) 100%),
+      linear-gradient(0deg, rgba(6, 7, 9, 0.92) 0%, rgba(6, 7, 9, 0) 58%);
+  }
+  .guide-nb__body { position: absolute; left: 28px; right: 28px; bottom: 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+  .guide-nb__body > span:first-child { display: grid; }
+  .guide-nb .kicker { margin: 0; font-size: 1rem; color: var(--ink-1); }
+  .guide-nb__name { display: flex; align-items: center; gap: 12px; margin-top: 2px; font-size: 2.2rem; color: var(--ink-0); }
+  .guide-nb__name :global(.sign-icon) { width: 34px; }
+  .guide-nb__line { margin-top: 6px; max-width: 40ch; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-1); }
+  .guide-nb__go {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid rgba(238, 241, 247, 0.4);
+    background: rgba(10, 12, 17, 0.5);
+    font-size: 16px;
+    color: var(--ink-0);
+    transition: transform var(--dur-1) var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .guide-nb:hover .guide-nb__go { transform: translateX(2px); }
+    .guide-nb[rel='prev']:hover .guide-nb__go { transform: translateX(-2px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .guide-nb__go { transition: none; } }
+
+  .guide-wheelrow { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; margin-top: 20px; }
+  .guide-wheelrow a {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 16px 2px 12px;
+    border: 1px solid var(--hair-1);
+    border-radius: 16px;
+    background: rgba(198, 204, 218, 0.02);
+    color: var(--ink-0);
+    text-align: center;
+    text-decoration: none;
+  }
+  .guide-wheelrow :global(.sign-icon) { width: 40px; }
+  .guide-wheelrow b { font-weight: 550; font-size: 0.875rem; }
+  .guide-wheelrow small { margin-top: -6px; font-size: 10.5px; line-height: 1.3; letter-spacing: -0.01em; white-space: nowrap; color: var(--faint); }
+  .guide-wheelrow a[aria-current='page'] {
+    border-color: color-mix(in oklab, var(--sign) 45%, transparent);
+    background: color-mix(in oklab, var(--sign) 8%, transparent);
+  }
+  .guide-wheelrow a[aria-current='page'] small { color: var(--sign); }
+  @media (hover: hover) and (pointer: fine) {
+    .guide-wheelrow a:hover { border-color: color-mix(in oklab, var(--sign) 42%, transparent); }
+  }
+  .guide-siblings { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 16px; font-size: 0.9375rem; color: var(--muted); }
+  .guide-siblings__label { margin-right: 4px; }
+  .guide-siblings .pill :global(.sign-icon) { width: 22px; }
+  .guide-collect { margin-top: clamp(36px, 5vw, 56px); }
+
+  /* ── Breakpoints ─────────────────────────────────────────────── */
+  @media (max-width: 1100px) {
+    .guide-wheelrow { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  }
+  @media (max-width: 960px) {
+    .guide-read { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .guide-rail { position: static; }
+    .guide-rail__meta { display: none; }
+  }
+  @media (max-width: 760px) {
+    .guide-read { margin-top: 44px; }
+    .guide-rail { margin: 0 -20px 40px 0; }
+    .guide-rail__title { display: none; }
+    .guide-rail ol {
+      display: flex;
+      gap: 8px;
+      padding-right: 20px;
+      overflow-x: auto;
+      border-left: 0;
+      scrollbar-width: none;
+    }
+    .guide-rail ol::-webkit-scrollbar { display: none; }
+    .guide-rail li { flex: none; }
+    .guide-rail li a {
+      display: inline-flex;
+      align-items: center;
+      height: 36px;
+      margin: 0;
+      padding: 0 14px;
+      border: 1px solid var(--hair-2);
+      border-radius: var(--r-full);
+      font-size: 0.875rem;
+      white-space: nowrap;
+    }
+
+    .guide-prose > :global(p:not(h2 ~ *)) { font-size: 1.0625rem; }
+    .guide-prose > :global(.guide-pull) { margin: 30px 0; padding-left: 20px; }
+
+    .guide-history__figs {
+      display: flex;
+      gap: 12px;
+      margin-right: -20px;
+      padding-right: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .guide-history__figs::-webkit-scrollbar { display: none; }
+    .guide-history__fig { flex: 0 0 84%; scroll-snap-align: start; }
+    .guide-history__fig :global(.guide-history__detail) { aspect-ratio: 4 / 3; }
+    .guide-history__frame { flex: none; aspect-ratio: 4 / 3; }
+
+    .guide-neighbours { gap: 10px; }
+    .guide-nb { min-height: 214px; border-radius: 20px; }
+    .guide-nb :global(.guide-nb__art::after) {
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 40%, transparent 0 30%, rgba(6, 7, 9, 0.45) 80%),
+        linear-gradient(0deg, rgba(6, 7, 9, 0.95) 0%, rgba(6, 7, 9, 0) 62%);
+    }
+    .guide-nb__body { left: 14px; right: 14px; bottom: 14px; }
+    .guide-nb .kicker { font-size: 0.875rem; }
+    .guide-nb__name { gap: 8px; font-size: 1.45rem; }
+    .guide-nb__name :global(.sign-icon) { width: 24px; }
+    .guide-nb__line, .guide-nb__go { display: none; }
+    .guide-wheelrow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .guide-wheelrow small { display: none; }
+    .guide-wheelrow a[aria-current='page'] small { display: block; }
+  }
 </style>

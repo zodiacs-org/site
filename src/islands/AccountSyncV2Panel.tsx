@@ -1478,7 +1478,7 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
       <div class="core pf-sync__core">
         <div class="pf-account-v2__intro">
           <span class="mono--label pf-sync__label">Optional Zodiacs account</span>
-          <strong>{session ? 'Private continuity across devices' : 'Keep charts on this device—or choose one to sync'}</strong>
+          <strong>{session ? 'Private continuity across devices' : 'Keep charts on this device, or choose one to sync'}</strong>
           <p>
             Charts work without an account. If you opt in, one self chart can be encrypted for recovery and future app access.
             Nothing becomes public.
@@ -1779,7 +1779,7 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
               <details class="pf-account-v2__delete">
                 <summary>Delete Zodiacs account</summary>
                 <p>This permanently deletes cloud charts, consent records where legally permitted, and account access. Zodiacs also removes a linked Daily Sun subscription when it can confirm the match; otherwise it reports that manual unsubscribe may be needed. Apple subscriptions, when introduced, will require separate cancellation.</p>
-                <p>If the connection drops, this browser keeps one account-scoped recovery proof. It can check and finish that exact request after reload—even after sign-in access has been removed—and clears the proof only after completion is confirmed.</p>
+                <p>If the connection drops, this browser keeps one account-scoped recovery proof. It can check and finish that exact request after reload, even after sign-in access has been removed, and clears the proof only after completion is confirmed.</p>
                 <label class="pf-account-v2__delete-label" for="account-delete-confirmation">Type DELETE to confirm</label>
                 <input
                   id="account-delete-confirmation"

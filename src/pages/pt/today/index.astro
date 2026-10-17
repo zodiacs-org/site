@@ -22,7 +22,7 @@ const cue = englishOnlyCue(locale);
 const description = `O céu de hoje para os doze signos solares: até quatro notas por signo, calculadas a partir das posições reais de ${dateLabel}.`;
 ---
 <Base
-  title={`Hoje — o céu de ${dateLabel} | Zodiacs.org`}
+  title={`Hoje, o céu de ${dateLabel} | Zodiacs.org`}
   description={description}
   path="/pt/today/"
   locale={locale}
@@ -30,8 +30,8 @@ const description = `O céu de hoje para os doze signos solares: até quatro not
 >
   <section class="section--tight container container--narrow" data-edition-content="true">
     <header class="today-pt__hero">
-      <em class="kicker">Edição diária · {dateLabel}</em>
       <h1 class="display">Hoje</h1>
+      <p class="dateline">Edição diária · {dateLabel}</p>
       <p>
         Escolha o seu signo solar. Cada nota vem das posições registradas do céu de hoje, lidas a partir das casas
         solares do seu signo; os registros sob cada leitura dizem exatamente o que a produziu.

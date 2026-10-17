@@ -1,5 +1,6 @@
 ---
 import type { Heritage } from '../lib/legacy/sign-lore';
+import { plainDashes } from '../lib/legacy/sign-lore';
 
 interface Props {
   lore: Heritage;
@@ -12,7 +13,7 @@ const beats = [
   { era: 'c. 1000 BC', place: 'Babylon', body: lore.provenanceBabylon },
   {
     era: 'c. 450 BC', place: 'Babylon',
-    body: 'Fixed as one of twelve equal signs when Babylonian astronomers divide the sun’s path into the first zodiac — the frame still in use today.',
+    body: 'Fixed as one of twelve equal signs when Babylonian astronomers divide the sun’s path into the first zodiac, the frame still in use today.',
   },
   { era: 'c. 270 BC', place: 'The Hellenistic world', body: lore.provenanceGreece },
   {
@@ -25,62 +26,74 @@ const beats = [
   },
 ];
 ---
-<ol class="timeline" style={`--sign:${hue}`}>
+<ol class="timeline" style={`--sign:${hue};--beats:${beats.length}`}>
   {beats.map((b) => (
     <li class="timeline__item">
-      <div class="timeline__era">{b.era} <span>· {b.place}</span></div>
-      <p>{b.body}</p>
+      <b class="timeline__era">{b.era}</b>
+      <em class="timeline__place">{b.place}</em>
+      <p>{plainDashes(b.body)}</p>
     </li>
   ))}
 </ol>
 
 <style>
+  /* Across the page on wide screens, down the left edge on phones. */
   .timeline {
-    margin: 0;
-    padding-block: 0;
-    padding-inline-start: 24px;
-    list-style: none;
     position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--beats, 5), minmax(0, 1fr));
+    gap: 20px;
+    margin: 48px 0 0;
+    padding: 0;
+    list-style: none;
   }
   .timeline::before {
     content: '';
     position: absolute;
-    inset-inline-start: 4px;
-    top: 8px;
-    bottom: 8px;
-    width: 1px;
-    background: linear-gradient(180deg, transparent, var(--hair-2) 10%, var(--hair-2) 90%, transparent);
+    left: 0;
+    right: 0;
+    top: 6px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--sign), var(--hair-2) 70%);
+    opacity: 0.7;
   }
-  .timeline__item { position: relative; padding-bottom: 22px; }
-  .timeline__item:last-child { padding-bottom: 0; }
+  .timeline__item { position: relative; padding-top: 28px; }
   .timeline__item::before {
     content: '';
     position: absolute;
-    inset-inline-start: -24px;
-    top: 6px;
-    width: 8px;
-    height: 8px;
+    top: 0;
+    left: 0;
+    width: 13px;
+    height: 13px;
     border-radius: 50%;
     background: var(--void-0);
     border: 1.5px solid var(--sign);
-    box-shadow: 0 0 10px color-mix(in oklab, var(--sign) 45%, transparent);
   }
   .timeline__era {
-    margin-bottom: 5px;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    font-weight: 550;
-    letter-spacing: 0;
-    text-transform: none;
-    font-variant-numeric: tabular-nums;
-    color: var(--sign);
+    display: block;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 1.35rem;
+    line-height: 1.1;
+    color: var(--ink-0);
+    font-variant-numeric: lining-nums;
   }
-  .timeline__era span { color: var(--faint); }
-  .timeline__item p {
-    margin: 0;
-    max-width: 58ch;
-    font-size: var(--text-sm);
-    line-height: 1.65;
-    color: var(--text-2);
+  .timeline__place { display: block; margin-top: 4px; font-style: normal; font-size: 13px; color: var(--sign); }
+  .timeline__item p { margin: 10px 0 0; font-size: 0.875rem; line-height: 1.55; color: var(--muted); }
+  @media (max-width: 760px) {
+    .timeline { grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 36px; }
+    .timeline::before {
+      left: 6px;
+      right: auto;
+      top: 6px;
+      bottom: 6px;
+      width: 1px;
+      height: auto;
+      background: linear-gradient(180deg, var(--sign), var(--hair-2) 80%);
+    }
+    .timeline__item { padding: 0 0 26px 32px; }
+    .timeline__item:last-child { padding-bottom: 0; }
+    .timeline__era { font-size: 1.2rem; }
+    .timeline__item p { margin-top: 6px; }
   }
 </style>

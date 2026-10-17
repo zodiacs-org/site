@@ -112,7 +112,7 @@ describe('homepage first-paint assets', () => {
     expect(css).toContain(".hero__poster[data-hero-visible='false'] { animation-play-state: paused; }");
   });
 
-  it('keeps the pre-August 31 hero hierarchy on the real route fonts', async () => {
+  it('keeps the approved hero copy and hierarchy on the real route fonts', async () => {
     const [css, page] = await Promise.all([
       readFile(resolve(repositoryRoot, 'src/home/home-first-paint.css'), 'utf8'),
       readFile(resolve(repositoryRoot, 'src/pages/index.astro'), 'utf8'),
@@ -124,11 +124,11 @@ describe('homepage first-paint assets', () => {
     expect(css).toMatch(/\.hero__trust\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
     expect(page).toMatch(/\.hero__title\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
     expect(page).toMatch(/\.hero__trust\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
-    expect(page).toContain('<h1 class="hero__title">Your whole chart, <em>not just your sign.</em></h1>');
-    expect(page).toContain('Birth charts calculated in your browser.');
-    expect(page).toContain('Clear astrology readings and tools, free to explore.');
+    // DESIGN.md's approved hero: the sentence-case headline and caption.
+    expect(page).toContain('<h1 class="hero__title">Explore the stars behind your story.</h1>');
+    expect(page).toContain('Free birth charts, moon signs, compatibility, and horoscopes: accurate, private, and easy to understand.');
     expect(page).toContain('Get your free birth chart');
-    expect(page).toMatch(/<a\b[^>]*class="btn btn--ghost hero__ghost"[^>]*href="\/horoscopes\/"[^>]*><span>Your horoscope<\/span><\/a>/u);
+    expect(page).toMatch(/<a\b[^>]*class="btn btn--ghost hero__ghost"[^>]*href="\/horoscopes\/"[^>]*><span>See your horoscope<\/span><\/a>/u);
     expect(page).toContain('Free · No signup · Calculated in your browser');
     expect(page).not.toContain('class="hero__story"');
     expect(page).not.toContain('class="hero__method"');
@@ -142,14 +142,16 @@ describe('homepage first-paint assets', () => {
     // The saved-profile island has no SSR child for visibility observation.
     // The intent/load fallback reaches returning state after the initial poster load.
     expect(page).toContain('<WelcomeBack client:interaction />');
-    expect(page).toContain('<TodayBySign client:visible={{ rootMargin: \'240px\' }} />');
+    // The sign picker under the hero is twelve plain links: no island.
+    expect(page).not.toContain('<TodayBySign');
+    expect(page).toMatch(/<a\s+href=\{`\/horoscopes\/\$\{s\.slug\}\/`\}/u);
   });
 
   it.skipIf(!existsSync(resolve(repositoryRoot, 'dist/index.html')))(
     'discovers the poster first and installs client copy after the hero',
     async () => {
       const html = await readFile(resolve(repositoryRoot, 'dist/index.html'), 'utf8');
-      const posterHint = html.indexOf('href="/assets/hero/zodiacs-hero-poster-mobile-v2.avif"');
+      const posterHint = html.indexOf('href="/assets/hero/zodiacs-hero-poster-mobile-v3.avif"');
       const criticalBase = html.indexOf('data-zdx-critical=');
       const hero = html.indexOf('<section class="hero');
       const catalog = html.indexOf('globalThis.__ZDX_UI__');
@@ -173,7 +175,7 @@ describe('homepage first-paint assets', () => {
       // dependency tree must not become a home hydration root again.
       expect(html).toContain('class="skyticker"');
       expect(html).toContain('class="skyticker__label"');
-      expect(html.match(/class="skyticker__item"/gu)?.length).toBeGreaterThanOrEqual(3);
+      expect(html.match(/class="skyticker__item(?: [^"]*)?"/gu)?.length).toBeGreaterThanOrEqual(3);
       expect(html).not.toMatch(/component-url="[^"]*\/SkyTicker\.[^"]*"/u);
     },
   );

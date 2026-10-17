@@ -36,16 +36,16 @@ const eclipses = (eclipseData.eclipses as EclipseEntry[])
     let detail = '';
     if (e.type === 'solar') {
       detail = e.kind === 'total'
-        ? 'totality — the Sun fully covered along the track'
+        ? 'totality, the Sun fully covered along the track'
         : e.kind === 'annular'
-          ? `ring eclipse — ${pct}% of the Sun covered at maximum`
+          ? `ring eclipse, ${pct}% of the Sun covered at maximum`
           : 'partial only';
     } else {
       detail = e.kind === 'total'
         ? `totality lasts about ${e.totalMinutes} minutes`
         : e.kind === 'partial'
           ? `${pct}% of the Moon in shadow at maximum`
-          : 'penumbral — a subtle shading, easy to miss';
+          : 'penumbral, a subtle shading, easy to miss';
     }
     return {
       ...e,
@@ -107,17 +107,17 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Eclipses 2027 — Every Solar and Lunar Eclipse, Exact | Zodiacs.org"
+  title="Eclipses 2027: Every Solar and Lunar Eclipse, Exact | Zodiacs.org"
   description="Every solar and lunar eclipse of 2027 with the exact peak in universal time, the eclipse type, and the zodiac sign it falls in, plus a calendar file for the year."
   path={`/eclipses/${YEAR}/`}
   image="/assets/og/v2/tool/eclipses.png"
-  imageAlt="Eclipses 2027 — Zodiacs.org"
+  imageAlt="Eclipses 2027, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
-      <em class="kicker">Eclipses · {YEAR}</em>
+      <a class="crumb" href="/eclipses/"><span class="crumb__arrow" aria-hidden="true">←</span>Eclipses</a>
       <h1 class="display">The eclipses of {YEAR}.</h1>
       <p>
         {solar.length} solar and {lunar.length} lunar, each at its exact peak in universal time, with the{' '}

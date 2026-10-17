@@ -223,7 +223,7 @@ export default function RaceBoard({
         // The signed cookie is gone; the local mirror is stale.
         writeMembership(null);
         setMembership(null);
-        setNote('This browser is not on a team yet. Join below — it takes ten seconds.');
+        setNote('This browser is not on a team yet. Join below. It takes ten seconds.');
       } else {
         setNote('The Race did not answer. Try again in a moment.');
       }
@@ -282,7 +282,7 @@ export default function RaceBoard({
           ? leader.points === runnerUp.points
             ? 'Scores are level at the top. Every check-in counts.'
             : `${signBySlug(leader.sign)?.name ?? leader.sign} leads. ${signBySlug(runnerUp.sign)?.name ?? runnerUp.sign} is ${(leader.points - runnerUp.points).toLocaleString('en')} points behind.`
-          : standings === null ? 'Reading the board…' : 'The season is open. All signs start level — the first points set the order.'}
+          : standings === null ? 'Reading the board…' : 'The season is open. All signs start level. The first points set the order.'}
       </p>
 
       <table class="race-board__table">
@@ -353,12 +353,12 @@ export default function RaceBoard({
             {!checkedInThisWeek ? (
               <>
                 <button type="button" class="btn race-board__cta" disabled={busy} onClick={checkin}>
-                  Check in — Week {week.isoWeek}
+                  Check in, Week {week.isoWeek}
                 </button>
                 {justJoined && (
                   <p class="race-board__free">
                     <strong>You’re in.</strong> {memberSign?.name ?? membership.sign} just
-                    scored. Come back weekly — check-ins count.
+                    scored. Come back weekly. Check-ins count.
                   </p>
                 )}
               </>
@@ -395,7 +395,7 @@ export default function RaceBoard({
           src={`/assets/sculptures/512/${seasonSlug}.webp`}
           width={200}
           height={200}
-          alt={`The ${seasonName} Zodiac design — this season’s trophy`}
+          alt={`The ${seasonName} Zodiac design, this season’s trophy`}
           loading="lazy"
           decoding="async"
         />
@@ -412,7 +412,7 @@ export default function RaceBoard({
         <div class="race-board__module race-board__bridge">
           <h3>{bridgeSign.name} is one of the Twelve.</h3>
           <p>
-            Every sign has an official catalogue profile — its story, its
+            Every sign has an official catalogue profile: its story, its
             record, and its place among the Twelve.
           </p>
           <a

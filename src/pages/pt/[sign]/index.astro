@@ -1,12 +1,15 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import SignIcon from '../../../components/SignIcon.astro';
-import SignHeroArt from '../../../components/SignHeroArt.astro';
+import SignGuideHero from '../../../components/SignGuideHero.astro';
+import SignGuideFacts from '../../../components/SignGuideFacts.astro';
 import Faq from '../../../components/Faq.astro';
 import CollectBand from '../../../components/CollectBand.astro';
 import ShareRow from '../../../components/ShareRow.astro';
-import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signDates, signName } from '../../../lib/signs';
-import { localizePath } from '../../../lib/i18n';
+import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signName } from '../../../lib/signs';
+import { signDateRange } from '../../../lib/sign-display';
+import { planetLabel } from '../../../lib/i18n/astrology';
+import { localizePath, t } from '../../../lib/i18n';
 import { portugueseGuideFor } from '../../../data/pt-guides';
 import { pairSlug } from '../../../lib/compat';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
@@ -34,6 +37,15 @@ const easeful = {
   aquarius: ['gemini', 'libra', 'sagittarius'],
   pisces: ['cancer', 'scorpio', 'capricorn'],
 }[sign.slug]!;
+
+// The hero's quick answers, in the labels this locale's catalogue already
+// carries for the chart inspector (dates, element, ruler).
+const upperFirst = (value: string) => value.replace(/^\p{L}/u, (letter) => letter.toLocaleUpperCase('pt'));
+const heroFacts = [
+  { label: t('pt', 'dates'), value: upperFirst(signDateRange(sign, 'pt')) },
+  { label: t('pt', 'element'), value: upperFirst(elementLabel(sign.element, 'pt')) },
+  { label: t('pt', 'ruler'), value: planetLabel('pt', sign.ruler), glyph: sign.ruler },
+];
 
 const jsonLd = [
   {
@@ -74,24 +86,19 @@ const jsonLd = [
   description={guide.description}
   path={`/pt/${sign.slug}/`}
   image={`/assets/og/v2/sign/${sign.slug}.png`}
-  imageAlt={`${signName(sign, 'pt')} — guia de signo no Zodiacs.org`}
+  imageAlt={`${signName(sign, 'pt')}, guia de signo no Zodiacs.org`}
   type="article"
   locale="pt"
   jsonLd={jsonLd}
 >
   <article style={`--sign:${sign.hue}`}>
-    <header class="guide-pt-hero container">
-      <SignHeroArt sign={sign.slug} locale="pt" />
-      <div>
-        <h1 class="display">{signName(sign, 'pt')}</h1>
-        <p>{guide.intro[0]}</p>
-        <p class="guide-pt-hero__facts">{elementLabel(sign.element, 'pt')} · {signDates(sign, 'pt')}</p>
-        <div class="guide-pt-hero__ctas">
-          <a class="btn btn--primary" href={localizePath('pt', '/birth-chart/')}><span>Calcule seu mapa astral grátis</span><span class="orb">↗</span></a>
-          <a class="btn btn--ghost" href={localizePath('pt', '/compatibility/')}><span>Ver compatibilidade</span></a>
-        </div>
-      </div>
-    </header>
+    <SignGuideHero sign={sign.slug} locale="pt" title={signName(sign, 'pt')} sub={guide.intro[0]}>
+      <a class="btn btn--primary btn--lg" href={localizePath('pt', '/birth-chart/')}><span>Calcule seu mapa astral grátis</span><span class="orb" aria-hidden="true">↗</span></a>
+      <a class="btn btn--glass btn--lg" href={localizePath('pt', '/compatibility/')}><span>Ver compatibilidade</span></a>
+    </SignGuideHero>
+    <div class="kwrap guide-locale-facts">
+      <SignGuideFacts facts={heroFacts} />
+    </div>
 
     <div class="container container--narrow guide-pt-body">
       <div class="reveal">
@@ -141,7 +148,7 @@ const jsonLd = [
       </section>
 
       <ShareRow
-        text={`${signName(sign, 'pt')} — o guia completo`}
+        text={`${signName(sign, 'pt')}, o guia completo`}
         url={`https://zodiacs.org/pt/${sign.slug}/`}
         locale="pt"
       />
@@ -161,39 +168,7 @@ const jsonLd = [
 </Base>
 
 <style>
-  .guide-pt-hero {
-    display: grid;
-    gap: clamp(22px, 5vw, 44px);
-    align-items: center;
-    padding-block: clamp(28px, 6vw, 68px) clamp(22px, 5vw, 42px);
-  }
-  @media (min-width: 760px) {
-    .guide-pt-hero { grid-template-columns: auto minmax(0, 1fr); }
-  }
-  .guide-pt-hero h1 {
-    margin: 0 0 14px;
-    font-size: var(--text-hero);
-    line-height: 0.96;
-  }
-  .guide-pt-hero p {
-    margin: 0;
-    max-width: 58ch;
-    color: var(--muted);
-    font-size: var(--text-lg);
-    line-height: 1.6;
-    text-wrap: pretty;
-  }
-  .guide-pt-hero .guide-pt-hero__facts {
-    margin-top: 10px;
-    font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 1.4;
-    letter-spacing: 0;
-    word-spacing: 0.1em;
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-  }
-  .guide-pt-hero__ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .guide-locale-facts { margin-bottom: clamp(36px, 5vw, 56px); }
   .guide-pt-body { display: grid; gap: clamp(28px, 5vw, 46px); }
   .guide-pt-panel__core { padding: clamp(22px, 4vw, 32px); display: grid; gap: 12px; }
   .guide-pt-panel h2 { margin: 0; font-size: var(--text-xl); }

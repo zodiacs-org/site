@@ -39,6 +39,8 @@
 @media (min-width: 760px) {
   .return-discovery ul { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
 }
+/* On the localized tools pages each entry wears its tool's icon (ToolIcon). */
+.return-discovery__name { display: inline-flex; align-items: center; gap: 14px; min-width: 0; }
 /* Profile already ends with section padding; avoid stacking two large gaps. */
 main > .section--tight:has(> .return-discovery) { width: min(100% - 40px, 780px); padding-block: 0; }
 main > .section--tight > .return-discovery { margin-top: 0; }

@@ -27,7 +27,7 @@ export const HOROSCOPE_OG_SURFACES = Object.freeze([
 ]);
 
 export const OG_EN = Object.freeze({
-  fallbackAlt: 'Zodiacs.org — free birth charts, sign guides, and astrology tools.',
+  fallbackAlt: 'Zodiacs.org: free birth charts, sign guides, and astrology tools.',
   site: 'zodiacs.org',
   signNames: Object.freeze({
     aries: 'Aries',
@@ -194,7 +194,7 @@ export const SCHEMA_EN = Object.freeze({
   organizationName: ORGANIZATION_NAME,
   organizationAlternateName: 'Zodiacs.org',
   websiteName: 'Zodiacs.org',
-  websiteDescription: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides — private in your browser.',
+  websiteDescription: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides, private in your browser.',
   breadcrumbHome: 'Zodiacs.org',
   applicationCategory: 'LifestyleApplication',
   operatingSystem: 'Any device with a modern web browser',
@@ -281,7 +281,7 @@ export function ogImageForPath(path) {
 export function ogAltForPath(path) {
   const normalized = normalizedPath(path);
   const tool = OG_EN.tools.find((entry) => entry.path === normalized);
-  if (tool) return `${tool.title} — Zodiacs.org`;
+  if (tool) return `${tool.title} | Zodiacs.org`;
   return ogSpecialForPath(normalized)?.value.alt ?? OG_EN.fallbackAlt;
 }
 

@@ -1,4 +1,5 @@
 ---
+import { phraseUntil, rangeWords, sincePhrase } from '../../lib/range-words';
 /**
  * Translated retrograde calendar (es, pt, fr, it). The English page
  * (src/pages/retrogrades/index.astro) is the reference: same data logic,
@@ -81,10 +82,10 @@ const COPY: Record<Locale, Copy> = {
   es: {
     title: 'Planetas retrógrados 2026 y 2027 | Zodiacs.org',
     description: 'Qué planetas están retrógrados ahora y cuándo son los próximos periodos: de Mercurio a Plutón en 2026 y 2027, con fechas y posiciones de cada estación.',
-    imageAlt: 'Planetas retrógrados — Zodiacs.org',
-    schemaName: 'Planetas retrógrados 2026–2027, con fechas',
+    imageAlt: 'Planetas retrógrados | Zodiacs.org',
+    schemaName: 'Planetas retrógrados 2026 y 2027, con fechas',
     schemaDescription: 'Todos los periodos retrógrados de 2026 y 2027, de Mercurio a Plutón, con fechas y posiciones de las estaciones, calculados a partir del movimiento real.',
-    datasetName: 'Periodos retrógrados de los planetas, 2026–2027',
+    datasetName: 'Periodos retrógrados de los planetas, 2026 y 2027',
     datasetDescription: 'Instantes calculados de las estaciones retrógradas y directas y posiciones en el zodiaco tropical, de Mercurio a Plutón.',
     variableMeasured: ['planeta', 'instante de la estación retrógrada', 'instante de la estación directa', 'longitud de la estación'],
     eventName: (planet) => `${planet} retrógrado`,
@@ -127,7 +128,7 @@ const COPY: Record<Locale, Copy> = {
     calm2: (links) => [
       'La tradición ajusta sus lecturas al ritmo. Los periodos de tres semanas de ',
       { text: 'Mercurio', href: links.mercury },
-      ' son temporada de revisión para planes y papeleo. Un periodo retrógrado de Venus —el menos frecuente, cada 19 meses— se lee como una reevaluación de lo que quieres y de a quién quieres; el de Marte, cada 26 meses, como una reconstrucción del motor del impulso mismo. Los periodos anuales de los planetas exteriores pasan casi inadvertidos y solo se sienten donde cruzan algo exacto en tu propia carta, que es lo que revisa el ',
+      ' son temporada de revisión para planes y papeleo. Un periodo retrógrado de Venus (el menos frecuente, cada 19 meses) se lee como una reevaluación de lo que quieres y de a quién quieres; el de Marte, cada 26 meses, como una reconstrucción del motor del impulso mismo. Los periodos anuales de los planetas exteriores pasan casi inadvertidos y solo se sienten donde cruzan algo exacto en tu propia carta, que es lo que revisa el ',
       { text: 'seguimiento de tránsitos', href: links.transits },
       '.',
     ],
@@ -156,17 +157,17 @@ const COPY: Record<Locale, Copy> = {
       },
       {
         q: '¿Por qué Mercurio se lleva toda la atención?',
-        a: 'Por frecuencia y por terreno. Mercurio se vuelve retrógrado tres o cuatro veces al año —es el único planeta que lo hace más de una vez al año— y la astrología le asigna los asuntos del día a día: mensajes, viajes, contratos. Los periodos retrógrados de Venus y Marte son menos frecuentes y se leen como revisiones más profundas del apego y del impulso. La historia completa de Mercurio tiene su propia página.',
+        a: 'Por frecuencia y por terreno. Mercurio se vuelve retrógrado tres o cuatro veces al año. Es el único planeta que lo hace más de una vez al año, y la astrología le asigna los asuntos del día a día: mensajes, viajes, contratos. Los periodos retrógrados de Venus y Marte son menos frecuentes y se leen como revisiones más profundas del apego y del impulso. La historia completa de Mercurio tiene su propia página.',
       },
     ],
   },
   pt: {
     title: 'Planetas retrógrados 2026 e 2027 | Zodiacs.org',
     description: 'Quais planetas estão retrógrados agora e quando vêm os próximos períodos: de Mercúrio a Plutão em 2026 e 2027, com datas e posições de cada estação.',
-    imageAlt: 'Planetas retrógrados — Zodiacs.org',
-    schemaName: 'Planetas retrógrados 2026–2027, com datas',
+    imageAlt: 'Planetas retrógrados | Zodiacs.org',
+    schemaName: 'Planetas retrógrados 2026 e 2027, com datas',
     schemaDescription: 'Todos os períodos retrógrados de 2026 e 2027, de Mercúrio a Plutão, com datas e posições das estações, calculados a partir do movimento real.',
-    datasetName: 'Períodos retrógrados dos planetas, 2026–2027',
+    datasetName: 'Períodos retrógrados dos planetas, 2026 e 2027',
     datasetDescription: 'Instantes calculados das estações retrógradas e diretas e posições no zodíaco tropical, de Mercúrio a Plutão.',
     variableMeasured: ['planeta', 'instante da estação retrógrada', 'instante da estação direta', 'longitude da estação'],
     eventName: (planet) => `${planet} retrógrado`,
@@ -209,7 +210,7 @@ const COPY: Record<Locale, Copy> = {
     calm2: (links) => [
       'A tradição ajusta suas leituras ao ritmo. Os períodos de três semanas de ',
       { text: 'Mercúrio', href: links.mercury },
-      ' são temporada de revisão de planos e papelada. Um período retrógrado de Vênus — o mais raro, a cada 19 meses — é lido como uma reavaliação do que você quer e de quem você quer; o de Marte, a cada 26 meses, como uma retífica do motor do próprio impulso. Os períodos anuais dos planetas exteriores passam quase despercebidos e só são sentidos onde cruzam algo exato no seu mapa, e é isso que o ',
+      ' são temporada de revisão de planos e papelada. Um período retrógrado de Vênus (o mais raro, a cada 19 meses) é lido como uma reavaliação do que você quer e de quem você quer; o de Marte, a cada 26 meses, como uma retífica do motor do próprio impulso. Os períodos anuais dos planetas exteriores passam quase despercebidos e só são sentidos onde cruzam algo exato no seu mapa, e é isso que o ',
       { text: 'acompanhamento de trânsitos', href: links.transits },
       ' verifica.',
     ],
@@ -238,17 +239,17 @@ const COPY: Record<Locale, Copy> = {
       },
       {
         q: 'Por que Mercúrio recebe toda a atenção?',
-        a: 'Por frequência e por território. Mercúrio fica retrógrado três ou quatro vezes por ano — é o único planeta que faz isso mais de uma vez por ano — e a astrologia entrega a ele os assuntos do dia a dia: mensagens, viagens, contratos. Os períodos retrógrados de Vênus e Marte são mais raros e lidos como revisões mais profundas do apego e do impulso. A história completa de Mercúrio tem uma página própria.',
+        a: 'Por frequência e por território. Mercúrio fica retrógrado três ou quatro vezes por ano. É o único planeta que faz isso mais de uma vez por ano, e a astrologia entrega a ele os assuntos do dia a dia: mensagens, viagens, contratos. Os períodos retrógrados de Vênus e Marte são mais raros e lidos como revisões mais profundas do apego e do impulso. A história completa de Mercúrio tem uma página própria.',
       },
     ],
   },
   fr: {
     title: 'Planètes rétrogrades 2026 et 2027 | Zodiacs.org',
-    description: 'Quelles planètes sont rétrogrades maintenant et quand viennent les prochaines périodes\u202F: de Mercure à Pluton, 2026–2027, dates et positions des stations.',
-    imageAlt: 'Planètes rétrogrades — Zodiacs.org',
-    schemaName: 'Planètes rétrogrades 2026–2027, avec les dates',
+    description: 'Quelles planètes sont rétrogrades maintenant et quand viennent les prochaines périodes\u202F: de Mercure à Pluton, 2026 et 2027, dates et positions des stations.',
+    imageAlt: 'Planètes rétrogrades | Zodiacs.org',
+    schemaName: 'Planètes rétrogrades 2026 et 2027, avec les dates',
     schemaDescription: 'Toutes les périodes rétrogrades de 2026 et 2027, de Mercure à Pluton, avec les dates et les positions des stations, calculées d’après le mouvement réel.',
-    datasetName: 'Périodes rétrogrades des planètes, 2026–2027',
+    datasetName: 'Périodes rétrogrades des planètes, 2026 et 2027',
     datasetDescription: 'Instants calculés des stations rétrogrades et directes et positions dans le zodiaque tropical, de Mercure à Pluton.',
     variableMeasured: ['planète', 'instant de la station rétrograde', 'instant de la station directe', 'longitude de la station'],
     eventName: (planet) => `${planet} rétrograde`,
@@ -291,7 +292,7 @@ const COPY: Record<Locale, Copy> = {
     calm2: (links) => [
       'La tradition ajuste ses lectures au rythme. Les périodes de trois semaines de ',
       { text: 'Mercure', href: links.mercury },
-      ' sont la saison des révisions pour les projets et la paperasse. Une période rétrograde de Vénus — la plus rare, tous les 19 mois — se lit comme une réévaluation de ce que tu veux et de qui tu veux\u202F; celle de Mars, tous les 26 mois, comme une remise à neuf du moteur de l’élan lui-même. Les périodes annuelles des planètes extérieures passent le plus souvent inaperçues et ne se font sentir que là où elles croisent un point exact de ton propre thème, et c’est ce que vérifie le ',
+      ' sont la saison des révisions pour les projets et la paperasse. Une période rétrograde de Vénus (la plus rare, tous les 19 mois) se lit comme une réévaluation de ce que tu veux et de qui tu veux\u202F; celle de Mars, tous les 26 mois, comme une remise à neuf du moteur de l’élan lui-même. Les périodes annuelles des planètes extérieures passent le plus souvent inaperçues et ne se font sentir que là où elles croisent un point exact de ton propre thème, et c’est ce que vérifie le ',
       { text: 'suivi des transits', href: links.transits },
       '.',
     ],
@@ -320,17 +321,17 @@ const COPY: Record<Locale, Copy> = {
       },
       {
         q: 'Pourquoi toute l’attention va-t-elle à Mercure\u202F?',
-        a: 'Question de fréquence et de domaine. Mercure devient rétrograde trois ou quatre fois par an — c’est la seule planète à le faire plus d’une fois par an — et l’astrologie lui confie le quotidien\u202F: messages, déplacements, contrats. Les périodes rétrogrades de Vénus et de Mars sont plus rares et se lisent comme des révisions plus profondes de l’attachement et de l’élan. L’histoire complète de Mercure a sa propre page.',
+        a: 'Question de fréquence et de domaine. Mercure devient rétrograde trois ou quatre fois par an. C’est la seule planète à le faire plus d’une fois par an, et l’astrologie lui confie le quotidien\u202F: messages, déplacements, contrats. Les périodes rétrogrades de Vénus et de Mars sont plus rares et se lisent comme des révisions plus profondes de l’attachement et de l’élan. L’histoire complète de Mercure a sa propre page.',
       },
     ],
   },
   it: {
     title: 'Pianeti retrogradi 2026 e 2027 | Zodiacs.org',
     description: 'Quali pianeti sono retrogradi adesso e quando arrivano i prossimi periodi: da Mercurio a Plutone nel 2026 e 2027, con date e posizioni di ogni stazione.',
-    imageAlt: 'Pianeti retrogradi — Zodiacs.org',
-    schemaName: 'Pianeti retrogradi 2026–2027, con le date',
+    imageAlt: 'Pianeti retrogradi | Zodiacs.org',
+    schemaName: 'Pianeti retrogradi 2026 e 2027, con le date',
     schemaDescription: 'Tutti i periodi retrogradi del 2026 e del 2027, da Mercurio a Plutone, con date e posizioni delle stazioni, calcolati sul moto reale.',
-    datasetName: 'Periodi retrogradi dei pianeti, 2026–2027',
+    datasetName: 'Periodi retrogradi dei pianeti, 2026 e 2027',
     datasetDescription: 'Istanti calcolati delle stazioni retrograde e dirette e posizioni nello zodiaco tropicale, da Mercurio a Plutone.',
     variableMeasured: ['pianeta', 'istante della stazione retrograda', 'istante della stazione diretta', 'longitudine della stazione'],
     // Venere is feminine in Italian; the other seven are masculine.
@@ -374,7 +375,7 @@ const COPY: Record<Locale, Copy> = {
     calm2: (links) => [
       'La tradizione adatta le sue letture al ritmo. I periodi di tre settimane di ',
       { text: 'Mercurio', href: links.mercury },
-      ' sono la stagione delle revisioni per progetti e scartoffie. Un periodo retrogrado di Venere — il più raro, ogni 19 mesi — si legge come un riesame di ciò che vuoi e di chi vuoi; quello di Marte, ogni 26 mesi, come una revisione del motore della spinta stessa. I periodi annuali dei pianeti esterni passano per lo più inosservati e si sentono solo dove incrociano qualcosa di esatto nel tuo tema, ed è ciò che controlla lo ',
+      ' sono la stagione delle revisioni per progetti e scartoffie. Un periodo retrogrado di Venere (il più raro, ogni 19 mesi) si legge come un riesame di ciò che vuoi e di chi vuoi; quello di Marte, ogni 26 mesi, come una revisione del motore della spinta stessa. I periodi annuali dei pianeti esterni passano per lo più inosservati e si sentono solo dove incrociano qualcosa di esatto nel tuo tema, ed è ciò che controlla lo ',
       { text: 'strumento dei transiti', href: links.transits },
       '.',
     ],
@@ -403,7 +404,7 @@ const COPY: Record<Locale, Copy> = {
       },
       {
         q: 'Perché Mercurio riceve tutta l’attenzione?',
-        a: 'Per frequenza e per territorio. Mercurio diventa retrogrado tre o quattro volte l’anno — è l’unico pianeta a farlo più di una volta l’anno — e l’astrologia gli affida la vita di tutti i giorni: messaggi, viaggi, contratti. I periodi retrogradi di Venere e Marte sono più rari e si leggono come revisioni più profonde dell’attaccamento e della spinta. La storia completa di Mercurio ha una pagina tutta sua.',
+        a: 'Per frequenza e per territorio. Mercurio diventa retrogrado tre o quattro volte l’anno. È l’unico pianeta a farlo più di una volta l’anno, e l’astrologia gli affida la vita di tutti i giorni: messaggi, viaggi, contratti. I periodi retrogradi di Venere e Marte sono più rari e si leggono come revisioni più profonde dell’attaccamento e della spinta. La storia completa di Mercurio ha una pagina tutta sua.',
       },
     ],
   },
@@ -445,7 +446,9 @@ const windows = (sky.retrogrades as { planet: BodyName; from: string; to: string
     from,
     to,
     clamped,
-    label: `${clamped ? c.clampedFrom : fmt(from)} – ${to ? fmt(to) : c.openEnd}`,
+    label: clamped
+      ? (to ? phraseUntil(locale, c.clampedFrom, fmt(to)) : c.clampedFrom)
+      : (to ? rangeWords(locale, fmt(from), fmt(to)) : sincePhrase(locale, fmt(from), c.openEnd)),
     stationRx: clamped ? null : formatLongitude(bodyLongitude(r.planet, from), locale),
     stationDirect: to ? formatLongitude(bodyLongitude(r.planet, to), locale) : null,
     state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',
@@ -642,7 +645,7 @@ const jsonLd = [
 
   .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
   .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
-  .rx-now__all { font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
+  .rx-now__all { font-family: var(--font-sans); font-size: 13px; color: var(--faint); letter-spacing: 0; }
   .rx-now__all a { color: var(--muted); }
   .rx-now__all a:hover { color: var(--text); }
 
@@ -656,9 +659,9 @@ const jsonLd = [
     letter-spacing: 0.002em;
   }
   .planet__now {
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0;
     color: var(--muted);
     border: 1px solid var(--hair-2);
     border-radius: 99px;

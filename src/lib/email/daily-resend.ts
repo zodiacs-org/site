@@ -167,7 +167,7 @@ export async function sendDailyChartConfirmation(
         '',
         `Confirm subscription: ${confirmation.toString()}`,
         '',
-        'The link works for 48 hours. If you did not request this, ignore this email — nothing will be subscribed.',
+        'The link works for 48 hours. If you did not request this, ignore this email. Nothing will be subscribed.',
       ].join('\n'),
     }),
   });

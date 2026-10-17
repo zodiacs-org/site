@@ -175,7 +175,7 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const ELECTIONS_ROUTES = ['/developers/', '/developers/compute/', '/developers/support/', '/privacy/'] as const;");
     expect(sitemap).toContain("...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const)");
     for (const page of [privacy, terms]) expect(page).toContain('dateModified: modifiedAt');
-    expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
+    expect(about).toContain("dateModified: '2026-10-16T00:00:00.000Z'");
     expect(sitemap).toContain("const ENGINE_PHASE1_LASTMOD = '2026-09-23'");
     expect(sitemap).toContain("const PRIVACY_AUDIT_LASTMOD = '2026-09-28'");
     expect(sitemap).toContain("const SHARE_IMAGE_REVIEW_LASTMOD = '2026-09-29'");
@@ -183,14 +183,14 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const DELTAT_ATTRIBUTION_ROUTES = ['/methodology/', '/terms/'] as const;");
     expect(sitemap).toContain("'/about/', '/ask/', '/birth-chart/someone-else/', '/methodology/', '/privacy/', '/tools/',");
     for (const [page, path, modified] of [
-      [learn, '/learn/', '2026-09-05T00:00:00.000Z'],
-      [houses, '/learn/houses/', '2026-08-23T00:00:00.000Z'],
+      [learn, '/learn/', '2026-10-16T00:00:00.000Z'],
+      [houses, '/learn/houses/', '2026-10-16T00:00:00.000Z'],
     ]) {
       expect(page).toContain(`...editorialDates('${path}')`);
       expect(editorialDates(path)).toEqual({ dateModified: modified });
     }
     expect(sitemap).toContain('EDITORIAL_METADATA[loc]?.modified');
-    expect(glossary).toContain("const PAGE_DATE = '2026-08-23'");
+    expect(glossary).toContain("const PAGE_DATE = '2026-10-16'");
     expect(thesis).toContain('property="article:modified_time" content="2026-09-05"');
     expect(thesis).toContain('"dateModified": "2026-09-05"');
   });

@@ -1,0 +1,38 @@
+---
+/**
+ * The pair page's long read, set as a feature: the rendered MDX body with
+ * the two close details of the sign art placed before the second section
+ * and the pull quote after the first paragraph of the fourth. Every pair
+ * file carries the same four sections, so the places are fixed; a file that
+ * loses one fails the build here rather than quietly dropping the art.
+ *
+ * The body is the site's own build-time MDX output, so splicing its HTML
+ * string is safe; nothing user-supplied passes through.
+ */
+interface Props {
+  /** For the error message only. */
+  id: string;
+}
+
+const { id } = Astro.props;
+const body = await Astro.slots.render('default');
+const rooms = Astro.slots.has('rooms') ? await Astro.slots.render('rooms') : '';
+const pull = Astro.slots.has('pull') ? await Astro.slots.render('pull') : '';
+
+const headingStarts = [...body.matchAll(/<h2[\s>]/g)].map((match) => match.index ?? 0);
+if (headingStarts.length !== 4) {
+  throw new Error(`Pair file ${id}.mdx must hold exactly four ## sections; found ${headingStarts.length}.`);
+}
+const afterPull = body.indexOf('</p>', headingStarts[3]);
+if (afterPull < 0) throw new Error(`Pair file ${id}.mdx has no paragraph under its fourth section.`);
+const pullAt = afterPull + '</p>'.length;
+
+const html = [
+  body.slice(0, headingStarts[1]),
+  rooms,
+  body.slice(headingStarts[1], pullAt),
+  pull,
+  body.slice(pullAt),
+].join('');
+---
+<div class="prose pair-prose"><Fragment set:html={html} /></div>

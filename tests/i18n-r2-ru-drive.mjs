@@ -127,7 +127,10 @@ await withPreview({ port: 4418 }, async (baseURL) => {
         if (route === '/ru/' && viewport.width === 1280) {
           const desktopEnglishSeams = await page.locator('.nav__deferred').allTextContents();
           check(desktopEnglishSeams.length === 3, `Russian desktop nav exposes ${desktopEnglishSeams.length} English-only seams; expected 3`);
-          check(desktopEnglishSeams.every((value) => value.trim() === '— пока по-английски'), 'Russian desktop nav seam copy drifted');
+          check(desktopEnglishSeams.every((value) => value.trim() === 'EN'), 'Russian desktop nav seam tag drifted');
+          const seamTitles = await page.locator('.nav__link--deferred, .nav__chip--deferred').evaluateAll((links) => links.map((link) => [link.getAttribute('title'), link.getAttribute('aria-label'), link.getAttribute('hreflang')]));
+          check(seamTitles.length === 3, `Russian desktop nav has ${seamTitles.length} English-only links; expected 3`);
+          check(seamTitles.every(([, label, lang]) => lang === 'en' && (label ?? '').includes('Материал пока доступен по-английски')), 'Russian desktop English-only links lost their spoken cue or hreflang');
           check(await page.locator('.nav__search').count() === 0, 'English-only search control leaked into Russian desktop nav');
           const astrofolioChip = page.locator('.nav__chip');
           check(await astrofolioChip.getAttribute('href') === '/astrofolio/', 'Russian desktop Astrofolio seam points somewhere else');

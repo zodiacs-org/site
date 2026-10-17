@@ -70,7 +70,7 @@ const iso = (x: number) => new Date(Math.round(x)).toISOString();
 function checkQuery(from: Date, to: Date): [number, number] {
   const a = from.getTime(), b = to.getTime();
   if (!Number.isFinite(a) || !Number.isFinite(b) || a >= b || a < FIRST || b >= LAST || b - a > 730 * DAY) {
-    throw new RangeError('Choose a positive transit period of at most two years, within 1800–2199.');
+    throw new RangeError('Choose a positive transit period of at most two years, within 1800 to 2199.');
   }
   return [a, b];
 }

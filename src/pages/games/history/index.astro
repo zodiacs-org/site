@@ -19,9 +19,9 @@ const closeDate = new Date(season.endUtcExclusive - 1).toLocaleDateString('en', 
 });
 const entries = championSeasons().slice().reverse();
 
-const title = 'The Trophy Hall — The Zodiac Games | Zodiacs.org';
+const title = 'The Trophy Hall: The Zodiac Games | Zodiacs.org';
 const description =
-  'Every season of the Zodiac Games crowns one champion. The Trophy Hall remembers all of it — every season, every champion, forever.';
+  'Every season of the Zodiac Games crowns one champion. The Trophy Hall remembers all of it, every season, every champion, forever.';
 ---
 <Base
   title={title}
@@ -30,10 +30,10 @@ const description =
 >
   <section class="section--tight container container--narrow">
     <header class="hall-hero">
-      <em class="kicker">The Zodiac Games</em>
+      <a class="crumb" href="/race/"><span class="crumb__arrow" aria-hidden="true">←</span>The Zodiac Games</a>
       <h1 class="display">The Trophy Hall.</h1>
       <p>
-        The Games run all year. The Hall remembers all of it — every season,
+        The Games run all year. The Hall remembers all of it, every season,
         every champion, forever.
       </p>
     </header>
@@ -41,7 +41,7 @@ const description =
     {entries.length === 0 && (
       <p class="hall-empty">
         The first trophy is still being raced for. {season.sign.name} Season
-        closes {closeDate} — {buildDaysLeft} {buildDaysLeft === 1 ? 'day' : 'days'} to
+        closes {closeDate}, {buildDaysLeft} {buildDaysLeft === 1 ? 'day' : 'days'} to
         go. Someone’s name goes here forever.
       </p>
     )}
@@ -57,7 +57,7 @@ const description =
                 src={`/assets/sculptures/512/${entry.champion}.webp`}
                 width={120}
                 height={120}
-                alt={`The ${sign.name} Zodiac design — the ${entry.seasonName} Season trophy`}
+                alt={`The ${sign.name} Zodiac design, the ${entry.seasonName} Season trophy`}
                 loading="lazy"
                 decoding="async"
               />

@@ -7,8 +7,8 @@ import { observeFooterStyles, observeViewportRegions, viewportRegionFailures,
 // are real preview navigations; screenshots are review evidence, not baselines.
 const DAILY = [
   { code: 'en', prefix: '', lang: 'en', today: 'Today' },
-  { code: 'es', prefix: '/es', lang: 'es', today: 'Hoy', dates: '22 dic – 19 ene', intl: 'es-419' },
-  { code: 'pt', prefix: '/pt', lang: 'pt-BR', today: 'Hoje', dates: '22 dez – 19 jan', intl: 'pt-BR' },
+  { code: 'es', prefix: '/es', lang: 'es', today: 'Hoy', dates: 'del 22 dic al 19 ene', intl: 'es-419' },
+  { code: 'pt', prefix: '/pt', lang: 'pt-BR', today: 'Hoje', dates: 'de 22 dez a 19 jan', intl: 'pt-BR' },
 ];
 const TOOLS = [
   { code: 'es', title: 'Herramientas gratis de astrología', promise: 'doce signos solares' },
@@ -18,8 +18,8 @@ const TOOLS = [
   { code: 'ru', title: 'Бесплатные астроинструменты', cue: 'по-английски' },
 ];
 const ENGLISH_CUES = {
-  fr: { text: '— pour l’instant en anglais', title: 'Contenu pour l’instant en anglais' },
-  it: { text: '— per ora in inglese', title: 'Contenuto per ora in inglese' },
+  fr: { text: '(pour l’instant en anglais)', title: 'Contenu pour l’instant en anglais' },
+  it: { text: '(per ora in inglese)', title: 'Contenuto per ora in inglese' },
 };
 const BIRTHDAY = {
   en: { label: 'Birthday', cue: null, title: null },
@@ -331,7 +331,7 @@ export async function driveLocaleDiscovery({ browser, baseURL, check, outDir }) 
             if (locale.code !== 'en') {
               const date = new Intl.DateTimeFormat(locale.intl, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
                 .format(new Date(`${daily.date}T12:00:00Z`));
-              const heading = await page.locator(`[data-edition-content] .kicker`).first().textContent();
+              const heading = await page.locator(`[data-edition-content] .dateline`).first().textContent();
               record(`${locale.code} ${slug} edition date@${viewport.width}`, heading.includes(date), heading.trim());
               if (slug !== 'today') {
                 const dates = slug === 'horoscopes'

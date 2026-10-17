@@ -31,19 +31,19 @@ These lines use each live page’s meta description to state what it computes or
 - /chart-twins/ — Compare your signs with the sourced people directory. A shared sign is a conversation starter, not proof of a similar personality.
 - /compatibility/invite/ — Add your chart first. Send the link, and your friend adds theirs to see your compatibility.
 - /group-charts/ — Add three to eight people and see what each might bring to the group: the spark, the anchor, the connector, or the glue. Use birth details with their permission.
-- /birth-chart/ — Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean — computed privately, in your browser.
+- /birth-chart/ — Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean, computed privately, in your browser.
 - /birthday/ — Choose your birthday for a date-specific reading of character, relationships, work, and growth, with an exact Sun-sign answer when the birth year matters.
 - /compatibility/ — Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings.
-- /eclipses/ — Every solar and lunar eclipse through 2028 with exact peak times and zodiac signs — including the August 12, 2026 total solar eclipse over Iceland and Spain.
-- /full-moon-calendar/ — Every full moon in 2026 and 2027: exact date and universal time, the Moon's zodiac sign and degree, and the traditional name — Wolf to Cold, blue moon included.
+- /eclipses/ — Every solar and lunar eclipse through 2028 with exact peak times and zodiac signs, including the August 12, 2026 total solar eclipse over Iceland and Spain.
+- /full-moon-calendar/ — Every full moon in 2026 and 2027: exact date and universal time, the Moon's zodiac sign and degree, and the traditional name, Wolf to Cold, blue moon included.
 - /lunar-return/ — Find your next lunar return with a known birth time. Explore its chart, save a private image, or add the moment to your calendar.
 - /mercury-retrograde/ — Every Mercury retrograde through 2027, computed from the planet's real motion: exact dates, station positions, and what the window actually asks of you.
 - /moon-phase/ — See tonight's moon phase or look up any date you care about: phase, illumination, and moon sign, free.
-- /moon-sign/ — Find your moon sign free, in seconds — how you feel, what soothes you, and what you need to feel safe. No signup.
+- /moon-sign/ — Find your moon sign free, in seconds: how you feel, what soothes you, and what you need to feel safe. No signup.
 - /numerology/ — Free numerology calculator: Life Path, Birthday, Expression, Soul Urge, Personality, Maturity, and Personal Year from your name and birth date, computed in your browser.
 - /profile/ — Open your saved birth charts, see what is active today, and keep the people and patterns you return to in one place.
-- /retrogrades/ — Which planets are retrograde right now, and when the next windows run: Mercury through Pluto for 2026–2027, station dates and positions for each window.
-- /rising-sign/ — Find your rising sign free with your birth time and place — how people first read you, plus the planet that rules your chart.
+- /retrogrades/ — Which planets are retrograde right now, and when the next windows run: Mercury through Pluto for 2026 to 2027, station dates and positions for each window.
+- /rising-sign/ — Find your rising sign free with your birth time and place: how people first read you, plus the planet that rules your chart.
 - /saturn-return/ — Find your exact Saturn return dates free: every crossing, retrograde passes included, computed from Saturn's real motion on your device. Just needs your birth date.
 - /solar-return/ — See the themes shaping your personal year with a solar return chart for any year and location. Free and private by default.
 - /transits/ — See what is active in your birth chart today, then move the date up to a year forward or back to watch each transit build and release.
@@ -52,11 +52,11 @@ These lines use each live page’s meta description to state what it computes or
 
 LEARN-HUB TOPICS
 - /learn/how-to-read-a-birth-chart/ — How to read a chart: The four-step method: big three, planets by house, aspects, then the weather.
-- /learn/communication/ — Communication: How you think, what a conversation needs to feel like, and how you handle friction — read from Mercury, the Moon, and Mars in your birth chart.
-- /learn/planets/ — The planets: Ten planets, ten jobs — from the Sun’s identity to Pluto’s slow excavations.
+- /learn/communication/ — Communication: How you think, what a conversation needs to feel like, and how you handle friction, read from Mercury, the Moon, and Mars in your birth chart.
+- /learn/planets/ — The planets: Ten planets, ten jobs, from the Sun’s identity to Pluto’s slow excavations.
 - /learn/houses/ — The houses: Life’s floor plan: money, home, work, partnership, reputation, solitude.
-- /learn/aspects/ — The aspects: The angles between planets — the chart’s wiring, friendly and otherwise.
-- /learn/placements/ — The placements: Every planet in every sign — how each combination actually behaves.
+- /learn/aspects/ — The aspects: The angles between planets, the chart’s wiring, friendly and otherwise.
+- /learn/placements/ — The placements: Every planet in every sign, how each combination actually behaves.
 - /learn/zodiac-dates/ — The living correspondence chart: All twelve signs, exact longitude boundaries, and year-exact Sun ingress instants.
 - /learn/glossary/ — The astrology glossary: The words used across the site, defined against the chart and timing calculations.
 
@@ -84,7 +84,7 @@ PAGE INVENTORY — EVERGREEN PAGES AND HUBS
 - /full-moon-calendar/2027/ — All 12 full moons of 2027 with exact…
 - /games/history/ — Every season of the Zodiac Games crowns…
 - /horoscopes/ — Dated daily horoscopes for every sign…
-- /learn/ — All 12 zodiac sign guides, the…
+- /learn/ — Five short lessons on the signs, planets…
 - /learn/aspects/ — The five major aspects of a birth chart…
 - /learn/chinese-zodiac/ — A careful introduction to the Chinese…
 - /learn/communication/ — How you think, what a conversation needs…
@@ -106,18 +106,18 @@ PAGE INVENTORY — EVERGREEN PAGES AND HUBS
 - /tools/ — Free astrology tools, no signup.
 
 PAGE INVENTORY — THE TWELVE SIGN GUIDES
-- /aquarius/ — Aquarius (Jan 20.
-- /aries/ — Aries (Mar 21.
-- /cancer/ — Cancer (Jun 21.
-- /capricorn/ — Capricorn (Dec 22.
-- /gemini/ — Gemini (May 21.
-- /leo/ — Leo (Jul 23.
-- /libra/ — Libra (Sep 23.
-- /pisces/ — Pisces (Feb 19.
-- /sagittarius/ — Sagittarius (Nov 22.
-- /scorpio/ — Scorpio (Oct 23.
-- /taurus/ — Taurus (Apr 20.
-- /virgo/ — Virgo (Aug 23.
+- /aquarius/ — Aquarius (Jan 20 to Feb 18).
+- /aries/ — Aries (Mar 21 to Apr 19).
+- /cancer/ — Cancer (Jun 21 to Jul 22).
+- /capricorn/ — Capricorn (Dec 22 to Jan 19).
+- /gemini/ — Gemini (May 21 to Jun 20).
+- /leo/ — Leo (Jul 23 to Aug 22).
+- /libra/ — Libra (Sep 23 to Oct 22).
+- /pisces/ — Pisces (Feb 19 to Mar 20).
+- /sagittarius/ — Sagittarius (Nov 22 to Dec 21).
+- /scorpio/ — Scorpio (Oct 23 to Nov 21).
+- /taurus/ — Taurus (Apr 20 to May 20).
+- /virgo/ — Virgo (Aug 23 to Sep 22).
 
 PAGE INVENTORY — DAILY AND MONTHLY HOROSCOPES
 The hub and stable sign routes publish a dated daily edition. Treat “today” as an exact UTC-date claim: use it only when the edition date printed on the page matches the current UTC date. If it does not match, name the printed date and say the current edition is pending rather than relabeling stale copy. Monthly readings use the /monthly/ subroutes.

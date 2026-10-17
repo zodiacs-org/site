@@ -73,7 +73,7 @@ const faq = [
   },
   {
     q: 'Why is the time given in UTC?',
-    a: 'A full moon is one instant for the whole planet — the moment the Moon stands exactly opposite the Sun — so the table lists that instant once, in universal time. Subtract or add your own offset; in the Americas an early-morning UTC time is the previous evening.',
+    a: 'A full moon is one instant for the whole planet, the moment the Moon stands exactly opposite the Sun, so the table lists that instant once, in universal time. Subtract or add your own offset; in the Americas an early-morning UTC time is the previous evening.',
   },
   {
     q: 'How do I add these dates to my calendar?',
@@ -100,17 +100,17 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Full Moon Calendar 2027 — Every Date, Time, and Sign | Zodiacs.org"
+  title="Full Moon Calendar 2027: Every Date, Time, and Sign | Zodiacs.org"
   description="All 12 full moons of 2027 with exact universal time, the Moon's zodiac sign and degree, and the almanac name, plus a calendar file you can subscribe to."
   path={`/full-moon-calendar/${YEAR}/`}
   image="/assets/og/v2/tool/full-moon-calendar.png"
-  imageAlt="Full moon calendar 2027 — Zodiacs.org"
+  imageAlt="Full moon calendar 2027, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >
   <section class="section--tight container container--narrow">
     <div class="tool-hero reveal">
-      <em class="kicker">Full moon calendar · {YEAR}</em>
+      <a class="crumb" href="/full-moon-calendar/"><span class="crumb__arrow" aria-hidden="true">←</span>Full moon calendar</a>
       <h1 class="display">The full moons of {YEAR}.</h1>
       <p>
         {fulls.length} full moons, each listed at the exact instant the <a href="/learn/glossary/#moon">Moon</a> stands
@@ -136,7 +136,7 @@ const jsonLd = [
   <section class="section--tight container container--narrow">
     <div class="section-head reveal">
       <h2>Full moons of {YEAR}</h2>
-      <p>Times are universal time — in the Americas the instant often falls the evening before.</p>
+      <p>Times are universal time. In the Americas the instant often falls the evening before.</p>
     </div>
     <div class="table-wrap reveal">
       <table class="rx-table">
@@ -171,7 +171,7 @@ const jsonLd = [
       </p>
       <p>
         Names follow the North American almanac sequence, Wolf through Cold; the second full moon inside one calendar
-        month is called a blue moon instead. Neither has astrological weight — the sign and degree do.
+        month is called a blue moon instead. Neither has astrological weight. The sign and degree do.
       </p>
     </div>
   </section>

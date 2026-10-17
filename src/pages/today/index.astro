@@ -1,17 +1,47 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ArtFrame from '../../components/ArtFrame.astro';
 import EditionText from '../../components/EditionText.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import AskGuideLine from '../../components/AskGuideLine.astro';
 import GuideQuickPrompts from '../../components/GuideQuickPrompts.astro';
-import UpcomingEventLinks from '../../components/events/UpcomingEventLinks.astro';
+import SignIcon from '../../components/SignIcon.astro';
+import ToolIcon from '../../components/ToolIcon.astro';
 import TodayBrief from '../../islands/today/TodayBrief';
+import SkyTicker from '../../islands/SkyTicker';
+import Wheel from '../../lib/wheel/Wheel';
 import dailyData from '../../data/daily.json';
 import publicationData from '../../data/daily-publication.json';
+import skyData from '../../data/sky.json';
+import eclipseData from '../../data/eclipses.json';
+import eventsData from '../../data/events-publication.json';
+import { CONTEXT_TERMS } from '../../data/context-help';
 import type { Daily } from '../../lib/daily';
 import type { DailyPublication } from '../../lib/daily-publication';
 import { editionDateLabel } from '../../lib/edition-freshness';
+import { ASPECT_GLYPH, PLANET_GLYPH } from '../../lib/glyphs/paths';
 import { livingChartCaptureEnabled, livingChartSyncEnabled } from '../../lib/living-chart/feature-flags';
+import { NATAL_BODY_THEME } from '../../lib/natal-context';
+import { TOOLS_HUB } from '../../lib/nav-tools';
+import { ART, artSrc, artSrcset } from '../../lib/art';
+import { signBySlug } from '../../lib/signs';
+import { signDateRange, signTagline } from '../../lib/sign-display';
+import {
+  aspectsToday,
+  comingUp,
+  degreeMinutes,
+  editionDayEvents,
+  longDate,
+  moonAgeDays,
+  moonCycle,
+  nextEclipse,
+  phaseLabel,
+  planetRows,
+  retrogradeTimeline,
+  shortDate,
+  utcClock,
+  type TransitCatalog,
+} from '../../lib/today-sky';
 
 const daily = dailyData as Daily;
 const publication = publicationData as DailyPublication;
@@ -20,6 +50,7 @@ const sunSignReadings = Object.fromEntries(
   publication.signs.map((entry) => [entry.sign, {
     text: entry.todayLine.text,
     receipt: entry.todayLine.receipt,
+    house: entry.todayLine.house,
   }]),
 );
 const livingChartEnabled = livingChartCaptureEnabled({
@@ -28,6 +59,99 @@ const livingChartEnabled = livingChartCaptureEnabled({
 const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled({
   PUBLIC_LIVING_CHART_SYNC_ENABLED: process.env.PUBLIC_LIVING_CHART_SYNC_ENABLED,
 });
+
+// ── The edition's sky. Every value below comes from committed data for the
+// edition date: the noon-UTC snapshot, the lunation and retrograde tables,
+// the monthly transit catalogs, the eclipse table and the event pages. ──
+const catalogs = Object.values(import.meta.glob<{ default: TransitCatalog }>('../../data/transits-*.json', { eager: true }))
+  .map((module) => module.default);
+const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+const listWords = (items: string[]) => (items.length <= 1
+  ? items.join('')
+  : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`);
+const snapshotAt = daily.snapshotAt ?? `${daily.date}T12:00:00.000Z`;
+const editionShort = shortDate(publication.date);
+const bodyOf = (name: string) => daily.bodies.find((body) => body.body === name)!;
+const sun = bodyOf('Sun');
+const moon = bodyOf('Moon');
+const sunSign = signBySlug(sun.sign);
+const moonSign = signBySlug(moon.sign);
+const illumination = Math.round(daily.moon.illumination * 100);
+const phase = phaseLabel(daily.moon.phase);
+const moonAge = moonAgeDays(daily, skyData.moons);
+const rows = planetRows(daily);
+
+// What happens on the edition's own date, as one sentence of facts.
+const dayEvents = editionDayEvents(daily).slice(0, 3);
+const daySentence = dayEvents.length === 0
+  ? ''
+  : `${cap(dayEvents[0])} today${dayEvents.length === 1
+    ? '.'
+    : dayEvents.length === 2 ? `, and ${dayEvents[1]}.` : `, ${dayEvents[1]}, and ${dayEvents[2]}.`}`;
+
+// The two lights: their signs as the sign guides sum them up, and where in
+// the sign each one stands.
+const sunIngress = catalogs.flatMap((catalog) => catalog.ingresses)
+  .filter((ingress) => ingress.planet === 'Sun' && ingress.at > snapshotAt)
+  .sort((a, b) => a.at.localeCompare(b.at))[0];
+const thirds = ['first', 'middle', 'last'];
+const sunNote = `The Sun is in the ${thirds[Math.min(2, Math.floor(sun.degree / 10))]} third of the sign${sunIngress ? ` and enters ${signBySlug(sunIngress.sign).name} on ${shortDate(sunIngress.at)}` : ''}.`;
+const moonNote = moonAge !== null
+  ? `The Moon is ${moonAge} days past the new moon${moon.degree >= 29 ? ', in the last degree of the sign' : ''}.`
+  : '';
+
+// The lunar cycle, drawn as the Moon looks: lit on the right while waxing.
+const cycle = moonCycle(daily, skyData.moons, catalogs);
+const waxing = /waxing|first quarter/iu.test(daily.moon.phase);
+function moonPath(fraction: number, growing: boolean, r = 20): string {
+  if (fraction >= 0.985) return 'full';
+  if (fraction <= 0.015) return '';
+  const rx = (Math.abs(1 - 2 * fraction) * r).toFixed(2);
+  const outer = growing ? 1 : 0;
+  const inner = fraction < 0.5 ? (growing ? 0 : 1) : (growing ? 1 : 0);
+  return `M0,-${r} A${r},${r} 0 0 ${outer} 0,${r} A${rx},${r} 0 0 ${inner} 0,-${r} Z`;
+}
+const todayMoonPath = moonPath(daily.moon.illumination, waxing);
+
+// The planets, the dates ahead and the retrogrades.
+const coming = comingUp(daily, catalogs, eclipseData.eclipses, eventsData.pages);
+const eclipseAhead = nextEclipse(daily, eclipseData.eclipses);
+const timeline = retrogradeTimeline(daily, skyData.retrogrades);
+const allAspects = aspectsToday(daily);
+const aspectCards = allAspects.slice(0, 4);
+const wheelAspects = allAspects.map((aspect) => ({ a: aspect.a, b: aspect.b, type: aspect.type }));
+const aspectTypes = new Set(allAspects.map((aspect) => aspect.type));
+const definition = (slug: string) => CONTEXT_TERMS.find((term) => term.slug === slug)?.plainDefinition ?? '';
+const named = (body: string) => (body === 'Sun' || body === 'Moon' ? `the ${body}` : body);
+const topic = (body: string) => NATAL_BODY_THEME[body as keyof typeof NATAL_BODY_THEME]?.topic ?? '';
+const numberWord = (count: number) => ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][count] ?? String(count);
+
+const retrogradeNow = timeline.rows.filter((row) => row.state === 'now').map((row) => row.planet);
+const nextRetrograde = timeline.rows
+  .filter((row) => row.state === 'upcoming')
+  .sort((a, b) => a.from.localeCompare(b.from))[0];
+const justEnded = timeline.rows
+  .filter((row) => row.state === 'ended')
+  .sort((a, b) => b.to.localeCompare(a.to))[0];
+const retrogradeSummary = [
+  retrogradeNow.length === 0
+    ? 'No planet is retrograde today.'
+    : `${listWords(retrogradeNow)} ${retrogradeNow.length === 1 ? 'is' : 'are'} retrograde today.`,
+  nextRetrograde ? `${nextRetrograde.planet} turns retrograde on ${shortDate(nextRetrograde.from)}.` : '',
+  justEnded
+    ? `${justEnded.planet}’s retrograde ended ${justEnded.to.slice(0, 10) === publication.date ? 'today' : `on ${shortDate(justEnded.to)}`}.`
+    : '',
+].filter(Boolean).join(' ');
+const windowEndLabel = shortDate(new Date(Date.parse(timeline.to) - 86_400_000).toISOString(), true);
+const periodYear = (iso: string) => iso.slice(0, 4) !== publication.date.slice(0, 4);
+
+const goFurther = ['/transits/', '/moon-phase/', '/sky-calendar/', '/eclipses/']
+  .map((href) => TOOLS_HUB.find((tool) => tool.href === href))
+  .filter((tool): tool is (typeof TOOLS_HUB)[number] => Boolean(tool));
+const monthDay = (iso: string) => ({
+  month: new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' }).format(new Date(iso)),
+  day: new Date(iso).getUTCDate(),
+});
 ---
 <Base
   inlineCriticalCss
@@ -35,10 +159,10 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   localTypography
   stableChromeTypography
   minimalNavFontPreloads
-  title={`${publicationLabel} Daily Astrology Brief | Zodiacs.org`}
-  description={`Choose your Sun sign for a clear note from the ${publicationLabel} UTC edition, or privately compare that sky with your birth chart.`}
+  title={`The Sky on ${publicationLabel}: Planets, Moon Phase and Retrogrades | Zodiacs.org`}
+  description={`Where each planet is at noon UTC on ${publicationLabel}, the Moon’s phase, what is retrograde and the dates coming up, with a short note for every Sun sign.`}
   path="/today/"
-  imageAlt={`${publicationLabel} daily astrology brief — Zodiacs.org`}
+  imageAlt={`The sky on ${publicationLabel}, Zodiacs.org`}
   editionDate={publication.date}
 >
   <script slot="head" is:inline define:vars={{ livingChartEnabled }}>
@@ -114,137 +238,588 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
       } catch (error) {}
     })();
   </script>
+  <!-- The opening's painted band is the page's largest first-screen picture:
+       ask for the one this screen uses as soon as the head is read. -->
+  <link slot="head" rel="preload" as="image" type="image/avif" href="/assets/hero/zodiacs-hero-poster-mobile.avif" media="(max-width: 760px)" fetchpriority="high" />
+  <link slot="head" rel="preload" as="image" type="image/avif" href="/assets/hero/zodiacs-hero-poster.avif" media="(min-width: 761px)" fetchpriority="high" />
   <section
-    class="section--tight container container--narrow today-page"
+    class="today-page"
     data-edition-content="true"
     data-daily-date={publication.date}
     data-generation-mode={publication.generation.mode}
     data-living-chart-enabled={livingChartEnabled ? '' : undefined}
   >
+    <!-- 1. The day in one sentence, with the edition's sky beside it. -->
     <header class="today-hero">
-      <em class="kicker">Your daily brief</em>
-      <h1 class="display"><EditionText current="Today" editionDate={publication.date} /></h1>
-      <p>
-        {livingChartEnabled
-          ? 'Compare today’s sky with your birth chart, then save an observation to revisit in your timeline. Without a chart, start with a short reading for your Sun sign.'
-          : 'Compare today’s sky with your most recently saved birth chart. Without a chart, start with a short reading for your Sun sign.'}
-      </p>
-      <p class="experience-note">Looking for your sign’s full reading? <a href="/horoscopes/">Open Horoscopes</a>.</p>
+      <div class="today-hero__body">
+        <nav class="today-crumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page"><span data-edition-current-only>Today</span><span data-edition-dated-only>{publicationLabel}</span></span>
+        </nav>
+        <p class="kicker today-hero__kicker">{longDate(publication.date)}</p>
+        <h1 class="display"><EditionText current="The sky today" editionDate={publication.date} /></h1>
+        <p class="today-hero__lede">
+          Where every planet is, what each placement traditionally stands for, and what comes next on the calendar.{daySentence && (
+            <>{' '}<EditionText current={daySentence} editionDate={publication.date} /></>
+          )}
+        </p>
+        <div class="btn-row today-hero__actions">
+          <a class="btn btn--primary btn--lg" href="/transits/">See it against your chart <span class="orb" aria-hidden="true">↗</span></a>
+          <a class="btn btn--glass btn--lg" href="#signs"><span><span class="today-cta-sign">Your sign</span><span class="today-cta-chart">Your chart</span><span data-edition-current-only> today</span></span></a>
+        </div>
+        <p class="reassure today-hero__note">Free · No signup · Positions for noon UTC</p>
+      </div>
+      <figure class="today-hero__wheel">
+        <div class="today-wheel">
+          <Wheel
+            bodies={daily.bodies.map((body) => ({ body: body.body, lon: body.lon, retrograde: body.retrograde }))}
+            aspects={wheelAspects}
+            ariaLabel={`The sky at noon UTC on ${publicationLabel}: the Sun, the Moon and the planets in their signs, with the aspects within three degrees of exact`}
+          />
+          <svg class="today-wheel__moon" viewBox="-24 -24 48 48" aria-hidden="true">
+            <circle r="23" fill="#0A0C11" stroke="rgba(198,204,218,0.12)" stroke-width="1" />
+            <circle r="18" fill="#1C2130" />
+            {todayMoonPath === 'full' && <circle r="18" fill="#E6E2D6" />}
+            {todayMoonPath && todayMoonPath !== 'full' && <path d={moonPath(daily.moon.illumination, waxing, 18)} fill="#E6E2D6" />}
+          </svg>
+        </div>
+        <figcaption class="today-legend">
+          <span><i class="today-legend__rx">Rx</i>Retrograde</span>
+          {(aspectTypes.has('trine') || aspectTypes.has('sextile')) && <span><i class="today-legend__line today-legend__line--easy"></i>Trine or sextile</span>}
+          {(aspectTypes.has('square') || aspectTypes.has('opposition')) && <span><i class="today-legend__line today-legend__line--tense"></i>Square or opposition</span>}
+          {aspectTypes.has('conjunction') && <span><i class="today-legend__line today-legend__line--joined"></i>Conjunction</span>}
+        </figcaption>
+      </figure>
     </header>
 
-    <!-- The complete no-chart brief is server-rendered. This island owns all
-         of its copy, so it needs neither the full client UI catalog nor eager
-         hydration; personalization can wait until the first paint is idle. -->
-    <TodayBrief
-      client:idle
-      editionDate={daily.date}
-      bodies={daily.bodies}
-      sunSignReadings={sunSignReadings}
-      livingChartEnabled={livingChartEnabled}
-      livingChartSyncEnabled={livingChartCloudSyncEnabled}
-      generatorVersion={publication.rendererVersion}
-    />
-
-    <UpcomingEventLinks date={publication.date} />
-
-    <div class="today-ask">
-      <AskGuideLine lead="Questions about today’s sky?" />
-      <GuideQuickPrompts
-        prompts={[
-          'What does today’s sky mean for my sign?',
-          'Which of today’s aspects matters most?',
-          'How do I read today’s sky against my birth chart?',
-        ]}
-      />
+    <!-- 2. The sky in one line, the same line the home page shows. -->
+    <div class="kwrap">
+      <div class="ticker-band today-skyline">
+        <SkyTicker />
+      </div>
     </div>
 
-    {daily.eventsCoverage === 'unavailable' && (
-      <p class="today-coverage-note">
-        This edition uses planetary positions only; exact-event timing
-        isn’t available for this date.
-      </p>
+    <!-- 3. The two lights, in the site's own sign art, and the lunar cycle. -->
+    <section class="kwrap today-sec" aria-labelledby="today-lights-heading">
+      <div class="section-head--row today-head">
+        <div>
+          <span class="kicker">Where the day starts</span>
+          <h2 id="today-lights-heading" class="h-2">The Sun and the Moon</h2>
+          <p>The two lights astrology begins with: where they are today, and what their signs have traditionally stood for.</p>
+        </div>
+        <a class="textlink only-desktop" href="/moon-phase/">Tonight’s moon, in detail <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="today-lights">
+        <article class="today-light" style={`--sign:${sunSign.hue}`}>
+          <div class="today-light__art">
+            <ArtFrame sign={sun.sign} sizes="(min-width: 761px) 600px, calc(100vw - 40px)" focus="50% 40%" spot="48% 52%" />
+            <span class="today-light__tag">Sun · {degreeMinutes(sun.degree)}</span>
+          </div>
+          <div class="today-light__body">
+            <div class="today-light__head"><SignIcon sign={sun.sign} size={46} /><h3 class="h-3">Sun in {sunSign.name}</h3></div>
+            <p>{signTagline(sunSign)} {sunNote}</p>
+            <p class="kfacts"><span>{signDateRange(sunSign)}</span><span>{cap(sunSign.modality)} {sunSign.element}</span><span class="today-hide-m">Ruled by {sunSign.ruler}</span></p>
+          </div>
+        </article>
+        <article class="today-light" style={`--sign:${moonSign.hue}`}>
+          <div class="today-light__art">
+            <ArtFrame sign={moon.sign} sizes="(min-width: 761px) 600px, calc(100vw - 40px)" focus="50% 40%" spot="52% 52%" />
+            <span class="today-light__tag">Moon · {degreeMinutes(moon.degree)} · {illumination}% lit</span>
+          </div>
+          <div class="today-light__body">
+            <div class="today-light__head"><SignIcon sign={moon.sign} size={46} /><h3 class="h-3">Moon in {moonSign.name}</h3></div>
+            <p>{signTagline(moonSign)} {moonNote}</p>
+            <p class="kfacts"><span>{phase}</span>{moonAge !== null && <span>{moonAge} days old</span>}<span class="today-hide-m">{cap(moonSign.modality)} {moonSign.element}</span></p>
+          </div>
+        </article>
+      </div>
+      <ol class="today-cycle" aria-label="This lunar cycle" style={`--nodes:${cycle.length}`}>
+        {cycle.map((node) => (
+          <li class:list={{ 'is-now': node.kind === 'now' }}>
+            <svg class="today-moon" viewBox="-24 -24 48 48" width="46" height="46" aria-hidden="true">
+              <circle r="20" fill="#1C2130" stroke="rgba(198,204,218,0.22)" stroke-width="1" />
+              {node.kind === 'full' && <circle r="20" fill="#E6E2D6" />}
+              {node.kind === 'now' && todayMoonPath === 'full' && <circle r="20" fill="#E6E2D6" />}
+              {node.kind === 'now' && todayMoonPath && todayMoonPath !== 'full' && <path d={todayMoonPath} fill="#E6E2D6" />}
+            </svg>
+            {node.kind === 'now'
+              ? <b><span data-edition-current-only>Today</span><span data-edition-dated-only>{editionShort}</span></b>
+              : <b>{node.kind === 'new' ? 'New moon' : 'Full moon'}</b>}
+            {node.kind === 'now'
+              ? <span>{phase}</span>
+              : <span>{shortDate(node.at)}{node.sign && <span class="today-cycle__sign">{signBySlug(node.sign).name}</span>}</span>}
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <!-- 4. The Moon from each Sun sign, and the version that is only yours.
+         The island server-renders all twelve notes; a saved chart replaces
+         them with its own comparison, and the head below follows the same
+         private first-paint hint. -->
+    <section class="kwrap today-sec today-signs" id="signs">
+      <div class="section-head--row today-head">
+        <div class="today-signs__head">
+          <span class="kicker">Your sign today</span>
+          <h2 class="h-2">The Moon, from your sign</h2>
+          <p>Each note comes from one fact: which part of life the {moonSign.name} Moon falls in, counted from your Sun sign. Themes to notice, not instructions.</p>
+        </div>
+        <div class="today-signs__head today-signs__head--chart">
+          <span class="kicker">Only yours</span>
+          <h2 class="h-2">Today, against your chart</h2>
+          <p>Today’s planets against your own chart.</p>
+        </div>
+        <a class="textlink only-desktop" href="/horoscopes/">All horoscopes <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <!-- The complete no-chart brief is server-rendered. This island owns all
+           of its copy, so it needs neither the full client UI catalog nor eager
+           hydration; personalization can wait until the first paint is idle. -->
+      <TodayBrief
+        client:idle
+        editionDate={daily.date}
+        bodies={daily.bodies}
+        sunSignReadings={sunSignReadings}
+        livingChartEnabled={livingChartEnabled}
+        livingChartSyncEnabled={livingChartCloudSyncEnabled}
+        generatorVersion={publication.rendererVersion}
+      />
+    </section>
+
+    <!-- 5. Every planet, then the dates ahead as calendar facts, opened by
+         the brass orrery: the Sun at the centre, the planets on their arms. -->
+    <div class="kwrap today-sec today-art-band">
+      <ArtFrame
+        class="today-orrery"
+        src={artSrc('today-orrery')}
+        srcset={artSrcset('today-orrery')}
+        sizes="(min-width: 1240px) 1200px, calc(100vw - 40px)"
+        width={ART['today-orrery'].width}
+        height={ART['today-orrery'].height}
+        alt=""
+        spot="51% 42%"
+        fade
+      />
+    </div>
+    <section class="kwrap today-sec today-split">
+      <div>
+        <h2 class="h-3">Where the planets are</h2>
+        <p class="today-sub">Noon UTC, {publicationLabel}.<span class="only-desktop"> Each body with what it has traditionally stood for.</span></p>
+        <ul class="today-ptable">
+          {rows.map((row) => (
+            <li class:list={['today-prow', { 'is-sun': row.body === 'Sun' }]}>
+              <span class="today-pg" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[row.body] ?? ''} /></span>
+              <span class="today-prow__name"><b>{row.body}</b><small>{cap(topic(row.body))}</small></span>
+              <span class="today-prow__sign"><SignIcon sign={row.sign} size={22} />{signBySlug(row.sign).name}</span>
+              <span class="today-prow__deg">{row.degree}</span>
+              {row.stationToday
+                ? <span class="today-pm is-station">{cap(row.stationToday.type)} from {utcClock(row.stationToday.at)} UTC</span>
+                : row.body === 'Moon'
+                  ? <span class="today-pm is-moon">{phase}</span>
+                  : row.retrograde
+                    ? <span class="today-pm is-rx">Retrograde</span>
+                    : <span class="today-pm">Direct</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2 class="h-3">Coming up in the sky</h2>
+        <p class="today-sub">Calendar facts in UTC, so a few fall a day earlier in the Americas.</p>
+        <ol class="today-events" data-daily-event-links>
+          {coming.map((event) => {
+            const date = monthDay(event.at);
+            const sign = event.sign ? signBySlug(event.sign) : null;
+            return (
+              <li class:list={{ 'is-lunation': event.kind === 'lunation' || event.kind === 'eclipse' }} style={sign ? `--sign:${sign.hue}` : undefined}>
+                <time datetime={event.at}><span>{date.month}</span><b>{date.day}</b></time>
+                <div>
+                  {event.path ? <a href={event.path}>{event.title}</a> : <b>{event.title}</b>}
+                  <small>{event.detail}</small>
+                </div>
+                <span class="today-events__ic" aria-hidden="true">
+                  {event.kind === 'ingress'
+                    ? <SignIcon sign={event.sign} size={24} />
+                    : event.kind === 'station' || event.kind === 'aspect'
+                      ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[event.body] ?? ''} />
+                      : <svg class="today-events__moon" viewBox="-24 -24 48 48"><circle r="20" fill="#1C2130" stroke="rgba(198,204,218,0.3)" stroke-width="1.5" />{event.title.startsWith('Full') || (event.kind === 'eclipse' && event.body === 'Moon') ? <circle r="20" fill="#E6E2D6" /> : null}</svg>}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+        <div class="today-events__foot">
+          {eclipseAhead && <span>Next eclipse: {cap(eclipseAhead.kind)} {eclipseAhead.type} eclipse, {shortDate(eclipseAhead.peak, true)}</span>}
+          <a class="textlink" href="/sky-calendar/">Full sky calendar <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Retrogrades on one time axis, the edition marked. -->
+    <section class="kwrap today-sec" aria-labelledby="today-rx-heading">
+      <div class="section-head--row today-head">
+        <div>
+          <h2 id="today-rx-heading" class="h-2">Retrogrades, at a glance</h2>
+          <p>{retrogradeSummary}</p>
+        </div>
+        <a class="textlink only-desktop" href="/retrogrades/">All retrograde dates <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="today-rt" role="table" aria-label={`Retrograde periods from ${shortDate(timeline.from, true)} to ${windowEndLabel}`} style={`--today-at:${timeline.todayAt}%`}>
+        <div class="today-rt__row today-rt__head" role="row">
+          <span class="today-rt__name" role="columnheader"><span class="sr-only">Planet</span></span>
+          <div class="today-rt__track today-rt__months" role="columnheader">
+            <span class="sr-only">Period</span>
+            {timeline.months.map((month, index) => (
+              <span
+                class:list={['today-rt__month', { 'today-hide-m': month.left <= timeline.todayAt && (timeline.months[index + 1]?.left ?? 100) > timeline.todayAt }]}
+                style={`left:${month.left}%`}
+                aria-hidden="true"
+              >{month.label}</span>
+            ))}
+            <b class="today-rt__today" aria-hidden="true"><span data-edition-current-only>Today</span><span data-edition-dated-only>{editionShort}</span></b>
+          </div>
+        </div>
+        {timeline.rows.map((row) => (
+          <div class="today-rt__row" role="row">
+            <div class="today-rt__name" role="rowheader">
+              <span class="today-rt__g" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[row.planet] ?? ''} /></span>
+              <span>
+                <b>{row.planet}</b>
+                <small class:list={{ 'is-on': row.state === 'now' }}>
+                  {row.state === 'now' && <span class="today-hide-m">Retrograde · </span>}
+                  {shortDate(row.from, periodYear(row.from))} to {shortDate(row.to, periodYear(row.to))}{row.state === 'ended' && ', now direct'}
+                </small>
+              </span>
+            </div>
+            <div class="today-rt__track" role="cell">
+              <span class="sr-only">{row.state === 'now' ? 'Retrograde now' : row.state === 'upcoming' ? 'Coming up' : 'Ended'}</span>
+              <i class:list={['today-rt__bar', `is-${row.state}`, { 'is-clip-start': row.clippedStart, 'is-clip-end': row.clippedEnd }]} style={`left:${row.left}%;width:${row.width}%`}></i>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="today-rt__key" aria-hidden="true">
+        <span><i></i>Retrograde now</span>
+        <span><i class="is-upcoming"></i>Coming up</span>
+        <span><i class="is-ended"></i>Ended</span>
+        <span><i class="is-today"></i><span><span data-edition-current-only>Today, </span>{editionShort}</span></span>
+      </div>
+      <div class="today-note">
+        <span class="kicker">What retrograde means</span>
+        <p>Seen from Earth, a planet sometimes appears to slow, stop and drift backward against the stars. Nothing changes in its real orbit. Astrologers have long read these stretches as a time for review: the planet’s themes are revisited rather than begun.</p>
+      </div>
+    </section>
+
+    <!-- 7. The closest angles in this sky, each with what it has
+         traditionally been read as. -->
+    {aspectCards.length > 0 && (
+      <section class="kwrap today-sec" aria-labelledby="today-aspects-heading">
+        <div class="section-head--row today-head">
+          <div>
+            <h2 id="today-aspects-heading" class="h-2">Today’s closest aspects</h2>
+            <p>
+              Aspects are the angles between planets.
+              {allAspects.length > aspectCards.length
+                ? ` ${cap(numberWord(allAspects.length))} are within three degrees of exact at noon UTC; these are the ${numberWord(aspectCards.length)} closest.`
+                : ` ${allAspects.length === 1 ? 'This one is' : `These ${numberWord(allAspects.length)} are`} within three degrees of exact at noon UTC.`}
+            </p>
+          </div>
+          <a class="textlink only-desktop" href="/learn/aspects/">How aspects work <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+        <div class="today-asps">
+          {aspectCards.map((aspect) => {
+            const a = bodyOf(aspect.a);
+            const b = bodyOf(aspect.b);
+            return (
+              <article class="kcard today-asp">
+                <div class="today-asp__g" aria-hidden="true">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[aspect.a] ?? ''} /></span>
+                  <svg class={`today-asp__type is-${aspect.type}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={ASPECT_GLYPH[aspect.type] ?? ''} />
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[aspect.b] ?? ''} /></span>
+                </div>
+                <h3 class="h-4">{aspect.a} {aspect.type} {aspect.b}</h3>
+                <p class="today-asp__pos">{degreeMinutes(a.degree)} {signBySlug(a.sign).name}{a.retrograde ? ' Rx' : ''} · {degreeMinutes(b.degree)} {signBySlug(b.sign).name}{b.retrograde ? ' Rx' : ''}</p>
+                <p>{definition(aspect.type)} {cap(named(aspect.a))} has traditionally stood for {topic(aspect.a)}, {named(aspect.b)} for {topic(aspect.b)}.</p>
+                <span class:list={['today-asp__tag', { 'is-exact': aspect.exactAt }]}>
+                  {aspect.exactAt ? `Exact at ${utcClock(aspect.exactAt)} UTC` : `${degreeMinutes(aspect.orb)} from exact`}
+                </span>
+              </article>
+            );
+          })}
+        </div>
+      </section>
     )}
 
-    <EvidenceDisclosure
-      class="today-provenance"
-      variant="panel"
-      label="Behind this daily reading"
-      description="Sky details, limitations, and editorial standards"
-    >
-      <p>
-        Each reading is tied to the recorded sky for{' '}
-        <time datetime={publication.date}>{publication.date}</time>, the UTC
-        edition date; planetary positions use a noon-UTC snapshot. Automated
-        checks verify the sky facts, keep the twelve signs meaningfully distinct,
-        and screen restricted advice before an edition is published.
-      </p>
-      <p class="evidence-disclosure__links today-provenance__links">
-        <a href="/methodology/#daily-publication">How daily publication works</a>
-        <a href="/data/daily-publication.json">View this edition’s record</a>
-        <a href="/corrections/">Corrections</a>
-      </p>
-    </EvidenceDisclosure>
+    <!-- 8. Go further, and questions for Guide. -->
+    <section class="kwrap today-sec" aria-labelledby="today-further-heading">
+      <div class="section-head--row today-head">
+        <div>
+          <h2 id="today-further-heading" class="h-2">Go further</h2>
+          <p>More ways to follow the sky, date by date.</p>
+        </div>
+        <a class="textlink only-desktop" href="/tools/">All tools <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="grid-4 today-tools">
+        {goFurther.map((tool) => (
+          <a class="kcard today-tool" href={tool.href}>
+            <ToolIcon name={tool.icon} size={48} />
+            <h3 class="h-4">{tool.title}</h3>
+            <p>{tool.promise}</p>
+            <span class="kcard__go" aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+      <div class="kcard kcard--raised today-ask">
+        <div>
+          <h3 class="h-4">Questions about today’s sky?</h3>
+          <AskGuideLine lead="Guide is an AI assistant for astrology questions and help using Zodiacs." />
+        </div>
+        <GuideQuickPrompts
+          prompts={[
+            'What does today’s sky mean for my sign?',
+            'What is a retrograde?',
+            'How do I read today’s sky against my birth chart?',
+          ]}
+        />
+      </div>
+    </section>
+
+    <!-- 9. How the page is made. -->
+    <section class="kwrap today-method" aria-labelledby="today-method-heading">
+      <h2 id="today-method-heading" class="h-4">How this page is made</h2>
+      <div>
+        <p>
+          Positions are calculated for noon UTC on the edition date, {publicationLabel}. Calendar times are UTC.
+          The sign notes describe themes for reflection, not advice.
+        </p>
+        {daily.eventsCoverage === 'unavailable' && (
+          <p class="today-coverage-note">
+            This edition uses planetary positions only; exact-event timing
+            isn’t available for this date.
+          </p>
+        )}
+        <EvidenceDisclosure
+          class="today-provenance"
+          variant="quiet"
+          label="Behind this daily reading"
+          description="Sky details, limitations, and editorial standards"
+        >
+          <p>
+            Each reading is tied to the recorded sky for{' '}
+            <time datetime={publication.date}>{publication.date}</time>, the UTC
+            edition date; planetary positions use a noon-UTC snapshot. Automated
+            checks verify the sky facts, keep the twelve signs meaningfully distinct,
+            and screen restricted advice before an edition is published.
+          </p>
+        </EvidenceDisclosure>
+        <p class="today-method__links">
+          <a class="textlink" href="/methodology/#daily-publication">How daily publication works <span class="arr" aria-hidden="true">→</span></a>
+          <a class="textlink" href="/data/daily-publication.json">This edition’s record <span class="arr" aria-hidden="true">→</span></a>
+          <a class="textlink" href="/corrections/">Corrections <span class="arr" aria-hidden="true">→</span></a>
+        </p>
+      </div>
+    </section>
   </section>
 <style is:global>
-  .today-page > .upcoming-events { margin-top: clamp(24px, 4vw, 32px); }
-  .today-ask { margin: clamp(18px, 3vw, 26px) 0 0; }
   .today-page {
-    max-width: 780px;
     /* Resolve the cold-load reading face directly from the native stack.
        Routing it through a local() @font-face can settle one frame late on
-       Linux, rewrap the 60ch hero, and move the complete reading shell. */
+       Linux, rewrap the hero, and move the complete reading shell. */
+    --today-face: Arial, 'Liberation Sans', system-ui, -apple-system, sans-serif;
     font-family: Arial, 'Liberation Sans', system-ui, -apple-system, sans-serif;
+    padding-bottom: clamp(48px, 7vw, 96px);
   }
-  .today-hero { max-width: 60ch; margin-bottom: clamp(24px, 5vw, 40px); }
+  .today-sec { padding-top: clamp(56px, 5.8vw, 84px); }
+  .today-head { margin-bottom: clamp(24px, 3.4vw, 40px); }
+  .today-head > div { max-width: 720px; }
+  .today-head p { max-width: 62ch; }
+  .today-head > .textlink { flex: none; white-space: nowrap; }
+  @media (max-width: 760px) { .today-hide-m { display: none; } }
+
+  /* ── 1. Hero: the day in one sentence, the wheel beside it ─────── */
+  .today-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+    /* Top-aligned, so a partly streamed opening never re-centres the text
+       above it once the rest arrives. The text's own top padding sets it
+       beside the middle of the wheel. */
+    align-items: start;
+    gap: clamp(32px, 4vw, 72px);
+    min-height: 760px;
+    /* Rise behind the fixed navigation, as the home page's frame does. */
+    margin: calc(12px - var(--nav-space, 96px)) 12px 0;
+    padding: 120px clamp(28px, 5vw, 72px) 48px;
+    overflow: hidden;
+    border-radius: var(--r-xl);
+    background: var(--void-1) url('/assets/hero/zodiacs-hero-poster.avif') 50% 18% / cover no-repeat;
+    box-shadow: inset 0 0 0 1px rgba(198, 204, 218, 0.08);
+    isolation: isolate;
+  }
+  .today-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(42% 62% at 77% 54%, rgba(6, 7, 9, 0.15), rgba(6, 7, 9, 0) 70%),
+      linear-gradient(90deg, rgba(6, 7, 9, 0.96) 0%, rgba(6, 7, 9, 0.9) 42%, rgba(6, 7, 9, 0.62) 64%, rgba(6, 7, 9, 0.58) 100%),
+      linear-gradient(0deg, rgba(6, 7, 9, 0.9) 0%, rgba(6, 7, 9, 0) 40%);
+  }
+  .today-hero__body { min-width: 0; padding-top: clamp(24px, 4.6vw, 64px); }
+  .today-crumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; color: var(--faint); font-size: 13px; }
+  .today-crumbs a { color: var(--muted); text-decoration: none; }
+  .today-crumbs a:hover { color: var(--ink-0); }
+  .today-crumbs > span[aria-hidden] { opacity: 0.6; }
+  .today-hero__kicker { margin: 0 0 10px; color: var(--ink-1); }
   .today-hero h1 {
-    margin: 12px 0 12px;
-    font-size: var(--text-2xl);
-    line-height: 1.04;
-  }
-  .today-hero p {
     margin: 0;
-    color: var(--muted);
+    font-size: clamp(3.2rem, 1.6rem + 5vw, 6.2rem);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+  }
+  .today-hero__lede {
+    max-width: 36ch;
+    margin: 22px 0 0;
+    color: var(--ink-1);
     font-size: var(--text-lg);
-    line-height: 1.55;
+    line-height: 1.5;
     text-wrap: pretty;
   }
-  .today-coverage-note {
-    margin: 18px 0 0;
-    padding: 12px 14px;
-    border-left: 2px solid var(--hair-2);
-    color: var(--faint);
-    font-size: var(--text-xs);
-    line-height: 1.65;
+  .today-hero__actions { margin-top: 30px; }
+  .today-hero__note { margin-top: 18px; color: var(--ink-2); }
+  .today-cta-chart { display: none; }
+  :root[data-today-saved-chart] .today-cta-sign { display: none; }
+  :root[data-today-saved-chart] .today-cta-chart { display: inline; }
+  /* Top-aligned like the text: on a dated edition the three-line headline
+     makes the text the taller column, and a centred wheel moved whenever a
+     late face or the rest of the stream changed that column's height. */
+  .today-hero__wheel { position: relative; align-self: start; min-width: 0; margin: 0; }
+  .today-wheel { position: relative; }
+  /* The wheel's own rings are open; a dark disc behind them keeps the art
+     from showing through the sky. */
+  .today-wheel::before {
+    content: '';
+    position: absolute;
+    inset: 6.8%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, #151925 0%, #0A0C11 100%);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
   }
-  .today-provenance { margin-top: 18px; }
-  /* One flat surface for the brief: no outer bezel, sign wash or lit edge.
-     The border answers when a control inside has focus; paint changes are
-     immediate here, as on every Phase 1 surface. */
-  .today-card.shell { padding: 0; border: 0; background: none; }
+  .today-wheel .wheel { position: relative; }
+  .today-wheel .wheel { display: block; width: 100%; height: auto; }
+  .today-wheel__moon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 15%;
+    height: auto;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+  }
+  .today-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 14px; color: var(--ink-2); font-size: 12.5px; }
+  .today-legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .today-legend i { font-style: normal; }
+  .today-legend__rx { color: rgba(224, 176, 128, 0.9); font-family: var(--font-mono); font-size: 11px; }
+  .today-legend__line { display: inline-block; width: 18px; height: 0; border-top: 1.5px solid; }
+  .today-legend__line--easy { color: rgba(182, 212, 228, 0.85); }
+  .today-legend__line--tense { color: rgba(222, 142, 121, 0.85); }
+  .today-legend__line--joined { color: rgba(238, 241, 247, 0.6); }
+
+  /* ── 2. The sky line ──────────────────────────────────────────── */
+  .today-skyline { margin-top: 18px; }
+  @media (min-width: 1101px) {
+    .today-skyline .skyticker { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .today-skyline .skyticker::-webkit-scrollbar { display: none; }
+    .today-skyline .skyticker > * { flex: none; }
+  }
+
+  /* ── 3. The Sun, the Moon and the lunar cycle ─────────────────── */
+  .today-lights { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .today-light { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid var(--hair-1); border-radius: var(--r-lg); background: rgba(198, 204, 218, 0.02); }
+  .today-light__art { position: relative; }
+  .today-light__art .artframe { aspect-ratio: 2 / 1; border-radius: 0; }
+  .today-light__tag {
+    position: absolute;
+    z-index: 3;
+    top: 16px;
+    left: 18px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 13px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-full);
+    background: rgba(10, 12, 17, 0.62);
+    color: var(--ink-1);
+    font-size: 13px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .today-light__body { display: grid; gap: 12px; padding: 24px 28px 28px; }
+  .today-light__head { display: flex; align-items: center; gap: 14px; }
+  .today-light p { max-width: 56ch; margin: 0; color: var(--text-2); line-height: 1.62; }
+  .today-light p.kfacts { margin-top: 2px; color: var(--faint); }
+  .today-cycle {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--nodes, 4), minmax(0, 1fr));
+    gap: 8px;
+    margin: 20px 0 0;
+    padding: 26px 28px 24px;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-lg);
+    background: rgba(198, 204, 218, 0.015);
+    list-style: none;
+  }
+  .today-cycle::before {
+    content: '';
+    position: absolute;
+    top: 49px;
+    left: calc(28px + (100% - 56px) / (2 * var(--nodes, 4)));
+    right: calc(28px + (100% - 56px) / (2 * var(--nodes, 4)));
+    height: 1px;
+    background: var(--hair-2);
+  }
+  .today-cycle li { position: relative; display: grid; justify-items: center; gap: 4px; min-width: 0; text-align: center; }
+  .today-moon { position: relative; z-index: 1; margin-bottom: 10px; border-radius: 50%; background: var(--void-0); box-shadow: 0 0 0 8px var(--void-0); }
+  .today-cycle b { color: var(--ink-1); font-size: 0.9375rem; font-weight: 600; }
+  .today-cycle li > span { color: var(--faint); font-size: 12.5px; }
+  .today-cycle__sign::before { content: ' · '; }
+  .today-cycle li.is-now b { color: var(--ink-0); }
+  .today-cycle li.is-now > span { color: var(--sign-sagittarius); }
+  .today-cycle li.is-now .today-moon { box-shadow: 0 0 0 8px var(--void-0), 0 0 0 9px rgba(224, 176, 128, 0.6); }
+
+  /* ── 4. The Moon from each sign, and the saved-chart comparison ── */
+  .today-signs__head--chart { display: none; }
+  :root[data-today-saved-chart] .today-signs__head { display: none; }
+  :root[data-today-saved-chart] .today-signs__head--chart { display: block; }
+  /* One flat surface for the brief: no outer bezel or sign wash. A saved
+     chart reads in one quiet panel; paint changes are immediate here, as on
+     every Phase 1 surface. */
+  .today-card.shell { padding: 0; border: 0; background: none; box-shadow: none; }
   .today-card.shell > .today-card__core {
+    position: relative;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .today-card__core { padding: 0; }
+  :root[data-today-saved-chart] .today-card.shell > .today-card__core {
+    padding: clamp(22px, 4vw, 36px);
     border: 1px solid var(--hair-2);
     border-radius: var(--r-xl);
     background: var(--void-1);
-    box-shadow: none;
   }
-  .today-card.shell:focus-within > .today-card__core { border-color: var(--hair-3); }
-  .today-card__core { padding: clamp(22px, 5vw, 38px); }
+  :root[data-today-saved-chart] .today-card.shell:focus-within > .today-card__core { border-color: var(--hair-3); }
   .today-card__head {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 18px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--hair-1);
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
   }
-  .today-card__date {
-    margin: 0;
-    color: var(--text);
-    font-size: var(--text-lg);
-    font-weight: 620;
-    letter-spacing: -0.015em;
-  }
-  .today-card__time { margin: 4px 0 0; color: var(--faint); font-size: 11px; }
+  :root[data-today-saved-chart] .today-card__head { top: clamp(22px, 4vw, 36px); right: clamp(22px, 4vw, 36px); }
+  /* The self-chart chooser leads the brief: the streak takes its own line. */
+  :root[data-living-chart-needs-self] .today-card__head { position: static; display: flex; justify-content: flex-end; margin-bottom: 10px; }
   .today-streak {
     display: grid;
     grid-template-columns: 3.75rem max-content;
@@ -252,7 +827,7 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     gap: 5px;
     min-width: 0;
     margin: 0;
-    color: var(--muted);
+    color: var(--faint);
     font-size: 12px;
     white-space: nowrap;
     visibility: hidden;
@@ -261,9 +836,9 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   .today-streak__count {
     display: block;
     min-width: 0;
-    color: var(--sign-cancer);
+    color: var(--ink-1);
     font-family: var(--font-serif);
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 500;
     font-variant-numeric: lining-nums tabular-nums;
     line-height: 1;
@@ -274,7 +849,7 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     from { opacity: 0.35; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .today-reading { display: grid; min-width: 0; gap: 24px; padding-top: 24px; }
+  .today-reading { display: grid; min-width: 0; max-width: 820px; gap: 24px; }
   .today-returning-chart-placeholder { display: none; align-content: start; }
   :root[data-today-saved-chart] .today-fallback { display: none; }
   :root[data-today-saved-chart] .today-returning-chart-placeholder { display: grid; }
@@ -309,17 +884,28 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   :root[data-today-chart-sun-sign="capricorn"] [data-today-chart-sun="capricorn"],
   :root[data-today-chart-sun-sign="aquarius"] [data-today-chart-sun="aquarius"],
   :root[data-today-chart-sun-sign="pisces"] [data-today-chart-sun="pisces"] { display: grid; }
-  .today-reading__head h2,
-  .today-fallback__intro h2 {
+  .today-reading__head h3,
+  .today-fallback__intro h3 {
+    min-height: 28px;
     margin: 0;
+    padding-right: 9.5rem;
     color: var(--text);
+    font-family: var(--font-serif);
     font-size: var(--text-xl);
-    font-weight: 620;
-    letter-spacing: -0.02em;
+    font-weight: 500;
+    line-height: 1.15;
+  }
+  .today-fallback__intro h3 {
+    display: flex;
+    align-items: center;
+    font-family: inherit;
+    font-size: 1.06rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
   .today-reading__head { min-width: 0; }
-  .today-reading__head h2 { min-width: 0; }
-  .today-reading__head h2:has(.today-reading__chart-name) {
+  .today-reading__head h3 { min-width: 0; }
+  .today-reading__head h3:has(.today-reading__chart-name) {
     display: flex;
     gap: 0.24em;
   }
@@ -331,6 +917,7 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   }
   .today-reading__head p,
   .today-fallback__intro p {
+    max-width: 64ch;
     margin: 7px 0 0;
     color: var(--muted);
     font-size: var(--text-sm);
@@ -374,10 +961,12 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     font-size: 12px;
     line-height: 1.7;
   }
-  .today-fallback { display: grid; gap: 24px; padding-top: 24px; }
-  .today-fallback__intro p { max-width: 56ch; }
+
+  /* The no-chart brief: the picker, the twelve notes, the invitation. */
+  .today-fallback { display: grid; gap: 22px; }
   .today-fallback__intro .today-fallback__status {
-    margin-top: 10px;
+    max-width: none;
+    margin-top: 6px;
     color: var(--faint);
     font-size: 12px;
     visibility: hidden;
@@ -391,21 +980,21 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   }
   .today-sign-picker__grid {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 6px;
   }
   .today-sign {
     display: grid;
-    grid-template-rows: 34px 18px 16px;
+    grid-template-rows: 30px 18px 14px;
     justify-items: center;
     align-content: start;
     min-width: 0;
-    block-size: 88px;
-    padding: 9px 5px;
+    block-size: 82px;
+    padding: 9px 4px;
     border: 1px solid var(--hair-1);
     border-radius: var(--r-md);
     color: var(--muted);
-    background: var(--void-1);
+    background: rgba(198, 204, 218, 0.02);
     cursor: pointer;
     font: inherit;
     text-decoration: none;
@@ -423,8 +1012,8 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   .today-sign__icon {
     display: block;
     grid-row: 1;
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
   }
   .today-sign__icon img {
     display: block;
@@ -432,12 +1021,12 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     height: 100%;
     object-fit: contain;
   }
-  .today-sign__name { grid-row: 2; margin-top: 6px; font-size: 12px; font-weight: 650; line-height: 1; }
+  .today-sign__name { grid-row: 2; max-width: 100%; margin-top: 6px; overflow: hidden; font-size: 12px; font-weight: 650; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
   .today-sign__dates {
     grid-row: 3;
-    margin-top: 5px;
+    margin-top: 2px;
     color: var(--faint);
-    font-size: 8.5px;
+    font-size: 9px;
     line-height: 1.2;
     white-space: nowrap;
   }
@@ -453,18 +1042,22 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   :root[data-today-sun-sign][data-today-stream-pending] .today-provenance {
     visibility: hidden;
   }
-  /* Reserve the compact desktop/provenance reading until its SSR bytes arrive;
-     saved charts use the separate geometry above. */
+  /* Reserve the stored sign's reading until its SSR bytes arrive; saved
+     charts use the separate geometry above. */
   :root[data-today-sun-sign]:not([data-today-saved-chart]) .today-fallback__result {
     min-height: 224px;
   }
+  :root[data-today-sun-sign]:not([data-today-saved-chart]) .today-fallback__result { display: grid; }
   .today-sign-readings {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 28px;
+    border-top: 1px solid var(--hair-1);
   }
   :root[data-today-sun-sign]:not([data-today-saved-chart]) .today-sign-readings {
     grid-template-columns: 1fr;
+    max-width: 820px;
+    border-top: 0;
   }
   :root[data-today-sun-sign="aries"] .today-sign-readings > :not([data-today-sun-sign="aries"]),
   :root[data-today-sun-sign="taurus"] .today-sign-readings > :not([data-today-sun-sign="taurus"]),
@@ -480,40 +1073,26 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   :root[data-today-sun-sign="pisces"] .today-sign-readings > :not([data-today-sun-sign="pisces"]) {
     display: none;
   }
+  /* A note is one row: disc, sign and house, the edition's line, and the
+     whole row a link to the sign's full horoscope. */
   .today-sign-reading {
+    position: relative;
     display: grid;
-    justify-items: start;
-    gap: 12px;
-    padding: clamp(18px, 4vw, 26px);
-    border: 1px solid color-mix(in oklab, var(--sign) 35%, var(--hair-1));
-    border-left: 3px solid var(--sign);
-    border-radius: var(--r-lg);
-    background: color-mix(in oklab, var(--sign) 7%, var(--void-1));
-  }
-  .today-sign-reading .kicker { margin: 0; }
-  .today-sign-reading h3 {
-    margin: 0;
-    color: var(--text);
-    font-size: var(--text-xl);
-    letter-spacing: -0.02em;
-  }
-  .today-sign-reading__line {
-    margin: 0;
-    color: var(--text-2);
-    font-size: clamp(1rem, 0.96rem + 0.25vw, 1.12rem);
-    line-height: 1.65;
-    text-wrap: pretty;
-  }
-  .today-sign-reading__title {
-    display: flex;
-    align-items: center;
-    gap: 9px;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    grid-template-areas: 'icon title more' 'icon line more';
+    align-content: start;
+    column-gap: 14px;
+    row-gap: 3px;
+    min-width: 0;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--hair-1);
   }
   .today-sign-reading__icon {
     display: block;
-    flex: 0 0 auto;
-    width: 28px;
-    height: 28px;
+    grid-area: icon;
+    width: 38px;
+    height: 38px;
+    margin-top: 2px;
   }
   .today-sign-reading__icon img {
     display: block;
@@ -521,43 +1100,95 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     height: 100%;
     object-fit: contain;
   }
-  .today-sign-reading--compact {
-    align-content: start;
-    gap: 9px;
-    padding: clamp(16px, 3vw, 20px);
+  .today-sign-reading .kicker { grid-area: kicker; margin: 0; font-size: var(--text-base); }
+  .today-sign-reading__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 8px;
+    grid-area: title;
+    margin: 0;
+    color: var(--ink-0);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
   }
-  .today-sign-reading--compact h3 { font-size: var(--text-lg); }
-  .today-sign-reading--compact .today-sign-reading__line {
-    font-size: var(--text-sm);
-    line-height: 1.6;
+  .today-sign-reading__title small { color: var(--faint); font-family: var(--today-face); font-size: 12.5px; font-weight: 500; }
+  .today-sign-reading__line {
+    grid-area: line;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    text-wrap: pretty;
   }
   .today-sign-reading__more {
-    color: var(--text-2);
-    font-size: 12px;
-    font-weight: 650;
-    text-underline-offset: 3px;
+    grid-area: more;
+    align-self: start;
+    color: var(--faint);
+    font-size: 14px;
+    text-decoration: none;
   }
-  .today-sign-reading__more:hover { color: var(--text); }
-  .today-sign-reading:target {
-    border-color: color-mix(in oklab, var(--sign) 75%, var(--hair-2));
+  .today-sign-reading__more::after { content: ''; position: absolute; inset: 0; }
+  .today-sign-reading__more:focus-visible { outline: none; }
+  .today-sign-reading:has(.today-sign-reading__more:focus-visible) { outline: 2px solid var(--ink-0); outline-offset: 2px; border-radius: 6px; }
+  .today-sign-reading__more-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
-  .today-sign-reading .btn { margin-top: 2px; }
+  .today-sign-reading__arrow { display: inline-block; transition: transform var(--dur-1) var(--ease); }
+  @media (hover: hover) and (pointer: fine) {
+    .today-sign-reading--compact:hover .today-sign-reading__title > span:first-child { color: var(--sign); }
+    .today-sign-reading--compact:hover .today-sign-reading__arrow { transform: translateX(3px); }
+  }
+  .today-sign-reading:target { background: color-mix(in oklab, var(--sign) 7%, transparent); }
+  /* One sign: the stored choice, or the one just picked. */
+  :root[data-today-sun-sign]:not([data-today-saved-chart]) .today-sign-reading--compact,
+  .today-sign-reading:not(.today-sign-reading--compact) {
+    grid-template-columns: 46px minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: 'icon title' 'icon line' 'icon more';
+    row-gap: 8px;
+    padding: clamp(20px, 3vw, 28px);
+    border: 1px solid color-mix(in oklab, var(--sign) 35%, var(--hair-1));
+    border-radius: var(--r-lg);
+    background: color-mix(in oklab, var(--sign) 7%, var(--void-1));
+  }
+  .today-sign-reading:not(.today-sign-reading--compact) {
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-areas: 'icon kicker' 'icon title' 'icon line' 'icon more';
+    max-width: 820px;
+  }
+  :root[data-today-sun-sign]:not([data-today-saved-chart]) .today-sign-reading--compact .today-sign-reading__title,
+  .today-sign-reading:not(.today-sign-reading--compact) .today-sign-reading__title { font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; }
+  :root[data-today-sun-sign]:not([data-today-saved-chart]) .today-sign-reading--compact .today-sign-reading__line,
+  .today-sign-reading:not(.today-sign-reading--compact) .today-sign-reading__line { color: var(--text-2); font-size: clamp(1rem, 0.96rem + 0.25vw, 1.12rem); line-height: 1.6; }
+  :root[data-today-sun-sign]:not([data-today-saved-chart]) .today-sign-reading__more { align-self: end; margin-top: 4px; color: var(--ink-0); font-size: 0.9375rem; font-weight: 550; }
+  :root[data-today-sun-sign]:not([data-today-saved-chart]) .today-sign-reading__more-label { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
+  .today-sign-reading .btn { grid-area: more; justify-self: start; margin-top: 4px; }
   .today-fallback__personalize {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    padding-top: 20px;
-    border-top: 1px solid var(--hair-1);
+    gap: 24px;
+    padding: 24px 28px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-lg);
+    background: linear-gradient(180deg, rgba(198, 204, 218, 0.05), rgba(198, 204, 218, 0.015));
   }
-  .today-fallback__personalize strong { color: var(--text-2); font-size: var(--text-sm); }
+  .today-fallback__personalize strong { color: var(--ink-0); font-size: 1.12rem; font-weight: 600; }
   .today-fallback__personalize p {
+    max-width: 54ch;
     margin: 4px 0 0;
-    color: var(--faint);
-    font-size: 12px;
-    line-height: 1.5;
+    color: var(--muted);
+    font-size: 0.9375rem;
+    line-height: 1.55;
   }
-  .today-fallback__personalize .btn { flex: 0 0 auto; }
+  .today-fallback__actions { display: flex; flex: none; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
   .today-quiet { display: grid; align-content: space-between; gap: 24px; }
   .today-quiet p { margin: 0; color: var(--text-2); line-height: 1.65; }
   .today-quiet__baseline {
@@ -587,26 +1218,249 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   .today-method-details__body p { margin: 0; }
   .today-method-details__body ul { display: grid; gap: 6px; margin: 10px 0 0; padding-left: 18px; }
   .today-method-details__body li { overflow-wrap: anywhere; font-family: var(--font-mono); font-size: 10.5px; }
+
+  /* ── 5. Planets and dates ahead ───────────────────────────────── */
+  .today-orrery { aspect-ratio: 3 / 1; --focus: 50% 26%; }
+  .today-art-band + .today-split { padding-top: clamp(24px, 2.6vw, 36px); }
+  .today-split { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr); align-items: start; gap: clamp(32px, 5vw, 72px); }
+  .today-split .h-3 { margin: 0 0 6px; }
+  .today-sub { margin: 0 0 18px; color: var(--muted); font-size: 0.9375rem; }
+  .today-ptable { margin: 0; padding: 0; border-top: 1px solid var(--hair-1); list-style: none; }
+  .today-prow {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) 116px 60px 156px;
+    align-items: center;
+    column-gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--hair-1);
+  }
+  .today-pg { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--hair-2); border-radius: 50%; background: var(--void-2); color: var(--ink-0); }
+  .today-pg svg { width: 18px; height: 18px; }
+  .today-prow.is-sun .today-pg { border-color: var(--ink-0); background: var(--ink-0); color: var(--void-0); }
+  .today-prow__name { min-width: 0; }
+  .today-prow__name b { display: block; color: var(--ink-0); font-size: 0.98rem; font-weight: 600; line-height: 1.3; }
+  .today-prow__name small { display: block; color: var(--faint); font-size: 12.5px; line-height: 1.35; }
+  .today-prow__sign { display: inline-flex; align-items: center; gap: 9px; min-width: 0; color: var(--ink-1); font-size: 0.9375rem; }
+  .today-prow__deg { color: var(--ink-1); font-family: var(--font-mono); font-size: 0.875rem; font-variant-numeric: tabular-nums; text-align: right; }
+  .today-pm {
+    display: inline-flex;
+    justify-self: end;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 11px;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-full);
+    color: var(--ink-2);
+    font-size: 12.5px;
+    font-weight: 550;
+    white-space: nowrap;
+  }
+  .today-pm.is-rx { border-color: rgba(222, 142, 121, 0.35); background: rgba(222, 142, 121, 0.07); color: var(--sign-aries); }
+  .today-pm.is-station { border-color: var(--hair-3); background: rgba(198, 204, 218, 0.08); color: var(--ink-0); }
+  .today-pm.is-moon { border-color: color-mix(in oklab, var(--sign-sagittarius) 40%, transparent); color: var(--sign-sagittarius); }
+  .today-events { margin: 0; padding: 0; border-top: 1px solid var(--hair-1); list-style: none; }
+  .today-events li { display: grid; grid-template-columns: 54px minmax(0, 1fr) 30px; align-items: center; column-gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--hair-1); }
+  .today-events time { display: grid; justify-items: center; padding: 7px 0 6px; border: 1px solid var(--hair-1); border-radius: 12px; background: rgba(198, 204, 218, 0.03); line-height: 1; }
+  .today-events time span { color: var(--faint); font-size: 11px; font-weight: 550; }
+  .today-events time b { margin-top: 3px; font-family: var(--font-serif); font-size: 1.4rem; font-weight: 500; font-variant-numeric: lining-nums; }
+  .today-events li > div { min-width: 0; }
+  .today-events li > div > :is(a, b) { display: block; color: var(--ink-0); font-size: 0.98rem; font-weight: 600; line-height: 1.3; }
+  .today-events li > div > a { width: fit-content; text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+  .today-events li > div > a:hover { text-decoration-color: var(--ink-1); }
+  .today-events li > div small { display: block; margin-top: 2px; color: var(--faint); font-size: 12.5px; }
+  .today-events__ic { display: grid; justify-self: end; width: 30px; height: 30px; place-items: center; color: var(--muted); }
+  .today-events__ic svg { width: 20px; height: 20px; }
+  .today-events__ic .sign-icon { width: 24px; }
+  .today-events li.is-lunation time { border-color: color-mix(in oklab, var(--sign) 50%, transparent); background: color-mix(in oklab, var(--sign) 9%, transparent); }
+  .today-events li.is-lunation time span { color: var(--sign); }
+  .today-events__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; margin-top: 16px; color: var(--faint); font-size: 13px; }
+
+  /* ── 6. Retrograde timeline ───────────────────────────────────── */
+  .today-rt { padding: 10px 28px 18px; border: 1px solid var(--hair-1); border-radius: var(--r-lg); background: rgba(198, 204, 218, 0.015); }
+  .today-rt__row { display: grid; grid-template-columns: 250px minmax(0, 1fr); align-items: center; column-gap: 28px; }
+  .today-rt__row + .today-rt__row { border-top: 1px solid var(--hair-1); }
+  .today-rt__name { display: grid; grid-template-columns: 30px minmax(0, 1fr); align-items: center; column-gap: 12px; padding: 12px 0; }
+  .today-rt__g { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid var(--hair-2); border-radius: 50%; color: var(--ink-1); }
+  .today-rt__g svg { width: 15px; height: 15px; }
+  .today-rt__name b { color: var(--ink-0); font-size: 0.95rem; font-weight: 600; line-height: 1.25; }
+  .today-rt__name small { display: block; color: var(--faint); font-size: 12.5px; line-height: 1.3; }
+  .today-rt__name small.is-on { color: var(--sign-aries); }
+  .today-rt__track { position: relative; align-self: stretch; min-height: 54px; }
+  .today-rt__track::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--hair-1); }
+  .today-rt__track::after { content: ''; position: absolute; top: 0; bottom: 0; left: var(--today-at); width: 1.5px; background: var(--ink-0); opacity: 0.75; }
+  .today-rt__head .today-rt__track { min-height: 58px; }
+  .today-rt__head .today-rt__track::before { display: none; }
+  .today-rt__head .today-rt__track::after { top: 22px; }
+  .today-rt__month { position: absolute; top: 32px; padding: 0 0 12px 6px; border-left: 1px solid var(--hair-1); color: var(--faint); font-size: 12px; line-height: 1; }
+  .today-rt__today { position: absolute; top: 0; left: var(--today-at); z-index: 2; padding: 3px 9px; border-radius: 99px; background: var(--ink-0); color: var(--void-0); font-size: 11.5px; font-weight: 600; white-space: nowrap; transform: translateX(-50%); }
+  .today-rt__bar { position: absolute; top: 50%; height: 14px; margin-top: -7px; border-radius: 99px; background: linear-gradient(90deg, rgba(222, 142, 121, 0.88), rgba(224, 169, 180, 0.88)); }
+  .today-rt__bar.is-upcoming { border: 1.5px dashed rgba(222, 142, 121, 0.7); background: transparent; }
+  .today-rt__bar.is-ended { background: rgba(198, 204, 218, 0.22); }
+  .today-rt__bar.is-clip-start { border-top-left-radius: 0; border-bottom-left-radius: 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 40%); mask-image: linear-gradient(90deg, transparent, #000 40%); }
+  .today-rt__bar.is-clip-end { border-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; -webkit-mask-image: linear-gradient(270deg, transparent, #000 45%); mask-image: linear-gradient(270deg, transparent, #000 45%); }
+  .today-rt__key { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 14px; color: var(--muted); font-size: 12.5px; }
+  .today-rt__key > span { display: inline-flex; align-items: center; gap: 8px; }
+  .today-rt__key i { display: inline-block; width: 26px; height: 10px; border-radius: 99px; background: linear-gradient(90deg, rgba(222, 142, 121, 0.88), rgba(224, 169, 180, 0.88)); }
+  .today-rt__key i.is-upcoming { border: 1.5px dashed rgba(222, 142, 121, 0.7); background: transparent; }
+  .today-rt__key i.is-ended { background: rgba(198, 204, 218, 0.22); }
+  .today-rt__key i.is-today { width: 1.5px; height: 14px; border-radius: 0; background: var(--ink-0); }
+  .today-note { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 14px; margin-top: 18px; padding: 18px 22px; border: 1px solid rgba(222, 142, 121, 0.16); border-radius: 16px; background: rgba(222, 142, 121, 0.05); }
+  .today-note .kicker { color: var(--sign-aries); font-size: 1rem; }
+  .today-note p { max-width: 92ch; margin: 0; color: var(--ink-1); font-size: 0.9375rem; line-height: 1.6; }
+
+  /* ── 7. Aspects ───────────────────────────────────────────────── */
+  .today-asps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .today-asp { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .today-asp__g { display: flex; align-items: center; gap: 10px; color: var(--ink-0); }
+  .today-asp__g > span { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid var(--hair-2); border-radius: 50%; background: var(--void-2); }
+  .today-asp__g svg { width: 18px; height: 18px; }
+  .today-asp__type.is-trine, .today-asp__type.is-sextile { color: #B6D4E4; }
+  .today-asp__type.is-square, .today-asp__type.is-opposition { color: var(--sign-aries); }
+  .today-asp .h-4 { margin-top: 8px; }
+  .today-asp p { margin: 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .today-asp p.today-asp__pos { margin-top: -2px; color: var(--faint); font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
+  .today-asp__tag { align-self: flex-start; margin-top: auto; padding: 4px 10px; border: 1px solid var(--hair-2); border-radius: 99px; color: var(--ink-1); font-size: 12px; font-weight: 550; }
+  .today-asp__tag.is-exact { border-color: var(--ink-0); background: var(--ink-0); color: var(--void-0); }
+
+  /* ── 8. Go further ────────────────────────────────────────────── */
+  .today-tool { display: flex; flex-direction: column; min-height: 200px; }
+  .today-tool .h-4 { margin-top: 26px; font-size: 1.12rem; }
+  .today-tool p { padding-right: 36px; }
+  .today-ask { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 32px; margin-top: 20px; padding: 26px 28px; }
+  .today-ask > div { max-width: 46ch; }
+  .today-ask .ask-guide-line { margin-top: 6px; font-size: 0.9375rem; }
+  .today-ask .guide-prompts { margin: 0; }
+
+  /* ── 9. Method ────────────────────────────────────────────────── */
+  .today-method { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: clamp(28px, 6vw, 96px); margin-top: clamp(56px, 5.8vw, 84px); padding-top: 32px; border-top: 1px solid var(--hair-1); }
+  .today-method .h-4 { margin: 0; }
+  .today-method p { max-width: 66ch; margin: 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.65; }
+  .today-method p.today-method__links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 16px; }
+  .today-method p.today-coverage-note {
+    margin: 18px 0 0;
+    padding: 12px 14px;
+    border-left: 2px solid var(--hair-2);
+    color: var(--faint);
+    font-size: var(--text-xs);
+    line-height: 1.65;
+  }
+  .today-provenance { margin-top: 16px; }
+
+  @media (max-width: 1100px) {
+    .today-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); }
+    .today-prow { grid-template-columns: 36px minmax(0, 1fr) 120px 60px; }
+    .today-prow .today-pm { grid-column: 2 / -1; justify-self: start; margin-top: 6px; }
+    .today-sign-picker__grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .today-sign-readings { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .today-asps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 960px) {
+    .today-orrery { aspect-ratio: 2 / 1; }
+    .today-split { grid-template-columns: minmax(0, 1fr); }
+    .today-prow { grid-template-columns: 36px minmax(0, 1fr) 116px 60px 156px; }
+    .today-prow .today-pm { grid-column: auto; justify-self: end; margin-top: 0; }
+    .today-rt__row { grid-template-columns: 200px minmax(0, 1fr); }
+    .today-fallback__personalize { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 860px) {
+    .today-hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: 104px; }
+    .today-hero__body { padding-top: 0; }
+    .today-hero__wheel { width: 100%; max-width: 520px; margin-inline: auto; }
+    .today-method { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  }
+  @media (max-width: 760px) {
+    .today-orrery { aspect-ratio: 16 / 10; --focus: 50% 30%; }
+    .today-hero {
+      gap: 36px;
+      margin: calc(8px - var(--nav-space, 64px)) 8px 0;
+      padding: 92px 20px 28px;
+      border-radius: 24px;
+      background-image: url('/assets/hero/zodiacs-hero-poster-mobile.avif');
+      background-position: 30% 0%;
+    }
+    .today-hero::before { background: linear-gradient(180deg, rgba(6, 7, 9, 0.72) 0%, rgba(6, 7, 9, 0.9) 34%, rgba(6, 7, 9, 0.82) 70%, rgba(6, 7, 9, 0.92) 100%); }
+    .today-crumbs { margin-bottom: 18px; }
+    .today-hero h1 { font-size: 3.4rem; }
+    .today-hero__lede { margin-top: 16px; font-size: 1.06rem; }
+    .today-hero__actions { flex-direction: column; align-items: stretch; margin-top: 24px; }
+    .today-hero__actions .btn { width: 100%; }
+    .today-legend { gap: 6px 14px; font-size: 12px; }
+    .today-skyline .skyticker { gap: 10px 18px; }
+    .today-lights { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .today-light__art .artframe { aspect-ratio: 16 / 9; }
+    .today-light__body { padding: 20px 20px 22px; }
+    .today-cycle { padding: 22px 8px 20px; gap: 4px; }
+    .today-cycle::before { left: calc(8px + (100% - 16px) / (2 * var(--nodes, 4))); right: calc(8px + (100% - 16px) / (2 * var(--nodes, 4))); top: 45px; }
+    .today-cycle li > span { font-size: 11.5px; line-height: 1.35; }
+    .today-card__head { position: static; display: flex; justify-content: flex-end; margin-bottom: 10px; }
+    .today-reading__head h3,
+    .today-fallback__intro h3 { padding-right: 0; }
+    .today-cycle__sign { display: block; }
+    .today-cycle__sign::before { content: none; }
+    .today-cycle b { font-size: 0.875rem; }
+    .today-sign-picker__grid {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 84px;
+      padding-block: 4px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(90deg, #000 86%, transparent);
+      mask-image: linear-gradient(90deg, #000 86%, transparent);
+    }
+    .today-sign-picker__grid::-webkit-scrollbar { display: none; }
+    .today-sign { scroll-snap-align: start; }
+    .today-sign-readings { grid-template-columns: minmax(0, 1fr); }
+    .today-sign-reading { grid-template-columns: 36px minmax(0, 1fr) auto; padding: 14px 0; }
+    .today-fallback__personalize { padding: 22px 20px; }
+    .today-fallback__actions { flex-direction: column; align-items: stretch; width: 100%; }
+    .today-fallback__actions .btn { justify-content: space-between; }
+    .today-prow { grid-template-columns: 34px minmax(0, 1fr) auto; column-gap: 12px; }
+    .today-pg { width: 34px; height: 34px; }
+    .today-prow__sign { grid-column: 2; grid-row: 2; margin-top: 6px; font-size: 0.875rem; }
+    .today-prow__deg { grid-column: 3; grid-row: 2; margin-top: 6px; }
+    .today-prow .today-pm { grid-column: 3; grid-row: 1; justify-self: end; margin-top: 0; }
+    .today-prow__name small { display: none; }
+    .today-events li { grid-template-columns: 50px minmax(0, 1fr); }
+    .today-events__ic { display: none; }
+    .today-rt { padding: 4px 14px 12px; }
+    .today-rt__row { grid-template-columns: 112px minmax(0, 1fr); column-gap: 10px; }
+    .today-rt__name { grid-template-columns: minmax(0, 1fr); padding: 10px 0; }
+    .today-rt__g { display: none; }
+    .today-rt__name b { font-size: 0.9rem; }
+    .today-rt__name small { font-size: 11.5px; }
+    .today-rt__track { min-height: 0; }
+    .today-rt__bar { height: 10px; margin-top: -5px; }
+    .today-rt__head .today-rt__track { min-height: 54px; }
+    .today-rt__month { padding-left: 3px; font-size: 10px; }
+    .today-note { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 16px 18px; }
+    .today-asps { display: flex; gap: 12px; margin-right: -20px; padding-right: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .today-asps .today-asp { flex: 0 0 80%; scroll-snap-align: start; padding: 20px; }
+    .today-tool { min-height: 0; padding: 20px; }
+    .today-tool .h-4 { margin-top: 18px; font-size: 1.06rem; }
+    .today-tool p { padding-right: 0; }
+    .today-tool .kcard__go { display: none; }
+    .today-ask { padding: 22px 20px; }
+  }
   @media (max-width: 480px) {
     .today-reading__body { min-height: 488px; }
     .today-page[data-living-chart-enabled] .today-reading__body { min-height: 570px; }
-    .today-page[data-living-chart-enabled] .today-returning-chart-placeholder .today-reading__head h2 {
+    .today-page[data-living-chart-enabled] .today-returning-chart-placeholder .today-reading__head h3 {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .today-card__head { align-items: center; }
     .today-lines li { padding-left: 14px; }
-    .today-sign-picker__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .today-sign-readings { grid-template-columns: 1fr; }
-    .today-fallback__personalize { align-items: flex-start; flex-direction: column; }
-    .today-fallback__personalize .btn { width: 100%; justify-content: space-between; }
+    .today-tools { gap: 12px; }
+    .today-tool { padding: 18px 16px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .today-streak__count { animation: none; }
     .today-sign { transition: none; }
+    .today-sign-reading__arrow { transition: none; }
   }
-
 </style>
 
 {livingChartEnabled && (
@@ -827,10 +1681,9 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     display: block;
     margin-bottom: 6px;
     color: var(--faint);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0;
   }
   .today-useful {
     padding: 15px 16px;

@@ -3,7 +3,7 @@
   'use strict';
 
   var kinds = Object.freeze({ moon: [360, 250], sky: [480, 250], chart: [400, 610] });
-  var titles = Object.freeze({"moon":"Moon phase today — Zodiacs.org","sky":"The sky today — Zodiacs.org","chart":"Mini birth chart — Zodiacs.org"});
+  var titles = Object.freeze({"moon":"Moon phase today | Zodiacs.org","sky":"The sky today | Zodiacs.org","chart":"Mini birth chart | Zodiacs.org"});
   var sandbox = 'allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox';
 
   function validAccent(value) {
