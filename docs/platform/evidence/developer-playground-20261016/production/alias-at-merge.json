@@ -1,0 +1,9 @@
+{
+  "deploymentId": "dpl_Bs8UKEC7igJeo1qBg2cUYVhrBUY7",
+  "aliasUpdatedAt": "2026-10-16T22:40:06.312Z",
+  "readyState": "READY",
+  "target": "production",
+  "githubCommitSha": "6bbda021eb0886bb18bac953c883be4170dc4f10",
+  "readAt": "2026-10-16T22:42Z, Vercel get_alias and get_deployment",
+  "aliasedUntil": "2026-10-17T00:11:53.966Z, when the alias moved to dpl_88MT9GVVRQMFif9ZX1ykvb725283 (built from 1601135f, the 2026-10-17 edition), read at 2026-10-17T01:05Z and again at 01:11Z"
+}

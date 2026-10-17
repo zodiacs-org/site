@@ -1,3 +1,28 @@
+The compute API playground in production, 2026-10-17 (Asia/Bangkok): P3.8
+accepted.
+
+**Overall delivery: 43%** (43.409% to three decimals): 79.2 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.8, accepted.** `/developers/playground/` (#767, merged as `6bbda021`)
+  offers the compute API's 14 documented requests and the three refusals a
+  body provokes. Send posts a request to the hosted API, Run in this browser
+  answers it with the API's own calculations, and the page compares the
+  answers path by path and checks each citation against its receipt. Code in
+  five languages and a link reproduce the request, and the Markdown twin and
+  `examples.json` give agents the same. The drive passed 53 of 53 against
+  zodiacs.org on the merge's own deployment,
+  `dpl_Bs8UKEC7igJeo1qBg2cUYVhrBUY7`: every documented request reproduces by
+  an agent's path and a person's, with its controls called out. On
+  `dpl_88MT9GVVRQMFif9ZX1ykvb725283`, the next day's edition, which contains
+  the merge, a production check that records and verifies the deployment it
+  reads passes 9 of 9 (0 of 8 before the merge), and the drive again passes
+  53 of 53 ([the record](../evidence/developer-playground-20261016/README.md)).
+- **Its dependency.** P3.3 stays merged: its own gate (a negative control on
+  the logs, latency and cost) touches nothing the playground's gate needs, as
+  P3.2's sidereal zodiac did not touch P2.D.frames.
+- **Main's Site Check** passed on #767's merge (run 38976740729).
+
 Sitemap dates follow page changes, 2026-10-15 (Asia/Bangkok): S8 stays
 partial, for Bing alone.
 
