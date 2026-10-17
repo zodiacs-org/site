@@ -1,3 +1,21 @@
+WebMCP tools on every calculator page, 2026-10-17 (Asia/Bangkok): A2 stays
+partial until production.
+
+**Overall delivery: 43%** (43.409% to three decimals): 79.2 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **A2, partial.** Each of the sixteen calculator pages, and each page that
+  embeds one (the rising signs' profiles, the compatibility pairs and the Life
+  Path pages), registers the calculator's WebMCP tool when the browser or an
+  extension provides `modelContext`, in every locale it is built in: 543
+  pages. English pages keep `zodiacs.search`.
+  The calculations load only on a call and run in the browser with the
+  page's own code. Tests run each island's code beside its tool, and the
+  WebMCP drive calls every tool on every page of a local build
+  ([the record](../evidence/webmcp-calculators-20261015/README.md)).
+- **What keeps A2 open:** the merge, the deployment and the production
+  check.
+
 The compute API playground in production, 2026-10-17 (Asia/Bangkok): P3.8
 accepted.
 

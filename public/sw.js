@@ -215,11 +215,20 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (url.pathname.startsWith('/data/')
+  // Cache-first only for what the cache version covers: build-service-worker.mjs digests the hashed bundles and the
+  // city shards, so a change to either replaces these caches.
+  if (url.pathname.startsWith('/data/cities/')
     || url.pathname.startsWith('/_astro/')
     || url.pathname.startsWith('/assets/zodiac-icons/')
     || url.pathname.startsWith('/fonts/')) {
     event.respondWith(cacheFirst(request, url.pathname.startsWith('/data/') ? DATA_CACHE : SHELL_CACHE));
+    return;
+  }
+
+  // Other data files can change while the version stands (the chart-twins directory the WebMCP tool reads follows
+  // the page's own list), so the network answers and the cached copy is only the offline fallback.
+  if (url.pathname.startsWith('/data/')) {
+    event.respondWith(networkFirst(request, DATA_CACHE));
   }
 });
 
