@@ -276,7 +276,8 @@ async function serveAccountRoute(res: any, route: string, options: AiHttpOptions
     page = await options.consentPage();
   } catch { return send(res, 503, 'accounts-unavailable'); }
   // The page reads its settings from an inert JSON block; < is escaped so it can never close the element.
-  const config = JSON.stringify({ url: service.supabaseUrl, key: service.publishableKey, clients: service.clients }).replace(/</g, '\\u003c');
+  const config = JSON.stringify({ url: service.supabaseUrl, key: service.publishableKey, clients: service.clients,
+    ...(service.previewWatchClients?.length ? { previewWatchClients: service.previewWatchClients } : {}) }).replace(/</g, '\\u003c');
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Referrer-Policy', 'no-referrer');

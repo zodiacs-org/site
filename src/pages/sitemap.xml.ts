@@ -165,6 +165,9 @@ const QUERY_GUIDES_INDEX_LASTMOD = '2026-10-13';
 const QUERY_GUIDES_INDEX_ROUTES = ['/developers/docs/'] as const;
 const PT_FIRST_DAY_LASTMOD = '2026-10-13';
 const PT_FIRST_DAY_ROUTES = ['/pt/eclipses/', '/pt/full-moon-calendar/', '/pt/mercury-retrograde/', '/pt/retrogrades/'] as const;
+// The compute API playground (P3.8): the page, and the developer index and compute API page that link to it.
+const PLAYGROUND_LASTMOD = '2026-10-16';
+const PLAYGROUND_ROUTES = ['/developers/playground/', '/developers/', '/developers/compute/'] as const;
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -320,6 +323,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ADAPTER_RC24_ROUTES.map((loc) => [loc, ADAPTER_RC24_LASTMOD] as const),
   ...QUERY_GUIDES_INDEX_ROUTES.map((loc) => [loc, QUERY_GUIDES_INDEX_LASTMOD] as const),
   ...PT_FIRST_DAY_ROUTES.map((loc) => [loc, PT_FIRST_DAY_LASTMOD] as const),
+  ...PLAYGROUND_ROUTES.map((loc) => [loc, PLAYGROUND_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -418,6 +422,7 @@ export const GET: APIRoute = async () => {
     { loc: '/developers/ai/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
+    { loc: '/developers/playground/', priority: 0.6 },
     { loc: '/developers/sky-benchmark/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },
     { loc: '/disclosure/', priority: 0.5 },

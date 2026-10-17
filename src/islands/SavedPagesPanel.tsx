@@ -12,6 +12,7 @@ import {
   type SavedPage,
   type SavedPageDraft,
 } from '../lib/profile/saved-pages-config';
+import { assistantSavedReading, type SavedReading } from '../lib/profile/assistant-saved-reading';
 import '../styles/account.css';
 
 interface Props {
@@ -51,11 +52,16 @@ export default function SavedPagesPanel({ enabled }: Props) {
   useEffect(() => {
     if (!enabled) return;
     let active = true;
+    let generation = 0;
     let unsubscribe = () => {};
     void import('../lib/profile/saved-pages-cloud').then((cloud) => {
       if (!active) return;
       unsubscribe = cloud.onSavedPagesAuthChange((signedIn) => {
         if (!active) return;
+        const current = ++generation;
+        setPages([]);
+        setStatus(null);
+        setLoad('loading');
         if (!signedIn) {
           setPending(peekPendingSave());
           setLoad('signed-out');
@@ -64,15 +70,17 @@ export default function SavedPagesPanel({ enabled }: Props) {
         // Supabase asks that auth callbacks not call back into the client
         // synchronously; let the callback return first.
         setTimeout(() => void (async () => {
+          if (!active || current !== generation) return;
           try {
             const settled = await settlePendingSave((draft) => cloud.saveSavedPage(draft));
-            if (settled && active) {
+            if (settled && active && current === generation) {
               const { draft, outcome } = settled;
               if (outcome === 'saved' || outcome === 'exists') setStatus({ text: `${COPY.justSaved} ${draft.title}` });
               else setStatus({ text: `${outcome === 'full' ? COPY.pendingFull : COPY.pendingError} ${draft.title}`, error: true });
             }
+            if (!active || current !== generation) return;
             const rows = await cloud.listSavedPages();
-            if (!active) return;
+            if (!active || current !== generation) return;
             setPending(null);
             if (rows === null) {
               setLoad('signed-out');
@@ -81,7 +89,7 @@ export default function SavedPagesPanel({ enabled }: Props) {
             setPages(rows);
             setLoad('ready');
           } catch {
-            if (active) setLoad('error');
+            if (active && current === generation) setLoad('error');
           }
         })(), 0);
       });
@@ -152,7 +160,10 @@ export default function SavedPagesPanel({ enabled }: Props) {
           <ul class="saved-pages__list" role="list">
             {pages.map((page) => (
               <li key={page.id} class="saved-pages__row">
-                <a class="saved-pages__link" href={page.href}>{page.title}</a>
+                {page.source === 'assistant' ? <button type="button" class="saved-pages__link saved-pages__open" aria-controls={`saved-reading-${page.id}`} onClick={() => {
+                  const detail = document.getElementById(`saved-reading-${page.id}`);
+                  if (detail instanceof HTMLDetailsElement) detail.open = !detail.open;
+                }}>{page.title}</button> : <a class="saved-pages__link" href={page.href}>{page.title}</a>}
                 {page.summary && <span class="saved-pages__summary">{page.summary}</span>}
                 <span class="saved-pages__meta">{SAVED_PAGE_KIND_LABELS[page.kind]} · saved {savedOn(page.savedAt)}{page.source === 'assistant' ? ` ${COPY.fromAssistant}` : ''}</span>
                 <button
@@ -161,6 +172,7 @@ export default function SavedPagesPanel({ enabled }: Props) {
                   onClick={() => void remove(page)}
                   aria-label={`${COPY.remove}: ${page.title}`}
                 >{COPY.remove}</button>
+                {page.source === 'assistant' && <AssistantReading page={page} />}
               </li>
             ))}
           </ul>
@@ -174,4 +186,40 @@ export default function SavedPagesPanel({ enabled }: Props) {
       </div>
     </section>
   );
+}
+
+/** Loaded on demand; unmounting on an account change drops all reading state. */
+function AssistantReading({ page }: { page: SavedPage }) {
+  const [open, setOpen] = useState(false);
+  const [reading, setReading] = useState<SavedReading | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    if (!open || reading) return;
+    let active = true;
+    setFailed(false);
+    void import('../lib/profile/saved-pages-cloud').then((cloud) => cloud.loadSavedPageDetail(page.id))
+      .then((value) => {
+        if (!active) return;
+        const parsed = assistantSavedReading(value, page.kind);
+        setReading(parsed); setFailed(!parsed);
+      }).catch(() => { if (active) setFailed(true); });
+    return () => { active = false; };
+  }, [open, page.id, page.kind]);
+  return <details class="saved-pages__reading" id={`saved-reading-${page.id}`} onToggle={(event) => setOpen(event.currentTarget.open)}>
+    <summary>Read saved result</summary>
+    {open && (reading ? <>
+      <SavedReadingContent reading={reading} />
+      <a href={page.href}>{page.kind === 'week' || page.href.includes('saved=') ? 'Explore more on Zodiacs' : 'Open on website'}</a>
+    </> : <p role="status">{failed ? 'This saved reading could not be opened. Close it and try again.' : 'Loading your saved reading…'}</p>)}
+  </details>;
+}
+
+export function SavedReadingContent({ reading }: { reading: SavedReading }) {
+  return <div class="saved-pages__reading-content">
+    {reading.sections.map((section, index) => <div key={index}>
+      <h3>{section.title}</h3>
+      {section.lines.map((line, lineIndex) => <p key={lineIndex}>{line}</p>)}
+    </div>)}
+    {reading.note && <p class="saved-pages__summary">{reading.note}</p>}
+  </div>;
 }

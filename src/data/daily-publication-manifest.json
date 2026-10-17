@@ -1,7 +1,7 @@
 {
   "schema": "zodiacs.daily-publication-manifest.v2",
-  "date": "2026-10-16",
-  "snapshotAt": "2026-10-16T12:00:00.000Z",
+  "date": "2026-10-17",
+  "snapshotAt": "2026-10-17T12:00:00.000Z",
   "status": "verified",
   "policy": {
     "id": "org.zodiacs.daily.en",
@@ -10,9 +10,9 @@
   },
   "facts": {
     "path": "src/data/daily.json",
-    "fileSha256": "06fa463e3d2ac26257c400793d212b8bf4c42d2b07506803411fea8508db812d",
-    "canonicalSha256": "af5f6947a87b1e29b0836969a936b97ec843ebe8de57a1a76cbc4a9858561acb",
-    "factCount": 48,
+    "fileSha256": "3f6cd5d791dc54be1a14a4737a01f1a36f54ca8362b37666573acd3d8d60bddf",
+    "canonicalSha256": "855f2b84d927436de221d0fc60eeed7b0ed1314098259c20d22d3f8c3b5760b3",
+    "factCount": 58,
     "eventsCoverage": "complete",
     "eventsSource": "src/data/transits-2026-10.json",
     "eventsSourceSha256": "d216bcb3ceda371b0725817894476755dcba8307fa32de990a3aa78eb776fff2",
@@ -24,7 +24,7 @@
   },
   "publication": {
     "path": "src/data/daily-publication.json",
-    "canonicalSha256": "37b13a9a8ce5f22c5a2d41516fed9054aa6580482c2d6805ea73578fc9dc1e8d",
+    "canonicalSha256": "2189d35b758747977742bc646d8d8e4b49942c507539653f6c6f03ebd520d8e9",
     "signCount": 12,
     "outputCount": 72
   },

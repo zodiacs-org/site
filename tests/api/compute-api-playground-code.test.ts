@@ -1,0 +1,136 @@
+import { execFile } from 'node:child_process';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { createServer, type Server } from 'node:http';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { COMPUTE_FUNCTION_PATH, COMPUTE_ROUTE_PARAM, MAX_BODY_BYTES } from '../../src/lib/compute-api/constants';
+import { createComputeApiHandler } from '../../src/lib/compute-api/handler';
+import * as localTime from '../../src/lib/compute-api/local-time-source';
+import { LANGUAGES, codeSamples, type Language } from '../../src/lib/developer-playground';
+import { playgroundExamples } from '../../src/lib/developer-playground-examples';
+import { run } from '../../scripts/lib/compute-api-harness';
+
+const exec = promisify(execFile);
+const handler = createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed' });
+
+// How each language's code runs, and the file it is written to.
+const RUNNERS: Record<Language, { command: string; file: string; args: (file: string) => string[] }> = {
+  curl: { command: 'sh', file: 'request.sh', args: (file) => [file] },
+  javascript: { command: process.execPath, file: 'request.mjs', args: (file) => [file] },
+  python: { command: 'python3', file: 'request.py', args: (file) => ['-I', file] },
+  swift: { command: 'swift', file: 'request.swift', args: (file) => [file] },
+  ruby: { command: 'ruby', file: 'request.rb', args: (file) => [file] },
+};
+
+async function available(language: Language): Promise<boolean> {
+  if (language === 'javascript') return true;
+  const probe = { curl: ['curl', ['--version']], python: ['python3', ['--version']], swift: ['swift', ['--version']], ruby: ['ruby', ['--version']] }[language] as [string, string[]];
+  try {
+    await exec(probe[0], probe[1], { timeout: 60_000 });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+let server: Server;
+let origin = '';
+let dir = '';
+
+beforeAll(async () => {
+  dir = await mkdtemp(join(tmpdir(), 'playground-code-'));
+  // The compute API as Vercel serves it: /api/v1/<endpoint> rewritten to the function with the route parameter.
+  server = createServer((req, res) => {
+    const endpoint = /^\/api\/v1\/([a-z-]+)$/u.exec(req.url ?? '')?.[1];
+    (req as any).url = `${COMPUTE_FUNCTION_PATH}?${COMPUTE_ROUTE_PARAM}=${endpoint ?? ''}`;
+    void handler(req, res);
+  });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address();
+  origin = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`;
+});
+
+afterAll(async () => {
+  await new Promise((resolve) => server.close(resolve));
+  await rm(dir, { recursive: true, force: true });
+});
+
+describe('the code the playground shows', () => {
+  it('runs in every language this machine has, and prints the answer the API gives', async () => {
+    const languages: Language[] = [];
+    for (const language of LANGUAGES) if (await available(language)) languages.push(language);
+    // cURL, JavaScript and Python are on every machine the suite runs on.
+    expect(languages).toEqual(expect.arrayContaining(['curl', 'javascript', 'python']));
+    const offered = playgroundExamples();
+    for (const example of [...offered.examples, ...offered.refusals]) {
+      const text = typeof example.body === 'string' ? example.body : JSON.stringify(example.body);
+      const expected = await run(handler, { endpoint: example.endpoint, body: text });
+      const samples = codeSamples(example.endpoint, text, origin);
+      // Swift compiles each file, so it sends one request per endpoint.
+      const first = offered.examples.find((candidate) => candidate.endpoint === example.endpoint) === example;
+      for (const language of languages) {
+        if (language === 'swift' && !first) continue;
+        const runner = RUNNERS[language];
+        const file = join(dir, runner.file);
+        await writeFile(file, `${samples[language]}\n`);
+        const { stdout } = await exec(runner.command, runner.args(file), { timeout: 120_000, cwd: dir, maxBuffer: 16 * 1024 * 1024 });
+        expect(JSON.parse(stdout), `${language} ${example.id}`).toEqual(expected.json);
+      }
+    }
+    // A body past the size the API measures before it reads one, only because of its whitespace: the code sends it as
+    // it stands and is refused as the page's own request is.
+    const padded = `${JSON.stringify(offered.examples[0].body)}${' '.repeat(MAX_BODY_BYTES)}`;
+    const refused = await run(handler, { endpoint: offered.examples[0].endpoint, body: padded });
+    expect(refused.status).toBe(413);
+    for (const language of languages) {
+      const runner = RUNNERS[language];
+      const file = join(dir, runner.file);
+      await writeFile(file, `${codeSamples(offered.examples[0].endpoint, padded, origin)[language]}\n`);
+      const { stdout } = await exec(runner.command, runner.args(file), { timeout: 120_000, cwd: dir, maxBuffer: 16 * 1024 * 1024 });
+      expect(JSON.parse(stdout), `${language} padded`).toEqual(refused.json);
+    }
+    console.log(`playground code ran in: ${languages.join(', ')}`);
+  }, 600_000);
+
+  it('sends exactly the text the page shows, in every language this machine has: quotes, escapes, line breaks and control characters', async () => {
+    // A server that keeps what it is sent.
+    const received: string[] = [];
+    const echo = createServer((req, res) => {
+      const chunks: Buffer[] = [];
+      req.on('data', (chunk: Buffer) => chunks.push(chunk));
+      req.on('end', () => {
+        received.push(Buffer.concat(chunks).toString('utf8'));
+        res.writeHead(200, { 'Content-Type': 'application/json' }).end('{}');
+      });
+    });
+    await new Promise<void>((resolve) => echo.listen(0, '127.0.0.1', resolve));
+    const address = echo.address();
+    const echoOrigin = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`;
+    // Text that is not JSON is sent as typed. These hold cURL's @file, each language's quotes, escapes and
+    // interpolations, Swift's raw-string delimiters with and without a quote before them, line breaks, control
+    // characters and text beyond ASCII. (No shell command line can carry a NUL, so cURL's could not.)
+    const texts = [
+      `@not-a-file '"' \\ \\n $HOME \${1 + 1} #{1 + 1} \\(1 + 1) "# \\#(1 + 1) "## \\##n %s naïve – 🌍\nsecond line\r\nthird\tline \u0001\u007f end`,
+      '\\#(1 + 1) and \\##(2) with no quote',
+      // JSON is sent as it stands too, its layout with it.
+      JSON.stringify({ utc: '2000-01-01T12:00:00Z', latitude: 0, longitude: 0 }, null, 2),
+    ];
+    try {
+      for (const language of LANGUAGES) {
+        if (!(await available(language))) continue;
+        const runner = RUNNERS[language];
+        const file = join(dir, runner.file);
+        for (const text of texts) {
+          await writeFile(file, `${codeSamples('chart', text, echoOrigin)[language]}\n`);
+          received.length = 0;
+          await exec(runner.command, runner.args(file), { timeout: 120_000, cwd: dir });
+          expect(received, `${language}: ${JSON.stringify(text)}`).toEqual([text]);
+        }
+      }
+    } finally {
+      await new Promise((resolve) => echo.close(resolve));
+    }
+  }, 600_000);
+});

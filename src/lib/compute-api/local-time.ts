@@ -116,6 +116,19 @@ export function runtimeTzdbVersion(): string | null {
   return typeof version === 'string' && version ? version : null;
 }
 
+export type RuntimeIdentity = { name: 'node'; tzdbVersion?: string } | { name: 'browser' };
+
+/**
+ * The runtime that computes a receipt, as the receipt names it: Node, with the
+ * tzdb release its Intl reads, or a browser running the developer
+ * playground's bundle, which reports none.
+ */
+export function runtimeIdentity(): RuntimeIdentity {
+  if (typeof process !== 'object' || process === null || typeof process.versions?.node !== 'string') return { name: 'browser' };
+  const tzdb = runtimeTzdbVersion();
+  return { name: 'node', ...(tzdb ? { tzdbVersion: tzdb } : {}) };
+}
+
 export interface TimeResolutionFacts {
   resolver: '@zodiacs/engine/geo';
   policy: { fold: 'earlier'; gap: 'shift-forward' };

@@ -29083,6 +29083,8 @@ function configuredAccounts(env, rpc) {
   const clients = (env.ZODIACS_ACCOUNTS_OAUTH_CLIENTS ?? "").split(",").map((value) => value.trim()).filter(Boolean);
   if (!url || !/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(url) || !key?.startsWith("sb_publishable_") || !clients.length || clients.length > 8 || clients.some((client) => !UUID.test(client))) throw new Error("accounts-unavailable");
   const origin = accountsResourceOrigin(env);
+  const previewWatchClients = (env.ZODIACS_ACCOUNTS_PREVIEW_WATCH_CLIENTS ?? "").split(",").map((value) => value.trim()).filter(Boolean);
+  if (previewWatchClients.length && (env.VERCEL_ENV !== "preview" || previewWatchClients.length > 8 || previewWatchClients.some((client) => !UUID.test(client) || clients.some((account) => account.toLowerCase() === client.toLowerCase())))) throw new Error("accounts-unavailable");
   const resource = `${origin}/mcp`;
   const call = rpc ?? accountsRpc(env);
   const oauth = supabaseOAuthResource({
@@ -29103,7 +29105,14 @@ function configuredAccounts(env, rpc) {
     }
   });
   const save = async (principal, record2) => call("save", { ...principal, resource, kind: PAGE_KINDS[record2.kind], title: record2.title, href: record2.href, summary: record2.summary, detail: record2 });
-  return { oauth, save, clients, supabaseUrl: url, publishableKey: key };
+  return {
+    oauth,
+    save,
+    clients,
+    supabaseUrl: url,
+    publishableKey: key,
+    ...previewWatchClients.length ? { previewWatchClients } : {}
+  };
 }
 function invalidTokenChallenge(oauth) {
   return `${oauth.challenge}, error="invalid_token"`;
@@ -29553,7 +29562,12 @@ async function serveAccountRoute(res, route, options, env) {
   } catch {
     return send(res, 503, "accounts-unavailable");
   }
-  const config = JSON.stringify({ url: service.supabaseUrl, key: service.publishableKey, clients: service.clients }).replace(/</g, "\\u003c");
+  const config = JSON.stringify({
+    url: service.supabaseUrl,
+    key: service.publishableKey,
+    clients: service.clients,
+    ...service.previewWatchClients?.length ? { previewWatchClients: service.previewWatchClients } : {}
+  }).replace(/</g, "\\u003c");
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.setHeader("Referrer-Policy", "no-referrer");

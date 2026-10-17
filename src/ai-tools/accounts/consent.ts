@@ -32,9 +32,23 @@ function redirect(value: string) {
   location.assign(value);
 }
 
+export function consentKind(client: string, config: { clients: readonly string[]; previewWatchClients?: readonly string[] }): 'accounts' | 'watch' | undefined {
+  const accounts = config.clients.includes(client);
+  const watch = config.previewWatchClients?.includes(client) ?? false;
+  return accounts === watch ? undefined : accounts ? 'accounts' : 'watch';
+}
+
+const WATCH_PERMISSIONS = [
+  'Read computed public sky events.',
+  'Create, refresh and cancel watches you request.',
+  'Deliver those events to your connected ChatGPT account.',
+  'The connected application receives your preview account ID and email address.',
+];
+
 async function start() {
   const raw = get('zodiacs-consent-config').textContent ?? '';
-  const config = JSON.parse(raw) as { url: string; key: string; clients: string[] };
+  const config = JSON.parse(raw) as { url: string; key: string; clients: string[]; previewWatchClients?: string[] };
+  if (config.previewWatchClients?.length) get('consent-intro').textContent = 'Connect an assistant to your Zodiacs preview account. Review the access for this connection before allowing it.';
   // The site's own client settings, so the site's sign-in is shared.
   const client = createClient(config.url, config.key, { auth: { autoRefreshToken: true, detectSessionInUrl: true, persistSession: true } });
   const authorization = new URL(location.href).searchParams.get('authorization_id');
@@ -53,23 +67,33 @@ async function start() {
         continuation = result.data.redirect_url;
         get('client-name').textContent = 'Continue your connection';
         get('scope-list').textContent = 'You have already allowed this assistant.';
+        show('permission-details', false);
       } else {
-        if (!config.clients.includes(result.data.client.id)) { message('This application cannot connect to Zodiacs accounts.'); return; }
+        const kind = consentKind(result.data.client.id, config);
+        if (!kind) { message('This application cannot connect to Zodiacs accounts.'); return; }
+        if (kind === 'watch') {
+          const list = get('permission-list'); list.replaceChildren();
+          for (const text of WATCH_PERMISSIONS) { const item = document.createElement('li'); item.textContent = text; list.append(item); }
+          get('permission-note').textContent = 'No birth details are needed for Sky Watch. Watches expire within seven days unless you refresh them. Disconnecting stops further deliveries.';
+        }
+        show('permission-details', true);
         get('client-name').textContent = `Connect ${result.data.client.name}`;
         get('scope-list').textContent = `${result.data.client.name} will be able to:`;
       }
       show('consent', true); message('Check what you are allowing before you continue.');
-    } else message('These assistants can save to your account.');
+    } else message(config.previewWatchClients?.length ? 'These applications are connected to your preview account.' : 'These assistants can save to your account.');
     const grants = await client.auth.oauth.listGrants();
     if (grants.error) throw grants.error;
     const list = get('connections'); list.replaceChildren();
-    for (const grant of grants.data.filter(grant => config.clients.includes(grant.client.id))) {
+    for (const grant of grants.data.filter(grant => consentKind(grant.client.id, config))) {
       const row = document.createElement('li'); const name = document.createElement('span'); name.textContent = grant.client.name;
       const button = document.createElement('button'); button.type = 'button'; button.textContent = 'Disconnect'; button.className = 'secondary';
       button.addEventListener('click', () => void run(async () => {
         const result = await client.auth.oauth.revokeGrant({ clientId: grant.client.id });
         if (result.error) throw result.error;
-        await account(); message('Disconnected. That assistant can no longer save to your account. What it saved stays until you delete it.');
+        await account(); message(consentKind(grant.client.id, config) === 'watch'
+          ? 'Disconnected. That application can no longer watch sky events for you.'
+          : 'Disconnected. That assistant can no longer save to your account. What it saved stays until you delete it.');
       }));
       row.append(name, button); list.append(row);
     }
