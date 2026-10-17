@@ -204,7 +204,7 @@ await withPreview({ port: 8787 }, async baseURL => {
         await page.goto(`${baseURL}${path}`, { waitUntil: 'load' });
         await page.evaluate(() => document.fonts.ready);
         const selector = path === '/gemini/' ? '.guide-main, .guide-main h2'
-          : path === '/ru/' ? '.home-tool-ru h3'
+          : path === '/ru/' ? '.home-tool h3'
           : '.pf-chart__action, .pf-foot .btn, .pf-sync__form input, .pf-sync__form .btn';
         if (path === '/ru/profile/') await page.locator('.pf-chart__actions').waitFor();
         const elements = page.locator(selector);
