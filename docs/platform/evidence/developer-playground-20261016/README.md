@@ -189,15 +189,21 @@ ran on.
   aliased at 2026-10-16T22:40:06Z.
 - **What production serves.**
   [tools/production-check.mjs](tools/production-check.mjs) passed 8 of 8 at
-  2026-10-16T22:42:40Z ([production.json](production/production.json)): the
+  2026-10-17T00:31:41Z ([production.json](production/production.json)): the
   page with the playground on it; `examples.json` as the merge builds it,
   every documented request with its documented answer; the Markdown twin,
-  with a `--data-raw` cURL command for each request; the browser bundle, byte
-  for byte the one its sources build; `llms.txt`; the sitemap; and
-  `/developers/` and `/developers/compute/`, which link to the page. The same
-  check before the merge, at 2026-10-16T19:51:15Z, passed 0 of 8
-  ([control-before.json](production/control-before.json)): the page and its
-  files answered 404, and nothing listed or linked to them.
+  each request in a section of its own with its endpoint, documented status,
+  link, citation digest and the `--data-raw` cURL command that sends its body
+  as typed, and no other section; the browser bundle, byte for byte the one
+  its sources build; `llms.txt`; the sitemap; and `/developers/` and
+  `/developers/compute/`, which link to the page.
+- **Controls.** The check before the merge, at 2026-10-16T19:51:15Z, passed 0
+  of 8 ([control-before.json](production/control-before.json)): the page and
+  its files answered 404, and nothing listed or linked to them. That run's
+  twin check counted the commands; the per-section check Codex asked for on
+  #769 also fails a build whose twin has one request's body changed
+  (`chart.local`'s latitude), 7 of 8
+  ([control-twin-one-body-changed.json](production/control-twin-one-body-changed.json)).
 - **The drive against production.**
   `node tests/developer-playground-drive.mjs --base-url https://zodiacs.org`
   passed 53 of 53 at 2026-10-16T22:44:28Z

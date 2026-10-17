@@ -1,6 +1,6 @@
 {
   "base": "https://zodiacs.org",
-  "checkedAt": "2026-10-16T22:42:40.017Z",
+  "checkedAt": "2026-10-17T00:31:41.962Z",
   "results": [
     {
       "name": "the page is served, with the playground on it",
@@ -19,11 +19,13 @@
       }
     },
     {
-      "name": "the Markdown twin lists every request, each with a cURL command that sends its text as typed",
+      "name": "the Markdown twin gives each request its own section, with its endpoint, status, link, digest and the cURL command that sends its body as typed, and nothing else",
       "ok": true,
       "detail": {
         "status": 200,
-        "missing": []
+        "sections": 17,
+        "offered": 17,
+        "wrong": []
       }
     },
     {

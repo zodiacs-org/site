@@ -35,10 +35,33 @@ try {
 } catch {}
 check('examples.json is the one the merge builds: every documented request with its documented answer', examples.status === 200 && JSON.stringify(servedExamples) === JSON.stringify(built), { status: examples.status, served: servedExamples ? [...servedExamples.examples ?? [], ...servedExamples.refusals ?? []].length : null, built: offered.length });
 
+// The twin has one "### <id>: <summary>" section per request. Each must hold that request's endpoint, documented
+// status and link, the cURL command that sends its own body as typed, and its documented citation digest, and there
+// must be no section for anything else.
 const twin = await get('/developers/playground.md');
 const twinText = twin.bytes.toString('utf8');
-const missing = offered.filter((example) => !twinText.includes(example.id)).map((example) => example.id);
-check('the Markdown twin lists every request, each with a cURL command that sends its text as typed', twin.status === 200 && missing.length === 0 && (twinText.match(/--data-raw '/gu) ?? []).length >= offered.length && !twinText.includes("--data '"), { status: twin.status, missing });
+const sections = twinText.split('\n### ').slice(1).map((section) => section.split('\n## ')[0]);
+const wrong = [];
+for (const example of offered) {
+  const own = sections.filter((section) => section.startsWith(`${example.id}: `));
+  const text = typeof example.body === 'string' ? example.body : JSON.stringify(example.body);
+  const command = [
+    `curl --silent --show-error https://zodiacs.org/api/v1/${example.endpoint} \\`,
+    "  --header 'Content-Type: application/json' \\",
+    `  --data-raw '${text.replaceAll("'", "'\\''")}'`,
+  ].join('\n');
+  const digest = example.answer?.cite?.receipt;
+  const section = own[0] ?? '';
+  const parts = {
+    one: own.length === 1,
+    request: section.includes(`POST /api/v1/${example.endpoint}, documented status ${example.status}.`),
+    link: section.includes(`https://zodiacs.org/developers/playground/?example=${example.id}`),
+    command: section.includes(command),
+    digest: digest ? section.includes(`Documented citation digest: \`${digest}\``) : true,
+  };
+  if (!Object.values(parts).every(Boolean)) wrong.push({ id: example.id, ...parts });
+}
+check('the Markdown twin gives each request its own section, with its endpoint, status, link, digest and the cURL command that sends its body as typed, and nothing else', twin.status === 200 && wrong.length === 0 && sections.length === offered.length, { status: twin.status, sections: sections.length, offered: offered.length, wrong });
 
 const engine = await get('/developers/playground/engine.mjs');
 const source = await readFile(join(clone, 'public/developers/playground/engine.mjs'));
