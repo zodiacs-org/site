@@ -178,3 +178,5 @@ before and after the review, which ran from 23:37:30Z to 23:47:17Z.
 The workflow, dispatched on main against the same endpoint, ran the review
 again from GitHub's runners: run 39079719569 gave the same verdicts (`--strict` exit 0, 13 of 13
 tools within their schemas, 0 of 32 conformance scenarios failed).
+
+Main's Site Check passed on the merge (run 39079314240).

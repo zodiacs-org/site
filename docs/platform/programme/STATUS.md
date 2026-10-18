@@ -12,6 +12,7 @@ weighted units accepted; blocked 2% (3), or 1.644%.
   - None of the MCP conformance suite's 32 server scenarios fails. The
     review ran from this machine and from the workflow on main (run
     39079719569) ([the record](../evidence/hosted-mcp-review-20261018/README.md)).
+- **Main's Site Check** passed on #777's merge (run 39079314240).
 - **What keeps P3.6 open.** The registry entry, which needs the owner's
   approval to publish and a verified `org.zodiacs` namespace.
 
