@@ -1,4 +1,5 @@
 ---
+import { phraseUntil, rangeWords, sincePhrase } from '../../lib/range-words';
 import Base from '../../layouts/Base.astro';
 import '../../styles/rx-table.css';
 import sky from '../../data/sky.json';
@@ -22,7 +23,7 @@ const sources = [
 const PLANET_ORDER = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
 const RHYTHM: Record<string, string> = {
   Mercury: 'three or four times a year, about three weeks each',
-  Venus: 'every 19 months, about six weeks — the rarest',
+  Venus: 'every 19 months, about six weeks, the rarest',
   Mars: 'every 26 months, two to three months',
   Jupiter: 'yearly, about four months',
   Saturn: 'yearly, about four and a half months',
@@ -44,7 +45,9 @@ const windows = (sky.retrogrades as { planet: BodyName; from: string; to: string
     from,
     to,
     clamped,
-    label: `${clamped ? 'already retrograde as 2026 opened' : fmt(from)} – ${to ? fmt(to) : 'past the data horizon'}`,
+    label: clamped
+      ? (to ? phraseUntil('en', 'already retrograde as 2026 opened', fmt(to)) : 'already retrograde as 2026 opened')
+      : (to ? rangeWords('en', fmt(from), fmt(to)) : sincePhrase('en', fmt(from), 'past the data horizon')),
     stationRx: clamped ? null : formatLongitude(bodyLongitude(r.planet, from)),
     stationDirect: to ? formatLongitude(bodyLongitude(r.planet, to)) : null,
     state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',
@@ -68,7 +71,7 @@ const listJoin = (xs: string[]) =>
 
 const status = retroToday.length
   ? `Retrograde right now: ${listJoin(retroToday)}. Everything else is direct.`
-  : 'Every planet is direct right now — it never lasts long.';
+  : 'Every planet is direct right now. It never lasts long.';
 
 const faq = [
   {
@@ -81,15 +84,15 @@ const faq = [
   },
   {
     q: 'Are outer-planet retrogrades a big deal?',
-    a: 'Mostly no. Jupiter through Pluto spend four to six months of every year retrograde — it is their normal rhythm, and roughly half of everyone alive has at least one outer planet retrograde in their birth chart. Astrologers read them as quieter, more internal phases of a planet’s theme, nothing like the scheduling folklore around Mercury.',
+    a: 'Mostly no. Jupiter through Pluto spend four to six months of every year retrograde. It is their normal rhythm, and roughly half of everyone alive has at least one outer planet retrograde in their birth chart. Astrologers read them as quieter, more internal phases of a planet’s theme, nothing like the scheduling folklore around Mercury.',
   },
   {
     q: 'What is a station?',
-    a: 'The turnaround. A planet slows, hangs at one degree for days, then reverses — first at the retrograde station, later at the direct station. The positions in the tables mark those standstills, and astrologers treat a station degree as the sensitive point of the whole window.',
+    a: 'The turnaround. A planet slows, hangs at one degree for days, then reverses, first at the retrograde station, later at the direct station. The positions in the tables mark those standstills, and astrologers treat a station degree as the sensitive point of the whole window.',
   },
   {
     q: 'Why does Mercury get all the attention?',
-    a: 'Frequency and territory. Mercury flips three or four times a year — the only planet that retrogrades more often than annually — and astrology assigns it the daily-life file: messages, travel, contracts. Venus and Mars retrogrades are rarer and read as deeper reviews of attachment and drive. The full Mercury story has its own page.',
+    a: 'Frequency and territory. Mercury flips three or four times a year, the only planet that retrogrades more often than annually, and astrology assigns it the daily-life file: messages, travel, contracts. Venus and Mars retrogrades are rarer and read as deeper reviews of attachment and drive. The full Mercury story has its own page.',
   },
 ];
 
@@ -114,7 +117,7 @@ const eventNodes = upcomingWindows.map((window) => {
 const dataset = {
   '@type': 'Dataset',
   '@id': 'https://zodiacs.org/retrogrades/#dataset',
-  name: 'Planetary retrograde windows, 2026–2027',
+  name: 'Planetary retrograde windows, 2026 to 2027',
   description: 'Computed retrograde and direct station instants and tropical zodiac positions for Mercury through Pluto.',
   url: 'https://zodiacs.org/retrogrades/',
   creator: { '@id': 'https://zodiacs.org/#org' },
@@ -129,10 +132,10 @@ const dataset = {
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Retrograde planets 2026–2027, dated',
+    name: 'Retrograde planets 2026 to 2027, dated',
     url: 'https://zodiacs.org/retrogrades/',
     description:
-      'Every planetary retrograde for 2026 and 2027 — Mercury through Pluto — with station dates and positions, computed from real motion.',
+      'Every planetary retrograde for 2026 and 2027, Mercury through Pluto, with station dates and positions, computed from real motion.',
   },
   {
     '@type': 'FAQPage',
@@ -147,11 +150,11 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Retrograde Planets 2026 & 2027 — Every Window, Dated | Zodiacs.org"
-  description="Which planets are retrograde right now, and when the next windows run: Mercury through Pluto for 2026–2027, station dates and positions for each window."
+  title="Retrograde Planets 2026 & 2027: Every Window, Dated | Zodiacs.org"
+  description="Which planets are retrograde right now, and when the next windows run: Mercury through Pluto for 2026 to 2027, station dates and positions for each window."
   path="/retrogrades/"
   image="/assets/og/v2/tool/retrogrades.png"
-  imageAlt="Retrograde planets — Zodiacs.org"
+  imageAlt="Retrograde planets, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >
@@ -172,7 +175,7 @@ const jsonLd = [
     </div>
     <details class="calendar-method"><summary>How this calendar works</summary>
       <p>
-        All eight <a href="/learn/glossary/#planet">planets</a> that do it, 2026 through 2027 &mdash; each window
+        All eight <a href="/learn/glossary/#planet">planets</a> that do it, 2026 through 2027, each window
         computed <a href="/learn/glossary/#station">station to station</a> from real motion, with the <a href="/learn/glossary/#degree">degree</a>{' '}
         where each turnaround happens.
       </p>
@@ -220,23 +223,23 @@ const jsonLd = [
         each other on different orbits, the same illusion as a slower train
         seeming to roll backward. What the tables make plain is how
         ordinary it is. The <a href="/learn/glossary/#outer-planets">outer planets</a> spend a third to half of every
-        year retrograde &mdash; on any given day the sky usually has one or two,
+        year retrograde. On any given day the sky usually has one or two,
         and today is no exception.
       </p>
       <p>
         The tradition scales its readings to the rhythm.
         <a href="/mercury-retrograde/">Mercury&rsquo;s</a> three-week flips are
         review season for plans and paperwork. A{' '}
-        <a href="/learn/planets/venus/">Venus</a> retrograde &mdash; the rarest,
-        every 19 months &mdash; gets read as a reassessment of what you want and
+        <a href="/learn/planets/venus/">Venus</a> retrograde, the rarest,
+        every 19 months, gets read as a reassessment of what you want and
         whom; <a href="/learn/planets/mars/">Mars</a>, every 26 months, as
         an engine rebuild for drive itself. The yearly outer-planet spans
         pass mostly unremarked, felt only where they cross something exact
-        in your own chart &mdash; which is what the{' '}
+        in your own chart, which is what the{' '}
         <a href="/transits/">transit tracker</a> checks.
       </p>
       <p>
-        Born during a retrograde? Common and unalarming &mdash; roughly one
+        Born during a retrograde? Common and unalarming: roughly one
         person in five has natal Mercury retrograde. Your{' '}
         <a href="/birth-chart/">birth chart</a> marks every planet that was
         moving backward when you arrived, with an ℞.
@@ -273,7 +276,7 @@ const jsonLd = [
 
   .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
   .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
-  .rx-now__all { font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
+  .rx-now__all { font-family: var(--font-sans); font-size: 13px; color: var(--faint); letter-spacing: 0; }
   .rx-now__all a { color: var(--muted); }
   .rx-now__all a:hover { color: var(--text); }
 
@@ -287,9 +290,9 @@ const jsonLd = [
     letter-spacing: 0.002em;
   }
   .planet__now {
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0;
     color: var(--muted);
     border: 1px solid var(--hair-2);
     border-radius: 99px;

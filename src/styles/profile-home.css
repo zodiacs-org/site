@@ -381,9 +381,8 @@
 .pf-row__when {
   justify-self: end;
   color: var(--faint);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0;
   white-space: nowrap;
 }
 .pf-row__when.is-soon { color: var(--text-2); }
@@ -425,9 +424,8 @@ a.pf-chart__action { text-decoration: none; }
 .pf-people__count {
   padding-top: 8px;
   color: var(--faint);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0;
 }
 .pf-people__empty {
   display: flex;

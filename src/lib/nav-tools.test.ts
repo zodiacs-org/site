@@ -67,19 +67,32 @@ describe('NAV_TOOLS', () => {
       '/transits/',
       '/retrogrades/',
     ]);
-    expect(TOOLS_HUB).toHaveLength(26);
+    expect(TOOLS_HUB).toHaveLength(28);
     for (const tool of [...NAV_TOOLS, ...FOOTER_TOOLS, ...TOOLS_HUB]) {
       expect(catalogueHrefs.has(tool.href)).toBe(true);
     }
   });
+
+  it('leads the tools hub with the birth chart and sorts the rest into four groups, one icon each', () => {
+    expect(TOOLS_HUB.filter((tool) => tool.group === 'lead').map((tool) => tool.href)).toEqual(['/birth-chart/']);
+    expect(TOOLS_HUB[0].href).toBe('/birth-chart/');
+    const counts = Object.fromEntries(['you', 'together', 'sky', 'year'].map((group) => [group, TOOLS_HUB.filter((tool) => tool.group === group).length]));
+    expect(counts).toEqual({ you: 6, together: 6, sky: 6, year: 9 });
+    expect(new Set(TOOLS_HUB.map((tool) => tool.icon)).size).toBe(TOOLS_HUB.length);
+    for (const tool of TOOLS_HUB) {
+      expect(tool.promise).not.toMatch(/[\r\n\u2013\u2014]/u);
+      expect(tool.promise.length).toBeLessThanOrEqual(72);
+    }
+    expect(TOOLS_HUB.find((tool) => tool.href === '/birthday/')).toMatchObject({ group: 'you', icon: 'birthday' });
+  });
   it('publishes lunar return only in the English tools hub', () => {
-    expect(TOOLS_HUB.find((tool) => tool.href === '/lunar-return/')).toMatchObject({ group: 'sky', kind: 'moon' });
+    expect(TOOLS_HUB.find((tool) => tool.href === '/lunar-return/')).toMatchObject({ group: 'year', icon: 'lunar-return' });
     expect([...NAV_TOOLS, ...FOOTER_TOOLS].some((tool) => tool.href === '/lunar-return/')).toBe(false);
     for (const locale of RELEASED_LOCALES) expect(localizePath(locale, '/lunar-return/')).toBe('/lunar-return/');
   });
 
-  it('publishes numerology only in the English tools hub, in its own group', () => {
-    expect(TOOLS_HUB.find((tool) => tool.href === '/numerology/')).toMatchObject({ group: 'numbers', kind: 'numerology' });
+  it('publishes numerology only in the English tools hub', () => {
+    expect(TOOLS_HUB.find((tool) => tool.href === '/numerology/')).toMatchObject({ group: 'you', icon: 'numerology' });
     expect([...NAV_TOOLS, ...FOOTER_TOOLS].some((tool) => tool.href === '/numerology/')).toBe(false);
     for (const locale of RELEASED_LOCALES) expect(localizePath(locale, '/numerology/')).toBe('/numerology/');
   });

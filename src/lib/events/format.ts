@@ -52,8 +52,8 @@ export function eventClock(iso: string): string {
 /** 'Jul 18 – Aug 11, 2026' for a cycle window (UTC days). */
 export function windowLabel(fromIso: string, toIso: string | null): string {
   const from = formatShortDate('en', new Date(fromIso));
-  if (!toIso) return `${from} – past the data horizon`;
-  return `${from} – ${formatShortDate('en', new Date(toIso))}`;
+  if (!toIso) return `${from} to past the data horizon`;
+  return `${from} to ${formatShortDate('en', new Date(toIso))}`;
 }
 
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
@@ -104,28 +104,28 @@ export function eventTitle(facts: Omit<EventFacts, 'title' | 'path' | 'id'>): st
       const sign = signNameFor(facts.signs[0]);
       const day = eventDay(facts.at!);
       return facts.subtype === 'full'
-        ? `Full moon in ${sign} — ${day}`
-        : `New moon in ${sign} — ${day}`;
+        ? `Full moon in ${sign}, ${day}`
+        : `New moon in ${sign}, ${day}`;
     }
     case 'eclipse': {
       const sign = signNameFor(facts.signs[0]);
       const body = facts.subtype === 'solar' ? 'solar' : 'lunar';
-      return `${capitalize(facts.eclipseKind ?? 'partial')} ${body} eclipse in ${sign} — ${eventDay(facts.at!)}`;
+      return `${capitalize(facts.eclipseKind ?? 'partial')} ${body} eclipse in ${sign}, ${eventDay(facts.at!)}`;
     }
     case 'retrograde': {
       const from = new Date(facts.start!);
       const month = formatDate('en', from, { month: 'long', timeZone: 'UTC' });
-      return `${facts.bodies[0]} retrograde — ${month} ${from.getUTCFullYear()}`;
+      return `${facts.bodies[0]} retrograde, ${month} ${from.getUTCFullYear()}`;
     }
     case 'ingress': {
-      return `${facts.bodies[0]} enters ${signNameFor(facts.signs[0])} — ${eventDay(facts.at!)}`;
+      return `${facts.bodies[0]} enters ${signNameFor(facts.signs[0])}, ${eventDay(facts.at!)}`;
     }
     case 'aspect': {
       const [a, b] = facts.bodies;
-      return `${a} ${facts.aspectType} ${b} — ${eventDay(facts.at!)}`;
+      return `${a} ${facts.aspectType} ${b}, ${eventDay(facts.at!)}`;
     }
     case 'station': {
-      return `${facts.bodies[0]} stations ${facts.direction} — ${eventDay(facts.at!)}`;
+      return `${facts.bodies[0]} stations ${facts.direction}, ${eventDay(facts.at!)}`;
     }
   }
 }
@@ -146,7 +146,7 @@ export function timelineLine(facts: EventFacts): string {
     case 'lunation': {
       const sign = signNameFor(facts.signs[0]);
       if (facts.subtype === 'full') {
-        const named = facts.moonName ? `${moonNameLabel(facts.moonName)} — ` : '';
+        const named = facts.moonName ? `${moonNameLabel(facts.moonName)}: ` : '';
         return `${capitalize(named)}the Moon stands opposite the Sun in ${sign}.`;
       }
       return `Sun and Moon meet in ${sign}; the month's quiet reset.`;
@@ -177,23 +177,23 @@ export function metaTitle(facts: EventFacts): string {
       const named = facts.moonName && facts.moonName !== 'Blue'
         ? ` (${facts.moonName} Moon)`
         : facts.moonName === 'Blue' ? ' (Blue Moon)' : '';
-      return `${kind} in ${sign}${named} — ${eventDay(facts.at!)}, Exact Time | Zodiacs.org`;
+      return `${kind} in ${sign}${named}, ${eventDay(facts.at!)}, Exact Time | Zodiacs.org`;
     }
     case 'eclipse': {
       const body = facts.subtype === 'solar' ? 'Solar' : 'Lunar';
-      return `${capitalize(facts.eclipseKind ?? '')} ${body} Eclipse — ${eventDay(facts.at!)}, in ${signNameFor(facts.signs[0])} | Zodiacs.org`;
+      return `${capitalize(facts.eclipseKind ?? '')} ${body} Eclipse, ${eventDay(facts.at!)}, in ${signNameFor(facts.signs[0])} | Zodiacs.org`;
     }
     case 'retrograde': {
       const from = new Date(facts.start!);
       const month = formatDate('en', from, { month: 'long', timeZone: 'UTC' });
-      return `${facts.bodies[0]} Retrograde ${month} ${from.getUTCFullYear()} — Dates, Signs, Meaning | Zodiacs.org`;
+      return `${facts.bodies[0]} Retrograde ${month} ${from.getUTCFullYear()}: Dates, Signs, Meaning | Zodiacs.org`;
     }
     case 'ingress':
-      return `${facts.bodies[0]} in ${signNameFor(facts.signs[0])} — Enters ${eventDay(facts.at!)} | Zodiacs.org`;
+      return `${facts.bodies[0]} in ${signNameFor(facts.signs[0])}, Enters ${eventDay(facts.at!)} | Zodiacs.org`;
     case 'aspect':
-      return `${facts.bodies[0]} ${capitalize(facts.aspectType ?? '')} ${facts.bodies[1]} — ${eventDay(facts.at!)} | Zodiacs.org`;
+      return `${facts.bodies[0]} ${capitalize(facts.aspectType ?? '')} ${facts.bodies[1]}, ${eventDay(facts.at!)} | Zodiacs.org`;
     case 'station':
-      return `${facts.bodies[0]} Stations ${capitalize(facts.direction ?? '')} — ${eventDay(facts.at!)} | Zodiacs.org`;
+      return `${facts.bodies[0]} Stations ${capitalize(facts.direction ?? '')}, ${eventDay(facts.at!)} | Zodiacs.org`;
   }
 }
 
@@ -213,7 +213,7 @@ export function metaDescription(facts: EventFacts): string {
     }
     case 'retrograde': {
       const window = windowLabel(facts.start!, facts.end ?? null);
-      return `${facts.bodies[0]} is retrograde ${window} — through ${facts.signs.map(signNameFor).join(' and ')}. What this cycle reviews, its station dates, and how to read it calmly.`;
+      return `${facts.bodies[0]} is retrograde ${window}, through ${facts.signs.map(signNameFor).join(' and ')}. What this cycle reviews, its station dates, and how to read it calmly.`;
     }
     case 'ingress':
       return `${facts.bodies[0]} enters ${signNameFor(facts.signs[0])} on ${eventDay(facts.at!)} at ${eventClock(facts.at!)}. What changes with the sign shift and how long it lasts.`;

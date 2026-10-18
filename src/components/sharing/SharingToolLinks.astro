@@ -1,8 +1,10 @@
 ---
 import { localizePath, type CatalogLocale } from '../../lib/i18n';
 import { sharingText as s } from '../../lib/sharing/copy';
-interface Props { locale?: CatalogLocale; current?: string }
-const { locale = 'en', current = '' } = Astro.props;
+import { toolIconForPath } from '../../lib/tool-icons';
+import ToolIcon from '../ToolIcon.astro';
+interface Props { locale?: CatalogLocale; current?: string; icons?: boolean }
+const { locale = 'en', current = '', icons = false } = Astro.props;
 const links = [
   { path: '/big-three/', key: 'bigTitle' },
   { path: '/compatibility/invite/', key: 'inviteTitle' },
@@ -10,10 +12,24 @@ const links = [
   { path: '/chart-twins/', key: 'twinsTitle' },
 ] as const;
 ---
-<nav class="sharing-discovery" aria-label={s(locale, 'sharingTools')}>
-  <h2>{s(locale, 'sharingTools')}</h2>
-  <ul>{links.filter((link) => link.path !== current).map((link) => <li><a href={localizePath(locale, link.path)}>{s(locale, link.key)} <span aria-hidden="true">↗</span></a></li>)}</ul>
-</nav>
+{icons ? (
+  /* On the localized tools hubs: rows with the tool icons, styled by
+     src/styles/tools-hub.css, which those pages import. */
+  <nav class="tools-discovery" aria-label={s(locale, 'sharingTools')}>
+    <h2 class="tools-section-title">{s(locale, 'sharingTools')}</h2>
+    <ul class="tools-list">{links.filter((link) => link.path !== current).map((link) => {
+      const icon = toolIconForPath(link.path);
+      return <li><a class="tools-row" href={localizePath(locale, link.path)}>{icon && <ToolIcon name={icon} size={52} />}<span class="tools-row__name">{s(locale, link.key)}</span></a></li>;
+    })}</ul>
+  </nav>
+) : (
+  <nav class="sharing-discovery" aria-label={s(locale, 'sharingTools')}>
+    <h2>{s(locale, 'sharingTools')}</h2>
+    <ul>{links.filter((link) => link.path !== current).map((link) => (
+      <li><a href={localizePath(locale, link.path)}>{s(locale, link.key)} <span aria-hidden="true">↗</span></a></li>
+    ))}</ul>
+  </nav>
+)}
 <style>
   .sharing-discovery { margin-block: 36px 20px; padding-top: 22px; border-top: 1px solid var(--hair-1); }
   .sharing-discovery h2 { font-family: var(--font-serif); font-size: 27px; font-weight: 400; margin: 0 0 15px; }

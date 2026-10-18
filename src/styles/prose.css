@@ -92,10 +92,9 @@
 }
 .prose th {
   text-align: start;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
   color: var(--faint);
   font-weight: 500;
   padding-block: 10px;

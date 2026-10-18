@@ -339,7 +339,7 @@ export function guideSafetyReply(category: Exclude<GuideSafetyCategory, 'allowed
     return 'Guide can’t provide legal strategy or predict a legal outcome. A qualified lawyer or local legal-aid service can review the facts and deadlines that apply where you are.';
   }
   if (category === 'financial') {
-    return 'Guide can share what the tradition says about a moment, but can’t tell you what to do with your money — no buy, sell, or investment calls. For a decision with real financial consequences, a qualified independent professional is the right person to ask.';
+    return 'Guide can share what the tradition says about a moment, but can’t tell you what to do with your money (no buy, sell, or investment calls). For a decision with real financial consequences, a qualified independent professional is the right person to ask.';
   }
   if (category === 'violence' || category === 'coercion') {
     return 'Guide can’t help plan harm, coercion, stalking, manipulation, or abuse. If anyone is in immediate danger, contact local emergency services and a trusted person who can help create distance and safety.';

@@ -1,7 +1,7 @@
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/u;
 
 export const BIRTHDAY_CUSP_OG_MODIFIED_AT = '2026-08-23T00:00:00.000Z';
-export const PEOPLE_TEMPLATE_MODIFIED_AT = '2026-08-23T00:00:00.000Z';
+export const PEOPLE_TEMPLATE_MODIFIED_AT = '2026-10-16T00:00:00.000Z';
 export const TERMINAL_RESEARCH_BASE_LASTMOD = '2026-08-13';
 
 type DateInput = string | Date;

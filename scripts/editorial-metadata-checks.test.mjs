@@ -12,16 +12,14 @@ describe('editorial metadata ownership', () => {
     for (const locale of ['', '/es', '/pt', '/fr', '/it']) {
       const articles = entries.filter(([path, x]) => path.startsWith(`${locale}/learn/chinese-zodiac/`) && x.type === 'Article');
       expect(articles).toHaveLength(13);
-      expect(new Set(articles.map(([, x]) => x.modified))).toEqual(new Set(['2026-07-15']));
+      expect(new Set(articles.map(([, x]) => x.modified))).toEqual(new Set(['2026-10-16']));
     }
     expect(() => editorialMetadata('/ru/learn/chinese-zodiac/')).toThrow(/Missing/);
   });
 
-  it('preserves old dates and advances only the documented Learn content revision', () => {
-    expect(editorialMetadata('/learn/').modified).toBe('2026-09-05');
-    expect(editorialMetadata('/learn/houses/').modified).toBe('2026-08-23');
-    for (const slug of ['planets', 'aspects', 'placements']) {
-      expect(editorialMetadata(`/learn/${slug}/`).modified).toBe('2026-07-10');
+  it('advances only the documented content revisions (the October 16 design sweep)', () => {
+    for (const slug of ['', 'houses/', 'planets/', 'aspects/', 'placements/']) {
+      expect(editorialMetadata(`/learn/${slug}`).modified).toBe('2026-10-16');
     }
     for (const [path, owner] of Object.entries(EDITORIAL_METADATA)) {
       expect(new Date(`${owner.modified}T00:00:00Z`).toISOString().slice(0, 10)).toBe(owner.modified);
@@ -50,7 +48,7 @@ describe('editorial metadata ownership', () => {
   it('requires all 70 sitemap dates and rejects missing, duplicate or stale entries', () => {
     const xml = Object.entries(EDITORIAL_METADATA).map(([path, x]) => `<url><loc>https://zodiacs.org${path}</loc><lastmod>${x.modified}</lastmod></url>`).join('');
     expect(editorialSitemapErrors(xml)).toEqual([]);
-    expect(editorialSitemapErrors(xml.replace('<lastmod>2026-09-05</lastmod>', '<lastmod>2026-08-23</lastmod>'))).not.toEqual([]);
+    expect(editorialSitemapErrors(xml.replace('<lastmod>2026-10-16</lastmod>', '<lastmod>2026-08-23</lastmod>'))).not.toEqual([]);
     expect(editorialSitemapErrors(xml.replace(/<url>.*?<\/url>/u, ''))).not.toEqual([]);
     expect(editorialSitemapErrors(xml + xml)).toHaveLength(70);
   });

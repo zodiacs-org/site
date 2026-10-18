@@ -48,7 +48,7 @@ export function buildSolarReturnCalendar(
   const title = model.noTime ? 'Approximate solar return' : 'Solar return';
   const uidInstant = instant.toISOString().replace(/[-:.]/g, '');
   const description = [
-    'Calendar marker — the one-minute duration is for display only, not a duration of the solar return.',
+    'Calendar marker. The one-minute duration is for display only, not a duration of the solar return.',
     ...(model.noTime ? ['The return instant can shift by hours with your exact birth time.'] : []),
   ].join('\n');
 

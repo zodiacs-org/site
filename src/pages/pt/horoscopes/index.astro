@@ -5,7 +5,8 @@ import type { Daily } from '../../../lib/daily';
 import { dailyReadingForLocale } from '../../../lib/i18n/daily-reading';
 import { formatDate } from '../../../lib/i18n/dates';
 import { englishOnlyCue } from '../../../lib/i18n/english-only';
-import { SIGNS, signDates, signName } from '../../../lib/signs';
+import { SIGNS, signName } from '../../../lib/signs';
+import { signDateRange } from '../../../lib/sign-display';
 
 const locale = 'pt' as const;
 const daily = dailyData as Daily;
@@ -20,18 +21,18 @@ const cue = englishOnlyCue(locale);
 const description = `Horóscopos de hoje, ${dateLabel}: uma nota clara para cada um dos doze signos, calculada a partir das posições reais do céu.`;
 ---
 <Base
-  title={`Horóscopos de hoje — ${dateLabel} | Zodiacs.org`}
+  title={`Horóscopos de hoje, ${dateLabel} | Zodiacs.org`}
   description={description}
   path="/pt/horoscopes/"
   locale={locale}
   editionDate={daily.date}
   image="/assets/og/v2/tool/horoscopes.png"
-  imageAlt="Horóscopos de hoje para os doze signos — Zodiacs.org"
+  imageAlt="Horóscopos de hoje para os doze signos, Zodiacs.org"
 >
   <section class="section--tight container container--narrow" data-edition-content="true">
     <div class="horo-pt__hero">
-      <em class="kicker">Edição diária · {dateLabel}</em>
       <h1 class="display">Horóscopos de hoje</h1>
+      <p class="dateline">Edição diária · {dateLabel}</p>
       <p>
         Encontre o seu signo e veja a nota mais concreta sobre o céu de hoje. Leia primeiro o seu signo solar e, se souber,
         o seu ascendente também.
@@ -43,7 +44,7 @@ const description = `Horóscopos de hoje, ${dateLabel}: uma nota clara para cada
         <a class="tile horo-pt__card" href={`/pt/horoscopes/${sign.slug}/`} style={`--sign:${sign.hue}`}>
           <img src={`/assets/zodiac-icons/48/${sign.slug}.webp`} width="48" height="48" alt="" loading="lazy" decoding="async" />
           <span class="horo-pt__name">{signName(sign, locale)}</span>
-          <span class="horo-pt__dates">{signDates(sign, locale)}</span>
+          <span class="horo-pt__dates">{signDateRange(sign, locale)}</span>
           <span class="horo-pt__teaser">{teaser}</span>
           <span class="horo-pt__go">Ler hoje →</span>
         </a>

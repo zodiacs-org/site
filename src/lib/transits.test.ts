@@ -34,7 +34,7 @@ describe('transits', () => {
           expect(line).toContain(BODY_ROLE[n]);
           expect(line.endsWith('.')).toBe(true);
           // The composed voice, not the fallback.
-          expect(line).toContain('—');
+          expect(line).toContain(': ');
         }
       }
     }
@@ -43,7 +43,7 @@ describe('transits', () => {
   it('reads correctly for the canonical hard transit', () => {
     const line = transitLine('Saturn', 'square', 'Moon');
     expect(line).toBe(
-      'Saturn pushes against your emotional life — a long season of pressure and accounting, friction that will not resolve on its own.',
+      'Saturn pushes against your emotional life: a long season of pressure and accounting, friction that will not resolve on its own.',
     );
   });
 

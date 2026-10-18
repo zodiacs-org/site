@@ -1,19 +1,21 @@
 ---
 import Base from '../layouts/Base.astro';
-import HomeShareTools from '../components/sharing/HomeShareTools.astro';
 import { homeTrustFaq } from '../lib/home-trust';
+import ArtFrame from '../components/ArtFrame.astro';
 import AstroTerm from '../components/AstroTerm.astro';
-import RaceRamp from '../components/RaceRamp.astro';
 import SignIcon from '../components/SignIcon.astro';
-import ToolGlyph from '../components/ToolGlyph.astro';
+import ToolIcon from '../components/ToolIcon.astro';
 import SkyTicker from '../islands/SkyTicker';
-import TodayBySign from '../islands/TodayBySign';
 import DemoChart from '../islands/DemoChart';
 import WelcomeBack from '../islands/WelcomeBack';
 import glassMaps from '../data/glass-maps.json';
+import daily from '../data/daily.json';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
 import { UI } from '../lib/i18n';
-import { SIGNS } from '../lib/signs';
+import { formatDate } from '../lib/i18n/dates';
+import { moonPhaseLabel } from '../lib/i18n/astrology';
+import { SIGNS, signDates, signForLongitude } from '../lib/signs';
+import { signDateRange } from '../lib/sign-display';
 import { ORGANIZATION_NAME, SOCIAL_PROFILES } from '../strings/seo.en.mjs';
 import homeFirstPaintCss from '../home/home-first-paint.css?inline';
 import '../styles/today.css';
@@ -53,7 +55,7 @@ const jsonLd = [
     '@id': 'https://zodiacs.org/#site',
     url: 'https://zodiacs.org/',
     name: 'Zodiacs.org',
-    description: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides — private in your browser.',
+    description: 'Free birth charts, moon signs, compatibility, horoscopes, and sign guides, private in your browser.',
     publisher: { '@id': 'https://zodiacs.org/#org' },
     inLanguage: 'en',
   },
@@ -67,31 +69,59 @@ const jsonLd = [
   },
 ];
 
+// The four calculators wear the same icons, and hues, as the tools hub.
 const tools = [
-  { href: '/birth-chart/', title: 'Birth chart', promise: 'Your sun, moon, rising, planets, houses, and what they mean.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
-  { href: '/moon-sign/', title: 'Moon sign', promise: 'How you feel — and what helps you feel at home.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
-  { href: '/rising-sign/', title: 'Rising sign', promise: 'How people first meet you.', hue: 'var(--sign-libra)', kind: 'rising' as const },
-  { href: '/compatibility/', title: 'Compatibility', promise: 'See how two charts connect.', hue: 'var(--sign-leo)', kind: 'compat' as const },
+  { href: '/birth-chart/', title: 'Birth chart', promise: 'Your sun, moon, rising, planets, houses, and what they mean.', icon: 'birth-chart' as const },
+  { href: '/moon-sign/', title: 'Moon sign', promise: 'How you feel, and what helps you feel at home.', icon: 'moon-sign' as const },
+  { href: '/rising-sign/', title: 'Rising sign', promise: 'How people first meet you. Birth time helps.', icon: 'rising-sign' as const },
+  { href: '/compatibility/', title: 'Compatibility', promise: 'See how two charts connect.', icon: 'compatibility' as const },
 ];
+
+/** The shared tools, as one light row under the four calculators. */
+const together = [
+  { href: '/group-charts/', label: 'Group charts' },
+  { href: '/compatibility/invite/', label: 'Invite a friend to compare' },
+  { href: '/big-three/', label: 'Big three card to share' },
+  { href: '/eclipses/', label: 'Eclipses through 2028' },
+];
+
+/** The sign the Sun is in on the committed daily edition. */
+const sunNow = signForLongitude(daily.bodies.find((body) => body.body === 'Sun')!.lon).slug;
+const editionStamp = `${formatDate('en', `${daily.date}T12:00:00Z`, {
+  year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
+})} · ${moonPhaseLabel('en', daily.moon.phase)}`;
+/** 'Mar 21 · Apr 19': the two edge days of a sign, compact enough for a twelve-column row. */
+const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · ');
 ---
 <Base
   inlineCriticalCss
   stableTypography
   localTypography
   localChromeTypography
-  title="Zodiacs.org — Free Birth Charts, Sign Guides & Astrology Tools"
+  title="Zodiacs.org | Free Birth Charts, Sign Guides & Astrology Tools"
   description="Free birth charts calculated in your browser, plus moon signs, compatibility, horoscopes, and sign guides with clear explanations."
   path="/"
   image="/assets/og/v2/share-pastel-wheel-20260809.png"
   imageAlt="Zodiacs homepage preview on black with a large ring of twelve pastel zodiac symbols and the headline “Your whole chart, not just your sign.”"
   jsonLd={jsonLd}
 >
+  <!-- Portrait phones take the narrow cut of the phone poster: the window a
+       frame up to 479px wide can show at the 28% focus, the same pixels on
+       screen. Wider phones keep the 4:3 cut. -->
   <link
     slot="head"
     rel="preload"
     as="image"
-    href="/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
-    media="(max-width: 719px)"
+    href="/assets/hero/zodiacs-hero-poster-mobile-narrow-v3.avif"
+    media="(max-width: 479px)"
+    fetchpriority="high"
+  />
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href="/assets/hero/zodiacs-hero-poster-mobile-v3.avif"
+    media="(min-width: 480px) and (max-width: 719px)"
     fetchpriority="high"
   />
   <link
@@ -140,15 +170,21 @@ const tools = [
     })();
   </script>
 
-  <!-- 01 · Hero — one rounded cinematic frame, headline over the footage. -->
+  <!-- 01 · Hero: the rounded cinematic frame, the headline set in the dark
+       side of the art so the sign ring stays visible on the right. -->
   <section class="hero container">
     {/* No reveal on the hero frame: the poster is the LCP and must paint
         before any script runs — the RU release set this pattern. */}
     <div class="hero__frame">
       <picture>
         <source
+          media="(max-width: 479px)"
+          srcset="/assets/hero/zodiacs-hero-poster-mobile-narrow-v3.avif"
+          type="image/avif"
+        />
+        <source
           media="(max-width: 719px)"
-          srcset="/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
+          srcset="/assets/hero/zodiacs-hero-poster-mobile-v3.avif"
           type="image/avif"
         />
         <img
@@ -177,22 +213,21 @@ const tools = [
         <source data-src="/assets/hero/zodiacs-hero-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
         <source data-src="/assets/hero/zodiacs-hero.mp4" type="video/mp4" />
       </video>
-      <button class="hero-motion" type="button" data-hero-motion-toggle aria-pressed="false">Pause motion</button>
       <div class="hero__scrim" aria-hidden="true"></div>
       <div class="hero__content">
-        <h1 class="hero__title">Your whole chart, <em>not just your sign.</em></h1>
-        <div class="hero__foot">
-          <p class="hero__sub">
-            Birth charts calculated in your browser.
-            Clear astrology readings and tools, free to explore.
-          </p>
-          <div class="hero__ctas">
-            <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
-            <a class="btn btn--ghost hero__ghost" href="/horoscopes/"><span>Your horoscope</span></a>
-          </div>
-          <p class="hero__trust">Free · No signup · Calculated in your browser</p>
+        <h1 class="hero__title">Explore the stars behind your story.</h1>
+        <p class="hero__sub">Free birth charts, moon signs, compatibility, and horoscopes: accurate, private, and easy to understand.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--primary" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
+          <a class="btn btn--ghost hero__ghost" href="/horoscopes/"><span>See your horoscope</span></a>
         </div>
+        <p class="hero__trust">Free · No signup · Calculated in your browser</p>
       </div>
+      <span class="hero__credit">The zodiac band, from the Zodiacs hero film</span>
+      <button class="hero-motion" type="button" data-hero-motion-toggle aria-pressed="false" aria-label="Pause motion">
+        <svg class="hero-motion__pause" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><rect x="2" y="1.5" width="2.6" height="9" rx="1" /><rect x="7.4" y="1.5" width="2.6" height="9" rx="1" /></svg>
+        <svg class="hero-motion__play" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3.2 1.6v8.8l7.4-4.4z" /></svg>
+      </button>
     </div>
     <script is:inline>
       // The poster is the LCP and the complete reduced-motion / constrained-data
@@ -321,12 +356,11 @@ const tools = [
           tryPlay();
         };
 
-        if (toggle && manuallyPaused) { toggle.setAttribute('aria-pressed', 'true'); toggle.textContent = 'Resume motion'; }
+        if (toggle && manuallyPaused) toggle.setAttribute('aria-pressed', 'true');
         toggle && toggle.addEventListener('click', function () {
           manuallyPaused = !manuallyPaused;
           try { sessionStorage.setItem('zodiacs:motion-paused', manuallyPaused ? '1' : '0'); } catch (_) {}
           toggle.setAttribute('aria-pressed', String(manuallyPaused));
-          toggle.textContent = manuallyPaused ? 'Resume motion' : 'Pause motion';
           v.dataset.heroMotion = manuallyPaused || reducedQuery.matches ? 'static' : 'drift';
           p.dataset.heroMotion = v.dataset.heroMotion;
           if (manuallyPaused) { playAttempt += 1; playPending = false; v.pause(); v.classList.remove('is-playing'); v.dataset.heroPlayback = 'paused'; }
@@ -335,24 +369,36 @@ const tools = [
         v.dataset.heroMotion = reducedQuery.matches || manuallyPaused ? 'static' : 'drift';
         p.dataset.heroMotion = v.dataset.heroMotion;
         v.dataset.heroPlayback = 'poster';
-        setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
 
         // Preserve the released desktop experience. The interaction gate is for
         // compact viewports, where the poster must remain the LCP surface.
-        if (!compactViewport && !constrained && !reducedQuery.matches) {
-          playbackRequested = true;
-          tryPlay();
-        }
+        var startDesktopPlayback = function () {
+          if (!compactViewport && !constrained && !reducedQuery.matches) {
+            playbackRequested = true;
+            tryPlay();
+          }
+        };
 
         ['pointerdown', 'touchstart', 'keydown'].forEach(function (eventName) {
           window.addEventListener(eventName, beginPlayback, { once: true, passive: true, capture: true });
         });
 
+        // The observer's first report, right after the first layout, is the
+        // frame's starting visibility. Reading the frame's rect here instead
+        // laid the whole page out mid-parse, ahead of the poster's paint.
         if (frame && 'IntersectionObserver' in window) {
+          var observed = false;
           var observer = new IntersectionObserver(function (entries) {
             setVisible(entries[0] && entries[0].isIntersecting);
+            if (!observed) {
+              observed = true;
+              startDesktopPlayback();
+            }
           }, { threshold: 0.01 });
           observer.observe(frame);
+        } else {
+          setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
+          startDesktopPlayback();
         }
 
         document.addEventListener('visibilitychange', function () {
@@ -419,6 +465,7 @@ const tools = [
         <feColorMatrix in="soft" type="saturate" values="1.35" />
       </filter>
     </svg>
+
   </section>
 
   <!-- This page's first hydrated island follows the hero. Install the shared
@@ -433,21 +480,82 @@ const tools = [
        after load, keeping its module tree out of the poster's initial fetches. -->
   <WelcomeBack client:interaction />
 
-  <!-- 02 · The sky, right now -->
-  <section class="container ticker-band reveal">
+
+  <!-- 02 · The sky, right now: one calm line under the hero. -->
+  <section class="home-sky ticker-band reveal" aria-label="The sky now">
     <!-- The committed sky receipt has no client interactions or live-clock
          state. Its complete server-rendered markup needs no hydration. -->
     <SkyTicker />
+    <a class="textlink home-sky__link" href="/today/">Today’s sky <span class="arr" aria-hidden="true">→</span></a>
   </section>
 
-  <!-- 02b · Interactive proof of the hero promise -->
-  <section class="container chart-preview pace-act" id="chart-preview">
-    <div class="section-head reveal">
-      <em class="kicker">Interactive preview</em>
-      <h2>See how a birth chart becomes a story.</h2>
-      <p>Explore a real chart without entering anything. Select a sign, planet, house, or connection to see what it means.</p>
+  <!-- 03 · The quickest need first: pick your Sun sign for today's reading.
+       Plain links, so the picker costs no script on the first screens. -->
+  <section class="kwrap home-today" id="today-by-sign" aria-labelledby="today-by-sign-title">
+    <div class="section-head section-head--row reveal">
+      <div>
+        <span class="kicker">Your daily reading</span>
+        <h2 class="h-2" id="today-by-sign-title">The sky today, by sign</h2>
+        <p>Tap your Sun sign for a clear reading for today. No birth time needed.</p>
+      </div>
+      <a class="textlink only-desktop" href="/horoscopes/">All horoscopes <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <div class="reveal">
+    <ul class="home-today__grid" role="list" data-today-icons>
+      {SIGNS.map((s) => (
+        <li>
+          <a
+            href={`/horoscopes/${s.slug}/`}
+            class:list={[s.slug === sunNow && 'is-now']}
+            style={`--sign:${s.hue}`}
+            aria-label={s.slug === sunNow ? `${s.name}, the Sun is here now` : `${s.name}, ${signDateRange(s)}`}
+          >
+            <SignIcon sign={s.slug} size={52} webpOnly deferred />
+            <b>{s.name}</b>
+            <small data-dates={compactDates(s.slug)}>{s.slug === sunNow ? 'Sun is here now' : compactDates(s.slug)}</small>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="home-today__note">
+      <span>Readings are published fresh each day and are meant for reflection.</span>
+      <span class="tbs__stamp">{editionStamp}</span>
+    </p>
+    <script is:inline>
+      // The twelve sign pictures wait until the grid nears the screen, the
+      // way the birth chart's sample does. The grid sits just below the
+      // first screen, where the browser's own lazy loading still fetched all
+      // twelve while the hero poster was loading.
+      (function () {
+        var grid = document.querySelector('[data-today-icons]');
+        if (!grid) return;
+        function load() {
+          grid.querySelectorAll('img[data-src]').forEach(function (image) {
+            image.src = image.getAttribute('data-src');
+            image.removeAttribute('data-src');
+          });
+        }
+        if (!('IntersectionObserver' in window)) { load(); return; }
+        var watch = new IntersectionObserver(function (entries) {
+          if (!entries[0] || !entries[0].isIntersecting) return;
+          watch.disconnect();
+          load();
+        }, { rootMargin: '200px 0px' });
+        watch.observe(grid);
+      })();
+    </script>
+  </section>
+
+  <div class="kwrap"><hr class="rule" /></div>
+
+  <!-- 04 · The birth chart, shown rather than described: a real chart with
+       its big three and one sentence of meaning. -->
+  <section class="chart-preview" id="chart-preview">
+    <div class="kwrap sample reveal">
+      <div class="sample__head">
+        <span class="kicker">A real chart, no typing needed</span>
+        <h2 class="h-2">See how a birth chart becomes a story.</h2>
+        <p class="klede">Every chart starts with three signs. Here are Frida Kahlo’s, calculated from the 1907 sky. Yours takes about twenty seconds.</p>
+      </div>
       <DemoChart />
       <script is:inline>
         (function () {
@@ -455,18 +563,23 @@ const tools = [
           if (!root) return;
 
           // The wheel's twelve sign discs ship as data-href (Wheel
-          // deferIcons) so they cost nothing while the hero paints; lift
-          // them to real hrefs as the section approaches. The 200px margin
-          // keeps the swap invisible without pulling the fetches back into
-          // the initial load on tall phone viewports.
-          var discs = root.querySelectorAll('image[data-href]');
+          // deferIcons), and the big three's discs as data-src, so they cost
+          // nothing while the hero paints; lift them to real addresses as the
+          // section approaches. The 200px margin keeps the swap invisible
+          // without pulling the fetches back into the initial load on tall
+          // phone viewports.
+          var discs = root.querySelectorAll('image[data-href], img[data-src]');
           function liftDiscs() {
             for (var i = 0; i < discs.length; i += 1) {
-              discs[i].setAttribute('href', discs[i].getAttribute('data-href'));
-              discs[i].removeAttribute('data-href');
+              var attribute = discs[i].tagName.toLowerCase() === 'img' ? 'src' : 'href';
+              discs[i].setAttribute(attribute, discs[i].getAttribute('data-' + attribute));
+              discs[i].removeAttribute('data-' + attribute);
             }
           }
           if (discs.length) {
+            // .demo itself is display: contents (its children sit in the
+            // page's grid), so it has no box to observe; watch the wheel.
+            var discAnchor = root.querySelector('.demo__wheel') || root;
             if ('IntersectionObserver' in window) {
               var discWatch = new IntersectionObserver(function (entries) {
                 for (var i = 0; i < entries.length; i += 1) {
@@ -477,7 +590,7 @@ const tools = [
                   }
                 }
               }, { rootMargin: '200px 0px' });
-              discWatch.observe(root);
+              discWatch.observe(discAnchor);
             } else {
               liftDiscs();
             }
@@ -555,121 +668,126 @@ const tools = [
           });
         })();
       </script>
+
     </div>
   </section>
 
-  <!-- 03 · Zero-input value: tap your sign, see today -->
-  <!-- client:visible, not client:idle: on a fast connection idle fires while
-       the hero poster (the LCP element) is still painting, and the preact
-       module cascade lands in the paint window. The strip sits ~1400px down,
-       so hydrate it on approach instead. -->
-  <section class="container reveal pace-sec">
-    <TodayBySign client:visible={{ rootMargin: '240px' }} />
-  </section>
-
-  <!-- 04 · Tools -->
-  <section class="container pace-act pace-act--rule">
-    <div class="section-head reveal">
-      <h2>Start with your chart</h2>
-      <p>Find your birth chart, moon sign, rising sign, compatibility, and what the sky is doing now.</p>
+  <!-- 05 · Tools: one grid, then the shared tools as a light row. -->
+  <section class="kwrap home-tools-band">
+    <div class="section-head section-head--row reveal">
+      <div>
+        <h2 class="h-2">Start with your chart</h2>
+        <p>Your birth chart, moon sign, rising sign, compatibility, and what the sky is doing now.</p>
+      </div>
+      <a class="textlink only-desktop" href="/tools/">All tools <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <div class="home-tools">
-      {tools.map((t, i) => (
-        <a class="tile reveal" href={t.href} style={`--sign:${t.hue};--reveal-delay:${i * 60}ms`}>
-          <div class="home-tool">
-            <ToolGlyph kind={t.kind} />
-            <h3>{t.title}</h3>
-            <p>{t.promise}</p>
-            <span class="home-tool__go">Open →</span>
-          </div>
+    <div class="grid-4 home-tools">
+      {tools.map((t) => (
+        <a class="kcard home-tool" href={t.href}>
+          <ToolIcon name={t.icon} size={52} />
+          <h3 class="h-4">{t.title}</h3>
+          <p>{t.promise}</p>
+          <span class="kcard__go" aria-hidden="true">→</span>
         </a>
       ))}
     </div>
-    <div class="tools-upcoming reveal">
-      <em class="kicker">And for the month ahead</em>
-      <ul>
+    <div class="home-together">
+      <span class="home-together__label">Together:</span>
+      {together.map((item) => (
+        <a class="pill" href={item.href}>{item.label}</a>
+      ))}
+    </div>
+  </section>
+
+  <!-- 06 · The twelve signs, each with its painted panel. -->
+  <section class="kwrap home-signs" id="signs">
+    <div class="section-head section-head--row reveal">
+      <div>
+        <h2 class="h-2">The twelve signs</h2>
+        <p>A full guide to each: character, relationships, history, and what the sign means across your chart.</p>
+      </div>
+    </div>
+    <ul class="home-signs__row" role="list">
+      {SIGNS.map((s) => (
         <li>
-          <strong>Eclipses.</strong> Every solar and lunar eclipse through
-          2028, with peak times in UTC — <a href="/eclipses/">see the dates</a>.
+          <a class="home-sign" href={`/${s.slug}/`} style={`--sign:${s.hue}`}>
+            <ArtFrame
+              sign={s.slug}
+              alt=""
+              sizes="(min-width: 1100px) 190px, (min-width: 761px) 25vw, 62vw"
+              spot="50% 54%"
+            />
+            <span class="home-sign__name"><SignIcon sign={s.slug} size={26} /><b>{s.name}</b></span>
+            <small>{compactDates(s.slug)}</small>
+          </a>
         </li>
-      </ul>
-    </div>
-  </section>
-
-  <HomeShareTools locale="en" />
-
-  <!-- 05 · The Twelve -->
-  <section class="container pace-tight" id="signs">
-    <div class="section-head reveal">
-      <h2>The twelve signs</h2>
-      <p>A full guide to each: character, relationships, history, and what the sign means across your chart.</p>
-    </div>
-    <div class="twelve">
-      {SIGNS.map((s, i) => (
-        <a class="tile reveal" href={`/${s.slug}/`} style={`--sign:${s.hue};--reveal-delay:${(i % 6) * 45}ms`}>
-          <div class="twelve__card">
-            <SignIcon sign={s.slug} size={64} />
-            <strong>{s.name}</strong>
-            <span class="twelve__dates">{s.dates}</span>
-          </div>
-        </a>
       ))}
-    </div>
-    <RaceRamp class="reveal" gap="28px" />
+    </ul>
   </section>
 
-  <!-- 06 · Three pillars -->
-  <section class="container pace-act pace-act--rule">
+  <!-- 07 · Learn, calculate, keep. -->
+  <section class="kwrap home-pillars">
     <div class="section-head reveal">
-      <h2>Learn your signs. Save what matters.</h2>
+      <h2 class="h-2">Learn your signs. Save what matters.</h2>
       <p>Three parts to the site, and you can start anywhere.</p>
     </div>
-    <div class="pillars">
-      <div class="pillar reveal">
-        <img class="pillar__art" src="/assets/hero-crops/learn-560.webp" srcset="/assets/hero-crops/learn-360.webp 360w, /assets/hero-crops/learn-560.webp 560w" sizes="(min-width: 860px) 360px, calc(100vw - 40px)" width="560" height="350" alt="Painted water bearer pouring from a jar on a dark zodiac band" loading="lazy" decoding="async" />
-        <em class="kicker">Learn</em>
-        <h3>A guide to every sign</h3>
+    <div class="grid-3 pillars">
+      <article class="pillar">
+        <img class="pillar__art" src="/assets/hero-crops/learn-560.webp" srcset="/assets/hero-crops/learn-360.webp 360w, /assets/hero-crops/learn-560.webp 560w" sizes="(min-width: 860px) 380px, (min-width: 761px) 50vw, 112px" width="560" height="350" alt="Painted water bearer pouring from a jar on a dark zodiac band" loading="lazy" decoding="async" />
+        <span class="kicker">Learn</span>
+        <h3 class="h-3">A guide to every sign</h3>
         <p>Twelve sign guides, the <AstroTerm term="big-three" label="big three" surface="home-pillars" /> explained, and plain-language help for reading your chart.</p>
-        <a href="/learn/">Learn astrology →</a>
-      </div>
-      <div class="pillar reveal" style="--reveal-delay:80ms">
-        <img class="pillar__art" src="/assets/hero-crops/calculate-560.webp" srcset="/assets/hero-crops/calculate-360.webp 360w, /assets/hero-crops/calculate-560.webp 560w" sizes="(min-width: 860px) 360px, calc(100vw - 40px)" width="560" height="350" alt="Ornate brass scrollwork across an engraved clock dial" loading="lazy" decoding="async" />
-        <em class="kicker">Calculate</em>
-        <h3>Free astrology tools</h3>
+        <a class="textlink" href="/learn/">Learn astrology <span class="arr" aria-hidden="true">→</span></a>
+      </article>
+      <article class="pillar">
+        <img class="pillar__art" src="/assets/hero-crops/calculate-560.webp" srcset="/assets/hero-crops/calculate-360.webp 360w, /assets/hero-crops/calculate-560.webp 560w" sizes="(min-width: 860px) 380px, (min-width: 761px) 50vw, 112px" width="560" height="350" alt="Ornate brass scrollwork across an engraved clock dial" loading="lazy" decoding="async" />
+        <span class="kicker">Calculate</span>
+        <h3 class="h-3">Free astrology tools</h3>
         <p>Birth chart, moon, rising, compatibility, and <AstroTerm term="transit" label="transits" surface="home-pillars" />, calculated privately in your browser.</p>
-        <a href="/tools/">Astrology tools →</a>
-      </div>
-      <div class="pillar reveal" style="--reveal-delay:160ms">
-        <img class="pillar__art" src="/assets/hero-crops/keep-560.webp" srcset="/assets/hero-crops/keep-360.webp 360w, /assets/hero-crops/keep-560.webp 560w" sizes="(min-width: 860px) 360px, calc(100vw - 40px)" width="560" height="350" alt="Gilded sun face above a painted band of zodiac figures" loading="lazy" decoding="async" />
-        <em class="kicker">Keep</em>
-        <h3>Saved charts</h3>
+        <a class="textlink" href="/tools/">Astrology tools <span class="arr" aria-hidden="true">→</span></a>
+      </article>
+      <article class="pillar">
+        <img class="pillar__art" src="/assets/hero-crops/keep-560.webp" srcset="/assets/hero-crops/keep-360.webp 360w, /assets/hero-crops/keep-560.webp 560w" sizes="(min-width: 860px) 380px, (min-width: 761px) 50vw, 112px" width="560" height="350" alt="Gilded sun face above a painted band of zodiac figures" loading="lazy" decoding="async" />
+        <span class="kicker">Keep</span>
+        <h3 class="h-3">Saved charts</h3>
         <p>Save a chart, return to it, and keep the people you care about close. Sign in only when you want sync.</p>
-        <a href="/profile/">Saved charts →</a>
+        <a class="textlink" href="/profile/">Saved charts <span class="arr" aria-hidden="true">→</span></a>
+      </article>
+    </div>
+  </section>
+
+  <!-- 08 · Questions, as one flat list beside its heading. -->
+  <section class="kwrap home-faq">
+    <div class="qa">
+      <div>
+        <h2 class="h-2 reveal">Common questions</h2>
+        <p>Still curious? <a class="home-faq__method" href="/methodology/">See how charts are calculated</a>.</p>
+      </div>
+      <div class="kfaq">
+        {faq.map(({ q, a, ...rest }, index) => (
+          <details open={index === 0}>
+            <summary>{q}</summary>
+            <p>{a} {'href' in rest && <a href={rest.href as string}>{rest.link}</a>}</p>
+          </details>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- 07 · FAQ -->
-  <section class="container container--narrow pace-sec">
-    <div class="section-head reveal"><h2>Common questions</h2></div>
-    <div class="faq reveal">
-      {faq.map(({ q, a, ...rest }) => (
-        <details class="faq__item">
-          <summary>{q}</summary>
-          <p>{a} {'href' in rest && <a href={rest.href as string}>{rest.link}</a>}</p>
-        </details>
-      ))}
+  <!-- 09 · One closing invitation over the hero art. -->
+  <section class="kwrap home-close">
+    <div class="closing-panel">
+      <img src="/assets/hero/zodiacs-hero-poster.avif" width="1600" height="900" alt="" loading="lazy" decoding="async" />
+      <div>
+        <h2 class="h-2">Start with your birth chart.</h2>
+        <p>Birth date, time, and place. Private in your browser.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary btn--lg" href="/birth-chart/"><span>Get your free birth chart</span><span class="orb">↗</span></a>
+          <a class="textlink" href="/birthday/">Or look up your exact birthday <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </div>
     </div>
-  </section>
-
-  <!-- 08 · Close -->
-  <section class="container close pace-sec pace-end">
-    <h2 class="display reveal">Start with your birth chart.</h2>
-    <div class="reveal" style="--reveal-delay:120ms">
-      <a class="btn btn--primary" href="/birth-chart/"><span>Start your chart</span><span class="orb">↗</span></a>
-      <a class="close__birthday" href="/birthday/">Or look up your exact birthday →</a>
-    </div>
-    <p class="company-note reveal" style="--reveal-delay:180ms">
+    <p class="company-note">
       Zodiacs.org is owned and operated by <a href="/about/">Zodiacs LLC</a>, a
       New Mexico limited liability company.
     </p>
@@ -677,20 +795,9 @@ const tools = [
 </Base>
 
 <style>
-  /* ── Vertical rhythm — the page reads as four acts, and the seams carry
-     that structure: one-sided padding in three tiers instead of the global
-     .section's doubled uniform gap. Act breaks may carry a hairline. ── */
-  .pace-act { padding-top: clamp(72px, 9.5vw, 132px); }
-  .pace-act--rule {
-    margin-top: clamp(40px, 5vw, 64px);
-    border-top: 1px solid var(--hair-1);
-    padding-top: clamp(44px, 5.5vw, 72px);
-  }
-  .pace-sec { padding-top: clamp(48px, 6.5vw, 88px); }
-  .pace-tight { padding-top: clamp(36px, 4.5vw, 60px); }
-  .pace-end { padding-bottom: clamp(80px, 10vw, 132px); }
-
-  /* ── Hero — the rounded cinematic frame ── */
+  /* ── Hero: the rounded cinematic frame, headline in the dark side ──
+     src/home/home-first-paint.css carries the same first-paint geometry;
+     keep the two in step. */
   .hero {
     /* Cancel main's nav clearance so the frame rises behind the fixed
        nav pill — the liquid-glass capsule then refracts the footage from
@@ -704,8 +811,6 @@ const tools = [
     position: relative;
     overflow: hidden;
     border-radius: clamp(18px, 2.6vw, 30px);
-    /* Frame now starts at the top of the viewport; fill it, leaving a
-       small peek of the ticker waiting below. */
     min-height: clamp(600px, calc(100svh - 40px), 900px);
     background: var(--void-1);
     /* A hairline ring keeps the frame editorial rather than app-like. */
@@ -714,9 +819,24 @@ const tools = [
       0 30px 80px -40px rgba(0, 0, 0, 0.8);
     isolation: isolate;
   }
-  .hero-motion { position: absolute; z-index: 5; top: 14px; right: 14px; min-height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); border-radius: 999px; background: rgba(6,7,9,.85); color: var(--text); font: 500 12px var(--font-sans); cursor: pointer; }
-  @media (max-width: 959px) { .hero-motion { top: calc(60px + env(safe-area-inset-top)); } }
+  .hero-motion { position: absolute; z-index: 5; right: 20px; bottom: 20px; display: grid; place-items: center; width: 44px; min-height: 44px; padding: 0; border: 1px solid rgba(238,241,247,.28); border-radius: 50%; background: rgba(10,12,17,.5); color: var(--ink-1); cursor: pointer; }
+  @media (max-width: 760px) { .hero-motion { top: calc(76px + env(safe-area-inset-top)); right: 16px; bottom: auto; } }
   @media (prefers-reduced-motion: reduce) { .hero-motion { display: none; } }
+  .hero-motion svg { width: 12px; height: 12px; fill: currentColor; }
+  .hero-motion[aria-pressed='true'] .hero-motion__pause,
+  .hero-motion[aria-pressed='false'] .hero-motion__play { display: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .hero-motion:hover { border-color: rgba(238, 241, 247, 0.5); color: var(--ink-0); }
+  }
+  .hero__credit {
+    position: absolute;
+    z-index: 3;
+    right: 76px;
+    bottom: 33px;
+    font-size: 12px;
+    color: rgba(198, 204, 218, 0.55);
+  }
+  @media (max-width: 760px) { .hero__credit { display: none; } }
   .hero__poster,
   .hero__video {
     position: absolute;
@@ -750,12 +870,9 @@ const tools = [
     inset: 0;
     z-index: 1;
     background:
-      linear-gradient(180deg,
-        rgba(6, 7, 9, 0.58) 0%,
-        rgba(6, 7, 9, 0.34) 30%,
-        rgba(6, 7, 9, 0.22) 56%,
-        rgba(6, 7, 9, 0.70) 88%,
-        rgba(6, 7, 9, 0.88) 100%);
+      linear-gradient(90deg, rgba(6, 7, 9, 0.92) 0%, rgba(6, 7, 9, 0.72) 30%, rgba(6, 7, 9, 0.18) 62%, rgba(6, 7, 9, 0) 80%),
+      linear-gradient(0deg, rgba(6, 7, 9, 0.85) 0%, rgba(6, 7, 9, 0) 42%),
+      linear-gradient(180deg, rgba(6, 7, 9, 0.42) 0%, rgba(6, 7, 9, 0) 16%);
   }
   .hero__content {
     position: relative;
@@ -764,58 +881,48 @@ const tools = [
     min-height: inherit;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0;
-    padding: calc(clamp(100px, 13svh, 132px) + env(safe-area-inset-top)) clamp(22px, 4vw, 56px) clamp(28px, 5vw, 64px);
-    text-align: center;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: calc(clamp(100px, 13svh, 132px) + env(safe-area-inset-top)) clamp(28px, 5vw, 72px) clamp(36px, 6vw, 72px);
+    text-align: left;
   }
   .hero__title {
-    margin: 0 0 clamp(14px, 2vw, 20px);
+    margin: 0;
     font-family: 'Instrument Sans Hero', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif;
-    font-weight: 690;
-    font-size: clamp(2.4rem, 0.95rem + 5.9vw, 6rem);
+    font-weight: 600;
+    font-size: clamp(3.1rem, 1.4rem + 5.4vw, 6.4rem);
     line-height: 0.94;
-    letter-spacing: 0.002em;
-    text-transform: uppercase;
-    max-width: 9.53em;
+    letter-spacing: -0.048em;
+    max-width: 10.5ch;
     color: var(--ink-0, #EEF1F7);
     text-wrap: balance;
     text-shadow: 0 2px 28px rgba(6, 7, 9, 0.55);
   }
-  .hero__title em {
-    font-style: normal;
-    color: var(--ink-1, #C6CCDA);
-  }
-  .hero__foot {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(20px, 3vw, 28px);
-  }
   .hero__sub {
-    margin: 0;
-    max-width: 31.97em;
+    margin: 24px 0 0;
+    max-width: 40ch;
     font-family: 'Instrument Sans Hero', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif;
     color: var(--ink-1, #C6CCDA);
-    font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.125rem);
-    line-height: 1.6;
+    font-size: clamp(1.06rem, 0.95rem + 0.4vw, 1.25rem);
+    line-height: 1.5;
     text-wrap: pretty;
     text-shadow: 0 1px 18px rgba(6, 7, 9, 0.6);
   }
   .hero__ctas {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 12px;
+    margin-top: 30px;
     font-family: 'Instrument Sans Hero', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif;
   }
+  .hero__ctas .btn { min-height: 56px; padding: 12px 28px; font-size: 1.06rem; }
+  .hero__ctas .btn:has(.orb) { padding-inline-end: 10px; }
+  .hero__ctas .btn .orb { width: 38px; height: 38px; }
   .hero__ctas .hero__ghost {
     background: rgba(10, 12, 17, 0.66);
     backdrop-filter: saturate(150%) blur(18px);
     -webkit-backdrop-filter: saturate(150%) blur(18px);
-    border-color: rgba(238, 241, 247, 0.28);
+    border-color: rgba(238, 241, 247, 0.46);
     color: var(--ink-0, #EEF1F7);
     box-shadow:
       inset 0 1px 0 rgba(238, 241, 247, 0.06),
@@ -823,18 +930,17 @@ const tools = [
   }
   .hero__ctas .hero__ghost:hover {
     background: rgba(10, 12, 17, 0.76);
-    border-color: rgba(238, 241, 247, 0.34);
+    border-color: rgba(238, 241, 247, 0.56);
   }
   .hero__trust {
-    margin: -2px 0 0;
+    margin: 18px 0 0;
     font-family: 'Instrument Sans Hero', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif;
     font-size: 13px;
     line-height: 1.5;
     letter-spacing: 0;
     word-spacing: 0.1em;
-    color: var(--faint);
+    color: var(--ink-2);
     text-shadow: 0 1px 14px rgba(6, 7, 9, 0.72);
-    text-align: center;
   }
 
   /* ── Liquid glass (homepage chrome) ──
@@ -888,21 +994,18 @@ const tools = [
     }
   }
 
-  @media (max-width: 640px) {
-    .hero { width: min(100% - 20px, 1440px); }
-    .hero__frame { min-height: clamp(540px, calc(100svh - 56px), 760px); }
-    .hero__content { padding: calc(clamp(96px, 15svh, 120px) + env(safe-area-inset-top)) 18px 22px; }
-    .hero__title {
-      max-width: 7.49em;
-      font-size: clamp(2.25rem, 11.5vw, 3.55rem);
-      line-height: 0.95;
+  @media (max-width: 760px) {
+    .hero { width: min(100% - 16px, 1440px); }
+    .hero__frame { min-height: clamp(540px, calc(100svh - 56px), 760px); border-radius: 24px; }
+    .hero__poster { object-position: 28% 50%; }
+    .hero__scrim {
+      background: linear-gradient(0deg, rgba(6, 7, 9, 0.96) 0%, rgba(6, 7, 9, 0.82) 46%, rgba(6, 7, 9, 0.15) 78%, rgba(6, 7, 9, 0.35) 100%);
     }
-    .hero__sub {
-      max-width: 20.65em;
-      font-size: 0.98rem;
-      line-height: 1.52;
-    }
-    .hero__ctas .btn { flex: 1 1 auto; justify-content: center; }
+    .hero__content { padding: calc(clamp(96px, 15svh, 120px) + env(safe-area-inset-top)) 20px 26px; }
+    .hero__title { font-size: clamp(2.6rem, 13vw, 3.3rem); }
+    .hero__sub { margin-top: 16px; font-size: 1.02rem; }
+    .hero__ctas { flex-direction: column; align-items: stretch; width: 100%; margin-top: 22px; }
+    .hero__ctas .btn { width: 100%; }
   }
   @media (prefers-reduced-motion: reduce) {
     .hero__frame { box-shadow: inset 0 0 0 1px rgba(198, 204, 218, 0.10); }
@@ -912,76 +1015,107 @@ const tools = [
   }
 
   /* Welcome-back strip + sky ticker styles live in ../styles/today.css
-     (shared with /es/, which renders the same islands). */
+     (shared with the localized homes, which render the same islands). */
 
-  /* ── Tools ── */
-  .home-tools { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
-  @media (min-width: 900px) { .home-tools { grid-template-columns: repeat(4, 1fr); } }
-  .home-tool {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    padding: 26px 22px 22px;
-    min-height: 196px;
-  }
-  /* Tool-card icon disc lives in ToolGlyph.astro (shared with /es/). */
-  .home-tool h3 { margin: 2px 0 0; font-size: var(--text-base); font-weight: 620; letter-spacing: -0.01em; color: var(--text); }
-  .home-tool p { margin: 0; font-size: 13px; color: var(--text-2); line-height: 1.55; }
-  .home-tool__go {
-    margin-top: auto;
-    padding-top: 12px;
-    font-size: 12.5px;
-    font-weight: 550;
-    color: var(--muted);
-    transition: color var(--dur-1) var(--ease);
-  }
-  .tile:hover .home-tool__go { color: var(--text); }
-  .tools-upcoming {
-    margin-top: clamp(28px, 5vw, 44px);
-    padding-top: 24px;
-    border-top: 1px solid var(--hair-1);
-  }
-  .tools-upcoming ul {
-    margin: 12px 0 0;
+  /* ── Sky line: its rules live in src/home/home-first-paint.css, since the
+     line is on the first screen of a phone and must not restyle later. ── */
+
+  /* ── The sky today, by sign ── */
+  .home-today { padding-block: clamp(64px, 8vw, 120px) 72px; }
+  .home-today .section-head--row { margin-bottom: clamp(28px, 4vw, 40px); }
+  .home-today .kicker { margin-bottom: 4px; }
+  .home-today__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0;
     padding: 0;
     list-style: none;
-    display: grid;
-    gap: 8px;
   }
-  .tools-upcoming li { font-size: var(--text-sm); color: var(--muted); }
-  .tools-upcoming strong { color: var(--text-2); font-weight: 600; }
-  .tools-upcoming a { color: var(--text); }
+  .home-today__grid a {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    height: 100%;
+    padding: 22px 6px 18px;
+    border: 1px solid var(--hair-1);
+    border-radius: 18px;
+    background: rgba(198, 204, 218, 0.02);
+    color: var(--ink-0);
+    text-decoration: none;
+    text-align: center;
+    transition: border-color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+  }
+  .home-today__grid b { font-weight: 550; font-size: 0.9375rem; }
+  .home-today__grid small { margin-top: -6px; font-size: 11.5px; color: var(--faint); white-space: nowrap; }
+  .home-today__grid a.is-now { border-color: var(--hair-3); background: color-mix(in oklab, var(--sign) 7%, transparent); }
+  .home-today__grid a.is-now small { color: var(--sign); }
+  @media (hover: hover) and (pointer: fine) {
+    .home-today__grid a:hover {
+      border-color: color-mix(in oklab, var(--sign) 42%, transparent);
+      background: color-mix(in oklab, var(--sign) 6%, transparent);
+    }
+  }
+  .home-today__note {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 16px 0 0;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+  @media (max-width: 1100px) { .home-today__grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  @media (max-width: 760px) {
+    .home-today__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .home-today__grid a { gap: 8px; padding: 14px 4px 12px; }
+    .home-today__grid :global(.sign-icon) { width: 42px; }
+    .home-today__grid b { font-size: 0.875rem; }
+    .home-today__grid small { display: none; }
+    .home-today__note { flex-direction: column; gap: 4px; font-size: 0.875rem; }
+  }
 
-  /* ── Demo ── */
-  .chart-preview { scroll-margin-top: 92px; }
-  .chart-preview .section-head { max-width: 720px; }
-  .chart-preview .section-head .kicker { display: block; margin-bottom: 12px; }
-  :global(.demo) {
+  /* ── Sample chart: the wheel beside her big three ── */
+  .chart-preview { scroll-margin-top: 92px; padding-block: 88px clamp(64px, 8vw, 120px); }
+  .sample {
     display: grid;
-    gap: clamp(18px, 3vw, 34px);
-    grid-template-columns: 1fr;
-    align-items: start;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-areas: 'wheel head' 'wheel guide';
+    column-gap: clamp(32px, 6vw, 96px);
+    align-items: center;
   }
-  @media (min-width: 960px) {
-    :global(.demo) { grid-template-columns: minmax(0, 1.18fr) minmax(340px, 0.82fr); }
+  .sample__head { grid-area: head; align-self: end; }
+  .sample__head .kicker { margin-bottom: 4px; }
+  .sample__head .klede { margin-top: 14px; }
+  :global(.demo) { display: contents; }
+  :global(.demo__wheel) {
+    grid-area: wheel;
+    /* Pinned to the top: the guide beside it changes height as the note
+       under her big three changes, and the wheel must not move with it. */
+    align-self: start;
+    position: relative;
+    padding: clamp(18px, 3vw, 40px);
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-xl);
+    background: radial-gradient(70% 70% at 50% 45%, rgba(21, 25, 37, 0.9), rgba(10, 12, 17, 0.6));
   }
-  :global(.demo__wheel) { overflow: hidden; }
-  :global(.demo__wheel-core) { padding: clamp(12px, 2.5vw, 26px); }
-  :global(.demo__wheel-stage) { position: relative; max-width: 640px; margin-inline: auto; }
+  :global(.demo__guide) { grid-area: guide; align-self: start; }
+  :global(.demo__wheel-stage) { position: relative; max-width: 560px; margin-inline: auto; }
   :global(.demo__sample-badge) {
     position: absolute;
     z-index: 5;
-    top: clamp(8px, 2vw, 16px);
-    left: clamp(8px, 2vw, 16px);
-    padding: 7px 10px;
-    border: 1px solid var(--hair-1);
+    top: 18px;
+    left: 18px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 14px;
+    border: 1px solid var(--hair-2);
     border-radius: 999px;
-    background: rgba(8, 10, 14, 0.78);
-    color: var(--text-2);
+    background: rgba(10, 12, 17, 0.78);
+    color: var(--ink-1);
     font-family: var(--font-sans);
-    font-size: 11px;
-    letter-spacing: 0;
-    font-variant-numeric: tabular-nums;
+    font-size: 0.875rem;
+    font-weight: 500;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     pointer-events: none;
@@ -1106,122 +1240,96 @@ const tools = [
   :global(.demo[data-active-layer='signs'] .wheel__body),
   :global(.demo[data-active-layer='signs'] .wheel__house),
   :global(.demo[data-active-layer='signs'] .wheel__aspect) { opacity: 0.16; }
-  :global(.demo__preview-hint) {
-    margin: 8px 0 0;
-    text-align: center;
-    color: var(--faint);
-    font-family: var(--font-sans);
-    font-size: 12px;
-    letter-spacing: 0;
+  :global(.demo__explore) {
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hair-1);
   }
-  :global(.demo__receipt) {
-    margin: 8px 0 0;
-    text-align: center;
-    font-family: var(--font-sans);
-    font-size: 11.5px;
-    letter-spacing: 0;
-    font-variant-numeric: tabular-nums;
-    color: var(--faint);
-  }
-  :global(.demo__guide) { display: grid; gap: 16px; align-content: center; }
-  :global(.demo__guide-head) { display: grid; gap: 8px; }
-  :global(.demo__guide-head .kicker) { margin: 0; }
-  :global(.demo__guide-head h3) {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-size: clamp(1.55rem, 2.4vw, 2.15rem);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-  }
-  :global(.demo__guide-head p) { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.55; }
-  :global(.demo__selector) { display: grid; gap: 8px; color: var(--text-2); font-size: var(--text-sm); }
+  :global(.demo__preview-hint) { margin: 0; color: var(--faint); font-size: 12.5px; }
+  :global(.demo__selector) { display: grid; gap: 8px; color: var(--ink-1); font-size: var(--text-sm); font-weight: 550; }
   :global(.demo__selector select) {
     width: 100%; min-height: 44px; padding: 10px 12px;
-    border: 1px solid var(--hair-1); border-radius: var(--r-md);
-    background: var(--bg); color: var(--text); font: inherit;
+    border: 1px solid var(--hair-2); border-radius: var(--r-md);
+    background: rgba(6, 7, 9, 0.55); color: var(--text); font: inherit; font-weight: 400;
   }
   :global(.demo__selector select:focus-visible) { outline: 2px solid var(--text); outline-offset: 2px; }
-  :global(.demo > .demo__jumps) { grid-column: 2; grid-row: 1; align-self: start; }
-  @media (min-width: 960px) { :global(.demo__wheel) { grid-column: 1; grid-row: 1 / 3; } :global(.demo__guide) { grid-column: 2; grid-row: 2; } }
-  @media (max-width: 959px) { :global(.demo > .demo__jumps) { grid-column: 1; grid-row: auto; } }
-  :global(.demo__jumps) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+
+  /* Her big three: three rows, each a starting point on the wheel. */
+  :global(.demo__jumps) { margin-top: 28px; border-top: 1px solid var(--hair-1); }
   :global(.demo__jump) {
+    position: relative;
     display: grid;
-    align-content: center;
-    gap: 4px;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    width: 100%;
     min-height: 66px;
-    padding: 10px 12px;
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-md);
-    background: rgba(13, 16, 23, 0.5);
-    color: var(--text-2);
+    padding: 16px 0;
+    border: 0;
+    border-bottom: 1px solid var(--hair-1);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink-1);
     text-align: start;
     cursor: pointer;
-    transition:
-      transform 140ms cubic-bezier(0.23, 1, 0.32, 1),
-      border-color 160ms ease,
-      background-color 160ms ease,
-      color 160ms ease;
+    transition: color 160ms ease;
   }
-  :global(.demo__jump strong) { font-size: 12.5px; font-weight: 600; line-height: 1.2; }
-  :global(.demo__jump .mono--label) { color: var(--muted); }
-  :global(.demo__jump[aria-pressed='true']) {
-    border-color: rgba(238, 241, 247, 0.5);
-    background: rgba(238, 241, 247, 0.1);
-    color: var(--text);
+  :global(.demo__jump::before) {
+    content: '';
+    position: absolute;
+    left: -18px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--sign);
+    opacity: 0;
+    transition: opacity 160ms ease;
   }
-  :global(.demo__jump[aria-pressed='true'] .mono--label) { color: var(--text-2); }
-  :global(.demo__jump:active) { transform: scale(0.97); }
+  :global(.demo__jump[aria-pressed='true']::before) { opacity: 1; }
+  :global(.demo__jump-disc) { width: 44px; height: 44px; border-radius: 50%; }
+  :global(.demo__jump-text) { display: grid; gap: 2px; min-width: 0; }
+  :global(.demo__jump strong) { font-size: 1.0625rem; font-weight: 600; color: var(--ink-0); line-height: 1.3; }
+  :global(.demo__jump-copy) { color: var(--muted); font-size: 0.9375rem; line-height: 1.45; }
+  :global(.demo__jump-degree) { font-family: var(--font-mono); font-size: 0.8125rem; color: var(--faint); font-variant-numeric: tabular-nums; }
   :global(.demo__jump:focus-visible) { outline: 2px solid var(--text); outline-offset: 2px; }
   @media (hover: hover) and (pointer: fine) {
-    :global(.demo__jump:hover) { border-color: rgba(238, 241, 247, 0.34); color: var(--text); }
+    :global(.demo__jump:hover strong) { text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
   }
   :global(.demo__insight) {
     display: grid;
-    align-content: start;
-    gap: 10px;
-    min-height: 230px;
-    padding: clamp(18px, 3vw, 28px);
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-lg);
-    background:
-      radial-gradient(circle at 100% 0%, rgba(182, 212, 228, 0.08), transparent 42%),
-      rgba(13, 16, 23, 0.58);
-  }
-  :global(.demo__insight h3) { margin: 0; font-size: var(--text-lg); letter-spacing: -0.015em; }
-  :global(.demo__insight p) {
-    margin: 0;
-    color: var(--text-2);
-    font-size: var(--text-sm);
-    line-height: 1.62;
-    text-wrap: pretty;
-  }
-  :global(.demo__cta) { width: fit-content; margin-top: auto; }
-  :global(.demo__big-three) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-  :global(.demo__callout) {
-    display: grid;
     gap: 4px;
-    padding: 11px 12px;
-    border: 1px solid color-mix(in oklab, var(--sign) 30%, transparent);
-    border-radius: var(--r-md);
-    background: color-mix(in oklab, var(--sign) 6%, transparent);
+    margin-top: 22px;
+    padding: 20px 22px;
+    border: 1px solid color-mix(in oklab, var(--sign-cancer) 18%, transparent);
+    border-radius: 16px;
+    background: color-mix(in oklab, var(--sign-cancer) 6%, transparent);
   }
-  :global(.demo__callout strong) { font-size: 14px; letter-spacing: -0.01em; }
-  :global(.demo__callout p) { margin: 0; font-size: 11px; color: var(--text-2); line-height: 1.45; }
-  :global(.demo__cta-line) { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.55; }
-  :global(.demo__cta-line strong) { color: var(--text); }
-
+  :global(.demo__insight-head) { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0; }
+  :global(.demo__insight-head .kicker) { font-size: 1rem; color: var(--sign-cancer); }
+  :global(.demo__insight-kind) { font-size: 12px; color: var(--faint); }
+  :global(.demo__insight h3) { margin: 0; font-size: 1rem; font-weight: 600; color: var(--ink-0); }
+  :global(.demo__insight p:not(.demo__insight-head)) { margin: 0; color: var(--ink-1); font-size: 1rem; line-height: 1.6; text-wrap: pretty; }
+  :global(.demo__actions) { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 26px; }
+  :global(.demo__cta) { width: fit-content; }
+  :global(.demo__receipt) {
+    margin: 18px 0 0;
+    color: var(--faint);
+    font-size: 12px;
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+  }
+  :global(.demo__receipt a) { color: inherit; text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+  @media (max-width: 860px) {
+    .sample { grid-template-columns: 1fr; grid-template-areas: 'head' 'wheel' 'guide'; row-gap: 28px; }
+    :global(.demo__sample-badge) { position: static; width: fit-content; margin-bottom: 8px; }
+    :global(.demo__jump::before) { left: -12px; }
+  }
   @media (max-width: 640px) {
-    :global(.demo__sample-badge) { font-size: 11.5px; }
-    :global(.demo__preview-hint) { font-size: 12px; }
-    :global(.demo__receipt) { font-size: 11.5px; line-height: 1.45; }
-    :global(.demo__jump) { min-height: 62px; padding: 9px; }
-    :global(.demo__jump strong) { font-size: 12.5px; }
-    :global(.demo__insight) { min-height: 0; }
     :global(.demo__cta) { width: 100%; justify-content: center; }
-    :global(.demo__callout p) { display: none; }
   }
-
   @media (prefers-reduced-motion: reduce) {
     :global([data-demo-highlight]) {
       transform: none;
@@ -1232,88 +1340,107 @@ const tools = [
     :global(.demo__wheel-stage .wheel__aspect) {
       transition: opacity 160ms cubic-bezier(0.23, 1, 0.32, 1);
     }
-    :global(.demo__jump) {
-      transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
-    }
-    :global(.demo__jump:active) { transform: none; }
+    :global(.demo__jump) { transition: none; }
   }
 
-  /* ── The Twelve ── */
-  .twelve { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); }
-  @media (min-width: 640px) { .twelve { grid-template-columns: repeat(3, 1fr); } }
-  @media (min-width: 960px) { .twelve { grid-template-columns: repeat(6, 1fr); } }
-  .twelve__card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 11px;
-    padding: 26px 12px 20px;
-    text-align: center;
+  /* ── Tools ── */
+  .home-tools-band { padding-bottom: clamp(64px, 8vw, 120px); }
+  .home-tool { display: flex; flex-direction: column; min-height: 230px; padding: 26px; }
+  .home-tool .h-4 { margin-top: 44px; font-size: 1.2rem; }
+  .home-tool p { padding-right: 36px; }
+  .home-together { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 18px; }
+  .home-together__label { margin-right: 6px; font-size: 0.9375rem; color: var(--muted); }
+  @media (max-width: 760px) {
+    .home-tool { min-height: 0; padding: 20px; }
+    .home-tool .h-4 { margin-top: 20px; font-size: 1.06rem; }
+    .home-tool p { padding-right: 0; }
+    .home-tool .kcard__go { display: none; }
   }
-  .twelve__card strong { font-size: 15px; font-weight: 600; color: var(--text); }
-  .twelve__dates { font-family: var(--font-sans); font-size: 12px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+
+  /* ── The twelve signs, with their painted panels ── */
+  .home-signs { padding-bottom: clamp(64px, 8vw, 120px); }
+  .home-signs__row {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .home-sign { display: block; color: var(--ink-0); text-decoration: none; }
+  .home-sign :global(.artframe) { aspect-ratio: 4 / 3; border-radius: 16px; }
+  .home-sign :global(.artframe::after) {
+    background: radial-gradient(ellipse 60% 64% at 50% 54%, transparent 0 30%, rgba(6, 7, 9, 0.45) 75%, rgba(6, 7, 9, 0.85) 100%);
+  }
+  .home-sign__name { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+  .home-sign b { font-weight: 600; font-size: 1rem; }
+  .home-sign small { display: block; margin: -2px 0 0 36px; font-size: 12.5px; color: var(--faint); }
+  @media (hover: hover) and (pointer: fine) {
+    .home-sign :global(.artframe > img) { transition: transform 600ms var(--ease-soft), filter 600ms var(--ease-soft); }
+    .home-sign:hover :global(.artframe > img) { transform: scale(1.03); filter: saturate(1) brightness(0.95); }
+  }
+  @media (max-width: 1100px) { .home-signs__row { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 760px) {
+    .home-signs__row {
+      display: flex;
+      gap: 12px;
+      margin-right: -20px;
+      padding-right: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .home-signs__row::-webkit-scrollbar { display: none; }
+    .home-signs__row > li { flex: 0 0 62%; scroll-snap-align: start; }
+  }
 
   /* ── Pillars ── */
-  .pillars { display: grid; gap: 20px; grid-template-columns: 1fr; }
-  @media (min-width: 860px) { .pillars { grid-template-columns: repeat(3, 1fr); } }
-  .pillar {
-    display: grid;
-    gap: 10px;
-    align-content: start;
-    padding: 4px 0;
-    border-top: 1px solid var(--hair-2);
-  }
-  /* A crop of the hero artwork heads each pillar. */
+  .home-pillars { padding-bottom: clamp(64px, 8vw, 120px); }
   .pillar__art {
     display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 16 / 10;
     object-fit: cover;
-    margin-top: 20px;
-    border-radius: 14px;
+    border-radius: 16px;
     background: var(--void-1);
+    filter: brightness(0.9);
   }
-  .pillar .kicker { margin-top: 18px; color: var(--muted); font-size: var(--text-base); }
-  .pillar .pillar__art + .kicker { margin-top: 6px; }
-  .pillar h3 { margin: 0; font-size: var(--text-lg); font-weight: 620; letter-spacing: -0.015em; }
-  .pillar p { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.62; }
-  .pillar a { margin-top: 4px; font-size: 13.5px; font-weight: 550; color: var(--text); text-decoration: none; }
-  .pillar a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .pillar .kicker { margin-top: 18px; font-size: 1.05rem; }
+  .pillar .h-3 { margin-top: 2px; }
+  .pillar p { margin: 10px 0 0; max-width: 38ch; color: var(--muted); font-size: 0.9375rem; line-height: 1.6; }
+  .pillar .textlink { margin-top: 14px; }
+  @media (max-width: 760px) {
+    .pillars { gap: 0; }
+    .pillar {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      column-gap: 16px;
+      align-content: start;
+      padding: 18px 0;
+      border-top: 1px solid var(--hair-1);
+    }
+    .pillar__art { grid-row: 1 / span 4; aspect-ratio: 1; border-radius: 14px; }
+    .pillar .kicker { margin-top: 0; font-size: 0.95rem; }
+    .pillar .h-3 { font-size: 1.3rem; }
+    .pillar p { margin-top: 6px; font-size: 0.875rem; }
+    .pillar .textlink { justify-self: start; margin-top: 10px; font-size: 0.875rem; }
+  }
 
-  /* ── FAQ ── */
-  .faq { display: grid; gap: 8px; }
-  .faq__item {
-    border: 1px solid var(--hair-1);
-    border-radius: var(--r-md);
-    background: var(--void-1);
-    padding: 4px 18px;
-  }
-  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
-  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+  /* ── Questions ── */
+  .home-faq { padding-bottom: clamp(64px, 8vw, 120px); }
+  .home-faq__method { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
 
   /* ── Close ── */
-  .close { text-align: center; }
-  .close h2 {
-    margin: 0 0 30px;
-    font-size: var(--text-2xl);
-  }
-  .close__birthday {
-    display: block;
-    width: fit-content;
-    margin: 14px auto 0;
-    color: var(--muted);
-    font-size: 13.5px;
-    text-decoration: none;
-    border-bottom: 1px solid var(--hair-2);
-  }
-  .close__birthday:hover { color: var(--text); border-bottom-color: var(--muted); }
+  .home-close { padding-bottom: clamp(64px, 8vw, 104px); }
+  .home-close .closing-panel > img { --focus: 30% 85%; }
   .company-note {
     max-width: 620px;
     margin: 34px auto 0;
     color: var(--faint);
     font-size: var(--text-xs);
     line-height: 1.6;
+    text-align: center;
   }
   .company-note a { color: var(--text-2); }
 </style>

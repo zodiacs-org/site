@@ -238,7 +238,7 @@ export default function PushOptIn({ locale = 'en', context = 'chart-save' }: Pro
         <div class="push-optin__copy">
           <strong>
             {profileStatusKnown
-              ? `Sky alerts · ${active ? 'On' : 'Off'} — the dates that matter, by notification.`
+              ? `Sky alerts · ${active ? 'On' : 'Off'}. The dates that matter, by notification.`
               : 'Sky alerts'}
           </strong>
           {detail && <span>{detail}</span>}

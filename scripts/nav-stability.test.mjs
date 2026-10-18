@@ -55,7 +55,7 @@ describe('navigation first-paint reservation', () => {
     expect(value(english, 'width')).toBe('884px');
     expect(value(localized, 'width')).toBe('992px');
     expect(value(english, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 62px 120px');
-    expect(value(localized, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 44px 120px');
+    expect(value(localized, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 44px 148px');
     expect(nav).toContain("'nav--localized': locale !== 'en'");
     expect(nav).toContain("'nav--without-search': locale === 'ru'");
   });

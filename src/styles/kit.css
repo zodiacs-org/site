@@ -1,0 +1,334 @@
+/* ────────────────────────────────────────────────────────────────────
+   Editorial kit for the top-ten redesign (October 2026).
+   The primitives the approved mockups share: display scale, the spotlit
+   sign-art frame, light cards and panels, neutral pills, the segmented
+   switch, the twelve-disc picker, the flat question list and the closing
+   panel over the hero art. Base.astro imports it, so the primitives are
+   in the first-paint stylesheet on every page: no late restyle, and no
+   extra stylesheet on the critical-CSS pages. Names that already mean something
+   elsewhere on the site carry a k- prefix (kwrap, kcard, kpanel, klede,
+   kfacts, kfaq); the rest are new.
+   ──────────────────────────────────────────────────────────────────── */
+
+/* ── Layout ───────────────────────────────────────────────────── */
+.kwrap { width: min(100% - 48px, 1200px); margin-inline: auto; position: relative; z-index: var(--z-base); }
+.kwrap--narrow { width: min(100% - 48px, 760px); }
+@media (max-width: 600px) { .kwrap, .kwrap--narrow { width: calc(100% - 40px); } }
+.ksection { padding-block: clamp(64px, 8vw, 120px); }
+.ksection--tight { padding-block: clamp(40px, 5vw, 72px); }
+
+/* ── Type ─────────────────────────────────────────────────────── */
+.h-hero {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--text-hero);
+  letter-spacing: -0.045em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+.h-1, .h-2, .h-3 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-variant-numeric: oldstyle-figures;
+  text-wrap: balance;
+}
+.h-1 { font-size: clamp(2.6rem, 1.6rem + 4.2vw, 4.6rem); line-height: 1; letter-spacing: -0.01em; }
+.h-2 { font-size: var(--text-2xl); line-height: 1.04; letter-spacing: -0.005em; }
+.h-3 { font-size: var(--text-xl); line-height: 1.12; }
+.h-4 { margin: 0; font-family: var(--font-sans); font-weight: 600; font-size: 1.06rem; line-height: 1.3; letter-spacing: -0.01em; }
+.h-1 em, .h-2 em, .h-3 em { font-style: italic; font-weight: 400; }
+.klede { margin: 0; font-size: var(--text-lg); line-height: 1.5; color: var(--text-2); text-wrap: pretty; max-width: 46ch; }
+.reassure { margin: 0; font-size: 13px; color: var(--faint); }
+.kfacts {
+  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+  font-size: 13px; font-weight: 500; color: var(--faint); font-variant-numeric: tabular-nums;
+}
+.kfacts > span + span::before { content: '·'; margin-right: 10px; color: var(--hair-3); }
+
+.textlink {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-weight: 550; font-size: 0.9375rem;
+  color: var(--ink-0); text-decoration: none;
+  border-bottom: 1px solid var(--hair-3); padding-bottom: 2px;
+}
+.textlink .arr { display: inline-block; transition: transform var(--dur-1) var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .textlink:hover { border-bottom-color: var(--ink-1); }
+  .textlink:hover .arr { transform: translateX(3px); }
+}
+
+/* Reading column details: a drop cap in the page hue and a pull quote. */
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 4.1em;
+  line-height: 0.82;
+  padding: 6px 10px 0 0;
+  color: var(--hue, var(--ink-1));
+}
+.pull {
+  margin: clamp(28px, 4vw, 44px) 0;
+  padding: 4px 0 4px clamp(18px, 2.4vw, 28px);
+  border-left: 2px solid var(--hue, var(--hair-3));
+}
+.pull p {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.1rem);
+  line-height: 1.2;
+  color: var(--ink-0);
+  text-wrap: balance;
+}
+.pull cite, .pull footer { display: block; margin-top: 10px; font-style: normal; font-size: 13px; color: var(--faint); }
+
+.section-head--row { display: flex; align-items: end; justify-content: space-between; gap: 24px; max-width: none; }
+.section-head--row > div { max-width: 40ch; }
+.section-head--row .h-2 { margin-bottom: 12px; }
+.section-head--row p { margin: 0; color: var(--muted); font-size: var(--text-lg); line-height: 1.5; max-width: 46ch; text-wrap: pretty; }
+@media (max-width: 760px) { .section-head--row { display: block; } }
+
+/* ── Surfaces ─────────────────────────────────────────────────── */
+.kcard {
+  position: relative;
+  display: block;
+  border: 1px solid var(--hair-2);
+  border-radius: 18px;
+  background: rgba(198, 204, 218, 0.025);
+  padding: 24px;
+  color: inherit;
+  text-decoration: none;
+}
+a.kcard { transition: border-color var(--dur-1) var(--ease), background var(--dur-1) var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  a.kcard:hover { border-color: var(--hair-3); background: rgba(198, 204, 218, 0.045); }
+}
+.kcard--raised { background: var(--void-2); }
+.kcard :is(.h-4, .h-3) + p { margin: 8px 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+.kcard__go {
+  position: absolute; right: 18px; bottom: 18px;
+  display: grid; place-items: center;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--hair-2);
+  color: var(--ink-1);
+  font-size: 14px;
+}
+.kpanel {
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(198, 204, 218, 0.045), rgba(198, 204, 218, 0.015));
+  padding: clamp(20px, 3vw, 36px);
+}
+
+/* Neutral pill link (the site's .chip is the sign-tinted chip). */
+.pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 34px; padding: 0 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-full);
+  background: rgba(198, 204, 218, 0.03);
+  font-size: 0.875rem; font-weight: 500;
+  color: var(--ink-1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.pill:has(img, svg) { padding-left: 6px; }
+.pill img { width: 22px; height: 22px; border-radius: 50%; }
+@media (hover: hover) and (pointer: fine) {
+  .pill:hover { border-color: var(--hair-3); color: var(--ink-0); }
+}
+
+/* Segmented switch: real links, the current one filled. */
+.seg {
+  display: inline-flex; gap: 4px; padding: 4px;
+  max-width: 100%; overflow-x: auto; scrollbar-width: none;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-full);
+  background: rgba(198, 204, 218, 0.03);
+}
+.seg::-webkit-scrollbar { display: none; }
+.seg > :is(a, button, span) {
+  flex: none;
+  display: inline-flex; align-items: center;
+  min-height: 36px; padding: 0 16px;
+  border-radius: var(--r-full);
+  font-size: 0.875rem; font-weight: 550;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.seg > [aria-current='page'], .seg > .is-on { background: var(--ink-0); color: var(--void-0); }
+@media (hover: hover) and (pointer: fine) {
+  .seg > a:not([aria-current='page']):hover { color: var(--ink-0); }
+}
+
+/* The twelve signs as a disc picker. */
+.signgrid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.signgrid a {
+  display: grid; justify-items: center; gap: 8px;
+  padding: 18px 8px 14px;
+  border: 1px solid var(--hair-1);
+  border-radius: 16px;
+  background: rgba(198, 204, 218, 0.02);
+  color: var(--ink-0);
+  text-decoration: none;
+  text-align: center;
+}
+.signgrid img { width: 44px; height: 44px; border-radius: 50%; }
+.signgrid b { font-weight: 550; font-size: 0.9375rem; }
+.signgrid small { margin-top: -6px; font-size: 12px; color: var(--faint); white-space: nowrap; }
+.signgrid a[aria-current='page'], .signgrid a.is-now { border-color: var(--hair-3); background: color-mix(in oklab, var(--sign, var(--ink-1)) 8%, transparent); }
+@media (hover: hover) and (pointer: fine) {
+  .signgrid a:hover { border-color: color-mix(in oklab, var(--sign, var(--ink-1)) 42%, transparent); }
+}
+@media (max-width: 760px) {
+  .signgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .signgrid a { padding: 14px 4px 10px; }
+  .signgrid img { width: 38px; height: 38px; }
+  .signgrid small { display: none; }
+}
+@media (max-width: 420px) { .signgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* ── The spotlit sign art (ArtFrame.astro) ────────────────────── */
+.artframe {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: var(--void-1);
+  isolation: isolate;
+}
+.artframe > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--focus, 50% 50%);
+  filter: saturate(0.92) brightness(0.86);
+}
+.artframe--flip > img { transform: scaleX(-1); }
+.artframe::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 46% 52% at var(--spot, 50% 52%), transparent 0 38%, rgba(6, 7, 9, 0.38) 70%, rgba(6, 7, 9, 0.78) 100%);
+}
+.artframe--fade::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(6, 7, 9, 0) 55%, var(--void-0) 100%);
+}
+.artframe__cap { position: absolute; z-index: 3; left: 18px; bottom: 16px; font-size: 12px; color: var(--ink-1); opacity: 0.8; }
+
+/* ── Flat question list ───────────────────────────────────────── */
+.qa { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: clamp(32px, 6vw, 96px); }
+.qa > div:first-child > p { margin: 12px 0 0; color: var(--muted); }
+@media (max-width: 860px) { .qa { grid-template-columns: 1fr; gap: 24px; } }
+.kfaq { border-top: 1px solid var(--hair-1); }
+.kfaq details { border-bottom: 1px solid var(--hair-1); }
+.kfaq summary {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  min-height: 44px; padding: 20px 0;
+  list-style: none;
+  font-size: 1.0625rem; font-weight: 550;
+  color: var(--ink-0);
+  cursor: pointer;
+}
+.kfaq summary::-webkit-details-marker { display: none; }
+.kfaq summary::after { content: '+'; flex: none; font-weight: 400; font-size: 1.4rem; line-height: 1; color: var(--muted); }
+.kfaq details[open] summary::after { content: '\2212'; }
+.kfaq details > :not(summary) { margin: 0; padding: 0 0 22px; max-width: 64ch; color: var(--muted); line-height: 1.65; }
+.kfaq details a { text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+/* ── Closing panel over the hero art ──────────────────────────── */
+.closing-panel {
+  position: relative;
+  display: grid; place-items: center;
+  min-height: 420px;
+  padding: clamp(32px, 5vw, 64px) 20px;
+  overflow: hidden;
+  border: 1px solid var(--hair-1);
+  border-radius: var(--r-xl);
+  text-align: center;
+  isolation: isolate;
+}
+.closing-panel > img {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: var(--focus, 30% 85%);
+}
+.closing-panel::before {
+  content: '';
+  position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(60% 80% at 50% 50%, rgba(6, 7, 9, 0.6), rgba(6, 7, 9, 0.9));
+}
+.closing-panel p { margin: 12px auto 0; max-width: 46ch; color: var(--muted); }
+.closing-panel .btn-row { justify-content: center; margin-top: 26px; }
+@media (max-width: 760px) {
+  .closing-panel { min-height: 360px; }
+  .closing-panel .btn-row { flex-direction: column; }
+}
+
+/* ── Buttons, sizes the mockups add ───────────────────────────── */
+.btn--lg { min-height: 56px; padding: 12px 28px; font-size: 1.06rem; }
+.btn--lg:has(.orb) { padding-inline-end: 10px; }
+.btn--lg .orb { width: 38px; height: 38px; }
+.btn--sm { min-height: 38px; padding: 6px 16px; font-size: 0.875rem; }
+.btn-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+
+/* ── Grids and visibility ─────────────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 960px) {
+  .grid-4, .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+.only-mobile { display: none !important; }
+@media (max-width: 760px) {
+  .only-mobile { display: revert !important; }
+  .only-desktop { display: none !important; }
+}
+
+/* ── The sky line (SkyTicker): the "right now" proof strip ─────── */
+.ticker-band { border-block: 1px solid var(--hair-1); padding-block: 14px; }
+.skyticker {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-2);
+}
+.skyticker__label {
+  font-style: italic;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+  margin-right: 2px;
+}
+.skyticker__item { display: inline-flex; align-items: center; gap: 6px; }
+.skyticker__icon { display: inline-flex; color: var(--text-2); }
+/* The Sun and the Moon wear the pastel disc of the sign they are in. */
+.skyticker__icon--disc img { display: block; width: 18px; height: 18px; border-radius: 50%; }
+.skyticker__icon svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

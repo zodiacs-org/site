@@ -24,9 +24,9 @@ const DISMISSED_KEY = 'zodiacs.install.dismissed.v1';
 const REGISTRY_AUTHORITY_PATH = '/registry/zodiacs.registry.json';
 
 const expectedManifest = {
-  name: 'Zodiacs — birth charts and daily astrology',
+  name: 'Zodiacs | birth charts and daily astrology',
   short_name: 'Zodiacs',
-  description: 'Birth charts, daily horoscopes, compatibility, and sign guides — free and private on your device.',
+  description: 'Birth charts, daily horoscopes, compatibility, and sign guides, free and private on your device.',
   start_url: '/',
   scope: '/',
   display: 'standalone',
@@ -51,7 +51,7 @@ const chartWire = {
 const chartFragment = `#c=1.${Buffer.from(JSON.stringify(chartWire)).toString('base64url')}`;
 
 const offlineRoutes = [
-  { path: '/today/', heading: 'Today' },
+  { path: '/today/', heading: 'The sky today' },
   { path: '/birth-chart/', heading: 'Get your free birth chart.' },
   { path: '/tools/', heading: 'Free astrology tools' },
 ];
@@ -339,10 +339,21 @@ try {
       await context.setOffline(true);
       for (const route of offlineRoutes) {
         const offlineResponse = await page.goto(`${baseURL}${route.path}`, { waitUntil: 'domcontentloaded' });
-        const content = await page.evaluate(() => ({
-          heading: document.querySelector('main h1')?.textContent?.replace(/\s+/gu, ' ').trim() ?? '',
-          textLength: document.querySelector('main')?.textContent?.replace(/\s+/gu, ' ').trim().length ?? 0,
-        }));
+        const content = await page.evaluate(() => {
+          const h1 = document.querySelector('main h1');
+          // An edition heading reads its current form ("The sky today") while
+          // the edition is the day's, and its dated form once a day has passed.
+          // Either is right; compare by the current form it carries.
+          const edition = h1?.querySelector('[data-edition-text]');
+          const shown = h1?.textContent?.replace(/\s+/gu, ' ').trim() ?? '';
+          return {
+            heading: edition && shown === edition.getAttribute('data-edition-dated')
+              ? edition.getAttribute('data-edition-current') ?? shown
+              : shown,
+            shown,
+            textLength: document.querySelector('main')?.textContent?.replace(/\s+/gu, ' ').trim().length ?? 0,
+          };
+        });
         check(`${route.path} navigates offline from the real worker cache with meaningful content`,
           offlineResponse?.status() === 200
             && offlineResponse.fromServiceWorker()

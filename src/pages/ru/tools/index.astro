@@ -2,19 +2,25 @@
 import ReturnToolLinks from "../../../components/return-visits/ReturnToolLinks.astro";
 import SharingToolLinks from '../../../components/sharing/SharingToolLinks.astro';
 import Base from '../../../layouts/Base.astro';
-import ToolGlyph from '../../../components/ToolGlyph.astro';
+import ToolIcon from '../../../components/ToolIcon.astro';
+import ToolsLead from '../../../components/tools/ToolsLead.astro';
 import ToolsPageHeading from '../../../components/ToolsPageHeading.astro';
+import { t } from '../../../lib/i18n';
+import { toolIconForPath } from '../../../lib/tool-icons';
+import '../../../styles/tools-hub.css';
 const tools = [
-  { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
-  { href: '/birth-chart/someone-else/', title: 'Карта другого человека — пока по-английски', promise: 'Используйте данные рождения, большую тройку или ссылку Zodiacs — с согласия человека.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
-  { href: '/today/', title: 'Сегодня — пока по-английски', promise: 'Последняя сохранённая карта на фоне полуденного неба, с точными градусами.', hue: 'var(--sign-cancer)', kind: 'transit' as const, englishOnly: true },
-  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-libra)', kind: 'compat' as const },
-  { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете и что помогает вернуться к себе.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
-  { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Энергия, которую другие замечают первой.', hue: 'var(--sign-gemini)', kind: 'rising' as const },
-  { href: '/ru/moon-phase/', title: 'Фаза Луны', promise: 'Луна сегодня и в любую важную для вас дату.', hue: 'var(--sign-cancer)', kind: 'moonphase' as const },
-  { href: '/ru/saturn-return/', title: 'Возвращение Сатурна', promise: 'Когда оно наступает и какие темы обычно поднимает.', hue: 'var(--sign-capricorn)', kind: 'saturn' as const },
-  { href: '/ru/transits/', title: 'Транзиты', promise: 'Сегодняшнее небо на фоне вашей карты.', hue: 'var(--sign-aries)', kind: 'transit' as const },
+  { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.' },
+  { href: '/birth-chart/someone-else/', title: 'Карта другого человека (пока по-английски)', promise: 'Используйте данные рождения, большую тройку или ссылку Zodiacs, с согласия человека.', englishOnly: true },
+  { href: '/today/', title: 'Сегодня (пока по-английски)', promise: 'Последняя сохранённая карта на фоне полуденного неба, с точными градусами.', englishOnly: true },
+  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.' },
+  { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете и что помогает вернуться к себе.' },
+  { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Энергия, которую другие замечают первой.' },
+  { href: '/ru/moon-phase/', title: 'Фаза Луны', promise: 'Луна сегодня и в любую важную для вас дату.' },
+  { href: '/ru/saturn-return/', title: 'Возвращение Сатурна', promise: 'Когда оно наступает и какие темы обычно поднимает.' },
+  { href: '/ru/transits/', title: 'Транзиты', promise: 'Сегодняшнее небо на фоне вашей карты.' },
 ];
+const [lead, ...rest] = tools;
+const iconFor = (href: string) => toolIconForPath(href) ?? 'birth-chart';
 
 const jsonLd = [
   {
@@ -28,57 +34,54 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Астрологические калькуляторы — натальная карта, транзиты"
+  title="Астрологические калькуляторы: натальная карта, транзиты"
   description="Бесплатные инструменты: натальная карта, лунный знак, асцендент, фаза Луны, возвращение Сатурна, транзиты. Приватно, в браузере."
   path="/ru/tools/"
   locale="ru"
   image="/assets/og/v2/tool/tools.png"
-  imageAlt="Астроинструменты — Zodiacs.org"
+  imageAlt="Астроинструменты, Zodiacs.org"
   jsonLd={jsonLd}
 >
-  <section class="section container">
-    <div class="section-head">
+  <header class="tools-hub tools-hub--solo kwrap">
+    <div class="tools-hub__intro">
       <ToolsPageHeading>Бесплатные астроинструменты</ToolsPageHeading>
-      <p>Постройте натальную карту, узнайте лунный знак, асцендент и совместимость, а затем посмотрите, что происходит в небе сейчас. Данные считаются в вашем браузере.</p>
+      <p class="klede tools-hub__lede">Постройте натальную карту, узнайте лунный знак, асцендент и совместимость, а затем посмотрите, что происходит в небе сейчас. Данные считаются в вашем браузере.</p>
     </div>
+    <ToolsLead
+      href={lead.href}
+      title={lead.title}
+      text={lead.promise}
+      needs={[t('ru', 'birthDate'), t('ru', 'birthTime'), t('ru', 'birthplace')]}
+      cta={t('ru', 'getBirthChart')}
+      reassure={t('ru', 'privacyDevice')}
+      locale="ru"
+    />
+  </header>
 
-    <div class="tools-grid">
-      {tools.map((tool) => (
-        <a class="shell tinted" href={tool.href} hreflang={'englishOnly' in tool ? 'en' : undefined} title={'englishOnly' in tool ? 'Материал пока доступен по-английски' : undefined} aria-label={'englishOnly' in tool ? `${tool.title}. Материал пока доступен по-английски` : undefined} style={`--sign:${tool.hue}`}>
-          <div class="core tinted tool-card">
-            <ToolGlyph kind={tool.kind} />
-            <h2>{tool.title}</h2>
-            <p>{tool.promise}</p>
-            <span class="tool-card__go">Открыть →</span>
-          </div>
-        </a>
+  <section class="tools-block kwrap">
+    <ul class="tools-grid tools-list">
+      {rest.map((tool) => (
+        <li>
+          <a class="tools-row" href={tool.href} hreflang={'englishOnly' in tool ? 'en' : undefined} title={'englishOnly' in tool ? 'Материал пока доступен по-английски' : undefined} aria-label={'englishOnly' in tool ? `${tool.title}. Материал пока доступен по-английски` : undefined}>
+            <ToolIcon name={iconFor(tool.href)} size={52} />
+            <div class="tool-card">
+              <h2>{tool.title}</h2>
+              <p>{tool.promise}</p>
+            </div>
+          </a>
+        </li>
       ))}
-    </div>
-
-    <div class="tools-upcoming">
-      <em class="kicker">Пока доступно по-английски</em>
-      <ul>
-        <li><strong>Гороскопы.</strong> Сегодняшнее небо для каждого знака. Английская версия также включает прогнозы на неделю и месяц: <a href="/horoscopes/" hreflang="en" title="Материал пока доступен по-английски">выбрать знак — пока по-английски</a>.</li>
-        <li><strong>Ретроградный Меркурий.</strong> Точные периоды до 2027 года: <a href="/mercury-retrograde/" hreflang="en" title="Материал пока доступен по-английски">посмотреть даты — пока по-английски</a>.</li>
-      </ul>
-    </div>
+    </ul>
   </section>
-<section class="section--tight container"><SharingToolLinks locale="ru" /></section>
-<section class="section--tight container"><ReturnToolLinks locale="ru" /></section>
-</Base>
 
-<style>
-  .tools-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
-  @media (min-width: 700px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1000px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
-  .tool-card { display: flex; flex-direction: column; gap: 10px; padding: 26px 22px; min-height: 210px; }
-  /* Tool-card icon disc lives in ToolGlyph.astro. */
-  .tool-card h2 { margin: 4px 0 0; font-size: var(--text-lg); font-weight: 620; color: var(--text); }
-  .tool-card p { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; }
-  .tool-card__go { margin-top: auto; font-size: 13px; font-weight: 550; color: var(--text); }
-  .tools-upcoming { margin-top: clamp(28px, 5vw, 44px); padding-top: 24px; border-top: 1px solid var(--hair-1); }
-  .tools-upcoming ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-  .tools-upcoming li { font-size: var(--text-sm); color: var(--muted); }
-  .tools-upcoming strong { color: var(--text-2); font-weight: 600; }
-  .tools-upcoming a { color: var(--text); }
-</style>
+  <section class="tools-block kwrap">
+    <h2 class="tools-section-title">Пока доступно по-английски</h2>
+    <ul class="tools-list">
+      <li class="tools-row"><ToolIcon name="horoscopes" size={52} /><span class="tools-row__text"><strong>Гороскопы.</strong> Сегодняшнее небо для каждого знака. Английская версия также включает прогнозы на неделю и месяц: <a href="/horoscopes/" hreflang="en" title="Материал пока доступен по-английски">выбрать знак (пока по-английски)</a>.</span></li>
+      <li class="tools-row"><ToolIcon name="retrogrades" size={52} /><span class="tools-row__text"><strong>Ретроградный Меркурий.</strong> Точные периоды до 2027 года: <a href="/mercury-retrograde/" hreflang="en" title="Материал пока доступен по-английски">посмотреть даты (пока по-английски)</a>.</span></li>
+    </ul>
+  </section>
+
+  <section class="tools-block kwrap"><SharingToolLinks locale="ru" icons /></section>
+  <section class="tools-block kwrap"><ReturnToolLinks locale="ru" current="/saturn-return/" icons /></section>
+</Base>

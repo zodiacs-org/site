@@ -172,7 +172,7 @@ function sunModel(
   const subjectTheme = HOUSE_SUBJECT_THEMES[published.todayLine.house ?? 0]
     ?? published.todayLine.text.replace(/^Today (?:may )?/u, '').replace(/[.]$/u, '').slice(0, 72);
   return {
-    subject: `${sign.name} today — ${subjectTheme}`,
+    subject: `${sign.name} today: ${subjectTheme}`,
     preheader: [published.headline, collective[0]].filter(Boolean).join(' '),
     identity: `${sign.name.toUpperCase()} · ${dateLabel(publication.date, true).toUpperCase()}`,
     title: published.headline,
@@ -185,7 +185,7 @@ function sunModel(
     },
     footerLines: [
       `You asked for the ${sign.name} daily at zodiacs.org.`,
-      'Your email and your chosen sign are all we store — never birth details.',
+      'Your email and your chosen sign are all we store, never birth details.',
     ],
     unsubscribeUrl,
     postalAddress,
@@ -206,7 +206,7 @@ function chartBirthSummary(chart: SavedChart): string {
 }
 
 function nearbyChartEventTitle(event: PublishedEventDescriptor): string {
-  const title = event.title.replace(/\s+—\s+.*$/u, '').trim();
+  const title = event.title.replace(/(?:,|\s+—)\s+.*$/u, '').trim();
   const date = new Intl.DateTimeFormat('en', {
     month: 'long',
     day: 'numeric',
@@ -291,8 +291,8 @@ function chartModel(
   const strongest = contacts[0];
   return {
     subject: strongest
-      ? `${referenceOnly ? 'Your reference chart' : 'Your chart'} today — ${contactSubject(strongest)}`
-      : `${referenceOnly ? 'Your reference chart' : 'Your chart'} today — a quieter sky`,
+      ? `${referenceOnly ? 'Your reference chart' : 'Your chart'} today: ${contactSubject(strongest)}`
+      : `${referenceOnly ? 'Your reference chart' : 'Your chart'} today: a quieter sky`,
     preheader: [referenceOnly ? referenceNotice : null, personal[0], sharedSky[0]].filter(Boolean).join(' '),
     identity: `FOR ${name.toUpperCase()} · ${dateLabel(program.anchorDate, true).toUpperCase()}`,
     ...(signSlug ? { sign: signSlug, signName: signBySlug(signSlug).name } : {}),
@@ -350,7 +350,7 @@ function textFromModel(model: MessageModel): string {
   if (model.why) lines.push(`Why this appeared: ${model.why}`, '');
   if (model.nearbyEvent) {
     lines.push(
-      `Ahead: ${model.nearbyEvent.title}${model.nearbyEvent.separator ?? ' — '}${model.nearbyEvent.summary}`,
+      `Ahead: ${model.nearbyEvent.title}${model.nearbyEvent.separator ?? '. '}${model.nearbyEvent.summary}`,
       model.nearbyEvent.url,
       '',
     );
@@ -372,7 +372,7 @@ function htmlFromModel(model: MessageModel, baseUrl: string): string {
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-top:1px solid #26282E;margin:4px 0 26px">
       <tr>
         ${model.nearbyEvent.sign ? `<td width="26" style="width:26px;vertical-align:top;padding:18px 12px 0 0"><img src="${escapeHtml(signIconUrl(baseUrl, model.nearbyEvent.sign))}" width="26" height="26" alt="" style="display:block;width:26px;height:26px;border:0;border-radius:50%" /></td>` : ''}
-        <td style="vertical-align:top;padding:18px 0 0"><p style="font:14px/1.55 system-ui,-apple-system,sans-serif;margin:0;color:#C6CCDA"><strong style="color:#EEF1F7">Ahead: ${escapeHtml(model.nearbyEvent.title)}</strong>${escapeHtml(model.nearbyEvent.separator ?? ' — ')}${escapeHtml(model.nearbyEvent.summary)} <a href="${escapeHtml(model.nearbyEvent.url)}" style="color:#EEF1F7">Read the event</a></p></td>
+        <td style="vertical-align:top;padding:18px 0 0"><p style="font:14px/1.55 system-ui,-apple-system,sans-serif;margin:0;color:#C6CCDA"><strong style="color:#EEF1F7">Ahead: ${escapeHtml(model.nearbyEvent.title)}</strong>${escapeHtml(model.nearbyEvent.separator ?? '. ')}${escapeHtml(model.nearbyEvent.summary)} <a href="${escapeHtml(model.nearbyEvent.url)}" style="color:#EEF1F7">Read the event</a></p></td>
       </tr>
     </table>` : '';
   // PNG, not WebP: Outlook on Windows and several older clients decode
@@ -462,7 +462,7 @@ export function renderDailyEmail({
           const house = wholeSignHouseFromAsc(eventSign, ascendantSign);
           model.nearbyEvent = {
             title: nearbyChartEventTitle(nearbyEvent),
-            summary: `falls in your ${ORDINAL[house]} house — a checkpoint for ${HOUSE_THEME[house]}.`,
+            summary: `falls in your ${ORDINAL[house]} house, a checkpoint for ${HOUSE_THEME[house]}.`,
             separator: ' ',
             url: siteUrl(baseUrl, nearbyEvent.path),
             sign: eventSign,

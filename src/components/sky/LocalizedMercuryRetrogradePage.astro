@@ -1,4 +1,5 @@
 ---
+import { rangeWords, sincePhrase } from '../../lib/range-words';
 /**
  * Translated Mercury retrograde hub (es, pt, fr, it). The English page
  * (src/pages/mercury-retrograde/index.astro) is the reference: same data
@@ -80,7 +81,7 @@ const COPY: Record<Locale, Copy> = {
   es: {
     title: 'Mercurio retrógrado 2026 y 2027: fechas | Zodiacs.org',
     description: 'Todas las retrogradaciones de Mercurio hasta 2027, calculadas con el movimiento real del planeta: fechas exactas, estaciones y qué te pide cada una.',
-    imageAlt: 'Fechas de Mercurio retrógrado — Zodiacs.org',
+    imageAlt: 'Fechas de Mercurio retrógrado | Zodiacs.org',
     h1: 'Mira cuándo Mercurio se vuelve retrógrado.',
     intro: 'Cada retrogradación de esta página se calcula a partir del movimiento real de Mercurio, de estación a estación, con precisión de una hora, hasta fines de 2027.',
     asOf: (date) => `Al ${date.text}`,
@@ -92,7 +93,7 @@ const COPY: Record<Locale, Copy> = {
     allBefore: 'los períodos de todos los planetas están en',
     allLink: 'la página de retrogradaciones',
     only2027: 'solo 2027',
-    windowsHeading: 'Las retrogradaciones, 2026–2027',
+    windowsHeading: 'Las retrogradaciones, 2026 y 2027',
     windowsLede: 'Fechas en hora universal (UTC). La posición indicada es el punto donde Mercurio se detiene cada vez: las estaciones.',
     colWindow: 'Período',
     colRetrograde: 'Estación retrógrada',
@@ -134,19 +135,19 @@ const COPY: Record<Locale, Copy> = {
         a: 'Todos, menos el Sol y la Luna. Los planetas exteriores pasan meses retrógrados cada año y los astrólogos apenas se inmutan; Mercurio se lleva los titulares porque sus retrogradaciones son frecuentes, cortas y tocan asuntos de la vida diaria.',
       },
     ],
-    pageName: 'Fechas de Mercurio retrógrado, 2026–2027',
+    pageName: 'Fechas de Mercurio retrógrado, 2026 y 2027',
     pageDescription: 'Fechas exactas de Mercurio retrógrado para 2026 y 2027, calculadas a partir del movimiento real del planeta, con las posiciones de las estaciones.',
     eventName: 'Mercurio retrógrado',
     eventDescription: (from, to, retrograde, direct) => `Mercurio se ve retrógrado desde ${from} hasta ${to}, con estaciones en ${retrograde} y ${direct ?? 'una estación directa aún no disponible'}.`,
     eventDescriptionOpen: (from, retrograde) => `Mercurio se ve retrógrado desde ${from}. Todavía no hay fecha de término ni estación directa disponibles; la estación retrógrada está en ${retrograde}.`,
-    datasetName: 'Períodos de Mercurio retrógrado, 2026–2027',
+    datasetName: 'Períodos de Mercurio retrógrado, 2026 y 2027',
     datasetDescription: 'Instantes calculados de las estaciones retrógrada y directa de Mercurio, con sus posiciones en el zodíaco tropical, para 2026 y 2027.',
     variableMeasured: ['instante de la estación retrógrada', 'instante de la estación directa', 'longitud de la estación'],
   },
   pt: {
     title: 'Mercúrio retrógrado 2026 e 2027: datas | Zodiacs.org',
     description: 'Todos os períodos de Mercúrio retrógrado até 2027, calculados pelo movimento real do planeta: datas exatas, estações e o que cada um pede de você.',
-    imageAlt: 'Datas de Mercúrio retrógrado — Zodiacs.org',
+    imageAlt: 'Datas de Mercúrio retrógrado | Zodiacs.org',
     h1: 'Veja quando Mercúrio fica retrógrado.',
     intro: 'Cada período retrógrado desta página é calculado a partir do movimento real de Mercúrio, de estação a estação, com precisão de uma hora, até o fim de 2027.',
     asOf: (date) => `Em ${date.text}`,
@@ -158,7 +159,7 @@ const COPY: Record<Locale, Copy> = {
     allBefore: 'os períodos de todos os planetas estão na',
     allLink: 'página de planetas retrógrados',
     only2027: 'só 2027',
-    windowsHeading: 'Os períodos retrógrados, 2026–2027',
+    windowsHeading: 'Os períodos retrógrados, 2026 e 2027',
     windowsLede: 'Datas em tempo universal (UTC). A posição indicada é o ponto em que Mercúrio fica parado a cada vez: as estações.',
     colWindow: 'Período',
     colRetrograde: 'Estação retrógrada',
@@ -200,19 +201,19 @@ const COPY: Record<Locale, Copy> = {
         a: 'Todos, menos o Sol e a Lua. Os planetas exteriores passam meses retrógrados todo ano e os astrólogos mal se abalam; Mercúrio fica com as manchetes porque seus períodos retrógrados são frequentes, curtos e ligados a assuntos do dia a dia.',
       },
     ],
-    pageName: 'Datas de Mercúrio retrógrado, 2026–2027',
+    pageName: 'Datas de Mercúrio retrógrado, 2026 e 2027',
     pageDescription: 'Datas exatas de Mercúrio retrógrado em 2026 e 2027, calculadas a partir do movimento real do planeta, com as posições das estações.',
     eventName: 'Mercúrio retrógrado',
     eventDescription: (from, to, retrograde, direct) => `Mercúrio aparece retrógrado de ${from} a ${to}, com estações em ${retrograde} e ${direct ?? 'uma estação direta ainda não disponível'}.`,
     eventDescriptionOpen: (from, retrograde) => `Mercúrio aparece retrógrado a partir de ${from}. Ainda não há data final nem estação direta disponíveis; a estação retrógrada fica em ${retrograde}.`,
-    datasetName: 'Períodos de Mercúrio retrógrado, 2026–2027',
+    datasetName: 'Períodos de Mercúrio retrógrado, 2026 e 2027',
     datasetDescription: 'Instantes calculados das estações retrógrada e direta de Mercúrio, com as posições no zodíaco tropical, para 2026 e 2027.',
     variableMeasured: ['instante da estação retrógrada', 'instante da estação direta', 'longitude da estação'],
   },
   fr: {
     title: 'Mercure rétrograde 2026 et 2027 : dates | Zodiacs.org',
     description: 'Chaque Mercure rétrograde jusqu’en 2027, calculé d’après le mouvement réel de la planète : dates exactes, stations et ce que la période te demande.',
-    imageAlt: 'Dates de Mercure rétrograde — Zodiacs.org',
+    imageAlt: 'Dates de Mercure rétrograde | Zodiacs.org',
     h1: 'Regarde quand Mercure devient rétrograde.',
     intro: 'Chaque période rétrograde de cette page est calculée d’après le mouvement réel de Mercure, de station à station, à l’heure près, jusqu’à la fin de 2027.',
     asOf: (date) => `Au ${date.text}`,
@@ -224,7 +225,7 @@ const COPY: Record<Locale, Copy> = {
     allBefore: 'les périodes de toutes les planètes sont sur',
     allLink: 'la page des périodes rétrogrades',
     only2027: '2027 seulement',
-    windowsHeading: 'Les périodes rétrogrades, 2026–2027',
+    windowsHeading: 'Les périodes rétrogrades, 2026 et 2027',
     windowsLede: 'Dates en temps universel (UTC). La position indiquée est le point où Mercure s’immobilise à chaque fois : les stations.',
     colWindow: 'Période',
     colRetrograde: 'Station rétrograde',
@@ -266,19 +267,19 @@ const COPY: Record<Locale, Copy> = {
         a: 'Toutes, sauf le Soleil et la Lune. Les planètes extérieures passent des mois en mouvement rétrograde chaque année et les astrologues sourcillent à peine ; Mercure fait les gros titres parce que ses périodes rétrogrades sont fréquentes, courtes et liées au quotidien.',
       },
     ],
-    pageName: 'Dates de Mercure rétrograde, 2026–2027',
+    pageName: 'Dates de Mercure rétrograde, 2026 et 2027',
     pageDescription: 'Dates exactes de Mercure rétrograde pour 2026 et 2027, calculées d’après le mouvement réel de la planète, avec les positions des stations.',
     eventName: 'Mercure rétrograde',
     eventDescription: (from, to, retrograde, direct) => `Mercure apparaît rétrograde de ${from} à ${to}, avec des stations à ${retrograde} et ${direct ?? 'une station directe pas encore disponible'}.`,
     eventDescriptionOpen: (from, retrograde) => `Mercure apparaît rétrograde à partir de ${from}. La date de fin et la station directe ne sont pas encore disponibles ; la station rétrograde se situe à ${retrograde}.`,
-    datasetName: 'Périodes de Mercure rétrograde, 2026–2027',
+    datasetName: 'Périodes de Mercure rétrograde, 2026 et 2027',
     datasetDescription: 'Instants calculés des stations rétrograde et directe de Mercure, avec leurs positions dans le zodiaque tropical, pour 2026 et 2027.',
     variableMeasured: ['instant de la station rétrograde', 'instant de la station directe', 'longitude de la station'],
   },
   it: {
     title: 'Mercurio retrogrado 2026 e 2027: date | Zodiacs.org',
     description: 'Tutti i periodi di Mercurio retrogrado fino al 2027, calcolati dal moto reale del pianeta: date esatte, stazioni e che cosa ti chiede ciascuno.',
-    imageAlt: 'Date di Mercurio retrogrado — Zodiacs.org',
+    imageAlt: 'Date di Mercurio retrogrado | Zodiacs.org',
     h1: 'Guarda quando Mercurio diventa retrogrado.',
     intro: 'Ogni periodo retrogrado di questa pagina è calcolato dal moto reale di Mercurio, da stazione a stazione, con la precisione dell’ora, fino alla fine del 2027.',
     asOf: (date) => (itElides(date) ? `All’${date.text}` : `Al ${date.text}`),
@@ -290,7 +291,7 @@ const COPY: Record<Locale, Copy> = {
     allBefore: 'i periodi di tutti i pianeti sono nella',
     allLink: 'pagina dei pianeti retrogradi',
     only2027: 'solo il 2027',
-    windowsHeading: 'I periodi retrogradi, 2026–2027',
+    windowsHeading: 'I periodi retrogradi, 2026 e 2027',
     windowsLede: 'Date in tempo universale (UTC). La posizione indicata è il punto in cui Mercurio si ferma ogni volta: le stazioni.',
     colWindow: 'Periodo',
     colRetrograde: 'Stazione retrograda',
@@ -332,12 +333,12 @@ const COPY: Record<Locale, Copy> = {
         a: 'Tutti, tranne il Sole e la Luna. I pianeti esterni passano mesi in moto retrogrado ogni anno e gli astrologi quasi non ci fanno caso; Mercurio finisce nei titoli perché i suoi periodi retrogradi sono frequenti, brevi e legati alla vita di tutti i giorni.',
       },
     ],
-    pageName: 'Date di Mercurio retrogrado, 2026–2027',
+    pageName: 'Date di Mercurio retrogrado, 2026 e 2027',
     pageDescription: 'Date esatte di Mercurio retrogrado per il 2026 e il 2027, calcolate dal moto reale del pianeta, con le posizioni delle stazioni.',
     eventName: 'Mercurio retrogrado',
     eventDescription: (from, to, retrograde, direct) => `Mercurio appare retrogrado da ${from} a ${to}, con stazioni a ${retrograde} e ${direct ?? 'una stazione diretta non ancora disponibile'}.`,
     eventDescriptionOpen: (from, retrograde) => `Mercurio appare retrogrado da ${from}. La data di fine e la stazione diretta non sono ancora disponibili; la stazione retrograda è a ${retrograde}.`,
-    datasetName: 'Periodi di Mercurio retrogrado, 2026–2027',
+    datasetName: 'Periodi di Mercurio retrogrado, 2026 e 2027',
     datasetDescription: 'Istanti calcolati delle stazioni retrograda e diretta di Mercurio, con le posizioni nello zodiaco tropicale, per il 2026 e il 2027.',
     variableMeasured: ['istante della stazione retrograda', 'istante della stazione diretta', 'longitudine della stazione'],
   },
@@ -381,7 +382,7 @@ const windows = (sky.retrogrades as { planet: string; from: string; to: string |
     return {
       from,
       to,
-      label: `${fmt(from)} – ${to ? fmt(to) : c.ongoing}`,
+      label: to ? rangeWords(locale, fmt(from), fmt(to)) : sincePhrase(locale, fmt(from), c.ongoing),
       stationRx: formatLongitude(bodyLongitude('Mercury', from), locale),
       stationDirect: to ? formatLongitude(bodyLongitude('Mercury', to), locale) : null,
       state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',
@@ -574,7 +575,7 @@ const jsonLd = [
   }
   .rx-now.shell:focus-within > .rx-now__core { border-color: var(--hair-3); }
   .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
-  .rx-now__all { font-size: 13px; color: var(--faint); letter-spacing: 0; }
+  .rx-now__all { font-family: var(--font-sans); font-size: 13px; color: var(--faint); letter-spacing: 0; }
   .rx-now__all a { color: var(--muted); }
   .rx-now__all a:hover { color: var(--text); }
 

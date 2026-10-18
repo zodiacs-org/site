@@ -10,7 +10,7 @@ import {
   TOOL_ROUTES,
   buildAssistantContext,
   extractCanonicalLabels,
-  extractLearnTopics,
+  learnTopics,
   generateAssistantContext,
 } from './build-assistant-context.mjs';
 
@@ -132,16 +132,16 @@ describe('assistant site context', () => {
   });
 
   it('extracts the learn-hub topics and the canonical strategy labels from their sources', () => {
-    const topics = extractLearnTopics(`
-      <a class="tile clusters__card" href="/learn/planets/">
-        <strong>The planets</strong><p>Ten planets, ten jobs.</p>
-      </a>
-    `);
+    const topics = learnTopics([
+      { route: '/learn/planets/', title: 'The planets', description: 'Ten planets, ten jobs.' },
+    ]);
     expect(topics).toEqual([{
       route: '/learn/planets/',
       title: 'The planets',
       description: 'Ten planets, ten jobs.',
     }]);
+    expect(learnTopics().map((topic) => topic.route)).toContain('/learn/glossary/');
+    expect(() => learnTopics([{ route: '/learn/planets/', title: '', description: 'x' }])).toThrow(/Incomplete learn topic/);
 
     const labels = extractCanonicalLabels(`
 ## 4. Voice & microcopy

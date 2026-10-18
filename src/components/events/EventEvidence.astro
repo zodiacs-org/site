@@ -28,12 +28,12 @@ if (facts.longitude !== undefined) {
 if (facts.degree !== undefined && facts.longitude === undefined) {
   rows.push({ label: 'Degree in sign', value: `${facts.degree.toFixed(2)}°` });
 }
-if (facts.orb === 0) rows.push({ label: 'Orb at the listed instant', value: '0° — an exact hit, not an approximation' });
+if (facts.orb === 0) rows.push({ label: 'Orb at the listed instant', value: '0°, an exact hit, not an approximation' });
 if (facts.obscuration !== undefined) rows.push({ label: 'Maximum obscuration', value: facts.obscuration.toFixed(3) });
 rows.push({
   label: 'Fact source',
   value: facts.provenance.source === 'fixture'
-    ? 'labeled sample data — not a sky fact'
+    ? 'labeled sample data, not a sky fact'
     : `${facts.provenance.source}${facts.provenance.generatedAt ? `, generated ${facts.provenance.generatedAt.slice(0, 10)}` : ''}`,
 });
 for (const derivation of facts.provenance.derived ?? []) {
@@ -56,12 +56,12 @@ for (const derivation of facts.provenance.derived ?? []) {
   </dl>
   <p>
     Instants and positions come from the site's astronomy engine and its
-    committed yearly and monthly sky catalogs — the same data behind the{' '}
+    committed yearly and monthly sky catalogs, the same data behind the{' '}
     <a href="/almanac/">Almanac</a> and the daily horoscopes. Times are
     universal time; in the Americas an instant can fall the evening before
     the date printed. Sign-by-sign notes, where present, use whole-sign
     solar houses. The readings are a tradition being applied, not a
-    forecast — <a href="/methodology/">the methodology page</a> sets out
+    forecast. <a href="/methodology/">The methodology page</a> sets out
     both halves.
   </p>
 </EvidenceDisclosure>
@@ -77,9 +77,8 @@ for (const derivation of facts.provenance.derived ?? []) {
   }
   .event-evidence__rows > div { display: grid; gap: 3px; }
   .event-evidence__rows dt {
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0;
     color: var(--faint);
   }
   .event-evidence__rows dd {

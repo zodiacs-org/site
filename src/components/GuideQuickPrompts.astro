@@ -63,7 +63,7 @@ const shown = prompts.filter((prompt) => prompt.trim().length > 0).slice(0, 4);
     font-size: var(--text-sm);
     line-height: 1.4;
     text-decoration: none;
-    transition: border-color 120ms ease, color 120ms ease;
+    transition: border-color 120ms ease, color 120ms ease, transform var(--dur-1) var(--ease);
   }
   .guide-prompts__chip:hover,
   .guide-prompts__chip:focus-visible {

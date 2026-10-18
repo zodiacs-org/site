@@ -215,7 +215,7 @@ export async function openSearch(from?: HTMLElement | null) {
   } catch {
     if (status) {
       status.hidden = false;
-      status.textContent = 'Search is unavailable right now — check your connection and try again.';
+      status.textContent = 'Search is unavailable right now. Check your connection and try again.';
     }
     return;
   }

@@ -15,11 +15,11 @@ describe('SEO modification dates', () => {
   });
 
   it('keeps the shared people-template revision source controlled', () => {
-    expect(lastmodDate(PEOPLE_TEMPLATE_MODIFIED_AT)).toBe('2026-08-23');
+    expect(lastmodDate(PEOPLE_TEMPLATE_MODIFIED_AT)).toBe('2026-10-16');
     expect(lastmodDate(latestModifiedAt(
       '2026-08-02T00:00:00.000Z',
       PEOPLE_TEMPLATE_MODIFIED_AT,
-    ))).toBe('2026-08-23');
+    ))).toBe('2026-10-16');
   });
 
   it('rejects invalid dates instead of emitting fake freshness', () => {

@@ -9,6 +9,12 @@ import type { CatalogLocale } from './i18n/core.js';
 export const SIGN_ART_WIDTHS = [720, 1200] as const;
 export const SIGN_ART_SIZE = { width: 1200, height: 800 } as const;
 
+/** The guide hero's rendered width: 72% of the window on wide screens, the full card on phones. */
+export const SIGN_GUIDE_HERO_SIZES = '(min-width: 761px) 72vw, calc(100vw - 16px)';
+
+/** The birthday hero's rendered width: 62% of the frame on wide screens, the full card on phones. */
+export const BIRTHDAY_HERO_SIZES = '(min-width: 761px) 62vw, calc(100vw - 16px)';
+
 export function signArtSrc(slug: string, width: (typeof SIGN_ART_WIDTHS)[number] = 1200): string {
   return `/assets/sign-art/${slug}-${width}.webp`;
 }

@@ -2,22 +2,28 @@
 import ReturnToolLinks from "../../../components/return-visits/ReturnToolLinks.astro";
 import SharingToolLinks from '../../../components/sharing/SharingToolLinks.astro';
 import Base from '../../../layouts/Base.astro';
-import ToolGlyph from '../../../components/ToolGlyph.astro';
+import ToolIcon from '../../../components/ToolIcon.astro';
+import ToolsHelpCard from '../../../components/tools/ToolsHelpCard.astro';
+import ToolsLead from '../../../components/tools/ToolsLead.astro';
 import ToolsPageHeading from '../../../components/ToolsPageHeading.astro';
-import { ENGLISH_ONLY_COPY, localizePath } from '../../../lib/i18n';
+import { ENGLISH_ONLY_COPY, localizePath, t } from '../../../lib/i18n';
+import { toolIconForPath } from '../../../lib/tool-icons';
+import '../../../styles/tools-hub.css';
 
 const englishOnly = ENGLISH_ONLY_COPY.it;
 const tools = [
-  { href: '/birth-chart/', title: 'Tema natale', promise: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
-  { href: '/birth-chart/someone-else/', title: 'Tema di un’altra persona (in inglese)', promise: 'Usa i dati di nascita, i tre segni principali o un link Zodiacs, con il suo permesso.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
-  { href: '/today/', title: 'Oggi (in inglese)', promise: 'Il tuo ultimo tema salvato a confronto con il cielo di mezzogiorno, gradi compresi.', hue: 'var(--sign-cancer)', kind: 'transit' as const, englishOnly: true },
-  { href: '/compatibility/', title: 'Compatibilità', promise: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.', hue: 'var(--sign-libra)', kind: 'compat' as const },
-  { href: '/moon-sign/', title: 'Segno lunare', promise: 'Come vivi le emozioni e che cosa ti calma.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
-  { href: '/rising-sign/', title: 'Ascendente', promise: 'Il segno che mostri agli altri al primo incontro. L’ora di nascita aiuta.', hue: 'var(--sign-gemini)', kind: 'rising' as const },
-  { href: '/moon-phase/', title: 'Fase lunare', promise: 'La Luna di oggi e quella di qualsiasi data importante per te.', hue: 'var(--sign-cancer)', kind: 'moonphase' as const },
-  { href: '/saturn-return/', title: 'Ritorno di Saturno', promise: 'Quando arriva il tuo, con precisione, e che cosa tende a chiedere.', hue: 'var(--sign-capricorn)', kind: 'saturn' as const },
-  { href: '/transits/', title: 'Transiti', promise: 'Il cielo di oggi a confronto con il tuo tema.', hue: 'var(--sign-aries)', kind: 'transit' as const },
+  { href: '/birth-chart/', title: 'Tema natale', promise: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.' },
+  { href: '/birth-chart/someone-else/', title: 'Tema di un’altra persona (in inglese)', promise: 'Usa i dati di nascita, i tre segni principali o un link Zodiacs, con il suo permesso.', englishOnly: true },
+  { href: '/today/', title: 'Oggi (in inglese)', promise: 'Il tuo ultimo tema salvato a confronto con il cielo di mezzogiorno, gradi compresi.', englishOnly: true },
+  { href: '/compatibility/', title: 'Compatibilità', promise: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.' },
+  { href: '/moon-sign/', title: 'Segno lunare', promise: 'Come vivi le emozioni e che cosa ti calma.' },
+  { href: '/rising-sign/', title: 'Ascendente', promise: 'Il segno che mostri agli altri al primo incontro. L’ora di nascita aiuta.' },
+  { href: '/moon-phase/', title: 'Fase lunare', promise: 'La Luna di oggi e quella di qualsiasi data importante per te.' },
+  { href: '/saturn-return/', title: 'Ritorno di Saturno', promise: 'Quando arriva il tuo, con precisione, e che cosa tende a chiedere.' },
+  { href: '/transits/', title: 'Transiti', promise: 'Il cielo di oggi a confronto con il tuo tema.' },
 ];
+const [lead, ...rest] = tools;
+const iconFor = (href: string) => toolIconForPath(href) ?? 'birth-chart';
 
 const jsonLd = [
   {
@@ -36,79 +42,66 @@ const jsonLd = [
   path="/it/tools/"
   locale="it"
   image="/assets/og/v2/tool/tools.png"
-  imageAlt="Strumenti astrologici gratuiti — Zodiacs.org"
+  imageAlt="Strumenti astrologici gratuiti, Zodiacs.org"
   jsonLd={jsonLd}
 >
-  <section class="section container">
-    <div class="section-head">
+  <header class="tools-hub tools-hub--solo kwrap">
+    <div class="tools-hub__intro">
       <ToolsPageHeading>Strumenti astrologici gratuiti</ToolsPageHeading>
-      <p>Scopri il tuo tema natale, il segno lunare, l’ascendente, le compatibilità e ciò che accade nel cielo adesso. I tuoi dati vengono calcolati nel browser.</p>
+      <p class="klede tools-hub__lede">Scopri il tuo tema natale, il segno lunare, l’ascendente, le compatibilità e ciò che accade nel cielo adesso. I tuoi dati vengono calcolati nel browser.</p>
     </div>
+    <ToolsLead
+      href={localizePath('it', lead.href)}
+      title={lead.title}
+      text={lead.promise}
+      needs={[t('it', 'birthDate'), t('it', 'birthTime'), t('it', 'birthplace')]}
+      cta={t('it', 'getBirthChart')}
+      reassure={t('it', 'privacyDevice')}
+      locale="it"
+    />
+  </header>
 
-    <div class="tools-grid">
-      {tools.map((tool) => (
-        <a class="shell tinted" href={'englishOnly' in tool ? tool.href : localizePath('it', tool.href)} hreflang={'englishOnly' in tool ? 'en' : undefined} title={'englishOnly' in tool ? englishOnly.aria : undefined} aria-label={'englishOnly' in tool ? `${tool.title}. ${englishOnly.aria}` : undefined} style={`--sign:${tool.hue}`}>
-          <div class="core tinted tool-card">
-            <ToolGlyph kind={tool.kind} />
-            <h2>{tool.title}</h2>
-            <p>{tool.promise}</p>
-            <span class="tool-card__go">Apri →</span>
-          </div>
-        </a>
+  <section class="tools-block kwrap">
+    <ul class="tools-grid tools-list">
+      {rest.map((tool) => (
+        <li>
+          <a class="tools-row" href={'englishOnly' in tool ? tool.href : localizePath('it', tool.href)} hreflang={'englishOnly' in tool ? 'en' : undefined} title={'englishOnly' in tool ? englishOnly.aria : undefined} aria-label={'englishOnly' in tool ? `${tool.title}. ${englishOnly.aria}` : undefined}>
+            <ToolIcon name={iconFor(tool.href)} size={52} />
+            <div class="tool-card">
+              <h2>{tool.title}</h2>
+              <p>{tool.promise}</p>
+            </div>
+          </a>
+        </li>
       ))}
-      <button
-        class="shell tinted assistant-tool"
-        type="button"
-        style="--sign:var(--sign-aquarius)"
-        data-assistant-open
-        data-assistant-locale="it"
-        aria-haspopup="dialog"
-      >
-        <div class="core tinted tool-card">
-          <ToolGlyph kind="assistant" />
-          <h2>Chiedi a Guide</h2>
-          <p>Guide può aiutarti con uno strumento, un termine astrologico o un tema che hai salvato qui.</p>
-          <span class="tool-card__go">Inizia una conversazione →</span>
-        </div>
-      </button>
-    </div>
-
-    <div class="tools-upcoming">
-      <em class="kicker">Calendari del cielo</em>
-      <ul>
-        <li><a href="/it/full-moon-calendar/"><strong>Lune piene</strong></a>: date, segni e nomi fino al 2027.</li>
-        <li><a href="/it/eclipses/"><strong>Eclissi</strong></a>: solari e lunari fino al 2028.</li>
-        <li><a href="/it/mercury-retrograde/"><strong>Mercurio retrogrado</strong></a>: ogni periodo, con le stazioni.</li>
-        <li><a href="/it/retrogrades/"><strong>Pianeti retrogradi</strong></a>: da Mercurio a Plutone.</li>
-      </ul>
-    </div>
-
-    <div class="tools-upcoming">
-      <em class="kicker">Disponibile anche in inglese</em>
-      <ul>
-        <li><strong>Oroscopi.</strong> Il cielo di oggi, segno per segno. L’edizione inglese include anche le letture della settimana e del mese: <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>scegliere un segno</a>.</li>
-      </ul>
-    </div>
+    </ul>
   </section>
-<section class="section--tight container"><SharingToolLinks locale="it" /></section>
-<section class="section--tight container"><ReturnToolLinks locale="it" /></section>
-</Base>
 
-<style>
-  .tools-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
-  @media (min-width: 700px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1000px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
-  .tool-card { display: flex; flex-direction: column; gap: 10px; padding: 26px 22px; min-height: 210px; }
-  /* Tool-card icon disc lives in ToolGlyph.astro. */
-  .tool-card h2 { margin: 4px 0 0; font-size: var(--text-lg); font-weight: 620; color: var(--text); }
-  .tool-card p { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; }
-  .tool-card__go { margin-top: auto; font-size: 13px; font-weight: 550; color: var(--text); }
-  .assistant-tool { display: block; width: 100%; text-align: start; transition: border-color var(--dur-2) var(--ease), transform var(--dur-2) var(--ease); }
-  .assistant-tool:hover { border-color: color-mix(in oklab, var(--sign) 45%, transparent); transform: translateY(-2px); }
-  .assistant-tool:hover .core { border-color: color-mix(in oklab, var(--sign) 28%, transparent); }
-  .tools-upcoming { margin-top: clamp(28px, 5vw, 44px); padding-top: 24px; border-top: 1px solid var(--hair-1); }
-  .tools-upcoming ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-  .tools-upcoming li { font-size: var(--text-sm); color: var(--muted); }
-  .tools-upcoming strong { color: var(--text-2); font-weight: 600; }
-  .tools-upcoming a { color: var(--text); }
-</style>
+  <section class="tools-block kwrap">
+    <h2 class="tools-section-title">Calendari del cielo</h2>
+    <ul class="tools-list">
+      <li class="tools-row"><ToolIcon name="full-moon-calendar" size={52} /><span class="tools-row__text"><a href="/it/full-moon-calendar/"><strong>Lune piene</strong></a>: date, segni e nomi fino al 2027.</span></li>
+      <li class="tools-row"><ToolIcon name="eclipses" size={52} /><span class="tools-row__text"><a href="/it/eclipses/"><strong>Eclissi</strong></a>: solari e lunari fino al 2028.</span></li>
+      <li class="tools-row"><ToolIcon name="retrogrades" size={52} /><span class="tools-row__text"><a href="/it/retrogrades/"><strong>Pianeti retrogradi</strong></a>: da Mercurio a Plutone. <a href="/it/mercury-retrograde/"><strong>Mercurio retrogrado</strong></a>: ogni periodo, con le stazioni.</span></li>
+    </ul>
+  </section>
+
+  <section class="tools-block kwrap">
+    <h2 class="tools-section-title">Disponibile anche in inglese</h2>
+    <ul class="tools-list">
+      <li class="tools-row"><ToolIcon name="horoscopes" size={52} /><span class="tools-row__text"><strong>Oroscopi.</strong> Il cielo di oggi, segno per segno. L’edizione inglese include anche le letture della settimana e del mese: <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>scegliere un segno</a>.</span></li>
+    </ul>
+  </section>
+
+  <section class="tools-block kwrap"><SharingToolLinks locale="it" icons /></section>
+  <section class="tools-block kwrap"><ReturnToolLinks locale="it" current="/saturn-return/" icons /></section>
+
+  <section class="tools-help">
+    <div class="kwrap"><div class="tools-help__grid tools-help__grid--one">
+      <ToolsHelpCard icon="guide" art="tools-lens" title="Chiedi a Guide">
+        <p>Guide può aiutarti con uno strumento, un termine astrologico o un tema che hai salvato qui.</p>
+        <button class="btn btn--sm" type="button" data-assistant-open data-assistant-locale="it" aria-haspopup="dialog">Inizia una conversazione</button>
+      </ToolsHelpCard>
+    </div></div>
+  </section>
+</Base>

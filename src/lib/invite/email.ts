@@ -59,15 +59,15 @@ export function renderCompatibilityInviteCompletionEmail(
   const text = [
     `COMPATIBILITY INVITATION · ${date}`,
     '',
-    `The invitation carrying your side as ${label} was opened, and the reading happened just now — on their device, where it stays.`,
+    `The invitation carrying your side as ${label} was opened, and the reading happened just now, on their device, where it stays.`,
     '',
     'The link has closed, and the positions it carried are deleted.',
     '',
-    "There's nothing to show you here, and that's on purpose — the reading never touched us. On their result there's a button that sends it back: a picture of the reading and a private link that carries chart positions and labels, with no birth details. Ask them for it.",
+    "There's nothing to show you here, and that's on purpose. The reading never touched us. On their result there's a button that sends it back: a picture of the reading and a private link that carries chart positions and labels, with no birth details. Ask them for it.",
     '',
     `Open the compatibility page: ${compatibilityUrl}`,
     '',
-    'You asked for one email when this invitation was read — this is it. Nothing recurring, nothing else to manage.',
+    'You asked for one email when this invitation was read. This is it. Nothing recurring, nothing else to manage.',
     `Your invitations: ${invitationsUrl}`,
   ].join('\n');
   const safe = escapeHtml(label);
@@ -79,7 +79,7 @@ export function renderCompatibilityInviteCompletionEmail(
   <title>Your invitation was read</title>
 </head>
 <body style="margin:0;background:#060709;color:#C6CCDA;font-family:Arial,Helvetica,sans-serif;">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">The reading happened on their device — ask them to send it back.</div>
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">The reading happened on their device. Ask them to send it back.</div>
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#060709;">
     <tr><td align="center" style="padding:24px 12px;">
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;border:1px solid #242936;background:#0A0C10;">
@@ -92,15 +92,15 @@ export function renderCompatibilityInviteCompletionEmail(
           </table>
         </td></tr>
         <tr><td style="padding:12px 24px 28px;color:#EEF1F7;font:22px/1.55 Georgia,'Times New Roman',serif;">
-          <p style="margin:0 0 20px;">The invitation carrying your side as ${safe} was opened, and the reading happened just now — on their device, where it stays.</p>
+          <p style="margin:0 0 20px;">The invitation carrying your side as ${safe} was opened, and the reading happened just now, on their device, where it stays.</p>
           <p style="margin:0 0 20px;">The link has closed, and the positions it carried are deleted.</p>
-          <p style="margin:0;">There&#39;s nothing to show you here, and that&#39;s on purpose — the reading never touched us. On their result there&#39;s a button that sends it back: a picture of the reading and a private link that carries chart positions and labels, with no birth details. Ask them for it.</p>
+          <p style="margin:0;">There&#39;s nothing to show you here, and that&#39;s on purpose. The reading never touched us. On their result there&#39;s a button that sends it back: a picture of the reading and a private link that carries chart positions and labels, with no birth details. Ask them for it.</p>
         </td></tr>
         <tr><td style="padding:0 24px 28px;">
           <a href="${compatibilityUrl}" style="display:block;padding:15px 18px;border-radius:999px;background:#EEF1F7;color:#10131A;font:600 15px/1.2 Arial,Helvetica,sans-serif;text-align:center;text-decoration:none;">Open the compatibility page</a>
         </td></tr>
         <tr><td style="padding:20px 24px 24px;border-top:1px solid #242936;color:#7A8397;font:12px/1.6 Arial,Helvetica,sans-serif;">
-          You asked for one email when this invitation was read — this is it. Nothing recurring, nothing else to manage.<br>
+          You asked for one email when this invitation was read. This is it. Nothing recurring, nothing else to manage.<br>
           <a href="${invitationsUrl}" style="color:#C6CCDA;text-decoration:underline;">Your invitations</a>
         </td></tr>
       </table>

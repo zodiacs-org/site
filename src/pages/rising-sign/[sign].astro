@@ -104,14 +104,14 @@ const jsonLd = [
   description={entry.data.description}
   path={`/rising-sign/${sign.slug}/`}
   image={`/assets/og/v2/rising/${sign.slug}.png`}
-  imageAlt={`${sign.name} rising — Zodiacs.org`}
+  imageAlt={`${sign.name} rising, Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}
   sources={entry.data.sources}
 >
   <article class="container container--narrow learn-detail" style={`--sign:${sign.hue}`}>
     <header class="learn-detail__hero reveal">
-      <em class="kicker">Rising signs</em>
+      <a class="crumb" href="/rising-sign/"><span class="crumb__arrow" aria-hidden="true">←</span>Rising signs</a>
       <div class="plc-lockup">
         <SignIcon sign={sign.slug} size={64} class="plc-disc" loading="eager" />
         <h1 class="display">{sign.name} rising</h1>
@@ -120,7 +120,7 @@ const jsonLd = [
       <dl class="plc-panel mono">
         <div class="plc-panel__row">
           <dt>Chart ruler</dt>
-          <dd><strong>{chartRuler}</strong> — the planet that steers this chart{modernNote}</dd>
+          <dd><strong>{chartRuler}</strong>, the planet that steers this chart{modernNote}</dd>
         </div>
         {rulerNow ? (
           <div class="plc-panel__row">
@@ -130,7 +130,7 @@ const jsonLd = [
         ) : (
           <div class="plc-panel__row">
             <dt>The Moon's pace</dt>
-            <dd>a sign every two and a half days — your natal Moon is the steady anchor</dd>
+            <dd>a sign every two and a half days. Your natal Moon is the steady anchor</dd>
           </div>
         )}
         <div class="plc-panel__row">
@@ -139,7 +139,7 @@ const jsonLd = [
         </div>
         <div class="plc-panel__row">
           <dt>The turnover</dt>
-          <dd>the ascendant changes sign about every two hours — twelve risings every day</dd>
+          <dd>the ascendant changes sign about every two hours, twelve risings every day</dd>
         </div>
       </dl>
     </header>
@@ -152,7 +152,7 @@ const jsonLd = [
       <div class="section-head">
         <h2>Find your rising sign</h2>
         <p>
-          Birth date, time, and place — the ascendant needs all three.
+          Birth date, time, and place. The ascendant needs all three.
           Computed on your device; your birth details are not sent anywhere.
         </p>
       </div>
@@ -212,7 +212,7 @@ const jsonLd = [
   }
   .plc-panel__row:first-child { border-top: 1px solid var(--hair-1); }
   @media (min-width: 560px) { .plc-panel__row { grid-template-columns: 170px 1fr; } }
-  .plc-panel__row dt { color: var(--faint); text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; align-self: baseline; }
+  .plc-panel__row dt { color: var(--faint); font-family: var(--font-sans); font-size: 12px; letter-spacing: 0; align-self: baseline; }
   .plc-panel__row dd { margin: 0; color: var(--text-2); }
   .plc-panel__row strong { color: var(--text); font-weight: 600; }
 

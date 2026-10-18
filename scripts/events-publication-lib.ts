@@ -5,7 +5,13 @@ import { EVENT_READING_REVISION, REVISED_EVENT_READINGS } from '../src/lib/event
 export const EVENTS_PUBLICATION_SCHEMA = 'zodiacs.events-publication.v1' as const;
 export const EVENTS_PUBLICATION_FROM = '2026-01-01T00:00:00.000Z';
 export const EVENTS_PUBLICATION_TO = '2028-01-01T00:00:00.000Z';
-export const EVENTS_PUBLICATION_LASTMOD = '2026-07-20';
+export const EVENTS_PUBLICATION_LASTMOD = '2026-10-16';
+
+/** A page's date: the later of the publication's revision and its reading's own revision. */
+export function eventLastModified(id: string): string {
+  return Object.hasOwn(REVISED_EVENT_READINGS, id) && EVENT_READING_REVISION > EVENTS_PUBLICATION_LASTMOD
+    ? EVENT_READING_REVISION : EVENTS_PUBLICATION_LASTMOD;
+}
 
 type Catalog = {
   events: CatalogEvent[];
@@ -36,8 +42,7 @@ const publicDescriptor = (event: CatalogEvent) => ({
   bodies: event.facts.bodies,
   signs: event.facts.signs,
   summary: timelineLine(event.facts),
-  lastModified: Object.hasOwn(REVISED_EVENT_READINGS, event.facts.id)
-    ? EVENT_READING_REVISION : EVENTS_PUBLICATION_LASTMOD,
+  lastModified: eventLastModified(event.facts.id),
 });
 
 /**

@@ -157,7 +157,7 @@ describe('personal calendar events', () => {
     expect(saturn.url).toBe(LINKS.saturnReturn);
     expect(saturn.description).toContain('The oldest milestone in astrology');
     const trine = events.find((event) => event.summary.startsWith('Saturn trines your Moon'))!;
-    expect(trine.description).toContain('Saturn flows through your emotional life — a long season of pressure and accounting, help that arrives without being asked.');
+    expect(trine.description).toContain('Saturn flows through your emotional life: a long season of pressure and accounting, help that arrives without being asked.');
     expect(trine.url).toBe(LINKS.transits);
     expect(trine.date).toMatch(/^2027-\d{2}-\d{2}$/);
     expect(trine.alarms?.[0].trigger).toBe('-PT15H');

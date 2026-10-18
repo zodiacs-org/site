@@ -8,7 +8,8 @@ import ToolGlyph from '../../components/ToolGlyph.astro';
 import SkyTicker from '../../islands/SkyTicker';
 import TodayBySign from '../../islands/TodayBySign';
 import WelcomeBack from '../../islands/WelcomeBack';
-import { SIGNS, signDates, signName } from '../../lib/signs';
+import { SIGNS, signName } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
 import { localizePath } from '../../lib/i18n';
 import glassMaps from '../../data/glass-maps.json';
 import '../../styles/today.css';
@@ -16,7 +17,7 @@ import '../../styles/today.css';
 const tools = [
   { href: '/birth-chart/', title: 'Carta natal', promise: 'Tu Sol, Luna, ascendente, planetas, casas y lo que significan.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/moon-sign/', title: 'Signo lunar', promise: 'Cómo sientes, qué te calma y qué necesitas para sentirte en casa.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
-  { href: '/rising-sign/', title: 'Ascendente', promise: 'La primera impresión que das y cómo se ordena tu carta.', hue: 'var(--sign-libra)', kind: 'rising' as const },
+  { href: '/rising-sign/', title: 'Ascendente', promise: 'La primera impresión que das y cómo se ordena tu carta.', hue: 'var(--sign-aries)', kind: 'rising' as const },
   { href: '/compatibility/', title: 'Compatibilidad', promise: 'Compara dos cartas y mira dónde conectan, chocan y crecen.', hue: 'var(--sign-leo)', kind: 'compat' as const },
 ];
 
@@ -35,7 +36,7 @@ const jsonLd = [
 ---
 <Base
   clientUi
-  title="Zodiacs.org — carta natal gratis y guías de signos"
+  title="Zodiacs.org | carta natal gratis y guías de signos"
   description="Carta natal gratis, signo lunar, ascendente, compatibilidad, horóscopos y guías de los doce signos, calculados en privado en tu navegador."
   path="/es/"
   locale="es"
@@ -181,7 +182,7 @@ const jsonLd = [
           <div class="twelve-es__card">
             <SignIcon sign={sign.slug} size={64} />
             <strong>{signName(sign, 'es')}</strong>
-            <span class="mono twelve-es__dates">{signDates(sign, 'es')}</span>
+            <span class="mono twelve-es__dates">{signDateRange(sign, 'es')}</span>
           </div>
         </a>
       ))}
@@ -284,7 +285,7 @@ const jsonLd = [
   }
   .hero-es__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
   .hero-es__trustlines { margin: -2px 0 0; display: grid; gap: 4px; justify-items: center; }
-  .hero-es__foot .hero-es__trust { margin: 0; max-width: none; font-family: var(--font-mono); font-size: 10.5px; line-height: 1.45; letter-spacing: 0.055em; color: var(--faint); text-shadow: 0 1px 14px rgba(6, 7, 9, 0.72); text-align: center; }
+  .hero-es__foot .hero-es__trust { margin: 0; max-width: none; font-family: var(--font-sans); font-size: 12.5px; line-height: 1.45; letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--faint); text-shadow: 0 1px 14px rgba(6, 7, 9, 0.72); text-align: center; }
   .hero-es__trust a { color: inherit; text-underline-offset: 2px; }
   .hero-es__ghost {
     background:
@@ -387,7 +388,7 @@ const jsonLd = [
   @media (min-width: 960px) { .twelve-es { grid-template-columns: repeat(6, 1fr); } }
   .twelve-es__card { display: flex; flex-direction: column; align-items: center; gap: 11px; padding: 26px 12px 20px; text-align: center; }
   .twelve-es__card strong { font-size: 15px; font-weight: 600; color: var(--text); }
-  .twelve-es__dates { font-size: 9.5px; color: var(--faint); letter-spacing: 0.05em; }
+  .twelve-es__dates { font-family: var(--font-sans); font-size: 11px; color: var(--faint); letter-spacing: 0; font-variant-numeric: tabular-nums; }
   .close-es { text-align: center; }
   .close-es h2 { margin: 0 0 30px; font-size: var(--text-2xl); }
   @media (max-width: 640px) {

@@ -14,7 +14,7 @@ import {
 
 const PAGE_URL = 'https://zodiacs.org/learn/zodiac-dates/';
 const CSV_URL = PAGE_URL + 'zodiac-dates.csv';
-const PAGE_DATE = '2026-08-23';
+const PAGE_DATE = '2026-10-16';
 const [currentYear, nextYear] = INGRESS_YEARS;
 const headline = 'The living correspondence chart';
 const description =
@@ -36,7 +36,7 @@ const citations = sources.map((source) => ({
 const dataset = {
   '@type': 'Dataset',
   '@id': PAGE_URL + '#dataset',
-  name: 'Tropical zodiac correspondences and Sun ingress instants, ' + currentYear + '–' + nextYear,
+  name: 'Tropical zodiac correspondences and Sun ingress instants, ' + currentYear + ' to ' + nextYear,
   description,
   url: PAGE_URL,
   creator: { '@id': 'https://zodiacs.org/#org' },
@@ -102,20 +102,20 @@ const generatedReceipt = INGRESS_GENERATED_AT.slice(0, 10)
   + ' at ' + INGRESS_GENERATED_AT.slice(11, 16) + ' UTC';
 ---
 <Base
-  title={'Zodiac Dates ' + currentYear + '–' + nextYear + ' — Exact Sun Ingress Times | Zodiacs.org'}
+  title={'Zodiac Dates ' + currentYear + ' to ' + nextYear + ' | Exact Sun Ingress Times | Zodiacs.org'}
   description={description}
   path="/learn/zodiac-dates/"
   type="article"
   image="/assets/og/v2/tool/learn.png"
-  imageAlt="The living correspondence chart — Zodiacs.org"
+  imageAlt="The living correspondence chart, Zodiacs.org"
   jsonLd={jsonLd}
   sources={sources}
 >
   <article class="zodiac-dates">
     <header class="dates-hero container">
       <div class="dates-hero__text">
-        <em class="kicker">Zodiac dates, {currentYear}–{nextYear}</em>
         <h1 class="display">{headline}.</h1>
+        <p class="dateline">Zodiac dates, {currentYear} to {nextYear}</p>
         <p class="dates-hero__lede">
           {'Twelve tropical signs, their exact 30-degree boundaries and standard correspondences, plus the UTC minute when the Sun enters each sign in '
             + currentYear + ' and ' + nextYear + '.'}
@@ -359,10 +359,9 @@ const generatedReceipt = INGRESS_GENERATED_AT.slice(0, 10)
     display: inline-block;
     min-width: 48px;
     color: var(--faint);
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0;
   }
   .ingress {
     min-width: 144px;

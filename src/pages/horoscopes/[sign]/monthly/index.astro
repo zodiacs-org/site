@@ -1,8 +1,9 @@
 ---
 import { getCollection, render } from 'astro:content';
 import HoroscopeProgramPage from '../../../../components/HoroscopeProgramPage.astro';
-import { SIGN_SLUGS, signBySlug } from '../../../../lib/signs';
-import { dayLabel, eventList, monthLabel, type TransitEvent } from '../../../../lib/horoscopes';
+import { SIGN_SLUGS, SIGNS, signBySlug } from '../../../../lib/signs';
+import { dayLabel, eventList, monthLabel, transitsFor, type TransitEvent } from '../../../../lib/horoscopes';
+import { degreeLabel, type HoroscopeSkyPlanet } from '../../../../lib/horoscope-page-data';
 import { currentHoroscopeMonth, utcMonth } from '../../../../lib/horoscope-month.mjs';
 import daily from '../../../../data/daily.json';
 
@@ -32,6 +33,42 @@ const skyEvents = [firstEvent, lastEvent]
   .filter((event): event is TransitEvent => Boolean(event))
   .filter((event, index, all) => all.findIndex((candidate) => candidate.at === event.at) === index);
 
+// The month's lunations first, then its stations, in date order: the dated
+// turning points the edition follows, each counted from this sign.
+const transits = transitsFor(entry.data.month);
+const signIndex = SIGNS.findIndex((candidate) => candidate.slug === sign.slug);
+const houseOf = (slug: string) => ((SIGNS.findIndex((candidate) => candidate.slug === slug) - signIndex + 12) % 12) + 1;
+const exactAt = (iso: string) => `${dayLabel(iso)}, ${new Intl.DateTimeFormat('en-GB', {
+  hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'UTC',
+}).format(new Date(iso))} UTC`;
+const monthSky: HoroscopeSkyPlanet[] = transits
+  ? [
+      ...transits.lunations.map((event): HoroscopeSkyPlanet => ({
+        id: `lunation:${event.at}`,
+        body: 'Moon',
+        sign: event.sign,
+        title: `${event.type === 'new' ? 'New moon' : 'Full moon'} in ${signBySlug(event.sign).name}`,
+        detail: `Exact ${exactAt(event.at)}`,
+        house: houseOf(event.sign),
+        value: degreeLabel(event.degree),
+        date: dayLabel(event.at),
+        at: event.at,
+      })),
+      ...transits.stations.map((event): HoroscopeSkyPlanet => ({
+        id: `station:${event.at}`,
+        body: event.planet,
+        sign: event.sign,
+        title: `${event.planet} in ${signBySlug(event.sign).name}`,
+        detail: `Stations ${event.type} ${exactAt(event.at)}`,
+        house: houseOf(event.sign),
+        value: degreeLabel(event.degree),
+        date: dayLabel(event.at),
+        at: event.at,
+      })),
+    ].slice(0, 4).sort((a, b) => a.at.localeCompare(b.at))
+  : [];
+const wordCount = (entry.body ?? '').trim().split(/\s+/u).filter(Boolean).length;
+
 const reading = {
   label,
   title: 'monthly horoscope',
@@ -48,6 +85,8 @@ const reading = {
         }))
       : [{ label: 'Edition', value: label }],
   },
+  sky: monthSky,
+  wordCount,
   sourceNote: events.length > 0
     ? `This month’s astrology follows ${events.length} dated sky events from ${firstEvent?.at.slice(0, 10)} through ${lastEvent?.at.slice(0, 10)}. Times use UTC, interpreted through solar houses for ${sign.name}.`
     : `This edition follows the ${entry.data.month} horoscope for ${sign.name}. No separate dated event table was available for the month.`,

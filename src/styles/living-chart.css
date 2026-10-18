@@ -376,9 +376,8 @@
   display: block;
   margin-bottom: 4px;
   color: var(--faint);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 12px;
 }
 
 .living-chart__edit {
@@ -498,10 +497,9 @@
   display: block;
   margin-bottom: 5px;
   color: var(--faint);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
 }
 
 .living-chart__reflection {

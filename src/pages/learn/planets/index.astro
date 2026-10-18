@@ -41,7 +41,7 @@ const jsonLd = [
     ...editorialDates('/learn/planets/'),
     name: 'The planets in astrology',
     url: 'https://zodiacs.org/learn/planets/',
-    description: 'What each planet means in a birth chart, from the Sun to Pluto — plain-language guides to all ten.',
+    description: 'What each planet means in a birth chart, from the Sun to Pluto, plain-language guides to all ten.',
   },
   {
     '@type': 'ItemList',
@@ -58,14 +58,14 @@ const jsonLd = [
 <Base
   type="website"
   editorialLine
-  title="The Planets in Astrology — What Each One Means | Zodiacs.org"
-  description="What every planet means in a birth chart: the Sun and Moon, Mercury through Mars, and the slow outer planets — each explained plainly, with its cycle and rulerships."
+  title="The Planets in Astrology: What Each One Means | Zodiacs.org"
+  description="What every planet means in a birth chart: the Sun and Moon, Mercury through Mars, and the slow outer planets, each explained plainly, with its cycle and rulerships."
   path="/learn/planets/"
   jsonLd={jsonLd}
 >
   <section class="section--tight container container--narrow">
     <div class="cluster-hero reveal">
-      <em class="kicker">Learn</em>
+      <a class="crumb" href="/learn/"><span class="crumb__arrow" aria-hidden="true">←</span>Learn</a>
       <h1 class="display">The planets</h1>
       <p>
         A <a href="/learn/glossary/#birth-chart">birth chart</a> begins with ten moving bodies, each assigned a different
@@ -99,8 +99,8 @@ const jsonLd = [
     </ol>
 
     <p class="cluster-note reveal">
-      Every one of them has a sign, a house, and aspects in your chart —{' '}
-      <a href="/birth-chart/">compute yours</a> to see where they landed. Or
+      Every one of them has a sign, a house, and aspects in your chart.{' '}
+      <a href="/birth-chart/">Compute yours</a> to see where they landed. Or
       continue with <a href="/learn/houses/">the houses</a> and{' '}
       <a href="/learn/aspects/">the aspects</a>.
     </p>

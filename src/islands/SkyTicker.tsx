@@ -13,7 +13,8 @@ import { planetLabel } from '../lib/i18n/astrology';
 import { formatDate, formatShortDate } from '../lib/i18n/dates';
 
 type IconKind = 'sun' | 'moon' | 'retro' | 'direct' | 'newMoon' | 'fullMoon';
-interface Item { kind: IconKind; text: string; hue?: string }
+/** `sign` swaps the line glyph for that sign's pastel disc (the Sun and Moon). */
+interface Item { kind: IconKind; text: string; hue?: string; sign?: string }
 
 /** Small line-art sky glyphs, drawn at ~13px. Stroke presentation is set in
  * CSS (.skyticker__icon svg); the two filled glyphs flip to fill via style. */
@@ -62,11 +63,16 @@ function TickerIcon({ kind }: { kind: IconKind }) {
   }
 }
 
-export default function SkyTicker({ locale: rawLocale = 'en' }: { locale?: Locale }) {
+/**
+ * `discs` (default) seats the Sun and Moon on their signs' pastel discs.
+ * Chart pages pass discs={false}: there every sign picture is asked for as
+ * a whole zodiac-ordered set (audit finding F-18), and two discs are not one.
+ */
+export default function SkyTicker({ locale: rawLocale = 'en', discs = true }: { locale?: Locale; discs?: boolean }) {
   const locale = normalizeCatalogLocale(rawLocale);
   const receiptDate = formatShortDate(locale, `${daily.date}T12:00:00.000Z`);
   const compactReceiptDate = formatDate(locale, `${daily.date}T12:00:00.000Z`, {
-    month: 'short', day: 'numeric', timeZone: 'UTC',
+    weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC',
   });
   const items = useMemo<Item[]>(() => {
     // Use the committed daily receipt for both SSR and hydration. Live-clock
@@ -77,19 +83,32 @@ export default function SkyTicker({ locale: rawLocale = 'en' }: { locale?: Local
     const sunLon = daily.bodies.find((body) => body.body === 'Sun')!.lon;
     const moonLon = daily.bodies.find((body) => body.body === 'Moon')!.lon;
     const moonSign = signForLongitude(moonLon);
-    out.push({ kind: 'sun', text: `${t(locale, 'sun')} ${formatLongitude(sunLon, locale)}`, hue: signForLongitude(sunLon).hue });
+    const sunSign = signForLongitude(sunLon);
+    out.push({ kind: 'sun', text: `${t(locale, 'sun')} ${formatLongitude(sunLon, locale)}`, hue: sunSign.hue, sign: sunSign.slug });
     out.push({
       kind: 'moon',
       text: `${t(locale, 'moonIn')} ${locale === 'ru' ? signPrepositional(moonSign) : signName(moonSign, locale)}`,
       hue: moonSign.hue,
+      sign: moonSign.slug,
     });
 
     const active = daily.bodies.filter((body) => body.retrograde).map((body) => body.body);
     out.push(active.includes('Mercury')
       ? { kind: 'retro', text: t(locale, 'skyMercuryRetrograde') }
       : { kind: 'direct', text: t(locale, 'skyMercuryDirect') });
-    for (const planet of active) {
-      if (planet !== 'Mercury') {
+    const others = active.filter((planet) => planet !== 'Mercury');
+    // English and Russian templates read naturally with a list of planets, so
+    // the rest of the retrograde planets share one item there. The other
+    // catalogs agree the adjective with one planet, so they keep one each.
+    if (others.length > 1 && (locale === 'en' || locale === 'ru')) {
+      out.push({
+        kind: 'retro',
+        text: tf(locale, 'skyPlanetRetrograde', {
+          planet: others.map((planet) => planetLabel(locale, planet)).join(', '),
+        }),
+      });
+    } else {
+      for (const planet of others) {
         out.push({
           kind: 'retro',
           text: tf(locale, 'skyPlanetRetrograde', { planet: planetLabel(locale, planet) }),
@@ -117,10 +136,16 @@ export default function SkyTicker({ locale: rawLocale = 'en' }: { locale?: Local
     <p class="skyticker" aria-label={tf(locale, 'skyTickerAria', { date: receiptDate })}>
       <span class="skyticker__label">{tf(locale, 'skyAsOf', { date: compactReceiptDate })}</span>
       {items.map((item) => (
-        <span class="skyticker__item" key={item.text}>
-          <span class="skyticker__icon" style={item.hue ? `color:${item.hue}` : undefined}>
-            <TickerIcon kind={item.kind} />
-          </span>
+        <span class={`skyticker__item skyticker__item--${item.kind}`} key={item.text}>
+          {item.sign && discs ? (
+            <span class="skyticker__icon skyticker__icon--disc">
+              <img src={`/assets/zodiac-icons/48/${item.sign}.webp`} width="18" height="18" alt="" decoding="async" />
+            </span>
+          ) : (
+            <span class="skyticker__icon" style={item.hue ? `color:${item.hue}` : undefined}>
+              <TickerIcon kind={item.kind} />
+            </span>
+          )}
           <span>{item.text}</span>
         </span>
       ))}
