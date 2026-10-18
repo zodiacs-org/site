@@ -1,0 +1,135 @@
+---
+import Base from '../../../layouts/Base.astro';
+import registry from '../../../data/conventions/registry.json';
+import { CONFORMANCE_LICENSE, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
+
+type Source = { title: string; url?: string };
+type Entry = { id: string; value: string; title: string; definition: string; sources: Source[]; status: string; writtenBy?: string };
+type Namespace = { name: string; title: string; description: string; usedIn: string[]; entries: Entry[] };
+
+const namespaces = registry.namespaces as Namespace[];
+const byName = new Map(namespaces.map((space) => [space.name, space]));
+const total = namespaces.reduce((sum, space) => sum + space.entries.length, 0);
+const superseded = namespaces.reduce((sum, space) => sum + space.entries.filter((entry) => entry.status === 'superseded').length, 0);
+/** An id's address: this page, with the id as its fragment. */
+const href = (id: string) => `#${encodeURI(id)}`;
+
+const title = 'Conventions Registry for Astrology Receipts | Zodiacs.org';
+const description = `Every id a Zodiacs receipt or conformance vector names, from zodiac:tropical to the house systems, the ΔT models and the conventions of earlier engine versions: ${total} ids, each with its definition, its source and an address on zodiacs.org.`;
+const jsonLd = [
+  {
+    '@type': 'Dataset',
+    name: 'Zodiacs.org conventions registry',
+    description,
+    url: 'https://zodiacs.org/developers/conventions/',
+    version: registry.version,
+    license: CONFORMANCE_LICENSE,
+    isAccessibleForFree: true,
+    creator: ORGANIZATION,
+    distribution: [{ '@type': 'DataDownload', name: 'The registry as JSON', encodingFormat: 'application/json', contentUrl: 'https://zodiacs.org/developers/conventions/registry.json' }],
+  },
+  developerBreadcrumb('/developers/conventions/', 'Conventions registry'),
+];
+---
+<Base title={title} description={description} path="/developers/conventions/" jsonLd={jsonLd}>
+  <section class="section container container--narrow conventions-page">
+    <em class="kicker">Conventions registry</em>
+    <h1 class="display">Look up what a receipt's ids mean.</h1>
+
+    <div class="prose">
+      <p>
+        A receipt from @zodiacs/engine or the compute API says how its numbers
+        were found by naming conventions: the zodiac, the frame, the house
+        system, the ΔT model and so on. A conformance vector names the quantity
+        it tests and its arbiter the same way. This registry gives each of those
+        names an id, a definition and its sources, and an address on this page.
+      </p>
+      <p>
+        An id is a namespace, a colon and a value, such as
+        <a href={href('zodiac:tropical')}><code>zodiac:tropical</code></a> or
+        <a href={href('house:placidus')}><code>house:placidus</code></a>. The
+        value is everything after the first colon and may itself hold
+        semicolons, slashes or an @. A receipt that holds a value under a field
+        names the id of that field's namespace and that value: a natal receipt
+        whose <code>conventions.zodiac</code> is <code>tropical</code> names
+        <code>zodiac:tropical</code>.
+      </p>
+      <p>
+        Version {registry.version} holds {total} ids in {namespaces.length} namespaces,
+        from @zodiacs/engine {registry.engine.version} (commit <code>{registry.engine.commit.slice(0, 7)}</code>)
+        and conformance suite {registry.conformance.suiteVersion}. {superseded} of
+        them are <strong>superseded</strong>: earlier engine versions wrote them,
+        and the engine still reads their receipts. The registry is dedicated to the
+        public domain under CC0 1.0, as the conformance suite is. It is also
+        <a href="/developers/conventions/registry.json">a JSON file</a>, with each id's
+        address, and <a href="/developers/conventions.md">a Markdown twin</a>.
+      </p>
+    </div>
+
+    <nav class="conventions-index" aria-label="Namespaces">
+      {registry.groups.map((group) => (
+        <div>
+          <h2 class="conventions-index-title">{group.title}</h2>
+          <ul>{group.namespaces.map((name) => <li><a href={`#ns-${name}`}><code>{name}</code></a></li>)}</ul>
+        </div>
+      ))}
+    </nav>
+
+    {registry.groups.map((group) => (
+      <section class="conventions-group">
+        <h2>{group.title}</h2>
+        {group.namespaces.map((name) => {
+          const space = byName.get(name)!;
+          return (
+            <section class="conventions-namespace" id={`ns-${space.name}`}>
+              <h3><code>{space.name}</code> · {space.title}</h3>
+              <p class="conventions-description">{space.description}</p>
+              <p class="conventions-used">Named in: {space.usedIn.join('; ')}.</p>
+              <dl>
+                {space.entries.map((entry) => (
+                  <div class="conventions-entry" id={entry.id}>
+                    <dt>
+                      <a class="conventions-id" href={href(entry.id)}><code>{entry.id}</code></a>
+                      <span class="conventions-title">{entry.title}</span>
+                      {entry.status === 'superseded' && <span class="conventions-status">superseded</span>}
+                    </dt>
+                    <dd>
+                      <p>{entry.definition}</p>
+                      {entry.writtenBy && <p class="conventions-meta">Written by engine {entry.writtenBy}.</p>}
+                      <ul class="conventions-sources">
+                        {entry.sources.map((source) => <li>{source.url ? <a href={source.url}>{source.title}</a> : source.title}</li>)}
+                      </ul>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          );
+        })}
+      </section>
+    ))}
+  </section>
+</Base>
+<style>
+  .conventions-page h1 { margin: var(--s-1) 0 var(--s-4); }
+  .conventions-page .prose { max-width: 68ch; }
+  .conventions-page code { font-family: var(--font-mono); font-size: .9em; overflow-wrap: anywhere; }
+  .conventions-index { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); margin: var(--s-8) 0; }
+  .conventions-index ul { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: var(--text-sm); }
+  .conventions-index-title { margin: 0; font-size: var(--text-sm); color: var(--text-2); }
+  .conventions-group > h2 { margin: var(--s-12) 0 var(--s-4); font-size: var(--text-lg); }
+  .conventions-namespace { margin: var(--s-8) 0; scroll-margin-top: 96px; }
+  .conventions-namespace h3 { margin: 0 0 var(--s-2); font-size: var(--text-base); }
+  .conventions-description, .conventions-used { margin: 0 0 var(--s-2); color: var(--text-2); font-size: var(--text-sm); max-width: 68ch; }
+  .conventions-namespace dl { margin: var(--s-3) 0 0; }
+  .conventions-entry { padding: var(--s-3) 0; border-top: 1px solid var(--hair-1); scroll-margin-top: 96px; }
+  .conventions-entry:target { background: color-mix(in srgb, var(--text-1) 6%, transparent); }
+  .conventions-entry dt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+  .conventions-title { color: var(--text-1); }
+  .conventions-status { font-family: var(--font-mono); font-size: 11px; color: var(--faint); border: 1px solid var(--hair-2); border-radius: var(--radius-sm); padding: 0 6px; }
+  .conventions-entry dd { margin: var(--s-2) 0 0; max-width: 68ch; font-size: var(--text-sm); }
+  .conventions-entry dd p { margin: 0 0 var(--s-2); }
+  .conventions-meta { color: var(--text-2); }
+  .conventions-sources { margin: 0; padding-left: 1.1em; color: var(--text-2); }
+  .conventions-sources li { overflow-wrap: anywhere; }
+</style>

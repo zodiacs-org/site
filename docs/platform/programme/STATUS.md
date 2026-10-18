@@ -1,3 +1,27 @@
+The conventions registry, 2026-10-18 (Asia/Bangkok): R44 stays partial
+until production.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **R44, partial.** The registry gives each id a receipt or conformance
+  vector names its definition, its sources and an address on
+  `/developers/conventions/`. It is also JSON and a Markdown twin, under
+  CC0. It holds 156 ids in 57 namespaces:
+  - every convention id calc receipts write;
+  - every value of the five natal conventions sets, the seven superseded
+    ones with the versions that wrote them;
+  - the natal receipt's houses, flags, reference instant, time records and
+    coverage statements;
+  - the compute API receipt's own fields;
+  - the conformance vectors' kinds and arbiters.
+
+  Tests hold it to the engine's exports and unions, to receipts across the
+  conditions their fields name, and to the suite
+  ([the record](../evidence/conventions-registry-20261018/README.md)).
+- **What keeps R44 open:** the merge, the deployment and the production
+  check.
+
 The hosted MCP tools reviewed in production, 2026-10-18 (Asia/Bangkok): P3.6
 stays partial.
 

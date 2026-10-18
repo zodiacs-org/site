@@ -333,6 +333,9 @@ const DESIGN_SWEEP_DEVELOPERS_LASTMOD = '2026-10-17';
 // The top-ten redesign reaches the translated homes, birth chart and rising
 // sign pages (their Today and horoscope pages date with the edition).
 const TOP10_LOCALES_LASTMOD = '2026-10-17';
+// The conventions registry (R44): its page, and the developer index and conformance page that link to it.
+const CONVENTIONS_LASTMOD = '2026-10-18';
+const CONVENTIONS_ROUTES = ['/developers/conventions/', '/developers/', '/developers/conformance/'] as const;
 const TOP10_LOCALES_ROUTES = ['es', 'pt', 'fr', 'it', 'ru']
   .flatMap((locale) => ['/', '/birth-chart/', '/rising-sign/'].map((path) => `/${locale}${path}`));
 const DEVELOPER_GUIDES_ROUTES = [
@@ -494,6 +497,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...PLAYGROUND_ROUTES.map((loc) => [loc, PLAYGROUND_LASTMOD] as const),
   ['/developers/', DESIGN_SWEEP_DEVELOPERS_LASTMOD] as const,
   ...TOP10_LOCALES_ROUTES.map((loc) => [loc, TOP10_LOCALES_LASTMOD] as const),
+  ...CONVENTIONS_ROUTES.map((loc) => [loc, CONVENTIONS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -591,6 +595,7 @@ export const GET: APIRoute = async () => {
     { loc: '/developers/mcp/', priority: 0.6 },
     { loc: '/developers/ai/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
+    { loc: '/developers/conventions/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
     { loc: '/developers/playground/', priority: 0.6 },
     { loc: '/developers/sky-benchmark/', priority: 0.6 },

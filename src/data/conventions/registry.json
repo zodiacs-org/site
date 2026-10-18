@@ -1,0 +1,3252 @@
+{
+  "schema": "zodiacs.conventions-registry.v1",
+  "version": "2026-10-18",
+  "title": "Conventions registry",
+  "base": "https://zodiacs.org/developers/conventions/",
+  "license": "CC0-1.0",
+  "idSyntax": "An id is a namespace, a colon and a value. The value is everything after the first colon and may itself hold colons, semicolons, slashes or an @. A receipt that holds a value under a field names the id of that field's namespace and that value.",
+  "engine": {
+    "package": "@zodiacs/engine",
+    "version": "1.0.0",
+    "repository": "https://github.com/zodiacs-org/engine",
+    "commit": "7307665bdbc432269fdac006104f661be16000bc"
+  },
+  "conformance": {
+    "suite": "zodiacs-conformance",
+    "suiteVersion": "0.1.0",
+    "repository": "https://github.com/zodiacs-org/engine",
+    "commit": "782b4963a8575fa8d81c602a36285f65fb9ae9bb"
+  },
+  "groups": [
+    {
+      "title": "Calculation conventions",
+      "namespaces": [
+        "zodiac",
+        "ayanamsa",
+        "frame",
+        "center",
+        "correction",
+        "light-time",
+        "aberration",
+        "deflection",
+        "moon",
+        "precession",
+        "nutation",
+        "obliquity",
+        "frame-bias",
+        "barycentre",
+        "observer",
+        "node",
+        "lilith",
+        "speed",
+        "ephemeris",
+        "deltat",
+        "time",
+        "house",
+        "polar-fallback",
+        "angles",
+        "sidereal-time",
+        "aspects",
+        "search"
+      ]
+    },
+    {
+      "title": "Natal receipt conventions",
+      "namespaces": [
+        "calendar",
+        "deltaT",
+        "localTime",
+        "longitudeUnit",
+        "moonNodes",
+        "moonPosition",
+        "planetPositions",
+        "timeScale"
+      ]
+    },
+    {
+      "title": "Natal receipt fields and time records",
+      "namespaces": [
+        "house-absence",
+        "flag",
+        "reference",
+        "time-scale",
+        "time-basis",
+        "deltat-model",
+        "deltat-segment",
+        "ut1-source"
+      ]
+    },
+    {
+      "title": "Coverage statements",
+      "namespaces": [
+        "assessment",
+        "broadDateRange",
+        "angleExclusions",
+        "inputSyntax"
+      ]
+    },
+    {
+      "title": "Compute API receipts",
+      "namespaces": [
+        "endpoint",
+        "search-solver",
+        "search-window",
+        "completeness",
+        "fold-policy",
+        "gap-policy",
+        "void-of-course",
+        "void-of-course-bodies"
+      ]
+    },
+    {
+      "title": "Conformance vectors",
+      "namespaces": [
+        "kind",
+        "arbiter"
+      ]
+    }
+  ],
+  "namespaces": [
+    {
+      "name": "zodiac",
+      "title": "Zodiac",
+      "description": "How longitudes are counted.",
+      "usedIn": [
+        "natal receipts: conventions.zodiac",
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "zodiac:tropical",
+          "value": "tropical",
+          "title": "Tropical zodiac",
+          "definition": "Longitudes counted from the equinox of the frame the position is given in. A natal receipt's positions are on the ecliptic and true equinox of date, so its zodiac counts from the true equinox of date.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        },
+        {
+          "id": "zodiac:sidereal",
+          "value": "sidereal",
+          "title": "Sidereal zodiac",
+          "definition": "Longitudes counted from an ayanamsa's sidereal zero point: the longitude in the ecliptic of date less the true ayanamsa (true equinox) or the mean one (mean equinox). The receipt's ayanamsa id names which ayanamsa.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "ayanamsa",
+      "title": "Ayanamsa",
+      "description": "The offset between the tropical and a sidereal zodiac. A built-in ayanamsa carries its own citation; a caller's ayanamsa is held in the receipt's request.",
+      "usedIn": [
+        "calc receipts: conventions",
+        "the engine's sidereal charts"
+      ],
+      "entries": [
+        {
+          "id": "ayanamsa:lahiri",
+          "value": "lahiri",
+          "title": "Lahiri (Chitrapaksha)",
+          "definition": "23°15′00.658″ true at 1956-03-21 0h TT, with IAU 1976 precession, held at J2000.0 and carried on by the engine's precession.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            },
+            {
+              "title": "Indian Astronomical Ephemeris: 23°15′00.658″ true at 1956-03-21 0h TT (1989, p. 556)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:fagan-bradley",
+          "value": "fagan-bradley",
+          "title": "Fagan–Bradley",
+          "definition": "24°02′31.36″ mean at B1950.0 (JD 2433282.42345905 TT), from the synetic vernal point at 335°57′28.64″, with Newcomb's precession.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            },
+            {
+              "title": "Synetic vernal point 335°57′28.64″ at B1950.0 (Astro*Index)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:krishnamurti",
+          "value": "krishnamurti",
+          "title": "Krishnamurti (KP)",
+          "definition": "22°21′50″ at 1900-01-01 0h TT (JD 2415020.5), with Newcomb's precession: a fit to Krishnamurti's own table.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            },
+            {
+              "title": "22°21′50″ at 1900-01-01, fitted to KP Reader 1's table (Hand, Dawson)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:raman",
+          "value": "raman",
+          "title": "Raman",
+          "definition": "(year − 397) × 50⅓″: zero at J397.0 (JD 1866049.25 TT), growing by 50⅓″ a Julian year, as B. V. Raman gives the formula (1935).",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            },
+            {
+              "title": "B. V. Raman, A Manual of Hindu Astrology (1935) §49"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:yukteswar",
+          "value": "yukteswar",
+          "title": "Sri Yukteswar",
+          "definition": "20°54′36″ at the March equinox of 1894 (JD 2412908.1244 TT), growing by 54″ a Julian year, as Sri Yukteswar gives it (1894).",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            },
+            {
+              "title": "Sri Yukteswar, The Holy Science (1894), Introduction"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:true-chitra",
+          "value": "true-chitra",
+          "title": "True Chitra (Spica at 180°)",
+          "definition": "Spica (α Vir) at 180°: the star's apparent geocentric longitude of date, from the Hipparcos new reduction, held at that sidereal longitude.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            },
+            {
+              "title": "Surya Siddhanta VIII; Hipparcos 2007 (I/311)"
+            },
+            {
+              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653–664",
+              "url": "https://doi.org/10.1051/0004-6361:20078357"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:true-revati",
+          "value": "true-revati",
+          "title": "True Revati (ζ Psc at 359°50′)",
+          "definition": "ζ Psc at 359°50′, held as for True Chitra.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            },
+            {
+              "title": "Surya Siddhanta VIII; Hipparcos 2007 (I/311)"
+            },
+            {
+              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653–664",
+              "url": "https://doi.org/10.1051/0004-6361:20078357"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:true-pushya",
+          "value": "true-pushya",
+          "title": "True Pushya (δ Cnc at 106°)",
+          "definition": "δ Cnc at 106°, held as for True Chitra.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            },
+            {
+              "title": "P. V. R. Narasimha Rao (2013); Hipparcos 2007 (I/311)"
+            },
+            {
+              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653–664",
+              "url": "https://doi.org/10.1051/0004-6361:20078357"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:galactic-center",
+          "value": "galactic-center",
+          "title": "Galactic Center at 0° Sagittarius",
+          "definition": "Sgr A* at 240° (0° Sagittarius), from its ICRS radio position with Reid and Brunthaler's proper motion, treated as infinitely distant.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, Ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#ayanamsas"
+            },
+            {
+              "title": "Sgr A*: SIMBAD ICRS position; Reid & Brunthaler 2004"
+            },
+            {
+              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653–664",
+              "url": "https://doi.org/10.1051/0004-6361:20078357"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:user-epoch",
+          "value": "user-epoch",
+          "title": "A caller's ayanamsa at an epoch",
+          "definition": "A mean ayanamsa the caller gives at an epoch, carried by the engine's precession, or held where the Newcomb or IAU 1976 precession puts it at J2000.0 when the caller names that model. The receipt's request holds the definition.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, User-defined ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#user-defined-ayanamsas"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ayanamsa:user-linear",
+          "value": "user-linear",
+          "title": "A caller's linear ayanamsa",
+          "definition": "An ayanamsa the caller gives as a value at an epoch plus a fixed rate in arcseconds per Julian year, with no precession model. The receipt's request holds the definition.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/vedic.md, User-defined ayanamsas",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/vedic.md#user-defined-ayanamsas"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "frame",
+      "title": "Frame",
+      "description": "The plane and equinox a position is given in. In an equatorial frame the longitude is right ascension, in degrees, and the latitude is declination.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "frame:ecliptic-true-of-date",
+          "value": "ecliptic-true-of-date",
+          "title": "Ecliptic, true equinox of date",
+          "definition": "The ecliptic of date and the true equinox: IAU 2006 precession, the IAU 2006 mean obliquity and the IAU 2000B nutation in longitude. The frame of a natal chart's positions.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Frames",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "frame:ecliptic-mean-of-date",
+          "value": "ecliptic-mean-of-date",
+          "title": "Ecliptic, mean equinox of date",
+          "definition": "The ecliptic and mean equinox of date: the same rotation without the nutation.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Frames",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "frame:ecliptic-j2000",
+          "value": "ecliptic-j2000",
+          "title": "Ecliptic of J2000.0",
+          "definition": "The mean ecliptic and equinox of J2000.0: the mean equator and equinox of J2000.0 turned by the IAU 2006 obliquity of J2000.0, 84381.406″.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Frames",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "frame:ecliptic-icrs",
+          "value": "ecliptic-icrs",
+          "title": "Ecliptic on ICRS axes",
+          "definition": "The ICRS turned by 84381.406″ about its x axis.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Frames",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "frame:equatorial-true-of-date",
+          "value": "equatorial-true-of-date",
+          "title": "Equator, true equinox of date",
+          "definition": "The true equator and equinox of date: apparent right ascension and declination, with IAU 2006 precession and the IAU 2000B nutation, on the true obliquity.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Frames",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "frame:equatorial-mean-of-date",
+          "value": "equatorial-mean-of-date",
+          "title": "Equator, mean equinox of date",
+          "definition": "The mean equator and equinox of date: the precession alone.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Frames",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "frame:equatorial-j2000",
+          "value": "equatorial-j2000",
+          "title": "Equator of J2000.0",
+          "definition": "The mean equator and equinox of J2000.0, the axes astronomy-engine's precession starts from (EQJ).",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Frames",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "frame:equatorial-icrs",
+          "value": "equatorial-icrs",
+          "title": "ICRS",
+          "definition": "The ICRS: the J2000.0 equator less the IAU 2000 frame bias.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Frames",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "center",
+      "title": "Center",
+      "description": "The origin a position is seen from.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "center:geocentric",
+          "value": "geocentric",
+          "title": "Geocentric",
+          "definition": "Seen from the Earth's centre.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "center:heliocentric",
+          "value": "heliocentric",
+          "title": "Heliocentric",
+          "definition": "Seen from the Sun's centre.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "center:barycentric",
+          "value": "barycentric",
+          "title": "Barycentric",
+          "definition": "Seen from the solar-system barycentre, as astronomy-engine finds it from the Sun and the four giant planets.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "center:topocentric",
+          "value": "topocentric",
+          "title": "Topocentric",
+          "definition": "Seen from an observer on the Earth's surface, on astronomy-engine's ellipsoid and turned by the engine's Greenwich apparent sidereal time, with no polar motion.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "correction",
+      "title": "Correction",
+      "description": "Which corrections a position carries.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "correction:apparent",
+          "value": "apparent",
+          "title": "Apparent",
+          "definition": "Light time and aberration: the observer is backdated with the target, which adds the observer's aberration to first order. No gravitational deflection.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "correction:astrometric",
+          "value": "astrometric",
+          "title": "Astrometric",
+          "definition": "Light time only: the target when its light left, from where the observer is when it arrives.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "correction:geometric",
+          "value": "geometric",
+          "title": "Geometric",
+          "definition": "Where the target is at the instant, from where the observer is at the instant.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "correction:not-applicable",
+          "value": "not-applicable",
+          "title": "Not applicable",
+          "definition": "For the lunar nodes and Lilith, geocentric points of the Moon's orbit, where the three corrections give the same position.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "light-time",
+      "title": "Light time",
+      "description": "How the light time is solved.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "light-time:newtonian",
+          "value": "newtonian",
+          "title": "Newtonian light time",
+          "definition": "astronomy-engine's light-time solution, iterated until successive light times agree to 10⁻⁹ day.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "astronomy-engine 2.1.19 (Don Cross)",
+              "url": "https://www.npmjs.com/package/astronomy-engine/v/2.1.19"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "aberration",
+      "title": "Aberration",
+      "description": "How aberration is applied.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "aberration:backdated-observer",
+          "value": "backdated-observer",
+          "title": "Backdated observer",
+          "definition": "First-order aberration from backdating the observer with the target.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "deflection",
+      "title": "Deflection",
+      "description": "Whether gravitational light deflection is applied.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "deflection:none",
+          "value": "none",
+          "title": "No deflection",
+          "definition": "No gravitational deflection of light.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "moon",
+      "title": "Moon",
+      "description": "How the Moon's position is found.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "moon:series-at-instant",
+          "value": "series-at-instant",
+          "title": "Lunar series at the instant",
+          "definition": "The engine's Moon: astronomy-engine's lunar series at the instant, without light time or aberration.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "astronomy-engine 2.1.19 (Don Cross)",
+              "url": "https://www.npmjs.com/package/astronomy-engine/v/2.1.19"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "precession",
+      "title": "Precession",
+      "description": "The precession model.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "precession:iau2006",
+          "value": "iau2006",
+          "title": "IAU 2006 precession",
+          "definition": "The angles of Capitaine et al. (2003) as astronomy-engine applies them, without a frame bias; named in every frame for the lunar nodes and Lilith, which are found in the ecliptic of date.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "nutation",
+      "title": "Nutation",
+      "description": "The nutation model, in either receipt.",
+      "usedIn": [
+        "natal receipts: conventions.nutation",
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "nutation:iau2000b",
+          "value": "iau2000b",
+          "title": "IAU 2000B",
+          "definition": "The engine's IAU 2000B nutation (McCarthy and Luzum 2003): all 77 luni-solar terms and the two fixed planetary offsets.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "value": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "title": "IAU 2000B, with complementary terms",
+          "definition": "The engine's IAU 2000B series, all 77 luni-solar terms and the two fixed planetary offsets, with the two largest complementary terms in the equation of the equinoxes.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Receipts",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#receipts"
+            },
+            {
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "url": "https://doi.org/10.1023/A:1021762727016"
+            },
+            {
+              "title": "G. Petit and B. Luzum (eds.), IERS Conventions (2010), IERS Technical Note 36",
+              "url": "https://www.iers.org/IERS/EN/Publications/TechnicalNotes/tn36.html"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0"
+        }
+      ]
+    },
+    {
+      "name": "obliquity",
+      "title": "Obliquity",
+      "description": "The obliquity of the ecliptic.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "obliquity:iau2006",
+          "value": "iau2006",
+          "title": "IAU 2006 obliquity",
+          "definition": "The IAU 2006 mean obliquity, 84381.406″ at J2000.0, with the nutation in obliquity for a true-of-date frame; named in every frame for the lunar nodes and Lilith.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "frame-bias",
+      "title": "Frame bias",
+      "description": "The rotation between the ICRS and the J2000.0 equator.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "frame-bias:iau2000",
+          "value": "iau2000",
+          "title": "IAU 2000 frame bias",
+          "definition": "The IAU 2000 frame bias of the ICRS (IERS Conventions 2010, equation 5.21).",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "G. Petit and B. Luzum (eds.), IERS Conventions (2010), IERS Technical Note 36",
+              "url": "https://www.iers.org/IERS/EN/Publications/TechnicalNotes/tn36.html"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "barycentre",
+      "title": "Barycentre",
+      "description": "How the solar-system barycentre is found.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "barycentre:sun-and-giant-planets",
+          "value": "sun-and-giant-planets",
+          "title": "Sun and giant planets",
+          "definition": "astronomy-engine's solar-system barycentre, from the Sun and the four giant planets, each weighted m / (m + M☉).",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            },
+            {
+              "title": "astronomy-engine 2.1.19 (Don Cross)",
+              "url": "https://www.npmjs.com/package/astronomy-engine/v/2.1.19"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "observer",
+      "title": "Observer",
+      "description": "Where a topocentric observer stands.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "observer:iers2003-ellipsoid;no-polar-motion",
+          "value": "iers2003-ellipsoid;no-polar-motion",
+          "title": "IERS 2003 ellipsoid, no polar motion",
+          "definition": "The topocentric observer's position and velocity on the IERS 2003 ellipsoid, without polar motion.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Centers and corrections",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#centers-and-corrections"
+            },
+            {
+              "title": "G. Petit and B. Luzum (eds.), IERS Conventions (2010), IERS Technical Note 36",
+              "url": "https://www.iers.org/IERS/EN/Publications/TechnicalNotes/tn36.html"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "node",
+      "title": "Lunar node",
+      "description": "Which lunar node.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "node:true-osculating",
+          "value": "true-osculating",
+          "title": "True (osculating) node",
+          "definition": "The node of the Moon's osculating orbit, from its geocentric state vector.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "node:mean",
+          "value": "mean",
+          "title": "Mean node",
+          "definition": "The Moon's mean node: IERS 2003's Ω plus the nutation in longitude.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "G. Petit and B. Luzum (eds.), IERS Conventions (2010), IERS Technical Note 36",
+              "url": "https://www.iers.org/IERS/EN/Publications/TechnicalNotes/tn36.html"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "lilith",
+      "title": "Lilith",
+      "description": "Which Black Moon Lilith.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "lilith:mean",
+          "value": "mean",
+          "title": "Mean Lilith",
+          "definition": "Black Moon Lilith as the Moon's mean apogee.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "speed",
+      "title": "Speed",
+      "description": "How speeds are found, in either receipt.",
+      "usedIn": [
+        "natal receipts: conventions.speed",
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "speed:analytic",
+          "value": "analytic",
+          "title": "Analytic speeds",
+          "definition": "For geometric positions on fixed axes (the J2000.0 and ICRS frames) of every body but the Moon: astronomy-engine's velocities from its differentiated series (Pluto's from its integrator), turned into the frame.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Speeds",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#speeds"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "speed:central-difference-0.001d",
+          "value": "central-difference-0.001d",
+          "title": "Central difference, ±0.001 day",
+          "definition": "The value at t + h less the value at t − h, over 2h, with h = 0.001 day: the method wherever speeds are not analytic.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Speeds",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#speeds"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "speed:central-difference-0.25d",
+          "value": "central-difference-0.25d",
+          "title": "Central difference, ±0.25 day",
+          "definition": "Central difference with h = 0.25 day, for the true node, whose short-period motion would otherwise dominate.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Speeds",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#speeds"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "value": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "title": "Degrees per day, ±0.001 day, nodes ±0.25 day",
+          "definition": "Speeds in degrees per day by central difference over ±0.001 day, and over ±0.25 day for the nodes.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+        },
+        {
+          "id": "speed:degrees-per-day;central-difference-plus-minus-0.25-day",
+          "value": "degrees-per-day;central-difference-plus-minus-0.25-day",
+          "title": "Degrees per day, ±0.25 day",
+          "definition": "Speeds in degrees per day by central difference over ±0.25 day.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "superseded",
+          "writtenBy": "0.1.1-rc.3 to rc.6"
+        }
+      ]
+    },
+    {
+      "name": "ephemeris",
+      "title": "Ephemeris",
+      "description": "The ephemeris, by name and version. A natal receipt names it in engine.ephemeris.",
+      "usedIn": [
+        "calc receipts: conventions",
+        "natal receipts: engine.ephemeris (name@version)"
+      ],
+      "entries": [
+        {
+          "id": "ephemeris:astronomy-engine@2.1.19",
+          "value": "astronomy-engine@2.1.19",
+          "title": "astronomy-engine 2.1.19",
+          "definition": "astronomy-engine 2.1.19: truncated VSOP87 for the planets, a lunar series after Brown's theory as Montenbruck and Pfleger give it, and an integrated Pluto.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "astronomy-engine 2.1.19 (Don Cross)",
+              "url": "https://www.npmjs.com/package/astronomy-engine/v/2.1.19"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "deltat",
+      "title": "ΔT source",
+      "description": "Where a calc receipt's ΔT comes from. Not the natal receipt's deltaT convention, which is its own namespace.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "deltat:time-basis",
+          "value": "time-basis",
+          "title": "ΔT from the time basis",
+          "definition": "ΔT from the engine's time basis: iers-utc/1 from 1972-01-01 to the end of the IERS table, zodiacs-deltat/1 outside it; each instant's deltaT.model says which.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deltat:pinned",
+          "value": "pinned",
+          "title": "Pinned ΔT",
+          "definition": "The caller's ΔT value, pinned.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "time",
+      "title": "Time basis",
+      "description": "How a calc receipt's instants become UT1 and TT.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "time:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise",
+          "value": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise",
+          "title": "The engine's time basis",
+          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds (UTC + (TAI − UTC) + 32.184 s) and UT1 from IERS UT1 − UTC; outside that span, the instant read as UT1 and TT from the ΔT model. The natal receipt names the same basis in its timeScale convention.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            },
+            {
+              "title": "IERS Bulletin C, leap seconds (TAI − UTC)",
+              "url": "https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "house",
+      "title": "House system",
+      "description": "The house system. A natal receipt names the system asked for and the one used in houses.requested and houses.actual; the compute API takes the same names.",
+      "usedIn": [
+        "calc receipts: conventions",
+        "natal receipts: houses.requested, houses.actual",
+        "compute API requests: houseSystem"
+      ],
+      "entries": [
+        {
+          "id": "house:whole",
+          "value": "whole",
+          "title": "Whole sign",
+          "definition": "Each sign is a house, the first the ascendant's.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:placidus",
+          "value": "placidus",
+          "title": "Placidus",
+          "definition": "The semi-arcs of each degree divided in thirds. Undefined where |latitude| ≥ 90° − ε.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:porphyry",
+          "value": "porphyry",
+          "title": "Porphyry",
+          "definition": "Each quadrant between the angles divided into three equal arcs of longitude.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:equal",
+          "value": "equal",
+          "title": "Equal",
+          "definition": "30° each from the ascendant.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:equal-mc",
+          "value": "equal-mc",
+          "title": "Equal from the midheaven",
+          "definition": "30° each, the 10th from the midheaven; the same at every latitude.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:vehlow",
+          "value": "vehlow",
+          "title": "Vehlow",
+          "definition": "30° each, with the ascendant in the middle of the first.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:koch",
+          "value": "koch",
+          "title": "Koch",
+          "definition": "Ascendants at thirds of the midheaven degree's semi-arc. Undefined where |latitude| ≥ 90° − ε.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:regiomontanus",
+          "value": "regiomontanus",
+          "title": "Regiomontanus",
+          "definition": "Circles through the horizon's north and south points, every 30° of the equator.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:campanus",
+          "value": "campanus",
+          "title": "Campanus",
+          "definition": "Circles through the horizon's north and south points, every 30° of the prime vertical.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:topocentric",
+          "value": "topocentric",
+          "title": "Topocentric (Polich–Page)",
+          "definition": "Regiomontanus's ascensions, with pole heights at one and two thirds of the latitude's tangent.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:alcabitius",
+          "value": "alcabitius",
+          "title": "Alcabitius",
+          "definition": "The ascendant's semi-arcs divided in thirds on the equator, along hour circles.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:morinus",
+          "value": "morinus",
+          "title": "Morinus",
+          "definition": "The equator every 30° from the midheaven's right ascension, carried to the ecliptic through its poles.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house:meridian",
+          "value": "meridian",
+          "title": "Meridian (axial rotation)",
+          "definition": "Right ascensions every 30° from the midheaven's; the 1st cusp is the equatorial ascendant.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "R. W. Holden, The Elements of House Division (L. N. Fowler, 1977)"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "polar-fallback",
+      "title": "Polar fallback",
+      "description": "What the engine uses where a house system is undefined.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "polar-fallback:whole",
+          "value": "whole",
+          "title": "Whole sign in polar regions",
+          "definition": "Whole-sign houses where Placidus or Koch is undefined, at |latitude| ≥ 90° − ε with ε the true obliquity of date; the chart also carries the polar-fallback flag.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "angles",
+      "title": "Angles",
+      "description": "How the ascendant and midheaven are found.",
+      "usedIn": [
+        "natal receipts: conventions.angles",
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "angles:gast-and-true-obliquity",
+          "value": "gast-and-true-obliquity",
+          "title": "Apparent sidereal time and true obliquity",
+          "definition": "The angles from the engine's Greenwich apparent sidereal time and the true obliquity of date.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+        },
+        {
+          "id": "angles:gast-and-mean-obliquity",
+          "value": "gast-and-mean-obliquity",
+          "title": "Apparent sidereal time and mean obliquity",
+          "definition": "The angles from Greenwich apparent sidereal time and the mean obliquity of date.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "superseded",
+          "writtenBy": "0.1.1-rc.3 to rc.6"
+        }
+      ]
+    },
+    {
+      "name": "sidereal-time",
+      "title": "Sidereal time",
+      "description": "How Greenwich apparent sidereal time is found.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "sidereal-time:gast-iau2006-era",
+          "value": "gast-iau2006-era",
+          "title": "GAST from the Earth rotation angle",
+          "definition": "Greenwich apparent sidereal time from the Earth rotation angle, astronomy-engine's IAU 2006 polynomial, and the equation of the equinoxes: Δψ cos εA and the two largest IAU 2000 complementary terms.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            },
+            {
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "url": "https://doi.org/10.1051/0004-6361:20031539"
+            },
+            {
+              "title": "G. Petit and B. Luzum (eds.), IERS Conventions (2010), IERS Technical Note 36",
+              "url": "https://www.iers.org/IERS/EN/Publications/TechnicalNotes/tn36.html"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "aspects",
+      "title": "Aspects",
+      "description": "Which aspects a chart lists and how.",
+      "usedIn": [
+        "natal receipts: conventions.aspects",
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "aspects:major",
+          "value": "major",
+          "title": "Major aspects",
+          "definition": "The chart's major aspects, as a calc chart lists them.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "value": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "title": "Major aspects, applying by orb rate",
+          "definition": "The major aspects among the Sun, the Moon and the eight planets, not the nodes, each applying or separating by the instantaneous rate of change of its orb.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7"
+        },
+        {
+          "id": "aspects:major-aspects;sun-moon-eight-planets;no-nodes",
+          "value": "major-aspects;sun-moon-eight-planets;no-nodes",
+          "title": "Major aspects",
+          "definition": "The major aspects among the Sun, the Moon and the eight planets, not the nodes.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "superseded",
+          "writtenBy": "0.1.1-rc.3 to rc.6"
+        }
+      ]
+    },
+    {
+      "name": "search",
+      "title": "Search",
+      "description": "How a calc event search finds crossings.",
+      "usedIn": [
+        "calc receipts: conventions"
+      ],
+      "entries": [
+        {
+          "id": "search:scan-and-bisect",
+          "value": "scan-and-bisect",
+          "title": "Scan and bisect",
+          "definition": "The engine's crossing search: every instant in (from, to] the body sits on the longitude, bracketed by a scan in steps and bisected, within a budget of evaluations.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/calc.md, Convention ids",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "calendar",
+      "title": "Calendar",
+      "description": "The calendar dates are written in.",
+      "usedIn": [
+        "natal receipts: conventions.calendar"
+      ],
+      "entries": [
+        {
+          "id": "calendar:proleptic-gregorian",
+          "value": "proleptic-gregorian",
+          "title": "Proleptic Gregorian",
+          "definition": "Dates in the Gregorian calendar, extended before its adoption in 1582.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "ISO 8601-1:2019, Date and time — Representations for information interchange, Part 1 (the proleptic Gregorian calendar)",
+              "url": "https://www.iso.org/standard/70907.html"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        }
+      ]
+    },
+    {
+      "name": "deltaT",
+      "title": "ΔT",
+      "description": "What a natal receipt's ΔT is and where it is given. Not the calc receipt's deltat source.",
+      "usedIn": [
+        "natal receipts: conventions.deltaT"
+      ],
+      "entries": [
+        {
+          "id": "deltaT:tt-minus-ut1;value-in-result",
+          "value": "tt-minus-ut1;value-in-result",
+          "title": "TT − UT1, in the result",
+          "definition": "ΔT is TT − UT1, and the result gives its value; the time basis decides how the instant is read.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Receipts",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#receipts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+        },
+        {
+          "id": "deltaT:tt-minus-ut1;ut1-read-as-utc;value-in-result",
+          "value": "tt-minus-ut1;ut1-read-as-utc;value-in-result",
+          "title": "TT − UT1, the instant read as UT1",
+          "definition": "ΔT is TT − UT1, the instant is read as UT1, and the result gives the value.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Receipts",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#receipts"
+            }
+          ],
+          "status": "superseded",
+          "writtenBy": "0.1.1-rc.8 to rc.14"
+        }
+      ]
+    },
+    {
+      "name": "localTime",
+      "title": "Local time",
+      "description": "How a local wall time becomes UTC.",
+      "usedIn": [
+        "natal receipts: conventions.localTime"
+      ],
+      "entries": [
+        {
+          "id": "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "value": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "title": "Shipped tzdb before 1970, Intl from 1970",
+          "definition": "Local times before 1970 resolved on the tzdb history the engine ships, from 1970 on the host's Intl, and the gap, fold and local-mean-time flags taken from the transition record.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Local wall times",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#local-wall-times-zodiacsenginegeo"
+            },
+            {
+              "title": "IANA time zone database",
+              "url": "https://www.iana.org/time-zones"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+        }
+      ]
+    },
+    {
+      "name": "longitudeUnit",
+      "title": "Longitude unit",
+      "description": "The unit and range of longitudes.",
+      "usedIn": [
+        "natal receipts: conventions.longitudeUnit"
+      ],
+      "entries": [
+        {
+          "id": "longitudeUnit:degrees-[0,360)",
+          "value": "degrees-[0,360)",
+          "title": "Degrees in [0, 360)",
+          "definition": "Longitudes in degrees, from 0 up to but not including 360.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        }
+      ]
+    },
+    {
+      "name": "moonNodes",
+      "title": "Moon nodes",
+      "description": "Which lunar nodes a natal chart gives.",
+      "usedIn": [
+        "natal receipts: conventions.moonNodes"
+      ],
+      "entries": [
+        {
+          "id": "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+          "value": "instantaneous-geocentric-moon-orbit-plane",
+          "title": "Instantaneous orbit plane",
+          "definition": "The nodes of the plane of the Moon's instantaneous geocentric orbit: the true (osculating) nodes.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14; 0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        }
+      ]
+    },
+    {
+      "name": "moonPosition",
+      "title": "Moon position",
+      "description": "How a natal chart's Moon is found.",
+      "usedIn": [
+        "natal receipts: conventions.moonPosition"
+      ],
+      "entries": [
+        {
+          "id": "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "value": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "title": "astronomy-engine GeoMoon, ecliptic of date",
+          "definition": "astronomy-engine's geocentric lunar series (GeoMoon), turned to the ecliptic of date by the engine's precession and nutation, without light time or aberration.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Receipts",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#receipts"
+            },
+            {
+              "title": "astronomy-engine 2.1.19 (Don Cross)",
+              "url": "https://www.npmjs.com/package/astronomy-engine/v/2.1.19"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0"
+        },
+        {
+          "id": "moonPosition:astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+          "value": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+          "title": "astronomy-engine EclipticGeoMoon, uncorrected",
+          "definition": "astronomy-engine's ecliptic geocentric Moon (EclipticGeoMoon), without light time or aberration.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "astronomy-engine 2.1.19 (Don Cross)",
+              "url": "https://www.npmjs.com/package/astronomy-engine/v/2.1.19"
+            }
+          ],
+          "status": "superseded",
+          "writtenBy": "0.1.1-rc.15; 0.1.1-rc.8 to rc.14"
+        },
+        {
+          "id": "moonPosition:astronomy-engine-ecliptic-geo-moon",
+          "value": "astronomy-engine-ecliptic-geo-moon",
+          "title": "astronomy-engine EclipticGeoMoon",
+          "definition": "astronomy-engine's ecliptic geocentric Moon (EclipticGeoMoon).",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "astronomy-engine 2.1.19 (Don Cross)",
+              "url": "https://www.npmjs.com/package/astronomy-engine/v/2.1.19"
+            }
+          ],
+          "status": "superseded",
+          "writtenBy": "0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        }
+      ]
+    },
+    {
+      "name": "planetPositions",
+      "title": "Planet positions",
+      "description": "How a natal chart's planets are found.",
+      "usedIn": [
+        "natal receipts: conventions.planetPositions"
+      ],
+      "entries": [
+        {
+          "id": "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "value": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "title": "Geocentric, light time and aberration, ecliptic of date",
+          "definition": "Geocentric positions corrected for light time and aberration but not for gravitational deflection, on the ecliptic of date.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15; 0.1.1-rc.8 to rc.14"
+        },
+        {
+          "id": "planetPositions:apparent-geocentric-ecliptic-of-date",
+          "value": "apparent-geocentric-ecliptic-of-date",
+          "title": "Apparent geocentric, ecliptic of date",
+          "definition": "Apparent geocentric positions on the ecliptic of date.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "superseded",
+          "writtenBy": "0.1.1-rc.7; 0.1.1-rc.3 to rc.6"
+        }
+      ]
+    },
+    {
+      "name": "timeScale",
+      "title": "Time scale",
+      "description": "How a natal chart's instant becomes UT1 and TT, and where the basis is recorded.",
+      "usedIn": [
+        "natal receipts: conventions.timeScale"
+      ],
+      "entries": [
+        {
+          "id": "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "value": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "title": "The engine's time basis, in the result",
+          "definition": "From 1972-01-01 to the end of the IERS UT1 table, TT from the leap seconds and UT1 from IERS UT1 − UTC; otherwise the instant read as UT1 and TT from the ΔT model; the basis recorded in the result's timeScale.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Receipts",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#receipts"
+            },
+            {
+              "title": "IERS Bulletin C, leap seconds (TAI − UTC)",
+              "url": "https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat"
+            }
+          ],
+          "status": "current",
+          "writtenBy": "0.1.1-rc.16 to 1.0.0; 0.1.1-rc.15"
+        }
+      ]
+    },
+    {
+      "name": "house-absence",
+      "title": "House absence",
+      "description": "Why a natal chart has no houses.",
+      "usedIn": [
+        "natal receipts: houses.absenceReason"
+      ],
+      "entries": [
+        {
+          "id": "house-absence:unknown-time",
+          "value": "unknown-time",
+          "title": "Unknown birth time",
+          "definition": "The birth time is unknown, so the chart has no angles or houses.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "house-absence:missing-location",
+          "value": "missing-location",
+          "title": "No birthplace",
+          "definition": "No birthplace was given, so the chart has no angles or houses.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "flag",
+      "title": "Chart flag",
+      "description": "A condition a natal chart reports, in the receipt's input and result flags.",
+      "usedIn": [
+        "natal receipts: inputFlags, resultFlags",
+        "compute API answers: flags"
+      ],
+      "entries": [
+        {
+          "id": "flag:dst-gap",
+          "value": "dst-gap",
+          "title": "Clock gap",
+          "definition": "The local time fell in a gap of any cause, such as a change to summer time, and was moved forward.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Local wall times",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#local-wall-times-zodiacsenginegeo"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:dst-fold",
+          "value": "dst-fold",
+          "title": "Clock fold",
+          "definition": "The local time fell in a fold of any cause and could be read twice; the earlier reading was taken.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Local wall times",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#local-wall-times-zodiacsenginegeo"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:lmt",
+          "value": "lmt",
+          "title": "Local mean time",
+          "definition": "A local mean time clock read the wall time.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Local wall times",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#local-wall-times-zodiacsenginegeo"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:no-time",
+          "value": "no-time",
+          "title": "No birth time",
+          "definition": "The birth time is unknown; the chart has no angles or houses.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:polar-fallback",
+          "value": "polar-fallback",
+          "title": "Polar fallback",
+          "definition": "Placidus or Koch was asked for where it is undefined, and the chart uses whole-sign houses.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, House systems",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md#house-systems"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "flag:outside-reference-span",
+          "value": "outside-reference-span",
+          "title": "Outside the reference span",
+          "definition": "The instant lies outside 1800-01-01 to 2200-01-01, the span over which positions were compared with an independent ephemeris (the engine's REFERENCE_SPAN); the chart is still computed.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, README, the reference span",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/README.md"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "reference",
+      "title": "Reference instant",
+      "description": "Which instant a natal chart is cast for.",
+      "usedIn": [
+        "natal receipts: reference"
+      ],
+      "entries": [
+        {
+          "id": "reference:supplied-instant",
+          "value": "supplied-instant",
+          "title": "The supplied instant",
+          "definition": "The chart is cast for the instant given.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "reference:utc-noon",
+          "value": "utc-noon",
+          "title": "Noon UTC",
+          "definition": "An untimed chart cast for 12:00 UTC on the date.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "reference:local-noon",
+          "value": "local-noon",
+          "title": "Local noon",
+          "definition": "An untimed chart cast for 12:00 local time on the date.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "time-scale",
+      "title": "Instant time scale",
+      "description": "The scale of a receipt's instant.",
+      "usedIn": [
+        "natal receipts: timeScale",
+        "calc receipts: instants[].timeScale.input"
+      ],
+      "entries": [
+        {
+          "id": "time-scale:utc",
+          "value": "utc",
+          "title": "UTC",
+          "definition": "Coordinated Universal Time.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "time-scale:ut1",
+          "value": "ut1",
+          "title": "UT1",
+          "definition": "Universal Time, the Earth's rotation angle as a time.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "time-scale:tt",
+          "value": "tt",
+          "title": "TT",
+          "definition": "Terrestrial Time: TAI + 32.184 s.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "time-basis",
+      "title": "Time basis",
+      "description": "Which branch of the time basis an instant took.",
+      "usedIn": [
+        "calc receipts: instants[].timeScale.basis",
+        "natal results: timeScale.basis"
+      ],
+      "entries": [
+        {
+          "id": "time-basis:iers",
+          "value": "iers",
+          "title": "IERS",
+          "definition": "From 1972-01-01 to the end of the IERS table: TT from the leap seconds, UT1 from IERS UT1 − UTC.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            },
+            {
+              "title": "IERS Bulletin C, leap seconds (TAI − UTC)",
+              "url": "https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "time-basis:delta-t",
+          "value": "delta-t",
+          "title": "ΔT model",
+          "definition": "Outside the IERS span: the instant read as UT1, TT from the ΔT model.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            },
+            {
+              "title": "F. R. Stephenson, L. V. Morrison and C. Y. Hohenkerk (2016), Measurement of the Earth's rotation: 720 BC to AD 2015, Proceedings of the Royal Society A 472, 20160404",
+              "url": "https://doi.org/10.1098/rspa.2016.0404"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "time-basis:pinned",
+          "value": "pinned",
+          "title": "Pinned",
+          "definition": "The caller pinned ΔT: TT is UT1 plus the pin.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "deltat-model",
+      "title": "ΔT model",
+      "description": "Which source gave an instant's ΔT.",
+      "usedIn": [
+        "calc receipts: instants[].deltaT.model",
+        "natal results: deltaT.model",
+        "compute API receipts: deltaT[].model"
+      ],
+      "entries": [
+        {
+          "id": "deltat-model:iers-utc/1",
+          "value": "iers-utc/1",
+          "title": "IERS, through UTC",
+          "definition": "ΔT = 32.184 s + (TAI − UTC) − (UT1 − UTC), from the IERS leap seconds and UT1 table.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            },
+            {
+              "title": "IERS Bulletin C, leap seconds (TAI − UTC)",
+              "url": "https://hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deltat-model:zodiacs-deltat/1",
+          "value": "zodiacs-deltat/1",
+          "title": "The engine's ΔT model",
+          "definition": "The reconstruction of Stephenson, Morrison and Hohenkerk (2016) up to 1941, observed USNO and IERS values after that, then Bulletin A's predictions and a damped extrapolation, with a 1-σ band.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, From an instant to UT1 and TT",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#from-an-instant-to-ut1-and-tt"
+            },
+            {
+              "title": "F. R. Stephenson, L. V. Morrison and C. Y. Hohenkerk (2016), Measurement of the Earth's rotation: 720 BC to AD 2015, Proceedings of the Royal Society A 472, 20160404",
+              "url": "https://doi.org/10.1098/rspa.2016.0404"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deltat-model:pinned",
+          "value": "pinned",
+          "title": "Pinned",
+          "definition": "The caller's pinned value, with no band or table.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "deltat-segment",
+      "title": "ΔT segment",
+      "description": "Which part of its source an instant's ΔT came from.",
+      "usedIn": [
+        "calc receipts: instants[].deltaT.segment",
+        "natal results: deltaT.segment"
+      ],
+      "entries": [
+        {
+          "id": "deltat-segment:long-term",
+          "value": "long-term",
+          "title": "Long-term",
+          "definition": "Before the year −720: the integral of Stephenson, Morrison and Hohenkerk's long-term formula for the length of day (their equation 5.1), joined in value at −720.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/deltat.ts, the ΔT model's segments",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/deltat.ts"
+            },
+            {
+              "title": "F. R. Stephenson, L. V. Morrison and C. Y. Hohenkerk (2016), Measurement of the Earth's rotation: 720 BC to AD 2015, Proceedings of the Royal Society A 472, 20160404",
+              "url": "https://doi.org/10.1098/rspa.2016.0404"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deltat-segment:reconstructed",
+          "value": "reconstructed",
+          "title": "Reconstructed",
+          "definition": "From −720 to 1956: Stephenson, Morrison and Hohenkerk's Table S15 as a cubic spline to 1941, then whole-year knots from USNO's historic ΔT.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/deltat.ts, the ΔT model's segments",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/deltat.ts"
+            },
+            {
+              "title": "F. R. Stephenson, L. V. Morrison and C. Y. Hohenkerk (2016), Measurement of the Earth's rotation: 720 BC to AD 2015, Proceedings of the Royal Society A 472, 20160404",
+              "url": "https://doi.org/10.1098/rspa.2016.0404"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deltat-segment:observed",
+          "value": "observed",
+          "title": "Observed",
+          "definition": "In the model, from 1956 to the last observed day: USNO, IERS 20 C04 and IERS finals2000A's observed rows. On the IERS basis, a ΔT whose UT1 − UTC is observed.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/deltat.ts, the ΔT model's segments",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/deltat.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deltat-segment:predicted",
+          "value": "predicted",
+          "title": "Predicted",
+          "definition": "In the model, to the last predicted day: knots from Bulletin A's predictions. On the IERS basis, a ΔT whose UT1 − UTC is predicted.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/deltat.ts, the ΔT model's segments",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/deltat.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deltat-segment:extrapolated",
+          "value": "extrapolated",
+          "title": "Extrapolated",
+          "definition": "After the last predicted day: the prediction window's slope, damped with a 15-year time constant, plus the curvature of the long-term curve.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/deltat.ts, the ΔT model's segments",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/deltat.ts"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deltat-segment:pinned",
+          "value": "pinned",
+          "title": "Pinned",
+          "definition": "The caller's pinned value of ΔT.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/deltat.ts, the ΔT model's segments",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/deltat.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "deltat-segment:fallback",
+          "value": "fallback",
+          "title": "Fallback",
+          "definition": "The IERS basis with UT1 − UTC taken as 0 ± 0.9 s past the table's ends. Only 0.1.1-rc.15's first cut wrote it; later releases read it so those records stay readable.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/deltat.ts, the ΔT model's segments",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/deltat.ts"
+            }
+          ],
+          "status": "superseded",
+          "writtenBy": "0.1.1-rc.15 (its first cut)"
+        }
+      ]
+    },
+    {
+      "name": "ut1-source",
+      "title": "UT1 − UTC source",
+      "description": "Where an instant's UT1 − UTC came from.",
+      "usedIn": [
+        "calc receipts: instants[].timeScale.ut1MinusUtc.source",
+        "natal results: timeScale.ut1MinusUtc.source"
+      ],
+      "entries": [
+        {
+          "id": "ut1-source:observed",
+          "value": "observed",
+          "title": "Observed",
+          "definition": "UT1 − UTC from an observed row of the IERS table.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ut1-source:predicted",
+          "value": "predicted",
+          "title": "Predicted",
+          "definition": "UT1 − UTC from a predicted row of the IERS table.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "ut1-source:fallback",
+          "value": "fallback",
+          "title": "Fallback",
+          "definition": "After the table, for UTC or TT input: 0 ± 0.9 s.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, What a chart reports",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#what-a-chart-reports"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "assessment",
+      "title": "Coverage: assessment",
+      "description": "What a receipt's numbers were checked against, from its coverage statements.",
+      "usedIn": [
+        "natal receipts: coverage.assessment",
+        "compute API receipts: coverage.assessment"
+      ],
+      "entries": [
+        {
+          "id": "assessment:finite-reference-cases-only",
+          "value": "finite-reference-cases-only",
+          "title": "Finite reference cases only",
+          "definition": "The numbers were checked against a finite set of reference cases only.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/versioning.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/versioning.md"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "broadDateRange",
+      "title": "Coverage: broad date range",
+      "description": "Whether the numbers are certified across a broad range of dates.",
+      "usedIn": [
+        "natal receipts: coverage.broadDateRange",
+        "compute API receipts: coverage.broadDateRange"
+      ],
+      "entries": [
+        {
+          "id": "broadDateRange:not-certified",
+          "value": "not-certified",
+          "title": "Not certified",
+          "definition": "The numbers are not certified across a broad range of dates.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/versioning.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/versioning.md"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "angleExclusions",
+      "title": "Coverage: angle exclusions",
+      "description": "Where the angles are not covered.",
+      "usedIn": [
+        "natal receipts: coverage.angleExclusions",
+        "compute API receipts: coverage.angleExclusions"
+      ],
+      "entries": [
+        {
+          "id": "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "value": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "title": "The poles and an ecliptic on the horizon",
+          "definition": "The angles are not covered at the exact geographic poles or where the ecliptic coincides with the horizon.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/versioning.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/versioning.md"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "inputSyntax",
+      "title": "Coverage: input syntax",
+      "description": "What accepting an input means.",
+      "usedIn": [
+        "natal receipts: coverage.inputSyntax",
+        "compute API receipts: coverage.inputSyntax"
+      ],
+      "entries": [
+        {
+          "id": "inputSyntax:not-an-astronomical-accuracy-guarantee",
+          "value": "not-an-astronomical-accuracy-guarantee",
+          "title": "Not an accuracy guarantee",
+          "definition": "That an input is accepted guarantees nothing about the astronomical accuracy of the answer.",
+          "sources": [
+            {
+              "title": "@zodiacs/engine 1.0.0, src/receipt.ts, the conventions sets",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/versioning.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/versioning.md"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "endpoint",
+      "title": "Compute endpoint",
+      "description": "The compute API endpoint a receipt is for, under https://zodiacs.org/api/v1/.",
+      "usedIn": [
+        "compute API receipts: endpoint"
+      ],
+      "entries": [
+        {
+          "id": "endpoint:chart",
+          "value": "chart",
+          "title": "Chart",
+          "definition": "A natal chart: positions, angles, houses and aspects for a birth.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ChartResult",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "endpoint:positions",
+          "value": "positions",
+          "title": "Positions",
+          "definition": "Positions of the bodies at one or more instants.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component PositionsResult",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "endpoint:houses",
+          "value": "houses",
+          "title": "Houses",
+          "definition": "The angles and houses for an instant and a place.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component HousesResult",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "endpoint:events",
+          "value": "events",
+          "title": "Events",
+          "definition": "The ingresses, stations and lunations in a window.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component EventsResult",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "endpoint:time",
+          "value": "time",
+          "title": "Time",
+          "definition": "A local time resolved to UTC and Terrestrial Time.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component TimeResult",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "endpoint:sky-fact",
+          "value": "sky-fact",
+          "title": "Sky fact",
+          "definition": "Whether a stated sky fact holds, answered true, false or depends.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component SkyFactResult",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "endpoint:elections",
+          "value": "elections",
+          "title": "Elections",
+          "definition": "The stretches of a window in which every stated condition holds.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ElectionsResult",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "search-solver",
+      "title": "Search solver",
+      "description": "The solver a compute search used.",
+      "usedIn": [
+        "compute API receipts: search.solver, electionSearch.solver"
+      ],
+      "entries": [
+        {
+          "id": "search-solver:engine-longitude-crossings",
+          "value": "engine-longitude-crossings",
+          "title": "The engine's longitude crossings",
+          "definition": "The engine's one crossing solver, with its scan steps and 24 bisections a crossing.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "search-solver:engine-longitude-crossings-and-sampled-houses",
+          "value": "engine-longitude-crossings-and-sampled-houses",
+          "title": "Longitude crossings and sampled houses",
+          "definition": "The crossing solver for sign changes, stations and phases, with the houses sampled at a fixed step for angular conditions.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "search-window",
+      "title": "Search window",
+      "description": "Which ends of a compute search's window count.",
+      "usedIn": [
+        "compute API receipts: search.window, electionSearch.window"
+      ],
+      "entries": [
+        {
+          "id": "search-window:start-exclusive-end-inclusive",
+          "value": "start-exclusive-end-inclusive",
+          "title": "Start exclusive, end inclusive",
+          "definition": "An event exactly at the window's start is not counted; one exactly at its end is.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "search-window:start-inclusive-end-exclusive",
+          "value": "start-inclusive-end-exclusive",
+          "title": "Start inclusive, end exclusive",
+          "definition": "The window includes its start and excludes its end.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "completeness",
+      "title": "Completeness",
+      "description": "What a compute search claims about missing nothing.",
+      "usedIn": [
+        "compute API receipts: search.completeness, electionSearch.completeness"
+      ],
+      "entries": [
+        {
+          "id": "completeness:tested-not-proven",
+          "value": "tested-not-proven",
+          "title": "Tested, not proven",
+          "definition": "The search's completeness is tested, not proven: it is not shown that no event between its samples was missed.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "fold-policy",
+      "title": "Fold policy",
+      "description": "Which reading of a local time in a fold the compute API takes.",
+      "usedIn": [
+        "compute API receipts: timeResolution.policy.fold"
+      ],
+      "entries": [
+        {
+          "id": "fold-policy:earlier",
+          "value": "earlier",
+          "title": "Earlier",
+          "definition": "A local time that occurs twice is read as the earlier of the two instants.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Local wall times",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#local-wall-times-zodiacsenginegeo"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "gap-policy",
+      "title": "Gap policy",
+      "description": "How the compute API reads a local time in a gap.",
+      "usedIn": [
+        "compute API receipts: timeResolution.policy.gap"
+      ],
+      "entries": [
+        {
+          "id": "gap-policy:shift-forward",
+          "value": "shift-forward",
+          "title": "Shift forward",
+          "definition": "A local time skipped by a clock change is moved forward by the gap.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            },
+            {
+              "title": "@zodiacs/engine 1.0.0, docs/time.md, Local wall times",
+              "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#local-wall-times-zodiacsenginegeo"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "void-of-course",
+      "title": "Void of course",
+      "description": "The void-of-course rule an election search used.",
+      "usedIn": [
+        "compute API receipts: electionSearch.voidOfCourse.convention"
+      ],
+      "entries": [
+        {
+          "id": "void-of-course:last-exact-ptolemaic-aspect-to-sign-exit",
+          "value": "last-exact-ptolemaic-aspect-to-sign-exit",
+          "title": "Last exact Ptolemaic aspect to sign exit",
+          "definition": "The Moon is void of course from its last exact Ptolemaic aspect in a sign until it leaves the sign.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "void-of-course-bodies",
+      "title": "Void-of-course bodies",
+      "description": "Which bodies count for the void-of-course rule.",
+      "usedIn": [
+        "compute API receipts: electionSearch.voidOfCourse.bodies"
+      ],
+      "entries": [
+        {
+          "id": "void-of-course-bodies:modern",
+          "value": "modern",
+          "title": "Modern",
+          "definition": "The bodies whose aspects with the Moon count: the Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto.",
+          "sources": [
+            {
+              "title": "Zodiacs compute API, OpenAPI component ComputeReceipt",
+              "url": "https://zodiacs.org/api/v1/openapi.json"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "kind",
+      "title": "Conformance vector kind",
+      "description": "The quantity a conformance vector tests, as its kind field names it.",
+      "usedIn": [
+        "conformance vectors: kind"
+      ],
+      "entries": [
+        {
+          "id": "kind:position.apparent.ecliptic-true-of-date",
+          "value": "position.apparent.ecliptic-true-of-date",
+          "title": "Apparent positions, ecliptic of date",
+          "definition": "L1 (Positions): 240 vectors, tolerance lon ±1″ (on the circle); lat ±1″.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L1-positions.json (L1, Positions; sha256 853486bd33ddf2c136581803aec7df4b069c00f63678861537b2c0b86127366c)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L1-positions.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:angles.asc-mc",
+          "value": "angles.asc-mc",
+          "title": "Ascendant and midheaven",
+          "definition": "L2 (Houses and angles): 60 vectors, tolerance asc ±1″ (on the circle); mc ±1″ (on the circle).",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:angles.vertex-east-point",
+          "value": "angles.vertex-east-point",
+          "title": "Vertex and east point",
+          "definition": "L2 (Houses and angles): 10 vectors, tolerance vertex ±1″ (on the circle); east_point ±1″ (on the circle).",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:houses.cusps",
+          "value": "houses.cusps",
+          "title": "House cusps, thirteen systems",
+          "definition": "L2 (Houses and angles): 80 vectors, tolerance cusps each ±1″ (on the circle), or status exact.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:time.zone-offset",
+          "value": "time.zone-offset",
+          "title": "Time zone offsets",
+          "definition": "L3 (Time and calendars): 45 vectors, tolerance status exact; utc_offset_s exact, or status exact, or status exact; utc_offsets_s exact.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:time.local-mean-time",
+          "value": "time.local-mean-time",
+          "title": "Local mean time",
+          "definition": "L3 (Time and calendars): 5 vectors, tolerance utc_offset_s ±0.001 s.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:time.tt-minus-utc",
+          "value": "time.tt-minus-utc",
+          "title": "TT − UTC",
+          "definition": "L3 (Time and calendars): 10 vectors, tolerance tt_minus_utc_s ±0.0005 s.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:time.delta-t",
+          "value": "time.delta-t",
+          "title": "ΔT (TT − UT1)",
+          "definition": "L3 (Time and calendars): 15 vectors, tolerance delta_t_s ±0.1 s.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:calendar.to-jdn",
+          "value": "calendar.to-jdn",
+          "title": "Calendar date to day number",
+          "definition": "L3 (Time and calendars): 25 vectors, tolerance jdn exact.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "kind:calendar.from-jdn",
+          "value": "calendar.from-jdn",
+          "title": "Day number to calendar date",
+          "definition": "L3 (Time and calendars): 10 vectors, tolerance year exact; month exact; day exact.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    },
+    {
+      "name": "arbiter",
+      "title": "Conformance arbiter",
+      "description": "The independent computation that gives a conformance vector its expected value, as its arbiter field names it.",
+      "usedIn": [
+        "conformance vectors: arbiter"
+      ],
+      "entries": [
+        {
+          "id": "arbiter:horizons-de441-iau2006",
+          "value": "horizons-de441-iau2006",
+          "title": "NASA JPL Horizons (DE441) apparent geocentric ecliptic positions, carried into the IAU 2006/2000A true ecliptic and equinox of date",
+          "definition": "The independent arbiter of L1 (Positions) vectors. Source: NASA JPL Horizons API 1.2 (https://ssd.jpl.nasa.gov/api/horizons.api), fetched 2026-09-22: ephemeris DE441 for every target, with Mars to Pluto as their system barycentres (NAIF 4 to 9); EOP file eop.260922.p261219 (data 1962-01-20 to 2026-09-22, predictions to 2026-12-18). One request per target: EPHEM_TYPE OBSERVER, CENTER 500@399 (the geocentre), QUANTITIES 31 (observer ecliptic longitude and latitude of date of the apparent position: light-time, gravitational deflection by the Sun, stellar aberration), APPARENT AIRLESS, TIME_TYPE TT, TLIST_TYPE JD with the 24 jd_tt values to 8 decimals, ANG_FORMAT DEG, EXTRA_PREC YES, CSV_FORMAT YES. The responses are kept verbatim in sources/horizons-24/, byte for byte as committed in the zodiacs.org site repository (ZodiacsOfficial/site, docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/, commit 3f31ba17), together with Horizons's body-centre files for Mars to Pluto (NAIF 499 to 999, from the satellite solutions mar099, jup365_merged, sat441l, ura184_merged, nep098_merged, plu060_merged), fetched the same way and used only for the body-centre measurement in the uncertainty. Plus the frame conversion: Horizons labels this frame IAU76/80 ecliptic-of-date, and the eopJpl model of it, with its per-instant celestial-pole offsets, is the horizons-frame study in the same repository (docs/platform/evidence/engine-beyond-swiss/horizons-frame/: decompose.py, results.json), the offsets copied into sources/horizons-24/frame-offsets.json.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L1-positions.json (L1, Positions; sha256 853486bd33ddf2c136581803aec7df4b069c00f63678861537b2c0b86127366c)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L1-positions.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:l2-angles-erfa",
+          "value": "l2-angles-erfa",
+          "title": "ERFA sidereal time and obliquity; spherical geometry of the angles",
+          "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006). Definitions: R. W. Holden, The Elements of House Division (1977); M. P. Munkasey, An Astrological House Formulary; W. M. Smart, Textbook on Spherical Astronomy.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:l2-houses-ecliptic",
+          "value": "l2-houses-ecliptic",
+          "title": "Ecliptic divisions: equal, whole-sign, Vehlow, equal-MC, Porphyry",
+          "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006). Definitions: R. W. Holden, The Elements of House Division (1977); M. P. Munkasey, An Astrological House Formulary; W. M. Smart, Textbook on Spherical Astronomy.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:l2-houses-great-circle",
+          "value": "l2-houses-great-circle",
+          "title": "Fixed house circles: Regiomontanus, Campanus, meridian, Morinus",
+          "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006). Definitions: R. W. Holden, The Elements of House Division (1977); M. P. Munkasey, An Astrological House Formulary; W. M. Smart, Textbook on Spherical Astronomy.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:l2-houses-semi-arc",
+          "value": "l2-houses-semi-arc",
+          "title": "Semi-arc and pole systems: Placidus, Koch, Alcabitius, topocentric",
+          "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006). Definitions: R. W. Holden, The Elements of House Division (1977); M. P. Munkasey, An Astrological House Formulary; W. M. Smart, Textbook on Spherical Astronomy. Topocentric: W. Polich and A. P. Nelson Page, the topocentric system (tan of the house pole = n/3 · tan φ).",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:l2-houses-undefined",
+          "value": "l2-houses-undefined",
+          "title": "Cusps that do not exist: the construction has no solution in zodiacal order",
+          "definition": "The independent arbiter of L2 (Houses and angles) vectors. Source: Constructions: Placidus de Titis, Tabulae primi mobilis (Milan, 1657; English translation by J. Cooper, Primum Mobile, 1814); W. A. Koch and E. Schaeck, Häusertabellen des Geburtsortes (Göppingen, 1962); both restated in R. W. Holden, The Elements of House Division (L. N. Fowler, Romford, 1977; page numbers not verified for this file). TT, RAMC and ε as in l2-angles-erfa: ERFA 2.0.1 through pyerfa 2.0.1.5 (github.com/liberfa/erfa, derived from IAU SOFA): gst06a, obl06, nut06a. UT1−UTC: IERS finals2000A (the IERS Rapid Service/Prediction Centre finals.all fetched 2026-09-22, sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1; the three columns used are the committed CSV). TAI−UTC: IERS Bulletin C, hpiers.obspm.fr/iers/bul/bulc/Leap_Second.dat (through Bulletin C 72, fetched 2026-09-28). ΔT outside the IERS span: F. Espenak and J. Meeus, Five Millennium Canon of Solar Eclipses: −1999 to +3000, NASA/TP-2006-214141 (2006).",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L2-houses-angles.json (L2, Houses and angles; sha256 5718690f184f8bb9c1f38056c1bd11ec71a4aebf3f945a4dd519501ef33f50d0)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L2-houses-angles.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:tzdb-2025c-backzone",
+          "value": "tzdb-2025c-backzone",
+          "title": "IANA tzdb 2025c with backzone, compiled by zic 2025c",
+          "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: IANA time zone database release 2025c: https://data.iana.org/time-zones/releases/tzdata2025c.tar.gz (sha256 4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957) and https://data.iana.org/time-zones/releases/tzcode2025c.tar.gz (sha256 697ebe6625444aef5080f58e49d03424bbb52e08bf483d3ddb5acf10cbd15740), both OpenPGP-signed by Paul Eggert (key 7E37 92A9 D8AC F7D6 33BC 1588 ED97 E90E 62AA 7E34; signatures checked 2026-09-28). The data are the Makefile's `make PACKRATDATA=backzone PACKRATLIST=zone.tab` build: backzone's pre-1970 history for the zone.tab zones that the main data merge into links. Why backzone: a birth chart needs the local time in force where and when the birth happened, often before 1970, and tzdb's default build does not keep that history for these zones; it makes each of them a link to another zone whose clocks have agreed with it since 1970, so the zone answers with the other zone's history (Africa/Banjul at 1880-12-31T12:00:00 gets Abidjan's local mean time, -968 s, instead of its own, -3996 s). The maintainers' caveat applies: the Makefile of tzdata 2025c offers backzone as 'out-of-scope and often-wrong data', and its theory.html says the file 'is less reliable and does not necessarily follow database guidelines'. zic and zdump are built from the same release's tzcode.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:lmt-definition",
+          "value": "lmt-definition",
+          "title": "Local mean time from longitude",
+          "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: The definition of local mean time: mean solar time at east longitude lon runs ahead of UT by lon/15 hours, 240 s of UTC offset per degree.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:iers-leap-seconds-2025c",
+          "value": "iers-leap-seconds-2025c",
+          "title": "IERS leap-second table (leap-seconds.list, tzdata 2025c)",
+          "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: leap-seconds.list as distributed in tzdata 2025c (IERS Earth Orientation Centre, Paris Observatory; updated through IERS Bulletin C; last update 2025-07-07 (NTP 3960835200); expires 2026-06-28 (NTP 3991593600); its #h line, SHA-1 49db2447571e5e1b2f002a539c8da8e439b8e49e, verified). TT = TAI + 32.184 s exactly (IAU 1991 Resolution A4), so TT - UTC = 32.184 s + (TAI - UTC).",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:iers-ut1-finals2000a",
+          "value": "iers-ut1-finals2000a",
+          "title": "IERS UT1 - UTC (finals2000A, observed rows) with the leap-second table",
+          "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: UT1 - UTC per day at 0h UTC from the IERS finals.all (IAU 2000) file fetched 2026-09-22 (sha256 c672540e026d3cd4840c0858d4ce2bc4a18c3bc9751f9636c3285e11950d58a1, 3,767,520 bytes), extracted to CSV (MJD, date, I/P flag, UT1 - UTC, formal error) and copied here unchanged; TAI - UTC from leap-seconds.list of tzdata 2025c (arbiter iers-leap-seconds-2025c).",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        },
+        {
+          "id": "arbiter:calendar-arithmetic",
+          "value": "calendar-arithmetic",
+          "title": "Julian and Gregorian calendar arithmetic, two published algorithms",
+          "definition": "The independent arbiter of L3 (Time and calendars) vectors. Source: Richards, E. G. (2013), 'Calendars', in Urban & Seidelmann (eds.), Explanatory Supplement to the Astronomical Almanac, 3rd ed., sec. 15.11 (Algorithms 3 and 4, Julian and Gregorian parameters); Fliegel, H. F. & Van Flandern, T. C. (1968), Communications of the ACM 11(10), 657; Meeus, J. (1998), Astronomical Algorithms, 2nd ed., ch. 7. Both calendars proleptic, astronomical year numbering; the JDN of a civil day is the Julian date at its noon.",
+          "sources": [
+            {
+              "title": "Conformance suite 0.1.0, vectors/L3-time-calendars.json (L3, Time and calendars; sha256 434365354095524646f68423634f0b07a05333c702fc02227fd7fd1bccb0e4c8)",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/vectors/L3-time-calendars.json"
+            },
+            {
+              "title": "Conformance suite 0.1.0, SPEC.md",
+              "url": "https://github.com/zodiacs-org/engine/blob/782b4963a8575fa8d81c602a36285f65fb9ae9bb/conformance/SPEC.md"
+            }
+          ],
+          "status": "current"
+        }
+      ]
+    }
+  ]
+}
