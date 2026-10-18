@@ -1,19 +1,23 @@
 /**
  * The parts every assistant card is made of, so the eight cards read as one
- * family: the nameplate, a head (kicker, title, meta) beside the hero art,
- * a hero row between hairlines (a score ring beside a verdict), sign chips,
- * number tiles, reasons, facts, text actions and the fine print.
+ * family. Since the owner's 2026-10-18 picks every card is a keepsake: the
+ * nameplate, the hero art large across the top with the sign discs on its
+ * lower edge, the kicker, title and meta line centred under it, a compact
+ * hero row (a score ring beside the verdict), then one disclosure, "More
+ * from this reading", that holds the rest (sign chips, number tiles,
+ * reasons, facts and a copy of the card), the card's two actions and the
+ * fine print.
  */
 import type { ComponentChildren, CSSProperties } from 'preact';
 import { useState } from 'preact/hooks';
-import { BrandRing } from '../panel-brand';
+import { TiltedRing } from './mark';
 import { hueVars } from './hue';
 import './card.css';
 
-/** The site's nameplate: the twelve-dot ring, "Zodiacs" in the masthead serif and a small ".org". */
+/** The nameplate: the tilted twelve-dot mark, "Zodiacs" in the masthead serif and a small ".org". */
 export function Nameplate({ href = 'https://zodiacs.org/' }: { href?: string }) {
   return <a class="nameplate" href={href} target="_blank" rel="noreferrer">
-    <BrandRing size={22}/>
+    <TiltedRing width={35}/>
     <span class="nameplate-name">Zodiacs<span class="nameplate-tld">.org</span></span>
   </a>;
 }
@@ -43,7 +47,7 @@ export interface ArtPanel { src: ArtSource | undefined; flip?: boolean; focus?: 
  * carries both twins and the stylesheet shows the one for the host theme, so
  * nothing swaps after paint; the other is never decoded. The panel fades into
  * the card on every side, with no frame. Decorative, so hidden from assistive
- * technology; the words around it say what it shows. Nothing is set over it.
+ * technology; the words around it say what it shows. No text is set over it.
  */
 export function Art({ panels }: { panels: ArtPanel[] }) {
   const shown = panels.filter((panel) => panel.src);
@@ -54,6 +58,7 @@ export function Art({ panels }: { panels: ArtPanel[] }) {
   </figure>)}</div>;
 }
 
+/** A head without art, for the panel's own states (a name Zodiacs does not publish, the sign picker). */
 export function Head({ kicker, title, meta, aside, art }: { kicker: ComponentChildren; title: ComponentChildren; meta?: ComponentChildren; aside?: ComponentChildren; art?: ArtPanel[] }) {
   const plate = art ? <Art panels={art}/> : null;
   return <header class={`card-head${plate && art!.some((panel) => panel.src) ? ' has-art' : ''}`}>
@@ -64,6 +69,25 @@ export function Head({ kicker, title, meta, aside, art }: { kicker: ComponentChi
     </div>
     {aside}
     {plate}
+  </header>;
+}
+
+/**
+ * The keepsake head: the hero art large across the top, the pastel sign
+ * discs (one per sign the card is about, no outline) set on its lower edge,
+ * and the kicker, title and meta line centred under them.
+ */
+export function Keepsake({ kicker, title, meta, art, signs = [] }: { kicker: ComponentChildren; title: ComponentChildren; meta?: ComponentChildren; art?: ArtPanel[]; signs?: (string | undefined)[] }) {
+  const discs = [...new Set(signs.filter((src): src is string => !!src))];
+  const hasArt = !!art && art.some((panel) => panel.src);
+  return <header class={`keepsake${hasArt ? ' has-art' : ''}${discs.length > 0 ? ' has-discs' : ''}`}>
+    {hasArt && <Art panels={art!}/>}
+    {discs.length > 0 && <div class="keepsake-discs" aria-hidden="true">{discs.map((src) => <SignDisc key={src} src={src} size="mark"/>)}</div>}
+    <div class="keepsake-text">
+      <p class="kicker">{kicker}</p>
+      <h1>{title}</h1>
+      {meta && <p class="meta">{meta}</p>}
+    </div>
   </header>;
 }
 
@@ -83,18 +107,21 @@ export function NumberRing({ value, caption }: { value: string | number; caption
   </div>;
 }
 
-export function SignDisc({ src, size }: { src: string | undefined; size: 'hero' | 'head' | 'chip' | 'row' }) {
+export function SignDisc({ src, size }: { src: string | undefined; size: 'hero' | 'head' | 'mark' | 'chip' | 'row' }) {
   return src ? <img class={`disc disc-${size}`} src={src} alt=""/> : <span class={`disc disc-${size} disc-empty`} aria-hidden="true"/>;
 }
 
-/** The hero row: a figure (score ring or number ring), when the card has one, beside the verdict and one line about it. */
+/**
+ * The hero row: a figure (score ring or number ring), when the card has one,
+ * beside the verdict, and one line about it centred under them.
+ */
 export function Hero({ figure, verdict, summary }: { figure?: ComponentChildren; verdict: ComponentChildren; summary?: ComponentChildren }) {
   return <section class={`hero${figure ? '' : ' hero-words-only'}`}>
-    {figure && <div class="hero-figure">{figure}</div>}
-    <div class="hero-words">
+    <div class="hero-row">
+      {figure && <div class="hero-figure">{figure}</div>}
       <p class="verdict">{verdict}</p>
-      {summary && <p class="summary">{summary}</p>}
     </div>
+    {summary && <p class="summary">{summary}</p>}
   </section>;
 }
 
@@ -131,19 +158,53 @@ export function More({ label, children }: { label: string; children: ComponentCh
   return <details class="more"><summary>{label}</summary>{children}</details>;
 }
 
+/**
+ * Everything past the first screen, behind one disclosure between
+ * hairlines: the label, a muted line saying what it holds, and a plus that
+ * turns into a minus when it is open.
+ */
+export function Fold({ hint, children, label = 'More from this reading' }: { hint?: ComponentChildren; children: ComponentChildren; label?: string }) {
+  return <details class="fold">
+    <summary>
+      <span class="fold-words"><span class="fold-label">{label}</span>{hint && <span class="fold-hint">{hint}</span>}</span>
+      <span class="fold-sign" aria-hidden="true"/>
+    </summary>
+    <div class="fold-body">{children}</div>
+  </details>;
+}
+
+const ARROW_OUT = 'M5 11 11 5M6 5h5v5';
+const ARROW_ON = 'M2 8h11M9 4l4 4-4 4';
+const Arrow = ({ path }: { path: string }) => <svg class="arrow" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={path}/></svg>;
+
 export interface Action { label: string; href: string }
-/** Underlined text actions: links that open on zodiacs.org, and a copy button that gives the card as text. */
-export function Actions({ links, copyText, copyLabel = 'Copy the card' }: { links: (Action | null | false | undefined | '')[]; copyText: string; copyLabel?: string }) {
+/**
+ * The card's two visible actions, never more: the main one as a pill (it
+ * opens on zodiacs.org), and a second as an underlined link.
+ */
+export function Actions({ primary, secondary }: { primary?: Action | null | false | ''; secondary?: Action | null | false | '' }) {
+  if (!primary && !secondary) return null;
+  return <div class="actions">
+    {primary && <a class="primary" href={primary.href} target="_blank" rel="noreferrer">{primary.label}<span class="orb" aria-hidden="true"><Arrow path={ARROW_OUT}/></span></a>}
+    {secondary && <a class="secondary" href={secondary.href} target="_blank" rel="noreferrer">{secondary.label}<Arrow path={ARROW_ON}/></a>}
+  </div>;
+}
+
+/** Underlined text links inside the fold, such as a famous person's page. */
+export function Links({ links }: { links: (Action | null | false | undefined | '')[] }) {
+  const shown = links.filter((link): link is Action => !!link);
+  return shown.length > 0 ? <p class="links">{shown.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer">{link.label}</a>)}</p> : null;
+}
+
+/** A button that gives the card as plain text, and the line that says whether it worked. */
+export function CopyCard({ text, label = 'Copy the card' }: { text: string; label?: string }) {
   const [status, setStatus] = useState('');
   async function copy() {
-    try { await navigator.clipboard.writeText(copyText); setStatus('Copied.'); }
+    try { await navigator.clipboard.writeText(text); setStatus('Copied.'); }
     catch { setStatus('Copying isn’t allowed here. Select the text to copy it.'); }
   }
-  return <div class="actions-block">
-    <div class="actions">
-      {links.filter((link): link is Action => !!link).map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer">{link.label}</a>)}
-      <button type="button" onClick={copy}>{copyLabel}</button>
-    </div>
+  return <div class="copy-block">
+    <button type="button" class="copy" onClick={copy}>{label}</button>
     <p role="status" class="status">{status}</p>
   </div>;
 }

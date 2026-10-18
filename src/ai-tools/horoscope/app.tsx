@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'preact';
-import { Art, artOf, Nameplate, PanelFooter } from '../card-kit/parts';
+import { Actions, artOf, Keepsake, Nameplate, PanelFooter } from '../card-kit/parts';
 import { hueVars, hueOf } from '../card-kit/hue';
 import { plain } from '../card-kit/words';
 import { render } from 'preact';
@@ -179,14 +179,8 @@ function App() {
   return <main>
     <article class="card horoscope" style={hueVars(hueOf(panel.sign)) as CSSProperties}>
       <Nameplate href="https://zodiacs.org/horoscopes/"/>
-      <header class="card-head has-art">
-        <div class="card-head-text">
-          <p class="kicker">Your horoscope</p>
-          <h1>{panel.signName}</h1>
-          <p class="meta">{plain(signInfo(panel.sign)?.dates ?? '')} <button class="text" onClick={() => pick(true)}>Change sign</button></p>
-        </div>
-        <Art panels={[{ src: artOf(panel.sign) }]}/>
-      </header>
+      <Keepsake kicker="Your horoscope" title={panel.signName} art={[{ src: artOf(panel.sign) }]} signs={[HOROSCOPE_ICONS[panel.sign]]}
+        meta={<>{plain(signInfo(panel.sign)?.dates ?? '')} <button class="text" onClick={() => pick(true)}>Change sign</button></>}/>
       <div class="controls">
         <div class="pills" role="group" aria-label="Day or week">
           {dayChoices.map((date) => <button key={date} aria-pressed={current.mode === 'day' && current.date === date} onClick={() => show({ mode: 'day', date, focus: current.mode === 'day' ? current.focus : 'general' })}>{dayLabel(date)}</button>)}
@@ -201,13 +195,13 @@ function App() {
           ? <Reading reading={reading} zone={zone} note={panel.note} heading={heading}/>
           : <p class="notice">{missing || `There's no ${current.mode === 'day' && current.focus !== 'general' ? `${current.focus} ` : ''}reading for ${panel.signName} here yet.`}</p>}
       </section>
-      {reading && reading.status === 'available' && <div class="actions-block">
-        <div class="actions">
-          <a href={`https://zodiacs.org/horoscopes/${panel.sign}/`} target="_blank" rel="noreferrer">More on zodiacs.org</a>
-          <button type="button" onClick={copy}>Copy reading</button>
+      {reading && reading.status === 'available' && <>
+        <div class="copy-block">
+          <button type="button" class="copy" onClick={copy}>Copy reading</button>
+          <p role="status" class="status">{status}</p>
         </div>
-        <p role="status" class="status">{status}</p>
-      </div>}
+        <Actions primary={{ label: 'More on zodiacs.org', href: `https://zodiacs.org/horoscopes/${panel.sign}/` }}/>
+      </>}
       <p class="fine">{panel.disclosure}</p>
     </article>
     {message && <p role="alert" class="notice">{message}</p>}

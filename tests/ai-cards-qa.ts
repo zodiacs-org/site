@@ -160,14 +160,15 @@ try {
       }
     }
   }
-  // Without reduced motion, the nameplate's slow turn does run on hover.
+  // The cards' tilted mark (owner-chosen 2026-10-18) is still: even with motion allowed, hovering the nameplate starts nothing.
   const context = await browser.newContext({ viewport: { width: 760, height: 900 } });
   const page = await context.newPage();
   await page.setContent(OCCASIONS_HTML);
   await deliver(page, await CARDS[2][2](), 'light');
   await page.locator('h1').waitFor();
   await page.locator('.nameplate').hover();
-  assert.ok(await page.evaluate(() => document.getAnimations().length) > 0, 'The nameplate turns on hover when motion is allowed');
+  assert.equal(await page.locator('.nameplate svg.tilted-ring circle').count(), 12, 'The nameplate draws the tilted twelve-dot mark');
+  assert.equal(await page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length), 0, 'The mark does not move on hover');
   await context.close();
 } finally { await browser.close(); }
 const lowest = report.reduce((min, row: any) => Math.min(min, row.lowestContrast.ratio), 99);

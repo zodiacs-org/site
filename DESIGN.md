@@ -90,40 +90,64 @@ seven cards in `src/ai-tools/occasions-panel/` and the horoscope panel in
 Many people meet Zodiacs through a screenshot of one, so every card has to
 read as Zodiacs on its first screen and stay legible at phone size.
 
+Every card is a keepsake (owner-chosen 2026-10-18, direction C of the share
+moments review, "the art as a keepsake"): its first screen is the art, the
+signs, the title and the verdict with one action, and the rest folds away.
 Anatomy, top to bottom (use only the parts a card needs, in this order):
 
-1. The nameplate: the twelve-dot ring, "Zodiacs" in EB Garamond 500 and a
-   small JetBrains Mono ".org", linking to zodiacs.org. Always first, inside
-   the card, so a cropped screenshot still says where it came from.
-2. The head: an italic EB Garamond kicker in the card's sign hue ("Two charts
-   compared", "Life milestones"), a large serif title (names when the person
-   gave them, otherwise the card's own title) and one muted meta line, beside
-   the hero art (see Artwork below). A date, time and place in the meta line
-   read as a sentence ("Saturday, 12 June 2027 at 17:00 in Florence,
-   Italy"), with the time and place in ink, exactly as the person gave them.
-   Without a time the card says how the sky was read ("No time given, so the
-   sky is read at noon UTC.").
-3. The hero row, between two hairlines: an italic serif verdict and one
-   muted line, beside a figure when the card has a number. A score is a 126px
-   ring (102px at 530px and below) filled to the score with a conic sweep
-   from the first sign's hue to the second's, the number in serif and "out
-   of 100" under it, and the label "60 out of 100" for assistive technology.
-   An age sits in a plain ring. Cards without a number show the verdict
-   alone; the art carries the picture.
-4. Sign chips (pastel disc, name, one detail line), two across, stacked at
-   530px. The small pastel icon discs stay the mark for chips and list rows;
-   they are never replaced by artwork.
-5. Number tiles: up to three, flat tone, label under a serif number. No bars
-   and no filled tracks.
-6. Words: a serif insight line; reasons as a list between hairlines with
-   small dots in the card's hue; facts as label and value rows with hairlines
-   between rows only. Clock times and degrees are set in JetBrains Mono.
-   Long lists show the first few rows and fold the rest behind a disclosure
-   ("4 more contacts").
-7. Actions as underlined text in the card's order: "Share the reading",
-   "Open printable card" or "Open both charts", then "Copy the card". The
-   sky calendar's subscribe link is the one filled button in the family.
-8. The fine print in small muted text, then, outside the card, the panel's
+1. The nameplate: the tilted twelve-dot mark (owner-chosen 2026-10-18: the
+   ring seen as a carousel on an ellipse, nearer dots larger and opaque, far
+   ones small and faint, in deeper tones of the sign hues so it reads on both
+   cards; `card-kit/mark.tsx`), "Zodiacs" in EB Garamond 500 and a small
+   JetBrains Mono ".org", linking to zodiacs.org. Always first, inside the
+   card, so a cropped screenshot still says where it came from. The mark is
+   still: nothing on the card moves on its own.
+2. The keepsake head: the hero art large across the top (see Artwork below),
+   the pastel sign discs of the signs the card is about set on its lower
+   edge (one disc per sign, no outline and no shadow, 52px, 46px at 530px
+   and below), then centred under them an italic EB Garamond kicker in the
+   card's sign hue ("Two charts compared", "Life milestones"), a large serif
+   title (names when the person gave them, otherwise the card's own title)
+   and one muted meta line. A date, time and place in the meta line read as
+   a sentence ("Saturday, 12 June 2027 at 17:00 in Florence, Italy"), with
+   the time and place in ink, exactly as the person gave them. Without a time
+   the card says how the sky was read ("No time given, so the sky is read at
+   noon UTC."). A card about no sign (life milestones, the sky calendar)
+   shows no disc, and a Moon that changes sign that day shows none.
+3. The hero row, centred: a figure when the card has a number, beside an
+   italic serif verdict, and one muted line centred under them. A score is a
+   104px ring (92px at 530px and below) filled to the score with a conic
+   sweep from the first sign's hue to the second's, the number in serif and
+   "out of 100" under it, and the label "60 out of 100" for assistive
+   technology. An age sits in a plain ring. Cards without a number show the
+   verdict alone. The best days of a date search sit above the hero row,
+   outside the fold, because they are the answer.
+4. The fold: one disclosure between hairlines, "More from this reading",
+   with a muted line saying what it holds ("Both charts, the score in three
+   parts, the 8 closest contacts and a copy of the card") and a plus that
+   turns into a minus when open. It holds everything past the first screen,
+   in this order where the card has them:
+   - Sign chips (pastel disc, name, one detail line), two across, stacked at
+     530px. The small pastel icon discs stay the mark for chips and list
+     rows; they are never replaced by artwork.
+   - Number tiles: up to three, flat tone, label under a serif number. No
+     bars and no filled tracks.
+   - Words: a serif insight line; reasons as a list between hairlines with
+     small dots in the card's hue; facts as label and value rows with
+     hairlines between rows only. Clock times and degrees are set in
+     JetBrains Mono. Long lists show the first few rows and fold the rest
+     behind their own disclosure ("4 more contacts").
+   - Links to people's pages, then "Copy the card" as an underlined text
+     button with its status line.
+   The horoscope keeps its day and focus controls and its reading open on
+   the card, with its own "Why this reading?" disclosure, and "Copy reading"
+   above its action.
+5. Actions, never more than two in view: the main one as a pill in ink with
+   a small arrow in a circle ("Share the reading", "Open printable card",
+   "Subscribe in your calendar app"), and a second as underlined text with an
+   arrow ("Open both charts", "Open the sky calendar page"). Both open on
+   zodiacs.org.
+6. The fine print in small muted text, then, outside the card, the panel's
    one-line privacy footer.
 
 Artwork:
@@ -137,7 +161,13 @@ Artwork:
 - Where a sign panel does not fit, the cards use their own pieces, in
   `public/assets/card-art/<name>-720.webp`: `wedding-hero` (weddings and
   anniversaries), `sky-calendar-hero` (the sky calendar and the panel's empty
-  state), `milestones-hero` and `twins-hero`. New pieces follow the same
+  state), `milestones-hero` and `twins-hero`. The last three were replaced
+  on 2026-10-18 with the owner's picks from three new options each: Twin
+  cameos (two cameo portraits facing each other in gold frames, the one
+  piece with faces), Hourglass (an hourglass of pastel sand inside Saturn's
+  gold ring) and Sky dial (a dial with pastel stones round the rim and a
+  crescent Moon for a hand), made as portrait pieces and cropped to 3:2 for
+  the masters. New pieces follow the same
   style: painterly, dimmed, one warm spotlight on the subject, ornate brass
   clockwork dials, the pastel sign palette as the only accents, a hero camera
   angle (frontal, slightly elevated), 3:2, no people, no text, letters or
@@ -165,10 +195,11 @@ Artwork:
   the left one mirrored so the figures face each other. The dark twin is
   shown at saturate .92 and brightness .86, the daylight twin at saturate
   .94. It is decorative (empty alt, hidden from assistive technology) and
-  nothing is ever set over it. On desktop it sits beside the head at 272px
-  wide (3:2), or as two 4:5 panels in 300px for a pair; at 530px and below
-  it goes above the kicker, full width, at 16:9 (two square panels for a
-  pair).
+  no text is ever set over it; only the sign discs overlap its faded foot.
+  In the keepsake head it runs across the top: on desktop up to 540px wide,
+  centred, at 3:2 (a pair as two 5:6 panels); at 530px and below it runs to
+  the card's edges at 4:3 (a pair as two 4:5 panels). It fades about a
+  sixth on the sides and top and a third at the foot, where the discs sit.
 - Size budgets: the panels make no image requests, so the art is inlined,
   both twins of every piece. `node scripts/build-card-art.mjs` makes 400px
   and 480px AVIF variants of each twin (quality 36; AVIF because both twins
@@ -177,7 +208,7 @@ Artwork:
   cannot read WebP or AVIF). The occasions panel inlines the sign panels at
   400px and its own four pieces at 480px; the horoscope panel inlines the
   sign panels at 480px. Each panel stays under its 600 KB build budget
-  (occasions about 572 KB, horoscope about 531 KB). Every image has its
+  (occasions about 572 KB, horoscope about 534 KB). Every image has its
   width and height set and decodes asynchronously. A host browser without
   AVIF shows the card without its picture, never a broken frame.
 - Adding art: generate the dark piece at 1536x1024 (3:2) in the style

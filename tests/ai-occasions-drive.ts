@@ -23,6 +23,13 @@ const wedding = await result('get_occasion_sky', { occasion: 'wedding', date: '2
 const baby = await result('get_occasion_sky', { occasion: 'baby', date: '2026-10-23' });
 const milestones = await result('get_life_milestones', { birthDate: '1997-03-15' });
 
+/** A card's first screen is the moment and one action; the rest is behind "More from this reading". Open it, as a reader would. */
+async function unfold(page: Page) {
+  if (await page.locator('details.fold').count() === 0) return;
+  await page.locator('details.fold > summary').click();
+  await page.locator('details.fold[open] .fold-body').waitFor();
+}
+
 async function show(page: Page, structuredContent: unknown) {
   await page.evaluate(content => {
     (window as any).openai = { toolOutput: content };
@@ -51,6 +58,9 @@ try {
   await show(page, wedding);
   const data = (wedding as any).data;
   await page.getByRole('heading', { name: 'Ana & Luis' }).waitFor();
+  // Closed, the fold keeps the evening and the reasons off the first screen.
+  assert.doesNotMatch(await page.locator('article').innerText(), /Golden hour/);
+  await unfold(page);
   const card = await page.locator('article').innerText();
   assert.match(card, /^Zodiacs\.org\n/u, 'The card opens with the Zodiacs.org nameplate');
   assert.equal(await page.locator('.kicker').innerText(), data.card.title);
@@ -98,6 +108,7 @@ try {
   const plain = await open();
   await show(plain, baby);
   await plain.getByRole('heading', { name: (baby as any).data.card.title }).waitFor();
+  await unfold(plain);
   const babyText = await plain.locator('article').innerText();
   assert.match(babyText, /A new baby/);
   assert.match(babyText, /Friday, 23 October 2026\nNo time or place given, so the sky is read at noon UTC\./);
@@ -115,6 +126,7 @@ try {
   const lives = await open();
   await show(lives, milestones);
   await lives.getByRole('heading', { name: 'Your sky milestones' }).waitFor();
+  await unfold(lives);
   const lifeText = await lives.locator('article').innerText();
   assert.match(lifeText, /Born 15 March 1997, no birth time given/);
   assert.match(lifeText, /Now: your first Saturn return, at 29/);
@@ -143,6 +155,7 @@ try {
   const compare = await open();
   await show(compare, pair);
   await compare.getByRole('heading', { name: 'Ana and Luis' }).waitFor();
+  await unfold(compare);
   const compareText = await compare.locator('article').innerText();
   assert.match(compareText, /Taurus Sun/);
   assert.match(compareText, /Leo Sun/);
@@ -174,6 +187,7 @@ try {
   const celebrityPage = await open();
   await show(celebrityPage, celebrity);
   await celebrityPage.getByRole('heading', { name: 'Sam and Frida Kahlo' }).waitFor();
+  await unfold(celebrityPage);
   const celebrityText = await celebrityPage.locator('article').innerText();
   assert.match(celebrityText, /Aquarius Sun/);
   assert.match(celebrityText, /Cancer Sun/);
@@ -243,6 +257,7 @@ try {
   const birthdayPage = await open();
   await show(birthdayPage, await result('get_birthday', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }));
   await birthdayPage.getByRole('heading', { name: '3 May birthdays' }).waitFor();
+  await unfold(birthdayPage);
   const birthdayText = await birthdayPage.locator('article').innerText();
   assert.match(birthdayText, /Taurus Sun/);
   assert.match(birthdayText, /Solar return 2026/);
@@ -300,7 +315,7 @@ try {
   await writeFile(new URL('occasions-review.json', out), JSON.stringify({
     scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance',
     timezone: 'Asia/Bangkok',
-    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'the calendar subscription', 'the Zodiacs.org nameplate at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'no external requests'],
+    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'the calendar subscription', 'the Zodiacs.org nameplate at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'the first screen keeps the details in the fold, and the fold opens to them', 'no external requests'],
   }, null, 2) + '\n');
   console.log('Occasions panel browser QA passed.');
 } finally { await browser.close(); }
