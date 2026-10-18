@@ -280,7 +280,9 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   .bc-main .field__toggle input:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 2px; }
   /* The switch's knob is drawn by its row, exactly over the box (row padding
      16px + box border 1px), so it can slide when the box is ticked: the same
-     gradient as before, one copy per colour, crossfading as it moves. */
+     gradient as before, one copy per colour. The light copy stays solid under
+     the dark one while it fades, and drops out only once covered, so the knob
+     never turns see-through on the way. */
   .bc-main .field__labelrow .field__toggle { position: relative; }
   .bc-main .field__labelrow .field__toggle::before,
   .bc-main .field__labelrow .field__toggle::after {
@@ -293,15 +295,19 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
     margin-top: -10px;
     background: radial-gradient(circle at 11px 50%, var(--ink-2) 0 7px, transparent 7.5px);
     pointer-events: none;
-    transition: transform var(--dur-1) var(--ease), opacity var(--dur-1) ease;
+    transition: transform var(--dur-1) var(--ease), opacity 0s;
   }
   .bc-main .field__labelrow .field__toggle::after {
     background: radial-gradient(circle at 11px 50%, var(--void-0) 0 7px, transparent 7.5px);
     opacity: 0;
+    transition: transform var(--dur-1) var(--ease), opacity var(--dur-1) var(--ease);
   }
   .bc-main .field__labelrow .field__toggle:has(input:checked)::before,
   .bc-main .field__labelrow .field__toggle:has(input:checked)::after { transform: translateX(15px); }
-  .bc-main .field__labelrow .field__toggle:has(input:checked)::before { opacity: 0; }
+  .bc-main .field__labelrow .field__toggle:has(input:checked)::before {
+    opacity: 0;
+    transition: transform var(--dur-1) var(--ease), opacity 0s var(--dur-1);
+  }
   .bc-main .field__labelrow .field__toggle:has(input:checked)::after { opacity: 1; }
   .bc-main .calc__submit {
     width: 100%;
@@ -505,20 +511,16 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   /* ── Motion ──
      Transform and opacity only, in the site's own recipes, and only where a
      change would otherwise snap. Nothing waits on motion to be usable. */
-  /* The big three and the first-reading prompt arrive in order, on the same
-     step as the rest of the result. */
+  /* The big three arrive in order, on the same step as the rest of the
+     result; the first-reading prompt under them arrives with the first. */
   .bc-main .calc__three > .three-card,
   .bc-main .calc__first-reading { transition: opacity 200ms var(--ease), transform 200ms var(--ease); }
   .bc-main .calc__three > .three-card:nth-child(2) { transition-delay: 40ms; }
   .bc-main .calc__three > .three-card:nth-child(3) { transition-delay: 80ms; }
-  .bc-main .calc__first-reading { transition-delay: 120ms; }
   @starting-style {
     .bc-main .calc__three > .three-card,
     .bc-main .calc__first-reading { opacity: 0; transform: translateY(6px); }
   }
-  /* The wheel's arrival waits until the wheel is first seen: the calculator
-     marks the wheelbox then (data-wheel-arrival). Until that, it rests. */
-  .bc-main .xplr__wheelbox:not([data-wheel-arrival]) .wheel--animate { animation: none; }
   /* Disclosures settle open like the site's question rows; closing is
      immediate. */
   .bc-main details[open] > :not(summary),
@@ -541,11 +543,13 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
       .bc-main .calc__first-reading,
       .bc-main .place__chip { transform: none; }
     }
-    .bc-main .field__labelrow .field__toggle::before,
-    .bc-main .field__labelrow .field__toggle::after { transition: opacity var(--dur-1) ease; }
+    .bc-main .field__labelrow .field__toggle::before { transition: opacity 0s; }
+    .bc-main .field__labelrow .field__toggle::after { transition: opacity var(--dur-1) var(--ease); }
+    .bc-main .field__labelrow .field__toggle:has(input:checked)::before { transition: opacity 0s var(--dur-1); }
     .bc-main details[open] > :not(summary),
-    .bc-faq .kfaq details[open] > :not(summary) { animation: none; }
+    .bc-faq .kfaq details[open] > :not(summary) { animation: bc-fade-in 160ms ease backwards; }
   }
+  @keyframes bc-fade-in { from { opacity: 0; } }
 
   @media (max-width: 1100px) {
     .bc-trust__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
