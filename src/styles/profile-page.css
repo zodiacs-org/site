@@ -882,7 +882,8 @@
 .pf-page .living-chart__sync a { padding-block: 8px; color: var(--ink-0); text-decoration-color: var(--hair-3); }
 .pf-page .living-chart__empty-state {
   grid-template-columns: minmax(0, 1fr);
-  gap: 18px;
+  /* The owner-set floor between the words and the button is 20px. */
+  gap: 24px;
   padding-top: 20px;
   border-top: 1px solid var(--hair-1);
 }
