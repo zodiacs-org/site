@@ -3,19 +3,27 @@
  * (Sun, Moon and rising) and beside compatibility invitations must not show in
  * the requests the page makes, or they give our host the signs of everyone a
  * visitor keeps. The islands draw them through signIcon (lib/sign-icon.ts),
- * which asks for all twelve pictures of a size in zodiac order first. Two
- * browsers holding different people, with no sign in common, must make the
- * same requests on /profile/ and on each translated profile: the same
- * addresses, and the same sign pictures in the same order.
+ * which asks for all twelve pictures of a size in zodiac order first; the
+ * pictures shown then come from the twelve the page holds. Two browsers
+ * holding different people, with no sign in common, must make the same
+ * requests on /profile/ and on each translated profile: the same addresses,
+ * and the same sign pictures in the same order.
  *
- * The invitations panel needs the production flags (invites on, and an
- * account service to sign in to); with PUBLIC_COMPAT_INVITES_ENABLED=1 the
- * English page is also checked with two invitations each. The account service
- * is the loopback stand-in, answered here; nothing leaves the machine.
+ * Nothing here intercepts requests: Playwright's interception turns the
+ * browser cache off, so every picture shown would be fetched again by name,
+ * which a visitor's browser does not do. Instead, a front server answers the
+ * site's own functions (/api/) and passes everything else to the preview, the
+ * account service is a loopback stand-in on its configured port, and the
+ * browser resolves no other host, so nothing leaves the machine.
+ *
+ * The invitations panel needs the production flags (invites on, and the
+ * loopback account service to sign in to); with them the English page is also
+ * checked with two invitations each.
  *
  *   npm run build && node tests/profile-sign-icon-requests-drive.mjs
  */
 import assert from 'node:assert/strict';
+import { createServer } from 'node:http';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
@@ -28,9 +36,9 @@ const SIGN_ORDER = [
 const ICON = /^\/assets\/zodiac-icons\/(\d+)\/([a-z]+)\.(webp|avif)(\?[^#]*)?$/u;
 const SIGN_IN_PATH = new RegExp(`(?:^|/)(?:${SIGN_ORDER.join('|')})(?![a-z])`, 'u');
 const PAGES = ['/profile/', '/es/profile/', '/pt/profile/', '/fr/profile/', '/it/profile/', '/ru/profile/'];
-const invitesEnabled = process.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
-const serviceURL = process.env.PUBLIC_SUPABASE_URL ?? '';
-const signedIn = invitesEnabled && Boolean(serviceURL);
+const serviceURL = process.env.PUBLIC_SUPABASE_URL ? new URL(process.env.PUBLIC_SUPABASE_URL) : null;
+const loopbackService = serviceURL?.hostname === '127.0.0.1';
+const signedIn = process.env.PUBLIC_COMPAT_INVITES_ENABLED === '1' && loopbackService;
 
 /** A saved chart whose Sun, Moon and rising fall 15° into the given signs. */
 function chart(id, name, relationship, [sun, moon, rising]) {
@@ -96,7 +104,79 @@ const session = {
   access_token: jwt, refresh_token: 'fixture-refresh', token_type: 'bearer', expires_in: 7200,
   expires_at: Math.floor(Date.now() / 1000) + 7200, user,
 };
-const authStorageKey = serviceURL ? `sb-${new URL(serviceURL).hostname.split('.')[0]}-auth-token` : '';
+const authStorageKey = serviceURL ? `sb-${serviceURL.hostname.split('.')[0]}-auth-token` : '';
+
+/** The visitor whose page is open; the stand-ins answer for them. */
+let current = VISITORS[0];
+let currentRoute = '/profile/';
+
+function listen(server, port = 0) {
+  return new Promise((resolveListen, rejectListen) => {
+    server.once('error', rejectListen);
+    server.listen(port, '127.0.0.1', () => resolveListen(server));
+  });
+}
+
+function sendJSON(response, json, headers = {}) {
+  response.writeHead(200, { ...headers, 'content-type': 'application/json', 'cache-control': 'no-store' });
+  response.end(JSON.stringify(json));
+}
+
+/** The account service on its configured loopback port: a session, and the visitor's charts. */
+function accountService() {
+  return createServer((request, response) => {
+    const url = new URL(request.url, serviceURL);
+    const headers = {
+      'access-control-allow-origin': request.headers.origin ?? '*',
+      'access-control-allow-methods': 'GET,POST,DELETE,PATCH,OPTIONS',
+      'access-control-allow-headers': request.headers['access-control-request-headers'] ?? '*',
+      'access-control-allow-credentials': 'true',
+    };
+    if (request.method === 'OPTIONS') { response.writeHead(204, headers); response.end(); return; }
+    request.resume();
+    if (url.pathname === '/auth/v1/user') return sendJSON(response, user, headers);
+    if (url.pathname === '/auth/v1/token') return sendJSON(response, session, headers);
+    if (url.pathname.startsWith('/rest/v1/')) {
+      const table = url.pathname.split('/').pop();
+      if (request.method !== 'GET') return sendJSON(response, null, headers);
+      if (table === 'charts') return sendJSON(response, current.charts.map((saved) => ({ id: saved.id, payload: saved, updated_at: saved.updatedAt })), headers);
+      if (table === 'profiles') return sendJSON(response, { settings: { houseSystem: 'whole' } }, headers);
+      return sendJSON(response, [], headers);
+    }
+    return sendJSON(response, {}, headers);
+  });
+}
+
+const HOP_BY_HOP = new Set(['connection', 'keep-alive', 'transfer-encoding', 'content-encoding', 'content-length']);
+
+/** The site's own functions do not run under preview; this answers them and passes the rest through. */
+function frontServer(previewURL) {
+  return createServer(async (request, response) => {
+    const url = new URL(request.url, previewURL);
+    if (url.pathname.startsWith('/api/')) {
+      request.resume();
+      if (url.pathname === '/api/compatibility/invites') {
+        return sendJSON(response, { invites: signedIn && currentRoute === '/profile/' ? current.invites : [] });
+      }
+      if (url.pathname === '/api/email/chart-preference') return sendJSON(response, { enabled: false, chartId: null });
+      return sendJSON(response, {});
+    }
+    try {
+      const upstream = await fetch(url, {
+        method: request.method,
+        headers: Object.fromEntries(Object.entries(request.headers).filter(([name]) => name !== 'host' && !HOP_BY_HOP.has(name))),
+        redirect: 'manual',
+      });
+      const headers = {};
+      upstream.headers.forEach((value, name) => { if (!HOP_BY_HOP.has(name)) headers[name] = value; });
+      response.writeHead(upstream.status, headers);
+      response.end(Buffer.from(await upstream.arrayBuffer()));
+    } catch (error) {
+      response.writeHead(502, { 'content-type': 'text/plain' });
+      response.end(String(error));
+    }
+  });
+}
 
 /** Resolves once the page has made no request for `settle` ms. */
 async function quiet(requests, settle = 2_000, limit = 30_000) {
@@ -111,6 +191,8 @@ async function quiet(requests, settle = 2_000, limit = 30_000) {
 }
 
 async function visit(browser, baseURL, route, visitor) {
+  current = visitor;
+  currentRoute = route;
   const origin = new URL(baseURL).origin;
   const withInvites = signedIn && route === '/profile/';
   const context = await browser.newContext({
@@ -134,40 +216,6 @@ async function visit(browser, baseURL, route, visitor) {
     if (signedIn) localStorage.setItem(authStorageKey, JSON.stringify(session));
     sessionStorage.setItem('profile-icons-seeded', '1');
   }, { charts: visitor.charts, signedIn, session, authStorageKey });
-  if (serviceURL) {
-    await context.route(`${serviceURL}/**`, (request) => {
-      const url = new URL(request.request().url());
-      const method = request.request().method();
-      const headers = {
-        'access-control-allow-origin': origin,
-        'access-control-allow-methods': 'GET,POST,DELETE,PATCH,OPTIONS',
-        'access-control-allow-headers': 'apikey,authorization,content-type,x-client-info,prefer,accept-profile,content-profile',
-        'access-control-allow-credentials': 'true',
-      };
-      const reply = (json) => request.fulfill({ status: 200, headers, contentType: 'application/json', body: JSON.stringify(json) });
-      if (method === 'OPTIONS') return request.fulfill({ status: 204, headers });
-      if (url.pathname === '/auth/v1/user') return reply(user);
-      if (url.pathname === '/auth/v1/token') return reply(session);
-      if (url.pathname.startsWith('/rest/v1/')) {
-        const table = url.pathname.split('/').pop();
-        if (method !== 'GET') return reply(null);
-        if (table === 'charts') return reply(visitor.charts.map((saved) => ({ id: saved.id, payload: saved, updated_at: saved.updatedAt })));
-        if (table === 'profiles') return reply({ settings: { houseSystem: 'whole' } });
-        return reply([]);
-      }
-      return reply({});
-    });
-  }
-  // The site's own functions do not run under preview. Playwright tries the
-  // most recently added route first, so the catch-all goes first.
-  await context.route('**/api/**', (request) => request.fulfill({ status: 200, contentType: 'application/json', body: '{}' }));
-  await context.route('**/api/email/chart-preference', (request) => request.fulfill({
-    status: 200, contentType: 'application/json', body: JSON.stringify({ enabled: false, chartId: null }),
-  }));
-  await context.route('**/api/compatibility/invites', (request) => request.fulfill({
-    status: 200, contentType: 'application/json', body: JSON.stringify({ invites: withInvites ? visitor.invites : [] }),
-  }));
-  await context.route(/plausible\.io|vercel-insights|va\.vercel/u, (request) => request.abort());
 
   try {
     const page = await context.newPage();
@@ -216,14 +264,20 @@ function firstRequestOrder(icons) {
   return orders;
 }
 
+const servers = [];
+if (loopbackService) servers.push(await listen(accountService(), Number(serviceURL.port)));
 const browser = await chromium.launch({
   executablePath: await findChromium(),
   headless: true,
-  args: STABLE_CHROMIUM_ARGS,
+  // Every host but the loopback fails to resolve: no analytics, no live service.
+  args: [...STABLE_CHROMIUM_ARGS, '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'],
 });
 
 try {
-  await withPreview({ port: Number(process.env.PROFILE_SIGN_ICON_PORT ?? 4337) }, async (baseURL) => {
+  await withPreview({ port: Number(process.env.PROFILE_SIGN_ICON_PORT ?? 4337) }, async (previewURL) => {
+    const front = await listen(frontServer(previewURL));
+    servers.push(front);
+    const baseURL = `http://127.0.0.1:${front.address().port}`;
     const icons = (requests) => requests.filter((path) => path.startsWith('/assets/zodiac-icons/'));
     const addresses = (requests) => [...new Set(requests)].sort();
     for (const route of PAGES) {
@@ -271,4 +325,8 @@ try {
   });
 } finally {
   await browser.close();
+  await Promise.all(servers.map((server) => new Promise((resolveClose) => {
+    server.close(resolveClose);
+    server.closeAllConnections();
+  })));
 }
