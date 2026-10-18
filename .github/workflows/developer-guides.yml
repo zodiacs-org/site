@@ -52,7 +52,7 @@ jobs:
         run: node scripts/verify-developer-guide-examples.mjs > "$RESULTS/examples.json"
       - name: Documented Python HTTP success and failure handling
         run: node scripts/verify-developer-guide-python.mjs > "$RESULTS/python.json"
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
           name: developer-guides-${{ github.sha }}
