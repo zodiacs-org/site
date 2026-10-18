@@ -135,6 +135,13 @@ const sunOf = (slug: ShareSign): PreviewSign => ({ slug, label: `${signName(slug
 /** One date in src/data/birthdays.json: a sign every year, or a cusp between two. */
 export interface BirthdayDay { sign?: string; cusp?: { a: string; b: string } }
 
+/**
+ * The first of the people the site publishes who were born on a date, as the
+ * date's birthday page lists them (src/lib/people.ts, peopleForBirthday: the
+ * indexable people, oldest first), with their Sun sign.
+ */
+export interface FamousBirthday { name: string; slug: string; sun: string | null }
+
 export interface BirthdayCardModel {
   /** "3 May" */
   label: string;
@@ -148,6 +155,8 @@ export interface BirthdayCardModel {
   /** One plain sentence or two about the date's Sun, for the page and its description. */
   about: string;
   hue: string;
+  /** The first famous person born on the date, when the site publishes one. */
+  famous: FamousBirthday | null;
 }
 
 function signAbout(slug: ShareSign): string {
@@ -155,17 +164,26 @@ function signAbout(slug: ShareSign): string {
   return `${cap(sign.element)}, ${sign.modality}, ruled by ${sign.ruler}. ${plain(sign.dates)}.`;
 }
 
-export function birthdayCardModel(share: BirthdayShare, days: Readonly<Record<string, BirthdayDay>>): BirthdayCardModel | null {
+export function birthdayCardModel(share: BirthdayShare, days: Readonly<Record<string, BirthdayDay>>, famous: FamousBirthday | null = null): BirthdayCardModel | null {
   const month = MONTH_NAMES[share.month - 1];
   const slug = `${month.toLowerCase()}-${share.day}`;
   const entry = days[slug];
   if (!entry) return null;
   const label = `${share.day} ${month}`;
-  const base = { label, title: `${label} birthdays`, slug };
+  const base = { label, title: `${label} birthdays`, slug, famous };
+  // A famous birthday joins the line: "Taurus Sun, like Audrey Hepburn" when
+  // the line names the Sun sign they had, and a plain sentence otherwise, as
+  // on a cusp date whose sign their birth year decided differently.
+  const withFamous = (line: string, sign: ShareSign | null) => (!famous ? line
+    : sign && famous.sun === sign ? `${line}, like ${famous.name}` : `${line}. ${famous.name} was born on this date`);
+  const aboutFamous = famous ? ` ${famous.name} was born on this date.` : '';
   if (entry.sign && isShareSign(entry.sign)) {
     // A date off the cusp has the same sign every year; a link naming another is not about this date.
     if (share.sign && share.sign !== entry.sign) return null;
-    return { ...base, signs: [sunOf(entry.sign)], line: `${signName(entry.sign)} Sun`, about: `People born on ${label} have the Sun in ${signName(entry.sign)}. ${signAbout(entry.sign)}`, hue: HUES[entry.sign] };
+    return {
+      ...base, signs: [sunOf(entry.sign)], line: withFamous(`${signName(entry.sign)} Sun`, entry.sign), hue: HUES[entry.sign],
+      about: `People born on ${label} have the Sun in ${signName(entry.sign)}. ${signAbout(entry.sign)}${aboutFamous}`,
+    };
   }
   const cusp = entry.cusp;
   if (!cusp || !isShareSign(cusp.a) || !isShareSign(cusp.b)) return null;
@@ -173,14 +191,26 @@ export function birthdayCardModel(share: BirthdayShare, days: Readonly<Record<st
   if (share.sign) {
     if (share.sign !== a && share.sign !== b) return null;
     return {
-      ...base, signs: [sunOf(share.sign)], line: `${signName(share.sign)} Sun`, hue: HUES[share.sign],
-      about: `${label} sits on the cusp of ${signName(a)} and ${signName(b)}; for this birthday the Sun was in ${signName(share.sign)}. ${signAbout(share.sign)}`,
+      ...base, signs: [sunOf(share.sign)], line: withFamous(`${signName(share.sign)} Sun`, share.sign), hue: HUES[share.sign],
+      about: `${label} sits on the cusp of ${signName(a)} and ${signName(b)}; for this birthday the Sun was in ${signName(share.sign)}. ${signAbout(share.sign)}${aboutFamous}`,
     };
   }
   return {
-    ...base, signs: [sunOf(a), sunOf(b)], line: `On the cusp of ${signName(a)} and ${signName(b)}`, hue: HUES[a],
-    about: `On ${label} the Sun sits on the boundary between ${signName(a)} and ${signName(b)}, so the sign depends on the year and time of birth.`,
+    ...base, signs: [sunOf(a), sunOf(b)], line: withFamous(`On the cusp of ${signName(a)} and ${signName(b)}`, null), hue: HUES[a],
+    about: `On ${label} the Sun sits on the boundary between ${signName(a)} and ${signName(b)}, so the sign depends on the year and time of birth.${aboutFamous}`,
   };
+}
+
+/** The first famous person born on each month and day ("05-04"), from the AI tools' index of the people the site publishes, oldest first as the birthday pages list them. */
+export function famousBirthdays(people: readonly { slug: string; name: string; gregorian: string; sun?: { sign: string | null } | null }[]): Map<string, FamousBirthday> {
+  const firsts = new Map<string, FamousBirthday & { gregorian: string }>();
+  for (const person of people) {
+    if (!/^\d{4}-\d{2}-\d{2}$/u.test(person.gregorian)) continue;
+    const key = person.gregorian.slice(5);
+    const known = firsts.get(key);
+    if (!known || person.gregorian < known.gregorian) firsts.set(key, { name: person.name, slug: person.slug, sun: person.sun?.sign ?? null, gregorian: person.gregorian });
+  }
+  return new Map([...firsts].map(([key, person]) => [key, { name: person.name, slug: person.slug, sun: person.sun }]));
 }
 
 /** A sky calendar event, as the feed lists it in English (src/lib/return-visits/sky-calendar.ts). */

@@ -32,11 +32,13 @@ p { margin: 0; }
 /* The card */
 .card { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px; display: grid; gap: 20px; min-width: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .card > * { min-width: 0; }
-/* The nameplate: the tilted mark is still; nothing on the card moves on its own. */
-.nameplate { display: inline-flex; align-items: center; width: fit-content; color: var(--ink); text-decoration: none; }
-.nameplate svg { margin-right: 9px; overflow: visible; }
-.nameplate-name { font: 500 20px/1 var(--serif); letter-spacing: .01em; }
-.nameplate-tld { margin-left: 3px; font: 400 10.5px/1 var(--mono); letter-spacing: .02em; color: var(--muted); vertical-align: baseline; }
+/* The nameplate: the brand lockup (DESIGN.md, "The brand lockup"), at the
+   nav's 13px. The tilted mark is still; nothing on the card moves on its own. */
+.nameplate { display: inline-flex; align-items: center; gap: 10px; width: fit-content; color: var(--ink); text-decoration: none; white-space: nowrap; direction: ltr; }
+.nameplate svg { flex: none; overflow: visible; }
+.nameplate-name { font: 400 13px/1 var(--serif); letter-spacing: .2em; text-transform: uppercase; }
+.nameplate-sep { margin: 0 .2em; color: var(--muted); }
+.nameplate-tld { font-weight: 500; color: var(--ink-2); }
 
 .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-top: -2px; }
 .card-head-text { display: grid; gap: 6px; min-width: 0; }

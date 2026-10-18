@@ -25,6 +25,7 @@ const IMAGES: [string, (request: Request) => Promise<Response>, string][] = [
   ['share-occasion-plain', handleOccasionImageRequest, '/api/og/occasion-image?o=birthday&d=2026-10-23&sun=libra&moon=aries&score=74&v=good'],
   ['share-birthday', handleBirthdayImageRequest, '/api/og/birthday-image?d=05-03'],
   ['share-birthday-cusp', handleBirthdayImageRequest, '/api/og/birthday-image?d=04-20'],
+  ['share-birthday-famous', handleBirthdayImageRequest, '/api/og/birthday-image?d=05-04'],
   ['share-sky-calendar', handleSkyCalendarImageRequest, '/api/og/sky-calendar-image?k=retrograde&b=mercury&d=2026-10-24'],
   ['share-horoscope', handleHoroscopeImageRequest, `/api/og/horoscope-image?s=leo&d=${generatedFor}`],
 ];

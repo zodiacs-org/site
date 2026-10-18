@@ -13,6 +13,9 @@ import { executeAiTool } from '../src/ai-tools/tools';
 import type { AiToolName } from '../src/ai-tools/contracts';
 import { plain as plainWords } from '../src/ai-tools/card-kit/words';
 
+/** A card's words under its lockup: the lockup's dot is the brand mark, not copy. */
+const copyOf = (text: string) => text.replace(/^ZODIACS·ORG\n/u, '');
+
 const NOW = new Date('2026-10-13T12:00:00Z');
 async function result(tool: AiToolName, args: Record<string, unknown>) {
   const answer = await executeAiTool(tool, args, { occasions: true, now: () => NOW });
@@ -62,7 +65,8 @@ try {
   assert.doesNotMatch(await page.locator('article').innerText(), /Golden hour/);
   await unfold(page);
   const card = await page.locator('article').innerText();
-  assert.match(card, /^Zodiacs\.org\n/u, 'The card opens with the Zodiacs.org nameplate');
+  assert.match(card, /^ZODIACS·ORG\n/u, 'The card opens with the ZODIACS · ORG lockup');
+  assert.equal(await page.locator('article .nameplate').first().getAttribute('aria-label'), 'Zodiacs.org', 'The lockup reads as Zodiacs.org');
   assert.equal(await page.locator('.kicker').innerText(), data.card.title);
   // The exact place and time the person gave, in ink.
   assert.match(card, /Saturday, 12 June 2027 at 19:00 in Florence, Italy/);
@@ -80,7 +84,8 @@ try {
   assert.match(card, /Mercury is retrograde: expect delays/);
   assert.match(card, /not a guarantee/);
   assert.doesNotMatch(card, /Europe\/Rome|\d{4}-\d{2}-\d{2}|T\d{2}:\d{2}/, 'People see dates, places and clock times, not zone IDs or ISO instants');
-  assert.doesNotMatch(card, /[—–·]/u, 'No dashes or middle dots in the card');
+  // The lockup's dot is the brand mark; the copy under it has no dashes or middle dots.
+  assert.doesNotMatch(copyOf(card), /[—–·]/u, 'No dashes or middle dots in the card');
   const link = page.getByRole('link', { name: 'Open printable card' });
   assert.equal(await link.getAttribute('href'), data.cardUrl);
   assert.ok(data.cardUrl.startsWith('https://zodiacs.org/occasions/#'));
@@ -165,11 +170,11 @@ try {
   assert.match(compareText, new RegExp(score.verdict, 'u'));
   assert.match(compareText, new RegExp(`Attraction\\s+${score.areas.attraction}`, 'u'));
   assert.match(compareText, new RegExp(`Long-term stability\\s+${score.areas.stability}`, 'u'));
-  assert.doesNotMatch(compareText, /[—–·]/u, 'No dashes or middle dots in the card');
+  assert.doesNotMatch(copyOf(compareText), /[—–·]/u, 'No dashes or middle dots in the card');
   // Forecasts, never guarantees.
   assert.doesNotMatch(compareText.replace(plainWords((pair as any).data.note), ''), /guarantee|soulmate|destined|doomed/iu);
   assert.match(compareText, /not a guarantee/);
-  assert.match(compareText, /^Zodiacs\.org\n/u, 'Every card opens with the Zodiacs.org nameplate');
+  assert.match(compareText, /^ZODIACS·ORG\n/u, 'Every card opens with the ZODIACS · ORG lockup');
   assert.ok((await compare.getByRole('link', { name: 'Open both charts' }).getAttribute('href'))!.startsWith('https://zodiacs.org/compatibility/#'));
   assert.equal(await compare.getByRole('link', { name: 'Share the reading' }).getAttribute('href'), (pair as any).data.shareUrl);
   // Four contacts show; the rest open from the keyboard.
@@ -236,7 +241,7 @@ try {
   const twinsText = await twinsPage.locator('article').innerText();
   assert.doesNotMatch(twinsText, /\b\d{4}-\d{2}-\d{2}\b/u, 'Birth dates read as dates, not ISO strings');
   assert.match(twinsText, /Born \d{1,2} [A-Z][a-z]{2,4} \d{4}/u);
-  assert.doesNotMatch(twinsText, /[—–·]/u, 'Lifespans and descriptions read with plain punctuation');
+  assert.doesNotMatch(copyOf(twinsText), /[—–·]/u, 'Lifespans and descriptions read with plain punctuation');
   await twinsPage.screenshot({ path: new URL('occasions-twins-desktop.png', out).pathname, fullPage: true });
   const famous = await open();
   const frida = await result('get_famous_chart', { name: 'Frida Kahlo' });
@@ -246,7 +251,7 @@ try {
     assert.equal(await famous.locator('h1').innerText(), (frida as any).data.person.name);
     assert.match(await famous.locator('article').innerText(), /12:00 civil time/);
     assert.match(await famous.locator('.meta').innerText(), /Born 6 July 1907 in Coyoacán$/u);
-    assert.doesNotMatch(await famous.locator('article').innerText(), /[—–·]/u, 'Published copy reads with plain punctuation');
+    assert.doesNotMatch(copyOf(await famous.locator('article').innerText()), /[—–·]/u, 'Published copy reads with plain punctuation');
   }
   await famous.screenshot({ path: new URL('occasions-famous-desktop.png', out).pathname, fullPage: true });
   const unknown = await open();
@@ -328,7 +333,7 @@ try {
   await writeFile(new URL('occasions-review.json', out), JSON.stringify({
     scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance',
     timezone: 'Asia/Bangkok',
-    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'a birthday shared by its month and day, never the year', 'the calendar subscription', 'the calendar shared by its next event', 'the Zodiacs.org nameplate at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'the first screen keeps the details in the fold, and the fold opens to them', 'no external requests'],
+    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'a birthday shared by its month and day, never the year', 'the calendar subscription', 'the calendar shared by its next event', 'the ZODIACS · ORG lockup at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'the first screen keeps the details in the fold, and the fold opens to them', 'no external requests'],
   }, null, 2) + '\n');
   console.log('Occasions panel browser QA passed.');
 } finally { await browser.close(); }

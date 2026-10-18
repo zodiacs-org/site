@@ -30,18 +30,31 @@ short caption, and two clear buttons.
 - Imagery: real zodiac/celestial artifacts, chart surfaces, sign icons, and
   computed-result previews. No vague stock mysticism.
 
-## Brand Nameplate
+## Brand Lockup
 
-One mark, one nameplate, everywhere the brand speaks:
+One lockup wherever the brand signs its work (owner-chosen 2026-10-19): the
+tilted twelve-dot ring and ZODIACS · ORG.
 
-- The mark: twelve dots in a ring, one per sign hue, drawn inline
-  (`src/components/BrandMark.astro`) — the same mark as the favicon and
-  the share cards. On hover of its parent link it makes one slow
-  revolution; reduced motion stills it.
-- The nameplate: "Zodiacs" set in EB Garamond 500 (the masthead voice),
-  with ".org" as a small JetBrains Mono tag seated on the baseline.
-- Used identically in the nav pill and the footer. Never a plain sans
-  wordmark; never a new logo per surface.
+- The ring: the twelve sign dots seen tilted, as a carousel on an ellipse,
+  nearer dots larger and opaque, far ones small and faint, in deeper tones of
+  the sign hues so it reads on dark and light surfaces (`src/lib/tilted-mark.ts`,
+  viewBox `-2 4 28 16`). It is 2.625 times the type size wide (7:4) and sits
+  three quarters of the type size before the words. It is still.
+- The words: ZODIACS · ORG in EB Garamond 400 capitals at 0.2em tracking and
+  line height 1. Live text is written "Zodiacs·org" and capitalised by the
+  stylesheet, and its link is named "Zodiacs.org"; images draw the capitals.
+  The dot (U+00B7) is muted, with 0.2em on either side so it sits centred
+  between the words; ORG is weight 500, a step dimmer than ZODIACS.
+- Sizes: 13px in the nav, footer, cards and pages; 20px on 1200 × 630 images;
+  other formats scale from these.
+- Everywhere: the desktop nav, the footers, the share pages, every share and
+  export image, the OG cards, emails and the assistant cards. Two exceptions,
+  by the owner's choice: on phones the top bar keeps ZODIACS | ASTROFOLIO,
+  and the favicon and app icons keep the flat ring (`BrandMark.astro`), which
+  reads better at 16 px.
+- The dot belongs to the mark, so the rule against middle dots in copy does
+  not apply to it. No image or lockup uses a sentence-case "Zodiacs.org"
+  wordmark; in running text the name stays Zodiacs, or Zodiacs.org.
 
 ## Voice
 
@@ -95,13 +108,11 @@ moments review, "the art as a keepsake"): its first screen is the art, the
 signs, the title and the verdict with one action, and the rest folds away.
 Anatomy, top to bottom (use only the parts a card needs, in this order):
 
-1. The nameplate: the tilted twelve-dot mark (owner-chosen 2026-10-18: the
-   ring seen as a carousel on an ellipse, nearer dots larger and opaque, far
-   ones small and faint, in deeper tones of the sign hues so it reads on both
-   cards; `card-kit/mark.tsx`), "Zodiacs" in EB Garamond 500 and a small
-   JetBrains Mono ".org", linking to zodiacs.org. Always first, inside the
-   card, so a cropped screenshot still says where it came from. The mark is
-   still: nothing on the card moves on its own.
+1. The nameplate: the brand lockup (see Brand Lockup above) at 13px, the
+   tilted twelve-dot mark (`card-kit/mark.tsx`) and ZODIACS · ORG, linking to
+   zodiacs.org. Always first, inside the card, so a cropped screenshot still
+   says where it came from. The mark is still: nothing on the card moves on
+   its own.
 2. The keepsake head: the hero art large across the top (see Artwork below),
    the pastel sign discs of the signs the card is about set on its lower
    edge (one disc per sign, no outline and no shadow, 52px, 46px at 530px
@@ -261,8 +272,8 @@ released contract stay byte-for-byte. No zone IDs or ISO dates on a card.
 
 Share images: `src/server/result-preview.ts` draws five cards' keepsakes at
 1200x630, as the owner picked on 2026-10-18 (direction C for each): the art
-across the whole picture, the nameplate top left (the tilted mark,
-"Zodiacs" and a small ".org", as on the cards), and at the bottom left the
+across the whole picture, the brand lockup top left at 20px (the tilted
+mark and ZODIACS · ORG, as on the cards), and at the bottom left the
 pastel sign discs, the kicker in the first sign's hue, the serif title and
 one line.
 
@@ -270,7 +281,7 @@ one line.
 | --- | --- | --- |
 | Two charts | `/api/og/compatibility-image` | "Two charts compared", "Ana and Luis", "60 out of 100. A good match, with some work to do" |
 | A date | `/api/og/occasion-image` | "Our wedding", "Ana & Luis", "69 out of 100. A good day for it" |
-| A birthday | `/api/og/birthday-image` | "A birthday", "3 May birthdays", "Taurus Sun" (a cusp date: both signs, "On the cusp of Aries and Taurus") |
+| A birthday | `/api/og/birthday-image` | "A birthday", "3 May birthdays", "Taurus Sun" (a cusp date: both signs, "On the cusp of Aries and Taurus"); with a famous birthday, "Taurus Sun, like Audrey Hepburn" |
 | Sky calendar | `/api/og/sky-calendar-image` | "Sky calendar", "The sky in your calendar", "Mercury retrograde, Sat 24 Oct to Fri 13 Nov." (no disc: it names no sign, as on its card) |
 | A horoscope | `/api/og/horoscope-image` | "Horoscope for Saturday 17 October", "Leo", the reading's own line for the sign ("For Leo, …") |
 
@@ -279,7 +290,10 @@ carry only what the picture shows, and the server checks the last three
 against the site's data before drawing: the birthday table (a link naming
 a sign the date never has is refused), the sky calendar's events, and the
 published horoscope window, whose line it quotes, so no text travels in a
-link. A birthday's link carries the month and day, never the year. A
+link. A birthday's link carries the month and day, never the year; its
+picture names the first famous person the site publishes for the date, as
+the date's page lists them (oldest first), with "like" only when the line
+names the Sun sign they had, and its page links their chart. A
 horoscope that has left the window keeps its picture with the sign's dates
 as the line; a link to a day or week after the window's latest is refused,
 since nothing is published for it yet, and a week's link names its Monday.

@@ -18,6 +18,7 @@ import {
 import {
   birthdayCardModel,
   compatibilityCardModel,
+  famousBirthdays,
   horoscopeCardModel,
   longDate,
   NEUTRAL_HUE,
@@ -36,6 +37,7 @@ const WINDOW = json<HoroscopeWindow>('../data/horoscope-window.json');
 const TODAY = WINDOW.generatedFor;
 const WEEK = WINDOW.editions.find((edition) => edition.anchorDate === TODAY)!.signs.leo.weekly.period;
 const OCCASION = 'o=wedding&d=2027-06-12&n=Ana+%26+Luis&p=Florence&sun=gemini&moon=libra&score=84&v=excellent';
+const FAMOUS = famousBirthdays(json<{ people: Parameters<typeof famousBirthdays>[0] }>('../ai-tools/features/people-index.json').people);
 const nativeFetch = globalThis.fetch;
 
 afterEach(() => {
@@ -94,6 +96,24 @@ describe('birthday, sky calendar and horoscope share models', () => {
     expect(birthday('d=02-29')).toMatchObject({ title: '29 February birthdays', line: 'Pisces Sun' });
     expect(birthday('d=05-03&s=leo')).toBeNull();
     expect(birthday('d=04-20&s=leo')).toBeNull();
+  });
+
+  it('name the first famous person the site publishes for the date, as its birthday page lists them', () => {
+    const famous = (query: string) => {
+      const share = parseBirthdayShare(new URLSearchParams(query))!;
+      return birthdayCardModel(share, DAYS, FAMOUS.get(`${String(share.month).padStart(2, '0')}-${String(share.day).padStart(2, '0')}`) ?? null)!;
+    };
+    expect(FAMOUS.get('05-04')).toEqual({ name: 'Audrey Hepburn', slug: 'audrey-hepburn', sun: 'taurus' });
+    // Oldest first: Edgar Allan Poe (1809) before Janis Joplin (1943).
+    expect(FAMOUS.get('01-19')?.name).toBe('Edgar Allan Poe');
+    expect(FAMOUS.has('05-03')).toBe(false);
+    expect(famous('d=05-04')).toMatchObject({ line: 'Taurus Sun, like Audrey Hepburn', famous: { slug: 'audrey-hepburn' } });
+    expect(famous('d=05-04').about).toBe('People born on 4 May have the Sun in Taurus. Earth, fixed, ruled by Venus. Apr 20 to May 20. Audrey Hepburn was born on this date.');
+    // On a cusp, "like" only when the line names the sign they had.
+    expect(famous('d=01-19&s=capricorn').line).toBe('Capricorn Sun, like Edgar Allan Poe');
+    expect(famous('d=01-19&s=aquarius').line).toBe('Aquarius Sun. Edgar Allan Poe was born on this date');
+    expect(famous('d=01-19').line).toBe('On the cusp of Capricorn and Aquarius. Edgar Allan Poe was born on this date');
+    expect(famous('d=05-03')).toMatchObject({ line: 'Taurus Sun', famous: null });
   });
 
   it('find a sky calendar event in the feed’s own data, and nothing that is not in it', () => {
@@ -171,6 +191,14 @@ describe('share link pages', () => {
     expect(birthday).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/birthday-image?d=05-03">');
     expect(birthday).toContain('<meta property="og:image:type" content="image/jpeg">');
     expect(birthday).toContain('<a class="cta" href="/birthday/?ref=chatgpt">Find your own birthday</a>');
+    // The brand lockup, as in the nav: the tilted mark and ZODIACS · ORG, named Zodiacs.org.
+    expect(birthday).toMatch(/<a class="brand" href="\/" aria-label="Zodiacs\.org"><svg viewBox="-2 4 28 16"[^>]*>(?:<circle [^>]+\/>){12}<\/svg><span class="brand-name" aria-hidden="true">Zodiacs<span class="brand-sep">·<\/span><span class="brand-tld">org<\/span><\/span><\/a>/u);
+    expect(birthday).not.toContain('class="more"');
+    // A date with a famous birthday names them, and links their chart.
+    const famous = await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-04'))).text();
+    expect(famous).toContain('<title>4 May birthdays: Taurus Sun, like Audrey Hepburn on Zodiacs</title>');
+    expect(famous).toContain('Audrey Hepburn was born on this date.');
+    expect(famous).toContain('<a class="more" href="/people/audrey-hepburn/">Audrey Hepburn’s chart</a>');
     const sky = await (await handleSkyCalendarLinkRequest(new Request('https://zodiacs.org/share/sky-calendar/?k=retrograde&b=mercury&d=2026-10-24'))).text();
     expect(sky).toContain('content="https://zodiacs.org/api/og/sky-calendar-image?k=retrograde&amp;b=mercury&amp;d=2026-10-24"');
     expect(sky).toContain('Mercury retrograde: Saturday 24 October to Friday 13 November.');
@@ -247,6 +275,7 @@ describe('share preview images', () => {
     ['one unknown sign', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?bs=pisces&score=41&attraction=55&communication=38&stability=30&v=challenging'))],
     ['birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=05-03'))],
     ['cusp birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=04-20'))],
+    ['famous birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=01-19&s=aquarius'))],
     ['sky calendar', () => handleSkyCalendarImageRequest(new Request('https://zodiacs.org/api/og/sky-calendar-image?k=retrograde&b=mercury&d=2026-10-24'))],
     ['horoscope', () => handleHoroscopeImageRequest(new Request(`https://zodiacs.org/api/og/horoscope-image?s=leo&d=${TODAY}`))],
     ['week’s horoscope', () => handleHoroscopeImageRequest(new Request(`https://zodiacs.org/api/og/horoscope-image?s=sagittarius&w=${WEEK.from}`))],

@@ -40,6 +40,9 @@ const out = new URL('../docs/platform/zodiacs-ai/evidence/', import.meta.url);
 await mkdir(out, { recursive: true });
 try {
   const context = await browser.newContext({ viewport: { width: 760, height: 900 }, timezoneId: 'Asia/Bangkok' });
+  // The panel takes today from the device clock: pin it to the committed edition's day, as the tool's own clock is,
+  // so the drive does not fail once the real date passes the window.
+  await context.clock.setFixedTime(noon);
   const page = await context.newPage();
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   let network = 0; page.on('request', request => { if (!request.url().startsWith('data:')) network++; });

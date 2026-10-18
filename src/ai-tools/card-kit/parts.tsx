@@ -14,11 +14,17 @@ import { TiltedRing } from './mark';
 import { hueVars } from './hue';
 import './card.css';
 
-/** The nameplate: the tilted twelve-dot mark, "Zodiacs" in the masthead serif and a small ".org". */
+/**
+ * The nameplate: the brand lockup, owner-chosen 2026-10-19 for everything the
+ * site makes: the tilted twelve-dot mark and ZODIACS · ORG in the site's nav
+ * serif, set in capitals, the dot muted and ORG a step dimmer. The words are
+ * written "Zodiacs·org" and capitalised by the stylesheet, as in the nav, and
+ * the link's name is "Zodiacs.org".
+ */
 export function Nameplate({ href = 'https://zodiacs.org/' }: { href?: string }) {
-  return <a class="nameplate" href={href} target="_blank" rel="noreferrer">
-    <TiltedRing width={35}/>
-    <span class="nameplate-name">Zodiacs<span class="nameplate-tld">.org</span></span>
+  return <a class="nameplate" href={href} target="_blank" rel="noreferrer" aria-label="Zodiacs.org">
+    <TiltedRing width={34}/>
+    <span class="nameplate-name" aria-hidden="true">Zodiacs<span class="nameplate-sep">·</span><span class="nameplate-tld">org</span></span>
   </a>;
 }
 
