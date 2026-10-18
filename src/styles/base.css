@@ -815,37 +815,12 @@ details.pair-faq__item:focus-within { border-color: var(--hair-3); }
   details.pf-account-v2__delete
 ):not([open])::details-content { opacity: 0; transform: translateY(-4px); }
 /* Reduced motion keeps the fade that says something opened and drops the
-   movement: the shift lands while the box is still transparent. */
+   movement: the shift lands while the box is still transparent. One rule
+   for every listed disclosure: each entry above is one class and one
+   element, which this matches and follows. On a disclosure not listed,
+   nothing changes opacity, so it does nothing. */
 @media (prefers-reduced-motion: reduce) {
-  :is(
-    details.faq__item,
-    details.pair-faq__item,
-    details.faq,
-    details.faq-item,
-    .kfaq details,
-    .article-contents details,
-    .bc-main details,
-    details.evidence-disclosure,
-    details.program__basis,
-    details.horo-method,
-    details.hhl-method,
-    details.today-method-details,
-    details.compat-library,
-    details.calendar-method,
-    details.bday-years,
-    details.bday-people__more,
-    details.learning-path__practice,
-    details.glossary__technical,
-    details.evhub-earlier,
-    details.num__cycles,
-    details.tsearch-host,
-    details.sharing-method,
-    details.about-operations,
-    details.pf-safety__details,
-    details.saved-pages__reading,
-    details.living-chart__forecast,
-    details.pf-account-v2__delete
-  )::details-content { transition: opacity 160ms ease; }
+  :root details::details-content { transition: opacity 160ms ease; }
 }
 
 /* ── Section back-link and dateline ─────────────────────────────
