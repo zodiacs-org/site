@@ -579,9 +579,10 @@
 .pf-page .pf-chart__action:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* ── Painted art inside a panel (PanelArt) ──
-   The picture never meets the panel's edge: an elliptical mask fades it
-   to nothing on every side, so it dissolves into any surface, dark or
-   light. Its box is fixed before the image loads. */
+   The picture never meets the panel's edge: its box stays inside the
+   panel and an elliptical mask, as wide and tall as the box, fades it to
+   nothing before any edge, so it dissolves into any surface, dark or
+   light. The box is sized before the image loads. */
 .pf-art {
   display: block;
   overflow: hidden;
@@ -786,12 +787,12 @@
 .pf-page .pfd__today > .core { position: relative; overflow: hidden; }
 .pf-page .pf-art--today {
   position: absolute;
-  top: -18px;
-  right: -36px;
+  top: 0;
+  right: 0;
   width: min(52%, 480px);
   aspect-ratio: 16 / 9;
-  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 54% 48%, #000 34%, transparent 100%);
-  mask-image: radial-gradient(ellipse 50% 50% at 54% 48%, #000 34%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 34%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 34%, transparent 100%);
 }
 .pf-page .pf-art--today > img { object-position: 50% 45%; }
 .pf-page .pfd__today > .core > :not(.pf-art) { position: relative; }
@@ -840,13 +841,12 @@
 .pf-page .pfd__empty .btn { margin-top: 8px; }
 .pf-page .pf-art--keepsake {
   position: absolute;
-  top: 50%;
-  right: -36px;
-  width: min(60%, 560px);
-  aspect-ratio: 3 / 2;
-  transform: translateY(-50%);
-  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 52% 48%, #000 46%, transparent 100%);
-  mask-image: radial-gradient(ellipse 50% 50% at 52% 48%, #000 46%, transparent 100%);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(58%, 560px);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 44%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 44%, transparent 100%);
 }
 .pf-page .pf-art--keepsake > img { object-position: 62% 46%; }
 
@@ -929,13 +929,12 @@
 .pf-page .pf-invites__empty p { color: var(--text-2); font-size: 0.9375rem; }
 .pf-page .pf-art--invite {
   position: absolute;
-  top: 50%;
-  right: -40px;
-  width: min(56%, 520px);
-  aspect-ratio: 3 / 2;
-  transform: translateY(-50%);
-  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 52% 50%, #000 44%, transparent 100%);
-  mask-image: radial-gradient(ellipse 50% 50% at 52% 50%, #000 44%, transparent 100%);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(54%, 520px);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 42%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 42%, transparent 100%);
 }
 .pf-page .pf-art--invite > img { object-position: 56% 50%; }
 
@@ -949,13 +948,14 @@
     position: relative;
     top: auto;
     right: auto;
+    bottom: auto;
     width: auto;
     height: 200px;
     aspect-ratio: auto;
     margin: calc(var(--pf-pad) * -1) calc(var(--pf-pad) * -1) -30px;
     transform: none;
-    -webkit-mask-image: radial-gradient(ellipse 54% 50% at 50% 46%, #000 48%, transparent 100%);
-    mask-image: radial-gradient(ellipse 54% 50% at 50% 46%, #000 48%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 48%, transparent 100%);
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 48%, transparent 100%);
   }
 }
 
