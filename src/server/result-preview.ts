@@ -59,7 +59,8 @@ import {
 } from '../ai-tools/share-links.js';
 import { HOROSCOPE_DISCLOSURE } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
-import { TILTED_RING_DOTS, TILTED_RING_VIEWBOX } from '../lib/tilted-mark.js';
+import { LOCKUP_SIZE, tiltedRingSvg } from '../lib/brand-lockup.mjs';
+import { lockupImage } from './brand-lockup-image.js';
 import {
   COMPATIBILITY_SHARE_IMAGE_PATH,
   COMPATIBILITY_SHARE_KEYS,
@@ -232,22 +233,13 @@ const SERIF = 'EB Garamond, EB Garamond Ext';
 const TEXT_WIDTH = 620;
 
 /**
- * The brand lockup (DESIGN.md, "The brand lockup"), as on the cards: the
- * tilted twelve-dot mark and ZODIACS · ORG in the regular serif's capitals at
- * 0.2em tracking, the dot muted and centred between the words (0.2em either
- * side) and ORG a step dimmer at 500. The mark is 2.625 times the type size
- * wide, with three quarters of it before the words.
+ * The brand lockup (DESIGN.md, "Brand Lockup") at 20px, top left, drawn by
+ * the site's one image lockup: the tilted twelve-dot mark and ZODIACS · ORG,
+ * with the dot in the cards' muted ink so it holds on the art.
  */
-const LOCKUP_SIZE = 20;
 function nameplate() {
-  const width = Math.round(LOCKUP_SIZE * 2.625);
-  return h('div', { style: { display: 'flex', alignItems: 'center', position: 'absolute', left: '64px', top: '56px' } },
-    h('svg', { width, height: Math.round((width * 4) / 7), viewBox: TILTED_RING_VIEWBOX, style: { marginRight: `${Math.round(LOCKUP_SIZE * 0.75)}px` } },
-      ...TILTED_RING_DOTS.map((dot) => h('circle', { cx: dot.cx, cy: dot.cy, r: dot.r, fill: dot.fill, opacity: dot.opacity }))),
-    h('div', { style: { display: 'flex', alignItems: 'center', fontFamily: 'EB Garamond', fontWeight: 400, fontSize: LOCKUP_SIZE, lineHeight: 1, letterSpacing: `${LOCKUP_SIZE * 0.2}px`, color: INK } },
-      'ZODIACS',
-      h('span', { style: { marginLeft: `${LOCKUP_SIZE * 0.2}px`, marginRight: `${LOCKUP_SIZE * 0.2}px`, color: CARD_MUTED } }, '·'),
-      h('span', { style: { fontWeight: 500, color: INK_SOFT } }, 'ORG')));
+  return h('div', { style: { display: 'flex', position: 'absolute', left: '64px', top: '56px' } },
+    lockupImage(LOCKUP_SIZE.image, { name: INK, dot: CARD_MUTED, tld: INK_SOFT }));
 }
 
 /** One panel of art, filling its box the way the cards' `object-fit: cover` does, held 46% of the way down, mirrored when asked. */
@@ -538,7 +530,7 @@ h1{font:500 clamp(30px,6vw,46px)/1.1 "EB Garamond",Georgia,serif;margin:28px 0 1
 const STYLE_NONCE = 'share-preview';
 
 /** The brand lockup's tilted mark at the nav's 13px (34 by 19), drawn inline: the page loads no image for it. */
-const LOCKUP_SVG = `<svg viewBox="${TILTED_RING_VIEWBOX}" width="34" height="19" fill="none" aria-hidden="true">${TILTED_RING_DOTS.map((dot) => `<circle cx="${dot.cx}" cy="${dot.cy}" r="${dot.r}" fill="${dot.fill}" opacity="${dot.opacity}"/>`).join('')}</svg>`;
+const LOCKUP_SVG = tiltedRingSvg({ width: 34 });
 
 export interface SharePage {
   title: string;

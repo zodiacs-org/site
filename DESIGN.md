@@ -33,25 +33,30 @@ short caption, and two clear buttons.
 ## Brand Lockup
 
 One lockup wherever the brand signs its work (owner-chosen 2026-10-19): the
-tilted twelve-dot ring and ZODIACS · ORG.
+tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
+`src/lib/brand-lockup.mjs`, and every surface draws from them.
 
 - The ring: the twelve sign dots seen tilted, as a carousel on an ellipse,
   nearer dots larger and opaque, far ones small and faint, in deeper tones of
-  the sign hues so it reads on dark and light surfaces (`src/lib/tilted-mark.ts`,
-  viewBox `-2 4 28 16`). It is 2.625 times the type size wide (7:4) and sits
-  three quarters of the type size before the words. It is still.
+  the sign hues so it reads on dark and light surfaces (viewBox
+  `-2 4 28 16`). It is 2.625 times the type size wide (7:4) and sits three
+  quarters of the type size before the words. It is still.
 - The words: ZODIACS · ORG in EB Garamond 400 capitals at 0.2em tracking and
   line height 1. Live text is written "Zodiacs·org" and capitalised by the
   stylesheet, and its link is named "Zodiacs.org"; images draw the capitals.
   The dot (U+00B7) is muted, with 0.2em on either side so it sits centred
   between the words; ORG is weight 500, a step dimmer than ZODIACS.
-- Sizes: 13px in the nav, footer, cards and pages; 20px on 1200 × 630 images;
-  other formats scale from these.
-- Everywhere: the desktop nav, the footers, the share pages, every share and
-  export image, the OG cards, emails and the assistant cards. Two exceptions,
-  by the owner's choice: on phones the top bar keeps ZODIACS | ASTROFOLIO,
-  and the favicon and app icons keep the flat ring (`BrandMark.astro`), which
-  reads better at 16 px.
+- Sizes: 13px in the nav, on the cards and on the share pages; 16px in the
+  footer; 20px on 1200 × 630 images and on the portrait export cards. Other
+  formats scale from these.
+- Everywhere, the wing included: the desktop nav, the footers, the share
+  pages, every share and export image, the OG cards, emails and the assistant
+  cards. Two exceptions, by the owner's choice: on phones the top bar keeps
+  ZODIACS | ASTROFOLIO, and the favicon, the app icons and the bio page's
+  orbit emblem keep the flat ring (`BrandMark.astro`), which reads better
+  small. Cards already published under a pinned or dated name (the Registry
+  lot cards, the Astrofolio and Terminal families) keep the design they were
+  published with; a new family takes the lockup.
 - The dot belongs to the mark, so the rule against middle dots in copy does
   not apply to it. No image or lockup uses a sentence-case "Zodiacs.org"
   wordmark; in running text the name stays Zodiacs, or Zodiacs.org.
