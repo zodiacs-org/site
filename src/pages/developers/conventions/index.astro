@@ -15,7 +15,7 @@ const superseded = namespaces.reduce((sum, space) => sum + space.entries.filter(
 const href = (id: string) => `#${encodeURI(id)}`;
 
 const title = 'Conventions Registry for Astrology Receipts | Zodiacs.org';
-const description = `Every id a Zodiacs receipt or conformance vector names, from zodiac:tropical to the house systems, the ΔT models and the conventions of earlier engine versions: ${total} ids, each with its definition, its source and an address on zodiacs.org.`;
+const description = 'Every id a Zodiacs receipt or conformance vector names, from zodiac:tropical to the house systems, the ΔT models and the conventions of earlier engine versions, each with its definition, its sources and an address on zodiacs.org.';
 const jsonLd = [
   {
     '@type': 'Dataset',
@@ -45,13 +45,13 @@ const jsonLd = [
         names an id, a definition and its sources, and an address on this page.
       </p>
       <p>
-        An id is a namespace, a colon and a value, such as
-        <a href={href('zodiac:tropical')}><code>zodiac:tropical</code></a> or
+        An id is a namespace, a colon and a value, such as{' '}
+        <a href={href('zodiac:tropical')}><code>zodiac:tropical</code></a> or{' '}
         <a href={href('house:placidus')}><code>house:placidus</code></a>. The
         value is everything after the first colon and may itself hold
         semicolons, slashes or an @. A receipt that holds a value under a field
         names the id of that field's namespace and that value: a natal receipt
-        whose <code>conventions.zodiac</code> is <code>tropical</code> names
+        whose <code>conventions.zodiac</code> is <code>tropical</code> names{' '}
         <code>zodiac:tropical</code>.
       </p>
       <p>
@@ -60,7 +60,7 @@ const jsonLd = [
         and conformance suite {registry.conformance.suiteVersion}. {superseded} of
         them are <strong>superseded</strong>: earlier engine versions wrote them,
         and the engine still reads their receipts. The registry is dedicated to the
-        public domain under CC0 1.0, as the conformance suite is. It is also
+        public domain under CC0 1.0, as the conformance suite is. It is also{' '}
         <a href="/developers/conventions/registry.json">a JSON file</a>, with each id's
         address, and <a href="/developers/conventions.md">a Markdown twin</a>.
       </p>

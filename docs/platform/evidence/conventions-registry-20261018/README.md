@@ -47,7 +47,8 @@ the receipts already write.
     ephemeris (`ephemeris:astronomy-engine@2.1.19`), and the coverage
     statements.
 - **The time records** of each instant: the ΔT model and segment, the time
-  basis, and the source of UT1 − UTC.
+  basis, and the source of UT1 − UTC. `deltat-segment:fallback` is marked
+  superseded: only rc.15's first cut wrote it.
 - **Compute API receipts** (`zodiacs.compute-receipt.v1`) carry the engine's
   conventions and coverage. They add the endpoint, the local-time policy,
   the search solver, window and completeness, and the election search's
@@ -101,6 +102,16 @@ ayanamsa's label changed, four of the eight tests fail.
 on the page, and `registry.json` must give every id, in order, with its
 address. `scripts/check-developer-authorship.mjs` lists the page and both
 twins.
+
+`docs/claims/ledger.json` lists the 84 sentences that the claims extractor
+selects from the registry, its page and its llms line:
+
+- 46 make claims the ledger already evidences, such as the time basis, the
+  ΔT model, the reference span and the conformance suite;
+- 3 make a new claim, `product.conventions-registry`, whose evidence is the
+  registry, its tests and the check on the built site;
+- 35 are definitions, citations of the engine's documents, or third parties'
+  sources.
 
 ## In production
 

@@ -205,7 +205,7 @@ describe('the conventions registry', () => {
     expect(values('ut1-source')).toEqual([...SOURCES]);
   });
 
-  it('holds every id the engine\'s receipts and the compute API\'s receipts name', () => {
+  it('holds every id that natal, calc and compute API receipts name', () => {
     const named = new Set<string>();
     for (const receipt of natalReceipts()) for (const id of natalReceiptIds(receipt)) named.add(id);
     for (const receipt of calcReceipts()) for (const id of calcReceiptIds(receipt)) named.add(id);
@@ -221,7 +221,7 @@ describe('the conventions registry', () => {
     }
   });
 
-  it('holds exactly the conformance vectors\' kinds and arbiters, tied to their vector files', () => {
+  it('holds exactly the kinds and arbiters of the conformance vectors, tied to their vector files', () => {
     const levelKinds = summary.levels.flatMap((level) => level.kinds.map((kind) => [kind.kind, level] as const));
     const levelArbiters = summary.levels.flatMap((level) => level.arbiters.map((arbiter) => [arbiter, level] as const));
     expect(values('kind')).toEqual(levelKinds.map(([kind]) => kind));
@@ -236,7 +236,7 @@ describe('the conventions registry', () => {
     }
   });
 
-  it('is served as JSON with each id\'s address on the registry page', async () => {
+  it('is served as JSON with the address of each id on the registry page', async () => {
     const response = await (registryJson as unknown as () => Response)();
     const served = await response.json() as { base: string; namespaces: Array<{ entries: Array<{ id: string; uri: string }> }> };
     const uris = served.namespaces.flatMap((space) => space.entries);
