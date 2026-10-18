@@ -476,33 +476,8 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   /* The astrolabe's hub sits behind the headline: keep the middle dark for
      the words and let the ring of sign discs catch the light around them. */
   .bc-close .closing-panel::before { background: radial-gradient(ellipse 46% 62% at 50% 50%, rgba(6, 7, 9, 0.84) 0 34%, rgba(6, 7, 9, 0.6) 66%, rgba(6, 7, 9, 0.9) 100%); }
-
-  /* ── Motion ──
-     Transform and opacity only, in the site's own recipes, and only where a
-     change would otherwise snap. Nothing waits on motion to be usable. The
-     disclosures, the time switch's knob and the place chip share their
-     settle with the rest of the site (base.css). */
-  /* The big three arrive in order, on the same step as the rest of the
-     result; the first-reading prompt under them arrives with the first. */
-  .bc-main .calc__three > .three-card,
-  .bc-main .calc__first-reading { transition: opacity 200ms var(--ease), transform 200ms var(--ease); }
-  .bc-main .calc__three > .three-card:nth-child(2) { transition-delay: 40ms; }
-  .bc-main .calc__three > .three-card:nth-child(3) { transition-delay: 80ms; }
-  @starting-style {
-    .bc-main .calc__three > .three-card,
-    .bc-main .calc__first-reading { opacity: 0; transform: translateY(6px); }
-  }
-  /* Reduced motion keeps the fades that say something changed and drops
-     every movement. */
-  @media (prefers-reduced-motion: reduce) {
-    .bc-main .calc__three > .three-card,
-    .bc-main .calc__first-reading { transition: opacity 160ms ease; }
-    .bc-main .calc__three > .three-card:nth-child(n) { transition-delay: 0ms; }
-    @starting-style {
-      .bc-main .calc__three > .three-card,
-      .bc-main .calc__first-reading { transform: none; }
-    }
-  }
+  /* Motion: the result's cards, the disclosures, the time switch's knob and
+     the place chip use the site's shared recipes (base.css). */
 
   @media (max-width: 1100px) {
     .bc-trust__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }

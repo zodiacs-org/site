@@ -731,20 +731,54 @@ details:is(.faq__item, .pair-faq__item) > summary::after {
 details[open]:is(.faq__item, .pair-faq__item) > summary::after {
   transform: translateY(2px) rotate(-135deg);
 }
-/* Every disclosure that opens in place settles the same way: the question
-   rows, the kit's flat question list and the birth chart's result
-   disclosures. Closing is immediate. */
-details[open]:is(.faq__item, .pair-faq__item) > :not(summary),
-.kfaq details[open] > :not(summary),
-.bc-main details[open] > :not(summary) {
-  animation: answer-settle 280ms var(--ease-soft) backwards;
-}
 details.faq__item:focus-within,
 details.pair-faq__item:focus-within { border-color: var(--hair-3); }
 @media (hover: hover) and (pointer: fine) {
   details.faq__item:hover { border-color: var(--hair-2); background: var(--void-2); }
   details:is(.faq__item, .pair-faq__item):hover > summary::after { color: var(--text-2); }
 }
+@media (prefers-reduced-motion: reduce) {
+  details:is(.faq__item, .pair-faq__item) > summary::after { transition: none; }
+}
+
+/* ── Disclosures ────────────────────────────────────────────────
+   Every disclosure that opens in place settles open the same way, in the
+   question rows' recipe; closing is immediate. The settle is set on the
+   disclosure's own content box: Chrome keeps a closed disclosure's content
+   out of style updates, so a settle set on the content itself would play
+   only the first time it opened. Browsers without ::details-content open at
+   once. Don't list a disclosure whose content is a positioned menu or sheet:
+   a transform on the content box would move it while it settles. */
+:root { --disclosure-settle: answer-settle 280ms var(--ease-soft) backwards; }
+:is(
+  details.faq__item,
+  details.pair-faq__item,
+  details.faq,
+  details.faq-item,
+  .kfaq details,
+  .article-contents details,
+  .bc-main details,
+  details.evidence-disclosure,
+  details.program__basis,
+  details.horo-method,
+  details.hhl-method,
+  details.today-method-details,
+  details.compat-library,
+  details.calendar-method,
+  details.bday-years,
+  details.bday-people__more,
+  details.learning-path__practice,
+  details.glossary__technical,
+  details.evhub-earlier,
+  details.num__cycles,
+  details.tsearch-host,
+  details.sharing-method,
+  details.about-operations,
+  details.pf-safety__details,
+  details.saved-pages__reading,
+  details.living-chart__forecast,
+  details.pf-account-v2__delete
+)[open]::details-content { animation: var(--disclosure-settle); }
 @keyframes answer-settle {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: none; }
@@ -753,10 +787,7 @@ details.pair-faq__item:focus-within { border-color: var(--hair-3); }
    movement. */
 @keyframes settle-fade { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  details:is(.faq__item, .pair-faq__item) > summary::after { transition: none; }
-  details[open]:is(.faq__item, .pair-faq__item) > :not(summary),
-  .kfaq details[open] > :not(summary),
-  .bc-main details[open] > :not(summary) { animation: settle-fade 160ms ease backwards; }
+  :root { --disclosure-settle: settle-fade 160ms ease backwards; }
 }
 
 /* ── Section back-link and dateline ─────────────────────────────
@@ -805,11 +836,11 @@ details.pair-faq__item:focus-within { border-color: var(--hair-3); }
 /* ── Small responses to the pointer ─────────────────────────────
    A card's "go" label takes one step toward where it leads, and a data
    table's row answers the row being read. Nothing moves on its own. */
-:is(.home-tool__go, .home-share__go, .home-tool-es__go, .tool-card__go, .featured-card__go, .horo-card__go, .horo-es__go, .horo-pt__go, .compat-choice__go, .feeds__go) {
+:is(.home-tool__go, .home-share__go, .home-tool-es__go, .tool-card__go, .featured-card__go, .horo-card__go, .hhl-card__go, .horo-es__go, .horo-pt__go, .compat-choice__go, .feeds__go) {
   transition: transform var(--dur-1) var(--ease);
 }
 @media (hover: hover) and (pointer: fine) {
-  :is(a, button, .tile, .featured-card, .horo-card, .compat-choice):hover :is(.home-tool__go, .home-share__go, .home-tool-es__go, .tool-card__go, .featured-card__go, .horo-card__go, .horo-es__go, .horo-pt__go, .compat-choice__go, .feeds__go) {
+  :is(a, button, .tile, .featured-card, .horo-card, .compat-choice):hover :is(.home-tool__go, .home-share__go, .home-tool-es__go, .tool-card__go, .featured-card__go, .horo-card__go, .hhl-card__go, .horo-es__go, .horo-pt__go, .compat-choice__go, .feeds__go) {
     transform: translateX(3px);
   }
   :is(.rx-table, .voc-table, .dates-table, .method-table) tbody tr:hover {
@@ -817,7 +848,7 @@ details.pair-faq__item:focus-within { border-color: var(--hair-3); }
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  :is(.home-tool__go, .home-share__go, .home-tool-es__go, .tool-card__go, .featured-card__go, .horo-card__go, .horo-es__go, .horo-pt__go, .compat-choice__go, .feeds__go) { transition: none; transform: none !important; }
+  :is(.home-tool__go, .home-share__go, .home-tool-es__go, .tool-card__go, .featured-card__go, .horo-card__go, .hhl-card__go, .horo-es__go, .horo-pt__go, .compat-choice__go, .feeds__go) { transition: none; transform: none !important; }
 }
 /* Bordered disclosures answer the pointer and the keyboard like FAQ rows. */
 details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-within { border-color: var(--hair-3); }
@@ -843,7 +874,8 @@ details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-w
   }
 }
 
-/* "On this page": the same turning chevron and settle as the question rows. */
+/* "On this page": the same turning chevron as the question rows; its list
+   settles open with the other disclosures. */
 .article-contents summary { list-style: none; display: inline-flex; align-items: center; gap: 10px; }
 .article-contents summary::-webkit-details-marker { display: none; }
 .article-contents summary::before {
@@ -857,13 +889,11 @@ details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-w
   transition: transform var(--dur-2) var(--ease-soft);
 }
 .article-contents details[open] > summary::before { transform: translateY(-2px) rotate(45deg); }
-.article-contents details[open] > ol { animation: answer-settle 280ms var(--ease-soft) backwards; }
 @media (prefers-reduced-motion: reduce) {
   .article-contents summary::before { transition: none; }
-  .article-contents details[open] > ol { animation: settle-fade 160ms ease backwards; }
 }
 
-/* ── Choosing a place and the time switch ───────────────────────
+/* ── Forms and their results ─────────────────────────────────────
    A picked place settles into its field from where the typing was, on
    every form that asks for a place. */
 .place__chip {
@@ -903,10 +933,41 @@ details:is(.compat-library, .about-operations, .bday-facts, .pair-basis):focus-w
   transition: transform var(--dur-1) var(--ease), opacity 0s var(--dur-1);
 }
 .bc-main .field__labelrow .field__toggle:has(input:checked)::after { opacity: 1; }
+/* A computed chart's cards arrive in order, on every chart form and the big
+   three; the first-reading prompt under them arrives with the first. The
+   results of the moon phase, numerology and return tools settle in as one
+   block on the same step: they land in view or are scrolled to. (Saturn's
+   and the transits' results land below the fold, where an arrival would
+   play unseen.) */
+.calc__three > .three-card,
+.calc__first-reading,
+:is(.mp, .num) > .calc__result,
+.calc > .sr-result {
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+}
+.calc__three > .three-card:nth-child(2) { transition-delay: 40ms; }
+.calc__three > .three-card:nth-child(3) { transition-delay: 80ms; }
+@starting-style {
+  .calc__three > .three-card,
+  .calc__first-reading,
+  :is(.mp, .num) > .calc__result,
+  .calc > .sr-result { opacity: 0; transform: translateY(6px); }
+}
 /* Reduced motion keeps the fades and drops the movement. */
 @media (prefers-reduced-motion: reduce) {
   .place__chip { transition: opacity 160ms ease; }
   @starting-style { .place__chip { transform: none; } }
+  .calc__three > .three-card,
+  .calc__first-reading,
+  :is(.mp, .num) > .calc__result,
+  .calc > .sr-result { transition: opacity 160ms ease; }
+  .calc__three > .three-card:nth-child(n) { transition-delay: 0ms; }
+  @starting-style {
+    .calc__three > .three-card,
+    .calc__first-reading,
+    :is(.mp, .num) > .calc__result,
+    .calc > .sr-result { transform: none; }
+  }
   .bc-main .field__labelrow .field__toggle::before { transition: opacity 0s; }
   .bc-main .field__labelrow .field__toggle::after { transition: opacity var(--dur-1) var(--ease); }
   .bc-main .field__labelrow .field__toggle:has(input:checked)::before { transition: opacity 0s var(--dur-1); }
