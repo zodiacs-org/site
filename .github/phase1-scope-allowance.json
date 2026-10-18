@@ -1,26 +1,11 @@
 {
   "version": 1,
-  "id": "design-top10-locales-20261017",
-  "baseCommit": "e7ad9dfc24a7502ab011f220c418917e64108346",
+  "id": "design-profile-redesign-20261018",
+  "baseCommit": "bf2e7e5bb77b72b70f8772cb6ef3a1e5fb8930a0",
   "protectedPaths": [
-    "src/lib/i18n/ui/ru.ts",
-    "src/pages/es/birth-chart/index.astro",
-    "src/pages/es/horoscopes/[sign]/index.astro",
-    "src/pages/es/horoscopes/index.astro",
-    "src/pages/es/index.astro",
-    "src/pages/es/rising-sign/index.astro",
-    "src/pages/es/today/index.astro",
-    "src/pages/fr/birth-chart/index.astro",
-    "src/pages/fr/index.astro",
-    "src/pages/fr/rising-sign/index.astro",
-    "src/pages/it/birth-chart/index.astro",
-    "src/pages/it/index.astro",
-    "src/pages/it/rising-sign/index.astro",
-    "src/pages/pt/birth-chart/index.astro",
-    "src/pages/pt/horoscopes/[sign]/index.astro",
-    "src/pages/pt/horoscopes/index.astro",
-    "src/pages/pt/index.astro",
-    "src/pages/pt/rising-sign/index.astro",
-    "src/pages/pt/today/index.astro"
+    "src/pages/es/profile/index.astro",
+    "src/pages/fr/profile/index.astro",
+    "src/pages/it/profile/index.astro",
+    "src/pages/pt/profile/index.astro"
   ]
 }

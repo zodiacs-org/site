@@ -1,6 +1,7 @@
 ---
 import ReturnToolLinks from "../../../components/return-visits/ReturnToolLinks.astro";
 import Base from '../../../layouts/Base.astro';
+import ProfilePrepaint from '../../../components/profile/ProfilePrepaint.astro';
 import ProfileDashboard from '../../../islands/ProfileDashboard';
 import SavedRecordsPanel from '../../../islands/SavedRecordsPanel';
 import { savedRecordsEnabled } from '../../../lib/profile/saved-record-flags';
@@ -9,6 +10,7 @@ import AccountBoundProfileSurface from '../../../islands/AccountBoundProfileSurf
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../../lib/account-v2/feature-flags';
 import '../../../styles/calculator.css';
 import '../../../styles/profile-polish.css';
+import '../../../styles/profile-page.css';
 
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
@@ -38,7 +40,8 @@ const jsonLd = [
   jsonLd={jsonLd}
   privateSurface={accountSyncV2Enabled}
 >
-  <section class="section--tight container container--narrow">
+  <section class="section--tight container pf-page">
+    <ProfilePrepaint />
     <div class="pf-hero">
       <h1 class="display">Сохранённые карты.</h1>
       <p>Сохраняйте карты на этом устройстве. Войдите, когда захотите видеть их на всех устройствах.</p>
@@ -60,53 +63,3 @@ const jsonLd = [
   </section>
 <section class="section--tight container"><ReturnToolLinks locale="ru" /></section>
 </Base>
-
-<style is:global>
-  .pf-hero { max-width: 58ch; margin-bottom: clamp(26px, 5vw, 42px); }
-  .pf-hero h1 { margin: 14px 0; font-size: var(--text-2xl); line-height: 1.04; }
-  .pf-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
-  .pf { display: grid; gap: 16px; }
-  .pf-sync__core { padding: 18px 20px; display: grid; gap: 14px; }
-  @media (min-width: 680px) { .pf-sync__core { grid-template-columns: minmax(0, 1fr) auto; align-items: center; } }
-  .pf-sync__core strong { display: block; margin-bottom: 4px; font-size: var(--text-lg); }
-  .pf-sync__core p { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.55; }
-  .pf-sync__label { display: block; margin-bottom: 7px; color: var(--faint); }
-  .pf-digest-panel { grid-column: 1 / -1; padding-top: 16px; border-top: 1px solid var(--hair-1); }
-  .pf-digest { margin-top: 9px; display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; align-items: start; color: var(--text-2); font-size: var(--text-sm); }
-  .pf-digest input { margin: 3px 0 0; accent-color: var(--accent); }
-  .pf-digest strong { margin: 0 0 2px; font-size: var(--text-sm); color: var(--text); }
-  .pf-digest small { display: block; color: var(--muted); line-height: 1.45; }
-  .pf-sync__message { margin-top: 8px !important; color: var(--muted) !important; }
-  .pf-sync__message--error { color: var(--sign-aries) !important; }
-  .pf-sync__form { display: grid; gap: 10px; min-width: min(100%, 310px); }
-  .pf-sync__actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start; }
-  .pf-sync__form .btn { justify-content: space-between; }
-  .pf-count { margin: 0; font-size: 11px; letter-spacing: 0.08em; color: var(--faint); }
-  .pf-list { display: grid; gap: 12px; }
-  .pf-privacy { margin: 0; color: var(--muted); font-size: var(--text-sm); }
-  .pf-chart__core { padding: 20px; display: grid; gap: 12px; }
-  .pf-chart__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
-  .pf-chart__head h2 { margin: 0; font-size: var(--text-lg); font-weight: 620; letter-spacing: -0.015em; }
-  .pf-chart__rename { display: flex; gap: 8px; flex: 1; min-width: 200px; }
-  .pf-chart__rename .field__input { height: 38px; }
-  .pf-chart__actions { display: flex; gap: 8px; }
-  .pf-chart__action { padding: 6px 12px; border-radius: var(--r-full); border: 1px solid var(--hair-2); font-size: 12.5px; color: var(--text-2); transition: border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease); }
-  .pf-chart__action:hover { border-color: var(--hair-3); color: var(--text); }
-  .pf-chart__action--danger:hover { border-color: color-mix(in oklab, var(--sign-aries) 55%, transparent); color: var(--sign-aries); }
-  .pf-chart__birth { margin: 0; font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
-  .pf-chart__three { display: flex; flex-wrap: wrap; gap: 8px; }
-  .pf-chip { display: inline-flex; align-items: center; gap: 7px; padding: 4px 11px 4px 6px; border-radius: var(--r-full); border: 1px solid color-mix(in oklab, var(--sign, var(--accent)) 35%, transparent); background: color-mix(in oklab, var(--sign, var(--accent)) 9%, transparent); font-size: 13px; font-weight: 500; color: var(--text); text-decoration: none; }
-  .pf-chip__icon { line-height: 0; }
-  .pf-chip__icon img { border-radius: 50%; }
-  .pf-chip__label { font-family: var(--font-sans); font-size: 12px; letter-spacing: 0; color: var(--muted); }
-  .pf-chip--empty { border-color: var(--hair-1); background: none; color: var(--faint); }
-  .pf-empty__core { padding: clamp(24px, 5vw, 40px); display: grid; gap: 14px; justify-items: start; }
-  .pf-empty__core h2 { margin: 0; font-size: var(--text-xl); font-weight: 620; letter-spacing: -0.02em; }
-  .pf-empty__core p { margin: 0; max-width: 46ch; color: var(--text-2); }
-  .pf-next__core { padding: 18px 20px; display: grid; gap: 8px; justify-items: start; }
-  .pf-next__core p { margin: 0; font-size: var(--text-sm); color: var(--text-2); }
-  .pf-next__core .btn { margin-top: 6px; }
-  .pf-foot { display: flex; }
-  .pf-note { margin-top: clamp(24px, 5vw, 40px); }
-  .pf-note p { margin: 0; font-size: 12px; line-height: 1.7; color: var(--muted); letter-spacing: 0.04em; }
-</style>
