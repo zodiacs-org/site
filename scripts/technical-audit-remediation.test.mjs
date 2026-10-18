@@ -62,6 +62,7 @@ describe('technical audit remediation contracts', () => {
     expect(cacheFor('/assets/vendor/(.*)')).toBe('public, max-age=31536000, immutable');
     expect(cacheFor('/assets/astrofolio/v2/(.*)')).toBe('public, max-age=31536000, immutable');
     expect(cacheFor('/assets/og/v2/share-pastel-wheel-20260809.png')).toBe('public, max-age=31536000, immutable');
+    expect(cacheFor('/assets/og/v2/share-pastel-wheel-20261019.png')).toBe('public, max-age=31536000, immutable');
     // `.v1` identifies the archive schema, not immutable content; the file is
     // appended repeatedly and must continue to revalidate.
     expect(cacheFor('/assets/data/registry-market-history.v1.json')).toBe('public, max-age=0, must-revalidate');

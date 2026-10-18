@@ -29,7 +29,7 @@ const wingCard = 'the-twelve.png';
 const astrofolioOut = resolve(root, 'public/assets/og/astrofolio/v4');
 const terminalOut = resolve(root, 'public/assets/og/v6');
 const legacyRegistryCardSha256 = 'f7b9e9e801e390f2ef3671755d1f3754a7e45bb9db026699f5381764aab5a08a';
-const homepageCard = 'share-pastel-wheel-20260809.png';
+const homepageCard = 'share-pastel-wheel-20261019.png';
 const russianOut = resolve(out, 'ru');
 const eventsPublication = JSON.parse(
   await readFile(resolve(root, 'src/data/events-publication.json'), 'utf8'),
@@ -241,8 +241,10 @@ try {
 let russianBytes = 0;
 try {
   russianBytes = await directoryBytes(russianOut);
-  if (russianBytes > 700 * 1024) {
-    failures.push(`Russian OG family: ${(russianBytes / 1024).toFixed(1)}KiB exceeds the 700KiB budget`);
+  // 700 to 720KiB on 2026-10-19 for the brand lockup, whose ring keeps its
+  // twelve hues in an 8-bit palette on every card.
+  if (russianBytes > 720 * 1024) {
+    failures.push(`Russian OG family: ${(russianBytes / 1024).toFixed(1)}KiB exceeds the 720KiB budget`);
   }
 } catch {
   // The missing Russian directory is reported by the inventory gate above.

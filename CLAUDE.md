@@ -117,6 +117,11 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   (the brand ring and the twelve 128px sign discs as base64, attached inline
   by cid: to the confirmation email so it still loads nothing remote;
   `--check` and `scripts/build-email-inline-images.test.mjs` catch drift)
+- `public/assets/brand/tilted-ring.svg` + `tilted-ring@3x.png` ← `node
+  scripts/build-brand-lockup-assets.mjs` (the lockup's ring as files, from
+  `src/lib/brand-lockup.mjs`; the PNG is the email's inline ring. libvips
+  output, so not in the drift job; `src/lib/brand-lockup.test.ts` checks the
+  SVG. Rerun it, then the email images, when the ring changes)
 - `public/registry/index.html` Aura marker region (meta flag + no-JS entry
   between the `registry-aura-entry` comments) ← stamped by
   `scripts/configure-registry-aura.mjs` (predev/prebuild) and
@@ -184,7 +189,11 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   scripts/build-og-void.mjs` (ALL share cards sitewide since Part Q — wing
   pages reference `v2/sign/{slug}.png` + `v2/share.png`; the 13 legacy gilt
   cards at `public/assets/og/*.png` are frozen and unreferenced — leave
-  the files alone, don't regenerate or re-reference them)
+  the files alone, don't regenerate or re-reference them. The People, event
+  and Russian families keep 16-colour palettes with the lockup ring laid back
+  in its own colours (`compactCard`), which is what holds the 25MB bundle and
+  the Russian family's ceiling; after a run, restore the pinned
+  `og/v2/registry.png` and `og/v2/registry/` from git)
 - `public/assets/og/registry/v3/` ← `node scripts/build-registry-og.mjs`
   (immutable Registry lot cards derived from the established v2 editorial
   plate plus the canonical 1024px pastel icon and gold sculpture sources;
@@ -280,6 +289,14 @@ Mono. No decorative status dots, no gradient/aurora backgrounds, no gold
 anywhere (Warm Gilt is retired sitewide). Reserve `.shell`/`.core` bezels
 for elevated moments; grids of equal items use the light `.tile`. Kickers are
 sentence-case serif-italic (`.kicker`), not mono-caps eyebrows.
+
+The brand signs with one lockup sitewide, the wing included (owner-chosen
+2026-10-19): the tilted twelve-dot ring and ZODIACS · ORG, drawn from
+`src/lib/brand-lockup.mjs` (DESIGN.md, "Brand Lockup"). Phones keep
+ZODIACS | ASTROFOLIO in the top bar, and the favicon and app icons keep the
+flat ring (`BrandMark.astro`). No image or lockup draws a sentence-case
+"Zodiacs.org" wordmark; published cards under pinned or dated names keep the
+design they were published with.
 
 ### Canonical site ending
 

@@ -205,6 +205,8 @@ describe('chart preview functions', () => {
         expect.objectContaining({ name: 'sans serif', weight: 400, style: 'normal' }),
         expect.objectContaining({ name: 'EB Garamond', weight: 500, style: 'italic' }),
         expect.objectContaining({ name: 'EB Garamond', weight: 500, style: 'normal' }),
+        // The brand lockup's capitals.
+        expect.objectContaining({ name: 'EB Garamond', weight: 400, style: 'normal' }),
       ],
     }));
     const serializedCard = JSON.stringify(imageResponseMock.element.mock.calls[0]?.[0]);
@@ -213,9 +215,12 @@ describe('chart preview functions', () => {
     expect(serializedCard).toContain('Your chart signature');
     expect(serializedCard).toContain('"fontFamily":"EB Garamond"');
     expect(serializedCard).toContain('"fontStyle":"italic"');
-    expect(serializedCard).toContain('data:image/png;base64,');
-    expect(serializedCard).toContain('zodiacs.org');
-    expect(serializedCard).toContain('"width":48');
+    // The brand lockup (DESIGN.md): the tilted ring's twelve dots and ZODIACS · ORG, with no profile image.
+    expect(serializedCard).toContain('"viewBox":"-2 4 28 16"');
+    expect(serializedCard.match(/"type":"circle"/gu)).toHaveLength(12);
+    for (const word of ['"ZODIACS"', '"·"', '"ORG"']) expect(serializedCard).toContain(word);
+    expect(serializedCard).not.toContain('data:image/png;base64,');
+    expect(serializedCard).not.toContain('"zodiacs.org"');
   });
 
   it('draws the same whole-degree image from the preview query', async () => {

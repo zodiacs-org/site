@@ -186,8 +186,9 @@ export function renderEmailHtml(doc: EmailDocument, baseUrl: string, images: Ema
     ? `<td width="44" style="width:44px;padding:0 14px 0 0"><img src="${signSrc}" width="44" height="44" alt="" style="display:block;width:44px;height:44px;border:0;border-radius:50%" /></td>`
     : '';
   const ringSrc = images.ring ? safeImageSrc(images.ring) : '';
+  // The brand lockup (DESIGN.md, "Brand Lockup"): the tilted ring, 34 by 19, then ZODIACS · ORG.
   const ring = ringSrc
-    ? `<td style="padding:0 8px 0 0;vertical-align:middle"><img src="${ringSrc}" width="22" height="22" alt="" style="display:block;width:22px;height:22px;border:0" /></td>`
+    ? `<td style="padding:0 10px 0 0;vertical-align:middle"><img src="${ringSrc}" width="34" height="19" alt="" style="display:block;width:34px;height:19px;border:0" /></td>`
     : '';
 
   const identity = doc.identity
@@ -253,7 +254,7 @@ export function renderEmailHtml(doc: EmailDocument, baseUrl: string, images: Ema
     </td>
     <td align="right" style="vertical-align:middle">
       <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
-        ${ring}<td style="vertical-align:middle;font:500 14px/1.2 ${SERIF};color:${INK_0};white-space:nowrap">Zodiacs<span style="font:400 10px/1 ${MONO};color:${INK_3}">.org</span></td>
+        ${ring}<td style="vertical-align:middle;font:400 13px/1.2 ${SERIF};letter-spacing:.2em;text-transform:uppercase;color:${INK_0};white-space:nowrap">Zodiacs<span style="margin:0 .2em;color:${INK_3}">·</span><span style="font-weight:500;color:${INK_1}">org</span></td>
       </tr></table>
     </td>
   </tr></table>

@@ -40,6 +40,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import sharp from 'sharp';
+import { tiltedRingSvg } from '../src/lib/brand-lockup.mjs';
 import {
   fileSha256, peopleIdentityReviewOptions, peopleFactReviewOptions, productionOgHashes, reviewedPeople, reviewedFactPeople,
 } from './people-identity-og-review.mjs';
@@ -50,7 +51,9 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const peopleFactReview = peopleFactReviewOptions(process.argv.slice(2), root);
 const peopleIdentityReview = peopleFactReview ?? peopleIdentityReviewOptions(process.argv.slice(2), root);
 const OUT = peopleIdentityReview?.output ?? resolve(root, 'public/assets/og/v2');
-const HOMEPAGE_CARD = 'share-pastel-wheel-20260809.png';
+// Cache-busted: the file is served immutable, so a new design takes a new name.
+// The 2026-08-09 card stays published, unchanged, for links already shared.
+const HOMEPAGE_CARD = 'share-pastel-wheel-20261019.png';
 
 // Import-free, test-pinned projection of the canonical sign table. The live
 // signs module now has runtime imports, while this generator must stay plain
@@ -117,6 +120,7 @@ const b64 = async (path, mime) =>
 
 const FONTS = {
   serif500: await b64('public/fonts/eb-garamond-latin-500-normal.woff2', 'font/woff2'),
+  serif400: await b64('public/fonts/eb-garamond-latin-400-normal.woff2', 'font/woff2'),
   serifItalic: await b64('public/fonts/eb-garamond-latin-400-italic.woff2', 'font/woff2'),
   sans: await b64('public/fonts/instrument-sans-latin-wght-normal.woff2', 'font/woff2'),
   mono: await b64('public/fonts/jetbrains-mono-latin-wght-normal.woff2', 'font/woff2'),
@@ -158,9 +162,41 @@ const MUTED = '#8E96AB';
 const VOID = '#060709';
 const HAIR = 'rgba(198, 204, 218, 0.10)';
 
-function shell(body, footer, { centered = false } = {}) {
+// ── The brand lockup (DESIGN.md, "Brand Lockup") ───────────────────────
+// Every card signs off with the tilted ring and ZODIACS · ORG at 20px in the
+// footer row, then the rest of the card's address or line in the data face.
+// The lockup's Latin capitals have their own family, so the Russian frame
+// draws them in EB Garamond too.
+const LOCKUP_FACES = `
+  @font-face { font-family: 'EB Garamond Lockup'; font-weight: 400; src: url(${FONTS.serif400}) format('woff2'); }
+  @font-face { font-family: 'EB Garamond Lockup'; font-weight: 500; src: url(${FONTS.serif500}) format('woff2'); }`;
+const LOCKUP_CSS = `
+  .lockup { display: inline-flex; align-items: center; gap: 15px; flex: none; white-space: nowrap; direction: ltr; }
+  .lockup svg { display: block; flex: none; overflow: visible; }
+  .lockup-name { font-family: 'EB Garamond Lockup', serif; font-weight: 400; font-size: 20px; letter-spacing: 0.2em; line-height: 1; color: ${INK}; }
+  .lockup-sep { margin: 0 0.2em; color: ${MUTED}; }
+  .lockup-tld { font-weight: 500; color: ${INK2}; }`;
+const LOCKUP_HTML = `<span class="lockup">${tiltedRingSvg({ width: 53, className: 'lockup-ring' })}<span class="lockup-name">ZODIACS<span class="lockup-sep">·</span><span class="lockup-tld">ORG</span></span></span>`;
+
+/** A footer line without its leading domain: the path, or the line after its separator. */
+function footerRest(footer) {
+  return footer.replace(/^zodiacs\.org/u, '').replace(/^\s*(?:—|·)\s*/u, '').trim();
+}
+
+/** The footer row: the lockup, then the rest of the line (pre-escaped HTML). */
+function lockupFooter(footer, className = 'footer') {
+  const rest = footerRest(footer);
+  return `<div class="${className}">${LOCKUP_HTML}${rest ? `<span class="footer-rest">${rest}</span>` : ''}</div>`;
+}
+
+/**
+ * The English frame. `legacyFooter` keeps the earlier address-only footer on
+ * the Registry cards whose bytes are pinned: the legacy registry.png and the
+ * twelve lot plates the immutable Registry v3 family is built from.
+ */
+function shell(body, footer, { centered = false, legacyFooter = false } = {}) {
   return `<!doctype html>
-<html><head><meta charset="utf-8"><style>
+<html><head><meta charset="utf-8"><style>${legacyFooter ? '' : LOCKUP_FACES}
   @font-face { font-family: 'EB Garamond'; font-weight: 500; src: url(${FONTS.serif500}) format('woff2'); }
   @font-face { font-family: 'EB Garamond'; font-weight: 400; font-style: italic; src: url(${FONTS.serifItalic}) format('woff2'); }
   @font-face { font-family: 'Instrument Sans'; font-weight: 100 900; src: url(${FONTS.sans}) format('woff2'); }
@@ -187,13 +223,14 @@ function shell(body, footer, { centered = false } = {}) {
     position: absolute;
     left: 88px;
     right: 88px;
-    bottom: 40px;
+    bottom: ${legacyFooter ? 40 : 34}px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 19px;
     letter-spacing: 0.06em;
     color: ${MUTED};
-    ${centered ? 'text-align: center;' : ''}
+    ${legacyFooter ? (centered ? 'text-align: center;' : '') : `display: flex; align-items: center; justify-content: ${centered ? 'center' : 'space-between'}; gap: 28px;`}
   }
+  .footer-rest { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }${legacyFooter ? '' : LOCKUP_CSS}
   .kicker {
     font-family: 'EB Garamond', serif;
     font-style: italic;
@@ -224,7 +261,7 @@ function shell(body, footer, { centered = false } = {}) {
 <body>
   ${body}
   <div class="rule"></div>
-  <div class="footer">${footer}</div>
+  ${legacyFooter ? `<div class="footer">${footer}</div>` : lockupFooter(footer)}
 </body></html>`;
 }
 
@@ -244,7 +281,7 @@ function wheelMark(diameter, dot) {
 
 function russianShell(body, footer) {
   return `<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><style>
+<html lang="ru"><head><meta charset="utf-8"><style>${LOCKUP_FACES}
   @font-face { font-family: 'EB Garamond Cyrillic'; font-weight: 400 500; src: url(${FONTS.ruSerif}) format('woff2'); }
   @font-face { font-family: 'Golos Text'; font-weight: 400 600; src: url(${FONTS.ruSansB}) format('woff2'); }
   @font-face { font-family: 'Golos Text'; font-weight: 400 600; src: url(${FONTS.ruSansA}) format('woff2'); unicode-range: U+0400-04FF; }
@@ -286,16 +323,21 @@ function russianShell(body, footer) {
     position: absolute;
     left: 88px;
     right: 88px;
-    bottom: 40px;
+    bottom: 34px;
     color: ${MUTED};
     font-family: 'JetBrains Mono Cyrillic', monospace;
     font-size: 18px;
     letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
   }
+  .footer-rest { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }${LOCKUP_CSS}
 </style></head><body>
   ${body}
   <div class="rule"></div>
-  <div class="footer">${footer}</div>
+  ${lockupFooter(footer)}
 </body></html>`;
 }
 
@@ -344,9 +386,9 @@ const escapeHtml = (value) => String(value)
 function shareCard() {
   const body = `
   <div class="stage">
-    <div class="left" style="max-width: 580px;">
+    <div class="left" style="max-width: 596px;">
       <div class="display" style="font-size: 67px; max-width: 580px;">${OG_EN.share.title}</div>
-      <div class="sub" style="font-size: 25px; color: ${MUTED}; max-width: 560px;">${OG_EN.share.subtitle}</div>
+      <div class="sub" style="font-size: 25px; color: ${MUTED}; max-width: 596px; text-wrap: balance;">${OG_EN.share.subtitle}</div>
     </div>
     ${wheelMark(380, 70)}
   </div>`;
@@ -423,10 +465,11 @@ function registryLotCard(s, index) {
     <img class="disc" src="${DISCS[s.slug]}" width="360" height="360"
          style="box-shadow: 0 30px 90px ${s.hue}40;" />
   </div>`;
-  return shell(body, `zodiacs.org/registry/${s.slug}/`);
+  // The plate the immutable Registry v3 lot cards are built from keeps its bytes.
+  return shell(body, `zodiacs.org/registry/${s.slug}/`, { legacyFooter: true });
 }
 
-function wingCard(copy = OG_EN.wing, footer = 'zodiacs.org · Astrofolio · Registry · Terminal') {
+function wingCard(copy = OG_EN.wing, footer = 'zodiacs.org · Astrofolio · Registry · Terminal', { legacyFooter = false } = {}) {
   const body = `
   <div class="stage">
     <div class="left">
@@ -437,7 +480,7 @@ function wingCard(copy = OG_EN.wing, footer = 'zodiacs.org · Astrofolio · Regi
     </div>
     ${wheelMark(330, 38)}
   </div>`;
-  return shell(body, footer);
+  return shell(body, footer, { legacyFooter });
 }
 
 function disclosureCard() {
@@ -745,6 +788,70 @@ let total = 0;
 let count = 0;
 let russianTotal = 0;
 
+/**
+ * A compact-family card with the brand ring kept in its twelve hues. Sixteen
+ * colours hold the card but not the ring as well, so the card is quantized
+ * from a second capture with the ring hidden (its space kept, so nothing
+ * moves), and every pixel the ring changes is quantized on its own and laid
+ * back in. That is at most 32 colours, written exactly as one 8-bit palette.
+ */
+async function compactCard(raw, { quantizeFirst, firstPass }) {
+  const rings = await page.evaluate(() => {
+    const found = [...document.querySelectorAll('.lockup-ring')];
+    for (const ring of found) ring.style.visibility = 'hidden';
+    return found.length;
+  });
+  const bare = rings ? await page.screenshot({ type: 'png' }) : raw;
+  const card = await sharp(quantizeFirst ? await firstPass(bare) : bare)
+    .png({ palette: true, colors: 16, dither: 0.6, compressionLevel: 9, effort: 10 })
+    .toBuffer();
+  if (!rings) return card;
+
+  const pixels = (png) => sharp(png).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const [ringed, plain, quantized] = await Promise.all([pixels(raw), pixels(bare), pixels(card)]);
+  const { width, height } = ringed.info;
+  const footprint = new Uint8Array(width * height);
+  let left = width;
+  let top = height;
+  let right = -1;
+  let bottom = -1;
+  for (let pixel = 0; pixel < footprint.length; pixel += 1) {
+    const i = pixel * 3;
+    if (ringed.data[i] === plain.data[i] && ringed.data[i + 1] === plain.data[i + 1] && ringed.data[i + 2] === plain.data[i + 2]) continue;
+    footprint[pixel] = 1;
+    const x = pixel % width;
+    const y = (pixel - x) / width;
+    left = Math.min(left, x);
+    right = Math.max(right, x);
+    top = Math.min(top, y);
+    bottom = Math.max(bottom, y);
+  }
+  if (right < 0) throw new Error('compact card: the brand ring painted nothing');
+  const box = { left, top, width: right - left + 1, height: bottom - top + 1 };
+  const ring = (await pixels(await sharp(raw).extract(box)
+    .png({ palette: true, colors: 16, dither: 0, compressionLevel: 9, effort: 10 })
+    .toBuffer())).data;
+  const merged = Buffer.from(quantized.data);
+  for (let y = top; y <= bottom; y += 1) {
+    for (let x = left; x <= right; x += 1) {
+      const pixel = y * width + x;
+      if (!footprint[pixel]) continue;
+      const i = pixel * 3;
+      const j = ((y - top) * box.width + (x - left)) * 3;
+      merged[i] = ring[j];
+      merged[i + 1] = ring[j + 1];
+      merged[i + 2] = ring[j + 2];
+    }
+  }
+  const out = await sharp(merged, { raw: { width, height, channels: 3 } })
+    .png({ palette: true, colors: 256, dither: 0, compressionLevel: 9, effort: 10 })
+    .toBuffer();
+  if (!(await sharp(out).removeAlpha().raw().toBuffer()).equals(merged)) {
+    throw new Error('compact card: the merged palette did not write exactly');
+  }
+  return out;
+}
+
 async function shoot(html, outPath, outputRoot = OUT) {
   await page.setContent(html, { waitUntil: 'load' });
   await page.evaluate(() => document.fonts.ready);
@@ -799,31 +906,28 @@ async function shoot(html, outPath, outputRoot = OUT) {
     }
   }
   const raw = await page.screenshot({ type: 'png' });
-  const firstPass = await sharp(raw)
+  const firstPass = (png) => sharp(png)
     .png({ palette: true, compressionLevel: 9, effort: 8 })
     .toBuffer();
-  // The event family adds one unique card per published page. A dedicated
-  // 64-colour palette keeps type edges and the canonical pastel sign art
-  // crisp while cutting this repeated family enough to preserve the complete
-  // v2 bundle's 15MiB ceiling.
+  // The event family adds one unique card per published page, and People
+  // five hundred. These repeated families, and the Russian set under its own
+  // budget, are written with the 16-colour palette their published cards
+  // carry, which keeps type edges and the canonical pastel sign art crisp
+  // inside the v2 bundle's ceiling. (sharp writes a colour count as the PNG
+  // bit depth that holds it; the 32 and 64 asked for here before were
+  // written as 16 by older sharp and are 256 now, so 16 is stated outright.)
   const compactPalette = outPath.startsWith('events/')
     || outPath.startsWith('people/')
     || outPath.startsWith('ru/');
-  const compactColors = outPath.startsWith('people/') ? 32 : 64;
   // Re-quantize People and the new Russian sharing cards from the full-colour capture. Reprocessing the
   // already-indexed first pass can preserve its larger palette in libvips,
   // which defeats this small family's tighter launch budget.
   const sharingRussian = outPath.startsWith('ru/') && (sharingRussianCards.has(outPath.slice(3)) || returnRussianCards.has(outPath.slice(3)));
-  const compactInput = outPath.startsWith('people/') || sharingRussian ? raw : firstPass;
-  const buf = compactPalette
-    ? await sharp(compactInput).png({
-        palette: true,
-        colors: sharingRussian ? 32 : compactColors,
-        dither: sharingRussian ? 0 : 0.6,
-        compressionLevel: 9,
-        effort: 10,
-      }).toBuffer()
-    : firstPass;
+  const buf = !compactPalette
+    ? await firstPass(raw)
+    : sharingRussian
+      ? await sharp(raw).png({ palette: true, colors: 32, dither: 0, compressionLevel: 9, effort: 10 }).toBuffer()
+      : await compactCard(raw, { quantizeFirst: !outPath.startsWith('people/'), firstPass });
   await writeFile(resolve(outputRoot, outPath), buf);
   total += buf.length;
   if (outPath.startsWith('ru/')) russianTotal += buf.length;
@@ -863,8 +967,10 @@ async function renderRussianCards(sharingOnly = false, returnOnly = false) {
   await writeRussianManifest();
   // A bounded refresh still checks the whole committed Russian family.
   russianTotal = (await Promise.all(RU_OG_REQUIRED_CARDS.map(async (card) => (await readFile(resolve(OUT, 'ru', card))).length))).reduce((a, b) => a + b, 0);
-  if (russianTotal > 700 * 1024) {
-    throw new Error(`Russian OG family is ${(russianTotal / 1024).toFixed(1)}KiB; budget is 700KiB`);
+  // The ceiling grew from 700 to 720KiB on 2026-10-19 for the brand lockup:
+  // its ring keeps twelve hues, so each card is written as an 8-bit palette.
+  if (russianTotal > 720 * 1024) {
+    throw new Error(`Russian OG family is ${(russianTotal / 1024).toFixed(1)}KiB; budget is 720KiB`);
   }
 }
 
@@ -1037,7 +1143,7 @@ if (onlyHoroscopes) {
   }
   // The v2 URL has a long-lived social-cache history. Preserve its original
   // Registry bytes; the active products share the neutral versioned v4 URL.
-  await shoot(wingCard(LEGACY_REGISTRY_CARD_COPY, 'zodiacs.org/registry/'), 'registry.png');
+  await shoot(wingCard(LEGACY_REGISTRY_CARD_COPY, 'zodiacs.org/registry/', { legacyFooter: true }), 'registry.png');
   await shoot(disclosureCard(), 'disclosure.png');
   await shoot(compatibilityInviteCard(), 'tool/compatibility-invite.png');
   for (const t of TOOLS) await shoot(toolCard(t), `tool/${t.key}.png`);
@@ -1070,7 +1176,7 @@ if (onlyHoroscopes) {
 // ── Pinterest pins — 1000×1500, the 2:3 ratio pins want ──────────────
 function pinShell(body, footer) {
   return `<!doctype html>
-<html><head><meta charset="utf-8"><style>
+<html><head><meta charset="utf-8"><style>${LOCKUP_FACES}
   @font-face { font-family: 'EB Garamond'; font-weight: 500; src: url(${FONTS.serif500}) format('woff2'); }
   @font-face { font-family: 'EB Garamond'; font-weight: 400; font-style: italic; src: url(${FONTS.serifItalic}) format('woff2'); }
   @font-face { font-family: 'Instrument Sans'; font-weight: 100 900; src: url(${FONTS.sans}) format('woff2'); }
@@ -1079,8 +1185,9 @@ function pinShell(body, footer) {
   html, body { width: 1000px; height: 1500px; }
   body { background: ${VOID}; font-family: 'Instrument Sans', sans-serif; color: ${INK}; position: relative; overflow: hidden; }
   .pstage { position: absolute; inset: 110px 84px 150px; display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center; gap: 44px; }
-  .prule { position: absolute; left: 84px; right: 84px; bottom: 128px; height: 1px; background: ${HAIR}; }
-  .pfooter { position: absolute; left: 84px; right: 84px; bottom: 68px; font-family: 'JetBrains Mono', monospace; font-size: 22px; letter-spacing: 0.06em; color: ${MUTED}; text-align: center; }
+  .prule { position: absolute; left: 84px; right: 84px; bottom: 150px; height: 1px; background: ${HAIR}; }
+  .pfooter { position: absolute; left: 84px; right: 84px; bottom: 48px; font-family: 'JetBrains Mono', monospace; font-size: 22px; letter-spacing: 0.06em; color: ${MUTED}; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .footer-rest { white-space: nowrap; }${LOCKUP_CSS}
   .kicker { font-family: 'EB Garamond', serif; font-style: italic; font-weight: 400; font-size: 36px; color: ${INK2}; display: block; margin-bottom: 6px; }
   .display { font-family: 'EB Garamond', serif; font-weight: 500; line-height: 1.02; letter-spacing: -0.005em; font-variant-numeric: oldstyle-figures; }
   .sub { font-size: 32px; color: ${INK2}; line-height: 1.5; max-width: 720px; }
@@ -1090,7 +1197,7 @@ function pinShell(body, footer) {
 <body>
   ${body}
   <div class="prule"></div>
-  <div class="pfooter">${footer}</div>
+  ${lockupFooter(footer, 'pfooter')}
 </body></html>`;
 }
 

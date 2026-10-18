@@ -1,0 +1,31 @@
+---
+/**
+ * The brand lockup's mark (DESIGN.md, "Brand Lockup"): the twelve sign dots
+ * seen tilted, drawn inline from src/lib/brand-lockup.mjs so it costs no
+ * request. Pass `width` in px; the height follows the 7:4 viewBox. It is
+ * still: nothing turns on hover. The favicon and app icons keep the flat ring
+ * (BrandMark.astro).
+ */
+import { TILTED_RING_DOTS, TILTED_RING_VIEWBOX, ringWidthFor, tiltedRingHeight, LOCKUP_SIZE } from '../lib/brand-lockup.mjs';
+
+interface Props {
+  width?: number;
+  class?: string;
+}
+const { width = ringWidthFor(LOCKUP_SIZE.page), class: className } = Astro.props;
+---
+<svg
+  class:list={['tilted-ring', className]}
+  width={width}
+  height={tiltedRingHeight(width)}
+  viewBox={TILTED_RING_VIEWBOX}
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  {TILTED_RING_DOTS.map((dot) => <circle cx={dot.cx} cy={dot.cy} r={dot.r} fill={dot.fill} opacity={dot.opacity} />)}
+</svg>
+
+<style>
+  .tilted-ring { display: block; flex-shrink: 0; overflow: visible; }
+</style>

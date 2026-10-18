@@ -155,13 +155,14 @@ describe('homepage social card', () => {
     const [page, seo, bytes] = await Promise.all([
       text('src/pages/index.astro'),
       text('src/components/SEO.astro'),
-      readFile(resolve(root, 'public/assets/og/v2/share-pastel-wheel-20260809.png')),
+      readFile(resolve(root, 'public/assets/og/v2/share-pastel-wheel-20261019.png')),
     ]);
-    expect(page).toContain('image="/assets/og/v2/share-pastel-wheel-20260809.png"');
+    expect(page).toContain('image="/assets/og/v2/share-pastel-wheel-20261019.png"');
     expect(page).toMatch(/imageAlt="[^"]*large ring of twelve pastel zodiac symbols/);
     expect(seo).toContain('<meta property="og:image:type" content={imageType} />');
     expect(seo).toContain('<meta name="twitter:image" content={imageUrl} />');
     expect(createHash('sha256').update(bytes).digest('hex'))
-      .toBe('8cdbd6b9adedc94b1793137dc0def58c2497ab1560f1850ef4e033d5ee7467fe');
+      // The 2026-10-19 card: the same card with the brand lockup (DESIGN.md) in its footer.
+      .toBe('f315272bcba1b99de463a4df89cb18284caeed3a6d7cbdd016cc26323dd2bcbe');
   });
 });

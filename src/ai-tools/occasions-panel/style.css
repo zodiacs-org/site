@@ -52,7 +52,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 .people a:hover { text-decoration: underline; }
 .actions a.primary { display: inline-block; padding: 8px 16px; border-radius: 10px; background: var(--accent); color: var(--paper); text-decoration: none; font-weight: 600; }
 code { font-size: 13px; overflow-wrap: anywhere; }
-.signature { margin: 4px 0 0; display: flex; align-items: center; gap: 6px; color: var(--muted); font: 600 13px/1 var(--sans); letter-spacing: .03em; }
+.signature { margin: 4px 0 0; display: flex; align-items: center; gap: 10px; color: var(--muted); font: 600 13px/1 var(--sans); letter-spacing: .03em; }
 footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; font-size: 13px; color: var(--muted); }
 footer p { margin: 0; }
 @media (max-width: 420px) {

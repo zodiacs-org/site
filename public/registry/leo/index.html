@@ -211,6 +211,7 @@
   .wnav__sep { color: var(--ink-mute, #8A93A6); margin: 0 4px; }
   .wnav__dim { color: var(--ink-2, #C6CCDA); font-weight: 500; }
   @media (max-width: 919.5px) { .wnav__sep, .wnav__dim { display: none; } }
+  .wnav__ring { display: none; flex-shrink: 0; overflow: visible; }
   .wnav__search { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border: none; border-radius: 999px; background: none; color: var(--ink-2, #C6CCDA); cursor: pointer; text-decoration: none; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
   .wnav__search:hover { color: var(--ink, #EEF1F7); background: rgba(198,204,218,0.07); }
   @media (max-width: 919.5px) {
@@ -292,8 +293,11 @@
   @keyframes wnav-turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .wnav-tools, .wnav-signs, .wnav__burger, .wnav__dropdown-btn svg, .wnav__burger-line { transition: none; } .wnav__mark:hover .wnav__brand { animation: none; } }
   @media (min-width: 920px) {
-    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
-    .wnav__mark { grid-area: mark; min-width: 0; }
+    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 168px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
+    .wnav__mark { grid-area: mark; min-width: 0; gap: 10px; }
+    .wnav__ring { display: block; }
+    .wnav__name { letter-spacing: 0.2em; }
+    .wnav__sep { margin: 0 0.2em; }
     .wnav__links { grid-area: links; min-width: 0; grid-template-columns: 74px 74px 64px 62px minmax(0, 1fr); }
     .wnav__profile-shortcut { grid-area: profile; }
     .wnav__search { grid-area: search; box-sizing: border-box; width: 62px; height: 44px; }
@@ -1146,7 +1150,7 @@
 
   <div class="wnav-wrap">
     <nav class="wnav" aria-label="Primary" data-wnav>
-      <a class="wnav__mark" href="/"><span class="wnav__name">Zodiacs<span class="wnav__sep">·</span><span class="wnav__dim">org</span></span></a>
+      <a class="wnav__mark" href="/" aria-label="Zodiacs.org"><svg class="wnav__ring" viewBox="-2 4 28 16" width="34" height="19" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="1.2" fill="#D9694F" opacity="0.45"/><circle cx="17" cy="8.54" r="1.33" fill="#5E9E70" opacity="0.49"/><circle cx="7" cy="8.54" r="1.33" fill="#4CA88F" opacity="0.49"/><circle cx="3.34" cy="10" r="1.67" fill="#7A57B0" opacity="0.59"/><circle cx="20.66" cy="10" r="1.67" fill="#8463BC" opacity="0.59"/><circle cx="22" cy="12" r="2.15" fill="#4A8FBD" opacity="0.73"/><circle cx="2" cy="12" r="2.15" fill="#7FB24C" opacity="0.73"/><circle cx="20.66" cy="14" r="2.62" fill="#CC6C84" opacity="0.86"/><circle cx="3.34" cy="14" r="2.62" fill="#CF8B3A" opacity="0.86"/><circle cx="17" cy="15.46" r="2.97" fill="#5FA352" opacity="0.96"/><circle cx="7" cy="15.46" r="2.97" fill="#3FA0BD" opacity="0.96"/><circle cx="12" cy="16" r="3.1" fill="#A764C0" opacity="1"/></svg><span class="wnav__name" aria-hidden="true">Zodiacs<span class="wnav__sep">·</span><span class="wnav__dim">org</span></span></a>
       <div class="wnav__links">
         <button class="wnav__link wnav__dropdown-btn" type="button" data-wnav-tools aria-expanded="false" aria-controls="wnav-tools" aria-haspopup="true">Tools<svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="wnav__link wnav__dropdown-btn" type="button" data-wnav-signs aria-expanded="false" aria-controls="wnav-signs" aria-haspopup="true">Signs<svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -1392,9 +1396,9 @@
   <div class="zfooter__inner">
     <div class="zfooter__lead">
       <div>
-        <a class="zfooter__brand" href="/">
-          <img class="zfooter__brand-mark" src="/assets/app-icons/v3/favicon.svg" width="26" height="26" alt="" loading="lazy" decoding="async" />
-          <span class="zfooter__brand-name">Zodiacs</span><span class="zfooter__brand-tld">.org</span>
+        <a class="zfooter__brand" href="/" aria-label="Zodiacs.org">
+          <svg class="zfooter__brand-mark" viewBox="-2 4 28 16" width="42" height="24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="1.2" fill="#D9694F" opacity="0.45"/><circle cx="17" cy="8.54" r="1.33" fill="#5E9E70" opacity="0.49"/><circle cx="7" cy="8.54" r="1.33" fill="#4CA88F" opacity="0.49"/><circle cx="3.34" cy="10" r="1.67" fill="#7A57B0" opacity="0.59"/><circle cx="20.66" cy="10" r="1.67" fill="#8463BC" opacity="0.59"/><circle cx="22" cy="12" r="2.15" fill="#4A8FBD" opacity="0.73"/><circle cx="2" cy="12" r="2.15" fill="#7FB24C" opacity="0.73"/><circle cx="20.66" cy="14" r="2.62" fill="#CC6C84" opacity="0.86"/><circle cx="3.34" cy="14" r="2.62" fill="#CF8B3A" opacity="0.86"/><circle cx="17" cy="15.46" r="2.97" fill="#5FA352" opacity="0.96"/><circle cx="7" cy="15.46" r="2.97" fill="#3FA0BD" opacity="0.96"/><circle cx="12" cy="16" r="3.1" fill="#A764C0" opacity="1"/></svg>
+          <span class="zfooter__brand-name" aria-hidden="true">Zodiacs<span class="zfooter__brand-sep">·</span><span class="zfooter__brand-tld">org</span></span>
         </a>
         <p class="zfooter__tag">Leo is one of the Twelve in the official Zodiacs Registry.</p>
       </div>

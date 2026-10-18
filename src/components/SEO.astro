@@ -63,7 +63,7 @@ const catalogImage = ogImageForPathAndLocale(contentPath, locale);
 // even where an older explicit English image prop remains in a page template.
 const image = locale === 'ru'
   ? catalogImage ?? explicitImage ?? '/assets/og/v2/ru/share.png'
-  : explicitImage ?? catalogImage ?? '/assets/og/v2/share-pastel-wheel-20260809.png';
+  : explicitImage ?? catalogImage ?? '/assets/og/v2/share-pastel-wheel-20261019.png';
 const imageAlt = explicitImageAlt ?? ogAltForPathAndLocale(contentPath, locale);
 const imageUrl = image.startsWith('http') ? image : site + image;
 const imageType = /\.webp(?:[?#]|$)/i.test(imageUrl)

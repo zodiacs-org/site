@@ -78,7 +78,7 @@ Registry establishment text consumes the single source `src/lib/registry-establi
 
 - Analytics: the Plausible-compatible shim is absent when unset and loads with `defer` only when configured. It canonicalizes paths, nulls outbound referrers, and allowlists the eleven directive events plus existing fixed-enum events. The integration uses no cookies or persistent/browser fingerprinting. Under the accepted bounded exception, Plausible may briefly process the request IP address and User-Agent into a salted site/device/day identifier for aggregate deduplication; raw values are not stored, the salt rotates and is deleted every 24 hours, and no identifier is exposed to Zodiacs.org or Growth OS. It rejects query strings, free text, birth details, chart positions, email values, and wallet addresses. The taxonomy is documented in `docs/ANALYTICS.md`. Local event tests pass; “events visible in analytics” requires a configured deployment and remains pending.
 - Email: one `EmailCapture` powers post-chart, `/horoscopes/`, and astrology-footer placements in all five locale rails. Only normalized email plus optional self-declared sun sign enters the adapter. Resend, Buttondown, and Loops are env-selected and the component is omitted when configuration is incomplete. Scanner-safe opaque AES-GCM Resend confirmation and a mocked end-to-end Buttondown request pass. A credentialed delivery/confirmation smoke test against the operator's chosen ESP remains pending.
-- OG/Twitter: 45 directive-required images are unique 1200×630 PNGs, use canonical sign art, and are wired per page; the cache-busted `/assets/og/v2/share-pastel-wheel-20260809.png` is the global fallback. The complete rendered inventory appears below.
+- OG/Twitter: 45 directive-required images are unique 1200×630 PNGs, use canonical sign art, and are wired per page; the cache-busted `/assets/og/v2/share-pastel-wheel-20261019.png` is the global fallback. The complete rendered inventory appears below.
 - Structured data: homepage `WebSite`, `Organization`, and existing FAQ `FAQPage`; sitewide `BreadcrumbList`; guide/learn `Article` (including the five learn section hubs); and tool `WebApplication` validate with 0 errors. Disclosure references the canonical site `@id`.
 
 ### WS3 — Shareable result cards
@@ -192,7 +192,7 @@ There are 186 PNGs under `/assets/og/v2/`. The exhaustive directive-required set
 - Additional placement cards (10): `/assets/og/v2/placements/{sun,moon,mercury,venus,mars,jupiter,saturn,uranus,neptune,pluto}.png`.
 - Pinterest/social variants (25): `/assets/og/v2/pin/{sign}.png` (12), `/assets/og/v2/pin/horoscope-{sign}.png` (12), and `/assets/og/v2/pin/how-to-read-a-birth-chart.png`.
 - Almanac cards (3): `/assets/og/v2/almanac/{index,reading-a-childs-chart,sky-2026-08}.png`.
-- Cache-busted global fallback (1): `/assets/og/v2/share-pastel-wheel-20260809.png`.
+- Cache-busted global fallback (1): `/assets/og/v2/share-pastel-wheel-20261019.png`.
 
 ### Client-generated share cards
 

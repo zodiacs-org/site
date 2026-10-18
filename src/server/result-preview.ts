@@ -10,7 +10,6 @@ import { h, type VNode } from 'preact';
 import {
   exactArrayBuffer,
   htmlEscape,
-  prepareBrandIcon,
   PRIVACY_HEADERS,
   requestOrigin,
   writeNodeResponse,
@@ -22,6 +21,8 @@ import {
   type OccasionCardModel,
   type PreviewSign,
 } from './result-preview-model.js';
+import { lockupImage } from './brand-lockup-image.js';
+import { tiltedRingSvg } from '../lib/brand-lockup.mjs';
 import {
   COMPATIBILITY_SHARE_IMAGE_PATH,
   COMPATIBILITY_SHARE_KEYS,
@@ -49,7 +50,7 @@ const TRACK = 'rgba(198,204,218,0.12)';
 
 // ── Assets ───────────────────────────────────────────────────────────
 
-type FontSet = [ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer];
+type FontSet = [ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer];
 let fonts: Promise<FontSet> | null = null;
 
 function prepareFonts(): Promise<FontSet> {
@@ -59,6 +60,8 @@ function prepareFonts(): Promise<FontSet> {
     readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-500-normal.woff', import.meta.url)),
     readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-ext-500-normal.woff', import.meta.url)),
     readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-500-italic.woff', import.meta.url)),
+    // The brand lockup's capitals are the regular weight.
+    readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff', import.meta.url)),
   ]).then((files) => files.map((bytes) => exactArrayBuffer(bytes)) as FontSet);
   fonts = pending;
   void pending.catch(() => { if (fonts === pending) fonts = null; });
@@ -104,10 +107,9 @@ function kicker(text: string) {
   return h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: 34, color: MUTED } }, text);
 }
 
-function brand(brandIcon: string) {
-  return h('div', { style: { display: 'flex', alignItems: 'center', alignSelf: 'flex-end', fontFamily: SERIF, fontSize: 30, color: MUTED } },
-    h('img', { src: brandIcon, width: 44, height: 44, style: { width: '44px', height: '44px', marginRight: '12px' } }),
-    h('div', { style: { display: 'flex' } }, 'zodiacs.org'));
+/** The brand lockup (DESIGN.md, "Brand Lockup"): the tilted ring and ZODIACS · ORG, top right. */
+function brand() {
+  return h('div', { style: { display: 'flex', alignSelf: 'flex-end' } }, lockupImage());
 }
 
 const RING = 384;
@@ -163,14 +165,14 @@ function fit(lines: string[], width: number, max: number, min: number): number {
 
 const LEFT_WIDTH = 660;
 
-function frame(left: VNode<any>, score: number, hues: [string, string], brandIcon: string) {
+function frame(left: VNode<any>, score: number, hues: [string, string]) {
   return h('div', { style: {
       width: '1200px', height: '630px', display: 'flex', justifyContent: 'space-between',
       padding: '54px 64px 56px', background: VOID, color: INK, fontFamily: 'Noto',
     } },
     left,
     h('div', { style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' } },
-      brand(brandIcon),
+      brand(),
       ring(score, hues)));
 }
 
@@ -178,7 +180,7 @@ const column = (...children: VNode<any>[]) => h('div', { style: {
   display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: `${LEFT_WIDTH}px`, height: '100%',
 } }, ...children);
 
-export function compatibilityCard(model: CompatibilityCardModel, brandIcon: string, images: Map<ShareSign, string>) {
+export function compatibilityCard(model: CompatibilityCardModel, images: Map<ShareSign, string>) {
   const lines = [model.first, `& ${model.second}`];
   const nameSize = fit(lines, LEFT_WIDTH, 92, 48);
   return frame(column(
@@ -188,10 +190,10 @@ export function compatibilityCard(model: CompatibilityCardModel, brandIcon: stri
       h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: fit([model.verdict], LEFT_WIDTH, 46, 34), color: INK, marginTop: '18px' } }, model.verdict),
       h('div', { style: { display: 'flex', marginTop: '22px' } }, ...model.people.map((person) => signChip(person, images, 54)))),
     h('div', { style: { display: 'flex' } }, ...model.areas.map((area, index) => areaMeter(area, index))),
-  ), model.score, model.ring, brandIcon);
+  ), model.score, model.ring);
 }
 
-export function occasionCard(model: OccasionCardModel, brandIcon: string, images: Map<ShareSign, string>) {
+export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>) {
   const headSize = fit([model.headline], LEFT_WIDTH, 100, 64);
   return frame(column(
     kicker(model.names ?? 'The sky on the day'),
@@ -203,7 +205,7 @@ export function occasionCard(model: OccasionCardModel, brandIcon: string, images
       ...(model.signs.length > 0
         ? model.signs.map((sign) => signChip(sign, images, 54))
         : [h('div', { style: { display: 'flex', fontSize: 28, color: MUTED } }, 'Rated from the sky that day')])),
-  ), model.score, model.ring, brandIcon);
+  ), model.score, model.ring);
 }
 
 // ── Responses ────────────────────────────────────────────────────────
@@ -218,7 +220,7 @@ function errorResponse(status: number): Response {
 async function renderPng(element: VNode<any>): Promise<Response> {
   try {
     const { ImageResponse } = await import('@vercel/og');
-    const [noto, serif, serifExt, italic] = await prepareFonts();
+    const [noto, serif, serifExt, italic, serifRegular] = await prepareFonts();
     const rendered = new ImageResponse(element, {
       width: 1200,
       height: 630,
@@ -226,6 +228,7 @@ async function renderPng(element: VNode<any>): Promise<Response> {
       fonts: [
         { name: 'Noto', data: noto, weight: 400, style: 'normal' },
         { name: 'EB Garamond', data: serif, weight: 500, style: 'normal' },
+        { name: 'EB Garamond', data: serifRegular, weight: 400, style: 'normal' },
         { name: 'EB Garamond', data: italic, weight: 500, style: 'italic' },
         { name: 'EB Garamond Ext', data: serifExt, weight: 500, style: 'normal' },
       ],
@@ -243,9 +246,9 @@ export async function handleCompatibilityImageRequest(request: Request): Promise
   const share = parseCompatibilityShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = compatibilityCardModel(share);
-  const [brandIcon, images] = await Promise.all([prepareBrandIcon(), discImages(model.people)]).catch(() => [null, null] as const);
-  if (!brandIcon || !images) return errorResponse(503);
-  return renderPng(compatibilityCard(model, brandIcon, images));
+  const images = await discImages(model.people).catch(() => null);
+  if (!images) return errorResponse(503);
+  return renderPng(compatibilityCard(model, images));
 }
 
 export async function handleOccasionImageRequest(request: Request): Promise<Response> {
@@ -253,21 +256,25 @@ export async function handleOccasionImageRequest(request: Request): Promise<Resp
   const share = parseOccasionShare(new URL(request.url).searchParams);
   if (!share) return errorResponse(400);
   const model = occasionCardModel(share);
-  const [brandIcon, images] = await Promise.all([prepareBrandIcon(), discImages(model.signs)]).catch(() => [null, null] as const);
-  if (!brandIcon || !images) return errorResponse(503);
-  return renderPng(occasionCard(model, brandIcon, images));
+  const images = await discImages(model.signs).catch(() => null);
+  if (!images) return errorResponse(503);
+  return renderPng(occasionCard(model, images));
 }
 
 // ── The page a share link opens ──────────────────────────────────────
 
 const PAGE_STYLE = `@font-face{font-family:"EB Garamond";src:url(/fonts/eb-garamond-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"EB Garamond";src:url(/fonts/eb-garamond-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Instrument Sans";src:url(/fonts/instrument-sans-latin-wght-normal.woff2) format("woff2");font-weight:400 700;font-display:swap}
-:root{color-scheme:dark;--void:${VOID};--ink:${INK};--muted:${MUTED};--hairline:${HAIRLINE}}
+:root{color-scheme:dark;--void:${VOID};--ink:${INK};--ink-2:#C6CCDA;--muted:${MUTED};--hairline:${HAIRLINE}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--void);color:var(--ink);font:400 17px/1.55 "Instrument Sans",system-ui,sans-serif}
 main{max-width:880px;margin:0 auto;padding:28px 16px 56px}
-.brand{display:inline-flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font:500 22px/1 "EB Garamond",Georgia,serif}
-.brand img{width:28px;height:28px}
+.brand{display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--ink);text-decoration:none;white-space:nowrap;direction:ltr}
+.brand svg{flex:none;overflow:visible}
+.brand-name{font:400 13px/1 "EB Garamond",Georgia,serif;letter-spacing:.2em;text-transform:uppercase}
+.brand-sep{margin:0 .2em;color:var(--muted)}
+.brand-tld{font-weight:500;color:var(--ink-2)}
 h1{font:500 clamp(30px,6vw,46px)/1.1 "EB Garamond",Georgia,serif;margin:28px 0 18px;letter-spacing:-.01em}
 .card{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--hairline);border-radius:18px;background:var(--void)}
 .lede{margin:22px 0 0;color:var(--ink);max-width:62ch}
@@ -290,7 +297,7 @@ export interface SharePage {
 
 export function sharePageHtml(page: SharePage): string {
   const e = htmlEscape;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/"><img src="/assets/app-icons/v3/favicon.svg" width="28" height="28" alt=""><span>Zodiacs</span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p><a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a><p class="note">${e(page.note)}</p></main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/" aria-label="Zodiacs.org">${tiltedRingSvg({ width: 34 })}<span class="brand-name" aria-hidden="true">Zodiacs<span class="brand-sep">·</span><span class="brand-tld">org</span></span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p><a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a><p class="note">${e(page.note)}</p></main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
 }
 
 function htmlResponse(html: string): Response {
