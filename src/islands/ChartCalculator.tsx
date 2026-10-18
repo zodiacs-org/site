@@ -10,7 +10,7 @@ import { CheckOurMath, ResultOpening } from './ChartTrust';
  *   'moon'   — moon-focused result view (same engine)
  *   'rising' — rising-focused result view (time required)
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import AstroTerm from './AstroTerm';
 import SignChip from './SignChip';
@@ -664,6 +664,30 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   useEffect(() => {
     return () => { spotlightArrivalCleanupRef.current?.(); };
   }, []);
+
+  // The result scroll leaves the wheel below the fold, where its arrival
+  // would play unseen. Mark the wheelbox with data-wheel-arrival once per
+  // chart, when the wheel panel is first on screen, so a page can hold the
+  // arrival until then. The wheel is never hidden while it waits.
+  useLayoutEffect(() => {
+    const box = wheelboxRef.current;
+    const panel = box?.closest<HTMLElement>('.calc__wheel');
+    if (!box || !panel) return;
+    box.removeAttribute('data-wheel-arrival');
+    const arrive = () => box.setAttribute('data-wheel-arrival', '');
+    const { top, bottom } = panel.getBoundingClientRect();
+    if ((top < window.innerHeight && bottom > 0) || typeof IntersectionObserver !== 'function') {
+      arrive();
+      return;
+    }
+    const watch = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      watch.disconnect();
+      arrive();
+    }, { rootMargin: '0px 0px 12px 0px' });
+    watch.observe(panel);
+    return () => watch.disconnect();
+  }, [scene]);
 
   useEffect(() => {
     const onProfile = () => setProfileRevision((revision) => revision + 1);
