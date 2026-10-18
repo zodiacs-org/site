@@ -1,6 +1,7 @@
 ---
 import ReturnToolLinks from "../../components/return-visits/ReturnToolLinks.astro";
 import Base from '../../layouts/Base.astro';
+import ProfilePrepaint from '../../components/profile/ProfilePrepaint.astro';
 import ProfileDashboard from '../../islands/ProfileDashboard';
 import ProfileInvites from '../../islands/ProfileInvites';
 import ProfileManager from '../../islands/ProfileManager';
@@ -50,6 +51,7 @@ const savedRecordsSurfaceEnabled = savedRecordsEnabled({
   privateSurface={accountSyncV2Enabled || livingChartSurfaceEnabled}
 >
   <section class="section--tight container pf-page">
+    <ProfilePrepaint />
     <ProfileCardInbox accountBound={accountSyncV2Enabled} client:load />
 
     <ProfileIdentity accountBound={accountSyncV2Enabled} client:load />

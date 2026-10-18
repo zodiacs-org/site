@@ -1,0 +1,23 @@
+---
+/**
+ * Runs before the profile's islands are parsed. A browser that already
+ * keeps saved charts is marked on the root element, so the server-drawn
+ * "no chart yet" panel never flashes before that browser's Today panel and
+ * the room the panel will need is held until the island hydrates
+ * (src/styles/profile-page.css, :root[data-pf-saved]). Nothing is read
+ * beyond whether the saved list is non-empty, and nothing leaves the page.
+ * With account sync v2 it reads only what the account gate already lets
+ * this tab read (window.zodiacsProfileAccess), like the nav's own hint.
+ */
+---
+<script is:inline>
+  try {
+    if (!document.documentElement.hasAttribute('data-account-sync-v2')
+      || (window.zodiacsProfileAccess && window.zodiacsProfileAccess.canRead())) {
+      var saved = JSON.parse(localStorage.getItem('zodiacs.profile.v1') || 'null');
+      if (saved && Array.isArray(saved.charts) && saved.charts.length > 0) {
+        document.documentElement.setAttribute('data-pf-saved', '');
+      }
+    }
+  } catch (e) {}
+</script>

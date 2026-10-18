@@ -38,6 +38,11 @@ function PhotoMark() {
   return <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 5.5 9.5 3.5h5L16 5.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-11a2 2 0 0 1 2-2h3Z"/><circle cx="12" cy="12.5" r="4"/></svg>;
 }
 
+/** Two overlapping sheets: the site's fonts carry no copy glyph of their own. */
+function CopyMark() {
+  return <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 3.5V3.1A1.6 1.6 0 0 0 8.9 1.5H3.1A1.6 1.6 0 0 0 1.5 3.1v5.8a1.6 1.6 0 0 0 1.6 1.6h.4"/></svg>;
+}
+
 const STORAGE_ERROR = 'This browser wouldn’t keep it. Private browsing or a full disk can do that.';
 /** --ink-1: the disc's colour when the chart cannot settle a Sun sign. */
 const NEUTRAL_HUE = '#C6CCDA';
@@ -471,7 +476,7 @@ function SharePanel({ chart, name, hue, placements, onAddName, onClose }: {
           <div class="pf-me__panel-actions">
             <button class="btn btn--primary" type="button" onClick={copy} data-card-link>
               <span>{state === 'copied' ? 'Link copied' : 'Copy card link'}</span>
-              <span class="orb" aria-hidden="true">{state === 'copied' ? '✓' : '⧉'}</span>
+              <span class="orb" aria-hidden="true">{state === 'copied' ? '✓' : <CopyMark />}</span>
             </button>
             {canShare && (
               <button class="btn btn--ghost" type="button" onClick={share}>

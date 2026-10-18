@@ -1,6 +1,7 @@
 ---
 import ReturnToolLinks from "../../../components/return-visits/ReturnToolLinks.astro";
 import Base from '../../../layouts/Base.astro';
+import ProfilePrepaint from '../../../components/profile/ProfilePrepaint.astro';
 import ProfileDashboard from '../../../islands/ProfileDashboard';
 import SavedRecordsPanel from '../../../islands/SavedRecordsPanel';
 import { savedRecordsEnabled } from '../../../lib/profile/saved-record-flags';
@@ -40,6 +41,7 @@ const jsonLd = [
   privateSurface={accountSyncV2Enabled}
 >
   <section class="section--tight container pf-page">
+    <ProfilePrepaint />
     <div class="pf-hero">
       <h1 class="display">Cartas guardadas.</h1>
       <p>Guarda cartas en este dispositivo. Inicia sesión cuando quieras tenerlas en todos tus dispositivos.</p>

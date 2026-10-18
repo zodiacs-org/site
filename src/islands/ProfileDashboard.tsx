@@ -67,7 +67,7 @@ const readYearCache = (): YearCacheFile => {
 export default function ProfileDashboard({ locale: rawLocale = 'en' }: Props) {
   const locale = normalizeCatalogLocale(rawLocale);
   const loadEngine = useEngine();
-  const { profile } = useProfile();
+  const { profile, ready } = useProfile();
   const charts = useMemo(
     () => [...profile.charts].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
     [profile.charts],
@@ -208,7 +208,10 @@ export default function ProfileDashboard({ locale: rawLocale = 'en' }: Props) {
 
   if (!chart) {
     return (
-      <section class="shell pfd" aria-label={t(locale, 'pfdEmptyTitle')}>
+      // Until this browser's storage is read, the panel says so: a browser
+      // that keeps charts holds its room hidden (ProfilePrepaint) rather
+      // than flash the no-chart invitation before its Today panel.
+      <section class="shell pfd" aria-label={t(locale, 'pfdEmptyTitle')} data-pf-pending={ready ? undefined : ''}>
         <div class="core pfd__core pfd__empty">
           <PanelArt name="profile-keepsake" class="pf-art--keepsake" />
           <h2>{t(locale, 'pfdEmptyTitle')}</h2>
