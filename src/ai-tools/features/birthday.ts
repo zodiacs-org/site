@@ -20,6 +20,7 @@ import { CATALOG_LOCALES, type CatalogLocale } from '../../lib/i18n/core';
 import { SUN } from '../../lib/interpretations';
 import { skyCalendarEvents } from '../../lib/return-visits/sky-calendar';
 import { formatLongitude, signBySlug, signForLongitude, type Sign } from '../../lib/signs';
+import { birthdayShareUrl, skyCalendarShareUrl } from '../share-links';
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
@@ -98,6 +99,8 @@ export const birthdayData = z.object({
   }).nullable(),
   sunAtBirth: z.object({ longitude: z.number(), position: z.string(), timeKnown: z.boolean() }).nullable(),
   pageUrl: z.url(),
+  /** The share link: the month and day, and a cusp date's sign when the year or time settled it. Never the year. */
+  shareUrl: z.url().nullable(),
   solarReturn: z.object({
     year: z.number().int(),
     instant: clockTime,
@@ -302,7 +305,9 @@ export async function getBirthday(
     month, day, label, sunSpan,
     sign: sign ? signRow(sign) : null,
     signFrom,
-    boundary, cusp, decan, sunAtBirth, pageUrl, solarReturn,
+    boundary, cusp, decan, sunAtBirth, pageUrl,
+    shareUrl: birthdayShareUrl(origin, { month, day, cuspSign: cusp && sign ? sign.slug : null }),
+    solarReturn,
     note: BIRTHDAY_NOTE,
   });
   const links: ToolLink[] = [{ title: `${label} birthdays on Zodiacs`, url: pageUrl }];
@@ -326,6 +331,8 @@ export const skyCalendarData = z.object({
   feedUrl: z.url().refine((url) => url.startsWith('https://') && url.endsWith('.ics')),
   subscribeUrl: z.url().refine((url) => url.startsWith('webcal://')),
   pageUrl: z.url(),
+  /** The share link for the next event, in English: the share images draw Latin letters only. */
+  shareUrl: z.url().nullable(),
   contains: z.array(z.string()).min(1),
   covers: z.object({ from: z.string(), to: z.string() }),
   next: z.array(nextEvent).max(3),
@@ -370,13 +377,15 @@ export function getSkyCalendar(
   const feedUrl = `${origin}${prefix}/sky-calendar.ics`;
   const subscribeUrl = feedUrl.replace(/^https?:/, 'webcal:');
   const pageUrl = `${origin}${prefix}/sky-calendar/`;
-  const next = skyCalendarEvents(language)
-    .map((event) => ({ title: event.summary, start: iso(event.start), end: event.end ? iso(event.end) : null }))
+  const upcoming = skyCalendarEvents(language)
+    .map((event) => ({ id: event.id, title: event.summary, start: iso(event.start), end: event.end ? iso(event.end) : null }))
     .filter((event) => Date.parse(event.start) > now.getTime())
     .sort((a, b) => a.start.localeCompare(b.start))
     .slice(0, 3);
+  const next = upcoming.map(({ title, start, end }) => ({ title, start, end }));
+  const shareUrl = upcoming[0] ? skyCalendarShareUrl(origin, upcoming[0]) : null;
   const data = skyCalendarData.parse({
-    language, feedUrl, subscribeUrl, pageUrl, ...feedContents(), next,
+    language, feedUrl, subscribeUrl, pageUrl, shareUrl, ...feedContents(), next,
     howTo: {
       google: `In Google Calendar on the web, next to Other calendars choose + then From URL, and paste ${feedUrl}.`,
       apple: `On an iPhone, iPad or Mac, open ${subscribeUrl}; or in Calendar on a Mac choose File → New Calendar Subscription and paste ${feedUrl}.`,

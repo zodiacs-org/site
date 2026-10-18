@@ -279,6 +279,7 @@ export function FamousChart({ data }: { data: FamousChartData }) {
 // ── A birthday ───────────────────────────────────────────────────────
 
 export function Birthday({ data }: { data: BirthdayData }) {
+  const open = { label: `Open the ${data.label} page`, href: data.pageUrl };
   const rows: Fact[] = [];
   if (data.decan) rows.push(['Decan', plain(data.decan.text)]);
   if (data.solarReturn) rows.push([`Solar return ${data.solarReturn.year}`, <strong>{data.solarReturn.instant.local.replace(/^[A-Z][a-z]{2} /u, '').replace(', ', ' at ')}</strong>]);
@@ -299,7 +300,7 @@ export function Birthday({ data }: { data: BirthdayData }) {
       {data.solarReturn && <p class="quiet">{plain(data.solarReturn.note)}</p>}
       <CopyCard text={text}/>
     </Fold>
-    <Actions primary={{ label: `Open the ${data.label} page`, href: data.pageUrl }}/>
+    <Actions primary={data.shareUrl ? { label: 'Share this birthday', href: data.shareUrl } : open} secondary={data.shareUrl && open}/>
     <FinePrint>{plain(data.note)}</FinePrint>
   </Card>;
 }
@@ -313,7 +314,7 @@ export function SkyCalendar({ data }: { data: SkyCalendarData }) {
   return <Card hue={hueOf('scorpio')} hue2={hueOf('cancer')}>
     <Keepsake kicker="Sky calendar" title="The sky in your calendar" meta="New and full Moons, eclipses and retrogrades, kept up to date in your calendar app." art={[{ src: artOf('sky-calendar-hero') }]}/>
     {soon && <Hero verdict={`Next: ${soon.title}`} summary={span(soon)}/>}
-    <Fold hint={holds([data.next.length > 1 && 'what else is coming up', 'how to add it by hand', 'the feed address'])}>
+    <Fold hint={holds([data.next.length > 1 && 'what else is coming up', 'how to add it by hand', data.shareUrl && 'the page', 'the feed address'])}>
       {data.next.length > 0 && <Section title="Coming up">
         <Facts rows={data.next.map((event) => [event.title, span(event)] as Fact)}/>
       </Section>}
@@ -321,9 +322,11 @@ export function SkyCalendar({ data }: { data: SkyCalendarData }) {
         <Facts stacked rows={[['Google Calendar', data.howTo.google], ['Apple Calendar', data.howTo.apple], ['Outlook', data.howTo.outlook]]}/>
         <p class="quiet">Feed address: <code>{data.feedUrl}</code></p>
       </Section>
+      {data.shareUrl && <Links links={[{ label: 'Open the sky calendar page', href: data.pageUrl }]}/>}
       <CopyCard text={`Zodiacs sky calendar: ${data.feedUrl}`} label="Copy the feed address"/>
     </Fold>
-    <Actions primary={{ label: 'Subscribe in your calendar app', href: data.subscribeUrl }} secondary={{ label: 'Open the sky calendar page', href: data.pageUrl }}/>
+    <Actions primary={{ label: 'Subscribe in your calendar app', href: data.subscribeUrl }}
+      secondary={data.shareUrl ? { label: 'Share the sky calendar', href: data.shareUrl } : { label: 'Open the sky calendar page', href: data.pageUrl }}/>
     <FinePrint>{plain(data.note)}</FinePrint>
   </Card>;
 }

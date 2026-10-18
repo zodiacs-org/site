@@ -1,9 +1,12 @@
 /**
- * Share links for a compatibility score and a date's rating: a page with the
- * result card and a way to try it, and the 1200×630 preview image link
- * previews show. Both read only the link's checked query string
- * (src/lib/share-results.ts); nothing is looked up, stored or logged, and
- * every response is uncacheable and kept out of search.
+ * Share links for five assistant cards: a compatibility score, a date's
+ * rating, a birthday, the sky calendar's next event and a horoscope. Each has
+ * a page with the result's picture and a way to try it, and the 1200×630
+ * preview image link previews show. They read only the link's checked query
+ * string (src/lib/share-results.ts, src/ai-tools/share-links.ts) and the
+ * site's own committed data (the birthday table, the sky calendar's events
+ * and the published horoscopes); nothing is looked up elsewhere, stored or
+ * logged, and every response is uncacheable and kept out of search.
  */
 import { readFile } from 'node:fs/promises';
 import { encode as encodeJpeg } from 'jpeg-js';
@@ -17,12 +20,42 @@ import {
   writeNodeResponse,
 } from './chart-preview.js';
 import {
+  birthdayCardModel,
+  type BirthdayCardModel,
+  type BirthdayDay,
   compatibilityCardModel,
   type CompatibilityCardModel,
+  horoscopeCardModel,
+  type HoroscopeCardModel,
   occasionCardModel,
   type OccasionCardModel,
   type PreviewSign,
+  skyCalendarCardModel,
+  type SkyCalendarCardModel,
+  type SkyData,
+  type SkyEvent,
+  skyEvents,
 } from './result-preview-model.js';
+import { HUES } from './chart-preview-model.js';
+import {
+  BIRTHDAY_SHARE_IMAGE_PATH,
+  BIRTHDAY_SHARE_KEYS,
+  BIRTHDAY_SHARE_PATH,
+  birthdayQuery,
+  HOROSCOPE_SHARE_IMAGE_PATH,
+  HOROSCOPE_SHARE_KEYS,
+  HOROSCOPE_SHARE_PATH,
+  horoscopeQuery,
+  parseBirthdayShare,
+  parseHoroscopeShare,
+  parseSkyCalendarShare,
+  SKY_CALENDAR_SHARE_IMAGE_PATH,
+  SKY_CALENDAR_SHARE_KEYS,
+  SKY_CALENDAR_SHARE_PATH,
+  skyCalendarQuery,
+} from '../ai-tools/share-links.js';
+import { HOROSCOPE_DISCLOSURE } from '../ai-tools/horoscope/reading.js';
+import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
 import { TILTED_RING_DOTS, TILTED_RING_VIEWBOX } from '../lib/tilted-mark.js';
 import {
   COMPATIBILITY_SHARE_IMAGE_PATH,
@@ -40,7 +73,10 @@ import {
 } from '../lib/share-results.js';
 
 export const RESULT_SHARE_ROUTE_KEY = '__zodiacs_share';
-export const RESULT_SHARE_ROUTES = ['compatibility-link', 'compatibility-image', 'occasion-link', 'occasion-image'] as const;
+export const RESULT_SHARE_ROUTES = [
+  'compatibility-link', 'compatibility-image', 'occasion-link', 'occasion-image',
+  'birthday-link', 'birthday-image', 'sky-calendar-link', 'sky-calendar-image', 'horoscope-link', 'horoscope-image',
+] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
 const VOID = '#060709';
@@ -130,6 +166,33 @@ function artImage(key: ShareArt): Promise<string> {
   const pending = readFile(ART_FILES[key]).then((bytes) => `data:image/jpeg;base64,${bytes.toString('base64')}`);
   arts.set(key, pending);
   void pending.catch(() => { if (arts.get(key) === pending) arts.delete(key); });
+  return pending;
+}
+
+// ── The site's own data, read once per instance ──────────────────────
+// One literal address per file, so the deployment's file tracing packs them.
+
+interface ShareData { birthdays: Readonly<Record<string, BirthdayDay>>; skyEvents: readonly SkyEvent[]; horoscopes: Pick<HoroscopeWindow, 'editions'> }
+let shareData: Promise<ShareData> | null = null;
+
+function readJson<T>(url: URL): Promise<T> {
+  return readFile(url, 'utf8').then((text) => JSON.parse(text) as T);
+}
+
+function loadShareData(): Promise<ShareData> {
+  if (shareData) return shareData;
+  const pending = Promise.all([
+    readJson<{ days: Record<string, BirthdayDay> }>(new URL('../data/birthdays.json', import.meta.url)),
+    readJson<Pick<SkyData, 'moons' | 'retrogrades'>>(new URL('../data/sky.json', import.meta.url)),
+    readJson<{ eclipses: SkyData['eclipses'] }>(new URL('../data/eclipses.json', import.meta.url)),
+    readJson<Pick<HoroscopeWindow, 'editions'>>(new URL('../data/horoscope-window.json', import.meta.url)),
+  ]).then(([birthdays, sky, eclipses, horoscopes]) => ({
+    birthdays: birthdays.days,
+    skyEvents: skyEvents({ moons: sky.moons, retrogrades: sky.retrogrades, eclipses: eclipses.eclipses }),
+    horoscopes: { editions: horoscopes.editions },
+  }));
+  shareData = pending;
+  void pending.catch(() => { if (shareData === pending) shareData = null; });
   return pending;
 }
 
@@ -290,15 +353,33 @@ export function compatibilityCard(model: CompatibilityCardModel, images: Map<Sha
   }));
 }
 
+/** A title that may wrap: as large as fits, balanced over its lines. */
+const titleBlock = (title: string) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: fit([title], TEXT_WIDTH, 76, 44), lineHeight: 1.03, color: INK, textWrap: 'balance' } }, title);
+
 export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>, art: string[]) {
   const title = model.names ?? model.headline;
   return frame(art, words({
     discs: discRow(model.signs, images),
     kicker: model.names ? model.headline : 'The sky on the day',
     hue: model.ring[0],
-    title: [h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: fit([title], TEXT_WIDTH, 76, 44), lineHeight: 1.03, color: INK, textWrap: 'balance' } }, title)],
+    title: [titleBlock(title)],
     line: `${model.score} out of 100. ${model.verdict}`,
   }));
+}
+
+/** A birthday: its Sun sign's panel, or a cusp date's two signs facing each other. */
+export function birthdayCard(model: BirthdayCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return frame(art, words({ discs: discRow(model.signs, images), kicker: 'A birthday', hue: model.hue, title: [titleBlock(model.title)], line: model.line }));
+}
+
+/** The sky calendar: the Sky dial, and the next event in a line. It names no sign, so it has no disc, as on its card. */
+export function skyCalendarCard(model: SkyCalendarCardModel, art: string[]) {
+  return frame(art, words({ discs: [], kicker: 'Sky calendar', hue: HUES.scorpio, title: [titleBlock('The sky in your calendar')], line: model.line }));
+}
+
+/** A horoscope: the sign's panel, the day or week, the sign, and the reading's own line for it. */
+export function horoscopeCard(model: HoroscopeCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return frame(art, words({ discs: discRow([model.sign], images), kicker: model.kicker, hue: model.hue, title: [titleBlock(model.signName)], line: model.line }));
 }
 
 // ── Responses ────────────────────────────────────────────────────────
@@ -361,6 +442,47 @@ export async function handleOccasionImageRequest(request: Request): Promise<Resp
   const [images, art] = await Promise.all([discImages(model.signs), Promise.all(occasionArt(share).map(artImage))]).catch(() => [null, null] as const);
   if (!images || !art) return errorResponse(503);
   return renderImage(occasionCard(model, images, art));
+}
+
+const artOfSigns = (signs: readonly PreviewSign[]): ShareArt[] => signs.map((sign) => sign.slug).filter((slug): slug is ShareSign => slug !== null);
+
+async function imageFor(signs: readonly PreviewSign[], art: ShareArt[], draw: (images: Map<ShareSign, string>, art: string[]) => VNode<any>): Promise<Response> {
+  const [images, pictures] = await Promise.all([discImages(signs), Promise.all(art.map(artImage))]).catch(() => [null, null] as const);
+  if (!images || !pictures) return errorResponse(503);
+  return renderImage(draw(images, pictures));
+}
+
+export async function handleBirthdayImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseBirthdayShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = birthdayCardModel(share, data.birthdays);
+  if (!model) return errorResponse(400);
+  return imageFor(model.signs, artOfSigns(model.signs), (images, art) => birthdayCard(model, images, art));
+}
+
+export async function handleSkyCalendarImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseSkyCalendarShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = skyCalendarCardModel(share, data.skyEvents);
+  if (!model) return errorResponse(400);
+  return imageFor([], ['sky-calendar-hero'], (_images, art) => skyCalendarCard(model, art));
+}
+
+export async function handleHoroscopeImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseHoroscopeShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = horoscopeCardModel(share, data.horoscopes);
+  if (!model) return errorResponse(400);
+  return imageFor([model.sign], [share.sign], (images, art) => horoscopeCard(model, images, art));
 }
 
 // ── The page a share link opens ──────────────────────────────────────
@@ -445,6 +567,112 @@ function defaultOccasionPage(origin: string): SharePage {
   };
 }
 
+/** The birthday tool's note (src/ai-tools/features/birthday.ts), which the share page keeps. */
+const BIRTHDAY_NOTE = 'Facts about the Sun on this date and their traditional meanings.';
+const SKY_CALENDAR_NOTE = 'A public feed of computed sky events; it takes no personal details.';
+const SKY_CALENDAR_ABOUT = 'Zodiacs’ sky calendar puts new and full Moons, eclipses and retrograde periods in Google Calendar, Apple Calendar or Outlook, and keeps them up to date.';
+
+function defaultBirthdayPage(origin: string): SharePage {
+  return {
+    title: 'Birthdays on Zodiacs',
+    description: 'The Sun’s sign on every birthday, with its decan and the cusp dates where the sign depends on the year.',
+    heading: 'The sky on every birthday',
+    imageUrl: `${origin}/assets/og/v2/tool/birthday.png`,
+    imageType: 'image/png',
+    imageAlt: 'Birthdays on Zodiacs',
+    explanation: 'Zodiacs gives the Sun’s sign for every date of the year, its traditional meaning and decan, and says when a date sits on a cusp.',
+    action: { label: 'Find your own birthday', href: '/birthday/' },
+    note: BIRTHDAY_NOTE,
+  };
+}
+
+function defaultSkyCalendarPage(origin: string): SharePage {
+  return {
+    title: 'The sky calendar on Zodiacs',
+    description: 'New and full Moons, eclipses and retrograde periods in your calendar app, kept up to date.',
+    heading: 'The sky in your calendar',
+    imageUrl: `${origin}/assets/og/v2/tool/sky-calendar.png`,
+    imageType: 'image/png',
+    imageAlt: 'The sky calendar on Zodiacs',
+    explanation: SKY_CALENDAR_ABOUT,
+    action: { label: 'Add it to your calendar', href: '/sky-calendar/' },
+    note: SKY_CALENDAR_NOTE,
+  };
+}
+
+function defaultHoroscopePage(origin: string): SharePage {
+  return {
+    title: 'Horoscopes on Zodiacs',
+    description: 'A horoscope for each Sun sign every day, written from that day’s sky.',
+    heading: 'Today’s horoscopes',
+    imageUrl: `${origin}/assets/og/v2/tool/horoscopes.png`,
+    imageType: 'image/png',
+    imageAlt: 'Horoscopes on Zodiacs',
+    explanation: 'Zodiacs writes a horoscope for each Sun sign every day, from that day’s sky.',
+    action: { label: 'Read your own horoscope', href: '/horoscopes/' },
+    note: HOROSCOPE_DISCLOSURE,
+  };
+}
+
+export async function handleBirthdayLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseBirthdayShare(url.searchParams);
+  const model = share ? birthdayCardModel(share, (await loadShareData().catch(() => null))?.birthdays ?? {}) : null;
+  if (!share || !model) return htmlResponse(sharePageHtml(defaultBirthdayPage(url.origin)));
+  return htmlResponse(sharePageHtml({
+    title: `${model.title}: ${model.line} on Zodiacs`,
+    description: model.about,
+    heading: model.title,
+    imageUrl: `${url.origin}${BIRTHDAY_SHARE_IMAGE_PATH}?${birthdayQuery(share)}`,
+    imageType: 'image/jpeg',
+    imageAlt: `${model.title}: ${model.line}.`,
+    explanation: model.about,
+    action: { label: 'Find your own birthday', href: withRef('/birthday/', share.ref) },
+    note: BIRTHDAY_NOTE,
+  }));
+}
+
+export async function handleSkyCalendarLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseSkyCalendarShare(url.searchParams);
+  const model = share ? skyCalendarCardModel(share, (await loadShareData().catch(() => null))?.skyEvents ?? []) : null;
+  if (!share || !model) return htmlResponse(sharePageHtml(defaultSkyCalendarPage(url.origin)));
+  return htmlResponse(sharePageHtml({
+    title: `${model.title}, ${model.span}: the sky calendar on Zodiacs`,
+    description: `${model.title}: ${model.spanLong}. New and full Moons, eclipses and retrograde periods in your calendar app.`,
+    heading: 'The sky in your calendar',
+    imageUrl: `${url.origin}${SKY_CALENDAR_SHARE_IMAGE_PATH}?${skyCalendarQuery(share)}`,
+    imageType: 'image/jpeg',
+    imageAlt: `The sky in your calendar: ${model.title}, ${model.spanLong}.`,
+    explanation: `${model.title}: ${model.spanLong}. ${SKY_CALENDAR_ABOUT}`,
+    action: { label: 'Add it to your calendar', href: withRef('/sky-calendar/', share.ref) },
+    note: SKY_CALENDAR_NOTE,
+  }));
+}
+
+export async function handleHoroscopeLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseHoroscopeShare(url.searchParams);
+  const data = share ? await loadShareData().catch(() => null) : null;
+  const model = share && data ? horoscopeCardModel(share, data.horoscopes) : null;
+  if (!share || !model) return htmlResponse(sharePageHtml(defaultHoroscopePage(url.origin)));
+  return htmlResponse(sharePageHtml({
+    title: `${model.heading} on Zodiacs`,
+    // A reading no longer kept here still names its sign and the sign's dates.
+    description: model.passage ? model.line : `${model.signName}, ${model.line}. Zodiacs writes a horoscope for each Sun sign every day.`,
+    heading: model.heading,
+    imageUrl: `${url.origin}${HOROSCOPE_SHARE_IMAGE_PATH}?${horoscopeQuery(share)}`,
+    imageType: 'image/jpeg',
+    imageAlt: `${model.heading}: ${model.line}`,
+    explanation: model.passage ?? 'Zodiacs writes a horoscope for each Sun sign every day, from that day’s sky. This one is no longer kept here; today’s are on zodiacs.org.',
+    action: { label: 'Read your own horoscope', href: withRef('/horoscopes/', share.ref) },
+    note: HOROSCOPE_DISCLOSURE,
+  }));
+}
+
 export async function handleCompatibilityLinkRequest(request: Request): Promise<Response> {
   if (request.method !== 'GET') return errorResponse(405);
   const url = new URL(request.url);
@@ -490,6 +718,12 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'compatibility-image': { path: COMPATIBILITY_SHARE_IMAGE_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityImageRequest },
   'occasion-link': { path: OCCASION_SHARE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionLinkRequest },
   'occasion-image': { path: OCCASION_SHARE_IMAGE_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionImageRequest },
+  'birthday-link': { path: BIRTHDAY_SHARE_PATH, keys: BIRTHDAY_SHARE_KEYS, handle: handleBirthdayLinkRequest },
+  'birthday-image': { path: BIRTHDAY_SHARE_IMAGE_PATH, keys: BIRTHDAY_SHARE_KEYS, handle: handleBirthdayImageRequest },
+  'sky-calendar-link': { path: SKY_CALENDAR_SHARE_PATH, keys: SKY_CALENDAR_SHARE_KEYS, handle: handleSkyCalendarLinkRequest },
+  'sky-calendar-image': { path: SKY_CALENDAR_SHARE_IMAGE_PATH, keys: SKY_CALENDAR_SHARE_KEYS, handle: handleSkyCalendarImageRequest },
+  'horoscope-link': { path: HOROSCOPE_SHARE_PATH, keys: HOROSCOPE_SHARE_KEYS, handle: handleHoroscopeLinkRequest },
+  'horoscope-image': { path: HOROSCOPE_SHARE_IMAGE_PATH, keys: HOROSCOPE_SHARE_KEYS, handle: handleHoroscopeImageRequest },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);

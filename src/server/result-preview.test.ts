@@ -3,15 +3,38 @@ import { decode as decodeJpeg } from 'jpeg-js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { parseCompatibilityShare, parseOccasionShare } from '../lib/share-results';
 import {
+  handleBirthdayImageRequest,
+  handleBirthdayLinkRequest,
   handleCompatibilityImageRequest,
   handleCompatibilityLinkRequest,
+  handleHoroscopeImageRequest,
+  handleHoroscopeLinkRequest,
   handleOccasionImageRequest,
   handleOccasionLinkRequest,
   handleResultShareNodeRequest,
+  handleSkyCalendarImageRequest,
+  handleSkyCalendarLinkRequest,
 } from './result-preview';
-import { compatibilityCardModel, longDate, NEUTRAL_HUE, occasionCardModel } from './result-preview-model';
+import {
+  birthdayCardModel,
+  compatibilityCardModel,
+  horoscopeCardModel,
+  longDate,
+  NEUTRAL_HUE,
+  occasionCardModel,
+  skyCalendarCardModel,
+  skyEvents,
+} from './result-preview-model';
+import { parseBirthdayShare, parseHoroscopeShare, parseSkyCalendarShare } from '../ai-tools/share-links';
+import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 
 const COMPAT = 'a=Ana&as=leo&b=Luis&bs=libra&score=78&attraction=82&communication=71&stability=80&v=strong';
+const json = <T>(path: string): T => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8')) as T;
+const DAYS = json<{ days: Record<string, { sign?: string; cusp?: { a: string; b: string } }> }>('../data/birthdays.json').days;
+const SKY_EVENTS = skyEvents({ ...json<any>('../data/sky.json'), eclipses: json<any>('../data/eclipses.json').eclipses });
+const WINDOW = json<HoroscopeWindow>('../data/horoscope-window.json');
+const TODAY = WINDOW.generatedFor;
+const WEEK = WINDOW.editions.find((edition) => edition.anchorDate === TODAY)!.signs.leo.weekly.period;
 const OCCASION = 'o=wedding&d=2027-06-12&n=Ana+%26+Luis&p=Florence&sun=gemini&moon=libra&score=84&v=excellent';
 const nativeFetch = globalThis.fetch;
 
@@ -60,6 +83,48 @@ describe('share card models', () => {
   });
 });
 
+describe('birthday, sky calendar and horoscope share models', () => {
+  const birthday = (query: string) => birthdayCardModel(parseBirthdayShare(new URLSearchParams(query))!, DAYS);
+
+  it('give a birthday its sign, or a cusp date both signs, and refuse a sign the date never has', () => {
+    expect(birthday('d=05-03')).toMatchObject({ title: '3 May birthdays', line: 'Taurus Sun', slug: 'may-3', signs: [{ slug: 'taurus' }] });
+    expect(birthday('d=05-03')!.about).toBe('People born on 3 May have the Sun in Taurus. Earth, fixed, ruled by Venus. Apr 20 to May 20.');
+    expect(birthday('d=04-20')).toMatchObject({ line: 'On the cusp of Aries and Taurus', signs: [{ slug: 'aries' }, { slug: 'taurus' }] });
+    expect(birthday('d=04-20&s=taurus')).toMatchObject({ line: 'Taurus Sun', signs: [{ slug: 'taurus' }] });
+    expect(birthday('d=02-29')).toMatchObject({ title: '29 February birthdays', line: 'Pisces Sun' });
+    expect(birthday('d=05-03&s=leo')).toBeNull();
+    expect(birthday('d=04-20&s=leo')).toBeNull();
+  });
+
+  it('find a sky calendar event in the feed’s own data, and nothing that is not in it', () => {
+    const sky = (query: string) => skyCalendarCardModel(parseSkyCalendarShare(new URLSearchParams(query))!, SKY_EVENTS);
+    expect(sky('k=retrograde&b=mercury&d=2026-10-24')).toEqual({
+      title: 'Mercury retrograde', span: 'Sat 24 Oct to Fri 13 Nov', spanLong: 'Saturday 24 October to Friday 13 November', line: 'Mercury retrograde, Sat 24 Oct to Fri 13 Nov.',
+    });
+    expect(sky('k=full-moon&d=2026-10-26')).toMatchObject({ title: 'Full moon', line: 'Full moon, Mon 26 Oct.' });
+    expect(sky('k=retrograde&b=mercury&d=2026-10-25')).toBeNull();
+    expect(sky('k=new-moon&d=2026-10-26')).toBeNull();
+  });
+
+  it('quote a published horoscope’s own line for the sign, and the sign’s dates once it is gone', () => {
+    const horoscope = (query: string) => horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(query))!, WINDOW)!;
+    const day = horoscope(`s=leo&d=${TODAY}`);
+    const published = WINDOW.editions.find((edition) => edition.anchorDate === TODAY)!.signs.leo.today.passages.map((passage) => passage.text).join(' ');
+    expect(day.line).toMatch(/^For Leo, .+[.!?]$/u);
+    expect(published).toContain(day.line);
+    expect(day.kicker).toMatch(/^Horoscope for [A-Z][a-z]+day \d{1,2} [A-Z][a-z]+$/u);
+    expect(day.heading).toBe(`Leo ${day.kicker.charAt(0).toLowerCase()}${day.kicker.slice(1)}`);
+    expect(horoscope(`s=leo&d=${TODAY}&f=love`).kicker).toMatch(/^Love horoscope for /u);
+    expect(horoscope(`s=leo&w=${WEEK.from}`).kicker).toMatch(/^Horoscope for \d{1,2}(?: [A-Z][a-z]+)? to \d{1,2} [A-Z][a-z]+$/u);
+    expect(horoscope('s=leo&d=2026-09-01')).toMatchObject({ kicker: 'Horoscope for Tuesday 1 September', line: 'Jul 23 to Aug 22', passage: null });
+    // Nothing is published after the window's latest day or week yet.
+    const latest = WINDOW.editions.map((edition) => edition.anchorDate).sort().at(-1)!;
+    const after = (date: string, days: number) => new Date(Date.parse(`${date}T12:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
+    expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(`s=leo&d=${after(latest, 1)}`))!, WINDOW)).toBeNull();
+    expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(`s=leo&w=${after(WEEK.from, 7)}`))!, WINDOW)).toBeNull();
+  });
+});
+
 describe('share link pages', () => {
   it('show the card, a line about it and the way to check your own, with the preview image', async () => {
     const response = await handleCompatibilityLinkRequest(new Request(`https://zodiacs.org/share/compatibility/?${COMPAT}&ref=chatgpt`));
@@ -100,6 +165,32 @@ describe('share link pages', () => {
     expect(occasion).toContain('content="https://zodiacs.org/assets/og/v2/share.png"');
   });
 
+  it('give a birthday, the sky calendar and a horoscope their own page, preview and way to try it', async () => {
+    const birthday = await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-03&ref=chatgpt'))).text();
+    expect(birthday).toContain('<title>3 May birthdays: Taurus Sun on Zodiacs</title>');
+    expect(birthday).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/birthday-image?d=05-03">');
+    expect(birthday).toContain('<meta property="og:image:type" content="image/jpeg">');
+    expect(birthday).toContain('<a class="cta" href="/birthday/?ref=chatgpt">Find your own birthday</a>');
+    const sky = await (await handleSkyCalendarLinkRequest(new Request('https://zodiacs.org/share/sky-calendar/?k=retrograde&b=mercury&d=2026-10-24'))).text();
+    expect(sky).toContain('content="https://zodiacs.org/api/og/sky-calendar-image?k=retrograde&amp;b=mercury&amp;d=2026-10-24"');
+    expect(sky).toContain('Mercury retrograde: Saturday 24 October to Friday 13 November.');
+    expect(sky).toContain('<a class="cta" href="/sky-calendar/">Add it to your calendar</a>');
+    const horoscope = await (await handleHoroscopeLinkRequest(new Request(`https://zodiacs.org/share/horoscope/?s=leo&d=${TODAY}`))).text();
+    expect(horoscope).toContain(`content="https://zodiacs.org/api/og/horoscope-image?s=leo&amp;d=${TODAY}"`);
+    expect(horoscope).toMatch(/<h1>Leo horoscope for [A-Z][a-z]+day \d{1,2} [A-Z][a-z]+<\/h1>/u);
+    expect(horoscope).toContain('<a class="cta" href="/horoscopes/">Read your own horoscope</a>');
+    expect(horoscope).not.toMatch(/[—–]/u);
+    // A link that does not match the site's data opens the plain page.
+    expect(await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-03&s=leo'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/birthday.png"');
+    expect(await (await handleSkyCalendarLinkRequest(new Request('https://zodiacs.org/share/sky-calendar/?k=full-moon&d=2026-10-27'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/sky-calendar.png"');
+    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&text=Win'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/horoscopes.png"');
+    expect(await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2199-01-01'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/horoscopes.png"');
+    // A reading that has left the window keeps its sign and day.
+    const gone = await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2026-09-01'))).text();
+    expect(gone).toContain('<h1>Leo horoscope for Tuesday 1 September</h1>');
+    expect(gone).toContain('content="Leo, Jul 23 to Aug 22. Zodiacs writes a horoscope for each Sun sign every day."');
+  });
+
   it('refuse other methods', async () => {
     expect((await handleCompatibilityLinkRequest(new Request(`https://zodiacs.org/share/compatibility/?${COMPAT}`, { method: 'POST' }))).status).toBe(405);
     expect((await handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${OCCASION}`, { method: 'POST' }))).status).toBe(405);
@@ -112,6 +203,9 @@ describe('the deployed entry', () => {
     for (const [source, route] of [
       ['/share/compatibility/', 'compatibility-link'], ['/api/og/compatibility-image', 'compatibility-image'],
       ['/share/occasion/', 'occasion-link'], ['/api/og/occasion-image', 'occasion-image'],
+      ['/share/birthday/', 'birthday-link'], ['/api/og/birthday-image', 'birthday-image'],
+      ['/share/sky-calendar/', 'sky-calendar-link'], ['/api/og/sky-calendar-image', 'sky-calendar-image'],
+      ['/share/horoscope/', 'horoscope-link'], ['/api/og/horoscope-image', 'horoscope-image'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
     const source = readFileSync(new URL('../../api/compatibility.ts', import.meta.url), 'utf8');
     expect(source).toContain("from '../src/server/result-preview.js'");
@@ -151,6 +245,11 @@ describe('share preview images', () => {
     ['accented names', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?a=%C5%81ukasz&b=Zo%C3%AB&score=63&attraction=70&communication=59&stability=58&v=good'))],
     ['accented names on a date', () => handleOccasionImageRequest(new Request('https://zodiacs.org/api/og/occasion-image?o=anniversary&d=2027-09-04&n=%C5%81ucja+%26+%C3%96mer&p=Gda%C5%84sk&sun=virgo&moon=pisces&score=72&v=good'))],
     ['one unknown sign', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?bs=pisces&score=41&attraction=55&communication=38&stability=30&v=challenging'))],
+    ['birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=05-03'))],
+    ['cusp birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=04-20'))],
+    ['sky calendar', () => handleSkyCalendarImageRequest(new Request('https://zodiacs.org/api/og/sky-calendar-image?k=retrograde&b=mercury&d=2026-10-24'))],
+    ['horoscope', () => handleHoroscopeImageRequest(new Request(`https://zodiacs.org/api/og/horoscope-image?s=leo&d=${TODAY}`))],
+    ['week’s horoscope', () => handleHoroscopeImageRequest(new Request(`https://zodiacs.org/api/og/horoscope-image?s=sagittarius&w=${WEEK.from}`))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -175,5 +274,15 @@ describe('share preview images', () => {
     const response = await handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?score=78'));
     expect(response.status).toBe(400);
     expect(response.headers.get('x-robots-tag')).toContain('noindex');
+  });
+
+  it('refuses a share the site’s data does not hold, before drawing anything', async () => {
+    for (const [handle, url] of [
+      [handleBirthdayImageRequest, 'https://zodiacs.org/api/og/birthday-image?d=05-03&s=leo'],
+      [handleBirthdayImageRequest, 'https://zodiacs.org/api/og/birthday-image?d=1990-05-03'],
+      [handleSkyCalendarImageRequest, 'https://zodiacs.org/api/og/sky-calendar-image?k=retrograde&b=mercury&d=2026-10-25'],
+      [handleHoroscopeImageRequest, `https://zodiacs.org/api/og/horoscope-image?s=leo&d=${TODAY}&t=You+will+win`],
+      [handleHoroscopeImageRequest, 'https://zodiacs.org/api/og/horoscope-image?s=leo&d=2199-01-01'],
+    ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
   });
 });

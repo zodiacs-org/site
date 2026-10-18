@@ -168,6 +168,8 @@ function App() {
     ? (current.date > days[days.length - 1] ? `The reading for ${dayName(current.date)} isn't published yet. Each day's reading appears the day before.` : `The reading for ${dayName(current.date)} is no longer kept here. Recent readings are on zodiacs.org.`)
     : '';
 
+  const more = { label: 'More on zodiacs.org', href: `https://zodiacs.org/horoscopes/${panel.sign}/` };
+
   async function copy() {
     if (!reading || reading.status !== 'available') return;
     const label = current.mode === 'week' ? weekName(week.from, week.through) : `${dayName(current.date)}${current.focus === 'general' ? '' : `, ${FOCUS_LABEL[current.focus]}`}`;
@@ -200,7 +202,7 @@ function App() {
           <button type="button" class="copy" onClick={copy}>Copy reading</button>
           <p role="status" class="status">{status}</p>
         </div>
-        <Actions primary={{ label: 'More on zodiacs.org', href: `https://zodiacs.org/horoscopes/${panel.sign}/` }}/>
+        <Actions primary={reading.shareUrl ? { label: 'Share the reading', href: reading.shareUrl } : more} secondary={reading.shareUrl && more}/>
       </>}
       <p class="fine">{panel.disclosure}</p>
     </article>

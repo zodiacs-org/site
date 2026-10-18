@@ -143,10 +143,13 @@ Anatomy, top to bottom (use only the parts a card needs, in this order):
    the card, with its own "Why this reading?" disclosure, and "Copy reading"
    above its action.
 5. Actions, never more than two in view: the main one as a pill in ink with
-   a small arrow in a circle ("Share the reading", "Open printable card",
-   "Subscribe in your calendar app"), and a second as underlined text with an
-   arrow ("Open both charts", "Open the sky calendar page"). Both open on
-   zodiacs.org.
+   a small arrow in a circle ("Share the reading", "Share this birthday",
+   "Open printable card", "Subscribe in your calendar app"), and a second as
+   underlined text with an arrow ("Open both charts", "Open the 3 May page",
+   "Share the sky calendar"). Both open on zodiacs.org. A card with a share
+   link leads with it, except the sky calendar, whose first job is the
+   subscription; its page link moves into the fold. The horoscope's share
+   link follows the day, focus or week on screen.
 6. The fine print in small muted text, then, outside the card, the panel's
    one-line privacy footer.
 
@@ -229,8 +232,8 @@ Artwork:
   oval spotlight (ArtFrame's radial vignette), and a shade from the left
   (.94 of the void at the edge, .72 at 42% of the width, .1 from three
   quarters on) carries the words. This is the one place type sits over
-  art: every line measures 6:1 or better against the art behind it, across
-  all twelve sign panels and both pieces.
+  art: every line measures 5:1 or better against the art behind it, across
+  all twelve sign panels and both pieces, with the longest kickers.
 
 Colour and theme:
 
@@ -256,17 +259,36 @@ does not own (published people copy, sign table ranges, tool notes) passes
 through `plain()` in `words.ts` at display time; the tools' output and the
 released contract stay byte-for-byte. No zone IDs or ISO dates on a card.
 
-Share images: `/api/og/compatibility-image` and `/api/og/occasion-image`
-(`src/server/result-preview.ts`) draw the card's keepsake at 1200x630, as
-the owner picked on 2026-10-18 (direction C for both): the art across the
-whole picture, the nameplate top left (the tilted mark, "Zodiacs" and a
-small ".org", as on the cards), and at the bottom left the pastel sign
-discs, the kicker in the first sign's hue, the serif title and one line
-with the score in words ("60 out of 100. A good match, with some work to
-do"). The three areas, the date and the place stay on the share page and
-in the link's title and description. They are sent as JPEG at quality 90,
-about 100 to 130 KB: as PNG the full-width art comes to 650 to 850 KB,
-over WhatsApp's 600 KB limit for a link preview image.
+Share images: `src/server/result-preview.ts` draws five cards' keepsakes at
+1200x630, as the owner picked on 2026-10-18 (direction C for each): the art
+across the whole picture, the nameplate top left (the tilted mark,
+"Zodiacs" and a small ".org", as on the cards), and at the bottom left the
+pastel sign discs, the kicker in the first sign's hue, the serif title and
+one line.
+
+| Card | Image | Kicker, title, line |
+| --- | --- | --- |
+| Two charts | `/api/og/compatibility-image` | "Two charts compared", "Ana and Luis", "60 out of 100. A good match, with some work to do" |
+| A date | `/api/og/occasion-image` | "Our wedding", "Ana & Luis", "69 out of 100. A good day for it" |
+| A birthday | `/api/og/birthday-image` | "A birthday", "3 May birthdays", "Taurus Sun" (a cusp date: both signs, "On the cusp of Aries and Taurus") |
+| Sky calendar | `/api/og/sky-calendar-image` | "Sky calendar", "The sky in your calendar", "Mercury retrograde, Sat 24 Oct to Fri 13 Nov." (no disc: it names no sign, as on its card) |
+| A horoscope | `/api/og/horoscope-image` | "Horoscope for Saturday 17 October", "Leo", the reading's own line for the sign ("For Leo, …") |
+
+Their links (`src/lib/share-results.ts`, `src/ai-tools/share-links.ts`)
+carry only what the picture shows, and the server checks the last three
+against the site's data before drawing: the birthday table (a link naming
+a sign the date never has is refused), the sky calendar's events, and the
+published horoscope window, whose line it quotes, so no text travels in a
+link. A birthday's link carries the month and day, never the year. A
+horoscope that has left the window keeps its picture with the sign's dates
+as the line; a link to a day or week after the window's latest is refused,
+since nothing is published for it yet, and a week's link names its Monday.
+The scores' parts, the date's place and a reading's first passage stay on
+the share page and in the link's title and description. They are sent as
+JPEG at quality 90, about 90 to 130 KB: as PNG the full-width
+art comes to 650 to 850 KB, over WhatsApp's 600 KB limit for a link preview
+image. Every line measures 5:1 or better against the art behind it, across
+all twelve signs.
 
 Checks before a card change ships: `node scripts/build-card-art.mjs` when
 art changes, then `npm run ai:build`, `npm run ai:package`,

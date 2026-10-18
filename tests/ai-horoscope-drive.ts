@@ -70,10 +70,16 @@ try {
   assert.match(text, /times for Bangkok/);
   assert.doesNotMatch(text, /UTC|Asia\/Bangkok|\d{4}-\d{2}-\d{2}/, 'People see dates and places, not UTC, time-zone IDs or ISO dates');
   assert.match(text, /For reflection\. Astrology does not establish what will happen in your life\./);
+  // "Share the reading" shares whatever the card shows: the day, its focus, or the week.
+  const shared = () => page.getByRole('link', { name: 'Share the reading' }).getAttribute('href');
+  assert.match(await shared() ?? '', /^https:\/\/zodiacs\.org\/share\/horoscope\/\?s=leo&d=\d{4}-\d{2}-\d{2}$/u);
+  assert.equal(await page.getByRole('link', { name: 'More on zodiacs.org' }).getAttribute('href'), 'https://zodiacs.org/horoscopes/leo/');
   await page.getByRole('button', { name: 'Love' }).click();
   assert.match(await page.locator('.when').innerText(), /times for Bangkok/);
+  assert.match(await shared() ?? '', /^https:\/\/zodiacs\.org\/share\/horoscope\/\?s=leo&d=\d{4}-\d{2}-\d{2}&f=love$/u);
   await page.getByRole('button', { name: 'This week' }).click();
   assert.match(await page.locator('.when').innerText(), /^Week of/);
+  assert.match(await shared() ?? '', /^https:\/\/zodiacs\.org\/share\/horoscope\/\?s=leo&w=\d{4}-\d{2}-\d{2}$/u);
   await page.locator('details.why summary').click();
   assert.ok(await page.locator('.why li').count() > 0);
   await page.screenshot({ path: new URL('horoscopes-desktop.png', out).pathname, fullPage: true });

@@ -255,8 +255,14 @@ try {
 
   // A birthday with its solar return, a cusp day, and the calendar subscription.
   const birthdayPage = await open();
-  await show(birthdayPage, await result('get_birthday', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }));
+  const birthday = await result('get_birthday', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' });
+  await show(birthdayPage, birthday);
   await birthdayPage.getByRole('heading', { name: '3 May birthdays' }).waitFor();
+  // Sharing a birthday gives the month and day, never the year.
+  const birthdayShare = await birthdayPage.getByRole('link', { name: 'Share this birthday' }).getAttribute('href');
+  assert.equal(birthdayShare, (birthday as any).data.shareUrl);
+  assert.equal(birthdayShare, 'https://zodiacs.org/share/birthday/?d=05-03');
+  assert.equal(await birthdayPage.getByRole('link', { name: 'Open the 3 May page' }).getAttribute('href'), 'https://zodiacs.org/birthday/may-3/');
   await unfold(birthdayPage);
   const birthdayText = await birthdayPage.locator('article').innerText();
   assert.match(birthdayText, /Taurus Sun/);
@@ -266,10 +272,17 @@ try {
   await show(cusp, await result('get_birthday', { date: '03-20' }));
   await cusp.locator('h1').waitFor();
   const calendar = await open();
-  await show(calendar, await result('get_sky_calendar', {}));
+  const feed = await result('get_sky_calendar', {});
+  await show(calendar, feed);
   await calendar.getByRole('heading', { name: 'The sky in your calendar' }).waitFor();
   assert.equal(await calendar.getByRole('link', { name: 'Subscribe in your calendar app' }).getAttribute('href'), 'webcal://zodiacs.org/sky-calendar.ics');
+  // The second action shares the next event; the calendar page moves into the fold.
+  const calendarShare = await calendar.getByRole('link', { name: 'Share the sky calendar' }).getAttribute('href');
+  assert.equal(calendarShare, (feed as any).data.shareUrl);
+  assert.match(calendarShare ?? '', /^https:\/\/zodiacs\.org\/share\/sky-calendar\/\?k=[a-z-]+(?:&b=[a-z]+)?&d=\d{4}-\d{2}-\d{2}$/u);
   await calendar.screenshot({ path: new URL('occasions-calendar-desktop.png', out).pathname, fullPage: true });
+  await unfold(calendar);
+  assert.equal(await calendar.getByRole('link', { name: 'Open the sky calendar page' }).getAttribute('href'), 'https://zodiacs.org/sky-calendar/');
 
   // Names are text, never markup.
   const injected = structuredClone(wedding) as any;
@@ -315,7 +328,7 @@ try {
   await writeFile(new URL('occasions-review.json', out), JSON.stringify({
     scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance',
     timezone: 'Asia/Bangkok',
-    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'the calendar subscription', 'the Zodiacs.org nameplate at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'the first screen keeps the details in the fold, and the fold opens to them', 'no external requests'],
+    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'a birthday shared by its month and day, never the year', 'the calendar subscription', 'the calendar shared by its next event', 'the Zodiacs.org nameplate at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'the first screen keeps the details in the fold, and the fold opens to them', 'no external requests'],
   }, null, 2) + '\n');
   console.log('Occasions panel browser QA passed.');
 } finally { await browser.close(); }

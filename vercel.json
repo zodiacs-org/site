@@ -262,6 +262,30 @@
       "destination": "/api/compatibility?__zodiacs_share=occasion-image"
     },
     {
+      "source": "/share/birthday/",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-link"
+    },
+    {
+      "source": "/api/og/birthday-image",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-image"
+    },
+    {
+      "source": "/share/sky-calendar/",
+      "destination": "/api/compatibility?__zodiacs_share=sky-calendar-link"
+    },
+    {
+      "source": "/api/og/sky-calendar-image",
+      "destination": "/api/compatibility?__zodiacs_share=sky-calendar-image"
+    },
+    {
+      "source": "/share/horoscope/",
+      "destination": "/api/compatibility?__zodiacs_share=horoscope-link"
+    },
+    {
+      "source": "/api/og/horoscope-image",
+      "destination": "/api/compatibility?__zodiacs_share=horoscope-image"
+    },
+    {
       "source": "/api/games",
       "destination": "/api/compatibility?__zodiacs_games_route=1"
     },
