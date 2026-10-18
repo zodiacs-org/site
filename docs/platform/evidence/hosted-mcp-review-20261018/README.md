@@ -156,6 +156,27 @@ and after it.
 - **The rate limit.** Production limited the run four times, and each limited
   step passed when it ran again.
 
-### Production after the deploy
+### Production after the deploy ([production-after/report.json](production-after/report.json))
 
-To be recorded after the merge.
+#777 merged as `b8b3b54c` at 2026-10-17T23:30:47Z. zodiacs.org serves it from
+`dpl_GTcEdh5MKK1fBMTCY5AEnnwKqHYz`, built from the merge and ready at
+23:34:42Z ([alias.json](production-after/alias.json)). The alias was the same
+before and after the review, which ran from 23:37:30Z to 23:47:17Z.
+
+- **Inspector `--strict`** exits 0: no error and no untyped part, only the 18
+  nullable `type` warnings. Before the deploy it exited 6, with 3 errors and
+  14 untyped parts.
+- **All 13 tools** answered, each within the `outputSchema` it now advertises.
+- **Conformance**: 0 of 32 failed.
+  - **4 passed**: `server-initialize`, `ping`, `tools-list` and
+    `resources-list`.
+  - **2 gave warnings only.**
+  - **26 do not apply**, as before the deploy.
+- **The rate limit.** Production limited the run seven times, and each limited
+  step passed when it ran again.
+
+The workflow, dispatched on main against the same endpoint, ran the review
+again from GitHub's runners: run 39079719569 gave the same verdicts (`--strict` exit 0, 13 of 13
+tools within their schemas, 0 of 32 conformance scenarios failed).
+
+Main's Site Check passed on the merge (run 39079314240).
