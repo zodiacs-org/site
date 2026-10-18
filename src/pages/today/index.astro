@@ -1147,9 +1147,8 @@ const monthDay = (iso: string) => ({
   }
   .today-sign-reading:target { background: color-mix(in oklab, var(--sign) 7%, transparent); }
   /* The quick read for a sign just picked settles in where the twelve notes
-     were, again for each sign picked after it (the reading is keyed by
-     sign). The stored sign's first paint (the compact list, narrowed below)
-     never moves. */
+     were. A later pick swaps its words in place, and the stored sign's first
+     paint (the compact list, narrowed below) never moves. */
   .today-sign-reading:not(.today-sign-reading--compact) { transition: opacity 200ms var(--ease), transform 200ms var(--ease); }
   @starting-style {
     .today-sign-reading:not(.today-sign-reading--compact) { opacity: 0; transform: translateY(6px); }

@@ -185,7 +185,6 @@ export default function SunSignFallback({
       >
         {active && dailyLine && hasInteracted ? (
           <section
-            key={active.slug}
             id={`today-sun-sign-${active.slug}`}
             class="today-sign-reading"
             style={`--sign:${active.hue}`}
