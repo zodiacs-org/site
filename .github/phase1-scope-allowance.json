@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "design-top10-redesign-20261017",
-  "baseCommit": "33e5eefe5aaa04218b1c3d0df75ff84b187f430d",
+  "baseCommit": "f22ffe92e6e01585c9bffa93cb06914438243d1e",
   "protectedPaths": [
     "src/content/guides/aquarius.mdx",
     "src/content/guides/aries.mdx",
