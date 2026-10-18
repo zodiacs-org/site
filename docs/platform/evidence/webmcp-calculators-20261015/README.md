@@ -202,4 +202,32 @@ CI took the 18 captures again.
 
 ## In production
 
-To be recorded after the merge.
+#772 merged as `069ef13e` at 2026-10-17T13:08:29Z. zodiacs.org serves it from
+`dpl_64gyTAnwkNLdFsEUnD9s3WoVkmNB`, built from the merge and ready at
+13:12:17Z ([alias-at-merge.json](production/alias-at-merge.json)).
+
+- **The drive against zodiacs.org**
+  ([drive-production.json](production/drive-production.json)):
+  `node tests/webmcp-drive.mjs --base-url https://zodiacs.org`, from
+  13:14:57Z to 13:32:05Z, with the MCP-B 4.0.0 polyfill. The alias pointed at
+  the same deployment before and after it.
+  - All 543 pages registered their tools: the 81 calculator pages and the 462
+    that embed one. On each, the calculations loaded only on the first call,
+    the tool answered, and it refused an input its schema refuses. Where the
+    tool checks more than its schema states, it also refused an input it
+    cannot read, with its own code: on every page but the six of the baby
+    zodiac, whose schema states all it checks.
+  - The seven other addresses found their tools too. Production served the
+    `index.html` and percent-encoded ones as typed, and redirected the two
+    without a trailing slash to the page.
+  - On `/birth-chart/` the page and the tool gave the same chart
+    (`24°11′ Gemini`, `16°11′ Pisces`, `11°14′ Libra`).
+  - The home page registered Search alone. The pages without a calculator
+    outside English, the wings and `/birth-chart/someone-else/` registered
+    nothing new.
+- **Before the merge** ([control-before.json](production/control-before.json)):
+  the same drive against zodiacs.org at 09:14:55Z stopped at once, because
+  the page loaded no bundle with the calculator tools. That was
+  `dpl_5t9bGxgd9bEVHzcN3v3yVsL3Kx74`, built from `a0b56074`
+  ([alias-before.json](production/alias-before.json)).
+- **Main's Site Check** passed on the merge (run 39035340598).

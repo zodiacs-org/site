@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "design-top10-locales-20261017",
-  "baseCommit": "e36de4113a42937423f98f3c6c13dd34ea1e0ef2",
+  "baseCommit": "e7ad9dfc24a7502ab011f220c418917e64108346",
   "protectedPaths": [
     "src/lib/i18n/ui/ru.ts",
     "src/pages/es/birth-chart/index.astro",
