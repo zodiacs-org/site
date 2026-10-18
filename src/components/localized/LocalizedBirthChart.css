@@ -117,14 +117,15 @@ html[data-chart-share-receiver] .calc > .shell { max-width: 640px; }
   appearance: none;
   border: 1px solid var(--hair-3);
   border-radius: 999px;
-  background: radial-gradient(circle at 11px 50%, var(--ink-2) 0 7px, transparent 7.5px), rgba(198, 204, 218, 0.06);
+  background: rgba(198, 204, 218, 0.06);
   cursor: pointer;
-  transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+  transition: background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
 }
 .bc-main .field__toggle input:checked {
   border-color: var(--sign-cancer);
-  background: radial-gradient(circle at 26px 50%, var(--void-0) 0 7px, transparent 7.5px), var(--sign-cancer);
+  background: var(--sign-cancer);
 }
+/* The knob is drawn by the row and slides (base.css). */
 .bc-main .field__toggle input:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 2px; }
 .bc-main .calc__submit {
   width: 100%;
