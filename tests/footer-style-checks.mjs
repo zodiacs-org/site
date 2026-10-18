@@ -190,7 +190,11 @@ export async function runFooterStyleChecks({ browser, baseURL, check, outDir }) 
       const applied = await awaitAppliedFooter(page, { allowNoscript: mode === 'no-script' });
       const timing = await page.evaluate(() => ({ linkAt: window.__footerLinkAt ?? null, loadAt: window.__footerWindowLoadAt ?? null }));
       if (mode === 'initial-near') {
-        check('Footer initial-near: short-page request does not wait for window load', initial.near && timing.linkAt !== null && (timing.loadAt === null || timing.linkAt <= timing.loadAt));
+        // The loader asks on the observer's first report, right after the
+        // first layout, so a page with nothing left to load can fire window
+        // load a moment before; what must never happen is the request waiting
+        // for the fallback 250 ms after load.
+        check('Footer initial-near: short-page request does not wait for the post-load fallback', initial.near && timing.linkAt !== null && (timing.loadAt === null || timing.linkAt < timing.loadAt + 250));
       } else if (mode === 'no-observer') {
         check('Footer no-observer: distant page retains the real post-load fallback', !initial.near && timing.loadAt !== null && timing.linkAt >= timing.loadAt && applied.links === 1);
       } else {

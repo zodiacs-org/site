@@ -1,0 +1,1460 @@
+---
+/**
+ * Today in Spanish and Portuguese. The English page
+ * (src/pages/today/index.astro) is the reference: the same sections, data
+ * and kit, with every visible string from COPY below. Values come from the
+ * committed edition data at build time: the noon-UTC snapshot (daily.json),
+ * the lunation and retrograde tables (sky.json), the monthly transit
+ * catalogs and the eclipse table, through src/lib/today-sky.ts.
+ *
+ * The twelve sign notes are DailyLocaleReading, unchanged: the text comes
+ * from dailyReadingForLocale and its receipts are the shared provenance.
+ * The English page's private saved-chart comparison (TodayBrief) stays in
+ * the English edition and is linked with the English-only cue.
+ *
+ * Relative wording ("hoy", "hoje") only appears in phrases that
+ * src/lib/edition-freshness.ts dates, or in an edition-current-only span
+ * beside its dated twin, so a day-old page never says "today".
+ */
+import Base from '../../layouts/Base.astro';
+import ArtFrame from '../ArtFrame.astro';
+import AskGuideLine from '../AskGuideLine.astro';
+import DailyLocaleReading from '../DailyLocaleReading.astro';
+import EvidenceDisclosure from '../EvidenceDisclosure.astro';
+import GuideQuickPrompts from '../GuideQuickPrompts.astro';
+import SignIcon from '../SignIcon.astro';
+import ToolIcon from '../ToolIcon.astro';
+import LocalizedSvgTitles from './LocalizedSvgTitles.astro';
+import SkyTicker from '../../islands/SkyTicker';
+import Wheel from '../../lib/wheel/Wheel';
+import dailyData from '../../data/daily.json';
+import skyData from '../../data/sky.json';
+import eclipseData from '../../data/eclipses.json';
+import eventsData from '../../data/events-publication.json';
+import type { Daily, DailyEvent } from '../../lib/daily';
+import { ASPECT_GLYPH, PLANET_GLYPH } from '../../lib/glyphs/paths';
+import { dailyReadingForLocale } from '../../lib/i18n/daily-reading';
+import { formatDate, intlLocale } from '../../lib/i18n/dates';
+import { aspectLabel, moonPhaseLabel, planetLabel } from '../../lib/i18n/astrology';
+import { englishOnlyCue } from '../../lib/i18n/english-only';
+import { localizePath, t } from '../../lib/i18n';
+import { rangeWords } from '../../lib/range-words';
+import { SIGNS, elementLabel, modalityLabel, signBySlug, signEssence, signName } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
+import { ART, artSrc, artSrcset } from '../../lib/art';
+import { toolIconForPath } from '../../lib/tool-icons';
+import {
+  aspectsToday,
+  comingUp,
+  degreeMinutes,
+  moonAgeDays,
+  moonCycle,
+  nextEclipse,
+  planetRows,
+  retrogradeTimeline,
+  utcClock,
+  type TransitCatalog,
+} from '../../lib/today-sky';
+
+type Locale = 'es' | 'pt';
+interface Props { locale: Locale }
+
+/** A sentence in parts; `TODAY` is the edition's day, said relatively only while it is current. */
+const TODAY = Symbol('today');
+type Part = string | typeof TODAY;
+
+interface Copy {
+  title: (date: string) => string;
+  description: (date: string) => string;
+  crumbsAria: string;
+  home: string;
+  todayWord: string;
+  TodayWord: string;
+  onDate: (date: string) => string;
+  h1: string;
+  lede: string;
+  cta: string;
+  yourSign: string;
+  reassure: string;
+  wheelAria: (date: string) => string;
+  legendRx: string;
+  legendEasy: string;
+  legendTense: string;
+  legendJoined: string;
+  lightsKicker: string;
+  lightsTitle: string;
+  lightsLede: string;
+  moonLink: string;
+  sunTag: (degree: string) => string;
+  moonTag: (degree: string, percent: number) => string;
+  sunIn: (sign: string) => string;
+  moonIn: (sign: string) => string;
+  sunNote: (third: number, ingress: { sign: string; date: string } | null) => string;
+  moonNote: (age: string, single: boolean, lastDegree: boolean) => string;
+  moonAge: (age: string, single: boolean) => string;
+  cycleAria: string;
+  signsKicker: string;
+  signsLede: string;
+  allHoroscopes: string;
+  signsAria: string;
+  horoscopeLink: (sign: string) => string;
+  guideLink: (sign: string) => string;
+  personalTitle: string;
+  personalBody: string;
+  personalCompare: string;
+  planetsTitle: string;
+  planetsSub: (date: string) => string;
+  planetsSubMore: string;
+  topics: Record<string, string>;
+  direct: string;
+  retrograde: string;
+  station: (type: string, clock: string) => string;
+  comingTitle: string;
+  comingSub: string;
+  eclipseTitle: (type: string, kind: string, sign: string) => string;
+  eclipseShort: (type: string, kind: string) => string;
+  eclipseType: Record<string, string>;
+  eclipseKind: Record<string, string>;
+  ingressTitle: (subject: string, sign: string) => string;
+  ingressDetail: (retrograde: boolean, from: string) => string;
+  lunationTitle: (type: string, sign: string) => string;
+  stationTitle: (planet: string, type: string) => string;
+  aspectDetail: (a: string, b: string) => string;
+  nextEclipse: (name: string, date: string) => string;
+  calendarLink: string;
+  dayEvent: (event: DailyEvent) => string | null;
+  rxTitle: string;
+  rxLink: string;
+  rxNone: Part[];
+  rxNow: (list: string, count: number) => Part[];
+  rxNext: (planet: string, date: string) => Part[];
+  rxEnded: (planet: string, date: string | null) => Part[];
+  rxTableAria: (range: string) => string;
+  rxPlanet: string;
+  rxPeriod: string;
+  rxNowPrefix: string;
+  rxNowDirect: string;
+  rxStateNow: string;
+  rxStateUpcoming: string;
+  rxStateEnded: string;
+  rxMeansKicker: string;
+  rxMeans: string;
+  aspectsTitle: string;
+  aspectsLede: (all: number, shown: number) => string;
+  definitions: Record<string, string>;
+  represent: (a: string, topicA: string, b: string, topicB: string) => string;
+  exactAt: (clock: string) => string;
+  fromExact: (orb: string) => string;
+  furtherTitle: string;
+  furtherLede: string;
+  allTools: string;
+  tools: { href: string; title: string; promise: string }[];
+  askTitle: string;
+  askLead: string;
+  askLabel: string;
+  prompts: string[];
+  methodTitle: string;
+  methodBody: (date: string) => string;
+  coverage: string;
+  provenanceLabel: string;
+  provenanceDescription: string;
+  provenanceBefore: string;
+  provenanceAfter: string;
+  methodLink: string;
+  publicationLink: string;
+  correctionsLink: string;
+}
+
+// Planet names with the article the Sun and the Moon take in running text.
+const named = (locale: Locale, body: string) => {
+  if (body === 'Sun') return locale === 'es' ? 'el Sol' : 'o Sol';
+  if (body === 'Moon') return locale === 'es' ? 'la Luna' : 'a Lua';
+  return planetLabel(locale, body);
+};
+const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+
+const COPY: Record<Locale, Copy> = {
+  es: {
+    title: (date) => `Hoy, el cielo del ${date} | Zodiacs.org`,
+    description: (date) => `El cielo de hoy para los doce signos solares: hasta cuatro notas por signo, calculadas a partir de las posiciones reales del ${date}.`,
+    crumbsAria: 'Ruta de navegación',
+    home: 'Inicio',
+    todayWord: 'hoy',
+    TodayWord: 'Hoy',
+    onDate: (date) => `el ${date}`,
+    h1: 'El cielo de hoy',
+    lede: 'Dónde está cada planeta, qué ha representado tradicionalmente cada posición y qué viene después en el calendario.',
+    cta: 'Compáralo con tu carta',
+    yourSign: 'Tu signo',
+    reassure: 'Gratis · Sin registro · Posiciones a las 12:00 UTC',
+    wheelAria: (date) => `El cielo a las 12:00 UTC del ${date}: el Sol, la Luna y los planetas en sus signos, con los aspectos a menos de tres grados del exacto`,
+    legendRx: 'Retrógrado',
+    legendEasy: 'Trígono o sextil',
+    legendTense: 'Cuadratura u oposición',
+    legendJoined: 'Conjunción',
+    lightsKicker: 'Donde empieza el día',
+    lightsTitle: 'El Sol y la Luna',
+    lightsLede: 'Las dos luminarias con las que empieza la astrología: dónde están y qué han representado tradicionalmente sus signos.',
+    moonLink: 'La Luna de esta noche, en detalle',
+    sunTag: (degree) => `Sol · ${degree}`,
+    moonTag: (degree, percent) => `Luna · ${degree} · ${percent}% iluminada`,
+    sunIn: (sign) => `Sol en ${sign}`,
+    moonIn: (sign) => `Luna en ${sign}`,
+    sunNote: (third, ingress) => `El Sol está en ${['el primer tercio', 'el tercio central', 'el último tercio'][third]} del signo${ingress ? ` y entra en ${ingress.sign} el ${ingress.date}` : ''}.`,
+    moonNote: (age, single, lastDegree) => `${single ? 'Ha pasado' : 'Han pasado'} ${age} ${single ? 'día' : 'días'} desde la Luna nueva${lastDegree ? ', y la Luna está en el último grado del signo' : ''}.`,
+    moonAge: (age, single) => `Edad: ${age} ${single ? 'día' : 'días'}`,
+    cycleAria: 'Este ciclo lunar',
+    signsKicker: 'Tu signo',
+    signsLede: 'Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo de hoy, leídas desde las casas solares de tu signo; los comprobantes bajo cada lectura dicen exactamente qué la produjo. Son temas para observar, no instrucciones.',
+    allHoroscopes: 'Todos los horóscopos',
+    signsAria: 'Signos',
+    horoscopeLink: (sign) => `Horóscopo de ${sign} de hoy`,
+    guideLink: (sign) => `Guía de ${sign}`,
+    personalTitle: 'Tu carta, frente al cielo de hoy',
+    personalBody: 'Con tu fecha, hora y lugar de nacimiento, tu carta natal se calcula aquí, en tu navegador. La comparación privada de una carta guardada con cada edición está, por ahora, en la edición en inglés.',
+    personalCompare: 'Ver la comparación privada',
+    planetsTitle: 'Dónde están los planetas',
+    planetsSub: (date) => `12:00 UTC, ${date}.`,
+    planetsSubMore: ' Cada cuerpo con lo que ha representado tradicionalmente.',
+    topics: {
+      Sun: 'identidad y dirección',
+      Moon: 'necesidades emocionales e instintos',
+      Mercury: 'pensamiento y comunicación',
+      Venus: 'afecto, placer y valores',
+      Mars: 'impulso y afirmación personal',
+      Jupiter: 'crecimiento y creencias',
+      Saturn: 'responsabilidad y crecimiento a largo plazo',
+      Uranus: 'independencia y cambio',
+      Neptune: 'imaginación e ideales',
+      Pluto: 'poder y cambio profundo',
+    },
+    direct: 'Directo',
+    retrograde: 'Retrógrado',
+    station: (type, clock) => `${type === 'retrograde' ? 'Retrógrado' : 'Directo'} desde las ${clock} UTC`,
+    comingTitle: 'Lo que viene en el cielo',
+    comingSub: 'Fechas en UTC, así que algunas caen un día antes en América.',
+    eclipseTitle: (type, kind, sign) => `Eclipse ${type} ${kind} en ${sign}`,
+    eclipseShort: (type, kind) => `${type} ${kind}`,
+    eclipseType: { solar: 'solar', lunar: 'lunar' },
+    eclipseKind: { total: 'total', partial: 'parcial', annular: 'anular', penumbral: 'penumbral', hybrid: 'híbrido' },
+    ingressTitle: (subject, sign) => `${subject} entra en ${sign}`,
+    ingressDetail: (retrograde, from) => `${retrograde ? 'Retrógrado, desde' : 'Desde'} ${from}`,
+    lunationTitle: (type, sign) => `${type === 'new' ? 'Luna nueva' : 'Luna llena'} en ${sign}`,
+    stationTitle: (planet, type) => `${planet} estaciona ${type === 'retrograde' ? 'retrógrado' : 'directo'}`,
+    aspectDetail: (a, b) => `${a} y ${b}`,
+    nextEclipse: (name, date) => `Próximo eclipse: ${name}, ${date}`,
+    calendarLink: 'Calendario del cielo completo',
+    dayEvent: (event) => {
+      if (event.kind === 'station' && event.planet) {
+        return `${named('es', event.planet)} ${event.type === 'retrograde' ? 'se vuelve retrógrado' : 'retoma el movimiento directo'}`;
+      }
+      if (event.kind === 'aspect' && event.a && event.b && event.type) {
+        const exact: Record<string, string> = {
+          conjunction: 'una conjunción exacta', sextile: 'un sextil exacto', square: 'una cuadratura exacta',
+          trine: 'un trígono exacto', opposition: 'una oposición exacta',
+        };
+        return `${named('es', event.a)} y ${named('es', event.b)} forman ${exact[event.type] ?? aspectLabel('es', event.type)}`;
+      }
+      if (event.kind === 'ingress' && event.planet && event.sign) return `${named('es', event.planet)} entra en ${signName(event.sign, 'es')}`;
+      if (event.kind === 'lunation' && event.sign) return `la ${event.type === 'new' ? 'Luna nueva' : 'Luna llena'} cae en ${signName(event.sign, 'es')}`;
+      return null;
+    },
+    rxTitle: 'Los retrógrados, de un vistazo',
+    rxLink: 'Todas las fechas retrógradas',
+    rxNone: ['Ningún planeta está retrógrado ', TODAY, '.'],
+    rxNow: (list, count) => [`${list} ${count === 1 ? 'está retrógrado' : 'están retrógrados'} `, TODAY, '.'],
+    rxNext: (planet, date) => [`${planet} se vuelve retrógrado el ${date}.`],
+    rxEnded: (planet, date) => (date ? [`El periodo retrógrado de ${planet} terminó el ${date}.`] : [`El periodo retrógrado de ${planet} terminó `, TODAY, '.']),
+    rxTableAria: (range) => `Periodos retrógrados ${range}`,
+    rxPlanet: 'Planeta',
+    rxPeriod: 'Periodo',
+    rxNowPrefix: 'Retrógrado · ',
+    rxNowDirect: ', ya directo',
+    rxStateNow: 'Retrógrado ahora',
+    rxStateUpcoming: 'Por venir',
+    rxStateEnded: 'Terminado',
+    rxMeansKicker: 'Qué significa retrógrado',
+    rxMeans: 'Visto desde la Tierra, a veces un planeta parece frenar, detenerse y retroceder contra el fondo de las estrellas. Su órbita real no cambia. Los astrólogos han leído estos tramos como un tiempo de revisión: los temas del planeta se retoman en lugar de empezarse.',
+    aspectsTitle: 'Los aspectos más exactos',
+    aspectsLede: (all, shown) => {
+      const word = (count: number) => ['ninguno', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'][count] ?? String(count);
+      if (all > shown) return `Los aspectos son los ángulos entre los planetas. ${cap(word(all))} están a menos de tres grados del exacto a las 12:00 UTC; estos son los ${word(shown)} más exactos.`;
+      return `Los aspectos son los ángulos entre los planetas. ${all === 1 ? 'Este está' : `Estos ${word(all)} están`} a menos de tres grados del exacto a las 12:00 UTC.`;
+    },
+    definitions: {
+      conjunction: 'Un aspecto de 0° que reúne dos partes de la carta en el mismo lugar.',
+      sextile: 'Un aspecto de 60° que se lee como una oportunidad para que dos partes de la carta cooperen.',
+      square: 'Un aspecto de 90° que se lee como una fricción que pide acción o ajuste.',
+      trine: 'Un aspecto de 120° que se lee como una conexión fluida entre dos partes de la carta.',
+      opposition: 'Un aspecto de 180° que sitúa dos puntos de la carta uno frente al otro.',
+    },
+    represent: (a, topicA, b, topicB) => `Por tradición, ${a} representa ${topicA}; ${b}, ${topicB}.`,
+    exactAt: (clock) => `Exacto a las ${clock} UTC`,
+    fromExact: (orb) => `A ${orb} del exacto`,
+    furtherTitle: 'Para ir más lejos',
+    furtherLede: 'Más formas de seguir el cielo, fecha a fecha.',
+    allTools: 'Todas las herramientas',
+    tools: [
+      { href: '/transits/', title: 'Tránsitos', promise: 'El cielo de hoy comparado con tu carta.' },
+      { href: '/moon-phase/', title: 'Fase lunar', promise: 'La Luna de esta noche o la de cualquier fecha.' },
+      { href: '/sky-calendar/', title: 'Calendario del cielo', promise: 'Lunas nuevas y llenas en tu app de calendario.' },
+      { href: '/eclipses/', title: 'Eclipses', promise: 'Eclipses solares y lunares hasta 2028.' },
+    ],
+    askTitle: '¿Preguntas sobre el cielo de hoy?',
+    askLead: 'Guide es un asistente de IA para preguntas de astrología y para ayudarte a usar Zodiacs.',
+    askLabel: 'Preguntar a Guide',
+    prompts: [
+      '¿Qué significa el cielo de hoy para mi signo?',
+      '¿Qué es un retrógrado?',
+      '¿Cómo leo el cielo de hoy en mi carta natal?',
+    ],
+    methodTitle: 'Cómo se hace esta página',
+    methodBody: (date) => `Las posiciones se calculan para las 12:00 UTC de la fecha de la edición, el ${date}. Las horas del calendario están en UTC. Las notas por signo describen temas para reflexionar, no consejos.`,
+    coverage: 'Esta edición usa solo las posiciones planetarias; la hora exacta de los eventos no está disponible para esta fecha.',
+    provenanceLabel: 'Detrás de esta lectura diaria',
+    provenanceDescription: 'Datos del cielo, límites y criterios editoriales',
+    provenanceBefore: 'Cada nota está ligada al cielo registrado del ',
+    provenanceAfter: ', la fecha de la edición en UTC; las posiciones planetarias usan una instantánea a las 12:00 UTC. Las notas en español salen de los mismos hechos que la edición en inglés, con plantillas escritas en este idioma, y una prueba automática comprueba que cada una responde a la misma casa y al mismo cuerpo que su versión en inglés.',
+    methodLink: 'Cómo calculamos',
+    publicationLink: 'Cómo se publica cada edición',
+    correctionsLink: 'Correcciones',
+  },
+  pt: {
+    title: (date) => `Hoje, o céu de ${date} | Zodiacs.org`,
+    description: (date) => `O céu de hoje para os doze signos solares: até quatro notas por signo, calculadas a partir das posições reais de ${date}.`,
+    crumbsAria: 'Trilha de navegação',
+    home: 'Início',
+    todayWord: 'hoje',
+    TodayWord: 'Hoje',
+    onDate: (date) => `em ${date}`,
+    h1: 'O céu de hoje',
+    lede: 'Onde está cada planeta, o que cada posição tradicionalmente representa e o que vem a seguir no calendário.',
+    cta: 'Compare com o seu mapa',
+    yourSign: 'Seu signo',
+    reassure: 'Grátis · Sem cadastro · Posições às 12h UTC',
+    wheelAria: (date) => `O céu às 12h UTC de ${date}: o Sol, a Lua e os planetas nos seus signos, com os aspectos a menos de três graus do exato`,
+    legendRx: 'Retrógrado',
+    legendEasy: 'Trígono ou sextil',
+    legendTense: 'Quadratura ou oposição',
+    legendJoined: 'Conjunção',
+    lightsKicker: 'Onde o dia começa',
+    lightsTitle: 'O Sol e a Lua',
+    lightsLede: 'Os dois luminares com que a astrologia começa: onde estão e o que os seus signos tradicionalmente representam.',
+    moonLink: 'A Lua desta noite, em detalhe',
+    sunTag: (degree) => `Sol · ${degree}`,
+    moonTag: (degree, percent) => `Lua · ${degree} · ${percent}% iluminada`,
+    sunIn: (sign) => `Sol em ${sign}`,
+    moonIn: (sign) => `Lua em ${sign}`,
+    sunNote: (third, ingress) => `O Sol está ${['no primeiro terço', 'no terço central', 'no último terço'][third]} do signo${ingress ? ` e entra em ${ingress.sign} em ${ingress.date}` : ''}.`,
+    moonNote: (age, single, lastDegree) => `${single ? 'Passou' : 'Passaram-se'} ${age} ${single ? 'dia' : 'dias'} desde a Lua nova${lastDegree ? ', e a Lua está no último grau do signo' : ''}.`,
+    moonAge: (age, single) => `Idade: ${age} ${single ? 'dia' : 'dias'}`,
+    cycleAria: 'Este ciclo lunar',
+    signsKicker: 'Seu signo',
+    signsLede: 'Escolha o seu signo solar. Cada nota vem das posições registradas do céu de hoje, lidas a partir das casas solares do seu signo; os registros sob cada leitura dizem exatamente o que a produziu. São temas para observar, não instruções.',
+    allHoroscopes: 'Todos os horóscopos',
+    signsAria: 'Signos',
+    horoscopeLink: (sign) => `Horóscopo de ${sign} de hoje`,
+    guideLink: (sign) => `Guia de ${sign}`,
+    personalTitle: 'Seu mapa, diante do céu de hoje',
+    personalBody: 'Com a sua data, hora e local de nascimento, o seu mapa astral é calculado aqui, no seu navegador. A comparação privada de um mapa salvo com cada edição está, por enquanto, na edição em inglês.',
+    personalCompare: 'Ver a comparação privada',
+    planetsTitle: 'Onde estão os planetas',
+    planetsSub: (date) => `12h UTC, ${date}.`,
+    planetsSubMore: ' Cada corpo com o que tradicionalmente representa.',
+    topics: {
+      Sun: 'identidade e direção',
+      Moon: 'necessidades emocionais e instintos',
+      Mercury: 'pensamento e comunicação',
+      Venus: 'afeto, prazer e valores',
+      Mars: 'impulso e autoafirmação',
+      Jupiter: 'crescimento e crenças',
+      Saturn: 'responsabilidade e crescimento a longo prazo',
+      Uranus: 'independência e mudança',
+      Neptune: 'imaginação e ideais',
+      Pluto: 'poder e mudança profunda',
+    },
+    direct: 'Direto',
+    retrograde: 'Retrógrado',
+    station: (type, clock) => `${type === 'retrograde' ? 'Retrógrado' : 'Direto'} a partir das ${clock} UTC`,
+    comingTitle: 'O que vem no céu',
+    comingSub: 'Datas em UTC, então algumas caem um dia antes nas Américas.',
+    eclipseTitle: (type, kind, sign) => `Eclipse ${type} ${kind} em ${sign}`,
+    eclipseShort: (type, kind) => `${type} ${kind}`,
+    eclipseType: { solar: 'solar', lunar: 'lunar' },
+    eclipseKind: { total: 'total', partial: 'parcial', annular: 'anular', penumbral: 'penumbral', hybrid: 'híbrido' },
+    ingressTitle: (subject, sign) => `${subject} entra em ${sign}`,
+    ingressDetail: (retrograde, from) => `${retrograde ? 'Retrógrado, vindo de' : 'Vindo de'} ${from}`,
+    lunationTitle: (type, sign) => `${type === 'new' ? 'Lua nova' : 'Lua cheia'} em ${sign}`,
+    stationTitle: (planet, type) => `${planet} estaciona ${type === 'retrograde' ? 'retrógrado' : 'direto'}`,
+    aspectDetail: (a, b) => `${a} e ${b}`,
+    nextEclipse: (name, date) => `Próximo eclipse: ${name}, ${date}`,
+    calendarLink: 'Calendário do céu completo',
+    dayEvent: (event) => {
+      if (event.kind === 'station' && event.planet) {
+        return `${named('pt', event.planet)} ${event.type === 'retrograde' ? 'fica retrógrado' : 'volta ao movimento direto'}`;
+      }
+      if (event.kind === 'aspect' && event.a && event.b && event.type) {
+        const exact: Record<string, string> = {
+          conjunction: 'uma conjunção exata', sextile: 'um sextil exato', square: 'uma quadratura exata',
+          trine: 'um trígono exato', opposition: 'uma oposição exata',
+        };
+        return `${named('pt', event.a)} e ${named('pt', event.b)} formam ${exact[event.type] ?? aspectLabel('pt', event.type)}`;
+      }
+      if (event.kind === 'ingress' && event.planet && event.sign) return `${named('pt', event.planet)} entra em ${signName(event.sign, 'pt')}`;
+      if (event.kind === 'lunation' && event.sign) return `a ${event.type === 'new' ? 'Lua nova' : 'Lua cheia'} acontece em ${signName(event.sign, 'pt')}`;
+      return null;
+    },
+    rxTitle: 'Os retrógrados, num relance',
+    rxLink: 'Todas as datas retrógradas',
+    rxNone: ['Nenhum planeta está retrógrado ', TODAY, '.'],
+    rxNow: (list, count) => [`${list} ${count === 1 ? 'está retrógrado' : 'estão retrógrados'} `, TODAY, '.'],
+    rxNext: (planet, date) => [`${planet} fica retrógrado em ${date}.`],
+    rxEnded: (planet, date) => (date ? [`O período retrógrado de ${planet} terminou em ${date}.`] : [`O período retrógrado de ${planet} terminou `, TODAY, '.']),
+    rxTableAria: (range) => `Períodos retrógrados ${range}`,
+    rxPlanet: 'Planeta',
+    rxPeriod: 'Período',
+    rxNowPrefix: 'Retrógrado · ',
+    rxNowDirect: ', já direto',
+    rxStateNow: 'Retrógrado agora',
+    rxStateUpcoming: 'Por vir',
+    rxStateEnded: 'Encerrado',
+    rxMeansKicker: 'O que significa retrógrado',
+    rxMeans: 'Visto da Terra, um planeta às vezes parece desacelerar, parar e recuar contra o fundo das estrelas. Nada muda na sua órbita real. Os astrólogos leem esses períodos há muito tempo como um tempo de revisão: os temas do planeta são retomados, em vez de começados.',
+    aspectsTitle: 'Os aspectos mais exatos',
+    aspectsLede: (all, shown) => {
+      const word = (count: number) => ['nenhum', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez'][count] ?? String(count);
+      if (all > shown) return `Os aspectos são os ângulos entre os planetas. ${cap(word(all))} estão a menos de três graus do exato às 12h UTC; estes são os ${word(shown)} mais exatos.`;
+      return `Os aspectos são os ângulos entre os planetas. ${all === 1 ? 'Este está' : `Estes ${word(all)} estão`} a menos de três graus do exato às 12h UTC.`;
+    },
+    definitions: {
+      conjunction: 'Um aspecto de 0° que reúne duas partes do mapa no mesmo lugar.',
+      sextile: 'Um aspecto de 60° lido como uma oportunidade de cooperação entre duas partes do mapa.',
+      square: 'Um aspecto de 90° lido como um atrito que pede ação ou ajuste.',
+      trine: 'Um aspecto de 120° lido como uma conexão fluida entre duas partes do mapa.',
+      opposition: 'Um aspecto de 180° que coloca dois pontos do mapa um diante do outro.',
+    },
+    represent: (a, topicA, b, topicB) => `Por tradição, ${a} representa ${topicA}; ${b}, ${topicB}.`,
+    exactAt: (clock) => `Exato às ${clock} UTC`,
+    fromExact: (orb) => `A ${orb} do exato`,
+    furtherTitle: 'Para ir além',
+    furtherLede: 'Mais formas de acompanhar o céu, data a data.',
+    allTools: 'Todas as ferramentas',
+    tools: [
+      { href: '/transits/', title: 'Trânsitos', promise: 'O céu de hoje comparado com seu mapa.' },
+      { href: '/moon-phase/', title: 'Fase da Lua', promise: 'A Lua desta noite ou a de qualquer data.' },
+      { href: '/sky-calendar/', title: 'Calendário do céu', promise: 'Luas novas e cheias no seu app de calendário.' },
+      { href: '/eclipses/', title: 'Eclipses', promise: 'Eclipses solares e lunares até 2028.' },
+    ],
+    askTitle: 'Dúvidas sobre o céu de hoje?',
+    askLead: 'O Guide é um assistente de IA para perguntas de astrologia e para ajudar você a usar o Zodiacs.',
+    askLabel: 'Perguntar ao Guide',
+    prompts: [
+      'O que o céu de hoje significa para o meu signo?',
+      'O que é um retrógrado?',
+      'Como leio o céu de hoje no meu mapa astral?',
+    ],
+    methodTitle: 'Como esta página é feita',
+    methodBody: (date) => `As posições são calculadas para as 12h UTC da data da edição, ${date}. Os horários do calendário estão em UTC. As notas por signo descrevem temas para reflexão, não conselhos.`,
+    coverage: 'Esta edição usa apenas as posições planetárias; o horário exato dos eventos não está disponível para esta data.',
+    provenanceLabel: 'Por trás desta leitura diária',
+    provenanceDescription: 'Dados do céu, limites e critérios editoriais',
+    provenanceBefore: 'Cada nota está ligada ao céu registrado de ',
+    provenanceAfter: ', a data da edição em UTC; as posições planetárias usam um instantâneo das 12h UTC. As notas em português saem dos mesmos fatos da edição em inglês, com modelos escritos neste idioma, e um teste automático confere que cada uma corresponde à mesma casa e ao mesmo corpo da versão em inglês.',
+    methodLink: 'Como calculamos',
+    publicationLink: 'Como cada edição é publicada',
+    correctionsLink: 'Correções',
+  },
+};
+
+const { locale } = Astro.props;
+const c = COPY[locale];
+const cue = englishOnlyCue(locale);
+const local = (path: string) => localizePath(locale, path);
+const daily = dailyData as Daily;
+
+// ── Dates, in the page's language ──
+const noonOf = (iso: string) => (iso.length === 10 ? `${iso}T12:00:00.000Z` : iso);
+const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
+  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+});
+const weekdayLabel = cap(formatDate(locale, `${daily.date}T12:00:00Z`, {
+  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+}));
+const shortDate = (iso: string, withYear = false) => formatDate(locale, noonOf(iso), {
+  day: 'numeric', month: 'short', ...(withYear ? { year: 'numeric' } : {}), timeZone: 'UTC',
+});
+const dayMonth = (iso: string) => formatDate(locale, noonOf(iso), { day: 'numeric', month: 'long', timeZone: 'UTC' });
+const monthShort = (iso: string) => formatDate(locale, noonOf(iso), { month: 'short', timeZone: 'UTC' });
+const editionShort = shortDate(daily.date);
+const number = (value: number) => new Intl.NumberFormat(intlLocale(locale), { maximumFractionDigits: 1 }).format(value);
+const listWords = (items: string[]) => (items.length <= 1
+  ? items.join('')
+  : `${items.slice(0, -1).join(', ')} ${locale === 'es' ? 'y' : 'e'} ${items.at(-1)}`);
+const sign = (slug: string) => signName(slug, locale);
+const planet = (body: string) => planetLabel(locale, body);
+
+// ── The edition's sky ──
+const catalogs = Object.values(import.meta.glob<{ default: TransitCatalog }>('../../data/transits-*.json', { eager: true }))
+  .map((module) => module.default);
+const snapshotAt = daily.snapshotAt ?? `${daily.date}T12:00:00.000Z`;
+const bodyOf = (name: string) => daily.bodies.find((body) => body.body === name)!;
+const sun = bodyOf('Sun');
+const moon = bodyOf('Moon');
+const sunSign = signBySlug(sun.sign);
+const moonSign = signBySlug(moon.sign);
+const illumination = Math.round(daily.moon.illumination * 100);
+const phase = moonPhaseLabel(locale, daily.moon.phase);
+const moonAge = moonAgeDays(daily, skyData.moons);
+const rows = planetRows(daily);
+
+// What happens on the edition's own date, as one sentence of facts.
+const dayEvents = daily.eventsCoverage === 'unavailable'
+  ? []
+  : daily.events
+    .filter((event) => event.at.slice(0, 10) === daily.date)
+    .sort((a, b) => a.at.localeCompare(b.at))
+    .map((event) => c.dayEvent(event))
+    .filter((phrase): phrase is string => Boolean(phrase))
+    .slice(0, 3);
+const daySentence = dayEvents.length > 0 ? cap(listWords(dayEvents)) : '';
+
+// The two lights.
+const sunIngress = catalogs.flatMap((catalog) => catalog.ingresses)
+  .filter((ingress) => ingress.planet === 'Sun' && ingress.at > snapshotAt)
+  .sort((a, b) => a.at.localeCompare(b.at))[0];
+const sunNote = c.sunNote(
+  Math.min(2, Math.floor(sun.degree / 10)),
+  sunIngress ? { sign: sign(sunIngress.sign), date: dayMonth(sunIngress.at) } : null,
+);
+const moonNote = moonAge !== null ? c.moonNote(number(moonAge), moonAge === 1, moon.degree >= 29) : '';
+
+// The lunar cycle, drawn as the Moon looks: lit on the right while waxing.
+const cycle = moonCycle(daily, skyData.moons, catalogs);
+const waxing = /waxing|first quarter/iu.test(daily.moon.phase);
+function moonPath(fraction: number, growing: boolean, r = 20): string {
+  if (fraction >= 0.985) return 'full';
+  if (fraction <= 0.015) return '';
+  const rx = (Math.abs(1 - 2 * fraction) * r).toFixed(2);
+  const outer = growing ? 1 : 0;
+  const inner = fraction < 0.5 ? (growing ? 0 : 1) : (growing ? 1 : 0);
+  return `M0,-${r} A${r},${r} 0 0 ${outer} 0,${r} A${rx},${r} 0 0 ${inner} 0,-${r} Z`;
+}
+const todayMoonPath = moonPath(daily.moon.illumination, waxing);
+
+// The twelve sign notes, exactly as the localized reading renders them.
+const readings = SIGNS.map((entry) => ({ sign: entry, reading: dailyReadingForLocale(entry.slug, daily, locale) }));
+
+// The dates ahead, worded from the catalogs' own fields.
+const allIngresses = catalogs.flatMap((catalog) => catalog.ingresses);
+const allLunations = catalogs.flatMap((catalog) => catalog.lunations);
+const allStations = catalogs.flatMap((catalog) => catalog.stations);
+const neighbour = (slug: string, step: number) => SIGNS[(SIGNS.findIndex((entry) => entry.slug === slug) + step + 12) % 12].slug;
+const subject = (body: string) => cap(locale === 'es'
+  ? (body === 'Sun' ? 'el Sol' : body === 'Moon' ? 'la Luna' : planet(body))
+  : (body === 'Sun' ? 'o Sol' : body === 'Moon' ? 'a Lua' : planet(body)));
+const eclipseKind = (kind: string) => c.eclipseKind[kind] ?? kind;
+const eclipseType = (type: string) => c.eclipseType[type] ?? type;
+const coming = comingUp(daily, catalogs, eclipseData.eclipses, eventsData.pages).map((event) => {
+  const clock = `${utcClock(event.at)} UTC`;
+  if (event.kind === 'eclipse') {
+    const record = eclipseData.eclipses.find((eclipse) => eclipse.peak === event.at);
+    return {
+      ...event,
+      title: c.eclipseTitle(eclipseType(record?.type ?? ''), eclipseKind(record?.kind ?? ''), sign(event.sign)),
+      detail: record ? `${degreeMinutes(record.degree)} ${sign(record.sign)} · ${clock}` : clock,
+      full: record?.type === 'lunar',
+    };
+  }
+  if (event.kind === 'ingress') {
+    const record = allIngresses.find((ingress) => ingress.at === event.at && ingress.planet === event.body);
+    const retrograde = Boolean(record?.retrograde);
+    return {
+      ...event,
+      title: c.ingressTitle(subject(event.body), sign(event.sign)),
+      detail: `${c.ingressDetail(retrograde, sign(neighbour(event.sign, retrograde ? 1 : -1)))} · ${clock}`,
+      full: false,
+    };
+  }
+  if (event.kind === 'lunation') {
+    const record = allLunations.find((lunation) => lunation.at === event.at);
+    return {
+      ...event,
+      title: c.lunationTitle(record?.type ?? '', sign(event.sign)),
+      detail: record ? `${degreeMinutes(record.degree)} ${sign(record.sign)} · ${clock}` : clock,
+      full: record?.type === 'full',
+    };
+  }
+  if (event.kind === 'station') {
+    const record = allStations.find((station) => station.at === event.at && station.planet === event.body);
+    return {
+      ...event,
+      title: c.stationTitle(planet(event.body), record?.type ?? ''),
+      detail: record ? `${degreeMinutes(record.degree)} ${sign(record.sign)} · ${clock}` : clock,
+      full: false,
+    };
+  }
+  const aspect = catalogs.flatMap((catalog) => catalog.aspects).find((entry) => entry.at === event.at && entry.a === event.body);
+  return {
+    ...event,
+    title: `${planet(event.body)} ${aspectLabel(locale, aspect?.type ?? '')} ${planet(event.other ?? '')}`,
+    detail: aspect ? `${c.aspectDetail(sign(aspect.aSign), sign(aspect.bSign))} · ${clock}` : clock,
+    full: false,
+  };
+});
+const eclipseAhead = nextEclipse(daily, eclipseData.eclipses);
+
+// Retrogrades on one time axis.
+const timeline = retrogradeTimeline(daily, skyData.retrogrades);
+const edition = new Date(`${daily.date}T00:00:00.000Z`);
+// retrogradeTimeline opens its window three months before the edition's month.
+const monthLabels = timeline.months.map((month, index) => ({
+  left: month.left,
+  label: monthShort(new Date(Date.UTC(edition.getUTCFullYear(), edition.getUTCMonth() - 3 + index, 1)).toISOString()),
+}));
+const retrogradeNow = timeline.rows.filter((row) => row.state === 'now').map((row) => planet(row.planet));
+const nextRetrograde = timeline.rows
+  .filter((row) => row.state === 'upcoming')
+  .sort((a, b) => a.from.localeCompare(b.from))[0];
+const justEnded = timeline.rows
+  .filter((row) => row.state === 'ended')
+  .sort((a, b) => b.to.localeCompare(a.to))[0];
+const retrogradeSummary: Part[] = [
+  ...(retrogradeNow.length === 0 ? c.rxNone : c.rxNow(listWords(retrogradeNow), retrogradeNow.length)),
+  ...(nextRetrograde ? [' ', ...c.rxNext(planet(nextRetrograde.planet), dayMonth(nextRetrograde.from))] : []),
+  ...(justEnded
+    ? [' ', ...c.rxEnded(planet(justEnded.planet), justEnded.to.slice(0, 10) === daily.date ? null : dayMonth(justEnded.to))]
+    : []),
+];
+const windowEndLabel = shortDate(new Date(Date.parse(timeline.to) - 86_400_000).toISOString(), true);
+const periodYear = (iso: string) => iso.slice(0, 4) !== daily.date.slice(0, 4);
+
+// The closest angles in this sky.
+const allAspects = aspectsToday(daily);
+const aspectCards = allAspects.slice(0, 4);
+const wheelAspects = allAspects.map((aspect) => ({ a: aspect.a, b: aspect.b, type: aspect.type }));
+const aspectTypes = new Set(allAspects.map((aspect) => aspect.type));
+const runningName = (body: string) => named(locale, body);
+
+const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon: toolIconForPath(tool.href) ?? 'transits' }));
+---
+<Base
+  stableTypography
+  title={c.title(dateLabel)}
+  description={c.description(dateLabel)}
+  path={`/${locale}/today/`}
+  locale={locale}
+  editionDate={daily.date}
+>
+  <!-- The opening's painted band is the page's largest first-screen picture:
+       ask for the one this screen uses as soon as the head is read. -->
+  <link slot="head" rel="preload" as="image" type="image/avif" href="/assets/hero/zodiacs-hero-poster-mobile.avif" media="(max-width: 760px)" fetchpriority="high" />
+  <link slot="head" rel="preload" as="image" type="image/avif" href="/assets/hero/zodiacs-hero-poster.avif" media="(min-width: 761px)" fetchpriority="high" />
+  <section class="tdl-page" data-edition-content="true" data-daily-date={daily.date}>
+    <!-- 1. The day, with the edition's sky beside it. -->
+    <header class="tdl-hero">
+      <div class="tdl-hero__body">
+        <nav class="tdl-crumbs" aria-label={c.crumbsAria}>
+          <a href={`/${locale}/`}>{c.home}</a><span aria-hidden="true">/</span><span aria-current="page"><span data-edition-current-only>{c.TodayWord}</span><span data-edition-dated-only>{dateLabel}</span></span>
+        </nav>
+        <p class="kicker tdl-hero__kicker">{weekdayLabel}</p>
+        <h1 class="display">{c.h1}</h1>
+        <p class="tdl-hero__lede">
+          {c.lede}{daySentence && (
+            <>{' '}{daySentence}{' '}<span data-edition-current-only>{c.todayWord}</span><span data-edition-dated-only>{c.onDate(dateLabel)}</span>.</>
+          )}
+        </p>
+        <div class="btn-row tdl-hero__actions">
+          <a class="btn btn--primary btn--lg" href={local('/transits/')}>{c.cta} <span class="orb" aria-hidden="true">↗</span></a>
+          <a class="btn btn--glass btn--lg" href="#signs"><span>{c.yourSign}<span data-edition-current-only> {c.todayWord}</span></span></a>
+        </div>
+        <p class="reassure tdl-hero__note">{c.reassure}</p>
+      </div>
+      <figure class="tdl-hero__wheel">
+        <div class="tdl-wheel">
+          <LocalizedSvgTitles locale={locale}>
+            <Wheel
+              bodies={daily.bodies.map((body) => ({ body: body.body, lon: body.lon, retrograde: body.retrograde }))}
+              aspects={wheelAspects}
+              ariaLabel={c.wheelAria(dateLabel)}
+            />
+          </LocalizedSvgTitles>
+          <svg class="tdl-wheel__moon" viewBox="-24 -24 48 48" aria-hidden="true">
+            <circle r="23" fill="#0A0C11" stroke="rgba(198,204,218,0.12)" stroke-width="1" />
+            <circle r="18" fill="#1C2130" />
+            {todayMoonPath === 'full' && <circle r="18" fill="#E6E2D6" />}
+            {todayMoonPath && todayMoonPath !== 'full' && <path d={moonPath(daily.moon.illumination, waxing, 18)} fill="#E6E2D6" />}
+          </svg>
+        </div>
+        <figcaption class="tdl-legend">
+          <span><i class="tdl-legend__rx">Rx</i>{c.legendRx}</span>
+          {(aspectTypes.has('trine') || aspectTypes.has('sextile')) && <span><i class="tdl-legend__line tdl-legend__line--easy"></i>{c.legendEasy}</span>}
+          {(aspectTypes.has('square') || aspectTypes.has('opposition')) && <span><i class="tdl-legend__line tdl-legend__line--tense"></i>{c.legendTense}</span>}
+          {aspectTypes.has('conjunction') && <span><i class="tdl-legend__line tdl-legend__line--joined"></i>{c.legendJoined}</span>}
+        </figcaption>
+      </figure>
+    </header>
+
+    <!-- 2. The sky in one line, the same line the home page shows. -->
+    <div class="kwrap">
+      <div class="ticker-band tdl-skyline">
+        <SkyTicker locale={locale} />
+      </div>
+    </div>
+
+    <!-- 3. The two lights, in the site's own sign art, and the lunar cycle. -->
+    <section class="kwrap tdl-sec" aria-labelledby="tdl-lights-heading">
+      <div class="section-head--row tdl-head">
+        <div>
+          <span class="kicker">{c.lightsKicker}</span>
+          <h2 id="tdl-lights-heading" class="h-2">{c.lightsTitle}</h2>
+          <p>{c.lightsLede}</p>
+        </div>
+        <a class="textlink only-desktop" href={local('/moon-phase/')}>{c.moonLink} <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="tdl-lights">
+        <article class="tdl-light" style={`--sign:${sunSign.hue}`}>
+          <div class="tdl-light__art">
+            <ArtFrame sign={sun.sign} locale={locale} sizes="(min-width: 761px) 600px, calc(100vw - 40px)" focus="50% 40%" spot="48% 52%" />
+            <span class="tdl-light__tag">{c.sunTag(degreeMinutes(sun.degree))}</span>
+          </div>
+          <div class="tdl-light__body">
+            <div class="tdl-light__head"><SignIcon sign={sun.sign} size={46} /><h3 class="h-3">{c.sunIn(sign(sun.sign))}</h3></div>
+            <p>{signEssence(sunSign, locale)} {sunNote}</p>
+            <p class="kfacts"><span>{signDateRange(sunSign, locale)}</span><span>{elementLabel(sunSign.element, locale)}</span><span>{modalityLabel(sunSign.modality, locale)}</span><span class="tdl-hide-m">{t(locale, 'ruler')}: {planet(sunSign.ruler)}</span></p>
+          </div>
+        </article>
+        <article class="tdl-light" style={`--sign:${moonSign.hue}`}>
+          <div class="tdl-light__art">
+            <ArtFrame sign={moon.sign} locale={locale} sizes="(min-width: 761px) 600px, calc(100vw - 40px)" focus="50% 40%" spot="52% 52%" />
+            <span class="tdl-light__tag">{c.moonTag(degreeMinutes(moon.degree), illumination)}</span>
+          </div>
+          <div class="tdl-light__body">
+            <div class="tdl-light__head"><SignIcon sign={moon.sign} size={46} /><h3 class="h-3">{c.moonIn(sign(moon.sign))}</h3></div>
+            <p>{signEssence(moonSign, locale)} {moonNote}</p>
+            <p class="kfacts"><span>{phase}</span>{moonAge !== null && <span>{c.moonAge(number(moonAge), moonAge === 1)}</span>}<span class="tdl-hide-m">{elementLabel(moonSign.element, locale)}</span><span class="tdl-hide-m">{modalityLabel(moonSign.modality, locale)}</span></p>
+          </div>
+        </article>
+      </div>
+      <ol class="tdl-cycle" aria-label={c.cycleAria} style={`--nodes:${cycle.length}`}>
+        {cycle.map((node) => (
+          <li class:list={{ 'is-now': node.kind === 'now' }}>
+            <svg class="tdl-moon" viewBox="-24 -24 48 48" width="46" height="46" aria-hidden="true">
+              <circle r="20" fill="#1C2130" stroke="rgba(198,204,218,0.22)" stroke-width="1" />
+              {node.kind === 'full' && <circle r="20" fill="#E6E2D6" />}
+              {node.kind === 'now' && todayMoonPath === 'full' && <circle r="20" fill="#E6E2D6" />}
+              {node.kind === 'now' && todayMoonPath && todayMoonPath !== 'full' && <path d={todayMoonPath} fill="#E6E2D6" />}
+            </svg>
+            {node.kind === 'now'
+              ? <b><span data-edition-current-only>{c.TodayWord}</span><span data-edition-dated-only>{editionShort}</span></b>
+              : <b>{moonPhaseLabel(locale, node.kind === 'new' ? 'New Moon' : 'Full Moon')}</b>}
+            {node.kind === 'now'
+              ? <span>{phase}</span>
+              : <span>{shortDate(node.at)}{node.sign && <span class="tdl-cycle__sign">{sign(node.sign)}</span>}</span>}
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <!-- 4. The twelve signs: each sign's notes from its solar houses, with
+         their receipts, exactly as the localized reading writes them. -->
+    <section class="kwrap tdl-sec tdl-signs" id="signs" aria-labelledby="tdl-signs-heading">
+      <div class="section-head--row tdl-head">
+        <div>
+          <span class="kicker">{c.signsKicker}</span>
+          <h2 id="tdl-signs-heading" class="h-2">{t(locale, 'todayBySignTitle')}</h2>
+          <p>{c.signsLede}</p>
+        </div>
+        <a class="textlink only-desktop" href={local('/horoscopes/')}>{c.allHoroscopes} <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <nav class="tdl-picker" aria-label={c.signsAria}>
+        {SIGNS.map((entry) => (
+          <a href={`#${entry.slug}`} style={`--sign:${entry.hue}`}>
+            <SignIcon sign={entry.slug} size={30} webpOnly />
+            <span class="tdl-picker__name">{sign(entry.slug)}</span>
+          </a>
+        ))}
+      </nav>
+      <div class="tdl-readings">
+        {readings.map(({ sign: entry, reading }) => (
+          <article class="tdl-sign" id={entry.slug} style={`--sign:${entry.hue}`}>
+            <header class="tdl-sign__head">
+              <SignIcon sign={entry.slug} size={38} />
+              <h3 id={`${entry.slug}-title`}>{sign(entry.slug)}</h3>
+              <small>{signDateRange(entry, locale)}</small>
+            </header>
+            <DailyLocaleReading locale={locale} reading={reading} headingId={`${entry.slug}-title`} />
+            <p class="tdl-sign__links">
+              <a href={local(`/horoscopes/${entry.slug}/`)}>{c.horoscopeLink(sign(entry.slug))}</a>
+              <a href={local(`/${entry.slug}/`)}>{c.guideLink(sign(entry.slug))}</a>
+            </p>
+          </article>
+        ))}
+      </div>
+      <div class="tdl-personal">
+        <div>
+          <strong>{c.personalTitle}</strong>
+          <p>{c.personalBody}</p>
+        </div>
+        <div class="tdl-personal__actions">
+          <a class="btn btn--primary" href={local('/birth-chart/')}>{t(locale, 'getBirthChart')} <span class="orb" aria-hidden="true">↗</span></a>
+          <a class="textlink" href="/today/" hreflang="en" title={cue?.aria}>{c.personalCompare}{cue?.suffix} <span class="arr" aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Every planet, then the dates ahead as calendar facts, opened by
+         the brass orrery: the Sun at the centre, the planets on their arms. -->
+    <div class="kwrap tdl-sec tdl-art-band">
+      <ArtFrame
+        class="tdl-orrery"
+        src={artSrc('today-orrery')}
+        srcset={artSrcset('today-orrery')}
+        sizes="(min-width: 1240px) 1200px, calc(100vw - 40px)"
+        width={ART['today-orrery'].width}
+        height={ART['today-orrery'].height}
+        alt=""
+        spot="51% 42%"
+        fade
+      />
+    </div>
+    <section class="kwrap tdl-sec tdl-split">
+      <div>
+        <h2 class="h-3">{c.planetsTitle}</h2>
+        <p class="tdl-sub">{c.planetsSub(dateLabel)}<span class="only-desktop">{c.planetsSubMore}</span></p>
+        <ul class="tdl-ptable">
+          {rows.map((row) => (
+            <li class:list={['tdl-prow', { 'is-sun': row.body === 'Sun' }]}>
+              <span class="tdl-pg" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[row.body] ?? ''} /></span>
+              <span class="tdl-prow__name"><b>{planet(row.body)}</b><small>{cap(c.topics[row.body] ?? '')}</small></span>
+              <span class="tdl-prow__sign"><SignIcon sign={row.sign} size={22} />{sign(row.sign)}</span>
+              <span class="tdl-prow__deg">{row.degree}</span>
+              {row.stationToday
+                ? <span class="tdl-pm is-station">{c.station(row.stationToday.type, utcClock(row.stationToday.at))}</span>
+                : row.body === 'Moon'
+                  ? <span class="tdl-pm is-moon">{phase}</span>
+                  : row.retrograde
+                    ? <span class="tdl-pm is-rx">{c.retrograde}</span>
+                    : <span class="tdl-pm">{c.direct}</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2 class="h-3">{c.comingTitle}</h2>
+        <p class="tdl-sub">{c.comingSub}</p>
+        <ol class="tdl-events">
+          {coming.map((event) => {
+            const tint = event.sign ? signBySlug(event.sign) : null;
+            return (
+              <li class:list={{ 'is-lunation': event.kind === 'lunation' || event.kind === 'eclipse' }} style={tint ? `--sign:${tint.hue}` : undefined}>
+                <time datetime={event.at}><span>{monthShort(event.at)}</span><b>{new Date(event.at).getUTCDate()}</b></time>
+                <div>
+                  <b>{event.title}</b>
+                  <small>{event.detail}</small>
+                </div>
+                <span class="tdl-events__ic" aria-hidden="true">
+                  {event.kind === 'ingress'
+                    ? <SignIcon sign={event.sign} size={24} />
+                    : event.kind === 'station' || event.kind === 'aspect'
+                      ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[event.body] ?? ''} />
+                      : <svg class="tdl-events__moon" viewBox="-24 -24 48 48"><circle r="20" fill="#1C2130" stroke="rgba(198,204,218,0.3)" stroke-width="1.5" />{event.full ? <circle r="20" fill="#E6E2D6" /> : null}</svg>}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+        <div class="tdl-events__foot">
+          {eclipseAhead && <span>{c.nextEclipse(c.eclipseShort(eclipseType(eclipseAhead.type), eclipseKind(eclipseAhead.kind)), shortDate(eclipseAhead.peak, true))}</span>}
+          <a class="textlink" href={local('/sky-calendar/')}>{c.calendarLink} <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Retrogrades on one time axis, the edition marked. -->
+    <section class="kwrap tdl-sec" aria-labelledby="tdl-rx-heading">
+      <div class="section-head--row tdl-head">
+        <div>
+          <h2 id="tdl-rx-heading" class="h-2">{c.rxTitle}</h2>
+          <p>{retrogradeSummary.map((part) => (part === TODAY
+            ? <><span data-edition-current-only>{c.todayWord}</span><span data-edition-dated-only>{c.onDate(dateLabel)}</span></>
+            : part))}</p>
+        </div>
+        <a class="textlink only-desktop" href={local('/retrogrades/')}>{c.rxLink} <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="tdl-rt" role="table" aria-label={c.rxTableAria(rangeWords(locale, shortDate(timeline.from, true), windowEndLabel))} style={`--tdl-at:${timeline.todayAt}%`}>
+        <div class="tdl-rt__row tdl-rt__head" role="row">
+          <span class="tdl-rt__name" role="columnheader"><span class="sr-only">{c.rxPlanet}</span></span>
+          <div class="tdl-rt__track tdl-rt__months" role="columnheader">
+            <span class="sr-only">{c.rxPeriod}</span>
+            {monthLabels.map((month, index) => (
+              <span
+                class:list={['tdl-rt__month', { 'tdl-hide-m': month.left <= timeline.todayAt && (monthLabels[index + 1]?.left ?? 100) > timeline.todayAt }]}
+                style={`left:${month.left}%`}
+                aria-hidden="true"
+              >{month.label}</span>
+            ))}
+            <b class="tdl-rt__today" aria-hidden="true"><span data-edition-current-only>{c.TodayWord}</span><span data-edition-dated-only>{editionShort}</span></b>
+          </div>
+        </div>
+        {timeline.rows.map((row) => (
+          <div class="tdl-rt__row" role="row">
+            <div class="tdl-rt__name" role="rowheader">
+              <span class="tdl-rt__g" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[row.planet] ?? ''} /></span>
+              <span>
+                <b>{planet(row.planet)}</b>
+                <small class:list={{ 'is-on': row.state === 'now' }}>
+                  {row.state === 'now' && <span class="tdl-hide-m">{c.rxNowPrefix}</span>}
+                  {rangeWords(locale, shortDate(row.from, periodYear(row.from)), shortDate(row.to, periodYear(row.to)))}{row.state === 'ended' && c.rxNowDirect}
+                </small>
+              </span>
+            </div>
+            <div class="tdl-rt__track" role="cell">
+              <span class="sr-only">{row.state === 'now' ? c.rxStateNow : row.state === 'upcoming' ? c.rxStateUpcoming : c.rxStateEnded}</span>
+              <i class:list={['tdl-rt__bar', `is-${row.state}`, { 'is-clip-start': row.clippedStart, 'is-clip-end': row.clippedEnd }]} style={`left:${row.left}%;width:${row.width}%`}></i>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="tdl-rt__key" aria-hidden="true">
+        <span><i></i>{c.rxStateNow}</span>
+        <span><i class="is-upcoming"></i>{c.rxStateUpcoming}</span>
+        <span><i class="is-ended"></i>{c.rxStateEnded}</span>
+        <span><i class="is-today"></i><span><span data-edition-current-only>{c.TodayWord}, </span>{editionShort}</span></span>
+      </div>
+      <div class="tdl-note">
+        <span class="kicker">{c.rxMeansKicker}</span>
+        <p>{c.rxMeans}</p>
+      </div>
+    </section>
+
+    <!-- 7. The closest angles in this sky, each with what it has
+         traditionally been read as. -->
+    {aspectCards.length > 0 && (
+      <section class="kwrap tdl-sec" aria-labelledby="tdl-aspects-heading">
+        <div class="section-head--row tdl-head">
+          <div>
+            <h2 id="tdl-aspects-heading" class="h-2">{c.aspectsTitle}</h2>
+            <p>{c.aspectsLede(allAspects.length, aspectCards.length)}</p>
+          </div>
+        </div>
+        <div class="tdl-asps">
+          {aspectCards.map((aspect) => {
+            const a = bodyOf(aspect.a);
+            const b = bodyOf(aspect.b);
+            return (
+              <article class="kcard tdl-asp">
+                <div class="tdl-asp__g" aria-hidden="true">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[aspect.a] ?? ''} /></span>
+                  <svg class={`tdl-asp__type is-${aspect.type}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={ASPECT_GLYPH[aspect.type] ?? ''} />
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[aspect.b] ?? ''} /></span>
+                </div>
+                <h3 class="h-4">{planet(aspect.a)} {aspectLabel(locale, aspect.type)} {planet(aspect.b)}</h3>
+                <p class="tdl-asp__pos">{degreeMinutes(a.degree)} {sign(a.sign)}{a.retrograde ? ' Rx' : ''} · {degreeMinutes(b.degree)} {sign(b.sign)}{b.retrograde ? ' Rx' : ''}</p>
+                <p>{c.definitions[aspect.type]} {c.represent(runningName(aspect.a), c.topics[aspect.a] ?? '', runningName(aspect.b), c.topics[aspect.b] ?? '')}</p>
+                <span class:list={['tdl-asp__tag', { 'is-exact': aspect.exactAt }]}>
+                  {aspect.exactAt ? c.exactAt(utcClock(aspect.exactAt)) : c.fromExact(degreeMinutes(aspect.orb))}
+                </span>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <!-- 8. Go further, and questions for Guide. -->
+    <section class="kwrap tdl-sec" aria-labelledby="tdl-further-heading">
+      <div class="section-head--row tdl-head">
+        <div>
+          <h2 id="tdl-further-heading" class="h-2">{c.furtherTitle}</h2>
+          <p>{c.furtherLede}</p>
+        </div>
+        <a class="textlink only-desktop" href={local('/tools/')}>{c.allTools} <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="grid-4 tdl-tools">
+        {goFurther.map((tool) => (
+          <a class="kcard tdl-tool" href={tool.href}>
+            <ToolIcon name={tool.icon} size={48} />
+            <h3 class="h-4">{tool.title}</h3>
+            <p>{tool.promise}</p>
+            <span class="kcard__go" aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+      <div class="kcard kcard--raised tdl-ask">
+        <div>
+          <h3 class="h-4">{c.askTitle}</h3>
+          <AskGuideLine lead={c.askLead} locale={locale} />
+        </div>
+        <GuideQuickPrompts prompts={c.prompts} locale={locale} label={c.askLabel} />
+      </div>
+    </section>
+
+    <!-- 9. How the page is made. -->
+    <section class="kwrap tdl-method" aria-labelledby="tdl-method-heading">
+      <h2 id="tdl-method-heading" class="h-4">{c.methodTitle}</h2>
+      <div>
+        <p>{c.methodBody(dateLabel)}</p>
+        {daily.eventsCoverage === 'unavailable' && <p class="tdl-coverage-note">{c.coverage}</p>}
+        <EvidenceDisclosure
+          class="tdl-provenance"
+          variant="quiet"
+          label={c.provenanceLabel}
+          description={c.provenanceDescription}
+        >
+          <p>{c.provenanceBefore}<time datetime={daily.date}>{daily.date}</time>{c.provenanceAfter}</p>
+        </EvidenceDisclosure>
+        <p class="tdl-method__links">
+          <a class="textlink" href={local('/methodology/')}>{c.methodLink} <span class="arr" aria-hidden="true">→</span></a>
+          <a class="textlink" href="/methodology/#daily-publication" hreflang="en" title={cue?.aria}>{c.publicationLink}{cue?.suffix} <span class="arr" aria-hidden="true">→</span></a>
+          <a class="textlink" href="/corrections/" hreflang="en" title={cue?.aria}>{c.correctionsLink}{cue?.suffix} <span class="arr" aria-hidden="true">→</span></a>
+        </p>
+      </div>
+    </section>
+  </section>
+</Base>
+
+<style is:global>
+  .tdl-page { padding-bottom: clamp(48px, 7vw, 96px); }
+  .tdl-sec { padding-top: clamp(56px, 5.8vw, 84px); }
+  .tdl-head { margin-bottom: clamp(24px, 3.4vw, 40px); }
+  .tdl-head > div { max-width: 720px; }
+  .tdl-head p { max-width: 62ch; }
+  .tdl-head > .textlink { flex: none; white-space: nowrap; }
+  @media (max-width: 760px) { .tdl-hide-m { display: none; } }
+
+  /* ── 1. Hero: the day, the wheel beside it ────────────────────── */
+  .tdl-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+    align-items: start;
+    gap: clamp(32px, 4vw, 72px);
+    min-height: 760px;
+    /* Rise behind the fixed navigation, as the home page's frame does. */
+    margin: calc(12px - var(--nav-space, 96px)) 12px 0;
+    padding: 120px clamp(28px, 5vw, 72px) 48px;
+    overflow: hidden;
+    border-radius: var(--r-xl);
+    background: var(--void-1) url('/assets/hero/zodiacs-hero-poster.avif') 50% 18% / cover no-repeat;
+    box-shadow: inset 0 0 0 1px rgba(198, 204, 218, 0.08);
+    isolation: isolate;
+  }
+  .tdl-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(42% 62% at 77% 54%, rgba(6, 7, 9, 0.15), rgba(6, 7, 9, 0) 70%),
+      linear-gradient(90deg, rgba(6, 7, 9, 0.96) 0%, rgba(6, 7, 9, 0.9) 42%, rgba(6, 7, 9, 0.62) 64%, rgba(6, 7, 9, 0.58) 100%),
+      linear-gradient(0deg, rgba(6, 7, 9, 0.9) 0%, rgba(6, 7, 9, 0) 40%);
+  }
+  .tdl-hero__body { min-width: 0; padding-top: clamp(24px, 4.6vw, 64px); }
+  .tdl-crumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; color: var(--faint); font-size: 13px; }
+  .tdl-crumbs a { color: var(--muted); text-decoration: none; }
+  .tdl-crumbs a:hover { color: var(--ink-0); }
+  .tdl-crumbs > span[aria-hidden] { opacity: 0.6; }
+  .tdl-hero__kicker { margin: 0 0 10px; color: var(--ink-1); }
+  .tdl-hero h1 {
+    margin: 0;
+    font-size: clamp(3.2rem, 1.6rem + 5vw, 6.2rem);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+    overflow-wrap: break-word;
+  }
+  .tdl-hero__lede {
+    max-width: 38ch;
+    margin: 22px 0 0;
+    color: var(--ink-1);
+    font-size: var(--text-lg);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  .tdl-hero__actions { margin-top: 30px; }
+  .tdl-hero__note { margin-top: 18px; color: var(--ink-2); }
+  /* Top-aligned like the text, as on the English Today: a centred wheel
+     moved whenever a late face or the rest of the stream changed the
+     height of a taller text column. */
+  .tdl-hero__wheel { position: relative; align-self: start; min-width: 0; margin: 0; }
+  .tdl-wheel { position: relative; }
+  /* The wheel's own rings are open; a dark disc behind them keeps the art
+     from showing through the sky. */
+  .tdl-wheel::before {
+    content: '';
+    position: absolute;
+    inset: 6.8%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, #151925 0%, #0A0C11 100%);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  }
+  .tdl-wheel .wheel { position: relative; display: block; width: 100%; height: auto; }
+  .tdl-wheel__moon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 15%;
+    height: auto;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+  }
+  .tdl-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 14px; color: var(--ink-2); font-size: 12.5px; }
+  .tdl-legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .tdl-legend i { font-style: normal; }
+  .tdl-legend__rx { color: rgba(224, 176, 128, 0.9); font-family: var(--font-mono); font-size: 11px; }
+  .tdl-legend__line { display: inline-block; width: 18px; height: 0; border-top: 1.5px solid; }
+  .tdl-legend__line--easy { color: rgba(182, 212, 228, 0.85); }
+  .tdl-legend__line--tense { color: rgba(222, 142, 121, 0.85); }
+  .tdl-legend__line--joined { color: rgba(238, 241, 247, 0.6); }
+
+  /* ── 2. The sky line ──────────────────────────────────────────── */
+  .tdl-skyline { margin-top: 18px; }
+
+  /* ── 3. The Sun, the Moon and the lunar cycle ─────────────────── */
+  .tdl-lights { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .tdl-light { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid var(--hair-1); border-radius: var(--r-lg); background: rgba(198, 204, 218, 0.02); }
+  .tdl-light__art { position: relative; }
+  .tdl-light__art .artframe { aspect-ratio: 2 / 1; border-radius: 0; }
+  .tdl-light__tag {
+    position: absolute;
+    z-index: 3;
+    top: 16px;
+    left: 18px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 13px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-full);
+    background: rgba(10, 12, 17, 0.62);
+    color: var(--ink-1);
+    font-size: 13px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .tdl-light__body { display: grid; gap: 12px; padding: 24px 28px 28px; }
+  .tdl-light__head { display: flex; align-items: center; gap: 14px; }
+  .tdl-light p { max-width: 56ch; margin: 0; color: var(--text-2); line-height: 1.62; }
+  .tdl-light p.kfacts { margin-top: 2px; color: var(--faint); }
+  .tdl-cycle {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--nodes, 4), minmax(0, 1fr));
+    gap: 8px;
+    margin: 20px 0 0;
+    padding: 26px 28px 24px;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-lg);
+    background: rgba(198, 204, 218, 0.015);
+    list-style: none;
+  }
+  .tdl-cycle::before {
+    content: '';
+    position: absolute;
+    top: 49px;
+    left: calc(28px + (100% - 56px) / (2 * var(--nodes, 4)));
+    right: calc(28px + (100% - 56px) / (2 * var(--nodes, 4)));
+    height: 1px;
+    background: var(--hair-2);
+  }
+  .tdl-cycle li { position: relative; display: grid; justify-items: center; gap: 4px; min-width: 0; text-align: center; }
+  .tdl-moon { position: relative; z-index: 1; margin-bottom: 10px; border-radius: 50%; background: var(--void-0); box-shadow: 0 0 0 8px var(--void-0); }
+  .tdl-cycle b { color: var(--ink-1); font-size: 0.9375rem; font-weight: 600; }
+  .tdl-cycle li > span { color: var(--faint); font-size: 12.5px; }
+  .tdl-cycle__sign::before { content: ' · '; }
+  .tdl-cycle li.is-now b { color: var(--ink-0); }
+  .tdl-cycle li.is-now > span { color: var(--sign-sagittarius); }
+  .tdl-cycle li.is-now .tdl-moon { box-shadow: 0 0 0 8px var(--void-0), 0 0 0 9px rgba(224, 176, 128, 0.6); }
+
+  /* ── 4. The twelve signs ──────────────────────────────────────── */
+  .tdl-picker {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 22px;
+  }
+  .tdl-picker a {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 6px;
+    min-width: 0;
+    padding: 10px 4px 9px;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-md);
+    background: rgba(198, 204, 218, 0.02);
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .tdl-picker a:hover { border-color: color-mix(in oklab, var(--sign) 65%, var(--hair-2)); color: var(--text); }
+  .tdl-picker a:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 2px; }
+  .tdl-picker__name { max-width: 100%; overflow: hidden; font-size: 12px; font-weight: 650; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+  .tdl-readings {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 16px;
+  }
+  .tdl-sign {
+    min-width: 0;
+    padding: clamp(20px, 2.4vw, 26px);
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-lg);
+    background: rgba(198, 204, 218, 0.02);
+    scroll-margin-top: 96px;
+  }
+  .tdl-sign:target { border-color: color-mix(in oklab, var(--sign) 45%, var(--hair-1)); background: color-mix(in oklab, var(--sign) 6%, var(--void-1)); }
+  .tdl-sign__head {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    grid-template-areas: 'icon name' 'icon dates';
+    align-items: center;
+    column-gap: 14px;
+    margin-bottom: 16px;
+  }
+  .tdl-sign__head .sign-icon { grid-area: icon; }
+  .tdl-sign__head h3 { grid-area: name; margin: 0; font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 500; line-height: 1.1; }
+  .tdl-sign__head small { grid-area: dates; color: var(--faint); font-size: 12.5px; }
+  .tdl-sign .daily-locale__lines li { padding-left: 14px; border-left: 2px solid color-mix(in oklab, var(--sign) 60%, transparent); }
+  .tdl-sign__links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 4px 0 0; font-size: var(--text-sm); }
+  .tdl-sign__links a { color: var(--text-2); text-underline-offset: 3px; text-decoration-color: var(--hair-3); }
+  .tdl-sign__links a:hover { color: var(--text); }
+  .tdl-personal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 22px;
+    padding: 24px 28px;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-lg);
+    background: linear-gradient(180deg, rgba(198, 204, 218, 0.05), rgba(198, 204, 218, 0.015));
+  }
+  .tdl-personal strong { color: var(--ink-0); font-size: 1.12rem; font-weight: 600; }
+  .tdl-personal p { max-width: 58ch; margin: 4px 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .tdl-personal__actions { display: flex; flex: none; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+
+  /* ── 5. Planets and dates ahead ───────────────────────────────── */
+  .tdl-orrery { aspect-ratio: 3 / 1; --focus: 50% 26%; }
+  .tdl-art-band + .tdl-split { padding-top: clamp(24px, 2.6vw, 36px); }
+  .tdl-split { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr); align-items: start; gap: clamp(32px, 5vw, 72px); }
+  .tdl-split .h-3 { margin: 0 0 6px; }
+  .tdl-sub { margin: 0 0 18px; color: var(--muted); font-size: 0.9375rem; }
+  .tdl-ptable { margin: 0; padding: 0; border-top: 1px solid var(--hair-1); list-style: none; }
+  .tdl-prow {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) 132px 60px 150px;
+    align-items: center;
+    column-gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--hair-1);
+  }
+  .tdl-pg { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--hair-2); border-radius: 50%; background: var(--void-2); color: var(--ink-0); }
+  .tdl-pg svg { width: 18px; height: 18px; }
+  .tdl-prow.is-sun .tdl-pg { border-color: var(--ink-0); background: var(--ink-0); color: var(--void-0); }
+  .tdl-prow__name { min-width: 0; }
+  .tdl-prow__name b { display: block; color: var(--ink-0); font-size: 0.98rem; font-weight: 600; line-height: 1.3; }
+  .tdl-prow__name small { display: block; color: var(--faint); font-size: 12.5px; line-height: 1.35; }
+  .tdl-prow__sign { display: inline-flex; align-items: center; gap: 9px; min-width: 0; color: var(--ink-1); font-size: 0.9375rem; }
+  .tdl-prow__deg { color: var(--ink-1); font-family: var(--font-mono); font-size: 0.875rem; font-variant-numeric: tabular-nums; text-align: right; }
+  .tdl-pm {
+    display: inline-flex;
+    justify-self: end;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 11px;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-full);
+    color: var(--ink-2);
+    font-size: 12.5px;
+    font-weight: 550;
+    text-align: center;
+  }
+  .tdl-pm.is-rx { border-color: rgba(222, 142, 121, 0.35); background: rgba(222, 142, 121, 0.07); color: var(--sign-aries); }
+  .tdl-pm.is-station { border-color: var(--hair-3); background: rgba(198, 204, 218, 0.08); color: var(--ink-0); }
+  .tdl-pm.is-moon { border-color: color-mix(in oklab, var(--sign-sagittarius) 40%, transparent); color: var(--sign-sagittarius); }
+  .tdl-events { margin: 0; padding: 0; border-top: 1px solid var(--hair-1); list-style: none; }
+  .tdl-events li { display: grid; grid-template-columns: 54px minmax(0, 1fr) 30px; align-items: center; column-gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--hair-1); }
+  .tdl-events time { display: grid; justify-items: center; padding: 7px 0 6px; border: 1px solid var(--hair-1); border-radius: 12px; background: rgba(198, 204, 218, 0.03); line-height: 1; }
+  .tdl-events time span { color: var(--faint); font-size: 11px; font-weight: 550; }
+  .tdl-events time b { margin-top: 3px; font-family: var(--font-serif); font-size: 1.4rem; font-weight: 500; font-variant-numeric: lining-nums; }
+  .tdl-events li > div { min-width: 0; }
+  .tdl-events li > div > b { display: block; color: var(--ink-0); font-size: 0.98rem; font-weight: 600; line-height: 1.3; }
+  .tdl-events li > div small { display: block; margin-top: 2px; color: var(--faint); font-size: 12.5px; }
+  .tdl-events__ic { display: grid; justify-self: end; width: 30px; height: 30px; place-items: center; color: var(--muted); }
+  .tdl-events__ic svg { width: 20px; height: 20px; }
+  .tdl-events__ic .sign-icon { width: 24px; }
+  .tdl-events li.is-lunation time { border-color: color-mix(in oklab, var(--sign) 50%, transparent); background: color-mix(in oklab, var(--sign) 9%, transparent); }
+  .tdl-events li.is-lunation time span { color: var(--sign); }
+  .tdl-events__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; margin-top: 16px; color: var(--faint); font-size: 13px; }
+
+  /* ── 6. Retrograde timeline ───────────────────────────────────── */
+  .tdl-rt { padding: 10px 28px 18px; border: 1px solid var(--hair-1); border-radius: var(--r-lg); background: rgba(198, 204, 218, 0.015); }
+  .tdl-rt__row { display: grid; grid-template-columns: 260px minmax(0, 1fr); align-items: center; column-gap: 28px; }
+  .tdl-rt__row + .tdl-rt__row { border-top: 1px solid var(--hair-1); }
+  .tdl-rt__name { display: grid; grid-template-columns: 30px minmax(0, 1fr); align-items: center; column-gap: 12px; padding: 12px 0; }
+  .tdl-rt__g { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid var(--hair-2); border-radius: 50%; color: var(--ink-1); }
+  .tdl-rt__g svg { width: 15px; height: 15px; }
+  .tdl-rt__name b { color: var(--ink-0); font-size: 0.95rem; font-weight: 600; line-height: 1.25; }
+  .tdl-rt__name small { display: block; color: var(--faint); font-size: 12.5px; line-height: 1.3; }
+  .tdl-rt__name small.is-on { color: var(--sign-aries); }
+  .tdl-rt__track { position: relative; align-self: stretch; min-height: 54px; }
+  .tdl-rt__track::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--hair-1); }
+  .tdl-rt__track::after { content: ''; position: absolute; top: 0; bottom: 0; left: var(--tdl-at); width: 1.5px; background: var(--ink-0); opacity: 0.75; }
+  .tdl-rt__head .tdl-rt__track { min-height: 58px; }
+  .tdl-rt__head .tdl-rt__track::before { display: none; }
+  .tdl-rt__head .tdl-rt__track::after { top: 22px; }
+  .tdl-rt__month { position: absolute; top: 32px; padding: 0 0 12px 6px; border-left: 1px solid var(--hair-1); color: var(--faint); font-size: 12px; line-height: 1; }
+  .tdl-rt__today { position: absolute; top: 0; left: var(--tdl-at); z-index: 2; padding: 3px 9px; border-radius: 99px; background: var(--ink-0); color: var(--void-0); font-size: 11.5px; font-weight: 600; white-space: nowrap; transform: translateX(-50%); }
+  .tdl-rt__bar { position: absolute; top: 50%; height: 14px; margin-top: -7px; border-radius: 99px; background: linear-gradient(90deg, rgba(222, 142, 121, 0.88), rgba(224, 169, 180, 0.88)); }
+  .tdl-rt__bar.is-upcoming { border: 1.5px dashed rgba(222, 142, 121, 0.7); background: transparent; }
+  .tdl-rt__bar.is-ended { background: rgba(198, 204, 218, 0.22); }
+  .tdl-rt__bar.is-clip-start { border-top-left-radius: 0; border-bottom-left-radius: 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 40%); mask-image: linear-gradient(90deg, transparent, #000 40%); }
+  .tdl-rt__bar.is-clip-end { border-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; -webkit-mask-image: linear-gradient(270deg, transparent, #000 45%); mask-image: linear-gradient(270deg, transparent, #000 45%); }
+  .tdl-rt__key { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 14px; color: var(--muted); font-size: 12.5px; }
+  .tdl-rt__key > span { display: inline-flex; align-items: center; gap: 8px; }
+  .tdl-rt__key i { display: inline-block; width: 26px; height: 10px; border-radius: 99px; background: linear-gradient(90deg, rgba(222, 142, 121, 0.88), rgba(224, 169, 180, 0.88)); }
+  .tdl-rt__key i.is-upcoming { border: 1.5px dashed rgba(222, 142, 121, 0.7); background: transparent; }
+  .tdl-rt__key i.is-ended { background: rgba(198, 204, 218, 0.22); }
+  .tdl-rt__key i.is-today { width: 1.5px; height: 14px; border-radius: 0; background: var(--ink-0); }
+  .tdl-note { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 14px; margin-top: 18px; padding: 18px 22px; border: 1px solid rgba(222, 142, 121, 0.16); border-radius: 16px; background: rgba(222, 142, 121, 0.05); }
+  .tdl-note .kicker { color: var(--sign-aries); font-size: 1rem; }
+  .tdl-note p { max-width: 92ch; margin: 0; color: var(--ink-1); font-size: 0.9375rem; line-height: 1.6; }
+
+  /* ── 7. Aspects ───────────────────────────────────────────────── */
+  .tdl-asps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .tdl-asp { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .tdl-asp__g { display: flex; align-items: center; gap: 10px; color: var(--ink-0); }
+  .tdl-asp__g > span { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid var(--hair-2); border-radius: 50%; background: var(--void-2); }
+  .tdl-asp__g svg { width: 18px; height: 18px; }
+  .tdl-asp__type.is-trine, .tdl-asp__type.is-sextile { color: #B6D4E4; }
+  .tdl-asp__type.is-square, .tdl-asp__type.is-opposition { color: var(--sign-aries); }
+  .tdl-asp .h-4 { margin-top: 8px; }
+  .tdl-asp p { margin: 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .tdl-asp p.tdl-asp__pos { margin-top: -2px; color: var(--faint); font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
+  .tdl-asp__tag { align-self: flex-start; margin-top: auto; padding: 4px 10px; border: 1px solid var(--hair-2); border-radius: 99px; color: var(--ink-1); font-size: 12px; font-weight: 550; }
+  .tdl-asp__tag.is-exact { border-color: var(--ink-0); background: var(--ink-0); color: var(--void-0); }
+
+  /* ── 8. Go further ────────────────────────────────────────────── */
+  .tdl-tool { display: flex; flex-direction: column; min-height: 200px; }
+  .tdl-tool .h-4 { margin-top: 26px; font-size: 1.12rem; }
+  .tdl-tool p { padding-right: 36px; }
+  .tdl-ask { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 32px; margin-top: 20px; padding: 26px 28px; }
+  .tdl-ask > div { max-width: 46ch; }
+  .tdl-ask .ask-guide-line { margin-top: 6px; font-size: 0.9375rem; }
+  .tdl-ask .guide-prompts { margin: 0; }
+
+  /* ── 9. Method ────────────────────────────────────────────────── */
+  .tdl-method { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: clamp(28px, 6vw, 96px); margin-top: clamp(56px, 5.8vw, 84px); padding-top: 32px; border-top: 1px solid var(--hair-1); }
+  .tdl-method .h-4 { margin: 0; }
+  .tdl-method p { max-width: 66ch; margin: 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.65; }
+  .tdl-method p.tdl-method__links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 16px; }
+  .tdl-method p.tdl-coverage-note {
+    margin: 18px 0 0;
+    padding: 12px 14px;
+    border-left: 2px solid var(--hair-2);
+    color: var(--faint);
+    font-size: var(--text-xs);
+    line-height: 1.65;
+  }
+  .tdl-provenance { margin-top: 16px; }
+
+  @media (max-width: 1100px) {
+    .tdl-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); }
+    .tdl-prow { grid-template-columns: 36px minmax(0, 1fr) 132px 60px; }
+    .tdl-prow .tdl-pm { grid-column: 2 / -1; justify-self: start; margin-top: 6px; }
+    .tdl-picker { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .tdl-asps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 960px) {
+    .tdl-orrery { aspect-ratio: 2 / 1; }
+    .tdl-split { grid-template-columns: minmax(0, 1fr); }
+    .tdl-prow { grid-template-columns: 36px minmax(0, 1fr) 132px 60px 150px; }
+    .tdl-prow .tdl-pm { grid-column: auto; justify-self: end; margin-top: 0; }
+    .tdl-rt__row { grid-template-columns: 210px minmax(0, 1fr); }
+    .tdl-readings { grid-template-columns: minmax(0, 1fr); }
+    .tdl-personal { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 860px) {
+    .tdl-hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: 104px; }
+    .tdl-hero__body { padding-top: 0; }
+    .tdl-hero__wheel { width: 100%; max-width: 520px; margin-inline: auto; }
+    .tdl-method { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  }
+  @media (max-width: 760px) {
+    .tdl-orrery { aspect-ratio: 16 / 10; --focus: 50% 30%; }
+    .tdl-hero {
+      gap: 36px;
+      margin: calc(8px - var(--nav-space, 64px)) 8px 0;
+      padding: 92px 20px 28px;
+      border-radius: 24px;
+      background-image: url('/assets/hero/zodiacs-hero-poster-mobile.avif');
+      background-position: 30% 0%;
+    }
+    .tdl-hero::before { background: linear-gradient(180deg, rgba(6, 7, 9, 0.72) 0%, rgba(6, 7, 9, 0.9) 34%, rgba(6, 7, 9, 0.82) 70%, rgba(6, 7, 9, 0.92) 100%); }
+    .tdl-crumbs { margin-bottom: 18px; }
+    .tdl-hero h1 { font-size: 3.1rem; }
+    .tdl-hero__lede { margin-top: 16px; font-size: 1.06rem; }
+    .tdl-hero__actions { flex-direction: column; align-items: stretch; margin-top: 24px; }
+    .tdl-hero__actions .btn { width: 100%; }
+    .tdl-legend { gap: 6px 14px; font-size: 12px; }
+    .tdl-skyline .skyticker { gap: 10px 18px; }
+    .tdl-lights { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .tdl-light__art .artframe { aspect-ratio: 16 / 9; }
+    .tdl-light__body { padding: 20px 20px 22px; }
+    .tdl-cycle { padding: 22px 8px 20px; gap: 4px; }
+    .tdl-cycle::before { left: calc(8px + (100% - 16px) / (2 * var(--nodes, 4))); right: calc(8px + (100% - 16px) / (2 * var(--nodes, 4))); top: 45px; }
+    .tdl-cycle li > span { font-size: 11.5px; line-height: 1.35; }
+    .tdl-cycle__sign { display: block; }
+    .tdl-cycle__sign::before { content: none; }
+    .tdl-cycle b { font-size: 0.875rem; }
+    .tdl-picker {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 84px;
+      padding-block: 4px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(90deg, #000 86%, transparent);
+      mask-image: linear-gradient(90deg, #000 86%, transparent);
+    }
+    .tdl-picker::-webkit-scrollbar { display: none; }
+    .tdl-picker a { scroll-snap-align: start; }
+    .tdl-sign { padding: 20px 18px; }
+    .tdl-personal { padding: 22px 20px; }
+    .tdl-personal__actions { flex-direction: column; align-items: stretch; width: 100%; }
+    .tdl-personal__actions .btn { justify-content: space-between; }
+    .tdl-personal__actions .textlink { align-self: flex-start; }
+    .tdl-prow { grid-template-columns: 34px minmax(0, 1fr) auto; column-gap: 12px; }
+    .tdl-pg { width: 34px; height: 34px; }
+    .tdl-prow__sign { grid-column: 2; grid-row: 2; margin-top: 6px; font-size: 0.875rem; }
+    .tdl-prow__deg { grid-column: 3; grid-row: 2; margin-top: 6px; }
+    .tdl-prow .tdl-pm { grid-column: 3; grid-row: 1; justify-self: end; margin-top: 0; }
+    .tdl-prow__name small { display: none; }
+    .tdl-events li { grid-template-columns: 50px minmax(0, 1fr); }
+    .tdl-events__ic { display: none; }
+    .tdl-rt { padding: 4px 14px 12px; }
+    .tdl-rt__row { grid-template-columns: 118px minmax(0, 1fr); column-gap: 10px; }
+    .tdl-rt__name { grid-template-columns: minmax(0, 1fr); padding: 10px 0; }
+    .tdl-rt__g { display: none; }
+    .tdl-rt__name b { font-size: 0.9rem; }
+    .tdl-rt__name small { font-size: 11.5px; }
+    .tdl-rt__track { min-height: 0; }
+    .tdl-rt__bar { height: 10px; margin-top: -5px; }
+    .tdl-rt__head .tdl-rt__track { min-height: 54px; }
+    .tdl-rt__month { padding-left: 3px; font-size: 10px; }
+    .tdl-note { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 16px 18px; }
+    .tdl-asps { display: flex; gap: 12px; margin-right: -20px; padding-right: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .tdl-asps .tdl-asp { flex: 0 0 80%; scroll-snap-align: start; padding: 20px; }
+    .tdl-tool { min-height: 0; padding: 20px; }
+    .tdl-tool .h-4 { margin-top: 18px; font-size: 1.06rem; }
+    .tdl-tool p { padding-right: 0; }
+    .tdl-tool .kcard__go { display: none; }
+    .tdl-ask { padding: 22px 20px; }
+  }
+  @media (max-width: 480px) {
+    .tdl-tools { gap: 12px; }
+    .tdl-tool { padding: 18px 16px; }
+  }
+</style>
