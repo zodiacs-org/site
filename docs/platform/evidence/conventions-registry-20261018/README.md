@@ -10,7 +10,7 @@ with the URIs on zodiacs.org.
 ## What it is
 
 - **The registry.** `src/data/conventions/registry.json`, version
-  2026-10-18. It holds 156 ids in 57 namespaces, from @zodiacs/engine 1.0.0
+  2026-10-18. It holds 154 ids in 57 namespaces, from @zodiacs/engine 1.0.0
   (commit `7307665`) and conformance suite 0.1.0. Each id has a title, a
   definition, its sources and a status. It is dedicated to the public domain
   under CC0 1.0, as the conformance suite is.
@@ -52,7 +52,9 @@ the receipts already write.
 - **Compute API receipts** (`zodiacs.compute-receipt.v1`) carry the engine's
   conventions and coverage. They add the endpoint, the local-time policy,
   the search solver, window and completeness, and the election search's
-  void-of-course rule and bodies.
+  void-of-course rule and bodies. The chart and houses endpoints answer with
+  the engine's own natal receipt instead, which names no endpoint, so
+  `endpoint` holds the other five.
 - **Conformance vectors** name a `kind` and an `arbiter`. The registry holds
   each as `kind:<kind>` and `arbiter:<arbiter>`, tied to its vector file by
   that file's SHA-256 in `src/data/conformance/summary.json`. Each arbiter's
@@ -91,6 +93,12 @@ API's documented answers.
     utc-noon and TT and UT1 charts;
   - the calc receipts above;
   - the compute API's documented receipt for every endpoint.
+
+  It also checks the other way, for the namespaces whose values only
+  receipts give: the coverage statements, the compute API's own fields and
+  the ephemeris. Each of their ids must be one these receipts name (Codex's
+  review: `endpoint:chart` and `endpoint:houses` were listed, though no
+  receipt names them).
 - **The conformance vectors.** The kinds and arbiters are exactly the
   suite's, each tied to its vector file.
 - **The JSON.** It gives every id an address that decodes back to the id.

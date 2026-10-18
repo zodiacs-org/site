@@ -2578,24 +2578,11 @@
     {
       "name": "endpoint",
       "title": "Compute endpoint",
-      "description": "The compute API endpoint a receipt is for, under https://zodiacs.org/api/v1/.",
+      "description": "The compute API endpoint a compute receipt is for, under https://zodiacs.org/api/v1/. The chart and houses endpoints answer with the engine's own natal receipt, which names no endpoint.",
       "usedIn": [
         "compute API receipts: endpoint"
       ],
       "entries": [
-        {
-          "id": "endpoint:chart",
-          "value": "chart",
-          "title": "Chart",
-          "definition": "A natal chart: positions, angles, houses and aspects for a birth.",
-          "sources": [
-            {
-              "title": "Zodiacs compute API, OpenAPI component ChartResult",
-              "url": "https://zodiacs.org/api/v1/openapi.json"
-            }
-          ],
-          "status": "current"
-        },
         {
           "id": "endpoint:positions",
           "value": "positions",
@@ -2604,19 +2591,6 @@
           "sources": [
             {
               "title": "Zodiacs compute API, OpenAPI component PositionsResult",
-              "url": "https://zodiacs.org/api/v1/openapi.json"
-            }
-          ],
-          "status": "current"
-        },
-        {
-          "id": "endpoint:houses",
-          "value": "houses",
-          "title": "Houses",
-          "definition": "The angles and houses for an instant and a place.",
-          "sources": [
-            {
-              "title": "Zodiacs compute API, OpenAPI component HousesResult",
               "url": "https://zodiacs.org/api/v1/openapi.json"
             }
           ],

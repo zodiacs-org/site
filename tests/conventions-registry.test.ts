@@ -213,6 +213,11 @@ describe('the conventions registry', () => {
       for (const response of Object.values(cases)) for (const id of computeReceiptIds(response.receipt)) named.add(id);
     }
     expect([...named].filter((id) => !ids.has(id))).toEqual([]);
+    // And the other way: no receipt writes a value of these namespaces that the samples miss, so each of their ids must be
+    // one a receipt names. The chart and houses endpoints answer with the engine's natal receipt, which names no endpoint.
+    expect(Object.keys(examples.success).sort()).toEqual(['chart', 'elections', 'events', 'houses', 'positions', 'sky-fact', 'time']);
+    const fromReceipts = new Set([...group('Coverage statements'), ...group('Compute API receipts'), 'ephemeris']);
+    expect(entries.filter((entry) => fromReceipts.has(entry.namespace) && !named.has(entry.id)).map((entry) => entry.id)).toEqual([]);
     // The conditions the samples reach, so the check has bite.
     for (const id of ['flag:no-time', 'flag:polar-fallback', 'flag:outside-reference-span', 'flag:dst-gap', 'flag:dst-fold', 'flag:lmt', 'house-absence:unknown-time',
       'reference:utc-noon', 'time-scale:tt', 'time-scale:ut1', 'time-basis:iers', 'time-basis:delta-t', 'time-basis:pinned', 'deltat-segment:extrapolated',

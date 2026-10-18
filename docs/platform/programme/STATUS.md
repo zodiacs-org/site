@@ -7,7 +7,7 @@ weighted units accepted; blocked 2% (3), or 1.644%.
 - **R44, partial.** The registry gives each id a receipt or conformance
   vector names its definition, its sources and an address on
   `/developers/conventions/`. It is also JSON and a Markdown twin, under
-  CC0. It holds 156 ids in 57 namespaces:
+  CC0. It holds 154 ids in 57 namespaces:
   - every convention id calc receipts write;
   - every value of the five natal conventions sets, the seven superseded
     ones with the versions that wrote them;
