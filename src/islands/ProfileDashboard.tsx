@@ -14,6 +14,7 @@ import { explicitSelfChart } from '../lib/profile/read-store';
 import { livingChartCaptureEnabled } from '../lib/living-chart/feature-flags';
 import { transitLine } from '../lib/transits';
 import PlanetGlyph from '../components/PlanetGlyph';
+import PanelArt from '../components/PanelArt';
 import EvidenceDisclosure from './EvidenceDisclosure';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { loadModule } from '../lib/module-load';
@@ -209,6 +210,7 @@ export default function ProfileDashboard({ locale: rawLocale = 'en' }: Props) {
     return (
       <section class="shell pfd" aria-label={t(locale, 'pfdEmptyTitle')}>
         <div class="core pfd__core pfd__empty">
+          <PanelArt name="profile-keepsake" class="pf-art--keepsake" />
           <h2>{t(locale, 'pfdEmptyTitle')}</h2>
           <p>{t(locale, 'pfdEmptyBody')}</p>
           <a class="btn btn--primary" href={localizePath(locale, '/birth-chart/')}>
@@ -222,8 +224,9 @@ export default function ProfileDashboard({ locale: rawLocale = 'en' }: Props) {
   return (
     <section class="pfd" aria-label={t(locale, 'pfdToday')}>
       <a class="btn btn--ghost pf-saved-shortcut" href="#saved-charts">{t(locale, 'navSavedCharts')} <span aria-hidden="true">↓</span></a>
-      <div class="shell">
+      <div class="shell pfd__today">
         <div class="core pfd__core">
+          <PanelArt name="today-orrery" class="pf-art--today" />
           <div class="pfd__head">
             <h2>{t(locale, 'pfdToday')}</h2>
             <span class="mono pfd__stamp">
@@ -289,7 +292,7 @@ export default function ProfileDashboard({ locale: rawLocale = 'en' }: Props) {
         </div>
       </div>
 
-      <div class="shell">
+      <div class="shell pfd__year">
         <div class="core pfd__core">
           <div class="pfd__head">
             <h2>{t(locale, 'pfdYearAhead')}</h2>

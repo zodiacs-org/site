@@ -42,19 +42,30 @@ const STORAGE_ERROR = 'This browser wouldn’t keep it. Private browsing or a fu
 /** --ink-1: the disc's colour when the chart cannot settle a Sun sign. */
 const NEUTRAL_HUE = '#C6CCDA';
 
+/**
+ * The header before this browser's profile has loaded (and while an account
+ * gate withholds it): the same shape as the header with no chart marked as
+ * yours, so nothing on the page moves when that header takes its place. It
+ * does not call the page yours yet; the photo disc is a picture here and
+ * becomes the button once the page is live.
+ */
 function Intro() {
   return (
-    <div class="pf-hero">
-      <svg class="pf-hero__mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-        <circle cx="32" cy="32" r="27"/><circle cx="32" cy="32" r="17"/>
-        <path d="M32 5v10m0 34v10M5 32h10m34 0h10M12.9 12.9l7 7m24.2 24.2 7 7M12.9 51.1l7-7m24.2-24.2 7-7"/>
-        <circle cx="32" cy="32" r="4"/>
-      </svg>
-      <em class="kicker">Your astrology</em>
-      <h1 class="display">Your charts, today and ahead.</h1>
-      <p>Keep your birth chart and the people you’ve added here. Today uses the chart you mark as yours; your timeline keeps the readings and observations you choose to save.</p>
-      <a class="pf-hero__start" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>
-    </div>
+    <header class="pf-me pf-me--intro">
+      <div class="pf-me__id">
+        <div class="pf-me__initial">
+          <span class="initial initial--unnamed pf-me__add-name" aria-hidden="true"><PhotoMark /></span>
+        </div>
+        <div class="pf-me__text">
+          <em class="kicker">Your astrology</em>
+          <h1 class="display">Your charts, today and ahead.</h1>
+        </div>
+      </div>
+      <p class="pf-me__intro">Keep your birth chart and the people you’ve added here. Today uses the chart you mark as yours; your timeline keeps the readings and observations you choose to save.</p>
+      <div class="pf-me__actions">
+        <a class="pf-quiet pf-me__share-action" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
   );
 }
 
@@ -174,7 +185,7 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
     closedPanel.current = null;
   }, [panel]);
 
-  if (!ready) return <div class="pf-introduction"><Intro /></div>;
+  if (!ready) return <Intro />;
 
   const name = draft === null
     ? savedName
