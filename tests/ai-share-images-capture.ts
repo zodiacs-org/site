@@ -22,6 +22,6 @@ await mkdir(resolve(out), { recursive: true });
 for (const [name, handle, path] of IMAGES) {
   const response = await handle(new Request(`https://zodiacs.org${path}`));
   if (response.status !== 200) throw new Error(`${name}: ${response.status}`);
-  await writeFile(resolve(out, `${name}.png`), Buffer.from(await response.arrayBuffer()));
+  await writeFile(resolve(out, `${name}.jpg`), Buffer.from(await response.arrayBuffer()));
 }
 console.log(`Rendered ${IMAGES.length} share images in ${out}.`);

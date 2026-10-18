@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { decode as decodeJpeg } from 'jpeg-js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { parseCompatibilityShare, parseOccasionShare } from '../lib/share-results';
 import {
@@ -72,6 +73,7 @@ describe('share link pages', () => {
     expect(html).toContain(`<meta property="og:image" content="${image}">`);
     expect(html).toContain(`<meta name="twitter:image" content="${image}">`);
     expect(html).toContain('<meta name="twitter:card" content="summary_large_image">');
+    expect(html).toContain('<meta property="og:image:type" content="image/jpeg">');
     expect(html).toContain(`<img class="card" src="${image}"`);
     expect(html).toContain('<a class="cta" href="/compatibility/?ref=chatgpt">Check your own compatibility</a>');
     expect(html).toContain('<title>Ana and Luis: 78/100 on Zodiacs</title>');
@@ -91,6 +93,7 @@ describe('share link pages', () => {
     const html = await response.text();
     expect(response.status).toBe(200);
     expect(html).toContain('content="https://zodiacs.org/assets/og/v2/tool/compatibility.png"');
+    expect(html).toContain('<meta property="og:image:type" content="image/png">');
     expect(html).not.toContain('script%3E');
     expect(html).not.toContain('<script');
     const occasion = await (await handleOccasionLinkRequest(new Request('https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&lat=1'))).text();
@@ -146,21 +149,25 @@ describe('share preview images', () => {
     ['compatibility', () => handleCompatibilityImageRequest(new Request(`https://zodiacs.org/api/og/compatibility-image?${COMPAT}`))],
     ['date', () => handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${OCCASION}`))],
     ['accented names', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?a=%C5%81ukasz&b=Zo%C3%AB&score=63&attraction=70&communication=59&stability=58&v=good'))],
-  ])('render the %s card as a local-asset-only 1200×630 PNG', async (_label, render) => {
+    ['accented names on a date', () => handleOccasionImageRequest(new Request('https://zodiacs.org/api/og/occasion-image?o=anniversary&d=2027-09-04&n=%C5%81ucja+%26+%C3%96mer&p=Gda%C5%84sk&sun=virgo&moon=pisces&score=72&v=good'))],
+    ['one unknown sign', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?bs=pisces&score=41&attraction=55&communication=38&stability=30&v=challenging'))],
+  ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
     });
     vi.stubGlobal('fetch', fetchSpy);
     const response = await render();
-    const png = Buffer.from(await response.arrayBuffer());
+    const jpeg = Buffer.from(await response.arrayBuffer());
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-type')).toBe('image/png');
+    expect(response.headers.get('content-type')).toBe('image/jpeg');
     expect(response.headers.get('cache-control')).toBe('no-store, max-age=0');
     expect(response.headers.get('x-robots-tag')).toContain('noindex');
-    expect(Array.from(png.subarray(0, 8))).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
-    expect(png.readUInt32BE(16)).toBe(1200);
-    expect(png.readUInt32BE(20)).toBe(630);
-    expect(png.byteLength).toBeGreaterThan(20_000);
+    expect(Array.from(jpeg.subarray(0, 3))).toEqual([0xFF, 0xD8, 0xFF]);
+    const { width, height } = decodeJpeg(jpeg);
+    expect([width, height]).toEqual([1200, 630]);
+    // The art fills the picture; WhatsApp drops a preview image over 600 KB, and the site keeps a photograph's share card under 300 KB.
+    expect(jpeg.byteLength).toBeGreaterThan(40_000);
+    expect(jpeg.byteLength).toBeLessThan(300_000);
     expect(fetchSpy).not.toHaveBeenCalled();
   }, 30_000);
 

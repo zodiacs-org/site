@@ -6,6 +6,8 @@
  * every response is uncacheable and kept out of search.
  */
 import { readFile } from 'node:fs/promises';
+import { encode as encodeJpeg } from 'jpeg-js';
+import { PNG } from 'pngjs';
 import { h, type VNode } from 'preact';
 import {
   exactArrayBuffer,
@@ -21,7 +23,7 @@ import {
   type OccasionCardModel,
   type PreviewSign,
 } from './result-preview-model.js';
-import { HUES } from './chart-preview-model.js';
+import { TILTED_RING_DOTS, TILTED_RING_VIEWBOX } from '../lib/tilted-mark.js';
 import {
   COMPATIBILITY_SHARE_IMAGE_PATH,
   COMPATIBILITY_SHARE_KEYS,
@@ -43,15 +45,11 @@ export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
 const VOID = '#060709';
 const INK = '#EEF1F7';
+const INK_SOFT = '#C6CCDA';
 const MUTED = '#8E96AB';
 const HAIRLINE = 'rgba(198,204,218,0.16)';
-// The share image is the dark assistant card (DESIGN.md, "Assistant cards"): its surface, tiles and ring track.
-const CARD = '#16191F';
-const TILE = '#1C2029';
+// The dark assistant card's muted ink (DESIGN.md, "Assistant cards").
 const CARD_MUTED = '#A0A8BA';
-const TRACK = '#2A303D';
-// The twelve-dot ring in zodiac order, as the site's BrandMark draws it.
-const RING_ORDER: readonly ShareSign[] = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 
 // ── Assets ───────────────────────────────────────────────────────────
 
@@ -64,27 +62,28 @@ function prepareFonts(): Promise<FontSet> {
     readFile(new URL('../../node_modules/@vercel/og/dist/noto-sans-v27-latin-regular.ttf', import.meta.url)),
     readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-500-normal.woff', import.meta.url)),
     readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-ext-500-normal.woff', import.meta.url)),
-    readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-500-italic.woff', import.meta.url)),
+    readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-italic.woff', import.meta.url)),
   ]).then((files) => files.map((bytes) => exactArrayBuffer(bytes)) as FontSet);
   fonts = pending;
   void pending.catch(() => { if (fonts === pending) fonts = null; });
   return pending;
 }
 
+// The site's pastel sign discs at 128px (scripts/build-icons.mjs: centred, one visible size), drawn at 64.
 // One literal address per sign, so the deployment's file tracing packs all twelve discs.
 const DISC_FILES: Readonly<Record<ShareSign, URL>> = {
-  aries: new URL('../../public/assets/sdk/zodiac-icons/circle/aries.png', import.meta.url),
-  taurus: new URL('../../public/assets/sdk/zodiac-icons/circle/taurus.png', import.meta.url),
-  gemini: new URL('../../public/assets/sdk/zodiac-icons/circle/gemini.png', import.meta.url),
-  cancer: new URL('../../public/assets/sdk/zodiac-icons/circle/cancer.png', import.meta.url),
-  leo: new URL('../../public/assets/sdk/zodiac-icons/circle/leo.png', import.meta.url),
-  virgo: new URL('../../public/assets/sdk/zodiac-icons/circle/virgo.png', import.meta.url),
-  libra: new URL('../../public/assets/sdk/zodiac-icons/circle/libra.png', import.meta.url),
-  scorpio: new URL('../../public/assets/sdk/zodiac-icons/circle/scorpio.png', import.meta.url),
-  sagittarius: new URL('../../public/assets/sdk/zodiac-icons/circle/sagittarius.png', import.meta.url),
-  capricorn: new URL('../../public/assets/sdk/zodiac-icons/circle/capricorn.png', import.meta.url),
-  aquarius: new URL('../../public/assets/sdk/zodiac-icons/circle/aquarius.png', import.meta.url),
-  pisces: new URL('../../public/assets/sdk/zodiac-icons/circle/pisces.png', import.meta.url),
+  aries: new URL('../../public/assets/zodiac-icons/128/aries.png', import.meta.url),
+  taurus: new URL('../../public/assets/zodiac-icons/128/taurus.png', import.meta.url),
+  gemini: new URL('../../public/assets/zodiac-icons/128/gemini.png', import.meta.url),
+  cancer: new URL('../../public/assets/zodiac-icons/128/cancer.png', import.meta.url),
+  leo: new URL('../../public/assets/zodiac-icons/128/leo.png', import.meta.url),
+  virgo: new URL('../../public/assets/zodiac-icons/128/virgo.png', import.meta.url),
+  libra: new URL('../../public/assets/zodiac-icons/128/libra.png', import.meta.url),
+  scorpio: new URL('../../public/assets/zodiac-icons/128/scorpio.png', import.meta.url),
+  sagittarius: new URL('../../public/assets/zodiac-icons/128/sagittarius.png', import.meta.url),
+  capricorn: new URL('../../public/assets/zodiac-icons/128/capricorn.png', import.meta.url),
+  aquarius: new URL('../../public/assets/zodiac-icons/128/aquarius.png', import.meta.url),
+  pisces: new URL('../../public/assets/zodiac-icons/128/pisces.png', import.meta.url),
 };
 const discs = new Map<ShareSign, Promise<string>>();
 
@@ -102,24 +101,26 @@ async function discImages(signs: readonly PreviewSign[]): Promise<Map<ShareSign,
   return new Map(await Promise.all(slugs.map(async (slug) => [slug, await disc(slug)] as const)));
 }
 
-// The cards' hero art at 640px (scripts/build-card-art.mjs), as JPEG because the renderer cannot decode WebP.
+// The cards' hero art at its largest (scripts/build-card-art.mjs): the sign panels at 1200px, the pieces
+// at 720px, as JPEG because the renderer cannot decode WebP, with the cards' dimming of the dark art
+// (saturate .92, brightness .86) already in the file. Every piece is 3:2.
 // One literal address per piece, so the deployment's file tracing packs them all.
 export type ShareArt = ShareSign | 'wedding-hero' | 'sky-calendar-hero';
 const ART_FILES: Readonly<Record<ShareArt, URL>> = {
-  aries: new URL('../../public/assets/card-art/share/aries-640.jpg', import.meta.url),
-  taurus: new URL('../../public/assets/card-art/share/taurus-640.jpg', import.meta.url),
-  gemini: new URL('../../public/assets/card-art/share/gemini-640.jpg', import.meta.url),
-  cancer: new URL('../../public/assets/card-art/share/cancer-640.jpg', import.meta.url),
-  leo: new URL('../../public/assets/card-art/share/leo-640.jpg', import.meta.url),
-  virgo: new URL('../../public/assets/card-art/share/virgo-640.jpg', import.meta.url),
-  libra: new URL('../../public/assets/card-art/share/libra-640.jpg', import.meta.url),
-  scorpio: new URL('../../public/assets/card-art/share/scorpio-640.jpg', import.meta.url),
-  sagittarius: new URL('../../public/assets/card-art/share/sagittarius-640.jpg', import.meta.url),
-  capricorn: new URL('../../public/assets/card-art/share/capricorn-640.jpg', import.meta.url),
-  aquarius: new URL('../../public/assets/card-art/share/aquarius-640.jpg', import.meta.url),
-  pisces: new URL('../../public/assets/card-art/share/pisces-640.jpg', import.meta.url),
-  'wedding-hero': new URL('../../public/assets/card-art/share/wedding-hero-640.jpg', import.meta.url),
-  'sky-calendar-hero': new URL('../../public/assets/card-art/share/sky-calendar-hero-640.jpg', import.meta.url),
+  aries: new URL('../../public/assets/card-art/share/aries-1200.jpg', import.meta.url),
+  taurus: new URL('../../public/assets/card-art/share/taurus-1200.jpg', import.meta.url),
+  gemini: new URL('../../public/assets/card-art/share/gemini-1200.jpg', import.meta.url),
+  cancer: new URL('../../public/assets/card-art/share/cancer-1200.jpg', import.meta.url),
+  leo: new URL('../../public/assets/card-art/share/leo-1200.jpg', import.meta.url),
+  virgo: new URL('../../public/assets/card-art/share/virgo-1200.jpg', import.meta.url),
+  libra: new URL('../../public/assets/card-art/share/libra-1200.jpg', import.meta.url),
+  scorpio: new URL('../../public/assets/card-art/share/scorpio-1200.jpg', import.meta.url),
+  sagittarius: new URL('../../public/assets/card-art/share/sagittarius-1200.jpg', import.meta.url),
+  capricorn: new URL('../../public/assets/card-art/share/capricorn-1200.jpg', import.meta.url),
+  aquarius: new URL('../../public/assets/card-art/share/aquarius-1200.jpg', import.meta.url),
+  pisces: new URL('../../public/assets/card-art/share/pisces-1200.jpg', import.meta.url),
+  'wedding-hero': new URL('../../public/assets/card-art/share/wedding-hero-720.jpg', import.meta.url),
+  'sky-calendar-hero': new URL('../../public/assets/card-art/share/sky-calendar-hero-720.jpg', import.meta.url),
 };
 const arts = new Map<ShareArt, Promise<string>>();
 
@@ -142,68 +143,112 @@ export function occasionArt(share: { occasion: string; sun: ShareSign | null }):
 }
 
 // ── Cards ────────────────────────────────────────────────────────────
+//
+// The share image is the card's keepsake, as the owner picked on 2026-10-18
+// (direction C): the hero art across the whole picture, shaded from the left
+// so the words sit on its darkest side; the nameplate top left; the pastel
+// sign discs, the kicker, the title and one line with the score bottom left.
 
+const WIDTH = 1200;
+const HEIGHT = 630;
 const SERIF = 'EB Garamond, EB Garamond Ext';
+const TEXT_WIDTH = 620;
 
-/** The site's nameplate: the twelve-dot ring, "Zodiacs" in the masthead serif and a small ".org". */
+/** The assistant cards' nameplate: the tilted twelve-dot mark, "Zodiacs" in the masthead serif and a small ".org". */
 function nameplate() {
-  const dots = RING_ORDER.map((slug, index) => {
-    const angle = (index / 12) * 2 * Math.PI - Math.PI / 2;
-    return h('circle', { cx: (12 + 9 * Math.cos(angle)).toFixed(3), cy: (12 + 9 * Math.sin(angle)).toFixed(3), r: '1.9', fill: HUES[slug] });
-  });
-  return h('div', { style: { display: 'flex', alignItems: 'center' } },
-    h('svg', { width: 40, height: 40, viewBox: '0 0 24 24', style: { marginRight: '14px' } }, ...dots),
-    h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 36, color: INK, lineHeight: 1 } }, 'Zodiacs'),
-    h('div', { style: { display: 'flex', fontSize: 19, color: CARD_MUTED, marginLeft: '6px', marginTop: '12px', letterSpacing: '1px' } }, '.org'));
+  const width = 60;
+  return h('div', { style: { display: 'flex', alignItems: 'center', position: 'absolute', left: '64px', top: '56px' } },
+    h('svg', { width, height: Math.round((width * 4) / 7), viewBox: TILTED_RING_VIEWBOX, style: { marginRight: '15px' } },
+      ...TILTED_RING_DOTS.map((dot) => h('circle', { cx: dot.cx, cy: dot.cy, r: dot.r, fill: dot.fill, opacity: dot.opacity }))),
+    h('div', { style: { display: 'flex', alignItems: 'baseline' } },
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: 34, color: INK, lineHeight: 1 } }, 'Zodiacs'),
+      h('div', { style: { display: 'flex', fontSize: 18, color: CARD_MUTED, marginLeft: '5px', letterSpacing: '0.5px' } }, '.org')));
 }
 
-function kicker(text: string, hue: string) {
-  return h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: 36, color: hue, lineHeight: 1.2 } }, text);
+/** One panel of art, filling its box the way the cards' `object-fit: cover` does, held 46% of the way down, mirrored when asked. */
+function artPanel(src: string, left: number, width: number, flip: boolean) {
+  const fitsWidth = width / HEIGHT > 3 / 2;
+  const w = Math.round(fitsWidth ? width : (HEIGHT * 3) / 2);
+  const height = Math.round(fitsWidth ? (width * 2) / 3 : HEIGHT);
+  return h('div', { style: { display: 'flex', position: 'absolute', left: `${left}px`, top: '0px', width: `${width}px`, height: `${HEIGHT}px`, overflow: 'hidden' } },
+    h('img', { src, width: w, height, style: {
+      position: 'absolute', left: `${Math.round((width - w) / 2)}px`, top: `${Math.round((HEIGHT - height) * 0.46)}px`, width: `${w}px`, height: `${height}px`,
+      ...(flip ? { transform: 'scaleX(-1)' } : {}),
+    } }));
 }
 
-const RING = 236;
-
-/** The score inside a ring drawn from one sign's hue to the other's, as on the card. */
-function ring(score: number, hues: [string, string]) {
-  const stroke = 16;
-  const radius = (RING - stroke) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const arc = Math.max(0.001, (score / 100) * circumference);
-  const centre = RING / 2;
-  return h('div', { style: { display: 'flex', position: 'relative', width: `${RING}px`, height: `${RING}px`, alignItems: 'center', justifyContent: 'center' } },
-    h('svg', { width: RING, height: RING, viewBox: `0 0 ${RING} ${RING}`, style: { position: 'absolute', top: 0, left: 0 } },
-      h('defs', null,
-        h('linearGradient', { id: 'arc', x1: '1', y1: '0', x2: '0', y2: '1' },
-          h('stop', { offset: '0', 'stop-color': hues[0] }),
-          h('stop', { offset: '1', 'stop-color': hues[1] }))),
-      h('circle', { cx: centre, cy: centre, r: radius, fill: 'none', stroke: TRACK, 'stroke-width': stroke }),
-      h('circle', {
-        cx: centre, cy: centre, r: radius, fill: 'none', stroke: 'url(#arc)', 'stroke-width': stroke,
-        'stroke-dasharray': `${arc.toFixed(2)} ${circumference.toFixed(2)}`,
-        transform: `rotate(-90 ${centre} ${centre})`,
-      })),
-    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-4px' } },
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 104, lineHeight: 1, color: INK, letterSpacing: '-2px' } }, String(score)),
-      h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 21, color: CARD_MUTED, marginTop: '4px' } }, 'out of 100')));
+/** A piecewise-linear ramp through [position, value] stops, held flat beyond the ends. */
+function ramp(t: number, stops: readonly (readonly [number, number])[]): number {
+  if (t <= stops[0][0]) return stops[0][1];
+  for (let index = 1; index < stops.length; index += 1) {
+    const [t1, v1] = stops[index];
+    if (t <= t1) {
+      const [t0, v0] = stops[index - 1];
+      return v0 + ((t - t0) / (t1 - t0)) * (v1 - v0);
+    }
+  }
+  return stops[stops.length - 1][1];
 }
 
-function signChip(sign: PreviewSign, images: Map<ShareSign, string>, size: number) {
-  const src = sign.slug ? images.get(sign.slug) : undefined;
-  return h('div', { style: { display: 'flex', alignItems: 'center', marginRight: '34px' } },
-    src
-      ? h('img', { src, width: size, height: size, style: { width: `${size}px`, height: `${size}px` } })
-      : h('div', { style: { display: 'flex', width: `${size}px`, height: `${size}px`, borderRadius: `${size}px`, border: `2px solid ${HAIRLINE}` } }),
-    h('div', { style: { display: 'flex', fontFamily: 'Noto', fontSize: 27, color: INK, marginLeft: '14px' } }, sign.label));
+const VIGNETTE: readonly (readonly [number, number])[] = [[0.38, 0], [0.7, 0.38], [1, 0.78]];
+const SHADE: readonly (readonly [number, number])[] = [[0, 0.94], [0.42, 0.72], [0.75, 0.1]];
+const overlays = new Map<boolean, string>();
+
+/**
+ * The darkening over the art, in the void's colour: the cards' oval
+ * vignette on each panel (clear to 38% of an oval 46% of the panel wide and
+ * 52% high, .38 at 70%, .78 at its edge and beyond), for a pair the soft
+ * seam where the two panels meet (each fades a seventh of its width into
+ * the ground), and over everything the shade from the left that the words
+ * sit on (.94 at the edge, .72 at 42% of the width, .1 from three quarters
+ * on). Layers of one colour stack into one layer exactly, so it is worked
+ * out once per layout and drawn as a single image: the renderer drops the
+ * alpha of a CSS radial gradient, and one image draws faster than four
+ * layers.
+ */
+function overlay(pair: boolean): string {
+  const known = overlays.get(pair);
+  if (known) return known;
+  const png = new PNG({ width: WIDTH, height: HEIGHT });
+  const half = WIDTH / 2;
+  const seam = half * 0.14;
+  for (let y = 0; y < HEIGHT; y += 1) {
+    for (let x = 0; x < WIDTH; x += 1) {
+      const px = x + 0.5;
+      const py = y + 0.5;
+      const [left, width, spotX, spotY] = pair ? [px < half ? 0 : half, half, 0.52, 0.5] : [0, WIDTH, 0.5, 0.52];
+      const oval = Math.hypot((px - left - spotX * width) / (0.46 * width), (py - spotY * HEIGHT) / (0.52 * HEIGHT));
+      let clear = 1 - ramp(oval, VIGNETTE);
+      if (pair) clear *= Math.min(1, Math.abs(px - half) / seam);
+      clear *= 1 - ramp(px / WIDTH, SHADE);
+      const at = (y * WIDTH + x) * 4;
+      // The void, #060709.
+      png.data[at] = 6;
+      png.data[at + 1] = 7;
+      png.data[at + 2] = 9;
+      png.data[at + 3] = Math.round((1 - clear) * 255);
+    }
+  }
+  const src = `data:image/png;base64,${PNG.sync.write(png).toString('base64')}`;
+  overlays.set(pair, src);
+  return src;
 }
 
-/** One area of a compatibility score as a tile: its number over its name, no bar. */
-function areaTile(area: { label: string; value: number }, index: number) {
-  return h('div', { style: {
-      display: 'flex', flexDirection: 'column', width: '172px', marginLeft: index === 0 ? '0px' : '12px',
-      padding: '14px 16px 16px', borderRadius: '16px', background: TILE,
-    } },
-    h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: 50, lineHeight: 1, color: INK } }, String(area.value)),
-    h('div', { style: { display: 'flex', fontSize: 19, color: CARD_MUTED, marginTop: '6px' } }, area.label));
+/** The art across the whole picture: one piece, or two sign panels side by side, the left one mirrored so the two figures face each other. */
+function artLayer(images: string[]) {
+  const half = WIDTH / 2;
+  const pair = images.length === 2;
+  return [
+    ...(pair ? [artPanel(images[0], 0, half, true), artPanel(images[1], half, half, false)] : [artPanel(images[0], 0, WIDTH, false)]),
+    h('img', { src: overlay(pair), width: WIDTH, height: HEIGHT, style: { position: 'absolute', left: '0px', top: '0px', width: `${WIDTH}px`, height: `${HEIGHT}px` } }),
+  ];
+}
+
+/** The pastel discs of the signs a card is about, each once, with no outline. */
+function discRow(signs: readonly PreviewSign[], images: Map<ShareSign, string>) {
+  const sources = [...new Set(signs.map((sign) => (sign.slug ? images.get(sign.slug) : undefined)).filter((src): src is string => !!src))];
+  return sources.length === 0 ? [] : [h('div', { style: { display: 'flex', marginBottom: '18px' } },
+    ...sources.map((src, index) => h('img', { src, width: 64, height: 64, style: { width: '64px', height: '64px', marginLeft: index === 0 ? '0px' : '8px' } })))];
 }
 
 /** A display size that keeps the longest line inside the column. */
@@ -212,86 +257,48 @@ function fit(lines: string[], width: number, max: number, min: number): number {
   return Math.max(min, Math.min(max, Math.floor(width / (longest * 0.5))));
 }
 
-const LEFT_WIDTH = 560;
-const ART_WIDTH = 560;
+const titleLine = (text: string, size: number) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: size, lineHeight: 1.03, color: INK } }, text);
 
-/**
- * The art panel on the right: the hero art (one panel, or two stacked) dimmed
- * like the card's frame and faded into the card on every side, so no edge of
- * a picture shows, with the score ring in its lower corner on a dark disc, so
- * the number never sits on busy art and the figures stay in view.
- */
-function artPanel(images: string[], score: number, hues: [string, string]) {
-  const height = 630 / images.length;
-  const clear = 'rgba(22,25,31,0)';
-  const fade = (style: Record<string, string>, direction: string, size: number) => h('div', { style: {
-    display: 'flex', position: 'absolute', ...style, backgroundImage: `linear-gradient(${direction}, ${CARD} 0%, rgba(22,25,31,0.6) ${Math.round(size * 0.35)}px, ${clear} ${size}px)`,
-  } });
-  return h('div', { style: { display: 'flex', position: 'relative', width: `${ART_WIDTH}px`, height: '630px', background: CARD } },
-    ...images.flatMap((src, index) => {
-      const top = index * height;
-      const edge = Math.round(height * 0.24);
-      return [
-        h('img', { src, width: ART_WIDTH, height, style: {
-          position: 'absolute', left: 0, top: `${top}px`, width: `${ART_WIDTH}px`, height: `${height}px`, objectFit: 'cover', opacity: 0.94,
-        } }),
-        h('div', { style: { display: 'flex', position: 'absolute', left: 0, top: `${top}px`, width: `${ART_WIDTH}px`, height: `${height}px`,
-          backgroundImage: `radial-gradient(circle at 55% 45%, ${clear} 0%, rgba(22,25,31,0.14) 50%, rgba(22,25,31,0.5) 100%)` } }),
-        fade({ left: '0px', top: `${top}px`, width: `${ART_WIDTH}px`, height: `${edge}px` }, '180deg', edge),
-        fade({ left: '0px', top: `${top + height - edge}px`, width: `${ART_WIDTH}px`, height: `${edge}px` }, '0deg', edge),
-      ];
-    }),
-    fade({ left: '0px', top: '0px', width: '170px', height: '630px' }, '90deg', 170),
-    fade({ left: `${ART_WIDTH - 120}px`, top: '0px', width: '120px', height: '630px' }, '270deg', 120),
-    h('div', { style: { display: 'flex', position: 'absolute', left: `${ART_WIDTH - RING - 24 - 30}px`, top: `${630 - RING - 24 - 30}px`,
-      width: `${RING + 24}px`, height: `${RING + 24}px`, borderRadius: `${RING}px`, background: 'rgba(13,15,19,0.78)', alignItems: 'center', justifyContent: 'center' } },
-      ring(score, hues)));
+/** The words at the bottom left: the discs, the kicker in the card's hue, the title, and the score in a line. */
+function words(parts: { discs: VNode<any>[]; kicker: string; hue: string; title: VNode<any>[]; line: string }) {
+  return h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '64px', width: `${TEXT_WIDTH}px` } },
+    ...parts.discs,
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: parts.hue } }, parts.kicker),
+    ...parts.title,
+    h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '18px', maxWidth: '600px', textWrap: 'balance' } }, parts.line));
 }
 
-function frame(left: VNode<any>, score: number, hues: [string, string], art: string[]) {
+function frame(art: string[], text: VNode<any>) {
   return h('div', { style: {
-      width: '1200px', height: '630px', display: 'flex', background: CARD, color: INK, fontFamily: 'Noto',
+      width: `${WIDTH}px`, height: `${HEIGHT}px`, display: 'flex', position: 'relative', background: VOID, color: INK, fontFamily: 'Noto',
     } },
-    h('div', { style: { display: 'flex', padding: '52px 20px 54px 64px', width: `${1200 - ART_WIDTH}px`, height: '630px' } }, left),
-    artPanel(art, score, hues));
+    ...artLayer(art),
+    nameplate(),
+    text);
 }
-
-const column = (...children: VNode<any>[]) => h('div', { style: {
-  display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: `${LEFT_WIDTH}px`, height: '100%',
-} }, ...children);
-
-const verdictLine = (verdict: string) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: fit([verdict], LEFT_WIDTH, 44, 34), color: INK, marginTop: '18px', lineHeight: 1.15 } }, verdict);
 
 export function compatibilityCard(model: CompatibilityCardModel, images: Map<ShareSign, string>, art: string[]) {
   const oneLine = `${model.first} and ${model.second}`;
-  const lines = fit([oneLine], LEFT_WIDTH, 84, 40) >= 64 ? [oneLine] : [model.first, `and ${model.second}`];
-  const nameSize = fit(lines, LEFT_WIDTH, lines.length > 1 ? 68 : 84, 48);
-  return frame(column(
-    nameplate(),
-    h('div', { style: { display: 'flex', flexDirection: 'column' } },
-      kicker('Two charts compared', model.people[0].hue),
-      ...lines.map((line) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: nameSize, lineHeight: 1.04, color: INK, marginTop: '4px' } }, line)),
-      verdictLine(model.verdict),
-      h('div', { style: { display: 'flex', marginTop: '20px' } }, ...model.people.map((person) => signChip(person, images, 48)))),
-    h('div', { style: { display: 'flex' } }, ...model.areas.map((area, index) => areaTile(area, index))),
-  ), model.score, model.ring, art);
+  const lines = fit([oneLine], TEXT_WIDTH, 76, 30) >= 56 ? [oneLine] : [model.first, `and ${model.second}`];
+  const size = fit(lines, TEXT_WIDTH, lines.length > 1 ? 64 : 76, 44);
+  return frame(art, words({
+    discs: discRow(model.people, images),
+    kicker: 'Two charts compared',
+    hue: model.people[0].hue,
+    title: lines.map((line) => titleLine(line, size)),
+    line: `${model.score} out of 100. ${model.verdict}`,
+  }));
 }
 
 export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>, art: string[]) {
   const title = model.names ?? model.headline;
-  const headSize = fit([title], LEFT_WIDTH, 92, 56);
-  return frame(column(
-    nameplate(),
-    h('div', { style: { display: 'flex', flexDirection: 'column' } },
-      kicker(model.names ? model.headline : 'The sky on the day', model.ring[0]),
-      h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: headSize, lineHeight: 1.04, color: INK, marginTop: '6px' } }, title),
-      h('div', { style: { display: 'flex', fontSize: 27, lineHeight: 1.3, color: CARD_MUTED, marginTop: '14px' } }, model.when),
-      verdictLine(model.verdict)),
-    h('div', { style: { display: 'flex', alignItems: 'center' } },
-      ...(model.signs.length > 0
-        ? model.signs.map((sign) => signChip(sign, images, 52))
-        : [h('div', { style: { display: 'flex', fontSize: 26, color: CARD_MUTED } }, 'Rated from the sky that day')])),
-  ), model.score, model.ring, art);
+  return frame(art, words({
+    discs: discRow(model.signs, images),
+    kicker: model.names ? model.headline : 'The sky on the day',
+    hue: model.ring[0],
+    title: [h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: fit([title], TEXT_WIDTH, 76, 44), lineHeight: 1.03, color: INK, textWrap: 'balance' } }, title)],
+    line: `${model.score} out of 100. ${model.verdict}`,
+  }));
 }
 
 // ── Responses ────────────────────────────────────────────────────────
@@ -303,7 +310,16 @@ function errorResponse(status: number): Response {
   });
 }
 
-async function renderPng(element: VNode<any>): Promise<Response> {
+/**
+ * JPEG quality for the share images. The art fills the picture, so as the
+ * renderer's PNG an image runs to 650 to 850 KB, over WhatsApp's 600 KB limit
+ * for a link preview; as a JPEG at 90 it is about 120 KB and its type reads as
+ * it does in the PNG. The site sends its photographic share card as a JPEG
+ * for the same reason.
+ */
+const JPEG_QUALITY = 90;
+
+async function renderImage(element: VNode<any>): Promise<Response> {
   try {
     const { ImageResponse } = await import('@vercel/og');
     const [noto, serif, serifExt, italic] = await prepareFonts();
@@ -314,13 +330,14 @@ async function renderPng(element: VNode<any>): Promise<Response> {
       fonts: [
         { name: 'Noto', data: noto, weight: 400, style: 'normal' },
         { name: 'EB Garamond', data: serif, weight: 500, style: 'normal' },
-        { name: 'EB Garamond', data: italic, weight: 500, style: 'italic' },
+        { name: 'EB Garamond', data: italic, weight: 400, style: 'italic' },
         { name: 'EB Garamond Ext', data: serifExt, weight: 500, style: 'normal' },
       ],
     });
     // Buffer the renderer stream so a failure never commits a partial 200 to a crawler.
-    const png = await rendered.arrayBuffer();
-    return new Response(png, { headers: { ...PRIVACY_HEADERS, 'Content-Type': 'image/png' } });
+    const { width, height, data } = PNG.sync.read(Buffer.from(await rendered.arrayBuffer()));
+    const jpeg = encodeJpeg({ width, height, data }, JPEG_QUALITY).data;
+    return new Response(new Uint8Array(jpeg), { headers: { ...PRIVACY_HEADERS, 'Content-Type': 'image/jpeg' } });
   } catch {
     return errorResponse(503);
   }
@@ -333,7 +350,7 @@ export async function handleCompatibilityImageRequest(request: Request): Promise
   const model = compatibilityCardModel(share);
   const [images, art] = await Promise.all([discImages(model.people), Promise.all(compatibilityArt(share).map(artImage))]).catch(() => [null, null] as const);
   if (!images || !art) return errorResponse(503);
-  return renderPng(compatibilityCard(model, images, art));
+  return renderImage(compatibilityCard(model, images, art));
 }
 
 export async function handleOccasionImageRequest(request: Request): Promise<Response> {
@@ -343,7 +360,7 @@ export async function handleOccasionImageRequest(request: Request): Promise<Resp
   const model = occasionCardModel(share);
   const [images, art] = await Promise.all([discImages(model.signs), Promise.all(occasionArt(share).map(artImage))]).catch(() => [null, null] as const);
   if (!images || !art) return errorResponse(503);
-  return renderPng(occasionCard(model, images, art));
+  return renderImage(occasionCard(model, images, art));
 }
 
 // ── The page a share link opens ──────────────────────────────────────
@@ -371,6 +388,8 @@ export interface SharePage {
   description: string;
   heading: string;
   imageUrl: string;
+  /** The result images are JPEG; the plain pages show the site's own PNG cards. */
+  imageType: 'image/jpeg' | 'image/png';
   imageAlt: string;
   explanation: string;
   action: { label: string; href: string };
@@ -379,7 +398,7 @@ export interface SharePage {
 
 export function sharePageHtml(page: SharePage): string {
   const e = htmlEscape;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/"><img src="/assets/app-icons/v3/favicon.svg" width="28" height="28" alt=""><span>Zodiacs<small>.org</small></span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p><a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a><p class="note">${e(page.note)}</p></main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="${page.imageType}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/"><img src="/assets/app-icons/v3/favicon.svg" width="28" height="28" alt=""><span>Zodiacs<small>.org</small></span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p><a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a><p class="note">${e(page.note)}</p></main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
 }
 
 function htmlResponse(html: string): Response {
@@ -404,6 +423,7 @@ function defaultCompatibilityPage(origin: string): SharePage {
     description: 'Compare two birth charts: the contacts between them and how the signs get along.',
     heading: 'Compare two birth charts',
     imageUrl: `${origin}/assets/og/v2/tool/compatibility.png`,
+    imageType: 'image/png',
     imageAlt: 'Compatibility on Zodiacs',
     explanation: 'Zodiacs compares two birth charts: the closest contacts between them and how the two Sun signs get along.',
     action: { label: 'Check your own compatibility', href: '/compatibility/' },
@@ -417,6 +437,7 @@ function defaultOccasionPage(origin: string): SharePage {
     description: 'The sky on a day that matters: the Sun and Moon signs, the Moon’s phase and the evening sky.',
     heading: 'The sky on a day that matters',
     imageUrl: `${origin}/assets/og/v2/share.png`,
+    imageType: 'image/png',
     imageAlt: 'Zodiacs',
     explanation: 'Zodiacs works out the sky on a wedding, a birthday or another day that matters: the Sun and Moon signs, the Moon’s phase and the evening sky.',
     action: { label: 'Rate your own date', href: '/occasions/' },
@@ -435,6 +456,7 @@ export async function handleCompatibilityLinkRequest(request: Request): Promise<
     description: model.summary,
     heading: `${model.first} and ${model.second}`,
     imageUrl: `${url.origin}${COMPATIBILITY_SHARE_IMAGE_PATH}?${compatibilityQuery(share)}`,
+    imageType: 'image/jpeg',
     imageAlt: `${model.first} and ${model.second}, ${model.score} out of 100. ${model.summary}`,
     explanation: `${model.first} and ${model.second} compared their birth charts on Zodiacs: ${model.score} out of 100, ${model.verdict.charAt(0).toLowerCase()}${model.verdict.slice(1)}. The score reads the contacts between the two charts and their Sun signs’ elements.`,
     action: { label: 'Check your own compatibility', href: withRef('/compatibility/', share.ref) },
@@ -453,6 +475,7 @@ export async function handleOccasionLinkRequest(request: Request): Promise<Respo
     description: model.summary,
     heading: model.names ? `${model.names}: ${model.headline.charAt(0).toLowerCase()}${model.headline.slice(1)}` : model.headline,
     imageUrl: `${url.origin}${OCCASION_SHARE_IMAGE_PATH}?${occasionQuery(share)}`,
+    imageType: 'image/jpeg',
     imageAlt: `${model.headline}, ${model.when}: ${model.score} out of 100. ${model.verdict}.`,
     explanation: `Zodiacs rated this date ${model.score} out of 100 from the sky that day: the Moon’s phase and sign, Venus, and any planets in retrograde.`,
     action: { label: 'Rate your own date', href: withRef('/occasions/', share.ref) },

@@ -204,8 +204,10 @@ Artwork:
   both twins of every piece. `node scripts/build-card-art.mjs` makes 400px
   and 480px AVIF variants of each twin (quality 36; AVIF because both twins
   must fit and at the same size it is about half the bytes of WebP) and
-  640px JPEGs of the dark twins for the share images (the image renderer
-  cannot read WebP or AVIF). The occasions panel inlines the sign panels at
+  JPEGs of the dark twins for the share images, from the largest sources
+  there are (the sign panels' 1200px originals, the pieces' 720px masters)
+  with the cards' dimming baked in (the image renderer cannot read WebP or
+  AVIF). The occasions panel inlines the sign panels at
   400px and its own four pieces at 480px; the horoscope panel inlines the
   sign panels at 480px. Each panel stays under its 600 KB build budget
   (occasions about 572 KB, horoscope about 534 KB). Every image has its
@@ -220,11 +222,15 @@ Artwork:
   panel that uses it, run `node scripts/build-card-art.mjs`, then
   `npm run ai:build`, and check both panels stay under budget. Record the
   prompts in `docs/platform/zodiacs-ai/CARD-ART.md`.
-- Share images are dark cards, so they use the dark twins. The art sits in
-  a 560px panel on the right, faded into the card on every side (a pair
-  stacks the two sign panels, each faded top and bottom, so no seam shows),
-  with the score ring in its lower corner on a dark disc so the number
-  never sits on busy art.
+- Share images are dark, so they use the dark twins. Since the owner's
+  2026-10-18 pick the art runs across the whole picture: one piece, or the
+  two sign panels side by side, the left one mirrored so the figures face
+  each other, meeting across a soft dark seam. Each panel keeps the site's
+  oval spotlight (ArtFrame's radial vignette), and a shade from the left
+  (.94 of the void at the edge, .72 at 42% of the width, .1 from three
+  quarters on) carries the words. This is the one place type sits over
+  art: every line measures 6:1 or better against the art behind it, across
+  all twelve sign panels and both pieces.
 
 Colour and theme:
 
@@ -251,10 +257,16 @@ through `plain()` in `words.ts` at display time; the tools' output and the
 released contract stay byte-for-byte. No zone IDs or ISO dates on a card.
 
 Share images: `/api/og/compatibility-image` and `/api/og/occasion-image`
-(`src/server/result-preview.ts`) draw the same dark card at 1200x630: the
-nameplate top left, the kicker in the first sign's hue, the serif title,
-the italic verdict, sign chips and score tiles on the left, and the art
-panel with the score ring on the right.
+(`src/server/result-preview.ts`) draw the card's keepsake at 1200x630, as
+the owner picked on 2026-10-18 (direction C for both): the art across the
+whole picture, the nameplate top left (the tilted mark, "Zodiacs" and a
+small ".org", as on the cards), and at the bottom left the pastel sign
+discs, the kicker in the first sign's hue, the serif title and one line
+with the score in words ("60 out of 100. A good match, with some work to
+do"). The three areas, the date and the place stay on the share page and
+in the link's title and description. They are sent as JPEG at quality 90,
+about 100 to 130 KB: as PNG the full-width art comes to 650 to 850 KB,
+over WhatsApp's 600 KB limit for a link preview image.
 
 Checks before a card change ships: `node scripts/build-card-art.mjs` when
 art changes, then `npm run ai:build`, `npm run ai:package`,

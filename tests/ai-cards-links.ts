@@ -92,9 +92,9 @@ try {
   await share.locator('img.card').waitFor();
   const image = await share.locator('meta[property="og:image"]').getAttribute('content');
   assert.ok(image && image.includes('/api/og/occasion-image?'));
-  const png = await share.request.get(image!.replace(/^https?:\/\/[^/]+/u, origin));
-  assert.equal(png.status(), 200);
-  assert.equal(png.headers()['content-type'], 'image/png');
+  const picture = await share.request.get(image!.replace(/^https?:\/\/[^/]+/u, origin));
+  assert.equal(picture.status(), 200);
+  assert.equal(picture.headers()['content-type'], 'image/jpeg');
   assert.ok(await share.locator('img.card').evaluate((img) => (img as HTMLImageElement).naturalWidth === 1200));
   assert.match(await share.locator('h1').innerText(), /Ana & Luis/u);
   if (out) await share.screenshot({ path: resolve(out, 'share-page-wedding-390.png'), fullPage: true });

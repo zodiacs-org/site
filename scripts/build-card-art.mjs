@@ -16,9 +16,14 @@
  *     build-horoscope-panel.mjs (they make no image requests). AVIF, because
  *     both twins of every piece must fit each panel's 600 KB budget: at the
  *     same sizes it is about half the bytes of WebP for the same look;
- *   public/assets/card-art/share/<key>-640.jpg, read by the share image
- *     renderer (src/server/result-preview.ts), which cannot decode WebP. The
- *     share images are dark cards, so they take the dark twins only.
+ *   public/assets/card-art/share/<sign>-1200.jpg and <piece>-720.jpg, read
+ *     by the share image renderer (src/server/result-preview.ts), which
+ *     cannot decode WebP. The share images run the art across the whole
+ *     1200x630 picture, so they take the largest source there is: the sign
+ *     panels' 1200px originals in public/assets/sign-art/ and the pieces'
+ *     720px masters. They are dark cards, so they take the dark twins only,
+ *     with the cards' dimming of the dark art (saturate .92, brightness .86)
+ *     baked in, so the renderer draws them as they are.
  *
  * Run by hand after changing a source: node scripts/build-card-art.mjs.
  * A new piece starts as a 1536x1024 PNG named <key>-source.png (dark) or
@@ -43,6 +48,20 @@ const sources = [
   ...CARD_ART_PIECES.map((key) => [key, `public/assets/card-art/${key}-720.webp`]),
 ];
 const lightSources = [...CARD_ART_SIGNS, ...CARD_ART_PIECES].map((key) => [`${key}-light`, `public/assets/card-art/${key}-light-720.webp`]);
+/** The share images' sources and widths: the sign panels' 1200px originals, the pieces' 720px masters. */
+export const SHARE_ART = [
+  ...CARD_ART_SIGNS.map((key) => [key, `public/assets/sign-art/${key}-1200.webp`, 1200]),
+  ...CARD_ART_PIECES.map((key) => [key, `public/assets/card-art/${key}-720.webp`, 720]),
+];
+
+/** CSS saturate(s) as a colour matrix (Filter Effects, feColorMatrix type="saturate"). */
+function saturate(s) {
+  return [
+    [0.213 + 0.787 * s, 0.715 - 0.715 * s, 0.072 - 0.072 * s],
+    [0.213 - 0.213 * s, 0.715 + 0.285 * s, 0.072 - 0.072 * s],
+    [0.213 - 0.213 * s, 0.715 - 0.715 * s, 0.072 + 0.928 * s],
+  ];
+}
 
 export async function buildCardArt() {
   await mkdir(new URL('public/assets/card-art/panel/', root), { recursive: true });
@@ -56,9 +75,10 @@ export async function buildCardArt() {
       total += bytes.length;
     }
   }
-  for (const [key, path] of sources) {
-    const share = await sharp(new URL(path, root).pathname).resize({ width: 640 }).jpeg({ quality: 74, mozjpeg: true }).toBuffer();
-    await writeFile(new URL(`public/assets/card-art/share/${key}-640.jpg`, root), share);
+  for (const [key, path, width] of SHARE_ART) {
+    const share = await sharp(new URL(path, root).pathname).resize({ width }).recomb(saturate(0.92)).linear(0.86, 0)
+      .jpeg({ quality: 74, mozjpeg: true }).toBuffer();
+    await writeFile(new URL(`public/assets/card-art/share/${key}-${width}.jpg`, root), share);
     total += share.length;
   }
   console.log(`Built card art for ${sources.length} pieces and their daylight twins (${Math.round(total / 1024)} KB)`);
