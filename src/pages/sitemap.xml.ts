@@ -335,6 +335,9 @@ const DESIGN_SWEEP_DEVELOPERS_LASTMOD = '2026-10-17';
 const TOP10_LOCALES_LASTMOD = '2026-10-17';
 const TOP10_LOCALES_ROUTES = ['es', 'pt', 'fr', 'it', 'ru']
   .flatMap((locale) => ['/', '/birth-chart/', '/rising-sign/'].map((path) => `/${locale}${path}`));
+// The profile redesign reaches /profile/ and its five translations.
+const PROFILE_REDESIGN_LASTMOD = '2026-10-18';
+const PROFILE_REDESIGN_ROUTES = ['', '/es', '/pt', '/fr', '/it', '/ru'].map((locale) => `${locale}/profile/`);
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -494,6 +497,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...PLAYGROUND_ROUTES.map((loc) => [loc, PLAYGROUND_LASTMOD] as const),
   ['/developers/', DESIGN_SWEEP_DEVELOPERS_LASTMOD] as const,
   ...TOP10_LOCALES_ROUTES.map((loc) => [loc, TOP10_LOCALES_LASTMOD] as const),
+  ...PROFILE_REDESIGN_ROUTES.map((loc) => [loc, PROFILE_REDESIGN_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

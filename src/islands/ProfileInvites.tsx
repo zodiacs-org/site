@@ -10,6 +10,7 @@ import type { InviteState, InviteStatusRow } from '../lib/invite/types';
 import { getSupabaseClient, isSupabaseConfigured } from '../lib/supabase/client';
 import { SIGNS, SIGN_SLUGS } from '../lib/signs';
 import { signIcon } from '../lib/sign-icon';
+import PanelArt from '../components/PanelArt';
 
 const STATUS_CACHE_PREFIX = 'zodiacs.compat.invite-status.v1.';
 const INVITE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
@@ -207,14 +208,16 @@ export function ProfileInvitesView({
     return null;
   }
 
+  const empty = !loading && !stale && rows.length === 0;
   return (
     <section
-      class="pf-invites shell"
+      class={empty ? 'pf-invites pf-invites--empty shell' : 'pf-invites shell'}
       id="compat-invites"
       aria-labelledby="pf-invites-title"
       aria-busy={loading}
     >
       <div class="core pf-invites__core">
+        {empty && <PanelArt name="profile-invitation" class="pf-art--invite" />}
         <header class="pf-invites__head">
           <h2 id="pf-invites-title">{PF_INVITE_COPY.title}</h2>
           <p>{PF_INVITE_COPY.body}</p>
@@ -227,7 +230,7 @@ export function ProfileInvitesView({
           <p class="pf-invites__notice" role="status">{PF_INVITE_COPY.stale}</p>
         )}
 
-        {!loading && !stale && rows.length === 0 && (
+        {empty && (
           <div class="pf-invites__empty">
             <p>{PF_INVITE_COPY.empty}</p>
             <a class="pf-invites__text-action" href="/compatibility/">

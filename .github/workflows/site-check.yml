@@ -874,6 +874,10 @@ jobs:
           OUT_DIR: tests/visual/artifacts/profile-recovery
         run: node tests/profile-recovery-drive.mjs
 
+      - name: Profile sign pictures are the same requests for every visitor
+        timeout-minutes: 8
+        run: node tests/profile-sign-icon-requests-drive.mjs
+
       - name: Profile photo editing and navigation on desktop and mobile
         timeout-minutes: 8
         env:

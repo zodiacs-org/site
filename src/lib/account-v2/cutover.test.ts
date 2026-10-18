@@ -88,6 +88,7 @@ describe('account sync v2 cutover guards', () => {
     const approvedAdapters = new Set([
       'components/HoroscopeProgramPage.astro',
       'components/SiteNav.astro',
+      'components/profile/ProfilePrepaint.astro',
       'islands/ProfileDashboard.tsx',
       'lib/assistant/open-assistant.ts',
       'lib/profile/circle.ts',
@@ -111,6 +112,7 @@ describe('account sync v2 cutover guards', () => {
     for (const path of [
       'components/HoroscopeProgramPage.astro',
       'components/SiteNav.astro',
+      'components/profile/ProfilePrepaint.astro',
       'pages/today/index.astro',
     ]) {
       const source = await readFile(resolve(sourceRoot, path), 'utf8');
