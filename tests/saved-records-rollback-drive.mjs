@@ -92,7 +92,8 @@ try {
     if (PHASE === 'fresh-off') {
       // A visitor who never had the feature must see exactly today's product.
       await page.goto(`${base}/profile/`);
-      await page.waitForSelector('#profile-sync, .pf-hero');
+      // The profile header (.pf-me) is drawn before and after the page hydrates.
+      await page.waitForSelector('#profile-sync, .pf-hero, .pf-me');
       assert.equal(await page.$('[data-saved-records]'), null, 'the records panel must not render with the flag off');
       await computeKnownTime(page, { expectKeep: false });
       assert.equal(await page.$('[data-keep-calculation-record]'), null, 'no keep affordance with the flag off');
