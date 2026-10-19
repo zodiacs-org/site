@@ -1,8 +1,8 @@
 /**
  * Share links for five assistant cards: a compatibility score, a date's
  * rating, a birthday, the sky calendar's next event and a horoscope. Each has
- * a page with the result's picture and a way to try it, and the 1200×630
- * preview image link previews show. They read only the link's checked query
+ * a page with the result's picture and a way to try it, the 1200×630
+ * preview image link previews show, and a 1080×1920 picture to post as a story. They read only the link's checked query
  * string (src/lib/share-results.ts, src/ai-tools/share-links.ts) and the
  * site's own committed data (the birthday table, the sky calendar's events
  * and the published horoscopes); nothing is looked up elsewhere, stored or
@@ -80,8 +80,19 @@ export const RESULT_SHARE_ROUTE_KEY = '__zodiacs_share';
 export const RESULT_SHARE_ROUTES = [
   'compatibility-link', 'compatibility-image', 'occasion-link', 'occasion-image',
   'birthday-link', 'birthday-image', 'sky-calendar-link', 'sky-calendar-image', 'horoscope-link', 'horoscope-image',
+  'compatibility-story', 'occasion-story', 'birthday-story', 'sky-calendar-story', 'horoscope-story',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
+
+/** The story pictures: the same share query, at 1080×1920. */
+export const COMPATIBILITY_SHARE_STORY_PATH = '/api/og/compatibility-story';
+export const OCCASION_SHARE_STORY_PATH = '/api/og/occasion-story';
+export const BIRTHDAY_SHARE_STORY_PATH = '/api/og/birthday-story';
+export const SKY_CALENDAR_SHARE_STORY_PATH = '/api/og/sky-calendar-story';
+export const HOROSCOPE_SHARE_STORY_PATH = '/api/og/horoscope-story';
+
+/** An image route takes only its own keys, each once; a page skips the ones it does not use. */
+const isPictureRoute = (route: ResultShareRoute) => route.endsWith('-image') || route.endsWith('-story');
 
 const VOID = '#060709';
 const INK = '#EEF1F7';
@@ -93,7 +104,7 @@ const CARD_MUTED = '#A0A8BA';
 
 // ── Assets ───────────────────────────────────────────────────────────
 
-type FontSet = [ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer];
+type FontSet = [ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer];
 let fonts: Promise<FontSet> | null = null;
 
 function prepareFonts(): Promise<FontSet> {
@@ -105,6 +116,8 @@ function prepareFonts(): Promise<FontSet> {
     readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-italic.woff', import.meta.url)),
     // The brand lockup's capitals are the regular weight.
     readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff', import.meta.url)),
+    // A share link's names may be Cyrillic (src/lib/share-results.ts); they are set in the display weight.
+    readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-cyrillic-500-normal.woff', import.meta.url)),
   ]).then((files) => files.map((bytes) => exactArrayBuffer(bytes)) as FontSet);
   fonts = pending;
   void pending.catch(() => { if (fonts === pending) fonts = null; });
@@ -229,7 +242,7 @@ export function occasionArt(share: { occasion: string; sun: ShareSign | null }):
 
 const WIDTH = 1200;
 const HEIGHT = 630;
-const SERIF = 'EB Garamond, EB Garamond Ext';
+const SERIF = 'EB Garamond, EB Garamond Ext, EB Garamond Cyrillic';
 const TEXT_WIDTH = 620;
 
 /**
@@ -420,13 +433,13 @@ function errorResponse(status: number): Response {
  */
 const JPEG_QUALITY = 90;
 
-async function renderImage(element: VNode<any>): Promise<Response> {
+async function renderImage(element: VNode<any>, size: { width: number; height: number } = { width: WIDTH, height: HEIGHT }): Promise<Response> {
   try {
     const { ImageResponse } = await import('@vercel/og');
-    const [noto, serif, serifExt, italic, serifRegular] = await prepareFonts();
+    const [noto, serif, serifExt, italic, serifRegular, serifCyrillic] = await prepareFonts();
     const rendered = new ImageResponse(element, {
-      width: 1200,
-      height: 630,
+      width: size.width,
+      height: size.height,
       headers: PRIVACY_HEADERS,
       fonts: [
         { name: 'Noto', data: noto, weight: 400, style: 'normal' },
@@ -434,6 +447,7 @@ async function renderImage(element: VNode<any>): Promise<Response> {
         { name: 'EB Garamond', data: serifRegular, weight: 400, style: 'normal' },
         { name: 'EB Garamond', data: italic, weight: 400, style: 'italic' },
         { name: 'EB Garamond Ext', data: serifExt, weight: 500, style: 'normal' },
+        { name: 'EB Garamond Cyrillic', data: serifCyrillic, weight: 500, style: 'normal' },
       ],
     });
     // Buffer the renderer stream so a failure never commits a partial 200 to a crawler.
@@ -510,11 +524,291 @@ export async function handleHoroscopeImageRequest(request: Request): Promise<Res
   return imageFor([model.sign], [share.sign], (images, art) => horoscopeCard(model, images, art));
 }
 
+// ── Stories (1080×1920) ──────────────────────────────────────────────
+//
+// The picture to post as a story, in the layouts the owner picked for each
+// card on 2026-10-18: Compatibility's score as a trophy (A), the sky
+// calendar's event as a quote (B), and the keepsake (C) for a date, a
+// birthday and a horoscope. The art runs across the top and fades into the
+// void; the lockup sits in a pill under the apps' top bar, and the words end
+// above their reply bar, with the way to try it and the site's address.
+
+const STORY_WIDTH = 1080;
+const STORY_HEIGHT = 1920;
+const STORY_SIZE = { width: STORY_WIDTH, height: STORY_HEIGHT };
+/** The art's band: it fades into the void before the words. */
+const STORY_ART_HEIGHT = 1200;
+/** Where the words end: above Instagram's and TikTok's reply bars. */
+const STORY_BOTTOM = 380;
+/** The lockup's size on a story, as picked (the 1200×630 images use 20). */
+const STORY_LOCKUP = 28;
+const STORY_TRACK = 'rgba(198,204,218,0.14)';
+
+/** A 3:2 piece of art drawn `size` wide and centred in its box, its top at `top`, clipped to the art band. */
+function storyArtPanel(src: string, box: { left: number; width: number }, size: number, top: number, flip: boolean) {
+  const height = Math.round((size * 2) / 3);
+  return h('div', { style: { display: 'flex', position: 'absolute', left: `${box.left}px`, top: '0px', width: `${box.width}px`, height: `${STORY_ART_HEIGHT}px`, overflow: 'hidden' } },
+    h('img', { src, width: size, height, style: {
+      position: 'absolute', left: `${Math.round((box.width - size) / 2)}px`, top: `${top}px`, width: `${size}px`, height: `${height}px`,
+      ...(flip ? { transform: 'scaleX(-1)' } : {}),
+    } }));
+}
+
+const STORY_FADE: readonly (readonly [number, number])[] = [[0, 0.58], [0.2, 0.12], [0.3, 0], [0.56, 0], [0.92, 1]];
+const STORY_EDGE: readonly (readonly [number, number])[] = [[0.62, 0], [1, 0.55]];
+const storyOverlays = new Map<boolean, string>();
+
+/**
+ * The darkening over a story's art, in the void's colour, worked out once
+ * per layout like the link previews' (the renderer drops a radial
+ * gradient's alpha): a shade under the lockup at the top, the fade into the
+ * void from just past halfway down the band, a soft darkening towards the
+ * sides, and for a pair the seam where the two panels meet.
+ */
+function storyOverlay(pair: boolean): string {
+  const known = storyOverlays.get(pair);
+  if (known) return known;
+  const png = new PNG({ width: STORY_WIDTH, height: STORY_ART_HEIGHT });
+  const half = STORY_WIDTH / 2;
+  const seam = half * 0.16;
+  for (let y = 0; y < STORY_ART_HEIGHT; y += 1) {
+    const fade = ramp((y + 0.5) / STORY_ART_HEIGHT, STORY_FADE);
+    for (let x = 0; x < STORY_WIDTH; x += 1) {
+      const px = x + 0.5;
+      let clear = (1 - fade) * (1 - ramp(Math.abs(px - half) / half, STORY_EDGE));
+      if (pair) clear *= Math.min(1, Math.abs(px - half) / seam);
+      const at = (y * STORY_WIDTH + x) * 4;
+      png.data[at] = 6;
+      png.data[at + 1] = 7;
+      png.data[at + 2] = 9;
+      png.data[at + 3] = Math.round((1 - clear) * 255);
+    }
+  }
+  const src = `data:image/png;base64,${PNG.sync.write(png).toString('base64')}`;
+  storyOverlays.set(pair, src);
+  return src;
+}
+
+/** The art across the top: one piece, or two sign panels facing each other. */
+function storyArt(images: string[]) {
+  const pair = images.length === 2;
+  const panels = pair
+    ? [storyArtPanel(images[0], { left: 0, width: STORY_WIDTH / 2 }, 1200, 0, true), storyArtPanel(images[1], { left: STORY_WIDTH / 2, width: STORY_WIDTH / 2 }, 1200, 0, false)]
+    : [storyArtPanel(images[0], { left: 0, width: STORY_WIDTH }, 1680, 0, false)];
+  return [...panels, h('img', { src: storyOverlay(pair), width: STORY_WIDTH, height: STORY_ART_HEIGHT, style: { position: 'absolute', left: '0px', top: '0px', width: `${STORY_WIDTH}px`, height: `${STORY_ART_HEIGHT}px` } })];
+}
+
+/** The lockup in its pill, centred under the apps' top bar. */
+function storyLockup(front: ShareSign | null) {
+  return h('div', { style: { display: 'flex', position: 'absolute', left: '0px', top: '296px', width: `${STORY_WIDTH}px`, justifyContent: 'center' } },
+    h('div', { style: { display: 'flex', padding: '18px 30px', borderRadius: '999px', background: 'rgba(15,18,26,0.82)', border: `1px solid ${HAIRLINE}` } },
+      lockupImage(STORY_LOCKUP, { name: INK, dot: CARD_MUTED, tld: INK_SOFT }, front)));
+}
+
+/** The pastel discs, each once, side by side. */
+function storyDiscs(signs: readonly PreviewSign[], images: Map<ShareSign, string>, size = 100) {
+  const sources = [...new Set(signs.map((sign) => (sign.slug ? images.get(sign.slug) : undefined)).filter((src): src is string => !!src))];
+  return sources.length === 0 ? [] : [h('div', { style: { display: 'flex', marginBottom: '22px' } },
+    ...sources.map((src, index) => h('img', { src, width: size, height: size, style: { width: `${size}px`, height: `${size}px`, marginLeft: index === 0 ? '0px' : '14px' } })))];
+}
+
+/** The site's text-link arrow, drawn: the renderer's fonts carry no arrow, and it would fetch one. */
+const storyArrow = () => h('svg', { width: 30, height: 20, viewBox: '0 0 30 20', style: { marginLeft: '14px' } },
+  h('path', { d: 'M1 10H27M19 2L27 10L19 18', fill: 'none', stroke: INK, 'stroke-width': 2.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+
+/** The way to try it, and the address a viewer can type. */
+function storyAction(label: string, address: string, align: 'center' | 'flex-start' = 'center') {
+  return h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: align, marginTop: '52px' } },
+    h('div', { style: { display: 'flex', alignItems: 'center', fontSize: 36, color: INK, paddingBottom: '8px', borderBottom: `2px solid ${HAIRLINE}` } }, label, storyArrow()),
+    h('div', { style: { display: 'flex', fontSize: 30, color: MUTED, marginTop: '12px' } }, address));
+}
+
+/** A display size that keeps the longest line inside the story's column. */
+const storyFit = (lines: string[], max: number, min: number) => fit(lines, STORY_WIDTH - 144, max, min);
+
+const storyKicker = (text: string, hue: string, size = 46) =>
+  h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: size, lineHeight: 1.25, color: hue, textAlign: 'center' } }, text);
+
+const storyTitle = (text: string, size: number, align: 'center' | 'left' = 'center') =>
+  h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: size, lineHeight: 1.04, color: INK, textAlign: align, textWrap: 'balance', justifyContent: align === 'center' ? 'center' : 'flex-start' } }, text);
+
+const storyLine = (text: string, size = 40, align: 'center' | 'left' = 'center') =>
+  h('div', { style: { display: 'flex', fontSize: size, lineHeight: 1.38, color: INK_SOFT, marginTop: '24px', maxWidth: '880px', textAlign: align, textWrap: 'balance', justifyContent: align === 'center' ? 'center' : 'flex-start' } }, text);
+
+/** The words' column, ending above the reply bar. */
+function storyColumn(children: VNode<any>[], align: 'center' | 'flex-start' = 'center') {
+  return h('div', { style: {
+      display: 'flex', flexDirection: 'column', position: 'absolute', left: '72px', right: '72px', top: '560px', bottom: `${STORY_BOTTOM}px`,
+      justifyContent: 'flex-end', alignItems: align,
+    } }, ...children);
+}
+
+function storyFrame(art: string[], column: VNode<any>, front: ShareSign | null = null) {
+  return h('div', { style: {
+      width: `${STORY_WIDTH}px`, height: `${STORY_HEIGHT}px`, display: 'flex', position: 'relative', background: VOID, color: INK, fontFamily: 'Noto',
+    } },
+    ...storyArt(art),
+    storyLockup(front),
+    column);
+}
+
+/** A score ring: the track, the arc in the two hues, the number and "out of 100". */
+function storyRing(score: number, hues: [string, string], size: number, stroke: number, numberSize: number, labelSize: number) {
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const arc = Math.max(0.001, (score / 100) * circumference);
+  const centre = size / 2;
+  return h('div', { style: { display: 'flex', position: 'relative', width: `${size}px`, height: `${size}px`, alignItems: 'center', justifyContent: 'center', flexShrink: 0 } },
+    h('svg', { width: size, height: size, viewBox: `0 0 ${size} ${size}`, style: { position: 'absolute', top: 0, left: 0 } },
+      h('defs', null,
+        h('linearGradient', { id: 'story-arc', x1: '1', y1: '0', x2: '0', y2: '1' },
+          h('stop', { offset: '0', 'stop-color': hues[0] }),
+          h('stop', { offset: '1', 'stop-color': hues[1] }))),
+      h('circle', { cx: centre, cy: centre, r: radius, fill: 'rgba(6,7,9,0.72)', stroke: STORY_TRACK, 'stroke-width': stroke }),
+      h('circle', {
+        cx: centre, cy: centre, r: radius, fill: 'none', stroke: 'url(#story-arc)', 'stroke-width': stroke,
+        'stroke-linecap': 'round', 'stroke-dasharray': `${arc.toFixed(2)} ${circumference.toFixed(2)}`,
+        transform: `rotate(-90 ${centre} ${centre})`,
+      })),
+    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } },
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: numberSize, lineHeight: 1, color: INK } }, String(score)),
+      h('div', { style: { display: 'flex', fontSize: labelSize, color: MUTED, marginTop: `${Math.round(numberSize * 0.06)}px` } }, 'out of 100')));
+}
+
+/** Compatibility (A, the score as a trophy): both panels, the discs, the ring, the verdict and the two names. */
+export function compatibilityStory(model: CompatibilityCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const nameSize = storyFit([`${model.first} and ${model.second}`], 96, 56);
+  const areas = model.areas.map((area, index) => `${index === 0 ? area.label : area.label.toLowerCase()} ${area.value}`).join(', ');
+  return storyFrame(art, storyColumn([
+    ...storyDiscs(model.people, images),
+    storyRing(model.score, model.ring, 400, 22, 168, 34),
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 50, lineHeight: 1.2, color: INK_SOFT, marginTop: '30px', textAlign: 'center' } }, model.verdict),
+    h('div', { style: { display: 'flex', alignItems: 'baseline', justifyContent: 'center', flexWrap: 'wrap', fontFamily: SERIF, fontWeight: 500, fontSize: nameSize, lineHeight: 1.05, color: INK, marginTop: '6px' } },
+      model.first,
+      h('span', { style: { fontStyle: 'italic', fontWeight: 400, color: INK_SOFT, marginLeft: `${Math.round(nameSize * 0.26)}px`, marginRight: `${Math.round(nameSize * 0.26)}px` } }, 'and'),
+      model.second),
+    storyLine(`${areas}.`, 36),
+    storyAction('Check your own compatibility', 'zodiacs.org/compatibility'),
+  ]), model.people[0].slug);
+}
+
+/** A date (C, the keepsake): the wedding piece or the Sun's panel, the names, and the score kept small. */
+export function occasionStory(model: OccasionCardModel, images: Map<ShareSign, string>, art: string[]) {
+  const title = model.names ?? model.headline;
+  return storyFrame(art, storyColumn([
+    ...storyDiscs(model.signs, images),
+    storyKicker(model.names ? model.headline : 'The sky on the day', model.ring[0]),
+    storyTitle(title, storyFit([title], 110, 64)),
+    h('div', { style: { display: 'flex', alignItems: 'center', marginTop: '34px' } },
+      storyRing(model.score, model.ring, 150, 10, 56, 17),
+      h('div', { style: { display: 'flex', fontSize: 40, lineHeight: 1.25, color: INK, marginLeft: '28px', maxWidth: '560px' } }, model.verdict)),
+    storyLine(model.when, 34),
+    storyAction('Rate your own date', 'zodiacs.org/occasions'),
+  ]));
+}
+
+/** A birthday (C, the keepsake): its sign's panel, or a cusp date's two signs facing each other. */
+export function birthdayStory(model: BirthdayCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return storyFrame(art, storyColumn([
+    ...storyDiscs(model.signs, images),
+    storyKicker('A birthday', model.hue),
+    storyTitle(model.title, storyFit([model.title], 112, 64)),
+    storyLine(model.line),
+    storyAction('Find your own birthday', 'zodiacs.org/birthday'),
+  ]), model.signs.length === 1 ? model.signs[0].slug : null);
+}
+
+/** The sky calendar (B, the event as a quote): the Sky dial, the event in large italic, and what the calendar is. */
+export function skyCalendarStory(model: SkyCalendarCardModel, art: string[]) {
+  return storyFrame(art, storyColumn([
+    storyKicker('Sky calendar', HUES.scorpio),
+    h('div', { style: { display: 'flex', marginTop: '22px', paddingLeft: '36px', borderLeft: `3px solid ${HUES.scorpio}` } },
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 78, lineHeight: 1.12, color: INK, maxWidth: '860px' } }, model.line)),
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: 52, lineHeight: 1.1, color: INK, marginTop: '56px' } }, 'The sky in your calendar'),
+    h('div', { style: { display: 'flex', fontSize: 34, color: MUTED, marginTop: '10px' } }, model.span),
+    storyAction('Add it to your calendar', 'zodiacs.org/sky-calendar', 'flex-start'),
+  ], 'flex-start'));
+}
+
+/** A horoscope (C, the keepsake): the sign's panel, the day or week, the sign and the reading's own line. */
+export function horoscopeStory(model: HoroscopeCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return storyFrame(art, storyColumn([
+    ...storyDiscs([model.sign], images),
+    storyKicker(model.kicker, model.hue),
+    storyTitle(model.signName, storyFit([model.signName], 124, 72)),
+    storyLine(model.line),
+    storyAction('Read your own horoscope', 'zodiacs.org/horoscopes'),
+  ]), model.sign.slug);
+}
+
+const renderStory = (element: VNode<any>) => renderImage(element, STORY_SIZE);
+
+export async function handleCompatibilityStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseCompatibilityShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = compatibilityCardModel(share);
+  const [images, art] = await Promise.all([discImages(model.people), Promise.all(compatibilityArt(share).map(artImage))]).catch(() => [null, null] as const);
+  if (!images || !art) return errorResponse(503);
+  return renderStory(compatibilityStory(model, images, art));
+}
+
+export async function handleOccasionStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseOccasionShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = occasionCardModel(share);
+  const [images, art] = await Promise.all([discImages(model.signs), Promise.all(occasionArt(share).map(artImage))]).catch(() => [null, null] as const);
+  if (!images || !art) return errorResponse(503);
+  return renderStory(occasionStory(model, images, art));
+}
+
+async function storyFor(signs: readonly PreviewSign[], art: ShareArt[], draw: (images: Map<ShareSign, string>, art: string[]) => VNode<any>): Promise<Response> {
+  const [images, pictures] = await Promise.all([discImages(signs), Promise.all(art.map(artImage))]).catch(() => [null, null] as const);
+  if (!images || !pictures) return errorResponse(503);
+  return renderStory(draw(images, pictures));
+}
+
+export async function handleBirthdayStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseBirthdayShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = birthdayCardModel(share, data.birthdays, famousOn(data, share));
+  if (!model) return errorResponse(400);
+  return storyFor(model.signs, artOfSigns(model.signs), (images, art) => birthdayStory(model, images, art));
+}
+
+export async function handleSkyCalendarStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseSkyCalendarShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = skyCalendarCardModel(share, data.skyEvents);
+  if (!model) return errorResponse(400);
+  return storyFor([], ['sky-calendar-hero'], (_images, art) => skyCalendarStory(model, art));
+}
+
+export async function handleHoroscopeStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseHoroscopeShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = horoscopeCardModel(share, data.horoscopes);
+  if (!model) return errorResponse(400);
+  return storyFor([model.sign], [share.sign], (images, art) => horoscopeStory(model, images, art));
+}
+
 // ── The page a share link opens ──────────────────────────────────────
 
 const PAGE_STYLE = `@font-face{font-family:"EB Garamond";src:url(/fonts/eb-garamond-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
 @font-face{font-family:"EB Garamond";src:url(/fonts/eb-garamond-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Instrument Sans";src:url(/fonts/instrument-sans-latin-wght-normal.woff2) format("woff2");font-weight:400 700;font-display:swap}
+@font-face{font-family:"EB Garamond";src:url(/fonts/eb-garamond-cyrillic-500-normal.woff2) format("woff2");font-weight:500;font-display:swap;unicode-range:U+0400-045F,U+0490-0491}
+@font-face{font-family:"Instrument Sans";src:url(/fonts/golos-text-cyr-a.woff2) format("woff2");font-weight:400 600;font-display:swap;unicode-range:U+0400-04FF}
 :root{color-scheme:dark;--void:${VOID};--ink:${INK};--ink-2:${INK_SOFT};--muted:${MUTED};--hairline:${HAIRLINE}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--void);color:var(--ink);font:400 17px/1.55 "Instrument Sans",system-ui,sans-serif}
@@ -531,6 +825,9 @@ h1{font:500 clamp(30px,6vw,46px)/1.1 "EB Garamond",Georgia,serif;margin:28px 0 1
 .cta:focus-visible,.more:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .more{display:inline-block;margin:26px 0 0 22px;color:var(--ink);text-decoration:underline;text-decoration-color:var(--muted);text-underline-offset:4px}
 @media (max-width:480px){.more{display:block;width:fit-content;margin:18px 0 0}}
+.story{margin:22px 0 0;font-size:15px}
+.story a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--muted);text-underline-offset:4px}
+.story a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .note{margin:22px 0 0;color:var(--muted);font-size:15px}`;
 
 const STYLE_NONCE = 'share-preview';
@@ -550,12 +847,14 @@ export interface SharePage {
   action: { label: string; href: string };
   /** A second, quieter link beside the action, such as a famous birthday's chart. */
   more?: { label: string; href: string };
+  /** The 1080×1920 picture of the same result, to save and post as a story. */
+  story?: { href: string; filename: string };
   note: string;
 }
 
 export function sharePageHtml(page: SharePage): string {
   const e = htmlEscape;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="${page.imageType}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/" aria-label="Zodiacs.org">${LOCKUP_SVG}<span class="brand-name" aria-hidden="true">Zodiacs<span class="brand-sep">·</span><span class="brand-tld">org</span></span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p><a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a>${page.more ? `<a class="more" href="${e(page.more.href)}">${e(page.more.label)}</a>` : ''}<p class="note">${e(page.note)}</p></main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><title>${e(page.title)}</title><meta name="description" content="${e(page.description)}"><meta property="og:site_name" content="Zodiacs"><meta property="og:title" content="${e(page.title)}"><meta property="og:description" content="${e(page.description)}"><meta property="og:type" content="website"><meta property="og:image" content="${e(page.imageUrl)}"><meta property="og:image:type" content="${page.imageType}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${e(page.imageAlt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(page.title)}"><meta name="twitter:description" content="${e(page.description)}"><meta name="twitter:image" content="${e(page.imageUrl)}"><meta name="twitter:image:alt" content="${e(page.imageAlt)}"><link rel="icon" href="/assets/app-icons/v3/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site-footer.css?v=20261006"><style nonce="${STYLE_NONCE}">${PAGE_STYLE}</style></head><body><main><a class="brand" href="/" aria-label="Zodiacs.org">${LOCKUP_SVG}<span class="brand-name" aria-hidden="true">Zodiacs<span class="brand-sep">·</span><span class="brand-tld">org</span></span></a><h1>${e(page.heading)}</h1><img class="card" src="${e(page.imageUrl)}" width="1200" height="630" alt="${e(page.imageAlt)}"><p class="lede">${e(page.explanation)}</p><a class="cta" href="${e(page.action.href)}">${e(page.action.label)}</a>${page.more ? `<a class="more" href="${e(page.more.href)}">${e(page.more.label)}</a>` : ''}${page.story ? `<p class="story"><a href="${e(page.story.href)}" download="${e(page.story.filename)}">Save the picture for your story</a></p>` : ''}<p class="note">${e(page.note)}</p></main><footer class="zfooter zfooter--compact"><span>Zodiacs.org</span><nav aria-label="Zodiacs"><a href="/">Astrology</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav></footer></body></html>`;
 }
 
 function htmlResponse(html: string): Response {
@@ -661,6 +960,7 @@ export async function handleBirthdayLinkRequest(request: Request): Promise<Respo
     description: model.about,
     heading: model.title,
     imageUrl: `${url.origin}${BIRTHDAY_SHARE_IMAGE_PATH}?${birthdayQuery(share)}`,
+    story: { href: `${BIRTHDAY_SHARE_STORY_PATH}?${birthdayQuery(share)}`, filename: `zodiacs-${model.slug}-birthday-story.jpg` },
     imageType: 'image/jpeg',
     imageAlt: `${model.title}: ${model.line}.`,
     explanation: model.about,
@@ -681,6 +981,7 @@ export async function handleSkyCalendarLinkRequest(request: Request): Promise<Re
     description: `${model.title}: ${model.spanLong}. New and full Moons, eclipses and retrograde periods in your calendar app.`,
     heading: 'The sky in your calendar',
     imageUrl: `${url.origin}${SKY_CALENDAR_SHARE_IMAGE_PATH}?${skyCalendarQuery(share)}`,
+    story: { href: `${SKY_CALENDAR_SHARE_STORY_PATH}?${skyCalendarQuery(share)}`, filename: 'zodiacs-sky-calendar-story.jpg' },
     imageType: 'image/jpeg',
     imageAlt: `The sky in your calendar: ${model.title}, ${model.spanLong}.`,
     explanation: `${model.title}: ${model.spanLong}. ${SKY_CALENDAR_ABOUT}`,
@@ -702,6 +1003,7 @@ export async function handleHoroscopeLinkRequest(request: Request): Promise<Resp
     description: model.passage ? model.line : `${model.signName}, ${model.line}. Zodiacs writes a horoscope for each Sun sign every day.`,
     heading: model.heading,
     imageUrl: `${url.origin}${HOROSCOPE_SHARE_IMAGE_PATH}?${horoscopeQuery(share)}`,
+    story: { href: `${HOROSCOPE_SHARE_STORY_PATH}?${horoscopeQuery(share)}`, filename: `zodiacs-${share.sign}-horoscope-story.jpg` },
     imageType: 'image/jpeg',
     imageAlt: `${model.heading}: ${model.line}`,
     explanation: model.passage ?? 'Zodiacs writes a horoscope for each Sun sign every day, from that day’s sky. This one is no longer kept here; today’s are on zodiacs.org.',
@@ -721,6 +1023,7 @@ export async function handleCompatibilityLinkRequest(request: Request): Promise<
     description: model.summary,
     heading: `${model.first} and ${model.second}`,
     imageUrl: `${url.origin}${COMPATIBILITY_SHARE_IMAGE_PATH}?${compatibilityQuery(share)}`,
+    story: { href: `${COMPATIBILITY_SHARE_STORY_PATH}?${compatibilityQuery(share)}`, filename: 'zodiacs-compatibility-story.jpg' },
     imageType: 'image/jpeg',
     imageAlt: `${model.first} and ${model.second}, ${model.score} out of 100. ${model.summary}`,
     explanation: `${model.first} and ${model.second} compared their birth charts on Zodiacs: ${model.score} out of 100, ${model.verdict.charAt(0).toLowerCase()}${model.verdict.slice(1)}. The score reads the contacts between the two charts and their Sun signs’ elements.`,
@@ -740,6 +1043,7 @@ export async function handleOccasionLinkRequest(request: Request): Promise<Respo
     description: model.summary,
     heading: model.names ? `${model.names}: ${model.headline.charAt(0).toLowerCase()}${model.headline.slice(1)}` : model.headline,
     imageUrl: `${url.origin}${OCCASION_SHARE_IMAGE_PATH}?${occasionQuery(share)}`,
+    story: { href: `${OCCASION_SHARE_STORY_PATH}?${occasionQuery(share)}`, filename: `zodiacs-${share.occasion}-story.jpg` },
     imageType: 'image/jpeg',
     imageAlt: `${model.headline}, ${model.when}: ${model.score} out of 100. ${model.verdict}.`,
     explanation: `Zodiacs rated this date ${model.score} out of 100 from the sky that day: the Moon’s phase and sign, Venus, and any planets in retrograde.`,
@@ -761,6 +1065,11 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'sky-calendar-image': { path: SKY_CALENDAR_SHARE_IMAGE_PATH, keys: SKY_CALENDAR_SHARE_KEYS, handle: handleSkyCalendarImageRequest },
   'horoscope-link': { path: HOROSCOPE_SHARE_PATH, keys: HOROSCOPE_SHARE_KEYS, handle: handleHoroscopeLinkRequest },
   'horoscope-image': { path: HOROSCOPE_SHARE_IMAGE_PATH, keys: HOROSCOPE_SHARE_KEYS, handle: handleHoroscopeImageRequest },
+  'compatibility-story': { path: COMPATIBILITY_SHARE_STORY_PATH, keys: COMPATIBILITY_SHARE_KEYS, handle: handleCompatibilityStoryRequest },
+  'occasion-story': { path: OCCASION_SHARE_STORY_PATH, keys: OCCASION_SHARE_KEYS, handle: handleOccasionStoryRequest },
+  'birthday-story': { path: BIRTHDAY_SHARE_STORY_PATH, keys: BIRTHDAY_SHARE_KEYS, handle: handleBirthdayStoryRequest },
+  'sky-calendar-story': { path: SKY_CALENDAR_SHARE_STORY_PATH, keys: SKY_CALENDAR_SHARE_KEYS, handle: handleSkyCalendarStoryRequest },
+  'horoscope-story': { path: HOROSCOPE_SHARE_STORY_PATH, keys: HOROSCOPE_SHARE_KEYS, handle: handleHoroscopeStoryRequest },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);
@@ -774,10 +1083,10 @@ export async function handleResultShareNodeRequest(req: any, res: any, route: Re
     if (key === RESULT_SHARE_ROUTE_KEY) continue;
     // The page skips a key it does not use, such as the fbclid or utm_source an app adds to a
     // link as it is opened, so the result still shows; the image takes only its own keys.
-    if (!target.keys.includes(key) && !route.endsWith('-image')) continue;
+    if (!target.keys.includes(key) && !isPictureRoute(route)) continue;
     if (!target.keys.includes(key) || typeof value !== 'string') {
       // A repeated key, or an unknown key on the image: the image refuses, the page opens without a result.
-      if (route.endsWith('-image')) {
+      if (isPictureRoute(route)) {
         await writeNodeResponse(res, errorResponse(400));
         return;
       }
