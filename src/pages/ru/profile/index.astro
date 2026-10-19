@@ -47,14 +47,14 @@ const jsonLd = [
       <p>Сохраняйте карты на этом устройстве. Войдите, когда захотите видеть их на всех устройствах.</p>
     </div>
     {accountSyncV2Enabled ? (
-      <AccountBoundProfileSurface locale="ru" client:load />
+      <AccountBoundProfileSurface locale="ru" client:interaction={{ separateTask: true }} />
     ) : (
       <>
-        <ProfileDashboard locale="ru" client:load />
-        <ProfileManager locale="ru" client:load />
+        <ProfileDashboard locale="ru" client:interaction={{ separateTask: true }} />
+        <ProfileManager locale="ru" client:interaction={{ separateTask: true }} />
       </>
     )}
-    <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="ru" client:load />
+    <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="ru" client:interaction={{ separateTask: true }} />
     <aside class="pf-note">
       <p class="mono">{accountSyncV2Enabled
         ? <>Тест зашифрованной синхронизации временно доступен на <a href="/profile/">/profile/</a>. Здесь карты остаются только на этом устройстве.</>

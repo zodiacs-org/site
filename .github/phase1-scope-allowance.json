@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "design-profile-redesign-20261018",
-  "baseCommit": "bf2e7e5bb77b72b70f8772cb6ef3a1e5fb8930a0",
+  "id": "translated-entry-lcp-20261019",
+  "baseCommit": "bdcef5f678bd36a9dc9c23f41ee227f4cf634ad3",
   "protectedPaths": [
     "src/pages/es/profile/index.astro",
     "src/pages/fr/profile/index.astro",

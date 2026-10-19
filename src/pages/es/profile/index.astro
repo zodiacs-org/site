@@ -47,14 +47,14 @@ const jsonLd = [
       <p>Guarda cartas en este dispositivo. Inicia sesión cuando quieras tenerlas en todos tus dispositivos.</p>
     </div>
     {accountSyncV2Enabled ? (
-      <AccountBoundProfileSurface locale="es" client:load />
+      <AccountBoundProfileSurface locale="es" client:interaction={{ separateTask: true }} />
     ) : (
       <>
-        <ProfileDashboard locale="es" client:load />
-        <ProfileManager locale="es" client:load />
+        <ProfileDashboard locale="es" client:interaction={{ separateTask: true }} />
+        <ProfileManager locale="es" client:interaction={{ separateTask: true }} />
       </>
     )}
-    <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="es" client:load />
+    <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="es" client:interaction={{ separateTask: true }} />
     <aside class="pf-note">
       <p class="mono">{accountSyncV2Enabled
         ? <>La prueba de sincronización cifrada se gestiona temporalmente en <a href="/profile/">/profile/</a>. Aquí tus cartas permanecen solo en este dispositivo.</>

@@ -2,6 +2,6 @@
 
 declare namespace astroHTML.JSX {
   interface IntrinsicAttributes {
-    'client:interaction'?: boolean | { eagerHash?: boolean };
+    'client:interaction'?: boolean | { eagerHash?: boolean; separateTask?: boolean };
   }
 }

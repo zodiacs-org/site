@@ -47,14 +47,14 @@ const jsonLd = [
       <p>Salva i tuoi temi su questo dispositivo. Accedi se vuoi ritrovarli su tutti i tuoi dispositivi.</p>
     </div>
     {accountSyncV2Enabled ? (
-      <AccountBoundProfileSurface locale="it" client:load />
+      <AccountBoundProfileSurface locale="it" client:interaction={{ separateTask: true }} />
     ) : (
       <>
-        <ProfileDashboard locale="it" client:load />
-        <ProfileManager locale="it" client:load />
+        <ProfileDashboard locale="it" client:interaction={{ separateTask: true }} />
+        <ProfileManager locale="it" client:interaction={{ separateTask: true }} />
       </>
     )}
-    <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="it" client:load />
+    <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="it" client:interaction={{ separateTask: true }} />
     <aside class="pf-note">
       <p class="mono">{accountSyncV2Enabled
         ? <>La prova di sincronizzazione cifrata viene gestita temporaneamente su <a href="/profile/">/profile/</a>. Qui i tuoi temi restano solo su questo dispositivo.</>
