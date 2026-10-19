@@ -10,7 +10,7 @@
   "browser": "Chromium 141.0.7390.37",
   "dailyDate": "2026-10-19",
   "publicationCanonicalSha256": "0119cc552034869b748c46a64bf91ee7de35e0dfd9aa1a447cec4aedd091c1aa",
-  "templateSourceSha256": "a68482ed54ca2e9f4496cc8b4ce1be319416c135b8fb97f75e7f7fc2f2703d4c",
+  "templateSourceSha256": "9b3d55f0c6addd227dd739a9a0595ac4dc026147021fed6cc933bd6f2d9f07b5",
   "renderPayloadSha256": {
     "daily": "59451b9f27109ccc48dd41a2e547083e00460b0d92ff3858712a1198a2003fee",
     "dailyPublication": "d1e5913fb060efc398e706c7da80b6e81e65f398824e33afec538b229461f8c9",
@@ -20,7 +20,7 @@
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
     "builtAt": "2026-10-19T12:00:00.000Z",
-    "templateSourceSha256": "a68482ed54ca2e9f4496cc8b4ce1be319416c135b8fb97f75e7f7fc2f2703d4c",
+    "templateSourceSha256": "9b3d55f0c6addd227dd739a9a0595ac4dc026147021fed6cc933bd6f2d9f07b5",
     "dailyDate": "2026-10-19",
     "publicationCanonicalSha256": "0119cc552034869b748c46a64bf91ee7de35e0dfd9aa1a447cec4aedd091c1aa",
     "renderPayloadSha256": {
@@ -66,7 +66,7 @@
         "file": "today-1280.png",
         "width": 1280,
         "height": 7757,
-        "sha256": "0d66a4435a827818c7ecada472b58a0a9fda15e44250ffee8965135c0bf368fa"
+        "sha256": "a0cae60891edab710d9f844bba7fed26b1f2ee1a64e9b6be1acbc39340692fcf"
       },
       "layout": {
         "clientWidth": 1280,
@@ -114,7 +114,7 @@
         "file": "horoscopes-hub-1280.png",
         "width": 1280,
         "height": 3168,
-        "sha256": "24845c364220ecb8fe4e41adfc2c3d2b42179acbd69bb9a9f77d12fc2ec4d876"
+        "sha256": "171a3f6f6d76365ef7a396e7c363bc094fbc353f0f832dc13658d060818380a2"
       },
       "layout": {
         "clientWidth": 1280,
