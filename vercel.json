@@ -254,12 +254,20 @@
       "destination": "/api/compatibility?__zodiacs_share=compatibility-image"
     },
     {
+      "source": "/api/og/compatibility-story",
+      "destination": "/api/compatibility?__zodiacs_share=compatibility-story"
+    },
+    {
       "source": "/share/occasion/",
       "destination": "/api/compatibility?__zodiacs_share=occasion-link"
     },
     {
       "source": "/api/og/occasion-image",
       "destination": "/api/compatibility?__zodiacs_share=occasion-image"
+    },
+    {
+      "source": "/api/og/occasion-story",
+      "destination": "/api/compatibility?__zodiacs_share=occasion-story"
     },
     {
       "source": "/share/birthday/",
@@ -270,6 +278,10 @@
       "destination": "/api/compatibility?__zodiacs_share=birthday-image"
     },
     {
+      "source": "/api/og/birthday-story",
+      "destination": "/api/compatibility?__zodiacs_share=birthday-story"
+    },
+    {
       "source": "/share/sky-calendar/",
       "destination": "/api/compatibility?__zodiacs_share=sky-calendar-link"
     },
@@ -278,12 +290,20 @@
       "destination": "/api/compatibility?__zodiacs_share=sky-calendar-image"
     },
     {
+      "source": "/api/og/sky-calendar-story",
+      "destination": "/api/compatibility?__zodiacs_share=sky-calendar-story"
+    },
+    {
       "source": "/share/horoscope/",
       "destination": "/api/compatibility?__zodiacs_share=horoscope-link"
     },
     {
       "source": "/api/og/horoscope-image",
       "destination": "/api/compatibility?__zodiacs_share=horoscope-image"
+    },
+    {
+      "source": "/api/og/horoscope-story",
+      "destination": "/api/compatibility?__zodiacs_share=horoscope-story"
     },
     {
       "source": "/api/games",
