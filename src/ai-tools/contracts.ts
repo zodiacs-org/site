@@ -179,7 +179,7 @@ const horoscope = z.object({
   disclosure: z.string(),
 });
 const clockTime = z.object({ utc: z.string(), local: z.string() });
-const occasionNote = 'Astrology’s reading of the day, for insight and fun — not a guarantee of how it will go.';
+const occasionNote = 'Astrology’s reading of the day, for insight and fun, not a guarantee of how it will go.';
 const occasionSky = z.object({
   occasion: z.enum(OCCASION_KINDS), date: z.string(), time: z.string().nullable(), zone: z.string().nullable(),
   place: z.string().nullable(), names: z.string().nullable(),

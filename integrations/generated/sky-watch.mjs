@@ -7682,6 +7682,9 @@ var OCCASION_WORDS = {
 function signName(slug) {
   return slug.charAt(0).toUpperCase() + slug.slice(1);
 }
+function article(name) {
+  return /^[AEIOU]/u.test(name) ? "an" : "a";
+}
 function sunMoonLine(sunSign, moonSign) {
   const sun = SIGN_THEME[sunSign];
   const moon = SIGN_THEME[moonSign];
@@ -7689,7 +7692,10 @@ function sunMoonLine(sunSign, moonSign) {
   if (sunSign === moonSign) {
     return `The Sun and Moon are both in ${signName(sunSign)}, the sign of ${sun}.`;
   }
-  return `A ${signName(sunSign)} Sun is the sign of ${sun}; a ${signName(moonSign)} Moon, of ${moon}.`;
+  const sunName = signName(sunSign);
+  const moonName = signName(moonSign);
+  const lead = article(sunName);
+  return `${lead.charAt(0).toUpperCase()}${lead.slice(1)} ${sunName} Sun is the sign of ${sun}; ${article(moonName)} ${moonName} Moon, of ${moon}.`;
 }
 
 // src/lib/occasions/sky.ts
@@ -7892,15 +7898,6 @@ function requireCatalogLocale(locale) {
   return locale;
 }
 
-// src/lib/i18n/ru-runtime/client.ts
-function clientRussianRuntime() {
-  const payload = globalThis.__ZDX_RU__;
-  if (!payload || payload.locale !== "ru" || !payload.data) {
-    throw new Error("Missing staged Russian runtime payload");
-  }
-  return payload.data;
-}
-
 // src/lib/i18n/ui/ru.ts
 var RUSSIAN_UI_PLURALS = {
   charts: {
@@ -8099,7 +8096,7 @@ function serverRussianRuntime() {
 
 // src/lib/i18n/ru-runtime/index.ts
 function russianRuntime() {
-  return import.meta.env.SSR ? serverRussianRuntime() : clientRussianRuntime();
+  return true ? serverRussianRuntime() : clientRussianRuntime();
 }
 
 // src/lib/signs.ts
@@ -8493,7 +8490,7 @@ var COMPATIBILITY_SHARE_PATH = "/share/compatibility/";
 var OCCASION_SHARE_PATH = "/share/occasion/";
 var COMPATIBILITY_SHARE_KEYS = Object.freeze(["a", "b", "as", "bs", "score", "attraction", "communication", "stability", "v", "ref"]);
 var OCCASION_SHARE_KEYS = Object.freeze(["o", "d", "n", "p", "sun", "moon", "score", "v", "ref"]);
-var LETTER = "A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u017F";
+var LETTER = "A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u017F\\u0400-\\u045F\\u0490\\u0491";
 var NAME_RE = new RegExp(`^[${LETTER}][${LETTER} .'\u2019-]*$`, "u");
 var NAMES_RE = new RegExp(`^[${LETTER}][${LETTER} .,&'\u2019-]*$`, "u");
 var PLACE_RE = new RegExp(`^[${LETTER}0-9][${LETTER}0-9 .,'\u2019()-]*$`, "u");
@@ -17444,7 +17441,7 @@ function getFamousChart(args, origin = DEFAULT_ORIGIN) {
 var COMPATIBILITY_MIN_YEAR = 1800;
 var COMPATIBILITY_MAX_YEAR = 2199;
 var COMPATIBILITY_TOP_CONTACTS = 8;
-var COMPATIBILITY_NOTE = "Astrology\u2019s reading of your two charts, for insight and fun \u2014 not a guarantee of how things will turn out.";
+var COMPATIBILITY_NOTE = "Astrology\u2019s reading of your two charts, for insight and fun, not a guarantee of how things will turn out.";
 var ZONE_PATTERN2 = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/;
 var DATE_PATTERN = /^(?:18|19|20|21)\d{2}-\d{2}-\d{2}$/;
 var WALL_CLOCK = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
@@ -27436,7 +27433,7 @@ var horoscope = z4.object({
   disclosure: z4.string()
 });
 var clockTime2 = z4.object({ utc: z4.string(), local: z4.string() });
-var occasionNote = "Astrology\u2019s reading of the day, for insight and fun \u2014 not a guarantee of how it will go.";
+var occasionNote = "Astrology\u2019s reading of the day, for insight and fun, not a guarantee of how it will go.";
 var occasionSky = z4.object({
   occasion: z4.enum(OCCASION_KINDS),
   date: z4.string(),

@@ -93,7 +93,7 @@ const CARD_MUTED = '#A0A8BA';
 
 // ── Assets ───────────────────────────────────────────────────────────
 
-type FontSet = [ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer];
+type FontSet = [ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer];
 let fonts: Promise<FontSet> | null = null;
 
 function prepareFonts(): Promise<FontSet> {
@@ -105,6 +105,8 @@ function prepareFonts(): Promise<FontSet> {
     readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-italic.woff', import.meta.url)),
     // The brand lockup's capitals are the regular weight.
     readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-latin-400-normal.woff', import.meta.url)),
+    // A share link's names may be Cyrillic (src/lib/share-results.ts); they are set in the display weight.
+    readFile(new URL('../../node_modules/@fontsource/eb-garamond/files/eb-garamond-cyrillic-500-normal.woff', import.meta.url)),
   ]).then((files) => files.map((bytes) => exactArrayBuffer(bytes)) as FontSet);
   fonts = pending;
   void pending.catch(() => { if (fonts === pending) fonts = null; });
@@ -229,7 +231,7 @@ export function occasionArt(share: { occasion: string; sun: ShareSign | null }):
 
 const WIDTH = 1200;
 const HEIGHT = 630;
-const SERIF = 'EB Garamond, EB Garamond Ext';
+const SERIF = 'EB Garamond, EB Garamond Ext, EB Garamond Cyrillic';
 const TEXT_WIDTH = 620;
 
 /**
@@ -423,7 +425,7 @@ const JPEG_QUALITY = 90;
 async function renderImage(element: VNode<any>): Promise<Response> {
   try {
     const { ImageResponse } = await import('@vercel/og');
-    const [noto, serif, serifExt, italic, serifRegular] = await prepareFonts();
+    const [noto, serif, serifExt, italic, serifRegular, serifCyrillic] = await prepareFonts();
     const rendered = new ImageResponse(element, {
       width: 1200,
       height: 630,
@@ -434,6 +436,7 @@ async function renderImage(element: VNode<any>): Promise<Response> {
         { name: 'EB Garamond', data: serifRegular, weight: 400, style: 'normal' },
         { name: 'EB Garamond', data: italic, weight: 400, style: 'italic' },
         { name: 'EB Garamond Ext', data: serifExt, weight: 500, style: 'normal' },
+        { name: 'EB Garamond Cyrillic', data: serifCyrillic, weight: 500, style: 'normal' },
       ],
     });
     // Buffer the renderer stream so a failure never commits a partial 200 to a crawler.
@@ -515,6 +518,8 @@ export async function handleHoroscopeImageRequest(request: Request): Promise<Res
 const PAGE_STYLE = `@font-face{font-family:"EB Garamond";src:url(/fonts/eb-garamond-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
 @font-face{font-family:"EB Garamond";src:url(/fonts/eb-garamond-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"Instrument Sans";src:url(/fonts/instrument-sans-latin-wght-normal.woff2) format("woff2");font-weight:400 700;font-display:swap}
+@font-face{font-family:"EB Garamond";src:url(/fonts/eb-garamond-cyrillic-500-normal.woff2) format("woff2");font-weight:500;font-display:swap;unicode-range:U+0400-045F,U+0490-0491}
+@font-face{font-family:"Instrument Sans";src:url(/fonts/golos-text-cyr-a.woff2) format("woff2");font-weight:400 600;font-display:swap;unicode-range:U+0400-04FF}
 :root{color-scheme:dark;--void:${VOID};--ink:${INK};--ink-2:${INK_SOFT};--muted:${MUTED};--hairline:${HAIRLINE}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--void);color:var(--ink);font:400 17px/1.55 "Instrument Sans",system-ui,sans-serif}
