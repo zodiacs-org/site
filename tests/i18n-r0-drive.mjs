@@ -206,6 +206,11 @@ await withPreview({ port: 4417 }, async (baseURL) => {
       waitUntil: 'domcontentloaded',
     });
     check(shortResponse?.status() === 200, `/es/learn/: expected 200, got ${shortResponse?.status()}`);
+    // Observe the first layout/IntersectionObserver delivery before reading
+    // its recorded timestamp; DOMContentLoaded can precede that first report.
+    await shortPage.evaluate(() => new Promise((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(resolve));
+    }));
     const shortFooter = await shortPage.evaluate(() => {
       const footer = document.querySelector('.zfooter');
       const link = document.querySelector('link[rel="stylesheet"][href^="/assets/site-footer.css?"]');

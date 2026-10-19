@@ -1,11 +1,13 @@
 {
   "version": 1,
   "id": "translated-entry-lcp-20261019",
-  "baseCommit": "bdcef5f678bd36a9dc9c23f41ee227f4cf634ad3",
+  "baseCommit": "fd3d10b0b32261508382103f8818889ad467ef3d",
   "protectedPaths": [
+    "src/lib/i18n/ui/build-audit.test.ts",
     "src/pages/es/profile/index.astro",
     "src/pages/fr/profile/index.astro",
     "src/pages/it/profile/index.astro",
     "src/pages/pt/profile/index.astro"
-  ]
+  ],
+  "justification": "The four translated profile pages retain their approved copy and layout while changing hydration scheduling. The build audit changes assertions only to validate the existing optional account stylesheet with strict core order and identical no-JS fallbacks, as permitted in the supervisor note of 2026-10-19 19:40."
 }
