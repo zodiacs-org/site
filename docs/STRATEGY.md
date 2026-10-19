@@ -167,6 +167,7 @@ Astro 5 static + Preact islands · TypeScript engine lib shared browser/Node · 
 
 - **Base:** cool void near-blacks (`#060709 → #1C2130`), cool off-white ink, hairline borders. Premium restraint; zero mystical clip-art.
 - **The pastel icons are the design language, not decoration**: hero wheel, Signs nav grid, calculator sign chips, placement tables, guide heroes, pair lockups, profile big-three, wing rows, share cards, 404. Served as resized AVIF/WebP tiers (24/64/200px) — never the raw 1024px PNGs.
+- **One brand lockup everywhere the brand signs** (owner-chosen 2026-10-19): the tilted twelve-dot ring and ZODIACS · ORG in the nav, the footers, the share and OG images, emails and the assistant cards (DESIGN.md, "Brand Lockup"). Phones keep ZODIACS | ASTROFOLIO in the top bar; the favicon and app icons keep the flat ring. On an image made for one person the ring turns to bring their Sun sign to the front, and the same ring settles into the lockup in the two-second end card for short videos.
 - **Per-sign accent tokens from the disc hues** (`--sign-aries: #DE8E79` … `--sign-pisces: #A9D4C4`), element groupings, `color-mix` tinting — no 12× component variants.
 - **Type:** Instrument Sans variable (display to text; hero up to ~4.5rem clamp) + JetBrains Mono for computed data. Cinzel/Cormorant survive only inside the legacy wing until its retheme.
 - **Motion:** the house easing (`cubic-bezier(0.32,0.72,0,1)`), scroll-reveal discipline, hero-wheel slow orbit, chart stroke-draw-in — all behind `prefers-reduced-motion`.

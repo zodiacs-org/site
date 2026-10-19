@@ -17,6 +17,7 @@ import { rankedContacts, summarizePair, type PairSummary, type MinimalBody } fro
 import type { CatalogLocale as Locale } from './i18n';
 import { aspectLabel, planetLabel } from './i18n/astrology';
 import { degreeInSign, SIGNS, signForLongitude, signName } from './signs';
+import { ringFront } from './ring-front';
 import { collisionNudge } from './scene/layout';
 import { shareCardText } from './share-card-copy';
 import { savePngBlob, type CardOutcome } from './share-card';
@@ -390,6 +391,8 @@ export async function drawCompatibilityCard(
     drawShareBrandLockup(ctx, brandIcon, {
       ...COMPATIBILITY_CARD_BRAND_LAYOUT,
       serif: SERIF,
+      // The ring brings the first person's sign forward: the card is theirs to share.
+      front: ringFront(a.bodies, a.asc !== null),
     });
   });
 
