@@ -116,7 +116,7 @@ const nextSlug = birthdaySlug(next.month, next.day);
 const linkSigns = sign ? [sign] : cusp ? [cusp.a, cusp.b] : [];
 const signNames = linkSigns.map((candidate) => localName(candidate));
 const path = localizePath(locale, `/birthday/${slug}/`);
-const ogImage = signArtCard(heroSign!.slug);
+const ogImage = signArtCard(heroSign!.slug, locale);
 const title = text('metaTitle', { date: label });
 const description = sign
   ? text('metaDescriptionSign', { date: label, sign: localName(sign) })
