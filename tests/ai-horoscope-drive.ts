@@ -40,6 +40,9 @@ const out = new URL('../docs/platform/zodiacs-ai/evidence/', import.meta.url);
 await mkdir(out, { recursive: true });
 try {
   const context = await browser.newContext({ viewport: { width: 760, height: 900 }, timezoneId: 'Asia/Bangkok' });
+  // The panel takes today from the device clock: pin it to the committed edition's day, as the tool's own clock is,
+  // so the drive does not fail once the real date passes the window.
+  await context.clock.setFixedTime(noon);
   const page = await context.newPage();
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   let network = 0; page.on('request', request => { if (!request.url().startsWith('data:')) network++; });
@@ -54,9 +57,13 @@ try {
   }, [picker, leo] as const);
   await page.getByRole('heading', { name: 'Your horoscope' }).waitFor();
   assert.equal(await page.locator('.grid button').count(), 12);
+  // Before a sign is chosen the ring is the brand's own, Libra in front.
+  assert.equal(await page.locator('.nameplate svg circle').last().getAttribute('fill'), '#A764C0');
   await page.screenshot({ path: new URL('horoscopes-picker.png', out).pathname, fullPage: true });
   await page.locator('.grid button', { hasText: 'Leo' }).click();
   await page.getByRole('heading', { name: 'Leo' }).waitFor();
+  // The reading is one sign's, so its ring turns to bring Leo to the front.
+  assert.equal(await page.locator('article .nameplate svg circle').last().getAttribute('fill'), '#CC6C84');
   const requests = await page.evaluate(() => (window as any).requests);
   assert.deepEqual(requests, [{ name: 'get_horoscope', args: { sign: 'leo', period: 'day', focus: 'general', zone: 'Asia/Bangkok' } }]);
   // ChatGPT sends updates for resizes and may repeat the turn's first result; neither undoes the choice.
@@ -70,10 +77,16 @@ try {
   assert.match(text, /times for Bangkok/);
   assert.doesNotMatch(text, /UTC|Asia\/Bangkok|\d{4}-\d{2}-\d{2}/, 'People see dates and places, not UTC, time-zone IDs or ISO dates');
   assert.match(text, /For reflection\. Astrology does not establish what will happen in your life\./);
+  // "Share the reading" shares whatever the card shows: the day, its focus, or the week.
+  const shared = () => page.getByRole('link', { name: 'Share the reading' }).getAttribute('href');
+  assert.match(await shared() ?? '', /^https:\/\/zodiacs\.org\/share\/horoscope\/\?s=leo&d=\d{4}-\d{2}-\d{2}$/u);
+  assert.equal(await page.getByRole('link', { name: 'More on zodiacs.org' }).getAttribute('href'), 'https://zodiacs.org/horoscopes/leo/');
   await page.getByRole('button', { name: 'Love' }).click();
   assert.match(await page.locator('.when').innerText(), /times for Bangkok/);
+  assert.match(await shared() ?? '', /^https:\/\/zodiacs\.org\/share\/horoscope\/\?s=leo&d=\d{4}-\d{2}-\d{2}&f=love$/u);
   await page.getByRole('button', { name: 'This week' }).click();
   assert.match(await page.locator('.when').innerText(), /^Week of/);
+  assert.match(await shared() ?? '', /^https:\/\/zodiacs\.org\/share\/horoscope\/\?s=leo&w=\d{4}-\d{2}-\d{2}$/u);
   await page.locator('details.why summary').click();
   assert.ok(await page.locator('.why li').count() > 0);
   await page.screenshot({ path: new URL('horoscopes-desktop.png', out).pathname, fullPage: true });
@@ -94,7 +107,7 @@ try {
     window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: result.structuredContent, toolResponseMetadata: result._meta } } }));
   }, injected);
   await fresh.locator('.prose p', { hasText: 'onerror' }).waitFor();
-  assert.equal(await fresh.locator('article img').count(), 0);
+  assert.equal(await fresh.locator('.prose img').count(), 0, 'Reading text never becomes markup');
   assert.equal(await fresh.evaluate(() => (window as any).pwned), undefined);
   // While a reading is on its way the panel shows a quiet line, not the sign picker.
   // A watcher placed before the panel's own script records whether the picker ever appeared.
@@ -276,6 +289,6 @@ try {
   await host.waitForTimeout(300);
   assert.deepEqual(await host.evaluate(() => [(window as any).sizes, (window as any).links]), [[], []], 'ChatGPT keeps the reviewed Chart Studio');
   assert.deepEqual(hostErrors, []);
-  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'host updates after a choice keep it','plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'a quiet line, not the sign picker, while a reading is on its way', 'the sign picker after a short wait when no reading comes', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'header in plain words: date, "Birth time unknown", or clock time and city', 'Your week: plain dates on the device clock, closest first, at most five', 'Your week without a birth time leaves out the Moon, rising sign and Midheaven', 'Your week matches the same calculation in Node, with and without a birth time', 'Your week ready within a second, in a worker or, where workers are refused, on the page', 'labelled example chart without Your week','both panels report their content height to an MCP Apps host', 'links open through an MCP Apps host that offers it', 'ChatGPT keeps the reviewed panels'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
+  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'the reading\'s ring turns to its sign', 'host updates after a choice keep it','plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'a quiet line, not the sign picker, while a reading is on its way', 'the sign picker after a short wait when no reading comes', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'header in plain words: date, "Birth time unknown", or clock time and city', 'Your week: plain dates on the device clock, closest first, at most five', 'Your week without a birth time leaves out the Moon, rising sign and Midheaven', 'Your week matches the same calculation in Node, with and without a birth time', 'Your week ready within a second, in a worker or, where workers are refused, on the page', 'labelled example chart without Your week','both panels report their content height to an MCP Apps host', 'links open through an MCP Apps host that offers it', 'ChatGPT keeps the reviewed panels'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
   console.log('Horoscope and Chart Studio browser QA passed.');
 } finally { await browser.close(); }
