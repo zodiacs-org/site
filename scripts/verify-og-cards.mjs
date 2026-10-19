@@ -27,6 +27,8 @@ import {
   ART_CARD_DIR,
   ART_CARD_MAX_BYTES,
   HOME_ART_CARD,
+  LOCALIZED_ART_CARDS,
+  LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES,
 } from '../src/lib/og-art-cards.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -192,8 +194,11 @@ await validatePng(wingCard, { unique: false, base: wingOut, label: `historical v
 // seven horoscope cards. The art fills the picture, so they are JPEGs under a
 // budget chat-app previews accept, each one unique, and the folder holds
 // exactly these, under its own ceiling.
+// The Spanish, French, Italian and Portuguese cards (es/, fr/, it/, pt/) are
+// held to the same picture budget and to a ceiling of their own.
 let artBytes = 0;
-for (const path of ART_CARDS) {
+let localizedArtBytes = 0;
+for (const path of [...ART_CARDS, ...LOCALIZED_ART_CARDS]) {
   try {
     const bytes = await readFile(resolve(root, `public${path}`));
     const metadata = await sharp(bytes).metadata();
@@ -201,7 +206,8 @@ for (const path of ART_CARDS) {
       failures.push(`${path}: expected 1200x630 JPEG, received ${metadata.width ?? '?'}x${metadata.height ?? '?'} ${metadata.format ?? 'unknown'}`);
     }
     if (bytes.length > ART_CARD_MAX_BYTES) failures.push(`${path}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
-    artBytes += bytes.length;
+    if (LOCALIZED_ART_CARDS.includes(path)) localizedArtBytes += bytes.length;
+    else artBytes += bytes.length;
     const hash = createHash('sha256').update(bytes).digest('hex');
     const duplicate = hashes.get(hash);
     if (duplicate) failures.push(`${path}: byte-identical to ${duplicate}`);
@@ -219,11 +225,15 @@ try {
     }
   };
   await walk(resolve(root, `public${ART_CARD_DIR}`), ART_CARD_DIR);
-  if (JSON.stringify(artFiles.sort()) !== JSON.stringify([...ART_CARDS].sort())) {
-    failures.push(`${ART_CARD_DIR}: expected exactly the ${ART_CARDS.length} art cards; found ${artFiles.length} files`);
+  const expectedArt = [...ART_CARDS, ...LOCALIZED_ART_CARDS];
+  if (JSON.stringify(artFiles.sort()) !== JSON.stringify(expectedArt.sort())) {
+    failures.push(`${ART_CARD_DIR}: expected exactly the ${expectedArt.length} art cards; found ${artFiles.length} files`);
   }
   if (artBytes > ART_CARDS_MAX_TOTAL_BYTES) {
     failures.push(`${ART_CARD_DIR}: ${(artBytes / 1024 / 1024).toFixed(2)}MiB, over the ${ART_CARDS_MAX_TOTAL_BYTES / 1024 / 1024}MiB ceiling`);
+  }
+  if (localizedArtBytes > LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES) {
+    failures.push(`${ART_CARD_DIR}: the localized cards are ${(localizedArtBytes / 1024 / 1024).toFixed(2)}MiB, over the ${LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES / 1024 / 1024}MiB ceiling`);
   }
 } catch (error) {
   failures.push(`${ART_CARD_DIR}: ${error instanceof Error ? error.message : 'missing card directory'}`);
@@ -327,7 +337,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`verify-og-cards: OK — homepage and fallback on the v8 hero art card, with the twelve v8 sign guide and 84 horoscope art cards (${(artBytes / 1024 / 1024).toFixed(2)}MiB; the v2 cards kept for shared links); Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
+console.log(`verify-og-cards: OK — homepage and fallback on the v8 hero art card, with the twelve v8 sign guide and 84 horoscope art cards (${(artBytes / 1024 / 1024).toFixed(2)}MiB; the v2 cards kept for shared links) and their ${LOCALIZED_ART_CARDS.length} Spanish, French, Italian and Portuguese cards (${(localizedArtBytes / 1024 / 1024).toFixed(2)}MiB); Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
 
 // Registry catalogue cards live outside the frozen v2 bundle. Keep their
 // source, geometry, manifest, route metadata, and size contracts in the same

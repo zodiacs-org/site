@@ -163,7 +163,8 @@ describe('homepage social card', () => {
     expect(page).toContain('imageAlt={HOME_ART_CARD_ALT}');
     expect(cards).toContain("export const HOME_ART_CARD = `${ART_CARD_DIR}/home-20261019.jpg`;");
     expect(cards).toMatch(/HOME_ART_CARD_ALT = '[^']*zodiac band from the hero film[^']*Explore the stars behind your story/u);
-    expect(seo).toContain('explicitImage ?? catalogImage ?? HOME_ART_CARD;');
+    // English pages fall back to it; a localized page to its locale's own homepage card.
+    expect(seo).toContain('explicitImage ?? catalogImage ?? (ART_CARD_LOCALES.includes(locale) ? homeArtCard(locale) : HOME_ART_CARD);');
     expect(seo).toContain('<meta property="og:image:type" content={imageType} />');
     expect(seo).toContain('<meta name="twitter:image" content={imageUrl} />');
     expect(createHash('sha256').update(bytes).digest('hex'))
