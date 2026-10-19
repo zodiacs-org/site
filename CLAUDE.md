@@ -200,6 +200,14 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   in its own colours (`compactCard`), which is what holds the 25MB bundle and
   the Russian family's ceiling; after a run, restore the pinned
   `og/v2/registry.png` and `og/v2/registry/` from git)
+- `public/assets/card-art/panel/` and `public/assets/card-art/share/` ←
+  `node scripts/build-card-art.mjs` (small AVIF variants of both twins of
+  every piece, dark and daylight, for the AI panels to inline, and JPEGs of
+  the dark twins for the share images; sources are the sign panels, the
+  cards' own pieces `public/assets/card-art/<name>-720.webp` and the daylight
+  twins `public/assets/card-art/<key>-light-720.webp`, which `--masters <dir>`
+  writes from 1536px source PNGs. libvips output, so not in the drift job;
+  rerun it when a source changes, then `npm run ai:build`)
 - `public/assets/og/registry/v4/` (twelve lot cards, `hub.png` and the
   manifest) ← `npm run data:og -- --only-registry` (Chromium draws each
   lot's text plate and the hub card with the brand lockup;
