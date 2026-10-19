@@ -153,6 +153,18 @@ const linkSigns = sign ? [sign] : cusp ? [cusp.a, cusp.b] : [];
 const birthdayPeople = peopleForBirthday(`/birthday/${slug}/`);
 const birthdayPeopleVisible = birthdayPeople.slice(0, BIRTHDAY_PEOPLE_VISIBLE);
 const birthdayPeopleMore = birthdayPeople.slice(BIRTHDAY_PEOPLE_VISIBLE);
+// "You share a birthday with A, B and C" in the hero: the first people the
+// page lists below, then how many more, which links to the list.
+const famousItems = [
+  ...birthdayPeopleVisible.map((person) => ({ label: person.displayName, href: `/people/${person.slug}/` })),
+  ...(birthdayPeopleMore.length > 0
+    ? [{ label: `${birthdayPeopleMore.length} ${birthdayPeopleMore.length === 1 ? 'other' : 'others'}`, href: '#bday-people-heading' }]
+    : []),
+];
+const famousParts = famousItems.map((item, index) => ({
+  ...item,
+  before: index === 0 ? '' : index === famousItems.length - 1 ? ' and ' : ', ',
+}));
 
 // A one-sign share card contradicts a boundary page such as August 23,
 // whose answer is explicitly year-and-time dependent. Use the birthday card
@@ -242,6 +254,9 @@ const jsonLd = [
           </li>
         ))}
       </ul>
+      {famousParts.length > 0 && (
+        <p class="bday-hero__famous">You share a birthday with {famousParts.map((part) => <>{part.before}<a href={part.href}>{part.label}</a></>)}.</p>
+      )}
       <div class="btn-row bday-hero__actions">
         <a class="btn btn--primary btn--lg" href="#chart"><span>Get your free birth chart</span><span class="orb" aria-hidden="true">↗</span></a>
         <a class="btn btn--glass btn--lg" href={`/${heroSign!.slug}/`}><span>Read the {heroSign!.name} guide</span></a>
@@ -595,6 +610,9 @@ const jsonLd = [
   .bday-answer :global(.sign-icon) { width: 22px; }
   .bday-answer :global(.bday-answer__second) { margin-left: -14px; box-shadow: 0 0 0 2px var(--void-1); border-radius: 50%; }
   .bday-answer--plain { padding-left: 14px; color: var(--ink-1); }
+  .bday-hero__famous { margin: 20px 0 0; max-width: 46ch; font-size: 0.98rem; line-height: 1.5; color: var(--ink-1); text-wrap: pretty; }
+  .bday-hero__famous a { color: var(--ink-0); text-decoration: underline; text-decoration-color: var(--hair-2); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .bday-hero__famous a:hover { text-decoration-color: var(--hue); }
   .bday-hero__actions { margin-top: 30px; }
   .bday-hero__reassure { margin-top: 16px; color: var(--ink-2); }
 
@@ -833,6 +851,7 @@ const jsonLd = [
     .bday-hero__lede { margin-top: 16px; font-size: 1.03rem; }
     .bday-answers { margin-top: 20px; gap: 6px; }
     .bday-answer { min-height: 34px; font-size: 0.84rem; }
+    .bday-hero__famous { margin-top: 16px; font-size: 0.92rem; }
     .bday-hero__actions { flex-direction: column; align-items: stretch; margin-top: 24px; }
     .bday-hero__actions .btn { width: 100%; }
     .bday-hero__reassure { text-align: center; }
