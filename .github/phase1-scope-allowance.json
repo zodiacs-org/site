@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "brand-lockup-20261019",
-  "baseCommit": "cb4b0a5e60d9f1f44f6df567ddaa900947bff39d",
+  "baseCommit": "bdcef5f678bd36a9dc9c23f41ee227f4cf634ad3",
   "protectedPaths": [
     "public/assets/app.js",
     "public/registry/aquarius/index.html",
