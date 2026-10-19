@@ -14,7 +14,13 @@ describe.skipIf(!existsSync(distRoot))('built compatibility pair pages', () => {
     'pt/compatibility/pisces-pisces/index.html',
   ])('%s keeps the hero on a short first-paint path', (path) => {
     const html = readFileSync(join(distRoot, path), 'utf8');
-    expect(html.match(/<style data-zdx-critical=/g)).toHaveLength(3);
+    // Base, the pair styles and the wheel at least; production flags can add
+    // more (account.css from the share control), and all of them are inlined.
+    const inlined = [...html.matchAll(/<style data-zdx-critical="([^"]+)"/g)].map((match) => match[1]);
+    expect(inlined.length).toBeGreaterThanOrEqual(3);
+    for (const name of [/^Base\./u, /^pair-page\./u, /^RelationshipWheel\./u]) {
+      expect(inlined.some((value) => name.test(value))).toBe(true);
+    }
     expect(html.match(/<link\b[^>]*\brel=["']stylesheet["'][^>]*>/gi)).toEqual([
       expect.stringMatching(/href="\/_astro\/calculator\.[A-Za-z0-9_-]+\.css"/),
     ]);
