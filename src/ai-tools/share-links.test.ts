@@ -4,6 +4,14 @@ import { OUTPUT_SCHEMAS } from './contracts';
 import {
   birthdayQuery,
   birthdayShareUrl,
+  chartTwinsQuery,
+  chartTwinsShareUrl,
+  famousChartShareUrl,
+  milestoneQuery,
+  milestoneShareUrl,
+  parseChartTwinsShare,
+  parseFamousChartShare,
+  parseMilestoneShare,
   horoscopeQuery,
   horoscopeShareUrl,
   parseBirthdayShare,
@@ -15,6 +23,10 @@ import {
 } from './share-links';
 import { executeAiTool, type AiCallContext } from './tools';
 import type { HoroscopeWindow } from './horoscope/window';
+import { lifeMilestones } from '../lib/occasions/milestones';
+import { matchTwins } from '../lib/sharing/twins';
+import { twinMatches, type IndexedPerson } from '../server/result-preview-model';
+import peopleIndex from './features/people-index.json';
 
 const params = (query: string) => new URLSearchParams(query);
 const NOW = new Date('2026-10-18T12:00:00Z');
@@ -75,6 +87,74 @@ describe('a horoscope share link', () => {
   });
 });
 
+describe('a chart twins share link', () => {
+  it('carries the Sun sign, and the Moon only when it was settled, never a name or a date', () => {
+    expect(chartTwinsShareUrl('https://zodiacs.org', { sun: 'taurus', moon: 'leo' })).toBe('https://zodiacs.org/share/chart-twins/?s=taurus&m=leo');
+    expect(chartTwinsShareUrl('https://zodiacs.org', { sun: 'pisces', moon: null })).toBe('https://zodiacs.org/share/chart-twins/?s=pisces');
+    expect(chartTwinsShareUrl('https://zodiacs.org', { sun: null, moon: 'leo' })).toBeNull();
+    const share = parseChartTwinsShare(params('s=taurus&m=leo&ref=chatgpt'))!;
+    expect(share).toEqual({ sun: 'taurus', moon: 'leo', ref: 'chatgpt' });
+    expect(chartTwinsQuery(share, true)).toBe('s=taurus&m=leo&ref=chatgpt');
+    for (const query of ['m=leo', 's=ophiuchus', 's=taurus&m=sun', 's=taurus&n=Audrey+Hepburn', 's=taurus&d=1990-05-03', 's=taurus&s=leo', 's=taurus&ref=x']) {
+      expect(parseChartTwinsShare(params(query)), query).toBeNull();
+    }
+  });
+
+  it('is matched on the server exactly as the tool matches twins, for every pair of signs', () => {
+    const people = (peopleIndex as unknown as { people: IndexedPerson[] }).people;
+    const directory = people.map((person) => ({ slug: person.slug, name: person.name, sun: person.sun.sign, moon: person.moon.sign }));
+    const signs = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
+    for (const sun of signs) for (const moon of [null, ...signs]) {
+      const tool = matchTwins({ sun, moon }, directory).map((match) => [match.person.slug, match.count]);
+      expect(twinMatches({ sun, moon }, people).map((match) => [match.person.slug, match.count]), `${sun} ${moon}`).toEqual(tool);
+    }
+  });
+});
+
+describe('a famous chart share link', () => {
+  it('carries a directory slug and nothing else', () => {
+    expect(famousChartShareUrl('https://zodiacs.org', 'frida-kahlo')).toBe('https://zodiacs.org/share/famous-chart/?p=frida-kahlo');
+    expect(famousChartShareUrl('https://zodiacs.org', 'Frida Kahlo')).toBeNull();
+    expect(parseFamousChartShare(params('p=frida-kahlo&ref=assistant'))).toEqual({ slug: 'frida-kahlo', ref: 'assistant' });
+    for (const query of ['p=Frida+Kahlo', 'p=frida-kahlo&n=Frida', 'p=../etc', 'p=frida--kahlo', `p=${'a'.repeat(65)}`, 'p=frida-kahlo&p=ada-lovelace', '']) {
+      expect(parseFamousChartShare(params(query)), query).toBeNull();
+    }
+  });
+});
+
+describe('a life milestone share link', () => {
+  const saturn = { kind: 'saturn-return', index: 1, age: 29, first: '2026-04-23T08:01:00.000Z', last: '2026-12-31T02:00:00.000Z' };
+
+  it('carries the milestone, its age and its days, never the birth date', () => {
+    expect(milestoneShareUrl('https://zodiacs.org', saturn)).toBe('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31');
+    const share = parseMilestoneShare(params('k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31&ref=chatgpt'))!;
+    expect(share).toEqual({ kind: 'saturn-return', index: 1, age: 29, first: '2026-04-23', last: '2026-12-31', ref: 'chatgpt' });
+    expect(milestoneQuery(share, true)).toBe('k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31&ref=chatgpt');
+  });
+
+  it('refuses a milestone that does not come at that age, or passes out of order', () => {
+    for (const query of [
+      'k=saturn-return&i=1&a=12&f=2026-04-23&l=2026-12-31',
+      'k=uranus-opposition&i=2&a=84&f=2026-04-23&l=2026-12-31',
+      'k=jupiter-return&i=1&a=12&f=2026-12-31&l=2026-04-23',
+      'k=jupiter-return&i=1&a=12&f=2026-01-01&l=2027-06-30',
+      'k=pluto-square&i=1&a=36&f=2026-04-23&l=2026-12-31',
+      'k=saturn-return&i=01&a=29&f=2026-04-23&l=2026-12-31',
+      'k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31&b=1997-03-15',
+      'k=saturn-return&i=1&a=29&f=2026-04-23',
+    ]) expect(parseMilestoneShare(params(query)), query).toBeNull();
+  });
+
+  it('accepts every milestone the tool gives a living person', () => {
+    const asOf = new Date('2026-10-19T12:00:00Z');
+    for (const year of [1926, 1937, 1948, 1959, 1966, 1977, 1984, 1997, 2008, 2019]) {
+      for (const milestone of lifeMilestones(new Date(`${year}-03-15T12:00:00Z`), asOf).milestones) {
+        expect(milestoneShareUrl('https://zodiacs.org', milestone), `${year} ${milestone.kind} ${milestone.index}`).not.toBeNull();
+      }
+    }
+  }, 120_000);
+});
+
 describe('the tools’ share links', () => {
   const window = JSON.parse(readFileSync(new URL('../data/horoscope-window.json', import.meta.url), 'utf8')) as HoroscopeWindow;
   const noon = new Date(`${window.generatedFor}T12:00:00Z`);
@@ -128,5 +208,27 @@ describe('the tools’ share links', () => {
     const choose = await executeAiTool('get_horoscope', {}, { now: () => noon, horoscopeWindow: async () => window });
     expect(choose.ok).toBe(true);
     if (choose.ok && choose.tool === 'get_horoscope') expect(choose.data.shareUrl ?? null).toBeNull();
+  });
+
+  it('give chart twins’ signs, a famous chart’s slug and the milestone shown, never a birth date', async () => {
+    const twins = await executeAiTool('find_chart_twins', { birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid' }, { occasions: true, now: () => NOW }, { ref: 'chatgpt' });
+    expect(twins.ok).toBe(true);
+    expect(OUTPUT_SCHEMAS.find_chart_twins.safeParse(twins).success).toBe(true);
+    if (twins.ok && twins.tool === 'find_chart_twins') {
+      expect(twins.data.shareUrl).toBe(`https://zodiacs.org/share/chart-twins/?s=taurus&m=${twins.data.you.moon}&ref=chatgpt`);
+    }
+    const untimed = await executeAiTool('find_chart_twins', { birthDate: '1990-05-03' }, { occasions: true, now: () => NOW });
+    if (untimed.ok && untimed.tool === 'find_chart_twins') expect(untimed.data.shareUrl).toBe('https://zodiacs.org/share/chart-twins/?s=taurus');
+    const famous = await executeAiTool('get_famous_chart', { name: 'Frida Kahlo' }, { occasions: true, now: () => NOW });
+    expect(OUTPUT_SCHEMAS.get_famous_chart.safeParse(famous).success).toBe(true);
+    if (famous.ok && famous.tool === 'get_famous_chart' && famous.data.found) expect(famous.data.shareUrl).toBe('https://zodiacs.org/share/famous-chart/?p=frida-kahlo');
+    const milestones = await executeAiTool('get_life_milestones', { birthDate: '1997-03-15' }, { occasions: true, now: () => NOW });
+    expect(milestones.ok).toBe(true);
+    expect(OUTPUT_SCHEMAS.get_life_milestones.safeParse(milestones).success).toBe(true);
+    if (milestones.ok && milestones.tool === 'get_life_milestones') {
+      const next = milestones.data.next!;
+      expect(milestones.data.shareUrl).toBe(`https://zodiacs.org/share/milestone/?k=${next.kind}&i=${next.index}&a=${next.age}&f=${next.first.slice(0, 10)}&l=${next.last.slice(0, 10)}`);
+      expect(milestones.data.shareUrl).not.toContain('1997');
+    }
   });
 });

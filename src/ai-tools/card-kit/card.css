@@ -44,6 +44,8 @@ p { margin: 0; }
 .card-head-text { display: grid; gap: 6px; min-width: 0; }
 .kicker { font: italic 400 19px/1.25 var(--serif); color: var(--accent); }
 .card h1 { margin: 0; font: 500 40px/1.06 var(--serif); letter-spacing: -.012em; text-wrap: balance; overflow-wrap: anywhere; }
+.card h1.title-long { font-size: 34px; }
+.card h1.title-longer { font-size: 29px; }
 .meta { margin-top: 2px; color: var(--muted); font-size: 15px; line-height: 1.45; }
 .meta strong { color: var(--ink); font-weight: 600; }
 .meta + .meta { margin-top: 0; }
@@ -205,6 +207,8 @@ code { font: 400 13px/1.5 var(--mono); overflow-wrap: anywhere; }
   main { padding: 10px 10px 14px; gap: 10px; }
   .card { padding: 20px 18px; gap: 18px; border-radius: 16px; }
   .card h1 { font-size: 33px; }
+  .card h1.title-long { font-size: 29px; }
+  .card h1.title-longer { font-size: 25px; }
   .kicker { font-size: 18px; }
   .ring { --size: 92px; --stroke: 7px; }
   .ring-number { font-size: 33px; }

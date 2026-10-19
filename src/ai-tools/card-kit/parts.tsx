@@ -82,6 +82,10 @@ export function Head({ kicker, title, meta, aside, art }: { kicker: ComponentChi
   </header>;
 }
 
+/** Title lengths past which a keepsake's title steps down: every title the cards set themselves is shorter, so only long names do. */
+const TITLE_LONG = 26;
+const TITLE_LONGER = 40;
+
 /**
  * The keepsake head: the hero art large across the top, the pastel sign
  * discs (one per sign the card is about, no outline) set on its lower edge,
@@ -90,12 +94,15 @@ export function Head({ kicker, title, meta, aside, art }: { kicker: ComponentChi
 export function Keepsake({ kicker, title, meta, art, signs = [] }: { kicker: ComponentChildren; title: ComponentChildren; meta?: ComponentChildren; art?: ArtPanel[]; signs?: (string | undefined)[] }) {
   const discs = [...new Set(signs.filter((src): src is string => !!src))];
   const hasArt = !!art && art.some((panel) => panel.src);
+  // Long names step the title down, as the share pictures fit theirs, so the card's main action stays on its first screen.
+  const length = typeof title === 'string' ? title.length : 0;
+  const fit = length > TITLE_LONGER ? 'title-longer' : length > TITLE_LONG ? 'title-long' : undefined;
   return <header class={`keepsake${hasArt ? ' has-art' : ''}${discs.length > 0 ? ' has-discs' : ''}`}>
     {hasArt && <Art panels={art!}/>}
     {discs.length > 0 && <div class="keepsake-discs" aria-hidden="true">{discs.map((src) => <SignDisc key={src} src={src} size="mark"/>)}</div>}
     <div class="keepsake-text">
       <p class="kicker">{kicker}</p>
-      <h1>{title}</h1>
+      <h1 class={fit}>{title}</h1>
       {meta && <p class="meta">{meta}</p>}
     </div>
   </header>;

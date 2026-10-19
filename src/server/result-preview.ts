@@ -1,11 +1,12 @@
 /**
- * Share links for five assistant cards: a compatibility score, a date's
- * rating, a birthday, the sky calendar's next event and a horoscope. Each has
+ * Share links for eight assistant cards: a compatibility score, a date's
+ * rating, a birthday, the sky calendar's next event, a horoscope, chart
+ * twins, a famous chart and a life milestone. Each has
  * a page with the result's picture and a way to try it, the 1200×630
  * preview image link previews show, and a 1080×1920 picture to post as a story. They read only the link's checked query
  * string (src/lib/share-results.ts, src/ai-tools/share-links.ts) and the
- * site's own committed data (the birthday table, the sky calendar's events
- * and the published horoscopes); nothing is looked up elsewhere, stored or
+ * site's own committed data (the birthday table, the sky calendar's events,
+ * the published horoscopes and the famous-people directory); nothing is looked up elsewhere, stored or
  * logged, and every response is uncacheable and kept out of search.
  */
 import { readFile } from 'node:fs/promises';
@@ -22,6 +23,13 @@ import {
 import {
   birthdayCardModel,
   type BirthdayCardModel,
+  chartTwinsCardModel,
+  type ChartTwinsCardModel,
+  famousChartCardModel,
+  type FamousChartCardModel,
+  type IndexedPerson,
+  milestoneCardModel,
+  type MilestoneCardModel,
   type BirthdayDay,
   type FamousBirthday,
   famousBirthdays,
@@ -45,6 +53,21 @@ import {
   BIRTHDAY_SHARE_PATH,
   type BirthdayShare,
   birthdayQuery,
+  CHART_TWINS_SHARE_IMAGE_PATH,
+  CHART_TWINS_SHARE_KEYS,
+  CHART_TWINS_SHARE_PATH,
+  chartTwinsQuery,
+  FAMOUS_CHART_SHARE_IMAGE_PATH,
+  FAMOUS_CHART_SHARE_KEYS,
+  FAMOUS_CHART_SHARE_PATH,
+  famousChartQuery,
+  MILESTONE_SHARE_IMAGE_PATH,
+  MILESTONE_SHARE_KEYS,
+  MILESTONE_SHARE_PATH,
+  milestoneQuery,
+  parseChartTwinsShare,
+  parseFamousChartShare,
+  parseMilestoneShare,
   HOROSCOPE_SHARE_IMAGE_PATH,
   HOROSCOPE_SHARE_KEYS,
   HOROSCOPE_SHARE_PATH,
@@ -81,6 +104,8 @@ export const RESULT_SHARE_ROUTES = [
   'compatibility-link', 'compatibility-image', 'occasion-link', 'occasion-image',
   'birthday-link', 'birthday-image', 'sky-calendar-link', 'sky-calendar-image', 'horoscope-link', 'horoscope-image',
   'compatibility-story', 'occasion-story', 'birthday-story', 'sky-calendar-story', 'horoscope-story',
+  'chart-twins-link', 'chart-twins-image', 'chart-twins-story', 'famous-chart-link', 'famous-chart-image', 'famous-chart-story',
+  'milestone-link', 'milestone-image', 'milestone-story',
 ] as const;
 export type ResultShareRoute = typeof RESULT_SHARE_ROUTES[number];
 
@@ -90,6 +115,9 @@ export const OCCASION_SHARE_STORY_PATH = '/api/og/occasion-story';
 export const BIRTHDAY_SHARE_STORY_PATH = '/api/og/birthday-story';
 export const SKY_CALENDAR_SHARE_STORY_PATH = '/api/og/sky-calendar-story';
 export const HOROSCOPE_SHARE_STORY_PATH = '/api/og/horoscope-story';
+export const CHART_TWINS_SHARE_STORY_PATH = '/api/og/chart-twins-story';
+export const FAMOUS_CHART_SHARE_STORY_PATH = '/api/og/famous-chart-story';
+export const MILESTONE_SHARE_STORY_PATH = '/api/og/milestone-story';
 
 /** An image route takes only its own keys, each once; a page skips the ones it does not use. */
 const isPictureRoute = (route: ResultShareRoute) => route.endsWith('-image') || route.endsWith('-story');
@@ -160,7 +188,7 @@ async function discImages(signs: readonly PreviewSign[]): Promise<Map<ShareSign,
 // at 720px, as JPEG because the renderer cannot decode WebP, with the cards' dimming of the dark art
 // (saturate .92, brightness .86) already in the file. Every piece is 3:2.
 // One literal address per piece, so the deployment's file tracing packs them all.
-export type ShareArt = ShareSign | 'wedding-hero' | 'sky-calendar-hero';
+export type ShareArt = ShareSign | 'wedding-hero' | 'sky-calendar-hero' | 'twins-hero' | 'milestones-hero';
 const ART_FILES: Readonly<Record<ShareArt, URL>> = {
   aries: new URL('../../public/assets/card-art/share/aries-1200.jpg', import.meta.url),
   taurus: new URL('../../public/assets/card-art/share/taurus-1200.jpg', import.meta.url),
@@ -176,6 +204,8 @@ const ART_FILES: Readonly<Record<ShareArt, URL>> = {
   pisces: new URL('../../public/assets/card-art/share/pisces-1200.jpg', import.meta.url),
   'wedding-hero': new URL('../../public/assets/card-art/share/wedding-hero-720.jpg', import.meta.url),
   'sky-calendar-hero': new URL('../../public/assets/card-art/share/sky-calendar-hero-720.jpg', import.meta.url),
+  'twins-hero': new URL('../../public/assets/card-art/share/twins-hero-720.jpg', import.meta.url),
+  'milestones-hero': new URL('../../public/assets/card-art/share/milestones-hero-720.jpg', import.meta.url),
 };
 const arts = new Map<ShareArt, Promise<string>>();
 
@@ -197,6 +227,8 @@ interface ShareData {
   famous: ReadonlyMap<string, FamousBirthday>;
   skyEvents: readonly SkyEvent[];
   horoscopes: Pick<HoroscopeWindow, 'editions'>;
+  /** The people the site publishes, for chart twins and a famous chart. */
+  people: readonly IndexedPerson[];
 }
 let shareData: Promise<ShareData> | null = null;
 
@@ -212,12 +244,13 @@ function loadShareData(): Promise<ShareData> {
     readJson<{ eclipses: SkyData['eclipses'] }>(new URL('../data/eclipses.json', import.meta.url)),
     readJson<Pick<HoroscopeWindow, 'editions'>>(new URL('../data/horoscope-window.json', import.meta.url)),
     // The people the site publishes, as the AI tools index them (scripts/build-ai-people.mjs).
-    readJson<{ people: Parameters<typeof famousBirthdays>[0] }>(new URL('../ai-tools/features/people-index.json', import.meta.url)),
+    readJson<{ people: (Parameters<typeof famousBirthdays>[0][number] & IndexedPerson)[] }>(new URL('../ai-tools/features/people-index.json', import.meta.url)),
   ]).then(([birthdays, sky, eclipses, horoscopes, people]) => ({
     birthdays: birthdays.days,
     famous: famousBirthdays(people.people),
     skyEvents: skyEvents({ moons: sky.moons, retrogrades: sky.retrogrades, eclipses: eclipses.eclipses }),
     horoscopes: { editions: horoscopes.editions },
+    people: people.people,
   }));
   shareData = pending;
   void pending.catch(() => { if (shareData === pending) shareData = null; });
@@ -350,13 +383,23 @@ function fit(lines: string[], width: number, max: number, min: number): number {
 const titleLine = (text: string, size: number) => h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: size, lineHeight: 1.03, color: INK } }, text);
 
 /** The words at the bottom left: the discs, the kicker in the card's hue, the title, and the score in a line. */
-function words(parts: { discs: VNode<any>[]; kicker: string; hue: string; title: VNode<any>[]; line: string }) {
+function words(parts: { discs: VNode<any>[]; kicker: string; hue: string; title: VNode<any>[]; line: string | VNode<any>[] }) {
   return h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '64px', width: `${TEXT_WIDTH}px` } },
     ...parts.discs,
     h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: parts.hue } }, parts.kicker),
     ...parts.title,
-    h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '18px', maxWidth: '600px', textWrap: 'balance' } }, parts.line));
+    h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '18px', maxWidth: '600px', textWrap: 'balance' } }, ...(typeof parts.line === 'string' ? [parts.line] : parts.line)));
 }
+
+/**
+ * A line whose first word ends in a comma, as two runs: the renderer kerns
+ * "r," when it draws a word but not when it measures it, which leaves a wide
+ * gap after "Painter," or "Composer,"; split at the comma, nothing is kerned.
+ */
+const commaLine = (text: string) => {
+  const at = text.indexOf(', ');
+  return at < 0 ? [h('span', null, text)] : [h('span', null, text.slice(0, at)), h('span', null, text.slice(at))];
+};
 
 /**
  * A share image. `front` is the Sun sign of the one person it is made for,
@@ -413,6 +456,58 @@ export function skyCalendarCard(model: SkyCalendarCardModel, art: string[]) {
 /** A horoscope: the sign's panel, the day or week, the sign, and the reading's own line for it. */
 export function horoscopeCard(model: HoroscopeCardModel, images: Map<ShareSign, string>, art: string[]) {
   return frame(art, words({ discs: discRow([model.sign], images), kicker: model.kicker, hue: model.hue, title: [titleBlock(model.signName)], line: model.line }), model.sign.slug);
+}
+
+/** A quote behind a rule in the card's hue, as the sky calendar's story sets its event. */
+const quoteBlock = (text: string, hue: string, size: number) => h('div', { style: { display: 'flex', marginTop: '4px', paddingLeft: '26px', borderLeft: `3px solid ${hue}` } },
+  h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: size, lineHeight: 1.12, color: INK, textWrap: 'balance' } }, text));
+
+/** Chart twins (B, the line as a quote): the twin cameos, the signs' discs, the first twin as a quote, and how many share the signs. */
+export function chartTwinsCard(model: ChartTwinsCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return frame(art, words({
+    discs: discRow(model.signs, images),
+    kicker: 'Chart twins',
+    hue: model.hue,
+    title: [quoteBlock(model.quote, model.hue, fit([model.quote], TEXT_WIDTH - 29, 60, 40))],
+    line: `${model.count}.`,
+  }), model.sun);
+}
+
+const italicLine = (text: string, size: number, marginTop: number) =>
+  h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: size, lineHeight: 1.25, color: INK_SOFT, marginTop: `${marginTop}px` } }, text);
+
+/** A famous chart (A, the name as a trophy): the Sun sign's panel and disc, the name, the Sun's degree, and who they were. */
+export function famousChartCard(model: FamousChartCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return frame(art, words({
+    discs: discRow([model.sign], images),
+    kicker: 'A famous birth chart',
+    hue: model.hue,
+    title: [titleBlock(model.name), italicLine(model.sunLine, 34, 12)],
+    line: commaLine(`${model.born}.`),
+  }), model.sign.slug);
+}
+
+/** The age in a plain ring in the milestone's hue, as the chat card draws it. */
+function ageRing(age: number, hue: string, size: number, stroke: number, numberSize: number, labelSize: number) {
+  const radius = (size - stroke) / 2;
+  return h('div', { style: { display: 'flex', position: 'relative', width: `${size}px`, height: `${size}px`, alignItems: 'center', justifyContent: 'center', flexShrink: 0 } },
+    h('svg', { width: size, height: size, viewBox: `0 0 ${size} ${size}`, style: { position: 'absolute', top: 0, left: 0 } },
+      h('circle', { cx: size / 2, cy: size / 2, r: radius, fill: 'rgba(6,7,9,0.72)', stroke: hue, 'stroke-width': stroke })),
+    h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } },
+      h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: numberSize, lineHeight: 1, color: INK } }, String(age)),
+      h('div', { style: { display: 'flex', fontSize: labelSize, color: MUTED, marginTop: `${Math.round(numberSize * 0.08)}px` } }, 'age')));
+}
+
+/** A life milestone (A, the number as a trophy): the hourglass, the age in its ring beside the milestone, whether it is coming or under way, and its dates. */
+export function milestoneCard(model: MilestoneCardModel, art: string[]) {
+  return frame(art, h('div', { style: { display: 'flex', flexDirection: 'column', position: 'absolute', left: '64px', bottom: '64px', width: `${TEXT_WIDTH}px` } },
+    h('div', { style: { display: 'flex', alignItems: 'center' } },
+      ageRing(model.age, model.hue, 172, 3, 74, 20),
+      h('div', { style: { display: 'flex', flexDirection: 'column', marginLeft: '30px', flexGrow: 1 } },
+        h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 30, lineHeight: 1.25, color: model.hue } }, 'Life milestones'),
+        titleLine(model.title, fit([model.title], TEXT_WIDTH - 202, 60, 40)))),
+    ...(model.status ? [italicLine(model.status, 34, 30)] : []),
+    h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: model.status ? '6px' : '30px' } }, model.span)));
 }
 
 // ── Responses ────────────────────────────────────────────────────────
@@ -524,6 +619,36 @@ export async function handleHoroscopeImageRequest(request: Request): Promise<Res
   return imageFor([model.sign], [share.sign], (images, art) => horoscopeCard(model, images, art));
 }
 
+export async function handleChartTwinsImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseChartTwinsShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = chartTwinsCardModel(share, data.people);
+  if (!model) return errorResponse(400);
+  return imageFor(model.signs, ['twins-hero'], (images, art) => chartTwinsCard(model, images, art));
+}
+
+export async function handleFamousChartImageRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseFamousChartShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = famousChartCardModel(share, data.people);
+  if (!model) return errorResponse(400);
+  return imageFor([model.sign], artOfSigns([model.sign]), (images, art) => famousChartCard(model, images, art));
+}
+
+export async function handleMilestoneImageRequest(request: Request, now: () => Date = () => new Date()): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseMilestoneShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = milestoneCardModel(share, now());
+  return imageFor([], ['milestones-hero'], (_images, art) => milestoneCard(model, art));
+}
+
 // ── Stories (1080×1920) ──────────────────────────────────────────────
 //
 // The picture to post as a story, in the layouts the owner picked for each
@@ -632,8 +757,8 @@ const storyKicker = (text: string, hue: string, size = 46) =>
 const storyTitle = (text: string, size: number, align: 'center' | 'left' = 'center') =>
   h('div', { style: { display: 'flex', fontFamily: SERIF, fontWeight: 500, fontSize: size, lineHeight: 1.04, color: INK, textAlign: align, textWrap: 'balance', justifyContent: align === 'center' ? 'center' : 'flex-start' } }, text);
 
-const storyLine = (text: string, size = 40, align: 'center' | 'left' = 'center') =>
-  h('div', { style: { display: 'flex', fontSize: size, lineHeight: 1.38, color: INK_SOFT, marginTop: '24px', maxWidth: '880px', textAlign: align, textWrap: 'balance', justifyContent: align === 'center' ? 'center' : 'flex-start' } }, text);
+const storyLine = (text: string | VNode<any>[], size = 40, align: 'center' | 'left' = 'center') =>
+  h('div', { style: { display: 'flex', fontSize: size, lineHeight: 1.38, color: INK_SOFT, marginTop: '24px', maxWidth: '880px', textAlign: align, textWrap: 'balance', justifyContent: align === 'center' ? 'center' : 'flex-start' } }, ...(typeof text === 'string' ? [text] : text));
 
 /** The words' column, ending above the reply bar. */
 function storyColumn(children: VNode<any>[], align: 'center' | 'flex-start' = 'center') {
@@ -741,6 +866,42 @@ export function horoscopeStory(model: HoroscopeCardModel, images: Map<ShareSign,
   ]), model.sign.slug);
 }
 
+/** Chart twins (C, the keepsake): the cameos, the discs, the first twin and how many share the signs. */
+export function chartTwinsStory(model: ChartTwinsCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return storyFrame(art, storyColumn([
+    ...storyDiscs(model.signs, images),
+    storyKicker('Chart twins', model.hue),
+    storyTitle(model.quote, storyFit([model.quote], 100, 60)),
+    storyLine(`${model.count}.`),
+    storyAction('Find your chart twins', 'zodiacs.org/chart-twins'),
+  ]), model.sun);
+}
+
+/** A famous chart (A, the name as a trophy): the Sun sign's panel, the disc, the name large, the Sun's degree and who they were. */
+export function famousChartStory(model: FamousChartCardModel, images: Map<ShareSign, string>, art: string[]) {
+  return storyFrame(art, storyColumn([
+    ...storyDiscs([model.sign], images),
+    storyTitle(model.name, storyFit([model.name], 132, 72)),
+    h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 52, lineHeight: 1.2, color: INK_SOFT, marginTop: '28px' } }, model.sunLine),
+    storyLine(commaLine(`${model.born}.`)),
+    storyAction(`Open ${model.name}’s chart`, `zodiacs.org/people/${model.slug}`),
+  ]), model.sign.slug);
+}
+
+/** A life milestone (C, the keepsake): the hourglass, the milestone, and the age kept small beside whether it is coming and its dates. */
+export function milestoneStory(model: MilestoneCardModel, art: string[]) {
+  return storyFrame(art, storyColumn([
+    storyKicker('Life milestones', model.hue),
+    storyTitle(model.title, storyFit([model.title], 112, 64)),
+    h('div', { style: { display: 'flex', alignItems: 'center', marginTop: '40px', padding: '18px 40px 18px 18px', borderRadius: '999px', background: 'rgba(15,18,26,0.82)', border: `1px solid ${HAIRLINE}` } },
+      ageRing(model.age, model.hue, 176, 3, 76, 22),
+      h('div', { style: { display: 'flex', flexDirection: 'column', marginLeft: '30px', maxWidth: '560px' } },
+        ...(model.status ? [h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: 44, lineHeight: 1.2, color: INK } }, model.status)] : []),
+        h('div', { style: { display: 'flex', fontSize: 34, lineHeight: 1.3, color: INK_SOFT, marginTop: model.status ? '8px' : '0px' } }, model.span))),
+    storyAction('When is yours?', 'zodiacs.org/occasions/milestones'),
+  ]));
+}
+
 const renderStory = (element: VNode<any>) => renderImage(element, STORY_SIZE);
 
 export async function handleCompatibilityStoryRequest(request: Request): Promise<Response> {
@@ -800,6 +961,36 @@ export async function handleHoroscopeStoryRequest(request: Request): Promise<Res
   const model = horoscopeCardModel(share, data.horoscopes);
   if (!model) return errorResponse(400);
   return storyFor([model.sign], [share.sign], (images, art) => horoscopeStory(model, images, art));
+}
+
+export async function handleChartTwinsStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseChartTwinsShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = chartTwinsCardModel(share, data.people);
+  if (!model) return errorResponse(400);
+  return storyFor(model.signs, ['twins-hero'], (images, art) => chartTwinsStory(model, images, art));
+}
+
+export async function handleFamousChartStoryRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseFamousChartShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const data = await loadShareData().catch(() => null);
+  if (!data) return errorResponse(503);
+  const model = famousChartCardModel(share, data.people);
+  if (!model) return errorResponse(400);
+  return storyFor([model.sign], artOfSigns([model.sign]), (images, art) => famousChartStory(model, images, art));
+}
+
+export async function handleMilestoneStoryRequest(request: Request, now: () => Date = () => new Date()): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const share = parseMilestoneShare(new URL(request.url).searchParams);
+  if (!share) return errorResponse(400);
+  const model = milestoneCardModel(share, now());
+  return storyFor([], ['milestones-hero'], (_images, art) => milestoneStory(model, art));
 }
 
 // ── The page a share link opens ──────────────────────────────────────
@@ -1052,6 +1243,122 @@ export async function handleOccasionLinkRequest(request: Request): Promise<Respo
   }));
 }
 
+/** The chart twins tool's note (src/ai-tools/features/people.ts, TWINS_NOTES.limit), which the share page keeps. */
+const TWINS_NOTE = 'Birth times in this directory are unknown, so we compare verified Sun and Moon signs only. Rising signs are not compared.';
+const TWINS_ABOUT = 'Zodiacs matches the famous people it publishes by the Sun and Moon signs they were born with.';
+/** The milestones tool's note (src/ai-tools/contracts.ts), which the share page keeps. */
+const MILESTONE_NOTE = 'Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.';
+/** The people page's caption for the noon reference chart (src/ai-tools/features/people.ts, noonChartNote), in plain punctuation. */
+const noonNote = (birthplace: string) => `Positions at 12:00 civil time in ${birthplace}, a reference instant, not a birth time. No houses, rising sign, angles, or sect were computed.`;
+
+function defaultChartTwinsPage(origin: string): SharePage {
+  return {
+    title: 'Chart twins on Zodiacs',
+    description: 'Famous people who share your Sun or Moon sign.',
+    heading: 'Famous people with your signs',
+    imageUrl: `${origin}/assets/og/v2/tool/chart-twins.png`,
+    imageType: 'image/png',
+    imageAlt: 'Chart twins on Zodiacs',
+    explanation: TWINS_ABOUT,
+    action: { label: 'Find your chart twins', href: '/chart-twins/' },
+    note: TWINS_NOTE,
+  };
+}
+
+function defaultFamousChartPage(origin: string): SharePage {
+  return {
+    title: 'Famous birth charts on Zodiacs',
+    description: 'The birth charts of famous people, from the dates they were born.',
+    heading: 'Famous birth charts',
+    imageUrl: `${origin}/assets/og/v2/share.png`,
+    imageType: 'image/png',
+    imageAlt: 'Zodiacs',
+    explanation: 'Zodiacs publishes the birth charts of famous people, from the dates they were born.',
+    action: { label: 'See the people Zodiacs publishes', href: '/people/' },
+    note: SHARE_NOTE,
+  };
+}
+
+function defaultMilestonePage(origin: string): SharePage {
+  return {
+    title: 'Life milestones on Zodiacs',
+    description: 'When your Saturn return, Jupiter returns and Uranus opposition come.',
+    heading: 'Your sky milestones',
+    imageUrl: `${origin}/assets/og/v2/tool/saturn-return.png`,
+    imageType: 'image/png',
+    imageAlt: 'Life milestones on Zodiacs',
+    explanation: 'Zodiacs works out when Saturn and Jupiter come back to where they were at your birth, and when Uranus stands opposite.',
+    action: { label: 'Find your own milestones', href: '/occasions/milestones/' },
+    note: MILESTONE_NOTE,
+  };
+}
+
+export async function handleChartTwinsLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseChartTwinsShare(url.searchParams);
+  const data = share ? await loadShareData().catch(() => null) : null;
+  const model = share && data ? chartTwinsCardModel(share, data.people) : null;
+  if (!share || !model) return htmlResponse(sharePageHtml(defaultChartTwinsPage(url.origin)));
+  return htmlResponse(sharePageHtml({
+    title: `${model.quote}: chart twins on Zodiacs`,
+    description: `${model.count}. ${TWINS_ABOUT}`,
+    heading: model.quote,
+    imageUrl: `${url.origin}${CHART_TWINS_SHARE_IMAGE_PATH}?${chartTwinsQuery(share)}`,
+    story: { href: `${CHART_TWINS_SHARE_STORY_PATH}?${chartTwinsQuery(share)}`, filename: `zodiacs-chart-twins-${share.sun}-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `Chart twins: ${model.quote}. ${model.count}.`,
+    explanation: `${model.count}. ${TWINS_ABOUT}`,
+    action: { label: 'Find your chart twins', href: withRef('/chart-twins/', share.ref) },
+    more: { label: `${model.first.name}’s chart`, href: withRef(`/people/${model.first.slug}/`, share.ref) },
+    note: TWINS_NOTE,
+  }));
+}
+
+export async function handleFamousChartLinkRequest(request: Request): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseFamousChartShare(url.searchParams);
+  const data = share ? await loadShareData().catch(() => null) : null;
+  const model = share && data ? famousChartCardModel(share, data.people) : null;
+  const person = model && data ? data.people.find((candidate) => candidate.slug === model.slug) : null;
+  if (!share || !model || !person) return htmlResponse(sharePageHtml(defaultFamousChartPage(url.origin)));
+  return htmlResponse(sharePageHtml({
+    title: `${model.name}’s birth chart on Zodiacs`,
+    description: `${model.sunLine}. ${model.bornIn}.`,
+    heading: model.name,
+    imageUrl: `${url.origin}${FAMOUS_CHART_SHARE_IMAGE_PATH}?${famousChartQuery(share)}`,
+    story: { href: `${FAMOUS_CHART_SHARE_STORY_PATH}?${famousChartQuery(share)}`, filename: `zodiacs-${model.slug}-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `A famous birth chart: ${model.name}, ${model.sunLine}.`,
+    explanation: `${model.sunLine}. ${model.lede}`,
+    action: { label: `Open ${model.name}’s chart`, href: withRef(`/people/${model.slug}/`, share.ref) },
+    more: { label: 'Find your chart twins', href: withRef('/chart-twins/', share.ref) },
+    note: noonNote(person.birthplace),
+  }));
+}
+
+export async function handleMilestoneLinkRequest(request: Request, now: () => Date = () => new Date()): Promise<Response> {
+  if (request.method !== 'GET') return errorResponse(405);
+  const url = new URL(request.url);
+  const share = parseMilestoneShare(url.searchParams);
+  if (!share) return htmlResponse(sharePageHtml(defaultMilestonePage(url.origin)));
+  const model = milestoneCardModel(share, now());
+  const when = model.status ? `${model.status}: ${model.span}` : model.span;
+  return htmlResponse(sharePageHtml({
+    title: `${model.heading}: life milestones on Zodiacs`,
+    description: `${when}. ${model.about}`,
+    heading: model.heading,
+    imageUrl: `${url.origin}${MILESTONE_SHARE_IMAGE_PATH}?${milestoneQuery(share)}`,
+    story: { href: `${MILESTONE_SHARE_STORY_PATH}?${milestoneQuery(share)}`, filename: `zodiacs-${share.kind}-${share.index}-story.jpg` },
+    imageType: 'image/jpeg',
+    imageAlt: `${model.heading}. ${when}.`,
+    explanation: `${when}. ${model.about}`,
+    action: { label: 'Find your own milestones', href: withRef('/occasions/milestones/', share.ref) },
+    note: MILESTONE_NOTE,
+  }));
+}
+
 // ── The deployed function's entry ────────────────────────────────────
 
 const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly string[]; handle: (request: Request) => Promise<Response> }>> = {
@@ -1070,6 +1377,15 @@ const ROUTES: Readonly<Record<ResultShareRoute, { path: string; keys: readonly s
   'birthday-story': { path: BIRTHDAY_SHARE_STORY_PATH, keys: BIRTHDAY_SHARE_KEYS, handle: handleBirthdayStoryRequest },
   'sky-calendar-story': { path: SKY_CALENDAR_SHARE_STORY_PATH, keys: SKY_CALENDAR_SHARE_KEYS, handle: handleSkyCalendarStoryRequest },
   'horoscope-story': { path: HOROSCOPE_SHARE_STORY_PATH, keys: HOROSCOPE_SHARE_KEYS, handle: handleHoroscopeStoryRequest },
+  'chart-twins-link': { path: CHART_TWINS_SHARE_PATH, keys: CHART_TWINS_SHARE_KEYS, handle: handleChartTwinsLinkRequest },
+  'chart-twins-image': { path: CHART_TWINS_SHARE_IMAGE_PATH, keys: CHART_TWINS_SHARE_KEYS, handle: handleChartTwinsImageRequest },
+  'chart-twins-story': { path: CHART_TWINS_SHARE_STORY_PATH, keys: CHART_TWINS_SHARE_KEYS, handle: handleChartTwinsStoryRequest },
+  'famous-chart-link': { path: FAMOUS_CHART_SHARE_PATH, keys: FAMOUS_CHART_SHARE_KEYS, handle: handleFamousChartLinkRequest },
+  'famous-chart-image': { path: FAMOUS_CHART_SHARE_IMAGE_PATH, keys: FAMOUS_CHART_SHARE_KEYS, handle: handleFamousChartImageRequest },
+  'famous-chart-story': { path: FAMOUS_CHART_SHARE_STORY_PATH, keys: FAMOUS_CHART_SHARE_KEYS, handle: handleFamousChartStoryRequest },
+  'milestone-link': { path: MILESTONE_SHARE_PATH, keys: MILESTONE_SHARE_KEYS, handle: (request) => handleMilestoneLinkRequest(request) },
+  'milestone-image': { path: MILESTONE_SHARE_IMAGE_PATH, keys: MILESTONE_SHARE_KEYS, handle: (request) => handleMilestoneImageRequest(request) },
+  'milestone-story': { path: MILESTONE_SHARE_STORY_PATH, keys: MILESTONE_SHARE_KEYS, handle: (request) => handleMilestoneStoryRequest(request) },
 };
 
 export const isResultShareRoute = (value: unknown): value is ResultShareRoute => typeof value === 'string' && (RESULT_SHARE_ROUTES as readonly string[]).includes(value);

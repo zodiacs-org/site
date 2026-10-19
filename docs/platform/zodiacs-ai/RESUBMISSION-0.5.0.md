@@ -4,6 +4,27 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 20 October: share links for the last three cards
+
+`find_chart_twins`, `get_famous_chart` and `get_life_milestones` now return
+a `shareUrl` too, so all eight cards can be shared as a picture link with a
+story picture, in the directions the owner picked on 18 October:
+
+- chart twins: the Sun sign and a settled Moon sign, never the birth date;
+- a famous chart: the person's directory slug;
+- a life milestone: the milestone the card leads with, its age and its
+  dates, never the birth date.
+
+Each tool's description ends by telling the assistant to give that link
+exactly, and the three chat cards lead with it ("Share your chart twins",
+"Share this chart", "Share your milestone"). `tools/list` changes for these
+three tools: one sentence in each description and a nullable `shareUrl` in
+each output schema, so the rescan after the deploy picks them up with the
+fixes below. On the chat cards a long pair of names now steps the title
+down so the main action stays on the first screen.
+`zodiacs-developer-0.3.13.zip` is rebuilt in place; `zodiacs-sky-0.5.0.zip`
+is unchanged.
+
 ## Update, 20 October: three bugs fixed before the rescan (#797)
 
 Found while rating the plugins for resubmission on 19 October:
