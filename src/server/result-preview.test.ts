@@ -291,6 +291,8 @@ describe('share preview images', () => {
     ['date', () => handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${OCCASION}`))],
     ['accented names', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?a=%C5%81ukasz&b=Zo%C3%AB&score=63&attraction=70&communication=59&stability=58&v=good'))],
     ['accented names on a date', () => handleOccasionImageRequest(new Request('https://zodiacs.org/api/og/occasion-image?o=anniversary&d=2027-09-04&n=%C5%81ucja+%26+%C3%96mer&p=Gda%C5%84sk&sun=virgo&moon=pisces&score=72&v=good'))],
+    ['Cyrillic names', () => handleCompatibilityImageRequest(new Request(`https://zodiacs.org/api/og/compatibility-image?${new URLSearchParams({ a: 'Анна', b: 'Иван', score: '63', attraction: '70', communication: '59', stability: '58', v: 'good' })}`))],
+    ['Cyrillic names on a date', () => handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${new URLSearchParams({ o: 'anniversary', d: '2027-09-04', n: 'Анна & Іван', p: 'Київ', sun: 'virgo', moon: 'pisces', score: '72', v: 'good' })}`))],
     ['one unknown sign', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?bs=pisces&score=41&attraction=55&communication=38&stability=30&v=challenging'))],
     ['birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=05-03'))],
     ['cusp birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=04-20'))],

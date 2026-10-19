@@ -4,6 +4,30 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 20 October: three bugs fixed before the rescan (#797)
+
+Found while rating the plugins for resubmission on 19 October:
+
+- `get_sky_calendar` in Russian answered `calculation-failed`. The runtimes
+  are Node bundles built outside Vite, and the Russian copy reads
+  `import.meta.env.SSR`; the build now defines it.
+  `src/ai-tools/bundle-languages.test.ts` runs the generated bundles in all
+  six languages.
+- The wedding and occasion line wrote "A Aries Sun"; it now reads "An Aries
+  Sun".
+- Share links dropped Cyrillic names. The preview renderer now carries EB
+  Garamond's Cyrillic, so "Анна and Иван" stays on the link and the picture.
+
+`tools/list` changes in two output schemas: the literal `note` of
+`get_compatibility` and of the occasion tools now says "for insight and fun,
+not a guarantee …" with a comma, as the share pages do. The rescan after the
+deploy picks it up with the other changes. `zodiacs-developer-0.3.13.zip` is
+rebuilt in place; `zodiacs-sky-0.5.0.zip` is unchanged.
+
+The listing's About loses its two dashes: "Compare two people's charts,
+whether partners, friends or family, and get a compatibility score …"
+(1,784 characters). Paste the About from "The listing" below into the draft.
+
 ## Update, 19 October: three more share links (#782, draft)
 
 The owner picked keepsake link previews for the birthday, sky calendar and
@@ -122,11 +146,11 @@ The source of truth is `integrations/chatgpt/chatgpt-app-submission.json`.
   links. Support stays admin@zodiacs.org.
 - **Test cases:** the five positive and three negative cases in the
   submission file, unchanged.
-- **About** (1,774 characters):
+- **About** (1,784 characters):
 
 > Explore your birth chart, see how compatible you are with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then tells you what astrology says about it.
 >
-> Build an interactive birth chart and see your planets' signs. Compare two people's charts—partners, friends or family—and get a compatibility score out of 100 for attraction, communication and long-term stability, or see how you match with a famous person Zodiacs publishes. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
+> Build an interactive birth chart and see your planets' signs. Compare two people's charts, whether partners, friends or family, and get a compatibility score out of 100 for attraction, communication and long-term stability, or see how you match with a famous person Zodiacs publishes. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
 >
 > Read daily and weekly Sun-sign horoscopes and a personal forecast for your week from your own chart, follow Moon phases, retrogrades and planets changing signs, and subscribe to the sky calendar in Google Calendar, Apple Calendar or Outlook.
 >
