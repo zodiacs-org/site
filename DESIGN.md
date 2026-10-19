@@ -218,6 +218,19 @@ Anatomy, top to bottom (use only the parts a card needs, in this order):
 6. The fine print in small muted text, then, outside the card, the panel's
    one-line privacy footer.
 
+Story pictures (owner's picks, 2026-10-18): each share link's page offers
+"Save the picture for your story", a 1080 × 1920 JPEG of the same result
+(`/api/og/{kind}-story`, from the share query alone). The art runs across
+the top and fades into the void; the lockup sits at 28px in a pill under the
+apps' top bar (296px down); the words end 380px above the bottom, clear of
+the reply bar, with the way to try it and the address. Compatibility shows
+the score as a trophy (A: both panels facing, the discs, a 400px ring, the
+verdict, the two names); the sky calendar shows its event as a quote (B: the
+Sky dial, the event in large italic behind a rule); a date, a birthday and a
+horoscope are keepsakes (C), a date keeping its score small, so a low score
+never headlines a wedding. The drawn arrow stands in for the text arrow,
+which the renderer's fonts lack.
+
 Artwork:
 
 - The cards reuse the website redesign's sign panels: the twelve spotlit
