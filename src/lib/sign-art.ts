@@ -23,6 +23,20 @@ export function signArtSrcset(slug: string): string {
   return SIGN_ART_WIDTHS.map((width) => `${signArtSrc(slug, width)} ${width}w`).join(', ');
 }
 
+/**
+ * AVIF copies of the same panels (scripts/build-sign-art-avif.mjs), about 40%
+ * lighter than the WebP. The 960 step fits a 1.75x phone, where the pair
+ * hero draws each painting 495px wide and the WebP set jumps from 720 to
+ * 1200. Offered only to screens at 1.5x and above; 1x screens keep the WebP
+ * they have always rendered.
+ */
+export const SIGN_ART_AVIF_WIDTHS = [720, 960, 1200] as const;
+export const SIGN_ART_AVIF_MEDIA = '(min-resolution: 1.5dppx)';
+
+export function signArtAvifSrcset(slug: string): string {
+  return SIGN_ART_AVIF_WIDTHS.map((width) => `/assets/sign-art/${slug}-${width}.avif ${width}w`).join(', ');
+}
+
 const SIGN_ART_ALT: Record<CatalogLocale, Record<string, string>> = {
   en: {
     aries: 'Illustrated ram with golden horns in side profile, standing on an ornate bronze and black zodiac dial',
