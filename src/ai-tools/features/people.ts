@@ -19,6 +19,7 @@ import { birthdaySlug } from '../../lib/birthdays';
 import { validOccasionDate } from '../../lib/occasions/card';
 import { matchTwins, twinSigns, type TwinPerson } from '../../lib/sharing/twins';
 import rawIndex from './people-index.json';
+import { chartTwinsShareUrl, famousChartShareUrl } from '../share-links';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
 const MAX_TWINS = 12;
@@ -98,6 +99,8 @@ export const chartTwinsData = z.object({
   total: z.number().int().nonnegative(),
   notes: z.array(z.string()),
   pageUrl: z.url(),
+  /** The share link: the Sun sign, and the Moon sign when settled; null when no one shares them. */
+  shareUrl: z.url().nullable(),
 });
 export type ChartTwinsData = z.infer<typeof chartTwinsData>;
 
@@ -157,6 +160,7 @@ export async function findChartTwins(args: ChartTwinsArgs, localTime: LocalTimeM
     total: matches.length,
     notes,
     pageUrl: `${origin}/chart-twins/`,
+    shareUrl: matches.length > 0 ? chartTwinsShareUrl(origin, signs) : null,
   };
   return {
     data: chartTwinsData.parse(data),
@@ -190,6 +194,8 @@ export const famousChartData = z.discriminatedUnion('found', [
     }),
     alsoMatched: z.array(lite).max(MAX_ALSO),
     note: z.string(),
+    /** The share link, carrying the person's directory slug only. */
+    shareUrl: z.url().nullable(),
   }),
   z.object({
     found: z.literal(false),
@@ -263,6 +269,7 @@ export function getFamousChart(args: FamousChartArgs, origin: string = DEFAULT_O
     },
     alsoMatched: rest.slice(0, MAX_ALSO).map((person) => ({ name: person.name, slug: person.slug, url: personUrl(origin, person.slug) })),
     note: noonChartNote(best.birthplace),
+    shareUrl: famousChartShareUrl(origin, best.slug),
   };
   return { data: famousChartData.parse(data), links: [{ title: `${best.name}'s chart on Zodiacs`, url }, directory] };
 }

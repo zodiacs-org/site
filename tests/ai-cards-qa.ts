@@ -33,6 +33,8 @@ async function horoscope(args: Record<string, unknown>) {
 const ana = { name: 'Ana', birthDate: '1990-05-03', time: '08:30', zone: 'Europe/Madrid', latitude: 40.4168, longitude: -3.7038 };
 const CARDS: [string, string, () => Promise<{ structuredContent: unknown; _meta: unknown }>][] = [
   ['chart-comparison', OCCASIONS_HTML, () => result('get_compatibility', { a: ana, b: { name: 'Luis', birthDate: '1992-08-10', time: '21:15', zone: 'America/Mexico_City', latitude: 19.4326, longitude: -99.1332 } })],
+  // Long names step the title down so the main action stays on the card's first screen.
+  ['chart-comparison-long-names', OCCASIONS_HTML, () => result('get_compatibility', { a: { ...ana, name: 'Maximilien Robespierre' }, b: { name: 'Wilhelmina Featherstonehaugh', birthDate: '1992-08-10' } })],
   ['chart-comparison-famous', OCCASIONS_HTML, () => result('get_compatibility', { a: { name: 'Sam', birthDate: '1994-02-01' }, b: { famous: 'Frida Kahlo' } })],
   ['wedding', OCCASIONS_HTML, () => result('get_occasion_sky', { occasion: 'wedding', date: '2027-06-12', time: '17:00', zone: 'Europe/Rome', latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy', names: 'Ana & Luis' })],
   ['wedding-best-days', OCCASIONS_HTML, () => result('get_occasion_sky', { occasion: 'wedding', searchFrom: '2027-06-01', searchTo: '2027-06-30', zone: 'Europe/Rome', latitude: 43.7696, longitude: 11.2558, place: 'Florence, Italy' })],
@@ -156,6 +158,10 @@ try {
         assert.equal(unringed, 0, `${card} ${width} ${theme}: every focused control shows a ring`);
         assert.equal(motion.animations + motion.transitions, 0, `${card} ${width} ${theme}: no motion under reduced motion`);
         assert.equal(network, 0, `${card} ${width} ${theme}: no network requests`);
+        if (card.endsWith('long-names')) {
+          const lines = await page.evaluate(() => { const title = document.querySelector('h1')!; return title.getBoundingClientRect().height / parseFloat(getComputedStyle(title).lineHeight); });
+          assert.ok(lines <= 2.05, `${card} ${width} ${theme}: the long names take ${lines.toFixed(1)} lines, not more than two`);
+        }
         await context.close();
       }
     }

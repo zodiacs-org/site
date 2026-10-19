@@ -16,6 +16,7 @@ import { rateOccasionDate } from '../lib/occasions/date-score';
 import { personalWeek } from './features/personal-week';
 import { bestDays, type BestDays } from '../lib/occasions/best-dates';
 import { occasionShareUrl } from '../lib/share-results';
+import { milestoneShareUrl } from './share-links';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, MAX_EVENT_DAYS, OCCASION_NOTE, OCCASION_TOOL_NAMES, ORIGIN, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 import { dateInZone, horoscopePanel, resolveHoroscope, type HoroscopePanelData, type ZoneSource } from './horoscope/reading';
 import type { HoroscopeWindow } from './horoscope/window';
@@ -315,6 +316,8 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
             ? `${ORIGIN}/occasions/milestones/#${new URLSearchParams({ b: args.birthDate }).toString()}`
             : null,
           note: 'Dates of computed crossings and their traditional astrological names. Without a birth time, a pass can move by about a day.',
+          // The milestone the card leads with: its kind, ordinal, age and days, never the birth date.
+          shareUrl: (() => { const shown = card.next ?? card.milestones[0]; return shown ? milestoneShareUrl(ORIGIN, shown) : null; })(),
         };
         links = [{ title: 'Life milestones on Zodiacs', url: `${ORIGIN}/occasions/milestones/` }, methodLink];
         break;

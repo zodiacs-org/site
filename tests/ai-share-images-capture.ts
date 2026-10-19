@@ -1,6 +1,7 @@
 /**
  * The share images (a compatibility score, a date's rating, a birthday, the
- * sky calendar's next event and a horoscope) and their 1080×1920 story
+ * sky calendar's next event, a horoscope, chart twins, a famous chart and a
+ * life milestone) and their 1080×1920 story
  * pictures, rendered locally from share queries like the ones the cards'
  * share links carry. Manual, for before-and-after review; no network.
  *
@@ -11,6 +12,8 @@ import { resolve } from 'node:path';
 import {
   handleBirthdayImageRequest, handleCompatibilityImageRequest, handleHoroscopeImageRequest, handleOccasionImageRequest, handleSkyCalendarImageRequest,
   handleBirthdayStoryRequest, handleCompatibilityStoryRequest, handleHoroscopeStoryRequest, handleOccasionStoryRequest, handleSkyCalendarStoryRequest,
+  handleChartTwinsImageRequest, handleFamousChartImageRequest, handleMilestoneImageRequest,
+  handleChartTwinsStoryRequest, handleFamousChartStoryRequest, handleMilestoneStoryRequest,
 } from '../src/server/result-preview';
 
 // The horoscope is the published reading for the window's own date.
@@ -35,6 +38,12 @@ const IMAGES: [string, (request: Request) => Promise<Response>, string][] = [
   ['story-birthday-cusp', handleBirthdayStoryRequest, '/api/og/birthday-story?d=04-20'],
   ['story-sky-calendar', handleSkyCalendarStoryRequest, '/api/og/sky-calendar-story?k=retrograde&b=mercury&d=2026-10-24'],
   ['story-horoscope', handleHoroscopeStoryRequest, `/api/og/horoscope-story?s=leo&d=${generatedFor}`],
+  ['share-chart-twins', handleChartTwinsImageRequest, '/api/og/chart-twins-image?s=taurus&m=leo'],
+  ['share-famous-chart', handleFamousChartImageRequest, '/api/og/famous-chart-image?p=frida-kahlo'],
+  ['share-milestone', handleMilestoneImageRequest, '/api/og/milestone-image?k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31'],
+  ['story-chart-twins', handleChartTwinsStoryRequest, '/api/og/chart-twins-story?s=taurus&m=leo'],
+  ['story-famous-chart', handleFamousChartStoryRequest, '/api/og/famous-chart-story?p=frida-kahlo'],
+  ['story-milestone', handleMilestoneStoryRequest, '/api/og/milestone-story?k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31'],
 ];
 await mkdir(resolve(out), { recursive: true });
 for (const [name, handle, path] of IMAGES) {
