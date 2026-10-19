@@ -59,7 +59,7 @@ const jsonLd = [
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org/fr/${sign.slug}/` },
-    image: `https://zodiacs.org${signArtCard(sign.slug)}`,
+    image: `https://zodiacs.org${signArtCard(sign.slug, 'fr')}`,
     inLanguage: 'fr',
     about: { '@type': 'Thing', name: `${signName(sign, 'fr')} (astrologie)` },
   },
@@ -86,7 +86,7 @@ const jsonLd = [
   title={`${guide.title} | Zodiacs.org`}
   description={guide.description}
   path={`/fr/${sign.slug}/`}
-  image={signArtCard(sign.slug)}
+  image={signArtCard(sign.slug, 'fr')}
   imageAlt={`${signName(sign, 'fr')}, guide du signe sur Zodiacs.org`}
   type="article"
   locale="fr"
