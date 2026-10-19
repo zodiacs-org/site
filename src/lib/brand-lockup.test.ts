@@ -100,6 +100,12 @@ describe('the brand lockup (DESIGN.md, "Brand Lockup")', () => {
     expect(nav).toContain('<TiltedRing width={34} class="nav__ring" />');
     const footer = read('src/components/SiteFooter.astro');
     expect(footer).toContain('<TiltedRing width={42} class="zfooter__brand-mark" />');
+    // Both show the one shared drawing (held to the source above), so the
+    // daily horoscope page stays inside the Lighthouse gate's LCP.
+    const ring = read('src/components/TiltedRing.astro');
+    expect(ring).toContain("const TILTED_RING_SRC = '/assets/brand/tilted-ring.svg';");
+    expect(ring).toContain('src={TILTED_RING_SRC}');
+    expect(ring).not.toContain('<svg');
     expect(footer).toContain('Zodiacs<span class="zfooter__brand-sep">·</span><span class="zfooter__brand-tld">org</span>');
     expect(read('scripts/site-footer.mjs')).toContain("tiltedRingSvg({ width: 42, className: 'zfooter__brand-mark' })");
     expect(read('scripts/wing-nav.mjs')).toContain("tiltedRingSvg({ width: 34, className: 'wnav__ring' })");

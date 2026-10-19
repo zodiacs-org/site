@@ -41,7 +41,11 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
   the sign hues so it reads on dark and light surfaces (viewBox
   `-2 4 28 16`). It is 2.625 times the type size wide (7:4) and sits three
   quarters of the type size before the words. The signs go round it in
-  zodiac order, Libra at the front and Aries at the back. It is still.
+  zodiac order, Libra at the front and Aries at the back. It is still. The
+  site's nav and footer show it as one shared image,
+  `/assets/brand/tilted-ring.svg`, rather than drawing it inline twice:
+  inline, the two rings put the daily horoscope page a round trip past the
+  Lighthouse gate's 2.5 s LCP.
 - Your sign at the front: on an image or card made for one person the ring
   turns to bring that person's Sun sign to the front, keeping the zodiac
   order, so the opposite sign sits at the back (`tiltedRingDots(front)`).
