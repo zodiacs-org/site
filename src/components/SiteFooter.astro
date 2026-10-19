@@ -1,7 +1,7 @@
 ---
 import { isAstrologyToolPath, showsCollectionNavigation } from '../lib/trust-boundary';
 import { SIGNS, signName } from '../lib/signs';
-import BrandMark from './BrandMark.astro';
+import TiltedRing from './TiltedRing.astro';
 import EmailCapture from './EmailCapture.astro';
 import TerminalMarketVenueNotice from './TerminalMarketVenueNotice.astro';
 import { GUIDE_LOADER_MARKER, guideLoaderSource } from '../lib/assistant/guide-loader.mjs';
@@ -71,9 +71,9 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
 
     <div class="zfooter__lead">
       <div>
-        <a class="zfooter__brand" href={localizePath(locale, '/')}>
-          <BrandMark size={26} class="zfooter__brand-mark" />
-          <span class="zfooter__brand-name">Zodiacs</span><span class="zfooter__brand-tld">.org</span>
+        <a class="zfooter__brand" href={localizePath(locale, '/')} aria-label="Zodiacs.org">
+          <TiltedRing width={42} class="zfooter__brand-mark" />
+          <span class="zfooter__brand-name" aria-hidden="true">Zodiacs<span class="zfooter__brand-sep">·</span><span class="zfooter__brand-tld">org</span></span>
         </a>
         <p class="zfooter__tag">{t(locale, 'footerTag')}</p>
         {!isTool && isRegistryWing && <p class="zfooter__tag">{t(locale, 'trustWalletNotice')}</p>}

@@ -399,7 +399,7 @@ describe('brand and sign pictures', () => {
     });
   };
 
-  it('puts the Zodiacs ring in every header', () => {
+  it('puts the brand lockup, the tilted ring and ZODIACS · ORG, in every header', () => {
     for (const html of [
       chartMessage(true).html,
       chartMessage(false).html,
@@ -407,7 +407,11 @@ describe('brand and sign pictures', () => {
         recipient: { tier: 'sun_sign', email: 'ring@example.com', sign: 'leo', contactId: 'ring', timezone: 'UTC' },
         daily, publication, program, baseUrl: 'https://zodiacs.org', unsubscribeUrl,
       }).html,
-    ]) expect(html).toContain('src="https://zodiacs.org/assets/app-icons/v3/favicon-96.png"');
+    ]) {
+      expect(html).toContain('src="https://zodiacs.org/assets/brand/tilted-ring@3x.png" width="34" height="19"');
+      expect(html).toContain('letter-spacing:.2em;text-transform:uppercase;margin:0;color:#EEF1F7;white-space:nowrap">Zodiacs<span style="margin:0 .2em;color:#7A8397">·</span><span style="font-weight:500;color:#C6CCDA">org</span></p>');
+      expect(html).not.toContain('favicon-96.png');
+    }
   });
 
   it('shows a chart Sun sign disc only when the birth time makes the Sun sign certain', () => {

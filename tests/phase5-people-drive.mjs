@@ -473,8 +473,18 @@ await withPreview({ port: 4425 }, async (baseURL) => {
     const birthdayPage = await birthdayContext.newPage();
     await birthdayPage.goto(`${baseURL}/birthday/december-10/`, { waitUntil: 'domcontentloaded' });
     check(
-      await birthdayPage.locator('a[href="/people/ada-lovelace/"]').count() === 1,
+      await birthdayPage.locator('.bday-people a[href="/people/ada-lovelace/"]').count() === 1,
       'birthday page does not cross-link Ada Lovelace',
+    );
+    /* The hero names the first people the list carries: "You share a birthday with …". */
+    check(
+      await birthdayPage.locator('.bday-hero__famous a[href="/people/ada-lovelace/"]').count() === 1
+        && /^You share a birthday with .*Ada Lovelace.*\.$/u.test((await birthdayPage.locator('.bday-hero__famous').textContent())?.trim() ?? ''),
+      'birthday hero does not say who shares the date',
+    );
+    check(
+      await birthdayPage.locator('a[href="/people/ada-lovelace/"]').count() === 2,
+      'birthday page links Ada Lovelace other than from the hero line and the list',
     );
     await birthdayPage.goto(`${baseURL}/birthday/september-26/`, { waitUntil: 'domcontentloaded' });
     check(
@@ -500,6 +510,10 @@ await withPreview({ port: 4425 }, async (baseURL) => {
       await birthdayPage.locator('.bday-people').count() === 0,
       `empty birthday date renders a People section (${emptyRoute})`,
     );
+    check(
+      await birthdayPage.locator('.bday-hero__famous').count() === 0,
+      `empty birthday date names someone in the hero (${emptyRoute})`,
+    );
     /* Crowded date: the details disclosure appears past three people. */
     const crowded = [...takenRoutes].map((route) => ({
       route,
@@ -514,6 +528,12 @@ await withPreview({ port: 4425 }, async (baseURL) => {
       check(
         (await birthdayPage.locator('.bday-people [data-person-card]').count()) === crowded.count,
         `crowded date does not carry all ${crowded.count} people (${crowded.route})`,
+      );
+      const others = crowded.count - 3;
+      check(
+        (await birthdayPage.locator('.bday-hero__famous a').count()) === 4
+          && (await birthdayPage.locator('.bday-hero__famous a[href="#bday-people-heading"]').textContent()) === `${others} ${others === 1 ? 'other' : 'others'}`,
+        `crowded date's hero line does not name three and count the rest (${crowded.route})`,
       );
     }
     await birthdayContext.close();

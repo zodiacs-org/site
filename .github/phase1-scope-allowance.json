@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "translated-entry-lcp-20261019",
-  "baseCommit": "fd3d10b0b32261508382103f8818889ad467ef3d",
+  "baseCommit": "ebf73ed08e5c916edf60571ba78230d12788f767",
   "protectedPaths": [
     "src/lib/i18n/ui/build-audit.test.ts",
     "src/pages/es/profile/index.astro",

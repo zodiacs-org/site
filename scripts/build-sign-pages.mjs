@@ -34,6 +34,7 @@ import { brandIconLinkMarkup } from '../src/lib/brand-icons.mjs';
 import { EN } from '../src/strings/en.mjs';
 import { GUIDE_LOADER_MARKER, guideLoaderSource } from '../src/lib/assistant/guide-loader.mjs';
 import { SITE_FOOTER_STYLESHEET, renderStaticFooter } from './site-footer.mjs';
+import { REGISTRY_OG_BASE } from './build-registry-og.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
@@ -42,7 +43,6 @@ const profilePolishCss = await readFile(resolve(here, 'registry-profile-polish.c
 // The official token records live at /registry/ (301 from the old /collect/
 // path via vercel.json).
 const BASE = '/registry';
-const REGISTRY_OG_BASE = '/assets/og/registry/v3';
 const signPath = (slug) => `${BASE}/${slug}/`;
 const signUrl = (slug) => `https://zodiacs.org${signPath(slug)}`;
 // Bump only when a sculpture must be re-fetched by clients that may have

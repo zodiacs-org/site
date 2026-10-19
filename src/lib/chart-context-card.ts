@@ -3,8 +3,7 @@ import { CATALOG_LOCALES } from './i18n';
 import { CONTEXT_CONVENTION } from './chart-shape';
 import type { ContextSection } from '../islands/explorer/chart-context-copy';
 import { CONTEXT_SECTIONS } from '../islands/explorer/chart-context-copy';
-import { BRAND_ICON_PATHS } from './brand-icons.mjs';
-import { drawShareBrandLockup, PORTRAIT_SHARE_CARD_BRAND_LAYOUT, type LoadedShareBrandIcon } from './share-card-brand';
+import { drawShareBrandLockup, PORTRAIT_SHARE_CARD_BRAND_LAYOUT } from './share-card-brand';
 import { downloadPreparedChartCard, type PreparedChartCard, type CardOutcome } from './share-card';
 
 /** Only displayed section facts cross this boundary; never input/revision keys. */
@@ -43,11 +42,11 @@ export async function prepareChartContextCard(payload:ChartContextCard,parent?:A
   // Reconstruct the permitted payload so extra runtime keys never affect a file.
   const facts={locale:payload.locale,section:payload.section,title:payload.title,lines:[...payload.lines],convention:payload.convention};
   const controller=new AbortController(),signal=controller.signal;
-  let icon:LoadedShareBrandIcon|undefined,canvas:HTMLCanvasElement|undefined,imageURL:string|null=null;
+  let canvas:HTMLCanvasElement|undefined;
   let rejectStop!:(reason:unknown)=>void;
   const stopped=new Promise<never>((_,reject)=>{rejectStop=reject;});
   const stop=()=>{controller.abort(parent?.aborted?parent.reason:new Error('context_prepare_timeout'));rejectStop(signal.reason);};
-  const cleanup=()=>{icon?.close?.();icon=undefined;if(imageURL)URL.revokeObjectURL(imageURL);imageURL=null;if(canvas){canvas.width=0;canvas.height=0;}};
+  const cleanup=()=>{if(canvas){canvas.width=0;canvas.height=0;}};
   const timer=setTimeout(stop,15_000);parent?.addEventListener('abort',stop,{once:true});signal.addEventListener('abort',cleanup,{once:true});
   if(parent?.aborted)stop();
   try {
@@ -55,23 +54,6 @@ export async function prepareChartContextCard(payload:ChartContextCard,parent?:A
       signal.throwIfAborted();
       const faces=await Promise.all([document.fonts.load(`500 50px ${SERIF}`),document.fonts.load(`500 24px ${SANS}`)]);
       signal.throwIfAborted();if(faces.some(list=>!list.length||list.some(face=>face.status!=='loaded')))throw new Error('context_fonts_unavailable');
-      const response=await fetch(BRAND_ICON_PATHS.icon512,{signal});if(!response.ok)throw new Error('context_brand_unavailable');
-      const blob=await response.blob();signal.throwIfAborted();
-      if(typeof createImageBitmap==='function') {
-        try { const bitmap=await createImageBitmap(blob);if(signal.aborted){bitmap.close();signal.throwIfAborted();}icon=bitmap; }
-        catch(cause){signal.throwIfAborted();if(!(cause instanceof Error))throw cause;}
-      }
-      if(!icon) {
-        imageURL=URL.createObjectURL(blob);
-        const element=new Image();
-        icon=await new Promise<HTMLImageElement>((resolve,reject)=>{
-          const done=()=>{signal.removeEventListener('abort',abortImage);element.onload=null;element.onerror=null;};
-          const abortImage=()=>{done();element.src='';reject(signal.reason);};
-          element.onload=()=>{done();resolve(element);};element.onerror=()=>{done();reject(new Error('context_brand_decode'));};
-          signal.addEventListener('abort',abortImage,{once:true});element.src=imageURL!;
-        });
-        signal.throwIfAborted();URL.revokeObjectURL(imageURL);imageURL=null;
-      }
       canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1350;
       const ctx=canvas.getContext('2d');if(!ctx)throw new Error('context_canvas_unavailable');
       ctx.fillStyle='#060709';ctx.fillRect(0,0,1080,1350);ctx.fillStyle='#EEF1F7';ctx.textBaseline='top';
@@ -87,7 +69,8 @@ export async function prepareChartContextCard(payload:ChartContextCard,parent?:A
       let y=start;ctx.fillStyle='#C6CCDA';
       for(const paragraph of rows){for(const line of paragraph){ctx.fillText(line,64,y);y+=size+7;}y+=10;}
       ctx.font=`500 18px ${SANS}`;ctx.fillStyle='#8E96AB';ctx.fillText(facts.convention,64,1238);
-      drawShareBrandLockup(ctx,icon,PORTRAIT_SHARE_CARD_BRAND_LAYOUT);
+      // The brand lockup draws its own ring, so the card loads no image for it.
+      drawShareBrandLockup(ctx,null,PORTRAIT_SHARE_CARD_BRAND_LAYOUT);
       const output=await new Promise<Blob>((resolve,reject)=>canvas!.toBlob(value=>value?resolve(value):reject(new Error('context_png_unavailable')),'image/png'));
       signal.throwIfAborted();
       const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(facts)));signal.throwIfAborted();

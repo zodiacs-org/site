@@ -21,15 +21,30 @@ import {
   RU_OG_REQUIRED_CARDS,
   RU_OG_ROUTE_CARDS,
 } from '../src/strings/seo.ru.mjs';
+import {
+  ART_CARDS,
+  ART_CARDS_MAX_TOTAL_BYTES,
+  ART_CARD_DIR,
+  ART_CARD_MAX_BYTES,
+  HOME_ART_CARD,
+} from '../src/lib/og-art-cards.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'public/assets/og/v2');
 const wingOut = resolve(root, 'public/assets/og/v5');
 const wingCard = 'the-twelve.png';
 const astrofolioOut = resolve(root, 'public/assets/og/astrofolio/v4');
-const terminalOut = resolve(root, 'public/assets/og/v6');
+const terminalOut = resolve(root, 'public/assets/og/v7');
+// The cards these replaced on 2026-10-19 stay published, unchanged, for
+// links already shared.
+const keptCards = [
+  ['public/assets/og/v6/terminal.png', 'v6/terminal.png'],
+  ['public/assets/og/astrofolio/v5/faces.jpg', 'astrofolio/v5/faces.jpg'],
+];
 const legacyRegistryCardSha256 = 'f7b9e9e801e390f2ef3671755d1f3754a7e45bb9db026699f5381764aab5a08a';
-const homepageCard = 'share-pastel-wheel-20260809.png';
+// The v2 homepage card stays published for links already shared; the
+// homepage and the site's fallback moved to the v8 art card on 2026-10-19.
+const homepageCard = 'share-pastel-wheel-20261019.png';
 const russianOut = resolve(out, 'ru');
 const eventsPublication = JSON.parse(
   await readFile(resolve(root, 'src/data/events-publication.json'), 'utf8'),
@@ -136,7 +151,7 @@ for (const slug of signSlugs) {
 }
 
 for (const relativePath of expected) await validatePng(relativePath);
-const expectedTerminalPath = '/assets/og/v6/terminal.png';
+const expectedTerminalPath = '/assets/og/v7/terminal.png';
 if (OG_EN.astrofolio.image !== ASTROFOLIO_SHARE_CARD_PATH) {
   failures.push(`Astrofolio image: expected ${ASTROFOLIO_SHARE_CARD_PATH}, received ${OG_EN.astrofolio.image}`);
 }
@@ -162,8 +177,57 @@ if (OG_EN.terminal.image !== expectedTerminalPath) {
 for (const slug of signSlugs) {
   await validatePng(`${slug}.png`, { base: astrofolioOut, label: `astrofolio/v4/${slug}.png` });
 }
-await validatePng('terminal.png', { base: terminalOut, label: 'v6/terminal.png' });
+await validatePng('terminal.png', { base: terminalOut, label: 'v7/terminal.png' });
+for (const [path, label] of keptCards) {
+  try {
+    await readFile(resolve(root, path));
+  } catch {
+    failures.push(`${label}: missing; a replaced card stays published for links already shared`);
+  }
+}
 await validatePng(wingCard, { unique: false, base: wingOut, label: `historical v5/${wingCard}` });
+
+// The art cards (v8, 2026-10-19): the homepage card, which every page without
+// a card of its own also shows, the twelve sign guide cards and each sign's
+// seven horoscope cards. The art fills the picture, so they are JPEGs under a
+// budget chat-app previews accept, each one unique, and the folder holds
+// exactly these, under its own ceiling.
+let artBytes = 0;
+for (const path of ART_CARDS) {
+  try {
+    const bytes = await readFile(resolve(root, `public${path}`));
+    const metadata = await sharp(bytes).metadata();
+    if (metadata.format !== 'jpeg' || metadata.width !== 1200 || metadata.height !== 630) {
+      failures.push(`${path}: expected 1200x630 JPEG, received ${metadata.width ?? '?'}x${metadata.height ?? '?'} ${metadata.format ?? 'unknown'}`);
+    }
+    if (bytes.length > ART_CARD_MAX_BYTES) failures.push(`${path}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+    artBytes += bytes.length;
+    const hash = createHash('sha256').update(bytes).digest('hex');
+    const duplicate = hashes.get(hash);
+    if (duplicate) failures.push(`${path}: byte-identical to ${duplicate}`);
+    else hashes.set(hash, path);
+  } catch {
+    failures.push(`${path}: missing`);
+  }
+}
+try {
+  const artFiles = [];
+  const walk = async (directory, prefix) => {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      if (entry.isDirectory()) await walk(resolve(directory, entry.name), `${prefix}/${entry.name}`);
+      else artFiles.push(`${prefix}/${entry.name}`);
+    }
+  };
+  await walk(resolve(root, `public${ART_CARD_DIR}`), ART_CARD_DIR);
+  if (JSON.stringify(artFiles.sort()) !== JSON.stringify([...ART_CARDS].sort())) {
+    failures.push(`${ART_CARD_DIR}: expected exactly the ${ART_CARDS.length} art cards; found ${artFiles.length} files`);
+  }
+  if (artBytes > ART_CARDS_MAX_TOTAL_BYTES) {
+    failures.push(`${ART_CARD_DIR}: ${(artBytes / 1024 / 1024).toFixed(2)}MiB, over the ${ART_CARDS_MAX_TOTAL_BYTES / 1024 / 1024}MiB ceiling`);
+  }
+} catch (error) {
+  failures.push(`${ART_CARD_DIR}: ${error instanceof Error ? error.message : 'missing card directory'}`);
+}
 try {
   const legacyRegistryBytes = await readFile(resolve(out, 'registry.png'));
   const legacyRegistryHash = createHash('sha256').update(legacyRegistryBytes).digest('hex');
@@ -191,7 +255,7 @@ try {
   if (manifest.iconSource !== '/assets/zodiac-icons/128/{sign}.webp') {
     failures.push('manifest.json: canonical icon source drifted');
   }
-  if (manifest.fallback !== `/assets/og/v2/${homepageCard}`) {
+  if (manifest.fallback !== HOME_ART_CARD) {
     failures.push('manifest.json: homepage fallback drifted');
   }
   if (JSON.stringify(manifest.requiredCards) !== JSON.stringify(expected)) {
@@ -241,8 +305,10 @@ try {
 let russianBytes = 0;
 try {
   russianBytes = await directoryBytes(russianOut);
-  if (russianBytes > 700 * 1024) {
-    failures.push(`Russian OG family: ${(russianBytes / 1024).toFixed(1)}KiB exceeds the 700KiB budget`);
+  // 700 to 720KiB on 2026-10-19 for the brand lockup, whose ring keeps its
+  // twelve hues in an 8-bit palette on every card.
+  if (russianBytes > 720 * 1024) {
+    failures.push(`Russian OG family: ${(russianBytes / 1024).toFixed(1)}KiB exceeds the 720KiB budget`);
   }
 } catch {
   // The missing Russian directory is reported by the inventory gate above.
@@ -261,7 +327,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`verify-og-cards: OK — homepage on the cache-busted void card; Astrofolio on its evergreen Faces card (the seasonal v4 cards kept for shared links) and Terminal on v6; ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
+console.log(`verify-og-cards: OK — homepage and fallback on the v8 hero art card, with the twelve v8 sign guide and 84 horoscope art cards (${(artBytes / 1024 / 1024).toFixed(2)}MiB; the v2 cards kept for shared links); Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
 
 // Registry catalogue cards live outside the frozen v2 bundle. Keep their
 // source, geometry, manifest, route metadata, and size contracts in the same

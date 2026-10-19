@@ -14,9 +14,9 @@ const ASPECT_SIGNS: Record<string, string> = { conjunction: '☌', sextile: '⚹
 
 /** Every card ends with the same mark, so a screenshot still says where it came from. */
 export function Signature() {
-  return <p class="signature" aria-label="zodiacs.org">
-    <BrandRing size={28}/>
-    <span>zodiacs.org</span>
+  return <p class="signature" aria-label="Zodiacs.org">
+    <BrandRing/>
+    <span class="panel-brand-name" aria-hidden="true">Zodiacs<span class="panel-brand-sep">·</span><span class="panel-brand-tld">org</span></span>
   </p>;
 }
 
