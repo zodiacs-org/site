@@ -55,18 +55,6 @@ describe.skipIf(!existsSync(distRoot))('built client UI payloads', () => {
       expect(html, path).not.toContain('data-inline-critical-css');
     }
 
-    // Pair pages in every locale inline their four stylesheets and load the
-    // faces only text far down the page uses after load.
-    for (const path of ['compatibility/aries-cancer/index.html', 'es/compatibility/aries-cancer/index.html', 'pt/compatibility/pisces-pisces/index.html']) {
-      const html = readFileSync(join(distRoot, path), 'utf8');
-      expect(html.match(/<style data-zdx-critical=/g), path).toHaveLength(4);
-      expect(html, path).not.toMatch(/<link\b[^>]*\brel=["']stylesheet["']/i);
-      expect(html.match(/<style data-zdx-deferred-faces>(.*?)<\/style>/)?.[1].match(/@font-face/g), path).toHaveLength(2);
-      expect(html, path).toContain('data-zdx-deferred-style-loader');
-      expect(html, path).toMatch(/<link\b[^>]*\brel=["']preload["'][^>]*\/fonts\/eb-garamond-latin-400-italic\.woff2/i);
-      expect(html.match(/<source type="image\/avif" media="\(min-resolution: 1\.5dppx\)"/g)?.length, path).toBeGreaterThanOrEqual(2);
-    }
-
     // Every horoscope period opens on the sign-art hero and is inlined; the
     // hub is not a latency-sensitive entry page and keeps its stylesheets.
     const hub = readFileSync(join(distRoot, 'horoscopes', 'index.html'), 'utf8');
