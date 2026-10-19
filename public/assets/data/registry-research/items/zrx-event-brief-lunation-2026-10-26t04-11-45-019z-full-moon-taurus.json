@@ -1,0 +1,91 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-event-brief-lunation-2026-10-26t04-11-45-019z-full-moon-taurus",
+  "slug": "event-brief-lunation-2026-10-26t04-11-45-019z-full-moon-taurus",
+  "kind": "event-brief",
+  "templateId": "event-brief.v1",
+  "issuedAt": "2026-10-19T12:00:00.000Z",
+  "visibleAt": "2026-10-26T04:11:45.019Z",
+  "eventAt": "2026-10-26T04:11:45.019Z",
+  "title": "Full Moon in Taurus · event brief",
+  "summary": "Full Moon in Taurus becomes exact at 2026-10-26T04:11:45.019Z. Its symbolic reading and later market observations remain separate.",
+  "url": "/terminal/research/event-brief-lunation-2026-10-26t04-11-45-019z-full-moon-taurus/",
+  "signs": [
+    "taurus"
+  ],
+  "topics": [
+    "calendar",
+    "astrology",
+    "lunation"
+  ],
+  "symbolicScore": null,
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Full Moon in Taurus is exact at 2026-10-26T04:11:45.019Z, according to the committed transit catalog.",
+      "evidence": [
+        "src/data/transits-2026-10.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "The event is listed as calendar context. No directional market claim is attached to it.",
+      "evidence": [
+        "src/data/transits-2026-10.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "No market outcome is attached to this precomputed event brief. A separately timestamped follow-up may be appended after an eligible archive observation.",
+      "evidence": []
+    }
+  },
+  "market": {
+    "available": false,
+    "snapshotId": null,
+    "observedAt": null
+  },
+  "evidence": {
+    "transitSource": "src/data/transits-2026-10.json",
+    "eventKey": "lunation:2026-10-26T04:11:45.019Z:full-moon-taurus",
+    "groupedEvents": null,
+    "outlookEdition": "public/assets/registry-outlook.json#weekly:2026-10-19",
+    "marketSnapshotId": null,
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "e61f07dea69e53a054edadcbbb1b54b750d2aa74e129a544f132bcd5518a702b",
+  "publishedAt": "2026-10-19T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-19T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "e61f07dea69e53a054edadcbbb1b54b750d2aa74e129a544f132bcd5518a702b"
+  },
+  "status": "approved"
+}
