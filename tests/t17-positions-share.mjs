@@ -103,6 +103,28 @@ async function persistZoomEvidence(download) {
   return ZOOM_EVIDENCE_FILE;
 }
 
+/**
+ * The brand lockup's words (DESIGN.md, "Brand Lockup"): ZODIACS, the dot and
+ * ORG painted once, in that order, left-aligned on one baseline. Returns the
+ * baseline and where the last letter ends (its tracking not counted).
+ */
+function lockupPlacement(entries, label) {
+  assert.equal(entries.filter((entry) => entry.value === 'ZODIACS').length, 1,
+    `${label} must carry the lockup once`);
+  const index = entries.findIndex((entry) => entry.value === 'ZODIACS');
+  const [name, dot, tld] = entries.slice(index, index + 3);
+  assert.deepEqual([name?.value, dot?.value, tld?.value], ['ZODIACS', '·', 'ORG'],
+    `${label} must paint ZODIACS · ORG in one run`);
+  assert.ok(name.x < dot.x && dot.x < tld.x, `${label} lockup must read left to right`);
+  assert.ok([name, dot, tld].every((entry) => entry.align === 'left' && entry.y === name.y),
+    `${label} lockup words must share one baseline`);
+  assert.equal(entries.some((entry) => entry.value === 'Zodiacs.org'), false,
+    `${label} must not paint the earlier sentence-case wordmark`);
+  const tracking = Number.parseFloat(tld.spacing);
+  const round = (value) => Math.round(value * 100) / 100;
+  return { baseline: round(name.y), end: round(tld.x + tld.width0 + tracking * ([...tld.value].length - 1)) };
+}
+
 function v2Wire(url) {
   const parsed = new URL(url);
   const token = new URLSearchParams(parsed.hash.slice(1)).get('p');
@@ -159,8 +181,14 @@ try {
           canvasId = globalThis.__t17NextCanvasId++;
           globalThis.__t17CanvasIds.set(this.canvas, canvasId);
         }
+        // The run's width without letter spacing, and the spacing it is
+        // painted with, so the lockup's end can be checked where it is drawn.
+        const spacing = 'letterSpacing' in this ? this.letterSpacing : '0px';
+        if ('letterSpacing' in this) this.letterSpacing = '0px';
+        const width0 = this.measureText(String(value)).width;
+        if ('letterSpacing' in this) this.letterSpacing = spacing;
         globalThis.__t17CanvasText.push({
-          value: String(value), x, y, align: this.textAlign, at: performance.now(), canvasId,
+          value: String(value), x, y, align: this.textAlign, at: performance.now(), canvasId, width0, spacing,
         });
         return maxWidth === undefined
           ? fillText.call(this, value, x, y)
@@ -301,15 +329,12 @@ try {
         'the hidden chart sheet must give the twelve bodies to the arcminute');
       assert.equal(sheetValues.filter((value) => /^[A-Z][a-z]+ \d{2}°$/u.test(value)).length, 4,
         'the hidden chart sheet must give ASC, DSC, MC and IC only to the whole degree');
-      const sheetWordmarks = preparedSheet.text.filter((entry) => entry.value === 'Zodiacs.org');
-      assert.deepEqual(sheetWordmarks.map(({ align, x, y }) => ({ align, x, y })), [
-        { align: 'right', x: 1708, y: 104 },
-      ], 'chart sheet must carry one legible corner wordmark');
-      assert.equal(
-        preparedSheet.brandIconFetches.includes('/assets/app-icons/v3/icon-512.png'),
-        true,
-        'chart sheet must pair the wordmark with the canonical site profile image',
-      );
+      // 40px capitals centred on y 104 (baseline half a cap height below),
+      // ending at the sheet's right margin.
+      assert.deepEqual(lockupPlacement(preparedSheet.text, 'chart sheet'), { baseline: 117, end: 1708 },
+        'chart sheet must carry one legible corner lockup');
+      assert.deepEqual(preparedSheet.brandIconFetches, [],
+        'the lockup draws the ring itself, so the chart sheet fetches no profile image');
       const sectionTitles = preparedSheet.text
         .filter((entry) => entry.value === 'Positions' || entry.value === 'Aspect grid')
         .map(({ value, y }) => ({ value, y }));
@@ -582,12 +607,8 @@ try {
       }
       assert.equal(approachText.includes(`Engine ${ENGINE_VERSION}`), true,
         'approach PNG must carry only its engine receipt');
-      const approachWordmark = contextualPrepared.approach.find((entry) => entry.value === 'Zodiacs.org');
-      assert.deepEqual(
-        { align: approachWordmark?.align, x: approachWordmark?.x, y: approachWordmark?.y },
-        { align: 'right', x: 1014, y: 1290 },
-        'approach lockup must occupy the protected bottom-right register',
-      );
+      assert.deepEqual(lockupPlacement(contextualPrepared.approach, 'approach PNG'), { baseline: 1296.5, end: 1014 },
+        'approach lockup must occupy the protected bottom-right register');
 
       await source.evaluate(() => {
         globalThis.__t17CanvasText = [];
@@ -731,13 +752,8 @@ try {
       }
       assert.equal(communicationText.includes(`Engine ${ENGINE_VERSION}`), true,
         'communication PNG must carry only its engine receipt');
-      const communicationWordmark = contextualPrepared.communication
-        .find((entry) => entry.value === 'Zodiacs.org');
-      assert.deepEqual(
-        { align: communicationWordmark?.align, x: communicationWordmark?.x, y: communicationWordmark?.y },
-        { align: 'right', x: 1014, y: 1290 },
-        'communication lockup must occupy the protected bottom-right register',
-      );
+      assert.deepEqual(lockupPlacement(contextualPrepared.communication, 'communication PNG'), { baseline: 1296.5, end: 1014 },
+        'communication lockup must occupy the protected bottom-right register');
       assert.deepEqual(
         communicationRender.events.slice(communicationEventStart).map(({ name, props }) => ({ name, props })),
         [

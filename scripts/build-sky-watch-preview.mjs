@@ -30,9 +30,10 @@ await build({ absWorkingDir: root, entryPoints: ['src/ai-tools/watch/account.ts'
   platform: 'browser', format: 'esm', target: 'es2022', outfile: resolve(dest, 'assets/account.js') });
 for (const [from, to] of [
   ['src/ai-tools/watch/account.html', 'account.html'], ['src/ai-tools/watch/account.css', 'assets/account.css'],
-  ['src/styles/site-footer.css', 'assets/site-footer.css'], ['public/assets/ai/sky-calendar.svg', 'assets/sky.svg'],
+  ['src/styles/site-footer.css', 'assets/site-footer.css'],
   ['public/fonts/instrument-sans-latin-wght-normal.woff2', 'assets/instrument-sans.woff2'],
   ['public/fonts/eb-garamond-latin-400-normal.woff2', 'assets/eb-garamond.woff2'],
+  ['public/fonts/eb-garamond-latin-500-normal.woff2', 'assets/eb-garamond-500.woff2'],
 ]) await copyFile(resolve(root, from), resolve(dest, to));
 await writeFile(resolve(dest, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
 await writeFile(resolve(dest, 'test-callback.html'), '<!doctype html><html lang="en"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex"><title>Synthetic OAuth check</title><p>Synthetic authorization returned. No real user feedback is recorded by this check.</p></html>');

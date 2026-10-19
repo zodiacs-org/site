@@ -25,6 +25,8 @@ function install({ encode = true, imageLoads = true, contextAvailable = true } =
     // Deterministic typography is only a painter contract; CI observes real font ink.
     measureText: vi.fn(function (this: { font: string }, value: string) { return { width: value.length * Number(this.font.match(/(\d+)px/u)?.[1] ?? 20) * 0.6 }; }),
     drawImage: vi.fn(), fillRect: vi.fn(), save: vi.fn(), restore: vi.fn(),
+    // The brand lockup's ring is twelve filled arcs.
+    beginPath: vi.fn(), arc: vi.fn(), fill: vi.fn(), globalAlpha: 1, letterSpacing: '0px',
   };
   const canvas = { width: 0, height: 0, getContext: vi.fn(() => contextAvailable ? context : null),
     toBlob: vi.fn((callback: (value: Blob | null) => void) => callback(encode ? new Blob(['encoded-png'], { type: 'image/png' }) : null)) };
@@ -60,7 +62,7 @@ describe('dedicated composite image receipts', () => {
     expect(fixture.context.drawImage).toHaveBeenCalledOnce();
     const text = fixture.painted.map((row) => row.value).join(' ').replace(/\s+/gu, ' ');
     expect(text).toContain(COMPOSITE_COPY[locale].imageTitle);
-    expect(text).toContain('Zodiacs.org');
+    expect(text).toContain('ZODIACS · ORG'); expect(text).not.toContain('Zodiacs.org');
     expect(text).toContain(COMPOSITE_COPY[locale].imageReceipt);
     for (const point of input.points) {
       expect(text).toContain(`${planetLabel(locale, point.body)}${point.body === 'Moon' ? ' *' : ''} · ${formatLongitude(point.lon, locale)}`);

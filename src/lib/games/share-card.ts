@@ -337,6 +337,8 @@ export async function drawRaceShareCard(snapshot: RaceShareSnapshot): Promise<Bl
     drawShareBrandLockup(context, brandIcon, {
       ...RACE_SHARE_CARD_BRAND_LAYOUT,
       serif: SERIF,
+      // The ring brings the card's sign forward.
+      front: snapshot.sign.slug,
     });
   });
 

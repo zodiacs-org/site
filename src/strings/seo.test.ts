@@ -33,8 +33,8 @@ describe('Astrofolio and Terminal SEO identity', () => {
   });
 
   it('publishes distinct cache-stable product images and route-specific alt text', () => {
-    expect(OG_EN.astrofolio.image).toBe('/assets/og/astrofolio/v5/faces.jpg');
-    expect(OG_EN.terminal.image).toBe('/assets/og/v6/terminal.png');
+    expect(OG_EN.astrofolio.image).toBe('/assets/og/astrofolio/v6/faces.jpg');
+    expect(OG_EN.terminal.image).toBe('/assets/og/v7/terminal.png');
     expect(OG_EN.terminal.image).not.toBe(OG_EN.astrofolio.image);
     expect(ogImageForPath('/astrofolio/')).toBe(OG_EN.astrofolio.image);
     expect(ogImageForPath('/terminal/research/')).toBe(OG_EN.terminal.image);
