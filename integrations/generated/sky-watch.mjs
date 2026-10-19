@@ -17250,6 +17250,8 @@ var DAYS_IN_MONTH2 = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 var DATE_RE2 = /^(?:18|19|20|21)[0-9]{2}-[0-9]{2}-[0-9]{2}$/u;
 var SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 var SLUG_MAX = 64;
+var MILESTONE_INDEX_MAX = 30;
+var MILESTONE_AGE_MAX = 300;
 var MILESTONE_SPAN_MAX = 400;
 var MILESTONE_AGES = {
   "jupiter-return": { cycle: 11.86, within: 2 },
@@ -17270,7 +17272,8 @@ function validMonthDay(month, day) {
 var dayNumber2 = (date3) => Date.parse(`${date3}T00:00:00Z`) / 864e5;
 function validMilestone(share) {
   if (!MILESTONE_KINDS.includes(share.kind)) return false;
-  if (!Number.isInteger(share.index) || share.index < 1 || share.index > 9 || !Number.isInteger(share.age) || share.age < 1 || share.age > 120) return false;
+  if (!Number.isInteger(share.index) || share.index < 1 || share.index > MILESTONE_INDEX_MAX) return false;
+  if (!Number.isInteger(share.age) || share.age < 1 || share.age > MILESTONE_AGE_MAX) return false;
   if (share.kind === "uranus-opposition" && share.index !== 1) return false;
   const { cycle, within } = MILESTONE_AGES[share.kind];
   if (Math.abs(share.age - share.index * cycle) > within) return false;

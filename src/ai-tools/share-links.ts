@@ -116,8 +116,16 @@ const MONTH_DAY_RE = /^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/u;
 const DATE_RE = /^(?:18|19|20|21)[0-9]{2}-[0-9]{2}-[0-9]{2}$/u;
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const SLUG_MAX = 64;
-const INDEX_RE = /^[1-9]$/u;
-const AGE_RE = /^[1-9][0-9]?$|^1[01][0-9]$|^120$/u;
+const INDEX_RE = /^[1-9][0-9]?$/u;
+const AGE_RE = /^[1-9][0-9]{0,2}$/u;
+/**
+ * The highest ordinal and age a milestone link may carry. The tool takes
+ * birth dates from 1800 and lists Jupiter returns to one cycle past the
+ * person's age, so a historical birth date reaches about the twentieth
+ * return, past age 230.
+ */
+const MILESTONE_INDEX_MAX = 30;
+const MILESTONE_AGE_MAX = 300;
 /** The longest a milestone's passes may run, first to last, in days (the longest from 1800 to 2110 is under 300). */
 const MILESTONE_SPAN_MAX = 400;
 /**
@@ -150,13 +158,14 @@ function validMonthDay(month: number, day: number): boolean {
 const dayNumber = (date: string) => Date.parse(`${date}T00:00:00Z`) / 86_400_000;
 
 /**
- * A milestone a link may name: a real kind and ordinal, an age within two
- * years of when that milestone comes, and passes that start on or before
+ * A milestone a link may name: a real kind and ordinal, an age near when
+ * that milestone comes, and passes that start on or before
  * they end and run no longer than the slowest one does.
  */
 function validMilestone(share: Omit<MilestoneShare, 'ref'>): boolean {
   if (!(MILESTONE_KINDS as readonly string[]).includes(share.kind)) return false;
-  if (!Number.isInteger(share.index) || share.index < 1 || share.index > 9 || !Number.isInteger(share.age) || share.age < 1 || share.age > 120) return false;
+  if (!Number.isInteger(share.index) || share.index < 1 || share.index > MILESTONE_INDEX_MAX) return false;
+  if (!Number.isInteger(share.age) || share.age < 1 || share.age > MILESTONE_AGE_MAX) return false;
   if (share.kind === 'uranus-opposition' && share.index !== 1) return false;
   const { cycle, within } = MILESTONE_AGES[share.kind];
   if (Math.abs(share.age - share.index * cycle) > within) return false;

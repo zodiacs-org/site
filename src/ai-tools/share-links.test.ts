@@ -145,14 +145,24 @@ describe('a life milestone share link', () => {
     ]) expect(parseMilestoneShare(params(query)), query).toBeNull();
   });
 
-  it('accepts every milestone the tool gives a living person', () => {
+  it('accepts every milestone the tool gives, back to a birth date in 1800', () => {
     const asOf = new Date('2026-10-19T12:00:00Z');
-    for (const year of [1926, 1937, 1948, 1959, 1966, 1977, 1984, 1997, 2008, 2019]) {
+    // 1919 reaches a tenth Jupiter return at about 118; 1800, about the twentieth, past 230.
+    for (const year of [1800, 1843, 1888, 1919, 1926, 1937, 1948, 1959, 1966, 1977, 1984, 1997, 2008, 2019]) {
       for (const milestone of lifeMilestones(new Date(`${year}-03-15T12:00:00Z`), asOf).milestones) {
         expect(milestoneShareUrl('https://zodiacs.org', milestone), `${year} ${milestone.kind} ${milestone.index}`).not.toBeNull();
       }
     }
-  }, 120_000);
+  }, 240_000);
+
+  it('gives a centenarian’s next milestone a share link', async () => {
+    const result = await executeAiTool('get_life_milestones', { birthDate: '1919-03-15' }, { occasions: true, now: () => new Date('2026-10-19T12:00:00Z') });
+    expect(result.ok).toBe(true);
+    if (result.ok && result.tool === 'get_life_milestones') {
+      expect(result.data.next).toMatchObject({ kind: 'jupiter-return', index: 10 });
+      expect(result.data.shareUrl).toContain('k=jupiter-return&i=10&a=118');
+    }
+  });
 });
 
 describe('the tools’ share links', () => {

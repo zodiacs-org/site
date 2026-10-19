@@ -430,7 +430,8 @@ export function famousChartCardModel(share: FamousChartShare, people: readonly I
   };
 }
 
-const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth'];
+/** As the site's milestones page names them (src/islands/LifeMilestones.tsx): words to the eighth, then 9th, 10th … */
+const ordinal = (n: number) => ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'][n - 1] ?? `${n}th`;
 /** Each milestone wears the hue of the sign its planet rules, as the chat card does. */
 const MILESTONE_SIGN: Readonly<Record<ShareMilestoneKind, ShareSign>> = { 'saturn-return': 'capricorn', 'jupiter-return': 'sagittarius', 'uranus-opposition': 'aquarius' };
 
@@ -449,7 +450,7 @@ export interface MilestoneCardModel {
 }
 
 export function milestoneCardModel(share: MilestoneShare, now: Date): MilestoneCardModel {
-  const name = share.kind === 'uranus-opposition' ? MILESTONE_WORDS[share.kind].name : `${ORDINALS[share.index - 1]} ${MILESTONE_WORDS[share.kind].name}`;
+  const name = share.kind === 'uranus-opposition' ? MILESTONE_WORDS[share.kind].name : `${ordinal(share.index)} ${MILESTONE_WORDS[share.kind].name}`;
   const title = cap(name);
   const today = now.toISOString().slice(0, 10);
   return {
