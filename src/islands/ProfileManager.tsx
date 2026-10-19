@@ -5,7 +5,6 @@
  */
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { deleteChart, renameChart } from '../lib/profile/store';
-import { loadProfile } from '../lib/profile/read-store';
 import { deletePair, loadPairs, pairSideLabels, prunePairs } from '../lib/profile/pairs';
 import type { SavedPair } from '../lib/profile/pairs';
 import type { SavedChart } from '../lib/profile/schema';
@@ -350,11 +349,9 @@ export default function ProfileManager({
     let unsubscribe = () => {};
     // Stale saved summaries are rewritten before this page's first sync
     // uploads them. A refresh that cannot load leaves them as stored.
-    const refreshed = loadProfile().charts.length === 0
-      ? Promise.resolve(0)
-      : import('../lib/profile/refresh')
-        .then(({ refreshSavedChartSummaries }) => refreshSavedChartSummaries(loadEngine))
-        .catch(() => 0);
+    const refreshed = import('../lib/profile/refresh')
+      .then(({ refreshSavedChartSummaries }) => refreshSavedChartSummaries(loadEngine))
+      .catch(() => 0);
     if (!HAS_PROFILE_SYNC || accountSyncV2Enabled) return () => unsubscribe();
     import('../lib/profile/sync')
       .then(async (api) => {

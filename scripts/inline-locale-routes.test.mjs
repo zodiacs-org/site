@@ -1,12 +1,14 @@
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { runInNewContext } from 'node:vm';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { inlineCriticalStyles } from './inline-critical-styles.mjs';
 import { inlineLocaleRoute, inlineLocaleRoutes, LOCALE_ROUTE_PLANS } from './lib/inline-locale-routes.mjs';
 
 const roots = [];
+const distRoot = resolve(process.cwd(), 'dist');
 const monoSource = '/fonts/jetbrains-mono-latin-wght-normal.woff2';
 const mono400 = '/assets/locale/jetbrains-mono-latin-400-normal.woff2';
 const mono = `@font-face{font-family:JetBrains Mono;src:url(${monoSource}) format('woff2-variations');font-weight:300 600;font-style:normal;font-display:swap}`;
@@ -38,6 +40,120 @@ async function fixture(overrides = {}) {
 afterEach(async () => {
   vi.restoreAllMocks();
   await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true })));
+});
+
+describe.skipIf(!existsSync(distRoot))('built translated entry delivery', () => {
+  it.each(LOCALE_ROUTE_PLANS)('keeps the approved CSS and manifest shape at $path', (plan) => {
+    const html = readFileSync(join(distRoot, plan.path), 'utf8');
+    const inlined = [...html.matchAll(/<style\b[^>]*\bdata-zdx-locale-critical="([^".]+)\.[^"/]+\.css"[^>]*>([\s\S]*?)<\/style>/gu)];
+    expect(inlined.map(([, name]) => name)).toEqual(plan.stylesheets.filter((name) => !plan.keepLinked.includes(name)));
+    expect(inlined.find(([, name]) => name === 'Base')?.[2].length).toBeGreaterThan(0);
+    const linked = [...html.matchAll(/<link\b[^>]*\brel="stylesheet"[^>]*>/gu)]
+      .map(([tag]) => tag.match(/\bhref="\/_astro\/([^".]+)\.[^"/]+\.css"/u)?.[1]);
+    // The production account-saves flag may add this one linked stylesheet.
+    // It must remain external, and all required links must still be present.
+    expect(linked.filter((name) => !plan.optionalLinked.includes(name))).toEqual(plan.keepLinked);
+    for (const optional of plan.optionalLinked) expect(linked.filter((name) => name === optional).length).toBeLessThanOrEqual(1);
+    expect(html).not.toContain('data-inline-critical-css');
+    expect(html).not.toContain('data-zdx-critical=');
+
+    const twins = [...html.matchAll(/<template data-zdx-locale-manifest>(<link\b[^>]*>)<\/template><noscript>(<link\b[^>]*>)<\/noscript>/gu)];
+    expect(twins).toHaveLength(1);
+    expect(twins[0][1]).toBe(twins[0][2]);
+    expect(twins[0][1]).toMatch(/\brel="manifest"/u);
+    expect(twins[0][1]).toMatch(/\bhref="\/site\.webmanifest"/u);
+    expect(html.replace(twins[0][0], '')).not.toMatch(/<link\b[^>]*\brel="manifest"/u);
+    expect(html.match(/<script data-zdx-locale-manifest-loader>/gu)).toHaveLength(1);
+  });
+
+  it.each(['es', 'pt'])('pairs every %s Today image placeholder with its complete no-JS image', (locale) => {
+    const html = readFileSync(join(distRoot, locale, 'today/index.html'), 'utf8');
+    const art = [...html.matchAll(/(<figure\b[^>]*\bclass="[^"]*\btdl-visible-artframe\b[^"]*"[^>]*>[\s\S]*?<\/figure>)\s*<template data-tdl-artframe>([\s\S]*?)<\/template>\s*<noscript>([\s\S]*?)<\/noscript>/gu)];
+    const icons = [...html.matchAll(/(<picture\b[^>]*\bclass="[^"]*\btdl-visible-sign-icon\b[^"]*"[^>]*>[\s\S]*?<\/picture>)\s*<noscript>([\s\S]*?)<\/noscript>/gu)];
+    expect(art.length).toBeGreaterThan(0);
+    expect(icons.length).toBeGreaterThan(0);
+    expect(html.match(/<figure\b[^>]*\bclass="[^"]*\btdl-visible-artframe\b/gu)).toHaveLength(art.length);
+    expect(html.match(/<template data-tdl-artframe>/gu)).toHaveLength(art.length);
+    expect(html.match(/<noscript>\s*<figure\b/gu)).toHaveLength(art.length);
+    expect(html.match(/<picture\b[^>]*\bclass="[^"]*\btdl-visible-sign-icon\b/gu)).toHaveLength(icons.length);
+    expect(html.match(/<noscript>\s*<picture\b/gu)).toHaveLength(icons.length);
+    for (const [, placeholder, template, fallback] of art) {
+      expect(template).toBe(fallback);
+      const initialImage = placeholder.match(/<img\b[^>]*>/u)?.[0];
+      const realImage = template.match(/<img\b[^>]*>/u)?.[0];
+      expect(initialImage).toMatch(/\bsrc="data:image\/svg\+xml,/u);
+      expect(initialImage).not.toMatch(/\bsrcset=/u);
+      expect(realImage).toMatch(/\bsrc="\/assets\//u);
+      for (const attribute of ['width', 'height', 'alt', 'loading', 'decoding', 'fetchpriority']) {
+        const pattern = new RegExp(`\\s${attribute}(?:="[^"]*")?(?=[\\s>])`, 'u');
+        expect(initialImage.match(pattern)?.[0], attribute).toBe(realImage.match(pattern)?.[0]);
+      }
+      expect(initialImage).toMatch(/\bwidth="\d+" height="\d+"/u);
+    }
+    for (const [, placeholder, fallback] of icons) {
+      expect(placeholder).not.toMatch(/\s(?:src|srcset)=/u);
+      expect(placeholder).toMatch(/\bdata-src="\/assets\/zodiac-icons\//u);
+      expect(placeholder.replace(' tdl-visible-sign-icon', '').replaceAll('data-srcset=', 'srcset=').replaceAll('data-src=', 'src='))
+        .toBe(fallback);
+      expect(fallback).not.toMatch(/\sdata-src(?:set)?=/u);
+    }
+    // With scripting disabled the real twins replace the reserved placeholders.
+    const fallbackStyles = html.match(/<noscript>\s*<style>([\s\S]*?)<\/style>\s*<\/noscript>/u)?.[1];
+    expect(fallbackStyles).toContain('.tdl-visible-sign-icon { display: none !important; }');
+    expect(fallbackStyles).toContain('.tdl-visible-sign-icon + noscript { display: contents; }');
+    expect(fallbackStyles).toContain('.tdl-visible-artframe { display: none !important; }');
+    expect(fallbackStyles).toContain('.tdl-visible-artframe + template + noscript { display: contents; }');
+  });
+
+  it.each([true, false])('activates Today image twins with IntersectionObserver available: %s', (hasObserver) => {
+    const html = readFileSync(join(distRoot, 'es/today/index.html'), 'utf8');
+    const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gu)]
+      .map(([, script]) => script).filter((script) => script.includes('picture.tdl-visible-sign-icon, figure.tdl-visible-artframe'));
+    expect(scripts).toHaveLength(1);
+    const promotions = [];
+    const sourceAttributes = { 'data-srcset': '/icon.avif' };
+    const imageAttributes = { 'data-src': '/icon.webp' };
+    const node = (attributes, kind) => ({
+      getAttribute: (name) => attributes[name],
+      setAttribute: (name, value) => { attributes[name] = value; promotions.push(kind); },
+      removeAttribute: (name) => { delete attributes[name]; },
+    });
+    const icon = {
+      classList: { contains: () => false },
+      querySelectorAll: (selector) => selector.startsWith('source') ? [node(sourceAttributes, 'source')] : [node(imageAttributes, 'img')],
+    };
+    const template = { matches: (selector) => selector === 'template[data-tdl-artframe]', content: {}, remove: vi.fn() };
+    const art = { classList: { contains: () => true }, nextElementSibling: template, replaceWith: vi.fn() };
+    const observe = vi.fn(), unobserve = vi.fn(), disconnect = vi.fn();
+    let intersect;
+    const context = {
+      document: { querySelectorAll: () => [art, icon] },
+      window: hasObserver ? { IntersectionObserver: true } : {},
+      IntersectionObserver: function (callback, options) {
+        expect(options.rootMargin).toBe('300px');
+        intersect = callback;
+        return { observe, unobserve, disconnect };
+      },
+    };
+    runInNewContext(scripts[0], context);
+    if (hasObserver) {
+      expect(observe.mock.calls.map(([target]) => target)).toEqual([art, icon]);
+      expect(promotions).toEqual([]);
+      expect(art.replaceWith).not.toHaveBeenCalled();
+      intersect([{ target: art, isIntersecting: false }]);
+      expect(unobserve).not.toHaveBeenCalled();
+      intersect([{ target: art, isIntersecting: true }]);
+      expect(disconnect).not.toHaveBeenCalled();
+      intersect([{ target: icon, isIntersecting: true }]);
+      expect(unobserve.mock.calls.map(([target]) => target)).toEqual([art, icon]);
+      expect(disconnect).toHaveBeenCalledOnce();
+    } else expect(observe).not.toHaveBeenCalled();
+    expect(art.replaceWith).toHaveBeenCalledExactlyOnceWith(template.content);
+    expect(template.remove).toHaveBeenCalledOnce();
+    expect(promotions).toEqual(['source', 'img']);
+    expect(sourceAttributes).toEqual({ srcset: '/icon.avif' });
+    expect(imageAttributes).toEqual({ src: '/icon.webp' });
+  });
 });
 
 describe('translated entry stylesheet delivery', () => {

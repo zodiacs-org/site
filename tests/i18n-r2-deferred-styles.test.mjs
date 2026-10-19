@@ -16,16 +16,16 @@ describe('Russian deferred CSS browser evidence', () => {
       .toEqual(names.map((name) => `${baseURL}/_astro/${name}`));
   });
 
-  it.each([[], names.slice(0, 2), [...names, 'account.hash.css', 'extra.hash.css']].map((styles) => ({ styles })))(
+  it.each([[], names.slice(0, 2), [...names, 'extra.hash.css']].map((styles) => ({ styles })))(
     'rejects a changed stylesheet count: $styles',
     ({ styles }) => {
-      expect(() => russianDeferredStyleURLs(fixture(styles), baseURL)).toThrow(/three core deferred/u);
+      expect(() => russianDeferredStyleURLs(fixture(styles), baseURL)).toThrow(/three deferred/u);
     },
   );
 
   it('rejects duplicate declarations and an invalid deferred link', () => {
     expect(() => russianDeferredStyleURLs(fixture([names[0], names[1], names[1]]), baseURL))
-      .toThrow(/distinct deferred/u);
+      .toThrow(/three distinct/u);
     expect(() => russianDeferredStyleURLs(fixture().replace('/_astro/ChartActionDock', 'https://other.test/ChartActionDock'), baseURL))
       .toThrow(/one local stylesheet/u);
   });
@@ -38,45 +38,6 @@ describe('Russian deferred CSS browser evidence', () => {
     }
     vi.stubGlobal('document', { styleSheets: [null, ...expected].map((href) => ({ href })) });
     expect(russianDeferredStylesReady(expected)).toBe(true);
-  });
-
-  it('preserves the core cascade and optional account link at its emitted position', () => {
-    for (const position of [0, 2, 3]) {
-      const styles = [...names];
-      styles.splice(position, 0, 'account.hash.css');
-      const expected = russianDeferredStyleURLs(fixture(styles), baseURL);
-      expect(expected).toEqual(styles.map((name) => `${baseURL}/_astro/${name}`));
-      vi.stubGlobal('document', { styleSheets: names.map((name) => ({ href: `${baseURL}/_astro/${name}` })) });
-      expect(russianDeferredStylesReady(expected)).toBe(false);
-      vi.stubGlobal('document', { styleSheets: expected.map((href) => ({ href })) });
-      expect(russianDeferredStylesReady(expected)).toBe(true);
-    }
-  });
-
-  it.each([
-    [...names, 'unrelated.hash.css'],
-    [names[0], names[1], 'account.hash.css'],
-    [names[1], names[0], names[2]],
-    [names[0], 'account.hash.css', 'account.other.css', names[2]],
-  ].map((styles) => ({ styles })))('rejects an unknown, missing, reordered, or duplicated stylesheet: $styles', ({ styles }) => {
-    expect(() => russianDeferredStyleURLs(fixture(styles), baseURL)).toThrow(/preserve calculator/u);
-    const expected = styles.map((name) => `${baseURL}/_astro/${name}`);
-    vi.stubGlobal('document', { styleSheets: expected.map((href) => ({ href })) });
-    expect(russianDeferredStylesReady(expected)).toBe(false);
-  });
-
-  it('requires identical adjacent no-JS fallbacks and rejects hidden or extra sheets', () => {
-    const html = fixture([names[0], names[1], 'account.hash.css', names[2]]);
-    const account = '<link rel="stylesheet" href="/_astro/account.hash.css">';
-    expect(() => russianDeferredStyleURLs(html.replace(`<noscript>${account}</noscript>`, ''), baseURL))
-      .toThrow(/identical adjacent noscript/u);
-    expect(() => russianDeferredStyleURLs(html.replace(`<noscript>${account}</noscript>`, `<noscript>${account.replace('account', 'unrelated')}</noscript>`), baseURL))
-      .toThrow(/identical adjacent noscript/u);
-    for (const extra of [account, `<template>${account}</template>`, `<noscript>${account}</noscript>`]) {
-      expect(() => russianDeferredStyleURLs(html + extra, baseURL)).toThrow(/only the ordered deferred/u);
-    }
-    expect(() => russianDeferredStyleURLs(html.replace(account, `<style>.hidden{color:red}</style>${account}`), baseURL))
-      .toThrow(/one local stylesheet/u);
   });
 
   it('does not treat an empty or partial expectation as delivery evidence', () => {

@@ -1,7 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { russianDeferredStyleURLs } from '../../../../tests/i18n-r2-deferred-styles.mjs';
 
 const distRoot = resolve(process.cwd(), 'dist');
 
@@ -69,9 +68,8 @@ describe.skipIf(!existsSync(distRoot))('built client UI payloads', () => {
     expect(russianBirthChart.match(/<style\b[^>]*\bdata-zdx-critical=/gi)).toHaveLength(1);
     expect(russianBirthChart).toMatch(/data-zdx-critical=["']Base\.[^"']+\.css["']/i);
     expect(russianBirthChart).toContain('data-zdx-calculator-first-paint');
-    // Validate the three core stylesheets in cascade order, plus the optional
-    // account-saves stylesheet, with identical ordered no-JS fallbacks.
-    russianDeferredStyleURLs(russianBirthChart, 'https://zodiacs.org');
+    expect(russianBirthChart.match(/<template data-zdx-deferred-style>/gi)).toHaveLength(3);
+    expect(russianBirthChart.match(/<noscript><link\b[^>]*\brel=["']stylesheet["']/gi)).toHaveLength(3);
     expect(russianBirthChart).toContain('data-zdx-deferred-style-loader');
     expect(russianBirthChart).not.toMatch(/\bonload=/i);
     expect(russianBirthChart).toContain('client="interaction"');

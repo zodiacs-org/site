@@ -47,14 +47,14 @@ const jsonLd = [
       <p>Salve mapas neste dispositivo. Entre na conta quando quiser acessá-los em todos os seus dispositivos.</p>
     </div>
     {accountSyncV2Enabled ? (
-      <AccountBoundProfileSurface locale="pt" client:interaction={{ separateTask: true }} />
+      <AccountBoundProfileSurface locale="pt" client:load />
     ) : (
       <>
-        <ProfileDashboard locale="pt" client:interaction={{ separateTask: true }} />
-        <ProfileManager locale="pt" client:interaction={{ separateTask: true }} />
+        <ProfileDashboard locale="pt" client:load />
+        <ProfileManager locale="pt" client:load />
       </>
     )}
-    <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="pt" client:interaction={{ separateTask: true }} />
+    <SavedRecordsPanel enabled={savedRecordsSurfaceEnabled} locale="pt" client:load />
     <aside class="pf-note">
       <p class="mono">{accountSyncV2Enabled
         ? <>O teste de sincronização criptografada é gerenciado temporariamente em <a href="/profile/">/profile/</a>. Aqui, seus mapas ficam somente neste dispositivo.</>
