@@ -1,0 +1,34 @@
+---
+/**
+ * The brand lockup's mark (DESIGN.md, "Brand Lockup"): the twelve sign dots
+ * seen tilted. The nav and the footer show the one shared drawing,
+ * public/assets/brand/tilted-ring.svg (written from src/lib/brand-lockup.mjs,
+ * and held to it by brand-lockup.test.ts), so the page requests one small
+ * cached file instead of carrying the ring's markup twice. Drawn inline, the
+ * two rings put the largest page, the daily horoscope, a round trip past the
+ * Lighthouse gate's 2.5 s LCP. Pass `width` in px; the height follows the 7:4
+ * viewBox. It is still: nothing turns on hover. The favicon and app icons
+ * keep the flat ring (BrandMark.astro).
+ */
+import { ringWidthFor, tiltedRingHeight, LOCKUP_SIZE } from '../lib/brand-lockup.mjs';
+
+const TILTED_RING_SRC = '/assets/brand/tilted-ring.svg';
+
+interface Props {
+  width?: number;
+  class?: string;
+}
+const { width = ringWidthFor(LOCKUP_SIZE.page), class: className } = Astro.props;
+---
+<img
+  class:list={['tilted-ring', className]}
+  src={TILTED_RING_SRC}
+  width={width}
+  height={tiltedRingHeight(width)}
+  alt=""
+  decoding="async"
+/>
+
+<style>
+  .tilted-ring { display: block; flex-shrink: 0; }
+</style>

@@ -58,6 +58,7 @@
     "data:astrofolio-identity": "node scripts/build-astrofolio-identity.mjs",
     "data:astrofolio-identity:verify": "node scripts/verify-astrofolio-identity.mjs",
     "data:astrofolio-share-card": "node scripts/build-astrofolio-share-card.mjs",
+    "data:end-card": "node scripts/build-end-card.mjs",
     "data:widgets": "node scripts/build-widget-loader.mjs",
     "data:sky": "node scripts/build-sky.mjs",
     "data:daily": "node scripts/build-daily.mjs && npm run editorial:daily:build && npm run editorial:horoscopes:build",

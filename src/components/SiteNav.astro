@@ -8,6 +8,7 @@ import { initProfileNavigation } from '../lib/profile/navigation-avatar.mjs';
 import { SIGNS, signName } from '../lib/signs';
 import { signDateRange } from '../lib/sign-display';
 import SignIcon from './SignIcon.astro';
+import TiltedRing from './TiltedRing.astro';
 import { availableLocalesForPath, englishOnlyCue, localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
 import { ALL_TOOLS_LABEL, NAV_MORE, NAV_MORE_LABEL, NAV_TOOLS, navToolLabelHasEnglishCue, type NavTool } from '../lib/nav-tools';
 
@@ -88,8 +89,9 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
 ---
 <div class="nav-wrap">
   <nav class:list={['nav', { 'nav--localized': locale !== 'en', 'nav--without-search': locale === 'ru', 'nav--with-today': links.some((link) => link.href === '/today/') }]} aria-label={t(locale, 'navPrimary')} data-nav>
-    <a class="nav__mark" href={localizePath(locale, '/')}>
-      <span class="nav__name">Zodiacs<span class="nav__sep">·</span><span class="nav__dim">org</span></span>
+    <a class="nav__mark" href={localizePath(locale, '/')} aria-label="Zodiacs.org">
+      <TiltedRing width={34} class="nav__ring" />
+      <span class="nav__name" aria-hidden="true">Zodiacs<span class="nav__sep">·</span><span class="nav__dim">org</span></span>
     </a>
 
     <div class="nav__links">
@@ -330,6 +332,9 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   /* Compact by default; the full lockup appears with the desktop links. */
   .nav__sep,
   .nav__dim { display: none; }
+  /* The brand lockup's ring (DESIGN.md, "Brand Lockup") shows with the full
+     lockup only; phones keep ZODIACS | ASTROFOLIO in the bar (owner's choice). */
+  .nav__mark :global(.nav__ring) { display: none; }
 
   .nav__links {
     grid-area: links;
@@ -531,12 +536,18 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     .nav:not(.nav--localized) {
       width: 884px;
       grid-template-areas: 'mark links profile search chip';
-      grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px;
+      grid-template-columns: 168px minmax(0, 1fr) 44px 62px 120px;
       gap: 18px;
     }
     .nav:not(.nav--localized) .nav__links { display: grid; }
     .nav:not(.nav--localized) .nav__sep,
     .nav:not(.nav--localized) .nav__dim { display: inline; }
+    /* The full brand lockup: the tilted ring, then ZODIACS · ORG at 0.2em
+       tracking with the dot centred (168px reserves its 166px at 13px). */
+    .nav:not(.nav--localized) .nav__mark { gap: 10px; }
+    .nav:not(.nav--localized) .nav__mark :global(.nav__ring) { display: block; }
+    .nav:not(.nav--localized) .nav__name { letter-spacing: 0.2em; }
+    .nav:not(.nav--localized) .nav__sep { margin: 0 0.2em; }
     .nav:not(.nav--localized) .nav__search { display: inline-flex; align-items: center; width: 62px; padding: 8px 11px; }
     .nav:not(.nav--localized) .nav__search-kbd { display: inline-block; }
     .nav:not(.nav--localized) .nav__chip { min-height: 34px; letter-spacing: 0.14em; }
@@ -546,13 +557,17 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     .nav--localized {
       width: 992px;
       grid-template-areas: 'mark links profile search chip';
-      grid-template-columns: 116px minmax(0, 1fr) 44px 44px 148px;
+      grid-template-columns: 168px minmax(0, 1fr) 44px 44px 148px;
       gap: 18px;
     }
-    .nav--without-search { grid-template-areas: 'mark links profile chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 148px; }
+    .nav--without-search { grid-template-areas: 'mark links profile chip'; grid-template-columns: 168px minmax(0, 1fr) 44px 148px; }
     .nav--localized .nav__links { display: grid; }
     .nav--localized .nav__sep,
     .nav--localized .nav__dim { display: inline; }
+    .nav--localized .nav__mark { gap: 10px; }
+    .nav--localized .nav__mark :global(.nav__ring) { display: block; }
+    .nav--localized .nav__name { letter-spacing: 0.2em; }
+    .nav--localized .nav__sep { margin: 0 0.2em; }
     .nav--localized .nav__chip { min-height: 34px; letter-spacing: 0.14em; }
     .nav--localized .nav__burger { display: none; }
   }
