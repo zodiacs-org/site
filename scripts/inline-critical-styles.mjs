@@ -63,6 +63,13 @@ const pairPaths = ['', 'es/', 'fr/', 'it/', 'pt/']
   .flatMap((prefix) => pairSlugs.map((slug) => `${prefix}compatibility/${slug}/index.html`));
 const pairPathSet = new Set(pairPaths);
 const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
+// Every pair page must inline at least these. Feature flags can add more
+// stylesheets (production's PUBLIC_ACCOUNT_SAVES_ENABLED adds account.css
+// through the share control), so the count per pair page is derived from the
+// page's own links instead of being fixed.
+const pairRequiredInlined = [/^Base\.[A-Za-z0-9_-]+\.css$/u, /^pair-page\.[A-Za-z0-9_-]+\.css$/u];
+// 103 entry pages carry 204 inlined stylesheets; feature flags do not change it.
+const entryInlinedStylesheets = 204;
 const targetPaths = [
   // The EN homepage keeps only Base plus its route-owned first-paint geometry
   // on the render path. The complete route bundle still loads after first
@@ -156,7 +163,8 @@ function removeHtmlAttribute(html, name) {
 
 export function expectedStylesheetShape(relativePath, deferNonBase) {
   if (pairPathSet.has(relativePath)) {
-    return { inlineCount: 3, deferredCount: 1, externalCount: 1, loaderCount: 1 };
+    // inlineCount is a minimum for pair pages (see pairRequiredInlined).
+    return { inlineCount: 3, deferredCount: 1, externalCount: 1, loaderCount: 1, inlineIsMinimum: true };
   }
   if (deferNonBase) {
     const shape = deferNonBaseConfig.get(relativePath)?.shape;
@@ -328,6 +336,14 @@ export async function inlineCriticalStyles(
     throw new Error(`inline-critical-styles: expected one stylesheet to keep linked, found ${linkedTags.length}`);
   }
   const movableTags = stylesheetTags.filter((tag) => !linkedTags.includes(tag));
+  if (keepLinked) {
+    const names = movableTags.map((tag) => basename(attribute(tag, 'href')));
+    for (const required of pairRequiredInlined) {
+      if (!names.some((name) => required.test(name))) {
+        throw new Error(`inline-critical-styles: pair page is missing a required stylesheet ${required}`);
+      }
+    }
+  }
   const selectedTags = deferNonBase
     ? movableTags.filter((tag) => {
       const href = attribute(tag, 'href');
@@ -421,6 +437,8 @@ async function main() {
   let alreadyInlined = 0;
   let stylesheets = 0;
   let bytes = 0;
+  let pairStylesheets = 0;
+  let expectedPairStylesheets = 0;
   const allPaths = await htmlFiles(distRoot);
   const markedOutsideScope = allPaths.filter((path) => {
     const relativePath = path.slice(distRoot.length + 1).split(sep).join('/');
@@ -453,9 +471,10 @@ async function main() {
         deferredCount: expectedDeferredCount,
         externalCount: expectedExternalCount,
         loaderCount: expectedLoaderCount,
+        inlineIsMinimum,
       } = expectedStylesheetShape(relativePath, Boolean(deferConfig));
       if (
-        inlineCount !== expectedInlineCount
+        (inlineIsMinimum ? inlineCount < expectedInlineCount : inlineCount !== expectedInlineCount)
         || deferredCount !== expectedDeferredCount
         || externalCount !== expectedExternalCount
         || loaderCount !== expectedLoaderCount
@@ -465,7 +484,12 @@ async function main() {
         );
       }
       alreadyInlined += 1;
-      stylesheets += inlineCount;
+      if (pairPathSet.has(relativePath)) {
+        pairStylesheets += inlineCount;
+        expectedPairStylesheets += inlineCount;
+      } else {
+        stylesheets += inlineCount;
+      }
       continue;
     }
     const result = await inlineCriticalStyles(source, distRoot, {
@@ -476,16 +500,32 @@ async function main() {
     });
     await writeFile(path, result.html);
     pages += 1;
-    stylesheets += result.stylesheets;
+    if (pairPathSet.has(relativePath)) {
+      // Every link except the kept calculator stylesheet is inlined.
+      const links = [...source.matchAll(linkPattern)]
+        .map((match) => match[0])
+        .filter((tag) => attribute(tag, 'rel')?.toLowerCase() === 'stylesheet').length;
+      expectedPairStylesheets += links - 1;
+      pairStylesheets += result.stylesheets;
+    } else {
+      stylesheets += result.stylesheets;
+    }
     bytes += result.bytes;
   }
-  // 103 entry pages with 204 stylesheets, plus the 390 pair pages with three
-  // each since they joined.
-  if (pages + alreadyInlined !== 493 || stylesheets !== 1374) {
+  // Entry pages have a fixed shape. Pair pages inline every stylesheet but
+  // the calculator's, at least Base, the pair styles and the wheel.
+  if (
+    pages + alreadyInlined !== targetPaths.length
+    || targetPaths.length !== 103 + pairPathSet.size
+    || stylesheets !== entryInlinedStylesheets
+    || pairStylesheets !== expectedPairStylesheets
+    || pairStylesheets < pairPathSet.size * 3
+  ) {
     throw new Error(
-      `inline-critical-styles: expected 493 pages / 1374 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
+      `inline-critical-styles: expected ${103 + pairPathSet.size} pages, ${entryInlinedStylesheets} entry and ${expectedPairStylesheets} (min ${pairPathSet.size * 3}) pair stylesheets inlined, found ${pages + alreadyInlined} / ${stylesheets} / ${pairStylesheets}`,
     );
   }
+  stylesheets += pairStylesheets;
   const state = pages > 0
     ? `${stylesheets} stylesheets inlined across ${pages} entry pages · ${(bytes / 1024).toFixed(1)} KB`
     : `${stylesheets} stylesheets already inlined across ${alreadyInlined} entry pages`;

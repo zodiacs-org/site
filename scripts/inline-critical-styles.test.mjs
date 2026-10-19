@@ -36,7 +36,7 @@ describe('inlineCriticalStyles', () => {
       inlineCount: 1, deferredCount: 3, externalCount: 6, loaderCount: 1,
     });    for (const pair of ['compatibility/aries-cancer/index.html', 'pt/compatibility/pisces-pisces/index.html']) {
       expect(expectedStylesheetShape(pair, false)).toEqual({
-        inlineCount: 3, deferredCount: 1, externalCount: 1, loaderCount: 1,
+        inlineCount: 3, deferredCount: 1, externalCount: 1, loaderCount: 1, inlineIsMinimum: true,
       });
     }
   });
