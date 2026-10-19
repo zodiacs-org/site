@@ -567,9 +567,7 @@ const nextCards = [
       </div>
 
       <div class="bc-main" id="bc-form">
-        {locale === 'ru'
-          ? <ChartCalculator mode="full" locale="ru" client:interaction={{ eagerHash: true }} />
-          : <ChartCalculator mode="full" locale={locale} client:idle />}
+        <ChartCalculator mode="full" locale={locale} client:interaction={{ eagerHash: true }} />
         <noscript>
           <p>{c.noscript}</p>
         </noscript>

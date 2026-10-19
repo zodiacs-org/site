@@ -8,6 +8,7 @@
 import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, dirname, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { inlineLocaleRoutes } from './lib/inline-locale-routes.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = resolve(repo, 'dist');
@@ -534,4 +535,5 @@ async function main() {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   await main();
+  await inlineLocaleRoutes(distRoot, inlineCriticalStyles);
 }

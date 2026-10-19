@@ -221,6 +221,10 @@ const interactionDirective: ClientDirective = (load, options, element) => {
         return;
       }
 
+      // Related profile islands can opt into separate browser tasks instead of
+      // sharing one long microtask when their common imports finish together.
+      if (separateTask) await new Promise<void>((resolve) => window.setTimeout(resolve, 0));
+
       // Intent can arrive while the island module is still in flight. Snapshot
       // at the last possible moment on the first hydration attempt so browser
       // autofill and native edits made without an input event are also kept.
@@ -276,6 +280,10 @@ const interactionDirective: ClientDirective = (load, options, element) => {
   armIntent();
 
   const directiveValue: unknown = options.value;
+  const separateTask = typeof directiveValue === 'object'
+    && directiveValue !== null
+    && 'separateTask' in directiveValue
+    && directiveValue.separateTask === true;
   const eagerHash = typeof directiveValue === 'object'
     && directiveValue !== null
     && 'eagerHash' in directiveValue
