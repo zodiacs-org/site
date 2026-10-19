@@ -42,7 +42,8 @@ describe("export-image brand coverage", () => {
   it("draws the tilted ring and ZODIACS · ORG, and fetches no image for it", () => {
     const source = libSource("share-card-brand.ts");
     expect(source).toContain('from "./brand-lockup.mjs"');
-    expect(source).toContain("TILTED_RING_DOTS");
+    expect(source).toContain("tiltedRingDots(front)");
+    expect(source).toContain("layout.front");
     expect(source).toContain("LOCKUP_WORDS.name");
     expect(source).toContain("LOCKUP_WORDS.tld");
     expect(source).not.toMatch(/\bfetch\(/u);
@@ -51,8 +52,11 @@ describe("export-image brand coverage", () => {
 
   it("brands all six natal portrait variants, the solar return and the technical sheet", () => {
     const source = libSource("share-card.ts");
-    expect(source.match(/await drawPortraitShareBrand\(ctx\);/g)).toHaveLength(6);
-    expect(source).toContain("await drawPortraitShareBrand(ctx, 1850);");
+    // Each card turns the ring to the person's Sun sign (ring-front.ts).
+    expect(source.match(/await drawPortraitShareBrand\(ctx, undefined, cardRingFront\(chart\)\);/g)).toHaveLength(5);
+    expect(source).toContain("await drawPortraitShareBrand(ctx, undefined, ringFront(model.wheel.bodies, !model.noTime));");
+    expect(source).toContain("await drawPortraitShareBrand(ctx, 1850, cardRingFront(chart));");
+    expect(source).toContain("front: cardRingFront(chart),");
     expect(source).toContain("drawShareBrandLockup(ctx, brandIcon");
     expect(source).toContain("withShareBrandIcon");
   });
@@ -70,9 +74,16 @@ describe("export-image brand coverage", () => {
   it("draws the server lockup from the shared ring and words", () => {
     const source = serverSource("brand-lockup-image.ts");
     expect(source).toContain("from '../lib/brand-lockup.mjs'");
-    expect(source).toContain("TILTED_RING_DOTS.map");
+    expect(source).toContain("tiltedRingDots(front).map");
     expect(source).toContain("LOCKUP_WORDS.name");
     expect(source).toContain("LOCKUP_WORDS.dot");
     expect(source).toContain("LOCKUP_WORDS.tld");
+  });
+
+  it("turns the ring to the person's sign on the images made for one person", () => {
+    expect(libSource("compatibility-card.ts")).toContain("front: ringFront(a.bodies, a.asc !== null),");
+    expect(libSource("games/share-card.ts")).toContain("front: snapshot.sign.slug,");
+    expect(serverSource("chart-preview.ts")).toContain("lockupImage(undefined, undefined, model.ringFront)");
+    expect(serverSource("result-preview.ts")).toContain("model.people[0].slug");
   });
 });

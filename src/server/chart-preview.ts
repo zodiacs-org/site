@@ -96,8 +96,8 @@ function previewCard(model: ChartPreviewModel) {
           display: 'flex', fontFamily: 'EB Garamond', fontSize: 28,
           fontStyle: 'italic', color: '#8E96AB',
         } }, PREVIEW_KICKER),
-      // The brand lockup (DESIGN.md): the tilted ring and ZODIACS · ORG.
-      lockupImage()),
+      // The brand lockup (DESIGN.md), its ring turned to the chart's Sun sign.
+      lockupImage(undefined, undefined, model.ringFront)),
     h('div', { style: { display: 'flex', gap: '30px', width: '100%' } },
       ...model.placements.map((row) => (
         h('div', { key: row.label, style: {

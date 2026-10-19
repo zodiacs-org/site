@@ -1,4 +1,4 @@
-import { LOCKUP, LOCKUP_WORDS, TILTED_RING_DOTS } from "./brand-lockup.mjs";
+import { LOCKUP, LOCKUP_WORDS, tiltedRingDots } from "./brand-lockup.mjs";
 
 /**
  * The brand lockup on the site's export images (DESIGN.md, "Brand Lockup"),
@@ -40,6 +40,11 @@ export interface ShareCardBrandLayout {
   gap?: number;
   /** The card's own serif; the lockup's Latin capitals always use EB Garamond. */
   serif?: string;
+  /**
+   * A card made for one person passes their sign (ringFront) and the ring
+   * turns to bring it to the front; without one it is the brand's own ring.
+   */
+  front?: string | null;
 }
 
 /** Kept for the cards' call shapes: the lockup no longer draws an image, so this is always null. */
@@ -72,12 +77,18 @@ export async function withShareBrandIcon<T>(
   return render(null);
 }
 
-/** The tilted ring, `width` px wide (its height is 4/7 of it), from its top-left corner. */
-export function drawTiltedRing(context: CanvasRenderingContext2D, x: number, y: number, width: number): void {
+/** The tilted ring, `width` px wide (its height is 4/7 of it), from its top-left corner, turned to `front` when one is given. */
+export function drawTiltedRing(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  front?: string | null,
+): void {
   const scale = width / 28;
   context.save();
   try {
-    for (const dot of TILTED_RING_DOTS) {
+    for (const dot of tiltedRingDots(front)) {
       context.globalAlpha = dot.opacity;
       context.fillStyle = dot.fill;
       context.beginPath();
@@ -112,7 +123,8 @@ function fillTracked(context: CanvasRenderingContext2D, text: string, x: number,
  * Paints the lockup: the tilted ring, then ZODIACS · ORG in EB Garamond
  * capitals at 0.2em tracking, the dot muted and centred, ORG at 500 a step
  * dimmer. It ends at `layout.wordmarkX` (the last letter, not its tracking)
- * and centres on `layout.centerY`. `_icon` is ignored (see loadShareBrandIcon).
+ * and centres on `layout.centerY`, the ring turned to `layout.front` on a
+ * card made for one person. `_icon` is ignored (see loadShareBrandIcon).
  */
 export function drawShareBrandLockup(
   context: CanvasRenderingContext2D,
@@ -141,7 +153,7 @@ export function drawShareBrandLockup(
     const ringWidth = size * LOCKUP.ringWidth;
     const ringHeight = (ringWidth * 4) / 7;
     let x = layout.wordmarkX - wordsWidth;
-    drawTiltedRing(context, x - size * LOCKUP.gap - ringWidth, layout.centerY - ringHeight / 2, ringWidth);
+    drawTiltedRing(context, x - size * LOCKUP.gap - ringWidth, layout.centerY - ringHeight / 2, ringWidth, layout.front);
     const baseline = layout.centerY + (size * CAP_HEIGHT) / 2;
     runs.forEach((run, index) => {
       x += run.before;

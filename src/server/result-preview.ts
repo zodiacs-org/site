@@ -107,9 +107,12 @@ function kicker(text: string) {
   return h('div', { style: { display: 'flex', fontFamily: SERIF, fontStyle: 'italic', fontSize: 34, color: MUTED } }, text);
 }
 
-/** The brand lockup (DESIGN.md, "Brand Lockup"): the tilted ring and ZODIACS · ORG, top right. */
-function brand() {
-  return h('div', { style: { display: 'flex', alignSelf: 'flex-end' } }, lockupImage());
+/**
+ * The brand lockup (DESIGN.md, "Brand Lockup"): the tilted ring and ZODIACS ·
+ * ORG, top right, the ring turned to `front` on a card made for one person.
+ */
+function brand(front: ShareSign | null = null) {
+  return h('div', { style: { display: 'flex', alignSelf: 'flex-end' } }, lockupImage(undefined, undefined, front));
 }
 
 const RING = 384;
@@ -165,14 +168,14 @@ function fit(lines: string[], width: number, max: number, min: number): number {
 
 const LEFT_WIDTH = 660;
 
-function frame(left: VNode<any>, score: number, hues: [string, string]) {
+function frame(left: VNode<any>, score: number, hues: [string, string], front: ShareSign | null = null) {
   return h('div', { style: {
       width: '1200px', height: '630px', display: 'flex', justifyContent: 'space-between',
       padding: '54px 64px 56px', background: VOID, color: INK, fontFamily: 'Noto',
     } },
     left,
     h('div', { style: { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' } },
-      brand(),
+      brand(front),
       ring(score, hues)));
 }
 
@@ -190,7 +193,8 @@ export function compatibilityCard(model: CompatibilityCardModel, images: Map<Sha
       h('div', { style: { display: 'flex', fontFamily: SERIF, fontSize: fit([model.verdict], LEFT_WIDTH, 46, 34), color: INK, marginTop: '18px' } }, model.verdict),
       h('div', { style: { display: 'flex', marginTop: '22px' } }, ...model.people.map((person) => signChip(person, images, 54)))),
     h('div', { style: { display: 'flex' } }, ...model.areas.map((area, index) => areaMeter(area, index))),
-  ), model.score, model.ring);
+  // The ring brings the first person's Sun sign forward, when the link settles it.
+  ), model.score, model.ring, model.people[0].slug);
 }
 
 export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, string>) {

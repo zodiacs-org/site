@@ -11,7 +11,7 @@ import {
   prepareShareBrandLockup,
   withShareBrandIcon,
 } from "./share-card-brand";
-import { TILTED_RING_DOTS } from "./brand-lockup.mjs";
+import { TILTED_RING_DOTS, tiltedRingDots } from "./brand-lockup.mjs";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -125,6 +125,22 @@ describe("approved export lockup", () => {
     expect(harness.painted.map(({ text }) => text).join("")).toBe("ZODIACS·ORG");
     const xs = harness.painted.slice(0, 7).map(({ x }) => x as number);
     expect(xs.slice(1).map((x, index) => x - xs[index])).toEqual([14, 14, 14, 14, 14, 14]);
+  });
+
+  it("turns the ring to a person's sign when the card passes one, and only the inks move", () => {
+    const own = canvasHarness();
+    drawShareBrandLockup(own.context, null, PORTRAIT_SHARE_CARD_BRAND_LAYOUT);
+    const turned = canvasHarness();
+    drawShareBrandLockup(turned.context, null, { ...PORTRAIT_SHARE_CARD_BRAND_LAYOUT, front: "cancer" });
+    const front = turned.arcs.at(-1);
+    expect(front?.fill).toBe(tiltedRingDots("cancer").at(-1)?.fill);
+    expect(front?.fill).toBe("#4A8FBD");
+    expect(front?.alpha).toBe(1);
+    expect(turned.arcs.map(({ x, y, r, alpha }) => ({ x, y, r, alpha }))).toEqual(own.arcs.map(({ x, y, r, alpha }) => ({ x, y, r, alpha })));
+    expect(turned.painted).toEqual(own.painted);
+    const unknown = canvasHarness();
+    drawShareBrandLockup(unknown.context, null, { ...PORTRAIT_SHARE_CARD_BRAND_LAYOUT, front: null });
+    expect(unknown.arcs).toEqual(own.arcs);
   });
 
   it("never paints the old sentence-case wordmark", () => {

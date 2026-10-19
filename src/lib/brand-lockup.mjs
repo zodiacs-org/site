@@ -36,6 +36,56 @@ export const TILTED_RING_DOTS = Object.freeze([
 ].map((dot) => Object.freeze(dot)));
 
 /**
+ * The ring carries the twelve signs in zodiac order, each in a deeper tone
+ * of its pastel hue (the --sign-* tokens), with Libra at the front and
+ * Aries, its opposite, at the back.
+ */
+export const TILTED_RING_SIGNS = Object.freeze([
+  'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+  'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
+]);
+export const TILTED_RING_INKS = Object.freeze({
+  aries: '#D9694F',
+  taurus: '#5E9E70',
+  gemini: '#8463BC',
+  cancer: '#4A8FBD',
+  leo: '#CC6C84',
+  virgo: '#5FA352',
+  libra: '#A764C0',
+  scorpio: '#3FA0BD',
+  sagittarius: '#CF8B3A',
+  capricorn: '#7FB24C',
+  aquarius: '#7A57B0',
+  pisces: '#4CA88F',
+});
+export const TILTED_RING_FRONT = 'libra';
+
+/** How many places after the front sign each dot sits, going round the ring. */
+const RING_STEPS = TILTED_RING_DOTS.map((dot) => {
+  const sign = TILTED_RING_SIGNS.findIndex((slug) => TILTED_RING_INKS[slug] === dot.fill);
+  return (sign - TILTED_RING_SIGNS.indexOf(TILTED_RING_FRONT) + 12) % 12;
+});
+
+/**
+ * The ring turned to bring `front` (a sign's slug) to the front, for an
+ * image made for one person: their sign becomes the big dot nearest the
+ * viewer, the others keep their zodiac order around it and the opposite
+ * sign sits at the back. Only the inks move; the twelve places, sizes and
+ * opacities stay. Without a sign the ring knows, it is the brand's own ring.
+ *
+ * @param {string | null | undefined} [front]
+ * @returns {ReadonlyArray<Readonly<{ cx: number, cy: number, r: number, fill: string, opacity: number }>>}
+ */
+export function tiltedRingDots(front) {
+  const turn = TILTED_RING_SIGNS.indexOf(front);
+  if (turn < 0 || front === TILTED_RING_FRONT) return TILTED_RING_DOTS;
+  return Object.freeze(TILTED_RING_DOTS.map((dot, index) => Object.freeze({
+    ...dot,
+    fill: TILTED_RING_INKS[TILTED_RING_SIGNS[(turn + RING_STEPS[index]) % 12]],
+  })));
+}
+
+/**
  * The lockup's proportions, in ems of the type size: the words' tracking,
  * the space on either side of the dot (before tracking, so it sits centred),
  * the ring's width (its height is 4/7 of it) and the space between the ring
@@ -61,15 +111,23 @@ export const tiltedRingHeight = (width) => Math.round((width * 4) / 7);
 /** The ring's width for a type size. */
 export const ringWidthFor = (size) => Math.round(size * LOCKUP.ringWidth);
 
-/** The twelve dots as SVG circles. */
-export const tiltedRingCircles = () => TILTED_RING_DOTS
+/**
+ * The twelve dots as SVG circles, turned to `front` when one is given (see tiltedRingDots).
+ *
+ * @param {string | null | undefined} [front]
+ */
+export const tiltedRingCircles = (front) => tiltedRingDots(front)
   .map((dot) => `<circle cx="${dot.cx}" cy="${dot.cy}" r="${dot.r}" fill="${dot.fill}" opacity="${dot.opacity}"/>`)
   .join('');
 
-/** The ring as inline SVG, `width` px wide; decorative, so hidden from assistive technology. */
-export function tiltedRingSvg({ width = ringWidthFor(LOCKUP_SIZE.page), className = '' } = {}) {
+/**
+ * The ring as inline SVG, `width` px wide; decorative, so hidden from assistive technology.
+ *
+ * @param {{ width?: number, className?: string, front?: string | null }} [options]
+ */
+export function tiltedRingSvg({ width = ringWidthFor(LOCKUP_SIZE.page), className = '', front = null } = {}) {
   const cls = className ? ` class="${className}"` : '';
-  return `<svg${cls} viewBox="${TILTED_RING_VIEWBOX}" width="${width}" height="${tiltedRingHeight(width)}" fill="none" aria-hidden="true" focusable="false">${tiltedRingCircles()}</svg>`;
+  return `<svg${cls} viewBox="${TILTED_RING_VIEWBOX}" width="${width}" height="${tiltedRingHeight(width)}" fill="none" aria-hidden="true" focusable="false">${tiltedRingCircles(front)}</svg>`;
 }
 
 /**

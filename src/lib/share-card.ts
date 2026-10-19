@@ -37,6 +37,7 @@ import {
   drawShareBrandLockup,
   withShareBrandIcon,
 } from './share-card-brand';
+import { ringFront } from './ring-front';
 
 export type CardOutcome = 'shared' | 'downloaded' | 'cancelled';
 export type ChartCardVariant = 'full' | 'big-three' | 'communication' | 'signature' | 'approach' | 'sheet';
@@ -254,15 +255,26 @@ export const SHARE_CARD_WORDMARK = Object.freeze({
   align: 'right' as const,
 });
 
+/**
+ * The sign a chart card's lockup ring brings to the front: the chart's Sun
+ * sign when the chart settles it (ring-front.ts). A chart from a link carries
+ * no birth-time flag, so its angles stand for one.
+ */
+export function cardRingFront(chart: Pick<BigThreeCardChart, 'bodies' | 'angles'> & { input?: { timeKnown?: boolean } }): string | null {
+  return ringFront(chart.bodies, chart.input ? chart.input.timeKnown === true : chart.angles !== null);
+}
+
 async function drawPortraitShareBrand(
   context: CanvasRenderingContext2D,
   centerY: number = PORTRAIT_SHARE_CARD_BRAND_LAYOUT.centerY,
+  front: string | null = null,
 ): Promise<void> {
   await withShareBrandIcon((icon) => {
     drawShareBrandLockup(context, icon, {
       ...PORTRAIT_SHARE_CARD_BRAND_LAYOUT,
       centerY,
       serif: SERIF,
+      front,
     });
   });
 }
@@ -761,7 +773,7 @@ async function drawFullChartCard(
   ctx.fillText(chartCardReceipt(chart, locale), 66, PORTRAIT_SHARE_CARD_BRAND_LAYOUT.centerY);
   ctx.textAlign = 'center';
 
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -833,7 +845,7 @@ async function drawBigThreeCard(
   timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1630 + index * 34));
   ctx.font = `400 24px ${MONO}`;
   ctx.fillText(shareCardFormat(locale, 'engineReceipt', { version: chart.engineVersion }), W / 2, 1770);
-  await drawPortraitShareBrand(ctx, 1850);
+  await drawPortraitShareBrand(ctx, 1850, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -920,7 +932,7 @@ async function drawCommunicationCard(
   ctx.textAlign = 'left';
   ctx.fillText(content.receipt, 72, 1260);
 
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -1044,7 +1056,7 @@ async function drawSignatureCard(
   ctx.fillStyle = INK_2;
   ctx.font = `400 24px ${MONO}`;
   ctx.fillText(content.receipt, 72, 1260);
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -1145,7 +1157,7 @@ async function drawApproachCard(
   ctx.fillStyle = INK_2;
   ctx.font = `400 24px ${MONO}`;
   ctx.fillText(content.receipt, 72, 1260);
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
@@ -1432,6 +1444,7 @@ async function drawChartSheet(
       fontSize: CHART_SHEET_LAYOUT.brandFontSize,
       gap: CHART_SHEET_LAYOUT.brandGap,
       serif: SERIF,
+      front: cardRingFront(chart),
     });
   });
 
@@ -1594,7 +1607,7 @@ async function drawPlacementCard(
   timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1090 + index * 34));
   ctx.font = `400 24px ${MONO}`;
   ctx.fillText(shareCardFormat(locale, 'engineReceipt', { version: chart.engineVersion }), W / 2, 1238);
-  await drawPortraitShareBrand(ctx);
+  await drawPortraitShareBrand(ctx, undefined, cardRingFront(chart));
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
   return blob;
@@ -1728,7 +1741,8 @@ export async function prepareSolarReturnCard(source: SolarReturnExportModel): Pr
   ctx.fillStyle = INK_2;
   ctx.textBaseline = 'middle';
   ctx.fillText(`Engine ${model.engineVersion}`, 72, 1290);
-  await drawPortraitShareBrand(ctx);
+  // The return's Sun stands where the natal Sun stood, so its sign is the person's.
+  await drawPortraitShareBrand(ctx, undefined, ringFront(model.wheel.bodies, !model.noTime));
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
   return { blob, filename: `zodiacs-${model.noTime ? 'approximate-' : ''}solar-return-${model.returnYear}.png` };

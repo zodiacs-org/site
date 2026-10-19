@@ -6,10 +6,14 @@ import {
   LOCKUP_SIZE,
   LOCKUP_WORDS,
   TILTED_RING_DOTS,
+  TILTED_RING_FRONT,
+  TILTED_RING_INKS,
+  TILTED_RING_SIGNS,
   TILTED_RING_VIEWBOX,
   lockupWordsCss,
   lockupWordsHtml,
   ringWidthFor,
+  tiltedRingDots,
   tiltedRingHeight,
   tiltedRingSvg,
 } from './brand-lockup.mjs';
@@ -32,6 +36,40 @@ describe('the brand lockup (DESIGN.md, "Brand Lockup")', () => {
     expect(LOCKUP_LABEL).toBe('Zodiacs.org');
     expect(ringWidthFor(13)).toBe(34);
     expect(tiltedRingHeight(34)).toBe(19);
+  });
+
+  it('carries the twelve signs round the ring in zodiac order, Libra in front and Aries behind', () => {
+    expect(Object.keys(TILTED_RING_INKS)).toEqual([...TILTED_RING_SIGNS]);
+    expect(new Set(Object.values(TILTED_RING_INKS))).toEqual(new Set(TILTED_RING_DOTS.map((dot) => dot.fill)));
+    expect(TILTED_RING_FRONT).toBe('libra');
+    // Going round the ellipse from the front dot, the signs follow the zodiac.
+    const angle = (dot: { cx: number; cy: number }) => (Math.atan2((dot.cy - 12) / 4, (dot.cx - 12) / 10) * 180 / Math.PI + 270) % 360;
+    const round = [...TILTED_RING_DOTS].sort((a, b) => angle(a) - angle(b)).map((dot) => dot.fill);
+    expect(round).toEqual(['libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces', 'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo']
+      .map((slug) => TILTED_RING_INKS[slug as keyof typeof TILTED_RING_INKS]));
+  });
+
+  it('turns to bring one person\'s sign to the front, moving only the inks', () => {
+    expect(tiltedRingDots()).toBe(TILTED_RING_DOTS);
+    expect(tiltedRingDots(null)).toBe(TILTED_RING_DOTS);
+    expect(tiltedRingDots('libra')).toBe(TILTED_RING_DOTS);
+    expect(tiltedRingDots('ophiuchus')).toBe(TILTED_RING_DOTS);
+    TILTED_RING_SIGNS.forEach((sign, index) => {
+      const dots = tiltedRingDots(sign);
+      expect(dots.map(({ cx, cy, r, opacity }) => ({ cx, cy, r, opacity })))
+        .toEqual(TILTED_RING_DOTS.map(({ cx, cy, r, opacity }) => ({ cx, cy, r, opacity })));
+      expect(new Set(dots.map((dot) => dot.fill)).size).toBe(12);
+      const at = (cx: number, cy: number) => dots.find((dot) => dot.cx === cx && dot.cy === cy)?.fill;
+      const ink = (step: number) => TILTED_RING_INKS[TILTED_RING_SIGNS[(index + step) % 12] as keyof typeof TILTED_RING_INKS];
+      expect(at(12, 16), sign).toBe(ink(0));
+      expect(at(7, 15.46), sign).toBe(ink(1));
+      expect(at(17, 15.46), sign).toBe(ink(11));
+      expect(at(12, 8), sign).toBe(ink(6));
+    });
+    const aries = tiltedRingSvg({ width: 34, front: 'aries' });
+    expect(aries).toMatch(/<circle cx="12" cy="16" r="3.1" fill="#D9694F" opacity="1"\/><\/svg>$/u);
+    expect(aries).toContain('<circle cx="12" cy="8" r="1.2" fill="#A764C0" opacity="0.45"/>');
+    expect(tiltedRingSvg({ width: 34, front: null })).toBe(tiltedRingSvg({ width: 34 }));
   });
 
   it('writes the live words as the nav does, for the stylesheet to capitalise', () => {

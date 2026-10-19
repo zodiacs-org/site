@@ -91,6 +91,13 @@ describe('chart preview functions', () => {
     expect(JSON.stringify(model)).not.toMatch(/\b(?:birth|date|time|place|coordinates?|min)\b/i);
   });
 
+  it('turns the lockup ring to the Sun sign, and only states one a link without a birth time settles', () => {
+    expect(previewModel({ sun: 0, moon: 29, rising: 359, houses: 'whole' }).ringFront).toBe('aries');
+    expect(previewModel({ sun: 135, moon: 29, rising: null, houses: null }).ringFront).toBe('leo');
+    expect(previewModel({ sun: 120, moon: 29, rising: null, houses: null }).ringFront).toBeNull();
+    expect(previewModel({ sun: 148, moon: 29, rising: null, houses: null }).ringFront).toBeNull();
+  });
+
   it('labels an angle-free token as reference positions without a clock claim without claiming Rising or houses', async () => {
     const model = previewModel(previewPlacementsFromToken(noAnglesToken)!);
     expect(model?.placements.map(({ label }) => label)).toEqual(['Sun', 'Moon']);
