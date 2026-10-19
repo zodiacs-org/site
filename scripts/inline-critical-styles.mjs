@@ -51,13 +51,18 @@ const signs = [
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
 // The 390 compatibility pair pages (78 pairings in five locales) open on two
-// sign paintings, their mobile LCP. All four of their stylesheets stay on the
-// render path, inlined, and the faces only text far down the page uses move
-// to after load (belowFoldFaces).
+// sign paintings, their mobile LCP. Three of their four stylesheets are
+// inlined and the faces only text far down the page uses move to after load
+// (belowFoldFaces). The calculator's stylesheet stays a linked one
+// (pairKeptStylesheet): every calculator page shares it, so readers often
+// have it cached, and inlining it too measured worse, because the first paint
+// then came ahead of the page's long first layout and Lighthouse counted that
+// layout as blocking time.
 const pairSlugs = signs.flatMap((sign, index) => signs.slice(index).map((other) => `${sign}-${other}`));
 const pairPaths = ['', 'es/', 'fr/', 'it/', 'pt/']
   .flatMap((prefix) => pairSlugs.map((slug) => `${prefix}compatibility/${slug}/index.html`));
 const pairPathSet = new Set(pairPaths);
+const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
 const targetPaths = [
   // The EN homepage keeps only Base plus its route-owned first-paint geometry
   // on the render path. The complete route bundle still loads after first
@@ -151,7 +156,7 @@ function removeHtmlAttribute(html, name) {
 
 export function expectedStylesheetShape(relativePath, deferNonBase) {
   if (pairPathSet.has(relativePath)) {
-    return { inlineCount: 4, deferredCount: 1, externalCount: 0, loaderCount: 1 };
+    return { inlineCount: 3, deferredCount: 1, externalCount: 1, loaderCount: 1 };
   }
   if (deferNonBase) {
     const shape = deferNonBaseConfig.get(relativePath)?.shape;
@@ -281,7 +286,7 @@ function takeBelowFoldFaces(css) {
 export async function inlineCriticalStyles(
   html,
   root = distRoot,
-  { deferNonBase = false, subsetHomepageFonts = false, deferFaces = false } = {},
+  { deferNonBase = false, subsetHomepageFonts = false, deferFaces = false, keepLinked = null } = {},
 ) {
   if (!hasHtmlAttribute(html, marker)) return { html, stylesheets: 0, bytes: 0 };
 
@@ -314,14 +319,23 @@ export async function inlineCriticalStyles(
   const selectPattern = deferNonBase instanceof RegExp
     ? deferNonBase
     : /^Base\.[A-Za-z0-9_-]+\.css$/u;
+  // A stylesheet matching keepLinked is left exactly as it is: neither
+  // inlined nor deferred.
+  const linkedTags = keepLinked
+    ? stylesheetTags.filter((tag) => keepLinked.test(basename(attribute(tag, 'href'))))
+    : [];
+  if (keepLinked && linkedTags.length !== 1) {
+    throw new Error(`inline-critical-styles: expected one stylesheet to keep linked, found ${linkedTags.length}`);
+  }
+  const movableTags = stylesheetTags.filter((tag) => !linkedTags.includes(tag));
   const selectedTags = deferNonBase
-    ? stylesheetTags.filter((tag) => {
+    ? movableTags.filter((tag) => {
       const href = attribute(tag, 'href');
       return href ? selectPattern.test(basename(href)) : false;
     })
-    : stylesheetTags;
+    : movableTags;
   const deferredTags = deferNonBase
-    ? stylesheetTags.filter((tag) => !selectedTags.includes(tag))
+    ? movableTags.filter((tag) => !selectedTags.includes(tag))
     : [];
   if (deferNonBase && (selectedTags.length === 0 || deferredTags.length === 0)) {
     throw new Error(
@@ -458,17 +472,18 @@ async function main() {
       deferNonBase: deferConfig?.select,
       subsetHomepageFonts: relativePath === 'index.html',
       deferFaces: pairPathSet.has(relativePath),
+      keepLinked: pairPathSet.has(relativePath) ? pairKeptStylesheet : null,
     });
     await writeFile(path, result.html);
     pages += 1;
     stylesheets += result.stylesheets;
     bytes += result.bytes;
   }
-  // 103 entry pages with 204 stylesheets, plus the 390 pair pages with four
+  // 103 entry pages with 204 stylesheets, plus the 390 pair pages with three
   // each since they joined.
-  if (pages + alreadyInlined !== 493 || stylesheets !== 1764) {
+  if (pages + alreadyInlined !== 493 || stylesheets !== 1374) {
     throw new Error(
-      `inline-critical-styles: expected 493 pages / 1764 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
+      `inline-critical-styles: expected 493 pages / 1374 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
     );
   }
   const state = pages > 0

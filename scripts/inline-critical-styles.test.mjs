@@ -36,7 +36,7 @@ describe('inlineCriticalStyles', () => {
       inlineCount: 1, deferredCount: 3, externalCount: 6, loaderCount: 1,
     });    for (const pair of ['compatibility/aries-cancer/index.html', 'pt/compatibility/pisces-pisces/index.html']) {
       expect(expectedStylesheetShape(pair, false)).toEqual({
-        inlineCount: 4, deferredCount: 1, externalCount: 0, loaderCount: 1,
+        inlineCount: 3, deferredCount: 1, externalCount: 1, loaderCount: 1,
       });
     }
   });
@@ -197,9 +197,12 @@ describe('inlineCriticalStyles', () => {
       + '<link rel="stylesheet" href="/_astro/calculator.hash.css">'
       + '<link rel="stylesheet" href="/_astro/pair-page.hash.css">'
       + '</head><body></body></html>';
-    const result = await inlineCriticalStyles(marked, root, { deferFaces: true });
+    const result = await inlineCriticalStyles(marked, root, { deferFaces: true, keepLinked: /^calculator\./ });
 
-    expect(result.stylesheets).toBe(3);
+    expect(result.stylesheets).toBe(2);
+    expect(result.html).toContain('<link rel="stylesheet" href="/_astro/calculator.hash.css">');
+    expect(result.html.indexOf('data-zdx-critical="Base.hash.css"')).toBeLessThan(result.html.indexOf('calculator.hash.css'));
+    expect(result.html.indexOf('calculator.hash.css')).toBeLessThan(result.html.indexOf('data-zdx-critical="pair-page.hash.css"'));
     const base = result.html.match(/<style data-zdx-critical="Base\.hash\.css">([^<]*)<\/style>/)[1];
     expect(base).toBe(`${faces.sans}${faces.phase1Italic}${faces.serifItalic}:root{--ink:#fff}`);
     expect(result.html).toContain(
@@ -207,8 +210,19 @@ describe('inlineCriticalStyles', () => {
       + `<noscript><style>${faces.italic}${faces.mono}</style></noscript>`,
     );
     expect(result.html.indexOf('data-zdx-deferred-faces')).toBeLessThan(result.html.indexOf('data-zdx-deferred-style-loader'));
-    expect(result.html).not.toMatch(/<link\b[^>]*rel="stylesheet"/);
+    expect(result.html.match(/<link\b[^>]*rel="stylesheet"/g)).toHaveLength(1);
     expect(result.html).not.toContain('data-inline-critical-css');
+  });
+
+  it('fails closed when the stylesheet to keep linked is missing', async () => {
+    const root = await fixture({ 'Base.hash.css': ':root{--ink:#fff}' });
+    const marked = '<html data-inline-critical-css><head>'
+      + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+      + '</head></html>';
+
+    await expect(inlineCriticalStyles(marked, root, { keepLinked: /^calculator\./ })).rejects.toThrow(
+      'expected one stylesheet to keep linked, found 0',
+    );
   });
 
   it('fails closed when a pair page build loses a below-fold face', async () => {
