@@ -10,7 +10,7 @@
   "browser": "Chromium 141.0.7390.37",
   "dailyDate": "2026-10-19",
   "publicationCanonicalSha256": "0119cc552034869b748c46a64bf91ee7de35e0dfd9aa1a447cec4aedd091c1aa",
-  "templateSourceSha256": "19496b9fff17677c48e810c04565096819ac8df2ca07cdd5ddb0256839ee1c64",
+  "templateSourceSha256": "f307771b4f3d0e36e92a2bcc8aac75959ad91b5785f968ae7ddf2c490c3defa4",
   "renderPayloadSha256": {
     "daily": "59451b9f27109ccc48dd41a2e547083e00460b0d92ff3858712a1198a2003fee",
     "dailyPublication": "d1e5913fb060efc398e706c7da80b6e81e65f398824e33afec538b229461f8c9",
@@ -20,7 +20,7 @@
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
     "builtAt": "2026-10-19T12:00:00.000Z",
-    "templateSourceSha256": "19496b9fff17677c48e810c04565096819ac8df2ca07cdd5ddb0256839ee1c64",
+    "templateSourceSha256": "f307771b4f3d0e36e92a2bcc8aac75959ad91b5785f968ae7ddf2c490c3defa4",
     "dailyDate": "2026-10-19",
     "publicationCanonicalSha256": "0119cc552034869b748c46a64bf91ee7de35e0dfd9aa1a447cec4aedd091c1aa",
     "renderPayloadSha256": {
@@ -41,13 +41,13 @@
       "screenshot": {
         "file": "today-360.png",
         "width": 360,
-        "height": 11269,
-        "sha256": "f5833f06f779d4b8e7be2d7dfeee741914ca6c872392fef1122d224b5eeffe72"
+        "height": 11304,
+        "sha256": "08f62bb5f6d4753c7022f6c5422667f601b9ee90db379efdc2ea28acc5c9277a"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
-        "scrollHeight": 11269,
+        "scrollHeight": 11304,
         "contentLength": 7933,
         "overlay": false,
         "guideLauncher": true
@@ -66,7 +66,7 @@
         "file": "today-1280.png",
         "width": 1280,
         "height": 7757,
-        "sha256": "a0cae60891edab710d9f844bba7fed26b1f2ee1a64e9b6be1acbc39340692fcf"
+        "sha256": "0d66a4435a827818c7ecada472b58a0a9fda15e44250ffee8965135c0bf368fa"
       },
       "layout": {
         "clientWidth": 1280,

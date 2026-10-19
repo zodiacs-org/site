@@ -70,8 +70,8 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
   design they were published with, and a new family takes the lockup: the
   Registry's v4 lot and hub cards, Astrofolio's v6 Faces card and
   Terminal's v7 card (2026-10-19) replace the v3, v2, v5 and v6 files on the
-  pages, and those stay published for links already shared. The homepage and
-  the sign guides moved to the art cards below.
+  pages, and those stay published for links already shared. The homepage,
+  the sign guides and the horoscopes moved to the art cards below.
 - In motion: the end card for short videos (`npm run data:end-card`), two
   seconds at 1080 × 1920 in which the ring spins, slows to the brand's own
   front and settles beside the words, a little above the middle of the
@@ -82,23 +82,29 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
 
 ## Art Share Cards
 
-The homepage and the twelve sign guides share as art cards (owner-chosen
-2026-10-19): each is laid out the way its page opens, with the names and the
-homepage headline in EB Garamond and the lockup in the footer row.
+The homepage, the twelve sign guides and their horoscopes share as art cards
+(owner-chosen 2026-10-19): each is laid out the way its page opens, with the
+names and the homepage headline in EB Garamond and the lockup in the footer
+row.
 
 - The homepage card cuts the hero film's poster at full size, the sign discs
   from Virgo to Aquarius running across the top, under the hero's scrim, with
   the hero's headline and the first half of its caption. Every page without a
   card of its own shows it too.
 - A sign guide's card is its hero: the sign's art panel on the right in the
-  hero's shade, and on the left the sign's disc and kicker ("The first sign of
-  the zodiac"), the name, its one line and "The Sun sign for birthdays from
-  …", the words the guide prints.
+  hero's shade, and on the left the sign's pastel disc, drawn large (144 px,
+  the owner's call, so it reads when a chat app shows the card small), the
+  kicker ("The first sign of the zodiac"), the name, its one line and "The
+  Sun sign for birthdays from …", the words the guide prints.
+- Each sign's seven horoscope pages (today, tomorrow, the week, the month,
+  love, career and the year) share in the same layout, with the horoscope's
+  kicker and line in place of the guide's ("Daily horoscope", "What matters
+  today, with one useful move.").
 - JPEGs under 300 KB, because the art fills the picture, in
   `/assets/og/v8/` (`npm run data:og -- --only-art-cards`). Their paths,
   words, crop and the heroes' art and shade live in `src/lib/og-art-cards.mjs`,
-  and a test holds them to the two heroes. The v2 homepage and sign cards stay
-  published for links already shared.
+  and a test holds them to the two heroes. The v2 homepage, sign and horoscope
+  cards stay published for links already shared.
 
 ## Voice
 

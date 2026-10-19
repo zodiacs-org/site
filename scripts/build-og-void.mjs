@@ -76,6 +76,7 @@ const { HOROSCOPE_OG_SURFACES, OG_EN } = await import(
 // The homepage and sign guide art cards (2026-10-19): their addresses, words
 // and the heroes' art and shade, shared with the pages and the verifier.
 const {
+  ART_CARD_DISC,
   ART_CARD_MAX_BYTES,
   HOME_ART_CARD,
   HOME_ART_CARD_COPY,
@@ -83,6 +84,8 @@ const {
   HOME_ART_CARD_SCRIM,
   SIGN_ART_CARD_ART,
   SIGN_ART_CARD_SHADE,
+  horoscopeArtCard,
+  horoscopeArtCardCopy,
   signArtCard,
   signArtCardCopy,
 } = await import(pathToFileURL(resolve(root, 'src/lib/og-art-cards.mjs')).href);
@@ -470,7 +473,7 @@ function signCard(s) {
 // panel behind the words, in the heroes' own shade, with the names and the
 // homepage headline in the display serif and the lockup in the footer row.
 // The art arrives as data: URIs read by the --only-art-cards run alone.
-const ART = { poster: null, signs: {} };
+const ART = { poster: null, signs: {}, icons: {} };
 
 /** The homepage: the poster cut at full size, the hero's scrim, its headline bottom left. */
 function artHomeCard() {
@@ -487,24 +490,38 @@ function artHomeCard() {
   return shell(body, OG_EN.site);
 }
 
-/** A sign guide: the art panel on the right in the guide hero's shade, the disc, kicker, name and lines on the left. */
-function artSignCard(s) {
-  const copy = signArtCardCopy(s.slug);
+/**
+ * A sign's card, for its guide or one of its horoscopes: the art panel on the
+ * right in the guide hero's shade; on the left the sign's pastel disc, large
+ * so it reads when the card is shown small (owner's call, 2026-10-19), then
+ * the kicker, the name, the line and the birthday sentence.
+ */
+function artSignLayout(s, copy, footer) {
   const body = `
   <img src="${ART.signs[s.slug]}" width="1200" height="800" alt=""
     style="position: absolute; top: 0; right: 0; width: ${SIGN_ART_CARD_ART.width}; height: 100%; object-fit: cover; object-position: ${SIGN_ART_CARD_ART.position};
       filter: ${SIGN_ART_CARD_ART.filter}; -webkit-mask-image: ${SIGN_ART_CARD_ART.mask}; mask-image: ${SIGN_ART_CARD_ART.mask};" />
   <div style="position: absolute; inset: 0; background: ${SIGN_ART_CARD_SHADE.join(', ')};"></div>
-  <div style="position: absolute; left: 88px; top: 0; bottom: 96px; z-index: 2; width: 520px; display: flex; flex-direction: column; justify-content: center;">
-    <div style="display: flex; align-items: center; gap: 14px;">
-      <img class="disc" src="${DISCS[s.slug]}" width="40" height="40" alt="" />
-      <span class="kicker" style="margin: 0;">${escapeHtml(copy.kicker)}</span>
-    </div>
-    <div class="display" data-fit="440" style="margin-top: 8px; font-size: 128px; line-height: 0.98; white-space: nowrap; width: max-content;">${escapeHtml(copy.name)}</div>
-    <div style="margin-top: 22px; font-size: 30px; line-height: 1.3; letter-spacing: -0.01em; max-width: 24ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
-    <div style="margin-top: 12px; font-size: 21px; line-height: 1.45; color: ${INK2}; max-width: 27ch; text-wrap: balance;">${escapeHtml(copy.sub)}</div>
+  <div style="position: absolute; left: 88px; top: 16px; bottom: 96px; z-index: 2; width: 520px; display: flex; flex-direction: column; justify-content: center;">
+    <img src="${ART.icons[s.slug]}" width="${ART_CARD_DISC}" height="${ART_CARD_DISC}" alt=""
+      style="display: block; width: ${ART_CARD_DISC}px; height: ${ART_CARD_DISC}px; flex: none;" />
+    <span class="kicker" style="margin: 18px 0 0;">${escapeHtml(copy.kicker)}</span>
+    <div class="display" data-fit="440" style="margin-top: 2px; font-size: 112px; line-height: 0.98; white-space: nowrap; width: max-content;">${escapeHtml(copy.name)}</div>
+    <div style="margin-top: 20px; font-size: 30px; line-height: 1.3; letter-spacing: -0.01em; max-width: 24ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+    <div style="margin-top: 10px; font-size: 21px; line-height: 1.45; color: ${INK2}; max-width: 27ch; text-wrap: balance;">${escapeHtml(copy.sub)}</div>
   </div>`;
-  return shell(body, `zodiacs.org/${s.slug}/`);
+  return shell(body, footer);
+}
+
+/** A sign guide's card. */
+function artSignCard(s) {
+  return artSignLayout(s, signArtCardCopy(s.slug), `zodiacs.org/${s.slug}/`);
+}
+
+/** One of a sign's horoscope pages, in the sign card's layout. */
+function artHoroscopeCard(s, surface) {
+  const route = surface.suffix ? `${s.slug}/${surface.suffix}/` : `${s.slug}/`;
+  return artSignLayout(s, horoscopeArtCardCopy(s.slug, surface.key), `zodiacs.org/horoscopes/${route}`);
 }
 
 /** Steps a long name down until it fits its measure (`data-fit`, px), once the fonts are in. */
@@ -1157,18 +1174,27 @@ if (process.argv.includes('--only-terminal-card')) {
 }
 
 // The art cards (v8, 2026-10-19): the homepage card, which is also the
-// site's fallback, and the twelve sign guide cards. JPEG, because the art
-// fills the picture; the v2 homepage and sign cards stay published for links
-// already shared. The v2 manifest is rewritten for its fallback line only.
+// site's fallback, the twelve sign guide cards and each sign's seven
+// horoscope cards. JPEG, because the art fills the picture; the v2 homepage,
+// sign and horoscope cards stay published for links already shared. The v2
+// manifest is rewritten for its fallback line only. The large disc is the
+// 400px tier of the canonical icons, drawn at ART_CARD_DISC.
 if (process.argv.includes('--only-art-cards')) {
-  console.log('Rendering the homepage and sign guide art cards…');
+  console.log('Rendering the homepage, sign guide and horoscope art cards…');
   ART.poster = await b64('public/assets/hero/zodiacs-hero-poster.jpg', 'image/jpeg');
-  for (const s of SIGNS) ART.signs[s.slug] = await b64(`public/assets/sign-art/${s.slug}-1200.webp`, 'image/webp');
-  const cards = [[HOME_ART_CARD, artHomeCard()], ...SIGNS.map((s) => [signArtCard(s.slug), artSignCard(s)])];
+  for (const s of SIGNS) {
+    ART.signs[s.slug] = await b64(`public/assets/sign-art/${s.slug}-1200.webp`, 'image/webp');
+    ART.icons[s.slug] = await b64(`public/assets/zodiac-icons/400/${s.slug}.webp`, 'image/webp');
+  }
+  const cards = [
+    [HOME_ART_CARD, artHomeCard()],
+    ...SIGNS.map((s) => [signArtCard(s.slug), artSignCard(s)]),
+    ...SIGNS.flatMap((s) => HOROSCOPE_OG_SURFACES.map((surface) => [horoscopeArtCard(s.slug, surface.key), artHoroscopeCard(s, surface)])),
+  ];
   let written = 0;
   for (const [path, html] of cards) {
     const raw = await capture(html, fitArtNames);
-    const bytes = await sharp(raw).jpeg({ quality: 88, mozjpeg: true, chromaSubsampling: '4:4:4' }).toBuffer();
+    const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
     if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${path}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
     const output = resolve(root, `public${path}`);
     await mkdir(dirname(output), { recursive: true });

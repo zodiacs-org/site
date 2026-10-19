@@ -170,7 +170,7 @@ describe('homepage social card', () => {
       // The 2026-10-19 art card: the hero film's poster cut at full size, with
       // the hero's headline in the display serif and the brand lockup
       // (src/lib/og-art-cards.mjs, DESIGN.md).
-      .toBe('a439fabe238b13aca9a8ab47808be39a6a81df2e2ea5f85dc4e1b2b1c47f196e');
+      .toBe('e7d2b4c009b5cb00349e969217a6846d0484a79b858b0e746d7011036d5fe4fc');
     // The card it replaced stays published, unchanged, for links already shared.
     expect(createHash('sha256').update(earlier).digest('hex'))
       .toBe('f315272bcba1b99de463a4df89cb18284caeed3a6d7cbdd016cc26323dd2bcbe');

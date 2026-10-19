@@ -1,21 +1,25 @@
 /**
  * The art share cards (owner-chosen 2026-10-19): the homepage card, cut from
- * the hero film's poster, and one card for each sign guide, on the sign's art
- * panel. Each is laid out the way its page opens (the homepage hero and the
+ * the hero film's poster, one card for each sign guide, on the sign's art
+ * panel, and one for each of the sign's seven horoscope pages in the same
+ * layout. Each is laid out the way its page opens (the homepage hero and the
  * sign guide hero), with the names and the homepage headline in the display
- * serif. `npm run data:og -- --only-art-cards` draws them, verify-og-cards
- * checks them, and the pages take their addresses from here.
+ * serif and, on the sign and horoscope cards, the sign's pastel disc large
+ * above the words, so it still reads when a chat app shows the card small.
+ * `npm run data:og -- --only-art-cards` draws them, verify-og-cards checks
+ * them, and the pages take their addresses from here.
  *
- * Import-free apart from the plain sign table, like OG_SIGNS, so the
+ * Import-free apart from the plain catalogues, like OG_SIGNS, so the
  * plain-Node generator can read it; og-art-cards.test.ts pins every line to
  * what the sign guide's hero prints (signTagline, signOrdinal, guideFacts)
  * and the headline to the homepage's.
  *
  * The art runs across the whole picture, so the cards are JPEGs: as PNGs
  * they would pass WhatsApp's 600 KB limit for a link preview. They are never
- * redrawn in place; a new design takes a new folder, and these stay published
- * for links already shared, as the v2 cards before them do.
+ * redrawn in place once published; a new design takes a new folder, and
+ * these stay published for links already shared, as the v2 cards before them do.
  */
+import { HOROSCOPE_OG_SURFACES } from '../strings/seo.en.mjs';
 import { OG_SIGNS } from '../strings/seo.signs.mjs';
 
 export const ART_CARD_DIR = '/assets/og/v8';
@@ -23,17 +27,44 @@ export const ART_CARD_DIR = '/assets/og/v8';
 /** The homepage card and the site's global fallback, served immutable under a dated name. */
 export const HOME_ART_CARD = `${ART_CARD_DIR}/home-20261019.jpg`;
 
-/** @param {string} slug */
-export function signArtCard(slug) {
-  if (!OG_SIGNS.some((sign) => sign.slug === slug)) throw new Error(`signArtCard: unknown sign ${slug}`);
-  return `${ART_CARD_DIR}/sign/${slug}.jpg`;
+/** @param {string} slug @param {string} caller */
+function knownSign(slug, caller) {
+  if (!OG_SIGNS.some((sign) => sign.slug === slug)) throw new Error(`${caller}: unknown sign ${slug}`);
+  return slug;
 }
 
-/** Every art card's public path: the homepage first, then the signs in zodiac order. */
-export const ART_CARDS = Object.freeze([HOME_ART_CARD, ...OG_SIGNS.map((sign) => signArtCard(sign.slug))]);
+/** @param {string} slug */
+export function signArtCard(slug) {
+  return `${ART_CARD_DIR}/sign/${knownSign(slug, 'signArtCard')}.jpg`;
+}
 
-/** Each card stays well under WhatsApp's 600 KB link-preview limit. */
+/** The horoscope surfaces, keyed as HoroscopeProgramPage names them ('today', 'weekly', 'year'…). */
+const SURFACES = new Map(HOROSCOPE_OG_SURFACES.map((surface) => [surface.key, surface]));
+
+/**
+ * A sign's horoscope page card: `horoscope/aries.jpg` for today, `horoscope/aries-2027.jpg` for the year.
+ * @param {string} slug
+ * @param {string} surfaceKey
+ */
+export function horoscopeArtCard(slug, surfaceKey) {
+  const surface = SURFACES.get(surfaceKey);
+  if (!surface) throw new Error(`horoscopeArtCard: unknown horoscope ${surfaceKey}`);
+  return `${ART_CARD_DIR}/horoscope/${knownSign(slug, 'horoscopeArtCard')}${surface.suffix ? `-${surface.suffix}` : ''}.jpg`;
+}
+
+/** Every art card's public path: the homepage, the signs in zodiac order, then each sign's horoscopes. */
+export const ART_CARDS = Object.freeze([
+  HOME_ART_CARD,
+  ...OG_SIGNS.map((sign) => signArtCard(sign.slug)),
+  ...OG_SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => horoscopeArtCard(sign.slug, surface.key))),
+]);
+
+/** Each card stays well under WhatsApp's 600 KB link-preview limit, and the folder under 12 MiB. */
 export const ART_CARD_MAX_BYTES = 300 * 1024;
+export const ART_CARDS_MAX_TOTAL_BYTES = 12 * 1024 * 1024;
+
+/** The sign's disc on a sign or horoscope card, in px: large enough to read with the card shown a quarter size. */
+export const ART_CARD_DISC = 144;
 
 /** The homepage hero's own headline, and the first half of its line. */
 export const HOME_ART_CARD_COPY = Object.freeze({
@@ -110,4 +141,18 @@ export function signArtCardCopy(slug) {
     line: TAGLINES[slug] ?? sign.essence,
     sub: `The Sun sign for birthdays from ${longRange(sign.dates)}.`,
   });
+}
+
+/**
+ * The words on a sign's horoscope card: the horoscope's kicker and line, as
+ * its v2 card had them, with the sign card's name and birthday sentence.
+ * @param {string} slug
+ * @param {string} surfaceKey
+ * @returns {{ kicker: string, name: string, line: string, sub: string }}
+ */
+export function horoscopeArtCardCopy(slug, surfaceKey) {
+  const surface = SURFACES.get(surfaceKey);
+  if (!surface) throw new Error(`horoscopeArtCardCopy: unknown horoscope ${surfaceKey}`);
+  const sign = signArtCardCopy(slug);
+  return Object.freeze({ kicker: surface.kicker, name: sign.name, line: surface.subtitle, sub: sign.sub });
 }

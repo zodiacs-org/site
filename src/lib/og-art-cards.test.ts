@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ART_CARDS,
   ART_CARD_DIR,
+  ART_CARD_DISC,
   HOME_ART_CARD,
   HOME_ART_CARD_ALT,
   HOME_ART_CARD_COPY,
@@ -10,9 +11,12 @@ import {
   HOME_ART_CARD_SCRIM,
   SIGN_ART_CARD_ART,
   SIGN_ART_CARD_SHADE,
+  horoscopeArtCard,
+  horoscopeArtCardCopy,
   signArtCard,
   signArtCardCopy,
 } from './og-art-cards.mjs';
+import { HOROSCOPE_OG_SURFACES } from '../strings/seo.en.mjs';
 import { guideFacts, signOrdinal } from './guide-facts';
 import { signTagline } from './sign-display';
 import { SIGNS } from './signs';
@@ -32,6 +36,19 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
       for (const words of Object.values(copy)) expect(words, sign.slug).not.toMatch(DASHES);
     });
     expect(() => signArtCardCopy('ophiuchus')).toThrow(/unknown sign/u);
+  });
+
+  it('carries each horoscope card\'s kicker and line, with the sign card\'s name and birthday sentence', () => {
+    expect(HOROSCOPE_OG_SURFACES.map((surface) => surface.key)).toEqual(['today', 'tomorrow', 'weekly', 'monthly', 'love', 'career', 'year']);
+    SIGNS.forEach((sign) => {
+      for (const surface of HOROSCOPE_OG_SURFACES) {
+        const copy = horoscopeArtCardCopy(sign.slug, surface.key);
+        const signCopy = signArtCardCopy(sign.slug);
+        expect(copy).toEqual({ kicker: surface.kicker, name: sign.name, line: surface.subtitle, sub: signCopy.sub });
+        for (const words of Object.values(copy)) expect(words, `${sign.slug} ${surface.key}`).not.toMatch(DASHES);
+      }
+    });
+    expect(() => horoscopeArtCardCopy('aries', 'decade')).toThrow(/unknown horoscope/u);
   });
 
   it('takes the homepage headline from the hero, and cuts the poster inside its frame', () => {
@@ -58,18 +75,29 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
     for (const layer of SIGN_ART_CARD_SHADE) expect(guide).toContain(layer);
   });
 
-  it('names thirteen JPEGs in a folder of their own, the homepage card dated for its immutable cache', () => {
+  it('names its JPEGs in a folder of their own, the homepage card dated for its immutable cache', () => {
     expect(ART_CARD_DIR).toBe('/assets/og/v8');
     expect(HOME_ART_CARD).toBe('/assets/og/v8/home-20261019.jpg');
     expect(signArtCard('aries')).toBe('/assets/og/v8/sign/aries.jpg');
     expect(() => signArtCard('ophiuchus')).toThrow(/unknown sign/u);
-    expect(ART_CARDS).toEqual([HOME_ART_CARD, ...SIGNS.map((sign) => `/assets/og/v8/sign/${sign.slug}.jpg`)]);
+    expect(horoscopeArtCard('aries', 'today')).toBe('/assets/og/v8/horoscope/aries.jpg');
+    expect(horoscopeArtCard('sagittarius', 'year')).toBe('/assets/og/v8/horoscope/sagittarius-2027.jpg');
+    expect(() => horoscopeArtCard('ophiuchus', 'today')).toThrow(/unknown sign/u);
+    expect(ART_CARDS).toEqual([
+      HOME_ART_CARD,
+      ...SIGNS.map((sign) => `/assets/og/v8/sign/${sign.slug}.jpg`),
+      ...SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => `/assets/og/v8/horoscope/${sign.slug}${surface.suffix ? `-${surface.suffix}` : ''}.jpg`)),
+    ]);
+    expect(ART_CARDS).toHaveLength(97);
+    // The sign's disc is drawn large, from the 400px tier of the canonical icons (owner's call, 2026-10-19).
+    expect(ART_CARD_DISC).toBeGreaterThanOrEqual(128);
+    expect(read('scripts/build-og-void.mjs')).toContain('public/assets/zodiac-icons/400/${s.slug}.webp');
     const config = JSON.parse(read('vercel.json')) as { headers: { source: string; headers: { key: string; value: string }[] }[] };
     const rule = config.headers.find((entry) => entry.source === HOME_ART_CARD);
     expect(rule?.headers.find((header) => header.key === 'Cache-Control')?.value).toBe('public, max-age=31536000, immutable');
   });
 
-  it('is what the homepage, the fallback and every page with a sign card link', () => {
+  it('is what the homepage, the fallback and every page with a sign or horoscope card link', () => {
     expect(read('src/pages/index.astro')).toContain('image={HOME_ART_CARD}');
     expect(read('src/components/SEO.astro')).toContain(': explicitImage ?? catalogImage ?? HOME_ART_CARD;');
     for (const page of [
@@ -86,5 +114,8 @@ describe('the art share cards (owner-chosen 2026-10-19)', () => {
       expect(source, page).toContain('signArtCard(');
       expect(source, page).not.toContain('/assets/og/v2/sign/');
     }
+    const horoscopes = read('src/components/HoroscopeProgramPage.astro');
+    expect(horoscopes).toContain('const ogImage = horoscopeArtCard(sign.slug, surface);');
+    expect(horoscopes).not.toContain('/assets/og/v2/horoscope/');
   });
 });
