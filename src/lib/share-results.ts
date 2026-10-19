@@ -73,8 +73,11 @@ export const OCCASION_SHARE_HEADLINES: Readonly<Record<OccasionKind, string>> = 
   gathering: 'An evening under the sky',
 };
 
-// Letters the preview's typefaces draw: Latin, with its accents (Latin-1 and Latin Extended-A).
-const LETTER = 'A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u017F';
+// Letters the preview's typefaces draw: Latin, with its accents (Latin-1 and
+// Latin Extended-A), and Cyrillic as EB Garamond's Cyrillic subset draws it
+// (the Russian, Ukrainian, Belarusian, Serbian, Macedonian and Bulgarian
+// alphabets, and Ґ). A name in another script is left out of the link.
+const LETTER = 'A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u017F\\u0400-\\u045F\\u0490\\u0491';
 const NAME_RE = new RegExp(`^[${LETTER}][${LETTER} .'’-]*$`, 'u');
 const NAMES_RE = new RegExp(`^[${LETTER}][${LETTER} .,&'’-]*$`, 'u');
 const PLACE_RE = new RegExp(`^[${LETTER}0-9][${LETTER}0-9 .,'’()-]*$`, 'u');
