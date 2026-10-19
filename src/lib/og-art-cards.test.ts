@@ -27,7 +27,7 @@ import {
   localizedHoroscopeArtCardCopy,
   localizedSignArtCardCopy,
 } from './og-art-cards.mjs';
-import { captionLead, renderLocalizedArtCardCopyModule } from './og-art-cards-copy';
+import { ART_CARD_COPY_LOCALES, captionLead, renderLocalizedArtCardCopyModule } from './og-art-cards-copy';
 import { HOME_COPY } from '../components/localized/home-copy';
 import { LOCALIZED_HOROSCOPE_COPY } from '../components/localized/horoscope-copy';
 import { spanishGuideFor } from '../data/es-guides';
@@ -148,8 +148,8 @@ describe('the Spanish, French, Italian and Portuguese art cards', () => {
   });
 
   it('prints on each card what its localized page prints at the top', () => {
-    expect([...ART_CARD_LOCALES]).toEqual(['es', 'fr', 'it', 'pt']);
-    for (const locale of ART_CARD_LOCALES) {
+    expect([...ART_CARD_LOCALES]).toEqual([...ART_CARD_COPY_LOCALES]);
+    for (const locale of ART_CARD_COPY_LOCALES) {
       const hero = HOME_COPY[locale].hero;
       const home = localizedHomeArtCardCopy(locale);
       expect(home.title, locale).toBe(hero.title);
