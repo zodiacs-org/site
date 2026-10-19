@@ -70,9 +70,12 @@ Everything in `CLAUDE.md` applies. These are the ones this work runs into.
 | #795 | Inline scripts minified at postbuild (speed headroom) | CI only |
 | #797 | Russian sky calendar, "An Aries Sun", Cyrillic share names | See Task 2 |
 
-Open: **#798** (`design/share-last-three`), share links, link previews and
-stories for chart twins, a famous chart and a life milestone, plus the chat
-cards' long-name fit. Task 1.
+Last in line: **#798** (`design/share-last-three`), share links, link
+previews and stories for chart twins, a famous chart and a life milestone,
+plus the chat cards' long-name fit. Claude meant to merge it before handing
+over; if GitHub shows it merged, skip to step 4 of Task 1.
+
+Skip any step GitHub or production shows is already done.
 
 ## Task 1: land #798
 
