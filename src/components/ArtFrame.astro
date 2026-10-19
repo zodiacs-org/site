@@ -18,6 +18,7 @@ import {
   signArtSrc,
   signArtSrcset,
 } from '../lib/sign-art';
+import type { HTMLAttributes } from 'astro/types';
 import type { CatalogLocale } from '../lib/i18n/core';
 
 interface Props {
@@ -81,7 +82,7 @@ const imgHeight = height ?? SIGN_ART_SIZE.height;
 const imgAlt = alt ?? (sign ? signArtAlt(sign, locale) : '');
 if (avif && (!sign || src || srcset)) throw new Error('ArtFrame avif needs a sign panel.');
 const avifSrcset = avif && sign ? signArtAvifSrcset(sign) : undefined;
-const imgAttributes = {
+const imgAttributes: HTMLAttributes<'img'> = {
   src: imgSrc,
   srcset: imgSrcset,
   sizes: imgSrcset ? sizes : undefined,
