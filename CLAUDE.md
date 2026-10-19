@@ -194,19 +194,32 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   in its own colours (`compactCard`), which is what holds the 25MB bundle and
   the Russian family's ceiling; after a run, restore the pinned
   `og/v2/registry.png` and `og/v2/registry/` from git)
-- `public/assets/og/registry/v3/` ← `node scripts/build-registry-og.mjs`
-  (immutable Registry lot cards derived from the established v2 editorial
-  plate plus the canonical 1024px pastel icon and gold sculpture sources;
-  never overwrite the cached v2 family)
-- `public/assets/og/astrofolio/v5/faces.jpg` ← `node
+- `public/assets/og/registry/v4/` (twelve lot cards, `hub.png` and the
+  manifest) ← `npm run data:og -- --only-registry` (Chromium draws each
+  lot's text plate and the hub card with the brand lockup;
+  `scripts/build-registry-og.mjs` lays the canonical 1024px pastel icon and
+  gold sculpture on each plate. The Registry hub and technical pages share
+  `hub.png`. Not in the drift job: `verify-registry-og` checks the family,
+  its icon and sculpture sources and the pages. The v3 family and the pinned
+  v2 cards it was built on stay published, byte for byte, for links already
+  shared; never overwrite them)
+- `public/assets/og/v7/terminal.png` ← `npm run data:og -- --only-terminal-card`
+  (Terminal's card: v6's desk from `build-astrofolio-identity.mjs` with the
+  lockup's footer row; v6 stays published)
+- `public/assets/og/astrofolio/v6/faces.jpg` ← `node
   scripts/build-astrofolio-share-card.mjs` (Astrofolio's one evergreen share
   card, owner-chosen 2026-09-24: Chromium paints the twelve sign frames of
-  `public/assets/fomo/fomo-film-av1.mp4` around the wordmark band. A JPEG
-  under a 300 KB budget because it is a photograph; `verify-og-cards`
-  checks it, and it is not in the drift job because Chromium's decode is not
-  byte-stable across platforms. The seasonal `og/astrofolio/v4/{sign}.png`
-  cards stay published for links already shared; the season stamp no longer
-  rewrites the page's share image)
+  `public/assets/fomo/fomo-film-av1.mp4` around the wordmark band, signed
+  with the brand lockup since v6. A JPEG under a 300 KB budget because it is
+  a photograph; `verify-og-cards` checks it, and it is not in the drift job
+  because Chromium's decode is not byte-stable across platforms. v5 and the
+  seasonal `og/astrofolio/v4/{sign}.png` cards stay published for links
+  already shared; the season stamp no longer rewrites the page's share image)
+- `public/assets/brand/end-card/` ← `npm run data:end-card` (the two-second
+  1080 × 1920 end card for short videos and its last frame: Chromium draws
+  the ring settling into the lockup from `src/lib/brand-lockup.mjs`, and the
+  system's ffmpeg encodes it. Not byte-stable, so not in the drift job;
+  `scripts/end-card.test.mjs` checks it. Rerun it when the lockup changes)
 - `public/assets/pulse.json` / `distribution.json` ← weekly cron workflows
 - `docs/phase5/people-pilot/index-demand.json` ← `node
   scripts/build-people-index-demand.mjs --refresh` (pinned twelve-month
@@ -296,7 +309,10 @@ The brand signs with one lockup sitewide, the wing included (owner-chosen
 ZODIACS | ASTROFOLIO in the top bar, and the favicon and app icons keep the
 flat ring (`BrandMark.astro`). No image or lockup draws a sentence-case
 "Zodiacs.org" wordmark; published cards under pinned or dated names keep the
-design they were published with.
+design they were published with. On an image made for one person the ring
+turns to bring their Sun sign to the front, and only a sign their chart
+settles (`tiltedRingDots`, `src/lib/ring-front.ts`); everything else keeps
+the brand's own ring, Libra in front.
 
 ### Canonical site ending
 

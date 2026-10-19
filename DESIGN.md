@@ -40,7 +40,19 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
   nearer dots larger and opaque, far ones small and faint, in deeper tones of
   the sign hues so it reads on dark and light surfaces (viewBox
   `-2 4 28 16`). It is 2.625 times the type size wide (7:4) and sits three
-  quarters of the type size before the words. It is still.
+  quarters of the type size before the words. The signs go round it in
+  zodiac order, Libra at the front and Aries at the back. It is still.
+- Your sign at the front: on an image or card made for one person the ring
+  turns to bring that person's Sun sign to the front, keeping the zodiac
+  order, so the opposite sign sits at the back (`tiltedRingDots(front)`).
+  That is the chart cards and sheet, the solar return, the chart link
+  preview, the compatibility card and preview (the first person's sign) and
+  a Zodiac Games card (its sign); and in the assistant, the birthday,
+  horoscope, two-chart, chart-twin and famous-chart cards and the birthday,
+  horoscope and compatibility link previews. Only a sign the chart settles is used
+  (`src/lib/ring-front.ts`): a chart without a birth time born near a sign
+  boundary keeps the brand's own ring. Everything else, the nav, footers,
+  OG cards and every image not made for one person, keeps Libra in front.
 - The words: ZODIACS · ORG in EB Garamond 400 capitals at 0.2em tracking and
   line height 1. Live text is written "Zodiacs·org" and capitalised by the
   stylesheet, and its link is named "Zodiacs.org"; images draw the capitals.
@@ -54,9 +66,15 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
   cards. Two exceptions, by the owner's choice: on phones the top bar keeps
   ZODIACS | ASTROFOLIO, and the favicon, the app icons and the bio page's
   orbit emblem keep the flat ring (`BrandMark.astro`), which reads better
-  small. Cards already published under a pinned or dated name (the Registry
-  lot cards, the Astrofolio and Terminal families) keep the design they were
-  published with; a new family takes the lockup.
+  small. Cards already published under a pinned or dated name keep the
+  design they were published with, and a new family takes the lockup: the
+  Registry's v4 lot and hub cards, Astrofolio's v6 Faces card and
+  Terminal's v7 card (2026-10-19) replace the v3, v2, v5 and v6 files on the
+  pages, and those stay published for links already shared.
+- In motion: the end card for short videos (`npm run data:end-card`), two
+  seconds at 1080 × 1920 in which the ring spins, slows to the brand's own
+  front and settles beside the words, a little above the middle of the
+  frame, clear of the apps' side buttons.
 - The dot belongs to the mark, so the rule against middle dots in copy does
   not apply to it. No image or lockup uses a sentence-case "Zodiacs.org"
   wordmark; in running text the name stays Zodiacs, or Zodiacs.org.
