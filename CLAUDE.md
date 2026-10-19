@@ -117,6 +117,11 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   (the brand ring and the twelve 128px sign discs as base64, attached inline
   by cid: to the confirmation email so it still loads nothing remote;
   `--check` and `scripts/build-email-inline-images.test.mjs` catch drift)
+- `public/assets/brand/tilted-ring.svg` + `tilted-ring@3x.png` ← `node
+  scripts/build-brand-lockup-assets.mjs` (the lockup's ring as files, from
+  `src/lib/brand-lockup.mjs`; the PNG is the email's inline ring. libvips
+  output, so not in the drift job; `src/lib/brand-lockup.test.ts` checks the
+  SVG. Rerun it, then the email images, when the ring changes)
 - `public/registry/index.html` Aura marker region (meta flag + no-JS entry
   between the `registry-aura-entry` comments) ← stamped by
   `scripts/configure-registry-aura.mjs` (predev/prebuild) and
@@ -129,6 +134,12 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
 - `public/assets/zodiac-icons/{48,128,400}/` ← `node scripts/build-icons.mjs`
   (sources in `public/assets/sdk/zodiac-icons/circle/` are SDK-public —
   keep byte-identical)
+- `public/assets/sign-art/{sign}-{720,960,1200}.avif` ← `node
+  scripts/build-sign-art-avif.mjs` (AVIF copies of each sign's published
+  1200px WebP painting, which stays untouched; the compatibility pair pages
+  offer them to screens at 1.5x and above. libaom output is not byte-stable
+  across platforms, so they are not in the drift job;
+  `scripts/build-sign-art-avif.test.mjs` checks the set)
 - `public/data/cities/` ← `node scripts/build-cities.mjs` (GeoNames, CC-BY)
 - `src/data/sky.json` ← `node scripts/build-sky.mjs`
 - `src/data/tz-names.json` (the zone names of the tzdb release that
@@ -184,7 +195,11 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   scripts/build-og-void.mjs` (ALL share cards sitewide since Part Q — wing
   pages reference `v2/sign/{slug}.png` + `v2/share.png`; the 13 legacy gilt
   cards at `public/assets/og/*.png` are frozen and unreferenced — leave
-  the files alone, don't regenerate or re-reference them)
+  the files alone, don't regenerate or re-reference them. The People, event
+  and Russian families keep 16-colour palettes with the lockup ring laid back
+  in its own colours (`compactCard`), which is what holds the 25MB bundle and
+  the Russian family's ceiling; after a run, restore the pinned
+  `og/v2/registry.png` and `og/v2/registry/` from git)
 - `public/assets/card-art/panel/` and `public/assets/card-art/share/` ←
   `node scripts/build-card-art.mjs` (small AVIF variants of both twins of
   every piece, dark and daylight, for the AI panels to inline, and JPEGs of
@@ -193,19 +208,45 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   twins `public/assets/card-art/<key>-light-720.webp`, which `--masters <dir>`
   writes from 1536px source PNGs. libvips output, so not in the drift job;
   rerun it when a source changes, then `npm run ai:build`)
-- `public/assets/og/registry/v3/` ← `node scripts/build-registry-og.mjs`
-  (immutable Registry lot cards derived from the established v2 editorial
-  plate plus the canonical 1024px pastel icon and gold sculpture sources;
-  never overwrite the cached v2 family)
-- `public/assets/og/astrofolio/v5/faces.jpg` ← `node
+- `public/assets/og/registry/v4/` (twelve lot cards, `hub.png` and the
+  manifest) ← `npm run data:og -- --only-registry` (Chromium draws each
+  lot's text plate and the hub card with the brand lockup;
+  `scripts/build-registry-og.mjs` lays the canonical 1024px pastel icon and
+  gold sculpture on each plate. The Registry hub and technical pages share
+  `hub.png`. Not in the drift job: `verify-registry-og` checks the family,
+  its icon and sculpture sources and the pages. The v3 family and the pinned
+  v2 cards it was built on stay published, byte for byte, for links already
+  shared; never overwrite them)
+- `public/assets/og/v7/terminal.png` ← `npm run data:og -- --only-terminal-card`
+  (Terminal's card: v6's desk from `build-astrofolio-identity.mjs` with the
+  lockup's footer row; v6 stays published)
+- `public/assets/og/v8/` (`home-20261019.jpg`, `sign/{slug}.jpg` and
+  `horoscope/{slug}[-{surface}].jpg`) ← `npm run data:og -- --only-art-cards`
+  (the art share cards, owner-chosen 2026-10-19: the homepage card, which is
+  also the site's fallback, cut from the hero poster; the twelve sign guide
+  cards on the sign art panels, each laid out as its page's hero with the
+  sign's disc large and the names in EB Garamond; and each sign's seven
+  horoscope cards in the same layout. JPEGs under 300 KB, the folder under
+  12 MiB; paths, words, crop and the heroes' shade live in
+  `src/lib/og-art-cards.mjs`, which `og-art-cards.test.ts` holds to the two
+  heroes. Not in the drift job (Chromium and libvips output);
+  `verify-og-cards` checks them. The v2 homepage, sign and horoscope cards
+  stay published for links already shared, and the run rewrites only the v2
+  manifest's fallback line)
+- `public/assets/og/astrofolio/v6/faces.jpg` ← `node
   scripts/build-astrofolio-share-card.mjs` (Astrofolio's one evergreen share
   card, owner-chosen 2026-09-24: Chromium paints the twelve sign frames of
-  `public/assets/fomo/fomo-film-av1.mp4` around the wordmark band. A JPEG
-  under a 300 KB budget because it is a photograph; `verify-og-cards`
-  checks it, and it is not in the drift job because Chromium's decode is not
-  byte-stable across platforms. The seasonal `og/astrofolio/v4/{sign}.png`
-  cards stay published for links already shared; the season stamp no longer
-  rewrites the page's share image)
+  `public/assets/fomo/fomo-film-av1.mp4` around the wordmark band, signed
+  with the brand lockup since v6. A JPEG under a 300 KB budget because it is
+  a photograph; `verify-og-cards` checks it, and it is not in the drift job
+  because Chromium's decode is not byte-stable across platforms. v5 and the
+  seasonal `og/astrofolio/v4/{sign}.png` cards stay published for links
+  already shared; the season stamp no longer rewrites the page's share image)
+- `public/assets/brand/end-card/` ← `npm run data:end-card` (the two-second
+  1080 × 1920 end card for short videos and its last frame: Chromium draws
+  the ring settling into the lockup from `src/lib/brand-lockup.mjs`, and the
+  system's ffmpeg encodes it. Not byte-stable, so not in the drift job;
+  `scripts/end-card.test.mjs` checks it. Rerun it when the lockup changes)
 - `public/assets/pulse.json` / `distribution.json` ← weekly cron workflows
 - `docs/phase5/people-pilot/index-demand.json` ← `node
   scripts/build-people-index-demand.mjs --refresh` (pinned twelve-month
@@ -288,6 +329,17 @@ Mono. No decorative status dots, no gradient/aurora backgrounds, no gold
 anywhere (Warm Gilt is retired sitewide). Reserve `.shell`/`.core` bezels
 for elevated moments; grids of equal items use the light `.tile`. Kickers are
 sentence-case serif-italic (`.kicker`), not mono-caps eyebrows.
+
+The brand signs with one lockup sitewide, the wing included (owner-chosen
+2026-10-19): the tilted twelve-dot ring and ZODIACS · ORG, drawn from
+`src/lib/brand-lockup.mjs` (DESIGN.md, "Brand Lockup"). Phones keep
+ZODIACS | ASTROFOLIO in the top bar, and the favicon and app icons keep the
+flat ring (`BrandMark.astro`). No image or lockup draws a sentence-case
+"Zodiacs.org" wordmark; published cards under pinned or dated names keep the
+design they were published with. On an image made for one person the ring
+turns to bring their Sun sign to the front, and only a sign their chart
+settles (`tiltedRingDots`, `src/lib/ring-front.ts`); everything else keeps
+the brand's own ring, Libra in front.
 
 ### Canonical site ending
 

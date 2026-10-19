@@ -9,6 +9,15 @@
       outlook: 'briefing',
     });
 
+    /* The brand lockup's tilted ring (DESIGN.md, "Brand Lockup"); its dots come from src/lib/brand-lockup.mjs through scripts/build-app.mjs. */
+    function BrandRing({ className, width }) {
+      return (
+        <svg className={className} viewBox={BRAND_RING_VIEWBOX} width={width} height={Math.round((width * 4) / 7)} fill="none" aria-hidden="true" focusable="false">
+          {BRAND_RING_DOTS.map((dot, index) => <circle key={index} cx={dot.cx} cy={dot.cy} r={dot.r} fill={dot.fill} opacity={dot.opacity} />)}
+        </svg>
+      );
+    }
+
     function trackAnalytics(name, properties = {}) {
       window.zodiacsAnalytics?.track?.(name, properties);
     }
@@ -1813,8 +1822,9 @@
         <>
           <div className="wnav-wrap" ref={wrapRef}>
             <nav className="wnav" aria-label="Primary" data-wnav="">
-                <a className="wnav__mark" href="/">
-                  <span className="wnav__name">Zodiacs<span className="wnav__sep">·</span><span className="wnav__dim">org</span></span>
+                <a className="wnav__mark" href="/" aria-label="Zodiacs.org">
+                  <BrandRing className="wnav__ring" width={34} />
+                  <span className="wnav__name" aria-hidden="true">Zodiacs<span className="wnav__sep">·</span><span className="wnav__dim">org</span></span>
                 </a>
                 <div className="wnav__links">
                   <button ref={toolsButtonRef} className="wnav__link wnav__dropdown-btn wnav__tools-btn" type="button" data-wnav-tools="" aria-expanded={toolsOpen} aria-controls="wnav-tools" aria-haspopup="true" onKeyDown={(event) => { if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); setSignsOpen(false); setToolsOpen(true); focusDropdownItem('wnav-tools', event.key === 'ArrowUp'); } }} onClick={() => { setToolsOpen((v) => !v); setSignsOpen(false); }}>Tools<svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
@@ -7287,9 +7297,9 @@
           <div className="zfooter__inner">
             <div className="zfooter__lead">
               <div>
-                <a className="zfooter__brand" href="/">
-                  <img className="zfooter__brand-mark" src="/assets/app-icons/v3/favicon.svg" width="26" height="26" alt="" loading="lazy" decoding="async" />
-                  <span className="zfooter__brand-name">Zodiacs</span><span className="zfooter__brand-tld">.org</span>
+                <a className="zfooter__brand" href="/" aria-label="Zodiacs.org">
+                  <BrandRing className="zfooter__brand-mark" width={42} />
+                  <span className="zfooter__brand-name" aria-hidden="true">Zodiacs<span className="zfooter__brand-sep">·</span><span className="zfooter__brand-tld">org</span></span>
                 </a>
                 <p className="zfooter__tag">{tagline}</p>
               </div>

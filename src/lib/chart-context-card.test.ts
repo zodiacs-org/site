@@ -13,6 +13,7 @@ function payload(section:ChartContextCard['section']='rulers',locale:ChartContex
 beforeEach(()=>{
   fontLoad=vi.fn(async()=>[{status:'loaded'}]);bitmap={close:vi.fn()};
   ctx={font:'',fillText:vi.fn(),fillRect:vi.fn(),save:vi.fn(),restore:vi.fn(),drawImage:vi.fn(),beginPath:vi.fn(),moveTo:vi.fn(),lineTo:vi.fn(),stroke:vi.fn(),
+    arc:vi.fn(),fill:vi.fn(),globalAlpha:1,letterSpacing:'0px',
     measureText:(text:string)=>({width:text.length*(Number(ctx.font.match(/(\d+)px/)?.[1])||24)*.52})};
   canvas={width:0,height:0,getContext:()=>ctx,toBlob:(cb:(b:Blob|null)=>void)=>cb(new Blob(['test-only-png'],{type:'image/png'}))};
   vi.stubGlobal('document',{fonts:{load:fontLoad},createElement:()=>canvas});
@@ -25,8 +26,11 @@ describe('four section card boundaries',()=>{
   it.each(CONTEXT_SECTIONS.flatMap(section=>(['en','es','pt','fr','it','ru']as const).map(locale=>({section,locale}))))('$section in $locale preserves every fact and releases its canvas',async({section,locale})=>{
     const facts=payload(section,locale);const image=await prepareChartContextCard(facts);
     expect(image.filename).toMatch(new RegExp(`^zodiacs-${section}-${locale}-[a-f0-9]{16}\\.png$`));
-    expect(image.blob.type).toBe('image/png');expect(bitmap.close).toHaveBeenCalledOnce();expect(canvas.width).toBe(0);
+    expect(image.blob.type).toBe('image/png');expect(canvas.width).toBe(0);
+    // The brand lockup draws its own ring: no image is fetched or decoded for it.
+    expect(fetch).not.toHaveBeenCalled();expect(createImageBitmap).not.toHaveBeenCalled();expect(ctx.drawImage).not.toHaveBeenCalled();
     const text=ctx.fillText.mock.calls.map((x:unknown[])=>x[0]).join(' ');
+    expect(text).toContain('ZODIACS · ORG');expect(text).not.toContain('Zodiacs.org');
     for(const line of facts.lines)expect(text).toContain(line.replace(/\s+/g,' '));
     expect(text).toContain(model.convention);
   });
@@ -39,13 +43,13 @@ describe('four section card boundaries',()=>{
     fontLoad.mockResolvedValueOnce([]);await expect(prepareChartContextCard(payload())).rejects.toThrow('context_fonts_unavailable');
     await expect(prepareChartContextCard(payload())).resolves.toHaveProperty('filename');
   });
-  it('bounds a stalled font operation without retaining a late bitmap',async()=>{
+  it('bounds a stalled font operation without painting late',async()=>{
     vi.useFakeTimers();fontLoad.mockImplementation(()=>new Promise(()=>{}));
     const result=prepareChartContextCard(payload());const assertion=expect(result).rejects.toThrow('context_prepare_timeout');
-    await vi.advanceTimersByTimeAsync(15_000);await assertion;expect(createImageBitmap).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(15_000);await assertion;expect(ctx.fillText).not.toHaveBeenCalled();
   });
-  it('rejects a failed encoder, closes native resources and permits retry',async()=>{
-    canvas.toBlob=(cb:(b:Blob|null)=>void)=>cb(null);await expect(prepareChartContextCard(payload())).rejects.toThrow('context_png_unavailable');expect(bitmap.close).toHaveBeenCalledOnce();
+  it('rejects a failed encoder, releases the canvas and permits retry',async()=>{
+    canvas.toBlob=(cb:(b:Blob|null)=>void)=>cb(null);await expect(prepareChartContextCard(payload())).rejects.toThrow('context_png_unavailable');expect(canvas.width).toBe(0);
   });
   it('never renders an already-aborted request',async()=>{
     const abort=new AbortController();abort.abort(new Error('source_changed'));

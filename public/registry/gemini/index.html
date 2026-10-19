@@ -13,14 +13,14 @@
   <meta property="og:description" content="Gemini dates, famous birthdays, Wikipedia views, current price and rank, and verified token address." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://zodiacs.org/registry/gemini/" />
-  <meta property="og:image" content="https://zodiacs.org/assets/og/registry/v3/gemini.png" />
+  <meta property="og:image" content="https://zodiacs.org/assets/og/registry/v4/gemini.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Gemini — sign 3 of 12 in the Zodiacs collection." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="♊ Gemini · Zodiac sign 3 of 12 — Zodiacs" />
   <meta name="twitter:description" content="Gemini dates, famous birthdays, Wikipedia views, current price and rank, and verified token address." />
-  <meta name="twitter:image" content="https://zodiacs.org/assets/og/registry/v3/gemini.png" />
+  <meta name="twitter:image" content="https://zodiacs.org/assets/og/registry/v4/gemini.png" />
   <meta name="twitter:image:alt" content="Gemini — sign 3 of 12 in the Zodiacs collection." />
 
   <link rel="icon" type="image/svg+xml" sizes="any" href="/assets/app-icons/v3/favicon.svg" />
@@ -211,6 +211,7 @@
   .wnav__sep { color: var(--ink-mute, #8A93A6); margin: 0 4px; }
   .wnav__dim { color: var(--ink-2, #C6CCDA); font-weight: 500; }
   @media (max-width: 919.5px) { .wnav__sep, .wnav__dim { display: none; } }
+  .wnav__ring { display: none; flex-shrink: 0; overflow: visible; }
   .wnav__search { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border: none; border-radius: 999px; background: none; color: var(--ink-2, #C6CCDA); cursor: pointer; text-decoration: none; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
   .wnav__search:hover { color: var(--ink, #EEF1F7); background: rgba(198,204,218,0.07); }
   @media (max-width: 919.5px) {
@@ -292,8 +293,11 @@
   @keyframes wnav-turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .wnav-tools, .wnav-signs, .wnav__burger, .wnav__dropdown-btn svg, .wnav__burger-line { transition: none; } .wnav__mark:hover .wnav__brand { animation: none; } }
   @media (min-width: 920px) {
-    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
-    .wnav__mark { grid-area: mark; min-width: 0; }
+    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 168px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
+    .wnav__mark { grid-area: mark; min-width: 0; gap: 10px; }
+    .wnav__ring { display: block; }
+    .wnav__name { letter-spacing: 0.2em; }
+    .wnav__sep { margin: 0 0.2em; }
     .wnav__links { grid-area: links; min-width: 0; grid-template-columns: 74px 74px 64px 62px minmax(0, 1fr); }
     .wnav__profile-shortcut { grid-area: profile; }
     .wnav__search { grid-area: search; box-sizing: border-box; width: 62px; height: 44px; }
@@ -1146,7 +1150,7 @@
 
   <div class="wnav-wrap">
     <nav class="wnav" aria-label="Primary" data-wnav>
-      <a class="wnav__mark" href="/"><span class="wnav__name">Zodiacs<span class="wnav__sep">·</span><span class="wnav__dim">org</span></span></a>
+      <a class="wnav__mark" href="/" aria-label="Zodiacs.org"><svg class="wnav__ring" viewBox="-2 4 28 16" width="34" height="19" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="1.2" fill="#D9694F" opacity="0.45"/><circle cx="17" cy="8.54" r="1.33" fill="#5E9E70" opacity="0.49"/><circle cx="7" cy="8.54" r="1.33" fill="#4CA88F" opacity="0.49"/><circle cx="3.34" cy="10" r="1.67" fill="#7A57B0" opacity="0.59"/><circle cx="20.66" cy="10" r="1.67" fill="#8463BC" opacity="0.59"/><circle cx="22" cy="12" r="2.15" fill="#4A8FBD" opacity="0.73"/><circle cx="2" cy="12" r="2.15" fill="#7FB24C" opacity="0.73"/><circle cx="20.66" cy="14" r="2.62" fill="#CC6C84" opacity="0.86"/><circle cx="3.34" cy="14" r="2.62" fill="#CF8B3A" opacity="0.86"/><circle cx="17" cy="15.46" r="2.97" fill="#5FA352" opacity="0.96"/><circle cx="7" cy="15.46" r="2.97" fill="#3FA0BD" opacity="0.96"/><circle cx="12" cy="16" r="3.1" fill="#A764C0" opacity="1"/></svg><span class="wnav__name" aria-hidden="true">Zodiacs<span class="wnav__sep">·</span><span class="wnav__dim">org</span></span></a>
       <div class="wnav__links">
         <button class="wnav__link wnav__dropdown-btn" type="button" data-wnav-tools aria-expanded="false" aria-controls="wnav-tools" aria-haspopup="true">Tools<svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="wnav__link wnav__dropdown-btn" type="button" data-wnav-signs aria-expanded="false" aria-controls="wnav-signs" aria-haspopup="true">Signs<svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -1284,11 +1288,11 @@
         <div class="market__head"><p class="market__copy">The price can change quickly and can fall to zero.</p><a class="market__source" data-market-live-link href="https://dexscreener.com/solana/HxhdKrB1UpSwfuMoZMVzPVELzbPWHdyN6PHU9CBFium9" rel="noopener noreferrer external nofollow">View live chart ↗</a></div>
         <section class="quick" aria-labelledby="quick-title" data-live-quote>
           <span class="quick__label" id="quick-title" data-live-price-label>Latest recorded price</span>
-          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price>$0.000174</strong><span class="quick__change" data-live-change>Past 24 hours +7.53%</span><p class="quick__state" data-live-state>Showing the latest saved price. Checking for a newer one…</p></div>
+          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price>$0.000176</strong><span class="quick__change" data-live-change>Past 24 hours -1.84%</span><p class="quick__state" data-live-state>Showing the latest saved price. Checking for a newer one…</p></div>
         </section>
         <div class="market__grid" data-market-grid>
-          <div class="market__cell"><div class="market__k">Total market value</div><div class="market__v ">$173.9K</div></div>
-          <div class="market__cell"><div class="market__k">Traded in 24 hours</div><div class="market__v ">$1K</div></div>
+          <div class="market__cell"><div class="market__k">Total market value</div><div class="market__v ">$175.8K</div></div>
+          <div class="market__cell"><div class="market__k">Traded in 24 hours</div><div class="market__v ">$8.10</div></div>
         </div>
         <p class="market__state" data-market-state>Loading price history…</p>
         <div class="market__chart" data-market-chart hidden>
@@ -1296,27 +1300,27 @@
           <div data-market-chart-canvas></div><dl class="chart-summary" data-chart-summary hidden></dl>
         </div>
         <noscript><p class="market__state">Price history is unavailable here. The latest recorded price and verified address are still shown.</p></noscript>
-        <div class="market__foot" data-market-foot>Updated Oct 17, 2026, 12:07 AM UTC</div>
+        <div class="market__foot" data-market-foot>Updated Oct 19, 2026, 12:08 AM UTC</div>
       </aside>
       <section class="standings" data-market-standings aria-labelledby="standings-title">
-        <div class="standings__head"><div><span>Market standings</span><h3 id="standings-title">1st of 12 by total market value</h3></div><p data-standings-summary>This rank only compares total market value. It does not show how many people support each sign.</p></div>
+        <div class="standings__head"><div><span>Market standings</span><h3 id="standings-title">Market rank unavailable</h3></div><p data-standings-summary>This rank only compares total market value. It does not show how many people support each sign. A rank is not shown because some numbers are missing or out of date.</p></div>
         <details class="standings__all"><summary>See all 12 market standings</summary>
           <ol class="standings__list" data-standings-list>
-          <li class="is-current" aria-current="true"><a href="/registry/gemini/" style="--sign:#B29DD0"><span class="standings__rank">#1</span><picture><source srcset="/assets/zodiac-icons/48/gemini.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/gemini.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Gemini</strong><span>$173,941</span></a></li>
-          <li><a href="/registry/aquarius/" style="--sign:#AE8FC9"><span class="standings__rank">#2</span><picture><source srcset="/assets/zodiac-icons/48/aquarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aquarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aquarius</strong><span>$92,361</span></a></li>
-          <li><a href="/registry/libra/" style="--sign:#D3A9DE"><span class="standings__rank">#3</span><picture><source srcset="/assets/zodiac-icons/48/libra.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/libra.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Libra</strong><span>$75,739</span></a></li>
-          <li><a href="/registry/aries/" style="--sign:#DE8E79"><span class="standings__rank">#4</span><picture><source srcset="/assets/zodiac-icons/48/aries.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aries.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aries</strong><span>$73,498</span></a></li>
-          <li><a href="/registry/taurus/" style="--sign:#B9D4BE"><span class="standings__rank">#5</span><picture><source srcset="/assets/zodiac-icons/48/taurus.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/taurus.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Taurus</strong><span>$67,512</span></a></li>
-          <li><a href="/registry/cancer/" style="--sign:#B6D4E4"><span class="standings__rank">#6</span><picture><source srcset="/assets/zodiac-icons/48/cancer.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/cancer.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Cancer</strong><span>$64,655</span></a></li>
-          <li><a href="/registry/capricorn/" style="--sign:#C0DEA8"><span class="standings__rank">#7</span><picture><source srcset="/assets/zodiac-icons/48/capricorn.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/capricorn.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Capricorn</strong><span>$63,207</span></a></li>
-          <li><a href="/registry/scorpio/" style="--sign:#B9DCE8"><span class="standings__rank">#8</span><picture><source srcset="/assets/zodiac-icons/48/scorpio.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/scorpio.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Scorpio</strong><span>$62,181</span></a></li>
-          <li><a href="/registry/sagittarius/" style="--sign:#E0B080"><span class="standings__rank">#9</span><picture><source srcset="/assets/zodiac-icons/48/sagittarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/sagittarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Sagittarius</strong><span>$60,472</span></a></li>
-          <li><a href="/registry/virgo/" style="--sign:#B7D9B0"><span class="standings__rank">#10</span><picture><source srcset="/assets/zodiac-icons/48/virgo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/virgo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Virgo</strong><span>$59,468</span></a></li>
-          <li><a href="/registry/leo/" style="--sign:#E0A9B4"><span class="standings__rank">#11</span><picture><source srcset="/assets/zodiac-icons/48/leo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/leo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Leo</strong><span>$59,362</span></a></li>
-          <li><a href="/registry/pisces/" style="--sign:#A9D4C4"><span class="standings__rank">#12</span><picture><source srcset="/assets/zodiac-icons/48/pisces.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/pisces.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Pisces</strong><span>$58,885</span></a></li>
+          <li class="is-current" aria-current="true"><a href="/registry/gemini/" style="--sign:#B29DD0"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/gemini.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/gemini.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Gemini</strong><span>$175,786</span></a></li>
+          <li><a href="/registry/libra/" style="--sign:#D3A9DE"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/libra.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/libra.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Libra</strong><span>$74,924</span></a></li>
+          <li><a href="/registry/aries/" style="--sign:#DE8E79"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/aries.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aries.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aries</strong><span>$70,507</span></a></li>
+          <li><a href="/registry/taurus/" style="--sign:#B9D4BE"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/taurus.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/taurus.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Taurus</strong><span>$67,247</span></a></li>
+          <li><a href="/registry/cancer/" style="--sign:#B6D4E4"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/cancer.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/cancer.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Cancer</strong><span>$66,582</span></a></li>
+          <li><a href="/registry/capricorn/" style="--sign:#C0DEA8"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/capricorn.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/capricorn.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Capricorn</strong><span>$62,278</span></a></li>
+          <li><a href="/registry/scorpio/" style="--sign:#B9DCE8"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/scorpio.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/scorpio.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Scorpio</strong><span>$62,116</span></a></li>
+          <li><a href="/registry/leo/" style="--sign:#E0A9B4"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/leo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/leo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Leo</strong><span>$59,739</span></a></li>
+          <li><a href="/registry/pisces/" style="--sign:#A9D4C4"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/pisces.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/pisces.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Pisces</strong><span>$59,209</span></a></li>
+          <li><a href="/registry/virgo/" style="--sign:#B7D9B0"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/virgo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/virgo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Virgo</strong><span>$58,597</span></a></li>
+          <li><a href="/registry/sagittarius/" style="--sign:#E0B080"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/sagittarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/sagittarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Sagittarius</strong><span>—</span></a></li>
+          <li><a href="/registry/aquarius/" style="--sign:#AE8FC9"><span class="standings__rank">—</span><picture><source srcset="/assets/zodiac-icons/48/aquarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aquarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aquarius</strong><span>—</span></a></li>
           </ol>
         </details>
-        <p class="standings__time" data-standings-time>Updated Oct 17, 2026, 12:07 AM UTC</p>
+        <p class="standings__time" data-standings-time>Updated Oct 19, 2026, 12:08 AM UTC</p>
         <details class="market-explainer"><summary>Where do these numbers come from?</summary><p>The source reports each sign’s price, trading activity and total market value. Zodiacs.org matches each sign by its verified address. Total market value is a comparison, not money held in a bank, and light trading can move it quickly. <a href="/registry/technical/#market-transparency">See sources and method details.</a></p></details>
       </section>
     </section>
@@ -1392,9 +1396,9 @@
   <div class="zfooter__inner">
     <div class="zfooter__lead">
       <div>
-        <a class="zfooter__brand" href="/">
-          <img class="zfooter__brand-mark" src="/assets/app-icons/v3/favicon.svg" width="26" height="26" alt="" loading="lazy" decoding="async" />
-          <span class="zfooter__brand-name">Zodiacs</span><span class="zfooter__brand-tld">.org</span>
+        <a class="zfooter__brand" href="/" aria-label="Zodiacs.org">
+          <svg class="zfooter__brand-mark" viewBox="-2 4 28 16" width="42" height="24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="1.2" fill="#D9694F" opacity="0.45"/><circle cx="17" cy="8.54" r="1.33" fill="#5E9E70" opacity="0.49"/><circle cx="7" cy="8.54" r="1.33" fill="#4CA88F" opacity="0.49"/><circle cx="3.34" cy="10" r="1.67" fill="#7A57B0" opacity="0.59"/><circle cx="20.66" cy="10" r="1.67" fill="#8463BC" opacity="0.59"/><circle cx="22" cy="12" r="2.15" fill="#4A8FBD" opacity="0.73"/><circle cx="2" cy="12" r="2.15" fill="#7FB24C" opacity="0.73"/><circle cx="20.66" cy="14" r="2.62" fill="#CC6C84" opacity="0.86"/><circle cx="3.34" cy="14" r="2.62" fill="#CF8B3A" opacity="0.86"/><circle cx="17" cy="15.46" r="2.97" fill="#5FA352" opacity="0.96"/><circle cx="7" cy="15.46" r="2.97" fill="#3FA0BD" opacity="0.96"/><circle cx="12" cy="16" r="3.1" fill="#A764C0" opacity="1"/></svg>
+          <span class="zfooter__brand-name" aria-hidden="true">Zodiacs<span class="zfooter__brand-sep">·</span><span class="zfooter__brand-tld">org</span></span>
         </a>
         <p class="zfooter__tag">Gemini is one of the Twelve in the official Zodiacs Registry.</p>
       </div>

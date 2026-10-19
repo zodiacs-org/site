@@ -1,0 +1,1049 @@
+---
+/**
+ * One sign's daily horoscope in Spanish or Portuguese. The English sign
+ * page (src/components/HoroscopeProgramPage.astro, surface "today") is the
+ * reference layout: the sign art hero, the period switch and sign rail, the
+ * reading beside the sky it draws on, the chart band with this sky on the
+ * sign's wheel, more for the sign, the other signs and three questions.
+ * Every visible string comes from COPY below.
+ *
+ * The reading is DailyLocaleReading, unchanged: the notes come from
+ * dailyReadingForLocale with their receipts. The localized editions publish
+ * the daily reading only; the week and month switch to the English edition
+ * with hreflang="en" and the English-only cue.
+ */
+import Base from '../../layouts/Base.astro';
+import ArtFrame from '../ArtFrame.astro';
+import AskGuideLine from '../AskGuideLine.astro';
+import DailyLocaleReading from '../DailyLocaleReading.astro';
+import EmailCapture from '../EmailCapture.astro';
+import GuideQuickPrompts from '../GuideQuickPrompts.astro';
+import ShareRow from '../ShareRow.astro';
+import SignIcon from '../SignIcon.astro';
+import LocalizedSvgTitles from './LocalizedSvgTitles.astro';
+import Wheel from '../../lib/wheel/Wheel';
+import dailyData from '../../data/daily.json';
+import type { Daily } from '../../lib/daily';
+import { PLANET_GLYPH } from '../../lib/glyphs/paths';
+import { dailyReadingForLocale } from '../../lib/i18n/daily-reading';
+import { formatDate } from '../../lib/i18n/dates';
+import { moonPhaseLabel, planetLabel } from '../../lib/i18n/astrology';
+import { englishOnlyCue } from '../../lib/i18n/english-only';
+import { localizePath, t } from '../../lib/i18n';
+import { signArtSrc, signArtSrcset } from '../../lib/sign-art';
+import { SIGNS, elementLabel, modalityLabel, signBySlug, signName } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
+import { signArtCard } from '../../lib/og-art-cards.mjs';
+import { degreeMinutes } from '../../lib/today-sky';
+
+type Locale = 'es' | 'pt';
+interface Props {
+  locale: Locale;
+  signSlug: string;
+}
+
+interface Copy {
+  title: (name: string, date: string) => string;
+  description: (name: string, date: string, notes: string) => string;
+  notes: (count: number) => string;
+  imageAlt: (name: string) => string;
+  crumbs: string;
+  crumbsAria: string;
+  h1: (name: string) => string;
+  credit: (name: string) => string;
+  periodsAria: (name: string) => string;
+  todayWord: string;
+  week: string;
+  month: string;
+  periodsNote: string;
+  railLabel: string;
+  metaLabel: string;
+  noteCount: (count: number) => string;
+  readingTitle: (name: string) => string;
+  foot: (name: string) => string;
+  methodLink: string;
+  share: (name: string) => string;
+  shareLabel: string;
+  askLead: string;
+  askLabel: string;
+  prompts: (name: string) => string[];
+  railAria: string;
+  skyTitle: string;
+  skyBasis: string;
+  skySub: string;
+  skyRow: (planet: string, sign: string) => string;
+  skyHouse: (house: number, name: string) => string;
+  moonLit: (phase: string, percent: number) => string;
+  retrograde: string;
+  alsoSun: (position: string) => string;
+  fullSky: string;
+  wheelAria: (date: string, name: string) => string;
+  wheelCaption: (date: string, name: string, focus: string, count: number) => string;
+  ctaKicker: string;
+  ctaTitle: string;
+  ctaLede: (name: string, moonSign: string, house: number) => string;
+  ticks: string[];
+  reassure: [string, string];
+  saved: string;
+  savedLink: string;
+  moreTitle: (name: string) => string;
+  moreLede: string;
+  moreLonger: string;
+  moreLongerText: (name: string) => string;
+  moreRising: (name: string) => string;
+  moreRisingNote: string;
+  moreRisingText: (name: string) => string;
+  moreAll: string;
+  moreAllText: string;
+  guideKicker: string;
+  guideTitle: (name: string) => string;
+  guideCopy: (name: string) => string;
+  guideLink: (name: string) => string;
+  signsTitle: string;
+  signsLede: string;
+  allHoroscopes: string;
+  signsAria: string;
+  readingNow: string;
+  faqTitle: (name: string) => string;
+  faqMore: string;
+  faq: (name: string) => { q: string; a: string }[];
+}
+
+const COPY: Record<Locale, Copy> = {
+  es: {
+    title: (name, date) => `Horóscopo de ${name} hoy, ${date} | Zodiacs.org`,
+    description: (name, date, notes) => `Horóscopo de ${name} hoy, ${date}: ${notes} desde sus casas solares, con las posiciones reales del cielo y sus comprobantes.`,
+    notes: (count) => (count === 1 ? '1 nota leída' : `${count} notas leídas`),
+    imageAlt: (name) => `${name}, horóscopo de hoy, Zodiacs.org`,
+    crumbs: 'Horóscopos',
+    crumbsAria: 'Ruta de navegación',
+    h1: (name) => `${name} hoy`,
+    credit: (name) => `${name}, del arte de signos de Zodiacs`,
+    periodsAria: (name) => `Periodos del horóscopo de ${name}`,
+    todayWord: 'Hoy',
+    week: 'Esta semana',
+    month: 'Este mes',
+    periodsNote: 'Semana y mes, por ahora en inglés',
+    railLabel: 'Cambiar de signo',
+    metaLabel: 'Horóscopo diario',
+    noteCount: (count) => (count === 1 ? '1 nota' : `${count} notas`),
+    readingTitle: (name) => `El cielo de hoy visto desde ${name}`,
+    foot: (name) => `Escrito para ${name} como signo solar. Las posiciones del cielo están calculadas; su significado es una interpretación astrológica. Úsalo para reflexionar, no como una predicción de hechos.`,
+    methodLink: 'Cómo calculamos',
+    share: (name) => `Horóscopo de ${name} de hoy`,
+    shareLabel: 'Enviar esta lectura',
+    askLead: '¿Preguntas sobre esta lectura?',
+    askLabel: 'Preguntar a Guide',
+    prompts: (name) => [
+      `¿Qué significa el cielo de hoy para ${name}?`,
+      '¿De qué planetas sale esta lectura?',
+      '¿Cómo leo esto en mi carta natal?',
+    ],
+    railAria: 'Sobre esta lectura',
+    skyTitle: 'El cielo detrás de esta lectura',
+    skyBasis: '12:00 UTC',
+    skySub: 'Cada nota sale de una de estas posiciones.',
+    skyRow: (planet, sign) => `${planet} en ${sign}`,
+    skyHouse: (house, name) => `Casa ${house} contada desde ${name}.`,
+    moonLit: (phase, percent) => `${phase}, ${percent}% iluminada.`,
+    retrograde: 'Retrógrado.',
+    alsoSun: (position) => `También en este cielo: Sol ${position}`,
+    fullSky: 'Todo el cielo de hoy',
+    wheelAria: (date, name) => `El cielo a las 12:00 UTC del ${date}, contado desde ${name} como primera casa`,
+    wheelCaption: (date, name, focus, count) => `El cielo a las 12:00 UTC del ${date}, en la rueda de ${name}.${count > 0 ? ` En color: ${focus}, ${count === 1 ? 'el planeta de esta lectura' : 'los planetas de esta lectura'}.` : ''}`,
+    ctaKicker: 'Más allá de tu signo solar',
+    ctaTitle: 'Mira dónde cae este cielo en tu propia carta.',
+    ctaLede: (name, moonSign, house) => `Esta lectura cuenta la rueda desde ${name}, así que la Luna en ${moonSign} cae en la casa ${house}. Tu carta natal cuenta desde tu propio ascendente, así que la misma Luna puede tocar otra parte de tu vida.`,
+    ticks: [
+      'Tu Sol, tu Luna y tu ascendente, y lo que significa cada uno',
+      'El cielo de cada día leído sobre tu propia carta',
+      'Se calcula en tu navegador, sin crear una cuenta',
+    ],
+    reassure: ['Fecha, hora y lugar de nacimiento.', 'Unos veinte segundos.'],
+    saved: '¿Ya guardaste una carta? ',
+    savedLink: 'Compárala con el cielo de hoy',
+    moreTitle: (name) => `Más sobre ${name}`,
+    moreLede: 'El mismo cielo en periodos más largos, y el signo leído desde otro punto de la carta.',
+    moreLonger: 'Mañana, semana y mes',
+    moreLongerText: (name) => `Las lecturas más largas de ${name}, también de amor, trabajo y 2027.`,
+    moreRising: (name) => `Ascendente ${name}`,
+    moreRisingNote: 'Perfil del ascendente',
+    moreRisingText: (name) => `${name} como signo ascendente, el que estaba en el horizonte este al nacer.`,
+    moreAll: 'Todos los signos',
+    moreAllText: 'Los doce horóscopos del cielo de hoy en una página.',
+    guideKicker: 'La guía del signo',
+    guideTitle: (name) => `${name}, a fondo`,
+    guideCopy: (name) => `Personalidad, amor, trabajo y dinero, compatibilidad, y lo que significa ${name} en tu carta natal.`,
+    guideLink: (name) => `Guía completa de ${name}`,
+    signsTitle: 'Lee otro signo',
+    signsLede: 'Las notas del cielo de hoy para los doce signos, desde las mismas posiciones.',
+    allHoroscopes: 'Todos los horóscopos',
+    signsAria: 'Otros signos',
+    readingNow: 'Leyendo ahora',
+    faqTitle: (name) => `Horóscopo diario de ${name}: preguntas`,
+    faqMore: 'Más sobre el método: ',
+    faq: (name) => [
+      {
+        q: `¿Qué cubre este horóscopo diario de ${name}?`,
+        a: `Hasta cuatro notas a partir del cielo de hoy: en qué casa solar de ${name} caen la Luna y los planetas personales, y cualquier evento exacto de la fecha. Cada nota lleva su comprobante.`,
+      },
+      {
+        q: `¿Esta lectura es solo para quien tiene ${name} como signo solar?`,
+        a: `Empieza por ${name} como signo solar. Si conoces tu ascendente, léelo también; tu carta natal completa da la imagen más personal.`,
+      },
+      {
+        q: `¿Cómo puede usar ${name} esta lectura?`,
+        a: 'Toma la parte que te sirva, conviértela en una pregunta o en un paso concreto, y deja que tu propio criterio decida.',
+      },
+    ],
+  },
+  pt: {
+    title: (name, date) => `Horóscopo de ${name} hoje, ${date} | Zodiacs.org`,
+    description: (name, date, notes) => `Horóscopo de ${name} hoje, ${date}: ${notes} a partir das casas solares do signo, com as posições reais do céu e seus registros.`,
+    notes: (count) => (count === 1 ? '1 nota lida' : `${count} notas lidas`),
+    imageAlt: (name) => `${name}, horóscopo de hoje, Zodiacs.org`,
+    crumbs: 'Horóscopos',
+    crumbsAria: 'Trilha de navegação',
+    h1: (name) => `${name} hoje`,
+    credit: (name) => `${name}, da arte dos signos do Zodiacs`,
+    periodsAria: (name) => `Períodos do horóscopo de ${name}`,
+    todayWord: 'Hoje',
+    week: 'Esta semana',
+    month: 'Este mês',
+    periodsNote: 'Semana e mês, por enquanto em inglês',
+    railLabel: 'Trocar de signo',
+    metaLabel: 'Horóscopo diário',
+    noteCount: (count) => (count === 1 ? '1 nota' : `${count} notas`),
+    readingTitle: (name) => `O céu de hoje visto de ${name}`,
+    foot: (name) => `Escrito para ${name} como signo solar. As posições do céu são calculadas; o significado delas é uma interpretação astrológica. Use para refletir, não como uma previsão de acontecimentos.`,
+    methodLink: 'Como calculamos',
+    share: (name) => `Horóscopo de ${name} de hoje`,
+    shareLabel: 'Enviar esta leitura',
+    askLead: 'Dúvidas sobre esta leitura?',
+    askLabel: 'Perguntar ao Guide',
+    prompts: (name) => [
+      `O que o céu de hoje significa para ${name}?`,
+      'De quais planetas vem esta leitura?',
+      'Como leio isto no meu mapa astral?',
+    ],
+    railAria: 'Sobre esta leitura',
+    skyTitle: 'O céu por trás desta leitura',
+    skyBasis: '12h UTC',
+    skySub: 'Cada nota vem de uma destas posições.',
+    skyRow: (planet, sign) => `${planet} em ${sign}`,
+    skyHouse: (house, name) => `Casa ${house} contada a partir de ${name}.`,
+    moonLit: (phase, percent) => `${phase}, ${percent}% iluminada.`,
+    retrograde: 'Retrógrado.',
+    alsoSun: (position) => `Também neste céu: Sol ${position}`,
+    fullSky: 'Todo o céu de hoje',
+    wheelAria: (date, name) => `O céu às 12h UTC de ${date}, contado a partir de ${name} como primeira casa`,
+    wheelCaption: (date, name, focus, count) => `O céu às 12h UTC de ${date}, na roda de ${name}.${count > 0 ? ` Em cor: ${focus}, ${count === 1 ? 'o planeta desta leitura' : 'os planetas desta leitura'}.` : ''}`,
+    ctaKicker: 'Além do seu signo solar',
+    ctaTitle: 'Veja onde este céu cai no seu próprio mapa.',
+    ctaLede: (name, moonSign, house) => `Esta leitura conta a roda a partir de ${name}, então a Lua em ${moonSign} cai na casa ${house}. O seu mapa astral conta a partir do seu próprio ascendente, então a mesma Lua pode tocar outra parte da sua vida.`,
+    ticks: [
+      'Seu Sol, sua Lua e seu ascendente, e o que cada um significa',
+      'O céu de cada dia lido sobre o seu próprio mapa',
+      'Calculado no seu navegador, sem criar conta',
+    ],
+    reassure: ['Data, hora e local de nascimento.', 'Cerca de vinte segundos.'],
+    saved: 'Já salvou um mapa? ',
+    savedLink: 'Compare com o céu de hoje',
+    moreTitle: (name) => `Mais sobre ${name}`,
+    moreLede: 'O mesmo céu em períodos mais longos, e o signo lido a partir de outro ponto do mapa.',
+    moreLonger: 'Amanhã, semana e mês',
+    moreLongerText: (name) => `As leituras mais longas de ${name}, também de amor, trabalho e 2027.`,
+    moreRising: (name) => `Ascendente em ${name}`,
+    moreRisingNote: 'Perfil do ascendente',
+    moreRisingText: (name) => `${name} como signo ascendente, o que estava no horizonte leste no nascimento.`,
+    moreAll: 'Todos os signos',
+    moreAllText: 'Os doze horóscopos do céu de hoje numa página.',
+    guideKicker: 'O guia do signo',
+    guideTitle: (name) => `${name}, a fundo`,
+    guideCopy: (name) => `Personalidade, amor, trabalho e dinheiro, compatibilidade e o que ${name} significa no seu mapa astral.`,
+    guideLink: (name) => `Guia completo de ${name}`,
+    signsTitle: 'Leia outro signo',
+    signsLede: 'As notas do céu de hoje para os doze signos, a partir das mesmas posições.',
+    allHoroscopes: 'Todos os horóscopos',
+    signsAria: 'Outros signos',
+    readingNow: 'Lendo agora',
+    faqTitle: (name) => `Horóscopo diário de ${name}: perguntas`,
+    faqMore: 'Mais sobre o método: ',
+    faq: (name) => [
+      {
+        q: `O que este horóscopo diário de ${name} cobre?`,
+        a: `Até quatro notas a partir do céu de hoje: em que casa solar de ${name} caem a Lua e os planetas pessoais, e qualquer evento exato da data. Cada nota traz o seu registro.`,
+      },
+      {
+        q: `Esta leitura é só para quem tem ${name} como signo solar?`,
+        a: `Comece por ${name} como signo solar. Se você conhece o seu ascendente, leia também; o seu mapa astral completo dá o retrato mais pessoal.`,
+      },
+      {
+        q: `Como ${name} pode usar esta leitura?`,
+        a: 'Pegue a parte que for útil, transforme em uma pergunta ou em um passo concreto e deixe o seu próprio julgamento decidir.',
+      },
+    ],
+  },
+};
+
+const { locale, signSlug } = Astro.props;
+const c = COPY[locale];
+const cue = englishOnlyCue(locale);
+const local = (path: string) => localizePath(locale, path);
+const daily = dailyData as Daily;
+const sign = signBySlug(signSlug);
+const name = signName(sign, locale);
+const reading = dailyReadingForLocale(sign.slug, daily, locale);
+const cap = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+const planet = (body: string) => planetLabel(locale, body);
+const named = (body: string) => (body === 'Sun'
+  ? (locale === 'es' ? 'el Sol' : 'o Sol')
+  : body === 'Moon' ? (locale === 'es' ? 'la Luna' : 'a Lua') : planet(body));
+const listWords = (items: string[]) => (items.length <= 1
+  ? items.join('')
+  : `${items.slice(0, -1).join(', ')} ${locale === 'es' ? 'y' : 'e'} ${items.at(-1)}`);
+
+const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
+  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+});
+// The title drops the year so the longest sign name still fits in 60 characters.
+const titleDate = formatDate(locale, `${daily.date}T12:00:00Z`, { day: 'numeric', month: 'long', timeZone: 'UTC' });
+const weekdayLabel = cap(formatDate(locale, `${daily.date}T12:00:00Z`, {
+  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+}));
+const editionShort = formatDate(locale, `${daily.date}T12:00:00Z`, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const path = `/${locale}/horoscopes/${sign.slug}/`;
+const heroArtSizes = '(min-width: 761px) 74vw, calc(100vw - 16px)';
+const phase = moonPhaseLabel(locale, daily.moon.phase);
+const illumination = Math.round(daily.moon.illumination * 100);
+
+// ── The sky behind the reading: each body a note draws on, once ──
+const skyRows = reading.lines
+  .filter((line) => line.body && daily.bodies.some((body) => body.body === line.body))
+  .filter((line, index, lines) => lines.findIndex((other) => other.body === line.body) === index)
+  .map((line) => {
+    const body = daily.bodies.find((entry) => entry.body === line.body)!;
+    const detail = [
+      body.body === 'Moon' ? c.moonLit(phase, illumination) : '',
+      body.retrograde ? c.retrograde : '',
+      line.house ? c.skyHouse(line.house, name) : '',
+    ].filter(Boolean).join(' ');
+    return { body: body.body, sign: body.sign, hue: signBySlug(body.sign).hue, degree: degreeMinutes(body.degree), detail };
+  });
+const sun = daily.bodies.find((body) => body.body === 'Sun');
+const alsoSun = sun && !skyRows.some((row) => row.body === 'Sun')
+  ? c.alsoSun(`${degreeMinutes(sun.degree)} ${signName(sun.sign, locale)}`)
+  : '';
+
+// ── The wheel: the edition's sky at noon UTC, counted from this sign ──
+const signIndex = SIGNS.findIndex((entry) => entry.slug === sign.slug);
+const signStart = signIndex * 30;
+const focus = skyRows.map((row) => row.body);
+const focusCss = [
+  '.hzl-wheel .wheel > text{display:none}',
+  focus.length > 0 ? '.hzl-wheel .wheel__body{opacity:.5}' : '',
+  ...skyRows.map((row) => {
+    const selector = `.hzl-wheel [data-preview-body="${row.body}"]`;
+    return `${selector}{opacity:1}${selector}>circle{fill:${row.hue};stroke:rgba(6,7,9,.5);stroke-opacity:1}${selector}>g{stroke:#0B0D12;color:#0B0D12!important}`;
+  }),
+].join('');
+const moon = daily.bodies.find((body) => body.body === 'Moon');
+const moonHouse = moon ? ((SIGNS.findIndex((entry) => entry.slug === moon.sign) - signIndex + 12) % 12) + 1 : null;
+const faq = c.faq(name);
+---
+<Base
+  stableTypography
+  title={c.title(name, titleDate)}
+  description={c.description(name, dateLabel, c.notes(reading.lines.length))}
+  path={path}
+  locale={locale}
+  editionDate={daily.date}
+  image={signArtCard(sign.slug)}
+  imageAlt={c.imageAlt(name)}
+>
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href={signArtSrc(sign.slug, 1200)}
+    imagesrcset={signArtSrcset(sign.slug)}
+    imagesizes={heroArtSizes}
+    fetchpriority="high"
+  />
+  <style slot="head" is:inline set:html={focusCss}></style>
+  <article class="hzl" style={`--sign:${sign.hue};--hue:${sign.hue}`} data-edition-content="true">
+    <header class="hzl-hero">
+      <ArtFrame sign={sign.slug} locale={locale} class="hzl-hero__art" sizes={heroArtSizes} focus="50% 60%" spot="55% 56%" eager />
+      <nav class="hzl-crumbs" aria-label={c.crumbsAria}>
+        <a href={local('/horoscopes/')}>{c.crumbs}</a><span aria-hidden="true">/</span><span aria-current="page">{name}</span>
+      </nav>
+      <div class="hzl-hero__body">
+        <span class="kicker hzl-hero__kicker">{weekdayLabel}</span>
+        <h1 class="hzl-hero__title">{c.h1(name)}</h1>
+        <p class="hzl-hero__cap">{cap(c.description(name, dateLabel, c.notes(reading.lines.length)).split(': ').slice(1).join(': '))}</p>
+        <p class="kfacts hzl-hero__facts">
+          <span><SignIcon sign={sign.slug} size={20} webpOnly class="hzl-hero__disc" />{signDateRange(sign, locale)}</span>
+          <span>{elementLabel(sign.element, locale)}</span>
+          <span>{modalityLabel(sign.modality, locale)}</span>
+          <span class="hzl-hero__ruler">{t(locale, 'ruler')}: {planet(sign.ruler)}</span>
+        </p>
+      </div>
+      <span class="hzl-hero__credit" aria-hidden="true">{c.credit(name)}</span>
+    </header>
+
+    <div class="kwrap hzl-controls">
+      <div class="hzl-periods">
+        <nav class="seg hzl-seg" aria-label={c.periodsAria(name)}>
+          <a href={path} aria-current="page"><span data-edition-current-only>{c.todayWord}</span><span data-edition-dated-only>{editionShort}</span></a>
+          <a href={`/horoscopes/${sign.slug}/weekly/`} hreflang="en" title={cue?.aria} aria-label={`${c.week}. ${cue?.aria}`}>{c.week}</a>
+          <a href={`/horoscopes/${sign.slug}/monthly/`} hreflang="en" title={cue?.aria} aria-label={`${c.month}. ${cue?.aria}`}>{c.month}</a>
+        </nav>
+        <span class="hzl-periods__note">{c.periodsNote}</span>
+      </div>
+      <nav class="hzl-signrail" aria-label={c.railLabel}>
+        <span class="hzl-signrail__label">{c.railLabel}</span>
+        {SIGNS.map((other) => (
+          <a
+            href={local(`/horoscopes/${other.slug}/`)}
+            aria-current={other.slug === sign.slug ? 'page' : undefined}
+            style={`--other-sign:${other.hue}`}
+          >
+            <SignIcon sign={other.slug} size={24} webpOnly fetchPriority="low" class="hzl-signrail__disc" />
+            <span>{signName(other, locale)}</span>
+          </a>
+        ))}
+      </nav>
+      <script is:inline>
+        /* On a phone the row scrolls sideways: start it at the current sign. */
+        (function () {
+          var rail = document.currentScript && document.currentScript.previousElementSibling;
+          var current = rail && rail.querySelector('[aria-current="page"]');
+          if (!current || rail.scrollWidth <= rail.clientWidth) return;
+          var start = current.offsetLeft - rail.offsetLeft;
+          if (start + current.offsetWidth > rail.clientWidth) rail.scrollLeft = Math.max(0, start - 8);
+        })();
+      </script>
+    </div>
+
+    <div class="kwrap hzl-reading">
+      <section class="hzl-note" aria-labelledby="reading-heading">
+        <p class="hzl-note__meta">
+          <SignIcon sign={sign.slug} size={24} webpOnly class="hzl-note__disc" />
+          <b>{c.metaLabel}</b>
+          <i aria-hidden="true">·</i><span>{phase}</span>
+          <i class="hzl-hide-m" aria-hidden="true">·</i><span class="hzl-hide-m">{c.noteCount(reading.lines.length)}</span>
+        </p>
+        <h2 id="reading-heading" class="hzl-note__title">{c.readingTitle(name)}</h2>
+
+        <div class="hzl-note__body">
+          <DailyLocaleReading locale={locale} reading={reading} />
+        </div>
+
+        <p class="hzl-note__foot">
+          {c.foot(name)}{' '}
+          <a href={local('/methodology/')}>{c.methodLink}</a>
+        </p>
+
+        <ShareRow
+          text={c.share(name)}
+          url={`https://zodiacs.org${path}`}
+          locale={locale}
+          label={c.shareLabel}
+          variant="pills"
+        />
+
+        <AskGuideLine lead={c.askLead} locale={locale} />
+        <GuideQuickPrompts prompts={c.prompts(name)} locale={locale} label={c.askLabel} />
+      </section>
+
+      <aside class="hzl-rail" aria-label={c.railAria}>
+        <section class="hzl-sky" aria-labelledby="reading-sky-heading">
+          <div class="hzl-sky__head">
+            <h3 id="reading-sky-heading" class="h-4">{c.skyTitle}</h3>
+            <span class="mono">{c.skyBasis}</span>
+          </div>
+          <p class="hzl-sky__sub">{c.skySub}</p>
+          <ul class="hzl-sky__rows">
+            {skyRows.map((row) => (
+              <li class="hzl-sky__row" style={`--c:${row.hue}`}>
+                <span class="hzl-pg" aria-hidden="true">
+                  {PLANET_GLYPH[row.body]
+                    ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={PLANET_GLYPH[row.body]} />
+                    : null}
+                </span>
+                <div>
+                  <strong>{c.skyRow(planet(row.body), signName(row.sign, locale))}</strong>
+                  <span class="hzl-sky__m">{row.detail}</span>
+                </div>
+                <span class="mono hzl-sky__deg">{row.degree}</span>
+              </li>
+            ))}
+          </ul>
+          {alsoSun && <p class="hzl-sky__also">{alsoSun}</p>}
+          <a class="textlink hzl-sky__link" href={local('/today/')}>{c.fullSky} <span class="arr" aria-hidden="true">→</span></a>
+        </section>
+
+        <EmailCapture placement="horoscopes" locale={locale} sign={sign.slug} />
+      </aside>
+    </div>
+
+    <section class="kwrap hzl-section" aria-labelledby="chart-cta-heading">
+      <div class="hzl-cta">
+        <figure class="hzl-cta__wheel hzl-wheel" data-hzl-wheel>
+          <LocalizedSvgTitles locale={locale}>
+            <Wheel
+              bodies={daily.bodies.map((body) => ({ body: body.body, lon: body.lon, retrograde: body.retrograde }))}
+              asc={signStart}
+              cusps={Array.from({ length: 12 }, (_, index) => (signStart + index * 30) % 360)}
+              preview
+              deferIcons
+              ariaLabel={c.wheelAria(dateLabel, name)}
+            />
+          </LocalizedSvgTitles>
+          <figcaption>{c.wheelCaption(dateLabel, name, listWords(focus.map(named)), focus.length)}</figcaption>
+        </figure>
+        <script is:inline>
+          /* The wheel's twelve sign discs ship as data-href so they cost
+             nothing while the hero paints; lift them as the band nears. */
+          (function () {
+            var root = document.querySelector('[data-hzl-wheel]');
+            if (!root) return;
+            var discs = root.querySelectorAll('image[data-href]');
+            function lift() {
+              for (var i = 0; i < discs.length; i += 1) {
+                discs[i].setAttribute('href', discs[i].getAttribute('data-href'));
+                discs[i].removeAttribute('data-href');
+              }
+            }
+            if (!('IntersectionObserver' in window)) { lift(); return; }
+            var watch = new IntersectionObserver(function (entries) {
+              for (var i = 0; i < entries.length; i += 1) {
+                if (entries[i].isIntersecting) { watch.disconnect(); lift(); return; }
+              }
+            }, { rootMargin: '200px 0px' });
+            watch.observe(root);
+          })();
+        </script>
+        <div class="hzl-cta__head">
+          <span class="kicker">{c.ctaKicker}</span>
+          <h2 id="chart-cta-heading" class="h-2">{c.ctaTitle}</h2>
+        </div>
+        <div class="hzl-cta__body">
+          {moon && moonHouse && <p class="klede">{c.ctaLede(name, signName(moon.sign, locale), moonHouse)}</p>}
+          <ul class="hzl-ticks">
+            {c.ticks.map((tick) => <li>{tick}</li>)}
+          </ul>
+          <div class="btn-row">
+            <a class="btn btn--primary btn--lg" href={local('/birth-chart/')}>{t(locale, 'getBirthChart')} <span class="orb" aria-hidden="true">↗</span></a>
+            <span class="reassure">{c.reassure[0]}<br />{c.reassure[1]}</span>
+          </div>
+          <p class="hzl-cta__saved">{c.saved}<a href={local('/transits/')}>{c.savedLink}</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="kwrap hzl-section hzl-more" aria-labelledby="more-heading">
+      <div>
+        <div class="section-head hzl-head">
+          <h2 id="more-heading" class="h-2">{c.moreTitle(name)}</h2>
+          <p>{c.moreLede}</p>
+        </div>
+        <nav class="hzl-more__list" aria-labelledby="more-heading">
+          <a href={`/horoscopes/${sign.slug}/`} hreflang="en" title={cue?.aria}>
+            <div><b>{c.moreLonger}</b><small>{cue?.aria}</small></div>
+            <p>{c.moreLongerText(name)}</p>
+            <span class="hzl-go" aria-hidden="true">↗</span>
+          </a>
+          <a href={local(`/rising-sign/${sign.slug}/`)}>
+            <div><b>{c.moreRising(name)}</b><small>{c.moreRisingNote}</small></div>
+            <p>{c.moreRisingText(name)}</p>
+            <span class="hzl-go" aria-hidden="true">→</span>
+          </a>
+          <a href={local('/horoscopes/')}>
+            <div><b>{c.moreAll}</b><small>{dateLabel}</small></div>
+            <p>{c.moreAllText}</p>
+            <span class="hzl-go" aria-hidden="true">→</span>
+          </a>
+        </nav>
+      </div>
+      <a class="hzl-guide" href={local(`/${sign.slug}/`)}>
+        <ArtFrame sign={sign.slug} locale={locale} alt="" fade focus="34% 40%" spot="40% 42%" sizes="(min-width: 1021px) 420px, calc(100vw - 40px)" class="hzl-guide__art" />
+        <span class="hzl-guide__cap">
+          <span class="kicker">{c.guideKicker}</span>
+          <span class="h-3">{c.guideTitle(name)}</span>
+          <span class="hzl-guide__copy">{c.guideCopy(name)}</span>
+          <span class="textlink">{c.guideLink(name)} <span class="arr">→</span></span>
+        </span>
+      </a>
+    </section>
+
+    <section class="kwrap hzl-section" aria-labelledby="signs-heading">
+      <div class="section-head--row hzl-head">
+        <div>
+          <h2 id="signs-heading" class="h-2">{c.signsTitle}</h2>
+          <p>{c.signsLede}</p>
+        </div>
+        <a class="textlink only-desktop" href={local('/horoscopes/')}>{c.allHoroscopes} <span class="arr">→</span></a>
+      </div>
+      <nav class="hzl-signs" aria-label={c.signsAria}>
+        <ul class="signgrid">
+          {SIGNS.map((other) => (
+            <li>
+              <a
+                href={local(`/horoscopes/${other.slug}/`)}
+                aria-current={other.slug === sign.slug ? 'page' : undefined}
+                style={`--sign:${other.hue}`}
+              >
+                <SignIcon sign={other.slug} size={44} webpOnly />
+                <b>{signName(other, locale)}</b>
+                <small>{other.slug === sign.slug ? c.readingNow : signDateRange(other, locale)}</small>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </section>
+
+    <section class="kwrap hzl-section qa hzl-faq" aria-labelledby="faq-heading">
+      <div>
+        <h2 id="faq-heading" class="h-2">{c.faqTitle(name)}</h2>
+        <p>{c.faqMore}<a href={local('/methodology/')}>{c.methodLink.toLowerCase()}</a>.</p>
+      </div>
+      <div class="kfaq">
+        {faq.map(({ q, a }, index) => (
+          <details open={index === 0}>
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style is:global>
+  .hzl {
+    display: block;
+    padding-bottom: clamp(48px, 7vw, 96px);
+  }
+
+  /* ── Hero: the sign art in the rounded cinematic frame ─────────── */
+  .hzl-hero {
+    position: relative;
+    height: 548px;
+    /* The frame sits under the floating nav, as the home hero does. */
+    margin: calc(12px - var(--nav-space, 96px)) 12px 0;
+    overflow: hidden;
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-xl);
+    background: var(--void-1);
+    isolation: isolate;
+  }
+  .hzl-hero .hzl-hero__art {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2;
+    width: 74%;
+    border-radius: 0;
+  }
+  .hzl-hero .hzl-hero__art > img { filter: saturate(0.94) brightness(0.9); }
+  .hzl-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, var(--void-1) 0%, var(--void-1) 25%, rgba(10, 12, 17, 0.86) 33%, rgba(10, 12, 17, 0.28) 45%, rgba(10, 12, 17, 0) 56%),
+      linear-gradient(0deg, rgba(6, 7, 9, 0.55) 0%, rgba(6, 7, 9, 0) 32%);
+  }
+  .hzl-crumbs {
+    position: absolute;
+    top: 92px;
+    left: clamp(28px, 5vw, 72px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--faint);
+  }
+  .hzl-crumbs a { color: var(--muted); text-decoration: none; }
+  .hzl-crumbs a:hover { color: var(--text); }
+  .hzl-crumbs span[aria-hidden] { opacity: 0.6; }
+  .hzl-hero__body {
+    position: absolute;
+    left: clamp(28px, 5vw, 72px);
+    bottom: 50px;
+    max-width: 620px;
+  }
+  .hzl-hero__kicker { color: var(--ink-1); }
+  .hzl-hero__title {
+    margin: 10px 0 0;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: clamp(2.7rem, 1.5rem + 3.6vw, 4.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  .hzl-hero__cap {
+    margin: 20px 0 0;
+    max-width: 40ch;
+    color: var(--ink-1);
+    font-size: var(--text-lg);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  .hzl-hero__facts { margin: 22px 0 0; color: var(--muted); }
+  .hzl-hero__facts > span { display: inline-flex; align-items: center; }
+  .hzl-hero .hzl-hero__disc { margin-right: 8px; }
+  .hzl-hero__credit {
+    position: absolute;
+    right: 22px;
+    bottom: 18px;
+    color: rgba(198, 204, 218, 0.5);
+    font-size: 12px;
+  }
+
+  /* ── Period switch and one-tap sign switch ─────────────────────── */
+  .hzl-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 18px;
+    padding: 12px 0;
+    border-block: 1px solid var(--hair-1);
+  }
+  /* The switch with its English-only note under it, so the sign rail
+     beside it keeps the English page's room. */
+  .hzl-periods { display: grid; flex: none; justify-items: start; gap: 6px; }
+  .hzl-seg { flex: none; }
+  .hzl-seg > a { min-height: 38px; padding-inline: 20px; font-size: 0.9375rem; }
+  .hzl-periods__note { padding-left: 14px; color: var(--faint); font-size: 12px; }
+  .hzl-signrail {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    margin-left: auto;
+  }
+  .hzl-signrail__label {
+    margin-right: 12px;
+    color: var(--muted);
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-style: italic;
+    white-space: nowrap;
+  }
+  .hzl-signrail a {
+    display: grid;
+    flex: none;
+    justify-items: center;
+    gap: 4px;
+    /* At least the English rail's 58px, wider only for a long name. */
+    min-width: 58px;
+    padding: 6px 3px 4px;
+    border-radius: 12px;
+    color: var(--faint);
+    font-size: 11px;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+  .hzl-signrail a > span { white-space: nowrap; }
+  /* The 48px derivative keeps twelve first-screen discs light; shown at 30px. */
+  .hzl-signrail a .hzl-signrail__disc { width: 30px; opacity: 0.78; }
+  .hzl-signrail a[aria-current='page'] {
+    background: color-mix(in oklab, var(--other-sign) 10%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--other-sign) 32%, transparent);
+    color: var(--ink-0);
+    font-weight: 600;
+  }
+  .hzl-signrail a[aria-current='page'] .hzl-signrail__disc { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .hzl-signrail a:hover { color: var(--ink-1); }
+    .hzl-signrail a:hover .hzl-signrail__disc { opacity: 1; }
+  }
+
+  /* ── The reading, with its sky beside it ───────────────────────── */
+  .hzl-reading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: clamp(40px, 7vw, 104px);
+    padding-block: clamp(40px, 4.4vw, 64px) clamp(64px, 8vw, 112px);
+  }
+  .hzl-note { min-width: 0; max-width: 700px; }
+  .hzl-note__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .hzl-note__meta .hzl-note__disc { width: 26px; margin-right: 2px; }
+  .hzl-note__meta b { color: var(--ink-0); font-weight: 600; }
+  .hzl-note__meta i { color: var(--hair-3); font-style: normal; }
+  .hzl-note__title {
+    max-width: 21ch;
+    margin: 18px 0 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.2rem, 1.3rem + 2.4vw, 3.35rem);
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .hzl-note__body { margin-top: 34px; }
+  /* Above DailyLocaleReading's own scoped rules (0,3,1), for this page's
+     larger serif reading column; its markup is unchanged. */
+  .hzl .hzl-note__body .daily-locale__lines { gap: 0; margin-bottom: 18px; }
+  .hzl .hzl-note__body .daily-locale__lines li + li { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--hair-1); }
+  .hzl .hzl-note .hzl-note__body .daily-locale__lines p {
+    max-width: 34em;
+    color: var(--ink-1);
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    font-variant-numeric: oldstyle-figures;
+    line-height: 1.5;
+  }
+  .hzl .hzl-note .hzl-note__body .daily-locale__lines li:first-child p::first-letter {
+    float: left;
+    padding: 7px 12px 0 0;
+    color: var(--hue);
+    font-family: var(--font-serif);
+    font-size: 3.5em;
+    line-height: 0.8;
+  }
+  .hzl-note__foot {
+    max-width: 62ch;
+    margin: 40px 0 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--hair-1);
+    color: var(--faint);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .hzl-note__foot a { color: var(--muted); text-underline-offset: 3px; }
+  .hzl-note > .identity-share { margin-top: 18px; }
+  .hzl-note > .ask-guide-line { margin-top: 18px; font-size: 0.9375rem; }
+  /* Guide's ready questions stay one quiet row under the line. */
+  .hzl-note > .guide-prompts { margin-top: 10px; }
+  .hzl-note .guide-prompts__chip { color: var(--muted); font-size: 0.8125rem; }
+  .hzl-note .guide-prompts__chip:is(:hover, :focus-visible) { color: var(--text); }
+
+  /* ── The rail: the sky behind the reading, then the signup ─────── */
+  .hzl-rail { display: grid; gap: 16px; min-width: 0; }
+  .hzl-sky {
+    position: relative;
+    overflow: hidden;
+    padding: 22px 22px 20px;
+    border: 1px solid var(--hair-2);
+    border-radius: 18px;
+    background: var(--void-2);
+  }
+  .hzl-sky__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .hzl-sky__head .mono { color: var(--faint); font-size: 0.75rem; white-space: nowrap; }
+  .hzl-sky__sub { margin: 2px 0 0; color: var(--faint); font-size: 0.8125rem; }
+  .hzl-sky__rows { margin: 14px 0 0; padding: 0; border-top: 1px solid var(--hair-1); list-style: none; }
+  .hzl-sky__row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--hair-1);
+  }
+  .hzl-pg {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--c);
+    color: #0b0d12;
+  }
+  .hzl-pg svg { width: 19px; height: 19px; }
+  .hzl-sky__row strong { display: block; color: var(--ink-0); font-size: 0.9375rem; font-weight: 600; line-height: 1.3; }
+  .hzl-sky__m { display: block; margin-top: 3px; color: var(--muted); font-size: 0.8125rem; line-height: 1.45; }
+  .hzl-sky__deg { padding-top: 2px; color: var(--ink-2); font-size: 0.8125rem; white-space: nowrap; }
+  .hzl-sky__also { margin: 14px 0 0; color: var(--faint); font-size: 0.8125rem; line-height: 1.5; }
+  .hzl-sky__link { margin-top: 14px; font-size: 0.875rem; }
+  .hzl-rail .email-capture {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    margin: 0;
+    padding: 22px;
+    border-radius: 18px;
+  }
+  .hzl-rail .email-capture h2 { margin-top: 0; font-family: var(--font-sans); font-size: 1.06rem; font-weight: 600; line-height: 1.3; }
+  .hzl-rail .email-capture__email-row { grid-template-columns: minmax(0, 1fr); }
+  .hzl-rail .email-capture__submit { width: 100%; }
+
+  /* ── Sections after the reading ───────────────────────────────── */
+  .hzl-section { padding-bottom: clamp(64px, 8vw, 120px); }
+  .hzl-head { margin-bottom: clamp(28px, 4vw, 48px); }
+  .hzl-head .h-2 { margin: 0 0 12px; }
+  .section-head.hzl-head { max-width: 40ch; }
+  .section-head.hzl-head p { margin: 0; color: var(--muted); font-size: var(--text-lg); line-height: 1.5; text-wrap: pretty; }
+
+  /* The next step: this sky on the sign's wheel, then your own chart */
+  .hzl-cta {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    grid-template-areas: 'wheel head' 'wheel body';
+    align-items: center;
+    column-gap: clamp(32px, 6vw, 88px);
+    padding: clamp(24px, 4vw, 56px);
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, rgba(198, 204, 218, 0.04), rgba(198, 204, 218, 0.012));
+  }
+  .hzl-cta__wheel { grid-area: wheel; margin: 0; }
+  .hzl-cta__wheel .wheel { display: block; width: 100%; height: auto; }
+  .hzl-cta__wheel figcaption {
+    max-width: 46ch;
+    margin: 14px auto 0;
+    color: var(--faint);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+  .hzl-cta__head { grid-area: head; align-self: end; }
+  .hzl-cta__head .h-2 { max-width: 15ch; margin-top: 4px; }
+  .hzl-cta__body { grid-area: body; align-self: start; }
+  .hzl-cta__body .klede { margin-top: 16px; }
+  .hzl-ticks { display: grid; gap: 12px; margin: 24px 0 0; padding: 0; list-style: none; }
+  .hzl-ticks li { display: flex; align-items: center; gap: 12px; color: var(--ink-1); font-size: 1rem; }
+  .hzl-ticks li::before {
+    content: '';
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--hue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6.5 11.3l3 3 6-6.4' fill='none' stroke='%230B0D12' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 22px no-repeat;
+  }
+  .hzl-cta .btn-row { gap: 14px 22px; margin-top: 30px; }
+  .hzl-cta .reassure { line-height: 1.5; }
+  .hzl-cta__saved { margin: 20px 0 0; padding-top: 18px; border-top: 1px solid var(--hair-1); color: var(--muted); font-size: 0.9375rem; }
+  .hzl-cta__saved a { color: var(--ink-1); text-underline-offset: 3px; }
+
+  /* More for the sign */
+  .hzl-more {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(32px, 6vw, 88px);
+  }
+  .hzl-more__list { border-top: 1px solid var(--hair-1); }
+  .hzl-more__list > a {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr) 32px;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--hair-1);
+    color: inherit;
+    text-decoration: none;
+  }
+  .hzl-more__list b { display: block; color: var(--ink-0); font-size: 1.0625rem; font-weight: 600; }
+  .hzl-more__list small { display: block; margin-top: 2px; color: var(--faint); font-size: 0.8125rem; }
+  .hzl-more__list p { margin: 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+  .hzl-go {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border: 1px solid var(--hair-2);
+    border-radius: 50%;
+    color: var(--ink-1);
+    font-size: 14px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .hzl-more__list > a:hover .hzl-go { border-color: var(--hair-3); color: var(--ink-0); }
+  }
+  .hzl-guide { position: relative; display: block; margin-top: 8px; color: inherit; text-decoration: none; }
+  .hzl-guide .hzl-guide__art { aspect-ratio: 4 / 5; border-radius: var(--r-lg); }
+  .hzl-guide .hzl-guide__art > img { transform: scale(1.55); transform-origin: 30% 40%; }
+  .hzl-guide__cap { position: absolute; z-index: 3; left: 24px; right: 24px; bottom: 22px; display: grid; justify-items: start; }
+  .hzl-guide__cap .kicker { color: var(--ink-1); font-size: 1.05rem; }
+  .hzl-guide__cap .h-3 { margin-top: 2px; }
+  .hzl-guide__copy { max-width: 34ch; margin-top: 8px; color: var(--ink-1); font-size: 0.9375rem; line-height: 1.5; }
+  .hzl-guide__cap .textlink { margin-top: 14px; }
+
+  /* Read another sign */
+  .hzl-signs li { display: contents; }
+  .hzl-signs a[aria-current='page'] small { color: var(--sign); }
+
+  .hzl-faq .h-2 { margin: 0; }
+  .hzl-faq > div:first-child p a { color: var(--ink-1); text-underline-offset: 3px; }
+
+  /* ── Narrower screens ─────────────────────────────────────────── */
+  @media (max-width: 1300px) {
+    .hzl-controls { flex-direction: column; align-items: stretch; }
+    .hzl-periods { align-self: flex-start; }
+    .hzl-signrail { flex: initial; margin-left: 0; overflow-x: auto; scrollbar-width: none; }
+    .hzl-signrail::-webkit-scrollbar { display: none; }
+  }
+  @media (max-width: 1020px) {
+    .hzl-reading { grid-template-columns: minmax(0, 1fr); }
+    .hzl-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .hzl-cta { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'head' 'wheel' 'body'; row-gap: 28px; }
+    .hzl-cta__wheel { width: 100%; max-width: 520px; margin-inline: auto; }
+    .hzl-more { grid-template-columns: minmax(0, 1fr); }
+    .hzl-guide { max-width: 480px; }
+  }
+  @media (max-width: 760px) {
+    .hzl-hero { height: 524px; margin: calc(8px - var(--nav-space, 64px)) 8px 0; border-radius: 24px; }
+    .hzl-hero .hzl-hero__art { width: 100%; bottom: auto; height: 70%; }
+    .hzl-hero .hzl-hero__art > img { object-position: 60% 50%; }
+    .hzl-hero::before {
+      background:
+        linear-gradient(0deg, var(--void-1) 0%, var(--void-1) 26%, rgba(10, 12, 17, 0.8) 36%, rgba(10, 12, 17, 0) 54%),
+        linear-gradient(180deg, rgba(10, 12, 17, 0.55) 0%, rgba(10, 12, 17, 0) 24%);
+    }
+    .hzl-crumbs { top: 80px; left: 20px; }
+    .hzl-hero__body { left: 20px; right: 20px; bottom: 26px; }
+    .hzl-hero__title { font-size: 2.75rem; }
+    .hzl-hero__cap { display: none; }
+    .hzl-hero__facts { margin-top: 16px; font-size: 12.5px; gap: 4px 8px; }
+    .hzl-hero__facts > span + span::before { margin-right: 8px; }
+    .hzl-hero__credit { display: none; }
+    .hzl-controls { gap: 12px; margin-top: 14px; padding: 12px 0 10px; }
+    .hzl-periods { align-self: stretch; }
+    .hzl-seg { display: flex; width: 100%; }
+    .hzl-seg > a { flex: 1; justify-content: center; padding-inline: 6px; }
+    .hzl-signrail { gap: 0; margin-right: -20px; padding-right: 20px; }
+    .hzl-signrail__label { display: none; }
+    .hzl-reading { gap: 48px; padding-top: 36px; }
+    .hzl-hide-m { display: none; }
+    .hzl-note__meta { font-size: 0.8125rem; }
+    .hzl-note__title { margin-top: 14px; font-size: 2.15rem; }
+    .hzl-note__body { margin-top: 26px; }
+    .hzl .hzl-note .hzl-note__body .daily-locale__lines p { font-size: 1.2rem; line-height: 1.5; }
+    .hzl .hzl-note__body .daily-locale__lines li + li { margin-top: 18px; padding-top: 18px; }
+    .hzl-note__foot { margin-top: 32px; }
+    .hzl-rail { grid-template-columns: minmax(0, 1fr); }
+    .hzl-cta { padding: 22px 18px 26px; border-radius: 24px; }
+    .hzl-cta .btn-row { flex-direction: column; align-items: stretch; }
+    .hzl-cta .btn { width: 100%; }
+    .hzl-cta .reassure { text-align: center; }
+    .hzl-ticks li { align-items: flex-start; font-size: 0.9375rem; }
+    .hzl-more__list > a { grid-template-columns: minmax(0, 1fr) 32px; gap: 6px 16px; padding: 18px 0; }
+    .hzl-more__list > a > div,
+    .hzl-more__list p { grid-column: 1; }
+    .hzl-more__list p { font-size: 0.9rem; }
+    .hzl-more__list .hzl-go { grid-column: 2; grid-row: 1 / span 2; }
+    .hzl-guide__cap { left: 18px; right: 18px; bottom: 18px; }
+  }
+  @media (max-width: 420px) {
+    /* One line of facts on a phone; the ruler is in the sign guide. */
+    .hzl-hero__facts > .hzl-hero__ruler { display: none; }
+  }
+</style>

@@ -178,8 +178,11 @@ await withPreview({ port: 4417 }, async (baseURL) => {
     await page.close();
 
     // A short page can put the canonical footer in the first viewport before
-    // images finish loading. Its stylesheet must be requested immediately,
-    // rather than exposing raw footer markup until the window load event.
+    // images finish loading. Its stylesheet must be requested as soon as the
+    // loader learns the footer is near (the observer's first report, right
+    // after the first layout), never by the post-load fallback, which fires
+    // 250 ms after the window load event. The footer is held hidden until
+    // then, so no raw footer markup shows either way.
     // Match the canonical asset independently of its rotating cache version.
     const shortPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
     await shortPage.addInitScript(() => {
@@ -217,8 +220,8 @@ await withPreview({ port: 4417 }, async (baseURL) => {
     check(shortFooter.stylesheetRequested, '/es/learn/: near-viewport footer CSS waited for window load');
     check(
       shortFooter.stylesheetObservedAt !== null
-        && (shortFooter.windowLoadAt === null || shortFooter.stylesheetObservedAt <= shortFooter.windowLoadAt),
-      `/es/learn/: footer CSS was observed after window load (${shortFooter.stylesheetObservedAt} > ${shortFooter.windowLoadAt})`,
+        && (shortFooter.windowLoadAt === null || shortFooter.stylesheetObservedAt < shortFooter.windowLoadAt + 250),
+      `/es/learn/: footer CSS waited for the post-load fallback (${shortFooter.stylesheetObservedAt} >= ${shortFooter.windowLoadAt} + 250)`,
     );
     await shortPage.close();
   } finally {

@@ -487,26 +487,34 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         }
         var root = document.documentElement;
         var footer = document.querySelector('.zfooter');
-        var nearViewport = footer && footer.getBoundingClientRect().top <= window.innerHeight + 200;
-        if (!nearViewport) root.removeAttribute('data-footer-styles-pending');
-        if (nearViewport) appendStylesheet();
-        else {
-          if (footer && 'IntersectionObserver' in window) {
-            try {
-              observer = new IntersectionObserver(function (entries) {
-                for (var index = 0; index < entries.length; index += 1) {
-                  if (entries[index].isIntersecting) { appendStylesheet(); return; }
-                }
-              }, { threshold: 0, rootMargin: '0px 0px 200px 0px' });
-              observer.observe(footer);
-            } catch (_) {
-              if (observer) observer.disconnect();
-              observer = null;
-            }
-          }
-          if (document.readyState === 'complete') appendAfterLoad();
+        var placed = false;
+        function place(nearViewport) {
+          if (placed) return;
+          placed = true;
+          if (!nearViewport) root.removeAttribute('data-footer-styles-pending');
+          if (nearViewport) appendStylesheet();
+          else if (document.readyState === 'complete') appendAfterLoad();
           else window.addEventListener('load', appendAfterLoad, { once: true });
         }
+        // Where the footer starts comes from the observer's first report,
+        // right after the first layout. Reading its rect here, while the page
+        // still parses, laid the whole page out ahead of the first paint.
+        if (footer && 'IntersectionObserver' in window) {
+          try {
+            observer = new IntersectionObserver(function (entries) {
+              for (var index = 0; index < entries.length; index += 1) {
+                if (entries[index].isIntersecting) { place(true); appendStylesheet(); return; }
+              }
+              place(false);
+            }, { threshold: 0, rootMargin: '0px 0px 200px 0px' });
+            observer.observe(footer);
+            return;
+          } catch (_) {
+            if (observer) observer.disconnect();
+            observer = null;
+          }
+        }
+        place(Boolean(footer) && footer.getBoundingClientRect().top <= window.innerHeight + 200);
       })();
     </script>
     <noscript><style>@import url('/assets/site-footer.css?v=20261006');</style></noscript>

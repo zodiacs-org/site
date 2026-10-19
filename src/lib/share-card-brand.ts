@@ -1,11 +1,28 @@
-import { BRAND_ICON_PATHS } from "./brand-icons.mjs";
-
-export const SHARE_CARD_BRAND_INK = "#8E96AB";
-export const SHARE_CARD_BRAND_WORDMARK = "Zodiacs.org";
+import { LOCKUP, LOCKUP_WORDS, tiltedRingDots } from "./brand-lockup.mjs";
 
 /**
- * Canonical bottom-right lockup for the site's 1080 x 1350 portrait cards.
- * The 2:1 icon/type ratio and zero gap are the approved birth-chart treatment.
+ * The brand lockup on the site's export images (DESIGN.md, "Brand Lockup"),
+ * owner-chosen 2026-10-19: the tilted twelve-dot ring and ZODIACS · ORG,
+ * drawn as vectors and type, so a card loads no image for it.
+ */
+
+/** The dot's muted ink; ZODIACS is the cards' ink and ORG a step dimmer. */
+export const SHARE_CARD_BRAND_INK = "#8E96AB";
+export const SHARE_CARD_BRAND_NAME_INK = "#EEF1F7";
+export const SHARE_CARD_BRAND_TLD_INK = "#C6CCDA";
+/** The words as the cards draw them. */
+export const SHARE_CARD_BRAND_WORDMARK = `${LOCKUP_WORDS.name} ${LOCKUP_WORDS.dot} ${LOCKUP_WORDS.tld}`;
+/** The lockup's capitals are this share of a layout's `fontSize` (22px on the portrait cards: 20px capitals). */
+export const SHARE_CARD_BRAND_TYPE_SCALE = 10 / 11;
+/** EB Garamond's cap height, so the capitals and the ring centre on `centerY`. */
+const CAP_HEIGHT = 0.65;
+const LOCKUP_SERIF = '"EB Garamond", Georgia, serif';
+
+/**
+ * Canonical bottom-right placement for the site's 1080 x 1350 portrait cards:
+ * the lockup ends at `wordmarkX` and centres on `centerY`. `fontSize` sets
+ * its size (see SHARE_CARD_BRAND_TYPE_SCALE); `iconSize` and `gap` are the
+ * earlier image lockup's numbers, kept because some cards lay out from them.
  */
 export const PORTRAIT_SHARE_CARD_BRAND_LAYOUT = Object.freeze({
   wordmarkX: 1014,
@@ -21,92 +38,130 @@ export interface ShareCardBrandLayout {
   iconSize: number;
   fontSize: number;
   gap?: number;
+  /** The card's own serif; the lockup's Latin capitals always use EB Garamond. */
   serif?: string;
+  /**
+   * A card made for one person passes their sign (ringFront) and the ring
+   * turns to bring it to the front; without one it is the brand's own ring.
+   */
+  front?: string | null;
 }
 
+/** Kept for the cards' call shapes: the lockup no longer draws an image, so this is always null. */
 export type LoadedShareBrandIcon = CanvasImageSource & { close?: () => void };
 
-async function imageElementFromBlob(blob: Blob): Promise<HTMLImageElement | null> {
-  if (typeof Image === "undefined") return null;
-  const url = URL.createObjectURL(blob);
+/** Makes sure the lockup's two faces are ready before a card paints. Never throws. */
+export async function prepareShareBrandLockup(size = 20): Promise<void> {
+  if (typeof document === "undefined" || typeof document.fonts === "undefined") return;
+  await Promise.all([
+    document.fonts.load(`400 ${size}px ${LOCKUP_SERIF}`),
+    document.fonts.load(`500 ${size}px ${LOCKUP_SERIF}`),
+  ]).catch(() => undefined);
+}
+
+/**
+ * Prepares the lockup's faces and resolves null: since the lockup became the
+ * tilted ring and ZODIACS · ORG (2026-10-19) no profile image is fetched.
+ * Kept so the cards that loaded the image keep their shape.
+ */
+export async function loadShareBrandIcon(): Promise<LoadedShareBrandIcon | null> {
+  await prepareShareBrandLockup();
+  return null;
+}
+
+/** Runs one renderer once the lockup's faces are ready (see loadShareBrandIcon). */
+export async function withShareBrandIcon<T>(
+  render: (icon: LoadedShareBrandIcon | null) => T | Promise<T>,
+): Promise<T> {
+  await prepareShareBrandLockup();
+  return render(null);
+}
+
+/** The tilted ring, `width` px wide (its height is 4/7 of it), from its top-left corner, turned to `front` when one is given. */
+export function drawTiltedRing(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  front?: string | null,
+): void {
+  const scale = width / 28;
+  context.save();
   try {
-    return await new Promise<HTMLImageElement>((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error("brand_icon_load_failed"));
-      image.src = url;
-    });
-  } catch {
-    return null;
+    for (const dot of tiltedRingDots(front)) {
+      context.globalAlpha = dot.opacity;
+      context.fillStyle = dot.fill;
+      context.beginPath();
+      context.arc(x + (dot.cx + 2) * scale, y + (dot.cy - 4) * scale, dot.r * scale, 0, Math.PI * 2);
+      context.fill();
+    }
   } finally {
-    URL.revokeObjectURL(url);
+    context.restore();
   }
 }
 
-/** Loads the canonical twelve-sign profile image used by exported charts. */
-export async function loadShareBrandIcon(): Promise<LoadedShareBrandIcon | null> {
-  try {
-    const response = await fetch(BRAND_ICON_PATHS.icon512);
-    if (!response.ok) return null;
-    const blob = await response.blob();
-    if (typeof createImageBitmap === "function") {
-      try {
-        return await createImageBitmap(blob);
-      } catch {
-        // WebKit can expose createImageBitmap without decoding every PNG.
-      }
-    }
-    return await imageElementFromBlob(blob);
-  } catch {
-    return null;
+/** Whether the canvas spaces letters itself (Chromium and Firefox do; older WebKit does not). */
+const spacesLetters = (context: CanvasRenderingContext2D) =>
+  typeof (context as { letterSpacing?: unknown }).letterSpacing === "string";
+
+/** Draws `text` from `x` with `tracking` after each letter: through the canvas's own letter spacing where it has one, letter by letter otherwise. */
+function fillTracked(context: CanvasRenderingContext2D, text: string, x: number, y: number, tracking: number): void {
+  if (spacesLetters(context)) {
+    context.letterSpacing = `${tracking}px`;
+    context.fillText(text, x, y);
+    context.letterSpacing = "0px";
+    return;
+  }
+  let cursor = x;
+  for (const letter of text) {
+    context.fillText(letter, cursor, y);
+    cursor += context.measureText(letter).width + tracking;
   }
 }
 
 /**
- * Gives one renderer a decoded profile image and always releases the bitmap.
- * Keeping acquisition adjacent to the lockup also avoids decoding an image
- * when an earlier part of a card cannot be painted.
+ * Paints the lockup: the tilted ring, then ZODIACS · ORG in EB Garamond
+ * capitals at 0.2em tracking, the dot muted and centred, ORG at 500 a step
+ * dimmer. It ends at `layout.wordmarkX` (the last letter, not its tracking)
+ * and centres on `layout.centerY`, the ring turned to `layout.front` on a
+ * card made for one person. `_icon` is ignored (see loadShareBrandIcon).
  */
-export async function withShareBrandIcon<T>(
-  render: (icon: LoadedShareBrandIcon | null) => T | Promise<T>,
-): Promise<T> {
-  const icon = await loadShareBrandIcon();
-  try {
-    return await render(icon);
-  } finally {
-    icon?.close?.();
-  }
-}
-
-/** Paints the approved profile-image + sentence-case wordmark export lockup. */
 export function drawShareBrandLockup(
   context: CanvasRenderingContext2D,
-  icon: LoadedShareBrandIcon | null,
+  _icon: LoadedShareBrandIcon | null,
   layout: ShareCardBrandLayout,
 ): void {
-  const wordmark = SHARE_CARD_BRAND_WORDMARK;
-  const gap = layout.gap ?? 0;
-  const serif = layout.serif ?? '"EB Garamond", Georgia, serif';
+  const size = layout.fontSize * SHARE_CARD_BRAND_TYPE_SCALE;
+  const tracking = size * LOCKUP.tracking;
+  const dotSpace = size * LOCKUP.dotSpace;
+  const runs = [
+    { text: LOCKUP_WORDS.name, weight: 400, color: SHARE_CARD_BRAND_NAME_INK, before: 0 },
+    { text: LOCKUP_WORDS.dot, weight: 400, color: SHARE_CARD_BRAND_INK, before: dotSpace },
+    { text: LOCKUP_WORDS.tld, weight: 500, color: SHARE_CARD_BRAND_TLD_INK, before: dotSpace },
+  ];
 
   context.save();
   try {
-    context.textBaseline = "middle";
-    context.textAlign = "right";
-    context.fillStyle = SHARE_CARD_BRAND_INK;
-    context.font = `500 ${layout.fontSize}px ${serif}`;
-
-    if (icon) {
-      const iconX = layout.wordmarkX
-        - context.measureText(wordmark).width
-        - gap
-        - layout.iconSize;
-      const iconY = layout.centerY - layout.iconSize / 2;
-      context.imageSmoothingEnabled = true;
-      context.imageSmoothingQuality = "high";
-      context.drawImage(icon, iconX, iconY, layout.iconSize, layout.iconSize);
-    }
-
-    context.fillText(wordmark, layout.wordmarkX, layout.centerY);
+    if (spacesLetters(context)) context.letterSpacing = "0px";
+    context.textAlign = "left";
+    context.textBaseline = "alphabetic";
+    const widths = runs.map((run) => {
+      context.font = `${run.weight} ${size}px ${LOCKUP_SERIF}`;
+      return context.measureText(run.text).width + tracking * [...run.text].length;
+    });
+    const wordsWidth = runs.reduce((sum, run, index) => sum + run.before + widths[index], 0) - tracking;
+    const ringWidth = size * LOCKUP.ringWidth;
+    const ringHeight = (ringWidth * 4) / 7;
+    let x = layout.wordmarkX - wordsWidth;
+    drawTiltedRing(context, x - size * LOCKUP.gap - ringWidth, layout.centerY - ringHeight / 2, ringWidth, layout.front);
+    const baseline = layout.centerY + (size * CAP_HEIGHT) / 2;
+    runs.forEach((run, index) => {
+      x += run.before;
+      context.font = `${run.weight} ${size}px ${LOCKUP_SERIF}`;
+      context.fillStyle = run.color;
+      fillTracked(context, run.text, x, baseline, tracking);
+      x += widths[index];
+    });
   } finally {
     context.restore();
   }

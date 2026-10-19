@@ -70,33 +70,36 @@
   white-space: nowrap;
 }
 
+/* The brand lockup (DESIGN.md, "Brand Lockup") at the footer's 16px: the
+   tilted ring, then ZODIACS · ORG in EB Garamond capitals at 0.2em tracking,
+   the dot muted and centred, ORG a step dimmer. */
 .zfooter__brand-mark {
   display: block;
   align-self: center;
   flex: 0 0 auto;
-  width: 26px;
-  height: 26px;
-  margin-inline-end: 11px;
+  width: 42px;
+  height: 24px;
+  margin-inline-end: 12px;
+  overflow: visible;
 }
 
 .zfooter__brand-name {
-  font-family: var(--zf-serif);
-  font-size: 26px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-family: 'EB Garamond', var(--zf-serif);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   line-height: 1;
-  /* Centre the visible Garamond lettering, rather than its ascender box. */
-  transform: translateY(0.08em);
+}
+
+.zfooter__brand-sep {
+  margin: 0 0.2em;
+  color: var(--zf-muted);
 }
 
 .zfooter__brand-tld {
-  margin-inline-start: 6px;
-  color: var(--zf-faint);
-  font-family: var(--zf-mono);
-  font-size: 10px;
-  letter-spacing: 0.11em;
-  line-height: 1;
-  transform: translateY(0.45em);
+  color: var(--zf-text-2);
+  font-weight: 500;
 }
 
 .zfooter__tag {
@@ -375,7 +378,6 @@
     padding-left: max(16px, env(safe-area-inset-left));
     padding-right: max(16px, env(safe-area-inset-right));
   }
-  .zfooter__brand-name { font-size: 24px; }
   .zfooter__locales { column-gap: 12px; }
   .zfooter__colophon { column-gap: 14px; }
 }

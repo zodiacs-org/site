@@ -107,7 +107,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
   const natalSign = result ? signForLongitude(result.natalLon) : null;
 
   return (
-    <div class="calc">
+    <div class="calc" data-saturn-return-calculator>
       <form class="calc__form shell" onSubmit={compute} aria-busy={busy}>
         <div class="core calc__core">
           <div class="calc__fields">

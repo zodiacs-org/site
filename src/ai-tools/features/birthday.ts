@@ -82,10 +82,10 @@ export const birthdayData = z.object({
   signFrom: z.enum(['date', 'birth-year', 'birth-time']).nullable(),
   boundary: z.object({ nearestDegrees: z.number(), text: z.string() }).nullable(),
   cusp: z.object({
-    signs: z.tuple([z.string(), z.string()]),
+    signs: z.array(z.string()).length(2),
     wholeDayYears: z.object({ first: z.number(), second: z.number() }),
     splitYears: z.number(),
-    ingressUtcRange: z.tuple([z.string(), z.string()]).nullable(),
+    ingressUtcRange: z.array(z.string()).length(2).nullable(),
     summary: z.string(),
     reading: z.union([
       z.object({ year: z.number(), kind: z.literal('whole'), sign: z.string(), text: z.string() }),

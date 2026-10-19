@@ -35,7 +35,8 @@
   background: linear-gradient(180deg, rgba(10, 12, 17, 0.42) 0%, rgba(10, 12, 17, 0) 16%, rgba(10, 12, 17, 0) 50%, rgba(10, 12, 17, 0.72) 80%, var(--void-1) 100%);
 }
 .ph-hero .ph-pane { border-radius: 0; height: 100%; }
-.ph-hero .ph-pane > img { filter: saturate(0.94) brightness(0.93); }
+.ph-hero .ph-pane > img,
+.ph-hero .ph-pane > picture > img { filter: saturate(0.94) brightness(0.93); }
 .ph-hero .ph-pane::after {
   background: radial-gradient(ellipse 50% 56% at var(--spot, 50% 52%), transparent 0 34%, rgba(6, 7, 9, 0.38) 70%, rgba(6, 7, 9, 0.8) 100%);
 }
@@ -425,6 +426,9 @@
 .ph-sel summary svg { width: 9px; height: 6px; opacity: 0.7; margin-left: 4px; transition: transform var(--dur-1) var(--ease); }
 .ph-sel[open] summary { border-color: var(--hair-3); }
 .ph-sel[open] summary svg { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  .ph-sel summary svg { transition: none; }
+}
 .ph-sel__menu {
   position: absolute;
   z-index: 20;

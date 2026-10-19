@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { BUDGETS, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS } from '../lib/compute-api/constants';
+import { COMPUTE_SCHEMAS } from '../lib/compute-api/openapi';
 import { OCCASION_KINDS } from '../lib/occasions/kinds';
 import { BEST_DAYS_MAX_WINDOW } from '../lib/occasions/best-dates';
 import { compatibilityInput, compatibilityResult } from './features/compatibility';
@@ -116,11 +117,45 @@ export const INPUT_SCHEMAS = {
 };
 
 const link = z.object({ title: z.string(), url: z.url() });
-const jsonObject = z.record(z.string(), z.unknown());
-const calculation = z.object({ schema: z.string(), result: jsonObject, receipt: jsonObject, backend: jsonObject, cite: z.object({ url: z.url(), receipt: z.string(), engine: z.string(), version: z.string() }) });
+
+/** A compute API schema with its references to other components written out, so it stands alone in a tool's schema. */
+function inlined(schema: unknown): unknown {
+  if (Array.isArray(schema)) return schema.map(inlined);
+  if (!schema || typeof schema !== 'object') return schema;
+  const node = schema as Record<string, unknown>;
+  if (typeof node.$ref === 'string') {
+    const component = COMPUTE_SCHEMAS[node.$ref.replace('#/components/schemas/', '')];
+    if (!component) throw new Error(`No compute API component for ${node.$ref}`);
+    return inlined(component);
+  }
+  return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, inlined(value)]));
+}
+
+/**
+ * A value the compute API returns, carried in a result as the API returns it. Its schema is the one the API
+ * documents for it (components.schemas in /api/v1/openapi.json), so every part of it states its type; at run time
+ * it is still checked only as an object, as before, so the server never refuses its own calculation over a field
+ * the API documents loosely.
+ */
+function computeValue(component: string): z.ZodType<Record<string, unknown>> {
+  if (!COMPUTE_SCHEMAS[component]) throw new Error(`No compute API component ${component}`);
+  return z.unknown()
+    .refine((value) => typeof value === 'object' && value !== null && !Array.isArray(value), { message: `Expected the compute API's ${component}` })
+    .meta(inlined(COMPUTE_SCHEMAS[component]) as Record<string, unknown>) as z.ZodType<Record<string, unknown>>;
+}
+const calculationOf = <R extends z.ZodType>(result: R) => z.object({
+  schema: z.string(), result, receipt: computeValue('ComputeReceipt'), backend: computeValue('Backend'),
+  cite: z.object({ url: z.url(), receipt: z.string(), engine: z.string(), version: z.string() }),
+});
+/** The engine's conventions and coverage statements, as its receipts write them: a name for each, and its value. */
+const statements = z.record(z.string(), z.string());
+const limits = z.object({
+  from: z.string(), to: z.string(), eventWindowDays: z.number().int(), eventKinds: z.array(z.enum(EVENT_KINDS)),
+  samples: z.number().int(), factSamples: z.number().int(),
+});
 const localTime = z.object({ utc: z.string(), zone: z.string(), display: z.string() });
 const body = z.object({ body: z.string(), lon: z.number(), lat: z.number(), speed: z.number(), retrograde: z.boolean(), sign: z.string(), degree: z.number() });
-const positionResult = z.object({ instants: z.array(z.object({ instant: z.string(), bodies: z.array(body), deltaT: jsonObject, timeScale: jsonObject, flags: z.array(z.string()) })) });
+const positionResult = z.object({ instants: z.array(z.object({ instant: z.string(), bodies: z.array(body), deltaT: computeValue('DeltaT'), timeScale: computeValue('TimeScale'), flags: z.array(z.string()) })) });
 const event = z.object({ kind: z.enum(EVENT_KINDS), at: z.string(), localAt: z.string(), body: z.string().optional(), sign: z.string(), type: z.string().optional(), retrograde: z.boolean().optional(), lon: z.number().optional(), degree: z.number().optional() });
 const personal = z.object({ timeKnown: z.boolean(), items: z.array(z.object({ title: z.string(), line: z.string(), when: z.string() })), note: z.string() });
 const horoscope = z.object({
@@ -188,10 +223,10 @@ export const OCCASION_NOTE = occasionNote;
 
 const dataSchemas = {
   open_chart_studio: z.object({ title: z.literal('Chart Studio'), calculation: z.literal('browser-local'), initialChart: z.literal('birth-details'), sharing: z.literal('user-reviewed-selection-only') }),
-  get_capabilities: z.object({ name: z.literal('Zodiacs'), version: z.string(), engine: jsonObject, tools: z.array(z.enum(ALL_AI_TOOL_NAMES)), limits: jsonObject, conventions: jsonObject, coverage: jsonObject, privacy: z.string(), limitations: z.array(z.string()) }),
-  get_sky: z.object({ mode: z.enum(['current-instant', 'requested-instant']), time: localTime, calculation: calculation.extend({ result: positionResult }), moonPhase: z.object({ name: z.string(), angle: z.number(), illumination: z.number() }), interpretation: z.literal('Astronomical calculations; no personal prediction is supplied.') }),
-  get_upcoming_events: z.object({ from: z.string(), to: z.string(), zone: z.string(), events: z.array(event), calculation, completeness: z.literal('tested-not-proven') }),
-  check_sky_fact: z.object({ answer: z.enum(['true', 'false', 'depends']), calculation, interpretation: z.literal('The verdict checks an astronomical proposition, not an astrological prediction.') }),
+  get_capabilities: z.object({ name: z.literal('Zodiacs'), version: z.string(), engine: computeValue('Backend'), tools: z.array(z.enum(ALL_AI_TOOL_NAMES)), limits, conventions: statements, coverage: statements, privacy: z.string(), limitations: z.array(z.string()) }),
+  get_sky: z.object({ mode: z.enum(['current-instant', 'requested-instant']), time: localTime, calculation: calculationOf(positionResult), moonPhase: z.object({ name: z.string(), angle: z.number(), illumination: z.number() }), interpretation: z.literal('Astronomical calculations; no personal prediction is supplied.') }),
+  get_upcoming_events: z.object({ from: z.string(), to: z.string(), zone: z.string(), events: z.array(event), calculation: calculationOf(computeValue('EventsResult')), completeness: z.literal('tested-not-proven') }),
+  check_sky_fact: z.object({ answer: z.enum(['true', 'false', 'depends']), calculation: calculationOf(computeValue('SkyFactResult')), interpretation: z.literal('The verdict checks an astronomical proposition, not an astrological prediction.') }),
   get_horoscope: horoscope,
   get_occasion_sky: occasionSky,
   get_life_milestones: lifeMilestones,

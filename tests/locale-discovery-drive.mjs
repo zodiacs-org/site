@@ -126,39 +126,24 @@ export async function driveLocaleDiscovery({ browser, baseURL, check, outDir }) 
     await target.screenshot({ path: `${directory}/${name}.png`, animations: 'disabled', ...options });
     report.screenshots.push(`${name}.png`);
   };
-  const selectedSignShots = async (page, name) => {
+  const todayGridShots = async (page, name) => {
     if (!directory) return;
     await waitForFooter(page, name);
-    await page.waitForFunction(() => [...document.querySelectorAll('.tbs img')]
+    await page.waitForFunction(() => [...document.querySelectorAll('.home-today__grid img')]
       .every((image) => image.complete && image.naturalWidth > 0), undefined, { timeout: TIMEOUT });
     await page.evaluate(() => document.fonts.ready);
-    const fits = await page.locator('.tbs').evaluate((node) => {
+    await page.evaluate(async () => {
+      const node = document.querySelector('.home-today');
+      if (!node) throw new Error('missing capture region .home-today');
       const navBottom = document.querySelector('.nav-wrap')?.getBoundingClientRect().bottom ?? 0;
-      return node.getBoundingClientRect().height <= innerHeight - Math.max(0, navBottom) - 32;
+      scrollTo({ top: scrollY + node.getBoundingClientRect().top - Math.max(0, navBottom) - 16, behavior: 'instant' });
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     });
-    const views = fits
-      ? [{ name, anchor: '.tbs', regions: ['.tbs__head', '.tbs__signs', '.tbs__read'] }]
-      : [
-        { name: `${name}-overview`, anchor: '.tbs', regions: ['.tbs__head', '.tbs__signs'] },
-        { name: `${name}-reading`, anchor: '.tbs__read', regions: ['.tbs__read'] },
-      ];
-    for (const view of views) {
-      await page.evaluate(async (selector) => {
-        const node = document.querySelector(selector);
-        if (!node) throw new Error(`missing capture region ${selector}`);
-        const navBottom = document.querySelector('.nav-wrap')?.getBoundingClientRect().bottom ?? 0;
-        scrollTo({ top: scrollY + node.getBoundingClientRect().top - Math.max(0, navBottom) - 16, behavior: 'instant' });
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      }, view.anchor);
-      const state = await page.evaluate(observeViewportRegions, view.regions);
-      const failures = viewportRegionFailures(state);
-      record(`${view.name} important regions clear of navigation and viewport edges`, failures.length === 0, JSON.stringify(state));
-      assert.deepEqual(failures, [], `${view.name}: ${failures.join('; ')}`);
-      // A real viewport preserves the fixed navigation and its relationship
-      // to the reading. A locator crop may silently scroll a tall component
-      // behind that navigation, so it cannot prove this state is readable.
-      await shot(page, view.name);
-    }
+    const state = await page.evaluate(observeViewportRegions, ['.home-today .section-head', '.home-today__grid']);
+    const failures = viewportRegionFailures(state);
+    record(`${name} important regions clear of navigation and viewport edges`, failures.length === 0, JSON.stringify(state));
+    assert.deepEqual(failures, [], `${name}: ${failures.join('; ')}`);
+    await shot(page, name);
   };
 
   for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000 }]) {
@@ -331,12 +316,14 @@ export async function driveLocaleDiscovery({ browser, baseURL, check, outDir }) 
             if (locale.code !== 'en') {
               const date = new Intl.DateTimeFormat(locale.intl, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
                 .format(new Date(`${daily.date}T12:00:00Z`));
-              const heading = await page.locator(`[data-edition-content] .dateline`).first().textContent();
+              // The hub keeps its dateline; Today and the sign pages carry the
+              // full date in the hero kicker, as the English pages do.
+              const heading = await page.locator(`[data-edition-content] :is(.dateline, .tdl-hero__kicker, .hzl-hero__kicker)`).first().textContent();
               record(`${locale.code} ${slug} edition date@${viewport.width}`, heading.includes(date), heading.trim());
               if (slug !== 'today') {
                 const dates = slug === 'horoscopes'
-                  ? page.locator(`.horo-${locale.code}__card[href="${locale.prefix}/horoscopes/capricorn/"] .horo-${locale.code}__dates`)
-                  : page.locator(`.sign-${locale.code}__stamp`);
+                  ? page.locator(`.hhl-card[href="${locale.prefix}/horoscopes/capricorn/"] .hhl-card__dates`)
+                  : page.locator('.hzl-hero__facts');
                 const text = await dates.textContent();
                 record(`${locale.code} ${slug} localized sign dates@${viewport.width}`, text.includes(locale.dates), text.trim());
               }
@@ -414,31 +401,26 @@ export async function driveLocaleDiscovery({ browser, baseURL, check, outDir }) 
           await open(`/${code}/`);
           const cue = ENGLISH_CUES[code];
           if (cue) {
-            const forecast = page.locator('.hero-es__ghost[href="/horoscopes/"]');
+            const forecast = page.locator('.lhero__ghost[href="/horoscopes/"]');
             record(`${code} hero English forecast cue@${viewport.width}`, (await forecast.textContent()).includes(cue.text)
               && await forecast.getAttribute('hreflang') === 'en' && await forecast.getAttribute('title') === cue.title);
             await shot(page, `${code}-home-forecast-${viewport.width}`);
           }
-          const firstSign = page.locator('.tbs__sign').first();
+          // The sky today, by sign: twelve plain links, each to the edition
+          // the locale has, the English one announced as English.
+          const firstSign = page.locator('.home-today__grid a').first();
           await firstSign.scrollIntoViewIfNeeded();
-          await page.waitForFunction(() => {
-            const island = document.querySelector('.tbs')?.closest('astro-island');
-            return island && !island.hasAttribute('ssr');
-          });
-          await firstSign.click();
-          const link = page.locator('.tbs__more');
-          await link.waitFor({ state: 'visible' });
           const expected = cue ? '/horoscopes/aries/' : `/${code}/horoscopes/aries/`;
-          record(`${code} selected sign has honest destination@${viewport.width}`, await link.getAttribute('href') === expected
-            && (cue ? (await link.textContent()).includes(cue.text) && await link.getAttribute('hreflang') === 'en'
-              && await link.getAttribute('title') === cue.title : await link.getAttribute('hreflang') === null));
-          await selectedSignShots(page, `${code}-home-selected-sign-${viewport.width}`);
-          await follow(link, expected);
-          record(`${code} selected sign opens the available edition@${viewport.width}`,
+          record(`${code} sign tile has honest destination@${viewport.width}`, await firstSign.getAttribute('href') === expected
+            && (cue ? (await firstSign.getAttribute('aria-label')).includes(cue.title) && await firstSign.getAttribute('hreflang') === 'en'
+              : await firstSign.getAttribute('hreflang') === null));
+          await todayGridShots(page, `${code}-home-today-by-sign-${viewport.width}`);
+          await follow(firstSign, expected);
+          record(`${code} sign tile opens the available edition@${viewport.width}`,
             await page.locator('html').getAttribute('lang') === (cue ? 'en' : code === 'pt' ? 'pt-BR' : code));
           if (cue) {
             await open(`/${code}/`);
-            await follow(page.locator('.hero-es__ghost[href="/horoscopes/"]'), '/horoscopes/');
+            await follow(page.locator('.lhero__ghost[href="/horoscopes/"]'), '/horoscopes/');
             record(`${code} hero opens the English forecast hub@${viewport.width}`, await page.locator('html').getAttribute('lang') === 'en');
           }
         });

@@ -1,3 +1,60 @@
+The hosted MCP tools reviewed in production, 2026-10-18 (Asia/Bangkok): P3.6
+stays partial.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.6, partial.** #777 merged as `b8b3b54c`. zodiacs.org serves it from
+  `dpl_GTcEdh5MKK1fBMTCY5AEnnwKqHYz`, built from the merge.
+  - The Inspector's `--strict` check (2.10.1) exits 0 there, with no error and
+    no untyped part; before the deploy it exited 6.
+  - All 13 tools answer within the output schemas they advertise.
+  - None of the MCP conformance suite's 32 server scenarios fails. The
+    review ran from this machine and from the workflow on main (run
+    39079719569) ([the record](../evidence/hosted-mcp-review-20261018/README.md)).
+- **Main's Site Check** passed on #777's merge (run 39079314240).
+- **What keeps P3.6 open.** The registry entry, which needs the owner's
+  approval to publish and a verified `org.zodiacs` namespace.
+
+The hosted MCP tools typed and reviewed, 2026-10-18 (Asia/Bangkok): P3.6
+stays partial.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **P3.6, partial.** The Inspector's `--strict` check (2.10.1) found 14
+  untyped parts, 3 errors and 15 nullable-type warnings in the 13 tools
+  production offers. The owner asked for the fix before the 0.5.0
+  resubmission.
+  - The compute API's values now carry the schemas the API documents for
+    them. The capabilities' limits, conventions and coverage have exact
+    types, and the pairs are two-item arrays.
+  - Served locally, the change passes `--strict` with no error and no untyped
+    part. Every tool answers within its advertised output schema.
+  - None of the conformance suite's 32 server scenarios fails
+    ([the record](../evidence/hosted-mcp-review-20261018/README.md)).
+- **What keeps P3.6 open.** The same review of production after the deploy,
+  and the registry entry, which needs the owner's approval to publish.
+
+WebMCP tools on every calculator page in production, 2026-10-17
+(Asia/Bangkok): A2 accepted.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **A2, accepted.** Each of the sixteen calculator pages, and each page that
+  embeds one (the rising signs' profiles, the compatibility pairs and the Life
+  Path pages), registers the calculator's WebMCP tool when the browser or an
+  extension provides `modelContext`, in every locale it is built in: 543
+  pages, each found from every address the host serves as the page. English
+  pages keep `zodiacs.search`. The calculations load only on a call and run
+  in the browser with the page's own code. #772 merged as `069ef13e`, and
+  zodiacs.org serves it from `dpl_64gyTAnwkNLdFsEUnD9s3WoVkmNB`, built from
+  the merge. There the WebMCP drive passes on all 543 pages and seven other
+  addresses of them; before the merge it stopped at once
+  ([the record](../evidence/webmcp-calculators-20261015/README.md)).
+- **Main's Site Check** passed on #772's merge (run 39035340598).
+
 WebMCP tools on every calculator page, 2026-10-17 (Asia/Bangkok): A2 stays
 partial until production.
 

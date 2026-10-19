@@ -3,6 +3,7 @@ import '../../styles/living-chart.css';
 import { useLivingChart } from '../../lib/hooks/useLivingChart';
 import type { LivingMomentCategory, LivingMomentV1 } from '../../lib/living-chart/types';
 import { trackAnalytics } from '../../lib/analytics';
+import PanelArt from '../../components/PanelArt';
 
 const CATEGORY_LABELS: Record<LivingMomentCategory, string> = {
   work: 'Work',
@@ -223,6 +224,7 @@ export default function LivingChartTimeline({
           </p>
         ) : moments.length === 0 ? (
           <div class="living-chart__empty-state">
+            <PanelArt name="birthday-sundial" class="pf-art--sundial" />
             <p class="living-chart__empty">
               No moments saved yet. Your first moment begins with a personal forecast in Today, no account setup needed.
               Markdown and JSON export appear here once a moment is saved.

@@ -1,0 +1,867 @@
+---
+/**
+ * The localized birth chart page body (es, pt, fr, it, ru). The English page,
+ * src/pages/birth-chart/index.astro, is the reference layout: the form with a
+ * computed sample beside it, the sample laid out like a result, the no-time
+ * answer, privacy, what to do next, questions, and one closing invitation.
+ *
+ * Each locale page keeps its title, description, structured data and FAQ
+ * (the reviewed answers, which its JSON-LD restates) and inlines the route
+ * stylesheet, LocalizedBirthChart.css, in its head. Sample values come from
+ * src/lib/sample-chart, computed at build time; the wording is COPY below,
+ * with the shared catalog (t), sign, planet and aspect names reused where the
+ * calculator already has them.
+ */
+import ArtFrame from '../ArtFrame.astro';
+import AskGuideLine from '../AskGuideLine.astro';
+import EmailCapture from '../EmailCapture.astro';
+import PlanetGlyph from '../PlanetGlyph';
+import ToolIcon from '../ToolIcon.astro';
+import LocalizedSignTitles from './LocalizedSignTitles.astro';
+import ChartCalculator from '../../islands/ChartCalculator';
+import SkyTicker from '../../islands/SkyTicker';
+import Wheel from '../../lib/wheel/Wheel';
+import { ART, artSrc, artSrcset } from '../../lib/art';
+import { englishOnlyCue, localizePath, t } from '../../lib/i18n';
+import { aspectLabel, planetLabel } from '../../lib/i18n/astrology';
+import { formatDate, formatTime, intlLocale } from '../../lib/i18n/dates';
+import { signName, signPrepositional } from '../../lib/signs';
+import { ALL_TOOLS_LABEL, NAV_MORE } from '../../lib/nav-tools';
+import {
+  SAMPLE_ASPECTS,
+  SAMPLE_BIRTH,
+  SAMPLE_HOURS_AFTER_FULL_MOON,
+  SAMPLE_MOON_ALL_DAY,
+  SAMPLE_PLACEMENTS,
+  SAMPLE_RISING,
+  SAMPLE_WHEEL,
+  type SamplePlacement,
+} from '../../lib/sample-chart';
+import '../../styles/calculator.css';
+import '../../styles/explorer.css';
+
+export type BirthChartLocale = 'es' | 'pt' | 'fr' | 'it' | 'ru';
+
+interface FaqItem { q: string; a: string; id?: string }
+
+interface Props {
+  locale: BirthChartLocale;
+  /** The locale's reviewed answers; the page's FAQPage JSON-LD uses the same list. */
+  faq: FaqItem[];
+}
+
+type Pair = readonly [string, string];
+
+interface Copy {
+  crumbs: string;
+  heading: string;
+  lede: string;
+  noscript: string;
+  /** AskGuideLine's lead; Russian pages carry no Guide line. */
+  guideLead?: string;
+  sample: string;
+  sampleWheel: string;
+  place: string;
+  north: string;
+  west: string;
+  /** "AC" in the positions table, as the locale abbreviates the rising sign. */
+  asc: string;
+  proofLead: string;
+  fullMoon: (hours: number) => string;
+  whatKicker: string;
+  whatTitle: string;
+  whatLede: string;
+  sunRole: string;
+  moonRole: string;
+  risingRole: string;
+  sunText: (house: number) => string;
+  moonText: (sign: string, house: number) => string;
+  risingText: (sign: string) => string;
+  signLink: (sign: string) => string;
+  anatomyWheel: string;
+  positions: string;
+  degree: string;
+  retrograde: string;
+  more: (count: number) => string;
+  notes: readonly [Pair, Pair, Pair, Pair];
+  readLink: string;
+  depthLink: string;
+  compare: string;
+  withTime: string;
+  withoutTime: string;
+  timeUnknown: string;
+  moonAllDay: (sign: string) => string;
+  moonTwo: string;
+  ntTitle: string;
+  ntLede: string;
+  known: Pair;
+  rough: Pair;
+  unknownText: string;
+  whereLabel: string;
+  whereText: string;
+  trustTitle: string;
+  trustLede: string;
+  trust: readonly [Pair, Pair, Pair];
+  nextTitle: string;
+  nextLede: string;
+  todaySky: string;
+  save: Pair;
+  transitsText: string;
+  compatText: string;
+  bigThreeText: string;
+  faqHeading: string;
+  faqLede: string;
+  glossary: string;
+  closeTitle: string;
+  closeText: string;
+  someoneElse: string;
+}
+
+const ES_HOURS = ['', 'una', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once'];
+const PT_HOURS = ['', 'uma', 'duas', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze'];
+const FR_HOURS = ['', 'une', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix', 'onze'];
+const IT_HOURS = ['', 'un', 'due', 'tre', 'quattro', 'cinque', 'sei', 'sette', 'otto', 'nove', 'dieci', 'undici'];
+const RU_HOURS = ['', 'час', 'два часа', 'три часа', 'четыре часа', 'пять часов', 'шесть часов', 'семь часов', 'восемь часов', 'девять часов', 'десять часов', 'одиннадцать часов'];
+
+const COPY: Record<BirthChartLocale, Copy> = {
+  es: {
+    crumbs: 'Ruta de navegación',
+    heading: 'Obtén tu carta natal gratis.',
+    lede: 'Ingresa tu fecha, hora y lugar de nacimiento para ver tu Sol, Luna, ascendente, planetas, casas y lo que significan.',
+    noscript: 'Esta calculadora de carta natal necesita JavaScript. Activa JavaScript y recarga la página para calcular tu Sol, Luna, ascendente, planetas y casas en tu navegador.',
+    guideLead: '¿Preguntas sobre una posición de tu carta?',
+    sample: 'Resultado de ejemplo',
+    sampleWheel: 'Rueda de la carta natal de ejemplo',
+    place: 'Chicago',
+    north: 'N',
+    west: 'O',
+    asc: 'AC',
+    proofLead: 'Un cálculo real, no una ilustración.',
+    fullMoon: (h) => `Esta persona nació ${h === 1 ? 'cerca de una hora' : `unas ${ES_HOURS[h]} horas`} después de una luna llena, por eso el Sol y la Luna quedan casi exactamente opuestos en la rueda.`,
+    whatKicker: 'Lo que obtienes',
+    whatTitle: 'Tu carta, explicada mientras la lees',
+    whatLede: 'Es la carta de ejemplo de arriba, ordenada como la muestra tu página de resultados: primero tus tres grandes, luego la rueda y cada posición exacta.',
+    sunRole: 'identidad',
+    moonRole: 'vida emocional',
+    risingRole: 'primera impresión',
+    sunText: (house) => `La justicia, la colaboración y el sentido del equilibrio están en el centro de esta persona. Con el Sol en la casa ${house}, eso suele notarse sobre todo en el trabajo y en la vida pública.`,
+    moonText: (sign, house) => `Los sentimientos suelen llegar rápido y con franqueza. Una pregunta útil para una Luna en ${sign} en la casa ${house}: ¿dónde hay espacio en el hogar para hablar claro?`,
+    risingText: (sign) => `Quien conoce a alguien con ascendente en ${sign} suele ver primero a una persona firme, capaz y algo reservada, y después nota la calidez de fondo. El ascendente también marca dónde empiezan las casas.`,
+    signLink: (sign) => `Más sobre ${sign}`,
+    anatomyWheel: 'Rueda de la carta natal de ejemplo, con sus cuatro partes numeradas',
+    positions: 'Posiciones exactas',
+    degree: 'Grado',
+    retrograde: 'retrógrado',
+    more: (n) => `${n} más`,
+    notes: [
+      ['Los signos', 'Los doce signos forman el anillo exterior. Cada planeta está en uno de ellos.'],
+      ['Las casas', 'Doce áreas de la vida, contadas desde tu ascendente. Con casas de signos completos, cada signo es una casa.'],
+      ['Los planetas', 'Cada uno en su grado exacto. El Sol, la Luna y el ascendente cuentan la mayor parte de la historia.'],
+      ['Los aspectos', 'Líneas entre planetas que se leen como conversaciones: los trígonos fluyen, las cuadraturas empujan y las oposiciones negocian.'],
+    ],
+    readLink: 'Cómo leer una carta natal',
+    depthLink: 'La carta natal en tres dimensiones',
+    compare: 'La carta de ejemplo con y sin hora de nacimiento',
+    withTime: 'Con hora',
+    withoutTime: 'Sin hora',
+    timeUnknown: 'hora desconocida',
+    moonAllDay: (sign) => `${sign}, todo el día`,
+    moonTwo: 'Dos signos posibles',
+    ntTitle: '¿No sabes tu hora de nacimiento? Aun así obtienes tu carta.',
+    ntLede: 'Mucha gente no la sabe. Esto es exactamente lo que cambia, para que nada en tu carta sea una suposición.',
+    known: ['La sé', 'La carta completa: ascendente, las doce casas y la Luna en su grado exacto.'],
+    rough: ['La sé más o menos', 'Ingresa tu mejor estimación. Los planetas apenas se mueven en una hora; el ascendente cambia más o menos cada dos horas, así que es lo primero que puede variar.'],
+    unknownText: 'Obtienes tu Sol, tus planetas y tus aspectos con una referencia al mediodía. Omitimos el ascendente y las casas, y si la Luna cambió de signo ese día, te mostramos las dos opciones.',
+    whereLabel: 'Dónde buscarla:',
+    whereText: 'el certificado de nacimiento, el libro del bebé, un registro del hospital o tu familia. Puedes agregar la hora más tarde y volver a calcular tu carta.',
+    trustTitle: 'Privacidad desde el diseño.',
+    trustLede: 'Sin cuenta, sin registro y sin un servicio de cartas en nuestros servidores.',
+    trust: [
+      ['Se calcula en tu navegador', 'Toda la carta se calcula en tu dispositivo. No hay un servicio de cartas en el servidor al que enviar tus datos.'],
+      ['Se guarda en este dispositivo', 'Si guardas una carta, se queda aquí. La sincronización con una cuenta es una elección aparte y solo ocurre después de que inicias sesión.'],
+      ['Se compara con el cielo', 'Las posiciones se comparan con datos de referencia de NASA JPL, con zonas horarias históricas y datos de lugares de GeoNames. Cada resultado indica los datos exactos con los que se calculó.'],
+    ],
+    nextTitle: 'Después de tu carta',
+    nextLede: 'Guárdala, compárala y mira cómo la toca el cielo de hoy.',
+    todaySky: 'El cielo de hoy',
+    save: ['Guarda tu carta', 'Guárdala en este dispositivo y vuelve a ella cuando quieras.'],
+    transitsText: 'El cielo de hoy comparado con tu carta.',
+    compatText: 'Compara dos cartas y mira dónde conectan, chocan y crecen.',
+    bigThreeText: 'Tu Sol, Luna y ascendente en una tarjeta lista para compartir.',
+    faqHeading: 'Preguntas sobre la carta natal',
+    faqLede: '¿Te quedan dudas?',
+    glossary: 'Consulta el glosario',
+    closeTitle: 'Tu carta tarda unos veinte segundos.',
+    closeText: 'Fecha, hora y lugar de nacimiento. Privada en tu navegador.',
+    someoneElse: 'Haz la carta de otra persona',
+  },
+  pt: {
+    crumbs: 'Trilha de navegação',
+    heading: 'Calcule seu mapa astral grátis.',
+    lede: 'Informe sua data, hora e local de nascimento para ver seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o que tudo isso significa.',
+    noscript: 'Esta calculadora de mapa astral precisa de JavaScript. Ative-o e recarregue a página para calcular seu Sol, sua Lua, seu ascendente, seus planetas e suas casas no navegador.',
+    guideLead: 'Perguntas sobre uma posição do seu mapa?',
+    sample: 'Resultado de exemplo',
+    sampleWheel: 'Roda do mapa astral de exemplo',
+    place: 'Chicago',
+    north: 'N',
+    west: 'O',
+    asc: 'AC',
+    proofLead: 'Um cálculo real, não uma ilustração.',
+    fullMoon: (h) => `Esta pessoa nasceu cerca de ${h === 1 ? 'uma hora' : `${PT_HOURS[h]} horas`} depois de uma lua cheia, por isso o Sol e a Lua ficam quase exatamente opostos na roda.`,
+    whatKicker: 'O que você recebe',
+    whatTitle: 'Seu mapa, explicado enquanto você lê',
+    whatLede: 'Este é o mapa de exemplo acima, organizado como a sua página de resultado mostra: primeiro seus três signos principais, depois a roda e cada posição exata.',
+    sunRole: 'identidade',
+    moonRole: 'vida emocional',
+    risingRole: 'primeira impressão',
+    sunText: (house) => `Justiça, parceria e senso de equilíbrio estão no centro desta pessoa. Com o Sol na casa ${house}, isso costuma aparecer mais no trabalho e na vida pública.`,
+    moonText: (sign, house) => `Os sentimentos costumam chegar rápido e com sinceridade. Uma pergunta útil para uma Lua em ${sign} na casa ${house}: na vida doméstica, onde há espaço para falar sem rodeios?`,
+    risingText: (sign) => `Quem conhece alguém com ascendente em ${sign} costuma ver primeiro uma pessoa firme, capaz e um pouco reservada, e só depois percebe o calor por baixo. O ascendente também define onde as casas começam.`,
+    signLink: (sign) => `Mais sobre ${sign}`,
+    anatomyWheel: 'Roda do mapa astral de exemplo, com as quatro partes numeradas',
+    positions: 'Posições exatas',
+    degree: 'Grau',
+    retrograde: 'retrógrado',
+    more: (n) => `mais ${n}`,
+    notes: [
+      ['Os signos', 'Os doze signos formam o anel externo. Cada planeta está em um deles.'],
+      ['As casas', 'Doze áreas da vida, contadas a partir do seu ascendente. Com casas de signos inteiros, cada signo é uma casa.'],
+      ['Os planetas', 'Cada um no seu grau exato. Sol, Lua e ascendente contam a maior parte da história.'],
+      ['Os aspectos', 'Linhas entre planetas, lidas como conversas: trígonos fluem, quadraturas pressionam e oposições negociam.'],
+    ],
+    readLink: 'Como ler um mapa astral',
+    depthLink: 'O mapa astral em três dimensões',
+    compare: 'O mapa de exemplo com e sem hora de nascimento',
+    withTime: 'Com horário',
+    withoutTime: 'Sem horário',
+    timeUnknown: 'horário desconhecido',
+    moonAllDay: (sign) => `${sign}, o dia todo`,
+    moonTwo: 'Dois signos possíveis',
+    ntTitle: 'Não sabe a hora do seu nascimento? Você recebe seu mapa mesmo assim.',
+    ntLede: 'Muita gente não sabe. Veja exatamente o que muda, para que nada no seu mapa seja adivinhado.',
+    known: ['Eu sei', 'O mapa completo: ascendente, as doze casas e a Lua no grau exato.'],
+    rough: ['Sei mais ou menos', 'Informe seu melhor palpite. Os planetas quase não se movem em uma hora; o ascendente muda mais ou menos a cada duas horas, então é o primeiro que pode mudar.'],
+    unknownText: 'Você recebe seu Sol, seus planetas e seus aspectos a partir de uma referência ao meio-dia. Omitimos o ascendente e as casas e, se a Lua mudou de signo naquele dia, mostramos as duas opções.',
+    whereLabel: 'Onde procurar:',
+    whereText: 'a certidão de nascimento, o livro do bebê, um registro do hospital ou sua família. Você pode informar o horário depois e calcular o mapa de novo.',
+    trustTitle: 'Feito para ser privado.',
+    trustLede: 'Sem conta, sem cadastro e sem serviço de mapas nos nossos servidores.',
+    trust: [
+      ['Calculado no seu navegador', 'O mapa inteiro é calculado no seu dispositivo. Não existe um serviço de mapas no servidor para onde enviar seus dados.'],
+      ['Salvo neste dispositivo', 'Salve um mapa e ele fica aqui. A sincronização com a conta é uma escolha à parte e só acontece depois que você entra na conta.'],
+      ['Conferido com o céu', 'As posições são comparadas com dados de referência do JPL da NASA, com fusos horários históricos e dados de lugares do GeoNames. Cada resultado mostra os dados exatos usados no cálculo.'],
+    ],
+    nextTitle: 'Depois do seu mapa',
+    nextLede: 'Salve, compare e veja como o céu de hoje toca o seu mapa.',
+    todaySky: 'O céu de hoje',
+    save: ['Salve seu mapa', 'Guarde-o neste dispositivo e volte a ele quando quiser.'],
+    transitsText: 'O céu de hoje comparado com seu mapa.',
+    compatText: 'Compare dois mapas e veja onde eles se conectam, entram em conflito e crescem.',
+    bigThreeText: 'Seu Sol, sua Lua e seu ascendente em um cartão pronto para compartilhar.',
+    faqHeading: 'Perguntas sobre o mapa astral',
+    faqLede: 'Ainda com dúvidas?',
+    glossary: 'Consulte o glossário',
+    closeTitle: 'Seu mapa leva uns vinte segundos.',
+    closeText: 'Data, hora e local de nascimento. Privado no seu navegador.',
+    someoneElse: 'Faça o mapa de outra pessoa',
+  },
+  fr: {
+    crumbs: 'Fil d’Ariane',
+    heading: 'Obtiens ton thème astral gratuit.',
+    lede: 'Indique ta date, ton heure et ton lieu de naissance pour voir ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.',
+    noscript: 'Ce calculateur de thème astral nécessite JavaScript. Active JavaScript et recharge la page pour calculer ton Soleil, ta Lune, ton ascendant, tes planètes et tes maisons dans ton navigateur.',
+    guideLead: 'Des questions sur une position de ton thème ?',
+    sample: 'Exemple de résultat',
+    sampleWheel: 'Roue du thème astral d’exemple',
+    place: 'Chicago',
+    north: 'N',
+    west: 'O',
+    asc: 'AS',
+    proofLead: 'Un vrai calcul, pas une illustration.',
+    fullMoon: (h) => `Cette personne est née environ ${h === 1 ? 'une heure' : `${FR_HOURS[h]} heures`} après une pleine lune, si bien que le Soleil et la Lune se font face presque exactement sur la roue.`,
+    whatKicker: 'Ce que tu obtiens',
+    whatTitle: 'Ton thème, expliqué au fil de la lecture',
+    whatLede: 'C’est le thème d’exemple ci-dessus, présenté comme sur ta page de résultat : d’abord tes trois signes principaux, puis la roue et chaque position exacte.',
+    sunRole: 'identité',
+    moonRole: 'vie émotionnelle',
+    risingRole: 'première impression',
+    sunText: (house) => `L’équité, le partenariat et le sens de l’équilibre sont au cœur de cette personne. Avec le Soleil en maison ${house}, cela se voit surtout dans le travail et la vie publique.`,
+    moonText: (sign, house) => `Les émotions arrivent vite, et franchement. Une question utile pour une Lune en ${sign} en maison ${house} : chez soi, où y a-t-il de la place pour parler sans détour ?`,
+    risingText: (sign) => `On perçoit souvent un ascendant ${sign} comme posé, compétent et un peu réservé, avant de remarquer la chaleur en dessous. L’ascendant fixe aussi le point de départ des maisons.`,
+    signLink: (sign) => `Découvrir le signe ${sign}`,
+    anatomyWheel: 'Roue du thème astral d’exemple, avec ses quatre parties numérotées',
+    positions: 'Positions exactes',
+    degree: 'Degré',
+    retrograde: 'rétrograde',
+    more: (n) => `${n} de plus`,
+    notes: [
+      ['Les signes', 'Les douze signes forment l’anneau extérieur. Chaque planète se trouve dans l’un d’eux.'],
+      ['Les maisons', 'Douze domaines de la vie, comptés à partir de ton ascendant. Avec les maisons en signes entiers, chaque signe forme une maison.'],
+      ['Les planètes', 'Chacune à son degré exact. Le Soleil, la Lune et l’ascendant portent l’essentiel du récit.'],
+      ['Les aspects', 'Des lignes entre les planètes, qui se lisent comme des conversations : les trigones facilitent, les carrés poussent, les oppositions négocient.'],
+    ],
+    readLink: 'Comment lire un thème astral',
+    depthLink: 'Le thème astral en trois dimensions',
+    compare: 'Le thème d’exemple avec et sans heure de naissance',
+    withTime: 'Avec l’heure',
+    withoutTime: 'Sans l’heure',
+    timeUnknown: 'heure inconnue',
+    moonAllDay: (sign) => `${sign}, toute la journée`,
+    moonTwo: 'Deux signes possibles',
+    ntTitle: 'Tu ne connais pas ton heure de naissance ? Tu as quand même ton thème.',
+    ntLede: 'Beaucoup de gens l’ignorent. Voici précisément ce qui change, pour que rien dans ton thème ne soit deviné.',
+    known: ['Je la connais', 'Le thème complet : l’ascendant, les douze maisons et la Lune au degré près.'],
+    rough: ['Je la connais à peu près', 'Indique ta meilleure estimation. Les planètes bougent à peine en une heure ; l’ascendant change environ toutes les deux heures, c’est donc lui qui peut varier en premier.'],
+    unknownText: 'Tu obtiens ton Soleil, tes planètes et tes aspects à partir d’une référence à midi. Nous omettons l’ascendant et les maisons et, si la Lune a changé de signe ce jour-là, nous affichons les deux possibilités.',
+    whereLabel: 'Où chercher :',
+    whereText: 'ton acte de naissance, ton carnet de santé, le dossier de la maternité ou ta famille. Tu peux ajouter l’heure plus tard et recalculer ton thème.',
+    trustTitle: 'Privé dès la conception.',
+    trustLede: 'Pas de compte, pas d’inscription, et aucun service de thèmes sur nos serveurs.',
+    trust: [
+      ['Calculé dans ton navigateur', 'Le thème entier est calculé sur ton appareil. Il n’existe aucun service de thèmes côté serveur auquel envoyer tes données.'],
+      ['Enregistré sur cet appareil', 'Enregistre un thème et il reste ici. La synchronisation avec un compte est un choix à part, et elle n’a lieu qu’après ta connexion.'],
+      ['Comparé au ciel', 'Les positions sont comparées aux données de référence du JPL de la NASA, avec les fuseaux horaires historiques et les données de lieux de GeoNames. Chaque résultat indique les données exactes de son calcul.'],
+    ],
+    nextTitle: 'Après ton thème',
+    nextLede: 'Garde-le, compare-le et vois comment le ciel du jour le touche.',
+    todaySky: 'Le ciel du jour',
+    save: ['Enregistre ton thème', 'Garde-le sur cet appareil et reviens-y quand tu veux.'],
+    transitsText: 'Le ciel d’aujourd’hui comparé à ton thème.',
+    compatText: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.',
+    bigThreeText: 'Ton Soleil, ta Lune et ton ascendant sur une carte prête à partager.',
+    faqHeading: 'Questions sur le thème astral',
+    faqLede: 'Envie d’en savoir plus ?',
+    glossary: 'Parcours le glossaire',
+    closeTitle: 'Ton thème prend une vingtaine de secondes.',
+    closeText: 'Date, heure et lieu de naissance. En privé, dans ton navigateur.',
+    someoneElse: 'Faire le thème d’une autre personne',
+  },
+  it: {
+    crumbs: 'Percorso di navigazione',
+    heading: 'Calcola il tuo tema natale gratis.',
+    lede: 'Inserisci data, ora e luogo di nascita per vedere il Sole, la Luna, l’ascendente, i pianeti, le case e il loro significato.',
+    noscript: 'Questo calcolatore del tema natale richiede JavaScript. Attiva JavaScript e ricarica la pagina per calcolare Sole, Luna, ascendente, pianeti e case nel tuo browser.',
+    guideLead: 'Domande su una posizione del tuo tema?',
+    sample: 'Risultato di esempio',
+    sampleWheel: 'Ruota del tema natale di esempio',
+    place: 'Chicago',
+    north: 'N',
+    west: 'O',
+    asc: 'AC',
+    proofLead: 'Un calcolo reale, non un’illustrazione.',
+    fullMoon: (h) => `Questa persona è nata circa ${h === 1 ? 'un’ora' : `${IT_HOURS[h]} ore`} dopo una luna piena, per questo il Sole e la Luna sono quasi esattamente opposti sulla ruota.`,
+    whatKicker: 'Cosa ottieni',
+    whatTitle: 'Il tuo tema, spiegato mentre lo leggi',
+    whatLede: 'È il tema di esempio qui sopra, ordinato come lo mostra la tua pagina dei risultati: prima i tuoi tre segni principali, poi la ruota e ogni posizione esatta.',
+    sunRole: 'identità',
+    moonRole: 'vita emotiva',
+    risingRole: 'prima impressione',
+    sunText: (house) => `Equità, collaborazione e senso dell’equilibrio sono al centro di questa persona. Con il Sole in casa ${house}, spesso si vede soprattutto nel lavoro e nella vita pubblica.`,
+    moonText: (sign, house) => `I sentimenti arrivano in fretta e con sincerità. Una domanda utile per una Luna in ${sign} in casa ${house}: in famiglia, dove c’è spazio per parlare chiaro?`,
+    risingText: (sign) => `Chi incontra un ascendente ${sign} vede spesso una persona solida, capace e un po’ riservata, prima di notare il calore che c’è sotto. L’ascendente stabilisce anche dove iniziano le case.`,
+    signLink: (sign) => `Scopri il segno ${sign}`,
+    anatomyWheel: 'Ruota del tema natale di esempio, con le sue quattro parti numerate',
+    positions: 'Posizioni esatte',
+    degree: 'Grado',
+    retrograde: 'retrogrado',
+    more: (n) => `altri ${n}`,
+    notes: [
+      ['I segni', 'I dodici segni formano l’anello esterno. Ogni pianeta si trova in uno di essi.'],
+      ['Le case', 'Dodici ambiti della vita, contati a partire dal tuo ascendente. Con le case a segni interi, ogni segno è una casa.'],
+      ['I pianeti', 'Ognuno al suo grado esatto. Sole, Luna e ascendente raccontano gran parte della storia.'],
+      ['Gli aspetti', 'Linee tra i pianeti, lette come conversazioni: i trigoni scorrono, le quadrature spingono, le opposizioni negoziano.'],
+    ],
+    readLink: 'Come leggere un tema natale',
+    depthLink: 'Il tema natale in tre dimensioni',
+    compare: 'Il tema di esempio con e senza ora di nascita',
+    withTime: 'Con l’ora',
+    withoutTime: 'Senza ora',
+    timeUnknown: 'ora sconosciuta',
+    moonAllDay: (sign) => `${sign}, tutto il giorno`,
+    moonTwo: 'Due segni possibili',
+    ntTitle: 'Non conosci l’ora di nascita? Il tema lo ottieni comunque.',
+    ntLede: 'Molte persone non la conoscono. Ecco esattamente cosa cambia, così niente nel tuo tema è tirato a indovinare.',
+    known: ['La conosco', 'Il tema completo: ascendente, tutte e dodici le case e la Luna al grado esatto.'],
+    rough: ['La conosco più o meno', 'Inserisci la tua stima migliore. In un’ora i pianeti si spostano appena; l’ascendente cambia circa ogni due ore, quindi è il primo che può variare.'],
+    unknownText: 'Ottieni Sole, pianeti e aspetti da un riferimento a mezzogiorno. Omettiamo ascendente e case e, se quel giorno la Luna ha cambiato segno, mostriamo entrambe le possibilità.',
+    whereLabel: 'Dove cercarla:',
+    whereText: 'il certificato di nascita, il libretto sanitario, la cartella dell’ospedale o la tua famiglia. Puoi aggiungere l’ora in seguito e ricalcolare il tema.',
+    trustTitle: 'Privacy fin dalla progettazione.',
+    trustLede: 'Nessun account, nessuna registrazione e nessun servizio di calcolo dei temi sui nostri server.',
+    trust: [
+      ['Calcolato nel tuo browser', 'L’intero tema viene calcolato sul tuo dispositivo. Non c’è nessun servizio lato server a cui inviare i tuoi dati.'],
+      ['Salvato su questo dispositivo', 'Se salvi un tema, rimane qui. La sincronizzazione con l’account è una scelta a parte e avviene solo dopo l’accesso.'],
+      ['Confrontato con il cielo', 'Le posizioni sono confrontate con i dati di riferimento del JPL della NASA, con i fusi orari storici e i dati dei luoghi di GeoNames. Ogni risultato riporta i dati esatti del suo calcolo.'],
+    ],
+    nextTitle: 'Dopo il tuo tema',
+    nextLede: 'Salvalo, confrontalo e guarda come il cielo di oggi lo tocca.',
+    todaySky: 'Il cielo di oggi',
+    save: ['Salva il tuo tema', 'Tienilo su questo dispositivo e tornaci quando vuoi.'],
+    transitsText: 'Il cielo di oggi a confronto con il tuo tema.',
+    compatText: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.',
+    bigThreeText: 'Il tuo Sole, la tua Luna e l’ascendente in un’immagine pronta da condividere.',
+    faqHeading: 'Domande sul tema natale',
+    faqLede: 'Vuoi saperne di più?',
+    glossary: 'Sfoglia il glossario',
+    closeTitle: 'Il tuo tema richiede una ventina di secondi.',
+    closeText: 'Data, ora e luogo di nascita. In privato, nel tuo browser.',
+    someoneElse: 'Calcola il tema di un’altra persona',
+  },
+  ru: {
+    crumbs: 'Навигационная цепочка',
+    heading: 'Постройте бесплатную натальную карту.',
+    lede: 'Введите дату, время и место рождения, чтобы увидеть Солнце, Луну, асцендент, планеты, дома и их значение.',
+    noscript: 'Для расчёта натальной карты нужен JavaScript. Включите его и перезагрузите страницу, чтобы рассчитать Солнце, Луну, асцендент, планеты и дома в вашем браузере.',
+    sample: 'Пример результата',
+    sampleWheel: 'Колесо натальной карты-примера',
+    place: 'Чикаго',
+    north: 'с. ш.',
+    west: 'з. д.',
+    asc: 'АС',
+    proofLead: 'Настоящий расчёт, а не иллюстрация.',
+    fullMoon: (h) => `Этот человек родился примерно через ${RU_HOURS[h]} после полнолуния, поэтому Солнце и Луна стоят на колесе почти точно друг напротив друга.`,
+    whatKicker: 'Что вы получите',
+    whatTitle: 'Ваша карта с пояснениями по ходу чтения',
+    whatLede: 'Это карта-пример сверху, разложенная так, как её покажет страница результата: сначала большая тройка, затем колесо и все точные положения.',
+    sunRole: 'идентичность',
+    moonRole: 'эмоциональная жизнь',
+    risingRole: 'первое впечатление',
+    sunText: (house) => `Справедливость, партнёрство и чувство равновесия находятся в центре личности этого человека. При Солнце в ${house}-м доме это чаще всего видно в работе и общественной жизни.`,
+    moonText: (sign, house) => `Чувства обычно приходят быстро и честно. Полезный вопрос для Луны в ${sign} в ${house}-м доме: где дома есть место для прямоты?`,
+    risingText: (sign) => `Человека с асцендентом в ${sign} часто сначала видят спокойным, умелым и немного сдержанным, а тепло замечают позже. Асцендент также задаёт, откуда начинаются дома.`,
+    signLink: (sign) => `Подробнее о знаке ${sign}`,
+    anatomyWheel: 'Колесо натальной карты-примера с четырьмя пронумерованными частями',
+    positions: 'Точные положения',
+    degree: 'Градус',
+    retrograde: 'ретроградный',
+    more: (n) => `ещё ${n}`,
+    notes: [
+      ['Знаки', 'Двенадцать знаков образуют внешнее кольцо. Каждая планета стоит в одном из них.'],
+      ['Дома', 'Двенадцать сфер жизни, отсчитанных от вашего асцендента. В системе целых знаков каждый знак равен одному дому.'],
+      ['Планеты', 'Каждая стоит на своём точном градусе. Солнце, Луна и асцендент рассказывают большую часть истории.'],
+      ['Аспекты', 'Линии между планетами, которые читаются как разговоры: трины текут свободно, квадраты подталкивают, оппозиции договариваются.'],
+    ],
+    readLink: 'Как читать натальную карту',
+    depthLink: 'Натальная карта в трёх измерениях',
+    compare: 'Карта-пример со временем рождения и без него',
+    withTime: 'Со временем',
+    withoutTime: 'Без времени',
+    timeUnknown: 'время неизвестно',
+    moonAllDay: (sign) => `${sign}, весь день`,
+    moonTwo: 'Два возможных знака',
+    ntTitle: 'Не знаете время рождения? Карта всё равно будет.',
+    ntLede: 'Многие его не знают. Вот что именно меняется, чтобы в вашей карте ничего не было угадано.',
+    known: ['Знаю точно', 'Полная карта: асцендент, все двенадцать домов и Луна до градуса.'],
+    rough: ['Знаю примерно', 'Укажите самое вероятное время. За час планеты почти не сдвигаются, а асцендент меняется примерно каждые два часа, поэтому первым может измениться именно он.'],
+    unknownText: 'Солнце, планеты и аспекты рассчитываются по опорному времени в полдень. Асцендент и дома мы не показываем, а если в тот день Луна сменила знак, показываем оба варианта.',
+    whereLabel: 'Где искать:',
+    whereText: 'свидетельство о рождении, выписка из роддома, медицинская карта или родители. Время можно добавить позже и пересчитать карту.',
+    trustTitle: 'Приватность с самого начала.',
+    trustLede: 'Без аккаунта, без регистрации и без сервиса расчёта карт на наших серверах.',
+    trust: [
+      ['Расчёт в вашем браузере', 'Вся карта рассчитывается на вашем устройстве. Серверного сервиса карт, которому можно было бы отправить ваши данные, нет.'],
+      ['Хранится на этом устройстве', 'Сохранённая карта остаётся здесь. Синхронизация с аккаунтом включается отдельно и только после входа.'],
+      ['Сверено с небом', 'Положения сверяются с эталонными данными NASA JPL, с учётом исторических часовых поясов и данных о местах GeoNames. В каждом результате указаны точные исходные данные.'],
+    ],
+    nextTitle: 'Когда карта готова',
+    nextLede: 'Сохраните её, сравните и посмотрите, как её затрагивает сегодняшнее небо.',
+    todaySky: 'Небо сегодня',
+    save: ['Сохраните карту', 'Она останется на этом устройстве, и к ней можно вернуться в любое время.'],
+    transitsText: 'Сегодняшнее небо на фоне вашей карты.',
+    compatText: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.',
+    bigThreeText: 'Ваше Солнце, Луна и асцендент на одной карточке, которой можно поделиться.',
+    faqHeading: 'Вопросы о натальной карте',
+    faqLede: 'Остались вопросы?',
+    glossary: 'Загляните в глоссарий',
+    closeTitle: 'На карту уйдёт секунд двадцать.',
+    closeText: 'Дата, время и место рождения. Приватно, в вашем браузере.',
+    someoneElse: 'Постройте карту другого человека',
+  },
+};
+
+const { locale, faq } = Astro.props;
+const c = COPY[locale];
+const cue = englishOnlyCue(locale)!;
+const href = (path: string) => localizePath(locale, path);
+/** Link attributes for a destination this locale does not have yet. */
+const englishOnly = (path: string) => href(path) === path;
+const linkTo = (path: string) => (englishOnly(path)
+  ? { href: path, hreflang: 'en', title: cue.aria }
+  : { href: href(path) });
+const suffix = (path: string) => (englishOnly(path) ? cue.suffix : '');
+const name = (slug: string) => signName(slug, locale);
+/** Russian puts the sign in the prepositional case after "в". */
+const inSign = (slug: string) => (locale === 'ru' ? signPrepositional(slug) : name(slug));
+const cap = (text: string) => text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
+const number = (value: number, digits: number) => new Intl.NumberFormat(intlLocale(locale), {
+  minimumFractionDigits: digits,
+  maximumFractionDigits: digits,
+}).format(value);
+
+const sun = SAMPLE_PLACEMENTS.find((p) => p.body === 'Sun')!;
+const moon = SAMPLE_PLACEMENTS.find((p) => p.body === 'Moon')!;
+const rising = SAMPLE_RISING;
+const houseLabel = (house: number) => `${t(locale, 'house')} ${house}`;
+
+/* The sample birth, in the locale's own date and clock: the stored instant
+   read on Chicago's wall clock, as the English page's "Oct 8, 1995, 2:00 PM". */
+const sampleDate = formatDate(locale, SAMPLE_BIRTH.utc, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Chicago' });
+const sampleTime = formatTime(locale, SAMPLE_BIRTH.utc, { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
+const coordinates = `${number(Math.abs(SAMPLE_BIRTH.latitude), 2)}° ${c.north}, ${number(Math.abs(SAMPLE_BIRTH.longitude), 2)}° ${c.west}`;
+
+/* The four numbered parts of the anatomy wheel, placed with the Wheel's own
+   geometry: its viewBox pads the drawing by 5% on every side, and longitude
+   runs counterclockwise from the rising degree at nine o'clock. */
+const WHEEL_SIZE = 430;
+const PAD = WHEEL_SIZE * 0.05;
+const FRAME = WHEEL_SIZE + PAD * 2;
+const at = (lon: number, radius: number) => {
+  const phi = ((180 + (lon - SAMPLE_WHEEL.asc)) * Math.PI) / 180;
+  return {
+    x: ((WHEEL_SIZE / 2 + radius * WHEEL_SIZE * Math.cos(phi) + PAD) / FRAME) * 100,
+    y: ((WHEEL_SIZE / 2 - radius * WHEEL_SIZE * Math.sin(phi) + PAD) / FRAME) * 100,
+  };
+};
+const boundaryNear = (lon: number) => Math.round(lon / 30) * 30;
+const anatomyMarks = [
+  { n: 1, ...at(boundaryNear(SAMPLE_WHEEL.asc - 125), 0.435) },
+  { n: 2, ...at(boundaryNear(SAMPLE_WHEEL.asc + 185), 0.255) },
+  { n: 3, ...at(moon.lon + 9, 0.31) },
+  { n: 4, ...at(sun.lon, 0.02) },
+];
+
+/* Sign pictures on a chart page are only ever asked for as a whole set of
+   twelve in zodiac order (audit finding F-18, tests/sign-icon-requests-drive):
+   the sample's discs carry their own query, wait as data attributes, and the
+   script at the end of the page asks for the sample wheel's twelve first,
+   in order, before any other sample disc. */
+const SAMPLE_SET = 'surface=sample-chart';
+const sampleDisc = (slug: string) => `/assets/zodiac-icons/128/${slug}.webp?${SAMPLE_SET}`;
+
+const bigThree: { label: string; p: SamplePlacement }[] = [
+  { label: t(locale, 'sun'), p: sun },
+  { label: t(locale, 'moon'), p: moon },
+  { label: t(locale, 'rising'), p: rising },
+];
+const shownAspects = SAMPLE_ASPECTS.slice(0, 3);
+const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
+const bodyName = (body: string) => (body === 'Rising' ? t(locale, 'rising') : planetLabel(locale, body));
+const moonWithoutTime = SAMPLE_MOON_ALL_DAY ? c.moonAllDay(name(moon.sign.slug)) : c.moonTwo;
+
+const bigThreeLabel = NAV_MORE.find((tool) => tool.href === '/big-three/')!.label[locale];
+const nextCards = [
+  { path: '/profile/', icon: 'today', title: c.save[0], text: c.save[1] },
+  { path: '/transits/', icon: 'transits', title: t(locale, 'transits'), text: c.transitsText },
+  { path: '/compatibility/', icon: 'compatibility', title: t(locale, 'compatibility'), text: c.compatText },
+  { path: '/big-three/', icon: 'big-three', title: bigThreeLabel, text: c.bigThreeText },
+] as const;
+---
+  <!-- 01 · The tool first: the form, and a real calculated chart beside it. -->
+  <section class="bc-hero">
+    <div class="kwrap bc-grid">
+      <div class="bc-head">
+        <nav class="bc-crumbs" aria-label={c.crumbs}><a href={href('/tools/')}>{t(locale, 'navTools')}</a><span aria-hidden="true">/</span><span aria-current="page">{t(locale, 'birthChart')}</span></nav>
+        <h1 class="bc-title">{c.heading}</h1>
+        <p class="bc-lede">{c.lede}</p>
+      </div>
+
+      <div class="bc-main" id="bc-form">
+        {locale === 'ru'
+          ? <ChartCalculator mode="full" locale="ru" client:interaction={{ eagerHash: true }} />
+          : <ChartCalculator mode="full" locale={locale} client:idle />}
+        <noscript>
+          <p>{c.noscript}</p>
+        </noscript>
+        {c.guideLead && locale !== 'ru' && <div class="bc-guide"><AskGuideLine lead={c.guideLead} locale={locale} /></div>}
+      </div>
+
+      <aside class="bc-aside" aria-label={c.sample} data-sample-set>
+        <figure class="bc-proof">
+          <div class="bc-proof__top">
+            <span class="pill">{c.sample}</span>
+            <span class="kfacts"><span>{sampleDate}</span><span class="bc-proof__time">{sampleTime}</span><span>{c.place}</span></span>
+          </div>
+          <div class="bc-proof__wheel bc-wheel">
+            <LocalizedSignTitles locale={locale}><Wheel {...SAMPLE_WHEEL} size={WHEEL_SIZE} deferIcons ariaLabel={c.sampleWheel} /></LocalizedSignTitles>
+          </div>
+          <div class="bc-proof__b3">
+            {bigThree.map(({ label, p }) => (
+              <div>
+                <img class="bc-disc" data-src={sampleDisc(p.sign.slug)} width="34" height="34" alt="" decoding="async" />
+                <span><small>{label}</small><b>{name(p.sign.slug)}</b><span class="bc-mono">{p.degree}</span></span>
+              </div>
+            ))}
+          </div>
+        </figure>
+        <p class="bc-proof__cap">
+          <b>{c.proofLead}</b>
+          {SAMPLE_HOURS_AFTER_FULL_MOON !== null && ` ${c.fullMoon(SAMPLE_HOURS_AFTER_FULL_MOON)}`}
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  {locale !== 'ru' && <div class="kwrap bc-email"><EmailCapture placement="chart" locale={locale} revealOnChart /></div>}
+
+  <!-- 02 · What the result looks like: the sample, laid out like a result page. -->
+  <section class="kwrap bc-section bc-what" data-sample-set>
+    <div class="section-head">
+      <span class="kicker">{c.whatKicker}</span>
+      <h2 class="h-2">{c.whatTitle}</h2>
+      <p>{c.whatLede}</p>
+    </div>
+
+    <div class="bc-b3cards">
+      <article class="kcard bc-b3card bc-b3card--sun" style={`--sign:${sun.sign.hue}`}>
+        <div class="bc-b3card__top"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>{t(locale, 'sun')} · {c.sunRole}</small><b>{name(sun.sign.slug)}</b></div><span class="bc-mono">{houseLabel(sun.house)}</span></div>
+        <p>{c.sunText(sun.house)}</p>
+        <a class="textlink" href={href(`/${sun.sign.slug}/`)}>{c.signLink(name(sun.sign.slug))} <span class="arr" aria-hidden="true">→</span></a>
+      </article>
+      <article class="kcard bc-b3card" style={`--sign:${moon.sign.hue}`}>
+        <div class="bc-b3card__top"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>{t(locale, 'moon')} · {c.moonRole}</small><b>{name(moon.sign.slug)}</b></div><span class="bc-mono">{houseLabel(moon.house)}</span></div>
+        <p>{c.moonText(inSign(moon.sign.slug), moon.house)}</p>
+        <a class="textlink" href={href(`/${moon.sign.slug}/`)}>{c.signLink(name(moon.sign.slug))} <span class="arr" aria-hidden="true">→</span></a>
+      </article>
+      <article class="kcard bc-b3card" style={`--sign:${rising.sign.hue}`}>
+        <div class="bc-b3card__top"><img class="bc-disc" data-src={sampleDisc(rising.sign.slug)} width="46" height="46" alt="" decoding="async" /><div><small>{t(locale, 'rising')} · {c.risingRole}</small><b>{name(rising.sign.slug)}</b></div><span class="bc-mono">{houseLabel(rising.house)}</span></div>
+        <p>{c.risingText(inSign(rising.sign.slug))}</p>
+        <a class="textlink" href={href(`/${rising.sign.slug}/`)}>{c.signLink(name(rising.sign.slug))} <span class="arr" aria-hidden="true">→</span></a>
+      </article>
+    </div>
+
+    <div class="kpanel bc-anat">
+      <div class="bc-anat__wheel bc-wheel">
+        <LocalizedSignTitles locale={locale}><Wheel {...SAMPLE_WHEEL} size={WHEEL_SIZE} deferIcons ariaLabel={c.anatomyWheel} /></LocalizedSignTitles>
+        {anatomyMarks.map((mark) => (
+          <span class="bc-anat__mark" style={`left:${mark.x.toFixed(2)}%;top:${mark.y.toFixed(2)}%`} aria-hidden="true">{mark.n}</span>
+        ))}
+      </div>
+      <div>
+        <div class="bc-pos-head">
+          <h3 class="h-4">{c.positions}</h3>
+          <span class="kfacts"><span>{coordinates}</span><span>{cap(t(locale, 'wholeSignHouses'))}</span></span>
+        </div>
+        <div class="bc-pos-scroll">
+          <table class="bc-pos">
+            <thead><tr><th scope="col">{t(locale, 'body')}</th><th scope="col">{t(locale, 'sign')}</th><th scope="col">{c.degree}</th><th scope="col">{t(locale, 'house')}</th></tr></thead>
+            <tbody>
+              {[...SAMPLE_PLACEMENTS, rising].map((p) => (
+                <tr class:list={[p.body === 'Sun' && 'is-on', p.body === 'Rising' && 'is-asc']} style={`--sign:${p.sign.hue}`}>
+                  <th scope="row">
+                    {p.body === 'Rising' ? <span class="bc-pos__ac" aria-hidden="true">{c.asc}</span> : <PlanetGlyph body={p.body} size={15} class="bc-pos__g" />}
+                    {bodyName(p.body)}
+                  </th>
+                  <td><span class="bc-pos__sign"><img class="bc-disc" data-src={sampleDisc(p.sign.slug)} width="20" height="20" alt="" decoding="async" />{name(p.sign.slug)}</span></td>
+                  <td class="bc-mono">{p.degree}{p.retrograde && <span class="bc-pos__rx" title={cap(c.retrograde)}> ℞<span class="sr-only"> {c.retrograde}</span></span>}</td>
+                  <td class="bc-pos__h">{p.house}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <ul class="bc-asp" role="list">
+          {shownAspects.map((aspect) => (
+            <li class="pill">
+              <PlanetGlyph body={aspect.a} size={14} title={planetLabel(locale, aspect.a)} />
+              {aspectLabel(locale, aspect.type)}
+              <PlanetGlyph body={aspect.b} size={14} title={planetLabel(locale, aspect.b)} />
+              <i>{number(aspect.orb, 1)}°</i>
+            </li>
+          ))}
+          {moreAspects > 0 && <li class="pill">{c.more(moreAspects)}</li>}
+        </ul>
+      </div>
+    </div>
+
+    <ol class="bc-notes" role="list">
+      {c.notes.map(([title, text], index) => (
+        <li><span class="bc-notes__n" aria-hidden="true">{index + 1}</span><h3 class="h-4">{title}</h3><p>{text}</p></li>
+      ))}
+    </ol>
+    <div class="bc-result-links">
+      <a class="textlink" {...linkTo('/learn/how-to-read-a-birth-chart/')}>{c.readLink}{suffix('/learn/how-to-read-a-birth-chart/')} <span class="arr" aria-hidden="true">→</span></a>
+      <a class="textlink" {...linkTo('/birth-chart/three-dimensions/')}>{c.depthLink}{suffix('/birth-chart/three-dimensions/')} <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <div class="kwrap"><hr class="rule" /></div>
+
+  <!-- 03 · The most common worry, answered in full. -->
+  <section class="kwrap bc-section bc-nt" id="no-time" data-sample-set>
+    <div>
+      <ArtFrame
+        class="bc-nt__art"
+        src={artSrc('pocket-orrery')}
+        srcset={artSrcset('pocket-orrery')}
+        sizes="(min-width: 960px) 560px, calc(100vw - 40px)"
+        width={ART['pocket-orrery'].width}
+        height={ART['pocket-orrery'].height}
+        alt=""
+        focus="50% 52%"
+      />
+      <div class="bc-cmp only-desktop" aria-label={c.compare}>
+        <div>
+          <span class="bc-cmp__lbl"><b>{c.withTime}</b>{sampleTime}</span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'sun')}<small>{name(sun.sign.slug)}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'moon')}<small>{name(moon.sign.slug)}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(rising.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'rising')}<small>{name(rising.sign.slug)}</small></span></span>
+        </div>
+        <div>
+          <span class="bc-cmp__lbl"><b>{c.withoutTime}</b>{c.timeUnknown}</span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'sun')}<small>{name(sun.sign.slug)}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'moon')}<small>{moonWithoutTime}</small></span></span>
+          <span class="bc-cmp__it is-missing"><span class="bc-cmp__ghost" aria-hidden="true">?</span><span>{t(locale, 'rising')}<small>{t(locale, 'needsBirthTime')}</small></span></span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="kicker">{t(locale, 'birthTime')}</span>
+      <h2 class="h-2">{c.ntTitle}</h2>
+      <p class="klede bc-nt__lede">{c.ntLede}</p>
+      <div class="bc-cmp only-mobile" aria-label={c.compare}>
+        <div>
+          <span class="bc-cmp__lbl"><b>{c.withTime}</b>{sampleTime}</span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'sun')}<small>{name(sun.sign.slug)}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'moon')}<small>{name(moon.sign.slug)}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(rising.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'rising')}<small>{name(rising.sign.slug)}</small></span></span>
+        </div>
+        <div>
+          <span class="bc-cmp__lbl"><b>{c.withoutTime}</b>{c.timeUnknown}</span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(sun.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'sun')}<small>{name(sun.sign.slug)}</small></span></span>
+          <span class="bc-cmp__it"><img class="bc-disc" data-src={sampleDisc(moon.sign.slug)} width="26" height="26" alt="" decoding="async" /><span>{t(locale, 'moon')}<small>{moonWithoutTime}</small></span></span>
+          <span class="bc-cmp__it is-missing"><span class="bc-cmp__ghost" aria-hidden="true">?</span><span>{t(locale, 'rising')}<small>{t(locale, 'needsBirthTime')}</small></span></span>
+        </div>
+      </div>
+      <ul class="bc-opts" role="list">
+        <li>
+          <span class="bc-ic" style="background:var(--sign-virgo)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M10 6v4l2.6 1.6" /></svg></span>
+          <div><b>{c.known[0]}</b><p>{c.known[1]}</p></div>
+        </li>
+        <li>
+          <span class="bc-ic" style="background:var(--sign-sagittarius)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 10h14M6 7l-3 3 3 3M14 7l3 3-3 3" /></svg></span>
+          <div><b>{c.rough[0]}</b><p>{c.rough[1]}</p></div>
+        </li>
+        <li>
+          <span class="bc-ic" style="background:var(--sign-cancer)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M8 8a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.7M10 14h.01" /></svg></span>
+          <div><b>{t(locale, 'noBirthTime')}</b><p>{c.unknownText}</p></div>
+        </li>
+      </ul>
+      <p class="bc-where"><b>{c.whereLabel}</b> {c.whereText}</p>
+    </div>
+  </section>
+
+  <!-- 04 · Privacy, said plainly. -->
+  <section class="bc-trust">
+    <div class="kwrap bc-trust__grid">
+      <div class="bc-trust__head">
+        <h2 class="h-3">{c.trustTitle}</h2>
+        <p>{c.trustLede}</p>
+        <a class="textlink" href={href('/methodology/')}>{t(locale, 'footerCompute')} <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="bc-ti">
+        <span class="bc-ic" style="background:var(--sign-cancer)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="14" height="10" rx="2" /><path d="M7 17h6M10 14v3" /></svg></span>
+        <h3 class="h-4">{c.trust[0][0]}</h3>
+        <p>{c.trust[0][1]}</p>
+      </div>
+      <div class="bc-ti">
+        <span class="bc-ic" style="background:var(--sign-pisces)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h10v13l-5-3.2-5 3.2z" /></svg></span>
+        <h3 class="h-4">{c.trust[1][0]}</h3>
+        <p>{c.trust[1][1]}</p>
+      </div>
+      <div class="bc-ti">
+        <span class="bc-ic" style="background:var(--sign-virgo)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.2" /><path d="M6.8 10.2l2.2 2.2 4.3-4.6" /></svg></span>
+        <h3 class="h-4">{c.trust[2][0]}</h3>
+        <p>{c.trust[2][1]}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · What to do once you have a chart. -->
+  <section class="kwrap bc-section bc-next">
+    <div class="section-head section-head--row">
+      <div>
+        <h2 class="h-2">{c.nextTitle}</h2>
+        <p>{c.nextLede}</p>
+      </div>
+      <a class="textlink only-desktop" href={href('/tools/')}>{ALL_TOOLS_LABEL[locale]} <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+    <div class="bc-skyline">
+      <SkyTicker locale={locale} discs={false} />
+      <a class="textlink" {...linkTo('/today/')}>{c.todaySky}{suffix('/today/')} <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+    <div class="grid-4 bc-nextgrid">
+      {nextCards.map((card) => (
+        <a class="kcard bc-nextcard" href={href(card.path)}>
+          <ToolIcon name={card.icon} size={52} />
+          <h3 class="h-4">{card.title}</h3><p>{card.text}</p>
+          <span class="kcard__go" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- 06 · Questions, plain answers. -->
+  <section class="kwrap bc-section bc-faq">
+    <div class="qa">
+      <div>
+        <h2 class="h-2">{c.faqHeading}</h2>
+        <p>{c.faqLede} <a class="bc-inline" {...linkTo('/learn/glossary/')}>{c.glossary}{suffix('/learn/glossary/')}</a>.</p>
+      </div>
+      <div class="kfaq">
+        {faq.map(({ q, a, id }, index) => (
+          <details id={id} open={index === 0}>
+            <summary>{q}</summary>
+            <p>{a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · One closing invitation. -->
+  <section class="kwrap bc-close">
+    <div class="closing-panel">
+      <img src={artSrc('birth-chart-astrolabe')} srcset={artSrcset('birth-chart-astrolabe')} sizes="(min-width: 1240px) 1200px, calc(100vw - 40px)" width={ART['birth-chart-astrolabe'].width} height={ART['birth-chart-astrolabe'].height} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+      <div>
+        <h2 class="h-2">{c.closeTitle}</h2>
+        <p>{c.closeText}</p>
+        <div class="btn-row">
+          <a class="btn btn--primary btn--lg" href="#bc-form"><span>{t(locale, 'getBirthChart')}</span><span class="orb" aria-hidden="true">↑</span></a>
+          <a class="textlink" {...linkTo('/birth-chart/someone-else/')}>{c.someoneElse}{suffix('/birth-chart/someone-else/')} <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    // The sample's sign pictures, as one whole set: when any part of the
+    // sample nears the screen, the first wheel's twelve discs are asked for
+    // in zodiac order, then the second wheel and every other sample disc,
+    // which by then are the same twelve files. A phone, where the sample sits
+    // below the form, fetches none of it while the page loads.
+    (function () {
+      var query = '?surface=sample-chart';
+      var parts = document.querySelectorAll('[data-sample-set]');
+      var done = false;
+      function load() {
+        if (done) return;
+        done = true;
+        document.querySelectorAll('.bc-wheel image[data-href]').forEach(function (image) {
+          image.setAttribute('href', image.getAttribute('data-href') + query);
+          image.removeAttribute('data-href');
+        });
+        document.querySelectorAll('[data-sample-set] img[data-src]').forEach(function (image) {
+          image.src = image.getAttribute('data-src');
+          image.removeAttribute('data-src');
+        });
+      }
+      if (!('IntersectionObserver' in window)) { load(); return; }
+      var watch = new IntersectionObserver(function (entries) {
+        if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+        watch.disconnect();
+        load();
+      }, { rootMargin: '200px 0px' });
+      parts.forEach(function (part) { watch.observe(part); });
+    })();
+  </script>

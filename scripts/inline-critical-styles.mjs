@@ -50,6 +50,26 @@ const signs = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
+// The 390 compatibility pair pages (78 pairings in five locales) open on two
+// sign paintings, their mobile LCP. Three of their four stylesheets are
+// inlined and the faces only text far down the page uses move to after load
+// (belowFoldFaces). The calculator's stylesheet stays a linked one
+// (pairKeptStylesheet): every calculator page shares it, so readers often
+// have it cached, and inlining it too measured worse, because the first paint
+// then came ahead of the page's long first layout and Lighthouse counted that
+// layout as blocking time.
+const pairSlugs = signs.flatMap((sign, index) => signs.slice(index).map((other) => `${sign}-${other}`));
+const pairPaths = ['', 'es/', 'fr/', 'it/', 'pt/']
+  .flatMap((prefix) => pairSlugs.map((slug) => `${prefix}compatibility/${slug}/index.html`));
+const pairPathSet = new Set(pairPaths);
+const pairKeptStylesheet = /^calculator\.[A-Za-z0-9_-]+\.css$/u;
+// Every pair page must inline at least these. Feature flags can add more
+// stylesheets (production's PUBLIC_ACCOUNT_SAVES_ENABLED adds account.css
+// through the share control), so the count per pair page is derived from the
+// page's own links instead of being fixed.
+const pairRequiredInlined = [/^Base\.[A-Za-z0-9_-]+\.css$/u, /^pair-page\.[A-Za-z0-9_-]+\.css$/u];
+// 103 entry pages carry 204 inlined stylesheets; feature flags do not change it.
+const entryInlinedStylesheets = 204;
 const targetPaths = [
   // The EN homepage keeps only Base plus its route-owned first-paint geometry
   // on the render path. The complete route bundle still loads after first
@@ -72,6 +92,7 @@ const targetPaths = [
   ...signs.flatMap((sign) => ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2027'].map((surface) => `horoscopes/${sign}/${surface}/index.html`)),
   'ru/index.html',
   'ru/birth-chart/index.html',
+  ...pairPaths,
 ];
 
 /**
@@ -141,6 +162,10 @@ function removeHtmlAttribute(html, name) {
 }
 
 export function expectedStylesheetShape(relativePath, deferNonBase) {
+  if (pairPathSet.has(relativePath)) {
+    // inlineCount is a minimum for pair pages (see pairRequiredInlined).
+    return { inlineCount: 3, deferredCount: 1, externalCount: 1, loaderCount: 1, inlineIsMinimum: true };
+  }
   if (deferNonBase) {
     const shape = deferNonBaseConfig.get(relativePath)?.shape;
     const deferredCount = shape?.deferred ?? 3;
@@ -240,10 +265,36 @@ function useHomepageFontSubsets(css) {
   return { css: output, changes };
 }
 
+/**
+ * Faces that only text far below the first screen uses on the pair pages:
+ * the italic body face (the read's emphasis) and the mono face (the compare
+ * section's "ASC"). Declared up front, the first layout fetches them beside
+ * the hero paintings. They move into a deferred <style> that the loader adds
+ * after load, or on first interaction with an island; <noscript> keeps them
+ * for readers without JavaScript.
+ */
+const belowFoldFaces = [
+  { family: 'Instrument Sans', style: 'italic', source: '/fonts/instrument-sans-latin-wght-italic.woff2' },
+  { family: 'JetBrains Mono', style: 'normal', source: '/fonts/jetbrains-mono-latin-wght-normal.woff2' },
+];
+
+function takeBelowFoldFaces(css) {
+  const faces = [];
+  const output = css.replace(/@font-face\s*\{[^{}]*\}/gi, (face) => {
+    const family = declarationValue(face, 'font-family');
+    const style = declarationValue(face, 'font-style') || 'normal';
+    const below = belowFoldFaces.some((entry) => entry.family === family && entry.style === style && face.includes(entry.source));
+    if (!below) return face;
+    faces.push(face);
+    return '';
+  });
+  return { css: output, faces };
+}
+
 export async function inlineCriticalStyles(
   html,
   root = distRoot,
-  { deferNonBase = false, subsetHomepageFonts = false } = {},
+  { deferNonBase = false, subsetHomepageFonts = false, deferFaces = false, keepLinked = null } = {},
 ) {
   if (!hasHtmlAttribute(html, marker)) return { html, stylesheets: 0, bytes: 0 };
 
@@ -276,14 +327,31 @@ export async function inlineCriticalStyles(
   const selectPattern = deferNonBase instanceof RegExp
     ? deferNonBase
     : /^Base\.[A-Za-z0-9_-]+\.css$/u;
+  // A stylesheet matching keepLinked is left exactly as it is: neither
+  // inlined nor deferred.
+  const linkedTags = keepLinked
+    ? stylesheetTags.filter((tag) => keepLinked.test(basename(attribute(tag, 'href'))))
+    : [];
+  if (keepLinked && linkedTags.length !== 1) {
+    throw new Error(`inline-critical-styles: expected one stylesheet to keep linked, found ${linkedTags.length}`);
+  }
+  const movableTags = stylesheetTags.filter((tag) => !linkedTags.includes(tag));
+  if (keepLinked) {
+    const names = movableTags.map((tag) => basename(attribute(tag, 'href')));
+    for (const required of pairRequiredInlined) {
+      if (!names.some((name) => required.test(name))) {
+        throw new Error(`inline-critical-styles: pair page is missing a required stylesheet ${required}`);
+      }
+    }
+  }
   const selectedTags = deferNonBase
-    ? stylesheetTags.filter((tag) => {
+    ? movableTags.filter((tag) => {
       const href = attribute(tag, 'href');
       return href ? selectPattern.test(basename(href)) : false;
     })
-    : stylesheetTags;
+    : movableTags;
   const deferredTags = deferNonBase
-    ? stylesheetTags.filter((tag) => !selectedTags.includes(tag))
+    ? movableTags.filter((tag) => !selectedTags.includes(tag))
     : [];
   if (deferNonBase && (selectedTags.length === 0 || deferredTags.length === 0)) {
     throw new Error(
@@ -295,6 +363,7 @@ export async function inlineCriticalStyles(
   let bytes = 0;
   let stabilizedChromeFaces = 0;
   let subsetHomepageFaces = 0;
+  const deferredFaces = [];
   for (const tag of selectedTags) {
     const href = attribute(tag, 'href');
     const cssPath = resolve(root, `.${href}`);
@@ -305,7 +374,11 @@ export async function inlineCriticalStyles(
     const subsetResult = subsetHomepageFonts
       ? useHomepageFontSubsets(stableResult.css)
       : { css: stableResult.css, changes: 0 };
-    const css = subsetResult.css;
+    const faceResult = deferFaces
+      ? takeBelowFoldFaces(subsetResult.css)
+      : { css: subsetResult.css, faces: [] };
+    const css = faceResult.css;
+    deferredFaces.push(...faceResult.faces);
     stabilizedChromeFaces += stableResult.changes;
     subsetHomepageFaces += subsetResult.changes;
     assertSafeCss(css, href);
@@ -327,13 +400,27 @@ export async function inlineCriticalStyles(
     );
   }
 
+  if (deferFaces && deferredFaces.length !== belowFoldFaces.length) {
+    throw new Error(
+      `inline-critical-styles: expected ${belowFoldFaces.length} below-fold faces, found ${deferredFaces.length}`,
+    );
+  }
+
   for (const tag of deferredTags) {
     output = output.replace(
       tag,
       `<template data-zdx-deferred-style>${tag}</template><noscript>${tag}</noscript>`,
     );
   }
-  if (deferredTags.length > 0) {
+  if (deferredFaces.length > 0) {
+    const faces = deferredFaces.join('');
+    assertSafeCss(faces, 'below-fold faces');
+    output = output.replace(
+      '</head>',
+      `<template data-zdx-deferred-style><style data-zdx-deferred-faces>${faces}</style></template><noscript><style>${faces}</style></noscript></head>`,
+    );
+  }
+  if (deferredTags.length > 0 || deferredFaces.length > 0) {
     if (!output.includes('</head>')) {
       throw new Error('inline-critical-styles: cannot install deferred-style loader without </head>');
     }
@@ -350,6 +437,8 @@ async function main() {
   let alreadyInlined = 0;
   let stylesheets = 0;
   let bytes = 0;
+  let pairStylesheets = 0;
+  let expectedPairStylesheets = 0;
   const allPaths = await htmlFiles(distRoot);
   const markedOutsideScope = allPaths.filter((path) => {
     const relativePath = path.slice(distRoot.length + 1).split(sep).join('/');
@@ -382,9 +471,10 @@ async function main() {
         deferredCount: expectedDeferredCount,
         externalCount: expectedExternalCount,
         loaderCount: expectedLoaderCount,
+        inlineIsMinimum,
       } = expectedStylesheetShape(relativePath, Boolean(deferConfig));
       if (
-        inlineCount !== expectedInlineCount
+        (inlineIsMinimum ? inlineCount < expectedInlineCount : inlineCount !== expectedInlineCount)
         || deferredCount !== expectedDeferredCount
         || externalCount !== expectedExternalCount
         || loaderCount !== expectedLoaderCount
@@ -394,25 +484,48 @@ async function main() {
         );
       }
       alreadyInlined += 1;
-      stylesheets += inlineCount;
+      if (pairPathSet.has(relativePath)) {
+        pairStylesheets += inlineCount;
+        expectedPairStylesheets += inlineCount;
+      } else {
+        stylesheets += inlineCount;
+      }
       continue;
     }
     const result = await inlineCriticalStyles(source, distRoot, {
       deferNonBase: deferConfig?.select,
       subsetHomepageFonts: relativePath === 'index.html',
+      deferFaces: pairPathSet.has(relativePath),
+      keepLinked: pairPathSet.has(relativePath) ? pairKeptStylesheet : null,
     });
     await writeFile(path, result.html);
     pages += 1;
-    stylesheets += result.stylesheets;
+    if (pairPathSet.has(relativePath)) {
+      // Every link except the kept calculator stylesheet is inlined.
+      const links = [...source.matchAll(linkPattern)]
+        .map((match) => match[0])
+        .filter((tag) => attribute(tag, 'rel')?.toLowerCase() === 'stylesheet').length;
+      expectedPairStylesheets += links - 1;
+      pairStylesheets += result.stylesheets;
+    } else {
+      stylesheets += result.stylesheets;
+    }
     bytes += result.bytes;
   }
-  // 103 pages since all seven horoscope periods are inlined (was 55 with
-  // daily, love and career only): 48 more pages, two stylesheets each.
-  if (pages + alreadyInlined !== 103 || stylesheets !== 204) {
+  // Entry pages have a fixed shape. Pair pages inline every stylesheet but
+  // the calculator's, at least Base, the pair styles and the wheel.
+  if (
+    pages + alreadyInlined !== targetPaths.length
+    || targetPaths.length !== 103 + pairPathSet.size
+    || stylesheets !== entryInlinedStylesheets
+    || pairStylesheets !== expectedPairStylesheets
+    || pairStylesheets < pairPathSet.size * 3
+  ) {
     throw new Error(
-      `inline-critical-styles: expected 103 pages / 204 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
+      `inline-critical-styles: expected ${103 + pairPathSet.size} pages, ${entryInlinedStylesheets} entry and ${expectedPairStylesheets} (min ${pairPathSet.size * 3}) pair stylesheets inlined, found ${pages + alreadyInlined} / ${stylesheets} / ${pairStylesheets}`,
     );
   }
+  stylesheets += pairStylesheets;
   const state = pages > 0
     ? `${stylesheets} stylesheets inlined across ${pages} entry pages · ${(bytes / 1024).toFixed(1)} KB`
     : `${stylesheets} stylesheets already inlined across ${alreadyInlined} entry pages`;

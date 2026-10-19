@@ -269,13 +269,13 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
     appearance: none;
     border: 1px solid var(--hair-3);
     border-radius: 999px;
-    background: radial-gradient(circle at 11px 50%, var(--ink-2) 0 7px, transparent 7.5px), rgba(198, 204, 218, 0.06);
+    background: rgba(198, 204, 218, 0.06);
     cursor: pointer;
-    transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+    transition: background-color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
   }
   .bc-main .field__toggle input:checked {
     border-color: var(--sign-cancer);
-    background: radial-gradient(circle at 26px 50%, var(--void-0) 0 7px, transparent 7.5px), var(--sign-cancer);
+    background: var(--sign-cancer);
   }
   .bc-main .field__toggle input:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 2px; }
   .bc-main .calc__submit {
@@ -476,6 +476,8 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   /* The astrolabe's hub sits behind the headline: keep the middle dark for
      the words and let the ring of sign discs catch the light around them. */
   .bc-close .closing-panel::before { background: radial-gradient(ellipse 46% 62% at 50% 50%, rgba(6, 7, 9, 0.84) 0 34%, rgba(6, 7, 9, 0.6) 66%, rgba(6, 7, 9, 0.9) 100%); }
+  /* Motion: the result's cards, the disclosures, the time switch's knob and
+     the place chip use the site's shared recipes (base.css). */
 
   @media (max-width: 1100px) {
     .bc-trust__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }

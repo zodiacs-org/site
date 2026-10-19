@@ -1,0 +1,914 @@
+---
+/**
+ * The translated homes (/es/, /pt/, /fr/, /it/, /ru/), section for section
+ * the English homepage (src/pages/index.astro): the hero, the returning
+ * visitor strip, the sky line, the sky today by sign, the sample chart, the
+ * tools, the twelve signs, the three parts of the site, the questions and
+ * the closing panel. Copy lives in ./home-copy.ts; each locale page passes
+ * its own FAQ, which also feeds its structured data.
+ *
+ * A link whose destination exists only in English carries hreflang="en",
+ * the locale's cue from src/lib/i18n/english-only.ts in its title and
+ * accessible name, and the navigation's small EN tag.
+ */
+import ArtFrame from '../ArtFrame.astro';
+import SignIcon from '../SignIcon.astro';
+import ToolIcon from '../ToolIcon.astro';
+import RuHomeHero from './RuHomeHero.astro';
+import SkyTicker from '../../islands/SkyTicker';
+import DemoChart from '../../islands/DemoChart';
+import WelcomeBack from '../../islands/WelcomeBack';
+import glassMaps from '../../data/glass-maps.json';
+import daily from '../../data/daily.json';
+import { englishOnlyCue, localizePath, t } from '../../lib/i18n';
+import { formatDate } from '../../lib/i18n/dates';
+import { moonPhaseLabel } from '../../lib/i18n/astrology';
+import { SIGNS, signDates, signForLongitude, signName } from '../../lib/signs';
+import { signDateRange } from '../../lib/sign-display';
+import { ALL_TOOLS_LABEL, NAV_MORE } from '../../lib/nav-tools';
+import { HOME_COPY, type HomeFaqItem, type HomeLocale } from './home-copy';
+import '../../styles/today.css';
+import './localized-home.css';
+
+interface Props {
+  locale: HomeLocale;
+  faq: readonly HomeFaqItem[];
+}
+
+const { locale, faq } = Astro.props;
+const c = HOME_COPY[locale];
+const cue = englishOnlyCue(locale)!;
+
+/** A route in this locale, or the English page with the courtesy cue. */
+const route = (path: string) => {
+  const href = localizePath(locale, path);
+  return { href, english: href === path };
+};
+const englishAttrs = (label: string) => ({
+  hreflang: 'en',
+  title: cue.aria,
+  'aria-label': `${label}. ${cue.aria}`,
+});
+
+const birthChart = localizePath(locale, '/birth-chart/');
+const horoscopes = route('/horoscopes/');
+const today = route('/today/');
+const tools = route('/tools/');
+const methodology = route('/methodology/');
+
+const toolCards = [
+  { path: '/birth-chart/', icon: 'birth-chart' as const },
+  { path: '/moon-sign/', icon: 'moon-sign' as const },
+  { path: '/rising-sign/', icon: 'rising-sign' as const },
+  { path: '/compatibility/', icon: 'compatibility' as const },
+].map((tool, index) => ({ ...tool, ...c.tools.items[index], href: localizePath(locale, tool.path) }));
+
+/** The shared tools, as one light row under the four calculators. */
+const shortLabel = (path: string) => NAV_MORE.find((item) => item.href === path)!.label[locale];
+const together = [
+  { path: '/group-charts/', label: shortLabel('/group-charts/') },
+  { path: '/compatibility/invite/', label: shortLabel('/compatibility/invite/') },
+  { path: '/big-three/', label: shortLabel('/big-three/') },
+  c.tools.extra,
+].map((item) => ({ ...item, ...route(item.path) }));
+
+/** The sign the Sun is in on the committed daily edition. */
+const sunNow = signForLongitude(daily.bodies.find((body) => body.body === 'Sun')!.lon).slug;
+const editionStamp = `${formatDate(locale, `${daily.date}T12:00:00Z`, {
+  year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
+})} · ${moonPhaseLabel(locale, daily.moon.phase)}`;
+/** ['21 mar', '19 abr']: the two edge days of a sign, compact enough for a twelve-column row. */
+const edgeDays = (slug: string) => {
+  const dates = signDates(slug, locale);
+  const russian = /^с (.+) по (.+)$/u.exec(dates);
+  // The table separates the two days with a spaced en dash (U+2013).
+  return russian ? [russian[1], russian[2]] : dates.split(' \u2013 ');
+};
+const compactDates = (slug: string) => edgeDays(slug).join(' · ');
+const signTiles = SIGNS.map((sign) => ({
+  sign,
+  name: signName(sign, locale),
+  ...route(`/horoscopes/${sign.slug}/`),
+}));
+---
+{locale === 'ru' ? (
+  <RuHomeHero
+    title={c.hero.title}
+    sub={c.hero.sub}
+    cta={c.hero.cta}
+    horoscope={c.hero.horoscope}
+    horoscopeHref={horoscopes.href}
+    englishCue={cue}
+    trust={c.hero.trust}
+    credit={c.hero.credit}
+    pause={c.hero.pause}
+  />
+) : (
+  <section class="lhero container">
+    {/* No reveal on the hero frame: the poster is the LCP and must paint
+        before any script runs. */}
+    <div class="lhero__frame">
+      <picture>
+        <source
+          media="(max-width: 479px)"
+          srcset="/assets/hero/zodiacs-hero-poster-mobile-narrow-v3.avif"
+          type="image/avif"
+        />
+        <source
+          media="(max-width: 719px)"
+          srcset="/assets/hero/zodiacs-hero-poster-mobile-v3.avif"
+          type="image/avif"
+        />
+        <img
+          class="lhero__poster"
+          src="/assets/hero/zodiacs-hero-poster.avif"
+          width="1600"
+          height="900"
+          loading="eager"
+          fetchpriority="high"
+          alt=""
+          aria-hidden="true"
+          data-hero-poster
+        />
+      </picture>
+      <video
+        class="lhero__video"
+        muted
+        loop
+        playsinline
+        preload="none"
+        disablepictureinpicture
+        aria-hidden="true"
+        tabindex="-1"
+        data-hero-video
+      >
+        <source data-src="/assets/hero/zodiacs-hero-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
+        <source data-src="/assets/hero/zodiacs-hero.mp4" type="video/mp4" />
+      </video>
+      <div class="lhero__scrim" aria-hidden="true"></div>
+      <div class="lhero__content">
+        <h1 class="lhero__title">{c.hero.title}</h1>
+        <p class="lhero__sub">{c.hero.sub}</p>
+        <div class="lhero__ctas">
+          <a class="btn btn--primary" href={birthChart}><span>{c.hero.cta}</span><span class="orb">↗</span></a>
+          {horoscopes.english ? (
+            <a class="btn btn--ghost lhero__ghost" href={horoscopes.href} hreflang="en" title={cue.aria}><span>{c.hero.horoscope}{cue.suffix}</span></a>
+          ) : (
+            <a class="btn btn--ghost lhero__ghost" href={horoscopes.href}><span>{c.hero.horoscope}</span></a>
+          )}
+        </div>
+        <p class="lhero__trust">{c.hero.trust}</p>
+      </div>
+      <span class="lhero__credit">{c.hero.credit}</span>
+      <button class="lhero-motion" type="button" data-hero-motion-toggle aria-pressed="false" aria-label={c.hero.pause}>
+        <svg class="lhero-motion__pause" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><rect x="2" y="1.5" width="2.6" height="9" rx="1" /><rect x="7.4" y="1.5" width="2.6" height="9" rx="1" /></svg>
+        <svg class="lhero-motion__play" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3.2 1.6v8.8l7.4-4.4z" /></svg>
+      </button>
+    </div>
+    <script is:inline>
+      // The poster is the LCP and the complete reduced-motion / constrained-data
+      // experience. Phone video remains detached until the first interaction;
+      // desktop starts the film as the English home does. Offscreen ambient
+      // work pauses.
+      (function () {
+        var v = document.querySelector('[data-hero-video]');
+        var p = document.querySelector('[data-hero-poster]');
+        if (!v || !p) return;
+        var frame = v.closest('.lhero__frame');
+        var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        var reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var compactViewport = window.matchMedia('(max-width: 719px)').matches;
+        var constrained = connection && (
+          connection.saveData ||
+          ['slow-2g', '2g'].indexOf(connection.effectiveType) !== -1
+        );
+        var manuallyPaused = false;
+        try { manuallyPaused = sessionStorage.getItem('zodiacs:motion-paused') === '1'; } catch (_) {}
+        var toggle = document.querySelector('[data-hero-motion-toggle]');
+        var visible = true;
+        var interacted = false;
+        var playbackRequested = false;
+        var playPending = false;
+        var posterFallback = false;
+        var playAttempt = 0;
+        var abortRetried = false;
+
+        var detachSources = function () {
+          playAttempt += 1;
+          playPending = false;
+          v.querySelectorAll('source[data-src]').forEach(function (source) {
+            source.removeAttribute('src');
+          });
+          delete v.dataset.sourcesAttached;
+          v.preload = 'none';
+          v.load();
+        };
+        var attachSources = function () {
+          if (!v.dataset.sourcesAttached) {
+            v.querySelectorAll('source[data-src]').forEach(function (source) {
+              source.src = source.dataset.src;
+            });
+            v.dataset.sourcesAttached = 'true';
+            v.preload = 'auto';
+            v.load();
+          }
+        };
+        var usePosterFallback = function () {
+          if (posterFallback) return;
+          posterFallback = true;
+          playAttempt += 1;
+          playPending = false;
+          v.dataset.heroPlayback = 'poster-fallback';
+          v.classList.remove('is-playing');
+          v.pause();
+          detachSources();
+        };
+        var tryPlay = function () {
+          if (manuallyPaused || !playbackRequested || !visible || document.hidden || constrained || reducedQuery.matches || posterFallback || playPending) return;
+          attachSources();
+          var attempt = ++playAttempt;
+          playPending = true;
+          v.dataset.heroPlayback = 'loading';
+          var promise;
+          try {
+            promise = v.play();
+          } catch (error) {
+            usePosterFallback();
+            return;
+          }
+          if (!promise || !promise.then) {
+            playPending = false;
+            abortRetried = false;
+            v.dataset.heroPlayback = 'playing';
+            v.classList.add('is-playing');
+            return;
+          }
+          promise.then(function () {
+            if (attempt !== playAttempt) return;
+            playPending = false;
+            abortRetried = false;
+            if (!visible || document.hidden) {
+              v.pause();
+              v.dataset.heroPlayback = 'paused';
+              return;
+            }
+            v.dataset.heroPlayback = 'playing';
+            v.classList.add('is-playing');
+          }).catch(function (error) {
+            if (attempt !== playAttempt) return;
+            playPending = false;
+            if (error && error.name === 'AbortError') {
+              v.dataset.heroPlayback = 'paused';
+              if (visible && !document.hidden && !abortRetried) {
+                abortRetried = true;
+                window.setTimeout(tryPlay, 0);
+              }
+              return;
+            }
+            usePosterFallback();
+          });
+        };
+
+        var setVisible = function (nextVisible) {
+          visible = Boolean(nextVisible) && !document.hidden;
+          v.dataset.heroVisible = String(visible);
+          p.dataset.heroVisible = String(visible);
+          if (!visible) {
+            playAttempt += 1;
+            playPending = false;
+            if (playbackRequested) v.pause();
+            if (v.dataset.heroPlayback === 'playing' || v.dataset.heroPlayback === 'loading') v.dataset.heroPlayback = 'paused';
+            return;
+          }
+          tryPlay();
+        };
+
+        var beginPlayback = function () {
+          if (interacted) return;
+          interacted = true;
+          v.dataset.heroInteracted = 'true';
+          if (constrained || reducedQuery.matches) return;
+          if (playbackRequested) return;
+          playbackRequested = true;
+          tryPlay();
+        };
+
+        if (toggle && manuallyPaused) toggle.setAttribute('aria-pressed', 'true');
+        toggle && toggle.addEventListener('click', function () {
+          manuallyPaused = !manuallyPaused;
+          try { sessionStorage.setItem('zodiacs:motion-paused', manuallyPaused ? '1' : '0'); } catch (_) {}
+          toggle.setAttribute('aria-pressed', String(manuallyPaused));
+          v.dataset.heroMotion = manuallyPaused || reducedQuery.matches ? 'static' : 'drift';
+          p.dataset.heroMotion = v.dataset.heroMotion;
+          if (manuallyPaused) { playAttempt += 1; playPending = false; v.pause(); v.classList.remove('is-playing'); v.dataset.heroPlayback = 'paused'; }
+          else { playbackRequested = true; tryPlay(); }
+        });
+        v.dataset.heroMotion = reducedQuery.matches || manuallyPaused ? 'static' : 'drift';
+        p.dataset.heroMotion = v.dataset.heroMotion;
+        v.dataset.heroPlayback = 'poster';
+
+        // Desktop keeps the released autoplay. The interaction gate is for
+        // compact viewports, where the poster must remain the LCP surface.
+        var startDesktopPlayback = function () {
+          if (!compactViewport && !constrained && !reducedQuery.matches) {
+            playbackRequested = true;
+            tryPlay();
+          }
+        };
+
+        ['pointerdown', 'touchstart', 'keydown'].forEach(function (eventName) {
+          window.addEventListener(eventName, beginPlayback, { once: true, passive: true, capture: true });
+        });
+
+        // The observer's first report, right after the first layout, is the
+        // frame's starting visibility.
+        if (frame && 'IntersectionObserver' in window) {
+          var observed = false;
+          var observer = new IntersectionObserver(function (entries) {
+            setVisible(entries[0] && entries[0].isIntersecting);
+            if (!observed) {
+              observed = true;
+              startDesktopPlayback();
+            }
+          }, { threshold: 0.01 });
+          observer.observe(frame);
+        } else {
+          setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
+          startDesktopPlayback();
+        }
+
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden) setVisible(false);
+          else setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
+        });
+
+        reducedQuery.addEventListener && reducedQuery.addEventListener('change', function () {
+          v.dataset.heroMotion = reducedQuery.matches || manuallyPaused ? 'static' : 'drift';
+          p.dataset.heroMotion = v.dataset.heroMotion;
+          if (reducedQuery.matches) {
+            playAttempt += 1;
+            playPending = false;
+            if (playbackRequested) v.pause();
+            v.dataset.heroPlayback = 'paused';
+            return;
+          }
+          if ((!compactViewport || interacted) && !constrained && !posterFallback) {
+            playbackRequested = true;
+            tryPlay();
+          }
+        });
+
+        v.addEventListener('error', function () {
+          if (constrained || posterFallback || !playbackRequested || !v.dataset.sourcesAttached) return;
+          if (v.dataset.sourceRetry === 'true') {
+            usePosterFallback();
+            return;
+          }
+          v.dataset.sourceRetry = 'true';
+          playPending = false;
+          detachSources();
+          window.setTimeout(function () {
+            if (posterFallback || !visible) return;
+            attachSources();
+            tryPlay();
+          }, 0);
+        });
+        window.addEventListener('pagehide', function () {
+          playAttempt += 1;
+          playPending = false;
+          if (playbackRequested) v.pause();
+        });
+        window.addEventListener('pageshow', function (event) {
+          if (event.persisted) setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
+        });
+      })();
+    </script>
+  </section>
+)}
+
+<!-- Lens filters for the glass chrome: capsule displacement maps ride
+     inline so nothing is fetched. Browsers without url() backdrop
+     filters never leave the blur floor. -->
+<svg class="glass-defs" aria-hidden="true" focusable="false">
+  <filter id="zdx-lens-cta" color-interpolation-filters="sRGB" primitiveUnits="objectBoundingBox" x="-0.1" y="-0.2" width="1.2" height="1.4">
+    <feImage href={glassMaps.cta} x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map" />
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="0.5" xChannelSelector="R" yChannelSelector="G" result="disp" />
+    <feGaussianBlur in="disp" stdDeviation="0.009 0.038" result="soft" />
+    <feColorMatrix in="soft" type="saturate" values="1.4" />
+  </filter>
+  <filter id="zdx-lens-nav" color-interpolation-filters="sRGB" primitiveUnits="objectBoundingBox" x="-0.1" y="-0.2" width="1.2" height="1.4">
+    <feImage href={glassMaps.nav} x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map" />
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="0.35" xChannelSelector="R" yChannelSelector="G" result="disp" />
+    <feGaussianBlur in="disp" stdDeviation="0.005 0.038" result="soft" />
+    <feColorMatrix in="soft" type="saturate" values="1.35" />
+  </filter>
+</svg>
+
+<!-- Returning visitors with a saved chart get greeted; everyone else sees nothing here. -->
+<WelcomeBack client:interaction locale={locale} />
+
+<!-- The sky, right now: one calm line under the hero. The committed receipt
+     needs no hydration. -->
+<section class="lhome-sky ticker-band reveal" aria-label={c.sky.label}>
+  <SkyTicker locale={locale} />
+  {today.english ? (
+    <a class="textlink lhome-sky__link" href={today.href} {...englishAttrs(c.sky.link)}>{c.sky.link} <small class="lang-tag" aria-hidden="true">EN</small> <span class="arr" aria-hidden="true">→</span></a>
+  ) : (
+    <a class="textlink lhome-sky__link" href={today.href}>{c.sky.link} <span class="arr" aria-hidden="true">→</span></a>
+  )}
+</section>
+
+<!-- The quickest need first: pick a Sun sign for today's reading. Plain
+     links, so the picker costs no script on the first screens. -->
+<section class="kwrap home-today" id="today-by-sign" aria-labelledby="today-by-sign-title">
+  <div class="section-head section-head--row reveal">
+    <div>
+      <span class="kicker">{c.today.kicker}</span>
+      <h2 class="h-2" id="today-by-sign-title">{c.today.title}</h2>
+      <p>{c.today.lede}</p>
+    </div>
+    {horoscopes.english ? (
+      <a class="textlink only-desktop" href={horoscopes.href} {...englishAttrs(c.today.all)}>{c.today.all} <small class="lang-tag" aria-hidden="true">EN</small> <span class="arr" aria-hidden="true">→</span></a>
+    ) : (
+      <a class="textlink only-desktop" href={horoscopes.href}>{c.today.all} <span class="arr" aria-hidden="true">→</span></a>
+    )}
+  </div>
+  <ul class="home-today__grid" role="list" data-today-icons>
+    {signTiles.map(({ sign, name, href, english }) => {
+      const label = sign.slug === sunNow ? c.today.sunHereAria(name) : `${name}, ${signDateRange(sign, locale)}`;
+      return (
+        <li>
+          <a
+            href={href}
+            hreflang={english ? 'en' : undefined}
+            class:list={[sign.slug === sunNow && 'is-now']}
+            style={`--sign:${sign.hue}`}
+            aria-label={english ? `${label}. ${cue.aria}` : label}
+          >
+            <SignIcon sign={sign.slug} size={52} webpOnly deferred />
+            <b>{name}</b>
+            <small>{sign.slug === sunNow
+              ? c.today.sunHere
+              : edgeDays(sign.slug).map((day, index) => <>{index > 0 && ' · '}<span>{day}</span></>)}</small>
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+  <p class="home-today__note">
+    <span>{c.today.note}</span>
+    <span class="tbs__stamp">{editionStamp}</span>
+  </p>
+  <script is:inline>
+    // The twelve sign pictures wait until the grid nears the screen.
+    (function () {
+      var grid = document.querySelector('[data-today-icons]');
+      if (!grid) return;
+      function load() {
+        grid.querySelectorAll('img[data-src]').forEach(function (image) {
+          image.src = image.getAttribute('data-src');
+          image.removeAttribute('data-src');
+        });
+      }
+      if (!('IntersectionObserver' in window)) { load(); return; }
+      var watch = new IntersectionObserver(function (entries) {
+        if (!entries[0] || !entries[0].isIntersecting) return;
+        watch.disconnect();
+        load();
+      }, { rootMargin: '200px 0px' });
+      watch.observe(grid);
+    })();
+  </script>
+</section>
+
+<div class="kwrap"><hr class="rule" /></div>
+
+<!-- The birth chart, shown rather than described: a real chart with its big
+     three and one sentence of meaning. -->
+<section class="chart-preview" id="chart-preview">
+  <div class="kwrap sample reveal">
+    <div class="sample__head">
+      <span class="kicker">{c.sample.kicker}</span>
+      <h2 class="h-2">{c.sample.title}</h2>
+      <p class="klede">{c.sample.lede}</p>
+    </div>
+    <DemoChart locale={locale} />
+    <script is:inline>
+      (function () {
+        var root = document.querySelector('[data-demo-preview]');
+        if (!root) return;
+
+        // The wheel's twelve sign discs ship as data-href and the big three's
+        // discs as data-src, so they cost nothing while the hero paints; lift
+        // them to real addresses as the section approaches.
+        var discs = root.querySelectorAll('image[data-href], img[data-src]');
+        function liftDiscs() {
+          for (var i = 0; i < discs.length; i += 1) {
+            var attribute = discs[i].tagName.toLowerCase() === 'img' ? 'src' : 'href';
+            discs[i].setAttribute(attribute, discs[i].getAttribute('data-' + attribute));
+            discs[i].removeAttribute('data-' + attribute);
+          }
+        }
+        if (discs.length) {
+          // .demo itself is display: contents, so it has no box to observe;
+          // watch the wheel.
+          var discAnchor = root.querySelector('.demo__wheel') || root;
+          if ('IntersectionObserver' in window) {
+            var discWatch = new IntersectionObserver(function (entries) {
+              for (var i = 0; i < entries.length; i += 1) {
+                if (entries[i].isIntersecting) {
+                  liftDiscs();
+                  discWatch.disconnect();
+                  return;
+                }
+              }
+            }, { rootMargin: '200px 0px' });
+            discWatch.observe(discAnchor);
+          } else {
+            liftDiscs();
+          }
+        }
+
+        var caption = root.querySelector('[data-demo-caption]');
+        var title = root.querySelector('[data-demo-title-output]');
+        var kind = root.querySelector('[data-demo-kind-output]');
+        var targets = root.querySelectorAll('[data-demo-target]');
+        var jumps = root.querySelectorAll('[data-demo-jump]');
+        var highlights = root.querySelectorAll('[data-demo-highlight]');
+        var selector = root.querySelector('[data-demo-select]');
+        var enterFrame = 0;
+        var settleFrame = 0;
+        if (!caption || !title || !kind || !targets.length) return;
+
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var targetFor = function (id) {
+          return Array.prototype.find.call(targets, function (target) {
+            return target.dataset.demoId === id;
+          });
+        };
+
+        var activate = function (target, event) {
+          if (!target) return;
+          window.cancelAnimationFrame(enterFrame);
+          window.cancelAnimationFrame(settleFrame);
+          var instant = !event || event.detail === 0;
+          var reducedMotion = !instant && reduced.matches;
+          var id = target.dataset.demoId;
+          var nextHighlight = null;
+
+          targets.forEach(function (item) {
+            item.dataset.selected = item === target ? 'true' : 'false';
+            if (item.tagName === 'BUTTON') item.setAttribute('aria-pressed', item === target ? 'true' : 'false');
+          });
+          if (selector) selector.value = id;
+          jumps.forEach(function (item) {
+            item.setAttribute('aria-pressed', item.dataset.demoJump === id ? 'true' : 'false');
+          });
+          highlights.forEach(function (item) {
+            item.dataset.active = 'false';
+            if (item.dataset.demoHighlight === id) nextHighlight = item;
+          });
+
+          root.dataset.demoMotion = instant ? 'instant' : reducedMotion ? 'reduced' : 'animated';
+          root.dataset.activeLayer = target.dataset.demoLayer;
+          root.dataset.activeId = id;
+          kind.textContent = target.dataset.demoKind;
+          title.textContent = target.dataset.demoTitle;
+          caption.textContent = target.dataset.demoCopy;
+
+          if (!nextHighlight) return;
+          if (instant || reducedMotion) {
+            nextHighlight.dataset.active = 'true';
+            return;
+          }
+          enterFrame = window.requestAnimationFrame(function () {
+            settleFrame = window.requestAnimationFrame(function () {
+              nextHighlight.dataset.active = 'true';
+            });
+          });
+        };
+
+        targets.forEach(function (target) {
+          target.addEventListener('click', function (event) { activate(target, event); });
+        });
+        if (selector) selector.addEventListener('change', function () {
+          activate(targetFor(selector.value));
+        });
+        jumps.forEach(function (jump) {
+          jump.addEventListener('click', function (event) {
+            activate(targetFor(jump.dataset.demoJump), event);
+          });
+        });
+      })();
+    </script>
+  </div>
+</section>
+
+<!-- Tools: one grid, then the shared tools as a light row. -->
+<section class="kwrap home-tools-band">
+  <div class="section-head section-head--row reveal">
+    <div>
+      <h2 class="h-2">{c.tools.title}</h2>
+      <p>{c.tools.lede}</p>
+    </div>
+    <a class="textlink only-desktop" href={tools.href}>{ALL_TOOLS_LABEL[locale]} <span class="arr" aria-hidden="true">→</span></a>
+  </div>
+  <div class="grid-4 home-tools">
+    {toolCards.map((tool) => (
+      <a class="kcard home-tool" href={tool.href}>
+        <ToolIcon name={tool.icon} size={52} />
+        <h3 class="h-4">{tool.title}</h3>
+        <p>{tool.promise}</p>
+        <span class="kcard__go" aria-hidden="true">→</span>
+      </a>
+    ))}
+  </div>
+  <div class="home-together">
+    <span class="home-together__label">{c.tools.together}</span>
+    {together.map((item) => item.english ? (
+      <a class="pill" href={item.href} {...englishAttrs(item.label)}>{item.label} <small class="lang-tag" aria-hidden="true">EN</small></a>
+    ) : (
+      <a class="pill" href={item.href}>{item.label}</a>
+    ))}
+  </div>
+</section>
+
+<!-- The twelve signs, each with its painted panel. -->
+<section class="kwrap home-signs" id={c.signs.id}>
+  <div class="section-head section-head--row reveal">
+    <div>
+      <h2 class="h-2">{c.signs.title}</h2>
+      <p>{c.signs.lede}</p>
+    </div>
+  </div>
+  <ul class="home-signs__row" role="list">
+    {SIGNS.map((sign) => (
+      <li>
+        <a class="home-sign" href={localizePath(locale, `/${sign.slug}/`)} style={`--sign:${sign.hue}`}>
+          <ArtFrame
+            sign={sign.slug}
+            locale={locale}
+            alt=""
+            sizes="(min-width: 1100px) 190px, (min-width: 761px) 25vw, 62vw"
+            spot="50% 54%"
+          />
+          <span class="home-sign__name"><SignIcon sign={sign.slug} size={26} /><b>{signName(sign, locale)}</b></span>
+          <small>{compactDates(sign.slug)}</small>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<!-- Learn, calculate, keep. -->
+<section class="kwrap home-pillars">
+  <div class="section-head reveal">
+    <h2 class="h-2">{c.pillars.title}</h2>
+    <p>{c.pillars.lede}</p>
+  </div>
+  <div class="grid-3 pillars">
+    <article class="pillar">
+      <img class="pillar__art" src="/assets/hero-crops/learn-560.webp" srcset="/assets/hero-crops/learn-360.webp 360w, /assets/hero-crops/learn-560.webp 560w" sizes="(min-width: 860px) 380px, (min-width: 761px) 50vw, 112px" width="560" height="350" alt={c.pillars.learn.alt} loading="lazy" decoding="async" />
+      <span class="kicker">{c.pillars.learn.kicker}</span>
+      <h3 class="h-3">{c.pillars.learn.title}</h3>
+      <p>{c.pillars.learn.body}</p>
+      <a class="textlink" href={`#${c.signs.id}`}>{c.pillars.learn.link} <span class="arr" aria-hidden="true">→</span></a>
+    </article>
+    <article class="pillar">
+      <img class="pillar__art" src="/assets/hero-crops/calculate-560.webp" srcset="/assets/hero-crops/calculate-360.webp 360w, /assets/hero-crops/calculate-560.webp 560w" sizes="(min-width: 860px) 380px, (min-width: 761px) 50vw, 112px" width="560" height="350" alt={c.pillars.calculate.alt} loading="lazy" decoding="async" />
+      <span class="kicker">{c.pillars.calculate.kicker}</span>
+      <h3 class="h-3">{c.pillars.calculate.title}</h3>
+      <p>{c.pillars.calculate.body}</p>
+      <a class="textlink" href={tools.href}>{c.pillars.calculate.link} <span class="arr" aria-hidden="true">→</span></a>
+    </article>
+    <article class="pillar">
+      <img class="pillar__art" src="/assets/hero-crops/keep-560.webp" srcset="/assets/hero-crops/keep-360.webp 360w, /assets/hero-crops/keep-560.webp 560w" sizes="(min-width: 860px) 380px, (min-width: 761px) 50vw, 112px" width="560" height="350" alt={c.pillars.keep.alt} loading="lazy" decoding="async" />
+      <span class="kicker">{c.pillars.keep.kicker}</span>
+      <h3 class="h-3">{c.pillars.keep.title}</h3>
+      <p>{c.pillars.keep.body}</p>
+      <a class="textlink" href={localizePath(locale, '/profile/')}>{c.pillars.keep.link} <span class="arr" aria-hidden="true">→</span></a>
+    </article>
+  </div>
+</section>
+
+<!-- Questions, as one flat list beside its heading. -->
+<section class="kwrap home-faq">
+  <div class="qa">
+    <div>
+      <h2 class="h-2 reveal">{t(locale, 'trustQuestions')}</h2>
+      <p>{c.faq.lead}<a class="home-faq__method" href={methodology.href}>{c.faq.link}</a>{c.faq.trail}</p>
+    </div>
+    <div class="kfaq">
+      {faq.map(({ q, a, href, link }, index) => (
+        <details open={index === 0}>
+          <summary>{q}</summary>
+          <p>{a} {href && link && <a href={href}>{link}</a>}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- One closing invitation over the hero art. -->
+<section class="kwrap home-close">
+  <div class="closing-panel">
+    <img src={c.close.image} width={locale === 'ru' ? 1440 : 1600} height={locale === 'ru' ? 810 : 900} alt="" loading="lazy" decoding="async" />
+    <div>
+      <h2 class="h-2">{c.close.title}</h2>
+      <p>{c.close.lede}</p>
+      <div class="btn-row">
+        <a class="btn btn--primary btn--lg" href={birthChart}><span>{c.hero.cta}</span><span class="orb">↗</span></a>
+        <a class="textlink" href={localizePath(locale, '/big-three/')}>{c.close.more} <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+  <p class="company-note">
+    {c.company.before}<a href="/about/" {...englishAttrs('Zodiacs LLC')}>Zodiacs LLC <small class="lang-tag" aria-hidden="true">EN</small></a>{c.company.after}
+  </p>
+</section>
+
+<style>
+  /* Section rhythm and the kit, as on the English homepage. */
+
+  /* ── The sky today, by sign ── */
+  .home-today { padding-block: clamp(64px, 8vw, 120px) 72px; }
+  .home-today .section-head--row { margin-bottom: clamp(28px, 4vw, 40px); }
+  .home-today .kicker { margin-bottom: 4px; }
+  .home-today__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .home-today__grid a {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 10px;
+    height: 100%;
+    padding: 22px 4px 18px;
+    border: 1px solid var(--hair-1);
+    border-radius: 18px;
+    background: rgba(198, 204, 218, 0.02);
+    color: var(--ink-0);
+    text-decoration: none;
+    text-align: center;
+    transition: border-color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+  }
+  /* Sign names run to eleven letters (Capricórnio, Capricorne), so the tile
+     text sits a step smaller than the English row's and the row drops to
+     six columns sooner. */
+  .home-today__grid b { max-width: 100%; font-weight: 550; font-size: 0.875rem; overflow-wrap: anywhere; hyphens: auto; }
+  .home-today__grid small { margin-top: -6px; font-size: 11.5px; line-height: 1.3; color: var(--faint); }
+  /* Each day stays whole; a tile too narrow for the pair breaks it at the dot. */
+  .home-today__grid small span { white-space: nowrap; }
+  .home-today__grid a.is-now { border-color: var(--hair-3); background: color-mix(in oklab, var(--sign) 7%, transparent); }
+  /* The "Sun is here" note runs longer than a date in some languages. */
+  .home-today__grid a.is-now small { color: var(--sign); white-space: normal; text-wrap: balance; }
+  @media (hover: hover) and (pointer: fine) {
+    .home-today__grid a:hover {
+      border-color: color-mix(in oklab, var(--sign) 42%, transparent);
+      background: color-mix(in oklab, var(--sign) 6%, transparent);
+    }
+  }
+  .home-today__note {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 16px 0 0;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+  @media (max-width: 1280px) { .home-today__grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  @media (max-width: 760px) {
+    .home-today__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .home-today__grid a { gap: 8px; padding: 14px 2px 12px; }
+    .home-today__grid :global(.sign-icon) { width: 42px; }
+    .home-today__grid b { font-size: 0.8125rem; letter-spacing: -0.01em; }
+    .home-today__grid small { display: none; }
+    .home-today__note { flex-direction: column; gap: 4px; font-size: 0.875rem; }
+  }
+  @media (max-width: 380px) { .home-today__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  /* ── Sample chart: the wheel beside her big three ── */
+  .chart-preview { scroll-margin-top: 92px; padding-block: 88px clamp(64px, 8vw, 120px); }
+  .sample {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-areas: 'wheel head' 'wheel guide';
+    column-gap: clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+  .sample__head { grid-area: head; align-self: end; }
+  .sample__head .kicker { margin-bottom: 4px; }
+  .sample__head .klede { margin-top: 14px; }
+  @media (max-width: 860px) {
+    .sample { grid-template-columns: 1fr; grid-template-areas: 'head' 'wheel' 'guide'; row-gap: 28px; }
+  }
+
+  /* ── Tools ── */
+  .home-tools-band { padding-bottom: clamp(64px, 8vw, 120px); }
+  .home-tool { display: flex; flex-direction: column; min-height: 230px; padding: 26px; }
+  .home-tool .h-4 { margin-top: 44px; font-size: 1.2rem; overflow-wrap: anywhere; hyphens: auto; }
+  .home-tool p { padding-right: 36px; }
+  .home-together { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 18px; }
+  .home-together__label { margin-right: 6px; font-size: 0.9375rem; color: var(--muted); }
+  .home-together .pill { white-space: normal; text-align: center; }
+  @media (max-width: 760px) {
+    .home-tool { min-height: 0; padding: 18px 16px; }
+    .home-tool .h-4 { margin-top: 20px; font-size: 1rem; }
+    .home-tool p { padding-right: 0; }
+    .home-tool .kcard__go { display: none; }
+  }
+  /* Совместимость and Compatibilidade need the full width on small phones. */
+  @media (max-width: 380px) { .home-tools { grid-template-columns: minmax(0, 1fr); } }
+
+  /* ── The twelve signs, with their painted panels ── */
+  .home-signs { padding-bottom: clamp(64px, 8vw, 120px); scroll-margin-top: 92px; }
+  .home-signs__row {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .home-sign { display: block; color: var(--ink-0); text-decoration: none; }
+  .home-sign :global(.artframe) { aspect-ratio: 4 / 3; border-radius: 16px; }
+  .home-sign :global(.artframe::after) {
+    background: radial-gradient(ellipse 60% 64% at 50% 54%, transparent 0 30%, rgba(6, 7, 9, 0.45) 75%, rgba(6, 7, 9, 0.85) 100%);
+  }
+  .home-sign__name { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+  .home-sign b { font-weight: 600; font-size: 1rem; }
+  .home-sign small { display: block; margin: -2px 0 0 36px; font-size: 12.5px; color: var(--faint); }
+  @media (hover: hover) and (pointer: fine) {
+    .home-sign :global(.artframe > img) { transition: transform 600ms var(--ease-soft), filter 600ms var(--ease-soft); }
+    .home-sign:hover :global(.artframe > img) { transform: scale(1.03); filter: saturate(1) brightness(0.95); }
+  }
+  @media (max-width: 1100px) { .home-signs__row { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 760px) {
+    .home-signs__row {
+      display: flex;
+      gap: 12px;
+      margin-right: -20px;
+      padding-right: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .home-signs__row::-webkit-scrollbar { display: none; }
+    .home-signs__row > li { flex: 0 0 62%; scroll-snap-align: start; }
+  }
+
+  /* ── Pillars ── */
+  .home-pillars { padding-bottom: clamp(64px, 8vw, 120px); }
+  .pillar__art {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 16px;
+    background: var(--void-1);
+    filter: brightness(0.9);
+  }
+  .pillar .kicker { margin-top: 18px; font-size: 1.05rem; }
+  .pillar .h-3 { margin-top: 2px; overflow-wrap: break-word; hyphens: auto; }
+  .pillar p { margin: 10px 0 0; max-width: 38ch; color: var(--muted); font-size: 0.9375rem; line-height: 1.6; }
+  .pillar .textlink { margin-top: 14px; }
+  @media (max-width: 760px) {
+    .pillars { gap: 0; }
+    .pillar {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      column-gap: 16px;
+      align-content: start;
+      padding: 18px 0;
+      border-top: 1px solid var(--hair-1);
+    }
+    .pillar__art { grid-row: 1 / span 4; aspect-ratio: 1; border-radius: 14px; }
+    .pillar .kicker { margin-top: 0; font-size: 0.95rem; }
+    .pillar .h-3 { font-size: 1.3rem; }
+    .pillar p { margin-top: 6px; font-size: 0.875rem; }
+    .pillar .textlink { justify-self: start; margin-top: 10px; font-size: 0.875rem; }
+  }
+
+  /* ── Questions ── */
+  .home-faq { padding-bottom: clamp(64px, 8vw, 120px); }
+  .home-faq__method { color: var(--ink-1); text-decoration: underline; text-decoration-color: var(--hair-3); text-underline-offset: 3px; }
+
+  /* ── Close ── */
+  .home-close { padding-bottom: clamp(64px, 8vw, 104px); }
+  .home-close .closing-panel > img { --focus: 30% 85%; }
+  .company-note {
+    max-width: 620px;
+    margin: 34px auto 0;
+    color: var(--faint);
+    font-size: var(--text-xs);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .company-note a { color: var(--text-2); }
+</style>

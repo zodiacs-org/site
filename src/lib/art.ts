@@ -6,6 +6,11 @@
  * them is ever a page's largest first-screen picture except the Learn
  * cover, which also ships as AVIF for that reason.
  *
+ * The two profile pieces (the keepsake case for an empty set of saved charts
+ * and the pocket orreries for an empty list of invitations) are 3:2 and sit
+ * inside their panels behind a soft mask, so no edge of the picture shows on
+ * any background.
+ *
  * The four element medallions are round, transparent-edged WebPs at 128 and
  * 256 pixels, cut from one sheet.
  */
@@ -18,6 +23,8 @@ export const ART = {
   'birthday-sundial': { width: 1200, height: 525 },
   'learn-atlas': { width: 1200, height: 900 },
   'pocket-orrery': { width: 1200, height: 750 },
+  'profile-invitation': { width: 1200, height: 800 },
+  'profile-keepsake': { width: 1200, height: 800 },
   'rising-horizon': { width: 1200, height: 675 },
   'today-orrery': { width: 1200, height: 675 },
   'tools-lens': { width: 1200, height: 750 },

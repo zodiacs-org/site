@@ -4,7 +4,7 @@
   "width": 1200,
   "height": 630,
   "iconSource": "/assets/zodiac-icons/128/{sign}.webp",
-  "fallback": "/assets/og/v2/share-pastel-wheel-20260809.png",
+  "fallback": "/assets/og/v8/home-20261019.jpg",
   "requiredCards": [
     "disclosure.png",
     "events/eclipse-2026-02-17.png",

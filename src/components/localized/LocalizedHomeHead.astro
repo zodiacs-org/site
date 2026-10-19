@@ -1,0 +1,23 @@
+---
+/**
+ * Poster hints for the translated homes, rendered into Base's head slot:
+ * each viewport discovers exactly the poster its hero paints first. The
+ * Russian home keeps its own reviewed poster pair (RuHomeHero.astro).
+ */
+import type { HomeLocale } from './home-copy';
+
+interface Props { locale: HomeLocale }
+const { locale } = Astro.props;
+---
+{locale === 'ru' ? (
+  <>
+    <link rel="preload" as="image" href="/assets/hero/zodiacs-hero-poster-ru-mobile.avif" media="(max-width: 719px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/hero/zodiacs-hero-poster-ru.avif" media="(min-width: 720px)" fetchpriority="high" />
+  </>
+) : (
+  <>
+    <link rel="preload" as="image" href="/assets/hero/zodiacs-hero-poster-mobile-narrow-v3.avif" media="(max-width: 479px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/hero/zodiacs-hero-poster-mobile-v3.avif" media="(min-width: 480px) and (max-width: 719px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/hero/zodiacs-hero-poster.avif" media="(min-width: 720px)" fetchpriority="high" />
+  </>
+)}

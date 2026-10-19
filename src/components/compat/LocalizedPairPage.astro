@@ -187,6 +187,7 @@ const jsonLd = [
 ---
 <Base
   clientUi
+  inlineCriticalCss
   title={entry.data.title}
   description={entry.data.description}
   path={pagePath}
@@ -196,11 +197,13 @@ const jsonLd = [
   type="article"
   jsonLd={jsonLd}
 >
+  <link slot="head" rel="preload" href="/fonts/eb-garamond-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
   <article class="ph ph--localized" style={`--a:${a.hue};--b:${b.hue}`}>
     <header class="ph-hero">
       <div class="ph-hero__art">
-        <ArtFrame sign={a.slug} locale={locale} flip eager class="ph-pane ph-pane--a" sizes="(max-width: 760px) 128vw, 66vw" />
-        <ArtFrame sign={b.slug} locale={locale} eager alt={same ? '' : undefined} class="ph-pane ph-pane--b" sizes="(max-width: 760px) 128vw, 66vw" />
+        <ArtFrame sign={a.slug} locale={locale} flip eager avif class="ph-pane ph-pane--a" sizes="(max-width: 760px) 128vw, 66vw" />
+        {/* The second painting waits behind the first, the page's largest element. */}
+        <ArtFrame sign={b.slug} locale={locale} eager fetchPriority="low" avif alt={same ? '' : undefined} class="ph-pane ph-pane--b" sizes="(max-width: 760px) 128vw, 66vw" />
       </div>
       <div class="ph-hero__pair" aria-hidden="true">
         {people.map((sign) => <SignIcon sign={sign.slug} size={84} loading="eager" class="ph-hero__disc" />)}
