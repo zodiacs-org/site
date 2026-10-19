@@ -31,6 +31,15 @@ describe('Astrofolio share card (Faces)', () => {
     }
   });
 
+  it('signs the band with the brand lockup, and keeps v5 published for links already shared', async () => {
+    expect(ASTROFOLIO_SHARE_CARD_PATH).toBe('/assets/og/astrofolio/v6/faces.jpg');
+    const source = await read('scripts/build-astrofolio-share-card.mjs');
+    expect(source).toContain('tiltedRingSvg({ width: ringWidthFor(LOCKUP_SIZE.image) })');
+    expect(source).toContain("lockupWordsHtml({ name: 'lockup-name', sep: 'lockup-sep', tld: 'lockup-tld' })");
+    expect(source).not.toContain('<span class="domain">');
+    await expect(readFile(resolve(root, 'public/assets/og/astrofolio/v5/faces.jpg'))).resolves.toBeTruthy();
+  });
+
   it('commits a 1200×630 JPEG small enough for chat-app previews', async () => {
     const bytes = await readFile(resolve(root, `public${ASTROFOLIO_SHARE_CARD_PATH}`));
     const metadata = await sharp(bytes).metadata();

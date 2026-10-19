@@ -27,6 +27,8 @@
  *   npm run data:og -- --only-wing        # refresh the shared Astrofolio / Terminal card
  *   npm run data:og -- --only-sharing-ru # refresh the four Russian sharing cards
  *   npm run data:og -- --only-fomo        # refresh the /fomo/ card
+ *   npm run data:og -- --only-registry    # the Registry's v4 lot and hub cards (build-registry-og.mjs)
+ *   npm run data:og -- --only-terminal-card # Terminal's v7 card
  *   npm run data:og -- --review-people-identities # reviewed identity cards, artifacts only
  *
  * Deterministic and offline: fonts and disc art are inlined as data:
@@ -54,6 +56,8 @@ const OUT = peopleIdentityReview?.output ?? resolve(root, 'public/assets/og/v2')
 // Cache-busted: the file is served immutable, so a new design takes a new name.
 // The 2026-08-09 card stays published, unchanged, for links already shared.
 const HOMEPAGE_CARD = 'share-pastel-wheel-20261019.png';
+// Terminal's card with the lockup; /assets/og/v6/terminal.png stays published.
+const TERMINAL_CARD = '/assets/og/v7/terminal.png';
 
 // Import-free, test-pinned projection of the canonical sign table. The live
 // signs module now has runtime imports, while this generator must stay plain
@@ -447,7 +451,7 @@ function signCard(s) {
 
 const LOTS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
 
-function registryLotCard(s, index) {
+function registryLotCard(s, index, { lockup = false } = {}) {
   const title = signName(s);
   const number = String(index + 1).padStart(2, '0');
   const lot = LOTS[index];
@@ -465,8 +469,9 @@ function registryLotCard(s, index) {
     <img class="disc" src="${DISCS[s.slug]}" width="360" height="360"
          style="box-shadow: 0 30px 90px ${s.hue}40;" />
   </div>`;
-  // The plate the immutable Registry v3 lot cards are built from keeps its bytes.
-  return shell(body, `zodiacs.org/registry/${s.slug}/`, { legacyFooter: true });
+  // The v2 plate the frozen Registry v3 lot cards are built from keeps its
+  // bytes; the v4 plate (--only-registry) carries the lockup.
+  return shell(body, `zodiacs.org/registry/${s.slug}/`, { legacyFooter: !lockup });
 }
 
 function wingCard(copy = OG_EN.wing, footer = 'zodiacs.org · Astrofolio · Registry · Terminal', { legacyFooter = false } = {}) {
@@ -481,6 +486,30 @@ function wingCard(copy = OG_EN.wing, footer = 'zodiacs.org · Astrofolio · Regi
     ${wheelMark(330, 38)}
   </div>`;
   return shell(body, footer, { legacyFooter });
+}
+
+/** Terminal's v7 card: v6's desk (build-astrofolio-identity.mjs) with the lockup's footer row under it. */
+async function terminalCard() {
+  const { terminalSvg } = await import('./build-astrofolio-identity.mjs');
+  const desk = terminalSvg(FONTS.sans.replace(/^data:font\/woff2;base64,/u, '')).replace('<svg ', '<svg class="desk" ');
+  return `<!doctype html>
+<html><head><meta charset="utf-8"><style>${LOCKUP_FACES}
+  @font-face { font-family: 'JetBrains Mono'; font-weight: 100 800; src: url(${FONTS.mono}) format('woff2'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body { background: ${VOID}; position: relative; overflow: hidden; }
+  .desk { position: absolute; left: 0; top: 0; display: block; }
+  .footer {
+    position: absolute; left: 88px; right: 88px; bottom: 34px;
+    display: flex; align-items: center; justify-content: space-between; gap: 28px;
+    font-family: 'JetBrains Mono', monospace; font-size: 19px; letter-spacing: 0.06em; color: ${MUTED};
+  }
+  .footer-rest { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }${LOCKUP_CSS}
+</style></head>
+<body>
+  ${desk}
+  ${lockupFooter('zodiacs.org/terminal/')}
+</body></html>`;
 }
 
 function disclosureCard() {
@@ -1009,6 +1038,48 @@ if (peopleIdentityReview) {
   } finally {
     await browser.close();
   }
+  process.exit(0);
+}
+
+/** A card's full-colour capture, for a family another script composes and encodes. */
+async function capture(html) {
+  await page.setContent(html, { waitUntil: 'load' });
+  await page.evaluate(() => document.fonts.ready);
+  const missing = await page.evaluate(() => [...document.fonts].filter((font) => font.status === 'error').map((font) => font.family));
+  if (missing.length) throw new Error(`Card fonts failed to load: ${missing.join(', ')}`);
+  await page.waitForTimeout(120);
+  return page.screenshot({ type: 'png' });
+}
+
+// The Registry's current family (v4, 2026-10-19): each lot's plate and the
+// hub card carry the lockup; build-registry-og.mjs lays the sculptures and
+// seals on the plates and writes the family. v3 and the pinned v2 cards
+// stay as published.
+if (process.argv.includes('--only-registry')) {
+  console.log('Rendering the Registry v4 family…');
+  const { buildRegistryOgFamily } = await import('./build-registry-og.mjs');
+  const plates = new Map();
+  for (let i = 0; i < SIGNS.length; i += 1) {
+    plates.set(SIGNS[i].slug, await capture(registryLotCard(SIGNS[i], i, { lockup: true })));
+  }
+  const hub = await capture(wingCard(LEGACY_REGISTRY_CARD_COPY, 'zodiacs.org/registry/'));
+  await browser.close();
+  const manifest = await buildRegistryOgFamily({ plates, hub });
+  console.log(`Done: ${manifest.cards.length} ${manifest.version} lot cards and the hub card.`);
+  process.exit(0);
+}
+
+// Terminal's card (v7, 2026-10-19), beside the published v6 card, which
+// stays for links already shared.
+if (process.argv.includes('--only-terminal-card')) {
+  console.log('Rendering the Terminal v7 card…');
+  const raw = await capture(await terminalCard());
+  await browser.close();
+  const bytes = await sharp(raw).png({ palette: true, colours: 256, dither: 0.45, compressionLevel: 9, effort: 10 }).toBuffer();
+  const output = resolve(root, `public${TERMINAL_CARD}`);
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, bytes);
+  console.log(`Done: ${TERMINAL_CARD}, ${(bytes.length / 1024).toFixed(0)}KB.`);
   process.exit(0);
 }
 

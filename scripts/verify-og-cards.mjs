@@ -27,7 +27,13 @@ const out = resolve(root, 'public/assets/og/v2');
 const wingOut = resolve(root, 'public/assets/og/v5');
 const wingCard = 'the-twelve.png';
 const astrofolioOut = resolve(root, 'public/assets/og/astrofolio/v4');
-const terminalOut = resolve(root, 'public/assets/og/v6');
+const terminalOut = resolve(root, 'public/assets/og/v7');
+// The cards these replaced on 2026-10-19 stay published, unchanged, for
+// links already shared.
+const keptCards = [
+  ['public/assets/og/v6/terminal.png', 'v6/terminal.png'],
+  ['public/assets/og/astrofolio/v5/faces.jpg', 'astrofolio/v5/faces.jpg'],
+];
 const legacyRegistryCardSha256 = 'f7b9e9e801e390f2ef3671755d1f3754a7e45bb9db026699f5381764aab5a08a';
 const homepageCard = 'share-pastel-wheel-20261019.png';
 const russianOut = resolve(out, 'ru');
@@ -136,7 +142,7 @@ for (const slug of signSlugs) {
 }
 
 for (const relativePath of expected) await validatePng(relativePath);
-const expectedTerminalPath = '/assets/og/v6/terminal.png';
+const expectedTerminalPath = '/assets/og/v7/terminal.png';
 if (OG_EN.astrofolio.image !== ASTROFOLIO_SHARE_CARD_PATH) {
   failures.push(`Astrofolio image: expected ${ASTROFOLIO_SHARE_CARD_PATH}, received ${OG_EN.astrofolio.image}`);
 }
@@ -162,7 +168,14 @@ if (OG_EN.terminal.image !== expectedTerminalPath) {
 for (const slug of signSlugs) {
   await validatePng(`${slug}.png`, { base: astrofolioOut, label: `astrofolio/v4/${slug}.png` });
 }
-await validatePng('terminal.png', { base: terminalOut, label: 'v6/terminal.png' });
+await validatePng('terminal.png', { base: terminalOut, label: 'v7/terminal.png' });
+for (const [path, label] of keptCards) {
+  try {
+    await readFile(resolve(root, path));
+  } catch {
+    failures.push(`${label}: missing; a replaced card stays published for links already shared`);
+  }
+}
 await validatePng(wingCard, { unique: false, base: wingOut, label: `historical v5/${wingCard}` });
 try {
   const legacyRegistryBytes = await readFile(resolve(out, 'registry.png'));
@@ -263,7 +276,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`verify-og-cards: OK — homepage on the cache-busted void card; Astrofolio on its evergreen Faces card (the seasonal v4 cards kept for shared links) and Terminal on v6; ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
+console.log(`verify-og-cards: OK — homepage on the cache-busted void card; Astrofolio on its evergreen Faces card, v6 (v5 and the seasonal v4 cards kept for shared links), and Terminal on v7 (v6 kept); ${expected.length} English + ${russianExpected.length} Russian unique page cards, all 1200x630 PNG; Russian family ${(russianBytes / 1024).toFixed(1)}KiB; v2 bundle ${bundleMb.toFixed(2)}MB`);
 
 // Registry catalogue cards live outside the frozen v2 bundle. Keep their
 // source, geometry, manifest, route metadata, and size contracts in the same

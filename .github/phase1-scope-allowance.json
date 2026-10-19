@@ -21,6 +21,8 @@
     "public/sdk/index.html",
     "public/terminal/markets/index.html",
     "scripts/build-app.mjs",
+    "scripts/build-sign-pages.mjs",
+    "scripts/registry-og.test.mjs",
     "scripts/registry-pastel-polish.test.mjs",
     "src/app.jsx",
     "src/lib/aura-share-card.test.ts"
