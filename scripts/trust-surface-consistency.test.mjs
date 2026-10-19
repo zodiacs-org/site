@@ -151,18 +151,28 @@ describe('repository operating claims', () => {
 });
 
 describe('homepage social card', () => {
-  it('wires the reviewed byte-exact black 1200x630 card with prominent pastel symbols into homepage metadata', async () => {
-    const [page, seo, bytes] = await Promise.all([
+  it('wires the reviewed byte-exact 1200x630 hero art card into homepage metadata and the site fallback', async () => {
+    const [page, seo, cards, bytes, earlier] = await Promise.all([
       text('src/pages/index.astro'),
       text('src/components/SEO.astro'),
+      text('src/lib/og-art-cards.mjs'),
+      readFile(resolve(root, 'public/assets/og/v8/home-20261019.jpg')),
       readFile(resolve(root, 'public/assets/og/v2/share-pastel-wheel-20261019.png')),
     ]);
-    expect(page).toContain('image="/assets/og/v2/share-pastel-wheel-20261019.png"');
-    expect(page).toMatch(/imageAlt="[^"]*large ring of twelve pastel zodiac symbols/);
+    expect(page).toContain('image={HOME_ART_CARD}');
+    expect(page).toContain('imageAlt={HOME_ART_CARD_ALT}');
+    expect(cards).toContain("export const HOME_ART_CARD = `${ART_CARD_DIR}/home-20261019.jpg`;");
+    expect(cards).toMatch(/HOME_ART_CARD_ALT = '[^']*zodiac band from the hero film[^']*Explore the stars behind your story/u);
+    expect(seo).toContain('explicitImage ?? catalogImage ?? HOME_ART_CARD;');
     expect(seo).toContain('<meta property="og:image:type" content={imageType} />');
     expect(seo).toContain('<meta name="twitter:image" content={imageUrl} />');
     expect(createHash('sha256').update(bytes).digest('hex'))
-      // The 2026-10-19 card: the same card with the brand lockup (DESIGN.md) in its footer.
+      // The 2026-10-19 art card: the hero film's poster cut at full size, with
+      // the hero's headline in the display serif and the brand lockup
+      // (src/lib/og-art-cards.mjs, DESIGN.md).
+      .toBe('a439fabe238b13aca9a8ab47808be39a6a81df2e2ea5f85dc4e1b2b1c47f196e');
+    // The card it replaced stays published, unchanged, for links already shared.
+    expect(createHash('sha256').update(earlier).digest('hex'))
       .toBe('f315272bcba1b99de463a4df89cb18284caeed3a6d7cbdd016cc26323dd2bcbe');
   });
 });

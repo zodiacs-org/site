@@ -206,6 +206,17 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
 - `public/assets/og/v7/terminal.png` ← `npm run data:og -- --only-terminal-card`
   (Terminal's card: v6's desk from `build-astrofolio-identity.mjs` with the
   lockup's footer row; v6 stays published)
+- `public/assets/og/v8/` (`home-20261019.jpg` and `sign/{slug}.jpg`) ←
+  `npm run data:og -- --only-art-cards` (the art share cards, owner-chosen
+  2026-10-19: the homepage card, which is also the site's fallback, cut from
+  the hero poster, and the twelve sign guide cards on the sign art panels,
+  each laid out as its page's hero with the names in EB Garamond. JPEGs
+  under 300 KB; paths, words, crop and the heroes' shade live in
+  `src/lib/og-art-cards.mjs`, which `og-art-cards.test.ts` holds to the two
+  heroes. Not in the drift job (Chromium and libvips output);
+  `verify-og-cards` checks them. The v2 homepage and sign cards stay
+  published for links already shared, and the run rewrites only the v2
+  manifest's fallback line)
 - `public/assets/og/astrofolio/v6/faces.jpg` ← `node
   scripts/build-astrofolio-share-card.mjs` (Astrofolio's one evergreen share
   card, owner-chosen 2026-09-24: Chromium paints the twelve sign frames of

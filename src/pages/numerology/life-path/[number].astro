@@ -5,6 +5,7 @@ import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES, type LifePathPage } from '../../../
 import { baseDigit, MASTER_NUMBERS, NUMBER_MEANINGS, type CoreNumber } from '../../../data/numerology-meanings';
 import { lifePathDistribution, lifePathExample, nextDatesWithLifePath, reduceKeepingMasters } from '../../../lib/numerology';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { HOME_ART_CARD } from '../../../lib/og-art-cards.mjs';
 import '../../../styles/calculator.css';
 
 export function getStaticPaths() {
@@ -72,7 +73,7 @@ const jsonLd = [
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     inLanguage: 'en',
-    image: 'https://zodiacs.org/assets/og/v2/share-pastel-wheel-20261019.png',
+    image: `https://zodiacs.org${HOME_ART_CARD}`,
     about: { '@type': 'Thing', name: `Life Path ${number}` },
   },
   {

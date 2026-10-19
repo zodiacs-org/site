@@ -6,6 +6,7 @@ import SignIcon from '../../components/SignIcon.astro';
 import publicationData from '../../data/daily-publication.json';
 import type { DailyPublication } from '../../lib/daily-publication';
 import { SIGNS } from '../../lib/signs';
+import { HOME_ART_CARD, HOME_ART_CARD_ALT } from '../../lib/og-art-cards.mjs';
 
 const primaryLink = {
   label: 'Create my free birth chart',
@@ -34,8 +35,8 @@ const dailyLabel = new Intl.DateTimeFormat('en-US', {
   title="Zodiacs.org Links: Birth Chart, Horoscopes & Astrofolio"
   description="Create your free birth chart, read the daily horoscope for every sign, and explore Astrofolio."
   path="/bio/"
-  image="/assets/og/v2/share-pastel-wheel-20261019.png"
-  imageAlt="The twelve zodiac signs in the Zodiacs.org celestial wheel."
+  image={HOME_ART_CARD}
+  imageAlt={HOME_ART_CARD_ALT}
 >
   <div class="bio-shell">
     <section class="bio-card" aria-labelledby="bio-title">

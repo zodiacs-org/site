@@ -23,6 +23,7 @@ import {
 } from '../../lib/birthdays';
 import birthdays from '../../data/birthdays.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { BIRTHDAY_PEOPLE_VISIBLE, peopleForBirthday } from '../../lib/people';
 import { BIRTHDAY_CUSP_OG_MODIFIED_AT, BIRTHDAY_FAMOUS_LINE_MODIFIED_AT, latestModifiedAt } from '../../lib/seo-lastmod';
 
@@ -171,7 +172,7 @@ const famousParts = famousItems.map((item, index) => ({
 // for every computed cusp and advance schema/sitemap freshness together.
 const ogImage = cusp
   ? '/assets/og/v2/tool/birthday.png'
-  : `/assets/og/v2/sign/${heroSign!.slug}.png`;
+  : signArtCard(heroSign!.slug);
 const pageModifiedAt = latestModifiedAt(
   entry.data.updated,
   ...(cusp ? [BIRTHDAY_CUSP_OG_MODIFIED_AT] : []),

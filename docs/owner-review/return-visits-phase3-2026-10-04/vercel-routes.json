@@ -206,6 +206,10 @@
       "src": "^/assets/og/v2/share-pastel-wheel-20261019\\.png$"
     },
     {
+      "source": "/assets/og/v8/home-20261019.jpg",
+      "src": "^/assets/og/v8/home-20261019\\.jpg$"
+    },
+    {
       "source": "/_astro/(.*)",
       "src": "^/_astro(?:/(.*))$"
     },

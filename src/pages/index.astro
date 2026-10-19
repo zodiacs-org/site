@@ -16,6 +16,7 @@ import { formatDate } from '../lib/i18n/dates';
 import { moonPhaseLabel } from '../lib/i18n/astrology';
 import { SIGNS, signDates, signForLongitude } from '../lib/signs';
 import { signDateRange } from '../lib/sign-display';
+import { HOME_ART_CARD, HOME_ART_CARD_ALT } from '../lib/og-art-cards.mjs';
 import { ORGANIZATION_NAME, SOCIAL_PROFILES } from '../strings/seo.en.mjs';
 import homeFirstPaintCss from '../home/home-first-paint.css?inline';
 import '../styles/today.css';
@@ -101,8 +102,8 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
   title="Zodiacs.org | Free Birth Charts, Sign Guides & Astrology Tools"
   description="Free birth charts calculated in your browser, plus moon signs, compatibility, horoscopes, and sign guides with clear explanations."
   path="/"
-  image="/assets/og/v2/share-pastel-wheel-20261019.png"
-  imageAlt="Zodiacs homepage preview on black with a large ring of twelve pastel zodiac symbols and the headline “Your whole chart, not just your sign.”"
+  image={HOME_ART_CARD}
+  imageAlt={HOME_ART_CARD_ALT}
   jsonLd={jsonLd}
 >
   <!-- Portrait phones take the narrow cut of the phone poster: the window a

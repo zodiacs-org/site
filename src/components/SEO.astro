@@ -24,6 +24,7 @@ import {
   schemaCatalog,
 } from '../strings/seo';
 import { absoluteBrandIconUrl, BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
+import { HOME_ART_CARD } from '../lib/og-art-cards.mjs';
 
 interface Props {
   title: string;
@@ -63,7 +64,7 @@ const catalogImage = ogImageForPathAndLocale(contentPath, locale);
 // even where an older explicit English image prop remains in a page template.
 const image = locale === 'ru'
   ? catalogImage ?? explicitImage ?? '/assets/og/v2/ru/share.png'
-  : explicitImage ?? catalogImage ?? '/assets/og/v2/share-pastel-wheel-20261019.png';
+  : explicitImage ?? catalogImage ?? HOME_ART_CARD;
 const imageAlt = explicitImageAlt ?? ogAltForPathAndLocale(contentPath, locale);
 const imageUrl = image.startsWith('http') ? image : site + image;
 const imageType = /\.webp(?:[?#]|$)/i.test(imageUrl)

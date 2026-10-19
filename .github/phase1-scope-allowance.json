@@ -25,6 +25,11 @@
     "scripts/registry-og.test.mjs",
     "scripts/registry-pastel-polish.test.mjs",
     "src/app.jsx",
-    "src/lib/aura-share-card.test.ts"
+    "src/lib/aura-share-card.test.ts",
+    "src/pages/[sign]/index.astro",
+    "src/pages/es/[sign]/index.astro",
+    "src/pages/fr/[sign]/index.astro",
+    "src/pages/it/[sign]/index.astro",
+    "src/pages/pt/[sign]/index.astro"
   ]
 }

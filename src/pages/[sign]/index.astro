@@ -25,6 +25,7 @@ import { signDateRange, signTagline } from '../../lib/sign-display';
 import { guideLede, heritage, plainDashes } from '../../lib/legacy/sign-lore';
 import { guideFacts, guideReadingMinutes, signFigure, signOrdinal } from '../../lib/guide-facts';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { SIGN_GUIDE_HERO_SIZES, signArtSrc, signArtSrcset } from '../../lib/sign-art';
 
 export async function getStaticPaths() {
@@ -92,7 +93,7 @@ const jsonLd = [
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org/${sign.slug}/` },
     inLanguage: 'en',
-    image: `https://zodiacs.org/assets/og/v2/sign/${sign.slug}.png`,
+    image: `https://zodiacs.org${signArtCard(sign.slug)}`,
     about: { '@type': 'Thing', name: `${sign.name} (astrology)` },
     citation: guide.data.sources.map((source) => source.href
       ? { '@type': 'CreativeWork', name: source.label, url: source.href }
@@ -121,7 +122,7 @@ const jsonLd = [
   title={guide.data.title}
   description={guide.data.description}
   path={`/${sign.slug}/`}
-  image={`/assets/og/v2/sign/${sign.slug}.png`}
+  image={signArtCard(sign.slug)}
   imageAlt={`${sign.name}, sign guide on Zodiacs.org`}
   type="article"
   jsonLd={jsonLd}

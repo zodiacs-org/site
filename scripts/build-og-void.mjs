@@ -29,6 +29,7 @@
  *   npm run data:og -- --only-fomo        # refresh the /fomo/ card
  *   npm run data:og -- --only-registry    # the Registry's v4 lot and hub cards (build-registry-og.mjs)
  *   npm run data:og -- --only-terminal-card # Terminal's v7 card
+ *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
  *   npm run data:og -- --review-people-identities # reviewed identity cards, artifacts only
  *
  * Deterministic and offline: fonts and disc art are inlined as data:
@@ -54,7 +55,9 @@ const peopleFactReview = peopleFactReviewOptions(process.argv.slice(2), root);
 const peopleIdentityReview = peopleFactReview ?? peopleIdentityReviewOptions(process.argv.slice(2), root);
 const OUT = peopleIdentityReview?.output ?? resolve(root, 'public/assets/og/v2');
 // Cache-busted: the file is served immutable, so a new design takes a new name.
-// The 2026-08-09 card stays published, unchanged, for links already shared.
+// The 2026-08-09 card stays published, unchanged, for links already shared,
+// and so does this one since the homepage art card (src/lib/og-art-cards.mjs)
+// took its place on 2026-10-19.
 const HOMEPAGE_CARD = 'share-pastel-wheel-20261019.png';
 // Terminal's card with the lockup; /assets/og/v6/terminal.png stays published.
 const TERMINAL_CARD = '/assets/og/v7/terminal.png';
@@ -70,6 +73,19 @@ const {
 const { HOROSCOPE_OG_SURFACES, OG_EN } = await import(
   pathToFileURL(resolve(root, 'src/strings/seo.en.mjs')).href
 );
+// The homepage and sign guide art cards (2026-10-19): their addresses, words
+// and the heroes' art and shade, shared with the pages and the verifier.
+const {
+  ART_CARD_MAX_BYTES,
+  HOME_ART_CARD,
+  HOME_ART_CARD_COPY,
+  HOME_ART_CARD_CROP,
+  HOME_ART_CARD_SCRIM,
+  SIGN_ART_CARD_ART,
+  SIGN_ART_CARD_SHADE,
+  signArtCard,
+  signArtCardCopy,
+} = await import(pathToFileURL(resolve(root, 'src/lib/og-art-cards.mjs')).href);
 const WING_OUT = resolve(root, 'public/assets/og/v5');
 // The immutable v5 card is retained as historical output. Astrofolio and
 // Terminal now have distinct v6-era identities built by the dedicated
@@ -449,6 +465,57 @@ function signCard(s) {
   return shell(body, `zodiacs.org/${s.slug}/`);
 }
 
+// ── The art cards (owner-chosen 2026-10-19, src/lib/og-art-cards.mjs) ──
+// Laid out the way each page opens: the hero film's poster or the sign's art
+// panel behind the words, in the heroes' own shade, with the names and the
+// homepage headline in the display serif and the lockup in the footer row.
+// The art arrives as data: URIs read by the --only-art-cards run alone.
+const ART = { poster: null, signs: {} };
+
+/** The homepage: the poster cut at full size, the hero's scrim, its headline bottom left. */
+function artHomeCard() {
+  const { x, y, width } = HOME_ART_CARD_CROP;
+  const scale = 1200 / width;
+  const body = `
+  <div style="position: absolute; inset: 0; background-image: url(${ART.poster}); background-repeat: no-repeat;
+    background-size: ${1600 * scale}px ${900 * scale}px; background-position: ${-x * scale}px ${-y * scale}px;"></div>
+  <div style="position: absolute; inset: 0; background: ${HOME_ART_CARD_SCRIM.join(', ')};"></div>
+  <div style="position: absolute; left: 88px; bottom: 120px; z-index: 2;">
+    <div class="display" style="font-size: 96px; line-height: 1; max-width: 520px; text-wrap: balance; text-shadow: 0 2px 28px rgba(6, 7, 9, 0.55);">${escapeHtml(HOME_ART_CARD_COPY.title)}</div>
+    <div class="sub" style="margin-top: 22px; font-size: 25px; line-height: 1.42; max-width: 30ch; text-shadow: 0 1px 18px rgba(6, 7, 9, 0.6);">${escapeHtml(HOME_ART_CARD_COPY.subtitle)}</div>
+  </div>`;
+  return shell(body, OG_EN.site);
+}
+
+/** A sign guide: the art panel on the right in the guide hero's shade, the disc, kicker, name and lines on the left. */
+function artSignCard(s) {
+  const copy = signArtCardCopy(s.slug);
+  const body = `
+  <img src="${ART.signs[s.slug]}" width="1200" height="800" alt=""
+    style="position: absolute; top: 0; right: 0; width: ${SIGN_ART_CARD_ART.width}; height: 100%; object-fit: cover; object-position: ${SIGN_ART_CARD_ART.position};
+      filter: ${SIGN_ART_CARD_ART.filter}; -webkit-mask-image: ${SIGN_ART_CARD_ART.mask}; mask-image: ${SIGN_ART_CARD_ART.mask};" />
+  <div style="position: absolute; inset: 0; background: ${SIGN_ART_CARD_SHADE.join(', ')};"></div>
+  <div style="position: absolute; left: 88px; top: 0; bottom: 96px; z-index: 2; width: 520px; display: flex; flex-direction: column; justify-content: center;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <img class="disc" src="${DISCS[s.slug]}" width="40" height="40" alt="" />
+      <span class="kicker" style="margin: 0;">${escapeHtml(copy.kicker)}</span>
+    </div>
+    <div class="display" data-fit="440" style="margin-top: 8px; font-size: 128px; line-height: 0.98; white-space: nowrap; width: max-content;">${escapeHtml(copy.name)}</div>
+    <div style="margin-top: 22px; font-size: 30px; line-height: 1.3; letter-spacing: -0.01em; max-width: 24ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
+    <div style="margin-top: 12px; font-size: 21px; line-height: 1.45; color: ${INK2}; max-width: 27ch; text-wrap: balance;">${escapeHtml(copy.sub)}</div>
+  </div>`;
+  return shell(body, `zodiacs.org/${s.slug}/`);
+}
+
+/** Steps a long name down until it fits its measure (`data-fit`, px), once the fonts are in. */
+function fitArtNames() {
+  for (const name of document.querySelectorAll('[data-fit]')) {
+    const room = Number(name.dataset.fit);
+    const size = Number.parseFloat(getComputedStyle(name).fontSize);
+    if (name.scrollWidth > room) name.style.fontSize = `${Math.floor((size * room) / name.scrollWidth)}px`;
+  }
+}
+
 const LOTS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
 
 function registryLotCard(s, index, { lockup = false } = {}) {
@@ -781,7 +848,8 @@ async function writeEnglishManifest() {
     width: 1200,
     height: 630,
     iconSource: '/assets/zodiac-icons/128/{sign}.webp',
-    fallback: `/assets/og/v2/${HOMEPAGE_CARD}`,
+    // The site's fallback is the homepage art card since 2026-10-19.
+    fallback: HOME_ART_CARD,
     requiredCards: englishRequiredCards(),
   }, null, 2)}\n`);
 }
@@ -1041,12 +1109,17 @@ if (peopleIdentityReview) {
   process.exit(0);
 }
 
-/** A card's full-colour capture, for a family another script composes and encodes. */
-async function capture(html) {
+/**
+ * A card's full-colour capture, for a family another script composes and
+ * encodes. `prepare`, when given, runs in the page once the fonts are in.
+ */
+async function capture(html, prepare) {
   await page.setContent(html, { waitUntil: 'load' });
   await page.evaluate(() => document.fonts.ready);
   const missing = await page.evaluate(() => [...document.fonts].filter((font) => font.status === 'error').map((font) => font.family));
   if (missing.length) throw new Error(`Card fonts failed to load: ${missing.join(', ')}`);
+  await page.evaluate(() => Promise.all([...document.images].map((image) => image.decode())));
+  if (prepare) await page.evaluate(prepare);
   await page.waitForTimeout(120);
   return page.screenshot({ type: 'png' });
 }
@@ -1080,6 +1153,31 @@ if (process.argv.includes('--only-terminal-card')) {
   await mkdir(dirname(output), { recursive: true });
   await writeFile(output, bytes);
   console.log(`Done: ${TERMINAL_CARD}, ${(bytes.length / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
+// The art cards (v8, 2026-10-19): the homepage card, which is also the
+// site's fallback, and the twelve sign guide cards. JPEG, because the art
+// fills the picture; the v2 homepage and sign cards stay published for links
+// already shared. The v2 manifest is rewritten for its fallback line only.
+if (process.argv.includes('--only-art-cards')) {
+  console.log('Rendering the homepage and sign guide art cards…');
+  ART.poster = await b64('public/assets/hero/zodiacs-hero-poster.jpg', 'image/jpeg');
+  for (const s of SIGNS) ART.signs[s.slug] = await b64(`public/assets/sign-art/${s.slug}-1200.webp`, 'image/webp');
+  const cards = [[HOME_ART_CARD, artHomeCard()], ...SIGNS.map((s) => [signArtCard(s.slug), artSignCard(s)])];
+  let written = 0;
+  for (const [path, html] of cards) {
+    const raw = await capture(html, fitArtNames);
+    const bytes = await sharp(raw).jpeg({ quality: 88, mozjpeg: true, chromaSubsampling: '4:4:4' }).toBuffer();
+    if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${path}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+    const output = resolve(root, `public${path}`);
+    await mkdir(dirname(output), { recursive: true });
+    await writeFile(output, bytes);
+    written += bytes.length;
+  }
+  await browser.close();
+  await writeEnglishManifest();
+  console.log(`Done: ${cards.length} art cards, ${(written / 1024).toFixed(0)}KB.`);
   process.exit(0);
 }
 
