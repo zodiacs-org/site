@@ -225,6 +225,16 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `verify-og-cards` checks them. The v2 homepage, sign and horoscope cards
   stay published for links already shared, and the run rewrites only the v2
   manifest's fallback line)
+- `public/assets/og/v8/{es,fr,it,pt}/` (`home.jpg`, `sign/{slug}.jpg`, and
+  for Spanish and Portuguese `horoscope/{slug}.jpg`) ← `npm run data:og --
+  --only-localized-art-cards` (the same art cards in each locale's own
+  words; it never redraws the English ones). Their words come from
+  `src/lib/og-art-cards.locales.mjs` ← `npx vite-node --script
+  scripts/build-og-art-card-copy.ts` (`--check` for drift), which reads what
+  the localized pages print (`src/lib/og-art-cards-copy.ts`);
+  `og-art-cards.test.ts` holds both. Not in the drift job; `verify-og-cards`
+  checks them, under their own 12 MiB ceiling. Each locale's homepage card is
+  also that locale's fallback
 - `public/assets/og/astrofolio/v6/faces.jpg` ← `node
   scripts/build-astrofolio-share-card.mjs` (Astrofolio's one evergreen share
   card, owner-chosen 2026-09-24: Chromium paints the twelve sign frames of
