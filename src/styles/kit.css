@@ -201,7 +201,10 @@ a.kcard { transition: border-color var(--dur-1) var(--ease), background var(--du
   background: var(--void-1);
   isolation: isolate;
 }
-.artframe > img {
+/* A sign panel with AVIF copies sits in a <picture>; the wrapper adds no box. */
+.artframe > picture { display: contents; }
+.artframe > img,
+.artframe > picture > img {
   display: block;
   width: 100%;
   height: 100%;
@@ -209,7 +212,8 @@ a.kcard { transition: border-color var(--dur-1) var(--ease), background var(--du
   object-position: var(--focus, 50% 50%);
   filter: saturate(0.92) brightness(0.86);
 }
-.artframe--flip > img { transform: scaleX(-1); }
+.artframe--flip > img,
+.artframe--flip > picture > img { transform: scaleX(-1); }
 .artframe::after {
   content: '';
   position: absolute; inset: 0; z-index: 1;
