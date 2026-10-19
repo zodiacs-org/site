@@ -24,6 +24,10 @@ not a guarantee …" with a comma, as the share pages do. The rescan after the
 deploy picks it up with the other changes. `zodiacs-developer-0.3.13.zip` is
 rebuilt in place; `zodiacs-sky-0.5.0.zip` is unchanged.
 
+The listing's About loses its two dashes: "Compare two people's charts,
+whether partners, friends or family, and get a compatibility score …"
+(1,784 characters). Paste the About from "The listing" below into the draft.
+
 ## Update, 19 October: three more share links (#782, draft)
 
 The owner picked keepsake link previews for the birthday, sky calendar and
@@ -142,11 +146,11 @@ The source of truth is `integrations/chatgpt/chatgpt-app-submission.json`.
   links. Support stays admin@zodiacs.org.
 - **Test cases:** the five positive and three negative cases in the
   submission file, unchanged.
-- **About** (1,774 characters):
+- **About** (1,784 characters):
 
 > Explore your birth chart, see how compatible you are with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then tells you what astrology says about it.
 >
-> Build an interactive birth chart and see your planets' signs. Compare two people's charts—partners, friends or family—and get a compatibility score out of 100 for attraction, communication and long-term stability, or see how you match with a famous person Zodiacs publishes. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
+> Build an interactive birth chart and see your planets' signs. Compare two people's charts, whether partners, friends or family, and get a compatibility score out of 100 for attraction, communication and long-term stability, or see how you match with a famous person Zodiacs publishes. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
 >
 > Read daily and weekly Sun-sign horoscopes and a personal forecast for your week from your own chart, follow Moon phases, retrogrades and planets changing signs, and subscribe to the sky calendar in Google Calendar, Apple Calendar or Outlook.
 >
