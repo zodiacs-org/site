@@ -4,6 +4,26 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 20 October: three bugs fixed before the rescan (#797)
+
+Found while rating the plugins for resubmission on 19 October:
+
+- `get_sky_calendar` in Russian answered `calculation-failed`. The runtimes
+  are Node bundles built outside Vite, and the Russian copy reads
+  `import.meta.env.SSR`; the build now defines it.
+  `src/ai-tools/bundle-languages.test.ts` runs the generated bundles in all
+  six languages.
+- The wedding and occasion line wrote "A Aries Sun"; it now reads "An Aries
+  Sun".
+- Share links dropped Cyrillic names. The preview renderer now carries EB
+  Garamond's Cyrillic, so "Анна and Иван" stays on the link and the picture.
+
+`tools/list` changes in two output schemas: the literal `note` of
+`get_compatibility` and of the occasion tools now says "for insight and fun,
+not a guarantee …" with a comma, as the share pages do. The rescan after the
+deploy picks it up with the other changes. `zodiacs-developer-0.3.13.zip` is
+rebuilt in place; `zodiacs-sky-0.5.0.zip` is unchanged.
+
 ## Update, 19 October: three more share links (#782, draft)
 
 The owner picked keepsake link previews for the birthday, sky calendar and
