@@ -1,3 +1,5 @@
+import { lockupWordsHtml, tiltedRingSvg } from '../src/lib/brand-lockup.mjs';
+
 const SIGNS = [
   ['aries', 'Aries'], ['taurus', 'Taurus'], ['gemini', 'Gemini'],
   ['cancer', 'Cancer'], ['leo', 'Leo'], ['virgo', 'Virgo'],
@@ -60,9 +62,9 @@ export function renderStaticFooter({
   <div class="zfooter__inner">
     <div class="zfooter__lead">
       <div>
-        <a class="zfooter__brand" href="/">
-          <img class="zfooter__brand-mark" src="/assets/app-icons/v3/favicon.svg" width="26" height="26" alt="" loading="lazy" decoding="async" />
-          <span class="zfooter__brand-name">Zodiacs</span><span class="zfooter__brand-tld">.org</span>
+        <a class="zfooter__brand" href="/" aria-label="Zodiacs.org">
+          ${tiltedRingSvg({ width: 42, className: 'zfooter__brand-mark' })}
+          ${lockupWordsHtml({ name: 'zfooter__brand-name', sep: 'zfooter__brand-sep', tld: 'zfooter__brand-tld' })}
         </a>
         <p class="zfooter__tag">${esc(tagline)}</p>
       </div>

@@ -33,6 +33,7 @@ import {
   injectRegistryExchangeLanding,
 } from '../src/exchange/entry.mjs';
 import { EN } from '../src/strings/en.mjs';
+import { TILTED_RING_DOTS, TILTED_RING_VIEWBOX } from '../src/lib/brand-lockup.mjs';
 import { buildRegistryOutlookArtifact } from './registry-outlook-artifact.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -204,6 +205,8 @@ const registryMeta = [
   `const REGISTRY_EXCHANGE_ENABLED=document.querySelector('meta[name="${REGISTRY_EXCHANGE_META}"]')?.content==='1';`,
   `const REGISTRY_EXCHANGE_PATH=${JSON.stringify(REGISTRY_EXCHANGE_PATH)};`,
   `const REGISTRY_EXCHANGE_LANDING_COPY=Object.freeze(${JSON.stringify(REGISTRY_EXCHANGE_LANDING_COPY)});`,
+  `const BRAND_RING_VIEWBOX=${JSON.stringify(TILTED_RING_VIEWBOX)};`,
+  `const BRAND_RING_DOTS=Object.freeze(${JSON.stringify(TILTED_RING_DOTS)});`,
 ].join('');
 const output = banner + registryMeta + code + '\n';
 const [terminalSplitCss, astrofolioHtml, terminalHtml, thesisHtml, registryOutlook] = await Promise.all([

@@ -6,6 +6,7 @@ import SignIcon from '../../components/SignIcon.astro';
 import publicationData from '../../data/daily-publication.json';
 import type { DailyPublication } from '../../lib/daily-publication';
 import { SIGNS } from '../../lib/signs';
+import { HOME_ART_CARD, HOME_ART_CARD_ALT } from '../../lib/og-art-cards.mjs';
 
 const primaryLink = {
   label: 'Create my free birth chart',
@@ -34,8 +35,8 @@ const dailyLabel = new Intl.DateTimeFormat('en-US', {
   title="Zodiacs.org Links: Birth Chart, Horoscopes & Astrofolio"
   description="Create your free birth chart, read the daily horoscope for every sign, and explore Astrofolio."
   path="/bio/"
-  image="/assets/og/v2/share-pastel-wheel-20260809.png"
-  imageAlt="The twelve zodiac signs in the Zodiacs.org celestial wheel."
+  image={HOME_ART_CARD}
+  imageAlt={HOME_ART_CARD_ALT}
 >
   <div class="bio-shell">
     <section class="bio-card" aria-labelledby="bio-title">
@@ -52,7 +53,7 @@ const dailyLabel = new Intl.DateTimeFormat('en-US', {
           </a>
 
           <div class="bio-heading">
-            <p class="bio-kicker">Zodiacs.org</p>
+            <p class="bio-brand"><span class="bio-brand__name" aria-hidden="true">Zodiacs<span class="bio-brand__sep">·</span><span class="bio-brand__tld">org</span></span><span class="sr-only">Zodiacs.org</span></p>
             <h1 id="bio-title">Your chart and <EditionText current="today’s" editionDate={publication.date} /> sky</h1>
             <p class="bio-summary">Free astrology tools, calculated privately in your browser.</p>
           </div>
@@ -254,7 +255,22 @@ const dailyLabel = new Intl.DateTimeFormat('en-US', {
     transition: transform 180ms ease;
   }
 
-  .bio-kicker,
+  /* The brand lockup's words (DESIGN.md, "Brand Lockup"); the emblem beside
+     them keeps the flat ring, as the app icon does. */
+  .bio-brand {
+    margin: 0;
+    line-height: 1;
+  }
+  .bio-brand__name {
+    color: var(--text);
+    font: 400 13px/1 'EB Garamond', var(--font-serif);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .bio-brand__sep { margin: 0 0.2em; color: var(--muted); }
+  .bio-brand__tld { color: var(--text-2); font-weight: 500; }
+
   .bio-signs__kicker,
   .bio-astrofolio__copy > small {
     margin: 0;

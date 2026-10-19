@@ -10,7 +10,7 @@ const bagRegion = (html) => html.slice(
 
 describe('Astrofolio build-season stamp', () => {
   it('selects one seasonal identity package across icons, manifest, lockup and runway, and keeps the evergreen share card', () => {
-    const card = 'https://zodiacs.org/assets/og/astrofolio/v5/faces.jpg';
+    const card = 'https://zodiacs.org/assets/og/astrofolio/v6/faces.jpg';
     const source = [
       '<link rel="icon" href="/assets/astrofolio/v1/leo/favicon.svg" />',
       '<link rel="manifest" href="/assets/astrofolio/v1/leo/astrofolio.webmanifest" />',

@@ -54,8 +54,9 @@ describe('navigation first-paint reservation', () => {
     const localized = rule('.nav--localized', css.split('@media (min-width: 1040px)')[1]);
     expect(value(english, 'width')).toBe('884px');
     expect(value(localized, 'width')).toBe('992px');
-    expect(value(english, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 62px 120px');
-    expect(value(localized, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 44px 148px');
+    // The mark track holds the full brand lockup: the tilted ring and ZODIACS · ORG (166px at 13px).
+    expect(value(english, 'grid-template-columns')).toBe('168px minmax(0, 1fr) 44px 62px 120px');
+    expect(value(localized, 'grid-template-columns')).toBe('168px minmax(0, 1fr) 44px 44px 148px');
     expect(nav).toContain("'nav--localized': locale !== 'en'");
     expect(nav).toContain("'nav--without-search': locale === 'ru'");
   });
@@ -91,6 +92,19 @@ describe('navigation first-paint reservation', () => {
     for (const selector of ['.nav__search', '.nav__burger']) {
       expect(value(rule(selector), 'width')).toBe('44px');
       expect(value(rule(selector), 'height')).toBe('44px');
+    }
+  });
+
+  it('shows the full brand lockup with the desktop links, and keeps the phone bar to ZODIACS', () => {
+    expect(nav).toContain('<a class="nav__mark" href={localizePath(locale, \'/\')} aria-label="Zodiacs.org">');
+    expect(nav).toContain('<TiltedRing width={34} class="nav__ring" />');
+    expect(value(rule('.nav__mark :global(.nav__ring)'), 'display')).toBe('none');
+    for (const [tier, scope] of [['@media (min-width: 920px)', '.nav:not(.nav--localized)'], ['@media (min-width: 1040px)', '.nav--localized']]) {
+      const block = css.split(tier)[1].split('\n  }\n')[0];
+      expect(value(rule(`${scope} .nav__mark :global(.nav__ring)`, block), 'display')).toBe('block');
+      expect(value(rule(`${scope} .nav__mark`, block), 'gap')).toBe('10px');
+      expect(value(rule(`${scope} .nav__name`, block), 'letter-spacing')).toBe('0.2em');
+      expect(value(rule(`${scope} .nav__sep`, block), 'margin')).toBe('0 0.2em');
     }
   });
 

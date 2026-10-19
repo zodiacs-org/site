@@ -19,7 +19,8 @@ import type { SavedChart } from '../profile/schema';
 import { signBySlug, signForLongitude } from '../signs';
 import { natalPointsForChart, selectTodayContacts, type TodayContact } from '../today';
 import { TRANSIT_ORB, transitLine } from '../transits';
-import { BRAND_ICON_PATHS } from '../brand-icons.mjs';
+/** The brand lockup's tilted ring (DESIGN.md, "Brand Lockup"), three times its 34 by 19 so it stays sharp. */
+const BRAND_RING_PATH = '/assets/brand/tilted-ring@3x.png';
 import type { DailyEmailMessage, DailyEmailRecipient } from './types';
 
 interface MessageSection {
@@ -396,7 +397,7 @@ function htmlFromModel(model: MessageModel, baseUrl: string): string {
         <tr>
           ${signIcon ? `<td width="58" style="width:58px;vertical-align:middle;padding:0 14px 22px 0">${signIcon}</td>` : ''}
           <td style="vertical-align:middle;padding:0 0 22px"><p style="font:600 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;margin:0;color:#7A8397">${escapeHtml(model.identity)}</p>${detail}</td>
-          <td align="right" style="vertical-align:middle;padding:0 0 22px"><table role="presentation" cellspacing="0" cellpadding="0" border="0" align="right"><tr><td style="vertical-align:middle;padding:0 8px 0 0"><img src="${escapeHtml(siteUrl(baseUrl, BRAND_ICON_PATHS.favicon))}" width="28" height="28" alt="" style="display:block;width:28px;height:28px;border:0" /></td><td style="vertical-align:middle"><p style="font:600 13px/1.2 Georgia,serif;margin:0;color:#EEF1F7;white-space:nowrap">Zodiacs.org</p></td></tr></table></td>
+          <td align="right" style="vertical-align:middle;padding:0 0 22px"><table role="presentation" cellspacing="0" cellpadding="0" border="0" align="right"><tr><td style="vertical-align:middle;padding:0 10px 0 0"><img src="${escapeHtml(siteUrl(baseUrl, BRAND_RING_PATH))}" width="34" height="19" alt="" style="display:block;width:34px;height:19px;border:0" /></td><td style="vertical-align:middle"><p style="font:400 13px/1.2 Georgia,serif;letter-spacing:.2em;text-transform:uppercase;margin:0;color:#EEF1F7;white-space:nowrap">Zodiacs<span style="margin:0 .2em;color:#7A8397">·</span><span style="font-weight:500;color:#C6CCDA">org</span></p></td></tr></table></td>
         </tr>
       </table>
       ${model.welcome ? `<p style="font:14px/1.55 system-ui,-apple-system,sans-serif;margin:0 0 24px;padding:14px 16px;border:1px solid #26282E;border-radius:12px;color:#C6CCDA">${escapeHtml(model.welcome)}</p>` : ''}

@@ -149,7 +149,7 @@ try {
   // Forecasts, never guarantees.
   assert.doesNotMatch(compareText.replace((pair as any).data.note, ''), /guarantee|soulmate|destined|doomed/iu);
   assert.match(compareText, /not a guarantee/);
-  assert.match(compareText, /zodiacs\.org$/u, 'Every card ends with the zodiacs.org signature');
+  assert.match(compareText, /ZODIACS·ORG$/u, 'Every card ends with the brand lockup');
   assert.ok((await compare.getByRole('link', { name: /Open both charts on zodiacs\.org/ }).getAttribute('href'))!.startsWith('https://zodiacs.org/compatibility/#'));
   await compare.screenshot({ path: new URL('occasions-compatibility-desktop.png', out).pathname, fullPage: true });
   await compare.setViewportSize({ width: 375, height: 812 });
@@ -280,7 +280,7 @@ try {
   await writeFile(new URL('occasions-review.json', out), JSON.stringify({
     scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance',
     timezone: 'Asia/Bangkok',
-    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'the calendar subscription', 'the zodiacs.org signature on every card', 'no external requests'],
+    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'the calendar subscription', 'the brand lockup on every card', 'no external requests'],
   }, null, 2) + '\n');
   console.log('Occasions panel browser QA passed.');
 } finally { await browser.close(); }

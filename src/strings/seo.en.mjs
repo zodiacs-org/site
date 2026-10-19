@@ -63,12 +63,12 @@ export const OG_EN = Object.freeze({
   },
   astrofolio: {
     path: '/astrofolio/',
-    image: '/assets/og/astrofolio/v5/faces.jpg',
+    image: '/assets/og/astrofolio/v6/faces.jpg',
     alt: 'Astrofolio: the collection of twelve official Zodiac tokens.',
   },
   terminal: {
     path: '/terminal/',
-    image: '/assets/og/v6/terminal.png',
+    image: '/assets/og/v7/terminal.png',
     alt: 'Terminal: expert market context and reviewed research for the twelve official Zodiac tokens.',
   },
   thesis: {

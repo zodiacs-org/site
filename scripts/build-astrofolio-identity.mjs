@@ -584,7 +584,12 @@ export async function buildAstrofolioOgFamily({
   return manifest;
 }
 
-function terminalSvg(fontData) {
+/**
+ * Terminal's desk card as SVG, `fontData` being Instrument Sans as base64:
+ * v6 is this alone; v7 (scripts/build-og-void.mjs --only-terminal-card) adds
+ * the brand lockup's footer row under it.
+ */
+export function terminalSvg(fontData) {
   const columns = Array.from({ length: 9 }, (_, index) => (
     `<path d="M${708 + index * 48} 108V520" stroke="#FFFFFF" stroke-opacity=".045"/>`
   )).join('');

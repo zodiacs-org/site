@@ -1,5 +1,6 @@
 import { decodePositionsLink } from '../lib/share-positions.js';
 import { previewPlacements, type PreviewPlacements } from '../lib/share-preview.js';
+import { ringFrontForWholeDegree } from '../lib/ring-front.js';
 
 export const HUES: Record<string, string> = {
   aries: '#DE8E79', taurus: '#B9D4BE', gemini: '#B29DD0', cancer: '#B6D4E4',
@@ -23,6 +24,8 @@ export interface ChartPreviewPlacement {
 export interface ChartPreviewModel {
   placements: ChartPreviewPlacement[];
   settings: string;
+  /** The sign the lockup's ring brings forward: the Sun's, when the link settles it. */
+  ringFront: string | null;
 }
 
 function wholeDegreePlacement(label: ChartPreviewPlacement['label'], longitude: number): ChartPreviewPlacement {
@@ -53,5 +56,7 @@ export function previewModel(placements: PreviewPlacements): ChartPreviewModel {
     settings: placements.rising !== null && placements.houses !== null
       ? `${placements.houses === 'whole' ? 'Whole sign' : 'Placidus'} / Tropical`
       : 'Reference positions / No houses / Tropical',
+    // A link with a rising sign was made from a chart with a birth time.
+    ringFront: ringFrontForWholeDegree(placements.sun, placements.rising !== null),
   };
 }

@@ -1,6 +1,8 @@
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/u;
 
 export const BIRTHDAY_CUSP_OG_MODIFIED_AT = '2026-08-23T00:00:00.000Z';
+/** The birthday pages' hero began naming who shares the date ("You share a birthday with …"). */
+export const BIRTHDAY_FAMOUS_LINE_MODIFIED_AT = '2026-10-19T00:00:00.000Z';
 export const PEOPLE_TEMPLATE_MODIFIED_AT = '2026-10-16T00:00:00.000Z';
 export const TERMINAL_RESEARCH_BASE_LASTMOD = '2026-08-13';
 
