@@ -129,6 +129,12 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
 - `public/assets/zodiac-icons/{48,128,400}/` ← `node scripts/build-icons.mjs`
   (sources in `public/assets/sdk/zodiac-icons/circle/` are SDK-public —
   keep byte-identical)
+- `public/assets/sign-art/{sign}-{720,960,1200}.avif` ← `node
+  scripts/build-sign-art-avif.mjs` (AVIF copies of each sign's published
+  1200px WebP painting, which stays untouched; the compatibility pair pages
+  offer them to screens at 1.5x and above. libaom output is not byte-stable
+  across platforms, so they are not in the drift job;
+  `scripts/build-sign-art-avif.test.mjs` checks the set)
 - `public/data/cities/` ← `node scripts/build-cities.mjs` (GeoNames, CC-BY)
 - `src/data/sky.json` ← `node scripts/build-sky.mjs`
 - `src/data/tz-names.json` (the zone names of the tzdb release that

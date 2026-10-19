@@ -35,7 +35,8 @@
   background: linear-gradient(180deg, rgba(10, 12, 17, 0.42) 0%, rgba(10, 12, 17, 0) 16%, rgba(10, 12, 17, 0) 50%, rgba(10, 12, 17, 0.72) 80%, var(--void-1) 100%);
 }
 .ph-hero .ph-pane { border-radius: 0; height: 100%; }
-.ph-hero .ph-pane > img { filter: saturate(0.94) brightness(0.93); }
+.ph-hero .ph-pane > img,
+.ph-hero .ph-pane > picture > img { filter: saturate(0.94) brightness(0.93); }
 .ph-hero .ph-pane::after {
   background: radial-gradient(ellipse 50% 56% at var(--spot, 50% 52%), transparent 0 34%, rgba(6, 7, 9, 0.38) 70%, rgba(6, 7, 9, 0.8) 100%);
 }
