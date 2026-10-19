@@ -24,7 +24,7 @@ import {
 import birthdays from '../../data/birthdays.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
 import { BIRTHDAY_PEOPLE_VISIBLE, peopleForBirthday } from '../../lib/people';
-import { BIRTHDAY_CUSP_OG_MODIFIED_AT, latestModifiedAt } from '../../lib/seo-lastmod';
+import { BIRTHDAY_CUSP_OG_MODIFIED_AT, BIRTHDAY_FAMOUS_LINE_MODIFIED_AT, latestModifiedAt } from '../../lib/seo-lastmod';
 
 export async function getStaticPaths() {
   const entries = await getCollection('birthdays', (e) => !e.data.draft);
@@ -175,6 +175,7 @@ const ogImage = cusp
 const pageModifiedAt = latestModifiedAt(
   entry.data.updated,
   ...(cusp ? [BIRTHDAY_CUSP_OG_MODIFIED_AT] : []),
+  ...(birthdayPeople.length > 0 ? [BIRTHDAY_FAMOUS_LINE_MODIFIED_AT] : []),
 );
 
 const jsonLd = [
