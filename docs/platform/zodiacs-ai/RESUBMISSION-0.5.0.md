@@ -4,6 +4,28 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 19 October: three more share links (#782, draft)
+
+The owner picked keepsake link previews for the birthday, sky calendar and
+horoscope cards on 18 October, so those three tools now return a share link,
+as `get_occasion_sky` and `get_compatibility` do:
+
+- `get_birthday` returns `shareUrl` with the month and day, never the year.
+- `get_sky_calendar` returns one for the next event.
+- `get_horoscope` returns one for the reading shown.
+- Each tool's description ends by telling the assistant to give that link
+  exactly, and the cards lead with it ("Share this birthday", "Share the
+  reading"; the sky calendar keeps Subscribe first).
+
+`tools/list` changes for these three tools only: one sentence in each
+description and a nullable `shareUrl` in each output schema. `initialize`,
+the resources and the capabilities answer keep their bytes, and the flag-off
+fixture is captured again from this change. The panel addresses stay
+`ui://zodiacs/occasions-v4.html` and `ui://zodiacs/horoscopes-v3.html`.
+`integrations/packages/zodiacs-sky-0.5.0.zip` is unchanged. After the deploy,
+a rescan, only with the owner's yes, shows the new descriptions.
+`zodiacs-developer-0.3.13.zip` is rebuilt in place.
+
 ## Update, 18 October: every output schema typed
 
 The owner asked for the hosted tools' output schemas to be fixed before the

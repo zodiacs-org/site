@@ -1,4 +1,7 @@
-import { BrandLink } from '../panel-brand';
+import type { CSSProperties } from 'preact';
+import { Actions, artOf, Keepsake, Nameplate, PanelFooter } from '../card-kit/parts';
+import { hueVars, hueOf } from '../card-kit/hue';
+import { plain } from '../card-kit/words';
 import { render } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { HoroscopeBridge, type PanelToolResult } from './bridge';
@@ -33,7 +36,7 @@ function weekName(from: string, through: string): string {
   const fromMonth = utcFormat(from, { month: 'long' });
   const throughMonth = utcFormat(through, { month: 'long' });
   const day = (date: string) => utcFormat(date, { day: 'numeric' });
-  return fromMonth === throughMonth ? `Week of ${day(from)}–${day(through)} ${throughMonth}` : `Week of ${day(from)} ${fromMonth} – ${day(through)} ${throughMonth}`;
+  return fromMonth === throughMonth ? `Week of ${day(from)} to ${day(through)} ${throughMonth}` : `Week of ${day(from)} ${fromMonth} to ${day(through)} ${throughMonth}`;
 }
 const when = (at: string, zone: string) => new Intl.DateTimeFormat('en-GB', { timeZone: zone, weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(at));
 const placeName = (zone: string) => (zone === 'UTC' || zone === 'Etc/UTC' ? 'UTC' : (zone.split('/').pop() ?? zone).replaceAll('_', ' '));
@@ -54,13 +57,13 @@ function startView(panel: HoroscopePanelData, zone: string): View {
 function Reading({ reading, zone, note, heading }: { reading: PanelReading; zone: string; note: string; heading: string }) {
   return <>
     <p class="when">{heading}</p>
-    <div class="prose">{reading.paragraphs.map((paragraph, index) => <div key={index}>{paragraph.heading && <h3>{paragraph.heading}</h3>}<p>{paragraph.text}</p></div>)}</div>
-    {(reading.facts.length > 0 || reading.houses.length > 0) && <details class="why">
+    <div class="prose">{reading.paragraphs.map((paragraph, index) => <div key={index}>{paragraph.heading && <h3>{paragraph.heading}</h3>}<p>{plain(paragraph.text)}</p></div>)}</div>
+    {(reading.facts.length > 0 || reading.houses.length > 0) && <details class="why more">
       <summary>Why this reading?</summary>
-      <p>{note}</p>
-      {reading.facts.length > 0 && <ul class="facts">{reading.facts.map((fact) => <li key={fact.text + fact.at}><span>{fact.text}</span><span class="quiet">{when(fact.at, zone)}</span></li>)}</ul>}
-      {reading.houses.length > 0 && <ul class="houses">{reading.houses.map((house) => <li key={house}>{house}</li>)}</ul>}
-      <a href="https://zodiacs.org/methodology/" target="_blank" rel="noreferrer">How we write horoscopes ↗</a>
+      <p class="quiet">{note}</p>
+      {reading.facts.length > 0 && <ul class="facts-list">{reading.facts.map((fact) => <li key={fact.text + fact.at}><span>{plain(fact.text)}</span><span class="quiet">{when(fact.at, zone)}</span></li>)}</ul>}
+      {reading.houses.length > 0 && <ul class="houses">{reading.houses.map((house) => <li key={house}>{plain(house)}</li>)}</ul>}
+      <a class="method" href="https://zodiacs.org/methodology/" target="_blank" rel="noreferrer">How we write horoscopes</a>
     </details>}
   </>;
 }
@@ -131,21 +134,23 @@ function App() {
 
   if (waiting && !panel && !picking && !message) {
     return <main>
-      <header class="brand"><BrandLink href="https://zodiacs.org/horoscopes/"/></header>
-      <p role="status" class="quiet">Opening your horoscope…</p>
+      <div class="shell"><Nameplate href="https://zodiacs.org/horoscopes/"/><p role="status" class="quiet">Opening your horoscope…</p></div>
     </main>;
   }
 
   if (showGrid) {
     return <main>
-      <header class="brand"><BrandLink href="https://zodiacs.org/horoscopes/"/></header>
-      <section class="intro"><h1>Your horoscope</h1><p>Choose your sign. Not sure? It follows your birthday.</p></section>
-      <nav class="grid" aria-label="Choose your Sun sign">{HOROSCOPE_SIGN_TABLE.map((sign) => <button key={sign.slug} disabled={busy} aria-pressed={panel?.sign === sign.slug} onClick={() => choose(sign.slug)}>
-        <img src={HOROSCOPE_ICONS[sign.slug]} alt="" width="40" height="40"/><span class="name">{sign.name}</span><span class="quiet">{sign.dates}</span>
-      </button>)}</nav>
-      {busy && <p role="status" class="quiet">Opening the reading…</p>}
-      {message && <p role="alert" class="notice">{message}</p>}
-      {panel && <button class="text" onClick={() => pick(false)}>Back to {panel.signName}</button>}
+      <div class="shell">
+        <Nameplate href="https://zodiacs.org/horoscopes/"/>
+        <header class="card-head"><div class="card-head-text"><p class="kicker">Horoscopes</p><h1>Your horoscope</h1><p class="meta">Choose your sign. Not sure? It follows your birthday.</p></div></header>
+        <nav class="grid" aria-label="Choose your Sun sign">{HOROSCOPE_SIGN_TABLE.map((sign) => <button key={sign.slug} disabled={busy} aria-pressed={panel?.sign === sign.slug} onClick={() => choose(sign.slug)}>
+          <img src={HOROSCOPE_ICONS[sign.slug]} alt="" width="44" height="44"/><span class="name">{sign.name}</span><span class="quiet">{plain(sign.dates)}</span>
+        </button>)}</nav>
+        {busy && <p role="status" class="quiet">Opening the reading…</p>}
+        {message && <p role="alert" class="notice">{message}</p>}
+        {panel && <button class="text" onClick={() => pick(false)}>Back to {panel.signName}</button>}
+      </div>
+      <PanelFooter>Your choices stay on this screen. If you ask the assistant about a reading, it sees that reading.</PanelFooter>
     </main>;
   }
 
@@ -157,47 +162,52 @@ function App() {
   const week = panel.weeks.find((item) => item.from <= today && today <= item.through) ?? panel.weeks[0];
   const reading = current.mode === 'week' ? week : panel.days.find((day) => day.date === current.date)?.focuses[current.focus];
   const heading = current.mode === 'week'
-    ? `${weekName(week.from, week.through)} · times for ${placeName(zone)}`
-    : `${dayName(current.date)} · times for ${placeName(zone)}`;
+    ? `${weekName(week.from, week.through)}, times for ${placeName(zone)}`
+    : `${dayName(current.date)}, times for ${placeName(zone)}`;
   const missing = current.mode === 'day' && !reading
     ? (current.date > days[days.length - 1] ? `The reading for ${dayName(current.date)} isn't published yet. Each day's reading appears the day before.` : `The reading for ${dayName(current.date)} is no longer kept here. Recent readings are on zodiacs.org.`)
     : '';
 
+  const more = { label: 'More on zodiacs.org', href: `https://zodiacs.org/horoscopes/${panel.sign}/` };
+
   async function copy() {
     if (!reading || reading.status !== 'available') return;
-    const label = current.mode === 'week' ? weekName(week.from, week.through) : `${dayName(current.date)}${current.focus === 'general' ? '' : ` · ${FOCUS_LABEL[current.focus]}`}`;
-    const text = `${panel!.signName} · ${label}\n\n${reading.paragraphs.map((paragraph) => paragraph.text).join('\n\n')}\n\n${panel!.disclosure}\nhttps://zodiacs.org/horoscopes/${panel!.sign}/`;
+    const label = current.mode === 'week' ? weekName(week.from, week.through) : `${dayName(current.date)}${current.focus === 'general' ? '' : `, ${FOCUS_LABEL[current.focus]}`}`;
+    const text = `${panel!.signName}: ${label}\n\n${reading.paragraphs.map((paragraph) => plain(paragraph.text)).join('\n\n')}\n\n${panel!.disclosure}\nhttps://zodiacs.org/horoscopes/${panel!.sign}/`;
     try { await navigator.clipboard.writeText(text); setStatus('Reading copied.'); }
     catch { setStatus('Copying isn’t allowed here. Select the text to copy it.'); }
   }
 
   return <main>
-    <header class="brand"><BrandLink href="https://zodiacs.org/horoscopes/"/></header>
-    <header class="sign-head">
-      <img src={HOROSCOPE_ICONS[panel.sign]} alt="" width="56" height="56"/>
-      <div><p class="eyebrow">Your horoscope</p><h1>{panel.signName}</h1><p class="quiet">{signInfo(panel.sign)?.dates}</p></div>
-      <button class="text" onClick={() => pick(true)}>Change sign</button>
-    </header>
-    <div class="chips" role="group" aria-label="Day or week">
-      {dayChoices.map((date) => <button key={date} aria-pressed={current.mode === 'day' && current.date === date} onClick={() => show({ mode: 'day', date, focus: current.mode === 'day' ? current.focus : 'general' })}>{dayLabel(date)}</button>)}
-      <button aria-pressed={current.mode === 'week'} onClick={() => show({ mode: 'week' })}>This week</button>
-    </div>
-    {current.mode === 'day' && <div class="chips focus" role="group" aria-label="Focus">
-      {FOCUSES.map((focus) => <button key={focus} aria-pressed={current.focus === focus} onClick={() => show({ ...current, focus })}>{FOCUS_LABEL[focus]}</button>)}
-    </div>}
-    <article aria-live="polite">
-      {reading && reading.status === 'available'
-        ? <Reading reading={reading} zone={zone} note={panel.note} heading={heading}/>
-        : <p class="notice">{missing || `There's no ${current.mode === 'day' && current.focus !== 'general' ? `${current.focus} ` : ''}reading for ${panel.signName} here yet.`}</p>}
-      {reading && reading.status === 'available' && <div class="actions">
-        <button onClick={copy}>Copy reading</button>
-        <a href={`https://zodiacs.org/horoscopes/${panel.sign}/`} target="_blank" rel="noreferrer">More on zodiacs.org ↗</a>
-      </div>}
-      <p role="status" class="quiet">{status}</p>
-      <p class="disclosure">{panel.disclosure}</p>
+    <article class="card horoscope" style={hueVars(hueOf(panel.sign)) as CSSProperties}>
+      <Nameplate href="https://zodiacs.org/horoscopes/" front={panel.sign}/>
+      <Keepsake kicker="Your horoscope" title={panel.signName} art={[{ src: artOf(panel.sign) }]} signs={[HOROSCOPE_ICONS[panel.sign]]}
+        meta={<>{plain(signInfo(panel.sign)?.dates ?? '')} <button class="text" onClick={() => pick(true)}>Change sign</button></>}/>
+      <div class="controls">
+        <div class="pills" role="group" aria-label="Day or week">
+          {dayChoices.map((date) => <button key={date} aria-pressed={current.mode === 'day' && current.date === date} onClick={() => show({ mode: 'day', date, focus: current.mode === 'day' ? current.focus : 'general' })}>{dayLabel(date)}</button>)}
+          <button aria-pressed={current.mode === 'week'} onClick={() => show({ mode: 'week' })}>This week</button>
+        </div>
+        {current.mode === 'day' && <div class="pills focus" role="group" aria-label="Focus">
+          {FOCUSES.map((focus) => <button key={focus} aria-pressed={current.focus === focus} onClick={() => show({ ...current, focus })}>{FOCUS_LABEL[focus]}</button>)}
+        </div>}
+      </div>
+      <section class="reading" aria-live="polite">
+        {reading && reading.status === 'available'
+          ? <Reading reading={reading} zone={zone} note={panel.note} heading={heading}/>
+          : <p class="notice">{missing || `There's no ${current.mode === 'day' && current.focus !== 'general' ? `${current.focus} ` : ''}reading for ${panel.signName} here yet.`}</p>}
+      </section>
+      {reading && reading.status === 'available' && <>
+        <div class="copy-block">
+          <button type="button" class="copy" onClick={copy}>Copy reading</button>
+          <p role="status" class="status">{status}</p>
+        </div>
+        <Actions primary={reading.shareUrl ? { label: 'Share the reading', href: reading.shareUrl } : more} secondary={reading.shareUrl && more}/>
+      </>}
+      <p class="fine">{panel.disclosure}</p>
     </article>
     {message && <p role="alert" class="notice">{message}</p>}
-    <footer><p>Your choices stay on this screen. If you ask the assistant about a reading, it sees that reading.</p><a href="https://zodiacs.org/privacy/" target="_blank" rel="noreferrer">Privacy</a></footer>
+    <PanelFooter>Your choices stay on this screen. If you ask the assistant about a reading, it sees that reading.</PanelFooter>
   </main>;
 }
 

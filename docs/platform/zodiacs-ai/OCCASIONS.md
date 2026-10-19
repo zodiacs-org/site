@@ -165,6 +165,13 @@ last, after the owner has read its wording; it is not in 0.5.0.
     with a full birth date, that year's solar return;
   - `get_sky_calendar`: the subscribe links for the published `.ics` feeds and
     how to add them in Google, Apple and Outlook.
+  - `get_birthday`, `get_sky_calendar` and `get_horoscope` also return a
+    `shareUrl` (`src/ai-tools/share-links.ts`), as `get_occasion_sky` and
+    `get_compatibility` do: a birthday's month and day (never the year), the
+    calendar's next event, or the reading's sign, date and focus. The
+    horoscope panel carries one per day, focus and week it can show. Their
+    pages and preview images are in `src/server/result-preview.ts`
+    (DESIGN.md, "Share images").
 - **Switched off**, the server lists and runs none of them, and capabilities,
   privacy text and the privacy page keep their public-sky wording.
   **Switched on**, capabilities add what the tools take, and the privacy page
