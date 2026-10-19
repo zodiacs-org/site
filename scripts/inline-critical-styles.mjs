@@ -50,6 +50,14 @@ const signs = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
+// The 390 compatibility pair pages (78 pairings in five locales) open on two
+// sign paintings, their mobile LCP. All four of their stylesheets stay on the
+// render path, inlined, and the faces only text far down the page uses move
+// to after load (belowFoldFaces).
+const pairSlugs = signs.flatMap((sign, index) => signs.slice(index).map((other) => `${sign}-${other}`));
+const pairPaths = ['', 'es/', 'fr/', 'it/', 'pt/']
+  .flatMap((prefix) => pairSlugs.map((slug) => `${prefix}compatibility/${slug}/index.html`));
+const pairPathSet = new Set(pairPaths);
 const targetPaths = [
   // The EN homepage keeps only Base plus its route-owned first-paint geometry
   // on the render path. The complete route bundle still loads after first
@@ -72,6 +80,7 @@ const targetPaths = [
   ...signs.flatMap((sign) => ['tomorrow', 'weekly', 'monthly', 'love', 'career', '2027'].map((surface) => `horoscopes/${sign}/${surface}/index.html`)),
   'ru/index.html',
   'ru/birth-chart/index.html',
+  ...pairPaths,
 ];
 
 /**
@@ -141,6 +150,9 @@ function removeHtmlAttribute(html, name) {
 }
 
 export function expectedStylesheetShape(relativePath, deferNonBase) {
+  if (pairPathSet.has(relativePath)) {
+    return { inlineCount: 4, deferredCount: 1, externalCount: 0, loaderCount: 1 };
+  }
   if (deferNonBase) {
     const shape = deferNonBaseConfig.get(relativePath)?.shape;
     const deferredCount = shape?.deferred ?? 3;
@@ -240,10 +252,36 @@ function useHomepageFontSubsets(css) {
   return { css: output, changes };
 }
 
+/**
+ * Faces that only text far below the first screen uses on the pair pages:
+ * the italic body face (the read's emphasis) and the mono face (the compare
+ * section's "ASC"). Declared up front, the first layout fetches them beside
+ * the hero paintings. They move into a deferred <style> that the loader adds
+ * after load, or on first interaction with an island; <noscript> keeps them
+ * for readers without JavaScript.
+ */
+const belowFoldFaces = [
+  { family: 'Instrument Sans', style: 'italic', source: '/fonts/instrument-sans-latin-wght-italic.woff2' },
+  { family: 'JetBrains Mono', style: 'normal', source: '/fonts/jetbrains-mono-latin-wght-normal.woff2' },
+];
+
+function takeBelowFoldFaces(css) {
+  const faces = [];
+  const output = css.replace(/@font-face\s*\{[^{}]*\}/gi, (face) => {
+    const family = declarationValue(face, 'font-family');
+    const style = declarationValue(face, 'font-style') || 'normal';
+    const below = belowFoldFaces.some((entry) => entry.family === family && entry.style === style && face.includes(entry.source));
+    if (!below) return face;
+    faces.push(face);
+    return '';
+  });
+  return { css: output, faces };
+}
+
 export async function inlineCriticalStyles(
   html,
   root = distRoot,
-  { deferNonBase = false, subsetHomepageFonts = false } = {},
+  { deferNonBase = false, subsetHomepageFonts = false, deferFaces = false } = {},
 ) {
   if (!hasHtmlAttribute(html, marker)) return { html, stylesheets: 0, bytes: 0 };
 
@@ -295,6 +333,7 @@ export async function inlineCriticalStyles(
   let bytes = 0;
   let stabilizedChromeFaces = 0;
   let subsetHomepageFaces = 0;
+  const deferredFaces = [];
   for (const tag of selectedTags) {
     const href = attribute(tag, 'href');
     const cssPath = resolve(root, `.${href}`);
@@ -305,7 +344,11 @@ export async function inlineCriticalStyles(
     const subsetResult = subsetHomepageFonts
       ? useHomepageFontSubsets(stableResult.css)
       : { css: stableResult.css, changes: 0 };
-    const css = subsetResult.css;
+    const faceResult = deferFaces
+      ? takeBelowFoldFaces(subsetResult.css)
+      : { css: subsetResult.css, faces: [] };
+    const css = faceResult.css;
+    deferredFaces.push(...faceResult.faces);
     stabilizedChromeFaces += stableResult.changes;
     subsetHomepageFaces += subsetResult.changes;
     assertSafeCss(css, href);
@@ -327,13 +370,27 @@ export async function inlineCriticalStyles(
     );
   }
 
+  if (deferFaces && deferredFaces.length !== belowFoldFaces.length) {
+    throw new Error(
+      `inline-critical-styles: expected ${belowFoldFaces.length} below-fold faces, found ${deferredFaces.length}`,
+    );
+  }
+
   for (const tag of deferredTags) {
     output = output.replace(
       tag,
       `<template data-zdx-deferred-style>${tag}</template><noscript>${tag}</noscript>`,
     );
   }
-  if (deferredTags.length > 0) {
+  if (deferredFaces.length > 0) {
+    const faces = deferredFaces.join('');
+    assertSafeCss(faces, 'below-fold faces');
+    output = output.replace(
+      '</head>',
+      `<template data-zdx-deferred-style><style data-zdx-deferred-faces>${faces}</style></template><noscript><style>${faces}</style></noscript></head>`,
+    );
+  }
+  if (deferredTags.length > 0 || deferredFaces.length > 0) {
     if (!output.includes('</head>')) {
       throw new Error('inline-critical-styles: cannot install deferred-style loader without </head>');
     }
@@ -400,17 +457,18 @@ async function main() {
     const result = await inlineCriticalStyles(source, distRoot, {
       deferNonBase: deferConfig?.select,
       subsetHomepageFonts: relativePath === 'index.html',
+      deferFaces: pairPathSet.has(relativePath),
     });
     await writeFile(path, result.html);
     pages += 1;
     stylesheets += result.stylesheets;
     bytes += result.bytes;
   }
-  // 103 pages since all seven horoscope periods are inlined (was 55 with
-  // daily, love and career only): 48 more pages, two stylesheets each.
-  if (pages + alreadyInlined !== 103 || stylesheets !== 204) {
+  // 103 entry pages with 204 stylesheets, plus the 390 pair pages with four
+  // each since they joined.
+  if (pages + alreadyInlined !== 493 || stylesheets !== 1764) {
     throw new Error(
-      `inline-critical-styles: expected 103 pages / 204 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
+      `inline-critical-styles: expected 493 pages / 1764 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
     );
   }
   const state = pages > 0

@@ -10,7 +10,14 @@
  * any other art. The intrinsic size is always set, so the frame reserves
  * its space before the image arrives.
  */
-import { SIGN_ART_SIZE, signArtAlt, signArtSrc, signArtSrcset } from '../lib/sign-art';
+import {
+  SIGN_ART_AVIF_MEDIA,
+  SIGN_ART_SIZE,
+  signArtAlt,
+  signArtAvifSrcset,
+  signArtSrc,
+  signArtSrcset,
+} from '../lib/sign-art';
 import type { CatalogLocale } from '../lib/i18n/core';
 
 interface Props {
@@ -33,6 +40,13 @@ interface Props {
   fade?: boolean;
   /** Load at high priority: only for art that is the page's first picture. */
   eager?: boolean;
+  /**
+   * Override the fetch priority, e.g. "low" for an eager painting beside the
+   * page's first picture, so the two do not split the connection.
+   */
+  fetchPriority?: 'high' | 'low' | 'auto';
+  /** Offer the sign panel's AVIF copies to screens at 1.5x and above. */
+  avif?: boolean;
   caption?: string;
   class?: string;
   style?: string;
@@ -52,6 +66,8 @@ const {
   flip = false,
   fade = false,
   eager = false,
+  fetchPriority,
+  avif = false,
   caption,
   class: className,
   style,
@@ -63,6 +79,19 @@ const imgSrcset = srcset ?? (sign && !src ? signArtSrcset(sign) : undefined);
 const imgWidth = width ?? SIGN_ART_SIZE.width;
 const imgHeight = height ?? SIGN_ART_SIZE.height;
 const imgAlt = alt ?? (sign ? signArtAlt(sign, locale) : '');
+if (avif && (!sign || src || srcset)) throw new Error('ArtFrame avif needs a sign panel.');
+const avifSrcset = avif && sign ? signArtAvifSrcset(sign) : undefined;
+const imgAttributes = {
+  src: imgSrc,
+  srcset: imgSrcset,
+  sizes: imgSrcset ? sizes : undefined,
+  width: imgWidth,
+  height: imgHeight,
+  alt: imgAlt,
+  loading: eager ? 'eager' : 'lazy',
+  fetchpriority: fetchPriority ?? (eager ? 'high' : undefined),
+  decoding: eager ? undefined : 'async',
+};
 // A frame with no alt text and no caption is decoration: keep it out of the
 // accessibility tree entirely.
 const decorative = imgAlt === '' && !caption;
@@ -73,16 +102,13 @@ const vars = [
 ].filter(Boolean).join(';');
 ---
 <figure class:list={['artframe', flip && 'artframe--flip', fade && 'artframe--fade', className]} style={vars || undefined} aria-hidden={decorative ? 'true' : undefined}>
-  <img
-    src={imgSrc}
-    srcset={imgSrcset}
-    sizes={imgSrcset ? sizes : undefined}
-    width={imgWidth}
-    height={imgHeight}
-    alt={imgAlt}
-    loading={eager ? 'eager' : 'lazy'}
-    fetchpriority={eager ? 'high' : undefined}
-    decoding={eager ? undefined : 'async'}
-  />
+  {avifSrcset ? (
+    <picture>
+      <source type="image/avif" media={SIGN_ART_AVIF_MEDIA} srcset={avifSrcset} sizes={sizes} />
+      <img {...imgAttributes} />
+    </picture>
+  ) : (
+    <img {...imgAttributes} />
+  )}
   {caption && <figcaption class="artframe__cap">{caption}</figcaption>}
 </figure>

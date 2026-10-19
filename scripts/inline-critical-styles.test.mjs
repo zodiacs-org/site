@@ -34,7 +34,11 @@ describe('inlineCriticalStyles', () => {
     });
     expect(expectedStylesheetShape('ru/birth-chart/index.html', true)).toEqual({
       inlineCount: 1, deferredCount: 3, externalCount: 6, loaderCount: 1,
-    });
+    });    for (const pair of ['compatibility/aries-cancer/index.html', 'pt/compatibility/pisces-pisces/index.html']) {
+      expect(expectedStylesheetShape(pair, false)).toEqual({
+        inlineCount: 4, deferredCount: 1, externalCount: 0, loaderCount: 1,
+      });
+    }
   });
 
   it('ignores transient build directories and tolerates a vanished directory', async () => {
@@ -173,6 +177,51 @@ describe('inlineCriticalStyles', () => {
     expect(result.html).toContain("window.addEventListener('load', schedule");
     expect(result.html).not.toMatch(/\bonload=/i);
     expect(result.html).not.toContain('data-inline-critical-css');
+  });
+
+  it('moves only the below-fold faces of a pair page behind the loader', async () => {
+    const faces = {
+      sans: "@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-normal.woff2) format('woff2-variations');font-weight:400 700;font-style:normal;font-display:swap}",
+      italic: "@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-italic.woff2) format('woff2-variations');font-weight:400 700;font-style:italic;font-display:swap}",
+      phase1Italic: "@font-face{font-family:Instrument Sans Phase1;src:url(/fonts/instrument-sans-latin-wght-italic.woff2) format('woff2-variations');font-weight:400 700;font-style:italic;font-display:optional}",
+      mono: "@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-weight:300 600;font-style:normal;font-display:swap}",
+      serifItalic: "@font-face{font-family:EB Garamond;src:url(/fonts/eb-garamond-latin-400-italic.woff2) format('woff2');font-weight:400;font-style:italic;font-display:swap}",
+    };
+    const root = await fixture({
+      'Base.hash.css': `${faces.sans}${faces.italic}${faces.phase1Italic}${faces.mono}${faces.serifItalic}:root{--ink:#fff}`,
+      'calculator.hash.css': '.calc{color:var(--ink)}',
+      'pair-page.hash.css': '.ph-hero{height:840px}',
+    });
+    const marked = '<html data-inline-critical-css><head>'
+      + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+      + '<link rel="stylesheet" href="/_astro/calculator.hash.css">'
+      + '<link rel="stylesheet" href="/_astro/pair-page.hash.css">'
+      + '</head><body></body></html>';
+    const result = await inlineCriticalStyles(marked, root, { deferFaces: true });
+
+    expect(result.stylesheets).toBe(3);
+    const base = result.html.match(/<style data-zdx-critical="Base\.hash\.css">([^<]*)<\/style>/)[1];
+    expect(base).toBe(`${faces.sans}${faces.phase1Italic}${faces.serifItalic}:root{--ink:#fff}`);
+    expect(result.html).toContain(
+      `<template data-zdx-deferred-style><style data-zdx-deferred-faces>${faces.italic}${faces.mono}</style></template>`
+      + `<noscript><style>${faces.italic}${faces.mono}</style></noscript>`,
+    );
+    expect(result.html.indexOf('data-zdx-deferred-faces')).toBeLessThan(result.html.indexOf('data-zdx-deferred-style-loader'));
+    expect(result.html).not.toMatch(/<link\b[^>]*rel="stylesheet"/);
+    expect(result.html).not.toContain('data-inline-critical-css');
+  });
+
+  it('fails closed when a pair page build loses a below-fold face', async () => {
+    const root = await fixture({
+      'Base.hash.css': "@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2-variations');font-style:normal}",
+    });
+    const marked = '<html data-inline-critical-css><head>'
+      + '<link rel="stylesheet" href="/_astro/Base.hash.css">'
+      + '</head></html>';
+
+    await expect(inlineCriticalStyles(marked, root, { deferFaces: true })).rejects.toThrow(
+      'expected 2 below-fold faces, found 1',
+    );
   });
 
   it.each([
