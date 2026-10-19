@@ -109,6 +109,13 @@ row.
   words, crop and the heroes' art and shade live in `src/lib/og-art-cards.mjs`,
   and a test holds them to the two heroes. The v2 homepage, sign and horoscope
   cards stay published for links already shared.
+- The Spanish, French, Italian and Portuguese homepages, sign guides and
+  (Spanish and Portuguese) daily horoscopes have the same cards in their own
+  words, as their pages print them: the localized hero's headline and the
+  first half of its caption; the sign's name, the first sentence of the
+  guide's opening line and its dates (the localized heroes carry no kicker);
+  and "Horóscopos" over "Aries hoy". A long line steps down until the column
+  fits. Each locale's homepage card is its fallback too.
 
 ## Voice
 

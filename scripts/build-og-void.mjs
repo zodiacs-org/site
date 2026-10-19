@@ -30,6 +30,7 @@
  *   npm run data:og -- --only-registry    # the Registry's v4 lot and hub cards (build-registry-og.mjs)
  *   npm run data:og -- --only-terminal-card # Terminal's v7 card
  *   npm run data:og -- --only-art-cards   # the homepage and sign guide art cards (v8, JPEG)
+ *   npm run data:og -- --only-localized-art-cards   # the same cards in Spanish, French, Italian and Portuguese
  *   npm run data:og -- --review-people-identities # reviewed identity cards, artifacts only
  *
  * Deterministic and offline: fonts and disc art are inlined as data:
@@ -88,6 +89,14 @@ const {
   horoscopeArtCardCopy,
   signArtCard,
   signArtCardCopy,
+  ART_CARD_LOCALES,
+  HOROSCOPE_ART_CARD_LOCALES,
+  LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES,
+  homeArtCard,
+  localizedHomeArtCardCopy,
+  localizedHoroscopeArtCard,
+  localizedHoroscopeArtCardCopy,
+  localizedSignArtCardCopy,
 } = await import(pathToFileURL(resolve(root, 'src/lib/og-art-cards.mjs')).href);
 const WING_OUT = resolve(root, 'public/assets/og/v5');
 // The immutable v5 card is retained as historical output. Astrofolio and
@@ -475,8 +484,12 @@ function signCard(s) {
 // The art arrives as data: URIs read by the --only-art-cards run alone.
 const ART = { poster: null, signs: {}, icons: {} };
 
-/** The homepage: the poster cut at full size, the hero's scrim, its headline bottom left. */
-function artHomeCard() {
+/**
+ * The homepage: the poster cut at full size, the hero's scrim, its headline
+ * bottom left. A localized homepage's headline steps down until it takes three
+ * lines at most (`data-fit-height`), so it stays clear of the sign discs.
+ */
+function artHomeCard(copy = HOME_ART_CARD_COPY, footer = OG_EN.site, { localized = false } = {}) {
   const { x, y, width } = HOME_ART_CARD_CROP;
   const scale = 1200 / width;
   const body = `
@@ -484,10 +497,10 @@ function artHomeCard() {
     background-size: ${1600 * scale}px ${900 * scale}px; background-position: ${-x * scale}px ${-y * scale}px;"></div>
   <div style="position: absolute; inset: 0; background: ${HOME_ART_CARD_SCRIM.join(', ')};"></div>
   <div style="position: absolute; left: 88px; bottom: 120px; z-index: 2;">
-    <div class="display" style="font-size: 96px; line-height: 1; max-width: 520px; text-wrap: balance; text-shadow: 0 2px 28px rgba(6, 7, 9, 0.55);">${escapeHtml(HOME_ART_CARD_COPY.title)}</div>
-    <div class="sub" style="margin-top: 22px; font-size: 25px; line-height: 1.42; max-width: 30ch; text-shadow: 0 1px 18px rgba(6, 7, 9, 0.6);">${escapeHtml(HOME_ART_CARD_COPY.subtitle)}</div>
+    <div class="display"${localized ? ' data-fit-height="288"' : ''} style="font-size: 96px; line-height: 1; max-width: 520px; text-wrap: balance; text-shadow: 0 2px 28px rgba(6, 7, 9, 0.55);">${escapeHtml(copy.title)}</div>
+    <div class="sub" style="margin-top: 22px; font-size: 25px; line-height: 1.42; max-width: 30ch; text-shadow: 0 1px 18px rgba(6, 7, 9, 0.6);">${escapeHtml(copy.subtitle)}</div>
   </div>`;
-  return shell(body, OG_EN.site);
+  return shell(body, footer);
 }
 
 /**
@@ -496,19 +509,24 @@ function artHomeCard() {
  * so it reads when the card is shown small (owner's call, 2026-10-19), then
  * the kicker, the name, the line and the birthday sentence.
  */
-function artSignLayout(s, copy, footer) {
+function artSignLayout(s, copy, footer, { localized = false } = {}) {
+  // The localized heroes carry no kicker, and their lines run longer than the
+  // English taglines: the line takes the column's width and steps down until
+  // the column fits (`data-fit-column`). The English cards draw as before.
+  const kicker = copy.kicker ? `
+    <span class="kicker" style="margin: 18px 0 0;">${escapeHtml(copy.kicker)}</span>` : '';
+  const line = copy.line ? `
+    <div${localized ? ' data-shrink' : ''} style="margin-top: 20px; font-size: ${localized ? 28 : 30}px; line-height: 1.3; letter-spacing: -0.01em; max-width: ${localized ? '100%' : '24ch'}; text-wrap: balance;">${escapeHtml(copy.line)}</div>` : '';
   const body = `
   <img src="${ART.signs[s.slug]}" width="1200" height="800" alt=""
     style="position: absolute; top: 0; right: 0; width: ${SIGN_ART_CARD_ART.width}; height: 100%; object-fit: cover; object-position: ${SIGN_ART_CARD_ART.position};
       filter: ${SIGN_ART_CARD_ART.filter}; -webkit-mask-image: ${SIGN_ART_CARD_ART.mask}; mask-image: ${SIGN_ART_CARD_ART.mask};" />
   <div style="position: absolute; inset: 0; background: ${SIGN_ART_CARD_SHADE.join(', ')};"></div>
-  <div style="position: absolute; left: 88px; top: 16px; bottom: 96px; z-index: 2; width: 520px; display: flex; flex-direction: column; justify-content: center;">
+  <div${localized ? ' data-fit-column' : ''} style="position: absolute; left: 88px; top: 16px; bottom: 96px; z-index: 2; width: 520px; display: flex; flex-direction: column; justify-content: center;">
     <img src="${ART.icons[s.slug]}" width="${ART_CARD_DISC}" height="${ART_CARD_DISC}" alt=""
-      style="display: block; width: ${ART_CARD_DISC}px; height: ${ART_CARD_DISC}px; flex: none;" />
-    <span class="kicker" style="margin: 18px 0 0;">${escapeHtml(copy.kicker)}</span>
-    <div class="display" data-fit="440" style="margin-top: 2px; font-size: 112px; line-height: 0.98; white-space: nowrap; width: max-content;">${escapeHtml(copy.name)}</div>
-    <div style="margin-top: 20px; font-size: 30px; line-height: 1.3; letter-spacing: -0.01em; max-width: 24ch; text-wrap: balance;">${escapeHtml(copy.line)}</div>
-    <div style="margin-top: 10px; font-size: 21px; line-height: 1.45; color: ${INK2}; max-width: 27ch; text-wrap: balance;">${escapeHtml(copy.sub)}</div>
+      style="display: block; width: ${ART_CARD_DISC}px; height: ${ART_CARD_DISC}px; flex: none;" />${kicker}
+    <div class="display" data-fit="440" style="margin-top: ${copy.kicker ? 2 : 18}px; font-size: 112px; line-height: 0.98; white-space: nowrap; width: max-content;">${escapeHtml(copy.name)}</div>${line}
+    <div style="margin-top: ${copy.line ? 10 : 20}px; font-size: 21px; line-height: 1.45; color: ${INK2}; max-width: 27ch; text-wrap: balance;">${escapeHtml(copy.sub)}</div>
   </div>`;
   return shell(body, footer);
 }
@@ -524,12 +542,44 @@ function artHoroscopeCard(s, surface) {
   return artSignLayout(s, horoscopeArtCardCopy(s.slug, surface.key), `zodiacs.org/horoscopes/${route}`);
 }
 
-/** Steps a long name down until it fits its measure (`data-fit`, px), once the fonts are in. */
+/** A localized sign guide's card, in its guide's words. */
+function localizedSignCard(s, locale) {
+  return artSignLayout(s, localizedSignArtCardCopy(s.slug, locale), `zodiacs.org/${locale}/${s.slug}/`, { localized: true });
+}
+
+/** A localized daily horoscope's card. */
+function localizedHoroscopeCard(s, locale) {
+  return artSignLayout(s, localizedHoroscopeArtCardCopy(s.slug, locale), `zodiacs.org/${locale}/horoscopes/${s.slug}/`, { localized: true });
+}
+
+/**
+ * Steps a long name down until it fits its measure (`data-fit`, px), a
+ * localized headline until it fits its height (`data-fit-height`, px), and a
+ * localized card's line (`data-shrink`) until its column fits, once the fonts
+ * are in.
+ */
 function fitArtNames() {
   for (const name of document.querySelectorAll('[data-fit]')) {
     const room = Number(name.dataset.fit);
     const size = Number.parseFloat(getComputedStyle(name).fontSize);
     if (name.scrollWidth > room) name.style.fontSize = `${Math.floor((size * room) / name.scrollWidth)}px`;
+  }
+  for (const block of document.querySelectorAll('[data-fit-height]')) {
+    const room = Number(block.dataset.fitHeight);
+    let size = Number.parseFloat(getComputedStyle(block).fontSize);
+    while (block.getBoundingClientRect().height > room + 0.5 && size > 60) {
+      size -= 2;
+      block.style.fontSize = `${size}px`;
+    }
+  }
+  for (const column of document.querySelectorAll('[data-fit-column]')) {
+    const line = column.querySelector('[data-shrink]');
+    if (!line) continue;
+    let size = Number.parseFloat(getComputedStyle(line).fontSize);
+    while (column.scrollHeight > column.clientHeight + 0.5 && size > 22) {
+      size -= 1;
+      line.style.fontSize = `${size}px`;
+    }
   }
 }
 
@@ -1179,6 +1229,35 @@ if (process.argv.includes('--only-terminal-card')) {
 // sign and horoscope cards stay published for links already shared. The v2
 // manifest is rewritten for its fallback line only. The large disc is the
 // 400px tier of the canonical icons, drawn at ART_CARD_DISC.
+if (process.argv.includes('--only-localized-art-cards')) {
+  // The localized cards only: the English art cards are published and stay as they are.
+  console.log('Rendering the Spanish, French, Italian and Portuguese art cards…');
+  ART.poster = await b64('public/assets/hero/zodiacs-hero-poster.jpg', 'image/jpeg');
+  for (const s of SIGNS) {
+    ART.signs[s.slug] = await b64(`public/assets/sign-art/${s.slug}-1200.webp`, 'image/webp');
+    ART.icons[s.slug] = await b64(`public/assets/zodiac-icons/400/${s.slug}.webp`, 'image/webp');
+  }
+  const cards = ART_CARD_LOCALES.flatMap((locale) => [
+    [homeArtCard(locale), artHomeCard(localizedHomeArtCardCopy(locale), `zodiacs.org/${locale}/`, { localized: true })],
+    ...SIGNS.map((s) => [signArtCard(s.slug, locale), localizedSignCard(s, locale)]),
+    ...(HOROSCOPE_ART_CARD_LOCALES.includes(locale) ? SIGNS.map((s) => [localizedHoroscopeArtCard(s.slug, locale), localizedHoroscopeCard(s, locale)]) : []),
+  ]);
+  let written = 0;
+  for (const [path, html] of cards) {
+    const raw = await capture(html, fitArtNames);
+    const bytes = await sharp(raw).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+    if (bytes.length > ART_CARD_MAX_BYTES) throw new Error(`${path}: ${bytes.length} bytes, over the ${ART_CARD_MAX_BYTES}-byte budget`);
+    const output = resolve(root, `public${path}`);
+    await mkdir(dirname(output), { recursive: true });
+    await writeFile(output, bytes);
+    written += bytes.length;
+  }
+  if (written > LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES) throw new Error(`localized art cards: ${written} bytes, over the ${LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES}-byte budget`);
+  await browser.close();
+  console.log(`Done: ${cards.length} localized art cards, ${(written / 1024).toFixed(0)}KB.`);
+  process.exit(0);
+}
+
 if (process.argv.includes('--only-art-cards')) {
   console.log('Rendering the homepage, sign guide and horoscope art cards…');
   ART.poster = await b64('public/assets/hero/zodiacs-hero-poster.jpg', 'image/jpeg');

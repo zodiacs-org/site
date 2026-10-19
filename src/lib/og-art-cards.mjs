@@ -14,6 +14,11 @@
  * what the sign guide's hero prints (signTagline, signOrdinal, guideFacts)
  * and the headline to the homepage's.
  *
+ * The Spanish, French, Italian and Portuguese homepages, sign guides and
+ * (Spanish and Portuguese) daily horoscopes have the same cards in their own
+ * words, which og-art-cards.locales.mjs carries for the generator
+ * (`npm run data:og -- --only-localized-art-cards`).
+ *
  * The art runs across the whole picture, so the cards are JPEGs: as PNGs
  * they would pass WhatsApp's 600 KB limit for a link preview. They are never
  * redrawn in place once published; a new design takes a new folder, and
@@ -21,6 +26,7 @@
  */
 import { HOROSCOPE_OG_SURFACES } from '../strings/seo.en.mjs';
 import { OG_SIGNS } from '../strings/seo.signs.mjs';
+import { LOCALIZED_ART_CARD_COPY } from './og-art-cards.locales.mjs';
 
 export const ART_CARD_DIR = '/assets/og/v8';
 
@@ -33,9 +39,54 @@ function knownSign(slug, caller) {
   return slug;
 }
 
-/** @param {string} slug */
-export function signArtCard(slug) {
-  return `${ART_CARD_DIR}/sign/${knownSign(slug, 'signArtCard')}.jpg`;
+/**
+ * The Spanish, French, Italian and Portuguese pages share cards in their own
+ * words (og-art-cards.locales.mjs, from src/lib/og-art-cards-copy.ts), in
+ * `${ART_CARD_DIR}/{locale}/`.
+ */
+export const ART_CARD_LOCALES = Object.freeze(['es', 'fr', 'it', 'pt']);
+
+/** @param {string} locale @param {string} caller */
+function cardLocale(locale, caller) {
+  if (locale === 'en') return locale;
+  if (!ART_CARD_LOCALES.includes(locale)) throw new Error(`${caller}: no art cards in ${locale}`);
+  return locale;
+}
+
+/**
+ * A sign guide's card: `sign/aries.jpg`, or `es/sign/aries.jpg` for the Spanish guide.
+ * @param {string} slug
+ * @param {string} [locale]
+ */
+export function signArtCard(slug, locale = 'en') {
+  const sign = knownSign(slug, 'signArtCard');
+  return cardLocale(locale, 'signArtCard') === 'en'
+    ? `${ART_CARD_DIR}/sign/${sign}.jpg`
+    : `${ART_CARD_DIR}/${locale}/sign/${sign}.jpg`;
+}
+
+/**
+ * A localized homepage's card, and that locale's fallback: `es/home.jpg`. English keeps HOME_ART_CARD.
+ * @param {string} [locale]
+ */
+export function homeArtCard(locale = 'en') {
+  return cardLocale(locale, 'homeArtCard') === 'en' ? HOME_ART_CARD : `${ART_CARD_DIR}/${locale}/home.jpg`;
+}
+
+/** The locales that publish a daily horoscope page of their own (Spanish and Portuguese). */
+export const HOROSCOPE_ART_CARD_LOCALES = Object.freeze(
+  ART_CARD_LOCALES.filter((locale) => Object.keys(LOCALIZED_ART_CARD_COPY[locale].horoscopes).length > 0),
+);
+
+/**
+ * A localized daily horoscope's card: `es/horoscope/aries.jpg`.
+ * @param {string} slug
+ * @param {string} locale
+ */
+export function localizedHoroscopeArtCard(slug, locale) {
+  const sign = knownSign(slug, 'localizedHoroscopeArtCard');
+  if (!HOROSCOPE_ART_CARD_LOCALES.includes(locale)) throw new Error(`localizedHoroscopeArtCard: no horoscope cards in ${locale}`);
+  return `${ART_CARD_DIR}/${locale}/horoscope/${sign}.jpg`;
 }
 
 /** The horoscope surfaces, keyed as HoroscopeProgramPage names them ('today', 'weekly', 'year'…). */
@@ -59,9 +110,20 @@ export const ART_CARDS = Object.freeze([
   ...OG_SIGNS.flatMap((sign) => HOROSCOPE_OG_SURFACES.map((surface) => horoscopeArtCard(sign.slug, surface.key))),
 ]);
 
-/** Each card stays well under WhatsApp's 600 KB link-preview limit, and the folder under 12 MiB. */
+/** Every localized card: each locale's homepage, its twelve sign guides, then its daily horoscopes. */
+export const LOCALIZED_ART_CARDS = Object.freeze(ART_CARD_LOCALES.flatMap((locale) => [
+  homeArtCard(locale),
+  ...OG_SIGNS.map((sign) => signArtCard(sign.slug, locale)),
+  ...(HOROSCOPE_ART_CARD_LOCALES.includes(locale) ? OG_SIGNS.map((sign) => localizedHoroscopeArtCard(sign.slug, locale)) : []),
+]));
+
+/**
+ * Each card stays well under WhatsApp's 600 KB link-preview limit, the
+ * English cards under 12 MiB together and the localized ones under 12 MiB.
+ */
 export const ART_CARD_MAX_BYTES = 300 * 1024;
 export const ART_CARDS_MAX_TOTAL_BYTES = 12 * 1024 * 1024;
+export const LOCALIZED_ART_CARDS_MAX_TOTAL_BYTES = 12 * 1024 * 1024;
 
 /** The sign's disc on a sign or horoscope card, in px: large enough to read with the card shown a quarter size. */
 export const ART_CARD_DISC = 144;
@@ -155,4 +217,46 @@ export function horoscopeArtCardCopy(slug, surfaceKey) {
   if (!surface) throw new Error(`horoscopeArtCardCopy: unknown horoscope ${surfaceKey}`);
   const sign = signArtCardCopy(slug);
   return Object.freeze({ kicker: surface.kicker, name: sign.name, line: surface.subtitle, sub: sign.sub });
+}
+
+/** @param {string} locale */
+function localizedCopy(locale) {
+  const copy = LOCALIZED_ART_CARD_COPY[cardLocale(locale, 'localizedArtCardCopy')];
+  if (!copy) throw new Error(`localizedArtCardCopy: no words for ${locale}`);
+  return copy;
+}
+
+/**
+ * A localized homepage card's words: the hero's headline and the first half of its caption.
+ * @param {string} locale
+ * @returns {{ title: string, subtitle: string }}
+ */
+export function localizedHomeArtCardCopy(locale) {
+  return Object.freeze({ ...localizedCopy(locale).home });
+}
+
+/**
+ * A localized sign card's words, as the localized guide's hero prints them:
+ * the name, the first sentence of its line and the dates. No kicker: the
+ * localized heroes carry none.
+ * @param {string} slug
+ * @param {string} locale
+ * @returns {{ name: string, line: string, sub: string }}
+ */
+export function localizedSignArtCardCopy(slug, locale) {
+  const copy = localizedCopy(locale).signs[knownSign(slug, 'localizedSignArtCardCopy')];
+  return Object.freeze({ ...copy });
+}
+
+/**
+ * A localized daily horoscope card's words: the breadcrumb's "Horóscopos",
+ * the hero's title ("Aries hoy") and the dates.
+ * @param {string} slug
+ * @param {string} locale
+ * @returns {{ kicker: string, name: string, sub: string }}
+ */
+export function localizedHoroscopeArtCardCopy(slug, locale) {
+  const copy = localizedCopy(locale).horoscopes[knownSign(slug, 'localizedHoroscopeArtCardCopy')];
+  if (!copy) throw new Error(`localizedHoroscopeArtCardCopy: no horoscope in ${locale}`);
+  return Object.freeze({ ...copy });
 }
