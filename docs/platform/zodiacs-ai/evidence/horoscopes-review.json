@@ -2,13 +2,14 @@
   "scope": "Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance",
   "timezone": "Asia/Bangkok",
   "window": [
-    "2026-10-17",
     "2026-10-18",
-    "2026-10-19"
+    "2026-10-19",
+    "2026-10-20"
   ],
   "passed": [
     "sign picker",
     "sign choice through the OpenAI bridge",
+    "the reading's ring turns to its sign",
     "host updates after a choice keep it",
     "plain dates and places",
     "focus and week switching",

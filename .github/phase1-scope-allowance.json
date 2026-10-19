@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "localized-art-cards-20261019",
-  "baseCommit": "ebf73ed08e5c916edf60571ba78230d12788f767",
+  "baseCommit": "4b7eb3cd7a19994510610065a1e3a0452b693599",
   "protectedPaths": [
     "src/pages/es/[sign]/index.astro",
     "src/pages/fr/[sign]/index.astro",
