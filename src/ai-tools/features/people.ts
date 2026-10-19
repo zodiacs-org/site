@@ -15,6 +15,7 @@ import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { zoneAt } from '../../lib/compute-api/validate';
 import { computeChart } from '../../lib/engine/full.js';
 import type { ChartInput } from '../../lib/engine/types';
+import { birthdaySlug } from '../../lib/birthdays';
 import { validOccasionDate } from '../../lib/occasions/card';
 import { matchTwins, twinSigns, type TwinPerson } from '../../lib/sharing/twins';
 import rawIndex from './people-index.json';
@@ -49,7 +50,18 @@ const TWIN_DIRECTORY: readonly TwinPerson[] = PEOPLE_INDEX.map((person) => ({ sl
 
 const link = z.object({ title: z.string(), url: z.url() });
 export type ToolLink = z.infer<typeof link>;
-const personUrl = (origin: string, slug: string) => `${origin}/people/${slug}/`;
+export const personUrl = (origin: string, slug: string) => `${origin}/people/${slug}/`;
+
+/**
+ * The people the site publishes who were born on a month and day, oldest
+ * first, as the date's birthday page lists them (src/lib/people.ts,
+ * peopleForBirthday): its hero names the first three.
+ */
+export function peopleBornOn(month: number, day: number): readonly IndexPerson[] {
+  const route = `/birthday/${birthdaySlug(month, day)}/`;
+  return PEOPLE_INDEX.filter((person) => person.birthdayRoute === route)
+    .sort((a, b) => a.gregorian.localeCompare(b.gregorian));
+}
 
 // ---------- find_chart_twins ----------
 

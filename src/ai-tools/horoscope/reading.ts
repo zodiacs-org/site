@@ -4,6 +4,8 @@
  * from the window passed in; dates and times are formatted for people.
  */
 import type { HoroscopeEvidenceReceipt, HoroscopeSign } from '../../lib/horoscope-program-types';
+import type { ShareRef } from '../../lib/share-results';
+import { horoscopeShareUrl } from '../share-links.js';
 import type { HoroscopeWindow, WindowReading } from './window';
 
 export const HOROSCOPE_URI = 'ui://zodiacs/horoscopes-v3.html';
@@ -41,6 +43,8 @@ export interface HoroscopeAnswer {
   why?: { note: string; facts: { text: string; when: string }[]; houses: string[] };
   available?: { date: string; label: string }[];
   message?: string;
+  /** The reading's share link (share-links.ts), when one is shown and an origin was given. */
+  shareUrl?: string | null;
   disclosure: string;
 }
 
@@ -52,6 +56,8 @@ export interface PanelReading {
   houses: string[];
   from: string;
   through: string;
+  /** Its share link, with the assistant's ?ref=, so the panel shares whatever it shows. */
+  shareUrl: string | null;
 }
 
 /** Every reading for one sign in the window, sent only to the panel so it can switch day, week or focus itself. */
@@ -149,6 +155,7 @@ export function resolveHoroscope(
   zone: string,
   zoneSource: ZoneSource,
   localDate: string,
+  origin?: string,
 ): HoroscopeAnswer {
   const date = request.date ?? localDate;
   const focus: HoroscopeFocus = request.period === 'week' ? 'general' : request.focus;
@@ -169,15 +176,16 @@ export function resolveHoroscope(
   } else {
     reading = window.editions.find((candidate) => candidate.anchorDate === date)?.signs[sign][focus === 'general' ? 'today' : focus];
   }
+  const noShare = origin === undefined ? {} : { shareUrl: null };
   if (!reading) {
     const message = date > dates[dates.length - 1]
       ? `The reading for ${dayLabel(date)} isn't published yet. Each day's reading appears the day before.`
       : `The reading for ${dayLabel(date)} is no longer kept here. Recent readings are on zodiacs.org.`;
-    return { ...named, status: 'unavailable', available, message };
+    return { ...named, status: 'unavailable', available, message, ...noShare };
   }
   if (reading.status !== 'publishable') {
     const kind = focus === 'general' ? '' : `${focus} `;
-    return { ...named, status: 'unavailable', available, message: `There's no ${kind}reading for ${cap(sign)} on ${dayLabel(date)}.` };
+    return { ...named, status: 'unavailable', available, message: `There's no ${kind}reading for ${cap(sign)} on ${dayLabel(date)}.`, ...noShare };
   }
   const label = request.period === 'week' ? weekLabel(reading.period.from, reading.period.through) : dayLabel(date);
   const suffix = request.period === 'day' && focus !== 'general' ? ` · ${cap(focus)}` : '';
@@ -190,10 +198,13 @@ export function resolveHoroscope(
       paragraphs: reading.passages.map((passage) => (passage.heading ? { heading: passage.heading, text: passage.text } : { text: passage.text })),
     },
     why: why(window, reading, zone),
+    ...(origin === undefined ? {} : {
+      shareUrl: horoscopeShareUrl(origin, { sign, date: request.period === 'week' ? reading.period.from : date, week: request.period === 'week', focus }),
+    }),
   };
 }
 
-function panelReading(window: HoroscopeWindow, reading: WindowReading): PanelReading {
+function panelReading(window: HoroscopeWindow, reading: WindowReading, shareUrl: string | null): PanelReading {
   const ids = new Set(reading.passages.flatMap((passage) => passage.evidenceRefs));
   for (const id of [...ids]) {
     const fact = window.evidence[id]?.sourceFactId;
@@ -212,13 +223,20 @@ function panelReading(window: HoroscopeWindow, reading: WindowReading): PanelRea
     houses: reading.status === 'publishable' ? [...new Set(receipts.filter((item) => item.kind === 'solar-house').map(houseText))] : [],
     from: reading.period.from,
     through: reading.period.through,
+    shareUrl: reading.status === 'publishable' ? shareUrl : null,
   };
 }
 
-export function horoscopePanel(window: HoroscopeWindow, sign: HoroscopeSign, requested: HoroscopePanelData['requested']): HoroscopePanelData {
+/** With `share`, each reading carries its share link, the assistant's ?ref= included. */
+export function horoscopePanel(
+  window: HoroscopeWindow, sign: HoroscopeSign, requested: HoroscopePanelData['requested'],
+  share?: { origin: string; ref: ShareRef | null },
+): HoroscopePanelData {
+  const link = (date: string, week: boolean, focus: HoroscopeFocus) => (share ? horoscopeShareUrl(share.origin, { sign, date, week, focus }, share.ref) : null);
   const weeks: PanelReading[] = [];
   for (const edition of window.editions) {
-    const week = panelReading(window, edition.signs[sign].weekly);
+    const weekly = edition.signs[sign].weekly;
+    const week = panelReading(window, weekly, link(weekly.period.from, true, 'general'));
     if (!weeks.some((known) => known.from === week.from)) weeks.push(week);
   }
   return {
@@ -228,9 +246,9 @@ export function horoscopePanel(window: HoroscopeWindow, sign: HoroscopeSign, req
     days: window.editions.map((edition) => ({
       date: edition.anchorDate,
       focuses: {
-        general: panelReading(window, edition.signs[sign].today),
-        love: panelReading(window, edition.signs[sign].love),
-        career: panelReading(window, edition.signs[sign].career),
+        general: panelReading(window, edition.signs[sign].today, link(edition.anchorDate, false, 'general')),
+        love: panelReading(window, edition.signs[sign].love, link(edition.anchorDate, false, 'love')),
+        career: panelReading(window, edition.signs[sign].career, link(edition.anchorDate, false, 'career')),
       },
     })),
     weeks,
