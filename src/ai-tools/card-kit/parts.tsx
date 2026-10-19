@@ -21,16 +21,20 @@ import './card.css';
  * written "Zodiacs·org" and capitalised by the stylesheet, as in the nav, and
  * the link's name is "Zodiacs.org".
  */
-export function Nameplate({ href = 'https://zodiacs.org/' }: { href?: string }) {
+export function Nameplate({ href = 'https://zodiacs.org/', front = null }: { href?: string; front?: string | null }) {
   return <a class="nameplate" href={href} target="_blank" rel="noreferrer" aria-label="Zodiacs.org">
-    <TiltedRing width={34}/>
+    <TiltedRing width={34} front={front}/>
     <span class="nameplate-name" aria-hidden="true">Zodiacs<span class="nameplate-sep">·</span><span class="nameplate-tld">org</span></span>
   </a>;
 }
 
-export function Card({ hue, hue2, label, children }: { hue: string | null; hue2?: string | null; label?: string; children: ComponentChildren }) {
+/**
+ * A card. `front` is the Sun sign of the one person a card is made for, the
+ * one its chart settles, and turns the nameplate's ring to it.
+ */
+export function Card({ hue, hue2, label, front = null, children }: { hue: string | null; hue2?: string | null; label?: string; front?: string | null; children: ComponentChildren }) {
   return <article class="card" style={hueVars(hue, hue2) as CSSProperties} aria-label={label}>
-    <Nameplate/>
+    <Nameplate front={front}/>
     {children}
   </article>;
 }

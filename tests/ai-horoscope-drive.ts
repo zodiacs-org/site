@@ -57,9 +57,13 @@ try {
   }, [picker, leo] as const);
   await page.getByRole('heading', { name: 'Your horoscope' }).waitFor();
   assert.equal(await page.locator('.grid button').count(), 12);
+  // Before a sign is chosen the ring is the brand's own, Libra in front.
+  assert.equal(await page.locator('.nameplate svg circle').last().getAttribute('fill'), '#A764C0');
   await page.screenshot({ path: new URL('horoscopes-picker.png', out).pathname, fullPage: true });
   await page.locator('.grid button', { hasText: 'Leo' }).click();
   await page.getByRole('heading', { name: 'Leo' }).waitFor();
+  // The reading is one sign's, so its ring turns to bring Leo to the front.
+  assert.equal(await page.locator('article .nameplate svg circle').last().getAttribute('fill'), '#CC6C84');
   const requests = await page.evaluate(() => (window as any).requests);
   assert.deepEqual(requests, [{ name: 'get_horoscope', args: { sign: 'leo', period: 'day', focus: 'general', zone: 'Asia/Bangkok' } }]);
   // ChatGPT sends updates for resizes and may repeat the turn's first result; neither undoes the choice.
@@ -285,6 +289,6 @@ try {
   await host.waitForTimeout(300);
   assert.deepEqual(await host.evaluate(() => [(window as any).sizes, (window as any).links]), [[], []], 'ChatGPT keeps the reviewed Chart Studio');
   assert.deepEqual(hostErrors, []);
-  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'host updates after a choice keep it','plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'a quiet line, not the sign picker, while a reading is on its way', 'the sign picker after a short wait when no reading comes', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'header in plain words: date, "Birth time unknown", or clock time and city', 'Your week: plain dates on the device clock, closest first, at most five', 'Your week without a birth time leaves out the Moon, rising sign and Midheaven', 'Your week matches the same calculation in Node, with and without a birth time', 'Your week ready within a second, in a worker or, where workers are refused, on the page', 'labelled example chart without Your week','both panels report their content height to an MCP Apps host', 'links open through an MCP Apps host that offers it', 'ChatGPT keeps the reviewed panels'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
+  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'the reading\'s ring turns to its sign', 'host updates after a choice keep it','plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'a quiet line, not the sign picker, while a reading is on its way', 'the sign picker after a short wait when no reading comes', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'header in plain words: date, "Birth time unknown", or clock time and city', 'Your week: plain dates on the device clock, closest first, at most five', 'Your week without a birth time leaves out the Moon, rising sign and Midheaven', 'Your week matches the same calculation in Node, with and without a birth time', 'Your week ready within a second, in a worker or, where workers are refused, on the page', 'labelled example chart without Your week','both panels report their content height to an MCP Apps host', 'links open through an MCP Apps host that offers it', 'ChatGPT keeps the reviewed panels'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
   console.log('Horoscope and Chart Studio browser QA passed.');
 } finally { await browser.close(); }

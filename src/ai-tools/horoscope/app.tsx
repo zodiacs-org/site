@@ -180,7 +180,7 @@ function App() {
 
   return <main>
     <article class="card horoscope" style={hueVars(hueOf(panel.sign)) as CSSProperties}>
-      <Nameplate href="https://zodiacs.org/horoscopes/"/>
+      <Nameplate href="https://zodiacs.org/horoscopes/" front={panel.sign}/>
       <Keepsake kicker="Your horoscope" title={panel.signName} art={[{ src: artOf(panel.sign) }]} signs={[HOROSCOPE_ICONS[panel.sign]]}
         meta={<>{plain(signInfo(panel.sign)?.dates ?? '')} <button class="text" onClick={() => pick(true)}>Change sign</button></>}/>
       <div class="controls">

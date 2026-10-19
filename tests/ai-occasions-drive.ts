@@ -272,10 +272,25 @@ try {
   const birthdayText = await birthdayPage.locator('article').innerText();
   assert.match(birthdayText, /Taurus Sun/);
   assert.match(birthdayText, /Solar return 2026/);
+  // No one the site publishes was born on 3 May, so there is no famous line.
+  assert.equal(await birthdayPage.locator('article .famous').count(), 0);
+  // The ring turns to the birthday's sign: Taurus is the big front dot.
+  const front = async (target: typeof birthdayPage) => target.locator('article .nameplate svg circle').last().getAttribute('fill');
+  assert.equal(await front(birthdayPage), '#5E9E70', 'The birthday card\'s ring brings Taurus to the front');
   await birthdayPage.screenshot({ path: new URL('occasions-birthday-desktop.png', out).pathname, fullPage: true });
+  // A date the site publishes someone for names them, as the date's page does.
+  const shared = await open();
+  await show(shared, await result('get_birthday', { date: '12-10' }));
+  await shared.getByRole('heading', { name: '10 December birthdays' }).waitFor();
+  assert.equal((await shared.locator('article .famous').innerText()).trim(), 'You share a birthday with Ada Lovelace.');
+  assert.equal(await shared.getByRole('link', { name: 'Ada Lovelace' }).getAttribute('href'), 'https://zodiacs.org/people/ada-lovelace/');
+  assert.equal(await front(shared), '#CF8B3A', 'The 10 December card\'s ring brings Sagittarius to the front');
+  await shared.screenshot({ path: new URL('occasions-birthday-famous-desktop.png', out).pathname, fullPage: true });
   const cusp = await open();
   await show(cusp, await result('get_birthday', { date: '03-20' }));
   await cusp.locator('h1').waitFor();
+  // A cusp day without a year names no sign, so its ring keeps Libra in front.
+  assert.equal(await front(cusp), '#A764C0', 'A cusp day keeps the brand\'s own ring');
   const calendar = await open();
   const feed = await result('get_sky_calendar', {});
   await show(calendar, feed);
@@ -333,7 +348,7 @@ try {
   await writeFile(new URL('occasions-review.json', out), JSON.stringify({
     scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance',
     timezone: 'Asia/Bangkok',
-    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'a birthday shared by its month and day, never the year', 'the calendar subscription', 'the calendar shared by its next event', 'the ZODIACS · ORG lockup at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'the first screen keeps the details in the fold, and the fold opens to them', 'no external requests'],
+    passed: ['wedding card with the evening on the place\'s clock', 'plain dates, places and clock times', 'printable card link from the tool', 'copy as plain text', 'resize updates keep the card', '375px phone: no sideways scroll, card at the top', 'date alone at noon UTC, said so, with the Moon\'s change of sign', 'life milestones: each pass, the numbers, every milestone', 'no card link when the page could not reproduce the answer', 'text injection', 'refusal message', 'other tools\' results ignored', 'host dark theme', 'MCP Apps tool-result notification and height report', 'two charts compared with a score', 'compared with a famous person, linking their page', 'a famous name Zodiacs does not publish, with no chart', 'the three best days in a month, with the best day\'s card', 'chart twins linking each person', 'a famous chart and an unpublished name', 'a birthday with its solar return, and a cusp day', 'a birthday shared by its month and day, never the year', 'a birthday names who shares it, as its page does', 'a personal card\'s ring turns to its sign', 'the calendar subscription', 'the calendar shared by its next event', 'the ZODIACS · ORG lockup at the top of every card', 'no dashes or middle dots in card copy', 'the exact place and time in ink', 'folded contacts open from the keyboard', 'the first screen keeps the details in the fold, and the fold opens to them', 'no external requests'],
   }, null, 2) + '\n');
   console.log('Occasions panel browser QA passed.');
 } finally { await browser.close(); }

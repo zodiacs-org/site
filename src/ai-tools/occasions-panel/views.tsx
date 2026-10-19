@@ -186,7 +186,7 @@ export function Compatibility({ data: result }: { data: CompatibilityData | Comp
     plain(data.note), data.pageUrl ? bare(data.pageUrl) : 'zodiacs.org/compatibility'].filter(Boolean).join('\n');
   const open = (data.cardUrl ?? data.pageUrl) ? { label: data.cardUrl ? 'Open both charts' : 'Read this pair', href: (data.cardUrl ?? data.pageUrl)! } : null;
   const contacts = data.contacts.length;
-  return <Card hue={hueOf(data.a.sun)} hue2={hueOf(data.b.sun)}>
+  return <Card hue={hueOf(data.a.sun)} hue2={hueOf(data.b.sun)} front={data.a.sun}>
     <Keepsake kicker="Two charts compared" title={title} meta={meta} art={[{ src: artOf(data.a.sun), flip: true }, { src: artOf(data.b.sun) }]} signs={[icon(data.a.sun), icon(data.b.sun)]}/>
     <Hero figure={<ScoreRing score={data.score.overall}/>} verdict={data.score.verdict} summary={plain(data.score.headline)}/>
     <Fold hint={holds(['both charts', 'the score in three parts', contacts > 0 && (contacts === 1 ? 'the closest contact' : `the ${contacts} closest contacts`), 'a copy of the card'])}>
@@ -229,7 +229,7 @@ export function ChartTwins({ data }: { data: ChartTwinsData }) {
     : data.total === 1 ? `One famous person shares your ${signs}` : `${data.total} famous people share your ${signs}`;
   // The first twin is the line people repeat: "Audrey Hepburn shares your Sun."
   const first = data.twins[0];
-  return <Card hue={hueOf(data.you.sun)} hue2={hueOf(data.you.moon)}>
+  return <Card hue={hueOf(data.you.sun)} hue2={hueOf(data.you.moon)} front={data.you.sun}>
     <Keepsake kicker="Chart twins" title="Your chart twins" meta={<>Born {fullDate(data.birthDate)}{yours && <>: <strong>{yours}</strong></>}</>} art={[{ src: artOf('twins-hero') }]}
       signs={[icon(data.you.sun), icon(data.you.moon)]}/>
     <Hero verdict={count} summary={first ? `${first.name} shares your ${SHARES[first.shares]}.` : data.notes[0] && plain(data.notes[0])}/>
@@ -259,7 +259,7 @@ export function FamousChart({ data }: { data: FamousChartData }) {
   const moonLine = person.moon.sign ? `${signName(person.moon.sign)} Moon at ${person.moon.degree!.toFixed(1)}°` : 'The Moon changes sign that day, so its sign is uncertain.';
   const text = [person.name, plain(person.shortDescription), `Born ${fullDate(person.born)} in ${person.birthplace}`, `${signName(person.sun.sign)} Sun${person.moon.sign ? `, ${signName(person.moon.sign)} Moon` : ''}`,
     ...person.placements.map((placement) => `${placement.body}: ${signName(placement.sign)} ${placement.degree.toFixed(1)}°`), plain(person.lede), plain(data.note), bare(person.url)].join('\n');
-  return <Card hue={hueOf(person.sun.sign)} hue2={hueOf(person.moon.sign)}>
+  return <Card hue={hueOf(person.sun.sign)} hue2={hueOf(person.moon.sign)} front={person.sun.sign}>
     <Keepsake kicker="A famous birth chart" title={person.name} art={[{ src: artOf(person.sun.sign) }]} signs={[icon(person.sun.sign)]}
       meta={<>{plain(person.shortDescription)}<br/>Born {fullDate(person.born)} in <strong>{person.birthplace}</strong></>}/>
     <Hero verdict={`${signName(person.sun.sign)} Sun at ${person.sun.degree.toFixed(1)}°`} summary={moonLine}/>
@@ -285,14 +285,23 @@ export function Birthday({ data }: { data: BirthdayData }) {
   if (data.solarReturn) rows.push([`Solar return ${data.solarReturn.year}`, <strong>{data.solarReturn.instant.local.replace(/^[A-Z][a-z]{2} /u, '').replace(', ', ' at ')}</strong>]);
   const sign = data.sign;
   const about = sign ? `${capital(sign.element)}, ${sign.modality}, ruled by ${sign.ruler}. ${plain(sign.dates)}.` : undefined;
-  const text = [`${data.label} birthdays`, sign ? `${sign.name} Sun` : '', about ?? '', plain(data.sunSpan.text), plain(data.cusp?.reading?.text ?? data.cusp?.summary ?? ''),
+  // "You share a birthday with A, B and C", as the date's page says it: the
+  // first three people it lists, then how many more, which opens the list.
+  const famous = data.famous ? [
+    ...data.famous.people.map((person) => ({ label: person.name, href: person.url })),
+    ...(data.famous.more > 0 ? [{ label: `${data.famous.more} ${data.famous.more === 1 ? 'other' : 'others'}`, href: `${data.pageUrl}#bday-people-heading` }] : []),
+  ] : [];
+  const join = (index: number) => (index === 0 ? '' : index === famous.length - 1 ? ' and ' : ', ');
+  const sharedWith = famous.length > 0 ? `You share a birthday with ${famous.map((item, index) => `${join(index)}${item.label}`).join('')}.` : '';
+  const text = [`${data.label} birthdays`, sign ? `${sign.name} Sun` : '', about ?? '', sharedWith, plain(data.sunSpan.text), plain(data.cusp?.reading?.text ?? data.cusp?.summary ?? ''),
     ...(data.decan ? [`Decan: ${plain(data.decan.text)}`] : []), ...(data.solarReturn ? [`Solar return ${data.solarReturn.year}: ${data.solarReturn.instant.local}`] : []),
     plain(sign?.meaning ?? ''), plain(data.note), bare(data.pageUrl)].filter(Boolean).join('\n');
-  return <Card hue={hueOf(sign?.slug)}>
+  return <Card hue={hueOf(sign?.slug)} front={sign?.slug}>
     <Keepsake kicker="Your birthday" title={`${data.label} birthdays`} meta={plain(data.sunSpan.text)}
       art={sign ? [{ src: artOf(sign.slug) }] : data.cusp ? [{ src: artOf(data.cusp.signs[0]), flip: true }, { src: artOf(data.cusp.signs[1]) }] : undefined}
       signs={sign ? [icon(sign.slug)] : data.cusp ? data.cusp.signs.map((slug) => icon(slug)) : []}/>
     <Hero verdict={sign ? `${sign.name} Sun` : 'On the cusp'} summary={about ?? (data.cusp ? plain(data.cusp.summary) : undefined)}/>
+    {famous.length > 0 && <p class="famous">You share a birthday with {famous.map((item, index) => <>{join(index)}<a href={item.href} target="_blank" rel="noreferrer">{item.label}</a></>)}.</p>}
     <Fold hint={holds([data.cusp && 'the reading for a cusp day', data.decan && 'your decan', data.solarReturn && 'your solar return', sign && 'what the sign is like', 'a copy of the card'])}>
       {data.cusp && <p class="insight">{plain(data.cusp.reading?.text ?? data.cusp.summary)}</p>}
       {rows.length > 0 && <Facts rows={rows}/>}

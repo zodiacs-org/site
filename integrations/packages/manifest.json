@@ -65,8 +65,8 @@
       "name": "zodiacs-developer",
       "version": "0.3.13",
       "file": "zodiacs-developer-0.3.13.zip",
-      "bytes": 3540676,
-      "sha256": "a0c21f652cc44dca21dc6a7ac94428b0ced4794cd277265ba1aca6c9b1803a59",
+      "bytes": 3544537,
+      "sha256": "5cd1fac936b85000d3b2672d4b83fd8cbab0520cb9110995d202069ec4c8c923",
       "members": [
         {
           "path": ".codex-plugin/plugin.json",
@@ -135,8 +135,8 @@
         },
         {
           "path": "mcp/server.mjs",
-          "bytes": 3428523,
-          "sha256": "a0cdc05c79f9288cb5d7fbbb4277c6e2b7fe363891580950df6645618be20bc2"
+          "bytes": 3432384,
+          "sha256": "a21e6089c4228bff5dbe9d40616b9c406c7daac33ccde1d7e9a02be17acdd371"
         },
         {
           "path": "package-lock.json",

@@ -21,6 +21,7 @@ import { SUN } from '../../lib/interpretations';
 import { skyCalendarEvents } from '../../lib/return-visits/sky-calendar';
 import { formatLongitude, signBySlug, signForLongitude, type Sign } from '../../lib/signs';
 import { birthdayShareUrl, skyCalendarShareUrl } from '../share-links';
+import { peopleBornOn, personUrl } from './people';
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
@@ -98,6 +99,15 @@ export const birthdayData = z.object({
     text: z.string(),
   }).nullable(),
   sunAtBirth: z.object({ longitude: z.number(), position: z.string(), timeKnown: z.boolean() }).nullable(),
+  /**
+   * The people the site publishes who were born on this month and day, as
+   * the date's page says it: "You share a birthday with …", the first three,
+   * oldest first, then how many more.
+   */
+  famous: z.object({
+    people: z.array(z.object({ name: z.string(), url: z.url() })).min(1).max(3),
+    more: z.number().int().min(0),
+  }).nullable(),
   pageUrl: z.url(),
   /** The share link: the month and day, and a cusp date's sign when the year or time settled it. Never the year. */
   shareUrl: z.url().nullable(),
@@ -301,11 +311,16 @@ export async function getBirthday(
     solarReturn = { year, instant: clock(instant, timeZone), timeKnown, range, note };
   }
 
+  const born = peopleBornOn(month, day);
+  const famous = born.length > 0
+    ? { people: born.slice(0, 3).map((person) => ({ name: person.name, url: personUrl(origin, person.slug) })), more: Math.max(0, born.length - 3) }
+    : null;
+
   const data = birthdayData.parse({
     month, day, label, sunSpan,
     sign: sign ? signRow(sign) : null,
     signFrom,
-    boundary, cusp, decan, sunAtBirth, pageUrl,
+    boundary, cusp, decan, sunAtBirth, famous, pageUrl,
     shareUrl: birthdayShareUrl(origin, { month, day, cuspSign: cusp && sign ? sign.slug : null }),
     solarReturn,
     note: BIRTHDAY_NOTE,

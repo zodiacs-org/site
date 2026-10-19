@@ -1,6 +1,7 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { createLocalTimeModule } from '../../../api/_compute/local-time.mjs';
 import { birthdayData, birthdayInput, getBirthday, getSkyCalendar, skyCalendarData } from './birthday';
+import { peopleBornOn } from './people';
 
 const localTime = createLocalTimeModule();
 afterAll(() => localTime.dispose());
@@ -32,6 +33,40 @@ describe('get_birthday', () => {
     expect(data.solarReturn).toBeNull();
     expect(links).toEqual([{ title: '3 May birthdays on Zodiacs', url: 'https://zodiacs.org/birthday/may-3/' }]);
     expectPlain({ data, links });
+  });
+
+  it('names who shares the birthday as the date\'s page does: the first three, oldest first, then how many more', async () => {
+    const { data } = await getBirthday({ date: '12-10' }, localTime, NOW);
+    expect(data.famous?.people[0]).toEqual({ name: 'Ada Lovelace', url: 'https://zodiacs.org/people/ada-lovelace/' });
+    expect(data.famous?.more).toBe(0);
+    const crowded = await getBirthday({ date: '01-08' }, localTime, NOW);
+    expect(crowded.data.famous?.people.map(({ name }) => name)).toEqual(peopleBornOn(1, 8).slice(0, 3).map(({ name }) => name));
+    const born = peopleBornOn(1, 8).map(({ gregorian }) => gregorian);
+    expect(born).toEqual([...born].sort());
+    // The index only carries the people the directory publishes; a date with none has no line.
+    let emptyDay = 1;
+    while (peopleBornOn(2, emptyDay).length > 0) emptyDay += 1;
+    const empty = await getBirthday({ date: `02-${String(emptyDay).padStart(2, '0')}` }, localTime, NOW);
+    expect(empty.data.famous).toBeNull();
+    for (let month = 1; month <= 12; month += 1) {
+      for (let day = 1; day <= 28; day += 1) {
+        const people = peopleBornOn(month, day);
+        if (people.length === 0) continue;
+        expect(people.every((person) => person.birthdayRoute.endsWith(`-${day}/`))).toBe(true);
+      }
+    }
+  });
+
+  it('names first the person the birthday\'s share image names', async () => {
+    const { famousBirthdays } = await import('../../server/result-preview-model');
+    const { PEOPLE_INDEX } = await import('./people');
+    const firsts = famousBirthdays(PEOPLE_INDEX);
+    for (let month = 1; month <= 12; month += 1) {
+      for (let day = 1; day <= 31; day += 1) {
+        const key = `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        expect(firsts.get(key)?.slug, key).toBe(peopleBornOn(month, day)[0]?.slug);
+      }
+    }
   });
 
   it('leaves the sign open on a cusp day without a year', async () => {

@@ -7,4 +7,4 @@
  * src/ai-tools/card-kit/mark.tsx and the share images with
  * src/server/result-preview.ts.
  */
-export { TILTED_RING_DOTS, TILTED_RING_VIEWBOX } from './brand-lockup.mjs';
+export { TILTED_RING_DOTS, TILTED_RING_VIEWBOX, tiltedRingDots } from './brand-lockup.mjs';

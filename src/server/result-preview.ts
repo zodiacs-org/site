@@ -237,9 +237,9 @@ const TEXT_WIDTH = 620;
  * the site's one image lockup: the tilted twelve-dot mark and ZODIACS · ORG,
  * with the dot in the cards' muted ink so it holds on the art.
  */
-function nameplate() {
+function nameplate(front: ShareSign | null) {
   return h('div', { style: { display: 'flex', position: 'absolute', left: '64px', top: '56px' } },
-    lockupImage(LOCKUP_SIZE.image, { name: INK, dot: CARD_MUTED, tld: INK_SOFT }));
+    lockupImage(LOCKUP_SIZE.image, { name: INK, dot: CARD_MUTED, tld: INK_SOFT }, front));
 }
 
 /** One panel of art, filling its box the way the cards' `object-fit: cover` does, held 46% of the way down, mirrored when asked. */
@@ -345,12 +345,17 @@ function words(parts: { discs: VNode<any>[]; kicker: string; hue: string; title:
     h('div', { style: { display: 'flex', fontSize: 28, lineHeight: 1.32, color: INK_SOFT, marginTop: '18px', maxWidth: '600px', textWrap: 'balance' } }, parts.line));
 }
 
-function frame(art: string[], text: VNode<any>) {
+/**
+ * A share image. `front` is the Sun sign of the one person it is made for,
+ * when the link settles it, and turns the lockup's ring to bring it forward
+ * as the site's personal images do; the others keep the brand's own ring.
+ */
+function frame(art: string[], text: VNode<any>, front: ShareSign | null = null) {
   return h('div', { style: {
       width: `${WIDTH}px`, height: `${HEIGHT}px`, display: 'flex', position: 'relative', background: VOID, color: INK, fontFamily: 'Noto',
     } },
     ...artLayer(art),
-    nameplate(),
+    nameplate(front),
     text);
 }
 
@@ -364,7 +369,7 @@ export function compatibilityCard(model: CompatibilityCardModel, images: Map<Sha
     hue: model.people[0].hue,
     title: lines.map((line) => titleLine(line, size)),
     line: `${model.score} out of 100. ${model.verdict}`,
-  }));
+  }), model.people[0].slug);
 }
 
 /** A title that may wrap: as large as fits, balanced over its lines. */
@@ -383,7 +388,8 @@ export function occasionCard(model: OccasionCardModel, images: Map<ShareSign, st
 
 /** A birthday: its Sun sign's panel, or a cusp date's two signs facing each other. */
 export function birthdayCard(model: BirthdayCardModel, images: Map<ShareSign, string>, art: string[]) {
-  return frame(art, words({ discs: discRow(model.signs, images), kicker: 'A birthday', hue: model.hue, title: [titleBlock(model.title)], line: model.line }));
+  return frame(art, words({ discs: discRow(model.signs, images), kicker: 'A birthday', hue: model.hue, title: [titleBlock(model.title)], line: model.line }),
+    model.signs.length === 1 ? model.signs[0].slug : null);
 }
 
 /** The sky calendar: the Sky dial, and the next event in a line. It names no sign, so it has no disc, as on its card. */
@@ -393,7 +399,7 @@ export function skyCalendarCard(model: SkyCalendarCardModel, art: string[]) {
 
 /** A horoscope: the sign's panel, the day or week, the sign, and the reading's own line for it. */
 export function horoscopeCard(model: HoroscopeCardModel, images: Map<ShareSign, string>, art: string[]) {
-  return frame(art, words({ discs: discRow([model.sign], images), kicker: model.kicker, hue: model.hue, title: [titleBlock(model.signName)], line: model.line }));
+  return frame(art, words({ discs: discRow([model.sign], images), kicker: model.kicker, hue: model.hue, title: [titleBlock(model.signName)], line: model.line }), model.sign.slug);
 }
 
 // ── Responses ────────────────────────────────────────────────────────
