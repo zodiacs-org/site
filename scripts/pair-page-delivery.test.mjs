@@ -6,7 +6,8 @@ const distRoot = resolve(import.meta.dirname, '../dist');
 
 // The built pair pages, in English and in translation: three of their four
 // stylesheets inlined (the shared calculator sheet stays linked), the faces only text far down the page uses loaded after load, the
-// hero's italic preloaded, and the paintings' AVIF copies offered at 1.5x.
+// hero's italic preloaded, the paintings' AVIF copies offered at 1.5x, and
+// every hero image but the first painting at low priority.
 describe.skipIf(!existsSync(distRoot))('built compatibility pair pages', () => {
   it.each([
     'compatibility/aries-cancer/index.html',
@@ -29,5 +30,12 @@ describe.skipIf(!existsSync(distRoot))('built compatibility pair pages', () => {
     expect(html).toMatch(/<link\b[^>]*\brel=["']preload["'][^>]*\/fonts\/eb-garamond-latin-400-italic\.woff2/i);
     expect(html.match(/<source type="image\/avif" media="\(min-resolution: 1\.5dppx\)"/g)?.length).toBeGreaterThanOrEqual(2);
     expect(html.match(/<img\b[^>]*fetchpriority="high"/g)).toHaveLength(1);
+    // Everything else in the hero waits behind the first painting. On a slow
+    // link Chrome raises any image on screen at the first layout to high
+    // priority unless it asks for low, and Lighthouse then counts it in LCP.
+    const hero = html.match(/<header class="ph-hero"[^>]*>[\s\S]*?<\/header>/)?.[0] ?? '';
+    const heroImages = hero.match(/<img\b[^>]*>/g) ?? [];
+    expect(heroImages.length).toBeGreaterThanOrEqual(4);
+    expect(heroImages.filter((tag) => !/fetchpriority="(?:high|low)"/.test(tag))).toEqual([]);
   });
 });
