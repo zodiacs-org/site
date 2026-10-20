@@ -26,6 +26,11 @@ describe.skipIf(!existsSync(distRoot))('built compatibility pair pages', () => {
       expect.stringMatching(/href="\/_astro\/calculator\.[A-Za-z0-9_-]+\.css"/),
     ]);
     expect(html.match(/<style data-zdx-deferred-faces>(.*?)<\/style>/)?.[1].match(/@font-face/g)).toHaveLength(2);
+    const fonts = JSON.parse(html.match(/<script type="application\/json" data-zdx-font-faces>(.*?)<\/script>/)?.[1] ?? 'null');
+    expect(fonts.map(({ family, source, descriptors }) => [family, source, descriptors.style, descriptors.weight, descriptors.display])).toEqual([
+      ['Instrument Sans', expect.stringContaining('/fonts/instrument-sans-latin-wght-italic.woff2'), 'italic', '400 700', 'swap'],
+      ['JetBrains Mono', expect.stringContaining('/fonts/jetbrains-mono-latin-wght-normal.woff2'), 'normal', '300 600', 'swap'],
+    ]);
     expect(html).toContain('data-zdx-deferred-style-loader');
     expect(html).toMatch(/<link\b[^>]*\brel=["']preload["'][^>]*\/fonts\/eb-garamond-latin-400-italic\.woff2/i);
     expect(html.match(/<source type="image\/avif" media="\(min-resolution: 1\.5dppx\)"/g)?.length).toBeGreaterThanOrEqual(2);
