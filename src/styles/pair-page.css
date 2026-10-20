@@ -497,6 +497,14 @@
   .ph-compare .calc > .calc__form, .ph-compare__after, .ph-compare__noscript { grid-column: 1; grid-row: auto; }
 }
 @media (max-width: 760px) {
+  /* Independent layout roots for the mobile article, chart form and pair
+     grids. Keep natural heights and paint all content from first render.
+     The switch section itself must stay uncontained: its sign menus are
+     fixed to the viewport. Desktop keeps its existing paint snapping. */
+  .ph-readsec,
+  .ph-comparesec,
+  .ph-others { contain: layout; }
+
   .ph-hero { margin: calc(8px - var(--nav-space)) 8px 0; height: auto; border-radius: 24px; }
   .ph-hero__art { height: 330px; }
   .ph-hero .ph-pane--a { --focus: 46% 50%; --spot: 60% 50%; }
