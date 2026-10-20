@@ -41,6 +41,10 @@ vi.mock('../../lib/module-load', async (importOriginal) => {
 
 import RelationshipWheel, { type WheelPerson } from './RelationshipWheel';
 import { CompositePanel } from './CompositePanel';
+vi.mock('../../lib/aspect-reference', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../lib/aspect-reference')>();
+  return { ...actual, aspectReference: (context: string, a: string, b: string, geometry: string) => actual.aspectReference(context, a, b, geometry, true) };
+});
 import CalculationReload, { calculationLoadMessage } from '../CalculationReload';
 import { summarizePair } from '../../lib/engine/synastry';
 
@@ -158,4 +162,21 @@ describe('composite selection belongs to the comparison inputs', () => {
     expect(unknown.props.selectedId).toBeNull();
     expect(unknown.props.data.moonProvisional).toBe(true);
   });
+});
+
+
+it('uses canonical visible reference names and Moon uncertainty in top and exact contacts', () => {
+  const first: WheelPerson = { ...a, bodies: [{ body: 'Moon', lon: 0 }], timeKnown: false };
+  const second: WheelPerson = { ...b, bodies: [{ body: 'Sun', lon: 0 }], timeKnown: true };
+  const text = (value: any): string => Array.isArray(value) ? value.map(text).join('') : value?.props ? text(value.props.children) : typeof value === 'string' ? value : '';
+  for (const known of [false, true]) {
+    const anchors = nodes(render({ ...first, timeKnown: known }, second)).filter((node) => node.type === 'a' && node.props.class === 'syn__reference');
+    expect(anchors).toHaveLength(2);
+    for (const anchor of anchors) {
+      const visible = text(anchor);
+      expect(visible).toBe(`Read Sun-Moon conjunction in synastry${known ? '' : ' (Moon time uncertain)'}`);
+      expect(anchor.props.href).toBe('/compatibility/aspects/sun-moon/#conjunction');
+      expect(anchor.props['aria-label'] === undefined || anchor.props['aria-label'].startsWith(visible)).toBe(true);
+    }
+  }
 });

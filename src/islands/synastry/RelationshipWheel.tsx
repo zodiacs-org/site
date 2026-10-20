@@ -484,8 +484,8 @@ export default function RelationshipWheel({ locale, a, b, summary }: Relationshi
                     <PlanetGlyph body={aspect.a} size={13} class="pg-inline" /> {a.label}: {planetLabel(locale, aspect.a)} <AspectGlyph type={aspect.type} size={13} class="pg-inline" /> {aspectLabel(locale, aspect.type)} <PlanetGlyph body={aspect.b} size={13} class="pg-inline" /> {b.label}: {planetLabel(locale, aspect.b)}
                   </span>
                 </button>
-                {reference && <a class="syn__reference" href={reference.href} aria-label={reference.label}>
-                  Read {aspect.a}-{aspect.b} {aspect.type} in synastry
+                {reference && <a class="syn__reference" href={reference.href}>
+                  {reference.label}
                   {(!a.timeKnown && aspect.a === 'Moon') || (!b.timeKnown && aspect.b === 'Moon') ? ' (Moon time uncertain)' : ''}
                 </a>}
                 </div>
@@ -557,7 +557,9 @@ export default function RelationshipWheel({ locale, a, b, summary }: Relationshi
                   {' · '}{t(locale, 'orb')} {aspect.orb.toFixed(1)}°
                   {locale === 'en' && (() => {
                     const reference = aspectReference('synastry', aspect.a, aspect.b, aspect.type);
-                    return reference ? <a class="syn__reference" href={reference.href} aria-label={reference.label}>Read this contact in synastry</a> : null;
+                    return reference ? <a class="syn__reference" href={reference.href}>{reference.label}
+                      {(!a.timeKnown && aspect.a === 'Moon') || (!b.timeKnown && aspect.b === 'Moon') ? ' (Moon time uncertain)' : ''}
+                    </a> : null;
                   })()}
                 </span>
               ))}

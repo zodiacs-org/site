@@ -12,7 +12,7 @@ import TiltedRing from './TiltedRing.astro';
 import { availableLocalesForPath, englishOnlyCue, localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
 import { ALL_TOOLS_LABEL, NAV_MORE, NAV_MORE_LABEL, NAV_TOOLS, navToolLabelHasEnglishCue, type NavTool } from '../lib/nav-tools';
 
-interface Props { locale?: Locale; collectionDescription?: string }
+interface Props { locale?: Locale }
 const locale = normalizeCatalogLocale(Astro.props.locale);
 // Owner-approved: the collection door is consistent on every primary navigation.
 const showCollection = true;
@@ -35,7 +35,6 @@ const astrofolioLabel: Record<Locale, string> = {
   it: 'Collezione ufficiale di token zodiacali — in inglese',
   ru: 'Официальная коллекция токенов Зодиака — на английском',
 };
-const collectionDescription = Astro.props.collectionDescription ?? astrofolioLabel[locale];
 // Short explanations keep the navigation labels stable while making each destination clear.
 const destinationDescription: Record<Locale, { today: string; horoscope: string; saved: string }> = {
   en: { today: 'Your daily reading and personal chart highlights', horoscope: 'Daily readings for your zodiac sign', saved: 'Your birth chart and the people you’ve added' },
@@ -148,8 +147,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       href="/astrofolio/"
       hreflang={englishOnly ? 'en' : undefined}
       aria-current={path === '/astrofolio/' ? 'page' : undefined}
-      title={collectionDescription}
-      aria-description={collectionDescription}
+      title={astrofolioLabel[locale]}
+      aria-description={astrofolioLabel[locale]}
       aria-label={englishOnly ? `${t(locale, 'navCollect')}. ${englishOnlyAria}` : undefined}
     >
       {englishOnly ? (
@@ -248,7 +247,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       {showCollection && (
       <a class="mobile-menu__link mobile-menu__registry" style={`--i:${hasDailyReading ? 5 : 4}`} href="/astrofolio/" hreflang={englishOnly ? 'en' : undefined} title={englishOnlyAria}>
         <span>{t(locale, 'navCollect')}</span>
-        <small>{collectionDescription}</small>
+        <small>{astrofolioLabel[locale]}</small>
       </a>
       )}
     </div>

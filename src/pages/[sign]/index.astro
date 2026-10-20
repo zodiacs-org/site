@@ -1,5 +1,4 @@
 ---
-import SynastryDiscovery from '../../components/learn/SynastryDiscovery.astro';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArtFrame from '../../components/ArtFrame.astro';
@@ -180,7 +179,6 @@ const jsonLd = [
         <div class="guide-main">
           <div class="prose guide-prose">
             <Content components={mdxComponents} />
-            {sign.slug === 'gemini' && <SynastryDiscovery />}
           </div>
 
           <section class="guide-history" id="history" aria-labelledby="guide-history-title">

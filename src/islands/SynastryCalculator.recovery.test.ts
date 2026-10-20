@@ -9,27 +9,28 @@ const harness = vi.hoisted(() => ({
   access: { current: 0 }, revoke: undefined as undefined | (() => void),
   writes: vi.fn(), load: vi.fn(), openSession: vi.fn(), decode: vi.fn(), summarize: vi.fn(),
   savePair: vi.fn(), track: vi.fn(),
-  profile: { charts: [] },
+  profile: { charts: [] as any[] }, profileReady: false, pairs: [] as any[],
   arrivalView: vi.fn(), returnView: vi.fn(), sendCard: vi.fn(), wheel: vi.fn(),
   copyLink: vi.fn(), compatShare: vi.fn(),
   allowed: true, complete: vi.fn(), replay: vi.fn(), beacon: vi.fn(),
 }));
 
-vi.mock('../lib/hooks/useProfile', () => ({ useProfile: () => ({ profile: harness.profile, ready: false }) }));
+vi.mock('../lib/hooks/useProfile', () => ({ useProfile: () => ({ profile: harness.profile, ready: harness.profileReady }) }));
 vi.mock('../lib/hooks/useEngine', () => ({ useEngine: () => vi.fn() }));
 vi.mock('../lib/hooks/useProfileAccessGeneration', () => ({
   useProfileAccessGeneration: (revoke: () => void) => { harness.revoke = revoke; return harness.access; },
 }));
 vi.mock('../lib/account-v2/profile-access-reader', () => ({ profileAccessAllowed: () => harness.allowed }));
 vi.mock('../lib/profile/pairs', () => ({
-  MAX_PAIRS: 12, loadPairs: () => [], hasPair: () => false, positionsPairSide: () => null,
+  MAX_PAIRS: 12, loadPairs: () => harness.pairs, hasPair: () => false, positionsPairSide: () => null,
   pairSideLabels: () => [], deletePair: vi.fn(), prunePairs: vi.fn(), savePair: harness.savePair,
 }));
+vi.mock('../lib/profile/resolve', () => ({ resolveSavedChart: (saved: any) => ({ summary: saved.summary, bodies: saved.summary.bodies, asc: null, timeKnown: true }) }));
 vi.mock('../lib/share', () => ({ encodeChartLink: () => 'chart', decodeChartLink: vi.fn() }));
 vi.mock('../lib/share-synastry', () => ({ decodeSynastryLink: harness.decode }));
 vi.mock('../lib/engine/synastry', () => ({ summarizePair: harness.summarize }));
 vi.mock('./synastry/RelationshipWheel', async () => ({
-  default: harness.wheel,
+  default: harness.wheel, PrivateInviteResultControl: () => null,
   ...await import('./ChartTrust'),
 }));
 vi.mock('./CopyLinkButton', () => ({ CopyLinkButton: harness.copyLink }));
@@ -151,6 +152,9 @@ beforeEach(() => {
   harness.slots = []; harness.cursor = 0; harness.effects = []; harness.effectCursor = 0; harness.pendingEffects = [];
   harness.access.current = 0; harness.revoke = undefined;
   harness.allowed = true;
+  harness.profileReady = false; harness.profile = { charts: [] }; harness.pairs = [];
+  const storage = new Map<string, string>();
+  vi.stubGlobal('sessionStorage', { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => storage.set(key, value), removeItem: (key: string) => storage.delete(key) });
   harness.complete.mockReset(); harness.replay.mockReset(); harness.beacon.mockReset();
   harness.writes.mockClear(); harness.track.mockReset(); harness.savePair.mockReset();
   harness.load.mockReset().mockImplementation(loadDependency);
@@ -457,5 +461,72 @@ describe('compatibility optional sharing and invitation recovery', () => {
     pending.resolve({ completeInvite: harness.complete });
     await settle();
     expect(harness.complete).toHaveBeenCalledTimes(boundary === 'grant' ? 1 : 0);
+  });
+});
+
+
+describe('reference comparison completion ownership', () => {
+  const key = 'zodiacs:reference-task';
+  function mark() {
+    const marker = JSON.stringify({ page: 'sun-moon', expires: Date.now() + 60000 });
+    sessionStorage.setItem(key, marker);
+    return marker;
+  }
+  function savedCharts() {
+    harness.profile.charts = ['a', 'b'].map((id) => ({ id, name: id, birth: { date: '2000-01-01' }, summary: chart }));
+  }
+  const completions = () => harness.track.mock.calls.filter(([name]) => name === 'reference_task_completed');
+  it('consumes a marker once for an explicitly submitted saved-chart comparison', async () => {
+    savedCharts();
+    mark();
+    for (const side of ['a', 'b']) {
+      view().find((node) => node.props.idPrefix === `syn-${side}`)!.props.setSlot((prior: object) => ({ ...prior, source: 'saved', savedId: side }));
+    }
+    await view().find((node) => node.type === 'form')!.props.onSubmit({ preventDefault: vi.fn() });
+    await settle();
+    expect(result()).toBeDefined();
+    expect(sessionStorage.getItem(key)).toBeNull();
+    expect(completions()).toHaveLength(1);
+  });
+  it('preserves a marker and sends no event for an invite-restored comparison', async () => {
+    const marker = mark();
+    await compare();
+    await settle();
+    expect(result()).toBeDefined();
+    expect(sessionStorage.getItem(key)).toBe(marker);
+    expect(completions()).toHaveLength(0);
+  });
+  it('preserves a marker for a fresh invitation comparison', async () => {
+    const marker = mark();
+    window.location.hash = `#invite=${handle}`;
+    render(); await settle();
+    view().find((node) => node.props.idPrefix === 'syn-b')!.props.setSlot((prior: object) => ({ ...prior, source: 'positions', positions: { chart, label: 'Mine' } }));
+    await view().find((node) => node.type === 'form')!.props.onSubmit({ preventDefault: vi.fn() });
+    await settle();
+    expect(result()).toBeDefined();
+    expect(sessionStorage.getItem(key)).toBe(marker);
+    expect(completions()).toHaveLength(0);
+  });
+  it.each(['deep link', 'restore'])('preserves a marker for a saved-chart %s auto-run', async (mode) => {
+    const marker = mark();
+    savedCharts();
+    harness.profileReady = true;
+    if (mode === 'deep link') window.location.search = '?a=a&b=b';
+    else {
+      harness.pairs = [{ id: 'pair', a: { kind: 'chart', chartId: 'a' }, b: { kind: 'chart', chartId: 'b' } }];
+      window.location.search = '?pair=pair';
+    }
+    render(); await settle(); await settle();
+    expect(result()).toBeDefined();
+    expect(sessionStorage.getItem(key)).toBe(marker);
+    expect(completions()).toHaveLength(0);
+  });
+  it('preserves a marker when a returned reading opens', async () => {
+    const marker = mark();
+    window.location.hash = '#s=returned';
+    render(); await settle();
+    expect(result()).toBeDefined();
+    expect(sessionStorage.getItem(key)).toBe(marker);
+    expect(completions()).toHaveLength(0);
   });
 });

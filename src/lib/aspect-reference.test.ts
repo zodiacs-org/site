@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { aspectReference, referencePublished, REFERENCE_GEOMETRIES, SYNASTRY_PAIRS } from './aspect-reference';
+import { aspectReference, REFERENCE_GEOMETRIES, SYNASTRY_PAIRS } from './aspect-reference';
 import fixtures from '../data/aspect-reference-examples.json';
 import { computeChart } from './engine/full';
 import { findInterAspects } from './engine/synastry';
@@ -16,8 +16,8 @@ describe('bounded two-chart reference library', () => {
       expect(forward.href).toBe(reverse.href);
       expect(reverse.chartA).toBe('Moon');
       expect(reverse.chartB).toBe('Sun');
-      expect(reverse.label).toContain('Moon in chart A');
-      expect(reverse.label).toContain('Sun in chart B');
+      expect(reverse.label).toBe(`Read Sun-Moon ${geometry} in synastry`);
+      expect(reverse.label).toBe(forward.label);
       expect(forward.href).toBe(`/compatibility/aspects/sun-moon/#${geometry}`);
     }
   });
@@ -26,7 +26,7 @@ describe('bounded two-chart reference library', () => {
     expect(aspectReference('natal', 'Sun', 'Moon', 'square', true)).toBeNull();
     expect(aspectReference('synastry', 'Sun', 'Mars', 'trine', true)).toBeNull();
     expect(aspectReference('synastry', 'Moon', 'Venus', 'quincunx', true)).toBeNull();
-    expect(availableLocalesForPath('/compatibility/aspects/sun-moon/')).toEqual(referencePublished ? ['en'] : undefined);
+    expect(availableLocalesForPath('/compatibility/aspects/sun-moon/')).toBeUndefined();
   });
   it('replays six feasible synthetic two-chart fixtures through the actual engine', () => {
     expect(fixtures.examples).toHaveLength(6);

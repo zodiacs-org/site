@@ -22,9 +22,15 @@ const jsonLd = [
   ] },
 ];
 ---
-<Base title={title} description={description} path="/compatibility/aspects/" noindex={!referencePublished} jsonLd={jsonLd} collectionDescription="Zodiac collection" stableTypography>
+<Base title={title} description={description} path="/compatibility/aspects/" noindex={!referencePublished} jsonLd={jsonLd} stableTypography>
+  <Fragment slot="head">
+    {referencePublished && <>
+      <link rel="alternate" hreflang="en" href="https://zodiacs.org/compatibility/aspects/" />
+      <link rel="alternate" hreflang="x-default" href="https://zodiacs.org/compatibility/aspects/" />
+    </>}
+  </Fragment>
   <article class="container reference">
-    <nav aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/compatibility/">Compatibility</a></nav>
+    <nav aria-label="Breadcrumb"><a href="/compatibility/">Compatibility</a> / <span aria-current="page">Synastry aspects</span></nav>
     <header class="reference__hero">
       <div>
         <p class="kicker">Between two charts</p>

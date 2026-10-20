@@ -32,7 +32,12 @@ try {
         const response = await page.goto(`${baseURL}${path}`, { waitUntil: 'networkidle' });
         assert.equal(response.status(), 200);
         const serverHtml = await response.text();
-        assert(!/\b(?:crypto|tokens?|wallet|blockchain|investment)\b/i.test(serverHtml), 'Consumer language throughout server HTML');
+        const consumerHtml = await page.evaluate((html) => {
+          const document = new DOMParser().parseFromString(html, 'text/html');
+          document.querySelectorAll('.nav-wrap a[href="/astrofolio/"], #mobile-menu a[href="/astrofolio/"]').forEach((link) => link.remove());
+          return document.documentElement.outerHTML;
+        }, serverHtml);
+        assert(!/\b(?:crypto|tokens?|wallet|blockchain|investment)\b/i.test(consumerHtml), 'Consumer language outside the owner-approved Astrofolio navigation');
         assert(!/[\u2013\u2014]/u.test(serverHtml), 'No long dash characters throughout server HTML');
         assert.equal(await page.locator('h1').count(), 1);
         assert.match(await page.locator('h1').innerText(), /synastry/i);
@@ -50,8 +55,13 @@ try {
         const text = await page.locator('.reference').innerText();
         assert(!/[\u2013\u2014]/u.test(text), 'No long dash characters in article copy');
         assert(!/\b(?:crypto|token|wallet|blockchain|investment)\b/i.test(text), 'Consumer content boundary');
-        const navigation = await page.locator('.nav-wrap, #mobile-menu').evaluateAll((nodes) => nodes.map((node) => node.outerHTML).join(' '));
-        assert(!/\b(?:crypto|tokens?|wallet|blockchain|investment)\b/i.test(navigation), 'Consumer navigation copy and accessible descriptions');
+        assert.equal(await page.locator('.nav-wrap a[href="/astrofolio/"]').getAttribute('aria-description'), 'Official Zodiac token collection');
+        if (!suffix) {
+          const breadcrumb = await page.locator('script[type="application/ld+json"]').evaluateAll((scripts) => scripts.flatMap((script) => JSON.parse(script.textContent)['@graph'] || []).find((node) => node['@type'] === 'BreadcrumbList'));
+          const visible = await page.locator('.reference > nav[aria-label="Breadcrumb"] > *').allTextContents();
+          assert.deepEqual(breadcrumb.itemListElement.map((item) => item.name), visible);
+          assert.deepEqual(breadcrumb.itemListElement.map((item) => item.item), ['https://zodiacs.org/compatibility/', 'https://zodiacs.org/compatibility/aspects/']);
+        }
         if (suffix) {
           for (const id of ['conjunction', 'sextile', 'square', 'trine', 'opposition']) assert.equal(await page.locator(`h2#${id}`).count(), 1);
           assert.equal(await page.locator('.reference__examples article').count(), 2);
@@ -81,9 +91,13 @@ try {
         await context.close();
       }
     }
-    for (const path of ['/', '/learn/', '/tools/', '/compatibility/', '/gemini/', '/compatibility/gemini-gemini/']) {
+    for (const path of ['/', '/tools/', '/compatibility/', '/compatibility/gemini-gemini/']) {
       const html = await (await fetch(`${baseURL}${path}`)).text();
       assert(html.includes('href="/compatibility/aspects/"'), `${path} has server-rendered discovery`);
+    }
+    for (const path of ['/learn/', '/gemini/']) {
+      const html = await (await fetch(`${baseURL}${path}`)).text();
+      assert(!html.includes('href="/compatibility/aspects/"'), `${path} stays outside discovery scope`);
     }
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const page = await context.newPage();
@@ -119,7 +133,16 @@ try {
     assert.equal(await page.evaluate(() => sessionStorage.getItem('zodiacs:reference-task')), null);
     const link = page.locator('.syn__reference[href="/compatibility/aspects/sun-moon/#conjunction"]').first();
     await link.waitFor();
-    assert.match(await link.getAttribute('aria-label'), /Sun in chart A conjunction Moon in chart B/);
+    assert.equal((await link.innerText()).trim(), 'Read Sun-Moon conjunction in synastry');
+    const referenceLinks = page.locator('.syn__reference');
+    for (const anchor of await referenceLinks.all()) {
+      const visible = (await anchor.textContent()).replace(/\s+/g, ' ').trim();
+      const label = await anchor.getAttribute('aria-label');
+      assert(!label || label.startsWith(visible), 'Accessible names start with the visible link text');
+      const pair = /aspects\/([^/]+)\//.exec(await anchor.getAttribute('href'))[1];
+      const canonical = pair.split('-').map((body) => body[0].toUpperCase() + body.slice(1)).join('-');
+      assert(visible.startsWith(`Read ${canonical} `), 'Reference text uses the canonical pair order');
+    }
     const row = link.locator('..').locator('button').first();
     await row.focus();
     await page.keyboard.press('Enter');

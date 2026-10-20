@@ -23,7 +23,7 @@ export function aspectReference(
   if (!pair) return null;
   return {
     href: `/compatibility/aspects/${pair}/#${geometry}`,
-    label: `${a} in chart A ${geometry} ${b} in chart B: synastry reference`,
+    label: `Read ${pair.split('-').map((body) => body[0].toUpperCase() + body.slice(1)).join('-')} ${geometry} in synastry`,
     chartA: a,
     chartB: b,
   };

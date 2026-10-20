@@ -44,7 +44,6 @@ interface Props {
   analyticsOnNoindex?: boolean;
   jsonLd?: Record<string, unknown>[];
   locale?: Locale;
-  collectionDescription?: string;
   sources?: SourceLink[];
   /** Optional route-specific RSS autodiscovery in addition to the global feeds. */
   rssFeed?: { href: string; title: string };
@@ -442,7 +441,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <div class="orbs" aria-hidden="true"></div>
     <div class="dust" aria-hidden="true"></div>
 
-    <SiteNav locale={locale} collectionDescription={props.collectionDescription} />
+    <SiteNav locale={locale} />
 
     {props.glass && <GlassDefs />}
 

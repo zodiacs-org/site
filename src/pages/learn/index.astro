@@ -1,5 +1,4 @@
 ---
-import SynastryDiscovery from '../../components/learn/SynastryDiscovery.astro';
 import { getCollection } from 'astro:content';
 import { editorialDates } from '../../lib/editorial-metadata.mjs';
 import Base from '../../layouts/Base.astro';
@@ -211,7 +210,6 @@ const jsonLd = [
           <a class="btn btn--primary btn--lg" href="#start"><span>Start with lesson one</span><span class="orb" aria-hidden="true">↓</span></a>
           <a class="textlink" href="/birth-chart/">Or get your free birth chart <span class="arr" aria-hidden="true">→</span></a>
         </div>
-        <SynastryDiscovery />
         <p class="kfacts lhero__facts"><span>{totalGuides} short guides</span><span class="lhero__hide-m">{GLOSSARY.length} glossary terms</span><span>Free, no signup</span></p>
       </div>
       <figure class="lhero__cover">

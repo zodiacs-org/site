@@ -10,8 +10,11 @@ for (const suffix of ['', 'sun-moon/', 'moon-venus/', 'moon-mars/']) {
   if (synastryPublished) await access(`dist/compatibility/aspects/${suffix}index.html`);
   else await assert.rejects(access(`dist/compatibility/aspects/${suffix}index.html`));
 }
-for (const path of ['index.html', 'learn/index.html', 'tools/index.html', 'compatibility/index.html', 'gemini/index.html', 'compatibility/gemini-gemini/index.html']) {
+for (const path of ['index.html', 'tools/index.html', 'compatibility/index.html', 'compatibility/gemini-gemini/index.html']) {
   assert.equal((await readFile(`dist/${path}`, 'utf8')).includes('href="/compatibility/aspects/"'), synastryPublished, `${path} matches publication status`);
+}
+for (const path of ['learn/index.html', 'gemini/index.html']) {
+  assert.equal((await readFile(`dist/${path}`, 'utf8')).includes('href="/compatibility/aspects/"'), false, `${path} remains outside discovery scope`);
 }
 await withPreview({ port: 4346 }, async (baseURL) => {
   for (const suffix of ['', 'sun-moon/', 'moon-venus/', 'moon-mars/']) {

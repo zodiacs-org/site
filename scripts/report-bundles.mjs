@@ -181,9 +181,9 @@ try {
 
 const routeBudgets = Object.entries(budgets).filter(([key]) => key.startsWith('/'));
 if (synastryEnabled) routeBudgets.push(...Object.entries(referenceBudgets));
-for (const [key, value] of Object.entries(budgets)) {
+for (const [key, value] of [...Object.entries(budgets), ...Object.entries(referenceBudgets)]) {
   if (typeof value !== 'number' || value < 0 || !Number.isFinite(value)) {
-    fail(`budgets.json: ${key} must be a finite, non-negative number`);
+    fail(`bundle budgets: ${key} must be a finite, non-negative number`);
   }
 }
 for (const required of ['/', '/birth-chart/', '/registry/collection/', '/aries/', 'chunk-max', 'engine-chunk']) {

@@ -20,6 +20,9 @@ const examples = entry.data.examples.map((id) => {
   if (!example || example.pair !== pair) throw new Error(`Missing verified example ${id}`);
   return example;
 });
+const wraparound = examplesData.schematic.find((example) => example.id === 'wraparound');
+const outsideOrb = examplesData.schematic.find((example) => example.id === 'outside-orb');
+if (!wraparound || !outsideOrb) throw new Error('Missing verified schematic examples');
 const jsonLd = [
   {
     '@type': 'Article', headline: title, description, url: `https://zodiacs.org${path}`,
@@ -37,7 +40,13 @@ const jsonLd = [
   { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
 ];
 ---
-<Base title={title} description={description} path={path} type="article" noindex={!referencePublished} jsonLd={jsonLd} sources={sources} collectionDescription="Zodiac collection" stableTypography>
+<Base title={title} description={description} path={path} type="article" noindex={!referencePublished} jsonLd={jsonLd} sources={sources} stableTypography>
+  <Fragment slot="head">
+    {referencePublished && <>
+      <link rel="alternate" hreflang="en" href={`https://zodiacs.org${path}`} />
+      <link rel="alternate" hreflang="x-default" href={`https://zodiacs.org${path}`} />
+    </>}
+  </Fragment>
   <article class="container reference">
     <nav aria-label="Breadcrumb"><a href="/compatibility/">Compatibility</a> / <a href="/compatibility/aspects/">Synastry aspects</a></nav>
     <header class="reference__hero">
@@ -72,7 +81,7 @@ const jsonLd = [
         </table>
         </div>
         <p>Tropical geocentric ecliptic longitudes are compared between two independent UTC instants. Applying and separating are omitted in this two-chart comparison. House systems do not alter these body-to-body angles. A noon Moon remains an estimate when its birth time is unknown.</p>
-        <p><strong>Schematic wraparound:</strong> Sun A at 359° and Moon B at 1° are 2° apart, a conjunction with a 2° residual. At 350° and 4° the separation is 14°, outside this conjunction limit, so no major contact is listed. These illustrative longitudes are schematic, with no implied timestamps.</p>
+        <p><strong>Schematic wraparound:</strong> {wraparound.chartA.body} A at {wraparound.chartA.longitude}° and {wraparound.chartB.body} B at {wraparound.chartB.longitude}° are {wraparound.separation}° apart, a {wraparound.geometry} with a {wraparound.residualOrb}° residual. At {outsideOrb.chartA.longitude}° and {outsideOrb.chartB.longitude}° the separation is {outsideOrb.separation}°, {outsideOrb.geometry ? `a ${outsideOrb.geometry} with a ${outsideOrb.residualOrb}° residual.` : `outside this ${wraparound.geometry} limit, so no major contact is listed.`} These illustrative longitudes are schematic, with no implied timestamps.</p>
         <p>For the symbols separately, read <a href={`/learn/planets/${bodies[0].toLowerCase()}/`}>{bodies[0]}</a> and <a href={`/learn/planets/${bodies[1].toLowerCase()}/`}>{bodies[1]}</a>. For the full two-chart task, use <a href="/compatibility/" data-reference-task>the compatibility tool</a>.</p>
       </section>
       <section id="examples" class="reference__examples prose" aria-labelledby="examples-heading">
