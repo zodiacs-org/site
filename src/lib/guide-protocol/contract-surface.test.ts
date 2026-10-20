@@ -42,8 +42,8 @@ describe('Guide draft runtime boundary', () => {
       }
     }
     expect(imports.sort()).toEqual([
-      'src/lib/guide-server/handler.ts',
       'src/lib/guide-server/anthropic.ts',
+      'src/lib/guide-server/handler.ts',
       'src/lib/guide-server/openai.ts',
       'src/lib/guide-server/safety.ts',
     ]);
