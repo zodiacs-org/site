@@ -8,6 +8,7 @@ import { chromium } from 'playwright-core';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
+import { quietSunFixture } from './visual/quiet-sun-fixture.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const CHROMIUM = await findChromium();
@@ -16,23 +17,7 @@ const manifest = JSON.parse(await readFile(
   'utf8',
 ));
 const daily = JSON.parse(await readFile(new URL('../src/data/daily.json', import.meta.url), 'utf8'));
-const MAJOR_ASPECT_ANGLES = [0, 60, 90, 120, 180];
-
-function quietAriesLongitude() {
-  const candidates = Array.from({ length: 300 }, (_, index) => index / 10).map((lon) => {
-    const nearestOrb = Math.min(...daily.bodies.flatMap((body) => {
-      const rawSeparation = Math.abs(body.lon - lon) % 360;
-      const separation = rawSeparation > 180 ? 360 - rawSeparation : rawSeparation;
-      return MAJOR_ASPECT_ANGLES.map((angle) => Math.abs(separation - angle));
-    }));
-    return { lon, nearestOrb };
-  });
-  const best = candidates.sort((a, b) => b.nearestOrb - a.nearestOrb)[0];
-  if (!best || best.nearestOrb <= 3) {
-    throw new Error(`No deterministic quiet Aries fixture exists for ${daily.date}.`);
-  }
-  return best.lon;
-}
+const QUIET_SUN = quietSunFixture(daily);
 
 const profile = {
   version: 1,
@@ -81,7 +66,7 @@ const quietMobileProfile = {
     name: LONG_CHART_NAME,
     summary: {
       ...profile.charts[0].summary,
-      bodies: [{ body: 'Sun', lon: quietAriesLongitude(), retrograde: false }],
+      bodies: [{ body: 'Sun', lon: QUIET_SUN.longitude, retrograde: false }],
       angles: null,
     },
   }],
@@ -225,7 +210,7 @@ async function inspectReturningMobile(BASE, browser, fixtureProfile, state, expe
     await page.locator('.today-lines li').count() === expectedContacts
       && (state === 'quiet'
         ? await page.locator('[data-today-quiet] .today-quiet__baseline').isVisible()
-          && await page.getByText('Aries Sun-sign baseline', { exact: true }).isVisible()
+          && await page.getByText(`${QUIET_SUN.sign} Sun-sign baseline`, { exact: true }).isVisible()
         : true),
   );
   if (OUT) await page.screenshot({ path: `${OUT}/today-returning-${state}-360.png`, fullPage: true });
