@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "id": "design-profile-redesign-20261018",
-  "baseCommit": "bf2e7e5bb77b72b70f8772cb6ef3a1e5fb8930a0",
+  "id": "localized-art-cards-20261019",
+  "baseCommit": "b9452b68fbfbfc57a0a11dc5a2b184e711bd1507",
   "protectedPaths": [
-    "src/pages/es/profile/index.astro",
-    "src/pages/fr/profile/index.astro",
-    "src/pages/it/profile/index.astro",
-    "src/pages/pt/profile/index.astro"
+    "src/pages/es/[sign]/index.astro",
+    "src/pages/fr/[sign]/index.astro",
+    "src/pages/it/[sign]/index.astro",
+    "src/pages/pt/[sign]/index.astro"
   ]
 }

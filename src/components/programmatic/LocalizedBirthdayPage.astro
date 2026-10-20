@@ -21,6 +21,7 @@ import {
 } from '../../lib/birthdays';
 import birthdays from '../../data/birthdays.json';
 import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { signArtCard } from '../../lib/og-art-cards.mjs';
 import { BIRTHDAY_HERO_SIZES, signArtSrc, signArtSrcset } from '../../lib/sign-art';
 import {
   birthdayOrdinal,
@@ -115,7 +116,7 @@ const nextSlug = birthdaySlug(next.month, next.day);
 const linkSigns = sign ? [sign] : cusp ? [cusp.a, cusp.b] : [];
 const signNames = linkSigns.map((candidate) => localName(candidate));
 const path = localizePath(locale, `/birthday/${slug}/`);
-const ogImage = `/assets/og/v2/sign/${heroSign!.slug}.png`;
+const ogImage = signArtCard(heroSign!.slug, locale);
 const title = text('metaTitle', { date: label });
 const description = sign
   ? text('metaDescriptionSign', { date: label, sign: localName(sign) })

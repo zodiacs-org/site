@@ -15,9 +15,11 @@ import type { LocalTimeModule } from '../../lib/compute-api/local-time';
 import { zoneAt } from '../../lib/compute-api/validate';
 import { computeChart } from '../../lib/engine/full.js';
 import type { ChartInput } from '../../lib/engine/types';
+import { birthdaySlug } from '../../lib/birthdays';
 import { validOccasionDate } from '../../lib/occasions/card';
 import { matchTwins, twinSigns, type TwinPerson } from '../../lib/sharing/twins';
 import rawIndex from './people-index.json';
+import { chartTwinsShareUrl, famousChartShareUrl } from '../share-links';
 
 const DEFAULT_ORIGIN = 'https://zodiacs.org';
 const MAX_TWINS = 12;
@@ -49,7 +51,18 @@ const TWIN_DIRECTORY: readonly TwinPerson[] = PEOPLE_INDEX.map((person) => ({ sl
 
 const link = z.object({ title: z.string(), url: z.url() });
 export type ToolLink = z.infer<typeof link>;
-const personUrl = (origin: string, slug: string) => `${origin}/people/${slug}/`;
+export const personUrl = (origin: string, slug: string) => `${origin}/people/${slug}/`;
+
+/**
+ * The people the site publishes who were born on a month and day, oldest
+ * first, as the date's birthday page lists them (src/lib/people.ts,
+ * peopleForBirthday): its hero names the first three.
+ */
+export function peopleBornOn(month: number, day: number): readonly IndexPerson[] {
+  const route = `/birthday/${birthdaySlug(month, day)}/`;
+  return PEOPLE_INDEX.filter((person) => person.birthdayRoute === route)
+    .sort((a, b) => a.gregorian.localeCompare(b.gregorian));
+}
 
 // ---------- find_chart_twins ----------
 
@@ -86,6 +99,8 @@ export const chartTwinsData = z.object({
   total: z.number().int().nonnegative(),
   notes: z.array(z.string()),
   pageUrl: z.url(),
+  /** The share link: the Sun sign, and the Moon sign when settled; null when no one shares them. */
+  shareUrl: z.url().nullable(),
 });
 export type ChartTwinsData = z.infer<typeof chartTwinsData>;
 
@@ -145,6 +160,7 @@ export async function findChartTwins(args: ChartTwinsArgs, localTime: LocalTimeM
     total: matches.length,
     notes,
     pageUrl: `${origin}/chart-twins/`,
+    shareUrl: matches.length > 0 ? chartTwinsShareUrl(origin, signs) : null,
   };
   return {
     data: chartTwinsData.parse(data),
@@ -178,6 +194,8 @@ export const famousChartData = z.discriminatedUnion('found', [
     }),
     alsoMatched: z.array(lite).max(MAX_ALSO),
     note: z.string(),
+    /** The share link, carrying the person's directory slug only. */
+    shareUrl: z.url().nullable(),
   }),
   z.object({
     found: z.literal(false),
@@ -251,6 +269,7 @@ export function getFamousChart(args: FamousChartArgs, origin: string = DEFAULT_O
     },
     alsoMatched: rest.slice(0, MAX_ALSO).map((person) => ({ name: person.name, slug: person.slug, url: personUrl(origin, person.slug) })),
     note: noonChartNote(best.birthplace),
+    shareUrl: famousChartShareUrl(origin, best.slug),
   };
   return { data: famousChartData.parse(data), links: [{ title: `${best.name}'s chart on Zodiacs`, url }, directory] };
 }

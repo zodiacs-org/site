@@ -151,17 +151,29 @@ describe('repository operating claims', () => {
 });
 
 describe('homepage social card', () => {
-  it('wires the reviewed byte-exact black 1200x630 card with prominent pastel symbols into homepage metadata', async () => {
-    const [page, seo, bytes] = await Promise.all([
+  it('wires the reviewed byte-exact 1200x630 hero art card into homepage metadata and the site fallback', async () => {
+    const [page, seo, cards, bytes, earlier] = await Promise.all([
       text('src/pages/index.astro'),
       text('src/components/SEO.astro'),
-      readFile(resolve(root, 'public/assets/og/v2/share-pastel-wheel-20260809.png')),
+      text('src/lib/og-art-cards.mjs'),
+      readFile(resolve(root, 'public/assets/og/v8/home-20261019.jpg')),
+      readFile(resolve(root, 'public/assets/og/v2/share-pastel-wheel-20261019.png')),
     ]);
-    expect(page).toContain('image="/assets/og/v2/share-pastel-wheel-20260809.png"');
-    expect(page).toMatch(/imageAlt="[^"]*large ring of twelve pastel zodiac symbols/);
+    expect(page).toContain('image={HOME_ART_CARD}');
+    expect(page).toContain('imageAlt={HOME_ART_CARD_ALT}');
+    expect(cards).toContain("export const HOME_ART_CARD = `${ART_CARD_DIR}/home-20261019.jpg`;");
+    expect(cards).toMatch(/HOME_ART_CARD_ALT = '[^']*zodiac band from the hero film[^']*Explore the stars behind your story/u);
+    // English pages fall back to it; a localized page to its locale's own homepage card.
+    expect(seo).toContain('explicitImage ?? catalogImage ?? (ART_CARD_LOCALES.includes(locale) ? homeArtCard(locale) : HOME_ART_CARD);');
     expect(seo).toContain('<meta property="og:image:type" content={imageType} />');
     expect(seo).toContain('<meta name="twitter:image" content={imageUrl} />');
     expect(createHash('sha256').update(bytes).digest('hex'))
-      .toBe('8cdbd6b9adedc94b1793137dc0def58c2497ab1560f1850ef4e033d5ee7467fe');
+      // The 2026-10-19 art card: the hero film's poster cut at full size, with
+      // the hero's headline in the display serif and the brand lockup
+      // (src/lib/og-art-cards.mjs, DESIGN.md).
+      .toBe('e7d2b4c009b5cb00349e969217a6846d0484a79b858b0e746d7011036d5fe4fc');
+    // The card it replaced stays published, unchanged, for links already shared.
+    expect(createHash('sha256').update(earlier).digest('hex'))
+      .toBe('f315272bcba1b99de463a4df89cb18284caeed3a6d7cbdd016cc26323dd2bcbe');
   });
 });

@@ -15,6 +15,7 @@ import { HOUSE_THEME, type Daily } from '../lib/daily';
 import { HOROSCOPE_WHEEL_SIZE, horoscopeWheelFocus } from '../lib/horoscope-wheel';
 import { datedEditionText, editionDateLabel } from '../lib/edition-freshness';
 import { EDITOR_AUTHOR } from '../lib/editorial';
+import { horoscopeArtCard } from '../lib/og-art-cards.mjs';
 import { PLANET_GLYPH } from '../lib/glyphs/paths';
 import { currentHoroscopeMonth, utcMonth } from '../lib/horoscope-month.mjs';
 import { monthLabel } from '../lib/horoscopes';
@@ -144,7 +145,7 @@ const surfacePath = (signSlugValue: string, key: SurfaceKey) => {
   return slug ? `/horoscopes/${signSlugValue}/${slug}/` : `/horoscopes/${signSlugValue}/`;
 };
 const path = surfacePath(sign.slug, surface);
-const ogImage = `/assets/og/v2/horoscope/${sign.slug}${meta.slug ? `-${meta.slug}` : ''}.png`;
+const ogImage = horoscopeArtCard(sign.slug, surface);
 const canonicalUrl = `https://zodiacs.org${path}`;
 const hasEditorial = Astro.slots.has('editorial');
 const hasEnhancement = Astro.slots.has('enhancement');

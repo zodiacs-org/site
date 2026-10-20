@@ -45,7 +45,7 @@ describe('compatibility share links', () => {
     expect(query).toBe(COMPAT);
     const url = compatibilityShareUrl('https://zodiacs.org', {
       a: { name: '<b>Ana</b>', sun: null },
-      b: { name: 'Анна', sun: 'nope' },
+      b: { name: '花子', sun: 'nope' },
       score: { overall: 40, areas: { attraction: 50, communication: 40, stability: 30 } },
     })!;
     expect(new URL(url).search).toBe('?score=40&attraction=50&communication=40&stability=30&v=challenging');
@@ -75,7 +75,7 @@ describe('compatibility share links', () => {
     ['a long name', COMPAT.replace('a=Ana', `a=${'A'.repeat(25)}`)],
     ['an empty name', COMPAT.replace('a=Ana', 'a=')],
     ['a padded name', COMPAT.replace('a=Ana', 'a=+Ana')],
-    ['a non-Latin name', COMPAT.replace('a=Ana', 'a=%D0%90%D0%BD%D0%BD%D0%B0')],
+    ['a name in a script the card cannot draw', COMPAT.replace('a=Ana', `a=${encodeURIComponent('Ελένη')}`)],
     ['an unknown ref', `${COMPAT}&ref=newsletter`],
   ])('refuse %s', (_label, query) => {
     expect(parseCompatibilityShare(params(query))).toBeNull();
@@ -98,6 +98,13 @@ describe('date share links', () => {
     expect(shareNames('<Ana>')).toBeNull();
     expect(shareName('Zoë')).toBe('Zoë');
     expect(shareName('Łukasz')).toBe('Łukasz');
+    // The preview draws Cyrillic in EB Garamond's Cyrillic subset, so a Russian or Ukrainian name stays in the link.
+    expect(shareName('Анна')).toBe('Анна');
+    expect(shareName('Анна-Мария')).toBe('Анна-Мария');
+    expect(shareName('Ґанна')).toBe('Ґанна');
+    expect(shareNames('Анна & Иван')).toBe('Анна & Иван');
+    expect(sharePlace('Москва')).toBe('Москва');
+    expect(shareName('Ελένη')).toBeNull();
     expect(shareName('J. R.')).toBe('J. R.');
     expect(sharePlace('St. Louis')).toBe('St. Louis');
     expect(occasionShareUrl('https://zodiacs.org', {

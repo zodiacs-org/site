@@ -4,6 +4,73 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 20 October: share links for the last three cards
+
+`find_chart_twins`, `get_famous_chart` and `get_life_milestones` now return
+a `shareUrl` too, so all eight cards can be shared as a picture link with a
+story picture, in the directions the owner picked on 18 October:
+
+- chart twins: the Sun sign and a settled Moon sign, never the birth date;
+- a famous chart: the person's directory slug;
+- a life milestone: the milestone the card leads with, its age and its
+  dates, never the birth date.
+
+Each tool's description ends by telling the assistant to give that link
+exactly, and the three chat cards lead with it ("Share your chart twins",
+"Share this chart", "Share your milestone"). `tools/list` changes for these
+three tools: one sentence in each description and a nullable `shareUrl` in
+each output schema, so the rescan after the deploy picks them up with the
+fixes below. On the chat cards a long pair of names now steps the title
+down so the main action stays on the first screen.
+`zodiacs-developer-0.3.13.zip` is rebuilt in place; `zodiacs-sky-0.5.0.zip`
+is unchanged.
+
+## Update, 20 October: three bugs fixed before the rescan (#797)
+
+Found while rating the plugins for resubmission on 19 October:
+
+- `get_sky_calendar` in Russian answered `calculation-failed`. The runtimes
+  are Node bundles built outside Vite, and the Russian copy reads
+  `import.meta.env.SSR`; the build now defines it.
+  `src/ai-tools/bundle-languages.test.ts` runs the generated bundles in all
+  six languages.
+- The wedding and occasion line wrote "A Aries Sun"; it now reads "An Aries
+  Sun".
+- Share links dropped Cyrillic names. The preview renderer now carries EB
+  Garamond's Cyrillic, so "Анна and Иван" stays on the link and the picture.
+
+`tools/list` changes in two output schemas: the literal `note` of
+`get_compatibility` and of the occasion tools now says "for insight and fun,
+not a guarantee …" with a comma, as the share pages do. The rescan after the
+deploy picks it up with the other changes. `zodiacs-developer-0.3.13.zip` is
+rebuilt in place; `zodiacs-sky-0.5.0.zip` is unchanged.
+
+The listing's About loses its two dashes: "Compare two people's charts,
+whether partners, friends or family, and get a compatibility score …"
+(1,784 characters). Paste the About from "The listing" below into the draft.
+
+## Update, 19 October: three more share links (#782, draft)
+
+The owner picked keepsake link previews for the birthday, sky calendar and
+horoscope cards on 18 October, so those three tools now return a share link,
+as `get_occasion_sky` and `get_compatibility` do:
+
+- `get_birthday` returns `shareUrl` with the month and day, never the year.
+- `get_sky_calendar` returns one for the next event.
+- `get_horoscope` returns one for the reading shown.
+- Each tool's description ends by telling the assistant to give that link
+  exactly, and the cards lead with it ("Share this birthday", "Share the
+  reading"; the sky calendar keeps Subscribe first).
+
+`tools/list` changes for these three tools only: one sentence in each
+description and a nullable `shareUrl` in each output schema. `initialize`,
+the resources and the capabilities answer keep their bytes, and the flag-off
+fixture is captured again from this change. The panel addresses stay
+`ui://zodiacs/occasions-v4.html` and `ui://zodiacs/horoscopes-v3.html`.
+`integrations/packages/zodiacs-sky-0.5.0.zip` is unchanged. After the deploy,
+a rescan, only with the owner's yes, shows the new descriptions.
+`zodiacs-developer-0.3.13.zip` is rebuilt in place.
+
 ## Update, 18 October: every output schema typed
 
 The owner asked for the hosted tools' output schemas to be fixed before the
@@ -100,11 +167,11 @@ The source of truth is `integrations/chatgpt/chatgpt-app-submission.json`.
   links. Support stays admin@zodiacs.org.
 - **Test cases:** the five positive and three negative cases in the
   submission file, unchanged.
-- **About** (1,774 characters):
+- **About** (1,784 characters):
 
 > Explore your birth chart, see how compatible you are with someone close to you, and read your horoscope. Zodiacs calculates the sky for the date and place you give, then tells you what astrology says about it.
 >
-> Build an interactive birth chart and see your planets' signs. Compare two people's charts—partners, friends or family—and get a compatibility score out of 100 for attraction, communication and long-term stability, or see how you match with a famous person Zodiacs publishes. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
+> Build an interactive birth chart and see your planets' signs. Compare two people's charts, whether partners, friends or family, and get a compatibility score out of 100 for attraction, communication and long-term stability, or see how you match with a famous person Zodiacs publishes. Find famous people who share your Sun or Moon sign, or look up the chart of a famous person Zodiacs publishes.
 >
 > Read daily and weekly Sun-sign horoscopes and a personal forecast for your week from your own chart, follow Moon phases, retrogrades and planets changing signs, and subscribe to the sky calendar in Google Calendar, Apple Calendar or Outlook.
 >

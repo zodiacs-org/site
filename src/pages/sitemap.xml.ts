@@ -13,9 +13,10 @@ import { DEFAULT_LOCALE, LOCALE_META, alternatePathEntries, alternatePaths } fro
 import { CHINESE_ZODIAC_PATHS } from '../lib/programmatic-paths';
 import { registryAuraSitemapEntry } from '../lib/registry-aura-entry.mjs';
 import { currentHoroscopeMonth, utcMonth } from '../lib/horoscope-month.mjs';
-import { INDEXABLE_PEOPLE, PEOPLE_DIRECTORY_INDEXABLE } from '../lib/people';
+import { INDEXABLE_PEOPLE, PEOPLE_DIRECTORY_INDEXABLE, peopleForBirthday } from '../lib/people';
 import {
   BIRTHDAY_CUSP_OG_MODIFIED_AT,
+  BIRTHDAY_FAMOUS_LINE_MODIFIED_AT,
   PEOPLE_TEMPLATE_MODIFIED_AT,
   lastmodDate,
   latestModifiedAt,
@@ -715,6 +716,7 @@ export const GET: APIRoute = async () => {
       lastmod: lastmodDate(latestModifiedAt(
         b.data.updated,
         ...(birthdayFacts.days[b.id]?.cusp ? [BIRTHDAY_CUSP_OG_MODIFIED_AT] : []),
+        ...(peopleForBirthday(`/birthday/${b.id}/`).length > 0 ? [BIRTHDAY_FAMOUS_LINE_MODIFIED_AT] : []),
       )),
     })),
     ...almanac.map((entry) => ({

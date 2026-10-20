@@ -13,6 +13,7 @@ import { localizePath, t } from '../../../lib/i18n';
 import { spanishGuideFor } from '../../../data/es-guides';
 import { pairSlug } from '../../../lib/compat';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { signArtCard } from '../../../lib/og-art-cards.mjs';
 
 export function getStaticPaths() {
   return SIGN_SLUGS.map((sign) => ({ params: { sign } }));
@@ -58,7 +59,7 @@ const jsonLd = [
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org/es/${sign.slug}/` },
-    image: `https://zodiacs.org/assets/og/v2/sign/${sign.slug}.png`,
+    image: `https://zodiacs.org${signArtCard(sign.slug, 'es')}`,
     inLanguage: 'es',
     about: { '@type': 'Thing', name: `${signName(sign, 'es')} (astrología)` },
   },
@@ -85,7 +86,7 @@ const jsonLd = [
   title={`${guide.title} | Zodiacs.org`}
   description={guide.description}
   path={`/es/${sign.slug}/`}
-  image={`/assets/og/v2/sign/${sign.slug}.png`}
+  image={signArtCard(sign.slug, 'es')}
   imageAlt={`${signName(sign, 'es')}, guía de signo en Zodiacs.org`}
   type="article"
   locale="es"

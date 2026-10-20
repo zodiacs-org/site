@@ -48,7 +48,12 @@ function signName(slug: string): string {
   return slug.charAt(0).toUpperCase() + slug.slice(1);
 }
 
-/** "A Gemini Sun is the sign of conversation; a Libra Moon, of partnership." */
+/** "an" before Aries and Aquarius, "a" before the other ten. */
+function article(name: string): 'a' | 'an' {
+  return /^[AEIOU]/u.test(name) ? 'an' : 'a';
+}
+
+/** "A Gemini Sun is the sign of conversation; a Libra Moon, of partnership." "An Aries Sun…" */
 export function sunMoonLine(sunSign: string, moonSign: string): string {
   const sun = SIGN_THEME[sunSign];
   const moon = SIGN_THEME[moonSign];
@@ -56,5 +61,8 @@ export function sunMoonLine(sunSign: string, moonSign: string): string {
   if (sunSign === moonSign) {
     return `The Sun and Moon are both in ${signName(sunSign)}, the sign of ${sun}.`;
   }
-  return `A ${signName(sunSign)} Sun is the sign of ${sun}; a ${signName(moonSign)} Moon, of ${moon}.`;
+  const sunName = signName(sunSign);
+  const moonName = signName(moonSign);
+  const lead = article(sunName);
+  return `${lead.charAt(0).toUpperCase()}${lead.slice(1)} ${sunName} Sun is the sign of ${sun}; ${article(moonName)} ${moonName} Moon, of ${moon}.`;
 }

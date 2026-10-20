@@ -688,8 +688,10 @@ if (!(await exists(webMcpCalculatorsPath))) {
 for (const relativePath of ['index.html', 'aries/index.html']) {
   const html = await readFile(resolve(root, relativePath), 'utf8');
   for (const [asset, key] of [['search-ui', 'search-ranking-2'], ['webmcp-register', 'calculators-1']]) {
-    if (!html.includes(`import('/assets/${asset}.js?v=${key}')`)
-        || html.includes(`import('/assets/${asset}.js')`)) {
+    // The inline loaders are reprinted by minify-inline-scripts.mjs, which may
+    // change their quotes; the address is what counts.
+    const loads = (address) => html.includes(`import('${address}')`) || html.includes(`import("${address}")`);
+    if (!loads(`/assets/${asset}.js?v=${key}`) || loads(`/assets/${asset}.js`)) {
       fail(`${asset}: ${relativePath} must use the cache key ?v=${key}`);
     }
   }

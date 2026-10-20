@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   BIRTHDAY_CUSP_OG_MODIFIED_AT,
+  BIRTHDAY_FAMOUS_LINE_MODIFIED_AT,
   PEOPLE_TEMPLATE_MODIFIED_AT,
   lastmodDate,
   latestModifiedAt,
@@ -12,6 +13,11 @@ describe('SEO modification dates', () => {
     const modifiedAt = latestModifiedAt('2026-07-07', BIRTHDAY_CUSP_OG_MODIFIED_AT);
     expect(modifiedAt).toBe('2026-08-23T00:00:00.000Z');
     expect(lastmodDate(modifiedAt)).toBe('2026-08-23');
+  });
+
+  it('re-dates the birthday pages whose hero names who shares the date', () => {
+    expect(lastmodDate(BIRTHDAY_FAMOUS_LINE_MODIFIED_AT)).toBe('2026-10-19');
+    expect(lastmodDate(latestModifiedAt('2026-07-07', BIRTHDAY_CUSP_OG_MODIFIED_AT, BIRTHDAY_FAMOUS_LINE_MODIFIED_AT))).toBe('2026-10-19');
   });
 
   it('keeps the shared people-template revision source controlled', () => {
