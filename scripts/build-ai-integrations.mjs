@@ -10,13 +10,17 @@ import { buildOccasionsPanel } from './build-occasions-panel.mjs';
 import { buildAccountsConsent } from './build-accounts-consent.mjs';
 import { peopleIndexCurrent, renderFromDisk, STALE_MESSAGE } from './build-ai-people.mjs';
 import { addAiLifetimeBoundary } from './ai-runtime-lifetime.mjs';
+import { syncPanelFingerprints } from './panel-fingerprints.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
-await buildSkyCalendar(check);
-await buildChartStudio(check);
-await buildHoroscopePanel(check);
-await buildOccasionsPanel(check);
+const panelHtml = {
+  'sky-events': await buildSkyCalendar(check),
+  'chart-studio': await buildChartStudio(check),
+  horoscopes: await buildHoroscopePanel(check),
+  occasions: await buildOccasionsPanel(check),
+};
+await syncPanelFingerprints(panelHtml, check);
 // The account consent page; the hosted function serves it only while ZODIACS_ACCOUNTS_ENABLED=1.
 await buildAccountsConsent(check);
 // The famous-people tools read a compact index of the people the site publishes (scripts/build-ai-people.mjs).

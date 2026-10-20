@@ -8,8 +8,8 @@ import type { ShareRef } from '../../lib/share-results';
 import { horoscopeShareUrl } from '../share-links.js';
 import type { HoroscopeWindow, WindowReading } from './window';
 
-export const HOROSCOPE_URI = 'ui://zodiacs/horoscopes-v3.html';
-export const LEGACY_HOROSCOPE_URIS = ['ui://zodiacs/horoscopes-v2.html', 'ui://zodiacs/horoscopes-v1.html'] as const;
+export const HOROSCOPE_URI = 'ui://zodiacs/horoscopes-v4.html';
+export const LEGACY_HOROSCOPE_URIS = ['ui://zodiacs/horoscopes-v3.html', 'ui://zodiacs/horoscopes-v2.html', 'ui://zodiacs/horoscopes-v1.html'] as const;
 export const HOROSCOPE_SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'] as const satisfies readonly HoroscopeSign[];
 export const HOROSCOPE_FOCUSES = ['general', 'love', 'career'] as const;
 export const HOROSCOPE_PERIODS = ['day', 'week'] as const;

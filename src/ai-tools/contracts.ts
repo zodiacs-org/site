@@ -29,16 +29,16 @@ export const ORIGIN = 'https://zodiacs.org';
 // ChatGPT keeps a panel by its URI, so a changed panel gets a new one. The
 // earlier URIs stay registered and serve the current panel, so conversations
 // and host definitions that still name them keep working.
-export const WIDGET_URI = 'ui://zodiacs/sky-events-v3.html';
-export const LEGACY_WIDGET_URIS = ['ui://zodiacs/sky-events-v2.html', 'ui://zodiacs/sky-events-v1.html'] as const;
-export const STUDIO_URI = 'ui://zodiacs/chart-studio-v4.html';
-export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v3.html', 'ui://zodiacs/chart-studio-v2.html', 'ui://zodiacs/chart-studio-v1.html'] as const;
+export const WIDGET_URI = 'ui://zodiacs/sky-events-v4.html';
+export const LEGACY_WIDGET_URIS = ['ui://zodiacs/sky-events-v3.html', 'ui://zodiacs/sky-events-v2.html', 'ui://zodiacs/sky-events-v1.html'] as const;
+export const STUDIO_URI = 'ui://zodiacs/chart-studio-v5.html';
+export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v4.html', 'ui://zodiacs/chart-studio-v3.html', 'ui://zodiacs/chart-studio-v2.html', 'ui://zodiacs/chart-studio-v1.html'] as const;
 /** The first Chart Studio URI, kept for existing callers. */
 export const LEGACY_STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
 export { HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS };
 /** The occasion tools' panel, offered only while ZODIACS_OCCASIONS_ENABLED=1. */
-export const OCCASIONS_URI = 'ui://zodiacs/occasions-v4.html';
-export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
+export const OCCASIONS_URI = 'ui://zodiacs/occasions-v5.html';
+export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v4.html', 'ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 
 /** What people see on the tool-call line and in the plugin's details. */
