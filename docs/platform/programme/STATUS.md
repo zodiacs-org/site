@@ -1,3 +1,37 @@
+R44 accepted, 2026-10-20 (Asia/Bangkok): the conventions registry is in
+production.
+
+**Overall delivery: 45%** (45.053% to three decimals): 82.2 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **R44, accepted.** #781 merged as `e024e602`. zodiacs.org serves it from
+  `dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg`, READY in production and built from the
+  merge.
+  - Every one of the registry's 154 ids has its address on
+    `/developers/conventions/`, and Chromium opening each address lands on
+    that id's entry.
+  - `registry.json` and the Markdown twin serve the merge's registry.
+  - The developer index, the conformance page, `llms.txt` and the sitemap
+    link to it.
+  - The production check passes 12 of 12. With one id renamed, exactly the
+    five checks that read the ids fail. Before the deployment, all 11 page
+    checks failed.
+  - Main's Site Check passed on the merge (run 39410915393, on the one
+    rerun `AGENTS.md` gives the `/today/` sky ticker's known 0.00087
+    layout shift).
+
+  The record is
+  [the evidence README](../evidence/conventions-registry-20261018/README.md).
+- **On the way:**
+  - Codex found two endpoint ids that no receipt names. They were dropped,
+    and the tests now check that direction too.
+  - Codex found the page missing from the structured-data contract. It is
+    now there.
+  - At phone width the page scrolled sideways. Its definitions now wrap.
+- **House rules.** Main's `AGENTS.md` (#788) now asks every agent to open
+  draft pull requests only and leave each merge to the owner. This record is
+  a draft for the owner to merge.
+
 The conventions registry, 2026-10-18 (Asia/Bangkok): R44 stays partial
 until production.
 

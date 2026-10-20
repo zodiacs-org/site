@@ -1,0 +1,123 @@
+{
+  "checkedAt": "2026-10-20T10:52:48.684Z",
+  "base": "http://127.0.0.1:4431",
+  "deployment": null,
+  "registry": {
+    "commit": "e024e6026a39c4d348bd8d241d9603a8fc5b0218",
+    "version": "2026-10-18",
+    "ids": 154,
+    "namespaces": 57,
+    "control": null
+  },
+  "served": {
+    "page": {
+      "status": 200,
+      "sha256": "4d207158d228bac16dadc31fc8d365a45762b0655fa973dc55fcdda685e358eb",
+      "anchors": 154
+    },
+    "browser": {
+      "landed": 154,
+      "missed": 0,
+      "madeUp": null
+    },
+    "json": {
+      "status": 200,
+      "sha256": "fd48b852b4b172eac0c0fe1e0d60124dd97e6e4a9ce2c31786e3f6f50ab670c9",
+      "entries": 154
+    },
+    "markdown": {
+      "status": 200,
+      "sha256": "08d7a0c45412b4bef027a5db23e75772436d9a965787fc79c89af5593e981f79"
+    }
+  },
+  "results": [
+    {
+      "name": "/developers/conventions/ is served as HTML",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "type": "text/html"
+      }
+    },
+    {
+      "name": "every one of the 154 ids has exactly one anchor on the page",
+      "ok": true,
+      "detail": {
+        "unanchored": 0,
+        "sample": []
+      }
+    },
+    {
+      "name": "every id links to its own address on the page",
+      "ok": true,
+      "detail": {
+        "unlinked": 0,
+        "sample": []
+      }
+    },
+    {
+      "name": "Chromium lands on each id's entry from its address (154 of 154)",
+      "ok": true,
+      "detail": {
+        "missed": 0,
+        "sample": []
+      }
+    },
+    {
+      "name": "control: a made-up id's address lands on no entry",
+      "ok": true,
+      "detail": {
+        "madeUp": null,
+        "status": 200
+      }
+    },
+    {
+      "name": "registry.json is the commit's registry, with every id's address",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "type": "application/json",
+        "served": 154
+      }
+    },
+    {
+      "name": "the Markdown twin names every id",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "unnamed": 0
+      }
+    },
+    {
+      "name": "the developer index links to the registry",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "the conformance page links its kinds to the registry",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "llms.txt lists the registry",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "the sitemap lists the page with its date",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "listed": true
+      }
+    }
+  ],
+  "passed": 11,
+  "failed": 0
+}
