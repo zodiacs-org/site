@@ -4,6 +4,23 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 20 October: fresh addresses for all four chat panels
+
+The card design changed after ChatGPT first saw the panel addresses. The
+production update gives each current panel a new address before the draft is
+rescanned: `sky-events-v4.html`, `chart-studio-v5.html`,
+`horoscopes-v4.html` and `occasions-v5.html`. Every earlier address remains
+readable and serves the current panel for existing conversations. The tools'
+`_meta.ui.resourceUri` and `openai/outputTemplate` use the new addresses.
+
+`src/ai-tools/panel-fingerprints.json` records the SHA-256 of each current
+panel's generated HTML under its address and retains retired address digests.
+`ai:build`, `ai:check` and a unit test reject changed HTML at an unchanged
+address, including accidental reuse of a retired address. After the production
+deployment, check all four current and four immediately previous addresses,
+then rescan the draft only with Dias's separate approval. Check a fresh
+ChatGPT conversation for the new wedding and horoscope designs afterward.
+
 ## Update, 20 October: share links for the last three cards
 
 `find_chart_twins`, `get_famous_chart` and `get_life_milestones` now return
@@ -65,7 +82,7 @@ as `get_occasion_sky` and `get_compatibility` do:
 `tools/list` changes for these three tools only: one sentence in each
 description and a nullable `shareUrl` in each output schema. `initialize`,
 the resources and the capabilities answer keep their bytes, and the flag-off
-fixture is captured again from this change. The panel addresses stay
+fixture is captured again from this change. At that stage the panel addresses were
 `ui://zodiacs/occasions-v4.html` and `ui://zodiacs/horoscopes-v3.html`.
 `integrations/packages/zodiacs-sky-0.5.0.zip` is unchanged. After the deploy,
 a rescan, only with the owner's yes, shows the new descriptions.
@@ -115,7 +132,7 @@ resubmitting. Zodiacs now:
 
 Three lines stay: no investment picks, no health predictions and no
 guarantees. The listing, test cases 3 and 5, the tools' instructions, the
-skill, the claims ledger and the panel (now `ui://zodiacs/occasions-v4.html`)
+skill, the claims ledger and the panel (then `ui://zodiacs/occasions-v4.html`)
 changed to match. The Sky package changed too, so
 `integrations/packages/zodiacs-sky-0.5.0.zip` must be uploaded again into
 the draft. Its version stays 0.5.0 because the draft was never submitted.
