@@ -25,7 +25,8 @@ import {
   GUIDE_PROVIDER_MODEL,
   GUIDE_SAFETY_RESPONSE_MODEL,
 } from './policy.js';
-import { guideSafetyCompletion, streamSafeGuideOpenAIResponse } from './safety.js';
+import { guideSafetyCompletion } from './safety.js';
+import { streamSafeGuideAnthropicResponse } from './anthropic.js';
 import { classifyGuideCurrentTurnSafety } from './local-safety.js';
 import { GuideQuotaController, GuideQuotaError, type GuideQuotaLease } from './quota.js';
 import {
@@ -80,7 +81,7 @@ interface GuideHandlerDependencies {
   now: () => number;
   protocolReady: boolean;
   authorizeTurn?: GuideAuthorizeTurn;
-  streamProvider: typeof streamSafeGuideOpenAIResponse;
+  streamProvider: typeof streamSafeGuideAnthropicResponse;
   quotaController?: GuideQuotaController;
   fetcher: typeof fetch;
   uuid: () => string;
@@ -91,7 +92,7 @@ const DEFAULT_DEPENDENCIES: GuideHandlerDependencies = {
   env: process.env,
   now: Date.now,
   protocolReady: true,
-  streamProvider: streamSafeGuideOpenAIResponse,
+  streamProvider: streamSafeGuideAnthropicResponse,
   fetcher: fetch,
   uuid: randomUUID,
   reportProviderDiagnostic: (diagnostic) => {
@@ -687,7 +688,7 @@ export function createGuideHandler(overrides: Partial<GuideHandlerDependencies> 
       const localCrisis = classifyGuideCurrentTurnSafety(
         authority.turn.projection.userMessage,
       ) === 'crisis';
-      const apiKey = dependencies.env.OPENAI_API_KEY;
+      const apiKey = dependencies.env.GUIDE_ANTHROPIC_API_KEY;
       if (!localCrisis && (typeof apiKey !== 'string' || !apiKey)) {
         sendJson(res, 503, rejection(request, 'temporarily_unavailable', true));
         return;
