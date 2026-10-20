@@ -244,6 +244,20 @@ describe('inlineCriticalStyles', () => {
     );
   });
 
+  it.each(['unicode-range:U+0000-00FF', 'font-stretch:condensed', 'font-feature-settings:"liga"', 'size-adjust:105%'])('rejects unsupported deferred descriptor %s', async (descriptor) => {
+    const root = await fixture({
+      'Base.hash.css': [
+        `@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-italic.woff2);font-style:italic;${descriptor}}`,
+        '@font-face{font-family:JetBrains Mono;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2);font-style:normal}',
+      ].join(''),
+    });
+    const marked = '<html data-inline-critical-css><head><link rel="stylesheet" href="/_astro/Base.hash.css"></head></html>';
+
+    await expect(inlineCriticalStyles(marked, root, { deferFaces: true })).rejects.toThrow(
+      `unsupported deferred font descriptor ${descriptor.split(':')[0]}`,
+    );
+  });
+
   it.each([
     ['relative URL', '.x{background:url(../image.png)}', 'relative CSS URL'],
     ['CSS import', '@import "/other.css";', '@import is not safe'],
@@ -270,7 +284,7 @@ describe('inlineCriticalStyles', () => {
 });
 
 describe('deferred font loader', () => {
-  async function harness({ supported = true, hash = '', fontTemplate = true } = {}) {
+  async function harness({ supported = true, hash = '', fontTemplate = true, constructorThrowsAt = -1 } = {}) {
     const root = await fixture({
       'Base.hash.css': [
         '@font-face{font-family:Instrument Sans;src:url(/fonts/instrument-sans-latin-wght-italic.woff2);font-weight:400 700;font-style:italic;font-display:swap}',
@@ -294,7 +308,10 @@ describe('deferred font loader', () => {
       remove: () => changes.push('removed'),
     };
     class TestFontFace {
-      constructor(family, source, descriptors) { Object.assign(this, { family, source, descriptors }); }
+      constructor(family, source, descriptors) {
+        if (loads.length === constructorThrowsAt) throw new SyntaxError('invalid font');
+        Object.assign(this, { family, source, descriptors });
+      }
       load() {
         return new Promise((resolve, reject) => loads.push({ face: this, resolve: () => resolve(this), reject }));
       }
@@ -356,6 +373,7 @@ describe('deferred font loader', () => {
     intent({ target: { closest: () => null } });
     expect(h.loads).toHaveLength(0);
     intent({ target: { closest: () => ({}) } });
+    expect(h.loads).toHaveLength(2);
     h.events.get('load')();
     h.timers[0].fn();
     expect(h.loads).toHaveLength(2);
@@ -369,6 +387,24 @@ describe('deferred font loader', () => {
     const h = await harness({ supported: false, hash: '#c=shared-compare' });
     expect(h.loads).toHaveLength(0);
     expect(h.changes).toEqual(['CSS fallback']);
+  });
+
+  it.each([0, 1])('inserts CSS when FontFace constructor %i throws', async (constructorThrowsAt) => {
+    const h = await harness({ constructorThrowsAt, hash: '#c=shared-compare' });
+    expect(h.loads).toHaveLength(constructorThrowsAt);
+    expect(h.changes).toEqual(['CSS fallback']);
+    for (const load of h.loads) load.resolve();
+    await flush();
+    expect(h.added).toHaveLength(0);
+  });
+
+  it('adds nothing and removes the template when both downloads fail', async () => {
+    const h = await harness({ hash: '#p=shared-chart' });
+    expect(h.loads).toHaveLength(2);
+    for (const load of h.loads) load.reject(new Error('network failure'));
+    await flush();
+    expect(h.added).toHaveLength(0);
+    expect(h.changes).toEqual(['removed']);
   });
 
   it('still inserts ordinary deferred stylesheets on entry pages', async () => {

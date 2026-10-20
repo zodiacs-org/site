@@ -34,15 +34,19 @@ const deferredStyleLoader = `<script data-zdx-deferred-style-loader>
           var template = templates[index];
           var fonts = template.content.querySelector('script[data-zdx-font-faces]');
           if (fonts && window.FontFace && document.fonts) {
-            var pending = JSON.parse(fonts.textContent).map(function (entry) {
-              return new FontFace(entry.family, entry.source, entry.descriptors).load().catch(function () { return null; });
-            });
-            Promise.all(pending).then(function (faces) {
-              for (var faceIndex = 0; faceIndex < faces.length; faceIndex += 1) {
-                if (faces[faceIndex]) document.fonts.add(faces[faceIndex]);
-              }
-            });
-            template.remove();
+            try {
+              var pending = JSON.parse(fonts.textContent).map(function (entry) {
+                return new FontFace(entry.family, entry.source, entry.descriptors).load().catch(function () { return null; });
+              });
+              Promise.all(pending).then(function (faces) {
+                for (var faceIndex = 0; faceIndex < faces.length; faceIndex += 1) {
+                  if (faces[faceIndex]) document.fonts.add(faces[faceIndex]);
+                }
+              });
+              template.remove();
+            } catch (error) {
+              template.replaceWith(template.content.cloneNode(true));
+            }
           } else {
             template.replaceWith(template.content.cloneNode(true));
           }
@@ -287,6 +291,7 @@ function useHomepageFontSubsets(css) {
  * and registers the loaded FontFace objects together. Inserting a stylesheet
  * here invalidates the whole page's styles and discards cached text layout.
  * Keep the CSS for no-JS readers and browsers without the FontFace API.
+ * FontFace.load() downloads both faces regardless of use; pair pages use both.
  */
 const belowFoldFaces = [
   { family: 'Instrument Sans', style: 'italic', source: '/fonts/instrument-sans-latin-wght-italic.woff2' },
@@ -307,15 +312,23 @@ function takeBelowFoldFaces(css) {
 }
 
 function fontFaceDefinitions(faces) {
-  return JSON.stringify(faces.map((face) => ({
-    family: declarationValue(face, 'font-family'),
-    source: declarationValue(face, 'src'),
-    descriptors: {
-      weight: declarationValue(face, 'font-weight') || 'normal',
-      style: declarationValue(face, 'font-style') || 'normal',
-      display: declarationValue(face, 'font-display') || 'auto',
-    },
-  }))).replace(/</g, '\\u003c');
+  const supported = new Set(['font-family', 'src', 'font-weight', 'font-style', 'font-display']);
+  return JSON.stringify(faces.map((face) => {
+    for (const [, descriptor] of face.matchAll(/(?:[{;])\s*([\w-]+)\s*:/g)) {
+      if (!supported.has(descriptor.toLowerCase())) {
+        throw new Error(`inline-critical-styles: unsupported deferred font descriptor ${descriptor}`);
+      }
+    }
+    return {
+      family: declarationValue(face, 'font-family'),
+      source: declarationValue(face, 'src'),
+      descriptors: {
+        weight: declarationValue(face, 'font-weight') || 'normal',
+        style: declarationValue(face, 'font-style') || 'normal',
+        display: declarationValue(face, 'font-display') || 'auto',
+      },
+    };
+  })).replace(/</g, '\\u003c');
 }
 
 export async function inlineCriticalStyles(
