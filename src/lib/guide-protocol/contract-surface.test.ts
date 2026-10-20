@@ -43,6 +43,7 @@ describe('Guide draft runtime boundary', () => {
     }
     expect(imports.sort()).toEqual([
       'src/lib/guide-server/handler.ts',
+      'src/lib/guide-server/anthropic.ts',
       'src/lib/guide-server/openai.ts',
       'src/lib/guide-server/safety.ts',
     ]);
@@ -57,18 +58,18 @@ describe('Guide draft runtime boundary', () => {
     expect(existsSync(resolve(ROOT, 'src/pages/guide'))).toBe(false);
   });
 
-  it('confines the Guide kill switch and reused OpenAI credential name to the server graph', async () => {
+  it('confines the Guide kill switch and Claude credential name to the server graph', async () => {
     const violations: string[] = [];
     for (const root of [resolve(ROOT, 'src'), resolve(ROOT, 'api')]) {
       for (const file of await runtimeFiles(root)) {
         const source = await readFile(file, 'utf8');
-        if (/PUBLIC_GUIDE_|GUIDE_KILL_SWITCH|OPENAI_API_KEY/u.test(source)
+        if (/PUBLIC_GUIDE_|GUIDE_KILL_SWITCH|ANTHROPIC_API_KEY/u.test(source)
           && !isGuideServerFile(file)) violations.push(relativePath(file));
       }
     }
     expect(violations).toEqual([]);
     const handler = await readFile(resolve(GUIDE_SERVER_ROOT, 'handler.ts'), 'utf8');
-    expect(handler).toContain("env.OPENAI_API_KEY");
+    expect(handler).toContain("env.ANTHROPIC_API_KEY");
     expect(handler).toContain("env.GUIDE_KILL_SWITCH === '1'");
     expect(handler).not.toContain('GUIDE_API_ENABLED');
     expect(handler).not.toContain('GUIDE_API_PREVIEW_ACK');
