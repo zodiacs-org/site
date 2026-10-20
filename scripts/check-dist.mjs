@@ -770,6 +770,28 @@ if (!(await exists(twinDirectoryPath))) {
     fail('webmcp: data/chart-twins.json must list the directory\'s names and signs, and nothing else');
   }
 }
+// The conventions registry (R44): every id has its anchor on the page, which a link to the id lands on, and the JSON
+// gives every id with the address of that anchor.
+{
+  const registry = JSON.parse(await readFile(resolve(repo, 'src/data/conventions/registry.json'), 'utf8'));
+  const registryIds = registry.namespaces.flatMap((space) => space.entries.map((entry) => entry.id));
+  const pagePath = resolve(root, 'developers/conventions/index.html');
+  const jsonPath = resolve(root, 'developers/conventions/registry.json');
+  if (!(await exists(pagePath)) || !(await exists(jsonPath))) {
+    fail('conventions: missing developers/conventions/index.html or its registry.json');
+  } else {
+    const unescape = (text) => text.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+    const anchors = new Set([...(await readFile(pagePath, 'utf8')).matchAll(/\sid="([^"]*)"/g)].map((match) => unescape(match[1])));
+    const unanchored = registryIds.filter((id) => !anchors.has(id));
+    if (unanchored.length) fail(`conventions: ${unanchored.length} ids have no anchor on the page, such as ${unanchored.slice(0, 3).join(', ')}`);
+    const served = JSON.parse(await readFile(jsonPath, 'utf8'));
+    const servedEntries = served.namespaces?.flatMap((space) => space.entries) ?? [];
+    const misaddressed = servedEntries.filter((entry) => entry.uri !== `${registry.base}#${encodeURI(entry.id)}`);
+    if (servedEntries.map((entry) => entry.id).join('\n') !== registryIds.join('\n') || misaddressed.length) {
+      fail('conventions: registry.json must give every id of the registry, in order, with its address on the page');
+    }
+  }
+}
 for (const relativePath of [
   'es/index.html',
   'es/aries/index.html',
@@ -1292,7 +1314,8 @@ const sitemapPolicy = {
   //   (developerGuidePaths, below; 26 with the seven S4 query pages).
   // +3 for the English-only occasion cards (/occasions/, milestones, baby shower).
   // +1 for /developers/playground/, the compute API playground.
-  total: 1423 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /developers/conventions/, the conventions registry.
+  total: 1424 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size + developerGuidePaths.size,

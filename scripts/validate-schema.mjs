@@ -32,6 +32,7 @@ const developerExpected = developerExpectations({
   manifest: readJson(resolve(repo, 'public/examples/mcp-server.json')),
   conformanceSource: readJson(resolve(repo, 'src/data/conformance/source.json')),
   conformanceSummary: readJson(resolve(repo, 'src/data/conformance/summary.json')),
+  conventionsRegistry: readJson(resolve(repo, 'src/data/conventions/registry.json')),
   skyIndex: readJson(resolve(dist, 'api/v1/index.json')),
   skyFiles: skyDataFiles(Object.fromEntries(SKY_DATA_FOLDERS.map((folder) => [folder, readdirSync(resolve(dist, 'api/v1', folder)).sort()]))),
   benchmarkItems: readJson(resolve(repo, 'public/developers/sky-benchmark/v0/items.json')),

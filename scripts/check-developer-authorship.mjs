@@ -28,12 +28,14 @@ export const generatedDeveloperDocuments = Object.freeze({
     ...developerGuides.map((guide) => `developers/docs/${guide.slug}.md`),
   ],
   'playground.md.ts': ['developers/playground.md'],
+  'conventions.md.ts': ['developers/conventions.md'],
+  'conventions/registry.json.ts': ['developers/conventions/registry.json'],
   'playground/examples.json.ts': ['developers/playground/examples.json'],
 });
 
 export const requiredDocuments = [
   ...Object.values(generatedDeveloperDocuments).flat(),
-  ...['', 'ai/', 'compare/', 'compute/', 'conformance/', 'engine/', 'examples/',
+  ...['', 'ai/', 'compare/', 'compute/', 'conformance/', 'conventions/', 'engine/', 'examples/',
     'mcp/', 'playground/', 'precision-preview/', 'sky-benchmark/', 'support/'].map((route) => `developers/${route}index.html`),
   'developers/engine/reference/index.html', 'developers/engine/reference/modules.html',
   'developers/engine/reference/provenance.json',
