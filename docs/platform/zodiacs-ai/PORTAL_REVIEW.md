@@ -33,6 +33,21 @@ showed no findings. The portal did not report an input-definition error or a
 server connection error. Its status remained **Not submitted / Not published**.
 No About text, test case, package, attestation or submission was changed.
 
+## Fresh ChatGPT card check, 20 October 2026
+
+Two new chats used the private Zodiacs Release Demo connection to the
+production MCP. The wedding prompt from the demo plan returned the Florence
+reading for 12 June 2027 at 17:00. The embedded Zodiacs panel displayed the
+redesigned artwork, Gemini and Libra sign icons, a 69/100 ring, the reasons
+disclosure, share link and printable-card link with the date, time and place.
+A second new chat requested the Taurus horoscope for 20 October 2026. Its
+embedded panel displayed the redesigned artwork, Taurus icon, day and focus
+controls, reading and share link. In both chats the first panel load showed
+ChatGPT's "Couldn't display" message; pressing **Try again** once loaded the
+panel. The separately generated ChatGPT response was not treated as evidence
+of the embedded panel. No console error explained the initial load failures.
+The draft remains unsubmitted and unpublished.
+
 ## 0.5.0 withdrawn for fixes — 15 October 2026
 
 Later the same day the owner withdrew the submission below. The owner's review
