@@ -77,7 +77,7 @@ Severity follows the audit's scale:
 | F-81 | minor | copy | The birth-time window surface starts its sampling sentence in lower case ("sampled at one-second resolution. This check varies birth time…"), and its times read "GMT+0" under a note that says "Times below use UTC notation" | open: a later change to the surface; seen on canonical production at checkpoint 26; no value, control or gate depends on it |
 | F-82 | minor | engine reproducibility | On arm64 the engine gives some values that differ from x86-64's in their last bits: 4 of its 3,853 tests fail on an Apple M4 under Node 20, 22 and 24 (a calc speed by 1.4e-11 against a 1e-12 pin; a chart digest and an aspect angle by 5e-14° in two exact site-parity checks), and one conformance residual rounds differently in its ninth decimal | recorded in engine 1.0.0's CHANGELOG and evidence; the pins and generated results stay x86-64's, as CI runs, and 1.0.0's generated files were rebuilt on Linux x86-64; no published claim says bit-identical across platforms |
 | F-83 | minor | Registry (frozen) | The wallet chart's owner comparison (`src/islands/WalletChart.tsx`) resolves the owner's local time without `prepareLocalTime`. With the engine's resolver, which #723 adopts, it refuses every owner time ("the local-time resolver is not loaded") and shows the page's invalid-response error; on main it read the host's Intl data. The file is frozen Registry code under the Phase 1 scope guard, and its page serves only a redirect while no wallet chain is configured, as in production. | open: the fix is one awaited `prepareLocalTime(ownerDate, ownerCity.tz)` before the call, which needs the owner's one-time scope allowance; until then the feature must stay unconfigured. `src/lib/time/localToUtc-callers.test.ts` lists it as the one caller that does not prepare |
-| F-84 | minor | performance | From 00:00 UTC until the day's edition deploys, the daily pages dated their "today" wording after the first paint, and the longer text moved what was below it: Site Check's Lighthouse gate measured CLS 0.020 on `/today/`, 0.005 on `/horoscopes/` and 0.011 on `/horoscopes/aries/` (run 38184748851, 2026-10-12 after 00:00 UTC) | fixed in #726: the head script dates that wording as the parser adds it; `tests/edition-dated-drive.mjs` |
+| F-84 | minor | performance | From 00:00 UTC until the day's edition deploys, the daily pages dated their "today" wording after the first paint, and the longer text moved what was below it: Site Check's Lighthouse gate measured CLS 0.020 on `/today/`, 0.005 on `/horoscopes/` and 0.011 on `/horoscopes/aries/` (run 38184748851, 2026-10-12 after 00:00 UTC) | fixed in #726: the head script dates that wording as the parser adds it; `tests/edition-dated-drive.mjs`; in production since #728 (merged as `c8bd493d` with #726's head, deployment `dpl_9HgvWwPALVsK5cCoVzPnrYebmqSh`); checked on production with a dated clock on 2026-10-13 |
 | F-86 | minor | copy | From 00:00 UTC until the day's edition deploys, the Spanish and Portuguese daily pages (`/es/today/`, `/es/horoscopes/`, `/es/horoscopes/<sign>/` and their `/pt/` twins) kept "hoy" and "hoje" while their kicker gave the older date: the dating rules were English only (F-84, *Remaining*) | fixed here: each reviewed Spanish and Portuguese phrase has its dated form in `src/lib/edition-freshness.ts`, which the head script inlines for its page's language, so the first paint is dated; `tests/edition-dated-drive.mjs` drives the six routes; the tab titles: dated in the window by #737, reviewed |
 | F-87 | minor | performance | A page short enough to show the site footer in its first viewport could paint the footer before its deferred stylesheet arrived, then move and reflow it: CLS up to 0.173 on `/es/horoscopes/aries/` and `/pt/horoscopes/aries/` in a 1400 px tall viewport, on any clock | fixed here: the head holds the footer hidden from its first layout; the loader, which already measures it, shows a distant footer at once, and a near one stays held until its stylesheet applies and shows it (or fails, or takes over 3 s); `tests/footer-style-loader.test.mjs`, `tests/edition-dated-drive.mjs` |
 | F-88 | minor | copy | Reviewing F-86's wording found faults in the Spanish and Portuguese daily copy that predate it: the Sun and Moon without their article as subjects ("Sol entra…", "Lua entra…"), Portuguese lists that drop their preposition, a lower-case, wrongly gendered note under "Por qué esta lectura", a doubled "inglés" cue, "cuatro notas por signo" on days with three, and smaller calques | open, for the owner: the files are Phase 1 protected (locale page trees and catalogs), so a fix needs a one-time allowance; each fault and its proposed correction is below; fixed in #731 under a one-time allowance the owner approved on 2026-10-12, each correction reviewed; the pt-BR first of the month and the undated titles remain; the pt-BR first of the month and the tab titles: fixed in #737 |
@@ -1057,3 +1057,26 @@ adoption changes neither its status nor the fixed denominator.
   accepted every title and "1º" form and changed the birthday sky line in both
   languages to join the year with "de" ("1º de janeiro de 1990", "1 de enero
   de 2026"). The drive checks the tab title on all nine routes.
+
+### F-84 — production verification, 2026-10-13
+
+- **Landed.** #728 was built on #726's branch, so its merge (`c8bd493d`,
+  2026-10-13 04:12 UTC) brought #726's head `accb6786` to main, and GitHub
+  marked #726 merged. Vercel deployed it to production as
+  `dpl_9HgvWwPALVsK5cCoVzPnrYebmqSh`. Main's Site Check on `c8bd493d` (run
+  38345292287) passed, the new drive and the Lighthouse gate included; that
+  run's edition was current, so only the drive covered the dated state.
+- **Checked.** zodiacs.org served `dpl_FF8v9Lp4xeRCaGMYPyAgmMPqRW3N` (main
+  `7d12c0f1`, #730's merge) before and after the checks. The drive as it
+  stood at `7d12c0f1` passed all 283 of its checks against zodiacs.org, over
+  nine routes in English, Spanish and Portuguese, with its dated loads on a
+  page clock of 2026-10-14 00:17 UTC. On that clock the Lighthouse harness
+  measured CLS 0.000 in each sample of `/today/`, `/horoscopes/` and
+  `/horoscopes/aries/`
+  ([record](../evidence/edition-dated-20261012/README.md#production-2026-10-13)).
+- **Remaining.** The moved clock stands in for a real dated window. The daily
+  commit landed between 00:08 and 05:40 UTC from 9 to 13 October, so the
+  window lasts from minutes to hours. Of the points first left open, an open
+  page still changes its wording at UTC midnight and can move then; the
+  Spanish and Portuguese wording is F-86, fixed in #728; and the bio drive's
+  clock is F-85, in #727, still open.
