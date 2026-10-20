@@ -5,7 +5,8 @@
 The source now advertises new addresses for all four redesigned chat panels:
 sky events v4, Chart Studio v5, horoscopes v4 and occasions v5. Earlier
 addresses stay registered and serve the current panels. A generated SHA-256
-record prevents a panel from changing again under the same address.
+record prevents a panel from changing again under the same address and keeps
+retired address fingerprints so they cannot be reused accidentally.
 
 Portal status for this step: no rescan, draft edit or submission has been
 performed. First merge the tested code, verify the new and previous addresses

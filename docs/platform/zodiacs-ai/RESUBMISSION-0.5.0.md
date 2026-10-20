@@ -14,8 +14,9 @@ readable and serves the current panel for existing conversations. The tools'
 `_meta.ui.resourceUri` and `openai/outputTemplate` use the new addresses.
 
 `src/ai-tools/panel-fingerprints.json` records the SHA-256 of each current
-panel's generated HTML under its address. `ai:build`, `ai:check` and a unit
-test reject changed HTML at an unchanged address. After the production
+panel's generated HTML under its address and retains retired address digests.
+`ai:build`, `ai:check` and a unit test reject changed HTML at an unchanged
+address, including accidental reuse of a retired address. After the production
 deployment, check all four current and four immediately previous addresses,
 then rescan the draft only with Dias's separate approval. Check a fresh
 ChatGPT conversation for the new wedding and horoscope designs afterward.

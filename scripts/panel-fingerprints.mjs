@@ -33,26 +33,28 @@ export function assertPanelFingerprints(entries, recorded) {
       throw new Error(`Panel ${name} has a new URI: run npm run ai:build`);
     }
   }
-  if (Object.keys(recorded).length !== entries.length) throw new Error('Panel fingerprint manifest has stale URIs; run npm run ai:build');
+}
+
+export function nextPanelFingerprints(entries, recorded) {
+  for (const { name, uri, sha256 } of entries) {
+    if (Object.hasOwn(recorded, uri) && recorded[uri] !== sha256) {
+      throw new Error(`Panel ${name} changed: give it a new URI in contracts.ts`);
+    }
+  }
+  // Retired addresses must remain recorded. A later accidental reuse of one
+  // then fails instead of being treated as a fresh resource URI.
+  return { ...recorded, ...Object.fromEntries(entries.map(({ uri, sha256 }) => [uri, sha256])) };
 }
 
 export async function syncPanelFingerprints(htmlByName, check) {
   const entries = await panelFingerprintEntries(htmlByName);
-  const current = Object.fromEntries(entries.map(({ uri, sha256 }) => [uri, sha256]));
-  const bytes = JSON.stringify(current, null, 2) + '\n';
   const previousBytes = await readFile(MANIFEST, 'utf8').catch(() => null);
   const recorded = previousBytes ? JSON.parse(previousBytes) : {};
+  const bytes = JSON.stringify(nextPanelFingerprints(entries, recorded), null, 2) + '\n';
   if (check) {
     assertPanelFingerprints(entries, recorded);
     if (previousBytes !== bytes) throw new Error('Panel fingerprint manifest is stale; run npm run ai:build');
   } else {
-    // A new address may be recorded. Rebuilding changed HTML at the same
-    // address must fail instead of silently blessing the stale host cache.
-    for (const { name, uri, sha256 } of entries) {
-      if (Object.hasOwn(recorded, uri) && recorded[uri] !== sha256) {
-        throw new Error(`Panel ${name} changed: give it a new URI in contracts.ts`);
-      }
-    }
     await writeFile(MANIFEST, bytes);
   }
   console.log(`${check ? 'Verified' : 'Built'} panel fingerprints (${entries.length} current URIs)`);
