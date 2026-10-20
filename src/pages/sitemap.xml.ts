@@ -339,6 +339,10 @@ const TOP10_LOCALES_ROUTES = ['es', 'pt', 'fr', 'it', 'ru']
 // The profile redesign reaches /profile/ and its five translations.
 const PROFILE_REDESIGN_LASTMOD = '2026-10-18';
 const PROFILE_REDESIGN_ROUTES = ['', '/es', '/pt', '/fr', '/it', '/ru'].map((locale) => `${locale}/profile/`);
+// The birth chart form keeps its options after submit in the HTML too, so a
+// streamed first paint never shifts (EN and the five translations).
+const CALCULATOR_ORDER_LASTMOD = '2026-10-20';
+const CALCULATOR_ORDER_ROUTES = ['', '/es', '/pt', '/fr', '/it', '/ru'].map((locale) => `${locale}/birth-chart/`);
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -499,6 +503,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/', DESIGN_SWEEP_DEVELOPERS_LASTMOD] as const,
   ...TOP10_LOCALES_ROUTES.map((loc) => [loc, TOP10_LOCALES_LASTMOD] as const),
   ...PROFILE_REDESIGN_ROUTES.map((loc) => [loc, PROFILE_REDESIGN_LASTMOD] as const),
+  ...CALCULATOR_ORDER_ROUTES.map((loc) => [loc, CALCULATOR_ORDER_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

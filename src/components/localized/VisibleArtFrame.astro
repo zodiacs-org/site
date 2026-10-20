@@ -1,0 +1,16 @@
+---
+/** Preserve the frame while its real picture waits near the viewport. */
+import type { ComponentProps } from 'astro/types';
+import ArtFrame from '../ArtFrame.astro';
+import { SIGN_ART_SIZE } from '../../lib/sign-art';
+
+type Props = ComponentProps<typeof ArtFrame>;
+const props = Astro.props;
+const width = props.width ?? SIGN_ART_SIZE.width;
+const height = props.height ?? SIGN_ART_SIZE.height;
+const placeholder = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"/>`)}`;
+const placeholderClass = ['tdl-visible-artframe', props.class].filter(Boolean).join(' ');
+---
+<ArtFrame {...props} src={placeholder} srcset={undefined} class={placeholderClass} />
+<template data-tdl-artframe><ArtFrame {...props} /></template>
+<noscript><ArtFrame {...props} /></noscript>

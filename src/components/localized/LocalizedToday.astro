@@ -17,12 +17,12 @@
  * beside its dated twin, so a day-old page never says "today".
  */
 import Base from '../../layouts/Base.astro';
-import ArtFrame from '../ArtFrame.astro';
+import ArtFrame from './VisibleArtFrame.astro';
 import AskGuideLine from '../AskGuideLine.astro';
 import DailyLocaleReading from '../DailyLocaleReading.astro';
 import EvidenceDisclosure from '../EvidenceDisclosure.astro';
 import GuideQuickPrompts from '../GuideQuickPrompts.astro';
-import SignIcon from '../SignIcon.astro';
+import SignIcon from './VisibleSignIcon.astro';
 import ToolIcon from '../ToolIcon.astro';
 import LocalizedSvgTitles from './LocalizedSvgTitles.astro';
 import SkyTicker from '../../islands/SkyTicker';
@@ -650,6 +650,14 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
   <link slot="head" rel="preload" as="image" type="image/avif" href="/assets/hero/zodiacs-hero-poster-mobile.avif" media="(max-width: 760px)" fetchpriority="high" />
   <link slot="head" rel="preload" as="image" type="image/avif" href="/assets/hero/zodiacs-hero-poster.avif" media="(min-width: 761px)" fetchpriority="high" />
   <section class="tdl-page" data-edition-content="true" data-daily-date={daily.date}>
+    <noscript>
+      <style is:inline>
+        .tdl-visible-sign-icon { display: none !important; }
+        .tdl-visible-sign-icon + noscript { display: contents; }
+        .tdl-visible-artframe { display: none !important; }
+        .tdl-visible-artframe + template + noscript { display: contents; }
+      </style>
+    </noscript>
     <!-- 1. The day, with the edition's sky beside it. -->
     <header class="tdl-hero">
       <div class="tdl-hero__body">
@@ -1011,6 +1019,46 @@ const goFurther = c.tools.map((tool) => ({ ...tool, href: local(tool.href), icon
       </div>
     </section>
   </section>
+  <script is:inline>
+    (function () {
+      const deferred = document.querySelectorAll('picture.tdl-visible-sign-icon, figure.tdl-visible-artframe');
+      function activate(picture) {
+        if (picture.classList.contains('tdl-visible-artframe')) {
+          const template = picture.nextElementSibling;
+          if (template && template.matches('template[data-tdl-artframe]')) {
+            picture.replaceWith(template.content);
+            template.remove();
+          }
+          return;
+        }
+        // Choose the picture source before activating its fallback image.
+        for (const source of picture.querySelectorAll('source[data-srcset]')) {
+          source.setAttribute('srcset', source.getAttribute('data-srcset'));
+          source.removeAttribute('data-srcset');
+        }
+        for (const image of picture.querySelectorAll('img[data-src]')) {
+          image.setAttribute('src', image.getAttribute('data-src'));
+          image.removeAttribute('data-src');
+        }
+      }
+      if (!('IntersectionObserver' in window)) {
+        deferred.forEach(activate);
+        return;
+      }
+      let pending = deferred.length;
+      if (!pending) return;
+      const observer = new IntersectionObserver(function (entries) {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          activate(entry.target);
+          observer.unobserve(entry.target);
+          pending -= 1;
+        }
+        if (!pending) observer.disconnect();
+      }, { rootMargin: '300px' });
+      deferred.forEach(function (picture) { observer.observe(picture); });
+    })();
+  </script>
 </Base>
 
 <style is:global>

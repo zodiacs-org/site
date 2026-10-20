@@ -1,0 +1,14 @@
+---
+/** Keep lower-page sign icons out of the opening's image requests. */
+import SignIcon from '../SignIcon.astro';
+
+interface Props {
+  sign: string;
+  size?: number;
+  webpOnly?: boolean;
+}
+
+const { sign, size, webpOnly } = Astro.props;
+---
+<SignIcon sign={sign} size={size} webpOnly={webpOnly} deferred class="tdl-visible-sign-icon" />
+<noscript><SignIcon sign={sign} size={size} webpOnly={webpOnly} /></noscript>
