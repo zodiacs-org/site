@@ -15,10 +15,22 @@ import {
 import { HUES } from './chart-preview-model.js';
 import { returnText } from '../lib/return-visits/copy.js';
 import { signBySlug } from '../lib/signs.js';
-import { plain } from '../ai-tools/card-kit/words.js';
+import { dateRange, fullDate, plain } from '../ai-tools/card-kit/words.js';
+import { MILESTONE_WORDS } from '../lib/occasions/milestone-words.js';
 import { dayLabel } from '../ai-tools/horoscope/reading.js';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window.js';
-import { SKY_PLANETS, type BirthdayShare, type HoroscopeShare, type SkyCalendarShare, type SkyEventKind, type SkyPlanet } from '../ai-tools/share-links.js';
+import {
+  SKY_PLANETS,
+  type BirthdayShare,
+  type ChartTwinsShare,
+  type FamousChartShare,
+  type HoroscopeShare,
+  type MilestoneShare,
+  type ShareMilestoneKind,
+  type SkyCalendarShare,
+  type SkyEventKind,
+  type SkyPlanet,
+} from '../ai-tools/share-links.js';
 
 /** The ring's colour where a sign is not known. */
 export const NEUTRAL_HUE = '#C6CCDA';
@@ -319,5 +331,135 @@ export function horoscopeCardModel(share: HoroscopeShare, window: Pick<Horoscope
     line: quoted ? plain(quoted) : plain(signBySlug(share.sign).dates),
     passage: kept?.passages[0] ? plain(kept.passages[0].text) : null,
     hue: HUES[share.sign],
+  };
+}
+
+// ── Chart twins, a famous chart and a life milestone (src/ai-tools/share-links.ts) ──
+
+/** A person the site publishes, as the AI tools' index lists them (src/ai-tools/features/people-index.json). */
+export interface IndexedPerson {
+  slug: string;
+  name: string;
+  /** "Painter · Mexico · 1907–1954" */
+  shortDescription: string;
+  born: string;
+  birthplace: string;
+  sun: { sign: string; degree: number };
+  moon: { sign: string | null; degree: number | null };
+  lede: string;
+}
+
+export interface ChartTwinsCardModel {
+  /** The Sun's disc, and the Moon's when it was compared. */
+  signs: PreviewSign[];
+  sun: ShareSign;
+  /** "Taurus Sun, like Audrey Hepburn": the first twin, as the chat card names them first. */
+  quote: string;
+  /** "14 famous people share this Sun or Moon" */
+  count: string;
+  first: { name: string; slug: string };
+  hue: string;
+}
+
+/**
+ * The people who share a Sun or Moon sign, in the order the tool lists them:
+ * src/lib/sharing/twins.ts, matchTwins (both signs first, then by name),
+ * repeated here because the share function loads its modules as they are and
+ * that one imports without file extensions; share-links.test.ts holds the two
+ * to the same answer for every pair of signs.
+ */
+export function twinMatches(signs: { sun: string; moon: string | null }, people: readonly IndexedPerson[]): { person: IndexedPerson; sun: boolean; moon: boolean; count: 1 | 2 }[] {
+  return people.flatMap((person) => {
+    const sun = person.sun.sign === signs.sun;
+    const moon = signs.moon !== null && person.moon.sign !== null && person.moon.sign === signs.moon;
+    return sun || moon ? [{ person, sun, moon, count: (sun && moon ? 2 : 1) as 1 | 2 }] : [];
+  }).sort((a, b) => b.count - a.count || a.person.name.localeCompare(b.person.name, 'en') || a.person.slug.localeCompare(b.person.slug));
+}
+
+/**
+ * Chart twins, matched from the site's own directory as the tool matches
+ * them, so the link names no one. Null when no one the site publishes shares
+ * the signs.
+ */
+export function chartTwinsCardModel(share: ChartTwinsShare, people: readonly IndexedPerson[]): ChartTwinsCardModel | null {
+  const matches = twinMatches({ sun: share.sun, moon: share.moon }, people);
+  const first = matches[0];
+  if (!first) return null;
+  const shared = [first.sun ? `${signName(share.sun)} Sun` : '', first.moon && share.moon ? `${signName(share.moon)} Moon` : ''].filter(Boolean).join(' and ');
+  const compared = share.moon ? 'Sun or Moon' : 'Sun';
+  return {
+    signs: [sunOf(share.sun), ...(share.moon ? [{ slug: share.moon, label: `${signName(share.moon)} Moon`, hue: HUES[share.moon] }] : [])],
+    sun: share.sun,
+    quote: `${shared}, like ${first.person.name}`,
+    count: matches.length === 1 ? `One famous person shares this ${compared}` : `${matches.length} famous people share this ${compared}`,
+    first: { name: first.person.name, slug: first.person.slug },
+    hue: HUES[share.sun],
+  };
+}
+
+export interface FamousChartCardModel {
+  name: string;
+  slug: string;
+  sign: PreviewSign;
+  /** "Cancer Sun at 13.5°", as the chat card leads with it. */
+  sunLine: string;
+  /** "Painter, born 6 July 1907": the card's first description and its birth date. */
+  born: string;
+  /** "Painter, born 6 July 1907 in Coyoacán", for the page. */
+  bornIn: string;
+  lede: string;
+  hue: string;
+}
+
+/** A famous chart from the site's own directory; null for a slug it does not publish. */
+export function famousChartCardModel(share: FamousChartShare, people: readonly IndexedPerson[]): FamousChartCardModel | null {
+  const person = people.find((candidate) => candidate.slug === share.slug);
+  if (!person || !isShareSign(person.sun.sign)) return null;
+  const sun = person.sun.sign;
+  const role = person.shortDescription.split(' · ')[0];
+  const born = `${role}, born ${fullDate(person.born)}`;
+  return {
+    name: person.name,
+    slug: person.slug,
+    sign: sunOf(sun),
+    sunLine: `${signName(sun)} Sun at ${person.sun.degree.toFixed(1)}°`,
+    born,
+    bornIn: `${born} in ${person.birthplace}`,
+    lede: plain(person.lede),
+    hue: HUES[sun],
+  };
+}
+
+/** As the site's milestones page names them (src/islands/LifeMilestones.tsx): words to the eighth, then 9th, 10th … */
+const ordinal = (n: number) => ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'][n - 1] ?? `${n}th`;
+/** Each milestone wears the hue of the sign its planet rules, as the chat card does. */
+const MILESTONE_SIGN: Readonly<Record<ShareMilestoneKind, ShareSign>> = { 'saturn-return': 'capricorn', 'jupiter-return': 'sagittarius', 'uranus-opposition': 'aquarius' };
+
+export interface MilestoneCardModel {
+  age: number;
+  /** "First Saturn return", "Uranus opposition" */
+  title: string;
+  /** "First Saturn return, at 29" */
+  heading: string;
+  /** Read on the day the link opens: before the first pass, between the passes, or nothing once it is over. */
+  status: 'Coming up' | 'Under way now' | null;
+  /** "23 April to 31 December 2026", or one day. */
+  span: string;
+  about: string;
+  hue: string;
+}
+
+export function milestoneCardModel(share: MilestoneShare, now: Date): MilestoneCardModel {
+  const name = share.kind === 'uranus-opposition' ? MILESTONE_WORDS[share.kind].name : `${ordinal(share.index)} ${MILESTONE_WORDS[share.kind].name}`;
+  const title = cap(name);
+  const today = now.toISOString().slice(0, 10);
+  return {
+    age: share.age,
+    title,
+    heading: `${title}, at ${share.age}`,
+    status: today < share.first ? 'Coming up' : today <= share.last ? 'Under way now' : null,
+    span: share.first === share.last ? fullDate(share.first) : dateRange(share.first, share.last).replace(/^from /u, ''),
+    about: MILESTONE_WORDS[share.kind].about,
+    hue: HUES[MILESTONE_SIGN[share.kind]],
   };
 }

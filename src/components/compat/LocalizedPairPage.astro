@@ -205,8 +205,9 @@ const jsonLd = [
         {/* The second painting waits behind the first, the page's largest element. */}
         <ArtFrame sign={b.slug} locale={locale} eager fetchPriority="low" avif alt={same ? '' : undefined} class="ph-pane ph-pane--b" sizes="(max-width: 760px) 128vw, 66vw" />
       </div>
+      {/* The discs and the Change pair minis wait behind the first painting too: on a slow link Chrome raises on-screen images to high priority at the first layout unless they ask for low. */}
       <div class="ph-hero__pair" aria-hidden="true">
-        {people.map((sign) => <SignIcon sign={sign.slug} size={84} loading="eager" class="ph-hero__disc" />)}
+        {people.map((sign) => <SignIcon sign={sign.slug} size={84} loading="eager" fetchPriority="low" class="ph-hero__disc" />)}
       </div>
       <div class="ph-hero__body">
         <span class="kicker"><a href={`${prefix}/compatibility/`}>{c.kicker}</a></span>
@@ -216,7 +217,7 @@ const jsonLd = [
           <a class="btn btn--primary btn--lg" href="#compare"><span>{c.toolHeading}</span><span class="orb" aria-hidden="true">↗</span></a>
           <a class="btn btn--glass btn--lg ph-change" href="#switch">
             <span class="ph-change__minis" aria-hidden="true">
-              {people.map((sign) => <SignIcon sign={sign.slug} size={22} loading="eager" />)}
+              {people.map((sign) => <SignIcon sign={sign.slug} size={22} loading="eager" fetchPriority="low" />)}
             </span>
             <span>{c.moreAria}</span>
             <svg class="ph-change__swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4" /></svg>

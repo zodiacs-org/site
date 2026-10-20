@@ -114,7 +114,7 @@ interface Milestone { kind: MilestoneKind; name: string; index: number; age: num
 export interface LifeMilestones {
   birthDate: string; timeKnown: boolean; asOf: string; milestones: Milestone[]; next: Milestone | null;
   numbers: { fullMoons: number; mercuryRetrogrades: number; jupiterReturns: number };
-  cardUrl: string | null; note: string;
+  cardUrl: string | null; shareUrl?: string | null; note: string;
 }
 const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'];
 const milestoneName = (milestone: Milestone) => (milestone.kind === 'uranus-opposition' ? 'Uranus opposition' : `${ORDINALS[milestone.index - 1] ?? `${milestone.index}th`} ${MILESTONE_WORDS[milestone.kind].name}`);
@@ -150,7 +150,8 @@ export function Milestones({ data }: { data: LifeMilestones }) {
       {!data.timeKnown && <p class="quiet">Without a birth time, a date can be a day off.</p>}
       <CopyCard text={text}/>
     </Fold>
-    <Actions primary={data.cardUrl && { label: 'Open printable card', href: data.cardUrl }}/>
+    <Actions primary={data.shareUrl ? { label: 'Share your milestone', href: data.shareUrl } : data.cardUrl && { label: 'Open printable card', href: data.cardUrl }}
+      secondary={data.shareUrl && data.cardUrl && { label: 'Open printable card', href: data.cardUrl }}/>
     <FinePrint>{plain(data.note)}</FinePrint>
   </Card>;
 }
@@ -241,7 +242,8 @@ export function ChartTwins({ data }: { data: ChartTwinsData }) {
       <CopyCard text={text} label="Copy the list"/>
     </Fold>}
     {data.twins.length === 0 && data.notes.slice(1).map((note) => <p class="quiet" key={note}>{plain(note)}</p>)}
-    <Actions primary={{ label: 'Find more chart twins', href: data.pageUrl }}/>
+    <Actions primary={data.shareUrl ? { label: 'Share your chart twins', href: data.shareUrl } : { label: 'Find more chart twins', href: data.pageUrl }}
+      secondary={data.shareUrl && { label: 'Find more chart twins', href: data.pageUrl }}/>
   </Card>;
 }
 
@@ -271,7 +273,8 @@ export function FamousChart({ data }: { data: FamousChartData }) {
       {data.alsoMatched.length > 0 && <p class="quiet">Also: {data.alsoMatched.map((other, index) => <>{index > 0 && ', '}<a href={other.url} target="_blank" rel="noreferrer">{other.name}</a></>)}</p>}
       <CopyCard text={text}/>
     </Fold>
-    <Actions primary={{ label: `Open ${person.name}’s chart`, href: person.url }}/>
+    <Actions primary={data.shareUrl ? { label: 'Share this chart', href: data.shareUrl } : { label: `Open ${person.name}’s chart`, href: person.url }}
+      secondary={data.shareUrl && { label: `Open ${person.name}’s chart`, href: person.url }}/>
     <FinePrint>{plain(data.note)}</FinePrint>
   </Card>;
 }

@@ -1,8 +1,9 @@
 /**
  * The share images (a compatibility score, a date's rating, a birthday, the
- * sky calendar's next event and a horoscope) rendered locally from share
- * queries like the ones the cards' share links carry. Manual, for
- * before-and-after review; no network.
+ * sky calendar's next event, a horoscope, chart twins, a famous chart and a
+ * life milestone) and their 1080×1920 story
+ * pictures, rendered locally from share queries like the ones the cards'
+ * share links carry. Manual, for before-and-after review; no network.
  *
  *   npx vite-node --script tests/ai-share-images-capture.ts -- --out <dir>
  */
@@ -10,6 +11,9 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import {
   handleBirthdayImageRequest, handleCompatibilityImageRequest, handleHoroscopeImageRequest, handleOccasionImageRequest, handleSkyCalendarImageRequest,
+  handleBirthdayStoryRequest, handleCompatibilityStoryRequest, handleHoroscopeStoryRequest, handleOccasionStoryRequest, handleSkyCalendarStoryRequest,
+  handleChartTwinsImageRequest, handleFamousChartImageRequest, handleMilestoneImageRequest,
+  handleChartTwinsStoryRequest, handleFamousChartStoryRequest, handleMilestoneStoryRequest,
 } from '../src/server/result-preview';
 
 // The horoscope is the published reading for the window's own date.
@@ -28,6 +32,18 @@ const IMAGES: [string, (request: Request) => Promise<Response>, string][] = [
   ['share-birthday-famous', handleBirthdayImageRequest, '/api/og/birthday-image?d=05-04'],
   ['share-sky-calendar', handleSkyCalendarImageRequest, '/api/og/sky-calendar-image?k=retrograde&b=mercury&d=2026-10-24'],
   ['share-horoscope', handleHoroscopeImageRequest, `/api/og/horoscope-image?s=leo&d=${generatedFor}`],
+  ['story-compatibility', handleCompatibilityStoryRequest, '/api/og/compatibility-story?a=Ana&as=taurus&b=Luis&bs=leo&score=60&attraction=70&communication=57&stability=52&v=good'],
+  ['story-occasion', handleOccasionStoryRequest, '/api/og/occasion-story?o=wedding&d=2027-06-12&n=Ana+%26+Luis&p=Florence%2C+Italy&sun=gemini&moon=libra&score=69&v=good'],
+  ['story-birthday', handleBirthdayStoryRequest, '/api/og/birthday-story?d=05-03'],
+  ['story-birthday-cusp', handleBirthdayStoryRequest, '/api/og/birthday-story?d=04-20'],
+  ['story-sky-calendar', handleSkyCalendarStoryRequest, '/api/og/sky-calendar-story?k=retrograde&b=mercury&d=2026-10-24'],
+  ['story-horoscope', handleHoroscopeStoryRequest, `/api/og/horoscope-story?s=leo&d=${generatedFor}`],
+  ['share-chart-twins', handleChartTwinsImageRequest, '/api/og/chart-twins-image?s=taurus&m=leo'],
+  ['share-famous-chart', handleFamousChartImageRequest, '/api/og/famous-chart-image?p=frida-kahlo'],
+  ['share-milestone', handleMilestoneImageRequest, '/api/og/milestone-image?k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31'],
+  ['story-chart-twins', handleChartTwinsStoryRequest, '/api/og/chart-twins-story?s=taurus&m=leo'],
+  ['story-famous-chart', handleFamousChartStoryRequest, '/api/og/famous-chart-story?p=frida-kahlo'],
+  ['story-milestone', handleMilestoneStoryRequest, '/api/og/milestone-story?k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31'],
 ];
 await mkdir(resolve(out), { recursive: true });
 for (const [name, handle, path] of IMAGES) {
@@ -35,4 +51,4 @@ for (const [name, handle, path] of IMAGES) {
   if (response.status !== 200) throw new Error(`${name}: ${response.status}`);
   await writeFile(resolve(out, `${name}.jpg`), Buffer.from(await response.arrayBuffer()));
 }
-console.log(`Rendered ${IMAGES.length} share images in ${out}.`);
+console.log(`Rendered ${IMAGES.length} share images and story pictures in ${out}.`);

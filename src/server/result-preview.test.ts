@@ -5,6 +5,11 @@ import { parseCompatibilityShare, parseOccasionShare } from '../lib/share-result
 import {
   handleBirthdayImageRequest,
   handleBirthdayLinkRequest,
+  handleBirthdayStoryRequest,
+  handleCompatibilityStoryRequest,
+  handleHoroscopeStoryRequest,
+  handleOccasionStoryRequest,
+  handleSkyCalendarStoryRequest,
   handleCompatibilityImageRequest,
   handleCompatibilityLinkRequest,
   handleHoroscopeImageRequest,
@@ -14,11 +19,24 @@ import {
   handleResultShareNodeRequest,
   handleSkyCalendarImageRequest,
   handleSkyCalendarLinkRequest,
+  handleChartTwinsImageRequest,
+  handleChartTwinsLinkRequest,
+  handleChartTwinsStoryRequest,
+  handleFamousChartImageRequest,
+  handleFamousChartLinkRequest,
+  handleFamousChartStoryRequest,
+  handleMilestoneImageRequest,
+  handleMilestoneLinkRequest,
+  handleMilestoneStoryRequest,
 } from './result-preview';
 import {
   birthdayCardModel,
+  chartTwinsCardModel,
   compatibilityCardModel,
   famousBirthdays,
+  famousChartCardModel,
+  type IndexedPerson,
+  milestoneCardModel,
   horoscopeCardModel,
   longDate,
   NEUTRAL_HUE,
@@ -26,7 +44,7 @@ import {
   skyCalendarCardModel,
   skyEvents,
 } from './result-preview-model';
-import { parseBirthdayShare, parseHoroscopeShare, parseSkyCalendarShare } from '../ai-tools/share-links';
+import { parseBirthdayShare, parseChartTwinsShare, parseFamousChartShare, parseHoroscopeShare, parseMilestoneShare, parseSkyCalendarShare } from '../ai-tools/share-links';
 import type { HoroscopeWindow } from '../ai-tools/horoscope/window';
 
 const COMPAT = 'a=Ana&as=leo&b=Luis&bs=libra&score=78&attraction=82&communication=71&stability=80&v=strong';
@@ -38,6 +56,9 @@ const TODAY = WINDOW.generatedFor;
 const WEEK = WINDOW.editions.find((edition) => edition.anchorDate === TODAY)!.signs.leo.weekly.period;
 const OCCASION = 'o=wedding&d=2027-06-12&n=Ana+%26+Luis&p=Florence&sun=gemini&moon=libra&score=84&v=excellent';
 const FAMOUS = famousBirthdays(json<{ people: Parameters<typeof famousBirthdays>[0] }>('../ai-tools/features/people-index.json').people);
+const PEOPLE = json<{ people: IndexedPerson[] }>('../ai-tools/features/people-index.json').people;
+const SATURN = 'k=saturn-return&i=1&a=29&f=2026-04-23&l=2026-12-31';
+const ON = (date: string) => () => new Date(`${date}T12:00:00Z`);
 const nativeFetch = globalThis.fetch;
 
 afterEach(() => {
@@ -145,6 +166,36 @@ describe('birthday, sky calendar and horoscope share models', () => {
   });
 });
 
+describe('chart twins, famous chart and milestone share models', () => {
+  it('name the first chart twin as the tool does, and count everyone who shares the signs', () => {
+    const both = chartTwinsCardModel(parseChartTwinsShare(new URLSearchParams('s=taurus&m=leo'))!, PEOPLE)!;
+    expect(both.quote).toBe('Taurus Sun, like Audrey Hepburn');
+    expect(both.count).toMatch(/^\d+ famous people share this Sun or Moon$/u);
+    expect(both.signs.map((sign) => sign.slug)).toEqual(['taurus', 'leo']);
+    const sunOnly = chartTwinsCardModel(parseChartTwinsShare(new URLSearchParams('s=taurus'))!, PEOPLE)!;
+    expect(sunOnly.count).toMatch(/^\d+ famous people share this Sun$/u);
+    // Someone who shares both signs comes first and is named for both.
+    const twin = PEOPLE.find((person) => person.moon.sign)!;
+    const pair = chartTwinsCardModel({ sun: twin.sun.sign as never, moon: twin.moon.sign as never, ref: null }, PEOPLE)!;
+    expect(pair.quote).toMatch(/^[A-Z][a-z]+ Sun and [A-Z][a-z]+ Moon, like /u);
+  });
+
+  it('draw a famous chart from the directory, and nothing for a slug it does not publish', () => {
+    const frida = famousChartCardModel(parseFamousChartShare(new URLSearchParams('p=frida-kahlo'))!, PEOPLE)!;
+    expect(frida).toMatchObject({ name: 'Frida Kahlo', sunLine: 'Cancer Sun at 13.5°', born: 'Painter, born 6 July 1907' });
+    expect(frida.lede).not.toMatch(/[—–·]/u);
+    expect(famousChartCardModel({ slug: 'someone-else', ref: null }, PEOPLE)).toBeNull();
+  });
+
+  it('say whether a milestone is coming or under way on the day the link opens', () => {
+    const share = parseMilestoneShare(new URLSearchParams(SATURN))!;
+    expect(milestoneCardModel(share, ON('2026-01-10')())).toMatchObject({ title: 'First Saturn return', heading: 'First Saturn return, at 29', status: 'Coming up', span: '23 April to 31 December 2026' });
+    expect(milestoneCardModel(share, ON('2026-10-19')()).status).toBe('Under way now');
+    expect(milestoneCardModel(share, ON('2027-02-01')()).status).toBeNull();
+    expect(milestoneCardModel(parseMilestoneShare(new URLSearchParams('k=uranus-opposition&i=1&a=42&f=2027-03-02&l=2027-03-02'))!, ON('2026-10-19')())).toMatchObject({ title: 'Uranus opposition', span: '2 March 2027' });
+  });
+});
+
 describe('share link pages', () => {
   it('show the card, a line about it and the way to check your own, with the preview image', async () => {
     const response = await handleCompatibilityLinkRequest(new Request(`https://zodiacs.org/share/compatibility/?${COMPAT}&ref=chatgpt`));
@@ -163,6 +214,8 @@ describe('share link pages', () => {
     expect(html).toContain('<a class="cta" href="/compatibility/?ref=chatgpt">Check your own compatibility</a>');
     expect(html).toContain('<title>Ana and Luis: 78/100 on Zodiacs</title>');
     expect(html).not.toMatch(/ref=chatgpt[^"]*"[^>]*og:image|image\?[^"]*ref=/u);
+    // The same result as a 1080×1920 picture, to save and post as a story.
+    expect(html).toContain(`<p class="story"><a href="/api/og/compatibility-story?${COMPAT.replaceAll('&', '&amp;')}" download="zodiacs-compatibility-story.jpg">Save the picture for your story</a></p>`);
   });
 
   it('offer a date its own way to rate yours', async () => {
@@ -171,6 +224,7 @@ describe('share link pages', () => {
     expect(html).toContain(`content="https://zodiacs.org/api/og/occasion-image?${OCCASION.replaceAll('&', '&amp;')}"`);
     expect(html).toContain('<a class="cta" href="/occasions/">Rate your own date</a>');
     expect(html).toContain('Ana &amp; Luis: our wedding');
+    expect(html).toContain('download="zodiacs-wedding-story.jpg"');
   });
 
   it('open the plain page, with the site’s own card, for a query that is not a share', async () => {
@@ -183,6 +237,7 @@ describe('share link pages', () => {
     expect(html).not.toContain('<script');
     const occasion = await (await handleOccasionLinkRequest(new Request('https://zodiacs.org/share/occasion/?o=wedding&d=2027-06-12&lat=1'))).text();
     expect(occasion).toContain('content="https://zodiacs.org/assets/og/v2/share.png"');
+    expect(html).not.toContain('class="story"');
   });
 
   it('give a birthday, the sky calendar and a horoscope their own page, preview and way to try it', async () => {
@@ -194,6 +249,7 @@ describe('share link pages', () => {
     // The brand lockup, as in the nav: the tilted mark and ZODIACS · ORG, named Zodiacs.org.
     expect(birthday).toMatch(/<a class="brand" href="\/" aria-label="Zodiacs\.org"><svg viewBox="-2 4 28 16"[^>]*>(?:<circle [^>]+\/>){12}<\/svg><span class="brand-name" aria-hidden="true">Zodiacs<span class="brand-sep">·<\/span><span class="brand-tld">org<\/span><\/span><\/a>/u);
     expect(birthday).not.toContain('class="more"');
+    expect(birthday).toContain('<a href="/api/og/birthday-story?d=05-03" download="zodiacs-may-3-birthday-story.jpg">Save the picture for your story</a>');
     // A date with a famous birthday names them, and links their chart.
     const famous = await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-04'))).text();
     expect(famous).toContain('<title>4 May birthdays: Taurus Sun, like Audrey Hepburn on Zodiacs</title>');
@@ -203,10 +259,12 @@ describe('share link pages', () => {
     expect(sky).toContain('content="https://zodiacs.org/api/og/sky-calendar-image?k=retrograde&amp;b=mercury&amp;d=2026-10-24"');
     expect(sky).toContain('Mercury retrograde: Saturday 24 October to Friday 13 November.');
     expect(sky).toContain('<a class="cta" href="/sky-calendar/">Add it to your calendar</a>');
+    expect(sky).toContain('href="/api/og/sky-calendar-story?k=retrograde&amp;b=mercury&amp;d=2026-10-24" download="zodiacs-sky-calendar-story.jpg"');
     const horoscope = await (await handleHoroscopeLinkRequest(new Request(`https://zodiacs.org/share/horoscope/?s=leo&d=${TODAY}`))).text();
     expect(horoscope).toContain(`content="https://zodiacs.org/api/og/horoscope-image?s=leo&amp;d=${TODAY}"`);
     expect(horoscope).toMatch(/<h1>Leo horoscope for [A-Z][a-z]+day \d{1,2} [A-Z][a-z]+<\/h1>/u);
     expect(horoscope).toContain('<a class="cta" href="/horoscopes/">Read your own horoscope</a>');
+    expect(horoscope).toContain(`href="/api/og/horoscope-story?s=leo&amp;d=${TODAY}" download="zodiacs-leo-horoscope-story.jpg"`);
     expect(horoscope).not.toMatch(/[—–]/u);
     // A link that does not match the site's data opens the plain page.
     expect(await (await handleBirthdayLinkRequest(new Request('https://zodiacs.org/share/birthday/?d=05-03&s=leo'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/birthday.png"');
@@ -217,6 +275,30 @@ describe('share link pages', () => {
     const gone = await (await handleHoroscopeLinkRequest(new Request('https://zodiacs.org/share/horoscope/?s=leo&d=2026-09-01'))).text();
     expect(gone).toContain('<h1>Leo horoscope for Tuesday 1 September</h1>');
     expect(gone).toContain('content="Leo, Jul 23 to Aug 22. Zodiacs writes a horoscope for each Sun sign every day."');
+  });
+
+  it('give chart twins, a famous chart and a milestone their own page, preview, story and way to try it', async () => {
+    const twins = await (await handleChartTwinsLinkRequest(new Request('https://zodiacs.org/share/chart-twins/?s=taurus&m=leo&ref=chatgpt'))).text();
+    expect(twins).toContain('<h1>Taurus Sun, like Audrey Hepburn</h1>');
+    expect(twins).toContain('<meta property="og:image" content="https://zodiacs.org/api/og/chart-twins-image?s=taurus&amp;m=leo">');
+    expect(twins).toContain('<a class="cta" href="/chart-twins/?ref=chatgpt">Find your chart twins</a>');
+    expect(twins).toContain('<a class="more" href="/people/audrey-hepburn/?ref=chatgpt">Audrey Hepburn’s chart</a>');
+    expect(twins).toContain('href="/api/og/chart-twins-story?s=taurus&amp;m=leo" download="zodiacs-chart-twins-taurus-story.jpg"');
+    const famous = await (await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/?p=frida-kahlo'))).text();
+    expect(famous).toContain('<title>Frida Kahlo’s birth chart on Zodiacs</title>');
+    expect(famous).toContain('content="https://zodiacs.org/api/og/famous-chart-image?p=frida-kahlo"');
+    expect(famous).toContain('<a class="cta" href="/people/frida-kahlo/">Open Frida Kahlo’s chart</a>');
+    expect(famous).toContain('a reference instant, not a birth time.');
+    const milestone = await (await handleMilestoneLinkRequest(new Request(`https://zodiacs.org/share/milestone/?${SATURN}`), ON('2026-10-19'))).text();
+    expect(milestone).toContain('<h1>First Saturn return, at 29</h1>');
+    expect(milestone).toContain('Under way now: 23 April to 31 December 2026.');
+    expect(milestone).toContain('<a class="cta" href="/occasions/milestones/">Find your own milestones</a>');
+    expect(milestone).toContain(`content="https://zodiacs.org/api/og/milestone-image?${SATURN.replaceAll('&', '&amp;')}"`);
+    for (const page of [twins, famous, milestone]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
+    // A link the site's data does not hold, or that is not a share, opens the plain page.
+    expect(await (await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/?p=someone-else'))).text()).toContain('<h1>Famous birth charts</h1>');
+    expect(await (await handleChartTwinsLinkRequest(new Request('https://zodiacs.org/share/chart-twins/?s=taurus&d=1990-05-03'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/chart-twins.png"');
+    expect(await (await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12&f=2026-04-23&l=2026-12-31'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/saturn-return.png"');
   });
 
   it('refuse other methods', async () => {
@@ -234,6 +316,12 @@ describe('the deployed entry', () => {
       ['/share/birthday/', 'birthday-link'], ['/api/og/birthday-image', 'birthday-image'],
       ['/share/sky-calendar/', 'sky-calendar-link'], ['/api/og/sky-calendar-image', 'sky-calendar-image'],
       ['/share/horoscope/', 'horoscope-link'], ['/api/og/horoscope-image', 'horoscope-image'],
+      ['/api/og/compatibility-story', 'compatibility-story'], ['/api/og/occasion-story', 'occasion-story'],
+      ['/api/og/birthday-story', 'birthday-story'], ['/api/og/sky-calendar-story', 'sky-calendar-story'],
+      ['/api/og/horoscope-story', 'horoscope-story'],
+      ['/share/chart-twins/', 'chart-twins-link'], ['/api/og/chart-twins-image', 'chart-twins-image'], ['/api/og/chart-twins-story', 'chart-twins-story'],
+      ['/share/famous-chart/', 'famous-chart-link'], ['/api/og/famous-chart-image', 'famous-chart-image'], ['/api/og/famous-chart-story', 'famous-chart-story'],
+      ['/share/milestone/', 'milestone-link'], ['/api/og/milestone-image', 'milestone-image'], ['/api/og/milestone-story', 'milestone-story'],
     ]) expect(vercel.rewrites).toContainEqual({ source, destination: `/api/compatibility?__zodiacs_share=${route}` });
     const source = readFileSync(new URL('../../api/compatibility.ts', import.meta.url), 'utf8');
     expect(source).toContain("from '../src/server/result-preview.js'");
@@ -245,6 +333,10 @@ describe('the deployed entry', () => {
     await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'compatibility-image', ...Object.fromEntries(new URLSearchParams(COMPAT)), lat: '1' } }, res, 'compatibility-image');
     expect(res.statusCode).toBe(400);
     expect(res.headers.get('cache-control')).toBe('no-store, max-age=0');
+    // The story picture is held to the same rule.
+    const story = nodeResponse();
+    await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'birthday-story', d: '05-03', fbclid: 'IwAR0' } }, story, 'birthday-story');
+    expect(story.statusCode).toBe(400);
 
     const repeated = nodeResponse();
     await handleResultShareNodeRequest({ method: 'GET', headers: { host: 'zodiacs.org' }, query: { __zodiacs_share: 'compatibility-link', ...Object.fromEntries(new URLSearchParams(COMPAT)), a: ['Ana', 'Eve'] } }, repeated, 'compatibility-link');
@@ -272,6 +364,8 @@ describe('share preview images', () => {
     ['date', () => handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${OCCASION}`))],
     ['accented names', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?a=%C5%81ukasz&b=Zo%C3%AB&score=63&attraction=70&communication=59&stability=58&v=good'))],
     ['accented names on a date', () => handleOccasionImageRequest(new Request('https://zodiacs.org/api/og/occasion-image?o=anniversary&d=2027-09-04&n=%C5%81ucja+%26+%C3%96mer&p=Gda%C5%84sk&sun=virgo&moon=pisces&score=72&v=good'))],
+    ['Cyrillic names', () => handleCompatibilityImageRequest(new Request(`https://zodiacs.org/api/og/compatibility-image?${new URLSearchParams({ a: 'Анна', b: 'Иван', score: '63', attraction: '70', communication: '59', stability: '58', v: 'good' })}`))],
+    ['Cyrillic names on a date', () => handleOccasionImageRequest(new Request(`https://zodiacs.org/api/og/occasion-image?${new URLSearchParams({ o: 'anniversary', d: '2027-09-04', n: 'Анна & Іван', p: 'Київ', sun: 'virgo', moon: 'pisces', score: '72', v: 'good' })}`))],
     ['one unknown sign', () => handleCompatibilityImageRequest(new Request('https://zodiacs.org/api/og/compatibility-image?bs=pisces&score=41&attraction=55&communication=38&stability=30&v=challenging'))],
     ['birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=05-03'))],
     ['cusp birthday', () => handleBirthdayImageRequest(new Request('https://zodiacs.org/api/og/birthday-image?d=04-20'))],
@@ -279,6 +373,12 @@ describe('share preview images', () => {
     ['sky calendar', () => handleSkyCalendarImageRequest(new Request('https://zodiacs.org/api/og/sky-calendar-image?k=retrograde&b=mercury&d=2026-10-24'))],
     ['horoscope', () => handleHoroscopeImageRequest(new Request(`https://zodiacs.org/api/og/horoscope-image?s=leo&d=${TODAY}`))],
     ['week’s horoscope', () => handleHoroscopeImageRequest(new Request(`https://zodiacs.org/api/og/horoscope-image?s=sagittarius&w=${WEEK.from}`))],
+    ['chart twins', () => handleChartTwinsImageRequest(new Request('https://zodiacs.org/api/og/chart-twins-image?s=taurus&m=leo'))],
+    ['chart twins by the Sun', () => handleChartTwinsImageRequest(new Request('https://zodiacs.org/api/og/chart-twins-image?s=pisces'))],
+    ['famous chart', () => handleFamousChartImageRequest(new Request('https://zodiacs.org/api/og/famous-chart-image?p=frida-kahlo'))],
+    ['famous chart with a long name', () => handleFamousChartImageRequest(new Request('https://zodiacs.org/api/og/famous-chart-image?p=wolfgang-amadeus-mozart'))],
+    ['life milestone', () => handleMilestoneImageRequest(new Request(`https://zodiacs.org/api/og/milestone-image?${SATURN}`), ON('2026-10-19'))],
+    ['milestone that has passed', () => handleMilestoneImageRequest(new Request('https://zodiacs.org/api/og/milestone-image?k=jupiter-return&i=2&a=23&f=2020-01-10&l=2020-01-10'), ON('2026-10-19'))],
   ])('render the %s card as a local-asset-only 1200×630 JPEG a link preview takes', async (_label, render) => {
     const fetchSpy = vi.fn(() => {
       throw new Error('The share preview renderer must not fetch assets.');
@@ -312,6 +412,49 @@ describe('share preview images', () => {
       [handleSkyCalendarImageRequest, 'https://zodiacs.org/api/og/sky-calendar-image?k=retrograde&b=mercury&d=2026-10-25'],
       [handleHoroscopeImageRequest, `https://zodiacs.org/api/og/horoscope-image?s=leo&d=${TODAY}&t=You+will+win`],
       [handleHoroscopeImageRequest, 'https://zodiacs.org/api/og/horoscope-image?s=leo&d=2199-01-01'],
+      [handleFamousChartImageRequest, 'https://zodiacs.org/api/og/famous-chart-image?p=someone-else'],
+      [handleChartTwinsImageRequest, 'https://zodiacs.org/api/og/chart-twins-image?s=taurus&n=Audrey'],
+      [handleMilestoneImageRequest, 'https://zodiacs.org/api/og/milestone-image?k=saturn-return&i=1&a=12&f=2026-04-23&l=2026-12-31'],
     ] as const) expect((await handle(new Request(url))).status, url).toBe(400);
+  });
+});
+
+describe('story pictures', () => {
+  it.each([
+    ['compatibility', () => handleCompatibilityStoryRequest(new Request(`https://zodiacs.org/api/og/compatibility-story?${COMPAT}`))],
+    ['long names compared', () => handleCompatibilityStoryRequest(new Request('https://zodiacs.org/api/og/compatibility-story?a=Maximiliana&as=capricorn&b=Bartholomew&bs=sagittarius&score=41&attraction=55&communication=38&stability=30&v=challenging'))],
+    ['wedding', () => handleOccasionStoryRequest(new Request(`https://zodiacs.org/api/og/occasion-story?${OCCASION}`))],
+    ['accented names on a date', () => handleOccasionStoryRequest(new Request('https://zodiacs.org/api/og/occasion-story?o=anniversary&d=2027-09-04&n=%C5%81ucja+%26+%C3%96mer&p=Gda%C5%84sk&sun=virgo&moon=pisces&score=72&v=good'))],
+    ['birthday', () => handleBirthdayStoryRequest(new Request('https://zodiacs.org/api/og/birthday-story?d=05-03'))],
+    ['cusp birthday', () => handleBirthdayStoryRequest(new Request('https://zodiacs.org/api/og/birthday-story?d=04-20'))],
+    ['sky calendar', () => handleSkyCalendarStoryRequest(new Request('https://zodiacs.org/api/og/sky-calendar-story?k=retrograde&b=mercury&d=2026-10-24'))],
+    ['horoscope', () => handleHoroscopeStoryRequest(new Request(`https://zodiacs.org/api/og/horoscope-story?s=leo&d=${TODAY}`))],
+    ['chart twins', () => handleChartTwinsStoryRequest(new Request('https://zodiacs.org/api/og/chart-twins-story?s=taurus&m=leo'))],
+    ['famous chart', () => handleFamousChartStoryRequest(new Request('https://zodiacs.org/api/og/famous-chart-story?p=frida-kahlo'))],
+    ['famous chart with a long name', () => handleFamousChartStoryRequest(new Request('https://zodiacs.org/api/og/famous-chart-story?p=wolfgang-amadeus-mozart'))],
+    ['life milestone', () => handleMilestoneStoryRequest(new Request(`https://zodiacs.org/api/og/milestone-story?${SATURN}`), ON('2026-10-19'))],
+  ])('draw the %s story as a local-asset-only 1080×1920 JPEG', async (_label, render) => {
+    const fetchSpy = vi.fn(() => {
+      throw new Error('The story renderer must not fetch assets or fonts.');
+    });
+    vi.stubGlobal('fetch', fetchSpy);
+    const response = await render();
+    const jpeg = Buffer.from(await response.arrayBuffer());
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe('image/jpeg');
+    expect(response.headers.get('cache-control')).toBe('no-store, max-age=0');
+    expect(response.headers.get('x-robots-tag')).toContain('noindex');
+    const { width, height } = decodeJpeg(jpeg, { maxMemoryUsageInMB: 64 });
+    expect([width, height]).toEqual([1080, 1920]);
+    expect(jpeg.byteLength).toBeGreaterThan(100_000);
+    expect(jpeg.byteLength).toBeLessThan(600_000);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  }, 60_000);
+
+  it('refuses what the link preview refuses', async () => {
+    expect((await handleCompatibilityStoryRequest(new Request('https://zodiacs.org/api/og/compatibility-story?score=78'))).status).toBe(400);
+    expect((await handleBirthdayStoryRequest(new Request('https://zodiacs.org/api/og/birthday-story?d=05-03&s=leo'))).status).toBe(400);
+    expect((await handleHoroscopeStoryRequest(new Request('https://zodiacs.org/api/og/horoscope-story?s=leo&d=2199-01-01'))).status).toBe(400);
+    expect((await handleOccasionStoryRequest(new Request(`https://zodiacs.org/api/og/occasion-story?${OCCASION}`, { method: 'POST' }))).status).toBe(405);
   });
 });

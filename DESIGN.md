@@ -109,6 +109,13 @@ row.
   words, crop and the heroes' art and shade live in `src/lib/og-art-cards.mjs`,
   and a test holds them to the two heroes. The v2 homepage, sign and horoscope
   cards stay published for links already shared.
+- The Spanish, French, Italian and Portuguese homepages, sign guides and
+  (Spanish and Portuguese) daily horoscopes have the same cards in their own
+  words, as their pages print them: the localized hero's headline and the
+  first half of its caption; the sign's name, the first sentence of the
+  guide's opening line and its dates (the localized heroes carry no kicker);
+  and "Horóscopos" over "Aries hoy". A long line steps down until the column
+  fits. Each locale's homepage card is its fallback too.
 
 ## Voice
 
@@ -209,6 +216,7 @@ Anatomy, top to bottom (use only the parts a card needs, in this order):
    above its action.
 5. Actions, never more than two in view: the main one as a pill in ink with
    a small arrow in a circle ("Share the reading", "Share this birthday",
+   "Share your chart twins", "Share this chart", "Share your milestone",
    "Open printable card", "Subscribe in your calendar app"), and a second as
    underlined text with an arrow ("Open both charts", "Open the 3 May page",
    "Share the sky calendar"). Both open on zodiacs.org. A card with a share
@@ -217,6 +225,40 @@ Anatomy, top to bottom (use only the parts a card needs, in this order):
    link follows the day, focus or week on screen.
 6. The fine print in small muted text, then, outside the card, the panel's
    one-line privacy footer.
+
+Story pictures (owner's picks, 2026-10-18): each share link's page offers
+"Save the picture for your story", a 1080 × 1920 JPEG of the same result
+(`/api/og/{kind}-story`, from the share query alone). The art runs across
+the top and fades into the void; the lockup sits at 28px in a pill under the
+apps' top bar (296px down); the words end 380px above the bottom, clear of
+the reply bar, with the way to try it and the address. Compatibility shows
+the score as a trophy (A: both panels facing, the discs, a 400px ring, the
+verdict, the two names); the sky calendar shows its event as a quote (B: the
+Sky dial, the event in large italic behind a rule); a date, a birthday and a
+horoscope are keepsakes (C), a date keeping its score small, so a low score
+never headlines a wedding. The drawn arrow stands in for the text arrow,
+which the renderer's fonts lack.
+
+Chart twins, a famous chart and a life milestone (owner's picks,
+2026-10-18; built 2026-10-20). Their links carry no birth date: chart twins
+carry the Sun sign and a settled Moon sign, and the server matches the
+twins from the directory as the tool does; a famous chart carries the
+person's slug; a milestone carries its kind, ordinal, age and first and last
+days. Their previews keep the cards' frame. Chart twins (B) set the first
+twin as a quote behind a rule in the Sun's hue, "Taurus Sun, like Audrey
+Hepburn", in the birthday preview's words, with "14 famous people share
+this Sun or Moon" under it; its story is a keepsake (C). A famous chart (A)
+shows the name large, "Cancer Sun at 13.5°" in italic and "Painter, born 6
+July 1907", on the Sun sign's panel, in its preview and its story. A life
+milestone (A) shows the age in the cards' plain ring in the hue of the
+sign its planet rules, the milestone ("First Saturn return"), whether it
+is "Coming up" or "Under way now" on the day the link opens, and its dates;
+its story is a keepsake (C) that keeps the ring small beside them. As with
+the birthday's "A birthday", the pictures do not say "your" to the friends
+who see them; only the way to try it does ("Find your chart twins", "When
+is yours?"). On the chat cards a long pair of names steps the title down
+(34px past 26 characters, 29px past 40; 29 and 25 at 530px and below), so
+the main action stays on the card's first screen.
 
 Artwork:
 

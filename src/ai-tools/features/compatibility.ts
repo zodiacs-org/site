@@ -38,7 +38,7 @@ export const COMPATIBILITY_MIN_YEAR = 1800;
 export const COMPATIBILITY_MAX_YEAR = 2199;
 /** How many contacts the result lists, as the compatibility page does. */
 export const COMPATIBILITY_TOP_CONTACTS = 8;
-export const COMPATIBILITY_NOTE = 'Astrology’s reading of your two charts, for insight and fun — not a guarantee of how things will turn out.';
+export const COMPATIBILITY_NOTE = 'Astrology’s reading of your two charts, for insight and fun, not a guarantee of how things will turn out.';
 
 // ── Input ────────────────────────────────────────────────────────────
 
