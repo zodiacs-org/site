@@ -1,0 +1,108 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Faq from '../Faq.astro';
+import SynastryDiagram from './SynastryDiagram.astro';
+import ReferenceJourney from './ReferenceJourney.astro';
+import examplesData from '../../data/aspect-reference-examples.json';
+import { EDITOR_AUTHOR } from '../../lib/editorial';
+import { referencePublished } from '../../lib/aspect-reference';
+import '../../styles/aspect-reference.css';
+
+interface Props { entry: CollectionEntry<'synastryAspects'> }
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { pair, bodies, title, description, faq, sources, updated } = entry.data;
+const path = `/compatibility/aspects/${pair}/`;
+const formatOrb = (value: number | null) => value === null ? 'unlisted' : `${value.toFixed(5)}°`;
+const examples = entry.data.examples.map((id) => {
+  const example = examplesData.examples.find((item) => item.id === id);
+  if (!example || example.pair !== pair) throw new Error(`Missing verified example ${id}`);
+  return example;
+});
+const jsonLd = [
+  {
+    '@type': 'Article', headline: title, description, url: `https://zodiacs.org${path}`,
+    datePublished: entry.data.published.toISOString(), dateModified: updated.toISOString(),
+    creativeWorkStatus: referencePublished ? 'Published' : 'Draft',
+    author: EDITOR_AUTHOR, publisher: { '@id': 'https://zodiacs.org/#org' }, inLanguage: 'en',
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org${path}` },
+    citation: sources.map((source) => ({ '@type': 'CreativeWork', name: source.label, url: source.href })),
+  },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Compatibility', item: 'https://zodiacs.org/compatibility/' },
+    { '@type': 'ListItem', position: 2, name: 'Synastry aspects', item: 'https://zodiacs.org/compatibility/aspects/' },
+    { '@type': 'ListItem', position: 3, name: `${bodies.join('-')} in synastry`, item: `https://zodiacs.org${path}` },
+  ] },
+  { '@type': 'FAQPage', mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+];
+---
+<Base title={title} description={description} path={path} type="article" noindex={!referencePublished} jsonLd={jsonLd} sources={sources} collectionDescription="Zodiac collection" stableTypography>
+  <article class="container reference">
+    <nav aria-label="Breadcrumb"><a href="/compatibility/">Compatibility</a> / <a href="/compatibility/aspects/">Synastry aspects</a></nav>
+    <header class="reference__hero">
+      <div>
+        <p class="kicker">Between two charts</p>
+        <h1 class="display">{bodies.join('-')} aspects in synastry <span class="reference__context">between two charts</span></h1>
+        <p class="reference__lede">{description}</p>
+        <p>For an aspect within one person's chart, use the <a href="/birth-chart/">individual birth chart tool</a>. That is the natal context.</p>
+        <p class="reference__meta">Updated <time datetime={updated.toISOString().slice(0, 10)}>{updated.toISOString().slice(0, 10)}</time>. {referencePublished ? `Reviewed by ${entry.data.reviewer}.` : 'Local review edition. Named editorial review and release evidence are pending.'}</p>
+      </div>
+      <SynastryDiagram a={bodies[0]} b={bodies[1]} angle={120} id={`${pair}-diagram`} />
+    </header>
+    <nav class="reference__nav" aria-label="Geometry sections">
+      {entry.data.geometries.map((geometry) => <a href={`#${geometry}`}>{geometry.charAt(0).toUpperCase() + geometry.slice(1)}</a>)}
+      <a href="#method">Method and orbs</a><a href="#examples">Calculated examples</a>
+    </nav>
+    <div class="reference__reading">
+      <aside class="reference__roles" aria-label="Chart roles">
+        <p><strong>Chart A.</strong> {entry.data.roles.a}</p>
+        <p><strong>Chart B.</strong> {entry.data.roles.b}</p>
+        <p>Reversing the same positions preserves the angle. Selecting {bodies[1]} A with {bodies[0]} B requires a separate calculation.</p>
+      </aside>
+      <div class="prose"><Content /></div>
+      <section id="method" class="prose" aria-labelledby="method-heading">
+        <h2 id="method-heading">Method and orb convention</h2>
+        <p>The compatibility tool uses the same major-aspect matcher for every cross-chart body pair. It computes shortest separation from 0° to 180°, then the absolute residual from the target angle. All three references include the Sun or Moon, so the luminary limit applies. Orb limits are conventions, not measurements of relationship quality.</p>
+        <div class="reference__table-wrap" role="region" aria-label="Aspect angle and orb limits" tabindex="0">
+        <table class="reference__table">
+          <caption>Current calculator limits in degrees, engine {examplesData.engineVersion}</caption>
+          <thead><tr><th scope="col">Geometry</th><th scope="col">Angle</th><th scope="col">Standard orb</th><th scope="col">Sun or Moon orb</th></tr></thead>
+          <tbody>{examplesData.conventions.map((def) => <tr><th scope="row"><a href={`/learn/aspects/${def.type}/`}>{def.type}</a></th><td>{def.angle}°</td><td>{def.orb}°</td><td>{def.orbLuminary}°</td></tr>)}</tbody>
+        </table>
+        </div>
+        <p>Tropical geocentric ecliptic longitudes are compared between two independent UTC instants. Applying and separating are omitted in this two-chart comparison. House systems do not alter these body-to-body angles. A noon Moon remains an estimate when its birth time is unknown.</p>
+        <p><strong>Schematic wraparound:</strong> Sun A at 359° and Moon B at 1° are 2° apart, a conjunction with a 2° residual. At 350° and 4° the separation is 14°, outside this conjunction limit, so no major contact is listed. These illustrative longitudes are schematic, with no implied timestamps.</p>
+        <p>For the symbols separately, read <a href={`/learn/planets/${bodies[0].toLowerCase()}/`}>{bodies[0]}</a> and <a href={`/learn/planets/${bodies[1].toLowerCase()}/`}>{bodies[1]}</a>. For the full two-chart task, use <a href="/compatibility/" data-reference-task>the compatibility tool</a>.</p>
+      </section>
+      <section id="examples" class="reference__examples prose" aria-labelledby="examples-heading">
+        <h2 id="examples-heading">Engine-backed two-chart examples</h2>
+        <p>All inputs below are synthetic. Longitudes and residuals are shown to five decimal places for replay, not as a claim about the precision of an unknown birth record. Calculation replay is separate from editorial interpretation review.</p>
+        {examples.map((example, index) => (
+          <article aria-labelledby={`example-${index}`}>
+            <h3 id={`example-${index}`}>Example {index + 1}: {example.geometry}</h3>
+            <dl>
+              <dt>Chart A</dt><dd>{example.chartA.body} at {example.chartA.longitude.toFixed(5)}°<br /><time datetime={example.chartA.utc}>{example.chartA.utc}</time></dd>
+              <dt>Chart B</dt><dd>{example.chartB.body} at {example.chartB.longitude.toFixed(5)}°<br /><time datetime={example.chartB.utc}>{example.chartB.utc}</time></dd>
+              <dt>Separation</dt><dd>{example.separation.toFixed(5)}°</dd>
+              <dt>Target angle</dt><dd>{example.angle}°</dd>
+              <dt>Residual orb</dt><dd>{example.residualOrb.toFixed(5)}°</dd>
+              <dt>Calculation</dt><dd>Computed, synthetic inputs. Engine {example.engineVersion}. Verified {example.provenance.verifiedAt} by deterministic replay through the site two-chart adapter.</dd>
+              <dt>Review</dt><dd>{example.provenance.review}</dd>
+            </dl>
+            <p>The other body assignment at these same instants uses {example.reversedAssignment.chartA.body} A at {example.reversedAssignment.chartA.longitude.toFixed(5)}° and {example.reversedAssignment.chartB.body} B at {example.reversedAssignment.chartB.longitude.toFixed(5)}°. Its separation is {example.reversedAssignment.separation.toFixed(5)}°: {example.reversedAssignment.geometry ? `${example.reversedAssignment.geometry}, residual orb ${formatOrb(example.reversedAssignment.residualOrb)}` : 'no listed major aspect'}. This is a separate contact, not a relabeling of the first one.</p>
+          </article>
+        ))}
+      </section>
+      <section><Faq items={faq} heading="Questions about this pair" /></section>
+      <aside class="reference__task">
+        <h2 class="display">Read the contact in your comparison</h2>
+        <p>With both people's permission, compare two charts and read a listed contact with its exact orb. Saving and private invitations remain optional controls in the tool.</p>
+        <a class="btn btn--primary" href="/compatibility/" data-reference-task>Compare two charts</a>
+        <a href="/birth-chart/">Get your free birth chart</a>
+      </aside>
+      <nav aria-label="More synastry references"><a href="/compatibility/aspects/">All three synastry pairs</a></nav>
+    </div>
+  </article>
+  <ReferenceJourney page={pair} />
+</Base>

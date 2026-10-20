@@ -1309,6 +1309,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
           ? 'invite'
           : slotA.source === 'form' && slotB.source === 'form' ? 'form' : 'restored',
       });
+      void import('../lib/reference-completion').then(({ completeReferenceTask }) => {
+        if (requestIsCurrent(request, accessGeneration)) completeReferenceTask();
+      }).catch(() => { /* Optional measurement must not interrupt a valid result. */ });
     } catch (err) {
       if (!requestIsCurrent(request, accessGeneration)) return;
       setError(calculationError(err, locale, t(locale, 'compareError')));

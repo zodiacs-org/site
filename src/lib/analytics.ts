@@ -16,6 +16,9 @@ export const ANALYTICS_EVENT_VALUES = EVENT_VALUES as Readonly<
 >;
 
 export type AnalyticsEventName =
+  | 'reference_opened'
+  | 'reference_cta_clicked'
+  | 'reference_task_completed'
   | 'chart_computed'
   | 'chart_saved'
   | 'compat_computed'

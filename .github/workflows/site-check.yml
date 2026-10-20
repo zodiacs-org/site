@@ -98,6 +98,9 @@ jobs:
           npx vitest run scripts/check-developer-authorship.test.mjs
           node scripts/check-developer-authorship.mjs
 
+      - name: Verify synastry publication policy
+        run: node tests/synastry-publication-drive.mjs
+
       - name: Released engine reference
         run: |
           npm ci --prefix scripts/engine-reference --ignore-scripts
@@ -330,6 +333,9 @@ jobs:
       # generator checks it against natalChart before comparing bytes.
       - name: Verify the engine time-basis bundle
         run: node scripts/build-time-basis.mjs --check
+
+      - name: Verify synastry reference example drift
+        run: node scripts/build-aspect-reference-examples.mjs --check
 
       # Committed wing HTML must match what the builders produce from
       # sources (build-app resolves the pinned local @babel/standalone,
@@ -915,5 +921,45 @@ jobs:
             tests/visual/artifacts/profile-appearance/
             tests/visual/artifacts/footer-discovery/
           if-no-files-found: ignore
+          retention-days: 30
+
+  synastry-reference:
+    name: Synastry review edition
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_SYNASTRY_REFERENCE_PREVIEW: '1'
+      LIGHTHOUSE_ROUTES: synastry-aspects,synastry-sun-moon,synastry-moon-venus,synastry-moon-mars
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Install pinned Chromium
+        run: npx playwright-core install chromium
+      - name: Verify calculation evidence
+        run: node scripts/build-aspect-reference-examples.mjs --check
+      - name: Build review pages with unchanged gates
+        run: npm run build
+      - name: Check review edition
+        run: npm run check
+      - name: Browser layout, keyboard and privacy journey
+        run: node tests/synastry-reference-drive.mjs
+      - name: Visual regressions for review pages
+        env:
+          VISUAL_ROUTES: synastry-aspects,synastry-sun-moon,synastry-moon-venus,synastry-moon-mars
+        run: npm run test:visual
+      - name: Mobile performance, accessibility and SEO
+        run: npm run test:lighthouse
+      - name: Retain review evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: synastry-reference-${{ github.run_id }}
+          path: tests/visual/artifacts/
           retention-days: 30
 

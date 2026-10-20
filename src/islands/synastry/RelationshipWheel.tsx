@@ -40,6 +40,7 @@ import './relationship.css';
 import EvidenceDisclosure from '../EvidenceDisclosure';
 import CalculationReload, { calculationError } from '../CalculationReload';
 import { loadModule } from '../../lib/module-load';
+import { aspectReference } from '../../lib/aspect-reference';
 
 export interface WheelPerson {
   label: string;
@@ -461,7 +462,9 @@ export default function RelationshipWheel({ locale, a, b, summary }: Relationshi
             {summary.top.map((aspect) => {
               const id = canonicalId(aspect);
               const reading = contactReading(a.label, b.label, aspect);
+              const reference = locale === 'en' ? aspectReference('synastry', aspect.a, aspect.b, aspect.type) : null;
               return (
+                <div key={id}>
                 <button
                   class={`syn__aspect tring__row${sel === id ? ' is-focus' : ''}`}
                   type="button"
@@ -481,6 +484,11 @@ export default function RelationshipWheel({ locale, a, b, summary }: Relationshi
                     <PlanetGlyph body={aspect.a} size={13} class="pg-inline" /> {a.label}: {planetLabel(locale, aspect.a)} <AspectGlyph type={aspect.type} size={13} class="pg-inline" /> {aspectLabel(locale, aspect.type)} <PlanetGlyph body={aspect.b} size={13} class="pg-inline" /> {b.label}: {planetLabel(locale, aspect.b)}
                   </span>
                 </button>
+                {reference && <a class="syn__reference" href={reference.href} aria-label={reference.label}>
+                  Read {aspect.a}-{aspect.b} {aspect.type} in synastry
+                  {(!a.timeKnown && aspect.a === 'Moon') || (!b.timeKnown && aspect.b === 'Moon') ? ' (Moon time uncertain)' : ''}
+                </a>}
+                </div>
               );
             })}
           </div>
@@ -547,6 +555,10 @@ export default function RelationshipWheel({ locale, a, b, summary }: Relationshi
                   {' '}<AspectGlyph type={aspect.type} size={13} class="pg-inline" /> {aspectLabel(locale, aspect.type)}
                   {' '}{b.label}: <PlanetGlyph body={aspect.b} size={13} class="pg-inline" /> {planetLabel(locale, aspect.b)}
                   {' · '}{t(locale, 'orb')} {aspect.orb.toFixed(1)}°
+                  {locale === 'en' && (() => {
+                    const reference = aspectReference('synastry', aspect.a, aspect.b, aspect.type);
+                    return reference ? <a class="syn__reference" href={reference.href} aria-label={reference.label}>Read this contact in synastry</a> : null;
+                  })()}
                 </span>
               ))}
             </div>

@@ -6,6 +6,7 @@ import { PNG } from 'pngjs';
 import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './browser.mjs';
 import { withPreview } from './preview-server.mjs';
+import { synastryEnabled } from '../../scripts/synastry-reference-policy.mjs';
 
 const visualRoot = dirname(fileURLToPath(import.meta.url));
 // Even with the same pinned Chromium, CoreText and FreeType produce different
@@ -63,6 +64,14 @@ const routes = [
   { name: 'events-hub', path: '/events/', normalizeEventsHub: true },
   { name: 'event-full-moon', path: '/full-moon/2026-07-29/' },
 ];
+if (synastryEnabled) {
+  routes.push(
+    { name: 'synastry-aspects', path: '/compatibility/aspects/' },
+    { name: 'synastry-sun-moon', path: '/compatibility/aspects/sun-moon/' },
+    { name: 'synastry-moon-venus', path: '/compatibility/aspects/moon-venus/' },
+    { name: 'synastry-moon-mars', path: '/compatibility/aspects/moon-mars/' },
+  );
+}
 const routeFilter = new Set(
   (process.env.VISUAL_ROUTES ?? '').split(',').map((name) => name.trim()).filter(Boolean),
 );

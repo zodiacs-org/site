@@ -221,3 +221,5 @@
   .rgrid__table tbody th,
   .rgrid__table .rgrid__corner { width: 70px; min-width: 70px; }
 }
+/* A separate anchor preserves the result button's selection semantics. */
+.syn__reference { display: inline-block; padding: 10px 12px; color: var(--text-2); font-size: var(--text-xs); text-underline-offset: .22em; }

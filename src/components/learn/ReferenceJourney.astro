@@ -1,0 +1,7 @@
+---
+import journeyScript from '../../lib/reference-journey.js?raw';
+interface Props { page: 'hub' | 'sun-moon' | 'moon-venus' | 'moon-mars' }
+const { page } = Astro.props;
+---
+<div data-reference-page={page} hidden></div>
+<script is:inline set:html={journeyScript}></script>

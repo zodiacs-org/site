@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import AspectPairPage from '../../components/learn/AspectPairPage.astro';
+import { SYNASTRY_PAIRS, referencePublished } from '../../lib/aspect-reference';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('synastryAspects', ({ data }) => referencePublished ? !data.draft : true);
+  if (entries.length !== 3 || entries.some((entry) => entry.id !== entry.data.pair || !(SYNASTRY_PAIRS as readonly string[]).includes(entry.id))) {
+    throw new Error('The synastry library requires exactly the three canonical pair references.');
+  }
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+---
+<AspectPairPage entry={entry} />

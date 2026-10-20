@@ -1,4 +1,5 @@
 import { SIGN_SLUGS } from '../signs';
+import { referencePublished, SYNASTRY_PAIRS } from '../aspect-reference';
 import {
   DEFAULT_LOCALE,
   LOCALES,
@@ -175,6 +176,8 @@ function isTranslatedFamilyPath(path: string): boolean {
 
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
+  if (import.meta.env.SSR && referencePublished
+    && (canonical === '/compatibility/aspects/' || SYNASTRY_PAIRS.some((pair) => canonical === `/compatibility/aspects/${pair}/`))) return ['en'];
   if (/^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) return CORE_ROUTE_LOCALES;
   return LOCALIZED_PATHS.get(canonical)
     ?? (isLocalizedChineseZodiacPath(canonical) || isTranslatedFamilyPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
