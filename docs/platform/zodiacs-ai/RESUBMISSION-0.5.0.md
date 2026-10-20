@@ -4,6 +4,22 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 20 October: About needs a new package version
+
+The portal's About field is read only because its metadata comes from the
+uploaded ZIP. The current draft still shows the outdated claim that Zodiacs
+does not score relationships or rate dates. Dias approved preparing a 0.5.1
+candidate with the exact About in "The listing" below and corrected release
+notes. `zodiacs-sky-0.5.0.zip` stays unchanged. Do not upload the 0.5.1 ZIP
+until Dias reviews it and gives a separate yes. Do not submit or attest on
+his behalf.
+
+Refreshing the private release connection did not fix first display of the
+redesigned wedding and horoscope panels in fresh chats. Both returned the
+right answer but displayed a host error before the panel loaded. Earlier
+chats displayed each panel after **Try again**. Resolve or explicitly review
+this issue before submission.
+
 ## Update, 20 October: fresh addresses for all four chat panels
 
 The card design changed after ChatGPT first saw the panel addresses. The

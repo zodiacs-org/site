@@ -1,5 +1,26 @@
 # OpenAI portal review record
 
+## About correction prepared, 20 October 2026
+
+Dias approved replacing only the draft's About text and seeing its preview.
+The portal displays that field as read only and states that review information
+is managed by the plugin ZIP. The current 0.5.0 draft still contains the old
+claim that Zodiacs does not score relationships or rate dates. No ZIP was
+uploaded and no About, test case, attestation or submission was changed.
+The published `zodiacs-sky-0.5.0.zip` remains byte for byte unchanged.
+
+With Dias's separate approval to prepare a candidate, `zodiacs-sky-0.5.1.zip`
+now contains the exact About from `integrations/chatgpt/chatgpt-app-submission.json`
+and release notes that describe the live scoring and ratings accurately.
+`ai:build`, `ai:package` and `ai:check` pass. The package has not been
+uploaded to the portal. A separate approval is required before that step.
+
+Dias also approved refreshing the private Zodiacs Release Demo connection.
+After the refresh, two new chats returned wedding and horoscope answers, but
+both embedded panels still failed on the first display. In earlier fresh
+chats, pressing **Try again** once loaded both redesigned panels. The first
+display issue remains unresolved; a tool refresh did not correct it.
+
 ## Panel address refresh live, 20 October 2026
 
 The source now advertises new addresses for all four redesigned chat panels:
