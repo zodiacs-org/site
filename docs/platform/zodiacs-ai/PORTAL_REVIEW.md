@@ -19,8 +19,19 @@ registered legacy address returned identical HTML, and the four live
 SHA-256 hashes matched `src/ai-tools/panel-fingerprints.json`.
 Main's Site Check run `39400395185` finished green on the same merge commit.
 
-Portal status for this step: no rescan, draft edit or submission has been
-performed. Ask Dias to approve the rescan while he watches.
+## OpenAI tool rescan, 20 October 2026
+
+Dias approved this specific rescan in chat. The existing Zodiacs 0.5.0 draft
+at `https://platform.openai.com/plugins/manage/plugin_asdk_app_6ad073182c5c8191ac05ef000b65058c`
+was rescanned at 17:53 Bangkok time. The portal showed the production MCP URL,
+domain verified, thirteen tools, and a fresh check time for each tool. Seven
+tools had the same finding: "This new tool definition needs further review
+before it can be published." They were `get_occasion_sky`,
+`get_life_milestones`, `get_compatibility`, `find_chart_twins`,
+`get_famous_chart`, `get_birthday` and `get_sky_calendar`. The other six tools
+showed no findings. The portal did not report an input-definition error or a
+server connection error. Its status remained **Not submitted / Not published**.
+No About text, test case, package, attestation or submission was changed.
 
 ## 0.5.0 withdrawn for fixes — 15 October 2026
 
