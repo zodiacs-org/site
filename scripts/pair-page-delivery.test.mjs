@@ -9,6 +9,17 @@ const distRoot = resolve(import.meta.dirname, '../dist');
 // hero's italic preloaded, the paintings' AVIF copies offered at 1.5x, and
 // every hero image but the first painting at low priority.
 describe.skipIf(!existsSync(distRoot))('built compatibility pair pages', () => {
+  it.each(['aries-cancer', 'leo-scorpio', 'taurus-taurus'])('%s ships comparison symbols without platform font lookup', (pair) => {
+    const html = readFileSync(join(distRoot, `compatibility/${pair}/index.html`), 'utf8');
+    const badges = [...html.matchAll(/<span class="ph-adds__gl(?: ph-adds__gl--two)?" aria-hidden="true">([\s\S]*?)<\/span>/g)];
+    expect(badges).toHaveLength(3);
+    for (const [, content] of badges) {
+      expect(content).toMatch(/<svg\b[^>]*aria-hidden="true"[^>]*focusable="false"/);
+      expect(content).not.toMatch(/[\u260c\u263d\u2640\u2642\ufe0e]/u);
+    }
+    expect(html).not.toContain('Pair Symbol Fallback');
+  });
+
   it.each([
     'compatibility/aries-cancer/index.html',
     'es/compatibility/aries-cancer/index.html',

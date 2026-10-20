@@ -317,19 +317,7 @@
 }
 .ph-adds__gl--two { font-size: 15px; letter-spacing: -1px; }
 .ph-adds__gl--mono { font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
-/* Resolve the Moon and conjunction's existing local face directly, avoiding
-   the system glyph search during first layout. Match Instrument Sans's line
-   metrics so their baselines stay put. Where DejaVu Sans is unavailable,
-   the usual font stack still supplies the symbols. */
-@font-face {
-  font-family: 'Pair Symbol Fallback';
-  src: local('DejaVu Sans');
-  ascent-override: 97%;
-  descent-override: 25%;
-  line-gap-override: 0%;
-  unicode-range: U+260C, U+263D, U+FE0E;
-}
-.ph-adds__gl:not(.ph-adds__gl--two, .ph-adds__gl--mono) { font-family: 'Pair Symbol Fallback', var(--font-sans); }
+.ph-adds__gl svg { display: block; }
 .ph-adds b { display: block; font-weight: 600; font-size: 1rem; }
 .ph-adds span:not(.ph-adds__gl) { color: var(--muted); font-size: 0.9375rem; }
 
