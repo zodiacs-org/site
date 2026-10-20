@@ -295,8 +295,9 @@ describe('share link pages', () => {
     expect(milestone).toContain('<a class="cta" href="/occasions/milestones/">Find your own milestones</a>');
     expect(milestone).toContain(`content="https://zodiacs.org/api/og/milestone-image?${SATURN.replaceAll('&', '&amp;')}"`);
     for (const page of [twins, famous, milestone]) expect(page.replace(/<style[^]*?<\/style>/u, '')).not.toMatch(/[—–]/u);
-    // A link the site's data does not hold, or that is not a share, opens the plain page.
-    expect(await (await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/?p=someone-else'))).text()).toContain('<h1>Famous birth charts</h1>');
+    // A bare address opens the directory; a named person absent from the directory is not a share.
+    expect(await (await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/'))).text()).toContain('<h1>Famous birth charts</h1>');
+    expect((await handleFamousChartLinkRequest(new Request('https://zodiacs.org/share/famous-chart/?p=someone-else'))).status).toBe(404);
     expect(await (await handleChartTwinsLinkRequest(new Request('https://zodiacs.org/share/chart-twins/?s=taurus&d=1990-05-03'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/chart-twins.png"');
     expect(await (await handleMilestoneLinkRequest(new Request('https://zodiacs.org/share/milestone/?k=saturn-return&i=1&a=12&f=2026-04-23&l=2026-12-31'))).text()).toContain('content="https://zodiacs.org/assets/og/v2/tool/saturn-return.png"');
   });
