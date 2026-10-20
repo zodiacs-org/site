@@ -1,5 +1,11 @@
 # zodiacs.org
 
+The house rules shared by every coding agent (identity, draft pull requests
+only, product rules, quality gates and the shared task board) live in
+`AGENTS.md`. Read it first; it is imported here:
+
+@AGENTS.md
+
 Free astrology platform (Learn / Tools / Collect) built with Astro, with the
 original token registry preserved as the "Collect" wing. Strategy:
 `docs/STRATEGY.md`. Frontend design plugin stays enabled:
