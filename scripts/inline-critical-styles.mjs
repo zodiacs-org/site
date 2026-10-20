@@ -31,7 +31,25 @@ const deferredStyleLoader = `<script data-zdx-deferred-style-loader>
         }
         var templates = document.querySelectorAll('template[data-zdx-deferred-style]');
         for (var index = 0; index < templates.length; index += 1) {
-          templates[index].replaceWith(templates[index].content.cloneNode(true));
+          var template = templates[index];
+          var fonts = template.content.querySelector('script[data-zdx-font-faces]');
+          if (fonts && window.FontFace && document.fonts) {
+            try {
+              var pending = JSON.parse(fonts.textContent).map(function (entry) {
+                return new FontFace(entry.family, entry.source, entry.descriptors).load().catch(function () { return null; });
+              });
+              Promise.all(pending).then(function (faces) {
+                for (var faceIndex = 0; faceIndex < faces.length; faceIndex += 1) {
+                  if (faces[faceIndex]) document.fonts.add(faces[faceIndex]);
+                }
+              });
+              template.remove();
+            } catch (error) {
+              template.replaceWith(template.content.cloneNode(true));
+            }
+          } else {
+            template.replaceWith(template.content.cloneNode(true));
+          }
         }
       };
       var onIntent = function (event) {
@@ -269,9 +287,11 @@ function useHomepageFontSubsets(css) {
  * Faces that only text far below the first screen uses on the pair pages:
  * the italic body face (the read's emphasis) and the mono face (the compare
  * section's "ASC"). Declared up front, the first layout fetches them beside
- * the hero paintings. They move into a deferred <style> that the loader adds
- * after load, or on first interaction with an island; <noscript> keeps them
- * for readers without JavaScript.
+ * the hero paintings. The loader fetches them after load (or on island intent)
+ * and registers the loaded FontFace objects together. Inserting a stylesheet
+ * here invalidates the whole page's styles and discards cached text layout.
+ * Keep the CSS for no-JS readers and browsers without the FontFace API.
+ * FontFace.load() downloads both faces regardless of use; pair pages use both.
  */
 const belowFoldFaces = [
   { family: 'Instrument Sans', style: 'italic', source: '/fonts/instrument-sans-latin-wght-italic.woff2' },
@@ -289,6 +309,26 @@ function takeBelowFoldFaces(css) {
     return '';
   });
   return { css: output, faces };
+}
+
+function fontFaceDefinitions(faces) {
+  const supported = new Set(['font-family', 'src', 'font-weight', 'font-style', 'font-display']);
+  return JSON.stringify(faces.map((face) => {
+    for (const [, descriptor] of face.matchAll(/(?:[{;])\s*([\w-]+)\s*:/g)) {
+      if (!supported.has(descriptor.toLowerCase())) {
+        throw new Error(`inline-critical-styles: unsupported deferred font descriptor ${descriptor}`);
+      }
+    }
+    return {
+      family: declarationValue(face, 'font-family'),
+      source: declarationValue(face, 'src'),
+      descriptors: {
+        weight: declarationValue(face, 'font-weight') || 'normal',
+        style: declarationValue(face, 'font-style') || 'normal',
+        display: declarationValue(face, 'font-display') || 'auto',
+      },
+    };
+  })).replace(/</g, '\\u003c');
 }
 
 export async function inlineCriticalStyles(
@@ -417,7 +457,7 @@ export async function inlineCriticalStyles(
     assertSafeCss(faces, 'below-fold faces');
     output = output.replace(
       '</head>',
-      `<template data-zdx-deferred-style><style data-zdx-deferred-faces>${faces}</style></template><noscript><style>${faces}</style></noscript></head>`,
+      `<template data-zdx-deferred-style><style data-zdx-deferred-faces>${faces}</style><script type="application/json" data-zdx-font-faces>${fontFaceDefinitions(deferredFaces)}</script></template><noscript><style>${faces}</style></noscript></head>`,
     );
   }
   if (deferredTags.length > 0 || deferredFaces.length > 0) {
@@ -466,6 +506,7 @@ async function main() {
         .length;
       const deferredCount = source.match(deferredStylePattern)?.length ?? 0;
       const loaderCount = source.match(/data-zdx-deferred-style-loader/g)?.length ?? 0;
+      const fontDefinitionsCount = source.match(/<script type="application\/json" data-zdx-font-faces>/g)?.length ?? 0;
       const {
         inlineCount: expectedInlineCount,
         deferredCount: expectedDeferredCount,
@@ -478,6 +519,7 @@ async function main() {
         || deferredCount !== expectedDeferredCount
         || externalCount !== expectedExternalCount
         || loaderCount !== expectedLoaderCount
+        || fontDefinitionsCount !== (pairPathSet.has(relativePath) ? 1 : 0)
       ) {
         throw new Error(
           `inline-critical-styles: ${relativePath} has an unexpected inline/external stylesheet shape`,
