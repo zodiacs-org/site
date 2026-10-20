@@ -49,6 +49,12 @@ export const DEVELOPER_PAGES = Object.freeze({
     breadcrumb: 'Conformance suite',
     licenses: { Dataset: [CONFORMANCE_LICENSE] },
   },
+  '/developers/conventions/': {
+    types: ['Dataset'],
+    breadcrumb: 'Conventions registry',
+    // CC0 1.0, the licence src/data/conventions/registry.json states, as for the conformance vectors.
+    licenses: { Dataset: [CONFORMANCE_LICENSE] },
+  },
   '/developers/sky-benchmark/': {
     types: ['Dataset'],
     breadcrumb: 'Sky-fact benchmark',
@@ -86,10 +92,10 @@ export const SKY_DATA_FOLDERS = Object.freeze(['planets', 'retrogrades', 'statio
 /**
  * What each page's markup must state, from the records it is built from:
  * the engine's candidate record, the MCP manifest, the conformance suite's
- * source and summary, the built sky API's index and data files, and the
- * benchmark's questions.
+ * source and summary, the conventions registry, the built sky API's index and
+ * data files, and the benchmark's questions.
  */
-export function developerExpectations({ candidate, manifest, conformanceSource, conformanceSummary, skyIndex, skyFiles, benchmarkItems }) {
+export function developerExpectations({ candidate, manifest, conformanceSource, conformanceSummary, conventionsRegistry, skyIndex, skyFiles, benchmarkItems }) {
   return {
     '/developers/': {
       Dataset: {
@@ -106,6 +112,9 @@ export function developerExpectations({ candidate, manifest, conformanceSource, 
     },
     '/developers/conformance/': {
       Dataset: { version: conformanceSummary.suiteVersion, contentUrls: conformanceUrls(conformanceSource, conformanceSummary) },
+    },
+    '/developers/conventions/': {
+      Dataset: { version: conventionsRegistry.version, contentUrls: [`${SITE}/developers/conventions/registry.json`] },
     },
     '/developers/sky-benchmark/': {
       Dataset: {

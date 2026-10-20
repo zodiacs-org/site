@@ -18,6 +18,7 @@ const ORG_NODE = { '@type': 'Organization', '@id': `${SITE}/#org`, name: 'Zodiac
 // A small built site: the files the fixtures name, and the one anchor the hub links to.
 const SERVED = new Set([
   '/developers/', '/developers/engine/', '/developers/mcp/', '/developers/compute/', '/developers/conformance/',
+  '/developers/conventions/', '/developers/conventions/registry.json',
   '/developers/sky-benchmark/', '/api/v1/openapi.json', '/api/v1/signs.json', '/api/v1/aspects/2026.json',
   '/developers/sky-benchmark/v0/items.json', '/developers/sky-benchmark/v0/key.json', '/developers/sky-benchmark/v0/tool-answers.json',
 ]);
@@ -29,6 +30,7 @@ const expected = developerExpectations({
   manifest: { version: '0.1.0', artifactCommit: 'def', file: 'server.tgz' },
   conformanceSource: { repository: 'https://github.com/zodiacs-org/engine', commit: 'abc' },
   conformanceSummary: { suiteVersion: '0.1.0', levels: [{ file: 'vectors/L1.json' }] },
+  conventionsRegistry: { version: '2026-10-18' },
   skyIndex: { coverage: { years: { from: 2026, to: 2030 } } },
   skyFiles: ['/api/v1/signs.json', '/api/v1/aspects/2026.json'],
   benchmarkItems: { version: 'v0', dates: { from: '1900-01-01', to: '2049-12-31' } },
@@ -95,6 +97,16 @@ const conformance = () => ({
   creator: ORGANIZATION,
   distribution: conformanceFiles.map((contentUrl) => ({ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl })),
 });
+const conventions = () => ({
+  '@type': 'Dataset',
+  name: 'Zodiacs.org conventions registry',
+  description: 'Ids.',
+  url: `${SITE}/developers/conventions/`,
+  version: '2026-10-18',
+  license: CONFORMANCE_LICENSE,
+  creator: ORGANIZATION,
+  distribution: [{ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE}/developers/conventions/registry.json` }],
+});
 const benchmark = () => ({
   '@type': 'Dataset',
   name: 'Zodiacs sky-fact benchmark',
@@ -112,6 +124,7 @@ const pages = () => ({
   '/developers/mcp/': [ORG_NODE, mcpApp(), developerBreadcrumb('/developers/mcp/', 'MCP server')],
   '/developers/compute/': [ORG_NODE, webApi(`${SITE}/developers/compute/`), developerBreadcrumb('/developers/compute/', 'Compute API')],
   '/developers/conformance/': [ORG_NODE, conformance(), developerBreadcrumb('/developers/conformance/', 'Conformance suite')],
+  '/developers/conventions/': [ORG_NODE, conventions(), developerBreadcrumb('/developers/conventions/', 'Conventions registry')],
   '/developers/sky-benchmark/': [ORG_NODE, benchmark(), developerBreadcrumb('/developers/sky-benchmark/', 'Sky-fact benchmark')],
 });
 /** The page's nodes with the node of `type` changed. */
@@ -119,7 +132,7 @@ const edited = (path, type, change) => pages()[path].map((node) => (node['@type'
 
 describe("the developer pages' structured data", () => {
   it('names a contract for each developer page that carries markup', () => {
-    expect(Object.keys(DEVELOPER_PAGES)).toEqual(['/developers/', '/developers/engine/', '/developers/mcp/', '/developers/compute/', '/developers/conformance/', '/developers/sky-benchmark/']);
+    expect(Object.keys(DEVELOPER_PAGES)).toEqual(['/developers/', '/developers/engine/', '/developers/mcp/', '/developers/compute/', '/developers/conformance/', '/developers/conventions/', '/developers/sky-benchmark/']);
   });
 
   it('passes every page as it should be, and ignores pages outside the contract', () => {
@@ -152,6 +165,11 @@ describe("the developer pages' structured data", () => {
       .toEqual([`/developers/sky-benchmark/: Dataset.license should be ${JSON.stringify([CONFORMANCE_LICENSE])}, not null`]);
     expect(check('/developers/conformance/', edited('/developers/conformance/', 'Dataset', (node) => ({ ...node, license: SKY_DATA_LICENSE }))))
       .toHaveLength(1);
+    // The conventions registry states its licence as CC0-1.0, which is the licence its page's markup must give.
+    expect(read('../src/data/conventions/registry.json').license).toBe('CC0-1.0');
+    expect(CONFORMANCE_LICENSE).toBe('https://creativecommons.org/publicdomain/zero/1.0/');
+    expect(check('/developers/conventions/', edited('/developers/conventions/', 'Dataset', (node) => ({ ...node, license: SKY_DATA_LICENSE }))))
+      .toEqual([`/developers/conventions/: Dataset.license should be ${JSON.stringify([CONFORMANCE_LICENSE])}, not ${JSON.stringify([SKY_DATA_LICENSE])}`]);
     expect(check('/developers/mcp/', edited('/developers/mcp/', 'SoftwareApplication', (node) => ({ ...node, license: [ENGINE_LICENSES[0]] }))))
       .toHaveLength(1);
     expect(check('/developers/compute/', edited('/developers/compute/', 'WebAPI', (node) => ({ ...node, license: SKY_DATA_LICENSE }))))
@@ -182,6 +200,18 @@ describe("the developer pages' structured data", () => {
     ]);
     expect(check('/developers/sky-benchmark/', edited('/developers/sky-benchmark/', 'Dataset', (node) => ({ ...node, version: 'v1' }))))
       .toEqual(['/developers/sky-benchmark/: Dataset.version should be "v0", not "v1"']);
+    // The registry's version, and its one download: registry.json on this site.
+    expect(check('/developers/conventions/', edited('/developers/conventions/', 'Dataset', (node) => ({ ...node, version: '2026-10-17' }))))
+      .toEqual(['/developers/conventions/: Dataset.version should be "2026-10-18", not "2026-10-17"']);
+    expect(check('/developers/conventions/', edited('/developers/conventions/', 'Dataset', (node) => ({
+      ...node,
+      distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/markdown', contentUrl: `${SITE}/developers/conventions.md` }],
+    })))).toEqual([
+      '/developers/conventions/: Dataset.distribution[0].contentUrl names /developers/conventions.md, which the build does not serve',
+      expect.stringMatching(/^\/developers\/conventions\/: Dataset\.distribution should list 1 files/u),
+    ]);
+    expect(check('/developers/conventions/', [ORG_NODE, conventions(), developerBreadcrumb('/developers/conventions/', 'Conventions')]))
+      .toHaveLength(1);
   });
 
   it('holds each span to the data, and reads a span open at one end', () => {
@@ -241,11 +271,13 @@ describe("the developer pages' structured data", () => {
     expect(SKY_DATA_FOLDERS).toEqual(['planets', 'retrogrades', 'stations', 'ingresses', 'moon-phases', 'eclipses', 'aspects']);
     const candidate = read('../src/data/platform-engine-candidate.json');
     const items = read('../public/developers/sky-benchmark/v0/items.json');
+    const registry = read('../src/data/conventions/registry.json');
     const real = developerExpectations({
-      candidate, manifest, conformanceSource: source, conformanceSummary: summary,
+      candidate, manifest, conformanceSource: source, conformanceSummary: summary, conventionsRegistry: registry,
       skyIndex: { coverage: { years: { from: 2026, to: 2030 } } }, skyFiles: [], benchmarkItems: items,
     });
     expect(real['/developers/engine/'].SoftwareApplication).toEqual({ softwareVersion: candidate.version, downloadUrl: candidate.artifactUrl });
     expect(real['/developers/sky-benchmark/'].Dataset.temporalCoverage).toBe(`${items.dates.from}/${items.dates.to}`);
+    expect(real['/developers/conventions/'].Dataset).toEqual({ version: registry.version, contentUrls: ['https://zodiacs.org/developers/conventions/registry.json'] });
   });
 });
