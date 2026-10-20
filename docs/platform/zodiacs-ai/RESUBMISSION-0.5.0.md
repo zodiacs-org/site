@@ -82,7 +82,8 @@ rebuilt in place; `zodiacs-sky-0.5.0.zip` is unchanged.
 
 The listing's About loses its two dashes: "Compare two people's charts,
 whether partners, friends or family, and get a compatibility score …"
-(1,784 characters). Paste the About from "The listing" below into the draft.
+(1,784 characters). It is now embedded in the proposed 0.5.1 ZIP because
+the portal does not allow direct editing of the uploaded About.
 
 ## Update, 19 October: three more share links (#782, draft)
 
@@ -325,23 +326,23 @@ Save screenshots to `docs/platform/zodiacs-ai/evidence/0.5.0/`.
 
 **The owner**
 
-1. Read the new wording in the pull request and say "merge", or ask for
-   changes.
-2. After the deploy, record the 45-second demo and run the checks above, or
-   watch Codex run them.
-3. Read the final listing and video, then authorize the resubmission and
-   confirm the attestations.
+1. Review the proposed 0.5.1 package and its About, then choose whether to
+   merge and upload it.
+2. Review the final listing and video before separately authorizing any
+   submission and confirming the attestations.
 
 **Codex**
 
 1. In the portal, under the owner's eye:
-   - upload the changed `zodiacs-sky-0.5.0.zip` into the draft;
-   - paste the About and the two changed test cases;
-   - confirm the subtitle and links;
-   - rescan only with the owner's yes;
-   - record what the scan says.
+   - only with the owner's separate yes, upload the new
+     `zodiacs-sky-0.5.1.zip` into the existing draft;
+   - check that its imported About matches the approved wording;
+   - confirm the subtitle, links and test cases;
+   - rescan again only if needed and with the owner's separate yes;
+   - record each portal result.
 2. Update `PORTAL_REVIEW.md` after each portal step.
-3. Cut and publish the new demo as described under "After recording".
+3. Check the fresh wedding and horoscope panels before submission; resolve
+   the first-display failure or present it to the owner for a decision.
 
 **Claude, in the session that made these fixes**
 
