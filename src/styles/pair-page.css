@@ -321,10 +321,12 @@
 .ph-adds span:not(.ph-adds__gl) { color: var(--muted); font-size: 0.9375rem; }
 
 .ph-compare .calc { display: contents; }
-.ph-compare .calc > * { grid-column: 1 / -1; }
-.ph-compare .calc > .calc__form {
+.ph-compare .calc > astro-island > * { grid-column: 1 / -1; }
+.ph-compare .calc > astro-island > .calc__form {
   grid-column: 2;
   grid-row: 1;
+  width: 100%;
+  max-width: 880px;
   border: 1px solid var(--hair-2);
   border-radius: var(--r-xl);
   background: linear-gradient(180deg, rgba(21, 25, 37, 0.86), rgba(15, 18, 26, 0.86));
@@ -494,7 +496,7 @@
   .ph-toc { position: static; }
   .ph-compare { grid-template-columns: minmax(0, 1fr); }
   .ph-compare__intro { grid-row: auto; }
-  .ph-compare .calc > .calc__form, .ph-compare__after, .ph-compare__noscript { grid-column: 1; grid-row: auto; }
+  .ph-compare .calc > astro-island > .calc__form, .ph-compare__after, .ph-compare__noscript { grid-column: 1; grid-row: auto; }
 }
 @media (max-width: 760px) {
   .ph-hero { margin: calc(8px - var(--nav-space)) 8px 0; height: auto; border-radius: 24px; }

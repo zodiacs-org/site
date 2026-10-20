@@ -91,7 +91,7 @@
     "test:home-hero:browser": "node tests/hero-video-drive.mjs",
     "test:home-demo:browser": "node tests/home-demo-drive.mjs",
     "test:thesis:browser": "node tests/thesis-qa-drive.mjs",
-    "test:compatibility:browser": "node tests/relationship-wheel-drive.mjs",
+    "test:compatibility:browser": "node tests/relationship-wheel-drive.mjs && node tests/pair-calculator-visible-drive.mjs",
     "test:registry-selector:browser": "node tests/registry-browser-drive.mjs",
     "test:terminal-split:browser": "node tests/terminal-split-drive.mjs",
     "test:registry-hub:browser": "node tests/registry-hub-drive.mjs",
