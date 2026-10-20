@@ -4,6 +4,7 @@ import { RU_OG_ROUTE_CARDS } from '../src/strings/seo.ru.mjs';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { russianDeferredStyleURLs, russianDeferredStylesReady } from './i18n-r2-deferred-styles.mjs';
+import { checkCalculatorParserLayout } from './calculator-parser-layout-drive.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const failures = [];
@@ -39,6 +40,7 @@ await withPreview({ port: 4418 }, async (baseURL) => {
     args: STABLE_CHROMIUM_ARGS,
   });
   try {
+    await checkCalculatorParserLayout({ browser, baseURL });
     for (const viewport of [{ width: 360, height: 800 }, { width: 1280, height: 900 }]) {
       const context = await browser.newContext({ viewport, reducedMotion: 'no-preference' });
       const page = await context.newPage();
