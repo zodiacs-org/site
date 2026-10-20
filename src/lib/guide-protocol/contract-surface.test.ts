@@ -63,13 +63,13 @@ describe('Guide draft runtime boundary', () => {
     for (const root of [resolve(ROOT, 'src'), resolve(ROOT, 'api')]) {
       for (const file of await runtimeFiles(root)) {
         const source = await readFile(file, 'utf8');
-        if (/PUBLIC_GUIDE_|GUIDE_KILL_SWITCH|ANTHROPIC_API_KEY/u.test(source)
+        if (/PUBLIC_GUIDE_|GUIDE_KILL_SWITCH|GUIDE_ANTHROPIC_API_KEY/u.test(source)
           && !isGuideServerFile(file)) violations.push(relativePath(file));
       }
     }
     expect(violations).toEqual([]);
     const handler = await readFile(resolve(GUIDE_SERVER_ROOT, 'handler.ts'), 'utf8');
-    expect(handler).toContain("env.ANTHROPIC_API_KEY");
+    expect(handler).toContain("env.GUIDE_ANTHROPIC_API_KEY");
     expect(handler).toContain("env.GUIDE_KILL_SWITCH === '1'");
     expect(handler).not.toContain('GUIDE_API_ENABLED');
     expect(handler).not.toContain('GUIDE_API_PREVIEW_ACK');

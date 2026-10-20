@@ -27,7 +27,7 @@ function ephemeralTurn(overrides: Partial<GuideEphemeralTurnRequestDraftV1> = {}
 }
 
 const ENV = {
-  ANTHROPIC_API_KEY: 'sk-ant-server-only-example-value',
+  GUIDE_ANTHROPIC_API_KEY: 'sk-ant-server-only-example-value',
   ASSISTANT_SALT: 'a'.repeat(64),
   PUBLIC_SUPABASE_URL: 'https://example.supabase.co',
   SUPABASE_SERVICE_ROLE_KEY: 'service-role-test-value-long-enough',
@@ -331,7 +331,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     const fetcher = vi.fn();
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, ANTHROPIC_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,
@@ -369,7 +369,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     const fetcher = vi.fn(async () => { throw new Error('quota unavailable'); });
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, ANTHROPIC_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,
@@ -431,7 +431,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     const fetcher = vi.fn();
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, ANTHROPIC_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,
@@ -449,7 +449,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     const fetcher = vi.fn();
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, ANTHROPIC_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,
@@ -489,7 +489,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     const fetcher = vi.fn();
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, ANTHROPIC_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,

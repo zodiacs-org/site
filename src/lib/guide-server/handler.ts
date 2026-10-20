@@ -688,7 +688,7 @@ export function createGuideHandler(overrides: Partial<GuideHandlerDependencies> 
       const localCrisis = classifyGuideCurrentTurnSafety(
         authority.turn.projection.userMessage,
       ) === 'crisis';
-      const apiKey = dependencies.env.ANTHROPIC_API_KEY;
+      const apiKey = dependencies.env.GUIDE_ANTHROPIC_API_KEY;
       if (!localCrisis && (typeof apiKey !== 'string' || !apiKey)) {
         sendJson(res, 503, rejection(request, 'temporarily_unavailable', true));
         return;
