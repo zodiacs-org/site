@@ -12,6 +12,8 @@ rescanned: `sky-events-v4.html`, `chart-studio-v5.html`,
 `horoscopes-v4.html` and `occasions-v5.html`. Every earlier address remains
 readable and serves the current panel for existing conversations. The tools'
 `_meta.ui.resourceUri` and `openai/outputTemplate` use the new addresses.
+The production MCP check on 20 October confirmed all four new addresses,
+every registered legacy version, and the generated HTML fingerprints.
 
 `src/ai-tools/panel-fingerprints.json` records the SHA-256 of each current
 panel's generated HTML under its address and retains retired address digests.

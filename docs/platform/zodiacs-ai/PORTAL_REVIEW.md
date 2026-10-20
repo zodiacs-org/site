@@ -1,6 +1,6 @@
 # OpenAI portal review record
 
-## Panel address refresh prepared, 20 October 2026
+## Panel address refresh live, 20 October 2026
 
 The source now advertises new addresses for all four redesigned chat panels:
 sky events v4, Chart Studio v5, horoscopes v4 and occasions v5. Earlier
@@ -8,9 +8,19 @@ addresses stay registered and serve the current panels. A generated SHA-256
 record prevents a panel from changing again under the same address and keeps
 retired address fingerprints so they cannot be reused accidentally.
 
+PR #802 merged as `35476c1622644bbb2a58e6bcb337f306b15c3578` after all PR
+checks passed, including a rerun of the fluctuating Today layout check.
+Production deployment `dpl_BnWvGnjHgF9nysuecbCZBBJeuhjh` was Ready before
+the live MCP check at about 09:29 UTC. `tools/list` exposed thirteen tools;
+the four panel tools advertised sky events v4, Chart Studio v5, horoscopes v4
+and occasions v5 in both resource metadata fields. The six other occasion
+tools also advertised occasions v5. Reading each new address and every
+registered legacy address returned identical HTML, and the four live
+SHA-256 hashes matched `src/ai-tools/panel-fingerprints.json`.
+Main's Site Check run `39400395185` finished green on the same merge commit.
+
 Portal status for this step: no rescan, draft edit or submission has been
-performed. First merge the tested code, verify the new and previous addresses
-on production, then ask Dias to approve the rescan while he watches.
+performed. Ask Dias to approve the rescan while he watches.
 
 ## 0.5.0 withdrawn for fixes — 15 October 2026
 
