@@ -21,10 +21,10 @@ The public Zodiacs plugin: one onboarding skill and a remote MCP connection to
 | `get_life_milestones` | Life milestones | Occasions panel |
 | `get_sky_calendar` | Sky calendar for your calendar app | Occasions panel |
 
-The last seven are new in 0.5.0. They share the panel
-`ui://zodiacs/occasions-v1.html` and are offered only where
-`ZODIACS_OCCASIONS_ENABLED=1`; production switches them on before the 0.5.0
-submission. The comparison, chart-twin, birthday, occasion and milestone tools
+The last seven were introduced in 0.5.0. They share the current panel
+`ui://zodiacs/occasions-v5.html` and are offered where
+`ZODIACS_OCCASIONS_ENABLED=1`. Production has them enabled. The comparison,
+chart-twin, birthday, occasion and milestone tools
 take the dates, times and places a person gives in the conversation, calculate
 from them for that call and keep none of them; the famous-chart and calendar
 tools take no personal details.
