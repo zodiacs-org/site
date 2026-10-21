@@ -22,6 +22,7 @@
  *   9. Source sky, transit, and daily snapshots cover the build date.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
+import { crawlDepths, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -1055,8 +1056,20 @@ for (const m of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {
   if (target.endsWith('.html')) {
     const html = idCache.get(target) ?? (await readFile(target, 'utf8'));
     if (hasNoindex(html)) fail(`sitemap.xml: noindex page included — ${m[1]}`);
+    for (const error of sitemapCanonicalErrors(url.pathname, html, redirectSources)) fail(error);
   }
 }
+
+// Sitemap submission cannot replace a navigable HTML path from the homepage.
+const discoveryPages = new Map();
+for (const file of files) {
+  discoveryPages.set(htmlFileToPath(relative(root, file)), idCache.get(file) ?? await readFile(file, 'utf8'));
+}
+const discoveryDepths = crawlDepths(discoveryPages);
+for (const path of sitemapLocs) {
+  if (!discoveryDepths.has(path)) fail(`sitemap.xml: no rendered anchor path from homepage to ${path}`);
+}
+console.log(`Indexing discovery: ${[...sitemapLocs].filter((path) => discoveryDepths.has(path)).length}/${sitemapLocs.size} sitemap URLs reachable from home`);
 for (const block of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
   const loc = block[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '?';
   try {
