@@ -317,6 +317,7 @@
 }
 .ph-adds__gl--two { font-size: 15px; letter-spacing: -1px; }
 .ph-adds__gl--mono { font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
+.ph-adds__gl svg { display: block; }
 .ph-adds b { display: block; font-weight: 600; font-size: 1rem; }
 .ph-adds span:not(.ph-adds__gl) { color: var(--muted); font-size: 0.9375rem; }
 

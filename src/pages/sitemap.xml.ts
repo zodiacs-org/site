@@ -749,6 +749,12 @@ export const GET: APIRoute = async () => {
       }];
     });
   });
+  // The comparison badges became SVG on the English pairs only. Apply the
+  // template date after making localized copies, which keep their own dates.
+  for (const pair of pairs) {
+    const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
+    if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
+  }
   const allUrls = [
     ...urls,
     ...localizedUrls,
