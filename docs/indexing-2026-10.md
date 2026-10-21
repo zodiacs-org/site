@@ -62,7 +62,7 @@ Draft PR: https://github.com/zodiacs-org/site/pull/816
 
 The PR connects the three isolated sections through the Tools directory, updates its honest revision date, and adds build-time discovery, canonical and redirect consistency gates with regression tests. It makes no dependency, hosting, theme or reading-copy changes. The initial head finished with 20 passing checks, one optional skip and only the known main-wide Vite advisory failure. The review follow-up removes retained HTML from the discovery gate, shares canonical parsing, ignores data attributes and inert markup, styles the Tools links and adds parser and browser regression coverage. Follow-up CI results are recorded in the PR body and the session report.
 
-The Vite security advisory also affects main. Dependencies and that gate are unchanged by instruction. A red advisory gate means the PR is not fully CI-green.
+The Vite security advisory was cleared on main by fe2d0790 (#815). After merging main, this change passed every required check: 21 passing, one optional skip.
 
 Left for later: owner review and merge, then production crawl verification, independent HTTP redirect verification, actual indexed-URL coverage and Googlebot crawl history when available, and evidence-led assessment of long-tail demand and horoscope similarity. Indexing recovery is not guaranteed by these changes. No merge or ready-for-review action has been taken.
 
