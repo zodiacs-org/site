@@ -138,8 +138,8 @@ const jsonLd = [
             </li>
           ))}
         </ul>
-        {chapter.group === 'year' && <p>Explore the <a href="/learn/chinese-zodiac/">Chinese zodiac calendar and its twelve animals</a>, or follow the sky through our <a href="/feeds/">RSS feeds</a>.</p>}
-        {chapter.group === 'together' && <p>Mark a shared moment with <a href="/occasions/">occasion cards for milestones and baby showers</a>.</p>}
+        {chapter.group === 'year' && <p class="tools-chapter__note">Explore the <a class="textlink" href="/learn/chinese-zodiac/">Chinese zodiac calendar and its twelve animals</a>, or follow the sky through our <a class="textlink" href="/feeds/">RSS feeds</a>.</p>}
+        {chapter.group === 'together' && <p class="tools-chapter__note">Mark a shared moment with <a class="textlink" href="/occasions/">occasion cards for milestones and baby showers</a>.</p>}
       </div>
     </section>
   ))}
@@ -157,3 +157,7 @@ const jsonLd = [
     </div>
   </section>
 </Base>
+
+<style>
+  .tools-chapter__note { margin-top: 20px; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.6; }
+</style>

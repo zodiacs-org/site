@@ -1,5 +1,7 @@
 # zodiacs.org indexing audit, 21 October 2026
 
+Evidence snapshot from 21 October 2026. Local evidence paths refer to the audit session, not repository dependencies. Current CI is recorded in the PR body.
+
 The live site does not have a sitewide indexing block in the evidence sampled. The audit found a concrete internal-discovery defect affecting 69 sitemap URLs. Fixing that defect improves crawl access, but cannot explain or promise recovery of all pages reportedly absent from Google. An approximate Google result count is not a reliable indexed-page inventory. Search Console was not used because its data is essentially empty. Google's chosen canonicals, crawl history, impressions and exclusion reasons remain unknown.
 
 ## Evidence and limits
@@ -58,8 +60,11 @@ Final local build passed, including all 5,163 HTML files, all 1,868 default-buil
 
 Draft PR: https://github.com/zodiacs-org/site/pull/816
 
-The PR connects the three isolated sections through the Tools directory, updates its honest revision date, and adds build-time discovery, canonical and redirect consistency gates with regression tests. It makes no dependency, hosting, theme or reading-copy changes. CI was still running when this report revision was committed. Latest checks: https://github.com/zodiacs-org/site/pull/816/checks
+The PR connects the three isolated sections through the Tools directory, updates its honest revision date, and adds build-time discovery, canonical and redirect consistency gates with regression tests. It makes no dependency, hosting, theme or reading-copy changes. The initial head finished with 20 passing checks, one optional skip and only the known main-wide Vite advisory failure. The review follow-up removes retained HTML from the discovery gate, shares canonical parsing, ignores data attributes and inert markup, styles the Tools links and adds parser and browser regression coverage. Follow-up CI results are recorded in the PR body and the session report.
 
-CI has a pre-existing Vite security advisory affecting main as well; per the job instructions, this change does not update dependencies or weaken that gate. A red advisory gate means the PR is not CI-green and the job cannot be described as fully done. The final observed CI state will be recorded in /tmp/indexing/REPORT.md and the PR body once the checks settle.
+The Vite security advisory also affects main. Dependencies and that gate are unchanged by instruction. A red advisory gate means the PR is not fully CI-green.
 
 Left for later: owner review and merge, then production crawl verification, independent HTTP redirect verification, actual indexed-URL coverage and Googlebot crawl history when available, and evidence-led assessment of long-tail demand and horoscope similarity. Indexing recovery is not guaranteed by these changes. No merge or ready-for-review action has been taken.
+
+
+Review outcome: all four code findings addressed, plus the missing parser cases and repeatable Tools browser checks. Localized Tools entry links remain a follow-up; translated Chinese zodiac pages currently remain reachable through language links.
