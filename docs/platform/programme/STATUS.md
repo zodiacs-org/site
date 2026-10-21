@@ -1,12 +1,12 @@
-R44 accepted, 2026-10-20 (Asia/Bangkok): the conventions registry is in
-production.
+The conventions registry in production, 2026-10-20 (Asia/Bangkok): R44
+stays partial.
 
-**Overall delivery: 45%** (45.053% to three decimals): 82.2 of 182.45
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
 weighted units accepted; blocked 2% (3), or 1.644%.
 
-- **R44, accepted.** #781 merged as `e024e602`. zodiacs.org serves it from
-  `dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg`, READY in production and built from the
-  merge.
+- **R44, partial and deployed.** #781 merged as `e024e602`. zodiacs.org
+  serves it from `dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg`, READY in production and
+  built from the merge.
   - Every one of the registry's 154 ids has its address on
     `/developers/conventions/`, and Chromium opening each address lands on
     that id's entry.
@@ -22,15 +22,25 @@ weighted units accepted; blocked 2% (3), or 1.644%.
 
   The record is
   [the evidence README](../evidence/conventions-registry-20261018/README.md).
+- **What keeps R44 open.** The brief asks every receipt, API field and
+  conformance vector to use the registry's ids (Codex's review of #813).
+  - Calc receipts do, writing ids such as `frame:ecliptic-j2000`.
+  - Natal and compute API receipts and the conformance vectors hold a field
+    and a bare value, such as `conventions.zodiac` "tropical" or `kind`
+    "houses.cusps". The registry maps each to an id, but they are not the
+    ids themselves.
+  - Carrying the ids needs an engine release for natal receipts, a compute
+    receipt change on the site and a conformance suite release, or your
+    revision of the gate.
 - **On the way:**
   - Codex found two endpoint ids that no receipt names. They were dropped,
     and the tests now check that direction too.
   - Codex found the page missing from the structured-data contract. It is
     now there.
   - At phone width the page scrolled sideways. Its definitions now wrap.
-- **House rules.** Main's `AGENTS.md` (#788) now asks every agent to open
-  draft pull requests only and leave each merge to the owner. This record is
-  a draft for the owner to merge.
+- **House rules.** Main's `AGENTS.md` (#788) asks every agent to open draft
+  pull requests only and leave each merge to the owner. This record is a
+  draft for the owner to merge.
 
 The conventions registry, 2026-10-18 (Asia/Bangkok): R44 stays partial
 until production.

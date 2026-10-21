@@ -182,3 +182,19 @@ Main's Site Check on the merge, [run 39410915393](https://github.com/zodiacs-org
 passed on its second attempt, at 21:02 (Asia/Bangkok). Its first attempt
 failed only the Phase 3 push drive, on the `/today/` sky ticker's known
 layout shift of 0.00087. `AGENTS.md` gives that check exactly one rerun.
+
+## What R44 still needs
+
+The brief's §4.4 asks that "every receipt, API field and conformance vector
+uses these ids". The registry is published, and its tests hold it to every
+value these payloads carry. But only calc receipts write the ids themselves,
+such as `frame:ecliptic-j2000`. Natal and compute API receipts and the
+conformance vectors hold a field and a bare value, such as
+`conventions.zodiac` "tropical" or `kind` "houses.cusps". The registry's
+rule maps each to an id, but the payloads do not carry the id (Codex's
+review of #813). R44 stays partial until they do, or until the owner revises
+the gate. Carrying the ids needs three things:
+
+- an engine release whose natal receipts carry them;
+- a change to the site's compute receipts;
+- a conformance suite release whose vectors carry them.
