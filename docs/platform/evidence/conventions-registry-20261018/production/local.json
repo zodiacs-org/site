@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-20T10:52:48.684Z",
+  "checkedAt": "2026-10-21T03:10:35.597Z",
   "base": "http://127.0.0.1:4431",
   "deployment": null,
   "registry": {
@@ -81,11 +81,13 @@
       }
     },
     {
-      "name": "the Markdown twin names every id",
+      "name": "the Markdown twin has exactly one entry for every id",
       "ok": true,
       "detail": {
         "status": 200,
-        "unnamed": 0
+        "unnamed": 0,
+        "sample": [],
+        "entries": 154
       }
     },
     {

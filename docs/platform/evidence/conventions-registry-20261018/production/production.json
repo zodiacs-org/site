@@ -1,12 +1,12 @@
 {
-  "checkedAt": "2026-10-20T10:59:28.745Z",
+  "checkedAt": "2026-10-21T03:10:28.355Z",
   "base": "https://zodiacs.org",
   "deployment": {
-    "deploymentId": "dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg",
-    "aliasUpdatedAt": "2026-10-20T10:58:35.945Z",
+    "deploymentId": "dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97",
+    "aliasUpdatedAt": "2026-10-21T00:14:13.644Z",
     "readyState": "READY",
     "target": "production",
-    "githubCommitSha": "e024e6026a39c4d348bd8d241d9603a8fc5b0218"
+    "githubCommitSha": "81c8a38fa9e99a4e1c0379afeb459ac85668a7ab"
   },
   "registry": {
     "commit": "e024e6026a39c4d348bd8d241d9603a8fc5b0218",
@@ -42,11 +42,11 @@
       "ok": true,
       "detail": {
         "deployment": {
-          "deploymentId": "dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg",
-          "aliasUpdatedAt": "2026-10-20T10:58:35.945Z",
+          "deploymentId": "dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97",
+          "aliasUpdatedAt": "2026-10-21T00:14:13.644Z",
           "readyState": "READY",
           "target": "production",
-          "githubCommitSha": "e024e6026a39c4d348bd8d241d9603a8fc5b0218"
+          "githubCommitSha": "81c8a38fa9e99a4e1c0379afeb459ac85668a7ab"
         },
         "containsCommit": true
       }
@@ -101,11 +101,13 @@
       }
     },
     {
-      "name": "the Markdown twin names every id",
+      "name": "the Markdown twin has exactly one entry for every id",
       "ok": true,
       "detail": {
         "status": 200,
-        "unnamed": 0
+        "unnamed": 0,
+        "sample": [],
+        "entries": 154
       }
     },
     {

@@ -96,9 +96,9 @@ API's documented answers.
 
   It also checks the other way, for the namespaces whose values only
   receipts give: the coverage statements, the compute API's own fields and
-  the ephemeris. Each of their ids must be one these receipts name (Codex's
-  review: `endpoint:chart` and `endpoint:houses` were listed, though no
-  receipt names them).
+  the ephemeris. Each of their ids must be one these receipts name. A
+  review found `endpoint:chart` and `endpoint:houses` listed, though no
+  receipt names them.
 - **The conformance vectors.** The kinds and arbiters are exactly the
   suite's, each tied to its vector file.
 - **The JSON.** It gives every id an address that decodes back to the id.
@@ -124,8 +124,8 @@ selects from the registry, its page and its llms line:
 ## In production
 
 #781 merged as `e024e602` on 2026-10-20 at 17:51 (Asia/Bangkok). Before the
-merge, this branch took main five times, most recently `4a12a5d0`. Codex
-reviewed it eight times and found two things, both fixed:
+merge, this branch took main five times, most recently `4a12a5d0`. Eight
+code reviews found two things, both fixed:
 
 - two endpoint ids that no receipt names;
 - the page missing from the structured-data contract.
@@ -164,18 +164,31 @@ first id renamed.
 
 | Report | Against | Passed |
 | --- | --- | --- |
-| `production/production.json` | zodiacs.org at `dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg`, built from the merge `e024e602` | 12 of 12 |
+| `production/production.json` | zodiacs.org at `dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97`, built from `81c8a38f`, which contains the merge | 12 of 12 |
 | `production/control-renamed-id.json` | the same, expecting the merge's registry with its first id renamed | 7 of 12 |
+| `production/production-at-merge.json` | zodiacs.org at `dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg`, built from the merge `e024e602` | 12 of 12 |
+| `production/control-renamed-id-at-merge.json` | the same, with the first id renamed | 7 of 12 |
 | `production/control-before.json` | zodiacs.org after the merge, before its deployment: `dpl_4SDHRDx97…`, built from `b35d0f01` | 0 of 11 |
-| `production/local.json` | the last head's build (`aebbc2db`, the merge's registry), served locally | 11 of 11 |
+| `production/local.json` | the record branch's build (`91846898`, the merge's registry), served locally | 11 of 11 |
 
 - **The control with one id renamed** fails exactly the five checks that
   read the ids: the anchor, the link, Chromium's landing, the JSON and the
   twin.
+- **The twin's check** counts whole entries, each `` - `id`: ``, since the
+  review of #813. A substring match would pass a twin that lost
+  `house:equal` but kept `house:equal-mc`.
+  - `production.json`, `control-renamed-id.json` and `local.json` were
+    written with that check.
+  - The `-at-merge` reports and `control-before.json` were written before
+    it.
+  - The page, the JSON and the twin served at the merge's deployment are
+    byte for byte the ones served at `dpl_FDD6j9M5…`: the reports' SHA-256
+    digests match, and no file of the registry changed between `e024e602`
+    and `81c8a38f`.
 - **Before the deployment** the page, the JSON and the twin were 404, and
   nothing linked to them.
-- **The alias facts** are in `production/alias.json` (at the check) and
-  `production/alias-before.json`. Each records only the deployment, when the
+- **The alias facts** are in `production/alias.json` (at the check),
+  `production/alias-at-merge.json` and `production/alias-before.json`. Each records only the deployment, when the
   alias last moved, its state, its target and its commit.
 
 Main's Site Check on the merge, [run 39410915393](https://github.com/zodiacs-org/site/actions/runs/39410915393),
@@ -191,8 +204,8 @@ value these payloads carry. But only calc receipts write the ids themselves,
 such as `frame:ecliptic-j2000`. Natal and compute API receipts and the
 conformance vectors hold a field and a bare value, such as
 `conventions.zodiac` "tropical" or `kind` "houses.cusps". The registry's
-rule maps each to an id, but the payloads do not carry the id (Codex's
-review of #813). R44 stays partial until they do, or until the owner revises
+rule maps each to an id, but the payloads do not carry the id (the review
+of #813). R44 stays partial until they do, or until the owner revises
 the gate. Carrying the ids needs three things:
 
 - an engine release whose natal receipts carry them;
