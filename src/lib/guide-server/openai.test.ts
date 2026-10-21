@@ -90,7 +90,7 @@ function openAIFetch(provider: () => Response) {
   return vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => provider());
 }
 
-describe('Guide OpenAI provider boundary', () => {
+describe('Legacy Guide OpenAI adapter', () => {
   it('pins model, immutable policy, bounded output, and store false', () => {
     const body = buildGuideOpenAIRequestBody(projection());
     expect(body).toMatchObject({
@@ -169,7 +169,7 @@ describe('Guide OpenAI provider boundary', () => {
       'event: response.output_text.delta\ndata: {"type":"response.output_text.delta","delta":"Hello "}',
     )).toEqual({ type: 'delta', text: 'Hello ' });
     expect(parseGuideOpenAIProviderEvent(
-      'data: {"type":"response.completed","response":{"status":"completed","model":"gpt-5.6-luna","usage":{"input_tokens":10,"output_tokens":2}}}',
+      'data: {"type":"response.completed","response":{"status":"completed","model":"claude-sonnet-5-5","usage":{"input_tokens":10,"output_tokens":2}}}',
     )).toEqual({
       type: 'completed',
       usage: { inputTokens: 10, outputTokens: 2 },
@@ -208,7 +208,7 @@ describe('Guide OpenAI provider boundary', () => {
         response: {
           id: 'resp_private',
           status: 'completed',
-          model: 'gpt-5.6-luna',
+          model: 'claude-sonnet-5-5',
           usage: { input_tokens: 100, output_tokens: 8 },
         },
       },
@@ -222,7 +222,7 @@ describe('Guide OpenAI provider boundary', () => {
     );
     expect(deltas).toEqual(['One ', 'step.']);
     expect(completion).toEqual({
-      modelId: 'gpt-5.6-luna',
+      modelId: 'claude-sonnet-5-5',
       promptVersion: GUIDE_PROVIDER_PROMPT_VERSION,
       policyVersion: expect.any(String),
       usage: { inputTokens: 100, outputTokens: 8 },
@@ -262,7 +262,7 @@ describe('Guide OpenAI provider boundary', () => {
         type: 'response.completed',
         response: {
           status: 'completed',
-          model: 'gpt-5.6-luna',
+          model: 'claude-sonnet-5-5',
           usage: { input_tokens: 10, output_tokens: 10 },
         },
       },
@@ -380,7 +380,7 @@ describe('Guide OpenAI provider boundary', () => {
         type: 'response.completed',
         response: {
           status: 'completed',
-          model: 'gpt-5.6-luna',
+          model: 'claude-sonnet-5-5',
           usage: { input_tokens: 10, output_tokens: 10 },
         },
       },

@@ -1,11 +1,15 @@
 {
   "version": 1,
-  "id": "localized-art-cards-20261019",
-  "baseCommit": "b9452b68fbfbfc57a0a11dc5a2b184e711bd1507",
+  "id": "guide-anthropic-provider-disclosures-2026-10-20",
+  "baseCommit": "abf94525f1ec04da2b86d6cdc68d1f57bcdd8540",
   "protectedPaths": [
-    "src/pages/es/[sign]/index.astro",
-    "src/pages/fr/[sign]/index.astro",
-    "src/pages/it/[sign]/index.astro",
-    "src/pages/pt/[sign]/index.astro"
+    "src/pages/es/methodology/index.astro",
+    "src/pages/es/privacy/index.astro",
+    "src/pages/fr/methodology/index.astro",
+    "src/pages/fr/privacy/index.astro",
+    "src/pages/it/methodology/index.astro",
+    "src/pages/it/privacy/index.astro",
+    "src/pages/pt/methodology/index.astro",
+    "src/pages/pt/privacy/index.astro"
   ]
 }

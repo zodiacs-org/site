@@ -27,7 +27,7 @@ function ephemeralTurn(overrides: Partial<GuideEphemeralTurnRequestDraftV1> = {}
 }
 
 const ENV = {
-  OPENAI_API_KEY: 'sk-server-only-example-value',
+  GUIDE_ANTHROPIC_API_KEY: 'sk-ant-server-only-example-value',
   ASSISTANT_SALT: 'a'.repeat(64),
   PUBLIC_SUPABASE_URL: 'https://example.supabase.co',
   SUPABASE_SERVICE_ROLE_KEY: 'service-role-test-value-long-enough',
@@ -331,7 +331,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     const fetcher = vi.fn();
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, OPENAI_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,
@@ -369,7 +369,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     const fetcher = vi.fn(async () => { throw new Error('quota unavailable'); });
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, OPENAI_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,
@@ -431,7 +431,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     const fetcher = vi.fn();
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, OPENAI_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,
@@ -445,11 +445,11 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     expect(streamProvider).not.toHaveBeenCalled();
   });
 
-  it('rate-limits a burst of distinct crisis turns locally without calling Supabase or OpenAI', async () => {
+  it('rate-limits a burst of distinct crisis turns locally without calling Supabase or Claude API', async () => {
     const fetcher = vi.fn();
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, OPENAI_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,
@@ -489,7 +489,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     const fetcher = vi.fn();
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
-      env: { ...ENV, OPENAI_API_KEY: undefined },
+      env: { ...ENV, GUIDE_ANTHROPIC_API_KEY: undefined },
       fetcher: fetcher as typeof fetch,
       streamProvider: streamProvider as any,
       uuid: () => GUIDE_TEST_IDS.messageSix,
@@ -982,7 +982,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     expect(response.text).not.toContain(history[1].generation!.generatedAt);
   });
 
-  it('accepts only Luna or the server-owned deterministic safety response', async () => {
+  it('accepts only Claude Sonnet 5.5 or the server-owned deterministic safety response', async () => {
     const safetyProvider = vi.fn(async (_key, _projection, onDelta) => {
       await onDelta('Please use qualified help.');
       return {
@@ -1132,7 +1132,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     expect(init.headers).toMatchObject({ apikey: ENV.SUPABASE_SERVICE_ROLE_KEY });
   });
 
-  it('rejects a cross-instance durable operation replay before Luna starts', async () => {
+  it('rejects a cross-instance durable operation replay before Claude Sonnet 5.5 starts', async () => {
     const turn = await consentedTurn();
     const streamProvider = vi.fn();
     const handler = createGuideHandler({
@@ -1207,7 +1207,7 @@ describe('POST /v1/guide/turn protected web endpoint', () => {
     expect(streamProvider).not.toHaveBeenCalled();
   });
 
-  it('enforces atomic recycled daily and global reservations before OpenAI', async () => {
+  it('enforces atomic recycled daily and global reservations before Claude API', async () => {
     for (const [status, visitor, global, expected] of [
       ['visitor_limit', 30, 30, 429],
       ['global_limit', 1, 3_000, 503],
