@@ -22,6 +22,7 @@
  *   9. Source sky, transit, and daily snapshots cover the build date.
  */
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../src/lib/horoscope-template-revision.mjs';
+import { attr, canonicalHref, renderedLinks, crawlDepths, sitemapCanonicalErrors } from './indexing-consistency.mjs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -384,23 +385,17 @@ const builtPageByFile = new Map(files.map((file) => [
 const phase1Graph = new Map([...builtPageByFile.values()].map((path) => [path, new Set()]));
 const phase1Inbound = new Map([...PHASE1_READER_PATHS].map((path) => [path, new Set()]));
 const phase1Metadata = [];
+const discoveryGraph = new Map();
 for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   const sourcePath = builtPageByFile.get(file);
-  for (const match of html.matchAll(/<a\b[^>]*\bhref=(?:"([^"]+)"|'([^']+)')[^>]*>/gi)) {
-    const value = match[1] ?? match[2];
-    if (/^(?:mailto:|tel:|data:|javascript:|#|\/\/)/i.test(value)) continue;
-    try {
-      const url = new URL(value, `${SITE_ORIGIN}${sourcePath}`);
-      if (url.origin !== SITE_ORIGIN) continue;
-      const target = targetPath(url.pathname);
-      const linkedPath = target ? builtPageByFile.get(target) : undefined;
-      if (!linkedPath || linkedPath === sourcePath) continue;
-      phase1Graph.get(sourcePath)?.add(linkedPath);
-      phase1Inbound.get(linkedPath)?.add(sourcePath);
-    } catch {
-      // Malformed internal links are reported by the forward resolver above.
-    }
+  discoveryGraph.set(sourcePath, renderedLinks(sourcePath, html));
+  for (const pathname of discoveryGraph.get(sourcePath)) {
+    const target = targetPath(pathname);
+    const linkedPath = target ? builtPageByFile.get(target) : undefined;
+    if (!linkedPath || linkedPath === sourcePath) continue;
+    phase1Graph.get(sourcePath)?.add(linkedPath);
+    phase1Inbound.get(linkedPath)?.add(sourcePath);
   }
 
   if (PHASE1_READER_PATHS.has(sourcePath)) {
@@ -1055,8 +1050,16 @@ for (const m of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {
   if (target.endsWith('.html')) {
     const html = idCache.get(target) ?? (await readFile(target, 'utf8'));
     if (hasNoindex(html)) fail(`sitemap.xml: noindex page included — ${m[1]}`);
+    for (const error of sitemapCanonicalErrors(url.pathname, html, redirectSources)) fail(error);
   }
 }
+
+// Sitemap submission cannot replace a navigable HTML path from the homepage.
+const discoveryDepths = crawlDepths(discoveryGraph);
+for (const path of sitemapLocs) {
+  if (!discoveryDepths.has(path)) fail(`sitemap.xml: no rendered anchor path from homepage to ${path}`);
+}
+console.log(`Indexing discovery: ${[...sitemapLocs].filter((path) => discoveryDepths.has(path)).length}/${sitemapLocs.size} sitemap URLs reachable from home`);
 for (const block of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
   const loc = block[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '?';
   try {
@@ -1136,20 +1139,10 @@ for (const artifact of ['/llms.txt', '/llms-full.txt', '/registry/zodiacs.regist
   }
 }
 
-function attr(tag, name) {
-  return tag.match(new RegExp(`\\b${name}=(?:"([^"]*)"|'([^']*)')`, 'i'))?.slice(1).find(Boolean) ?? null;
-}
-
 function hasNoindex(html) {
   return [...html.matchAll(/<meta\b[^>]*>/gi)].some((match) =>
     attr(match[0], 'name')?.toLowerCase() === 'robots' &&
     attr(match[0], 'content')?.toLowerCase().split(/\s*,\s*/).includes('noindex'));
-}
-
-function canonicalHref(html) {
-  const tag = [...html.matchAll(/<link\b[^>]*>/gi)].find((match) =>
-    attr(match[0], 'rel')?.toLowerCase().split(/\s+/).includes('canonical'));
-  return tag ? attr(tag[0], 'href') : null;
 }
 
 function alternateHrefMap(markup, sitemapBlock = false) {
@@ -1457,11 +1450,6 @@ for (const family of indexedFamilies) {
   for (const loc of locs) {
     const target = targetPath(loc);
     if (!target || !(await exists(target))) continue;
-    const html = idCache.get(target) ?? (await readFile(target, 'utf8'));
-    const canonical = canonicalHref(html);
-    if (canonical !== `https://zodiacs.org${loc}`) {
-      fail(`sitemap.xml: ${loc} is not self-canonical — ${canonical ?? 'missing'}`);
-    }
     const block = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)]
       .find((match) => match[1].includes(`<loc>https://zodiacs.org${loc}</loc>`))?.[1] ?? '';
     if (!family.localized && /hreflang=/.test(block)) {
@@ -1599,6 +1587,7 @@ for (const file of files) {
 for (const file of files) {
   const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
   if (hasNoindex(html)) continue;
+  if (sitemapLocs.has(htmlFileToPath(relative(root, file)))) continue;
   const rel = relative(root, file);
   const canonical = canonicalHref(html);
   if (!canonical) {

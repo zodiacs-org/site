@@ -510,6 +510,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     '/it/methodology/', '/it/privacy/', '/pt/methodology/', '/pt/privacy/',
     '/ru/methodology/', '/ru/privacy/',
   ].map((loc) => [loc, '2026-10-20'] as const),
+  // Contextual discovery links added to the tools directory.
+  ['/tools/', '2026-10-21'] as const,
 ]);
 
 function getLastmod(loc: string): string {
