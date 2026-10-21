@@ -1,3 +1,48 @@
+The conventions registry in production, 2026-10-20 (Asia/Bangkok): R44
+stays partial.
+
+**Overall delivery: 44%** (44.231% to three decimals): 80.7 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%.
+
+- **R44, partial and deployed.** #781 merged as `e024e602`. zodiacs.org
+  served it from `dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg`, READY in production and
+  built from the merge. It serves the same bytes today from
+  `dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97`, built from `81c8a38f`.
+  - Every one of the registry's 154 ids has its address on
+    `/developers/conventions/`, and Chromium opening each address lands on
+    that id's entry.
+  - `registry.json` and the Markdown twin serve the merge's registry.
+  - The developer index, the conformance page, `llms.txt` and the sitemap
+    link to it.
+  - The production check passes 12 of 12. With one id renamed, exactly the
+    five checks that read the ids fail. Before the deployment, all 11 page
+    checks failed.
+  - Main's Site Check passed on the merge (run 39410915393, on the one
+    rerun `AGENTS.md` gives the `/today/` sky ticker's known 0.00087
+    layout shift).
+
+  The record is
+  [the evidence README](../evidence/conventions-registry-20261018/README.md).
+- **What keeps R44 open.** The brief asks every receipt, API field and
+  conformance vector to use the registry's ids (the review of #813).
+  - Calc receipts do, writing ids such as `frame:ecliptic-j2000`.
+  - Natal and compute API receipts and the conformance vectors hold a field
+    and a bare value, such as `conventions.zodiac` "tropical" or `kind`
+    "houses.cusps". The registry maps each to an id, but they are not the
+    ids themselves.
+  - Carrying the ids needs an engine release for natal receipts, a compute
+    receipt change on the site and a conformance suite release, or your
+    revision of the gate.
+- **On the way:**
+  - A review found two endpoint ids that no receipt names. They were dropped,
+    and the tests now check that direction too.
+  - A review found the page missing from the structured-data contract. It
+    is now there.
+  - At phone width the page scrolled sideways. Its definitions now wrap.
+- **House rules.** Main's `AGENTS.md` (#788) asks every agent to open draft
+  pull requests only and leave each merge to the owner. This record is a
+  draft for the owner to merge.
+
 The conventions registry, 2026-10-18 (Asia/Bangkok): R44 stays partial
 until production.
 

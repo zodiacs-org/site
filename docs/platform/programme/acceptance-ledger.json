@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-18 the hosted MCP tools typed and reviewed in production (site b8b3b54c); P3.6 stays partial",
+  "asOf": "2026-10-20 the conventions registry in production (site e024e602); R44 stays partial",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -2770,11 +2770,15 @@
       "gate": "registry published; receipts and conformance vectors use its ids",
       "dependsOn": [],
       "status": "partial",
-      "release": "none",
+      "release": "deployed",
       "evidence": [
+        "https://github.com/zodiacs-org/site/pull/781",
+        "docs/platform/evidence/conventions-registry-20261018/production/production.json: zodiacs.org at dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97, built from 81c8a38f, which contains the merge e024e602, 12 of 12 checks: the page with one anchor per id and a link to each id's address, Chromium landing on each of the 154 ids' entries from its address and on nothing for a made-up id, registry.json equal to the merge's registry with each id's address, the Markdown twin with exactly one entry for every id and no other, and the links from the developer index, the conformance page, llms.txt and the sitemap (the merge's registry with one id renamed: 7 of 12, control-renamed-id.json; the record branch's own build served locally: 11 of 11, local.json)",
+        "docs/platform/evidence/conventions-registry-20261018/production/production-at-merge.json: zodiacs.org at dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg, built from the merge e024e602 itself, 12 of 12 (one id renamed: 7 of 12; after the merge, before its deployment: 0 of 11, control-before.json); the page, the JSON and the twin it read are byte for byte the ones production.json read",
+        "https://github.com/zodiacs-org/site/actions/runs/39410915393",
         "docs/platform/evidence/conventions-registry-20261018/README.md: the registry (src/data/conventions/registry.json, 154 ids in 57 namespaces), its page, JSON and Markdown twin, how receipts and conformance vectors name its ids, and the tests that hold it to the engine, the compute API's receipts and the conformance suite"
       ],
-      "notes": "receipt conventions vocabulary exists (engine receipt.ts); no published registry Update 2026-10-18: the registry is written: 154 ids in 57 namespaces, each with its definition, its sources and an address on /developers/conventions/ (also as JSON and a Markdown twin, CC0). It holds every convention id calc receipts write, every value of the five natal conventions sets (seven superseded, with the versions that wrote them), the natal receipt's houses, flags, reference instant and time records, its coverage statements, the compute API receipt's own fields and the conformance vectors' kinds and arbiters; tests/conventions-registry.test.ts holds it to the engine's exports and unions, to receipts across the conditions their fields name, and to the suite. Partial until it is merged, deployed and checked in production."
+      "notes": "receipt conventions vocabulary exists (engine receipt.ts); no published registry Update 2026-10-18: the registry is written: 154 ids in 57 namespaces, each with its definition, its sources and an address on /developers/conventions/ (also as JSON and a Markdown twin, CC0). It holds every convention id calc receipts write, every value of the five natal conventions sets (seven superseded, with the versions that wrote them), the natal receipt's houses, flags, reference instant and time records, its coverage statements, the compute API receipt's own fields and the conformance vectors' kinds and arbiters; tests/conventions-registry.test.ts holds it to the engine's exports and unions, to receipts across the conditions their fields name, and to the suite. Partial until it is merged, deployed and checked in production. Update 2026-10-20: the registry is in production. #781 merged as e024e602; zodiacs.org serves it from dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg, built from the merge, where every one of its 154 ids has its address and Chromium opening each address lands on that id's entry; main's Site Check passed on the merge (run 39410915393, on the one rerun AGENTS.md gives the /today/ sky ticker's known layout shift). Still partial (the review of #813): the brief asks that every receipt, API field and conformance vector use these ids. Calc receipts do, writing ids such as frame:ecliptic-j2000; natal and compute API receipts and the conformance vectors hold a field and a bare value (conventions.zodiac \"tropical\", kind \"houses.cusps\"), which the registry maps to an id but which are not the ids themselves. The gate needs those payloads to carry the ids: an engine release for natal receipts, a compute receipt change on the site and a conformance suite release, or the owner's revision of the gate."
     }
   ],
   "excluded": [
