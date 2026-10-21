@@ -341,6 +341,9 @@ const TOP10_LOCALES_ROUTES = ['es', 'pt', 'fr', 'it', 'ru']
 // The profile redesign reaches /profile/ and its five translations.
 const PROFILE_REDESIGN_LASTMOD = '2026-10-18';
 const PROFILE_REDESIGN_ROUTES = ['', '/es', '/pt', '/fr', '/it', '/ru'].map((locale) => `${locale}/profile/`);
+// The conventions registry (R44): its page, and the developer index and conformance page that link to it.
+const CONVENTIONS_LASTMOD = '2026-10-18';
+const CONVENTIONS_ROUTES = ['/developers/conventions/', '/developers/', '/developers/conformance/'] as const;
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -501,6 +504,16 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/developers/', DESIGN_SWEEP_DEVELOPERS_LASTMOD] as const,
   ...TOP10_LOCALES_ROUTES.map((loc) => [loc, TOP10_LOCALES_LASTMOD] as const),
   ...PROFILE_REDESIGN_ROUTES.map((loc) => [loc, PROFILE_REDESIGN_LASTMOD] as const),
+  ...CONVENTIONS_ROUTES.map((loc) => [loc, CONVENTIONS_LASTMOD] as const),
+  // Guide's provider and retention disclosures changed on these public pages.
+  ...[
+    '/about/', '/ask/', '/methodology/', '/privacy/',
+    '/es/methodology/', '/es/privacy/', '/fr/methodology/', '/fr/privacy/',
+    '/it/methodology/', '/it/privacy/', '/pt/methodology/', '/pt/privacy/',
+    '/ru/methodology/', '/ru/privacy/',
+  ].map((loc) => [loc, '2026-10-20'] as const),
+  // Contextual discovery links added to the tools directory.
+  ['/tools/', '2026-10-21'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -598,6 +611,7 @@ export const GET: APIRoute = async () => {
     { loc: '/developers/mcp/', priority: 0.6 },
     { loc: '/developers/ai/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
+    { loc: '/developers/conventions/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
     { loc: '/developers/playground/', priority: 0.6 },
     { loc: '/developers/sky-benchmark/', priority: 0.6 },
@@ -742,6 +756,12 @@ export const GET: APIRoute = async () => {
       }];
     });
   });
+  // The comparison badges became SVG on the English pairs only. Apply the
+  // template date after making localized copies, which keep their own dates.
+  for (const pair of pairs) {
+    const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
+    if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
+  }
   const allUrls = [
     ...urls,
     ...localizedUrls,

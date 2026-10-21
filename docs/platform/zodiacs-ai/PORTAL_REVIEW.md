@@ -1,5 +1,53 @@
 # OpenAI portal review record
 
+## Panel address refresh live, 20 October 2026
+
+The source now advertises new addresses for all four redesigned chat panels:
+sky events v4, Chart Studio v5, horoscopes v4 and occasions v5. Earlier
+addresses stay registered and serve the current panels. A generated SHA-256
+record prevents a panel from changing again under the same address and keeps
+retired address fingerprints so they cannot be reused accidentally.
+
+PR #802 merged as `35476c1622644bbb2a58e6bcb337f306b15c3578` after all PR
+checks passed, including a rerun of the fluctuating Today layout check.
+Production deployment `dpl_BnWvGnjHgF9nysuecbCZBBJeuhjh` was Ready before
+the live MCP check at about 09:29 UTC. `tools/list` exposed thirteen tools;
+the four panel tools advertised sky events v4, Chart Studio v5, horoscopes v4
+and occasions v5 in both resource metadata fields. The six other occasion
+tools also advertised occasions v5. Reading each new address and every
+registered legacy address returned identical HTML, and the four live
+SHA-256 hashes matched `src/ai-tools/panel-fingerprints.json`.
+Main's Site Check run `39400395185` finished green on the same merge commit.
+
+## OpenAI tool rescan, 20 October 2026
+
+Dias approved this specific rescan in chat. The existing Zodiacs 0.5.0 draft
+at `https://platform.openai.com/plugins/manage/plugin_asdk_app_6ad073182c5c8191ac05ef000b65058c`
+was rescanned at 17:53 Bangkok time. The portal showed the production MCP URL,
+domain verified, thirteen tools, and a fresh check time for each tool. Seven
+tools had the same finding: "This new tool definition needs further review
+before it can be published." They were `get_occasion_sky`,
+`get_life_milestones`, `get_compatibility`, `find_chart_twins`,
+`get_famous_chart`, `get_birthday` and `get_sky_calendar`. The other six tools
+showed no findings. The portal did not report an input-definition error or a
+server connection error. Its status remained **Not submitted / Not published**.
+No About text, test case, package, attestation or submission was changed.
+
+## Fresh ChatGPT card check, 20 October 2026
+
+Two new chats used the private Zodiacs Release Demo connection to the
+production MCP. The wedding prompt from the demo plan returned the Florence
+reading for 12 June 2027 at 17:00. The embedded Zodiacs panel displayed the
+redesigned artwork, Gemini and Libra sign icons, a 69/100 ring, the reasons
+disclosure, share link and printable-card link with the date, time and place.
+A second new chat requested the Taurus horoscope for 20 October 2026. Its
+embedded panel displayed the redesigned artwork, Taurus icon, day and focus
+controls, reading and share link. In both chats the first panel load showed
+ChatGPT's "Couldn't display" message; pressing **Try again** once loaded the
+panel. The separately generated ChatGPT response was not treated as evidence
+of the embedded panel. No console error explained the initial load failures.
+The draft remains unsubmitted and unpublished.
+
 ## 0.5.0 withdrawn for fixes — 15 October 2026
 
 Later the same day the owner withdrew the submission below. The owner's review

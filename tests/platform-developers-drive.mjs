@@ -22,20 +22,23 @@ try {
       const response = await page.goto(`${baseURL}/developers/`, { waitUntil: 'networkidle' });
       assert.equal(response.status(), 200);
       const paths = page.getByRole('navigation', { name: 'Developer integration paths', exact: true });
-      // The seven cards, in the order the hub presents them. The order is the
+      // The nine cards, in the order the hub presents them. The order is the
       // point: an earlier version led with sky data and a hosted API that did
       // not exist yet, so a first-time reader met the two things they could not
       // use before the two they could. The two ways to calculate a chart come
       // first, in your own process and then on our server; the conformance
-      // suite and the sky-fact benchmark, which are for people testing an
-      // engine or an assistant rather than using one, come last.
+      // suite, the conventions registry and the sky-fact benchmark, which are
+      // for people testing an engine or an assistant or reading its receipts
+      // rather than using one, come last.
       const cards = [
         ['Calculate a chart', '/developers/engine/'],
         ['Calculate on our server', '/developers/compute/'],
         ['Embed a tool', '/widgets/'],
         ['Connect an AI assistant', '/developers/mcp/'],
         ['Compare two calculation records', '/developers/compare/'],
+        ['Review the AI integrations', '/developers/ai/'],
         ['Check an engine against independent references', '/developers/conformance/'],
+        ['Look up what a receipt\'s ids mean', '/developers/conventions/'],
         ['Test an assistant on questions about the sky', '/developers/sky-benchmark/'],
       ];
       for (const [name, href] of cards) {

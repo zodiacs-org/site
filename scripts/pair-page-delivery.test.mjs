@@ -9,6 +9,21 @@ const distRoot = resolve(import.meta.dirname, '../dist');
 // hero's italic preloaded, the paintings' AVIF copies offered at 1.5x, and
 // every hero image but the first painting at low priority.
 describe.skipIf(!existsSync(distRoot))('built compatibility pair pages', () => {
+  it.each(['aries-cancer', 'leo-scorpio', 'taurus-taurus'])('%s ships comparison symbols without platform font lookup', (pair) => {
+    const html = readFileSync(join(distRoot, `compatibility/${pair}/index.html`), 'utf8');
+    const badges = [...html.matchAll(/<span\b[^>]*\bclass="ph-adds__gl(?: ph-adds__gl--two)?"[^>]*>([\s\S]*?)<\/span>/g)];
+    expect(badges).toHaveLength(3);
+    for (const [, content] of badges) {
+      expect(content).toMatch(/<svg\b[^>]*aria-hidden="true"[^>]*focusable="false"/);
+      // Fixed em sizing keeps the badge box identical before and after paint.
+      expect(content).toMatch(/<svg\b[^>]*viewBox="0 -1761\.28 [\d.]+ 2048"/);
+      expect(content).toMatch(/<svg\b[^>]*height="1em"/);
+      expect(content).toMatch(/<svg\b[^>]*width="[\d.]+em"/);
+      expect(content).not.toMatch(/[\u260c\u263d\u2640\u2642\ufe0e]/u);
+    }
+    expect(html).not.toContain('Pair Symbol Fallback');
+  });
+
   it.each([
     'compatibility/aries-cancer/index.html',
     'es/compatibility/aries-cancer/index.html',
@@ -26,6 +41,11 @@ describe.skipIf(!existsSync(distRoot))('built compatibility pair pages', () => {
       expect.stringMatching(/href="\/_astro\/calculator\.[A-Za-z0-9_-]+\.css"/),
     ]);
     expect(html.match(/<style data-zdx-deferred-faces>(.*?)<\/style>/)?.[1].match(/@font-face/g)).toHaveLength(2);
+    const fonts = JSON.parse(html.match(/<script type="application\/json" data-zdx-font-faces>(.*?)<\/script>/)?.[1] ?? 'null');
+    expect(fonts.map(({ family, source, descriptors }) => [family, source, descriptors.style, descriptors.weight, descriptors.display])).toEqual([
+      ['Instrument Sans', expect.stringContaining('/fonts/instrument-sans-latin-wght-italic.woff2'), 'italic', '400 700', 'swap'],
+      ['JetBrains Mono', expect.stringContaining('/fonts/jetbrains-mono-latin-wght-normal.woff2'), 'normal', '300 600', 'swap'],
+    ]);
     expect(html).toContain('data-zdx-deferred-style-loader');
     expect(html).toMatch(/<link\b[^>]*\brel=["']preload["'][^>]*\/fonts\/eb-garamond-latin-400-italic\.woff2/i);
     expect(html.match(/<source type="image\/avif" media="\(min-resolution: 1\.5dppx\)"/g)?.length).toBeGreaterThanOrEqual(2);

@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI, OCCASIONS_URI, LEGACY_OCCASIONS_URIS, OCCASION_TOOL_NAMES } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_WIDGET_URIS, LEGACY_STUDIO_URIS, LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, LEGACY_OCCASIONS_URIS, OCCASION_TOOL_NAMES } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
@@ -70,6 +70,7 @@ describe('stateless MCP HTTP boundary', () => {
       expect(tools.tools.find(tool => tool.name === 'check_sky_fact')?.description).toContain('https://zodiacs.org/developers/compute/');
       const calendar = tools.tools.find(tool => tool.name === 'get_upcoming_events')!;
       expect(calendar._meta?.['openai/ui']).toEqual({ entrypoints: [{ type: 'global' }, { type: 'thread' }] });
+      expect((calendar._meta?.ui as { resourceUri?: string } | undefined)?.resourceUri).toBe(WIDGET_URI);
       expect(calendar.annotations?.idempotentHint).toBe(false);
       const opened = await client.callTool({ name: 'get_upcoming_events', arguments: {} });
       expect(opened.isError).toBe(false);
@@ -80,6 +81,7 @@ describe('stateless MCP HTTP boundary', () => {
       expect(launch.isError).toBe(false); expect(OUTPUT_SCHEMAS.open_chart_studio.parse(launch.structuredContent).ok).toBe(true);
       const horoscopes = tools.tools.find(tool => tool.name === 'get_horoscope')!;
       expect(horoscopes.title).toBe('Horoscopes');
+      expect((horoscopes._meta?.ui as { resourceUri?: string } | undefined)?.resourceUri).toBe(HOROSCOPE_URI);
       expect(horoscopes._meta?.['openai/widgetAccessible']).toBe(true);
       expect(horoscopes._meta?.['openai/outputTemplate']).toBe(HOROSCOPE_URI);
       const reading = await client.callTool({ name: 'get_horoscope', arguments: { sign: 'leo', zone: 'Asia/Bangkok' } });
@@ -89,6 +91,10 @@ describe('stateless MCP HTTP boundary', () => {
       expect((reading._meta?.['zodiacs/horoscope'] as { sign?: string } | undefined)?.sign).toBe('leo');
       const horoscopePanel = await client.readResource({ uri: HOROSCOPE_URI });
       expect((horoscopePanel.contents[0] as { text: string }).text.startsWith('<!doctype html>')).toBe(true);
+      for (const uri of LEGACY_HOROSCOPE_URIS) {
+        const previous = await client.readResource({ uri });
+        expect(previous.contents[0]).toEqual({ ...horoscopePanel.contents[0], uri });
+      }
       const refused = await client.callTool({ name: 'open_chart_studio', arguments: { birth: 'private-canary' } });
       expect(refused.isError).toBe(true); expect(JSON.stringify(refused)).not.toContain('private-canary');
       const panel = await client.readResource({ uri: STUDIO_URI });
@@ -96,14 +102,19 @@ describe('stateless MCP HTTP boundary', () => {
       expect(panel.contents[0]._meta?.['openai/ui']).toMatchObject({ preferredDisplayMode: 'fullscreen' });
       expect(panel.contents[0]).toHaveProperty('text', expect.stringContaining('Chart Studio'));
       expect(studio._meta?.['openai/outputTemplate']).toBe(STUDIO_URI);
-      const previousPanel = await client.readResource({ uri: LEGACY_STUDIO_URI });
-      expect(previousPanel.contents[0].uri).toBe(LEGACY_STUDIO_URI);
-      expect(previousPanel.contents[0]).toEqual({ ...panel.contents[0], uri: LEGACY_STUDIO_URI });
+      for (const uri of LEGACY_STUDIO_URIS) {
+        const previousPanel = await client.readResource({ uri });
+        expect(previousPanel.contents[0]).toEqual({ ...panel.contents[0], uri });
+      }
       const result = await client.callTool({ name: 'get_sky', arguments: { instant: '2026-10-01T06:00:00Z', zone: 'Asia/Bangkok' } });
       expect(result.isError).toBe(false); expect(OUTPUT_SCHEMAS.get_sky.parse(result.structuredContent).ok).toBe(true);
       const widget = await client.readResource({ uri: WIDGET_URI });
       expect(widget.contents[0].mimeType).toBe('text/html;profile=mcp-app');
       expect(widget.contents[0]._meta?.['openai/ui']).toEqual({ availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode: 'inline' });
+      for (const uri of LEGACY_WIDGET_URIS) {
+        const previous = await client.readResource({ uri });
+        expect(previous.contents[0]).toEqual({ ...widget.contents[0], uri });
+      }
     } finally { await client.close(); }
   });
   it.each(['2025-03-26', '2025-06-18', LATEST_PROTOCOL_VERSION])('accepts a supported %s raw protocol handshake', async protocolVersion => {

@@ -12,6 +12,26 @@ await withPreview({ port: 8912 }, async base => {
       ? await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS })
       : await webkit.launch();
     try {
+      if (engine === 'chromium') for (const width of [360, 1280]) {
+        const page = await browser.newPage({ viewport: { width, height: 900 }, serviceWorkers: 'block' });
+        await page.addInitScript(() => {
+          window.toolsCLS = 0;
+          new PerformanceObserver(list => {
+            for (const entry of list.getEntries()) if (!entry.hadRecentInput) window.toolsCLS += entry.value;
+          }).observe({ type: 'layout-shift', buffered: true });
+        });
+        const response = await page.goto(base + '/tools/', { waitUntil: 'networkidle' });
+        assert.equal(response.status(), 200);
+        await page.evaluate(() => document.fonts.ready);
+        await page.waitForTimeout(1500);
+        assert.equal(await page.evaluate(() => window.toolsCLS), 0, `Tools CLS at ${width}`);
+        assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+        for (const path of ['/occasions/', '/learn/chinese-zodiac/', '/feeds/']) {
+          assert.equal(await page.locator(`.tools-chapter__note a.textlink[href="${path}"]`).count(), 1);
+        }
+        console.log(`PASS Tools discovery and zero CLS at ${width}`);
+        await page.close();
+      }
       const locales = engine === 'chromium' ? ['', 'es', 'pt', 'fr', 'it', 'ru'] : [''];
       for (const locale of locales) for (const width of [320, 390, 611, 1440]) {
         const page = await browser.newPage({ viewport: { width, height: 1149 }, serviceWorkers: 'block', reducedMotion: 'reduce' });

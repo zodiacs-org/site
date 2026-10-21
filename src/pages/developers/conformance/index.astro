@@ -121,7 +121,9 @@ const jsonLd = [
         Version {summary.suiteVersion} is at <a href={suiteTree}>zodiacs-org/engine</a>,
         commit <code>{source.commit.slice(0, 7)}</code>, with its{' '}
         <a href={suiteFile('SPEC.md')}>format and protocol</a> and{' '}
-        <a href={suiteFile('RESULTS.md')}>full results</a>.
+        <a href={suiteFile('RESULTS.md')}>full results</a>. Each vector's kind and
+        arbiter has an id in the <a href="/developers/conventions/#ns-kind">conventions registry</a>,
+        such as <code>kind:houses.cusps</code>.
       </p>
     </div>
 

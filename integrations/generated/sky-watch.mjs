@@ -27185,8 +27185,8 @@ function getSkyCalendar(input, now, origin = DEFAULT_ORIGIN2) {
 }
 
 // src/ai-tools/horoscope/reading.ts
-var HOROSCOPE_URI = "ui://zodiacs/horoscopes-v3.html";
-var LEGACY_HOROSCOPE_URIS = ["ui://zodiacs/horoscopes-v2.html", "ui://zodiacs/horoscopes-v1.html"];
+var HOROSCOPE_URI = "ui://zodiacs/horoscopes-v4.html";
+var LEGACY_HOROSCOPE_URIS = ["ui://zodiacs/horoscopes-v3.html", "ui://zodiacs/horoscopes-v2.html", "ui://zodiacs/horoscopes-v1.html"];
 var HOROSCOPE_SIGNS = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
 var HOROSCOPE_FOCUSES = ["general", "love", "career"];
 var HOROSCOPE_PERIODS = ["day", "week"];
@@ -27361,12 +27361,12 @@ var MAX_HTTP_BYTES = 16384;
 var AI_ROUTE_PARAM = "__zodiacs_ai";
 var AI_SWITCH_ENV = "ZODIACS_MCP_ENABLED";
 var ORIGIN = "https://zodiacs.org";
-var WIDGET_URI = "ui://zodiacs/sky-events-v3.html";
-var LEGACY_WIDGET_URIS = ["ui://zodiacs/sky-events-v2.html", "ui://zodiacs/sky-events-v1.html"];
-var STUDIO_URI = "ui://zodiacs/chart-studio-v4.html";
-var LEGACY_STUDIO_URIS = ["ui://zodiacs/chart-studio-v3.html", "ui://zodiacs/chart-studio-v2.html", "ui://zodiacs/chart-studio-v1.html"];
-var OCCASIONS_URI = "ui://zodiacs/occasions-v4.html";
-var LEGACY_OCCASIONS_URIS = ["ui://zodiacs/occasions-v3.html", "ui://zodiacs/occasions-v2.html", "ui://zodiacs/occasions-v1.html"];
+var WIDGET_URI = "ui://zodiacs/sky-events-v4.html";
+var LEGACY_WIDGET_URIS = ["ui://zodiacs/sky-events-v3.html", "ui://zodiacs/sky-events-v2.html", "ui://zodiacs/sky-events-v1.html"];
+var STUDIO_URI = "ui://zodiacs/chart-studio-v5.html";
+var LEGACY_STUDIO_URIS = ["ui://zodiacs/chart-studio-v4.html", "ui://zodiacs/chart-studio-v3.html", "ui://zodiacs/chart-studio-v2.html", "ui://zodiacs/chart-studio-v1.html"];
+var OCCASIONS_URI = "ui://zodiacs/occasions-v5.html";
+var LEGACY_OCCASIONS_URIS = ["ui://zodiacs/occasions-v4.html", "ui://zodiacs/occasions-v3.html", "ui://zodiacs/occasions-v2.html", "ui://zodiacs/occasions-v1.html"];
 var READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true };
 var TOOL_TITLES = {
   get_capabilities: "What Zodiacs can do",

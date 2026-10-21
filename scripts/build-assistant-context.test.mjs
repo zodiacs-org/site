@@ -75,12 +75,13 @@ describe('assistant site context', () => {
       // The conformance suite's results page at /developers/conformance/ adds one more.
       // The compute API, AI integrations and sky benchmark each add a page.
       // The three occasion cards (/occasions/, milestones, baby shower) add three.
-      consumerRoutes: 710,
+      // The conventions registry at /developers/conventions/ adds one more.
+      consumerRoutes: 711,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 71,
+      staticPages: 72,
       tools: 28,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
@@ -100,7 +101,7 @@ describe('assistant site context', () => {
     expect(context).toContain('Chart calculation does not send birth fields to a chart API.');
     expect(context).toContain('optional account sync, which starts when a person signs in, uploads their saved charts');
     expect(context).not.toContain('only the charts a person chooses');
-    expect(context).toContain('The public Guide sends chat messages to OpenAI');
+    expect(context).toContain('The public Guide sends chat messages to Anthropic');
     expect(context).toContain('placements-only chart summary only after the person explicitly chooses “Attach my chart”');
     expect(context).not.toContain('Birth details stay on the device.');
 

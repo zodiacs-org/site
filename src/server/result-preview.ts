@@ -1322,6 +1322,7 @@ export async function handleFamousChartLinkRequest(request: Request): Promise<Re
   const data = share ? await loadShareData().catch(() => null) : null;
   const model = share && data ? famousChartCardModel(share, data.people) : null;
   const person = model && data ? data.people.find((candidate) => candidate.slug === model.slug) : null;
+  if ((url.searchParams.has('p') && !share) || (share && data && (!model || !person))) return errorResponse(404);
   if (!share || !model || !person) return htmlResponse(sharePageHtml(defaultFamousChartPage(url.origin)));
   return htmlResponse(sharePageHtml({
     title: `${model.name}’s birth chart on Zodiacs`,

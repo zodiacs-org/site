@@ -2771,8 +2771,10 @@
       "dependsOn": [],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "receipt conventions vocabulary exists (engine receipt.ts); no published registry"
+      "evidence": [
+        "docs/platform/evidence/conventions-registry-20261018/README.md: the registry (src/data/conventions/registry.json, 154 ids in 57 namespaces), its page, JSON and Markdown twin, how receipts and conformance vectors name its ids, and the tests that hold it to the engine, the compute API's receipts and the conformance suite"
+      ],
+      "notes": "receipt conventions vocabulary exists (engine receipt.ts); no published registry Update 2026-10-18: the registry is written: 154 ids in 57 namespaces, each with its definition, its sources and an address on /developers/conventions/ (also as JSON and a Markdown twin, CC0). It holds every convention id calc receipts write, every value of the five natal conventions sets (seven superseded, with the versions that wrote them), the natal receipt's houses, flags, reference instant and time records, its coverage statements, the compute API receipt's own fields and the conformance vectors' kinds and arbiters; tests/conventions-registry.test.ts holds it to the engine's exports and unions, to receipts across the conditions their fields name, and to the suite. Partial until it is merged, deployed and checked in production."
     }
   ],
   "excluded": [
