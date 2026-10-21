@@ -484,7 +484,7 @@ export default function RelationshipWheel({ locale, a, b, summary }: Relationshi
                     <PlanetGlyph body={aspect.a} size={13} class="pg-inline" /> {a.label}: {planetLabel(locale, aspect.a)} <AspectGlyph type={aspect.type} size={13} class="pg-inline" /> {aspectLabel(locale, aspect.type)} <PlanetGlyph body={aspect.b} size={13} class="pg-inline" /> {b.label}: {planetLabel(locale, aspect.b)}
                   </span>
                 </button>
-                {reference && <a class="syn__reference" href={reference.href}>
+                {reference && <a class="syn__reference" href={reference.href} aria-label={`${reference.label}${(!a.timeKnown && aspect.a === 'Moon') || (!b.timeKnown && aspect.b === 'Moon') ? ' (Moon time uncertain)' : ''} (${reference.chartA} in chart A, ${reference.chartB} in chart B)`}>
                   {reference.label}
                   {(!a.timeKnown && aspect.a === 'Moon') || (!b.timeKnown && aspect.b === 'Moon') ? ' (Moon time uncertain)' : ''}
                 </a>}
@@ -557,7 +557,7 @@ export default function RelationshipWheel({ locale, a, b, summary }: Relationshi
                   {' · '}{t(locale, 'orb')} {aspect.orb.toFixed(1)}°
                   {locale === 'en' && (() => {
                     const reference = aspectReference('synastry', aspect.a, aspect.b, aspect.type);
-                    return reference ? <a class="syn__reference" href={reference.href}>{reference.label}
+                    return reference ? <a class="syn__reference" href={reference.href} aria-label={`${reference.label}${(!a.timeKnown && aspect.a === 'Moon') || (!b.timeKnown && aspect.b === 'Moon') ? ' (Moon time uncertain)' : ''} (${reference.chartA} in chart A, ${reference.chartB} in chart B)`}>{reference.label}
                       {(!a.timeKnown && aspect.a === 'Moon') || (!b.timeKnown && aspect.b === 'Moon') ? ' (Moon time uncertain)' : ''}
                     </a> : null;
                   })()}

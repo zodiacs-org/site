@@ -17,3 +17,10 @@ export function synastryReferenceRoutes() {
     },
   };
 }
+
+export function assertSynastryEntriesPublishable(entries, published = synastryPublished) {
+  const drafts = entries.filter((entry) => entry.data.draft).map((entry) => entry.id).sort();
+  if (published && drafts.length) {
+    throw new Error(`publication record complete but ${drafts.length} entries still draft: ${drafts.join(', ')}`);
+  }
+}

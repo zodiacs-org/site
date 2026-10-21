@@ -945,6 +945,10 @@ jobs:
         run: node scripts/build-aspect-reference-examples.mjs --check
       - name: Build review pages with unchanged gates
         run: npm run build
+      - name: Enforce review bundle budgets and artifact integrity
+        run: |
+          node scripts/report-bundles.mjs --fail
+          node scripts/check-dist.mjs
       - name: Check review edition
         run: npm run check
       - name: Browser layout, keyboard and privacy journey

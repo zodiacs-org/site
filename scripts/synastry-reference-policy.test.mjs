@@ -58,3 +58,13 @@ describe('synastry publication policy', () => {
     expect(referenceEnabled).toBe(true);
   });
 });
+
+it('reports draft MDX entries when the publication record is complete', async () => {
+  const { assertSynastryEntriesPublishable } = await policy(reviewedPublication);
+  const entries = ['sun-moon', 'moon-venus', 'moon-mars'].map((id) => ({ id, data: { draft: true } }));
+  expect(() => assertSynastryEntriesPublishable(entries)).toThrow(
+    'publication record complete but 3 entries still draft: moon-mars, moon-venus, sun-moon',
+  );
+  expect(() => assertSynastryEntriesPublishable(entries, false)).not.toThrow();
+  expect(() => assertSynastryEntriesPublishable(entries.map((entry) => ({ ...entry, data: { draft: false } })))).not.toThrow();
+});

@@ -23,7 +23,9 @@ publication record. This keeps drafts out of normal public generation.
 Both the site routes and the lightweight result-link resolver use the
 same publication record. Changing a preview flag cannot mark a draft as
 published. Named approval, review dates, reviewed article status and an
-indexing-evidence record are required before public release.
+indexing-evidence record are required before public release. The three pair MDX
+files must also change from `draft: true` to `draft: false`; a complete
+publication record with draft entries fails the build explicitly.
 
 The plan's existing-core cohort is frozen at these twenty routes:
 

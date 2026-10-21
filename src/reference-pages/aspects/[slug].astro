@@ -1,10 +1,12 @@
 ---
+import { assertSynastryEntriesPublishable } from '../../../scripts/synastry-reference-policy.mjs';
 import { getCollection } from 'astro:content';
 import AspectPairPage from '../../components/learn/AspectPairPage.astro';
 import { SYNASTRY_PAIRS, referencePublished } from '../../lib/aspect-reference';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('synastryAspects', ({ data }) => referencePublished ? !data.draft : true);
+  const entries = await getCollection('synastryAspects');
+  assertSynastryEntriesPublishable(entries, referencePublished);
   if (entries.length !== 3 || entries.some((entry) => entry.id !== entry.data.pair || !(SYNASTRY_PAIRS as readonly string[]).includes(entry.id))) {
     throw new Error('The synastry library requires exactly the three canonical pair references.');
   }

@@ -176,7 +176,18 @@ it('uses canonical visible reference names and Moon uncertainty in top and exact
       const visible = text(anchor);
       expect(visible).toBe(`Read Sun-Moon conjunction in synastry${known ? '' : ' (Moon time uncertain)'}`);
       expect(anchor.props.href).toBe('/compatibility/aspects/sun-moon/#conjunction');
-      expect(anchor.props['aria-label'] === undefined || anchor.props['aria-label'].startsWith(visible)).toBe(true);
+      expect(anchor.props['aria-label']).toBe(`${visible} (Moon in chart A, Sun in chart B)`);
     }
+  }
+});
+
+it('names chart roles correctly when the assignment is reversed', () => {
+  const first: WheelPerson = { ...a, bodies: [{ body: 'Sun', lon: 0 }], timeKnown: true };
+  const second: WheelPerson = { ...b, bodies: [{ body: 'Moon', lon: 0 }], timeKnown: true };
+  const anchors = nodes(render(first, second)).filter((node) => node.type === 'a' && node.props.class === 'syn__reference');
+  expect(anchors).toHaveLength(2);
+  for (const anchor of anchors) {
+    expect(anchor.props['aria-label']).toBe('Read Sun-Moon conjunction in synastry (Sun in chart A, Moon in chart B)');
+    expect(anchor.props['aria-label']).not.toContain('undefined');
   }
 });
