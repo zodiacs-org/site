@@ -503,6 +503,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...TOP10_LOCALES_ROUTES.map((loc) => [loc, TOP10_LOCALES_LASTMOD] as const),
   ...PROFILE_REDESIGN_ROUTES.map((loc) => [loc, PROFILE_REDESIGN_LASTMOD] as const),
   ...CONVENTIONS_ROUTES.map((loc) => [loc, CONVENTIONS_LASTMOD] as const),
+  // Guide's provider and retention disclosures changed on these public pages.
+  ...[
+    '/about/', '/ask/', '/methodology/', '/privacy/',
+    '/es/methodology/', '/es/privacy/', '/fr/methodology/', '/fr/privacy/',
+    '/it/methodology/', '/it/privacy/', '/pt/methodology/', '/pt/privacy/',
+    '/ru/methodology/', '/ru/privacy/',
+  ].map((loc) => [loc, '2026-10-20'] as const),
 ]);
 
 function getLastmod(loc: string): string {
