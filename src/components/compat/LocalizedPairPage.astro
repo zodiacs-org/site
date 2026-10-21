@@ -273,7 +273,8 @@ const jsonLd = [
           <h2 class="h-2" id="compare-title">{c.toolHeading}</h2>
           <p class="klede">{c.toolLede}</p>
         </div>
-        <SynastryCalculator locale={locale} client:visible />
+        <!-- Keep the display: contents layout outside the visibility observer. -->
+        <div class="calc"><SynastryCalculator locale={locale} unwrapped client:visible /></div>
         <noscript>
           <p class="ph-compare__noscript">{c.noscript}</p>
         </noscript>

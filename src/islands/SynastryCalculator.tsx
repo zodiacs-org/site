@@ -4,6 +4,7 @@
  * that path. Birth-detail entry (or a stale engine version) lazy-loads
  * the engine the same way the chart calculator does.
  */
+import { Fragment } from 'preact';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, type CalendarChoice } from './BirthFields';
 import SignChip from './SignChip';
@@ -516,7 +517,11 @@ function LoadRecovery({ error, onRetry, locale, area, reopenLink = false }: {
   );
 }
 
-export default function SynastryCalculator({ locale: rawLocale = 'en' }: { locale?: Locale }) {
+export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped = false }: {
+  locale?: Locale;
+  /** The host owns .calc so client:visible can observe the boxed form directly. */
+  unwrapped?: boolean;
+}) {
   const locale = normalizeCatalogLocale(rawLocale);
   const inviteUiActive = COMPAT_INVITES_UI_ENABLED
     && locale === 'en'
@@ -1353,8 +1358,9 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     }
   }, [busy, error, result]);
 
+  const Root = unwrapped ? Fragment : 'div';
   return (
-    <div class="calc">
+    <Root class={unwrapped ? undefined : 'calc'}>
       {inviteUiError && <LoadRecovery error={inviteUiError} locale={locale} area="invite-ui" onRetry={() => setInviteUiRetry((n) => n + 1)} />}
       {returnBand === 'loading' && <p role="status">Opening the returned reading…</p>}
       {returnError && <LoadRecovery error={returnError} locale={locale} area="return" reopenLink onRetry={() => {
@@ -1460,8 +1466,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
           )}
           {charts.length < 2 && (
             <p class="field__help">
-              {t(locale, 'compareSavedHelp')}{' '}
-              <a href={localizePath(locale, '/birth-chart/')}>{t(locale, 'getBirthChart')} →</a>
+              {`${t(locale, 'compareSavedHelp')} `}
+              <a href={localizePath(locale, '/birth-chart/')}>{`${t(locale, 'getBirthChart')} →`}</a>
             </p>
           )}
           {error && <p class="calc__error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
@@ -1656,6 +1662,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
             )}
         </div>
       )}
-    </div>
+    </Root>
   );
 }

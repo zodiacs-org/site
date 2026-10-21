@@ -101,7 +101,7 @@ describe('assistant site context', () => {
     expect(context).toContain('Chart calculation does not send birth fields to a chart API.');
     expect(context).toContain('optional account sync, which starts when a person signs in, uploads their saved charts');
     expect(context).not.toContain('only the charts a person chooses');
-    expect(context).toContain('The public Guide sends chat messages to OpenAI');
+    expect(context).toContain('The public Guide sends chat messages to Anthropic');
     expect(context).toContain('placements-only chart summary only after the person explicitly chooses “Attach my chart”');
     expect(context).not.toContain('Birth details stay on the device.');
 

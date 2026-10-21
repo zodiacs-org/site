@@ -18,7 +18,7 @@
  * - HARD, everywhere else: the unambiguous subset (JPL, arcseconds, IANA,
  *   "in your browser", "never sent" and the like).
  * - NEUTRAL, on translated pages and catalogs: names and numbers that read
- *   the same in any language (JPL, IANA, OpenAI, 12:00, UTC), so a
+ *   the same in any language (JPL, IANA, OpenAI, Anthropic, 12:00, UTC), so a
  *   translation of a listed claim is listed too.
  *
  * Nothing here writes the ledger; scripts/claims-ledger.mjs prints drafts.
@@ -672,7 +672,7 @@ export async function extractBlocks(file, source) {
  */
 export const LEXICON_VERSION = 2;
 
-const BRANDS = /(?:\bOpenAI\b|\bSupabase\b|\bPlausible\b|\bPII\b|\bJPL\b|\bNASA\b|\bHorizons\b|\bSwiss Ephemeris\b|\bIANA\b|\bICU\b)/u;
+const BRANDS = /(?:\bOpenAI\b|\bAnthropic\b|\bSupabase\b|\bPlausible\b|\bPII\b|\bJPL\b|\bNASA\b|\bHorizons\b|\bSwiss Ephemeris\b|\bIANA\b|\bICU\b)/u;
 
 export const FULL = Object.freeze({
   names: BRANDS,
@@ -690,7 +690,7 @@ export const HARD = Object.freeze({
 });
 
 export const NEUTRAL = Object.freeze({
-  names: /(?:\bJPL\b|\bNASA\b|\bHorizons\b|\bIANA\b|\bICU\b|\bOpenAI\b|\bPlausible\b|\bSupabase\b|\b12:00\b|\bUTC\b|\bSwiss Ephemeris\b)/u,
+  names: /(?:\bJPL\b|\bNASA\b|\bHorizons\b|\bIANA\b|\bICU\b|\bOpenAI\b|\bAnthropic\b|\bPlausible\b|\bSupabase\b|\b12:00\b|\bUTC\b|\bSwiss Ephemeris\b)/u,
 });
 
 const LEXICONS = { dense: FULL, trust: FULL, hard: HARD, mirror: NEUTRAL };

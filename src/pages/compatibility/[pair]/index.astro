@@ -261,7 +261,8 @@ const jsonLd = [
             <div><span class="ph-adds__gl" aria-hidden="true"><PairComparisonSymbol symbol="conjunction" /></span><div><b>Links between the charts</b><span>Where your planets meet, support each other, or rub.</span></div></div>
           </div>
         </div>
-        <SynastryCalculator client:visible />
+        <!-- Keep the display: contents layout outside the visibility observer. -->
+        <div class="calc"><SynastryCalculator unwrapped client:visible /></div>
         <noscript>
           <p class="ph-compare__noscript">This compatibility calculator needs JavaScript. Enable it and reload to compare two birth charts in your browser.</p>
         </noscript>

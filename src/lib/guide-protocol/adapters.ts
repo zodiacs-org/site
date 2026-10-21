@@ -792,10 +792,10 @@ export function guideHistoryToLegacyAssistant(
 
 /** Provider settings remain server-owned; clients cannot supply this object. */
 export const GUIDE_PROVIDER_PRIVACY_POLICY = Object.freeze({
-  store: false as const,
+  retentionArrangement: 'standard_30_day' as const,
   route: '/v1/guide/turn' as const,
   productName: 'Guide' as const,
-  currentModelIdentity: 'gpt-5.6-luna' as const,
+  currentModelIdentity: 'claude-sonnet-5-5' as const,
   contextHandling: 'untrusted_data_only' as const,
   protocolSchema: GUIDE_SCHEMAS.accountTurn,
 });
