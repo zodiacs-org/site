@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-21T08:02:38.190Z",
+  "capturedAt": "2026-10-21T15:30:49.563Z",
   "browser": "Chromium 155.0.8059.84",
   "dailyDate": "2026-10-21",
   "publicationCanonicalSha256": "51aee612c425f9fc8f6dcbbd4314df3dc7209a9b20a016b1a4209a398dc4537f",
-  "templateSourceSha256": "b13da3037fd107a78b50a8c6303a19134f2512a7ba8df5f5b7ea0df2eae4ee05",
+  "templateSourceSha256": "70b4c7c2250418bee130f3b84f50833ad382d079b39bb836e77e80e75e088f97",
   "renderPayloadSha256": {
     "daily": "796405eed7a6d68637d5c2d111055f8f44e905b166a1e9ae2c541fec89a79891",
     "dailyPublication": "8a32136081810c200e78dce4f8ee876046c798e238569a68331ab97d30ccd8c0",
-    "dailyPublicationManifest": "d89f9e747fba698cf7962c440d78be5224a3419761773ae8ced25a0a5f033d6f",
+    "dailyPublicationManifest": "c69f7113fcf35c8edec0d3af9ecb784c51fd6146b2ee36b7ef9ce9d8451a295b",
     "horoscopeProgram": "0130eea35df4d90f86bedcaaa684027dce3ef7f03a4bf55119f6d430ca402117"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-21T08:02:01.295Z",
-    "templateSourceSha256": "b13da3037fd107a78b50a8c6303a19134f2512a7ba8df5f5b7ea0df2eae4ee05",
+    "builtAt": "2026-10-21T15:30:12.704Z",
+    "templateSourceSha256": "70b4c7c2250418bee130f3b84f50833ad382d079b39bb836e77e80e75e088f97",
     "dailyDate": "2026-10-21",
     "publicationCanonicalSha256": "51aee612c425f9fc8f6dcbbd4314df3dc7209a9b20a016b1a4209a398dc4537f",
     "renderPayloadSha256": {
       "daily": "796405eed7a6d68637d5c2d111055f8f44e905b166a1e9ae2c541fec89a79891",
       "dailyPublication": "8a32136081810c200e78dce4f8ee876046c798e238569a68331ab97d30ccd8c0",
-      "dailyPublicationManifest": "d89f9e747fba698cf7962c440d78be5224a3419761773ae8ced25a0a5f033d6f",
+      "dailyPublicationManifest": "c69f7113fcf35c8edec0d3af9ecb784c51fd6146b2ee36b7ef9ce9d8451a295b",
       "horoscopeProgram": "0130eea35df4d90f86bedcaaa684027dce3ef7f03a4bf55119f6d430ca402117"
     }
   },
