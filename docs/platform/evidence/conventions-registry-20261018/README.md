@@ -151,7 +151,7 @@ a site serves of it:
   nothing for a made-up id;
 - `registry.json`, equal to the commit's registry with each id's address
   added;
-- the Markdown twin, which names every id;
+- the Markdown twin, with exactly one entry for every id and no other;
 - the links from the developer index, the conformance page, `llms.txt` and
   the sitemap.
 
@@ -175,8 +175,10 @@ first id renamed.
   read the ids: the anchor, the link, Chromium's landing, the JSON and the
   twin.
 - **The twin's check** counts whole entries, each `` - `id`: ``, since the
-  review of #813. A substring match would pass a twin that lost
-  `house:equal` but kept `house:equal-mc`.
+  review of #813. It requires exactly one entry for every id and none for an
+  id the registry does not hold. A substring match would pass a twin that
+  lost `house:equal` but kept `house:equal-mc`. A one-way match would pass
+  a twin that still listed an obsolete id.
   - `production.json`, `control-renamed-id.json` and `local.json` were
     written with that check.
   - The `-at-merge` reports and `control-before.json` were written before

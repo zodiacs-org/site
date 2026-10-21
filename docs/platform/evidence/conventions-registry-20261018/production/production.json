@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-21T03:10:28.355Z",
+  "checkedAt": "2026-10-21T03:49:10.153Z",
   "base": "https://zodiacs.org",
   "deployment": {
     "deploymentId": "dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97",
@@ -101,11 +101,12 @@
       }
     },
     {
-      "name": "the Markdown twin has exactly one entry for every id",
+      "name": "the Markdown twin has exactly one entry for every id, and no other",
       "ok": true,
       "detail": {
         "status": 200,
         "unnamed": 0,
+        "unexpected": 0,
         "sample": [],
         "entries": 154
       }

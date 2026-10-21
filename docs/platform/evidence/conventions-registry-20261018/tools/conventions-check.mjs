@@ -8,7 +8,8 @@
 // - the page is served and every id has its anchor there, with a link to its own address;
 // - Chromium, opening each id's address (the page's URL with the id as its fragment), lands on that id's entry;
 // - a made-up id's address lands on nothing (the browser check can fail);
-// - registry.json is the registry with each id's address, and the Markdown twin has exactly one entry for every id;
+// - registry.json is the registry with each id's address, and the Markdown twin has exactly one entry for every id and no
+//   other;
 // - the developer index, the conformance page, llms.txt and the sitemap link to it.
 // With CONVENTIONS_CHECK_CONTROL=renamed-id it expects the registry with its first id renamed, a control that must fail
 // exactly the checks that read the ids.
@@ -127,8 +128,11 @@ const markdown = twin.bytes.toString('utf8');
 const entryCounts = new Map();
 for (const [, id] of markdown.matchAll(/^- `([^`]+)`:/gmu)) entryCounts.set(id, (entryCounts.get(id) ?? 0) + 1);
 const unnamed = ids.filter((id) => entryCounts.get(id) !== 1);
-check('the Markdown twin has exactly one entry for every id', twin.status === 200 && unnamed.length === 0,
-  { status: twin.status, unnamed: unnamed.length, sample: unnamed.slice(0, 3), entries: entryCounts.size });
+// Both ways: an entry the registry does not hold (an obsolete id, or one never registered) makes it some other document.
+const known = new Set(ids);
+const unexpected = [...entryCounts.keys()].filter((id) => !known.has(id));
+check('the Markdown twin has exactly one entry for every id, and no other', twin.status === 200 && unnamed.length === 0 && unexpected.length === 0,
+  { status: twin.status, unnamed: unnamed.length, unexpected: unexpected.length, sample: [...unnamed, ...unexpected].slice(0, 3), entries: entryCounts.size });
 
 const index = await get('/developers/');
 check('the developer index links to the registry', index.status === 200 && index.bytes.toString('utf8').includes('href="/developers/conventions/"'), { status: index.status });

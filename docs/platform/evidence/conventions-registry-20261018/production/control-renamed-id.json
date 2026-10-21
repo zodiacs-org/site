@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-21T03:10:32.875Z",
+  "checkedAt": "2026-10-21T03:49:43.658Z",
   "base": "https://zodiacs.org",
   "deployment": {
     "deploymentId": "dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97",
@@ -110,13 +110,15 @@
       }
     },
     {
-      "name": "the Markdown twin has exactly one entry for every id",
+      "name": "the Markdown twin has exactly one entry for every id, and no other",
       "ok": false,
       "detail": {
         "status": 200,
         "unnamed": 1,
+        "unexpected": 1,
         "sample": [
-          "zodiac:tropical-control"
+          "zodiac:tropical-control",
+          "zodiac:tropical"
         ],
         "entries": 154
       }
