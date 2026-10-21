@@ -54,4 +54,12 @@ The 298 newly verified successful GET/HEAD samples returned 200. A sample cannot
 
 ## Validation and handoff
 
-Validation and PR details will be updated after the final build and CI complete. CI has a pre-existing Vite security advisory affecting main as well; per the job instructions, this change does not update dependencies or weaken that gate. A red advisory gate means the PR is not CI-green and the job cannot be described as fully done.
+Final local build passed, including all 5,163 HTML files, all 1,868 default-build sitemap entries reachable, self-canonicals, existing hreflang checks and bundle budgets. Typecheck passed with zero errors and zero warnings (49 existing hints). The full test run passed 7,874 tests and timed out in two unrelated tests. Both affected files then passed in isolation, 116 tests total. The nine new consistency tests pass. Protected-scope guard passes. Browser verification of the changed Tools page at 360 px and 1280 px returned 200 with all three new links present, zero CLS and no horizontal overflow. Existing protected visual templates and their screenshot receipts are untouched.
+
+Draft PR: https://github.com/zodiacs-org/site/pull/816
+
+The PR connects the three isolated sections through the Tools directory, updates its honest revision date, and adds build-time discovery, canonical and redirect consistency gates with regression tests. It makes no dependency, hosting, theme or reading-copy changes. CI was still running when this report revision was committed. Latest checks: https://github.com/zodiacs-org/site/pull/816/checks
+
+CI has a pre-existing Vite security advisory affecting main as well; per the job instructions, this change does not update dependencies or weaken that gate. A red advisory gate means the PR is not CI-green and the job cannot be described as fully done. The final observed CI state will be recorded in /tmp/indexing/REPORT.md and the PR body once the checks settle.
+
+Left for later: owner review and merge, then production crawl verification, independent HTTP redirect verification, actual indexed-URL coverage and Googlebot crawl history when available, and evidence-led assessment of long-tail demand and horoscope similarity. Indexing recovery is not guaranteed by these changes. No merge or ready-for-review action has been taken.
