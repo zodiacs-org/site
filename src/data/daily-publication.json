@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.daily-publication.v1",
-  "date": "2026-10-21",
+  "date": "2026-10-22",
   "locale": "en",
   "policy": {
     "id": "org.zodiacs.daily.en",
@@ -14,1376 +14,1376 @@
   },
   "facts": [
     {
-      "id": "derived:2026-10-21:solar-house:aquarius:h1:fact-2026-10-21-body-moon-1200z",
+      "id": "derived:2026-10-22:solar-house:aquarius:h10:fact-2026-10-22-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
-      "body": "Moon",
-      "sign": "aquarius",
-      "sunSign": "aquarius",
-      "house": 1
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:aquarius:h10:fact-2026-10-21-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "aquarius",
       "house": 10
     },
     {
-      "id": "derived:2026-10-21:solar-house:aquarius:h7:fact-2026-10-21-body-mars-1200z",
+      "id": "derived:2026-10-22:solar-house:aquarius:h2:fact-2026-10-22-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
+      "body": "Moon",
+      "sign": "pisces",
+      "sunSign": "aquarius",
+      "house": 2
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:aquarius:h7:fact-2026-10-22-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "aquarius",
       "house": 7
     },
     {
-      "id": "derived:2026-10-21:solar-house:aquarius:h9:fact-2026-10-21-body-sun-1200z",
+      "id": "derived:2026-10-22:solar-house:aquarius:h9:fact-2026-10-22-body-sun-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
       "body": "Sun",
       "sign": "libra",
       "sunSign": "aquarius",
       "house": 9
     },
     {
-      "id": "derived:2026-10-21:solar-house:aries:h11:fact-2026-10-21-body-moon-1200z",
+      "id": "derived:2026-10-22:solar-house:aries:h12:fact-2026-10-22-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
       "body": "Moon",
-      "sign": "aquarius",
+      "sign": "pisces",
       "sunSign": "aries",
-      "house": 11
+      "house": 12
     },
     {
-      "id": "derived:2026-10-21:solar-house:aries:h5:fact-2026-10-21-body-mars-1200z",
+      "id": "derived:2026-10-22:solar-house:aries:h5:fact-2026-10-22-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "aries",
       "house": 5
     },
     {
-      "id": "derived:2026-10-21:solar-house:aries:h7:fact-2026-10-21-body-sun-1200z",
+      "id": "derived:2026-10-22:solar-house:aries:h7:fact-2026-10-22-body-sun-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
       "body": "Sun",
       "sign": "libra",
       "sunSign": "aries",
       "house": 7
     },
     {
-      "id": "derived:2026-10-21:solar-house:aries:h8:fact-2026-10-21-body-mercury-1200z",
+      "id": "derived:2026-10-22:solar-house:aries:h8:fact-2026-10-22-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "aries",
       "house": 8
     },
     {
-      "id": "derived:2026-10-21:solar-house:cancer:h2:fact-2026-10-21-body-mars-1200z",
+      "id": "derived:2026-10-22:solar-house:cancer:h2:fact-2026-10-22-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "cancer",
       "house": 2
     },
     {
-      "id": "derived:2026-10-21:solar-house:cancer:h4:fact-2026-10-21-body-sun-1200z",
+      "id": "derived:2026-10-22:solar-house:cancer:h4:fact-2026-10-22-body-sun-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
       "body": "Sun",
       "sign": "libra",
       "sunSign": "cancer",
       "house": 4
     },
     {
-      "id": "derived:2026-10-21:solar-house:cancer:h5:fact-2026-10-21-body-mercury-1200z",
+      "id": "derived:2026-10-22:solar-house:cancer:h5:fact-2026-10-22-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "cancer",
       "house": 5
     },
     {
-      "id": "derived:2026-10-21:solar-house:cancer:h8:fact-2026-10-21-body-moon-1200z",
+      "id": "derived:2026-10-22:solar-house:cancer:h9:fact-2026-10-22-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
       "body": "Moon",
-      "sign": "aquarius",
+      "sign": "pisces",
       "sunSign": "cancer",
-      "house": 8
+      "house": 9
     },
     {
-      "id": "derived:2026-10-21:solar-house:capricorn:h10:fact-2026-10-21-body-sun-1200z",
+      "id": "derived:2026-10-22:solar-house:capricorn:h10:fact-2026-10-22-body-sun-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
       "body": "Sun",
       "sign": "libra",
       "sunSign": "capricorn",
       "house": 10
     },
     {
-      "id": "derived:2026-10-21:solar-house:capricorn:h11:fact-2026-10-21-body-mercury-1200z",
+      "id": "derived:2026-10-22:solar-house:capricorn:h11:fact-2026-10-22-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "capricorn",
       "house": 11
     },
     {
-      "id": "derived:2026-10-21:solar-house:capricorn:h2:fact-2026-10-21-body-moon-1200z",
+      "id": "derived:2026-10-22:solar-house:capricorn:h3:fact-2026-10-22-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
       "body": "Moon",
-      "sign": "aquarius",
+      "sign": "pisces",
       "sunSign": "capricorn",
-      "house": 2
+      "house": 3
     },
     {
-      "id": "derived:2026-10-21:solar-house:capricorn:h8:fact-2026-10-21-body-mars-1200z",
+      "id": "derived:2026-10-22:solar-house:capricorn:h8:fact-2026-10-22-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "capricorn",
       "house": 8
     },
     {
-      "id": "derived:2026-10-21:solar-house:gemini:h3:fact-2026-10-21-body-mars-1200z",
+      "id": "derived:2026-10-22:solar-house:gemini:h10:fact-2026-10-22-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
+      "body": "Moon",
+      "sign": "pisces",
+      "sunSign": "gemini",
+      "house": 10
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:gemini:h3:fact-2026-10-22-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "gemini",
       "house": 3
     },
     {
-      "id": "derived:2026-10-21:solar-house:gemini:h5:fact-2026-10-21-body-sun-1200z",
+      "id": "derived:2026-10-22:solar-house:gemini:h5:fact-2026-10-22-body-sun-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
       "body": "Sun",
       "sign": "libra",
       "sunSign": "gemini",
       "house": 5
     },
     {
-      "id": "derived:2026-10-21:solar-house:gemini:h6:fact-2026-10-21-body-mercury-1200z",
+      "id": "derived:2026-10-22:solar-house:gemini:h6:fact-2026-10-22-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "gemini",
       "house": 6
     },
     {
-      "id": "derived:2026-10-21:solar-house:gemini:h9:fact-2026-10-21-body-moon-1200z",
+      "id": "derived:2026-10-22:solar-house:leo:h1:fact-2026-10-22-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
-      "body": "Moon",
-      "sign": "aquarius",
-      "sunSign": "gemini",
-      "house": 9
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:leo:h1:fact-2026-10-21-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "leo",
       "house": 1
     },
     {
-      "id": "derived:2026-10-21:solar-house:leo:h3:fact-2026-10-21-body-sun-1200z",
+      "id": "derived:2026-10-22:solar-house:leo:h3:fact-2026-10-22-body-sun-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
       "body": "Sun",
       "sign": "libra",
       "sunSign": "leo",
       "house": 3
     },
     {
-      "id": "derived:2026-10-21:solar-house:leo:h4:fact-2026-10-21-body-mercury-1200z",
+      "id": "derived:2026-10-22:solar-house:leo:h4:fact-2026-10-22-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "leo",
       "house": 4
     },
     {
-      "id": "derived:2026-10-21:solar-house:leo:h7:fact-2026-10-21-body-moon-1200z",
+      "id": "derived:2026-10-22:solar-house:leo:h8:fact-2026-10-22-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
       "body": "Moon",
-      "sign": "aquarius",
+      "sign": "pisces",
       "sunSign": "leo",
+      "house": 8
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:libra:h1:fact-2026-10-22-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
+      "body": "Sun",
+      "sign": "libra",
+      "sunSign": "libra",
+      "house": 1
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:libra:h11:fact-2026-10-22-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "libra",
+      "house": 11
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:libra:h2:fact-2026-10-22-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "libra",
+      "house": 2
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:libra:h6:fact-2026-10-22-body-moon-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
+      "body": "Moon",
+      "sign": "pisces",
+      "sunSign": "libra",
+      "house": 6
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:pisces:h1:fact-2026-10-22-body-moon-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
+      "body": "Moon",
+      "sign": "pisces",
+      "sunSign": "pisces",
+      "house": 1
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:pisces:h6:fact-2026-10-22-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "pisces",
+      "house": 6
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:pisces:h8:fact-2026-10-22-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
+      "body": "Sun",
+      "sign": "libra",
+      "sunSign": "pisces",
+      "house": 8
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:pisces:h9:fact-2026-10-22-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "pisces",
+      "house": 9
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:sagittarius:h11:fact-2026-10-22-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
+      "body": "Sun",
+      "sign": "libra",
+      "sunSign": "sagittarius",
+      "house": 11
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:sagittarius:h12:fact-2026-10-22-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "sagittarius",
+      "house": 12
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:sagittarius:h4:fact-2026-10-22-body-moon-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
+      "body": "Moon",
+      "sign": "pisces",
+      "sunSign": "sagittarius",
+      "house": 4
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:sagittarius:h9:fact-2026-10-22-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "sagittarius",
+      "house": 9
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:scorpio:h1:fact-2026-10-22-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "scorpio",
+      "house": 1
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:scorpio:h10:fact-2026-10-22-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "scorpio",
+      "house": 10
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:scorpio:h12:fact-2026-10-22-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
+      "body": "Sun",
+      "sign": "libra",
+      "sunSign": "scorpio",
+      "house": 12
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:scorpio:h5:fact-2026-10-22-body-moon-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
+      "body": "Moon",
+      "sign": "pisces",
+      "sunSign": "scorpio",
+      "house": 5
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:taurus:h11:fact-2026-10-22-body-moon-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
+      "body": "Moon",
+      "sign": "pisces",
+      "sunSign": "taurus",
+      "house": 11
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:taurus:h4:fact-2026-10-22-body-mars-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
+      "body": "Mars",
+      "sign": "leo",
+      "sunSign": "taurus",
+      "house": 4
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:taurus:h6:fact-2026-10-22-body-sun-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
+      "body": "Sun",
+      "sign": "libra",
+      "sunSign": "taurus",
+      "house": 6
+    },
+    {
+      "id": "derived:2026-10-22:solar-house:taurus:h7:fact-2026-10-22-body-mercury-1200z",
+      "kind": "solar-house",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
+      "body": "Mercury",
+      "sign": "scorpio",
+      "sunSign": "taurus",
       "house": 7
     },
     {
-      "id": "derived:2026-10-21:solar-house:libra:h1:fact-2026-10-21-body-sun-1200z",
+      "id": "derived:2026-10-22:solar-house:virgo:h12:fact-2026-10-22-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
-      "body": "Sun",
-      "sign": "libra",
-      "sunSign": "libra",
-      "house": 1
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:libra:h11:fact-2026-10-21-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
-      "sunSign": "libra",
-      "house": 11
+      "sunSign": "virgo",
+      "house": 12
     },
     {
-      "id": "derived:2026-10-21:solar-house:libra:h2:fact-2026-10-21-body-mercury-1200z",
+      "id": "derived:2026-10-22:solar-house:virgo:h2:fact-2026-10-22-body-sun-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "libra",
+      "sourceFactId": "fact:2026-10-22:body:sun:1200z",
+      "body": "Sun",
+      "sign": "libra",
+      "sunSign": "virgo",
       "house": 2
     },
     {
-      "id": "derived:2026-10-21:solar-house:libra:h5:fact-2026-10-21-body-moon-1200z",
+      "id": "derived:2026-10-22:solar-house:virgo:h3:fact-2026-10-22-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
-      "body": "Moon",
-      "sign": "aquarius",
-      "sunSign": "libra",
-      "house": 5
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:pisces:h12:fact-2026-10-21-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
-      "body": "Moon",
-      "sign": "aquarius",
-      "sunSign": "pisces",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:pisces:h6:fact-2026-10-21-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "pisces",
-      "house": 6
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:pisces:h8:fact-2026-10-21-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
-      "body": "Sun",
-      "sign": "libra",
-      "sunSign": "pisces",
-      "house": 8
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:pisces:h9:fact-2026-10-21-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
+      "sourceFactId": "fact:2026-10-22:body:mercury:1200z",
       "body": "Mercury",
       "sign": "scorpio",
-      "sunSign": "pisces",
-      "house": 9
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:sagittarius:h11:fact-2026-10-21-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
-      "body": "Sun",
-      "sign": "libra",
-      "sunSign": "sagittarius",
-      "house": 11
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:sagittarius:h12:fact-2026-10-21-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "sagittarius",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:sagittarius:h3:fact-2026-10-21-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
-      "body": "Moon",
-      "sign": "aquarius",
-      "sunSign": "sagittarius",
+      "sunSign": "virgo",
       "house": 3
     },
     {
-      "id": "derived:2026-10-21:solar-house:sagittarius:h9:fact-2026-10-21-body-mars-1200z",
+      "id": "derived:2026-10-22:solar-house:virgo:h7:fact-2026-10-22-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "sagittarius",
-      "house": 9
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:scorpio:h1:fact-2026-10-21-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "scorpio",
-      "house": 1
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:scorpio:h10:fact-2026-10-21-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "scorpio",
-      "house": 10
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:scorpio:h12:fact-2026-10-21-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
-      "body": "Sun",
-      "sign": "libra",
-      "sunSign": "scorpio",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:scorpio:h4:fact-2026-10-21-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-22:body:moon:1200z",
       "body": "Moon",
-      "sign": "aquarius",
-      "sunSign": "scorpio",
-      "house": 4
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:taurus:h10:fact-2026-10-21-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
-      "body": "Moon",
-      "sign": "aquarius",
-      "sunSign": "taurus",
-      "house": 10
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:taurus:h4:fact-2026-10-21-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "taurus",
-      "house": 4
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:taurus:h6:fact-2026-10-21-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
-      "body": "Sun",
-      "sign": "libra",
-      "sunSign": "taurus",
-      "house": 6
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:taurus:h7:fact-2026-10-21-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "taurus",
+      "sign": "pisces",
+      "sunSign": "virgo",
       "house": 7
     },
     {
-      "id": "derived:2026-10-21:solar-house:virgo:h12:fact-2026-10-21-body-mars-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mars:1200z",
-      "body": "Mars",
-      "sign": "leo",
-      "sunSign": "virgo",
-      "house": 12
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:virgo:h2:fact-2026-10-21-body-sun-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:sun:1200z",
-      "body": "Sun",
-      "sign": "libra",
-      "sunSign": "virgo",
-      "house": 2
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:virgo:h3:fact-2026-10-21-body-mercury-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:mercury:1200z",
-      "body": "Mercury",
-      "sign": "scorpio",
-      "sunSign": "virgo",
-      "house": 3
-    },
-    {
-      "id": "derived:2026-10-21:solar-house:virgo:h6:fact-2026-10-21-body-moon-1200z",
-      "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-21:body:moon:1200z",
-      "body": "Moon",
-      "sign": "aquarius",
-      "sunSign": "virgo",
-      "house": 6
-    },
-    {
-      "id": "fact:2026-10-21:body:jupiter:1200z",
+      "id": "fact:2026-10-22:body:jupiter:1200z",
       "kind": "body-position",
       "body": "Jupiter",
       "sign": "leo",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 142.92503526475514,
-      "degree": 22.925035264755138,
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 143.06812157206502,
+      "degree": 23.068121572065024,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-21:body:mars:1200z",
+      "id": "fact:2026-10-22:body:mars:1200z",
       "kind": "body-position",
       "body": "Mars",
       "sign": "leo",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 133.16679763424412,
-      "degree": 13.16679763424412,
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 133.6998633624766,
+      "degree": 13.699863362476606,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-21:body:mercury:1200z",
+      "id": "fact:2026-10-22:body:mercury:1200z",
       "kind": "body-position",
       "body": "Mercury",
       "sign": "scorpio",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 230.49412362651722,
-      "degree": 20.494123626517194,
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 230.77362864564492,
+      "degree": 20.773628645644976,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-21:body:moon:1200z",
+      "id": "fact:2026-10-22:body:moon:1200z",
       "kind": "body-position",
       "body": "Moon",
-      "sign": "aquarius",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 329.6934206417544,
-      "degree": 29.693420641754415,
+      "sign": "pisces",
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 342.4398517207313,
+      "degree": 12.439851720731326,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-21:body:neptune:1200z",
+      "id": "fact:2026-10-22:body:neptune:1200z",
       "kind": "body-position",
       "body": "Neptune",
       "sign": "aries",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 2.3256787005359456,
-      "degree": 2.3256787005359456,
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 2.301507654270779,
+      "degree": 2.301507654270779,
       "retrograde": true
     },
     {
-      "id": "fact:2026-10-21:body:pluto:1200z",
+      "id": "fact:2026-10-22:body:pluto:1200z",
       "kind": "body-position",
       "body": "Pluto",
       "sign": "aquarius",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 303.07508192616353,
-      "degree": 3.0750819261635343,
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 303.0778461274065,
+      "degree": 3.077846127406474,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-21:body:saturn:1200z",
+      "id": "fact:2026-10-22:body:saturn:1200z",
       "kind": "body-position",
       "body": "Saturn",
       "sign": "aries",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 9.997970896430388,
-      "degree": 9.997970896430388,
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 9.925820083345684,
+      "degree": 9.925820083345684,
       "retrograde": true
     },
     {
-      "id": "fact:2026-10-21:body:sun:1200z",
+      "id": "fact:2026-10-22:body:sun:1200z",
       "kind": "body-position",
       "body": "Sun",
       "sign": "libra",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 208.10850642228985,
-      "degree": 28.108506422289793,
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 209.10290759991514,
+      "degree": 29.10290759991517,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-21:body:uranus:1200z",
+      "id": "fact:2026-10-22:body:uranus:1200z",
       "kind": "body-position",
       "body": "Uranus",
       "sign": "gemini",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 65.03038641032805,
-      "degree": 5.030386410328049,
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 64.99911964146423,
+      "degree": 4.999119641464233,
       "retrograde": true
     },
     {
-      "id": "fact:2026-10-21:body:venus:1200z",
+      "id": "fact:2026-10-22:body:venus:1200z",
       "kind": "body-position",
       "body": "Venus",
       "sign": "scorpio",
-      "at": "2026-10-21T12:00:00.000Z",
-      "longitude": 212.35585785182084,
-      "degree": 2.355857851820815,
+      "at": "2026-10-22T12:00:00.000Z",
+      "longitude": 211.75508552315665,
+      "degree": 1.7550855231565947,
       "retrograde": true
     }
   ],
   "signs": [
     {
       "sign": "aries",
-      "headline": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
-          "receipt": "Moon 29.7° Aquarius · house 11",
-          "house": 11,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:aries:h11:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your eighth house — shared finances, debts, intimacy, and trust.",
-          "receipt": "Mercury 20.5° Scorpio · house 8",
-          "house": 8,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:aries:h8:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your fifth house — creativity, romance, children, and enjoyment.",
-          "receipt": "Mars 13.2° Leo · house 5",
-          "house": 5,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:aries:h5:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your seventh house — partners and one-to-one relationships.",
-          "receipt": "Sun 28.1° Libra · house 7",
-          "house": 7,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:aries:h7:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to friends, groups, and plans for the future.",
-        "receipt": "Moon 29.7° aquarius · solar house 11",
-        "house": 11,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:aries:h11:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "taurus",
-      "headline": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
-          "receipt": "Moon 29.7° Aquarius · house 10",
-          "house": 10,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:taurus:h10:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your seventh house — partners and one-to-one relationships.",
-          "receipt": "Mercury 20.5° Scorpio · house 7",
-          "house": 7,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:taurus:h7:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your fourth house — home, family, and your private life.",
-          "receipt": "Mars 13.2° Leo · house 4",
-          "house": 4,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:taurus:h4:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your sixth house — daily work, health routines, and responsibilities.",
-          "receipt": "Sun 28.1° Libra · house 6",
-          "house": 6,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:taurus:h6:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to career, reputation, and public responsibilities.",
-        "receipt": "Moon 29.7° aquarius · solar house 10",
-        "house": 10,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:taurus:h10:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "gemini",
-      "headline": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
-          "receipt": "Moon 29.7° Aquarius · house 9",
-          "house": 9,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:gemini:h9:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your sixth house — daily work, health routines, and responsibilities.",
-          "receipt": "Mercury 20.5° Scorpio · house 6",
-          "house": 6,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:gemini:h6:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your third house — messages, errands, siblings, and your local community.",
-          "receipt": "Mars 13.2° Leo · house 3",
-          "house": 3,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:gemini:h3:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your fifth house — creativity, romance, children, and enjoyment.",
-          "receipt": "Sun 28.1° Libra · house 5",
-          "house": 5,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:gemini:h5:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to travel, learning, beliefs, and long-term plans.",
-        "receipt": "Moon 29.7° aquarius · solar house 9",
-        "house": 9,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:gemini:h9:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "cancer",
-      "headline": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
-          "receipt": "Moon 29.7° Aquarius · house 8",
-          "house": 8,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:cancer:h8:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your fifth house — creativity, romance, children, and enjoyment.",
-          "receipt": "Mercury 20.5° Scorpio · house 5",
-          "house": 5,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:cancer:h5:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your second house — your money, possessions, and priorities.",
-          "receipt": "Mars 13.2° Leo · house 2",
-          "house": 2,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:cancer:h2:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your fourth house — home, family, and your private life.",
-          "receipt": "Sun 28.1° Libra · house 4",
-          "house": 4,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:cancer:h4:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to shared finances, debts, intimacy, and trust.",
-        "receipt": "Moon 29.7° aquarius · solar house 8",
-        "house": 8,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:cancer:h8:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "leo",
-      "headline": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
-          "receipt": "Moon 29.7° Aquarius · house 7",
-          "house": 7,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:leo:h7:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your fourth house — home, family, and your private life.",
-          "receipt": "Mercury 20.5° Scorpio · house 4",
-          "house": 4,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:leo:h4:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your first house — your identity and how you present yourself.",
-          "receipt": "Mars 13.2° Leo · house 1",
-          "house": 1,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:leo:h1:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your third house — messages, errands, siblings, and your local community.",
-          "receipt": "Sun 28.1° Libra · house 3",
-          "house": 3,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:leo:h3:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to partners and one-to-one relationships.",
-        "receipt": "Moon 29.7° aquarius · solar house 7",
-        "house": 7,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:leo:h7:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "virgo",
-      "headline": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
-          "receipt": "Moon 29.7° Aquarius · house 6",
-          "house": 6,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:virgo:h6:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your third house — messages, errands, siblings, and your local community.",
-          "receipt": "Mercury 20.5° Scorpio · house 3",
-          "house": 3,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:virgo:h3:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your twelfth house — rest, privacy, and unfinished matters.",
-          "receipt": "Mars 13.2° Leo · house 12",
-          "house": 12,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:virgo:h12:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your second house — your money, possessions, and priorities.",
-          "receipt": "Sun 28.1° Libra · house 2",
-          "house": 2,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:virgo:h2:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to daily work, health routines, and responsibilities.",
-        "receipt": "Moon 29.7° aquarius · solar house 6",
-        "house": 6,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:virgo:h6:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "libra",
-      "headline": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
-          "receipt": "Moon 29.7° Aquarius · house 5",
-          "house": 5,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:libra:h5:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your second house — your money, possessions, and priorities.",
-          "receipt": "Mercury 20.5° Scorpio · house 2",
-          "house": 2,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:libra:h2:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your eleventh house — friends, groups, and plans for the future.",
-          "receipt": "Mars 13.2° Leo · house 11",
-          "house": 11,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:libra:h11:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your first house — your identity and how you present yourself.",
-          "receipt": "Sun 28.1° Libra · house 1",
-          "house": 1,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:libra:h1:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to creativity, romance, children, and enjoyment.",
-        "receipt": "Moon 29.7° aquarius · solar house 5",
-        "house": 5,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:libra:h5:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "scorpio",
-      "headline": "The Moon spends today in your fourth house — home, family, and your private life.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your fourth house — home, family, and your private life.",
-          "receipt": "Moon 29.7° Aquarius · house 4",
-          "house": 4,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:scorpio:h4:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your first house — your identity and how you present yourself.",
-          "receipt": "Mercury 20.5° Scorpio · house 1",
-          "house": 1,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:scorpio:h1:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your tenth house — career, reputation, and public responsibilities.",
-          "receipt": "Mars 13.2° Leo · house 10",
-          "house": 10,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:scorpio:h10:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your twelfth house — rest, privacy, and unfinished matters.",
-          "receipt": "Sun 28.1° Libra · house 12",
-          "house": 12,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:scorpio:h12:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to home, family, and your private life.",
-        "receipt": "Moon 29.7° aquarius · solar house 4",
-        "house": 4,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:scorpio:h4:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "sagittarius",
-      "headline": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
-          "receipt": "Moon 29.7° Aquarius · house 3",
-          "house": 3,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:sagittarius:h3:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your twelfth house — rest, privacy, and unfinished matters.",
-          "receipt": "Mercury 20.5° Scorpio · house 12",
-          "house": 12,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:sagittarius:h12:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your ninth house — travel, learning, beliefs, and long-term plans.",
-          "receipt": "Mars 13.2° Leo · house 9",
-          "house": 9,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:sagittarius:h9:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your eleventh house — friends, groups, and plans for the future.",
-          "receipt": "Sun 28.1° Libra · house 11",
-          "house": 11,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:sagittarius:h11:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to messages, errands, siblings, and your local community.",
-        "receipt": "Moon 29.7° aquarius · solar house 3",
-        "house": 3,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:sagittarius:h3:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "capricorn",
-      "headline": "The Moon spends today in your second house — your money, possessions, and priorities.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your second house — your money, possessions, and priorities.",
-          "receipt": "Moon 29.7° Aquarius · house 2",
-          "house": 2,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:capricorn:h2:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your eleventh house — friends, groups, and plans for the future.",
-          "receipt": "Mercury 20.5° Scorpio · house 11",
-          "house": 11,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:capricorn:h11:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your eighth house — shared finances, debts, intimacy, and trust.",
-          "receipt": "Mars 13.2° Leo · house 8",
-          "house": 8,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:capricorn:h8:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your tenth house — career, reputation, and public responsibilities.",
-          "receipt": "Sun 28.1° Libra · house 10",
-          "house": 10,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:capricorn:h10:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to your money, possessions, and priorities.",
-        "receipt": "Moon 29.7° aquarius · solar house 2",
-        "house": 2,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:capricorn:h2:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "aquarius",
-      "headline": "The Moon spends today in your first house — your identity and how you present yourself.",
-      "lines": [
-        {
-          "text": "The Moon spends today in your first house — your identity and how you present yourself.",
-          "receipt": "Moon 29.7° Aquarius · house 1",
-          "house": 1,
-          "body": "Moon",
-          "hue": "#AE8FC9",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:aquarius:h1:fact-2026-10-21-body-moon-1200z"
-          ]
-        },
-        {
-          "text": "Mercury is working your tenth house — career, reputation, and public responsibilities.",
-          "receipt": "Mercury 20.5° Scorpio · house 10",
-          "house": 10,
-          "body": "Mercury",
-          "hue": "#B9DCE8",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:aquarius:h10:fact-2026-10-21-body-mercury-1200z"
-          ]
-        },
-        {
-          "text": "Mars is pushing on your seventh house — partners and one-to-one relationships.",
-          "receipt": "Mars 13.2° Leo · house 7",
-          "house": 7,
-          "body": "Mars",
-          "hue": "#E0A9B4",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:aquarius:h7:fact-2026-10-21-body-mars-1200z"
-          ]
-        },
-        {
-          "text": "The Sun is moving through your ninth house — travel, learning, beliefs, and long-term plans.",
-          "receipt": "Sun 28.1° Libra · house 9",
-          "house": 9,
-          "body": "Sun",
-          "hue": "#D3A9DE",
-          "templateId": "body-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:aquarius:h9:fact-2026-10-21-body-sun-1200z"
-          ]
-        }
-      ],
-      "todayLine": {
-        "text": "Today may draw more attention to your identity and how you present yourself.",
-        "receipt": "Moon 29.7° aquarius · solar house 1",
-        "house": 1,
-        "body": "Moon",
-        "templateId": "today-moon-theme.v1",
-        "scope": "solar-house",
-        "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:aquarius:h1:fact-2026-10-21-body-moon-1200z"
-        ]
-      }
-    },
-    {
-      "sign": "pisces",
       "headline": "The Moon spends today in your twelfth house — rest, privacy, and unfinished matters.",
       "lines": [
         {
           "text": "The Moon spends today in your twelfth house — rest, privacy, and unfinished matters.",
-          "receipt": "Moon 29.7° Aquarius · house 12",
+          "receipt": "Moon 12.4° Pisces · house 12",
           "house": 12,
           "body": "Moon",
-          "hue": "#AE8FC9",
+          "hue": "#A9D4C4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-21:body:moon:1200z",
-            "derived:2026-10-21:solar-house:pisces:h12:fact-2026-10-21-body-moon-1200z"
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:aries:h12:fact-2026-10-22-body-moon-1200z"
           ]
         },
         {
-          "text": "Mercury is working your ninth house — travel, learning, beliefs, and long-term plans.",
-          "receipt": "Mercury 20.5° Scorpio · house 9",
-          "house": 9,
+          "text": "Mercury is working your eighth house — shared finances, debts, intimacy, and trust.",
+          "receipt": "Mercury 20.8° Scorpio · house 8",
+          "house": 8,
           "body": "Mercury",
           "hue": "#B9DCE8",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-21:body:mercury:1200z",
-            "derived:2026-10-21:solar-house:pisces:h9:fact-2026-10-21-body-mercury-1200z"
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:aries:h8:fact-2026-10-22-body-mercury-1200z"
           ]
         },
         {
-          "text": "Mars is pushing on your sixth house — daily work, health routines, and responsibilities.",
-          "receipt": "Mars 13.2° Leo · house 6",
-          "house": 6,
+          "text": "Mars is pushing on your fifth house — creativity, romance, children, and enjoyment.",
+          "receipt": "Mars 13.7° Leo · house 5",
+          "house": 5,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-21:body:mars:1200z",
-            "derived:2026-10-21:solar-house:pisces:h6:fact-2026-10-21-body-mars-1200z"
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:aries:h5:fact-2026-10-22-body-mars-1200z"
           ]
         },
         {
-          "text": "The Sun is moving through your eighth house — shared finances, debts, intimacy, and trust.",
-          "receipt": "Sun 28.1° Libra · house 8",
-          "house": 8,
+          "text": "The Sun is moving through your seventh house — partners and one-to-one relationships.",
+          "receipt": "Sun 29.1° Libra · house 7",
+          "house": 7,
           "body": "Sun",
           "hue": "#D3A9DE",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-21:body:sun:1200z",
-            "derived:2026-10-21:solar-house:pisces:h8:fact-2026-10-21-body-sun-1200z"
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:aries:h7:fact-2026-10-22-body-sun-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to rest, privacy, and unfinished matters.",
-        "receipt": "Moon 29.7° aquarius · solar house 12",
+        "receipt": "Moon 12.4° pisces · solar house 12",
         "house": 12,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-21:body:moon:1200z",
-          "derived:2026-10-21:solar-house:pisces:h12:fact-2026-10-21-body-moon-1200z"
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:aries:h12:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "taurus",
+      "headline": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
+          "receipt": "Moon 12.4° Pisces · house 11",
+          "house": 11,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:taurus:h11:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your seventh house — partners and one-to-one relationships.",
+          "receipt": "Mercury 20.8° Scorpio · house 7",
+          "house": 7,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:taurus:h7:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your fourth house — home, family, and your private life.",
+          "receipt": "Mars 13.7° Leo · house 4",
+          "house": 4,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:taurus:h4:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your sixth house — daily work, health routines, and responsibilities.",
+          "receipt": "Sun 29.1° Libra · house 6",
+          "house": 6,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:taurus:h6:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to friends, groups, and plans for the future.",
+        "receipt": "Moon 12.4° pisces · solar house 11",
+        "house": 11,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:taurus:h11:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "gemini",
+      "headline": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
+          "receipt": "Moon 12.4° Pisces · house 10",
+          "house": 10,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:gemini:h10:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your sixth house — daily work, health routines, and responsibilities.",
+          "receipt": "Mercury 20.8° Scorpio · house 6",
+          "house": 6,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:gemini:h6:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your third house — messages, errands, siblings, and your local community.",
+          "receipt": "Mars 13.7° Leo · house 3",
+          "house": 3,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:gemini:h3:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your fifth house — creativity, romance, children, and enjoyment.",
+          "receipt": "Sun 29.1° Libra · house 5",
+          "house": 5,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:gemini:h5:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to career, reputation, and public responsibilities.",
+        "receipt": "Moon 12.4° pisces · solar house 10",
+        "house": 10,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:gemini:h10:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "cancer",
+      "headline": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
+          "receipt": "Moon 12.4° Pisces · house 9",
+          "house": 9,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:cancer:h9:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your fifth house — creativity, romance, children, and enjoyment.",
+          "receipt": "Mercury 20.8° Scorpio · house 5",
+          "house": 5,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:cancer:h5:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your second house — your money, possessions, and priorities.",
+          "receipt": "Mars 13.7° Leo · house 2",
+          "house": 2,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:cancer:h2:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your fourth house — home, family, and your private life.",
+          "receipt": "Sun 29.1° Libra · house 4",
+          "house": 4,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:cancer:h4:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to travel, learning, beliefs, and long-term plans.",
+        "receipt": "Moon 12.4° pisces · solar house 9",
+        "house": 9,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:cancer:h9:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "leo",
+      "headline": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
+          "receipt": "Moon 12.4° Pisces · house 8",
+          "house": 8,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:leo:h8:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your fourth house — home, family, and your private life.",
+          "receipt": "Mercury 20.8° Scorpio · house 4",
+          "house": 4,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:leo:h4:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your first house — your identity and how you present yourself.",
+          "receipt": "Mars 13.7° Leo · house 1",
+          "house": 1,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:leo:h1:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your third house — messages, errands, siblings, and your local community.",
+          "receipt": "Sun 29.1° Libra · house 3",
+          "house": 3,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:leo:h3:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to shared finances, debts, intimacy, and trust.",
+        "receipt": "Moon 12.4° pisces · solar house 8",
+        "house": 8,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:leo:h8:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "virgo",
+      "headline": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
+          "receipt": "Moon 12.4° Pisces · house 7",
+          "house": 7,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:virgo:h7:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your third house — messages, errands, siblings, and your local community.",
+          "receipt": "Mercury 20.8° Scorpio · house 3",
+          "house": 3,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:virgo:h3:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your twelfth house — rest, privacy, and unfinished matters.",
+          "receipt": "Mars 13.7° Leo · house 12",
+          "house": 12,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:virgo:h12:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your second house — your money, possessions, and priorities.",
+          "receipt": "Sun 29.1° Libra · house 2",
+          "house": 2,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:virgo:h2:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to partners and one-to-one relationships.",
+        "receipt": "Moon 12.4° pisces · solar house 7",
+        "house": 7,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:virgo:h7:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "libra",
+      "headline": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
+          "receipt": "Moon 12.4° Pisces · house 6",
+          "house": 6,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:libra:h6:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your second house — your money, possessions, and priorities.",
+          "receipt": "Mercury 20.8° Scorpio · house 2",
+          "house": 2,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:libra:h2:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your eleventh house — friends, groups, and plans for the future.",
+          "receipt": "Mars 13.7° Leo · house 11",
+          "house": 11,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:libra:h11:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your first house — your identity and how you present yourself.",
+          "receipt": "Sun 29.1° Libra · house 1",
+          "house": 1,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:libra:h1:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to daily work, health routines, and responsibilities.",
+        "receipt": "Moon 12.4° pisces · solar house 6",
+        "house": 6,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:libra:h6:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "scorpio",
+      "headline": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
+          "receipt": "Moon 12.4° Pisces · house 5",
+          "house": 5,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:scorpio:h5:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your first house — your identity and how you present yourself.",
+          "receipt": "Mercury 20.8° Scorpio · house 1",
+          "house": 1,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:scorpio:h1:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your tenth house — career, reputation, and public responsibilities.",
+          "receipt": "Mars 13.7° Leo · house 10",
+          "house": 10,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:scorpio:h10:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your twelfth house — rest, privacy, and unfinished matters.",
+          "receipt": "Sun 29.1° Libra · house 12",
+          "house": 12,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:scorpio:h12:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to creativity, romance, children, and enjoyment.",
+        "receipt": "Moon 12.4° pisces · solar house 5",
+        "house": 5,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:scorpio:h5:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "sagittarius",
+      "headline": "The Moon spends today in your fourth house — home, family, and your private life.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your fourth house — home, family, and your private life.",
+          "receipt": "Moon 12.4° Pisces · house 4",
+          "house": 4,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:sagittarius:h4:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your twelfth house — rest, privacy, and unfinished matters.",
+          "receipt": "Mercury 20.8° Scorpio · house 12",
+          "house": 12,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:sagittarius:h12:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your ninth house — travel, learning, beliefs, and long-term plans.",
+          "receipt": "Mars 13.7° Leo · house 9",
+          "house": 9,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:sagittarius:h9:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your eleventh house — friends, groups, and plans for the future.",
+          "receipt": "Sun 29.1° Libra · house 11",
+          "house": 11,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:sagittarius:h11:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to home, family, and your private life.",
+        "receipt": "Moon 12.4° pisces · solar house 4",
+        "house": 4,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:sagittarius:h4:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "capricorn",
+      "headline": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
+          "receipt": "Moon 12.4° Pisces · house 3",
+          "house": 3,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:capricorn:h3:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your eleventh house — friends, groups, and plans for the future.",
+          "receipt": "Mercury 20.8° Scorpio · house 11",
+          "house": 11,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:capricorn:h11:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your eighth house — shared finances, debts, intimacy, and trust.",
+          "receipt": "Mars 13.7° Leo · house 8",
+          "house": 8,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:capricorn:h8:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your tenth house — career, reputation, and public responsibilities.",
+          "receipt": "Sun 29.1° Libra · house 10",
+          "house": 10,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:capricorn:h10:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to messages, errands, siblings, and your local community.",
+        "receipt": "Moon 12.4° pisces · solar house 3",
+        "house": 3,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:capricorn:h3:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "aquarius",
+      "headline": "The Moon spends today in your second house — your money, possessions, and priorities.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your second house — your money, possessions, and priorities.",
+          "receipt": "Moon 12.4° Pisces · house 2",
+          "house": 2,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:aquarius:h2:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your tenth house — career, reputation, and public responsibilities.",
+          "receipt": "Mercury 20.8° Scorpio · house 10",
+          "house": 10,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:aquarius:h10:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your seventh house — partners and one-to-one relationships.",
+          "receipt": "Mars 13.7° Leo · house 7",
+          "house": 7,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:aquarius:h7:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your ninth house — travel, learning, beliefs, and long-term plans.",
+          "receipt": "Sun 29.1° Libra · house 9",
+          "house": 9,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:aquarius:h9:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to your money, possessions, and priorities.",
+        "receipt": "Moon 12.4° pisces · solar house 2",
+        "house": 2,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:aquarius:h2:fact-2026-10-22-body-moon-1200z"
+        ]
+      }
+    },
+    {
+      "sign": "pisces",
+      "headline": "The Moon spends today in your first house — your identity and how you present yourself.",
+      "lines": [
+        {
+          "text": "The Moon spends today in your first house — your identity and how you present yourself.",
+          "receipt": "Moon 12.4° Pisces · house 1",
+          "house": 1,
+          "body": "Moon",
+          "hue": "#A9D4C4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:moon:1200z",
+            "derived:2026-10-22:solar-house:pisces:h1:fact-2026-10-22-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your ninth house — travel, learning, beliefs, and long-term plans.",
+          "receipt": "Mercury 20.8° Scorpio · house 9",
+          "house": 9,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mercury:1200z",
+            "derived:2026-10-22:solar-house:pisces:h9:fact-2026-10-22-body-mercury-1200z"
+          ]
+        },
+        {
+          "text": "Mars is pushing on your sixth house — daily work, health routines, and responsibilities.",
+          "receipt": "Mars 13.7° Leo · house 6",
+          "house": 6,
+          "body": "Mars",
+          "hue": "#E0A9B4",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:mars:1200z",
+            "derived:2026-10-22:solar-house:pisces:h6:fact-2026-10-22-body-mars-1200z"
+          ]
+        },
+        {
+          "text": "The Sun is moving through your eighth house — shared finances, debts, intimacy, and trust.",
+          "receipt": "Sun 29.1° Libra · house 8",
+          "house": 8,
+          "body": "Sun",
+          "hue": "#D3A9DE",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-22:body:sun:1200z",
+            "derived:2026-10-22:solar-house:pisces:h8:fact-2026-10-22-body-sun-1200z"
+          ]
+        }
+      ],
+      "todayLine": {
+        "text": "Today may draw more attention to your identity and how you present yourself.",
+        "receipt": "Moon 12.4° pisces · solar house 1",
+        "house": 1,
+        "body": "Moon",
+        "templateId": "today-moon-theme.v1",
+        "scope": "solar-house",
+        "evidenceRefs": [
+          "fact:2026-10-22:body:moon:1200z",
+          "derived:2026-10-22:solar-house:pisces:h1:fact-2026-10-22-body-moon-1200z"
         ]
       }
     }
