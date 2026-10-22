@@ -67,6 +67,7 @@ assert.ok(!sky.apps && !sky.hooks && !sky.extensions['com.openai'].apps && !sky.
 assert.deepEqual((await json('plugins/zodiacs-sky/mcp.json')).mcpServers['zodiacs-sky'], { type: 'streamable-http', url: 'https://zodiacs.org/mcp' });
 assert.deepEqual((await json('plugins/zodiacs-developer/mcp.json')).mcpServers['zodiacs-developer'], { type: 'stdio', command: 'node', cwd: './', args: ['${PLUGIN_ROOT}/mcp/server.mjs'] });
 const submission = await json('integrations/chatgpt/chatgpt-app-submission.json');
+assert.equal(skyInterface.longDescription, submission.app_info.description, 'Sky package About must match the reviewed submission copy');
 // 0.5.0: the six released tools and the seven tools that share the occasions panel.
 const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio', 'get_occasion_sky', 'get_life_milestones', 'get_compatibility', 'find_chart_twins', 'get_famous_chart', 'get_birthday', 'get_sky_calendar'];
 assert.deepEqual(Object.keys(submission.tools), names);
