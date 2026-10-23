@@ -1,12 +1,12 @@
 {
   "schema": "zodiacs.registry-research-feed.v1",
-  "generatedAt": "2026-10-22T00:09:55.130Z",
+  "generatedAt": "2026-10-23T00:07:36.897Z",
   "publisher": "Zodiacs.org Research System",
   "window": {
     "previousDays": 30,
     "futureDays": 7,
-    "startsAt": "2026-09-22T00:00:00.000Z",
-    "endsBefore": "2026-10-30T00:00:00.000Z"
+    "startsAt": "2026-09-23T00:00:00.000Z",
+    "endsBefore": "2026-10-31T00:00:00.000Z"
   },
   "items": [
     {
@@ -95,6 +95,27 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-daily-market-brief-2026-10-23",
+      "slug": "daily-market-brief-2026-10-23",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-23T12:00:00.000Z",
+      "visibleAt": "2026-10-23T12:00:00.000Z",
+      "title": "Sun enters Scorpio · daily market brief",
+      "summary": "Sun enters Scorpio leads the disclosed symbolic index; Scorpio market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-23/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "ingress"
+      ],
+      "status": "scheduled"
+    },
+    {
       "id": "zrx-event-brief-ingress-2026-10-23t09-38-28-721z-sun-scorpio",
       "slug": "event-brief-ingress-2026-10-23t09-38-28-721z-sun-scorpio",
       "kind": "event-brief",
@@ -116,6 +137,26 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-market-check-2026-10-23",
+      "slug": "market-check-2026-10-23",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-23T00:07:36.897Z",
+      "visibleAt": "2026-10-23T00:07:36.897Z",
+      "title": "Scorpio market check · 2026-10-23",
+      "summary": "Scorpio price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-23/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
       "id": "zrx-daily-market-brief-2026-10-22",
       "slug": "daily-market-brief-2026-10-22",
       "kind": "daily-market-brief",
@@ -134,7 +175,7 @@
         "daily-sky",
         "occupancy"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-market-check-2026-10-14-observation-168h",
@@ -3089,47 +3130,6 @@
         "calendar",
         "astrology",
         "ingress"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-daily-market-brief-2026-09-22",
-      "slug": "daily-market-brief-2026-09-22",
-      "kind": "daily-market-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-22T12:00:00.000Z",
-      "visibleAt": "2026-09-22T12:00:00.000Z",
-      "title": "Saturn in Aries · daily market brief",
-      "summary": "Saturn in Aries leads the disclosed symbolic index; Aries market measures are recorded separately.",
-      "url": "/terminal/research/daily-market-brief-2026-09-22/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "daily-sky",
-        "occupancy"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-22",
-      "slug": "market-check-2026-09-22",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-22T00:07:53.706Z",
-      "visibleAt": "2026-09-22T00:07:53.706Z",
-      "title": "Aries market check · 2026-09-22",
-      "summary": "Aries price, market cap, liquidity, volume, and collection medians at one archived observation.",
-      "url": "/terminal/research/market-check-2026-09-22/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
       ],
       "status": "published"
     }
