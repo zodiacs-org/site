@@ -96,9 +96,9 @@ API's documented answers.
 
   It also checks the other way, for the namespaces whose values only
   receipts give: the coverage statements, the compute API's own fields and
-  the ephemeris. Each of their ids must be one these receipts name (Codex's
-  review: `endpoint:chart` and `endpoint:houses` were listed, though no
-  receipt names them).
+  the ephemeris. Each of their ids must be one these receipts name. A
+  review found `endpoint:chart` and `endpoint:houses` listed, though no
+  receipt names them.
 - **The conformance vectors.** The kinds and arbiters are exactly the
   suite's, each tied to its vector file.
 - **The JSON.** It gives every id an address that decodes back to the id.
@@ -123,4 +123,93 @@ selects from the registry, its page and its llms line:
 
 ## In production
 
-To be recorded after the merge.
+#781 merged as `e024e602` on 2026-10-20 at 17:51 (Asia/Bangkok). Before the
+merge, this branch took main five times, most recently `4a12a5d0`. Eight
+code reviews found two things, both fixed:
+
+- two endpoint ids that no receipt names;
+- the page missing from the structured-data contract.
+
+The full suite and the private search passed before each push, and CI
+passed 22 of 22 on the last head, `aebbc2db`. Along the way the CI runs met
+timing checks on pages this change does not touch:
+
+- the WebKit sharing drive;
+- Lighthouse on `/thesis/` and `/ru/birth-chart/`;
+- the `/es/learn/` footer drive, which #790 fixed;
+- the `/today/` fixture for 2026-10-20, which #800 fixed.
+
+Built from main and from the branch, those pages and every asset they load
+are byte-identical.
+
+`tools/conventions-check.mjs` reads the registry at a commit and checks what
+a site serves of it:
+
+- the page, with exactly one anchor per id and a link to each id's address;
+- Chromium opening every id's address, the page's URL with the id as its
+  fragment, and landing on that id's entry (`:target`), and landing on
+  nothing for a made-up id;
+- `registry.json`, equal to the commit's registry with each id's address
+  added;
+- the Markdown twin, with exactly one entry for every id and no other;
+- the links from the developer index, the conformance page, `llms.txt` and
+  the sitemap.
+
+Given the alias facts, it first checks that zodiacs.org's alias names a
+READY production deployment built from a commit that contains the given
+one. Run it from the repository's root after `npm ci`:
+`node docs/platform/evidence/conventions-registry-20261018/tools/conventions-check.mjs <alias.json or -> <commit> <out.json> [base URL]`.
+With `CONVENTIONS_CHECK_CONTROL=renamed-id` it expects the registry with its
+first id renamed.
+
+| Report | Against | Passed |
+| --- | --- | --- |
+| `production/production.json` | zodiacs.org at `dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97`, built from `81c8a38f`, which contains the merge | 12 of 12 |
+| `production/control-renamed-id.json` | the same, expecting the merge's registry with its first id renamed | 7 of 12 |
+| `production/production-at-merge.json` | zodiacs.org at `dpl_CWXDN5g3RDHy9UaWBT5DYmWGY5Kg`, built from the merge `e024e602` | 12 of 12 |
+| `production/control-renamed-id-at-merge.json` | the same, with the first id renamed | 7 of 12 |
+| `production/control-before.json` | zodiacs.org after the merge, before its deployment: `dpl_4SDHRDx97…`, built from `b35d0f01` | 0 of 11 |
+| `production/local.json` | the record branch's build (`91846898`, the merge's registry), served locally | 11 of 11 |
+
+- **The control with one id renamed** fails exactly the five checks that
+  read the ids: the anchor, the link, Chromium's landing, the JSON and the
+  twin.
+- **The twin's check** counts whole entries, each `` - `id`: ``, since the
+  review of #813. It requires exactly one entry for every id and none for an
+  id the registry does not hold. A substring match would pass a twin that
+  lost `house:equal` but kept `house:equal-mc`. A one-way match would pass
+  a twin that still listed an obsolete id.
+  - `production.json`, `control-renamed-id.json` and `local.json` were
+    written with that check.
+  - The `-at-merge` reports and `control-before.json` were written before
+    it.
+  - The page, the JSON and the twin served at the merge's deployment are
+    byte for byte the ones served at `dpl_FDD6j9M5…`: the reports' SHA-256
+    digests match, and no file of the registry changed between `e024e602`
+    and `81c8a38f`.
+- **Before the deployment** the page, the JSON and the twin were 404, and
+  nothing linked to them.
+- **The alias facts** are in `production/alias.json` (at the check),
+  `production/alias-at-merge.json` and `production/alias-before.json`. Each records only the deployment, when the
+  alias last moved, its state, its target and its commit.
+
+Main's Site Check on the merge, [run 39410915393](https://github.com/zodiacs-org/site/actions/runs/39410915393),
+passed on its second attempt, at 21:02 (Asia/Bangkok). Its first attempt
+failed only the Phase 3 push drive, on the `/today/` sky ticker's known
+layout shift of 0.00087. `AGENTS.md` gives that check exactly one rerun.
+
+## What R44 still needs
+
+The brief's §4.4 asks that "every receipt, API field and conformance vector
+uses these ids". The registry is published, and its tests hold it to every
+value these payloads carry. But only calc receipts write the ids themselves,
+such as `frame:ecliptic-j2000`. Natal and compute API receipts and the
+conformance vectors hold a field and a bare value, such as
+`conventions.zodiac` "tropical" or `kind` "houses.cusps". The registry's
+rule maps each to an id, but the payloads do not carry the id (the review
+of #813). R44 stays partial until they do, or until the owner revises
+the gate. Carrying the ids needs three things:
+
+- an engine release whose natal receipts carry them;
+- a change to the site's compute receipts;
+- a conformance suite release whose vectors carry them.
