@@ -117,8 +117,8 @@ const NAV_SUBLABELS = {
     fr: 'Ta manière de ressentir et ce qui t’apaise.',
     it: 'Come vivi le emozioni e che cosa ti calma.',
     ru: 'Как вы чувствуете и что помогает вам успокоиться.',
-    'zh-hans': '你如何感受，什么能让你安定下来。',
-    'zh-hant': '你如何感受，什麼能讓你安定下來。',
+    'zh-hans': '你感受情绪的方式，以及什么能让你安定下来。',
+    'zh-hant': '你感受情緒的方式，以及什麼能讓你安定下來。',
   },
   rising: {
     en: 'Find the sign people meet first. Birth time helps.',
@@ -127,8 +127,8 @@ const NAV_SUBLABELS = {
     fr: 'Découvre le signe que les autres perçoivent en premier. L’heure de naissance est utile.',
     it: 'Il segno che mostri agli altri al primo incontro. L’ora di nascita aiuta.',
     ru: 'Знак, который другие замечают первым. Нужно время рождения.',
-    'zh-hans': '别人初次认识你时最先看到的星座。知道出生时间会更准确。',
-    'zh-hant': '別人初次認識你時最先看到的星座。知道出生時間會更準確。',
+    'zh-hans': '别人初次认识你时，最先注意到的那一面。有出生时间会算得更准确。',
+    'zh-hant': '別人初次認識你時，最先注意到的那一面。有出生時間會算得更準確。',
   },
   moonPhase: {
     en: 'Tonight’s moon, and the moon of any date you care about.',
