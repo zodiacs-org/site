@@ -62,7 +62,7 @@ describe('hidden Russian deferred-product safeguards', () => {
     expect(navSource).toContain('const englishOnly = englishOnlyCue(locale);');
     expect(navSource).toContain("'nav__link--deferred': englishOnlyHref(l.href)");
     expect(englishOnlySource).toContain(
-      "ru: { suffix: ' (пока по-английски)', aria: 'Материал пока доступен по-английски' }",
+      "ru: { suffix: ' (пока по-английски)', aria: 'Материал пока доступен по-английски', badge: 'EN' }",
     );
     expect(navSource).toContain("NAV_TOOLS.filter((tool) => tool.href !== '/birthday/')");
     expect(navSource).toContain("locale === 'ru' ? null : locale === 'en'");
