@@ -19,12 +19,22 @@
  * the first two are not stylesheets, and SVG style text is parsed as foreign
  * content with entity decoding. The CSP admits inline styles with
  * 'unsafe-inline', not by hash, so a reprinted block needs no new hash.
+ *
+ * esbuild also prints a few tokens in their shortest equivalent form (an
+ * attribute selector's value or a url() without quotes). The sitemap-dates
+ * gate reads the words a stylesheet adds with `content` together with their
+ * selectors as written, so a block whose generated copy would read
+ * differently to it (stylesheetCopy) is minified statement by statement, and
+ * a top-level statement that would still read differently keeps its bytes: a
+ * page must never look changed to search engines when nothing a reader sees
+ * has changed.
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { transformSync } from 'esbuild';
 import { htmlFiles } from './inline-critical-styles.mjs';
+import { stylesheetCopy } from './sitemap-rendered-changes.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -53,6 +63,59 @@ export function minifyStyleWhitespace(css) {
 }
 
 /**
+ * A stylesheet's top-level statements in order (rules, at-rule blocks and
+ * `;` statements), each with the comments and whitespace before it. Quoted
+ * strings and comments are read whole, so a brace or semicolon inside one does
+ * not end a statement. Joined, the parts are the stylesheet byte for byte.
+ * @param {string} css
+ */
+export function topLevelStatements(css) {
+  const parts = [];
+  let start = 0;
+  let depth = 0;
+  for (let index = 0; index < css.length; index += 1) {
+    const character = css[index];
+    if (character === '/' && css[index + 1] === '*') {
+      const end = css.indexOf('*/', index + 2);
+      index = end === -1 ? css.length : end + 1;
+    } else if (character === '"' || character === "'") {
+      for (index += 1; index < css.length && css[index] !== character; index += 1) {
+        if (css[index] === '\\') index += 1;
+      }
+    } else if (character === '{') {
+      depth += 1;
+    } else if (character === '}') {
+      depth = Math.max(0, depth - 1);
+      if (depth === 0) { parts.push(css.slice(start, index + 1)); start = index + 1; }
+    } else if (character === ';' && depth === 0) {
+      parts.push(css.slice(start, index + 1));
+      start = index + 1;
+    }
+  }
+  if (start < css.length) parts.push(css.slice(start));
+  return parts;
+}
+
+/** Whether the sitemap-dates gate reads the same generated copy from both. */
+const sameCopy = (a, b) => JSON.stringify(stylesheetCopy(a)) === JSON.stringify(stylesheetCopy(b));
+
+/**
+ * The stylesheet minified, statement by statement where it has to be: a
+ * top-level statement whose generated copy the gate would read differently
+ * keeps its bytes, and every other statement is minified.
+ * @param {string} css
+ */
+function minifyKeepingCopy(css) {
+  const whole = minifyStyleWhitespace(css);
+  if (sameCopy(whole, css)) return whole;
+  return topLevelStatements(css).map((part) => {
+    if (!part.trim()) return '';
+    const minified = minifyStyleWhitespace(part);
+    return sameCopy(minified, part) ? minified : part;
+  }).join('');
+}
+
+/**
  * The page with each inline stylesheet's whitespace minified.
  * @param {string} html
  * @returns {{ html: string, styles: number, saved: number, skipped: string[] }}
@@ -65,12 +128,12 @@ export function minifyInlineStyles(html) {
     if (css === undefined || !css.trim() || !isCss(attributes)) return whole;
     let minified;
     try {
-      minified = minifyStyleWhitespace(css);
+      minified = minifyKeepingCopy(css);
     } catch (error) {
       skipped.push(String(error?.message ?? error).split('\n')[0]);
       return whole;
     }
-    if (minified.length >= css.length) return whole;
+    if (minified.length >= css.length || !sameCopy(minified, css)) return whole;
     styles += 1;
     saved += css.length - minified.length;
     return `<style${attributes}>${minified}</style>`;

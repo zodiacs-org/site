@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { minifyInlineStyles, minifyStyleWhitespace } from './minify-inline-styles.mjs';
+import { minifyInlineStyles, minifyStyleWhitespace, topLevelStatements } from './minify-inline-styles.mjs';
 
 const page = (head, body = '<p>Hi</p>') => `<!doctype html><html><head>${head}</head><body>${body}</body></html>`;
 
@@ -65,5 +65,46 @@ describe('minify-inline-styles', () => {
     expect(styles).toBe(1);
     expect(html).toContain(".after{color:red}");
     expect(html).toContain("<path d='M0 0h1'/></svg>");
+  });
+
+  it('keeps the statements whose generated copy the sitemap-dates gate would read differently', () => {
+    const kept = '.verify-result[data-state="verified"]::before { content: "Verified"; }';
+    const css = `
+      /* the checker's states */
+      .note { color: red; }
+      ${kept}
+      @media (max-width: 640px) {
+        .note { color: blue; }
+      }
+    `;
+    const { html, styles } = minifyInlineStyles(page(`<style>${css}</style>`));
+    expect(styles).toBe(1);
+    expect(html).toContain(kept);
+    expect(html).toContain('.note{color:red}');
+    expect(html).toContain('@media(max-width:640px){.note{color:blue}}');
+    expect(html).not.toContain("the checker's states");
+  });
+
+  it('splits a stylesheet into its top-level statements byte for byte', () => {
+    const css = '@import url("/a.css"); /* a } b; */ .a { content: "}"; } @media (x) { .b { c: d; } } .tail { e: f }  ';
+    const parts = topLevelStatements(css);
+    expect(parts.join('')).toBe(css);
+    expect(parts.map((part) => part.trim())).toEqual([
+      '@import url("/a.css");',
+      '/* a } b; */ .a { content: "}"; }',
+      '@media (x) { .b { c: d; } }',
+      '.tail { e: f }',
+      '',
+    ]);
+  });
+
+  it('still minifies a block whose generated copy reads the same', () => {
+    const css = `
+      .badge::before { content: "New"; }
+      .note { color: red; }
+    `;
+    const { html, styles } = minifyInlineStyles(page(`<style>${css}</style>`));
+    expect(styles).toBe(1);
+    expect(html).toContain('<style>.badge::before{content:"New"}.note{color:red}</style>');
   });
 });
