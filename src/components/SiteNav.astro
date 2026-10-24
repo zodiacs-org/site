@@ -35,11 +35,9 @@ const astrofolioLabel: Record<Locale, string> = {
   fr: 'Collection officielle de jetons du Zodiaque — en anglais',
   it: 'Collezione ufficiale di token zodiacali — in inglese',
   ru: 'Официальная коллекция токенов Зодиака — на английском',
-  // No Chinese description is approved yet; these pages print the approved English one.
-  'zh-hans': 'Official Zodiac token collection',
-  'zh-hant': 'Official Zodiac token collection',
+  'zh-hans': '十二星座官方代币收藏（英文）',
+  'zh-hant': '十二星座官方代幣收藏（英文）',
 };
-const astrofolioLabelLang = isSectionLocale(locale) ? 'en' : undefined;
 // Short explanations keep the navigation labels stable while making each destination clear.
 const destinationDescription: Record<Locale, { today: string; horoscope: string; saved: string }> = {
   en: { today: 'Your daily reading and personal chart highlights', horoscope: 'Daily readings for your zodiac sign', saved: 'Your birth chart and the people you’ve added' },
@@ -95,7 +93,7 @@ const mobileNavLabel: Partial<Record<Locale, string>> = {
 // stacks onto two lines; the full sentence stays in title and aria-label.
 const englishOnly = englishOnlyCue(locale);
 const englishOnlyAria = englishOnly?.aria;
-const englishOnlyBadge = englishOnly ? 'EN' : undefined;
+const englishOnlyBadge = englishOnly?.badge;
 // Chinese labels join a cue with a full stop of their own script.
 const ariaJoin = isSectionLocale(locale) ? '。' : '. ';
 const visibleNavTools = locale === 'ru'
@@ -272,7 +270,7 @@ const englishOnlyLabel = (href: string, label: string): string | undefined => (
       {showCollection && (
       <a class="mobile-menu__link mobile-menu__registry" style={`--i:${hasDailyReading ? 5 : 4}`} href="/astrofolio/" hreflang={englishOnly ? 'en' : undefined} title={englishOnlyAria}>
         <span>{t(locale, 'navCollect')}</span>
-        <small lang={astrofolioLabelLang}>{astrofolioLabel[locale]}</small>
+        <small>{astrofolioLabel[locale]}</small>
       </a>
       )}
     </div>

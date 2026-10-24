@@ -37,6 +37,8 @@ const zhHans = {
   footerRegistry: 'Registry',
   footerSdk: 'SDK',
   footerDisclosure: '声明',
+  trustFreeAnswer: '本站的占星工具和指南全部免费，无需注册。Zodiacs.org 同时运营十二星座代币收藏 Astrofolio。',
+  trustDisclosure: '阅读我们的声明',
   footerAbout: '关于本站',
   footerPrivacy: '隐私',
   footerTerms: '使用条款',

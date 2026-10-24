@@ -37,6 +37,8 @@ const zhHant = {
   footerRegistry: 'Registry',
   footerSdk: 'SDK',
   footerDisclosure: '聲明',
+  trustFreeAnswer: '本站的占星工具和指南全部免費，無須註冊。Zodiacs.org 同時經營十二星座代幣收藏 Astrofolio。',
+  trustDisclosure: '閱讀我們的聲明',
   footerAbout: '關於本站',
   footerPrivacy: '隱私',
   footerTerms: '使用條款',

@@ -62,8 +62,7 @@ const englishSuffix = englishOnly?.suffix ?? '';
 const englishOnlyAria = englishOnly?.aria;
 const englishHreflang = englishOnly ? ('en' as const) : undefined;
 const englishOnlyHref = (href: string): boolean => Boolean(englishOnly) && localizePath(locale, href) === href;
-// The section locales link every page outside their guide in English. The
-// collection note below has no approved Chinese wording, so it stays English.
+// The section locales link every page outside their guide in English.
 const sectionLocale = isSectionLocale(locale);
 const linkHreflang = (href: string) => (englishOnlyHref(href) ? ('en' as const) : undefined);
 const linkTitle = (href: string) => (englishOnlyHref(href) ? englishOnlyAria : undefined);
@@ -148,7 +147,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           <a href={localizePath(locale, '/disclosure/')} hreflang={linkHreflang('/disclosure/')} title={linkTitle('/disclosure/')}>{t(locale, 'footerDisclosure')}{linkSuffix('/disclosure/')}</a>
         </div>
         {sectionLocale ? (
-          <span class="zfooter__note" lang="en">{t('en', 'trustFreeAnswer')} <a href="/disclosure/" hreflang="en">{t('en', 'trustDisclosure')}</a>.</span>
+          <span class="zfooter__note">{t(locale, 'trustFreeAnswer')}<a href="/disclosure/" hreflang="en" title={englishOnlyAria}>{t(locale, 'trustDisclosure')}{englishSuffix}</a>。</span>
         ) : (
           <span class="zfooter__note">{t(locale, 'trustFreeAnswer')} <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'trustDisclosure')}</a>.</span>
         )}

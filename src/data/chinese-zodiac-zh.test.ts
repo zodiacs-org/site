@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { CHINESE_ZODIAC_ANIMALS, CHINESE_ZODIAC_COPY } from './chinese-zodiac';
 import { CHINESE_ZODIAC_ZH, stemBranchYear } from './chinese-zodiac-zh';
 import { chineseZodiacAnimals, chineseZodiacLocalizedText } from './chinese-zodiac-localized';
+import { readFileSync } from 'node:fs';
+import { ENGLISH_ONLY_COPY } from '../lib/i18n/english-only';
+import { SECTION_UI } from '../lib/i18n/ui/server';
 
 const strings = (locale: keyof typeof CHINESE_ZODIAC_ZH) => [
   ...Object.values(CHINESE_ZODIAC_ZH[locale].copy),
@@ -51,4 +54,25 @@ describe('Chinese editions of the Chinese zodiac guide', () => {
     expect(chineseZodiacAnimals('zh-hans').map((animal) => animal.name).join('')).toBe('鼠牛虎兔龙蛇马羊猴鸡狗猪');
     expect(chineseZodiacAnimals('zh-hant').map((animal) => animal.name).join('')).toBe('鼠牛虎兔龍蛇馬羊猴雞狗豬');
   });
+
+  it('prints the Astrofolio and collection chrome in each script, not in English', () => {
+    const nav = readFileSync(new URL('../components/SiteNav.astro', import.meta.url), 'utf8');
+    const footer = readFileSync(new URL('../components/SiteFooter.astro', import.meta.url), 'utf8');
+    const description = { 'zh-hans': '十二星座官方代币收藏（英文）', 'zh-hant': '十二星座官方代幣收藏（英文）' } as const;
+    for (const locale of ['zh-hans', 'zh-hant'] as const) {
+      expect(nav).toContain(`'${locale}': '${description[locale]}'`);
+      expect(SECTION_UI[locale].navCollect).toBe('Astrofolio');
+      expect(SECTION_UI[locale].trustFreeAnswer).toContain('Astrofolio');
+      expect(ENGLISH_ONLY_COPY[locale].badge).toBe('英');
+      for (const text of [description[locale], SECTION_UI[locale].trustFreeAnswer, SECTION_UI[locale].trustDisclosure]) {
+        expect(text).not.toMatch(/[–—―－]/u);
+      }
+    }
+    expect(SECTION_UI['zh-hant'].trustFreeAnswer).not.toMatch(/[这们时运营费册币阅读声]/u);
+    expect(SECTION_UI['zh-hans'].trustFreeAnswer).not.toMatch(/[這們時運營費冊幣閱讀聲]/u);
+    // The English fallbacks for these items are gone.
+    expect(nav).not.toContain('astrofolioLabelLang');
+    expect(footer).not.toContain(`t('en', 'trustFreeAnswer')`);
+  });
 });
+
