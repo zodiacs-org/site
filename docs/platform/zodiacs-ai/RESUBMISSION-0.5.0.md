@@ -4,6 +4,19 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 24 October: new addresses for the horoscope and occasion panels (#823)
+
+The Chinese language work changes the bundled horoscope and occasion panels,
+so each gets a new address under the same rule: `horoscopes-v5.html` and
+`occasions-v6.html`. `horoscopes-v4.html` and `occasions-v5.html` join the
+legacy lists and, like every earlier address, serve the current panel.
+Sky events v4 and Chart Studio v5 are unchanged. `tools/list` and
+`resources/list` change only in these addresses, and the flag-off fixture was
+recaptured to match. After the production deployment, check both new
+addresses and the two immediately previous ones against
+`src/ai-tools/panel-fingerprints.json`. Any rescan still needs Dias's
+separate approval.
+
 ## Update, 20 October: fresh addresses for all four chat panels
 
 The card design changed after ChatGPT first saw the panel addresses. The
