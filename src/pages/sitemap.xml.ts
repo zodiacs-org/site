@@ -512,6 +512,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ].map((loc) => [loc, '2026-10-20'] as const),
   // Contextual discovery links added to the tools directory.
   ['/tools/', '2026-10-21'] as const,
+  // Tap-to-explain on the birth chart wheel: the sample chart's hint and
+  // keyboard instructions (the house guides date it in their own records).
+  ['/birth-chart/', '2026-10-24'] as const,
 ]);
 
 function getLastmod(loc: string): string {
