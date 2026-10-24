@@ -8,9 +8,9 @@ import {
   LOCALE_META,
   alternatePathEntries,
   alternatePaths,
-  normalizeCatalogLocale,
+  normalizePageLocale,
   stripLocale,
-  type CatalogLocale as Locale,
+  type PageLocale as Locale,
 } from '../lib/i18n';
 import {
   ORGANIZATION_NAME,
@@ -55,7 +55,7 @@ const {
 } = Astro.props;
 
 const site = 'https://zodiacs.org';
-const locale = normalizeCatalogLocale(rawLocale);
+const locale = normalizePageLocale(rawLocale);
 const schema = schemaCatalog(locale);
 const canonical = site + canonicalPath;
 const contentPath = stripLocale(canonicalPath);
