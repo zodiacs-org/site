@@ -1,4 +1,4 @@
-import { isCatalogLocale, type CatalogLocale, type Locale } from './core';
+import { isPageLocale, type Locale, type PageLocale } from './core';
 
 export interface EnglishOnlyCue {
   /** Visible text appended after a label, in parentheses. */
@@ -14,16 +14,18 @@ export interface EnglishOnlyCue {
  * this module is the one copy of the strings: the nav, the footer, and
  * page-level links all read from here so the cues cannot drift apart.
  */
-export const ENGLISH_ONLY_COPY: Record<Exclude<CatalogLocale, 'en'>, EnglishOnlyCue> = {
+export const ENGLISH_ONLY_COPY: Record<Exclude<PageLocale, 'en'>, EnglishOnlyCue> = {
   es: { suffix: ' (por ahora en inglés)', aria: 'Contenido por ahora en inglés' },
   pt: { suffix: ' (por enquanto em inglês)', aria: 'Conteúdo por enquanto em inglês' },
   fr: { suffix: ' (pour l’instant en anglais)', aria: 'Contenu pour l’instant en anglais' },
   it: { suffix: ' (per ora in inglese)', aria: 'Contenuto per ora in inglese' },
   ru: { suffix: ' (пока по-английски)', aria: 'Материал пока доступен по-английски' },
+  'zh-hans': { suffix: '（英文）', aria: '这一页目前只有英文版' },
+  'zh-hant': { suffix: '（英文）', aria: '這一頁目前只有英文版' },
 };
 
 /** Cue for the locale, or undefined when none applies (English, staged AR). */
 export function englishOnlyCue(locale: Locale): EnglishOnlyCue | undefined {
-  if (locale === 'en' || !isCatalogLocale(locale)) return undefined;
+  if (locale === 'en' || !isPageLocale(locale)) return undefined;
   return ENGLISH_ONLY_COPY[locale];
 }

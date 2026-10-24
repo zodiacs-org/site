@@ -1308,14 +1308,16 @@ const sitemapPolicy = {
   // +3 for the English-only occasion cards (/occasions/, milestones, baby shower).
   // +1 for /developers/playground/, the compute API playground.
   // +1 for /developers/conventions/, the conventions registry.
-  total: 1424 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +26 for the Chinese zodiac guide in Simplified and Traditional Chinese (hub and twelve animals each).
+  total: 1450 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size + developerGuidePaths.size,
   // 78 pairs in English and in es, pt, fr and it.
   compatibilityPairs: 390,
   birthdays: 366,
-  chineseZodiac: 65,
+  // 13 pages in English, es, pt, fr, it, zh-hans and zh-hant.
+  chineseZodiac: 91,
   disclosures: 6,
   extendedHoroscopePages: 72,
   dailyReadingPages: 42,
@@ -1327,7 +1329,7 @@ const sitemapPolicy = {
 const indexedFamilies = [
   { label: 'compatibility pairs', pattern: /^\/(?:(?:es|pt|fr|it)\/)?compatibility\/[a-z]+-[a-z]+\/$/, expected: sitemapPolicy.compatibilityPairs, localized: true },
   { label: 'birthdays', pattern: /^\/(?:(?:es|pt|fr|it)\/)?birthday\/[a-z]+-\d{1,2}\/$/, expected: sitemapPolicy.birthdays, localized: true },
-  { label: 'Chinese zodiac', pattern: /^\/(?:(?:es|pt|fr|it)\/)?learn\/chinese-zodiac(?:\/[a-z]+)?\/$/, expected: sitemapPolicy.chineseZodiac, localized: true },
+  { label: 'Chinese zodiac', pattern: /^\/(?:(?:es|pt|fr|it|zh-hans|zh-hant)\/)?learn\/chinese-zodiac(?:\/[a-z]+)?\/$/, expected: sitemapPolicy.chineseZodiac, localized: true },
   { label: 'disclosures', pattern: /^\/(?:(?:es|pt|fr|it|ru)\/)?disclosure\/$/, expected: sitemapPolicy.disclosures, localized: true },
   {
     label: 'English-only extended horoscope pages',

@@ -12,8 +12,14 @@ const CORE_LOCALES = [
 ];
 const PROGRAMMATIC_LOCALES = CORE_LOCALES.filter((entry) => entry.code !== 'ru');
 const CORE_HREFLANGS = [...CORE_LOCALES.map((entry) => entry.hreflang), 'x-default'];
-const PROGRAMMATIC_HREFLANGS = [...PROGRAMMATIC_LOCALES.map((entry) => entry.hreflang), 'x-default'];
 const FORECAST_LOCALES = CORE_LOCALES.filter((entry) => ['en', 'es', 'pt'].includes(entry.code));
+// The Chinese zodiac guide alone also has Simplified and Traditional Chinese editions.
+const CHINESE_ZODIAC_LOCALES = [
+  ...PROGRAMMATIC_LOCALES,
+  { code: 'zh-hans', prefix: '/zh-hans', lang: 'zh-Hans', hreflang: 'zh-Hans' },
+  { code: 'zh-hant', prefix: '/zh-hant', lang: 'zh-Hant', hreflang: 'zh-Hant' },
+];
+const CHINESE_ZODIAC_HREFLANGS = [...CHINESE_ZODIAC_LOCALES.map((entry) => entry.hreflang), 'x-default'];
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
 const localizedPath = (prefix, path) => `${prefix}${path}` || '/';
@@ -76,7 +82,7 @@ await withPreview({ port: 4417 }, async (baseURL) => {
       }
 
       for (const route of ['/learn/chinese-zodiac/dragon/']) {
-        for (const locale of PROGRAMMATIC_LOCALES) {
+        for (const locale of CHINESE_ZODIAC_LOCALES) {
           const path = localizedPath(locale.prefix, route);
           const response = await page.goto(`${baseURL}${path}`, { waitUntil: 'domcontentloaded' });
           check(response?.status() === 200, `${path}@${viewport.width}: expected 200, got ${response?.status()}`);
@@ -86,10 +92,10 @@ await withPreview({ port: 4417 }, async (baseURL) => {
           check(state.width <= state.viewport + 1, `${path}@${viewport.width}: ${state.width}px overflow`);
           check(state.canonical === `https://zodiacs.org${path}`, `${path}: canonical ${state.canonical}`);
           check(
-            JSON.stringify(state.alternates.map(([lang]) => lang)) === JSON.stringify(PROGRAMMATIC_HREFLANGS),
+            JSON.stringify(state.alternates.map(([lang]) => lang)) === JSON.stringify(CHINESE_ZODIAC_HREFLANGS),
             `${path}: hreflangs ${state.alternates.map(([lang]) => lang).join(',')}`,
           );
-          check(state.selector.length === 5, `${path}: selector has ${state.selector.length} entries`);
+          check(state.selector.length === 7, `${path}: selector has ${state.selector.length} entries`);
           check(!state.russian && !state.arabic, `${path}: deferred locale leaked into programmatic output`);
         }
       }

@@ -5,15 +5,15 @@ import { initProfileNavigation } from '../lib/profile/navigation-avatar.mjs';
  * the icons are the navigation. The profile glyph fills once the visitor
  * has saved something (read from localStorage, progressive).
  */
-import { SIGNS, signName } from '../lib/signs';
-import { signDateRange } from '../lib/sign-display';
+import { SIGNS } from '../lib/signs';
+import { chromeSignDateRange as signDateRange, chromeSignName as signName } from '../lib/i18n/section-signs';
 import SignIcon from './SignIcon.astro';
 import TiltedRing from './TiltedRing.astro';
-import { availableLocalesForPath, englishOnlyCue, localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
+import { availableLocalesForPath, englishOnlyCue, isSectionLocale, localizePath, normalizePageLocale, t, type PageLocale as Locale } from '../lib/i18n';
 import { ALL_TOOLS_LABEL, NAV_MORE, NAV_MORE_LABEL, NAV_TOOLS, navToolLabelHasEnglishCue, type NavTool } from '../lib/nav-tools';
 
 interface Props { locale?: Locale }
-const locale = normalizeCatalogLocale(Astro.props.locale);
+const locale = normalizePageLocale(Astro.props.locale);
 // Owner-approved: the collection door is consistent on every primary navigation.
 const showCollection = true;
 const path = Astro.url.pathname;
@@ -26,6 +26,7 @@ const links = [
 ] as const;
 const developersLabel: Record<Locale, string> = {
   en: 'Developers', es: 'Desarrolladores', pt: 'Desenvolvedores', fr: 'Développeurs', it: 'Sviluppatori', ru: 'Разработчикам',
+  'zh-hans': '开发者', 'zh-hant': '開發者',
 };
 const astrofolioLabel: Record<Locale, string> = {
   en: 'Official Zodiac token collection',
@@ -34,7 +35,11 @@ const astrofolioLabel: Record<Locale, string> = {
   fr: 'Collection officielle de jetons du Zodiaque — en anglais',
   it: 'Collezione ufficiale di token zodiacali — in inglese',
   ru: 'Официальная коллекция токенов Зодиака — на английском',
+  // No Chinese description is approved yet; these pages print the approved English one.
+  'zh-hans': 'Official Zodiac token collection',
+  'zh-hant': 'Official Zodiac token collection',
 };
+const astrofolioLabelLang = isSectionLocale(locale) ? 'en' : undefined;
 // Short explanations keep the navigation labels stable while making each destination clear.
 const destinationDescription: Record<Locale, { today: string; horoscope: string; saved: string }> = {
   en: { today: 'Your daily reading and personal chart highlights', horoscope: 'Daily readings for your zodiac sign', saved: 'Your birth chart and the people you’ve added' },
@@ -43,6 +48,8 @@ const destinationDescription: Record<Locale, { today: string; horoscope: string;
   fr: { today: 'Le ciel du jour, signe par signe', horoscope: 'Lectures quotidiennes pour ton signe', saved: 'Ton thème astral et les personnes que tu as ajoutées' },
   it: { today: 'Il cielo di oggi, segno per segno', horoscope: 'Letture quotidiane per il tuo segno', saved: 'Il tuo tema natale e le persone che hai aggiunto' },
   ru: { today: 'Небо сегодня для каждого знака', horoscope: 'Ежедневный гороскоп для вашего знака', saved: 'Ваша натальная карта и добавленные люди' },
+  'zh-hans': { today: '今天的星空，逐个星座来看', horoscope: '每个星座的每日解读', saved: '你的出生星盘和你添加的人' },
+  'zh-hant': { today: '今天的星空，逐個星座來看', horoscope: '每個星座的每日解讀', saved: '你的出生星盤和你新增的人' },
 };
 const destination = destinationDescription[locale];
 const searchLabel: Record<Locale, string> = {
@@ -52,6 +59,8 @@ const searchLabel: Record<Locale, string> = {
   fr: 'Rechercher sur le site',
   it: 'Cerca nel sito',
   ru: 'Поиск по сайту',
+  'zh-hans': '搜索本站',
+  'zh-hant': '搜尋本站',
 };
 const openMenuLabel: Record<Locale, string> = {
   en: 'Open menu',
@@ -60,6 +69,8 @@ const openMenuLabel: Record<Locale, string> = {
   fr: 'Ouvrir le menu',
   it: 'Apri menu',
   ru: 'Открыть меню',
+  'zh-hans': '打开菜单',
+  'zh-hant': '開啟選單',
 };
 const closeMenuLabel: Record<Locale, string> = {
   en: 'Close menu',
@@ -68,9 +79,15 @@ const closeMenuLabel: Record<Locale, string> = {
   fr: 'Fermer le menu',
   it: 'Chiudi menu',
   ru: 'Закрыть меню',
+  'zh-hans': '关闭菜单',
+  'zh-hant': '關閉選單',
 };
 const profileLabel: Record<Locale, string> = {
   en: 'Your profile', es: 'Tu perfil', pt: 'Seu perfil', fr: 'Ton profil', it: 'Il tuo profilo', ru: 'Ваш профиль',
+  'zh-hans': '你的个人资料', 'zh-hant': '你的個人檔案',
+};
+const mobileNavLabel: Partial<Record<Locale, string>> = {
+  ru: 'Мобильная навигация', 'zh-hans': '移动版导航', 'zh-hant': '行動版選單',
 };
 // Shared English-only courtesy (src/lib/i18n/english-only.ts): hreflang="en"
 // plus a visible cue on every link whose destination has no localized route.
@@ -79,6 +96,8 @@ const profileLabel: Record<Locale, string> = {
 const englishOnly = englishOnlyCue(locale);
 const englishOnlyAria = englishOnly?.aria;
 const englishOnlyBadge = englishOnly ? 'EN' : undefined;
+// Chinese labels join a cue with a full stop of their own script.
+const ariaJoin = isSectionLocale(locale) ? '。' : '. ';
 const visibleNavTools = locale === 'ru'
   ? NAV_TOOLS.filter((tool) => tool.href !== '/birthday/')
   : NAV_TOOLS;
@@ -86,10 +105,16 @@ const visibleNavTools = locale === 'ru'
 const englishOnlyHref = (href: string): boolean => Boolean(englishOnly) && localizePath(locale, href) === href;
 const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.href)
   && !navToolLabelHasEnglishCue(locale, tool.label, t(locale, tool.label));
+/** The section locales' home link leads to the English homepage. */
+const homeEnglishOnly = englishOnlyHref('/') ? { hreflang: 'en', title: englishOnlyAria } : {};
+/** Assistive cue for a link whose visible label stays short (signs, profile). */
+const englishOnlyLabel = (href: string, label: string): string | undefined => (
+  englishOnlyHref(href) ? `${label}${ariaJoin}${englishOnlyAria}` : undefined
+);
 ---
 <div class="nav-wrap">
   <nav class:list={['nav', { 'nav--localized': locale !== 'en', 'nav--without-search': locale === 'ru', 'nav--with-today': links.some((link) => link.href === '/today/') }]} aria-label={t(locale, 'navPrimary')} data-nav>
-    <a class="nav__mark" href={localizePath(locale, '/')} aria-label="Zodiacs.org">
+    <a {...homeEnglishOnly} class="nav__mark" href={localizePath(locale, '/')} aria-label="Zodiacs.org">
       <TiltedRing width={34} class="nav__ring" />
       <span class="nav__name" aria-hidden="true">Zodiacs<span class="nav__sep">·</span><span class="nav__dim">org</span></span>
     </a>
@@ -110,7 +135,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
           hreflang={englishOnlyHref(l.href) ? 'en' : undefined}
           aria-current={path.startsWith(localizePath(locale, l.href)) ? 'page' : undefined}
           title={englishOnlyHref(l.href) ? englishOnlyAria : l.href === '/today/' ? destination.today : l.href === '/horoscopes/' ? destination.horoscope : undefined}
-          aria-label={englishOnlyHref(l.href) ? `${l.label}. ${englishOnlyAria}` : undefined}
+          aria-label={englishOnlyHref(l.href) ? `${l.label}${ariaJoin}${englishOnlyAria}` : undefined}
         >
           {englishOnlyHref(l.href) ? (
             <><span>{l.label}</span><small class="nav__deferred" aria-hidden="true">{englishOnlyBadge}</small></>
@@ -120,7 +145,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
 
     </div>
 
-    <a class="nav__profile-shortcut" data-profile-glyph href={localizePath(locale, '/profile/')} aria-label={profileLabel[locale]} title={profileLabel[locale]} aria-current={path.startsWith(localizePath(locale, '/profile/')) ? 'page' : undefined}>
+    <a class="nav__profile-shortcut" data-profile-glyph href={localizePath(locale, '/profile/')} hreflang={englishOnlyHref('/profile/') ? 'en' : undefined} aria-label={englishOnlyLabel('/profile/', profileLabel[locale]) ?? profileLabel[locale]} title={profileLabel[locale]} aria-current={path.startsWith(localizePath(locale, '/profile/')) ? 'page' : undefined}>
       <svg class="nav__profile-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span>
     </a>
     {locale === 'ru' ? null : locale === 'en' ? (
@@ -134,7 +159,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
         href="/?search=1"
         hreflang="en"
         title={englishOnlyAria}
-        aria-label={`${searchLabel[locale]}. ${englishOnlyAria}`}
+        aria-label={`${searchLabel[locale]}${ariaJoin}${englishOnlyAria}`}
       >
         <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.75" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
       </a>
@@ -149,7 +174,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       aria-current={path === '/astrofolio/' ? 'page' : undefined}
       title={astrofolioLabel[locale]}
       aria-description={astrofolioLabel[locale]}
-      aria-label={englishOnly ? `${t(locale, 'navCollect')}. ${englishOnlyAria}` : undefined}
+      aria-label={englishOnly ? `${t(locale, 'navCollect')}${ariaJoin}${englishOnlyAria}` : undefined}
     >
       {englishOnly ? (
         <><span>{t(locale, 'navCollect')}</span><small class="nav__deferred" aria-hidden="true">{englishOnlyBadge}</small></>
@@ -189,10 +214,10 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       ))}
       <div class="tools-menu__more" role="group" aria-label={NAV_MORE_LABEL[locale]}>
         <span class="tools-menu__more-label">{NAV_MORE_LABEL[locale]}</span>
-        <ul>{NAV_MORE.map((item) => <li><a href={localizePath(locale, item.href)}>{item.label[locale]}</a></li>)}</ul>
+        <ul>{NAV_MORE.map((item) => <li><a href={localizePath(locale, item.href)} hreflang={englishOnlyHref(item.href) ? 'en' : undefined} title={englishOnlyHref(item.href) ? englishOnlyAria : undefined}>{item.label[locale]}{englishOnlyHref(item.href) ? englishOnly?.suffix : ''}</a></li>)}</ul>
       </div>
-      <a class="tools-menu__all" href={localizePath(locale, '/tools/')}>
-        {ALL_TOOLS_LABEL[locale]} <span aria-hidden="true">→</span>
+      <a class="tools-menu__all" href={localizePath(locale, '/tools/')} hreflang={englishOnlyHref('/tools/') ? 'en' : undefined} title={englishOnlyHref('/tools/') ? englishOnlyAria : undefined}>
+        {ALL_TOOLS_LABEL[locale]}{englishOnlyHref('/tools/') ? englishOnly?.suffix : ''} <span aria-hidden="true">→</span>
       </a>
     </div>
   </div>
@@ -200,7 +225,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   <div class="nav-menu signs-menu" id="signs-menu" data-signs-menu hidden>
     <div class="signs-menu__grid">
       {SIGNS.map((s) => (
-        <a class="signs-menu__item" href={localizePath(locale, `/${s.slug}/`)} style={`--sign:${s.hue}`}>
+        <a class="signs-menu__item" href={localizePath(locale, `/${s.slug}/`)} hreflang={englishOnlyHref(`/${s.slug}/`) ? 'en' : undefined} title={englishOnlyHref(`/${s.slug}/`) ? englishOnlyAria : undefined} style={`--sign:${s.hue}`}>
           <SignIcon sign={s.slug} size={32} deferred />
           <span class="signs-menu__name">{signName(s, locale)}</span>
           <span class="signs-menu__dates">{signDateRange(s, locale)}</span>
@@ -211,7 +236,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
 </div>
 
 <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
-  <nav aria-label={locale === 'ru' ? 'Мобильная навигация' : 'Mobile'}>
+  <nav aria-label={mobileNavLabel[locale] ?? 'Mobile'}>
     <div class="mobile-menu__group">
       <span class="mobile-menu__label">{t(locale, 'navSite')}</span>
       {visibleNavTools.filter((tool) => tool.href === '/birth-chart/' || tool.href === '/compatibility/').map((tool) => (
@@ -220,7 +245,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       {hasDailyReading && <a class="mobile-menu__link mobile-menu__link--explained" style="--i:0" href={localizePath(locale, '/today/')}><span>{todayLabel}</span><small>{destination.today}</small></a>}
       <a class="mobile-menu__link" style={`--i:${hasDailyReading ? 1 : 0}`} href={localizePath(locale, '/learn/')} hreflang={englishOnlyHref('/learn/') ? 'en' : undefined} title={englishOnlyHref('/learn/') ? englishOnlyAria : undefined}>{t(locale, 'navLearn')}{englishOnlyHref('/learn/') ? englishOnly?.suffix : ''}</a>
       <a class="mobile-menu__link mobile-menu__link--explained" style={`--i:${hasDailyReading ? 2 : 1}`} href={localizePath(locale, '/horoscopes/')} hreflang={englishOnlyHref('/horoscopes/') ? 'en' : undefined} title={englishOnlyHref('/horoscopes/') ? englishOnlyAria : undefined}><span>{t(locale, 'navHoroscopes')}{englishOnlyHref('/horoscopes/') ? englishOnly?.suffix : ''}</span><small>{destination.horoscope}</small></a>
-      <a class="mobile-menu__link mobile-menu__link--explained" style={`--i:${hasDailyReading ? 3 : 2}`} href={localizePath(locale, '/profile/')}><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span><span>{t(locale, 'navSavedCharts')}</span><small>{destination.saved}</small></a>
+      <a class="mobile-menu__link mobile-menu__link--explained" style={`--i:${hasDailyReading ? 3 : 2}`} href={localizePath(locale, '/profile/')} hreflang={englishOnlyHref('/profile/') ? 'en' : undefined} title={englishOnlyHref('/profile/') ? englishOnlyAria : undefined}><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span><span>{t(locale, 'navSavedCharts')}{englishOnlyHref('/profile/') ? englishOnly?.suffix : ''}</span><small>{destination.saved}</small></a>
     </div>
     <div class="mobile-menu__group">
       <span class="mobile-menu__label">{t(locale, 'navTools')}</span>
@@ -232,13 +257,13 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
             href={localizePath(locale, tool.href)}
             hreflang={englishOnlyHref(tool.href) ? 'en' : undefined}
             title={englishOnlyHref(tool.href) ? englishOnlyAria : undefined}
-            aria-label={`${t(locale, tool.label)}. ${tool.sublabel[locale]}${toolNeedsEnglishCue(tool) ? ` ${englishOnlyAria}.` : ''}`}
+            aria-label={`${t(locale, tool.label)}${ariaJoin}${tool.sublabel[locale]}${toolNeedsEnglishCue(tool) ? (isSectionLocale(locale) ? englishOnlyAria : ` ${englishOnlyAria}.`) : ''}`}
           >
             <span>{t(locale, tool.label)}{toolNeedsEnglishCue(tool) ? englishOnly?.suffix : ''}</span>
           </a>
         ))}
-        <a class="mobile-menu__tool mobile-menu__tool--all" href={localizePath(locale, '/tools/')}>
-          {ALL_TOOLS_LABEL[locale]} <span aria-hidden="true">→</span>
+        <a class="mobile-menu__tool mobile-menu__tool--all" href={localizePath(locale, '/tools/')} hreflang={englishOnlyHref('/tools/') ? 'en' : undefined} title={englishOnlyHref('/tools/') ? englishOnlyAria : undefined}>
+          {ALL_TOOLS_LABEL[locale]}{englishOnlyHref('/tools/') ? englishOnly?.suffix : ''} <span aria-hidden="true">→</span>
         </a>
       </div>
     </div>
@@ -247,7 +272,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       {showCollection && (
       <a class="mobile-menu__link mobile-menu__registry" style={`--i:${hasDailyReading ? 5 : 4}`} href="/astrofolio/" hreflang={englishOnly ? 'en' : undefined} title={englishOnlyAria}>
         <span>{t(locale, 'navCollect')}</span>
-        <small>{astrofolioLabel[locale]}</small>
+        <small lang={astrofolioLabelLang}>{astrofolioLabel[locale]}</small>
       </a>
       )}
     </div>
@@ -255,7 +280,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       <span class="mobile-menu__label">{t(locale, 'navTwelve')}</span>
       <div class="mobile-menu__signs">
         {SIGNS.map((s, i) => (
-          <a class="mobile-menu__sign" style={`--i:${i}`} href={localizePath(locale, `/${s.slug}/`)} aria-label={signName(s, locale)}>
+          <a class="mobile-menu__sign" style={`--i:${i}`} href={localizePath(locale, `/${s.slug}/`)} hreflang={englishOnlyHref(`/${s.slug}/`) ? 'en' : undefined} aria-label={englishOnlyLabel(`/${s.slug}/`, signName(s, locale)) ?? signName(s, locale)}>
             <SignIcon sign={s.slug} size={30} deferred />
             <span>{signName(s, locale)}</span>
           </a>
