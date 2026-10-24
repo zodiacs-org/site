@@ -1,0 +1,22 @@
+---
+/**
+ * The /learn/aspects/ hub's natal planet-pair section. Rendered only when
+ * natal pairs are enabled; its styles are inlined here so the hub's emitted
+ * stylesheet does not change while the section is withheld.
+ */
+import HubContent from './NatalAspectsHub.mdx';
+import { NATAL_ASPECT_PAIRS, NATAL_PAIR_SUMMARIES, type NatalAspectPair } from '../../lib/natal-aspect-pairs';
+import styles from '../../styles/natal-aspects.css?raw';
+
+const pairs = NATAL_ASPECT_PAIRS as NatalAspectPair[];
+---
+<style is:inline set:html={styles}></style>
+<section class="natal-hub" aria-labelledby="natal-pairs-heading">
+  <h2 id="natal-pairs-heading" class="display">Planet pairs in a birth chart</h2>
+  <ul class="natal-hub__pairs">
+    {pairs.map((pair) => (
+      <li><a class="natal-hub__pair" href={`/learn/aspects/${pair}/`}><strong>{NATAL_PAIR_SUMMARIES[pair].name}</strong><span>{NATAL_PAIR_SUMMARIES[pair].summary}</span></a></li>
+    ))}
+  </ul>
+  <div class="prose"><HubContent /></div>
+</section>
