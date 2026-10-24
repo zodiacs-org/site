@@ -757,6 +757,12 @@ export const GET: APIRoute = async () => {
     const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
     if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
   }
+  // Phones get the earlier hero framing back on the English and translated
+  // homes (the Russian home keeps its own poster).
+  for (const loc of ['/', '/es/', '/fr/', '/it/', '/pt/']) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-10-24');
+  }
   const allUrls = [
     ...urls,
     ...localizedUrls,
