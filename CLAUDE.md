@@ -309,6 +309,13 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
 - `docs/platform/programme/LEDGER.md` ← `node scripts/programme-ledger.mjs`
   (source `docs/platform/programme/acceptance-ledger.json`; `--check` for drift,
   `--summary` for the completion figures)
+- `src/data/natal-aspect-examples.json` ← `node
+  scripts/build-natal-aspect-examples.mjs` (the natal planet-pair pages'
+  evidence: synthetic UTC instants run through the birth chart calculation,
+  two worked examples and all five feasible geometries per pair, hourly
+  birth-time spans; `--check` for drift, CI runs it). The pages themselves
+  are held behind `src/data/natal-aspects-publication.json` and
+  `PUBLIC_NATAL_ASPECTS_PREVIEW=1`; see `docs/natal-aspects/RELEASE.md`
 
 `public/sw.js` is a PWA worker — the owner approved superseding the old
 push-only rule (2026-07-15, WS4 merge decision). Strict invariants: HTML
