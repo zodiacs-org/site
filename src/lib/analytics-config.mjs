@@ -1,5 +1,8 @@
 /** Property allowlist shared by Astro pages and the generated Registry shell. */
 export const ANALYTICS_EVENT_PROPS = Object.freeze({
+  reference_opened: ['topic', 'page', 'locale', 'task', 'destination'],
+  reference_cta_clicked: ['topic', 'page', 'locale', 'task', 'destination'],
+  reference_task_completed: ['topic', 'page', 'locale', 'task', 'destination'],
   chart_computed: ['mode', 'source'],
   chart_saved: ['source'],
   compat_computed: ['source'],
@@ -96,8 +99,19 @@ const REGISTRY_BRIDGE_LOCALE_VALUES = Object.freeze([
   'en', 'es', 'pt', 'fr', 'it', 'ru',
 ]);
 
+const REFERENCE_VALUES = Object.freeze({
+  topic: Object.freeze(['synastry']),
+  page: Object.freeze(['hub', 'sun-moon', 'moon-venus', 'moon-mars']),
+  locale: Object.freeze(['en']),
+  task: Object.freeze(['comparison']),
+  destination: Object.freeze(['compatibility']),
+});
+
 /** Closed-value contracts for non-identifying product dimensions. */
 export const ANALYTICS_EVENT_VALUES = Object.freeze({
+  reference_opened: REFERENCE_VALUES,
+  reference_cta_clicked: REFERENCE_VALUES,
+  reference_task_completed: REFERENCE_VALUES,
   assistant_arrival: Object.freeze({
     assistant: Object.freeze(['chatgpt', 'assistant']),
   }),

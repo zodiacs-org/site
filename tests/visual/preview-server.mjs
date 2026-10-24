@@ -68,7 +68,9 @@ export async function startPreview({ port }) {
   const outputChunks = [];
   const processHandle = spawn(
     process.execPath,
-    [astro, 'preview', '--host', '127.0.0.1', '--port', String(selectedPort)],
+    // This harness owns its foreground process and port. Parallel test jobs
+    // must not share a CLI discovery lock or replace another local server.
+    [astro, 'preview', '--ignore-lock', '--host', '127.0.0.1', '--port', String(selectedPort)],
     {
       cwd: projectRoot,
       // Astro 7 detects agent runners and otherwise daemonizes preview, while

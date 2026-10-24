@@ -1,0 +1,59 @@
+---
+import Base from '../../layouts/Base.astro';
+import HubContent from './hub.mdx';
+import SynastryDiagram from '../../components/learn/SynastryDiagram.astro';
+import ReferenceJourney from '../../components/learn/ReferenceJourney.astro';
+import { referencePublished } from '../../lib/aspect-reference';
+import publication from '../../data/synastry-publication.json';
+import '../../styles/aspect-reference.css';
+
+const pairs = [
+  { slug: 'sun-moon', name: 'Sun-Moon', description: 'Direction and comfort. Keep Sun A / Moon B distinct from Moon A / Sun B.' },
+  { slug: 'moon-venus', name: 'Moon-Venus', description: 'Comfort and appreciation. Name what is wanted and what is offered.' },
+  { slug: 'moon-mars', name: 'Moon-Mars', description: 'Emotional pacing and action. Keep requests, choices and boundaries explicit.' },
+];
+const title = 'Aspects in synastry: between two charts | Zodiacs.org';
+const description = 'A guide to synastry aspects between two charts: Sun-Moon, Moon-Venus and Moon-Mars, five geometries, calculated examples and birth-time limits.';
+const jsonLd = [
+  { '@type': 'CollectionPage', name: title, description, url: 'https://zodiacs.org/compatibility/aspects/', dateModified: publication.updated, inLanguage: 'en', hasPart: pairs.map((pair) => ({ '@type': 'Article', name: `${pair.name} aspects in synastry`, url: `https://zodiacs.org/compatibility/aspects/${pair.slug}/` })) },
+  { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Compatibility', item: 'https://zodiacs.org/compatibility/' },
+    { '@type': 'ListItem', position: 2, name: 'Synastry aspects', item: 'https://zodiacs.org/compatibility/aspects/' },
+  ] },
+];
+---
+<Base title={title} description={description} path="/compatibility/aspects/" noindex={!referencePublished} jsonLd={jsonLd} stableTypography>
+  <Fragment slot="head">
+    {referencePublished && <>
+      <link rel="alternate" hreflang="en" href="https://zodiacs.org/compatibility/aspects/" />
+      <link rel="alternate" hreflang="x-default" href="https://zodiacs.org/compatibility/aspects/" />
+    </>}
+  </Fragment>
+  <article class="container reference">
+    <nav aria-label="Breadcrumb"><a href="/compatibility/">Compatibility</a> / <span aria-current="page">Synastry aspects</span></nav>
+    <header class="reference__hero">
+      <div>
+        <p class="kicker">Between two charts</p>
+        <h1 class="display">Aspects in synastry <span class="reference__context">between two charts</span></h1>
+        <p class="reference__lede">Three planet pairs, five geometries and the chart roles that keep a two-chart reading clear.</p>
+        <p>For aspects within one person's chart, use the <a href="/birth-chart/">individual birth chart tool</a>. This library explains the separate synastry context.</p>
+        <p class="reference__meta">Updated <time datetime={publication.updated}>{publication.updated}</time>. {referencePublished ? `Reviewed by ${publication.reviewer}.` : 'Local review edition. Named editorial review and release evidence are pending.'}</p>
+      </div>
+      <SynastryDiagram a="Sun" b="Moon" angle={120} id="hub-diagram" />
+    </header>
+    <nav class="reference__pairs" aria-label="Choose a synastry pair">
+      {pairs.map((pair) => <a class="reference__pair" href={`/compatibility/aspects/${pair.slug}/`}><strong>{pair.name}</strong><span>{pair.description}</span></a>)}
+    </nav>
+    <div class="reference__reading">
+      <div class="prose"><HubContent /></div>
+      <aside class="reference__task">
+        <h2 class="display">Compare two charts with permission</h2>
+        <p>The tool lists supported contacts with their orbs. Use the explanation beside a result to read its geometry in context.</p>
+        <a class="btn btn--primary" href="/compatibility/" data-reference-task>Compare two charts</a>
+        <a href="/birth-chart/">Get your free birth chart</a>
+      </aside>
+      <p class="reference__meta">Method sources: <a href="https://www.astro.com/astrology/in_aspect_e.htm">Astrodienst's introduction to aspects</a>, <a href="https://www.astro.com/prod/pr_relation_e.htm">its two-chart comparison overview</a>, and <a href="/methodology/">our calculation methods</a>. Discussion prompts are editorial suggestions, not verified behavioral effects.</p>
+    </div>
+  </article>
+  <ReferenceJourney page="hub" />
+</Base>

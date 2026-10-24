@@ -1,0 +1,359 @@
+{
+  "engineVersion": "1.0.0",
+  "conventions": [
+    {
+      "type": "conjunction",
+      "angle": 0,
+      "orb": 8,
+      "orbLuminary": 10
+    },
+    {
+      "type": "sextile",
+      "angle": 60,
+      "orb": 4,
+      "orbLuminary": 5
+    },
+    {
+      "type": "square",
+      "angle": 90,
+      "orb": 7,
+      "orbLuminary": 8
+    },
+    {
+      "type": "trine",
+      "angle": 120,
+      "orb": 7,
+      "orbLuminary": 8
+    },
+    {
+      "type": "opposition",
+      "angle": 180,
+      "orb": 8,
+      "orbLuminary": 10
+    }
+  ],
+  "examples": [
+    {
+      "id": "sun-moon-1",
+      "pair": "sun-moon",
+      "context": "synastry",
+      "type": "computed",
+      "synthetic": true,
+      "chartA": {
+        "role": "A",
+        "body": "Sun",
+        "utc": "2000-01-01T12:00:00.000Z",
+        "longitude": 280.3687723811323
+      },
+      "chartB": {
+        "role": "B",
+        "body": "Moon",
+        "utc": "2001-01-22T12:00:00.000Z",
+        "longitude": 280.43878067266456
+      },
+      "separation": 0.07000829153224686,
+      "angle": 0,
+      "residualOrb": 0.07000829153224686,
+      "geometry": "conjunction",
+      "engineVersion": "1.0.0",
+      "reversedAssignment": {
+        "chartA": {
+          "role": "A",
+          "body": "Moon",
+          "utc": "2000-01-01T12:00:00.000Z",
+          "longitude": 223.32396777014543
+        },
+        "chartB": {
+          "role": "B",
+          "body": "Sun",
+          "utc": "2001-01-22T12:00:00.000Z",
+          "longitude": 302.5329663178325
+        },
+        "separation": 79.20899854768709,
+        "geometry": null,
+        "residualOrb": null
+      },
+      "convention": "Tropical geocentric ecliptic longitudes; UTC instants; site major-aspect luminary orbs; no applying/separating.",
+      "provenance": {
+        "generator": "scripts/build-aspect-reference-examples.mjs",
+        "source": "src/lib/engine/synastry.ts",
+        "verifiedAt": "2026-10-20",
+        "review": "Calculation replay only; named editorial review pending."
+      }
+    },
+    {
+      "id": "sun-moon-2",
+      "pair": "sun-moon",
+      "context": "synastry",
+      "type": "computed",
+      "synthetic": true,
+      "chartA": {
+        "role": "A",
+        "body": "Sun",
+        "utc": "2000-01-01T12:00:00.000Z",
+        "longitude": 280.3687723811323
+      },
+      "chartB": {
+        "role": "B",
+        "body": "Moon",
+        "utc": "2001-04-05T12:00:00.000Z",
+        "longitude": 159.89340997426552
+      },
+      "separation": 120.4753624068668,
+      "angle": 120,
+      "residualOrb": 0.4753624068667932,
+      "geometry": "trine",
+      "engineVersion": "1.0.0",
+      "reversedAssignment": {
+        "chartA": {
+          "role": "A",
+          "body": "Moon",
+          "utc": "2000-01-01T12:00:00.000Z",
+          "longitude": 223.32396777014543
+        },
+        "chartB": {
+          "role": "B",
+          "body": "Sun",
+          "utc": "2001-04-05T12:00:00.000Z",
+          "longitude": 15.762406150789218
+        },
+        "separation": 152.4384383806438,
+        "geometry": null,
+        "residualOrb": null
+      },
+      "convention": "Tropical geocentric ecliptic longitudes; UTC instants; site major-aspect luminary orbs; no applying/separating.",
+      "provenance": {
+        "generator": "scripts/build-aspect-reference-examples.mjs",
+        "source": "src/lib/engine/synastry.ts",
+        "verifiedAt": "2026-10-20",
+        "review": "Calculation replay only; named editorial review pending."
+      }
+    },
+    {
+      "id": "moon-venus-1",
+      "pair": "moon-venus",
+      "context": "synastry",
+      "type": "computed",
+      "synthetic": true,
+      "chartA": {
+        "role": "A",
+        "body": "Moon",
+        "utc": "2000-01-01T12:00:00.000Z",
+        "longitude": 223.32396777014543
+      },
+      "chartB": {
+        "role": "B",
+        "body": "Venus",
+        "utc": "2001-11-18T12:00:00.000Z",
+        "longitude": 222.45851397918372
+      },
+      "separation": 0.8654537909617375,
+      "angle": 0,
+      "residualOrb": 0.8654537909617375,
+      "geometry": "conjunction",
+      "engineVersion": "1.0.0",
+      "reversedAssignment": {
+        "chartA": {
+          "role": "A",
+          "body": "Venus",
+          "utc": "2000-01-01T12:00:00.000Z",
+          "longitude": 241.5652674210742
+        },
+        "chartB": {
+          "role": "B",
+          "body": "Moon",
+          "utc": "2001-11-18T12:00:00.000Z",
+          "longitude": 276.08853302366913
+        },
+        "separation": 34.52326560259496,
+        "geometry": null,
+        "residualOrb": null
+      },
+      "convention": "Tropical geocentric ecliptic longitudes; UTC instants; site major-aspect luminary orbs; no applying/separating.",
+      "provenance": {
+        "generator": "scripts/build-aspect-reference-examples.mjs",
+        "source": "src/lib/engine/synastry.ts",
+        "verifiedAt": "2026-10-20",
+        "review": "Calculation replay only; named editorial review pending."
+      }
+    },
+    {
+      "id": "moon-venus-2",
+      "pair": "moon-venus",
+      "context": "synastry",
+      "type": "computed",
+      "synthetic": true,
+      "chartA": {
+        "role": "A",
+        "body": "Moon",
+        "utc": "2000-01-01T12:00:00.000Z",
+        "longitude": 223.32396777014543
+      },
+      "chartB": {
+        "role": "B",
+        "body": "Venus",
+        "utc": "2001-01-15T12:00:00.000Z",
+        "longitude": 342.48885352402203
+      },
+      "separation": 119.1648857538766,
+      "angle": 120,
+      "residualOrb": 0.8351142461233962,
+      "geometry": "trine",
+      "engineVersion": "1.0.0",
+      "reversedAssignment": {
+        "chartA": {
+          "role": "A",
+          "body": "Venus",
+          "utc": "2000-01-01T12:00:00.000Z",
+          "longitude": 241.5652674210742
+        },
+        "chartB": {
+          "role": "B",
+          "body": "Moon",
+          "utc": "2001-01-15T12:00:00.000Z",
+          "longitude": 192.66913506075565
+        },
+        "separation": 48.896132360318575,
+        "geometry": null,
+        "residualOrb": null
+      },
+      "convention": "Tropical geocentric ecliptic longitudes; UTC instants; site major-aspect luminary orbs; no applying/separating.",
+      "provenance": {
+        "generator": "scripts/build-aspect-reference-examples.mjs",
+        "source": "src/lib/engine/synastry.ts",
+        "verifiedAt": "2026-10-20",
+        "review": "Calculation replay only; named editorial review pending."
+      }
+    },
+    {
+      "id": "moon-mars-1",
+      "pair": "moon-mars",
+      "context": "synastry",
+      "type": "computed",
+      "synthetic": true,
+      "chartA": {
+        "role": "A",
+        "body": "Moon",
+        "utc": "2000-01-01T12:00:00.000Z",
+        "longitude": 223.32396777014543
+      },
+      "chartB": {
+        "role": "B",
+        "body": "Mars",
+        "utc": "2001-01-14T12:00:00.000Z",
+        "longitude": 222.749220286832
+      },
+      "separation": 0.5747474833134447,
+      "angle": 0,
+      "residualOrb": 0.5747474833134447,
+      "geometry": "conjunction",
+      "engineVersion": "1.0.0",
+      "reversedAssignment": {
+        "chartA": {
+          "role": "A",
+          "body": "Mars",
+          "utc": "2000-01-01T12:00:00.000Z",
+          "longitude": 327.96393186874616
+        },
+        "chartB": {
+          "role": "B",
+          "body": "Moon",
+          "utc": "2001-01-14T12:00:00.000Z",
+          "longitude": 178.7753935896792
+        },
+        "separation": 149.18853827906696,
+        "geometry": null,
+        "residualOrb": null
+      },
+      "convention": "Tropical geocentric ecliptic longitudes; UTC instants; site major-aspect luminary orbs; no applying/separating.",
+      "provenance": {
+        "generator": "scripts/build-aspect-reference-examples.mjs",
+        "source": "src/lib/engine/synastry.ts",
+        "verifiedAt": "2026-10-20",
+        "review": "Calculation replay only; named editorial review pending."
+      }
+    },
+    {
+      "id": "moon-mars-2",
+      "pair": "moon-mars",
+      "context": "synastry",
+      "type": "computed",
+      "synthetic": true,
+      "chartA": {
+        "role": "A",
+        "body": "Moon",
+        "utc": "2000-01-01T12:00:00.000Z",
+        "longitude": 223.32396777014543
+      },
+      "chartB": {
+        "role": "B",
+        "body": "Mars",
+        "utc": "2001-12-26T12:00:00.000Z",
+        "longitude": 342.8541911066122
+      },
+      "separation": 119.53022333646675,
+      "angle": 120,
+      "residualOrb": 0.46977666353325276,
+      "geometry": "trine",
+      "engineVersion": "1.0.0",
+      "reversedAssignment": {
+        "chartA": {
+          "role": "A",
+          "body": "Mars",
+          "utc": "2000-01-01T12:00:00.000Z",
+          "longitude": 327.96393186874616
+        },
+        "chartB": {
+          "role": "B",
+          "body": "Moon",
+          "utc": "2001-12-26T12:00:00.000Z",
+          "longitude": 45.602935240277645
+        },
+        "separation": 77.63900337153154,
+        "geometry": null,
+        "residualOrb": null
+      },
+      "convention": "Tropical geocentric ecliptic longitudes; UTC instants; site major-aspect luminary orbs; no applying/separating.",
+      "provenance": {
+        "generator": "scripts/build-aspect-reference-examples.mjs",
+        "source": "src/lib/engine/synastry.ts",
+        "verifiedAt": "2026-10-20",
+        "review": "Calculation replay only; named editorial review pending."
+      }
+    }
+  ],
+  "schematic": [
+    {
+      "id": "wraparound",
+      "type": "schematic",
+      "context": "synastry",
+      "chartA": {
+        "body": "Sun",
+        "longitude": 359
+      },
+      "chartB": {
+        "body": "Moon",
+        "longitude": 1
+      },
+      "separation": 2,
+      "geometry": "conjunction",
+      "residualOrb": 2
+    },
+    {
+      "id": "outside-orb",
+      "type": "schematic",
+      "context": "synastry",
+      "chartA": {
+        "body": "Sun",
+        "longitude": 350
+      },
+      "chartB": {
+        "body": "Moon",
+        "longitude": 4
+      },
+      "separation": 14,
+      "geometry": null,
+      "residualOrb": null
+    }
+  ]
+}

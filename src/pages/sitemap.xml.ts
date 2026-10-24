@@ -33,6 +33,8 @@ import registryResearchPublicationData from '../data/registry-research/publicati
 import type { EventsPublication } from '../lib/events/publication';
 
 import { EDITORIAL_METADATA } from '../lib/editorial-metadata.mjs';
+import { referencePublished, SYNASTRY_PAIRS } from '../lib/aspect-reference';
+import synastryPublication from '../data/synastry-publication.json';
 
 const SITE = 'https://zodiacs.org';
 const eventsPublication = eventsPublicationData as EventsPublication;
@@ -635,6 +637,9 @@ export const GET: APIRoute = async () => {
   }));
 
   const urls: { loc: string; priority: number; lastmod?: string }[] = [
+    ...(referencePublished ? ['', ...SYNASTRY_PAIRS.map((pair) => `${pair}/`)].map((suffix) => ({
+      loc: `/compatibility/aspects/${suffix}`, priority: 0.65, lastmod: synastryPublication.updated,
+    })) : []),
     ...evergreenUrls,
     ...DEVELOPER_GUIDES_ROUTES.map((loc) => ({ loc, priority: 0.6, lastmod: EVERGREEN_LASTMOD.get(loc) ?? DEVELOPER_GUIDES_LASTMOD })),
     ...(registryAuraEntry ? [registryAuraEntry] : []),

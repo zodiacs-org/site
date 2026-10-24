@@ -1,4 +1,5 @@
 ---
+import SynastryDiscovery from '../components/learn/SynastryDiscovery.astro';
 import Base from '../layouts/Base.astro';
 import { homeTrustFaq } from '../lib/home-trust';
 import ArtFrame from '../components/ArtFrame.astro';
@@ -692,6 +693,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
         </a>
       ))}
     </div>
+    <SynastryDiscovery />
     <div class="home-together">
       <span class="home-together__label">Together:</span>
       {together.map((item) => (

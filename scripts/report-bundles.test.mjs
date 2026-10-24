@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import { execFileSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,10 +9,13 @@ const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const temporaryRoots = [];
 afterAll(() => temporaryRoots.forEach((root) => rmSync(root, { recursive: true, force: true })));
 
-function check(changes = {}) {
+function check(changes = {}, preview = false) {
   const root = mkdtempSync(join(tmpdir(), 'zodiacs-bundle-gate-'));
   temporaryRoots.push(root);
   const files = {
+    'scripts/synastry-reference-policy.mjs': readFileSync(join(sourceRoot, 'scripts/synastry-reference-policy.mjs'), 'utf8'),
+    'src/data/synastry-publication.json': JSON.stringify({ released: false, reviewer: null, reviewedAt: null, indexingEvidence: null }),
+    'budgets.synastry.json': readFileSync(join(sourceRoot, 'budgets.synastry.json'), 'utf8'),
     'budgets.json': JSON.stringify({ '/': 42, '/birth-chart/': 70, '/aries/': 0,
       '/registry/collection/': 48, 'chunk-max': 60, 'engine-chunk': 25 }),
     'dist/index.html': '<script type="module" src="/_astro/client.fixture.js"></script>',
@@ -33,18 +36,29 @@ function check(changes = {}) {
     const path = join(root, name); mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, contents);
   }
-  mkdirSync(join(root, 'scripts'));
+  mkdirSync(join(root, 'scripts'), { recursive: true });
   copyFileSync(join(sourceRoot, 'scripts/report-bundles.mjs'), join(root, 'scripts/report-bundles.mjs'));
   symlinkSync(join(sourceRoot, 'node_modules'), join(root, 'node_modules'), 'dir');
   try {
     return { code: 0, output: execFileSync(process.execPath, ['scripts/report-bundles.mjs', '--fail'],
-      { cwd: root, encoding: 'utf8', stdio: 'pipe' }) };
+      { cwd: root, encoding: 'utf8', stdio: 'pipe', env: { ...process.env, PUBLIC_SYNASTRY_REFERENCE_PREVIEW: preview ? '1' : '0' } }) };
   } catch (error) {
     return { code: error.status, output: `${error.stdout}\n${error.stderr}` };
   }
 }
 
 describe('actual bundle gate', () => {
+  it('requires every review route and rejects any route-entry JavaScript there', () => {
+    const missing = check({}, true);
+    expect(missing.code).toBe(1);
+    expect(missing.output).toContain('/compatibility/aspects/: built HTML not found');
+    const pages = Object.fromEntries(['', 'sun-moon/', 'moon-venus/', 'moon-mars/']
+      .map((suffix) => [`dist/compatibility/aspects/${suffix}index.html`, '']));
+    expect(check(pages, true).code).toBe(0);
+    const over = check({ ...pages, 'dist/compatibility/aspects/sun-moon/index.html': '<script type="module" src="/_astro/client.fixture.js"></script>' }, true);
+    expect(over.code).toBe(1);
+    expect(over.output).toContain('exceeds 0 KB');
+  });
   it('accepts a factored static engine closure and an inert provenance name', () => {
     expect(check().code).toBe(0);
   });

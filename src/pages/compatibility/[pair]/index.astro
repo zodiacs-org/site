@@ -1,4 +1,5 @@
 ---
+import SynastryDiscovery from '../../../components/learn/SynastryDiscovery.astro';
 import PairComparisonSymbol from '../../../components/PairComparisonSymbol.astro';
 import { getCollection, render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
@@ -191,6 +192,7 @@ const jsonLd = [
         <div class="ph-feature">
           <PairProse id={entry.id}>
             <Content />
+            {entry.id === 'gemini-gemini' && <SynastryDiscovery />}
             <div slot="rooms" class="ph-rooms">
               {[a, b].map((sign, index) => {
                 const point = detail(sign);

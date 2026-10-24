@@ -14,6 +14,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, extname, join, relative, resolve, sep } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import ts from 'typescript';
+import { synastryEnabled } from './synastry-reference-policy.mjs';
+import referenceBudgets from '../budgets.synastry.json' with { type: 'json' };
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(repo, 'dist');
@@ -178,9 +180,10 @@ try {
 }
 
 const routeBudgets = Object.entries(budgets).filter(([key]) => key.startsWith('/'));
-for (const [key, value] of Object.entries(budgets)) {
+if (synastryEnabled) routeBudgets.push(...Object.entries(referenceBudgets));
+for (const [key, value] of [...Object.entries(budgets), ...Object.entries(referenceBudgets)]) {
   if (typeof value !== 'number' || value < 0 || !Number.isFinite(value)) {
-    fail(`budgets.json: ${key} must be a finite, non-negative number`);
+    fail(`bundle budgets: ${key} must be a finite, non-negative number`);
   }
 }
 for (const required of ['/', '/birth-chart/', '/registry/collection/', '/aries/', 'chunk-max', 'engine-chunk']) {

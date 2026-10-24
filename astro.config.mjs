@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 import mdx from '@astrojs/mdx';
+import { synastryReferenceRoutes } from './scripts/synastry-reference-policy.mjs';
 
 function interactionDirective() {
   return {
@@ -54,7 +55,7 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [interactionDirective(), preact(), mdx()],
+  integrations: [interactionDirective(), synastryReferenceRoutes(), preact(), mdx()],
   build: {
     format: 'directory',
     inlineStylesheets: 'auto',

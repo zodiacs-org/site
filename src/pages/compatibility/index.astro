@@ -1,4 +1,5 @@
 ---
+import SynastryDiscovery from '../../components/learn/SynastryDiscovery.astro';
 import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
 import Base from '../../layouts/Base.astro';
 import Faq from '../../components/Faq.astro';
@@ -96,6 +97,7 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
   <section class="section container">
     <div class="section-head">
       <h2>Start with sun signs</h2>
+      <SynastryDiscovery />
       <p>
         If you do not have two birth charts yet, these shorter{' '}
         <a href="/learn/glossary/#sun-sign">Sun-sign guides</a> are a useful first look at

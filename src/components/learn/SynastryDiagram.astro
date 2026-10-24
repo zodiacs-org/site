@@ -1,0 +1,26 @@
+---
+interface Props { a: string; b: string; angle: number; id: string }
+const { a, b, angle, id } = Astro.props;
+const x = 120 + 83 * Math.sin(angle * Math.PI / 180);
+const y = 120 - 83 * Math.cos(angle * Math.PI / 180);
+---
+<figure class="syn-diagram">
+  <svg width="240" height="240" viewBox="0 0 240 240" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
+    <title id={`${id}-title`}>{a} in chart A and {b} in chart B: schematic two-chart geometry</title>
+    <desc id={`${id}-desc`}>Schematic two-chart geometry. The inner ring belongs to chart A; the outer ring belongs to chart B. Angular separation is measured from the shared center, independently of ring radius.</desc>
+    <circle cx="120" cy="120" r="61" fill="none" stroke="var(--hair-2)" />
+    <circle cx="120" cy="120" r="83" fill="none" stroke="var(--hair-2)" />
+    <path d={`M120 59 L120 120 L${x} ${y}`} fill="none" stroke="var(--text-2)" stroke-width="1.5" />
+    <circle cx="120" cy="59" r="6" fill="var(--sign-cancer)" />
+    <circle cx={x} cy={y} r="6" fill="var(--sign-libra)" />
+    <text x="106" y="52" text-anchor="end" fill="var(--text)" font-size="13">A</text>
+    <text x={x + 12} y={y} fill="var(--text)" font-size="13">B</text>
+    <text x="120" y="224" text-anchor="middle" fill="var(--text-2)" font-size="14">{angle}° separation</text>
+  </svg>
+  <figcaption>Schematic: {a} A / {b} B. Ring radius does not affect the angle.</figcaption>
+</figure>
+<style>
+  .syn-diagram { margin: 0; width: 240px; max-width: 100%; }
+  svg { display: block; width: 100%; height: auto; font-family: var(--font-mono); }
+  figcaption { font-size: var(--text-xs); line-height: 1.6; color: var(--muted); }
+</style>

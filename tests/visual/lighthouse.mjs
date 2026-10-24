@@ -9,6 +9,7 @@ import { withPreview } from './preview-server.mjs';
 import { saveLighthouseAssets } from './lighthouse-assets.mjs';
 import { calibrations, describeMisses, gateRoute, MAX_STALL_RETAKES, stallSummary } from './lighthouse-gate.mjs';
 import { describeStalls } from './runner-stalls.mjs';
+import { synastryEnabled, synastryPublished } from '../../scripts/synastry-reference-policy.mjs';
 
 const visualRoot = dirname(fileURLToPath(import.meta.url));
 const artifactRoot = resolve(visualRoot, 'artifacts/lighthouse');
@@ -52,6 +53,14 @@ const routes = [
   { name: 'ru-birth-chart', path: '/ru/birth-chart/' },
   { name: 'ru-sign-guide', path: '/ru/aries/', intentionalNoindex: true },
 ];
+if (synastryEnabled) {
+  routes.push(
+    { name: 'synastry-aspects', path: '/compatibility/aspects/', intentionalNoindex: !synastryPublished },
+    { name: 'synastry-sun-moon', path: '/compatibility/aspects/sun-moon/', intentionalNoindex: !synastryPublished },
+    { name: 'synastry-moon-venus', path: '/compatibility/aspects/moon-venus/', intentionalNoindex: !synastryPublished },
+    { name: 'synastry-moon-mars', path: '/compatibility/aspects/moon-mars/', intentionalNoindex: !synastryPublished },
+  );
+}
 // Registry Collection only exists in flag-on builds, so it cannot join the
 // per-push gate; the scheduled lighthouse-collection workflow builds with the
 // flag and audits it here.

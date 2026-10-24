@@ -1251,7 +1251,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     style: 'long', type: 'conjunction',
   }).format(pairSideLabels(pair, charts));
 
-  async function compare(e?: Event) {
+  async function compare(e?: Event, trigger: 'user' | 'automatic' | 'restore' = 'automatic') {
     e?.preventDefault();
     // Ref, not state: two effects in one commit share the same stale
     // `busy` closure, so state can't gate re-entry.
@@ -1314,6 +1314,11 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
           ? 'invite'
           : slotA.source === 'form' && slotB.source === 'form' ? 'form' : 'restored',
       });
+      if (trigger === 'user' && resultSource === 'plain') {
+        void import('../lib/reference-completion').then(({ completeReferenceTask }) => {
+          if (requestIsCurrent(request, accessGeneration)) completeReferenceTask();
+        }).catch(() => { /* Optional measurement must not interrupt a valid result. */ });
+      }
     } catch (err) {
       if (!requestIsCurrent(request, accessGeneration)) return;
       setError(calculationError(err, locale, t(locale, 'compareError')));
@@ -1341,7 +1346,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
     if (restoreTick === 0 || busy) return;
     setRestoreTick(0);
     if (slotReady(slotA) && slotReady(slotB)) {
-      compare(new Event('zodiacs:restore'));
+      compare(new Event('zodiacs:restore'), 'restore');
     }
   }, [restoreTick, slotA, slotB, busy]);
 
@@ -1395,7 +1400,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en', unwrapped
           }}
         />
       )}
-      <form class="calc__form shell" onSubmit={compare} aria-busy={busy}>
+      <form class="calc__form shell" onSubmit={(e) => compare(e, 'user')} aria-busy={busy}>
         <div class="core calc__core">
           {/* Always mounted: role=status nodes inserted together with
               their text are routinely missed by VoiceOver — the region
