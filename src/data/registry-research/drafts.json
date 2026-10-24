@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.registry-research-drafts.v1",
-  "generatedAt": "2026-10-23T00:07:36.897Z",
+  "generatedAt": "2026-10-24T00:07:44.233Z",
   "generator": "zodiacs.registry-research.deterministic.v1",
   "method": {
     "id": "zodiacs.registry-research-method.v1",
@@ -35406,6 +35406,418 @@
       },
       "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
       "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+      "revisions": [
+        {
+          "kind": "append-only-follow-up",
+          "parentId": "zrx-market-check-2026-10-16"
+        }
+      ],
+      "id": "zrx-market-check-2026-10-16-observation-168h",
+      "slug": "market-check-2026-10-16-observation-168h",
+      "kind": "observation-update",
+      "templateId": "observation-update.v1",
+      "parentId": "zrx-market-check-2026-10-16",
+      "issuedAt": "2026-10-24T00:07:44.233Z",
+      "visibleAt": "2026-10-24T00:07:44.233Z",
+      "title": "Leo 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (192 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-16-observation-168h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "symbolicScore": {
+        "sign": "leo",
+        "attention": 28,
+        "tone": 9,
+        "eventIntensity": 3,
+        "calculation": "14 attention / 10 tone / 3 event intensity × 0.9121 horizon multiplier",
+        "marketFieldsUsed": false
+      },
+      "sections": {
+        "skyFact": {
+          "heading": "Sky fact",
+          "body": "The original zrx-market-check-2026-10-16 sky score and traditional reading remain unchanged.",
+          "evidence": [
+            "/assets/data/registry-research/items/zrx-market-check-2026-10-16.json"
+          ]
+        },
+        "traditionalReading": {
+          "heading": "Traditional reading",
+          "body": "This follow-up does not reinterpret the sky after observing the market.",
+          "evidence": [
+            "/assets/data/registry-research/items/zrx-market-check-2026-10-16.json"
+          ]
+        },
+        "marketObservation": {
+          "heading": "Market observation",
+          "body": "192 hours after the original market observation, indexed price change was unavailable and indexed liquidity change was unavailable. This temporal comparison does not establish causation.",
+          "evidence": [
+            "public/assets/data/registry-market-history.v1.json"
+          ]
+        }
+      },
+      "market": {
+        "available": true,
+        "snapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "observedAt": "2026-10-24T00:07:44.233Z",
+        "provider": "DexScreener",
+        "sign": "leo",
+        "priceUsd": 0.00006039,
+        "change24hPct": -0.16,
+        "marketCapUsd": 60385,
+        "fdvUsd": 60385,
+        "liquidityUsd": 13908.09,
+        "volume24hUsd": 11.68,
+        "indexedPoolCount": 1,
+        "deepestPoolUrl": "https://dexscreener.com/solana/48erbgmqizekyloccebd7cs5knqpzqr7qqak9mzapqgq",
+        "baselineSnapshotId": "registry-market:2026-10-16:2026-10-16T00:07:50.402Z",
+        "baselineObservedAt": "2026-10-16T00:07:50.402Z",
+        "requestedElapsedHours": 168,
+        "actualElapsedHours": 192,
+        "priceChangePct": null,
+        "liquidityChangePct": null
+      },
+      "evidence": {
+        "parentId": "zrx-market-check-2026-10-16",
+        "baselineSnapshotId": "registry-market:2026-10-16:2026-10-16T00:07:50.402Z",
+        "marketSnapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "coverage": "first-qualifying-archive-observation"
+      },
+      "artifactHash": "96028967ff3975a351abef8ebb093bd32f6428b6747226b79222a8c51b7f71be"
+    },
+    {
+      "schema": "zodiacs.registry-research-item.v1",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "byline": "Zodiacs.org Research System",
+      "status": "draft",
+      "method": {
+        "id": "zodiacs.registry-research-method.v1",
+        "version": 1,
+        "generator": "zodiacs.registry-research.deterministic.v1",
+        "deterministicTemplatesOnly": true,
+        "modelAuthoredProse": false,
+        "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+        "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+        "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+        "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+      },
+      "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+      "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+      "revisions": [
+        {
+          "kind": "append-only-follow-up",
+          "parentId": "zrx-market-check-2026-10-22"
+        }
+      ],
+      "id": "zrx-market-check-2026-10-22-observation-24h",
+      "slug": "market-check-2026-10-22-observation-24h",
+      "kind": "observation-update",
+      "templateId": "observation-update.v1",
+      "parentId": "zrx-market-check-2026-10-22",
+      "issuedAt": "2026-10-24T00:07:44.233Z",
+      "visibleAt": "2026-10-24T00:07:44.233Z",
+      "title": "Leo 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (47.96 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-22-observation-24h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "symbolicScore": {
+        "sign": "leo",
+        "attention": 15,
+        "tone": 0,
+        "eventIntensity": 0,
+        "calculation": "8 disclosed Jupiter occupancy-attention points",
+        "marketFieldsUsed": false
+      },
+      "sections": {
+        "skyFact": {
+          "heading": "Sky fact",
+          "body": "The original zrx-market-check-2026-10-22 sky score and traditional reading remain unchanged.",
+          "evidence": [
+            "/assets/data/registry-research/items/zrx-market-check-2026-10-22.json"
+          ]
+        },
+        "traditionalReading": {
+          "heading": "Traditional reading",
+          "body": "This follow-up does not reinterpret the sky after observing the market.",
+          "evidence": [
+            "/assets/data/registry-research/items/zrx-market-check-2026-10-22.json"
+          ]
+        },
+        "marketObservation": {
+          "heading": "Market observation",
+          "body": "47.96 hours after the original market observation, indexed price change was -3.39% and indexed liquidity change was -3.4%. This temporal comparison does not establish causation.",
+          "evidence": [
+            "public/assets/data/registry-market-history.v1.json"
+          ]
+        }
+      },
+      "market": {
+        "available": true,
+        "snapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "observedAt": "2026-10-24T00:07:44.233Z",
+        "provider": "DexScreener",
+        "sign": "leo",
+        "priceUsd": 0.00006039,
+        "change24hPct": -0.16,
+        "marketCapUsd": 60385,
+        "fdvUsd": 60385,
+        "liquidityUsd": 13908.09,
+        "volume24hUsd": 11.68,
+        "indexedPoolCount": 1,
+        "deepestPoolUrl": "https://dexscreener.com/solana/48erbgmqizekyloccebd7cs5knqpzqr7qqak9mzapqgq",
+        "baselineSnapshotId": "registry-market:2026-10-22:2026-10-22T00:09:55.130Z",
+        "baselineObservedAt": "2026-10-22T00:09:55.130Z",
+        "requestedElapsedHours": 24,
+        "actualElapsedHours": 47.96,
+        "priceChangePct": -3.39,
+        "liquidityChangePct": -3.4
+      },
+      "evidence": {
+        "parentId": "zrx-market-check-2026-10-22",
+        "baselineSnapshotId": "registry-market:2026-10-22:2026-10-22T00:09:55.130Z",
+        "marketSnapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "coverage": "first-qualifying-archive-observation"
+      },
+      "artifactHash": "41497f2108a52a178bba46b647dfdfd80b5f21cba35360944700c786c0b7a1bf"
+    },
+    {
+      "schema": "zodiacs.registry-research-item.v1",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "byline": "Zodiacs.org Research System",
+      "status": "draft",
+      "method": {
+        "id": "zodiacs.registry-research-method.v1",
+        "version": 1,
+        "generator": "zodiacs.registry-research.deterministic.v1",
+        "deterministicTemplatesOnly": true,
+        "modelAuthoredProse": false,
+        "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+        "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+        "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+        "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+      },
+      "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+      "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+      "revisions": [
+        {
+          "kind": "append-only-follow-up",
+          "parentId": "zrx-market-check-2026-10-23"
+        }
+      ],
+      "id": "zrx-market-check-2026-10-23-observation-24h",
+      "slug": "market-check-2026-10-23-observation-24h",
+      "kind": "observation-update",
+      "templateId": "observation-update.v1",
+      "parentId": "zrx-market-check-2026-10-23",
+      "issuedAt": "2026-10-24T00:07:44.233Z",
+      "visibleAt": "2026-10-24T00:07:44.233Z",
+      "title": "Scorpio 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (24 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-23-observation-24h/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "symbolicScore": {
+        "sign": "scorpio",
+        "attention": 33,
+        "tone": 0,
+        "eventIntensity": 2,
+        "calculation": "14.5 attention / 0 tone / 2 event intensity × 0.8996 horizon multiplier",
+        "marketFieldsUsed": false
+      },
+      "sections": {
+        "skyFact": {
+          "heading": "Sky fact",
+          "body": "The original zrx-market-check-2026-10-23 sky score and traditional reading remain unchanged.",
+          "evidence": [
+            "/assets/data/registry-research/items/zrx-market-check-2026-10-23.json"
+          ]
+        },
+        "traditionalReading": {
+          "heading": "Traditional reading",
+          "body": "This follow-up does not reinterpret the sky after observing the market.",
+          "evidence": [
+            "/assets/data/registry-research/items/zrx-market-check-2026-10-23.json"
+          ]
+        },
+        "marketObservation": {
+          "heading": "Market observation",
+          "body": "24 hours after the original market observation, indexed price change was -1.37% and indexed liquidity change was -1.09%. This temporal comparison does not establish causation.",
+          "evidence": [
+            "public/assets/data/registry-market-history.v1.json"
+          ]
+        }
+      },
+      "market": {
+        "available": true,
+        "snapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "observedAt": "2026-10-24T00:07:44.233Z",
+        "provider": "DexScreener",
+        "sign": "scorpio",
+        "priceUsd": 0.00006329,
+        "change24hPct": -0.58,
+        "marketCapUsd": 63293,
+        "fdvUsd": 63293,
+        "liquidityUsd": 13997.59,
+        "volume24hUsd": 27.49,
+        "indexedPoolCount": 1,
+        "deepestPoolUrl": "https://dexscreener.com/solana/3d2kyumgj2yotnc6skx4hnoeswp4n8zqzsq9kfh81yta",
+        "baselineSnapshotId": "registry-market:2026-10-23:2026-10-23T00:07:36.897Z",
+        "baselineObservedAt": "2026-10-23T00:07:36.897Z",
+        "requestedElapsedHours": 24,
+        "actualElapsedHours": 24,
+        "priceChangePct": -1.37,
+        "liquidityChangePct": -1.09
+      },
+      "evidence": {
+        "parentId": "zrx-market-check-2026-10-23",
+        "baselineSnapshotId": "registry-market:2026-10-23:2026-10-23T00:07:36.897Z",
+        "marketSnapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "coverage": "first-qualifying-archive-observation"
+      },
+      "artifactHash": "335416f8621c054ecc769f9848930d389b36792db19df98ef541e049c7aaaa08"
+    },
+    {
+      "schema": "zodiacs.registry-research-item.v1",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "byline": "Zodiacs.org Research System",
+      "status": "draft",
+      "method": {
+        "id": "zodiacs.registry-research-method.v1",
+        "version": 1,
+        "generator": "zodiacs.registry-research.deterministic.v1",
+        "deterministicTemplatesOnly": true,
+        "modelAuthoredProse": false,
+        "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+        "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+        "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+        "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+      },
+      "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+      "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+      "revisions": [],
+      "id": "zrx-market-check-2026-10-24",
+      "slug": "market-check-2026-10-24",
+      "kind": "market-check",
+      "templateId": "market-check.v1",
+      "issuedAt": "2026-10-24T00:07:44.233Z",
+      "visibleAt": "2026-10-24T00:07:44.233Z",
+      "title": "Scorpio market check · 2026-10-24",
+      "summary": "Scorpio price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-24/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "symbolicScore": {
+        "sign": "scorpio",
+        "attention": 39,
+        "tone": -9,
+        "eventIntensity": 13,
+        "calculation": "20 attention / -10 tone / 14 event intensity × 0.9246 horizon multiplier",
+        "marketFieldsUsed": false
+      },
+      "sections": {
+        "skyFact": {
+          "heading": "Sky fact",
+          "body": "Scorpio is the highest-ranked attention entry in the separately published 2026-10-24 daily outlook.",
+          "evidence": [
+            "public/assets/registry-outlook.json"
+          ]
+        },
+        "traditionalReading": {
+          "heading": "Traditional reading",
+          "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. The symbolic score was fixed before this market comparison.",
+          "evidence": [
+            "public/assets/registry-outlook.json"
+          ]
+        },
+        "marketObservation": {
+          "heading": "Market observation",
+          "body": "At 2026-10-24T00:07:44.233Z, Scorpio was indexed at $0.00006329, with -0.58% over 24 hours, $63.29K market cap, $63.29K FDV, $14K indexed liquidity, $27.49 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score. Scorpio market cap was 0.896× the collection median and indexed liquidity was 0.968× the collection median.",
+          "evidence": [
+            "public/assets/data/registry-market-history.v1.json"
+          ]
+        }
+      },
+      "market": {
+        "available": true,
+        "snapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "observedAt": "2026-10-24T00:07:44.233Z",
+        "provider": "DexScreener",
+        "sign": "scorpio",
+        "priceUsd": 0.00006329,
+        "change24hPct": -0.58,
+        "marketCapUsd": 63293,
+        "fdvUsd": 63293,
+        "liquidityUsd": 13997.59,
+        "volume24hUsd": 27.49,
+        "indexedPoolCount": 1,
+        "deepestPoolUrl": "https://dexscreener.com/solana/3d2kyumgj2yotnc6skx4hnoeswp4n8zqzsq9kfh81yta",
+        "collectionMedian": {
+          "marketCapUsd": 70621,
+          "liquidityUsd": 14463.57
+        },
+        "vsCollectionMedian": {
+          "marketCap": 0.896,
+          "liquidity": 0.968
+        }
+      },
+      "evidence": {
+        "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-24",
+        "marketSnapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "coverage": {
+          "overall": "complete",
+          "events": "complete",
+          "occupancies": "complete",
+          "expectedTransitMonths": [
+            "2026-10"
+          ],
+          "missingTransitMonths": [],
+          "missingOccupancyPlanets": []
+        }
+      },
+      "artifactHash": "3ab3048739c582cb2efa98a181fb735f566a9f07c794c041016598fb51f4c65b"
+    },
+    {
+      "schema": "zodiacs.registry-research-item.v1",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "byline": "Zodiacs.org Research System",
+      "status": "draft",
+      "method": {
+        "id": "zodiacs.registry-research-method.v1",
+        "version": 1,
+        "generator": "zodiacs.registry-research.deterministic.v1",
+        "deterministicTemplatesOnly": true,
+        "modelAuthoredProse": false,
+        "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+        "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+        "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+        "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+      },
+      "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+      "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
       "revisions": [],
       "id": "zrx-event-brief-station-2026-10-24t07-14-21-822z-mercury-retrograde-scorpio",
       "slug": "event-brief-station-2026-10-24t07-14-21-822z-mercury-retrograde-scorpio",
@@ -35470,6 +35882,108 @@
         }
       },
       "artifactHash": "b396b9bec7e9c5c9bf47ca4058b06dc127c364016c3c12e65103639d9aa12ad9"
+    },
+    {
+      "schema": "zodiacs.registry-research-item.v1",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "byline": "Zodiacs.org Research System",
+      "status": "draft",
+      "method": {
+        "id": "zodiacs.registry-research-method.v1",
+        "version": 1,
+        "generator": "zodiacs.registry-research.deterministic.v1",
+        "deterministicTemplatesOnly": true,
+        "modelAuthoredProse": false,
+        "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+        "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+        "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+        "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+      },
+      "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+      "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+      "revisions": [],
+      "id": "zrx-daily-market-brief-2026-10-24",
+      "slug": "daily-market-brief-2026-10-24",
+      "kind": "daily-market-brief",
+      "templateId": "daily-market-brief.v1",
+      "issuedAt": "2026-10-24T12:00:00.000Z",
+      "visibleAt": "2026-10-24T12:00:00.000Z",
+      "title": "Mercury stations retrograde in Scorpio · daily market brief",
+      "summary": "Mercury stations retrograde in Scorpio leads the disclosed symbolic index; Scorpio market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-24/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "station"
+      ],
+      "symbolicScore": {
+        "sign": "scorpio",
+        "attention": 39,
+        "tone": -9,
+        "eventIntensity": 13,
+        "calculation": "20 attention / -10 tone / 14 event intensity × 0.9246 horizon multiplier",
+        "marketFieldsUsed": false
+      },
+      "sections": {
+        "skyFact": {
+          "heading": "Sky fact",
+          "body": "Mercury stations retrograde in Scorpio is the highest-weighted named factor for Scorpio in the 2026-10-24 UTC edition. The disclosed score is attention 39/100, tone -9, and symbolic event intensity 13/100.",
+          "evidence": [
+            "src/data/transits-2026-10.json",
+            "public/assets/registry-outlook.json"
+          ]
+        },
+        "traditionalReading": {
+          "heading": "Traditional reading",
+          "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. This is a traditional symbolic reading, not a price direction or probability.",
+          "evidence": [
+            "src/data/transits-2026-10.json",
+            "public/assets/registry-outlook.json"
+          ]
+        },
+        "marketObservation": {
+          "heading": "Market observation",
+          "body": "At 2026-10-24T00:07:44.233Z, Scorpio was indexed at $0.00006329, with -0.58% over 24 hours, $63.29K market cap, $63.29K FDV, $14K indexed liquidity, $27.49 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+          "evidence": [
+            "public/assets/data/registry-market-history.v1.json"
+          ]
+        }
+      },
+      "market": {
+        "available": true,
+        "snapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "observedAt": "2026-10-24T00:07:44.233Z",
+        "provider": "DexScreener",
+        "sign": "scorpio",
+        "priceUsd": 0.00006329,
+        "change24hPct": -0.58,
+        "marketCapUsd": 63293,
+        "fdvUsd": 63293,
+        "liquidityUsd": 13997.59,
+        "volume24hUsd": 27.49,
+        "indexedPoolCount": 1,
+        "deepestPoolUrl": "https://dexscreener.com/solana/3d2kyumgj2yotnc6skx4hnoeswp4n8zqzsq9kfh81yta"
+      },
+      "evidence": {
+        "dailyFacts": "src/data/daily.json#2026-10-24",
+        "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-24",
+        "marketSnapshotId": "registry-market:2026-10-24:2026-10-24T00:07:44.233Z",
+        "coverage": {
+          "overall": "complete",
+          "events": "complete",
+          "occupancies": "complete",
+          "expectedTransitMonths": [
+            "2026-10"
+          ],
+          "missingTransitMonths": [],
+          "missingOccupancyPlanets": []
+        }
+      },
+      "artifactHash": "4b810746fabc54c636b8b5dbc69c5dc0fa6bf709080b9d7fbf5c63f4bfa0ff04"
     },
     {
       "schema": "zodiacs.registry-research-item.v1",
