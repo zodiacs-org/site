@@ -20,36 +20,19 @@ interface Props {
   copy: WheelExplainCopy;
   /** Unique per page; prefixes the panel and hint ids. */
   id: string;
-  /** Idle hint override, for wheels where only some kinds are tappable. */
-  hint?: string;
-  keyHint?: string;
-  /** Fixed width in px for a wheel that sizes itself, so the panel cannot widen it. */
-  width?: number;
-  /** Panel height (any CSS length); the default suits a full-width wheel. */
-  panelHeight?: string;
   class?: string;
-  /** False renders the slot alone, untouched: the same wheel without the feature. */
-  enabled?: boolean;
   [attribute: string]: unknown;
 }
 
-const {
-  spots, copy, id, hint = copy.hint, keyHint = copy.keyHint, width, panelHeight, class: className,
-  enabled = true, ...rest
-} = Astro.props;
-const style = [
-  width ? `width:${width}px;max-width:100%` : '',
-  panelHeight ? `--wx-panel-h:${panelHeight}` : '',
-].filter(Boolean).join(';') || undefined;
+const { spots, copy, id, class: className, ...rest } = Astro.props;
 const panelId = `${id}-panel`;
 const keysId = `${id}-keys`;
 ---
-{enabled ? (
-<div class:list={['wx', className]} style={style} data-wheel-explain {...rest}>
+<div class:list={['wx', className]} data-wheel-explain {...rest}>
   <div class="wx__stage">
     <slot />
     <div class="wx__spots" role="group" aria-label={copy.groupLabel} aria-describedby={keysId} data-wx-spots hidden>
-      <p id={keysId} hidden>{keyHint}</p>
+      <p id={keysId} hidden>{copy.keyHint}</p>
       {spots.map((spot, index) => (
         <button
           type="button"
@@ -72,7 +55,7 @@ const keysId = `${id}-keys`;
   <div class="wx__panel" id={panelId} data-wx-panel>
     <div class="wx__live" aria-live="polite" aria-atomic="true">
       <p class="wx__title" data-wx-out-title>{copy.idleTitle}</p>
-      <p class="wx__text" data-wx-out-text>{hint}</p>
+      <p class="wx__text" data-wx-out-text>{copy.hint}</p>
     </div>
     <button type="button" class="wx__close" data-wx-close hidden>{copy.close}</button>
   </div>
@@ -175,7 +158,6 @@ const keysId = `${id}-keys`;
     }
   </style>
 </div>
-) : <slot />}
 
 <script>
   import { mountAllWheelExplain } from '../lib/wheel-explain/controller';

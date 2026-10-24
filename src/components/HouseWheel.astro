@@ -4,17 +4,10 @@
  * a real chart is: the ascendant on the left, houses running counter-
  * clockwise from it, so the tenth sits at the top as the midheaven does.
  *
- * Static inline SVG: no island. The wedge fades in behind
+ * Static inline SVG: no island, no JS. The wedge fades in behind
  * prefers-reduced-motion; the geometry stands still without it.
- *
- * Tap-to-explain (WheelExplain): the twelve numerals become buttons that
- * say what each house is about. Without JavaScript the wheel renders
- * exactly as before; `explain={false}` leaves the bare figure.
  */
 import { SIGNS } from '../lib/signs';
-import WheelExplain from './WheelExplain.astro';
-import { wheelExplainCopy } from '../lib/wheel-explain/copy';
-import { houseWheelNumeral, houseWheelSpots } from '../lib/wheel-explain/hotspots';
 
 interface Props {
   /** 1–12. */
@@ -23,12 +16,9 @@ interface Props {
   hue: string;
   size?: number;
   class?: string;
-  /** Tap-to-explain on the numerals (English copy). */
-  explain?: boolean;
 }
 
-const { house, hue, size = 200, class: className, explain = true } = Astro.props;
-const explainCopy = wheelExplainCopy('en').copy;
+const { house, hue, size = 200, class: className } = Astro.props;
 
 const CX = 100;
 const CY = 100;
@@ -69,10 +59,10 @@ const cusps = Array.from({ length: 12 }, (_, i) => {
   return { x1: fmt(x1), y1: fmt(y1), x2: fmt(x2), y2: fmt(y2) };
 });
 
-// Shared with the tap-to-explain hotspots, so the two always agree.
 const numerals = Array.from({ length: 12 }, (_, i) => {
   const n = i + 1;
-  return { n, ...houseWheelNumeral(n), lit: n === house };
+  const [x, y] = point(houseStart(n) - 15, (R_OUT + R_IN) / 2);
+  return { n, x: fmt(x), y: fmt(y), lit: n === house };
 });
 
 // The twelve sign hues stay on the rim, so the wheel reads as the same
@@ -87,56 +77,45 @@ const ticks = SIGNS.map((sign, i) => {
 const ANGLE_LABEL: Record<number, string> = { 1: 'ASC', 4: 'IC', 7: 'DSC', 10: 'MC' };
 const uid = `hw${house}`;
 ---
-<WheelExplain
-  enabled={explain}
-  id={`${uid}-explain`}
-  class={className}
-  spots={houseWheelSpots(hue, explainCopy)}
-  copy={explainCopy}
-  hint={explainCopy.houseHint}
-  keyHint={explainCopy.houseKeyHint}
-  width={size}
-  panelHeight="7.75rem"
->
-  <figure class:list={['house-wheel', !explain && className]} style={`--size:${size}px;--lit:${hue}`}>
-    <svg viewBox="0 0 200 200" width={size} height={size} role="img" aria-labelledby={`${uid}-t`}>
-      <title id={`${uid}-t`}>
-        A chart wheel with the {house === 1 ? 'first' : `${house}th`} house sector highlighted, ascendant on the left.
-      </title>
+<figure class:list={['house-wheel', className]} style={`--size:${size}px;--lit:${hue}`}>
+  <svg viewBox="0 0 200 200" width={size} height={size} role="img" aria-labelledby={`${uid}-t`}>
+    <title id={`${uid}-t`}>
+      A chart wheel with the {house === 1 ? 'first' : `${house}th`} house sector highlighted, ascendant on the left.
+    </title>
 
-      <path class="hw-wedge" d={wedge} />
+    <path class="hw-wedge" d={wedge} />
 
-      <circle class="hw-ring" cx={CX} cy={CY} r={R_OUT} />
-      <circle class="hw-ring" cx={CX} cy={CY} r={R_IN} />
+    <circle class="hw-ring" cx={CX} cy={CY} r={R_OUT} />
+    <circle class="hw-ring" cx={CX} cy={CY} r={R_IN} />
 
-      <g class="hw-ticks">
-        {ticks.map((t) => <line x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} style={`--tick:${t.hue}`} />)}
-      </g>
+    <g class="hw-ticks">
+      {ticks.map((t) => <line x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} style={`--tick:${t.hue}`} />)}
+    </g>
 
-      <g class="hw-cusps">
-        {cusps.map((c) => <line x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2} />)}
-      </g>
+    <g class="hw-cusps">
+      {cusps.map((c) => <line x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2} />)}
+    </g>
 
-      <g class="hw-numerals">
-        {numerals.map((m) => (
-          <text
-            class:list={['hw-numeral', m.lit && 'is-lit']}
-            x={m.x}
-            y={m.y}
-            text-anchor="middle"
-            dominant-baseline="central"
-          >{m.n}</text>
-        ))}
-      </g>
+    <g class="hw-numerals">
+      {numerals.map((m) => (
+        <text
+          class:list={['hw-numeral', m.lit && 'is-lit']}
+          x={m.x}
+          y={m.y}
+          text-anchor="middle"
+          dominant-baseline="central"
+        >{m.n}</text>
+      ))}
+    </g>
 
-      {ANGLE_LABEL[house] && (
-        <text class="hw-angle" x={CX} y={CY} text-anchor="middle" dominant-baseline="central">
-          {ANGLE_LABEL[house]}
-        </text>
-      )}
-    </svg>
-  </figure>
-</WheelExplain>
+    {ANGLE_LABEL[house] && (
+      <text class="hw-angle" x={CX} y={CY} text-anchor="middle" dominant-baseline="central">
+        {ANGLE_LABEL[house]}
+      </text>
+    )}
+  </svg>
+</figure>
+
 <style>
   .house-wheel {
     margin: 0;

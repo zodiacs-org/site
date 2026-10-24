@@ -5,7 +5,7 @@ import Wheel from '../wheel/Wheel';
 import { SIGNS } from '../signs';
 import { SAMPLE_PLACEMENTS, SAMPLE_WHEEL } from '../sample-chart';
 import frida from '../../data/demo-chart-frida.json';
-import { houseWheelNumeral, houseWheelSpots, staticWheelFrame, staticWheelSpots } from './hotspots';
+import { staticWheelFrame, staticWheelSpots } from './hotspots';
 
 type FixtureBody = { body: string; lon: number; retrograde: boolean };
 const fridaBodies = (frida.bodies as FixtureBody[]).filter((b) => b.body !== 'South Node');
@@ -100,26 +100,5 @@ describe('static wheel hotspots', () => {
     expect(kinds.lastIndexOf('sign')).toBeLessThan(kinds.indexOf('house'));
     const order = spots.filter((s) => s.kind === 'planet').map((s) => SAMPLE_WHEEL.bodies.find((b) => `body:${b.body}` === s.id)!.lon);
     expect(order).toEqual([...order].sort((a, b) => a - b));
-  });
-});
-
-describe('house wheel hotspots', () => {
-  it('sit on the numerals HouseWheel draws, ascendant on the left, houses running counterclockwise', () => {
-    const spots = houseWheelSpots('#B6D4E4');
-    expect(spots.map((s) => s.id)).toEqual(Array.from({ length: 12 }, (_, i) => `house:${i + 1}`));
-    spots.forEach((spot, i) => {
-      const numeral = houseWheelNumeral(i + 1);
-      expect(spot.x).toBeCloseTo(numeral.x / 2, 1);
-      expect(spot.y).toBeCloseTo(numeral.y / 2, 1);
-      expect(spot.hue).toBe('#B6D4E4');
-      expect(spot.text).not.toMatch(/this chart/u);
-    });
-    const at = (n: number) => spots[n - 1];
-    // First house just below the ascendant on the left; tenth near the top; seventh on the right.
-    expect(at(1).x).toBeLessThan(30);
-    expect(at(1).y).toBeGreaterThan(50);
-    expect(at(10).y).toBeLessThan(25);
-    expect(at(7).x).toBeGreaterThan(70);
-    expect(at(4).y).toBeGreaterThan(75);
   });
 });

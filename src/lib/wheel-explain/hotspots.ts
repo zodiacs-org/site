@@ -4,9 +4,8 @@
  *
  * The positions repeat the geometry of the static `Wheel` (src/lib/wheel/
  * Wheel.tsx: radii, the 5% viewBox pad, the pinned collision nudge and the
- * cusp + 15 degree numeral) and of `HouseWheel.astro`, rather than changing
- * either renderer: the Wheel's static markup is pinned byte for byte for
- * shared cards. hotspots.test.ts renders the real Wheel and checks every
+ * cusp + 15 degree numeral) rather than changing the renderer: the Wheel's
+ * static markup is pinned byte for byte for shared cards. hotspots.test.ts renders the real Wheel and checks every
  * hotspot against the mark it explains, so the two cannot drift apart.
  *
  * Build-time only, like the copy it carries.
@@ -103,27 +102,4 @@ export function staticWheelSpots(input: StaticWheelInput, copy: WheelExplainCopy
     : [];
 
   return [...planets, ...signs, ...houses];
-}
-
-/**
- * Where HouseWheel draws numeral n, in its 200 unit viewBox: midway between
- * the rings (radii 40 and 78), at the middle of the house's 30 degree
- * sector. HouseWheel itself places its numerals with this function.
- */
-export function houseWheelNumeral(n: number): { x: number; y: number } {
-  const deg = 270 - 30 * (n - 1) - 15;
-  const rad = ((deg - 90) * Math.PI) / 180;
-  // Rounded exactly as HouseWheel's own fmt() did, so its markup is unchanged.
-  return { x: Number((100 + 59 * Math.cos(rad)).toFixed(2)), y: Number((100 + 59 * Math.sin(rad)).toFixed(2)) };
-}
-
-/**
- * Hotspots for HouseWheel's twelve numerals. It is a diagram of the houses,
- * not anyone's chart, so the copy carries no chart context.
- */
-export function houseWheelSpots(hue: string, copy: WheelExplainCopy = wheelExplainCopy('en').copy): ExplainSpot[] {
-  return Array.from({ length: 12 }, (_, i) => {
-    const { x, y } = houseWheelNumeral(i + 1);
-    return { ...explainHouse(i + 1, null, copy), x: round(x / 2), y: round(y / 2), hue };
-  });
 }

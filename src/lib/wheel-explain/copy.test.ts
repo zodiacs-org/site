@@ -14,7 +14,7 @@ const BODIES = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 
 
 /** Every sentence a visitor can be shown, plus the panel chrome. */
 function everyLine(table: WheelExplainCopy): string[] {
-  const lines = [table.idleTitle, table.hint, table.keyHint, table.houseHint, table.houseKeyHint, table.close, table.groupLabel];
+  const lines = [table.idleTitle, table.hint, table.keyHint, table.close, table.groupLabel];
   for (const body of BODIES) {
     for (let sign = 0; sign < 12; sign += 1) {
       lines.push(explainPlanet({ body, lon: sign * 30 + 12, house: (sign % 12) + 1, retrograde: true }, table).text);

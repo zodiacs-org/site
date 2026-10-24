@@ -31,9 +31,6 @@ export interface WheelExplainCopy {
   hint: string;
   /** Spoken once for the group of hotspots: how to move and choose. */
   keyHint: string;
-  /** The same two, for a houses-only diagram where just the numerals are tappable. */
-  houseHint: string;
-  houseKeyHint: string;
   close: string;
   groupLabel: string;
 }
@@ -98,8 +95,6 @@ const EN: WheelExplainCopy = {
   idleTitle: 'Explore the wheel',
   hint: 'Tap a planet, a sign or a house number to read what it means in this chart.',
   keyHint: 'Use the arrow keys to move between planets, signs and house numbers, then press Enter or Space to read about one. Escape closes it.',
-  houseHint: 'Tap a house number to read what that part of the chart is about.',
-  houseKeyHint: 'Use the arrow keys to move between the house numbers, then press Enter or Space to read about one. Escape closes it.',
   close: 'Close',
   groupLabel: 'Parts of the chart wheel',
 };
