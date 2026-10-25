@@ -18,6 +18,7 @@
  *      deferred search/WebMCP assets exist with their expected fingerprints.
  *   7. sitemap.xml — unique dated locs resolve, exclude noindex, and cover
  *      every indexable built page's same-origin canonical.
+ *      sitemap-index.xml's section sitemaps list exactly its entries, once.
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
  */
@@ -1607,6 +1608,57 @@ for (const file of files) {
   }
   if (!sitemapLocs.has(url.pathname)) {
     fail(`${rel}: canonical missing from sitemap — ${url.pathname}`);
+  }
+}
+
+// ---- 6b. Section sitemaps ----------------------------------------------------
+// sitemap-index.xml lists the section sitemaps under sitemaps/, which together
+// carry every sitemap.xml entry exactly once, each block byte for byte as
+// sitemap.xml has it (src/pages/sitemaps/_sections.ts).
+{
+  const index = await readFile(resolve(root, 'sitemap-index.xml'), 'utf8').catch(() => null);
+  if (index === null) fail('missing sitemap-index.xml');
+  else {
+    if (!index.startsWith('<?xml') || !/<sitemapindex\b/u.test(index)) fail('sitemap-index.xml: not a sitemap index');
+    const listed = new Set();
+    const sectionPathOf = new Map();
+    for (const m of index.matchAll(/<sitemap>\s*<loc>([^<]+)<\/loc>/g)) {
+      const url = new URL(m[1]);
+      if (url.origin !== 'https://zodiacs.org' || !/^\/sitemaps\/[a-z-]+\.xml$/u.test(url.pathname)) {
+        fail(`sitemap-index.xml: unexpected sitemap ${m[1]}`);
+        continue;
+      }
+      if (listed.has(url.pathname)) fail(`sitemap-index.xml: duplicate sitemap ${url.pathname}`);
+      listed.add(url.pathname);
+      const child = await readFile(resolve(root, url.pathname.slice(1)), 'utf8').catch(() => null);
+      if (child === null) {
+        fail(`sitemap-index.xml: listed sitemap has no file: ${url.pathname}`);
+        continue;
+      }
+      if (!child.startsWith('<?xml') || !/<urlset\b/u.test(child)) fail(`${url.pathname}: not a urlset`);
+      const blocks = [...child.matchAll(/<url>([\s\S]*?)<\/url>/g)];
+      if (blocks.length === 0) fail(`${url.pathname}: lists no URLs`);
+      if (blocks.length > 50_000) fail(`${url.pathname}: ${blocks.length} URLs, over the 50,000 limit`);
+      for (const block of blocks) {
+        const path = new URL(block[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? 'https://invalid.invalid/').pathname;
+        if (sectionPathOf.has(path)) fail(`${url.pathname}: ${path} is also listed by ${sectionPathOf.get(path)}`);
+        sectionPathOf.set(path, url.pathname);
+        if (!sitemapLocs.has(path)) fail(`${url.pathname}: ${path} is not in sitemap.xml`);
+        else if (sitemapBlocksByPath.get(path) !== block[1]) fail(`${url.pathname}: ${path} differs from its sitemap.xml entry`);
+      }
+    }
+    for (const path of sitemapLocs) {
+      if (!sectionPathOf.has(path)) fail(`sitemap-index.xml: ${path} is in no section sitemap`);
+    }
+    const built = await readdir(resolve(root, 'sitemaps')).catch(() => []);
+    for (const name of built) {
+      if (!listed.has(`/sitemaps/${name}`)) fail(`sitemaps/${name}: not listed by sitemap-index.xml`);
+    }
+    console.log(`Section sitemaps: ${listed.size} sitemaps, ${sectionPathOf.size}/${sitemapLocs.size} sitemap.xml URLs`);
+  }
+  const robots = await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => '');
+  for (const line of ['Sitemap: https://zodiacs.org/sitemap.xml', 'Sitemap: https://zodiacs.org/sitemap-index.xml']) {
+    if (!robots.split('\n').includes(line)) fail(`robots.txt: missing "${line}"`);
   }
 }
 
