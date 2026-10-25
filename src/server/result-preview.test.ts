@@ -162,7 +162,9 @@ describe('birthday, sky calendar and horoscope share models', () => {
     const latest = WINDOW.editions.map((edition) => edition.anchorDate).sort().at(-1)!;
     const after = (date: string, days: number) => new Date(Date.parse(`${date}T12:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
     expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(`s=leo&d=${after(latest, 1)}`))!, WINDOW)).toBeNull();
-    expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(`s=leo&w=${after(WEEK.from, 7)}`))!, WINDOW)).toBeNull();
+    // The window can already carry next week's edition (it rolls on Sundays), so step past the latest week, not today's.
+    const latestWeek = WINDOW.editions.map((edition) => edition.signs.leo.weekly.period.from).sort().at(-1)!;
+    expect(horoscopeCardModel(parseHoroscopeShare(new URLSearchParams(`s=leo&w=${after(latestWeek, 7)}`))!, WINDOW)).toBeNull();
   });
 });
 

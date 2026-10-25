@@ -514,6 +514,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ].map((loc) => [loc, '2026-10-20'] as const),
   // Contextual discovery links added to the tools directory.
   ['/tools/', '2026-10-21'] as const,
+  // Tap-to-explain on the birth chart page's sample wheel.
+  ['/birth-chart/', '2026-10-24'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -765,6 +767,12 @@ export const GET: APIRoute = async () => {
   for (const pair of pairs) {
     const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
     if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
+  }
+  // Phones get the earlier hero framing back on the English and translated
+  // homes (the Russian home keeps its own poster).
+  for (const loc of ['/', '/es/', '/fr/', '/it/', '/pt/']) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-10-24');
   }
   const allUrls = [
     ...urls,

@@ -8,6 +8,9 @@ import SkyTicker from '../../islands/SkyTicker';
 import { PostChartDailyBrief } from '../../islands/PostChartDailyBrief';
 import EmailCapture from '../../components/EmailCapture.astro';
 import Wheel from '../../lib/wheel/Wheel';
+import WheelExplain from '../../components/WheelExplain.astro';
+import { wheelExplainCopy } from '../../lib/wheel-explain/copy';
+import { staticWheelSpots } from '../../lib/wheel-explain/hotspots';
 import { hasDailyChartEmailProvider } from '../../lib/email/daily-config';
 import { ART, artSrc, artSrcset } from '../../lib/art';
 import {
@@ -97,6 +100,9 @@ const at = (lon: number, radius: number) => {
   };
 };
 const boundaryNear = (lon: number) => Math.round(lon / 30) * 30;
+/* Tap-to-explain on the sample wheel: every planet, sign and house number. */
+const explainCopy = wheelExplainCopy('en').copy;
+const sampleSpots = staticWheelSpots({ ...SAMPLE_WHEEL, size: WHEEL_SIZE }, explainCopy);
 const anatomyMarks = [
   { n: 1, ...at(boundaryNear(SAMPLE_WHEEL.asc - 125), 0.435) },
   { n: 2, ...at(boundaryNear(SAMPLE_WHEEL.asc + 185), 0.255) },
@@ -339,6 +345,10 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
   .bc-proof__top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 22px 0; }
   .bc-proof__top .kfacts { font-size: 12.5px; }
   .bc-proof__wheel { padding: 10px 28px 18px; }
+  /* The explanation panel's height is fixed per width, so no text it shows can move the page. */
+  .bc-proof__wheel .wx { --wx-panel-h: 8.75rem; }
+  @media (max-width: 479px) { .bc-proof__wheel .wx { --wx-panel-h: 11.25rem; } }
+  @media (max-width: 359px) { .bc-proof__wheel .wx { --wx-panel-h: 12.75rem; } }
   .bc-wheel svg.wheel, .bc-wheel > svg { display: block; width: 100%; height: auto; aspect-ratio: 1; }
   .bc-proof__b3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--hair-1); }
   .bc-proof__b3 > div { display: flex; align-items: center; gap: 12px; padding: 16px 18px; }
@@ -574,7 +584,9 @@ const moreAspects = SAMPLE_ASPECTS.length - shownAspects.length;
             <span class="kfacts"><span>{SAMPLE_BIRTH.date}</span><span class="bc-proof__time">{SAMPLE_BIRTH.time}</span><span>{SAMPLE_BIRTH.place}</span></span>
           </div>
           <div class="bc-proof__wheel bc-wheel">
-            <Wheel {...SAMPLE_WHEEL} size={WHEEL_SIZE} deferIcons ariaLabel="Sample birth chart wheel" />
+            <WheelExplain id="bc-sample-explain" spots={sampleSpots} copy={explainCopy}>
+              <Wheel {...SAMPLE_WHEEL} size={WHEEL_SIZE} deferIcons ariaLabel="Sample birth chart wheel" />
+            </WheelExplain>
           </div>
           <div class="bc-proof__b3">
             {[['Sun', sun], ['Moon', moon], ['Rising', rising]].map(([label, p]) => (
