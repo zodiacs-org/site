@@ -12,9 +12,11 @@ a new plan decision.
 the generator with `--check` for drift (CI checks it). It runs the birth chart
 calculator's own chart calculation on synthetic, nonpersonal UTC instants.
 
-Public release needs the named review and indexing evidence recorded in
-`src/data/natal-aspects-publication.json`, and every article moved to
-`draft: false` with `reviewer` and `reviewedAt`. Until then normal builds emit
-none of the three routes. `PUBLIC_NATAL_ASPECTS_PREVIEW=1` (set in the shell)
-builds the local review edition: noindex, outside the sitemap and search.
-Preview availability is not editorial approval. See `docs/natal-aspects/RELEASE.md`.
+Released 2026-10-26: `src/data/natal-aspects-publication.json` carries the
+named review (Dias Malayev, 2026-10-25) and the indexing evidence, and every
+article is `draft: false` with `reviewer` and `reviewedAt`. Keep them so: a
+complete publication record with a draft entry fails the build. Normal builds
+emit the three routes as indexable pages in the sitemap and search.
+`PUBLIC_NATAL_ASPECTS_PREVIEW=1` (set in the shell) only matters if the record
+is ever withheld again; preview availability is not editorial approval. See
+`docs/natal-aspects/RELEASE.md`.

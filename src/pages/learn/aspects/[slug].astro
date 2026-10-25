@@ -4,8 +4,11 @@ import Base from '../../../layouts/Base.astro';
 import Faq from '../../../components/Faq.astro';
 import AspectGlyph from '../../../components/AspectGlyph';
 import AspectWheel from '../../../components/AspectWheel.astro';
+import NatalPairLinks from '../../../components/learn/NatalPairLinks.astro';
 import { ASPECTS } from '../../../lib/engine/aspects';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
+import { natalAspectsEnabled, natalAspectsPublished } from '../../../lib/natal-aspect-pairs';
+import natalAspectsPublication from '../../../data/natal-aspects-publication.json';
 
 const ASPECT_ORDER = ['conjunction', 'sextile', 'square', 'trine', 'opposition'] as const;
 
@@ -45,7 +48,10 @@ const jsonLd = [
     description: entry.data.description,
     url: `https://zodiacs.org/learn/aspects/${slug}/`,
     datePublished: entry.data.published.toISOString(),
-    dateModified: entry.data.updated.toISOString(),
+    // The natal pair links re-date the guide, as the sitemap does.
+    dateModified: natalAspectsPublished && natalAspectsPublication.updated > entry.data.updated.toISOString().slice(0, 10)
+      ? `${natalAspectsPublication.updated}T00:00:00.000Z`
+      : entry.data.updated.toISOString(),
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://zodiacs.org/learn/aspects/${slug}/` },
@@ -103,6 +109,8 @@ const jsonLd = [
     <section class="reveal">
       <Faq items={entry.data.faq} heading="Asked and answered" />
     </section>
+
+    {natalAspectsEnabled && <NatalPairLinks type={type} />}
 
     <div class="learn-detail__cta shell tinted reveal">
       <div class="core tinted learn-detail__cta-core">

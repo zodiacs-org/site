@@ -60,7 +60,7 @@ if (process.env.LIGHTHOUSE_INCLUDE_AURA === '1') {
   routes.push({ name: 'registry-aura', path: '/registry/collection/' });
 }
 // Natal planet-pair pages exist only in published or review builds
-// (PUBLIC_NATAL_ASPECTS_PREVIEW=1); the review edition is noindex on purpose.
+// (PUBLIC_NATAL_ASPECTS_PREVIEW=1); only the review edition is noindex, on purpose.
 if (natalAspectsEnabled) {
   routes.push(...NATAL_ASPECT_PAIRS.map((pair) => ({
     name: `natal-${pair}`, path: `/learn/aspects/${pair}/`, intentionalNoindex: !natalAspectsPublished,

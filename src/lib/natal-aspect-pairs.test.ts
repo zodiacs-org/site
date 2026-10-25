@@ -95,7 +95,7 @@ describe('natal planet-pair articles', () => {
       expect(opening).toMatch(/birth chart/);
       expect(opening).toMatch(/natal/);
       expect(source.match(/^ {2}- q: /gm)).toHaveLength(4);
-      expect(source).toMatch(/^draft: true$/m);
+      expect(source).toMatch(/^draft: false$/m);
       expect(source).toMatch(/^reviewer: "Dias Malayev"$/m);
       expect(source).toMatch(/^reviewedAt: "2026-10-25"$/m);
     }
@@ -147,8 +147,10 @@ describe('natal planet-pair articles', () => {
     for (const pair of NATAL_ASPECT_PAIRS) expect(availableLocalesForPath(`/learn/aspects/${pair}/`)).toBeUndefined();
   });
 
-  it('leave the five geometry guides and their route assertion untouched', () => {
-    expect(readFileSync('src/pages/learn/aspects/[slug].astro', 'utf8')).toContain('entries.length !== 5');
-    expect(readFileSync('src/pages/learn/aspects/[slug].astro', 'utf8')).not.toMatch(/natal/i);
+  it('keep the five geometry guides and their route assertion, adding only the pair links', () => {
+    const guide = readFileSync('src/pages/learn/aspects/[slug].astro', 'utf8');
+    expect(guide).toContain('entries.length !== 5');
+    expect(guide).toContain('{natalAspectsEnabled && <NatalPairLinks type={type} />}');
+    expect(guide).not.toMatch(/getCollection\(\s*'natalAspectPairs'/);
   });
 });

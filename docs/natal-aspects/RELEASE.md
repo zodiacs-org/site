@@ -1,4 +1,4 @@
-# Natal planet-pair aspects: review edition
+# Natal planet-pair aspects: released
 
 Scope: the third adjacent build in the plan. Three natal pair references,
 `/learn/aspects/sun-moon/`, `/learn/aspects/moon-venus/` and
@@ -8,22 +8,24 @@ The five generic geometry guides and their `entries.length !== 5` route
 assertion are unchanged. No other pair, locale, reversed pair or calculator
 is introduced.
 
-## Publication is held
+## Publication is released
 
-`src/data/natal-aspects-publication.json` is not released: no named astrology
-and source review, no review date and no indexing evidence. The three MDX
-articles in `src/content/natal-aspect-pairs/` are `draft: true` with
-`reviewer: null`. A complete publication record with any draft entry fails the
+Released 2026-10-26 with the owner's approval. `src/data/natal-aspects-publication.json`
+is complete: `released: true`, reviewer Dias Malayev, reviewed 2026-10-25,
+updated 2026-10-26, and indexing evidence in
+`docs/natal-aspects/indexing-evidence.md` (pre-release readiness now, crawl
+confirmation appended after deploy). The three MDX articles in
+`src/content/natal-aspect-pairs/` are `draft: false` with the same reviewer and
+review date. A complete publication record with any draft entry fails the
 build (`assertNatalPairEntries`).
 
-Normal builds emit none of the three routes. They are absent from `dist/`,
-answer 404, and appear in neither the sitemap nor the search index;
+Normal builds emit the three routes as indexable, self-canonical, English-only
+pages. They answer 200 and appear in the sitemap and the search index;
 `tests/natal-aspects-publication-drive.mjs` checks all of that after the main
-CI build. A local review build sets `PUBLIC_NATAL_ASPECTS_PREVIEW=1` in the
-shell (not a `.env` file: `astro.config.mjs` reads it before Vite loads env
-files). It emits the three pages as noindex, self-canonical, English-only
-pages, still outside the sitemap and search. The flag cannot mark anything
-published.
+CI build, along with the discovery links below. `PUBLIC_NATAL_ASPECTS_PREVIEW=1`
+(set in the shell, not a `.env` file) still builds the pages when the record
+is withheld, as noindex pages outside the sitemap and search; the flag cannot
+mark anything published.
 
 ## Routing and the Phase 1 freeze
 
@@ -38,22 +40,25 @@ build did:
   (`kind: natal-aspect-pair`), not entries in the `learn` collection, so no
   existing Learn listing, sitemap loop or locale route picks them up.
 
-Two discovery hooks are prepared but deliberately not wired, because both
-files are inside the freeze and need an owner-approved one-time allowance
-(`.github/phase1-scope-allowance.json`, pinned to the PR's base commit):
+Both discovery hooks are wired. The two files are inside the freeze, so the
+release carries an owner-approved one-time allowance
+(`.github/phase1-scope-allowance.json`, id
+`natal-aspect-pairs-release-2026-10-26`, pinned to the PR's base commit and
+naming exactly these two paths):
 
-1. The hub improvement for `/learn/aspects/`: in
-   `src/pages/learn/aspects/index.astro`, render
-   `{natalAspectsEnabled && <NatalAspectsHubSection />}` after the closing
-   `cluster-note` paragraph. The section lists the three pairs and adds about
-   680 words (`src/components/learn/NatalAspectsHub.mdx`), bringing the hub
-   past the plan's 800 words. Its styles are inlined, so the hub's emitted
-   stylesheet does not change while the section is withheld.
-2. Links from each geometry guide: in `src/pages/learn/aspects/[slug].astro`,
-   render `{natalAspectsEnabled && <NatalPairLinks type={type} />}` after
-   the FAQ section. It uses the page's prose rules and adds no CSS.
+1. The hub improvement for `/learn/aspects/`: `src/pages/learn/aspects/index.astro`
+   renders `{natalAspectsEnabled && <NatalAspectsHubSection />}` after the
+   closing `cluster-note` paragraph. The section lists the three pairs and
+   adds about 680 words (`src/components/learn/NatalAspectsHub.mdx`), bringing
+   the hub past the plan's 800 words. Its styles are inlined. The hub's
+   editorial date moves to 2026-10-26.
+2. Links from each geometry guide: `src/pages/learn/aspects/[slug].astro`
+   renders `{natalAspectsEnabled && <NatalPairLinks type={type} />}` after the
+   FAQ section. It uses the page's prose rules and adds no CSS. The five
+   guides' sitemap dates and `dateModified` move to the record's `updated`
+   date.
 
-Until those land, the pair pages link to each other and back to the hub.
+The pair pages also link to each other and back to the hub.
 
 ## Reciprocal synastry links
 
@@ -97,11 +102,15 @@ interpretive sections are editorial suggestions awaiting named review.
   in titles and openings, four FAQs, no dashes, no outcome or wing language.
 - `scripts/report-bundles.test.mjs`: `budgets.natal-aspects.json` holds each
   emitted pair route to a 0 KB entry closure.
-- CI job "Natal aspect pairs review edition": preview build under the
-  normal postbuild gates, `npm run check`, the browser drive
+- `tests/natal-aspects-publication-drive.mjs` (main CI build): routes 200,
+  indexable, self-canonical, in the sitemap and search, linked from the hub
+  and the five geometry guides.
+- CI job "Natal aspect pairs": normal build under the normal postbuild
+  gates, `npm run check`, the browser drive
   (`tests/natal-aspects-reference-drive.mjs`: 320px, 200% text, keyboard,
   zero CLS, static delivery, accessible diagram) and mobile Lighthouse on
   the three routes with the existing thresholds.
 
-Not covered by automation: named astrology and source approval, a manual
-screen reader pass, and visual regression baselines for the three pages.
+Not covered by automation: a manual screen reader pass, visual regression
+baselines for the three pages, and post-release crawl confirmation (appended
+to the indexing evidence after deploy).

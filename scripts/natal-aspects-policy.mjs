@@ -19,7 +19,7 @@ export const natalAspectsEnabled = state.enabled;
 export const NATAL_PAIR_ENTRYPOINT = './src/reference-pages/natal-aspects/pair.astro';
 
 // The pages live outside src/pages (the Phase 1 freeze covers the existing
-// Learn routes), so normal builds emit none of them. Three static patterns
+// Learn routes) and are injected only while enabled. Three static patterns
 // beside the five-geometry [slug] route: no second dynamic route there.
 export function natalAspectRoutes(enabled = natalAspectsEnabled) {
   return {
