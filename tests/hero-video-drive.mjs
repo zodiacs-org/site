@@ -164,8 +164,8 @@ await withPreview({ port: 4402 }, async (baseURL) => {
       if (testCase.viewport.width < 720) check(`${testCase.name}: mobile poster retains full-HD source detail`, before.posterHeight >= 1080, `${before.posterHeight}px`);
       // Portrait phones take the narrow cut, wider phones the 4:3 cut, desktops the wide poster.
       const expectedPoster = testCase.viewport.width < 480
-        ? 'zodiacs-hero-poster-mobile-narrow-v3'
-        : testCase.viewport.width < 720 ? 'zodiacs-hero-poster-mobile-v3' : 'zodiacs-hero-poster';
+        ? 'zodiacs-hero-poster-mobile-narrow-v4'
+        : testCase.viewport.width < 720 ? 'zodiacs-hero-poster-mobile-v4' : 'zodiacs-hero-poster';
       check(`${testCase.name}: poster remains the LCP surface`, (before.poster ?? '').endsWith(`/assets/hero/${expectedPoster}.avif`) && before.width > 0 && before.height > 0, `${before.poster} · ${before.width.toFixed(0)}×${before.height.toFixed(0)}`);
       check(
         `${testCase.name}: ambient motion matches preference and viewport`,
