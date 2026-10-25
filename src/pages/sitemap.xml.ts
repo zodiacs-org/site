@@ -768,6 +768,14 @@ export const GET: APIRoute = async () => {
     const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
     if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
   }
+  // The natal planet-pair release links each geometry guide to the same
+  // angle on the three pair pages.
+  if (natalAspectsPublished) {
+    for (const type of ['conjunction', 'sextile', 'square', 'trine', 'opposition']) {
+      const url = urls.find(({ loc }) => loc === `/learn/aspects/${type}/`);
+      if (url) url.lastmod = laterDate(url.lastmod, natalAspectsPublication.updated);
+    }
+  }
   // Phones get the earlier hero framing back on the English and translated
   // homes (the Russian home keeps its own poster).
   for (const loc of ['/', '/es/', '/fr/', '/it/', '/pt/']) {

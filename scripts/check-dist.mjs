@@ -32,6 +32,7 @@ import {
   searchIndexShapeFailures, shouldIndexPath,
 } from './search-index-lib.mjs';
 import { backstageCopyMatches } from './consumer-copy-lib.mjs';
+import { natalAspectsPublished, NATAL_ASPECT_PAIRS } from './natal-aspects-policy.mjs';
 import {
   ABSENT_LOCALES,
   HREFLANG_LOCALE_POLICY,
@@ -1310,6 +1311,8 @@ const sitemapPolicy = {
   // +1 for /developers/conventions/, the conventions registry.
   total: 1424 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
+    // +3 natal aspect pair pages once their publication record is released.
+    + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size + developerGuidePaths.size,
   // 78 pairs in English and in es, pt, fr and it.
