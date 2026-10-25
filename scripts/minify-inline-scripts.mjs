@@ -24,6 +24,7 @@ import { dirname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { transformSync } from 'esbuild';
 import { htmlFiles } from './inline-critical-styles.mjs';
+import { minifyDistInlineStyles } from './minify-inline-styles.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -106,6 +107,8 @@ async function main() {
     return;
   }
   console.log(`minify-inline-scripts: ${scripts} inline scripts across ${changed} of ${pages.length} pages, ${(saved / 1024).toFixed(1)} KB of whitespace and comments removed`);
+  // Second pass: the inline stylesheets of every page, wing pages included.
+  await minifyDistInlineStyles(distRoot);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
