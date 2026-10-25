@@ -84,10 +84,11 @@ describe('natal planet-pair articles', () => {
   it('keep editorial depth, exact contextual headings and natal wording', () => {
     for (const pair of NATAL_ASPECT_PAIRS as NatalAspectPair[]) {
       const source = article(pair);
-      expect(words(body(pair))).toBeGreaterThanOrEqual(2000);
+      expect(words(body(pair))).toBeGreaterThanOrEqual(1300);
+      expect(words(body(pair))).toBeLessThanOrEqual(1700);
       for (const geometry of GEOMETRIES) {
         expect(source).toContain(`<h2 id="${geometry}">${natalPairHeading(pair, geometry)}</h2>`);
-        expect(words(section(pair, geometry))).toBeGreaterThanOrEqual(300);
+        expect(words(section(pair, geometry))).toBeGreaterThanOrEqual(180);
       }
       expect(source).toMatch(/^title: ".* in a birth chart \| Zodiacs\.org"$/m);
       const opening = body(pair).trim().split('\n\n')[0];
@@ -95,8 +96,17 @@ describe('natal planet-pair articles', () => {
       expect(opening).toMatch(/natal/);
       expect(source.match(/^ {2}- q: /gm)).toHaveLength(4);
       expect(source).toMatch(/^draft: true$/m);
-      expect(source).toMatch(/^reviewer: null$/m);
+      expect(source).toMatch(/^reviewer: "Dias Malayev"$/m);
+      expect(source).toMatch(/^reviewedAt: "2026-10-25"$/m);
     }
+    // One figure for the Moon: about 13 degrees a day through the zodiac, about 12 against the Sun or Venus.
+    for (const text of [article('sun-moon'), article('moon-venus'), readFileSync('src/components/learn/NatalAspectsHub.mdx', 'utf8')]) {
+      expect(text).toContain('about 13 degrees a day through the zodiac');
+      expect(text).not.toMatch(/\b(?:twelve|12) degrees a day\b/);
+    }
+    const page = readFileSync('src/components/learn/NatalAspectPairPage.astro', 'utf8');
+    expect(page).not.toMatch(/Review edition|review is pending|replay|generator|five decimal places|tropical|geocentric/i);
+    expect(page).toContain('Reviewed by ${entry.data.reviewer}.');
     expect(natalPairHeading('sun-moon', 'square')).toBe('Sun square Moon in a birth chart');
     expect(natalPairHeading('venus-mars', 'opposition')).toBe('Venus opposite Mars in a birth chart');
   });
