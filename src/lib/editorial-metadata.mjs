@@ -12,7 +12,7 @@ export const EDITORIAL_METADATA = Object.freeze(Object.fromEntries([
     ['/learn/', '2026-10-16'],
     ['/learn/houses/', '2026-10-16'],
     ['/learn/planets/', '2026-10-16'],
-    ['/learn/aspects/', '2026-10-26'],
+    ['/learn/aspects/', '2026-10-25'],
     ['/learn/placements/', '2026-10-16'],
   ].map(([path, modified]) => [path, Object.freeze({ type: 'CollectionPage', modified })]),
   ...locales.flatMap((locale) => ['', ...animals.map((animal) => `${animal}/`)].map((suffix) => [

@@ -35,7 +35,7 @@ describe('natal aspect publication policy', () => {
   it('releases the committed record with its named review and indexing evidence', () => {
     const record = JSON.parse(readFileSync('src/data/natal-aspects-publication.json', 'utf8'));
     expect(natalAspectsState(record, {})).toEqual({ published: true, preview: false, enabled: true });
-    expect(record).toMatchObject({ reviewer: 'Dias Malayev', reviewedAt: '2026-10-25', updated: '2026-10-26' });
+    expect(record).toMatchObject({ reviewer: 'Dias Malayev', reviewedAt: '2026-10-25', updated: '2026-10-25' });
     expect(record.holdReason).toBeNull();
     expect(existsSync(record.indexingEvidence)).toBe(true);
   });
