@@ -1,0 +1,54 @@
+/* Natal planet-pair references and the gated hub section on /learn/aspects/.
+   Inlined by the components that use it (imported with ?raw), so pages that
+   import but do not render them keep their emitted stylesheets unchanged. */
+.natal-ref { display: grid; gap: clamp(28px, 5vw, 44px); padding-block: clamp(24px, 5vw, 56px) clamp(36px, 6vw, 72px); }
+.natal-ref a { text-underline-offset: .22em; }
+.natal-ref__hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: clamp(20px, 4vw, 48px); }
+.natal-ref__heroText { display: grid; gap: 12px; justify-items: start; min-width: 0; }
+.natal-ref__hero h1 { margin: 4px 0 0; font-size: clamp(2.2rem, 1.5rem + 3.6vw, 3.8rem); line-height: 1.04; max-width: 18ch; }
+.natal-ref__lede { margin: 0; font-size: var(--text-lg); color: var(--text-2); max-width: 56ch; text-wrap: pretty; }
+.natal-ref__context { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.7; max-width: 60ch; }
+.natal-ref__meta { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.7; }
+.natal-ref h2 { scroll-margin-top: 110px; }
+.natal-ref__panel { display: grid; gap: 14px; }
+.natal-ref__panel > h2 { margin: 0; }
+.natal-ref__panel p { margin: 0; color: var(--text-2); line-height: 1.7; max-width: 68ch; }
+.natal-ref__table-wrap { max-width: 100%; overflow-x: auto; }
+.natal-ref__table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+.natal-ref__table caption { text-align: left; margin-bottom: 12px; color: var(--text-2); }
+.natal-ref__table th, .natal-ref__table td { padding: 11px 8px; border-bottom: 1px solid var(--hair-2); text-align: left; }
+.natal-ref__table td { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.natal-ref__table th[scope="row"] { font-weight: 400; text-transform: capitalize; }
+.natal-ref__examples article { display: grid; gap: 12px; padding-block: 20px; border-bottom: 1px solid var(--hair-2); }
+.natal-ref__examples h3 { margin: 0; font-size: var(--text-lg); }
+.natal-ref__examples dl { display: grid; grid-template-columns: minmax(110px, 1fr) minmax(0, 2fr); gap: 10px 18px; margin: 0; font-size: var(--text-sm); }
+.natal-ref__examples dt { color: var(--muted); }
+.natal-ref__examples dd { margin: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.natal-ref__examples dd.natal-ref__num { font-family: var(--font-mono); }
+.natal-ref__cta { display: grid; gap: 10px; justify-items: start; padding-block: 24px; border-block: 1px solid var(--hair-2); }
+.natal-ref__cta strong { font-size: var(--text-lg); letter-spacing: -0.01em; }
+.natal-ref__cta p { margin: 0; font-size: var(--text-sm); color: var(--text-2); }
+.natal-ref__cta .btn { max-width: 100%; white-space: normal; text-align: center; }
+.natal-ref__more { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; padding-top: 18px; border-top: 1px solid var(--hair-1); font-size: var(--text-sm); }
+.natal-ref__more a { color: var(--text-2); text-decoration: none; }
+.natal-ref__more a:hover { color: var(--text); }
+
+.natal-diagram { margin: 0; width: 240px; max-width: 100%; }
+.natal-diagram svg { display: block; width: 100%; height: auto; font-family: var(--font-mono); }
+.natal-diagram figcaption { margin-top: 8px; font-size: var(--text-xs); line-height: 1.6; color: var(--muted); }
+
+.natal-hub { display: grid; gap: clamp(22px, 4vw, 34px); margin-top: clamp(36px, 6vw, 56px); padding-top: clamp(28px, 5vw, 40px); border-top: 1px solid var(--hair-1); }
+.natal-hub__pairs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 20px; margin: 0; padding: 0; list-style: none; }
+.natal-hub__pair { display: grid; gap: 8px; height: 100%; padding-block: 20px; border-block: 1px solid var(--hair-2); text-decoration: none; }
+.natal-hub__pair strong { font: 400 1.7rem/1.2 var(--font-serif); color: var(--text); }
+.natal-hub__pair span { color: var(--text-2); font-size: var(--text-sm); line-height: 1.6; }
+.natal-hub__pair:hover strong { color: var(--sign-cancer); }
+
+@media (max-width: 720px) {
+  .natal-ref__hero { grid-template-columns: minmax(0, 1fr); }
+  .natal-ref__examples dl { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .natal-ref__examples dd { margin-bottom: 10px; }
+  .natal-hub__pairs { grid-template-columns: minmax(0, 1fr); }
+  .natal-hub__pair { border-top: 0; }
+  .natal-hub__pairs li:first-child .natal-hub__pair { border-top: 1px solid var(--hair-2); }
+}

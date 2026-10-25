@@ -4,6 +4,8 @@
  * rather than @astrojs/sitemap (which only sees Astro routes and would
  * move the sitemap URL robots.txt points at).
  */
+import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-pairs';
+import natalAspectsPublication from '../data/natal-aspects-publication.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
@@ -721,6 +723,13 @@ export const GET: APIRoute = async () => {
             priority: 0.65,
             lastmod: l.data.updated.toISOString().slice(0, 10),
           }]),
+    // Natal planet pairs enter only with a complete publication record; a
+    // local review build (PUBLIC_NATAL_ASPECTS_PREVIEW=1) stays out.
+    ...(natalAspectsPublished ? NATAL_ASPECT_PAIRS.map((pair) => ({
+      loc: `/learn/aspects/${pair}/`,
+      priority: 0.65,
+      lastmod: natalAspectsPublication.updated,
+    })) : []),
     ...birthdays.map((b) => ({
       loc: `/birthday/${b.id}/`,
       priority: 0.65,
