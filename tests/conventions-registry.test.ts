@@ -16,6 +16,16 @@ const entries = namespaces.flatMap((space) => space.entries.map((entry) => ({ ..
 const ids = new Set(entries.map((entry) => entry.id));
 const values = (namespace: string) => namespaces.find((space) => space.name === namespace)!.entries.map((entry) => entry.value);
 const group = (title: string) => registry.groups.find((candidate) => candidate.title === title)!.namespaces;
+// The registry's copy carries no en or em dash (AGENTS.md), so an en dash in the engine's wording is a hyphen there.
+const undashed = (text: string) => text.replace(/–/gu, '-');
+
+/** Each string in a JSON value, keys included, that holds an en or em dash, with where it is. */
+function dashedStrings(value: unknown, path = 'registry'): string[] {
+  if (typeof value === 'string') return /[–—]/u.test(value) ? [`${path}: ${value}`] : [];
+  if (Array.isArray(value)) return value.flatMap((item, index) => dashedStrings(item, `${path}[${index}]`));
+  if (value === null || typeof value !== 'object') return [];
+  return Object.entries(value).flatMap(([key, item]) => [...dashedStrings(key, `${path} key`), ...dashedStrings(item, `${path}.${key}`)]);
+}
 
 // The engine versions that wrote each natal conventions set, newest first (src/receipt.ts).
 const SET_RANGES = ['0.1.1-rc.16 to 1.0.0', '0.1.1-rc.15', '0.1.1-rc.8 to rc.14', '0.1.1-rc.7', '0.1.1-rc.3 to rc.6'];
@@ -128,6 +138,13 @@ describe('the conventions registry', () => {
     expect(new Set(namespaces.map((space) => space.name)).size).toBe(namespaces.length);
   });
 
+  it('holds no en or em dash in any string, as AGENTS.md asks of copy', () => {
+    expect(dashedStrings(registry)).toEqual([]);
+    // The walk reaches keys and nested source titles, so the check has bite.
+    const planted = { 'Date and time — Representations': true, namespaces: [{ entries: [{ sources: [{ title: 'Astronomy & Astrophysics 412, 567–586' }] }] }] };
+    expect(dashedStrings(planted)).toHaveLength(2);
+  });
+
   it('holds every value of every natal conventions set, current where 1.0.0 writes it and superseded where only earlier versions did', () => {
     const seen = new Set<string>();
     NATAL_RECEIPT_CONVENTION_SETS.forEach((set, index) => {
@@ -165,8 +182,8 @@ describe('the conventions registry', () => {
     for (const name of CALC_AYANAMSAS) {
       const entry = entries.find((candidate) => candidate.id === `ayanamsa:${name}`)!;
       const definition = (AYANAMSAS as Record<string, { label: string; source: string }>)[name];
-      expect(entry.title).toBe(definition.label);
-      expect(entry.sources.map((source) => source.title)).toContain(definition.source);
+      expect(entry.title).toBe(undashed(definition.label));
+      expect(entry.sources.map((source) => source.title)).toContain(undashed(definition.source));
     }
     expect(values('house')).toEqual([...HOUSE_SYSTEMS]);
     expect(values('frame')).toEqual([...CALC_FRAMES]);

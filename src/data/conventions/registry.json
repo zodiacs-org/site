@@ -181,7 +181,7 @@
         {
           "id": "ayanamsa:fagan-bradley",
           "value": "fagan-bradley",
-          "title": "Fagan–Bradley",
+          "title": "Fagan-Bradley",
           "definition": "24°02′31.36″ mean at B1950.0 (JD 2433282.42345905 TT), from the synetic vernal point at 335°57′28.64″, with Newcomb's precession.",
           "sources": [
             {
@@ -256,7 +256,7 @@
               "title": "Surya Siddhanta VIII; Hipparcos 2007 (I/311)"
             },
             {
-              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653–664",
+              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653-664",
               "url": "https://doi.org/10.1051/0004-6361:20078357"
             }
           ],
@@ -276,7 +276,7 @@
               "title": "Surya Siddhanta VIII; Hipparcos 2007 (I/311)"
             },
             {
-              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653–664",
+              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653-664",
               "url": "https://doi.org/10.1051/0004-6361:20078357"
             }
           ],
@@ -296,7 +296,7 @@
               "title": "P. V. R. Narasimha Rao (2013); Hipparcos 2007 (I/311)"
             },
             {
-              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653–664",
+              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653-664",
               "url": "https://doi.org/10.1051/0004-6361:20078357"
             }
           ],
@@ -316,7 +316,7 @@
               "title": "Sgr A*: SIMBAD ICRS position; Reid & Brunthaler 2004"
             },
             {
-              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653–664",
+              "title": "F. van Leeuwen (2007), Validation of the new Hipparcos reduction, Astronomy & Astrophysics 474, 653-664",
               "url": "https://doi.org/10.1051/0004-6361:20078357"
             }
           ],
@@ -377,11 +377,11 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             }
           ],
@@ -398,11 +398,11 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             }
           ],
@@ -419,11 +419,11 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             }
           ],
@@ -440,11 +440,11 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             }
           ],
@@ -461,11 +461,11 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             }
           ],
@@ -482,11 +482,11 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             }
           ],
@@ -503,11 +503,11 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             }
           ],
@@ -524,11 +524,11 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#frames"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             }
           ],
@@ -815,7 +815,7 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             }
           ],
@@ -843,7 +843,7 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             }
           ],
@@ -864,7 +864,7 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/time.md#receipts"
             },
             {
-              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37–49",
+              "title": "D. D. McCarthy and B. J. Luzum (2003), An abridged model of the precession-nutation of the celestial pole, Celestial Mechanics and Dynamical Astronomy 85, 37-49",
               "url": "https://doi.org/10.1023/A:1021762727016"
             },
             {
@@ -896,7 +896,7 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             }
           ],
@@ -1406,7 +1406,7 @@
         {
           "id": "house:topocentric",
           "value": "topocentric",
-          "title": "Topocentric (Polich–Page)",
+          "title": "Topocentric (Polich-Page)",
           "definition": "Regiomontanus's ascensions, with pole heights at one and two thirds of the latitude's tangent.",
           "sources": [
             {
@@ -1558,7 +1558,7 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/docs/calc.md#convention-ids"
             },
             {
-              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567–586",
+              "title": "N. Capitaine, P. T. Wallace and J. Chapront (2003), Expressions for IAU 2000 precession quantities, Astronomy & Astrophysics 412, 567-586",
               "url": "https://doi.org/10.1051/0004-6361:20031539"
             },
             {
@@ -1664,7 +1664,7 @@
               "url": "https://github.com/zodiacs-org/engine/blob/7307665bdbc432269fdac006104f661be16000bc/src/receipt.ts"
             },
             {
-              "title": "ISO 8601-1:2019, Date and time — Representations for information interchange, Part 1 (the proleptic Gregorian calendar)",
+              "title": "ISO 8601-1:2019, Date and time: Representations for information interchange, Part 1 (the proleptic Gregorian calendar)",
               "url": "https://www.iso.org/standard/70907.html"
             }
           ],
