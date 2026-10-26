@@ -3,7 +3,9 @@ import { getCollection } from 'astro:content';
 import { editorialDates } from '../../../lib/editorial-metadata.mjs';
 import Base from '../../../layouts/Base.astro';
 import AspectGlyph from '../../../components/AspectGlyph';
+import NatalAspectsHubSection from '../../../components/learn/NatalAspectsHubSection.astro';
 import { ASPECTS } from '../../../lib/engine/aspects';
+import { natalAspectsEnabled } from '../../../lib/natal-aspect-pairs';
 import '../../../styles/cluster.css';
 
 const ASPECT_ORDER = ['conjunction', 'sextile', 'square', 'trine', 'opposition'];
@@ -89,5 +91,7 @@ const jsonLd = [
       <a href="/learn/planets/">the planets</a> and{' '}
       <a href="/learn/houses/">the houses</a>.
     </p>
+
+    {natalAspectsEnabled && <NatalAspectsHubSection />}
   </section>
 </Base>

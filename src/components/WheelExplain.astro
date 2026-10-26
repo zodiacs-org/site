@@ -1,0 +1,166 @@
+---
+/**
+ * Tap-to-explain for a static chart wheel. Wraps the wheel (the default
+ * slot) and lays one real button over each planet, sign or house number,
+ * with a short explanation in a panel below.
+ *
+ * Progressive enhancement: the buttons ship `hidden` and the panel is
+ * collapsed by a <noscript> rule, so without JavaScript the wheel renders
+ * exactly as it did. With it, the panel's height is fixed from the first
+ * paint (overflow scrolls inside it), so opening, changing and closing an
+ * explanation never moves anything on the page. Behaviour lives in
+ * src/lib/wheel-explain/controller.ts; copy and positions come from the
+ * page through `spots` (src/lib/wheel-explain/hotspots.ts).
+ */
+import type { ExplainSpot } from '../lib/wheel-explain/hotspots';
+import type { WheelExplainCopy } from '../lib/wheel-explain/copy';
+
+interface Props {
+  spots: ExplainSpot[];
+  copy: WheelExplainCopy;
+  /** Unique per page; prefixes the panel and hint ids. */
+  id: string;
+  class?: string;
+  [attribute: string]: unknown;
+}
+
+const { spots, copy, id, class: className, ...rest } = Astro.props;
+const panelId = `${id}-panel`;
+const keysId = `${id}-keys`;
+---
+<div class:list={['wx', className]} data-wheel-explain {...rest}>
+  <div class="wx__stage">
+    <slot />
+    <div class="wx__spots" role="group" aria-label={copy.groupLabel} aria-describedby={keysId} data-wx-spots hidden>
+      <p id={keysId} hidden>{copy.keyHint}</p>
+      {spots.map((spot, index) => (
+        <button
+          type="button"
+          class={`wx__spot wx__spot--${spot.kind}`}
+          style={`left:${spot.x}%;top:${spot.y}%;--wx-hue:${spot.hue}`}
+          aria-label={spot.label}
+          aria-expanded="false"
+          aria-controls={panelId}
+          tabindex={index === 0 ? '0' : '-1'}
+          data-wx-spot
+          data-wx-id={spot.id}
+          data-wx-x={spot.x}
+          data-wx-y={spot.y}
+          data-wx-title={spot.title}
+          data-wx-text={spot.text}
+        ></button>
+      ))}
+    </div>
+  </div>
+  <div class="wx__panel" id={panelId} data-wx-panel>
+    <div class="wx__live" aria-live="polite" aria-atomic="true">
+      <p class="wx__title" data-wx-out-title>{copy.idleTitle}</p>
+      <p class="wx__text" data-wx-out-text>{copy.hint}</p>
+    </div>
+    <button type="button" class="wx__close" data-wx-close hidden>{copy.close}</button>
+  </div>
+  <noscript><style>.wx__panel{display:none}</style></noscript>
+  <style is:inline>
+    .wx { position: relative; min-width: 0; }
+    .wx__stage { position: relative; }
+    .wx__spots { position: absolute; inset: 0; container-type: size; }
+    .wx__spots[hidden] { display: none; }
+    /* The button is the touch area (at least 44px); the ring is the mark.
+       Neighbouring areas overlap on a crowded wheel, so a tap is resolved to
+       the nearest mark by the controller, not by stacking order. */
+    .wx__spot {
+      position: absolute;
+      width: 44px;
+      width: max(44px, var(--wx-hit, 10cqw));
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .wx__spot::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 24px;
+      width: var(--wx-ring, 7cqw);
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      box-shadow: 0 0 0 1.5px transparent;
+      transition: box-shadow var(--dur-1, 160ms) ease;
+      pointer-events: none;
+    }
+    /* Rings sized to the marks they circle, in the wheel's own width. */
+    .wx__spot--planet { --wx-ring: 7.6cqw; }
+    .wx__spot--sign { --wx-ring: 9.4cqw; }
+    .wx__spot--house { --wx-ring: 5cqw; }
+    .wx__spot:focus { outline: none; }
+    @media (hover: hover) {
+      .wx__spot:hover::after { box-shadow: 0 0 0 1.5px var(--hair-2); }
+    }
+    .wx__spot:focus-visible::after { box-shadow: 0 0 0 2px var(--ink-0); }
+    .wx__spot[aria-expanded='true']::after {
+      box-shadow: 0 0 0 2px var(--wx-hue), 0 0 0 6px color-mix(in oklab, var(--wx-hue) 22%, transparent);
+    }
+    .wx__spot[aria-expanded='true']:focus-visible::after {
+      box-shadow: 0 0 0 2px var(--wx-hue), 0 0 0 4px var(--ink-0);
+    }
+
+    /* Fixed height from the first paint: nothing below ever moves. */
+    .wx__panel {
+      position: relative;
+      box-sizing: border-box;
+      height: var(--wx-panel-h, 9.5rem);
+      overflow-y: auto;
+      margin-top: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--hair-1);
+      border-radius: 14px;
+      background: var(--surface, #0F121A);
+      line-height: 1.45;
+    }
+    .wx__title {
+      margin: 0;
+      padding-right: 56px;
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--text);
+    }
+    .wx__text { margin: 4px 0 0; font-size: 0.875rem; color: var(--text-2); text-wrap: pretty; }
+    .wx__close {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.8125rem;
+      cursor: pointer;
+    }
+    .wx__close[hidden] { display: none; }
+    .wx__close:hover { color: var(--text); }
+    .wx__close:focus-visible { outline: 2px solid var(--ink-0); outline-offset: -2px; }
+    @media (prefers-reduced-motion: reduce) {
+      .wx__spot::after { transition: none; }
+    }
+  </style>
+</div>
+
+<script>
+  import { mountAllWheelExplain } from '../lib/wheel-explain/controller';
+
+  mountAllWheelExplain(document);
+</script>

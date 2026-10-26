@@ -1,0 +1,618 @@
+{
+  "engineVersion": "1.0.0",
+  "conventions": [
+    {
+      "type": "conjunction",
+      "angle": 0,
+      "orb": 8,
+      "orbLuminary": 10
+    },
+    {
+      "type": "sextile",
+      "angle": 60,
+      "orb": 4,
+      "orbLuminary": 5
+    },
+    {
+      "type": "square",
+      "angle": 90,
+      "orb": 7,
+      "orbLuminary": 8
+    },
+    {
+      "type": "trine",
+      "angle": 120,
+      "orb": 7,
+      "orbLuminary": 8
+    },
+    {
+      "type": "opposition",
+      "angle": 180,
+      "orb": 8,
+      "orbLuminary": 10
+    }
+  ],
+  "pairs": [
+    {
+      "pair": "sun-moon",
+      "bodies": [
+        "Sun",
+        "Moon"
+      ],
+      "luminary": true,
+      "feasibility": [
+        {
+          "geometry": "conjunction",
+          "utc": "2001-01-24T12:00:00.000Z",
+          "separation": 0.4993805715558892,
+          "orb": 0.4993805715558892
+        },
+        {
+          "geometry": "sextile",
+          "utc": "2001-04-18T12:00:00.000Z",
+          "separation": 59.00828910634755,
+          "orb": 0.9917108936524528
+        },
+        {
+          "geometry": "square",
+          "utc": "2001-01-16T12:00:00.000Z",
+          "separation": 90.2936833142636,
+          "orb": 0.2936833142636033
+        },
+        {
+          "geometry": "trine",
+          "utc": "2001-06-30T12:00:00.000Z",
+          "separation": 119.88799587142046,
+          "orb": 0.11200412857954234
+        },
+        {
+          "geometry": "opposition",
+          "utc": "2001-05-07T12:00:00.000Z",
+          "separation": 179.01726697299978,
+          "orb": 0.9827330270002221
+        }
+      ],
+      "examples": [
+        {
+          "id": "sun-moon-1",
+          "pair": "sun-moon",
+          "context": "natal",
+          "type": "computed",
+          "synthetic": true,
+          "utc": "2001-01-16T12:00:00.000Z",
+          "bodies": [
+            {
+              "body": "Sun",
+              "longitude": 296.4246402347974
+            },
+            {
+              "body": "Moon",
+              "longitude": 206.13095692053378
+            }
+          ],
+          "separation": 90.2936833142636,
+          "angle": 90,
+          "residualOrb": 0.2936833142636033,
+          "geometry": "square",
+          "applying": true,
+          "engineVersion": "1.0.0",
+          "daySpan": {
+            "from": {
+              "utc": "2001-01-16T00:00:00.000Z",
+              "separation": 96.46278755909384,
+              "geometry": "square",
+              "orb": 6.46278755909384
+            },
+            "to": {
+              "utc": "2001-01-17T00:00:00.000Z",
+              "separation": 84.22512995977911,
+              "geometry": "square",
+              "orb": 5.77487004022089
+            },
+            "separationChange": 12.23765759931473,
+            "hourlySamples": 25,
+            "samplesListingGeometry": 25
+          },
+          "convention": "Tropical geocentric ecliptic longitudes; one UTC instant; the birth chart calculator's major-aspect orbs; applying from current speeds.",
+          "provenance": {
+            "generator": "scripts/build-natal-aspect-examples.mjs",
+            "source": "src/lib/engine/full.ts",
+            "verifiedAt": "2026-10-24",
+            "review": "Calculation replay only; named editorial review pending."
+          }
+        },
+        {
+          "id": "sun-moon-2",
+          "pair": "sun-moon",
+          "context": "natal",
+          "type": "computed",
+          "synthetic": true,
+          "utc": "2001-06-30T12:00:00.000Z",
+          "bodies": [
+            {
+              "body": "Sun",
+              "longitude": 98.75998593310692
+            },
+            {
+              "body": "Moon",
+              "longitude": 218.64798180452738
+            }
+          ],
+          "separation": 119.88799587142046,
+          "angle": 120,
+          "residualOrb": 0.11200412857954234,
+          "geometry": "trine",
+          "applying": true,
+          "engineVersion": "1.0.0",
+          "daySpan": {
+            "from": {
+              "utc": "2001-06-30T00:00:00.000Z",
+              "separation": 113.69092807802994,
+              "geometry": "trine",
+              "orb": 6.309071921970059
+            },
+            "to": {
+              "utc": "2001-07-01T00:00:00.000Z",
+              "separation": 126.0174014776814,
+              "geometry": "trine",
+              "orb": 6.017401477681403
+            },
+            "separationChange": 12.326473399651462,
+            "hourlySamples": 25,
+            "samplesListingGeometry": 25
+          },
+          "convention": "Tropical geocentric ecliptic longitudes; one UTC instant; the birth chart calculator's major-aspect orbs; applying from current speeds.",
+          "provenance": {
+            "generator": "scripts/build-natal-aspect-examples.mjs",
+            "source": "src/lib/engine/full.ts",
+            "verifiedAt": "2026-10-24",
+            "review": "Calculation replay only; named editorial review pending."
+          }
+        }
+      ],
+      "timeSensitive": {
+        "utc": "2001-01-02T12:00:00.000Z",
+        "geometry": "square",
+        "orb": 5.05514359898234,
+        "separation": 84.94485640101766,
+        "daySpan": {
+          "from": {
+            "utc": "2001-01-02T00:00:00.000Z",
+            "separation": 79.25433001685337,
+            "geometry": null,
+            "orb": null
+          },
+          "to": {
+            "utc": "2001-01-03T00:00:00.000Z",
+            "separation": 90.71414851336021,
+            "geometry": "square",
+            "orb": 0.7141485133602146
+          },
+          "separationChange": 11.459818496506841,
+          "hourlySamples": 25,
+          "samplesListingGeometry": 19
+        }
+      }
+    },
+    {
+      "pair": "moon-venus",
+      "bodies": [
+        "Moon",
+        "Venus"
+      ],
+      "luminary": true,
+      "feasibility": [
+        {
+          "geometry": "conjunction",
+          "utc": "2001-05-19T12:00:00.000Z",
+          "separation": 0.30215398709924557,
+          "orb": 0.30215398709924557
+        },
+        {
+          "geometry": "sextile",
+          "utc": "2001-02-21T12:00:00.000Z",
+          "separation": 60.51845434716415,
+          "orb": 0.5184543471641518
+        },
+        {
+          "geometry": "square",
+          "utc": "2001-03-18T12:00:00.000Z",
+          "separation": 89.95301946153677,
+          "orb": 0.046980538463230914
+        },
+        {
+          "geometry": "trine",
+          "utc": "2001-08-25T12:00:00.000Z",
+          "separation": 120.36167895818801,
+          "orb": 0.36167895818800844
+        },
+        {
+          "geometry": "opposition",
+          "utc": "2001-02-11T12:00:00.000Z",
+          "separation": 179.60370113512317,
+          "orb": 0.396298864876826
+        }
+      ],
+      "examples": [
+        {
+          "id": "moon-venus-1",
+          "pair": "moon-venus",
+          "context": "natal",
+          "type": "computed",
+          "synthetic": true,
+          "utc": "2001-05-19T12:00:00.000Z",
+          "bodies": [
+            {
+              "body": "Moon",
+              "longitude": 14.209231913483393
+            },
+            {
+              "body": "Venus",
+              "longitude": 14.511385900582638
+            }
+          ],
+          "separation": 0.30215398709924557,
+          "angle": 0,
+          "residualOrb": 0.30215398709924557,
+          "geometry": "conjunction",
+          "applying": true,
+          "engineVersion": "1.0.0",
+          "daySpan": {
+            "from": {
+              "utc": "2001-05-19T00:00:00.000Z",
+              "separation": 6.212262754477081,
+              "geometry": "conjunction",
+              "orb": 6.212262754477081
+            },
+            "to": {
+              "utc": "2001-05-20T00:00:00.000Z",
+              "separation": 5.681795211286385,
+              "geometry": "conjunction",
+              "orb": 5.681795211286385
+            },
+            "separationChange": 0.5304675431906958,
+            "hourlySamples": 25,
+            "samplesListingGeometry": 25
+          },
+          "convention": "Tropical geocentric ecliptic longitudes; one UTC instant; the birth chart calculator's major-aspect orbs; applying from current speeds.",
+          "provenance": {
+            "generator": "scripts/build-natal-aspect-examples.mjs",
+            "source": "src/lib/engine/full.ts",
+            "verifiedAt": "2026-10-24",
+            "review": "Calculation replay only; named editorial review pending."
+          }
+        },
+        {
+          "id": "moon-venus-2",
+          "pair": "moon-venus",
+          "context": "natal",
+          "type": "computed",
+          "synthetic": true,
+          "utc": "2001-02-11T12:00:00.000Z",
+          "bodies": [
+            {
+              "body": "Moon",
+              "longitude": 187.38291207906136
+            },
+            {
+              "body": "Venus",
+              "longitude": 6.986613214184501
+            }
+          ],
+          "separation": 179.60370113512317,
+          "angle": 180,
+          "residualOrb": 0.396298864876826,
+          "geometry": "opposition",
+          "applying": false,
+          "engineVersion": "1.0.0",
+          "daySpan": {
+            "from": {
+              "utc": "2001-02-11T00:00:00.000Z",
+              "separation": 173.52700614385867,
+              "geometry": "opposition",
+              "orb": 6.472993856141329
+            },
+            "to": {
+              "utc": "2001-02-12T00:00:00.000Z",
+              "separation": 172.84595585582997,
+              "geometry": "opposition",
+              "orb": 7.1540441441700295
+            },
+            "separationChange": 0.6810502880287004,
+            "hourlySamples": 25,
+            "samplesListingGeometry": 25
+          },
+          "convention": "Tropical geocentric ecliptic longitudes; one UTC instant; the birth chart calculator's major-aspect orbs; applying from current speeds.",
+          "provenance": {
+            "generator": "scripts/build-natal-aspect-examples.mjs",
+            "source": "src/lib/engine/full.ts",
+            "verifiedAt": "2026-10-24",
+            "review": "Calculation replay only; named editorial review pending."
+          }
+        }
+      ],
+      "timeSensitive": {
+        "utc": "2001-01-04T12:00:00.000Z",
+        "geometry": "sextile",
+        "orb": 1.9706328346881037,
+        "separation": 61.970632834688104,
+        "daySpan": {
+          "from": {
+            "utc": "2001-01-04T00:00:00.000Z",
+            "separation": 55.9513337735259,
+            "geometry": "sextile",
+            "orb": 4.048666226474097
+          },
+          "to": {
+            "utc": "2001-01-05T00:00:00.000Z",
+            "separation": 68.09981587518331,
+            "geometry": null,
+            "orb": null
+          },
+          "separationChange": 12.148482101657407,
+          "hourlySamples": 25,
+          "samplesListingGeometry": 18
+        }
+      }
+    },
+    {
+      "pair": "venus-mars",
+      "bodies": [
+        "Venus",
+        "Mars"
+      ],
+      "luminary": false,
+      "feasibility": [
+        {
+          "geometry": "conjunction",
+          "utc": "2002-05-09T12:00:00.000Z",
+          "separation": 0.7181008927747712,
+          "orb": 0.7181008927747712
+        },
+        {
+          "geometry": "sextile",
+          "utc": "2002-01-18T12:00:00.000Z",
+          "separation": 60.49101221028991,
+          "orb": 0.4910122102899095
+        },
+        {
+          "geometry": "square",
+          "utc": "2001-11-22T12:00:00.000Z",
+          "separation": 90.64108566597639,
+          "orb": 0.6410856659763908
+        },
+        {
+          "geometry": "trine",
+          "utc": "2001-01-15T12:00:00.000Z",
+          "separation": 119.16815742283183,
+          "orb": 0.8318425771681746
+        },
+        {
+          "geometry": "opposition",
+          "utc": "2001-07-19T12:00:00.000Z",
+          "separation": 179.87551928731642,
+          "orb": 0.12448071268357808
+        }
+      ],
+      "examples": [
+        {
+          "id": "venus-mars-1",
+          "pair": "venus-mars",
+          "context": "natal",
+          "type": "computed",
+          "synthetic": true,
+          "utc": "2002-01-18T12:00:00.000Z",
+          "bodies": [
+            {
+              "body": "Venus",
+              "longitude": 299.1777374896832
+            },
+            {
+              "body": "Mars",
+              "longitude": 359.6687496999731
+            }
+          ],
+          "separation": 60.49101221028991,
+          "angle": 60,
+          "residualOrb": 0.4910122102899095,
+          "geometry": "sextile",
+          "applying": true,
+          "engineVersion": "1.0.0",
+          "daySpan": {
+            "from": {
+              "utc": "2002-01-18T00:00:00.000Z",
+              "separation": 60.755146117143624,
+              "geometry": "sextile",
+              "orb": 0.7551461171436245
+            },
+            "to": {
+              "utc": "2002-01-19T00:00:00.000Z",
+              "separation": 60.22684162279711,
+              "geometry": "sextile",
+              "orb": 0.22684162279711018
+            },
+            "separationChange": 0.5283044943465143,
+            "hourlySamples": 25,
+            "samplesListingGeometry": 25
+          },
+          "convention": "Tropical geocentric ecliptic longitudes; one UTC instant; the birth chart calculator's major-aspect orbs; applying from current speeds.",
+          "provenance": {
+            "generator": "scripts/build-natal-aspect-examples.mjs",
+            "source": "src/lib/engine/full.ts",
+            "verifiedAt": "2026-10-24",
+            "review": "Calculation replay only; named editorial review pending."
+          }
+        },
+        {
+          "id": "venus-mars-2",
+          "pair": "venus-mars",
+          "context": "natal",
+          "type": "computed",
+          "synthetic": true,
+          "utc": "2001-11-22T12:00:00.000Z",
+          "bodies": [
+            {
+              "body": "Venus",
+              "longitude": 227.4795115015683
+            },
+            {
+              "body": "Mars",
+              "longitude": 318.1205971675447
+            }
+          ],
+          "separation": 90.64108566597639,
+          "angle": 90,
+          "residualOrb": 0.6410856659763908,
+          "geometry": "square",
+          "applying": true,
+          "engineVersion": "1.0.0",
+          "daySpan": {
+            "from": {
+              "utc": "2001-11-22T00:00:00.000Z",
+              "separation": 90.90977439620548,
+              "geometry": "square",
+              "orb": 0.9097743962054778
+            },
+            "to": {
+              "utc": "2001-11-23T00:00:00.000Z",
+              "separation": 90.37256953249596,
+              "geometry": "square",
+              "orb": 0.3725695324959588
+            },
+            "separationChange": 0.537204863709519,
+            "hourlySamples": 25,
+            "samplesListingGeometry": 25
+          },
+          "convention": "Tropical geocentric ecliptic longitudes; one UTC instant; the birth chart calculator's major-aspect orbs; applying from current speeds.",
+          "provenance": {
+            "generator": "scripts/build-natal-aspect-examples.mjs",
+            "source": "src/lib/engine/full.ts",
+            "verifiedAt": "2026-10-24",
+            "review": "Calculation replay only; named editorial review pending."
+          }
+        }
+      ],
+      "timeSensitive": {
+        "utc": "2001-02-04T12:00:00.000Z",
+        "geometry": "trine",
+        "orb": 6.971140442561762,
+        "separation": 126.97114044256176,
+        "daySpan": {
+          "from": {
+            "utc": "2001-02-04T00:00:00.000Z",
+            "separation": 126.81994222439266,
+            "geometry": "trine",
+            "orb": 6.819942224392662
+          },
+          "to": {
+            "utc": "2001-02-05T00:00:00.000Z",
+            "separation": 127.11938134259924,
+            "geometry": null,
+            "orb": null
+          },
+          "separationChange": 0.2994391182065783,
+          "hourlySamples": 25,
+          "samplesListingGeometry": 15
+        }
+      }
+    }
+  ],
+  "schematic": [
+    {
+      "id": "wraparound",
+      "type": "schematic",
+      "context": "natal",
+      "bodies": [
+        {
+          "body": "Moon",
+          "longitude": 358
+        },
+        {
+          "body": "Venus",
+          "longitude": 3
+        }
+      ],
+      "separation": 5,
+      "geometry": "conjunction",
+      "residualOrb": 5
+    },
+    {
+      "id": "luminary-allowance",
+      "type": "schematic",
+      "context": "natal",
+      "bodies": [
+        {
+          "body": "Moon",
+          "longitude": 350
+        },
+        {
+          "body": "Venus",
+          "longitude": 359.5
+        }
+      ],
+      "separation": 9.5,
+      "geometry": "conjunction",
+      "residualOrb": 9.5
+    },
+    {
+      "id": "standard-allowance",
+      "type": "schematic",
+      "context": "natal",
+      "bodies": [
+        {
+          "body": "Venus",
+          "longitude": 350
+        },
+        {
+          "body": "Mars",
+          "longitude": 359.5
+        }
+      ],
+      "separation": 9.5,
+      "geometry": null,
+      "residualOrb": null
+    }
+  ],
+  "venus": {
+    "from": "2001-01-01T12:00:00.000Z",
+    "days": 2922,
+    "maxSunVenusSeparation": 47.0931997305849,
+    "venusMarsWindows": [
+      {
+        "geometry": "conjunction",
+        "windows": 6,
+        "minDays": 28,
+        "medianDays": 30,
+        "maxDays": 54
+      },
+      {
+        "geometry": "sextile",
+        "windows": 10,
+        "minDays": 11,
+        "medianDays": 15,
+        "maxDays": 43
+      },
+      {
+        "geometry": "square",
+        "windows": 10,
+        "minDays": 12,
+        "medianDays": 21,
+        "maxDays": 37
+      },
+      {
+        "geometry": "trine",
+        "windows": 12,
+        "minDays": 9,
+        "medianDays": 18,
+        "maxDays": 33
+      },
+      {
+        "geometry": "opposition",
+        "windows": 4,
+        "minDays": 10,
+        "medianDays": 14,
+        "maxDays": 14
+      }
+    ]
+  }
+}

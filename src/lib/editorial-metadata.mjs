@@ -1,7 +1,8 @@
 /** Source-controlled editorial owners; rebuilding is not a content revision.
  * Dates preserve the reviewed sitemap baseline, except /learn/: Search's
  * September 5 content revision (034ee2f) supersedes its August 23 receipt;
- * the October 16 design sweep (labels and dash punctuation) dates them all.
+ * the October 16 design sweep (labels and dash punctuation) dates them all,
+ * and /learn/aspects/ gained its natal planet-pair section on October 26.
  * No reliable first-publication receipt is available for these pages.
  */
 const animals = ['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'goat', 'monkey', 'rooster', 'dog', 'pig'];
@@ -11,7 +12,7 @@ export const EDITORIAL_METADATA = Object.freeze(Object.fromEntries([
     ['/learn/', '2026-10-16'],
     ['/learn/houses/', '2026-10-16'],
     ['/learn/planets/', '2026-10-16'],
-    ['/learn/aspects/', '2026-10-16'],
+    ['/learn/aspects/', '2026-10-25'],
     ['/learn/placements/', '2026-10-16'],
   ].map(([path, modified]) => [path, Object.freeze({ type: 'CollectionPage', modified })]),
   ...locales.flatMap((locale) => ['', ...animals.map((animal) => `${animal}/`)].map((suffix) => [
