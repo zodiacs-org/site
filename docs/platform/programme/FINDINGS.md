@@ -78,6 +78,7 @@ Severity follows the audit's scale:
 | F-82 | minor | engine reproducibility | On arm64 the engine gives some values that differ from x86-64's in their last bits: 4 of its 3,853 tests fail on an Apple M4 under Node 20, 22 and 24 (a calc speed by 1.4e-11 against a 1e-12 pin; a chart digest and an aspect angle by 5e-14° in two exact site-parity checks), and one conformance residual rounds differently in its ninth decimal | recorded in engine 1.0.0's CHANGELOG and evidence; the pins and generated results stay x86-64's, as CI runs, and 1.0.0's generated files were rebuilt on Linux x86-64; no published claim says bit-identical across platforms |
 | F-83 | minor | Registry (frozen) | The wallet chart's owner comparison (`src/islands/WalletChart.tsx`) resolves the owner's local time without `prepareLocalTime`. With the engine's resolver, which #723 adopts, it refuses every owner time ("the local-time resolver is not loaded") and shows the page's invalid-response error; on main it read the host's Intl data. The file is frozen Registry code under the Phase 1 scope guard, and its page serves only a redirect while no wallet chain is configured, as in production. | open: the fix is one awaited `prepareLocalTime(ownerDate, ownerCity.tz)` before the call, which needs the owner's one-time scope allowance; until then the feature must stay unconfigured. `src/lib/time/localToUtc-callers.test.ts` lists it as the one caller that does not prepare |
 | F-84 | minor | performance | From 00:00 UTC until the day's edition deploys, the daily pages dated their "today" wording after the first paint, and the longer text moved what was below it: Site Check's Lighthouse gate measured CLS 0.020 on `/today/`, 0.005 on `/horoscopes/` and 0.011 on `/horoscopes/aries/` (run 38184748851, 2026-10-12 after 00:00 UTC) | fixed in #726: the head script dates that wording as the parser adds it; `tests/edition-dated-drive.mjs` |
+| F-85 | minor | CI | `tests/bio-drive.mjs` read the real clock: from 00:00 UTC until the day's edition deploys, `/bio/`'s dated heading takes another line and put the desktop CTA at 374 px against the drive's 360 px ceiling, so its verdict depended on when it ran; Site Check 38184748851 passed the step because it started at 23:58:31 UTC | fixed here: the drive sets the page clock, to the edition's day for its acceptance checks and to the dated window for a pass with its own expectation |
 | F-86 | minor | copy | From 00:00 UTC until the day's edition deploys, the Spanish and Portuguese daily pages (`/es/today/`, `/es/horoscopes/`, `/es/horoscopes/<sign>/` and their `/pt/` twins) kept "hoy" and "hoje" while their kicker gave the older date: the dating rules were English only (F-84, *Remaining*) | fixed here: each reviewed Spanish and Portuguese phrase has its dated form in `src/lib/edition-freshness.ts`, which the head script inlines for its page's language, so the first paint is dated; `tests/edition-dated-drive.mjs` drives the six routes; the tab titles: dated in the window by #737, reviewed |
 | F-87 | minor | performance | A page short enough to show the site footer in its first viewport could paint the footer before its deferred stylesheet arrived, then move and reflow it: CLS up to 0.173 on `/es/horoscopes/aries/` and `/pt/horoscopes/aries/` in a 1400 px tall viewport, on any clock | fixed here: the head holds the footer hidden from its first layout; the loader, which already measures it, shows a distant footer at once, and a near one stays held until its stylesheet applies and shows it (or fails, or takes over 3 s); `tests/footer-style-loader.test.mjs`, `tests/edition-dated-drive.mjs` |
 | F-88 | minor | copy | Reviewing F-86's wording found faults in the Spanish and Portuguese daily copy that predate it: the Sun and Moon without their article as subjects ("Sol entra…", "Lua entra…"), Portuguese lists that drop their preposition, a lower-case, wrongly gendered note under "Por qué esta lectura", a doubled "inglés" cue, "cuatro notas por signo" on days with three, and smaller calques | open, for the owner: the files are Phase 1 protected (locale page trees and catalogs), so a fix needs a one-time allowance; each fault and its proposed correction is below; fixed in #731 under a one-time allowance the owner approved on 2026-10-12, each correction reviewed; the pt-BR first of the month and the undated titles remain; the pt-BR first of the month and the tab titles: fixed in #737 |
@@ -896,6 +897,43 @@ adoption changes neither its status nor the fixed denominator.
   window, as before. `tests/bio-drive.mjs` reads the real clock, and in the
   window `/bio/`'s dated heading puts its desktop CTA at 374 px against the
   drive's 360 px (on `ec0451ff` too); Site Check ran it at 23:58 UTC.
+
+### F-85 — the bio drive's verdict depended on the time of day (minor, CI; fixed here)
+
+- **Found.** A run of `tests/bio-drive.mjs` on 2026-10-12 against
+  `ec0451ff`, with the 2026-10-11 edition and the real clock on 2026-10-12,
+  failed `desktop: primary CTA arrives in the opening scan` at 374 px. Site
+  Check run 38184748851 on the same commit passed the step because it
+  started at 23:58:31 UTC on 2026-10-11, 89 seconds before midnight
+  ([record](../evidence/bio-drive-clock-20261012/README.md)). F-84 lists it
+  under Remaining.
+- **Cause.** The drive read the real clock. `/bio/` renders its heading with
+  EditionText, "Your chart and today’s sky". From 00:00 UTC until the day's
+  daily commit deploys, at about 05:30 UTC, the page is dated and the heading
+  reads "Your chart and the October 11, 2026 edition’s sky": one more line in
+  Georgia, and for most dates two in Times New Roman. The drive's 360 px
+  ceiling, one figure for all five viewports, came with this heading in
+  `1dac5100` and was set against the edition day's composition (328 px on
+  desktop).
+- **Reproduced** on `812423b1`, main before the 2026-10-12 daily commit, with
+  the 2026-10-11 edition, built without the two freshness gates and driven
+  at 07:30 UTC on 2026-10-12: the same failure at 374 px. Tablet (357),
+  mobile (326), annotation (332) and narrow (323) pass.
+- **Fix.** The drive sets the page clock with an init script, as
+  `tests/edition-parser-drive.mjs` does: 12:00 UTC on the edition's day for
+  the acceptance checks, which now also check that the heading is the
+  current one, and 00:17 UTC on the next day for a dated pass over the same
+  five viewports. The dated pass checks for page errors, the dated heading
+  exactly, horizontal overflow, and that the whole primary CTA is in the
+  first screen. No page, style or copy changes.
+- **Regression test.** The drive itself, in Site Check's "Link-in-bio page
+  acceptance". On `812423b1` at 10:12 UTC the new drive passes its 109
+  checks; the old one fails as above.
+- **Remaining.** The dated pass does not bound where in the first screen the
+  CTA lands: 374 to 420 px on desktop in the measured cases, against 328 px
+  on the edition's day. Keeping the edition day's position in the dated
+  state would be a design change to the page. Other drives that read the
+  real clock were not surveyed.
 
 ### F-86 — the Spanish and Portuguese daily pages said "today" about a day-old edition (minor, copy; fixed here)
 
