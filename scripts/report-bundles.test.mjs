@@ -176,3 +176,23 @@ describe('birth-window worker built boundary',()=>{
   expect(result.code).toBe(1);expect(result.output).toContain('worker static closure exceeds original chunk-max budget');
  });
 });
+
+describe('optional review-route budgets', () => {
+  const natal = JSON.stringify({ '/learn/aspects/sun-moon/': 0, '/learn/aspects/moon-venus/': 0, '/learn/aspects/venus-mars/': 0 });
+  const pages = Object.fromEntries(['sun-moon', 'moon-venus', 'venus-mars'].map((pair) => [`dist/learn/aspects/${pair}/index.html`, '']));
+  it('skips natal pair routes a normal build does not emit', () => {
+    expect(check({ 'budgets.natal-aspects.json': natal }).code).toBe(0);
+  });
+  it('holds every emitted natal pair route to a 0 KB entry closure', () => {
+    expect(check({ 'budgets.natal-aspects.json': natal, ...pages }).code).toBe(0);
+    const over = check({ 'budgets.natal-aspects.json': natal, ...pages,
+      'dist/learn/aspects/moon-venus/index.html': '<script type="module" src="/_astro/client.fixture.js"></script>' });
+    expect(over.code).toBe(1);
+    expect(over.output).toContain('/learn/aspects/moon-venus/: 0.0 KB gz exceeds 0 KB');
+  });
+  it('rejects a malformed optional budget', () => {
+    const result = check({ 'budgets.natal-aspects.json': JSON.stringify({ '/learn/aspects/sun-moon/': -1 }) });
+    expect(result.code).toBe(1);
+    expect(result.output).toContain('budgets.natal-aspects.json: /learn/aspects/sun-moon/ must be a route');
+  });
+});

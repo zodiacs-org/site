@@ -55,7 +55,7 @@ export async function runEventTransitChecks({ browser, baseURL, check, outDir = 
           .flatMap((script) => { const data = JSON.parse(script.textContent); return data['@graph'] ?? [data]; })
           .filter((node) => node['@type'] === 'Article'));
         check(`event ${width}: ${event.id} exposes the actual revision without inventing first publication`,
-          articles.length === 1 && articles[0].dateModified === '2026-09-06T00:00:00.000Z'
+          articles.length === 1 && articles[0].dateModified === `${event.lastModified}T00:00:00.000Z`
           && !Object.hasOwn(articles[0], 'datePublished'));
         if (outDir) await staticPage.screenshot({ path: `${outDir}/event-${event.id}-${width}.png`, fullPage: true });
       }

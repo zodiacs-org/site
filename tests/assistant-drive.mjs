@@ -311,8 +311,8 @@ await withPreview({ port: 4404 }, async (baseURL) => {
     await input.press('Enter');
     const cloud = page.locator('.zassistant__consent');
     await cloud.waitFor({ state: 'visible' });
-    check('first send pauses for accurate OpenAI disclosure', requests.length === 0
-      && (await cloud.textContent() ?? '').includes('OpenAI')
+    check('first send pauses for accurate Anthropic disclosure', requests.length === 0
+      && (await cloud.textContent() ?? '').includes('Anthropic')
       && (await cloud.textContent() ?? '').includes('30 days'));
     await page.getByRole('button', { name: 'Continue with Guide' }).click();
     const firstGuideMessage = page.locator('.zassistant__message--assistant')

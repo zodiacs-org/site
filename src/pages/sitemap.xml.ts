@@ -4,6 +4,8 @@
  * rather than @astrojs/sitemap (which only sees Astro routes and would
  * move the sitemap URL robots.txt points at).
  */
+import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-pairs';
+import natalAspectsPublication from '../data/natal-aspects-publication.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
@@ -503,6 +505,21 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...TOP10_LOCALES_ROUTES.map((loc) => [loc, TOP10_LOCALES_LASTMOD] as const),
   ...PROFILE_REDESIGN_ROUTES.map((loc) => [loc, PROFILE_REDESIGN_LASTMOD] as const),
   ...CONVENTIONS_ROUTES.map((loc) => [loc, CONVENTIONS_LASTMOD] as const),
+  // Guide's provider and retention disclosures changed on these public pages.
+  ...[
+    '/about/', '/ask/', '/methodology/', '/privacy/',
+    '/es/methodology/', '/es/privacy/', '/fr/methodology/', '/fr/privacy/',
+    '/it/methodology/', '/it/privacy/', '/pt/methodology/', '/pt/privacy/',
+    '/ru/methodology/', '/ru/privacy/',
+  ].map((loc) => [loc, '2026-10-20'] as const),
+  // Contextual discovery links added to the tools directory.
+  ['/tools/', '2026-10-21'] as const,
+  // Tap-to-explain on the birth chart page's sample wheel.
+  ['/birth-chart/', '2026-10-24'] as const,
+  // The English home's second row of tool links (void-of-course Moon,
+  // numerology, Chinese zodiac). The day of the daily edition it was built
+  // with, since the Sitemap Dates check refuses a later date.
+  ['/', '2026-10-25'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -517,7 +534,13 @@ function sitemapAlternates(loc: string) {
   return alternatePaths(loc);
 }
 
-export const GET: APIRoute = async () => {
+export type SitemapEntry = { loc: string; priority: number; lastmod?: string };
+
+/**
+ * Every sitemap location, in sitemap.xml's order. The section sitemaps under
+ * /sitemaps/ (src/pages/sitemaps/[section].xml.ts) partition this same list.
+ */
+export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const guides = await getCollection('guides', ({ data }) => !data.draft);
   const pairs = await getCollection('pairs', ({ data }) => !data.draft);
   const learn = await getCollection('learn', ({ data }) => !data.draft);
@@ -646,13 +669,8 @@ export const GET: APIRoute = async () => {
       priority: 0.64,
       lastmod: event.lastModified,
     })),
-    ...registryResearchPublication.items
-      .filter((item) => item.status === 'published' && item.visibleAt <= registryResearchPublication.generatedAt)
-      .map((item) => ({
-        loc: item.url,
-        priority: 0.56,
-        lastmod: item.publishedAt.slice(0, 10),
-      })),
+    // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
+    // /terminal/research/ above, is listed.
     ...(PEOPLE_DIRECTORY_INDEXABLE ? [{
       loc: '/people/',
       priority: 0.7,
@@ -710,6 +728,13 @@ export const GET: APIRoute = async () => {
             priority: 0.65,
             lastmod: l.data.updated.toISOString().slice(0, 10),
           }]),
+    // Natal planet pairs enter only with a complete publication record; a
+    // local review build (PUBLIC_NATAL_ASPECTS_PREVIEW=1) stays out.
+    ...(natalAspectsPublished ? NATAL_ASPECT_PAIRS.map((pair) => ({
+      loc: `/learn/aspects/${pair}/`,
+      priority: 0.65,
+      lastmod: natalAspectsPublication.updated,
+    })) : []),
     ...birthdays.map((b) => ({
       loc: `/birthday/${b.id}/`,
       priority: 0.65,
@@ -742,14 +767,37 @@ export const GET: APIRoute = async () => {
       }];
     });
   });
-  const allUrls = [
+  // The comparison badges became SVG on the English pairs only. Apply the
+  // template date after making localized copies, which keep their own dates.
+  for (const pair of pairs) {
+    const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
+    if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
+  }
+  // The natal planet-pair release links each geometry guide to the same
+  // angle on the three pair pages.
+  if (natalAspectsPublished) {
+    for (const type of ['conjunction', 'sextile', 'square', 'trine', 'opposition']) {
+      const url = urls.find(({ loc }) => loc === `/learn/aspects/${type}/`);
+      if (url) url.lastmod = laterDate(url.lastmod, natalAspectsPublication.updated);
+    }
+  }
+  // Phones get the earlier hero framing back on the English and translated
+  // homes (the Russian home keeps its own poster).
+  for (const loc of ['/', '/es/', '/fr/', '/it/', '/pt/']) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-10-24');
+  }
+  return [
     ...urls,
     ...localizedUrls,
   ];
+}
 
-  const body = `<?xml version="1.0" encoding="UTF-8"?>
+/** A urlset of the given entries, each with its hreflang alternates, lastmod and priority. */
+export function renderUrlset(entries: readonly SitemapEntry[]): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${allUrls
+${entries
   .map(
     (u) => {
       const alternates = sitemapAlternates(u.loc);
@@ -769,8 +817,8 @@ ${allUrls
   .join('\n')}
 </urlset>
 `;
+}
 
-  return new Response(body, {
-    headers: { 'Content-Type': 'application/xml; charset=utf-8' },
-  });
-};
+export const GET: APIRoute = async () => new Response(renderUrlset(await sitemapEntries()), {
+  headers: { 'Content-Type': 'application/xml; charset=utf-8' },
+});

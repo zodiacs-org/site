@@ -19,8 +19,7 @@ describe('public trust-surface claims', () => {
       expect(copy).toMatch(/12:00 local civil time/);
       expect(copy).toMatch(/angles.*houses/s);
       expect(copy).toMatch(/Guide/);
-      expect(copy).toMatch(/OpenAI/);
-      expect(copy).toMatch(/store:false/);
+      expect(copy).toMatch(/Anthropic/);
       expect(copy).toMatch(/does not automatically attach your saved birth chart/);
       expect(copy).not.toMatch(/Attach my chart/);
       expect(copy).toMatch(/generated draft reply.*second safety check/s);
@@ -81,7 +80,7 @@ describe('public trust-surface claims', () => {
     ]);
     for (const path of localeFiles('privacy')) {
       const copy = await text(path);
-      expect(copy, path).toMatch(/OpenAI/);
+      expect(copy, path).toMatch(/Anthropic/);
       expect(copy, path).toMatch(/Plausible/);
       expect(copy, path).toMatch(/24 (?:hours|horas|heures|ore|часа)/u);
       for (const pattern of guideSafetyDisclosure.get(path) ?? []) {
@@ -89,7 +88,7 @@ describe('public trust-surface claims', () => {
       }
     }
     const assistant = await text('src/lib/assistant/open-assistant.ts');
-    expect(assistant).toMatch(/OpenAI/);
+    expect(assistant).toMatch(/Anthropic/);
     expect(assistant).toMatch(/does not automatically attach your saved birth chart or personal chart placements/);
     expect(assistant).toMatch(/browser session|session/i);
   });
@@ -97,13 +96,13 @@ describe('public trust-surface claims', () => {
   it('keeps the runtime Guide policy aligned with the public disclosure', async () => {
     const [policy, provider] = await Promise.all([
       text('src/lib/guide-server/policy.ts'),
-      text('src/lib/guide-server/openai.ts'),
+      text('src/lib/guide-server/anthropic.ts'),
     ]);
     expect(policy).toMatch(/You are Guide/);
     expect(policy).toMatch(/plain language/);
     expect(policy).toMatch(/financial/);
-    expect(provider).toMatch(/store: false/);
-    expect(provider).toMatch(/background: false/);
+    expect(provider).toMatch(/https:\/\/api\.anthropic\.com\/v1\/messages/);
+    expect(provider).toMatch(/x-api-key/);
     expect(provider).not.toMatch(/user_id|visitorHash/);
   });
 });
@@ -115,7 +114,7 @@ describe('repository operating claims', () => {
     expect(strategy).toMatch(/chart calculation stays on the device/iu);
     expect(strategy).toMatch(/opts into account sync/iu);
     expect(strategy).toMatch(/types them into Guide/iu);
-    expect(strategy).toMatch(/derived placements to OpenAI/iu);
+    expect(strategy).toMatch(/derived placements to Anthropic/iu);
     expect(strategy).toMatch(/not the saved name, birth date, time, place, or coordinates/iu);
   });
 

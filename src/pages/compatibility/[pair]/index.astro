@@ -1,4 +1,5 @@
 ---
+import PairComparisonSymbol from '../../../components/PairComparisonSymbol.astro';
 import { getCollection, render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import SignIcon from '../../../components/SignIcon.astro';
@@ -254,13 +255,14 @@ const jsonLd = [
           <p class="klede">This page reads one placement in each chart, the Sun. With birth details for both of you, the calculator reads the rest and shows where your two charts meet.</p>
           <div class="ph-adds">
             <h3>What a full comparison adds</h3>
-            <div><span class="ph-adds__gl" aria-hidden="true">☽&#xFE0E;</span><div><b>Moon and Moon</b><span>How each of you settles, and what feels like home.</span></div></div>
-            <div><span class="ph-adds__gl ph-adds__gl--two" aria-hidden="true">♀&#xFE0E;♂&#xFE0E;</span><div><b>Venus and Mars</b><span>How affection is shown, and what draws each of you in.</span></div></div>
+            <div><span class="ph-adds__gl" aria-hidden="true"><PairComparisonSymbol symbol="moon" /></span><div><b>Moon and Moon</b><span>How each of you settles, and what feels like home.</span></div></div>
+            <div><span class="ph-adds__gl ph-adds__gl--two" aria-hidden="true"><PairComparisonSymbol symbol="venus-mars" /></span><div><b>Venus and Mars</b><span>How affection is shown, and what draws each of you in.</span></div></div>
             <div><span class="ph-adds__gl ph-adds__gl--mono" aria-hidden="true">ASC</span><div><b>Rising signs</b><span>First impressions and everyday approach. Needs birth times.</span></div></div>
-            <div><span class="ph-adds__gl" aria-hidden="true">☌&#xFE0E;</span><div><b>Links between the charts</b><span>Where your planets meet, support each other, or rub.</span></div></div>
+            <div><span class="ph-adds__gl" aria-hidden="true"><PairComparisonSymbol symbol="conjunction" /></span><div><b>Links between the charts</b><span>Where your planets meet, support each other, or rub.</span></div></div>
           </div>
         </div>
-        <SynastryCalculator client:visible />
+        <!-- Keep the display: contents layout outside the visibility observer. -->
+        <div class="calc"><SynastryCalculator unwrapped client:visible /></div>
         <noscript>
           <p class="ph-compare__noscript">This compatibility calculator needs JavaScript. Enable it and reload to compare two birth charts in your browser.</p>
         </noscript>

@@ -1,12 +1,12 @@
 {
   "schema": "zodiacs.registry-research-feed.v1",
-  "generatedAt": "2026-10-20T00:08:52.327Z",
+  "generatedAt": "2026-10-26T00:08:09.677Z",
   "publisher": "Zodiacs.org Research System",
   "window": {
     "previousDays": 30,
     "futureDays": 7,
-    "startsAt": "2026-09-20T00:00:00.000Z",
-    "endsBefore": "2026-10-28T00:00:00.000Z"
+    "startsAt": "2026-09-26T00:00:00.000Z",
+    "endsBefore": "2026-11-03T00:00:00.000Z"
   },
   "items": [
     {
@@ -32,6 +32,51 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-daily-market-brief-2026-10-26",
+      "slug": "daily-market-brief-2026-10-26",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-26T12:00:00.000Z",
+      "visibleAt": "2026-10-26T12:00:00.000Z",
+      "title": "Sun square Pluto · daily market brief",
+      "summary": "Sun square Pluto leads the disclosed symbolic index; Scorpio market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-26/",
+      "signs": [
+        "scorpio",
+        "aquarius"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "aspect"
+      ],
+      "status": "scheduled"
+    },
+    {
+      "id": "zrx-weekly-outlook-2026-10-26",
+      "slug": "weekly-outlook-2026-10-26",
+      "kind": "weekly-outlook",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-26T12:00:00.000Z",
+      "visibleAt": "2026-10-26T12:00:00.000Z",
+      "title": "Weekly symbolic outlook · 2026-10-26",
+      "summary": "Scorpio, Taurus, Aquarius hold the three highest disclosed attention ranks for the next seven UTC days.",
+      "url": "/terminal/research/weekly-outlook-2026-10-26/",
+      "signs": [
+        "scorpio",
+        "taurus",
+        "aquarius"
+      ],
+      "topics": [
+        "markets",
+        "weekly-outlook",
+        "astrology"
+      ],
+      "status": "scheduled"
+    },
+    {
       "id": "zrx-event-brief-lunation-2026-10-26t04-11-45-019z-full-moon-taurus",
       "slug": "event-brief-lunation-2026-10-26t04-11-45-019z-full-moon-taurus",
       "kind": "event-brief",
@@ -53,6 +98,47 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-market-check-2026-10-26",
+      "slug": "market-check-2026-10-26",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-26T00:08:09.677Z",
+      "visibleAt": "2026-10-26T00:08:09.677Z",
+      "title": "Scorpio market check · 2026-10-26",
+      "summary": "Scorpio price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-26/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-daily-market-brief-2026-10-25",
+      "slug": "daily-market-brief-2026-10-25",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-25T12:00:00.000Z",
+      "visibleAt": "2026-10-25T12:00:00.000Z",
+      "title": "Venus enters Libra · daily market brief",
+      "summary": "Venus enters Libra leads the disclosed symbolic index; Libra market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-25/",
+      "signs": [
+        "libra"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "ingress"
+      ],
+      "status": "published"
+    },
+    {
       "id": "zrx-event-brief-ingress-2026-10-25t08-57-01-333z-venus-libra",
       "slug": "event-brief-ingress-2026-10-25t08-57-01-333z-venus-libra",
       "kind": "event-brief",
@@ -71,7 +157,108 @@
         "astrology",
         "ingress"
       ],
-      "status": "scheduled"
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-17-observation-168h",
+      "slug": "market-check-2026-10-17-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-25T00:08:10.539Z",
+      "visibleAt": "2026-10-25T00:08:10.539Z",
+      "title": "Leo 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (192 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-17-observation-168h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-18-observation-168h",
+      "slug": "market-check-2026-10-18-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-25T00:08:10.539Z",
+      "visibleAt": "2026-10-25T00:08:10.539Z",
+      "title": "Leo 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (168.01 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-18-observation-168h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-24-observation-24h",
+      "slug": "market-check-2026-10-24-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-25T00:08:10.539Z",
+      "visibleAt": "2026-10-25T00:08:10.539Z",
+      "title": "Scorpio 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (24.01 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-24-observation-24h/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-25",
+      "slug": "market-check-2026-10-25",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-25T00:08:10.539Z",
+      "visibleAt": "2026-10-25T00:08:10.539Z",
+      "title": "Libra market check · 2026-10-25",
+      "summary": "Libra price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-25/",
+      "signs": [
+        "libra"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-daily-market-brief-2026-10-24",
+      "slug": "daily-market-brief-2026-10-24",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-24T12:00:00.000Z",
+      "visibleAt": "2026-10-24T12:00:00.000Z",
+      "title": "Mercury stations retrograde in Scorpio · daily market brief",
+      "summary": "Mercury stations retrograde in Scorpio leads the disclosed symbolic index; Scorpio market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-24/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "station"
+      ],
+      "status": "published"
     },
     {
       "id": "zrx-event-brief-station-2026-10-24t07-14-21-822z-mercury-retrograde-scorpio",
@@ -92,7 +279,108 @@
         "astrology",
         "station"
       ],
-      "status": "scheduled"
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-16-observation-168h",
+      "slug": "market-check-2026-10-16-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-24T00:07:44.233Z",
+      "visibleAt": "2026-10-24T00:07:44.233Z",
+      "title": "Leo 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (192 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-16-observation-168h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-22-observation-24h",
+      "slug": "market-check-2026-10-22-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-24T00:07:44.233Z",
+      "visibleAt": "2026-10-24T00:07:44.233Z",
+      "title": "Leo 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (47.96 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-22-observation-24h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-23-observation-24h",
+      "slug": "market-check-2026-10-23-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-24T00:07:44.233Z",
+      "visibleAt": "2026-10-24T00:07:44.233Z",
+      "title": "Scorpio 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (24 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-23-observation-24h/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-24",
+      "slug": "market-check-2026-10-24",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-24T00:07:44.233Z",
+      "visibleAt": "2026-10-24T00:07:44.233Z",
+      "title": "Scorpio market check · 2026-10-24",
+      "summary": "Scorpio price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-24/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-daily-market-brief-2026-10-23",
+      "slug": "daily-market-brief-2026-10-23",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-23T12:00:00.000Z",
+      "visibleAt": "2026-10-23T12:00:00.000Z",
+      "title": "Sun enters Scorpio · daily market brief",
+      "summary": "Sun enters Scorpio leads the disclosed symbolic index; Scorpio market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-23/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "ingress"
+      ],
+      "status": "published"
     },
     {
       "id": "zrx-event-brief-ingress-2026-10-23t09-38-28-721z-sun-scorpio",
@@ -113,7 +401,189 @@
         "astrology",
         "ingress"
       ],
-      "status": "scheduled"
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-23",
+      "slug": "market-check-2026-10-23",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-23T00:07:36.897Z",
+      "visibleAt": "2026-10-23T00:07:36.897Z",
+      "title": "Scorpio market check · 2026-10-23",
+      "summary": "Scorpio price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-23/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-daily-market-brief-2026-10-22",
+      "slug": "daily-market-brief-2026-10-22",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-22T12:00:00.000Z",
+      "visibleAt": "2026-10-22T12:00:00.000Z",
+      "title": "Jupiter in Leo · daily market brief",
+      "summary": "Jupiter in Leo leads the disclosed symbolic index; Leo market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-22/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "occupancy"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-14-observation-168h",
+      "slug": "market-check-2026-10-14-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-22T00:09:55.130Z",
+      "visibleAt": "2026-10-22T00:09:55.130Z",
+      "title": "Leo 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (192.03 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-14-observation-168h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-15-observation-168h",
+      "slug": "market-check-2026-10-15-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-22T00:09:55.130Z",
+      "visibleAt": "2026-10-22T00:09:55.130Z",
+      "title": "Leo 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (168.04 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-15-observation-168h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-20-observation-24h",
+      "slug": "market-check-2026-10-20-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-22T00:09:55.130Z",
+      "visibleAt": "2026-10-22T00:09:55.130Z",
+      "title": "Scorpio 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (48.02 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-20-observation-24h/",
+      "signs": [
+        "scorpio"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-21-observation-24h",
+      "slug": "market-check-2026-10-21-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-22T00:09:55.130Z",
+      "visibleAt": "2026-10-22T00:09:55.130Z",
+      "title": "Leo 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (24.04 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-21-observation-24h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-22",
+      "slug": "market-check-2026-10-22",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-22T00:09:55.130Z",
+      "visibleAt": "2026-10-22T00:09:55.130Z",
+      "title": "Leo market check · 2026-10-22",
+      "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-22/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-daily-market-brief-2026-10-21",
+      "slug": "daily-market-brief-2026-10-21",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-21T12:00:00.000Z",
+      "visibleAt": "2026-10-21T12:00:00.000Z",
+      "title": "Jupiter in Leo · daily market brief",
+      "summary": "Jupiter in Leo leads the disclosed symbolic index; Leo market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-21/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "occupancy"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-21",
+      "slug": "market-check-2026-10-21",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-21T00:07:45.001Z",
+      "visibleAt": "2026-10-21T00:07:45.001Z",
+      "title": "Leo market check · 2026-10-21",
+      "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-21/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
     },
     {
       "id": "zrx-daily-market-brief-2026-10-20",
@@ -135,7 +605,7 @@
         "daily-sky",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-event-brief-aspect-2026-10-20t06-43-09-751z-venus-square-pluto",
@@ -157,7 +627,7 @@
         "astrology",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-market-check-2026-10-12-observation-168h",
@@ -2637,539 +3107,6 @@
       "title": "Aries market check · 2026-09-26",
       "summary": "Aries price, market cap, liquidity, volume, and collection medians at one archived observation.",
       "url": "/terminal/research/market-check-2026-09-26/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-daily-market-brief-2026-09-25",
-      "slug": "daily-market-brief-2026-09-25",
-      "kind": "daily-market-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-25T12:00:00.000Z",
-      "visibleAt": "2026-09-25T12:00:00.000Z",
-      "title": "Sun in Libra · daily market brief",
-      "summary": "Sun in Libra leads the disclosed symbolic index; Libra market measures are recorded separately.",
-      "url": "/terminal/research/daily-market-brief-2026-09-25/",
-      "signs": [
-        "libra"
-      ],
-      "topics": [
-        "markets",
-        "daily-sky",
-        "occupancy"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-24-observation-24h",
-      "slug": "market-check-2026-09-24-observation-24h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-25T00:09:10.614Z",
-      "visibleAt": "2026-09-25T00:09:10.614Z",
-      "title": "Libra 24-hour observation update",
-      "summary": "24-hour follow-up using the first qualifying archived snapshot (24.02 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-24-observation-24h/",
-      "signs": [
-        "libra"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-25",
-      "slug": "market-check-2026-09-25",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-25T00:09:10.614Z",
-      "visibleAt": "2026-09-25T00:09:10.614Z",
-      "title": "Libra market check · 2026-09-25",
-      "summary": "Libra price, market cap, liquidity, volume, and collection medians at one archived observation.",
-      "url": "/terminal/research/market-check-2026-09-25/",
-      "signs": [
-        "libra"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-daily-market-brief-2026-09-24",
-      "slug": "daily-market-brief-2026-09-24",
-      "kind": "daily-market-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-24T12:00:00.000Z",
-      "visibleAt": "2026-09-24T12:00:00.000Z",
-      "title": "Sun in Libra · daily market brief",
-      "summary": "Sun in Libra leads the disclosed symbolic index; Libra market measures are recorded separately.",
-      "url": "/terminal/research/daily-market-brief-2026-09-24/",
-      "signs": [
-        "libra"
-      ],
-      "topics": [
-        "markets",
-        "daily-sky",
-        "occupancy"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-17-observation-168h",
-      "slug": "market-check-2026-09-17-observation-168h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-24T00:08:01.280Z",
-      "visibleAt": "2026-09-24T00:08:01.280Z",
-      "title": "Aries 7-day observation update",
-      "summary": "7-day follow-up using the first qualifying archived snapshot (168.01 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-17-observation-168h/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-23-observation-24h",
-      "slug": "market-check-2026-09-23-observation-24h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-24T00:08:01.280Z",
-      "visibleAt": "2026-09-24T00:08:01.280Z",
-      "title": "Libra 24-hour observation update",
-      "summary": "24-hour follow-up using the first qualifying archived snapshot (24 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-23-observation-24h/",
-      "signs": [
-        "libra"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-24",
-      "slug": "market-check-2026-09-24",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-24T00:08:01.280Z",
-      "visibleAt": "2026-09-24T00:08:01.280Z",
-      "title": "Libra market check · 2026-09-24",
-      "summary": "Libra price, market cap, liquidity, volume, and collection medians at one archived observation.",
-      "url": "/terminal/research/market-check-2026-09-24/",
-      "signs": [
-        "libra"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-daily-market-brief-2026-09-23",
-      "slug": "daily-market-brief-2026-09-23",
-      "kind": "daily-market-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-23T12:00:00.000Z",
-      "visibleAt": "2026-09-23T12:00:00.000Z",
-      "title": "Sun enters Libra · daily market brief",
-      "summary": "Sun enters Libra leads the disclosed symbolic index; Libra market measures are recorded separately.",
-      "url": "/terminal/research/daily-market-brief-2026-09-23/",
-      "signs": [
-        "libra"
-      ],
-      "topics": [
-        "markets",
-        "daily-sky",
-        "ingress"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-15-observation-168h",
-      "slug": "market-check-2026-09-15-observation-168h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-23T00:07:57.450Z",
-      "visibleAt": "2026-09-23T00:07:57.450Z",
-      "title": "Scorpio 7-day observation update",
-      "summary": "7-day follow-up using the first qualifying archived snapshot (191.99 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-15-observation-168h/",
-      "signs": [
-        "scorpio"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-16-observation-168h",
-      "slug": "market-check-2026-09-16-observation-168h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-23T00:07:57.450Z",
-      "visibleAt": "2026-09-23T00:07:57.450Z",
-      "title": "Aries 7-day observation update",
-      "summary": "7-day follow-up using the first qualifying archived snapshot (168 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-16-observation-168h/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-21-observation-24h",
-      "slug": "market-check-2026-09-21-observation-24h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-23T00:07:57.450Z",
-      "visibleAt": "2026-09-23T00:07:57.450Z",
-      "title": "Leo 24-hour observation update",
-      "summary": "24-hour follow-up using the first qualifying archived snapshot (47.99 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-21-observation-24h/",
-      "signs": [
-        "leo"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-22-observation-24h",
-      "slug": "market-check-2026-09-22-observation-24h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-23T00:07:57.450Z",
-      "visibleAt": "2026-09-23T00:07:57.450Z",
-      "title": "Aries 24-hour observation update",
-      "summary": "24-hour follow-up using the first qualifying archived snapshot (24 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-22-observation-24h/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-23",
-      "slug": "market-check-2026-09-23",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-23T00:07:57.450Z",
-      "visibleAt": "2026-09-23T00:07:57.450Z",
-      "title": "Libra market check · 2026-09-23",
-      "summary": "Libra price, market cap, liquidity, volume, and collection medians at one archived observation.",
-      "url": "/terminal/research/market-check-2026-09-23/",
-      "signs": [
-        "libra"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-event-brief-ingress-2026-09-23t00-05-40-396z-sun-libra",
-      "slug": "event-brief-ingress-2026-09-23t00-05-40-396z-sun-libra",
-      "kind": "event-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-16T12:00:00.000Z",
-      "visibleAt": "2026-09-23T00:05:40.396Z",
-      "title": "Sun enters Libra · event brief",
-      "summary": "Sun enters Libra becomes exact at 2026-09-23T00:05:40.396Z. Its symbolic reading and later market observations remain separate.",
-      "url": "/terminal/research/event-brief-ingress-2026-09-23t00-05-40-396z-sun-libra/",
-      "signs": [
-        "libra"
-      ],
-      "topics": [
-        "calendar",
-        "astrology",
-        "ingress"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-daily-market-brief-2026-09-22",
-      "slug": "daily-market-brief-2026-09-22",
-      "kind": "daily-market-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-22T12:00:00.000Z",
-      "visibleAt": "2026-09-22T12:00:00.000Z",
-      "title": "Saturn in Aries · daily market brief",
-      "summary": "Saturn in Aries leads the disclosed symbolic index; Aries market measures are recorded separately.",
-      "url": "/terminal/research/daily-market-brief-2026-09-22/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "daily-sky",
-        "occupancy"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-22",
-      "slug": "market-check-2026-09-22",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-22T00:07:53.706Z",
-      "visibleAt": "2026-09-22T00:07:53.706Z",
-      "title": "Aries market check · 2026-09-22",
-      "summary": "Aries price, market cap, liquidity, volume, and collection medians at one archived observation.",
-      "url": "/terminal/research/market-check-2026-09-22/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-event-brief-aspect-2026-09-21t22-51-01-669z-mercury-sextile-jupiter",
-      "slug": "event-brief-aspect-2026-09-21t22-51-01-669z-mercury-sextile-jupiter",
-      "kind": "event-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-14T12:00:00.000Z",
-      "visibleAt": "2026-09-21T22:51:01.669Z",
-      "title": "Mercury Sextile Jupiter · event brief",
-      "summary": "Mercury Sextile Jupiter becomes exact at 2026-09-21T22:51:01.669Z. Its symbolic reading and later market observations remain separate.",
-      "url": "/terminal/research/event-brief-aspect-2026-09-21t22-51-01-669z-mercury-sextile-jupiter/",
-      "signs": [
-        "leo",
-        "libra"
-      ],
-      "topics": [
-        "calendar",
-        "astrology",
-        "aspect"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-daily-market-brief-2026-09-21",
-      "slug": "daily-market-brief-2026-09-21",
-      "kind": "daily-market-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-21T12:00:00.000Z",
-      "visibleAt": "2026-09-21T12:00:00.000Z",
-      "title": "Mercury sextile Jupiter · daily market brief",
-      "summary": "Mercury sextile Jupiter leads the disclosed symbolic index; Leo market measures are recorded separately.",
-      "url": "/terminal/research/daily-market-brief-2026-09-21/",
-      "signs": [
-        "libra",
-        "leo"
-      ],
-      "topics": [
-        "markets",
-        "daily-sky",
-        "aspect"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-weekly-outlook-2026-09-21",
-      "slug": "weekly-outlook-2026-09-21",
-      "kind": "weekly-outlook",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-21T12:00:00.000Z",
-      "visibleAt": "2026-09-21T12:00:00.000Z",
-      "title": "Weekly symbolic outlook · 2026-09-21",
-      "summary": "Libra, Aries, Leo hold the three highest disclosed attention ranks for the next seven UTC days.",
-      "url": "/terminal/research/weekly-outlook-2026-09-21/",
-      "signs": [
-        "libra",
-        "aries",
-        "leo"
-      ],
-      "topics": [
-        "markets",
-        "weekly-outlook",
-        "astrology"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-14-observation-168h",
-      "slug": "market-check-2026-09-14-observation-168h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-21T00:14:07.219Z",
-      "visibleAt": "2026-09-21T00:14:07.219Z",
-      "title": "Gemini 7-day observation update",
-      "summary": "7-day follow-up using the first qualifying archived snapshot (168.08 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-14-observation-168h/",
-      "signs": [
-        "gemini"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-20-observation-24h",
-      "slug": "market-check-2026-09-20-observation-24h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-21T00:08:45.187Z",
-      "visibleAt": "2026-09-21T00:08:45.187Z",
-      "title": "Aries 24-hour observation update",
-      "summary": "24-hour follow-up using the first qualifying archived snapshot (24.02 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-20-observation-24h/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-21",
-      "slug": "market-check-2026-09-21",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-21T00:08:45.187Z",
-      "visibleAt": "2026-09-21T00:08:45.187Z",
-      "title": "Leo market check · 2026-09-21",
-      "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
-      "url": "/terminal/research/market-check-2026-09-21/",
-      "signs": [
-        "leo"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-daily-market-brief-2026-09-20",
-      "slug": "daily-market-brief-2026-09-20",
-      "kind": "daily-market-brief",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-20T12:00:00.000Z",
-      "visibleAt": "2026-09-20T12:00:00.000Z",
-      "title": "Saturn in Aries · daily market brief",
-      "summary": "Saturn in Aries leads the disclosed symbolic index; Aries market measures are recorded separately.",
-      "url": "/terminal/research/daily-market-brief-2026-09-20/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "daily-sky",
-        "occupancy"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-13-observation-168h",
-      "slug": "market-check-2026-09-13-observation-168h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-20T00:12:33.973Z",
-      "visibleAt": "2026-09-20T00:12:33.973Z",
-      "title": "Aries 7-day observation update",
-      "summary": "7-day follow-up using the first qualifying archived snapshot (168.06 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-13-observation-168h/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-19-observation-24h",
-      "slug": "market-check-2026-09-19-observation-24h",
-      "kind": "observation-update",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-20T00:12:33.973Z",
-      "visibleAt": "2026-09-20T00:12:33.973Z",
-      "title": "Aries 24-hour observation update",
-      "summary": "24-hour follow-up using the first qualifying archived snapshot (24.08 actual hours elapsed).",
-      "url": "/terminal/research/market-check-2026-09-19-observation-24h/",
-      "signs": [
-        "aries"
-      ],
-      "topics": [
-        "markets",
-        "observation-update"
-      ],
-      "status": "published"
-    },
-    {
-      "id": "zrx-market-check-2026-09-20",
-      "slug": "market-check-2026-09-20",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-09-20T00:07:25.502Z",
-      "visibleAt": "2026-09-20T00:07:25.502Z",
-      "title": "Aries market check · 2026-09-20",
-      "summary": "Aries price, market cap, liquidity, volume, and collection medians at one archived observation.",
-      "url": "/terminal/research/market-check-2026-09-20/",
       "signs": [
         "aries"
       ],

@@ -187,6 +187,23 @@ for (const required of ['/', '/birth-chart/', '/registry/collection/', '/aries/'
   if (!(required in budgets)) fail(`budgets.json: missing ${required}`);
 }
 
+// Review-edition routes are budgeted on every build that emits them; the
+// publication drive tests decide whether they should exist at all.
+const optionalRoutes = new Set();
+try {
+  const optional = JSON.parse(await readFile(resolve(repo, 'budgets.natal-aspects.json'), 'utf8'));
+  for (const [route, value] of Object.entries(optional)) {
+    if (!route.startsWith('/') || typeof value !== 'number' || value < 0 || !Number.isFinite(value)) {
+      fail(`budgets.natal-aspects.json: ${route} must be a route with a finite, non-negative number`);
+      continue;
+    }
+    optionalRoutes.add(route);
+    routeBudgets.push([route, value]);
+  }
+} catch (error) {
+  if (error.code !== 'ENOENT') fail(`budgets.natal-aspects.json: ${error.message}`);
+}
+
 let chunkFiles;
 try {
   chunkFiles = await walk(chunkDir, (path) => extname(path) === '.js');
@@ -229,6 +246,7 @@ for (const [route, limit] of routeBudgets) {
   try {
     html = await readFile(routeHtmlPath(route), 'utf8');
   } catch {
+    if (optionalRoutes.has(route)) continue;
     fail(`${route}: built HTML not found`);
     routeRows.push({ route, limit, gzip: 0, closure: new Set() });
     continue;
