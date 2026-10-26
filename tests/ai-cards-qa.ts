@@ -171,6 +171,9 @@ try {
         assert.ok(art.faded, `${card} ${width} ${theme}: hero art fades into the card on every side, with no frame`);
         if (!['horoscope-picker'].includes(card)) assert.ok(art.frames > 0, `${card} ${width} ${theme}: the card has its hero art`);
         if (art.frames > 0) assert.ok(art.minPixelsPerCssPixel >= 1.3, `${card} ${width} ${theme}: hero art has enough source pixels`);
+        if (['chart-twins', 'milestones', 'sky-calendar'].includes(card)) {
+          assert.ok(art.minPixelsPerCssPixel >= 2, `${card} ${width} ${theme}: the restored original supplies at least two pixels per display pixel`);
+        }
         assert.equal(reached.length, focusable, `${card} ${width} ${theme}: Tab reaches all ${focusable} controls (reached ${reached.length})`);
         assert.equal(unringed, 0, `${card} ${width} ${theme}: every focused control shows a ring`);
         assert.equal(motion.animations + motion.transitions, 0, `${card} ${width} ${theme}: no motion under reduced motion`);

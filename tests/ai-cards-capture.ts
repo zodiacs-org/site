@@ -85,10 +85,15 @@ try {
         const context = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: 2, colorScheme: theme, timezoneId: 'Asia/Bangkok', reducedMotion: 'reduce' });
         await context.clock.setFixedTime(new Date(`${window.generatedFor}T05:00:00Z`));
         const page = await context.newPage();
+        await page.route('https://zodiacs.org/assets/**', async (route) => {
+          const pathname = new URL(route.request().url()).pathname;
+          const body = await readFile(new URL(`../public${pathname}`, import.meta.url));
+          await route.fulfill({ body, contentType: pathname.endsWith('.avif') ? 'image/avif' : 'image/webp' });
+        });
         const errors: string[] = [];
         page.on('pageerror', (error) => errors.push(error.message));
-        let network = 0;
-        page.on('request', (request) => { if (!request.url().startsWith('data:')) network++; });
+        const network: string[] = [];
+        page.on('request', (request) => { if (!request.url().startsWith('data:')) network.push(request.url()); });
         await page.setContent(html);
         await deliver(page, value, theme);
         await page.locator('h1').first().waitFor();
@@ -107,7 +112,7 @@ try {
         const file = `${card}-${width}-${theme}.png`;
         await page.screenshot({ path: resolve(out, file), fullPage: true });
         assert.deepEqual(errors, [], `${file}: no page errors`);
-        assert.equal(network, 0, `${file}: no network requests`);
+        assert.ok(network.every((url) => url.startsWith('https://zodiacs.org/assets/')), `${file}: only owned static art is requested`);
         captures.push({ file, card, width, theme, height, overflow });
         await context.close();
       }

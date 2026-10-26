@@ -5,6 +5,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 const ART_PIECES = ['wedding-hero', 'sky-calendar-hero', 'milestones-hero', 'twins-hero'];
+const HIRES_PIECES = new Set(['sky-calendar-hero', 'milestones-hero', 'twins-hero']);
 
 export async function buildOccasionsPanel(check = false) {
   const inline = async (path) => `data:image/${path.endsWith('.avif') ? 'avif' : 'webp'};base64,` + (await readFile(new URL(path, root))).toString('base64');
@@ -18,8 +19,8 @@ export async function buildOccasionsPanel(check = false) {
       [`${slug}-light`, `https://zodiacs.org/assets/card-art/${slug}-light-720.webp`],
     ]),
     ...ART_PIECES.flatMap((key) => [
-      [key, `https://zodiacs.org/assets/card-art/${key}-720.webp`],
-      [`${key}-light`, `https://zodiacs.org/assets/card-art/${key}-light-720.webp`],
+      [key, `https://zodiacs.org/assets/card-art/${key}-${HIRES_PIECES.has(key) ? 1200 : 720}.webp`],
+      [`${key}-light`, `https://zodiacs.org/assets/card-art/${key}-light-${HIRES_PIECES.has(key) ? 1200 : 720}.webp`],
     ]),
   ]);
   const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/occasions-panel/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { OCCASIONS_ICONS: JSON.stringify(icons), CARD_ART: JSON.stringify(art), 'process.env.NODE_ENV': '"production"' } });

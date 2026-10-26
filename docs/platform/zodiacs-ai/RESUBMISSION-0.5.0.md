@@ -6,14 +6,16 @@ the release work done in #758.
 
 ## Pending, 26 October: sharper chat artwork
 
-The owner noticed that the pictures in the wedding and horoscope cards look
-blurry. The current panels embed 400px and 480px, quality 36 copies while the
-art can span 540 CSS pixels. A candidate change uses the larger public
-Zodiacs artwork instead, with no names, dates or scores in the image URL. It
-keeps the panel HTML smaller and permits only `https://zodiacs.org` as a static
-art origin. The candidate uses `horoscopes-v5.html` and
-`occasions-v6.html`; v4 and v5 respectively remain readable. The local card
-and browser checks pass, but this is not live or scanned yet. Verify it in a
+The owner noticed that the pictures in the chat cards look blurry. The
+production panels embed 400px and 480px, quality 36 copies while the art can
+span 540 CSS pixels. A candidate change uses larger public Zodiacs artwork
+for every illustrated card, with no names, dates or scores in the image URL.
+It also rebuilds the sky calendar, milestones and chart twins art and their
+share pictures from the selected full-resolution originals. The panel HTML
+stays smaller and permits only `https://zodiacs.org` as a static art origin.
+The candidate uses `horoscopes-v5.html` and `occasions-v7.html`; earlier
+addresses remain readable. The local card and browser checks pass, but this
+is not live or scanned yet. Verify it in a
 private host connection before requesting a separate production approval and
 another separately approved draft rescan. The 20 October address record below
 remains the verified production state until that happens.
