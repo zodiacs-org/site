@@ -1270,12 +1270,10 @@ const registryResearchPublication = JSON.parse(await readFile(
   resolve(repo, 'src/data/registry-research/publication.json'),
   'utf8',
 ));
-const indexedRegistryResearchPaths = new Set([
-  '/terminal/research/',
-  ...registryResearchPublication.items
-    .filter((item) => item.status === 'published' && item.visibleAt <= registryResearchPublication.generatedAt)
-    .map((item) => item.url),
-]);
+// Only the research archive is indexed. Its notes, published or scheduled, are
+// built and linked but `noindex, follow` (owner decision, 2026-10-26).
+const indexedRegistryResearchPaths = new Set(['/terminal/research/']);
+const registryResearchNotePaths = new Set(registryResearchPublication.items.map((item) => item.url));
 const developerGuidePaths = new Set([
   '/developers/docs/',
   ...JSON.parse(await readFile(resolve(repo, 'src/data/developer-guides.json'), 'utf8'))
@@ -1309,6 +1307,8 @@ const sitemapPolicy = {
   // +3 for the English-only occasion cards (/occasions/, milestones, baby shower).
   // +1 for /developers/playground/, the compute API playground.
   // +1 for /developers/conventions/, the conventions registry.
+  // Terminal Research adds its archive alone (indexedRegistryResearchPaths): its
+  // published notes (227 that day) left the sitemap as noindex pages on 2026-10-26.
   total: 1424 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
@@ -1382,6 +1382,24 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/u.test(path))),
   indexedRegistryResearchPaths,
 );
+for (const notePath of registryResearchNotePaths) {
+  const file = resolve(root, notePath.slice(1), 'index.html');
+  if (!(await exists(file))) {
+    fail(`Terminal Research: note is not built — ${notePath}`);
+    continue;
+  }
+  const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
+  const robots = [...html.matchAll(/<meta\b[^>]*>/gi)]
+    .map((match) => match[0])
+    .find((tag) => attr(tag, 'name')?.toLowerCase() === 'robots');
+  const directives = attr(robots ?? '', 'content')?.toLowerCase().split(/\s*,\s*/) ?? [];
+  if (!directives.includes('noindex') || !directives.includes('follow')) {
+    fail(`Terminal Research: note must be "noindex, follow" — ${notePath}`);
+  }
+  if (sitemapLocs.has(notePath) || sitemapAlternatePaths.has(notePath)) {
+    fail(`Terminal Research: noindex note leaked into sitemap discovery — ${notePath}`);
+  }
+}
 
 const packetFNoindexCounts = { localizedBirthdays: 0, russianSignGuides: 0, people: 0 };
 for (const file of files) {

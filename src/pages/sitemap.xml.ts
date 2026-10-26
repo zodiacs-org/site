@@ -669,13 +669,8 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       priority: 0.64,
       lastmod: event.lastModified,
     })),
-    ...registryResearchPublication.items
-      .filter((item) => item.status === 'published' && item.visibleAt <= registryResearchPublication.generatedAt)
-      .map((item) => ({
-        loc: item.url,
-        priority: 0.56,
-        lastmod: item.publishedAt.slice(0, 10),
-      })),
+    // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
+    // /terminal/research/ above, is listed.
     ...(PEOPLE_DIRECTORY_INDEXABLE ? [{
       loc: '/people/',
       priority: 0.7,

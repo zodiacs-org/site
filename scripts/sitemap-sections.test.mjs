@@ -1,7 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import eventsPublication from '../src/data/events-publication.json';
-import registryResearchPublication from '../src/data/registry-research/publication.json';
 import { BIRTHDAY_PATHS, CHINESE_ZODIAC_PATHS } from '../src/lib/programmatic-paths';
 import {
   SITEMAP_SECTIONS,
@@ -15,7 +14,8 @@ const LOCALES = ['', '/es', '/pt', '/fr', '/it', '/ru'];
 const SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 
 // The shapes sitemap.xml lists: hubs and tools, the generated families from
-// the same data the endpoint reads, the wing, and their locale copies.
+// the same data the endpoint reads, the wing, and their locale copies. The
+// Terminal Research notes are noindex, so the terminal section holds the archive alone.
 const FIXTURE = [...new Set([
   ...LOCALES.flatMap((locale) => [
     '/', '/birth-chart/', '/birth-chart/someone-else/', '/compatibility/', '/compatibility/invite/', '/moon-sign/',
@@ -31,7 +31,6 @@ const FIXTURE = [...new Set([
   ].map((path) => `${locale}${path}`)),
   '/terminal/', '/terminal/research/', '/astrofolio/', '/registry/', '/registry/aries/', '/registry/technical/',
   '/thesis/', '/archive/', '/sdk/', '/fomo/', '/disclosure/', '/almanac/', '/almanac/2026-10/', '/404.html',
-  ...registryResearchPublication.items.map((item) => item.url),
 ])].map((loc, index) => ({ loc, priority: index }));
 
 function expectExactPartition(entries) {

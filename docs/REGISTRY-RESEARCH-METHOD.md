@@ -29,4 +29,6 @@ After the pilot, only explicitly allowlisted deterministic template IDs can publ
 - JSON Feed: `/feeds/market-research.json`
 - Archive: `/terminal/research/`
 
+Only the archive is offered for indexing. Each item page, `/terminal/research/{slug}/`, stays live and linked from the archive and the feeds but carries `noindex, follow` and is left out of `/sitemap.xml` and the section sitemaps (owner decision, 26 October 2026). `scripts/check-dist.mjs` fails a build in which an item page is indexable or listed.
+
 The rolling window contains the previous 30 UTC calendar days plus approved event briefs through the end of the next seven UTC calendar days. `endsBefore` is the exclusive boundary at 00:00 UTC on the following day. Scheduled items carry `visibleAt`; standard RSS/JSON feeds exclude them until their publication build is eligible.
