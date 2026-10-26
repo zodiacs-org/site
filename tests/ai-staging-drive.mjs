@@ -10,6 +10,27 @@ import { OCCASIONS_HTML } from '../integrations/generated/occasions.mjs';
 const packageInfo = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const expectedEngine = packageInfo.dependencies['@zodiacs/engine'].match(/zodiacs-engine-(.+)\.tgz$/)[1];
 
+// This acceptance makes more than thirty requests against one preview. Space
+// them below the live per-address thirty-per-minute Firewall rule and the
+// shared forty-per-minute database quota instead of weakening either limit.
+const originalFetch = globalThis.fetch;
+let lastFetchAt = 0;
+let requestNumber = 0;
+const pacedFetch = async (...args) => {
+  const waitMs = Math.max(0, 2600 - (Date.now() - lastFetchAt));
+  if (waitMs) await new Promise(resolve => setTimeout(resolve, waitMs));
+  lastFetchAt = Date.now();
+  const number = ++requestNumber;
+  const response = await originalFetch(...args);
+  if (response.status >= 500 || response.status === 429) {
+    const request = args[1]?.body;
+    let operation = 'direct HTTP';
+    try { operation = JSON.parse(request).method ?? operation; } catch { /* no JSON-RPC body */ }
+    console.error(`Staging request ${number} ${operation}: HTTP ${response.status}`);
+  }
+  return response;
+};
+
 const url = new URL(process.env.ZODIACS_STAGING_MCP_URL);
 assert.equal(url.protocol, 'https:');
 assert.ok(url.hostname.endsWith('.vercel.app'));
@@ -26,7 +47,7 @@ const headers = { Cookie: cookies };
 const client = new Client({ name: 'zodiacs-staging-review', version: '1' });
 const evidence = { schema: 'zodiacs.ai-staging-acceptance.v2', capturedAt: new Date().toISOString(), url: url.href, transport: `official MCP client ${packageInfo.devDependencies['@modelcontextprotocol/client']}`, expectedEngine, checks: [], calls: [] };
 const record = (name, detail = {}) => evidence.checks.push({ name, passed: true, ...detail });
-const request = async (path, options = {}) => fetch(new URL(path, url), { ...options, headers: { ...headers, ...options.headers }, redirect: 'manual' });
+const request = async (path, options = {}) => pacedFetch(new URL(path, url), { ...options, headers: { ...headers, ...options.headers }, redirect: 'manual' });
 try {
   for (const path of ['/mcp/health', '/mcp/health/']) {
     const response = await request(path);
@@ -35,7 +56,7 @@ try {
     assert.equal((await response.json()).ready, true);
     record(`health ${path}`, { status: response.status });
   }
-  await client.connect(new StreamableHTTPClientTransport(url, { requestInit: { headers } }));
+  await client.connect(new StreamableHTTPClientTransport(url, { fetch: pacedFetch, requestInit: { headers } }));
   const tools = (await client.listTools()).tools;
   // 0.5.0 acceptance runs with ZODIACS_OCCASIONS_ENABLED=1 on the staging deployment.
   assert.equal(tools.length, 13);
