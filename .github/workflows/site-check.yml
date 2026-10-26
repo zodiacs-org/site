@@ -106,6 +106,9 @@ jobs:
           npx vitest run scripts/engine-reference.test.mjs
           node tests/engine-reference-drive.mjs
 
+      - name: Natal aspect pairs released in normal builds
+        run: node tests/natal-aspects-publication-drive.mjs
+
       - name: Typecheck
         run: npm run check
 
@@ -323,6 +326,9 @@ jobs:
       # offline.
       - name: Verify MCP adapter bundle, archive and manifest
         run: npm run mcp:pack:check
+
+      - name: Verify natal aspect example drift
+        run: node scripts/build-natal-aspect-examples.mjs --check
 
       # The engine's own time basis, which the package does not export, bundled
       # from the installed dist/ for the calendar function's server adapter and
@@ -740,6 +746,57 @@ jobs:
 
       - name: Browser acceptance drive
         run: npm run test:phase3:pwa
+
+  natal-aspects-reference:
+    # The released natal planet-pair references: the three
+    # /learn/aspects/{pair}/ pages from a normal build, under the normal
+    # postbuild gates (check-dist, report-bundles --fail with
+    # budgets.natal-aspects.json).
+    name: Natal aspect pairs
+    runs-on: ubuntu-latest
+    env:
+      LIGHTHOUSE_ROUTES: natal-sun-moon,natal-moon-venus,natal-venus-mars
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install pinned Chromium
+        run: npx playwright-core install chromium
+
+      - name: Verify calculation evidence
+        run: node scripts/build-natal-aspect-examples.mjs --check
+
+      - name: Build released pages with unchanged gates
+        run: npm run build
+
+      - name: Typecheck released pages
+        run: npm run check
+
+      - name: Browser layout, keyboard and register
+        run: node tests/natal-aspects-reference-drive.mjs
+
+      - name: Mobile performance, accessibility and SEO
+        run: npm run test:lighthouse
+
+      - name: Retain natal page evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: natal-aspects-reference-${{ github.run_id }}
+          path: |
+            tests/visual/artifacts/natal-aspects/
+            tests/visual/artifacts/lighthouse/
+          if-no-files-found: ignore
+          retention-days: 30
 
   aura-drive:
     # The flag-on browser acceptance suite for Registry Aura: docket honesty,

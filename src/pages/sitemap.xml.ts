@@ -4,6 +4,8 @@
  * rather than @astrojs/sitemap (which only sees Astro routes and would
  * move the sitemap URL robots.txt points at).
  */
+import { NATAL_ASPECT_PAIRS, natalAspectsPublished } from '../lib/natal-aspect-pairs';
+import natalAspectsPublication from '../data/natal-aspects-publication.json';
 import { HOROSCOPE_TEMPLATE_LASTMOD, laterDate } from '../lib/horoscope-template-revision.mjs';
 import type { APIRoute } from 'astro';
 import { LIFE_PATH_NUMBERS, LIFE_PATH_PAGES } from '../data/numerology-pages';
@@ -512,6 +514,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ].map((loc) => [loc, '2026-10-20'] as const),
   // Contextual discovery links added to the tools directory.
   ['/tools/', '2026-10-21'] as const,
+  // Tap-to-explain on the birth chart page's sample wheel.
+  ['/birth-chart/', '2026-10-24'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -719,6 +723,13 @@ export const GET: APIRoute = async () => {
             priority: 0.65,
             lastmod: l.data.updated.toISOString().slice(0, 10),
           }]),
+    // Natal planet pairs enter only with a complete publication record; a
+    // local review build (PUBLIC_NATAL_ASPECTS_PREVIEW=1) stays out.
+    ...(natalAspectsPublished ? NATAL_ASPECT_PAIRS.map((pair) => ({
+      loc: `/learn/aspects/${pair}/`,
+      priority: 0.65,
+      lastmod: natalAspectsPublication.updated,
+    })) : []),
     ...birthdays.map((b) => ({
       loc: `/birthday/${b.id}/`,
       priority: 0.65,
@@ -756,6 +767,20 @@ export const GET: APIRoute = async () => {
   for (const pair of pairs) {
     const url = urls.find(({ loc }) => loc === `/compatibility/${pair.id}/`);
     if (url) url.lastmod = laterDate(pair.data.updated.toISOString().slice(0, 10), '2026-10-20');
+  }
+  // The natal planet-pair release links each geometry guide to the same
+  // angle on the three pair pages.
+  if (natalAspectsPublished) {
+    for (const type of ['conjunction', 'sextile', 'square', 'trine', 'opposition']) {
+      const url = urls.find(({ loc }) => loc === `/learn/aspects/${type}/`);
+      if (url) url.lastmod = laterDate(url.lastmod, natalAspectsPublication.updated);
+    }
+  }
+  // Phones get the earlier hero framing back on the English and translated
+  // homes (the Russian home keeps its own poster).
+  for (const loc of ['/', '/es/', '/fr/', '/it/', '/pt/']) {
+    const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
+    if (url) url.lastmod = laterDate(url.lastmod, '2026-10-24');
   }
   const allUrls = [
     ...urls,

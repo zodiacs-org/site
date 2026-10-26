@@ -255,4 +255,43 @@ const pairsLocalized = defineCollection({
   })),
 });
 
-export const collections = { guides, pairs, pairsLocalized, learn, learnLocalized, horoscopes, birthdays, almanac };
+/**
+ * Natal planet-pair references: one family page per pair under
+ * /learn/aspects/{pair}/, five geometry anchors each. A closed three-pair
+ * allowlist beside the five geometry guides, built only when
+ * src/data/natal-aspects-publication.json is complete or the
+ * PUBLIC_NATAL_ASPECTS_PREVIEW review flag is set
+ * (scripts/natal-aspects-policy.mjs).
+ */
+const natalAspectPairs = defineCollection({
+  loader: glob({ pattern: '*.mdx', base: './src/content/natal-aspect-pairs' }),
+  schema: z.object({
+    kind: z.literal('natal-aspect-pair'),
+    context: z.literal('natal'),
+    pair: z.enum(['sun-moon', 'moon-venus', 'venus-mars']),
+    bodies: z.union([
+      z.tuple([z.literal('Sun'), z.literal('Moon')]),
+      z.tuple([z.literal('Moon'), z.literal('Venus')]),
+      z.tuple([z.literal('Venus'), z.literal('Mars')]),
+    ]),
+    title: z.string().max(70),
+    description: z.string().max(170),
+    geometries: z.tuple([z.literal('conjunction'), z.literal('sextile'), z.literal('square'), z.literal('trine'), z.literal('opposition')]),
+    examples: z.array(z.string()).length(2),
+    published: z.coerce.date(),
+    updated: z.coerce.date(),
+    reviewer: z.string().nullable(),
+    reviewedAt: z.coerce.date().nullable(),
+    sources: sourcesSchema.refine((sources) => sources.length >= 2, 'Natal pair references require sources.'),
+    faq: faqSchema.length(4),
+    draft: z.boolean(),
+  }).superRefine((data, ctx) => {
+    if (data.bodies.map((body) => body.toLowerCase()).join('-') !== data.pair) ctx.addIssue({ code: 'custom', message: 'Pair must use canonical body order.' });
+    if (!data.draft && (!data.reviewer || !data.reviewedAt)) ctx.addIssue({ code: 'custom', message: 'Publication requires named editorial review.' });
+    if (data.examples.some((id) => !id.startsWith(`${data.pair}-`))) ctx.addIssue({ code: 'custom', message: 'Examples must belong to this pair.' });
+    if (new Set(data.examples).size !== 2) ctx.addIssue({ code: 'custom', message: 'Two distinct examples are required.' });
+    if (data.updated < data.published) ctx.addIssue({ code: 'custom', message: 'Updated date cannot precede publication date.' });
+  }),
+});
+
+export const collections = { guides, pairs, pairsLocalized, learn, learnLocalized, horoscopes, birthdays, almanac, natalAspectPairs };
