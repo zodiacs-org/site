@@ -11,11 +11,9 @@
  * Writes:
  *
  *   public/assets/card-art/panel/<key>-400.avif and -480.avif, and
- *     <key>-light-400.avif and -light-480.avif, inlined into the
- *     self-contained panels by build-occasions-panel.mjs and
- *     build-horoscope-panel.mjs (they make no image requests). AVIF, because
- *     both twins of every piece must fit each panel's 600 KB budget: at the
- *     same sizes it is about half the bytes of WebP for the same look;
+ *     <key>-light-400.avif and -light-480.avif, retained from the earlier
+ *     inline panel design. Current chat panels use the larger published
+ *     masters, so these variants remain for older build references;
  *   public/assets/card-art/share/<sign>-1200.jpg and <piece>-720.jpg, read
  *     by the share image renderer (src/server/result-preview.ts), which
  *     cannot decode WebP. The share images run the art across the whole
@@ -40,7 +38,7 @@ import { join } from 'node:path';
 const root = new URL('../', import.meta.url);
 export const CARD_ART_SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 export const CARD_ART_PIECES = ['wedding-hero', 'sky-calendar-hero', 'milestones-hero', 'twins-hero'];
-/** One AVIF quality for every panel variant, both twins, chosen to keep both panels under budget. */
+/** One AVIF quality for the retained small panel variants, both twins. */
 const PANEL_QUALITY = 36;
 
 const sources = [

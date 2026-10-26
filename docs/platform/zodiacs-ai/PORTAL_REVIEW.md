@@ -1,5 +1,17 @@
 # OpenAI portal review record
 
+## Local artwork check, pending release, 26 October 2026
+
+Dias reported blurry pictures in the wedding and horoscope chat cards. The
+published panels use 400px or 480px, quality 36 artwork at up to 540 CSS
+pixels. A candidate on `codex/card-art-sharpness` loads the larger immutable
+art from zodiacs.org and assigns fresh panel addresses, occasions v6 and
+horoscopes v5. Local browser checks passed for 52 card renders, including
+desktop, phone width, light and dark themes; the occasion browser drive also
+passed. This has not been deployed, rescanned or entered in the OpenAI draft.
+The draft remains unsubmitted and unpublished. Do not treat the candidate as
+live portal evidence.
+
 ## Panel address refresh live, 20 October 2026
 
 The source now advertises new addresses for all four redesigned chat panels:

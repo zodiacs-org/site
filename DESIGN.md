@@ -310,19 +310,18 @@ Artwork:
   centred, at 3:2 (a pair as two 5:6 panels); at 530px and below it runs to
   the card's edges at 4:3 (a pair as two 4:5 panels). It fades about a
   sixth on the sides and top and a third at the foot, where the discs sit.
-- Size budgets: the panels make no image requests, so the art is inlined,
-  both twins of every piece. `node scripts/build-card-art.mjs` makes 400px
-  and 480px AVIF variants of each twin (quality 36; AVIF because both twins
-  must fit and at the same size it is about half the bytes of WebP) and
-  JPEGs of the dark twins for the share images, from the largest sources
-  there are (the sign panels' 1200px originals, the pieces' 720px masters)
-  with the cards' dimming baked in (the image renderer cannot read WebP or
-  AVIF). The occasions panel inlines the sign panels at
-  400px and its own four pieces at 480px; the horoscope panel inlines the
-  sign panels at 480px. Each panel stays under its 600 KB build budget
-  (occasions about 572 KB, horoscope about 534 KB). Every image has its
-  width and height set and decodes asynchronously. A host browser without
-  AVIF shows the card without its picture, never a broken frame.
+- Size budgets: following the owner's 26 October sharpness concern, the panels
+  load only the visible art from immutable, owned `zodiacs.org/assets/`
+  URLs. Dark sign panels use the 1200px AVIF, and the daylight twins and
+  four card pieces use their 720px WebP masters. The art URL carries only
+  the static piece name, never a person's name, birth details or score.
+  The host resource policy allows that one static asset origin; all fonts,
+  sign discs, scripts and styles remain inline. This keeps the occasions
+  and horoscope panel HTML near 338 KB and 324 KB respectively, below their
+  600 KB build budget. Every image has its width and height set and decodes
+  asynchronously. `node scripts/build-card-art.mjs` still makes the older
+  400px and 480px AVIF variants and the dark JPEGs used by share images;
+  the current chat panels use the larger published masters.
 - Adding art: generate the dark piece at 1536x1024 (3:2) in the style
   above, then its daylight twin from it with the same subject, framing and
   camera, edges calm and low in detail so they fade cleanly. Name them
