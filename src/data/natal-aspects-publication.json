@@ -1,8 +1,8 @@
 {
-  "released": false,
-  "updated": "2026-10-24",
-  "reviewer": null,
-  "reviewedAt": null,
-  "indexingEvidence": null,
-  "holdReason": "Named astrology and source review, and post-release crawl evidence for the synastry references, are pending."
+  "released": true,
+  "updated": "2026-10-25",
+  "reviewer": "Dias Malayev",
+  "reviewedAt": "2026-10-25",
+  "indexingEvidence": "docs/natal-aspects/indexing-evidence.md",
+  "holdReason": null
 }

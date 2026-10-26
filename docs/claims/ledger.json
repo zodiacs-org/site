@@ -1454,7 +1454,6 @@
     {"path":"src/content/learn/rising/taurus.mdx","text":"No hurry, but the calculator below can settle it whenever you like: birth date, time, and place in, ascendant out, with every step computed on your device (how we compute).","claim":"priv.on-device"},
     {"path":"src/content/learn/rising/virgo.mdx","text":"The exact answer takes about a minute: the calculator below asks for birth date, time, and place, and every step of the chart is computed on your device (how we compute).","claim":"priv.on-device"},
     {"path":"src/content/natal-aspect-pairs/moon-venus.mdx","text":"Astronomy Engine, the ephemeris library behind the site's chart calculations","claim":"acc.engine-source"},
-    {"path":"src/content/natal-aspect-pairs/moon-venus.mdx","text":"Either reading can be tested against experience.","exempt":"interpretive"},
     {"path":"src/content/natal-aspect-pairs/moon-venus.mdx","text":"NASA Science: Venus (an inner planet that stays near the Sun in the sky)","exempt":"navigation"},
     {"path":"src/content/natal-aspect-pairs/sun-moon.mdx","text":"Astronomy Engine, the ephemeris library behind the site's chart calculations","claim":"acc.engine-source"},
     {"path":"src/content/natal-aspect-pairs/sun-moon.mdx","text":"NASA Science: Moon phases (the Sun-Moon angle and the 29.5 day cycle)","exempt":"navigation"},

@@ -1,5 +1,6 @@
-// Review build (PUBLIC_NATAL_ASPECTS_PREVIEW=1): the three natal pair pages
-// in a browser. Structure, register, noindex and sitemap exclusion, static
+// Released (or PUBLIC_NATAL_ASPECTS_PREVIEW=1 review) build: the three natal
+// pair pages in a browser. Structure, register, indexing state that follows
+// the publication record (noindex and sitemap exclusion only in review), static
 // delivery, the accessible diagram, 320px and 200% text, keyboard access and
 // zero layout shift.
 import assert from 'node:assert/strict';
@@ -9,7 +10,7 @@ import { withPreview } from './visual/preview-server.mjs';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { NATAL_ASPECT_PAIRS, natalAspectsEnabled, natalAspectsPublished } from '../scripts/natal-aspects-policy.mjs';
 
-assert(natalAspectsEnabled, 'Build with PUBLIC_NATAL_ASPECTS_PREVIEW=1 first.');
+assert(natalAspectsEnabled, 'Build the released pages (or PUBLIC_NATAL_ASPECTS_PREVIEW=1) first.');
 const GEOMETRIES = ['conjunction', 'sextile', 'square', 'trine', 'opposition'];
 const VERBS = { conjunction: 'conjunct', sextile: 'sextile', square: 'square', trine: 'trine', opposition: 'opposite' };
 const root = 'tests/visual/artifacts/natal-aspects';

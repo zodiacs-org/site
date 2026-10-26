@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import {
   NATAL_ASPECT_PAIRS,
   NATAL_PAIR_ENTRYPOINT,
@@ -32,10 +32,26 @@ describe('natal aspect publication policy', () => {
     expect(natalAspectsState({ ...reviewed, released: false }, { PUBLIC_NATAL_ASPECTS_PREVIEW: 'true' }).enabled).toBe(false);
   });
 
-  it('keeps the committed record on hold, so normal builds emit nothing', () => {
+  it('releases the committed record with its named review and indexing evidence', () => {
     const record = JSON.parse(readFileSync('src/data/natal-aspects-publication.json', 'utf8'));
-    expect(natalAspectsState(record, {})).toEqual({ published: false, preview: false, enabled: false });
-    expect(record.holdReason).toBeTruthy();
+    expect(natalAspectsState(record, {})).toEqual({ published: true, preview: false, enabled: true });
+    expect(record).toMatchObject({ reviewer: 'Dias Malayev', reviewedAt: '2026-10-25', updated: '2026-10-25' });
+    expect(record.holdReason).toBeNull();
+    expect(existsSync(record.indexingEvidence)).toBe(true);
+  });
+
+  it('moves every article to draft: false, so the released build passes the draft guard', () => {
+    for (const pair of NATAL_ASPECT_PAIRS) {
+      const source = readFileSync(`src/content/natal-aspect-pairs/${pair}.mdx`, 'utf8');
+      expect(source).toMatch(/^draft: false$/m);
+    }
+  });
+
+  it('wires both discovery hooks behind the publication state', () => {
+    const hub = readFileSync('src/pages/learn/aspects/index.astro', 'utf8');
+    expect(hub).toContain('{natalAspectsEnabled && <NatalAspectsHubSection />}');
+    const guide = readFileSync('src/pages/learn/aspects/[slug].astro', 'utf8');
+    expect(guide).toContain('{natalAspectsEnabled && <NatalPairLinks type={type} />}');
   });
 
   it('injects exactly three static pair routes, and none while held', () => {
