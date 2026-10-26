@@ -1,5 +1,26 @@
 # OpenAI portal review record
 
+## ChatGPT release retest, 26 October 2026
+
+The private Zodiacs Release Demo connection still failed in fresh Chat-mode
+conversations. Selecting it and asking for a single-word reply without any
+tool call produced a blank reply. The same prompt returned the requested word
+without a plugin. Two other private Zodiacs test connections on separate
+servers also produced blank replies without calling a tool.
+
+Fresh wedding and Taurus horoscope prompts called the right tools but showed
+"Couldn't display Zodiacs Release Demo" on the first card load and "This
+response couldn't load" for the surrounding reply. **Try again** loaded each
+card with the expected reading; reopening the wedding conversation reproduced
+the first-load failure. Direct production tool calls returned valid wedding
+and horoscope results, and `npm run ai:check` passed on the prepared 0.5.1
+branch after merging the latest `main` locally.
+
+The existing OpenAI draft still shows version 0.5.0, its outdated About text,
+**Not submitted** and **Not published**. No package was uploaded, no rescan or
+attestation was made, and no submission was sent. The first-load problem still
+needs review before release.
+
 ## About correction prepared, 20 October 2026
 
 Dias approved replacing only the draft's About text and seeing its preview.
