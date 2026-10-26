@@ -136,6 +136,21 @@ describe('Terminal public-route split', () => {
     expect(sitemap).not.toContain("'/registry/research/'");
   });
 
+  it('keeps every research note noindex and out of the sitemaps while the archive stays indexed', async () => {
+    const [index, note, sitemap] = await Promise.all([
+      read('src/pages/terminal/research/index.astro'),
+      read('src/pages/terminal/research/[slug].astro'),
+      read('src/pages/sitemap.xml.ts'),
+    ]);
+    // Unconditional: Base renders it as "noindex, follow", so the notes stay linked and crawlable.
+    expect(note).toMatch(/<Base[\s\S]*?\n {2}noindex\n[\s\S]*?>/u);
+    expect(note).not.toContain('noindex={');
+    expect(note).not.toContain('nofollow');
+    expect(index).not.toMatch(/\bnoindex\b/u);
+    expect(sitemap).toContain("{ loc: '/terminal/research/', priority: 0.68 }");
+    expect(sitemap).not.toMatch(/registryResearchPublication\.items/u);
+  });
+
   it('keeps research breadcrumbs inside the Terminal identity', async () => {
     const [index, article] = await Promise.all([
       read('src/pages/terminal/research/index.astro'),

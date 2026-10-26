@@ -86,6 +86,13 @@ const together = [
   { href: '/eclipses/', label: 'Eclipses through 2028' },
 ];
 
+/** A second light row: tools and guides the four calculators don't lead to. */
+const also = [
+  { href: '/void-of-course-moon/', label: 'Void-of-course Moon' },
+  { href: '/numerology/', label: 'Numerology' },
+  { href: '/learn/chinese-zodiac/', label: 'Chinese zodiac' },
+];
+
 /** The sign the Sun is in on the committed daily edition. */
 const sunNow = signForLongitude(daily.bodies.find((body) => body.body === 'Sun')!.lon).slug;
 const editionStamp = `${formatDate('en', `${daily.date}T12:00:00Z`, {
@@ -673,7 +680,7 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
     </div>
   </section>
 
-  <!-- 05 · Tools: one grid, then the shared tools as a light row. -->
+  <!-- 05 · Tools: one grid, then the shared tools and a few more as light rows. -->
   <section class="kwrap home-tools-band">
     <div class="section-head section-head--row reveal">
       <div>
@@ -695,6 +702,12 @@ const compactDates = (slug: string) => signDates(slug).split(' – ').join(' · 
     <div class="home-together">
       <span class="home-together__label">Together:</span>
       {together.map((item) => (
+        <a class="pill" href={item.href}>{item.label}</a>
+      ))}
+    </div>
+    <div class="home-together">
+      <span class="home-together__label">Also:</span>
+      {also.map((item) => (
         <a class="pill" href={item.href}>{item.label}</a>
       ))}
     </div>

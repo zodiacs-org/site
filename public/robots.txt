@@ -11,3 +11,4 @@ User-agent: GPTBot
 Allow: /
 
 Sitemap: https://zodiacs.org/sitemap.xml
+Sitemap: https://zodiacs.org/sitemap-index.xml
