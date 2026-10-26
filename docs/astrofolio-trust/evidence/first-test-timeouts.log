@@ -1,0 +1,586 @@
+
+> zodiacs-org@1.0.0 test
+> vitest run
+
+
+ RUN  v3.2.6 <site>
+
+ ✓ scripts/registry-consumer-contract.test.mjs (13 tests) 98ms
+ ✓ tests/thesis-contract.test.mjs (39 tests) 104ms
+ ✓ scripts/registry-pastel-polish.test.mjs (24 tests) 148ms
+ ✓ src/lib/numerology/index.test.ts (155 tests) 111ms
+ ✓ src/lib/guide-protocol/adapters.test.ts (17 tests) 52ms
+ ✓ scripts/shelf-layout.test.mjs (59 tests) 79ms
+ ✓ src/lib/account-api/handler.test.ts (18 tests) 71ms
+ ✓ src/lib/account-api/sync-handler.test.ts (20 tests) 82ms
+ ✓ src/lib/assistant/open-assistant.test.ts (31 tests) 168ms
+ ✓ src/lib/guide-protocol/validators.test.ts (25 tests) 36ms
+ ✓ tests/guide-api.test.ts (63 tests) 323ms
+ ✓ scripts/send-daily-push.test.mjs (45 tests) 951ms
+   ✓ sky-alert event selection and copy > keeps the entire committed editorial stream below three alerts in every seven UTC dates  562ms
+ ✓ scripts/registry-gallery-band.test.mjs (18 tests) 69ms
+ ✓ src/lib/account-v2/profile-boundary.test.ts (22 tests) 20ms
+ ✓ src/lib/disclosure.test.ts (15 tests) 100ms
+ ✓ scripts/registry-selected-token-chart.test.mjs (27 tests) 72ms
+ ✓ src/islands/ReturnCalculators.recovery.test.ts (21 tests) 90ms
+ ✓ src/lib/aura-share-card.test.ts (18 tests) 137ms
+ ✓ src/lib/email/daily-admin-bootstrap.test.ts (14 tests) 325ms
+ ✓ src/lib/email/daily-api.test.ts (35 tests) 827ms
+   ✓ daily sun confirmation > retries a Resend 429 without moving segment membership for a sign change  505ms
+ ✓ tests/assistant-api.test.ts (23 tests) 59ms
+ ✓ src/lib/living-chart/store.test.ts (20 tests) 849ms
+   ✓ LivingChartStore > caps active records at 250 without blocking tombstones  649ms
+ ✓ src/lib/guide-server/local-safety.test.ts (171 tests) 108ms
+ ✓ src/lib/email/email.test.ts (22 tests) 63ms
+ ✓ scripts/sign-records.test.mjs (10 tests) 349ms
+ ✓ src/islands/SynastryCalculator.recovery.test.ts (23 tests) 422ms
+ ✓ src/lib/engine/engine.test.ts (53 tests) 268ms
+ ✓ src/lib/account-v2/local-state.test.ts (16 tests) 15ms
+ ✓ src/lib/email/daily-sun-state.test.ts (9 tests) 1599ms
+   ✓ durable daily sun confirmation state > dispatches in waitUntil, suppresses duplicate token churn, and safely repairs a replay  556ms
+ ✓ scripts/trade-ultra.test.mjs (29 tests) 50ms
+ ✓ scripts/build-thesis-disclosure.test.mjs (10 tests) 18ms
+ ✓ src/lib/guide-server/safety.test.ts (16 tests) 198ms
+ ✓ src/lib/aura-cabinet-card.test.ts (19 tests) 22ms
+ ✓ src/islands/synastry/composite-model.test.tsx (23 tests) 92ms
+ ✓ src/lib/aura/compose.test.ts (14 tests) 20ms
+ ✓ src/lib/lunar-return-card.test.ts (20 tests) 100ms
+ ✓ src/lib/share-card.test.ts (34 tests) 32ms
+ ✓ src/lib/events/catalog.test.ts (27 tests) 701ms
+   ✓ events catalog — metadata and copy > keeps banned vocabulary and register tells out of every authored passage  401ms
+ ✓ src/islands/aura/AuraCollectionCabinet.test.tsx (12 tests) 24ms
+ ✓ src/lib/i18n/index.test.ts (20 tests) 124ms
+ ✓ scripts/db-backup-contract.test.mjs (8 tests) 1383ms
+   ✓ database backup and restore contract > rejects weak and multiline backup passphrases before any database access  880ms
+ ✓ src/islands/lunar-return/LunarReturnActions.test.tsx (13 tests) 42ms
+ ✓ src/lib/phase1-motion-layout-contract.test.ts (12 tests) 111ms
+ ✓ src/lib/share.test.ts (31 tests) 66ms
+ ✓ src/lib/invite/api.test.ts (11 tests) 89ms
+ ✓ src/lib/engine/lunar-return.test.ts (49 tests) 474ms
+ ✓ src/lib/guide-server/openai.test.ts (10 tests) 29ms
+ ✓ scripts/exchange-risk.test.mjs (14 tests) 41ms
+ ✓ src/lib/profile/store.test.ts (25 tests) 98ms
+ ✓ tests/api/registry-news.test.ts (17 tests) 131ms
+ ✓ src/lib/guide-protocol/context-state.test.ts (12 tests) 122ms
+ ✓ src/lib/daily-email/delivery.test.ts (12 tests) 101ms
+ ✓ scripts/build-pwa-icons.test.mjs (20 tests) 1303ms
+   ✓ PWA icon compositor > writes install metadata from the English catalogue  371ms
+ ✓ src/lib/i18n/astrology.test.ts (12 tests) 90ms
+ ✓ src/islands/synastry/CompositePanel.test.tsx (22 tests) 58ms
+ ✓ scripts/sky-api.test.mjs (14 tests) 1900ms
+   ✓ sky data API — coverage and contracts > validates every JSON payload against its published schema, including formats  374ms
+   ✓ sky data API — coverage and contracts > advertises exactly the files it writes, and the OpenAPI document covers them all  605ms
+   ✓ sky data API — coverage and contracts > is deterministic, and keeps yearly files and schemas byte-stable across builds  884ms
+ ✓ src/lib/living-chart/sync.test.ts (7 tests) 50ms
+ ✓ src/islands/LunarReturnCalculator.test.tsx (15 tests) 95ms
+ ✓ scripts/registry-research.test.mjs (9 tests) 397ms
+ ✓ src/lib/wheel/Wheel.crowding.test.ts (29 tests) 571ms
+ ✓ src/lib/engine/transit-scan.test.ts (15 tests) 395ms
+ ✓ src/lib/daily-email/content.test.ts (7 tests) 160ms
+ ✓ scripts/trade-entry.test.mjs (15 tests) 275ms
+ ✓ src/lib/horoscope-program.test.ts (12 tests) 3886ms
+   ✓ horoscope program domain > builds one deterministic, serializable six-surface program for all signs  1227ms
+   ✓ horoscope program domain > keeps love actions distinct when Venus and the Moon share a sign  742ms
+   ✓ horoscope program domain > does not treat 2027 daily events as missing yearly-catalog coverage  422ms
+   ✓ horoscope program domain > keeps all twelve readings pairwise distinct, including the long 2027 edition  398ms
+   ✓ horoscope program domain > fails closed on invalid facts, malformed yearly events, and output tampering  447ms
+ ✓ src/islands/BigThreeQuick.recovery.test.ts (18 tests) 283ms
+ ✓ src/islands/aspect-patterns/AspectPatternActions.test.tsx (12 tests) 33ms
+ ✓ src/islands/ProfileDashboard.recovery.test.ts (15 tests) 212ms
+ ✓ src/lib/aspect-pattern-card.test.ts (26 tests) 264ms
+ ✓ src/lib/daily-publication.test.ts (17 tests) 243ms
+ ✓ src/lib/profile/polar-repair.test.ts (31 tests) 585ms
+ ✓ scripts/exchange-gecko.test.mjs (26 tests) 181ms
+ ✓ src/lib/weekly-digest/delivery.test.ts (21 tests) 232ms
+ ✓ scripts/consumer-boundary-lib.test.mjs (25 tests) 500ms
+stderr | src/lib/games/server.test.ts > handleGamesApi gates > fails closed without Supabase or session configuration
+[games] unconfigured {"hasSupabaseUrl":true,"hasServiceKey":true,"hasSecret":true,"secretLength":5,"secretValid":false}
+
+stderr | src/lib/games/server.test.ts > join and check-in > answers 502 when PostgREST fails, never a fabricated result
+[games] upstream PostgREST zodiac_games_join_v1 500
+
+stderr | src/lib/games/server.test.ts > join and check-in > collapses non-PostgREST upstream failures to a fixed token
+[games] upstream fetch failed: https://example.supabase.co
+
+ ✓ src/lib/games/server.test.ts (18 tests) 37ms
+ ✓ src/lib/engine/transit-window-core.test.ts (34 tests) 148ms
+ ✓ scripts/nav-stability.test.mjs (20 tests) 50ms
+ ✓ src/lib/wallet/holdings.test.ts (28 tests) 4472ms
+   ✓ official holdings resolution > fails closed when any Base response carries a mismatched response id  402ms
+   ✓ official holdings resolution > fails closed when any Base response carries a provider error  400ms
+   ✓ official holdings resolution > fails closed when any Base response carries a array payload  403ms
+   ✓ official holdings resolution > fails closed when any single Base request fails at HTTP or JSON level  806ms
+   ✓ official holdings resolution > fails closed when any Solana response carries a mismatched response id  403ms
+   ✓ official holdings resolution > fails closed when any Solana response carries a provider error  406ms
+   ✓ official holdings resolution > fails closed when any Solana response carries a array payload  402ms
+   ✓ official holdings resolution > fails closed when any single Solana request fails at the HTTP level  403ms
+   ✓ official holdings resolution > retries a failed call once before failing closed  403ms
+   ✓ official holdings resolution > fails closed when the retry also fails, and reports the failure without the address  405ms
+ ✓ tests/api/og-chart.test.ts (11 tests) 507ms
+   ✓ chart preview functions > renders the bounded EB Garamond kicker subset as a real PNG  425ms
+ ✓ src/lib/composite-card.test.ts (21 tests) 252ms
+ ✓ scripts/trade-panel.test.mjs (18 tests) 97ms
+ ✓ scripts/trade-panel-model.test.mjs (29 tests) 99ms
+ ✓ scripts/exchange-entry.test.mjs (18 tests) 134ms
+ ✓ scripts/exchange-depth.test.mjs (18 tests) 106ms
+ ✓ tests/astrofolio-verification/checker.test.ts (48 tests) 180ms
+stderr | tests/api/aura-holdings.test.ts > Aura holdings endpoint > maps a partial Base RPC batch to unavailable end to end
+aura-holdings lookup failed base calls.slice is not a function
+
+ ✓ tests/api/aura-holdings.test.ts (22 tests) 506ms
+   ✓ Aura holdings endpoint > maps a partial Base RPC batch to unavailable end to end  405ms
+ ✓ scripts/inline-critical-styles.test.mjs (13 tests) 251ms
+ ✓ src/lib/moon-certainty.test.tsx (14 tests) 494ms
+ ✓ tests/astrofolio-verification/evidence.test.ts (22 tests) 18ms
+ ✓ scripts/registry-risk.test.mjs (9 tests) 252ms
+ ✓ src/islands/solar-return/SolarReturnActions.test.tsx (9 tests) 31ms
+ ✓ scripts/verify-phase1-operations.test.mjs (13 tests) 23ms
+ ✓ src/islands/PlaceSearch.recovery.test.ts (11 tests) 24ms
+ ✓ tests/api/runtime-imports.test.ts (10 tests) 1162ms
+   ✓ Vercel API runtime packaging > uses Node ESM-safe relative imports through every handler graph  1125ms
+ ✓ src/lib/daily-email/recipients.test.ts (8 tests) 63ms
+ ✓ src/lib/aura/readings.test.ts (9 tests) 746ms
+   ✓ Registry Aura braided readings > stays plain, dated-neutral, and bounded across the entire product space  741ms
+ ✓ scripts/build-service-worker.test.mjs (8 tests) 283ms
+ ✓ src/lib/analytics.test.ts (13 tests) 14ms
+ ✓ src/islands/today/TodayBrief.loading.test.ts (10 tests) 1039ms
+ ✓ src/lib/scene/chapters.test.ts (20 tests) 97ms
+ ✓ scripts/search-index-lib.test.mjs (7 tests) 17ms
+ ✓ src/lib/wheel/ecliptic3d.test.ts (30 tests) 68ms
+ ✓ scripts/technical-audit-remediation.test.mjs (7 tests) 144ms
+ ✓ scripts/registry-outlook.test.mjs (7 tests) 145ms
+ ✓ src/lib/natal.test.ts (18 tests) 161ms
+ ✓ src/islands/ChartCalculator.locale.test.ts (7 tests) 43ms
+ ✓ src/lib/profile/daily-email-client.test.ts (13 tests) 316ms
+ ✓ scripts/trust-surface-consistency.test.mjs (9 tests) 163ms
+ ✓ scripts/terminal-public-routes.test.mjs (8 tests) 373ms
+ ✓ src/lib/profile/pairs.test.ts (13 tests) 99ms
+ ✓ scripts/audit-with-retry.test.mjs (49 tests) 98ms
+ ✓ src/lib/account-v2/cutover.test.ts (8 tests) 863ms
+   ✓ account sync v2 cutover guards > keeps direct private-profile storage access inside approved guarded adapters  839ms
+ ✓ src/islands/ChartCalculator.actions.test.ts (14 tests) 28ms
+ ✓ scripts/trade-wallet.test.mjs (17 tests) 66ms
+ ✓ src/islands/AccountSyncV2Panel.test.tsx (12 tests) 13ms
+ ✓ scripts/shelf-figures.test.mjs (10 tests) 2373ms
+   ✓ the committed geometry > still says what the artwork says, and covers what it traced  2068ms
+ ✓ src/lib/chart-context.test.ts (109 tests) 79ms
+ ✓ scripts/registry-aura-entry.test.mjs (10 tests) 15ms
+ ✓ src/lib/ical.test.ts (9 tests) 27ms
+ ✓ src/lib/engine/transit-window-independent.test.ts (10 tests) 1419ms
+   ✓ immutable independent A–I source comparisons > F-Pluto2020  471ms
+ ✓ src/lib/webmcp/search.test.ts (27 tests) 74ms
+ ✓ scripts/how-to-buy.test.mjs (6 tests) 22ms
+ ✓ scripts/weekly-digest-contract.test.mjs (3 tests) 13ms
+ ✓ src/islands/explorer/ChartContext.export.test.tsx (9 tests) 58ms
+ ✓ src/lib/account-api/sync-wire.test.ts (24 tests) 33ms
+ ✓ src/lib/aura/persistence.test.ts (9 tests) 13ms
+ ✓ src/lib/aura/talisman.test.ts (8 tests) 17ms
+ ✓ src/islands/synastry/RelationshipWheel.recovery.test.tsx (14 tests) 25ms
+ ✓ src/lib/account-v2/client.test.ts (8 tests) 15ms
+ ✓ scripts/registry-hub.test.mjs (8 tests) 12ms
+ ✓ tests/locale-capture-readiness.test.mjs (19 tests) 59ms
+ ✓ src/lib/account-api/encryption.test.ts (12 tests) 240ms
+ ✓ src/lib/aura/copy.test.ts (14 tests) 3ms
+ ✓ src/lib/scene/scene.test.ts (15 tests) 282ms
+ ✓ src/islands/synastry/inviteClient.test.ts (7 tests) 52ms
+ ✓ src/lib/declination.test.ts (11 tests) 82ms
+ ✓ scripts/build-i18n-additions.test.mjs (8 tests) 437ms
+ ✓ scripts/send-daily-email.test.ts (9 tests) 53ms
+ ✓ src/lib/account-v2/profile-lease.test.ts (7 tests) 12ms
+ ✓ src/lib/learning-progress.test.ts (12 tests) 81ms
+stderr | tests/api/email-unconfigured.test.ts > unconfigured email endpoints > returns the designed JSON 503 from subscribe without contacting a provider
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ scripts/home-first-paint.test.mjs (9 tests) 16ms
+stderr | tests/api/email-unconfigured.test.ts > unconfigured email endpoints > returns the localized HTML 503 from a subscribe form post
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/email-unconfigured.test.ts > unconfigured email endpoints > does not let a filled honeypot bypass the unconfigured 503
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ tests/api/email-unconfigured.test.ts (9 tests) 699ms
+ ✓ src/lib/profile/merge.test.ts (10 tests) 17ms
+ ✓ scripts/people-pilot.test.mjs (13 tests) 133ms
+ ✓ src/lib/email/daily-token.test.ts (7 tests) 50ms
+ ✓ src/islands/aspect-patterns/AspectPatternPanel.test.tsx (9 tests) 46ms
+ ✓ scripts/independent-copy-verifier.test.ts (10 tests) 7649ms
+   ✓ independent copy verifier > accepts the committed daily and multi-surface packages  1415ms
+   ✓ independent copy verifier > independently catches program evidence, declared length, voice, and distinctness  897ms
+   ✓ independent copy verifier > caps exact sentence reuse across signs and surfaces  2256ms
+   ✓ independent copy verifier > rejects near-duplicate actions inside one short-form reading  1122ms
+   ✓ independent copy verifier > rejects a tomorrow edition that merely relabels today  996ms
+   ✓ independent copy verifier > independently reconciles prose claims to phase, sign, aspect, house, and event receipts  892ms
+ ✓ src/lib/solar-return-ical.test.ts (11 tests) 10ms
+ ✓ src/lib/events/interpretations.test.ts (7 tests) 356ms
+ ✓ src/lib/guide-server/quota.test.ts (7 tests) 19ms
+ ✓ src/lib/communication.test.ts (10 tests) 308ms
+ ✓ src/data/ru-guides.test.ts (5 tests) 31ms
+ ✓ src/lib/horoscope-page-data.test.ts (12 tests) 241ms
+ ✓ scripts/race-recap.test.mjs (8 tests) 23ms
+ ✓ scripts/daily-workflow.test.mjs (4 tests) 51ms
+ ✓ scripts/registry-market-snapshot.test.mjs (6 tests) 25ms
+ ✓ src/lib/engine/aspect-patterns.test.ts (18 tests) 93ms
+ ✓ src/lib/email/post-chart-state.test.ts (16 tests) 6ms
+ ✓ src/data/glossary.test.ts (7 tests) 31ms
+ ❯ scripts/phase1-acceptance-evidence.test.mjs (5 tests | 1 failed) 7214ms
+   ✓ Phase 1 durable acceptance evidence > contains exact 360px and 1280px captures for every new template  801ms
+   ✓ Phase 1 durable acceptance evidence > records the three-page cold read and the deliberate accessory removal 1ms
+   × Phase 1 durable acceptance evidence > invalidates stale evidence when a transitive render source or bundled font changes 5010ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ Phase 1 durable acceptance evidence > keeps server-only email delivery changes outside the Phase 1 visual receipt  611ms
+   ✓ Phase 1 durable acceptance evidence > keeps reviewed template geometry valid across payload-only daily editions  789ms
+ ✓ src/islands/explorer/LearningPractice.test.tsx (9 tests) 21ms
+ ✓ src/lib/engine/solar-return.test.ts (10 tests) 418ms
+ ✓ src/lib/daily.test.ts (11 tests) 103ms
+ ✓ scripts/build-assistant-context.test.mjs (5 tests) 2524ms
+   ✓ assistant site context > contains every tool route and the complete live route families  690ms
+   ✓ assistant site context > stays inside the cache-size band without localized routes or consumer-banned vocabulary  536ms
+   ✓ assistant site context > is byte-identical across two builds and matches the committed module  1024ms
+ ✓ src/lib/invite/email.test.ts (5 tests) 91ms
+ ✓ scripts/games-sql-readiness.test.mjs (4 tests) 6286ms
+   ✓ Zodiac Games SQL container readiness > waits through socket-only initialization before the unchanged SQL sequence  2388ms
+   ✓ Zodiac Games SQL container readiness > reproduces the original premature socket-readiness failure  530ms
+   ✓ Zodiac Games SQL container readiness > retains the bounded readiness failure, diagnostics and container cleanup  2381ms
+   ✓ Zodiac Games SQL container readiness > keeps a real SQL-stage failure fatal without retrying or running later files  986ms
+ ✓ scripts/browser-evidence-control.test.mjs (19 tests) 11ms
+ ✓ scripts/configure-legacy-analytics.test.mjs (9 tests) 7ms
+ ✓ scripts/glossary-crosslinks.test.mjs (1 test) 464ms
+   ✓ glossary crosslinks > stay bounded, English-only, and anchored to real glossary terms  462ms
+ ✓ src/lib/i18n/ui/build-audit.test.ts (11 tests) 4092ms
+   ✓ built client UI payloads > installs one locale catalog before every island that uses shared UI copy  4016ms
+ ✓ src/lib/chart-signature.test.ts (10 tests) 12ms
+ ✓ src/lib/geo/search.test.ts (8 tests) 112ms
+ ✓ src/lib/year-ahead.test.ts (9 tests) 32ms
+ ✓ src/lib/aura/source-alignment.test.ts (7 tests) 12ms
+ ✓ src/lib/chart-shape.test.ts (59 tests) 138ms
+ ✓ src/lib/invite/server.test.ts (5 tests) 64ms
+ ✓ tests/api/push-subscribe.test.ts (5 tests) 8ms
+ ✓ scripts/registry-shell-parity.test.mjs (3 tests) 98ms
+ ✓ scripts/daily-snapshot-lib.test.mjs (6 tests) 162ms
+ ✓ src/islands/aura/AuraTalisman.test.tsx (3 tests) 127ms
+ ✓ src/lib/games/share-card.test.ts (10 tests) 39ms
+ ✓ src/lib/share-card-brand.test.ts (7 tests) 11ms
+ ✓ src/islands/synastry/InviteExperience.test.ts (5 tests) 60ms
+ ✓ src/data/it-guides.test.ts (2 tests) 27ms
+ ✓ src/lib/i18n/ui/ru.test.ts (6 tests) 36ms
+ ✓ src/lib/chart-context-card.test.ts (31 tests) 247ms
+ ✓ src/lib/hooks/useProfileAccessGeneration.test.ts (5 tests) 92ms
+ ✓ src/islands/ProfileInvites.test.tsx (11 tests) 43ms
+ ✓ src/lib/lunar-return-ical.test.ts (10 tests) 44ms
+ ✓ src/lib/wheel/horizon-fixtures.test.ts (13 tests) 9ms
+ ✓ src/lib/wallet/aura-connectors.test.ts (5 tests) 10ms
+ ✓ src/lib/chart-handoff.test.ts (8 tests) 81ms
+ ✓ src/lib/wheel/wheel-serialization.test.ts (6 tests) 28ms
+ ✓ tests/footer-style-loader.test.mjs (9 tests) 19ms
+ ✓ src/islands/explorer/Inspector.test.tsx (4 tests) 35ms
+ ✓ src/islands/chart3d/turning.test.ts (13 tests) 14ms
+ ✓ src/islands/explorer/ReadingPath.test.tsx (5 tests) 48ms
+ ✓ src/lib/email/weekly-unsubscribe-api.test.ts (5 tests) 10ms
+ ✓ src/islands/transit/slow-transit-scan.test.ts (6 tests) 35ms
+ ✓ scripts/exchange-analytics.test.mjs (9 tests) 31ms
+ ✓ src/lib/living-chart/cloud.test.ts (6 tests) 265ms
+ ✓ scripts/locale-discovery.test.ts (6 tests) 9ms
+ ✓ src/lib/birthdays.test.ts (12 tests) 210ms
+ ✓ src/lib/aura/events.test.ts (4 tests) 14ms
+ ✓ scripts/t17-hydration-diagnostics.test.mjs (4 tests) 79ms
+ ✓ scripts/people-source-corrections.test.mjs (10 tests) 165ms
+ ✓ src/islands/aura/AuraResult.test.tsx (3 tests) 17ms
+ ✓ src/lib/engine/returns.test.ts (6 tests) 1805ms
+   ✓ saturnReturns > first return begins between ages 27.5 and 30.5 for every fixture  566ms
+   ✓ saturnReturns > every season carries an odd number of crossings  555ms
+   ✓ saturnReturns > 1961-08-04: second return is the 2020 Saturn-in-Capricorn stint  300ms
+ ✓ src/islands/SomeoneElseChart.test.ts (7 tests) 119ms
+ ✓ tests/composite-browser-checks.test.mjs (6 tests) 1074ms
+   ✓ PNG observation rejects blank and heading-only images as full composite evidence  1066ms
+stderr | src/lib/server/transit-calendar.test.ts > subscribable transit calendar > rejects invalid tokens and non-GET requests without scanning
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ src/data/almanac.test.ts (3 tests) 4ms
+stderr | src/lib/server/transit-calendar.test.ts > subscribable transit calendar > serves the feed inline with a six-hour shared cache policy
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ src/lib/server/transit-calendar.test.ts (4 tests) 728ms
+   ✓ subscribable transit calendar > serializes a pinned positions-only token with stable UIDs and valid RFC 5545 lines  502ms
+ ✓ src/lib/nav-tools.test.ts (11 tests) 9ms
+ ✓ src/lib/engine/synastry.test.ts (10 tests) 9ms
+ ✓ src/lib/aura/cabinet-finish.test.ts (32 tests) 150ms
+ ✓ scripts/archive-data.test.mjs (7 tests) 7ms
+ ✓ src/lib/aspect-pattern-model.test.ts (6 tests) 98ms
+ ✓ src/lib/search/score.test.ts (10 tests) 10ms
+ ✓ src/lib/account-v2/profile-access.test.ts (7 tests) 6ms
+ ✓ scripts/build-search-index.test.mjs (1 test) 245ms
+ ✓ src/lib/transit-window-ical.test.ts (5 tests) 178ms
+ ✓ src/lib/email/template.test.ts (9 tests) 9ms
+ ✓ src/lib/games/season.test.ts (8 tests) 5ms
+ ✓ scripts/build-cabinet-materials.test.mjs (4 tests) 1612ms
+   ✓ cabinet material derivatives > keeps all material artwork centered inside the 14% safe inset  598ms
+   ✓ cabinet material derivatives > preserves one silhouette across every material and output format  867ms
+ ✓ src/lib/today/index.test.ts (8 tests) 69ms
+ ✓ src/lib/upcoming.test.ts (9 tests) 24ms
+ ✓ src/lib/invite/validate.test.ts (7 tests) 11ms
+ ✓ src/lib/events/publication.test.ts (5 tests) 923ms
+   ✓ bounded event reading revision > revises exactly five pages and their four timeline entries without changing factual descriptors  907ms
+ ✓ tests/astrofolio-verification/rendered.test.ts (5 tests) 80ms
+ ✓ src/islands/LearningPath.test.ts (8 tests) 11ms
+ ✓ src/lib/daily-email/sun-authority.test.ts (3 tests) 56ms
+ ✓ scripts/terminal-market-notice.test.mjs (4 tests) 16ms
+ ✓ scripts/horoscope-freshness-lib.test.mjs (4 tests) 7ms
+ ✓ src/lib/invite/local-links.test.ts (5 tests) 7ms
+ ✓ src/lib/wallet/providers.test.ts (4 tests) 71ms
+ ✓ src/lib/sect.test.ts (11 tests) 5ms
+ ✓ tests/portrait-readiness.test.mjs (8 tests) 58ms
+ ✓ src/lib/guide-protocol/contract-surface.test.ts (4 tests) 1557ms
+   ✓ Guide draft runtime boundary > keeps the protocol out of browser and legacy runtime graphs  1065ms
+   ✓ Guide draft runtime boundary > confines the Guide kill switch and reused OpenAI credential name to the server graph  488ms
+ ❯ src/lib/engine/void-of-course.test.ts (7 tests | 1 failed) 7685ms
+   ✓ void-of-course Moon > finds every Moon ingress the committed ingress table lists, to the second 6ms
+   ✓ void-of-course Moon > perfects every reported aspect to within a fraction of an arcsecond 36ms
+   × void-of-course Moon > misses no aspect: a fine brute-force sweep finds a reported perfection in every zero-crossing interval 5701ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ void-of-course Moon > builds one window per ingress, ending exactly at the ingress and starting at the last aspect 44ms
+   ✓ void-of-course Moon > reports the traditional Sun-to-Saturn variant with voids that start no earlier than the modern ones 128ms
+   ✓ void-of-course Moon > answers the status question consistently with the window list 228ms
+   ✓ void-of-course Moon > computes a quarter of windows in a few seconds  1536ms
+ ✓ scripts/phase1-scope-guard.test.mjs (30 tests) 35ms
+ ✓ scripts/horoscope-program-files.test.ts (3 tests) 1045ms
+   ✓ strict 2027 horoscope fact catalog > renders the complete catalog inside the strict yearly word bounds  985ms
+ ✓ scripts/astrofolio-identity.test.mjs (27 tests) 28691ms
+   ✓ Astrofolio seasonal identity generator > replays semantically from canonical sources with platform-safe artwork comparison  18932ms
+   ✓ Astrofolio seasonal identity generator > replays every v4 social card from the same deterministic seasonal composition  9473ms
+ ✓ scripts/exchange-chart-model.test.mjs (15 tests) 57ms
+ ✓ src/lib/invite/config.test.ts (7 tests) 19ms
+ ✓ scripts/astrofolio-canonical.test.mjs (4 tests) 65ms
+ ✓ src/islands/lunar-return/compute.test.ts (18 tests) 378ms
+ ✓ scripts/editorial-metadata-checks.test.mjs (5 tests) 148ms
+ ✓ scripts/horoscope-route-map.test.mjs (9 tests) 11ms
+ ✓ src/lib/share-synastry.test.ts (5 tests) 6ms
+ ✓ src/islands/solar-return/export-model.test.ts (4 tests) 6ms
+ ✓ src/lib/learning-source.test.ts (25 tests) 32ms
+ ✓ src/lib/account-v2/chart-wire.test.ts (4 tests) 6ms
+ ✓ src/lib/dignities.test.ts (5 tests) 10ms
+ ✓ src/islands/ProfileManager.test.ts (13 tests) 26ms
+ ✓ src/islands/solar-return/compute.test.ts (5 tests) 763ms
+   ✓ solar return calculator model > exercises the island helper against yearScan within a minute  462ms
+ ✓ src/islands/explorer/ChartContext.test.tsx (8 tests) 159ms
+ ✓ scripts/build-icons.test.mjs (3 tests) 573ms
+   ✓ zodiac icon derivatives > keeps the alpha plane lossless across AVIF and WebP outputs  361ms
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > returns the neutral not-found outcome for malformed input
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > caches only public timestamp context and optional official sign slugs
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > caches only public timestamp context and optional official sign slugs
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > is unavailable when the feature flag is off, before any provider call
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ tests/api/wallet-birth.test.ts (4 tests) 8ms
+ ✓ tests/ru-hero-source.test.mjs (5 tests) 5ms
+ ✓ scripts/exchange-pools.test.mjs (6 tests) 6ms
+ ✓ scripts/i18n-hreflang-policy.test.ts (2 tests) 10ms
+ ✓ scripts/registry-og.test.mjs (3 tests) 198ms
+ ✓ src/islands/explorer/EntityPicker.test.tsx (13 tests) 118ms
+ ✓ src/lib/chart-date-certainty.test.ts (8 tests) 270ms
+ ✓ src/islands/explorer/learning-exercises.test.ts (11 tests) 8ms
+ ✓ src/lib/approach.test.ts (4 tests) 32ms
+ ✓ src/lib/growth-link-graph.test.ts (5 tests) 104ms
+ ✓ scripts/analytics-referrer-privacy.test.mjs (1 test) 156ms
+ ✓ scripts/people-font-preload.test.mjs (10 tests) 64ms
+ ✓ scripts/github-actions-trust-contract.test.mjs (3 tests) 89ms
+ ✓ src/islands/LearningPath.navigation.test.ts (7 tests) 80ms
+ ✓ src/lib/living-chart/schema.test.ts (5 tests) 11ms
+ ✓ src/lib/account-v2/mutation-fingerprint.test.ts (2 tests) 10ms
+ ✓ tests/visual/lighthouse-assets.test.mjs (12 tests) 173ms
+ ✓ src/islands/lunar-return/LunarReturnResult.test.tsx (3 tests) 200ms
+ ✓ src/lib/engine/package-integration.test.ts (3 tests) 203ms
+ ✓ scripts/trade-styles.test.mjs (5 tests) 7ms
+ ✓ scripts/exchange-mobile.test.mjs (5 tests) 5ms
+ ✓ src/islands/explorer/tour/TourCard.test.tsx (3 tests) 7ms
+ ✓ tests/recovery-browser-observation.test.mjs (3 tests) 2ms
+ ✓ src/strings/seo.ru.test.ts (4 tests) 7ms
+ ✓ scripts/people-identity-og-review.test.mjs (11 tests) 4ms
+ ✓ tests/search-learning-checks.test.mjs (9 tests) 7ms
+ ✓ src/lib/wheel/Wheel.spotlight.test.ts (4 tests) 44ms
+ ✓ scripts/calculator-first-paint.test.mjs (2 tests) 123ms
+ ✓ src/lib/guide-knowledge/retriever.test.ts (5 tests) 14ms
+ ✓ src/islands/lunar-return/export-model.test.ts (6 tests) 220ms
+ ✓ src/lib/engine/progressions.test.ts (3 tests) 133ms
+ ✓ src/lib/living-chart/owner.test.ts (4 tests) 4ms
+ ✓ src/lib/invite/request.test.ts (3 tests) 3ms
+ ✓ scripts/check-text-seams.test.mjs (6 tests) 26ms
+ ✓ src/lib/time/localToUtc.test.ts (8 tests) 62ms
+ ✓ scripts/build-distribution.test.mjs (4 tests) 11ms
+ ✓ src/islands/PositionsShareSurface.test.tsx (3 tests) 39ms
+ ✓ src/islands/synastry/SendBackExperience.test.tsx (3 tests) 6ms
+ ✓ src/lib/i18n/plural.test.ts (5 tests) 35ms
+ ✓ src/lib/horoscopes.test.ts (10 tests) 30ms
+ ✓ scripts/consumer-copy-lib.test.mjs (6 tests) 8ms
+ ✓ src/strings/seo.test.ts (3 tests) 44ms
+ ✓ tests/i18n-r2-deferred-styles.test.mjs (7 tests) 98ms
+ ✓ src/lib/zodiac-dates.test.ts (4 tests) 7ms
+ ✓ scripts/stamp-astrofolio-season.test.mjs (2 tests) 4ms
+ ✓ tests/locale-discovery-drive.test.mjs (5 tests) 12ms
+ ✓ src/lib/daily-email/segments.test.ts (3 tests) 10ms
+ ✓ src/islands/WelcomeBack.test.ts (4 tests) 19ms
+ ✓ scripts/daily-feed-dates.test.ts (2 tests) 122ms
+ ✓ scripts/daily-fact-audit.test.mjs (3 tests) 119ms
+ ✓ src/lib/webmcp/register.test.ts (3 tests) 10ms
+ ✓ src/lib/webmcp/polyfill.test.ts (1 test) 8ms
+ ✓ src/lib/account-v2/remote-chart.test.ts (3 tests) 5ms
+ ✓ src/lib/account-v2/pending-operation.test.ts (2 tests) 4ms
+ ✓ src/islands/explorer/tour/progress.test.ts (4 tests) 4ms
+ ✓ tests/legal-identity.test.ts (2 tests) 4ms
+ ✓ tests/explorer-crowded-wheel-checks.test.mjs (4 tests) 4ms
+ ✓ scripts/race-close.test.mjs (4 tests) 10ms
+ ✓ src/islands/synastry/synastryLines.test.ts (7 tests) 64ms
+ ✓ src/lib/a2hs.test.ts (3 tests) 6ms
+ ✓ src/islands/transit/transit-search-model.test.ts (2 tests) 73ms
+ ❯ scripts/build-event-horizon.test.mjs (2 tests | 1 failed) 5016ms
+   × Phase 2 five-year event horizon > regenerates the committed sky and eclipse catalogs byte-for-byte 5009ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ Phase 2 five-year event horizon > pins the exact inclusive 2026–2030 horizon and preserved anchors 5ms
+ ✓ src/lib/living-chart/forecast-snapshot.test.ts (3 tests) 5ms
+ ✓ src/lib/living-chart/capture-sync-choice.test.ts (4 tests) 4ms
+ ✓ src/lib/daily-email/resend-request.test.ts (3 tests) 19ms
+ ✓ src/lib/phase1-design-contract.test.ts (14 tests) 12ms
+ ✓ src/lib/natal-context.test.ts (4 tests) 6ms
+ ✓ src/lib/hooks/useEngine.test.ts (4 tests) 9ms
+ ✓ src/data/fr-guides.test.ts (2 tests) 44ms
+ ✓ src/lib/profile/sync.test.ts (4 tests) 82ms
+ ✓ src/lib/share-positions-reading.test.ts (3 tests) 7ms
+ ✓ src/lib/engine/year-scan.test.ts (3 tests) 7ms
+ ✓ src/lib/engine/longitude-crossings.test.ts (12 tests) 15ms
+ ✓ src/lib/push.test.ts (4 tests) 17ms
+ ✓ src/lib/scene/overlay.test.ts (4 tests) 5ms
+ ✓ src/lib/wallet/config.test.ts (3 tests) 12ms
+ ✓ src/lib/seo-lastmod.test.ts (5 tests) 29ms
+ ✓ src/islands/transit/TransitRing.test.ts (4 tests) 5ms
+ ✓ src/lib/widgets.test.ts (4 tests) 8ms
+ ✓ tests/bio-page.test.ts (4 tests) 9ms
+ ✓ src/lib/account-v2/auth-epoch.test.ts (3 tests) 5ms
+ ✓ src/lib/transits.test.ts (5 tests) 187ms
+ ✓ src/islands/synastry/relationshipData.test.ts (3 tests) 5ms
+ ✓ src/islands/AccountBoundProfileSurface.test.ts (3 tests) 4ms
+ ✓ src/lib/events/transit-link.test.ts (4 tests) 6ms
+ ✓ src/lib/games/champions.test.ts (2 tests) 5ms
+ ✓ src/lib/daily-email/schedule.test.ts (3 tests) 35ms
+ ✓ scripts/exchange-styles.test.mjs (5 tests) 51ms
+ ✓ src/lib/events/format.test.ts (4 tests) 360ms
+   ✓ events format — generated timeline lines > gives every catalog event a clean, complete one-liner  343ms
+ ✓ src/lib/engine/server-ephemeris.test.ts (2 tests) 370ms
+ ✓ scripts/embed-headers.test.mjs (1 test) 15ms
+ ✓ tests/solar-return-observation.test.mjs (3 tests) 6ms
+ ✓ src/islands/ChartCalculator.registry-bridge.test.ts (2 tests) 52ms
+ ✓ src/lib/share-card-brand-contract.test.ts (8 tests) 10ms
+ ✓ src/lib/account-v2/browser-storage.test.ts (3 tests) 6ms
+ ✓ tests/aspect-pattern-observation.test.mjs (3 tests) 5ms
+ ✓ src/lib/composite.test.ts (3 tests) 5ms
+ ✓ scripts/trade-liquidity.test.mjs (3 tests) 3ms
+ ✓ src/lib/account-api/mutation-verifier.test.ts (2 tests) 14ms
+ ✓ tests/vercel-aura-headers.test.ts (2 tests) 4ms
+ ✓ src/lib/edition-freshness.test.ts (4 tests) 53ms
+ ✓ src/islands/CalculationReload.test.ts (7 tests) 7ms
+ ✓ src/lib/i18n/daily-reading.test.ts (2 tests) 21ms
+ ✓ src/components/CollectBand.contract.test.ts (3 tests) 19ms
+ ✓ src/islands/solar-return/copy.test.ts (3 tests) 4ms
+ ✓ src/lib/guide-server/security.test.ts (3 tests) 4ms
+ ✓ src/lib/horoscope-month.test.mjs (4 tests) 8ms
+ ✓ src/lib/living-chart/feature-flags.test.ts (3 tests) 5ms
+ ✓ scripts/github-actions-pins.test.mjs (1 test) 11ms
+ ✓ src/lib/profile/personal-chart.test.ts (3 tests) 2ms
+ ✓ src/lib/daily-email/identity.test.ts (3 tests) 5ms
+ ✓ scripts/event-article-dates.test.mjs (4 tests) 5ms
+ ✓ tests/api/email-subscribe-cooldown.test.ts (3 tests) 106ms
+ ✓ src/lib/i18n/ui/client.test.ts (4 tests) 5ms
+ ✓ src/lib/module-load.test.ts (4 tests) 7ms
+ ✓ src/lib/footer-boundary.test.mjs (21 tests) 7ms
+ ✓ src/islands/SkyTicker.test.tsx (2 tests) 79ms
+ ✓ src/data/pt-guides.test.ts (1 test) 18ms
+ ✓ tests/api/og-chart-render.test.ts (1 test) 876ms
+   ✓ chart preview renderer > renders the full card as a local-asset-only 1200×630 PNG  875ms
+ ✓ tests/lunar-return-observation.test.mjs (2 tests) 7ms
+ ✓ tests/vercel-compatibility-routes.test.ts (2 tests) 5ms
+ ✓ src/lib/living-chart/initialization-guard.test.ts (2 tests) 15ms
+ ✓ src/islands/aura/curatorialSets.test.ts (3 tests) 7ms
+ ✓ src/lib/wallet/address.test.ts (3 tests) 3ms
+ ✓ src/lib/i18n/ru-runtime/client.test.ts (2 tests) 4ms
+ ✓ src/lib/contact-identity.test.ts (1 test) 6ms
+ ✓ src/lib/aura/sdk-conformance.test.ts (2 tests) 3ms
+ ✓ src/lib/wallet/share-card.test.ts (3 tests) 10ms
+ ✓ src/islands/EvidenceDisclosure.test.tsx (2 tests) 4ms
+ ✓ src/data/chinese-zodiac.test.ts (3 tests) 9ms
+ ✓ src/lib/compatibility-card.test.ts (3 tests) 2ms
+ ✓ src/lib/pwa-install.test.ts (2 tests) 1ms
+ ✓ tests/chart-context-observation.test.mjs (2 tests) 2ms
+ ✓ src/lib/server/digest-unsubscribe.test.ts (2 tests) 11ms
+ ✓ src/data/es-guides.test.ts (1 test) 7ms
+ ✓ src/islands/WalletChart.test.ts (2 tests) 23ms
+ ✓ src/islands/lunar-return/copy.test.ts (2 tests) 7ms
+ ✓ src/lib/share-card-copy.test.ts (2 tests) 3ms
+ ✓ tests/search-asset-cache.test.mjs (2 tests) 7ms
+ ✓ src/lib/account-v2/feature-flags.test.ts (1 test) 79ms
+ ✓ src/islands/SynastryCalculator.test.ts (2 tests) 3ms
+ ✓ src/lib/aura/analytics.test.ts (12 tests) 5ms
+ ✓ scripts/sync-registry-establishment.test.mjs (1 test) 2ms
+ ✓ src/islands/ProfileSunSignCapture.test.ts (2 tests) 3ms
+ ✓ src/islands/today/sun-sign-reading.test.ts (1 test) 4ms
+ ✓ src/lib/account-v2/deletion-recovery.test.ts (1 test) 7ms
+ ✓ scripts/build-widget-loader.test.mjs (1 test) 1ms
+ ✓ src/lib/compat.test.ts (2 tests) 8ms
+ ✓ scripts/check-programmatic-uniqueness.test.mjs (3 tests) 1532ms
+   ✓ programmatic-page uniqueness gate > keeps all 366 birthday essays below the CI threshold  1258ms
+ ✓ scripts/build-transits.test.mjs (4 tests) 60751ms
+   ✓ Transit fact generation > regenerates every committed monthly catalog from the site engine  60399ms
+   ✓ Transit fact generation > preserves both Mercury ingresses when a retrograde turn returns across a cusp the same day  341ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  scripts/build-event-horizon.test.mjs > Phase 2 five-year event horizon > regenerates the committed sky and eclipse catalogs byte-for-byte
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ scripts/build-event-horizon.test.mjs:19:5
+     17|
+     18| describe('Phase 2 five-year event horizon', () => {
+     19|   it('regenerates the committed sky and eclipse catalogs byte-for-byte…
+       |     ^
+     20|     temporaryRoot = await mkdtemp(join(tmpdir(), 'zodiacs-event-horizo…
+     21|     for (const { script, source } of [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  scripts/phase1-acceptance-evidence.test.mjs > Phase 1 durable acceptance evidence > invalidates stale evidence when a transitive render source or bundled font changes
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ scripts/phase1-acceptance-evidence.test.mjs:122:5
+    120|   });
+    121|
+    122|   it('invalidates stale evidence when a transitive render source or bu…
+       |     ^
+    123|     const baseline = await phase1TemplateSourceSha256(root);
+    124|     for (const changedPath of [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/lib/engine/void-of-course.test.ts > void-of-course Moon > misses no aspect: a fine brute-force sweep finds a reported perfection in every zero-crossing interval
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/lib/engine/void-of-course.test.ts:54:3
+     52|   });
+     53|
+     54|   it('misses no aspect: a fine brute-force sweep finds a reported perf…
+       |   ^
+     55|     const sweepFrom = new Date('2026-09-10T00:00:00Z');
+     56|     const sweepTo = new Date('2026-09-30T00:00:00Z');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed | 403 passed (406)
+      Tests  3 failed | 4481 passed (4484)
+   Start at  03:30:02
+   Duration  81.99s (transform 14.46s, setup 0ms, collect 68.84s, tests 198.11s, environment 103ms, prepare 56.80s)

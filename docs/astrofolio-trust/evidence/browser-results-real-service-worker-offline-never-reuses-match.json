@@ -1,0 +1,23 @@
+{
+  "recordedAt": "2026-09-07T20:33:02.771Z",
+  "baseURL": "http://127.0.0.1:4397",
+  "node": "v22.23.2",
+  "chromium": "152.0.7977.83",
+  "fixture": "public/registry/zodiacs.registry.json",
+  "viewportWidths": [
+    1280,
+    390,
+    320
+  ],
+  "results": [
+    {
+      "scenario": "real-service-worker-offline-never-reuses-match",
+      "status": "failed",
+      "error": "AssertionError [ERR_ASSERTION]: No unexpected browser errors\n+ actual - expected\n\n+ [\n+   {\n+     text: 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED',\n+     url: 'http://127.0.0.1:4397/assets/app-icons/v3/favicon.svg'\n+   },\n+   {\n+     text: 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED',\n+     url: 'http://127.0.0.1:4397/assets/app-icons/v3/favicon-32.png'\n+   },\n+   {\n+     text: 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED',\n+     url: 'http://127.0.0.1:4397/assets/app-icons/v3/favicon-16.png'\n+   },\n+   {\n+     text: 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED',\n+     url: 'http://127.0.0.1:4397/assets/app-icons/v3/favicon-96.png'\n+   },\n+   {\n+     text: 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED',\n+     url: 'http://127.0.0.1:4397/assets/site-footer.css'\n+   },\n+   {\n+     text: 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED',\n+     url: 'http://127.0.0.1:4397/assets/assistant-ui.js?v=ask-guide-3'\n+   }\n+ ]\n- []\n\n    at scenario (file://<site>/tests/astrofolio-verification/browser.mjs:137:14)\n    at async run (file://<site>/tests/astrofolio-verification/browser.mjs:317:5)\n    at async withPreview (file://<site>/tests/visual/preview-server.mjs:105:12)"
+    }
+  ],
+  "normalization": {
+    "absoluteWorkspacePaths": "Replaced the local workspace root in diagnostic stack traces with <site>.",
+    "retained": "Original scenario outcomes, error messages and available execution metadata are preserved."
+  }
+}
