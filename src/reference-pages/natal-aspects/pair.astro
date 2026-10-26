@@ -1,0 +1,15 @@
+---
+// Entrypoint for the three injected natal pair routes
+// (scripts/natal-aspects-policy.mjs); the path names the pair.
+import { getCollection } from 'astro:content';
+import NatalAspectPairPage from '../../components/learn/NatalAspectPairPage.astro';
+import { assertNatalPairEntries } from '../../../scripts/natal-aspects-policy.mjs';
+import { natalAspectsPublished } from '../../lib/natal-aspect-pairs';
+
+const entries = await getCollection('natalAspectPairs');
+assertNatalPairEntries(entries, natalAspectsPublished);
+const pair = Astro.url.pathname.match(/^\/learn\/aspects\/([a-z]+-[a-z]+)\/?$/)?.[1];
+const entry = entries.find((item) => item.id === pair);
+if (!entry) throw new Error(`No natal pair reference for ${Astro.url.pathname}`);
+---
+<NatalAspectPairPage entry={entry} />

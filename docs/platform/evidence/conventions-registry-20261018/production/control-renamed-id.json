@@ -1,0 +1,158 @@
+{
+  "checkedAt": "2026-10-21T03:49:43.658Z",
+  "base": "https://zodiacs.org",
+  "deployment": {
+    "deploymentId": "dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97",
+    "aliasUpdatedAt": "2026-10-21T00:14:13.644Z",
+    "readyState": "READY",
+    "target": "production",
+    "githubCommitSha": "81c8a38fa9e99a4e1c0379afeb459ac85668a7ab"
+  },
+  "registry": {
+    "commit": "e024e6026a39c4d348bd8d241d9603a8fc5b0218",
+    "version": "2026-10-18",
+    "ids": 154,
+    "namespaces": 57,
+    "control": "renamed-id"
+  },
+  "served": {
+    "page": {
+      "status": 200,
+      "sha256": "dc40358c720c7395b7df581b932edd98eb4ffb30dab74e84d7cd005edba0a0e2",
+      "anchors": 153
+    },
+    "browser": {
+      "landed": 153,
+      "missed": 1,
+      "madeUp": null
+    },
+    "json": {
+      "status": 200,
+      "sha256": "fd48b852b4b172eac0c0fe1e0d60124dd97e6e4a9ce2c31786e3f6f50ab670c9",
+      "entries": 154
+    },
+    "markdown": {
+      "status": 200,
+      "sha256": "08d7a0c45412b4bef027a5db23e75772436d9a965787fc79c89af5593e981f79"
+    }
+  },
+  "results": [
+    {
+      "name": "the zodiacs.org alias names a READY production deployment built from a commit that contains the registry's commit",
+      "ok": true,
+      "detail": {
+        "deployment": {
+          "deploymentId": "dpl_FDD6j9M53T9Hr1bKC4y18AsjuY97",
+          "aliasUpdatedAt": "2026-10-21T00:14:13.644Z",
+          "readyState": "READY",
+          "target": "production",
+          "githubCommitSha": "81c8a38fa9e99a4e1c0379afeb459ac85668a7ab"
+        },
+        "containsCommit": true
+      }
+    },
+    {
+      "name": "/developers/conventions/ is served as HTML",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "name": "every one of the 154 ids has exactly one anchor on the page",
+      "ok": false,
+      "detail": {
+        "unanchored": 1,
+        "sample": [
+          "zodiac:tropical-control"
+        ]
+      }
+    },
+    {
+      "name": "every id links to its own address on the page",
+      "ok": false,
+      "detail": {
+        "unlinked": 1,
+        "sample": [
+          "zodiac:tropical-control"
+        ]
+      }
+    },
+    {
+      "name": "Chromium lands on each id's entry from its address (153 of 154)",
+      "ok": false,
+      "detail": {
+        "missed": 1,
+        "sample": [
+          {
+            "id": "zodiac:tropical-control",
+            "target": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "control: a made-up id's address lands on no entry",
+      "ok": true,
+      "detail": {
+        "madeUp": null,
+        "status": 200
+      }
+    },
+    {
+      "name": "registry.json is the commit's registry, with every id's address",
+      "ok": false,
+      "detail": {
+        "status": 200,
+        "type": "application/json; charset=utf-8",
+        "served": 154
+      }
+    },
+    {
+      "name": "the Markdown twin has exactly one entry for every id, and no other",
+      "ok": false,
+      "detail": {
+        "status": 200,
+        "unnamed": 1,
+        "unexpected": 1,
+        "sample": [
+          "zodiac:tropical-control",
+          "zodiac:tropical"
+        ],
+        "entries": 154
+      }
+    },
+    {
+      "name": "the developer index links to the registry",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "the conformance page links its kinds to the registry",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "llms.txt lists the registry",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "the sitemap lists the page with its date",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "listed": true
+      }
+    }
+  ],
+  "passed": 7,
+  "failed": 5
+}

@@ -1,11 +1,9 @@
 {
   "version": 1,
-  "id": "localized-art-cards-20261019",
-  "baseCommit": "b9452b68fbfbfc57a0a11dc5a2b184e711bd1507",
+  "id": "natal-aspect-pairs-release-2026-10-26",
+  "baseCommit": "c705d2498fad8105c5dc3e984a1cab678683b624",
   "protectedPaths": [
-    "src/pages/es/[sign]/index.astro",
-    "src/pages/fr/[sign]/index.astro",
-    "src/pages/it/[sign]/index.astro",
-    "src/pages/pt/[sign]/index.astro"
+    "src/pages/learn/aspects/[slug].astro",
+    "src/pages/learn/aspects/index.astro"
   ]
 }

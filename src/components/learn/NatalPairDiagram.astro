@@ -1,0 +1,51 @@
+---
+/**
+ * One birth chart, one pair, five geometries: the first body held at the top
+ * of the wheel and the five places the second body sits for each major
+ * aspect, measured clockwise here (the same angles hold either way round).
+ * Static SVG, no script; the title and description carry the whole figure.
+ * Styles live in natal-aspects.css, inlined by the page.
+ */
+interface Props { a: string; b: string; id: string; hueA: string; hueB: string }
+const { a, b, id, hueA, hueB } = Astro.props;
+
+const C = 120;
+const R_RING = 96;
+const R_MARK = 80;
+const R_LABEL = 106;
+const point = (deg: number, radius: number) => {
+  const rad = ((deg - 90) * Math.PI) / 180;
+  return [Number((C + radius * Math.cos(rad)).toFixed(2)), Number((C + radius * Math.sin(rad)).toFixed(2))] as const;
+};
+// The conjunction mark sits just inside the first body so both stay legible.
+const marks = [
+  { name: 'conjunction', angle: 0, at: point(0, R_MARK - 22), label: point(0, R_MARK - 40) },
+  ...[60, 90, 120, 180].map((angle) => ({
+    name: ({ 60: 'sextile', 90: 'square', 120: 'trine', 180: 'opposition' } as Record<number, string>)[angle],
+    angle,
+    at: point(angle, R_MARK),
+    label: point(angle, R_LABEL + 6),
+  })),
+];
+const [ax, ay] = point(0, R_MARK);
+---
+<figure class="natal-diagram">
+  <svg width="240" height="240" viewBox="0 0 240 240" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
+    <title id={`${id}-title`}>{a} and {b} in one birth chart: the five major aspects</title>
+    <desc id={`${id}-desc`}>Schematic natal wheel. {a} is held at the top. Five marks show where {b} would sit for each major aspect: conjunction at 0 degrees, sextile at 60, square at 90, trine at 120 and opposition at 180. The same angles count in either direction around the wheel.</desc>
+    <circle cx={C} cy={C} r={R_RING} fill="none" stroke="var(--hair-2)" />
+    {marks.map((mark) => (
+      <line x1={C} y1={C} x2={mark.at[0]} y2={mark.at[1]} stroke="var(--hair-2)" stroke-width="1" />
+    ))}
+    <line x1={C} y1={C} x2={ax} y2={ay} stroke="var(--text-2)" stroke-width="1.25" />
+    {marks.map((mark) => (
+      <circle cx={mark.at[0]} cy={mark.at[1]} r="5" fill="none" stroke={hueB} stroke-width="1.5" />
+    ))}
+    {marks.filter((mark) => mark.angle > 0).map((mark) => (
+      <text x={mark.label[0]} y={mark.label[1]} text-anchor="middle" dominant-baseline="middle" fill="var(--text-2)" font-size="11">{mark.angle}°</text>
+    ))}
+    <circle cx={ax} cy={ay} r="7" fill={hueA} stroke="var(--bg, #08090C)" stroke-width="2" />
+    <text x={ax} y={ay - 16} text-anchor="middle" fill="var(--text)" font-size="12">{a}</text>
+  </svg>
+  <figcaption>Schematic: {a} at the top, the five marks where {b} makes each major aspect. Hollow marks are {b}.</figcaption>
+</figure>

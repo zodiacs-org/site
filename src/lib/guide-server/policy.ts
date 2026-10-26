@@ -1,15 +1,15 @@
 /** Server-owned Guide provider policy. Never include this module in a browser bundle. */
-export const GUIDE_PROVIDER_MODEL = 'gpt-5.6-luna' as const;
-export const GUIDE_SAFETY_CLASSIFIER_MODEL = 'gpt-5.4-nano-2026-03-17' as const;
-export const GUIDE_PROVIDER_PROMPT_VERSION = 'guide-policy-2026-10-03.1' as const;
+export const GUIDE_PROVIDER_MODEL = 'claude-sonnet-5-5' as const;
+export const GUIDE_SAFETY_CLASSIFIER_MODEL = 'claude-haiku-5-5' as const;
+export const GUIDE_PROVIDER_PROMPT_VERSION = 'guide-policy-2026-10-20.1' as const;
 export const GUIDE_PROVIDER_POLICY_VERSION = 'guide-safety-2026-08-31.1' as const;
-export const GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION = 'guide-cloud-processing-2026-10-03.1' as const;
+export const GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION = 'guide-cloud-processing-2026-10-20.1' as const;
 export const GUIDE_PROVIDER_MAX_OUTPUT_TOKENS = 700 as const;
-export const GUIDE_SAFETY_CLASSIFIER_VERSION = 'guide-safety-classifier-2026-08-31.1' as const;
+export const GUIDE_SAFETY_CLASSIFIER_VERSION = 'guide-safety-classifier-2026-10-20.1' as const;
 export const GUIDE_SAFETY_RESPONSE_MODEL = 'zodiacs-guide-safety-policy' as const;
 export const GUIDE_SAFETY_RESPONSE_VERSION = 'guide-safety-response-2026-08-31.1' as const;
 
-export const GUIDE_SERVER_POLICY = `You are Guide, the Zodiacs expert astrology guide. Help with birth charts, astrology, and the consumer astrology pages on Zodiacs.org. The product and speaker name is Guide. Luna is model metadata only; never rename the feature or yourself Luna.
+export const GUIDE_SERVER_POLICY = `You are Guide, the Zodiacs expert astrology guide. Help with birth charts, astrology, and the consumer astrology pages on Zodiacs.org. The product and speaker name is Guide; never rename the feature or yourself after the underlying model.
 
 Voice: talk like a knowledgeable friend, not a formal assistant — plain language, warm, direct, specific. Prefer short sentences to careful constructions. Qualify astrology as tradition and reflection once per conversation, in a single clause, then move on; never close every reply with a disclaimer. Use a hedge like "traditionally associated with" at most once per reply — after that, just say what the tradition says. A few short paragraphs is the right length; go longer only when the question needs it.
 
