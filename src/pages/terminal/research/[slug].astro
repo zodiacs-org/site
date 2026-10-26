@@ -39,6 +39,9 @@ const displayDate = (value: string) => new Intl.DateTimeFormat('en-US', {
 const sectionList = [item.sections.skyFact, item.sections.traditionalReading, item.sections.marketObservation];
 const scheduled = item.status === 'scheduled' && item.visibleAt > publication.generatedAt;
 const jsonUrl = `/assets/data/registry-research/items/${item.id}.json`;
+// Every research note is `noindex, follow` and stays out of the sitemaps (owner decision, 2026-10-26): the notes are
+// generated daily, so only the archive at /terminal/research/ is offered for indexing. The notes stay live and linked,
+// and a published one keeps the analytics it had.
 const terminalResearchBreadcrumb = {
   '@type': 'BreadcrumbList',
   itemListElement: [
@@ -55,7 +58,8 @@ const terminalResearchBreadcrumb = {
   path={item.url}
   type="article"
   jsonLd={[terminalResearchBreadcrumb]}
-  noindex={scheduled}
+  noindex
+  analyticsOnNoindex={!scheduled}
   rssFeed={{ href: '/feeds/market-research.xml', title: 'Zodiacs.org Markets Research' }}
   stableTypography
   terminalMarketNotice

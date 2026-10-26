@@ -18,6 +18,7 @@
  *      deferred search/WebMCP assets exist with their expected fingerprints.
  *   7. sitemap.xml — unique dated locs resolve, exclude noindex, and cover
  *      every indexable built page's same-origin canonical.
+ *      sitemap-index.xml's section sitemaps list exactly its entries, once.
  *   8. Root artifacts the outside world depends on are present.
  *   9. Source sky, transit, and daily snapshots cover the build date.
  */
@@ -1270,12 +1271,10 @@ const registryResearchPublication = JSON.parse(await readFile(
   resolve(repo, 'src/data/registry-research/publication.json'),
   'utf8',
 ));
-const indexedRegistryResearchPaths = new Set([
-  '/terminal/research/',
-  ...registryResearchPublication.items
-    .filter((item) => item.status === 'published' && item.visibleAt <= registryResearchPublication.generatedAt)
-    .map((item) => item.url),
-]);
+// Only the research archive is indexed. Its notes, published or scheduled, are
+// built and linked but `noindex, follow` (owner decision, 2026-10-26).
+const indexedRegistryResearchPaths = new Set(['/terminal/research/']);
+const registryResearchNotePaths = new Set(registryResearchPublication.items.map((item) => item.url));
 const developerGuidePaths = new Set([
   '/developers/docs/',
   ...JSON.parse(await readFile(resolve(repo, 'src/data/developer-guides.json'), 'utf8'))
@@ -1310,6 +1309,8 @@ const sitemapPolicy = {
   // +1 for /developers/playground/, the compute API playground.
   // +1 for /developers/conventions/, the conventions registry.
   // +26 for the Chinese zodiac guide in Simplified and Traditional Chinese (hub and twelve animals each).
+  // Terminal Research adds its archive alone (indexedRegistryResearchPaths): its
+  // published notes (227 that day) left the sitemap as noindex pages on 2026-10-26.
   total: 1450 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
@@ -1386,6 +1387,24 @@ requireExactSet(
   new Set([...sitemapLocs].filter((path) => /^\/terminal\/research(?:\/[a-z0-9-]+)?\/$/u.test(path))),
   indexedRegistryResearchPaths,
 );
+for (const notePath of registryResearchNotePaths) {
+  const file = resolve(root, notePath.slice(1), 'index.html');
+  if (!(await exists(file))) {
+    fail(`Terminal Research: note is not built — ${notePath}`);
+    continue;
+  }
+  const html = idCache.get(file) ?? (await readFile(file, 'utf8'));
+  const robots = [...html.matchAll(/<meta\b[^>]*>/gi)]
+    .map((match) => match[0])
+    .find((tag) => attr(tag, 'name')?.toLowerCase() === 'robots');
+  const directives = attr(robots ?? '', 'content')?.toLowerCase().split(/\s*,\s*/) ?? [];
+  if (!directives.includes('noindex') || !directives.includes('follow')) {
+    fail(`Terminal Research: note must be "noindex, follow" — ${notePath}`);
+  }
+  if (sitemapLocs.has(notePath) || sitemapAlternatePaths.has(notePath)) {
+    fail(`Terminal Research: noindex note leaked into sitemap discovery — ${notePath}`);
+  }
+}
 
 const packetFNoindexCounts = { localizedBirthdays: 0, russianSignGuides: 0, people: 0 };
 for (const file of files) {
@@ -1612,6 +1631,57 @@ for (const file of files) {
   }
   if (!sitemapLocs.has(url.pathname)) {
     fail(`${rel}: canonical missing from sitemap — ${url.pathname}`);
+  }
+}
+
+// ---- 6b. Section sitemaps ----------------------------------------------------
+// sitemap-index.xml lists the section sitemaps under sitemaps/, which together
+// carry every sitemap.xml entry exactly once, each block byte for byte as
+// sitemap.xml has it (src/pages/sitemaps/_sections.ts).
+{
+  const index = await readFile(resolve(root, 'sitemap-index.xml'), 'utf8').catch(() => null);
+  if (index === null) fail('missing sitemap-index.xml');
+  else {
+    if (!index.startsWith('<?xml') || !/<sitemapindex\b/u.test(index)) fail('sitemap-index.xml: not a sitemap index');
+    const listed = new Set();
+    const sectionPathOf = new Map();
+    for (const m of index.matchAll(/<sitemap>\s*<loc>([^<]+)<\/loc>/g)) {
+      const url = new URL(m[1]);
+      if (url.origin !== 'https://zodiacs.org' || !/^\/sitemaps\/[a-z-]+\.xml$/u.test(url.pathname)) {
+        fail(`sitemap-index.xml: unexpected sitemap ${m[1]}`);
+        continue;
+      }
+      if (listed.has(url.pathname)) fail(`sitemap-index.xml: duplicate sitemap ${url.pathname}`);
+      listed.add(url.pathname);
+      const child = await readFile(resolve(root, url.pathname.slice(1)), 'utf8').catch(() => null);
+      if (child === null) {
+        fail(`sitemap-index.xml: listed sitemap has no file: ${url.pathname}`);
+        continue;
+      }
+      if (!child.startsWith('<?xml') || !/<urlset\b/u.test(child)) fail(`${url.pathname}: not a urlset`);
+      const blocks = [...child.matchAll(/<url>([\s\S]*?)<\/url>/g)];
+      if (blocks.length === 0) fail(`${url.pathname}: lists no URLs`);
+      if (blocks.length > 50_000) fail(`${url.pathname}: ${blocks.length} URLs, over the 50,000 limit`);
+      for (const block of blocks) {
+        const path = new URL(block[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? 'https://invalid.invalid/').pathname;
+        if (sectionPathOf.has(path)) fail(`${url.pathname}: ${path} is also listed by ${sectionPathOf.get(path)}`);
+        sectionPathOf.set(path, url.pathname);
+        if (!sitemapLocs.has(path)) fail(`${url.pathname}: ${path} is not in sitemap.xml`);
+        else if (sitemapBlocksByPath.get(path) !== block[1]) fail(`${url.pathname}: ${path} differs from its sitemap.xml entry`);
+      }
+    }
+    for (const path of sitemapLocs) {
+      if (!sectionPathOf.has(path)) fail(`sitemap-index.xml: ${path} is in no section sitemap`);
+    }
+    const built = await readdir(resolve(root, 'sitemaps')).catch(() => []);
+    for (const name of built) {
+      if (!listed.has(`/sitemaps/${name}`)) fail(`sitemaps/${name}: not listed by sitemap-index.xml`);
+    }
+    console.log(`Section sitemaps: ${listed.size} sitemaps, ${sectionPathOf.size}/${sitemapLocs.size} sitemap.xml URLs`);
+  }
+  const robots = await readFile(resolve(root, 'robots.txt'), 'utf8').catch(() => '');
+  for (const line of ['Sitemap: https://zodiacs.org/sitemap.xml', 'Sitemap: https://zodiacs.org/sitemap-index.xml']) {
+    if (!robots.split('\n').includes(line)) fail(`robots.txt: missing "${line}"`);
   }
 }
 
