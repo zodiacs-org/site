@@ -516,6 +516,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/tools/', '2026-10-21'] as const,
   // Tap-to-explain on the birth chart page's sample wheel.
   ['/birth-chart/', '2026-10-24'] as const,
+  // The English home's second row of tool links (void-of-course Moon,
+  // numerology, Chinese zodiac). The day of the daily edition it was built
+  // with, since the Sitemap Dates check refuses a later date.
+  ['/', '2026-10-25'] as const,
 ]);
 
 function getLastmod(loc: string): string {
@@ -530,7 +534,13 @@ function sitemapAlternates(loc: string) {
   return alternatePaths(loc);
 }
 
-export const GET: APIRoute = async () => {
+export type SitemapEntry = { loc: string; priority: number; lastmod?: string };
+
+/**
+ * Every sitemap location, in sitemap.xml's order. The section sitemaps under
+ * /sitemaps/ (src/pages/sitemaps/[section].xml.ts) partition this same list.
+ */
+export async function sitemapEntries(): Promise<SitemapEntry[]> {
   const guides = await getCollection('guides', ({ data }) => !data.draft);
   const pairs = await getCollection('pairs', ({ data }) => !data.draft);
   const learn = await getCollection('learn', ({ data }) => !data.draft);
@@ -659,13 +669,8 @@ export const GET: APIRoute = async () => {
       priority: 0.64,
       lastmod: event.lastModified,
     })),
-    ...registryResearchPublication.items
-      .filter((item) => item.status === 'published' && item.visibleAt <= registryResearchPublication.generatedAt)
-      .map((item) => ({
-        loc: item.url,
-        priority: 0.56,
-        lastmod: item.publishedAt.slice(0, 10),
-      })),
+    // The research notes under /terminal/research/ are noindex (owner decision, 2026-10-26); only their archive,
+    // /terminal/research/ above, is listed.
     ...(PEOPLE_DIRECTORY_INDEXABLE ? [{
       loc: '/people/',
       priority: 0.7,
@@ -782,14 +787,17 @@ export const GET: APIRoute = async () => {
     const url = [...urls, ...localizedUrls].find((u) => u.loc === loc);
     if (url) url.lastmod = laterDate(url.lastmod, '2026-10-24');
   }
-  const allUrls = [
+  return [
     ...urls,
     ...localizedUrls,
   ];
+}
 
-  const body = `<?xml version="1.0" encoding="UTF-8"?>
+/** A urlset of the given entries, each with its hreflang alternates, lastmod and priority. */
+export function renderUrlset(entries: readonly SitemapEntry[]): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${allUrls
+${entries
   .map(
     (u) => {
       const alternates = sitemapAlternates(u.loc);
@@ -809,8 +817,8 @@ ${allUrls
   .join('\n')}
 </urlset>
 `;
+}
 
-  return new Response(body, {
-    headers: { 'Content-Type': 'application/xml; charset=utf-8' },
-  });
-};
+export const GET: APIRoute = async () => new Response(renderUrlset(await sitemapEntries()), {
+  headers: { 'Content-Type': 'application/xml; charset=utf-8' },
+});
