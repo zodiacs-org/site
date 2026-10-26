@@ -520,6 +520,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // numerology, Chinese zodiac). The day of the daily edition it was built
   // with, since the Sitemap Dates check refuses a later date.
   ['/', '2026-10-25'] as const,
+  // The conventions registry's citations and names without en or em dashes,
+  // on the day of the daily edition it was built with.
+  ['/developers/conventions/', '2026-10-26'] as const,
   // The developer demo, and the developer index that links to it. The day of
   // the daily edition it was built with.
   ...['/developers/demo/', '/developers/'].map((loc) => [loc, '2026-10-26'] as const),
