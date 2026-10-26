@@ -847,6 +847,13 @@ jobs:
   # and the RPC URLs only need to pass build-time validation. Keep the list in
   # step with the public variables set for Production in Vercel.
   #
+  # The account-saves, Google and Apple sign-in and Terminal venue flags were
+  # read off the live site on 2026-10-19: the privacy page's flag-gated copy,
+  # the stamped Terminal and Astrofolio pages, and the compiled chunks, all of
+  # which a build with this list reproduces. Production's account-saves flag
+  # adds account.css to the pair pages; the build of a353c2b2 failed on it
+  # while this job, without the flag, passed (#789).
+  #
   # Production also has the daily email settings, and some pages read those
   # server-side variables while they are built. With the whole chain present
   # (hasDailyChartEmailProvider in src/lib/email/daily-config.ts),
@@ -865,9 +872,13 @@ jobs:
     # remain unchanged; allow installation plus both acceptance drives.
     timeout-minutes: 30
     env:
+      PUBLIC_ACCOUNT_SAVES_ENABLED: "1"
+      PUBLIC_AUTH_APPLE: "1"
+      PUBLIC_AUTH_GOOGLE: "1"
       PUBLIC_COMPAT_INVITES_ENABLED: "1"
       PUBLIC_REGISTRY_AURA_ENABLED: "1"
       PUBLIC_REGISTRY_COLLECTION_ENABLED: "1"
+      PUBLIC_REGISTRY_EXCHANGE_ENABLED: "1"
       PUBLIC_REGISTRY_TRADE_ENABLED: "1"
       PUBLIC_SAVED_RECORDS_ENABLED: "1"
       PUBLIC_WEEKLY_DIGEST_ENABLED: "1"
