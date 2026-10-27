@@ -210,6 +210,70 @@ the engine-side dump, whose header names the engine. The test, the claims
 `acc.deltat` and `acc.swiss-multiyear`, and their binds now read these
 reports; the bound values are unchanged.
 
+## Birth chart form shift
+
+Browser Evidence's Lighthouse gate failed twice on this pull request, on
+Russian routes:
+
+- run 40451982876 on `ef2ce850`: `/ru/`, CLS 0.020;
+- run 40465183791 on `937199b8`: `/ru/birth-chart/`, 0.008 in one sample of
+  three.
+
+Other branches failed the same way before this one did:
+`/ru/birth-chart/` measured 0.011 in runs 40350231305 (26 October) and
+40453547217 (27 October). AGENTS.md allows one rerun for a small CLS failure
+and asks that a second be fixed, so the second run's samples were read
+([form-shift/ci-run-40465183791.json](form-shift/ci-run-40465183791.json), by
+[tools/lighthouse-shift-summary.mjs](tools/lighthouse-shift-summary.mjs)).
+
+- **What moved.** The failing sample has one layout shift, 0.0076, at
+  131.8 ms. That is 32.5 ms after its first contentful paint and before the
+  document had finished parsing. The element that moved is the form's options
+  panel, `details.calc__options`.
+- **Why.** Both birth chart pages draw the panel after the submit button and
+  the privacy line: `.calc__fields` is `display: contents`, and the panel has
+  `order: 10` in the form's grid. The markup, though, put the panel before
+  those two rows. The browser can paint while it is still parsing. If it
+  paints after it has read the panel but before the two rows, it draws the
+  panel straight under the fields. When the rows arrive they go above the
+  panel, which moves down out of view. The shift depends on where parsing has
+  reached at the first paint, so it is intermittent. It is likeliest on the
+  Russian page, which paints first; the English page has the same markup.
+- **Reproduced.** [tools/form-shift-split.mjs](tools/form-shift-split.mjs)
+  pauses each page's HTML for 2 s at four points in the form and records the
+  layout shifts at 412 by 823 pixels.
+  - Without the change ([form-shift/split-before.json](form-shift/split-before.json)),
+    a pause just before the submit button shifts the panel: 0.0096 on the
+    English page and 0.0112 on the Russian one (the 0.011 of the other
+    branches).
+  - With it ([form-shift/split-after.json](form-shift/split-after.json)), no
+    pause shifts either page.
+- **The change.** `src/islands/ChartCalculator.tsx` now writes the panel after
+  the privacy line, where the CSS already draws it.
+  [tools/form-layout.mjs](tools/form-layout.mjs) finds the loaded form
+  unchanged at 412 and 1440 pixels on both pages: every row's box, and the
+  SHA-256 of a screenshot of the form
+  ([form-shift/layout-before.json](form-shift/layout-before.json),
+  [form-shift/layout-after.json](form-shift/layout-after.json)). Keyboard
+  focus now follows the drawn order, so the submit button comes before the
+  options.
+- **Not explained.** The first run's `/ru/` failure was not reproduced, and
+  its traces were not kept. The second run's three `/ru/` samples have no
+  shift.
+
+The six birth chart pages render their form's text in a new order, so their
+sitemap dates move to 2026-10-27, the day of the daily edition they were built
+with.
+
+The local gate ran again with the change, every step as at the merge, and all
+passed except the full suite. That run had two failures: the Phase 1 capture
+check, and `scripts/sitemap-rendered-changes.test.mjs`, which timed out at 5 s
+while another job on the machine held the load average near 158. Alone, that
+file passes 25 of 25. After the sitemap dates, the build, `npm run check`,
+check-dist and the full suite ran again. The suite passed 7,958, with only the
+Phase 1 capture check failing
+([validation/full-suite-form-shift.log](validation/full-suite-form-shift.log)).
+
 ## Phase 1 captures
 
 The lockfile and `src/lib/**` are part of the Phase 1 capture digest, so the
