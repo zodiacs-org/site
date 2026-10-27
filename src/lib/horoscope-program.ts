@@ -601,6 +601,13 @@ function dateLabel(dateOrInstant: string): string {
   return `${MONTHS[parsed.getUTCMonth()]} ${parsed.getUTCDate()}, ${parsed.getUTCFullYear()}`;
 }
 
+function dateRangeLabel(from: string, through: string): string {
+  const a = new Date(`${from}T00:00:00.000Z`);
+  const b = new Date(`${through}T00:00:00.000Z`);
+  if (a.getUTCFullYear() !== b.getUTCFullYear()) return `${dateLabel(from)} to ${dateLabel(through)}`;
+  return `${MONTHS[a.getUTCMonth()]} ${a.getUTCDate()} to ${dateLabel(through)}`;
+}
+
 function timeLabel(at: string): string {
   return `${at.slice(11, 16)} UTC`;
 }
@@ -1197,7 +1204,7 @@ function weeklySurface(sign: HoroscopeSign, days: Daily[], catalog: EvidenceCata
     `The week closes with ${HOUSE_THEME[endHouse]}: ${HOUSE_ACTION[endHouse]}, then ${uncap(HOUSE_DECISION[endHouse]).replace(/[.]$/u, '')}. For ${cap(sign)}, the final review is to ${SIGN_REGISTER[sign].test}.`,
     catalog.position(end, endMoon, sign),
   ));
-  return reading('weekly', sign, { from: start.date, through: end.date }, `${cap(sign)} weekly horoscope, ${dateLabel(start.date)}–${dateLabel(end.date)}`, passages);
+  return reading('weekly', sign, { from: start.date, through: end.date }, `${cap(sign)} weekly horoscope, ${dateRangeLabel(start.date, end.date)}`, passages);
 }
 
 function hasYearCoverage(events: readonly HoroscopeProgramEvent[]): boolean {
@@ -1309,10 +1316,10 @@ function yearEventBeat(
 }
 
 const YEAR_PHASES = [
-  { fromMonth: 0, throughMonth: 2, label: 'January–March' },
-  { fromMonth: 3, throughMonth: 5, label: 'April–June' },
-  { fromMonth: 6, throughMonth: 8, label: 'July–September' },
-  { fromMonth: 9, throughMonth: 11, label: 'October–December' },
+  { fromMonth: 0, throughMonth: 2, label: 'January to March' },
+  { fromMonth: 3, throughMonth: 5, label: 'April to June' },
+  { fromMonth: 6, throughMonth: 8, label: 'July to September' },
+  { fromMonth: 9, throughMonth: 11, label: 'October to December' },
 ] as const;
 
 function yearPhasePassage(
@@ -1387,12 +1394,12 @@ function yearThemePassage(
     `For ${cap(sign)}, a sound private structure leaves you more available to your life.`,
     `For ${cap(sign)}, keep the experiment only if it works under ordinary conditions.`,
   ][variant % 4];
-  const contextualLead = `${profileLead.replace(/[.]$/u, '')}—${uncap(observableLead)}`;
+  const contextualLead = `${profileLead.replace(/[.]$/u, '')}, ${uncap(observableLead)}`;
   const firstCheckpoint = `The first checkpoint arrives on ${dateLabel(first.at)} with ${eventName(first)}, mapped to ${HOUSE_THEME[firstHouse]}; ${uncap(firstAction).replace(/[.]$/u, '')}.`;
   const secondCheckpoint = second === first
     ? ''
     : `A second checkpoint arrives on ${dateLabel(second.at)} with ${eventName(second)}, mapped to ${HOUSE_THEME[secondHouse]}; ${uncap(secondAction).replace(/[.]$/u, '')}.`;
-  const contextualInterval = `${interval.replace(/[.]$/u, '')}—${uncap(standard)}`;
+  const contextualInterval = `${interval.replace(/[.]$/u, '')}; ${uncap(standard)}`;
   return passage(
     `${contextualLead} ${firstCheckpoint} ${secondCheckpoint} ${contextualInterval}`,
     refs,
@@ -1485,7 +1492,7 @@ function yearlySurface(
   ));
 
   passages.push(passage(
-    `${YEAR_EDITORIAL[sign].close} Put three events in your calendar now—${eventName(first)} on ${shortDateLabel(first.at)}, ${eventName(ingress)} on ${shortDateLabel(ingress.at)}, and ${eventName(last)} on ${shortDateLabel(last.at)}—as a working plan for this principle: ${SIGN_REGISTER[sign].year}. At each one, write what changed, what did not, and what you will do next; for ${cap(sign)}, the year’s practice is to ${SIGN_REGISTER[sign].test}, with the dates providing structure while your decisions and circumstances remain the substance.`,
+    `${YEAR_EDITORIAL[sign].close} Put three events in your calendar now (${eventName(first)} on ${shortDateLabel(first.at)}, ${eventName(ingress)} on ${shortDateLabel(ingress.at)}, and ${eventName(last)} on ${shortDateLabel(last.at)}) as a working plan for this principle: ${SIGN_REGISTER[sign].year}. At each one, write what changed, what did not, and what you will do next; for ${cap(sign)}, the year’s practice is to ${SIGN_REGISTER[sign].test}, with the dates providing structure while your decisions and circumstances remain the substance.`,
     openingRefs,
     'A three-date plan for the year',
   ));
