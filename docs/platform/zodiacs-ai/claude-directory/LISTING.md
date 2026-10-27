@@ -1,5 +1,19 @@
 # Claude directory listing
 
+## Inspection, 27 October 2026
+
+The existing edit page still says the submission is in review and that
+reviewers see saved updates without a new submission. It lists thirteen tools
+with a snapshot dated 16 October. The description includes compatibility
+scores, occasion ratings and personal weekly forecasts. It retains the older
+punctuation around partners, friends and family; the current resubmission
+source uses commas. The carousel still points to the published 0.5.0
+comparison and wedding images. The one-liner and use cases are unchanged.
+
+No field was edited, no save or sync was clicked, and no reviewer email was
+sent during this inspection. Any update requires the owner's separate yes.
+
+
 ## Review-state update — 16 October 2026
 
 With the owner's explicit approval, the in-review directory entry's description

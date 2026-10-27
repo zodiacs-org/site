@@ -4,6 +4,37 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 27 October: tilted ring profile picture
+
+The owner selected the tilted ring avatar for the plugin after reviewing the
+full-size options. The pending 0.5.1 package uses `assets/icon-v2.png` for
+its logo and composer icon. The picture is generated from the shared brand
+mark and has a fresh public address,
+`https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v2.png`. The owner approved
+updating PR #807 and publishing after the updated checks pass. Portal upload,
+rescan and profile changes still need separate approval. See the latest
+`PORTAL_REVIEW.md` entry for the candidate checksum.
+
+## Update, 27 October: sharper artwork live and draft rescanned
+
+PR #837 is merged and deployed with Dias's explicit approval. Production
+checks passed for the current panels, all seventeen old addresses and all
+32 artwork files. The current artwork panels are horoscopes v5 and occasions
+v7. The separately approved OpenAI rescan completed with eleven tools clear
+and two tools needing reviewer approval, `get_occasion_sky` and
+`get_compatibility`. The portal still contains the older 0.5.0 package and
+has not been submitted. The refreshed positive host checks passed. The locally prepared 0.5.1
+package and clean video remain subject to the owner's final review and the
+separate publication and portal approvals. See `PORTAL_REVIEW.md` for the exact results.
+
+After the approved private tool refresh, all five positive review cases
+loaded on their first display. Scheduling and relationship-guarantee boundary
+cases passed. The stock-picking case failed because the host combined a
+horoscope with investment suggestions. A local description correction is
+prepared and tested, but needs production approval and a fresh host retest
+before submission. A clean 41-second comparison and wedding recording is
+ready locally for review and has not been published.
+
 ## Pending, 26 October: sharper chat artwork
 
 The owner noticed that the pictures in the chat cards look blurry. The
@@ -20,6 +51,22 @@ is not live or scanned yet. Verify it in a
 private host connection before requesting a separate production approval and
 another separately approved draft rescan. The 20 October address record below
 remains the verified production state until that happens.
+
+## Update, 20 October: About needs a new package version
+
+The portal's About field is read only because its metadata comes from the
+uploaded ZIP. The current draft still shows the outdated claim that Zodiacs
+does not score relationships or rate dates. Dias approved preparing a 0.5.1
+candidate with the exact About in "The listing" below and corrected release
+notes. `zodiacs-sky-0.5.0.zip` stays unchanged. Do not upload the 0.5.1 ZIP
+until Dias reviews it and gives a separate yes. Do not submit or attest on
+his behalf.
+
+Refreshing the private release connection did not fix first display of the
+redesigned wedding and horoscope panels in fresh chats. Both returned the
+right answer but displayed a host error before the panel loaded. Earlier
+chats displayed each panel after **Try again**. Resolve or explicitly review
+this issue before submission.
 
 ## Update, 20 October: fresh addresses for all four chat panels
 
@@ -83,7 +130,8 @@ rebuilt in place; `zodiacs-sky-0.5.0.zip` is unchanged.
 
 The listing's About loses its two dashes: "Compare two people's charts,
 whether partners, friends or family, and get a compatibility score …"
-(1,784 characters). Paste the About from "The listing" below into the draft.
+(1,784 characters). It is now embedded in the proposed 0.5.1 ZIP because
+the portal does not allow direct editing of the uploaded About.
 
 ## Update, 19 October: three more share links (#782, draft)
 
@@ -237,19 +285,14 @@ inputs, paste this:
 
 ## The demo
 
-- **Who sees it.** The demo is evidence for OpenAI's reviewers. Nothing
-  found suggests the directory shows it to users. OpenAI's own description of
-  a listing names the app's name, icon, descriptions, categories and optional
-  screenshots. So once Zodiacs is approved, the demo does nothing for traffic
-  or the brand. Its only job is not to stand in the way of approval.
-- **Re-record it: the demo in the portal now contradicts the listing.** It
-  shows "Zodiacs does not score relationships" on screen, while the listing
-  now promises a compatibility score out of 100 and date ratings. Reviewers
-  compare the two.
-- **Keep it short and plain.** Polish doesn't matter, because the public
-  never sees it. Record only the comparison and the wedding card, with the
-  shot list below (about 45 seconds), and replace
-  `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`.
+- **Who sees it.** The demo is evidence for OpenAI's reviewers. It is hosted
+  at a public URL, so anyone with that link can view it.
+- **Show the current cards.** Record the live comparison score, the wedding
+  rating and their expandable details with the current artwork.
+- **Keep it short and plain.** Use the comparison and wedding shot list below
+  (about 45 seconds). Publish a new version at
+  `public/assets/ai/review/zodiacs-sky-0.5.1.mp4`. Keep the previously
+  published 0.5.0 movie unchanged.
 - **Unconfirmed: mobile.** Third-party guides say the demo should cover web
   and mobile; OpenAI's own page couldn't be checked. The portal accepted the
   web-only video on 15 October without flagging it. If a reviewer asks, add
@@ -294,10 +337,11 @@ inputs, paste this:
 
 ### After recording
 
-- **Publish it.** Replace `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`
-  with the new file. The address stays the same, so the plugin package and
-  the Claude listing link need no change.
-- **Update the record.** In `WALKTHROUGH.md`, add a 0.5.0 entry with its
+- **Publish it.** Add the new version at `public/assets/ai/review/zodiacs-sky-0.5.1.mp4`
+  with the new file. Keep the old 0.5.0 movie unchanged. Update the demo URL
+  in the submission source and primary plugin manifest, then regenerate the
+  0.5.1 package. Uploading that package requires a separate owner approval.
+- **Update the record.** In `WALKTHROUGH.md`, add a 0.5.1 entry with its
   SHA-256, length and timeline.
 - **Check and merge.** Run `npm run ai:check`, then open a pull request.
 
@@ -326,23 +370,23 @@ Save screenshots to `docs/platform/zodiacs-ai/evidence/0.5.0/`.
 
 **The owner**
 
-1. Read the new wording in the pull request and say "merge", or ask for
-   changes.
-2. After the deploy, record the 45-second demo and run the checks above, or
-   watch Codex run them.
-3. Read the final listing and video, then authorize the resubmission and
-   confirm the attestations.
+1. Review the proposed 0.5.1 package and its About, then choose whether to
+   merge and upload it.
+2. Review the final listing and video before separately authorizing any
+   submission and confirming the attestations.
 
 **Codex**
 
 1. In the portal, under the owner's eye:
-   - upload the changed `zodiacs-sky-0.5.0.zip` into the draft;
-   - paste the About and the two changed test cases;
-   - confirm the subtitle and links;
-   - rescan only with the owner's yes;
-   - record what the scan says.
+   - only with the owner's separate yes, upload the new
+     `zodiacs-sky-0.5.1.zip` into the existing draft;
+   - check that its imported About matches the approved wording;
+   - confirm the subtitle, links and test cases;
+   - rescan again only if needed and with the owner's separate yes;
+   - record each portal result.
 2. Update `PORTAL_REVIEW.md` after each portal step.
-3. Cut and publish the new demo as described under "After recording".
+3. Check the fresh wedding and horoscope panels before submission; resolve
+   the first-display failure or present it to the owner for a decision.
 
 **Claude, in the session that made these fixes**
 

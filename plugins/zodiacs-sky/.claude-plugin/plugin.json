@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-sky",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Check what's happening in the sky, read the horoscope for your sign, explore your own birth chart, compare two charts and see the sky on the days that matter.",
   "author": {
     "name": "Zodiacs LLC",
@@ -19,7 +19,7 @@
   ],
   "displayName": "Zodiacs",
   "mcpServers": "./.mcp.json",
-  "icon": "./assets/icon.png",
+  "icon": "./assets/icon-v2.png",
   "documentationUrl": "https://zodiacs.org/",
   "supportUrl": "https://zodiacs.org/about/",
   "privacyPolicyUrl": "https://zodiacs.org/privacy/",
