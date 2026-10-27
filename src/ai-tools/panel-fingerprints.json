@@ -2,5 +2,6 @@
   "ui://zodiacs/sky-events-v4.html": "7a1db3093ae647a0fb7695e5282d537f1b61351f56f7c477ae8a8b5d96731fa3",
   "ui://zodiacs/chart-studio-v5.html": "568414d5f261fffbbbcf2a2c06085e6207746afc1c0e5637c791281b615a53a4",
   "ui://zodiacs/horoscopes-v4.html": "130bc21e8eca08c42af0b9b7693e3e7bf7d9099f0a1fc4dbbdb777342964a2f7",
-  "ui://zodiacs/occasions-v5.html": "8c5f2c4d470dd6a57d84ab57ced71aa6016ca23616500c8a7270c0b75df2950c"
+  "ui://zodiacs/occasions-v5.html": "8c5f2c4d470dd6a57d84ab57ced71aa6016ca23616500c8a7270c0b75df2950c",
+  "ui://zodiacs/chart-studio-v6.html": "9fef51b4c35b7b9dd9a8b78a654fa222812b5805c5351406ea81d1fb3087d899"
 }

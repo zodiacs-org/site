@@ -438,7 +438,8 @@ try {
   const conventions = JSON.parse((await client.readResource({ uri: 'zodiacs://conventions' })).contents[0]?.text ?? '{}');
   check('the conventions resource is the vocabulary the records carry',
     canonical(conventions.sets?.[0]?.conventions ?? null) === canonical(JSON.parse(record.record).receipt.conventions)
-    && conventions.sets.length === 5, conventions.sets?.map((set) => set.writtenBy));
+    // 1.1.0-rc.1 writes the sixth set, and reads the five before it.
+    && conventions.sets.length === 6, conventions.sets?.map((set) => set.writtenBy));
   const methodology = (await client.readResource({ uri: 'zodiacs://methodology' })).contents[0]?.text ?? '';
   check('the methodology resource names the engine and the site\'s methodology page',
     methodology.includes(`@zodiacs/engine ${capabilities.engine.version}`)

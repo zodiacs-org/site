@@ -123,7 +123,8 @@ const jsonLd = [
         <a href={suiteFile('SPEC.md')}>format and protocol</a> and{' '}
         <a href={suiteFile('RESULTS.md')}>full results</a>. Each vector's kind and
         arbiter has an id in the <a href="/developers/conventions/#ns-kind">conventions registry</a>,
-        such as <code>kind:houses.cusps</code>.
+        such as <code>kind:houses.cusps</code>, and from version 0.2.0 each vector
+        lists those two ids in its <code>conventionIds</code>.
       </p>
     </div>
 
@@ -218,6 +219,9 @@ const jsonLd = [
         )}
         {run.values === 'none' && (
           <p class="conformance-tags">Published as verdicts, returned flags and summary statistics only.</p>
+        )}
+        {run.suiteVersion !== summary.suiteVersion && (
+          <p class="conformance-tags">Run on version {run.suiteVersion}'s vector files, which hold the same vectors without their ids.</p>
         )}
         <div class="prose conformance-notes" set:html={notesHtml(run.notes)} />
       </>

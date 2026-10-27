@@ -181,9 +181,9 @@ export function describeCapabilities(): ToolOutcome {
   const receipt = capabilitiesReceipt();
   const value: CapabilitiesOutput = {
     adapter: { name: ADAPTER_NAME, version: ADAPTER_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' },
-    // On npm since 2026-10-11, under `latest` (the engine's Release run 38144970198; the registry read
-    // in docs/platform/evidence/site-engine-1-0-0/npm-registry.json). The adapter is not on npm.
-    engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'published', registry: 'npm' },
+    // 1.1.0-rc.1 is the candidate the site vendors, and npm does not carry it: npm serves 1.0.0 under
+    // `latest` (docs/platform/evidence/site-engine-1-1-0-rc1/). The adapter is not on npm either.
+    engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'unpublished-candidate' },
     schemas: { envelope: NATAL_ENVELOPE_SCHEMA, receipt: NATAL_RECEIPT_SCHEMA, diagnostic: NATAL_DIAGNOSTIC_SCHEMA },
     supported: {
       houseSystems: [...HOUSE_SYSTEMS],

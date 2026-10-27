@@ -342,8 +342,10 @@ const TOP10_LOCALES_ROUTES = ['es', 'pt', 'fr', 'it', 'ru']
 const PROFILE_REDESIGN_LASTMOD = '2026-10-18';
 const PROFILE_REDESIGN_ROUTES = ['', '/es', '/pt', '/fr', '/it', '/ru'].map((locale) => `${locale}/profile/`);
 // The conventions registry (R44): its page, and the developer index and conformance page that link to it.
-const CONVENTIONS_LASTMOD = '2026-10-18';
+const CONVENTIONS_LASTMOD = '2026-10-27';
 const CONVENTIONS_ROUTES = ['/developers/conventions/', '/developers/', '/developers/conformance/'] as const;
+// Engine 1.1.0-rc.1 adopted 2026-10-27; the routes are listed where it is applied, last.
+const ENGINE_110_RC1_LASTMOD = '2026-10-27';
 const DEVELOPER_GUIDES_ROUTES = [
   '/developers/docs/',
   ...developerGuides.map((guide) => `/developers/docs/${guide.slug}/`),
@@ -523,6 +525,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The conventions registry's citations and names without en or em dashes,
   // on the day of the daily edition it was built with.
   ['/developers/conventions/', '2026-10-26'] as const,
+  // Engine 1.1.0-rc.1, MCP adapter 0.1.0-rc.25 and conformance suite 0.2.0 (R44), on the day of the daily
+  // edition they were built with: the pages that name the engine's version and how npm carries it, the
+  // conventions registry and the pages that list ids, the playground's engine and answers, and the guides.
+  ...[
+    ...ENGINE_RC2_ROUTES, '/developers/conventions/', '/developers/playground/',
+    '/developers/docs/astrology-mcp-server/', ...DEVELOPER_GUIDES_ROUTES,
+  ].map((loc) => [loc, ENGINE_110_RC1_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
