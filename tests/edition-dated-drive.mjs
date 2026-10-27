@@ -31,6 +31,7 @@ import { chromium } from 'playwright-core';
 import { datedEditionTextIn, datedEditionTitleIn, editionDateLabel } from '../src/lib/edition-freshness.ts';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
+import { editionLayoutStreaming } from './edition-layout-stream-drive.mjs';
 
 const publication = JSON.parse(await readFile(new URL('../src/data/daily-publication.json', import.meta.url), 'utf8'));
 const program = JSON.parse(await readFile(new URL('../src/data/horoscope-program.json', import.meta.url), 'utf8'));
@@ -313,6 +314,13 @@ await withPreview({ port: 4393 }, async (baseURL) => {
     await new Promise((resolve) => server.close(resolve));
   }
 });
+
+try {
+  await withPreview({ port: 4396 }, editionLayoutStreaming);
+  check('Partly streamed edition controls and wheel: CLS is exactly 0', true);
+} catch (error) {
+  check('Partly streamed edition controls and wheel: CLS is exactly 0', false, error.message);
+}
 
 let failures = 0;
 for (const result of results) {

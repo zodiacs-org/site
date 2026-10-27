@@ -792,21 +792,26 @@ const ctaLede = edgeMoon && moonHouse
 
   /* ── Period switch and one-tap sign switch ─────────────────────── */
   .hz-controls {
-    display: flex;
+    /* Reserve both controls before the response has finished parsing. A
+       centred flex row moved the period switch when the sign rail arrived. */
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    grid-template-rows: calc(44px + 11px * 1.2);
     align-items: center;
-    justify-content: space-between;
     gap: 24px;
     margin-top: 18px;
     padding: 12px 0;
     border-block: 1px solid var(--hair-1);
   }
-  .hz-seg { flex: none; }
+  .hz-seg { justify-self: start; }
   .hz-seg > a { min-height: 38px; padding-inline: 20px; font-size: 0.9375rem; }
   /* Sized to its content and right-aligned, so the switch beside it can
      never move it; narrower screens stack the two (see 1240px below). */
   .hz-signrail {
-    display: flex;
-    flex: none;
+    display: grid;
+    grid-template-columns: max-content repeat(12, 58px);
+    /* 30px disc, 4px gap, one 11px/1.2 label and 10px padding. */
+    grid-template-rows: calc(44px + 11px * 1.2);
     align-items: center;
     gap: 2px;
     min-width: 0;
@@ -822,7 +827,7 @@ const ctaLede = edgeMoon && moonHouse
   }
   .hz-signrail a {
     display: grid;
-    flex: none;
+    grid-template-rows: 30px 1.2em;
     justify-items: center;
     gap: 4px;
     width: 58px;
@@ -1244,9 +1249,8 @@ const ctaLede = edgeMoon && moonHouse
 
   /* ── Narrower screens ─────────────────────────────────────────── */
   @media (max-width: 1240px) {
-    .hz-controls { flex-direction: column; align-items: stretch; }
-    .hz-seg { align-self: flex-start; }
-    .hz-signrail { flex: initial; margin-left: 0; overflow-x: auto; scrollbar-width: none; }
+    .hz-controls { grid-template-columns: minmax(0, 1fr); grid-template-rows: 48px calc(44px + 11px * 1.2); }
+    .hz-signrail { margin-left: 0; overflow-x: auto; scrollbar-width: none; }
     .hz-signrail::-webkit-scrollbar { display: none; }
   }
   @media (max-width: 1020px) {
@@ -1274,9 +1278,9 @@ const ctaLede = edgeMoon && moonHouse
     .hz-hero__facts > span + span::before { margin-right: 8px; }
     .hz-hero__credit { display: none; }
     .hz-controls { gap: 12px; margin-top: 14px; padding: 12px 0 10px; }
-    .hz-seg { display: flex; width: 100%; align-self: stretch; }
+    .hz-seg { display: flex; width: 100%; justify-self: stretch; }
     .hz-seg > a { flex: 1; justify-content: center; padding-inline: 6px; }
-    .hz-signrail { gap: 0; margin-right: -20px; padding-right: 20px; }
+    .hz-signrail { grid-template-columns: repeat(12, 58px); gap: 0; margin-right: -20px; padding-right: 20px; }
     .hz-signrail__label { display: none; }
     .hz-signrail a { width: 58px; }
     .hz-reading { gap: 48px; padding-top: 36px; }
