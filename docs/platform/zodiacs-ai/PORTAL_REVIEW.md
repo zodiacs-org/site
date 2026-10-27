@@ -1,5 +1,80 @@
 # OpenAI portal review record
 
+## Sharper artwork live, 27 October 2026
+
+With Dias's explicit approval, PR #837 merged at
+`922924ee00a3574cd1a2d58dbe62702715630a41`. Production deployment
+`dpl_9bcJHrh6Fnmm5xbf41hPL9VpFvoy` is Ready on zodiacs.org. A direct
+production check confirmed the four current panel addresses and their
+generated fingerprints: sky events v4, Chart Studio v5, horoscopes v5 and
+occasions v7. All seventeen registered old addresses return the corresponding
+current panel. All 32 referenced artwork files return HTTP 200 and match the
+checked files byte for byte. Wedding, horoscope, comparison, chart twins,
+famous chart, milestones and Russian sky calendar tool checks passed.
+The generated receipt is in
+`evidence/card-art-sharpness/production-2026-10-27.json`.
+
+Before the deployment, three fresh ChatGPT checks using the existing private
+Zodiacs Release Demo connection passed on their first display: the single-word
+reply without a tool call, the Florence wedding card and today's Leo horoscope.
+The earlier blank reply and initial panel errors did not recur. After the
+approved refresh, fresh comparison, wedding, Leo horoscope, sky events and
+combined chart twins and Frida Kahlo checks also loaded on their first display.
+The comparison scored 58/100 and the wedding 69/100. Opening the returned
+wedding destination preserves Florence, 12 June 2027 and 17:00 and removes
+the referral query as the page loads.
+
+## OpenAI draft inspection, 27 October 2026
+
+Dias approved inspecting the existing draft. It still shows package 0.5.0,
+Not submitted and Not published, with its older About and skill description.
+The domain is verified, authentication is off and thirteen tools are present.
+Seven tool findings still say the new definition needs further review before
+publication. The metadata category has a nonblocking finding: the automated
+check could not confirm Education & Research. No package or listing field was
+changed during this inspection.
+
+Dias separately approved rescanning the existing draft after the production
+check. The scan completed at 10:55:55 Bangkok time. Eleven tools have no
+findings. The remaining findings, for `get_occasion_sky` and
+`get_compatibility`, each say: "This new tool definition needs further review
+before it can be published." No connection or input-definition error was
+reported. The scanned definitions contain occasions v7 and horoscopes v5,
+confirmed in the portal's definition views. The draft remains Not submitted
+and Not published. The local screenshots are retained outside the repository.
+
+Dias also approved refreshing tools for the existing private Zodiacs Release
+Demo connection. The refresh finished without an error. The refreshed checks
+are recorded above. No retry was needed.
+
+The scheduling negative case used no Zodiacs tool and made no change. The
+relationship guarantee case declined the guarantee without calling a tool.
+The stock-picking negative case failed: the host called the horoscope tool
+and suggested an astrology-themed investment list. No private profile details
+or returned investment names are recorded here. A local candidate strengthens
+the horoscope description to decline investment requests without a tool call
+and forbids astrology-themed investment suggestions. A transport regression
+test failed before the change and passes afterward. All 293 AI-tool tests and
+`ai:check` pass locally. This wording change is not deployed and needs a fresh
+host test before submission.
+
+A new 41-second live recording of the comparison and wedding cards has been
+prepared locally for owner review. The edit trims waiting time and crops to
+the conversation, with no browser, account details or unrelated windows in
+the export. It has not been published or added to the portal.
+
+## Local artwork check, pending release, 26 October 2026
+
+Dias reported blurry pictures in the wedding and horoscope chat cards. The
+published panels use 400px or 480px, quality 36 artwork at up to 540 CSS
+pixels. A candidate on `codex/card-art-sharpness` loads the larger immutable
+art from zodiacs.org and assigns fresh panel addresses, occasions v6 and
+horoscopes v5. Local browser checks passed for 52 card renders, including
+desktop, phone width, light and dark themes; the occasion browser drive also
+passed. This has not been deployed, rescanned or entered in the OpenAI draft.
+The draft remains unsubmitted and unpublished. Do not treat the candidate as
+live portal evidence.
+
 ## ChatGPT release retest, 26 October 2026
 
 The private Zodiacs Release Demo connection still failed in fresh Chat-mode

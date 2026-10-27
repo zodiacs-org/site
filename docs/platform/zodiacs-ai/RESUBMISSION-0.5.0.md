@@ -4,6 +4,42 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 27 October: sharper artwork live and draft rescanned
+
+PR #837 is merged and deployed with Dias's explicit approval. Production
+checks passed for the current panels, all seventeen old addresses and all
+32 artwork files. The current artwork panels are horoscopes v5 and occasions
+v7. The separately approved OpenAI rescan completed with eleven tools clear
+and two tools needing reviewer approval, `get_occasion_sky` and
+`get_compatibility`. The portal still contains the older 0.5.0 package and
+has not been submitted. The 0.5.1 package, refreshed host checks and a clean
+video remain subject to the owner's final review and the separate portal
+approvals. See `PORTAL_REVIEW.md` for the exact results.
+
+After the approved private tool refresh, all five positive review cases
+loaded on their first display. Scheduling and relationship-guarantee boundary
+cases passed. The stock-picking case failed because the host combined a
+horoscope with investment suggestions. A local description correction is
+prepared and tested, but needs production approval and a fresh host retest
+before submission. A clean 41-second comparison and wedding recording is
+ready locally for review and has not been published.
+
+## Pending, 26 October: sharper chat artwork
+
+The owner noticed that the pictures in the chat cards look blurry. The
+production panels embed 400px and 480px, quality 36 copies while the art can
+span 540 CSS pixels. A candidate change uses larger public Zodiacs artwork
+for every illustrated card, with no names, dates or scores in the image URL.
+It also rebuilds the sky calendar, milestones and chart twins art and their
+share pictures from the selected full-resolution originals. The panel HTML
+stays smaller and permits only `https://zodiacs.org` as a static art origin.
+The candidate uses `horoscopes-v5.html` and `occasions-v7.html`; earlier
+addresses remain readable. The local card and browser checks pass, but this
+is not live or scanned yet. Verify it in a
+private host connection before requesting a separate production approval and
+another separately approved draft rescan. The 20 October address record below
+remains the verified production state until that happens.
+
 ## Update, 20 October: About needs a new package version
 
 The portal's About field is read only because its metadata comes from the

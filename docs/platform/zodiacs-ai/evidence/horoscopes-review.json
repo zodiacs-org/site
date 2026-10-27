@@ -2,9 +2,9 @@
   "scope": "Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance",
   "timezone": "Asia/Bangkok",
   "window": [
-    "2026-10-18",
-    "2026-10-19",
-    "2026-10-20"
+    "2026-10-25",
+    "2026-10-26",
+    "2026-10-27"
   ],
   "passed": [
     "sign picker",
