@@ -4,7 +4,9 @@
 
 With Dias's explicit approval, PR #837 merged at
 `922924ee00a3574cd1a2d58dbe62702715630a41`. Production deployment
-`dpl_9bcJHrh6Fnmm5xbf41hPL9VpFvoy` is Ready on zodiacs.org. A direct
+`dpl_9bcJHrh6Fnmm5xbf41hPL9VpFvoy` is Ready on zodiacs.org. Main
+Site Check run `40445680773` completed successfully for the same merge
+commit; the preceding daily main run `40424414749` is also green. A direct
 production check confirmed the four current panel addresses and their
 generated fingerprints: sky events v4, Chart Studio v5, horoscopes v5 and
 occasions v7. All seventeen registered old addresses return the corresponding
@@ -13,6 +15,10 @@ checked files byte for byte. Wedding, horoscope, comparison, chart twins,
 famous chart, milestones and Russian sky calendar tool checks passed.
 The generated receipt is in
 `evidence/card-art-sharpness/production-2026-10-27.json`.
+Plain HTTP checks also confirmed the three remaining share images as
+1200 by 630 JPEGs below 300 KB and their three story pictures as 1080 by
+1920 JPEGs. An unknown famous person returns HTTP 404. The receipt is
+`evidence/card-art-sharpness/share-images-2026-10-27.json`.
 
 Before the deployment, three fresh ChatGPT checks using the existing private
 Zodiacs Release Demo connection passed on their first display: the single-word
