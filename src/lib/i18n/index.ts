@@ -14,20 +14,26 @@ export {
   LOCALES,
   LOCALE_META,
   RELEASED_LOCALES,
+  SECTION_LOCALES,
   isLocale,
   isCatalogLocale,
+  isPageLocale,
   isReleasedLocale,
+  isSectionLocale,
   localeHtmlLang,
   normalizeKnownLocale,
   normalizeCatalogLocale,
   normalizeLocale,
+  normalizePageLocale,
   normalizeReleasedLocale,
   requireReleasedLocale,
   requireCatalogLocale,
   type CatalogLocale,
   type Locale,
   type LocaleMeta,
+  type PageLocale,
   type ReleasedLocale,
+  type SectionLocale,
   type TextDirection,
 } from './core';
 export { UI } from './ui/server';
@@ -45,6 +51,8 @@ export const LOCALE_PATH_PREFIX = {
   it: '/it',
   ru: '/ru',
   ar: '/ar',
+  'zh-hans': '/zh-hans',
+  'zh-hant': '/zh-hant',
 } as const satisfies Record<Locale, string>;
 
 /** D9 policy: authored interpretation corpora remain English-only. */
@@ -101,6 +109,19 @@ export const STAGED_CORE_ROUTE_LOCALES = [] as const satisfies readonly Locale[]
 
 /** Birthday and Chinese-zodiac families remain outside R1/R2/A1/A2. */
 export const PROGRAMMATIC_ROUTE_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const satisfies readonly Locale[];
+
+/**
+ * The Chinese zodiac guide also has Simplified and Traditional Chinese
+ * editions. Like the translated families below, this is answered on the
+ * server only: every link to those editions is server-rendered.
+ */
+export const CHINESE_ZODIAC_ROUTE_LOCALES = [
+  'en', 'es', 'pt', 'fr', 'it', 'zh-hans', 'zh-hant',
+] as const satisfies readonly Locale[];
+
+function chineseZodiacLocales(): readonly Locale[] {
+  return import.meta.env.SSR ? CHINESE_ZODIAC_ROUTE_LOCALES : PROGRAMMATIC_ROUTE_LOCALES;
+}
 
 /** Byte-compatible locale-home fallback; future locales never join it. */
 export const LEGACY_HOME_SELECTOR_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const satisfies readonly Locale[];
@@ -177,7 +198,8 @@ export function availableLocalesForPath(path: string): readonly Locale[] | undef
   const canonical = stripLocale(path);
   if (/^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) return CORE_ROUTE_LOCALES;
   return LOCALIZED_PATHS.get(canonical)
-    ?? (isLocalizedChineseZodiacPath(canonical) || isTranslatedFamilyPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
+    ?? (isLocalizedChineseZodiacPath(canonical) ? chineseZodiacLocales() : undefined)
+    ?? (isTranslatedFamilyPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
     ?? (isLocalizedBirthdayPath(canonical) ? [DEFAULT_LOCALE] : undefined);
 }
 
@@ -188,7 +210,8 @@ export function renderableLocalesForPath(path: string): readonly Locale[] | unde
     return [...CORE_ROUTE_LOCALES, ...STAGED_CORE_ROUTE_LOCALES];
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;
-  return isLocalizedChineseZodiacPath(canonical) || isLocalizedBirthdayPath(canonical)
+  if (isLocalizedChineseZodiacPath(canonical)) return chineseZodiacLocales();
+  return isLocalizedBirthdayPath(canonical)
     || isTranslatedFamilyPath(canonical)
     ? PROGRAMMATIC_ROUTE_LOCALES
     : undefined;

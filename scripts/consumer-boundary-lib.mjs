@@ -66,11 +66,13 @@ const VOCABULARY = Object.freeze([
   ['acquisition vocabulary', /\b(?:buy|buying|purchase|purchasing|sell|selling|trade|trading|acquir(?:e|ing|ed)|acquisition)\b[\s\S]{0,90}\b(?:assets?|coins?|registry|tokens?)\b|\b(?:assets?|coins?|tokens?)\b[\s\S]{0,90}\b(?:buy|buying|purchase|sell|selling|trade|trading|acquisition)\b/iu],
   ['market vocabulary', /\bmarkets?\b/iu],
   ['liquidity vocabulary', /\b(?:indexed liquidity|liquidity (?:aggregator|pool)|market cap|market desk|market tape)\b/iu],
+  // Chinese runs have no word boundaries, so these match anywhere in a string.
+  ['Chinese token or crypto vocabulary', /代币|代幣|加密(?:货币|貨幣)/u],
 ]);
 
 const EXTERNAL_WING_DESTINATION = /\b(?:astrofolio\.xyz|api\.dexscreener\.com|dexscreener\.com|jup\.ag|raydium\.io|orca\.so|fomo\.family|wallet\.coinbase\.com|web3\.okx\.com|phantom\.com|solflare\.com|binance\.com\/en\/web3wallet|bybit\.com\/web3)\b/giu;
 const INTERNAL_WING_DESTINATION = /(?:^|[\s("'`=]|https?:\/\/(?:www\.)?zodiacs\.org)(\/(?:archive|astrofolio|disclosure|fomo|registry|sdk|terminal|thesis)(?:(?:\/|[?#])[a-z0-9._/?=&%#${}…-]*)?)(?=$|[\s("'`=),.;:<>])/giu;
-const SOURCE_PROBE = /(?:astrofolio\.xyz|jup\.ag|raydium\.io|orca\.so|fomo\.family|wallet\.coinbase\.com|web3\.okx\.com|phantom\.com|solflare\.com|binance\.com\/en\/web3wallet|bybit\.com\/web3|\/(?:archive|astrofolio|disclosure|fomo|registry|sdk|terminal|thesis)(?:\/|[?#]|(?=$))|(?<![\p{L}\p{N}_])(?:acquir(?:e|ed|ing)|acquisition|altcoins?|assets?|blockchains?|buy(?:ing)?|coins?|crypto(?:currenc(?:y|ies))?|cryptomonnaie?s?|cripto(?:moned\p{L}*|moed\p{L}*|valut\p{L}*)?|крипто(?:валют\p{L}*)?|dexscreener|erc-?20|getton\p{L}*|jeton\p{L}*|liquidity|markets?|marchés?|mercad\p{L}*|mercat\p{L}*|memecoins?|on-?chain|purchas(?:e|ed|ing)|рын\p{L}*|sell(?:ing)?|solana|spl|t[oó]kens?|tokens?|токен\p{L}*|trad(?:e|ed|ing)|web3|zodiac)(?![\p{L}\p{N}_]))/iu;
+const SOURCE_PROBE = /(?:astrofolio\.xyz|jup\.ag|raydium\.io|orca\.so|fomo\.family|wallet\.coinbase\.com|web3\.okx\.com|phantom\.com|solflare\.com|binance\.com\/en\/web3wallet|bybit\.com\/web3|\/(?:archive|astrofolio|disclosure|fomo|registry|sdk|terminal|thesis)(?:\/|[?#]|(?=$))|(?<![\p{L}\p{N}_])(?:acquir(?:e|ed|ing)|acquisition|altcoins?|assets?|blockchains?|buy(?:ing)?|coins?|crypto(?:currenc(?:y|ies))?|cryptomonnaie?s?|cripto(?:moned\p{L}*|moed\p{L}*|valut\p{L}*)?|крипто(?:валют\p{L}*)?|dexscreener|erc-?20|getton\p{L}*|jeton\p{L}*|liquidity|markets?|marchés?|mercad\p{L}*|mercat\p{L}*|memecoins?|on-?chain|purchas(?:e|ed|ing)|рын\p{L}*|sell(?:ing)?|solana|spl|t[oó]kens?|tokens?|токен\p{L}*|trad(?:e|ed|ing)|web3|zodiac)(?![\p{L}\p{N}_])|代币|代幣|加密货币|加密貨幣)/iu;
 
 const LEGAL_PATH = /^(?:src\/components\/LocalizedDisclosurePage\.astro|src\/lib\/disclosure\.ts|src\/pages\/(?:privacy|terms|disclosure)\/|src\/pages\/(?:es|fr|it|pt|ru)\/(?:privacy|terms|disclosure)\/)/u;
 const LEGAL_DEFENSIVE_CONTEXT = /(?:\b(?:can|cannot|disclosure|does not|do not|independent(?:ly)?|irreversible|liable|loss|may|never|no|not|only|privacy|risk|speculative|terms|third part|verify|volatile|without)\b|\b(?:aucun(?:e)?|confidentialit[eé]|ind[eé]pendant|irr[eé]versible|jamais|ne|ni|pas|perte|peut|risque|sans|seulement|uniquement|v[eé]rif\p{L}*)\b|\b(?:indipendente|irreversibile|mai|nessun[ao]?|non|perdita|privacy|pu[oò]|rischio|senza|solo|verific\p{L}*)\b|\b(?:apenas|independente|irrevers[ií]vel|jamais|n[aã]o|nenhum[ao]?|perda|pode|privacidade|risco|sem|somente|verific\p{L}*)\b|\b(?:independiente|irreversible|nunca|ning[uú]n|no|p[eé]rdida|puede|privacidad|riesgo|sin|solo|verific\p{L}*)\b|(?:^|\s)(?:без|может|не|нет|потеря|провер\p{L}*|риск|только)(?:\s|$))/iu;
@@ -407,6 +409,9 @@ function isAstrofolioNavigationDescription(fragment) {
     'Collection officielle de jetons du Zodiaque — en anglais',
     'Collezione ufficiale di token zodiacali — in inglese',
     'Официальная коллекция токенов Зодиака — на английском',
+    // Owner-directed Chinese wording (2026-10-24), for the Chinese zodiac guide.
+    '十二星座官方代币收藏（英文）',
+    '十二星座官方代幣收藏（英文）',
   ]).has(fragment.text);
 }
 
@@ -430,11 +435,13 @@ const OWNER_TRUST_COPY_HASHES = new Set([
   "efafd26f9200f5ccbc67b894e02e447c8ed7de720c58a62a3f4a976e5d108194",
   "00feb6e74a8118217ee751d8c3e490ba73a239b72ecdab610edc29f4747cc36a",
   "b6215489dd1fdbd8baea944dee38a965b4838e51436320d4107645d3fe7ca6e3",
-  "cb044b723d7e6bc78bbe81e657b810f664bc5868703b6734e6560ff5b4068222"
+  "cb044b723d7e6bc78bbe81e657b810f664bc5868703b6734e6560ff5b4068222",
+  "c4a8335606375cfb8e5a24918341227d158ab1cc4e48ae4c8d5f3c198fe6562c",
+  "9ad50a1c139b62f50049f489cd65624fb5d8df1795b8a05039300504f6eeff08"
 ]);
 function isOwnerTrustStatement(fragment) {
-  return /^src\/lib\/i18n\/ui\/(?:en|es|pt|fr|it|ru)\.ts$/.test(fragment.file)
-    && /^(?:en|es|pt|fr|it|ru)\.trust(?:FreeAnswer|GamesScore|GamesIndependent)$/.test(fragment.key)
+  return /^src\/lib\/i18n\/ui\/(?:en|es|pt|fr|it|ru|zh-hans|zh-hant)\.ts$/.test(fragment.file)
+    && /^(?:en|es|pt|fr|it|ru|zhHans|zhHant)\.trust(?:FreeAnswer|GamesScore|GamesIndependent)$/.test(fragment.key)
     && OWNER_TRUST_COPY_HASHES.has(createHash('sha256').update(fragment.text).digest('hex'));
 }
 

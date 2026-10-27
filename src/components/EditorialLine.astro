@@ -12,13 +12,15 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 // The editorial standards live on the English /about/ page.
 const englishOnly = englishOnlyCue(locale);
+// Every catalog locale has its own methodology page; the section locales link the English one.
+const methodologyEnglish = Boolean(englishOnly) && localizePath(locale, '/methodology/') === '/methodology/';
 ---
 <aside class="editorial-line container container--narrow">
   <span>
     {t(locale, 'editedBy')}{' '}
     <a href={EDITOR_PATH} hreflang={englishOnly ? 'en' : undefined} title={englishOnly?.aria}>Zodiacs.org</a>
     <span aria-hidden="true"> · </span>
-    <a href={localizePath(locale, '/methodology/')}>{t(locale, 'editorialHow')}</a>
+    <a href={localizePath(locale, '/methodology/')} hreflang={methodologyEnglish ? 'en' : undefined} title={methodologyEnglish ? englishOnly?.aria : undefined}>{t(locale, 'editorialHow')}{methodologyEnglish ? englishOnly?.suffix : ''}</a>
   </span>
 </aside>
 

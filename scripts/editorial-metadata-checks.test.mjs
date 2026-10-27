@@ -3,16 +3,22 @@ import { EDITORIAL_METADATA, editorialDates, editorialMetadata } from '../src/li
 import { editorialGraphErrors, editorialSitemapErrors } from './editorial-metadata-checks.mjs';
 
 describe('editorial metadata ownership', () => {
-  it('bounds the repair to five English collections and 65 five-locale articles', () => {
+  it('bounds the repair to five English collections, 65 five-locale articles and the 26 Chinese editions', () => {
     const entries = Object.entries(EDITORIAL_METADATA);
-    expect(entries).toHaveLength(70);
+    expect(entries).toHaveLength(96);
     expect(entries.filter(([, x]) => x.type === 'CollectionPage').map(([path]) => path).sort()).toEqual([
       '/learn/', '/learn/aspects/', '/learn/houses/', '/learn/placements/', '/learn/planets/',
     ]);
     for (const locale of ['', '/es', '/pt', '/fr', '/it']) {
       const articles = entries.filter(([path, x]) => path.startsWith(`${locale}/learn/chinese-zodiac/`) && x.type === 'Article');
       expect(articles).toHaveLength(13);
-      expect(new Set(articles.map(([, x]) => x.modified))).toEqual(new Set(['2026-10-16']));
+      // English animal pages carry the 2026-10-26 art revision; the hub and other locales stay on 2026-10-16.
+      expect(new Set(articles.map(([, x]) => x.modified))).toEqual(new Set(locale ? ['2026-10-16'] : ['2026-10-16', '2026-10-26']));
+    }
+    for (const locale of ['/zh-hans', '/zh-hant']) {
+      const articles = entries.filter(([path, x]) => path.startsWith(`${locale}/learn/chinese-zodiac/`) && x.type === 'Article');
+      expect(articles).toHaveLength(13);
+      expect(new Set(articles.map(([, x]) => x.modified))).toEqual(new Set(['2026-10-24', '2026-10-26']));
     }
     expect(() => editorialMetadata('/ru/learn/chinese-zodiac/')).toThrow(/Missing/);
   });
@@ -47,11 +53,11 @@ describe('editorial metadata ownership', () => {
     expect(editorialGraphErrors(path, [{ ...article, dateModified: '2026-09-06T00:00:00.000Z' }])).not.toEqual([]);
   });
 
-  it('requires all 70 sitemap dates and rejects missing, duplicate or stale entries', () => {
+  it('requires all 96 sitemap dates and rejects missing, duplicate or stale entries', () => {
     const xml = Object.entries(EDITORIAL_METADATA).map(([path, x]) => `<url><loc>https://zodiacs.org${path}</loc><lastmod>${x.modified}</lastmod></url>`).join('');
     expect(editorialSitemapErrors(xml)).toEqual([]);
     expect(editorialSitemapErrors(xml.replace('<lastmod>2026-10-16</lastmod>', '<lastmod>2026-08-23</lastmod>'))).not.toEqual([]);
     expect(editorialSitemapErrors(xml.replace(/<url>.*?<\/url>/u, ''))).not.toEqual([]);
-    expect(editorialSitemapErrors(xml + xml)).toHaveLength(70);
+    expect(editorialSitemapErrors(xml + xml)).toHaveLength(96);
   });
 });

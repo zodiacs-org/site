@@ -1,5 +1,42 @@
 # OpenAI portal review record
 
+## Edition layout fixes prepared locally, 27 October 2026
+
+The release remains on hold. Site Check run `40458842151` at the approved
+head `c9736c27` exhausted its one permitted failed-job rerun. Attempt 2
+failed the dated Today page at 360px (CLS 0.00347222900390625) and the
+Aries horoscope at 1280px (CLS 0.01662311862244898). No further rerun was
+requested, no gate was loosened, and no portal action was taken.
+
+A regression pauses the actual responses before the wheel SVG arrives,
+after the period navigation, and after the first sign icon. On the old
+pages it reproduces both failures, including the decorative pseudo-element
+on Today and the sign rail and period navigation on the horoscope.
+Reserving the wheel's square and the controls' rows and sign columns fixes
+the movement. All nine new interrupted-load cases have exactly zero CLS.
+The complete Today browser suite passes 379 assertions in Chromium 149;
+the source check reports no errors or warnings. Settled geometry matches
+the old pages at 360, 900 and 1280px for both surfaces.
+
+The complete merged release candidate builds successfully under Node 22
+with the publication clock pinned to noon UTC. All bundle budgets pass
+without changing a limit. Full CI success remains a condition of
+publication.
+
+All 293 AI tests, package and generated-file checks, and the flag-off
+fixture pass. Phase 1 was recaptured with eighteen screenshots and all five
+evidence checks pass. The same nine interruption cases also pass against
+the complete merged release build. Main's Site Check run `40465453550`
+finished successfully for `e94fdf1a`; the revised candidate still needs its
+own GitHub checks after approval to publish it.
+
+A private candidate combines current main `e94fdf1a`, the layout fix and
+the approved release. Generated files were rebuilt with their tools.
+It preserves main's occasions v8 and horoscopes v6 and their old addresses.
+The reviewed Sky 0.5.1 ZIP, selected icon and demo retain the checksums
+recorded below. The existing remote draft PR remains at `c9736c27`.
+Owner approval is needed before publishing this revised candidate.
+
 ## Tilted ring profile picture selected, 27 October 2026
 
 After reviewing the full-size options, Dias selected option 1, the tilted

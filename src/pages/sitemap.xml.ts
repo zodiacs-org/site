@@ -766,7 +766,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
       return [{
         ...url,
         loc,
-        lastmod: EVERGREEN_LASTMOD.has(loc) ? getLastmod(loc) : url.lastmod,
+        lastmod: EVERGREEN_LASTMOD.has(loc) || EDITORIAL_METADATA[loc] ? getLastmod(loc) : url.lastmod,
       }];
     });
   });

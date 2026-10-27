@@ -25,6 +25,8 @@ export const SITEMAP_SECTIONS = [
   'fr',
   'it',
   'ru',
+  'zh-hans',
+  'zh-hant',
 ] as const;
 
 export type SitemapSection = (typeof SITEMAP_SECTIONS)[number];
@@ -32,7 +34,7 @@ export type SitemapSection = (typeof SITEMAP_SECTIONS)[number];
 /** The protocol's limit on the locations one sitemap may list. */
 export const SITEMAP_URL_LIMIT = 50_000;
 
-const LOCALE_SECTIONS: ReadonlySet<string> = new Set<SitemapSection>(['es', 'pt', 'fr', 'it', 'ru']);
+const LOCALE_SECTIONS: ReadonlySet<string> = new Set<SitemapSection>(['es', 'pt', 'fr', 'it', 'ru', 'zh-hans', 'zh-hant']);
 
 /** First path segment → section, for paths deeper than one segment. */
 const FIRST_SEGMENT_SECTIONS: ReadonlyMap<string, SitemapSection> = new Map<string, SitemapSection>([
