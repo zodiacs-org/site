@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "chinese-zodiac-mandarin-editions-2026-10-26",
-  "baseCommit": "400c261218c19deac82bd0353074d110a923f051",
+  "baseCommit": "922924ee00a3574cd1a2d58dbe62702715630a41",
   "protectedPaths": [
     "src/lib/i18n/core.ts",
     "src/lib/i18n/english-only.ts",

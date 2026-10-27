@@ -40,12 +40,17 @@ const out = new URL('../docs/platform/zodiacs-ai/evidence/', import.meta.url);
 await mkdir(out, { recursive: true });
 try {
   const context = await browser.newContext({ viewport: { width: 760, height: 900 }, timezoneId: 'Asia/Bangkok' });
+  await context.route('https://zodiacs.org/assets/**', async (route) => {
+    const pathname = new URL(route.request().url()).pathname;
+    const body = await readFile(new URL(`../public${pathname}`, import.meta.url));
+    await route.fulfill({ body, contentType: pathname.endsWith('.avif') ? 'image/avif' : 'image/webp' });
+  });
   // The panel takes today from the device clock: pin it to the committed edition's day, as the tool's own clock is,
   // so the drive does not fail once the real date passes the window.
   await context.clock.setFixedTime(noon);
   const page = await context.newPage();
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
-  let network = 0; page.on('request', request => { if (!request.url().startsWith('data:')) network++; });
+  const network: string[] = []; page.on('request', request => { if (!request.url().startsWith('data:')) network.push(request.url()); });
   await page.setContent(HOROSCOPES_HTML);
   // A sign-less call shows the picker.
   const picker = await horoscope({});
@@ -100,7 +105,7 @@ try {
   injected._meta['zodiacs/horoscope'].days.forEach((day: any) => { day.focuses.general.paragraphs = [{ text: '<img src=x onerror="window.pwned=1">' }]; });
   const fresh = await context.newPage();
   fresh.on('pageerror', error => errors.push(error.message));
-  fresh.on('request', request => { if (!request.url().startsWith('data:')) network++; });
+  fresh.on('request', request => { if (!request.url().startsWith('data:')) network.push(request.url()); });
   await fresh.setContent(HOROSCOPES_HTML);
   await fresh.evaluate(result => {
     (window as any).openai = { toolOutput: result.structuredContent, toolResponseMetadata: result._meta };
@@ -114,7 +119,7 @@ try {
   const watched = HOROSCOPES_HTML.replace('<head>', '<head><script>new MutationObserver(() => { if (document.querySelector(".grid")) window.sawPicker = true; }).observe(document, { childList: true, subtree: true });</script>');
   const arriving = await context.newPage();
   arriving.on('pageerror', error => errors.push(error.message));
-  arriving.on('request', request => { if (!request.url().startsWith('data:')) network++; });
+  arriving.on('request', request => { if (!request.url().startsWith('data:')) network.push(request.url()); });
   await arriving.setContent(watched);
   assert.match(await arriving.getByRole('status').innerText(), /^Opening your horoscope…$/);
   assert.equal(await arriving.locator('.grid button').count(), 0, 'No sign picker while the reading is on its way');
@@ -130,7 +135,7 @@ try {
   // Opened with no reading at all (from a sidebar, say), the picker appears after a short wait.
   const empty = await context.newPage();
   empty.on('pageerror', error => errors.push(error.message));
-  empty.on('request', request => { if (!request.url().startsWith('data:')) network++; });
+  empty.on('request', request => { if (!request.url().startsWith('data:')) network.push(request.url()); });
   const opened = Date.now();
   await empty.setContent(watched);
   assert.match(await empty.getByRole('status').innerText(), /Opening your horoscope/);
@@ -139,7 +144,7 @@ try {
   assert.ok(Date.now() - opened >= 1400, `The picker waits for a reading first (${Date.now() - opened} ms)`);
   assert.equal(await empty.locator('.grid button').count(), 12);
   assert.equal(await empty.getByText('Opening your horoscope…').count(), 0);
-  assert.equal(network, 0); assert.deepEqual(errors, []);
+  assert.ok(network.every(url => url.startsWith('https://zodiacs.org/assets/')), 'Only owned static art is requested'); assert.deepEqual(errors, []);
 
   // Chart Studio opens on the person's own birth details; the example is a labelled second choice.
   // Its own context has a fixed device clock, so "Your week" can be compared with Node.

@@ -4,18 +4,22 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
-## Update, 24 October: new addresses for the horoscope and occasion panels (#823)
+## Pending, 26 October: sharper chat artwork
 
-The Chinese language work changes the bundled horoscope and occasion panels,
-so each gets a new address under the same rule: `horoscopes-v5.html` and
-`occasions-v6.html`. `horoscopes-v4.html` and `occasions-v5.html` join the
-legacy lists and, like every earlier address, serve the current panel.
-Sky events v4 and Chart Studio v5 are unchanged. `tools/list` and
-`resources/list` change only in these addresses, and the flag-off fixture was
-recaptured to match. After the production deployment, check both new
-addresses and the two immediately previous ones against
-`src/ai-tools/panel-fingerprints.json`. Any rescan still needs Dias's
-separate approval.
+The owner noticed that the pictures in the chat cards look blurry. The
+production panels embed 400px and 480px, quality 36 copies while the art can
+span 540 CSS pixels. A candidate change uses larger public Zodiacs artwork
+for every illustrated card, with no names, dates or scores in the image URL.
+It also rebuilds the sky calendar, milestones and chart twins art and their
+share pictures from the selected full-resolution originals. The panel HTML
+stays smaller and permits only `https://zodiacs.org` as a static art origin.
+The candidate uses `horoscopes-v6.html` and `occasions-v8.html` (moved on
+again because the Chinese language work also changes both panels); earlier
+addresses remain readable. The local card and browser checks pass, but this
+is not live or scanned yet. Verify it in a
+private host connection before requesting a separate production approval and
+another separately approved draft rescan. The 20 October address record below
+remains the verified production state until that happens.
 
 ## Update, 20 October: fresh addresses for all four chat panels
 

@@ -10,6 +10,27 @@ import { OCCASIONS_HTML } from '../integrations/generated/occasions.mjs';
 const packageInfo = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const expectedEngine = packageInfo.dependencies['@zodiacs/engine'].match(/zodiacs-engine-(.+)\.tgz$/)[1];
 
+// This acceptance makes more than thirty requests against one preview. Space
+// them below the live per-address thirty-per-minute Firewall rule and the
+// shared forty-per-minute database quota instead of weakening either limit.
+const originalFetch = globalThis.fetch;
+let lastFetchAt = 0;
+let requestNumber = 0;
+const pacedFetch = async (...args) => {
+  const waitMs = Math.max(0, 2600 - (Date.now() - lastFetchAt));
+  if (waitMs) await new Promise(resolve => setTimeout(resolve, waitMs));
+  lastFetchAt = Date.now();
+  const number = ++requestNumber;
+  const response = await originalFetch(...args);
+  if (response.status >= 500 || response.status === 429) {
+    const request = args[1]?.body;
+    let operation = 'direct HTTP';
+    try { operation = JSON.parse(request).method ?? operation; } catch { /* no JSON-RPC body */ }
+    console.error(`Staging request ${number} ${operation}: HTTP ${response.status}`);
+  }
+  return response;
+};
+
 const url = new URL(process.env.ZODIACS_STAGING_MCP_URL);
 assert.equal(url.protocol, 'https:');
 assert.ok(url.hostname.endsWith('.vercel.app'));
@@ -26,7 +47,7 @@ const headers = { Cookie: cookies };
 const client = new Client({ name: 'zodiacs-staging-review', version: '1' });
 const evidence = { schema: 'zodiacs.ai-staging-acceptance.v2', capturedAt: new Date().toISOString(), url: url.href, transport: `official MCP client ${packageInfo.devDependencies['@modelcontextprotocol/client']}`, expectedEngine, checks: [], calls: [] };
 const record = (name, detail = {}) => evidence.checks.push({ name, passed: true, ...detail });
-const request = async (path, options = {}) => fetch(new URL(path, url), { ...options, headers: { ...headers, ...options.headers }, redirect: 'manual' });
+const request = async (path, options = {}) => pacedFetch(new URL(path, url), { ...options, headers: { ...headers, ...options.headers }, redirect: 'manual' });
 try {
   for (const path of ['/mcp/health', '/mcp/health/']) {
     const response = await request(path);
@@ -35,7 +56,7 @@ try {
     assert.equal((await response.json()).ready, true);
     record(`health ${path}`, { status: response.status });
   }
-  await client.connect(new StreamableHTTPClientTransport(url, { requestInit: { headers } }));
+  await client.connect(new StreamableHTTPClientTransport(url, { fetch: pacedFetch, requestInit: { headers } }));
   const tools = (await client.listTools()).tools;
   // 0.5.0 acceptance runs with ZODIACS_OCCASIONS_ENABLED=1 on the staging deployment.
   assert.equal(tools.length, 13);
@@ -83,27 +104,27 @@ try {
   record('native calendar resource');
   for (const [current, earlier] of [
     ...['sky-events-v3', 'sky-events-v2', 'sky-events-v1'].map(old => ['sky-events-v4', old]),
-    ...['horoscopes-v4', 'horoscopes-v3', 'horoscopes-v2', 'horoscopes-v1'].map(old => ['horoscopes-v5', old]),
+    ...['horoscopes-v5', 'horoscopes-v4', 'horoscopes-v3', 'horoscopes-v2', 'horoscopes-v1'].map(old => ['horoscopes-v6', old]),
     ...['chart-studio-v4', 'chart-studio-v3', 'chart-studio-v2', 'chart-studio-v1'].map(old => ['chart-studio-v5', old]),
-    ...['occasions-v5', 'occasions-v4', 'occasions-v3', 'occasions-v2', 'occasions-v1'].map(old => ['occasions-v6', old]),
+    ...['occasions-v7', 'occasions-v6', 'occasions-v5', 'occasions-v4', 'occasions-v3', 'occasions-v2', 'occasions-v1'].map(old => ['occasions-v8', old]),
   ]) {
     const now = (await client.readResource({ uri: `ui://zodiacs/${current}.html` })).contents[0];
     const before = (await client.readResource({ uri: `ui://zodiacs/${earlier}.html` })).contents[0];
     assert.equal(before.text, now.text, `${earlier} serves the current panel`);
   }
   record('earlier panel addresses serve the current panels');
-  const horoscopes = (await client.readResource({ uri: 'ui://zodiacs/horoscopes-v5.html' })).contents[0];
+  const horoscopes = (await client.readResource({ uri: 'ui://zodiacs/horoscopes-v6.html' })).contents[0];
   assert.equal(horoscopes.mimeType, 'text/html;profile=mcp-app');
   assert.equal(horoscopes.text, HOROSCOPES_HTML);
-  assert.deepEqual(horoscopes._meta.ui.csp, { connectDomains: [], resourceDomains: [] });
-  record('native horoscope resource matches the self-contained bundle', {
+  assert.deepEqual(horoscopes._meta.ui.csp, { connectDomains: [], resourceDomains: ['https://zodiacs.org'] });
+  record('native horoscope resource matches the bundle with owned static art', {
     bytes: Buffer.byteLength(horoscopes.text), sha256: createHash('sha256').update(horoscopes.text).digest('hex'),
   });
-  const occasions = (await client.readResource({ uri: 'ui://zodiacs/occasions-v6.html' })).contents[0];
+  const occasions = (await client.readResource({ uri: 'ui://zodiacs/occasions-v8.html' })).contents[0];
   assert.equal(occasions.mimeType, 'text/html;profile=mcp-app');
   assert.equal(occasions.text, OCCASIONS_HTML);
-  assert.deepEqual(occasions._meta.ui.csp, { connectDomains: [], resourceDomains: [] });
-  record('native occasions resource matches the self-contained bundle', {
+  assert.deepEqual(occasions._meta.ui.csp, { connectDomains: [], resourceDomains: ['https://zodiacs.org'] });
+  record('native occasions resource matches the bundle with owned static art', {
     bytes: Buffer.byteLength(occasions.text), sha256: createHash('sha256').update(occasions.text).digest('hex'),
   });
   const studio = (await client.readResource({ uri: 'ui://zodiacs/chart-studio-v5.html' })).contents[0];

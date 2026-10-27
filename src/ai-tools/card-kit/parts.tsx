@@ -44,7 +44,8 @@ declare const CARD_ART: Record<string, string>;
 export interface ArtSource { dark: string; light?: string }
 /**
  * A card's hero art: a sign panel (by slug) or one of the cards' own pieces
- * (by name), inlined at build time, with its light twin under "<key>-light".
+ * (by name), served from Zodiacs' static assets, with its light twin under
+ * "<key>-light". The sign discs and fonts stay inline in the panel.
  */
 export const artOf = (key: string | null | undefined): ArtSource | undefined => {
   const name = key && (CARD_ART[key] ? key : key.toLowerCase());
