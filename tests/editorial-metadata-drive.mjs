@@ -23,7 +23,9 @@ export async function runEditorialMetadataChecks({ browser, baseURL, check, outD
             return data['@graph'] ?? [data];
           }),
         }));
-        const locale = /^\/(es|pt|fr|it)\//u.exec(path)?.[1] ?? 'en';
+        // The Mandarin editions declare zh-Hans / zh-Hant, whose primary subtag is zh.
+        const prefix = /^\/(es|pt|fr|it|zh-hans|zh-hant)\//u.exec(path)?.[1];
+        const locale = prefix?.startsWith('zh-') ? 'zh' : prefix ?? 'en';
         check(`editorial ${width}: ${path} has its exact canonical, locale and reviewed date without JavaScript`,
           response?.ok() && data.canonical === `https://zodiacs.org${path}`
           && data.lang.split('-')[0] === locale && data.headings === 1 && data.fit

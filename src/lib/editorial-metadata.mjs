@@ -19,6 +19,11 @@ export const EDITORIAL_METADATA = Object.freeze(Object.fromEntries([
     `${locale === 'en' ? '' : `/${locale}`}/learn/chinese-zodiac/${suffix}`,
     Object.freeze({ type: 'Article', modified: '2026-10-16' }),
   ])),
+  // The Simplified and Traditional Chinese editions of the guide, first published 2026-10-24.
+  ...['zh-hans', 'zh-hant'].flatMap((locale) => ['', ...animals.map((animal) => `${animal}/`)].map((suffix) => [
+    `/${locale}/learn/chinese-zodiac/${suffix}`,
+    Object.freeze({ type: 'Article', modified: '2026-10-24' }),
+  ])),
 ]));
 
 /** @param {string} path */

@@ -37,8 +37,8 @@ export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v4.html', 'ui://zo
 export const LEGACY_STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
 export { HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS };
 /** The occasion tools' panel, offered only while ZODIACS_OCCASIONS_ENABLED=1. */
-export const OCCASIONS_URI = 'ui://zodiacs/occasions-v7.html';
-export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v6.html', 'ui://zodiacs/occasions-v5.html', 'ui://zodiacs/occasions-v4.html', 'ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
+export const OCCASIONS_URI = 'ui://zodiacs/occasions-v8.html';
+export const LEGACY_OCCASIONS_URIS = ['ui://zodiacs/occasions-v7.html', 'ui://zodiacs/occasions-v6.html', 'ui://zodiacs/occasions-v5.html', 'ui://zodiacs/occasions-v4.html', 'ui://zodiacs/occasions-v3.html', 'ui://zodiacs/occasions-v2.html', 'ui://zodiacs/occasions-v1.html'] as const;
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 
 /** What people see on the tool-call line and in the plugin's details. */

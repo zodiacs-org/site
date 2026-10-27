@@ -7,10 +7,12 @@ import {
   CORE_ROUTE_LOCALES,
   DAILY_READING_ROUTE_LOCALES,
   CATALOG_LOCALES,
+  CHINESE_ZODIAC_ROUTE_LOCALES,
   LEGACY_HOME_SELECTOR_LOCALES,
   INDEXABLE_SIGN_GUIDE_LOCALES,
   PROGRAMMATIC_ROUTE_LOCALES,
   RELEASED_LOCALES,
+  SECTION_LOCALES,
   STAGED_CORE_ROUTE_LOCALES,
   alternatePaths,
   availableLocalesForPath,
@@ -139,7 +141,7 @@ describe('i18n helpers', () => {
   });
 
   it('publishes Russian only on the reviewed core route family', () => {
-    expect(LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru', 'ar']);
+    expect(LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru', 'ar', 'zh-hans', 'zh-hant']);
     expect(RELEASED_LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it']);
     expect(CORE_ROUTE_LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru']);
     expect(CATALOG_LOCALES).toEqual(['en', 'es', 'pt', 'fr', 'it', 'ru']);
@@ -166,7 +168,25 @@ describe('i18n helpers', () => {
     expect(renderableLocalesForPath('/tools/')).toEqual(CORE_ROUTE_LOCALES);
     expect(availableLocalesForPath('/birthday/february-29/')).toEqual(['en']);
     expect(renderableLocalesForPath('/birthday/february-29/')).toEqual(PROGRAMMATIC_ROUTE_LOCALES);
-    expect(availableLocalesForPath('/learn/chinese-zodiac/dragon/')).toEqual(PROGRAMMATIC_ROUTE_LOCALES);
+    expect(availableLocalesForPath('/learn/chinese-zodiac/dragon/')).toEqual(CHINESE_ZODIAC_ROUTE_LOCALES);
+    expect(CHINESE_ZODIAC_ROUTE_LOCALES).toEqual([...PROGRAMMATIC_ROUTE_LOCALES, 'zh-hans', 'zh-hant']);
+    expect(LOCALE_META['zh-hans']).toEqual({
+      pathPrefix: '/zh-hans', htmlLang: 'zh-Hans', dir: 'ltr', hreflang: 'zh-Hans',
+      intlLocale: 'zh-Hans', ogLocale: 'zh_CN', languageName: '简体中文',
+    });
+    expect(LOCALE_META['zh-hant']).toEqual({
+      pathPrefix: '/zh-hant', htmlLang: 'zh-Hant', dir: 'ltr', hreflang: 'zh-Hant',
+      intlLocale: 'zh-Hant', ogLocale: 'zh_TW', languageName: '繁體中文',
+    });
+    // The section locales publish the Chinese zodiac guide and nothing else.
+    for (const locale of SECTION_LOCALES) {
+      expect(localizePath(locale, '/learn/chinese-zodiac/rat/')).toBe(`/${locale}/learn/chinese-zodiac/rat/`);
+      for (const path of ['/', '/tools/', '/aries/', '/birthday/february-29/', '/learn/', '/horoscopes/', '/compatibility/aries-leo/']) {
+        expect(localizePath(locale, path)).toBe(path);
+        expect(alternatePaths(path) ?? {}).not.toHaveProperty(locale);
+      }
+      expect(stripLocale(`/${locale}/learn/chinese-zodiac/`)).toBe('/learn/chinese-zodiac/');
+    }
     expect(availableLocalesForPath('/aries/')).toEqual(INDEXABLE_SIGN_GUIDE_LOCALES);
     expect(renderableLocalesForPath('/aries/')).toEqual(CORE_ROUTE_LOCALES);
     expect(alternatePaths('/tools/')).toHaveProperty('ru', '/ru/tools/');
@@ -226,6 +246,8 @@ describe('i18n helpers', () => {
         pt: `/pt${path}`,
         fr: `/fr${path}`,
         it: `/it${path}`,
+        'zh-hans': `/zh-hans${path}`,
+        'zh-hant': `/zh-hant${path}`,
       });
     }
     expect(alternatePaths('/birthday/july-15/')).toEqual({ en: '/birthday/july-15/' });

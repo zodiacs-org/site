@@ -1,0 +1,9 @@
+---
+import LocalizedChineseZodiacAnimal from '../../../../components/programmatic/LocalizedChineseZodiacAnimal.astro';
+import { CHINESE_ZODIAC_ANIMALS } from '../../../../data/chinese-zodiac';
+
+export function getStaticPaths() {
+  return CHINESE_ZODIAC_ANIMALS.map((animal) => ({ params: { animal: animal.slug } }));
+}
+---
+<LocalizedChineseZodiacAnimal locale="zh-hant" animalSlug={Astro.params.animal!} />

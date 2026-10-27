@@ -7,19 +7,22 @@ const dailyBlocks = (approvedDailyDays.length + (approvedDailyDays.length ? 1 : 
  * TypeScript locale union never changes this release policy.
  */
 export const HREFLANG_LOCALE_POLICY = Object.freeze([
-  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 1129 + dailyBlocks },
-  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 763 + dailyBlocks },
-  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 763 + dailyBlocks },
-  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 721 + dailyBlocks },
-  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 721 + dailyBlocks },
+  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 1155 + dailyBlocks },
+  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 789 + dailyBlocks },
+  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 789 + dailyBlocks },
+  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 747 + dailyBlocks },
+  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 747 + dailyBlocks },
   { locale: 'ru', hreflang: 'ru', indexEligible: true, routeFamilies: ['core'], expectedBlocks: 126 + dailyBlocks },
   { locale: 'ar', hreflang: 'ar', indexEligible: false, routeFamilies: [], expectedBlocks: 0 },
+  // The Chinese zodiac guide alone: its 13 pages in each of the seven locales that publish it.
+  { locale: 'zh-hans', hreflang: 'zh-Hans', indexEligible: true, routeFamilies: ['chinese-zodiac'], expectedBlocks: 91 },
+  { locale: 'zh-hant', hreflang: 'zh-Hant', indexEligible: true, routeFamilies: ['chinese-zodiac'], expectedBlocks: 91 },
 ]);
 
 export const X_DEFAULT_HREFLANG = Object.freeze({
   hreflang: 'x-default',
   locale: 'en',
-  expectedBlocks: 1129 + dailyBlocks,
+  expectedBlocks: 1155 + dailyBlocks,
 });
 
 export const ACTIVE_HREFLANGS = Object.freeze(
@@ -71,7 +74,7 @@ const ANIMALS = new Set([
 
 function canonicalPath(path) {
   let clean = path;
-  for (const prefix of ['/es', '/pt', '/fr', '/it', '/ru', '/ar']) {
+  for (const prefix of ['/es', '/pt', '/fr', '/it', '/ru', '/ar', '/zh-hans', '/zh-hant']) {
     if (clean === prefix) return '/';
     if (clean.startsWith(`${prefix}/`)) {
       clean = clean.slice(prefix.length) || '/';

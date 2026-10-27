@@ -1,6 +1,7 @@
 ---
 import { isAstrologyToolPath, showsCollectionNavigation } from '../lib/trust-boundary';
-import { SIGNS, signName } from '../lib/signs';
+import { SIGNS } from '../lib/signs';
+import { chromeSignName as signName } from '../lib/i18n/section-signs';
 import TiltedRing from './TiltedRing.astro';
 import EmailCapture from './EmailCapture.astro';
 import TerminalMarketVenueNotice from './TerminalMarketVenueNotice.astro';
@@ -12,16 +13,17 @@ import {
   alternatePathEntries,
   englishOnlyCue,
   renderableAlternatePathEntries,
+  isSectionLocale,
   localizePath,
-  normalizeCatalogLocale,
+  normalizePageLocale,
   stripLocale,
   t,
-  type CatalogLocale as Locale,
+  type PageLocale as Locale,
 } from '../lib/i18n';
 
 const year = new Date().getFullYear();
 interface Props { locale?: Locale; terminalMarketNotice?: boolean; noAssistant?: boolean }
-const locale = normalizeCatalogLocale(Astro.props.locale);
+const locale = normalizePageLocale(Astro.props.locale);
 const isTool = isAstrologyToolPath(Astro.url.pathname);
 const showCollection = showsCollectionNavigation(Astro.url.pathname);
 const routeLanguageLinks = renderableAlternatePathEntries(Astro.url.pathname);
@@ -41,6 +43,8 @@ const FOOTER_COPY = {
   fr: { guideDescription: 'Un assistant IA pour vos questions sur l’astrologie et pour vous aider à utiliser Zodiacs.', assistant: 'Guide', language: 'Langue', legal: 'Mentions légales', utilities: 'Plus', licenses: 'Données et licences', developers: 'Développeurs' },
   it: { guideDescription: 'Un assistente IA per le tue domande di astrologia e per aiutarti a usare Zodiacs.', assistant: 'Guide', language: 'Lingua', legal: 'Note legali', utilities: 'Altro', licenses: 'Dati e licenze', developers: 'Sviluppatori' },
   ru: { guideDescription: 'ИИ-помощник для вопросов об астрологии и помощи с Zodiacs.', assistant: 'Guide (пока по-английски)', language: 'Язык', legal: 'Правовая информация', utilities: 'Ещё', licenses: 'Данные и лицензии', developers: 'Разработчикам' },
+  'zh-hans': { guideDescription: '一个 AI 助手，可以回答占星问题，也能帮你使用 Zodiacs。', assistant: 'Guide（英文）', language: '语言', legal: '法律信息', utilities: '更多', licenses: '数据与授权', developers: '开发者' },
+  'zh-hant': { guideDescription: '一個 AI 助理，可以回答占星問題，也能幫你使用 Zodiacs。', assistant: 'Guide（英文）', language: '語言', legal: '法律資訊', utilities: '更多', licenses: '資料與授權', developers: '開發者' },
 } as const satisfies Record<Locale, {
   assistant: string;
   guideDescription: string;
@@ -58,6 +62,11 @@ const englishSuffix = englishOnly?.suffix ?? '';
 const englishOnlyAria = englishOnly?.aria;
 const englishHreflang = englishOnly ? ('en' as const) : undefined;
 const englishOnlyHref = (href: string): boolean => Boolean(englishOnly) && localizePath(locale, href) === href;
+// The section locales link every page outside their guide in English.
+const sectionLocale = isSectionLocale(locale);
+const linkHreflang = (href: string) => (englishOnlyHref(href) ? ('en' as const) : undefined);
+const linkTitle = (href: string) => (englishOnlyHref(href) ? englishOnlyAria : undefined);
+const linkSuffix = (href: string) => (englishOnlyHref(href) ? englishSuffix : '');
 const privacyHref = localizePath(locale, '/privacy/');
 const fontLicenseHref = locale === 'ru' ? '/fonts/OFL-golos-text.txt' : '/fonts/OFL-instrument-sans.txt';
 const consumerPath = stripLocale(Astro.url.pathname);
@@ -67,11 +76,11 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
 ---
 <footer class="zfooter">
   <div class="zfooter__inner">
-    {locale !== 'ru' && !isRegistryWing && !suppressFooterEmailCapture && <EmailCapture locale={locale} placement="footer" />}
+    {locale !== 'ru' && !isRegistryWing && !suppressFooterEmailCapture && !sectionLocale && <EmailCapture locale={locale} placement="footer" />}
 
     <div class="zfooter__lead">
       <div>
-        <a class="zfooter__brand" href={localizePath(locale, '/')} aria-label="Zodiacs.org">
+        <a class="zfooter__brand" href={localizePath(locale, '/')} hreflang={linkHreflang('/')} title={linkTitle('/')} aria-label="Zodiacs.org">
           <TiltedRing width={42} class="zfooter__brand-mark" />
           <span class="zfooter__brand-name" aria-hidden="true">Zodiacs<span class="zfooter__brand-sep">·</span><span class="zfooter__brand-tld">org</span></span>
         </a>
@@ -85,7 +94,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           type="button"
           data-assistant-open
           data-footer-guide
-          data-assistant-locale={locale}
+          data-assistant-locale={sectionLocale ? 'en' : locale}
           aria-haspopup="dialog"
           aria-describedby="footer-guide-description"
         >
@@ -123,8 +132,8 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           <a href="/learn/houses/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerHouses')}{englishSuffix}</a>
           <a href="/learn/zodiac-dates/" hreflang="en" title={englishOnlyAria}>{t(locale, 'footerZodiacDates')}{englishSuffix}</a>
           <a href="/learn/glossary/" hreflang="en" title={englishOnlyAria}>{t(locale, 'footerGlossary')}{englishSuffix}</a>
-          <a href={localizePath(locale, '/methodology/')}>{t(locale, 'footerCompute')}</a>
-          <a href={localizePath(locale, '/profile/')}>{t(locale, 'navSavedCharts')}</a>
+          <a href={localizePath(locale, '/methodology/')} hreflang={linkHreflang('/methodology/')} title={linkTitle('/methodology/')}>{t(locale, 'footerCompute')}{linkSuffix('/methodology/')}</a>
+          <a href={localizePath(locale, '/profile/')} hreflang={linkHreflang('/profile/')} title={linkTitle('/profile/')}>{t(locale, 'navSavedCharts')}{linkSuffix('/profile/')}</a>
         </div>
       </details></nav>
 
@@ -135,9 +144,13 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           <a href="/astrofolio/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'navCollect')}{englishSuffix}</a>
           <a href="/registry/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerRegistry')}{englishSuffix}</a>
           <a href="/sdk/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerSdk')}{englishSuffix}</a>
-          <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'footerDisclosure')}</a>
+          <a href={localizePath(locale, '/disclosure/')} hreflang={linkHreflang('/disclosure/')} title={linkTitle('/disclosure/')}>{t(locale, 'footerDisclosure')}{linkSuffix('/disclosure/')}</a>
         </div>
-        <span class="zfooter__note">{t(locale, 'trustFreeAnswer')} <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'trustDisclosure')}</a>.</span>
+        {sectionLocale ? (
+          <span class="zfooter__note">{t(locale, 'trustFreeAnswer')}<a href="/disclosure/" hreflang="en" title={englishOnlyAria}>{t(locale, 'trustDisclosure')}{englishSuffix}</a>。</span>
+        ) : (
+          <span class="zfooter__note">{t(locale, 'trustFreeAnswer')} <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'trustDisclosure')}</a>.</span>
+        )}
       </details></nav>
 
       )}
@@ -146,7 +159,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
         <span class="zfooter__label">{t(locale, 'navTwelve')}</span>
         <div class="zfooter__signs">
           {SIGNS.map((sign) => (
-            <a class="zfooter__sign" href={localizePath(locale, `/${sign.slug}/`)} aria-label={signName(sign, locale)} title={signName(sign, locale)}>
+            <a class="zfooter__sign" href={localizePath(locale, `/${sign.slug}/`)} hreflang={linkHreflang(`/${sign.slug}/`)} aria-label={englishOnlyHref(`/${sign.slug}/`) ? `${signName(sign, locale)}${englishSuffix}` : signName(sign, locale)} title={signName(sign, locale)}>
               <img src={`/assets/zodiac-icons/48/${sign.slug}.webp?surface=site-footer`} width="25" height="25" alt="" loading="lazy" decoding="async" />
               <span class="zfooter__visually-hidden">{signName(sign, locale)}</span>
             </a>
@@ -175,7 +188,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
         <span class="zfooter__label">{FOOTER_COPY[locale].legal}</span>
         <div class="zfooter__meta-links">
           <a href="/about/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerAbout')}{englishSuffix}</a>
-          <a href={privacyHref}>{t(locale, 'footerPrivacy')}</a>
+          <a href={privacyHref} hreflang={linkHreflang('/privacy/')} title={linkTitle('/privacy/')}>{t(locale, 'footerPrivacy')}{linkSuffix('/privacy/')}</a>
           <a href="/terms/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerTerms')}{englishSuffix}</a>
         </div>
       </nav>
@@ -191,7 +204,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
 
       <div class="zfooter__meta zfooter__credits">
         <span class="zfooter__label">{FOOTER_COPY[locale].licenses}</span>
-        <p>{t(locale, 'footerPlaceData')}: <a href="https://www.geonames.org/" rel="noopener noreferrer">GeoNames</a> · CC BY 4.0</p>
+        <p>{t(locale, 'footerPlaceData')}{sectionLocale ? '：' : ': '}<a href="https://www.geonames.org/" rel="noopener noreferrer">GeoNames</a> · CC BY 4.0</p>
         <p>{t(locale, 'footerFonts')} <a href={fontLicenseHref}>SIL OFL 1.1</a></p>
       </div>
     </div>
@@ -202,7 +215,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
      inline loader reacts only to a deliberate Guide CTA click. `noAssistant`
      omits it. -->
 {!Astro.props.noAssistant && (
-  <script is:inline data-guide-loader={GUIDE_LOADER_MARKER} set:html={guideLoaderSource(locale)} />
+  <script is:inline data-guide-loader={GUIDE_LOADER_MARKER} set:html={guideLoaderSource(sectionLocale ? 'en' : locale)} />
 )}
 
 <script is:inline>

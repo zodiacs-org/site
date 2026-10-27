@@ -13,7 +13,8 @@ for every illustrated card, with no names, dates or scores in the image URL.
 It also rebuilds the sky calendar, milestones and chart twins art and their
 share pictures from the selected full-resolution originals. The panel HTML
 stays smaller and permits only `https://zodiacs.org` as a static art origin.
-The candidate uses `horoscopes-v5.html` and `occasions-v7.html`; earlier
+The candidate uses `horoscopes-v6.html` and `occasions-v8.html` (moved on
+again because the Chinese language work also changes both panels); earlier
 addresses remain readable. The local card and browser checks pass, but this
 is not live or scanned yet. Verify it in a
 private host connection before requesting a separate production approval and
