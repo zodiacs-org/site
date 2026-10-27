@@ -1,6 +1,6 @@
 {
   "bundlePath": "plugins/zodiacs-developer/mcp/server.mjs",
-  "bundleSha256": "976e3b7ab8c4ff9d30708c55ac773a0b08b172e633bcc6a593179a91fffcec45",
+  "bundleSha256": "724f03c08fef7222111e246f1d104ab7be0fc532a65d6e22487fcbaecaa2ca5b",
   "bindings": [
     {
       "name": "NAMESPACE",

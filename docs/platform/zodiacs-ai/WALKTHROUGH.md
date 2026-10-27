@@ -1,5 +1,27 @@
 # Native ChatGPT walkthroughs
 
+## 0.5.1 recording prepared, 27 October 2026
+
+Status: local candidate for owner review, not published or uploaded. The new
+movie shows the production comparison and Florence wedding cards after the
+sharper-artwork release. It contains real recorded card interactions, with
+waiting time trimmed and the conversation cropped to exclude browser and
+account details. No unrelated windows or confirmation dialogs appear in the
+edit. The exported movie was reviewed in native project filmstrips and at
+normal playback speed.
+
+- Proposed URL: `https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4`
+- Duration: 41 seconds, H.264, 1080 by 1600 pixels, 30 frames per second.
+- Audio: intentionally silent.
+- SHA-256: `51bb6000a328b5fcb4dec11b5e552ec14bbb31ab60ad9be9443796fe1379ce35`.
+- Timeline: 0 to 22 seconds, the synthetic Madrid comparison and expanded
+  scores and contacts; 22 to 41 seconds, the synthetic Florence wedding,
+  rating, reasons and evening times.
+- Editable native project: `Zodiacs-051-live-demo.tsrct`, retained locally with
+  the original recordings and review previews.
+- Keep `zodiacs-sky-0.5.0.mp4` unchanged. Publish only after the owner approves.
+
+
 ## 0.5.0 — 17 October 2026
 
 Video: `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`

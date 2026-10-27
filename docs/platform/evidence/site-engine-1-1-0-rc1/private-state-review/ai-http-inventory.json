@@ -1,6 +1,6 @@
 {
   "bundlePath": "api/_ai/runtime.mjs",
-  "bundleSha256": "b8d8056af442b2cfe421b46fe065c7e27082d1552baf6b6e867054d8dc0a12f3",
+  "bundleSha256": "57bfa708ebd73f02b87aa3e9def9bbdee3fc475ea1db8320653057e6b405eaab",
   "bindings": [
     {
       "name": "COMPUTE_ENDPOINTS",

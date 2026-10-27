@@ -68,7 +68,7 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
 - Everywhere, the wing included: the desktop nav, the footers, the share
   pages, every share and export image, the OG cards, emails and the assistant
   cards. Two exceptions, by the owner's choice: on phones the top bar keeps
-  ZODIACS | ASTROFOLIO, and the favicon, the app icons and the bio page's
+  ZODIACS | ASTROFOLIO, and the favicon, website install icons and the bio page's
   orbit emblem keep the flat ring (`BrandMark.astro`), which reads better
   small. Cards already published under a pinned or dated name keep the
   design they were published with, and a new family takes the lockup: the
@@ -76,6 +76,11 @@ tilted twelve-dot ring and ZODIACS · ORG. Its numbers live in
   Terminal's v7 card (2026-10-19) replace the v3, v2, v5 and v6 files on the
   pages, and those stay published for links already shared. The homepage,
   the sign guides and the horoscopes moved to the art cards below.
+- Plugin profile pictures use the tilted ring on the dark background, chosen
+  by the owner on 27 October 2026. This exception applies to the Zodiacs
+  plugin, while the website favicon, install icons and bio emblem keep their
+  existing flat ring. The plugin avatar is generated from the shared ring by
+  `scripts/build-plugin-avatar.mjs`, with a fresh versioned public address.
 - In motion: the end card for short videos (`npm run data:end-card`), two
   seconds at 1080 × 1920 in which the ring spins, slows to the brand's own
   front and settles beside the words, a little above the middle of the

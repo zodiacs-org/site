@@ -1,6 +1,6 @@
 {
   "bundlePath": "integrations/generated/sky-watch.mjs",
-  "bundleSha256": "dcaa0472af86dac00cf3dc2af202dc4d8321d49d7c3fe368d6ee1e92b43e37f2",
+  "bundleSha256": "3212a86617adfebe0751a1417de2052b25c996b040a6d059161ce1c610cc927a",
   "bindings": [
     {
       "name": "COMPUTE_ENDPOINTS",

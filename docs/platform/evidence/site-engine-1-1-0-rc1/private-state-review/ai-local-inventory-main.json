@@ -1,6 +1,6 @@
 {
   "bundlePath": "plugins/zodiacs-developer/mcp/server.mjs",
-  "bundleSha256": "7ec11a2d663c5fe6f861abd377d1b3d198182169b4a9be13525ff13708329b79",
+  "bundleSha256": "f9cf2c40ac6474d9e8534b1b1c3f339f17becced7e51fd90836c6d8764c99684",
   "bindings": [
     {
       "name": "julianLeap",

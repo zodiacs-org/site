@@ -693,7 +693,9 @@ const monthDay = (iso: string) => ({
      makes the text the taller column, and a centred wheel moved whenever a
      late face or the rest of the stream changed that column's height. */
   .today-hero__wheel { position: relative; align-self: start; min-width: 0; margin: 0; }
-  .today-wheel { position: relative; }
+  /* Reserve the square before its SVG arrives in a streamed response. Its
+     decorative disc otherwise paints against an empty box, then moves. */
+  .today-wheel { position: relative; aspect-ratio: 1; }
   /* The wheel's own rings are open; a dark disc behind them keeps the art
      from showing through the sky. */
   .today-wheel::before {
