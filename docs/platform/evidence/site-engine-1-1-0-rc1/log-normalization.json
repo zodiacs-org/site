@@ -16,26 +16,26 @@
     },
     {
       "path": "validation/build.log",
-      "capturedSha256": "e24bb8597c407830dba1d35c54d4d1ed6b11971db5e37e5d7da345167f75d5f0",
-      "committedSha256": "b7cac6acdf1e7c838cee7be81dbcd28c1298185ce1eda1d23845d5d4ae306800",
+      "capturedSha256": "49e74462361750441cdb62ae76f6866bb65a296ba89c7fd45eebbb230547be76",
+      "committedSha256": "3469e85c5608b3aa53aea03e569cc5e71177316ba5c7036933c7ebe01c9d052b",
       "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
     },
     {
       "path": "validation/astro-check.log",
-      "capturedSha256": "372475c1f96d8a4aa2f4961aeb7b920b5137d931c8414b06955fe02cead63499",
-      "committedSha256": "cf31d034e2d2a2b6ce6a85c34eecc7facc0d823c12f45cdcff297c5eadde86c3",
+      "capturedSha256": "ad9d9e13c0bba4d5e74ecaad6bce036e04a92c4537a3eba540c62cf34d4c3bf9",
+      "committedSha256": "f128d98bd5ad8c08ed13480c5a73765a2c4e99ca74edf43bee5a37a204bb02e9",
       "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
     },
     {
       "path": "validation/full-suite.log",
-      "capturedSha256": "41a772bd65502dd88a2022784674bc2a06604e57e7e1845d793f3bc225497479",
-      "committedSha256": "f779464b6a7680ef8f2d083fb123349674565c7662c423c62da8ec4c3b5759ea",
+      "capturedSha256": "eddf8eb955ce3c629826ca85edb5c7b83a24ff2aa6762721083523a67ff19c4b",
+      "committedSha256": "b749bada8d168e9a92b555a11e734c9cb0322acd123fc5c1fd67de8bba7660bb",
       "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
     },
     {
       "path": "validation/ai-test.log",
-      "capturedSha256": "ee2abf7cdb816d8faee81e0e00207503f9a0a39eeb5f805a97e1595b5b1e93a0",
-      "committedSha256": "1d02b1a79fa07f6ae6b904369a88442282e9f5741cf7c33f875efc082718b081",
+      "capturedSha256": "0687fe3ac21a96d6366f09c651c7b1dc036f5030727d5408a4ea789129b1110c",
+      "committedSha256": "efebd31f4545d5799744dd2dc45b8a95d592c28b34b6e5070b428788f5c72dbb",
       "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
     },
     {

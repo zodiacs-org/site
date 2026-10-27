@@ -152,15 +152,17 @@ Claude Code host drive 7 of 7.
 
 ## Local results
 
-On macOS arm64, Node 22.22.2:
+On macOS arm64, Node 22.22.2, at the merge of main `3f50b316` (#823) into
+this branch:
 
 - build, with schema validation (0 errors), engine isolation and bundle
   budgets: passes;
 - `npm run check`: 0 errors, 0 warnings, 49 hints;
-- `npm test`: 7,952 passed, 5 existing skips, 1 failed, across 620 files. The
+- `npm test`: 7,958 passed, 5 existing skips, 1 failed, across 621 files. The
   failure is `scripts/phase1-acceptance-evidence.test.mjs`, which requires
-  captures of the current source (see Phase 1 captures). In an earlier full
-  run two tests timed out at 5 s under load and passed alone;
+  captures of the current source (see Phase 1 captures). Before the merge the
+  same run gave 7,952 passed across 620 files, with the same failure; in an
+  earlier full run two tests timed out at 5 s under load and passed alone;
 - `node scripts/check-dist.mjs`, the engine reference check and its browser
   drive, the natal aspect publication drive and `report-bundles.mjs --fail`:
   pass;

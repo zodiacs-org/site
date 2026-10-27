@@ -53,3 +53,17 @@ changed, and the 4 single long lines' 8 matches each sit in the same 300
 characters on either side as on main; the bundles hold 17 matches before
 and after. The tree: 484 lines in 18,519 files, the 11 in the two new
 archives as above. The commit after the merge changes only this record.
+
+Fourth run, after main (3f50b316, #823) was merged into this branch: over
+ef2ce850..56fdecb7, both sets, with Node 22.22.2. It reads main's fifteen
+#823 commits, which main already carries, and the merge, against each of its
+parents. The merge's 23 lines are under the same 5 labels, in the same seven
+places as the third run's: the four bundles the merge rebuilt, the 0.3.14 ZIP,
+the adapter archive and, read against this branch, main's rebuilt 0.3.13 ZIP.
+In the four bundles 13 lines match. Nine are main's (3f50b316) lines with only
+version strings changed. The other four are the single long lines; each of
+their 8 matches sits in the same 300 characters on either side as on main. The
+bundles hold 17 matches before and after. The tree: 484 lines in 18,528 files,
+the 11 in the two new archives as above. The commit after the merge records
+this run and the local gate's logs at the merge; searched with both sets,
+it adds no matching line.

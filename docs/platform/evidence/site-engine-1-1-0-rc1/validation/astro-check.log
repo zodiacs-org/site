@@ -6,17 +6,17 @@
 > zodiacs-org@1.0.0 check:consumer-boundary
 > node scripts/check-consumer-boundary.mjs
 
-consumer-boundary: clear · 2228 source files checked
+consumer-boundary: clear · 2236 source files checked
 
 > zodiacs-org@1.0.0 footer:check
 > node scripts/sync-site-footer-css.mjs --check && node scripts/check-site-footer-standard.mjs
 
 site-footer.css: public copy matches the canonical source
 site-footer-standard: canonical footer sources and surfaces verified
-11:14:29 [content] Syncing content
-11:14:29 [content] Synced content
-11:14:29 [types] Generated 525ms
-11:14:29 [check] Getting diagnostics for Astro files in <checkout>...
+13:29:01 [content] Syncing content
+13:29:01 [content] Synced content
+13:29:01 [types] Generated 1.19s
+13:29:01 [check] Getting diagnostics for Astro files in <checkout>...
 src/ai-tools/http.ts:4:246 - warning ts(6133): 'AiToolName' is declared but its value is never read.
 
 4 import { AI_TOOL_NAMES, ALL_AI_TOOL_NAMES, OCCASIONS_SWITCH_ENV, HOROSCOPE_URI, STUDIO_URI, LEGACY_HOROSCOPE_URIS, LEGACY_OCCASIONS_URIS, LEGACY_STUDIO_URIS, OCCASIONS_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName } from './contracts';
@@ -255,7 +255,7 @@ src/trade/entry.mjs:20:38 - warning ts(6133): 'env' is declared but its value is
 20 export function registryTradeEnabled(env = {}) {
                                         ~~~
 
-Result (1568 files):
+Result (1577 files):
 - 0 errors
 - 0 warnings
 - 49 hints
