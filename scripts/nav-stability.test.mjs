@@ -96,7 +96,8 @@ describe('navigation first-paint reservation', () => {
   });
 
   it('shows the full brand lockup with the desktop links, and keeps the phone bar to ZODIACS', () => {
-    expect(nav).toContain('<a class="nav__mark" href={localizePath(locale, \'/\')} aria-label="Zodiacs.org">');
+    // The spread carries hreflang="en" only where the homepage is English-only (the Chinese editions).
+    expect(nav).toContain('<a {...homeEnglishOnly} class="nav__mark" href={localizePath(locale, \'/\')} aria-label="Zodiacs.org">');
     expect(nav).toContain('<TiltedRing width={34} class="nav__ring" />');
     expect(value(rule('.nav__mark :global(.nav__ring)'), 'display')).toBe('none');
     for (const [tier, scope] of [['@media (min-width: 920px)', '.nav:not(.nav--localized)'], ['@media (min-width: 1040px)', '.nav--localized']]) {

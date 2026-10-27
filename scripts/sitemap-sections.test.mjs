@@ -30,6 +30,8 @@ const FIXTURE = [...new Set([
     ...eventsPublication.pages.map((page) => page.path),
   ].map((path) => `${locale}${path}`)),
   '/terminal/', '/terminal/research/', '/astrofolio/', '/registry/', '/registry/aries/', '/registry/technical/',
+  // The Mandarin editions publish only the Chinese zodiac guide.
+  ...['/zh-hans', '/zh-hant'].flatMap((locale) => ['/learn/chinese-zodiac/', '/learn/chinese-zodiac/rat/'].map((path) => `${locale}${path}`)),
   '/thesis/', '/archive/', '/sdk/', '/fomo/', '/disclosure/', '/almanac/', '/almanac/2026-10/', '/404.html',
 ])].map((loc, index) => ({ loc, priority: index }));
 
@@ -87,6 +89,8 @@ describe('section sitemaps', () => {
     expect(sitemapSection('/fr/birthday/october-26/')).toBe('fr');
     expect(sitemapSection('/it/learn/chinese-zodiac/')).toBe('it');
     expect(sitemapSection('/ru/privacy/')).toBe('ru');
+    expect(sitemapSection('/zh-hans/learn/chinese-zodiac/rat/')).toBe('zh-hans');
+    expect(sitemapSection('/zh-hant/learn/chinese-zodiac/')).toBe('zh-hant');
     expect(sitemapSectionPath('sky-events')).toBe('/sitemaps/sky-events.xml');
   });
 

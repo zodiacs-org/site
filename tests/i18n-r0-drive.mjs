@@ -12,8 +12,15 @@ const CORE_LOCALES = [
 ];
 const PROGRAMMATIC_LOCALES = CORE_LOCALES.filter((entry) => entry.code !== 'ru');
 const CORE_HREFLANGS = [...CORE_LOCALES.map((entry) => entry.hreflang), 'x-default'];
-const PROGRAMMATIC_HREFLANGS = [...PROGRAMMATIC_LOCALES.map((entry) => entry.hreflang), 'x-default'];
 const FORECAST_LOCALES = CORE_LOCALES.filter((entry) => ['en', 'es', 'pt'].includes(entry.code));
+// The Chinese zodiac guide alone also has Simplified and Traditional Chinese editions.
+const CHINESE_ZODIAC_LOCALES = [
+  ...PROGRAMMATIC_LOCALES,
+  { code: 'zh-hans', prefix: '/zh-hans', lang: 'zh-Hans', hreflang: 'zh-Hans' },
+  { code: 'zh-hant', prefix: '/zh-hant', lang: 'zh-Hant', hreflang: 'zh-Hant' },
+];
+const CHINESE_ZODIAC_LANGUAGE_NAMES = ['English', 'Español', 'Português (Brasil)', 'Français', 'Italiano', '简体中文', '繁體中文'];
+const CHINESE_ZODIAC_HREFLANGS = [...CHINESE_ZODIAC_LOCALES.map((entry) => entry.hreflang), 'x-default'];
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
 const localizedPath = (prefix, path) => `${prefix}${path}` || '/';
@@ -38,6 +45,12 @@ async function routeState(page) {
         href: node.getAttribute('href'),
         current: node.getAttribute('aria-current'),
       })),
+    currentLanguage: document.querySelector('.zfooter__locales [aria-current="page"]')?.textContent?.trim() ?? null,
+    navBadges: Array.from(document.querySelectorAll('.nav .nav__deferred'), (node) => node.textContent?.trim()),
+    // Chrome printed in English on a localized page; the selector's own English entry is its name.
+    englishChrome: Array.from(document.querySelectorAll('.nav-wrap [lang="en"], .mobile-menu [lang="en"], .zfooter [lang="en"]'))
+      .filter((node) => !node.classList.contains('zfooter__locale'))
+      .map((node) => node.textContent?.trim()),
     russian: /Русский/u.test(document.body.textContent ?? '')
       || Boolean(document.querySelector('a[href="/ru"], a[href^="/ru/"]')),
     arabic: /العربية/u.test(document.body.textContent ?? '')
@@ -76,7 +89,7 @@ await withPreview({ port: 4417 }, async (baseURL) => {
       }
 
       for (const route of ['/learn/chinese-zodiac/dragon/']) {
-        for (const locale of PROGRAMMATIC_LOCALES) {
+        for (const locale of CHINESE_ZODIAC_LOCALES) {
           const path = localizedPath(locale.prefix, route);
           const response = await page.goto(`${baseURL}${path}`, { waitUntil: 'domcontentloaded' });
           check(response?.status() === 200, `${path}@${viewport.width}: expected 200, got ${response?.status()}`);
@@ -86,10 +99,23 @@ await withPreview({ port: 4417 }, async (baseURL) => {
           check(state.width <= state.viewport + 1, `${path}@${viewport.width}: ${state.width}px overflow`);
           check(state.canonical === `https://zodiacs.org${path}`, `${path}: canonical ${state.canonical}`);
           check(
-            JSON.stringify(state.alternates.map(([lang]) => lang)) === JSON.stringify(PROGRAMMATIC_HREFLANGS),
+            JSON.stringify(state.alternates.map(([lang]) => lang)) === JSON.stringify(CHINESE_ZODIAC_HREFLANGS),
             `${path}: hreflangs ${state.alternates.map(([lang]) => lang).join(',')}`,
           );
-          check(state.selector.length === 5, `${path}: selector has ${state.selector.length} entries`);
+          check(state.selector.length === 7, `${path}: selector has ${state.selector.length} entries`);
+          check(
+            JSON.stringify(state.selector) === JSON.stringify(CHINESE_ZODIAC_LANGUAGE_NAMES),
+            `${path}: selector lists ${state.selector.join(',')}`,
+          );
+          check(
+            state.currentLanguage === CHINESE_ZODIAC_LANGUAGE_NAMES[CHINESE_ZODIAC_LOCALES.indexOf(locale)],
+            `${path}: selector marks ${state.currentLanguage} as current`,
+          );
+          if (locale.code.startsWith('zh-')) {
+            // The tag on English-only destinations is the Chinese short form 英, never a bare EN.
+            check(state.navBadges.length > 0 && state.navBadges.every((badge) => badge === '英'), `${path}: nav badges ${state.navBadges.join(',')}`);
+            check(state.englishChrome.length === 0, `${path}: English chrome ${state.englishChrome.join(' | ')}`);
+          }
           check(!state.russian && !state.arabic, `${path}: deferred locale leaked into programmatic output`);
         }
       }

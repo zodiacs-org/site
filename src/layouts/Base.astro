@@ -14,7 +14,7 @@ import EditionFreshnessGuard from '../components/EditionFreshnessGuard.astro';
 import { ANALYTICS_EVENT_PROPS, ANALYTICS_EVENT_VALUES } from '../lib/analytics';
 import { hasDailyChartEmailProvider } from '../lib/email/daily-config';
 import { BRAND_ICON_PATHS } from '../lib/brand-icons.mjs';
-import { LOCALE_META, UI, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
+import { LOCALE_META, UI, isSectionLocale, normalizePageLocale, t, type PageLocale as Locale } from '../lib/i18n';
 import { RUSSIAN_RUNTIME } from '../lib/i18n/ru-runtime/server';
 import AccountProfileAccessBootstrap from '../islands/AccountProfileAccessBootstrap';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../lib/account-v2/feature-flags';
@@ -97,7 +97,7 @@ interface Props {
 }
 
 const props = Astro.props;
-const locale = normalizeCatalogLocale(props.locale);
+const locale = normalizePageLocale(props.locale);
 // WebMCP (Track A2): Search on English pages, and on a calculator page, in every locale, the page's own tool.
 const webMcpSearch = locale === 'en';
 const webMcpCalculator = calculatorToolForPath(Astro.url.pathname) !== null;
@@ -109,8 +109,12 @@ const FEED_TITLES: Record<typeof locale, { sky: string; horoscopes: string; alma
   fr: { sky: 'Zodiacs.org | le ciel, chaque jour (en anglais)', horoscopes: 'Horoscopes quotidiens de Zodiacs.org (en anglais)', almanac: 'Almanach de Zodiacs.org (en anglais)' },
   it: { sky: 'Zodiacs.org | il cielo, ogni giorno (in inglese)', horoscopes: 'Oroscopi quotidiani di Zodiacs.org (in inglese)', almanac: 'Almanacco di Zodiacs.org (in inglese)' },
   ru: { sky: 'Zodiacs.org | небо каждый день (по-английски)', horoscopes: 'Ежедневные гороскопы Zodiacs.org (по-английски)', almanac: 'Альманах Zodiacs.org (по-английски)' },
+  'zh-hans': { sky: 'Zodiacs.org 每日星空（英文）', horoscopes: 'Zodiacs.org 每日星座解读（英文）', almanac: 'Zodiacs.org 天文年历（英文）' },
+  'zh-hant': { sky: 'Zodiacs.org 每日星空（英文）', horoscopes: 'Zodiacs.org 每日星座解讀（英文）', almanac: 'Zodiacs.org 天文年曆（英文）' },
 };
-const clientUi = props.clientUi ? UI[locale] : null;
+// Section locales carry a chrome-only catalog, which is never embedded for islands.
+if (props.clientUi && isSectionLocale(locale)) throw new Error(`${locale} pages cannot hydrate UI islands`);
+const clientUi = props.clientUi && !isSectionLocale(locale) ? UI[locale] : null;
 const russianRuntime = props.clientUi && locale === 'ru' ? RUSSIAN_RUNTIME : null;
 const plausibleScriptUrl = import.meta.env.PUBLIC_PLAUSIBLE_SCRIPT_URL?.trim();
 const plausibleEndpoint = import.meta.env.PUBLIC_PLAUSIBLE_ENDPOINT?.trim() ?? '';

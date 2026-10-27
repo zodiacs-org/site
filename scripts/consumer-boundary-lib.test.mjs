@@ -30,6 +30,24 @@ describe('consumer boundary source scanner', () => {
     expect(rules(catalog.replace('the Zodiac token collection.', 'the Zodiac token collection. Buy today.'), 'src/lib/i18n/ui/en.ts').length).toBeGreaterThan(0);
   });
 
+  it('checks the Chinese collection wording against its approved copy', () => {
+    for (const description of ['十二星座官方代币收藏（英文）', '十二星座官方代幣收藏（英文）']) {
+      const copy = `---\nconst description = '${description}';\n---\n<p>{description}</p>`;
+      expect(rules(copy, 'src/components/SiteNav.astro')).toEqual([]);
+      expect(rules(copy, 'src/pages/zh-hans/learn/chinese-zodiac/index.astro').length).toBeGreaterThan(0);
+      expect(rules(copy.replace('收藏', '收藏，立即购买'), 'src/components/SiteNav.astro').length).toBeGreaterThan(0);
+    }
+    for (const [file, name, statement] of [
+      ['src/lib/i18n/ui/zh-hans.ts', 'zhHans', '本站的占星工具和指南全部免费，无需注册。Zodiacs.org 同时运营十二星座代币收藏 Astrofolio。'],
+      ['src/lib/i18n/ui/zh-hant.ts', 'zhHant', '本站的占星工具和指南全部免費，無須註冊。Zodiacs.org 同時經營十二星座代幣收藏 Astrofolio。'],
+    ]) {
+      const catalog = `const ${name} = { trustFreeAnswer: ${JSON.stringify(statement)} };`;
+      expect(rules(catalog, file)).toEqual([]);
+      expect(rules(catalog.replace('trustFreeAnswer', 'footerTag'), file).length).toBeGreaterThan(0);
+      expect(rules(catalog.replace('Astrofolio。', 'Astrofolio，加密货币。'), file).length).toBeGreaterThan(0);
+    }
+  });
+
   it('reads visible Astro copy and frontmatter strings without treating comments as copy', () => {
     const source = `---
 const description = 'A free astrology calculator.';

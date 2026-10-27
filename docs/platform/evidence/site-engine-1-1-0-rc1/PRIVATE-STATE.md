@@ -93,7 +93,7 @@ evaluation count.
 
 After `npm run ai:build`, the static inventories
 (`../site-engine-1-0-0-rc2/tools/ai-state-inventory.mjs`) count, against main's
-bundles at `922924ee`, merged into this branch (the `-main` files):
+bundles at `3f50b316`, merged into this branch (the `-main` files):
 
 | Bundle | Top-level bindings, main | Now | Direct writes, main and now |
 | --- | ---: | ---: | ---: |

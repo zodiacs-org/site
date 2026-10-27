@@ -1,6 +1,6 @@
 {
   "bundlePath": "integrations/generated/sky-watch.mjs",
-  "bundleSha256": "f650f4cabc5317983ca1ba1a3711535c07c71bfa75f5b4106d480a3639c1e6b0",
+  "bundleSha256": "4639f04faacafb771b270900d19d86d12f4128f8ab185b6b6e495a15ee6d7c8a",
   "bindings": [
     {
       "name": "COMPUTE_ENDPOINTS",
@@ -2885,12 +2885,12 @@
     {
       "name": "HOROSCOPE_URI",
       "line": 27188,
-      "initializer": "\"ui://zodiacs/horoscopes-v5.html\""
+      "initializer": "\"ui://zodiacs/horoscopes-v6.html\""
     },
     {
       "name": "LEGACY_HOROSCOPE_URIS",
       "line": 27189,
-      "initializer": "[\"ui://zodiacs/horoscopes-v4.html\", \"ui://zodiacs/horoscopes-v3.html\", \"ui://zodiacs/horoscopes-v2.html\", \"ui://zodiacs/horoscopes-v1.html\"]"
+      "initializer": "[\"ui://zodiacs/horoscopes-v5.html\", \"ui://zodiacs/horoscopes-v4.html\", \"ui://zodiacs/horoscopes-v3.html\", \"ui://zodiacs/horoscopes-v2.html\", \"ui://zodiacs/horoscopes-v1.html\"]"
     },
     {
       "name": "HOROSCOPE_SIGNS",
@@ -3010,12 +3010,12 @@
     {
       "name": "OCCASIONS_URI",
       "line": 27368,
-      "initializer": "\"ui://zodiacs/occasions-v7.html\""
+      "initializer": "\"ui://zodiacs/occasions-v8.html\""
     },
     {
       "name": "LEGACY_OCCASIONS_URIS",
       "line": 27369,
-      "initializer": "[\"ui://zodiacs/occasions-v6.html\", \"ui://zodiacs/occasions-v5.html\", \"ui://zodiacs/occasions-v4.html\", \"ui://zodiacs/occasions-v3.html\", \"ui://zodiacs/occasions-v2.html\", \"ui://zod"
+      "initializer": "[\"ui://zodiacs/occasions-v7.html\", \"ui://zodiacs/occasions-v6.html\", \"ui://zodiacs/occasions-v5.html\", \"ui://zodiacs/occasions-v4.html\", \"ui://zodiacs/occasions-v3.html\", \"ui://zod"
     },
     {
       "name": "READ_ONLY",

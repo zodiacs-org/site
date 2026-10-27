@@ -104,23 +104,23 @@ try {
   record('native calendar resource');
   for (const [current, earlier] of [
     ...['sky-events-v3', 'sky-events-v2', 'sky-events-v1'].map(old => ['sky-events-v4', old]),
-    ...['horoscopes-v4', 'horoscopes-v3', 'horoscopes-v2', 'horoscopes-v1'].map(old => ['horoscopes-v5', old]),
+    ...['horoscopes-v5', 'horoscopes-v4', 'horoscopes-v3', 'horoscopes-v2', 'horoscopes-v1'].map(old => ['horoscopes-v6', old]),
     ...['chart-studio-v5', 'chart-studio-v4', 'chart-studio-v3', 'chart-studio-v2', 'chart-studio-v1'].map(old => ['chart-studio-v6', old]),
-    ...['occasions-v6', 'occasions-v5', 'occasions-v4', 'occasions-v3', 'occasions-v2', 'occasions-v1'].map(old => ['occasions-v7', old]),
+    ...['occasions-v7', 'occasions-v6', 'occasions-v5', 'occasions-v4', 'occasions-v3', 'occasions-v2', 'occasions-v1'].map(old => ['occasions-v8', old]),
   ]) {
     const now = (await client.readResource({ uri: `ui://zodiacs/${current}.html` })).contents[0];
     const before = (await client.readResource({ uri: `ui://zodiacs/${earlier}.html` })).contents[0];
     assert.equal(before.text, now.text, `${earlier} serves the current panel`);
   }
   record('earlier panel addresses serve the current panels');
-  const horoscopes = (await client.readResource({ uri: 'ui://zodiacs/horoscopes-v5.html' })).contents[0];
+  const horoscopes = (await client.readResource({ uri: 'ui://zodiacs/horoscopes-v6.html' })).contents[0];
   assert.equal(horoscopes.mimeType, 'text/html;profile=mcp-app');
   assert.equal(horoscopes.text, HOROSCOPES_HTML);
   assert.deepEqual(horoscopes._meta.ui.csp, { connectDomains: [], resourceDomains: ['https://zodiacs.org'] });
   record('native horoscope resource matches the bundle with owned static art', {
     bytes: Buffer.byteLength(horoscopes.text), sha256: createHash('sha256').update(horoscopes.text).digest('hex'),
   });
-  const occasions = (await client.readResource({ uri: 'ui://zodiacs/occasions-v7.html' })).contents[0];
+  const occasions = (await client.readResource({ uri: 'ui://zodiacs/occasions-v8.html' })).contents[0];
   assert.equal(occasions.mimeType, 'text/html;profile=mcp-app');
   assert.equal(occasions.text, OCCASIONS_HTML);
   assert.deepEqual(occasions._meta.ui.csp, { connectDomains: [], resourceDomains: ['https://zodiacs.org'] });
