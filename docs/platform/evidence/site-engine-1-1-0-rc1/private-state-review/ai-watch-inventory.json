@@ -1,6 +1,6 @@
 {
   "bundlePath": "integrations/generated/sky-watch.mjs",
-  "bundleSha256": "a0c3bfcc285e351b4f7a1448047ecc12f461324c7e01eac8c9bd1afbfc134e0e",
+  "bundleSha256": "19843735fb03270ca2ad38cb53a098a2a6daf2b7dc703fb6ff94373eb6dc3c00",
   "bindings": [
     {
       "name": "COMPUTE_ENDPOINTS",
@@ -2910,12 +2910,12 @@
     {
       "name": "HOROSCOPE_URI",
       "line": 27280,
-      "initializer": "\"ui://zodiacs/horoscopes-v4.html\""
+      "initializer": "\"ui://zodiacs/horoscopes-v5.html\""
     },
     {
       "name": "LEGACY_HOROSCOPE_URIS",
       "line": 27281,
-      "initializer": "[\"ui://zodiacs/horoscopes-v3.html\", \"ui://zodiacs/horoscopes-v2.html\", \"ui://zodiacs/horoscopes-v1.html\"]"
+      "initializer": "[\"ui://zodiacs/horoscopes-v4.html\", \"ui://zodiacs/horoscopes-v3.html\", \"ui://zodiacs/horoscopes-v2.html\", \"ui://zodiacs/horoscopes-v1.html\"]"
     },
     {
       "name": "HOROSCOPE_SIGNS",
@@ -3035,12 +3035,12 @@
     {
       "name": "OCCASIONS_URI",
       "line": 27460,
-      "initializer": "\"ui://zodiacs/occasions-v5.html\""
+      "initializer": "\"ui://zodiacs/occasions-v7.html\""
     },
     {
       "name": "LEGACY_OCCASIONS_URIS",
       "line": 27461,
-      "initializer": "[\"ui://zodiacs/occasions-v4.html\", \"ui://zodiacs/occasions-v3.html\", \"ui://zodiacs/occasions-v2.html\", \"ui://zodiacs/occasions-v1.html\"]"
+      "initializer": "[\"ui://zodiacs/occasions-v6.html\", \"ui://zodiacs/occasions-v5.html\", \"ui://zodiacs/occasions-v4.html\", \"ui://zodiacs/occasions-v3.html\", \"ui://zodiacs/occasions-v2.html\", \"ui://zod"
     },
     {
       "name": "READ_ONLY",
@@ -3673,53 +3673,58 @@
       "initializer": "{   get_upcoming_events: { uri: WIDGET_URI, icon: \"sky-calendar\" },   open_chart_studio: { uri: STUDIO_URI, icon: \"chart-studio\" },   get_horoscope: { uri: HOROSCOPE_URI, icon: \"ho"
     },
     {
-      "name": "panelMeta",
+      "name": "artResourceDomains",
       "line": 30206,
-      "initializer": "(preferredDisplayMode) => ({ ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, \"openai/widgetCSP\": { connect_domains: [], resource_domains: [] }, \"open"
+      "initializer": "[\"https://zodiacs.org\"]"
+    },
+    {
+      "name": "panelMeta",
+      "line": 30207,
+      "initializer": "(preferredDisplayMode, art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, \"openai/widgetCSP\": { connect_do"
     },
     {
       "name": "USAGE_HOSTS",
-      "line": 30334,
+      "line": 30335,
       "initializer": "[\"chatgpt\", \"claude\", \"other\"]"
     },
     {
       "name": "COUNTED_TOOL_NAMES",
-      "line": 30335,
+      "line": 30336,
       "initializer": "[...ALL_AI_TOOL_NAMES, SAVE_TOOL_NAME]"
     },
     {
       "name": "USAGE_TIMEOUT_MS",
-      "line": 30336,
+      "line": 30337,
       "initializer": "1500"
     },
     {
       "name": "LARGE_PANEL_URIS",
-      "line": 30364,
+      "line": 30365,
       "initializer": "new Set([STUDIO_URI, ...LEGACY_STUDIO_URIS, HOROSCOPE_URI, ...LEGACY_HOROSCOPE_URIS, OCCASIONS_URI, ...LEGACY_OCCASIONS_URIS])"
     },
     {
       "name": "ALLOWED_ORIGINS",
-      "line": 30365,
+      "line": 30366,
       "initializer": "new Set([\"https://chatgpt.com\", \"https://chat.openai.com\", \"https://claude.ai\", \"https://claude.com\", ORIGIN])"
     },
     {
       "name": "SECURITY_HEADERS",
-      "line": 30366,
+      "line": 30367,
       "initializer": "{ \"Cache-Control\": \"no-store\", \"X-Content-Type-Options\": \"nosniff\", \"X-Robots-Tag\": \"noindex\" }"
     },
     {
       "name": "handledPreviewRequests",
-      "line": 30367,
+      "line": 30368,
       "initializer": "0"
     },
     {
       "name": "REFUSALS",
-      "line": 30368,
+      "line": 30369,
       "initializer": "{   \"rate-limited\": \"Zodiacs is busy. Try again in a minute.\",   \"rate-limit-unavailable\": \"Zodiacs is busy. Try again in a few minutes.\",   disabled: \"Zodiacs is not available rig"
     },
     {
       "name": "ACCOUNT_ROUTES",
-      "line": 30376,
+      "line": 30377,
       "initializer": "[\"resource\", \"consent\"]"
     }
   ],
@@ -3901,25 +3906,25 @@
     {
       "name": "handledPreviewRequests",
       "kind": "update",
-      "line": 30420,
+      "line": 30421,
       "expression": "handledPreviewRequests++"
     },
     {
       "name": "last",
       "kind": "assignment",
-      "line": 30730,
+      "line": 30731,
       "expression": "last = undefined"
     },
     {
       "name": "pluto_cache",
       "kind": "assignment",
-      "line": 30731,
+      "line": 30732,
       "expression": "pluto_cache.length = 0"
     },
     {
       "name": "CalcMoonCount",
       "kind": "assignment",
-      "line": 30732,
+      "line": 30733,
       "expression": "CalcMoonCount = 0"
     }
   ]

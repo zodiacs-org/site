@@ -184,8 +184,8 @@ async function discImages(signs: readonly PreviewSign[]): Promise<Map<ShareSign,
   return new Map(await Promise.all(slugs.map(async (slug) => [slug, await disc(slug)] as const)));
 }
 
-// The cards' hero art at its largest (scripts/build-card-art.mjs): the sign panels at 1200px, the pieces
-// at 720px, as JPEG because the renderer cannot decode WebP, with the cards' dimming of the dark art
+// The cards' hero art at its largest (scripts/build-card-art.mjs): most pieces
+// at 1200px, as JPEG because the renderer cannot decode WebP, with the cards' dimming of the dark art
 // (saturate .92, brightness .86) already in the file. Every piece is 3:2.
 // One literal address per piece, so the deployment's file tracing packs them all.
 export type ShareArt = ShareSign | 'wedding-hero' | 'sky-calendar-hero' | 'twins-hero' | 'milestones-hero';
@@ -203,9 +203,9 @@ const ART_FILES: Readonly<Record<ShareArt, URL>> = {
   aquarius: new URL('../../public/assets/card-art/share/aquarius-1200.jpg', import.meta.url),
   pisces: new URL('../../public/assets/card-art/share/pisces-1200.jpg', import.meta.url),
   'wedding-hero': new URL('../../public/assets/card-art/share/wedding-hero-720.jpg', import.meta.url),
-  'sky-calendar-hero': new URL('../../public/assets/card-art/share/sky-calendar-hero-720.jpg', import.meta.url),
-  'twins-hero': new URL('../../public/assets/card-art/share/twins-hero-720.jpg', import.meta.url),
-  'milestones-hero': new URL('../../public/assets/card-art/share/milestones-hero-720.jpg', import.meta.url),
+  'sky-calendar-hero': new URL('../../public/assets/card-art/share/sky-calendar-hero-1200.jpg', import.meta.url),
+  'twins-hero': new URL('../../public/assets/card-art/share/twins-hero-1200.jpg', import.meta.url),
+  'milestones-hero': new URL('../../public/assets/card-art/share/milestones-hero-1200.jpg', import.meta.url),
 };
 const arts = new Map<ShareArt, Promise<string>>();
 

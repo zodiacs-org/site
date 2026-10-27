@@ -1,6 +1,6 @@
 {
   "bundlePath": "plugins/zodiacs-developer/mcp/server.mjs",
-  "bundleSha256": "342250567efb67fb0a4fe36e4097b88896e4809a3b6e32de1a1b46ddbb3f38b5",
+  "bundleSha256": "995a35a7207e8f0e4dfd7389b4c95b53fa2ff7dd4a2bb829826611fd3cbc038b",
   "bindings": [
     {
       "name": "NAMESPACE",
@@ -3175,12 +3175,12 @@
     {
       "name": "HOROSCOPE_URI",
       "line": 28528,
-      "initializer": "\"ui://zodiacs/horoscopes-v4.html\""
+      "initializer": "\"ui://zodiacs/horoscopes-v5.html\""
     },
     {
       "name": "LEGACY_HOROSCOPE_URIS",
       "line": 28529,
-      "initializer": "[\"ui://zodiacs/horoscopes-v3.html\", \"ui://zodiacs/horoscopes-v2.html\", \"ui://zodiacs/horoscopes-v1.html\"]"
+      "initializer": "[\"ui://zodiacs/horoscopes-v4.html\", \"ui://zodiacs/horoscopes-v3.html\", \"ui://zodiacs/horoscopes-v2.html\", \"ui://zodiacs/horoscopes-v1.html\"]"
     },
     {
       "name": "HOROSCOPE_SIGNS",
@@ -3280,12 +3280,12 @@
     {
       "name": "OCCASIONS_URI",
       "line": 28704,
-      "initializer": "\"ui://zodiacs/occasions-v5.html\""
+      "initializer": "\"ui://zodiacs/occasions-v7.html\""
     },
     {
       "name": "LEGACY_OCCASIONS_URIS",
       "line": 28705,
-      "initializer": "[\"ui://zodiacs/occasions-v4.html\", \"ui://zodiacs/occasions-v3.html\", \"ui://zodiacs/occasions-v2.html\", \"ui://zodiacs/occasions-v1.html\"]"
+      "initializer": "[\"ui://zodiacs/occasions-v6.html\", \"ui://zodiacs/occasions-v5.html\", \"ui://zodiacs/occasions-v4.html\", \"ui://zodiacs/occasions-v3.html\", \"ui://zodiacs/occasions-v2.html\", \"ui://zod"
     },
     {
       "name": "READ_ONLY",
@@ -3858,43 +3858,48 @@
       "initializer": "{   get_upcoming_events: { uri: WIDGET_URI, icon: \"sky-calendar\" },   open_chart_studio: { uri: STUDIO_URI, icon: \"chart-studio\" },   get_horoscope: { uri: HOROSCOPE_URI, icon: \"ho"
     },
     {
-      "name": "panelMeta",
+      "name": "artResourceDomains",
       "line": 31117,
-      "initializer": "(preferredDisplayMode) => ({ ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, \"openai/widgetCSP\": { connect_domains: [], resource_domains: [] }, \"open"
+      "initializer": "[\"https://zodiacs.org\"]"
+    },
+    {
+      "name": "panelMeta",
+      "line": 31118,
+      "initializer": "(preferredDisplayMode, art = false) => ({ ui: { csp: { connectDomains: [], resourceDomains: art ? artResourceDomains : [] }, prefersBorder: true }, \"openai/widgetCSP\": { connect_do"
     },
     {
       "name": "pending",
-      "line": 31233,
+      "line": 31234,
       "initializer": "[]"
     },
     {
       "name": "size",
-      "line": 31234,
+      "line": 31235,
       "initializer": "0"
     },
     {
       "name": "dropping",
-      "line": 31235,
+      "line": 31236,
       "initializer": "false"
     },
     {
       "name": "gate",
-      "line": 31236,
+      "line": 31237,
       "initializer": "new Transform({ transform(chunk, _encoding, done) {   let start = 0;   while (start < chunk.length) {     const newline = chunk.indexOf(10, start);     const end = newline < 0 ? ch"
     },
     {
       "name": "output",
-      "line": 31267,
+      "line": 31268,
       "initializer": "\"\""
     },
     {
       "name": "safeOutput",
-      "line": 31268,
+      "line": 31269,
       "initializer": "new Transform({ transform(chunk, _encoding, done) {   output += chunk.toString(\"utf8\");   let newline;   while ((newline = output.indexOf(\"\\n\")) >= 0) {     const line = output.sli"
     },
     {
       "name": "handle",
-      "line": 31282,
+      "line": 31283,
       "initializer": "serveStdio(build, { transport: new StdioServerTransport(gate, safeOutput, { maxBufferSize: LIMITS.requestBytes + 4096 }), onerror: () => { } })"
     }
   ],
@@ -4076,79 +4081,79 @@
     {
       "name": "dropping",
       "kind": "assignment",
-      "line": 31244,
+      "line": 31245,
       "expression": "dropping = false"
     },
     {
       "name": "pending",
       "kind": "assignment",
-      "line": 31248,
+      "line": 31249,
       "expression": "pending = []"
     },
     {
       "name": "size",
       "kind": "assignment",
-      "line": 31249,
+      "line": 31250,
       "expression": "size = 0"
     },
     {
       "name": "dropping",
       "kind": "assignment",
-      "line": 31250,
+      "line": 31251,
       "expression": "dropping = newline < 0"
     },
     {
       "name": "pending",
       "kind": "method",
-      "line": 31253,
+      "line": 31254,
       "expression": "pending.push(part)"
     },
     {
       "name": "size",
       "kind": "assignment",
-      "line": 31254,
+      "line": 31255,
       "expression": "size += part.length"
     },
     {
       "name": "pending",
       "kind": "assignment",
-      "line": 31257,
+      "line": 31258,
       "expression": "pending = []"
     },
     {
       "name": "size",
       "kind": "assignment",
-      "line": 31258,
+      "line": 31259,
       "expression": "size = 0"
     },
     {
       "name": "output",
       "kind": "assignment",
-      "line": 31269,
+      "line": 31270,
       "expression": "output += chunk.toString(\"utf8\")"
     },
     {
       "name": "output",
       "kind": "assignment",
-      "line": 31273,
+      "line": 31274,
       "expression": "output = output.slice(newline + 1)"
     },
     {
       "name": "last",
       "kind": "assignment",
-      "line": 31291,
+      "line": 31292,
       "expression": "last = undefined"
     },
     {
       "name": "pluto_cache",
       "kind": "assignment",
-      "line": 31292,
+      "line": 31293,
       "expression": "pluto_cache.length = 0"
     },
     {
       "name": "CalcMoonCount",
       "kind": "assignment",
-      "line": 31293,
+      "line": 31294,
       "expression": "CalcMoonCount = 0"
     }
   ]

@@ -93,13 +93,13 @@ evaluation count.
 
 After `npm run ai:build`, the static inventories
 (`../site-engine-1-0-0-rc2/tools/ai-state-inventory.mjs`) count, against main's
-bundles (the `-main` files):
+bundles at `922924ee`, merged into this branch (the `-main` files):
 
 | Bundle | Top-level bindings, main | Now | Direct writes, main and now |
 | --- | ---: | ---: | ---: |
-| HTTP | 739 | 744 | 33 |
-| Sky Watch | 739 | 744 | 33 |
-| Local developer | 774 | 779 | 42 |
+| HTTP | 740 | 745 | 33 |
+| Sky Watch | 740 | 745 | 33 |
+| Local developer | 775 | 780 | 42 |
 
 The write sites are main's once versions are normalised. The new bindings are
 the engine's constants above and the OpenAPI document's `conventionIds`

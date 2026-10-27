@@ -4,6 +4,22 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Pending, 26 October: sharper chat artwork
+
+The owner noticed that the pictures in the chat cards look blurry. The
+production panels embed 400px and 480px, quality 36 copies while the art can
+span 540 CSS pixels. A candidate change uses larger public Zodiacs artwork
+for every illustrated card, with no names, dates or scores in the image URL.
+It also rebuilds the sky calendar, milestones and chart twins art and their
+share pictures from the selected full-resolution originals. The panel HTML
+stays smaller and permits only `https://zodiacs.org` as a static art origin.
+The candidate uses `horoscopes-v5.html` and `occasions-v7.html`; earlier
+addresses remain readable. The local card and browser checks pass, but this
+is not live or scanned yet. Verify it in a
+private host connection before requesting a separate production approval and
+another separately approved draft rescan. The 20 October address record below
+remains the verified production state until that happens.
+
 ## Update, 20 October: fresh addresses for all four chat panels
 
 The card design changed after ChatGPT first saw the panel addresses. The
