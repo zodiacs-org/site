@@ -75,7 +75,7 @@ jobs:
 
       - name: Check out audited backup scripts
         # actions/checkout@v6.1.0
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           # Scheduled workflows execute only the audited default-branch file;
           # keep the checkout equally explicit for the scripts it invokes.
