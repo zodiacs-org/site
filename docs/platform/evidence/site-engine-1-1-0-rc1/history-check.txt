@@ -41,3 +41,15 @@ with either set: 4 in the plugin ZIP and 7 in the adapter archive; the
 earlier archives keep theirs. The tree's lines predate this adoption and stay as the 2026-10-08 record
 (../site-engine-1-0-0-rc2/refresh-20261008/) classified the lines introduced
 then; no blanket privacy clearance of the tree is claimed.
+
+Third run, after main (922924ee, #837) was merged into this branch: over
+b23dab83..61880d54, both sets. It reads main's five #837 commits, which
+main already carries, and the merge, against each of its parents. The
+merge's 23 lines, under the same 5 labels, are in the four bundles the merge
+rebuilt and in three archives: the 0.3.14 ZIP, the adapter archive and,
+read against this branch, main's rebuilt 0.3.13 ZIP. In the four bundles 13
+lines match: 9 are main's (922924ee) lines with only version strings
+changed, and the 4 single long lines' 8 matches each sit in the same 300
+characters on either side as on main; the bundles hold 17 matches before
+and after. The tree: 484 lines in 18,519 files, the 11 in the two new
+archives as above. The commit after the merge changes only this record.
