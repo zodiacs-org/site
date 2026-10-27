@@ -207,9 +207,9 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   the Russian family's ceiling; after a run, restore the pinned
   `og/v2/registry.png` and `og/v2/registry/` from git)
 - `public/assets/card-art/panel/` and `public/assets/card-art/share/` ←
-  `node scripts/build-card-art.mjs` (small AVIF variants of both twins of
-  every piece, dark and daylight, for the AI panels to inline, and JPEGs of
-  the dark twins for the share images; sources are the sign panels, the
+  `node scripts/build-card-art.mjs` (small AVIF variants retained from the
+  earlier inline panels, and JPEGs of the dark twins for the share images;
+  current chat panels use the larger published art files directly. Sources are the sign panels, the
   cards' own pieces `public/assets/card-art/<name>-720.webp` and the daylight
   twins `public/assets/card-art/<key>-light-720.webp`, which `--masters <dir>`
   writes from 1536px source PNGs. libvips output, so not in the drift job;

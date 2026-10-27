@@ -54,7 +54,11 @@ def main():
         if args.check:
             if not target.exists() or target.read_bytes() != payload:
                 raise ValueError(f"Stale {filename}; run npm run ai:package")
-        else:
+        elif not target.exists() or target.read_bytes() != payload:
+            if name == "zodiacs-sky" and version == "0.5.0" and target.exists():
+                raise ValueError("The published 0.5.0 archive is pinned; use a new version")
+            # Preserve the exact file and modification time of unchanged,
+            # already distributed archives.
             target.write_bytes(payload)
         manifest["packages"].append({"name": name, "version": version, "file": filename, "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest(), "members": members})
         print(f"{'Verified' if args.check else 'Built'} {filename} ({len(payload)} bytes)")
