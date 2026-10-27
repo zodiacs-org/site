@@ -1,13 +1,13 @@
 {
   "daily": {
     "schema": "zodiacs.registry-outlook.v1",
-    "date": "2026-10-26",
+    "date": "2026-10-27",
     "horizon": {
       "kind": "daily",
       "days": 1,
-      "from": "2026-10-26T00:00:00.000Z",
-      "toExclusive": "2026-10-27T00:00:00.000Z",
-      "referenceAt": "2026-10-26T12:00:00.000Z"
+      "from": "2026-10-27T00:00:00.000Z",
+      "toExclusive": "2026-10-28T00:00:00.000Z",
+      "referenceAt": "2026-10-27T12:00:00.000Z"
     },
     "method": {
       "id": "zodiacs.registry-symbolic-outlook.v1",
@@ -114,11 +114,11 @@
     "marketSnapshot": {
       "suppliedSigns": 12,
       "medians": {
-        "liquidityUsd": 13601.58,
-        "marketCapUsd": 64683.5
+        "liquidityUsd": 13495.16,
+        "marketCapUsd": 66868
       },
       "freshness": {
-        "asOf": "2026-10-26T00:08:09.677Z",
+        "asOf": "2026-10-27T00:07:45.015Z",
         "status": "current-for-horizon",
         "ageHoursAtHorizonEnd": 23.9
       },
@@ -126,14 +126,14 @@
     },
     "evidence": {
       "status": "collecting",
-      "historyDaysObserved": 79,
+      "historyDaysObserved": 80,
       "minimumHistoryDays": 180,
-      "historyDaysRemaining": 101,
+      "historyDaysRemaining": 100,
       "directionalForecasts": "disabled",
       "confidence": {
         "label": "not-yet-calibrated",
         "score": null,
-        "reason": "No predictive accuracy is claimed. 101 more daily observations are required before the first eligible evaluation."
+        "reason": "No predictive accuracy is claimed. 100 more daily observations are required before the first eligible evaluation."
       }
     },
     "forecast": {
@@ -154,9 +154,9 @@
         },
         "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
         "primaryFactor": {
-          "id": "occupancy:saturn:aries:2026-10-26T12:00:00.000Z",
+          "id": "occupancy:saturn:aries:2026-10-27T12:00:00.000Z",
           "kind": "occupancy",
-          "at": "2026-10-26T12:00:00.000Z",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
             "Saturn"
           ],
@@ -173,9 +173,9 @@
         },
         "factors": [
           {
-            "id": "occupancy:saturn:aries:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:saturn:aries:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Saturn"
             ],
@@ -191,9 +191,9 @@
             "source": "src/data/ingresses.json"
           },
           {
-            "id": "occupancy:neptune:aries:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:neptune:aries:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Neptune"
             ],
@@ -211,97 +211,47 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.00007059,
-          "change24hPct": -0.72,
-          "marketCapUsd": 70576,
-          "liquidityUsd": 14376.66,
-          "volume24hUsd": 27.82,
+          "priceUsd": 0.00007029,
+          "change24hPct": -0.7,
+          "marketCapUsd": 70274,
+          "liquidityUsd": 14305.35,
+          "volume24hUsd": 5,
           "liquidityVsCollectionMedian": 1.06,
-          "marketCapVsCollectionMedian": 1.09,
+          "marketCapVsCollectionMedian": 1.05,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 5
+        "attentionRank": 3
       },
       {
         "sign": "taurus",
         "displayName": "Taurus",
-        "signal": "steady",
+        "signal": "quiet",
         "scores": {
-          "attention": 23,
+          "attention": 0,
           "tone": 0,
-          "volatility": 15
+          "volatility": 0
         },
-        "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
-        "primaryFactor": {
-          "id": "lunation:full:taurus:2026-10-26T04:11:45.019Z",
-          "kind": "lunation",
-          "at": "2026-10-26T04:11:45.019Z",
-          "bodies": [
-            "Sun",
-            "Moon"
-          ],
-          "signs": [
-            "taurus"
-          ],
-          "label": "Full Moon in Taurus",
-          "attentionPoints": 23,
-          "tonePoints": 0,
-          "volatilityPoints": 15.3,
-          "basePoints": {
-            "attention": 24,
-            "tone": 0,
-            "volatility": 16
-          },
-          "horizonMultiplier": 0.9563,
-          "calculation": "24 attention / 0 tone / 16 event intensity × 0.9563 horizon multiplier",
-          "explanation": "A full Moon is scored as culmination and higher symbolic intensity for Taurus, without assigning a price direction.",
-          "source": "src/data/transits-2026-10.json"
-        },
-        "factors": [
-          {
-            "id": "lunation:full:taurus:2026-10-26T04:11:45.019Z",
-            "kind": "lunation",
-            "at": "2026-10-26T04:11:45.019Z",
-            "bodies": [
-              "Sun",
-              "Moon"
-            ],
-            "signs": [
-              "taurus"
-            ],
-            "label": "Full Moon in Taurus",
-            "attentionPoints": 23,
-            "tonePoints": 0,
-            "volatilityPoints": 15.3,
-            "basePoints": {
-              "attention": 24,
-              "tone": 0,
-              "volatility": 16
-            },
-            "horizonMultiplier": 0.9563,
-            "calculation": "24 attention / 0 tone / 16 event intensity × 0.9563 horizon multiplier",
-            "explanation": "A full Moon is scored as culmination and higher symbolic intensity for Taurus, without assigning a price direction.",
-            "source": "src/data/transits-2026-10.json"
-          }
-        ],
+        "summary": "A quiet sky window for this sign, without a strong directional tone. Signal: quiet.",
+        "primaryFactor": null,
+        "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00006711,
-          "change24hPct": -0.78,
-          "marketCapUsd": 67119,
-          "liquidityUsd": 13521.14,
-          "volume24hUsd": 7.85,
-          "liquidityVsCollectionMedian": 0.99,
-          "marketCapVsCollectionMedian": 1.04,
+          "priceUsd": 0.00006686,
+          "change24hPct": -0.87,
+          "marketCapUsd": 66868,
+          "liquidityUsd": 13449.74,
+          "volume24hUsd": 10.48,
+          "liquidityVsCollectionMedian": 1,
+          "marketCapVsCollectionMedian": 1,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 2
+        "attentionRank": 7
       },
       {
         "sign": "gemini",
@@ -314,9 +264,9 @@
         },
         "summary": "A quiet sky window for this sign, without a strong directional tone. Signal: quiet.",
         "primaryFactor": {
-          "id": "occupancy:uranus:gemini:2026-10-26T12:00:00.000Z",
+          "id": "occupancy:uranus:gemini:2026-10-27T12:00:00.000Z",
           "kind": "occupancy",
-          "at": "2026-10-26T12:00:00.000Z",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
             "Uranus"
           ],
@@ -333,9 +283,9 @@
         },
         "factors": [
           {
-            "id": "occupancy:uranus:gemini:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:uranus:gemini:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Uranus"
             ],
@@ -353,19 +303,19 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.0001458,
-          "change24hPct": -1.27,
-          "marketCapUsd": 145848,
-          "liquidityUsd": 22397.09,
-          "volume24hUsd": 80.02,
+          "priceUsd": 0.0001466,
+          "change24hPct": 0.85,
+          "marketCapUsd": 146588,
+          "liquidityUsd": 22320.51,
+          "volume24hUsd": 286.55,
           "liquidityVsCollectionMedian": 1.65,
-          "marketCapVsCollectionMedian": 2.25,
-          "turnover24h": 0,
+          "marketCapVsCollectionMedian": 2.19,
+          "turnover24h": 0.01,
           "liquidityBand": "deeper",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 7
+        "attentionRank": 5
       },
       {
         "sign": "cancer",
@@ -381,13 +331,13 @@
         "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00006896,
-          "change24hPct": -1.06,
-          "marketCapUsd": 68958,
-          "liquidityUsd": 15140.3,
-          "volume24hUsd": 1.17,
-          "liquidityVsCollectionMedian": 1.11,
-          "marketCapVsCollectionMedian": 1.07,
+          "priceUsd": 0.00006874,
+          "change24hPct": 0.01,
+          "marketCapUsd": 68746,
+          "liquidityUsd": 15088.49,
+          "volume24hUsd": 3.39,
+          "liquidityVsCollectionMedian": 1.12,
+          "marketCapVsCollectionMedian": 1.03,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
@@ -406,9 +356,9 @@
         },
         "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
         "primaryFactor": {
-          "id": "occupancy:jupiter:leo:2026-10-26T12:00:00.000Z",
+          "id": "occupancy:jupiter:leo:2026-10-27T12:00:00.000Z",
           "kind": "occupancy",
-          "at": "2026-10-26T12:00:00.000Z",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
             "Jupiter"
           ],
@@ -425,9 +375,9 @@
         },
         "factors": [
           {
-            "id": "occupancy:jupiter:leo:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:jupiter:leo:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Jupiter"
             ],
@@ -443,9 +393,9 @@
             "source": "src/data/ingresses.json"
           },
           {
-            "id": "occupancy:mars:leo:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:mars:leo:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Mars"
             ],
@@ -463,19 +413,19 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.00005773,
-          "change24hPct": -1.32,
-          "marketCapUsd": 57733,
-          "liquidityUsd": 13343.22,
-          "volume24hUsd": 15.51,
-          "liquidityVsCollectionMedian": 0.98,
-          "marketCapVsCollectionMedian": 0.89,
+          "priceUsd": 0.00005892,
+          "change24hPct": 1.09,
+          "marketCapUsd": 58923,
+          "liquidityUsd": 13491.49,
+          "volume24hUsd": 62.82,
+          "liquidityVsCollectionMedian": 1,
+          "marketCapVsCollectionMedian": 0.88,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 4
+        "attentionRank": 1
       },
       {
         "sign": "virgo",
@@ -490,17 +440,17 @@
         "primaryFactor": null,
         "factors": [],
         "market": {
-          "available": true,
-          "priceUsd": 0.00005756,
+          "available": false,
+          "priceUsd": null,
           "change24hPct": null,
-          "marketCapUsd": 57568,
-          "liquidityUsd": 12702.91,
-          "volume24hUsd": 7,
-          "liquidityVsCollectionMedian": 0.93,
-          "marketCapVsCollectionMedian": 0.89,
-          "turnover24h": 0,
-          "liquidityBand": "near-median",
-          "participationBand": "low",
+          "marketCapUsd": null,
+          "liquidityUsd": null,
+          "volume24hUsd": null,
+          "liquidityVsCollectionMedian": null,
+          "marketCapVsCollectionMedian": null,
+          "turnover24h": null,
+          "liquidityBand": "unknown",
+          "participationBand": "unknown",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
         "attentionRank": 9
@@ -516,9 +466,9 @@
         },
         "summary": "A quiet sky window for this sign, without a strong directional tone. Signal: quiet.",
         "primaryFactor": {
-          "id": "occupancy:venus:libra:2026-10-26T12:00:00.000Z",
+          "id": "occupancy:venus:libra:2026-10-27T12:00:00.000Z",
           "kind": "occupancy",
-          "at": "2026-10-26T12:00:00.000Z",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
             "Venus"
           ],
@@ -535,9 +485,9 @@
         },
         "factors": [
           {
-            "id": "occupancy:venus:libra:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:venus:libra:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Venus"
             ],
@@ -555,87 +505,53 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.00007443,
-          "change24hPct": 0.21,
-          "marketCapUsd": 74436,
-          "liquidityUsd": 18819.86,
-          "volume24hUsd": 49.55,
-          "liquidityVsCollectionMedian": 1.38,
-          "marketCapVsCollectionMedian": 1.15,
+          "priceUsd": 0.00007313,
+          "change24hPct": -0.17,
+          "marketCapUsd": 73130,
+          "liquidityUsd": 18510.69,
+          "volume24hUsd": 10.41,
+          "liquidityVsCollectionMedian": 1.37,
+          "marketCapVsCollectionMedian": 1.09,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 6
+        "attentionRank": 4
       },
       {
         "sign": "scorpio",
         "displayName": "Scorpio",
-        "signal": "active",
+        "signal": "steady",
         "scores": {
-          "attention": 29,
-          "tone": -9,
-          "volatility": 11
+          "attention": 14,
+          "tone": 0,
+          "volatility": 0
         },
-        "summary": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active.",
+        "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
         "primaryFactor": {
-          "id": "aspect:sun:pluto:square:2026-10-26T12:11:42.354Z",
-          "kind": "aspect",
-          "at": "2026-10-26T12:11:42.354Z",
+          "id": "occupancy:sun:scorpio:2026-10-27T12:00:00.000Z",
+          "kind": "occupancy",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
-            "Sun",
-            "Pluto"
+            "Sun"
           ],
           "signs": [
-            "scorpio",
-            "aquarius"
+            "scorpio"
           ],
-          "label": "Sun square Pluto",
-          "attentionPoints": 14.8,
-          "tonePoints": -8.7,
-          "volatilityPoints": 10.5,
-          "basePoints": {
-            "attention": 17,
-            "tone": -10,
-            "volatility": 12
-          },
-          "horizonMultiplier": 0.873,
-          "calculation": "17 attention / -10 tone / 12 event intensity × 0.8730 horizon multiplier",
-          "explanation": "The exact square is scored as frictional for the directly occupied signs (Scorpio and Aquarius). This is symbolic scoring, not a causal market mechanism.",
-          "source": "src/data/transits-2026-10.json"
+          "label": "Sun in Scorpio",
+          "attentionPoints": 9,
+          "tonePoints": 0,
+          "volatilityPoints": 0,
+          "calculation": "9 disclosed Sun occupancy-attention points",
+          "explanation": "Sun occupies Scorpio at the UTC reference point. This adds symbolic attention, not a directional market claim.",
+          "source": "src/data/ingresses.json"
         },
         "factors": [
           {
-            "id": "aspect:sun:pluto:square:2026-10-26T12:11:42.354Z",
-            "kind": "aspect",
-            "at": "2026-10-26T12:11:42.354Z",
-            "bodies": [
-              "Sun",
-              "Pluto"
-            ],
-            "signs": [
-              "scorpio",
-              "aquarius"
-            ],
-            "label": "Sun square Pluto",
-            "attentionPoints": 14.8,
-            "tonePoints": -8.7,
-            "volatilityPoints": 10.5,
-            "basePoints": {
-              "attention": 17,
-              "tone": -10,
-              "volatility": 12
-            },
-            "horizonMultiplier": 0.873,
-            "calculation": "17 attention / -10 tone / 12 event intensity × 0.8730 horizon multiplier",
-            "explanation": "The exact square is scored as frictional for the directly occupied signs (Scorpio and Aquarius). This is symbolic scoring, not a causal market mechanism.",
-            "source": "src/data/transits-2026-10.json"
-          },
-          {
-            "id": "occupancy:sun:scorpio:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:sun:scorpio:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Sun"
             ],
@@ -651,9 +567,9 @@
             "source": "src/data/ingresses.json"
           },
           {
-            "id": "occupancy:mercury:scorpio:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:mercury:scorpio:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Mercury"
             ],
@@ -671,19 +587,19 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.00006173,
+          "priceUsd": 0.00006094,
           "change24hPct": null,
-          "marketCapUsd": 61730,
-          "liquidityUsd": 13682.02,
-          "volume24hUsd": 3.59,
-          "liquidityVsCollectionMedian": 1.01,
-          "marketCapVsCollectionMedian": 0.95,
+          "marketCapUsd": 60941,
+          "liquidityUsd": 13495.16,
+          "volume24hUsd": 5.99,
+          "liquidityVsCollectionMedian": 1,
+          "marketCapVsCollectionMedian": 0.91,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 1
+        "attentionRank": 2
       },
       {
         "sign": "sagittarius",
@@ -699,14 +615,14 @@
         "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00005743,
-          "change24hPct": -0.62,
-          "marketCapUsd": 57418,
-          "liquidityUsd": 13281.13,
-          "volume24hUsd": 84.84,
+          "priceUsd": 0.00005698,
+          "change24hPct": null,
+          "marketCapUsd": 56964,
+          "liquidityUsd": 13208.86,
+          "volume24hUsd": 16.34,
           "liquidityVsCollectionMedian": 0.98,
-          "marketCapVsCollectionMedian": 0.89,
-          "turnover24h": 0.01,
+          "marketCapVsCollectionMedian": 0.85,
+          "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
@@ -727,14 +643,14 @@
         "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00006224,
-          "change24hPct": -0.55,
-          "marketCapUsd": 62248,
-          "liquidityUsd": 13274.76,
-          "volume24hUsd": 81.09,
+          "priceUsd": 0.00006164,
+          "change24hPct": -0.36,
+          "marketCapUsd": 61643,
+          "liquidityUsd": 13193.13,
+          "volume24hUsd": 23.67,
           "liquidityVsCollectionMedian": 0.98,
-          "marketCapVsCollectionMedian": 0.96,
-          "turnover24h": 0.01,
+          "marketCapVsCollectionMedian": 0.92,
+          "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
@@ -744,70 +660,36 @@
       {
         "sign": "aquarius",
         "displayName": "Aquarius",
-        "signal": "steady",
+        "signal": "quiet",
         "scores": {
-          "attention": 20,
-          "tone": -9,
-          "volatility": 11
+          "attention": 5,
+          "tone": 0,
+          "volatility": 0
         },
-        "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
+        "summary": "A quiet sky window for this sign, without a strong directional tone. Signal: quiet.",
         "primaryFactor": {
-          "id": "aspect:sun:pluto:square:2026-10-26T12:11:42.354Z",
-          "kind": "aspect",
-          "at": "2026-10-26T12:11:42.354Z",
+          "id": "occupancy:pluto:aquarius:2026-10-27T12:00:00.000Z",
+          "kind": "occupancy",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
-            "Sun",
             "Pluto"
           ],
           "signs": [
-            "scorpio",
             "aquarius"
           ],
-          "label": "Sun square Pluto",
-          "attentionPoints": 14.8,
-          "tonePoints": -8.7,
-          "volatilityPoints": 10.5,
-          "basePoints": {
-            "attention": 17,
-            "tone": -10,
-            "volatility": 12
-          },
-          "horizonMultiplier": 0.873,
-          "calculation": "17 attention / -10 tone / 12 event intensity × 0.8730 horizon multiplier",
-          "explanation": "The exact square is scored as frictional for the directly occupied signs (Scorpio and Aquarius). This is symbolic scoring, not a causal market mechanism.",
-          "source": "src/data/transits-2026-10.json"
+          "label": "Pluto in Aquarius",
+          "attentionPoints": 5,
+          "tonePoints": 0,
+          "volatilityPoints": 0,
+          "calculation": "5 disclosed Pluto occupancy-attention points",
+          "explanation": "Pluto occupies Aquarius at the UTC reference point. This adds symbolic attention, not a directional market claim.",
+          "source": "src/data/ingresses.json"
         },
         "factors": [
           {
-            "id": "aspect:sun:pluto:square:2026-10-26T12:11:42.354Z",
-            "kind": "aspect",
-            "at": "2026-10-26T12:11:42.354Z",
-            "bodies": [
-              "Sun",
-              "Pluto"
-            ],
-            "signs": [
-              "scorpio",
-              "aquarius"
-            ],
-            "label": "Sun square Pluto",
-            "attentionPoints": 14.8,
-            "tonePoints": -8.7,
-            "volatilityPoints": 10.5,
-            "basePoints": {
-              "attention": 17,
-              "tone": -10,
-              "volatility": 12
-            },
-            "horizonMultiplier": 0.873,
-            "calculation": "17 attention / -10 tone / 12 event intensity × 0.8730 horizon multiplier",
-            "explanation": "The exact square is scored as frictional for the directly occupied signs (Scorpio and Aquarius). This is symbolic scoring, not a causal market mechanism.",
-            "source": "src/data/transits-2026-10.json"
-          },
-          {
-            "id": "occupancy:pluto:aquarius:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:pluto:aquarius:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Pluto"
             ],
@@ -825,19 +707,19 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.0001035,
-          "change24hPct": 14.96,
-          "marketCapUsd": 103504,
-          "liquidityUsd": 17588.32,
-          "volume24hUsd": 1364.46,
-          "liquidityVsCollectionMedian": 1.29,
-          "marketCapVsCollectionMedian": 1.6,
-          "turnover24h": 0.08,
+          "priceUsd": 0.0000966,
+          "change24hPct": 0.37,
+          "marketCapUsd": 96607,
+          "liquidityUsd": 16967.63,
+          "volume24hUsd": 315.7,
+          "liquidityVsCollectionMedian": 1.26,
+          "marketCapVsCollectionMedian": 1.44,
+          "turnover24h": 0.02,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 3
+        "attentionRank": 6
       },
       {
         "sign": "pisces",
@@ -853,13 +735,13 @@
         "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00005716,
-          "change24hPct": -1.14,
-          "marketCapUsd": 57168,
-          "liquidityUsd": 12363.59,
-          "volume24hUsd": 5.1,
-          "liquidityVsCollectionMedian": 0.91,
-          "marketCapVsCollectionMedian": 0.88,
+          "priceUsd": 0.00005724,
+          "change24hPct": -0.64,
+          "marketCapUsd": 57245,
+          "liquidityUsd": 12355.97,
+          "volume24hUsd": 12.16,
+          "liquidityVsCollectionMedian": 0.92,
+          "marketCapVsCollectionMedian": 0.86,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
@@ -877,13 +759,13 @@
   },
   "weekly": {
     "schema": "zodiacs.registry-outlook.v1",
-    "date": "2026-10-26",
+    "date": "2026-10-27",
     "horizon": {
       "kind": "weekly",
       "days": 7,
-      "from": "2026-10-26T00:00:00.000Z",
-      "toExclusive": "2026-11-02T00:00:00.000Z",
-      "referenceAt": "2026-10-26T12:00:00.000Z"
+      "from": "2026-10-27T00:00:00.000Z",
+      "toExclusive": "2026-11-03T00:00:00.000Z",
+      "referenceAt": "2026-10-27T12:00:00.000Z"
     },
     "method": {
       "id": "zodiacs.registry-symbolic-outlook.v1",
@@ -991,11 +873,11 @@
     "marketSnapshot": {
       "suppliedSigns": 12,
       "medians": {
-        "liquidityUsd": 13601.58,
-        "marketCapUsd": 64683.5
+        "liquidityUsd": 13495.16,
+        "marketCapUsd": 66868
       },
       "freshness": {
-        "asOf": "2026-10-26T00:08:09.677Z",
+        "asOf": "2026-10-27T00:07:45.015Z",
         "status": "stale-for-horizon",
         "ageHoursAtHorizonEnd": 167.9
       },
@@ -1003,14 +885,14 @@
     },
     "evidence": {
       "status": "collecting",
-      "historyDaysObserved": 79,
+      "historyDaysObserved": 80,
       "minimumHistoryDays": 180,
-      "historyDaysRemaining": 101,
+      "historyDaysRemaining": 100,
       "directionalForecasts": "disabled",
       "confidence": {
         "label": "not-yet-calibrated",
         "score": null,
-        "reason": "No predictive accuracy is claimed. 101 more daily observations are required before the first eligible evaluation."
+        "reason": "No predictive accuracy is claimed. 100 more daily observations are required before the first eligible evaluation."
       }
     },
     "forecast": {
@@ -1031,9 +913,9 @@
         },
         "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
         "primaryFactor": {
-          "id": "occupancy:saturn:aries:2026-10-26T12:00:00.000Z",
+          "id": "occupancy:saturn:aries:2026-10-27T12:00:00.000Z",
           "kind": "occupancy",
-          "at": "2026-10-26T12:00:00.000Z",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
             "Saturn"
           ],
@@ -1050,9 +932,9 @@
         },
         "factors": [
           {
-            "id": "occupancy:saturn:aries:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:saturn:aries:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Saturn"
             ],
@@ -1068,9 +950,9 @@
             "source": "src/data/ingresses.json"
           },
           {
-            "id": "occupancy:neptune:aries:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:neptune:aries:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Neptune"
             ],
@@ -1088,97 +970,47 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.00007059,
-          "change24hPct": -0.72,
-          "marketCapUsd": 70576,
-          "liquidityUsd": 14376.66,
-          "volume24hUsd": 27.82,
+          "priceUsd": 0.00007029,
+          "change24hPct": -0.7,
+          "marketCapUsd": 70274,
+          "liquidityUsd": 14305.35,
+          "volume24hUsd": 5,
           "liquidityVsCollectionMedian": 1.06,
-          "marketCapVsCollectionMedian": 1.09,
+          "marketCapVsCollectionMedian": 1.05,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 5
+        "attentionRank": 3
       },
       {
         "sign": "taurus",
         "displayName": "Taurus",
-        "signal": "steady",
+        "signal": "quiet",
         "scores": {
-          "attention": 24,
+          "attention": 0,
           "tone": 0,
-          "volatility": 16
+          "volatility": 0
         },
-        "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
-        "primaryFactor": {
-          "id": "lunation:full:taurus:2026-10-26T04:11:45.019Z",
-          "kind": "lunation",
-          "at": "2026-10-26T04:11:45.019Z",
-          "bodies": [
-            "Sun",
-            "Moon"
-          ],
-          "signs": [
-            "taurus"
-          ],
-          "label": "Full Moon in Taurus",
-          "attentionPoints": 23.9,
-          "tonePoints": 0,
-          "volatilityPoints": 15.9,
-          "basePoints": {
-            "attention": 24,
-            "tone": 0,
-            "volatility": 16
-          },
-          "horizonMultiplier": 0.9938,
-          "calculation": "24 attention / 0 tone / 16 event intensity × 0.9938 horizon multiplier",
-          "explanation": "A full Moon is scored as culmination and higher symbolic intensity for Taurus, without assigning a price direction.",
-          "source": "src/data/transits-2026-10.json"
-        },
-        "factors": [
-          {
-            "id": "lunation:full:taurus:2026-10-26T04:11:45.019Z",
-            "kind": "lunation",
-            "at": "2026-10-26T04:11:45.019Z",
-            "bodies": [
-              "Sun",
-              "Moon"
-            ],
-            "signs": [
-              "taurus"
-            ],
-            "label": "Full Moon in Taurus",
-            "attentionPoints": 23.9,
-            "tonePoints": 0,
-            "volatilityPoints": 15.9,
-            "basePoints": {
-              "attention": 24,
-              "tone": 0,
-              "volatility": 16
-            },
-            "horizonMultiplier": 0.9938,
-            "calculation": "24 attention / 0 tone / 16 event intensity × 0.9938 horizon multiplier",
-            "explanation": "A full Moon is scored as culmination and higher symbolic intensity for Taurus, without assigning a price direction.",
-            "source": "src/data/transits-2026-10.json"
-          }
-        ],
+        "summary": "A quiet sky window for this sign, without a strong directional tone. Signal: quiet.",
+        "primaryFactor": null,
+        "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00006711,
-          "change24hPct": -0.78,
-          "marketCapUsd": 67119,
-          "liquidityUsd": 13521.14,
-          "volume24hUsd": 7.85,
-          "liquidityVsCollectionMedian": 0.99,
-          "marketCapVsCollectionMedian": 1.04,
+          "priceUsd": 0.00006686,
+          "change24hPct": -0.87,
+          "marketCapUsd": 66868,
+          "liquidityUsd": 13449.74,
+          "volume24hUsd": 10.48,
+          "liquidityVsCollectionMedian": 1,
+          "marketCapVsCollectionMedian": 1,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 2
+        "attentionRank": 7
       },
       {
         "sign": "gemini",
@@ -1191,9 +1023,9 @@
         },
         "summary": "A quiet sky window for this sign, without a strong directional tone. Signal: quiet.",
         "primaryFactor": {
-          "id": "occupancy:uranus:gemini:2026-10-26T12:00:00.000Z",
+          "id": "occupancy:uranus:gemini:2026-10-27T12:00:00.000Z",
           "kind": "occupancy",
-          "at": "2026-10-26T12:00:00.000Z",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
             "Uranus"
           ],
@@ -1210,9 +1042,9 @@
         },
         "factors": [
           {
-            "id": "occupancy:uranus:gemini:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:uranus:gemini:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Uranus"
             ],
@@ -1230,19 +1062,19 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.0001458,
-          "change24hPct": -1.27,
-          "marketCapUsd": 145848,
-          "liquidityUsd": 22397.09,
-          "volume24hUsd": 80.02,
+          "priceUsd": 0.0001466,
+          "change24hPct": 0.85,
+          "marketCapUsd": 146588,
+          "liquidityUsd": 22320.51,
+          "volume24hUsd": 286.55,
           "liquidityVsCollectionMedian": 1.65,
-          "marketCapVsCollectionMedian": 2.25,
-          "turnover24h": 0,
+          "marketCapVsCollectionMedian": 2.19,
+          "turnover24h": 0.01,
           "liquidityBand": "deeper",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 7
+        "attentionRank": 5
       },
       {
         "sign": "cancer",
@@ -1258,13 +1090,13 @@
         "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00006896,
-          "change24hPct": -1.06,
-          "marketCapUsd": 68958,
-          "liquidityUsd": 15140.3,
-          "volume24hUsd": 1.17,
-          "liquidityVsCollectionMedian": 1.11,
-          "marketCapVsCollectionMedian": 1.07,
+          "priceUsd": 0.00006874,
+          "change24hPct": 0.01,
+          "marketCapUsd": 68746,
+          "liquidityUsd": 15088.49,
+          "volume24hUsd": 3.39,
+          "liquidityVsCollectionMedian": 1.12,
+          "marketCapVsCollectionMedian": 1.03,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
@@ -1283,9 +1115,9 @@
         },
         "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
         "primaryFactor": {
-          "id": "occupancy:jupiter:leo:2026-10-26T12:00:00.000Z",
+          "id": "occupancy:jupiter:leo:2026-10-27T12:00:00.000Z",
           "kind": "occupancy",
-          "at": "2026-10-26T12:00:00.000Z",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
             "Jupiter"
           ],
@@ -1302,9 +1134,9 @@
         },
         "factors": [
           {
-            "id": "occupancy:jupiter:leo:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:jupiter:leo:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Jupiter"
             ],
@@ -1320,9 +1152,9 @@
             "source": "src/data/ingresses.json"
           },
           {
-            "id": "occupancy:mars:leo:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:mars:leo:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Mars"
             ],
@@ -1340,19 +1172,19 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.00005773,
-          "change24hPct": -1.32,
-          "marketCapUsd": 57733,
-          "liquidityUsd": 13343.22,
-          "volume24hUsd": 15.51,
-          "liquidityVsCollectionMedian": 0.98,
-          "marketCapVsCollectionMedian": 0.89,
+          "priceUsd": 0.00005892,
+          "change24hPct": 1.09,
+          "marketCapUsd": 58923,
+          "liquidityUsd": 13491.49,
+          "volume24hUsd": 62.82,
+          "liquidityVsCollectionMedian": 1,
+          "marketCapVsCollectionMedian": 0.88,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 4
+        "attentionRank": 1
       },
       {
         "sign": "virgo",
@@ -1367,17 +1199,17 @@
         "primaryFactor": null,
         "factors": [],
         "market": {
-          "available": true,
-          "priceUsd": 0.00005756,
+          "available": false,
+          "priceUsd": null,
           "change24hPct": null,
-          "marketCapUsd": 57568,
-          "liquidityUsd": 12702.91,
-          "volume24hUsd": 7,
-          "liquidityVsCollectionMedian": 0.93,
-          "marketCapVsCollectionMedian": 0.89,
-          "turnover24h": 0,
-          "liquidityBand": "near-median",
-          "participationBand": "low",
+          "marketCapUsd": null,
+          "liquidityUsd": null,
+          "volume24hUsd": null,
+          "liquidityVsCollectionMedian": null,
+          "marketCapVsCollectionMedian": null,
+          "turnover24h": null,
+          "liquidityBand": "unknown",
+          "participationBand": "unknown",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
         "attentionRank": 9
@@ -1393,9 +1225,9 @@
         },
         "summary": "A quiet sky window for this sign, without a strong directional tone. Signal: quiet.",
         "primaryFactor": {
-          "id": "occupancy:venus:libra:2026-10-26T12:00:00.000Z",
+          "id": "occupancy:venus:libra:2026-10-27T12:00:00.000Z",
           "kind": "occupancy",
-          "at": "2026-10-26T12:00:00.000Z",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
             "Venus"
           ],
@@ -1412,9 +1244,9 @@
         },
         "factors": [
           {
-            "id": "occupancy:venus:libra:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:venus:libra:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Venus"
             ],
@@ -1432,87 +1264,53 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.00007443,
-          "change24hPct": 0.21,
-          "marketCapUsd": 74436,
-          "liquidityUsd": 18819.86,
-          "volume24hUsd": 49.55,
-          "liquidityVsCollectionMedian": 1.38,
-          "marketCapVsCollectionMedian": 1.15,
+          "priceUsd": 0.00007313,
+          "change24hPct": -0.17,
+          "marketCapUsd": 73130,
+          "liquidityUsd": 18510.69,
+          "volume24hUsd": 10.41,
+          "liquidityVsCollectionMedian": 1.37,
+          "marketCapVsCollectionMedian": 1.09,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 6
+        "attentionRank": 4
       },
       {
         "sign": "scorpio",
         "displayName": "Scorpio",
-        "signal": "active",
+        "signal": "steady",
         "scores": {
-          "attention": 31,
-          "tone": -10,
-          "volatility": 12
+          "attention": 14,
+          "tone": 0,
+          "volatility": 0
         },
-        "summary": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active.",
+        "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
         "primaryFactor": {
-          "id": "aspect:sun:pluto:square:2026-10-26T12:11:42.354Z",
-          "kind": "aspect",
-          "at": "2026-10-26T12:11:42.354Z",
+          "id": "occupancy:sun:scorpio:2026-10-27T12:00:00.000Z",
+          "kind": "occupancy",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
-            "Sun",
-            "Pluto"
+            "Sun"
           ],
           "signs": [
-            "scorpio",
-            "aquarius"
+            "scorpio"
           ],
-          "label": "Sun square Pluto",
-          "attentionPoints": 16.7,
-          "tonePoints": -9.8,
-          "volatilityPoints": 11.8,
-          "basePoints": {
-            "attention": 17,
-            "tone": -10,
-            "volatility": 12
-          },
-          "horizonMultiplier": 0.9819,
-          "calculation": "17 attention / -10 tone / 12 event intensity × 0.9819 horizon multiplier",
-          "explanation": "The exact square is scored as frictional for the directly occupied signs (Scorpio and Aquarius). This is symbolic scoring, not a causal market mechanism.",
-          "source": "src/data/transits-2026-10.json"
+          "label": "Sun in Scorpio",
+          "attentionPoints": 9,
+          "tonePoints": 0,
+          "volatilityPoints": 0,
+          "calculation": "9 disclosed Sun occupancy-attention points",
+          "explanation": "Sun occupies Scorpio at the UTC reference point. This adds symbolic attention, not a directional market claim.",
+          "source": "src/data/ingresses.json"
         },
         "factors": [
           {
-            "id": "aspect:sun:pluto:square:2026-10-26T12:11:42.354Z",
-            "kind": "aspect",
-            "at": "2026-10-26T12:11:42.354Z",
-            "bodies": [
-              "Sun",
-              "Pluto"
-            ],
-            "signs": [
-              "scorpio",
-              "aquarius"
-            ],
-            "label": "Sun square Pluto",
-            "attentionPoints": 16.7,
-            "tonePoints": -9.8,
-            "volatilityPoints": 11.8,
-            "basePoints": {
-              "attention": 17,
-              "tone": -10,
-              "volatility": 12
-            },
-            "horizonMultiplier": 0.9819,
-            "calculation": "17 attention / -10 tone / 12 event intensity × 0.9819 horizon multiplier",
-            "explanation": "The exact square is scored as frictional for the directly occupied signs (Scorpio and Aquarius). This is symbolic scoring, not a causal market mechanism.",
-            "source": "src/data/transits-2026-10.json"
-          },
-          {
-            "id": "occupancy:sun:scorpio:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:sun:scorpio:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Sun"
             ],
@@ -1528,9 +1326,9 @@
             "source": "src/data/ingresses.json"
           },
           {
-            "id": "occupancy:mercury:scorpio:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:mercury:scorpio:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Mercury"
             ],
@@ -1548,19 +1346,19 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.00006173,
+          "priceUsd": 0.00006094,
           "change24hPct": null,
-          "marketCapUsd": 61730,
-          "liquidityUsd": 13682.02,
-          "volume24hUsd": 3.59,
-          "liquidityVsCollectionMedian": 1.01,
-          "marketCapVsCollectionMedian": 0.95,
+          "marketCapUsd": 60941,
+          "liquidityUsd": 13495.16,
+          "volume24hUsd": 5.99,
+          "liquidityVsCollectionMedian": 1,
+          "marketCapVsCollectionMedian": 0.91,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 1
+        "attentionRank": 2
       },
       {
         "sign": "sagittarius",
@@ -1576,14 +1374,14 @@
         "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00005743,
-          "change24hPct": -0.62,
-          "marketCapUsd": 57418,
-          "liquidityUsd": 13281.13,
-          "volume24hUsd": 84.84,
+          "priceUsd": 0.00005698,
+          "change24hPct": null,
+          "marketCapUsd": 56964,
+          "liquidityUsd": 13208.86,
+          "volume24hUsd": 16.34,
           "liquidityVsCollectionMedian": 0.98,
-          "marketCapVsCollectionMedian": 0.89,
-          "turnover24h": 0.01,
+          "marketCapVsCollectionMedian": 0.85,
+          "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
@@ -1604,14 +1402,14 @@
         "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00006224,
-          "change24hPct": -0.55,
-          "marketCapUsd": 62248,
-          "liquidityUsd": 13274.76,
-          "volume24hUsd": 81.09,
+          "priceUsd": 0.00006164,
+          "change24hPct": -0.36,
+          "marketCapUsd": 61643,
+          "liquidityUsd": 13193.13,
+          "volume24hUsd": 23.67,
           "liquidityVsCollectionMedian": 0.98,
-          "marketCapVsCollectionMedian": 0.96,
-          "turnover24h": 0.01,
+          "marketCapVsCollectionMedian": 0.92,
+          "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
@@ -1621,70 +1419,36 @@
       {
         "sign": "aquarius",
         "displayName": "Aquarius",
-        "signal": "steady",
+        "signal": "quiet",
         "scores": {
-          "attention": 22,
-          "tone": -10,
-          "volatility": 12
+          "attention": 5,
+          "tone": 0,
+          "volatility": 0
         },
-        "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
+        "summary": "A quiet sky window for this sign, without a strong directional tone. Signal: quiet.",
         "primaryFactor": {
-          "id": "aspect:sun:pluto:square:2026-10-26T12:11:42.354Z",
-          "kind": "aspect",
-          "at": "2026-10-26T12:11:42.354Z",
+          "id": "occupancy:pluto:aquarius:2026-10-27T12:00:00.000Z",
+          "kind": "occupancy",
+          "at": "2026-10-27T12:00:00.000Z",
           "bodies": [
-            "Sun",
             "Pluto"
           ],
           "signs": [
-            "scorpio",
             "aquarius"
           ],
-          "label": "Sun square Pluto",
-          "attentionPoints": 16.7,
-          "tonePoints": -9.8,
-          "volatilityPoints": 11.8,
-          "basePoints": {
-            "attention": 17,
-            "tone": -10,
-            "volatility": 12
-          },
-          "horizonMultiplier": 0.9819,
-          "calculation": "17 attention / -10 tone / 12 event intensity × 0.9819 horizon multiplier",
-          "explanation": "The exact square is scored as frictional for the directly occupied signs (Scorpio and Aquarius). This is symbolic scoring, not a causal market mechanism.",
-          "source": "src/data/transits-2026-10.json"
+          "label": "Pluto in Aquarius",
+          "attentionPoints": 5,
+          "tonePoints": 0,
+          "volatilityPoints": 0,
+          "calculation": "5 disclosed Pluto occupancy-attention points",
+          "explanation": "Pluto occupies Aquarius at the UTC reference point. This adds symbolic attention, not a directional market claim.",
+          "source": "src/data/ingresses.json"
         },
         "factors": [
           {
-            "id": "aspect:sun:pluto:square:2026-10-26T12:11:42.354Z",
-            "kind": "aspect",
-            "at": "2026-10-26T12:11:42.354Z",
-            "bodies": [
-              "Sun",
-              "Pluto"
-            ],
-            "signs": [
-              "scorpio",
-              "aquarius"
-            ],
-            "label": "Sun square Pluto",
-            "attentionPoints": 16.7,
-            "tonePoints": -9.8,
-            "volatilityPoints": 11.8,
-            "basePoints": {
-              "attention": 17,
-              "tone": -10,
-              "volatility": 12
-            },
-            "horizonMultiplier": 0.9819,
-            "calculation": "17 attention / -10 tone / 12 event intensity × 0.9819 horizon multiplier",
-            "explanation": "The exact square is scored as frictional for the directly occupied signs (Scorpio and Aquarius). This is symbolic scoring, not a causal market mechanism.",
-            "source": "src/data/transits-2026-10.json"
-          },
-          {
-            "id": "occupancy:pluto:aquarius:2026-10-26T12:00:00.000Z",
+            "id": "occupancy:pluto:aquarius:2026-10-27T12:00:00.000Z",
             "kind": "occupancy",
-            "at": "2026-10-26T12:00:00.000Z",
+            "at": "2026-10-27T12:00:00.000Z",
             "bodies": [
               "Pluto"
             ],
@@ -1702,19 +1466,19 @@
         ],
         "market": {
           "available": true,
-          "priceUsd": 0.0001035,
-          "change24hPct": 14.96,
-          "marketCapUsd": 103504,
-          "liquidityUsd": 17588.32,
-          "volume24hUsd": 1364.46,
-          "liquidityVsCollectionMedian": 1.29,
-          "marketCapVsCollectionMedian": 1.6,
-          "turnover24h": 0.08,
+          "priceUsd": 0.0000966,
+          "change24hPct": 0.37,
+          "marketCapUsd": 96607,
+          "liquidityUsd": 16967.63,
+          "volume24hUsd": 315.7,
+          "liquidityVsCollectionMedian": 1.26,
+          "marketCapVsCollectionMedian": 1.44,
+          "turnover24h": 0.02,
           "liquidityBand": "near-median",
           "participationBand": "low",
           "note": "Descriptive snapshot only; these fields do not alter the symbolic sky score or predict the next period."
         },
-        "attentionRank": 3
+        "attentionRank": 6
       },
       {
         "sign": "pisces",
@@ -1730,13 +1494,13 @@
         "factors": [],
         "market": {
           "available": true,
-          "priceUsd": 0.00005716,
-          "change24hPct": -1.14,
-          "marketCapUsd": 57168,
-          "liquidityUsd": 12363.59,
-          "volume24hUsd": 5.1,
-          "liquidityVsCollectionMedian": 0.91,
-          "marketCapVsCollectionMedian": 0.88,
+          "priceUsd": 0.00005724,
+          "change24hPct": -0.64,
+          "marketCapUsd": 57245,
+          "liquidityUsd": 12355.97,
+          "volume24hUsd": 12.16,
+          "liquidityVsCollectionMedian": 0.92,
+          "marketCapVsCollectionMedian": 0.86,
           "turnover24h": 0,
           "liquidityBand": "near-median",
           "participationBand": "low",
