@@ -61,7 +61,19 @@ host test before submission.
 A new 41-second live recording of the comparison and wedding cards has been
 prepared locally for owner review. The edit trims waiting time and crops to
 the conversation, with no browser, account details or unrelated windows in
-the export. It has not been published or added to the portal.
+the export. Its proposed new address is
+`https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4`; the published
+0.5.0 video stays unchanged. The local 0.5.1 ZIP now references the proposed
+new video and strengthens the investment negative test and release notes.
+The About wording is unchanged from the version Dias reviewed. Nothing has
+been pushed, published or uploaded for these new changes.
+
+The candidate ZIP is 74,350 bytes, SHA-256
+`d5de82e42e3f7fcc37b10f313d531aa42375f3114851b4f833e53dab891b944b`.
+The video is 41 seconds, H.264 at 1080 by 1600 pixels and 30 frames per
+second, with intentionally silent audio. Native project filmstrips and a
+full-speed playback were reviewed locally. The final video SHA-256 is
+`51bb6000a328b5fcb4dec11b5e552ec14bbb31ab60ad9be9443796fe1379ce35`.
 
 ## Local artwork check, pending release, 26 October 2026
 

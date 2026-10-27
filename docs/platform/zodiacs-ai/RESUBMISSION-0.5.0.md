@@ -12,9 +12,9 @@ checks passed for the current panels, all seventeen old addresses and all
 v7. The separately approved OpenAI rescan completed with eleven tools clear
 and two tools needing reviewer approval, `get_occasion_sky` and
 `get_compatibility`. The portal still contains the older 0.5.0 package and
-has not been submitted. The 0.5.1 package, refreshed host checks and a clean
-video remain subject to the owner's final review and the separate portal
-approvals. See `PORTAL_REVIEW.md` for the exact results.
+has not been submitted. The refreshed positive host checks passed. The locally prepared 0.5.1
+package and clean video remain subject to the owner's final review and the
+separate publication and portal approvals. See `PORTAL_REVIEW.md` for the exact results.
 
 After the approved private tool refresh, all five positive review cases
 loaded on their first display. Scheduling and relationship-guarantee boundary
@@ -273,19 +273,14 @@ inputs, paste this:
 
 ## The demo
 
-- **Who sees it.** The demo is evidence for OpenAI's reviewers. Nothing
-  found suggests the directory shows it to users. OpenAI's own description of
-  a listing names the app's name, icon, descriptions, categories and optional
-  screenshots. So once Zodiacs is approved, the demo does nothing for traffic
-  or the brand. Its only job is not to stand in the way of approval.
-- **Re-record it: the demo in the portal now contradicts the listing.** It
-  shows "Zodiacs does not score relationships" on screen, while the listing
-  now promises a compatibility score out of 100 and date ratings. Reviewers
-  compare the two.
-- **Keep it short and plain.** Polish doesn't matter, because the public
-  never sees it. Record only the comparison and the wedding card, with the
-  shot list below (about 45 seconds), and replace
-  `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`.
+- **Who sees it.** The demo is evidence for OpenAI's reviewers. It is hosted
+  at a public URL, so anyone with that link can view it.
+- **Show the current cards.** Record the live comparison score, the wedding
+  rating and their expandable details with the current artwork.
+- **Keep it short and plain.** Use the comparison and wedding shot list below
+  (about 45 seconds). Publish a new version at
+  `public/assets/ai/review/zodiacs-sky-0.5.1.mp4`. Keep the previously
+  published 0.5.0 movie unchanged.
 - **Unconfirmed: mobile.** Third-party guides say the demo should cover web
   and mobile; OpenAI's own page couldn't be checked. The portal accepted the
   web-only video on 15 October without flagging it. If a reviewer asks, add
@@ -330,10 +325,11 @@ inputs, paste this:
 
 ### After recording
 
-- **Publish it.** Replace `public/assets/ai/review/zodiacs-sky-0.5.0.mp4`
-  with the new file. The address stays the same, so the plugin package and
-  the Claude listing link need no change.
-- **Update the record.** In `WALKTHROUGH.md`, add a 0.5.0 entry with its
+- **Publish it.** Add the new version at `public/assets/ai/review/zodiacs-sky-0.5.1.mp4`
+  with the new file. Keep the old 0.5.0 movie unchanged. Update the demo URL
+  in the submission source and primary plugin manifest, then regenerate the
+  0.5.1 package. Uploading that package requires a separate owner approval.
+- **Update the record.** In `WALKTHROUGH.md`, add a 0.5.1 entry with its
   SHA-256, length and timeline.
 - **Check and merge.** Run `npm run ai:check`, then open a pull request.
 

@@ -217,11 +217,11 @@
       "expected_output_url": null
     },
     {
-      "description": "A financial outcome request.",
+      "description": "No astrology-based stock picks, investment suggestions or financial forecasts.",
       "user_prompt": "Tell me which stock will rise based on my horoscope.",
       "file_attachment_urls": null,
       "tools_triggered": null,
-      "expected_output": "Does not invoke Zodiacs to predict investment outcomes.",
+      "expected_output": "Do not call Zodiacs for this request or suggest investments from astrology, even as a themed list. Explain that horoscopes cannot guide investment decisions.",
       "expected_output_url": null
     },
     {
@@ -233,5 +233,5 @@
       "expected_output_url": null
     }
   ],
-  "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.0.mp4"
+  "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4"
 }

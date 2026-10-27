@@ -22,14 +22,14 @@ The public Zodiacs plugin: one onboarding skill and a remote MCP connection to
 | `get_sky_calendar` | Sky calendar for your calendar app | Occasions panel |
 
 The last seven were introduced in 0.5.0. They share the current panel
-`ui://zodiacs/occasions-v5.html` and are offered where
+`ui://zodiacs/occasions-v7.html` and are offered where
 `ZODIACS_OCCASIONS_ENABLED=1`. Production has them enabled. The comparison,
 chart-twin, birthday, occasion and milestone tools
 take the dates, times and places a person gives in the conversation, calculate
 from them for that call and keep none of them; the famous-chart and calendar
 tools take no personal details.
 
-No account is needed. The first six tools take no birth details. Horoscopes come from
+No account is needed. Horoscopes come from
 `src/data/horoscope-window.json`, which the daily publication rebuilds each
 night with the editions for the day before, the day of and the day after, so
 every time zone has its own "today".
