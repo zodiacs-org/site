@@ -330,12 +330,38 @@ the machine list adds the new key; and the bindings name the new archive,
 `"releaseStatus": "vendored-candidate"` and 34.2 KB. Every sentence the
 extractor selects is listed.
 
+## Production
+
+#840 merged on 27 October 2026 at 21:38 ICT as
+`d698bc084091b8c9a63d95e0572b270386e4b077`. Its parents are main `59a9383c`
+and head `2cd66f37`, and its tree is the tested head's tree. Vercel
+`dpl_9BVVN29Z2d8zWsiBUthJo1ytcePn` built it for production and was READY at
+2026-10-27T14:45:58Z, when the zodiacs.org alias moved to it.
+
+`tools/verify-production.mjs`, 1.0.0's check adapted, then checked canonical
+production
+([production/production-at-merge.json](production/production-at-merge.json)).
+It now reads its expected values from the merge commit, and the alias read
+from a file, as the registry's check does. Before and after the run, the
+alias named that deployment, built from the merge, with an unchanged
+`updatedAt` (read through the Vercel connector). All 11 checks pass:
+
+- the engine, support and MCP pages and both llms files name 1.1.0-rc.1 as a
+  release candidate npm does not carry, with npm's 1.0.0 beside it, and the
+  pages give the archive's digest;
+- the TypeDoc provenance names 1.1.0-rc.1, its source commit, its digest and
+  its licence;
+- the MCP manifest served is the merge's, and the rc.25 archive has its
+  digest;
+- the compute API's documented positions request is answered with `backend`
+  and receipt engine 1.1.0-rc.1, and its receipt lists its convention ids.
+
+The R44 checks, the registry's and the ids', and the state before the
+deployment are recorded in
+[convention-ids-20261027](../convention-ids-20261027/README.md).
+
 ## Not established here
 
-- Production. R44 stays partial until this revision is merged, deployed and
-  checked in production: the registry with its new id, the compute API's and
-  the hosted MCP server's receipts carrying their ids, and the conformance page
-  on 0.2.0.
 - A portal rescan. The hosted `tools/list` changes (Chart Studio's address and
   the compute receipts' schemas), so the AI portals' copies are stale until
   they scan again, which is the owner's call.
