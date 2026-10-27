@@ -1,0 +1,36 @@
+Private birth-data search, 2026-10-27 (counts only)
+
+Tool: the engine's docs/evidence/1.0.0-20261011/tools/history-check-excluding.mjs
+(SHA-256 cbc8bb993c53dbdf6d31a652c42c005cad4d6be6741bf56a4cbc8a99c82d7c08), run from this checkout with Node 22.22.2.
+Range: 68d12fceed2fb197e62d52479c5062f2c0dd0203..fa2a6e01f (this adoption's two
+commits, the carry 18273949 and the adoption fa2a6e01: every added line, every
+added or changed binary with gzip and ZIP contents read, added paths and
+messages), and the tree of fa2a6e01.
+Patterns: the owner's two private pattern sets, kept outside every repository
+with the raw outputs. No pattern, matched line, label or path is recorded here.
+The owner's excluded engine file does not exist in this repository; the
+tool's exclusion is stated in its output all the same.
+
+Each pattern set gives the same counts.
+
+Lines the two commits add: 15 birth-data lines, under 5 anonymous labels, in 6
+places: four regenerated JavaScript bundles, and the two new archives
+(developer plugin 0.3.14's ZIP and MCP adapter 0.1.0-rc.25's), whose bundles
+are byte for byte two of those four. Every one is birth data already on main
+(68d12fce), re-emitted by the regeneration. Read whole at the adoption commit,
+the four bundles hold 13 matching lines:
+  9 are main's lines with only version strings changed;
+  4 are single lines of about a megabyte each, embedded panels and data, whose
+    8 matches each sit in the same 300 characters on either side as on main;
+    the lines changed elsewhere.
+The four bundles hold 17 matches before the adoption and 17 after.
+No other line in the range matches.
+
+Tree: 484 birth-data lines in the 18,499 files of fa2a6e01, with either set,
+against 473 in the 18,454 files of main's 68d12fce, read with the first. The
+11 more are the two new archives' copies of their bundles, as the tool reads
+them, with either set: 4 in the plugin ZIP and 7 in the adapter archive; the
+earlier archives keep theirs. The tree's lines
+predate this adoption and stay as the 2026-10-08 record
+(../site-engine-1-0-0-rc2/refresh-20261008/) classified the lines introduced
+then; no blanket privacy clearance of the tree is claimed.

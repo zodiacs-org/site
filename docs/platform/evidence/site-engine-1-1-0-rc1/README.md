@@ -150,6 +150,47 @@ two records from one engine compare as before. The protocol drive passes 114
 of 114, now expecting six sets, the benchmark 18 of 18 scenarios, and the
 Claude Code host drive 7 of 7.
 
+## Local results
+
+On macOS arm64, Node 22.22.2:
+
+- build, with schema validation (0 errors), engine isolation and bundle
+  budgets: passes;
+- `npm run check`: 0 errors, 0 warnings, 49 hints;
+- `npm test`: 7,952 passed, 5 existing skips, 1 failed, across 620 files. The
+  failure is `scripts/phase1-acceptance-evidence.test.mjs`, which requires
+  captures of the current source (see Phase 1 captures). In an earlier full
+  run two tests timed out at 5 s under load and passed alone;
+- `node scripts/check-dist.mjs`, the engine reference check and its browser
+  drive, the natal aspect publication drive and `report-bundles.mjs --fail`:
+  pass;
+- every generator's `--check`, `mcp:build:check`, `mcp:pack:check` and
+  `ai:check`, and the wing builders with `git diff --exit-code -- public/`:
+  no drift;
+- `npm run ai:test`: 293 tests, the bundle drive and the npm recipes pass;
+- the developer guide checks: 24 of 24 examples, installed from the carried
+  archive, and every guide's HTML and Markdown twin;
+- the claims ledger lists every selected sentence, and the programme ledger
+  regenerates unchanged.
+
+The logs are in [validation/](validation/), normalised as
+[log-normalization.json](log-normalization.json) records, which also cover the
+host drive's record, whose digest of this machine's Claude Code configuration
+is withheld.
+
+## Private search
+
+The owner's private birth-data search ran over this adoption's two commits and
+its tree, with both pattern sets ([history-check.txt](history-check.txt),
+counts only):
+
+- the commits add 15 matching lines, under 5 anonymous labels, every one birth
+  data already on main, re-emitted by the regenerated bundles and by the two
+  new archives' copies of them;
+- the tree's 484 lines are main's 473 and the 11 in those two archives.
+
+Inputs and raw outputs stay outside every repository.
+
 ## Accuracy refresh
 
 The two Swiss statistics runs the methodology page binds to were made again,
@@ -166,6 +207,12 @@ every repository.
 the engine-side dump, whose header names the engine. The test, the claims
 `acc.deltat` and `acc.swiss-multiyear`, and their binds now read these
 reports; the bound values are unchanged.
+
+## Phase 1 captures
+
+The lockfile and `src/lib/**` are part of the Phase 1 capture digest, so the
+18 captures are taken again by CI's Browser Evidence on this pull request,
+reviewed, and committed with their provenance.
 
 ## Claims ledger
 
