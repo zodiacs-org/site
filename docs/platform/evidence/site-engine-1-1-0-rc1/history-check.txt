@@ -67,3 +67,31 @@ bundles hold 17 matches before and after. The tree: 484 lines in 18,528 files,
 the 11 in the two new archives as above. The commit after the merge records
 this run and the local gate's logs at the merge; searched with both sets,
 it adds no matching line.
+
+Fifth run, both sets, with Node 22.22.2: over 937199b8..ef8b35d8, the birth
+chart form's change (ffbd90b1) and its record (ef8b35d8), which add no
+matching line; then over ef8b35d8..828f9e33, the merge of main (bdf4ef88,
+#836 and #835) with main's eighteen commits, which main already carries. The
+merge's 15 lines are under the same 5 labels, in six places: the four
+bundles, the 0.3.14 ZIP and the adapter archive (main's 0.3.13 ZIP did not
+change this time). In the four bundles 13 lines match. Nine are main's
+(bdf4ef88) lines with only version strings changed; the other four are the
+single long lines, each of whose 8 matches sits in the same 300 characters on
+either side as on main. The bundles hold 17 matches before and after. The
+tree: 484 lines in 18,586 files, the 11 in the two new archives as above.
+The merge was pushed after this search.
+
+Sixth run, after main (59a9383c, #807) was merged into this branch: over
+828f9e33..55544dc1, both sets, with Node 22.22.2. It reads main's fifteen
+#807 commits, which main already carries, and the merge, against each of its
+parents. The merge's 26 lines are under the same 5 labels, in eight places:
+the four bundles the merge rebuilt, the 0.3.14 ZIP, the adapter archive,
+main's rebuilt 0.3.13 ZIP (read against this branch) and one of main's text
+files that #807 changed. The five text files hold 16 matching lines. Twelve
+are main's (59a9383c) lines with only version strings changed. The other four
+are the single long lines, each of whose 8 matches sits in the same 300
+characters on either side as on main. The files hold 20 matches before and
+after. The tree: 487 lines in 18,594 files. The 3 more than before are main's,
+added by #807; the 11 in the two new archives are as above. The commit after
+the merge adds the Phase 1 captures, this record and the README's; searched
+with both sets before it was pushed, it adds no matching line.

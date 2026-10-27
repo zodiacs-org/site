@@ -175,6 +175,17 @@ this branch:
 - the claims ledger lists every selected sentence, and the programme ledger
   regenerates unchanged.
 
+After the birth chart form's change (see below), main was merged twice more:
+`bdf4ef88` (#836 and #835) without conflict, then `59a9383c` (#807). That
+merge conflicted only in generated files: the packages manifest, which now
+keeps main's sky 0.5.1 entry beside this branch's developer 0.3.14 one, and
+the flag-off fixture, captured again. The AI runtimes are rebuilt and equal
+the merged ones. After each merge the gate ran again: the scope guard, the
+build, `npm run check`, check-dist, the MCP and AI checks and tests, the
+engine reference and its drive, the natal aspect drive and both ledgers. All
+pass, and the full suite passes 7,958 with only the Phase 1 capture check
+failing.
+
 The logs are in [validation/](validation/), normalised as
 [log-normalization.json](log-normalization.json) records, which also cover the
 host drive's record, whose digest of this machine's Claude Code configuration
@@ -257,6 +268,9 @@ and asks that a second be fixed, so the second run's samples were read
   [form-shift/layout-after.json](form-shift/layout-after.json)). Keyboard
   focus now follows the drawn order, so the submit button comes before the
   options.
+- **In CI.** With the change, Browser Evidence run 40482308898 on `828f9e33`
+  passed every step. Lighthouse passed on every route, with CLS 0.000 on
+  `/ru/` and `/ru/birth-chart/`.
 - **Not explained.** The first run's `/ru/` failure was not reproduced, and
   its traces were not kept. The second run's three `/ru/` samples have no
   shift.
@@ -276,9 +290,36 @@ Phase 1 capture check failing
 
 ## Phase 1 captures
 
-The lockfile and `src/lib/**` are part of the Phase 1 capture digest, so the
-18 captures are taken again by CI's Browser Evidence on this pull request,
-reviewed, and committed with their provenance.
+The Phase 1 capture digest covers the lockfile, `src/lib/**`, `src/islands/**`
+and the templates that main's merges change. So CI's Browser Evidence takes
+the 18 captures again on this pull request's last head, and they are reviewed
+and committed with their provenance.
+
+- **Committed captures.** Browser Evidence run 40491088699 took them on
+  `55544dc1`, after the birth chart form's change and the merge of main's
+  `59a9383c`. It used Chromium 149.0.7827.55 at 2026-10-27T11:02:24Z, bound
+  to template source digest `7124cefb…`, which the source at this head gives.
+  Every step passed: the build, the captures and their receipt, the visual
+  comparison, Lighthouse and the explorer drive
+  ([browser-evidence-provenance.json](browser-evidence-provenance.json) is the
+  run's own record). The committed files are the artifact's, byte for byte,
+  and each matches the manifest and that record. All 18 images differ from
+  the captures main's #807 committed, which carry a fixed `12:00:00Z` time.
+  In the images compared, the content and layout are the same. Most of the
+  differing pixels are 1 or 2 levels apart, spread over the whole page. The
+  `today` page at 360 pixels is 35 pixels taller, and two others differ by
+  1 pixel. With these captures the full suite passes 7,959 tests in 620
+  files, with 5 existing skips
+  ([validation/full-suite-captures.log](validation/full-suite-captures.log)).
+- **Superseded runs.** Three runs took the captures for heads whose digest
+  later changed:
+  - 40451982876 on `ef2ce850`, digest `1a126188…`, before main's #823 was
+    merged. Its artifact was not downloaded.
+  - 40465183791 on `937199b8`, digest `75eaedf0…`, before the birth chart
+    form's change. Its provenance is kept as
+    [browser-evidence-provenance-937199b8.json](browser-evidence-provenance-937199b8.json).
+  - 40482308898 on `828f9e33`, digest `3dff78e3…`, before main's #807 was
+    merged. Every step passed.
 
 ## Claims ledger
 

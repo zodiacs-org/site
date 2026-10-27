@@ -39,6 +39,12 @@
       "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
     },
     {
+      "path": "validation/full-suite-captures.log",
+      "capturedSha256": "7b11ae09e464190af49aaa3c97d465d26900855c5b3e44960523b3c8887de5f2",
+      "committedSha256": "0661e364fde08db0c34c5088768b42ef956800bb069db822a2da86bc51712260",
+      "normalization": "terminal colour codes removed; the checkout, temporary and home paths written <checkout>, <tmp> and <home>; trailing whitespace removed"
+    },
+    {
       "path": "validation/ai-test.log",
       "capturedSha256": "0687fe3ac21a96d6366f09c651c7b1dc036f5030727d5408a4ea789129b1110c",
       "committedSha256": "efebd31f4545d5799744dd2dc45b8a95d592c28b34b6e5070b428788f5c72dbb",
