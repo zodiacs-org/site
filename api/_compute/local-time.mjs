@@ -307,7 +307,7 @@ var localTimeModule = (() => {
     return `${String(date.year).padStart(4, "0")}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
   }
 
-  // node_modules/@zodiacs/engine/dist/chunk-YIITY7Q7.js
+  // node_modules/@zodiacs/engine/dist/chunk-CIVYAHTP.js
   var ROWS = `AT|Austria|Austria|1584-01-17|t|Grotefend 1898: 1583-10-16, with Bavaria. Salzburg 1583-10-16; Styria 1583-12-25.
 BE|Belgium|Brabant, Flanders, Hainaut|1583-01-01|t|Grotefend 1891, 1898: 1582-12-25. Bishopric of Li\xE8ge 1583-02-21.
 CH|Switzerland|Z\xFCrich, Bern, Basel, Schaffhausen|1701-01-12|t18|Also Geneva and Thurgau. Catholic cantons 1584-01-22 (Grotefend 1891: 1584-01-23); Unterwalden June 1584; Glarus, Appenzell, St. Gallen city 1724; Valais 1655 (Grotefend 1898: 1622); Graub\xFCnden 1760-1812 (Grotefend 1898: to 1811); bishopric of Basel 1583-10-31.

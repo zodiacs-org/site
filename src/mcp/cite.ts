@@ -23,7 +23,8 @@
  *   the hosted compute API's receipt for the same calculation, which the reply
  *   carries in full: the engine, its conventions and coverage, the reference
  *   span, the two sources of ΔT, for a search how it searched and how many
- *   evaluations it made, and for a local time how time zones were read. It
+ *   evaluations it made, for a local time how time zones were read, and the
+ *   ids of the conventions registry those fields name. It
  *   holds no instant, date, zone or body from the request, and it is the
  *   receipt the compute API writes for the same request, so the digest is the
  *   one the compute API cites.

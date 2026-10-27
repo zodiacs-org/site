@@ -63,7 +63,7 @@ function rootEntryGraph(extension = 'js') {
 // deltat-gap-2100-2199.json holds and its tools regenerate with Swiss run on
 // demand.
 const report = JSON.parse(read('docs/platform/evidence/swiss-benchmark/report-measure-rc8.json'));
-const gap = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0/accuracy-refresh/deltat-gap-2100-2199.json'));
+const gap = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0-rc1/accuracy-refresh/deltat-gap-2100-2199.json'));
 const corpus = read('docs/platform/evidence/swiss-benchmark/tools/corpus.mjs');
 const { withinRecord, farFuture } = report.statistics;
 /** The comparator's own per-stratum aggregates, which the statistics must agree with. */
@@ -392,7 +392,7 @@ describe('the same figures on /developers/engine/', () => {
 
 describe('the every-tenth-day comparison, 1800 to 2199', () => {
   // Statistics only: the per-instant Swiss values stay out of the repository.
-  const dense = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0/accuracy-refresh/multiyear-1800-2199.json'));
+  const dense = JSON.parse(read('docs/platform/evidence/site-engine-1-1-0-rc1/accuracy-refresh/multiyear-1800-2199.json'));
   const upTo2026 = dense.allBodiesLongitude.sameUt['1800-2026'];
   const moonSameTt = dense.sameTt.Moon.lon.byEra['2150-2199'];
   const moonSameUt = dense.sameUt.Moon.lon.byEra['2150-2199'];

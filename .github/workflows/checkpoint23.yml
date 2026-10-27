@@ -10,6 +10,7 @@ on:
       - 'src/lib/sky-api/**'
       - 'vendor/zodiacs-engine-1.0.0-rc.2.tgz'
       - 'vendor/zodiacs-engine-1.0.0.tgz'
+      - 'vendor/zodiacs-engine-1.1.0-rc.1.tgz'
       - 'src/data/platform-engine-candidate.json'
       - 'package.json'
       - 'package-lock.json'

@@ -65,7 +65,7 @@ try {
   const launcher = tools.find(tool => tool.name === 'open_chart_studio');
   assert.deepEqual(launcher.inputSchema.properties, {});
   assert.equal(launcher.inputSchema.additionalProperties, false);
-  assert.equal(launcher._meta.ui.resourceUri, 'ui://zodiacs/chart-studio-v5.html');
+  assert.equal(launcher._meta.ui.resourceUri, 'ui://zodiacs/chart-studio-v6.html');
   assert.deepEqual(launcher._meta['openai/ui'].entrypoints, [{ type: 'global' }, { type: 'thread' }]);
   record('Chart Studio has empty-only arguments and both native entrypoints');
   const calls = [
@@ -105,7 +105,7 @@ try {
   for (const [current, earlier] of [
     ...['sky-events-v3', 'sky-events-v2', 'sky-events-v1'].map(old => ['sky-events-v4', old]),
     ...['horoscopes-v5', 'horoscopes-v4', 'horoscopes-v3', 'horoscopes-v2', 'horoscopes-v1'].map(old => ['horoscopes-v6', old]),
-    ...['chart-studio-v4', 'chart-studio-v3', 'chart-studio-v2', 'chart-studio-v1'].map(old => ['chart-studio-v5', old]),
+    ...['chart-studio-v5', 'chart-studio-v4', 'chart-studio-v3', 'chart-studio-v2', 'chart-studio-v1'].map(old => ['chart-studio-v6', old]),
     ...['occasions-v7', 'occasions-v6', 'occasions-v5', 'occasions-v4', 'occasions-v3', 'occasions-v2', 'occasions-v1'].map(old => ['occasions-v8', old]),
   ]) {
     const now = (await client.readResource({ uri: `ui://zodiacs/${current}.html` })).contents[0];
@@ -127,7 +127,7 @@ try {
   record('native occasions resource matches the bundle with owned static art', {
     bytes: Buffer.byteLength(occasions.text), sha256: createHash('sha256').update(occasions.text).digest('hex'),
   });
-  const studio = (await client.readResource({ uri: 'ui://zodiacs/chart-studio-v5.html' })).contents[0];
+  const studio = (await client.readResource({ uri: 'ui://zodiacs/chart-studio-v6.html' })).contents[0];
   assert.equal(studio.mimeType, 'text/html;profile=mcp-app');
   assert.equal(studio.text, STUDIO_HTML);
   assert.deepEqual(studio._meta.ui.csp, { connectDomains: [], resourceDomains: [] });

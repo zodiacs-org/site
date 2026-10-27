@@ -39,5 +39,5 @@ Neptune     13.72° capricorn retrograde
 Pluto       15.40° scorpio retrograde
 North Node   8.12° aquarius
 South Node   8.12° leo
-ascendant  191.24°   engine 1.0.0
+ascendant  191.24°   engine 1.1.0-rc.1
 `;

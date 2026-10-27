@@ -161,7 +161,7 @@
     "@vercel/firewall": "1.2.1",
     "@vercel/functions": "3.7.5",
     "@vercel/og": "0.7.2",
-    "@zodiacs/engine": "file:vendor/zodiacs-engine-1.0.0.tgz",
+    "@zodiacs/engine": "file:vendor/zodiacs-engine-1.1.0-rc.1.tgz",
     "astro": "^7.3.3",
     "astronomy-engine": "^2.1.19",
     "http-cache-semantics": "file:vendor/http-cache-semantics",

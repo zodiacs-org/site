@@ -28,7 +28,8 @@ export const VOCABULARY_SCHEMA = 'zodiacs.conventions-vocabulary.v1';
  * current set.
  */
 export const SET_WRITERS = Object.freeze([
-  { from: '0.1.1-rc.16', to: null },
+  { from: '1.1.0-rc.1', to: null },
+  { from: '0.1.1-rc.16', to: '1.0.0' },
   { from: '0.1.1-rc.15', to: '0.1.1-rc.15' },
   { from: '0.1.1-rc.8', to: '0.1.1-rc.14' },
   { from: '0.1.1-rc.7', to: '0.1.1-rc.7' },
@@ -38,6 +39,7 @@ export const SET_WRITERS = Object.freeze([
 /** What each key of a conventions set covers. Its value is the engine's own token. */
 export const CONVENTION_KEYS: Readonly<Record<string, string>> = Object.freeze({
   calendar: 'The calendar dates are read on.',
+  conventionIds: 'Which ids of the Zodiacs conventions registry (zodiacs.org/developers/conventions) a record lists in receipt.conventionIds, and in what order.',
   zodiac: 'The zodiac longitudes are measured in.',
   planetPositions: 'How the planets\' positions are reduced: the observer, the frame, and which corrections apply.',
   moonPosition: 'Where the Moon\'s position comes from, and which corrections apply to it.',
@@ -75,7 +77,7 @@ export function conventionsVocabulary() {
   }));
   return {
     schema: VOCABULARY_SCHEMA,
-    note: 'A Zodiacs-owned draft vocabulary, not an industry interoperability standard. Each calculation record names the set it was computed under in receipt.conventions; a record is read only under a set the engine version it names wrote.',
+    note: 'A Zodiacs-owned draft vocabulary, not an industry interoperability standard. Each calculation record names the set it was computed under in receipt.conventions, and from 1.1.0-rc.1 lists the ids of the Zodiacs conventions registry that it names in receipt.conventionIds. A record is read only under a set the engine version it names may carry: a set before rc.16\'s under the versions that wrote it, and rc.16\'s and the current one under 0.1.1-rc.16 and later.',
     receiptSchema: NATAL_RECEIPT_SCHEMA,
     engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { name: EPHEMERIS.name, version: EPHEMERIS.version } },
     keys,

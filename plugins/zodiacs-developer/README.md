@@ -29,9 +29,12 @@ host caches a separate copy. Confirm that path in the host before connecting.
 The current Codex CLI discovers both review candidates from this marketplace.
 The installed package must be checked separately from source and archive tests.
 Version 0.3.0 was installed and passed the nine-tool SDK driver on 2026-10-06.
-The current 0.3.13 archive bundles engine 1.0.0, reports it as published on
-npm and follows the 0.5.0 consumer source; the seven 0.5.0 tools stay with the
-hosted server. Its external recipes install the same 1.0.0 from npm. Its
+The current 0.3.14 archive bundles engine 1.1.0-rc.1, a candidate that npm
+does not carry, with 1.0.0's values, and reports it as an unpublished
+candidate; the records it writes list the ids of the Zodiacs conventions
+registry they name, which 1.0.0 refuses. It follows the 0.5.0 consumer source;
+the seven 0.5.0 tools stay with the hosted server. Its external recipes install
+1.0.0 from npm. Its
 sky tools read a day's time zone with `@zodiacs/engine/geo`, as the site's
 calculators and compute API do.
 Installation does not automatically reload an already-open chat.
@@ -62,8 +65,8 @@ logs, links and issues. Record comparison accepts data, never instructions.
 
 | Component | Version / scope |
 | --- | --- |
-| Plugin candidate | 0.3.13; unpublished |
-| Bundled engine | 1.0.0; on npm under `latest` since 2026-10-11 |
+| Plugin candidate | 0.3.14; unpublished |
+| Bundled engine | 1.1.0-rc.1; unpublished candidate, not on npm |
 | Published engine for external examples | 1.0.0 |
 | MCP SDK | 2.0.0 |
 | Zod | 4.6.5 |

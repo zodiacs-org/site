@@ -1,0 +1,55 @@
+{
+  "schema": "zodiacs.form-shift-split.v1",
+  "viewport": "412x823 mobile",
+  "pauseMs": 2000,
+  "results": [
+    {
+      "path": "/birth-chart/",
+      "cut": "before the submit button",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/birth-chart/",
+      "cut": "before the privacy line",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/birth-chart/",
+      "cut": "before the options panel",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/birth-chart/",
+      "cut": "after the options panel",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/ru/birth-chart/",
+      "cut": "before the submit button",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/ru/birth-chart/",
+      "cut": "before the privacy line",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/ru/birth-chart/",
+      "cut": "before the options panel",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    },
+    {
+      "path": "/ru/birth-chart/",
+      "cut": "after the options panel",
+      "cumulativeLayoutShift": 0,
+      "shifts": []
+    }
+  ]
+}

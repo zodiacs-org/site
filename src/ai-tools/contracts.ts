@@ -31,8 +31,8 @@ export const ORIGIN = 'https://zodiacs.org';
 // and host definitions that still name them keep working.
 export const WIDGET_URI = 'ui://zodiacs/sky-events-v4.html';
 export const LEGACY_WIDGET_URIS = ['ui://zodiacs/sky-events-v3.html', 'ui://zodiacs/sky-events-v2.html', 'ui://zodiacs/sky-events-v1.html'] as const;
-export const STUDIO_URI = 'ui://zodiacs/chart-studio-v5.html';
-export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v4.html', 'ui://zodiacs/chart-studio-v3.html', 'ui://zodiacs/chart-studio-v2.html', 'ui://zodiacs/chart-studio-v1.html'] as const;
+export const STUDIO_URI = 'ui://zodiacs/chart-studio-v6.html';
+export const LEGACY_STUDIO_URIS = ['ui://zodiacs/chart-studio-v5.html', 'ui://zodiacs/chart-studio-v4.html', 'ui://zodiacs/chart-studio-v3.html', 'ui://zodiacs/chart-studio-v2.html', 'ui://zodiacs/chart-studio-v1.html'] as const;
 /** The first Chart Studio URI, kept for existing callers. */
 export const LEGACY_STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
 export { HOROSCOPE_URI, LEGACY_HOROSCOPE_URIS };
