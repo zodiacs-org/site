@@ -6,7 +6,8 @@
  * fades into the card on every side with no frame, no sideways overflow, every link and
  * button reachable by Tab with a visible focus ring, and no motion when the
  * system asks for reduced motion.
- * Real Chromium, synthetic host bridge, no network.
+ * Real Chromium, synthetic host bridge; static art requests are served from
+ * the checkout so the test does not depend on the live site.
  *
  *   npx vite-node --script tests/ai-cards-qa.ts [-- --out <report.json>]
  */
@@ -22,6 +23,7 @@ import type { HoroscopeWindow } from '../src/ai-tools/horoscope/window';
 
 const argv = process.argv.slice(2);
 const out = argv.includes('--out') ? argv[argv.indexOf('--out') + 1] : undefined;
+const previewDir = argv.includes('--preview-dir') ? argv[argv.indexOf('--preview-dir') + 1] : undefined;
 const NOW = new Date('2026-10-17T12:00:00Z');
 const result = async (tool: AiToolName, args: Record<string, unknown>) => ({ structuredContent: await executeAiTool(tool, args, { occasions: true, now: () => NOW }), _meta: undefined as unknown });
 const window = JSON.parse(await readFile(new URL('../src/data/horoscope-window.json', import.meta.url), 'utf8')) as HoroscopeWindow;
@@ -53,6 +55,14 @@ async function deliver(page: Page, value: { structuredContent: unknown; _meta: u
     (window as any).openai = { toolOutput: content.structuredContent, toolResponseMetadata: content._meta, theme };
     window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: content.structuredContent, toolResponseMetadata: content._meta, theme } } }));
   }, [value, theme] as const);
+}
+
+async function serveArt(page: Page) {
+  await page.route('https://zodiacs.org/assets/**', async (route) => {
+    const pathname = new URL(route.request().url()).pathname;
+    const body = await readFile(new URL(`../public${pathname}`, import.meta.url));
+    await route.fulfill({ body, contentType: pathname.endsWith('.avif') ? 'image/avif' : 'image/webp' });
+  });
 }
 
 /** The lowest text contrast on the page: each element with its own text, against the nearest opaque background behind it. */
@@ -90,11 +100,15 @@ try {
         const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme, timezoneId: 'Asia/Bangkok', reducedMotion: 'reduce' });
         await context.clock.setFixedTime(new Date(`${window.generatedFor}T05:00:00Z`));
         const page = await context.newPage();
-        let network = 0;
-        page.on('request', (request) => { if (!request.url().startsWith('data:')) network++; });
+        await serveArt(page);
+        const network: string[] = [];
+        page.on('request', (request) => { if (!request.url().startsWith('data:')) network.push(request.url()); });
         await page.setContent(html);
         await deliver(page, value, theme);
         await page.locator('h1').first().waitFor();
+        await page.waitForFunction(() => [...document.querySelectorAll<HTMLImageElement>('.art-frame img')]
+          .filter((img) => getComputedStyle(img).display !== 'none')
+          .every((img) => img.complete && img.naturalWidth > 0));
         await page.evaluate(() => document.fonts.ready);
         // Open every disclosure so folded rows are checked too.
         await page.locator('details').evaluateAll((items) => items.forEach((item) => { (item as HTMLDetailsElement).open = true; }));
@@ -122,7 +136,9 @@ try {
             const mask = style.maskImage || style.getPropertyValue('-webkit-mask-image');
             return (mask.match(/linear-gradient/g) ?? []).length === 2 && style.borderTopWidth === '0px' && style.boxShadow === 'none' && style.backgroundImage === 'none' && parseFloat(style.borderTopLeftRadius) === 0;
           });
-          return { frames: frames.length, textOver, decorative, twin, faded };
+          const visible = [...document.querySelectorAll<HTMLImageElement>('.art-frame img')].filter((img) => getComputedStyle(img).display !== 'none');
+          const minPixelsPerCssPixel = Math.min(...visible.map((img) => img.naturalWidth / img.getBoundingClientRect().width));
+          return { frames: frames.length, textOver, decorative, twin, faded, minPixelsPerCssPixel };
         }, theme);
         // Keyboard: Tab reaches every link, button and disclosure, each with a visible focus ring.
         const focusable = await page.locator('a[href], button:not([disabled]), summary').count();
@@ -145,7 +161,7 @@ try {
           animations: document.getAnimations().filter((animation) => animation.playState === 'running').length,
           transitions: [...document.querySelectorAll('*')].filter((element) => getComputedStyle(element).transitionDuration.split(',').some((value) => parseFloat(value) > 0)).length,
         }));
-        const row = { card, width, theme, lowestContrast: contrast, overflow, artFrames: art.frames, textOverArt: art.textOver, focusable, reachedByTab: reached.length, focusWithoutRing: unringed, runningAnimations: motion.animations, transitions: motion.transitions, network };
+        const row = { card, width, theme, lowestContrast: contrast, overflow, artFrames: art.frames, artPixelsPerCssPixel: art.minPixelsPerCssPixel, textOverArt: art.textOver, focusable, reachedByTab: reached.length, focusWithoutRing: unringed, runningAnimations: motion.animations, transitions: motion.transitions, network: network.length };
         report.push(row);
         assert.ok(contrast.ratio >= 4.5, `${card} ${width} ${theme}: text contrast ${contrast.ratio}:1 for "${contrast.text}" (${contrast.color} on ${contrast.on})`);
         assert.equal(overflow, false, `${card} ${width} ${theme}: nothing runs off the side`);
@@ -154,10 +170,18 @@ try {
         assert.ok(art.twin, `${card} ${width} ${theme}: hero art shows its ${theme} twin, and only that one`);
         assert.ok(art.faded, `${card} ${width} ${theme}: hero art fades into the card on every side, with no frame`);
         if (!['horoscope-picker'].includes(card)) assert.ok(art.frames > 0, `${card} ${width} ${theme}: the card has its hero art`);
+        if (art.frames > 0) assert.ok(art.minPixelsPerCssPixel >= 1.3, `${card} ${width} ${theme}: hero art has enough source pixels`);
+        if (['chart-twins', 'milestones', 'sky-calendar'].includes(card)) {
+          assert.ok(art.minPixelsPerCssPixel >= 2, `${card} ${width} ${theme}: the restored original supplies at least two pixels per display pixel`);
+        }
         assert.equal(reached.length, focusable, `${card} ${width} ${theme}: Tab reaches all ${focusable} controls (reached ${reached.length})`);
         assert.equal(unringed, 0, `${card} ${width} ${theme}: every focused control shows a ring`);
         assert.equal(motion.animations + motion.transitions, 0, `${card} ${width} ${theme}: no motion under reduced motion`);
-        assert.equal(network, 0, `${card} ${width} ${theme}: no network requests`);
+        assert.ok(network.every((url) => url.startsWith('https://zodiacs.org/assets/')), `${card} ${width} ${theme}: only Zodiacs static art is requested`);
+        if (previewDir && width === 760 && theme === 'light' && ['wedding', 'horoscope'].includes(card)) {
+          await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
+          await page.screenshot({ path: `${previewDir}/${card}-after.png`, fullPage: true });
+        }
         if (card.endsWith('long-names')) {
           const lines = await page.evaluate(() => { const title = document.querySelector('h1')!; return title.getBoundingClientRect().height / parseFloat(getComputedStyle(title).lineHeight); });
           assert.ok(lines <= 2.05, `${card} ${width} ${theme}: the long names take ${lines.toFixed(1)} lines, not more than two`);
@@ -169,6 +193,7 @@ try {
   // The cards' tilted mark (owner-chosen 2026-10-18) is still: even with motion allowed, hovering the nameplate starts nothing.
   const context = await browser.newContext({ viewport: { width: 760, height: 900 } });
   const page = await context.newPage();
+  await serveArt(page);
   await page.setContent(OCCASIONS_HTML);
   await deliver(page, await CARDS[2][2](), 'light');
   await page.locator('h1').waitFor();

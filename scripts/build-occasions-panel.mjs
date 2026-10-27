@@ -1,19 +1,28 @@
-/** Self-contained MCP App for the occasion tools: sign icons, card art and the three brand faces inlined, no asset requests, no occasion data. */
+/** MCP App for the occasion tools: sign icons and fonts inline, full-size public art from zodiacs.org, no occasion data. */
 import { build } from 'esbuild';
 import { fileURLToPath } from 'node:url';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const SIGNS = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
 const ART_PIECES = ['wedding-hero', 'sky-calendar-hero', 'milestones-hero', 'twins-hero'];
+const HIRES_PIECES = new Set(['sky-calendar-hero', 'milestones-hero', 'twins-hero']);
 
 export async function buildOccasionsPanel(check = false) {
   const inline = async (path) => `data:image/${path.endsWith('.avif') ? 'avif' : 'webp'};base64,` + (await readFile(new URL(path, root))).toString('base64');
   const icons = Object.fromEntries(await Promise.all(SIGNS.map(async (slug) => [slug, await inline(`public/assets/zodiac-icons/128/${slug}.webp`)])));
-  // The hero art (scripts/build-card-art.mjs), each piece with its daylight twin under "<key>-light":
-  // sign panels at 400px, the cards' own pieces at 480px.
-  const art = Object.fromEntries(await Promise.all([
-    ...SIGNS.map((slug) => [slug, 400]), ...ART_PIECES.map((key) => [key, 480]),
-  ].flatMap(([key, width]) => [key, `${key}-light`].map(async (name) => [name, await inline(`public/assets/card-art/panel/${name}-${width}.avif`)]))));
+  // A card displays at up to 540 CSS pixels. The former 400/480px inline
+  // variants looked soft there, especially on high-density screens. Only the
+  // visible art is requested, from our own immutable public assets.
+  const art = Object.fromEntries([
+    ...SIGNS.flatMap((slug) => [
+      [slug, `https://zodiacs.org/assets/sign-art/${slug}-1200.avif`],
+      [`${slug}-light`, `https://zodiacs.org/assets/card-art/${slug}-light-720.webp`],
+    ]),
+    ...ART_PIECES.flatMap((key) => [
+      [key, `https://zodiacs.org/assets/card-art/${key}-${HIRES_PIECES.has(key) ? 1200 : 720}.webp`],
+      [`${key}-light`, `https://zodiacs.org/assets/card-art/${key}-light-${HIRES_PIECES.has(key) ? 1200 : 720}.webp`],
+    ]),
+  ]);
   const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/occasions-panel/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { OCCASIONS_ICONS: JSON.stringify(icons), CARD_ART: JSON.stringify(art), 'process.env.NODE_ENV': '"production"' } });
   const js = result.outputFiles.find(file => file.path.endsWith('.js')).text.replace(/<\/script/gi, '<\\/script');
   let css = result.outputFiles.find(file => file.path.endsWith('.css')).text;
@@ -27,6 +36,6 @@ export async function buildOccasionsPanel(check = false) {
   const output = new URL('integrations/generated/occasions.mjs', root);
   if (check) { if (await readFile(output, 'utf8').catch(() => '') !== content) throw new Error('The occasions panel is stale; run ai:build'); }
   else { await mkdir(new URL('integrations/generated/', root), { recursive: true }); await writeFile(output, content); }
-  console.log(`${check ? 'Verified' : 'Built'} the occasions panel (${Buffer.byteLength(html)} bytes, self-contained)`);
+  console.log(`${check ? 'Verified' : 'Built'} the occasions panel (${Buffer.byteLength(html)} bytes, owned public art)`);
   return html;
 }
