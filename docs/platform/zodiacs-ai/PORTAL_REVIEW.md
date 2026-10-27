@@ -1,5 +1,24 @@
 # OpenAI portal review record
 
+## November content refresh prepared locally, 27 October 2026
+
+Main merged PR #835 at `bdf4ef88` while the approved `c626a7b7` release
+was running its checks. The November horoscopes carry their own Phase 1
+screenshots, so GitHub reports a merge conflict. All nineteen conflicting
+files are generated screenshots or their evidence manifest; there is no
+plugin source conflict.
+
+A private candidate merges that already published content and regenerates
+the combined evidence with the official tools. Its complete frozen-clock
+Node 22 build and source checks pass. All 293 AI tests, generated-file and
+package checks, eighteen captures, five evidence tests and nine interrupted
+response cases pass. No check or limit was weakened.
+
+The plugin sources, runtimes, packages, selected icon and demo are unchanged
+from the approved release. The remote PR remains at `c626a7b7`, pending
+owner approval to publish this content and evidence refresh. No portal
+action has been taken.
+
 ## Edition layout fixes prepared locally, 27 October 2026
 
 The release remains on hold. Site Check run `40458842151` at the approved
