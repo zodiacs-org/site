@@ -11,9 +11,11 @@ import { buildAccountsConsent } from './build-accounts-consent.mjs';
 import { peopleIndexCurrent, renderFromDisk, STALE_MESSAGE } from './build-ai-people.mjs';
 import { addAiLifetimeBoundary } from './ai-runtime-lifetime.mjs';
 import { syncPanelFingerprints } from './panel-fingerprints.mjs';
+import { buildPluginAvatar } from './build-plugin-avatar.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
+await buildPluginAvatar(check);
 const panelHtml = {
   'sky-events': await buildSkyCalendar(check),
   'chart-studio': await buildChartStudio(check),

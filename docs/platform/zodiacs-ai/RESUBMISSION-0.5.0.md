@@ -4,6 +4,17 @@ Written 15 October 2026, after an independent review of the withdrawn 0.5.0
 package. This is the plan for the resubmission. `HANDOFF-0.5.0.md` covers
 the release work done in #758.
 
+## Update, 27 October: tilted ring profile picture
+
+The owner selected the tilted ring avatar for the plugin after reviewing the
+full-size options. The pending 0.5.1 package uses `assets/icon-v2.png` for
+its logo and composer icon. The picture is generated from the shared brand
+mark and has a fresh public address,
+`https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v2.png`. The owner approved
+updating PR #807 and publishing after the updated checks pass. Portal upload,
+rescan and profile changes still need separate approval. See the latest
+`PORTAL_REVIEW.md` entry for the candidate checksum.
+
 ## Update, 27 October: sharper artwork live and draft rescanned
 
 PR #837 is merged and deployed with Dias's explicit approval. Production

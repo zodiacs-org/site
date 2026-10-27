@@ -1,5 +1,30 @@
 # OpenAI portal review record
 
+## Tilted ring profile picture selected, 27 October 2026
+
+After reviewing the full-size options, Dias selected option 1, the tilted
+ring, and approved adding it to 0.5.1 and publishing through PR #807 once
+its updated checks pass. OpenAI uploads and directory profile changes remain
+subject to separate approval. The earlier PR head `811171f0` finished with
+all checks passing or legitimately skipped; that result does not cover this
+new revision.
+
+The Sky plugin's logo and composer icon now point to
+`./assets/icon-v2.png`. The image is generated from the shared brand ring by
+`ai:build`, verified by `ai:check`, and will be available at
+`https://zodiacs.org/assets/ai/brand/zodiacs-avatar-v2.png`. It is a 512 by
+512 PNG and matches the selected preview byte for byte. Earlier icons and
+the published 0.5.0 ZIP and movie stay unchanged. No panel HTML or resource
+address changes in this icon revision.
+
+Current candidate ZIP: 88,054 bytes, SHA-256
+`d6c440e088474773eac16edf2b89fb0520c880af5407ddc3f4ab7136b3066e13`.
+Avatar SHA-256:
+`739964975885d3a9d0228bb55dda611bacab461ace4a6eec7f00735f3042e5e8`.
+The earlier candidate checksum below records the package before this icon
+revision. No portal upload or profile setting was changed for this step.
+
+
 ## Sharper artwork live, 27 October 2026
 
 With Dias's explicit approval, PR #837 merged at
@@ -74,7 +99,7 @@ new video and strengthens the investment negative test and release notes.
 The About wording is unchanged from the version Dias reviewed. Nothing has
 been pushed, published or uploaded for these new changes.
 
-The candidate ZIP is 74,350 bytes, SHA-256
+Before the avatar revision, the candidate ZIP was 74,350 bytes, SHA-256
 `d5de82e42e3f7fcc37b10f313d531aa42375f3114851b4f833e53dab891b944b`.
 The video is 41 seconds, H.264 at 1080 by 1600 pixels and 30 frames per
 second, with intentionally silent audio. Native project filmstrips and a

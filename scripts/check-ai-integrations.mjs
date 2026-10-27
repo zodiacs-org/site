@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile, access } from 'node:fs/promises';
+import { PLUGIN_AVATAR_PATH } from './build-plugin-avatar.mjs';
 // OpenAI submission-errors reference, verified 2026-10-06. A valid ZIP can
 // still fail the portal when its listing uses an unsupported category.
 const submissionCategories = new Set(['Productivity', 'Creativity', 'Developer Tools', 'Business & Operations', 'Data & Analytics', 'Communication', 'Education & Research', 'Security', 'Finance', 'Healthcare', 'Travel', 'Entertainment', 'Other']);
@@ -47,6 +48,8 @@ const sky = await json('plugins/zodiacs-sky/plugin.json');
 const skyCompatibility = await json('plugins/zodiacs-sky/.codex-plugin/plugin.json');
 assert.equal(skyCompatibility.version, sky.version);
 const { interface: skyInterface, ...skySettings } = sky.extensions['com.openai'];
+assert.equal(skyInterface.composerIcon, PLUGIN_AVATAR_PATH);
+assert.equal(skyInterface.logo, PLUGIN_AVATAR_PATH);
 assert.deepEqual(skyCompatibility.interface, skyInterface);
 assert.deepEqual(skyCompatibility.extensions['com.openai'], skySettings);
 assert.deepEqual((await json('plugins/zodiacs-sky/.mcp.json')).mcpServers['zodiacs-sky'], { type: 'http', url: 'https://zodiacs.org/mcp' });

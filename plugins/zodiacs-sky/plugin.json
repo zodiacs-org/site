@@ -40,8 +40,8 @@
         "supportURL": "https://zodiacs.org/about/",
         "privacyPolicyURL": "https://zodiacs.org/privacy/",
         "termsOfServiceURL": "https://zodiacs.org/terms/",
-        "composerIcon": "./assets/icon.png",
-        "logo": "./assets/icon.png",
+        "composerIcon": "./assets/icon-v2.png",
+        "logo": "./assets/icon-v2.png",
         "defaultPrompt": [
           "Show my horoscope for today",
           "Is Mercury retrograde right now?",
@@ -105,7 +105,7 @@
         "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.5.1.mp4"
       },
       "publication": {
-        "release_notes": "0.5.1: Corrects the listing to describe birth charts, compatibility scores, horoscopes, sky calendar and occasion ratings. Adds a fresh live review recording and explicit instructions to decline investment requests without calling the horoscope tool."
+        "release_notes": "0.5.1: Corrects the listing to describe birth charts, compatibility scores, horoscopes, sky calendar and occasion ratings. Adds a fresh live review recording and explicit instructions to decline investment requests without calling the horoscope tool. Uses the tilted ring profile icon selected by the owner."
       },
       "onboardingSkill": "./skills/explore-the-sky/SKILL.md"
     }

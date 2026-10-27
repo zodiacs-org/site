@@ -6,18 +6,18 @@
       "name": "zodiacs-sky",
       "version": "0.5.1",
       "file": "zodiacs-sky-0.5.1.zip",
-      "bytes": 74350,
-      "sha256": "d5de82e42e3f7fcc37b10f313d531aa42375f3114851b4f833e53dab891b944b",
+      "bytes": 88054,
+      "sha256": "d6c440e088474773eac16edf2b89fb0520c880af5407ddc3f4ab7136b3066e13",
       "members": [
         {
           "path": ".claude-plugin/plugin.json",
-          "bytes": 880,
-          "sha256": "01db4efe97806cf28ad3145da420621e8e7b190683cf05ecac2a2aae7c14371a"
+          "bytes": 883,
+          "sha256": "e860602031775fe1e56af59e014a4d9e7b99ef073f43fe505e600d15e21fbc8b"
         },
         {
           "path": ".codex-plugin/plugin.json",
-          "bytes": 8515,
-          "sha256": "aaa6b984160b0d5a44e0be31d9d519a53023290bf853b382c3c52b0e152d9608"
+          "bytes": 8578,
+          "sha256": "d386416820c9d9a50214774d8bbf9bd4ce21116a6c9a99d55769ada8193e37a0"
         },
         {
           "path": ".mcp.json",
@@ -40,6 +40,11 @@
           "sha256": "6cfcf83f17ee90d9415b83c6610b00e1c698098c4e037acd5871750faf541faa"
         },
         {
+          "path": "assets/icon-v2.png",
+          "bytes": 13463,
+          "sha256": "739964975885d3a9d0228bb55dda611bacab461ace4a6eec7f00735f3042e5e8"
+        },
+        {
           "path": "assets/icon.png",
           "bytes": 47117,
           "sha256": "01405f4da95d384d77e19d2986abbbe1ae9081650055d03cc46698b8d53c8896"
@@ -51,8 +56,8 @@
         },
         {
           "path": "plugin.json",
-          "bytes": 8646,
-          "sha256": "4d15f8988d7fa34d234e8f2688f3f00c4a22ae630e68642049940d0d957a87e3"
+          "bytes": 8709,
+          "sha256": "d6a7fcd9ad323ac11120d57bdc1cc7e31629685424f0dbf526c89c1354d609d3"
         },
         {
           "path": "skills/explore-the-sky/SKILL.md",

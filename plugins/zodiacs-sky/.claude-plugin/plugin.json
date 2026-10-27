@@ -19,7 +19,7 @@
   ],
   "displayName": "Zodiacs",
   "mcpServers": "./.mcp.json",
-  "icon": "./assets/icon.png",
+  "icon": "./assets/icon-v2.png",
   "documentationUrl": "https://zodiacs.org/",
   "supportUrl": "https://zodiacs.org/about/",
   "privacyPolicyUrl": "https://zodiacs.org/privacy/",
