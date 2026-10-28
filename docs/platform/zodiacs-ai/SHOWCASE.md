@@ -19,8 +19,11 @@ live-resource HTML, checked byte for byte against the local generated panels,
 using the labelled example chart and a synthetic Leo request. The horoscope is
 a dated example, not a claim that its pictured reading is always today's.
 
-The page links each image's complete version and supplies real text and
-copyable prompts beside the cropped previews. No screenshot is presented as
+The opening shows the complete comparison and wedding cards side by side,
+with their natural proportions. The example gallery links each complete image
+and supplies real text and copyable prompts beside its closer previews.
+Keyboard-accessible category links jump to each example, and copying a prompt
+provides visible feedback inside a control whose dimensions stay fixed. No screenshot is presented as
 an interactive control. The existing 41-second 1080 by 1600 movie stays
 unchanged, with controls, no autoplay, no initial video download and a written
 description. The audio track is silent. The poster is a frame from that movie.
@@ -59,6 +62,12 @@ no horizontal overflow, all prompt-copy buttons, the endpoint-copy button,
 owned links, video dimensions/duration, delayed video loading and no browser
 errors. It keeps the zero-CLS assertion unchanged. Fixed heading lines and
 reserved CTA geometry prevent font swaps from changing the first screen.
+The drive also checks the complete hero image ratios, keyboard category links
+and copy-feedback geometry. Screenshots include separate hero, gallery and
+demo views. The full-page proof paints the shared footer using a capture-only
+content-visibility override, after all layout checks. This replaces its
+off-screen placeholder with the real footer; source CSS and measured gates
+are unchanged.
 
 The separate [Muse candidate](muse/README.md) records protocol preflight and
 host cases to run once the owner has access. It is not a Muse submission or a
