@@ -4,8 +4,9 @@
 
 All times in this entry are Asia/Bangkok (ICT).
 
-At 10:01:09, the existing 0.5.1 version's final **Submit for review**
-dialog was opened with the owner's approval for inspection only. All six
+At 10:01:09, the release session recorded the existing 0.5.1 version's
+final **Submit for review** dialog open, with the owner's approval for
+inspection only. All six
 attestations were unchecked, the optional submission context was blank,
 and Submit was disabled. The release session changed no fields, confirmed
 no attestation and did not submit. This direct observation is preserved in
