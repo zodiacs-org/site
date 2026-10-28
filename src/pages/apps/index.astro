@@ -1,5 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import comparisonCard from '../../../public/assets/ai/showcase/20261028/comparison.webp';
+import weddingCard from '../../../public/assets/ai/showcase/20261028/wedding.webp';
+import chartCard from '../../../public/assets/ai/showcase/20261028/chart.webp';
+import horoscopeCard from '../../../public/assets/ai/showcase/20261028/horoscope.webp';
 import captures from '../../data/apps-showcase-images.json';
 const assetRoot = '/assets/ai/showcase/20261028/';
 const image = (name: string) => {
@@ -8,10 +13,10 @@ const image = (name: string) => {
   return { src: assetRoot + result.file, width: result.width, height: result.height };
 };
 const examples = [
-  { id: 'chart', title: 'Your chart, ready to explore.', category: 'Birth charts', description: 'See the planets, signs and houses in an interactive chart. Choose a detail to bring into the conversation.', prompt: 'Open Zodiacs Chart Studio so I can explore my birth chart.', alt: 'Chart Studio displaying its labelled example birth chart, with the chart wheel and an inspector.', image: image('chart'), shape: 'wide' },
-  { id: 'comparison', title: 'Two charts. A conversation starter.', category: 'Compatibility', description: 'Compare two charts and explore their connections, with a reading to discuss together.', prompt: "Use Zodiacs to compare our charts. I was born 3 May 1990 at 8:30 in Madrid. My partner was born 10 August 1992, time unknown.", alt: 'A Zodiacs comparison card for two synthetic birth dates, with Taurus and Leo artwork and the calculated reading.', image: image('comparison'), shape: 'portrait' },
-  { id: 'wedding', title: 'The sky on a day that matters.', category: 'Occasions', description: 'Make a card for a wedding, anniversary or another date you want to remember.', prompt: "Use Zodiacs to make a wedding card for 12 June 2027 at 17:00 in Florence, Italy. Tell us what the sky means in astrology.", alt: 'A Zodiacs wedding card for a synthetic example in Florence on 12 June 2027, with wedding artwork and the reading.', image: image('wedding'), shape: 'portrait' },
-  { id: 'horoscope', title: 'A moment for your sign.', category: 'Horoscopes', description: 'Read your sign’s daily horoscope, change the focus and explore the sky behind the words.', prompt: "Use Zodiacs to show today’s horoscope for Leo in Bangkok.", alt: 'A dated Leo horoscope card with the sign artwork, day and focus controls, and its published reading.', image: image('horoscope'), shape: 'portrait' },
+  { id: 'chart', title: 'Your chart, ready to explore.', category: 'Birth charts', description: 'See the planets, signs and houses in an interactive chart. Choose a detail to bring into the conversation.', prompt: 'Open Zodiacs Chart Studio so I can explore my birth chart.', alt: 'Chart Studio displaying its labelled example birth chart, with the chart wheel and an inspector.', image: image('chart'), source: chartCard, shape: 'wide' },
+  { id: 'comparison', title: 'Two charts. A conversation starter.', category: 'Compatibility', description: 'Compare two charts and explore their connections, with a reading to discuss together.', prompt: "Use Zodiacs to compare our charts. I was born 3 May 1990 at 8:30 in Madrid. My partner was born 10 August 1992, time unknown.", alt: 'A Zodiacs comparison card for two synthetic birth dates, with Taurus and Leo artwork and the calculated reading.', image: image('comparison'), source: comparisonCard, shape: 'portrait' },
+  { id: 'wedding', title: 'The sky on a day that matters.', category: 'Occasions', description: 'Make a card for a wedding, anniversary or another date you want to remember.', prompt: "Use Zodiacs to make a wedding card for 12 June 2027 at 17:00 in Florence, Italy. Tell us what the sky means in astrology.", alt: 'A Zodiacs wedding card for a synthetic example in Florence on 12 June 2027, with wedding artwork and the reading.', image: image('wedding'), source: weddingCard, shape: 'portrait' },
+  { id: 'horoscope', title: 'A moment for your sign.', category: 'Horoscopes', description: 'Read your sign’s daily horoscope, change the focus and explore the sky behind the words.', prompt: "Use Zodiacs to show today’s horoscope for Leo in Bangkok.", alt: 'A dated Leo horoscope card with the sign artwork, day and focus controls, and its published reading.', image: image('horoscope'), source: horoscopeCard, shape: 'portrait' },
 ];
 const title = 'Zodiacs in ChatGPT and Claude | Zodiacs.org';
 const description = 'Explore Zodiacs birth charts, compatibility, occasion cards and horoscopes in your AI conversations. See real card examples, a short demo and connection options.';
@@ -31,11 +36,11 @@ const description = 'Explore Zodiacs birth charts, compatibility, occasion cards
       </div>
       <div class="apps-hero__gallery" aria-label="Real Zodiacs card examples">
         <figure class="apps-hero__card apps-hero__card--comparison">
-          <a href={assetRoot + 'comparison.webp'} target="_blank" rel="noopener" aria-label="View the complete comparison card"><img {...image('comparison')} alt="A complete Zodiacs comparison card using synthetic example birth details." loading="eager" fetchpriority="high" decoding="async" /></a>
+          <a href={assetRoot + 'comparison.webp'} target="_blank" rel="noopener" aria-label="View the complete comparison card"><Image src={comparisonCard} widths={[300, 480, 600, 750]} sizes="(max-width: 560px) calc((100vw - 58px) * 0.55), (max-width: 760px) 276px, (max-width: 1000px) 20vw, 242px" format="avif" quality={65} alt="A complete Zodiacs comparison card using synthetic example birth details." loading="eager" fetchpriority="high" decoding="async" /></a>
           <figcaption>Two people <span aria-hidden="true">↗</span></figcaption>
         </figure>
         <figure class="apps-hero__card apps-hero__card--wedding">
-          <a href={assetRoot + 'wedding.webp'} target="_blank" rel="noopener" aria-label="View the complete wedding card"><img {...image('wedding')} alt="A complete Zodiacs wedding card for the synthetic Florence example." loading="eager" decoding="async" /></a>
+          <a href={assetRoot + 'wedding.webp'} target="_blank" rel="noopener" aria-label="View the complete wedding card"><Image src={weddingCard} widths={[300, 480, 600, 750]} sizes="(max-width: 560px) calc((100vw - 58px) * 0.45), (max-width: 760px) 226px, (max-width: 1000px) 16vw, 198px" format="avif" quality={65} alt="A complete Zodiacs wedding card for the synthetic Florence example." loading="eager" decoding="async" /></a>
           <figcaption>A day to remember <span aria-hidden="true">↗</span></figcaption>
         </figure>
         <p class="apps-hero__caption">Your question opens a card you can explore.</p>
@@ -58,12 +63,12 @@ const description = 'Explore Zodiacs birth charts, compatibility, occasion cards
       <div class="apps-examples__grid">
         {examples.map((example) => (
           <article class:list={['apps-example', `apps-example--${example.shape}`]} id={`${example.id}-example`} aria-labelledby={`${example.id}-title`}>
-            <a class="apps-example__picture" href={example.image.src} target="_blank" rel="noopener" aria-label={`View full ${example.category.toLowerCase()} example`}>
-              <img {...example.image} alt={example.alt} loading="lazy" decoding="async" />
-              <span class="apps-example__expand" aria-hidden="true">View full card ↗</span>
+            <a class="apps-example__picture" href={example.image.src} target="_blank" rel="noopener" aria-labelledby={`${example.id}-full-label`}>
+              <Image src={example.source} widths={example.source.width > 750 ? [400, 800, 1200, 1600] : [400, 600, 750]} sizes="(max-width: 560px) calc(100vw - 40px), (max-width: 760px) calc((100vw - 68px) / 2), (max-width: 1280px) calc((100vw - 88px) / 2), 576px" format="avif" quality={65} alt={example.alt} loading="lazy" decoding="async" />
+              <span class="apps-example__expand" id={`${example.id}-full-label`}>View full card<span class="sr-only"> for {example.category.toLowerCase()}</span> <span aria-hidden="true">↗</span></span>
             </a>
             <div class="apps-example__copy"><p class="apps-category">{example.category}</p><h3 id={`${example.id}-title`}>{example.title}</h3><p>{example.description}</p>
-              <div class="apps-prompt"><p class="apps-prompt__label">Try asking</p><blockquote id={`${example.id}-prompt`}>{example.prompt}</blockquote><button type="button" data-copy-prompt={`${example.id}-prompt`} aria-label={`Copy ${example.category.toLowerCase()} prompt`}><span data-copy-label>Copy prompt</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/></svg></button></div>
+              <div class="apps-prompt"><p class="apps-prompt__label">Try asking</p><blockquote id={`${example.id}-prompt`}>{example.prompt}</blockquote><button type="button" data-copy-prompt={`${example.id}-prompt`}><span data-copy-label>Copy prompt</span><span class="sr-only"> for {example.category.toLowerCase()}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/></svg></button></div>
             </div>
           </article>
         ))}

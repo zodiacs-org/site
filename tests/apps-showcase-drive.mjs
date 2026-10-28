@@ -24,7 +24,13 @@ try{
    assert.equal(await img.evaluate(image=>image.naturalWidth>0&&image.width>0),true,'Image decoded');
   }
   for(const card of await page.locator('.apps-hero__card img').all()){
-   assert.equal(await card.evaluate(img=>Math.abs(img.clientHeight-img.clientWidth*img.naturalHeight/img.naturalWidth)<1),true,'Hero cards keep their complete aspect ratio');
+   // With srcset, naturalWidth/naturalHeight are density-corrected integers.
+   // Compare precise rendered geometry with the original reserved ratio instead.
+   assert.equal(await card.evaluate(img=>{
+    const box=img.getBoundingClientRect(),frame=img.parentElement.getBoundingClientRect();
+    const ratio=Number(img.getAttribute('height'))/Number(img.getAttribute('width'));
+    return Math.abs(box.height-box.width*ratio)<1&&Math.abs(frame.height-box.height)<1;
+   }),true,'Hero cards keep their complete aspect ratio without a clipping frame');
   }
   for(const link of await page.locator('.apps-example-nav a').all()){
    const target=await link.getAttribute('href');await link.scrollIntoViewIfNeeded();await link.focus();await link.press('Enter');
@@ -36,7 +42,7 @@ try{
    assert.ok(box&&box.y>=0&&box.y<height,'Keyboard example link reaches its visible section');
   }
   for(const name of ['birth charts','compatibility','occasions','horoscopes']){
-   const button=page.getByRole('button',{name:'Copy '+name+' prompt',exact:true});
+   const button=page.getByRole('button',{name:new RegExp('^(Copy prompt|Copied) for '+name+'$')});
    await button.scrollIntoViewIfNeeded();const before=await button.boundingBox();await button.click();
    await button.getByText('Copied',{exact:true}).waitFor({state:'visible'});
    const after=await button.boundingBox();assert.equal(after.width,before.width,'Copy feedback preserves width');assert.equal(after.height,before.height,'Copy feedback preserves height');

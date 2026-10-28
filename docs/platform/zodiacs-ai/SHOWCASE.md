@@ -23,11 +23,14 @@ The opening shows the complete comparison and wedding cards side by side,
 with their natural proportions. The example gallery links each complete image
 and supplies real text and copyable prompts beside its closer previews.
 Keyboard-accessible category links jump to each example, and copying a prompt
-provides visible feedback inside a control whose dimensions stay fixed. No screenshot is presented as
-an interactive control. The existing 41-second 1080 by 1600 movie stays
+provides visible feedback inside a control whose dimensions stay fixed. Link
+and button names include their visible text for voice and screen-reader use.
+No screenshot is presented as an interactive control. The existing 41-second 1080 by 1600 movie stays
 unchanged, with controls, no autoplay, no initial video download and a written
 description. The audio track is silent. The poster is a frame from that movie.
-All image dimensions are reserved before loading.
+All image dimensions are reserved before loading. Astro generates responsive
+AVIF display variants from the existing WebP captures during the build. The
+original full-size captures and their public links remain unchanged.
 
 `src/data/apps-showcase-images.json` is produced by the capture utility. To
 make a new unpublished family after an intentional panel change, first run
