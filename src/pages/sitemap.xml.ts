@@ -525,9 +525,6 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // The conventions registry's citations and names without en or em dashes,
   // on the day of the daily edition it was built with.
   ['/developers/conventions/', '2026-10-26'] as const,
-  // The developer demo, and the developer index that links to it. The day of
-  // the daily edition it was built with.
-  ...['/developers/demo/', '/developers/'].map((loc) => [loc, '2026-10-26'] as const),
   // Engine 1.1.0-rc.1, MCP adapter 0.1.0-rc.25 and conformance suite 0.2.0 (R44), on the day of the daily
   // edition they were built with: the pages that name the engine's version and how npm carries it, the
   // conventions registry and the pages that list ids, the playground's engine and answers, and the guides.
@@ -539,6 +536,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
+  // The developer demo, and the developer index that links to it. The day of
+  // the daily edition it was built with; after the engine 1.1.0-rc.1 entry above so it wins.
+  ...['/developers/demo/', '/developers/'].map((loc) => [loc, '2026-10-28'] as const),
 ]);
 
 function getLastmod(loc: string): string {

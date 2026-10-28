@@ -302,10 +302,39 @@
         }
       },
       "receipt": {
+        "conventionIds": [
+          "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "angles:gast-and-true-obliquity",
+          "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "assessment:finite-reference-cases-only",
+          "broadDateRange:not-certified",
+          "calendar:proleptic-gregorian",
+          "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+          "deltaT:tt-minus-ut1;value-in-result",
+          "deltat-model:iers-utc/1",
+          "deltat-segment:observed",
+          "ephemeris:astronomy-engine@2.1.19",
+          "house:whole",
+          "inputSyntax:not-an-astronomical-accuracy-guarantee",
+          "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "longitudeUnit:degrees-[0,360)",
+          "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+          "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "reference:supplied-instant",
+          "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "time-basis:iers",
+          "time-scale:utc",
+          "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "ut1-source:observed",
+          "zodiac:tropical"
+        ],
         "conventions": {
           "angles": "gast-and-true-obliquity",
           "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
           "calendar": "proleptic-gregorian",
+          "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
           "deltaT": "tt-minus-ut1;value-in-result",
           "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
           "longitudeUnit": "degrees-[0,360)",
@@ -333,7 +362,7 @@
             "version": "2.1.19"
           },
           "name": "@zodiacs/engine",
-          "version": "1.0.0"
+          "version": "1.1.0-rc.1"
         },
         "houses": {
           "absenceReason": null,
@@ -369,7 +398,7 @@
       },
       "backend": {
         "name": "@zodiacs/engine",
-        "version": "1.0.0",
+        "version": "1.1.0-rc.1",
         "ephemeris": {
           "name": "astronomy-engine",
           "version": "2.1.19"
@@ -377,9 +406,9 @@
       },
       "cite": {
         "url": "https://zodiacs.org/developers/compute/#chart",
-        "receipt": "sha256:4cb4617ff4504f9298e00d47bca417a3cc480b4966138b125cbc0f83184c0f1f",
+        "receipt": "sha256:79819f8b7f18d88d2f9199e29718bef60000bd98d492c602e4010330e8a782ea",
         "engine": "@zodiacs/engine",
-        "version": "1.0.0"
+        "version": "1.1.0-rc.1"
       }
     }
   },
@@ -432,7 +461,7 @@
           "endpoint": "events",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.0.0",
+            "version": "1.1.0-rc.1",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -442,6 +471,7 @@
             "angles": "gast-and-true-obliquity",
             "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
             "calendar": "proleptic-gregorian",
+            "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
             "deltaT": "tt-minus-ut1;value-in-result",
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
@@ -487,11 +517,38 @@
             "maxSamples": 12000,
             "window": "start-exclusive-end-inclusive",
             "completeness": "tested-not-proven"
-          }
+          },
+          "conventionIds": [
+            "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "angles:gast-and-true-obliquity",
+            "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "assessment:finite-reference-cases-only",
+            "broadDateRange:not-certified",
+            "calendar:proleptic-gregorian",
+            "completeness:tested-not-proven",
+            "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+            "deltaT:tt-minus-ut1;value-in-result",
+            "deltat-model:iers-utc/1",
+            "deltat-model:zodiacs-deltat/1",
+            "endpoint:events",
+            "ephemeris:astronomy-engine@2.1.19",
+            "inputSyntax:not-an-astronomical-accuracy-guarantee",
+            "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit:degrees-[0,360)",
+            "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "search-solver:engine-longitude-crossings",
+            "search-window:start-exclusive-end-inclusive",
+            "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac:tropical"
+          ]
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.0.0",
+          "version": "1.1.0-rc.1",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -499,9 +556,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:eaf3bf5fb00c7288d451fd6cee70431a00fb901423bd87d22d02a856fa9b5106",
+          "receipt": "sha256:a54fc501f053a8d4b9908b201a225fc09d62def96a9013a0a62e84cdb84f1891",
           "engine": "@zodiacs/engine",
-          "version": "1.0.0"
+          "version": "1.1.0-rc.1"
         }
       },
       {
@@ -535,7 +592,7 @@
           "endpoint": "events",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "1.0.0",
+            "version": "1.1.0-rc.1",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -545,6 +602,7 @@
             "angles": "gast-and-true-obliquity",
             "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
             "calendar": "proleptic-gregorian",
+            "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
             "deltaT": "tt-minus-ut1;value-in-result",
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
@@ -590,11 +648,38 @@
             "maxSamples": 12000,
             "window": "start-exclusive-end-inclusive",
             "completeness": "tested-not-proven"
-          }
+          },
+          "conventionIds": [
+            "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "angles:gast-and-true-obliquity",
+            "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "assessment:finite-reference-cases-only",
+            "broadDateRange:not-certified",
+            "calendar:proleptic-gregorian",
+            "completeness:tested-not-proven",
+            "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+            "deltaT:tt-minus-ut1;value-in-result",
+            "deltat-model:iers-utc/1",
+            "deltat-model:zodiacs-deltat/1",
+            "endpoint:events",
+            "ephemeris:astronomy-engine@2.1.19",
+            "inputSyntax:not-an-astronomical-accuracy-guarantee",
+            "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit:degrees-[0,360)",
+            "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "search-solver:engine-longitude-crossings",
+            "search-window:start-exclusive-end-inclusive",
+            "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac:tropical"
+          ]
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "1.0.0",
+          "version": "1.1.0-rc.1",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -602,9 +687,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:6cb5c0c999de89dc28cc5fd9c1b27025c6ee57a47b15ee3b27b64de0d94b2660",
+          "receipt": "sha256:2a475a4d6710870faa24559b5d8311f8e32c9e50ccf717d2614e5d36d5f93e17",
           "engine": "@zodiacs/engine",
-          "version": "1.0.0"
+          "version": "1.1.0-rc.1"
         }
       }
     ]
