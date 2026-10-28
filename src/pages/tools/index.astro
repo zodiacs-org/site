@@ -144,6 +144,12 @@ const jsonLd = [
     </section>
   ))}
 
+  <section class="kwrap tools-apps" aria-label="Zodiacs in your assistant">
+    <h2 class="h-2">Keep the conversation going.</h2>
+    <p>Explore birth charts, compatibility, occasion cards and horoscopes in your AI conversations.</p>
+    <a class="textlink" href="/apps/">See Zodiacs for ChatGPT and Claude <span class="arr" aria-hidden="true">→</span></a>
+  </section>
+
   <section class="tools-help" aria-label="Help and privacy">
     <div class="kwrap tools-help__grid">
       <ToolsHelpCard icon="guide" art="tools-lens" title="Not sure which tool?">
@@ -159,5 +165,7 @@ const jsonLd = [
 </Base>
 
 <style>
+  .tools-apps { padding-block: 48px 64px; border-top: 1px solid var(--line); }
+  .tools-apps p { color: var(--ink-2); max-width: 56ch; line-height: 1.7; margin-block: 18px; }
   .tools-chapter__note { margin-top: 20px; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.6; }
 </style>

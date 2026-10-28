@@ -248,6 +248,11 @@ const OPAQUE_LOADS: Record<string, { expression: string; loads: string[]; why: s
     loads: ['src/lib/compute-api/playground.ts'],
     why: '/developers/playground/engine.mjs, which scripts/build-playground-engine.mjs builds from playground.ts',
   }],
+  'src/islands/DeveloperDemo.tsx': [{
+    expression: 'PLAYGROUND_ENGINE_PATH',
+    loads: ['src/lib/compute-api/playground.ts'],
+    why: 'the playground\'s /developers/playground/engine.mjs, which the demo runs an edited question with',
+  }],
   'src/lib/webmcp/register.ts': [{
     expression: 'CALCULATOR_RUNTIME_URL',
     loads: ['src/lib/webmcp/calculator-runtime.ts'],

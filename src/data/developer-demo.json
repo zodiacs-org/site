@@ -1,0 +1,914 @@
+{
+  "schema": "zodiacs.developer-demo.v1",
+  "generatedBy": "scripts/build-developer-demo.ts",
+  "chart": {
+    "input": {
+      "date": "1990-06-15",
+      "time": "14:30",
+      "zone": "Europe/Paris",
+      "latitude": 48.8566,
+      "longitude": 2.3522,
+      "place": "Paris, France"
+    },
+    "request": {
+      "local": {
+        "date": "1990-06-15",
+        "time": "14:30",
+        "zone": "Europe/Paris"
+      },
+      "latitude": 48.8566,
+      "longitude": 2.3522,
+      "houseSystem": "whole"
+    },
+    "answer": {
+      "schema": "zodiacs.compute-api.chart.v1",
+      "result": {
+        "instant": "1990-06-15T12:30:00.000Z",
+        "local": {
+          "offsetMinutes": 120,
+          "flags": [],
+          "localMeanTime": null,
+          "zoneHistory": "runtime",
+          "zoneUncertain": false
+        },
+        "bodies": [
+          {
+            "body": "Sun",
+            "lon": 84.14928002220142,
+            "lat": -0.00001827703878788282,
+            "speed": 0.9551305973047874,
+            "retrograde": false,
+            "sign": "gemini",
+            "degree": 24.149280022201424
+          },
+          {
+            "body": "Moon",
+            "lon": 345.6367188970119,
+            "lat": 3.1501089515977787,
+            "speed": 13.369240872094679,
+            "retrograde": false,
+            "sign": "pisces",
+            "degree": 15.63671889701186
+          },
+          {
+            "body": "Mercury",
+            "lon": 65.7265334199264,
+            "lat": -1.659130144145581,
+            "speed": 1.7170306078924114,
+            "retrograde": false,
+            "sign": "gemini",
+            "degree": 5.7265334199263975
+          },
+          {
+            "body": "Venus",
+            "lon": 48.80186545784608,
+            "lat": -1.9454777463945472,
+            "speed": 1.1760216097229659,
+            "retrograde": false,
+            "sign": "taurus",
+            "degree": 18.801865457846077
+          },
+          {
+            "body": "Mars",
+            "lon": 11.0560354451639,
+            "lat": -1.985442010929648,
+            "speed": 0.7189171010963946,
+            "retrograde": false,
+            "sign": "aries",
+            "degree": 11.0560354451639
+          },
+          {
+            "body": "Jupiter",
+            "lon": 105.89399333781893,
+            "lat": 0.1868222095489725,
+            "speed": 0.2166527083602432,
+            "retrograde": false,
+            "sign": "cancer",
+            "degree": 15.893993337818927
+          },
+          {
+            "body": "Saturn",
+            "lon": 294.0306398433936,
+            "lat": 0.11719975460325133,
+            "speed": -0.0586625626510795,
+            "retrograde": true,
+            "sign": "capricorn",
+            "degree": 24.0306398433936
+          },
+          {
+            "body": "Uranus",
+            "lon": 278.16312067145714,
+            "lat": -0.3255654628085348,
+            "speed": -0.038934664019052434,
+            "retrograde": true,
+            "sign": "capricorn",
+            "degree": 8.163120671457136
+          },
+          {
+            "body": "Neptune",
+            "lon": 283.7163219439272,
+            "lat": 0.8770484012609031,
+            "speed": -0.025031484796045333,
+            "retrograde": true,
+            "sign": "capricorn",
+            "degree": 13.716321943927142
+          },
+          {
+            "body": "Pluto",
+            "lon": 225.40175398202936,
+            "lat": 15.85358596624236,
+            "speed": -0.02017257970976516,
+            "retrograde": true,
+            "sign": "scorpio",
+            "degree": 15.40175398202939
+          },
+          {
+            "body": "North Node",
+            "lon": 308.1217975926026,
+            "lat": 0,
+            "speed": 0.013238202005254607,
+            "retrograde": false,
+            "sign": "aquarius",
+            "degree": 8.121797592602661
+          },
+          {
+            "body": "South Node",
+            "lon": 128.1217975926026,
+            "lat": 0,
+            "speed": 0.013238202005254607,
+            "retrograde": false,
+            "sign": "leo",
+            "degree": 8.121797592602604
+          }
+        ],
+        "angles": {
+          "asc": 182.4651150595028,
+          "mc": 93.10546207243345,
+          "dsc": 2.465115059502807,
+          "ic": 273.1054620724335
+        },
+        "houses": {
+          "system": "whole",
+          "cusps": [
+            180,
+            210,
+            240,
+            270,
+            300,
+            330,
+            0,
+            30,
+            60,
+            90,
+            120,
+            150
+          ]
+        },
+        "aspects": [
+          {
+            "a": "Moon",
+            "b": "Pluto",
+            "type": "trine",
+            "orb": 0.23496491498258365,
+            "applying": false
+          },
+          {
+            "a": "Moon",
+            "b": "Jupiter",
+            "type": "trine",
+            "orb": 0.25727444080700934,
+            "applying": true
+          },
+          {
+            "a": "Jupiter",
+            "b": "Pluto",
+            "type": "trine",
+            "orb": 0.49223935578956457,
+            "applying": false
+          },
+          {
+            "a": "Neptune",
+            "b": "Pluto",
+            "type": "sextile",
+            "orb": 1.6854320381021353,
+            "applying": false
+          },
+          {
+            "a": "Moon",
+            "b": "Neptune",
+            "type": "sextile",
+            "orb": 1.920396953084719,
+            "applying": false
+          },
+          {
+            "a": "Jupiter",
+            "b": "Neptune",
+            "type": "opposition",
+            "orb": 2.1776713938917283,
+            "applying": false
+          },
+          {
+            "a": "Mars",
+            "b": "Neptune",
+            "type": "square",
+            "orb": 2.6602864987632984,
+            "applying": true
+          },
+          {
+            "a": "Mars",
+            "b": "Uranus",
+            "type": "square",
+            "orb": 2.8929147737067638,
+            "applying": false
+          },
+          {
+            "a": "Venus",
+            "b": "Jupiter",
+            "type": "sextile",
+            "orb": 2.9078721200271502,
+            "applying": false
+          },
+          {
+            "a": "Moon",
+            "b": "Venus",
+            "type": "sextile",
+            "orb": 3.1651465608341596,
+            "applying": true
+          },
+          {
+            "a": "Venus",
+            "b": "Pluto",
+            "type": "opposition",
+            "orb": 3.400111475816715,
+            "applying": false
+          },
+          {
+            "a": "Mars",
+            "b": "Jupiter",
+            "type": "square",
+            "orb": 4.837957892655027,
+            "applying": true
+          },
+          {
+            "a": "Venus",
+            "b": "Neptune",
+            "type": "trine",
+            "orb": 5.0855435139188785,
+            "applying": false
+          },
+          {
+            "a": "Venus",
+            "b": "Saturn",
+            "type": "trine",
+            "orb": 5.228774385547524,
+            "applying": true
+          },
+          {
+            "a": "Uranus",
+            "b": "Neptune",
+            "type": "conjunction",
+            "orb": 5.553201272470062,
+            "applying": false
+          },
+          {
+            "a": "Jupiter",
+            "b": "Uranus",
+            "type": "opposition",
+            "orb": 7.73087266636179,
+            "applying": false
+          }
+        ],
+        "flags": [],
+        "deltaT": {
+          "seconds": 57.19704162597656,
+          "sigma": 0.000846,
+          "model": "iers-utc/1",
+          "table": "2026-09-24",
+          "tableDigest": "064d98b4a531053a",
+          "segment": "observed"
+        },
+        "timeScale": {
+          "input": "utc",
+          "basis": "iers",
+          "ut1MinusUtc": {
+            "seconds": -0.013041666666662621,
+            "sigma": 0.000846,
+            "source": "observed"
+          },
+          "leapSeconds": {
+            "taiMinusUtc": 25,
+            "listed": true
+          }
+        }
+      },
+      "receipt": {
+        "conventionIds": [
+          "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "angles:gast-and-true-obliquity",
+          "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "assessment:finite-reference-cases-only",
+          "broadDateRange:not-certified",
+          "calendar:proleptic-gregorian",
+          "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+          "deltaT:tt-minus-ut1;value-in-result",
+          "deltat-model:iers-utc/1",
+          "deltat-segment:observed",
+          "ephemeris:astronomy-engine@2.1.19",
+          "house:whole",
+          "inputSyntax:not-an-astronomical-accuracy-guarantee",
+          "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "longitudeUnit:degrees-[0,360)",
+          "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+          "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "reference:supplied-instant",
+          "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "time-basis:iers",
+          "time-scale:utc",
+          "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "ut1-source:observed",
+          "zodiac:tropical"
+        ],
+        "conventions": {
+          "angles": "gast-and-true-obliquity",
+          "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+          "calendar": "proleptic-gregorian",
+          "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+          "deltaT": "tt-minus-ut1;value-in-result",
+          "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+          "longitudeUnit": "degrees-[0,360)",
+          "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+          "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+          "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+          "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+          "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+          "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+          "zodiac": "tropical"
+        },
+        "coordinates": {
+          "latitude": 48.8566,
+          "longitude": 2.3522
+        },
+        "coverage": {
+          "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+          "assessment": "finite-reference-cases-only",
+          "broadDateRange": "not-certified",
+          "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+        },
+        "engine": {
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          },
+          "name": "@zodiacs/engine",
+          "version": "1.1.0-rc.1"
+        },
+        "houses": {
+          "absenceReason": null,
+          "actual": "whole",
+          "requested": "whole"
+        },
+        "inputFlags": [],
+        "instant": "1990-06-15T12:30:00.000Z",
+        "localResolution": {
+          "date": "1990-06-15",
+          "gapShiftMinutes": 0,
+          "offsetMinutes": 120,
+          "policy": {
+            "fold": "earlier",
+            "gap": "shift-forward"
+          },
+          "time": "14:30",
+          "timeZone": "Europe/Paris"
+        },
+        "provenance": {
+          "runtime": {
+            "name": "node",
+            "tzdbVersion": "2026c"
+          },
+          "status": "claimed"
+        },
+        "reference": "supplied-instant",
+        "resultFlags": [],
+        "schema": "zodiacs.calculation-receipt.draft-v1",
+        "sourceInstant": null,
+        "timeKnown": true,
+        "timeScale": "utc"
+      },
+      "backend": {
+        "name": "@zodiacs/engine",
+        "version": "1.1.0-rc.1",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      },
+      "cite": {
+        "url": "https://zodiacs.org/developers/compute/#chart",
+        "receipt": "sha256:79819f8b7f18d88d2f9199e29718bef60000bd98d492c602e4010330e8a782ea",
+        "engine": "@zodiacs/engine",
+        "version": "1.1.0-rc.1"
+      }
+    }
+  },
+  "mercury": {
+    "input": {
+      "after": "2026-11-01"
+    },
+    "requests": [
+      {
+        "from": "2026-11-01T00:00:00Z",
+        "to": "2027-02-01T00:00:00Z",
+        "bodies": [
+          "Mercury"
+        ],
+        "kinds": [
+          "station"
+        ]
+      },
+      {
+        "from": "2027-02-01T00:00:00Z",
+        "to": "2027-05-04T00:00:00Z",
+        "bodies": [
+          "Mercury"
+        ],
+        "kinds": [
+          "station"
+        ]
+      }
+    ],
+    "answers": [
+      {
+        "schema": "zodiacs.compute-api.events.v1",
+        "result": {
+          "from": "2026-11-01T00:00:00.000Z",
+          "to": "2027-02-01T00:00:00.000Z",
+          "events": [
+            {
+              "kind": "station",
+              "body": "Mercury",
+              "at": "2026-11-13T15:52:21.161Z",
+              "type": "direct",
+              "lon": 215.03388723735245,
+              "sign": "scorpio",
+              "degree": 5.033887237352474
+            }
+          ]
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "events",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "1.1.0-rc.1",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ],
+          "search": {
+            "solver": "engine-longitude-crossings",
+            "stepDays": {
+              "default": 5,
+              "moon": 1,
+              "elongation": 1
+            },
+            "bisections": 24,
+            "samples": 45,
+            "maxSamples": 12000,
+            "window": "start-exclusive-end-inclusive",
+            "completeness": "tested-not-proven"
+          },
+          "conventionIds": [
+            "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "angles:gast-and-true-obliquity",
+            "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "assessment:finite-reference-cases-only",
+            "broadDateRange:not-certified",
+            "calendar:proleptic-gregorian",
+            "completeness:tested-not-proven",
+            "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+            "deltaT:tt-minus-ut1;value-in-result",
+            "deltat-model:iers-utc/1",
+            "deltat-model:zodiacs-deltat/1",
+            "endpoint:events",
+            "ephemeris:astronomy-engine@2.1.19",
+            "inputSyntax:not-an-astronomical-accuracy-guarantee",
+            "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit:degrees-[0,360)",
+            "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "search-solver:engine-longitude-crossings",
+            "search-window:start-exclusive-end-inclusive",
+            "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac:tropical"
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "1.1.0-rc.1",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/compute/#events",
+          "receipt": "sha256:a54fc501f053a8d4b9908b201a225fc09d62def96a9013a0a62e84cdb84f1891",
+          "engine": "@zodiacs/engine",
+          "version": "1.1.0-rc.1"
+        }
+      },
+      {
+        "schema": "zodiacs.compute-api.events.v1",
+        "result": {
+          "from": "2027-02-01T00:00:00.000Z",
+          "to": "2027-05-04T00:00:00.000Z",
+          "events": [
+            {
+              "kind": "station",
+              "body": "Mercury",
+              "at": "2027-02-09T17:35:47.590Z",
+              "type": "retrograde",
+              "lon": 335.9825816701762,
+              "sign": "pisces",
+              "degree": 5.98258167017616
+            },
+            {
+              "kind": "station",
+              "body": "Mercury",
+              "at": "2027-03-03T12:35:03.437Z",
+              "type": "direct",
+              "lon": 320.92395589169735,
+              "sign": "aquarius",
+              "degree": 20.923955891697346
+            }
+          ]
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "events",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "1.1.0-rc.1",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "conventionIds": "zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ],
+          "search": {
+            "solver": "engine-longitude-crossings",
+            "stepDays": {
+              "default": 5,
+              "moon": 1,
+              "elongation": 1
+            },
+            "bisections": 24,
+            "samples": 69,
+            "maxSamples": 12000,
+            "window": "start-exclusive-end-inclusive",
+            "completeness": "tested-not-proven"
+          },
+          "conventionIds": [
+            "angleExclusions:exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "angles:gast-and-true-obliquity",
+            "aspects:major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "assessment:finite-reference-cases-only",
+            "broadDateRange:not-certified",
+            "calendar:proleptic-gregorian",
+            "completeness:tested-not-proven",
+            "conventionIds:zodiacs-conventions-registry;receipt-and-result;sorted-unique;in-receipt",
+            "deltaT:tt-minus-ut1;value-in-result",
+            "deltat-model:iers-utc/1",
+            "deltat-model:zodiacs-deltat/1",
+            "endpoint:events",
+            "ephemeris:astronomy-engine@2.1.19",
+            "inputSyntax:not-an-astronomical-accuracy-guarantee",
+            "localTime:tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit:degrees-[0,360)",
+            "moonNodes:instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition:astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation:iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions:aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "search-solver:engine-longitude-crossings",
+            "search-window:start-exclusive-end-inclusive",
+            "speed:degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac:tropical"
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "1.1.0-rc.1",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/compute/#events",
+          "receipt": "sha256:2a475a4d6710870faa24559b5d8311f8e32c9e50ccf717d2614e5d36d5f93e17",
+          "engine": "@zodiacs/engine",
+          "version": "1.1.0-rc.1"
+        }
+      }
+    ]
+  },
+  "compatibility": {
+    "input": {
+      "a": {
+        "birthDate": "1992-03-08",
+        "time": "09:15",
+        "zone": "Europe/Lisbon",
+        "latitude": 38.7223,
+        "longitude": -9.1393,
+        "place": "Lisbon, Portugal"
+      },
+      "b": {
+        "birthDate": "1989-11-21",
+        "time": "18:40",
+        "zone": "America/Toronto",
+        "latitude": 43.6532,
+        "longitude": -79.3832,
+        "place": "Toronto, Canada"
+      }
+    },
+    "arguments": {
+      "a": {
+        "birthDate": "1992-03-08",
+        "time": "09:15",
+        "zone": "Europe/Lisbon",
+        "latitude": 38.7223,
+        "longitude": -9.1393,
+        "place": "Lisbon, Portugal"
+      },
+      "b": {
+        "birthDate": "1989-11-21",
+        "time": "18:40",
+        "zone": "America/Toronto",
+        "latitude": 43.6532,
+        "longitude": -79.3832,
+        "place": "Toronto, Canada"
+      }
+    },
+    "result": {
+      "schema": "zodiacs.ai-tool-result.v1",
+      "ok": true,
+      "tool": "get_compatibility",
+      "data": {
+        "a": {
+          "name": null,
+          "label": "Person A",
+          "birthDate": "1992-03-08",
+          "timeKnown": true,
+          "placed": true,
+          "place": "Lisbon, Portugal",
+          "sun": "pisces",
+          "moon": "taurus",
+          "rising": "taurus",
+          "famous": false,
+          "url": null
+        },
+        "b": {
+          "name": null,
+          "label": "Person B",
+          "birthDate": "1989-11-21",
+          "timeKnown": true,
+          "placed": true,
+          "place": "Toronto, Canada",
+          "sun": "scorpio",
+          "moon": "virgo",
+          "rising": "cancer",
+          "famous": false,
+          "url": null
+        },
+        "score": {
+          "overall": 73,
+          "areas": {
+            "attraction": 78,
+            "communication": 72,
+            "stability": 68
+          },
+          "verdict": "A strong match",
+          "headline": "Attraction is the strongest part of this pairing; long-term stability will take the most work."
+        },
+        "signPair": {
+          "slug": "scorpio-pisces",
+          "signs": [
+            "scorpio",
+            "pisces"
+          ],
+          "same": false,
+          "element": {
+            "label": "Deep water",
+            "note": "You read each other instantly: a deep, intuitive bond, and you’ll feel each other’s moods."
+          },
+          "modality": {
+            "label": "Anchor and sail",
+            "note": "Stability meets flexibility: you balance each other well."
+          },
+          "polarity": "Both private: a quiet, deeply felt bond that needs time alone together."
+        },
+        "contacts": [
+          {
+            "aBody": "Mercury",
+            "bBody": "Mercury",
+            "aspect": "trine",
+            "orb": 0.1,
+            "generational": false,
+            "line": "Person A’s way of thinking flows with Person B’s. This flows naturally and brings out the best in you both."
+          },
+          {
+            "aBody": "Mars",
+            "bBody": "Pluto",
+            "aspect": "square",
+            "orb": 0.9,
+            "generational": false,
+            "line": "Person A’s drive pushes against Person B’s intensity. Expect friction here, especially under stress."
+          },
+          {
+            "aBody": "Moon",
+            "bBody": "Uranus",
+            "aspect": "trine",
+            "orb": 1.2,
+            "generational": false,
+            "line": "Person A’s emotional life flows with Person B’s independence. This flows naturally and brings out the best in you both."
+          },
+          {
+            "aBody": "Uranus",
+            "bBody": "Venus",
+            "aspect": "conjunction",
+            "orb": 1.2,
+            "generational": false,
+            "line": "Person A’s independence sits right on top of Person B’s way of loving. You’ll feel this one strongly."
+          },
+          {
+            "aBody": "Neptune",
+            "bBody": "Moon",
+            "aspect": "trine",
+            "orb": 1.2,
+            "generational": false,
+            "line": "Person A’s imagination flows with Person B’s emotional life. This flows naturally and brings out the best in you both."
+          },
+          {
+            "aBody": "Jupiter",
+            "bBody": "Jupiter",
+            "aspect": "sextile",
+            "orb": 1.3,
+            "generational": false,
+            "line": "Person A’s appetite for more works easily with Person B’s. An easy spark that grows when you use it."
+          },
+          {
+            "aBody": "Uranus",
+            "bBody": "Pluto",
+            "aspect": "sextile",
+            "orb": 1.5,
+            "generational": false,
+            "line": "Person A’s independence works easily with Person B’s intensity. An easy spark that grows when you use it."
+          },
+          {
+            "aBody": "Sun",
+            "bBody": "Moon",
+            "aspect": "opposition",
+            "orb": 1.6,
+            "generational": false,
+            "line": "Person A’s sense of self pulls against Person B’s emotional life. A strong pull that swings between attraction and tension."
+          }
+        ],
+        "counts": {
+          "easeful": 16,
+          "charged": 13,
+          "total": 37,
+          "byAspect": {
+            "conjunction": 8,
+            "sextile": 6,
+            "square": 10,
+            "trine": 10,
+            "opposition": 3
+          }
+        },
+        "elements": {
+          "a": {
+            "fire": 1,
+            "earth": 4,
+            "air": 3,
+            "water": 2
+          },
+          "b": {
+            "fire": 1,
+            "earth": 5,
+            "air": 0,
+            "water": 4
+          }
+        },
+        "modalities": {
+          "a": {
+            "cardinal": 3,
+            "fixed": 5,
+            "mutable": 2
+          },
+          "b": {
+            "cardinal": 5,
+            "fixed": 3,
+            "mutable": 2
+          }
+        },
+        "pageUrl": "https://zodiacs.org/compatibility/scorpio-pisces/",
+        "cardUrl": "https://zodiacs.org/compatibility/#a=1.eyJkIjoiMTk5Mi0wMy0wOCIsInoiOiJFdXJvcGUvTGlzYm9uIiwibGEiOjM4LjcyMjMsImxvIjotOS4xMzkzLCJ0IjoiMDk6MTUiLCJwIjoiTGlzYm9uLCBQb3J0dWdhbCJ9&b=1.eyJkIjoiMTk4OS0xMS0yMSIsInoiOiJBbWVyaWNhL1Rvcm9udG8iLCJsYSI6NDMuNjUzMiwibG8iOi03OS4zODMyLCJ0IjoiMTg6NDAiLCJwIjoiVG9yb250bywgQ2FuYWRhIn0",
+        "shareUrl": "https://zodiacs.org/share/compatibility/?as=pisces&bs=scorpio&score=73&attraction=78&communication=72&stability=68&v=strong",
+        "notes": [],
+        "note": "Astrology’s reading of your two charts, for insight and fun, not a guarantee of how things will turn out."
+      },
+      "links": [
+        {
+          "title": "Compatibility on Zodiacs",
+          "url": "https://zodiacs.org/compatibility/"
+        },
+        {
+          "title": "How we calculate",
+          "url": "https://zodiacs.org/methodology/"
+        }
+      ]
+    }
+  }
+}

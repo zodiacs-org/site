@@ -204,6 +204,10 @@ SHA-256 is the one served at the merge, `85bb125b…`.
   host them.
 - A portal rescan. The hosted `tools/list` changed (the compute receipts'
   schemas and Chart Studio's address), so the AI portals' copies stay stale
-  until they scan again. That is the owner's call.
+  until they scan again. That is the owner's call. On 28 October, OpenAI's
+  copy under review already had the new definitions, and the Claude
+  directory's snapshot stayed at 16 October
+  ([PORTAL_REVIEW.md](../../zodiacs-ai/PORTAL_REVIEW.md),
+  [LISTING.md](../../zodiacs-ai/claude-directory/LISTING.md)).
 - Readers of new records. As the adoption's record says, npm's 1.0.0 and the
   earlier archives refuse the records the site now writes.

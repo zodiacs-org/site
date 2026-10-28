@@ -1,0 +1,62 @@
+{
+  "demoPoster": {
+    "file": "demo-poster.webp",
+    "width": 648,
+    "height": 960,
+    "bytes": 39438,
+    "sha256": "369d58b4219d2d07d6bf5fe3cff9c3e2a3afff2c71e483f310b8330a4937ecb1",
+    "source": "/assets/ai/review/zodiacs-sky-0.5.1.mp4",
+    "atSeconds": 6
+  },
+  "capturedAt": "2026-10-28T10:27:42.950Z",
+  "syntheticExamples": true,
+  "source": "https://zodiacs.org/mcp",
+  "images": [
+    {
+      "name": "comparison",
+      "file": "comparison.webp",
+      "width": 750,
+      "height": 1942,
+      "bytes": 133998,
+      "sha256": "cef2f95981a402ff751beb178c80593710509eeb82fd8ae3a803176a4204b525",
+      "source": "/assets/ai/review/zodiacs-comparison-card-0.5.1.png",
+      "sourceSha256": "92a48a4d3b5798e02f96e3c625f3a9cb2da047a0733d3f4d37d7ee7ed2afd8b9"
+    },
+    {
+      "name": "wedding",
+      "file": "wedding.webp",
+      "width": 750,
+      "height": 2084,
+      "bytes": 148392,
+      "sha256": "d03259a3114a89f6a732a9c0c61a0abcd6ff1f370cab0f6b4f394df0947ed2f6",
+      "source": "/assets/ai/review/zodiacs-wedding-card-0.5.1.png",
+      "sourceSha256": "5de0ba03b61e09616b6010d56b8aeb5824e0d1565ba908b6e3d829aacfd82c7e"
+    },
+    {
+      "name": "chart",
+      "file": "chart.webp",
+      "width": 1600,
+      "height": 2683,
+      "bytes": 186714,
+      "sha256": "76dbc6c7df23c3612c91a83d1bfb53ed4166b94e028f17fb5547138cf1978447",
+      "resourceUri": "ui://zodiacs/chart-studio-v6.html",
+      "htmlSha256": "9fef51b4c35b7b9dd9a8b78a654fa222812b5805c5351406ea81d1fb3087d899",
+      "synthetic": true,
+      "noBrowserErrors": true,
+      "noOverflow": true
+    },
+    {
+      "name": "horoscope",
+      "file": "horoscope.webp",
+      "width": 750,
+      "height": 2886,
+      "bytes": 188270,
+      "sha256": "e3fab7cee39b59faeecc25717f047b4bb6524c99ee509c145e376c0b48626883",
+      "resourceUri": "ui://zodiacs/horoscopes-v6.html",
+      "htmlSha256": "567dc7beec110af087b75107f611c513cdf73b8a910226b83c8d3bab95743458",
+      "synthetic": true,
+      "noBrowserErrors": true,
+      "noOverflow": true
+    }
+  ]
+}
