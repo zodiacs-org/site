@@ -6,28 +6,28 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-28T11:13:57.338Z",
+  "capturedAt": "2026-10-28T12:15:06.041Z",
   "browser": "Chromium 155.0.8059.84",
   "dailyDate": "2026-10-28",
   "publicationCanonicalSha256": "70cff7345903fc26552be8c16585c65227d6894401a41d33220cda20e37168b7",
-  "templateSourceSha256": "b20b76fb42c670324e90b8ab74ea00c9dff401fa4b7c56dddc855e447682b72e",
+  "templateSourceSha256": "cfbd8fbc7ab8e91ad7708d74302413ea75f26ef38c4151bbe095e469f989e0e2",
   "renderPayloadSha256": {
     "daily": "570caaf328e51ee07dfe9e81dd51fc6947deb9f0bdea5142f18ae30c292cbd7b",
     "dailyPublication": "24541e6ef30f8b18b90dda49d6472c274baefaa4ac1d65f004965df6bf4b4042",
     "dailyPublicationManifest": "e7bf480eaa85ef224eb9f37a366916de23f2bdf578695b9264ee6419f29331c2",
-    "horoscopeProgram": "8492aa27d651473fa0b03747a527c5ac25275d76dfd1047efe5f188e2ded31ad"
+    "horoscopeProgram": "60fd60d3715b556c298c3f1c3c1406d0b067b3faf55b3d5628bb5801e65a6d29"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-28T11:13:20.097Z",
-    "templateSourceSha256": "b20b76fb42c670324e90b8ab74ea00c9dff401fa4b7c56dddc855e447682b72e",
+    "builtAt": "2026-10-28T12:14:26.565Z",
+    "templateSourceSha256": "cfbd8fbc7ab8e91ad7708d74302413ea75f26ef38c4151bbe095e469f989e0e2",
     "dailyDate": "2026-10-28",
     "publicationCanonicalSha256": "70cff7345903fc26552be8c16585c65227d6894401a41d33220cda20e37168b7",
     "renderPayloadSha256": {
       "daily": "570caaf328e51ee07dfe9e81dd51fc6947deb9f0bdea5142f18ae30c292cbd7b",
       "dailyPublication": "24541e6ef30f8b18b90dda49d6472c274baefaa4ac1d65f004965df6bf4b4042",
       "dailyPublicationManifest": "e7bf480eaa85ef224eb9f37a366916de23f2bdf578695b9264ee6419f29331c2",
-      "horoscopeProgram": "8492aa27d651473fa0b03747a527c5ac25275d76dfd1047efe5f188e2ded31ad"
+      "horoscopeProgram": "60fd60d3715b556c298c3f1c3c1406d0b067b3faf55b3d5628bb5801e65a6d29"
     }
   },
   "captures": [
@@ -426,13 +426,13 @@
         "file": "yearly-360.png",
         "width": 360,
         "height": 16632,
-        "sha256": "ee1ba318b2fdbf878460f9bb857d4466487b63a6b8415b19af6dd0704a1aca5a"
+        "sha256": "617502ceec739af2ee9093dac1c03716f457e442470eb07d7a9267ca5fe29681"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
         "scrollHeight": 16632,
-        "contentLength": 15358,
+        "contentLength": 15380,
         "overlay": false,
         "guideLauncher": true
       },
@@ -450,13 +450,13 @@
         "file": "yearly-1280.png",
         "width": 1280,
         "height": 10777,
-        "sha256": "be2b31b5014cbb99050bb8ba48a6abb7e24913d2bf109120fc54b4e2a5628880"
+        "sha256": "d029023f608713172fcd7a41fe681d915c900bf9ea00b8c770343d3b3d85d130"
       },
       "layout": {
         "clientWidth": 1280,
         "scrollWidth": 1280,
         "scrollHeight": 10777,
-        "contentLength": 16059,
+        "contentLength": 16081,
         "overlay": false,
         "guideLauncher": true
       },
