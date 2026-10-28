@@ -1,5 +1,37 @@
 # Claude directory listing
 
+## Final 0.5.1 carousel and release note, 28 October 2026
+
+The final approved update was verified after a full editor reload at
+15:42:54 Asia/Bangkok (ICT). Both new carousel URLs persisted with their
+original paired synthetic prompts:
+
+- `https://zodiacs.org/assets/ai/review/zodiacs-comparison-card-0.5.1.png`
+- `https://zodiacs.org/assets/ai/review/zodiacs-wedding-card-0.5.1.png`
+
+PR #847 published these images through merge `cede7a13`. Its PR and main
+checks passed, production was Ready, and both public images returned HTTP
+200 with the exact approved hashes, dimensions and sizes in
+[`0.5.1/screenshots.json`](0.5.1/screenshots.json). The older 0.5.0 images
+were preserved.
+
+After PR #848's version-only correction and its production checks passed,
+Additional notes were updated to identify the live server as version 0.5.1
+and to state that the carousel now shows the current cards. There is no
+editable formal server-version field in this editor. The consumer About
+text was not changed to add technical version text. The server's status,
+initialize and get_capabilities responses all report 0.5.1, verified at
+15:33:25 ICT, and all thirteen tool names and input schemas are unchanged.
+
+The selected tilted-ring icon and approved one-liner and 1,784-character
+About also persisted. Status remains **In review**. The 16 October tool
+snapshot caveat remains in the reviewer note. No further Sync from server
+was invoked for this final update, no tool-name field or policy/self-test
+checkbox was changed, and no new submission, attestation or email was made.
+Local evidence includes `anthropic-051-final-persistence.json`, the saved
+branding, carousel and review-status screenshots, and
+`mcp-version-051-production-acceptance.json`.
+
 ## Second sync, 28 October 2026
 
 Dias approved syncing the tools again after R44 (#840) went live. In the

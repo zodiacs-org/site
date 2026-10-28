@@ -1,5 +1,25 @@
 # Handoff to Codex, 20 October 2026
 
+## Current release references, 28 October 2026
+
+Read the latest dated entries in `PORTAL_REVIEW.md` and
+`claude-directory/LISTING.md` before repeating the historical steps below.
+R44 (#840) moved the developer plugin to 0.3.14, with the bundled server
+using engine 1.1.0-rc.1. Its current archive is
+`integrations/packages/zodiacs-developer-0.3.14.zip`. The Sky package remains
+0.5.1, and #848 aligned the hosted server's release metadata with 0.5.1
+without changing tool names or inputs. The current Chart Studio URI is
+`ui://zodiacs/chart-studio-v6.html`; v1 through v5 remain legacy aliases.
+Keep both the published Sky 0.5.0 ZIP and the owner-submitted 0.5.1 ZIP
+byte-identical.
+
+The owner reported submitting OpenAI 0.5.1 on 28 October. The release
+session did not observe his final click or attestation choices. The current
+directory update is saved in the existing in-review submission. These
+completed steps must not be repeated from this dated handoff alone.
+
+## Original handoff, 20 October 2026
+
 Written by Claude at the end of the session that built the share images, the
 brand lockup, the localized art cards, the story pictures, the resubmission
 fixes and the share links for the last three assistant cards. It says what is
@@ -33,7 +53,8 @@ Everything in `CLAUDE.md` applies. These are the ones this work runs into.
   `npm run ai:check`, and commit the regenerated runtimes
   (`api/_ai/runtime.mjs`, `plugins/zodiacs-developer/mcp/server.mjs`,
   `integrations/generated/*.mjs`) and the rebuilt
-  `integrations/packages/zodiacs-developer-0.3.13.zip` and `manifest.json`
+  developer archive named in `integrations/packages/manifest.json`
+  (currently `zodiacs-developer-0.3.14.zip`) and `manifest.json`
   with the source. When `tools/list` changes, recapture the flag-off fixture:
   `CAPTURE_FLAG_OFF_FIXTURE=1 npx vitest run src/ai-tools/accounts/flag-off.test.ts`.
 - **Pinned files.** Never overwrite a published file under a pinned or dated
