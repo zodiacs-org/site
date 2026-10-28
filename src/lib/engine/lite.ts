@@ -59,17 +59,28 @@ export function moonPhaseName(date: Date): MoonPhaseName {
   return moonPhaseNameFromAngle(moonPhaseAngle(date));
 }
 
-/** Existing UI categories for an already-normalized phase angle in [0, 360).
+/** New and Full Moon: the lit fraction is under 3%, or over 97%. */
+export const MOON_PHASE_NEW_ILLUMINATION = 0.03;
+/** First and Last Quarter: within 12° of elongation (about a day) of 90° or 270°. */
+export const MOON_PHASE_QUARTER_DEGREES = 12;
+
+/** Standard phase names for an already-normalized phase angle in [0, 360).
+ * New Moon and Full Moon only while the lit fraction is under 3% or over 97%
+ * (about a day and a half either side of the exact moment), the quarters only
+ * within 12° of 90° and 270°, and the crescents and gibbous phases in between.
+ * The lit fraction is the one the engine's moonPhase reports for the same
+ * angle, so a name never contradicts the illumination printed beside it.
  * Classify the retained value directly: normalizing again can round across a
  * category boundary. This function does not calculate or modify an angle.
  */
 export function moonPhaseNameFromAngle(a: number): MoonPhaseName {
-  if (a < 22.5 || a >= 337.5) return 'New Moon';
-  if (a < 67.5) return 'Waxing Crescent';
-  if (a < 112.5) return 'First Quarter';
-  if (a < 157.5) return 'Waxing Gibbous';
-  if (a < 202.5) return 'Full Moon';
-  if (a < 247.5) return 'Waning Gibbous';
-  if (a < 292.5) return 'Last Quarter';
+  const lit = (1 - Math.cos(a * Math.PI / 180)) / 2;
+  if (lit < MOON_PHASE_NEW_ILLUMINATION) return 'New Moon';
+  if (lit > 1 - MOON_PHASE_NEW_ILLUMINATION) return 'Full Moon';
+  if (Math.abs(a - 90) <= MOON_PHASE_QUARTER_DEGREES) return 'First Quarter';
+  if (Math.abs(a - 270) <= MOON_PHASE_QUARTER_DEGREES) return 'Last Quarter';
+  if (a < 90) return 'Waxing Crescent';
+  if (a < 180) return 'Waxing Gibbous';
+  if (a < 270) return 'Waning Gibbous';
   return 'Waning Crescent';
 }

@@ -171,3 +171,20 @@ describe('computeCompatibility with a famous person', () => {
     expect(compatibilityInput.safeParse({ a: { famous: '<script>' }, b: { birthDate: '1990-01-01' } }).success).toBe(false);
   });
 });
+
+describe('computeCompatibility with generational contacts', () => {
+  it('keeps the outer-planet contacts two people born days apart share behind every personal contact', async () => {
+    // Born ten days apart: Uranus, Neptune and Pluto sit on top of each other
+    // in both charts, at orbs tighter than any personal contact.
+    const args = compatibilityInput.parse({ a: { birthDate: '1990-01-10' }, b: { birthDate: '1990-01-20' } });
+    const { data } = await computeCompatibility(args, localTime);
+    expect(compatibilityData.parse(data)).toEqual(data);
+    const outer = new Set(['Uranus', 'Neptune', 'Pluto']);
+    expect(data.counts.byAspect.conjunction).toBeGreaterThanOrEqual(3);
+    expect(data.contacts).toHaveLength(8);
+    for (const contact of data.contacts) {
+      expect(contact.generational, contact.line).toBe(false);
+      expect(outer.has(contact.aBody) && outer.has(contact.bBody), contact.line).toBe(false);
+    }
+  });
+});

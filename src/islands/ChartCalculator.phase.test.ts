@@ -20,7 +20,7 @@ const classify = (sun: { lon: number } | undefined, moon: { lon: number } | unde
 describe('Moon-mode retained chart phase', () => {
   it.each([
     [350, 12.5, 'Waxing Crescent'], [20, 200, 'Full Moon'],
-    [100, 77.5, 'New Moon'], [120, 119, 'New Moon'],
+    [100, 77.5, 'Waning Crescent'], [120, 119, 'New Moon'],
   ])('uses retained longitudes %s/%s without consulting a date or ephemeris', (sun, moon, expected) => {
     expect(classify({ lon: sun as number }, { lon: moon as number })).toBe(expected);
   });

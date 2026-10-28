@@ -16,7 +16,7 @@ describe('occasion sky', () => {
     expect(sign('Moon')).toBe('libra');
     expect(sign('Mercury')).toBe('cancer');
     expect(sky.retrograde).toContain('Mercury');
-    expect(sky.moon).toMatchObject({ phase: 'First Quarter', illuminationPercent: 64, waxing: true });
+    expect(sky.moon).toMatchObject({ phase: 'Waxing Gibbous', illuminationPercent: 64, waxing: true });
   });
 
   it('refuses an invalid instant', () => {

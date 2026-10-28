@@ -9038,6 +9038,22 @@ function sunMoonLine(sunSign, moonSign) {
   return `${lead.charAt(0).toUpperCase()}${lead.slice(1)} ${sunName} Sun is the sign of ${sun}; ${article(moonName)} ${moonName} Moon, of ${moon}.`;
 }
 
+// src/lib/engine/lite.ts
+var DEG7 = Math.PI / 180;
+var MOON_PHASE_NEW_ILLUMINATION = 0.03;
+var MOON_PHASE_QUARTER_DEGREES = 12;
+function moonPhaseNameFromAngle(a) {
+  const lit = (1 - Math.cos(a * Math.PI / 180)) / 2;
+  if (lit < MOON_PHASE_NEW_ILLUMINATION) return "New Moon";
+  if (lit > 1 - MOON_PHASE_NEW_ILLUMINATION) return "Full Moon";
+  if (Math.abs(a - 90) <= MOON_PHASE_QUARTER_DEGREES) return "First Quarter";
+  if (Math.abs(a - 270) <= MOON_PHASE_QUARTER_DEGREES) return "Last Quarter";
+  if (a < 90) return "Waxing Crescent";
+  if (a < 180) return "Waxing Gibbous";
+  if (a < 270) return "Waning Gibbous";
+  return "Waning Crescent";
+}
+
 // src/lib/occasions/sky.ts
 var OCCASION_BODIES = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
 function skyAt(instant2) {
@@ -9058,7 +9074,7 @@ function skyAt(instant2) {
     instant: instant2.toISOString(),
     bodies,
     moon: {
-      phase: phase.name,
+      phase: moonPhaseNameFromAngle(phase.angle),
       illuminationPercent: Math.round(phase.illumination * 100),
       waxing: phase.waxing
     },
@@ -9699,6 +9715,34 @@ function synastryLine(aName, aBody, bName, bBody, type) {
   return `${subject}. ${phrase.gloss.charAt(0).toUpperCase()}${phrase.gloss.slice(1)}.`;
 }
 
+// src/lib/generational-contact.ts
+var SLOW_BODIES = /* @__PURE__ */ new Set(["Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]);
+var OUTER_BODIES = /* @__PURE__ */ new Set(["Uranus", "Neptune", "Pluto"]);
+function isGenerationalContact(aspect) {
+  if (OUTER_BODIES.has(aspect.a) && OUTER_BODIES.has(aspect.b)) return true;
+  return aspect.type === "conjunction" && aspect.a === aspect.b && SLOW_BODIES.has(aspect.a);
+}
+
+// src/lib/contact-line.ts
+var GENERATIONAL_VERB = {
+  conjunction: "lines up with",
+  sextile: "links with",
+  square: "meets",
+  trine: "links with",
+  opposition: "faces"
+};
+var GENERATIONAL_GLOSS = "A shared generational backdrop, common to many people born in the same years.";
+function contactLine(aName, aBody, bName, bBody, type) {
+  const verb = GENERATIONAL_VERB[type];
+  if (verb === void 0 || !isGenerationalContact({ a: aBody, b: bBody, type })) {
+    return synastryLine(aName, aBody, bName, bBody, type);
+  }
+  const roleA = BODY_ROLE[aBody] ?? aBody.toLowerCase();
+  const roleB = BODY_ROLE[bBody] ?? bBody.toLowerCase();
+  const subject = aBody === bBody ? `${aName}\u2019s ${roleA} ${verb} ${bName}\u2019s` : `${aName}\u2019s ${roleA} ${verb} ${bName}\u2019s ${roleB}`;
+  return `${subject}. ${GENERATIONAL_GLOSS}`;
+}
+
 // src/lib/compat-score.ts
 var PERSONAL = {
   Sun: 1,
@@ -10069,10 +10113,6 @@ function modalityBalance2(bodies) {
     out[signForLongitude2(b.lon).modality] += 1;
   }
   return out;
-}
-var SLOW_BODIES = /* @__PURE__ */ new Set(["Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]);
-function isGenerationalContact(aspect) {
-  return aspect.type === "conjunction" && aspect.a === aspect.b && SLOW_BODIES.has(aspect.a);
 }
 function rankedContacts(aspects) {
   return [...aspects].sort((one, other) => Number(isGenerationalContact(one)) - Number(isGenerationalContact(other)) || one.orb - other.orb);
@@ -19185,7 +19225,7 @@ async function computeCompatibility(args, localTime2, origin = "https://zodiacs.
       aspect: contact.type,
       orb: roundOrb(contact.orb),
       generational: isGenerationalContact(contact),
-      line: synastryLine(a.label, contact.a, b.label, contact.b, contact.type)
+      line: contactLine(a.label, contact.a, b.label, contact.b, contact.type)
     })),
     counts: {
       easeful: summary.easeful,
@@ -26435,7 +26475,7 @@ function solarReturnInstant(natalSunLongitude, near) {
   const closest = crossings.reduce((best, crossing) => Math.abs(crossing.at.getTime() - center) < Math.abs(best.at.getTime() - center) ? crossing : best, first2);
   return new Date(closest.at.getTime());
 }
-var DEG7 = Math.PI / 180;
+var DEG8 = Math.PI / 180;
 
 // src/lib/engine/reference-span.ts
 var REFERENCE_SPAN_START_MS = Date.parse("1800-01-01T00:00:00Z");
@@ -28690,7 +28730,7 @@ function horoscopePanel(window, sign2, requested, share) {
 }
 
 // src/ai-tools/contracts.ts
-var AI_VERSION = "0.5.0";
+var AI_VERSION = "0.5.1";
 var AI_RESULT_SCHEMA = "zodiacs.ai-tool-result.v1";
 var AI_TOOL_NAMES = ["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "get_horoscope", "open_chart_studio"];
 var OCCASION_TOOL_NAMES = ["get_occasion_sky", "get_life_milestones", "get_compatibility", "find_chart_twins", "get_famous_chart", "get_birthday", "get_sky_calendar"];
@@ -30279,6 +30319,17 @@ function displayTime(utc, zone6) {
 function failure(tool, code, message, retryAfterSeconds) {
   return { schema: AI_RESULT_SCHEMA, ok: false, tool, error: { code, message, ...retryAfterSeconds === void 0 ? {} : { retryAfterSeconds } } };
 }
+var COMPUTE_REQUIRED = "This field is required.";
+function fieldName(pointer) {
+  return pointer.slice(1).split("/").map((part) => /^\d+$/.test(part) ? `[${part}]` : part).join(".").replace(/\.\[/g, "[");
+}
+function namedRefusal(message, pointer) {
+  if (!pointer) return message;
+  const field = fieldName(pointer);
+  if (message === COMPUTE_REQUIRED) return `${field} is required.`;
+  if (/^(?:Must|Each must) /.test(message)) return `${field} ${message.charAt(0).toLowerCase()}${message.slice(1)}`;
+  return `${field}: ${message}`;
+}
 function offeredTools(dependencies) {
   const released = AI_TOOL_NAMES.filter((tool) => tool !== "get_horoscope" || !!dependencies.horoscopeWindow);
   return dependencies.occasions ? [...released, ...OCCASION_TOOL_NAMES] : released;
@@ -30370,7 +30421,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
         const calculation = computePositions(parsePositionsRequest({ instants: [instant2], ...args.bodies ? { bodies: args.bodies } : {} }));
         const utc = calculation.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone6, display: displayTime(utc, zone6) }, calculation, moonPhase: { name: phase.name, angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
+        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone6, display: displayTime(utc, zone6) }, calculation, moonPhase: { name: moonPhaseNameFromAngle(phase.angle), angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
         links = [moonLink, methodLink];
         break;
       }
@@ -30591,7 +30642,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies, c
     const result = { schema: AI_RESULT_SCHEMA, ok: true, tool, data, links };
     return OUTPUT_SCHEMAS[tool].parse(result);
   } catch (error) {
-    if (error instanceof ComputeApiError) return failure(tool, error.detail.code, error.detail.message, error.detail.retryAfterSeconds);
+    if (error instanceof ComputeApiError) return failure(tool, error.detail.code, namedRefusal(error.detail.message, error.detail.pointer), error.detail.retryAfterSeconds);
     return failure(tool, "calculation-failed", "Zodiacs could not complete this. Nothing partial is returned; try again.");
   } finally {
     ownedLocalTime?.dispose();
