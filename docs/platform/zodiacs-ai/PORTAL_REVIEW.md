@@ -1,5 +1,48 @@
 # OpenAI portal review record
 
+## 0.5.1 owner submission record, 28 October 2026
+
+All times in this entry are Asia/Bangkok (ICT).
+
+At 10:01:09, the release session recorded the existing 0.5.1 version's
+final **Submit for review** dialog open, with the owner's approval for
+inspection only. All six
+attestations were unchecked, the optional submission context was blank,
+and Submit was disabled. The release session changed no fields, confirmed
+no attestation and did not submit. This direct observation is preserved in
+the local `openai-051-final-review-20261028.json` receipt and its screenshot.
+
+At 10:04:00, Dias wrote in this release chat, "i submitted. what about the
+anthropic one?" This is the timestamp of his submission report, not an
+observed portal submission timestamp. His final click and attestation
+choices were not observed or recorded by the release session. Do not infer
+which statements he confirmed from the later review status. The subsequent
+read-only R44 check below records 0.5.1 as **In review**, **Not published**.
+The chat timestamp is preserved in the local
+`owner-submission-report-20261028.json` receipt.
+
+The reviewed ZIP remains 88,054 bytes with SHA-256
+`d6c440e088474773eac16edf2b89fb0520c880af5407ddc3f4ab7136b3066e13`.
+There was no further package upload, submission or attestation by the
+release session after the handoff.
+
+## 0.5.1 server metadata verified, 28 October 2026
+
+PR #848 merged as `a1b06fd2` after all 24 applicable PR checks passed or
+were legitimately skipped and main's Site Check was green. Its own main
+Site Check `40652007347` then passed all 21 jobs, and the exact production
+deployment was Ready. At 15:33:25 ICT, public checks confirmed version
+0.5.1 in the status response, MCP initialize response and get_capabilities.
+All thirteen tool names and input schemas remained unchanged, as did the
+four current panels and all twenty legacy panel mappings.
+
+The version correction updates release-version values in initialize and
+get_capabilities, including their flag-off fixture responses. It does not
+change tools/list, R44's conventionIds receipt schema, or the scanned card
+addresses. No OpenAI portal action or additional rescan was performed for
+this correction. The completed directory save is recorded in
+[`claude-directory/LISTING.md`](claude-directory/LISTING.md).
+
 ## Tool copy checked after R44, 28 October 2026
 
 Dias approved a rescan so that the app's copy of the tools would match
@@ -43,6 +86,13 @@ owner approval to publish this content and evidence refresh. No portal
 action has been taken.
 
 ## Edition layout fixes prepared locally, 27 October 2026
+
+Later status, 28 October: the reservation fix `f6bc89bd` landed through
+PR #807's merge `59a9383c` and remains in main. The current sources retain
+the reserved wheel geometry and the grid rows and columns for the
+horoscope controls. A later 412px shift reported for `div.hz-hero__body`
+still needs investigation; it does not establish that this earlier fix is
+absent. The preparation record below describes the state before #807 merged.
 
 The release remains on hold. Site Check run `40458842151` at the approved
 head `c9736c27` exhausted its one permitted failed-job rerun. Attempt 2
