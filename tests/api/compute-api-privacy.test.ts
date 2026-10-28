@@ -525,6 +525,11 @@ describe('the site and the compute API', () => {
     // endpoints for the code it shows and the examples it offers, and its
     // browser run bundles the API's parsers and calculations.
     const PLAYGROUND = new Set(PLAYGROUND_FILES);
+    // The developer demo (/developers/demo/): its island shows answers computed
+    // when the page was built and runs an edited question with the playground's
+    // browser bundle, and its helpers name the endpoints for the commands it
+    // shows. It sends nothing to the API, which the test after the next holds.
+    const DEMO = new Set(DEMO_FILES);
     // Every way a module names another: from, a bare side-effect import, a
     // dynamic import with any quote, and require. An AI review found the first
     // two forms alone let a side-effect import and a template-literal import
@@ -551,7 +556,7 @@ describe('the site and the compute API', () => {
     walk('public/');
     expect(files.length).toBeGreaterThan(1000);
     const callers = files.filter((path) => {
-      if (path.startsWith(ADAPTER) || PLAYGROUND.has(path)) return false;
+      if (path.startsWith(ADAPTER) || PLAYGROUND.has(path) || DEMO.has(path)) return false;
       const text = readFileSync(new URL(path, root), 'utf8');
       return (PATHS.test(text) && !DOCUMENTS.has(path)) || (IMPORT.test(text) && !IMPORTERS.has(path));
     });
@@ -564,7 +569,7 @@ describe('the site and the compute API', () => {
     for (const path of DOCUMENTS) {
       if (files.includes(path)) expect(readFileSync(new URL(path, root), 'utf8')).not.toMatch(/<script\b/u);
     }
-    for (const path of PLAYGROUND) expect(files, path).toContain(path);
+    for (const path of [...PLAYGROUND, ...DEMO]) expect(files, path).toContain(path);
   });
 
   it('is called by the developer playground only when its user presses Send; the browser run sends nothing', () => {
@@ -592,7 +597,25 @@ describe('the site and the compute API', () => {
     // The page loads no analytics script: a request typed there can hold a birth.
     expect(read('src/pages/developers/playground/index.astro')).toMatch(/<Base [^>]*\bprivateSurface\b/u);
   });
+
+  it('is never called by the developer demo; an edited question runs with the playground bundle', () => {
+    const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
+    const quiet = /\bfetch\(|XMLHttpRequest|WebSocket|sendBeacon|EventSource|localStorage|sessionStorage|indexedDB|document\.cookie/u;
+    for (const path of DEMO_FILES) expect(read(path), path).not.toMatch(quiet);
+    // Its one load is the playground's bundle, which sends nothing (the test above).
+    const island = read('src/islands/DeveloperDemo.tsx');
+    expect(island.match(/\bimport\(/gu)).toHaveLength(1);
+    expect(island).toContain('import(/* @vite-ignore */ PLAYGROUND_ENGINE_PATH)');
+    // The page loads no analytics script: a birth typed there stays in the page.
+    expect(read('src/pages/developers/demo/index.astro')).toMatch(/<Base [^>]*\bprivateSurface\b/u);
+  });
 });
+
+const DEMO_FILES = [
+  'src/islands/DeveloperDemo.tsx',
+  'src/lib/developer-demo.ts',
+  'src/pages/developers/demo/index.astro',
+];
 
 const PLAYGROUND_FILES = [
   'src/islands/DeveloperPlayground.tsx',

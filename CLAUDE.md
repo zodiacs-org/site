@@ -306,6 +306,12 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   run through the real handler; `tests/api/compute-api-openapi.test.ts` fails
   while it is stale). Its `cite` digests cover receipts that name the
   runtime's tzdb, so generate it on the Node major production runs (24.x)
+- `src/data/developer-demo.json` ← `npx vite-node --script
+  scripts/build-developer-demo.ts` (the answers /developers/demo/ opens with:
+  its preset chart and Mercury questions run through the compute API's
+  dispatch, and its two sample charts through the hosted `get_compatibility`
+  tool; `--check` for drift, and `scripts/developer-demo.test.ts` runs the same
+  comparison, accepting only the runtime a receipt names)
 - `docs/platform/programme/LEDGER.md` ← `node scripts/programme-ledger.mjs`
   (source `docs/platform/programme/acceptance-ledger.json`; `--check` for drift,
   `--summary` for the completion figures)

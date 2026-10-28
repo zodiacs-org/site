@@ -540,6 +540,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/apps/', '2026-10-28'] as const,
   ['/tools/', '2026-10-28'] as const,
   ['/developers/ai/', '2026-10-28'] as const,
+  // The developer demo, and the developer index that links to it. The day of
+  // the daily edition it was built with; after the engine 1.1.0-rc.1 entry above so it wins.
+  ...['/developers/demo/', '/developers/'].map((loc) => [loc, '2026-10-28'] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -647,6 +650,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/developers/conventions/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
     { loc: '/developers/playground/', priority: 0.6 },
+    { loc: '/developers/demo/', priority: 0.6 },
     { loc: '/developers/sky-benchmark/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },
     { loc: '/disclosure/', priority: 0.5 },

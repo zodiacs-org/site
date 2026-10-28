@@ -1308,11 +1308,12 @@ const sitemapPolicy = {
   // +3 for the English-only occasion cards (/occasions/, milestones, baby shower).
   // +1 for /developers/playground/, the compute API playground.
   // +1 for /developers/conventions/, the conventions registry.
+  // +1 for /developers/demo/, the three-question developer demo.
   // +26 for the Chinese zodiac guide in Simplified and Traditional Chinese (hub and twelve animals each).
   // Terminal Research adds its archive alone (indexedRegistryResearchPaths): its
   // published notes (227 that day) left the sitemap as noindex pages on 2026-10-26.
   // +1 for /apps/, the English assistant showcase.
-  total: 1451 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  total: 1452 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     // +3 natal aspect pair pages once their publication record is released.
     + (natalAspectsPublished ? NATAL_ASPECT_PAIRS.length : 0)
