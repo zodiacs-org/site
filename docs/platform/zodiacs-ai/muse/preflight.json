@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-28T10:20:26.543Z",
+  "checkedAt": "2026-10-28T10:25:11.402Z",
   "source": "https://zodiacs.org/mcp",
   "scope": "Generic MCP preflight, not a Muse host result",
   "clientCapabilities": {},
@@ -209,6 +209,52 @@
       "museRendering": "unverified"
     }
   ],
+  "rateLimitWaits": [
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "tools/call",
+      "seconds": 60
+    },
+    {
+      "method": "resources/list",
+      "seconds": 60
+    },
+    {
+      "method": "resources/list",
+      "seconds": 60
+    },
+    {
+      "method": "resources/read",
+      "seconds": 60
+    },
+    {
+      "method": "resources/read",
+      "seconds": 60
+    }
+  ],
   "initialize": {
     "protocolVersion": "2025-06-18",
     "capabilities": {
@@ -223,10 +269,11 @@
       "name": "zodiacs",
       "version": "0.5.1"
     },
-    "instructions": "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never guess a birth time or a sign. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology’s reading. Zodiacs does not schedule anything, pick investments, make health predictions or guarantee how anything will turn out; do not call its tools for those requests, and say plainly that it cannot."
+    "instructions": "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Use URLs returned by the tools exactly, including the query and the complete fragment after #. Never rebuild, shorten or change a card link; if no card URL is returned, use a returned page link. Never guess a birth time or a sign. Share the scores, ratings and astrological forecasts plainly and confidently, as astrology\u2019s reading. Zodiacs does not schedule anything, pick investments, make health predictions or guarantee how anything will turn out; do not call its tools for those requests, and say plainly that it cannot."
   },
   "initializedNotification": {
     "status": 202
   },
-  "preflight": "passed"
+  "preflight": "passed",
+  "baseline": "src/ai-tools/accounts/flag-off.fixture.json, occasions.toolsList"
 }
