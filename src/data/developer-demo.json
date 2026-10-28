@@ -839,20 +839,20 @@
             "line": "Person A’s appetite for more works easily with Person B’s. An easy spark that grows when you use it."
           },
           {
-            "aBody": "Uranus",
-            "bBody": "Pluto",
-            "aspect": "sextile",
-            "orb": 1.5,
-            "generational": false,
-            "line": "Person A’s independence works easily with Person B’s intensity. An easy spark that grows when you use it."
-          },
-          {
             "aBody": "Sun",
             "bBody": "Moon",
             "aspect": "opposition",
             "orb": 1.6,
             "generational": false,
             "line": "Person A’s sense of self pulls against Person B’s emotional life. A strong pull that swings between attraction and tension."
+          },
+          {
+            "aBody": "Saturn",
+            "bBody": "Mars",
+            "aspect": "square",
+            "orb": 1.7,
+            "generational": false,
+            "line": "Person A’s sense of duty pushes against Person B’s drive. Expect friction here, especially under stress."
           }
         ],
         "counts": {
