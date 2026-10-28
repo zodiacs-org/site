@@ -356,6 +356,12 @@ alias named that deployment, built from the merge, with an unchanged
 - the compute API's documented positions request is answered with `backend`
   and receipt engine 1.1.0-rc.1, and its receipt lists its convention ids.
 
+On 28 October the check ran again on the next production deployment,
+`dpl_ErxbAH1Qp8jfhqWVKY3w6CDKpet1`, built from the daily sky commit
+`457ad878`, whose parent is the merge. All 11 checks pass
+([production/production-later.json](production/production-later.json)), and
+the alias named that deployment, with the same `updatedAt`, before and after.
+
 The R44 checks, the registry's and the ids', and the state before the
 deployment are recorded in
 [convention-ids-20261027](../convention-ids-20261027/README.md).

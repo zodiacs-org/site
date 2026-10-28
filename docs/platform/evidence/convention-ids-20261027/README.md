@@ -156,10 +156,41 @@ checks the following:
 With one id renamed, exactly the five checks that read the ids fail, 7 of 12
 ([conventions-control-renamed-id-at-merge.json](production/conventions-control-renamed-id-at-merge.json)).
 
-## Next
+## The next deployment, 28 October
 
-Each check runs again on the next production deployment built from a commit
-that contains the merge, with the alias read before and after.
+The next production deployment came from the daily sky commit `457ad878`,
+whose parent is the merge. It changes the day's sky and horoscope editions,
+the registry's research and market data and the twelve registry sign pages,
+none of which the checks read. Vercel built it as
+`dpl_ErxbAH1Qp8jfhqWVKY3w6CDKpet1`, READY at 00:16:41Z (07:16 ICT), when
+the alias moved to it. The alias was read before and after the checks, and
+named that deployment with the same `updatedAt` both times
+([alias-later-before.json](production/alias-later-before.json),
+[alias-later-after.json](production/alias-later-after.json)).
+
+Each check ran again there, with its controls:
+
+| Report | Passed |
+| --- | --- |
+| E1, [production-later.json](../site-engine-1-1-0-rc1/production/production-later.json) | 11 of 11 |
+| E2, [ids-later.json](production/ids-later.json) | 25 of 25 |
+| E2 without the natal set's id, [ids-control-dropped-id-later.json](production/ids-control-dropped-id-later.json) | 12 of 25 |
+| E2 on suite 0.1.0, [ids-control-suite-0.1.0-later.json](production/ids-control-suite-0.1.0-later.json) | 20 of 25 |
+| E3, [conventions-later.json](production/conventions-later.json) | 12 of 12 |
+| E3 with one id renamed, [conventions-control-renamed-id-later.json](production/conventions-control-renamed-id-later.json) | 7 of 12 |
+
+Each control fails the same checks as at the merge. The reports record the
+same SHA-256 digests as at the merge for:
+
+- registry.json and the registry's page and Markdown twin;
+- the conformance page and its three vector files;
+- all eleven receipts and the hosted MCP server's, each with the same ids;
+- in E1, the engine, support and MCP pages, both llms files, the TypeDoc
+  provenance and the MCP archive.
+
+One digest differs: the OpenAPI document's, because it names the day's data
+("Data as of 2026-10-28"). With that date set back to 2026-10-27, its
+SHA-256 is the one served at the merge, `85bb125b…`.
 
 ## What this does not establish
 

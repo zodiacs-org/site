@@ -26,9 +26,15 @@ weighted units accepted; blocked 2% (3), or 1.644%. Standards §4.4 is at
 
   The record is
   [the evidence README](../evidence/convention-ids-20261027/README.md).
-- **Still to do.** The same checks run again on the next production
-  deployment. A rescan by the AI portals is your call: the hosted tool list
-  changed (the compute receipts' schemas and Chart Studio's address).
+- **Checked again on the next deployment, 28 October.** The daily sky
+  commit `457ad878`, whose parent is the merge, went live at 07:16 as
+  `dpl_ErxbAH1Qp8jfhqWVKY3w6CDKpet1`. The same checks pass there, 11 of 11,
+  25 of 25 and 12 of 12, and each control fails the same checks as before.
+  Everything they record by digest is byte for byte what the merge's
+  deployment served, except the OpenAPI document, which names the day's
+  data.
+- **Still to do.** A rescan by the AI portals is your call: the hosted tool
+  list changed (the compute receipts' schemas and Chart Studio's address).
 - **Not checked.** Request forms beyond the documented ones and one polar
   chart. The local MCP adapter's own receipt for place searches states no
   convention, so it lists no ids.
