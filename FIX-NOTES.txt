@@ -1,0 +1,12 @@
+
+Review fixes
+============
+Removed discovery from the protected sign and Learn pages and restored the protected locale catalog to origin/main. English reference alternates now belong to the reference pages. Removed collectionDescription and restored the owner-approved navigation copy. No scope allowance was added.
+
+Reference completion now requires an explicit user submission and a plain comparison. Regression tests preserve markers for invitations, restored invitations, deep-link auto-runs, restores and returned readings. Result links use canonical pair text and native accessible names, with Moon time uncertainty on both top and exact-detail links.
+
+Restored all 18 Phase 1 screenshots and their manifest to origin/main. Corrected the hub breadcrumb, rendered schematic values from generated data, validated synastry budgets in the validation loop, and added complete/incomplete publication fixtures.
+
+Validation: check, consumer boundary, normal build, preview build, both synastry drives, 58 focused regression tests and 12 visual comparisons passed. All restored screenshot hashes match their manifest. No visual baselines or gate thresholds changed.
+
+The full test rerun passed 7,855 tests but has three failing files: the restored acceptance manifest's source fingerprint differs from the current source tree, and two tests cannot read the external Git metadata at /home/box/work/site-anim/.git/worktrees/site-adjacent. The scope command likewise cannot resolve a comparison base. The acceptance fingerprint includes broad source directories and test files, so reverting navigation alone cannot preserve it. These gates were left intact. No commit, push or GitHub command was run.

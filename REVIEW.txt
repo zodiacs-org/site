@@ -1,0 +1,62 @@
+# Cross-review: site#805
+
+- Author: codex. Reviewer: claude (read-only).
+- Started: 2026-10-20 17:42 ICT. Head: f8a7cf13c3ce75a9a123ab36ff42bc3a8c0ea9ca.
+- Not posted to GitHub.
+
+# Review: site#805, "Adjacent topic: first section from traffic plan"
+
+## 1. Verdict
+**Request changes.** The first CI gate will fail, and the PR overrides an owner-approved navigation decision.
+
+## 2. Bugs and regressions (most serious first)
+
+1. **The Phase 1 scope guard will fail.**
+   - The PR adds the `SynastryDiscovery` link to `src/pages/[sign]/index.astro:183` and `src/pages/learn/index.astro:214`. The guard (`scripts/phase1-scope-guard.mjs:67,70`) protects both files.
+   - The existing `.github/phase1-scope-allowance.json` won't cover them. It isn't part of this diff, so the guard ignores it, and it is pinned to `b9452b6` for the four localized sign pages only.
+   - `test:phase1:scope` will report two violations before `npm ci` even runs.
+   - **Fix:** take the discovery link off the Gemini guide and the Learn index, or get owner approval and add a new one-time allowance pinned to this base.
+
+2. **The pages override the owner-approved navigation description.**
+   - `SiteNav.astro:38` gains a `collectionDescription` prop. `Base.astro:445` passes it through, and the hub and pair pages set it to `"Zodiac collection"` (`index.astro:25`, `AspectPairPage.astro:40`).
+   - CLAUDE.md requires the 2026-10-01 copy that names the official Zodiac token collection on every primary navigation, and says the scanner checks the exact wording. Swapping it per page is exactly what that rule forbids.
+   - `tests/synastry-reference-drive.mjs:53-54` then asserts that the navigation contains no "token", which locks the deviation in.
+   - **Fix:** remove the prop and its three call sites. Drop the navigation assertion, or exclude the sanctioned Astrofolio link from it.
+
+3. **The reference-completion event fires on more than a user's own comparison.**
+   - `SynastryCalculator.tsx:1312` calls `completeReferenceTask()` after every successful compare. That includes invitation results (`resultSource === 'invite-restored'`), deep-link auto-runs and restore ticks.
+   - `docs/synastry/RELEASE.md` says invitations are not counted as completion.
+   - **Fix:** only call it for a comparison the user starts from the form or a saved chart, and skip invite and auto-run sources.
+
+4. **The result-row links fail label-in-name and print pairs in the wrong order** (`RelationshipWheel.tsx:487-490`, `:560`).
+   - `aria-label` replaces the visible text, and neither contains the other. The visible "Read Sun-Moon conjunction in synastry" does not appear in the label "Sun in chart A conjunction Moon in chart B: synastry reference". This fails WCAG 2.5.3.
+   - The label also reads as broken grammar ("conjunction" where "conjunct" is meant).
+   - When the engine lists Moon first, the visible text reads "Moon-Sun", but the link goes to the Sun-Moon page, whose fixed roles are Sun A / Moon B.
+   - **Fix:** use the page's canonical pair order in the visible text, and either drop `aria-label` or make it begin with the visible text.
+
+5. **The "Moon time uncertain" cue is incomplete.** It appears on the top rows (`:489`) but not on the exact-details links (`:560`).
+
+6. **Out-of-scope acceptance evidence was regenerated with a different browser.**
+   - All 18 `docs/acceptance/phase1/screenshots/*` files and `manifest.json` were recaptured, and the manifest's `browser` went from Chromium 155 to **149**. That looks like a system browser rather than the pinned Playwright build.
+   - The daily date also rolled forward to 2026-10-20, which changes Today and Tomorrow content unrelated to this topic.
+   - Once the SiteNav/Base change from item 2 is removed, the template hash should no longer need a refresh. Drop these files, or recapture with the pinned Chromium in a separate PR.
+
+7. **Smaller issues:**
+   - The hub's visible breadcrumb is "Learn / Compatibility" (`index.astro:27`), but its JSON-LD says Compatibility → Synastry aspects.
+   - The wraparound and outside-orb copy is hardcoded in `AspectPairPage.astro`, not read from the generated `schematic` data. The `--check` gate therefore can't catch it drifting from the data.
+   - `report-bundles.mjs:183` adds the synastry budgets after the validation loop, so their values are never checked as finite and non-negative.
+
+## 3. House-rule breaches
+- **Model names or personal emails:** none found.
+- **Em or en dashes:** none in the new MDX, pages or components. I searched for them, and the drive also asserts this.
+- **Predictions:** none. The copy consistently refuses to predict outcomes.
+- **Token or crypto language on consumer surfaces:** the copy is clean. The real breach runs the other way: removing the sanctioned token description from the navigation (item 2).
+- **Light theme:** none. The diagram uses the theme's own colour variables.
+- **CLS:** nothing obvious. The discovery paragraph is server-rendered behind a build flag. The new result links appear in the post-compute view, inside the existing opacity transition.
+- **Edits outside scope:** the Phase 1-protected Gemini guide and Learn index (item 1), the navigation and layout (item 2), and the acceptance screenshots (item 6).
+
+## 4. Missing tests and checks
+- No test that an invite-restored or auto-run comparison leaves the marker in place and sends no completion event.
+- No accessibility check of the result-link name against its visible text.
+- I couldn't run git or CI here (read-only tools), so I haven't confirmed whether the consumer-boundary scanner flags the new navigation text. Running `npm run check:consumer-boundary` would show it.
+- The normal-build path (`tests/synastry-publication-drive.mjs`) never covers the published branch: `released: true` with all its fields filled, routes present, sitemap entries, and no noindex. A fixture-based unit test of `synastryPublished` would cover that.
