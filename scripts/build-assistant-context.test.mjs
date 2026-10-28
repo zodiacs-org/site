@@ -76,13 +76,14 @@ describe('assistant site context', () => {
       // The compute API, AI integrations and sky benchmark each add a page.
       // The three occasion cards (/occasions/, milestones, baby shower) add three.
       // The conventions registry at /developers/conventions/ adds one more.
+      // The assistant showcase at /apps/ adds one evergreen page.
       // The developer demo at /developers/demo/ adds one more.
-      consumerRoutes: 712,
+      consumerRoutes: 713,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 73,
+      staticPages: 74,
       tools: 28,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');

@@ -536,6 +536,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // draw them, so a first paint mid-parse no longer moves them; on the day of the daily edition it was built with.
   ...['/birth-chart/', '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/', '/ru/birth-chart/']
     .map((loc) => [loc, '2026-10-27'] as const),
+  // The assistant showcase and its entry links, first published with this change.
+  ['/apps/', '2026-10-28'] as const,
+  ['/tools/', '2026-10-28'] as const,
+  ['/developers/ai/', '2026-10-28'] as const,
   // The developer demo, and the developer index that links to it. The day of
   // the daily edition it was built with; after the engine 1.1.0-rc.1 entry above so it wins.
   ...['/developers/demo/', '/developers/'].map((loc) => [loc, '2026-10-28'] as const),
@@ -641,6 +645,7 @@ export async function sitemapEntries(): Promise<SitemapEntry[]> {
     { loc: '/developers/compare/', priority: 0.6 },
     { loc: '/developers/mcp/', priority: 0.6 },
     { loc: '/developers/ai/', priority: 0.6 },
+    { loc: '/apps/', priority: 0.7 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/conventions/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
