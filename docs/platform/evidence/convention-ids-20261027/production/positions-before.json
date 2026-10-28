@@ -1,0 +1,18 @@
+{
+  "fetchedAt": "2026-10-27T14:43:31Z",
+  "path": "/api/v1/positions",
+  "request": "positions.two (src/lib/compute-api/examples.ts)",
+  "status": 200,
+  "backend": "1.0.0",
+  "receiptEngine": "1.0.0",
+  "receiptHasConventionIds": false,
+  "receiptKeys": [
+    "conventions",
+    "coverage",
+    "deltaT",
+    "endpoint",
+    "engine",
+    "referenceSpan",
+    "schema"
+  ]
+}

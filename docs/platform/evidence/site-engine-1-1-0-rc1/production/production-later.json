@@ -1,0 +1,98 @@
+{
+  "schema": "zodiacs.engine-1-1-0-rc1-production.v1",
+  "checkedAt": "2026-10-28T00:18:01.498Z",
+  "base": "https://zodiacs.org",
+  "merge": "d698bc084091b8c9a63d95e0572b270386e4b077",
+  "deployment": {
+    "deploymentId": "dpl_ErxbAH1Qp8jfhqWVKY3w6CDKpet1",
+    "aliasUpdatedAt": "2026-10-28T00:16:41.864Z",
+    "readyState": "READY",
+    "target": "production",
+    "githubCommitSha": "457ad878da3d6cbbf7e4e8a9d1d8ad0159c8187e"
+  },
+  "candidate": {
+    "version": "1.1.0-rc.1",
+    "sha256": "52352d3f8fde4a262483e4a5a6217e02d814aa53269b49c0333325e6c0d6a7b6",
+    "sourceCommit": "c41706266caf4dde7e03aaa18c08acd569d19a7e"
+  },
+  "mcp": {
+    "version": "0.1.0-rc.25",
+    "sha256": "26c7c04b360d46134a7747530a45fa1e8bea3487291ca472af1cb5a82053fbbb"
+  },
+  "checks": [
+    {
+      "containsMerge": true,
+      "name": "the zodiacs.org alias names a READY production deployment built from a commit that contains the merge",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "5a59944057ff2baffee961c4ee4b34a6e345a02e0823388e673a9ca0e395fca9",
+      "missing": [],
+      "name": "/developers/engine/ names engine 1.1.0-rc.1 as a candidate npm does not carry",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "f474f7300a06d2fa0b4dfbe11966b280fa51b92b757a2416773ed3c82fda9e36",
+      "missing": [],
+      "name": "/developers/support/ names engine 1.1.0-rc.1 as a candidate npm does not carry",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "23a73dbc1dce7d1368df835ac2779b68a2d517d8a70abf7b4b4a6e0654fbafec",
+      "missing": [],
+      "name": "/developers/mcp/ names engine 1.1.0-rc.1 as a candidate npm does not carry",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "dc166f8f9b46f5ed1627ca4a2a87565b45b282c1fcb9190c4df856327dde7dd4",
+      "missing": [],
+      "name": "/llms.txt names engine 1.1.0-rc.1 as a candidate npm does not carry",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "sha256": "c01b6c14fb415f167c419f554040b6998ffd3f697e0e2e38b767942da5460da9",
+      "missing": [],
+      "name": "/llms-full.txt names engine 1.1.0-rc.1 as a candidate npm does not carry",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "version": "1.1.0-rc.1",
+      "sha256": "f372c9dcb0b2708e3c0cf7c295922fb7f7ab785ba8b9db2da94560b42b091438",
+      "name": "TypeDoc provenance names 1.1.0-rc.1 and its archive",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "version": "0.1.0-rc.25",
+      "name": "MCP manifest is the merge's",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "bytes": 913196,
+      "sha256": "26c7c04b360d46134a7747530a45fa1e8bea3487291ca472af1cb5a82053fbbb",
+      "name": "MCP archive 0.1.0-rc.25 has the manifest's digest",
+      "ok": true
+    },
+    {
+      "name": "the documented positions example is the one sent",
+      "ok": true
+    },
+    {
+      "status": 200,
+      "backend": "1.1.0-rc.1",
+      "receiptEngine": "1.1.0-rc.1",
+      "conventionIds": 22,
+      "name": "compute API answers on engine 1.1.0-rc.1, with the receipt's convention ids",
+      "ok": true
+    }
+  ],
+  "passed": 11,
+  "failed": 0
+}
