@@ -6,11 +6,11 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-28T09:15:59.572Z",
+  "capturedAt": "2026-10-28T11:13:57.338Z",
   "browser": "Chromium 155.0.8059.84",
   "dailyDate": "2026-10-28",
   "publicationCanonicalSha256": "70cff7345903fc26552be8c16585c65227d6894401a41d33220cda20e37168b7",
-  "templateSourceSha256": "2f95f8fd99fc19683a2e2f71f8f54779e31620b824bd6ced794b49722bf05534",
+  "templateSourceSha256": "b20b76fb42c670324e90b8ab74ea00c9dff401fa4b7c56dddc855e447682b72e",
   "renderPayloadSha256": {
     "daily": "570caaf328e51ee07dfe9e81dd51fc6947deb9f0bdea5142f18ae30c292cbd7b",
     "dailyPublication": "24541e6ef30f8b18b90dda49d6472c274baefaa4ac1d65f004965df6bf4b4042",
@@ -19,8 +19,8 @@
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-28T09:15:12.266Z",
-    "templateSourceSha256": "2f95f8fd99fc19683a2e2f71f8f54779e31620b824bd6ced794b49722bf05534",
+    "builtAt": "2026-10-28T11:13:20.097Z",
+    "templateSourceSha256": "b20b76fb42c670324e90b8ab74ea00c9dff401fa4b7c56dddc855e447682b72e",
     "dailyDate": "2026-10-28",
     "publicationCanonicalSha256": "70cff7345903fc26552be8c16585c65227d6894401a41d33220cda20e37168b7",
     "renderPayloadSha256": {
@@ -282,13 +282,13 @@
         "file": "monthly-360.png",
         "width": 360,
         "height": 9125,
-        "sha256": "b03bf755ea8713f5f34c8d53426343c7f7e9f9d081b44a63e480fa4c3b53fed6"
+        "sha256": "212677368387be9b4f6c1d6a9508028291adeb6a01ccde525074f7a4de07b82c"
       },
       "layout": {
         "clientWidth": 360,
         "scrollWidth": 360,
         "scrollHeight": 9125,
-        "contentLength": 5899,
+        "contentLength": 5896,
         "overlay": false,
         "guideLauncher": true
       },
@@ -306,13 +306,13 @@
         "file": "monthly-1280.png",
         "width": 1280,
         "height": 5923,
-        "sha256": "01244b7cc6c4250e52b008600696126e6b003301ed8d178613be2e00b1bc63c2"
+        "sha256": "4fd58b72e9678be7648db47818e02d021e3e96df9b8aedbbabd4b3be55859a03"
       },
       "layout": {
         "clientWidth": 1280,
         "scrollWidth": 1280,
         "scrollHeight": 5923,
-        "contentLength": 6601,
+        "contentLength": 6598,
         "overlay": false,
         "guideLauncher": true
       },
